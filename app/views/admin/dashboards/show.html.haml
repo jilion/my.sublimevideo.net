@@ -62,7 +62,7 @@
     %li= "#{Country[top_10_countries[i][0]].name} (#{top_10_countries[i][1]} - #{display_percentage(top_10_countries[i][1].to_f / billable_customers)})"
 %br
 
-%h3 Traffic (SiteStat)
+%h3 Traffic (Stat::Site)
 %p
   Last 30 days traffic:&nbsp;&nbsp;&nbsp;
   = "#{number_with_delimiter(@last_30_days_video_views, :significant => false, :precision => 2, :delimiter => "'")} video views"

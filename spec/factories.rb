@@ -170,7 +170,7 @@ FactoryGirl.define do
     ended_at    { Time.now.utc.end_of_month }
   end
 
-  factory :plan_invoice_item, :parent => :invoice_item, :class => ::InvoiceItem::Plan do
+  factory :plan_invoice_item, parent: :invoice_item, class: ::InvoiceItem::Plan do
     item   { FactoryGirl.create(:plan) }
     price  1000
     amount 1000
@@ -188,8 +188,14 @@ FactoryGirl.define do
     plans_count   { {} }
   end
 
-  factory :site_stat do
-    t    { FactoryGirl.create(:site).token }
+  factory :site_stat, class: Stat::Site do
+  end
+
+  factory :video_stat, class: Stat::Video do
+  end
+
+  factory :video_tag do
+
   end
 
   factory :tweet do

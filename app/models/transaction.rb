@@ -196,7 +196,7 @@ class Transaction < ActiveRecord::Base
   end
 
   def description
-    @description ||= "SublimeVideo Invoices: " + self.invoices.all.map { |invoice| "##{invoice.reference}" }.join(", ")
+    @description ||= "SublimeVideo Invoices: " + self.invoices.order(:created_at).all.map { |invoice| "##{invoice.reference}" }.join(", ")
   end
 
   def store_cc_infos(payment_method)

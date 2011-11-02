@@ -6,7 +6,7 @@ class StatsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: SiteStat.json(@site.token, params[:period] || 'minutes') }
+      format.json { render json: Stat::Site.json(@site.token, params[:period] || 'minutes') }
     end
   end
 

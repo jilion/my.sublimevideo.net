@@ -6,7 +6,7 @@
 	ignorecase              = true
 
 [remote "origin"]
-  url   = git@jime1.epfl.ch:my.sublimevideo.net.git
+  url   = git@github.com:jilion/sublimevideo.net.git
   fetch = +refs/heads/*:refs/remotes/origin/*
 [remote "production"]
   url   = git@heroku.com:mysublime.git

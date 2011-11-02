@@ -73,6 +73,8 @@ gem 'hoptoad_notifier',      '~> 2.4.11'
 gem 'prowl',                 '~> 0.1.3'
 
 gem 'addressable',           '~> 2.2.6'
+# Need to be updated manually until https://github.com/carlhuda/bundler/issues/67 is fixed.
+gem 'stat_request_parser',   path: 'vendor/sv_stat_request_parser'
 
 # Perf
 gem 'dalli',                 '~> 1.1.1'

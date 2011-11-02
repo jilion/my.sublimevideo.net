@@ -11,7 +11,6 @@ module RecurringJob
   stats_tasks = [
     '%UsersStat%create_users_stats%',
     '%SitesStat%create_sites_stats%',
-    '%SiteStat%clear_old_seconds_minutes_and_days_stats%',
     '%Site%stop_stats_trial%',
     '%Site%send_stats_trial_will_end%'
   ]
@@ -22,7 +21,8 @@ module RecurringJob
     '%RecurringJob%invoices_processing%',
     '%SiteModules::UsageMonitoring%monitor_sites_usages%',
     '%Site%update_last_30_days_counters_for_not_archived_sites%',
-    '%Tweet%save_new_tweets_and_sync_favorite_tweets%'
+    '%Tweet%save_new_tweets_and_sync_favorite_tweets%',
+    '%Stat%clear_old_seconds_minutes_and_hours_stats%'
   ] + logs_tasks + stats_tasks
 
   class << self
@@ -53,7 +53,6 @@ module RecurringJob
       # Stats
       UsersStat.delay_create_users_stats
       SitesStat.delay_create_sites_stats
-      SiteStat.delay_clear_old_seconds_minutes_and_days_stats
       Site.delay_stop_stats_trial
       Site.delay_send_stats_trial_will_end
 
@@ -61,6 +60,7 @@ module RecurringJob
       SiteModules::UsageMonitoring.delay_monitor_sites_usages
       Site.delay_update_last_30_days_counters_for_not_archived_sites
       Tweet.delay_save_new_tweets_and_sync_favorite_tweets
+      Stat.delay_clear_old_seconds_minutes_and_hours_stats
     end
 
     def supervise

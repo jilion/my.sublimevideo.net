@@ -3,6 +3,7 @@ class Log::Voxcast < Log
   field :stats_parsed_at,       type: DateTime
   field :referrers_parsed_at,   type: DateTime
   field :user_agents_parsed_at, type: DateTime
+  field :video_tags_parsed_at,  type: DateTime
 
   attr_accessible :file
 
@@ -65,7 +66,7 @@ class Log::Voxcast < Log
   end
 
   class << self
-    %w[stats referrers user_agents].each do |type|
+    %w[stats referrers user_agents video_tags].each do |type|
       define_method("parse_log_for_#{type}") do |id|
         log = find(id)
         unless log.send "#{type}_parsed_at?"
@@ -88,7 +89,7 @@ class Log::Voxcast < Log
 
   def parse_and_create_stats!
     trackers = trackers('LogsFileFormat::VoxcastStats')
-    SiteStat.create_stats_from_trackers!(self, trackers)
+    Stat.create_stats_from_trackers!(self, trackers)
   end
 
   def parse_and_create_referrers!
@@ -99,6 +100,11 @@ class Log::Voxcast < Log
   def parse_and_create_user_agents!
     trackers = trackers('LogsFileFormat::VoxcastUserAgents')
     UsrAgent.create_or_update_from_trackers!(self, trackers)
+  end
+
+  def parse_and_create_video_tags!
+    trackers = trackers('LogsFileFormat::VoxcastVideoTags')
+    VideoTag.create_or_update_from_trackers!(self, trackers)
   end
 
   def minute
@@ -116,6 +122,7 @@ private
   def delay_parse
     self.class.delay(:priority => 1).parse_log(id)
     self.class.delay(:priority => 0).parse_log_for_stats(id)
+    self.class.delay(:priority => 9).parse_log_for_video_tags(id)
     self.class.delay(:priority => 90, :run_at => 15.seconds.from_now).parse_log_for_referrers(id)
     self.class.delay(:priority => 95, :run_at => 15.seconds.from_now).parse_log_for_user_agents(id)
   end

@@ -14,14 +14,14 @@
 # gif.src =     "https://4076.voxcdn.com/_.gif?t=ibvjcopp&i=1310389131519&h=m&e=s&pd=t&pm=h";
 
 module LogsFileFormat
-  class VoxcastStats < RequestLogAnalyzer::FileFormat::Base
+  class VoxcastVideoTags < RequestLogAnalyzer::FileFormat::Base
     extend LogsFileFormat::Voxcast
 
     def self.report_trackers
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
-      analyze.frequency(:stats, :title => :stats,
-        :category => lambda { |r| [remove_timestamp(r[:path_query]), r[:useragent]] },
-        :if       => lambda { |r| gif_request?(r[:path_stem]) && countable_hit?(r) && good_token?(r[:path_query]) }
+      analyze.frequency(:video_tags, :title => :video_tags,
+        :category => lambda { |r| remove_timestamp(r[:path_query]) },
+        :if       => lambda { |r| gif_request?(r[:path_stem]) && countable_hit?(r) && good_token?(r[:path_query]) && view_event?(r[:path_query]) }
       )
       analyze.trackers
     end
@@ -39,6 +39,10 @@ module LogsFileFormat
 
     def self.good_token?(path_query)
       path_query =~ /t=([a-z0-9]{8})/
+    end
+
+    def self.view_event?(path_query)
+      path_query =~ /&e=s/
     end
 
   end

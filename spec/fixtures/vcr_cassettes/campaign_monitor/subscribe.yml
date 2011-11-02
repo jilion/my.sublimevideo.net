@@ -1,594 +1,705 @@
---- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1@user.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 15:16:19 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "180"
-    body: "{\"EmailAddress\":\"email1@user.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-05 16:16:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"446\"}]}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '180'
+    body: ! '{"EmailAddress":"email1@user.com","Name":"John Doe","Date":"2011-01-05
+      16:16:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"446"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email2@user.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 15:16:21 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "180"
-    body: "{\"EmailAddress\":\"email2@user.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-05 16:16:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"447\"}]}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '180'
+    body: ! '{"EmailAddress":"email2@user.com","Name":"John Doe","Date":"2011-01-05
+      16:16:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"447"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email2@user.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 15:16:22 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "186"
-    body: "{\"EmailAddress\":\"email2@user.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-05 16:16:00\",\"State\":\"Unsubscribed\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"447\"}]}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '186'
+    body: ! '{"EmailAddress":"email2@user.com","Name":"John Doe","Date":"2011-01-05
+      16:16:00","State":"Unsubscribed","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"447"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email2@user.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 15:16:23 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "180"
-    body: "{\"EmailAddress\":\"email2@user.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-05 16:16:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"447\"}]}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '180'
+    body: ! '{"EmailAddress":"email2@user.com","Name":"John Doe","Date":"2011-01-05
+      16:16:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"447"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email46@user.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 400
       message: Bad Request
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 17:40:00 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "47"
-    body: "{\"Code\":203,\"Message\":\"Subscriber not in list\"}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '47'
+    body: ! '{"Code":203,"Message":"Subscriber not in list"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email47@user.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 400
       message: Bad Request
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 17:40:01 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "47"
-    body: "{\"Code\":203,\"Message\":\"Subscriber not in list\"}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '47'
+    body: ! '{"Code":203,"Message":"Subscriber not in list"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email47@user.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 400
       message: Bad Request
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 17:40:01 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "47"
-    body: "{\"Code\":203,\"Message\":\"Subscriber not in list\"}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '47'
+    body: ! '{"Code":203,"Message":"Subscriber not in list"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email47@user.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 400
       message: Bad Request
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 17:40:02 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "47"
-    body: "{\"Code\":203,\"Message\":\"Subscriber not in list\"}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '47'
+    body: ! '{"Code":203,"Message":"Subscriber not in list"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm@jilion.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 19:47:34 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "178"
-    body: "{\"EmailAddress\":\"cm@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-05 20:48:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"654\"}]}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '178'
+    body: ! '{"EmailAddress":"cm@jilion.com","Name":"John Doe","Date":"2011-01-05
+      20:48:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"654"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm@jilion.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 19:47:38 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "184"
-    body: "{\"EmailAddress\":\"cm@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-05 20:48:00\",\"State\":\"Unsubscribed\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"654\"}]}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '184'
+    body: ! '{"EmailAddress":"cm@jilion.com","Name":"John Doe","Date":"2011-01-05
+      20:48:00","State":"Unsubscribed","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"654"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm@jilion.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      date: 
+    headers:
+      date:
       - Wed, 05 Jan 2011 19:47:39 GMT
-      server: 
+      server:
       - Microsoft-IIS/6.0
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      x-aspnet-version: 
+      x-aspnet-version:
       - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+      x-aspnetmvc-version:
+      - '2.0'
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "178"
-    body: "{\"EmailAddress\":\"cm@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-05 20:48:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"654\"}]}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '178'
+    body: ! '{"EmailAddress":"cm@jilion.com","Name":"John Doe","Date":"2011-01-05
+      20:48:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"654"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: "{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":2},{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"beta\",\"Value\":\"true\"}],\"Resubscribe\":true}"
-    headers: 
-      user-agent: 
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":2},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"true"}],"Resubscribe":true}'
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 201
       message: Created
-    headers: 
-      cache-control: 
+    headers:
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      server: 
+      server:
       - CMWEB08
-      x-aspnetmvc-version: 
-      - "2.0"
-      x-aspnet-version: 
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
       - 4.0.30319
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date: 
+      date:
       - Mon, 28 Mar 2011 13:47:46 GMT
-      content-length: 
-      - "16"
-    body: "\"cm2@jilion.com\""
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '16'
+    body: ! '"cm2@jilion.com"'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      cache-control: 
+    headers:
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      server: 
+      server:
       - CMWEB08
-      x-aspnetmvc-version: 
-      - "2.0"
-      x-aspnet-version: 
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
       - 4.0.30319
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date: 
+      date:
       - Mon, 28 Mar 2011 13:47:47 GMT
-      content-length: 
-      - "207"
-    body: "{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-03-28 15:47:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"2\"},{\"Key\":\"beta\",\"Value\":\"true\"}]}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '207'
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","Date":"2011-03-28
+      15:47:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"2"},{"Key":"beta","Value":"true"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244/unsubscribe.json
-    body: "{\"EmailAddress\":\"cm2@jilion.com\"}"
-    headers: 
-      user-agent: 
+    body: ! '{"EmailAddress":"cm2@jilion.com"}'
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      cache-control: 
+    headers:
+      cache-control:
       - private, s-maxage=0
-      server: 
+      server:
       - CMWEB08
-      x-aspnetmvc-version: 
-      - "2.0"
-      x-aspnet-version: 
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
       - 4.0.30319
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date: 
+      date:
       - Mon, 28 Mar 2011 13:47:48 GMT
-      content-length: 
-      - "0"
-    body: 
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '0'
+    body: !!null 
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      cache-control: 
+    headers:
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      server: 
+      server:
       - CMWEB08
-      x-aspnetmvc-version: 
-      - "2.0"
-      x-aspnet-version: 
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
       - 4.0.30319
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date: 
+      date:
       - Mon, 28 Mar 2011 13:47:48 GMT
-      content-length: 
-      - "213"
-    body: "{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-03-28 15:48:00\",\"State\":\"Unsubscribed\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"2\"},{\"Key\":\"beta\",\"Value\":\"true\"}]}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '213'
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","Date":"2011-03-28
+      15:48:00","State":"Unsubscribed","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"2"},{"Key":"beta","Value":"true"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: "{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":2},{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"beta\",\"Value\":\"true\"}],\"Resubscribe\":true}"
-    headers: 
-      user-agent: 
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":2},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"true"}],"Resubscribe":true}'
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 201
       message: Created
-    headers: 
-      cache-control: 
+    headers:
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      server: 
+      server:
       - CMWEB08
-      x-aspnetmvc-version: 
-      - "2.0"
-      x-aspnet-version: 
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
       - 4.0.30319
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date: 
+      date:
       - Mon, 28 Mar 2011 13:47:49 GMT
-      content-length: 
-      - "16"
-    body: "\"cm2@jilion.com\""
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+      content-length:
+      - '16'
+    body: ! '"cm2@jilion.com"'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
-    body: 
-    headers: 
-      user-agent: 
+    body: !!null 
+    headers:
+      user-agent:
       - createsend-ruby-0.6.1
-      content-type: 
+      content-type:
       - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      cache-control: 
+    headers:
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      server: 
+      server:
       - CMWEB08
-      x-aspnetmvc-version: 
-      - "2.0"
-      x-aspnet-version: 
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
       - 4.0.30319
-      x-powered-by: 
+      x-powered-by:
       - ASP.NET
-      p3p: 
+      p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date: 
+      date:
       - Mon, 28 Mar 2011 13:47:50 GMT
-      content-length: 
-      - "207"
-    body: "{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-03-28 15:48:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"2\"},{\"Key\":\"beta\",\"Value\":\"true\"}]}"
-    http_version: "1.1"
+      content-length:
+      - '207'
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","Date":"2011-03-28
+      15:48:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"2"},{"Key":"beta","Value":"true"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":1},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"true"}],"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.8.1
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 172.20.3.24
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 02 Nov 2011 15:51:06 GMT
+      content-length:
+      - '16'
+    body: ! '"cm2@jilion.com"'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
+    body: !!null 
+    headers:
+      user-agent:
+      - createsend-ruby-0.8.1
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 172.20.3.29
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 02 Nov 2011 15:51:07 GMT
+      content-length:
+      - '207'
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","Date":"2011-11-02
+      17:35:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"1"},{"Key":"beta","Value":"true"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244/unsubscribe.json
+    body: ! '{"EmailAddress":{"company_employees":null,"company_job_title":null,"company_name":null,"company_url":null,"company_videos_served":null,"country":"CH","email":"cm2@jilion.com","first_name":"John","hidden_notice_ids":[],"last_name":"Doe","newsletter":true,"postal_code":"2000","use_clients":null,"use_company":null,"use_personal":true}}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.8.1
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 400
+      message: Bad Request
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 172.20.3.25
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 02 Nov 2011 15:50:54 GMT
+      content-length:
+      - '141'
+    body: ! '{"Code":400,"Message":"Failed to deserialize your request. \r\nPlease
+      check the documentation and try again.\r\nFields in error: subscriber"}'
+    http_version: '1.1'
