@@ -197,7 +197,7 @@ def create_users(user_id=nil)
         cc_expiration_month: 2.years.from_now.month,
         cc_expiration_year: 2.years.from_now.year
       }
-      user.check_credit_card
+      user.register_credit_card_on_file
       user.save!
       puts "User #{BASE_USERS[i][1]}:123456"
     end

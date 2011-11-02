@@ -19,7 +19,7 @@ describe TransactionsController do
           end
 
           it "should add a notice and redirect to /account/edit" do
-            @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
+            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should be_present
@@ -41,7 +41,7 @@ describe TransactionsController do
           end
 
           it "should add an alert and redirect to /account/edit" do
-            @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
+            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should == ""
@@ -63,7 +63,7 @@ describe TransactionsController do
           end
 
           it "should add an alert and redirect to /account/edit" do
-            @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
+            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should == ""
@@ -85,7 +85,7 @@ describe TransactionsController do
           end
 
           it "should add an alert and redirect to /account/edit" do
-            @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
+            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should == ""
@@ -107,7 +107,7 @@ describe TransactionsController do
           end
 
           it "should add an alert and redirect to /account/edit" do
-            @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
+            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should == ""
@@ -129,7 +129,7 @@ describe TransactionsController do
           end
 
           it "should add an alert and redirect to /account/edit" do
-            @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
+            @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should == ""

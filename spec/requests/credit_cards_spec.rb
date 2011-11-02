@@ -83,7 +83,7 @@ feature "Credit cards update" do
       page.should have_content "Please click on the \"Continue\" button to continue the processing of your 3-D secure transaction."
 
       # fake payment succeeded callback (and thus skip the d3d redirection)
-      VCR.use_cassette('ogone/void_authorization') { @current_user.process_cc_authorize_and_save("PAYID" => "1234", "STATUS" => "5") }
+      VCR.use_cassette('ogone/void_authorization') { @current_user.process_credit_card_authorization_response("PAYID" => "1234", "STATUS" => "5") }
       @current_user.cc_type.should == 'visa'
       @current_user.cc_last_digits.should == '0002'
       @current_user.pending_cc_type.should be_nil
@@ -115,7 +115,7 @@ feature "Credit cards update" do
 
 
       # fake payment waiting callback (and thus skip the d3d redirection)
-      VCR.use_cassette('ogone/void_authorization') { @current_user.process_cc_authorize_and_save("PAYID" => "1234", "STATUS" => "51") }
+      VCR.use_cassette('ogone/void_authorization') { @current_user.process_credit_card_authorization_response("PAYID" => "1234", "STATUS" => "51") }
       @current_user.reload.cc_type.should == 'visa'
       @current_user.cc_last_digits.should == '1111'
 
@@ -146,7 +146,7 @@ feature "Credit cards update" do
       @current_user.pending_cc_last_digits.should == '0002'
 
       # fake payment failed callback (and thus skip the d3d redirection)
-      @current_user.process_cc_authorize_and_save("PAYID" => "1234", "STATUS" => "0")
+      @current_user.process_credit_card_authorization_response("PAYID" => "1234", "STATUS" => "0")
 
       @current_user.reload.cc_type.should == 'visa'
       @current_user.cc_last_digits.should == '1111'

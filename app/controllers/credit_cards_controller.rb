@@ -17,8 +17,8 @@ class CreditCardsController < ApplicationController
     }
 
     respond_with(@user) do |format|
-      if @user.valid? #&& @user.credit_card.valid? # credit card validity is already checked by @user.valid?
-        @user.check_credit_card(options)
+      if @user.save
+        @user.register_credit_card_on_file(options)
         if @user.d3d_html # 3-d secure identification needed
           format.html { render :text => d3d_html_inject(@user.d3d_html), notice: "", alert: "" }
         else # authorized, waiting or unknown
