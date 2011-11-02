@@ -189,10 +189,13 @@ FactoryGirl.define do
   end
 
   factory :site_stat, class: Stat::Site do
-
   end
 
   factory :video_stat, class: Stat::Video do
+  end
+
+  factory :video_tag do
+
   end
 
   factory :tweet do
