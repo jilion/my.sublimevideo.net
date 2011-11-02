@@ -682,7 +682,7 @@ var SitesPoller = Class.create({
   remoteCheckForStateUpdate: function() {
     if (this.attempts < this.maxAttempts) {
       this.attempts++;
-      new Ajax.Request('/sites/'+this.currentSiteId+'/state', { method: 'get' });
+      new Ajax.Request('/sites/' + this.currentSiteId + '/state', { method: 'put' });
     }
     else {
       this.stopPolling();

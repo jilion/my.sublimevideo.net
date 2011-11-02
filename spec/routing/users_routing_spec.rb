@@ -19,6 +19,6 @@ describe UsersController do
   it { { get:  '/confirmation/new' }.should route_to(controller: 'devise/confirmations', action: 'new') }
   it { { post: '/confirmation' }.should     route_to(controller: 'devise/confirmations', action: 'create') }
 
-  it { { post: '/hide_notice/1' }.should route_to(controller: 'users', action: 'hide_notice', id: '1') }
+  it { { put: '/hide_notice/1' }.should route_to(controller: 'users', action: 'hide_notice', id: '1') }
 
 end
