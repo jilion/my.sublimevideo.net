@@ -18,6 +18,22 @@ class VideoTag
     Site.find_by_token(st)
   end
 
+  # ====================
+  # = Instance Methods =
+  # ====================
+
+  def update_with_latest_data(attributes)
+    %w[uo n no p cs].each do |key|
+      self.send("#{key}=", attributes[key])
+    end
+    # Properly change sources without falsely trig dirty attribute tracking
+    current_sources = self.read_attribute('s')
+    new_sources     = current_sources.merge(attributes['s'])
+    self.s = new_sources if current_sources != new_sources
+
+    save
+  end
+
   # =================
   # = Class Methods =
   # =================
@@ -27,15 +43,7 @@ class VideoTag
     video_tags.each do |keys, attrs|
       attrs[:st], attrs[:u] = keys
       if video_tag = VideoTag.where(st: attrs[:st], u: attrs[:u]).first
-        %w[uo n no p cs].each do |key|
-          video_tag.send("#{key}=", attrs[key])
-        end
-        # Properly change sources without falsely trig dirty attribute tracking
-        actual_sources = video_tag.read_attribute('s')
-        new_sources    = actual_sources.merge(attrs['s'])
-        video_tag.s = new_sources if actual_sources != new_sources
-
-        video_tag.save
+        video_tag.update_with_latest_data(attrs)
       else
         VideoTag.create(attrs)
       end
