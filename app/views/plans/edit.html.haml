@@ -32,10 +32,10 @@
 
         = render 'fields', f: f
 
-        = render 'plan_change_messages'
-
         = render 'sites/cc_fields', site: @site, f: f
+
+        = render 'plan_change_messages'
         .spacer
 
         .actions.center
-          = f.submit("Update plan", class: "submit big") unless @site.in_custom_plan?
+          = f.submit("Update plan", class: "submit big", id: 'site_submit') unless @site.in_custom_plan?
