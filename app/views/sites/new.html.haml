@@ -21,5 +21,7 @@
 
     = render 'fields', site: @site, f: f
 
+    = render 'sites/cc_fields', site: @site, f: f
+
     .actions.center
       = f.submit (@site.persisted? ? "Update site" : "Create site"), class: "submit big"

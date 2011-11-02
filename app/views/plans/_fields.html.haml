@@ -90,14 +90,16 @@
               .radio_wrap
                 = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, current_plan, standard_plan, checked: current_plan && current_plan == standard_plan)
                 %span.bg
-              %span.current_label= "Current" if site.persisted? && plan && plan == standard_plan
+              - if site.persisted? && plan == standard_plan
+                %span.current_label= "Current"
             - if standard_yearly_plan
               .yearly.select_box{ class: current_plan && current_plan == standard_yearly_plan ? 'active' : '' + ' no_discount' }
                 = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), for: "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
                 .radio_wrap
                   = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, current_plan, standard_yearly_plan, checked: current_plan && current_plan == standard_yearly_plan)
                   %span.bg
-                %span.current_label= "Current" if site.persisted? && plan && plan == standard_yearly_plan
+                - if site.persisted? && plan == standard_yearly_plan
+                  %span.current_label= "Current"
             .spacer
           .bottom
           %span.save_label= "save 2 months"
