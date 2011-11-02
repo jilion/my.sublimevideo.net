@@ -247,3 +247,36 @@
 
 '
     http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
+    body: ! '{"EmailAddress":"email466@user.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":88},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.8.1
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 172.20.3.25
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 02 Nov 2011 15:39:23 GMT
+      content-length:
+      - '19'
+    body: ! '"email466@user.com"'
+    http_version: '1.1'
