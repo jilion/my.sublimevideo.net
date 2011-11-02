@@ -14,6 +14,7 @@ describe Log::Voxcast do
     its(:stats_parsed_at)       { should be_nil}
     its(:referrers_parsed_at)   { should be_nil}
     its(:user_agents_parsed_at) { should be_nil}
+    its(:video_tags_parsed_at) { should be_nil}
     it { should be_valid }
   end
 
@@ -62,8 +63,9 @@ describe Log::Voxcast do
       jobs = Delayed::Job.all.sort_by { |j| j.priority }
       jobs[0].name.should == 'Class#parse_log_for_stats'
       jobs[1].name.should == 'Class#parse_log'
-      jobs[2].name.should == 'Class#parse_log_for_referrers'
-      jobs[3].name.should == 'Class#parse_log_for_user_agents'
+      jobs[2].name.should == 'Class#parse_log_for_video_tags'
+      jobs[3].name.should == 'Class#parse_log_for_referrers'
+      jobs[4].name.should == 'Class#parse_log_for_user_agents'
     end
   end
 
@@ -100,7 +102,7 @@ describe Log::Voxcast do
 
     it "should delay parse_log after create" do
       subject # trigger log creation
-      Delayed::Job.all.should have(4).job
+      Delayed::Job.all.should have(5).job
     end
   end
 
@@ -288,7 +290,7 @@ describe Log::Voxcast do
       it "analyzes logs" do
         VoxcastCDN.should_not_receive(:download_log)
         LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastStats')
-        SiteStat.should_receive(:create_stats_from_trackers!)
+        Stat.should_receive(:create_stats_from_trackers!)
         @log.parse_and_create_stats!
       end
     end
@@ -300,12 +302,20 @@ describe Log::Voxcast do
         @log.parse_and_create_referrers!
       end
     end
-    describe "#parse_and_create_referrers!" do
+    describe "#parse_and_create_user_agents!" do
       it "analyzes logs" do
         VoxcastCDN.should_not_receive(:download_log)
         LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastUserAgents')
         UsrAgent.should_receive(:create_or_update_from_trackers!)
         @log.parse_and_create_user_agents!
+      end
+    end
+    describe "#parse_and_create_video_tags!" do
+      it "analyzes logs" do
+        VoxcastCDN.should_not_receive(:download_log)
+        LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastVideoTags')
+        VideoTag.should_receive(:create_or_update_from_trackers!)
+        @log.parse_and_create_video_tags!
       end
     end
 

@@ -14,7 +14,7 @@ module Admin::DelayedJobsHelper
       "Sites stats"
     when "Class#save_new_tweets_and_sync_favorite_tweets"
       "Tweets processing"
-    when "Class#clear_old_seconds_minutes_and_days_stats"
+    when "Class#clear_old_seconds_minutes_and_hours_stats"
       "Clear old site stats"
     when "Class#update_last_30_days_counters_for_not_archived_sites"
       "Update last 30 days hits"
@@ -58,7 +58,7 @@ module Admin::DelayedJobsHelper
       Class#stop_stats_trial
       Class#send_stats_trial_will_end
       Class#fetch_and_create_new_logs
-      Class#clear_old_seconds_minutes_and_days_stats
+      Class#clear_old_seconds_minutes_and_hours_stats
       Class#send
     ].include?(job.name)
   end

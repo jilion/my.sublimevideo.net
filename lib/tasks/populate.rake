@@ -67,13 +67,13 @@ namespace :db do
 
     desc "Create fake site stats"
     task :site_stats => :environment do
-      timed { empty_tables(SiteStat) }
+      timed { empty_tables(Stat::Site) }
       timed { create_site_stats(argv_user) }
     end
 
     desc "Create fake site stats"
     task :recurring_site_stats => :environment do
-      timed { empty_tables(SiteStat) }
+      timed { empty_tables(Stat::Site) }
       timed { create_site_stats(argv_user) }
       timed { recurring_site_stats_update(argv_user) }
     end
@@ -319,7 +319,7 @@ def create_site_stats(user_id=nil)
       # Days
       95.times.each do |i|
         stats = random_stats_inc(24 * 60 * 60)
-        SiteStat.collection.update(
+        Stat::Site.collection.update(
           { t: site.token, d: i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time },
           { "$inc" => stats },
           upsert: true
@@ -346,7 +346,7 @@ def create_site_stats(user_id=nil)
       end
       # Hours
       25.times.each do |i|
-        SiteStat.collection.update(
+        Stat::Site.collection.update(
           { t: site.token, h: i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time },
           { "$inc" => random_stats_inc(60 * 60) },
           upsert: true
@@ -354,7 +354,7 @@ def create_site_stats(user_id=nil)
       end
       # Minutes
       60.times.each do |i|
-        SiteStat.collection.update(
+        Stat::Site.collection.update(
           { t: site.token, m: i.minutes.ago.change(sec: 0, usec: 0).to_time },
           { "$inc" => random_stats_inc(60) },
           upsert: true
@@ -362,7 +362,7 @@ def create_site_stats(user_id=nil)
       end
       # seconds
       60.times.each do |i|
-        SiteStat.collection.update(
+        Stat::Site.collection.update(
           { t: site.token, s: i.seconds.ago.change(usec: 0).to_time },
           { "$inc" => random_stats_inc(1) },
           upsert: true
@@ -381,7 +381,7 @@ def recurring_site_stats_update(user_id)
       second = Time.now.utc.change(usec: 0).to_time
       sites.each do |site|
         inc = random_stats_inc(1)
-        SiteStat.collection.update({ t: site.token, s: second }, { "$inc" => inc }, upsert: true)
+        Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => inc }, upsert: true)
       end
       # puts "Site(s) stats seconds updated at #{second}"
       sleep 1
@@ -393,9 +393,9 @@ def recurring_site_stats_update(user_id)
       if now.change(usec: 0) == now.change(sec: 0, usec: 0)
         sites.each do |site|
           inc = random_stats_inc(60)
-          SiteStat.collection.update({ t: site.token, m: (now - 1.minute).change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
-          SiteStat.collection.update({ t: site.token, h: (now - 1.minute).change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
-          SiteStat.collection.update({ t: site.token, d: (now - 1.minute).change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
+          Stat::Site.collection.update({ t: site.token, m: (now - 1.minute).change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
+          Stat::Site.collection.update({ t: site.token, h: (now - 1.minute).change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
+          Stat::Site.collection.update({ t: site.token, d: (now - 1.minute).change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
         end
 
         json = {}
