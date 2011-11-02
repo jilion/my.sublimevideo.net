@@ -32,9 +32,9 @@ module ApplicationHelper
     "#{number_to_currency(units, :precision => 0)}#{content_tag(:sup, ".#{decimals}") unless decimals.zero?}".html_safe
   end
 
-  def info_box(options={}, &block)
-    content_tag(:div, :class => "info_box" + (options[:class] ? " #{options[:class]}" : "")) do
-      capture_haml(&block).chomp.html_safe + content_tag(:span, nil, :class => "arrow")
+  def info_box(options = {}, &block)
+    content_tag(:div, class: "info_box" + (options[:class] ? " #{options[:class]}" : "")) do
+      capture_haml(&block).chomp.html_safe + content_tag(:span, nil, class: "arrow")
     end
   end
 

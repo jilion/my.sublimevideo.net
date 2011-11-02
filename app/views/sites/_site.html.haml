@@ -52,28 +52,27 @@
       - if site.invoices_failed?
         = link_to [site, :invoices] do
           %span.icon.payment_issue
-          = info_box(:class => "payment_issue") do
-            %p=t 'site.status.payment_issue'
+          = info_box(class: "payment_issue") do
+            %p= t 'site.status.payment_issue'
       - elsif site.invoices_open?
         = link_to [site, :invoices] do
           %span.icon.payment_waiting
-          = info_box(:class => "payment_waiting") do
-            %p=t 'site.status.payment_open'
+          = info_box(class: "payment_waiting") do
+            %p= t 'site.status.payment_open'
       - elsif site.invoices_waiting?
         = link_to [site, :invoices] do
           %span.icon.payment_waiting
-          = info_box(:class => "payment_waiting") do
-            %p=t 'site.status.payment_waiting'
+          = info_box(class: "payment_waiting") do
+            %p= t 'site.status.payment_waiting'
+      - elsif site.cdn_up_to_date?
+        %span.icon.ok
+        = info_box do
+          %p= t 'site.status.ok'
       - else
-        - if site.cdn_up_to_date?
+        %span.icon.in_progress
+        = info_box do
+          %p= t 'site.status.in_progress'
+        .completed{ style: "display:none;" }
           %span.icon.ok
           = info_box do
-            %p=t 'site.status.ok'
-        - else
-          %span.icon.in_progress
-          = info_box do
-            %p=t 'site.status.in_progress'
-          .completed{ style: "display:none;" }
-            %span.icon.ok
-            = info_box do
-              %p=t 'site.status.ok'
+            %p= t 'site.status.ok'

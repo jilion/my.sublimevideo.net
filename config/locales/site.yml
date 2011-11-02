@@ -1,0 +1,38 @@
+en:
+  site:
+    settings:
+      badge_disabling_note: "The SublimeVideo badge can be disabled by upgrading your site to a %{link}."
+      ssl_serving_note: "SSL Serving is available with all %{link}."
+    status:
+      payment_issue: "Transaction error, click to review your invoice and retry the payment."
+      payment_waiting: "Transaction in progress, please be patient. Click to review your invoice."
+      payment_open: "Invoice still open. Click to review your invoice and retry the payment."
+      ok: "Player successfully deployed."
+      in_progress: "Your player is being deployed."
+      need_path: "If you don't own %{hostname}, we highly recommend you set a <em>path</em> to restrict the player to your pages only."
+      need_subdomain: "If you don't own %{hostname}, we highly recommend you add a <em>subdomain</em> to it (or disable the wildcard option) to restrict the player to your pages only."
+    plan:
+      upgrade_in_progress: "Your payment is being processed."
+      upgrade_in_progress_failed_link: "There has been a transaction error. Please review %{link} and retry the payment."
+      upgrade_in_progress_open_link: "There is still an open invoice. Please review %{link} and retry the payment."
+      upgrade_in_progress_waiting_link: "There is a transaction in progress, please be patient."
+      next_cycle_will_start_on: "Your new <strong>%{plan_title}</strong> plan will automatically start on %{date}."
+    edit:
+      delete_site_info1: "Your SublimeVideo license for <em>%{domain}</em> will be instantly removed from our servers."
+      delete_site_info2: "This operation cannot be undone."
+    refund:
+      warning: "Once you submit a refund request, the site will be deleted (unless you already deleted it) and the associated SublimeVideo license will be instantly removed from our servers."
+      request: "Request a refund"
+      refunded: "All your payments for %{hostname} will be refunded in the next few hours."
+      refund_unsuccessful: "The refund you requested for %{hostname} was unsuccessful."
+      no_refund_possible: "You don't have any site eligible for 30 day money back guarantee."
+    invoices:
+      count_failed_invoices_with_total_amount:
+        one: "You have 1 failed invoice for a total of <strong>%{total_amount}</strong>."
+        other: "You have %{count} failed invoices for a total of <strong>%{total_amount}</strong>."
+      count_open_invoices_with_total_amount:
+        one: "You have 1 open invoice for a total of <strong>%{total_amount}</strong>."
+        other: "You have %{count} open invoices for a total of <strong>%{total_amount}</strong>."
+      retry_invoices: "Retry the payment"
+      retry_succeed: "Invoices have been successfully paid. Thank you."
+      no_invoices_to_retry: "You have no open or failed invoices to pay."

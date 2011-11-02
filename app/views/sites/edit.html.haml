@@ -10,8 +10,9 @@
       - if params[:action] == 'update' && current_password_needed_error?(@site)
         = password_box resource: @site, f: f, cancel_url: [:edit, @site]
       = render 'fields', site: @site, f: f
+
       .actions.center
-        = f.submit 'Update settings', class: "submit big"
+        = f.submit "Save settings", class: "submit big"
 
   - if @site.archivable?
     .break_line

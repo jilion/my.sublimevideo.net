@@ -1,3 +1,3 @@
 en:
   notices:
-    checkout_v2_news: "<p>Check out %{link_to_stats} and our new %{link_to_video_tag_builder} and blablabla…</p>"
+    checkout_v2_news: "<p>Check out the new %{link_to_stats} and %{link_to_video_tag_builder}!</p>"
