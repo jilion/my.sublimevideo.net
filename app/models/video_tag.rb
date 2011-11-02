@@ -52,8 +52,6 @@ class VideoTag
 
 private
 
-  VIDEO_TAGS_KEYS = %w[t vu vuo vn vno vs vc vcs vsq vsf vp]
-
   # Merge each videos tag in one big hash
   #
   # { ['site_token','video_uid'] => { uo: ..., n: ..., cs: ['5062d010',...], s: { '5062d010' => { ...}, ... } } }
@@ -63,7 +61,7 @@ private
     video_tags = Hash.new { |h,k| h[k] = Hash.new }
     trackers.each do |request, hits|
       params = Addressable::URI.parse(request).query_values || {}
-      if (params.keys & VIDEO_TAGS_KEYS).sort == VIDEO_TAGS_KEYS.sort
+      if all_needed_params_present?(params)
         %w[uo n no p cs].each do |key|
           video_tags[[params['t'],params['vu']]][key] = params["v#{key}"]
         end
@@ -78,6 +76,11 @@ private
 
   def self.only_stats_trackers(trackers)
     trackers.detect { |t| t.options[:title] == :video_tags }.categories
+  end
+
+  def self.all_needed_params_present?(params)
+    query_keys = %w[t vu vuo vn vno vs vc vcs vsq vsf vp]
+    (params.keys & query_keys).sort == query_keys.sort
   end
 
 end
