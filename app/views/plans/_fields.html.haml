@@ -22,7 +22,7 @@
     .entry
       .radio_wrap
         = f.radio_button :plan_id, custom_plan.token, radio_button_options(site, current_plan, custom_plan, id: "plan_custom", checked: current_plan && current_plan == custom_plan)
-        = f.label :plan_id, raw("#{display_amount_with_sup(custom_plan.price)} (#{custom_plan.yearly? ? "per year" : "per month"})"), for: "plan_custom"
+        = f.label :plan_id, raw("#{display_amount_with_sup(custom_plan.price)} (per #{custom_plan.cycle})"), for: "plan_custom"
     .spacer
   - if params[:custom_plan]
     %p
@@ -46,10 +46,15 @@
         .wrapper
           .header
             %h3.title= content_tag(:strong, free_plan.name.titleize)
-            %h4.number= "Unlimited views"
             %ul.features
-              %li= "Branded Player"
-              %li.last= "Forum Support"
+              %li.number
+                %strong= plan_plays(free_plan)
+                %br= "With SublimeVideo badge*"
+              %li
+                %strong= "Standard Stats"
+                %br= plan_stats_rentention_days(free_plan)
+              %li.last
+                %strong= plan_support(free_plan)
           .select_box{ class: current_plan && current_plan == free_plan ? 'active' : '' + ' no_discount' }
             = f.label :plan_id, "FREE", for: "plan_#{free_plan.name}"
             .radio_wrap
@@ -69,32 +74,34 @@
           .wrapper
             .header
               %h3.title= content_tag(:strong, standard_plan.name.titleize)
-              %h4.number= number_with_delimiter(standard_plan.video_views)
-              %h5.label= "Video views per month"
               %ul.features
-                %li= "#{content_tag(:strong, "Unbranded")} Player".html_safe
-                %li= plan_support(standard_plan)
-                %li.last= "#{content_tag(:strong, "SSL")} Serving".html_safe
+                %li.number
+                  %strong= plan_plays(standard_plan)
+                %li
+                  %strong= "Real-Time Stats"
+                  %br= plan_stats_rentention_days(standard_plan)
+                %li
+                  %strong= plan_support(standard_plan)
+                %li.last
+                  %strong= "SSL Serving"
               %span.recommended_label= "Recommended"
             .monthly.select_box{ class: current_plan && current_plan == standard_plan ? 'active' : '' + ' no_discount' }
               = f.label :plan_id, raw(plan_label_content(standard_plan, site)), for: "plan_#{standard_plan.name}_#{standard_plan.cycle}"
               .radio_wrap
                 = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, current_plan, standard_plan, checked: current_plan && current_plan == standard_plan)
                 %span.bg
-              - if site.persisted? && plan && plan == standard_plan
-                %span.current_label= "Current"
+              %span.current_label= "Current" if site.persisted? && plan && plan == standard_plan
             - if standard_yearly_plan
               .yearly.select_box{ class: current_plan && current_plan == standard_yearly_plan ? 'active' : '' + ' no_discount' }
                 = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), for: "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
                 .radio_wrap
                   = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, current_plan, standard_yearly_plan, checked: current_plan && current_plan == standard_yearly_plan)
                   %span.bg
-                - if site.persisted? && plan && plan == standard_yearly_plan
-                  %span.current_label= "Current"
+                %span.current_label= "Current" if site.persisted? && plan && plan == standard_yearly_plan
             .spacer
           .bottom
-          %span.save_label= "2 months free"
+          %span.save_label= "save 2 months"
     .spacer
 
     #need_more{ class: (site.recommended_plan_name == 'custom' ? 'recommended' : '') }
-      %p= raw "Need more views, custom support or have other enterprise-class requirements? Please #{mail_to "sales@sublimevideo.net", "contact us"}."
+      %p= raw "Need more or have other enterprise-class requirements? Please #{mail_to "sales@sublimevideo.net", "contact us"}."

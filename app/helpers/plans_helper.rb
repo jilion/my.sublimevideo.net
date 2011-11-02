@@ -42,15 +42,39 @@ module PlansHelper
     end
   end
 
+  def plan_plays(plan)
+    text = case plan.video_views
+           when 0
+             "Unlimited"
+           else
+             number_with_delimiter(plan.video_views)
+           end
+
+    "#{text} Plays".html_safe
+  end
+
   def plan_support(plan)
     text = case plan.support
-           when 'forum'
-             "Forum"
-           when 'email'
-             content_tag(:strong, "Email ")
+           when 'vip'
+             "VIP Email"
+           else
+             plan.support.titleize
            end
 
     "#{text} Support".html_safe
+  end
+  
+  def plan_stats_rentention_days(plan)
+    text = case plan.stats_retention_days
+           when nil
+             "Unlimited"
+           when 0
+             "24h"
+           else
+             "#{plan.stats_retention_days}d"
+           end
+
+    "#{text} Data Retention".html_safe
   end
 
   def radio_button_options(site, current_plan, new_plan, options={})

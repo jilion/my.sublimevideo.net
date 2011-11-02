@@ -6,7 +6,7 @@
   = render '/layouts/segmented_menu'
 
   - if @site.hostname.blank?
-    .info_message_box= raw "Please #{link_to "add a hostname", [:edit, @site]} before choosing a paid plan."
+    .info_message_box= raw "Please #{link_to("add a hostname", [:edit, @site])} before choosing a paid plan."
   - elsif @site.pending_plan_id? && !@site.pending_plan_id_changed?
     - if @site.invoices_failed?
       .info_message_box= raw t('site.plan.upgrade_in_progress_failed_link', link: link_to("your invoice", [@site, :invoices]))
