@@ -20,8 +20,8 @@ class User < ActiveRecord::Base
                   :newsletter, :terms_and_conditions, :hidden_notice_ids
   # Credit card
   attr_accessible :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
-  
-  serialize :hidden_notice_ids
+
+  serialize :hidden_notice_ids, Array
 
   uniquify :cc_alias, :chars => Array('A'..'Z') + Array('0'..'9')
 
@@ -140,12 +140,6 @@ class User < ActiveRecord::Base
 
   def email=(email)
     write_attribute(:email, email.try(:downcase))
-  end
-
-  def hidden_notice_ids
-    write_attribute(:hidden_notice_ids, []) if read_attribute(:hidden_notice_ids).nil?
-
-    read_attribute(:hidden_notice_ids)
   end
 
   def notice_hidden?(id)
