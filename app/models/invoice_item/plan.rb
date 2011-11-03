@@ -7,15 +7,15 @@ class InvoiceItem::Plan < InvoiceItem
   # = Class Methods =
   # =================
 
-  def self.setup(attributes = {})
-    new(attributes).setup
+  def self.construct(attributes = {})
+    new(attributes).construct
   end
 
   # ====================
   # = Instance Methods =
   # ====================
 
-  def setup
+  def construct
     set_discounted_percentage
     set_started_at_and_ended_at
     set_price_and_amount
