@@ -35,8 +35,8 @@ MySublimeVideo::Application.routes.draw do
       put :retry, :on => :collection
     end
 
-    resources :stats, :only => :index do
-      post :trial, :on => :collection
+    resources :stats, :only => :index, :controller => 'site_stats' do
+      put :trial, :on => :collection
     end
   end
 

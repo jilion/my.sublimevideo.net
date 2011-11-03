@@ -1,4 +1,4 @@
-class StatsController < ApplicationController
+class SiteStatsController < ApplicationController
   before_filter :redirect_suspended_user
   before_filter :find_site_by_token!
 
@@ -10,7 +10,7 @@ class StatsController < ApplicationController
     end
   end
 
-  # POST /sites/:id/stats/trial
+  # PUT /sites/:id/stats/trial
   def trial
     @site.stats_trial_started_at ||= Time.now.utc
     @site.save
