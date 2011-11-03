@@ -344,6 +344,7 @@ end
 #  last_invoiced_amount   :integer         default(0)
 #  total_invoiced_amount  :integer         default(0)
 #  balance                :integer         default(0)
+#  hidden_notice_ids      :text
 #
 # Indexes
 #
