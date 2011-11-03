@@ -21,8 +21,6 @@ class InvoiceItem::Plan < InvoiceItem
   # = Instance Methods =
   # ====================
 
-private
-
   def set_discounted_percentage
     self.discounted_percentage = item.discounted_percentage if !deduct && item.discounted?(site)
   end

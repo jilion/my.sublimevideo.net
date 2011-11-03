@@ -153,8 +153,6 @@ class Invoice < ActiveRecord::Base
     paid_plan_invoice_item.try(:item)
   end
 
-private
-
   def construct_invoice_items
     if site.pending_plan_id? && site.in_paid_plan? && site.plan.upgrade?(site.pending_plan)
       invoice_items << InvoiceItem::Plan.construct(invoice: self, item: Plan.find(site.plan_id), deduct: true)
@@ -174,6 +172,8 @@ private
   def set_amount
     self.amount = invoice_items_amount + vat_amount
   end
+
+private
 
   # validate (canceled state)
   def ensure_first_invoice_of_site
