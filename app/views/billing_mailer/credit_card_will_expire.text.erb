@@ -6,4 +6,6 @@ Please update your credit card information via the following link:
 
 https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
 
+If you have any questions, please <%= mail_to "billing@sublimevideo.net", "email us" %>.
+
 <%= t("mailer.signature") %>
