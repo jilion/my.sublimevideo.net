@@ -74,7 +74,7 @@ private
     video_tags
   end
 
-  def self.only_stats_trackers(trackers)
+  def self.only_video_tags_trackers(trackers)
     trackers.detect { |t| t.options[:title] == :video_tags }.categories
   end
 
