@@ -214,7 +214,7 @@ feature "user has a credit card" do
 
       page.should have_content("You have 1 failed invoice for a total of $#{@invoice.amount / 100.0}")
 
-      VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('site.invoices.retry_invoices') }
+      VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('invoice.retry_invoices') }
 
       @site.invoices.failed.should be_empty
 

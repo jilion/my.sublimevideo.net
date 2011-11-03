@@ -17,6 +17,8 @@ MySublimeVideo::Application.routes.draw do
       delete :destroy, :path => '/account'
     end
   end
+  match '/account' => redirect('/account/edit'), :via => :get
+
   %w[sign_up register].each         { |action| match action => redirect('/signup'), :via => :get }
   %w[log_in sign_in signin].each    { |action| match action => redirect('/login'),  :via => :get }
   %w[log_out sign_out signout].each { |action| match action => redirect('/logout'), :via => :get }
@@ -41,6 +43,8 @@ MySublimeVideo::Application.routes.draw do
   end
 
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
+  match '/card' => redirect('/card/edit'), :via => :get
+
   resources :invoices, :only => :show do
     put :retry_all, :on => :collection
   end
