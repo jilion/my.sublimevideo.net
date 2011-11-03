@@ -9,7 +9,7 @@ describe InvoiceItem do
     its(:invoice)   { should be_present }
     its(:site)      { should == @invoice_item.invoice.site }
     its(:user)      { should == @invoice_item.site.user }
-    its(:type)      { should == 'InvoiceItem::Plan' }
+    its(:type)      { should == 'PlanInvoiceItem' }
     its(:item_type) { should == 'Plan' }
     its(:item_id)   { should be_present }
     specify { subject.started_at.to_i.should == Time.now.utc.beginning_of_month.to_i }

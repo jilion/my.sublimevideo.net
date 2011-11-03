@@ -11,7 +11,7 @@ class Invoice < ActiveRecord::Base
   has_one :user, :through => :site
 
   has_many :invoice_items
-  has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, class_name: "InvoiceItem"
+  has_many :plan_invoice_items, conditions: { type: "PlanInvoiceItem" }, class_name: "InvoiceItem"
 
   has_and_belongs_to_many :transactions
 
@@ -155,9 +155,9 @@ class Invoice < ActiveRecord::Base
 
   def construct_invoice_items
     if site.pending_plan_id? && site.in_paid_plan? && site.plan.upgrade?(site.pending_plan)
-      invoice_items << InvoiceItem::Plan.construct(invoice: self, item: Plan.find(site.plan_id), deduct: true)
+      invoice_items << PlanInvoiceItem.construct(invoice: self, item: Plan.find(site.plan_id), deduct: true)
     end
-    invoice_items << InvoiceItem::Plan.construct(invoice: self, item: site.pending_plan || site.plan)
+    invoice_items << PlanInvoiceItem.construct(invoice: self, item: site.pending_plan || site.plan)
   end
 
   def set_invoice_items_amount

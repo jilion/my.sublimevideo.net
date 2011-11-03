@@ -1,4 +1,4 @@
-class InvoiceItem::Plan < InvoiceItem
+class PlanInvoiceItem < InvoiceItem
 
   attr_accessor   :deduct
   attr_accessible :deduct
