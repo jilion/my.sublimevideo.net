@@ -60,7 +60,7 @@ private
     trackers   = only_video_tags_trackers(trackers)
     video_tags = Hash.new { |h,k| h[k] = Hash.new }
     trackers.each do |request, hits|
-      params = Addressable::URI.parse(request).query_values || {}
+      params = Addressable::URI.parse(CGI.unescape(request)).query_values || {}
       if all_needed_params_present?(params)
         %w[uo n no p cs].each do |key|
           video_tags[[params['t'],params['vu']]][key] = params["v#{key}"]
