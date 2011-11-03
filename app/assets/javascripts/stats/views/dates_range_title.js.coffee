@@ -22,5 +22,6 @@ class MSVStats.Views.DatesRangeTitleView extends Backbone.View
     this.render() if MSVStats.period.get('type') == stats.periodType()
 
   toggleDatePicker: (event) ->
-    event.stopPropagation()
-    MSVStats.datePickersView.render()
+    unless MSVStats.sites.selectedSite.inFreePlan()
+      event.stopPropagation()
+      MSVStats.datePickersView.render()
