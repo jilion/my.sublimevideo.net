@@ -8,19 +8,18 @@ class InvoiceItem::Plan < InvoiceItem
   # =================
 
   def self.construct(attributes = {})
-    new(attributes).construct
+    instance = new(attributes)
+
+    instance.set_discounted_percentage
+    instance.set_started_at_and_ended_at
+    instance.set_price_and_amount
+
+    instance
   end
 
   # ====================
   # = Instance Methods =
   # ====================
-
-  def construct
-    set_discounted_percentage
-    set_started_at_and_ended_at
-    set_price_and_amount
-    self
-  end
 
 private
 

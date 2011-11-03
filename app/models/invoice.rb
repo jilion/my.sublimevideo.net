@@ -95,7 +95,14 @@ class Invoice < ActiveRecord::Base
   # =================
 
   def self.construct(attributes = {})
-    new(attributes).construct
+    instance = new(attributes)
+
+    instance.construct_invoice_items
+    instance.set_invoice_items_amount
+    instance.set_vat_rate_and_amount
+    instance.set_amount
+
+    instance
   end
 
   def self.total_revenue
@@ -124,14 +131,6 @@ class Invoice < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
-
-  def construct
-    construct_invoice_items
-    set_invoice_items_amount
-    set_vat_rate_and_amount
-    set_amount
-    self
-  end
 
   def to_param
     reference
