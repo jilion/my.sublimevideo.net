@@ -145,7 +145,7 @@ end
 group :test do
   gem 'spork', '~> 0.9.0.rc9'
   gem 'fuubar'
-  gem 'shoulda-matchers', :git => 'git://github.com/thoughtbot/shoulda-matchers.git'
+  gem 'shoulda-matchers'
   gem 'capybara'
   gem 'webmock',  '~> 1.6.0'
   gem 'typhoeus', '~> 0.2.0'
