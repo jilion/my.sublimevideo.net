@@ -104,8 +104,8 @@ class Invoice < ActiveRecord::Base
   # = Class Methods =
   # =================
 
-  def self.build(attributes={})
-    new(attributes).build
+  def self.setup(attributes = {})
+    new(attributes).setup
   end
 
   def self.total_revenue
@@ -135,8 +135,8 @@ class Invoice < ActiveRecord::Base
   # = Instance Methods =
   # ====================
 
-  def build
-    build_invoice_items
+  def setup
+    setup_invoice_items
     set_invoice_items_amount
     set_vat_rate_and_amount
     set_balance_deduction_amount
@@ -172,11 +172,11 @@ class Invoice < ActiveRecord::Base
 
 private
 
-  def build_invoice_items
+  def setup_invoice_items
     if site.pending_plan_id? && site.in_paid_plan? && site.plan.upgrade?(site.pending_plan)
-      invoice_items << ::InvoiceItem::Plan.build(invoice: self, item: Plan.find(site.plan_id), deduct: true)
+      invoice_items << InvoiceItem::Plan.setup(invoice: self, item: Plan.find(site.plan_id), deduct: true)
     end
-    invoice_items << ::InvoiceItem::Plan.build(invoice: self, item: site.pending_plan || site.plan)
+    invoice_items << InvoiceItem::Plan.setup(invoice: self, item: site.pending_plan || site.plan)
   end
 
   def set_invoice_items_amount

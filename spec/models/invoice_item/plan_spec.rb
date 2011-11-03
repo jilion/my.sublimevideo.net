@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe InvoiceItem::Plan do
 
-  describe ".build" do
+  describe ".setup(attributes = {})" do
     before(:all) do
       @user = FactoryGirl.create(:user, invitation_token: "123asd", created_at: Time.utc(2010,10,10))
 
@@ -44,7 +44,7 @@ describe InvoiceItem::Plan do
 
     describe "creation or upgrade" do
       describe "with standard params" do
-        subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @plan2) }
+        subject { InvoiceItem::Plan.setup(invoice: @invoice1, item: @plan2) }
 
         its(:item)                  { should eql @site1.pending_plan }
         its(:price)                 { should eql 2000 }
@@ -55,7 +55,7 @@ describe InvoiceItem::Plan do
       end
 
       describe "with deduct params" do
-        subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @plan2, deduct: true) }
+        subject { InvoiceItem::Plan.setup(invoice: @invoice1, item: @plan2, deduct: true) }
 
         its(:item)                  { should eql @site1.pending_plan }
         its(:price)                 { should eql 1000 }
@@ -67,7 +67,7 @@ describe InvoiceItem::Plan do
     end
 
     describe "renew" do
-      subject { InvoiceItem::Plan.build(invoice: @invoice3, item: @plan1) }
+      subject { InvoiceItem::Plan.setup(invoice: @invoice3, item: @plan1) }
 
       its(:item)                  { should eql @site3.plan }
       its(:price)                 { should eql 1000 }
@@ -78,7 +78,7 @@ describe InvoiceItem::Plan do
     end
 
     describe "downgrade" do
-      subject { InvoiceItem::Plan.build(invoice: @invoice2, item: @plan1) }
+      subject { InvoiceItem::Plan.setup(invoice: @invoice2, item: @plan1) }
 
       its(:item)                  { should eql @site2.pending_plan }
       its(:price)                 { should eql 1000 }

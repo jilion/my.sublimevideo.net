@@ -221,7 +221,7 @@ module SiteModules::Invoice
     # after_save (BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self)
     def create_and_charge_invoice
       if !trial_not_started_or_in_trial? && (activated? || upgraded? || renewed?)
-        invoice = ::Invoice.build(site: self, renew: renewed?)
+        invoice = ::Invoice.setup(site: self, renew: renewed?)
         invoice.save!
 
         if instant_charging? && !invoice.paid?

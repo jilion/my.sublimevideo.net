@@ -316,7 +316,7 @@ describe Invoice do
           before(:all) do
             @user = FactoryGirl.create(:user, country: 'FR', balance: 2000)
             @site = FactoryGirl.build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
-            @invoice = Invoice.build(site: @site)
+            @invoice = Invoice.setup(site: @site)
             @invoice.save!
           end
           subject { @invoice }
@@ -331,7 +331,7 @@ describe Invoice do
           before(:all) do
             @user = FactoryGirl.create(:user, country: 'FR', balance: 2000)
             @site = FactoryGirl.build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
-            @invoice = Invoice.build(site: @site)
+            @invoice = Invoice.setup(site: @site)
             @invoice.save!
           end
           subject { @invoice }
@@ -470,7 +470,7 @@ describe Invoice do
       end
     end
 
-    describe ".build" do
+    describe ".setup" do
       before(:all) do
         @paid_plan = FactoryGirl.create(:plan, cycle: "month", price: 1000)
       end
@@ -480,7 +480,7 @@ describe Invoice do
           @user = FactoryGirl.create(:user, country: 'FR', created_at: Time.utc(2011,3,30))
           Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
             @site    = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-            @invoice = Invoice.build(site: @site)
+            @invoice = Invoice.setup(site: @site)
           end
         end
         subject { @invoice }
@@ -508,7 +508,7 @@ describe Invoice do
               @paid_plan2 = FactoryGirl.create(:plan, cycle: "month", price: 3000)
               # Simulate upgrade
               @site.plan_id = @paid_plan2.id
-              @invoice = Invoice.build(site: @site)
+              @invoice = Invoice.setup(site: @site)
             end
           end
           subject { @invoice }
@@ -540,7 +540,7 @@ describe Invoice do
               @paid_plan = FactoryGirl.create(:plan, cycle: "month", price: 3000)
               # Simulate upgrade
               @site.plan_id = @paid_plan.id
-              @invoice = Invoice.build(site: @site)
+              @invoice = Invoice.setup(site: @site)
             end
           end
           subject { @invoice }
@@ -575,7 +575,7 @@ describe Invoice do
             Timecop.travel(Time.utc(2011,6,1)) do
               @site.pend_plan_changes
               @site.save_without_password_validation
-              @invoice = Invoice.build(site: @site)
+              @invoice = Invoice.setup(site: @site)
             end
           end
           subject { @invoice }
@@ -602,7 +602,7 @@ describe Invoice do
           @user    = FactoryGirl.create(:user, country: 'FR', created_at: Time.utc(2011,3,30))
           Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
             @site = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
-            @invoice = Invoice.build(site: @site)
+            @invoice = Invoice.setup(site: @site)
           end
         end
         subject { @invoice }
@@ -617,7 +617,7 @@ describe Invoice do
         before(:all) do
           @user    = FactoryGirl.create(:user, country: 'CH')
           @site = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
-          @invoice = Invoice.build(site: @site)
+          @invoice = Invoice.setup(site: @site)
         end
         subject { @invoice }
 
@@ -631,8 +631,8 @@ describe Invoice do
         context "balance < invoice amount" do
           before(:all) do
             @user    = FactoryGirl.create(:user, country: 'FR', balance: 100)
-            @site = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
-            @invoice = Invoice.build(site: @site)
+            @site    = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.setup(site: @site)
           end
           subject { @invoice }
 
@@ -644,8 +644,8 @@ describe Invoice do
         context "balance == invoice amount" do
           before(:all) do
             @user    = FactoryGirl.create(:user, country: 'FR', balance: 1000)
-            @site = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
-            @invoice = Invoice.build(site: @site)
+            @site    = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.setup(site: @site)
           end
           subject { @invoice }
 
@@ -656,9 +656,9 @@ describe Invoice do
 
         context "balance > invoice amount" do
           before(:all) do
-            @user = FactoryGirl.create(:user, country: 'FR', balance: 2000)
-            @site = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
-            @invoice = Invoice.build(site: @site)
+            @user    = FactoryGirl.create(:user, country: 'FR', balance: 2000)
+            @site    = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.setup(site: @site)
           end
           subject { @invoice }
 
@@ -668,7 +668,7 @@ describe Invoice do
         end
       end
 
-    end # .build
+    end # .setup
 
   end # Class Methods
 
