@@ -351,7 +351,7 @@ describe Site::Invoice do
         end
         subject { @site }
 
-        it "should return the price of the last PlanInvoiceItem with an price > 0" do
+        it "should return the price of the last InvoiceItem::Plan with an price > 0" do
           subject.last_paid_plan_price.should == @plan1.price(subject)
         end
       end

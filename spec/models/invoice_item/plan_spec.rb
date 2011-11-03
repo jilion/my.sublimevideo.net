@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PlanInvoiceItem do
+describe InvoiceItem::Plan do
 
   describe ".construct(attributes = {})" do
     before(:all) do
@@ -38,7 +38,7 @@ describe PlanInvoiceItem do
 
     describe "new or renew" do
       describe "with standard params and a site with pending plan" do
-        subject { PlanInvoiceItem.construct(invoice: @invoice1, item: @site1.pending_plan) }
+        subject { InvoiceItem::Plan.construct(invoice: @invoice1, item: @site1.pending_plan) }
 
         its(:item)                  { should eql @site1.pending_plan }
         its(:price)                 { should eql 1000 }
@@ -53,7 +53,7 @@ describe PlanInvoiceItem do
       context "a site with a pending plan" do
         # the new upgraded paid plan
         describe "with standard params" do
-          subject { PlanInvoiceItem.construct(invoice: @invoice2, item: @site2.pending_plan) }
+          subject { InvoiceItem::Plan.construct(invoice: @invoice2, item: @site2.pending_plan) }
 
           its(:item)                  { should eql @site2.pending_plan }
           its(:price)                 { should eql 2000 }
@@ -65,7 +65,7 @@ describe PlanInvoiceItem do
 
         # the old deducted plan
         describe "with deduct params" do
-          subject { PlanInvoiceItem.construct(invoice: @invoice2, item: @site2.plan, deduct: true) }
+          subject { InvoiceItem::Plan.construct(invoice: @invoice2, item: @site2.plan, deduct: true) }
 
           its(:item)                  { should eql @site2.plan }
           its(:price)                 { should eql 1000 }
@@ -79,7 +79,7 @@ describe PlanInvoiceItem do
       context "a site without a pending plan" do
         # the new upgraded paid plan
         describe "with standard params" do
-          subject { PlanInvoiceItem.construct(invoice: @invoice4, item: @site4.plan) }
+          subject { InvoiceItem::Plan.construct(invoice: @invoice4, item: @site4.plan) }
 
           its(:item)                  { should eql @site4.plan }
           its(:price)                 { should eql 1000 }
@@ -91,7 +91,7 @@ describe PlanInvoiceItem do
 
         # the old deducted plan
         describe "with deduct params" do
-          subject { PlanInvoiceItem.construct(invoice: @invoice4, item: @site4.plan, deduct: true) }
+          subject { InvoiceItem::Plan.construct(invoice: @invoice4, item: @site4.plan, deduct: true) }
 
           its(:item)                  { should eql @site4.plan }
           its(:price)                 { should eql 1000 }
@@ -106,7 +106,7 @@ describe PlanInvoiceItem do
     describe "downgrade" do
       # the new downgraded paid plan
       describe "with standard params and a site with pending plan" do
-        subject { PlanInvoiceItem.construct(invoice: @invoice3, item: @site3.pending_plan) }
+        subject { InvoiceItem::Plan.construct(invoice: @invoice3, item: @site3.pending_plan) }
 
         its(:item)                  { should == @site3.pending_plan }
         its(:price)                 { should == 1000 }
