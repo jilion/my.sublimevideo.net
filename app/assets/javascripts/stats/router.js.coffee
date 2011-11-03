@@ -114,7 +114,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
           success: -> setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
 
       MSVStats.presenceChannel.bind 'stats', (data) ->
-        MSVStats.statsSeconds.merge(data, silent: true)
+        MSVStats.statsSeconds.merge(data.site, silent: true)
 
   resetAndFetchStats: ->
     MSVStats.statsSeconds.reset()
