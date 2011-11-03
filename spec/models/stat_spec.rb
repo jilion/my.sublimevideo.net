@@ -225,26 +225,28 @@ describe Stat do
     end
 
     it "delete old seconds, minutes and hours video stats, but keep all days video stats" do
-      Factory.create(:video_stat, s: 62.seconds.ago)
-      Factory.create(:video_stat, s: 63.seconds.ago)
-      Factory.create(:video_stat, m: 62.minutes.ago.change(s: 0))
-      Factory.create(:video_stat, m: 61.minutes.ago.change(s: 0))
-      Factory.create(:video_stat, h: 26.hours.ago.change(m: 0))
-      Factory.create(:video_stat, h: 25.hours.ago.change(m: 0))
-      Factory.create(:video_stat, d: 99.days.ago.change(h: 0))
-      Factory.create(:video_stat, d: 30.days.ago.change(h: 0))
+      Timecop.freeze(Time.now) do
+        Factory.create(:video_stat, s: 62.seconds.ago)
+        Factory.create(:video_stat, s: 63.seconds.ago)
+        Factory.create(:video_stat, m: 62.minutes.ago.change(s: 0))
+        Factory.create(:video_stat, m: 61.minutes.ago.change(s: 0))
+        Factory.create(:video_stat, h: 26.hours.ago.change(m: 0))
+        Factory.create(:video_stat, h: 25.hours.ago.change(m: 0))
+        Factory.create(:video_stat, d: 99.days.ago.change(h: 0))
+        Factory.create(:video_stat, d: 30.days.ago.change(h: 0))
 
-      Stat::Video.count.should eql(8)
-      Stat::Video.s_before(60.seconds.ago).count.should eql(2)
-      Stat::Video.m_before(60.minutes.ago).count.should eql(2)
-      Stat::Video.h_before(20.hours.ago).count.should eql(2)
-      Stat::Video.d_before(10.days.ago).count.should eql(2)
-      Stat.clear_old_seconds_minutes_and_hours_stats
-      Stat::Video.count.should eql(5)
-      Stat::Video.s_before(60.seconds.ago).count.should eql(1)
-      Stat::Video.m_before(60.minutes.ago).count.should eql(1)
-      Stat::Video.h_before(20.hours.ago).count.should eql(1)
-      Stat::Video.d_before(10.days.ago).count.should eql(2)
+        Stat::Video.count.should eql(8)
+        Stat::Video.s_before(60.seconds.ago).count.should eql(2)
+        Stat::Video.m_before(60.minutes.ago).count.should eql(2)
+        Stat::Video.h_before(20.hours.ago).count.should eql(2)
+        Stat::Video.d_before(10.days.ago).count.should eql(2)
+        Stat.clear_old_seconds_minutes_and_hours_stats
+        Stat::Video.count.should eql(5)
+        Stat::Video.s_before(60.seconds.ago).count.should eql(1)
+        Stat::Video.m_before(60.minutes.ago).count.should eql(1)
+        Stat::Video.h_before(20.hours.ago).count.should eql(1)
+        Stat::Video.d_before(10.days.ago).count.should eql(2)
+      end
     end
 
     it "delays itself" do
