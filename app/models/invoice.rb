@@ -104,8 +104,15 @@ class Invoice < ActiveRecord::Base
   # = Class Methods =
   # =================
 
-  def self.setup(attributes = {})
-    new(attributes).setup
+  def self.construct(attributes = {})
+    instance = new(attributes)
+
+    instance.construct_invoice_items
+    instance.set_invoice_items_amount
+    instance.set_vat_rate_and_amount
+    instance.set_amount
+
+    instance
   end
 
   def self.total_revenue
@@ -135,15 +142,6 @@ class Invoice < ActiveRecord::Base
   # = Instance Methods =
   # ====================
 
-  def setup
-    setup_invoice_items
-    set_invoice_items_amount
-    set_vat_rate_and_amount
-    set_balance_deduction_amount
-    set_amount
-    self
-  end
-
   def to_param
     reference
   end
@@ -170,13 +168,11 @@ class Invoice < ActiveRecord::Base
     first_site_invoice.nil? || self == first_site_invoice
   end
 
-private
-
-  def setup_invoice_items
+  def construct_invoice_items
     if site.pending_plan_id? && site.in_paid_plan? && site.plan.upgrade?(site.pending_plan)
-      invoice_items << InvoiceItem::Plan.setup(invoice: self, item: Plan.find(site.plan_id), deduct: true)
+      invoice_items << ::InvoiceItem::Plan.construct(invoice: self, item: Plan.find(site.plan_id), deduct: true)
     end
-    invoice_items << InvoiceItem::Plan.setup(invoice: self, item: site.pending_plan || site.plan)
+    invoice_items << ::InvoiceItem::Plan.construct(invoice: self, item: site.pending_plan || site.plan)
   end
 
   def set_invoice_items_amount
@@ -195,6 +191,8 @@ private
   def set_amount
     self.amount = invoice_items_amount + vat_amount - balance_deduction_amount
   end
+
+private
 
   # validate (canceled state)
   def ensure_first_invoice_of_site
