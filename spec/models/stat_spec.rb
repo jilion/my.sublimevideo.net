@@ -202,26 +202,28 @@ describe Stat do
   describe ".clear_old_seconds_minutes_and_hours_stats" do
 
     it "delete old seconds, minutes and hours site stats, but keep all days site stats" do
-      Factory.create(:site_stat, s: 62.seconds.ago)
-      Factory.create(:site_stat, s: 63.seconds.ago)
-      Factory.create(:site_stat, m: 62.minutes.ago.change(s: 0))
-      Factory.create(:site_stat, m: 61.minutes.ago.change(s: 0))
-      Factory.create(:site_stat, h: 26.hours.ago.change(m: 0))
-      Factory.create(:site_stat, h: 25.hours.ago.change(m: 0))
-      Factory.create(:site_stat, d: 99.days.ago.change(h: 0))
-      Factory.create(:site_stat, d: 30.days.ago.change(h: 0))
+      Timecop.freeze(Time.now) do
+        Factory.create(:site_stat, s: 62.seconds.ago)
+        Factory.create(:site_stat, s: 63.seconds.ago)
+        Factory.create(:site_stat, m: 62.minutes.ago.change(s: 0))
+        Factory.create(:site_stat, m: 61.minutes.ago.change(s: 0))
+        Factory.create(:site_stat, h: 26.hours.ago.change(m: 0))
+        Factory.create(:site_stat, h: 25.hours.ago.change(m: 0))
+        Factory.create(:site_stat, d: 99.days.ago.change(h: 0))
+        Factory.create(:site_stat, d: 30.days.ago.change(h: 0))
 
-      Stat::Site.count.should eql(8)
-      Stat::Site.s_before(60.seconds.ago).count.should eql(2)
-      Stat::Site.m_before(60.minutes.ago).count.should eql(2)
-      Stat::Site.h_before(20.hours.ago).count.should eql(2)
-      Stat::Site.d_before(10.days.ago).count.should eql(2)
-      Stat.clear_old_seconds_minutes_and_hours_stats
-      Stat::Site.count.should eql(5)
-      Stat::Site.s_before(60.seconds.ago).count.should eql(1)
-      Stat::Site.m_before(60.minutes.ago).count.should eql(1)
-      Stat::Site.h_before(20.hours.ago).count.should eql(1)
-      Stat::Site.d_before(10.days.ago).count.should eql(2)
+        Stat::Site.count.should eql(8)
+        Stat::Site.s_before(60.seconds.ago).count.should eql(2)
+        Stat::Site.m_before(60.minutes.ago).count.should eql(2)
+        Stat::Site.h_before(20.hours.ago).count.should eql(2)
+        Stat::Site.d_before(10.days.ago).count.should eql(2)
+        Stat.clear_old_seconds_minutes_and_hours_stats
+        Stat::Site.count.should eql(5)
+        Stat::Site.s_before(60.seconds.ago).count.should eql(1)
+        Stat::Site.m_before(60.minutes.ago).count.should eql(1)
+        Stat::Site.h_before(20.hours.ago).count.should eql(1)
+        Stat::Site.d_before(10.days.ago).count.should eql(2)
+      end
     end
 
     it "delete old seconds, minutes and hours video stats, but keep all days video stats" do
