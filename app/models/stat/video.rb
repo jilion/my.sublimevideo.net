@@ -17,17 +17,39 @@ class Stat::Video
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:h, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]
 
-  def site
-    Site.find_by_token(st)
-  end
-
   # ====================
   # = Instance Methods =
   # ====================
+
+  def site
+    Site.find_by_token(st)
+  end
 
   def site_token
     read_attribute(:st)
   end
 
+  def uid
+    read_attribute(:u)
+  end
+
+  # only main & extra hostname are counted in charts
+  def chart_vl
+    vl['m'].to_i + vl['e'].to_i
+  end
+
+  # only main & extra hostname are counted in charts
+  def chart_vv
+    vv['m'].to_i + vv['e'].to_i
+  end
+
+  # =================
+  # = Class Methods =
+  # =================
+
+  def self.top_videos(site_token, period, options = {})
+
+    []
+  end
 
 end
