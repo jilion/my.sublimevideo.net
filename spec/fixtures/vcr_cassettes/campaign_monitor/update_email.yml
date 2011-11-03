@@ -3,10 +3,10 @@
   request: !ruby/struct:VCR::Request
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":6},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"true"}],"Resubscribe":true}'
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":1},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"true"}],"Resubscribe":true}'
     headers:
       user-agent:
-      - createsend-ruby-0.7.8
+      - createsend-ruby-0.8.1
       content-type:
       - application/json; charset=utf-8
       accept-encoding:
@@ -16,22 +16,16 @@
       code: 201
       message: Created
     headers:
+      server:
+      - csw
       cache-control:
       - private, s-maxage=0
+      x-cs-node:
+      - 172.20.3.30
       content-type:
       - application/json; charset=utf-8
-      server:
-      - CMWEB02
-      x-aspnetmvc-version:
-      - '2.0'
-      x-aspnet-version:
-      - 4.0.30319
-      x-powered-by:
-      - ASP.NET
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 15:25:42 GMT
+      - Thu, 03 Nov 2011 09:18:47 GMT
       content-length:
       - '16'
     body: ! '"cm2@jilion.com"'
@@ -43,7 +37,7 @@
     body: !!null 
     headers:
       user-agent:
-      - createsend-ruby-0.7.8
+      - createsend-ruby-0.8.1
       content-type:
       - application/json; charset=utf-8
       accept-encoding:
@@ -53,33 +47,20 @@
       code: 200
       message: OK
     headers:
+      server:
+      - csw
       cache-control:
       - private, s-maxage=0
+      x-cs-node:
+      - 172.20.3.28
       content-type:
       - application/json; charset=utf-8
-      content-encoding:
-      - gzip
-      vary:
-      - Accept-Encoding
-      server:
-      - CMWEB02
-      x-aspnetmvc-version:
-      - '2.0'
-      x-aspnet-version:
-      - 4.0.30319
-      x-powered-by:
-      - ASP.NET
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 15:25:42 GMT
+      - Thu, 03 Nov 2011 09:19:21 GMT
       content-length:
-      - '170'
-    body: !binary |-
-      H4sIAAAAAAAEAEyMMQvCMBBG/0q5uZUkQ5VOFquDgovgIiKxOTSSNNBcBCn9
-      714RodPBe++7AbZeW1cb02OMUEHr1fplnQ3dog0ecjhqj8z34dllTUAmjaaJ
-      KCFlIVaFVJlcVqqshGB5op+tW7Lvqd6kSMHvLDrD/y8DHPDDPuLDY0ccnLVL
-      04IwEoz5P0gR+5s1s6Cc2TuSnm97PuN1/A4A41Ce4c8AAAA=
+      - '207'
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","Date":"2011-11-02
+      17:51:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"1"},{"Key":"beta","Value":"true"}]}'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
@@ -88,123 +69,30 @@
     body: ! '{"EmailAddress":"cm_update_email@jilion.com","Name":"John Doe","CustomFields":[],"Resubscribe":true}'
     headers:
       user-agent:
-      - createsend-ruby-0.7.8
+      - createsend-ruby-0.8.1
       content-type:
       - application/json; charset=utf-8
       accept-encoding:
       - gzip, deflate
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
+      code: 400
+      message: Bad Request
     headers:
+      server:
+      - csw
       cache-control:
       - private, s-maxage=0
-      server:
-      - CMWEB02
-      x-aspnetmvc-version:
-      - '2.0'
-      x-aspnet-version:
-      - 4.0.30319
-      x-powered-by:
-      - ASP.NET
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      x-cs-node:
+      - 172.20.3.25
+      content-type:
+      - application/json; charset=utf-8
       date:
-      - Fri, 12 Aug 2011 15:25:43 GMT
+      - Thu, 03 Nov 2011 09:19:44 GMT
       content-length:
-      - '0'
-    body: !!null 
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm_update_email@jilion.com
-    body: !!null 
-    headers:
-      user-agent:
-      - createsend-ruby-0.7.8
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - private, s-maxage=0
-      content-type:
-      - application/json; charset=utf-8
-      content-encoding:
-      - gzip
-      vary:
-      - Accept-Encoding
-      server:
-      - CMWEB02
-      x-aspnetmvc-version:
-      - '2.0'
-      x-aspnet-version:
-      - 4.0.30319
-      x-powered-by:
-      - ASP.NET
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Fri, 12 Aug 2011 15:25:43 GMT
-      content-length:
-      - '178'
-    body: !binary |-
-      H4sIAAAAAAAEAEzNMQvCMBCG4b9Sbm4l6VClk8XqoOAiuIiU2BwaSRppLoKU
-      /neviNAp8L3PkQG2Thlbad1jCFBC65r40oqwwSmsn8Ya3y1a7yCFo3LIZu8f
-      XVJ75KVmyUsupMzEKpN5IpdlXpRCcDzRr1YtmfekNzGQdzuDVvNflwEO+OEe
-      8O6wIwZnZeN0QRgIxvQPYsC+MXoGilm9Ian5bc/PeB2/AwBXD4jh2wAAAA==
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm_update_email@jilion.com
-    body: !!null 
-    headers:
-      user-agent:
-      - createsend-ruby-0.7.8
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - private, s-maxage=0
-      content-type:
-      - application/json; charset=utf-8
-      content-encoding:
-      - gzip
-      vary:
-      - Accept-Encoding
-      server:
-      - CMWEB02
-      x-aspnetmvc-version:
-      - '2.0'
-      x-aspnet-version:
-      - 4.0.30319
-      x-powered-by:
-      - ASP.NET
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Fri, 12 Aug 2011 15:25:44 GMT
-      content-length:
-      - '178'
-    body: !binary |-
-      H4sIAAAAAAAEAEzNMQvCMBCG4b9Sbm4l6VClk8XqoOAiuIiU2BwaSRppLoKU
-      /neviNAp8L3PkQG2Thlbad1jCFBC65r40oqwwSmsn8Ya3y1a7yCFo3LIZu8f
-      XVJ75KVmyUsupMzEKpN5IpdlXpRCcDzRr1YtmfekNzGQdzuDVvNflwEO+OEe
-      8O6wIwZnZeN0QRgIxvQPYsC+MXoGilm9Ian5bc/PeB2/AwBXD4jh2wAAAA==
+      - '81'
+    body: ! '{"Code":201,"Message":"Sorry, that email address is already taken on
+      this list."}'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
@@ -228,13 +116,13 @@
       cache-control:
       - private, s-maxage=0
       x-cs-node:
-      - 172.20.3.23
+      - 172.20.3.26
       content-type:
       - application/json; charset=utf-8
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Wed, 02 Nov 2011 15:35:05 GMT
+      - Thu, 03 Nov 2011 09:43:16 GMT
       content-length:
       - '16'
     body: ! '"cm2@jilion.com"'
@@ -267,9 +155,43 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Wed, 02 Nov 2011 15:34:23 GMT
+      - Thu, 03 Nov 2011 09:43:20 GMT
       content-length:
-      - '213'
+      - '207'
     body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","Date":"2011-11-02
-      17:35:00","State":"Unsubscribed","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"5"},{"Key":"beta","Value":"true"}]}'
+      17:51:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"6"},{"Key":"beta","Value":"true"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
+    body: ! '{"EmailAddress":"cm_update_email@jilion.com","Name":"John Doe","CustomFields":[],"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.8.1
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 400
+      message: Bad Request
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 172.20.3.23
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 03 Nov 2011 09:44:04 GMT
+      content-length:
+      - '81'
+    body: ! '{"Code":201,"Message":"Sorry, that email address is already taken on
+      this list."}'
     http_version: '1.1'
