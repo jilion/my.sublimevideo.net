@@ -55,7 +55,7 @@ document.observe("dom:loaded", function() {
     MySublimeVideo.hideFlashMessageDelayed(element);
   });
 
-  $$('.hideable_notice').each(function(element) {
+  $$('.hidable_notice').each(function(element) {
     new HideableNoticeManager(element);
   });
 

@@ -230,8 +230,8 @@ body {
   background:-moz-linear-gradient(top, #ffd1d1, #ffb4b4);
 }
 
-/* Rémy: Added .hideable_notice (with the same style as #sticky_notice) */
-#sticky_notice, .hideable_notice {
+/* Rémy: Added .hidable_notice (with the same style as #sticky_notice) */
+#sticky_notice, .hidable_notice {
   margin:0 0 20px;
   padding:10px 13px;
   font-weight:600;
@@ -249,28 +249,28 @@ body {
   box-shadow:rgba(0,0,0,0.35) 0 1px 5px, inset 0 1px 1px rgba(255,255,255,0.95);
 }
 
-#sticky_notice h3, .hideable_notice h3 {
+#sticky_notice h3, .hidable_notice h3 {
   font-size:20px;
   padding:0 0 5px;
   color:#453513;
 }
 
-#sticky_notice ul, .hideable_notice ul {
+#sticky_notice ul, .hidable_notice ul {
   list-style-type:none;
 }
 
-#sticky_notice ul li, .hideable_notice ul li {
+#sticky_notice ul li, .hidable_notice ul li {
   background:url(<%= asset_data_uri 'sticky_notice_bullet.png' %>) no-repeat 0 7px;
   padding:2px 0 6px 16px;
 }
 
-#sticky_notice a, .hideable_notice a {
+#sticky_notice a, .hidable_notice a {
   font-weight:bold;
   color:#453513;
   border-bottom:1px solid #c6af79;
 }
 
-#sticky_notice ul li small, .hideable_notice ul li small {
+#sticky_notice ul li small, .hidable_notice ul li small {
   display:block;
   font-weight:400;
   margin-top:2px;
