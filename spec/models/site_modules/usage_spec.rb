@@ -50,6 +50,8 @@ describe SiteModules::Usage do
   describe "#current_monthly_billable_usages.sum & #current_percentage_of_plan_used" do
     before(:all) { @site = FactoryGirl.create(:site) }
     before(:each) do
+      @site.reload
+      @site.unmemoize_all
       FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,30).midnight, vv: { m: 3, e: 7, d: 10, i: 0, em: 0 })
       FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,3,30).midnight, vv: { m: 11, e: 15, d: 10, i: 0, em: 0 })
       FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,4,30).midnight, vv: { m: 19, e: 23, d: 10, i: 0, em: 0 })
@@ -57,66 +59,74 @@ describe SiteModules::Usage do
 
     context "with monthly plan" do
       before(:all) do
-        @site.unmemoize_all
         @site.plan.cycle            = "month"
         @site.plan.video_views      = 100
+        @site.trial_started_at      = Time.utc(2011,1,20)
         @site.plan_cycle_started_at = Time.utc(2011,3,20)
         @site.plan_cycle_ended_at   = Time.utc(2011,4,20)
+        @site.plan.save!
+        @site.save!
         Timecop.travel(Time.utc(2011,3,25))
       end
-      after(:all) { Timecop.return }
+      after(:each) { Timecop.return }
       subject { @site }
 
-      its("current_monthly_billable_usages.sum") { should == 5 + 6 + 7 + 8 }
-      its(:current_percentage_of_plan_used)     { should == 26 / 100.0 }
+      its("current_monthly_billable_usages.sum") { should == 11 + 15 }
+      its(:current_percentage_of_plan_used)      { should == 26 / 100.0 }
     end
 
     context "with monthly plan and overage" do
       before(:all) do
-        @site.unmemoize_all
         @site.plan.cycle            = "month"
         @site.plan.video_views      = 10
+        @site.trial_started_at      = Time.utc(2011,1,20)
         @site.plan_cycle_started_at = Time.utc(2011,4,20)
         @site.plan_cycle_ended_at   = Time.utc(2011,5,20)
+        @site.plan.save!
+        @site.save!
         Timecop.travel(Time.utc(2011,4,25))
       end
       after(:all) { Timecop.return }
       subject { @site }
 
-      its("current_monthly_billable_usages.sum") { should == 9 + 10 + 11 + 12 }
-      its(:current_percentage_of_plan_used)     { should == 1 }
+      its("current_monthly_billable_usages.sum") { should == 19 + 23 }
+      its(:current_percentage_of_plan_used)      { should == 1 }
     end
 
     context "with yearly plan" do
       before(:all) do
-        @site.unmemoize_all
         @site.plan.cycle            = "year"
         @site.plan.video_views      = 100
+        @site.trial_started_at      = Time.utc(2011,1,20)
         @site.plan_cycle_started_at = Time.utc(2011,1,20)
         @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
+        @site.plan.save!
+        @site.save!
         Timecop.travel(Time.utc(2011,3,25))
       end
       after(:all) { Timecop.return }
       subject { @site }
 
-      its("current_monthly_billable_usages.sum") { should == 5 + 6 + 7 + 8 }
-      its(:current_percentage_of_plan_used)     { should == 26 / 100.0 }
+      its("current_monthly_billable_usages.sum") { should == 11 + 15 }
+      its(:current_percentage_of_plan_used)      { should == 26 / 100.0 }
     end
 
     context "with yearly plan (other date)" do
       before(:all) do
-        @site.unmemoize_all
         @site.plan.cycle            = "year"
         @site.plan.video_views      = 1000
+        @site.trial_started_at      = Time.utc(2011,1,20)
         @site.plan_cycle_started_at = Time.utc(2011,1,20)
         @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
+        @site.plan.save!
+        @site.save!
         Timecop.travel(Time.utc(2011,1,31))
       end
       after(:all) { Timecop.return }
       subject { @site }
 
-      its("current_monthly_billable_usages.sum") { should == 1 + 2 + 3 + 4 }
-      its(:current_percentage_of_plan_used)     { should == 10 / 1000.0 }
+      its("current_monthly_billable_usages.sum") { should == 3 + 7 }
+      its(:current_percentage_of_plan_used)      { should == 10 / 1000.0 }
     end
   end
 
