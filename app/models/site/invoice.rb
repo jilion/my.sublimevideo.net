@@ -27,7 +27,7 @@ module Site::Invoice
     invoices.any? { |i| i.waiting? }
   end
 
-  def invoices_open?(options={})
+  def invoices_open?(options = {})
     scope = invoices
     scope = scope.where(renew: options[:renew]) if options.key?(:renew)
     scope.any? { |i| i.open? }
@@ -184,7 +184,7 @@ module Site::Invoice
     time ? ((Time.now.utc.midnight.to_i - time.midnight.to_i) / 1.day) : 0
   end
 
-  def advance_for_next_cycle_end(plan, start_time=plan_started_at)
+  def advance_for_next_cycle_end(plan, start_time = plan_started_at)
     offset = months_since(start_time)
     offset = offset - (offset % 12) + 11 if plan.yearly?
 
@@ -203,7 +203,7 @@ private
   # after_save BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self
   def create_and_charge_invoice
     if being_changed_to_paid_plan? || being_renewed?
-      invoice = Invoice.build(site: self, renew: !!being_renewed?)
+      invoice = Invoice.setup(site: self, renew: !!being_renewed?)
       invoice.save!
       @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
 
