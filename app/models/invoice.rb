@@ -11,7 +11,7 @@ class Invoice < ActiveRecord::Base
   has_one :user, :through => :site
 
   has_many :invoice_items
-  has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
+  has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, class_name: "InvoiceItem"
 
   has_and_belongs_to_many :transactions
 
