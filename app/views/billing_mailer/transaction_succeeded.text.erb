@@ -13,7 +13,6 @@ You can review the invoices associated with this transaction via the following l
 https://<%= ActionMailer::Base.default_url_options[:host] %>/invoices/<%= invoice.to_param %>
 <% end %>
 
-If you have any questions, please use our support form:
-https://<%= ActionMailer::Base.default_url_options[:host] %>/support#billing
+If you have any questions, please <%= mail_to "billing@sublimevideo.net", "email us" %>.
 
 <%= t("mailer.signature") %>

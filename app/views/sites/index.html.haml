@@ -2,18 +2,18 @@
 
 = title_and_content_header("My sites")
 
-= render 'layouts/hideable_notices'
+= render 'layouts/hidable_notices'
 
 = link_to "Add a site", new_site_path, :class => "add_site small_button"
 
 - if @billable_views.zero?
-  %h4 The SublimeVideo experience' steps
+  %h4 Almost done! There are only a few things left to do:
   %ol
     %li.complete Choose a plan for your site.
     %li{ class: ('complete' if @loader_hits > 0) }= "Add your embed code to your pages. Click on #{@sites.one? ? 'the' : 'the appropriate'} \"Embed Code\" button below."
     %li{ class: ('complete' if @dev_views > 0) }
-      = raw "Add #{content_tag(:code, '<video>')} elements top your pages. Need help?"
-      = raw "Discover our #{link_to "video tag builder", video_tag_builder_path}!"
+      = raw "Add #{content_tag(:code, '<video>')} elements to your pages. Need help?"
+      = raw "Learn more about our #{link_to "video tag builder", video_tag_builder_path}!"
     %li Deploy your SublimeVideo players on your website in production.
 
 #sites_table_wrap= render 'sites'

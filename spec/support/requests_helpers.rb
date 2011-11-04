@@ -10,11 +10,11 @@ module Spec
         plans_attributes = [
           { name: "free",       cycle: "none",  video_views: 0,          price: 0, support_level: 0 },
           { name: "sponsored",  cycle: "none",  video_views: 0,          price: 0, support_level: 0 },
-          { name: "silver",     cycle: "month", video_views: 200_000,    price: 990, support_level: 0 },
-          { name: "gold",       cycle: "month", video_views: 1_000_000,  price: 4990, support_level: 1 },
-          { name: "silver",     cycle: "year",  video_views: 200_000,    price: 9900, support_level: 0 },
-          { name: "gold",       cycle: "year",  video_views: 1_000_000,  price: 49900, support_level: 1 },
-          { name: "custom1",    cycle: "year",  video_views: 10_000_000, price: 99900, support_level: 1 }
+          { name: "silver",     cycle: "month", video_views: 200_000,    price: 990, support_level: 1 },
+          { name: "gold",       cycle: "month", video_views: 1_000_000,  price: 4990, support_level: 2 },
+          { name: "silver",     cycle: "year",  video_views: 200_000,    price: 9900, support_level: 1 },
+          { name: "gold",       cycle: "year",  video_views: 1_000_000,  price: 49900, support_level: 2 },
+          { name: "custom1",    cycle: "year",  video_views: 10_000_000, price: 99900, support_level: 2 }
         ]
         plans_attributes.each { |attributes| Plan.create(attributes) }
       end
@@ -64,21 +64,23 @@ module Spec
         end
       end
 
-      def set_credit_card(options={})
+      def set_credit_card(options = {})
         choose  "user_cc_brand_#{options[:type] || 'visa'}"
-        fill_in "Name on card", with: 'Jime'
+        fill_in "Name on card", with: 'Jilion'
         fill_in "Card number", with: options[:d3d] ? "4000000000000002" : (options[:type] == 'master' ? "5399999999999999" : "4111111111111111")
         select  "#{options[:expire_on_month] || "6"}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expiration_month"
         select  "#{options[:expire_on_year] || Time.now.year + 1}", from: "#{options[:expire_on_prefix] || "user"}_cc_expiration_year"
         fill_in "Security Code", with: '111'
       end
 
-      def set_credit_card_in_site_form(options={})
+      def set_credit_card_in_site_form(options = {})
         set_credit_card(options.merge(expire_on_prefix: "site_user_attributes"))
       end
 
-      def sign_in_as(resource_name, options={})
+      def sign_in_as(resource_name, options = {})
+        sign_out(options.delete(:kill_user)) if @current_user
         options = { resource_name => options }
+
         resource = case resource_name
         when :user
           visit "/login"
@@ -105,8 +107,9 @@ module Spec
         resource_name.to_s.classify.constantize.last
       end
 
-      def sign_out
+      def sign_out(kill_user = false)
         click_link_or_button "Logout"
+        @current_user = nil if kill_user
       end
 
     end

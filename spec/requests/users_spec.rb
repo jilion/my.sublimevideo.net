@@ -231,7 +231,7 @@ feature "Users" do
       page.should have_no_content("API")
 
       visit "/account/applications"
-      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      current_url.should =~ %r(^http://[^/]+/account$)
     end
 
     scenario "API pages are accessible to @jilion.com emails" do

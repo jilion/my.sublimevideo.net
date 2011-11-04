@@ -1,6 +1,9 @@
-days_for_stats_trial: 8 # for 7 days
 days_for_trial: 15 # for 14 days
 days_before_trial_end:
   - 5
   - 1
+
+days_for_stats_trial: 8 # for 7 days
+days_before_stats_trial_end: 6
+
 days_for_refund: 30

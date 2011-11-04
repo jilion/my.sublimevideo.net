@@ -10,7 +10,7 @@ feature "Credit cards update" do
 
     scenario "successfully" do
       click_link(@current_user.full_name)
-      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      current_url.should =~ %r(^http://[^/]+/account$)
 
       page.should have_content("Register credit card")
 
@@ -41,7 +41,7 @@ feature "Credit cards update" do
 
     scenario "successfully" do
       click_link(@current_user.full_name)
-      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      current_url.should =~ %r(^http://[^/]+/account$)
 
       @current_user.cc_type.should == 'visa'
       @current_user.cc_last_digits.should == '1111'
@@ -65,7 +65,7 @@ feature "Credit cards update" do
 
     scenario "successfully 3-D Secure credit card with a succeeding identification" do
       click_link(@current_user.full_name)
-      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      current_url.should =~ %r(^http://[^/]+/account$)
 
       @current_user.cc_type.should == 'visa'
       @current_user.cc_last_digits.should == '1111'
@@ -89,7 +89,7 @@ feature "Credit cards update" do
       @current_user.pending_cc_type.should be_nil
       @current_user.pending_cc_last_digits.should be_nil
 
-      visit '/account/edit'
+      visit '/account'
 
       page.should have_content I18n.t('flash.credit_cards.update.notice')
       page.should have_content "Visa"
@@ -98,7 +98,7 @@ feature "Credit cards update" do
 
     scenario "waiting 3-D Secure credit card" do
       click_link(@current_user.full_name)
-      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      current_url.should =~ %r(^http://[^/]+/account$)
 
       @current_user.cc_type.should == 'visa'
       @current_user.cc_last_digits.should == '1111'
@@ -119,7 +119,7 @@ feature "Credit cards update" do
       @current_user.reload.cc_type.should == 'visa'
       @current_user.cc_last_digits.should == '1111'
 
-      visit '/account/edit'
+      visit '/account'
       @current_user.pending_cc_type.should == 'visa'
       @current_user.pending_cc_last_digits.should == '0002'
 
@@ -130,7 +130,7 @@ feature "Credit cards update" do
 
     scenario "entering a 3-D Secure credit card with a failing identification" do
       click_link(@current_user.full_name)
-      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      current_url.should =~ %r(^http://[^/]+/account$)
 
       @current_user.cc_type.should == 'visa'
       @current_user.cc_last_digits.should == '1111'
@@ -153,14 +153,14 @@ feature "Credit cards update" do
       @current_user.pending_cc_type.should == 'visa'
       @current_user.pending_cc_last_digits.should == '0002'
 
-      visit '/account/edit'
+      visit '/account'
 
       should_save_credit_card_successfully
     end
 
     scenario "with a failed attempt first" do
       click_link(@current_user.full_name)
-      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      current_url.should =~ %r(^http://[^/]+/account$)
 
       @current_user.cc_type.should == 'visa'
       @current_user.cc_last_digits.should == '1111'
@@ -187,7 +187,7 @@ feature "Credit cards update" do
 end
 
 def should_save_credit_card_successfully(type='visa')
-  current_url.should =~ %r(^http://[^/]+/account/edit$)
+  current_url.should =~ %r(^http://[^/]+/account$)
   page.should have_content I18n.t('flash.credit_cards.update.notice')
   page.should have_content type == 'visa' ? 'Visa' : "MasterCard"
   page.should have_content type == 'visa' ? '1111' : '9999'

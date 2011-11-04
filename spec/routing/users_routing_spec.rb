@@ -5,7 +5,7 @@ describe UsersController do
   it { { get:  '/signup' }.should route_to(controller: 'users/registrations', action: 'new') }
   it { { post: '/signup' }.should route_to(controller: 'users/registrations', action: 'create') }
 
-  it { { get:    '/account/edit' }.should        route_to(controller: 'users/registrations', action: 'edit') }
+  it { { get:    '/account' }.should             route_to(controller: 'users/registrations', action: 'edit') }
   it { { put:    '/account/credentials' }.should route_to(controller: 'users/registrations', action: 'update') }
   it { { delete: '/account' }.should             route_to(controller: 'users/registrations', action: 'destroy') }
 

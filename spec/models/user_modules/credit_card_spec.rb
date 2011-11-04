@@ -172,7 +172,7 @@ describe UserModules::CreditCard do
       end
 
       it "allows string" do
-        user = FactoryGirl.build(:user_no_cc, valid_cc_attributes.merge(cc_full_name: "Jime"))
+        user = FactoryGirl.build(:user_no_cc, valid_cc_attributes.merge(cc_full_name: "Jilion"))
         user.should be_valid
       end
     end

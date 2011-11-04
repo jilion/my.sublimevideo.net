@@ -44,7 +44,7 @@ feature "Pages" do
       end
 
       scenario "can't visit the edit account page" do
-        visit "/account/edit"
+        visit "/account"
         current_url.should =~ %r(^http://[^/]+/suspended$)
       end
 
@@ -80,7 +80,7 @@ feature "Pages" do
         ActionMailer::Base.deliveries.clear
         current_url.should =~ %r(^http://[^/]+/suspended$)
 
-        VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('site.invoices.retry_invoices') }
+        VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('invoice.retry_invoices') }
 
         current_url.should =~ %r(http://[^/]+/sites)
 

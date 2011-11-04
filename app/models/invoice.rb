@@ -110,6 +110,7 @@ class Invoice < ActiveRecord::Base
     instance.construct_invoice_items
     instance.set_invoice_items_amount
     instance.set_vat_rate_and_amount
+    instance.set_balance_deduction_amount
     instance.set_amount
 
     instance

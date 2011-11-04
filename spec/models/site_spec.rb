@@ -1072,7 +1072,7 @@ describe Site do
         subject { @site }
 
         its(:plan_month_cycle_started_at)     { should eq Time.now.utc.midnight }
-        its("plan_month_cycle_ended_at.to_i") { should eq (1.month - 1.day).from_now.end_of_day.to_i }
+        its("plan_month_cycle_ended_at.to_i") { should eq (Time.now.utc + 1.month - 1.day).end_of_day.to_i }
       end
 
       context "with yearly plan" do
@@ -1082,8 +1082,8 @@ describe Site do
           before(:all) { @site = FactoryGirl.create(:site_not_in_trial, plan_id: @yearly_plan.id) }
           subject { @site }
 
-          its(:plan_month_cycle_started_at)     { should eq Time.now.utc.midnight }
-          its("plan_month_cycle_ended_at.to_i") { should eq (1.month - 1.day).from_now.end_of_day.to_i }
+          its(:plan_month_cycle_started_at) { should eq Time.now.utc.midnight }
+          its(:plan_month_cycle_ended_at)   { should eq (Time.now.utc + 1.month - 1.day).end_of_day }
         end
 
         describe "after the first month" do
@@ -1092,8 +1092,8 @@ describe Site do
           end
           subject { @site }
 
-          its(:plan_month_cycle_started_at)     { should eq 5.days.ago.utc.midnight }
-          its("plan_month_cycle_ended_at.to_i") { should eq (1.month - 6.days).from_now.end_of_day.to_i }
+          its(:plan_month_cycle_started_at) { should eq 5.days.ago.utc.midnight }
+          its(:plan_month_cycle_ended_at)   { should eq (5.days.ago + 1.month - 1.day).end_of_day }
         end
       end
     end

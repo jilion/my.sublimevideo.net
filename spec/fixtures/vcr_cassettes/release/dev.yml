@@ -424,7 +424,7 @@
     method: :put
     uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/dev%2Fsublime.js
     body: |
-      // Copyright (c) 2010 Jilion.com / Jime SA
+      // Copyright (c) 2010 Jilion SA
       (function() { var h,i=this;function k(a,b,c){a=a.split(".");c=c||i;!(a[0]in c)&&c.execScript&&c.execScript("var "+a[0]);for(var d;a.length&&(d=a.shift());)if(!a.length&&b!==undefined)c[d]=b;else c=c[d]?c[d]:(c[d]={})}function aa(a,b){a=a.split(".");b=b||i;for(var c;c=a.shift();)if(b[c])b=b[c];else return null;return b}function ba(){}      h.stop=function(){this.a&&se(this);this.W&&re(this);this.ga&&this.ga.pause()};h.ud=function(){console.log(this.n)};function Ge(){new $}k("jilion.sublime.video.init",Ge,void 0); })();
       jilion.sublime.video.init();
 

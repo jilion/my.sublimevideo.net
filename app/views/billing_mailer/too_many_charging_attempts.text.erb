@@ -10,4 +10,6 @@ Note that if the payment failed due to a problem with your credit card, you shou
 
 https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
 
+If you have any questions, please <%= mail_to "billing@sublimevideo.net", "email us" %>.
+
 <%= t("mailer.signature") %>

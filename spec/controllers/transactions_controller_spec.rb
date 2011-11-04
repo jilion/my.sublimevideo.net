@@ -18,7 +18,7 @@ describe TransactionsController do
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => nil))
           end
 
-          it "should add a notice and redirect to /account/edit" do
+          it "should add a notice and redirect to /account" do
             @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
@@ -40,7 +40,7 @@ describe TransactionsController do
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => { alert: I18n.t("credit_card.errors.waiting") }))
           end
 
-          it "should add an alert and redirect to /account/edit" do
+          it "should add an alert and redirect to /account" do
             @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
@@ -62,7 +62,7 @@ describe TransactionsController do
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => { alert: I18n.t("credit_card.errors.invalid") }))
           end
 
-          it "should add an alert and redirect to /account/edit" do
+          it "should add an alert and redirect to /account" do
             @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
@@ -84,7 +84,7 @@ describe TransactionsController do
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => { alert: I18n.t("credit_card.errors.refused") }))
           end
 
-          it "should add an alert and redirect to /account/edit" do
+          it "should add an alert and redirect to /account" do
             @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
@@ -106,7 +106,7 @@ describe TransactionsController do
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => { alert: I18n.t("credit_card.errors.unknown") }))
           end
 
-          it "should add an alert and redirect to /account/edit" do
+          it "should add an alert and redirect to /account" do
             @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
@@ -128,7 +128,7 @@ describe TransactionsController do
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => { alert: I18n.t("credit_card.errors.unknown") }))
           end
 
-          it "should add an alert and redirect to /account/edit" do
+          it "should add an alert and redirect to /account" do
             @m.should_receive(:process_credit_card_authorization_response).with(@sha_params)
 
             post :callback, @params.merge(@sha_params)
@@ -175,7 +175,7 @@ describe TransactionsController do
               }
             end
 
-            it "should add a notice and redirect to /account/edit" do
+            it "should add a notice and redirect to /account" do
               Transaction.should_receive(:find_by_order_id).with("dwqdqw756w6q4d654qwd64qw").and_return(@m = mock_transaction(:paid? => false, :state => 'paid'))
               @m.should_receive(:process_payment_response).with(@sha_params)
 
@@ -197,7 +197,7 @@ describe TransactionsController do
               }
             end
 
-            it "should add an alert and redirect to /account/edit" do
+            it "should add an alert and redirect to /account" do
               Transaction.should_receive(:find_by_order_id).with("dwqdqw756w6q4d654qwd64qw").and_return(@m = mock_transaction(:paid? => false, :state => 'failed'))
               @m.should_receive(:process_payment_response).with(@sha_params)
 

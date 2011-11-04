@@ -25,12 +25,12 @@ class InvoicesController < ApplicationController
     if @invoices.present?
       transaction = Transaction.charge_by_invoice_ids(@invoices.map(&:id))
       if transaction.paid?
-        flash[:notice] = t("site.invoices.retry_succeed")
+        flash[:notice] = t('invoice.retry_succeed')
       else
         flash[:alert] = t("transaction.errors.#{transaction.state}")
       end
     else
-      flash[:notice] = t("site.invoices.no_invoices_to_retry")
+      flash[:notice] = t('invoice.no_invoices_to_retry')
     end
 
     respond_with(@invoices) do |format|
@@ -45,12 +45,12 @@ class InvoicesController < ApplicationController
     if @invoices.present?
       transaction = Transaction.charge_by_invoice_ids(@invoices.map(&:id))
       if transaction.paid?
-        flash[:notice] = t("site.invoices.retry_succeed")
+        flash[:notice] = t('invoice.retry_succeed')
       else
         flash[:alert] = t("transaction.errors.#{transaction.state}")
       end
     else
-      flash[:notice] = t("site.invoices.no_invoices_to_retry")
+      flash[:notice] = t('invoice.no_invoices_to_retry')
     end
 
     respond_with(@invoices) do |format|
