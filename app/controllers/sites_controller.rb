@@ -1,11 +1,11 @@
 class SitesController < ApplicationController
   respond_to :html
-  respond_to :js, :only => [:index, :code]
-  respond_to :json, :only => :index
+  respond_to :js, only: [:index, :code]
+  respond_to :json, only: :index
 
   before_filter :redirect_suspended_user
-  before_filter :find_sites_or_redirect_to_new_site, :only => [:index, :edit, :update, :destroy]
-  before_filter :find_by_token!, :only => [:edit, :update, :destroy]
+  before_filter :find_sites_or_redirect_to_new_site, only: [:index, :edit, :update, :destroy]
+  before_filter :find_by_token!, only: [:edit, :update, :destroy]
 
   has_scope :by_hostname
   has_scope :by_date
@@ -15,7 +15,7 @@ class SitesController < ApplicationController
   def index
     load_usages_for_initial_help
 
-    respond_with(@sites, :per_page => 10) do |format|
+    respond_with(@sites, per_page: 10) do |format|
       format.js
       format.html
       format.json { render json: @sites.to_backbone_json }
@@ -24,7 +24,7 @@ class SitesController < ApplicationController
 
   # GET /sites/new
   def new
-    @site = current_user.sites.build((params[:site] || {}).reverse_merge(:dev_hostnames => Site::DEFAULT_DEV_DOMAINS))
+    @site = current_user.sites.build((params[:site] || {}).reverse_merge(dev_hostnames: Site::DEFAULT_DEV_DOMAINS))
 
     respond_with(@site)
   end
@@ -54,7 +54,7 @@ class SitesController < ApplicationController
         if @site.transaction.try(:waiting_d3d?)
           flash[:notice] = ""
           flash[:alert] = ""
-          format.html { render :text => d3d_html_inject(@site.transaction.error) }
+          format.html { render text: d3d_html_inject(@site.transaction.error) }
         else
           format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.transaction) }
         end
@@ -70,7 +70,7 @@ class SitesController < ApplicationController
   def update
     @site.update_attributes(params[:site])
 
-    respond_with(@site, :location => :sites)
+    respond_with(@site, location: :sites)
   end
 
   # DELETE /sites/:id

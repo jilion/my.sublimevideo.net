@@ -11,16 +11,16 @@
         %p.period
           = "Period: #{invoice_item_dates(invoice_item)}"
           - if invoice_item.discounted_percentage?
-            = "(-#{number_to_percentage(invoice_item.discounted_percentage * 100.0, :precision => 0)} beta discount)"
-      %td.total= display_amount(invoice_item.amount, :decimals => 2)
+            = "(-#{number_to_percentage(invoice_item.discounted_percentage * 100.0, precision: 0)} beta discount)"
+      %td.total= display_amount(invoice_item.amount, decimals: 2)
 
   - if invoice.vat_amount > 0
     %tr.pre_total
-      %td.right{ :colspan => 2 }= "VAT #{display_percentage(invoice.vat_rate)}:"
-      %td.total= display_amount(invoice.vat_amount, :decimals => 2)
+      %td.right{ colspan: 2 }= "VAT #{display_percentage(invoice.vat_rate)}:"
+      %td.total= display_amount(invoice.vat_amount, decimals: 2)
 
   %tr.final_total
-    %td.right{ :colspan => 2 }
+    %td.right{ colspan: 2 }
       %strong Total
     %td.total
-      %strong= display_amount(invoice.amount, :decimals => 2)
+      %strong= display_amount(invoice.amount, decimals: 2)
