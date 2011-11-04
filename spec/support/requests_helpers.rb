@@ -66,7 +66,7 @@ module Spec
 
       def set_credit_card(options={})
         choose  "user_cc_brand_#{options[:type] || 'visa'}"
-        fill_in "Name on card", with: 'Jime'
+        fill_in "Name on card", with: 'Jilion'
         fill_in "Card number", with: options[:d3d] ? "4000000000000002" : (options[:type] == 'master' ? "5399999999999999" : "4111111111111111")
         select  "#{options[:expire_on_month] || "6"}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expiration_month"
         select  "#{options[:expire_on_year] || Time.now.year + 1}", from: "#{options[:expire_on_prefix] || "user"}_cc_expiration_year"

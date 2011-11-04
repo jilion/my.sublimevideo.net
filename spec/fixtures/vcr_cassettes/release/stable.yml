@@ -1295,7 +1295,7 @@
     method: :put
     uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/dev%2Fsublime.js
     body: |
-      // Copyright (c) 2010 Jilion.com / Jime SA
+      // Copyright (c) 2010 Jilion SA
       (function() { var h,i=this;function k(a,b,c){a=a.split(".");c=c||i;!(a[0]in c)&&c.execScript&&c.execScript("var "+a[0]);for(var d;a.length&&(d=a.shift());)if(!a.length&&b!==undefined)c[d]=b;else c=c[d]?c[d]:(c[d]={})}function aa(a,b){a=a.split(".");b=b||i;for(var c;c=a.shift();)if(b[c])b=b[c];else return null;return b}function ba(){}
       function ca(a){var b=typeof a;if(b=="object")if(a){if(a instanceof Array||!(a instanceof Object)&&Object.prototype.toString.call(a)=="[object Array]"||typeof a.length=="number"&&typeof a.splice!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("splice"))return"array";if(!(a instanceof Object)&&(Object.prototype.toString.call(a)=="[object Function]"||typeof a.call!="undefined"&&typeof a.propertyIsEnumerable!="undefined"&&!a.propertyIsEnumerable("call")))return"function"}else return"null";
       else if(b=="function"&&typeof a.call=="undefined")return"object";return b}function l(a){return ca(a)=="array"}function da(a){var b=ca(a);return b=="array"||b=="object"&&typeof a.length=="number"}function n(a){return typeof a=="string"}function ea(a){return ca(a)=="function"}function fa(a){a=ca(a);return a=="object"||a=="array"||a=="function"}function ga(a){if(a.hasOwnProperty&&a.hasOwnProperty(ha))return a[ha];a[ha]||(a[ha]=++ia);return a[ha]}
