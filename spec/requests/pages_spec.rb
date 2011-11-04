@@ -44,7 +44,7 @@ feature "Pages" do
       end
 
       scenario "can't visit the edit account page" do
-        visit "/account/edit"
+        visit "/account"
         current_url.should =~ %r(^http://[^/]+/suspended$)
       end
 

@@ -12,21 +12,21 @@ feature "OAuth applications" do
     describe "list OAuth applications" do
       scenario "shows a list of applications" do
         visit "/account/applications"
-        current_url.should =~ %r(^http://[^/]+/account/edit$)
+        current_url.should =~ %r(^http://[^/]+/account$)
       end
     end
 
     describe "new OAuth applications" do
       scenario "shows a list of applications" do
         visit "/account/applications/new"
-        current_url.should =~ %r(^http://[^/]+/account/edit$)
+        current_url.should =~ %r(^http://[^/]+/account$)
       end
     end
 
     describe "edit an OAuth applications" do
       scenario "shows a list of applications" do
         visit "/account/applications/#{@application.id}/edit"
-        current_url.should =~ %r(^http://[^/]+/account/edit$)
+        current_url.should =~ %r(^http://[^/]+/account$)
       end
     end
   end

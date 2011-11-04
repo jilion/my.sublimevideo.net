@@ -12,12 +12,12 @@ MySublimeVideo::Application.routes.draw do
       get    :new,     :path => '/signup', :as => 'new'
       post   :create,  :path => '/signup'
 
-      get    :edit,    :path => '/account/edit', :as => 'edit'
+      get    :edit,    :path => '/account', :as => 'edit'
       put    :update,  :path => '/account/credentials'
       delete :destroy, :path => '/account'
     end
   end
-  match '/account' => redirect('/account/edit'), :via => :get
+  match '/account/edit' => redirect('/account'), :via => :get
 
   %w[sign_up register].each         { |action| match action => redirect('/signup'), :via => :get }
   %w[log_in sign_in signin].each    { |action| match action => redirect('/login'),  :via => :get }
