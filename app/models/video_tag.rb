@@ -34,6 +34,10 @@ class VideoTag
     save
   end
 
+  def meta_data
+    attributes.slice("uo", "n", "no", "p", "cs", "s")
+  end
+
   # =================
   # = Class Methods =
   # =================

@@ -1,13 +1,36 @@
 require 'spec_helper'
 
 describe VideoTag do
+  let(:video_tag) { VideoTag.create(
+    'st' => 'site1234',
+    'u'  => 'video123',
+    'uo' => 'a', 'n' => 'My Video', 'no' => 'a',
+    'p' => 'http://posters.sublimevideo.net/video123.png',
+    'cs' => ['source11'],
+    's' => {
+      'source11' => { 'u' => 'http://videos.sublimevideo.net/source11.mp4', 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' },
+    }
+  )}
+
+  describe "#meta_data" do
+    subject { video_tag }
+
+    its(:meta_data) { should eql({
+      'uo' => 'a', 'n' => 'My Video', 'no' => 'a',
+      'p' => 'http://posters.sublimevideo.net/video123.png',
+      'cs' => ['source11'],
+      's' => {
+        'source11' => { 'u' => 'http://videos.sublimevideo.net/source11.mp4', 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' },
+      }
+    }) }
+  end
 
   describe ".create_or_update_from_trackers!" do
 
     context "wit a new video" do
       before(:each) do
         described_class.stub(:video_tags_from_trackers).and_return({
-          ['site1234', 'video123'] => { 'uo' => 'u', 'n' => 'My Video', 'no' => 's',
+          ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
             'p'  => 'http://posters.sublimevideo.net/video123.png',
             'cs' => ['source12', 'source34'],
             's'  => {
@@ -29,7 +52,7 @@ describe VideoTag do
 
         its(:st) { should eql('site1234') }
         its(:u)  { should eql('video123') }
-        its(:uo) { should eql('u') }
+        its(:uo) { should eql('a') }
         its(:n)  { should eql('My Video') }
         its(:no) { should eql('s') }
         its(:p)  { should eql('http://posters.sublimevideo.net/video123.png') }
@@ -43,16 +66,7 @@ describe VideoTag do
       describe "existing video_tag (different)" do
         before(:each) do
           Timecop.travel 1.hour.ago do
-            @video_tag = VideoTag.create(
-              st: 'site1234',
-              'u' => 'video123',
-              uo: 'u', 'n' => 'My Video', 'no' => 'n',
-              'p' => 'http://posters.sublimevideo.net/video123.png',
-              'cs' => ['source11'],
-              's' => {
-                'source11' => { 'u' => 'http://videos.sublimevideo.net/source11.mp4', 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' },
-              }
-            )
+            @video_tag = video_tag
           end
         end
         subject do
@@ -62,7 +76,7 @@ describe VideoTag do
 
         its(:st) { should eql('site1234') }
         its(:u)  { should eql('video123') }
-        its(:uo) { should eql('u') }
+        its(:uo) { should eql('a') }
         its(:n)  { should eql('My Video') }
         its(:no) { should eql('s') }
         its(:p)  { should eql('http://posters.sublimevideo.net/video123.png') }
@@ -90,7 +104,7 @@ describe VideoTag do
 
         its(:st) { should eql('site1234') }
         its(:u)  { should eql('video123') }
-        its(:uo) { should eql('u') }
+        its(:uo) { should eql('a') }
         its(:n)  { should eql('My Video') }
         its(:no) { should eql('s') }
         its(:p)  { should eql('http://posters.sublimevideo.net/video123.png') }
@@ -111,13 +125,13 @@ describe VideoTag do
     context "with 1 video" do
       before(:each) do
         described_class.stub(:only_video_tags_trackers).and_return({
-          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=u&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
-          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=u&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source34.webm&vc=source34&vcs[]=source12&vcs[]=source34&vsq=base&vsf=webm&vsr=460x340&vp=http%3A//posters.sublimevideo.net/video123.png" => 1
+          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
+          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source34.webm&vc=source34&vcs[]=source12&vcs[]=source34&vsq=base&vsf=webm&vsr=460x340&vp=http%3A//posters.sublimevideo.net/video123.png" => 1
         })
       end
 
       specify { described_class.video_tags_from_trackers(nil).should eql({
-        ['site1234', 'video123'] => { 'uo' => 'u', 'n' => 'My Video', 'no' => 's',
+        ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
           'p'  => 'http://posters.sublimevideo.net/video123.png',
           'cs' => ['source12', 'source34'],
           's'  => {
@@ -131,14 +145,14 @@ describe VideoTag do
     context "with 1 video and changes" do
       before(:each) do
         described_class.stub(:only_video_tags_trackers).and_return({
-          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=u&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
-          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=u&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source34.webm&vc=source34&vcs[]=source12&vcs[]=source34&vsq=base&vsf=webm&vsr=460x340&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
-          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=u&vn=My%20New%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source35.webm&vc=source35&vcs[]=source12&vcs[]=source35&vsq=base&vsf=webm&vsr=480x360&vp=http%3A//posters.sublimevideo.net/video1235.png" => 1
+          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
+          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source34.webm&vc=source34&vcs[]=source12&vcs[]=source34&vsq=base&vsf=webm&vsr=460x340&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
+          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20New%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source35.webm&vc=source35&vcs[]=source12&vcs[]=source35&vsq=base&vsf=webm&vsr=480x360&vp=http%3A//posters.sublimevideo.net/video1235.png" => 1
         })
       end
 
       specify { described_class.video_tags_from_trackers(nil).should eql({
-        ['site1234', 'video123'] => { 'uo' => 'u', 'n' => 'My New Video', 'no' => 's',
+        ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My New Video', 'no' => 's',
           'p'  => 'http://posters.sublimevideo.net/video1235.png',
           'cs' => ['source12', 'source35'],
           's'  => {
@@ -153,20 +167,20 @@ describe VideoTag do
     context "with 2 video and changes" do
       before(:each) do
         described_class.stub(:only_video_tags_trackers).and_return({
-          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=u&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
-          "?t=site5678&e=s&d=d&h=m&vu=video123&vuo=u&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source45.webm&vc=source45&vcs[]=source44&vcs[]=source45&vsq=hd&vsf=webm&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1
+          "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
+          "?t=site5678&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source45.webm&vc=source45&vcs[]=source44&vcs[]=source45&vsq=hd&vsf=webm&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1
         })
       end
 
       specify { described_class.video_tags_from_trackers(nil).should eql({
-        ['site1234', 'video123'] => { 'uo' => 'u', 'n' => 'My Video', 'no' => 's',
+        ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
           'p'  => 'http://posters.sublimevideo.net/video123.png',
           'cs' => ['source12', 'source34'],
           's'  => {
             'source12' => { 'u' => 'http://videos.sublimevideo.net/source12.mp4', 'q' => 'hd', 'f' => 'mp4', 'r' => '1280x720' },
           }
         },
-        ['site5678', 'video123'] => { 'uo' => 'u', 'n' => 'My Video', 'no' => 's',
+        ['site5678', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
           'p'  => 'http://posters.sublimevideo.net/video123.png',
           'cs' => ['source44', 'source45'],
           's'  => {
