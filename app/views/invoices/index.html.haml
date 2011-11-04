@@ -16,22 +16,21 @@
           - if @site.invoices_failed?
             - failed_invoices = @invoices.select { |invoice| invoice.failed? }
             %p.desc
-              = raw t('invoice.count_failed_invoices_with_total_amount', count: failed_invoices.count, total_amount: display_amount(failed_invoices.sum(&:amount)))
+              = raw t('invoice.count_failed_invoices_with_total_amount', count: failed_invoices.size, total_amount: display_amount(failed_invoices.sum(&:amount)))
 
           - if @site.invoices_open?
             - open_invoices = @invoices.select { |invoice| invoice.open? }
             %p.desc
-              = raw t('invoice.count_open_invoices_with_total_amount', count: open_invoices.count, total_amount: display_amount(open_invoices.sum(&:amount)))
+              = raw t('invoice.count_open_invoices_with_total_amount', count: open_invoices.size, total_amount: display_amount(open_invoices.sum(&:amount)))
 
           - if !current_user.cc?
             %p
-              = "Please"
-              = link_to "add a valid credit card", edit_credit_card_path, class: "hl"
+              = raw t("app.please_link", link: link_to("add a valid credit card", edit_credit_card_path, class: "hl"))
               = t('user.payment.retry_here')
           - elsif current_user.cc_expired?
             %p
               = t('user.credit_card.expired')
-              = raw t("please_link", link: link_to("update your credit card", edit_credit_card_path, class: "hl"))
+              = raw t("app.please_link", link: link_to("update your credit card", edit_credit_card_path, class: "hl"))
               = t('user.payment.retry_here')
           - else
             %p

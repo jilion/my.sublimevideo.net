@@ -19,6 +19,11 @@
       %td.right{ colspan: 2 }= "VAT #{display_percentage(invoice.vat_rate)}:"
       %td.total= display_amount(invoice.vat_amount, decimals: 2)
 
+  - if invoice.balance_deduction_amount > 0
+    %tr.pre_total
+      %td.right{ colspan: 2 }= "From your balance:"
+      %td.total= "-#{display_amount(invoice.balance_deduction_amount, decimals: 2)}"
+
   %tr.final_total
     %td.right{ colspan: 2 }
       %strong Total

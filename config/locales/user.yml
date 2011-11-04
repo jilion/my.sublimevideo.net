@@ -7,6 +7,7 @@ en:
       will_expire: "Your credit card will expire at the end of the month."
       prevent_charging_problem: "to prevent any charging problem"
       expired: "Your credit card is expired."
+      expired_long: "This credit card is expired, please update it as soon as possible to prevent any charging problem."
       update_it: "update it"
     payment:
       retry_here: "and then retry the payment here."
