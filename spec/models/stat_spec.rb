@@ -59,10 +59,10 @@ describe Stat do
         it "update existing h/d stats" do
           Stat.create_stats_from_trackers!(@log, nil)
           Stat::Site.count.should eql(6)
-          log_time = 5.days.ago.change(sec: 0).to_i + 1.minute
+          log_time = 5.days.ago.change(sec: 0).to_i + 61.minute
           log  = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
           Stat.create_stats_from_trackers!(log, nil)
-          Stat::Site.count.should eql(8)
+          Stat::Site.count.should eql(10)
           Stat::Site.where(t: 'ovjigy83').m_before(Time.now).count.should eql(2)
           Stat::Site.where(t: 'ovjigy83', m: log.minute).first.bp.should eql({ "saf-osx" => 4 })
           Stat::Site.where(t: 'ovjigy83', d: log.day).first.bp.should eql({ "saf-osx" => 8 })
