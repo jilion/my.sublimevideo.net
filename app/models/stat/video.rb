@@ -55,7 +55,7 @@ class Stat::Video
   # @option options [String] view_type the type of views to order with. Can be 'vv' (Video Views, default) or 'vl' (Video load).
   # @option options [String] count number of videos to return
   #
-  # @return [Array] an array of video hash with video tag metadata and period 'vl' & 'vv' totals + vv period array
+  # @return [Hash] with an array of video hash with video tag metadata and period 'vl' & 'vv' totals + vv period array, the total amount of videos viewed or loaded during the period and the start_time of the period
   #
   def self.top_videos(site_token, period, options = {})
     from, to   = period_intervals(site_token, period)
@@ -64,20 +64,21 @@ class Stat::Video
 
     conditions = { st: site_token, period_sym => { "$gte" => from, "$lte" => to } }
 
-    stats = collection.group(
+    videos = collection.group(
       key: :u,
       cond: conditions,
       initial: { vv_sum: 0, vl_sum: 0, vv_hash: {} },
       reduce: js_reduce_for_sum(period_sym)
     )
 
-    stats.sort_by! { |stat| stat["#{options[:view_type]}_sum"] }.reverse!
-    stats = stats.take(options[:count])
+    total = videos.size
 
-    add_video_tags_metadata!(site_token, stats)
-    add_vv_array!(stats)
+    videos.sort_by! { |video| video["#{options[:view_type]}_sum"] }.reverse!
+    videos = videos.take(options[:count])
 
-    stats
+    add_video_tags_metadata!(site_token, videos)
+    add_vv_array!(videos, period, from.to_i, to.to_i)
+    { videos: videos, total: total, start_time: from }
   end
 
 private
@@ -86,29 +87,38 @@ private
     fields = %w[m e] # billable fields: main, extra
     reduce_function = ["function(doc, prev) {"]
     fields.inject(reduce_function) do |js, field_to_merge|
-      js << "vv = isNaN(doc.vv.#{field_to_merge}) ? 0 : doc.vv.#{field_to_merge};"
-      js << "prev.vv_sum += vv;"
+      js << "vv_#{field_to_merge} = isNaN(doc.vv.#{field_to_merge}) ? 0 : doc.vv.#{field_to_merge};"
+      js << "prev.vv_sum += vv_#{field_to_merge};"
       js << "prev.vl_sum += isNaN(doc.vl.#{field_to_merge}) ? 0 : doc.vl.#{field_to_merge};"
-      js << "prev.vv_hash[doc.#{period_sym}.getTime() / 1000] = vv;"
       js
     end
+    reduce_function << "prev.vv_hash[doc.#{period_sym}.getTime() / 1000] = vv_m + vv_e;"
 
     (reduce_function << "}").join(' ')
   end
 
-  def self.add_video_tags_metadata!(site_token, stats)
-    video_uids = stats.map { |stat| stat["u"] }
+  def self.add_video_tags_metadata!(site_token, videos)
+    video_uids = videos.map { |video| video["u"] }
 
     VideoTag.where(st: site_token, u: { "$in" => video_uids }).entries.each do |video_tag|
-      stat = stats.detect { |stat| stat["u"] == video_tag.u }
-      stat.merge!(video_tag.meta_data)
+      video = videos.detect { |video| video["u"] == video_tag.u }
+      video.merge!(video_tag.meta_data)
     end
 
-    stats
+    videos
   end
 
-  def self.add_vv_array!(stats)
-    stats
+  def self.add_vv_array!(videos, period, from, to)
+    step = 1.send(period)
+    videos.each do |video|
+      video["vv_array"] = []
+      while from <= to
+        video["vv_array"] << video["vv_hash"][from.to_s].to_i
+        from += step
+      end
+      video.delete("vv_hash")
+    end
   end
+
 
 end
