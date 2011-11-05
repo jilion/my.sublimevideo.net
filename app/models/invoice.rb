@@ -155,9 +155,9 @@ class Invoice < ActiveRecord::Base
 
   def construct_invoice_items
     if site.pending_plan_id? && site.in_paid_plan? && site.plan.upgrade?(site.pending_plan)
-      invoice_items << ::InvoiceItem::Plan.construct(invoice: self, item: Plan.find(site.plan_id), deduct: true)
+      invoice_items << InvoiceItem::Plan.construct(invoice: self, item: Plan.find(site.plan_id), deduct: true)
     end
-    invoice_items << ::InvoiceItem::Plan.construct(invoice: self, item: site.pending_plan || site.plan)
+    invoice_items << InvoiceItem::Plan.construct(invoice: self, item: site.pending_plan || site.plan)
   end
 
   def set_invoice_items_amount
