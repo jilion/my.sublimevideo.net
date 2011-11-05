@@ -5,7 +5,7 @@ describe Stat do
   context "with cdn.sublimevideo.net.log.1310993640-1310993700.gz logs file" do
     before(:each) do
       @log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1313499060-1313499120.gz'))
-      log_time  = 5.days.ago.change(sec: 0).to_i
+      log_time  = 5.days.ago.change(min: 0).to_i
       @log      = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
     end
 
@@ -59,10 +59,10 @@ describe Stat do
         it "update existing h/d stats" do
           Stat.create_stats_from_trackers!(@log, nil)
           Stat::Site.count.should eql(6)
-          log_time = 5.days.ago.change(sec: 0).to_i + 61.minute
+          log_time = 5.days.ago.change(min: 0).to_i + 1.minute
           log  = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
           Stat.create_stats_from_trackers!(log, nil)
-          Stat::Site.count.should eql(10)
+          Stat::Site.count.should eql(8)
           Stat::Site.where(t: 'ovjigy83').m_before(Time.now).count.should eql(2)
           Stat::Site.where(t: 'ovjigy83', m: log.minute).first.bp.should eql({ "saf-osx" => 4 })
           Stat::Site.where(t: 'ovjigy83', d: log.day).first.bp.should eql({ "saf-osx" => 8 })
@@ -70,7 +70,7 @@ describe Stat do
 
         it "triggers Pusher on the right private channel for each site" do
           mock_channel = mock('channel')
-          mock_channel.should_receive(:trigger).once.with('tick', {})
+          mock_channel.should_receive(:trigger).once.with('tick', h: true)
           Pusher.stub(:[]).with("stats") { mock_channel }
           Stat.create_stats_from_trackers!(@log, @trackers)
         end
