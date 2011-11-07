@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 gem 'rails',                 '3.1.1'
 
 gem 'prototype-rails'
-gem 'jquery-rails'
+gem 'jquery-rails', git: 'git://github.com/evanwalsh/jquery-rails.git' # Jquery 1.7
 gem 'rails-backbone'
 
 # Databases
@@ -40,7 +40,7 @@ gem 'rescue_me',             '~> 0.1.0'
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', :require => 'libxml'
 
-gem 'state_machine',         '~> 1.0.2'
+gem 'state_machine',         '~> 1.0.3'
 gem 'paper_trail',           '~> 2.4.0'
 gem 'uniquify',              '~> 0.1.0'
 
@@ -116,7 +116,7 @@ group :development do
 
   gem 'em-http-request' # async pusher in populate
 
-  gem 'rb-fsevent', '~> 0.9.0.pre3'
+  gem 'rb-fsevent', '0.9.0.pre3'
 
   # gem 'ruby_gntp'
   # gem 'guard', :git => 'git://github.com/guard/guard.git', :branch => 'dev'
@@ -125,6 +125,7 @@ group :development do
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
+  # gem 'rack-livereload', git: 'git://github.com/johnbintz/rack-livereload.git'
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
