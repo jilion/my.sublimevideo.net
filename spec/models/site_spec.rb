@@ -1092,8 +1092,8 @@ describe Site do
           end
           subject { @site }
 
-          its(:plan_month_cycle_started_at) { should eq 5.days.ago.utc.midnight }
-          its(:plan_month_cycle_ended_at)   { should eq (5.days.ago + 1.month - 1.day).end_of_day }
+          its(:plan_month_cycle_started_at) { should eq (35.days.ago + 1.month).utc.midnight }
+          its(:plan_month_cycle_ended_at)   { should eq (35.days.ago + 2.months - 1.day).end_of_day }
         end
       end
     end
