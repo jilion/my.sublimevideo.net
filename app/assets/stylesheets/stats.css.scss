@@ -11,7 +11,7 @@
     top: 5px;
     left: 5px;
   }
-  
+
   #trial {
     position: absolute;
     top: 5px;
@@ -141,6 +141,16 @@
 
 }
 
+#content #top_videos {
+  display:block;
+  height:250px;
+  width:100%;
+  float:left;
+
+  #top_videos_content {
+    display:none;
+  }
+}
 #content #bp {
   display:block;
   height:250px;

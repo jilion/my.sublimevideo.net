@@ -39,6 +39,7 @@ MySublimeVideo::Application.routes.draw do
 
     resources :stats, :only => :index, :controller => 'site_stats' do
       put :trial, :on => :collection
+      get :videos, :on => :collection
     end
   end
 

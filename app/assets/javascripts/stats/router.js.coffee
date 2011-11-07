@@ -58,6 +58,11 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
 
+    new MSVStats.Views.TopVideosView
+      el: '#top_videos_content'
+      period: MSVStats.period
+      videos: MSVStats.videos
+    
     new MSVStats.Views.BPView
       el: '#bp_content'
       statsSeconds: MSVStats.statsSeconds
@@ -92,11 +97,14 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.period = new MSVStats.Models.Period()
     MSVStats.period.bind 'change', ->
       MSVStats.Routers.StatsRouter.setHighchartsUTC()
-
+      MSVStats.videos.fetch()
+      
     MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
     MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
     MSVStats.statsHours   = new MSVStats.Collections.StatsHours()
     MSVStats.statsDays    = new MSVStats.Collections.StatsDays()
+    
+    MSVStats.videos = new MSVStats.Collections.Videos()
 
   initPusherTick: ->
     MSVStats.statsChannel = MSVStats.pusher.subscribe("stats")
@@ -104,6 +112,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.statsMinutes.fetch()
       MSVStats.statsHours.fetch() if data.h
       MSVStats.statsDays.fetch() if data.d
+      MSVStats.videos.fetch()
 
   initPusherStats: ->
     unless MSVStats.sites.selectedSite.inFreePlan()
@@ -135,7 +144,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
 
   syncFetchSuccess: ->
     if MSVStats.Collections.Stats.allPresent()
-      MSVStats.period.autosetPeriod()
+      MSVStats.period.autosetPeriod ->
+        # MSVStats.videos.fetch()
 
   initHighcharts: ->
     Highcharts.setOptions

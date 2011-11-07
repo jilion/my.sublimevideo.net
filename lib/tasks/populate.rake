@@ -78,6 +78,13 @@ namespace :db do
       timed { recurring_site_stats_update(argv_user) }
     end
 
+    desc "Create fake site & video stats"
+    task :recurring_stats => :environment do
+      timed { empty_tables(Stat::Site, Stat::Video, VideoTag) }
+      timed { create_stats(argv_site_token) }
+      # timed { recurring_stats_update(argv_site_token) }
+    end
+
     desc "Create fake plans"
     task :plans => :environment do
       timed { empty_tables(Plan) }
@@ -318,7 +325,7 @@ def create_site_stats(user_id=nil)
     user.sites.each do |site|
       # Days
       95.times.each do |i|
-        stats = random_stats_inc(24 * 60 * 60)
+        stats = random_site_stats_inc(24 * 60 * 60)
         Stat::Site.collection.update(
           { t: site.token, d: i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time },
           { "$inc" => stats },
@@ -348,7 +355,7 @@ def create_site_stats(user_id=nil)
       25.times.each do |i|
         Stat::Site.collection.update(
           { t: site.token, h: i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time },
-          { "$inc" => random_stats_inc(60 * 60) },
+          { "$inc" => random_site_stats_inc(60 * 60) },
           upsert: true
         )
       end
@@ -356,7 +363,7 @@ def create_site_stats(user_id=nil)
       60.times.each do |i|
         Stat::Site.collection.update(
           { t: site.token, m: i.minutes.ago.change(sec: 0, usec: 0).to_time },
-          { "$inc" => random_stats_inc(60) },
+          { "$inc" => random_site_stats_inc(60) },
           upsert: true
         )
       end
@@ -364,13 +371,84 @@ def create_site_stats(user_id=nil)
       60.times.each do |i|
         Stat::Site.collection.update(
           { t: site.token, s: i.seconds.ago.change(usec: 0).to_time },
-          { "$inc" => random_stats_inc(1) },
+          { "$inc" => random_site_stats_inc(1) },
           upsert: true
         )
       end
     end
   end
   puts "Fake site(s) stats generated"
+end
+
+def create_stats(site_token=nil)
+  sites = site_token ? [Site.find_by_token(site_token)] : Site.all
+  sites.each do |site|
+    # Video Tags
+    6.times do |video_i|
+      VideoTag.create(st: site.token, u: "video#{video_i}",
+        uo:	"s",
+        n: "Video #{video_i}",
+        no: "s",
+        cs:	["83cb4c27","af355ec8","1d1e3c63"],
+        p: "http://sublimevideo.net/demo/dartmoor1_800.jpg",
+        s: {
+          "83cb4c27" => { u: "http://medias.jilion.com/sublimevideo/dartmoor1_800.mp4", q: "base", f: "mp4" },
+          "af355ec8" => { u: "http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4", q: "mobile", f: "ogg" },
+          "1d1e3c63" => { u: "http://medias.jilion.com/sublimevideo/dartmoor1_800.ogv", q: "base", f: "ogg" }
+        }
+      )
+    end
+
+    # Days
+    95.times.each do |i|
+      time = i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
+      Stat::Site.collection.update(
+        { t: site.token, d: time }, { "$inc" => random_site_stats_inc(24 * 60 * 60) }, upsert: true
+      )
+      6.times do |video_i|
+        Stat::Video.collection.update(
+          { st: site.token, u: "video#{video_i}", d: time }, { "$inc" => random_video_stats_inc(24 * 60 * 60) }, upsert: true
+        )
+      end
+    end
+    # Hours
+    25.times.each do |i|
+      time = i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time
+      Stat::Site.collection.update(
+        { t: site.token, h: time }, { "$inc" => random_site_stats_inc(60 * 60) }, upsert: true
+      )
+      6.times do |video_i|
+        Stat::Video.collection.update(
+          { st: site.token, u: "video#{video_i}", h: time }, { "$inc" => random_video_stats_inc(60 * 60) }, upsert: true
+        )
+      end
+    end
+    # Minutes
+    60.times.each do |i|
+      time = i.minutes.ago.change(sec: 0, usec: 0).to_time
+      Stat::Site.collection.update(
+        { t: site.token, m: time }, { "$inc" => random_site_stats_inc(60) }, upsert: true
+      )
+      6.times do |video_i|
+        Stat::Video.collection.update(
+          { st: site.token, u: "video#{video_i}", m: time }, { "$inc" => random_video_stats_inc(60) }, upsert: true
+        )
+      end
+    end
+    # seconds
+    60.times.each do |i|
+      time = i.seconds.ago.change(usec: 0).to_time
+      Stat::Site.collection.update(
+        { t: site.token, s: time }, { "$inc" => random_site_stats_inc(1) }, upsert: true
+      )
+      6.times do |video_i|
+        Stat::Video.collection.update(
+          { st: site.token, u: "video#{video_i}", s: time }, { "$inc" => random_video_stats_inc(1) }, upsert: true
+        )
+      end
+    end
+  end
+  puts "Fake site(s)/video(s) stats generated"
 end
 
 def recurring_site_stats_update(user_id)
@@ -380,7 +458,7 @@ def recurring_site_stats_update(user_id)
     loop do
       second = Time.now.utc.change(usec: 0).to_time
       sites.each do |site|
-        inc = random_stats_inc(1)
+        inc = random_site_stats_inc(1)
         Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => inc }, upsert: true)
       end
       # puts "Site(s) stats seconds updated at #{second}"
@@ -392,7 +470,7 @@ def recurring_site_stats_update(user_id)
       now = Time.now.utc
       if now.change(usec: 0) == now.change(sec: 0, usec: 0)
         sites.each do |site|
-          inc = random_stats_inc(60)
+          inc = random_site_stats_inc(60)
           Stat::Site.collection.update({ t: site.token, m: (now - 1.minute).change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
           Stat::Site.collection.update({ t: site.token, h: (now - 1.minute).change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
           Stat::Site.collection.update({ t: site.token, d: (now - 1.minute).change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
@@ -425,7 +503,7 @@ def recurring_site_stats_update(user_id)
   end
 end
 
-def random_stats_inc(i, force = nil)
+def random_site_stats_inc(i, force = nil)
   {
     # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 3 }
     "pv.m"  => force || (i * rand(20)),
@@ -433,6 +511,42 @@ def random_stats_inc(i, force = nil)
     "pv.em" => force || (i * rand(2)),
     "pv.d"  => force || (i * rand(2)),
     "pv.i"  => force || (i * rand(2)),
+    # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
+    "vv.m"  => force || (i * rand(10)),
+    "vv.e"  => force || (i * rand(3)),
+    "vv.em" => force || (i * rand(3)),
+    "vv.d"  => force || (i * rand(2)),
+    "vv.i"  => force || (i * rand(2)),
+    # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1, t (tablet) => 1 }, f (flash) => ... }
+    "md.h.d" => i * rand(12),
+    "md.h.m" => i * rand(5),
+    "md.h.t" => i * rand(3),
+    "md.f.d" => i * rand(6),
+    "md.f.m" => 0, #i * rand(2),
+    "md.f.t" => 0, #i * rand(2),
+    # field :bp, :type => Hash # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
+    "bp.iex-win" => i * rand(35), # 35% in total
+    "bp.fir-win" => i * rand(18), # 26% in total
+    "bp.fir-osx" => i * rand(8),
+    "bp.chr-win" => i * rand(11), # 21% in total
+    "bp.chr-osx" => i * rand(10),
+    "bp.saf-win" => i * rand(1), # 6% in total
+    "bp.saf-osx" => i * rand(5),
+    "bp.saf-ipo" => i * rand(1),
+    "bp.saf-iph" => i * rand(2),
+    "bp.saf-ipa" => i * rand(2),
+    "bp.and-and" => i * rand(6)
+  }
+end
+
+def random_video_stats_inc(i, force = nil)
+  {
+    # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 3 }
+    "vl.m"  => force || (i * rand(20)),
+    "vl.e"  => force || (i * rand(4)),
+    "vl.em" => force || (i * rand(2)),
+    "vl.d"  => force || (i * rand(2)),
+    "vl.i"  => force || (i * rand(2)),
     # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
     "vv.m"  => force || (i * rand(10)),
     "vv.e"  => force || (i * rand(3)),
@@ -508,5 +622,13 @@ def argv_user(var_name='user', default_index=nil)
     var.sub($1, '').to_i
   else
     default_index
+  end
+end
+
+def argv_site_token(var_name='site', default_token=nil)
+  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
+    var.sub($1, '')
+  else
+    default_token
   end
 end

@@ -1,4 +1,5 @@
 class MSVStats.Models.Stat extends Backbone.Model
+  # id = Stat time (day, hour, minute or second)
   defaults:
     pv: 0 # main + extra
     vv: 0 # main + extra
@@ -119,7 +120,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
 
 class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
   url: ->
-    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats?period=seconds"
+    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=seconds"
 
   periodType: -> 'seconds'
 

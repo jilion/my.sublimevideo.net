@@ -57,12 +57,12 @@ class Stat::Video
   #
   # @return [Hash] with an array of video hash with video tag metadata and period 'vl' & 'vv' totals + vv period array, the total amount of videos viewed or loaded during the period and the start_time of the period
   #
-  def self.top_videos(site_token, period, options = {})
-    from, to   = period_intervals(site_token, period)
-    period_sym = period.first.to_sym
-    options    = options.symbolize_keys.reverse_merge(view_type: 'vv', count: 10)
+  def self.top_videos(site_token, options = {})
+    options    = options.symbolize_keys.reverse_merge(period: 'days', view_type: 'vv', count: 5)
+    from, to   = period_intervals(site_token, options[:period])
+    period_sym = options[:period].first.to_sym
 
-    conditions = { st: site_token, period_sym => { "$gte" => from, "$lte" => to } }
+    conditions = { st: site_token, period_sym => { "$gte" => from.to_time, "$lte" => to.to_time } }
 
     videos = collection.group(
       key: :u,
@@ -77,8 +77,8 @@ class Stat::Video
     videos = videos.take(options[:count])
 
     add_video_tags_metadata!(site_token, videos)
-    add_vv_array!(videos, period, from.to_i, to.to_i)
-    { videos: videos, total: total, start_time: from }
+    add_vv_array!(videos, options[:period], from.to_i, to.to_i)
+    { videos: videos, total: total, start_time: from.to_i }
   end
 
 private
@@ -103,6 +103,7 @@ private
     VideoTag.where(st: site_token, u: { "$in" => video_uids }).entries.each do |video_tag|
       video = videos.detect { |video| video["u"] == video_tag.u }
       video.merge!(video_tag.meta_data)
+      video["id"] = video.delete("u") # replace u per id for Backbone
     end
 
     videos
@@ -112,9 +113,10 @@ private
     step = 1.send(period)
     videos.each do |video|
       video["vv_array"] = []
-      while from <= to
-        video["vv_array"] << video["vv_hash"][from.to_s].to_i
-        from += step
+      from_step = from
+      while from_step <= to
+        video["vv_array"] << video["vv_hash"][from_step.to_s].to_i
+        from_step += step
       end
       video.delete("vv_hash")
     end

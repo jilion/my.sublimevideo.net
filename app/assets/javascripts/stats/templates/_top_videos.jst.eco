@@ -1,0 +1,19 @@
+<table>
+  <tr>
+    <th></th>
+    <th>Name</th>
+    <th>Loads</th>
+    <th>Views</th>
+    <th></th>
+  </tr>
+    
+  <% for video in @videos.models: %>
+    <tr>
+      <td></td>
+      <td><%= video.get('n') %></td>
+      <td><%= Highcharts.numberFormat(video.get('vl_sum'), 0) %></td>
+      <td><%= Highcharts.numberFormat(video.get('vv_sum'), 0) %></td>
+    </tr>
+  <% end %>
+
+</table>

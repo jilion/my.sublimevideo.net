@@ -52,14 +52,17 @@ class MSVStats.Models.Period extends Backbone.Model
     endIndex   = MSVStats.statsDays.indexOf(MSVStats.statsDays.get(endTime / 1000))
     this.set(type: 'days', startIndex: startIndex, endIndex: endIndex, options)
 
-  autosetPeriod: (options = {}) ->
+  autosetPeriod: (callback) ->
     MSVStats.statsDays.trigger('init') # for planUsageView
 
     if MSVStats.statsMinutes.vvTotal() > 0
-      this.setPeriod type: 'minutes', options
+      this.setPeriod type: 'minutes'
     else if MSVStats.statsHours.vvTotal() > 0 || MSVStats.sites.selectedSite.inFreePlan()
-      this.setPeriod type: 'hours', options
+      this.setPeriod type: 'hours'
     else if MSVStats.statsDays.length <= 30 || MSVStats.statsDays.vvTotal(-30, -1) > 0
-      this.setPeriod type: 'days', startIndex: -30, endIndex: -1, options
+      this.setPeriod type: 'days', startIndex: -30, endIndex: -1
     else # last 365 days
-      this.setPeriod type: 'days', startIndex: -365, endIndex: -1, options
+      this.setPeriod type: 'days', startIndex: -365, endIndex: -1
+
+    if callback && typeof(callback) == "function"
+      callback()
