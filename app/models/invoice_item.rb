@@ -1,5 +1,7 @@
 class InvoiceItem < ActiveRecord::Base
 
+  autoload :Plan, 'invoice_item/plan'
+
   attr_accessible :invoice, :item
 
   # ================
