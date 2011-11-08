@@ -1,11 +1,10 @@
 class PlansController < ApplicationController
   before_filter :redirect_suspended_user
+  before_filter :find_sites_or_redirect_to_new_site, only: [:edit, :update]
   before_filter :find_site_by_token!
 
   # GET /sites/:site_id/plan/edit
   def edit
-    @sites = current_user.sites.not_archived
-
     respond_with(@site)
   end
 
@@ -48,7 +47,7 @@ class PlansController < ApplicationController
 private
 
   def find_site_by_token!
-    @site = current_user.sites.find_by_token!(params[:site_id])
+    @site = current_user.sites.not_archived.find_by_token!(params[:site_id])
   end
 
 end
