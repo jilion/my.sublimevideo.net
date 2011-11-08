@@ -6,12 +6,17 @@
     <th>Views</th>
     <th></th>
   </tr>
-    
+
   <% for video in @videos.models: %>
     <tr>
       <td>
         <a class="sublime" href=""><img src="<%= video.get('p') %>" alt="<%= video.get('n') %>posterframe" width='30' height='30' /></a>
-        
+        <video style="display:none" class="sublime zoom" width="640" height="360" poster="<%= video.get('p') %>" preload="none">
+          <% console.log video %>
+          <% for source in video.currentSources(): %>
+            <source src="<%= source.u %>" <%= if source.q != 'base' then "data-quality='#{source.q}'" %> />
+          <% end %>
+        </video>
       </td>
       <td><%= video.get('n') %></td>
       <td><%= Highcharts.numberFormat(video.get('vl_sum'), 0) %></td>

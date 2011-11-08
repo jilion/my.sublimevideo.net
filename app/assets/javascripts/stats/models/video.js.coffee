@@ -5,11 +5,19 @@ class MSVStats.Models.Video extends Backbone.Model
     n: null
     no: null
     p: null
+    z: null
     cs: []
     s: {}
     vl_sum: 0 # main + extra
     vv_sum: 0 # main + extra
     vv_array: [] # main + extra
+
+  currentSources: ->
+    sources = []
+    for s in this.get('cs')
+      if this.get('s')[s]?
+        sources.push this.get('s')[s]
+    sources
 
 class MSVStats.Collections.Videos extends Backbone.Collection
   url: ->
