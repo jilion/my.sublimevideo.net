@@ -9,7 +9,10 @@
     
   <% for video in @videos.models: %>
     <tr>
-      <td></td>
+      <td>
+        <a class="sublime" href=""><img src="<%= video.get('p') %>" alt="<%= video.get('n') %>posterframe" width='30' height='30' /></a>
+        
+      </td>
       <td><%= video.get('n') %></td>
       <td><%= Highcharts.numberFormat(video.get('vl_sum'), 0) %></td>
       <td><%= Highcharts.numberFormat(video.get('vv_sum'), 0) %></td>

@@ -51,18 +51,22 @@ class Stat::Video
   # Returns the sum of all the usage for the given token(s) (optional) and between the given dates (optional).
   #
   # @option site_token [String] a valid site token
-  # @option period [String] a time period. Can be 'days', 'hours', 'minutes' or 'seconds'
-  # @option options [String] view_type the type of views to order with. Can be 'vv' (Video Views, default) or 'vl' (Video load).
-  # @option options [String] count number of videos to return
+  # @option options [String] period, a time period. Can be 'days', 'hours', 'minutes' or 'seconds'
+  # @option options [String] view_type, the type of views to order with. Can be 'vv' (Video Views, default) or 'vl' (Video load).
+  # @option options [String] count, number of videos to return
   #
   # @return [Hash] with an array of video hash with video tag metadata and period 'vl' & 'vv' totals + vv period array, the total amount of videos viewed or loaded during the period and the start_time of the period
   #
   def self.top_videos(site_token, options = {})
-    options    = options.symbolize_keys.reverse_merge(period: 'days', view_type: 'vv', count: 5)
-    from, to   = period_intervals(site_token, options[:period])
+    from, to   = period_intervals(site_token, options[:period]) unless options[:from] || options[:to]
+    options    = options.symbolize_keys.reverse_merge(period: 'days', view_type: 'vv', count: 5, from: from, to: to)
     period_sym = options[:period].first.to_sym
+    options[:from], options[:to] = options[:from].to_i, options[:to].to_i
 
-    conditions = { st: site_token, period_sym => { "$gte" => from.to_time, "$lte" => to.to_time } }
+    Rails.logger.debug from
+    Rails.logger.debug to
+
+    conditions = { st: site_token, period_sym => { "$gte" => Time.at(options[:from]), "$lte" => Time.at(options[:to]) } }
 
     videos = collection.group(
       key: :u,
@@ -77,8 +81,8 @@ class Stat::Video
     videos = videos.take(options[:count])
 
     add_video_tags_metadata!(site_token, videos)
-    add_vv_array!(videos, options[:period], from.to_i, to.to_i)
-    { videos: videos, total: total, start_time: from.to_i }
+    add_vv_array!(videos, options)
+    { videos: videos, total: total }.merge(options.slice(:period, :from, :to))
   end
 
 private
@@ -109,12 +113,12 @@ private
     videos
   end
 
-  def self.add_vv_array!(videos, period, from, to)
-    step = 1.send(period)
+  def self.add_vv_array!(videos, options = {})
+    step = 1.send(options[:period])
     videos.each do |video|
       video["vv_array"] = []
-      from_step = from
-      while from_step <= to
+      from_step = options[:from]
+      while from_step <= options[:to]
         video["vv_array"] << video["vv_hash"][from_step.to_s].to_i
         from_step += step
       end

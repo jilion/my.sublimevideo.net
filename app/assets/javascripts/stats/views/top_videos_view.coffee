@@ -7,15 +7,14 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     @options.videos.bind 'reset',  this.render
     this.render()
 
-  render: ->    
-    if MSVStats.videos.total?
+  render: ->
+    if MSVStats.videos.isSamePeriod()
       $(@el).show()
       $('#top_videos').data().spinner.stop()
-      
+
       @videos = MSVStats.videos
-      console.log @videos
       $(@el).html(this.template(videos: @videos))
-      
+
       return this
     else
       $(@el).hide()

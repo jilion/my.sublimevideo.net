@@ -7,8 +7,9 @@ class MSVStats.Views.PeriodSelectorDays365View extends Backbone.View
     @options.statsDays.bind('reset', this.render)
     $(@el).bind 'click', -> 
       unless MSVStats.sites.selectedSite.inFreePlan()
-        $('#vv').spin()
-        setTimeout (-> MSVStats.period.setPeriod(type: 'days', startIndex: -365, endIndex: -1)), 100
+        # $('#vv').spin()
+        # setTimeout (-> MSVStats.period.setPeriod(type: 'days', startIndex: -365, endIndex: -1)), 50
+        MSVStats.period.setPeriod(type: 'days', startIndex: -365, endIndex: -1)
     this.render()
 
   render: ->

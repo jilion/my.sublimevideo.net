@@ -31,10 +31,16 @@ class MSVStats.Models.Period extends Backbone.Model
     this.normalizeStatsIndex(this.get('endIndex')) == this.normalizeStatsIndex(endIndex)
 
   startTime: (index = this.get('startIndex')) ->
-    this.stats().at(this.normalizeStatsIndex(index)).time() if this.stats()?
+    if this.stats()?
+      this.stats().at(this.normalizeStatsIndex(index)).time()
+    else
+      0
 
   endTime: (index = this.get('endIndex')) ->
-    this.stats().at(this.normalizeStatsIndex(index)).time() if this.stats()?
+    if this.stats()?
+      this.stats().at(this.normalizeStatsIndex(index)).time()
+    else
+      0
 
   realEndTime: (index = this.get('endIndex')) ->
     this.endTime(index) + this.pointInterval() - 1000 if this.stats()?

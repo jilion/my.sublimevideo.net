@@ -20,7 +20,7 @@ describe Stat::Video do
 
       specify {  Stat::Video.top_videos('site1234', period: 'hours', count: 5)[:videos].size.should == 5 }
       specify {  Stat::Video.top_videos('site1234', period: 'hours', count: 5)[:total].should == 6 }
-      specify {  Stat::Video.top_videos('site1234', period: 'hours', count: 5)[:start_time].should == 24.hour.ago.utc.change(min: 0).to_i }
+      specify {  Stat::Video.top_videos('site1234', period: 'hours', count: 5)[:from].should == 24.hour.ago.utc.change(min: 0).to_i }
 
       it "adds video_tag meta data" do
         video = Stat::Video.top_videos('site1234', period: 'hours', count: 5)[:videos].first
