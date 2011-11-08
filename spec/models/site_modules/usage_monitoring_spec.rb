@@ -14,10 +14,10 @@ describe SiteModules::UsageMonitoring do
   end
 
   describe ".monitor_sites_usages" do
-    before(:all) { @plan = FactoryGirl.create(:plan, video_views: 30 * 100) }
+    before(:all) { @plan = Factory.create(:plan, video_views: 30 * 100) }
 
     it "should do nothing" do
-      Timecop.travel(Time.utc(2011,1,1)) { @site = FactoryGirl.create(:site, plan_id: @plan.id) }
+      Timecop.travel(Time.utc(2011,1,1)) { @site = Factory.create(:site, plan_id: @plan.id) }
 
       UsageMonitoringMailer.should_not_receive(:plan_overused)
       UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
@@ -29,9 +29,9 @@ describe SiteModules::UsageMonitoring do
 
     pending "with required upgrade site" do
       before(:each) do
-        Timecop.travel(Time.utc(2011,1,1)) { @site = FactoryGirl.create(:site, plan_id: @plan.id) }
+        Timecop.travel(Time.utc(2011,1,1)) { @site = Factory.create(:site, plan_id: @plan.id) }
         (1..20).each do |day|
-          FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,day), vv: { m: 200 })
+          Factory.create(:site_stat, t: @site.token, d: Time.utc(2011,1,day), vv: { m: 200 })
         end
       end
 
@@ -54,8 +54,8 @@ describe SiteModules::UsageMonitoring do
 
     context "with reached player hits site" do
       before(:each) do
-        Timecop.travel(Time.utc(2011,1,1)) { @site = FactoryGirl.create(:site_not_in_trial, plan_id: @plan.id) }
-        FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,1), vv: { m: 3001 })
+        Timecop.travel(Time.utc(2011,1,1)) { @site = Factory.create(:site_not_in_trial, plan_id: @plan.id) }
+        Factory.create(:site_stat, t: @site.token, d: Time.utc(2011,1,1), vv: { m: 3001 })
       end
 
       it "should send player hits reached notification" do

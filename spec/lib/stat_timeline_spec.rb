@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe StatTimeline::SiteUsage do
   before(:each) do
-    @site1 = FactoryGirl.create(:site)
-    @site2 = FactoryGirl.create(:site)
+    @site1 = Factory.create(:site)
+    @site2 = Factory.create(:site)
     @day1  = Time.utc(2010, 1, 1)
     @day2  = Time.utc(2010, 1, 2)
     @day3  = Time.utc(2010, 1, 3)
     @day4  = Time.utc(2010, 1, 4)
-    FactoryGirl.create(:site_usage, :day => @day1, :site_id => @site1.id, :player_hits => 1)
-    FactoryGirl.create(:site_usage, :day => @day2, :site_id => @site2.id, :player_hits => 2)
-    FactoryGirl.create(:site_usage, :day => @day3, :site_id => @site1.id, :player_hits => 3)
-    FactoryGirl.create(:site_usage, :day => @day4, :site_id => @site2.id, :player_hits => 4)
+    Factory.create(:site_usage, :day => @day1, :site_id => @site1.id, :player_hits => 1)
+    Factory.create(:site_usage, :day => @day2, :site_id => @site2.id, :player_hits => 2)
+    Factory.create(:site_usage, :day => @day3, :site_id => @site1.id, :player_hits => 3)
+    Factory.create(:site_usage, :day => @day4, :site_id => @site2.id, :player_hits => 4)
   end
 
   describe "Class Methods" do

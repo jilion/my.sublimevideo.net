@@ -35,7 +35,7 @@ FactoryGirl.define do
   factory :new_site, :class => Site do
     sequence(:hostname) { |n| "jilion#{n}.com" }
     dev_hostnames       '127.0.0.1, localhost'
-    plan_id             { FactoryGirl.create(:plan).id }
+    plan_id             { Factory.create(:plan).id }
     user
   end
 
@@ -89,7 +89,7 @@ FactoryGirl.define do
   end
 
   factory :site_usage do
-    site_id { FactoryGirl.create(:site).id }
+    site_id { Factory.create(:site).id }
   end
 
   factory :release do
@@ -98,7 +98,7 @@ FactoryGirl.define do
 
   factory :referrer do
     url   "http://bob.com"
-    token { FactoryGirl.create(:site).token }
+    token { Factory.create(:site).token }
     hits  12
   end
 
@@ -171,7 +171,7 @@ FactoryGirl.define do
   end
 
   factory :plan_invoice_item, parent: :invoice_item, class: InvoiceItem::Plan do
-    item   { FactoryGirl.create(:plan) }
+    item   { Factory.create(:plan) }
     price  1000
     amount 1000
   end

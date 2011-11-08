@@ -22,10 +22,10 @@ describe SiteModules::Recurring do
     end
 
     it "calls update_last_30_days_counters on each non-archived sites" do
-      @active_site = FactoryGirl.create(:site, state: 'active')
-      FactoryGirl.create(:site_stat, t: @active_site.token, d: Time.utc(2011,1,15).midnight, vv: { m: 6 })
-      @archived_site = FactoryGirl.create(:site, state: 'archived')
-      FactoryGirl.create(:site_stat, t: @archived_site.token, d: Time.utc(2011,1,15).midnight, vv: { m: 6 })
+      @active_site = Factory.create(:site, state: 'active')
+      Factory.create(:site_stat, t: @active_site.token, d: Time.utc(2011,1,15).midnight, vv: { m: 6 })
+      @archived_site = Factory.create(:site, state: 'archived')
+      Factory.create(:site_stat, t: @archived_site.token, d: Time.utc(2011,1,15).midnight, vv: { m: 6 })
 
       Timecop.travel(Time.utc(2011,1,31, 12)) do
         Site.update_last_30_days_counters_for_not_archived_sites
@@ -51,11 +51,11 @@ describe SiteModules::Recurring do
   describe ".send_trial_will_end" do
     before(:all) do
       Site.delete_all
-      @site_not_in_trial = FactoryGirl.create(:site, trial_started_at: BusinessModel.days_for_trial.days.ago)
+      @site_not_in_trial = Factory.create(:site, trial_started_at: BusinessModel.days_for_trial.days.ago)
       @sites_in_trial = []
 
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
-        @sites_in_trial << FactoryGirl.create(:site, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
+        @sites_in_trial << Factory.create(:site, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
       end
     end
 
@@ -89,11 +89,11 @@ describe SiteModules::Recurring do
   describe ".stop_stats_trial" do
     before(:all) do
       Site.delete_all
-      @site_not_in_stats_trial = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: nil)
-      @site_in_stats_trial = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 7.days.ago)
+      @site_not_in_stats_trial = Factory.create(:site, plan_id: @free_plan.id, stats_trial_started_at: nil)
+      @site_in_stats_trial = Factory.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 7.days.ago)
       @worker.work_off # set_template("license")
       Timecop.travel(4.days.ago) do
-        @site_no_more_in_stats_trial = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 4.days.ago) # 8.days.ago with the Timecop.travel
+        @site_no_more_in_stats_trial = Factory.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 4.days.ago) # 8.days.ago with the Timecop.travel
         @worker.work_off # set_template("license")
       end
     end
@@ -131,9 +131,9 @@ describe SiteModules::Recurring do
   describe ".send_stats_trial_will_end" do
     before(:all) do
       Site.delete_all
-      @site_not_in_stats_trial     = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: nil)
-      @site_in_stats_trial         = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 6.days.ago)
-      @site_no_more_in_stats_trial = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 8.days.ago)
+      @site_not_in_stats_trial     = Factory.create(:site, plan_id: @free_plan.id, stats_trial_started_at: nil)
+      @site_in_stats_trial         = Factory.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 6.days.ago)
+      @site_no_more_in_stats_trial = Factory.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 8.days.ago)
     end
 
     it "delays itself" do

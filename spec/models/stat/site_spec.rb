@@ -192,7 +192,7 @@ describe Stat::Site do
 
   describe ".json" do
     before(:all) do
-      @site = FactoryGirl.create(:site)
+      @site = Factory.create(:site)
     end
 
     before(:each) do

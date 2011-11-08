@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Admin do
   context "Factory" do
-    before(:all) { @admin = FactoryGirl.create(:admin) }
+    before(:all) { @admin = Factory.create(:admin) }
     subject { @admin }
 
     its(:email) { should match /email\d+@admin.com/ }
@@ -11,14 +11,14 @@ describe Admin do
   end # Factory
 
   describe "Associations" do
-    before(:all) { @admin = FactoryGirl.create(:admin) }
+    before(:all) { @admin = Factory.create(:admin) }
     subject { @admin }
 
     it { should have_many :mail_logs }
   end # Associations
 
   describe "Validations" do
-    before(:all) { @admin = FactoryGirl.create(:admin) }
+    before(:all) { @admin = Factory.create(:admin) }
     subject { @admin }
 
     [:email, :password, :password_confirmation, :remember_me].each do |attr|

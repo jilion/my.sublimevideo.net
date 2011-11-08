@@ -268,7 +268,7 @@ feature "Sites" do
 
       context "with a free site" do
         background do
-          @site = FactoryGirl.create(:site, user: @current_user, hostname: 'rymai.com', plan_id: @free_plan.id)
+          @site = Factory.create(:site, user: @current_user, hostname: 'rymai.com', plan_id: @free_plan.id)
           visit "/sites"
         end
 
@@ -288,7 +288,7 @@ feature "Sites" do
 
         context "with an invoice" do
           background do
-            FactoryGirl.create(:invoice, site: @site, state: 'paid', paid_at: Time.now.utc)
+            Factory.create(:invoice, site: @site, state: 'paid', paid_at: Time.now.utc)
           end
 
           scenario "all tabs are visible and accessible" do
@@ -321,7 +321,7 @@ feature "Sites" do
 
       context "with a site without invoice" do
         background do
-          @site = FactoryGirl.create(:site, user: @current_user, hostname: 'rymai.com')
+          @site = Factory.create(:site, user: @current_user, hostname: 'rymai.com')
           visit "/sites"
         end
 
@@ -362,7 +362,7 @@ feature "Sites" do
 
       context "with at least a site with an invoice" do
         background do
-          @site = FactoryGirl.create(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
+          @site = Factory.create(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
           visit "/sites"
         end
 
@@ -386,11 +386,11 @@ feature "Sites" do
 
       describe "edit" do
         background do
-          @free_site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id, hostname: 'rymai.com')
+          @free_site = Factory.create(:site, user: @current_user, plan_id: @free_plan.id, hostname: 'rymai.com')
 
-          @paid_site_in_trial = FactoryGirl.create(:site, user: @current_user, hostname: 'rymai.eu')
+          @paid_site_in_trial = Factory.create(:site, user: @current_user, hostname: 'rymai.eu')
 
-          @paid_site_not_in_trial = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.ch')
+          @paid_site_not_in_trial = Factory.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.ch')
 
           @free_site.should be_badged
           @paid_site_in_trial.should_not be_badged
@@ -475,13 +475,13 @@ feature "Sites" do
 
       describe "archive" do
         background do
-          @paid_site_in_trial = FactoryGirl.create(:site, user: @current_user, hostname: 'rymai.me')
+          @paid_site_in_trial = Factory.create(:site, user: @current_user, hostname: 'rymai.me')
 
-          @paid_site_with_paid_invoices = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.fr')
-          FactoryGirl.create(:invoice, site: @paid_site_with_paid_invoices, state: 'paid')
+          @paid_site_with_paid_invoices = Factory.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.fr')
+          Factory.create(:invoice, site: @paid_site_with_paid_invoices, state: 'paid')
 
-          @paid_site_with_open_invoices = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.ch')
-          FactoryGirl.create(:invoice, site: @paid_site_with_open_invoices, state: 'open')
+          @paid_site_with_open_invoices = Factory.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.ch')
+          Factory.create(:invoice, site: @paid_site_with_open_invoices, state: 'open')
 
           visit "/sites"
         end
@@ -517,8 +517,8 @@ feature "Sites" do
         end
 
         scenario "a paid site with a failed invoice" do
-          site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
-          FactoryGirl.create(:invoice, site: site, state: 'failed')
+          site = Factory.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
+          Factory.create(:invoice, site: site, state: 'failed')
 
           visit "/sites"
           page.should have_content('google.com')
@@ -528,8 +528,8 @@ feature "Sites" do
         end
 
         scenario "a paid site with a waiting invoice" do
-          site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
-          FactoryGirl.create(:invoice, site: site, state: 'waiting')
+          site = Factory.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
+          Factory.create(:invoice, site: site, state: 'waiting')
 
           visit "/sites"
           page.should have_content('google.com')
@@ -541,7 +541,7 @@ feature "Sites" do
 
       describe "index" do
         background do
-          @site = FactoryGirl.create(:site, user: @current_user, hostname: 'google.com')
+          @site = Factory.create(:site, user: @current_user, hostname: 'google.com')
           visit "/sites"
         end
 
@@ -550,7 +550,7 @@ feature "Sites" do
           page.should have_no_css('div.sorting')
           page.should have_no_css('a.sort')
 
-          FactoryGirl.create(:site, user: @current_user, hostname: 'google2.com')
+          Factory.create(:site, user: @current_user, hostname: 'google2.com')
           visit "/sites"
 
           page.should have_content('google.com')
@@ -568,7 +568,7 @@ feature "Sites" do
           page.should have_no_css('nav.pagination')
           page.should have_no_css('span.next')
 
-          FactoryGirl.create(:site, user: @current_user, hostname: 'google2.com')
+          Factory.create(:site, user: @current_user, hostname: 'google2.com')
           visit "/sites"
 
           page.should have_css('nav.pagination')

@@ -107,7 +107,7 @@ feature "Admins pagination:" do
     page.should have_no_css('em.current')
     page.should have_no_css('a.next')
 
-    FactoryGirl.create(:admin)
+    Factory.create(:admin)
     visit "/admin/admins"
 
     page.should have_css('nav.pagination')

@@ -22,12 +22,12 @@ describe SitesStat do
 
   context "with a bunch of different sites" do
     before(:all) do
-      user = FactoryGirl.create(:user)
-      @plan1 = FactoryGirl.create(:plan)
-      @plan2 = FactoryGirl.create(:plan)
-      FactoryGirl.create(:site, user: user, state: 'active', plan_id: @plan1.id)
-      FactoryGirl.create(:site, user: user, state: 'archived', plan_id: @plan1.id)
-      FactoryGirl.create(:site, user: user, state: 'suspended', plan_id: @plan2.id)
+      user = Factory.create(:user)
+      @plan1 = Factory.create(:plan)
+      @plan2 = Factory.create(:plan)
+      Factory.create(:site, user: user, state: 'active', plan_id: @plan1.id)
+      Factory.create(:site, user: user, state: 'archived', plan_id: @plan1.id)
+      Factory.create(:site, user: user, state: 'suspended', plan_id: @plan2.id)
     end
 
     describe ".create_sites_stats" do

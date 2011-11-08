@@ -28,7 +28,7 @@ require 'spec_helper'
   feature "Mails index with logs and templates" do
     background do
       @admin = sign_in_as :admin
-      @mail_log      = FactoryGirl.create(:mail_log)
+      @mail_log      = Factory.create(:mail_log)
       @mail_template = @mail_log.template
     end
 
@@ -58,9 +58,9 @@ require 'spec_helper'
 
   feature "Mails sending" do
     background do
-      @user = FactoryGirl.create(:user)
+      @user = Factory.create(:user)
       @admin = sign_in_as :admin
-      @mail_template = FactoryGirl.create(:mail_template)
+      @mail_template = Factory.create(:mail_template)
     end
 
     context "choosing 'all' criteria" do
@@ -96,9 +96,9 @@ require 'spec_helper'
     end
 
     # context "choosing 'with invalid site' criteria" do
-    #   let(:user_with_invalid_site) { FactoryGirl.create(:user, :invitation_token => nil) }
+    #   let(:user_with_invalid_site) { Factory.create(:user, :invitation_token => nil) }
     #   background do
-    #     @invalid_site = FactoryGirl.build(:new_site, :user => user_with_invalid_site, :hostname => 'test')
+    #     @invalid_site = Factory.build(:new_site, :user => user_with_invalid_site, :hostname => 'test')
     #     @invalid_site.save(:validate => false)
     #     ActionMailer::Base.deliveries.clear
     #   end

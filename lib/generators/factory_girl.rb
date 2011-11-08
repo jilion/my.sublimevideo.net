@@ -1,6 +1,6 @@
 require 'rails/generators/named_base'
 
-module FactoryGirl
+module Factory
   module Generators
     class Base < Rails::Generators::NamedBase #:nodoc:
       def self.source_root

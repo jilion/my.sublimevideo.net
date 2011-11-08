@@ -5,9 +5,9 @@ describe UserModules::Scope do
   describe "state" do
     before(:all) do
       User.delete_all
-      @user_invited = FactoryGirl.create(:user, invitation_token: '123', state: 'archived')
-      @user_beta    = FactoryGirl.create(:user, invitation_token: nil, created_at: PublicLaunch.beta_transition_started_on - 1.day, state: 'suspended')
-      @user_active  = FactoryGirl.create(:user)
+      @user_invited = Factory.create(:user, invitation_token: '123', state: 'archived')
+      @user_beta    = Factory.create(:user, invitation_token: nil, created_at: PublicLaunch.beta_transition_started_on - 1.day, state: 'suspended')
+      @user_active  = Factory.create(:user)
     end
 
     describe "#invited" do
@@ -26,8 +26,8 @@ describe UserModules::Scope do
   describe "credit card" do
     before(:all) do
       User.delete_all
-      @user_no_cc = FactoryGirl.create(:user, cc_type: nil, cc_last_digits: nil)
-      @user_cc    = FactoryGirl.create(:user, cc_type: 'visa', cc_last_digits: '1234')
+      @user_no_cc = Factory.create(:user, cc_type: nil, cc_last_digits: nil)
+      @user_cc    = Factory.create(:user, cc_type: 'visa', cc_last_digits: '1234')
     end
 
     describe "#without_cc" do
@@ -43,29 +43,29 @@ describe UserModules::Scope do
     before(:all) do
       User.delete_all
       # Billable because of 1 paid plan
-      @user1 = FactoryGirl.create(:user)
-      FactoryGirl.create(:site, user: @user1, plan_id: @paid_plan.id)
-      FactoryGirl.create(:site, user: @user1, plan_id: @paid_plan.id)
-      FactoryGirl.create(:site, user: @user1, plan_id: @free_plan.id)
+      @user1 = Factory.create(:user)
+      Factory.create(:site, user: @user1, plan_id: @paid_plan.id)
+      Factory.create(:site, user: @user1, plan_id: @paid_plan.id)
+      Factory.create(:site, user: @user1, plan_id: @free_plan.id)
 
       # Billable because next cycle plan is another paid plan
-      @user2 = FactoryGirl.create(:user)
-      FactoryGirl.create(:site, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, FactoryGirl.create(:plan).id)
+      @user2 = Factory.create(:user)
+      Factory.create(:site, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, Factory.create(:plan).id)
 
       # Not billable because next cycle plan is the free plan
-      @user3 = FactoryGirl.create(:user)
-      FactoryGirl.create(:site, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
+      @user3 = Factory.create(:user)
+      Factory.create(:site, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
 
       # Not billable because his site has been archived
-      @user4 = FactoryGirl.create(:user)
-      FactoryGirl.create(:site, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
+      @user4 = Factory.create(:user)
+      Factory.create(:site, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
 
       # Billable because next cycle plan is another paid plan, but not active
-      @user5 = FactoryGirl.create(:user)
-      FactoryGirl.create(:site, user: @user5, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, FactoryGirl.create(:plan).id)
+      @user5 = Factory.create(:user)
+      Factory.create(:site, user: @user5, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, Factory.create(:plan).id)
 
       # Not billable nor active
-      @user6 = FactoryGirl.create(:user, state: 'archived')
+      @user6 = Factory.create(:user, state: 'archived')
     end
 
     describe ".billable" do
@@ -89,11 +89,11 @@ describe UserModules::Scope do
     before(:all) do
       User.delete_all
       Site.delete_all
-      @user1 = FactoryGirl.create(:user, email: "remy@jilion.com", first_name: "Marcel", last_name: "Jacques")
-      @site1 = FactoryGirl.create(:site, user: @user1, hostname: "bob.com", plan_id: @free_plan.id)
+      @user1 = Factory.create(:user, email: "remy@jilion.com", first_name: "Marcel", last_name: "Jacques")
+      @site1 = Factory.create(:site, user: @user1, hostname: "bob.com", plan_id: @free_plan.id)
       # THIS IS HUGELY SLOW DUE TO IPAddr.new('*.dev')!!!!!!!
-      # @site2 = FactoryGirl.create(:new_site, user: @user1, dev_hostnames: "foo.dev, bar.dev")
-      @site2 = FactoryGirl.create(:new_site, user: @user1, dev_hostnames: "192.168.0.0, 192.168.0.30")
+      # @site2 = Factory.create(:new_site, user: @user1, dev_hostnames: "foo.dev, bar.dev")
+      @site2 = Factory.create(:new_site, user: @user1, dev_hostnames: "192.168.0.0, 192.168.0.30")
     end
 
     specify { User.search("remy").all.should =~ [@user1] }

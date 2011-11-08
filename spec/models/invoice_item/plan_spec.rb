@@ -4,17 +4,17 @@ describe InvoiceItem::Plan do
 
   describe ".construct(attributes = {})" do
     before(:all) do
-      @user = FactoryGirl.create(:user, invitation_token: "123asd", created_at: Time.utc(2010,10,10))
+      @user = Factory.create(:user, invitation_token: "123asd", created_at: Time.utc(2010,10,10))
 
-      @plan1 = FactoryGirl.create(:plan, price: 1000)
-      @plan2 = FactoryGirl.create(:plan, price: 2000)
+      @plan1 = Factory.create(:plan, price: 1000)
+      @plan2 = Factory.create(:plan, price: 2000)
 
       Timecop.travel(Time.utc(2011,5,1)) do
-        @site1 = FactoryGirl.create(:site_with_invoice, user: @user, plan_id: @plan1.id)
+        @site1 = Factory.create(:site_with_invoice, user: @user, plan_id: @plan1.id)
 
-        @site2 = FactoryGirl.create(:site_not_in_trial, user: @user, plan_id: @plan2.id)
+        @site2 = Factory.create(:site_not_in_trial, user: @user, plan_id: @plan2.id)
 
-        @site3 = FactoryGirl.create(:site_with_invoice, user: @user, plan_id: @plan1.id)
+        @site3 = Factory.create(:site_with_invoice, user: @user, plan_id: @plan1.id)
       end
 
       Timecop.travel(Time.utc(2011,6,15)) do
@@ -37,9 +37,9 @@ describe InvoiceItem::Plan do
         @site3.pend_plan_changes
       end
 
-      @invoice1 = FactoryGirl.build(:invoice, site: @site1)
-      @invoice2 = FactoryGirl.build(:invoice, site: @site2)
-      @invoice3 = FactoryGirl.build(:invoice, site: @site3)
+      @invoice1 = Factory.build(:invoice, site: @site1)
+      @invoice2 = Factory.build(:invoice, site: @site2)
+      @invoice3 = Factory.build(:invoice, site: @site3)
     end
 
     describe "creation or upgrade" do

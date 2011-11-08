@@ -5,7 +5,7 @@ describe SiteModules::Templates do
   describe "Callbacks" do
 
     context "on create" do
-      subject { FactoryGirl.build(:new_site) }
+      subject { Factory.build(:new_site) }
 
       it "delays .update_loader_and_license once" do
         expect { subject.save! }.to change(Delayed::Job.where(:handler.matches => "%update_loader_and_license%"), :count).by(1)
@@ -44,7 +44,7 @@ describe SiteModules::Templates do
       end
 
       describe "plan_id has changed" do
-        subject { FactoryGirl.create(:site, plan_id: @free_plan.id) }
+        subject { Factory.create(:site, plan_id: @free_plan.id) }
         before(:each) { subject.plan_id = @paid_plan.id }
 
         it "delays .update_loader_and_license once" do
@@ -68,7 +68,7 @@ describe SiteModules::Templates do
       ].each do |attr, key, value|
         describe "and #{attr} setting has changed" do
           before(:all) do
-            @site = FactoryGirl.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: false)
+            @site = Factory.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: false)
             @worker.work_off
           end
           subject { @site.reload }
@@ -103,7 +103,7 @@ describe SiteModules::Templates do
 
       describe "player_mode has changed" do
         subject do
-          site = FactoryGirl.create(:site, player_mode: 'dev')
+          site = Factory.create(:site, player_mode: 'dev')
           @worker.work_off
           site.reload
         end
@@ -135,7 +135,7 @@ describe SiteModules::Templates do
   describe "Instance Methods" do
 
     describe "#settings_changed?" do
-      subject { FactoryGirl.create(:site) }
+      subject { Factory.create(:site) }
 
       it "should return false if no attribute has changed" do
         subject.should_not be_settings_changed
@@ -151,7 +151,7 @@ describe SiteModules::Templates do
 
     describe "#license_hash" do
       before(:all) do
-        @site = FactoryGirl.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: true)
+        @site = Factory.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: true)
       end
 
       describe "common settings" do
@@ -227,7 +227,7 @@ describe SiteModules::Templates do
     end
 
     describe "#license_js_hash" do
-      subject{ FactoryGirl.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
+      subject{ Factory.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
       its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true}" }
     end
@@ -235,7 +235,7 @@ describe SiteModules::Templates do
     describe "#set_template" do
       context "license" do
         before(:all) do
-          @site = FactoryGirl.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+          @site = Factory.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
           @site.tap { |s| s.set_template("license") }
         end
         subject { @site }
@@ -247,7 +247,7 @@ describe SiteModules::Templates do
 
       context "loader" do
         before(:all) do
-          @site = FactoryGirl.create(:site).tap { |s| s.set_template("loader") }
+          @site = Factory.create(:site).tap { |s| s.set_template("loader") }
         end
         subject { @site }
 

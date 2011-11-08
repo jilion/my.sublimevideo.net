@@ -9,7 +9,7 @@ feature "Site invoices page" do
 
   context "site in free plan with 0 invoices" do
     background do
-      @site = FactoryGirl.create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
+      @site = Factory.create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
       visit "/sites"
       click_link "Edit rymai.com"
     end
@@ -29,8 +29,8 @@ feature "Site invoices page" do
 
   context "site in free plan with invoices" do
     background do
-      @site = FactoryGirl.create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
-      FactoryGirl.create(:invoice, site: @site)
+      @site = Factory.create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
+      Factory.create(:invoice, site: @site)
       visit "/sites"
       click_link "Edit rymai.com"
     end
@@ -50,7 +50,7 @@ feature "Site invoices page" do
 
   context "site in paid plan with 0 invoices (possible during trial)" do
     background do
-      @site = FactoryGirl.create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      @site = Factory.create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       visit "/sites"
       click_link "Edit rymai.com"
     end
@@ -70,7 +70,7 @@ feature "Site invoices page" do
 
   context "site in paid plan with invoices" do
     background do
-      @site    = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = @site.last_invoice
       visit "/sites"
       click_link "Edit rymai.com"
@@ -117,7 +117,7 @@ feature "Site invoices page" do
   context "site in paid plan with 1 failed invoice" do
     context "user has a credit card" do
       background do
-        @site    = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
         @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
         @invoice.last_transaction.update_attribute(:error, "Credit card refused")
@@ -138,7 +138,7 @@ feature "Site invoices page" do
       describe "retry the payment" do
         scenario "it is possible to retry the payment" do
           # @current_user.update_attribute(:created_at, Time.utc(2010,10,10))
-          # @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'google.com')
+          # @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'google.com')
           # @invoice = @site.last_invoice
           # @site.pending_plan_started_at = Time.now.utc
           # @site.pending_plan_cycle_started_at = Time.now.utc
@@ -171,7 +171,7 @@ feature "Site invoices page" do
     context "user has no credit card" do
       background do
         sign_in_as :user, without_cc: true, kill_user: true
-        @site    = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
         @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
         @invoice.last_transaction.update_attribute(:error, "Credit card refused")
@@ -193,7 +193,7 @@ feature "Site invoices page" do
     context "user credit card is expired" do
       background do
         sign_in_as :user, cc_expire_on: 2.years.ago, kill_user: true
-        @site    = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
         @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
         @invoice.last_transaction.update_attribute(:error, "Credit card refused")
@@ -217,7 +217,7 @@ feature "Site invoices page" do
 
   context "site in paid plan with 1 failed invoice having the 3d secure html as the error" do
     background do
-      @site    = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = @site.last_invoice
       @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
       @invoice.last_transaction.update_attribute(:error, "<html>secure.ogone...</html>")
@@ -238,8 +238,8 @@ feature "Site invoices page" do
 
   context "site in paid plan with 1 failed invoice and 1 failed invoice for another site" do
     background do
-      @site1 = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-      @site2 = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user)
+      @site1 = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      @site2 = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user)
       @invoice1 = @site1.last_invoice
       @invoice2 = @site2.last_invoice
       @invoice1.update_attributes(state: 'failed', last_failed_at: 2.days.ago)
@@ -278,7 +278,7 @@ feature "Site invoice page" do
     context "normal invoice" do
       background do
         sign_in_as :user
-        @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
 
         visit invoice_path(@invoice)
@@ -311,7 +311,7 @@ feature "Site invoice page" do
         Timecop.travel(Time.utc(2010,10,10)) do
           @current_user.update_attribute(:created_at, Time.now.utc)
           @current_user.update_attribute(:country, 'US')
-          @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+          @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
           VCR.use_cassette('ogone/visa_payment_generic') do
             @site.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
           end
@@ -331,7 +331,7 @@ feature "Site invoice page" do
     context "invoice has balance deduction" do
       background do
         sign_in_as :user
-        @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
         @invoice.update_attribute(:balance_deduction_amount, 20000) # $20
 
@@ -349,7 +349,7 @@ feature "Site invoice page" do
     context "invoice has beta discount" do
       background do
         sign_in_as :user
-        @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
 
         @invoice = @site.last_invoice
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:discounted_percentage, 0.2)
@@ -366,7 +366,7 @@ feature "Site invoice page" do
   context "user has VAT" do
     background do
       sign_in_as :user, country: 'CH'
-      site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = site.last_invoice
 
       visit invoice_path(@invoice)

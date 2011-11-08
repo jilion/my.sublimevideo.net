@@ -9,7 +9,7 @@ feature "edit" do
 
   context "site in trial" do
     scenario "view with a free plan without hostname" do
-      site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id, hostname: nil)
+      site = Factory.create(:site, user: @current_user, plan_id: @free_plan.id, hostname: nil)
 
       visit edit_site_plan_path(site)
 
@@ -18,7 +18,7 @@ feature "edit" do
     end
 
     scenario "update paid plan to free plan" do
-      site = FactoryGirl.create(:site, user: @current_user, plan_id: @paid_plan.id)
+      site = Factory.create(:site, user: @current_user, plan_id: @paid_plan.id)
 
       visit edit_site_plan_path(site)
 
@@ -35,7 +35,7 @@ feature "edit" do
     end
 
     scenario "update free plan to paid plan" do
-      site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id)
+      site = Factory.create(:site, user: @current_user, plan_id: @free_plan.id)
 
       visit edit_site_plan_path(site)
 
@@ -52,7 +52,7 @@ feature "edit" do
 
   context "site not in trial" do
     scenario "view with a free plan without hostname" do
-      site = FactoryGirl.create(:site_not_in_trial, user: @current_user, plan_id: @free_plan.id, hostname: nil)
+      site = Factory.create(:site_not_in_trial, user: @current_user, plan_id: @free_plan.id, hostname: nil)
 
       visit edit_site_plan_path(site)
 
@@ -61,7 +61,7 @@ feature "edit" do
     end
 
     scenario "update paid plan to free plan" do
-      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
+      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
 
       visit edit_site_plan_path(site)
 
@@ -85,7 +85,7 @@ feature "edit" do
     end
 
     scenario "update free plan to paid plan" do
-      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
+      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
       site.plan_id = @free_plan.id
       site.save_without_password_validation
       Timecop.travel(2.months.from_now) { site.pend_plan_changes; site.apply_pending_plan_changes }
@@ -107,7 +107,7 @@ feature "edit" do
     end
 
     scenario "update paid plan to paid plan with credit card data" do
-      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
+      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
       site.plan.should eql @gold_month
       site.first_paid_plan_started_at.should be_present
       site.plan_started_at.should be_present
@@ -139,7 +139,7 @@ feature "edit" do
     end
 
     scenario "update paid plan to paid plan without credit card data" do
-      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
+      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
       site.plan.should eql @gold_month
       site.first_paid_plan_started_at.should be_present
       site.plan_started_at.should be_present
@@ -174,7 +174,7 @@ feature "edit" do
     end
 
     scenario "failed update" do
-      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @free_plan.id)
+      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @free_plan.id)
 
       visit edit_site_plan_path(site)
 
@@ -198,7 +198,7 @@ feature "edit" do
     end
 
     scenario "cancel next plan automatic update" do
-      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
+      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
 
       site.update_attribute(:next_cycle_plan_id, @free_plan.id)
 
@@ -229,7 +229,7 @@ feature "sponsored plan" do
   end
 
   scenario "view" do
-    site = FactoryGirl.create(:site, user: @current_user, last_30_days_main_video_views: 1000, last_30_days_extra_video_views: 500)
+    site = Factory.create(:site, user: @current_user, last_30_days_main_video_views: 1000, last_30_days_extra_video_views: 500)
     site.sponsor!
 
     visit sites_path
@@ -264,7 +264,7 @@ feature "custom plan" do
   end
 
   scenario "view" do
-    site = FactoryGirl.create(:site, user: @current_user, plan_id: @custom_plan.token)
+    site = Factory.create(:site, user: @current_user, plan_id: @custom_plan.token)
 
     visit sites_path
 
@@ -275,7 +275,7 @@ feature "custom plan" do
   end
 
   scenario "upgrade site" do
-    site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
+    site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
 
     visit edit_site_plan_path(site, custom_plan: @custom_plan.token)
 

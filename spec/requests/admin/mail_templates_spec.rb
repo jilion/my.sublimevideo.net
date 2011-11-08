@@ -3,11 +3,11 @@ require 'spec_helper'
 feature "Mail templates index:" do
   background do
     sign_in_as :admin
-    FactoryGirl.create(:user)
+    Factory.create(:user)
   end
 
   scenario "should be possible to edit mail template" do
-    mail_template = FactoryGirl.create(:mail_template)
+    mail_template = Factory.create(:mail_template)
     MailTemplate.all.size.should == 1
 
     visit "/admin/mails/templates/#{mail_template.id}/edit"

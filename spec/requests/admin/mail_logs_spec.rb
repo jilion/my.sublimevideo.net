@@ -4,11 +4,11 @@ include ActionView::Helpers::TagHelper
 include ActionView::Helpers::TextHelper
 
 feature "Mail logs show:" do
-  let(:mail_log) { FactoryGirl.create(:mail_log) }
+  let(:mail_log) { Factory.create(:mail_log) }
 
   background do
     sign_in_as :admin
-    FactoryGirl.create(:user)
+    Factory.create(:user)
   end
 
   scenario "should be possible to show mail log" do
