@@ -9,6 +9,7 @@ class VideoTag
   field :n,  :type => String # Video name
   field :no, :type => String # Video name origin
   field :p,  :type => String # Video poster url
+  field :z,  :type => String # Player size
   field :cs, :type => Array  # Video current sources array (cs) ['5062d010' (video source crc32), 'abcd1234', ... ] # sources actually used in the video tag
   field :s,  :type => Hash   # Video sources hash (s) { '5062d010' (video source crc32) => { u (source url) => 'http://.../dartmoor.mp4', q (quality) => 'hd', f (family) => 'mp4', r (resolution) => '320x240' }, ... }
 
@@ -23,13 +24,15 @@ class VideoTag
   # ====================
 
   def update_with_latest_data(attributes)
-    %w[uo n no p cs].each do |key|
+    %w[uo n no p cs z].each do |key|
       self.send("#{key}=", attributes[key])
     end
     # Properly change sources without falsely trig dirty attribute tracking
-    current_sources = self.read_attribute('s')
-    new_sources     = current_sources.merge(attributes['s'])
-    self.s = new_sources if current_sources != new_sources
+    if attributes.key?('s')
+      current_sources = self.read_attribute('s')
+      new_sources     = current_sources.merge(attributes['s'])
+      self.s = new_sources if current_sources != new_sources
+    end
 
     save
   end
@@ -64,15 +67,24 @@ private
     trackers   = only_video_tags_trackers(trackers)
     video_tags = Hash.new { |h,k| h[k] = Hash.new }
     trackers.each do |request, hits|
-      params = Addressable::URI.parse(request).query_values || {}
-      if all_needed_params_present?(params)
-        %w[uo n no p cs].each do |key|
-          video_tags[[params['t'],params['vu']]][key] = params["v#{key}"]
+      params = Addressable::URI.parse(CGI.unescape(request)).query_values || {}
+      case params['e']
+      when 'l'
+        if all_needed_params_present?(params, %w[vu pz])
+          params['vu'].each_with_index do |vu, index|
+            video_tags[[params['t'],vu]]['z'] = params['pz'][index]
+          end
         end
-        # Video sources
-        video_tags[[params['t'],params['vu']]]['s'] ||= {}
-        video_tags[[params['t'],params['vu']]]['s'][params['vc']] = { 'u' => params['vs'], 'q' => params['vsq'], 'f' => params['vsf'] }
-        video_tags[[params['t'],params['vu']]]['s'][params['vc']]['r'] = params['vsr'] if params['vsr'].present?
+      when 's'
+        if all_needed_params_present?(params, %w[t vu vuo vn vno vs vc vcs vsq vsf vp])
+          %w[uo n no p cs].each do |key|
+            video_tags[[params['t'],params['vu']]][key] = params["v#{key}"]
+          end
+          # Video sources
+          video_tags[[params['t'],params['vu']]]['s'] ||= {}
+          video_tags[[params['t'],params['vu']]]['s'][params['vc']] = { 'u' => params['vs'], 'q' => params['vsq'], 'f' => params['vsf'] }
+          video_tags[[params['t'],params['vu']]]['s'][params['vc']]['r'] = params['vsr'] if params['vsr'].present?
+        end
       end
     end
     video_tags
@@ -82,9 +94,8 @@ private
     trackers.detect { |t| t.options[:title] == :video_tags }.categories
   end
 
-  def self.all_needed_params_present?(params)
-    query_keys = %w[t vu vuo vn vno vs vc vcs vsq vsf vp]
-    (params.keys & query_keys).sort == query_keys.sort
+  def self.all_needed_params_present?(params, keys)
+    (params.keys & keys).sort == keys.sort
   end
 
 end
