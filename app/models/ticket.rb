@@ -1,6 +1,4 @@
 # coding: utf-8
-require 'digest/md5'
-
 class Ticket
   include ActiveModel::Validations
 
@@ -39,7 +37,7 @@ class Ticket
 
   def self.verify_user(user_id)
     if user = User.find(user_id)
-      Zendesk.put("/users/#{user.zendesk_id}.xml", "<user><password>#{Digest::MD5.new(Time.now.to_s)}</password><is-verified>true</is-verified></user>")
+      Zendesk.put("/users/#{user.zendesk_id}.xml", "<user><password>#{SecureRandom.hex(13)}</password><is-verified>true</is-verified></user>")
     end
   end
 
