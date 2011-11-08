@@ -31,7 +31,7 @@ module Configurator
     def respond_to?(*args)
       method_name = args.shift.to_sym
 
-      @heroku_config_attributes.include?(method_name) || yml_options[method_name] || super(method_name, args)
+      (@heroku_config_attributes || []).include?(method_name) || yml_options[method_name] || super(method_name, args)
     end
 
     def reset_yml_options

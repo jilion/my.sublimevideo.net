@@ -19,7 +19,8 @@ class User < ActiveRecord::Base
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
                   :newsletter, :terms_and_conditions, :hidden_notice_ids
   # Credit card
-  attr_accessible :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
+  # cc_register is a flag to indicate if the CC should be recorded or not
+  attr_accessible :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
 
   serialize :hidden_notice_ids, Array
 

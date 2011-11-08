@@ -34,6 +34,7 @@ module Spec
           else
             attrs = Factory.attributes_for(:user)
             user = FactoryGirl.build(:user_real_cc, (options[:user] || {}).merge({
+              cc_register: 1,
               cc_brand: options[:cc_type],
               cc_full_name: "#{attrs[:first_name]} #{attrs[:last_name]}",
               cc_number: options[:cc_number],

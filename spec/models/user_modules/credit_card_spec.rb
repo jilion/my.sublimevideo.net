@@ -12,7 +12,6 @@ describe UserModules::CreditCard do
       its(:cc_last_digits) { should be_nil }
       its(:cc_expire_on)   { should be_nil }
       its(:cc_updated_at)  { should be_nil }
-
       its(:cc_brand)              { should eql 'visa' }
       its(:cc_full_name)          { should eql 'John Doe Huber' }
       its(:cc_number)             { should eql '4111111111111111' }
@@ -35,10 +34,39 @@ describe UserModules::CreditCard do
       its(:cc_last_digits) { should be_nil }
       its(:cc_expire_on)   { should be_nil }
       its(:cc_updated_at)  { should be_nil }
+
       its(:pending_cc_type)        { should eql 'visa' }
       its(:pending_cc_last_digits) { should eql '1111' }
       its(:pending_cc_expire_on)   { should eql 1.year.from_now.end_of_month.to_date }
       its(:pending_cc_updated_at)  { should be_present }
+
+      its(:cc_brand)              { should be_nil }
+      its(:cc_full_name)          { should be_nil }
+      its(:cc_number)             { should be_nil }
+      its(:cc_expiration_year)    { should be_nil }
+      its(:cc_expiration_month)   { should be_nil }
+      its(:cc_verification_value) { should be_nil }
+
+      it { should be_valid }
+      it { should_not be_credit_card }
+      it { should_not be_cc }
+    end
+
+    describe "persisted record with cc_register == 0" do
+      before(:all) do
+        @user = FactoryGirl.create(:user_no_cc, valid_cc_attributes.merge(cc_register: 0))
+      end
+      subject { @user }
+
+      its(:cc_type)        { should be_nil }
+      its(:cc_last_digits) { should be_nil }
+      its(:cc_expire_on)   { should be_nil }
+      its(:cc_updated_at)  { should be_nil }
+
+      its(:pending_cc_type)        { should be_nil }
+      its(:pending_cc_last_digits) { should be_nil }
+      its(:pending_cc_expire_on)   { should be_nil }
+      its(:pending_cc_updated_at)  { should be_nil }
 
       its(:cc_brand)              { should be_nil }
       its(:cc_full_name)          { should be_nil }
@@ -63,6 +91,7 @@ describe UserModules::CreditCard do
       its(:cc_last_digits) { should eql '1111' }
       its(:cc_expire_on)   { should eql 1.year.from_now.end_of_month.to_date }
       its(:cc_updated_at)  { should be_present }
+
       its(:pending_cc_type)        { should be_nil }
       its(:pending_cc_last_digits) { should be_nil }
       its(:pending_cc_expire_on)   { should be_nil }
@@ -93,6 +122,7 @@ describe UserModules::CreditCard do
       its(:cc_last_digits)         { should eql '1111' }
       its(:cc_expire_on)           { should eql 1.year.from_now.end_of_month.to_date }
       its(:cc_updated_at)          { should be_present }
+
       its(:pending_cc_type)        { should eql 'master' }
       its(:pending_cc_last_digits) { should eql '9999' }
       its(:pending_cc_expire_on)   { should eql 2.years.from_now.end_of_month.to_date }
@@ -324,17 +354,37 @@ describe UserModules::CreditCard do
 
     describe "#cc_type" do
       it "should take cc_type from cc_number if nil" do
-        FactoryGirl.create(:user_real_cc, cc_type: nil).cc_type.should eql 'visa'
+        FactoryGirl.create(:user_real_cc, cc_register: 1, cc_type: nil).cc_type.should eql 'visa'
       end
     end
 
     describe "#any_credit_card_attributes_present?" do
-      it { FactoryGirl.build(:user_no_cc).should_not be_any_credit_card_attributes_present }
-      it { FactoryGirl.build(:user_no_cc, cc_number: 123).should be_any_credit_card_attributes_present }
-      it { FactoryGirl.build(:user_no_cc, cc_full_name: "Foo Bar").should be_any_credit_card_attributes_present }
-      it { FactoryGirl.build(:user_no_cc, cc_expiration_month: "foo").should be_any_credit_card_attributes_present }
-      it { FactoryGirl.build(:user_no_cc, cc_expiration_year: "foo").should be_any_credit_card_attributes_present }
-      it { FactoryGirl.build(:user_no_cc, cc_verification_value: "foo").should be_any_credit_card_attributes_present }
+      context "with cc_register == nil" do
+        it { FactoryGirl.build(:user_no_cc, cc_register: nil).should_not be_any_credit_card_attributes_present }
+        it { FactoryGirl.build(:user_no_cc, cc_register: nil, cc_number: 123).should_not be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: nil, cc_full_name: "Foo Bar").should_not be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: nil, cc_expiration_month: "foo").should_not be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: nil, cc_expiration_year: "foo").should_not be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: nil, cc_verification_value: "foo").should_not be_any_cc_attrs }
+      end
+
+      context "with cc_register == '1'" do
+        it { FactoryGirl.build(:user_no_cc, cc_register: '1').should_not be_any_credit_card_attributes_present }
+        it { FactoryGirl.build(:user_no_cc, cc_register: '1', cc_number: 123).should be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: '1', cc_full_name: "Foo Bar").should be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: '1', cc_expiration_month: "foo").should be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: '1', cc_expiration_year: "foo").should be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: '1', cc_verification_value: "foo").should be_any_cc_attrs }
+      end
+
+      context "with cc_register == 1" do
+        it { FactoryGirl.build(:user_no_cc, cc_register: 1).should_not be_any_credit_card_attributes_present }
+        it { FactoryGirl.build(:user_no_cc, cc_register: 1, cc_number: 123).should be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: 1, cc_full_name: "Foo Bar").should be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: 1, cc_expiration_month: "foo").should be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: 1, cc_expiration_year: "foo").should be_any_cc_attrs }
+        it { FactoryGirl.build(:user_no_cc, cc_register: 1, cc_verification_value: "foo").should be_any_cc_attrs }
+      end
     end
 
     describe "#pending_credit_card?" do
@@ -385,28 +435,28 @@ describe UserModules::CreditCard do
 
     describe "#credit_card_expired?" do
       context "with no cc_expire_on" do
-        subject { FactoryGirl.create(:user_no_cc, cc_expiration_month: nil, cc_expiration_year: nil) }
+        subject { FactoryGirl.create(:user_no_cc, cc_register: 1, cc_expiration_month: nil, cc_expiration_year: nil) }
 
         it { subject.cc_expire_on.should be_nil }
         it { subject.should_not be_credit_card_expired }
       end
 
       context "with a credit card that will expire this month" do
-        subject { FactoryGirl.create(:user_real_cc, cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year) }
+        subject { FactoryGirl.create(:user_real_cc, cc_register: 1, cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year) }
 
         it { subject.cc_expire_on.should eql Time.now.utc.end_of_month.to_date }
         it { subject.should_not be_credit_card_expired }
       end
 
       context "with a credit card not expired" do
-        subject { FactoryGirl.create(:user_real_cc, cc_expiration_month: 1.month.from_now.month, cc_expiration_year: 1.month.from_now.year) }
+        subject { FactoryGirl.create(:user_real_cc, cc_register: 1, cc_expiration_month: 1.month.from_now.month, cc_expiration_year: 1.month.from_now.year) }
 
         it { subject.cc_expire_on.should eql 1.month.from_now.end_of_month.to_date }
         it { subject.should_not be_credit_card_expired }
       end
 
       context "with a credit card expired" do
-        subject { Timecop.travel(1.month.ago) { @user = FactoryGirl.create(:user_real_cc, cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year) }; @user }
+        subject { Timecop.travel(1.month.ago) { @user = FactoryGirl.create(:user_real_cc, cc_register: 1, cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year) }; @user }
 
         it { subject.cc_expire_on.should eql 1.month.ago.end_of_month.to_date }
         it { subject.should be_credit_card_expired }

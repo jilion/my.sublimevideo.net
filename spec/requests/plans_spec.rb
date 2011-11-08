@@ -187,7 +187,7 @@ feature "edit" do
 
       current_url.should =~ %r(http://[^/]+/sites$)
 
-      page.should_not have_content("Choose a plan")
+      page.should have_content("Embed Code")
       page.should have_content(site.plan.title)
       page.should have_content(I18n.t('site.status.payment_issue'))
 
@@ -229,14 +229,13 @@ feature "sponsored plan" do
   end
 
   scenario "view" do
-    site = FactoryGirl.create(:site, user: @current_user)
+    site = FactoryGirl.create(:site, user: @current_user, last_30_days_main_video_views: 1000, last_30_days_extra_video_views: 500)
     site.sponsor!
-    FactoryGirl.create(:site_stat, t: site.token, d: 1.day.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time, vv: { m: 1000 })
 
     visit sites_path
 
     page.should have_content("Sponsored")
-    page.should have_content("1,000 sponsored video views")
+    page.should have_content("1,500 sponsored video views")
 
     click_link "Sponsored"
 

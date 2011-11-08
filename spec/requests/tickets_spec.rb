@@ -50,8 +50,8 @@ feature "Support" do
       end
 
       scenario "submit a valid ticket" do
-        fill_in "Subject", :with => "I have a request!"
-        fill_in "Message", :with => "I have a request this is a long text!"
+        fill_in "Subject", with: "I have a request!"
+        fill_in "Message", with: "I have a request this is a long text!"
         expect { click_button "Send" }.to change(Delayed::Job.where(:handler.matches => "%post_ticket%"), :count).by(1)
 
         page.should have_content I18n.t('flash.tickets.create.notice')
@@ -63,8 +63,8 @@ feature "Support" do
       end
 
       scenario "submit a ticket with an invalid subject" do
-        fill_in "Subject", :with => ""
-        fill_in "Message", :with => "I have a request this is a long text!"
+        fill_in "Subject", with: ""
+        fill_in "Message", with: "I have a request this is a long text!"
         click_button "Send"
 
         current_url.should =~ %r(http://[^/]+/support)
@@ -74,8 +74,8 @@ feature "Support" do
       end
 
       scenario "submit a ticket with an invalid message" do
-        fill_in "Subject", :with => "I have a request!"
-        fill_in "Message", :with => ""
+        fill_in "Subject", with: "I have a request!"
+        fill_in "Message", with: ""
         click_button "Send"
 
         current_url.should =~ %r(http://[^/]+/support)

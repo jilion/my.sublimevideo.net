@@ -41,6 +41,13 @@ private
   end
   helper_method :octave?
 
+  def find_sites_or_redirect_to_new_site
+    @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan, :invoices)
+    @sites = apply_scopes(@sites).by_date
+
+    redirect_to [:new, :site] if @sites.empty?
+  end
+
   module DeviseInvitable::Controllers::Helpers
   protected
     def authenticate_inviter!

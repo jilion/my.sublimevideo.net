@@ -5,7 +5,6 @@ feature "Sites" do
   before(:all) { create_plans }
 
   context "with a user with no credit card registered" do
-
     background do
       sign_in_as :user, without_cc: true
     end
@@ -227,7 +226,6 @@ feature "Sites" do
   end
 
   context "with a user with a credit card registered" do
-
     background do
       sign_in_as :user, without_cc: false
       visit "/sites/new"
@@ -236,13 +234,11 @@ feature "Sites" do
   end
 
   context "no matter if the user has a credit card or not" do
-
     background do
       sign_in_as :user
     end
 
     context "suspended user" do
-
       background do
         @current_user.suspend
       end
@@ -251,11 +247,9 @@ feature "Sites" do
         visit "/sites"
         current_url.should =~ %r(http://[^/]+/suspended)
       end
-
     end
 
     context "active user" do
-
       background do
         visit "/sites"
       end
@@ -272,8 +266,60 @@ feature "Sites" do
 
       end
 
-      context "with a site without invoice" do
+      context "with a free site" do
+        background do
+          @site = FactoryGirl.create(:site, user: @current_user, hostname: 'rymai.com', plan_id: @free_plan.id)
+          visit "/sites"
+        end
 
+        scenario "the Invoices tab is not visible" do
+          page.should have_content('rymai.com')
+
+          click_link "Edit rymai.com"
+
+          page.should have_no_content('Invoices')
+          page.should have_no_selector("a[href='/sites/#{@site.token}/invoices']")
+
+          visit "/sites/#{@site.token}/invoices"
+
+          current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
+          page.should have_content('No invoices')
+        end
+
+        context "with an invoice" do
+          background do
+            FactoryGirl.create(:invoice, site: @site, state: 'paid', paid_at: Time.now.utc)
+          end
+
+          scenario "all tabs are visible and accessible" do
+            page.should have_content('rymai.com')
+
+            click_link "Edit rymai.com"
+            current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/edit)
+            page.should have_content('rymai.com')
+
+            page.should have_content strip_tags(I18n.t('site.edit.delete_site_info1', domain: "rymai.com"))
+            page.should have_content I18n.t('site.edit.delete_site_info2')
+
+            click_link "Plan"
+            current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/plan/edit)
+            page.should have_selector('#change_plan_box.section_box')
+
+            page.should have_content('Invoices')
+            page.should have_selector("a[href='/sites/#{@site.token}/invoices']")
+
+            click_link "Invoices"
+
+            current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
+            page.should have_no_content('No invoices')
+            page.should have_no_content('Next invoice')
+            page.should have_content('Past invoices')
+          end
+        end
+
+      end
+
+      context "with a site without invoice" do
         background do
           @site = FactoryGirl.create(:site, user: @current_user, hostname: 'rymai.com')
           visit "/sites"
@@ -288,7 +334,7 @@ feature "Sites" do
         end
 
         describe "site's tabs" do
-          scenario "all tabs are accessible except the Invoices tab" do
+          scenario "all tabs are visible and accessible" do
             page.should have_content('rymai.com')
 
             click_link "Edit rymai.com"
@@ -302,9 +348,11 @@ feature "Sites" do
             current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/plan/edit)
             page.should have_selector('#change_plan_box.section_box')
 
-            page.should have_content('No Invoices')
-            page.should have_no_selector("a[href='/sites/#{@site.token}/invoices']")
-            visit "/sites/#{@site.token}/invoices"
+            page.should have_content('Invoices')
+            page.should have_selector("a[href='/sites/#{@site.token}/invoices']")
+
+            click_link "Invoices"
+
             current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
             page.should have_content('No invoices')
           end
@@ -313,7 +361,6 @@ feature "Sites" do
       end
 
       context "with at least a site with an invoice" do
-
         background do
           @site = FactoryGirl.create(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
           visit "/sites"
@@ -335,7 +382,6 @@ feature "Sites" do
             page.should have_content('Past invoices')
           end
         end
-
       end
 
       describe "edit" do
@@ -360,11 +406,11 @@ feature "Sites" do
           page.should have_selector("input#site_extra_hostnames")
           page.should have_selector("input#site_path")
           page.should have_selector("input#site_wildcard")
-          page.should have_selector("input#site_badged")
+          page.should have_no_selector("input#site_badged")
 
           fill_in "site_extra_hostnames", with: "rymai.me"
           fill_in "site_dev_hostnames", with: "rymai.local"
-          click_button "Update settings"
+          click_button "Save settings"
 
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('rymai.com')
@@ -388,7 +434,7 @@ feature "Sites" do
           fill_in "site_extra_hostnames", with: "rymai.fr"
           fill_in "site_dev_hostnames", with: "rymai.dev"
           check "site_badged"
-          click_button "Update settings"
+          click_button "Save settings"
 
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('rymai.eu')
@@ -413,7 +459,7 @@ feature "Sites" do
           fill_in "site_extra_hostnames", with: "rymai.es"
           fill_in "site_dev_hostnames", with: "rymai.dev"
           check "site_badged"
-          click_button "Update settings"
+          click_button "Save settings"
 
           fill_in "Password", with: "123456"
           click_button "Done"
@@ -538,7 +584,7 @@ feature "Sites" do
 
           scenario "views notice 1" do
             visit "/sites"
-            page.should have_selector(".hideable_notice[data-notice-id='1']")
+            page.should have_selector(".hidable_notice[data-notice-id='1']")
           end
 
         end

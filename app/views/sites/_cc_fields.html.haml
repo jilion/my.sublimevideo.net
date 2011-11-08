@@ -5,20 +5,22 @@
       = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
     %p= link_to "Update credit card", edit_credit_card_path
 - else
-  #credit_card{ style: site.in_free_plan? ? "display:none;" : "" }
-    - if error = site.errors[:base].find { |error| error == t('activerecord.errors.models.site.attributes.base.credit_card_needed') }
+  - cc_errors = site.errors.find_all { |k,v| k.to_s =~ /user.cc_\w+/ }
+  #credit_card
+    - if cc_errors
       .inline_errors
-        %span= error
+        %span= cc_errors
 
     %h3.title
       Credit Card Information
       = " (Optional)" if site.trial_not_started_or_in_trial?
-      = button_tag "V", onclick: "$('credit_card_toggle').toggle(); return false;"
-    
+      = button_tag "V", onclick: "$('credit_card_toggle').toggle(); $('user_cc_register').value == 1 ? $('user_cc_register').value = 0 : $('user_cc_register').value = 1; return false;"
+
     #credit_card_toggle{ style: 'display:none' }
       - if current_user.cc_expired?
         %p.warning
           = t "user.credit_card.expired"
           = t(:please_link, link: link_to("update it", edit_credit_card_path)) + "."
       = f.fields_for :user_attributes, site.user do |ff|
+        = ff.hidden_field :cc_register, value: 0
         = render 'credit_cards/fields', f: ff

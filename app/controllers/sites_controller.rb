@@ -98,13 +98,6 @@ class SitesController < ApplicationController
 
   private
 
-  def find_sites_or_redirect_to_new_site
-    @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan, :invoices)
-    @sites = apply_scopes(@sites).by_date
-
-    redirect_to [:new, :site] if @sites.empty?
-  end
-
   def find_by_token!
     @site = current_user.sites.not_archived.find_by_token!(params[:id])
   end

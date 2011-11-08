@@ -318,7 +318,7 @@ feature "Site invoice page" do
           @site.apply_pending_plan_changes
         end
         @invoice = @site.last_invoice
-        
+
         visit invoice_path(@invoice)
       end
 
