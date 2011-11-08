@@ -3,10 +3,10 @@ require 'spec_helper'
 
 feature "API" do
   before(:all) do
-    @user        = FactoryGirl.create(:user)
-    @site        = FactoryGirl.create(:site, user: @user)
-    @application = FactoryGirl.create(:client_application, user: @user)
-    @token       = FactoryGirl.create(:oauth2_token, user: @user, client_application: @application)
+    @user        = Factory.create(:user)
+    @site        = Factory.create(:site, user: @user)
+    @application = Factory.create(:client_application, user: @user)
+    @token       = Factory.create(:oauth2_token, user: @user, client_application: @application)
   end
   before(:each) do
     @parsed_body = nil

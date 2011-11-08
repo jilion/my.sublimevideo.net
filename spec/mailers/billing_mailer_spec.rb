@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe BillingMailer do
   before(:all) do
-    @user        = FactoryGirl.create(:user, cc_expire_on: 1.day.from_now)
-    @site        = FactoryGirl.create(:site, user: @user, trial_started_at: 8.days.ago)
-    @invoice     = FactoryGirl.create(:invoice)
-    @transaction = FactoryGirl.create(:transaction, invoices: [@invoice])
+    @user        = Factory.create(:user, cc_expire_on: 1.day.from_now)
+    @site        = Factory.create(:site, user: @user, trial_started_at: 8.days.ago)
+    @invoice     = Factory.create(:invoice)
+    @transaction = Factory.create(:transaction, invoices: [@invoice])
   end
 
-  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: ["billing@sublimevideo.net"], params: FactoryGirl.create(:invoice)
-  it_should_behave_like "common mailer checks", %w[trial_will_end], from: ["billing@sublimevideo.net"], params: FactoryGirl.create(:site)
-  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: ["billing@sublimevideo.net"], params: FactoryGirl.create(:user, cc_expire_on: 1.day.from_now)
-  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: ["billing@sublimevideo.net"], params: FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)])
+  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: ["billing@sublimevideo.net"], params: Factory.create(:invoice, site: Factory.create(:site))
+  it_should_behave_like "common mailer checks", %w[trial_will_end], from: ["billing@sublimevideo.net"], params: Factory.create(:site)
+  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: ["billing@sublimevideo.net"], params: Factory.create(:user, cc_expire_on: 1.day.from_now)
+  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: ["billing@sublimevideo.net"], params: Factory.create(:transaction, invoices: [Factory.create(:invoice)])
 
   describe "#trial_will_end" do
     before(:each) do

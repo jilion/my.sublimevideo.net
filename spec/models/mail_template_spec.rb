@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MailTemplate do
 
   context "Factory" do
-    before(:all) { @mail_template = FactoryGirl.create(:mail_template) }
+    before(:all) { @mail_template = Factory.create(:mail_template) }
     subject { @mail_template }
 
     its(:title)   { should =~ /Pricing survey \d+/ }
@@ -14,7 +14,7 @@ describe MailTemplate do
   end
 
   describe "Associations" do
-    before(:all) { @mail_template = FactoryGirl.create(:mail_template) }
+    before(:all) { @mail_template = Factory.create(:mail_template) }
     subject { @mail_template }
 
     it { should have_many :logs }

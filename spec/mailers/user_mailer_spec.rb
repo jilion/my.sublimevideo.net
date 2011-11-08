@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe UserMailer do
-  subject { FactoryGirl.create(:user) }
+  subject { Factory.create(:user) }
 
-  it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], :params => [FactoryGirl.create(:user)]
+  it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], :params => [Factory.create(:user)]
 
   describe "#account_suspended" do
     context "when reason given is :invoice_problem" do

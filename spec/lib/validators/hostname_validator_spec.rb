@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe HostnameValidator do
-  subject { FactoryGirl.build(:new_site) }
+  subject { Factory.build(:new_site) }
   
   describe "valid hostname" do
     it "should not add an error" do

@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe StatMailer do
   before(:all) do
-    @user = FactoryGirl.create(:user)
-    @site = FactoryGirl.create(:site, user: @user, stats_trial_started_at: 6.days.ago)
+    @user = Factory.create(:user)
+    @site = Factory.create(:site, user: @user, stats_trial_started_at: 6.days.ago)
   end
 
-  it_should_behave_like "common mailer checks", %w[stats_trial_will_end], params: FactoryGirl.create(:site, stats_trial_started_at: 6.days.ago)
+  it_should_behave_like "common mailer checks", %w[stats_trial_will_end], params: Factory.create(:site, stats_trial_started_at: 6.days.ago)
 
   describe "#stats_trial_will_end" do
     before(:each) do

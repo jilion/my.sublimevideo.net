@@ -30,13 +30,13 @@ feature "Pages" do
 
     context "with a suspended user" do
       background do
-        @site  = FactoryGirl.create(:site, user: @current_user)
+        @site  = Factory.create(:site, user: @current_user)
         @site.pending_plan_started_at = Time.now.utc
         @site.pending_plan_cycle_started_at = Time.now.utc
         @site.pending_plan_cycle_ended_at = Time.now.utc
         @site.save!(validate: false)
-        @invoice = FactoryGirl.create(:invoice, site: @site, state: 'failed', last_failed_at: Time.utc(2010,2,10), amount: 1990)
-        @transaction = FactoryGirl.create(:transaction, invoices: [@invoice], state: 'failed', error: "Credit Card expired")
+        @invoice = Factory.create(:invoice, site: @site, state: 'failed', last_failed_at: Time.utc(2010,2,10), amount: 1990)
+        @transaction = Factory.create(:transaction, invoices: [@invoice], state: 'failed', error: "Credit Card expired")
         @current_user.suspend
         @site.reload.should be_suspended
         @current_user.reload.should be_suspended

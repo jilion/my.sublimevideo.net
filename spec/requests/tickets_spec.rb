@@ -4,7 +4,7 @@ feature "Support" do
   context "user has only the 'forum' support level" do
     background do
       sign_in_as :user
-      FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id)
+      Factory.create(:site, user: @current_user, plan_id: @free_plan.id)
     end
 
     scenario "navigation (1)" do
@@ -28,7 +28,7 @@ feature "Support" do
   context "user has the 'email' support level" do
     background do
       sign_in_as :user
-      FactoryGirl.create(:site, user: @current_user, plan_id: @paid_plan.id)
+      Factory.create(:site, user: @current_user, plan_id: @paid_plan.id)
       visit "/support"
     end
 

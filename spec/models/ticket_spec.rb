@@ -12,12 +12,12 @@ require 'spec_helper'
 
 describe Ticket do
   before(:all) do
-    @user = FactoryGirl.create(:user, first_name: "Remy")
-    @site = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-    @loser = FactoryGirl.create(:user)
-    FactoryGirl.create(:site, user: @loser, plan_id: @free_plan.id)
-    @vip = FactoryGirl.create(:user)
-    FactoryGirl.create(:site, user: @vip, plan_id: @custom_plan.token)
+    @user = Factory.create(:user, first_name: "Remy")
+    @site = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
+    @loser = Factory.create(:user)
+    Factory.create(:site, user: @loser, plan_id: @free_plan.id)
+    @vip = Factory.create(:user)
+    Factory.create(:site, user: @vip, plan_id: @custom_plan.token)
   end
 
   describe "Factory" do

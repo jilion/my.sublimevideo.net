@@ -4,7 +4,7 @@ describe Log::Voxcast do
 
   context "Factory build" do
     use_vcr_cassette "ogone/one_log"
-    subject { FactoryGirl.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
+    subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
 
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
     its(:started_at) { should == Time.zone.at(1274773200).utc }
@@ -23,8 +23,8 @@ describe Log::Voxcast do
       use_vcr_cassette "ogone/one_saved_log"
 
       it "should validate uniqueness of name" do
-        FactoryGirl.create(:log_voxcast)
-        log = FactoryGirl.build(:log_voxcast)
+        Factory.create(:log_voxcast)
+        log = Factory.build(:log_voxcast)
         log.should_not be_valid
         log.should have(1).error_on(:name)
       end
@@ -33,7 +33,7 @@ describe Log::Voxcast do
 
   context "Factory create" do
     use_vcr_cassette "ogone/one_saved_log"
-    subject { FactoryGirl.create(:log_voxcast) }
+    subject { Factory.create(:log_voxcast) }
 
     its(:created_at) { should be_present }
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
@@ -75,7 +75,7 @@ describe Log::Voxcast do
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz'))
       }
     end
-    subject { FactoryGirl.create(:log_voxcast, :name => '4076.voxcdn.com.log.1279103340-1279103400.gz') }
+    subject { Factory.create(:log_voxcast, :name => '4076.voxcdn.com.log.1279103340-1279103400.gz') }
 
     its(:created_at) { should be_present }
     its(:hostname)   { should == '4076.voxcdn.com' }
@@ -153,49 +153,61 @@ describe Log::Voxcast do
 
       context "with a log saved" do
         use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 1 min ago"
-        before(:each) do
-          FactoryGirl.create(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", Time.now.change(sec: 0)))
-        end
+        let(:log_voxcast) {  FactoryGirl.create(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", Time.now.change(sec: 0))) }
 
         it "creates 0 log (no duplicates)" do
-          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to_not change(Log::Voxcast, :count)
+          Timecop.freeze Time.now do
+            log_voxcast
+            expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to_not change(Log::Voxcast, :count)
+          end
         end
         it "delays method to run in 1 min" do
-          Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
-          Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
-          Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+          Timecop.freeze Time.now do
+            log_voxcast
+            Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
+            Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
+            Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+          end
         end
       end
 
       context "with log saved 1 min ago" do
         use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 1 min ago"
-        before(:each) do
-          FactoryGirl.create(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", 1.minute.ago.change(sec: 0)))
-        end
+        let(:log_voxcast) {  FactoryGirl.create(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", 1.minute.ago.change(sec: 0))) }
 
         it "creates 1 log" do
-          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(1)
+          Timecop.freeze Time.now do
+            log_voxcast
+            expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(1)
+          end
         end
         it "delays method to run in 1 min" do
-          Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
-          Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
-          Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+          Timecop.freeze Time.now do
+            log_voxcast
+            Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
+            Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
+            Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+          end
         end
       end
 
-      context "with log saved 5 min ago" do
+      context "with log saved 5 min ago"  do
         use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 5 min ago"
-        before(:each) do
-          FactoryGirl.create(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", 5.minutes.ago.change(sec: 0)))
-        end
+        let(:log_voxcast) {  FactoryGirl.create(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", 5.minutes.ago.change(sec: 0))) }
 
         it "creates 5 logs" do
-          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(5)
+          Timecop.freeze Time.now do
+            log_voxcast
+            expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(5)
+          end
         end
         it "delays method to run in 1 min" do
-          Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
-          Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
-          Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+          Timecop.freeze Time.now do
+            log_voxcast
+            Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
+            Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
+            Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+          end
         end
       end
 
@@ -235,8 +247,8 @@ describe Log::Voxcast do
       context "with already a log saved" do
         use_vcr_cassette "voxcast/next_log_ended_at"
         before(:each) do
-          FactoryGirl.create(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,29).to_i}-#{Time.utc(2011,7,7,9,30).to_i}.gz")
-          FactoryGirl.create(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,37).to_i}-#{Time.utc(2011,7,7,9,38).to_i}.gz")
+          Factory.create(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,29).to_i}-#{Time.utc(2011,7,7,9,30).to_i}.gz")
+          Factory.create(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,37).to_i}-#{Time.utc(2011,7,7,9,38).to_i}.gz")
         end
 
         it "should check the last log created if no last_log_ended_at is given" do
@@ -283,7 +295,7 @@ describe Log::Voxcast do
     before(:each) do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
       VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
-      @log = FactoryGirl.create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
+      @log = Factory.create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
     end
 
     describe "#parse_and_create_stats!" do

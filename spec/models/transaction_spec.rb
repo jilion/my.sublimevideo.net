@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Transaction do
   before(:all) do
-    @user = FactoryGirl.create(:user)
-    @user_with_no_cc = FactoryGirl.create(:user_no_cc)
+    @user = Factory.create(:user)
+    @user_with_no_cc = Factory.create(:user_no_cc)
   end
 
   context "Factory" do
-    before(:all) { @transaction = FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice, amount: 1000, state: 'open')]) }
+    before(:all) { @transaction = Factory.create(:transaction, invoices: [Factory.create(:invoice, amount: 1000, state: 'open')]) }
     subject { @transaction }
 
     its(:user)      { should be_present }
@@ -30,7 +30,7 @@ describe Transaction do
 
   describe "Validations" do
     describe "#at_least_one_invoice" do
-      before(:all) { @transaction = FactoryGirl.build(:transaction) }
+      before(:all) { @transaction = Factory.build(:transaction) }
       subject { @transaction }
 
       specify { subject.invoices.should be_empty }
@@ -40,9 +40,9 @@ describe Transaction do
 
     describe "#all_invoices_belong_to_same_user" do
       before(:all) do
-        site1 = FactoryGirl.create(:site)
-        site2 = FactoryGirl.create(:site)
-        @transaction = FactoryGirl.build(:transaction, invoices: [FactoryGirl.create(:invoice, site: site1), FactoryGirl.create(:invoice, site: site2)])
+        site1 = Factory.create(:site)
+        site2 = Factory.create(:site)
+        @transaction = Factory.build(:transaction, invoices: [Factory.create(:invoice, site: site1), Factory.create(:invoice, site: site2)])
       end
       subject { @transaction }
 
@@ -53,12 +53,12 @@ describe Transaction do
 
   describe "Callbacks" do
     before(:all) do
-      @site = FactoryGirl.create(:site)
-      @invoice1 = FactoryGirl.create(:invoice, site: @site, amount: 200, state: 'open')
-      @invoice2 = FactoryGirl.create(:invoice, site: @site, amount: 300, state: 'paid')
-      @invoice3 = FactoryGirl.create(:invoice, site: @site, amount: 400, state: 'failed')
+      @site = Factory.create(:site)
+      @invoice1 = Factory.create(:invoice, site: @site, amount: 200, state: 'open')
+      @invoice2 = Factory.create(:invoice, site: @site, amount: 300, state: 'paid')
+      @invoice3 = Factory.create(:invoice, site: @site, amount: 400, state: 'failed')
     end
-    subject { FactoryGirl.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3]) }
+    subject { Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3]) }
 
     describe "before_create :reject_paid_invoices" do
       it "should reject any paid invoices" do
@@ -118,10 +118,10 @@ describe Transaction do
 
   describe "State Machine" do
     before(:all) do
-      @site        = FactoryGirl.create(:site)
-      @invoice1    = FactoryGirl.create(:invoice, site: @site, state: 'open')
-      @invoice2    = FactoryGirl.create(:invoice, site: @site, state: 'failed')
-      @transaction = FactoryGirl.create(:transaction, invoices: [@invoice1, @invoice2])
+      @site        = Factory.create(:site)
+      @invoice1    = Factory.create(:invoice, site: @site, state: 'open')
+      @invoice2    = Factory.create(:invoice, site: @site, state: 'failed')
+      @transaction = Factory.create(:transaction, invoices: [@invoice1, @invoice2])
     end
     subject { @transaction }
 
@@ -245,7 +245,7 @@ describe Transaction do
 
       describe "after_transition :on => :succeed, :do => :send_charging_succeeded_email" do
         context "from open" do
-          subject { FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)]) }
+          subject { Factory.create(:transaction, invoices: [Factory.create(:invoice)]) }
 
           it "should send an email to invoice.user" do
             subject
@@ -257,7 +257,7 @@ describe Transaction do
 
       describe "after_transition :on => :fail, :do => :send_charging_failed_email" do
         context "from open" do
-          subject { FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)]) }
+          subject { Factory.create(:transaction, invoices: [Factory.create(:invoice)]) }
 
           it "should send an email to invoice.user" do
             subject
@@ -272,11 +272,11 @@ describe Transaction do
 
   describe "Scopes" do
     before(:all) do
-      @site                    = FactoryGirl.create(:site)
-      @invoice                 = FactoryGirl.create(:invoice, site: @site, state: 'open')
-      @transaction_unprocessed = FactoryGirl.create(:transaction, invoices: [@invoice])
-      @transaction_failed      = FactoryGirl.create(:transaction, invoices: [@invoice], state: 'failed')
-      @transaction_paid        = FactoryGirl.create(:transaction, invoices: [@invoice], state: 'paid')
+      @site                    = Factory.create(:site)
+      @invoice                 = Factory.create(:invoice, site: @site, state: 'open')
+      @transaction_unprocessed = Factory.create(:transaction, invoices: [@invoice])
+      @transaction_failed      = Factory.create(:transaction, invoices: [@invoice], state: 'failed')
+      @transaction_paid        = Factory.create(:transaction, invoices: [@invoice], state: 'paid')
     end
 
     describe "#failed" do
@@ -289,15 +289,15 @@ describe Transaction do
     describe ".charge_invoices" do
       before(:all) do
         Invoice.delete_all
-        @user1    = FactoryGirl.create(:user)
-        @user2    = FactoryGirl.create(:user, state: 'suspended')
-        @site1    = FactoryGirl.create(:site, user: @user1)
-        @site2    = FactoryGirl.create(:site, user: @user2)
-        @invoice1 = FactoryGirl.create(:invoice, state: 'open', site: @site1, renew: true)
-        @invoice2 = FactoryGirl.create(:invoice, state: 'open', site: @site1, renew: false)
-        @invoice3 = FactoryGirl.create(:invoice, state: 'failed', site: @site1)
-        @invoice4 = FactoryGirl.create(:invoice, state: 'failed', site: @site2)
-        @invoice5 = FactoryGirl.create(:invoice, state: 'paid', site: @site1)
+        @user1    = Factory.create(:user)
+        @user2    = Factory.create(:user, state: 'suspended')
+        @site1    = Factory.create(:site, user: @user1)
+        @site2    = Factory.create(:site, user: @user2)
+        @invoice1 = Factory.create(:invoice, state: 'open', site: @site1, renew: true)
+        @invoice2 = Factory.create(:invoice, state: 'open', site: @site1, renew: false)
+        @invoice3 = Factory.create(:invoice, state: 'failed', site: @site1)
+        @invoice4 = Factory.create(:invoice, state: 'failed', site: @site2)
+        @invoice5 = Factory.create(:invoice, state: 'paid', site: @site1)
       end
       before(:each) { Delayed::Job.delete_all }
 
@@ -314,16 +314,16 @@ describe Transaction do
       use_vcr_cassette "ogone/visa_payment_generic"
       before(:all) do
         Invoice.delete_all
-        @user1    = FactoryGirl.create(:user)
-        @user2    = FactoryGirl.create(:user)
-        @site1    = FactoryGirl.create(:site, user: @user1, first_paid_plan_started_at: (BusinessModel.days_for_refund+1).days.ago)
-        @site2    = FactoryGirl.create(:site, user: @user2)
+        @user1    = Factory.create(:user)
+        @user2    = Factory.create(:user)
+        @site1    = Factory.create(:site, user: @user1, first_paid_plan_started_at: (BusinessModel.days_for_refund+1).days.ago)
+        @site2    = Factory.create(:site, user: @user2)
         @site1.invoices.delete_all
         @site2.invoices.delete_all
-        @invoice1 = FactoryGirl.create(:invoice, site: @site1, state: 'paid', renew: false) # first invoice
-        @invoice2 = FactoryGirl.create(:invoice, site: @site1, state: 'failed', renew: true)
-        @invoice3 = FactoryGirl.create(:invoice, site: @site1, state: 'open', renew: true)
-        @invoice4 = FactoryGirl.create(:invoice, site: @site2, state: 'failed', renew: false) # first invoice
+        @invoice1 = Factory.create(:invoice, site: @site1, state: 'paid', renew: false) # first invoice
+        @invoice2 = Factory.create(:invoice, site: @site1, state: 'failed', renew: true)
+        @invoice3 = Factory.create(:invoice, site: @site1, state: 'open', renew: true)
+        @invoice4 = Factory.create(:invoice, site: @site2, state: 'failed', renew: false) # first invoice
       end
       before do
         @user1.reload
@@ -352,7 +352,7 @@ describe Transaction do
       context "invoice with 15 failed transactions or more" do
         it "doesn't try to charge the invoice" do
           @invoice2.reload
-          15.times { FactoryGirl.create(:transaction, invoices: [@invoice2], state: 'failed') }
+          15.times { Factory.create(:transaction, invoices: [@invoice2], state: 'failed') }
           Transaction.should_not_receive(:charge_by_invoice_ids)
           Transaction.charge_invoices_by_user_id(@user1.id)
           @invoice2.reload.should be_failed
@@ -360,7 +360,7 @@ describe Transaction do
 
         it "doesn't try to charge at all if it's the only invoice" do
           @invoice4.reload
-          15.times { FactoryGirl.create(:transaction, invoices: [@invoice4], state: 'failed') }
+          15.times { Factory.create(:transaction, invoices: [@invoice4], state: 'failed') }
           Transaction.should_not_receive(:charge_by_invoice_ids)
           Transaction.charge_invoices_by_user_id(@user2.id)
         end
@@ -368,7 +368,7 @@ describe Transaction do
         context "invoice is not the first one" do
           it "suspend the user" do
             @invoice2.reload
-            15.times { FactoryGirl.create(:transaction, invoices: [@invoice2], state: 'failed') }
+            15.times { Factory.create(:transaction, invoices: [@invoice2], state: 'failed') }
             Transaction.should_not_receive(:charge_by_invoice_ids)
             Transaction.charge_invoices_by_user_id(@user1.id)
             @invoice2.reload.should be_failed
@@ -379,14 +379,14 @@ describe Transaction do
         context "invoice is the first one" do
           it "cancels the invoice" do
             @invoice4.reload
-            15.times { FactoryGirl.create(:transaction, invoices: [@invoice4], state: 'failed') }
+            15.times { Factory.create(:transaction, invoices: [@invoice4], state: 'failed') }
             Transaction.charge_invoices_by_user_id(@user2.id)
             @invoice4.reload.should be_canceled
           end
 
           it "sends an email to the user" do
             @invoice4.reload
-            15.times { FactoryGirl.create(:transaction, invoices: [@invoice4], state: 'failed') }
+            15.times { Factory.create(:transaction, invoices: [@invoice4], state: 'failed') }
             expect { Transaction.charge_invoices_by_user_id(@user2.id) }.to change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [@user2.email]
           end
@@ -397,8 +397,8 @@ describe Transaction do
     describe ".charge_by_invoice_ids" do
       context "with a new credit card given through options[:credit_card]" do
         before do
-          @user = FactoryGirl.create(:user_no_cc)
-          @site1 = FactoryGirl.build(:new_site, user: @user)
+          @user = Factory.create(:user_no_cc)
+          @site1 = Factory.build(:new_site, user: @user)
           @site1.user.assign_attributes(valid_cc_attributes)
           @credit_card = @site1.user.credit_card
           @site1.charging_options = { credit_card: @credit_card }
@@ -411,7 +411,7 @@ describe Transaction do
           @user.cc_last_digits.should be_nil
           @user.cc_expire_on.should be_nil
 
-          @invoice1 = FactoryGirl.create(:invoice, site: @site1, state: 'open')
+          @invoice1 = Factory.create(:invoice, site: @site1, state: 'open')
         end
 
         it "should charge Ogone for the total amount of the open and failed invoices" do
@@ -457,9 +457,9 @@ describe Transaction do
 
         before do
           @user.reload
-          @invoice1 = FactoryGirl.create(:invoice, site: FactoryGirl.create(:site, user: @user), state: 'open')
-          @invoice2 = FactoryGirl.create(:invoice, site: FactoryGirl.create(:site, user: @user), state: 'failed')
-          @invoice3 = FactoryGirl.create(:invoice, site: FactoryGirl.create(:site, user: @user), state: 'paid')
+          @invoice1 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'open')
+          @invoice2 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'failed')
+          @invoice3 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'paid')
         end
 
         it "charges Ogone for the total amount of the open and failed invoices" do
@@ -507,7 +507,7 @@ describe Transaction do
       context "with a succeeding purchase" do
         before do
           @user.reload
-          @invoice1 = FactoryGirl.create(:invoice, site: FactoryGirl.create(:site, user: @user), state: 'open')
+          @invoice1 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'open')
         end
 
         context "credit card" do
@@ -561,7 +561,7 @@ describe Transaction do
 
       context "with a failing purchase" do
         before do
-          @invoice1 = FactoryGirl.create(:invoice, site: FactoryGirl.create(:site, user: @user), state: 'open')
+          @invoice1 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'open')
         end
 
         context "with a purchase that raise an error" do
@@ -624,19 +624,19 @@ describe Transaction do
       context "for a non-refundable site" do
         describe "because of a not present refunded_at" do
           it "does nothing!" do
-            site = FactoryGirl.create(:site, refunded_at: nil)
+            site = Factory.create(:site, refunded_at: nil)
             expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
           end
         end
         describe "because of a too old first_paid_plan_started_at" do
           it "does nothing!" do
-            site = FactoryGirl.create(:site, first_paid_plan_started_at: 31.days.ago, refunded_at: Time.now.utc)
+            site = Factory.create(:site, first_paid_plan_started_at: 31.days.ago, refunded_at: Time.now.utc)
             expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
           end
         end
         describe "because of a non-archived site" do
           it "does nothing!" do
-            site = FactoryGirl.create(:site, first_paid_plan_started_at: 29.days.ago, refunded_at: Time.now.utc)
+            site = Factory.create(:site, first_paid_plan_started_at: 29.days.ago, refunded_at: Time.now.utc)
             expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
           end
         end
@@ -644,7 +644,7 @@ describe Transaction do
 
       context "for a refundable site with 1 paid transaction containing 2 invoices with 2 different sites" do
         before do
-          expect { @site = FactoryGirl.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
+          expect { @site = Factory.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
           Site.refunded.should include(@site)
           @site.invoices.where(state: 'paid').count.should eql 1
 
@@ -653,7 +653,7 @@ describe Transaction do
 
           @transaction = transactions.first
           @transaction.invoices.where(state: 'paid').count.should eql 1
-          @transaction.invoices << FactoryGirl.create(:invoice, site: FactoryGirl.create(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
+          @transaction.invoices << Factory.create(:invoice, site: Factory.create(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
           @transaction.save
           @transaction.reload.invoices.where(state: 'paid').count.should eql 2
           @transaction.should be_paid
@@ -678,7 +678,7 @@ describe Transaction do
 
       context "for a refundable site with 1 failed transaction" do
         before do
-          expect { @site = FactoryGirl.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
+          expect { @site = Factory.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
           transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
           transactions.count.should == 1
 
@@ -700,8 +700,8 @@ describe Transaction do
 
       context "for a refundable site with multiple transactions all paid" do
         before do
-          expect { @site = FactoryGirl.create(:site_with_invoice) }.to change(Invoice, :count).by(1)
-          expect { @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc) }.to change(Invoice, :count).by(1)
+          expect { @site = Factory.create(:site_with_invoice) }.to change(Invoice, :count).by(1)
+          expect { @site2 = Factory.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc) }.to change(Invoice, :count).by(1)
           @site.plan_id = @custom_plan.token # upgrade
           expect { VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation } }.to change(Invoice, :count).by(1)
           @site.without_password_validation { @site.reload.archive }
@@ -718,7 +718,7 @@ describe Transaction do
           @transaction2.invoices.where(state: 'paid').count.should eql 1
 
           # the transaction is with 2 invoices for 2 different sites
-          @transaction2.invoices << FactoryGirl.create(:invoice, site: FactoryGirl.create(:site), state: 'failed')
+          @transaction2.invoices << Factory.create(:invoice, site: Factory.create(:site), state: 'failed')
           @transaction2.save
           @transaction2.reload.invoices.where(state: 'paid').count.should eql 1
 
@@ -762,8 +762,8 @@ describe Transaction do
 
       context "for a refundable site with multiple transactions: 1 paid and 1 failed" do
         before do
-          expect { @site = FactoryGirl.create(:site_with_invoice) }.to change(Invoice, :count).by(1)
-          expect { @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user) }.to change(Invoice, :count).by(1)
+          expect { @site = Factory.create(:site_with_invoice) }.to change(Invoice, :count).by(1)
+          expect { @site2 = Factory.create(:site_with_invoice, user: @site.user) }.to change(Invoice, :count).by(1)
           @site.plan_id = @custom_plan.token # upgrade
           expect { VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation } }.to change(Invoice, :count).by(1)
           @site.without_password_validation { @site.reload.archive }
@@ -779,9 +779,9 @@ describe Transaction do
           @transaction2.reload.update_attribute(:amount, 23213)
 
           # the transaction is with 2 invoices for 2 different sites
-          @transaction1.invoices << FactoryGirl.create(:invoice, site: FactoryGirl.create(:site), state: 'paid')
+          @transaction1.invoices << Factory.create(:invoice, site: Factory.create(:site), state: 'paid')
           # the transaction is with 2 invoices for 2 different sites
-          @transaction2.invoices << FactoryGirl.create(:invoice, site: FactoryGirl.create(:site), state: 'failed')
+          @transaction2.invoices << Factory.create(:invoice, site: Factory.create(:site), state: 'failed')
           @transaction1.save
           @transaction2.save
 
@@ -816,10 +816,10 @@ describe Transaction do
     describe "#process_payment_response" do
       before(:all) do
         @user.reload
-        @site1    = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
-        @site2    = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-        @invoice1 = FactoryGirl.create(:invoice, site: @site1, state: 'open')
-        @invoice2 = FactoryGirl.create(:invoice, site: @site2, state: 'failed')
+        @site1    = Factory.create(:site, user: @user, plan_id: @free_plan.id)
+        @site2    = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
+        @invoice1 = Factory.create(:invoice, site: @site1, state: 'open')
+        @invoice2 = Factory.create(:invoice, site: @site2, state: 'failed')
         @d3d_params = {
           "PAYID" => "123",
           "ACCEPTANCE" => "321",
@@ -875,7 +875,7 @@ describe Transaction do
           "NCERRORPLUS" => "unknown"
         }
       end
-      subject { FactoryGirl.create(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
+      subject { Factory.create(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
 
       context "STATUS is 46" do
         it "puts transaction in 'waiting_d3d' state" do
@@ -1202,12 +1202,12 @@ describe Transaction do
 
     describe "#description" do
       before(:all) do
-        @site1    = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
-        @site2    = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-        @invoice1 = FactoryGirl.create(:invoice, site: @site1, state: 'open')
-        @invoice2 = FactoryGirl.create(:invoice, site: @site2, state: 'failed')
+        @site1    = Factory.create(:site, user: @user, plan_id: @free_plan.id)
+        @site2    = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
+        @invoice1 = Factory.create(:invoice, site: @site1, state: 'open')
+        @invoice2 = Factory.create(:invoice, site: @site2, state: 'failed')
       end
-      subject { FactoryGirl.create(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
+      subject { Factory.create(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
 
       it "should create a description with invoices references" do
         subject.description.should == "SublimeVideo Invoices: ##{@invoice1.reference}, ##{@invoice2.reference}"

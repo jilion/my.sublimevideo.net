@@ -1,12 +1,12 @@
 class Plan < ActiveRecord::Base
   include PlanModules::Api
 
-  CYCLES         = %w[month year none]
-  UNPAID_NAMES = %w[free sponsored]
-  LEGACY_UNPAID_NAMES = %w[dev]
-  STANDARD_NAMES = %w[silver gold]
+  CYCLES                = %w[month year none]
+  UNPAID_NAMES          = %w[free sponsored]
+  LEGACY_UNPAID_NAMES   = %w[dev]
+  STANDARD_NAMES        = %w[silver gold]
   LEGACY_STANDARD_NAMES = %w[comet planet star galaxy]
-  SUPPORT_LEVELS = %w[forum email vip]
+  SUPPORT_LEVELS        = %w[forum email vip]
 
   attr_accessible :name, :cycle, :video_views, :price, :support_level, :stats_retention_days
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9'), :length => 12
@@ -42,7 +42,6 @@ class Plan < ActiveRecord::Base
   # =================
 
   class << self
-    extend ActiveSupport::Memoizable
 
     def create_custom(attributes)
       create(attributes.merge(:name => "custom - #{attributes[:name]}"))
@@ -53,7 +52,6 @@ class Plan < ActiveRecord::Base
       define_method(method_name) do
         where(name: plan_name).first
       end
-      memoize method_name.to_sym
     end
 
     STANDARD_NAMES.each do |plan_name|
@@ -61,13 +59,11 @@ class Plan < ActiveRecord::Base
       define_method(method_name) do
         where(name: plan_name).first.video_views
       end
-      memoize method_name.to_sym
 
       method_name = "#{plan_name}_daily_video_views"
       define_method(method_name) do
         where(name: plan_name).first.daily_video_views
       end
-      memoize method_name.to_sym
     end
 
   end

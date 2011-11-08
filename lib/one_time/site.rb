@@ -109,23 +109,23 @@ module OneTime
         end
       end
 
-      def dev_plan      ; @dev_plan       ||= Plan.where(name: 'dev').first; end
-      def sponsored_plan; @sponsored_plan ||= Plan.where(name: 'sponsored').first; end
-      def comet_m_plan  ; @comet_m_plan   ||= Plan.where(name: 'comet', cycle: 'month').first; end
-      def comet_y_plan  ; @comet_y_plan   ||= Plan.where(name: 'comet', cycle: 'year').first; end
-      def planet_m_plan ; @planet_m_plan  ||= Plan.where(name: 'planet', cycle: 'month').first; end
-      def planet_y_plan ; @planet_y_plan  ||= Plan.where(name: 'planet', cycle: 'year').first; end
-      def star_m_plan   ; @star_m_plan    ||= Plan.where(name: 'star', cycle: 'month').first; end
-      def star_y_plan   ; @star_y_plan    ||= Plan.where(name: 'star', cycle: 'year').first; end
-      def galaxy_m_plan ; @galaxy_m_plan  ||= Plan.where(name: 'galaxy', cycle: 'month').first; end
-      def galaxy_y_plan ; @galaxy_y_plan  ||= Plan.where(name: 'galaxy', cycle: 'year').first; end
-      def custom_plan   ; @custom_plan    ||= Plan.where(name: 'custom - 1').first; end
-
-      def free_plan     ; @free_plan      ||= Plan.where(name: 'free').first; end
-      def silver_m_plan ; @silver_m_plan  ||= Plan.where(name: 'silver', cycle: 'month').first; end
-      def silver_y_plan ; @silver_y_plan  ||= Plan.where(name: 'silver', cycle: 'year').first; end
-      def gold_m_plan   ; @gold_m_plan    ||= Plan.where(name: 'gold', cycle: 'month').first; end
-      def gold_y_plan   ; @gold_y_plan    ||= Plan.where(name: 'gold', cycle: 'year').first; end
+      def dev_plan      ; ::Plan.where(name: 'dev').first; end
+      def sponsored_plan; ::Plan.where(name: 'sponsored').first; end
+      def comet_m_plan  ; ::Plan.where(name: 'comet', cycle: 'month').first; end
+      def comet_y_plan  ; ::Plan.where(name: 'comet', cycle: 'year').first; end
+      def planet_m_plan ; ::Plan.where(name: 'planet', cycle: 'month').first; end
+      def planet_y_plan ; ::Plan.where(name: 'planet', cycle: 'year').first; end
+      def star_m_plan   ; ::Plan.where(name: 'star', cycle: 'month').first; end
+      def star_y_plan   ; ::Plan.where(name: 'star', cycle: 'year').first; end
+      def galaxy_m_plan ; ::Plan.where(name: 'galaxy', cycle: 'month').first; end
+      def galaxy_y_plan ; ::Plan.where(name: 'galaxy', cycle: 'year').first; end
+      def custom_plan   ; ::Plan.where(name: 'custom - 1').first; end
+                          
+      def free_plan     ; ::Plan.where(name: 'free').first; end
+      def silver_m_plan ; ::Plan.where(name: 'silver', cycle: 'month').first; end
+      def silver_y_plan ; ::Plan.where(name: 'silver', cycle: 'year').first; end
+      def gold_m_plan   ; ::Plan.where(name: 'gold', cycle: 'month').first; end
+      def gold_y_plan   ; ::Plan.where(name: 'gold', cycle: 'year').first; end
 
 
     end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CampaignMonitor do
-  let(:user) { FactoryGirl.create(:user, email: "cm2@jilion.com", first_name: "John", last_name: "Doe", created_at: Time.utc(2010,10,10), invitation_token: nil) }
+  let(:user) { Factory.create(:user, email: "cm2@jilion.com", first_name: "John", last_name: "Doe", created_at: Time.utc(2010,10,10), invitation_token: nil) }
 
   specify { CampaignMonitor.api_key.should eql "8844ec1803ffbe6501c3d7e9cfa23bf3" }
   specify { CampaignMonitor.list_id.should eql "a064dfc4b8ccd774252a2e9c9deb9244" }
@@ -35,8 +35,8 @@ describe CampaignMonitor do
   #   use_vcr_cassette "campaign_monitor/import"
   #
   #   it "should subscribe a list of user" do
-  #     user1 = FactoryGirl.create(:user, email: "bob1@bob.com", created_at: Time.utc(2010,10,10), invitation_token: nil)
-  #     user2 = FactoryGirl.create(:user, email: "bob2@bob.com", created_at: Time.utc(2011,10,10), invitation_token: nil)
+  #     user1 = Factory.create(:user, email: "bob1@bob.com", created_at: Time.utc(2010,10,10), invitation_token: nil)
+  #     user2 = Factory.create(:user, email: "bob2@bob.com", created_at: Time.utc(2011,10,10), invitation_token: nil)
   #     CampaignMonitor.import([user1, user2]).should be_true
   #     # user 1
   #     subscriber = CreateSend::Subscriber.get(CampaignMonitor.list_id, user1.email)

@@ -15,19 +15,19 @@ feature "Pusher" do
       end
 
       scenario "authorized site token on private channel" do
-        site = FactoryGirl.create(:site, user: @current_user)
+        site = Factory.create(:site, user: @current_user)
         page.driver.post('/pusher/auth', socket_id: '1427.1223076', channel_name: "private-#{site.token}")
         page.driver.status_code.should eql 200
       end
 
       scenario "authorized site token on presence channel" do
-        site = FactoryGirl.create(:site, user: @current_user)
+        site = Factory.create(:site, user: @current_user)
         page.driver.post('/pusher/auth', socket_id: '1427.1223076', channel_name: "presence-#{site.token}")
         page.driver.status_code.should eql 200
       end
 
       scenario "un-authorized site token" do
-        site = FactoryGirl.create(:site)
+        site = Factory.create(:site)
         page.driver.post('/pusher/auth', socket_id: '1427.1223076', channel_name: "private-#{site.token}")
         page.driver.status_code.should eql 403
       end

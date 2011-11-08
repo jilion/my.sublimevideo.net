@@ -30,10 +30,10 @@ module Spec
 
         @current_user ||= begin
           user = if options[:without_cc] == true
-            FactoryGirl.create(:user_no_cc, options[:user] || {})
+            Factory.create(:user_no_cc, options[:user] || {})
           else
             attrs = Factory.attributes_for(:user)
-            user = FactoryGirl.build(:user_real_cc, (options[:user] || {}).merge({
+            user = Factory.build(:user_real_cc, (options[:user] || {}).merge({
               cc_register: 1,
               cc_brand: options[:cc_type],
               cc_full_name: "#{attrs[:first_name]} #{attrs[:last_name]}",
@@ -58,7 +58,7 @@ module Spec
         options[:locked]            = options[:admin].delete(:locked) || options[:locked]
 
         @current_admin ||= begin
-          admin = FactoryGirl.create(:admin, options[:admin] || {})
+          admin = Factory.create(:admin, options[:admin] || {})
           admin.accept_invitation if options[:accept_invitation] == true
           admin.lock! if options[:locked] == true
           admin
