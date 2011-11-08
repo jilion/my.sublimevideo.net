@@ -26,13 +26,6 @@ GIT
     useragent (0.2.3)
 
 GIT
-  remote: git://github.com/johnbintz/rack-livereload.git
-  revision: 17d4bed4eb4139282d31e6aacded94011e4bba1a
-  specs:
-    rack-livereload (0.0.1)
-      rack
-
-GIT
   remote: git://github.com/rymai/active_merchant.git
   revision: 66e1960276f3e7248ecfba969b7a6d341f1aab18
   branch: 3ds_from_ZenCocoon
@@ -324,6 +317,8 @@ GEM
     rack-cache (1.1)
       rack (>= 0.4)
     rack-google-analytics (0.9.2)
+    rack-livereload (0.1.0)
+      rack
     rack-mount (0.8.3)
       rack (>= 1.0.0)
     rack-private (0.1.8)
@@ -523,7 +518,7 @@ DEPENDENCIES
   public_suffix_service (~> 0.9.0)
   pusher (~> 0.8.3)
   rack-google-analytics (~> 0.9.2)
-  rack-livereload!
+  rack-livereload
   rack-private
   rack-ssl-enforcer (~> 0.2.3)
   rails (= 3.1.1)

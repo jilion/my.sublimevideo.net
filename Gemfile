@@ -125,7 +125,7 @@ group :development do
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
-  gem 'rack-livereload', git: 'git://github.com/johnbintz/rack-livereload.git'
+  gem 'rack-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
