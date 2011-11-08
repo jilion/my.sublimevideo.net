@@ -1,9 +1,4 @@
 .left
-  - if f.object.errors[:base].present?
-    .global_errors
-      - f.object.errors[:base].each do |error|
-        %p= error
-
   .entry.card
     .radio_wrap
       = f.radio_button :cc_brand, "visa", id: "user_cc_brand_visa"
