@@ -903,6 +903,7 @@ describe Transaction do
         end
 
         it "applies pending cc infos to the user" do
+          subject.user.cc_register           = 1
           subject.user.cc_brand              = 'master'
           subject.user.cc_full_name          = 'Remy Coutable'
           subject.user.cc_number             = '5399999999999999'
@@ -953,6 +954,7 @@ describe Transaction do
         end
 
         it "clears pending cc infos of the user" do
+          subject.user.cc_register           = 1
           subject.user.cc_brand              = 'master'
           subject.user.cc_full_name          = 'Remy Coutable'
           subject.user.cc_number             = '5399999999999999'
@@ -991,6 +993,7 @@ describe Transaction do
         end
 
         it "clears pending cc infos of the user" do
+          subject.user.cc_register           = 1
           subject.user.cc_brand              = 'master'
           subject.user.cc_full_name          = 'Remy Coutable'
           subject.user.cc_number             = '5399999999999999'
@@ -1030,6 +1033,7 @@ describe Transaction do
         end
 
         it "doesn't clear pending cc infos of the user" do
+          subject.user.cc_register           = 1
           subject.user.cc_brand              = 'master'
           subject.user.cc_full_name          = 'Remy Coutable'
           subject.user.cc_number             = '5399999999999999'
@@ -1051,6 +1055,7 @@ describe Transaction do
 
       context "first STATUS is 46, second is 9" do
         it "puts transaction in 'waiting_d3d' state, and then puts it in 'paid' state" do
+          subject.user.cc_register           = 1
           subject.user.cc_brand              = 'master'
           subject.user.cc_full_name          = 'Remy Coutable'
           subject.user.cc_number             = '5399999999999999'
@@ -1099,6 +1104,7 @@ describe Transaction do
 
       context "first STATUS is 51, second is 9" do
         it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
+          subject.user.cc_register           = 1
           subject.user.cc_brand              = 'master'
           subject.user.cc_full_name          = 'Remy Coutable'
           subject.user.cc_number             = '5399999999999999'
@@ -1146,6 +1152,7 @@ describe Transaction do
 
       context "first STATUS is 92, second is 9" do
         it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
+          subject.user.cc_register           = 1
           subject.user.cc_brand              = 'master'
           subject.user.cc_full_name          = 'Remy Coutable'
           subject.user.cc_number             = '5399999999999999'

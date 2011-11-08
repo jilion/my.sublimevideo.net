@@ -53,7 +53,7 @@ describe BillingMailer do
       @last_delivery.body.encoded.should include @transaction.user.full_name
       @last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved."
       @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/invoices/#{@invoice.to_param}"
-      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/support#billing"
+      @last_delivery.body.encoded.should include 'If you have any questions, please <a href="mailto:billing@sublimevideo.net">email us</a>.'
     end
   end
 
@@ -68,7 +68,7 @@ describe BillingMailer do
       @last_delivery.body.encoded.should include @transaction.user.full_name
       @last_delivery.body.encoded.should include "Your credit card could not be charged."
       @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites"
-      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/support#billing"
+      @last_delivery.body.encoded.should include 'If you have any questions, please <a href="mailto:billing@sublimevideo.net">email us</a>.'
     end
   end
 
