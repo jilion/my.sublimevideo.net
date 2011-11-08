@@ -975,8 +975,11 @@ describe Site do
 
     describe "#sponsor!" do
       describe "sponsor a site with a next plan" do
-        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site_not_in_trial) } }
-        subject { @site.reload; @site.next_cycle_plan_id = @free_plan.id; @site }
+        subject do
+          site = FactoryGirl.create(:site_not_in_trial)
+          site.next_cycle_plan_id = @free_plan.id
+          site
+        end
 
         it "changes the plan to sponsored plan" do
           subject.next_cycle_plan_id.should be_present
@@ -1101,9 +1104,9 @@ describe Site do
     describe "#recommended_plan" do
       before(:all) do
         Plan.delete_all
-        silver = FactoryGirl.create(:plan, name: "silver", video_views: 200_000)
+        @silver_plan = FactoryGirl.create(:plan, name: "silver", video_views: 200_000)
         @gold_plan = FactoryGirl.create(:plan, name: "gold", video_views: 1_000_000)
-        @site = FactoryGirl.create(:site, plan_id: silver.id)
+        @site = FactoryGirl.create(:site, plan_id: @silver_plan.id)
       end
       subject { @site }
 

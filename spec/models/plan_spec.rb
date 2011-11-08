@@ -62,7 +62,6 @@ describe Plan do
   describe "Class Methods" do
     describe ".create_custom" do
       it "should create new custom plan" do
-        Plan.delete_all
         expect { @plan = Plan.create_custom(name: 'bob', cycle: "month", video_views: 10**7, price: 999900) }.to change(Plan.custom_plans, :count).by(1)
         @plan.name.should == "custom - bob"
       end

@@ -53,10 +53,7 @@ Spork.prefork do
       PaperTrail.enabled = false
       @worker = Delayed::Worker.new(quiet: true)
       # Plans
-      @free_plan      = FactoryGirl.create(:free_plan, support_level: 0)
-      @paid_plan      = FactoryGirl.create(:plan, name: "silver", video_views: 3_000, support_level: 1)
-      @sponsored_plan = FactoryGirl.create(:sponsored_plan, support_level: 2)
-      @custom_plan    = FactoryGirl.create(:custom_plan, support_level: 2)
+      recreate_default_plans
     end
 
     config.before(:each) do
@@ -92,6 +89,13 @@ Spork.each_run do
     # config.include Shoulda::ActionController::Matchers
     config.include Devise::TestHelpers, :type => :controller
   end
+end
+
+def recreate_default_plans
+  @free_plan      = Factory.create(:free_plan, support_level: 0)
+  @paid_plan      = Factory.create(:plan, name: "silver", video_views: 3_000, support_level: 1)
+  @sponsored_plan = Factory.create(:sponsored_plan, support_level: 2)
+  @custom_plan    = Factory.create(:custom_plan, support_level: 2)
 end
 
 # Thanks to Jonas Pfenniger for this!
