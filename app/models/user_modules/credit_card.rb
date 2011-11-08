@@ -5,7 +5,7 @@ module UserModules::CreditCard
 
   included do
 
-    attr_accessor :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
+    attr_accessor :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
     attr_accessor :i18n_notice_and_alert, :d3d_html
 
     # validate :if => :any_cc_attrs?
@@ -61,7 +61,12 @@ module UserModules::CreditCard
     end
 
     def any_credit_card_attributes_present?
-      [cc_brand, cc_number, cc_full_name, cc_expiration_month, cc_expiration_year, cc_verification_value].any?(&:present?)
+      if cc_register.to_i == 1
+        [cc_brand, cc_number, cc_full_name, cc_expiration_month, cc_expiration_year, cc_verification_value].any?(&:present?)
+      else
+        reset_credit_card_attributes
+        false
+      end
     end
     alias :any_cc_attrs? :any_credit_card_attributes_present?
 
