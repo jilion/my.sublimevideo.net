@@ -4,11 +4,11 @@ describe UsageMonitoringMailer do
 
   before(:all) do
     @site = Factory.create(:site)
-    Factory.create(:plan, :price => @site.plan.price + 100)
+    Factory.create(:plan, price: @site.plan.price + 100)
   end
   subject { @site }
 
-  it_should_behave_like "common mailer checks", %w[plan_overused], :params => [Factory.create(:site)]
+  it_should_behave_like "common mailer checks", %w[plan_overused], params: Factory.create(:site)
 
   describe "#plan_overused" do
     before(:each) do
@@ -17,7 +17,7 @@ describe UsageMonitoringMailer do
     end
 
     it "should set subject" do
-      @last_delivery.subject.should eql "Peak Insurance activated for #{subject.hostname}"
+      @last_delivery.subject.should eq "Peak Insurance activated for #{subject.hostname}"
     end
 
     it "should set a body that contain the link to peak insurance docs" do
@@ -25,7 +25,7 @@ describe UsageMonitoringMailer do
     end
   end
 
-  it_should_behave_like "common mailer checks", %w[plan_upgrade_required], :params => [Factory.create(:site)]
+  it_should_behave_like "common mailer checks", %w[plan_upgrade_required], params: Factory.create(:site)
 
   describe "#plan_upgrade_required" do
     before(:each) do
@@ -34,7 +34,7 @@ describe UsageMonitoringMailer do
     end
 
     it "should set subject" do
-      @last_delivery.subject.should eql "You need to upgrade your plan for #{@site.hostname}"
+      @last_delivery.subject.should eq "You need to upgrade your plan for #{@site.hostname}"
     end
 
     it "should set a body that contain the link to edit the plan" do
