@@ -21,7 +21,7 @@ module LogsFileFormat
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
       analyze.frequency(:video_tags, :title => :video_tags,
         :category => lambda { |r| remove_timestamp(r[:path_query]) },
-        :if       => lambda { |r| gif_request?(r[:path_stem]) && countable_hit?(r) && good_token?(r[:path_query]) && view_event?(r[:path_query]) }
+        :if       => lambda { |r| gif_request?(r[:path_stem]) && countable_hit?(r) && good_token?(r[:path_query]) }
       )
       analyze.trackers
     end
@@ -39,10 +39,6 @@ module LogsFileFormat
 
     def self.good_token?(path_query)
       path_query =~ /t=([a-z0-9]{8})/
-    end
-
-    def self.view_event?(path_query)
-      path_query =~ /&e=s/
     end
 
   end
