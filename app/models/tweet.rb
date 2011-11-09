@@ -2,25 +2,25 @@
 class Tweet
   include Mongoid::Document
 
-  field :tweet_id,          :type => Integer # returned as id from Twitter
-  field :keywords,          :type => Array, :default => [] # ['sublimevideo', 'jilion'] for example
-  field :from_user_id,      :type => Integer
-  field :from_user,         :type => String
-  field :to_user_id,        :type => Integer
-  field :to_user,           :type => String
-  field :iso_language_code, :type => String
-  field :profile_image_url, :type => String
-  field :source,            :type => String
-  field :content,           :type => String   # returned as text from Twitter
-  field :tweeted_at,        :type => DateTime # returned as created_at from Twitter
-  field :retweets_count,    :type => Integer, :default => 0 # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
-  field :favorited,         :type => Boolean, :default => false # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
+  field :tweet_id,          type: Integer # returned as id from Twitter
+  field :keywords,          type: Array, default: [] # ['sublimevideo', 'jilion'] for example
+  field :from_user_id,      type: Integer
+  field :from_user,         type: String
+  field :to_user_id,        type: Integer
+  field :to_user,           type: String
+  field :iso_language_code, type: String
+  field :profile_image_url, type: String
+  field :source,            type: String
+  field :content,           type: String   # returned as text from Twitter
+  field :tweeted_at,        type: DateTime # returned as created_at from Twitter
+  field :retweets_count,    type: Integer, default: 0 # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
+  field :favorited,         type: Boolean, default: false # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
 
   index :tweeted_at
   index :keywords
 
-  belongs_to :retweeted_tweet, :class_name => "Tweet", :inverse_of => :retweets
-  has_many   :retweets, :class_name => "Tweet", :inverse_of => :retweeted_tweet
+  belongs_to :retweeted_tweet, class_name: "Tweet", inverse_of: :retweets
+  has_many   :retweets, class_name: "Tweet", inverse_of: :retweeted_tweet
 
   KEYWORDS = ["jilion", "sublimevideo", "aelios", "aeliosapp", "videojs", "jw player"]
 
@@ -37,8 +37,8 @@ class Tweet
   # = Validations =
   # ===============
 
-  validates :tweet_id, :from_user_id, :content, :tweeted_at, :presence => true
-  validates :tweet_id, :uniqueness => true
+  validates :tweet_id, :from_user_id, :content, :tweeted_at, presence: true
+  validates :tweet_id, uniqueness: true
 
   # =================
   # = Class Methods =
@@ -50,28 +50,28 @@ class Tweet
   end
 
   def self.save_new_tweets_and_sync_favorite_tweets
-    delay_save_new_tweets_and_sync_favorite_tweets
     return unless enough_remaining_twitter_calls?
 
     search = TwitterApi.search.new
 
     KEYWORDS.each do |keyword|
+      results_count = 0
       search.clear
       search.containing("\"#{keyword}\"").result_type("recent").per_page(100)
 
       begin
-        results = TwitterApi.with_rescue_and_retry(5) { search.fetch }
-
         search.fetch.each do |tweet|
+          results_count += 1
           if t = self.where(tweet_id: tweet.id).first
             t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
           else
             self.create_from_twitter_tweet!(tweet)
           end
         end
-      end while TwitterApi.with_rescue_and_retry(5) { search.fetch_next_page }
+      end while TwitterApi.with_rescue_and_retry(5) { results_count < 500 && search.fetch_next_page }
     end
     self.sync_favorite_tweets
+    delay_save_new_tweets_and_sync_favorite_tweets
   end
 
   def self.create_from_twitter_tweet!(tweet)
@@ -199,9 +199,9 @@ class Tweet
   #   end
   #   max_to_process_during_this_hour = (twitter_rate_limit_status.remaining_hits * 0.75).to_i
   #   # Rails.logger.info(max_to_process_during_this_hour)
-  #   # Rails.logger.info(Tweet.where(:tweeted_at => { "$gte" => 1.week.ago }).count)
+  #   # Rails.logger.info(Tweet.where(tweeted_at: { "$gte" => 1.week.ago }).count)
   #
-  #   Tweet.where(:tweeted_at => { "$gte" => 1.week.ago }).limit(max_to_process_during_this_hour).order_by(:id).all.each do |tweet|
+  #   Tweet.where(tweeted_at: { "$gte" => 1.week.ago }).limit(max_to_process_during_this_hour).order_by(:id).all.each do |tweet|
   #     twitter_retweets = Twitter.retweets(tweet.tweet_id, count: 100, trim_user: false)
   #     twitter_retweets.each do |twitter_retweet|
   #       # we should make an individual call for each new tweet in order to have the "from_user", "profile_image_url" etc.
