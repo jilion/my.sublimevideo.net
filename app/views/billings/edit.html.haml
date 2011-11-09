@@ -1,0 +1,26 @@
+= title_and_content_header("Update billing information")
+
+= form_for @user, url: [:billing], html: { class: "full_form" } do |f|
+
+  #billing_address
+    %h3.section_title Billing Address
+    = render 'users/billing_form_fields', f: f
+
+  #credit_card
+    - if @user.cc?
+      %h3.section_title Current credit card on file
+      #credit_card_summary= render 'billings/cc_summary', user: @user
+
+    %h3.section_title
+      - if @user.cc?
+        = "Update credit card"
+      - else
+        = "Register a credit card"
+
+    #credit_card_box
+      = f.hidden_field :cc_register, value: 1
+      = render 'fields', f: f
+
+  .entry.update
+    = f.submit 'Update', id: 'user_submit', class: "submit small_button"
+%p.small_note= raw "If you have a #{link_to "3-D Secure VISA", "http://www.visa.com/3-dsecure", onclick: "window.open(this); return false", class: "hl"} or #{link_to "3-D Secure MasterCard", "http://www.mastercard.com/securecode/", onclick: "window.open(this); return false", class: "hl"} we will charge your credit card with a small amount ($1.00) that we will refund immediately in order to authorize your new credit card."

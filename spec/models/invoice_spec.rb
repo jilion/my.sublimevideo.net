@@ -298,10 +298,11 @@ describe Invoice do
       subject { @invoice }
 
       describe "#set_customer_infos" do
-        its(:customer_full_name)    { should eql @invoice.user.full_name }
-        its(:customer_email)        { should eql @invoice.user.email }
-        its(:customer_country)      { should eql @invoice.user.country }
-        its(:customer_company_name) { should eql @invoice.user.company_name }
+        its(:customer_full_name)       { should eql @invoice.user.billing_name }
+        its(:customer_email)           { should eql @invoice.user.email }
+        its(:customer_country)         { should eql @invoice.user.billing_country }
+        its(:customer_company_name)    { should eql @invoice.user.company_name }
+        its(:customer_billing_address) { should eql @invoice.user.billing_address }
       end
 
       describe "#set_site_infos" do
@@ -314,7 +315,7 @@ describe Invoice do
 
         describe "succeed invoice with amount == 0" do
           before(:all) do
-            @user = Factory.create(:user, country: 'FR', balance: 2000)
+            @user = Factory.create(:user, billing_country: 'FR', balance: 2000)
             @site = Factory.build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
             @invoice.save!
@@ -329,7 +330,7 @@ describe Invoice do
 
         describe "#decrement_user_balance" do
           before(:all) do
-            @user = Factory.create(:user, country: 'FR', balance: 2000)
+            @user = Factory.create(:user, billing_country: 'FR', balance: 2000)
             @site = Factory.build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
             @invoice.save!
@@ -477,7 +478,7 @@ describe Invoice do
 
       describe "standard invoice" do
         before(:all) do
-          @user = Factory.create(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+          @user = Factory.create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
           Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
             @site    = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -502,7 +503,7 @@ describe Invoice do
       describe "with a site upgraded" do
         context "from a paid plan" do
           before(:all) do
-            @user = Factory.create(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+            @user = Factory.create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site       = Factory.create(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
               @paid_plan2 = Factory.create(:plan, cycle: "month", price: 3000)
@@ -534,7 +535,7 @@ describe Invoice do
 
         context "from a free plan" do
           before(:all) do
-            @user = Factory.create(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+            @user = Factory.create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site      = Factory.create(:site, user: @user, plan_id: @free_plan.id)
               @paid_plan = Factory.create(:plan, cycle: "month", price: 3000)
@@ -564,7 +565,7 @@ describe Invoice do
       describe "with a site downgraded" do
         context "from a paid plan" do
           before(:all) do
-            @user = Factory.create(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+            @user = Factory.create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(Time.utc(2011,5,1)) do
               @site       = Factory.create(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
               @paid_plan2 = Factory.create(:plan, cycle: "month", price: 500)
@@ -599,7 +600,7 @@ describe Invoice do
 
       describe "with a site created" do
         before(:all) do
-          @user    = Factory.create(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+          @user    = Factory.create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
           Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
             @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -615,7 +616,7 @@ describe Invoice do
 
       describe "with a Swiss user" do
         before(:all) do
-          @user    = Factory.create(:user, country: 'CH')
+          @user    = Factory.create(:user, billing_country: 'CH')
           @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
           @invoice = Invoice.construct(site: @site)
         end
@@ -630,7 +631,7 @@ describe Invoice do
       describe "with a user that has a balance" do
         context "balance < invoice amount" do
           before(:all) do
-            @user    = Factory.create(:user, country: 'FR', balance: 100)
+            @user    = Factory.create(:user, billing_country: 'FR', balance: 100)
             @site    = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
           end
@@ -643,7 +644,7 @@ describe Invoice do
 
         context "balance == invoice amount" do
           before(:all) do
-            @user    = Factory.create(:user, country: 'FR', balance: 1000)
+            @user    = Factory.create(:user, billing_country: 'FR', balance: 1000)
             @site    = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
           end
@@ -656,7 +657,7 @@ describe Invoice do
 
         context "balance > invoice amount" do
           before(:all) do
-            @user    = Factory.create(:user, country: 'FR', balance: 2000)
+            @user    = Factory.create(:user, billing_country: 'FR', balance: 2000)
             @site    = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
           end
@@ -754,6 +755,7 @@ end
 #  last_failed_at           :datetime
 #  renew                    :boolean         default(FALSE)
 #  balance_deduction_amount :integer         default(0)
+#  customer_billing_address :text
 #
 # Indexes
 #

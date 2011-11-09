@@ -42,8 +42,10 @@ MySublimeVideo::Application.routes.draw do
     end
   end
 
-  resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
-  match '/card' => redirect('/card/edit'), :via => :get
+  scope "account" do
+    resource :billing, :only => [:edit, :update]
+  end
+  match '/card' => redirect('/account/billing/edit'), :via => :get
 
   resources :invoices, :only => :show do
     put :retry_all, :on => :collection

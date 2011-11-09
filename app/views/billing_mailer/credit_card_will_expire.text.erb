@@ -1,10 +1,10 @@
-<%= t("mailer.intro_name", name: @user.full_name) %>
+<%= t("mailer.intro_name", name: @user.name) %>
 
 Your credit card will expire at the end of this month.
 
 Please update your credit card information via the following link:
 
-https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
+https://<%= ActionMailer::Base.default_url_options[:host] %>/account/billing/edit
 
 If you have any questions, please <%= mail_to "billing@sublimevideo.net", "email us" %>.
 

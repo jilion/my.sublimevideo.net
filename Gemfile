@@ -63,6 +63,7 @@ gem 'useragent',             :git => 'git://github.com/jilion/useragent.git'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.6.2'
+gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.0.1', :require => 'page_rankr'
 gem 'twitter',               '~> 1.7.2'
 gem 'settingslogic',         '~> 2.0.6'

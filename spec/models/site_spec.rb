@@ -828,13 +828,13 @@ describe Site do
       subject { Factory.build(:new_site, dev_hostnames: nil) }
 
       describe "#set_user_attributes"  do
-        subject { Factory.create(:user, first_name: "Bob") }
+        subject { Factory.create(:user, name: "Bob") }
 
         it "should set only current_password" do
-          subject.first_name.should eql "Bob"
+          subject.name.should eql "Bob"
           site = Factory.create(:site, user: subject, plan_id: @paid_plan.id)
-          site.update_attributes(user_attributes: { first_name: "John", 'current_password' => '123456' })
-          site.user.first_name.should eql "Bob"
+          site.update_attributes(user_attributes: { name: "John", 'current_password' => '123456' })
+          site.user.name.should eql "Bob"
           site.user.current_password.should eql "123456"
         end
       end

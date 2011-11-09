@@ -132,7 +132,7 @@ module UserModules::CreditCard
       options = options.merge({
         store: cc_alias,
         email: email,
-        billing_address: { zip: postal_code, country: country },
+        billing_address: { address1: billing_address_1, zip: billing_postal_code, city: billing_city, country: billing_country },
         d3d: true,
         paramplus: "CHECK_CC_USER_ID=#{self.id}"
       })

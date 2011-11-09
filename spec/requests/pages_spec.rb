@@ -49,8 +49,8 @@ feature "Pages" do
       end
 
       scenario "can visit the edit credit card page" do
-        visit "/card/edit"
-        current_url.should =~ %r(^http://[^/]+/card/edit$)
+        visit "/account/billing/edit"
+        current_url.should =~ %r(^http://[^/]+/account/billing/edit$)
       end
 
       scenario "and an expired credit card, should be able to visit the credit card form page" do
@@ -64,7 +64,6 @@ feature "Pages" do
         page.should have_content('Your account is suspended')
         page.should have_content("This credit card is expired")
         page.should have_content("Visa ending in 1111")
-        page.should have_content("Expired on:")
         page.should have_content("Update credit card")
         page.should have_content("Please pay the following invoice in order to reactivate your account:")
         page.should have_content("$19.90 on #{I18n.l(@invoice.created_at, :format => :d_b_Y)}.")
@@ -73,7 +72,7 @@ feature "Pages" do
 
         click_link "Update credit card"
 
-        current_url.should =~ %r(^http://[^/]+/card/edit$)
+        current_url.should =~ %r(^http://[^/]+/account/billing/edit$)
       end
 
       scenario "and a valid credit card with 1 or more failed invoices" do

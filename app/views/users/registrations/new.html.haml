@@ -13,47 +13,10 @@
     = f.password_field :password, :class => "text show_password", :placeholder => "Password", :required => true
 
   .entry
-    .first_name.left_field
-      = f.label :first_name, "First name", :class => "icon"
-      = f.text_field :first_name, :class => "text", :placeholder => "First name", :required => true
-    .last_name.right_field
-      = f.label :last_name, "Last name", :class => "icon"
-      = f.text_field :last_name, :class => "text no_icon", :placeholder => "Last name", :required => true
+    .name
+      = f.label :name, "Name", :class => "icon"
+      = f.text_field :name, :class => "text", :placeholder => "Name", :required => true
     .spacer
-
-  .entry.select
-    .country.left_field
-      = f.label :country, "Country", :class => "icon"
-      = f.country_select :country, options_for_select("Country", :selected => "Country")
-    .last_name.right_field
-      = f.label :postal_code, "Zip or Postal Code", :class => "icon"
-      = f.text_field :postal_code, :class => "text no_icon", :placeholder => "Zip or Postal Code", :required => true
-    .spacer
-  .optional_fields
-    -# %h4= "Optional fields"
-    .entry.company_info.select
-      .company_name.left_field
-        = f.label :company_name, "Company name", :class => "icon"
-        = f.text_field :company_name, :class => "text no_icon", :placeholder => "Company name"
-      .company_employees.right_field
-        = f.label :company_employees, "Company size", :class => "icon"
-        = f.select :company_employees, options_for_select(["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"])
-
-      .spacer
-    .entry.use
-      %label.main= "Use of SublimeVideo:"
-      .checkbox_wrap
-        - if resource.errors.include?(:use)
-          .inline_errors
-            %span= resource.errors[:use].first
-        = f.check_box :use_personal
-        = f.label :use_personal, "Personal"
-      .checkbox_wrap
-        = f.check_box :use_company
-        = f.label :use_company, "For my company"
-      .checkbox_wrap
-        = f.check_box :use_clients
-        = f.label :use_clients, "For my clients"
 
   .entry.terms
     .checkbox_wrap
@@ -63,26 +26,3 @@
   .entry.submit.signup
     = f.submit "Sign Up"
     .spacer
-
-  #signup_right
-    %h3.title= "What people say"
-    %ul#twitter_quotes
-      - random_favorite_tweets.each do |tweet|
-        %li
-          .left
-            = image_tag tweet.bigger_profile_image, :alt => clean_tweet_from_user(tweet), :size => "60x60"
-          .right
-            %blockquote= clean_tweet_text(tweet, strip_cc: true, strip_urls: true)
-          .spacer
-          %p.quote_info= raw "—#{clean_tweet_from_user(tweet)}, #{link_to l(tweet.created_at, :format => :tweet, :ordinal_day => tweet.created_at.day.ordinalize), "https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}"}"
-
-  -#   .sublimevideo_headline
-  -#     -# = link_to (image_tag "/images/embed/signup/player_icon.png", :alt => "SublimeVideo Player"), "http://sublimevideo.net"
-  -#     %p= raw "#{link_to "SublimeVideo", "http://sublimevideo.net"} is a unique cloud-based HTML5 video player that gives you the power to reach your audience no matter what device or browser they are using. #{link_to "Learn more", "http://sublimevideo.net"}."
-  -# #signup_quotes
-  -#   %blockquote.wired
-  -#     = "A uniform, cross-browser, multiple-codec compatible, HTML5 video-embedding solution."
-  -#   %p.author.wired= "Webmonkey, Wired, 2010."
-  -#   %blockquote.oreilly
-  -#     = "Wow. Sublime Video HTML5 video player. Looks awesome."
-  -#   %p.author.oreilly= "Tim O'Reilly, 2010."

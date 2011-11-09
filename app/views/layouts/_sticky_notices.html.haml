@@ -4,10 +4,8 @@
     %ul
       - if current_user.cc_expire_this_month? || current_user.cc_expired?
         %li
-          - edit_cc_link = link_to(t('user.credit_card.update_it'), edit_credit_card_path)
           - if current_user.cc_expired?
             = t('user.credit_card.expired')
-            = raw t('app.please_link', link: edit_cc_link)
           - else
-            = raw t('user.credit_card.will_expire', link: edit_cc_link)
-            = raw t('app.please_link', link: edit_cc_link) + " " + t('user.credit_card.prevent_charging_problem')
+            = raw t('user.credit_card.will_expire')
+          = raw t('user.credit_card.prevent_charging_problem', link: link_to(t('app.update_it'), edit_credit_card_path))

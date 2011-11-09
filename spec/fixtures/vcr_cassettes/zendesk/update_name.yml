@@ -3,7 +3,7 @@
   request: !ruby/struct:VCR::Request
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: ! '{"EmailAddress":"email48@user.com","Name":"John Coutable","CustomFields":[{"Key":"user_id","Value":54},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
+    body: ! '{"EmailAddress":"email47@user.com","Name":"Remy Doe","CustomFields":[{"Key":"user_id","Value":53},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
     headers:
       user-agent:
       - createsend-ruby-0.7.8
@@ -31,16 +31,16 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 16:20:59 GMT
+      - Fri, 12 Aug 2011 16:20:56 GMT
       content-length:
       - '18'
-    body: ! '"email48@user.com"'
+    body: ! '"email47@user.com"'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email48@user.com
-    body: ! '{"EmailAddress":"email48@user.com","Name":"John Coutable","CustomFields":[],"Resubscribe":true}'
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email47@user.com
+    body: ! '{"EmailAddress":"email47@user.com","Name":"Remy Doe","CustomFields":[],"Resubscribe":true}'
     headers:
       user-agent:
       - createsend-ruby-0.7.8
@@ -66,7 +66,7 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 16:21:00 GMT
+      - Fri, 12 Aug 2011 16:20:56 GMT
       content-length:
       - '0'
     body: !!null 
@@ -75,7 +75,7 @@
   request: !ruby/struct:VCR::Request
     method: :put
     uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.xml
-    body: <user><name>John Coutable</name><is-verified>true</is-verified></user>
+    body: <user><name>Remy Doe</name><is-verified>true</is-verified></user>
     headers:
       content-type:
       - application/xml
@@ -87,7 +87,7 @@
       server:
       - nginx/0.8.53
       date:
-      - Fri, 12 Aug 2011 16:21:01 GMT
+      - Fri, 12 Aug 2011 16:20:57 GMT
       content-type:
       - application/xml; charset=utf-8
       connection:
@@ -97,11 +97,11 @@
       p3p:
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       x-runtime:
-      - '338'
+      - '425'
       content-length:
       - '1'
       set-cookie:
-      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlNmJlNDE2YTBiZjQxM2IxMWQwODg0MWRlYzE2ZjlkMDgiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH7VJFTjoVYXV0aGVudGljYXRlZF9hdGwrB%2B1SRU4iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVlaDhscG9waTktdWJxbmJ5OgxhY2NvdW50aQI3qQ%3D%3D--30e022cde633e40b36c2ee2df71c283c47ad036f;
+      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlMmNkNzk2NWQ3NjE3MTQ5NGZiNTAzMGNkMGY2YmFmYzkiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH6VJFTjoVYXV0aGVudGljYXRlZF9hdGwrB%2BlSRU4iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVieGJscHA2c3ctcm51MWU4OgxhY2NvdW50aQI3qQ%3D%3D--12fa03b0fdfc0c7ea6dd30d629fc02dddfc03e1b;
         path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control:
@@ -122,7 +122,7 @@
       server:
       - nginx/0.8.53
       date:
-      - Fri, 12 Aug 2011 16:21:01 GMT
+      - Fri, 12 Aug 2011 16:20:58 GMT
       content-type:
       - application/json; charset=utf-8
       connection:
@@ -130,20 +130,20 @@
       status:
       - 200 OK
       etag:
-      - ! '"0aaeeacf2ecd742d587a29c31a538cd6"'
+      - ! '"b5757d30c87e1940811fd4d8fbda0faa"'
       p3p:
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       x-runtime:
-      - '37'
+      - '350'
       content-length:
-      - '494'
+      - '489'
       set-cookie:
-      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlYWE0MTg4MWIyMTc0OWIzNWE2OGRlNzVjYWQ3YzM1NWIiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH7VJFTjoVYXV0aGVudGljYXRlZF9hdGwrB%2B1SRU4iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRobHlscHlyOTNuOXdxdGc6DGFjY291bnRpAjep--ea6fa602331fbcb947854cdb75845d7fc9b62cd1;
+      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlMzI2YzUwODVhNTlmNzFmYjRjMzg5OWIzNzEzNmIyN2MiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH6lJFTjoVYXV0aGVudGljYXRlZF9hdGwrB%2BpSRU4iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVlaDNscG1nM2ktejJmcWQwOgxhY2NvdW50aQI3qQ%3D%3D--cdc31e73fdb8a259b19747bca4eb27d75fc7e723;
         path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control:
       - private, max-age=0, must-revalidate
-    body: ! '{"name":"John Coutable","locale_id":null,"openid_url":null,"created_at":"2011/05/17
+    body: ! '{"name":"Remy","locale_id":null,"openid_url":null,"created_at":"2011/05/17
       13:54:12 +0200","current_tags":"","last_login":null,"details":null,"photo_url":"http://sublimevideo.zendesk.com/images/types/user_sm.png","updated_at":"2011/08/12
-      18:21:01 +0200","notes":null,"external_id":null,"is_verified":true,"restriction_id":4,"id":59438671,"email":"email3@user.com","phone":null,"is_active":true,"time_zone":"Bern","roles":0,"organization_id":null,"groups":[],"uses_12_hour_clock":false}'
+      18:20:57 +0200","notes":null,"external_id":null,"is_verified":true,"restriction_id":4,"id":59438671,"email":"email3@user.com","phone":null,"is_active":true,"time_zone":"Bern","roles":0,"organization_id":null,"groups":[],"uses_12_hour_clock":false}'
     http_version: '1.1'

@@ -4,73 +4,73 @@ module Spec
 
       def nil_cc_attributes
         {
-          :cc_register           => 1,
-          :cc_brand              => nil,
-          :cc_full_name          => nil,
-          :cc_number             => nil,
-          :cc_expiration_month   => nil,
-          :cc_expiration_year    => nil,
-          :cc_verification_value => nil
+          cc_register:           1,
+          cc_brand:              nil,
+          cc_full_name:          nil,
+          cc_number:             nil,
+          cc_expiration_month:   nil,
+          cc_expiration_year:    nil,
+          cc_verification_value: nil
         }
       end
 
       def valid_cc_attributes
         {
-          :cc_register           => 1,
-          :cc_brand              => 'visa',
-          :cc_full_name          => 'John Doe Huber',
-          :cc_number             => '4111111111111111',
-          :cc_expiration_month   => 1.year.from_now.month,
-          :cc_expiration_year    => 1.year.from_now.year,
-          :cc_verification_value => '111'
+          cc_register:           1,
+          cc_brand:              'visa',
+          cc_full_name:          'John Doe Huber',
+          cc_number:             '4111111111111111',
+          cc_expiration_month:   1.year.from_now.month,
+          cc_expiration_year:    1.year.from_now.year,
+          cc_verification_value: '111'
         }
       end
 
       def valid_cc_attributes_master
         {
-          :cc_register           => 1,
-          :cc_brand              => 'master',
-          :cc_full_name          => 'Bob Doe Hicks',
-          :cc_number             => '5399999999999999',
-          :cc_expiration_month   => 2.years.from_now.month,
-          :cc_expiration_year    => 2.years.from_now.year,
-          :cc_verification_value => '111'
+          cc_register:           1,
+          cc_brand:              'master',
+          cc_full_name:          'Bob Doe Hicks',
+          cc_number:             '5399999999999999',
+          cc_expiration_month:   2.years.from_now.month,
+          cc_expiration_year:    2.years.from_now.year,
+          cc_verification_value: '111'
         }
       end
 
       def valid_cc_d3d_attributes
         {
-          :cc_register           => 1,
-          :cc_brand              => 'visa',
-          :cc_full_name          => 'John Doe Huber',
-          :cc_number             => '4000000000000002',
-          :cc_expiration_month   => 1.year.from_now.month,
-          :cc_expiration_year    => 1.year.from_now.year,
-          :cc_verification_value => '111'
+          cc_register:           1,
+          cc_brand:              'visa',
+          cc_full_name:          'John Doe Huber',
+          cc_number:             '4000000000000002',
+          cc_expiration_month:   1.year.from_now.month,
+          cc_expiration_year:    1.year.from_now.year,
+          cc_verification_value: '111'
         }
       end
 
       def invalid_cc_attributes
         {
-          :cc_register           => 1,
-          :cc_brand              => 'visa',
-          :cc_full_name          => 'John Doe Huber',
-          :cc_number             => '4111113333333333',
-          :cc_expiration_month   => 1.year.from_now.month,
-          :cc_expiration_year    => 1.year.from_now.year,
-          :cc_verification_value => '111'
+          cc_register:           1,
+          cc_brand:              'visa',
+          cc_full_name:          'John Doe Huber',
+          cc_number:             '4111113333333333',
+          cc_expiration_month:   1.year.from_now.month,
+          cc_expiration_year:    1.year.from_now.year,
+          cc_verification_value: '111'
         }
       end
 
       def uncertain_cc_attributes
         {
-          :cc_register           => 1,
-          :cc_brand              => 'visa',
-          :cc_full_name          => 'John Doe Huber',
-          :cc_number             => '4111116666666666',
-          :cc_expiration_month   => 1.year.from_now.month,
-          :cc_expiration_year    => 1.year.from_now.year,
-          :cc_verification_value => '111'
+          cc_register:           1,
+          cc_brand:              'visa',
+          cc_full_name:          'John Doe Huber',
+          cc_number:             '4111116666666666',
+          cc_expiration_month:   1.year.from_now.month,
+          cc_expiration_year:    1.year.from_now.year,
+          cc_verification_value: '111'
         }
       end
 

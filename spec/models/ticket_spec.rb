@@ -12,7 +12,7 @@ require 'spec_helper'
 
 describe Ticket do
   before(:all) do
-    @user = Factory.create(:user, first_name: "Remy")
+    @user = Factory.create(:user, name: "Remy")
     @site = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
     @loser = Factory.create(:user)
     Factory.create(:site, user: @loser, plan_id: @free_plan.id)
@@ -160,7 +160,7 @@ describe Ticket do
 <ticket>
   <subject>I have a request!</subject>
   <description>I have a request this is a long text!</description>
-  <requester-name>#{@user.full_name}</requester-name>
+  <requester-name>#{@user.name}</requester-name>
   <requester-email>#{@user.email}</requester-email>
 </ticket>
 EOF
@@ -175,7 +175,7 @@ EOF
   <subject>I have a request!</subject>
   <description>I have a request this is a long text!</description>
   <set-tags>vip</set-tags>
-  <requester-name>#{@vip.full_name}</requester-name>
+  <requester-name>#{@vip.name}</requester-name>
   <requester-email>#{@vip.email}</requester-email>
 </ticket>
 EOF

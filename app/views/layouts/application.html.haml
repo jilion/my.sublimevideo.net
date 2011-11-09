@@ -27,7 +27,6 @@
     #global
       = render 'layouts/header'
       #main_wrap
-        = render 'layouts/sticky_notices' if user_signed_in?
         #main
           #rounded_corners_fix
             #white_halo
@@ -43,5 +42,5 @@
 
     = yield :bottom
     - if user_signed_in?
-      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.full_name, current_user.id, Rails.env.production?)
+      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name, current_user.id, Rails.env.production?)
     = render 'layouts/gosquared' if Rails.env.production?

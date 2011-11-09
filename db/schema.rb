@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111101125136) do
+ActiveRecord::Schema.define(:version => 20111109102818) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -107,6 +107,7 @@ ActiveRecord::Schema.define(:version => 20111101125136) do
     t.datetime "last_failed_at"
     t.boolean  "renew",                    :default => false
     t.integer  "balance_deduction_amount", :default => 0
+    t.text     "customer_billing_address"
   end
 
   add_index "invoices", ["reference"], :name => "index_invoices_on_reference", :unique => true
@@ -279,8 +280,8 @@ ActiveRecord::Schema.define(:version => 20111101125136) do
     t.integer  "enthusiast_id"
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "postal_code"
-    t.string   "country"
+    t.string   "billing_postal_code"
+    t.string   "billing_country"
     t.boolean  "use_personal"
     t.boolean  "use_company"
     t.boolean  "use_clients"
@@ -300,6 +301,12 @@ ActiveRecord::Schema.define(:version => 20111101125136) do
     t.integer  "total_invoiced_amount",                 :default => 0
     t.integer  "balance",                               :default => 0
     t.text     "hidden_notice_ids"
+    t.string   "name"
+    t.string   "billing_name"
+    t.string   "billing_address_1"
+    t.string   "billing_address_2"
+    t.string   "billing_city"
+    t.string   "billing_region"
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true

@@ -25,17 +25,17 @@
 
           - if !current_user.cc?
             %p
-              = raw t("app.please_link", link: link_to("add a valid credit card", edit_credit_card_path, class: "hl"))
+              = raw t("app.please_link", link: link_to("add a valid credit card", [:edit, :billing], class: "hl"))
               = t('user.payment.retry_here')
           - elsif current_user.cc_expired?
             %p
               = t('user.credit_card.expired')
-              = raw t("app.please_link", link: link_to("update your credit card", edit_credit_card_path, class: "hl"))
+              = raw t("app.please_link", link: link_to("update your credit card", [:edit, :billing], class: "hl"))
               = t('user.payment.retry_here')
           - else
             %p
-              = "If necessary"
-              = link_to "update your credit card", edit_credit_card_path, class: "hl"
+              = "If necessary,"
+              = link_to "update your credit card", [:edit, :billing], class: "hl"
               = "and then retry the payment via the button below."
 
             = form_for @site, url: retry_site_invoices_path(site_id: @site.to_param), html: { method: 'put' } do |f|

@@ -1,8 +1,4 @@
-%p
-  = raw invoice.customer_full_name
-  = " (#{invoice.customer_email})" if invoice.customer_email.present?
--# 
--# - if invoice.customer_company_name?
--#   %p= invoice.customer_company_name
--# 
--# %p= Country[invoice.customer_country].name
+- if invoice.customer_billing_address?
+  = simple_format(current_user.billing_address)
+- else
+  %p= invoice.customer_full_name

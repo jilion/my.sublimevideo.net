@@ -94,7 +94,7 @@ feature "Sites" do
         #   choose "plan_silver_year"
         #   has_checked_field?("plan_silver_year").should be_true
         #   fill_in "Domain", with: "rymai.com"
-        #   set_credit_card(d3d: true)
+        #   set_credit_card(type: 'd3d')
         #   VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create" }
         #   @worker.work_off
         #   site = @current_user.sites.last
@@ -138,7 +138,7 @@ feature "Sites" do
         #   choose "plan_silver_year"
         #   has_checked_field?("plan_silver_year").should be_true
         #   fill_in "Domain", with: "rymai.com"
-        #   set_credit_card(d3d: true)
+        #   set_credit_card(type: 'd3d')
         #   VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create site" }
         #   @worker.work_off
         #   site = @current_user.sites.last

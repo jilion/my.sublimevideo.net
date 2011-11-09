@@ -1,4 +1,4 @@
-module CreditCardsHelper
+module BillingsHelper
 
   # def reset_credit_card_attributes(user)
   #   unless user.any_cc_attrs?
