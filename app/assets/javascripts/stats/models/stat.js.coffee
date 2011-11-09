@@ -124,9 +124,11 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
 
   periodType: -> 'seconds'
 
-  updateEachSeconds: ->
+  updateEachSeconds: =>
+    console.log new Date()
+    console.log this.length
     if this.length > 60
-      setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
+      # setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
       if this.length == 61 # no seconds stats added
         new_id = (this.last().time() + 1000)/1000
         this.add({ id: new_id }, silent: true)

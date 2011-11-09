@@ -128,7 +128,9 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
 
       MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
         MSVStats.statsSeconds.fetch
-          success: -> setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
+          success: ->
+            setTimeout(( -> setInterval(MSVStats.statsSeconds.updateEachSeconds, 1000)), 1000)
+            # setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
 
       MSVStats.presenceChannel.bind 'stats', (data) ->
         MSVStats.statsSeconds.merge(data.site, silent: true)
