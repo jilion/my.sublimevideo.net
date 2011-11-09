@@ -9,24 +9,24 @@ class Plan < ActiveRecord::Base
   SUPPORT_LEVELS        = %w[forum email vip]
 
   attr_accessible :name, :cycle, :video_views, :price, :support_level, :stats_retention_days
-  uniquify :token, :chars => Array('a'..'z') + Array('0'..'9'), :length => 12
+  uniquify :token, chars: Array('a'..'z') + Array('0'..'9'), length: 12
 
   # ================
   # = Associations =
   # ================
 
   has_many :sites
-  has_many :invoice_items, :as => :item
+  has_many :invoice_items, as: :item
 
   # ===============
   # = Validations =
   # ===============
 
-  validates :name,          :presence => true, :uniqueness => { :scope => :cycle }
-  validates :video_views,   :presence => true, :numericality => true
-  validates :price,         :presence => true, :numericality => true
-  validates :cycle,         :presence => true, :inclusion => CYCLES
-  validates :support_level, :presence => true, :inclusion => (0...SUPPORT_LEVELS.size)
+  validates :name,          presence: true, uniqueness: { scope: :cycle }
+  validates :video_views,   presence: true, numericality: true
+  validates :price,         presence: true, numericality: true
+  validates :cycle,         presence: true, inclusion: CYCLES
+  validates :support_level, presence: true, inclusion: (0...SUPPORT_LEVELS.size)
 
   # ==========
   # = Scopes =
@@ -44,7 +44,7 @@ class Plan < ActiveRecord::Base
   class << self
 
     def create_custom(attributes)
-      create(attributes.merge(:name => "custom - #{attributes[:name]}"))
+      create(attributes.merge(name: "custom - #{attributes[:name]}"))
     end
 
     %w[free sponsored].each do |plan_name|
