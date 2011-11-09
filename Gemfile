@@ -127,7 +127,7 @@ group :development do
   gem 'guard-livereload'
   gem 'rack-livereload'
   gem 'guard-spork'
-  gem 'guard-rspec'
+  gem 'guard-rspec', git: 'git://github.com/guard/guard-rspec.git'
   gem 'guard-coffeescript'
   gem 'guard-jasmine'
   gem 'guard-yard'
