@@ -108,13 +108,13 @@ class MSVStats.Views.VVView extends Backbone.View
         name: 'Page visits'
         data: @stats.customPluck('pv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
         pointInterval: MSVStats.period.pointInterval()
-        pointStart: @stats.first().time()
+        pointStart: MSVStats.period.startTime()
         },{
         type: 'spline'
         name: 'Video views'
         data: @stats.customPluck('vv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
         pointInterval: MSVStats.period.pointInterval()
-        pointStart: @stats.first().time()
+        pointStart: MSVStats.period.startTime()
       }]
       xAxis:
         lineWidth: 0

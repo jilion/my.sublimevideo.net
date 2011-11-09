@@ -1,27 +1,32 @@
-<table>
-  <tr>
-    <th></th>
-    <th>Name</th>
-    <th>Loads</th>
-    <th>Views</th>
-    <th></th>
-  </tr>
+<% if @videos.length == 0: %>
+  <p>No data</p>
+<% else: %>
 
-  <% for video in @videos.models: %>
+  <table>
     <tr>
-      <td>
-        <a class="sublime" href=""><img src="<%= video.get('p') %>" alt="<%= video.get('n') %>posterframe" width='30' height='30' /></a>
-        <video style="display:none" class="sublime zoom" width="640" height="360" poster="<%= video.get('p') %>" preload="none">
-          <% console.log video %>
-          <% for source in video.currentSources(): %>
-            <source src="<%= source.u %>" <%= if source.q != 'base' then "data-quality='#{source.q}'" %> />
-          <% end %>
-        </video>
-      </td>
-      <td><%= video.get('n') %></td>
-      <td><%= Highcharts.numberFormat(video.get('vl_sum'), 0) %></td>
-      <td><%= Highcharts.numberFormat(video.get('vv_sum'), 0) %></td>
+      <th></th>
+      <th>Name</th>
+      <th><a id='video_loads' class='sort_button<%= ' active' if @sortBy == 'vl' %>'>Loads</a></th>
+      <th><a id='video_views' class='sort_button<%= ' active' if @sortBy == 'vv' %>'>Views</a></th>
+      <th></th>
     </tr>
+
+    <% for video in @videos.models: %>
+      <tr>
+        <td><a class="play"><img id="img-<%= video.id %>" src="<%= video.get('p') %>" alt="<%= video.get('n') %> posterframe" width='30' height='30' /></a></td>
+        <td><%= video.get('n') %></td>
+        <td><%= Highcharts.numberFormat(video.vlTotal(), 0) %></td>
+        <td><%= Highcharts.numberFormat(video.vvTotal(), 0) %></td>
+        <td><div class="sparkline" id="sparkline_<%= video.id %>"/></td>
+      </tr>
+    <% end %>
+
+  </table>
+
+  <% if @count == 20: %>
+    <a id='show_less'>Show less</a>
+  <% else if @count == 5 && @videos.total > 5: %>
+    <a id='show_more'>Show more</a>
   <% end %>
 
-</table>
+<% end %>

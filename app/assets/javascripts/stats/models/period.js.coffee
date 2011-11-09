@@ -41,6 +41,12 @@ class MSVStats.Models.Period extends Backbone.Model
       this.stats().at(this.normalizeStatsIndex(index)).time()
     else
       0
+      
+  startIndex: ->
+    this.normalizeStatsIndex(this.get('startIndex'))
+
+  endIndex: ->
+    this.normalizeStatsIndex(this.get('endIndex'))
 
   realEndTime: (index = this.get('endIndex')) ->
     this.endTime(index) + this.pointInterval() - 1000 if this.stats()?
@@ -58,7 +64,7 @@ class MSVStats.Models.Period extends Backbone.Model
     endIndex   = MSVStats.statsDays.indexOf(MSVStats.statsDays.get(endTime / 1000))
     this.set(type: 'days', startIndex: startIndex, endIndex: endIndex, options)
 
-  autosetPeriod: (callback) ->
+  autosetPeriod: ->
     MSVStats.statsDays.trigger('init') # for planUsageView
 
     if MSVStats.statsMinutes.vvTotal() > 0
@@ -69,6 +75,3 @@ class MSVStats.Models.Period extends Backbone.Model
       this.setPeriod type: 'days', startIndex: -30, endIndex: -1
     else # last 365 days
       this.setPeriod type: 'days', startIndex: -365, endIndex: -1
-
-    if callback && typeof(callback) == "function"
-      callback()

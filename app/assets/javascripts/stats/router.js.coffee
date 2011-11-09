@@ -5,6 +5,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initSparkline()
     this.initModels()
     this.initPusherTick()
+    sublimevideo.load()
 
     new MSVStats.Views.PageTitleView
       el: 'h2'
@@ -58,11 +59,14 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
 
-    new MSVStats.Views.TopVideosView
+    MSVStats.topVideosView = new MSVStats.Views.TopVideosView
       el: '#top_videos_content'
       period: MSVStats.period
       videos: MSVStats.videos
-    
+
+    MSVStats.playableVideoView = new MSVStats.Views.PlayableVideoView
+      el: '#playable_video'
+
     new MSVStats.Views.BPView
       el: '#bp_content'
       statsSeconds: MSVStats.statsSeconds
@@ -97,13 +101,17 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.period = new MSVStats.Models.Period()
     MSVStats.period.bind 'change', ->
       MSVStats.Routers.StatsRouter.setHighchartsUTC()
-      MSVStats.videos.fetch() if MSVStats.period.get('type')?
-      
+      if MSVStats.period.get('type')?
+        MSVStats.videos.fetch
+          success: -> 
+            console.log "Videos startTime: #{MSVStats.videos.startTime}"
+            console.log "Period startTime: #{MSVStats.period.startTime()}"
+
     MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
     MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
     MSVStats.statsHours   = new MSVStats.Collections.StatsHours()
     MSVStats.statsDays    = new MSVStats.Collections.StatsDays()
-    
+
     MSVStats.videos = new MSVStats.Collections.Videos()
 
   initPusherTick: ->
@@ -144,8 +152,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
 
   syncFetchSuccess: ->
     if MSVStats.Collections.Stats.allPresent()
-      MSVStats.period.autosetPeriod ->
-        # MSVStats.videos.fetch()
+      MSVStats.period.autosetPeriod()
 
   initHighcharts: ->
     Highcharts.setOptions
@@ -153,9 +160,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
         useUTC: false
 
   @setHighchartsUTC: (useUTC) ->
-    # console.log useUTC
-    # console.log MSVStats.period.get('type') == 'days'
-    # console.lgo if useUTC? then MSVStats.period.get('type') == 'days' else useUTC
     Highcharts.setOptions
       global:
         useUTC: if useUTC? then useUTC else MSVStats.period.get('type') == 'days'

@@ -59,7 +59,7 @@ class Stat::Video
   #
   def self.top_videos(site_token, options = {})
     from, to   = period_intervals(site_token, options[:period]) unless options[:from] || options[:to]
-    options    = options.symbolize_keys.reverse_merge(period: 'days', view_type: 'vv', count: 5, from: from, to: to)
+    options    = options.symbolize_keys.reverse_merge(period: 'days', sort_by: 'vv', count: 5, from: from, to: to)
     period_sym = options[:period].first.to_sym
     options[:from], options[:to] = options[:from].to_i, options[:to].to_i
 
@@ -71,17 +71,21 @@ class Stat::Video
     videos = collection.group(
       key: :u,
       cond: conditions,
-      initial: { vv_sum: 0, vl_sum: 0, vv_hash: {} },
+      initial: { vv_sum: 0, vl_sum: 0, vv_hash: {}, vl_hash: {} },
       reduce: js_reduce_for_sum(period_sym)
     )
 
     total = videos.size
 
-    videos.sort_by! { |video| video["#{options[:view_type]}_sum"] }.reverse!
-    videos = videos.take(options[:count])
+    Rails.logger.debug videos.map { |v| v["#{options[:sort_by]}_sum"] }
+
+    videos.sort_by! { |video| video["#{options[:sort_by]}_sum"] }.reverse!
+
+    count  = options[:period] == 'seconds' ? 30 : options[:count].to_i
+    videos = videos.take(count)
 
     add_video_tags_metadata!(site_token, videos)
-    add_vv_array!(videos, options)
+    fill_missing_values!(videos, options)
     { videos: videos, total: total }.merge(options.slice(:period, :from, :to))
   end
 
@@ -91,12 +95,14 @@ private
     fields = %w[m e] # billable fields: main, extra
     reduce_function = ["function(doc, prev) {"]
     fields.inject(reduce_function) do |js, field_to_merge|
-      js << "vv_#{field_to_merge} = isNaN(doc.vv.#{field_to_merge}) ? 0 : doc.vv.#{field_to_merge};"
-      js << "prev.vv_sum += vv_#{field_to_merge};"
-      js << "prev.vl_sum += isNaN(doc.vl.#{field_to_merge}) ? 0 : doc.vl.#{field_to_merge};"
+      js << "vl_#{field_to_merge} = doc.vl ? (isNaN(doc.vl.#{field_to_merge}) ? 0 : doc.vl.#{field_to_merge}) : 0;"
+      js << "vv_#{field_to_merge} = doc.vv ? (isNaN(doc.vv.#{field_to_merge}) ? 0 : doc.vv.#{field_to_merge}) : 0;"
+      js << "prev.vv_sum += vv_#{field_to_merge};" if period_sym != :s
+      js << "prev.vl_sum += vl_#{field_to_merge};" if period_sym != :s
       js
     end
     reduce_function << "prev.vv_hash[doc.#{period_sym}.getTime() / 1000] = vv_m + vv_e;"
+    reduce_function << "prev.vl_hash[doc.#{period_sym}.getTime() / 1000] = vl_m + vl_e;" if period_sym == :s
 
     (reduce_function << "}").join(' ')
   end
@@ -113,16 +119,24 @@ private
     videos
   end
 
-  def self.add_vv_array!(videos, options = {})
+  def self.fill_missing_values!(videos, options = {})
     step = 1.send(options[:period])
+    period_is_seconds = options[:period] == 'seconds'
     videos.each do |video|
       video["vv_array"] = []
+      video["vl_array"] = [] if period_is_seconds
       from_step = options[:from]
       while from_step <= options[:to]
         video["vv_array"] << video["vv_hash"][from_step.to_s].to_i
+        video["vl_array"] << video["vl_hash"][from_step.to_s].to_i if period_is_seconds
         from_step += step
       end
       video.delete("vv_hash")
+      if period_is_seconds
+        video.delete("vv_sum")
+        video.delete("vl_sum")
+        video.delete("vl_hash")
+      end
     end
   end
 

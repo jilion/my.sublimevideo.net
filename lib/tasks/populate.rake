@@ -82,7 +82,7 @@ namespace :db do
     task :recurring_stats => :environment do
       timed { empty_tables(Stat::Site, Stat::Video, VideoTag) }
       timed { create_stats(argv_site_token) }
-      # timed { recurring_stats_update(argv_site_token) }
+      timed { recurring_stats_update(argv_site_token) }
     end
 
     desc "Create fake plans"
@@ -383,15 +383,16 @@ end
 def create_stats(site_token=nil)
   sites = site_token ? [Site.find_by_token(site_token)] : Site.all
   sites.each do |site|
+    videos_count = 6
     # Video Tags
-    6.times do |video_i|
+    videos_count.times do |video_i|
       VideoTag.create(st: site.token, u: "video#{video_i}",
         uo:	"s",
         n: "Video #{video_i}",
         no: "s",
         cs:	["83cb4c27","af355ec8","1d1e3c63"],
         p: "http://sublimevideo.net/demo/dartmoor1_800.jpg",
-        z: "640x360",
+        z: "600x252",
         s: {
           "83cb4c27" => { u: "http://medias.jilion.com/sublimevideo/dartmoor1_800.mp4", q: "base", f: "mp4" },
           "af355ec8" => { u: "http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4", q: "mobile", f: "ogg" },
@@ -406,7 +407,7 @@ def create_stats(site_token=nil)
       Stat::Site.collection.update(
         { t: site.token, d: time }, { "$inc" => random_site_stats_inc(24 * 60 * 60) }, upsert: true
       )
-      6.times do |video_i|
+      videos_count.times do |video_i|
         Stat::Video.collection.update(
           { st: site.token, u: "video#{video_i}", d: time }, { "$inc" => random_video_stats_inc(24 * 60 * 60) }, upsert: true
         )
@@ -418,7 +419,7 @@ def create_stats(site_token=nil)
       Stat::Site.collection.update(
         { t: site.token, h: time }, { "$inc" => random_site_stats_inc(60 * 60) }, upsert: true
       )
-      6.times do |video_i|
+      videos_count.times do |video_i|
         Stat::Video.collection.update(
           { st: site.token, u: "video#{video_i}", h: time }, { "$inc" => random_video_stats_inc(60 * 60) }, upsert: true
         )
@@ -430,7 +431,7 @@ def create_stats(site_token=nil)
       Stat::Site.collection.update(
         { t: site.token, m: time }, { "$inc" => random_site_stats_inc(60) }, upsert: true
       )
-      6.times do |video_i|
+      videos_count.times do |video_i|
         Stat::Video.collection.update(
           { st: site.token, u: "video#{video_i}", m: time }, { "$inc" => random_video_stats_inc(60) }, upsert: true
         )
@@ -442,7 +443,7 @@ def create_stats(site_token=nil)
       Stat::Site.collection.update(
         { t: site.token, s: time }, { "$inc" => random_site_stats_inc(1) }, upsert: true
       )
-      6.times do |video_i|
+      videos_count.times do |video_i|
         Stat::Video.collection.update(
           { st: site.token, u: "video#{video_i}", s: time }, { "$inc" => random_video_stats_inc(1) }, upsert: true
         )
@@ -499,6 +500,29 @@ def recurring_site_stats_update(user_id)
         Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
         json = { "vv" => 1 }
         Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+      end
+    end
+  end
+end
+
+def recurring_stats_update(site_token)
+  site      = Site.find_by_token(site_token)
+  video_uid = 'video0'
+  EM.run do
+    EM.add_periodic_timer(1) do
+      EM.defer do
+        second = Time.now.change(usec: 0).to_time
+        hits   = second.to_i%10
+        Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
+        Stat::Video.collection.update({ st: site.token, u: video_uid, s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
+        json = {
+          site: { id: second.to_i, vv: hits },
+          videos: [
+            { u: 'video0', vv: hits }
+          ]
+        }
+        Pusher["presence-#{site.token}"].trigger_async('stats', json)
+        puts "Stats updated at #{second}"
       end
     end
   end
