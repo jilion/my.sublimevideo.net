@@ -101,6 +101,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 2.7.0'
   # gem 'ruby-debug19'
 
+  gem 'rack-livereload'
   gem 'rails-dev-tweaks', '~> 0.5.0'
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'ffaker'
@@ -125,7 +126,6 @@ group :development do
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
-  gem 'rack-livereload'
   gem 'guard-spork'
   gem 'guard-rspec', git: 'git://github.com/guard/guard-rspec.git'
   gem 'guard-coffeescript'
