@@ -171,7 +171,7 @@ def create_admins
   end
 end
 
-def create_users(user_id=nil)
+def create_users(user_id = nil)
   created_at_array = (Date.new(2011,1,1)..100.days.ago.to_date).to_a
   disable_perform_deliveries do
     (user_id ? [user_id] : 0.upto(BASE_USERS.count - 1)).each do |i|
@@ -184,21 +184,20 @@ def create_users(user_id=nil)
         email: BASE_USERS[i][1],
         password: "123456",
         use_personal: true,
-        terms_and_conditions: "1"
-      )
-      user.created_at   = created_at_array.sample
-      user.confirmed_at = user.created_at
-      user.save!(validate: false)
-      user.attributes = {
+        terms_and_conditions: "1",
+        cc_register: 1,
         cc_brand: 'visa',
         cc_full_name: BASE_USERS[i][0],
         cc_number: "4111111111111111",
         cc_verification_value: "111",
         cc_expiration_month: 2.years.from_now.month,
         cc_expiration_year: 2.years.from_now.year
-      }
-      user.register_credit_card_on_file
-      user.save!
+      )
+      user.created_at   = created_at_array.sample
+      user.confirmed_at = user.created_at
+      user.save!(validate: false)
+      user.apply_pending_credit_card_info
+      user.save
       puts "User #{BASE_USERS[i][1]}:123456"
     end
 
@@ -227,18 +226,19 @@ def create_sites
   custom_plans   = Plan.custom_plans.all
 
   subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
-  created_at_array = (Date.new(2010,1,1)..(1.month.ago - 2.days).to_date).to_a
+  created_at_array = (2.months.ago.to_date..Date.today).to_a
 
   require 'invoice_item/plan'
 
   User.all.each do |user|
     BASE_SITES.each do |hostname|
+      plan_id = rand > 0.4 ? (rand > 0.8 ? custom_plans.sample.token : standard_plans.sample.id) : unpaid_plans.sample.id
       site = user.sites.build(
-        plan_id: rand > 0.4 ? (rand > 0.8 ? custom_plans.sample.token : standard_plans.sample.id) : unpaid_plans.sample.id,
+        plan_id: plan_id,
         hostname: hostname
       )
       Timecop.travel(created_at_array.sample) do
-        site.save_without_password_validation
+        site.without_password_validation { site.save! }
       end
 
       if rand > 0.5
@@ -368,6 +368,7 @@ def create_site_stats(user_id=nil)
           upsert: true
         )
       end
+      site.update_last_30_days_counters
     end
   end
   puts "Fake site(s) stats generated"

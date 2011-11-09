@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe User do
@@ -747,6 +748,52 @@ describe User do
         subject { Factory.create(:user, country: 'US') }
 
         its(:vat?) { should be_false }
+      end
+    end
+
+    describe "#full_name" do
+      subject { Factory.create(:user, first_name: "Rémy", last_name: "Coutable") }
+
+      its(:full_name) { should eq "Rémy Coutable" }
+    end
+
+    describe "#billing_address" do
+      context "delegates to snail" do
+        subject { Factory.create(:user, street_1: "EPFL Innovation Square", street_2: "PSE-D", postal_code: "1015", city: "New York", region: "NY", country: "US") }
+
+        its(:billing_address) { should eq "John Doe\nEPFL Innovation Square\nPSE-D\nNew York NY  1015\nUNITED STATES" }
+      end
+    end
+
+    describe "#billing_address_incomplete?" do
+      context "complete billing address" do
+        subject { Factory.create(:user, street_1: "EPFL Innovation Square", street_2: "PSE-D", postal_code: "1015", city: "New York", region: "NY", country: "US") }
+
+        it { should_not be_billing_address_incomplete }
+
+        context "billing address is missing street_2" do
+          subject { Factory.create(:user, street_1: "EPFL Innovation Square", street_2: "", postal_code: "1015", city: "New York", region: "NY", country: "US") }
+
+          it { should_not be_billing_address_incomplete }
+        end
+
+        context "billing address is missing region" do
+          subject { Factory.create(:user, street_1: "EPFL Innovation Square", street_2: "PSE-D", postal_code: "1015", city: "New York", region: "", country: "US") }
+
+          it { should_not be_billing_address_incomplete }
+        end
+      end
+
+      context "billing address is missing street_1" do
+        subject { Factory.create(:user, street_1: "", street_2: "PSE-D", postal_code: "1015", city: "New York", region: "NY", country: "US") }
+
+        it { should be_billing_address_incomplete }
+      end
+
+      context "billing address is missing city" do
+        subject { Factory.create(:user, street_1: "EPFL Innovation Square", street_2: "PSE-D", postal_code: "1015", city: "", region: "NY", country: "US") }
+
+        it { should be_billing_address_incomplete }
       end
     end
 

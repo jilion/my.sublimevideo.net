@@ -14,10 +14,11 @@ class User < ActiveRecord::Base
   liquid_methods :email, :first_name, :last_name, :full_name
 
   attr_accessor :terms_and_conditions, :use, :current_password
-  attr_accessible :first_name, :last_name, :email, :remember_me, :password, :current_password, :postal_code, :country,
+  attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
+                  :first_name, :last_name, :street_1, :street_2, :postal_code, :city, :region, :country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
-                  :newsletter, :terms_and_conditions, :hidden_notice_ids
+                  :newsletter, :terms_and_conditions
   # Credit card
   # cc_register is a flag to indicate if the CC should be recorded or not
   attr_accessible :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
@@ -103,7 +104,7 @@ class User < ActiveRecord::Base
 
   # Devise overriding
   # avoid the "not active yet" flash message to be displayed for archived users!
-  def self.find_for_authentication(conditions={})
+  def self.find_for_authentication(conditions = {})
     where(conditions).where{state != 'archived'}.first
   end
 
@@ -117,12 +118,12 @@ class User < ActiveRecord::Base
 
   def self.suspend(user_id)
     user = find(user_id)
-    user.suspend!
+    user.suspend
   end
 
   def self.unsuspend(user_id)
     user = find(user_id)
-    user.unsuspend!
+    user.unsuspend
   end
 
   # ====================
@@ -163,6 +164,22 @@ class User < ActiveRecord::Base
 
   def full_name
     first_name.to_s + ' ' + last_name.to_s
+  end
+
+  def billing_address
+    Snail.new(
+      name:        full_name,
+      line_1:      street_1,
+      line_2:      street_2,
+      postal_code: postal_code,
+      city:        city,
+      region:      region,
+      country:     Country[country].name
+    ).to_s
+  end
+
+  def billing_address_incomplete?
+    [street_1, postal_code, city, country].any?(&:blank?)
   end
 
   def support

@@ -2,24 +2,29 @@
   %h3.section_title Billing Info
 
   %h4 Billing Address
+  - if current_user.billing_address_incomplete?
+    %p.alert
+      = t("user.billing_address_incomplete")
+      %br
+      = raw t('app.please_link', link: link_to(t('app.update_it'), edit_credit_card_path)) + "."
 
-  %p
-    / Billing address here
+  = simple_format(current_user.billing_address)
 
   %p= link_to "#{current_user.cc? ? 'Update' : 'Register'} billing address", [:edit, :credit_card]
 
   %h4 Credit Card
   - if current_user.cc?
-    - if current_user.cc_expired?
-      %p.alert= t("user.credit_card.expired_long")
-    %p.card{ :class => current_user.cc_type }<
-      = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
-    %p
-      - if current_user.cc_expired?
-        Expired
-      - else
-        Will expire
-      = " on: #{l(current_user.cc_expire_on, :format => :month_fullyear)}"
+    - if current_user.cc_expire_this_month? || current_user.cc_expired?
+      %p.alert
+        - if current_user.cc_expired?
+          = t("user.credit_card.expired_long")
+        - elsif current_user.cc_expire_this_month?
+          = t('user.credit_card.will_expire')
+        %br
+        = raw t('user.credit_card.prevent_charging_problem', link: link_to(t('app.update_it'), edit_credit_card_path))
+
+    = render 'credit_cards/summary'
+
   - else
     %p No credit card on file.
 

@@ -1,46 +1,43 @@
 = title_and_content_header("My Account")
 
 .content_left
-  = render 'users/form'
-  .spacer
-
-  = form_for @user, :url => [:users], :html => { :method => :put, :class => "main_form section", :id => "edit_credentials", "data-password-protected" => true, "data-password-state" => 'current' } do |f|
+  = form_for @user, url: [:users], html: { method: :put, class: "main_form section", id: "edit_credentials", "data-password-protected" => true, "data-password-state" => 'current' } do |f|
     - if params[:action] == 'update' && @user.errors[:current_password].present?
-      = password_box :resource => @user, :f => f, :cancel_url => [:edit, :user_registration], :password_state => "current"
+      = password_box resource: @user, f: f, cancel_url: [:edit, :user_registration], password_state: "current"
 
-    %h3.section_title= "Email & Password"
-    .entry.email
-      = f.label :email, "Email", :class => "icon"
-      = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
-    %p.note= "Leave blank if you don't want to change it"
-    .entry.password
-      = f.label :password, "New Password", :class => "icon"
-      = f.password_field :password, :class => "text show_password", :placeholder => "New password", :autocomplete => "off", :value => params[:user] && params[:user][:password]
+    = render 'users/basic_infos_form_fields', f: f
 
     .entry.update
-      = f.submit "Update", :class => "submit small_button", :id => "user_credentials_submit"
+      = f.submit "Update", class: "submit small_button", id: "user_credentials_submit"
+
+  = form_for @user, url: [:users], html: { method: :put, class: "main_form section" } do |f|
+    = render 'users/other_infos_form_fields', f: f
+
+    .entry.update
+      = f.submit "Update", id: 'user_submit', class: "submit small_button"
+  .spacer
 
   - if current_user.email =~ /@jilion.com$/
     %h3.section_title= link_to "API authorizations and applications (alpha)", [:client_applications]
-
   .spacer
 
 .content_right
   = render 'users/credit_card_infos'
+  = render 'users/balance_infos'
 
   - if current_user.archivable?
     #delete_account
       %h3.section_title= "Delete account"
-      = form_for @user, :url => "/account", :html => { :method => :delete, "data-password-protected" => true } do |f|
+      = form_for @user, url: "/account", html: { method: :delete, "data-password-protected" => true } do |f|
         - if params[:action] == 'destroy' && @user.errors[:current_password].present?
-          = password_box :resource => @user, :f => f, :cancel_url => [:edit, :user_registration]
+          = password_box resource: @user, f: f, cancel_url: [:edit, :user_registration]
         %p= "Please understand that:"
         %ul
-          %li= raw "All your #{link_to "sites", sites_path, :class => "hl"} will be deleted."
+          %li= raw "All your #{link_to "sites", sites_path, class: "hl"} will be deleted."
           %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
           %li= "We do not offer refunds."
         .entry.delete
-          = f.submit "Delete account", :class => "submit link_looks delete"
+          = f.submit "Delete account", class: "submit link_looks delete"
 
   .spacer
 .spacer

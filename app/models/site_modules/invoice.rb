@@ -4,7 +4,7 @@ module SiteModules::Invoice
   module ClassMethods
 
     def activate_or_downgrade_sites_leaving_trial
-      Site.not_in_trial.billable.where(first_paid_plan_started_at: nil).find_each(:batch_size => 100) do |site|
+      Site.not_in_trial.billable.where(first_paid_plan_started_at: nil).find_each(batch_size: 100) do |site|
         if site.user.credit_card?
           site.first_paid_plan_started_at = Time.now.utc
           site.pend_plan_changes

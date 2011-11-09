@@ -298,10 +298,11 @@ describe Invoice do
       subject { @invoice }
 
       describe "#set_customer_infos" do
-        its(:customer_full_name)    { should eql @invoice.user.full_name }
-        its(:customer_email)        { should eql @invoice.user.email }
-        its(:customer_country)      { should eql @invoice.user.country }
-        its(:customer_company_name) { should eql @invoice.user.company_name }
+        its(:customer_full_name)       { should eql @invoice.user.full_name }
+        its(:customer_email)           { should eql @invoice.user.email }
+        its(:customer_country)         { should eql @invoice.user.country }
+        its(:customer_company_name)    { should eql @invoice.user.company_name }
+        its(:customer_billing_address) { should eql @invoice.user.billing_address }
       end
 
       describe "#set_site_infos" do

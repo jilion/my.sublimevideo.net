@@ -1,9 +1,19 @@
-= title_and_content_header("Update credit card")
+= title_and_content_header("Update billing information")
 
-#credit_card
-  = form_for @user, url: [:credit_card], html: { class: "full_form" } do |f|
-    = f.hidden_field :cc_register, value: 1
-    = render 'fields', f: f
-    .entry.update
-      = f.submit current_user.cc? ? 'Update' : 'Register', id: 'user_submit', class: "submit small_button"
-  %p.small_note= raw "If you have a #{link_to "3-D Secure VISA", "http://www.visa.com/3-dsecure", onclick: "window.open(this); return false", class: "hl"} or #{link_to "3-D Secure MasterCard", "http://www.mastercard.com/securecode/", onclick: "window.open(this); return false", class: "hl"} we will charge your credit card with a small amount ($1.00) that we will refund immediately in order to authorize your new credit card."
+= form_for @user, url: [:credit_card], html: { class: "full_form" } do |f|
+
+  #billing_address
+    %h3.section_title Billing Address
+    = render 'users/billing_form_fields', f: f
+
+  #credit_card
+    %h3.section_title Credit Card Information
+
+    = button_tag "V", id: "credit_card_form_toggle"
+
+    #credit_card_box{ style: 'display:none' }
+      = render 'fields', f: f
+
+  .entry.update
+    = f.submit current_user.cc? ? 'Update' : 'Register', id: 'user_submit', class: "submit small_button"
+%p.small_note= raw "If you have a #{link_to "3-D Secure VISA", "http://www.visa.com/3-dsecure", onclick: "window.open(this); return false", class: "hl"} or #{link_to "3-D Secure MasterCard", "http://www.mastercard.com/securecode/", onclick: "window.open(this); return false", class: "hl"} we will charge your credit card with a small amount ($1.00) that we will refund immediately in order to authorize your new credit card."

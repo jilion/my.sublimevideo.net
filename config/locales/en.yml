@@ -13,12 +13,14 @@ en:
       month_fullyear: "%B %Y"
       Y_m_d: "%Y/%m/%d"
       d_b_Y: "%d %b %Y"
+      b_Y: "%b %Y"
       year_month_day: "%Y %b %d"
 
   date:
     formats:
       default: "%B %e, %Y"
       small:   "%m/%d/%Y"
+      b_Y:     "%b %Y"
       month_fullyear: "%B %Y"
 
   number:
