@@ -222,7 +222,7 @@ describe Stat::Site do
       Site.stub(:find_by_token).and_return(@mock_site)
     end
 
-    describe "with seconds period", :focus do
+    describe "with seconds period" do
       subject { JSON.parse(Stat::Site.json(@site.token, 'seconds')) }
       before(:each) { Timecop.travel(@second) }
 
