@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 gem 'rails',                 '3.1.1'
 
 gem 'prototype-rails'
-gem 'jquery-rails', git: 'git://github.com/evanwalsh/jquery-rails.git' # Jquery 1.7
+gem 'jquery-rails'
 gem 'rails-backbone'
 
 # Databases
