@@ -495,11 +495,11 @@ def recurring_site_stats_update(user_id)
         second = Time.now.change(usec: 0).to_time
         site = sites.order(:hostname).first()
         json = { "pv" => 1, "bp" => { "saf-osx" => 1 } }
-        Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+        Pusher["private-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
         json = { "md" => { "f" => { "d" => 1 }, "h" => { "d" => 1 } } }
-        Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+        Pusher["private-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
         json = { "vv" => 1 }
-        Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+        Pusher["private-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
       end
     end
   end
@@ -524,7 +524,7 @@ def recurring_stats_update(site_token)
               { u: 'video0', vv: hits }
             ]
           }
-          Pusher["presence-#{site.token}"].trigger_async('stats', json)
+          Pusher["private-#{site.token}"].trigger_async('stats', json)
           puts "Stats updated at #{second}"
         end
       end

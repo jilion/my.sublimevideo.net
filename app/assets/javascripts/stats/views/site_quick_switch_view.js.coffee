@@ -29,7 +29,7 @@ class MSVStats.Views.SiteQuickSwitchView extends Backbone.View
 
     if newSelectedToken isnt currentSelectedToken
       $('#site_quick_switch_trigger').text $(event.target).text()
-      MSVStats.pusher.unsubscribe("presence-#{currentSelectedToken}")
+      MSVStats.pusher.unsubscribe("private-#{currentSelectedToken}")
       MSVStats.statsRouter.navigate("sites/#{newSelectedToken}/stats", true)
 
     false

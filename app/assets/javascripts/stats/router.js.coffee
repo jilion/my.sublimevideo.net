@@ -128,7 +128,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
 
   initPusherStats: ->
     unless MSVStats.sites.selectedSite.inFreePlan()
-      MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
+      MSVStats.presenceChannel = MSVStats.pusher.subscribe("private-#{MSVStats.selectedSiteToken}")
       MSVStats.presenceChannel.bind 'stats', (data) ->
         MSVStats.statsSeconds.merge(data.site, silent: true)
 
