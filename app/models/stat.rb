@@ -96,8 +96,8 @@ module Stat
     def period_intervals(site_token, period)
       case period
       when 'seconds'
-        to    = Time.now.change(usec: 0).utc
-        from  = to - 60.seconds # pass 61 seconds
+        to    = 1.second.ago.change(usec: 0).utc
+        from  = to - 59.seconds
       when 'minutes'
         last_minute_stat = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last
         to   = last_minute_stat.try(:m) || 1.minute.ago.change(sec: 0)
@@ -221,7 +221,7 @@ module Stat
       end
     end
     begin
-      json = {}
+      json = { m: true }
       json[:h] = true if log.hour == log.minute
       json[:d] = true if log.day == log.hour
       Pusher["stats"].trigger('tick', json)

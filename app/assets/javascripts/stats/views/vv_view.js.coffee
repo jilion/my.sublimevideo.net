@@ -100,17 +100,41 @@ class MSVStats.Views.VVView extends Backbone.View
           states:
             hover:
               lineWidth: 2
+        column:
+          animation: false
+          shadow: false
+          borderWidth: 0
+          showInLegend: false
+          allowPointSelect: false
+          stickyTracking: false
+          lineWidth: 2
+          marker:
+            # enabled: false
+            radius: 1
+            fillColor: null
+            lineColor: null
+            lineWidth: 2
+            states:
+              hover:
+                # enabled: true
+                radius: 1
+                fillColor: null
+                lineColor: null
+                lineWidth: 6
+          states:
+            hover:
+              lineWidth: 2
           # dataGrouping:
           #   groupPixelWidth: 1
           #   smoothed: true
       series: [{
-        type: 'spline'
+        type: @stats.chartType()
         name: 'Page visits'
         data: @stats.customPluck('pv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
         pointInterval: MSVStats.period.pointInterval()
         pointStart: MSVStats.period.startTime()
         },{
-        type: 'spline'
+        type: @stats.chartType()
         name: 'Video views'
         data: @stats.customPluck('vv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
         pointInterval: MSVStats.period.pointInterval()

@@ -103,9 +103,9 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.Routers.StatsRouter.setHighchartsUTC()
       if MSVStats.period.get('type')?
         MSVStats.videos.fetch
-          success: -> 
-            console.log "Videos startTime: #{MSVStats.videos.startTime}"
-            console.log "Period startTime: #{MSVStats.period.startTime()}"
+          success: ->
+            # console.log "Videos startTime: #{MSVStats.videos.startTime}"
+            # console.log "Period startTime: #{MSVStats.period.startTime()}"
 
     MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
     MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
@@ -117,21 +117,18 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
   initPusherTick: ->
     MSVStats.statsChannel = MSVStats.pusher.subscribe("stats")
     MSVStats.statsChannel.bind 'tick', (data) ->
-      MSVStats.statsMinutes.fetch()
-      MSVStats.statsHours.fetch() if data.h
-      MSVStats.statsDays.fetch() if data.d
-      MSVStats.videos.fetch()
+      MSVStats.statsMinutes.fetch() if data.m
+      MSVStats.statsHours.fetch()   if data.h
+      MSVStats.statsDays.fetch()    if data.d
+      if data.s
+        unless MSVStats.sites.selectedSite.inFreePlan()
+          MSVStats.statsSeconds.updateSeconds(data.s * 1000)
+      else
+        MSVStats.videos.fetch()
 
   initPusherStats: ->
     unless MSVStats.sites.selectedSite.inFreePlan()
       MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
-
-      MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
-        MSVStats.statsSeconds.fetch
-          success: ->
-            setTimeout(( -> setInterval(MSVStats.statsSeconds.updateEachSeconds, 1000)), 1000)
-            # setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
-
       MSVStats.presenceChannel.bind 'stats', (data) ->
         MSVStats.statsSeconds.merge(data.site, silent: true)
 

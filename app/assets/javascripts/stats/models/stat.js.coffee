@@ -16,6 +16,8 @@ class MSVStats.Models.Stat extends Backbone.Model
 class MSVStats.Collections.Stats extends Backbone.Collection
   model: MSVStats.Models.Stat
 
+  chartType: -> 'spline'
+
   pvTotal: (startIndex, endIndex) ->
     this.customSum('pv', startIndex, endIndex)
 
@@ -122,18 +124,45 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
   url: ->
     "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=seconds"
 
+  # chartType: -> 'column'
+  chartType: -> 'spline'
   periodType: -> 'seconds'
 
-  updateEachSeconds: =>
-    console.log new Date()
-    console.log this.length
-    if this.length > 60
-      # setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
-      if this.length == 61 # no seconds stats added
-        new_id = (this.last().time() + 1000)/1000
-        this.add({ id: new_id }, silent: true)
+  updateSeconds: (secondTime) =>
+    # console.log "secondTime: #{new Date(secondTime)}"
+    # console.log "lastStatTime: #{new Date(this.lastStatTime())}"
+    # console.log "length: #{this.length}"
+    # console.log "length: #{this.models.length}"
+    # console.log this.customPluck('vv', 0, 59)
+
+    currentStatId = secondTime / 1000
+    unless this.get(currentStatId)?
+      this.add({ id: currentStatId }, silent: true)
+
+    if this.length == 3
+      this.fetchOldSeconds()
+    if this.length > 62
+      this.removeOldStats(62)
+
+  fetchOldSeconds: =>
+    $.get this.url(), (data) =>
+      for stat in data.reverse()
+        if (statSecond = MSVStats.statsSeconds.get(stat.id))?
+          statSecond.set(stat, silent: true)
+        else
+          MSVStats.statsSeconds.add(stat, silent: true, at: 0)
+      this.removeOldStats(62)
+
+  removeOldStats: (count) ->
+    while this.length > count
       this.remove(this.first(), silent: true)
-      this.trigger('change', this)
+    this.trigger('change', this)
+
+  isShowable: -> this.length >= 62
+
+  lastStatTime: ->
+    last = this.last()
+    if last? then last.time() else 0
 
 class MSVStats.Collections.StatsMinutes extends MSVStats.Collections.Stats
   url: ->

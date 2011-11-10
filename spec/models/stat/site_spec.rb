@@ -222,20 +222,18 @@ describe Stat::Site do
       Site.stub(:find_by_token).and_return(@mock_site)
     end
 
-    describe "with seconds period" do
+    describe "with seconds period", :focus do
       subject { JSON.parse(Stat::Site.json(@site.token, 'seconds')) }
       before(:each) { Timecop.travel(@second) }
 
-      its(:size) { should eql(61) }
+      its(:size) { should eql(60) }
       it { subject[0]['vv'].should eql(2) }
       it { subject[1]['vv'].should eql(3) }
       it { subject[58]['vv'].should eql(nil) }
       it { subject[59]['vv'].should eql(4) }
-      it { subject[60]['vv'].should eql(5) }
 
       it { subject[0]['id'].should eql((@second - 60.seconds).to_i) }
-      it { subject[1]['id'].should eql((@second - 59.seconds).to_i) }
-      it { subject[60]['id'].should eql(@second.to_i) }
+      it { subject[59]['id'].should eql((@second - 1.second).to_i) }
     end
 
     describe "with minutes period" do
