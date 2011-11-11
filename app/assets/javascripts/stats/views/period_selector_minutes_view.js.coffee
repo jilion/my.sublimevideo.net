@@ -26,4 +26,4 @@ class MSVStats.Views.PeriodSelectorMinutesView extends Backbone.View
       fillColor: if this.isSelected() then '#0046ff' else '#00b1ff'
       
   isSelected: ->
-    @options.period.get('type') == 'minutes'
+    @options.period.isMinutes()

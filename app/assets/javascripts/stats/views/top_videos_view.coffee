@@ -17,7 +17,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     this.render()
 
   render: ->
-    if MSVStats.videos.isSamePeriod()
+    if MSVStats.videos.isSamePeriod() && MSVStats.videos.total?
       $(@el).show()
       $('#top_videos').data().spinner.stop()
 
@@ -34,9 +34,11 @@ class MSVStats.Views.TopVideosView extends Backbone.View
 
   renderSparklines: ->
     for video in MSVStats.videos.models
-      $("#sparkline_#{video.id}").sparkline video.get('vv_array'),
+      $("#sparkline_#{video.id}").sparkline video.get('vv_array').slice(0,60),
         width: '150px'
         height: '25px'
+        lineColor: '#0046ff'
+        fillColor: '#0046ff'
 
   updateTitle: ->
     title = switch @sortBy

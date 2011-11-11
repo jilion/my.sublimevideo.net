@@ -129,12 +129,6 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
   periodType: -> 'seconds'
 
   updateSeconds: (secondTime) =>
-    # console.log "secondTime: #{new Date(secondTime)}"
-    # console.log "lastStatTime: #{new Date(this.lastStatTime())}"
-    # console.log "length: #{this.length}"
-    # console.log "length: #{this.models.length}"
-    # console.log this.customPluck('vv', 0, 59)
-
     currentStatId = secondTime / 1000
     unless this.get(currentStatId)?
       this.add({ id: currentStatId }, silent: true)
@@ -156,7 +150,7 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
   removeOldStats: (count) ->
     while this.length > count
       this.remove(this.first(), silent: true)
-    this.trigger('change', this)
+      this.trigger('change', this)
 
   isShowable: -> this.length >= 62
 

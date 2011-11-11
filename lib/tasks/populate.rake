@@ -521,7 +521,7 @@ def recurring_stats_update(site_token)
           json = {
             site: { id: second.to_i, vv: hits },
             videos: [
-              { u: 'video0', vv: hits }
+              { id: second.to_i, u: 'video0', n: 'Video 0', vv: hits }
             ]
           }
           Pusher["private-#{site.token}"].trigger_async('stats', json)

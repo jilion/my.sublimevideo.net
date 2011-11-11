@@ -74,7 +74,7 @@ class MSVStats.Views.VVView extends Backbone.View
         enabled: false
       # rangeSelector:
       #   buttons: []
-      #   enabled: MSVStats.period.get('type') == 'days'
+      #   enabled: MSVStats.period.isDays()
       plotOptions:
         spline:
           animation: false

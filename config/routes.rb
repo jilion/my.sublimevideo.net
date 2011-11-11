@@ -41,6 +41,8 @@ MySublimeVideo::Application.routes.draw do
       put :trial, :on => :collection
       get :videos, :on => :collection
     end
+
+    resources :video_tags, :only => :show
   end
 
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]

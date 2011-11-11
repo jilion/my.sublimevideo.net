@@ -9,6 +9,7 @@ class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
     $(@el).bind 'click', -> 
       if MSVStats.statsSeconds.isShowable()
         MSVStats.period.setPeriod type: 'seconds', startIndex: 0, endIndex: 59
+        setTimeout MSVStats.videos.fetchOldSeconds, 3000
     this.render()
 
   render: ->
@@ -35,4 +36,4 @@ class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
       fillColor: if this.isSelected() then '#0046ff' else '#00b1ff'
       
   isSelected: ->
-    @options.period.get('type') == 'seconds'
+    @options.period.isSeconds()

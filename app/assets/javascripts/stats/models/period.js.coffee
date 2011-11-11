@@ -30,10 +30,15 @@ class MSVStats.Models.Period extends Backbone.Model
     this.normalizeStatsIndex(this.get('startIndex')) == this.normalizeStatsIndex(startIndex) &&
     this.normalizeStatsIndex(this.get('endIndex')) == this.normalizeStatsIndex(endIndex)
 
+  isSeconds: -> this.get('type') == 'seconds'
+  isMinutes: -> this.get('type') == 'minutes'
+  isHours:   -> this.get('type') == 'hours'
+  isDays:    -> this.get('type') == 'days'
+
   startTime: (index = this.get('startIndex')) ->
     if this.stats()?
       # ensure that there's always a 60s period for StatsSeconds
-      if this.get('type') == 'seconds'
+      if this.isSeconds()
         this.endTime() - this.pointInterval() * 59
       else
         this.stats().at(this.normalizeStatsIndex(index)).time()

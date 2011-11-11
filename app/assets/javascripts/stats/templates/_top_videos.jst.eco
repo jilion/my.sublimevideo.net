@@ -8,13 +8,21 @@
       <th>Name</th>
       <th><a id='video_loads' class='sort_button<%= ' active' if @sortBy == 'vl' %>'>Loads</a></th>
       <th><a id='video_views' class='sort_button<%= ' active' if @sortBy == 'vv' %>'>Views</a></th>
-      <th></th>
+      <th>Current period</th>
     </tr>
 
     <% for video in @videos.models: %>
       <tr>
-        <td><a class="play"><img id="img-<%= video.id %>" src="<%= video.get('p') %>" alt="<%= video.get('n') %> posterframe" width='30' height='30' /></a></td>
-        <td><%= video.get('n') %></td>
+        <td>
+          <% if video.get('p')?: %>
+            <a class="play"><img id="img-<%= video.id %>" src="<%= video.get('p') %>" alt="<%= video.get('n') %> posterframe" width='30' height='30' /></a>
+          <% else: %>
+            default img
+          <% end %>
+        <td>
+          <%= video.get('n') %>
+          <div>#<%= video.id %></div>
+        </td>
         <td><%= Highcharts.numberFormat(video.vlTotal(), 0) %></td>
         <td><%= Highcharts.numberFormat(video.vvTotal(), 0) %></td>
         <td><div class="sparkline" id="sparkline_<%= video.id %>"/></td>

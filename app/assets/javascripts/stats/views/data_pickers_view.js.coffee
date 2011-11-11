@@ -50,7 +50,7 @@ class MSVStats.Views.DatePickersView extends Backbone.View
           option    = "maxDate"
           endTime   = datePickersView.convertPickerDate(selectedDate)
         dates.not(this).datepicker('option', option, selectedDate)
-    if MSVStats.period.get('type') == 'days'
+    if MSVStats.period.isDays()
       $('#start_time_picker').datepicker('setDate', new Date(MSVStats.period.startTime()))
       $('#end_time_picker').datepicker('setDate', new Date(MSVStats.period.endTime()))
     else
