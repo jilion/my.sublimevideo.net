@@ -63,9 +63,6 @@ class Stat::Video
     period_sym = options[:period].first.to_sym
     options[:from], options[:to] = options[:from].to_i, options[:to].to_i
 
-    Rails.logger.debug from
-    Rails.logger.debug to
-
     conditions = { st: site_token, period_sym => { "$gte" => Time.at(options[:from]), "$lte" => Time.at(options[:to]) } }
 
     videos = collection.group(
@@ -79,7 +76,7 @@ class Stat::Video
 
     Rails.logger.debug videos.map { |v| v["#{options[:sort_by]}_sum"] }
 
-    videos.sort_by! { |video| video["#{options[:sort_by]}_sum"] }.reverse!
+    videos.sort_by! { |video| video["#{options[:sort_by]}_sum"] }.reverse! unless period_sym == :s
 
     count  = options[:period] == 'seconds' ? 30 : options[:count].to_i
     videos = videos.take(count)
