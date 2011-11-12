@@ -9,8 +9,6 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     'click a#show_less':   'showLess'
 
   initialize: () ->
-    @sortBy = 'vv'
-    @count  = 5
     _.bindAll this, 'render'
     @options.period.bind 'change', this.render
     @options.videos.bind 'reset',  this.render
@@ -22,7 +20,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
       $('#top_videos').data().spinner.stop()
 
       @videos = MSVStats.videos
-      $(@el).html(this.template(videos: @videos, sortBy: @sortBy, count: @count))
+      $(@el).html(this.template(videos: @videos))
       this.renderSparklines()
       this.updateTitle()
 
@@ -41,7 +39,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
         fillColor: '#0046ff'
 
   updateTitle: ->
-    title = switch @sortBy
+    title = switch MSVStats.videos.sortBy
       when 'vl' then 'loaded'
       when 'vv' then 'viewed'
     $('#top_videos_title').text("Most #{title} videos")
@@ -51,21 +49,11 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     MSVStats.playableVideoView.renderAndPlay(videoID)
 
   sortByLoads: ->
-    unless @sortBy == 'vl'
-      @sortBy = 'vl'
-      MSVStats.videos.fetch()
-
+    MSVStats.videos.change sortBy: 'vl' unless MSVStats.videos.sortBy == 'vl'
   sortByViews: ->
-    unless @sortBy == 'vv'
-      @sortBy = 'vv'
-      MSVStats.videos.fetch()
+    MSVStats.videos.change sortBy: 'vv' unless MSVStats.videos.sortBy == 'vv'
       
-  showMore: ->
-    @count = 20
-    MSVStats.videos.fetch()
-    
-  showLess: ->
-    @count = 5
-    MSVStats.videos.fetch()
+  showMore: -> MSVStats.videos.change limit: 20
+  showLess: -> MSVStats.videos.change limit: 5
       
   

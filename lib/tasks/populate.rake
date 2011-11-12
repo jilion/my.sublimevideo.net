@@ -383,7 +383,7 @@ end
 def create_stats(site_token=nil)
   sites = site_token ? [Site.find_by_token(site_token)] : Site.all
   sites.each do |site|
-    videos_count = 6
+    videos_count = 30
     # Video Tags
     videos_count.times do |video_i|
       VideoTag.create(st: site.token, u: "video#{video_i}",
@@ -507,24 +507,26 @@ end
 
 def recurring_stats_update(site_token)
   site        = Site.find_by_token(site_token)
-  video_uid   = 'video0'
   last_second = 0
   EM.run do
     EM.add_periodic_timer(0.001) do
       second = Time.now.change(usec: 0).to_time
       if last_second != second.to_i
+        sleep rand(1)
         last_second = second.to_i
         EM.defer do
-          hits   = second.to_i%10
-          Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
-          Stat::Video.collection.update({ st: site.token, u: video_uid, s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
-          json = {
-            site: { id: second.to_i, vv: hits },
-            videos: [
-              { id: second.to_i, u: 'video0', n: 'Video 0', vv: hits }
-            ]
-          }
-          Pusher["private-#{site.token}"].trigger_async('stats', json)
+          30.times do |video_i|
+            hits = second.to_i%10
+            Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
+            Stat::Video.collection.update({ st: site.token, u:  "video#{video_i}", s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
+            json = {
+              site: { id: second.to_i, vv: hits },
+              videos: [
+                { id: second.to_i, u: "video#{video_i}", n: "Video #{video_i}", vv: hits }
+              ]
+            }
+            Pusher["private-#{site.token}"].trigger_async('stats', json)
+          end
           puts "Stats updated at #{second}"
         end
       end

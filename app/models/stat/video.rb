@@ -53,13 +53,14 @@ class Stat::Video
   # @option site_token [String] a valid site token
   # @option options [String] period, a time period. Can be 'days', 'hours', 'minutes' or 'seconds'
   # @option options [String] view_type, the type of views to order with. Can be 'vv' (Video Views, default) or 'vl' (Video load).
-  # @option options [String] count, number of videos to return
+  # @option options [Integer] limit, number of videos to return
+  # @option options [String] sort_by, field to sort with
   #
   # @return [Hash] with an array of video hash with video tag metadata and period 'vl' & 'vv' totals + vv period array, the total amount of videos viewed or loaded during the period and the start_time of the period
   #
   def self.top_videos(site_token, options = {})
     from, to   = period_intervals(site_token, options[:period]) unless options[:from] || options[:to]
-    options    = options.symbolize_keys.reverse_merge(period: 'days', sort_by: 'vv', count: 5, from: from, to: to)
+    options    = options.symbolize_keys.reverse_merge(period: 'days', sort_by: 'vv', limit: 5, from: from, to: to)
     period_sym = options[:period].first.to_sym
     options[:from], options[:to] = options[:from].to_i, options[:to].to_i
 
@@ -74,16 +75,14 @@ class Stat::Video
 
     total = videos.size
 
-    Rails.logger.debug videos.map { |v| v["#{options[:sort_by]}_sum"] }
-
     videos.sort_by! { |video| video["#{options[:sort_by]}_sum"] }.reverse! unless period_sym == :s
 
-    count  = options[:period] == 'seconds' ? 30 : options[:count].to_i
-    videos = videos.take(count)
+    limit  = options[:period] == 'seconds' ? 30 : options[:limit].to_i
+    videos = videos.take(limit)
 
     add_video_tags_metadata!(site_token, videos)
     fill_missing_values!(videos, options)
-    { videos: videos, total: total }.merge(options.slice(:period, :from, :to))
+    { videos: videos, total: total }.merge(options.slice(:period, :from, :to, :sort_by, :limit))
   end
 
 private
