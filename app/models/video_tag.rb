@@ -2,16 +2,16 @@ class VideoTag
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field :st, :type => String # Site token
-  field :u,  :type => String # Video uid
+  field :st, type: String # Site token
+  field :u,  type: String # Video uid
 
-  field :uo, :type => String # Video uid origin
-  field :n,  :type => String # Video name
-  field :no, :type => String # Video name origin
-  field :p,  :type => String # Video poster url
-  field :z,  :type => String # Player size
-  field :cs, :type => Array  # Video current sources array (cs) ['5062d010' (video source crc32), 'abcd1234', ... ] # sources actually used in the video tag
-  field :s,  :type => Hash   # Video sources hash (s) { '5062d010' (video source crc32) => { u (source url) => 'http://.../dartmoor.mp4', q (quality) => 'hd', f (family) => 'mp4', r (resolution) => '320x240' }, ... }
+  field :uo, type: String # Video uid origin
+  field :n,  type: String # Video name
+  field :no, type: String # Video name origin
+  field :p,  type: String # Video poster url
+  field :z,  type: String # Player size
+  field :cs, type: Array, default: [] # Video current sources array (cs) ['5062d010' (video source crc32), 'abcd1234', ... ] # sources actually used in the video tag
+  field :s,  type: Hash,  default: {} # Video sources hash (s) { '5062d010' (video source crc32) => { u (source url) => 'http://.../dartmoor.mp4', q (quality) => 'hd', f (family) => 'mp4', r (resolution) => '320x240' }, ... }
 
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING]]
 
