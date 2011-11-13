@@ -57,6 +57,12 @@ class MSVStats.Models.Video extends Backbone.Model
       _.reduce(this.get("#{field}_array").slice(0, 60), (memo, hits) ->
         memo + hits
       0)
+      
+  vvArray: ->
+    if this.get("vv_sum")?
+      this.get('vv_array')
+    else
+      this.get('vv_array').slice(0, 60)
 
   total: (field) ->
     switch field
