@@ -11,6 +11,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
   initialize: () ->
     _.bindAll this, 'render'
     @options.period.bind 'change', this.render
+    @options.videos.bind 'change', this.render
     @options.videos.bind 'reset',  this.render
     this.render()
 
@@ -52,8 +53,8 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     MSVStats.videos.change sortBy: 'vl' unless MSVStats.videos.sortBy == 'vl'
   sortByViews: ->
     MSVStats.videos.change sortBy: 'vv' unless MSVStats.videos.sortBy == 'vv'
-      
+
   showMore: -> MSVStats.videos.change limit: 20
   showLess: -> MSVStats.videos.change limit: 5
-      
-  
+
+

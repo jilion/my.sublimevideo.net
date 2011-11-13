@@ -19,6 +19,12 @@ class VideoTag
     Site.find_by_token(st)
   end
 
+  # =============
+  # = Callbacks =
+  # =============
+
+  after_save :push_new_meta_data
+
   # ====================
   # = Instance Methods =
   # ====================
@@ -58,6 +64,11 @@ class VideoTag
   end
 
 private
+
+  # after_save
+  def push_new_meta_data
+    Pusher["private-#{st}"].trigger('video_tags', { u: u, meta_data: meta_data }.to_json)
+  end
 
   # Merge each videos tag in one big hash
   #
