@@ -240,7 +240,7 @@ def create_sites
         hostname: hostname
       )
       Timecop.travel(created_at_array.sample) do
-        site.skip_pwd { site.save! }
+        site.save_skip_pwd
       end
 
       if rand > 0.5

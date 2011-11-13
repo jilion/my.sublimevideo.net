@@ -179,6 +179,22 @@ class User < ActiveRecord::Base
     [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
   end
 
+  def billing_address
+    Snail.new(
+      name:        full_name,
+      line_1:      street_1,
+      line_2:      street_2,
+      postal_code: postal_code,
+      city:        city,
+      region:      region,
+      country:     Country[country].name
+    ).to_s
+  end
+
+  def billing_address_incomplete?
+    [street_1, postal_code, city, country].any?(&:blank?)
+  end
+
   def support
     support_level = sites.active.max { |a, b| a.plan.support_level <=> b.plan.support_level }.try(:plan).try(:support_level) || 0
 
