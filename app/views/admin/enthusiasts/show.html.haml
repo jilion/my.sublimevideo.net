@@ -1,0 +1,74 @@
+= title("Enthusiast ##{@enthusiast.id}")
+
+.status
+  %h3= "Status"
+  %br
+  .starred
+    %strong= "Starred:"
+    %span{ :id => "star_enthusiast_#{@enthusiast.id}" }
+      = render "star_form", :enthusiast => @enthusiast
+  %br
+  
+  .invited
+    %strong= "Invited: "
+    %p
+      - if @enthusiast.interested_in_beta && @enthusiast.confirmed?
+        %span{ :id => "invited_at_enthusiast_#{@enthusiast.id}" }
+          = display_date(@enthusiast.invited_at)
+      - else
+        = "Not interested in beta or not confirmed."
+        
+%br
+%hr
+%br
+
+.info
+  %h3= "Info"
+  %br
+  .confirmed
+    %strong= "Confirmed:"
+    = display_bool(@enthusiast.confirmed?)
+  .interested_in_beta
+    %strong= "Interested in beta:"
+    = display_bool(@enthusiast.interested_in_beta)
+  %br
+  
+  .email
+    %strong= "Email:"
+    = mail_to @enthusiast.email
+  %br
+  
+  .free_text
+    %strong= "Comment:"
+    %p
+      - if @enthusiast.free_text.present?
+        = @enthusiast.free_text
+      - else
+        = "No comment."
+  %br
+  
+  .remote_ip
+    %strong= "IP:"
+    = @enthusiast.remote_ip
+  
+.tags
+  = render "tags_form", :enthusiast => @enthusiast
+  %br
+  %p= "Existing tags: #{existing_tags_for(:enthusiast)}"
+  
+%br
+%hr
+%br
+
+.sites
+  %h3= "Sites"
+  %br
+  - if @enthusiast.sites.present?
+    = render 'admin/enthusiast_sites/enthusiast_sites'
+    %br
+    %p= "Existing tags: #{existing_tags_for(:enthusiast_site)}"
+  - else
+    = "No sites."
+%br
+
+%p= link_to("Back to the list", admin_enthusiasts_path)

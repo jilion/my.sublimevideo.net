@@ -73,7 +73,7 @@ module OneTime
         # Invoice.failed.where { invoice_items_count > 1 }.map(&:cancel)
 
         # Update all renew & failed invoices
-        Invoice.failed.where { renew == true }.find_each(batch_size: 100) do |invoice|
+        Invoice.open_or_failed.where { renew == true }.find_each(batch_size: 100) do |invoice|
           new_plan = plan_switch(invoice.plan_invoice_items.last.item)
           last_plan_invoice_item = invoice.plan_invoice_items.last
           last_plan_invoice_item.item   = new_plan

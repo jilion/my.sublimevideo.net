@@ -25,20 +25,20 @@ class Site < ActiveRecord::Base
   mount_uploader :license, LicenseUploader
   mount_uploader :loader, LoaderUploader
 
-  delegate :name, :to => :plan, :prefix => true
-  delegate :video_views, :to => :plan, :prefix => true
+  delegate :name, to: :plan, prefix: true
+  delegate :video_views, to: :plan, prefix: true
 
   # ================
   # = Associations =
   # ================
 
-  belongs_to :user, :validate => true, :autosave => true
+  belongs_to :user, validate: true, autosave: true
   belongs_to :plan
-  belongs_to :next_cycle_plan, :class_name => "Plan"
-  belongs_to :pending_plan,    :class_name => "Plan"
+  belongs_to :next_cycle_plan, class_name: "Plan"
+  belongs_to :pending_plan,    class_name: "Plan"
 
-  has_many :invoices, :class_name => "::Invoice"
-  has_one  :last_invoice, :class_name => "::Invoice", :order => :created_at.desc
+  has_many :invoices, class_name: "::Invoice"
+  has_one  :last_invoice, class_name: "::Invoice", order: :created_at.desc
 
   # Mongoid associations
   def usages
@@ -55,14 +55,14 @@ class Site < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :user,        :presence => true
-  validates :plan,        :presence => { :message => "Please choose a plan" }, :unless => :pending_plan_id?
-  validates :player_mode, :inclusion => PLAYER_MODES
+  validates :user,        presence: true
+  validates :plan,        presence: { message: "Please choose a plan" }, unless: :pending_plan_id?
+  validates :player_mode, inclusion: PLAYER_MODES
 
-  validates :hostname,        :presence => { :if => proc { |s| s.in_or_will_be_in_paid_plan? } }, :hostname => true, :hostname_uniqueness => true
-  validates :dev_hostnames,   :dev_hostnames => true
-  validates :extra_hostnames, :extra_hostnames => true
-  validates :badged,          :inclusion => [true], :if => :in_free_plan?
+  validates :hostname,        presence: { if: proc { |s| s.in_or_will_be_in_paid_plan? } }, hostname: true, hostname_uniqueness: true
+  validates :dev_hostnames,   dev_hostnames: true
+  validates :extra_hostnames, extra_hostnames: true
+  validates :badged,          inclusion: [true], if: :in_free_plan?
 
   validate  :validates_current_password
 
@@ -71,12 +71,12 @@ class Site < ActiveRecord::Base
   # =============
 
   before_validation :set_user_attributes
-  before_validation :set_default_dev_hostnames, :unless => :dev_hostnames?
-  before_validation :set_default_badged, :if => proc { |s| s.badged.nil? || s.in_free_plan? }
+  before_validation :set_default_dev_hostnames, unless: :dev_hostnames?
+  before_validation :set_default_badged, if: proc { |s| s.badged.nil? || s.in_free_plan? }
 
   before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
-  before_save :prepare_pending_attributes, :if => :pending_plan_id_changed? # in site_modules/invoice
+  before_save :prepare_pending_attributes, if: :pending_plan_id_changed? # in site_modules/invoice
   before_save :set_trial_started_at # in site_modules/invoice
 
   after_create :delay_ranks_update # in site_modules/templates
@@ -88,18 +88,18 @@ class Site < ActiveRecord::Base
   # = State Machine =
   # =================
 
-  state_machine :initial => :active do
+  state_machine initial: :active do
     event(:archive)   { transition [:active, :suspended] => :archived }
-    event(:suspend)   { transition :active => :suspended }
-    event(:unsuspend) { transition :suspended => :active }
+    event(:suspend)   { transition active: :suspended }
+    event(:unsuspend) { transition suspended: :active }
 
     state :archived do
       validate :prevent_archive_with_non_paid_invoices
     end
 
-    before_transition :on => :archive, :do => [:set_archived_at, :cancel_open_or_failed_invoices]
+    before_transition on: :archive, do: [:set_archived_at, :cancel_open_or_failed_invoices]
 
-    after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license # in site/templates
+    after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
   end
 
   # =================
@@ -276,7 +276,7 @@ private
   # validate (archived state)
   def prevent_archive_with_non_paid_invoices
     unless archivable?
-      self.errors.add(:base, :not_paid_invoices_prevent_archive, :count => invoices.not_paid.count)
+      self.errors.add(:base, :not_paid_invoices_prevent_archive, count: invoices.not_paid.count)
     end
   end
 
@@ -287,15 +287,15 @@ private
 
   # after_create
   def delay_ranks_update
-    Site.delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks(self.id)
+    Site.delay(priority: 100, run_at: 30.seconds.from_now).update_ranks(self.id)
   end
 
-  # before_transition :on => :archive
+  # before_transition on: :archive
   def set_archived_at
     self.archived_at = Time.now.utc
   end
 
-  # before_transition :on => :archive
+  # before_transition on: :archive
   def cancel_open_or_failed_invoices
     invoices.open_or_failed.each do |invoice|
       invoice.cancel

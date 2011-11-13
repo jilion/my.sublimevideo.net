@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UsersController do
+describe My::UsersController do
 
   it { { get:  '/signup' }.should route_to(controller: 'users/registrations', action: 'new') }
   it { { post: '/signup' }.should route_to(controller: 'users/registrations', action: 'create') }

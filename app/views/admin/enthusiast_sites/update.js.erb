@@ -1,0 +1,3 @@
+if ($('tags_list_enthusiast_site_label_<%= @enthusiast_site.id %>')) {
+  $('tags_list_enthusiast_site_label_<%= @enthusiast_site.id %>').update("Tags list [saved at <%= escape_javascript(l(Time.now.utc, :format => :semi_full_seconds)) %>]");
+}

@@ -39,6 +39,12 @@ namespace :db do
       timed { create_admins }
     end
 
+    desc "Load Enthusiast development fixtures."
+    task enthusiasts: :environment do
+      timed { empty_tables(EnthusiastSite, Enthusiast)                                 }
+      timed { create_enthusiasts(argv_user) }
+    end
+
     desc "Load User development fixtures."
     task users: :environment do
       timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
@@ -167,6 +173,17 @@ def create_admins
     BASE_USERS.each do |admin_infos|
       Admin.create(full_name: admin_infos[0], email: admin_infos[1], password: "123456")
       puts "Admin #{admin_infos[1]}:123456"
+    end
+  end
+end
+
+def create_enthusiasts(user_id = nil)
+  disable_perform_deliveries do
+    (user_id ? [user_id] : 0.upto(BASE_USERS.count - 1)).each do |i|
+      enthusiast = Enthusiast.create(email: BASE_USERS[i][1], interested_in_beta: true)
+      enthusiast.confirmed_at = Time.now
+      enthusiast.save!
+      print "Enthusiast #{BASE_USERS[0]} created!\n"
     end
   end
 end

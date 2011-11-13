@@ -1,0 +1,133 @@
+= content_for :title do
+  = "SublimeVideo - HTML5 Video Player - Plans & Pricing"
+  
+%section#content
+  = render 'layouts/meta_menu'
+  %section#plans
+    %h2.headline= "Plans & Pricing"
+    %h3.subheadline
+      = "All plans include a"
+      %strong= "30 Day Money Back Guarantee."
+    %ul#plans_box
+      %li.box_1
+        .header
+          %h3.title= "Comet"
+          %h4.number= "3,000"
+          %h5.label= "Video pageviews per month"
+        %ul.features
+          %li= "Standard Support"
+          %li= "Peak Insurance"
+          %li= "SSL Serving"
+        .price
+          .monthly
+            %strong
+              = "$9"
+              %sup= ".90"
+            %em.label= "per site/month"
+          .or_separator= "or"
+          .yearly
+            %strong
+              = "$99"
+            %em.label= "per site/year"
+          .two_months_free= "2 months free"
+      %li.box_2
+        .header
+          %h3.title= "Planet"
+          %h4.number= "50,000"
+          %h5.label= "Video pageviews per month"
+        %ul.features
+          %li= "Standard Support"
+          %li= "Peak Insurance"
+          %li= "SSL Serving"
+        .price
+          .monthly
+            %strong
+              = "$19"
+              %sup= ".90"
+            %em.label= "per site/month"
+          .or_separator= "or"
+          .yearly
+            %strong
+              = "$199"
+            %em.label= "per site/year"
+          .two_months_free= "2 months free"
+      %li.box_3
+        .header
+          %h3.title= "Star"
+          %h4.number= "200,000"
+          %h5.label= "Video pageviews per month"
+        %ul.features
+          %li
+            %strong= "Priority"
+            = "Support"
+          %li= "Peak Insurance"
+          %li= "SSL Serving"
+        .price
+          .monthly
+            %strong
+              = "$49"
+              %sup= ".90"
+            %em.label= "per site/month"
+          .or_separator= "or"
+          .yearly
+            %strong
+              = "$499"
+            %em.label= "per site/year"
+          .two_months_free= "2 months free"
+      %li.box_4
+        .header
+          %h3.title= "Galaxy"
+          %h4.number= "1,000,000"
+          %h5.label= "Video pageviews per month"
+        %ul.features
+          %li
+            %strong= "Priority"
+            = "Support"
+          %li= "Peak Insurance"
+          %li= "SSL Serving"
+        .price
+          .monthly
+            %strong
+              = "$99"
+              %sup= ".90"
+            %em.label= "per site/month"
+          .or_separator= "or"
+          .yearly
+            %strong
+              = "$999"
+            %em.label= "per site/year"
+          .two_months_free= "2 months free"
+    .spacer
+    %h3.subheadline
+      = "No cut corners."
+      %strong= "All plans include all features."
+    .sign_up_box
+      .blue_halo
+      .left
+        %p= raw "We also offer a #{content_tag :strong, 'Free LaunchPad Plan'}<br /> to test and work with SublimeVideo before launching your site."
+      .right
+        %p= raw "Need more pageviews, custom support or have other enterprise-class requirements? Please #{mail_to "sales@sublimevideo.net", "contact us" }."
+      = link_to "Sign Up", "https://my.sublimevideo.net/signup", :class => "big_button"
+    .spacer
+    #plans_faq
+      .left
+        %h3.title= "How does the 30 day money back guarantee work?"
+        :textile
+          p(desc). We offer a 30 day money back guarantee on all paid plans. If for any reason you are unsatisfied with our service, you can request a refund at any time within 30 days of the purchase date. "Read more":http://docs.sublimevideo.net/30-day-money-back.
+        %h3.title= 'What does "per site" mean?'
+        :textile
+          p(desc). Each plan is per site. However, if you have multiple domains showing or pointing to the same content as your main domain, then you don't need to purchase a separate plan for each of these domains: you can share the same plan via the _Alias domains_ option and also across all your subdomains. "Read more":http://docs.sublimevideo.net/site-settings.
+        %h3.title= "Advanced domain settings"
+        :textile
+          p(desc). All paid plans come with advanced domain settings, including the possibility to specify staging domains and a wildcard option to extend your SublimeVideo license to subdomains of your main domain. "Read more":http://docs.sublimevideo.net/site-settings.
+      .right
+        %h3.title= "What is Peak Insurance?"
+        :textile
+          p(desc). All paid plans include *Peak Insurance*, a flexible feature which allows your site to exceed the monthly limit of video pageviews in the event of a temporary burst of traffic. We are not going to block your player when you need it the most, and we are not going to ask you to upgrade unless you have exceeded your monthly pageview quota and your site has been above its average daily limit for more than 50% of the last 60 days.
+        %h3.title= "Can I upgrade or downgrade my plan?"
+        :textile
+          p(desc). Absolutely. You can upgrade, downgrade or change monthly and yearly cycles at any time. In case of a downgrade or a change from a yearly to monthly cycle, the change will come into effect at the end of the current plan's cycle.
+        %h3.title= "Can I test SublimeVideo for free?"
+        :textile
+          p(desc). Absolutely. While you are working on your site development, you can use LaunchPad, our free & unlimited plan for developers. Likewise, once you are subscribed to a paid plan, you can continue testing SublimeVideo on your local development domains with unlimited pageviews.
+      .spacer

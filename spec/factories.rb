@@ -1,4 +1,14 @@
 FactoryGirl.define do
+  factory :enthusiast do
+    sequence(:email) { |n| "email#{n}@enthusiast.com" }
+    free_text        "Love you!"
+  end
+
+  factory :enthusiast_site do
+    enthusiast
+    hostname "youtube.com"
+  end
+
   factory :user_no_cc, class: User do
     name                 "John Doe"
     billing_name         "Remy Coutable"

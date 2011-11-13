@@ -31,6 +31,8 @@ class User < ActiveRecord::Base
   # = Associations =
   # ================
 
+  belongs_to :enthusiast
+
   has_many :sites
   has_many :invoices, through: :sites
   has_one  :last_invoice, through: :sites, source: :invoices, order: :created_at.desc

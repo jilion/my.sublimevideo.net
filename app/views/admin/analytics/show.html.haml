@@ -1,0 +1,16 @@
+= include_appropriate_js(@report.render_engine)
+
+= title(@report.title)
+
+= render 'analytics_menu'
+
+%br
+
+%h3= @report.title
+
+= render "date_selector" if @report.date_can_be_changed?
+
+#charts_holder{ :style => "width:#{@report.holder_dimensions[0]}px; height:#{@report.holder_dimensions[1]}px;" }
+
+- cache "analytics/#{params[:report]}/#{@report.render_engine}/#{@report.graph_type}" do
+  = raw @report.render

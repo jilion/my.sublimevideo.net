@@ -1,46 +1,70 @@
 !!! 5
 %html{ "xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en" }
   %head
-    %title= "MySublimeVideo - #{yield :title}"
+    %title= yield(:title) || "SublimeVideo"
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-    = stylesheet_link_tag 'application'
+    = stylesheet_link_tag 'main'
+
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
+
     /[if lte IE 6]
       %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
       %style{ :type => "text/css", :media => "screen" }
         == body {background:#fff;display:none;}
-    /[if lte IE 8]
-      = stylesheet_link_tag 'application_ie'
-
-    - if %w[site_stats video_tag_builder].include?(controller_name)
-      = javascript_include_tag 'application_jquery'
-    - else
-      = javascript_include_tag 'application'
-    = yield :head
-
+    /[if lte IE 9]
+      = javascript_include_tag("http://html5shiv.googlecode.com/svn/trunk/html5.js")
     = csrf_meta_tag
-    = javascript_include_tag "#{request.protocol}use.typekit.com/zwt2duv.js"
+    = yield :js
+    = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
     :javascript
       try { Typekit.load(); } catch(e) { }
+
   %body
-    #global
-      = render 'layouts/header'
-      #main_wrap
-        #main
-          #rounded_corners_fix
-            #white_halo
-              #content
-                = render 'layouts/flash', :flash => flash if flash.present?
-                = yield
-      #footer
+    %section#global
+      %header
+        %h1
+          = link_to "/" do
+            %span
+              = "SublimeVideo"
+              %em= "HTML5 Video Player"
+        = link_to "http://jilion.com", :class => "jilion" do
+          %span= "Jilion"
+        = link_to "http://twitter.com/jilion", :class => "twitter" do
+          %span= "Follow us on Twitter"
+      = yield
+      %footer
         %p.right
           = "SublimeVideo® is a service by"
           = link_to "Jilion®", "http://jilion.com"
-        %p.links= "#{link_to "SublimeVideo.net", "http://sublimevideo.net"} | #{link_to "Terms & Conditions", page_path(:page => 'terms')} | #{link_to "Privacy Policy", page_path(:page => 'privacy') }".html_safe
-        %p.copyright= "Copyright © 2010 - #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks"
+        %p.links
+          = link_to "Demo", "/demo"
+          = "|"
+          = link_to "Sign Up", "https://my.sublimevideo.net/signup"
+          = "|"
+          = link_to "Log In", "https://my.sublimevideo.net/login"
+          = "|"
+          = link_to "Documentation", "http://docs.sublimevideo.net"
+          = "|"
+          = link_to "Releases", "http://docs.sublimevideo.net/releases"
+          = "|"
+          = mail_to "info@sublimevideo.net", "Contact", :encode => "hex"
+          = "|"
+          = link_to "Blog", "http://blog.jilion.com"
+          = "|"
+          = link_to "Twitter", "http://twitter.com/jilion"
+        %p.copyright= "Copyright © #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks"
+      = yield :bottom
 
-    = yield :bottom
-    - if user_signed_in?
-      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name, current_user.id, Rails.env.production?)
-    = render 'layouts/gosquared' if Rails.env.production?
+    - if Rails.env.production?
+      :javascript
+        var GoSquared={};
+        GoSquared.acct = "GSN-706041-F";
+        (function(w){
+            function gs(){
+                w._gstc_lt=+(new Date); var d=document;
+                var g = d.createElement("script"); g.type = "text/javascript"; g.async = true; g.src = "//d1l6p2sc9645hc.cloudfront.net/tracker.js";
+                var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(g, s);
+            }
+            w.addEventListener?w.addEventListener("load",gs,false):w.attachEvent("onload",gs);
+        })(window);

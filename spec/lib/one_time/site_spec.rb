@@ -96,6 +96,12 @@ describe OneTime::Site do
       @site_comet_y   = Factory.create(:site_with_invoice, plan_id: @comet_y_plan.id)
 
       @site_planet_m  = Factory.create(:site_with_invoice, plan_id: @planet_m_plan.id)
+      Timecop.travel(35.days.from_now) do
+        invoice = ::Invoice.construct(site: @site_planet_m, renew: true)
+        invoice.save!
+        @site_planet_m.invoices.order(:id).last.should be_renew
+        @site_planet_m.invoices.order(:id).last.should be_open
+      end
 
       # This site got the beta discount + VAT
       @site_planet_y = Factory.create(:site_with_invoice, plan_id: @planet_y_plan.id)
@@ -112,9 +118,9 @@ describe OneTime::Site do
       Timecop.travel(35.days.from_now) do
         invoice = ::Invoice.construct(site: @site_star_m, renew: true)
         invoice.save!
-        @site_star_m.invoices.order(:id.asc).last.update_attribute(:state, 'failed')
-        @site_star_m.invoices.order(:id.asc).last.should be_renew
-        @site_star_m.invoices.order(:id.asc).last.should be_failed
+        @site_star_m.invoices.order(:id).last.update_attribute(:state, 'failed')
+        @site_star_m.invoices.order(:id).last.should be_renew
+        @site_star_m.invoices.order(:id).last.should be_failed
       end
 
       # downgrade and next plan is not the same as the new plan
@@ -179,6 +185,17 @@ describe OneTime::Site do
     it "star month => gold month" do
       @site_star_m.reload.plan.should eq @gold_m_plan
       @site_star_m.user.balance.should eq 0
+    end
+
+    it "updates open & renew invoice with new plans and prices" do
+      last_invoice = @site_planet_m.invoices.order(:id).last
+      last_invoice.vat_amount.should eq (@silver_m_plan.price * last_invoice.vat_rate).round
+      last_invoice.amount.should eq @silver_m_plan.price + (@silver_m_plan.price * last_invoice.vat_rate).round
+
+      last_plan_invoice_item = last_invoice.plan_invoice_items.last
+      last_plan_invoice_item.item.should eq @silver_m_plan
+      last_plan_invoice_item.price.should eq @silver_m_plan.price
+      last_plan_invoice_item.amount.should eq @silver_m_plan.price
     end
 
     it "updates failed & renew invoice with new plans and prices" do
