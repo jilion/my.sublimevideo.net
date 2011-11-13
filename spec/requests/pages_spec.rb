@@ -61,8 +61,8 @@ feature "Pages" do
 
         current_url.should =~ %r(^http://[^/]+/suspended$)
 
-        page.should have_content('Your account is suspended')
-        page.should have_content("This credit card is expired")
+        page.should have_content("Your account is suspended")
+        page.should have_content("Your credit card is expired")
         page.should have_content("Visa ending in 1111")
         page.should have_content("Update credit card")
         page.should have_content("Please pay the following invoice in order to reactivate your account:")
