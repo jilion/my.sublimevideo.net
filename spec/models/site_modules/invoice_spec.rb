@@ -392,7 +392,7 @@ describe SiteModules::Invoice do
         @site_in_trial1 = Factory.build(:site)
         @site_in_trial2 = Factory.create(:site)
         Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = Factory.create(:site) }
-        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial4 = Factory.create(:site, plan_id: @free_plan.id) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_in_trial4 = Factory.create(:site, plan_id: @free_plan.id) }
         Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial = Factory.create(:site) }
       end
 
@@ -523,7 +523,7 @@ describe SiteModules::Invoice do
           its(:pending_plan_cycle_started_at) { should be_nil }
           its(:pending_plan_cycle_ended_at)   { should be_nil }
           its(:plan)                          { should be_nil }
-          its(:pending_plan)                  { should eql @free_plan }
+          its(:pending_plan)                  { should eq @free_plan }
           its(:next_cycle_plan)               { should be_nil }
           it { should_not be_instant_charging }
         end
@@ -540,9 +540,66 @@ describe SiteModules::Invoice do
             its(:pending_plan_cycle_started_at) { should be_nil }
             its(:pending_plan_cycle_ended_at)   { should be_nil }
             its(:plan)                          { should be_nil }
-            its(:pending_plan)                  { should eql @paid_plan }
+            its(:pending_plan)                  { should eq @paid_plan }
             its(:next_cycle_plan)               { should be_nil }
+            it { should_not be_trial_ended }
             it { should_not be_instant_charging }
+          end
+
+          context "in trial with skip_trial == '0'" do
+            before(:all) do
+              @site = Factory.build(:new_site, plan_id: @paid_plan.id, skip_trial: '0')
+              @site.prepare_pending_attributes
+            end
+            subject { @site }
+
+            its(:pending_plan_started_at)       { should be_present }
+            its(:pending_plan_cycle_started_at) { should be_nil }
+            its(:pending_plan_cycle_ended_at)   { should be_nil }
+            its(:plan)                          { should be_nil }
+            its(:pending_plan)                  { should eq @paid_plan }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should_not be_trial_ended }
+            it { should_not be_instant_charging }
+          end
+
+          context "in trial with skip_trial == '1'" do
+            before(:all) do
+              @site = Factory.build(:new_site, plan_id: @paid_plan.id, skip_trial: '1')
+              @site.prepare_pending_attributes
+            end
+            subject { @site }
+
+            its(:skip_trial)    { should eq '1' }
+            its(:first_paid_plan_started_at)    { should be_present }
+            its(:pending_plan_started_at)       { should be_present }
+            its(:pending_plan_started_at)       { should be_present }
+            its(:pending_plan_cycle_started_at) { should be_present }
+            its(:pending_plan_cycle_ended_at)   { should be_present }
+            its(:plan)                          { should be_nil }
+            its(:pending_plan)                  { should eq @paid_plan }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should be_trial_ended }
+            it { should be_instant_charging }
+          end
+
+          context "in trial with skip_trial == 1" do
+            before(:all) do
+              @site = Factory.build(:new_site, plan_id: @paid_plan.id, skip_trial: 1)
+              @site.prepare_pending_attributes
+            end
+            subject { @site }
+
+            its(:first_paid_plan_started_at)    { should be_present }
+            its(:pending_plan_started_at)       { should be_present }
+            its(:pending_plan_started_at)       { should be_present }
+            its(:pending_plan_cycle_started_at) { should be_present }
+            its(:pending_plan_cycle_ended_at)   { should be_present }
+            its(:plan)                          { should be_nil }
+            its(:pending_plan)                  { should eq @paid_plan }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should be_trial_ended }
+            it { should be_instant_charging }
           end
 
           context "not in trial" do
@@ -550,16 +607,16 @@ describe SiteModules::Invoice do
               Timecop.travel(Time.utc(2011,1,30)) do
                 @site = Factory.build(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
                 @site.first_paid_plan_started_at = Time.now.utc
-                @site.pend_plan_changes
+                @site.prepare_pending_attributes
               end
             end
             subject { @site }
 
-            its(:pending_plan_started_at)       { should eql Time.utc(2011,1,30) }
-            its(:pending_plan_cycle_started_at) { should eql Time.utc(2011,1,30) }
-            its(:pending_plan_cycle_ended_at)   { should eql Time.utc(2011,2,27).to_datetime.end_of_day }
+            its(:pending_plan_started_at)       { should eq Time.utc(2011,1,30) }
+            its(:pending_plan_cycle_started_at) { should eq Time.utc(2011,1,30) }
+            its(:pending_plan_cycle_ended_at)   { should eq Time.utc(2011,2,27).to_datetime.end_of_day }
             its(:plan)                          { should be_nil }
-            its(:pending_plan)                  { should eql @paid_plan }
+            its(:pending_plan)                  { should eq @paid_plan }
             its(:next_cycle_plan)               { should be_nil }
             it { should_not be_instant_charging }
           end
@@ -577,7 +634,7 @@ describe SiteModules::Invoice do
             its(:pending_plan_cycle_started_at) { should be_nil }
             its(:pending_plan_cycle_ended_at)   { should be_nil }
             its(:plan)                          { should be_nil }
-            its(:pending_plan)                  { should eql @paid_plan_yearly }
+            its(:pending_plan)                  { should eq @paid_plan_yearly }
             its(:next_cycle_plan)               { should be_nil }
             it { should_not be_instant_charging }
           end
@@ -592,11 +649,11 @@ describe SiteModules::Invoice do
             end
             subject { @site }
 
-            its(:pending_plan_started_at)       { should eql Time.utc(2011,1,30) }
-            its(:pending_plan_cycle_started_at) { should eql Time.utc(2011,1,30) }
-            its(:pending_plan_cycle_ended_at)   { should eql Time.utc(2012,1,29).to_datetime.end_of_day }
+            its(:pending_plan_started_at)       { should eq Time.utc(2011,1,30) }
+            its(:pending_plan_cycle_started_at) { should eq Time.utc(2011,1,30) }
+            its(:pending_plan_cycle_ended_at)   { should eq Time.utc(2012,1,29).to_datetime.end_of_day }
             its(:plan)                          { should be_nil }
-            its(:pending_plan)                  { should eql @paid_plan_yearly }
+            its(:pending_plan)                  { should eq @paid_plan_yearly }
             its(:next_cycle_plan)               { should be_nil }
             it { should_not be_instant_charging }
           end
@@ -614,14 +671,34 @@ describe SiteModules::Invoice do
             end
             subject { @site }
 
-            its(:pending_plan_started_at)       { should eql (BusinessModel.days_for_trial-1).days.from_now.midnight }
+            its(:pending_plan_started_at)       { should eq (BusinessModel.days_for_trial-1).days.from_now.midnight }
             its(:pending_plan_cycle_started_at) { should be_nil }
             its(:pending_plan_cycle_ended_at)   { should be_nil }
-            its(:plan)                          { should eql @free_plan }
-            its(:pending_plan)                  { should eql @paid_plan }
+            its(:plan)                          { should eq @free_plan }
+            its(:pending_plan)                  { should eq @paid_plan }
             its(:next_cycle_plan)               { should be_nil }
-            it { should be_trial_not_started_or_in_trial }
+            it { should_not be_trial_ended }
             it { should_not be_instant_charging }
+          end
+
+          context "in trial with skip_trial == '1'" do
+            before(:all) do
+              @site = Factory.create(:site, plan_id: @free_plan.id)
+              @site.apply_pending_attributes
+              @site.reload.plan_id = @paid_plan.id # upgrade
+              @site.skip_trial = '1'
+              @site.prepare_pending_attributes
+            end
+            subject { @site }
+
+            its(:pending_plan_started_at)       { should eq Time.now.utc.midnight }
+            its(:pending_plan_cycle_started_at) { should be_present }
+            its(:pending_plan_cycle_ended_at)   { should be_present }
+            its(:plan)                          { should eq @free_plan }
+            its(:pending_plan)                  { should eq @paid_plan }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should be_trial_ended }
+            it { should be_instant_charging }
           end
 
           context "not in trial" do
@@ -638,13 +715,13 @@ describe SiteModules::Invoice do
             end
             subject { @site }
 
-            it { subject.pending_plan_started_at.should       eql 2.months.from_now.midnight }
-            it { subject.pending_plan_cycle_started_at.should eql subject.plan_cycle_started_at }
-            it { subject.pending_plan_cycle_ended_at.should   eql subject.plan_cycle_ended_at }
-            its(:plan)                          { should eql @free_plan }
-            its(:pending_plan)                  { should eql @paid_plan }
+            it { subject.pending_plan_started_at.should       eq 2.months.from_now.midnight }
+            it { subject.pending_plan_cycle_started_at.should eq subject.plan_cycle_started_at }
+            it { subject.pending_plan_cycle_ended_at.should   eq subject.plan_cycle_ended_at }
+            its(:plan)                          { should eq @free_plan }
+            its(:pending_plan)                  { should eq @paid_plan }
             its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_trial_not_started_or_in_trial }
+            it { should be_trial_ended }
             it { should be_instant_charging }
           end
         end
@@ -664,7 +741,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan }
             its(:pending_plan)                  { should eql @paid_plan2 }
             its(:next_cycle_plan)               { should be_nil }
-            it { should be_trial_not_started_or_in_trial }
+            it { should_not be_trial_ended }
             it { should_not be_instant_charging }
           end
 
@@ -682,13 +759,13 @@ describe SiteModules::Invoice do
             end
             subject { @site }
 
-            it { subject.pending_plan_started_at.should       eql 2.months.from_now.midnight }
-            it { subject.pending_plan_cycle_started_at.should eql subject.plan_cycle_started_at }
-            it { subject.pending_plan_cycle_ended_at.should   eql subject.plan_cycle_ended_at }
+            its(:pending_plan_started_at)       { should eql 2.months.from_now.midnight }
+            its(:pending_plan_cycle_started_at) { should eql 2.months.from_now.midnight }
+            its(:pending_plan_cycle_ended_at)   { should eql (3.months.from_now - 1.day).to_datetime.end_of_day }
             its(:plan)                          { should eql @paid_plan }
             its(:pending_plan)                  { should eql @paid_plan2 }
             its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_trial_not_started_or_in_trial }
+            it { should be_trial_ended }
             it { should be_instant_charging }
           end
         end
@@ -711,7 +788,7 @@ describe SiteModules::Invoice do
           its(:plan)                          { should eql @paid_plan }
           its(:pending_plan)                  { should be_nil }
           its(:next_cycle_plan)               { should be_nil }
-          it { should_not be_trial_not_started_or_in_trial }
+          it { should be_trial_ended }
           it { should_not be_instant_charging }
         end
 
@@ -736,7 +813,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan }
             its(:pending_plan)                  { should be_nil }
             its(:next_cycle_plan)               { should eql @free_plan }
-            it { should_not be_trial_not_started_or_in_trial }
+            it { should be_trial_ended }
             it { should_not be_instant_charging }
           end
 
@@ -757,7 +834,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan }
             its(:pending_plan)                  { should eql @free_plan }
             its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_trial_not_started_or_in_trial }
+            it { should be_trial_ended }
             it { should_not be_instant_charging }
           end
 
@@ -781,7 +858,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan2 }
             its(:pending_plan)                  { should be_nil }
             its(:next_cycle_plan)               { should eql @paid_plan }
-            it { should_not be_trial_not_started_or_in_trial }
+            it { should be_trial_ended }
             it { should_not be_instant_charging }
           end
 
@@ -802,7 +879,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan2 }
             its(:pending_plan)                  { should eql @paid_plan }
             its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_trial_not_started_or_in_trial }
+            it { should be_trial_ended }
             it { should_not be_instant_charging }
           end
         end

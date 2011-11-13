@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
   validates :company_url, hostname: true, allow_blank: true
   validates :terms_and_conditions, acceptance: { accept: "1" }, on: :create
 
-  validate :validates_credit_card_attributes, :if => :any_cc_attrs? # in user/credit_card
+  validate :validates_credit_card_attributes # in user/credit_card
   validate :validates_current_password
 
   # =============
@@ -64,12 +64,14 @@ class User < ActiveRecord::Base
   # =============
 
   # hack to explicitely declare changes on cc fields (needed when we save from an association. e.g. site.save)
-  before_validation :force_update_of_credit_card, :if => :any_cc_attrs?
+  # DO WE NEED THIS???!!!
+  before_validation :force_update_of_credit_card, if: proc { |u| u.cc_number.present? }
 
   before_save :set_password
 
-  before_save :pend_credit_card_info, :if => :any_cc_attrs? # in user/credit_card
+  before_save :prepare_pending_credit_card, if: proc { |u| u.cc_number.present? && u.credit_card.valid? } # in user/credit_card
 
+  after_save :register_credit_card_on_file, if: proc { |u| u.cc_register && u.credit_card.valid? } # in user/credit_card
   after_save :newsletter_update
 
   after_update :zendesk_update

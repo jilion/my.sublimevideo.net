@@ -11,27 +11,18 @@ class PlansController < ApplicationController
   # PUT /sites/:site_id/plan
   def update
     # setting user_attributes will set user.attributes only only before validation (so, on the save below)
-    # in order to set the credit card in the charging_options site's attribute, user.attributes have to be set before calling user.credit_card
-    @site.assign_attributes(params[:site])
+    @site.assign_attributes(params[:site].merge(remote_ip: request.try(:remote_ip)))
     @site.user.assign_attributes(params[:site][:user_attributes])
-    @site.charging_options = {
-      credit_card: @site.user.credit_card,
-      accept_url: sites_url,
-      decline_url: sites_url,
-      exception_url: sites_url,
-      ip: request.try(:remote_ip)
-    }
 
     respond_with(@site) do |format|
       if @site.save # will create invoice and charge...
-        if @site.transaction.try(:waiting_d3d?)
-          format.html { render :text => d3d_html_inject(@site.transaction.error) }
+        if @site.last_transaction.try(:waiting_d3d?)
+          format.html { render :text => d3d_html_inject(@site.last_transaction.error) }
         else
-          format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.transaction) }
+          format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.last_transaction) }
         end
       else
-        flash[:notice] = ""
-        flash[:alert] = ""
+        flash[:notice] = flash[:alert] = ""
         format.html { render :edit }
       end
     end

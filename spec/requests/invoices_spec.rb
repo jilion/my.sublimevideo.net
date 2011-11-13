@@ -3,119 +3,122 @@ include ActionView::Helpers::NumberHelper
 include ApplicationHelper
 
 feature "Site invoices page" do
-  background do
-    sign_in_as :user
-  end
 
-  context "site in free plan with 0 invoices" do
+  context "user has a credit card" do
     background do
-      @site = Factory.create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
-      visit "/sites"
-      click_link "Edit rymai.com"
+      sign_in_as :user
     end
 
-    scenario "'Invoice' tab is invisible" do
-      page.should have_no_content('Invoices')
-    end
+    context "site in free plan with 0 invoices" do
+      background do
+        @site = Factory.create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
+        visit "/sites"
+        click_link "Edit rymai.com"
+      end
 
-    scenario "invoices page is reachable through URL" do
-      visit "/sites/#{@site.token}/invoices"
+      scenario "'Invoice' tab is invisible" do
+        page.should have_no_content('Invoices')
+      end
 
-      current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
-      page.should have_content('rymai.com')
-      page.should have_content('No invoices')
-    end
-  end
+      scenario "invoices page is reachable through URL" do
+        visit "/sites/#{@site.token}/invoices"
 
-  context "site in free plan with invoices" do
-    background do
-      @site = Factory.create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
-      Factory.create(:invoice, site: @site)
-      visit "/sites"
-      click_link "Edit rymai.com"
-    end
-
-    scenario "'Invoice' tab is visible" do
-      page.should have_content('Invoices')
-    end
-
-    scenario "invoices page is reachable through the tab" do
-      click_link "Invoices"
-
-      current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
-      page.should have_content('rymai.com')
-      page.should have_no_content('No invoices')
-    end
-  end
-
-  context "site in paid plan with 0 invoices (possible during trial)" do
-    background do
-      @site = Factory.create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-      visit "/sites"
-      click_link "Edit rymai.com"
-    end
-
-    scenario "'Invoice' tab is visible" do
-      page.should have_content('Invoices')
-    end
-
-    scenario "invoices page is reachable through the tab" do
-      click_link "Invoices"
-
-      current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
-      page.should have_content('rymai.com')
-      page.should have_content('No invoices')
-    end
-  end
-
-  context "site in paid plan with invoices" do
-    background do
-      @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-      @invoice = @site.last_invoice
-      visit "/sites"
-      click_link "Edit rymai.com"
-    end
-
-    scenario "'Invoice' tab is visible" do
-      page.should have_content('Invoices')
-    end
-
-    scenario "invoices page is reachable through the tab" do
-      click_link "Invoices"
-
-      current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
-      page.should have_content('rymai.com')
-      page.should have_no_content('No invoices')
-    end
-
-    scenario "'Next invoice' is visible, including '(excl. VAT)' for CH customer" do
-      visit "/sites/#{@site.token}/invoices"
-
-      page.should have_content('Next invoice')
-      page.should have_content("#{display_amount(@site.plan.price)} (excl. VAT) on #{I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :d_b_Y)}")
-    end
-
-    scenario "'Next invoice' is visible, without '(excl. VAT)' for not-CH customer" do
-      @current_user.update_attribute(:country, 'FR')
-      visit "/sites/#{@site.token}/invoices"
-
-      page.should have_content('Next invoice')
-      page.should have_content("#{display_amount(@site.plan.price)} on #{I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :d_b_Y)}")
-    end
-
-    scenario "'Past invoices' are visible" do
-      visit "/sites/#{@site.token}/invoices"
-
-      page.should have_content('Past invoices')
-      within('.past_invoices') do
-        page.should have_content("#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}")
-        page.should have_content("Status: Paid on #{I18n.l(@site.last_invoice.paid_at, format: :minutes_timezone)}")
+        current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
+        page.should have_content('rymai.com')
+        page.should have_content('No invoices')
       end
     end
-  end
 
-  context "site in paid plan with 1 failed invoice" do
-    context "user has a credit card" do
+    context "site in free plan with invoices" do
+      background do
+        @site = Factory.create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
+        Factory.create(:invoice, site: @site)
+        visit "/sites"
+        click_link "Edit rymai.com"
+      end
+
+      scenario "'Invoice' tab is visible" do
+        page.should have_content('Invoices')
+      end
+
+      scenario "invoices page is reachable through the tab" do
+        click_link "Invoices"
+
+        current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
+        page.should have_content('rymai.com')
+        page.should have_no_content('No invoices')
+      end
+    end
+
+    context "site in paid plan with 0 invoices (possible during trial)" do
+      background do
+        @site = Factory.create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        visit "/sites"
+        click_link "Edit rymai.com"
+      end
+
+      scenario "'Invoice' tab is visible" do
+        page.should have_content('Invoices')
+      end
+
+      scenario "invoices page is reachable through the tab" do
+        click_link "Invoices"
+
+        current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
+        page.should have_content('rymai.com')
+        page.should have_content('No invoices')
+      end
+    end
+
+    context "site in paid plan with invoices" do
+      background do
+        @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @invoice = @site.last_invoice
+        visit "/sites"
+        click_link "Edit rymai.com"
+      end
+
+      scenario "'Invoice' tab is visible" do
+        page.should have_content('Invoices')
+      end
+
+      scenario "invoices page is reachable through the tab" do
+        click_link "Invoices"
+
+        current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
+        page.should have_content('rymai.com')
+        page.should have_no_content('No invoices')
+      end
+
+      scenario "'Next invoice' is visible, including '(excl. VAT)' for CH customer" do
+        @current_user.should be_vat
+        visit "/sites/#{@site.token}/invoices"
+
+        page.should have_content('Next invoice')
+        page.should have_content("#{display_amount(@site.plan.price)} (excl. VAT) on #{I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :d_b_Y)}")
+      end
+
+      scenario "'Next invoice' is visible, without '(excl. VAT)' for not-CH customer" do
+        @current_user.update_attribute(:billing_country, 'FR')
+        @current_user.should_not be_vat
+        visit "/sites/#{@site.token}/invoices"
+
+        page.should have_content('Next invoice')
+        page.should have_content("#{display_amount(@site.plan.price)} on #{I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :d_b_Y)}")
+      end
+
+      scenario "'Past invoices' are visible" do
+        visit "/sites/#{@site.token}/invoices"
+
+        page.should have_content('Past invoices')
+        within('.past_invoices') do
+          page.should have_content("#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}")
+          page.should have_content("Status: Paid on #{I18n.l(@site.last_invoice.paid_at, format: :minutes_timezone)}")
+        end
+      end
+    end
+
+    context "site in paid plan with 1 failed invoice" do
       background do
         @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
@@ -126,7 +129,7 @@ feature "Site invoices page" do
 
       scenario "displays a notice" do
         page.should have_content("You have 1 failed invoice for a total of #{display_amount(@invoice.amount)}")
-        page.should have_content("If necessary update your credit card and then retry the payment via the button below.")
+        page.should have_content("If necessary, update your credit card and then retry the payment via the button below.")
 
         within('.past_invoices') do
           page.should have_content("#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}")
@@ -168,100 +171,100 @@ feature "Site invoices page" do
 
     end
 
-    context "user has no credit card" do
+    context "site in paid plan with 1 failed invoice having the 3d secure html as the error" do
       background do
-        sign_in_as :user, without_cc: true, kill_user: true
         @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
         @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
-        @invoice.last_transaction.update_attribute(:error, "Credit card refused")
+        @invoice.last_transaction.update_attribute(:error, "<html>secure.ogone...</html>")
         visit "/sites/#{@site.token}/invoices"
       end
 
       scenario "displays a notice" do
-        page.should have_content("You have 1 failed invoice for a total of #{display_amount(@invoice.amount)}")
-        page.should have_content("Please add a valid credit card and then retry the payment here.")
+        page.should have_content("You have 1 failed invoice for a total of $#{@invoice.amount / 100.0}")
+        page.should have_content("If necessary, update your credit card and then retry the payment via the button below.")
 
         within('.past_invoices') do
           page.should have_content("#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}")
           page.should have_content("Status: Payment failed on #{I18n.l(@invoice.last_failed_at, format: :minutes_timezone)}")
-          page.should have_content("with the following error: \"Credit card refused\".")
+          page.should have_no_content("with the following error")
         end
       end
     end
 
-    context "user credit card is expired" do
+    context "site in paid plan with 1 failed invoice and 1 failed invoice for another site" do
       background do
-        sign_in_as :user, cc_expire_on: 2.years.ago, kill_user: true
-        @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-        @invoice = @site.last_invoice
-        @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
-        @invoice.last_transaction.update_attribute(:error, "Credit card refused")
-        visit "/sites/#{@site.token}/invoices"
+        @site1 = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site2 = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user)
+        @invoice1 = @site1.last_invoice
+        @invoice2 = @site2.last_invoice
+        @invoice1.update_attributes(state: 'failed', last_failed_at: 2.days.ago)
+        @invoice1.last_transaction.update_attribute(:error, "Credit card refused")
+
+        @invoice2.update_attributes(site_id: @site1.id, state: 'failed', last_failed_at: Time.now.utc)
+        @invoice2.last_transaction.update_attribute(:error, "Authorization refused")
+        visit "/sites/#{@site1.token}/invoices"
       end
 
       scenario "displays a notice" do
-        page.should have_content("You have 1 failed invoice for a total of #{display_amount(@invoice.amount)}")
-        page.should have_content("Your credit card is expired")
-        page.should have_content("Please update your credit card and then retry the payment here.")
+        page.should have_content("You have 2 failed invoices for a total of #{display_amount(@invoice1.amount + @invoice2.amount)}")
+        page.should have_content("If necessary, update your credit card and then retry the payment via the button below.")
 
         within('.past_invoices') do
-          page.should have_content("#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}")
-          page.should have_content("Status: Payment failed on #{I18n.l(@invoice.last_failed_at, format: :minutes_timezone)}")
+          page.should have_content("#{display_amount(@invoice1.amount)} on #{I18n.l(@invoice1.created_at, format: :d_b_Y)}")
+          page.should have_content("Status: Payment failed on #{I18n.l(@invoice1.last_failed_at, format: :minutes_timezone)}")
           page.should have_content("with the following error: \"Credit card refused\".")
+
+          page.should have_content("#{display_amount(@invoice2.amount)} on #{I18n.l(@invoice2.created_at, format: :d_b_Y)}")
+          page.should have_content("Status: Payment failed on #{I18n.l(@invoice2.last_failed_at, format: :minutes_timezone)}")
+          page.should have_content("with the following error: \"Authorization refused\".")
         end
       end
     end
 
   end
 
-  context "site in paid plan with 1 failed invoice having the 3d secure html as the error" do
+  context "user has no credit card" do
     background do
+      sign_in_as :user, without_cc: true, kill_user: true
       @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = @site.last_invoice
       @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
-      @invoice.last_transaction.update_attribute(:error, "<html>secure.ogone...</html>")
+      @invoice.last_transaction.update_attribute(:error, "Credit card refused")
       visit "/sites/#{@site.token}/invoices"
     end
 
     scenario "displays a notice" do
-      page.should have_content("You have 1 failed invoice for a total of $#{@invoice.amount / 100.0}")
-      page.should have_content("If necessary update your credit card and then retry the payment via the button below.")
+      page.should have_content("You have 1 failed invoice for a total of #{display_amount(@invoice.amount)}")
+      page.should have_content("Please add a valid credit card and then retry the payment here.")
 
       within('.past_invoices') do
         page.should have_content("#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}")
         page.should have_content("Status: Payment failed on #{I18n.l(@invoice.last_failed_at, format: :minutes_timezone)}")
-        page.should have_no_content("with the following error")
+        page.should have_content("with the following error: \"Credit card refused\".")
       end
     end
   end
 
-  context "site in paid plan with 1 failed invoice and 1 failed invoice for another site" do
+  context "user credit card is expired" do
     background do
-      @site1 = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-      @site2 = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user)
-      @invoice1 = @site1.last_invoice
-      @invoice2 = @site2.last_invoice
-      @invoice1.update_attributes(state: 'failed', last_failed_at: 2.days.ago)
-      @invoice1.last_transaction.update_attribute(:error, "Credit card refused")
-
-      @invoice2.update_attributes(site_id: @site1.id, state: 'failed', last_failed_at: Time.now.utc)
-      @invoice2.last_transaction.update_attribute(:error, "Authorization refused")
-      visit "/sites/#{@site1.token}/invoices"
+      sign_in_as :user, cc_expire_on: 2.years.ago, kill_user: true
+      @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      @invoice = @site.last_invoice
+      @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
+      @invoice.last_transaction.update_attribute(:error, "Credit card refused")
+      visit "/sites/#{@site.token}/invoices"
     end
 
     scenario "displays a notice" do
-      page.should have_content("You have 2 failed invoices for a total of #{display_amount(@invoice1.amount + @invoice2.amount)}")
-      page.should have_content("If necessary update your credit card and then retry the payment via the button below.")
+      page.should have_content("You have 1 failed invoice for a total of #{display_amount(@invoice.amount)}")
+      page.should have_content("Your credit card is expired")
+      page.should have_content("Please update your credit card and then retry the payment here.")
 
       within('.past_invoices') do
-        page.should have_content("#{display_amount(@invoice1.amount)} on #{I18n.l(@invoice1.created_at, format: :d_b_Y)}")
-        page.should have_content("Status: Payment failed on #{I18n.l(@invoice1.last_failed_at, format: :minutes_timezone)}")
+        page.should have_content("#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}")
+        page.should have_content("Status: Payment failed on #{I18n.l(@invoice.last_failed_at, format: :minutes_timezone)}")
         page.should have_content("with the following error: \"Credit card refused\".")
-
-        page.should have_content("#{display_amount(@invoice2.amount)} on #{I18n.l(@invoice2.created_at, format: :d_b_Y)}")
-        page.should have_content("Status: Payment failed on #{I18n.l(@invoice2.last_failed_at, format: :minutes_timezone)}")
-        page.should have_content("with the following error: \"Authorization refused\".")
       end
     end
   end
@@ -312,12 +315,12 @@ feature "Site invoice page" do
         sign_in_as :user
         Timecop.travel(Time.utc(2010,10,10)) do
           @current_user.update_attribute(:created_at, Time.now.utc)
-          @current_user.update_attribute(:country, 'US')
+          @current_user.update_attribute(:billing_country, 'US')
           @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
           VCR.use_cassette('ogone/visa_payment_generic') do
             @site.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
           end
-          @site.apply_pending_plan_changes
+          @site.apply_pending_attributes
         end
         @invoice = @site.last_invoice
 
@@ -367,7 +370,7 @@ feature "Site invoice page" do
 
   context "user has VAT" do
     background do
-      sign_in_as :user, country: 'CH'
+      sign_in_as :user, billing_country: 'CH'
       site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = site.last_invoice
 

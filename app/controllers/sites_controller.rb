@@ -36,31 +36,21 @@ class SitesController < ApplicationController
 
   # POST /sites
   def create
-    @site = current_user.sites.build(params[:site])
+    @site = current_user.sites.build(params[:site].merge(remote_ip: request.try(:remote_ip)))
 
     # setting user_attributes will set user.attributes only before validation (so, on the save below)
-    # in order to set the credit card in the charging_options site's attribute, user.attributes have to be set before calling user.credit_card
-    @site.user.assign_attributes(params[:site][:user_attributes]) if @site.in_or_will_be_in_paid_plan? && !@site.will_be_in_free_plan?
-    @site.charging_options = {
-      credit_card: @site.user.credit_card,
-      accept_url: sites_url,
-      decline_url: sites_url,
-      exception_url: sites_url,
-      ip: request.try(:remote_ip)
-    }
+    @site.user.assign_attributes(params[:site][:user_attributes]) # cc_register is checked in credit_card.rb anyways
 
     respond_with(@site) do |format|
       if @site.save # will create invoice and charge...
-        if @site.transaction.try(:waiting_d3d?)
-          flash[:notice] = ""
-          flash[:alert] = ""
-          format.html { render text: d3d_html_inject(@site.transaction.error) }
+        if @site.last_transaction.try(:waiting_d3d?)
+          flash[:notice] = flash[:alert] = ""
+          format.html { render text: d3d_html_inject(@site.last_transaction.error) }
         else
-          format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.transaction) }
+          format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.last_transaction) }
         end
       else
-        flash[:notice] = ""
-        flash[:alert] = ""
+        flash[:notice] = flash[:alert] = ""
         format.html { render :new }
       end
     end
