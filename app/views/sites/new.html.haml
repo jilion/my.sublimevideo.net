@@ -19,7 +19,7 @@
 
     = render 'skip_trial_box', site: @site, f: f
 
-    = render "billing_infos_box"
+    = render 'billing_infos_box'
 
     .actions.center
       = f.submit "#{@site.persisted? ? 'Update' : 'Create'} site", class: "submit big", id: 'site_submit'

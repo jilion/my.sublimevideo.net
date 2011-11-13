@@ -43,8 +43,8 @@ module Spec
             cc_expiration_month:   12,
             cc_expiration_year:    2.years.from_now.year
           }))
-          if cc_expire_on < Time.now
-            user.cc_expire_on = cc_expire_on.end_of_month
+          if cc_expire_on <= Time.now.utc.end_of_month.to_date
+            user.cc_expire_on = cc_expire_on.end_of_month.to_date
             user.save_skip_pwd
           end
           user

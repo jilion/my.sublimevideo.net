@@ -249,6 +249,7 @@ feature "Site invoices page" do
   context "user credit card is expired" do
     background do
       sign_in_as :user, cc_expire_on: 2.years.ago, kill_user: true
+      @current_user.should be_cc_expired
       @site    = Factory.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = @site.last_invoice
       @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)

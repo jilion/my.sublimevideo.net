@@ -6,5 +6,5 @@
     %h3 Warning
     %ul
       - notices.each do |notice|
-        - if notice[0]
+        - if current_user.billable? && notice[0]
           %li= render "layouts/sticky_notices/#{notice[1]}"
