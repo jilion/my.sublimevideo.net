@@ -52,6 +52,15 @@ module SiteModules::Invoice
       self.first_paid_plan_started_at = Time.now.utc unless first_paid_plan_started_at?
     end
 
+    def prepare_trial_skipping
+      self.trial_started_at = (BusinessModel.days_for_trial + 1).days.ago
+      prepare_activation
+    end
+
+    def skip_trial?
+      @skip_trial.to_i.nonzero?
+    end
+
     def instant_charging?
       @instant_charging
     end
@@ -193,17 +202,19 @@ module SiteModules::Invoice
 
         # Creation, activation or upgrade
         else
-          # Upgrade only
-          @instant_charging = !trial_not_started_or_in_trial? && !first_paid_plan_started_at_changed?
-          # Creation, activation or upgrade
+          prepare_trial_skipping if skip_trial?
+
+          # Upgrade or creation with "skip trial"
+          @instant_charging = trial_ended? && (!first_paid_plan_started_at_changed? || skip_trial?)
+
           self.pending_plan_started_at = plan_cycle_started_at || Time.now.utc
         end
 
         if trial_ended? &&
           (
-            # Activation
+            # Activation or creation with "skip trial"
             first_paid_plan_started_at_changed? ||
-            # Upgrade or downgrade
+            # Upgrade, downgrade or creation with "skip trial"
             (pending_plan_id? && pending_plan.paid_plan?)
           )
           self.pending_plan_cycle_started_at = plan_id? && plan.yearly? ? pending_plan_started_at : pending_plan_started_at + months_since(pending_plan_started_at).months

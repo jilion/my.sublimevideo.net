@@ -32,7 +32,20 @@
 
         = render 'fields', f: f
 
-        = render 'sites/cc_fields', site: @site, f: f
+        #billing_infos{ 'data-state' => credit_card_state(current_user), style: 'display:none' }
+          #billing_infos_none{ style: 'display:none' }
+            = "In order to pay immediately, please fill your billing information first and come back here to buy your plan."
+            %br
+            = raw t("app.please_link", link: link_to("fill your billing information", [:edit, :billing], class: "hl")) + '.'
+          #billing_infos_expired{ style: 'display:none' }
+            = t('user.credit_card.expired')
+            = raw t("app.please_link", link: link_to(t('app.update_it'), [:edit, :billing], class: "hl")) + " and come back here to buy your plan."
+          #billing_infos_present{ style: 'display:none' }
+            #credit_card_summary
+              %strong Credit card used
+              = render 'billings/cc_summary', user: current_user
+
+        #credit_card_summary{ style: 'display:none' }= render 'billings/cc_summary', user: current_user
 
         = render 'plan_change_messages'
         .spacer

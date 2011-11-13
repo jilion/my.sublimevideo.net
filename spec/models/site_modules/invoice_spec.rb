@@ -300,6 +300,51 @@ describe SiteModules::Invoice do
       end
     end
 
+    describe "#prepare_trial_skipping" do
+      context "site in trial" do
+        subject { Factory.build(:new_site) }
+
+        it "sets trial_started_at at a date that kills it immediately" do
+          subject.trial_started_at.should be_nil
+
+          subject.prepare_trial_skipping
+
+          subject.trial_started_at.should be_present
+          subject.should_not be_trial_not_started_or_in_trial
+        end
+
+        it "sets first_paid_plan_started_at" do
+          subject.first_paid_plan_started_at.should be_nil
+
+          subject.prepare_trial_skipping
+
+          subject.first_paid_plan_started_at.should be_present
+        end
+      end
+
+      context "site not in trial anymore" do
+        subject { Factory.create(:site_with_invoice, trial_started_at: 30.days.ago) }
+
+        it "resets trial_started_at" do
+          subject.trial_started_at.should be_present
+
+          original_trial_started_at = subject.trial_started_at
+          subject.prepare_trial_skipping
+
+          subject.trial_started_at.should_not eq original_trial_started_at
+        end
+
+        it "doesn't reset first_paid_plan_started_at" do
+          subject.first_paid_plan_started_at.should be_present
+
+          original_first_paid_plan_started_at = subject.first_paid_plan_started_at
+          subject.prepare_trial_skipping
+
+          subject.first_paid_plan_started_at.should eq original_first_paid_plan_started_at
+        end
+      end
+    end
+
     describe "#instant_charging?" do
       subject { Factory.create(:site) }
 
