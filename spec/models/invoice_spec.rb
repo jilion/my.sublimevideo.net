@@ -373,35 +373,35 @@ describe Invoice do
     end
 
     describe "#open" do
-      specify { Invoice.open.should == [@open_invoice] }
+      specify { Invoice.open.order(:id).should == [@open_invoice] }
     end
 
     describe "#paid" do
-      specify { Invoice.paid.should == [@paid_invoice] }
+      specify { Invoice.paid.order(:id).should == [@paid_invoice] }
     end
 
     describe "#refunded" do
-      specify { Invoice.refunded.should == [@refunded_invoice] }
+      specify { Invoice.refunded.order(:id).should == [@refunded_invoice] }
     end
 
     describe "#failed" do
-      specify { Invoice.failed.should == [@failed_invoice] }
+      specify { Invoice.failed.order(:id).should == [@failed_invoice] }
     end
 
     describe "#waiting" do
-      specify { Invoice.waiting.should == [@waiting_invoice] }
+      specify { Invoice.waiting.order(:id).should == [@waiting_invoice] }
     end
 
     describe "#open_or_failed" do
-      specify { Invoice.open_or_failed.should == [@open_invoice, @failed_invoice] }
+      specify { Invoice.open_or_failed.order(:id).should == [@open_invoice, @failed_invoice] }
     end
 
     describe "#not_canceled" do
-      specify { Invoice.not_canceled.should == [@open_invoice, @failed_invoice, @waiting_invoice, @paid_invoice, @refunded_invoice] }
+      specify { Invoice.not_canceled.order(:id).should == [@open_invoice, @failed_invoice, @waiting_invoice, @paid_invoice, @refunded_invoice] }
     end
 
     describe "#not_paid" do
-      specify { Invoice.not_paid.should == [@open_invoice, @failed_invoice, @waiting_invoice] }
+      specify { Invoice.not_paid.order(:id).should == [@open_invoice, @failed_invoice, @waiting_invoice] }
     end
 
   end # Scopes
