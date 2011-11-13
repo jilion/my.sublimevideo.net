@@ -164,13 +164,13 @@ describe Invoice do
         end
       end
 
-      describe "after_transition :on => :succeed, :do => :apply_pending_site_plan_changes" do
+      describe "after_transition :on => :succeed, :do => :apply_site_pending_attributes" do
         context "with a site with no more non-paid invoices" do
-          it "should call #apply_pending_plan_changes on the site" do
+          it "should call #apply_pending_attributes on the site" do
             site = Factory.create(:site)
 
             invoice = Factory.create(:invoice, site: site)
-            invoice.site.should_receive(:apply_pending_plan_changes)
+            invoice.site.should_receive(:apply_pending_attributes)
             invoice.succeed!
             invoice.reload.should be_paid
           end
@@ -181,17 +181,17 @@ describe Invoice do
             let(:site) { Factory.create(:site) }
             let(:non_paid_invoice) { Factory.create(:invoice, state: state, site: site) }
 
-            it "should not call #apply_pending_plan_changes on the site only if there are still non-paid invoices" do
+            it "should not call #apply_pending_attributes on the site only if there are still non-paid invoices" do
               non_paid_invoice.state.should == state
 
-              non_paid_invoice.site.should_not_receive(:apply_pending_plan_changes)
+              non_paid_invoice.site.should_not_receive(:apply_pending_attributes)
               Factory.create(:invoice, site: site).succeed!
             end
 
-            it "should call #apply_pending_plan_changes on the site if there are no more non-paid invoices" do
+            it "should call #apply_pending_attributes on the site if there are no more non-paid invoices" do
               non_paid_invoice.state.should == state
 
-              non_paid_invoice.site.should_receive(:apply_pending_plan_changes).once
+              non_paid_invoice.site.should_receive(:apply_pending_attributes).once
               Factory.create(:invoice, site: site).succeed!
               non_paid_invoice.succeed!
             end
@@ -414,7 +414,7 @@ describe Invoice do
           @user = Factory.create(:user)
 
           @site1 = Factory.build(:site_not_in_trial, plan_id: @paid_plan.id, user: @user, first_paid_plan_started_at: Time.now.utc)
-          @site1.pend_plan_changes
+          @site1.prepare_pending_attributes
           @site1.save!
 
           Invoice.delete_all
@@ -574,8 +574,8 @@ describe Invoice do
             end
 
             Timecop.travel(Time.utc(2011,6,1)) do
-              @site.pend_plan_changes
-              @site.save_without_password_validation
+              @site.prepare_pending_attributes
+              @site.save_skip_pwd
               @invoice = Invoice.construct(site: @site)
             end
           end

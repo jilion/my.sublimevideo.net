@@ -61,7 +61,7 @@ module SiteModules::Scope
 
     # sort
     scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
-    scope :by_user,        lambda { |way = 'desc'| includes(:user).order(users: [:first_name.send(way), :email.send(way)]) }
+    scope :by_user,        lambda { |way = 'desc'| includes(:user).order(users: [:name.send(way), :email.send(way)]) }
     scope :by_state,       lambda { |way = 'desc'| order(:state.send(way)) }
     scope :by_plan_price,  lambda { |way = 'desc'| includes(:plan).order(plans: :price.send(way)) }
     scope :by_google_rank, lambda { |way = 'desc'| where { google_rank >= 0 }.order(:google_rank.send(way)) }
@@ -87,13 +87,13 @@ module SiteModules::Scope
   module ClassMethods
 
     def search(q)
-      joins(:user).
-      where(:lower.func(:email).matches % :lower.func("%#{q}%") |
-            :lower.func(:first_name).matches % :lower.func("%#{q}%") |
-            :lower.func(:last_name).matches % :lower.func("%#{q}%") |
-            :lower.func(:hostname).matches % :lower.func("%#{q}%") |
-            :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%") |
-            :lower.func(:extra_hostnames).matches % :lower.func("%#{q}%"))
+      joins(:user).where {
+        (lower(:email) =~ lower("%#{q}%")) |
+        (lower(:name) =~ lower("%#{q}%")) |
+        (lower(:hostname) =~ lower("%#{q}%")) |
+        (lower(:dev_hostnames) =~ lower("%#{q}%")) |
+        (lower(:extra_hostnames) =~ lower("%#{q}%"))
+      }
     end
 
   end

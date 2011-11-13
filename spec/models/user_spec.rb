@@ -557,44 +557,37 @@ describe User do
   end
 
   describe "Callbacks" do
-    let(:user) { Factory.create(:user) }
 
-    describe "before_save :pend_credit_card_info" do
+    describe "before_save :prepare_pending_credit_card" do
 
       context "when user had no cc infos before" do
-        subject { Factory.build(:user_no_cc, valid_cc_attributes) }
-        before(:each) do
-          subject.save!
-          subject.apply_pending_credit_card_info
-          subject.reload
-        end
+        subject { Factory.create(:user_no_cc, valid_cc_attributes.merge(cc_register: false)) }
 
-        its(:cc_type)                { should == 'visa' }
-        its(:cc_last_digits)         { should == '1111' }
-        its(:cc_expire_on)           { should == 1.year.from_now.end_of_month.to_date }
-        its(:pending_cc_type)        { should be_nil }
-        its(:pending_cc_last_digits) { should be_nil }
-        its(:pending_cc_expire_on)   { should be_nil }
+        its(:cc_type)                { should be_nil }
+        its(:cc_last_digits)         { should be_nil }
+        its(:cc_expire_on)           { should be_nil }
+        its(:pending_cc_type)        { should eq 'visa' }
+        its(:pending_cc_last_digits) { should eq '1111' }
+        its(:pending_cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
       end
 
       context "when user has cc infos before" do
-        subject { Factory.create(:user) }
+        subject { Factory.create(:user_real_cc) }
         before(:each) do
-          subject.cc_type.should == 'visa'
-          subject.cc_last_digits.should == '1111'
-          subject.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
-          subject.attributes = valid_cc_attributes_master
+          subject.cc_type.should eq 'visa'
+          subject.cc_last_digits.should eq '1111'
+          subject.cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
+
+          subject.attributes = valid_cc_attributes_master.merge(cc_register: false)
           subject.save!
-          subject.apply_pending_credit_card_info
-          subject.reload
         end
 
-        its(:cc_type)                { should == 'master' }
-        its(:cc_last_digits)         { should == '9999' }
-        its(:cc_expire_on)           { should == 2.years.from_now.end_of_month.to_date }
-        its(:pending_cc_type)        { should be_nil }
-        its(:pending_cc_last_digits) { should be_nil }
-        its(:pending_cc_expire_on)   { should be_nil }
+        its(:cc_type)                { should eq 'visa' }
+        its(:cc_last_digits)         { should eq '1111' }
+        its(:cc_expire_on)           { should eq 1.year.from_now.end_of_month.to_date }
+        its(:pending_cc_type)        { should eq 'master' }
+        its(:pending_cc_last_digits) { should eq '9999' }
+        its(:pending_cc_expire_on)   { should eq 2.years.from_now.end_of_month.to_date }
       end
     end
 

@@ -668,7 +668,7 @@ describe Site do
     describe "#suspend" do
       subject do
         site = Factory.build(:new_site)
-        site.apply_pending_plan_changes
+        site.apply_pending_attributes
         @worker.work_off
         site
       end
@@ -686,7 +686,7 @@ describe Site do
     describe "#unsuspend" do
       subject do
         site = Factory.build(:new_site)
-        site.apply_pending_plan_changes
+        site.apply_pending_attributes
         @worker.work_off
         site
       end
@@ -859,23 +859,23 @@ describe Site do
         end
       end
 
-      describe "#pend_plan_changes" do
+      describe "#prepare_pending_attributes" do
         context "when pending_plan_id has changed" do
-          it "should call #pend_plan_changes" do
+          it "should call #prepare_pending_attributes" do
             subject.reload
             subject.plan_id = @paid_plan.id
-            VCR.use_cassette('ogone/visa_payment_generic') { subject.save_without_password_validation }
+            VCR.use_cassette('ogone/visa_payment_generic') { subject.save_skip_pwd }
             subject.pending_plan_id.should == @paid_plan.id
-            subject.reload # apply_pending_plan_changes called
+            subject.reload # apply_pending_attributes called
             subject.plan_id.should == @paid_plan.id
             subject.pending_plan_id.should be_nil
           end
         end
 
         context "when pending_plan_id doesn't change" do
-          it "should not call #pend_plan_changes" do
+          it "should not call #prepare_pending_attributes" do
             subject.hostname = 'test.com'
-            subject.save_without_password_validation
+            subject.save_skip_pwd
             subject.pending_plan_id.should be_nil
           end
         end
@@ -920,12 +920,12 @@ describe Site do
         VCR.use_cassette('ogone/visa_payment_generic') do
           subject.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
         end
-        subject.apply_pending_plan_changes
+        subject.apply_pending_attributes
         subject.overusage_notification_sent_at.should be_nil
       end
     end
 
-    describe "#without_password_validation" do
+    describe "#skip_pwd" do
       subject { Factory.create(:site_not_in_trial, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
@@ -939,17 +939,17 @@ describe Site do
       it "should not ask password when calling this method" do
         subject.hostname.should == "rymai.com"
         subject.hostname = "remy.com"
-        subject.without_password_validation { subject.save }
+        subject.skip_pwd { subject.save }
         subject.should have(0).error_on(:base)
         subject.reload.hostname.should == "remy.com"
       end
 
       it "should return the result of the given block" do
-        subject.without_password_validation { "foo" }.should == "foo"
+        subject.skip_pwd { "foo" }.should == "foo"
       end
     end
 
-    describe "#save_without_password_validation" do
+    describe "#save_skip_pwd" do
       subject { Factory.create(:site_not_in_trial, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
@@ -963,13 +963,13 @@ describe Site do
       it "should not ask password when calling this method" do
         subject.hostname.should == "rymai.com"
         subject.hostname = "remy.com"
-        subject.save_without_password_validation
+        subject.save_skip_pwd
         subject.should have(0).error_on(:base)
         subject.reload.hostname.should == "remy.com"
       end
 
       it "should return the result of the given block" do
-        subject.without_password_validation { "foo" }.should == "foo"
+        subject.skip_pwd { "foo" }.should == "foo"
       end
     end
 
@@ -1046,58 +1046,6 @@ describe Site do
         subject { Factory.build(:site, hostname: 'tumblr.com') }
         its(:need_subdomain?)                { should be_false }
         its(:hostname_with_subdomain_needed) { should be_nil }
-      end
-    end
-
-    describe "#plan_month_cycle_started_at & #plan_month_cycle_ended_at" do
-      before(:all) do
-        Site.delete_all
-      end
-
-      context "with free plan" do
-        before(:all) { @site = Factory.create(:site, plan_id: @free_plan.id) }
-        subject { @site }
-
-        its(:plan_month_cycle_started_at) { should eq (1.month - 1.day).ago.midnight }
-        its(:plan_month_cycle_ended_at)   { should eq Time.now.utc.end_of_day }
-      end
-
-      context "with monthly plan in trial" do
-        before(:all) { @site = Factory.create(:site) }
-        subject { @site }
-
-        its(:plan_month_cycle_started_at) { should eq (1.month - 1.day).ago.midnight }
-        its(:plan_month_cycle_ended_at)   { should eq Time.now.utc.end_of_day }
-      end
-
-      context "with monthly plan" do
-        before(:all) { @site = Factory.create(:site_not_in_trial) }
-        subject { @site }
-
-        its(:plan_month_cycle_started_at)     { should eq Time.now.utc.midnight }
-        its("plan_month_cycle_ended_at.to_i") { should eq (Time.now.utc + 1.month - 1.day).end_of_day.to_i }
-      end
-
-      context "with yearly plan" do
-        before(:all) { @yearly_plan = Factory.create(:plan, cycle: 'year') }
-
-        describe "before the first month" do
-          before(:all) { @site = Factory.create(:site_not_in_trial, plan_id: @yearly_plan.id) }
-          subject { @site }
-
-          its(:plan_month_cycle_started_at) { should eq Time.now.utc.midnight }
-          its(:plan_month_cycle_ended_at)   { should eq (Time.now.utc + 1.month - 1.day).end_of_day }
-        end
-
-        describe "after the first month" do
-          before(:all) do
-            Timecop.travel(35.days.ago) { @site = Factory.create(:site_not_in_trial, plan_id: @yearly_plan.id) }
-          end
-          subject { @site }
-
-          its(:plan_month_cycle_started_at) { should eq (35.days.ago + 1.month).utc.midnight }
-          its(:plan_month_cycle_ended_at)   { should eq (35.days.ago + 2.months - 1.day).end_of_day }
-        end
       end
     end
 

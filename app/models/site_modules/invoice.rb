@@ -6,19 +6,19 @@ module SiteModules::Invoice
     def activate_or_downgrade_sites_leaving_trial
       Site.not_in_trial.billable.where(first_paid_plan_started_at: nil).find_each(batch_size: 100) do |site|
         if site.user.credit_card?
-          site.first_paid_plan_started_at = Time.now.utc
-          site.pend_plan_changes
+          site.prepare_activation
+          site.prepare_pending_attributes
         else
           site.plan_id = Plan.free_plan.id
         end
-        site.save_without_password_validation
+        site.save_skip_pwd
       end
     end
 
     def renew_active_sites
       Site.renewable.each do |site|
-        site.pend_plan_changes
-        site.save_without_password_validation
+        site.prepare_pending_attributes
+        site.save_skip_pwd
       end
     end
 
@@ -48,6 +48,10 @@ module SiteModules::Invoice
       end
     end
 
+    def prepare_activation
+      self.first_paid_plan_started_at = Time.now.utc unless first_paid_plan_started_at?
+    end
+
     def instant_charging?
       @instant_charging
     end
@@ -66,8 +70,14 @@ module SiteModules::Invoice
       in_paid_plan? || will_be_in_paid_plan?
     end
 
+    # Tells if trial has **never been** started or is **not yet** ended
     def trial_not_started_or_in_trial?
-      !trial_started_at? || trial_started_at > BusinessModel.days_for_trial.days.ago
+      !trial_ended?
+    end
+
+    # Tells if trial **actually** started and **now** ended
+    def trial_ended?
+      trial_started_at? && trial_started_at <= BusinessModel.days_for_trial.days.ago
     end
 
     # DEPRECATED, TO BE REMOVED 30 DAYS AFTER NEW BUSINESS MODEL DEPLOYMENT
@@ -81,6 +91,14 @@ module SiteModules::Invoice
 
     def plan_cycle_ended?
       plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc
+    end
+
+    def last_paid_invoice
+      invoices.paid.order(:paid_at).try(:last)
+    end
+
+    def last_paid_plan_price
+      last_paid_invoice ? last_paid_invoice.plan_invoice_items.find { |pii| pii.amount > 0 }.try(:price) || 0 : 0
     end
 
     def months_since(time)
@@ -111,12 +129,38 @@ module SiteModules::Invoice
       trial_started_at? ? trial_started_at + BusinessModel.days_for_trial.days : nil
     end
 
-    def last_paid_invoice
-      invoices.paid.order(:paid_at).try(:last)
+    def plan_month_cycle_started_at
+      cycle = trial_not_started_or_in_trial? ? 'none' : plan.read_attribute(:cycle) # strange error in specs when using .cycle
+
+      case cycle
+      when 'month'
+        plan_cycle_started_at
+      when 'year'
+        plan_cycle_started_at + months_since(plan_cycle_started_at).months
+      when 'none'
+        (1.month - 1.day).ago.midnight
+      end
     end
 
-    def last_paid_plan_price
-      last_paid_invoice ? last_paid_invoice.plan_invoice_items.find { |pii| pii.amount > 0 }.try(:price) || 0 : 0
+    def plan_month_cycle_ended_at
+      cycle = trial_not_started_or_in_trial? ? 'none' : plan.read_attribute(:cycle) # strange error in specs when using .cycle
+
+      case cycle
+      when 'month'
+        plan_cycle_ended_at
+      when 'year'
+        (plan_cycle_started_at + (months_since(plan_cycle_started_at) + 1).months - 1.day).end_of_day
+      when 'none'
+        Time.now.utc.end_of_day
+      end
+    end
+
+    def plan_month_cycle_start_time
+      plan_month_cycle_started_at.to_i
+    end
+
+    def plan_month_cycle_end_time
+      plan_month_cycle_ended_at.to_i
     end
 
     # DEPRECATED, TO BE REMOVED 30 DAYS AFTER NEW BUSINESS MODEL DEPLOYMENT
@@ -128,7 +172,7 @@ module SiteModules::Invoice
     end
 
     # before_save :if => :pending_plan_id_changed? / also called from SiteModules::Invoice.renew_active_sites
-    def pend_plan_changes
+    def prepare_pending_attributes
       @instant_charging = false
 
       # Downgrade
@@ -155,7 +199,7 @@ module SiteModules::Invoice
           self.pending_plan_started_at = plan_cycle_started_at || Time.now.utc
         end
 
-        if !trial_not_started_or_in_trial? &&
+        if trial_ended? &&
           (
             # Activation
             first_paid_plan_started_at_changed? ||
@@ -183,8 +227,8 @@ module SiteModules::Invoice
     end
 
     # called from SiteModules::Invoice#create_and_charge_invoice callback
-    # and from Invoice#succeed's apply_pending_site_plan_changes callback
-    def apply_pending_plan_changes
+    # and from Invoice#succeed's apply_site_pending_attributes callback
+    def apply_pending_attributes
       # Remove upgrade required "state"
       if plan_id? && pending_plan_id? && Plan.find(plan_id).upgrade?(Plan.find(pending_plan_id))
         self.first_plan_upgrade_required_alert_sent_at = nil
@@ -193,44 +237,44 @@ module SiteModules::Invoice
       write_attribute(:plan_id, pending_plan_id) if pending_plan_id?
 
       # force update
-      %w[plan_started_at plan_cycle_started_at plan_cycle_ended_at pending_plan_id pending_plan_cycle_started_at pending_plan_cycle_ended_at].each do |attr|
-        self.send("#{attr}_will_change!")
+      %w[plan_started_at plan_cycle_started_at plan_cycle_ended_at].each do |att|
+        self.send("#{att}_will_change!")
+        self.send("pending_#{att}_will_change!")
       end
+      self.pending_plan_id_will_change!
       self.pending_plan_started_at_will_change! if pending_plan_started_at?
 
-      self.plan_started_at               = pending_plan_started_at if pending_plan_started_at?
-      self.plan_cycle_started_at         = pending_plan_cycle_started_at
-      self.plan_cycle_ended_at           = pending_plan_cycle_ended_at
+      self.plan_started_at       = pending_plan_started_at if pending_plan_started_at?
+      self.plan_cycle_started_at = pending_plan_cycle_started_at
+      self.plan_cycle_ended_at   = pending_plan_cycle_ended_at
 
-      %w[pending_plan_id pending_plan_started_at pending_plan_cycle_started_at pending_plan_cycle_ended_at].each do |attr|
-        self.send("#{attr}=", nil)
+      %w[plan_id plan_started_at plan_cycle_started_at plan_cycle_ended_at].each do |att|
+        self.send("pending_#{att}=", nil)
       end
 
-      save_without_password_validation
+      self.save_skip_pwd
     end
 
   private
 
     # before_save
     def set_trial_started_at
-      if !trial_started_at? && in_or_will_be_in_paid_plan?
-        self.trial_started_at = Time.now.utc
-      end
+      self.trial_started_at = Time.now.utc if !trial_started_at? && in_or_will_be_in_paid_plan?
     end
 
     # after_save (BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self)
     def create_and_charge_invoice
-      if !trial_not_started_or_in_trial? && (activated? || upgraded? || renewed?)
+      if trial_ended? && (activated? || upgraded? || renewed?)
         invoice = ::Invoice.construct(site: self, renew: renewed?)
         invoice.save!
 
         if instant_charging? && !invoice.paid?
-          @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {})
+          @transaction = Transaction.charge_by_invoice_ids([invoice.id], { ip: remote_ip, credit_card: user.credit_card })
         end
 
       elsif pending_plan_id_changed? && pending_plan_id? && (pending_plan.unpaid_plan? || trial_not_started_or_in_trial?)
         # directly update for unpaid plans or any plans during trial
-        self.apply_pending_plan_changes
+        self.apply_pending_attributes
       end
     end
 
