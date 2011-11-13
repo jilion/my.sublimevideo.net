@@ -154,6 +154,10 @@
       width: 100%;
       td {
         text-align: center;
+        
+        span.tooltip {
+          display: none;
+        }
       }
     }
   }

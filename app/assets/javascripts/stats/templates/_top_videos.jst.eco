@@ -19,6 +19,19 @@
             <% end %>
           <td>
             <%= video.get('n') %>
+            <% if video.get('uo') == 's' || video.get('no') == 's': %>
+              <span class='tooltip'>
+                Your video
+                <% if video.get('uo') == 's' && video.get('no') == 's': %>
+                  uid & name aren't
+                <% else if video.get('uo') == 's': %>
+                  uid isn't
+                <% else: %>
+                  name isn't
+                <% end %>
+                defined properly, please set data-* attribute(s) in your video tag. <a href='TODO docs link'>More info (TODO)</a>
+              </span>
+            <% end %>
             <div>#<%= video.id %></div>
           </td>
           <td><%= Highcharts.numberFormat(video.vlTotal(), 0) %></td>
