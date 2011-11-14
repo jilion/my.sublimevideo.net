@@ -9,7 +9,7 @@
           = link_to "Sites", sites_path
     .right
       %ul.extra_links
-        %li= link_to("Documentation", "http://docs.sublimevideo.net")
+        %li= link_to("Documentation", root_url(subdomain: 'docs'))
         - if !user_signed_in? || current_user.support == 'forum'
           %li= link_to("Help", "http://sublimevideo.net/help")
         - else

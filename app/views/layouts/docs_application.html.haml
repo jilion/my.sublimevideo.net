@@ -1,0 +1,67 @@
+!!! 5
+%html{ "xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en" }
+  %head
+    %title= "SublimeVideo Documentation - #{yield :title}"
+    %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
+    %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
+    %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
+
+    = stylesheet_link_tag 'application', 'coderay'
+    
+    /[if lte IE 6]
+      %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
+      %style{ :type => "text/css", :media => "screen" }
+        == body {background:#fff;display:none;}
+    /[if lte IE 9]
+      = javascript_include_tag("http://html5shiv.googlecode.com/svn/trunk/html5.js")
+      
+    = yield :header
+    = csrf_meta_tag
+    = yield :js
+    = javascript_include_tag("#{request.protocol}use.typekit.com/vcc7hji.js")
+    == <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    
+  %body
+    %section#global
+      %header
+        %h1
+          = link_to "http://sublimevideo.net" do
+            %span
+              = "SublimeVideo"
+              %em= "HTML5 Video Player"
+        = link_to "http://jilion.com", :class => "jilion" do
+          %span= "Jilion"
+        = link_to "http://twitter.com/jilion", :class => "twitter" do
+          %span= "Follow us on Twitter"
+      %section#content
+        %ul#meta_menu
+          %li.first= link_to "Home", "http://sublimevideo.net"
+          %li= link_to "Demo", "http://sublimevideo.net/demo"
+          %li= link_to "Plans & Pricing", "http://sublimevideo.net/plans"
+          %li.docs.active= link_to "Documentation", "http://docs.sublimevideo.net"
+          %li.right= link_to "MySublimeVideo", "https://my.sublimevideo.net"
+        %section#docs
+          %h2.headline= "Documentation"
+          = render "layouts/docs/menu"
+          %section#main= yield
+          .spacer
+      %footer
+        %p.right
+          = "SublimeVideo® is a service by"
+          = link_to "Jilion®", "http://jilion.com"
+        %p.links
+          = link_to "Demo", "http://sublimevideo.net/demo"
+          = "|"
+          = link_to "Sign Up", "https://my.sublimevideo.net/signup"
+          = "|"
+          = link_to "Log In", "https://my.sublimevideo.net/login"
+          = "|"
+          = link_to "Documentation", "http://docs.sublimevideo.net"
+          = "|"
+          = link_to "Releases", "http://docs.sublimevideo.net/releases"
+          = "|"
+          = link_to "Blog", "http://blog.jilion.com"
+          = "|"
+          = link_to "Twitter", "http://twitter.com/jilion"
+        %p.copyright= "Copyright © #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks"
+      = yield :bottom

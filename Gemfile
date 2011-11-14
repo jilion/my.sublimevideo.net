@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails',                 '3.1.1'
+gem 'rails',                 '3.1.2.rc2'
 
 gem 'prototype-rails'
 gem 'jquery-rails'
@@ -87,6 +87,10 @@ gem 'pusher',                '~> 0.8.3'
 
 # gem 'grafico',               '~> 0.2.5'
 
+# Docs
+gem 'coderay',               '~> 1.0.4'
+gem 'haml-coderay',          '~> 0.1.2'
+
 # Javascript test
 gem "jasminerice"
 
@@ -142,7 +146,7 @@ end
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.1.4'
+  gem 'sass-rails',   '~> 3.1.5.rc.2'
   gem 'coffee-rails', '~> 3.1.1'
   gem 'eco'
   gem 'uglifier'

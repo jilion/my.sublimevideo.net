@@ -4,7 +4,8 @@
     %title= "MySublimeVideo - #{yield :title}"
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-    = stylesheet_link_tag 'application'
+    = stylesheet_link_tag 'application', request.subdomain
+    = stylesheet_link_tag 'coderay' if request.subdomain == 'docs'
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
     /[if lte IE 6]
       %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
@@ -26,6 +27,8 @@
   %body
     #global
       = render 'layouts/header'
+      - if request.subdomain == 'docs'
+        = render "layouts/docs/menu"
       #main_wrap
         #main
           #rounded_corners_fix
