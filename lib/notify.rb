@@ -14,9 +14,9 @@ module Notify
 
     def airbrake(message, options)
       if options[:exception]
-        Airbrake.notify(:error_message => message + " // exception: #{options[:exception]}")
+        Airbrake.notify(Exception.new(message + " // exception: #{options[:exception]}"))
       else
-        Airbrake.notify(:error_message => message)
+        Airbrake.notify(Exception.new(message))
       end
     end
 
