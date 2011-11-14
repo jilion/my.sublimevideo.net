@@ -19,22 +19,22 @@ describe InvoiceItem::Plan do
 
       Timecop.travel(Time.utc(2011,6,15)) do
         # simulate renew of June 1st
-        @site1.pend_plan_changes
-        @site1.apply_pending_plan_changes
-        @site2.pend_plan_changes
-        @site2.apply_pending_plan_changes
+        @site1.prepare_pending_attributes
+        @site1.apply_pending_attributes
+        @site2.prepare_pending_attributes
+        @site2.apply_pending_attributes
 
         # simulate upgrade now
         @site1.plan_id = @plan2.id
-        @site1.pend_plan_changes
+        @site1.prepare_pending_attributes
 
         # simulate downgrade now
         @site2.plan_id = @plan1.id
-        @site2.pend_plan_changes
-        @site2.save_without_password_validation
+        @site2.prepare_pending_attributes
+        @site2.save_skip_pwd
 
         # normal renew
-        @site3.pend_plan_changes
+        @site3.prepare_pending_attributes
       end
 
       @invoice1 = Factory.build(:invoice, site: @site1)

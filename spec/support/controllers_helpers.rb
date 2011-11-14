@@ -37,7 +37,7 @@ module Spec
         end
       end
 
-      def authenticated_admin(stubs={})
+      def authenticated_admin(stubs = {})
         # admin = mock_admin(stubs.reverse_merge(:confirmed? => true, :authenticatable_salt => "x"))
         # Admin.stub(:find) { admin }
         # Admin.stub(:find_first) { admin }
@@ -47,7 +47,7 @@ module Spec
         mock_admin(stubs)
       end
 
-      def authenticated_user(stubs={})
+      def authenticated_user(stubs = {})
         # user = mock_user(stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false, :authenticatable_salt => "x"))
         # User.stub(:find) { user }
         # User.stub(:find_first) { user }
@@ -60,55 +60,55 @@ module Spec
         mock_user(stubs)
       end
 
-      def mock_site(stubs={})
+      def mock_site(stubs = {})
         mock_model(Site, stubs)
       end
 
-      def mock_user(stubs={})
+      def mock_user(stubs = {})
         Factory.create(:user, stubs)
       end
 
-      def mock_admin(stubs={})
+      def mock_admin(stubs = {})
         Factory.create(:admin, stubs)
       end
 
-      def mock_release(stubs={})
+      def mock_release(stubs = {})
         mock_model(Release, stubs)
       end
 
-      def mock_mail_template(stubs={})
+      def mock_mail_template(stubs = {})
         mock_model(MailTemplate, stubs)
       end
 
-      def mock_mail_letter(stubs={})
+      def mock_mail_letter(stubs = {})
         mock_model(MailLetter, stubs)
       end
 
-      def mock_mail_log(stubs={})
+      def mock_mail_log(stubs = {})
         mock_model(MailLog, stubs)
       end
 
-      def mock_delayed_job(stubs={})
+      def mock_delayed_job(stubs = {})
         mock_model(Delayed::Job, stubs)
       end
 
-      def mock_ticket(stubs={})
+      def mock_ticket(stubs = {})
         mock_model(Ticket, stubs).as_null_object
       end
 
-      def mock_plan(stubs={})
+      def mock_plan(stubs = {})
         mock_model(Plan, stubs)
       end
 
-      def mock_invoice(stubs={})
+      def mock_invoice(stubs = {})
         mock_model(Invoice, stubs)
       end
 
-      def mock_transaction(stubs={})
+      def mock_transaction(stubs = {})
         mock_model(Transaction, stubs)
       end
 
-      def mock_tweet(stubs={})
+      def mock_tweet(stubs = {})
         mock_model(Tweet, stubs)
       end
 

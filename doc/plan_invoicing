@@ -6,7 +6,7 @@ Every day at midnight:
       -> When a transaction:
         - succeed: included invoices are updated to 'paid' (and their paid_at is set)
         - fail: included invoices are updated to 'fail' (and their last_failed_at is set)
-      -> When an invoice succeed, Site#apply_pending_plan_changes is called and set plan_started_at (if applicable), plan_cycle_started_at, plan_cycle_ended_at, plan_id (if applicable) from their respective pending_XXX
+      -> When an invoice succeed, Site#apply_pending_attributes is called and set plan_started_at (if applicable), plan_cycle_started_at, plan_cycle_ended_at, plan_id (if applicable) from their respective pending_XXX
 
 -------------------------------------------------------------------------
 

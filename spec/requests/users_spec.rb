@@ -39,21 +39,21 @@ feature "Users" do
 
     describe "log-out redirections" do
       scenario "redirect /log_out to /logout" do
-        page.should have_content @current_user.full_name
+        page.should have_content @current_user.name
         visit "/log_out"
-        page.should have_no_content @current_user.full_name
+        page.should have_no_content @current_user.name
       end
 
       scenario "redirect /sign_out to /logout" do
-        page.should have_content @current_user.full_name
+        page.should have_content @current_user.name
         visit "/sign_out"
-        page.should have_no_content @current_user.full_name
+        page.should have_no_content @current_user.name
       end
 
       scenario "redirect /signout to /logout" do
-        page.should have_content @current_user.full_name
+        page.should have_content @current_user.name
         visit "/signout"
-        page.should have_no_content @current_user.full_name
+        page.should have_no_content @current_user.name
       end
     end
   end
@@ -68,71 +68,52 @@ feature "Users" do
       scenario "with all fields needed" do
         page.should have_selector("#signup_steps")
         find('#signup_steps').find('li.active').should have_content('1')
-        fill_in "Email",              :with => "remy@jilion.com"
-        fill_in "Password",           :with => "123456"
-        fill_in "First name",         :with => "Rémy"
-        fill_in "Last name",          :with => "Coutable"
-        select "Switzerland",         :from => "Country"
-        fill_in "Zip or Postal Code", :with => "CH-1024"
-        check "Personal"
+        fill_in "Email",    with: "remy@jilion.com"
+        fill_in "Password", with: "123456"
+        fill_in "Name",     with: "Rémy Coutable"
         check "user_terms_and_conditions"
         click_button "Sign Up"
 
         current_url.should =~ %r(^http://[^/]+/sites/new$)
         page.should have_content "Rémy Coutable"
 
-        User.last.full_name.should == "Rémy Coutable"
-        User.last.email.should == "remy@jilion.com"
+        User.last.name.should eq "Rémy Coutable"
+        User.last.email.should eq "remy@jilion.com"
       end
 
       scenario "with errors" do
-        fill_in "Email",              :with => ""
-        fill_in "Password",           :with => ""
-        fill_in "First name",         :with => ""
-        fill_in "Last name",          :with => ""
-        fill_in "Zip or Postal Code", :with => ""
+        fill_in "Email",    with: ""
+        fill_in "Password", with: ""
+        fill_in "Name",     with: ""
         VCR.use_cassette("twitter/signup") { click_button "Sign Up" }
 
         current_url.should =~ %r(^http://[^/]+/signup$)
         page.should have_content "Email can't be blank"
         page.should have_content "Password can't be blank"
-        page.should have_content "First name can't be blank"
-        page.should have_content "Last name can't be blank"
-        page.should have_content "Postal code can't be blank"
+        page.should have_content "Name can't be blank"
         page.should have_content "Terms & Conditions must be accepted"
       end
     end
 
     describe "signup for company use" do
       scenario "with all fields needed" do
-        fill_in "Email",              :with => "remy@jilion.com"
-        fill_in "Password",           :with => "123456"
-        fill_in "First name",         :with => "Rémy"
-        fill_in "Last name",          :with => "Coutable"
-        select  "Switzerland",        :from => "Country"
-        fill_in "Zip or Postal Code", :with => "CH-1024"
-        fill_in "Company name",       :with => "Jilion"
-        select  "21-100 employees",   :from => "Company size"
-        check   "For my company"
+        fill_in "Email",    with: "remy@jilion.com"
+        fill_in "Password", with: "123456"
+        fill_in "Name",     with: "Rémy Coutable"
         check   "user_terms_and_conditions"
         click_button "Sign Up"
 
         current_url.should =~ %r(^http://[^/]+/sites/new$)
         page.should have_content "Rémy Coutable"
 
-        User.last.full_name.should == "Rémy Coutable"
-        User.last.email.should == "remy@jilion.com"
+        User.last.name.should eq "Rémy Coutable"
+        User.last.email.should eq "remy@jilion.com"
       end
 
       scenario "with optional blank fields" do
-        fill_in "Email",              :with => "remy@jilion.com"
-        fill_in "Password",           :with => "123456"
-        fill_in "First name",         :with => "Rémy"
-        fill_in "Last name",          :with => "Coutable"
-        select  "Switzerland",        :from => "Country"
-        fill_in "Zip or Postal Code", :with => "CH-1024"
-        fill_in "Company name",       :with => ""
-        select  "Company size",       :from => "Company size"
+        fill_in "Email",    with: "remy@jilion.com"
+        fill_in "Password", with: "123456"
+        fill_in "Name",     with: "Rémy Coutable"
         check   "user_terms_and_conditions"
         click_button "Sign Up"
 
@@ -146,19 +127,16 @@ feature "Users" do
         archived_user.current_password = '123456'
         archived_user.archive
 
-        fill_in "Email",              :with => archived_user.email
-        fill_in "Password",           :with => "123456"
-        fill_in "First name",         :with => "Rémy"
-        fill_in "Last name",          :with => "Coutable"
-        select "Switzerland",         :from => "Country"
-        fill_in "Zip or Postal Code", :with => "CH-1024"
+        fill_in "Email",    with: archived_user.email
+        fill_in "Password", with: "123456"
+        fill_in "Name",     with: "Rémy Coutable"
         check "user_terms_and_conditions"
         click_button "Sign Up"
 
         new_user = User.last
-        new_user.should_not == archived_user
-        new_user.full_name.should == "Rémy Coutable"
-        new_user.email.should == archived_user.email
+        new_user.should_not eq archived_user
+        new_user.name.should eq "Rémy Coutable"
+        new_user.email.should eq archived_user.email
 
         current_url.should =~ %r(^http://[^/]+/sites/new$)
         page.should have_content "Rémy Coutable"
@@ -168,60 +146,42 @@ feature "Users" do
   end
 
   scenario "current password confirmation accept password with HTML special characters" do
-    sign_in_as :user, { :email => "old@jilion.com", :password => "abc'def" }
+    sign_in_as :user, { email: "old@jilion.com", password: "abc'def" }
     click_link('John Doe')
-    fill_in "Email",            :with => "New@jilion.com"
+
+    fill_in "Email", with: "New@jilion.com"
     click_button "user_credentials_submit"
 
-    fill_in "Current password", :with => "abc'def"
+    fill_in "Current password", with: "abc'def"
     click_button "Done"
 
-    User.last.email.should == "new@jilion.com"
+    User.last.email.should eq "new@jilion.com"
   end
 
   scenario "update email (with current password confirmation)" do
-    sign_in_as :user, { :email => "old@jilion.com" }
+    sign_in_as :user, { email: "old@jilion.com" }
     click_link('John Doe')
-    fill_in "Email",            :with => "New@jilion.com"
+
+    fill_in "Email", with: "New@jilion.com"
     click_button "user_credentials_submit"
 
-    fill_in "Current password", :with => "123456"
+    fill_in "Current password", with: "123456"
     click_button "Done"
 
-    User.last.email.should == "new@jilion.com"
+    User.last.email.should eq "new@jilion.com"
   end
 
   scenario "update password (with current password confirmation)" do
     sign_in_as :user
     click_link('John Doe')
-    fill_in "Password", :with => "newpassword"
+
+    fill_in "Password", with: "newpassword"
     click_button "user_credentials_submit"
 
-    fill_in "Current password", :with => "123456"
+    fill_in "Current password", with: "123456"
     click_button "Done"
 
     User.last.valid_password?("newpassword").should be_true
-  end
-
-  scenario "update first name" do
-    sign_in_as :user
-    click_link('John Doe')
-    fill_in "First name",  :with => "Bob"
-    click_button "user_submit"
-
-    page.should have_content('Bob Doe')
-    User.last.full_name.should == "Bob Doe"
-  end
-
-  scenario "update first name with errors" do
-    sign_in_as :user
-    click_link('John Doe')
-    fill_in "First name",  :with => ""
-    click_button "user_submit"
-
-    page.should have_css('.inline_errors')
-    page.should have_content("First name can't be blank")
-    User.last.full_name.should == "John Doe"
   end
 
   describe "API" do
@@ -249,7 +209,7 @@ feature "Users" do
     click_link('John Doe')
     click_button "Delete account"
 
-    fill_in "Password", :with => "123456"
+    fill_in "Password", with: "123456"
     click_button "Done"
 
     current_url.should =~ %r(^http://[^/]+/login$)
@@ -293,19 +253,18 @@ feature "session" do
 
   describe "login" do
     background do
-      create_user :user => {
-        :first_name => "John",
-        :last_name => "Doe",
-        :email => "john@doe.com",
-        :password => "123456"
+      create_user user: {
+        name: "John Doe",
+        email: "john@doe.com",
+        password: "123456"
       }
     end
 
     scenario "not suspended user" do
       visit "/login"
       page.should_not have_content('John Doe')
-      fill_in "Email",     :with => "John@doe.com"
-      fill_in "Password",  :with => "123456"
+      fill_in "Email",    with: "John@doe.com"
+      fill_in "Password", with: "123456"
 
       click_button "Login"
 
@@ -317,8 +276,8 @@ feature "session" do
       @current_user.suspend
       visit "/login"
       page.should_not have_content('John Doe')
-      fill_in "Email",     :with => "John@doe.com"
-      fill_in "Password",  :with => "123456"
+      fill_in "Email",    with: "John@doe.com"
+      fill_in "Password", with: "123456"
       click_button "Login"
 
       current_url.should =~ %r(http://[^/]+/suspended)
@@ -330,8 +289,8 @@ feature "session" do
       @current_user.archive
       visit "/login"
       page.should_not have_content('John Doe')
-      fill_in "Email",     :with => "John@doe.com"
-      fill_in "Password",  :with => "123456"
+      fill_in "Email",    with: "John@doe.com"
+      fill_in "Password", with: "123456"
       click_button "Login"
 
       current_url.should =~ %r(http://[^/]+/login)
@@ -340,7 +299,7 @@ feature "session" do
   end
 
   scenario "logout" do
-    sign_in_as :user, { :first_name => "John", :last_name => "Doe" }
+    sign_in_as :user, { name: "John Doe" }
     page.should have_content "John Doe"
     click_link "Logout"
 
@@ -351,7 +310,7 @@ end
 
 feature "confirmation" do
   scenario "confirmation" do
-    user = create_user :user => { :first_name => "John", :last_name => "Doe", :email => "john@doe.com", :password => "123456" }, :confirm => false
+    user = create_user user: { name: "John Doe", email: "john@doe.com", password: "123456" }, confirm: false
 
     visit "/confirmation?confirmation_token=#{user.confirmation_token}"
 

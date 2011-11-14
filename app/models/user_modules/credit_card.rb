@@ -8,11 +8,10 @@ module UserModules::CreditCard
     attr_accessor :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
     attr_accessor :i18n_notice_and_alert, :d3d_html
 
-    # validate :if => :any_cc_attrs?
+    # validate
     def validates_credit_card_attributes
-      @credit_card = new_credit_card # reset the current credit card
-
-      return if credit_card.valid?
+      return if cc_number.blank? # don't try to validate if cc_number is not present at all
+      return if credit_card(true).valid?
 
       self.errors.add(:cc_full_name, :blank) unless credit_card.name?
 
@@ -35,20 +34,21 @@ module UserModules::CreditCard
       end
     end
 
-    def new_credit_card
-      ActiveMerchant::Billing::CreditCard.new(
-        :type               => cc_brand,
-        :number             => cc_number,
-        :month              => cc_expiration_month,
-        :year               => cc_expiration_year,
-        :first_name         => @cc_first_name,
-        :last_name          => @cc_last_name,
-        :verification_value => cc_verification_value
-      )
+    def credit_card(force_refresh = false)
+      reset_credit_card if force_refresh
+
+      @credit_card ||= ActiveMerchant::Billing::CreditCard.new(
+                        type:               cc_brand,
+                        number:             cc_number,
+                        month:              cc_expiration_month,
+                        year:               cc_expiration_year,
+                        first_name:         @cc_first_name,
+                        last_name:          @cc_last_name,
+                        verification_value: cc_verification_value)
     end
 
-    def credit_card
-      @credit_card ||= new_credit_card
+    def reset_credit_card
+      @credit_card = nil
     end
 
     def cc_full_name=(attribute)
@@ -59,16 +59,6 @@ module UserModules::CreditCard
         @cc_last_name  = names.size > 1 ? names.drop(1).join(" ") : "-"
       end
     end
-
-    def any_credit_card_attributes_present?
-      if cc_register.to_i == 1
-        [cc_brand, cc_number, cc_full_name, cc_expiration_month, cc_expiration_year, cc_verification_value].any?(&:present?)
-      else
-        reset_credit_card_attributes
-        false
-      end
-    end
-    alias :any_cc_attrs? :any_credit_card_attributes_present?
 
     def credit_card?
       [cc_type, cc_last_digits, cc_expire_on, cc_updated_at].all?(&:present?)
@@ -81,7 +71,7 @@ module UserModules::CreditCard
     alias :pending_cc? :pending_credit_card?
 
     def credit_card_expire_this_month?
-      cc_expire_on == Time.now.utc.end_of_month.to_date
+      credit_card? && cc_expire_on == Time.now.utc.end_of_month.to_date
     end
     alias :cc_expire_this_month? :credit_card_expire_this_month?
 
@@ -90,8 +80,13 @@ module UserModules::CreditCard
     end
     alias :cc_expired? :credit_card_expired?
 
-    # before_save if any_cc_attrs?
-    def pend_credit_card_info
+    # before_validation if cc_number.present?
+    def force_update_of_credit_card
+      pending_cc_type_will_change!
+    end
+
+    # before_save if cc_number.present? && credit_card.valid?
+    def prepare_pending_credit_card
       self.pending_cc_type        = credit_card.type
       self.pending_cc_last_digits = credit_card.last_digits
       self.pending_cc_expire_on   = Time.utc(credit_card.year, credit_card.month).end_of_month.to_date
@@ -101,38 +96,43 @@ module UserModules::CreditCard
     end
 
     def reset_credit_card_attributes
-      %w[cc_brand cc_number cc_expiration_month cc_expiration_year cc_full_name cc_verification_value].each { |att| self.send("#{att}=", nil) }
+      %w[brand number expiration_month expiration_year full_name verification_value].each do |att|
+        self.send("cc_#{att}=", nil)
+      end
     end
 
     # Be careful with this! Should be only used in dev and for special support-requested-credit-card-deletion purposes
-    def reset_credit_card_info
-      self.cc_type        = nil
-      self.cc_last_digits = nil
-      self.cc_expire_on   = nil
-      self.cc_updated_at  = nil
+    def reset_credit_card_infos
+      %w[type last_digits expire_on updated_at].each do |att|
+        self.send("cc_#{att}=", nil)
+        self.send("pending_cc_#{att}=", nil)
+      end
+      reset_credit_card
 
-      self.save
+      self.save_skip_pwd
     end
 
+    # We need the '_will_change!' calls since this methods is called in an after_save callback...
     def apply_pending_credit_card_info
-      self.cc_type        = pending_cc_type
-      self.cc_last_digits = pending_cc_last_digits
-      self.cc_expire_on   = pending_cc_expire_on
-      self.cc_updated_at  = pending_cc_updated_at
-      self.pending_cc_type        = nil
-      self.pending_cc_last_digits = nil
-      self.pending_cc_expire_on   = nil
-      self.pending_cc_updated_at  = nil
+      %w[type last_digits expire_on updated_at].each do |att|
+        self.send("cc_#{att}_will_change!")
+        self.send("pending_cc_#{att}_will_change!")
+        self.send("cc_#{att}=", self.send("pending_cc_#{att}"))
+        self.send("pending_cc_#{att}=", nil)
+      end
+      reset_credit_card
 
-      self.save
+      self.save_skip_pwd
     end
 
-    # Called from CreditCardsController#update
+    # Called from User#after_save
     def register_credit_card_on_file(options = {})
+      @i18n_notice_and_alert = nil
+
       options = options.merge({
         store: cc_alias,
         email: email,
-        billing_address: { zip: postal_code, country: country },
+        billing_address: { address1: billing_address_1, zip: billing_postal_code, city: billing_city, country: billing_country },
         d3d: true,
         paramplus: "CHECK_CC_USER_ID=#{self.id}"
       })
@@ -141,6 +141,7 @@ module UserModules::CreditCard
         Ogone.authorize(100, credit_card, options)
       rescue => ex
         Notify.send("Authorization failed: #{ex.message}", exception: ex)
+        puts;puts ex.inspect;puts ex.backtrace;puts
         @i18n_notice_and_alert = { alert: "Credit card could not be verified, we have been notified." }
         nil
       end
@@ -163,8 +164,7 @@ module UserModules::CreditCard
       #   An authorization code is available in the field "ACCEPTANCE".
       when "5"
         void_authorization([authorization_params["PAYID"], 'RES'].join(';'))
-        # pend_credit_card_info if any_cc_attrs? # not called with d3d callback
-        apply_pending_credit_card_info # save
+        apply_pending_credit_card_info
 
       # STATUS == 51, Authorization waiting:
       #   The authorization will be processed offline.
@@ -205,7 +205,10 @@ module UserModules::CreditCard
     # Called from UserModules::CreditCard#process_credit_card_authorization_response and TransactionsController#callback
     def void_authorization(authorization)
       void = Ogone.void(authorization)
-      Notify.send("SUPER WARNING! Credit card authorization void for user #{self.id} failed: #{void.message}") unless void.success?
+
+      unless void.success?
+        Notify.send("SUPER WARNING! Credit card authorization void for user #{self.id} failed: #{void.message}")
+      end
     end
 
   end
@@ -215,7 +218,7 @@ module UserModules::CreditCard
     # Recurring task
     def delay_send_credit_card_expiration(interval = 1.week)
       unless Delayed::Job.already_delayed?('%UserModules::CreditCard%send_credit_card_expiration%')
-        delay(:run_at => interval.from_now).send_credit_card_expiration
+        delay(run_at: interval.from_now).send_credit_card_expiration
       end
     end
 

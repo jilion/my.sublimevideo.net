@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CampaignMonitor do
-  let(:user) { Factory.create(:user, email: "cm2@jilion.com", first_name: "John", last_name: "Doe", created_at: Time.utc(2010,10,10), invitation_token: nil) }
+  let(:user) { Factory.create(:user, email: "cm2@jilion.com", name: "John Doe", created_at: Time.utc(2010,10,10), invitation_token: nil) }
 
   specify { CampaignMonitor.api_key.should eql "8844ec1803ffbe6501c3d7e9cfa23bf3" }
   specify { CampaignMonitor.list_id.should eql "a064dfc4b8ccd774252a2e9c9deb9244" }
@@ -14,7 +14,7 @@ describe CampaignMonitor do
   #     CampaignMonitor.subscribe(user).should be_true
   #     subscriber = CampaignMonitor.subscriber(user.email)
   #     subscriber["EmailAddress"].should eql user.email
-  #     subscriber["Name"].should         eql user.full_name
+  #     subscriber["Name"].should         eql user.name
   #     subscriber["State"].should        eql "Active"
   #     subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should == CampaignMonitor.segment
   #     subscriber["CustomFields"].detect { |h| h.values.include?("user_id") }["Value"].should be_present
@@ -41,7 +41,7 @@ describe CampaignMonitor do
   #     # user 1
   #     subscriber = CreateSend::Subscriber.get(CampaignMonitor.list_id, user1.email)
   #     subscriber["EmailAddress"].should eql user1.email
-  #     subscriber["Name"].should         eql user1.full_name
+  #     subscriber["Name"].should         eql user1.name
   #     subscriber["State"].should        eql "Active"
   #     subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should == CampaignMonitor.segment
   #     subscriber["CustomFields"].detect { |h| h.values.include?("user_id") }["Value"].should be_present
@@ -49,7 +49,7 @@ describe CampaignMonitor do
   #     # user 2
   #     subscriber = CreateSend::Subscriber.get(CampaignMonitor.list_id, user2.email)
   #     subscriber["EmailAddress"].should eql user2.email
-  #     subscriber["Name"].should         eql user2.full_name
+  #     subscriber["Name"].should         eql user2.name
   #     subscriber["State"].should        eql "Active"
   #     subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should == CampaignMonitor.segment
   #     subscriber["CustomFields"].detect { |h| h.values.include?("user_id") }["Value"].should be_present
@@ -91,14 +91,14 @@ describe CampaignMonitor do
   #   end
   #
   #   describe "updates first name" do
-  #     use_vcr_cassette "campaign_monitor/update_first_name"
+  #     use_vcr_cassette "campaign_monitor/update_name"
   #
   #     it "works" do
   #       CampaignMonitor.subscribe(user)
   #       CampaignMonitor.subscriber(user.email)["State"].should eql "Active"
   #
   #       CreateSend.api_key('invalid') # simulate a call to unsubscribe from a context where api_key is not set (here, not valid since when set to nil it takes the current value...), from within a delayed job for example
-  #       user.first_name = "Joe"
+  #       user.name = "Joe Doe"
   #
   #       CampaignMonitor.update(user).should be_true
   #       CampaignMonitor.subscriber(user.email)["Name"].should eql "Joe Doe"
@@ -106,23 +106,7 @@ describe CampaignMonitor do
   #     end
   #   end
   #
-  #   describe "updates last name" do
-  #     use_vcr_cassette "campaign_monitor/update_last_name"
-  #
-  #     it "works" do
-  #       CampaignMonitor.subscribe(user)
-  #       CampaignMonitor.subscriber(user.email)["State"].should eql "Active"
-  #
-  #       CreateSend.api_key('invalid') # simulate a call to unsubscribe from a context where api_key is not set (here, not valid since when set to nil it takes the current value...), from within a delayed job for example
-  #       user.last_name = "Doooe"
-  #
-  #       CampaignMonitor.update(user).should be_true
-  #       CampaignMonitor.subscriber(user.email)["Name"].should eql "John Doooe"
-  #       CampaignMonitor.subscriber(user.email)["State"].should eql "Active"
-  #     end
-  #   end
-  #
-  #   describe "updates last name" do
+  #   describe "updates newsletter" do
   #     use_vcr_cassette "campaign_monitor/update_newsletter"
   #
   #     it "works" do

@@ -94,7 +94,7 @@ feature "Sites" do
         #   choose "plan_silver_year"
         #   has_checked_field?("plan_silver_year").should be_true
         #   fill_in "Domain", with: "rymai.com"
-        #   set_credit_card(d3d: true)
+        #   set_credit_card(type: 'd3d')
         #   VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create" }
         #   @worker.work_off
         #   site = @current_user.sites.last
@@ -138,7 +138,7 @@ feature "Sites" do
         #   choose "plan_silver_year"
         #   has_checked_field?("plan_silver_year").should be_true
         #   fill_in "Domain", with: "rymai.com"
-        #   set_credit_card(d3d: true)
+        #   set_credit_card(type: 'd3d')
         #   VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create site" }
         #   @worker.work_off
         #   site = @current_user.sites.last
@@ -179,7 +179,7 @@ feature "Sites" do
 
       describe "custom plan" do
         background do
-          visit "/sites/new?custom_plan=#{Plan.find_by_name_and_cycle("custom1", "year").token}"
+          visit "/sites/new?custom_plan=#{Plan.find_by_name_and_cycle("custom - 1", "year").token}"
         end
 
         scenario "with no hostname" do
@@ -203,7 +203,7 @@ feature "Sites" do
           site.hostname.should == "rymai.com"
           site.loader.read.should include(site.token)
           site.license.read.should include(site.license_js_hash)
-          site.plan_id.should == Plan.find_by_name_and_cycle("custom1", "year").id
+          site.plan_id.should == Plan.find_by_name_and_cycle("custom - 1", "year").id
           site.pending_plan_id.should be_nil
           site.trial_started_at.should be_present
           site.first_paid_plan_started_at.should be_nil

@@ -1,6 +1,6 @@
 :ruby
   minimum_users = 100
-  countries = User.beta.select("country, COUNT(*) as total").group(:country).order("total DESC").map! { |u| [u.country || "Unknown", u.total.to_i] }
+  countries = User.beta.select("billing_country, COUNT(*) as total").group(:billing_country).order("total DESC").map! { |u| [u.billing_country || "Unknown", u.total.to_i] }
   other_countries = ["Other (less than #{minimum_users} users)", 0]
   countries_with_others = countries.inject([]) do |memo, country|
     if country[1] < minimum_users

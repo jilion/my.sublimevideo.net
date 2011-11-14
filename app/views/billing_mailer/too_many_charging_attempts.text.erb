@@ -1,4 +1,4 @@
-<%= t("mailer.intro_name", name: @invoice.user.full_name) %>
+<%= t("mailer.intro_name", name: @invoice.user.name) %>
 
 The payment for <%= @invoice.site.hostname %> has failed multiple times, no further charging attempt will be made.
 
@@ -8,7 +8,7 @@ https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @invoice.
 
 Note that if the payment failed due to a problem with your credit card, you should probably update your credit card information via the following link:
 
-https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
+https://<%= ActionMailer::Base.default_url_options[:host] %>/account/billing/edit
 
 If you have any questions, please <%= mail_to "billing@sublimevideo.net", "email us" %>.
 

@@ -11,7 +11,7 @@ class RefundsController < ApplicationController
     @site = current_user.sites.refundable.find(params[:site_id])
 
     respond_to do |format|
-      if @site.archived? || @site.without_password_validation { @site.archive }
+      if @site.archived? || @site.skip_pwd { @site.archive }
         @site.refund
         format.html { redirect_to [:refunds], :notice => t('site.refund.refunded', hostname: @site.hostname) }
       else

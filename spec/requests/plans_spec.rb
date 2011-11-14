@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "edit" do
+feature "Plan edit" do
   background do
     sign_in_as :user
     @gold_month = Plan.create(name: "gold", cycle: "month", video_views: 200_000, price: 4990)
@@ -87,8 +87,8 @@ feature "edit" do
     scenario "update free plan to paid plan" do
       site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
       site.plan_id = @free_plan.id
-      site.save_without_password_validation
-      Timecop.travel(2.months.from_now) { site.pend_plan_changes; site.apply_pending_plan_changes }
+      site.save_skip_pwd
+      Timecop.travel(2.months.from_now) { site.prepare_pending_attributes; site.apply_pending_attributes }
       site.reload.plan.should eql @free_plan
 
       visit edit_site_plan_path(site)
@@ -106,7 +106,7 @@ feature "edit" do
       click_link site.plan.title
     end
 
-    scenario "update paid plan to paid plan with credit card data" do
+    scenario "update paid plan to paid plan and using registered credit card" do
       site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
       site.plan.should eql @gold_month
       site.first_paid_plan_started_at.should be_present
@@ -138,39 +138,43 @@ feature "edit" do
       has_checked_field?("plan_gold_year").should be_true
     end
 
-    scenario "update paid plan to paid plan without credit card data" do
-      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
-      site.plan.should eql @gold_month
-      site.first_paid_plan_started_at.should be_present
-      site.plan_started_at.should be_present
-      site.plan_cycle_started_at.should be_present
-      site.plan_cycle_ended_at.should be_present
-      @current_user.update_attribute(:cc_expire_on, 2.month.ago.end_of_month)
-      @current_user.cc_expire_on.should eql 2.month.ago.end_of_month
-
-      visit edit_site_plan_path(site)
-
-      page.should have_selector("#credit_card")
-      page.should have_no_selector("#credit_card_summary")
-
-      choose "plan_gold_year"
-      set_credit_card
-      has_checked_field?("plan_gold_year").should be_true
-
-      click_button "Update plan"
-
-      VCR.use_cassette('ogone/visa_payment_generic') do
-        fill_in "Password", with: "123456"
-        click_button "Done"
+    context "When user has no credit card" do
+      background do
+        sign_in_as :user, without_cc: true, kill_user: true
+        @current_user.should_not be_cc
+        @site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
+        @site.plan.should eql @gold_month
+        @site.first_paid_plan_started_at.should be_present
+        @site.plan_started_at.should be_present
+        @site.plan_cycle_started_at.should be_present
+        @site.plan_cycle_ended_at.should be_present
       end
 
-      site.reload.plan.should eql @gold_year
+      pending "update paid plan to paid plan and using new credit card" do
+        visit edit_site_plan_path(@site)
 
-      current_url.should =~ %r(http://[^/]+/sites$)
-      page.should have_content(site.plan.title)
+        page.should have_selector("#billing_infos")
+        # page.should have_no_selector("#credit_card_summary")
 
-      click_link site.plan.title
-      has_checked_field?("plan_gold_year").should be_true
+        choose "plan_gold_year"
+        # set_credit_card(type: 'master')
+        has_checked_field?("plan_gold_year").should be_true
+
+        click_button "Update plan"
+
+        VCR.use_cassette('ogone/visa_payment_generic') do
+          fill_in "Password", with: "123456"
+          click_button "Done"
+        end
+
+        @site.reload.plan.should eql @gold_year
+
+        current_url.should =~ %r(http://[^/]+/sites$)
+        page.should have_content(@site.plan.title)
+
+        click_link @site.plan.title
+        has_checked_field?("plan_gold_year").should be_true
+      end
     end
 
     scenario "failed update" do
@@ -223,7 +227,7 @@ feature "edit" do
   end
 end
 
-feature "sponsored plan" do
+feature "Site in sponsored plan" do
   background do
     sign_in_as :user
   end
@@ -244,7 +248,7 @@ feature "sponsored plan" do
   end
 end
 
-feature "custom plan" do
+feature "Site in custom plan" do
   background do
     sign_in_as :user
   end

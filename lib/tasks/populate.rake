@@ -10,16 +10,16 @@ BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 
 namespace :db do
 
   desc "Load all development fixtures."
-  task :populate => ['populate:empty_all_tables', 'populate:all']
+  task populate: ['populate:empty_all_tables', 'populate:all']
 
   namespace :populate do
     desc "Empty all the tables"
-    task :empty_all_tables => :environment do
+    task empty_all_tables: :environment do
       timed { empty_tables("delayed_jobs", "invoices_transactions", InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
     desc "Load all development fixtures."
-    task :all => :environment do
+    task all: :environment do
       delete_all_files_in_public('uploads/releases')
       delete_all_files_in_public('uploads/s3')
       delete_all_files_in_public('uploads/tmp')
@@ -34,45 +34,45 @@ namespace :db do
     end
 
     desc "Load Admin development fixtures."
-    task :admins => :environment do
+    task admins: :environment do
       timed { empty_tables(Admin) }
       timed { create_admins }
     end
 
     desc "Load User development fixtures."
-    task :users => :environment do
+    task users: :environment do
       timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
       timed { create_users(argv_user) }
       empty_tables("delayed_jobs")
     end
 
     desc "Load Site development fixtures."
-    task :sites => :environment do
+    task sites: :environment do
       timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
       timed { create_sites }
       empty_tables("delayed_jobs")
     end
 
     desc "Load Mail templates development fixtures."
-    task :mail_templates => :environment do
+    task mail_templates: :environment do
       timed { empty_tables(MailTemplate) }
       timed { create_mail_templates }
     end
 
     desc "Create fake usages"
-    task :site_usages => :environment do
+    task site_usages: :environment do
       timed { empty_tables(SiteUsage) }
       timed { create_site_usages }
     end
 
     desc "Create fake site stats"
-    task :site_stats => :environment do
+    task site_stats: :environment do
       timed { empty_tables(Stat::Site) }
       timed { create_site_stats(argv_user) }
     end
 
     desc "Create fake site stats"
-    task :recurring_site_stats => :environment do
+    task recurring_site_stats: :environment do
       timed { empty_tables(Stat::Site) }
       timed { create_site_stats(argv_user) }
       timed { recurring_site_stats_update(argv_user) }
@@ -86,7 +86,7 @@ namespace :db do
     end
 
     desc "Create fake plans"
-    task :plans => :environment do
+    task plans: :environment do
       timed { empty_tables(Plan) }
       timed { create_plans }
     end
@@ -98,7 +98,7 @@ end
 namespace :user do
 
   desc "Expire the credit card of the user with the given email (EMAIL=xx@xx.xx) at the end of the month (or the opposite if already expiring at the end of the month)"
-  task :cc_will_expire => :environment do
+  task cc_will_expire: :environment do
     timed do
       email = argv("email")
       return if email.nil?
@@ -113,7 +113,7 @@ namespace :user do
         end
         user.update_attributes({
           cc_type: 'visa',
-          cc_full_name: user.full_name,
+          cc_full_name: user.name,
           cc_number: "4111111111111111",
           cc_verification_value: "111",
           cc_expire_on: date
@@ -123,7 +123,7 @@ namespace :user do
   end
 
   desc "Suspend/unsuspend a user given an email (EMAIL=xx@xx.xx), you can pass the count of failed invoices on suspend with FAILED_INVOICES=N"
-  task :suspended => :environment do
+  task suspended: :environment do
     timed do
       email = argv("email")
       return if email.nil?
@@ -148,7 +148,7 @@ end
 namespace :sm do
 
   desc "Draw the States Diagrams for every model having State Machine"
-  task :draw => :environment do
+  task draw: :environment do
     %x(rake state_machine:draw CLASS=Invoice,Log,Site,User TARGET=doc/state_diagrams FORMAT=png ORIENTATION=landscape)
   end
 
@@ -184,27 +184,29 @@ def create_users(user_id = nil)
     (user_id ? [user_id] : 0.upto(BASE_USERS.count - 1)).each do |i|
       user = User.new(
         enthusiast_id: rand(1000000),
-        first_name: BASE_USERS[i][0].split(' ').first,
-        last_name: BASE_USERS[i][0].split(' ').second,
-        country: COUNTRIES.sample,
-        postal_code: Faker::Address.zip_code,
         email: BASE_USERS[i][1],
         password: "123456",
+        name: BASE_USERS[i][0],
+        billing_name: BASE_USERS[i][0],
+        billing_address_1: Faker::Address.street_address,
+        billing_address_2: Faker::Address.secondary_address,
+        billing_postal_code: Faker::Address.zip_code,
+        billing_city: Faker::Address.city,
+        billing_region: Faker::Address.uk_county,
+        billing_country: COUNTRIES.sample,
         use_personal: true,
         terms_and_conditions: "1",
-        cc_register: 1,
+        cc_register: true,
         cc_brand: 'visa',
         cc_full_name: BASE_USERS[i][0],
         cc_number: "4111111111111111",
         cc_verification_value: "111",
-        cc_expiration_month: 2.years.from_now.month,
+        cc_expiration_month: 12,
         cc_expiration_year: 2.years.from_now.year
       )
       user.created_at   = created_at_array.sample
       user.confirmed_at = user.created_at
-      user.save!(validate: false)
-      user.apply_pending_credit_card_info
-      user.save
+      user.save!
       puts "User #{BASE_USERS[i][1]}:123456"
     end
 
@@ -245,12 +247,12 @@ def create_sites
         hostname: hostname
       )
       Timecop.travel(created_at_array.sample) do
-        site.without_password_validation { site.save! }
+        site.save_skip_pwd
       end
 
       if rand > 0.5
         site.cdn_up_to_date = true
-        site.save_without_password_validation
+        site.save_skip_pwd
       end
       site.sponsor! if rand > 0.85
     end

@@ -43,9 +43,9 @@ private
 
   def process_cc_authorization
     user = User.find(params["CHECK_CC_USER_ID"].to_i)
-    
+
     user.process_credit_card_authorization_response(@sha_params)
-    redirect_to [:edit, :user_registration], notice_and_alert_from_user(user)
+    render(nothing: true, status: 200)
   end
 
   def process_payment

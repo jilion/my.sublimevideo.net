@@ -34,7 +34,7 @@ describe BillingMailer do
         end
 
         it { @last_delivery.subject.should eql "Trial for #{@site.hostname} will expire in #{BusinessModel.days_for_trial-8} days" }
-        it { @last_delivery.body.encoded.should include "Dear #{@user.full_name}," }
+        it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
         it { @last_delivery.body.encoded.should include I18n.l(@site.trial_end, format: :named_date) }
         it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.token}/plan/edit" }
         it { @last_delivery.body.encoded.should include "http://docs.sublimevideo.net" }
@@ -48,8 +48,8 @@ describe BillingMailer do
       end
 
       it { @last_delivery.subject.should eql "Your credit card will expire at the end of the month" }
-      it { @last_delivery.body.encoded.should include "Dear #{@user.full_name}," }
-      it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/card/edit" }
+      it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
+      it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
     end
 
     describe "#transaction_succeeded" do
@@ -59,7 +59,7 @@ describe BillingMailer do
       end
 
       it { @last_delivery.subject.should eql "Payment approved" }
-      it { @last_delivery.body.encoded.should include @transaction.user.full_name }
+      it { @last_delivery.body.encoded.should include @transaction.user.name }
       it { @last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved." }
       it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/invoices/#{@invoice.to_param}" }
       it { @last_delivery.body.encoded.should include 'If you have any questions, please <a href="mailto:billing@sublimevideo.net">email us</a>.' }
@@ -72,7 +72,7 @@ describe BillingMailer do
       end
 
       it { @last_delivery.subject.should eql "Problem processing your payment" }
-      it { @last_delivery.body.encoded.should include @transaction.user.full_name }
+      it { @last_delivery.body.encoded.should include @transaction.user.name }
       it { @last_delivery.body.encoded.should include "Your credit card could not be charged." }
       it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites" }
       it { @last_delivery.body.encoded.should include 'If you have any questions, please <a href="mailto:billing@sublimevideo.net">email us</a>.' }
@@ -89,7 +89,7 @@ describe BillingMailer do
       it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{@invoice.site.to_param}/plan/edit" }
       it { @last_delivery.body.encoded.should include "Note that if the payment failed due to a problem with your credit card" }
       it { @last_delivery.body.encoded.should include "you should probably update your credit card information via the following link:" }
-      it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/card/edit" }
+      it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
     end
   end
 

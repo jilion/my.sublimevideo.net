@@ -72,8 +72,4 @@ private
     end
   end
 
-  def notice_and_alert_from_user(user)
-    user.i18n_notice_and_alert.present? ? user.i18n_notice_and_alert.reverse_merge({ notice: "", alert: "" }) : { notice: t('flash.credit_cards.update.notice'), alert: nil }
-  end
-
 end

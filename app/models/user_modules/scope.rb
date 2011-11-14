@@ -26,7 +26,7 @@ module UserModules::Scope
     scope :signed_in_between, lambda { |start_date, end_date| where { (current_sign_in_at >= start_date) & (current_sign_in_at < end_date) } }
 
     # sort
-    scope :by_name_or_email,   lambda { |way='asc'| order("users.first_name #{way.upcase}, users.email #{way.upcase}") }
+    scope :by_name_or_email,   lambda { |way='asc'| order("users.name #{way.upcase}, users.email #{way.upcase}") }
     scope :by_sites_last_30_days_billable_video_views,  lambda { |way='desc'|
       joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_video_views) + SUM(sites.last_30_days_extra_video_views) #{way}")
     }
@@ -46,8 +46,7 @@ module UserModules::Scope
     def search(q)
       includes(:sites).where {
         (lower(:email) =~ lower("%#{q}%")) |
-        (lower(:first_name) =~ lower("%#{q}%")) |
-        (lower(:last_name) =~ lower("%#{q}%")) |
+        (lower(:name) =~ lower("%#{q}%")) |
         (lower(sites.hostname) =~ lower("%#{q}%")) |
         (lower(sites.dev_hostnames) =~ lower("%#{q}%"))
       }

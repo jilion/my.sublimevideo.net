@@ -14,42 +14,44 @@ module Spec
           { name: "gold",       cycle: "month", video_views: 1_000_000,  price: 4990, support_level: 2 },
           { name: "silver",     cycle: "year",  video_views: 200_000,    price: 9900, support_level: 1 },
           { name: "gold",       cycle: "year",  video_views: 1_000_000,  price: 49900, support_level: 2 },
-          { name: "custom1",    cycle: "year",  video_views: 10_000_000, price: 99900, support_level: 2 }
+          { name: "custom - 1", cycle: "year",  video_views: 10_000_000, price: 99900, support_level: 2 }
         ]
         plans_attributes.each { |attributes| Plan.create(attributes) }
       end
 
       def create_user(options = {})
-        options[:confirm]      = options[:user].delete(:confirm) || options[:confirm]
-        options[:without_cc]   = options[:user].delete(:without_cc) || options[:without_cc]
-        options[:locked]       = options[:user].delete(:locked) || options[:locked]
-        options[:cc_type]      = options[:user].delete(:cc_type) || options[:cc_type] || 'visa'
-        options[:cc_number]    = options[:user].delete(:cc_number) || (options[:cc_type] == 'visa' ? "4111111111111111" : "5399999999999999")
-        options[:cc_expire_on] = options[:user].delete(:cc_expire_on) || options[:cc_expire_on] || 2.years.from_now
-        options[:suspend]      = options[:user].delete(:suspend) || options[:suspend]
+        User.delete_all
 
-        @current_user ||= begin
-          user = if options[:without_cc] == true
-            Factory.create(:user_no_cc, options[:user] || {})
-          else
-            attrs = Factory.attributes_for(:user)
-            user = Factory.build(:user_real_cc, (options[:user] || {}).merge({
-              cc_register: 1,
-              cc_brand: options[:cc_type],
-              cc_full_name: "#{attrs[:first_name]} #{attrs[:last_name]}",
-              cc_number: options[:cc_number],
-              cc_verification_value: "111",
-              cc_expiration_month: options[:cc_expire_on].month,
-              cc_expiration_year: options[:cc_expire_on].year
-            }))
-            user.save!(validate: (options[:cc_expire_on] < Time.now ? false : true))
-            user.apply_pending_credit_card_info
-            user
+        options[:confirm]    = options[:user].delete(:confirm) || options[:confirm]
+        options[:without_cc] = options[:user].delete(:without_cc) || options[:without_cc]
+        options[:locked]     = options[:user].delete(:locked) || options[:locked]
+        options[:cc_type]    = options[:user].delete(:cc_type) || options[:cc_type] || 'visa'
+        options[:cc_number]  = options[:user].delete(:cc_number) || card_number(options[:cc_type])
+        options[:suspend]    = options[:user].delete(:suspend) || options[:suspend]
+        cc_expire_on = options[:user].delete(:cc_expire_on) || options[:cc_expire_on] || 2.years.from_now
+
+        @current_user = if options[:without_cc] == true
+          Factory.create(:user_no_cc, options[:user] || {})
+        else
+          attrs = Factory.attributes_for(:user)
+          user = Factory.create(:user_real_cc, (options[:user] || {}).merge({
+            cc_register:           '1',
+            cc_brand:              options[:cc_type],
+            cc_full_name:          attrs[:billing_name],
+            cc_number:             options[:cc_number],
+            cc_verification_value: "111",
+            cc_expiration_month:   12,
+            cc_expiration_year:    2.years.from_now.year
+          }))
+          if cc_expire_on <= Time.now.utc.end_of_month.to_date
+            user.cc_expire_on = cc_expire_on.end_of_month.to_date
+            user.save_skip_pwd
           end
-          user.confirm! if !!options[:confirm]
-          user.lock! if !!options[:locked]
           user
         end
+        @current_user.confirm! if !!options[:confirm]
+        @current_user.lock! if !!options[:locked]
+
         @current_user
       end
 
@@ -66,10 +68,10 @@ module Spec
       end
 
       def set_credit_card(options = {})
-        choose  "user_cc_brand_#{options[:type] || 'visa'}"
-        fill_in "Name on card", with: 'Jilion'
-        fill_in "Card number", with: options[:d3d] ? "4000000000000002" : (options[:type] == 'master' ? "5399999999999999" : "4111111111111111")
-        select  "#{options[:expire_on_month] || "6"}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expiration_month"
+        choose  "user_cc_brand_#{options[:type] == 'master' ? 'master' : 'visa'}"
+        fill_in "Name on card", with: 'Jilion Team'
+        fill_in "Card number", with: card_number(options[:type])
+        select  "#{options[:expire_on_month] || "6"}", from: "#{options[:expire_on_prefix] || 'user'}_cc_expiration_month"
         select  "#{options[:expire_on_year] || Time.now.year + 1}", from: "#{options[:expire_on_prefix] || "user"}_cc_expiration_year"
         fill_in "Security Code", with: '111'
       end
@@ -78,8 +80,24 @@ module Spec
         set_credit_card(options.merge(expire_on_prefix: "site_user_attributes"))
       end
 
+      def card_number(type = 'visa')
+        case type
+        when 'visa'
+          '4111111111111111'
+        when 'master'
+          '5399999999999999'
+        when 'd3d'
+          '4000000000000002'
+        end
+      end
+
+      def last_digits(type = 'visa')
+        card_number(type)[-4,4]
+      end
+
       def sign_in_as(resource_name, options = {})
-        sign_out(options.delete(:kill_user)) if @current_user
+        kill_user = options.delete(:kill_user)
+        sign_out(kill_user) if @current_user
         options = { resource_name => options }
 
         resource = case resource_name
@@ -90,8 +108,8 @@ module Spec
           visit "/admin/login"
           create_admin(options)
         end
-        fill_in 'Email',    :with => resource.email
-        fill_in 'Password', :with => options[resource_name][:password] || '123456'
+        fill_in 'Email',    with: resource.email
+        fill_in 'Password', with: options[resource_name][:password] || '123456'
         check   'Remember me' if options[:remember_me] == true
         yield if block_given?
         click_button 'Login'
@@ -109,12 +127,12 @@ module Spec
       end
 
       def sign_out(kill_user = false)
-        click_link_or_button "Logout"
-        @current_user = nil if kill_user
+        click_link "Logout"
+        @current_user = nil #if kill_user
       end
 
     end
   end
 end
 
-RSpec.configuration.include(Spec::Support::RequestsHelpers, :type => :request)
+RSpec.configuration.include(Spec::Support::RequestsHelpers, type: :request)

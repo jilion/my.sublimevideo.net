@@ -1,6 +1,6 @@
-= title("User: #{@user.full_name}")
+= title("User: #{@user.name}")
 
-= content_header(raw "#{@user.full_name} <#{mail_to @user.email}>")
+= content_header(raw "#{@user.name} <#{mail_to @user.email}>")
 
 = render '/admin/shared/date_chooser'
 %br.spacer
@@ -8,7 +8,7 @@
 = render partial: 'timeline_usage', locals: { user: @user }
 -#= render partial: 'timeline_invoices', locals: { user: @user }
 
-%p= link_to "Signin as #{@user.full_name}", become_admin_user_path(@user)
+%p= link_to "Signin as #{@user.name}", become_admin_user_path(@user)
 
 %p
   = "State:"
@@ -37,7 +37,7 @@
 
 %p
   = "Location: "
-  = content_tag(:strong, "#{@user.country} (#{@user.postal_code})")
+  = content_tag(:strong, "#{@user.billing_country} (#{@user.billing_postal_code})")
   = "| Personal use: " + display_bool(@user.use_personal)
   = "| Use for clients: " + display_bool(@user.use_clients)
   = "| Use for company: " + display_bool(@user.use_company)

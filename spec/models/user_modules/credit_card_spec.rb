@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'base64'
 
 describe UserModules::CreditCard do
-  let(:user) { Factory.create(:user_real_cc) }
 
   describe "Factory" do
     describe "new record" do
@@ -12,21 +11,23 @@ describe UserModules::CreditCard do
       its(:cc_last_digits) { should be_nil }
       its(:cc_expire_on)   { should be_nil }
       its(:cc_updated_at)  { should be_nil }
-      its(:cc_brand)              { should eql 'visa' }
-      its(:cc_full_name)          { should eql 'John Doe Huber' }
-      its(:cc_number)             { should eql '4111111111111111' }
-      its(:cc_expiration_year)    { should eql 1.year.from_now.year }
-      its(:cc_expiration_month)   { should eql 1.year.from_now.month }
-      its(:cc_verification_value) { should eql '111' }
+
+      its(:cc_brand)              { should eq 'visa' }
+      its(:cc_full_name)          { should eq 'John Doe Huber' }
+      its(:cc_number)             { should eq '4111111111111111' }
+      its(:cc_expiration_year)    { should eq 1.year.from_now.year }
+      its(:cc_expiration_month)   { should eq 1.year.from_now.month }
+      its(:cc_verification_value) { should eq '111' }
 
       it { should be_valid }
       it { should_not be_credit_card }
-      it { should_not be_cc }
+      it { should_not be_pending_credit_card }
     end
 
     describe "persisted record with pending cc" do
       before(:all) do
-        @user = Factory.create(:user_no_cc, valid_cc_attributes)
+        @user = Factory.build(:user_no_cc, valid_cc_attributes.merge(cc_register: '0'))
+        @user.prepare_pending_credit_card
       end
       subject { @user }
 
@@ -35,9 +36,9 @@ describe UserModules::CreditCard do
       its(:cc_expire_on)   { should be_nil }
       its(:cc_updated_at)  { should be_nil }
 
-      its(:pending_cc_type)        { should eql 'visa' }
-      its(:pending_cc_last_digits) { should eql '1111' }
-      its(:pending_cc_expire_on)   { should eql 1.year.from_now.end_of_month.to_date }
+      its(:pending_cc_type)        { should eq 'visa' }
+      its(:pending_cc_last_digits) { should eq '1111' }
+      its(:pending_cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
       its(:pending_cc_updated_at)  { should be_present }
 
       its(:cc_brand)              { should be_nil }
@@ -49,12 +50,12 @@ describe UserModules::CreditCard do
 
       it { should be_valid }
       it { should_not be_credit_card }
-      it { should_not be_cc }
+      it { should be_pending_credit_card }
     end
 
-    describe "persisted record with cc_register == 0" do
+    describe "persisted record with cc_number == ''" do
       before(:all) do
-        @user = Factory.create(:user_no_cc, valid_cc_attributes.merge(cc_register: 0))
+        @user = Factory.create(:user_real_cc, cc_number: '')
       end
       subject { @user }
 
@@ -68,6 +69,34 @@ describe UserModules::CreditCard do
       its(:pending_cc_expire_on)   { should be_nil }
       its(:pending_cc_updated_at)  { should be_nil }
 
+      its(:cc_brand)              { should eq 'visa' }
+      its(:cc_full_name)          { should eq 'John Doe Huber' }
+      its(:cc_number)             { should eq '' }
+      its(:cc_expiration_year)    { should eq 1.year.from_now.year }
+      its(:cc_expiration_month)   { should eq 1.year.from_now.month }
+      its(:cc_verification_value) { should eq '111' }
+
+      it { should be_valid }
+      it { should_not be_credit_card }
+      it { should_not be_pending_credit_card }
+    end
+
+    describe "persisted record with cc_register == '0'" do
+      before(:all) do
+        @user = Factory.create(:user_real_cc, cc_register: false)
+      end
+      subject { @user }
+
+      its(:cc_type)        { should be_nil }
+      its(:cc_last_digits) { should be_nil }
+      its(:cc_expire_on)   { should be_nil }
+      its(:cc_updated_at)  { should be_nil }
+
+      its(:pending_cc_type)        { should eq 'visa' }
+      its(:pending_cc_last_digits) { should eq '1111' }
+      its(:pending_cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
+      its(:pending_cc_updated_at)  { should be_present }
+
       its(:cc_brand)              { should be_nil }
       its(:cc_full_name)          { should be_nil }
       its(:cc_number)             { should be_nil }
@@ -77,19 +106,18 @@ describe UserModules::CreditCard do
 
       it { should be_valid }
       it { should_not be_credit_card }
-      it { should_not be_cc }
+      it { should be_pending_credit_card }
     end
 
     describe "persisted record with saved cc" do
       before(:all) do
-        @user = Factory.create(:user_no_cc, valid_cc_attributes)
-        @user.apply_pending_credit_card_info
+        @user = Factory.create(:user_real_cc)
       end
       subject { @user }
 
-      its(:cc_type)        { should eql 'visa' }
-      its(:cc_last_digits) { should eql '1111' }
-      its(:cc_expire_on)   { should eql 1.year.from_now.end_of_month.to_date }
+      its(:cc_type)        { should eq 'visa' }
+      its(:cc_last_digits) { should eq '1111' }
+      its(:cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
       its(:cc_updated_at)  { should be_present }
 
       its(:pending_cc_type)        { should be_nil }
@@ -106,26 +134,26 @@ describe UserModules::CreditCard do
 
       it { should be_valid }
       it { should be_credit_card }
-      it { should be_cc }
+      it { should_not be_pending_credit_card }
     end
 
     describe "persisted record with saved cc and with a new pending cc" do
       before(:all) do
-        @user = Factory.create(:user_no_cc, valid_cc_attributes)
-        @user.apply_pending_credit_card_info
+        @user = Factory.create(:user_real_cc)
         @user = User.find(@user.id)
-        @user.update_attributes(valid_cc_attributes_master)
+        @user.assign_attributes(valid_cc_attributes_master)
+        @user.prepare_pending_credit_card
       end
       subject { @user }
 
-      its(:cc_type)                { should eql 'visa' }
-      its(:cc_last_digits)         { should eql '1111' }
-      its(:cc_expire_on)           { should eql 1.year.from_now.end_of_month.to_date }
-      its(:cc_updated_at)          { should be_present }
+      its(:cc_type)        { should eq 'visa' }
+      its(:cc_last_digits) { should eq '1111' }
+      its(:cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
+      its(:cc_updated_at)  { should be_present }
 
-      its(:pending_cc_type)        { should eql 'master' }
-      its(:pending_cc_last_digits) { should eql '9999' }
-      its(:pending_cc_expire_on)   { should eql 2.years.from_now.end_of_month.to_date }
+      its(:pending_cc_type)        { should eq 'master' }
+      its(:pending_cc_last_digits) { should eq '9999' }
+      its(:pending_cc_expire_on)   { should eq 2.years.from_now.end_of_month.to_date }
       its(:pending_cc_updated_at)  { should be_present }
 
       its(:cc_brand)              { should be_nil }
@@ -137,7 +165,7 @@ describe UserModules::CreditCard do
 
       it { should be_valid }
       it { should be_credit_card }
-      it { should be_cc }
+      it { should be_pending_credit_card }
     end
   end
 
@@ -167,10 +195,9 @@ describe UserModules::CreditCard do
     end
 
     describe "credit card number" do
-      it "validates cc_number presence" do
+      it "doesn't validate if cc_number is not presence" do
         user = Factory.build(:user_no_cc, valid_cc_attributes.merge(cc_number: nil))
-        user.should_not be_valid
-        user.errors[:cc_number].should eql ["is invalid"]
+        user.should be_valid
       end
 
       it "validates cc_number" do
@@ -277,8 +304,9 @@ describe UserModules::CreditCard do
   describe "Instance Methods" do
 
     describe "#credit_card" do
+      subject { Factory.build(:user_no_cc, valid_cc_attributes) }
+
       context "when attributes are present" do
-        subject { Factory.build(:user_no_cc, valid_cc_attributes) }
 
         it "should return a ActiveMerchant::Billing::CreditCard instance" do
           first_credit_card = subject.credit_card
@@ -301,27 +329,26 @@ describe UserModules::CreditCard do
 
         describe "when new attributes are set" do
           it "should not memoize the first ActiveMerchant::Billing::CreditCard if new attributes are given" do
-            user = Factory.create(:user_no_cc, valid_cc_attributes)
-            first_credit_card = user.credit_card
-            user.attributes = valid_cc_attributes_master
-            user.valid? # refresh the credit card
+            first_credit_card = subject.credit_card
+            subject.credit_card.should eql first_credit_card
+            subject.attributes = valid_cc_attributes_master
+            subject.valid? # refresh the credit card
 
-            user.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
-            user.credit_card.should_not eql first_credit_card
-            user.credit_card.type.should eql valid_cc_attributes_master[:cc_brand]
-            user.credit_card.number.should eql valid_cc_attributes_master[:cc_number]
-            user.credit_card.month.should eql valid_cc_attributes_master[:cc_expiration_month]
-            user.credit_card.year.should eql valid_cc_attributes_master[:cc_expiration_year]
-            user.credit_card.first_name.should eql valid_cc_attributes_master[:cc_full_name].split(' ').first
-            user.credit_card.last_name.should eql valid_cc_attributes_master[:cc_full_name].split(' ').drop(1).join(" ")
-            user.credit_card.verification_value.should eql valid_cc_attributes_master[:cc_verification_value]
+            subject.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
+            subject.credit_card.should_not eql first_credit_card
+            subject.credit_card.type.should eql valid_cc_attributes_master[:cc_brand]
+            subject.credit_card.number.should eql valid_cc_attributes_master[:cc_number]
+            subject.credit_card.month.should eql valid_cc_attributes_master[:cc_expiration_month]
+            subject.credit_card.year.should eql valid_cc_attributes_master[:cc_expiration_year]
+            subject.credit_card.first_name.should eql valid_cc_attributes_master[:cc_full_name].split(' ').first
+            subject.credit_card.last_name.should eql valid_cc_attributes_master[:cc_full_name].split(' ').drop(1).join(" ")
+            subject.credit_card.verification_value.should eql valid_cc_attributes_master[:cc_verification_value]
           end
         end
       end
 
       context "when attributes are not present" do
-        before(:each) { user.attributes = nil_cc_attributes }
-        subject { user }
+        before(:each) { subject.attributes = nil_cc_attributes }
 
         it "should return a ActiveMerchant::Billing::CreditCard instance" do
           subject.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
@@ -358,34 +385,34 @@ describe UserModules::CreditCard do
       end
     end
 
-    describe "#any_credit_card_attributes_present?" do
-      context "with cc_register == nil" do
-        it { Factory.build(:user_no_cc, cc_register: nil).should_not be_any_credit_card_attributes_present }
-        it { Factory.build(:user_no_cc, cc_register: nil, cc_number: 123).should_not be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: nil, cc_full_name: "Foo Bar").should_not be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: nil, cc_expiration_month: "foo").should_not be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: nil, cc_expiration_year: "foo").should_not be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: nil, cc_verification_value: "foo").should_not be_any_cc_attrs }
-      end
-
-      context "with cc_register == '1'" do
-        it { Factory.build(:user_no_cc, cc_register: '1').should_not be_any_credit_card_attributes_present }
-        it { Factory.build(:user_no_cc, cc_register: '1', cc_number: 123).should be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: '1', cc_full_name: "Foo Bar").should be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: '1', cc_expiration_month: "foo").should be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: '1', cc_expiration_year: "foo").should be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: '1', cc_verification_value: "foo").should be_any_cc_attrs }
-      end
-
-      context "with cc_register == 1" do
-        it { Factory.build(:user_no_cc, cc_register: 1).should_not be_any_credit_card_attributes_present }
-        it { Factory.build(:user_no_cc, cc_register: 1, cc_number: 123).should be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: 1, cc_full_name: "Foo Bar").should be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: 1, cc_expiration_month: "foo").should be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: 1, cc_expiration_year: "foo").should be_any_cc_attrs }
-        it { Factory.build(:user_no_cc, cc_register: 1, cc_verification_value: "foo").should be_any_cc_attrs }
-      end
-    end
+    # describe "#any_credit_card_attributes_present?" do
+    #   context "with cc_register == nil" do
+    #     it { Factory.build(:user_no_cc, cc_register: nil).should_not be_any_credit_card_attributes_present }
+    #     it { Factory.build(:user_no_cc, cc_register: nil, cc_number: 123).should_not be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: nil, cc_full_name: "Foo Bar").should_not be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: nil, cc_expiration_month: "foo").should_not be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: nil, cc_expiration_year: "foo").should_not be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: nil, cc_verification_value: "foo").should_not be_any_cc_attrs }
+    #   end
+    #
+    #   context "with cc_register == '1'" do
+    #     it { Factory.build(:user_no_cc, cc_register: '1').should_not be_any_credit_card_attributes_present }
+    #     it { Factory.build(:user_no_cc, cc_register: '1', cc_number: 123).should be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: '1', cc_full_name: "Foo Bar").should be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: '1', cc_expiration_month: "foo").should be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: '1', cc_expiration_year: "foo").should be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: '1', cc_verification_value: "foo").should be_any_cc_attrs }
+    #   end
+    #
+    #   context "with cc_register == 1" do
+    #     it { Factory.build(:user_no_cc, cc_register: 1).should_not be_any_credit_card_attributes_present }
+    #     it { Factory.build(:user_no_cc, cc_register: 1, cc_number: 123).should be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: 1, cc_full_name: "Foo Bar").should be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: 1, cc_expiration_month: "foo").should be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: 1, cc_expiration_year: "foo").should be_any_cc_attrs }
+    #     it { Factory.build(:user_no_cc, cc_register: 1, cc_verification_value: "foo").should be_any_cc_attrs }
+    #   end
+    # end
 
     describe "#pending_credit_card?" do
       it { Factory.create(:user_no_cc, pending_cc_type: 'visa', pending_cc_last_digits: '1234', pending_cc_expire_on: Time.now.tomorrow, pending_cc_updated_at: Time.now).should be_pending_credit_card }
@@ -403,67 +430,45 @@ describe UserModules::CreditCard do
       it { Factory.build(:user_no_cc, cc_type: 'visa', cc_last_digits: '1234', cc_expire_on: Time.now.tomorrow, cc_updated_at: nil).should_not be_credit_card }
     end
 
-    describe "#credit_card_expire_this_month?" do
+    describe "#credit_card_expire_this_month? & #credit_card_expired?" do
       context "with no cc_expire_on" do
         subject { Factory.build(:user_no_cc, cc_expire_on: nil) }
 
+        it { subject.should_not be_credit_card }
         it { subject.cc_expire_on.should be_nil }
         it { subject.should_not be_credit_card_expire_this_month }
+        it { subject.should_not be_credit_card_expired }
       end
 
       context "with a credit card that will expire this month" do
-        subject { Factory.build(:user_no_cc, cc_expire_on: Time.now.utc.end_of_month.to_date) }
+        subject { Factory.create(:user_real_cc).tap { |u| u.cc_expire_on = Time.now.utc.end_of_month.to_date } }
 
+        it { subject.should be_credit_card }
         it { subject.cc_expire_on.should eql Time.now.utc.end_of_month.to_date }
         it { subject.should be_credit_card_expire_this_month }
-      end
-
-      context "with a credit card not expired" do
-        subject { Factory.build(:user_no_cc, cc_expire_on: 1.month.from_now.end_of_month.to_date) }
-
-        it { subject.cc_expire_on.should eql 1.month.from_now.end_of_month.to_date }
-        it { subject.should_not be_credit_card_expire_this_month }
-      end
-
-      context "with a credit card expired" do
-        subject { Factory.build(:user_no_cc, cc_expire_on: 1.month.ago.end_of_month.to_date) }
-
-        it { subject.cc_expire_on.should eql 1.month.ago.end_of_month.to_date }
-        it { subject.should_not be_credit_card_expire_this_month }
-      end
-    end
-
-    describe "#credit_card_expired?" do
-      context "with no cc_expire_on" do
-        subject { Factory.create(:user_no_cc, cc_register: 1, cc_expiration_month: nil, cc_expiration_year: nil) }
-
-        it { subject.cc_expire_on.should be_nil }
-        it { subject.should_not be_credit_card_expired }
-      end
-
-      context "with a credit card that will expire this month" do
-        subject { Factory.create(:user_real_cc, cc_register: 1, cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year) }
-
-        it { subject.cc_expire_on.should eql Time.now.utc.end_of_month.to_date }
         it { subject.should_not be_credit_card_expired }
       end
 
       context "with a credit card not expired" do
-        subject { Factory.create(:user_real_cc, cc_register: 1, cc_expiration_month: 1.month.from_now.month, cc_expiration_year: 1.month.from_now.year) }
+        subject { Factory.create(:user_real_cc).tap { |u| u.cc_expire_on = 1.month.from_now.end_of_month.to_date } }
 
+        it { subject.should be_credit_card }
         it { subject.cc_expire_on.should eql 1.month.from_now.end_of_month.to_date }
+        it { subject.should_not be_credit_card_expire_this_month }
         it { subject.should_not be_credit_card_expired }
       end
 
       context "with a credit card expired" do
-        subject { Timecop.travel(1.month.ago) { @user = Factory.create(:user_real_cc, cc_register: 1, cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year) }; @user }
+        subject { Factory.create(:user_real_cc).tap { |u| u.cc_expire_on = 1.month.ago.end_of_month.to_date } }
 
+        it { subject.should be_credit_card }
         it { subject.cc_expire_on.should eql 1.month.ago.end_of_month.to_date }
+        it { subject.should_not be_credit_card_expire_this_month }
         it { subject.should be_credit_card_expired }
       end
     end
 
-    describe "#pend_credit_card_info" do
+    describe "#prepare_pending_credit_card" do
       describe "when cc attributes present" do
         subject { Factory.build(:user_no_cc, valid_cc_attributes) }
 
@@ -473,10 +478,8 @@ describe UserModules::CreditCard do
           subject.pending_cc_expire_on.should be_nil
           subject.pending_cc_updated_at.should be_nil
 
-          subject.pend_credit_card_info
-          subject.save
+          subject.prepare_pending_credit_card
 
-          subject.reload
           subject.pending_cc_type.should be_present
           subject.pending_cc_last_digits.should be_present
           subject.pending_cc_expire_on.should be_present
@@ -485,7 +488,7 @@ describe UserModules::CreditCard do
       end
     end
 
-    describe "#reset_credit_card_info" do
+    describe "#reset_credit_card_infos" do
       subject { Factory.build(:user) }
 
       it "resets all pending_cc_xxx fields" do
@@ -494,7 +497,7 @@ describe UserModules::CreditCard do
         subject.cc_expire_on.should be_present
         subject.cc_updated_at.should be_present
 
-        subject.reset_credit_card_info
+        subject.reset_credit_card_infos
 
         subject.reload
         subject.cc_type.should be_nil
@@ -505,8 +508,12 @@ describe UserModules::CreditCard do
     end
 
     describe "#apply_pending_credit_card_info" do
-      subject { Factory.build(:user_no_cc, valid_cc_attributes) }
-      before(:each) { subject.pend_credit_card_info }
+      before(:each) do
+        @user = Factory.build(:user_no_cc, valid_cc_attributes)
+        @user.prepare_pending_credit_card
+        @user.cc_register = false # fake #register_credit_card_on_file
+      end
+      subject { @user }
 
       it "sets cc_xxx fields and resets all pending_cc_xxx fields" do
         subject.pending_cc_type.should be_present
@@ -534,16 +541,16 @@ describe UserModules::CreditCard do
 
     describe "#register_credit_card_on_file" do
       use_vcr_cassette "ogone/void_authorization"
-      subject { user }
+      subject { Factory.build(:user_no_cc, valid_cc_attributes) }
 
       it "should actually call Ogone" do
-        Ogone.should_receive(:authorize).with(100, user.credit_card, {
-          store: user.cc_alias,
-          email: user.email,
-          billing_address: { zip: user.postal_code, country: user.country },
+        Ogone.should_receive(:authorize).with(100, subject.credit_card, {
+          store: subject.cc_alias,
+          email: subject.email,
+          billing_address: { address1: subject.billing_address_1, zip: subject.billing_postal_code, city: subject.billing_city, country: subject.billing_country },
           d3d: true,
-          paramplus: "CHECK_CC_USER_ID=#{user.id}"
-        }) { mock('authorize_response', :params => {}) }
+          paramplus: "CHECK_CC_USER_ID=#{subject.id}"
+        }) { mock('authorize_response', params: {}) }
         subject.register_credit_card_on_file
       end
     end
@@ -587,46 +594,42 @@ describe UserModules::CreditCard do
         before(:each) do
           @user = Factory.create(:user_no_cc)
 
-          @user.cc_type.should be_nil
-          @user.cc_last_digits.should be_nil
-          @user.cc_expire_on.should be_nil
-          @user.cc_updated_at.should be_nil
-
           @user.attributes = valid_cc_attributes
+          @user.prepare_pending_credit_card
+          @user.cc_register = false # fake #register_credit_card_on_file
 
           @user.cc_type.should be_nil
           @user.cc_last_digits.should be_nil
           @user.cc_expire_on.should be_nil
           @user.cc_updated_at.should be_nil
-          @user.errors.should be_empty
-        end
-        subject { @user.save; @user }
 
-        context "waiting for 3-D Secure identification" do
+          @user.pending_cc_type.should eql 'visa'
+          @user.pending_cc_last_digits.should eql '1111'
+          @user.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
+          @user.pending_cc_updated_at.should be_present
+        end
+        subject { @user }
+
+        context "authorization waiting for 3-D Secure identification" do
           it "should return true and set d3d_html" do
             subject.process_credit_card_authorization_response(@d3d_params)
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should eql "<html>No HTML.</html>"
 
-            subject.reload
-            subject.pending_cc_type.should eql 'visa'
-            subject.pending_cc_last_digits.should eql '1111'
-            subject.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
-            subject.pending_cc_updated_at.should be_present
             subject.cc_type.should be_nil
             subject.cc_last_digits.should be_nil
             subject.cc_expire_on.should be_nil
             subject.cc_updated_at.should be_nil
-          end
-        end
 
-        context "authorized" do
-          it "should not add an error on base to the user" do
             subject.pending_cc_type.should eql 'visa'
             subject.pending_cc_last_digits.should eql '1111'
             subject.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
             subject.pending_cc_updated_at.should be_present
+          end
+        end
 
+        context "authorization is OK" do
+          it "should not add an error on base to the user" do
             subject.should_receive(:void_authorization).with("1234;RES")
 
             subject.process_credit_card_authorization_response(@authorized_params)
@@ -634,43 +637,42 @@ describe UserModules::CreditCard do
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should be_nil
 
-            subject.reload
-            subject.pending_cc_type.should be_nil
-            subject.pending_cc_last_digits.should be_nil
-            subject.pending_cc_expire_on.should be_nil
-            subject.pending_cc_updated_at.should be_nil
             subject.cc_type.should eql 'visa'
             subject.cc_last_digits.should eql '1111'
             subject.cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
             subject.cc_updated_at.should be_present
+
+            subject.pending_cc_type.should be_nil
+            subject.pending_cc_last_digits.should be_nil
+            subject.pending_cc_expire_on.should be_nil
+            subject.pending_cc_updated_at.should be_nil
           end
         end
 
-        context "waiting" do
+        context "authorization is waiting" do
           it "should not add an error on base to the user" do
             subject.process_credit_card_authorization_response(@waiting_params)
             subject.i18n_notice_and_alert.should == { notice: I18n.t("credit_card.errors.waiting") }
             subject.d3d_html.should be_nil
 
-            subject.reload
-            subject.pending_cc_type.should eql 'visa'
-            subject.pending_cc_last_digits.should eql '1111'
-            subject.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
-            subject.pending_cc_updated_at.should be_present
             subject.cc_type.should be_nil
             subject.cc_last_digits.should be_nil
             subject.cc_expire_on.should be_nil
             subject.cc_updated_at.should be_nil
+
+            subject.pending_cc_type.should eql 'visa'
+            subject.pending_cc_last_digits.should eql '1111'
+            subject.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
+            subject.pending_cc_updated_at.should be_present
           end
         end
 
-        context "invalid or incomplete" do
+        context "authorization is invalid or incomplete" do
           it "returns a hash with infos" do
             subject.process_credit_card_authorization_response(@invalid_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.invalid") }
             subject.d3d_html.should be_nil
 
-            subject.reload
             subject.pending_cc_type.should eql 'visa'
             subject.pending_cc_last_digits.should eql '1111'
             subject.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
@@ -682,21 +684,20 @@ describe UserModules::CreditCard do
           end
         end
 
-        context "refused" do
+        context "authorization is refused" do
           it "should add an error on base to the user" do
             subject.process_credit_card_authorization_response(@refused_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.refused") }
             subject.d3d_html.should be_nil
-
-            subject.reload
-            subject.pending_cc_type.should eql 'visa'
-            subject.pending_cc_last_digits.should eql '1111'
-            subject.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
-            subject.pending_cc_updated_at.should be_present
             subject.cc_type.should be_nil
             subject.cc_last_digits.should be_nil
             subject.cc_expire_on.should be_nil
             subject.cc_updated_at.should be_nil
+
+            subject.pending_cc_type.should eql 'visa'
+            subject.pending_cc_last_digits.should eql '1111'
+            subject.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
+            subject.pending_cc_updated_at.should be_present
           end
         end
 
@@ -707,15 +708,15 @@ describe UserModules::CreditCard do
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.unknown") }
             subject.d3d_html.should be_nil
 
-            subject.reload
-            subject.pending_cc_type.should eql 'visa'
-            subject.pending_cc_last_digits.should eql '1111'
-            subject.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
-            subject.pending_cc_updated_at.should be_present
             subject.cc_type.should be_nil
             subject.cc_last_digits.should be_nil
             subject.cc_expire_on.should be_nil
             subject.cc_updated_at.should be_nil
+
+            subject.pending_cc_type.should eql 'visa'
+            subject.pending_cc_last_digits.should eql '1111'
+            subject.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
+            subject.pending_cc_updated_at.should be_present
           end
         end
       end
@@ -723,39 +724,42 @@ describe UserModules::CreditCard do
       context "user has already a registered credit card" do
         before(:each) do
           @user = Factory.create(:user, cc_updated_at: 5.seconds.ago)
+
+          @user.attributes = valid_cc_attributes_master
+          @user.prepare_pending_credit_card
+          @user.cc_register = false # fake #register_credit_card_on_file
+
+          @user.pending_cc_type.should eql 'master'
+          @user.pending_cc_last_digits.should eql '9999'
+          @user.pending_cc_expire_on.should eql 2.years.from_now.end_of_month.to_date
+          @user.pending_cc_updated_at.should be_present
           @user.cc_type.should eql 'visa'
           @user.cc_last_digits.should eql '1111'
           @user.cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
           @user.cc_updated_at.should be_present
-          @first_cc_updated_at = @user.cc_updated_at
           @user.errors.should be_empty
 
-          @user.attributes = valid_cc_attributes_master
+          @first_cc_updated_at = @user.cc_updated_at
         end
-        subject { @user.save; @user }
+        subject { @user }
 
         context "waiting for 3-D Secure identification" do
           it "should set d3d_html and save the user" do
-            subject.pending_cc_type.should eql 'master'
-            subject.pending_cc_last_digits.should eql '9999'
-            subject.pending_cc_expire_on.should eql 2.years.from_now.end_of_month.to_date
-            subject.pending_cc_updated_at.should be_present
-
             response = subject.process_credit_card_authorization_response(@d3d_params)
             response.should be_true
             subject.errors.should be_empty
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should eql "<html>No HTML.</html>"
 
-            subject.reload
-            subject.pending_cc_type.should eql 'master'
-            subject.pending_cc_last_digits.should eql '9999'
-            subject.pending_cc_expire_on.should eql 2.years.from_now.end_of_month.to_date
-            subject.pending_cc_updated_at.should_not eql @first_cc_updated_at
             subject.cc_type.should eql 'visa'
             subject.cc_last_digits.should eql '1111'
             subject.cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
             subject.cc_updated_at.should be_present
+
+            subject.pending_cc_type.should eql 'master'
+            subject.pending_cc_last_digits.should eql '9999'
+            subject.pending_cc_expire_on.should eql 2.years.from_now.end_of_month.to_date
+            subject.pending_cc_updated_at.should_not eql @first_cc_updated_at
           end
         end
 
@@ -766,7 +770,6 @@ describe UserModules::CreditCard do
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should be_nil
 
-            subject.reload
             subject.pending_cc_type.should be_nil
             subject.pending_cc_last_digits.should be_nil
             subject.pending_cc_expire_on.should be_nil
@@ -784,7 +787,6 @@ describe UserModules::CreditCard do
             subject.i18n_notice_and_alert.should == { notice: I18n.t("credit_card.errors.waiting") }
             subject.d3d_html.should be_nil
 
-            subject.reload
             subject.pending_cc_type.should eql 'master'
             subject.pending_cc_last_digits.should eql '9999'
             subject.pending_cc_expire_on.should eql 2.years.from_now.end_of_month.to_date
@@ -802,7 +804,6 @@ describe UserModules::CreditCard do
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.invalid") }
             subject.d3d_html.should be_nil
 
-            subject.reload
             subject.pending_cc_type.should eql 'master'
             subject.pending_cc_last_digits.should eql '9999'
             subject.pending_cc_expire_on.should eql 2.years.from_now.end_of_month.to_date
@@ -820,7 +821,6 @@ describe UserModules::CreditCard do
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.refused") }
             subject.d3d_html.should be_nil
 
-            subject.reload
             subject.pending_cc_type.should eql 'master'
             subject.pending_cc_last_digits.should eql '9999'
             subject.pending_cc_expire_on.should eql 2.years.from_now.end_of_month.to_date
@@ -839,7 +839,6 @@ describe UserModules::CreditCard do
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.unknown") }
             subject.d3d_html.should be_nil
 
-            subject.reload
             subject.pending_cc_type.should eql 'master'
             subject.pending_cc_last_digits.should eql '9999'
             subject.pending_cc_expire_on.should eql 2.years.from_now.end_of_month.to_date
@@ -856,20 +855,18 @@ describe UserModules::CreditCard do
 
     # Private method
     describe "#void_authorization" do
-      use_vcr_cassette "ogone/void_authorization"
-      before(:each) { user.update_attributes(valid_cc_attributes) }
-      subject { user }
+      subject { Factory.create(:user_real_cc) }
 
-      it "should void authorization after verification" do
+      it "voids authorization after verification" do
         mock_response = mock('response', :success? => true)
-        Ogone.should_receive(:void) { mock_response }
+        Ogone.should_receive(:void).twice { mock_response }
         subject.send(:void_authorization, "1234;RES")
       end
 
-      it "should notify if void authorization after verification failed" do
-        mock_response = mock('response', :success? => false, :message => 'failed')
+      it "notifies if void authorization after verification failed" do
+        mock_response = mock('response', :success? => false, message:'failed')
         Ogone.stub(:void) { mock_response }
-        Notify.should_receive(:send)
+        Notify.should_receive(:send).twice
         subject.send(:void_authorization, "1234;RES")
       end
     end

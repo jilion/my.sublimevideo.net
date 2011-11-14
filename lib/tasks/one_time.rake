@@ -40,6 +40,15 @@ namespace :one_time do
   end
 
   namespace :users do
+    desc "Set users' name from users' current first and last name"
+    task :set_name => :environment do
+      puts OneTime::User.set_name_from_first_and_last_name
+    end
+
+    desc "Set users' billing address from users' current infos"
+    task :set_billing_address => :environment do
+      puts OneTime::User.set_billing_address_from_current_infos
+    end
   end
 
   namespace :sites do

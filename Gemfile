@@ -23,8 +23,9 @@ gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.8'
 
 # Auth / invitations
-gem 'devise',                '~> 1.4.8'
-gem 'devise_invitable',      '~> 0.5.7'
+gem 'devise',                '~> 1.4.9'
+# gem 'devise',                :git => 'git://github.com/plataformatec/devise.git'
+gem 'devise_invitable',      '~> 0.5.7' # currently, devise_invitable requires devise ~ 1.4.1...
 
 # API
 gem 'oauth',                 '~> 0.4.5'

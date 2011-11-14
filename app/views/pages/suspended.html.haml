@@ -7,7 +7,7 @@
   - if failed_invoices.any?
     %p= "You currently have #{t('invoice.failed_invoices', count: failed_invoices.count)}."
 
-    = render 'users/credit_card_infos'
+    = render 'users/billing_infos'
 
     %h3.section_title= "Your failed invoices"
     #failed_invoices

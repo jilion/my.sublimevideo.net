@@ -11,7 +11,7 @@ class Vat < Settingslogic
   end
 
   def self.for_country?(country)
-    country == 'CH'
+    for_country(country) > 0
   end
 
 end

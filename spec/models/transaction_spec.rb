@@ -13,7 +13,7 @@ describe Transaction do
     its(:user)      { should be_present }
     its(:invoices)  { should be_present }
     its(:order_id)  { should =~ /^[a-z0-9]{30}$/ }
-    its(:amount)    { should == 1000 }
+    its(:amount)    { should eq 1000 }
     its(:pay_id)    { should be_nil }
     its(:nc_status) { should be_nil }
     its(:status)    { should be_nil }
@@ -62,9 +62,9 @@ describe Transaction do
 
     describe "before_create :reject_paid_invoices" do
       it "should reject any paid invoices" do
-        subject.invoices.should == [@invoice1, @invoice2, @invoice3]
+        subject.invoices.should eq [@invoice1, @invoice2, @invoice3]
         subject.save!
-        subject.reload.invoices.should == [@invoice1, @invoice3]
+        subject.reload.invoices.should eq [@invoice1, @invoice3]
       end
     end
 
@@ -72,7 +72,7 @@ describe Transaction do
       it "should set user_id" do
         subject.user.should be_nil
         subject.save!
-        subject.reload.user.should == @invoice1.user
+        subject.reload.user.should eq @invoice1.user
       end
     end
 
@@ -99,10 +99,10 @@ describe Transaction do
             "NCERRORPLUS" => "!"
           })
           subject.save
-          subject.pay_id.should == "123"
-          subject.nc_status.should == 0
-          subject.status.should == 9
-          subject.error.should == "!"
+          subject.pay_id.should eq "123"
+          subject.nc_status.should eq 0
+          subject.status.should eq 9
+          subject.error.should eq "!"
         end
       end
     end
@@ -111,7 +111,7 @@ describe Transaction do
       it "should set transaction amount to the sum of all its invoices amount" do
         subject.amount.should be_nil
         subject.save!
-        subject.reload.amount.should == 600
+        subject.reload.amount.should eq 600
       end
     end
   end # Callbacks
@@ -250,7 +250,7 @@ describe Transaction do
           it "should send an email to invoice.user" do
             subject
             expect { subject.succeed }.to change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should == [subject.user.email]
+            ActionMailer::Base.deliveries.last.to.should eq [subject.user.email]
           end
         end
       end
@@ -262,7 +262,7 @@ describe Transaction do
           it "should send an email to invoice.user" do
             subject
             expect { subject.fail }.to change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should == [subject.user.email]
+            ActionMailer::Base.deliveries.last.to.should eq [subject.user.email]
           end
         end
       end
@@ -302,10 +302,10 @@ describe Transaction do
       before(:each) { Delayed::Job.delete_all }
 
       it "should delay invoice charging for open invoices which have the renew flag == true by user" do
-        Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%").count.should == 0
+        Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%").should be_empty
         expect { Transaction.charge_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%"), :count).by(1)
         djs = Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%")
-        djs.count.should == 1
+        djs.should have(1).item
         djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@invoice1.reload.site.user.id]
       end
     end # .charge_invoices
@@ -388,7 +388,7 @@ describe Transaction do
             @invoice4.reload
             15.times { Factory.create(:transaction, invoices: [@invoice4], state: 'failed') }
             expect { Transaction.charge_invoices_by_user_id(@user2.id) }.to change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should == [@user2.email]
+            ActionMailer::Base.deliveries.last.to.should eq [@user2.email]
           end
         end
       end
@@ -399,14 +399,13 @@ describe Transaction do
         before do
           @user = Factory.create(:user_no_cc)
           @site1 = Factory.build(:new_site, user: @user)
-          @site1.user.assign_attributes(valid_cc_attributes)
-          @credit_card = @site1.user.credit_card
-          @site1.charging_options = { credit_card: @credit_card }
-          @site1.save_without_password_validation # fake sites_controller
+          @site1.user.assign_attributes(valid_cc_attributes.merge(cc_register: false))
+          @site1.save_skip_pwd # fake sites_controller
 
-          @user.pending_cc_type.should eql 'visa'
-          @user.pending_cc_last_digits.should eql '1111'
-          @user.pending_cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
+          @user.reload
+          @user.pending_cc_type.should eq 'visa'
+          @user.pending_cc_last_digits.should eq '1111'
+          @user.pending_cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
           @user.cc_type.should be_nil
           @user.cc_last_digits.should be_nil
           @user.cc_expire_on.should be_nil
@@ -415,40 +414,40 @@ describe Transaction do
         end
 
         it "should charge Ogone for the total amount of the open and failed invoices" do
-          Ogone.should_receive(:purchase).with(@invoice1.amount, @site1.charging_options[:credit_card], {
+          Ogone.should_receive(:purchase).with(@invoice1.amount, @site1.user.credit_card, {
             order_id: an_instance_of(String),
             description: an_instance_of(String),
             store: @user.cc_alias,
             email: @user.email,
-            billing_address: { zip: @user.postal_code, country: @user.country },
+            billing_address: { address1: @user.billing_address_1, zip: @user.billing_postal_code, city: @user.billing_city, country: @user.billing_country },
             d3d: true,
             paramplus: "PAYMENT=TRUE"
           })
-          Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @credit_card })
+          Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @site1.user.credit_card })
         end
 
         it "should not reset the user's credit card infos" do
           VCR.use_cassette("ogone/visa_payment_2000_credit_card") do
-            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @credit_card }).should be_true
+            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @site1.user.credit_card }).should be_true
           end
 
           @user.reload
           @user.pending_cc_type.should be_nil
           @user.pending_cc_last_digits.should be_nil
           @user.pending_cc_expire_on.should be_nil
-          @user.cc_type.should == 'visa'
-          @user.cc_last_digits.should == '1111'
-          @user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
+          @user.cc_type.should eq 'visa'
+          @user.cc_last_digits.should eq '1111'
+          @user.cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
         end
 
         it "should store cc infos from the credit card" do
           VCR.use_cassette("ogone/visa_payment_2000_credit_card") do
-            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @credit_card }).should be_true
+            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @site1.user.credit_card }).should be_true
           end
 
-          @invoice1.last_transaction.cc_type.should == @credit_card.type
-          @invoice1.last_transaction.cc_last_digits.should == @credit_card.last_digits
-          @invoice1.last_transaction.cc_expire_on.should == Time.utc(@credit_card.year, @credit_card.month).end_of_month.to_date
+          @invoice1.last_transaction.cc_type.should eq @site1.user.credit_card.type
+          @invoice1.last_transaction.cc_last_digits.should eq @site1.user.credit_card.last_digits
+          @invoice1.last_transaction.cc_expire_on.should eq Time.utc(@site1.user.credit_card.year, @site1.user.credit_card.month).end_of_month.to_date
         end
       end
 
@@ -468,7 +467,7 @@ describe Transaction do
             description: an_instance_of(String),
             store: @user.cc_alias,
             email: @user.email,
-            billing_address: { zip: @user.postal_code, country: @user.country },
+            billing_address: { address1: @user.billing_address_1, zip: @user.billing_postal_code, city: @user.billing_city, country: @user.billing_country },
             d3d: true,
             paramplus: "PAYMENT=TRUE"
           })
@@ -478,9 +477,9 @@ describe Transaction do
         it "stores cc infos from the user's cc infos" do
           Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
 
-          @invoice1.last_transaction.cc_type.should        eql @user.cc_type
-          @invoice1.last_transaction.cc_last_digits.should eql @user.cc_last_digits
-          @invoice1.last_transaction.cc_expire_on.should   eql @user.cc_expire_on
+          @invoice1.last_transaction.cc_type.should        eq @user.cc_type
+          @invoice1.last_transaction.cc_last_digits.should eq @user.cc_last_digits
+          @invoice1.last_transaction.cc_expire_on.should   eq @user.cc_expire_on
         end
 
         context "user has pending cc infos" do
@@ -497,9 +496,9 @@ describe Transaction do
           it "stores cc infos from the user's pending cc infos" do
             Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
 
-            @invoice1.last_transaction.cc_type.should        eql 'master'
-            @invoice1.last_transaction.cc_last_digits.should eql '9999'
-            @invoice1.last_transaction.cc_expire_on.should   eql Time.now.utc.end_of_month.to_date
+            @invoice1.last_transaction.cc_type.should        eq 'master'
+            @invoice1.last_transaction.cc_last_digits.should eq '9999'
+            @invoice1.last_transaction.cc_expire_on.should   eq Time.now.utc.end_of_month.to_date
           end
         end
       end
@@ -542,7 +541,7 @@ describe Transaction do
               @invoice1.should be_open
               Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_true
               @invoice1.last_transaction.should be_waiting_d3d
-              @invoice1.last_transaction.error.should == "<html>No HTML.</html>"
+              @invoice1.last_transaction.error.should eq "<html>No HTML.</html>"
               @invoice1.reload.should be_open
             end
           end
@@ -552,7 +551,7 @@ describe Transaction do
               @invoice1.should be_open
               Transaction.charge_by_invoice_ids([@invoice1.id]).should be_true
               @invoice1.last_transaction.should be_waiting_d3d
-              @invoice1.last_transaction.error.should == "<html>No HTML.</html>"
+              @invoice1.last_transaction.error.should eq "<html>No HTML.</html>"
               @invoice1.reload.should be_open
             end
           end
@@ -570,7 +569,7 @@ describe Transaction do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
             @invoice1.last_transaction.should be_failed
-            @invoice1.last_transaction.error.should == "Purchase error!"
+            @invoice1.last_transaction.error.should eq "Purchase error!"
             @invoice1.reload.should be_failed
           end
         end
@@ -646,16 +645,16 @@ describe Transaction do
         before do
           expect { @site = Factory.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
           Site.refunded.should include(@site)
-          @site.invoices.where(state: 'paid').count.should eql 1
+          @site.invoices.where(state: 'paid').should have(1).item
 
           transactions = Transaction.paid.joins(:invoices).where { invoices.site_id == my{@site.id} }.order(:id)
-          transactions.count.should eql 1
+          transactions.should have(1).item
 
           @transaction = transactions.first
-          @transaction.invoices.where(state: 'paid').count.should eql 1
+          @transaction.invoices.where(state: 'paid').should have(1).item
           @transaction.invoices << Factory.create(:invoice, site: Factory.create(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
           @transaction.save
-          @transaction.reload.invoices.where(state: 'paid').count.should eql 2
+          @transaction.reload.invoices.where(state: 'paid').should have(2).items
           @transaction.should be_paid
         end
 
@@ -666,13 +665,13 @@ describe Transaction do
         end
 
         it "deducts refunded invoices from the user's total_invoiced_amount and update the last_invoiced_amount" do
-          @site.user.last_invoiced_amount.should eql @site.invoices.where(state: 'paid').order(:paid_at.desc).first.amount
-          @site.user.total_invoiced_amount.should eql @site.invoices.where(state: 'paid').order(:paid_at.desc).first.amount
+          @site.user.last_invoiced_amount.should eq @site.invoices.where(state: 'paid').order(:paid_at.desc).first.amount
+          @site.user.total_invoiced_amount.should eq @site.invoices.where(state: 'paid').order(:paid_at.desc).first.amount
           Ogone.should_receive(:refund).with(@site.invoices.first.amount, "#{@transaction.pay_id};SAL") { mock_refund }
 
           Transaction.refund_by_site_id(@site.id)
-          @site.user.reload.last_invoiced_amount.should eql 0
-          @site.user.total_invoiced_amount.should eql 0
+          @site.user.reload.last_invoiced_amount.should eq 0
+          @site.user.total_invoiced_amount.should eq 0
         end
       end
 
@@ -680,14 +679,14 @@ describe Transaction do
         before do
           expect { @site = Factory.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
           transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
-          transactions.count.should == 1
+          transactions.should have(1).item
 
           @transaction = Transaction.find(transactions.first.id)
-          @transaction.invoices.where(state: 'paid').count.should == 1
+          @transaction.invoices.where(state: 'paid').should have(1).item
           @transaction.reload.update_attribute(:state, 'failed')
           @transaction.reload.should be_failed
           @transaction.invoices.first.update_attribute(:state, 'failed')
-          @transaction.reload.invoices.where(state: 'paid').count.should == 0
+          @transaction.reload.invoices.where(state: 'paid').should be_empty
           @transaction.invoices.first.should be_failed
         end
 
@@ -703,30 +702,30 @@ describe Transaction do
           expect { @site = Factory.create(:site_with_invoice) }.to change(Invoice, :count).by(1)
           expect { @site2 = Factory.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc) }.to change(Invoice, :count).by(1)
           @site.plan_id = @custom_plan.token # upgrade
-          expect { VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation } }.to change(Invoice, :count).by(1)
-          @site.without_password_validation { @site.reload.archive }
+          expect { VCR.use_cassette("ogone/visa_payment_generic") { @site.save_skip_pwd } }.to change(Invoice, :count).by(1)
+          @site.skip_pwd { @site.reload.archive }
           @site.refund
 
           transactions = Transaction.paid.joins(:invoices).where { invoices.site_id == my{@site.id} }.order(:id.asc)
-          transactions.count.should eql 2
+          transactions.should have(2).items
           @transaction1 = Transaction.find(transactions.first.id)
           @transaction1.reload.update_attribute(:amount, 3209999)
           @transaction2 = Transaction.find(transactions.last.id)
           @transaction2.reload.update_attribute(:amount, 23213)
 
-          @transaction1.invoices.where(state: 'paid').count.should eql 1
-          @transaction2.invoices.where(state: 'paid').count.should eql 1
+          @transaction1.invoices.where(state: 'paid').should have(1).item
+          @transaction2.invoices.where(state: 'paid').should have(1).item
 
           # the transaction is with 2 invoices for 2 different sites
           @transaction2.invoices << Factory.create(:invoice, site: Factory.create(:site), state: 'failed')
           @transaction2.save
-          @transaction2.reload.invoices.where(state: 'paid').count.should eql 1
+          @transaction2.reload.invoices.where(state: 'paid').should have(1).item
 
           @transaction1.should be_paid
           @transaction2.should be_paid
 
-          @site.invoices.first.amount.should_not eql @transaction1.amount
-          @site.invoices.last.amount.should_not eql @transaction2.amount
+          @site.invoices.first.amount.should_not eq @transaction1.amount
+          @site.invoices.last.amount.should_not eq @transaction2.amount
         end
 
         it "calls one Ogone.refund" do
@@ -749,14 +748,14 @@ describe Transaction do
         it "deducts refunded invoices from the user's total_invoiced_amount and update the last_invoiced_amount" do
           @site.user.update_attribute(:last_invoiced_amount, 20000)
           @site.user.update_attribute(:total_invoiced_amount, 100000)
-          @site.reload.user.last_invoiced_amount.should eql 20000
-          @site.user.total_invoiced_amount.should eql 100000
+          @site.reload.user.last_invoiced_amount.should eq 20000
+          @site.user.total_invoiced_amount.should eq 100000
           Ogone.should_receive(:refund).ordered.with(@transaction1.invoices.order(:id.asc).first.amount, "#{@transaction1.pay_id};SAL") { mock_refund }
           Ogone.should_receive(:refund).ordered.with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
 
           Transaction.refund_by_site_id(@site.id)
-          @site.user.reload.last_invoiced_amount.should eql @site2.last_paid_invoice.amount
-          @site.user.total_invoiced_amount.should eql @site2.last_paid_invoice.amount
+          @site.user.reload.last_invoiced_amount.should eq @site2.last_paid_invoice.amount
+          @site.user.total_invoiced_amount.should eq @site2.last_paid_invoice.amount
         end
       end
 
@@ -765,12 +764,12 @@ describe Transaction do
           expect { @site = Factory.create(:site_with_invoice) }.to change(Invoice, :count).by(1)
           expect { @site2 = Factory.create(:site_with_invoice, user: @site.user) }.to change(Invoice, :count).by(1)
           @site.plan_id = @custom_plan.token # upgrade
-          expect { VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation } }.to change(Invoice, :count).by(1)
-          @site.without_password_validation { @site.reload.archive }
+          expect { VCR.use_cassette("ogone/visa_payment_generic") { @site.save_skip_pwd } }.to change(Invoice, :count).by(1)
+          @site.skip_pwd { @site.reload.archive }
           @site.refund
 
           transactions = Transaction.paid.joins(:invoices).where{ invoices.site_id == my{@site.id} }.order(:id.asc)
-          transactions.count.should eql 2
+          transactions.should have(2).items
 
           @transaction1 = Transaction.find(transactions.first.id)
           @transaction1.reload.update_attribute(:amount, 3209999)
@@ -785,8 +784,8 @@ describe Transaction do
           @transaction1.save
           @transaction2.save
 
-          @transaction1.invoices.first.amount.should_not eql @transaction1.amount
-          @transaction2.invoices.first.amount.should_not eql @transaction2.amount
+          @transaction1.invoices.first.amount.should_not eq @transaction1.amount
+          @transaction2.invoices.first.amount.should_not eq @transaction2.amount
         end
 
         it "delays one Ogone.refund" do
@@ -798,13 +797,13 @@ describe Transaction do
         it "deducts refunded invoices from the user's total_invoiced_amount and update the last_invoiced_amount" do
           @site.user.update_attribute(:last_invoiced_amount, 20000)
           @site.user.update_attribute(:total_invoiced_amount, 100000)
-          @site.reload.user.last_invoiced_amount.should eql 20000
-          @site.user.total_invoiced_amount.should eql 100000
+          @site.reload.user.last_invoiced_amount.should eq 20000
+          @site.user.total_invoiced_amount.should eq 100000
           Ogone.should_receive(:refund).with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
 
           Transaction.refund_by_site_id(@site.id)
-          @site.user.reload.last_invoiced_amount.should eql @site2.last_paid_invoice.amount
-          @site.user.total_invoiced_amount.should eql @site2.last_paid_invoice.amount
+          @site.user.reload.last_invoiced_amount.should eq @site2.last_paid_invoice.amount
+          @site.user.total_invoiced_amount.should eq @site2.last_paid_invoice.amount
         end
       end
     end
@@ -885,9 +884,23 @@ describe Transaction do
           subject.process_payment_response(@d3d_params)
 
           subject.reload.should   be_waiting_d3d
-          subject.error.should    eql "<html>No HTML.</html>"
+          subject.error.should    eq "<html>No HTML.</html>"
           @invoice1.reload.should be_open
           @invoice2.reload.should be_failed
+        end
+
+        it "doesn't clear pending cc infos of the user" do
+          subject.user.reload.should_not be_pending_cc
+          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
+          subject.user.save!
+          subject.user.reload.should be_pending_cc
+
+          subject.process_payment_response(@invalid_params)
+
+          subject.user.reload.cc_type.should eq 'visa'
+          subject.user.cc_last_digits.should eq '1111'
+          subject.user.cc_expire_on.should   eq 1.year.from_now.end_of_month.to_date
+          subject.user.should be_pending_cc
         end
       end
 
@@ -903,23 +916,17 @@ describe Transaction do
         end
 
         it "applies pending cc infos to the user" do
-          subject.user.cc_register           = 1
-          subject.user.cc_brand              = 'master'
-          subject.user.cc_full_name          = 'Remy Coutable'
-          subject.user.cc_number             = '5399999999999999'
-          subject.user.cc_expiration_month   = 2.years.from_now.month
-          subject.user.cc_expiration_year    = 2.years.from_now.year
-          subject.user.cc_verification_value = 999
+          subject.user.reload.should_not be_pending_cc
+          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
           subject.user.save!
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should be_pending_cc
 
           subject.process_payment_response(@success_params)
 
-          subject.user.reload.cc_type.should eql 'master'
-          subject.user.cc_last_digits.should eql '9999'
-          subject.user.cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.cc_type.should eq 'master'
+          subject.user.cc_last_digits.should eq '9999'
+          subject.user.cc_expire_on.should   eq 2.years.from_now.end_of_month.to_date
+          subject.user.should_not be_pending_cc
         end
 
       end
@@ -931,11 +938,25 @@ describe Transaction do
           subject.process_payment_response(@waiting_params)
 
           subject.reload.should    be_waiting
-          subject.nc_status.should eql 0
-          subject.status.should    eql 51
-          subject.error.should     eql "waiting"
+          subject.nc_status.should eq 0
+          subject.status.should    eq 51
+          subject.error.should     eq "waiting"
           @invoice1.reload.should  be_waiting
           @invoice2.reload.should  be_waiting
+        end
+
+        it "doesn't clear pending cc infos of the user" do
+          subject.user.reload.should_not be_pending_cc
+          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
+          subject.user.save!
+          subject.user.reload.should be_pending_cc
+
+          subject.process_payment_response(@invalid_params)
+
+          subject.user.reload.cc_type.should eq 'visa'
+          subject.user.cc_last_digits.should eq '1111'
+          subject.user.cc_expire_on.should   eq 1.year.from_now.end_of_month.to_date
+          subject.user.should be_pending_cc
         end
       end
 
@@ -946,34 +967,25 @@ describe Transaction do
           subject.process_payment_response(@invalid_params)
 
           subject.reload.should    be_failed
-          subject.nc_status.should eql 5
-          subject.status.should    eql 0
-          subject.error.should     eql "invalid"
+          subject.nc_status.should eq 5
+          subject.status.should    eq 0
+          subject.error.should     eq "invalid"
           @invoice1.reload.should  be_failed
           @invoice2.reload.should  be_failed
         end
 
-        it "clears pending cc infos of the user" do
-          subject.user.cc_register           = 1
-          subject.user.cc_brand              = 'master'
-          subject.user.cc_full_name          = 'Remy Coutable'
-          subject.user.cc_number             = '5399999999999999'
-          subject.user.cc_expiration_month   = 2.years.from_now.month
-          subject.user.cc_expiration_year    = 2.years.from_now.year
-          subject.user.cc_verification_value = 999
+        it "doesn't clear pending cc infos of the user" do
+          subject.user.reload.should_not be_pending_cc
+          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
           subject.user.save!
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should be_pending_cc
 
           subject.process_payment_response(@invalid_params)
 
-          subject.user.reload.cc_type.should         eql 'visa'
-          subject.user.cc_last_digits.should         eql '1111'
-          subject.user.cc_expire_on.should           eql 1.year.from_now.end_of_month.to_date
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
-          subject.user.pending_cc_updated_at.should  be_present
+          subject.user.reload.cc_type.should eq 'visa'
+          subject.user.cc_last_digits.should eq '1111'
+          subject.user.cc_expire_on.should   eq 1.year.from_now.end_of_month.to_date
+          subject.user.should be_pending_cc
         end
       end
 
@@ -984,35 +996,26 @@ describe Transaction do
           subject.process_payment_response(@refused_params)
 
           subject.reload.should    be_failed
-          subject.nc_status.should eql 3
-          subject.status.should    eql 93
-          subject.error.should     eql "refused"
+          subject.nc_status.should eq 3
+          subject.status.should    eq 93
+          subject.error.should     eq "refused"
 
           @invoice1.reload.should be_failed
           @invoice2.reload.should be_failed
         end
 
-        it "clears pending cc infos of the user" do
-          subject.user.cc_register           = 1
-          subject.user.cc_brand              = 'master'
-          subject.user.cc_full_name          = 'Remy Coutable'
-          subject.user.cc_number             = '5399999999999999'
-          subject.user.cc_expiration_month   = 2.years.from_now.month
-          subject.user.cc_expiration_year    = 2.years.from_now.year
-          subject.user.cc_verification_value = 999
+        it "doesn't clear pending cc infos of the user" do
+          subject.user.reload.should_not be_pending_cc
+          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
           subject.user.save!
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should be_pending_cc
 
           subject.process_payment_response(@refused_params)
 
-          subject.user.reload.cc_type.should         eql 'visa'
-          subject.user.cc_last_digits.should         eql '1111'
-          subject.user.cc_expire_on.should           eql 1.year.from_now.end_of_month.to_date
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
-          subject.user.pending_cc_updated_at.should  be_present
+          subject.user.reload.cc_type.should eq 'visa'
+          subject.user.cc_last_digits.should eq '1111'
+          subject.user.cc_expire_on.should   eq 1.year.from_now.end_of_month.to_date
+          subject.user.should be_pending_cc
         end
       end
 
@@ -1024,61 +1027,45 @@ describe Transaction do
           subject.process_payment_response(@unknown_params)
 
           subject.reload.should    be_waiting
-          subject.nc_status.should eql 2
-          subject.status.should    eql 92
-          subject.error.should     eql "unknown"
+          subject.nc_status.should eq 2
+          subject.status.should    eq 92
+          subject.error.should     eq "unknown"
 
           @invoice1.reload.should be_waiting
           @invoice2.reload.should be_waiting
         end
 
         it "doesn't clear pending cc infos of the user" do
-          subject.user.cc_register           = 1
-          subject.user.cc_brand              = 'master'
-          subject.user.cc_full_name          = 'Remy Coutable'
-          subject.user.cc_number             = '5399999999999999'
-          subject.user.cc_expiration_month   = 2.years.from_now.month
-          subject.user.cc_expiration_year    = 2.years.from_now.year
-          subject.user.cc_verification_value = 999
+          subject.user.reload.should_not be_pending_cc
+          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
           subject.user.save!
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should be_pending_cc
 
           subject.process_payment_response(@unknown_params)
 
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.cc_type.should eq 'visa'
+          subject.user.cc_last_digits.should eq '1111'
+          subject.user.cc_expire_on.should   eq 1.year.from_now.end_of_month.to_date
+          subject.user.should be_pending_cc
         end
       end
 
       context "first STATUS is 46, second is 9" do
         it "puts transaction in 'waiting_d3d' state, and then puts it in 'paid' state" do
-          subject.user.cc_register           = 1
-          subject.user.cc_brand              = 'master'
-          subject.user.cc_full_name          = 'Remy Coutable'
-          subject.user.cc_number             = '5399999999999999'
-          subject.user.cc_expiration_month   = 2.years.from_now.month
-          subject.user.cc_expiration_year    = 2.years.from_now.year
-          subject.user.cc_verification_value = 999
+          subject.user.reload.should_not be_pending_cc
+          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
           subject.user.save!
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should be_pending_cc
           subject.should be_unprocessed
 
           subject.process_payment_response(@d3d_params)
 
           subject.reload.should    be_waiting_d3d
-          subject.nc_status.should eql 0
-          subject.status.should    eql 46
-          subject.error.should     eql "<html>No HTML.</html>"
+          subject.nc_status.should eq 0
+          subject.status.should    eq 46
+          subject.error.should     eq "<html>No HTML.</html>"
           subject.should           be_waiting_d3d
-
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should be_pending_cc
 
           @invoice1.reload.should be_open
           @invoice2.reload.should be_failed
@@ -1086,16 +1073,14 @@ describe Transaction do
           subject.process_payment_response(@success_params)
 
           subject.reload.should    be_paid
-          subject.nc_status.should eql 0
-          subject.status.should    eql 9
-          subject.error.should     eql "!"
+          subject.nc_status.should eq 0
+          subject.status.should    eq 9
+          subject.error.should     eq "!"
 
-          subject.user.reload.pending_cc_type.should be_nil
-          subject.user.pending_cc_last_digits.should be_nil
-          subject.user.pending_cc_expire_on.should   be_nil
-          subject.user.reload.cc_type.should         eql 'master'
-          subject.user.cc_last_digits.should         eql '9999'
-          subject.user.cc_expire_on.should           eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should_not be_pending_cc
+          subject.user.reload.cc_type.should eq 'master'
+          subject.user.cc_last_digits.should eq '9999'
+          subject.user.cc_expire_on.should   eq 2.years.from_now.end_of_month.to_date
 
           @invoice1.reload.should be_paid
           @invoice2.reload.should be_paid
@@ -1104,29 +1089,20 @@ describe Transaction do
 
       context "first STATUS is 51, second is 9" do
         it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
-          subject.user.cc_register           = 1
-          subject.user.cc_brand              = 'master'
-          subject.user.cc_full_name          = 'Remy Coutable'
-          subject.user.cc_number             = '5399999999999999'
-          subject.user.cc_expiration_month   = 2.years.from_now.month
-          subject.user.cc_expiration_year    = 2.years.from_now.year
-          subject.user.cc_verification_value = 999
+          subject.user.reload.should_not be_pending_cc
+          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
           subject.user.save!
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should be_pending_cc
           subject.should be_unprocessed
 
           subject.process_payment_response(@waiting_params)
 
           subject.reload.should    be_waiting
-          subject.nc_status.should eql 0
-          subject.status.should    eql 51
-          subject.error.should     eql "waiting"
+          subject.nc_status.should eq 0
+          subject.status.should    eq 51
+          subject.error.should     eq "waiting"
           subject.should be_waiting
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should be_pending_cc
 
           @invoice1.reload.should be_waiting
           @invoice2.reload.should be_waiting
@@ -1134,16 +1110,14 @@ describe Transaction do
           subject.process_payment_response(@success_params)
 
           subject.reload.should    be_paid
-          subject.nc_status.should eql 0
-          subject.status.should    eql 9
-          subject.error.should     eql "!"
+          subject.nc_status.should eq 0
+          subject.status.should    eq 9
+          subject.error.should     eq "!"
 
-          subject.user.reload.pending_cc_type.should be_nil
-          subject.user.pending_cc_last_digits.should be_nil
-          subject.user.pending_cc_expire_on.should   be_nil
-          subject.user.reload.cc_type.should         eql 'master'
-          subject.user.cc_last_digits.should         eql '9999'
-          subject.user.cc_expire_on.should           eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should_not be_pending_cc
+          subject.user.reload.cc_type.should eq 'master'
+          subject.user.cc_last_digits.should eq '9999'
+          subject.user.cc_expire_on.should   eq 2.years.from_now.end_of_month.to_date
 
           @invoice1.reload.should be_paid
           @invoice2.reload.should be_paid
@@ -1152,30 +1126,20 @@ describe Transaction do
 
       context "first STATUS is 92, second is 9" do
         it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
-          subject.user.cc_register           = 1
-          subject.user.cc_brand              = 'master'
-          subject.user.cc_full_name          = 'Remy Coutable'
-          subject.user.cc_number             = '5399999999999999'
-          subject.user.cc_expiration_month   = 2.years.from_now.month
-          subject.user.cc_expiration_year    = 2.years.from_now.year
-          subject.user.cc_verification_value = 999
+          subject.user.reload.should_not be_pending_cc
+          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
           subject.user.save!
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should be_pending_cc
           subject.should be_unprocessed
           Notify.should_receive(:send)
 
           subject.process_payment_response(@unknown_params)
 
           subject.reload.should    be_waiting
-          subject.nc_status.should eql 2
-          subject.status.should    eql 92
-          subject.error.should     eql "unknown"
-
-          subject.user.reload.pending_cc_type.should eql 'master'
-          subject.user.pending_cc_last_digits.should eql '9999'
-          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.nc_status.should eq 2
+          subject.status.should    eq 92
+          subject.error.should     eq "unknown"
+          subject.user.reload.should be_pending_cc
 
           @invoice1.reload.should be_waiting
           @invoice2.reload.should be_waiting
@@ -1183,16 +1147,14 @@ describe Transaction do
           subject.process_payment_response(@success_params)
 
           subject.reload.should be_paid
-          subject.nc_status.should eql 0
-          subject.status.should    eql 9
-          subject.error.should     eql "!"
+          subject.nc_status.should eq 0
+          subject.status.should    eq 9
+          subject.error.should     eq "!"
 
-          subject.user.reload.pending_cc_type.should be_nil
-          subject.user.pending_cc_last_digits.should be_nil
-          subject.user.pending_cc_expire_on.should   be_nil
-          subject.user.reload.cc_type.should         eql 'master'
-          subject.user.cc_last_digits.should         eql '9999'
-          subject.user.cc_expire_on.should           eql 2.years.from_now.end_of_month.to_date
+          subject.user.reload.should_not be_pending_cc
+          subject.user.reload.cc_type.should eq 'master'
+          subject.user.cc_last_digits.should eq '9999'
+          subject.user.cc_expire_on.should   eq 2.years.from_now.end_of_month.to_date
 
           @invoice1.reload.should be_paid
           @invoice2.reload.should be_paid
@@ -1210,7 +1172,7 @@ describe Transaction do
       subject { Factory.create(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
 
       it "should create a description with invoices references" do
-        subject.description.should == "SublimeVideo Invoices: ##{@invoice1.reference}, ##{@invoice2.reference}"
+        subject.description.should eq "SublimeVideo Invoices: ##{@invoice1.reference}, ##{@invoice2.reference}"
       end
     end
 
