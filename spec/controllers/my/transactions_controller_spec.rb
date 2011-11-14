@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TransactionsController do
+describe My::TransactionsController do
 
   describe "#callback" do
 
