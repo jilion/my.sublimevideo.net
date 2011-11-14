@@ -90,7 +90,14 @@ document.observe("dom:loaded", function() {
   if ($('plans')) {
     new PlanUpdateManager();
   }
-
+  
+  if ($('credit_card_form_toggle')) {
+    $('credit_card_form_toggle').on("click", function(event) {
+      event.stop();
+      $('credit_card_box').toggle();
+      $('user_cc_register').value == 1 ? $('user_cc_register').value = 0 : $('user_cc_register').value = 1;
+    });
+  }
 });
 
 // ====================

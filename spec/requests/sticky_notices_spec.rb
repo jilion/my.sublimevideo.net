@@ -10,9 +10,9 @@ feature "Sticky notices" do
       visit '/sites'
 
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should_not have_content("Your credit card will expire at the end of the month")
-      page.should_not have_content("Your credit card is expired.")
-      page.should_not have_content("update it")
+      page.should have_no_content("Your credit card will expire at the end of this month")
+      page.should have_no_content("Your credit card is expired.")
+      page.should have_no_content("update it")
     end
   end
 
@@ -27,8 +27,8 @@ feature "Sticky notices" do
       visit '/sites'
 
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should_not have_content("Your credit card will expire at the end of the month")
-      page.should_not have_content("update it")
+      page.should have_no_content("Your credit card will expire at the end of this month")
+      page.should have_no_content("update it")
     end
   end
 
@@ -44,7 +44,7 @@ feature "Sticky notices" do
       visit '/sites'
 
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("Your credit card will expire at the end of the month")
+      page.should have_content("Your credit card will expire at the end of this month")
       page.should have_content("update it")
     end
   end

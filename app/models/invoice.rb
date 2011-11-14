@@ -202,10 +202,11 @@ private
 
   # before_validation :on => :create
   def set_customer_infos
-    self.customer_full_name    ||= user.full_name
-    self.customer_email        ||= user.email
-    self.customer_country      ||= user.country
-    self.customer_company_name ||= user.company_name
+    self.customer_full_name       ||= user.full_name
+    self.customer_email           ||= user.email
+    self.customer_country         ||= user.country
+    self.customer_company_name    ||= user.company_name
+    self.customer_billing_address ||= user.billing_address
   end
 
   # before_validation :on => :create

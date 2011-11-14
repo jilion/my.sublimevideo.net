@@ -24,7 +24,7 @@ gem 'RedCloth',              '~> 4.2.8'
 
 # Auth / invitations
 gem 'devise',                '~> 1.4.8'
-gem 'devise_invitable',      '~> 0.5.5'
+gem 'devise_invitable',      '~> 0.5.7'
 
 # API
 gem 'oauth',                 '~> 0.4.5'
@@ -40,7 +40,7 @@ gem 'rescue_me',             '~> 0.1.0'
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', :require => 'libxml'
 
-gem 'state_machine',         '~> 1.0.3'
+gem 'state_machine',         '~> 1.1.0'
 gem 'paper_trail',           '~> 2.4.0'
 gem 'uniquify',              '~> 0.1.0'
 
@@ -63,13 +63,14 @@ gem 'useragent',             :git => 'git://github.com/jilion/useragent.git'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.6.2'
+gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.0.1', :require => 'page_rankr'
 gem 'twitter',               '~> 1.7.2'
 gem 'settingslogic',         '~> 2.0.6'
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 1.0.0' # Campaign Monitor
 
-gem 'hoptoad_notifier',      '~> 2.4.11'
+gem 'airbrake',              '~> 3.0.5'
 gem 'prowl',                 '~> 0.1.3'
 
 gem 'addressable',           '~> 2.2.6'
@@ -77,7 +78,7 @@ gem 'addressable',           '~> 2.2.6'
 gem 'stat_request_parser',   path: 'vendor/sv_stat_request_parser'
 
 # Perf
-gem 'dalli',                 '~> 1.1.1'
+gem 'dalli',                 '~> 1.1.3'
 
 # Stats
 gem 'crack',                 '~> 0.1.8'

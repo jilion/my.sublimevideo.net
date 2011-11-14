@@ -296,8 +296,10 @@ feature "Site invoice page" do
         page.should have_content("Card type: Visa")
         page.should have_content("Card no.: XXXXXXXXXXXX-1111")
 
-        page.should have_content("Bill to:")
-        page.should have_content("#{@invoice.customer_full_name} (#{@invoice.customer_email})")
+        page.should have_content("Bill To")
+        @invoice.customer_billing_address.split("\n").each do |address_part|
+          page.should have_content(address_part)
+        end
 
         page.should have_content("Period: #{I18n.l(@site.plan_cycle_started_at, format: :d_b_Y)} - #{I18n.l(@site.plan_cycle_ended_at, format: :d_b_Y)}")
         page.should have_content(display_amount(@paid_plan.price))

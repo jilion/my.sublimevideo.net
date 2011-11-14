@@ -6,7 +6,7 @@
 %table#header
   %tr
     %td.our_info
-      = render "/invoices/our_billing_info", :invoice => invoice
+      = render "/invoices/our_billing_info", invoice: invoice
 
       .invoice_info
         %p
@@ -18,7 +18,7 @@
         %p
           %strong= "Site token: "
           = invoice.site.token
-        %span.stamp{ :class => stamp(invoice) }= stamp(invoice)
+        %span.stamp{ class: stamp(invoice) }= stamp(invoice)
         - if invoice.last_transaction.present?
           %p
             %strong= "Payment info:"
@@ -26,7 +26,7 @@
           %p= "Card no.: XXXXXXXXXXXX-#{invoice.last_transaction.cc_last_digits}"
 
     %td.user_info
-      %h4= "Bill to:"
-      = render "/invoices/customer_billing_info", :invoice => invoice
+      %h4= "Bill To"
+      = render "/invoices/customer_billing_info", invoice: invoice
 
-= render "/invoices/details", :invoice => invoice
+= render "/invoices/details", invoice: invoice

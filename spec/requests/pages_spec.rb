@@ -64,7 +64,6 @@ feature "Pages" do
         page.should have_content('Your account is suspended')
         page.should have_content("This credit card is expired")
         page.should have_content("Visa ending in 1111")
-        page.should have_content("Expired on:")
         page.should have_content("Update credit card")
         page.should have_content("Please pay the following invoice in order to reactivate your account:")
         page.should have_content("$19.90 on #{I18n.l(@invoice.created_at, :format => :d_b_Y)}.")
