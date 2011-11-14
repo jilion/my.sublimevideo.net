@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 gem 'rails',                 '3.1.1'
 
 gem 'prototype-rails'
-gem 'jquery-rails', git: 'git://github.com/evanwalsh/jquery-rails.git' # Jquery 1.7
+gem 'jquery-rails'
 gem 'rails-backbone'
 
 # Databases
@@ -24,7 +24,7 @@ gem 'RedCloth',              '~> 4.2.8'
 
 # Auth / invitations
 gem 'devise',                '~> 1.4.8'
-gem 'devise_invitable',      '~> 0.5.5'
+gem 'devise_invitable',      '~> 0.5.7'
 
 # API
 gem 'oauth',                 '~> 0.4.5'
@@ -40,7 +40,7 @@ gem 'rescue_me',             '~> 0.1.0'
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', :require => 'libxml'
 
-gem 'state_machine',         '~> 1.0.3'
+gem 'state_machine',         '~> 1.1.0'
 gem 'paper_trail',           '~> 2.4.0'
 gem 'uniquify',              '~> 0.1.0'
 
@@ -78,7 +78,7 @@ gem 'addressable',           '~> 2.2.6'
 gem 'stat_request_parser',   path: 'vendor/sv_stat_request_parser'
 
 # Perf
-gem 'dalli',                 '~> 1.1.1'
+gem 'dalli',                 '~> 1.1.3'
 
 # Stats
 gem 'crack',                 '~> 0.1.8'
