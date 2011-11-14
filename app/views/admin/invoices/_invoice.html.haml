@@ -5,7 +5,7 @@
     = link_to invoice.reference, [:admin, invoice]
   %td.user
     %small
-      = link_to invoice.user.full_name, [:admin, invoice.user], :title => "#{invoice.user.full_name} <#{invoice.user.email}>"
+      = link_to invoice.user.name, [:admin, invoice.user], :title => "#{invoice.user.name} <#{invoice.user.email}>"
       - if invoice.user.beta?
         = "("
         = "beta" if invoice.user.beta?

@@ -108,5 +108,15 @@ module PlansHelper
   def vat_price_info(klass)
     raw("Prices above exclude VAT, total amount charged will be #{content_tag(:strong, "?", class: klass)} (including #{display_vat_percentage} VAT).")
   end
+  
+  def credit_card_state(user)
+    if !user.cc? || !user.billing_address_complete?
+      'none'
+    elsif user.cc_expired?
+      'expired'
+    else
+      'present'
+    end
+  end
 
 end

@@ -3,11 +3,10 @@
     - if current_user.cc_expired?
       %p.warning
         = t "user.credit_card.expired"
-        = t(:please_link, link: link_to("update it", edit_credit_card_path)) + "."
+        = t(:please_link, link: link_to("update it", [:edit, :billing])) + "."
     %h3.title Credit Card Information
-    %p.card{ class: current_user.cc_type }<
-      = render 'credit_cards/summary'
-    %p= link_to "Update credit card", edit_credit_card_path
+    = render 'billings/summary'
+    %p= link_to "Update credit card", [:edit, :billing]
 - else
   - cc_errors = site.errors.find_all { |k,v| k.to_s =~ /user.cc_\w+/ }
   #credit_card
@@ -18,8 +17,8 @@
     %h3.title
       Credit Card Information
       = " (Optional)" if site.trial_not_started_or_in_trial?
-      = button_tag "V", id: "credit_card_form_toggle"
 
-    #credit_card_box{ style: 'display:none' }
+    #credit_card_box
       = f.fields_for :user_attributes, site.user do |ff|
-        = render 'credit_cards/fields', f: ff
+        = ff.hidden_field :cc_register, value: 0
+        = render 'billings/fields', f: ff

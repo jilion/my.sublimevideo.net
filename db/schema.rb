@@ -280,8 +280,8 @@ ActiveRecord::Schema.define(:version => 20111109102818) do
     t.integer  "enthusiast_id"
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "postal_code"
-    t.string   "country"
+    t.string   "billing_postal_code"
+    t.string   "billing_country"
     t.boolean  "use_personal"
     t.boolean  "use_company"
     t.boolean  "use_clients"
@@ -301,10 +301,12 @@ ActiveRecord::Schema.define(:version => 20111109102818) do
     t.integer  "total_invoiced_amount",                 :default => 0
     t.integer  "balance",                               :default => 0
     t.text     "hidden_notice_ids"
-    t.string   "street_1"
-    t.string   "street_2"
-    t.string   "city"
-    t.string   "region"
+    t.string   "name"
+    t.string   "billing_name"
+    t.string   "billing_address_1"
+    t.string   "billing_address_2"
+    t.string   "billing_city"
+    t.string   "billing_region"
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true

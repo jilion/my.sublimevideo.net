@@ -6,7 +6,7 @@ class CampaignMonitor < Settingslogic
 
     def subscribe(user)
       set_api_key
-      CreateSend::Subscriber.add(self.list_id, user.email, user.full_name,
+      CreateSend::Subscriber.add(self.list_id, user.email, user.name,
         [
           { Key: 'user_id', Value: user.id },
           { Key: 'segment', Value: self.segment },
@@ -18,12 +18,12 @@ class CampaignMonitor < Settingslogic
       log_bad_request(ex)
     end
 
-    def import(users=[])
+    def import(users = [])
       set_api_key
       subscribers = users.collect do |user|
         {
           EmailAddress: user.email,
-          Name: user.full_name,
+          Name: user.name,
           CustomFields: [
             { Key: 'user_id', Value: user.id },
             { Key: 'segment', Value: self.segment },
@@ -48,7 +48,7 @@ class CampaignMonitor < Settingslogic
     def update(user)
       set_api_key
       if subscriber = CreateSend::Subscriber.new(self.list_id, user.email_was.presence || user.email)
-        subscriber.update(user.email, user.full_name, [], user.newsletter?)
+        subscriber.update(user.email, user.name, [], user.newsletter?)
       end
     rescue CreateSend::BadRequest => ex
       log_bad_request(ex)

@@ -1,6 +1,6 @@
 en:
   user:
-    billing_address_incomplete: "Your billing address is incomplete!"
+    billing_address_incomplete: "Your billing address is incomplete"
     credit_card:
       type:
         visa:   'Visa'

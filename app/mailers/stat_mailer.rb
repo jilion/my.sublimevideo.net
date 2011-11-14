@@ -6,7 +6,7 @@ class StatMailer < DefaultMailer
   def stats_trial_will_end(site)
     @site = site
     mail(
-      :to => "\"#{@site.user.full_name}\" <#{@site.user.email}>",
+      :to => "\"#{@site.user.name}\" <#{@site.user.email}>",
       :subject => "Your stats trial for #{@site.hostname} will expire in 2 days"
     )
   end

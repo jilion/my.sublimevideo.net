@@ -1,11 +1,11 @@
-<%= t("mailer.intro_name", name: @transaction.user.full_name) %>
+<%= t("mailer.intro_name", name: @transaction.user.name) %>
 
 There has been a problem processing your payment.
 Your credit card could not be charged.
 
 <% if @transaction.user.cc_expired? %>
 Please update your credit card information via the following link:
-https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
+https://<%= ActionMailer::Base.default_url_options[:host] %>/account/billing/edit
 <% else %>
 Please use the following link to see the sites with payment errors and retry the payment:
 https://<%= ActionMailer::Base.default_url_options[:host] %>/sites

@@ -8,7 +8,7 @@
     = links_to_hostnames(site)
   %td.user
     %small
-      = link_to site.user.full_name, [:admin, site.user], :title => "#{site.user.full_name} <#{site.user.email}>"
+      = link_to site.user.name, [:admin, site.user], :title => "#{site.user.name} <#{site.user.email}>"
   %td.state
     %small= site.state.humanize
   %td.plan

@@ -13,12 +13,9 @@
     = f.password_field :password, :class => "text show_password", :placeholder => "Password", :required => true
 
   .entry
-    .first_name.left_field
-      = f.label :first_name, "First name", :class => "icon"
-      = f.text_field :first_name, :class => "text", :placeholder => "First name", :required => true
-    .last_name.right_field
-      = f.label :last_name, "Last name", :class => "icon"
-      = f.text_field :last_name, :class => "text no_icon", :placeholder => "Last name", :required => true
+    .name
+      = f.label :name, "Name", :class => "icon"
+      = f.text_field :name, :class => "text", :placeholder => "Name", :required => true
     .spacer
 
   .entry.terms

@@ -15,7 +15,7 @@ describe SiteModules::Templates do
         subject.loader.read.should be_nil
         subject.license.read.should be_nil
 
-        subject.apply_pending_plan_changes
+        subject.apply_pending_attributes
         @worker.work_off
 
         subject.reload.loader.read.should be_present
@@ -24,7 +24,7 @@ describe SiteModules::Templates do
 
       it "sets cdn_up_to_date to true" do
         subject.cdn_up_to_date.should be_false
-        subject.apply_pending_plan_changes
+        subject.apply_pending_attributes
         @worker.work_off
 
         subject.reload.cdn_up_to_date.should be_true
@@ -33,7 +33,7 @@ describe SiteModules::Templates do
       it "doesn't purge loader nor license file" do
         VoxcastCDN.should_not_receive(:purge)
 
-        subject.apply_pending_plan_changes
+        subject.apply_pending_attributes
         @worker.work_off
       end
     end
@@ -83,7 +83,7 @@ describe SiteModules::Templates do
             old_license_content = subject.license.read
             subject.send("#{attr}=", value)
             subject.user.current_password = '123456'
-            subject.apply_pending_plan_changes
+            subject.apply_pending_attributes
             @worker.work_off
 
             subject.reload
@@ -194,7 +194,7 @@ describe SiteModules::Templates do
         end
 
         context "without ssl (free plan)" do
-          before { subject.plan_id = @free_plan.id; subject.apply_pending_plan_changes }
+          before { subject.plan_id = @free_plan.id; subject.apply_pending_attributes }
 
           it "includes ssl: false" do
             subject.should be_in_free_plan
@@ -203,7 +203,7 @@ describe SiteModules::Templates do
         end
 
         context "without realtime data (free plan)" do
-          before { subject.plan_id = @free_plan.id; subject.apply_pending_plan_changes }
+          before { subject.plan_id = @free_plan.id; subject.apply_pending_attributes }
 
           it "doesn't includes r: true" do
             subject.should be_in_free_plan
@@ -213,7 +213,7 @@ describe SiteModules::Templates do
         
         context "with realtime data (free plan with stats trial)" do
           before do
-            subject.plan_id = @free_plan.id; subject.apply_pending_plan_changes
+            subject.plan_id = @free_plan.id; subject.apply_pending_attributes
             subject.touch(:stats_trial_started_at)
           end
 

@@ -4,10 +4,8 @@
     %title= "MySublimeVideo - #{yield :title}"
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-    
-    = airbrake_javascript_notifier
+
     = stylesheet_link_tag 'application'
-    = include_stylesheets :style
 
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
     /[if lte IE 6]
@@ -17,6 +15,7 @@
     /[if lte IE 8]
       = stylesheet_link_tag 'application_ie'
 
+    = airbrake_javascript_notifier
     - if %w[site_stats video_tag_builder].include?(controller_name)
       = javascript_include_tag 'application_jquery'
     - else
@@ -46,5 +45,5 @@
 
     = yield :bottom
     - if user_signed_in?
-      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.full_name, current_user.id, Rails.env.production?)
+      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name, current_user.id, Rails.env.production?)
     = render 'layouts/gosquared' if Rails.env.production?

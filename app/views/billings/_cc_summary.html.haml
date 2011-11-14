@@ -1,0 +1,10 @@
+- if !user.cc?
+  %p.card No credit card.
+- else
+  %p.card{ class: user.cc_type }
+    = raw "#{t("user.credit_card.type.#{user.cc_type}")} ending in #{content_tag(:strong, user.cc_last_digits)}."
+  %p
+    - if user.cc_expired?
+      Expired.
+    - else
+      = "Will expire on #{l(user.cc_expire_on, format: :month_fullyear)}."

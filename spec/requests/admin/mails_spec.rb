@@ -52,7 +52,7 @@ require 'spec_helper'
 
       page.should have_content(@mail_template.title)
       page.should have_content(@mail_template.subject)
-      page.should have_content("Hi {{user.full_name}}")
+      page.should have_content("Hi {{user.name}}")
     end
   end
 

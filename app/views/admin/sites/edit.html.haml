@@ -3,7 +3,7 @@
 %p
   %strong
     = "User: "
-    = link_to(@site.user.full_name, [:admin, @site.user]).html_safe
+    = link_to(@site.user.name, [:admin, @site.user]).html_safe
     = "(beta)" if @site.user.beta?
 
 - if @site.plan_id?

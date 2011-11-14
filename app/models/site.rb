@@ -13,14 +13,14 @@ class Site < ActiveRecord::Base
   PLAYER_MODES = %w[dev beta stable]
 
   # Versioning
-  has_paper_trail :ignore => [:cdn_up_to_date, :license, :loader]
+  has_paper_trail ignore: [:cdn_up_to_date, :license, :loader]
 
   attr_accessor :loader_needs_update, :license_needs_update
-  attr_accessor :user_attributes, :charging_options, :transaction
+  attr_accessor :user_attributes, :last_transaction, :remote_ip, :skip_trial
 
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :plan_id, :user_attributes
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :plan_id, :skip_trial, :user_attributes, :remote_ip
 
-  uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
+  uniquify :token, chars: Array('a'..'z') + Array('0'..'9')
 
   mount_uploader :license, LicenseUploader
   mount_uploader :loader, LoaderUploader
@@ -76,7 +76,7 @@ class Site < ActiveRecord::Base
 
   before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
-  before_save :pend_plan_changes, :if => :pending_plan_id_changed? # in site_modules/invoice
+  before_save :prepare_pending_attributes, :if => :pending_plan_id_changed? # in site_modules/invoice
   before_save :set_trial_started_at # in site_modules/invoice
 
   after_create :delay_ranks_update # in site_modules/templates
@@ -169,18 +169,7 @@ class Site < ActiveRecord::Base
   def sponsor!
     write_attribute(:pending_plan_id, Plan.sponsored_plan.id)
     write_attribute(:next_cycle_plan_id, nil)
-    save_without_password_validation
-  end
-
-  def without_password_validation
-    @skip_password_validation = true
-    result = yield
-    @skip_password_validation = false
-    result
-  end
-
-  def save_without_password_validation
-    without_password_validation { self.save }
+    save_skip_pwd
   end
 
   def to_param
@@ -233,38 +222,15 @@ class Site < ActiveRecord::Base
   end
   memoize :recommended_plan_name
 
-  def plan_month_cycle_started_at
-    cycle = trial_not_started_or_in_trial? ? 'none' : plan.read_attribute(:cycle) # strange error in specs when using .cycle
-
-    case cycle
-    when 'month'
-      plan_cycle_started_at
-    when 'year'
-      plan_cycle_started_at + months_since(plan_cycle_started_at).months
-    when 'none'
-      (1.month - 1.day).ago.midnight
-    end
+  def skip_pwd
+    @skip_password_validation = true
+    result = yield
+    @skip_password_validation = false
+    result
   end
 
-  def plan_month_cycle_start_time
-    plan_month_cycle_started_at.to_i
-  end
-
-  def plan_month_cycle_ended_at
-    cycle = trial_not_started_or_in_trial? ? 'none' : plan.read_attribute(:cycle) # strange error in specs when using .cycle
-
-    case cycle
-    when 'month'
-      plan_cycle_ended_at
-    when 'year'
-      (plan_cycle_started_at + (months_since(plan_cycle_started_at) + 1).months - 1.day).end_of_day
-    when 'none'
-      Time.now.utc.end_of_day
-    end
-  end
-
-  def plan_month_cycle_end_time
-    plan_month_cycle_ended_at.to_i
+  def save_skip_pwd
+    skip_pwd { self.save! }
   end
 
 private
@@ -299,7 +265,7 @@ private
   def validates_current_password
     return if @skip_password_validation
 
-    if !new_record? && in_paid_plan? && !trial_not_started_or_in_trial? && errors.empty? &&
+    if persisted? && in_paid_plan? && trial_ended? && errors.empty? &&
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         self.errors.add(:base, :current_password_needed)

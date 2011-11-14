@@ -90,14 +90,6 @@ document.observe("dom:loaded", function() {
   if ($('plans')) {
     new PlanUpdateManager();
   }
-  
-  if ($('credit_card_form_toggle')) {
-    $('credit_card_form_toggle').on("click", function(event) {
-      event.stop();
-      $('credit_card_box').toggle();
-      $('user_cc_register').value == 1 ? $('user_cc_register').value = 0 : $('user_cc_register').value = 1;
-    });
-  }
 });
 
 // ====================
@@ -256,9 +248,11 @@ var PlanUpdateManager = Class.create({
   initialize: function() {
     this.planUpgradeInfoDiv = $('plan_upgrade_info');
     this.planCreateInfoDiv  = $('plan_create_info');
-    this.ccDiv              = $('credit_card');
-    this.ccInfoDiv          = $('credit_card_summary');
+    this.skipTrialDiv       = $('skip_trial');
+    this.skipTrialCheckbox  = $('site_skip_trial');
+    this.billingInfosDiv    = $('billing_infos');
     this.hostnameDiv        = $('site_hostname');
+    this.checkedPlan        = null;
     this.messages = $H();
     ['plan_in_trial_update_info', 'plan_in_trial_update_to_free_info',
      'plan_upgrade_info', 'plan_upgrade_from_free_info', 'plan_delayed_upgrade_info',
@@ -267,62 +261,44 @@ var PlanUpdateManager = Class.create({
     }.bind(this));
 
     $$('#plans input[type=radio]').each(function(element){
-      element.on('click', function(event){
-        if (this.planUpgradeInfoDiv) this.showPlanUpdateInfo(element);
-        if (this.planCreateInfoDiv) this.showPlanCreateInfo(element);
-        this.handlePlanChange(element);
+      element.on('click', function(event) {
+        this.checkedPlan = element;
         var select_box = element.up('.select_box');
         $$('#plans ul .select_box').invoke('removeClassName', 'active');
         if (select_box) select_box.addClassName('active');
+        this.handlePlanChange(element);
       }.bind(this));
     }.bind(this));
+
+    if (this.skipTrialCheckbox) {
+      this.skipTrialCheckbox.on("click", function(event) {
+        this.handleBillingInfos();
+      }.bind(this));
+    }
   },
   handlePlanChange: function(radioButton) {
     var plan_price    = radioButton.readAttribute('data-plan_price');
     var price_is_zero = plan_price === "$0";
 
     if (this.hostnameDiv) this.hostnameDiv.required = !price_is_zero;
-    if (this.ccInfoDiv) price_is_zero ? this.ccInfoDiv.hide() : this.ccInfoDiv.show();
+    if (this.skipTrialDiv) {
+      price_is_zero ? this.skipTrialDiv.hide() : this.skipTrialDiv.show();
+    }
+    else if (this.planUpgradeInfoDiv) {
+      this.showPlanUpdateInfo(this.checkedPlan);
+    }
+  },
+  handleBillingInfos: function() {
+    var billingInfosState = this.billingInfosDiv.readAttribute('data-state');
+    this.billingInfosDiv.toggle();
+    $('billing_infos_' + billingInfosState).toggle();
 
-    // if (plan_price === "$0") {
-      if (this.ccDiv) {
-        price_is_zero ? this.ccDiv.hide() : this.ccDiv.show();
-        $$('#credit_card input, #credit_card select').each(function(element) {
-          price_is_zero ? element.disable() : element.enable();
-          element.required = !price_is_zero;
-        });
-        //
-        // $('user_cc_brand_visa').disable();
-        // $('user_cc_brand_master').disable();
-        // $('user_cc_full_name').disable();
-        // $('user_cc_full_name').required = false;
-        // $('user_cc_number').disable();
-        // $('user_cc_number').required = false;
-        // $('user_cc_verification_value').disable();
-        // $('user_cc_verification_value').required = false;
-        // $('user_cc_expiration_month').disable();
-        // $('user_cc_expiration_year').disable();
-      }
-    // }
-    // else {
-    //   if (this.hostnameDiv) {
-    //     this.hostnameDiv.required = true;
-    //   }
-    //   if (this.ccInfoDiv) this.ccInfoDiv.show();
-    //   if (this.ccDiv) {
-    //     $('user_cc_brand_visa').enable();
-    //     $('user_cc_brand_master').enable();
-    //     $('user_cc_full_name').enable();
-    //     $('user_cc_full_name').required = true;
-    //     $('user_cc_number').enable();
-    //     $('user_cc_number').required = true;
-    //     $('user_cc_verification_value').enable();
-    //     $('user_cc_verification_value').required = true;
-    //     $('user_cc_expiration_month').enable();
-    //     $('user_cc_expiration_year').enable();
-    //     this.ccDiv.show();
-    //   }
-    // }
+    if (billingInfosState !== 'present') $('site_submit').hide();
+    else {
+      $('site_submit').show();
+      if (this.planUpgradeInfoDiv) this.showPlanUpdateInfo(this.checkedPlan);
+      if (this.planCreateInfoDiv) this.showPlanCreateInfo(this.checkedPlan);
+    }
   },
   updatePlanInfo_: function(infoDiv, radioButton) {
     ['plan_title', 'plan_price', 'plan_price_vat', 'plan_update_price', 'plan_update_price_vat', 'plan_update_date'].each(function(className) {
@@ -332,8 +308,8 @@ var PlanUpdateManager = Class.create({
   },
   showPlanCreateInfo: function(radioButton) {
     this.planCreateInfoDiv.hide();
-    if (radioButton.readAttribute('data-plan_price') !== "$0") {
-      MySublimeVideo.updatePlanInfo_(this.planCreateInfoDiv, radioButton);
+    if (radioButton.readAttribute('data-plan_price') !== "$0" && this.skipTrialCheckbox.checked) {
+      this.updatePlanInfo_(this.planCreateInfoDiv, radioButton);
     }
   },
   showPlanUpdateInfo: function(radioButton) {
