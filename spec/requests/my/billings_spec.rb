@@ -15,7 +15,7 @@ feature "Billing address update" do
       click_link "Update billing address"
     end
 
-    scenario "Update billing address successfully" do
+    scenario "Update billing address successfully", :focus do
       fill_in "Name",               with: "Bob Doe"
       fill_in "Street 1",           with: "60 rue du hurepoix"
       fill_in "Street 2",           with: ""
