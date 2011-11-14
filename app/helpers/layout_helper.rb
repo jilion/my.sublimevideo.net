@@ -1,5 +1,9 @@
 module LayoutHelper
 
+  def body_class
+    params[:page] ? h(params[:page]) : nil
+  end
+
   def title_and_content_header(text, options = {})
     title(text)
     content_header(text, options)

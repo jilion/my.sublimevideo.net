@@ -1,5 +1,6 @@
 class My::Users::RegistrationsController < Devise::RegistrationsController
-  include RedirectionFilters
+  include MyRedirectionFilters
+
   before_filter :redirect_suspended_user
 
   def destroy

@@ -1,8 +1,8 @@
 class MyController < ApplicationController
   include CustomDevisePaths
-  include RedirectionFilters
+  include MyRedirectionFilters
 
-  responders Responders::FlashResponder, Responders::PaginatedResponder
+  responders Responders::FlashResponder
 
   layout 'my_application'
 
@@ -22,21 +22,6 @@ private
   def current_admin_id
     current_admin.try(:id) rescue nil
   end
-
-  def zeno?
-    (admin_signed_in? && current_admin.email == "zeno@jilion.com") || Rails.env.development?
-  end
-  helper_method :zeno?
-
-  def mehdi?
-    (admin_signed_in? && current_admin.email == "mehdi@jilion.com") || Rails.env.development?
-  end
-  helper_method :mehdi?
-
-  def octave?
-    (admin_signed_in? && current_admin.email == "octave@jilion.com") || Rails.env.development?
-  end
-  helper_method :octave?
 
   def find_sites_or_redirect_to_new_site
     @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan, :invoices)

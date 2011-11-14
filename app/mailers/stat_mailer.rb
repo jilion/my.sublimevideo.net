@@ -1,7 +1,7 @@
 class StatMailer < DefaultMailer
-  helper :application, :invoices, :sites
-  include SitesHelper # the only way to include view helpers in here
-                      # I don't feel dirty doing this since the email's subject IS a view so...
+  helper :application, 'my/invoices', 'my/sites'
+  include My::SitesHelper # the only way to include view helpers in here
+                          # I don't feel dirty doing this since the email's subject IS a view so...
 
   def stats_trial_will_end(site)
     @site = site

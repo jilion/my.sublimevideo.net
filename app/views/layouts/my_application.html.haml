@@ -37,10 +37,10 @@
         %p.right
           = "SublimeVideo® is a service by"
           = link_to "Jilion®", "http://jilion.com"
-        %p.links= "#{link_to "SublimeVideo.net", "http://sublimevideo.net"} | #{link_to "Terms & Conditions", page_path(:page => 'terms')} | #{link_to "Privacy Policy", page_path(:page => 'privacy') }".html_safe
+        %p.links= "#{link_to "SublimeVideo.net", root_url(host: request.domain)} | #{link_to "Terms & Conditions", my_page_path(page: 'terms')} | #{link_to "Privacy Policy", my_page_path(page: 'privacy') }".html_safe
         %p.copyright= "Copyright © 2010 - #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks"
 
     = yield :bottom
     - if user_signed_in?
-      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name, current_user.id, Rails.env.production?)
+      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name, current_user.id, Rails.env.production? || Rails.env.staging?)
     = render 'layouts/gosquared' if Rails.env.production?

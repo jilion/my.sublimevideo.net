@@ -1,4 +1,4 @@
-class My::Users::PasswordsController < ApplicationController
+class My::Users::PasswordsController < MyController
 
   # POST /password/validate
   def validate

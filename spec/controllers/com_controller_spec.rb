@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ComsController do
+describe ComController do
 
   context "as guest" do
     %w[home demo features plans].each do |page|

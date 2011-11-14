@@ -39,7 +39,7 @@ class Admin::SitesController < Admin::AdminController
       @sites = @sites.active
     end
     @sites = apply_scopes(@sites).by_date
-    respond_with(@sites, :per_page => 50)
+    respond_with(@sites, per_page: 50)
   end
 
   # GET /admin/sites/:id
@@ -58,14 +58,14 @@ class Admin::SitesController < Admin::AdminController
     @site = Site.find_by_token(params[:id])
     @site.player_mode = params[:site][:player_mode]
     @site.save
-    respond_with(@site, :location => [:admin, :sites])
+    respond_with(@site, location: [:admin, :sites])
   end
 
   # PUT /admin/sites/:id/sponsor
   def sponsor
     @site = Site.find_by_token(params[:id])
     @site.sponsor!
-    respond_with(@site, :location => [:admin, @site])
+    respond_with(@site, location: [:admin, @site])
   end
 
 end

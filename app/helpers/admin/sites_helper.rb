@@ -47,7 +47,7 @@ module Admin::SitesHelper
     html += ", #{hostnames.size} more" unless hostnames.empty?
     html
   end
-  
+
   # always with span here
   def hostname_with_path_and_wildcard(site, options = {})
     site_hostname = site.hostname || "no hostname"

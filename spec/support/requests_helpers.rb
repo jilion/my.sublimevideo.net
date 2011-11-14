@@ -99,6 +99,7 @@ module Spec
         Capybara.app_host = "http://sublimevideo.dev"
       end
 
+      # http://stackoverflow.com/questions/4484435/rails3-how-do-i-visit-a-subdomain-in-a-steakrspec-spec-using-capybara
       def switch_to_subdomain(subdomain)
         Capybara.app_host = "http://#{subdomain}.sublimevideo.dev"
       end

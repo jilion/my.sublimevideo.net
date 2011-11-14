@@ -26,7 +26,7 @@ module Spec
 
                 it "should redirect to #{url} on #{verb.upcase} :#{action}" do
                   params_to_pass = params
-                  params_to_pass = (params_to_pass.nil? || [:index, :new].include?(verb.to_sym)) ? {} : params_to_pass.reverse_merge({ :id => '1' })
+                  params_to_pass = (params_to_pass.nil? || [:index, :new].include?(verb.to_sym)) ? {} : params_to_pass.reverse_merge({ id: '1' })
                   send(verb, action, params_to_pass)
 
                   response.should redirect_to(url)
