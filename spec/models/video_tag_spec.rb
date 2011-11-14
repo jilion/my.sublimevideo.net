@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe VideoTag do
+  before(:each) { Pusher.stub(:[]) { mock('channel', trigger: nil) } }
+
   let(:video_tag) { VideoTag.create(
     'st' => 'site1234',
     'u'  => 'video123',
@@ -23,6 +25,18 @@ describe VideoTag do
         'source11' => { 'u' => 'http://videos.sublimevideo.net/source11.mp4', 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' },
       }
     }) }
+  end
+
+  describe "#push_new_meta_data" do
+
+    it "push after save" do
+      video_tag = VideoTag.new(st: 'site1234', u: 'video123', n: 'Video 123')
+      mock_channel = mock('channel')
+      mock_channel.should_receive(:trigger).once.with('video_tag', u: 'video123', meta_data: video_tag.meta_data)
+      Pusher.stub(:[]).with("private-site1234") { mock_channel }
+      video_tag.save
+    end
+
   end
 
   describe ".create_or_update_from_trackers!" do

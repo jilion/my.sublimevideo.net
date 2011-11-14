@@ -135,7 +135,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.privateChannel.bind 'stats', (data) ->
         MSVStats.statsSeconds.merge(data.site, silent: true)
         MSVStats.videos.merge(data.videos, silent: true) if MSVStats.period.isSeconds()
-      MSVStats.privateChannel.bind 'video_tags', (data) ->
+      MSVStats.privateChannel.bind 'video_tag', (data) ->
         if (video = MSVStats.videos.get(data.u))?
           video.set(data.meta_data)
 

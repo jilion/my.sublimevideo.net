@@ -67,7 +67,7 @@ private
 
   # after_save
   def push_new_meta_data
-    Pusher["private-#{st}"].trigger('video_tags', { u: u, meta_data: meta_data }.to_json)
+    Pusher["private-#{st}"].trigger('video_tag', u: u, meta_data: meta_data)
   end
 
   # Merge each videos tag in one big hash

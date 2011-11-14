@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Stat::Video do
+  before(:each) { Pusher.stub(:[]) { mock('channel', trigger: nil) } }
 
   describe ".top_videos" do
 
