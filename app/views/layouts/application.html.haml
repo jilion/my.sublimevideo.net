@@ -4,7 +4,11 @@
     %title= "MySublimeVideo - #{yield :title}"
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
+    
+    = airbrake_javascript_notifier
     = stylesheet_link_tag 'application'
+    = include_stylesheets :style
+
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
     /[if lte IE 6]
       %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }

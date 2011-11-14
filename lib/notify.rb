@@ -6,17 +6,17 @@ module Notify
   class << self
 
     def send(message, options = {})
-      hoptoad(message, options)
+      airbrake(message, options)
       prowl(message) if Rails.env.production? || Rails.env.staging?
     end
 
   private
 
-    def hoptoad(message, options)
+    def airbrake(message, options)
       if options[:exception]
-        HoptoadNotifier.notify(:error_message => message + " // exception: #{options[:exception]}")
+        Airbrake.notify(:error_message => message + " // exception: #{options[:exception]}")
       else
-        HoptoadNotifier.notify(:error_message => message)
+        Airbrake.notify(:error_message => message)
       end
     end
 

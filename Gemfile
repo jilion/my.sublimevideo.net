@@ -70,7 +70,7 @@ gem 'settingslogic',         '~> 2.0.6'
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 1.0.0' # Campaign Monitor
 
-gem 'hoptoad_notifier',      '~> 2.4.11'
+gem 'airbrake',              '~> 3.0.5'
 gem 'prowl',                 '~> 0.1.3'
 
 gem 'addressable',           '~> 2.2.6'
