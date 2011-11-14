@@ -16,7 +16,7 @@ class MSVStats.Models.Stat extends Backbone.Model
 class MSVStats.Collections.Stats extends Backbone.Collection
   model: MSVStats.Models.Stat
 
-  chartType: -> 'spline'
+  chartType: -> 'areaspline'
 
   pvTotal: (startIndex, endIndex) ->
     this.customSum('pv', startIndex, endIndex)
@@ -40,6 +40,9 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       memo.push(stat.get(attribute))
       memo
     [], datesRange)
+
+  isUnactive: ->
+    this.pvTotal(0, -1) == 0 && this.vvTotal(0, -1) == 0
 
   bpData: ->
     unless MSVStats.period.isFullRange()
@@ -125,7 +128,7 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
     "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=seconds"
 
   # chartType: -> 'column'
-  chartType: -> 'spline'
+  chartType: -> 'areaspline'
   periodType: -> 'seconds'
 
   updateSeconds: (secondTime) =>

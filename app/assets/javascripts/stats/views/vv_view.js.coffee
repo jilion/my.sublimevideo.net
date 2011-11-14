@@ -76,7 +76,7 @@ class MSVStats.Views.VVView extends Backbone.View
       #   buttons: []
       #   enabled: MSVStats.period.isDays()
       plotOptions:
-        spline:
+        areaspline:
           animation: false
           shadow: false
           borderWidth: 0

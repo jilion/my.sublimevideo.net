@@ -16,7 +16,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     this.render()
 
   render: ->
-    if MSVStats.videos.isSamePeriod() && MSVStats.videos.total?
+    if MSVStats.videos.isReady()
       $(@el).show()
       $('#top_videos').data().spinner.stop()
 
@@ -50,11 +50,24 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     MSVStats.playableVideoView.renderAndPlay(videoID)
 
   sortByLoads: ->
-    MSVStats.videos.change sortBy: 'vl' unless MSVStats.videos.sortBy == 'vl'
+    unless MSVStats.videos.sortBy == 'vl'
+      $('#video_loads').text 'Loads...' # TODO remove with design implementation
+      $('#video_loads').addClass 'spinner'
+      MSVStats.videos.change sortBy: 'vl'
   sortByViews: ->
-    MSVStats.videos.change sortBy: 'vv' unless MSVStats.videos.sortBy == 'vv'
+    unless MSVStats.videos.sortBy == 'vv'
+      $('#video_views').text 'Views...' # TODO remove with design implementation
+      $('#video_views').addClass 'spinner'
+      MSVStats.videos.change sortBy: 'vv'
 
-  showMore: -> MSVStats.videos.change limit: 20
-  showLess: -> MSVStats.videos.change limit: 5
+  showMore: ->
+    $('#show_more').text 'Show more...' # TODO remove with design implementation
+    $('#show_more').addClass 'spinner'
+    MSVStats.videos.change limit: 20
+
+  showLess: ->
+    $('#show_less').text 'Show less...' # TODO remove with design implementation
+    $('#show_less').addClass 'spinner'
+    MSVStats.videos.change limit: 5
 
 

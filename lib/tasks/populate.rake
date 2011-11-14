@@ -384,7 +384,7 @@ end
 def create_stats(site_token=nil)
   sites = site_token ? [Site.find_by_token(site_token)] : Site.all
   sites.each do |site|
-    videos_count = 30
+    videos_count = 10
     # Video Tags
     videos_count.times do |video_i|
       VideoTag.create(st: site.token, u: "video#{video_i}",
@@ -507,9 +507,9 @@ def recurring_site_stats_update(user_id)
 end
 
 def recurring_stats_update(site_token)
-  site        = Site.find_by_token(site_token)
-  last_second = 0
-  videos_count = 1
+  site         = Site.find_by_token(site_token)
+  last_second  = 0
+  videos_count = 3
   EM.run do
     EM.add_periodic_timer(0.001) do
       second = Time.now.change(usec: 0).to_time
@@ -518,7 +518,7 @@ def recurring_stats_update(site_token)
         last_second = second.to_i
         EM.defer do
           videos_count.times do |video_i|
-            hits = second.to_i%10
+            hits = second.to_i%3
             Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
             Stat::Video.collection.update({ st: site.token, u:  "video#{video_i}", s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
             json = {

@@ -8,7 +8,7 @@
       <th><a id='video_views' class='sort_button<%= ' active' if @videos.sortBy == 'vv' %>'>Views</a></th>
       <th>Current period</th>
     </tr>
-    <% for video in @videos.showableModels(): %>
+    <% for video in @videos.customModels(): %>
       <% if video.isShowable(): %>
         <tr>
           <td>

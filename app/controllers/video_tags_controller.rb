@@ -7,7 +7,7 @@ class VideoTagsController < ApplicationController
     @video_tag = VideoTag.where(st: @site.token, u: params[:id]).first
     
     respond_to do |format|
-      format.json { render json: @video_tag.meta_data }
+      format.json { render json: @video_tag.try(:meta_data) }
     end
   end
 
