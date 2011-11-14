@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 gem 'rails',                 '3.1.1'
 
 gem 'prototype-rails'
-gem 'jquery-rails', git: 'git://github.com/evanwalsh/jquery-rails.git' # Jquery 1.7
+gem 'jquery-rails'
 gem 'rails-backbone'
 
 # Databases
@@ -41,7 +41,7 @@ gem 'rescue_me',             '~> 0.1.0'
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'
 
-gem 'state_machine',         '~> 1.0.3'
+gem 'state_machine',         '~> 1.1.0'
 gem 'paper_trail',           '~> 2.4.0'
 gem 'uniquify',              '~> 0.1.0'
 
@@ -71,7 +71,7 @@ gem 'settingslogic',         '~> 2.0.6'
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 1.0.0' # Campaign Monitor
 
-gem 'hoptoad_notifier',      '~> 2.4.11'
+gem 'airbrake',              '~> 3.0.5'
 gem 'prowl',                 '~> 0.1.3'
 
 gem 'addressable',           '~> 2.2.6'
@@ -79,7 +79,7 @@ gem 'addressable',           '~> 2.2.6'
 gem 'stat_request_parser',   path: 'vendor/sv_stat_request_parser'
 
 # Perf
-gem 'dalli',                 '~> 1.1.1'
+gem 'dalli',                 '~> 1.1.3'
 
 # Stats
 gem 'crack',                 '~> 0.1.8'
