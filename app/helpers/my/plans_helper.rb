@@ -1,4 +1,4 @@
-module PlansHelper
+module My::PlansHelper
 
   def plan_label_content(plan, site=nil, options={})
     content_tag(:span, class: "pricing") do
@@ -63,7 +63,7 @@ module PlansHelper
 
     "#{text} Support".html_safe
   end
-  
+
   def plan_stats_rentention_days(plan)
     text = case plan.stats_retention_days
            when nil
@@ -108,7 +108,7 @@ module PlansHelper
   def vat_price_info(klass)
     raw("Prices above exclude VAT, total amount charged will be #{content_tag(:strong, "?", class: klass)} (including #{display_vat_percentage} VAT).")
   end
-  
+
   def credit_card_state(user)
     if !user.cc? || !user.billing_address_complete?
       'none'

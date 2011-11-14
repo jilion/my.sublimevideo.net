@@ -1,4 +1,4 @@
-module TweetsHelper
+module My::TweetsHelper
 
   # Fetch +count+ tweets randomly from the 20 cached last favorite tweets, sorted by date desc
   def random_favorite_tweets(count=3)

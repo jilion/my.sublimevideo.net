@@ -1,4 +1,4 @@
-module SitesHelper
+module My::SitesHelper
 
   def current_password_needed_error?(site)
     site.errors[:base] && site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))

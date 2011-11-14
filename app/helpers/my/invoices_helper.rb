@@ -1,4 +1,4 @@
-module InvoicesHelper
+module My::InvoicesHelper
 
   def invoice_dates(invoice)
     if invoice.persisted?

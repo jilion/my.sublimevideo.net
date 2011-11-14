@@ -1,4 +1,4 @@
-module SiteUsagesHelper
+module My::SiteUsagesHelper
 
   def get_usages_hash(site_or_user, options={})
     usages_hash = Hash.new { |h,k| h[k] = {} }

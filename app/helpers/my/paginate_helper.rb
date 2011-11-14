@@ -1,4 +1,4 @@
-module PaginateHelper
+module My::PaginateHelper
 
   def page_entries_info(collection)
     if collection.num_pages > 1

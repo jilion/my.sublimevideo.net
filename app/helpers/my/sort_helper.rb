@@ -1,4 +1,4 @@
-module SortHelper
+module My::SortHelper
 
   def link_to_sort(field, *args)
     options = args.extract_options!

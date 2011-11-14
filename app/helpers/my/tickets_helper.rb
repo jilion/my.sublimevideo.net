@@ -1,4 +1,4 @@
-module TicketsHelper
+module My::TicketsHelper
 
   def ticket_type_options
     options_for_select([[t("ticket.type.choose-type"), 'choose-type'], ["-"*16, '-']] + Ticket::EMAIL_SUPPORT_ALLOWED_TYPES.map { |t| [t("ticket.type.#{t}"), t] }, selected: params[:ticket] ? params[:ticket][:type] : nil, disabled: ['-'])

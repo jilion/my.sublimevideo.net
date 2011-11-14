@@ -1,5 +1,5 @@
 # coding: utf-8
-module GraphsHelper
+module My::GraphsHelper
 
   def chart(id, options = {})
     options.reverse_merge!(margin_top: 110, margin_bottom: 50, margin_left: 90, background_color: '#EEEEEE')
