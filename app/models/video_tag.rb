@@ -31,7 +31,7 @@ class VideoTag
 
   def update_with_latest_data(attributes)
     %w[uo n no p cs z].each do |key|
-      self.send("#{key}=", attributes[key])
+      self.send("#{key}=", attributes[key]) if attributes.key?(key)
     end
     # Properly change sources without falsely trig dirty attribute tracking
     if attributes.key?('s')
