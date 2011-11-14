@@ -1,6 +1,6 @@
 module Spec
   module Support
-    module ControllerHelpers
+    module ControllersHelpers
       extend ActiveSupport::Memoizable
 
       shared_examples_for "redirect when connected as" do |url, roles, verb_actions, params={}|
@@ -38,25 +38,10 @@ module Spec
       end
 
       def authenticated_admin(stubs = {})
-        # admin = mock_admin(stubs.reverse_merge(:confirmed? => true, :authenticatable_salt => "x"))
-        # Admin.stub(:find) { admin }
-        # Admin.stub(:find_first) { admin }
-        # Admin.stub(:find_for_database_authentication) { admin }
-        # request.env['warden'] = mock(Warden, :authenticate => admin, :authenticate! => admin, :admin => admin, :user => nil)
-        # admin
         mock_admin(stubs)
       end
 
       def authenticated_user(stubs = {})
-        # user = mock_user(stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false, :authenticatable_salt => "x"))
-        # User.stub(:find) { user }
-        # User.stub(:find_first) { user }
-        # User.stub(:find_for_database_authentication) { user }
-        # Admin.stub(:find) { nil }
-        # Admin.stub(:find_first) { nil }
-        # Admin.stub(:find_for_database_authentication) { nil }
-        # request.env['warden'] = mock(Warden, :authenticate => user, :authenticate! => user, :user => user, :admin => nil)
-        # user
         mock_user(stubs)
       end
 
@@ -118,4 +103,4 @@ module Spec
   end
 end
 
-RSpec.configuration.include(Spec::Support::ControllerHelpers)
+RSpec.configuration.include(Spec::Support::ControllersHelpers)

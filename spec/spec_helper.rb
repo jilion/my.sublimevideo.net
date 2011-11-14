@@ -87,7 +87,7 @@ Spork.each_run do
 
   RSpec.configure do |config|
     # config.include Shoulda::ActionController::Matchers
-    config.include Devise::TestHelpers, :type => :controller
+    config.include Devise::TestHelpers, type: :controller
   end
 end
 

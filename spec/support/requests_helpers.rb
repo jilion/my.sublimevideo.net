@@ -95,6 +95,24 @@ module Spec
         card_number(type)[-4,4]
       end
 
+      def switch_to_topdomain
+        Capybara.app_host = "http://sublimevideo.dev"
+      end
+
+      def switch_to_subdomain(subdomain)
+        Capybara.app_host = "http://#{subdomain}.sublimevideo.dev"
+      end
+
+      def go(*subdomain_and_route)
+        if subdomain_and_route.one?
+          switch_to_topdomain
+          visit subdomain_and_route
+        else
+          switch_to_subdomain(subdomain_and_route[0])
+          visit subdomain_and_route[1]
+        end
+      end
+
       def sign_in_as(resource_name, options = {})
         kill_user = options.delete(:kill_user)
         sign_out(kill_user) if @current_user
@@ -102,10 +120,10 @@ module Spec
 
         resource = case resource_name
         when :user
-          visit "/login"
+          go 'my', '/login'
           create_user(options)
         when :admin
-          visit "/admin/login"
+          go 'admin', '/login'
           create_admin(options)
         end
         fill_in 'Email',    with: resource.email
@@ -118,7 +136,7 @@ module Spec
 
       def send_invite_to(resource_name, email = "invited@invited.com")
         sign_in_as :admin
-        visit "/admin/#{resource_name.to_s.pluralize}/invitation/new"
+        go 'admin', "/#{resource_name.to_s.pluralize}/invitation/new"
         fill_in 'Email', with: email
         yield if block_given?
         click_button 'Send'
