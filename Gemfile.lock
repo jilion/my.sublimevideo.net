@@ -12,13 +12,6 @@ GIT
     annotate (2.4.1.beta1)
 
 GIT
-  remote: git://github.com/guard/guard-rspec.git
-  revision: 18048e5d52f1af05e2ef58f5873d6dbcb525e1dd
-  specs:
-    guard-rspec (0.5.2)
-      guard (>= 0.8.4)
-
-GIT
   remote: git://github.com/jilion/useragent.git
   revision: bc6ab85b0d7afc76504bf6fa3763130dad9d3e7c
   specs:
@@ -228,6 +221,8 @@ GEM
       multi_json (~> 1.0.3)
     guard-pow (0.2.1)
       guard (>= 0.3.0)
+    guard-rspec (0.5.4)
+      guard (>= 0.8.4)
     guard-spork (0.3.1)
       guard (>= 0.8.4)
       spork (>= 0.8.4)
@@ -479,7 +474,7 @@ DEPENDENCIES
   guard-jasmine
   guard-livereload
   guard-pow
-  guard-rspec!
+  guard-rspec
   guard-spork
   guard-yard
   haml (~> 3.1.3)
