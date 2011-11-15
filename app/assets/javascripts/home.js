@@ -1,27 +1,20 @@
 //= require prototype
 //= require modernizr
+//= require s2
 
 document.observe("dom:loaded", function() {
-  // slideshow  = new Slideshow(5,1.1);
+  slideshow  = new Slideshow(4,0.6);
 });
 
 Slideshow = Class.create({
   initialize: function(pause,speed) {
     this.pauseDuration = pause *1000;
     this.speed = speed;
-    this.slideShowWrapper = $$('body.home .slides ul')[0];
-    if (Modernizr.csstransitions) {
-      this.slideShowWrapper.style[Modernizr.prefixed('transitionDuration')] = this.speed+"s";
-      // this.slideShowWrapper.style[Modernizr.prefixed('transitionTimingFunction')] = "cubic-bezier(0, 0, 0.25, 1)";
-      if (Modernizr.csstransforms) {
-        this.slideShowWrapper.style[Modernizr.prefixed('transitionProperty')] = this.prefixedCSSValue("transform");
-      } else {
-        this.slideShowWrapper.style[Modernizr.prefixed('transitionProperty')] = "left";
-      }
-    }
+    this.slideShowWrapper = $$('body.home ul.slides')[0];
     
     this.slideNames = [];
     $$('body.home .slides li').each(function(element){
+      if (!element.hasClassName('active')) element.setOpacity(0);
       this.slideNames.push(this.getBoxName(element));
     }.bind(this));
     
@@ -39,21 +32,48 @@ Slideshow = Class.create({
   },
   nextSlide: function(index) {
     if (this.activeBoxIndex != index) {
-      var position = index*300;
-      if (Modernizr.csstransitions && Modernizr.csstransforms) {
-        if (Modernizr.csstransforms3d) {
-          this.slideShowWrapper.style[Modernizr.prefixed('transform')] = "translate3d(-" + position + "px, 0, 0)";
-        } else {
-          this.slideShowWrapper.style[Modernizr.prefixed('transform')] = "translate(-" + position + "px, 0)";
+      var currentBox = $$('.slides li.'+this.slideNames[this.activeBoxIndex])[0];
+      var nextBox = $$('.slides li.'+this.slideNames[index])[0];
+      
+      if (this.timer) {
+        // animation
+        this.fadeInAnimation = new S2.FX.Morph(currentBox, {
+          duration:this.speed,
+          style: 'opacity:0',
+          after: function() {
+            if (this.timer) {
+              this.updateActiveClasses(this.slideNames[index]);
+              this.fadeOutAnimation = new S2.FX.Morph(nextBox, {
+                duration:this.speed,
+                style: 'opacity:1'
+              });
+              this.fadeOutAnimation.play();
+            } else {
+              currentBox.setOpacity(0);
+              
+            }
+          }.bind(this)
+        });
+        this.fadeInAnimation.play();
+      } else {
+        if (this.fadeInAnimation) {
+          this.fadeInAnimation.cancel();
+          this.fadeInAnimation = null;
         }
-      } else if (Modernizr.csstransitions) {
-        this.slideShowWrapper.style.left = "left:-" + position + "px";
-      } else {        
-        this.slideShowWrapper.morph('left:-'+position+'px', {duration:this.speed});
+        
+        if (this.fadeOutAnimation) {
+          this.fadeOutAnimation.cancel();
+          this.fadeOutAnimation = null;
+        }
+
+        this.updateActiveClasses(this.slideNames[index]);
+        currentBox.removeAttribute('style');
+        currentBox.setOpacity(0);
+        nextBox.removeAttribute('style');
+        nextBox.setOpacity(1);
       }
       
       this.activeBoxIndex = index;
-      this.updateActiveClasses(this.slideNames[index]);
     }
   },
   prefixedCSSValue: function(value) {
@@ -68,7 +88,10 @@ Slideshow = Class.create({
   setupObservers: function() {
     $$('body.home .slides_nav a').each(function(element){
       element.observe("click", function(e) {
-        if (this.timer) clearInterval(this.timer);
+        if (this.timer) {
+          clearInterval(this.timer);
+          this.timer = null;
+        } 
         index = this.slideNames.indexOf(this.getBoxName(element));
         this.nextSlide(index);
         e.preventDefault();
