@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BillingMailer do
+describe My::BillingMailer do
 
   it_should_behave_like "common mailer checks", %w[trial_will_end], from: ["billing@sublimevideo.net"], params: Factory.create(:site)
   it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: ["billing@sublimevideo.net"], params: Factory.create(:user, cc_expire_on: 1.day.from_now)
@@ -23,7 +23,7 @@ describe BillingMailer do
           @last_delivery = ActionMailer::Base.deliveries.last
         end
 
-        it { @last_delivery.subject.should eql "Trial for your site will expire in #{BusinessModel.days_for_trial-8} days" }
+        it { @last_delivery.subject.should eq I18n.t("mailer.billing_mailer.trial_will_end", hostname: 'your site', days: BusinessModel.days_for_trial-8) }
       end
 
       context "site has a hostname" do
@@ -33,11 +33,11 @@ describe BillingMailer do
           @last_delivery = ActionMailer::Base.deliveries.last
         end
 
-        it { @last_delivery.subject.should eql "Trial for #{@site.hostname} will expire in #{BusinessModel.days_for_trial-8} days" }
+        it { @last_delivery.subject.should eq   I18n.t("mailer.billing_mailer.trial_will_end", hostname: @site.hostname, days: BusinessModel.days_for_trial-8) }
         it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
         it { @last_delivery.body.encoded.should include I18n.l(@site.trial_end, format: :named_date) }
-        it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.token}/plan/edit" }
-        it { @last_delivery.body.encoded.should include "http://docs.sublimevideo.net" }
+        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
+        it { @last_delivery.body.encoded.should include "http://docs.#{ActionMailer::Base.default_url_options[:host]}" }
       end
     end
 
@@ -47,9 +47,10 @@ describe BillingMailer do
         @last_delivery = ActionMailer::Base.deliveries.last
       end
 
-      it { @last_delivery.subject.should eql "Your credit card will expire at the end of the month" }
+      it { @last_delivery.subject.should eq  I18n.t("mailer.billing_mailer.credit_card_will_expire") }
       it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
-      it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
+      it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
+      it { @last_delivery.body.encoded.should include "If you have any questions, please <a href=\"mailto:#{h I18n.t("mailer.from_billing")}\">email us</a>." }
     end
 
     describe "#transaction_succeeded" do
@@ -58,11 +59,11 @@ describe BillingMailer do
         @last_delivery = ActionMailer::Base.deliveries.last
       end
 
-      it { @last_delivery.subject.should eql "Payment approved" }
+      it { @last_delivery.subject.should eq   I18n.t("mailer.billing_mailer.transaction_succeeded") }
       it { @last_delivery.body.encoded.should include @transaction.user.name }
       it { @last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved." }
-      it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/invoices/#{@invoice.to_param}" }
-      it { @last_delivery.body.encoded.should include 'If you have any questions, please <a href="mailto:billing@sublimevideo.net">email us</a>.' }
+      it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/invoices/#{@invoice.to_param}" }
+      it { @last_delivery.body.encoded.should include "If you have any questions, please <a href=\"mailto:#{h I18n.t("mailer.from_billing")}\">email us</a>." }
     end
 
     describe "#transaction_failed" do
@@ -71,11 +72,11 @@ describe BillingMailer do
         @last_delivery = ActionMailer::Base.deliveries.last
       end
 
-      it { @last_delivery.subject.should eql "Problem processing your payment" }
+      it { @last_delivery.subject.should eq   I18n.t("mailer.billing_mailer.transaction_failed") }
       it { @last_delivery.body.encoded.should include @transaction.user.name }
       it { @last_delivery.body.encoded.should include "Your credit card could not be charged." }
-      it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites" }
-      it { @last_delivery.body.encoded.should include 'If you have any questions, please <a href="mailto:billing@sublimevideo.net">email us</a>.' }
+      it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites" }
+      it { @last_delivery.body.encoded.should include "If you have any questions, please <a href=\"mailto:#{h I18n.t("mailer.from_billing")}\">email us</a>." }
     end
 
     describe "#too_many_charging_attempts" do
@@ -84,12 +85,13 @@ describe BillingMailer do
         @last_delivery = ActionMailer::Base.deliveries.last
       end
 
-      it { @last_delivery.subject.should eql "Payment for #{@invoice.site.hostname} has failed multiple times" }
+      it { @last_delivery.subject.should eq   I18n.t("mailer.billing_mailer.too_many_charging_attempts", hostname: @invoice.site.hostname) }
       it { @last_delivery.body.encoded.should include "The payment for #{@invoice.site.hostname} has failed multiple times, no further charging attempt will be made." }
-      it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{@invoice.site.to_param}/plan/edit" }
+      it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@invoice.site.to_param}/plan/edit" }
       it { @last_delivery.body.encoded.should include "Note that if the payment failed due to a problem with your credit card" }
       it { @last_delivery.body.encoded.should include "you should probably update your credit card information via the following link:" }
-      it { @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
+      it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
+      it { @last_delivery.body.encoded.should include "If you have any questions, please <a href=\"mailto:#{h I18n.t("mailer.from_billing")}\">email us</a>." }
     end
   end
 

@@ -32,7 +32,7 @@ class MailLetter
 private
 
   def self.deliver(user, template)
-    MailMailer.send_mail_with_template(user, template).deliver
+    My::MailMailer.send_mail_with_template(user, template).deliver
   end
 
 end

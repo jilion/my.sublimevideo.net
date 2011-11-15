@@ -72,7 +72,7 @@ class Transaction < ActiveRecord::Base
             invoice.user.suspend! and return
           else
             invoice.cancel!
-            BillingMailer.too_many_charging_attempts(invoice).deliver!
+            My::BillingMailer.too_many_charging_attempts(invoice).deliver!
           end
         end
       end
@@ -271,12 +271,12 @@ private
 
   # after_transition on: :succeed
   def send_charging_succeeded_email
-    BillingMailer.transaction_succeeded(self).deliver!
+    My::BillingMailer.transaction_succeeded(self).deliver!
   end
 
   # after_transition on: :fail
   def send_charging_failed_email
-    BillingMailer.transaction_failed(self).deliver!
+    My::BillingMailer.transaction_failed(self).deliver!
   end
 
 end

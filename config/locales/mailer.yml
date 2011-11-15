@@ -1,5 +1,27 @@
 en:
   mailer:
+    default:
+      from: "SublimeVideo <info@sublimevideo.net>"
+    from_billing: "SublimeVideo Billing <billing@sublimevideo.net>"
     intro_generic: "Dear SublimeVideo user,"
     intro_name:    "Dear %{name},"
     signature:     "The SublimeVideo Team"
+
+    billing_mailer:
+      trial_will_end: "Trial for %{hostname} will expire in %{days} days"
+      credit_card_will_expire: "Your credit card will expire at the end of this month"
+      transaction_succeeded: "Payment approved"
+      transaction_failed: "Problem processing your payment"
+      too_many_charging_attempts: "Payment for %{hostname} has failed multiple times"
+
+    stat_mailer:
+      stats_trial_will_end: "Your stats trial for %{hostname} will expire in 2 days"
+
+    usage_monitoring_mailer:
+      plan_overused: "Peak Insurance activated for %{hostname}"
+      plan_upgrade_required: "You need to upgrade your plan for %{hostname}"
+
+    user_mailer:
+      account_suspended: "Your account has been suspended"
+      account_unsuspended: "Your account has been reactivated"
+      account_archived: "Your account has been deleted"

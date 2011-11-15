@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserMailer do
+describe My::UserMailer do
   subject { Factory.create(:user) }
 
   it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: Factory.create(:user)
@@ -8,12 +8,12 @@ describe UserMailer do
   describe "#account_suspended" do
     context "when reason given is :invoice_problem" do
       before(:each) do
-        UserMailer.account_suspended(subject).deliver
+        described_class.account_suspended(subject).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
 
       it "should set proper subject" do
-        @last_delivery.subject.should eql "Your account has been suspended"
+        @last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_suspended')
       end
 
       it "should set a body that contain infos" do
@@ -24,12 +24,12 @@ describe UserMailer do
 
   describe "#account_unsuspended" do
     before(:each) do
-      UserMailer.account_unsuspended(subject).deliver
+      described_class.account_unsuspended(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
 
     it "should set proper subject" do
-      @last_delivery.subject.should eql "Your account has been reactivated"
+      @last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_unsuspended')
     end
 
     it "should set a body that contain infos" do
@@ -39,12 +39,12 @@ describe UserMailer do
 
   describe "#account_archived" do
     before(:each) do
-      UserMailer.account_archived(subject).deliver
+      described_class.account_archived(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
 
     it "should set proper subject" do
-      @last_delivery.subject.should eql "Your account has been deleted"
+      @last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_archived')
     end
 
     it "should set a body that contain infos" do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MailMailer do
+describe My::MailMailer do
   subject { Factory.create(:user) }
 
   before(:each) do
@@ -13,7 +13,7 @@ describe MailMailer do
 
   describe "#send_mail_with_template" do
     before(:each) do
-      MailMailer.send_mail_with_template(subject, @template).deliver
+      described_class.send_mail_with_template(subject, @template).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UsageMonitoringMailer do
+describe My::UsageMonitoringMailer do
 
   before(:all) do
     @site = Factory.create(:site)
@@ -12,12 +12,12 @@ describe UsageMonitoringMailer do
 
   describe "#plan_overused" do
     before(:each) do
-      UsageMonitoringMailer.plan_overused(subject).deliver
+      described_class.plan_overused(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
 
     it "should set subject" do
-      @last_delivery.subject.should eq "Peak Insurance activated for #{subject.hostname}"
+      @last_delivery.subject.should eq I18n.t('mailer.usage_monitoring_mailer.plan_overused', hostname: subject.hostname)
     end
 
     it "should set a body that contain the link to peak insurance docs" do
@@ -29,12 +29,12 @@ describe UsageMonitoringMailer do
 
   describe "#plan_upgrade_required" do
     before(:each) do
-      UsageMonitoringMailer.plan_upgrade_required(subject).deliver
+      described_class.plan_upgrade_required(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
 
     it "should set subject" do
-      @last_delivery.subject.should eq "You need to upgrade your plan for #{@site.hostname}"
+      @last_delivery.subject.should eq I18n.t('mailer.usage_monitoring_mailer.plan_upgrade_required', hostname: subject.hostname)
     end
 
     it "should set a body that contain the link to edit the plan" do
