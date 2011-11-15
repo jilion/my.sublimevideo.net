@@ -123,6 +123,9 @@ group :development do
 
   # gem 'ruby_gntp'
   # gem 'guard', :git => 'git://github.com/guard/guard.git', :branch => 'dev'
+  # platforms :ruby do
+  #   gem 'rb-readline'
+  # end
   gem 'growl_notify'
 
   gem 'guard-bundler'
@@ -133,7 +136,6 @@ group :development do
   gem 'guard-coffeescript'
   gem 'guard-jasmine'
   gem 'guard-yard'
-  # gem 'rails_mail_preview'
 end
 
 # Gems used only for assets and not required
