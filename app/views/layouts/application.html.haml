@@ -4,8 +4,7 @@
     %title= yield(:title) || "SublimeVideo"
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-
-    = stylesheet_link_tag 'main'
+    = stylesheet_link_tag 'com'
 
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
 
@@ -21,42 +20,23 @@
     :javascript
       try { Typekit.load(); } catch(e) { }
 
-  %body
-    %section#global
-      = render 'layouts/header'
-      %header
-        %h1
-          = link_to "/" do
-            %span
-              = "SublimeVideo"
-              %em= "HTML5 Video Player"
-        = link_to "http://jilion.com", :class => "jilion" do
-          %span= "Jilion"
-        = link_to "http://twitter.com/jilion", :class => "twitter" do
-          %span= "Follow us on Twitter"
+  %body{ class: yield(:global_class) }
+    %header
+      .shadow
+        .lights
+          .stars
+            .wrap
+              %h1
+                = link_to "/" do
+                  %span
+                    = "SublimeVideo"
+              = render "layouts/menu"
+              = yield :header
+    = yield :middle
+    %section#content
       = yield
-      %footer
-        %p.right
-          = "SublimeVideo® is a service by"
-          = link_to "Jilion®", "http://jilion.com"
-        %p.links
-          = link_to "Demo", "/demo"
-          = "|"
-          = link_to "Sign Up", "https://my.sublimevideo.net/signup"
-          = "|"
-          = link_to "Log In", "https://my.sublimevideo.net/login"
-          = "|"
-          = link_to "Documentation", "http://docs.sublimevideo.net"
-          = "|"
-          = link_to "Releases", "http://docs.sublimevideo.net/releases"
-          = "|"
-          = mail_to "info@sublimevideo.net", "Contact", :encode => "hex"
-          = "|"
-          = link_to "Blog", "http://blog.jilion.com"
-          = "|"
-          = link_to "Twitter", "http://twitter.com/jilion"
-        %p.copyright= "Copyright © #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks"
-      = yield :bottom
+    = render "layouts/footer"
+    = yield :bottom
 
     - if Rails.env.production?
       :javascript

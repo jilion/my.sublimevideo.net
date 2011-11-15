@@ -1,0 +1,40 @@
+%footer
+  .wrap
+    %nav
+      .col
+        %h4= "Product"
+        %ul
+          %li= link_to "Home", ""
+          %li= link_to "Features", ""
+          %li= link_to "Demo", ""
+          %li= link_to "Plans & Pricing", ""
+      .col
+        %h4= "Community & Support"
+        %ul
+          %li= link_to "Customer Showcases", ""
+          %li= link_to "Help", ""
+          %li= link_to "Documentation", ""
+          %li= link_to "Community Forum", ""
+          %li= link_to "Player Releases", ""
+      .col
+        %h4= "Stay Connected"
+        %ul
+          %li= link_to "Blog", ""
+          %li= link_to "Twitter", ""
+          %li= link_to "Contact us", ""
+    .right
+      %p
+        = "SublimeVideo is a service by"
+        = link_to "http://jilion.com", class: "jilion" do
+          %span= "Jilion"
+      %p.twitter
+        = "Follow"
+        = link_to "@sublimevideo", "http://twitter.com/sublimevideo"
+        = "by"
+        = link_to "@jilion", "http://twitter.com/jilion"
+    .footer_break
+    %p.copyright
+      = link_to "Terms & Conditions", ""
+      = "|" 
+      = link_to "Privacy Policy", ""
+      = "| Copyright © #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks."

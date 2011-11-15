@@ -16,17 +16,21 @@ group :frontend do
   # guard 'coffeescript', :input => 'app/assets/javascripts', :noop => true, :hide_success => true
 
   guard :livereload do
+    watch(%r{app/helpers/.+\.rb})
+    watch(%r{app/views/.+\.(erb|haml)})
+    watch(%r{(public/).+\.(css|js|html)})
+
+    watch(%r{app/assets/stylesheets/(.+\.css).*$})  { |m| "assets/#{m[1]}" }
+    watch(%r{app/assets/javascripts/(.+\.js).*$})   { |m| "assets/#{m[1]}" }
+    
     watch(%r{^app/.+\.(erb|haml|js|css|scss|coffee|eco|png|gif|jpg)})
-    watch(%r{^app/helpers/.+\.rb})
-    watch(%r{^public/.+\.html})
-    watch(%r{^config/locales/.+\.yml})
   end
 
-  guard :jasmine, :server => :none, :jasmine_url => 'http://my.sublimevideo.net.dev/jasmine', :all_on_start => false do
-    watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
-    watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
-    watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
-  end
+  # guard :jasmine, :server => :none, :jasmine_url => 'http://my.sublimevideo.net.dev/jasmine', :all_on_start => false do
+  #   watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+  #   watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+  #   watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
+  # end
 
 end
 
