@@ -70,7 +70,7 @@ describe Stat do
 
         it "triggers Pusher on the right private channel for each site" do
           mock_channel = mock('channel')
-          mock_channel.should_receive(:trigger).once.with('tick', h: true, d: true)
+          mock_channel.should_receive(:trigger).once.with('tick', m: true, h: true, d: true)
           Pusher.stub(:[]).with("stats") { mock_channel }
           Stat.create_stats_from_trackers!(@log, @trackers)
         end

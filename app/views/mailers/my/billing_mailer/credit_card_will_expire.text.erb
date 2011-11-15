@@ -1,0 +1,7 @@
+Your credit card will expire at the end of this month.
+
+Please update your credit card information via the following link:
+
+<%= edit_billing_url(protocol: 'https',subdomain: 'my') %>
+
+If you have any questions, please <%= raw mail_to I18n.t("mailer.from_billing"), "email us" %>.

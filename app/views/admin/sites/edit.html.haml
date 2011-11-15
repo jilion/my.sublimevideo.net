@@ -3,13 +3,13 @@
 %p
   %strong
     = "User: "
-    = link_to(@site.user.full_name, [:admin, @site.user]).html_safe
+    = link_to(@site.user.name, [:admin, @site.user]).html_safe
     = "(beta)" if @site.user.beta?
 
 - if @site.plan_id?
   = render '/admin/shared/date_chooser'
   %br.spacer
-  = render partial: 'timeline_usage', locals: { site: @site }
+  = render 'timeline_usage', site: @site
 
 %h3 Basic infos
 

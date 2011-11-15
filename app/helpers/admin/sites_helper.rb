@@ -16,7 +16,7 @@ module Admin::SitesHelper
       " with peak insurance"
     elsif params[:user_id]
       user = User.find(params[:user_id])
-      " for #{user.full_name.titleize}" if user
+      " for #{user.name.titleize}" if user
     elsif params[:search].present?
       " matching '#{params[:search]}'"
     else
@@ -47,7 +47,7 @@ module Admin::SitesHelper
     html += ", #{hostnames.size} more" unless hostnames.empty?
     html
   end
-  
+
   # always with span here
   def hostname_with_path_and_wildcard(site, options = {})
     site_hostname = site.hostname || "no hostname"

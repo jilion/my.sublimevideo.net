@@ -1,7 +1,10 @@
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
-  config.middleware.use(Rack::SslEnforcer, :except => /^\/r\// )
-  config.middleware.use(Rack::GoogleAnalytics, :tracker => 'UA-10280941-8')
+  
+  # SVS
+  # config.middleware.insert_before(Rack::Lock, Rack::NoWWW)
+  config.middleware.use(Rack::SslEnforcer, except: /^\/r\// )
+  config.middleware.use(Rack::GoogleAnalytics, tracker: 'UA-10280941-8')
   # require 'rack/throttle/custom_hourly'
   # config.middleware.use(Rack::Throttle::Hourly, :max => 3600, :cache => Rails.cache, :key_prefix => :throttle)
 
@@ -44,7 +47,7 @@ MySublimeVideo::Application.configure do
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { :host => 'my.sublimevideo.net' }
+  config.action_mailer.default_url_options = { host: 'sublimevideo.net' }
 
   # Enable threaded mode
   # config.threadsafe!

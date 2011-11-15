@@ -10,8 +10,8 @@ describe Admin::MailsController do
       MailTemplate.stub_chain(:scoped, :by_date, :page) { [mock_mail_template] }
 
       get :index
-      assigns(:mail_logs).should == [mock_mail_log]
-      assigns(:mail_templates).should == [mock_mail_template]
+      assigns(:mail_logs).should eq [mock_mail_log]
+      assigns(:mail_templates).should eq [mock_mail_template]
       response.should be_success
       response.should render_template(:index)
     end
@@ -20,7 +20,7 @@ describe Admin::MailsController do
       MailLog.stub(:new) { mock_mail_log }
 
       get :new
-      assigns(:mail_log).should == mock_mail_log
+      assigns(:mail_log).should eq mock_mail_log
       response.should be_success
       response.should render_template(:new)
     end
@@ -29,11 +29,11 @@ describe Admin::MailsController do
       MailLetter.stub(:new).with({ "template_id" => '1', "criteria" => "foo", "admin_id" => authenticated_admin.id }) { mock_mail_letter }
       mock_mail_letter.stub_chain(:delay, :deliver_and_log) { mock_mail_log }
 
-      post :create, :mail_log => { :template_id => '1', :criteria => "foo" }
+      post :create, mail_log: { template_id: '1', criteria: "foo" }
       response.should redirect_to(admin_mails_url)
     end
   end
 
-  it_should_behave_like "redirect when connected as", '/admin/login', [:user, :guest], { :get => [:index, :new], :post => :create }
+  it_should_behave_like "redirect when connected as", '/login', [:user, :guest], { get: [:index, :new], post: :create }
 
 end

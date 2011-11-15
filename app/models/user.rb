@@ -11,53 +11,54 @@ class User < ActiveRecord::Base
   end
 
   # Mail template
-  liquid_methods :email, :first_name, :last_name, :full_name
+  liquid_methods :email, :name
 
-  attr_accessor :terms_and_conditions, :use, :current_password
-  attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
-                  :first_name, :last_name, :street_1, :street_2, :postal_code, :city, :region, :country,
+  attr_accessor :terms_and_conditions, :use, :current_password, :remote_ip
+  attr_accessible :email, :name, :remember_me, :password, :current_password, :hidden_notice_ids,
+                  :billing_name, :billing_address_1, :billing_address_2, :billing_postal_code, :billing_city, :billing_region, :billing_country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
                   :newsletter, :terms_and_conditions
   # Credit card
   # cc_register is a flag to indicate if the CC should be recorded or not
-  attr_accessible :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
+  attr_accessible :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value, :remote_ip
 
   serialize :hidden_notice_ids, Array
 
-  uniquify :cc_alias, :chars => Array('A'..'Z') + Array('0'..'9')
+  uniquify :cc_alias, chars: Array('A'..'Z') + Array('0'..'9')
 
   # ================
   # = Associations =
   # ================
 
+  belongs_to :enthusiast
+
   has_many :sites
-  has_many :invoices, :through => :sites
-  has_one  :last_invoice, :through => :sites, :source => :invoices, :order => :created_at.desc
+  has_many :invoices, through: :sites
+  has_one  :last_invoice, through: :sites, source: :invoices, order: :created_at.desc
 
   # API
   has_many :client_applications
-  has_many :tokens, :class_name => "OauthToken", :order => :authorized_at.desc, :include => [:client_application]
+  has_many :tokens, class_name: "OauthToken", order: :authorized_at.desc, include: [:client_application]
 
   # ===============
   # = Validations =
   # ===============
 
-  validates :email, :presence => true, :email_uniqueness => true, :format => { :with => Devise.email_regexp }, :allow_blank => true
+  validates :email, presence: true, email_uniqueness: true, format: { with: Devise.email_regexp }, allow_blank: true
 
-  with_options :if => :password_required? do |v|
-    v.validates_presence_of :password, :on => :create
-    v.validates_length_of   :password, :within => Devise.password_length, :allow_blank => true
+  with_options if: :password_required? do |v|
+    v.validates_presence_of :password, on: :create
+    v.validates_length_of   :password, within: Devise.password_length, allow_blank: true
   end
 
-  validates :first_name,  :presence => true
-  validates :last_name,   :presence => true
-  validates :postal_code, :presence => true, :length => { :maximum => 10 }
-  validates :country,     :presence => true
-  validates :company_url, :hostname => true, :allow_blank => true
-  validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
+  validates :name, presence: true
+  validates :billing_postal_code, length: { maximum: 10 }, allow_blank: true
+  validates :billing_country, presence: true, if: :billable?
+  validates :company_url, hostname: true, allow_blank: true
+  validates :terms_and_conditions, acceptance: { accept: "1" }, on: :create
 
-  validate :validates_credit_card_attributes, :if => :any_cc_attrs? # in user/credit_card
+  validate :validates_credit_card_attributes # in user/credit_card
   validate :validates_current_password
 
   # =============
@@ -65,12 +66,14 @@ class User < ActiveRecord::Base
   # =============
 
   # hack to explicitely declare changes on cc fields (needed when we save from an association. e.g. site.save)
-  before_validation :force_update_of_credit_card, :if => :any_cc_attrs?
+  # DO WE NEED THIS???!!!
+  before_validation :force_update_of_credit_card, if: proc { |u| u.cc_number.present? }
 
   before_save :set_password
 
-  before_save :pend_credit_card_info, :if => :any_cc_attrs? # in user/credit_card
+  before_save :prepare_pending_credit_card, if: proc { |u| u.cc_number.present? && u.credit_card.valid? } # in user/credit_card
 
+  after_save :register_credit_card_on_file, if: proc { |u| u.cc_register && u.credit_card.valid? } # in user/credit_card
   after_save :newsletter_update
 
   after_update :zendesk_update
@@ -79,23 +82,23 @@ class User < ActiveRecord::Base
   # = State Machine =
   # =================
 
-  state_machine :initial => :active do
-    event(:suspend)   { transition :active => :suspended }
-    event(:unsuspend) { transition :suspended => :active }
+  state_machine initial: :active do
+    event(:suspend)   { transition active: :suspended }
+    event(:unsuspend) { transition suspended: :active }
     event(:archive)   { transition [:active, :suspended] => :archived }
 
     state :archived do
       validate :prevent_archive_with_non_paid_invoices
     end
 
-    before_transition :on => :suspend, :do => :suspend_sites
-    after_transition  :on => :suspend, :do => :send_account_suspended_email
+    before_transition on: :suspend, do: :suspend_sites
+    after_transition  on: :suspend, do: :send_account_suspended_email
 
-    before_transition :on => :unsuspend, :do => :unsuspend_sites
-    after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
+    before_transition on: :unsuspend, do: :unsuspend_sites
+    after_transition  on: :unsuspend, do: :send_account_unsuspended_email
 
-    before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]
-    after_transition  :on => :archive, :do => [:invalidate_tokens, :newsletter_unsubscribe, :send_account_archived_email]
+    before_transition on: :archive, do: [:set_archived_at, :archive_sites]
+    after_transition  on: :archive, do: [:invalidate_tokens, :newsletter_unsubscribe, :send_account_archived_email]
   end
 
   # =================
@@ -133,7 +136,7 @@ class User < ActiveRecord::Base
   # Devise overriding
   def password=(new_password)
     @password = new_password
-    # setted in #set_password
+    # set in #set_password
   end
 
   def current_password=(new_current_password)
@@ -159,27 +162,23 @@ class User < ActiveRecord::Base
   end
 
   def vat?
-    Vat.for_country?(country)
-  end
-
-  def full_name
-    first_name.to_s + ' ' + last_name.to_s
+    Vat.for_country?(billing_country)
   end
 
   def billing_address
     Snail.new(
-      name:        full_name,
-      line_1:      street_1,
-      line_2:      street_2,
-      postal_code: postal_code,
-      city:        city,
-      region:      region,
-      country:     Country[country].name
+      name:        billing_name.presence || name,
+      line_1:      billing_address_1,
+      line_2:      billing_address_2,
+      postal_code: billing_postal_code,
+      city:        billing_city,
+      region:      billing_region,
+      country:     billing_country? ? Country[billing_country.to_s].name : ''
     ).to_s
   end
 
-  def billing_address_incomplete?
-    [street_1, postal_code, city, country].any?(&:blank?)
+  def billing_address_complete?
+    [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
   end
 
   def support
@@ -188,20 +187,32 @@ class User < ActiveRecord::Base
     Plan::SUPPORT_LEVELS[support_level]
   end
 
+  def billable?
+    sites.active.billable.any?
+  end
+
   def archivable?
     sites.active.all? { |site| site.archivable? }
   end
 
-private
-
-  # before_validation
-  def force_update_of_credit_card
-    pending_cc_type_will_change!
+  def skip_pwd
+    @skip_password_validation = true
+    result = yield
+    @skip_password_validation = false
+    result
   end
+
+  def save_skip_pwd
+    skip_pwd { self.save! }
+  end
+
+private
 
   # validate
   def validates_current_password
-    if !new_record? &&
+    return if @skip_password_validation
+
+    if persisted? &&
       ((state_changed? && archived?) || @password.present? || email_changed?) &&
       errors.empty? &&
       # handle Devise password reset!!
@@ -218,53 +229,53 @@ private
   # validate (archived state)
   def prevent_archive_with_non_paid_invoices
     unless archivable?
-      self.errors.add(:base, :not_paid_invoices_prevent_archive, :count => invoices.not_paid.count)
+      self.errors.add(:base, :not_paid_invoices_prevent_archive, count: invoices.not_paid.count)
     end
   end
 
-  # before_transition :on => :suspend
+  # before_transition on: :suspend
   def suspend_sites
     sites.includes(:invoices).where(invoices: { state: 'failed' }).map(&:suspend)
   end
 
-  # after_transition :on => :suspend
+  # after_transition on: :suspend
   def send_account_suspended_email
-    UserMailer.account_suspended(self).deliver!
+    My::UserMailer.account_suspended(self).deliver!
   end
 
-  # before_transition :on => :unsuspend
+  # before_transition on: :unsuspend
   def unsuspend_sites
     sites.where(state: 'suspended').map(&:unsuspend)
   end
 
-  # after_transition :on => :unsuspend
+  # after_transition on: :unsuspend
   def send_account_unsuspended_email
-    UserMailer.account_unsuspended(self).deliver!
+    My::UserMailer.account_unsuspended(self).deliver!
   end
 
-  # before_transition :on => :archive
+  # before_transition on: :archive
   def set_archived_at
     self.archived_at = Time.now.utc
   end
   def archive_sites
     sites.each do |site|
-      site.without_password_validation { site.archive }
+      site.skip_pwd { site.archive }
     end
   end
 
-  # after_transition :on => :archive
+  # after_transition on: :archive
   def invalidate_tokens
     tokens.update_all(invalidated_at: Time.now.utc)
   end
 
-  # after_transition :on => :archive
+  # after_transition on: :archive
   def newsletter_unsubscribe
     CampaignMonitor.delay.unsubscribe(self.email)
   end
 
-  # after_transition :on => :archive
+  # after_transition on: :archive
   def send_account_archived_email
-    UserMailer.account_archived(self).deliver!
+    My::UserMailer.account_archived(self).deliver!
   end
 
   # before_save
@@ -277,7 +288,7 @@ private
 
   # after_save
   def newsletter_update
-    if newsletter_changed? || email_changed? || first_name_changed? || last_name_changed?
+    if newsletter_changed? || email_changed? || name_changed?
       if email_was.present?
         CampaignMonitor.delay.update(self)
         CampaignMonitor.delay(run_at: 30.seconds.from_now).unsubscribe(email) unless newsletter?
@@ -289,8 +300,8 @@ private
 
   # after_update
   def zendesk_update
-    if zendesk_id.present? && (email_changed? || first_name_changed? || last_name_changed?)
-      body = email_changed? ? "<email>#{email}</email>" : "<name>#{full_name}</name>"
+    if zendesk_id.present? && (email_changed? || name_changed?)
+      body = email_changed? ? "<email>#{email}</email>" : "<name>#{name}</name>"
       Zendesk.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user>#{body}<is-verified>true</is-verified></user>")
     end
   end
@@ -342,8 +353,8 @@ end
 #  enthusiast_id          :integer
 #  first_name             :string(255)
 #  last_name              :string(255)
-#  postal_code            :string(255)
-#  country                :string(255)
+#  billing_postal_code    :string(255)
+#  billing_country        :string(255)
 #  use_personal           :boolean
 #  use_company            :boolean
 #  use_clients            :boolean
@@ -363,6 +374,12 @@ end
 #  total_invoiced_amount  :integer         default(0)
 #  balance                :integer         default(0)
 #  hidden_notice_ids      :text
+#  name                   :string(255)
+#  billing_name           :string(255)
+#  billing_address_1      :string(255)
+#  billing_address_2      :string(255)
+#  billing_city           :string(255)
+#  billing_region         :string(255)
 #
 # Indexes
 #

@@ -87,11 +87,15 @@ Spork.each_run do
 
   RSpec.configure do |config|
     # config.include Shoulda::ActionController::Matchers
-    config.include Devise::TestHelpers, :type => :controller
+    config.include Devise::TestHelpers, type: :controller
+
+    # FactoryGirl http://railscasts.com/episodes/158-factories-not-fixtures-revised
+    config.include Factory::Syntax::Methods
   end
 end
 
 def recreate_default_plans
+  Plan.unmemoize_all
   @free_plan      = Factory.create(:free_plan, support_level: 0)
   @paid_plan      = Factory.create(:plan, name: "silver", video_views: 3_000, support_level: 1)
   @sponsored_plan = Factory.create(:sponsored_plan, support_level: 2)

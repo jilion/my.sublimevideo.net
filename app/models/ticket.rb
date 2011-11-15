@@ -72,7 +72,7 @@ class Ticket
       if user.zendesk_id?
         xml.tag!(:"requester-id", user.zendesk_id)
       else
-        xml.tag!(:"requester-name", h(user.full_name))
+        xml.tag!(:"requester-name", h(user.name))
         xml.tag!(:"requester-email", h(user.email))
       end
     end

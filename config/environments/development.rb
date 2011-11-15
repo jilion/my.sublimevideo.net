@@ -1,6 +1,6 @@
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
-  # config.middleware.insert_before(Rack::Lock, Rack::LiveReload)
+  config.middleware.insert_before(Rack::Lock, Rack::LiveReload)
 
   # In the development environment your application's code is reloaded on
   # every request.  This slows down response time but is perfect for development
@@ -17,7 +17,7 @@ MySublimeVideo::Application.configure do
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.delivery_method       = :test
-  config.action_mailer.default_url_options   = { :host => 'my.sublimevideo.net.dev' }
+  config.action_mailer.default_url_options   = { host: 'sublimevideo.dev' }
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log

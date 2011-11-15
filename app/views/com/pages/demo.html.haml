@@ -1,0 +1,148 @@
+= content_for :title, "SublimeVideo - HTML5 Video Player - Demo"
+= content_for :js do
+  = javascript_include_tag("http://cdn.sublimevideo.net/js/ibvjcopp.js")
+  = javascript_include_tag("/javascripts/demo.js");
+
+%section#content
+  = render 'layouts/meta_menu'
+  %section#demo
+    %h2.headline= "Player Demo"
+    %nav
+      %ul
+        %li#nav_single
+          %a{ href: "#single" }= "Single"
+        %li#nav_zoom
+          %a{ href: "#zoom" }= "Zoom"
+        %li#nav_interactive
+          %a{ href: "#interactive" }= "Interactive"
+        %li#nav_features
+          %a{ href: "#features" }= "Features"
+
+    .spacer
+    %section#single
+      .video_wrap
+        %video#single_video.sublime{ width: "800", height: "340", poster: image_path("demo/dartmoor.jpg"), preload: "none" }
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.mp4" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.webm" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }/
+      #mode_switcher
+        = "SublimeVideo mode:"
+        %span.html5
+          %strong= "HTML5"
+        %span.flash
+          %strong= "Flash"
+        %p
+          %small><
+            = "(Right-click on video to switch to "
+            %em
+            =")"
+      %h3= "Single video"
+      %p.desc= "The most common and basic integration of a player in a page."
+    %section#zoom
+      %ul
+        %li
+          %a.sublime{ href: "http://medias.jilion.com/sublimevideo/dartmoor1-mobile.mp4" }
+            = image_tag("demo/dartmoor1_800.jpg", alt: "", width: "180", height: "76")
+            %span.icon
+          %video.sublime.zoom{ style: "display:none", width: "700", height: "294", poster: image_path("demo/dartmoor1_800.jpg"), preload: "none" }
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1_800.mp4" }/
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1-mobile.mp4" }/
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1_800.ogv" }/
+        %li
+          %a.sublime{ href: "http://medias.jilion.com/sublimevideo/dartmoor2-mobile.mp4" }
+            = image_tag("demo/dartmoor2_800.jpg", alt: "", width: "180", height: "76")
+            %span.icon
+          %video.sublime.zoom{ style: "display:none", width: "700", height: "294", poster: "demo/dartmoor2_800.jpg", preload: "none" }
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2_800.mp4" }/
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2-mobile.mp4" }/
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2_800.ogv" }/
+        %li
+          %a.sublime{ href: "http://medias.jilion.com/sublimevideo/dartmoor3-mobile.mp4" }
+            = image_tag("demo/dartmoor3_800.jpg", alt: "", width: "180", height: "76")
+            %span.icon
+          %video.sublime.zoom{ style: "display:none", width: "700", height: "294", poster: image_path("demo/dartmoor3_800.jpg"), preload: "none" }
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3_800.mp4" }/
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3-mobile.mp4" }/
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3_800.ogv" }/
+        %li
+          %a.sublime{ href: "http://medias.jilion.com/sublimevideo/dartmoor4-mobile.mp4" }
+            = image_tag("demo/dartmoor4_800.jpg", alt: "", width: "180", height: "76")
+            %span.icon
+          %video.sublime.zoom{ style: "display:none", width: "700", height: "294", poster: image_path("demo/dartmoor4_800.jpg"), preload: "none" }
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4_800.mp4" }/
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4-mobile.mp4" }/
+            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4_800.ogv" }/
+
+      .section_text
+        %h3= "Zoomable thumbnails"
+        :textile
+          p(desc). Here is a demo showing SublimeVideo  integrated zooming capabilities to display videos in a floating player. It offers the easiest and best possible "lightbox" integration for your videos.
+      .spacer
+    %section#interactive
+      .video_wrap.active
+        %video#video1.sublime{ width: "800", height: "336", poster: image_path("demo/dartmoor1_800.jpg"), preload: "none" }
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1_800.mp4" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1-mobile.mp4" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1_800.ogv" }/
+      .video_wrap
+        %video#video2{ width: "800", height: "336", poster: image_path("demo/dartmoor2_800.jpg"), preload: "none" }
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2_800.mp4" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2-mobile.mp4" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2_800.ogv" }/
+      .video_wrap
+        %video#video3{ width: "800", height: "336", poster: image_path("demo/dartmoor3_800.jpg"), preload: "none" }
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3_800.mp4" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3-mobile.mp4" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3_800.ogv" }/
+      .video_wrap
+        %video#video4{ width: "800", height: "336", poster: image_path("demo/dartmoor4_800.jpg"), preload: "none" }
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4_800.mp4" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4-mobile.mp4" }/
+          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4_800.ogv" }/
+      %ul
+        %li#thumb_video1
+          %a{ href: "" }
+            = image_tag("demo/dartmoor1_178.jpg", alt: "", width: "178", height: "76")
+        %li#thumb_video2
+          %a{ href: "" }
+            = image_tag("demo/dartmoor2_178.jpg", alt: "", width: "178", height: "76")
+        %li#thumb_video3
+          %a{ href: "" }
+            = image_tag("demo/dartmoor3_178.jpg", alt: "", width: "178", height: "76")
+        %li#thumb_video4
+          %a{ href: "" }
+            = image_tag("demo/dartmoor4_178.jpg", alt: "", width: "178", height: "76")
+      .spacer
+      %h3= "Interactive thumbnails"
+      %p.desc= "SublimeVideo Player offers a simple yet powerful JavaScript API that allows all kinds of different integrations in your page. Here are 4 different videos with their clickable thumbnail."
+      -#%p.desc= "SublimeVideo Player offers a simple yet powerful JavaScript API that allows all kinds of different integrations in your page. Here are 4 different videos with their clickable thumbnail; when a video finishes playing, the next one is automatically started."
+    %section#features
+      %h3= "UI features"
+      %ul
+        %li
+          %strong= "Seek ahead:"
+          =raw "jump anywhere in the video and it will start buffering from that point (Flash mode requires streaming server)"
+        %li
+          %strong= "Uniform UI across all browsers"
+        %li
+          %strong= "Volume controls:"
+          =raw "saving audio level for each site (cookie-less HTML5/Flash local storage)"
+        %li
+          %strong= "Time display:"
+          =raw "mouse over elapsed time to view remaining time with click to stick"
+        %li
+          %strong= "Full-window mode:"
+          %ul
+            %li= "More advanced controls on a draggable pane"
+            %li= "Sleek zoom-in/out transitions"
+            %li= "Live-resizing (when resizing the browser window)"
+            %li= "Double-click video to enter full-window"
+            %li= "Press spacebar to play/pause and Esc to exit full-window"
+        %li
+          %strong= "Full-screen mode:"
+          = raw "hold down Command (Mac) or Ctrl (Windows/Linux) while entering full-window. Currently only supported in #{link_to("Safari 5", "http://www.apple.com/safari")} and in the Flash version of the player."
+    %section#credits
+      :textile
+        p(desc). Video Credits: _Dartmoor_ by "James Watson":http://james-watson.net (Desktop: HD 720p. iPhone/iPad Wi-Fi: 640x272)
+

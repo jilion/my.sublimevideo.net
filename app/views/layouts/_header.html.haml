@@ -9,7 +9,7 @@
           = link_to "Sites", sites_path
     .right
       %ul.extra_links
-        %li= link_to("Documentation", "http://docs.sublimevideo.net")
+        %li= link_to("Documentation", root_url(subdomain: 'docs'))
         - if !user_signed_in? || current_user.support == 'forum'
           %li= link_to("Help", "http://sublimevideo.net/help")
         - else
@@ -19,11 +19,11 @@
       - if user_signed_in?
         = link_to(edit_user_registration_path, class: "user #{'active' if controller.request.url =~ /account/}", onclick: "MySublimeVideo.makeSticky(this, '#header')") do
           %strong
-            %span.icon= truncate(current_user.full_name, length: 45)
+            %span.icon= truncate(current_user.name, length: 45)
           %span.corner
       - else
         - if controller_name != 'sessions'
-          = link_to(new_user_session_path, class: "user") do
+          = link_to(new_user_session_url(subdomain: 'my'), class: "user") do
             %strong
               %span.icon= "Login"
             %span.corner

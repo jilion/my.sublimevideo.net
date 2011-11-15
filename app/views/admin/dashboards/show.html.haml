@@ -55,7 +55,7 @@
     %td= display_percentage(billable_customers.to_f / total_users)
 %br
 
-- top_10_countries = User.select("country, COUNT(country) as country_count").where(id: User.select("DISTINCT(users.id)").active_and_billable.map(&:id)).group(:country).order("country_count DESC").map { |u| [u.country, u.country_count] }
+- top_10_countries = User.select("billing_country, COUNT(billing_country) as billing_country_count").where(id: User.select("DISTINCT(users.id)").active_and_billable.map(&:id)).group(:billing_country).order("billing_country_count DESC").map { |u| [u.billing_country, u.billing_country_count] }
 %h3= "Top 10 countries (by billable customers #):"
 %ul
   - (0...[top_10_countries.size, 10].min).each do |i|

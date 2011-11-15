@@ -5,12 +5,11 @@ class MSVStats.Views.TrialView extends Backbone.View
     'click button': 'startTrial'
 
   initialize: ->
-    _.bindAll this, 'render'
     @options.sites.bind 'change', this.render
     @options.sites.bind 'reset',  this.render
     this.render()
 
-  render: ->
+  render: =>
     MSVStats.Routers.StatsRouter.setHighchartsUTC(false) # don't use UTC date here
     $(@el).html(this.template(site: MSVStats.sites.selectedSite))
     MSVStats.Routers.StatsRouter.setHighchartsUTC()

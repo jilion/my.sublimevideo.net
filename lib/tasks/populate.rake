@@ -10,16 +10,16 @@ BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 
 namespace :db do
 
   desc "Load all development fixtures."
-  task :populate => ['populate:empty_all_tables', 'populate:all']
+  task populate: ['populate:empty_all_tables', 'populate:all']
 
   namespace :populate do
     desc "Empty all the tables"
-    task :empty_all_tables => :environment do
+    task empty_all_tables: :environment do
       timed { empty_tables("delayed_jobs", "invoices_transactions", InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
     desc "Load all development fixtures."
-    task :all => :environment do
+    task all: :environment do
       delete_all_files_in_public('uploads/releases')
       delete_all_files_in_public('uploads/s3')
       delete_all_files_in_public('uploads/tmp')
@@ -34,52 +34,64 @@ namespace :db do
     end
 
     desc "Load Admin development fixtures."
-    task :admins => :environment do
+    task admins: :environment do
       timed { empty_tables(Admin) }
       timed { create_admins }
     end
 
+    desc "Load Enthusiast development fixtures."
+    task enthusiasts: :environment do
+      timed { empty_tables(EnthusiastSite, Enthusiast)                                 }
+      timed { create_enthusiasts(argv_user) }
+    end
+
     desc "Load User development fixtures."
-    task :users => :environment do
+    task users: :environment do
       timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
       timed { create_users(argv_user) }
       empty_tables("delayed_jobs")
     end
 
     desc "Load Site development fixtures."
-    task :sites => :environment do
+    task sites: :environment do
       timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
       timed { create_sites }
       empty_tables("delayed_jobs")
     end
 
     desc "Load Mail templates development fixtures."
-    task :mail_templates => :environment do
+    task mail_templates: :environment do
       timed { empty_tables(MailTemplate) }
       timed { create_mail_templates }
     end
 
     desc "Create fake usages"
-    task :site_usages => :environment do
+    task site_usages: :environment do
       timed { empty_tables(SiteUsage) }
       timed { create_site_usages }
     end
 
     desc "Create fake site stats"
-    task :site_stats => :environment do
+    task site_stats: :environment do
       timed { empty_tables(Stat::Site) }
       timed { create_site_stats(argv_user) }
     end
 
     desc "Create fake site stats"
-    task :recurring_site_stats => :environment do
+    task recurring_site_stats: :environment do
       timed { empty_tables(Stat::Site) }
       timed { create_site_stats(argv_user) }
       timed { recurring_site_stats_update(argv_user) }
     end
 
+    desc "Create fake site & video stats"
+    task :recurring_stats => :environment do
+      timed { create_stats(argv_site_token) }
+      timed { recurring_stats_update(argv_site_token) }
+    end
+
     desc "Create fake plans"
-    task :plans => :environment do
+    task plans: :environment do
       timed { empty_tables(Plan) }
       timed { create_plans }
     end
@@ -91,7 +103,7 @@ end
 namespace :user do
 
   desc "Expire the credit card of the user with the given email (EMAIL=xx@xx.xx) at the end of the month (or the opposite if already expiring at the end of the month)"
-  task :cc_will_expire => :environment do
+  task cc_will_expire: :environment do
     timed do
       email = argv("email")
       return if email.nil?
@@ -106,7 +118,7 @@ namespace :user do
         end
         user.update_attributes({
           cc_type: 'visa',
-          cc_full_name: user.full_name,
+          cc_full_name: user.name,
           cc_number: "4111111111111111",
           cc_verification_value: "111",
           cc_expire_on: date
@@ -116,7 +128,7 @@ namespace :user do
   end
 
   desc "Suspend/unsuspend a user given an email (EMAIL=xx@xx.xx), you can pass the count of failed invoices on suspend with FAILED_INVOICES=N"
-  task :suspended => :environment do
+  task suspended: :environment do
     timed do
       email = argv("email")
       return if email.nil?
@@ -141,7 +153,7 @@ end
 namespace :sm do
 
   desc "Draw the States Diagrams for every model having State Machine"
-  task :draw => :environment do
+  task draw: :environment do
     %x(rake state_machine:draw CLASS=Invoice,Log,Site,User TARGET=doc/state_diagrams FORMAT=png ORIENTATION=landscape)
   end
 
@@ -171,33 +183,46 @@ def create_admins
   end
 end
 
+def create_enthusiasts(user_id = nil)
+  disable_perform_deliveries do
+    (user_id ? [user_id] : 0.upto(BASE_USERS.count - 1)).each do |i|
+      enthusiast = Enthusiast.create(email: BASE_USERS[i][1], interested_in_beta: true)
+      enthusiast.confirmed_at = Time.now
+      enthusiast.save!
+      print "Enthusiast #{BASE_USERS[0]} created!\n"
+    end
+  end
+end
+
 def create_users(user_id = nil)
   created_at_array = (Date.new(2011,1,1)..100.days.ago.to_date).to_a
   disable_perform_deliveries do
     (user_id ? [user_id] : 0.upto(BASE_USERS.count - 1)).each do |i|
       user = User.new(
         enthusiast_id: rand(1000000),
-        first_name: BASE_USERS[i][0].split(' ').first,
-        last_name: BASE_USERS[i][0].split(' ').second,
-        country: COUNTRIES.sample,
-        postal_code: Faker::Address.zip_code,
         email: BASE_USERS[i][1],
         password: "123456",
+        name: BASE_USERS[i][0],
+        billing_name: BASE_USERS[i][0],
+        billing_address_1: Faker::Address.street_address,
+        billing_address_2: Faker::Address.secondary_address,
+        billing_postal_code: Faker::Address.zip_code,
+        billing_city: Faker::Address.city,
+        billing_region: Faker::Address.uk_county,
+        billing_country: COUNTRIES.sample,
         use_personal: true,
         terms_and_conditions: "1",
-        cc_register: 1,
+        cc_register: true,
         cc_brand: 'visa',
         cc_full_name: BASE_USERS[i][0],
         cc_number: "4111111111111111",
         cc_verification_value: "111",
-        cc_expiration_month: 2.years.from_now.month,
+        cc_expiration_month: 12,
         cc_expiration_year: 2.years.from_now.year
       )
       user.created_at   = created_at_array.sample
       user.confirmed_at = user.created_at
-      user.save!(validate: false)
-      user.apply_pending_credit_card_info
-      user.save
+      user.save!
       puts "User #{BASE_USERS[i][1]}:123456"
     end
 
@@ -238,12 +263,12 @@ def create_sites
         hostname: hostname
       )
       Timecop.travel(created_at_array.sample) do
-        site.without_password_validation { site.save! }
+        site.save_skip_pwd
       end
 
       if rand > 0.5
         site.cdn_up_to_date = true
-        site.save_without_password_validation
+        site.save_skip_pwd
       end
       site.sponsor! if rand > 0.85
     end
@@ -318,7 +343,7 @@ def create_site_stats(user_id=nil)
     user.sites.each do |site|
       # Days
       95.times.each do |i|
-        stats = random_stats_inc(24 * 60 * 60)
+        stats = random_site_stats_inc(24 * 60 * 60)
         Stat::Site.collection.update(
           { t: site.token, d: i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time },
           { "$inc" => stats },
@@ -348,7 +373,7 @@ def create_site_stats(user_id=nil)
       25.times.each do |i|
         Stat::Site.collection.update(
           { t: site.token, h: i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time },
-          { "$inc" => random_stats_inc(60 * 60) },
+          { "$inc" => random_site_stats_inc(60 * 60) },
           upsert: true
         )
       end
@@ -356,7 +381,7 @@ def create_site_stats(user_id=nil)
       60.times.each do |i|
         Stat::Site.collection.update(
           { t: site.token, m: i.minutes.ago.change(sec: 0, usec: 0).to_time },
-          { "$inc" => random_stats_inc(60) },
+          { "$inc" => random_site_stats_inc(60) },
           upsert: true
         )
       end
@@ -364,7 +389,7 @@ def create_site_stats(user_id=nil)
       60.times.each do |i|
         Stat::Site.collection.update(
           { t: site.token, s: i.seconds.ago.change(usec: 0).to_time },
-          { "$inc" => random_stats_inc(1) },
+          { "$inc" => random_site_stats_inc(1) },
           upsert: true
         )
       end
@@ -374,6 +399,82 @@ def create_site_stats(user_id=nil)
   puts "Fake site(s) stats generated"
 end
 
+def create_stats(site_token=nil)
+  sites = site_token ? [Site.find_by_token(site_token)] : Site.all
+  sites.each do |site|
+    VideoTag.where(st: site.token).delete_all
+    Stat::Site.where(t: site.token).delete_all
+    Stat::Video.where(st: site.token).delete_all
+    videos_count = 6
+    # Video Tags
+    videos_count.times do |video_i|
+      VideoTag.create(st: site.token, u: "video#{video_i}",
+        uo:	"s",
+        n: "Video #{video_i}",
+        no: "s",
+        cs:	["83cb4c27","af355ec8","1d1e3c63"],
+        p: "http://sublimevideo.net/demo/dartmoor1_800.jpg",
+        z: "600x252",
+        s: {
+          "83cb4c27" => { u: "http://medias.jilion.com/sublimevideo/dartmoor1_800.mp4", q: "base", f: "mp4" },
+          "af355ec8" => { u: "http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4", q: "mobile", f: "ogg" },
+          "1d1e3c63" => { u: "http://medias.jilion.com/sublimevideo/dartmoor1_800.ogv", q: "base", f: "ogg" }
+        }
+      )
+    end
+
+    # Days
+    95.times.each do |i|
+      time = i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
+      Stat::Site.collection.update(
+        { t: site.token, d: time }, { "$inc" => random_site_stats_inc(24 * 60 * 60) }, upsert: true
+      )
+      videos_count.times do |video_i|
+        Stat::Video.collection.update(
+          { st: site.token, u: "video#{video_i}", d: time }, { "$inc" => random_video_stats_inc(24 * 60 * 60) }, upsert: true
+        )
+      end
+    end
+    # Hours
+    25.times.each do |i|
+      time = i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time
+      Stat::Site.collection.update(
+        { t: site.token, h: time }, { "$inc" => random_site_stats_inc(60 * 60) }, upsert: true
+      )
+      videos_count.times do |video_i|
+        Stat::Video.collection.update(
+          { st: site.token, u: "video#{video_i}", h: time }, { "$inc" => random_video_stats_inc(60 * 60) }, upsert: true
+        )
+      end
+    end
+    # Minutes
+    60.times.each do |i|
+      time = i.minutes.ago.change(sec: 0, usec: 0).to_time
+      Stat::Site.collection.update(
+        { t: site.token, m: time }, { "$inc" => random_site_stats_inc(60) }, upsert: true
+      )
+      videos_count.times do |video_i|
+        Stat::Video.collection.update(
+          { st: site.token, u: "video#{video_i}", m: time }, { "$inc" => random_video_stats_inc(60) }, upsert: true
+        )
+      end
+    end
+    # seconds
+    60.times.each do |i|
+      time = i.seconds.ago.change(usec: 0).to_time
+      Stat::Site.collection.update(
+        { t: site.token, s: time }, { "$inc" => random_site_stats_inc(1) }, upsert: true
+      )
+      videos_count.times do |video_i|
+        Stat::Video.collection.update(
+          { st: site.token, u: "video#{video_i}", s: time }, { "$inc" => random_video_stats_inc(1) }, upsert: true
+        )
+      end
+    end
+  end
+  puts "Fake site(s)/video(s) stats generated"
+end
+
 def recurring_site_stats_update(user_id)
   sites = User.find(user_id).sites
   puts "Begin recurring fake site(s) stats generation (each minute)"
@@ -381,7 +482,7 @@ def recurring_site_stats_update(user_id)
     loop do
       second = Time.now.utc.change(usec: 0).to_time
       sites.each do |site|
-        inc = random_stats_inc(1)
+        inc = random_site_stats_inc(1)
         Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => inc }, upsert: true)
       end
       # puts "Site(s) stats seconds updated at #{second}"
@@ -393,7 +494,7 @@ def recurring_site_stats_update(user_id)
       now = Time.now.utc
       if now.change(usec: 0) == now.change(sec: 0, usec: 0)
         sites.each do |site|
-          inc = random_stats_inc(60)
+          inc = random_site_stats_inc(60)
           Stat::Site.collection.update({ t: site.token, m: (now - 1.minute).change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
           Stat::Site.collection.update({ t: site.token, h: (now - 1.minute).change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
           Stat::Site.collection.update({ t: site.token, d: (now - 1.minute).change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
@@ -426,7 +527,38 @@ def recurring_site_stats_update(user_id)
   end
 end
 
-def random_stats_inc(i, force = nil)
+def recurring_stats_update(site_token)
+  site         = Site.find_by_token(site_token)
+  last_second  = 0
+  videos_count = 20
+  EM.run do
+    EM.add_periodic_timer(0.001) do
+      second = Time.now.change(usec: 0).to_time
+      if last_second != second.to_i
+        sleep rand(1)
+        last_second = second.to_i
+        EM.defer do
+          # videos_count.times do |video_i|
+            video_i = second.to_i%videos_count
+            hits    = second.to_i%10
+            Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
+            Stat::Video.collection.update({ st: site.token, u:  "video#{video_i}", s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
+            json = {
+              site: { id: second.to_i, vv: hits },
+              videos: [
+                { id: second.to_i, u: "video#{video_i}", n: "Video #{video_i}", vv: hits }
+              ]
+            }
+            Pusher["presence-#{site.token}"].trigger_async('stats', json)
+          # end
+          puts "Stats updated at #{second}"
+        end
+      end
+    end
+  end
+end
+
+def random_site_stats_inc(i, force = nil)
   {
     # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 3 }
     "pv.m"  => force || (i * rand(20)),
@@ -434,6 +566,42 @@ def random_stats_inc(i, force = nil)
     "pv.em" => force || (i * rand(2)),
     "pv.d"  => force || (i * rand(2)),
     "pv.i"  => force || (i * rand(2)),
+    # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
+    "vv.m"  => force || (i * rand(10)),
+    "vv.e"  => force || (i * rand(3)),
+    "vv.em" => force || (i * rand(3)),
+    "vv.d"  => force || (i * rand(2)),
+    "vv.i"  => force || (i * rand(2)),
+    # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1, t (tablet) => 1 }, f (flash) => ... }
+    "md.h.d" => i * rand(12),
+    "md.h.m" => i * rand(5),
+    "md.h.t" => i * rand(3),
+    "md.f.d" => i * rand(6),
+    "md.f.m" => 0, #i * rand(2),
+    "md.f.t" => 0, #i * rand(2),
+    # field :bp, :type => Hash # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
+    "bp.iex-win" => i * rand(35), # 35% in total
+    "bp.fir-win" => i * rand(18), # 26% in total
+    "bp.fir-osx" => i * rand(8),
+    "bp.chr-win" => i * rand(11), # 21% in total
+    "bp.chr-osx" => i * rand(10),
+    "bp.saf-win" => i * rand(1), # 6% in total
+    "bp.saf-osx" => i * rand(5),
+    "bp.saf-ipo" => i * rand(1),
+    "bp.saf-iph" => i * rand(2),
+    "bp.saf-ipa" => i * rand(2),
+    "bp.and-and" => i * rand(6)
+  }
+end
+
+def random_video_stats_inc(i, force = nil)
+  {
+    # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 3 }
+    "vl.m"  => force || (i * rand(20)),
+    "vl.e"  => force || (i * rand(4)),
+    "vl.em" => force || (i * rand(2)),
+    "vl.d"  => force || (i * rand(2)),
+    "vl.i"  => force || (i * rand(2)),
     # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
     "vv.m"  => force || (i * rand(10)),
     "vv.e"  => force || (i * rand(3)),
@@ -509,5 +677,13 @@ def argv_user(var_name='user', default_index=nil)
     var.sub($1, '').to_i
   else
     default_index
+  end
+end
+
+def argv_site_token(var_name='site', default_token=nil)
+  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
+    var.sub($1, '')
+  else
+    default_token
   end
 end

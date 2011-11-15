@@ -1,0 +1,9 @@
+<%= t("mailer.intro_name", name: @user.name) %>
+
+Your account has been suspended.
+
+Please find more information on the following page:
+
+https://<%= ActionMailer::Base.default_url_options[:host] %>/suspended
+
+<%= t("mailer.signature") %>

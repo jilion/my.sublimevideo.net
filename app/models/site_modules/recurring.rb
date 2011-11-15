@@ -28,7 +28,7 @@ module SiteModules::Recurring
 
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
         in_trial.trial_expires_on(days_before_trial_end.days.from_now).find_each(batch_size: 100) do |site|
-          BillingMailer.trial_will_end(site).deliver!
+          My::BillingMailer.trial_will_end(site).deliver!
         end
       end
     end
@@ -57,7 +57,7 @@ module SiteModules::Recurring
       delay_send_stats_trial_will_end
 
       not_archived.where(stats_trial_started_at: BusinessModel.days_before_stats_trial_end.days.ago.midnight).find_each(batch_size: 100) do |site|
-        StatMailer.stats_trial_will_end(site).deliver!
+        My::StatMailer.stats_trial_will_end(site).deliver!
       end
     end
 

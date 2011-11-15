@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Admin::ReleasesController do
 
   context "with logged in admin Zeno" do
-    before(:each) { sign_in :admin, authenticated_admin(:email => "zeno@jilion.com") }
+    before(:each) { sign_in :admin, authenticated_admin(email: "zeno@jilion.com") }
 
-    it "should respond with success to GET :index" do
+    it "responds with success to GET :index" do
       get :index
       response.should be_success
       response.should render_template(:index)
@@ -14,17 +14,17 @@ describe Admin::ReleasesController do
     describe "POST :create" do
       before(:each) { Release.stub(:new).and_return(mock_release) }
 
-      it "should respond with redirect when save succeed" do
+      it "responds with redirect when save succeed" do
         mock_release.stub(:save) { true }
 
-        post :create, :release => {}
+        post :create, release: {}
         response.should redirect_to(admin_releases_path)
       end
 
-      it "should respond with success when save fails" do
+      it "responds with success when save fails" do
         mock_release.stub(:save) { false }
 
-        post :create, :release => {}
+        post :create, release: {}
         response.should be_success
         response.should render_template(:index)
       end
@@ -33,24 +33,24 @@ describe Admin::ReleasesController do
     describe "PUT :update" do
       before(:each) { Release.stub(:find).and_return(mock_release) }
 
-      it "should respond with redirect when update_attributes succeed" do
+      it "responds with redirect when update_attributes succeed" do
         mock_release.stub(:flag).and_return(true)
 
-        put :update, :id => '1', :release => {}
+        put :update, id: '1', release: {}
         response.should redirect_to(admin_releases_path)
       end
 
-      it "should respond with success when update_attributes fails" do
+      it "responds with success when update_attributes fails" do
         mock_release.stub(:flag).and_return(false)
 
-        put :update, :id => '1', :release => {}
+        put :update, id: '1', release: {}
         response.should be_success
         response.should render_template(:index)
       end
     end
   end
 
-  it_should_behave_like "redirect when connected as", '/admin', [[:admin, { :email => "remy@jilion.com" }]], { :get => :index, :post => :create, :put => :update }
-  it_should_behave_like "redirect when connected as", '/admin/login', [:authenticated_user, :guest], { :get => :index, :post => :create, :put => :update }
+  it_should_behave_like "redirect when connected as", '/admin', [[:admin, { email: "remy@jilion.com" }]], { get: :index, post: :create, put: :update }
+  it_should_behave_like "redirect when connected as", '/login', [:authenticated_user, :guest], { get: :index, post: :create, put: :update }
 
 end

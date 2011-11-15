@@ -44,7 +44,7 @@ module OneTime
               (new_plan.price * (1.0 - (site.last_paid_invoice.plan_invoice_items.last.discounted_percentage || 0)) / 100).to_i * 100
             end
 
-            add_to_balance = site.last_paid_invoice.amount - (new_discounted_price * (1.0 + Vat.for_country(site.user.country))).round
+            add_to_balance = site.last_paid_invoice.amount - (new_discounted_price * (1.0 + Vat.for_country(site.user.billing_country))).round
           end
 
           next_cycle_plan = nil if next_cycle_plan == new_plan
@@ -54,13 +54,13 @@ module OneTime
           site.send(:write_attribute, :pending_plan_id, nil)
           site.send(:write_attribute, :next_cycle_plan_id, next_cycle_plan.try(:id))
           print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
-          site.save_without_password_validation
+          site.save_skip_pwd
           puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
           total += 1
 
           unless add_to_balance.zero?
             site.user.increment!(:balance, add_to_balance)
-            puts "$#{add_to_balance/100.0} added to #{site.user.full_name}'s balance for ##{site.token} (##{site.id} #{site.hostname})!"
+            puts "$#{add_to_balance/100.0} added to #{site.user.name}'s balance for ##{site.token} (##{site.id} #{site.hostname})!"
           end
 
           puts
@@ -73,7 +73,7 @@ module OneTime
         # Invoice.failed.where { invoice_items_count > 1 }.map(&:cancel)
 
         # Update all renew & failed invoices
-        Invoice.failed.where { renew == true }.find_each(batch_size: 100) do |invoice|
+        Invoice.open_or_failed.where { renew == true }.find_each(batch_size: 100) do |invoice|
           new_plan = plan_switch(invoice.plan_invoice_items.last.item)
           last_plan_invoice_item = invoice.plan_invoice_items.last
           last_plan_invoice_item.item   = new_plan

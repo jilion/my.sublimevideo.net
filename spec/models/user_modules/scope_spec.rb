@@ -89,7 +89,7 @@ describe UserModules::Scope do
     before(:all) do
       User.delete_all
       Site.delete_all
-      @user1 = Factory.create(:user, email: "remy@jilion.com", first_name: "Marcel", last_name: "Jacques")
+      @user1 = Factory.create(:user, email: "remy@jilion.com", name: "Marcel Jacques")
       @site1 = Factory.create(:site, user: @user1, hostname: "bob.com", plan_id: @free_plan.id)
       # THIS IS HUGELY SLOW DUE TO IPAddr.new('*.dev')!!!!!!!
       # @site2 = Factory.create(:new_site, user: @user1, dev_hostnames: "foo.dev, bar.dev")

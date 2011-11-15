@@ -98,7 +98,7 @@ feature "Admins pagination:" do
     Responders::PaginatedResponder.stub(:per_page).and_return(1)
   end
 
-  scenario "pagination links displayed only if count of amins > Admin.per_page" do
+  scenario "pagination links displayed only if count of admins > Admin.per_page" do
     Admin.all.size.should == 1
 
     visit "/admin/admins"

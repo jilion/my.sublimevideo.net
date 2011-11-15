@@ -30,11 +30,32 @@ class MSVStats.Models.Period extends Backbone.Model
     this.normalizeStatsIndex(this.get('startIndex')) == this.normalizeStatsIndex(startIndex) &&
     this.normalizeStatsIndex(this.get('endIndex')) == this.normalizeStatsIndex(endIndex)
 
+  isSeconds: -> this.get('type') == 'seconds'
+  isMinutes: -> this.get('type') == 'minutes'
+  isHours:   -> this.get('type') == 'hours'
+  isDays:    -> this.get('type') == 'days'
+
   startTime: (index = this.get('startIndex')) ->
-    this.stats().at(this.normalizeStatsIndex(index)).time() if this.stats()?
+    if this.stats()?
+      # ensure that there's always a 60s period for StatsSeconds
+      if this.isSeconds()
+        this.endTime() - this.pointInterval() * 59
+      else
+        this.stats().at(this.normalizeStatsIndex(index)).time()
+    else
+      0
 
   endTime: (index = this.get('endIndex')) ->
-    this.stats().at(this.normalizeStatsIndex(index)).time() if this.stats()?
+    if this.stats()?
+      this.stats().at(this.normalizeStatsIndex(index)).time()
+    else
+      0
+
+  startIndex: ->
+    this.normalizeStatsIndex(this.get('startIndex'))
+
+  endIndex: ->
+    this.normalizeStatsIndex(this.get('endIndex'))
 
   realEndTime: (index = this.get('endIndex')) ->
     this.endTime(index) + this.pointInterval() - 1000 if this.stats()?
@@ -52,14 +73,14 @@ class MSVStats.Models.Period extends Backbone.Model
     endIndex   = MSVStats.statsDays.indexOf(MSVStats.statsDays.get(endTime / 1000))
     this.set(type: 'days', startIndex: startIndex, endIndex: endIndex, options)
 
-  autosetPeriod: (options = {}) ->
+  autosetPeriod: ->
     MSVStats.statsDays.trigger('init') # for planUsageView
 
     if MSVStats.statsMinutes.vvTotal() > 0
-      this.setPeriod type: 'minutes', options
+      this.setPeriod type: 'minutes'
     else if MSVStats.statsHours.vvTotal() > 0 || MSVStats.sites.selectedSite.inFreePlan()
-      this.setPeriod type: 'hours', options
+      this.setPeriod type: 'hours'
     else if MSVStats.statsDays.length <= 30 || MSVStats.statsDays.vvTotal(-30, -1) > 0
-      this.setPeriod type: 'days', startIndex: -30, endIndex: -1, options
+      this.setPeriod type: 'days', startIndex: -30, endIndex: -1
     else # last 365 days
-      this.setPeriod type: 'days', startIndex: -365, endIndex: -1, options
+      this.setPeriod type: 'days', startIndex: -365, endIndex: -1

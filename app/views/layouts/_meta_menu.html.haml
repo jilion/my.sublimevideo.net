@@ -1,0 +1,6 @@
+%ul#meta_menu
+  %li.first= link_to "Home", "/"
+  %li{ :class => params[:page] == "demo" ? "active" : '' }= link_to "Demo", "/demo"
+  %li{ :class => params[:page] == "plans" ? "active" : '' }= link_to "Plans & Pricing", "/plans"
+  %li.docs= link_to "Documentation", "http://docs.sublimevideo.net"
+  %li.right= link_to "MySublimeVideo", "https://my.sublimevideo.net"

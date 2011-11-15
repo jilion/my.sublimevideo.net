@@ -13,5 +13,6 @@
 window.MSVStats =
   Models: {}
   Collections: {}
+  Helpers: {}
   Routers: {}
   Views: {}

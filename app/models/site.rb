@@ -13,32 +13,32 @@ class Site < ActiveRecord::Base
   PLAYER_MODES = %w[dev beta stable]
 
   # Versioning
-  has_paper_trail :ignore => [:cdn_up_to_date, :license, :loader]
+  has_paper_trail ignore: [:cdn_up_to_date, :license, :loader]
 
   attr_accessor :loader_needs_update, :license_needs_update
-  attr_accessor :user_attributes, :charging_options, :transaction
+  attr_accessor :user_attributes, :last_transaction, :remote_ip, :skip_trial
 
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :plan_id, :user_attributes
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :plan_id, :skip_trial, :user_attributes, :remote_ip
 
-  uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
+  uniquify :token, chars: Array('a'..'z') + Array('0'..'9')
 
   mount_uploader :license, LicenseUploader
   mount_uploader :loader, LoaderUploader
 
-  delegate :name, :to => :plan, :prefix => true
-  delegate :video_views, :to => :plan, :prefix => true
+  delegate :name, to: :plan, prefix: true
+  delegate :video_views, to: :plan, prefix: true
 
   # ================
   # = Associations =
   # ================
 
-  belongs_to :user, :validate => true, :autosave => true
+  belongs_to :user, validate: true, autosave: true
   belongs_to :plan
-  belongs_to :next_cycle_plan, :class_name => "Plan"
-  belongs_to :pending_plan,    :class_name => "Plan"
+  belongs_to :next_cycle_plan, class_name: "Plan"
+  belongs_to :pending_plan,    class_name: "Plan"
 
-  has_many :invoices, :class_name => "::Invoice"
-  has_one  :last_invoice, :class_name => "::Invoice", :order => :created_at.desc
+  has_many :invoices, class_name: "::Invoice"
+  has_one  :last_invoice, class_name: "::Invoice", order: :created_at.desc
 
   # Mongoid associations
   def usages
@@ -55,14 +55,14 @@ class Site < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :user,        :presence => true
-  validates :plan,        :presence => { :message => "Please choose a plan" }, :unless => :pending_plan_id?
-  validates :player_mode, :inclusion => PLAYER_MODES
+  validates :user,        presence: true
+  validates :plan,        presence: { message: "Please choose a plan" }, unless: :pending_plan_id?
+  validates :player_mode, inclusion: PLAYER_MODES
 
-  validates :hostname,        :presence => { :if => proc { |s| s.in_or_will_be_in_paid_plan? } }, :hostname => true, :hostname_uniqueness => true
-  validates :dev_hostnames,   :dev_hostnames => true
-  validates :extra_hostnames, :extra_hostnames => true
-  validates :badged,          :inclusion => [true], :if => :in_free_plan?
+  validates :hostname,        presence: { if: proc { |s| s.in_or_will_be_in_paid_plan? } }, hostname: true, hostname_uniqueness: true
+  validates :dev_hostnames,   dev_hostnames: true
+  validates :extra_hostnames, extra_hostnames: true
+  validates :badged,          inclusion: [true], if: :in_free_plan?
 
   validate  :validates_current_password
 
@@ -71,12 +71,12 @@ class Site < ActiveRecord::Base
   # =============
 
   before_validation :set_user_attributes
-  before_validation :set_default_dev_hostnames, :unless => :dev_hostnames?
-  before_validation :set_default_badged, :if => proc { |s| s.badged.nil? || s.in_free_plan? }
+  before_validation :set_default_dev_hostnames, unless: :dev_hostnames?
+  before_validation :set_default_badged, if: proc { |s| s.badged.nil? || s.in_free_plan? }
 
   before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
-  before_save :pend_plan_changes, :if => :pending_plan_id_changed? # in site_modules/invoice
+  before_save :prepare_pending_attributes, if: :pending_plan_id_changed? # in site_modules/invoice
   before_save :set_trial_started_at # in site_modules/invoice
 
   after_create :delay_ranks_update # in site_modules/templates
@@ -88,18 +88,18 @@ class Site < ActiveRecord::Base
   # = State Machine =
   # =================
 
-  state_machine :initial => :active do
+  state_machine initial: :active do
     event(:archive)   { transition [:active, :suspended] => :archived }
-    event(:suspend)   { transition :active => :suspended }
-    event(:unsuspend) { transition :suspended => :active }
+    event(:suspend)   { transition active: :suspended }
+    event(:unsuspend) { transition suspended: :active }
 
     state :archived do
       validate :prevent_archive_with_non_paid_invoices
     end
 
-    before_transition :on => :archive, :do => [:set_archived_at, :cancel_open_or_failed_invoices]
+    before_transition on: :archive, do: [:set_archived_at, :cancel_open_or_failed_invoices]
 
-    after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license # in site/templates
+    after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
   end
 
   # =================
@@ -169,18 +169,7 @@ class Site < ActiveRecord::Base
   def sponsor!
     write_attribute(:pending_plan_id, Plan.sponsored_plan.id)
     write_attribute(:next_cycle_plan_id, nil)
-    save_without_password_validation
-  end
-
-  def without_password_validation
-    @skip_password_validation = true
-    result = yield
-    @skip_password_validation = false
-    result
-  end
-
-  def save_without_password_validation
-    without_password_validation { self.save }
+    save_skip_pwd
   end
 
   def to_param
@@ -233,38 +222,15 @@ class Site < ActiveRecord::Base
   end
   memoize :recommended_plan_name
 
-  def plan_month_cycle_started_at
-    cycle = trial_not_started_or_in_trial? ? 'none' : plan.read_attribute(:cycle) # strange error in specs when using .cycle
-
-    case cycle
-    when 'month'
-      plan_cycle_started_at
-    when 'year'
-      plan_cycle_started_at + months_since(plan_cycle_started_at).months
-    when 'none'
-      (1.month - 1.day).ago.midnight
-    end
+  def skip_pwd
+    @skip_password_validation = true
+    result = yield
+    @skip_password_validation = false
+    result
   end
 
-  def plan_month_cycle_start_time
-    plan_month_cycle_started_at.to_i
-  end
-
-  def plan_month_cycle_ended_at
-    cycle = trial_not_started_or_in_trial? ? 'none' : plan.read_attribute(:cycle) # strange error in specs when using .cycle
-
-    case cycle
-    when 'month'
-      plan_cycle_ended_at
-    when 'year'
-      (plan_cycle_started_at + (months_since(plan_cycle_started_at) + 1).months - 1.day).end_of_day
-    when 'none'
-      Time.now.utc.end_of_day
-    end
-  end
-
-  def plan_month_cycle_end_time
-    plan_month_cycle_ended_at.to_i
+  def save_skip_pwd
+    skip_pwd { self.save! }
   end
 
 private
@@ -299,7 +265,7 @@ private
   def validates_current_password
     return if @skip_password_validation
 
-    if !new_record? && in_paid_plan? && !trial_not_started_or_in_trial? && errors.empty? &&
+    if persisted? && in_paid_plan? && trial_ended? && errors.empty? &&
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         self.errors.add(:base, :current_password_needed)
@@ -310,7 +276,7 @@ private
   # validate (archived state)
   def prevent_archive_with_non_paid_invoices
     unless archivable?
-      self.errors.add(:base, :not_paid_invoices_prevent_archive, :count => invoices.not_paid.count)
+      self.errors.add(:base, :not_paid_invoices_prevent_archive, count: invoices.not_paid.count)
     end
   end
 
@@ -321,15 +287,15 @@ private
 
   # after_create
   def delay_ranks_update
-    Site.delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks(self.id)
+    Site.delay(priority: 100, run_at: 30.seconds.from_now).update_ranks(self.id)
   end
 
-  # before_transition :on => :archive
+  # before_transition on: :archive
   def set_archived_at
     self.archived_at = Time.now.utc
   end
 
-  # before_transition :on => :archive
+  # before_transition on: :archive
   def cancel_open_or_failed_invoices
     invoices.open_or_failed.each do |invoice|
       invoice.cancel

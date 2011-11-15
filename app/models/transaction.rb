@@ -3,13 +3,13 @@ StateMachine::Machine.ignore_method_conflicts = true
 
 class Transaction < ActiveRecord::Base
 
-  uniquify :order_id, :chars => Array('a'..'z') + Array('0'..'9'), :length => 30
+  uniquify :order_id, chars: Array('a'..'z') + Array('0'..'9'), length: 30
 
   # ================
   # = Associations =
   # ================
 
-  belongs_to :user, :autosave => false
+  belongs_to :user, autosave: false
   has_and_belongs_to_many :invoices
 
   # ===============
@@ -30,16 +30,16 @@ class Transaction < ActiveRecord::Base
   # = State Machine =
   # =================
 
-  state_machine :initial => :unprocessed do
-    event(:wait_d3d) { transition :unprocessed => :waiting_d3d }
-    event(:wait)     { transition :unprocessed => :waiting }
+  state_machine initial: :unprocessed do
+    event(:wait_d3d) { transition unprocessed: :waiting_d3d }
+    event(:wait)     { transition unprocessed: :waiting }
     event(:succeed)  { transition [:unprocessed, :waiting_d3d, :waiting] => :paid }
     event(:fail)     { transition [:unprocessed, :waiting_d3d, :waiting] => :failed }
 
-    after_transition :on => [:succeed, :fail, :wait_d3d, :wait], :do => :update_invoices
+    after_transition on: [:succeed, :fail, :wait_d3d, :wait], do: :update_invoices
 
-    after_transition :on => :succeed, :do => :send_charging_succeeded_email
-    after_transition :on => :fail, :do => :send_charging_failed_email
+    after_transition on: :succeed, do: :send_charging_succeeded_email
+    after_transition on: :fail, do: :send_charging_failed_email
   end
 
   # ==========
@@ -56,7 +56,7 @@ class Transaction < ActiveRecord::Base
 
   def self.charge_invoices
     User.active.includes(:invoices).where(invoices: { state: %w[open failed] }).each do |user|
-      delay(:priority => 2).charge_invoices_by_user_id(user.id)
+      delay(priority: 2).charge_invoices_by_user_id(user.id)
     end
   end
 
@@ -72,7 +72,7 @@ class Transaction < ActiveRecord::Base
             invoice.user.suspend! and return
           else
             invoice.cancel!
-            BillingMailer.too_many_charging_attempts(invoice).deliver!
+            My::BillingMailer.too_many_charging_attempts(invoice).deliver!
           end
         end
       end
@@ -81,7 +81,7 @@ class Transaction < ActiveRecord::Base
     end
   end
 
-  def self.charge_by_invoice_ids(invoice_ids, options={})
+  def self.charge_by_invoice_ids(invoice_ids, options = {})
     invoices = Invoice.where(id: invoice_ids)
     transaction = new(invoices: invoices)
     transaction.save!
@@ -91,7 +91,7 @@ class Transaction < ActiveRecord::Base
       description: transaction.description,
       store: transaction.user.cc_alias,
       email: transaction.user.email,
-      billing_address: { zip: transaction.user.postal_code, country: transaction.user.country },
+      billing_address: { address1: transaction.user.billing_address_1, zip: transaction.user.billing_postal_code, city: transaction.user.billing_city, country: transaction.user.billing_country },
       d3d: true,
       paramplus: "PAYMENT=TRUE"
     })
@@ -148,13 +148,15 @@ class Transaction < ActiveRecord::Base
     when "46"
       @ogone_response_infos.delete("NCERRORPLUS")
       self.error = Base64.decode64(payment_params["HTML_ANSWER"])
+
       self.wait_d3d
 
     # STATUS == 9, Payment requested:
     #   The payment has been accepted.
     #   An authorization code is available in the field "ACCEPTANCE".
     when "9"
-      self.user.apply_pending_credit_card_info if self.user.pending_credit_card?
+      self.user.apply_pending_credit_card_info if user.pending_credit_card?
+
       self.succeed
 
     # STATUS == 51, Authorization waiting:
@@ -184,12 +186,14 @@ class Transaction < ActiveRecord::Base
     #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
     #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
     when "52", "92"
-      self.wait
       Notify.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
 
-    else
       self.wait
+
+    else
       Notify.send("Transaction unknown status: #{payment_params["STATUS"]}")
+
+      self.wait
     end
 
     self
@@ -249,7 +253,7 @@ private
     self.amount = invoices.map(&:amount).sum
   end
 
-  # after_transition :on => [:succeed, :fail, :wait, :wait_d3d]
+  # after_transition on: [:succeed, :fail, :wait, :wait_d3d]
   def update_invoices
     Invoice.where(id: invoice_ids).each do |invoice|
       case state
@@ -265,14 +269,14 @@ private
     end
   end
 
-  # after_transition :on => :succeed
+  # after_transition on: :succeed
   def send_charging_succeeded_email
-    BillingMailer.transaction_succeeded(self).deliver!
+    My::BillingMailer.transaction_succeeded(self).deliver!
   end
 
-  # after_transition :on => :fail
+  # after_transition on: :fail
   def send_charging_failed_email
-    BillingMailer.transaction_failed(self).deliver!
+    My::BillingMailer.transaction_failed(self).deliver!
   end
 
 end
