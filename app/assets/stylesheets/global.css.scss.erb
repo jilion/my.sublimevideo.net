@@ -1,0 +1,189 @@
+@import "css3";
+
+* {
+  margin:0;
+  padding:0;
+}
+
+body {
+  font-family:proxima-nova-1,proxima-nova-2, Helvetica, Arial, sans-serif;
+  background:#ecf2f8 url(<%= asset_data_uri "global/back_texture.png" %>);
+  text-rendering:optimizeLegibility;
+/*  -webkit-font-smoothing:antialiased;*/
+}
+
+header {
+  min-width:1000px;
+  height:583px;
+  background:url(<%= asset_data_uri "global/header_repeat.png" %>) repeat-x;
+}
+
+header .lights {
+  background:url(global/header_back_light.png) center top no-repeat;
+  height:583px;
+}
+
+header .stars {
+  background:url(global/header_stars.png) center top no-repeat;  
+}
+
+header .wrap {
+  width:960px;
+  margin:0 auto;
+  padding:34px 20px 0;
+  position:relative;
+}
+
+header h1 a {
+  display:block;
+  width:312px;
+  height:51px;
+  background:url(<%= asset_data_uri 'global/sublimevideo_logo.png' %>) no-repeat;
+}
+
+header h1 a span {display:none}
+
+#menu {
+  position:absolute;
+  top:50px;
+  right:0;
+}
+
+#menu ul {
+  list-style-type:none;
+}
+
+#menu li {
+  float:left;
+}
+
+#menu li a {
+  display:block;
+  padding:6px 10px 3px;
+  color:#cde5fe;
+  font-size:14px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  border:1px solid transparent;
+  text-shadow:#000 0 1px 2px;
+  font-weight:100;
+  @include transition(color,0.25s,linear);
+}
+
+#menu li a:hover {
+  color:#fff;
+}
+
+#menu li.active a {
+  border-color:#000;
+  text-shadow:rgba(0,0,0,0.8) 0 -1px 0;
+  @include border-radius(20px);
+  @include gradient(#114492, #207ec3, #1a65ae);
+  @include box-shadow((inset rgba(0,0,0,0.93) 0 1px 4px, rgba(144,191,255,0.2) 0 1px 0));
+}
+
+#menu li.signup a {
+  padding:7px 0 0;
+  width:74px;
+  height:23px;
+  font-size:13px;
+  font-weight:500;
+  color:#fff;
+  text-shadow:#000 0 1px 2px;
+  background:url(<%= asset_data_uri "global/header_signup_btn.png" %>) no-repeat;
+  text-align:center;
+}
+
+#menu li.signup a:active {background-position:0 -30px;}
+
+footer {
+  min-width:1000px;
+  height:331px;
+  background:#24334b url(<%= asset_data_uri "global/footer_texture.png" %>) repeat-x;
+  text-shadow:#000 0 -1px 0;
+  color:#9eb5ce;
+  -webkit-font-smoothing:antialiased;
+}
+
+footer a {
+  color:#c3daff;
+  @include transition(color,0.25s,linear);
+}
+
+footer a:hover {color:#fff}
+
+footer .wrap {
+  width:900px;
+  margin:0 auto;
+  padding:45px 0 0;
+}
+
+footer nav {
+  width:480px;
+}
+
+footer .col {
+  float:left;
+  padding:0 16px 40px;
+}
+
+footer .col h4 {
+  color:#667b9f;
+  font-size:16px;
+  font-weight:600;
+  padding:0 0 12px;
+}
+
+footer .col ul {
+  list-style-type:none;
+  font-size:14px;
+  line-height:25px;
+}
+
+footer .right {
+  float:left;
+  font-size:20px;
+  padding:26px 0 0 40px;
+}
+
+footer a.jilion {
+  display:inline-block;
+  background:url(<%= asset_data_uri "global/jilion.png" %>) no-repeat;
+  width:89px;
+  height:23px;
+  position:relative;
+  top:4px;
+  left:2px;
+}
+
+footer a.jilion span {display:none}
+
+footer p.twitter {
+  margin:10px 0 0;
+  padding:4px 0 0 48px;
+  background:url(<%= asset_data_uri "global/twitter.png" %>) no-repeat;
+}
+
+footer p.twitter a {
+  color:#38ceff;
+}
+
+footer .footer_break {
+  clear:both;
+  width:669px;
+  height:14px;
+  margin:0 auto;
+  background:url(<%= asset_data_uri "global/footer_break.png" %> );
+}
+
+footer p.copyright {
+  padding:5px 0 0;
+  font-size:12px;
+  text-align:center;
+}
+
+.spacer {clear:both}
+
+a {
+  text-decoration:none;
+}

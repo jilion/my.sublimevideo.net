@@ -1,136 +1,91 @@
-= content_for :title do
-  = "SublimeVideo - HTML5 Video Player"
+= content_for :title, "SublimeVideo - HTML5 Video Player"
+= content_for :global_class, "home"
+= content_for :js do
+  = javascript_include_tag "home"
+  == <script type="text/javascript" src="http://cdn.sublimevideo.net/js/ibvjcopp.js"></script>
+  
+= content_for :header do
+  %h2= "The HTML5 Video Player Everyone Deserves"
+  
+  .video_wrap
+    %video.sublime{ width: "544", height: "306", poster: image_path("com/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none" }
+      %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.mp4" }/
+      %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4" }/
+      %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.webm" }/
+      %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }/
+  
+  .right
+    .slides
+      %ul
+        %li.always_up_to_date
+          %h3= "Always Up-To-Date"
+          = link_to (image_tag "com/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), ""
+        %li.works_in_any_browsers
+          %h3= "Works in any browsers"
+          = link_to (image_tag "com/home/features/browsers/default.png", alt: "Works in any browsers"), ""
+        %li.works_on_any_devices
+          %h3= "Works on any mobile devices"
+          = link_to (image_tag "com/home/features/any_devices.png", alt: "Works on any mobile devices"), ""
+        %li.stats
+          %h3= "Real-time Statistics"
+          = link_to (image_tag "com/home/features/stats.png", alt: "Real-time Statistics"), ""
+        %li.instant_setup
+          = link_to (image_tag "com/home/features/instant_setup.png", alt: "Always Up-To-Date"), ""
+          %h3.t1= "Instant Setup"
+          %h3.t2= "Easy Integration"
+    .slides_nav
+      = link_to "", class: "always_up_to_date active" do
+        %span= "Always Up-To-Date"
+      = link_to "", class: "works_in_any_browsers" do
+        %span= "Works in any browsers"
+      = link_to "", class: "works_on_any_devices" do
+        %span= "Works on any devices"
+      = link_to "", class: "stats" do
+        %span= "Real-time Statistics"
+      = link_to "", class: "instant_setup" do
+        %span= "Instant Setup"
+    = link_to "Feature Tour", "", class: "feature_tour"
 
-%section#content
-  %section.top
-    #player_screen
-      = link_to "/demo" do
-        %span= "Test the player"
-    .head_box.left
-      %h3= "Pricing"
-      %p.desc= "Check out our pricing plans and sign up today!"
-      = link_to "Plans & Pricing", "/plans", :class => "button dark_blue"
-      %p.login= raw "Have an account? #{link_to "Log in", "https://my.sublimevideo.net/login"}."
-    .head_box.right
-      %h3= "Get a Taste!"
-      %p.desc= "Visit our demo page to test-drive SublimeVideo's features."
-      = link_to "Test the player", "/demo", :class => "button light_blue"
-  %section.middle_headline
-    %h2.headline= "The HTML5 Video experience your audience deserves. Today."
-    -# %h3.subheadline= "SublimeVideo is a unique cloud-based HTML5 video player that gives you the power to reach your audience no matter what device or browser they are using."
-    %ul
-      %li= "No compatibility issues."
-      %li= "No maintenance tasks."
-      %li= "Complete peace of mind."
-  %section#customer_showcases
-    = link_to "view all showcases >", "http://blog.jilion.com/tags/customer-showcase", :class => "view_all"
-    .wrap
-      .showcase.littlebigplanet
-        = image_tag "http://blog.medias.jilion.com/uploads/2011/04/tom_kiss_mediamolecule.jpg", :alt => "Tom Kiss - MediaMolecule", :class => "portrait"
-        = link_to image_tag("main/customer_showcases/littlebigplanet.png", :alt => "LittleBigPlanet", :width => 90), "http://littlebigplanet.com", :class => "logo"
-        :textile
-          bq. “SublimeVideo has set a real benchmark for high quality HTML5 video players. By using it on "littlebigplanet.com":http://littlebigplanet.com, it’s allowed us to deliver our videos across a broad spectrum of devices and operating systems to a much wider audience.”
-        .quote_info
-          :textile
-            — *Tom Kiss*, Community Manager at "MediaMolecule":http://mediamolecule.com.
-          = link_to "read showcase", "http://blog.jilion.com/2011/04/15/customer-showcase-media-molecule-littlebigplanet2", :class => "read_showcase"
-      .showcase.bigcartel
-        = image_tag "http://blog.medias.jilion.com/uploads/2011/04/matt_wigham_big_cartel.jpg", :alt => "Matt Wigham - Big Cartel", :class => "portrait"
-        = link_to image_tag("main/customer_showcases/bigcartel.png", :alt => "Big Cartel", :width => 100), "http://bigcartel.com", :class => "logo", :style => "margin-top:12px"
-        %blockquote
-          = "“We’ve tried a number of different video players, but none of them have satisfied our craving for design perfection like SublimeVideo has. Not only does it look amazing, it also works everywhere we need it to, from desktop to mobile.”"
-        .quote_info
-          :textile
-            — *Matt Wigham*, Co-Founder of "Big Cartel":http://bigcartel.com.
-          = link_to "read showcase", "http://blog.jilion.com/2011/04/26/customer-showcase-big-cartel", :class => "read_showcase"
-      .showcase.taptaptap
-        = image_tag "http://blog.medias.jilion.com/uploads/2011/06/scott_meinzer_tap_tap_tap.jpg", :alt => "Scott Meinzer - tap tap tap", :class => "portrait"
-        = link_to image_tag("main/customer_showcases/taptaptap.png", :alt => "tap tap tap", :width => 100), "http://taptaptap.com", :class => "logo", :style => "margin-top:8px"
-        %blockquote
-          = "“HTML5 video can be a bag of hurt if you implement it on your own. The fact that SublimeVideo makes it so we can just drop in a line of JS and it works consistently across all the browsers is amazing. The great design and thoughtful user experience just make it even better.”"
-        .quote_info
-          :textile
-            — *Scott Meinzer*, Co-founder of "tap tap tap":http://taptaptap.com, developer of "Camera+":http://campl.us.
-          = link_to "read showcase", "http://blog.jilion.com/2011/06/01/customer-showcase-camera-plus", :class => "read_showcase"
-      .showcase.methodandcraft
-        = image_tag "http://blog.medias.jilion.com/uploads/2011/04/phil_coffman_methodandcraft.jpg", :alt => "Phil Coffman - Method & Craft", :class => "portrait"
-        = link_to image_tag("main/customer_showcases/methodandcraft.png", :alt => "Method & Craft"), "http://methodandcraft.com", :class => "logo"
-        %blockquote
-          = "“We needed to leverage HTML5 video for Method & Craft because we knew iOS device use would be high among our visitors. SublimeVideo not only delivered on that need in spades, but also looks absolutely gorgeous which is a big deal to design nerds like us.”"
-        .quote_info
-          :textile
-            — *Phil Coffman*, Founder of "Method & Craft":http://methodandcraft.com.
-          = link_to "read showcase", "http://blog.jilion.com/2011/04/18/customer-showcase-method-and-craft", :class => "read_showcase"
+= content_for :middle do
+  %section#get_it_now
+    .texture
+      .wrap
+        %h3
+          = "Now"
+          %span= "Free & Unlimited"
+        .button_wrap
+          = link_to "Get It Now", "", class: "big_button"
+          = link_to "see all plans", "", class: "small"
+        %em.never_look_back= "And never look back!"
 
-    = link_to "", :class => "arrow left" do
-      %span= "Back"
-    = link_to "", :class => "arrow right" do
-      %span= "Next"
-    #hw
-  %section.get_the_most
-    #browsers_box.box.browsers.left
-      == <div style="float:left;clear:left;height:72px;width:210px;"></div><div style="float:left;clear:left;height:24px;width:205px;"></div><div style="float:left;clear:left;height:22px;width:184px;"></div><div style="float:left;clear:left;height:22px;width:124px;"></div>
-      %h3= "Works in any browser"
-      :textile
-        p(desc). Reaching your audience on any platform is key. SublimeVideo *maximizes the use of HTML5 Video* in the latest browsers while providing full support for legacy browsers with integrated fallback to Flash. "List of supported browsers":http://docs.sublimevideo.net/supported-browsers-and-platforms.
-    .box.mobile.right
-      %h3= "Mobile support"
-      :textile
-        p(desc). SublimeVideo allows your videos to *play seamlessly on iPhones, iPads and Android* smartphones, as well as other mobile platforms.
-    .spacer
-  %section.sublimevideo_cloud
-    .cloud_box
-    .box.up_to_date.left
-      .blue_halo
-      .wrap
-        == <div style="float:left;clear:left;height:44px;width:170px;"></div><div style="float:right;clear:right;height:44px;width:0;"></div><div style="float:left;clear:left;height:22px;width:180px;"></div><div style="float:right;clear:right;height:22px;width:20px;"></div><div style="float:left;clear:left;height:22px;width:184px;"></div><div style="float:right;clear:right;height:22px;width:20px;"></div><div style="float:left;clear:left;height:22px;width:182px;"></div><div style="float:right;clear:right;height:22px;width:60px;"></div><div style="float:left;clear:left;height:22px;width:174px;"></div><div style="float:right;clear:right;height:22px;width:90px;"></div><div style="float:left;clear:left;height:22px;width:160px;"></div><div style="float:right;clear:right;height:22px;width:90px;"></div><div style="float:left;clear:left;height:22px;width:135px;"></div><div style="float:right;clear:right;height:22px;width:110px;"></div><div style="float:right;clear:right;height:22px;width:120px;"></div><div style="float:right;clear:right;height:22px;width:160px;"></div><div style="float:right;clear:right;height:42px;width:140px;"></div>
-        %h3= "Always up-to-date"
-        :textile
-          p(desc). SublimeVideo is the first *Zero Maintenance* HTML5 video player as a service solution. You always get the latest version of the player, without having to do anything. It provides you with the comfort of *automatic* browser support updates, *automatic* bug fixes and *automatic* new features. We take care of all the complexity for you.
-    .box.cost_effective.right
-      .blue_halo
-      .wrap
-        %h3= "Cost effective"
-        == <div style="float:left;clear:left;height:48px;width:0px;"></div><div style="float:right;clear:right;height:48px;width:160px;"></div><div style="float:left;clear:left;height:24px;width:50px;"></div><div style="float:right;clear:right;height:24px;width:160px;"></div><div style="float:left;clear:left;height:24px;width:74px;"></div><div style="float:right;clear:right;height:24px;width:160px;"></div><div style="float:left;clear:left;height:24px;width:95px;"></div><div style="float:left;clear:left;height:22px;width:109px;"></div><div style="float:left;clear:left;height:24px;width:121px;"></div><div style="float:left;clear:left;height:24px;width:115px;"></div><div style="float:left;clear:left;height:24px;width:105px;"></div><div style="float:left;clear:left;height:24px;width:105px;"></div>
-        :textile
-          p(desc). SublimeVideo is designed to be super simple to integrate: *Just add a single-line-of-code* to enable SublimeVideo in your web page. SublimeVideo pricing is *more cost effective than “free download solutions”*. Why? Because with SublimeVideo you don’t waste time and money to integrate, deploy and maintain your own video player.
-    .spacer
-    .box.performance.left
-      .blue_halo
-      .wrap
-        == <div style="float:left;clear:left;height:34px;width:160px;"></div><div style="float:left;clear:left;height:22px;width:170px;"></div><div style="float:left;clear:left;height:22px;width:175px;"></div><div style="float:left;clear:left;height:22px;width:173px;"></div><div style="float:left;clear:left;height:22px;width:165px;"></div><div style="float:left;clear:left;height:22px;width:150px;"></div><div style="float:left;clear:left;height:22px;width:130px;"></div>
-        %h3= "Performance"
-        :textile
-          p(desc). Your SublimeVideo HTML5 Player is delivered to your audience *worldwide quickly and reliably* thanks to our integration with state-of-the-art Content Delivery Network (CDN) which has seen 100% uptime over the last 2 years.
-    .box.management.right
-      .blue_halo
-      .wrap
-        %h3= "Management"
-        :textile
-          p(desc). Have your own SublimeVideo player *up-and-running in a few seconds*. Add your sites in an easy-to-use interface and monitor your player's *usage in real-time* directly on "my.sublimevideo.net":https://my.sublimevideo.net.
-    .spacer
-  %section.key_features
-    %h2.headline= "SublimeVideo Player Key Features"
-    .box.compatible
-      %h3= "Highly Compatible"
-      :textile
-        p(desc). SublimeVideo is designed to be highly compatible with your existing web page’s code. We've worked hard so that *you don't have to recode anything* to use SublimeVideo.
-    .box.consistent_ui
-      %h3= "Consistent User Interface"
-      :textile
-        p(desc). SublimeVideo provides a *high quality user experience* thanks to its consistent and uniform implementation of both our HTML5 and Flash user interfaces. Take a look at the player "demo page":/demo to learn more about it.
-    .box.your_video_sources
-      %h3= "Your Video Sources"
-      :textile
-        p(desc). SublimeVideo allows you to maintain full control of your videos. It gives you the flexibility to *use your preferred encoding and hosting services*.
-    .box.js_independent
-      %h3= "JavaScript Independent"
-      :textile
-        p(desc). SublimeVideo is a pure JavaScript application. It is not based on any JS library, which means it does not create conflicts and *runs safely along with any other JS* library you might have in your page.
-    .box.advanced_ui
-      %h3
-        %br
-        = "Powerful API"
-      :textile
-        p(desc). SublimeVideo Player provides a powerful and flexible API, giving you the power to control the player via JavaScript and easily implement advanced functionality. To learn more about the API check out our "documentation":http://docs.sublimevideo.net/javascript-api.
-    .spacer
+%section.showcase
+  %h4.custom_break= "They use SublimeVideo"
+  %table.logos
+    %tr
+      %td= link_to (image_tag "com/home/logos/littlebigplanet.png", alt: "Little Big Planet"), ""
+      %td= link_to (image_tag "com/home/logos/cloudapp.png", alt: "CloudApp"), ""
+    %tr
+      %td= link_to (image_tag "com/home/logos/taptaptap.png", alt: "Tap Tap Tap"), ""
+      %td= link_to (image_tag "com/home/logos/tetrapak.png", alt: "Tetra Pak"), ""
+    %tr
+      %td= link_to (image_tag "com/home/logos/bigcartel.png", alt: "Big Cartel"), ""
+      %td= link_to (image_tag "com/home/logos/bredbandsbolaget.png", alt: "Little Big Planet"), ""
+    %tr
+      %td= link_to (image_tag "com/home/logos/5by5.png", alt: "5By5"), ""
+      %td= link_to (image_tag "com/home/logos/rock_am_ring.png", alt: "Rock Am Ring"), ""
+    
+  .quote
+    = image_tag "com/home/showcases/tom_kiss.png", alt: "Tom Kiss"
+    %blockquote= "“SublimeVideo allowed us to deliver our videos to a much wider audience”"
+    %p.author
+      = "Tom Kiss, Designer at "
+      = link_to "MediaMolecule", "http://www.mediamolecule.com"
+    = link_to "", class: "view_all_showcases" do
+      %span= "View all showcases"
+  .spacer
+.big_break
+
+%section.vision_tagline
+  %h3
+    = "HTML5 is the future of online video. Together with the SublimeVideo community,"
+    = link_to "we've made it a reality today", ""
