@@ -4,24 +4,25 @@
       .col
         %h4= "Product"
         %ul
-          %li= link_to "Home", ""
-          %li= link_to "Features", ""
-          %li= link_to "Demo", ""
-          %li= link_to "Plans & Pricing", ""
+          %li= link_to "Home", root_url(host: request.domain)
+          %li= link_to "Features", com_page_url('features')
+          %li= link_to "Demo", com_page_url('demo')
+          %li= link_to "Plans & Pricing", com_page_url('plans')
       .col
         %h4= "Community & Support"
         %ul
-          %li= link_to "Customer Showcases", ""
-          %li= link_to "Help", ""
-          %li= link_to "Documentation", ""
-          %li= link_to "Community Forum", ""
-          %li= link_to "Player Releases", ""
+          %li= link_to "Customer Showcases", com_page_url('customer-showcases')
+          %li= link_to "Help", com_page_url('help')
+          %li= link_to "Documentation", root_url(subdomain: 'docs')
+          %li= link_to "Community Forum", "http://getsatisfaction.com/sublimevideo"
+          %li= link_to "Player Releases", docs_releases_url(subdomain: 'docs')
       .col
         %h4= "Stay Connected"
         %ul
           %li= link_to "Blog", ""
           %li= link_to "Twitter", ""
-          %li= link_to "Contact us", ""
+          %li= link_to "Contact us", com_page_url('contact')
+          %li= link_to "About", com_page_url('vision')
     .right
       %p
         = "SublimeVideo is a service by"
@@ -34,7 +35,7 @@
         = link_to "@jilion", "http://twitter.com/jilion"
     .footer_break
     %p.copyright
-      = link_to "Terms & Conditions", ""
+      = link_to "Terms & Conditions", page_url('terms', subdomain: 'my')
       = "|" 
-      = link_to "Privacy Policy", ""
+      = link_to "Privacy Policy", page_url('privacy', subdomain: 'my')
       = "| Copyright © #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks."

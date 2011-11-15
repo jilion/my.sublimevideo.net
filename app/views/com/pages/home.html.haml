@@ -1,36 +1,33 @@
 = content_for :title, "SublimeVideo - HTML5 Video Player"
-= content_for :global_class, "home"
-= content_for :js do
-  = javascript_include_tag "home"
-  == <script type="text/javascript" src="http://cdn.sublimevideo.net/js/ibvjcopp.js"></script>
-  
+= content_for :js, javascript_include_tag("home", "http://cdn.sublimevideo.net/js/ibvjcopp.js")
+
 = content_for :header do
   %h2= "The HTML5 Video Player Everyone Deserves"
-  
+
   .video_wrap
     %video.sublime{ width: "544", height: "306", poster: image_path("com/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none" }
       %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.mp4" }/
       %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4" }/
       %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.webm" }/
       %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }/
-  
+
   .right
     .slides
       %ul
         %li.always_up_to_date
           %h3= "Always Up-To-Date"
-          = link_to (image_tag "com/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), ""
+          = link_to (image_tag "com/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), com_page_path('features', anchor: 'always_up_to_date')
         %li.works_in_any_browsers
           %h3= "Works in any browsers"
-          = link_to (image_tag "com/home/features/browsers/default.png", alt: "Works in any browsers"), ""
+          = link_to (image_tag "com/home/features/browsers/default.png", alt: "Works in any browsers"), com_page_path('features', anchor: 'default')
         %li.works_on_any_devices
           %h3= "Works on any mobile devices"
-          = link_to (image_tag "com/home/features/any_devices.png", alt: "Works on any mobile devices"), ""
+          = link_to (image_tag "com/home/features/any_devices.png", alt: "Works on any mobile devices"), com_page_path('features', anchor: 'any_devices')
         %li.stats
           %h3= "Real-time Statistics"
-          = link_to (image_tag "com/home/features/stats.png", alt: "Real-time Statistics"), ""
+          = link_to (image_tag "com/home/features/stats.png", alt: "Real-time Statistics"), com_page_path('features', anchor: 'stats')
         %li.instant_setup
-          = link_to (image_tag "com/home/features/instant_setup.png", alt: "Always Up-To-Date"), ""
+          = link_to (image_tag "com/home/features/instant_setup.png", alt: "Always Up-To-Date"), com_page_path('features', anchor: 'instant_setup')
           %h3.t1= "Instant Setup"
           %h3.t2= "Easy Integration"
     .slides_nav
@@ -73,7 +70,7 @@
     %tr
       %td= link_to (image_tag "com/home/logos/5by5.png", alt: "5By5"), ""
       %td= link_to (image_tag "com/home/logos/rock_am_ring.png", alt: "Rock Am Ring"), ""
-    
+
   .quote
     = image_tag "com/home/showcases/tom_kiss.png", alt: "Tom Kiss"
     %blockquote= "“SublimeVideo allowed us to deliver our videos to a much wider audience”"

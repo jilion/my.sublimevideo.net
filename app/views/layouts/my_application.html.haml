@@ -40,7 +40,7 @@
         %p.right
           = "SublimeVideo® is a service by"
           = link_to "Jilion®", "http://jilion.com"
-        %p.links= "#{link_to "SublimeVideo.net", root_url(host: request.domain)} | #{link_to "Terms & Conditions", my_page_path(page: 'terms')} | #{link_to "Privacy Policy", my_page_path(page: 'privacy') }".html_safe
+        %p.links= "#{link_to "SublimeVideo.net", root_url(host: request.domain)} | #{link_to "Terms & Conditions", page_url('terms', subdomain: 'my')} | #{link_to "Privacy Policy", page_url('privacy', subdomain: 'my') }".html_safe
         %p.copyright= "Copyright © 2010 - #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks"
 
     = yield :bottom

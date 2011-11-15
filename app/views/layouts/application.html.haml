@@ -20,7 +20,7 @@
     :javascript
       try { Typekit.load(); } catch(e) { }
 
-  %body{ class: yield(:global_class) }
+  %body{ class: params[:page] ? h(params[:page]) : nil }
     %header
       .shadow
         .lights
@@ -28,8 +28,7 @@
             .wrap
               %h1
                 = link_to "/" do
-                  %span
-                    = "SublimeVideo"
+                  %span= "SublimeVideo"
               = render "layouts/menu"
               = yield :header
     = yield :middle
