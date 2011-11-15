@@ -12,24 +12,23 @@
       %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }/
 
   .right
-    .slides
-      %ul
-        %li.always_up_to_date
-          %h3= "Always Up-To-Date"
-          = link_to (image_tag "com/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), com_page_path('features', anchor: 'always_up_to_date')
-        %li.works_in_any_browsers
-          %h3= "Works in any browsers"
-          = link_to (image_tag "com/home/features/browsers/default.png", alt: "Works in any browsers"), com_page_path('features', anchor: 'default')
-        %li.works_on_any_devices
-          %h3= "Works on any mobile devices"
-          = link_to (image_tag "com/home/features/any_devices.png", alt: "Works on any mobile devices"), com_page_path('features', anchor: 'any_devices')
-        %li.stats
-          %h3= "Real-time Statistics"
-          = link_to (image_tag "com/home/features/stats.png", alt: "Real-time Statistics"), com_page_path('features', anchor: 'stats')
-        %li.instant_setup
-          = link_to (image_tag "com/home/features/instant_setup.png", alt: "Always Up-To-Date"), com_page_path('features', anchor: 'instant_setup')
-          %h3.t1= "Instant Setup"
-          %h3.t2= "Easy Integration"
+    %ul.slides
+      %li.always_up_to_date.active
+        %h3= "Always Up-To-Date"
+        = link_to (image_tag "com/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), com_page_path('features', anchor: 'always_up_to_date')
+      %li.works_in_any_browsers
+        %h3= "Works in any browsers"
+        = link_to (image_tag "com/home/features/browsers/default.png", alt: "Works in any browsers"), com_page_path('features', anchor: 'default')
+      %li.works_on_any_devices
+        %h3= "Works on any mobile devices"
+        = link_to (image_tag "com/home/features/any_devices.png", alt: "Works on any mobile devices"), com_page_path('features', anchor: 'any_devices')
+      %li.stats
+        %h3= "Real-time Statistics"
+        = link_to (image_tag "com/home/features/stats.png", alt: "Real-time Statistics"), com_page_path('features', anchor: 'stats')
+      %li.instant_setup
+        = link_to (image_tag "com/home/features/instant_setup.png", alt: "Always Up-To-Date"), com_page_path('features', anchor: 'instant_setup')
+        %h3.t1= "Instant Setup"
+        %h3.t2= "Easy Integration"
     .slides_nav
       = link_to "", class: "always_up_to_date active" do
         %span= "Always Up-To-Date"
