@@ -5,13 +5,12 @@ class MSVStats.Views.SiteQuickSwitchView extends Backbone.View
     'click ul#site_quick_switch_list li a': 'updatePage'
 
   initialize: ->
-    _.bindAll this, 'render'
     @options.sites.bind 'change', this.render
     @options.sites.bind 'reset', this.render
 
     this.render()
 
-  render: ->
+  render: =>
     $(@el).html(this.template(sites: @options.sites))
 
     this

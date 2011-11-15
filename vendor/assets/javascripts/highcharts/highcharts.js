@@ -2,7 +2,7 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /**
- * @license Highcharts JS v2.1.8 (2011-11-05)
+ * @license Highcharts JS v2.1.9 (2011-11-11)
  *
  * (c) 2009-2011 Torstein Hønsi
  *
@@ -1770,7 +1770,7 @@ SVGElement.prototype = {
 						length = arr.length,
 						itemWrapper,
 						j;
-					
+
 					for (j = 0; j < length; j++) {
 						itemWrapper = arr[j];
 						bBox = itemWrapper.getBBox();
@@ -2186,13 +2186,23 @@ SVGElement.prototype = {
 	},
 
 	/**
+	 * Removes a child either by removeChild or move to garbageBin.
+	 * Issue 490; in VML removeChild results in Orphaned nodes according to sIEve, discardElement does not.
+	 */
+	safeRemoveChild: function (element) {
+		var parentNode = element.parentNode;
+		if (parentNode) {
+			parentNode.removeChild(element);
+		}
+	},
+
+	/**
 	 * Destroy the element and element wrapper
 	 */
 	destroy: function () {
 		var wrapper = this,
 			element = wrapper.element || {},
 			shadows = wrapper.shadows,
-			parentNode = element.parentNode,
 			key,
 			i;
 
@@ -2213,17 +2223,12 @@ SVGElement.prototype = {
 		}
 
 		// remove element
-		if (parentNode) {
-			parentNode.removeChild(element);
-		}
+		wrapper.safeRemoveChild(element);
 
 		// destroy shadows
 		if (shadows) {
 			each(shadows, function (shadow) {
-				parentNode = shadow.parentNode;
-				if (parentNode) { // the entire chart HTML can be overwritten
-					parentNode.removeChild(shadow);
-				}
+				wrapper.safeRemoveChild(shadow);
 			});
 		}
 
@@ -2261,7 +2266,8 @@ SVGElement.prototype = {
 			element = this.element,
 
 			// compensate for inverted plot area
-			transform = this.parentInverted ? '(-1,-1)' : '(1,1)';
+      // transform = this.parentInverted ? '(-1,-1)' : '(1,1)';
+			transform = '(0,0)';
 
 
 		if (apply) {
@@ -2269,9 +2275,9 @@ SVGElement.prototype = {
 				shadow = element.cloneNode(0);
 				attr(shadow, {
 					'isShadow': 'true',
-					'stroke': 'rgb(0, 0, 0)',
+					'stroke': 'rgb(116, 255, 131)',
 					'stroke-opacity': 0.05 * i,
-					'stroke-width': 7 - 2 * i,
+					'stroke-width': 16 - 2 * i,
 					'transform': 'translate' + transform,
 					'fill': NONE
 				});
@@ -3372,6 +3378,19 @@ var VMLElement = extendClass(SVGElement, {
 		css(wrapper.element, styles);
 
 		return wrapper;
+	},
+
+	/**
+	 * Removes a child either by removeChild or move to garbageBin.
+	 * Issue 490; in VML removeChild results in Orphaned nodes according to sIEve, discardElement does not.
+	 */
+	safeRemoveChild: function (element) {
+		// discardElement will detach the node from its parent before attaching it
+		// to the garbage bin. Therefore it is important that the node is attached and have parent.
+		var parentNode = element.parentNode;
+		if (parentNode) {
+			discardElement(element);
+		}
 	},
 
 	/**
@@ -4704,7 +4723,7 @@ function Chart(options, callback) {
 
 			// Save the x value to be able to position the label later
 			stackItem.x = x;
-			
+
 			// Save the stack option on the series configuration object
 			stackItem.stack = stackOption;
 
@@ -8312,19 +8331,19 @@ function Chart(options, callback) {
 		});
 
 		// ==== Destroy local variables:
-		each([chartBackground, legend, tooltip, renderer, tracker], function (obj) {
+		each([chartBackground, plotBorder, plotBackground, legend, tooltip, renderer, tracker], function (obj) {
 			if (obj && obj.destroy) {
 				obj.destroy();
 			}
 		});
-		chartBackground = legend = tooltip = renderer = tracker = null;
+		chartBackground = plotBorder = plotBackground = legend = tooltip = renderer = tracker = null;
 
 		// remove container and all SVG
 		if (container) { // can break in IE when destroyed before finished loading
 			container.innerHTML = '';
 			removeEvent(container);
 			if (parentNode) {
-				parentNode.removeChild(container);
+				discardElement(container);
 			}
 
 			// IE6 leak
@@ -11420,6 +11439,7 @@ win.Highcharts = {
 
 	// Expose utility funcitons for modules
 	addEvent: addEvent,
+	removeEvent: removeEvent,
 	createElement: createElement,
 	discardElement: discardElement,
 	css: css,
@@ -11430,6 +11450,6 @@ win.Highcharts = {
 	pick: pick,
 	extendClass: extendClass,
 	product: 'Highcharts',
-	version: '2.1.8'
+	version: '2.1.9'
 };
 }());

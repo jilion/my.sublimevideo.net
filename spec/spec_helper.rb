@@ -88,6 +88,9 @@ Spork.each_run do
   RSpec.configure do |config|
     # config.include Shoulda::ActionController::Matchers
     config.include Devise::TestHelpers, type: :controller
+
+    # FactoryGirl http://railscasts.com/episodes/158-factories-not-fixtures-revised
+    config.include Factory::Syntax::Methods
   end
 end
 

@@ -1,4 +1,5 @@
 class MSVStats.Models.Stat extends Backbone.Model
+  # id = Stat time (day, hour, minute or second)
   defaults:
     pv: 0 # main + extra
     vv: 0 # main + extra
@@ -14,6 +15,8 @@ class MSVStats.Models.Stat extends Backbone.Model
 
 class MSVStats.Collections.Stats extends Backbone.Collection
   model: MSVStats.Models.Stat
+
+  chartType: -> 'areaspline'
 
   pvTotal: (startIndex, endIndex) ->
     this.customSum('pv', startIndex, endIndex)
@@ -37,6 +40,9 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       memo.push(stat.get(attribute))
       memo
     [], datesRange)
+
+  isUnactive: ->
+    this.pvTotal(0, -1) == 0 && this.vvTotal(0, -1) == 0
 
   bpData: ->
     unless MSVStats.period.isFullRange()
@@ -66,7 +72,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       _.reduce @models, ((memo, stat) -> iterator(memo, stat)), context
 
   merge: (data, options) ->
-    if stat = this.get(data.id)
+    if (stat = this.get(data.id))?
       attributes = {}
       attributes.pv = stat.get('pv') + data.pv if data.pv?
       attributes.vv = stat.get('vv') + data.vv if data.vv?
@@ -119,18 +125,39 @@ class MSVStats.Collections.Stats extends Backbone.Collection
 
 class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
   url: ->
-    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats?period=seconds"
+    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=seconds"
 
+  # chartType: -> 'column'
+  chartType: -> 'areaspline'
   periodType: -> 'seconds'
 
-  updateEachSeconds: ->
-    if this.length > 60
-      setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
-      if this.length == 61 # no seconds stats added
-        new_id = (this.last().time() + 1000)/1000
-        this.add({ id: new_id }, silent: true)
+  updateSeconds: (secondTime) =>
+    currentStatId = secondTime / 1000
+    unless this.get(currentStatId)?
+      this.add({ id: currentStatId }, silent: true)
+
+    if this.length > 62
+      this.removeOldStats(62)
+
+  fetchOldSeconds: =>
+    $.get this.url(), (data) =>
+      for stat in data.reverse()
+        if (statSecond = MSVStats.statsSeconds.get(stat.id))?
+          statSecond.set(stat, silent: true)
+        else
+          MSVStats.statsSeconds.add(stat, silent: true, at: 0)
+      this.removeOldStats(62)
+
+  removeOldStats: (count) ->
+    while this.length > count
       this.remove(this.first(), silent: true)
       this.trigger('change', this)
+
+  isShowable: -> this.length >= 62
+
+  lastStatTime: ->
+    last = this.last()
+    if last? then last.time() else 0
 
 class MSVStats.Collections.StatsMinutes extends MSVStats.Collections.Stats
   url: ->

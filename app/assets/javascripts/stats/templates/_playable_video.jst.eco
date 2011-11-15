@@ -1,0 +1,6 @@
+<a class="sublime" href=""></a>
+<video id="playable_video_<%= @video.id %>" data-uid="<%= @video.id %>" data-name="<%= @video.get('n') %>" style="display:none" class="zoom" width="<%= @video.width() %>" height="<%= @video.height() %>" poster="<%= @video.get('p') %>" preload="none">
+  <% for source in @video.currentSources(): %>
+    <source src="<%= source.u %>" <%= if source.q != 'base' then "data-quality='#{source.q}'" %> />
+  <% end %>
+</video>

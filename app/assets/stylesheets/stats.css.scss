@@ -11,7 +11,7 @@
     top: 5px;
     left: 5px;
   }
-  
+
   #trial {
     position: absolute;
     top: 5px;
@@ -141,6 +141,36 @@
 
 }
 
+#content #top_videos {
+  display:block;
+  min-height:250px;
+  width:100%;
+  float:left;
+
+  #top_videos_content {
+    display:none;
+
+    table {
+      width: 100%;
+      td {
+        text-align: center;
+        
+        span.tooltip {
+          display: none;
+        }
+        
+        .sparkline {
+          height: 30px;
+          width: 150px;
+        }
+      }
+    }
+  }
+
+  // #playable_video {
+  //   display:none;
+  // }
+}
 #content #bp {
   display:block;
   height:250px;

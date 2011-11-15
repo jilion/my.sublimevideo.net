@@ -19,13 +19,19 @@ class VideoTag
     Site.find_by_token(st)
   end
 
+  # =============
+  # = Callbacks =
+  # =============
+
+  after_save :push_new_meta_data
+
   # ====================
   # = Instance Methods =
   # ====================
 
   def update_with_latest_data(attributes)
     %w[uo n no p cs z].each do |key|
-      self.send("#{key}=", attributes[key])
+      self.send("#{key}=", attributes[key]) if attributes.key?(key)
     end
     # Properly change sources without falsely trig dirty attribute tracking
     if attributes.key?('s')
@@ -35,6 +41,10 @@ class VideoTag
     end
 
     save
+  end
+
+  def meta_data
+    attributes.slice("uo", "n", "no", "p", "cs", "s", "z")
   end
 
   # =================
@@ -54,6 +64,11 @@ class VideoTag
   end
 
 private
+
+  # after_save
+  def push_new_meta_data
+    Pusher["presence-#{st}"].trigger('video_tag', u: u, meta_data: meta_data)
+  end
 
   # Merge each videos tag in one big hash
   #

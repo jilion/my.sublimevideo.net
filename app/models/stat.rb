@@ -37,6 +37,91 @@ module Stat
   # =================
   module ClassMethods
 
+
+    # Returns the sum of all the usage for the given token(s) (optional) and between the given dates (optional).
+    #
+    # @option options [String] token a valid site token
+    # @option options [Array<String>] token an array of valid site tokens
+    # @option options [String] view_type the type of views to fetch. Can be 'vv' (Video Views, default) or 'pv' (Page Visits).
+    # @option options [DateTime] from represents the datetime from where returning stats
+    # @option options [DateTime] to represents the datetime to where returning stats
+    # @option options [String] billable_only if true, return only the sum for billable fields
+    #
+    # @return [Integer] the sum of views
+    #
+    def views_sum(options = {})
+      options = options.symbolize_keys.reverse_merge(view_type: 'vv', billable_only: false)
+
+      conditions = {}
+      conditions[:t] = { "$in" => Array.wrap(options[:token]) }        if options[:token]
+      conditions.deep_merge!(d: { "$gte" => options[:from].midnight }) if options[:from]
+      conditions.deep_merge!(d: { "$lte" => options[:to].end_of_day }) if options[:to]
+
+      stats = collection.group(
+        key: nil,
+        cond: conditions,
+        initial: { sum: 0 },
+        reduce: js_reduce_for_sum(options)
+      )
+
+      stats.any? ? stats.first['sum'].to_i : 0
+    end
+
+    def js_reduce_for_sum(options = {})
+      options = options.symbolize_keys.reverse_merge(billable_only: false)
+
+      fields = %w[m e em] # billable fields: main, extra and embed
+      fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
+      reduce_function = ["function(doc, prev) {"]
+      fields.inject(reduce_function) do |js, field_to_merge|
+        js << "prev.sum += isNaN(doc.#{options[:view_type]}.#{field_to_merge}) ? 0 : doc.#{options[:view_type]}.#{field_to_merge};"
+        js
+      end
+
+      (reduce_function << "}").join(' ')
+    end
+
+    def json(site_token, period = 'days')
+      from, to = period_intervals(site_token, period)
+
+      json_stats = if from.present? && to.present?
+        last_stats(token: site_token, period: period, from: from, to: to)
+      else
+        []
+      end
+
+      json_stats.to_json(only: [:bp, :md])
+    end
+
+    def period_intervals(site_token, period)
+      case period
+      when 'seconds'
+        to    = 2.seconds.ago.change(usec: 0).utc
+        from  = to - 59.seconds
+      when 'minutes'
+        last_minute_stat = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last
+        to   = last_minute_stat.try(:m) || 1.minute.ago.change(sec: 0)
+        from = to - 59.minutes
+      when 'hours'
+        to   = 1.hour.ago.change(min: 0, sec: 0).utc
+        from = to - 23.hours
+      when 'days'
+        site  = ::Site.find_by_token(site_token)
+        stats = self.where(t: site_token, d: { "$ne" => nil }).order_by([:d, :asc])
+        to    = 1.day.ago.midnight
+        case site.stats_retention_days
+        when 0
+          to   = nil
+          from = nil
+        when nil
+          from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
+        else
+          from = to - (site.stats_retention_days - 1).days
+        end
+      end
+      [from, to]
+    end
+
     # Returns an array of Stat::Site objects.
     #
     # @option options [String] token a valid site token
@@ -79,89 +164,6 @@ module Stat
       else
         stats
       end
-    end
-
-    # Returns the sum of all the usage for the given token(s) (optional) and between the given dates (optional).
-    #
-    # @option options [String] token a valid site token
-    # @option options [Array<String>] token an array of valid site tokens
-    # @option options [String] view_type the type of views to fetch. Can be 'vv' (Video Views, default) or 'pv' (Page Visits).
-    # @option options [DateTime] from represents the datetime from where returning stats
-    # @option options [DateTime] to represents the datetime to where returning stats
-    # @option options [String] billable_only if true, return only the sum for billable fields
-    #
-    # @return [Integer] the sum of views
-    #
-    def views_sum(options = {})
-      options = options.symbolize_keys.reverse_merge(view_type: 'vv', billable_only: false)
-
-      conditions = {}
-      conditions[:t] = { "$in" => Array.wrap(options[:token]) }        if options[:token]
-      conditions.deep_merge!(d: { "$gte" => options[:from].midnight }) if options[:from]
-      conditions.deep_merge!(d: { "$lte" => options[:to].end_of_day }) if options[:to]
-
-      stats = collection.group(
-        key: nil,
-        cond: conditions,
-        initial: { sum: 0 },
-        reduce: js_reduce_for_sum(options)
-      )
-
-      stats.any? ? stats.first['sum'].to_i : 0
-    end
-
-    def json(token, period = 'days')
-      json_stats = case period
-      when 'seconds'
-        to    = Time.now.change(usec: 0).utc
-        from  = to - 60.seconds # pass 61 seconds
-
-        last_stats(token: token, period: period, from: from, to: to)
-
-      when 'minutes'
-        last_minute_stat = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last
-        to   = last_minute_stat.try(:m) || 1.minute.ago.change(sec: 0)
-        from = to - 59.minutes
-
-        last_stats(token: token, period: period, from: from, to: to)
-
-      when 'hours'
-        to   = 1.hour.ago.change(min: 0, sec: 0).utc
-        from = to - 23.hours
-
-        last_stats(token: token, period: period, from: from, to: to)
-
-      when 'days'
-        site  = ::Site.find_by_token(token)
-        stats = self.where(t: token, d: { "$ne" => nil }).order_by([:d, :asc])
-        to    = 1.day.ago.midnight
-        case site.stats_retention_days
-        when 0
-          []
-        when nil
-          from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
-          last_stats(stats: stats, period: period, from: from, to: to)
-        else
-          from = to - (site.stats_retention_days - 1).days
-          last_stats(stats: stats, period: period, from: from, to: to)
-        end
-      end
-
-      json_stats.to_json(only: [:bp, :md])
-    end
-
-    def js_reduce_for_sum(options = {})
-      options = options.symbolize_keys.reverse_merge(billable_only: false)
-
-      fields = %w[m e em] # billable fields: main, extra and embed
-      fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
-      reduce_function = ["function(doc, prev) {"]
-      fields.inject(reduce_function) do |js, field_to_merge|
-        js << "prev.sum += isNaN(doc.#{options[:view_type]}.#{field_to_merge}) ? 0 : doc.#{options[:view_type]}.#{field_to_merge};"
-        js
-      end
-
-      (reduce_function << "}").join(' ')
     end
 
     def js_reduce_for_array(options = {})
@@ -219,7 +221,7 @@ module Stat
       end
     end
     begin
-      json = {}
+      json = { m: true }
       json[:h] = true if log.hour == log.minute
       json[:d] = true if log.day == log.hour
       Pusher["stats"].trigger('tick', json)

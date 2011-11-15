@@ -25,7 +25,7 @@ module SiteModules::Scope
     scope :with_extra_hostnames, where { (extra_hostnames != nil) & (extra_hostnames != '') }
     scope :with_next_cycle_plan, where { next_cycle_plan_id != nil }
 
-    scope :with_not_canceled_invoices, joins(:invoices).merge(Invoice.not_canceled)
+    scope :with_not_canceled_invoices, joins(:invoices).merge(::Invoice.not_canceled)
 
     # billing
     scope :in_trial, lambda {

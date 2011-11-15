@@ -47,6 +47,13 @@ MySublimeVideo::Application.routes.draw do
       end
       match '/card(/*anything)', to: redirect('/account/billing/edit'), via: :get
 
+      resources :stats, :only => :index, :controller => 'site_stats' do
+        put :trial, :on => :collection
+        get :videos, :on => :collection
+      end
+
+      resources :video_tags, :only => :show
+
       resources :invoices, only: [:show] do
         put :retry_all, on: :collection
       end

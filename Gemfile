@@ -110,6 +110,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 2.7.0'
   # gem 'ruby-debug19'
 
+  gem 'rack-livereload'
   gem 'rails-dev-tweaks', '~> 0.5.0'
   gem 'ruby-graphviz', require: 'graphviz'
   gem 'ffaker'
@@ -128,19 +129,20 @@ group :development do
   gem 'rb-fsevent', '0.9.0.pre3'
 
   # gem 'ruby_gntp'
-  # gem 'guard', git: 'git://github.com/guard/guard.git', branch: 'dev'
+  # gem 'guard', :git => 'git://github.com/guard/guard.git', :branch => 'dev'
+  # platforms :ruby do
+  #   gem 'rb-readline'
+  # end
   gem 'growl_notify'
 
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
-  # gem 'rack-livereload', git: 'git://github.com/johnbintz/rack-livereload.git'
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
   gem 'guard-jasmine'
   gem 'guard-yard'
-  # gem 'rails_mail_preview'
 end
 
 # Gems used only for assets and not required

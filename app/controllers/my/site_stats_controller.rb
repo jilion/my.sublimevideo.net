@@ -17,6 +17,13 @@ class My::SiteStatsController < MyController
     render nothing: true
   end
 
+  # GET /sites/:id/stats/videos
+  def videos
+    respond_to do |format|
+      format.json { render json: Stat::Video.top_videos(@site.token, params) }
+    end
+  end
+
 private
 
   def find_site_by_token!

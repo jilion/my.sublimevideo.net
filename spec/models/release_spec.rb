@@ -25,7 +25,7 @@ describe Release do
     it "should only allow zip file" do
       release = Factory.build(:release, :zip => File.new(Rails.root.join('spec/fixtures/railscast_intro.mov')))
       release.should_not be_valid
-      release.errors[:zip].should include("is not an allowed file type")
+      release.errors[:zip].should include("You are not allowed to upload \"mov\" files, allowed types: [\"zip\"]")
     end
   end
 

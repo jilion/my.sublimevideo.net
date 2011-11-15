@@ -15,14 +15,7 @@ group :frontend do
 
   # guard 'coffeescript', :input => 'app/assets/javascripts', :noop => true, :hide_success => true
 
-  guard :livereload do
-    watch(%r{app/helpers/.+\.rb})
-    watch(%r{app/views/.+\.(erb|haml)})
-    watch(%r{(public/).+\.(css|js|html)})
-
-    watch(%r{app/assets/stylesheets/(.+\.css).*$})  { |m| "assets/#{m[1]}" }
-    watch(%r{app/assets/javascripts/(.+\.js).*$})   { |m| "assets/#{m[1]}" }
-    
+  guard :livereload, host: 'my.sublimevideo.net.dev' do
     watch(%r{^app/.+\.(erb|haml|js|css|scss|coffee|eco|png|gif|jpg)})
   end
 

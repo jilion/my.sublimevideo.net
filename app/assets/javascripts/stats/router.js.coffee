@@ -4,7 +4,9 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initHighcharts()
     this.initSparkline()
     this.initModels()
-    this.initPusherTick()
+    this.initHelpers()
+    this.initPusherStatsChannel()
+    sublimevideo.load()
 
     new MSVStats.Views.PageTitleView
       el: 'h2'
@@ -58,6 +60,14 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
 
+    MSVStats.topVideosView = new MSVStats.Views.TopVideosView
+      el: '#top_videos_content'
+      period: MSVStats.period
+      videos: MSVStats.videos
+
+    MSVStats.playableVideoView = new MSVStats.Views.PlayableVideoView
+      el: '#playable_video'
+
     new MSVStats.Views.BPView
       el: '#bp_content'
       statsSeconds: MSVStats.statsSeconds
@@ -86,35 +96,53 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.period.clear()
     MSVStats.sites.select(token)
     this.resetAndFetchStats()
-    this.initPusherStats()
+    this.initPusherPrivateSiteChannel()
 
   initModels: ->
     MSVStats.period = new MSVStats.Models.Period()
     MSVStats.period.bind 'change', ->
-      MSVStats.Routers.StatsRouter.setHighchartsUTC()
+      if MSVStats.period.get('type')?
+        MSVStats.Routers.StatsRouter.setHighchartsUTC()
+        MSVStats.videos.customFetch()
 
     MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
     MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
     MSVStats.statsHours   = new MSVStats.Collections.StatsHours()
     MSVStats.statsDays    = new MSVStats.Collections.StatsDays()
 
-  initPusherTick: ->
+    MSVStats.videos = new MSVStats.Collections.Videos()
+    
+  initHelpers: ->
+    MSVStats.chartsHelper = new MSVStats.Helpers.ChartsHelper()
+
+  initPusherStatsChannel: ->
     MSVStats.statsChannel = MSVStats.pusher.subscribe("stats")
     MSVStats.statsChannel.bind 'tick', (data) ->
-      MSVStats.statsMinutes.fetch()
-      MSVStats.statsHours.fetch() if data.h
-      MSVStats.statsDays.fetch() if data.d
+      MSVStats.statsMinutes.fetch() if data.m
+      MSVStats.statsHours.fetch()   if data.h
+      MSVStats.statsDays.fetch()    if data.d
+      if (data.m && MSVStats.period.isMinutes()) || (data.h && MSVStats.period.isHours()) || (data.d && MSVStats.period.isDays())
+        MSVStats.videos.fetch()
+      unless MSVStats.sites.selectedSite.inFreePlan()
+        if data.s
+          secondTime = data.s * 1000
+          MSVStats.statsSeconds.updateSeconds(secondTime)
+          MSVStats.videos.updateSeconds(secondTime) if MSVStats.period.isSeconds()
 
-  initPusherStats: ->
+  initPusherPrivateSiteChannel: ->
     unless MSVStats.sites.selectedSite.inFreePlan()
       MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
-
-      MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
-        MSVStats.statsSeconds.fetch
-          success: -> setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
-
+  
+      MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
+        setTimeout MSVStats.statsSeconds.fetchOldSeconds, 2000
+      
       MSVStats.presenceChannel.bind 'stats', (data) ->
         MSVStats.statsSeconds.merge(data.site, silent: true)
+        MSVStats.videos.merge(data.videos, silent: true) if MSVStats.period.isSeconds()
+      
+      MSVStats.presenceChannel.bind 'video_tag', (data) ->
+        if (video = MSVStats.videos.get(data.u))?
+          video.set(data.meta_data)
 
   resetAndFetchStats: ->
     MSVStats.statsSeconds.reset()
@@ -143,12 +171,9 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
         useUTC: false
 
   @setHighchartsUTC: (useUTC) ->
-    # console.log useUTC
-    # console.log MSVStats.period.get('type') == 'days'
-    # console.lgo if useUTC? then MSVStats.period.get('type') == 'days' else useUTC
     Highcharts.setOptions
       global:
-        useUTC: if useUTC? then useUTC else MSVStats.period.get('type') == 'days'
+        useUTC: if useUTC? then useUTC else MSVStats.period.isDays()
 
   initSparkline: ->
     # $.fn.sparkline.defaults.line.lineColor       = '#0046ff'

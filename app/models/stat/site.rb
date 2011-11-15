@@ -15,13 +15,14 @@ class Stat::Site
   index [[:t, Mongo::ASCENDING], [:h, Mongo::ASCENDING]]
   index [[:t, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]
 
-  def site
-    Site.find_by_token(t)
-  end
 
   # ====================
   # = Instance Methods =
   # ====================
+
+  def site
+    Site.find_by_token(t)
+  end
 
   def token
     read_attribute(:t)

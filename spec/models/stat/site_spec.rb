@@ -197,10 +197,11 @@ describe Stat::Site do
 
     before(:each) do
       @second = Time.now.utc.change(usec: 0)
-      Factory.create(:site_stat, t: @site.token, s: (@second - 61.seconds), vv: { e: 1 })
-      Factory.create(:site_stat, t: @site.token, s: (@second - 60.seconds), vv: { e: 2 })
-      Factory.create(:site_stat, t: @site.token, s: (@second - 59.seconds), vv: { e: 3 })
-      Factory.create(:site_stat, t: @site.token, s: (@second - 1.second), vv: { e: 4 })
+      Factory.create(:site_stat, t: @site.token, s: (@second - 62.seconds), vv: { e: 1 })
+      Factory.create(:site_stat, t: @site.token, s: (@second - 61.seconds), vv: { e: 2 })
+      Factory.create(:site_stat, t: @site.token, s: (@second - 60.seconds), vv: { e: 3 })
+      Factory.create(:site_stat, t: @site.token, s: (@second - 2.second), vv: { e: 4 })
+      Factory.create(:site_stat, t: @site.token, s: (@second - 1.second), vv: { e: 5 })
       Factory.create(:site_stat, t: @site.token, s: @second, vv: { e: 5 })
 
       Factory.create(:site_stat, t: @site.token, m: 60.minutes.ago.change(sec: 0), vv: { e: 2 })
@@ -226,16 +227,14 @@ describe Stat::Site do
       subject { JSON.parse(Stat::Site.json(@site.token, 'seconds')) }
       before(:each) { Timecop.travel(@second) }
 
-      its(:size) { should eql(61) }
+      its(:size) { should eql(60) }
       it { subject[0]['vv'].should eql(2) }
       it { subject[1]['vv'].should eql(3) }
       it { subject[58]['vv'].should eql(nil) }
       it { subject[59]['vv'].should eql(4) }
-      it { subject[60]['vv'].should eql(5) }
 
-      it { subject[0]['id'].should eql((@second - 60.seconds).to_i) }
-      it { subject[1]['id'].should eql((@second - 59.seconds).to_i) }
-      it { subject[60]['id'].should eql(@second.to_i) }
+      it { subject[0]['id'].should eql((@second - 61.seconds).to_i) }
+      it { subject[59]['id'].should eql((@second - 2.second).to_i) }
     end
 
     describe "with minutes period" do
