@@ -1,10 +1,14 @@
 %nav#menu
   %ul
-    %li.active= link_to "Features", ""
-    %li= link_to "Plans", ""
-    %li= link_to "Demo", ""
-    %li= link_to "Showcases", ""
-    %li= link_to "Help", ""
-    %li= link_to "Blog", ""
-    %li= link_to "Login", ""
-    %li.signup= link_to "Sign Up", ""
+    - if user_signed_in?
+      %li= link_to "My Sites", sites_url
+      %li= link_to("Documentation", root_url(subdomain: 'docs'))
+      %li= link_to("Help", page_url('help', subdomain: 'my'))
+      %li= link_to("Logout", destroy_user_session_path)
+    - else
+      - [:features, :plans, :demo, ['customer-showcases', { link_text: "Showcases" }], :help, :blog].each do |r|
+        - name = r.is_a?(Array) ? r[0] : r
+        - opts = r.is_a?(Array) ? r[1] : {}
+        = activable_menu_item(:li, name, opts)
+      %li= link_to "Login", new_user_session_url(subdomain: 'my'), onclick: "return MySublimeVideo.showLogin()"
+      %li.signup= link_to "Sign Up", new_user_registration_url(subdomain: 'my')

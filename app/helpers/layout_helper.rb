@@ -4,6 +4,17 @@ module LayoutHelper
     params[:page] ? h(params[:page]) : nil
   end
 
+  def title_based_on_subdomain(request)
+    case request.subdomain
+    when 'my'
+      "MySublimeVideo"
+    when 'docs'
+      "SublimeVideo Documentation"
+    else
+      "SublimeVideo"
+    end
+  end
+
   def title_and_content_header(text, options = {})
     title(text)
     content_header(text, options)
@@ -36,7 +47,17 @@ module LayoutHelper
     content_tag(tag, tag_options) { yield }
   end
 
-  def activable_menu_item(tag, resources, options = {})
+  def activable_menu_item(tag, url, options = {})
+    options.reverse_merge!(urls: [url], link_text: url.to_s.titleize, class: url.to_s)
+
+    link = url.to_s
+
+    activable_content_tag(tag, options) do
+      block_given? ? link_to(link) { yield } : link_to(options[:link_text], link)
+    end
+  end
+
+  def activable_menu_restful_item(tag, resources, options = {})
     options.reverse_merge!(urls: [resources], link_text: resources.to_s.titleize, class: resources.to_s)
     options[:namespace] = Array.wrap(options[:namespace])
 

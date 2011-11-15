@@ -69,7 +69,7 @@ MySublimeVideo::Application.routes.draw do
       match '/video-tag-builder',              to: 'video_tag_builder#new',          via: :get, as: 'video_tag_builder'
       match '/video-tag-builder/iframe-embed', to: 'video_tag_builder#iframe_embed', via: :get
 
-      match '/:page', to: 'pages#show', via: :get, as: :page, page: /terms|privacy|suspended/
+      match '/:page', to: 'pages#show', via: :get, as: :page, page: /help|terms|privacy|suspended/
       match '/r/:type/:token', to: 'referrers#redirect', via: :get, type: /c/, token: /[a-z0-9]{8}/
 
       match '/pusher/auth', to: 'pusher#auth', via: :post
