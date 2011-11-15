@@ -23,7 +23,7 @@
           %span.corner
       - else
         - if controller_name != 'sessions'
-          = link_to(new_user_session_path, class: "user") do
+          = link_to(new_user_session_url(subdomain: 'my'), class: "user") do
             %strong
               %span.icon= "Login"
             %span.corner

@@ -1,15 +1,14 @@
 = title_and_content_header("Update billing information")
 
 = form_for @user, url: [:billing], html: { class: "full_form" } do |f|
-
   #billing_address
     %h3.section_title Billing Address
-    = render 'users/billing_form_fields', f: f
+    = render 'my/users/billing_form_fields', f: f
 
   #credit_card
     - if @user.cc?
       %h3.section_title Current credit card on file
-      #credit_card_summary= render 'billings/cc_summary', user: @user
+      #credit_card_summary= render 'cc_summary', user: @user
 
     %h3.section_title
       - if @user.cc?

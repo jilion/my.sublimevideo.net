@@ -1,14 +1,14 @@
-%tr{ :id => dom_id(site), :class => cycle("", "alt") }
-  %td.site{ :class => site.hostname.present? ? "has_domain" : "empty"}
+%tr{ id: dom_id(site), class: cycle("", "alt") }
+  %td.site{ class: site.hostname.present? ? "has_domain" : "empty"}
     .wrap
       - if site.hostname.present?
-        = link_to [:edit, site], :class => "domain", :title => "Edit #{hostname_with_path(site)}" do
+        = link_to [:edit, site], class: "domain", title: "Edit #{hostname_with_path(site)}" do
           %span.settings_icon
-          = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=http://#{hostname_with_path(site)}/favicon.ico", :onerror => "this.src='/sites/default_favicon.png';", :alt => "Favicon", :size => "16x16", :id => "site_favicon_#{site.id}"
-          = truncate_middle(site.hostname, :length => 35)
+          = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=http://#{hostname_with_path(site)}/favicon.ico", onerror: "this.src='/sites/default_favicon.png';", alt: "Favicon", size: "16x16", id: "site_favicon_#{site.id}"
+          = truncate_middle(site.hostname, length: 35)
         - if site.in_paid_plan? && (site.need_path? || site.need_subdomain?)
           .warning.box_hovering_zone
-            = link_to [:edit, site], :class => "icon" do
+            = link_to [:edit, site], class: "icon" do
               %span= "warning"
             - if site.need_path?
               = info_box do
@@ -17,7 +17,7 @@
               = info_box do
                 %p= raw t 'site.status.need_subdomain', hostname: site.hostname_with_subdomain_needed
       - else
-        = link_to [:edit, site], :class => "domain" do
+        = link_to [:edit, site], class: "domain" do
           %span.settings_icon
           = "add a hostname"
       .plan
@@ -29,12 +29,12 @@
       .cycle
         - if site.in_paid_plan?
           - if site.trial_not_started_or_in_trial?
-            = l(site.trial_started_at, :format => :d_b_Y) + ' - ' + l(site.trial_end, :format => :d_b_Y) + ' (trial)'
+            = l(site.trial_started_at, format: :d_b_Y) + ' - ' + l(site.trial_end, format: :d_b_Y) + ' (trial)'
           - else
-            = l(site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, :format => :d_b_Y)
+            = l(site.plan_cycle_started_at, format: :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, format: :d_b_Y)
       .spacer
 
-  %td.usage{ :class => td_usage_class(site) }
+  %td.usage{ class: td_usage_class(site) }
     - if site.plan_id?
       = render 'td_usage', site: site
     - else
@@ -42,7 +42,7 @@
 
   %td.code{ id: "code_#{site.token}" }
     - if site.plan_id?
-      = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
+      = link_to "Embed code", "", class: "embed_code", onclick: "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
     - else
       = "—"
     %div{ id: "embed_code_site_content_#{site.token}", style: 'display:none' }= render 'code', site: site

@@ -8,7 +8,7 @@
 #site.new
   = form_for @site, html: { class: "full", onsubmit: "$('site_submit').disable();" } do |f|
 
-    = render 'plans/fields', site: @site, f: f
+    = render 'my/plans/fields', site: @site, f: f
 
     - if current_user.vat?
       #plan_create_info.update_plan_message_box{ style: "display:none;" }

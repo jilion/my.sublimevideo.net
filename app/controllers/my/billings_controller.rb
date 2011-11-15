@@ -30,7 +30,7 @@ class My::BillingsController < MyController
     if user.i18n_notice_and_alert.present?
       { notice: "", alert: "" }.merge(user.i18n_notice_and_alert)
     else
-      { notice: t('flash.billing.update.notice'), alert: nil }
+      { notice: t('flash.billings.update.notice'), alert: nil }
     end
   end
 

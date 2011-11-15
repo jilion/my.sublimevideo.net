@@ -9,7 +9,7 @@
 - if @site.plan_id?
   = render '/admin/shared/date_chooser'
   %br.spacer
-  = render partial: 'timeline_usage', locals: { site: @site }
+  = render 'timeline_usage', site: @site
 
 %h3 Basic infos
 

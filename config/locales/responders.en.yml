@@ -1,6 +1,6 @@
 en:
   flash:
-    billing:
+    billings:
       update:
         notice: "Your billing information were successfully updated."
     tickets:

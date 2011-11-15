@@ -23,7 +23,7 @@
         %br
         = raw t('user.credit_card.prevent_charging_problem', link: link_to(t('app.update_it'), [:edit, :billing]))
 
-    = render 'billings/cc_summary', user: current_user
+    = render 'my/billings/cc_summary', user: current_user
 
   - else
     %p No credit card on file.

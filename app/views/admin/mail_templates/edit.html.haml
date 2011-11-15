@@ -17,7 +17,7 @@
 %h3 Send email
 %br
 
-%p= link_to "Send a new mail with this template", new_admin_mail_path(:template_id => @mail_template.id)
+%p= link_to "Send a new mail with this template", new_admin_mail_path(template_id: @mail_template.id)
 
 %br
 %hr
@@ -25,7 +25,7 @@
 
 %h3 Edition
 
-= render :partial => 'form', :locals => { :mail_template => @mail_template }
+= render 'form', mail_template: @mail_template
 
 %br
 %hr

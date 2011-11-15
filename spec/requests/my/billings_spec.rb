@@ -6,7 +6,7 @@ feature "Billing address update" do
     background do
       sign_in_as :user
       click_link @current_user.name
-      current_url.should =~ %r(^http://[^/]+/account$)
+      current_url.should =~ %r(^http://my\.[^/]+/account$)
       page.should have_content 'John Doe'
       page.should have_content 'Avenue de France 71'
       page.should have_content 'Batiment B'
@@ -15,7 +15,7 @@ feature "Billing address update" do
       click_link "Update billing address"
     end
 
-    scenario "Update billing address successfully", :focus do
+    scenario "Update billing address successfully" do
       fill_in "Name",               with: "Bob Doe"
       fill_in "Street 1",           with: "60 rue du hurepoix"
       fill_in "Street 2",           with: ""
@@ -57,7 +57,7 @@ feature "Credit cards update" do
       sign_in_as :user, without_cc: true
       @current_user.should_not be_credit_card
       click_link(@current_user.name)
-      current_url.should =~ %r(^http://[^/]+/account$)
+      current_url.should =~ %r(^http://my\.[^/]+/account$)
     end
 
     scenario "And update is successful" do
@@ -65,7 +65,7 @@ feature "Credit cards update" do
       @current_user.cc_last_digits.should be_nil
 
       click_link("Register credit card")
-      current_url.should =~ %r(^http://[^/]+/account/billing/edit$)
+      current_url.should =~ %r(^http://my\.[^/]+/account/billing/edit$)
 
       set_credit_card(type: 'master')
       VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "Update" }
@@ -82,10 +82,10 @@ feature "Credit cards update" do
       @current_user.should be_credit_card
 
       click_link(@current_user.name)
-      current_url.should =~ %r(^http://[^/]+/account$)
+      current_url.should =~ %r(^http://my\.[^/]+/account$)
       should_display_credit_card
       click_link("Update credit card")
-      current_url.should =~ %r(^http://[^/]+/account/billing/edit$)
+      current_url.should =~ %r(^http://my\.[^/]+/account/billing/edit$)
     end
 
     scenario "And update is successful" do
@@ -117,7 +117,7 @@ feature "Credit cards update" do
       visit '/account'
 
       should_display_credit_card('d3d')
-      page.should have_no_content(I18n.t('flash.billing.update.notice'))
+      page.should have_no_content(I18n.t('flash.billings.update.notice'))
     end
 
     scenario "And update is waiting after a successful 3-D Secure identification" do
@@ -155,14 +155,14 @@ feature "Credit cards update" do
       visit '/account'
 
       should_display_credit_card
-      page.should have_no_content(I18n.t('flash.billing.update.notice'))
+      page.should have_no_content(I18n.t('flash.billings.update.notice'))
     end
 
     scenario "And update is unsuccessful with a failed attempt first" do
       fill_in "Card number", with: "123123"
       click_button "Update"
 
-      current_url.should =~ %r(^http://[^/]+/account/billing$)
+      current_url.should =~ %r(^http://my\.[^/]+/account/billing$)
       page.should have_content "Name on card can't be blank"
       page.should have_content "Card number is invalid"
       page.should have_content "Expiration date expired"
@@ -195,7 +195,7 @@ def should_display_credit_card(type = 'visa')
 end
 
 def should_save_billing_infos_successfully(type = 'visa')
-  current_url.should =~ %r(^http://[^/]+/account$)
+  current_url.should =~ %r(^http://my\.[^/]+/account$)
   should_display_credit_card(type)
-  page.should have_content(I18n.t('flash.billing.update.notice'))
+  page.should have_content(I18n.t('flash.billings.update.notice'))
 end
