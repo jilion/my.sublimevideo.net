@@ -4,19 +4,19 @@ describe Notify do
 
   describe "send method" do
     before(:each) do
-      HoptoadNotifier.stub(:notify)
+      Airbrake.stub(:notify)
       Notify.stub(:prowl)
     end
 
-    it "should notify via hoptoad" do
+    it "should notify via airbrake" do
       message = 'Yo!'
-      HoptoadNotifier.should_receive(:notify).with(:error_message => message)
+      Airbrake.should_receive(:notify).with(Exception.new(message))
       Notify.send(message)
     end
 
-    it "should notify via hoptoad with exception" do
+    it "should notify via airbrake with exception" do
       message = 'Yo!'
-      HoptoadNotifier.should_receive(:notify).with(:error_message => "Yo! // exception: exception")
+      Airbrake.should_receive(:notify).with(Exception.new("Yo! // exception: exception"))
       Notify.send(message, :exception => "exception")
     end
 
