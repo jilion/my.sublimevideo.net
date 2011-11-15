@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SitesHelper do
+describe My::SitesHelper do
 
   describe "#full_days_until_trial_end" do
     it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 1.day.ago.midnight)).should eql BusinessModel.days_for_trial-1 }

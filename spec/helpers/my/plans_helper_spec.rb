@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PlansHelper do
+describe My::PlansHelper do
 
   describe ".plan_change_type" do
     before(:all) do
