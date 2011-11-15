@@ -37,16 +37,39 @@ Slideshow = Class.create({
       
       if (this.timer) {
         // animation
-        currentBox.morph('opacity:0', {
+        this.fadeInAnimation = new S2.FX.Morph(currentBox, {
           duration:this.speed,
+          style: 'opacity:0',
           after: function() {
-            this.updateActiveClasses(this.slideNames[index]);
-            nextBox.morph('opacity:1', {duration: this.speed});
+            if (this.timer) {
+              this.updateActiveClasses(this.slideNames[index]);
+              this.fadeOutAnimation = new S2.FX.Morph(nextBox, {
+                duration:this.speed,
+                style: 'opacity:1'
+              });
+              this.fadeOutAnimation.play();
+            } else {
+              currentBox.setOpacity(0);
+              
+            }
           }.bind(this)
         });
+        this.fadeInAnimation.play();
       } else {
+        if (this.fadeInAnimation) {
+          this.fadeInAnimation.cancel();
+          this.fadeInAnimation = null;
+        }
+        
+        if (this.fadeOutAnimation) {
+          this.fadeOutAnimation.cancel();
+          this.fadeOutAnimation = null;
+        }
+
         this.updateActiveClasses(this.slideNames[index]);
+        currentBox.removeAttribute('style');
         currentBox.setOpacity(0);
+        nextBox.removeAttribute('style');
         nextBox.setOpacity(1);
       }
       
