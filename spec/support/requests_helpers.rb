@@ -110,7 +110,7 @@ module Spec
           visit subdomain_and_route
         else
           switch_to_subdomain(subdomain_and_route[0])
-          visit subdomain_and_route[1]
+          visit subdomain_and_route[1].start_with?("/") ? subdomain_and_route[1] : "/#{subdomain_and_route[1]}"
         end
       end
 

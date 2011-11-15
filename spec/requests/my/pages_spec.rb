@@ -1,14 +1,15 @@
+# coding: utf-8
 require 'spec_helper'
 
 feature "Pages" do
 
   scenario "/terms" do
-    visit "/terms"
+    go 'my', 'terms'
     page.should have_content('Terms & Conditions')
   end
 
   scenario "/privacy" do
-    visit "/privacy"
+    go 'my', 'privacy'
     page.should have_content('Privacy Policy')
   end
 
@@ -21,7 +22,7 @@ feature "Pages" do
     context "with a non-suspended user" do
       scenario "/suspended" do
         create_plans
-        visit "/suspended"
+        go 'my', 'suspended'
 
         current_url.should =~ %r(^http://[^/]+/sites/new$)
         page.should_not have_content('Your account is suspended')
@@ -40,16 +41,17 @@ feature "Pages" do
         @current_user.suspend
         @site.reload.should be_suspended
         @current_user.reload.should be_suspended
-        visit "/suspended"
       end
 
       scenario "can't visit the edit account page" do
-        visit "/account"
+        go 'my', 'account'
+        
         current_url.should =~ %r(^http://[^/]+/suspended$)
       end
 
       scenario "can visit the edit credit card page" do
-        visit "/account/billing/edit"
+        go 'my', 'account/billing/edit'
+        
         current_url.should =~ %r(^http://[^/]+/account/billing/edit$)
       end
 
@@ -57,7 +59,7 @@ feature "Pages" do
         @current_user.cc_expire_on = 1.month.ago
         @current_user.save(validate: false)
         @current_user.reload.should be_cc_expired
-        visit "/sites"
+        go 'my', 'sites'
 
         current_url.should =~ %r(^http://[^/]+/suspended$)
 
@@ -77,6 +79,8 @@ feature "Pages" do
 
       scenario "and a valid credit card with 1 or more failed invoices" do
         ActionMailer::Base.deliveries.clear
+        go 'my', 'suspended'
+        
         current_url.should =~ %r(^http://[^/]+/suspended$)
 
         VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('invoice.retry_invoices') }

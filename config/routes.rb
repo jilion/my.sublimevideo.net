@@ -28,6 +28,11 @@ MySublimeVideo::Application.routes.draw do
       resource :users, only: [:update], path: '/account/info'
       match '/hide_notice/:id', to: 'users#hide_notice', via: :put
 
+      scope 'account' do
+        resource :billing, only: [:edit, :update]
+      end
+      match '/card(/*anything)', to: redirect('/account/billing/edit'), via: :get
+
       resources :sites, except: [:show] do
         get :state, on: :member
 
@@ -40,22 +45,17 @@ MySublimeVideo::Application.routes.draw do
         resources :stats, only: [:index], controller: 'site_stats' do
           put :trial, on: :collection
         end
+
+        resources :video_tags, :only => :show
       end
 
-      scope 'account' do
-        resource :billing, only: [:edit, :update]
+      resources :invoices, only: [:show] do
+        put :retry_all, on: :collection
       end
-      match '/card(/*anything)', to: redirect('/account/billing/edit'), via: :get
 
       resources :stats, :only => :index, :controller => 'site_stats' do
         put :trial, :on => :collection
         get :videos, :on => :collection
-      end
-
-      resources :video_tags, :only => :show
-
-      resources :invoices, only: [:show] do
-        put :retry_all, on: :collection
       end
 
       match '/transaction/callback', to: 'transactions#callback', via: :post

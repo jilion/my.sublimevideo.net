@@ -1,5 +1,5 @@
 class My::InvoicesController < MyController
-  before_filter :redirect_suspended_user, :only => :index
+  before_filter :redirect_suspended_user, only: [:index]
 
   # GET /sites/:site_id/invoices
   def index

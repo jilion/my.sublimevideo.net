@@ -1,11 +1,11 @@
-class My::VideoTagsController < ApplicationController
+class My::VideoTagsController < MyController
   before_filter :redirect_suspended_user
   before_filter :find_site_by_token!
 
   # GET /sites/:site_id/video_tags/:id
   def show
     @video_tag = VideoTag.where(st: @site.token, u: params[:id]).first
-    
+
     respond_to do |format|
       format.json { render json: @video_tag.try(:meta_data) }
     end

@@ -1,9 +1,12 @@
+# coding: utf-8
 require 'spec_helper'
 
 feature "encode-videos-for-the-web" do
   it "should contain text" do
-    visit "/encode-videos-for-the-web"
+    go 'docs', 'encode-videos-for-the-web'
+
     current_url.should =~ %r(http://[^/]+/encode-videos-for-the-web)
+
     # first line
     page.should have_content("A <video> element can link to multiple video files encoded in different formats")
     # last line
@@ -13,7 +16,8 @@ end
 
 feature "faq" do
   it "should contain text" do
-    visit "/faq"
+    go 'docs', 'faq'
+
     current_url.should =~ %r(http://[^/]+/faq)
     # first line
     page.should have_content("What are “video pageviews” and how are they counted?")
@@ -22,7 +26,8 @@ end
 
 feature "javascript-api" do
   it "should contain text" do
-    visit "/javascript-api"
+    go 'docs', 'javascript-api'
+
     current_url.should =~ %r(http://[^/]+/javascript-api/usage)
     # title
     page.should have_content("Using the JavaScript API")
@@ -33,7 +38,8 @@ end
 
 feature "put-video-in-a-floating-lightbox" do
   it "should contain text" do
-    visit "/put-video-in-a-floating-lightbox"
+    go 'docs', 'put-video-in-a-floating-lightbox'
+
     current_url.should =~ %r(http://[^/]+/put-video-in-a-floating-lightbox)
     # 1st paragraph: first line
     page.should have_content("SublimeVideo comes with integrated zooming capabilities to load and display videos in a floating “lightbox”.")
@@ -52,7 +58,8 @@ end
 
 feature "quickstart-guide" do
   it "should contain text" do
-    visit "/quickstart-guide"
+    go 'docs', 'quickstart-guide'
+
     current_url.should =~ %r(http://[^/]+/quickstart-guide)
     # 1st paragraph: first line
     page.should have_content("Step 1: Add your site")
@@ -69,7 +76,8 @@ end
 
 feature "supported-browsers-and-platforms" do
   it "should contain text" do
-    visit "/supported-browsers-and-platforms"
+    go 'docs', 'supported-browsers-and-platforms'
+
     current_url.should =~ %r(http://[^/]+/supported-browsers-and-platforms)
     # first line
     page.should have_css("table#supported_browsers")
@@ -80,7 +88,8 @@ end
 
 feature "troubleshooting" do
   it "should contain text" do
-    visit "/troubleshooting"
+    go 'docs', 'troubleshooting'
+
     current_url.should =~ %r(http://[^/]+/troubleshooting)
     # 1st paragraph: first line
     page.should have_content("Videos don’t start playing")
@@ -91,14 +100,16 @@ end
 
 feature "releases" do
   it "should be accessible" do
-    visit "/releases"
+    go 'docs', 'releases'
+
     current_url.should =~ %r(http://[^/]+/releases)
   end
 end
 
 feature "write-proper-video-elements" do
   it "should contain text" do
-    visit "/write-proper-video-elements"
+    go 'docs', 'write-proper-video-elements'
+
     current_url.should =~ %r(http://[^/]+/write-proper-video-elements)
     # 1st paragraph: first line
     page.should have_content("The <video> tag is the core element used to embed video clips in HTML5.")

@@ -6,7 +6,7 @@
 %table#header
   %tr
     %td.our_info
-      = render "/invoices/our_billing_info", invoice: invoice
+      = render "our_billing_info", invoice: invoice
 
       .invoice_info
         %p
@@ -27,6 +27,6 @@
 
     %td.user_info
       %h4= "Bill To"
-      = render "/invoices/customer_billing_info", invoice: invoice
+      = render "customer_billing_info", invoice: invoice
 
-= render "/invoices/details", invoice: invoice
+= render "details", invoice: invoice
