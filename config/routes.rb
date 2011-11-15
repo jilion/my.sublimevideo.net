@@ -17,7 +17,7 @@ MySublimeVideo::Application.routes.draw do
           delete :destroy, path: '/account'
         end
       end
-      match '/account/edit' => redirect('/account'), via: :get
+      match '/account/edit', to: redirect('/account'), via: :get
 
       %w[sign_up register].each         { |action| match action => redirect('/signup'), via: :get }
       %w[log_in sign_in signin].each    { |action| match action => redirect('/login'),  via: :get }
@@ -26,7 +26,7 @@ MySublimeVideo::Application.routes.draw do
       match '/password/validate' => "users/passwords#validate", via: :post
 
       resource :users, only: [:update], path: '/account/info'
-      match '/hide_notice/:id' => 'users#hide_notice', via: :put
+      match '/hide_notice/:id', to: 'users#hide_notice', via: :put
 
       resources :sites, except: [:show] do
         get :state, on: :member
@@ -45,19 +45,19 @@ MySublimeVideo::Application.routes.draw do
       scope 'account' do
         resource :billing, only: [:edit, :update]
       end
-      match '/card(/*anything)' => redirect('/account/billing/edit'), via: :get
+      match '/card(/*anything)', to: redirect('/account/billing/edit'), via: :get
 
       resources :invoices, only: [:show] do
         put :retry_all, on: :collection
       end
 
-      match '/transaction/callback' => 'transactions#callback', via: :post
+      match '/transaction/callback', to: 'transactions#callback', via: :post
 
-      match '/refund' => 'refunds#index',  via: :get,  as: 'refunds'
-      match '/refund' => 'refunds#create', via: :post, as: 'refund'
+      match '/refund', to: 'refunds#index',  via: :get,  as: 'refunds'
+      match '/refund', to: 'refunds#create', via: :post, as: 'refund'
 
       resource :ticket, only: [:new, :create], path: '/support', path_names: { new:  '' }
-      %w[help feedback].each { |action| match action => redirect('/support'), via: :get }
+      %w[help feedback].each { |action| match action, to: redirect('/support'), via: :get }
 
       match '/video-tag-builder',              to: 'video_tag_builder#new',          via: :get, as: 'video_tag_builder'
       match '/video-tag-builder/iframe-embed', to: 'video_tag_builder#iframe_embed', via: :get
@@ -65,7 +65,7 @@ MySublimeVideo::Application.routes.draw do
       match '/:page', to: 'pages#show', via: :get, as: :my_page, page: /terms|privacy|suspended/
       match '/r/:type/:token', to: 'referrers#redirect', via: :get, type: /c/, token: /[a-z0-9]{8}/
 
-      match '/pusher/auth' => 'pusher#auth', via: :post
+      match '/pusher/auth', to: 'pusher#auth', via: :post
 
       # =======
       # = API =
@@ -73,11 +73,11 @@ MySublimeVideo::Application.routes.draw do
 
       scope "oauth" do
         # OAuth 2
-        match '/access_token' => 'oauth#token', as: :oauth_token
+        match '/access_token', to: 'oauth#token', as: :oauth_token
 
         # OAuth 1 & 2
-        match '/authorize' => 'oauth#authorize', as: :oauth_authorize
-        match '/revoke'    => 'oauth#revoke',    as: :oauth_revoke, via: :delete
+        match '/authorize', to: 'oauth#authorize', as: :oauth_authorize
+        match '/revoke'   , to: 'oauth#revoke',    as: :oauth_revoke, via: :delete
       end
 
       scope "account" do
@@ -86,7 +86,7 @@ MySublimeVideo::Application.routes.draw do
 
       namespace "api" do
         constraints format: /json|xml/ do
-          match '/test_request' => 'api#test_request'
+          match '/test_request', to: 'api#test_request'
           resources :sites do
             member do
               get :usage
@@ -121,17 +121,18 @@ MySublimeVideo::Application.routes.draw do
 
   scope module: 'docs', as: 'docs' do
     constraints subdomain: 'docs' do
+      # Deprecated routes
+      %w[javascript-api js-api].each { |r| match r, to: redirect('/javascript-api/usage') }
+
       resources :releases, only: :index
 
-      # Deprecated routes
-      %w[javascript-api js-api].each { |r| match r => redirect('/javascript-api/usage') }
-
-      match '/:page' => 'docs#show', via: :get
+      match '/*page', to: 'pages#show', via: :get
 
       root to: redirect('/quickstart-guide')
     end
   end
 
+  # We put this block out of the following scope to avoid double admin_admin in url helpers...
   devise_for :admins,
              constraints: { subdomain: 'admin' },
              module: 'admin/admins',
@@ -163,7 +164,7 @@ MySublimeVideo::Application.routes.draw do
 
       resources :analytics, only: [:index]
 
-      match 'analytics/:report', to: 'analytics#show', as: "analytic"
+      match '/analytics/:report', to: 'analytics#show', as: "analytic"
 
       resources :users, only: [:index, :show] do
         member do
@@ -216,20 +217,18 @@ MySublimeVideo::Application.routes.draw do
   end
 
   scope module: 'com', as: 'com' do
-    constraints subdomain: '' do
-      # SVS routes
-      # match "/signup" => redirect("https://my.sublimevideo.net/signup")
-      # match "/register" => redirect("https://my.sublimevideo.net/signup")
-      # match "/login" => redirect("https://my.sublimevideo.net/login")
-      match "/releases" => redirect("http://docs.sublimevideo.net/releases")
-      match "/privacy"  => redirect("/")
-      match "/notify(/:anything)" => redirect("/")
-      match "/enthusiasts(/:anything)" => redirect("/")
+    # SVS routes
+    # match "/signup", to: redirect("https://my.sublimevideo.net/signup")
+    # match "/register", to: redirect("https://my.sublimevideo.net/signup")
+    # match "/login", to: redirect("https://my.sublimevideo.net/login")
+    # match '/releases', to: redirect('http://docs.sublimevideo.net/releases')
+    match '/privacy' , to: redirect('/')
+    match '/notify(/:anything)', to: redirect('/')
+    match '/enthusiasts(/:anything)', to:redirect('/')
 
-      match '/:page' => 'pages#show', via: :get, as: :page, page: /demo|plans|features/
+    match '/:page', to: 'pages#show', via: :get, as: :page, page: /demo|plans|features/
 
-      root to: 'pages#show', page: 'home'
-    end
+    root to: 'pages#show', page: 'home'
   end
 
 end

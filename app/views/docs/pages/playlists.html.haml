@@ -9,36 +9,35 @@
 
   This example only has two videos, but you can use any number of videos in your own page. Just repeat the _video_wrap_ @<div>@ (and their respective @<li>@ elements) and keep the same @id@ logic for the @<video>@ and the @<li>@ elements: _video3_ / _thumbnail_video3_, _video4_ / _thumbnail_video4_, _videoN_ / _thumbnail_videoN_ and so on.
 
-.code
-  :harsh
-    = "#!harsh #{harsh_options(:html)}"
-    <div id="playlist1" class="interactive">
-      <div class="video_wrap">
-        <video id="video1" class="sublime" poster="posterframe1.jpg" width="640" height="360" preload="none">
-          <source src="video1.mp4" />
-          <source src="video1.webm" />
-        </video>
-      </div>
-      <div class="video_wrap">
-        <video id="video2" poster="posterframe2.jpg" width="640" height="360" preload="none">
-          <source src="video2.mp4" />
-          <source src="video2.webm" />
-        </video>
-      </div>
-
-      <ul>
-        <li id="thumbnail_video1">
-          <a href="">
-            <img alt="Thumbnail 1" src="thumbnail1.jpg" width="178" height="76" />
-          </a>
-        </li>
-        <li id="thumbnail_video2">
-          <a href="">
-            <img alt="Thumbnail 2" src="thumbnail2.jpg" width="178" height="76" />
-          </a>
-        </li>
-      </ul>
+:coderay
+  #{coderay_options(:html)}
+  <div id="playlist1" class="interactive">
+    <div class="video_wrap">
+      <video id="video1" class="sublime" poster="posterframe1.jpg" width="640" height="360" preload="none">
+        <source src="video1.mp4" />
+        <source src="video1.webm" />
+      </video>
     </div>
+    <div class="video_wrap">
+      <video id="video2" poster="posterframe2.jpg" width="640" height="360" preload="none">
+        <source src="video2.mp4" />
+        <source src="video2.webm" />
+      </video>
+    </div>
+
+    <ul>
+      <li id="thumbnail_video1">
+        <a href="">
+          <img alt="Thumbnail 1" src="thumbnail1.jpg" width="178" height="76" />
+        </a>
+      </li>
+      <li id="thumbnail_video2">
+        <a href="">
+          <img alt="Thumbnail 2" src="thumbnail2.jpg" width="178" height="76" />
+        </a>
+      </li>
+    </ul>
+  </div>
 
 :textile
   **Notes**
@@ -49,34 +48,33 @@
 
   These CSS rules hide the non-active @<video>@ elements and show the active ones. They also add a simple _hover_ effect to the thumbnail @<li>@ elements and set a different style on the currently active thumbnail.
 
-.code
-  :harsh
-    = "#!harsh #{harsh_options(:css)}"
-    /*
-    * You probably want to set the same width and height
-    * that you have set to your <video> elements.
-    */
-    .interactive .video_wrap {
-      width:640px;
-      height:360px;
-      display:none;
-    }
-    .interactive .video_wrap.active {
-      display:block;
-    }
+:coderay
+  #{coderay_options(:css)}
+  /*
+  * You probably want to set the same width and height
+  * that you have set to your <video> elements.
+  */
+  .interactive .video_wrap {
+    width:640px;
+    height:360px;
+    display:none;
+  }
+  .interactive .video_wrap.active {
+    display:block;
+  }
 
-    /* This will make distinguishable the currently selected thumbnail */
-    .interactive li.active {
-      background:#000;
-    }
+  /* This will make distinguishable the currently selected thumbnail */
+  .interactive li.active {
+    background:#000;
+  }
 
-    /* This will create a simple hover effect */
-    .interactive li img {
-      opacity:.7;
-    }
-    .interactive li a:hover img, .interactive li.active img {
-      opacity:1;
-    }
+  /* This will create a simple hover effect */
+  .interactive li img {
+    opacity:.7;
+  }
+  .interactive li a:hover img, .interactive li.active img {
+    opacity:1;
+  }
 
 :textile
   h4. JavaScript Code

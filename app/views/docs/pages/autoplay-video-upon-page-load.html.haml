@@ -7,13 +7,12 @@
 
   h4. HTML Code
 
-.code
-  :harsh
-    = "#!harsh #{harsh_options(:html)}"
-    <video id="video1" poster="posterframe.jpg" width="640" height="360" preload="none">
-      <source src="video.mp4" />
-      <source src="video.webm" />
-    </video>
+:coderay
+  #{coderay_options(:html)}
+  <video id="video1" poster="posterframe.jpg" width="640" height="360" preload="none">
+    <source src="video.mp4" />
+    <source src="video.webm" />
+  </video>
 
 :textile
   **Notes**
@@ -24,14 +23,13 @@
 
   Put this code in a @<script>@ element just before the @</body>@ tag, or in an external file.
 
-.code
-  :harsh
-    = "#!harsh #{harsh_options(:javascript)}"
-    sublimevideo.ready(function() {
-      sublimevideo.prepareAndPlay("video1");
-    });
-    
+:coderay
+  #{coderay_options(:javascript)}
+  sublimevideo.ready(function() {
+    sublimevideo.prepareAndPlay("video1");
+  });
+
 :textile
   h3. Demo
-  
+
   You can see this feature in action "on this page":http://test.sublimevideo.net/autoplay.

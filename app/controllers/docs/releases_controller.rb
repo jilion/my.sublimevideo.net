@@ -1,9 +1,12 @@
-class Docs::ReleasesController < DocsController
-  respond_to :html, :atom
+class Docs::ReleasesController < ApplicationController
+  respond_to :atom
+
+  layout 'my_application'
+
+  before_filter :cache_page
 
   def index
     @releases = Docs::Release.all.reverse
-    params[:page] = "releases"
 
     respond_with(@releases)
   end

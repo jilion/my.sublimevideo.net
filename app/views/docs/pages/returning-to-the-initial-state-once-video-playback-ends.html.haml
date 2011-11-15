@@ -5,14 +5,13 @@
 
   Simply put the following JavaScript code in a @<script>@ element just before the @</body>@ tag, or in an external file.
 
-.code
-  :harsh
-    = "#!harsh #{harsh_options(:javascript)}"
-    sublimevideo.ready(function() {
-      sublimevideo.onEnd(function(sv) {
-        sublimevideo.stop();
-      });
+:coderay
+  #{coderay_options(:javascript)}
+  sublimevideo.ready(function() {
+    sublimevideo.onEnd(function(sv) {
+      sublimevideo.stop();
     });
+  });
 
 :textile
   **Notes**

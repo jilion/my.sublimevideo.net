@@ -1,33 +1,48 @@
-.CodeRay {
-  background-color: #232323;
-  border: 1px solid black;
-  font-family: 'Courier New', 'Terminal', monospace;
-  color: #E6E0DB;
-  padding: 3px 5px;
-  overflow: auto;
-  font-size: 12px;
-  margin: 12px 0;
-}
-.CodeRay pre {
-  margin: 0px;
-  padding: 0px;
+.CodeRay .code {
+  font-family:Monaco, Courier, monospace;
+  font-size:13px;
+  line-height:22px;
 }
 
-.CodeRay .an { color:#E7BE69 }                      /* html attribute */
-.CodeRay .c  { color:#BC9358; font-style: italic; } /* comment */
+.CodeRay pre {
+  width:560px;
+  overflow:auto;
+  color: #496594;
+}
+
+.CodeRay pre::-webkit-scrollbar {
+  width:6px;
+  height:6px;
+}
+
+.CodeRay pre::-webkit-scrollbar-button:start:decrement, #main code::-webkit-scrollbar-button:end:increment  {
+  display:none;
+}
+
+.CodeRay pre::-webkit-scrollbar-track-piece  {
+  background-color:#b9c8d8;
+  -webkit-border-radius:6px;
+}
+
+.CodeRay pre::-webkit-scrollbar-thumb:horizontal {
+  background-color:#657a8f;
+  -webkit-border-radius:6px;
+}
+
+
+.CodeRay .tag, .CodeRay .attribute-name, .CodeRay .predefined, #content .CodeRay .line-numbers, #content .CodeRay .line-numbers a { color:#496594 }
+.CodeRay .line-numbers:after { content: '.'; }
+.CodeRay .comment { color:#BC9358; font-style: italic; } /* comment */
 .CodeRay .ch { color:#509E4F }                      /* escaped character */
 .CodeRay .cl { color:#FFF }                         /* class */
-.CodeRay .co { color:#FFF }                         /* constant */
-.CodeRay .fl { color:#A4C260 }                      /* float */
-.CodeRay .fu { color:#FFC56D }                      /* function */
+.CodeRay .float { color:#739623 }                      /* float */
+.CodeRay .function { color:#678DCB }
+.CodeRay .key, .CodeRay .keyword { color:#d67722 }
 .CodeRay .gv { color:#D0CFFE }                      /* global variable */
-.CodeRay .i  { color:#A4C260 }                      /* integer */
 .CodeRay .il { background:#151515 }                 /* inline code */
-.CodeRay .iv { color:#D0CFFE }                      /* instance variable */
+.CodeRay .local-variable { color:#7C97C4 }                      /* instance variable */
 .CodeRay .pp { color:#E7BE69 }                      /* doctype */
-.CodeRay .r  { color:#CB7832 }                      /* keyword */
-.CodeRay .rx { color:#A4C260 }                      /* regex */
-.CodeRay .s  { color:#A4C260 }                      /* string */
+.CodeRay .regexp { color:#509E4F }                      /* regex */
+.CodeRay .string, .CodeRay .color  { color:#5e42ab }
 .CodeRay .sy { color:#6C9CBD }                      /* symbol */
-.CodeRay .ta { color:#E7BE69 }                      /* html tag */
 .CodeRay .pc { color:#6C9CBD }                      /* boolean */

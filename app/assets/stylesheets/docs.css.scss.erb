@@ -1,84 +1,3 @@
-/** {
-  margin:0;
-  padding:0;
-}
-
-html {-webkit-text-size-adjust:none;}
-
-body {
-  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
-  background:#3a5379 url(<%= asset_data_uri 'header_background.png' %>) repeat-x;
-  color:#545e75;
-  font-size:14px;
-  text-shadow:rgba(255,255,255,0.8) 0 1px 0;
-  text-rendering:optimizeLegibility;
-}
-
-body.win {font-family:Arial, sans-serif}
-
-#global {
-  width:1000px;
-  margin:0 auto;
-}
-
-header {
-  height:535px;
-  background:url(<%= asset_data_uri 'docs/stars_background.png' %>) no-repeat;
-  position:relative;
-}
-
-header h1 a {
-  display:block;
-  width:443px;
-  height:113px;
-  background:url(<%= asset_data_uri 'docs/sublimevideo.png' %>) no-repeat;
-  margin:0 auto;
-  position:relative;
-  top:60px;
-}
-
-header h1 span {display:none}
-*/
-header a.jilion {
-  display:block;
-  width:142px;
-  height:71px;
-  position:absolute;
-  top:79px;
-  left:70px;
-  background:url(<%= asset_data_uri 'docs/jilion.png' %>) no-repeat;
-}
-
-header a.twitter {
-  display:block;
-  width:105px;
-  height:54px;
-  background:url(<%= asset_data_uri 'docs/twitter.png' %>) no-repeat;
-  position:absolute;
-  top:87px;
-  right:70px;
-  -webkit-transition:8s -webkit-transform;
-}
-
-header a.twitter:hover {
-  -webkit-transform:translate(30px, -30px);
-}
-
-header a.jilion span, header a.twitter span {display:none}
-
-#content {
-  width:960px;
-  margin:-300px auto 0;
-  background:#e1e6f0 url(<%= asset_data_uri 'docs/content_gradient.png' %>) repeat-x;
-  position:relative;
-  -moz-border-radius:8px;
-  -webkit-border-radius:8px;
-  border-radius:8px;
-  -moz-box-shadow:rgba(0,0,0,0.4) 0 1px 20px, inset rgba(255,255,255,0.3) 0 1px 0;
-  -webkit-box-shadow:rgba(0,0,0,0.4) 0 1px 20px, inset rgba(255,255,255,0.3) 0 1px 0;
-  box-shadow:rgba(0,0,0,0.4) 0 1px 20px, inset rgba(255,255,255,0.3) 0 1px 0;
-}
-
 #content a {
   color:#005bbe;
 }
@@ -180,30 +99,6 @@ ul#meta_menu li.active a {
 
 #content .footnotes code {font-size:12px}
 
-footer {
-  width:940px;
-  margin:15px auto 30px;
-  color:#a6c0e7;
-  text-shadow:rgba(0,0,0,0.5) 0 -1px 0;
-  font-size:15px;
-}
-
-footer a {
-  color:#fff;
-}
-
-footer p.right {
-  float:right;
-}
-
-footer p.copyright {
-  font-size:12px;
-  text-align:center;
-  padding:20px 0;
-}
-
-.spacer {clear:both}
-
 section, header, footer, nav {display:block}
 
 a {
@@ -227,62 +122,6 @@ img {
   color:#1c263b;
   font-weight:600;
   text-shadow:rgba(255,255,255,0.5) 0 1px 0;
-}
-
-nav#menu {
-  width:220px;
-  padding-right:20px;
-  float:left;
-}
-
-nav#menu ul {
-  list-style-type:none;
-}
-
-nav#menu ul.pages {
-  padding:4px 0;
-  margin-bottom:16px;
-}
-
-nav#menu ul.pages li {
-  padding:6px 0 6px 18px;
-  line-height:15px;
-  background:url(<%= asset_data_uri 'docs/menu_bullet.png' %>) no-repeat 0 10px;
-}
-
-nav#menu ul.pages li.active {
-  font-weight:600;
-  background:url(<%= asset_data_uri 'docs/menu_bullet_active.png' %>) no-repeat 0 10px;
-}
-
-nav#menu ul.pages li.active a {
-  color:#163058;
-}
-
-nav#menu ul.pages li.title {
-  padding:6px 0;
-  background:none;
-}
-
-nav#menu h3 {
-  font-size:14px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  font-weight:800;
-  color:#737e94;
-  text-shadow:rgba(255,255,255,0.6) 0 1px 0;
-}
-
-nav#menu ul.pages li a {
-  font-size:16px;
-  color:#455674;
-  text-shadow:rgba(255,255,255,0.6) 0 1px 0;
-}
-
-#main {
-  width:560px;
-  float:left;
-  font-size:15px;
 }
 
 #main h2 {
@@ -425,30 +264,6 @@ nav#menu ul.pages li a {
   font-family:Monaco, Courier, monospace;
   font-size:13px;
   line-height:22px;
-}
-
-#main pre {
-  width:560px;
-  overflow:auto;
-}
-
-#main pre::-webkit-scrollbar {
-  width:6px;
-  height:6px;
-}
-
-#main pre::-webkit-scrollbar-button:start:decrement, #main code::-webkit-scrollbar-button:end:increment  {
-  display:none;
-}
-
-#main pre::-webkit-scrollbar-track-piece  {
-  background-color:#b9c8d8;
-  -webkit-border-radius:6px;
-}
-
-#main pre::-webkit-scrollbar-thumb:horizontal {
-  background-color:#657a8f;
-  -webkit-border-radius:6px;
 }
 
 #main a:hover {

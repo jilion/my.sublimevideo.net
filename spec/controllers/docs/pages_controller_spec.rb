@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Com::PagesController do
+describe Docs::PagesController do
 
   context "as guest" do
-    %w[home demo features plans].each do |page|
+    %w[quickstart-guide javascript-api/usage].each do |page|
       it "responds with success to GET :show, on #{page} page" do
         get :show, page: page
-        response.should render_template("pages/#{page}")
+        response.should render_template("docs/pages/#{page}")
       end
     end
   end

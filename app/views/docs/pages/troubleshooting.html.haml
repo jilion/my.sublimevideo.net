@@ -2,47 +2,47 @@
 
 :textile
   h3(#videos-dont-start-playing). Videos don't start playing
-  
+
   The most common cause of this problem is MIME types misconfiguration in your web server. While most web servers are already configured to serve _.mp4_ files with the proper MIME type, they are often not configured to properly serve _.ogv_ and _.webm_ files.
-  
+
   Here is how MIME types should be configured in your web server:
-  
+
   table(simple).
   |_. File extension|_. MIME type|
   |.mp4, m4v|video/mp4|
   |.ogv|video/ogg|
   |.webm|video/webm|
-  
+
   h4. Videos served by Apache
-  
+
   Please read "this article":http://diveintohtml5.info/video.html#video-mime-types to learn more about how to configure the Apache web server.
-  
+
   h4. Videos served by Amazon S3
-  
+
   If your are using Amazon S3 to host Ogg and WebM videos, you might want to check that the proper MIME types are set when uploading the video files.
   For MP4 videos this shouldn't be necessary (as the proper MIME type is already set by default).
-  
+
   h3(#videos-dont-play-on-the-iphone-or-other-mobile-devices). Videos don't play on the iPhone or other mobile devices
-  
+
   Be sure your MP4/H.264 video file doesn't exceed the maximum resolution/bitrate supported by your mobile device, otherwise you need to specify an additional @<source>@ element as explained in "how to write proper @<video>@ elements":/write-proper-video-elements section.
-  
+
   h3(#videos-dont-play-until-fully-preloaded). Videos don't play until they are fully preloaded (in Flash mode)
-  
+
   It is probably an encoding issue with your MP4 videos. Try to re-encode them using the free application "Handbrake":http://handbrake.fr, and be sure to check the "*Web optimized*" option which will allows the video to start playing (in Flash mode) even if it is not fully preloaded. Read more about "H.264 video encoding":/encode-videos-for-the-web.
-  
+
   h3(#not-properly-registered). I'm seeing the message "SublimeVideo Player is not properly registered for this site", why?
-  
+
   There are two reasons this alert message could be appearing:
-  
+
   The alert is displayed if you have multiple sites registered on "MySublimeVideo":https://my.sublimevideo.net/sites and are using another site’s SublimeVideo Player embed code in the site receiving the error message. Please check that the embed code you are using on your site is the same as the one displayed when you click the ‘Embed Code’ button for that site on "MySublimeVideo":https://my.sublimevideo.net/sites.
-  
+
   This alert is also displayed if you have a Free LaunchPad plan and are trying to use the player in production. The LaunchPad Plan only works on your local domains - if you want to use the player in production you can upgrade your LaunchPad plan to a paid plan.
-  
+
 -#  h3. The player has a strange behavior or looking
--#  
+-#
 -#  In normal mode, if *the controls bar disappears when hovering*,
 -#  or if *the play button is not in the center* but on the extreme left of the video.
--#  
+-#
 -#  Check that you declare a DOCTYPE a the top of your Web page, like this:
 -#.code
 -#  :harsh

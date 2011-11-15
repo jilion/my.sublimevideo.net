@@ -9,14 +9,13 @@
 
   h4. HTML Code
 
-.code
-  :harsh
-    = "#!harsh #{harsh_options(:html)}"
-    <img id="posterframe_video1" class="custom_play_button" src="posterframe.jpg" width="640" height="360" />
-    <video id="video1" style="display:none;" poster="posterframe.jpg" width="640" height="360" preload="none">
-      <source src="video.mp4" />
-      <source src="video.webm" />
-    </video>
+:coderay
+  #{coderay_options(:html)}
+  <img id="posterframe_video1" class="custom_play_button" src="posterframe.jpg" width="640" height="360" />
+  <video id="video1" style="display:none;" poster="posterframe.jpg" width="640" height="360" preload="none">
+    <source src="video.mp4" />
+    <source src="video.webm" />
+  </video>
 
 :textile
   **Notes**
@@ -31,36 +30,34 @@
 
   **jQuery Version:**
 
-.code
-  :harsh
-    = "#!harsh #{harsh_options(:javascript)}"
-    sublimevideo.ready(function() {
-      $("img.custom_play_button").each(function() {
-        $(this).click(function(event) {
-          event.preventDefault();
-          // Hide the posterframe and prepare and play the video
-          sublimevideo.prepareAndPlay($(this).attr("id").replace(/^posterframe_/, ""));
-          $(this).hide();
-        });
+:coderay
+  #{coderay_options(:javascript)}
+  sublimevideo.ready(function() {
+    $("img.custom_play_button").each(function() {
+      $(this).click(function(event) {
+        event.preventDefault();
+        // Hide the posterframe and prepare and play the video
+        sublimevideo.prepareAndPlay($(this).attr("id").replace(/^posterframe_/, ""));
+        $(this).hide();
       });
     });
+  });
 
 :textile
   **Prototype Version:**
 
-.code
-  :harsh
-    = "#!harsh #{harsh_options(:javascript)}"
-    sublimevideo.ready(function() {
-      $$("img.custom_play_button").each(function(img) {
-        img.on("click", function(event) {
-          event.stop();
-          // Hide the posterframe and prepare and play the video
-          sublimevideo.prepareAndPlay(img.readAttribute("id").replace(/^posterframe_/, ""));
-          img.hide();
-        }.bind(this));
+:coderay
+  #{coderay_options(:javascript)}
+  sublimevideo.ready(function() {
+    $$("img.custom_play_button").each(function(img) {
+      img.on("click", function(event) {
+        event.stop();
+        // Hide the posterframe and prepare and play the video
+        sublimevideo.prepareAndPlay(img.readAttribute("id").replace(/^posterframe_/, ""));
+        img.hide();
       }.bind(this));
-    });
+    }.bind(this));
+  });
 
 :textile
   **Notes**

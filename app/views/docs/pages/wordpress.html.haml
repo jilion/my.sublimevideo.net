@@ -1,5 +1,4 @@
-= content_for :js do
-  = javascript_include_tag("http://cdn.sublimevideo.net/js/ibvjcopp.js")
+= content_for :head, javascript_include_tag("http://cdn.sublimevideo.net/js/ibvjcopp.js")
 
 = page_title "WordPress plugin"
 
@@ -7,7 +6,7 @@
   This plugin allows you to easily integrate SublimeVideo with your WordPress site. It automatically connects to your account on <a href='https://my.sublimevideo.net' onclick='window.open(this); return false'>MySublimeVideo</a>, gathers the necessary license information and provide an easy-to-use visual editor that will help you generate "shortcodes":#shortcode-documentation for your videos.
 
   Check out the short demo video below to see just how easy it is to use.
-  
+
   <div class="video_wrap"><video class="sublime" width="560" height="315" poster="http://assets0.jilion.com/static/videos/SublimeVideo-WP-Plugin-Demo.jpg" preload="none">
     <source src="http://assets0.jilion.com/static/videos/SublimeVideo-WP-Plugin-Demo.mp4" />
     <source src="http://assets0.jilion.com/static/videos/SublimeVideo-WP-Plugin-Demo-mobile.mp4" />
@@ -20,17 +19,17 @@
   # Go to the SublimeVideo plugin settings page and authorize the plugin to access some of your MySublimeVideo data. You will be redirected to the MySublimeVideo site to complete the authorization process.
   # Once the authorization is complete, you will see your SublimeVideo sites listed in a dropdown menu in the plugin settings page; you'll have to choose the one matching the domain of your WordPress site. If you only have one site on MySublimeVideo, it'll be selected automatically.
   # In the plugin settings page you can also set the default width for all videos you embed.
-  # Go to the post editor, you should see the new !(icon)/images/embed/main/wordpress/sv_toolbar_icon.png(SV)! button next to the media icons (image, video, audio, etc) – the plugin's installation is now complete. If you don't see it, please refer to the "Troubleshooting":#troubleshooting section below.
+  # Go to the post editor, you should see the new #{image_tag('docs/wordpress/sv_toolbar_icon.png', class: 'icon', title: 'SV')} button next to the media icons (image, video, audio, etc) – the plugin's installation is now complete. If you don't see it, please refer to the "Troubleshooting":#troubleshooting section below.
 
   h3(#usage). Usage
 
   Go to your WordPress Media Library and upload some video files and poster images (if your assets are hosted externally, you can skip this step).
-  Click the !(icon)/images/embed/main/wordpress/sv_toolbar_icon.png(SV)! button to access the "Add SublimeVideo" pop-up panel. It is composed of 3 sections: "Poster frame":#poster-frame, "Video sources":#video-sources and "Live preview":#live-preview (initially hidden).
+  Click the #{image_tag('docs/wordpress/sv_toolbar_icon.png', class: 'icon', title: 'SV')} button to access the "Add SublimeVideo" pop-up panel. It is composed of 3 sections: "Poster frame":#poster-frame, "Video sources":#video-sources and "Live preview":#live-preview (initially hidden).
   _Please note that it's currently not possible to upload media directly from this popup._
 
   h4(#poster-frame). Poster frame
 
-  !(screenshot)/images/embed/main/wordpress/poster_frame.png(Poster frame)!
+  #{image_tag('docs/wordpress/poster_frame.png', class: 'screenshot', title: 'Poster frame')}
   _The SublimeVideo WordPress plugin's poster frame browser._
 
   Images in the browser are ordered decreasingly by date of upload. Simply click an image to choose it as the poster frame.
@@ -39,7 +38,7 @@
 
   h4(#video-sources). Video sources
 
-  !(screenshot)/images/embed/main/wordpress/video_sources.png(Video sources)!
+  #{image_tag('docs/wordpress/video_sources.png', class: 'screenshot', title: 'Video sources')}
 
   Learn more about video formats and encoding "on this page":encode-videos-for-the-web.
 
