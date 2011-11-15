@@ -1,4 +1,4 @@
-class ComController < ApplicationController
+class Com::PagesController < ApplicationController
   before_filter :cache_page
 
   def show

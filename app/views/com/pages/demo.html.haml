@@ -1,7 +1,6 @@
-= content_for :title do
-  = "SublimeVideo - HTML5 Video Player - Demo"
-= content_for :js do 
-  == <script type="text/javascript" src="http://cdn.sublimevideo.net/js/ibvjcopp.js"></script>
+= content_for :title, "SublimeVideo - HTML5 Video Player - Demo"
+= content_for :js do
+  = javascript_include_tag("http://cdn.sublimevideo.net/js/ibvjcopp.js")
   = javascript_include_tag("/javascripts/demo.js");
 
 %section#content
@@ -126,10 +125,10 @@
           =raw "jump anywhere in the video and it will start buffering from that point (Flash mode requires streaming server)"
         %li
           %strong= "Uniform UI across all browsers"
-        %li 
+        %li
           %strong= "Volume controls:"
           =raw "saving audio level for each site (cookie-less HTML5/Flash local storage)"
-        %li 
+        %li
           %strong= "Time display:"
           =raw "mouse over elapsed time to view remaining time with click to stick"
         %li
@@ -146,4 +145,4 @@
     %section#credits
       :textile
         p(desc). Video Credits: _Dartmoor_ by "James Watson":http://james-watson.net (Desktop: HD 720p. iPhone/iPad Wi-Fi: 640x272)
-      
+
