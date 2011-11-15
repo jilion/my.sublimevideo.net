@@ -80,7 +80,6 @@ namespace :db do
 
     desc "Create fake site & video stats"
     task :recurring_stats => :environment do
-      timed { empty_tables(Stat::Site, Stat::Video, VideoTag) }
       timed { create_stats(argv_site_token) }
       timed { recurring_stats_update(argv_site_token) }
     end
@@ -386,7 +385,10 @@ end
 def create_stats(site_token=nil)
   sites = site_token ? [Site.find_by_token(site_token)] : Site.all
   sites.each do |site|
-    videos_count = 10
+    VideoTag.where(st: site.token).delete_all
+    Stat::Site.where(t: site.token).delete_all
+    Stat::Video.where(st: site.token).delete_all
+    videos_count = 6
     # Video Tags
     videos_count.times do |video_i|
       VideoTag.create(st: site.token, u: "video#{video_i}",
@@ -498,11 +500,11 @@ def recurring_site_stats_update(user_id)
         second = Time.now.change(usec: 0).to_time
         site = sites.order(:hostname).first()
         json = { "pv" => 1, "bp" => { "saf-osx" => 1 } }
-        Pusher["private-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+        Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
         json = { "md" => { "f" => { "d" => 1 }, "h" => { "d" => 1 } } }
-        Pusher["private-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+        Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
         json = { "vv" => 1 }
-        Pusher["private-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+        Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
       end
     end
   end
@@ -511,7 +513,7 @@ end
 def recurring_stats_update(site_token)
   site         = Site.find_by_token(site_token)
   last_second  = 0
-  videos_count = 3
+  videos_count = 20
   EM.run do
     EM.add_periodic_timer(0.001) do
       second = Time.now.change(usec: 0).to_time
@@ -519,8 +521,9 @@ def recurring_stats_update(site_token)
         sleep rand(1)
         last_second = second.to_i
         EM.defer do
-          videos_count.times do |video_i|
-            hits = second.to_i%3
+          # videos_count.times do |video_i|
+            video_i = second.to_i%videos_count
+            hits    = second.to_i%10
             Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
             Stat::Video.collection.update({ st: site.token, u:  "video#{video_i}", s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
             json = {
@@ -529,8 +532,8 @@ def recurring_stats_update(site_token)
                 { id: second.to_i, u: "video#{video_i}", n: "Video #{video_i}", vv: hits }
               ]
             }
-            Pusher["private-#{site.token}"].trigger_async('stats', json)
-          end
+            Pusher["presence-#{site.token}"].trigger_async('stats', json)
+          # end
           puts "Stats updated at #{second}"
         end
       end

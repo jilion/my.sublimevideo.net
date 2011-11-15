@@ -73,6 +73,9 @@ class Stat::Video
       reduce: js_reduce_for_sum(period_sym)
     )
 
+    # replace u per id for Backbone
+    videos.each { |video| video["id"] = video.delete("u") }
+
     total = videos.size
 
     videos.sort_by! { |video| video["#{options[:sort_by]}_sum"] }.reverse! unless period_sym == :s
@@ -104,12 +107,11 @@ private
   end
 
   def self.add_video_tags_metadata!(site_token, videos)
-    video_uids = videos.map { |video| video["u"] }
+    video_uids = videos.map { |video| video["id"] }
 
     VideoTag.where(st: site_token, u: { "$in" => video_uids }).entries.each do |video_tag|
-      video = videos.detect { |video| video["u"] == video_tag.u }
+      video = videos.detect { |video| video["id"] == video_tag.u }
       video.merge!(video_tag.meta_data)
-      video["id"] = video.delete("u") # replace u per id for Backbone
     end
 
     videos

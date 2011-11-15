@@ -4,6 +4,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initHighcharts()
     this.initSparkline()
     this.initModels()
+    this.initHelpers()
     this.initPusherStatsChannel()
     sublimevideo.load()
 
@@ -110,6 +111,9 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.statsDays    = new MSVStats.Collections.StatsDays()
 
     MSVStats.videos = new MSVStats.Collections.Videos()
+    
+  initHelpers: ->
+    MSVStats.chartsHelper = new MSVStats.Helpers.ChartsHelper()
 
   initPusherStatsChannel: ->
     MSVStats.statsChannel = MSVStats.pusher.subscribe("stats")
@@ -127,11 +131,16 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
 
   initPusherPrivateSiteChannel: ->
     unless MSVStats.sites.selectedSite.inFreePlan()
-      MSVStats.privateChannel = MSVStats.pusher.subscribe("private-#{MSVStats.selectedSiteToken}")
-      MSVStats.privateChannel.bind 'stats', (data) ->
+      MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
+  
+      MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
+        setTimeout MSVStats.statsSeconds.fetchOldSeconds, 2000
+      
+      MSVStats.presenceChannel.bind 'stats', (data) ->
         MSVStats.statsSeconds.merge(data.site, silent: true)
         MSVStats.videos.merge(data.videos, silent: true) if MSVStats.period.isSeconds()
-      MSVStats.privateChannel.bind 'video_tag', (data) ->
+      
+      MSVStats.presenceChannel.bind 'video_tag', (data) ->
         if (video = MSVStats.videos.get(data.u))?
           video.set(data.meta_data)
 

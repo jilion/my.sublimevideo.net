@@ -72,7 +72,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       _.reduce @models, ((memo, stat) -> iterator(memo, stat)), context
 
   merge: (data, options) ->
-    if stat = this.get(data.id)
+    if (stat = this.get(data.id))?
       attributes = {}
       attributes.pv = stat.get('pv') + data.pv if data.pv?
       attributes.vv = stat.get('vv') + data.vv if data.vv?
@@ -136,8 +136,6 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
     unless this.get(currentStatId)?
       this.add({ id: currentStatId }, silent: true)
 
-    if this.length == 3
-      this.fetchOldSeconds()
     if this.length > 62
       this.removeOldStats(62)
 

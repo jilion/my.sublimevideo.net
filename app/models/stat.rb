@@ -96,7 +96,7 @@ module Stat
     def period_intervals(site_token, period)
       case period
       when 'seconds'
-        to    = 1.second.ago.change(usec: 0).utc
+        to    = 2.seconds.ago.change(usec: 0).utc
         from  = to - 59.seconds
       when 'minutes'
         last_minute_stat = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last

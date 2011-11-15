@@ -2266,7 +2266,8 @@ SVGElement.prototype = {
 			element = this.element,
 
 			// compensate for inverted plot area
-			transform = this.parentInverted ? '(-1,-1)' : '(1,1)';
+      // transform = this.parentInverted ? '(-1,-1)' : '(1,1)';
+			transform = '(0,0)';
 
 
 		if (apply) {
@@ -2274,9 +2275,9 @@ SVGElement.prototype = {
 				shadow = element.cloneNode(0);
 				attr(shadow, {
 					'isShadow': 'true',
-					'stroke': 'rgb(0, 0, 0)',
+					'stroke': 'rgb(116, 255, 131)',
 					'stroke-opacity': 0.05 * i,
-					'stroke-width': 7 - 2 * i,
+					'stroke-width': 16 - 2 * i,
 					'transform': 'translate' + transform,
 					'fill': NONE
 				});

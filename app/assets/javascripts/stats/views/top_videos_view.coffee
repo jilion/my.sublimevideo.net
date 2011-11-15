@@ -9,13 +9,12 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     'click a#show_less':   'showLess'
 
   initialize: () ->
-    _.bindAll this, 'render'
     @options.period.bind 'change', this.render
     @options.videos.bind 'change', this.render
     @options.videos.bind 'reset',  this.render
     this.render()
 
-  render: ->
+  render: =>
     if MSVStats.videos.isReady()
       $(@el).show()
       $('#top_videos').data().spinner.stop()
@@ -32,12 +31,13 @@ class MSVStats.Views.TopVideosView extends Backbone.View
       return this
 
   renderSparklines: ->
-    for video in MSVStats.videos.models
-      $("#sparkline_#{video.id}").sparkline video.vvArray(),
-        width: '150px'
-        height: '25px'
-        lineColor: '#0046ff'
-        fillColor: '#0046ff'
+    for video in MSVStats.videos.customModels()
+      if video.isShowable()
+        MSVStats.chartsHelper.sparkline $("#sparkline_#{video.id}"), video.vvArray(),
+          width:  '100%'
+          height: '100%'
+          lineColor: '#1ce937'
+          fillColor: '#71bb93'
 
   updateTitle: ->
     title = switch MSVStats.videos.sortBy

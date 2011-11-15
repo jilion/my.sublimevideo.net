@@ -2,11 +2,10 @@ class MSVStats.Views.PlanUsageView extends Backbone.View
   template: JST['stats/templates/_plan_usage']
 
   initialize: ->
-    _.bindAll this, 'render'
     @options.statsDays.bind 'init', this.render
     @options.statsDays.bind 'reset', this.render
 
-  render: ->
+  render: =>
     site = MSVStats.sites.selectedSite
     plan =
       videoViews:           site.get('plan_video_views')
@@ -15,4 +14,4 @@ class MSVStats.Views.PlanUsageView extends Backbone.View
       monthCycleEndTime:    site.planMonthCycleEndTime()
     $(@el).html(this.template(plan: plan, stats: @options.statsDays))
     return this
-      
+
