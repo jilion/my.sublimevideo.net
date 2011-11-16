@@ -9,4 +9,9 @@ class My::Users::SessionsController < Devise::SessionsController
     respond_with resource, location: redirect_location(resource_name, resource)
   end
 
+  def destroy
+    cookies.delete :l, domain: :all
+    super
+  end
+
 end

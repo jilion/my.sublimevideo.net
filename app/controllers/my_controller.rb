@@ -7,6 +7,7 @@ class MyController < ApplicationController
   layout 'my_application'
 
   before_filter :authenticate_user!
+  before_filter :set_cookie_for_menu
 
 private
 
@@ -28,6 +29,16 @@ private
     @sites = apply_scopes(@sites).by_date
 
     redirect_to [:new, :site] if @sites.empty?
+  end
+
+  def set_cookie_for_menu
+    unless cookies[:l]
+      cookies[:l] = {
+        value: true,
+        expires: 1.hour.from_now,
+        domain: :all
+      }
+    end
   end
 
   module DeviseInvitable::Controllers::Helpers

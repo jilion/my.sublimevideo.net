@@ -8,8 +8,9 @@ document.observe "dom:loaded", ->
       SublimeVideo.showPopup(event.state.showPopup)
 
 SublimeVideo.showPopup = (name) ->
-  console.log document.cookie
-  if $("popup_#{name}")
+  if Cookie.get('l') == 'true'
+    document.location.href = "http://my.#{document.location.host}/sites"
+  else if $("popup_#{name}")
     SublimeVideo.openSimplePopup("popup_#{name}")
     if history && history.pushState
       history.pushState { showPopup: name }, '', document.location.href.replace(document.location.search, '') + "?p=#{name}"
@@ -81,7 +82,7 @@ window.Cookie =
     if document.cookie.indexOf(name) >= 0
       cookies = document.cookie.split(/\s*;\s*/)
       for cookie in cookies
-        if cookie.indexOf(name) == 0 then unescape cookie.substring(name.length, cookie.length)
+        if cookie.indexOf(name) == 0 then return unescape cookie.substring(name.length, cookie.length)
 
     null
 
