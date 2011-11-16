@@ -94,6 +94,17 @@ gem 'haml-coderay',          '~> 0.1.2'
 # Javascript test
 gem "jasminerice"
 
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails',   '~> 3.1.5.rc.2'
+  gem 'coffee-rails', '~> 3.1.1'
+  gem 'eco'
+  gem 'uglifier'
+  gem 'haml_coffee_assets'
+  gem 'execjs'
+end
+
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end
@@ -143,15 +154,6 @@ group :development do
   gem 'guard-coffeescript'
   gem 'guard-jasmine'
   gem 'guard-yard'
-end
-
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'sass-rails',   '~> 3.1.5.rc.2'
-  gem 'coffee-rails', '~> 3.1.1'
-  gem 'eco'
-  gem 'uglifier'
 end
 
 group :test do

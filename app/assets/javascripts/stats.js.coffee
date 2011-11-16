@@ -1,3 +1,4 @@
+#= require hamlcoffee
 #= require highcharts/highcharts
 #= require backbone
 # https://github.com/timrwood/underscore.date

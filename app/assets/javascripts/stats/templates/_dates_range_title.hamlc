@@ -1,0 +1,8 @@
+- if @period.get('type')?
+  %span.day= Highcharts.dateFormat('%e %b %Y', @period.startTime())
+  ,
+  %span.time= Highcharts.dateFormat('%H:%M:%S', @period.startTime())
+  –
+  %span.day= Highcharts.dateFormat('%e %b %Y', @period.realEndTime())
+  ,
+  %span.time= Highcharts.dateFormat('%H:%M:%S', @period.realEndTime())

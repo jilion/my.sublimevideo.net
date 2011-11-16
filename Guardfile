@@ -16,7 +16,7 @@ group :frontend do
   # guard 'coffeescript', :input => 'app/assets/javascripts', :noop => true, :hide_success => true
 
   guard :livereload, host: 'my.sublimevideo.net.dev' do
-    watch(%r{^app/.+\.(erb|haml|js|css|scss|coffee|eco|png|gif|jpg)})
+    watch(%r{^app/.+\.(erb|haml|hamlc|js|css|scss|coffee|eco|png|gif|jpg)})
   end
 
   guard :jasmine, :server => :none, :jasmine_url => 'http://sublimevideo.dev/jasmine', :all_on_start => false do
