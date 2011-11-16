@@ -1,7 +1,7 @@
 !!! 5
 %html{ "xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en" }
   %head
-    %title= yield(:title) || "SublimeVideo"
+    %title= yield(:title) || title_based_on_subdomain(request)
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
     = stylesheet_link_tag 'com'
@@ -16,6 +16,7 @@
       = javascript_include_tag("http://html5shiv.googlecode.com/svn/trunk/html5.js")
     = csrf_meta_tag
     = yield :js
+    = javascript_include_tag("application")
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
     :javascript
       try { Typekit.load(); } catch(e) { }
@@ -37,6 +38,8 @@
     = render "layouts/footer"
     = yield :bottom
 
+    - unless user_signed_in?
+      #login_form= render template: '/my/users/sessions/new'
     - if Rails.env.production?
       :javascript
         var GoSquared={};
