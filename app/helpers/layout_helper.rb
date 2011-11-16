@@ -4,14 +4,18 @@ module LayoutHelper
     params[:page] ? h(params[:page]) : nil
   end
 
-  def title_based_on_subdomain(request)
+  def title_env_prefix
+    Rails.env.production? ? '' : "[#{Rails.env.upcase}] "
+  end
+
+  def title_subdomain_prefix(request)
     case request.subdomain
     when 'my'
       "MySublimeVideo"
     when 'docs'
       "SublimeVideo Documentation"
     else
-      "SublimeVideo"
+      "SublimeVideo - HTML5 Video Player"
     end
   end
 

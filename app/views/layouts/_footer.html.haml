@@ -20,7 +20,7 @@
       .col
         %h4= "Stay Connected"
         %ul
-          %li= link_to "Blog", ""
+          %li= link_to "Blog", com_page_url('blog', host: request.domain)
           %li= link_to "Twitter", ""
           %li= link_to "Contact us", com_page_url('contact', host: request.domain)
           %li= link_to "About", com_page_url('about', host: request.domain)
