@@ -68,8 +68,8 @@ MySublimeVideo::Application.routes.draw do
       post '/refund' => 'refunds#create', as: 'refund'
       # DEPRECATED
 
-      resource :ticket, only: [:new, :create], path: '/support', path_names: { new:  '' }
-      %w[help feedback].each { |action| get action, to: redirect('/support') }
+      resource :ticket, only: [:create], path: '/help'
+      %w[support feedback].each { |action| get action, to: redirect('/help') }
 
       # match '/video-tag-builder' => 'video_tag_builder#new', via: :get, as: 'video_tag_builder'
       # match '/video-tag-builder/iframe-embed' => 'video_tag_builder#iframe_embed', via: :get
@@ -250,8 +250,13 @@ MySublimeVideo::Application.routes.draw do
       end
 
       # My routes
-      %w[privacy terms sites support].each do |path|
+      %w[privacy terms sites help].each do |path|
         match path => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://my.#{req.domain}/#{path}" }
+      end
+      authenticated :user do
+        get 'help', to: redirect { |params, req| "http://my.#{req.domain}/help" }
+        get '/?p=login', to: redirect { |params, req| "http://my.#{req.domain}/sites" }
+        get '/?p=signup', to: redirect { |params, req| "http://my.#{req.domain}/sites" }
       end
 
       match '/notify(/:anything)' => redirect('/')

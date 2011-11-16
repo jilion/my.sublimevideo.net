@@ -15,10 +15,11 @@
         == body {background:#fff;display:none;}
     /[if lte IE 9]
       = javascript_include_tag("http://html5shiv.googlecode.com/svn/trunk/html5.js")
-    - if %w[site_stats video_tag_builder].include?(controller_name)
+    - if %w[site_stats].include?(controller_name)
       = javascript_include_tag 'application_jquery'
     - else
-      = javascript_include_tag 'application'
+      = javascript_include_tag(request.subdomain.blank? ? 'com' : request.subdomain)
+      / = javascript_include_tag 'application'
     = yield :head
     
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"

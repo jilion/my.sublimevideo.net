@@ -50,8 +50,8 @@
           = "Now"
           %span= "Free & Unlimited"
         .button_wrap
-          = link_to "Get It Now", "", class: "big_button"
-          = link_to "see all plans", "", class: "small"
+          = link_to "Get It Now", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button"
+          = link_to "see all plans", com_page_url('plans', host: request.domain), class: "small"
         %em.never_look_back= "And never look back!"
 
 %section.showcase
@@ -76,7 +76,7 @@
     %p.author
       = "Tom Kiss, Designer at "
       = link_to "MediaMolecule", "http://www.mediamolecule.com"
-    = link_to "", class: "view_all_showcases" do
+    = link_to com_page_url('customer-showcases', host: request.domain), class: "view_all_showcases" do
       %span= "View all showcases"
   .spacer
 .big_break
@@ -84,4 +84,4 @@
 %section.vision_tagline
   %h3
     = "HTML5 is the future of online video. Together with the SublimeVideo community,"
-    = link_to "we've made it a reality today", ""
+    = link_to "we've made it a reality today", com_page_url('about', host: request.domain)

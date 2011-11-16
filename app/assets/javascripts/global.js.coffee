@@ -1,3 +1,5 @@
+#= require application
+
 window.SublimeVideo = {}
 
 document.observe "dom:loaded", ->
@@ -9,7 +11,7 @@ document.observe "dom:loaded", ->
 
 SublimeVideo.showPopup = (name) ->
   if Cookie.get('l') == 'true'
-    document.location.href = "http://my.#{document.location.host}/sites"
+    return true
   else if $("popup_#{name}")
     SublimeVideo.openSimplePopup("popup_#{name}")
     if history && history.pushState
@@ -20,14 +22,16 @@ SublimeVideo.showPopup = (name) ->
 SublimeVideo.hidePopup = (name) ->
   if $("popup_#{name}")
     SublimeVideo.closeSimplePopup("popup_#{name}")
-    if history && history.replaceState
-      history.replaceState { hidePopup: name }, '', document.location.href.replace document.location.search, ''
 
   false
 
+SublimeVideo.replaceHistory = (contentId) ->
+  if history && history.replaceState
+    history.replaceState { hidePopup: contentId.replace(/^popup_/, '') }, '', document.location.href.replace document.location.search, ''
+
 SublimeVideo.openSimplePopup = (contentId) -> # item can be site
   if SublimeVideo.simplePopupHandler then SublimeVideo.simplePopupHandler.close()
-  SublimeVideo.simplePopupHandler = new SimplePopupHandler(contentId)
+  SublimeVideo.simplePopupHandler = new SimplePopupHandler(contentId, SublimeVideo.replaceHistory)
   SublimeVideo.simplePopupHandler.open()
 
 # ====================
@@ -36,15 +40,17 @@ SublimeVideo.openSimplePopup = (contentId) -> # item can be site
 
 SublimeVideo.closeSimplePopup = (contentId) ->
   unless SublimeVideo.simplePopupHandler?
-    SublimeVideo.simplePopupHandler = new SimplePopupHandler(contentId)
+    SublimeVideo.simplePopupHandler = new SimplePopupHandler(contentId, SublimeVideo.replaceHistory)
   SublimeVideo.simplePopupHandler.close();
 
   false
 
 class SimplePopupHandler
-  constructor: (contentId) ->
-    @contentDiv     = $(contentId)
-    @keyDownHandler = document.on "keydown", this.keyDown.bind(this)
+  constructor: (contentId, onCloseCallback) ->
+    @contentId       = contentId
+    @contentDiv      = $(contentId)
+    @keyDownHandler  = document.on "keydown", this.keyDown.bind(this)
+    @onCloseCallback = onCloseCallback
 
   startKeyboardObservers: ->
     @keyDownHandler.start()
@@ -69,6 +75,7 @@ class SimplePopupHandler
 
   close: ->
     this.stopKeyboardObservers()
+    @onCloseCallback(@contentId)
     @contentDiv.hide()
 
   keyDown: (event) ->
