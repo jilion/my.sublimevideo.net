@@ -44,18 +44,14 @@ MySublimeVideo::Application.routes.draw do
 
         resources :stats, only: [:index], controller: 'site_stats' do
           put :trial, on: :collection
+          get :videos, :on => :collection
         end
 
-        resources :video_tags, :only => :show
+        resources :video_tags, only: [:show]
       end
 
       resources :invoices, only: [:show] do
         put :retry_all, on: :collection
-      end
-
-      resources :stats, :only => :index, :controller => 'site_stats' do
-        put :trial, :on => :collection
-        get :videos, :on => :collection
       end
 
       match '/transaction/callback', to: 'transactions#callback', via: :post

@@ -1,0 +1,7 @@
+*.psd
+*.pdf
+.gitconfig
+Guardfile
+test
+spec
+doc
