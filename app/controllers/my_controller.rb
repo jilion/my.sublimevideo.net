@@ -4,8 +4,6 @@ class MyController < ApplicationController
 
   responders Responders::FlashResponder
 
-  layout 'my_application'
-
   before_filter :authenticate_user!
 
 private
