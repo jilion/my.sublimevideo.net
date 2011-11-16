@@ -1,7 +1,7 @@
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
   config.middleware.insert_before(Rack::Lock, Rack::NoWWW)
-  # config.middleware.use(Rack::SslEnforcer, only_hosts: /[my|admin]\.sublimevideo-stating\.net$/)
+  config.middleware.use(Rack::SslEnforcer, only_hosts: /[my|admin]\.sublimevideo-stating\.net$/)
   config.middleware.use(Rack::Private, code: ENV['STAGING_CODE'], except: [/\/oauth\//, /\/api\//, /\/transaction\//])
 
   # The production environment is meant for finished, "live" apps.
