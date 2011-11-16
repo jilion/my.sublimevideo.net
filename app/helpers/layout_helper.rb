@@ -36,7 +36,11 @@ module LayoutHelper
     options.reverse_merge!(active_class: 'active')
 
     active = options[:urls].any? do |u|
-      controller.request.url =~ Regexp.new("^https?://[^/]+#{(options[:namespace] || []).join('/')}/#{u}")
+      if u =~ /^http/
+        controller.request.url =~ Regexp.new(u)
+      else
+        controller.request.url =~ Regexp.new("^https?://[^/]+#{(options[:namespace] || []).join('/')}/#{u}")
+      end
     end
     classes = options[:class] ? options[:class].split(" ") : []
     classes << options[:active_class] if active

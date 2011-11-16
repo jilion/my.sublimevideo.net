@@ -82,6 +82,12 @@ class SimplePopupHandler
     switch event.keyCode
       when Event.KEY_ESC then this.close()
 
+SublimeVideo.makeSticky = (element, css_selector) ->
+  $$("#{css_selector} .active").each (el) ->
+    el.removeClassName 'active'
+  element.addClassName 'active'
+  if li = element.up 'li' then li.addClassName 'active'
+
 # C IS FOR COOKIE
 window.Cookie =
   get: (name) ->
