@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe My::ReferrersController do
+describe Com::ReferrersController do
 
   describe "GET redirect" do
 

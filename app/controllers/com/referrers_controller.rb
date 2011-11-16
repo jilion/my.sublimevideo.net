@@ -1,4 +1,4 @@
-class My::ReferrersController < MyController
+class Com::ReferrersController < MyController
   skip_before_filter :authenticate_user!
 
   # GET /r/:type/:token
