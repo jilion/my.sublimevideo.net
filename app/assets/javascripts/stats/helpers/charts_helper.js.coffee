@@ -1,12 +1,12 @@
 class MSVStats.Helpers.ChartsHelper
 
   sparkline: (el, serie, options = {}) ->
-    el.sparkline serie,
-      width: options.width
-      height: options.height
-      lineColor: options.lineColor ? (if options.selected then '#1ce937' else '#59c775')
-      fillColor: options.fillColor ? (if options.selected then '#71bb93' else '#4c7b75')
-  
+    el.sparkline serie,
+      width: options.width
+      height: options.height
+      lineColor: options.lineColor ? (if options.selected then '#1ce937' else '#59c775')
+      fillColor: options.fillColor ? (if options.selected then '#71bb93' else '#4c7b75')
+
     # new Highcharts.Chart
     #   chart:
     #     animation: false
@@ -102,6 +102,9 @@ class MSVStats.Helpers.ChartsHelper
         areaspline:
           showInLegend: false
           animation: false
+          states:
+            hover:
+              lineWidth: 2
         column:
           showInLegend: false
           animation: false
