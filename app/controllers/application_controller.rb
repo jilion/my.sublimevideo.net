@@ -1,13 +1,14 @@
 class ApplicationController < ActionController::Base
   respond_to :html
-  responders Responders::HttpCacheResponder, Responders::PaginatedResponder
+  # responders Responders::HttpCacheResponder, Responders::PaginatedResponder
+  responders Responders::PaginatedResponder
 
   layout 'application'
 
   protect_from_forgery
 
   def cache_page
-    expires_in(1.year, public: true) if Rails.env.production?
+    # expires_in(1.year, public: true) if Rails.env.production?
   end
 
   %w[zeno mehdi octave remy thibaud].each do |name|
