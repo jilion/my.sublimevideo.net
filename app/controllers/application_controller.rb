@@ -1,14 +1,14 @@
 class ApplicationController < ActionController::Base
   respond_to :html
-  # responders Responders::HttpCacheResponder, Responders::PaginatedResponder
-  responders Responders::PaginatedResponder
+  responders Responders::HttpCacheResponder, Responders::PaginatedResponder
+  http_basic_authenticate_with name: "jilion", password: ENV['STAGING_CODE'], realm: "Staging" if Rails.env.staging?
 
   layout 'application'
 
   protect_from_forgery
 
   def cache_page
-    # expires_in(1.year, public: true) if Rails.env.production?
+    expires_in(1.year, public: true) if Rails.env.production?
   end
 
   %w[zeno mehdi octave remy thibaud].each do |name|

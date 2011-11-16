@@ -115,10 +115,6 @@ group :production, :staging do
   gem 'rack-no-www'
 end
 
-group :staging do
-  gem 'rack-private'
-end
-
 group :development, :test do
   gem 'log_buddy'
   gem 'timecop'
