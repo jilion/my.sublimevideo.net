@@ -13,7 +13,7 @@
   fetch = +refs/heads/master:refs/remotes/production/master
   push  = master:master
 [remote "staging"]
-  url   = git@heroku.com:mysublime-staging.git
+  url   = git@heroku.com:sublimevideo-staging.git
   fetch = +refs/heads/master:refs/remotes/staging/master
 
 [branch "master"]
@@ -22,4 +22,4 @@
 	database = true
 
 [heroku]
-	remote = production
+	remote = staging

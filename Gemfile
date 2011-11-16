@@ -94,6 +94,9 @@ gem 'haml-coderay',          '~> 0.1.2'
 # Javascript test
 gem "jasminerice"
 
+gem 'rack-cache'
+gem 'asset_sync'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -110,9 +113,13 @@ group :production do
 end
 
 group :production, :staging do
+  gem 'thin'
   gem 'rack-ssl-enforcer', '~> 0.2.3'
+  gem 'rack-no-www'
+end
+
+group :staging do
   gem 'rack-private'
-  # gem 'rack-no-www'
 end
 
 group :development, :test do
@@ -131,6 +138,7 @@ group :development do
   gem 'annotate', git: 'git://github.com/ctran/annotate_models.git'
   gem 'wirble'
   gem 'heroku'
+  gem 'foreman'
   gem 'powder'
   gem 'taps'
   gem 'silent-postgres'

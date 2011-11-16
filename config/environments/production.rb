@@ -1,9 +1,8 @@
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
-  
-  # SVS
-  # config.middleware.insert_before(Rack::Lock, Rack::NoWWW)
-  config.middleware.use(Rack::SslEnforcer, except: /^\/r\// )
+
+  config.middleware.insert_before(Rack::Lock, Rack::NoWWW)
+  config.middleware.use(Rack::SslEnforcer, only_hosts: /[my|admin]\.sublimevideo\.net$/)
   config.middleware.use(Rack::GoogleAnalytics, tracker: 'UA-10280941-8')
   # require 'rack/throttle/custom_hourly'
   # config.middleware.use(Rack::Throttle::Hourly, :max => 3600, :cache => Rails.cache, :key_prefix => :throttle)
