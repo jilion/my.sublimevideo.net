@@ -7,7 +7,6 @@
 
 body {
   font-family:proxima-nova-1,proxima-nova-2, Helvetica, Arial, sans-serif;
-  background:#ecf2f8 url(<%= asset_data_uri "global/back_texture.png" %>);
   text-rendering:optimizeLegibility;
 /*  -webkit-font-smoothing:antialiased;*/
 }
@@ -21,6 +20,11 @@ header {
 header .lights {
   background:url(<%= asset_path "global/header_back_light.png" %>) center top no-repeat;
   height:583px;
+}
+
+header .shadow {
+  height:583px;
+  background:url(<%= asset_data_uri "global/header_inner_shadow.png" %>) bottom repeat-x;
 }
 
 header .stars {

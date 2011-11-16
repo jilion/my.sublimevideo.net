@@ -1,15 +1,15 @@
 = content_for :title, "SublimeVideo - HTML5 Video Player"
-= content_for :js, javascript_include_tag("home", "http://cdn.sublimevideo.net/js/ibvjcopp.js")
+= content_for :head, javascript_include_tag("home", "http://cdn.sublimevideo.net/js/ibvjcopp.js")
 
 = content_for :header do
   %h2= "The HTML5 Video Player Everyone Deserves"
 
   .video_wrap
     %video.sublime{ width: "544", height: "306", poster: image_path("com/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none" }
-      %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.mp4" }/
-      %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4" }/
-      %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.webm" }/
-      %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }/
+      %source{ src: "http://zeno.name/@/videos/midnight_sun_720p.mp4", "data-quality" => "hd" }/
+      %source{ src: "http://zeno.name/@/videos/midnight_sun_360p.mp4" }/
+      %source{ src: "http://zeno.name/@/videos/midnight_sun_720p.webm", "data-quality" => "hd" }/
+      %source{ src: "http://zeno.name/@/videos/midnight_sun_360p.webm" }/
 
   .right
     %ul.slides

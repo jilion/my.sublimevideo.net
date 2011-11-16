@@ -1,0 +1,9 @@
+#start_time
+  From:
+  #start_time_picker
+#end_time
+  To:
+  #end_time_picker
+.spacer
+%button.cancel cancel
+%button.apply APPLY

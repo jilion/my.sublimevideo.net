@@ -16,7 +16,7 @@ group :frontend do
   # guard 'coffeescript', :input => 'app/assets/javascripts', :noop => true, :hide_success => true
 
   guard :livereload, host: 'my.sublimevideo.net.dev' do
-    watch(%r{^app/.+\.(erb|haml|js|css|scss|coffee|eco|png|gif|jpg)})
+    watch(%r{^app/.+\.(erb|haml|hamlc|js|css|scss|coffee|eco|png|gif|jpg)})
   end
 
   guard :jasmine, :server => :none, :jasmine_url => 'http://sublimevideo.dev/jasmine', :all_on_start => false do
@@ -40,7 +40,7 @@ group :backend do
     watch('spec/spec_helper.rb')
   end
 
-  guard :rspec, :version => 2, :cli => "--color -f doc", :all_after_pass => false, :all_on_start => false, :keep_failed => false do
+  guard :rspec, :version => 2, :cli => "--color -f doc --drb", :all_after_pass => false, :all_on_start => false, :keep_failed => false do
     watch('spec/spec_helper.rb')                                               { "spec" }
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }

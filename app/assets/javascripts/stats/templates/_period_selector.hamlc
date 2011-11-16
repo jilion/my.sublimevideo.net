@@ -1,0 +1,7 @@
+.content
+  - if @site? && @site.inFreePlan()
+    %a{ href: "/sites/#{@site.get('token')}/plan/edit", title: "Upgrade your plan"} PRO PLAN ONLY
+  - else
+    %span.vv_total
+    .sparkline
+%span.title

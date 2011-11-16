@@ -1,9 +1,0 @@
-<div id='start_time'>
-  From: <div id='start_time_picker'></div>
-</div>
-<div id='end_time'>
-  To: <div id='end_time_picker'></div>
-</div>
-<div class='spacer'></div>
-<button class='cancel'>cancel</button>
-<button class='apply'>APPLY</button>

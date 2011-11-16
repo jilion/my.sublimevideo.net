@@ -94,14 +94,32 @@ gem 'haml-coderay',          '~> 0.1.2'
 # Javascript test
 gem "jasminerice"
 
+gem 'rack-cache'
+gem 'asset_sync'
+
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails',   '~> 3.1.5.rc.2'
+  gem 'coffee-rails', '~> 3.1.1'
+  gem 'eco'
+  gem 'uglifier'
+  gem 'haml_coffee_assets'
+  gem 'execjs'
+end
+
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end
 
 group :production, :staging do
+  gem 'thin'
   gem 'rack-ssl-enforcer', '~> 0.2.3'
+  gem 'rack-no-www'
+end
+
+group :staging do
   gem 'rack-private'
-  # gem 'rack-no-www'
 end
 
 group :development, :test do
@@ -120,6 +138,7 @@ group :development do
   gem 'annotate', git: 'git://github.com/ctran/annotate_models.git'
   gem 'wirble'
   gem 'heroku'
+  gem 'foreman'
   gem 'powder'
   gem 'taps'
   gem 'silent-postgres'
@@ -143,15 +162,6 @@ group :development do
   gem 'guard-coffeescript'
   gem 'guard-jasmine'
   gem 'guard-yard'
-end
-
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'sass-rails',   '~> 3.1.5.rc.2'
-  gem 'coffee-rails', '~> 3.1.1'
-  gem 'eco'
-  gem 'uglifier'
 end
 
 group :test do

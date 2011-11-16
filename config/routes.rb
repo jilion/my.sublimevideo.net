@@ -74,8 +74,7 @@ MySublimeVideo::Application.routes.draw do
       # match '/video-tag-builder' => 'video_tag_builder#new', via: :get, as: 'video_tag_builder'
       # match '/video-tag-builder/iframe-embed' => 'video_tag_builder#iframe_embed', via: :get
 
-      get '/:page' => 'pages#show', as: :page, page: /help|terms|privacy|suspended/
-      get '/r/:type/:token' => 'referrers#redirect', type: /c/, token: /[a-z0-9]{8}/
+      get '/:page' => 'pages#show', as: :page
 
       post '/pusher/auth' => 'pusher#auth'
 
@@ -259,6 +258,8 @@ MySublimeVideo::Application.routes.draw do
       match '/enthusiasts(/:anything)' => redirect('/')
 
       get '/:page' => 'pages#show', as: :page#, page: /demo|plans|features|help|vision|customer-showcases|contact/
+
+      get '/r/:type/:token' => 'referrers#redirect', type: /c/, token: /[a-z0-9]{8}/
 
       root to: 'pages#show', page: 'home'
     end
