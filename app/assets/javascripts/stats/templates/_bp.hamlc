@@ -3,7 +3,7 @@
 - else
   %ul
     - for bp in @bpData.toArray()
-      %li{ class: "#{@bpData.cssClass(bp[0])}" }
+      %li{ class: @bpData.cssClass(bp[0]) }
         %span{ style: "width: #{@bpData.percentage(bp[1])}%;" }
         %span.title= @bpData.bpName(bp[0])
         %span.value= "#{Highcharts.numberFormat(bp[1], 0)} (#{@bpData.percentage(bp[1])}%)"
