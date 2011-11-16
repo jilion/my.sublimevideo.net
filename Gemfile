@@ -91,9 +91,6 @@ gem 'pusher',                '~> 0.8.3'
 gem 'coderay',               '~> 1.0.4'
 gem 'haml-coderay',          '~> 0.1.2'
 
-# Javascript test
-gem "jasminerice"
-
 gem 'rack-cache'
 gem 'asset_sync'
 
@@ -132,6 +129,9 @@ group :development, :test do
   gem 'rails-dev-tweaks', '~> 0.5.0'
   gem 'ruby-graphviz', require: 'graphviz'
   gem 'ffaker'
+
+  # Javascript test
+  gem "jasminerice"
 end
 
 group :development do
