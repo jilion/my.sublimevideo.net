@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   respond_to :html
   responders Responders::HttpCacheResponder, Responders::PaginatedResponder
-  http_basic_authenticate_with name: "jilion", password: ENV['STAGING_CODE'], realm: "Staging" if Rails.env.staging?
+  # http_basic_authenticate_with(name: "jilion", password: ENV['PRIVATE_CODE'], realm: "Staging") if Rails.env.staging?
 
   protect_from_forgery
 

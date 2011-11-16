@@ -2,6 +2,9 @@ MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
   config.middleware.insert_before(Rack::Lock, Rack::NoWWW)
   config.middleware.use(Rack::SslEnforcer, only_hosts: /[my|admin]\.sublimevideo-stating\.net$/)
+  config.middleware.insert_after(::Rack::Lock, "::Rack::Auth::Basic", "Staging") do |u, p|
+    [u, p] == ['jilion', ENV['PRIVATE_CODE']]
+  end
 
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
