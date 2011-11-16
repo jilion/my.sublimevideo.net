@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe TweetsHelper do
+describe My::TweetsHelper do
 
   describe "#clean_tweet_text" do
     context "with entities" do
