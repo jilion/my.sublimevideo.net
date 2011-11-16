@@ -48,7 +48,7 @@ module LayoutHelper
   end
 
   def activable_menu_item(tag, url, options = {})
-    options.reverse_merge!(urls: [url], link_text: url.to_s.titleize, class: url.to_s)
+    options.reverse_merge!(urls: [url], link_text: url.to_s.titleize)
 
     link = url.to_s
 
