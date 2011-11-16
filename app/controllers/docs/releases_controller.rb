@@ -3,8 +3,6 @@ class Docs::ReleasesController < ApplicationController
 
   layout 'my_application'
 
-  before_filter :cache_page
-
   def index
     @releases = Docs::Release.all.reverse
 

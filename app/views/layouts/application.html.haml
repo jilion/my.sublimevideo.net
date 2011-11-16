@@ -38,8 +38,20 @@
     = render "layouts/footer"
     = yield :bottom
 
-    - unless user_signed_in?
-      #login_form= render template: '/my/users/sessions/new'
+    - display_signup = params[:p] == 'signup' || params[:commit] == 'Sign Up'
+    #popup_signup.popup{ style: "display:#{display_signup ? 'block' : 'none'}" }
+      .wrap
+        .content= render template: '/my/users/registrations/new'
+      = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('signup')" do
+        %span Close
+
+    - display_login = params[:p] == 'login' || params[:commit] == 'Login'
+    #popup_login.popup{ style: "display:#{display_login ? 'block' : 'none'}" }
+      .wrap
+        .content= render template: '/my/users/sessions/new'
+      = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('login')" do
+        %span Close
+
     - if Rails.env.production?
       :javascript
         var GoSquared={};

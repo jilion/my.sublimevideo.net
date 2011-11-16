@@ -1,21 +1,19 @@
-= render 'layouts/signup_steps', active: 1
+%p= flash[:alert]
 
-= title_and_content_header("Sign Up")
-
-= form_for @resource, :as => resource_name, :url => "/signup", :html => { :class => "main_form" } do |f|
+= form_for @user || User.new, as: :user, url: '/signup', html: { class: "main_form" } do |f|
 
   .entry.email
-    = f.label :email, "Email", :class => "icon"
-    = f.text_field :email, :class => "text", :placeholder => "Email", :required => true
+    = f.label :email, "Email", class: "icon"
+    = f.text_field :email, class: "text", placeholder: "Email", required: true, value: params[:user].try(:[], :email)
 
   .entry.password
-    = f.label :password, "", :class => "icon"
-    = f.password_field :password, :class => "text show_password", :placeholder => "Password", :required => true
+    = f.label :password, "", class: "icon"
+    = f.password_field :password, class: "text show_password", placeholder: "Password", required: true
 
   .entry
     .name
-      = f.label :name, "Name", :class => "icon"
-      = f.text_field :name, :class => "text", :placeholder => "Name", :required => true
+      = f.label :name, "Name", class: "icon"
+      = f.text_field :name, class: "text", placeholder: "Name", required: true, value: params[:user].try(:[], :name)
     .spacer
 
   .entry.terms
@@ -26,3 +24,8 @@
   .entry.submit.signup
     = f.submit "Sign Up"
     .spacer
+    
+#signup_right
+  .wrap
+    Already an account?
+    = link_to "Login Here", '/?p=login', onclick: "return SublimeVideo.showPopup('login')", class: "button"

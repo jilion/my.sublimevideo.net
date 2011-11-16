@@ -62,7 +62,7 @@ module LayoutHelper
     options[:namespace] = Array.wrap(options[:namespace])
 
     namespace = options[:namespace].present? ? "#{options[:namespace].join('_')}_" : ''
-    link = send("#{namespace}#{resources}_path", options[:resource])
+    link = send("#{namespace}#{resources}_url", options[:url_options])
 
     activable_content_tag(tag, options) do
       block_given? ? link_to(link) { yield } : link_to(options[:link_text], link)

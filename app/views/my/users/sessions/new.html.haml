@@ -1,13 +1,14 @@
-= title_and_content_header("Login")
+- if flash[:alert]
+  %p.alert= flash[:alert]
 
-= form_for User.new, as: :user, url: user_session_path, html: { method: :post, class: "main_form" } do |f|
+= form_for User.new, as: :user, url: '/login', html: { method: :post, class: "main_form" } do |f|
   .entry.email
-    = f.label :email, "", :class => "icon"
-    = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
+    = f.label :email, "", class: "icon"
+    = f.email_field :email, class: "text", placeholder: "Email", required: true, value: params[:user].try(:[], :email)
 
   .entry.password
-    = f.label :password, "", :class => "icon"
-    = f.password_field :password, :class => "text", :placeholder => "Password", :required => true
+    = f.label :password, "", class: "icon"
+    = f.password_field :password, class: "text", placeholder: "Password", required: true
 
     .checkbox_wrap
       = f.check_box :remember_me
@@ -15,12 +16,11 @@
 
   .entry.submit
     = f.submit "Login"
-    -#= render 'devise/shared/links'
+
+    %li.signup= link_to "Don't have an account yet?", new_user_registration_path
+    %li= link_to "Forgot your password?", new_user_password_path
+    %li= link_to "Didn't receive confirmation instructions?", new_user_confirmation_path
   .spacer
 
 #login_right
-  .wrap
-    %h4= "New to SublimeVideo?"
-    %p= link_to "Learn more", "http://sublimevideo.net"
-    %p= "or"
-    = link_to "Sign Up Now", new_user_registration_url, :class => "button"
+  .wrap= link_to "Sign Up Now", '/?p=signup', onclick: "return SublimeVideo.showPopup('signup')", class: "button"

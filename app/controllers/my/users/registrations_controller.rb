@@ -3,6 +3,28 @@ class My::Users::RegistrationsController < Devise::RegistrationsController
 
   before_filter :redirect_suspended_user
 
+  # POST /resource
+  def create
+    build_resource
+    @user = resource
+
+    if @user.save
+      if @user.active_for_authentication?
+        set_flash_message :notice, :signed_up if is_navigational_format?
+        sign_in(resource_name, @user)
+        respond_with resource, :location => redirect_location(resource_name, @user)
+      else
+        set_flash_message :notice, :inactive_signed_up, :reason => inactive_reason(@user) if is_navigational_format?
+        expire_session_data_after_sign_in!
+        respond_with @user, :location => after_inactive_sign_up_path_for(@user)
+      end
+    else
+      clean_up_passwords(@user)
+      params[:page] = 'home'
+      render 'com/pages/home'
+    end
+  end
+
   def destroy
     @user = User.find(current_user.id)
     @user.current_password = params[:user] && params[:user][:current_password]
