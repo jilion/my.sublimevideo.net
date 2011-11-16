@@ -9,7 +9,7 @@ module Admin::AnalyticsHelper
     when "flotr"
       ["flotr/flotr-0.2.0-alpha.js", "flotr/lib/base64.js", "flotr/lib/canvas2image.js", "flotr/lib/canvastext.js"]
     end
-    content_for :js do
+    content_for :head do
       javascript_include_tag(*js_files) if js_files
     end
   end
