@@ -11,7 +11,6 @@ describe My::UsersController do
 
   it { put(with_subdomain('my', 'account/info')).should route_to('my/users#update') }
 
-  it { get(with_subdomain('my', 'login')).should  route_to('my/users/sessions#new') }
   it { post(with_subdomain('my', 'login')).should route_to('my/users/sessions#create') }
   it { get(with_subdomain('my', 'logout')).should route_to('my/users/sessions#destroy') }
 

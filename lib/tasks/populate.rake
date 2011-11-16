@@ -26,7 +26,7 @@ namespace :db do
       delete_all_files_in_public('uploads/voxcast')
       timed { create_plans }
       timed { create_admins }
-      timed { create_users(argv_user) }
+      timed { create_users(argv('user')) }
       timed { create_sites }
       timed { create_site_usages }
       timed { create_site_stats }
@@ -42,13 +42,13 @@ namespace :db do
     desc "Load Enthusiast development fixtures."
     task enthusiasts: :environment do
       timed { empty_tables(EnthusiastSite, Enthusiast)                                 }
-      timed { create_enthusiasts(argv_user) }
+      timed { create_enthusiasts(argv('user')) }
     end
 
     desc "Load User development fixtures."
     task users: :environment do
       timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
-      timed { create_users(argv_user) }
+      timed { create_users(argv('user')) }
       empty_tables("delayed_jobs")
     end
 
@@ -74,20 +74,20 @@ namespace :db do
     desc "Create fake site stats"
     task site_stats: :environment do
       timed { empty_tables(Stat::Site) }
-      timed { create_site_stats(argv_user) }
+      timed { create_site_stats(argv('user')) }
     end
 
     desc "Create fake site stats"
     task recurring_site_stats: :environment do
       timed { empty_tables(Stat::Site) }
-      timed { create_site_stats(argv_user) }
-      timed { recurring_site_stats_update(argv_user) }
+      timed { create_site_stats(argv('user')) }
+      timed { recurring_site_stats_update(argv('user')) }
     end
 
     desc "Create fake site & video stats"
     task :recurring_stats => :environment do
-      timed { create_stats(argv_site_token) }
-      timed { recurring_stats_update(argv_site_token) }
+      timed { create_stats(argv('site')) }
+      timed { recurring_stats_update(argv('site')) }
     end
 
     desc "Create fake plans"
@@ -105,7 +105,7 @@ namespace :user do
   desc "Expire the credit card of the user with the given email (EMAIL=xx@xx.xx) at the end of the month (or the opposite if already expiring at the end of the month)"
   task cc_will_expire: :environment do
     timed do
-      email = argv("email")
+      email = argv('email')
       return if email.nil?
 
       User.find_by_email(email).tap do |user|
@@ -130,7 +130,7 @@ namespace :user do
   desc "Suspend/unsuspend a user given an email (EMAIL=xx@xx.xx), you can pass the count of failed invoices on suspend with FAILED_INVOICES=N"
   task suspended: :environment do
     timed do
-      email = argv("email")
+      email = argv('email')
       return if email.nil?
 
       User.find_by_email(email).tap do |user|
@@ -655,35 +655,11 @@ def create_mail_templates(count = 5)
   puts "#{count} random mail templates created!"
 end
 
-def argv(var_name)
+def argv(var_name, default = nil)
   var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
   if var
     var.sub($1, '')
   else
     nil
-  end
-end
-
-def argv_count(var_name='count', default_count=5)
-  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
-    var.sub($1, '').to_i
-  else
-    default_count
-  end
-end
-
-def argv_user(var_name='user', default_index=nil)
-  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
-    var.sub($1, '').to_i
-  else
-    default_index
-  end
-end
-
-def argv_site_token(var_name='site', default_token=nil)
-  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
-    var.sub($1, '')
-  else
-    default_token
   end
 end
