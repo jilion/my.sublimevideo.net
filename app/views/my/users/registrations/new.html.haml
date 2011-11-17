@@ -1,6 +1,6 @@
 %p= flash[:alert]
 
-= form_for @user || User.new, as: :user, url: '/signup', html: { class: "main_form" } do |f|
+= form_for @user || User.new, as: :user, url: "http://#{request.domain}/signup", html: { class: "main_form" } do |f|
 
   .entry.email
     = f.label :email, "Email", class: "icon"

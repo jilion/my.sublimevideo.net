@@ -33,7 +33,7 @@ private
     unless cookies[:l]
       cookies[:l] = {
         value: true,
-        expires: 1.hour.from_now,
+        expires: 1.year.from_now,
         domain: :all
       }
     end

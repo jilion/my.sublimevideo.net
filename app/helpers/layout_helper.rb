@@ -41,9 +41,20 @@ module LayoutHelper
 
     active = options[:urls].any? do |u|
       if u =~ /^http/
-        controller.request.url =~ Regexp.new(u)
+        controller.request.url =~ Regexp.new("^#{u}")
       else
-        controller.request.url =~ Regexp.new("^https?://[^/]+#{(options[:namespace] || []).join('/')}/#{u}")
+        subdomain = options[:url_options].try(:[], :subdomain).present? ? "#{options[:url_options][:subdomain]}\." : ''
+        page = case u.to_sym
+               when :page
+                 options[:url_options].try(:[], :page)
+                when :root
+                  ''
+                else
+                  u
+                end
+        Rails.logger.info "subdomain: #{subdomain}"
+        Rails.logger.info "page: #{page}"
+        controller.request.url =~ Regexp.new("^https?://#{subdomain}[^/]+#{(options[:namespace] || []).join('/')}/#{page}")
       end
     end
     classes = options[:class] ? options[:class].split(" ") : []
@@ -66,14 +77,14 @@ module LayoutHelper
   end
 
   def activable_menu_restful_item(tag, resources, options = {})
-    options.reverse_merge!(urls: [resources], link_text: resources.to_s.titleize, class: resources.to_s)
+    options.reverse_merge!(urls: [resources], link_text: resources.to_s.titleize, link_options: {}, class: resources.to_s)
     options[:namespace] = Array.wrap(options[:namespace])
 
     namespace = options[:namespace].present? ? "#{options[:namespace].join('_')}_" : ''
     link = send("#{namespace}#{resources}_url", options[:url_options])
 
     activable_content_tag(tag, options) do
-      block_given? ? link_to(link) { yield } : link_to(options[:link_text], link)
+      block_given? ? link_to(link, options[:link_options]) { yield } : link_to(options[:link_text], link, options[:link_options])
     end
   end
 

@@ -4,7 +4,7 @@
       .col
         %h4= "Product"
         %ul
-          %li= link_to "Home", root_url(host: request.domain)
+          %li#footer_home= link_to "Home", root_url(host: request.domain)
           %li= link_to "Features", com_page_url('features', host: request.domain)
           %li= link_to "Demo", com_page_url('demo', host: request.domain)
           %li= link_to "Plans & Pricing", com_page_url('plans', host: request.domain)
@@ -13,7 +13,7 @@
         %h4= "Community & Support"
         %ul
           %li= link_to "Customer Showcases", com_page_url('customer-showcases', host: request.domain)
-          %li= link_to "Help", com_page_url('help', host: request.domain)
+          %li.my_li= link_to "Help", com_page_url('help', host: request.domain)
           %li= link_to "Documentation", root_url(subdomain: 'docs')
           %li= link_to "Community Forum", "http://getsatisfaction.com/sublimevideo"
           %li= link_to "Player Releases", docs_releases_url(subdomain: 'docs')

@@ -3,15 +3,34 @@
 window.SublimeVideo = {}
 
 document.observe "dom:loaded", ->
+  if Cookie.get('l') == 'true'
+    if document.location.host.split('.').length == 2 # topdomain and logged-in
+      SublimeVideo.handleLoggedInAutoRedirection()
+    SublimeVideo.handleLoggedInLinksModification()
+
   Event.observe window, 'popstate', (event) ->
     if event.state? && event.state.hidePopup?
       SublimeVideo.showPopup(event.state.hidePopup)
     else if event.state? && event.state.showPopup?
       SublimeVideo.showPopup(event.state.showPopup)
 
+SublimeVideo.handleLoggedInAutoRedirection = ->
+  path = document.location.pathname
+  my_host = "http://my.#{document.location.host}"
+  if path == '/'
+    document.location.href = "#{my_host}/sites"
+  else if path == '/help'
+    document.location.href = "#{my_host}#{path}"
+
+SublimeVideo.handleLoggedInLinksModification = ->
+  $('footer_home').hide()
+  $$('.my_li').each (li) ->
+    a = li.down('a')
+    a.href = a.href.replace(/sublimevideo/, 'my.sublimevideo')
+
 SublimeVideo.showPopup = (name) ->
   if Cookie.get('l') == 'true'
-    return true
+    document.location.href = "http://my.#{document.location.host.split('.').slice(-2).join('.')}/sites"
   else if $("popup_#{name}")
     SublimeVideo.openSimplePopup("popup_#{name}")
     if history && history.pushState
