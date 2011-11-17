@@ -2,6 +2,8 @@ source 'http://rubygems.org'
 
 gem 'rails',                 '3.1.2.rc2'
 
+gem 'thin'
+
 gem 'prototype-rails'
 gem 'jquery-rails'
 gem 'rails-backbone'
@@ -110,7 +112,6 @@ group :production do
 end
 
 group :production, :staging do
-  gem 'thin'
   gem 'rack-ssl-enforcer', '~> 0.2.3'
   gem 'rack-no-www'
 end
