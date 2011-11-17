@@ -4,6 +4,10 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
+  def cache_page
+    expires_in(1.year, public: true) if %w[production staging].include?(Rails.env)
+  end
+
   %w[zeno mehdi octave remy thibaud].each do |name|
     method_name = "#{name}?"
     define_method(method_name) do
