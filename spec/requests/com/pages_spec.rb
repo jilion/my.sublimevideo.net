@@ -38,10 +38,6 @@ feature "Com Pages" do
 
           click_link 'Sign Up'
           current_url.should eq "http://sublimevideo.dev/?p=signup"
-
-          click_button 'Get It Now'
-
-          current_url.should eq "http://sublimevideo.dev/?p=signup"
         end
       end
     end
@@ -96,6 +92,16 @@ feature "Com Pages" do
       end
     end
 
+    describe "home page" do
+      scenario 'Get It Know link is reachable and show signup popup' do
+        go '/'
+
+        click_link 'Get It Now'
+
+        current_url.should eq "http://sublimevideo.dev/?p=signup"
+      end
+    end
+
     describe "log in" do
       background do
         create_plans
@@ -137,7 +143,7 @@ feature "Com Pages" do
         current_url.should eq "http://my.sublimevideo.dev/sites/new"
       end
 
-      context "with the email of an archived user", :focus do
+      context "with the email of an archived user" do
         background do
           @archived_user = Factory.create(:user)
           @archived_user.skip_pwd { @archived_user.archive }
@@ -179,12 +185,12 @@ feature "Com Pages" do
     end
 
     describe "redirections" do
-      scenario 'home is not reachable' do
+      pending 'home is not reachable' do # pending because this done via is made in JS
         go '/'
         current_url.should eq "http://my.sublimevideo.dev/sites/new"
       end
 
-      scenario 'help is redirected' do
+      pending 'help is redirected' do # pending because this done via is made in JS
         go '/help'
         current_url.should eq "http://my.sublimevideo.dev/help"
       end
@@ -207,7 +213,7 @@ feature "Com Pages" do
     end
 
     describe "footer" do
-      scenario 'home link is hidden' do
+      pending 'home link is hidden' do # pending because this done via is made in JS
         within 'footer' do
           page.should have_no_content 'Home'
         end
