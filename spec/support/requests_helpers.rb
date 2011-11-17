@@ -96,18 +96,19 @@ module Spec
       end
 
       def switch_to_topdomain
-        Capybara.app_host = "http://sublimevideo.dev"
+        switch_to_subdomain
       end
 
       # http://stackoverflow.com/questions/4484435/rails3-how-do-i-visit-a-subdomain-in-a-steakrspec-spec-using-capybara
-      def switch_to_subdomain(subdomain)
-        Capybara.app_host = "http://#{subdomain}.sublimevideo.dev"
+      def switch_to_subdomain(subdomain = nil)
+        subdomain += '.' if subdomain.present?
+        Capybara.app_host = "http://#{subdomain}sublimevideo.dev"
       end
 
       def go(*subdomain_and_route)
         if subdomain_and_route.one?
           switch_to_topdomain
-          visit subdomain_and_route
+          visit *subdomain_and_route
         else
           switch_to_subdomain(subdomain_and_route[0])
           visit subdomain_and_route[1].start_with?("/") ? subdomain_and_route[1] : "/#{subdomain_and_route[1]}"
@@ -121,8 +122,7 @@ module Spec
 
         resource = case resource_name
         when :user
-          switch_to_topdomain
-          visit '/?p=login'
+          go '/?p=login'
           create_user(options)
         when :admin
           go 'admin', '/login'
