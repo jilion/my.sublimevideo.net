@@ -18,6 +18,10 @@ SublimeVideo.handleLoggedInAutoRedirection = ->
   path = document.location.pathname
   my_host = "http://my.#{document.location.host}"
   if path == '/'
+    # We "kill" the cookie to ensure there will be no infinite redirect between /sites and /?p=login
+    # When MSV session is dead but "l" cookie is still true
+    # Setting the cookie to false here will force the MyController to reset it to true if user is actually logged-in.
+    Cookie.set('l', 'false', { domain: ".#{document.location.host.split('.').slice(-2).join('.')}"})
     document.location.href = "#{my_host}/sites"
   else if path == '/help'
     document.location.href = "#{my_host}#{path}"

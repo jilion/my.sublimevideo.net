@@ -30,7 +30,7 @@ private
   end
 
   def set_cookie_for_menu
-    unless cookies[:l]
+    unless cookies[:l] == 'true'
       cookies[:l] = {
         value: true,
         expires: 1.year.from_now,
