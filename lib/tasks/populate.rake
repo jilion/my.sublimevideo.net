@@ -85,7 +85,7 @@ namespace :db do
     end
 
     desc "Create fake site & video stats"
-    task :recurring_stats => :environment do
+    task recurring_stats: :environment do
       timed { create_stats(argv('site')) }
       timed { recurring_stats_update(argv('site')) }
     end

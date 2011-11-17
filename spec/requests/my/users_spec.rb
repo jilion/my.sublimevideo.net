@@ -64,35 +64,6 @@ feature "Users" do
       current_url.should =~ %r(^http://[^/]+/?p=signup$)
     end
 
-    describe "signup for personal use" do
-      scenario "with all fields needed" do
-        fill_in "Name",     with: "Rémy Coutable"
-        fill_in "Email",    with: "remy@jilion.com"
-        fill_in "Password", with: "123456"
-        check "user_terms_and_conditions"
-        click_button "Sign Up"
-
-        current_url.should =~ %r(^http://my\.[^/]+/sites/new$)
-        page.should have_content "Rémy Coutable"
-
-        User.last.name.should eq "Rémy Coutable"
-        User.last.email.should eq "remy@jilion.com"
-      end
-
-      scenario "with errors" do
-        fill_in "Name",     with: ""
-        fill_in "Email",    with: ""
-        fill_in "Password", with: ""
-        VCR.use_cassette("twitter/signup") { click_button "Sign Up" }
-
-        current_url.should =~ %r(^http://[^/]+/signup$)
-        page.should have_content "Email can't be blank"
-        page.should have_content "Password can't be blank"
-        page.should have_content "Name can't be blank"
-        page.should have_content "Terms & Conditions must be accepted"
-      end
-    end
-
     describe "with the email of an archived user" do
       scenario "archived user" do
         archived_user = Factory.create(:user)
@@ -214,7 +185,7 @@ end
 
 feature "session" do
   scenario "before login or signup" do
-    visit "/"
+    go "/"
 
     page.should_not have_content('Feedback')
     page.should_not have_content('Logout')

@@ -1,0 +1,218 @@
+# coding: utf-8
+require 'spec_helper'
+
+feature "Com Pages" do
+
+  context "unlogged visitor" do
+    background do
+      @current_user = nil
+    end
+
+    describe "menu" do
+      scenario 'links are clickable and routable' do
+        go '/'
+
+        within '#menu' do
+          current_url.should eq "http://sublimevideo.dev/"
+
+          click_link 'Features'
+          current_url.should eq "http://sublimevideo.dev/features"
+
+          click_link 'Plans'
+          current_url.should eq "http://sublimevideo.dev/plans"
+
+          click_link 'Demo'
+          current_url.should eq "http://sublimevideo.dev/demo"
+
+          click_link 'Showcases'
+          current_url.should eq "http://sublimevideo.dev/customer-showcases"
+
+          click_link 'Help'
+          current_url.should eq "http://sublimevideo.dev/help"
+
+          click_link 'Blog'
+          current_url.should eq "http://sublimevideo.dev/blog"
+
+          click_link 'Login'
+          current_url.should eq "http://sublimevideo.dev/?p=login"
+
+          click_link 'Sign Up'
+          current_url.should eq "http://sublimevideo.dev/?p=signup"
+
+          click_button 'Get It Now'
+
+          current_url.should eq "http://sublimevideo.dev/?p=signup"
+        end
+      end
+    end
+
+    describe "footer" do
+      scenario 'links are clickable and routable' do
+        go '/'
+
+        within 'footer' do
+          click_link 'Home'
+          current_url.should eq "http://sublimevideo.dev/"
+
+          click_link 'Features'
+          current_url.should eq "http://sublimevideo.dev/features"
+
+          click_link 'Demo'
+          current_url.should eq "http://sublimevideo.dev/demo"
+
+          click_link 'Plans & Pricing'
+          current_url.should eq "http://sublimevideo.dev/plans"
+
+          click_link 'My SublimeVideo'
+          current_url.should eq "http://sublimevideo.dev/?p=login"
+
+          click_link 'Customer Showcases'
+          current_url.should eq "http://sublimevideo.dev/customer-showcases"
+
+          click_link 'Help'
+          current_url.should eq "http://sublimevideo.dev/help"
+
+          click_link 'Documentation'
+          current_url.should eq "http://docs.sublimevideo.dev/quickstart-guide"
+
+          click_link 'Player Releases'
+          current_url.should eq "http://docs.sublimevideo.dev/releases"
+
+          click_link 'Blog'
+          current_url.should eq "http://sublimevideo.dev/blog"
+
+          click_link 'Contact us'
+          current_url.should eq "http://sublimevideo.dev/contact"
+
+          click_link 'About'
+          current_url.should eq "http://sublimevideo.dev/about"
+
+          click_link 'Terms & Conditions'
+          current_url.should eq "http://my.sublimevideo.dev/terms"
+
+          click_link 'Privacy Policy'
+          current_url.should eq "http://my.sublimevideo.dev/privacy"
+        end
+      end
+    end
+
+    describe "log in" do
+      background do
+        create_plans
+        create_user(user: {})
+        go '/?p=login'
+      end
+
+      scenario "it's possible to log in" do
+        fill_in 'Email',    with: @current_user.email
+        fill_in 'Password', with: '123456'
+        click_button 'Login'
+
+        current_url.should eq "http://my.sublimevideo.dev/sites/new"
+      end
+
+      scenario "displays errors if log in is not successful" do
+        fill_in 'Email',    with: ''
+        fill_in 'Password', with: ''
+        click_button 'Login'
+
+        current_url.should eq "http://sublimevideo.dev/login"
+        page.should have_content "Invalid email or password"
+      end
+    end
+
+    describe "sign up" do
+      background do
+        create_plans
+        go '/?p=signup'
+      end
+
+      scenario "it's possible to sign up" do
+        fill_in 'Name',     with: 'Rémy Coutable'
+        fill_in 'Email',    with: 'remy@jilion.com'
+        fill_in 'Password', with: '123456'
+        check "user_terms_and_conditions"
+        click_button 'Sign Up'
+
+        current_url.should eq "http://my.sublimevideo.dev/sites/new"
+      end
+
+      context "with the email of an archived user", :focus do
+        background do
+          @archived_user = Factory.create(:user)
+          @archived_user.skip_pwd { @archived_user.archive }
+        end
+
+        scenario "archived user" do
+          fill_in 'Name',     with: 'Rémy Coutable'
+          fill_in 'Email',    with: @archived_user.email
+          fill_in 'Password', with: '123456'
+          check "user_terms_and_conditions"
+          click_button 'Sign Up'
+
+          current_url.should =~ %r(^http://my.[^/]+/sites/new$)
+          User.last.should_not eq @archived_user
+        end
+      end
+
+      scenario "displays errors if sign up is not successful" do
+        go '/?p=signup'
+
+        fill_in 'Name',     with: ''
+        fill_in 'Email',    with: ''
+        fill_in 'Password', with: ''
+        click_button 'Sign Up'
+
+        current_url.should eq "http://sublimevideo.dev/signup"
+        page.should have_content "Name can't be blank"
+        page.should have_content "Email can't be blank"
+        page.should have_content "Password can't be blank"
+        page.should have_content "Terms & Conditions must be accepted"
+      end
+    end
+  end
+
+  context "logged-in user" do
+    background do
+      create_plans
+      sign_in_as :user
+    end
+
+    describe "redirections" do
+      scenario 'home is not reachable' do
+        go '/'
+        current_url.should eq "http://my.sublimevideo.dev/sites/new"
+      end
+
+      scenario 'help is redirected' do
+        go '/help'
+        current_url.should eq "http://my.sublimevideo.dev/help"
+      end
+    end
+
+    describe "menu" do
+      scenario 'links are clickable and routable' do
+        within '#menu' do
+          page.should have_no_content 'Features'
+          page.should have_no_content 'Plans'
+          page.should have_no_content 'Demo'
+          page.should have_no_content 'Showcases'
+          page.should have_no_content 'Blog'
+          page.should have_no_content 'Login'
+
+          page.should have_content 'Logout'
+          page.should have_content @current_user.name
+        end
+      end
+    end
+
+    describe "footer" do
+      scenario 'home link is hidden' do
+        within 'footer' do
+          page.should have_no_content 'Home'
+        end
+      end
+    end
+  end
+
+end
