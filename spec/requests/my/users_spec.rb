@@ -5,30 +5,30 @@ feature "Users" do
 
   describe "sign-up redirections" do
     scenario "redirect /register to /signup" do
-      VCR.use_cassette("twitter/signup") { visit "/register" }
-      current_url.should =~ %r(^http://[^/]+/signup$)
+      VCR.use_cassette("twitter/signup") { go 'my', '/register' }
+      current_url.should =~ %r(^http://[^/]+/$)
     end
 
     scenario "redirect /sign_up to /signup" do
-      VCR.use_cassette("twitter/signup") { visit "/sign_up" }
-      current_url.should =~ %r(^http://[^/]+/signup$)
+      VCR.use_cassette("twitter/signup") { go 'my', '/sign_up' }
+      current_url.should =~ %r(^http://[^/]+/$)
     end
   end
 
   describe "log-in redirections" do
     scenario "redirect /log_in to /login" do
-      visit "/log_in"
-      current_url.should =~ %r(^http://[^/]+/login$)
+      go 'my', '/log_in'
+      current_url.should =~ %r(^http://[^/]+/$)
     end
 
     scenario "redirect /sign_in to /login" do
-      visit "/sign_in"
-      current_url.should =~ %r(^http://[^/]+/login$)
+      go 'my', '/sign_in'
+      current_url.should =~ %r(^http://[^/]+/$)
     end
 
     scenario "redirect /signin to /login" do
-      visit "/signin"
-      current_url.should =~ %r(^http://[^/]+/login$)
+      go 'my', '/signin'
+      current_url.should =~ %r(^http://[^/]+/$)
     end
   end
 
@@ -40,19 +40,19 @@ feature "Users" do
     describe "log-out redirections" do
       scenario "redirect /log_out to /logout" do
         page.should have_content @current_user.name
-        visit "/log_out"
+        go 'my', '/log_out'
         page.should have_no_content @current_user.name
       end
 
       scenario "redirect /sign_out to /logout" do
         page.should have_content @current_user.name
-        visit "/sign_out"
+        go 'my', '/sign_out'
         page.should have_no_content @current_user.name
       end
 
       scenario "redirect /signout to /logout" do
         page.should have_content @current_user.name
-        visit "/signout"
+        go 'my', '/signout'
         page.should have_no_content @current_user.name
       end
     end
@@ -60,21 +60,19 @@ feature "Users" do
 
   describe "signup" do
     before(:each) do
-      VCR.use_cassette("twitter/signup") { visit "/signup" }
-      current_url.should =~ %r(^http://[^/]+/signup$)
+      VCR.use_cassette("twitter/signup") { go 'my', '/?p=signup' }
+      current_url.should =~ %r(^http://[^/]+/?p=signup$)
     end
 
     describe "signup for personal use" do
       scenario "with all fields needed" do
-        page.should have_selector("#signup_steps")
-        find('#signup_steps').find('li.active').should have_content('1')
+        fill_in "Name",     with: "Rémy Coutable"
         fill_in "Email",    with: "remy@jilion.com"
         fill_in "Password", with: "123456"
-        fill_in "Name",     with: "Rémy Coutable"
         check "user_terms_and_conditions"
         click_button "Sign Up"
 
-        current_url.should =~ %r(^http://[^/]+/sites/new$)
+        current_url.should =~ %r(^http://my\.[^/]+/sites/new$)
         page.should have_content "Rémy Coutable"
 
         User.last.name.should eq "Rémy Coutable"
@@ -82,9 +80,9 @@ feature "Users" do
       end
 
       scenario "with errors" do
+        fill_in "Name",     with: ""
         fill_in "Email",    with: ""
         fill_in "Password", with: ""
-        fill_in "Name",     with: ""
         VCR.use_cassette("twitter/signup") { click_button "Sign Up" }
 
         current_url.should =~ %r(^http://[^/]+/signup$)
@@ -95,41 +93,15 @@ feature "Users" do
       end
     end
 
-    describe "signup for company use" do
-      scenario "with all fields needed" do
-        fill_in "Email",    with: "remy@jilion.com"
-        fill_in "Password", with: "123456"
-        fill_in "Name",     with: "Rémy Coutable"
-        check   "user_terms_and_conditions"
-        click_button "Sign Up"
-
-        current_url.should =~ %r(^http://[^/]+/sites/new$)
-        page.should have_content "Rémy Coutable"
-
-        User.last.name.should eq "Rémy Coutable"
-        User.last.email.should eq "remy@jilion.com"
-      end
-
-      scenario "with optional blank fields" do
-        fill_in "Email",    with: "remy@jilion.com"
-        fill_in "Password", with: "123456"
-        fill_in "Name",     with: "Rémy Coutable"
-        check   "user_terms_and_conditions"
-        click_button "Sign Up"
-
-        current_url.should =~ %r(^http://[^/]+/sites/new$)
-      end
-    end
-
     describe "with the email of an archived user" do
       scenario "archived user" do
         archived_user = Factory.create(:user)
         archived_user.current_password = '123456'
         archived_user.archive
 
+        fill_in "Name",     with: "Rémy Coutable"
         fill_in "Email",    with: archived_user.email
         fill_in "Password", with: "123456"
-        fill_in "Name",     with: "Rémy Coutable"
         check "user_terms_and_conditions"
         click_button "Sign Up"
 
@@ -138,7 +110,7 @@ feature "Users" do
         new_user.name.should eq "Rémy Coutable"
         new_user.email.should eq archived_user.email
 
-        current_url.should =~ %r(^http://[^/]+/sites/new$)
+        current_url.should =~ %r(^http://my.[^/]+/sites/new$)
         page.should have_content "Rémy Coutable"
       end
     end

@@ -1,8 +1,6 @@
 class Docs::ReleasesController < ApplicationController
   respond_to :atom
 
-  layout 'my_application'
-
   before_filter :cache_page
 
   def index

@@ -121,7 +121,8 @@ module Spec
 
         resource = case resource_name
         when :user
-          go 'my', '/login'
+          switch_to_topdomain
+          visit '/?p=login'
           create_user(options)
         when :admin
           go 'admin', '/login'

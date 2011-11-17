@@ -1,7 +1,8 @@
 !!! 5
 %html{ "xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en" }
   %head
-    %title= yield(:title) || title_based_on_subdomain(request)
+    - title = yield(:title)
+    %title= title_env_prefix + title_subdomain_prefix(request) + (title.present? ? " - #{title}" : '')
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
     = stylesheet_link_tag(request.subdomain.blank? ? 'com' : request.subdomain)
@@ -15,12 +16,13 @@
         == body {background:#fff;display:none;}
     /[if lte IE 9]
       = javascript_include_tag("http://html5shiv.googlecode.com/svn/trunk/html5.js")
-    - if %w[site_stats video_tag_builder].include?(controller_name)
+    - if %w[site_stats].include?(controller_name)
       = javascript_include_tag 'application_jquery'
     - else
-      = javascript_include_tag 'application'
+      = javascript_include_tag(request.subdomain.blank? ? 'com' : request.subdomain)
+      -#= javascript_include_tag 'application'
     = yield :head
-    
+
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
     :javascript
       try { Typekit.load(); } catch(e) { }
@@ -42,8 +44,20 @@
     = render "layouts/footer"
     = yield :bottom
 
-    - unless user_signed_in?
-      #login_form= render template: '/my/users/sessions/new'
+    - display_signup = params[:p] == 'signup' || params[:commit] == 'Sign Up'
+    #popup_signup.popup{ style: "display:#{display_signup ? 'block' : 'none'}" }
+      .wrap
+        .content= render template: '/my/users/registrations/new'
+      = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('signup')" do
+        %span Close
+
+    - display_login = params[:p] == 'login' || params[:commit] == 'Login'
+    #popup_login.popup{ style: "display:#{display_login ? 'block' : 'none'}" }
+      .wrap
+        .content= render template: '/my/users/sessions/new'
+      = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('login')" do
+        %span Close
+
     - if Rails.env.production?
       :javascript
         var GoSquared={};

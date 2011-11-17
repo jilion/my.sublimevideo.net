@@ -2,6 +2,8 @@ source 'http://rubygems.org'
 
 gem 'rails',                 '3.1.2.rc2'
 
+gem 'thin'
+
 gem 'prototype-rails'
 gem 'jquery-rails'
 gem 'rails-backbone'
@@ -91,8 +93,8 @@ gem 'pusher',                '~> 0.8.3'
 gem 'coderay',               '~> 1.0.4'
 gem 'haml-coderay',          '~> 0.1.2'
 
-# Javascript test
-gem "jasminerice"
+gem 'rack-cache'
+gem 'asset_sync'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -111,8 +113,7 @@ end
 
 group :production, :staging do
   gem 'rack-ssl-enforcer', '~> 0.2.3'
-  gem 'rack-private'
-  # gem 'rack-no-www'
+  gem 'rack-no-www'
 end
 
 group :development, :test do
@@ -125,12 +126,16 @@ group :development, :test do
   gem 'rails-dev-tweaks', '~> 0.5.0'
   gem 'ruby-graphviz', require: 'graphviz'
   gem 'ffaker'
+
+  # Javascript test
+  gem "jasminerice"
 end
 
 group :development do
   gem 'annotate', git: 'git://github.com/ctran/annotate_models.git'
   gem 'wirble'
   gem 'heroku'
+  gem 'foreman'
   gem 'powder'
   gem 'taps'
   gem 'silent-postgres'

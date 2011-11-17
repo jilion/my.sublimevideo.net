@@ -4,14 +4,18 @@ module LayoutHelper
     params[:page] ? h(params[:page]) : nil
   end
 
-  def title_based_on_subdomain(request)
+  def title_env_prefix
+    Rails.env.production? ? '' : "[#{Rails.env.upcase}] "
+  end
+
+  def title_subdomain_prefix(request)
     case request.subdomain
     when 'my'
       "MySublimeVideo"
     when 'docs'
       "SublimeVideo Documentation"
     else
-      "SublimeVideo"
+      "SublimeVideo - HTML5 Video Player"
     end
   end
 
@@ -36,7 +40,11 @@ module LayoutHelper
     options.reverse_merge!(active_class: 'active')
 
     active = options[:urls].any? do |u|
-      controller.request.url =~ Regexp.new("^https?://[^/]+#{(options[:namespace] || []).join('/')}/#{u}")
+      if u =~ /^http/
+        controller.request.url =~ Regexp.new(u)
+      else
+        controller.request.url =~ Regexp.new("^https?://[^/]+#{(options[:namespace] || []).join('/')}/#{u}")
+      end
     end
     classes = options[:class] ? options[:class].split(" ") : []
     classes << options[:active_class] if active
@@ -48,7 +56,7 @@ module LayoutHelper
   end
 
   def activable_menu_item(tag, url, options = {})
-    options.reverse_merge!(urls: [url], link_text: url.to_s.titleize, class: url.to_s)
+    options.reverse_merge!(urls: [url], link_text: url.to_s.titleize)
 
     link = url.to_s
 
@@ -62,7 +70,7 @@ module LayoutHelper
     options[:namespace] = Array.wrap(options[:namespace])
 
     namespace = options[:namespace].present? ? "#{options[:namespace].join('_')}_" : ''
-    link = send("#{namespace}#{resources}_path", options[:resource])
+    link = send("#{namespace}#{resources}_url", options[:url_options])
 
     activable_content_tag(tag, options) do
       block_given? ? link_to(link) { yield } : link_to(options[:link_text], link)

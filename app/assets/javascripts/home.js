@@ -3,7 +3,7 @@
 //= require s2
 
 document.observe("dom:loaded", function() {
-  slideshow  = new Slideshow(4,0.6);
+  slideshow = new Slideshow(4, 0.6);
 });
 
 Slideshow = Class.create({

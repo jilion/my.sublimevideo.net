@@ -2,8 +2,6 @@ class ApplicationController < ActionController::Base
   respond_to :html
   responders Responders::HttpCacheResponder, Responders::PaginatedResponder
 
-  layout 'application'
-
   protect_from_forgery
 
   def cache_page
