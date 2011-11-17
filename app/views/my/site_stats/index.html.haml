@@ -4,68 +4,64 @@
   :javascript
     document.write(unescape("%3Cscript src='" + (("https:" == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js' type='text/javascript'%3E%3C/script%3E"));
 
-= title_and_content_header("Stats for #{hostname_or_token(@site)}")
+.stats
+  = title_and_content_header("Stats for #{hostname_or_token(@site)}")
 
-:coffeescript
-  $ ->
-    # Enable pusher logging - don't include this in production
-    # Pusher.log = (message) ->
-    #   window.console.log(message) if (window.console && window.console.log)
-    # Flash fallback logging - don't include this in production
-    # WEB_SOCKET_DEBUG = true
+  :coffeescript
+    $ ->
+      # Enable pusher logging - don't include this in production
+      # Pusher.log = (message) ->
+      #   window.console.log(message) if (window.console && window.console.log)
+      # Flash fallback logging - don't include this in production
+      # WEB_SOCKET_DEBUG = true
 
-    window.MSVStats.pusher = new Pusher('#{PusherConfig.key}', encrypted: true)
-    window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.order(:hostname).to_backbone_json})
-    window.MSVStats.sites.select('#{@site.token}')
-    window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
-    Backbone.history.start({ pushState: true })
+      window.MSVStats.pusher = new Pusher('#{PusherConfig.key}', encrypted: true)
+      window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.order(:hostname).to_backbone_json})
+      window.MSVStats.sites.select('#{@site.token}')
+      window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
+      Backbone.history.start({ pushState: true })
 
-#site_quick_switch
+  #site_quick_switch
 
-#trial
+  #trial
+  
+  %ul#period_selectors
+    %li.days365
+    %li.days30
+    %li.hours
+    %li.minutes
+    %li.seconds
 
-#period_selectors
-  %ul
-    %li
-      .days365
-    %li
-      .days30
-    %li
-      .hours
-    %li
-      .minutes
-    %li
-      .seconds
+  .spacer
+  
+  #dates_range
+    %h3#dates_range_title.editable
+    #date_pickers
+  .spacer
+  #vv
+    #vv_content
+      #vv_chart
+      #vv_chart_legend
 
-.spacer
+  .spacer
 
-%h3#dates_range_title
-#date_pickers
+  #top_videos
+    %h3#top_videos_title Most viewed videos
+    #top_videos_content
+    #playable_video
 
-#vv
-  #vv_content
-    #vv_chart
-    #vv_chart_legend
+  #bp
+    %h3 Browser + OS
+    #bp_content
 
-.spacer
+  #md
+    %h3 HTML5 vs Flash
+    #md_content
+      #md_legend
+      #md_pie_chart
 
-#top_videos
-  %h3#top_videos_title Most viewed videos
-  #top_videos_content
-  #playable_video
+  .spacer
 
-#bp
-  %h3 Browser + OS
-  #bp_content
+  #plan_usage
 
-#md
-  %h3 HTML5 vs Flash
-  #md_content
-    #md_legend
-    #md_pie_chart
-
-.spacer
-
-#plan_usage
-
-%p Days period are in UTC
+  %p Days period are in UTC

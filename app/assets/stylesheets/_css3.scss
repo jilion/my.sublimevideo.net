@@ -6,11 +6,11 @@
 }
 
 @mixin gradient($from, $to, $middle) {
-  background-color: $middle;
-  background-image: -moz-linear-gradient($from, $to);
-  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
-  background-image: -webkit-linear-gradient($from, $to);
-  background-image: -o-linear-gradient($from, $to);
+  background: $middle;
+  background: -moz-linear-gradient($from, $to);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
+  background: -webkit-linear-gradient($from, $to);
+  background: -o-linear-gradient($from, $to);
 }
 
 @mixin box-shadow($value) {

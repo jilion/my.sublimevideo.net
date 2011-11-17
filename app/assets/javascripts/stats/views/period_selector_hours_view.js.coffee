@@ -19,7 +19,7 @@ class MSVStats.Views.PeriodSelectorHoursView extends Backbone.View
   renderSparkline: ->
     MSVStats.chartsHelper.sparkline $(@el).find('.sparkline'), @options.statsHours.pluck('vv'),
       width:    '100%'
-      height:   '50px'
+      height:   '42px'
       click:    this.select
       selected: this.isSelected()
 
