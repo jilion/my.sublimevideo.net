@@ -1,9 +1,11 @@
-#start_time
-  From:
-  #start_time_picker
-#end_time
-  To:
-  #end_time_picker
+#start_time.box
+  %h4 From:
+  #start_time_picker.picker
+#end_time.box
+  %h4 To:
+  #end_time_picker.picker
 .spacer
-%button.cancel cancel
-%button.apply APPLY
+.actions
+  %button.cancel cancel
+  %button.apply Apply
+.spacer
