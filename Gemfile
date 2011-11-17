@@ -93,7 +93,6 @@ gem 'pusher',                '~> 0.8.3'
 gem 'coderay',               '~> 1.0.4'
 gem 'haml-coderay',          '~> 0.1.2'
 
-gem 'rack-cache'
 gem 'asset_sync'
 
 # Gems used only for assets and not required
@@ -108,6 +107,7 @@ group :assets do
 end
 
 group :production do
+  gem 'rack-cache'
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end
 
