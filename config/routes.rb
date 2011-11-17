@@ -95,19 +95,10 @@ MySublimeVideo::Application.routes.draw do
         resources :applications, controller: 'client_applications', as: :client_applications # don't change this, used by oauth-plugin
       end
 
-      namespace "api" do
-        constraints format: /json|xml/ do
-          get '/test_request' => 'api#test_request'
-          resources :sites do
-            member do
-              get :usage
-            end
-          end
-        end
-      end
+      match '/api(/*rest)' => redirect { |params, req| "http://api.#{req.domain}/#{params[:rest]}" }
 
       unauthenticated :user do
-        root to: redirect('/login')
+        root to: redirect { |params, req| "http://#{req.domain}/?p=login" }
       end
 
       authenticated :user do
@@ -242,7 +233,7 @@ MySublimeVideo::Application.routes.draw do
       get '/login' => redirect('/?p=login')
 
       # Redirect to subdomains
-      match '/docs' => redirect { |params, req| "http://docs.#{req.domain}" }
+      match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
 
       # Docs routes
       %w[javascript-api releases].each do |path|
@@ -252,11 +243,6 @@ MySublimeVideo::Application.routes.draw do
       # My routes
       %w[privacy terms sites help].each do |path|
         match path => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://my.#{req.domain}/#{path}" }
-      end
-      authenticated :user do
-        get 'help', to: redirect { |params, req| "http://my.#{req.domain}/help" }
-        get '/?p=login', to: redirect { |params, req| "http://my.#{req.domain}/sites" }
-        get '/?p=signup', to: redirect { |params, req| "http://my.#{req.domain}/sites" }
       end
 
       match '/notify(/:anything)' => redirect('/')
