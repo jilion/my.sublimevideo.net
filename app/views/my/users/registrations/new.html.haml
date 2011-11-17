@@ -1,6 +1,11 @@
 %p= flash[:alert]
 
 = form_for @user || User.new, as: :user, url: "http://#{request.domain}/signup", html: { class: "main_form" } do |f|
+  .entry
+    .name
+      = f.label :name, "Name", class: "icon"
+      = f.text_field :name, class: "text", placeholder: "Name", required: true, value: params[:user].try(:[], :name)
+    .spacer
 
   .entry.email
     = f.label :email, "Email", class: "icon"
@@ -9,12 +14,6 @@
   .entry.password
     = f.label :password, "", class: "icon"
     = f.password_field :password, class: "text show_password", placeholder: "Password", required: true
-
-  .entry
-    .name
-      = f.label :name, "Name", class: "icon"
-      = f.text_field :name, class: "text", placeholder: "Name", required: true, value: params[:user].try(:[], :name)
-    .spacer
 
   .entry.terms
     .checkbox_wrap
