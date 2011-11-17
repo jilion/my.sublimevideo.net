@@ -66,8 +66,4 @@ MySublimeVideo::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
-  
-  # Use Dalli as the rack-cache metastore
-  $cache = Dalli::Client.new
-  config.middleware.use ::Rack::Cache, :metastore => $cache, :entitystore => 'file:tmp/cache/entity'
 end
