@@ -31,5 +31,5 @@
     %p
       = "Your credit card information is protected with secure socket layer (SSL) encryption."
       %br
-      = link_to "Questions about billing?", new_ticket_path(anchor: "billing")
+      = mail_to("billing@sublimevideo.net", "Questions about billing?", encode: "hex", class: "hl")
 .spacer
