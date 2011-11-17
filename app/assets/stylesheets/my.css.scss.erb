@@ -307,4 +307,230 @@ header, header .shadow, header .lights {
   @include gradient(#4a5e7e,#8b9cb8,#637898);
 }
 
+.stats #vv_chart_legend {
+  float:right;
+/*  width:500px;*/
+  list-style-type:none;
+  padding-top:70px;
+}
+
+.stats #vv_chart_legend li {
+  float:left;
+  font-size:22px;
+  padding:0 0 0 35px;
+  margin:0 10px;
+}
+
+.stats #vv_chart_legend li.video_plays {
+  background:url(<%= asset_data_uri "my/stats/video_plays_label.png" %>) no-repeat;
+}
+
+.stats #vv_chart_legend li.page_visits {
+  background:url(<%= asset_data_uri "my/stats/page_visits_label.png" %>) no-repeat;
+}
+
+.stats #vv_chart_legend li span {
+  font-size:16px;
+}
+
+.stats #vv {
+  padding:16px 16px 4px;
+  background:#6a86a8;
+  background:rgba(0,36,91,0.25);
+  @include border-radius(5px);
+  @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.5) 0 1px 4px));
+}
+
+.stats #vv p.note {
+  font-size:11px;
+  text-align:right;
+  position:relative;
+  right:-10px;
+  padding-bottom:1px;
+}
+
+.stats h3.title {
+  font-size:34px;
+  font-weight:600;
+  padding:35px 0 10px;
+}
+
+.stats #top_videos table {
+  width:100%;
+  border-collapse:collapse;
+  background:#8fa0c1;
+  background:rgba(0,36,91,0.1);
+  @include border-radius(5px);
+  @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.6) 0 1px 4px));
+}
+
+.stats #top_videos table col.alt {
+  background:rgba(24,41,78,0.05);
+}
+
+.stats #top_videos table th {
+  background:#6c81a0;
+  background:rgba(4,27,62,0.4);
+  color:#aabcd5;
+  text-shadow:rgba(0,0,0,0.6) 0 -1px 0;
+  padding:8px 10px;
+  font-size:15px;
+  font-weight:600;
+  border-bottom:1px solid rgba(0,0,0,0.25);
+}
+
+.stats #top_videos table th.video {
+  width:398px;
+  text-align:left;
+  @include border-radius(5px 0 0 0);
+}
+
+.stats #top_videos table th.loads, .stats #top_videos table th.plays {
+  width:110px;
+}
+
+.stats #top_videos table th.period {
+  @include border-radius(0 5px 0 0);
+}
+
+.stats #top_videos table th a {
+  color:#dfecfe;
+  display:inline-block;
+  padding:3px 12px;
+  border: 1px solid #2d4162;
+  @include gradient(rgba(255,255,255,0.1),rgba(0,0,0,0.1),#dfecfe);
+  @include border-radius(20px);
+  @include box-shadow((inset rgba(255,255,255,0.2) 0 1px 0, rgba(255,255,255,0.1) 0 1px 0));
+}
+
+.stats #top_videos table th a:active {
+  @include gradient(rgba(0,0,0,0.1),rgba(255,255,255,0.1),#dfecfe);
+}
+
+.stats #top_videos table th a.active {
+  border-color:#1b2b45;
+  @include gradient(#2e54c7,#3571d0,#3162cb);
+  @include box-shadow((inset rgba(0,0,0,0.7) 0 1px 5px, rgba(255,255,255,0.1) 0 1px 0));
+}
+
+.stats #top_videos tr.alt {
+  background:#7c8cae;
+  background:rgba(65,88,121,0.14);
+}
+
+.stats #top_videos tr:last-child td.video {
+  @include border-radius(0 0 0 5px);
+}
+
+.stats #top_videos tr:last-child td.period {
+  @include border-radius(0 0 5px 0);
+}
+
+.stats #top_videos td {
+  height:80px;
+  border-top:1px solid #5f7497;
+  @include box-shadow(rgba(255,255,255,0.13) 0 2px 0);
+}
+
+.stats #top_videos tr:last-child td {
+  @include box-shadow(none);
+}
+
+.stats #top_videos td.video .wrap {
+  position:relative;
+  padding:10px 12px;
+}
+
+.stats #top_videos td.video a.play {
+  display:inline-block;
+  width:96px;
+  height:54px;
+  position:relative;
+  border:1px solid #000f24;
+  line-height:0;
+  float:left;
+  overflow:hidden;
+  @include border-radius(5px);
+  @include box-shadow(#002564 0 1px 4px);
+}
+
+.stats #top_videos td.video a.play img {
+  max-width:96px;
+  max-height:54px;
+}
+
+.stats #top_videos td.video a.play .overlay {
+  display:block;
+  width:96px;
+  background:url(<%= asset_data_uri "my/stats/video_thumb_overlay.png" %>) no-repeat center;
+  position:absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  @include border-radius(4px 4px 0 0);
+  @include box-shadow((inset rgba(255,255,255,0.23) 0 1px 0, inset rgba(0,0,0,0.8) 0 0 20px));
+}
+
+.stats #top_videos td.video .right {
+  float:left;
+  padding:8px 0 0 14px;
+}
+
+.stats #top_videos td.video h4 {
+  font-size:18px;
+  font-weight:600;
+  padding-bottom:2px;
+}
+
+.stats #top_videos td.video .video_uid {
+  display:inline-block;
+  padding:2px 5px;
+  background:#778cac;
+  background:rgba(74,100,142,0.5);
+  color:#b7c5db;
+  font-size:13px;
+  font-weight:600;
+  text-shadow:none;
+  @include border-radius(4px);
+  @include box-shadow(rgba(255,255,255,0.2) 0 1px 0);
+}
+
+.stats #top_videos td.video .tooltip {
+  display:none;
+}
+
+.stats #top_videos td.loads, .stats #top_videos td.plays {
+  text-align:center;
+  font-size:24px;
+  font-weight:600;
+}
+
+.stats #top_videos td.period .sparkline {
+  margin:0 auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -42,32 +42,35 @@ class MSVStats.Views.TopVideosView extends Backbone.View
   updateTitle: ->
     title = switch MSVStats.videos.sortBy
       when 'vl' then 'loaded'
-      when 'vv' then 'viewed'
+      when 'vv' then 'played'
     $('#top_videos_title').text("Most #{title} videos")
 
   prepareAndPlayVideo: (event) ->
-    videoID = event.target.id.match(/img-(.*)/)[1]
+    videoID = $(event.currentTarget).children('img')[0].id.match(/img-(.*)/)[1]
     MSVStats.playableVideoView.renderAndPlay(videoID)
 
-  sortByLoads: ->
+  sortByLoads: (event) ->
     unless MSVStats.videos.sortBy == 'vl'
-      $('#video_loads').text 'Loads...' # TODO remove with design implementation
-      $('#video_loads').addClass 'spinner'
+      $('#video_loads').text 'Loads...'
+      $('#video_loads').addClass ' spinner'
       MSVStats.videos.change sortBy: 'vl'
-  sortByViews: ->
+    false
+    
+  sortByViews: (event) ->
     unless MSVStats.videos.sortBy == 'vv'
-      $('#video_views').text 'Views...' # TODO remove with design implementation
-      $('#video_views').addClass 'spinner'
+      $('#video_views').text 'Views...'
+      $('#video_views').addClass ' spinner'
       MSVStats.videos.change sortBy: 'vv'
+    false
 
   showMore: ->
     $('#show_more').text 'Show more...' # TODO remove with design implementation
     $('#show_more').addClass 'spinner'
     MSVStats.videos.change limit: 20
+    false
 
   showLess: ->
     $('#show_less').text 'Show less...' # TODO remove with design implementation
     $('#show_less').addClass 'spinner'
     MSVStats.videos.change limit: 5
-
-
+    false
