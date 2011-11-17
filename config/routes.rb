@@ -74,7 +74,7 @@ MySublimeVideo::Application.routes.draw do
       # match '/video-tag-builder' => 'video_tag_builder#new', via: :get, as: 'video_tag_builder'
       # match '/video-tag-builder/iframe-embed' => 'video_tag_builder#iframe_embed', via: :get
 
-      get '/:page' => 'pages#show', as: :page
+      get '/r/:type/:token' => 'referrers#redirect', type: /c/, token: /[a-z0-9]{8}/
 
       post '/pusher/auth' => 'pusher#auth'
 
@@ -104,6 +104,8 @@ MySublimeVideo::Application.routes.draw do
       authenticated :user do
         root to: redirect('/sites')
       end
+
+      get '/:page' => 'pages#show', as: :page
 
     end
   end # my.
@@ -154,6 +156,8 @@ MySublimeVideo::Application.routes.draw do
       authenticated :admin do
         root to: redirect('/sites'), as: 'admin'
       end
+
+      match '/admin(/*rest)' => redirect { |params, req| "http://admin.#{req.domain}/#{params[:rest]}" }
 
       %w[log_in sign_in signin].each         { |action| get action => redirect('/login') }
       %w[log_out sign_out signout exit].each { |action| get action => redirect('/logout') }
@@ -241,7 +245,7 @@ MySublimeVideo::Application.routes.draw do
       end
 
       # My routes
-      %w[privacy terms sites help].each do |path|
+      %w[privacy terms sites].each do |path|
         match path => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://my.#{req.domain}/#{path}" }
       end
 
