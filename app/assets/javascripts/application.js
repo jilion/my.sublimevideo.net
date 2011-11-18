@@ -255,7 +255,7 @@ var PlanUpdateManager = Class.create({
     if (this.skipTrialDiv) {
       price_is_zero ? this.skipTrialDiv.hide() : this.skipTrialDiv.show();
     }
-    else if (this.planUpgradeInfoDiv) {
+    if (this.planUpgradeInfoDiv) {
       this.showPlanUpdateInfo(this.checkedPlan);
     }
   },
