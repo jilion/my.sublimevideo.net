@@ -1,0 +1,9 @@
+%h2 Stats for
+  -# Oui c'est mal!
+  %select
+    - for site in @sites.models
+      -# et horrible
+      - if @sites.selectedSite == site
+        %option{ value: site.get('token'), selected: 'selected' }= site.title()
+      - else
+        %option{ value: site.get('token') }= site.title()

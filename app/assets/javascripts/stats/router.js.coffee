@@ -12,8 +12,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       el: 'h2'
       sites: MSVStats.sites
 
-    new MSVStats.Views.SiteQuickSwitchView
-      el: '#site_quick_switch'
+    new MSVStats.Views.SitesSelectView
+      el: '#sites_select'
       sites: MSVStats.sites
 
     new MSVStats.Views.TrialView
@@ -92,6 +92,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     'sites/:token/stats': 'home'
 
   home: (token) ->
+    if (selectedSite = MSVStats.sites.selectedSite)?
+      MSVStats.pusher.unsubscribe("presence-#{selectedSite.get('token')}") 
     MSVStats.selectedSiteToken = token
     MSVStats.period.clear()
     MSVStats.sites.select(token)

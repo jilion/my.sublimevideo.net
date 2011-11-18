@@ -1,5 +1,0 @@
-<select>
-  <% for site in @sites.models: %>
-    <option <%= "selected='selected'" if @sites.selectedSite is site %> value='<%= site.get('token') %>'><%= site.title() %></option>
-  <% end %>
-</select>
