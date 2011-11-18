@@ -224,10 +224,11 @@ var PlanUpdateManager = Class.create({
     this.hostnameDiv        = $('site_hostname');
     this.checkedPlan        = null;
     this.messages = $H();
-    ['plan_in_trial_update_info', 'plan_in_trial_update_to_free_info',
-     'plan_upgrade_info', 'plan_upgrade_from_free_info', 'plan_delayed_upgrade_info',
-     'plan_delayed_downgrade_info', 'plan_delayed_change_info', 'plan_delayed_downgrade_to_free_info'].each(function(divName) {
-      this.messages.set(divName, $(divName));
+    ['in_trial_downgrade_to_free', 'in_trial_update', 'in_trial_instant_upgrade',
+     'upgrade', 'upgrade_from_free', 'delayed_upgrade',
+     'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'].each(function(name) {
+      divName = 'plan_' + name + '_info';
+      this.messages.set(name, $(divName));
     }.bind(this));
 
     $$('#plans input[type=radio]').each(function(element){
@@ -288,8 +289,11 @@ var PlanUpdateManager = Class.create({
     });
 
     var planChangeType = radioButton.readAttribute('data-plan_change_type');
+    if (planChangeType == 'in_trial_update' && this.skipTrialCheckbox.checked) {
+      planChangeType = 'in_trial_instant_upgrade';
+    }
     this.messages.each(function(pair) {
-      if ('plan_' + planChangeType + '_info' === pair.key) {
+      if (planChangeType === pair.key) {
         this.updatePlanInfo_(pair.value, radioButton);
         return;
       }
