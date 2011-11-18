@@ -1,9 +1,9 @@
 class My::InvoicesController < MyController
   before_filter :redirect_suspended_user, only: [:index]
+  before_filter :find_sites_or_redirect_to_new_site, only: [:index]
 
   # GET /sites/:site_id/invoices
   def index
-    @sites    = current_user.sites.billable.with_not_canceled_invoices # for sites_select_title
     @site     = current_user.sites.not_archived.find_by_token!(params[:site_id])
     @invoices = @site.invoices.not_canceled.by_date
 
@@ -56,6 +56,15 @@ class My::InvoicesController < MyController
     respond_with(@invoices) do |format|
       format.html { redirect_to sites_url }
     end
+  end
+
+private
+
+  def find_sites_or_redirect_to_new_site
+    # for sites_select_title
+    @sites = current_user.sites.billable | current_user.sites.not_archived.with_not_canceled_invoices
+
+    redirect_to [:new, :site] if @sites.empty?
   end
 
 end
