@@ -12,8 +12,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       el: 'h2'
       sites: MSVStats.sites
 
-    new MSVStats.Views.SitesSelectView
-      el: '#sites_select'
+    new MSVStats.Views.SitesSelectTitleView
+      el: '#sites_select_title'
       sites: MSVStats.sites
 
     new MSVStats.Views.TrialView
