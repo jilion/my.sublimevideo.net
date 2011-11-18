@@ -14,6 +14,9 @@ module OneTime
         "Finished: in total, #{total} sites will have their loader and license re-generated"
       end
 
+      # Take all active sites that are (or has been) in a paid plan (and with no trial started date)
+      # And set their trial started date to their first paid plan started date - <duration of trial>
+      # So their "trial period" is already over.
       def set_trial_started_at_for_sites_created_before_v2
         total = 0
         ::Site.where { (first_paid_plan_started_at != nil) & (trial_started_at == nil) }.find_in_batches(batch_size: 100) do |sites|
@@ -49,23 +52,23 @@ module OneTime
 
           next_cycle_plan = nil if next_cycle_plan == new_plan
 
-          print "##{site.token} (##{site.id} #{site.hostname}): #{site.plan.title} (##{site.plan.id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+          # print "##{site.token} (##{site.id} #{site.hostname}): #{site.plan.title} (##{site.plan.id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
           site.send(:write_attribute, :plan_id, new_plan.id)
           site.send(:write_attribute, :pending_plan_id, nil)
           site.send(:write_attribute, :next_cycle_plan_id, next_cycle_plan.try(:id))
-          print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+          # print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
           site.save_skip_pwd
-          puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+          # puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
           total += 1
 
           unless add_to_balance.zero?
             site.user.increment!(:balance, add_to_balance)
-            puts "$#{add_to_balance/100.0} added to #{site.user.name}'s balance for ##{site.token} (##{site.id} #{site.hostname})!"
+            # puts "$#{add_to_balance/100.0} added to #{site.user.name}'s balance for ##{site.token} (##{site.id} #{site.hostname})!"
           end
 
-          puts
+          # puts
 
-          puts "500 more..." if total.nonzero? && total % 500 == 0
+          # puts "500 more..." if total.nonzero? && total % 500 == 0
         end
 
         # Cancel all upgrade & failed invoices
@@ -120,13 +123,12 @@ module OneTime
       def galaxy_m_plan ; ::Plan.where(name: 'galaxy', cycle: 'month').first; end
       def galaxy_y_plan ; ::Plan.where(name: 'galaxy', cycle: 'year').first; end
       def custom_plan   ; ::Plan.where(name: 'custom - 1').first; end
-                          
+
       def free_plan     ; ::Plan.where(name: 'free').first; end
       def silver_m_plan ; ::Plan.where(name: 'silver', cycle: 'month').first; end
       def silver_y_plan ; ::Plan.where(name: 'silver', cycle: 'year').first; end
       def gold_m_plan   ; ::Plan.where(name: 'gold', cycle: 'month').first; end
       def gold_y_plan   ; ::Plan.where(name: 'gold', cycle: 'year').first; end
-
 
     end
 
