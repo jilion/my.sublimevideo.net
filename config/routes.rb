@@ -19,7 +19,7 @@ MySublimeVideo::Application.routes.draw do
           post   :create,  path: '/signup'
 
           get    :edit,    path: '/account', as: 'edit'
-          put    :update,  path: '/account/info', as: 'update'
+          put    :update,  path: '/account', as: 'update'
           delete :destroy, path: '/account', as: 'destroy'
         end
         get '/logout' => 'users/sessions#destroy', as: 'destroy_user_session'

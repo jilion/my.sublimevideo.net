@@ -5,7 +5,7 @@ class My::UsersController < Devise::RegistrationsController
 
   before_filter :redirect_suspended_user
 
-  # POST /resource
+  # POST /signup
   def create
     build_resource
     @user = resource
@@ -27,7 +27,7 @@ class My::UsersController < Devise::RegistrationsController
     end
   end
 
-  # PUT /users/:id
+  # PUT /account
   def update
     @user = User.find(current_user.id)
 
@@ -40,6 +40,7 @@ class My::UsersController < Devise::RegistrationsController
     end
   end
 
+  # /account
   def destroy
     @user = User.find(current_user.id)
     @user.current_password = params[:user] && params[:user][:current_password]

@@ -4,7 +4,7 @@ module Spec
       extend ActiveSupport::Memoizable
 
       shared_examples_for "redirect when connected as" do |url, roles, verb_actions, params = {}|
-        roles = [roles] unless roles.is_a?(Array)
+        roles = Array.wrap(roles)
         roles.each do |role|
 
           role_name, role_stubs = if role.is_a?(Array)
@@ -15,7 +15,7 @@ module Spec
           context "a #{role_name}" do
             verb_actions.each do |verb, actions|
 
-              actions = [actions] unless actions.is_a?(Array)
+              actions = Array.wrap(actions)
               actions.each do |action|
                 before(:each) do
                   case role_name.to_sym
@@ -25,9 +25,8 @@ module Spec
                 end
 
                 it "should redirect to #{url} on #{verb.upcase} :#{action}" do
-                  params_to_pass = params
-                  params_to_pass = (params_to_pass.nil? || [:index, :new].include?(verb.to_sym)) ? {} : params_to_pass.reverse_merge({ id: '1' })
-                  send(verb, action, params_to_pass)
+                  params = params.nil? ? {} : params.reverse_merge({ id: '1' })
+                  send(verb, action, params)
 
                   response.should redirect_to(url)
                 end

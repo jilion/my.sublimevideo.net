@@ -44,7 +44,8 @@ describe My::PagesController do
 
     it "should redirect to /sites with GET :show, on suspended page" do
       get :show, page: 'suspended'
-      response.should redirect_to(new_user_session_path)
+      response.should redirect_to('http://test.host/')
+      
     end
   end
 
