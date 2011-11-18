@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails',                 '3.1.2.rc2'
+gem 'rails',                 '3.1.2'
 
 gem 'thin'
 
@@ -154,7 +154,7 @@ group :development do
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
-  gem 'guard-spork'
+  gem 'guard-spork', git: 'git://github.com/guard/guard-spork.git'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
   gem 'guard-jasmine'
