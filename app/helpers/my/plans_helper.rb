@@ -22,7 +22,7 @@ module My::PlansHelper
     if old_plan == new_plan
       nil
     elsif site.trial_not_started_or_in_trial?
-      new_plan.free_plan? ? "in_trial_update_to_free" : "in_trial_update"
+      new_plan.free_plan? ? "in_trial_downgrade_to_free" : "in_trial_update"
     elsif new_plan.free_plan?
       "delayed_downgrade_to_free"
     elsif old_plan.free_plan?
@@ -35,7 +35,7 @@ module My::PlansHelper
       else
         "delayed_downgrade"
       end
-    elsif old_plan.month_price(10) <= new_plan.month_price(10)
+    elsif old_plan.upgrade?(new_plan)
       "upgrade"
     else
       "delayed_downgrade"

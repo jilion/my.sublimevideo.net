@@ -10,10 +10,10 @@ describe Plan do
     subject { @plan }
 
     its(:name)                 { should =~ /silver\d+/ }
-    its(:cycle)                { should == "month" }
-    its(:video_views)          { should == 10_000 }
-    its(:stats_retention_days) { should == 365 }
-    its(:price)                { should == 1000 }
+    its(:cycle)                { should eq "month" }
+    its(:video_views)          { should eq 10_000 }
+    its(:stats_retention_days) { should eq 365 }
+    its(:price)                { should eq 1000 }
     its(:token)                { should =~ /^[a-z0-9]{12}$/ }
 
     it { should be_valid }
@@ -64,7 +64,7 @@ describe Plan do
     describe ".create_custom" do
       it "should create new custom plan" do
         expect { @plan = Plan.create_custom(name: 'bob', cycle: "month", video_views: 10**7, price: 999900) }.to change(Plan.custom_plans, :count).by(1)
-        @plan.name.should == "custom - bob"
+        @plan.name.should eq "custom - bob"
       end
     end
   end
@@ -74,7 +74,7 @@ describe Plan do
       it "should return the next plan with a bigger price" do
         plan2 = Factory.create(:plan, price: subject.price + 100)
         plan3 = Factory.create(:plan, price: subject.price + 2000)
-        @paid_plan.next_plan.should == plan2
+        @paid_plan.next_plan.should eq plan2
       end
 
       it "should be_nil if none bigger plan exist" do
@@ -87,13 +87,13 @@ describe Plan do
       context "with month plan" do
         subject { Factory.build(:plan, :cycle => "month", :price => 1000) }
 
-        its(:month_price) { should == 1000 }
+        its(:month_price) { should eq 1000 }
       end
 
       context "with year plan" do
         subject { Factory.build(:plan, :cycle => "year", :price => 10000) }
 
-        its(:month_price) { should == 10000 / 12 }
+        its(:month_price) { should eq 10000 / 12 }
       end
     end
 
@@ -195,16 +195,16 @@ describe Plan do
     end
 
     describe "#title" do
-      specify { @free_plan.title.should == "Free" }
-      specify { @free_plan.title(always_with_cycle: true).should == "Free" }
-      specify { @sponsored_plan.title.should == "Sponsored" }
-      specify { @sponsored_plan.title(always_with_cycle: true).should == "Sponsored" }
-      specify { @custom_plan.title.should == "Custom" }
-      specify { @custom_plan.title(always_with_cycle: true).should == "Custom (monthly)" }
-      specify { Factory.build(:plan, cycle: "month", name: "comet").title.should == "Comet" }
-      specify { Factory.build(:plan, cycle: "year", name: "comet").title.should == "Comet (yearly)" }
-      specify { Factory.build(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should == "Comet (monthly)" }
-      specify { Factory.build(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should == "Comet (yearly)" }
+      specify { @free_plan.title.should eq "Free" }
+      specify { @free_plan.title(always_with_cycle: true).should eq "Free" }
+      specify { @sponsored_plan.title.should eq "Sponsored" }
+      specify { @sponsored_plan.title(always_with_cycle: true).should eq "Sponsored" }
+      specify { @custom_plan.title.should eq "Custom" }
+      specify { @custom_plan.title(always_with_cycle: true).should eq "Custom (monthly)" }
+      specify { Factory.build(:plan, cycle: "month", name: "comet").title.should eq "Comet" }
+      specify { Factory.build(:plan, cycle: "year", name: "comet").title.should eq "Comet (yearly)" }
+      specify { Factory.build(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should eq "Comet (monthly)" }
+      specify { Factory.build(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should eq "Comet (yearly)" }
     end
 
     describe "#daily_video_views" do
@@ -214,15 +214,15 @@ describe Plan do
         @plan3 = Factory.build(:plan, cycle: "none", video_views: 3000)
       end
 
-      it { @plan1.daily_video_views.should == 33 }
-      it { @plan2.daily_video_views.should == 66 }
-      it { @plan3.daily_video_views.should == 100 }
+      it { @plan1.daily_video_views.should eq 33 }
+      it { @plan2.daily_video_views.should eq 66 }
+      it { @plan3.daily_video_views.should eq 100 }
     end
 
     describe "#support" do
-      it { Factory.build(:plan, name: "free", support_level: 0).support.should == "forum" }
-      it { Factory.build(:plan, name: "silver", support_level: 1).support.should == "email" }
-      it { Factory.build(:plan, name: "gold", support_level: 2).support.should == "vip" }
+      it { Factory.build(:plan, name: "free", support_level: 0).support.should eq "forum" }
+      it { Factory.build(:plan, name: "silver", support_level: 1).support.should eq "email" }
+      it { Factory.build(:plan, name: "gold", support_level: 2).support.should eq "vip_email" }
     end
 
   end

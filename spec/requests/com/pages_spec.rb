@@ -194,6 +194,21 @@ feature "Com Pages" do
         go '/help'
         current_url.should eq "http://my.sublimevideo.dev/help"
       end
+
+      %w[privacy terms sites account].each do |path|
+        scenario "#{path} is redirected to 'my'" do
+          go "/#{path}"
+          current_url.should =~ /http:\/\/my\.sublimevideo\.dev\/#{path}/
+        end
+      end
+
+      %w[javascript-api releases].each do |path|
+        scenario "#{path} is redirected to 'docs'" do
+          go "/#{path}"
+          current_url.should =~ /http:\/\/docs\.sublimevideo\.dev\/#{path}/
+        end
+      end
+
     end
 
     describe "menu" do

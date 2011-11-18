@@ -1,19 +1,64 @@
-class My::UsersController < MyController
+class My::UsersController < Devise::RegistrationsController
+  include MyRedirectionFilters
+
   respond_to :html
 
   before_filter :redirect_suspended_user
 
-  # PUT /users/:id
+  # POST /signup
+  def create
+    build_resource
+    @user = resource
+
+    if @user.save
+      if @user.active_for_authentication?
+        set_flash_message :notice, :signed_up if is_navigational_format?
+        sign_in(resource_name, @user)
+        respond_with resource, location: sites_url(subdomain: 'my')
+      else
+        set_flash_message :notice, :inactive_signed_up, reason: inactive_reason(@user) if is_navigational_format?
+        expire_session_data_after_sign_in!
+        respond_with @user, location: after_inactive_sign_up_path_for(@user)
+      end
+    else
+      clean_up_passwords(@user)
+      params[:page] = 'home'
+      render 'com/pages/home'
+    end
+  end
+
+  # PUT /account
   def update
     @user = User.find(current_user.id)
 
     respond_with(@user) do |format|
       if @user.update_attributes(params[:user])
-        format.html { redirect_to edit_user_registration_path }
+        format.html { redirect_to [:edit, :user] }
       else
-        format.html { render 'users/registrations/edit' }
+        format.html { render :edit }
       end
     end
+  end
+
+  # /account
+  def destroy
+    @user = User.find(current_user.id)
+    @user.current_password = params[:user] && params[:user][:current_password]
+
+    respond_with(@user) do |format|
+      if @user.archive
+        format.html do
+          sign_out(@user)
+          redirect_to new_user_session_path, notice: I18n.t("devise.registrations.destroyed")
+        end
+      else
+        format.html { render :edit }
+      end
+    end
+  end
+
+  def after_update_path_for(resource_or_scope)
+    [:edit, :"#{Devise::Mapping.find_scope!(resource_or_scope)}"]
   end
 
   # PUT /hide_notice/:id

@@ -42,7 +42,7 @@ class My::ClientApplicationsController < MyController
   private
 
   def team_accessible_only
-    redirect_to edit_user_registration_path unless current_user.email =~ /@jilion.com$/
+    redirect_to [:edit, :user] unless current_user.email =~ /@jilion.com$/
   end
 
   def get_client_application

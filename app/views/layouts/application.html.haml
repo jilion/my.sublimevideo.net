@@ -40,6 +40,7 @@
               = yield :header
     = yield :middle
     %section#content
+      = render "layouts/flash", flash: flash if flash.present? && request.subdomain == 'my'
       .content_wrapper= yield
     = render "layouts/footer"
     = yield :bottom
@@ -47,7 +48,7 @@
     - display_signup = params[:p] == 'signup' || params[:commit] == 'Sign Up'
     #popup_signup.popup{ style: "display:#{display_signup ? 'block' : 'none'}" }
       .wrap
-        .content= render template: '/my/users/registrations/new'
+        .content= render template: '/my/users/new'
       = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('signup')" do
         %span Close
 

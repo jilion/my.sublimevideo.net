@@ -7,6 +7,7 @@
 //= require prototype
 //= require prototype_ujs
 //= require scriptaculous/s2
+//= require prototype/sites_select_title
 
 function isEventSupported(eventName) {
   eventName = 'on' + eventName;
@@ -64,10 +65,6 @@ document.observe("dom:loaded", function() {
   // =====================================
   if ($("sites_table_wrap")) {
     MySublimeVideo.sitesPoller = new SitesPoller();
-  }
-  // Site quick switch
-  if ($('site_quick_switch_trigger')) {
-    MySublimeVideo.siteQuickSwitch = new SiteQuickSwitch($('site_quick_switch_trigger'), $('site_quick_switch_list'));
   }
 
   // ===================================================
@@ -217,45 +214,6 @@ var HideableNoticeManager = Class.create({
   }
 });
 
-var SiteQuickSwitch = Class.create({
-  initialize: function(triggerLink, sitesList) {
-    this.sitesList   = sitesList;
-    this.triggerLink = triggerLink;
-    this.token       = triggerLink.readAttribute('data-token');
-
-    triggerLink.on('click', this.showSitesList.bind(this));
-    this.sitesList.select('li a').each(function(el) {
-      if (el.readAttribute('data-token') == this.token) {
-        el.on('click', this.hideSitesList.bind(this));
-      }
-      else {
-        el.on('click', this.changePage.bind(this));
-      }
-    }.bind(this));
-  },
-  showSitesList: function(event) {
-    event.stop();
-    this.triggerLink.hide();
-    this.sitesList.addClassName('expanded');
-  },
-  hideSitesList: function(event) {
-    if (event) event.stop();
-    this.sitesList.removeClassName('expanded');
-    this.triggerLink.show();
-  },
-  changePage: function(event) {
-    event.stop();
-    // Change the active link in the sites' list
-    // this.sitesList.select('.active')[0].removeClassName('active');
-    // event.target.addClassName('active');
-
-    // Change the current selected site text
-    this.triggerLink.update(event.target.innerText);
-    this.hideSitesList();
-    window.location.href = window.location.href.replace(this.token, event.target.readAttribute('data-token'));
-  }
-});
-
 var PlanUpdateManager = Class.create({
   initialize: function() {
     this.planUpgradeInfoDiv = $('plan_upgrade_info');
@@ -266,10 +224,11 @@ var PlanUpdateManager = Class.create({
     this.hostnameDiv        = $('site_hostname');
     this.checkedPlan        = null;
     this.messages = $H();
-    ['plan_in_trial_update_info', 'plan_in_trial_update_to_free_info',
-     'plan_upgrade_info', 'plan_upgrade_from_free_info', 'plan_delayed_upgrade_info',
-     'plan_delayed_downgrade_info', 'plan_delayed_change_info', 'plan_delayed_downgrade_to_free_info'].each(function(divName) {
-      this.messages.set(divName, $(divName));
+    ['in_trial_downgrade_to_free', 'in_trial_update', 'in_trial_instant_upgrade',
+     'upgrade', 'upgrade_from_free', 'delayed_upgrade',
+     'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'].each(function(name) {
+      divName = 'plan_' + name + '_info';
+      this.messages.set(name, $(divName));
     }.bind(this));
 
     $$('#plans input[type=radio]').each(function(element){
@@ -296,7 +255,7 @@ var PlanUpdateManager = Class.create({
     if (this.skipTrialDiv) {
       price_is_zero ? this.skipTrialDiv.hide() : this.skipTrialDiv.show();
     }
-    else if (this.planUpgradeInfoDiv) {
+    if (this.planUpgradeInfoDiv) {
       this.showPlanUpdateInfo(this.checkedPlan);
     }
   },
@@ -330,8 +289,11 @@ var PlanUpdateManager = Class.create({
     });
 
     var planChangeType = radioButton.readAttribute('data-plan_change_type');
+    if (planChangeType == 'in_trial_update' && this.skipTrialCheckbox.checked) {
+      planChangeType = 'in_trial_instant_upgrade';
+    }
     this.messages.each(function(pair) {
-      if ('plan_' + planChangeType + '_info' === pair.key) {
+      if (planChangeType === pair.key) {
         this.updatePlanInfo_(pair.value, radioButton);
         return;
       }
@@ -619,7 +581,7 @@ var PopupHandler = Class.create({
     }).update("<span>Close</span>");
     this.popupElement.insert({ bottom: closeButton });
 
-    $('global').insert({ after: this.popupElement });
+    $('content').insert({ after: this.popupElement });
 
     this.startKeyboardObservers();
 

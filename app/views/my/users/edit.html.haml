@@ -1,16 +1,16 @@
 = title_and_content_header("My Account")
 
 .content_left
-  = form_for @user, url: [:users], html: { method: :put, class: "main_form section", id: "edit_credentials", "data-password-protected" => true, "data-password-state" => 'current' } do |f|
+  = form_for @user, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_credentials", "data-password-protected" => true, "data-password-state" => 'current' } do |f|
     - if params[:action] == 'update' && @user.errors[:current_password].present?
-      = password_box resource: @user, f: f, cancel_url: [:edit, :user_registration], password_state: "current"
+      = password_box resource: @user, f: f, cancel_url: [:edit, :user], password_state: "current"
 
-    = render 'my/users/basic_infos_form_fields', f: f
+    = render 'my/users/credentials_form_fields', f: f
 
     .entry.update
       = f.submit "Update", class: "submit small_button", id: "user_credentials_submit"
 
-  = form_for @user, url: [:users], html: { method: :put, class: "main_form section" } do |f|
+  = form_for @user, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_more_infos" } do |f|
     = render 'my/users/more_infos_form_fields', f: f
 
     .entry.update
@@ -28,9 +28,9 @@
   - if current_user.archivable?
     #delete_account
       %h3.section_title= "Delete account"
-      = form_for @user, url: "/account", html: { method: :delete, "data-password-protected" => true } do |f|
+      = form_for @user, url: [:destroy, :user], html: { method: :delete, "data-password-protected" => true } do |f|
         - if params[:action] == 'destroy' && @user.errors[:current_password].present?
-          = password_box resource: @user, f: f, cancel_url: [:edit, :user_registration]
+          = password_box resource: @user, f: f, cancel_url: [:edit, :user]
         %p= "Please understand that:"
         %ul
           %li= raw "All your #{link_to "sites", sites_path, class: "hl"} will be deleted."

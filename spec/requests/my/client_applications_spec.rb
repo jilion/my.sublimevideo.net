@@ -11,22 +11,22 @@ feature "OAuth applications" do
 
     describe "list OAuth applications" do
       scenario "shows a list of applications" do
-        visit "/account/applications"
-        current_url.should =~ %r(^http://[^/]+/account$)
+        go 'my', '/account/applications'
+        current_url.should == "http://my.sublimevideo.dev/account"
       end
     end
 
     describe "new OAuth applications" do
       scenario "shows a list of applications" do
-        visit "/account/applications/new"
-        current_url.should =~ %r(^http://[^/]+/account$)
+        go 'my', '/account/applications/new'
+        current_url.should == "http://my.sublimevideo.dev/account"
       end
     end
 
     describe "edit an OAuth applications" do
       scenario "shows a list of applications" do
-        visit "/account/applications/#{@application.id}/edit"
-        current_url.should =~ %r(^http://[^/]+/account$)
+        go 'my', "/account/applications/#{@application.id}/edit"
+        current_url.should == "http://my.sublimevideo.dev/account"
       end
     end
   end
@@ -41,8 +41,8 @@ feature "OAuth applications" do
 
     describe "list OAuth applications" do
       scenario "shows a list of applications" do
-        visit "/account/applications"
-        current_url.should =~ %r(^http://[^/]+/account/applications$)
+        go 'my', '/account/applications'
+        current_url.should == "http://my.sublimevideo.dev/account/applications"
 
         page.should have_content('Agree2')
       end
@@ -50,29 +50,27 @@ feature "OAuth applications" do
 
     describe "new OAuth applications" do
       scenario "shows a list of applications" do
-        visit "/account/applications"
-        current_url.should =~ %r(^http://[^/]+/account/applications$)
+        go 'my', '/account/applications'
 
         click_link "Register a new application"
-        current_url.should =~ %r(^http://[^/]+/account/applications/new$)
+        current_url.should == "http://my.sublimevideo.dev/account/applications/new"
 
         fill_in "Name", :with => "WordPress"
         fill_in "Url", :with => "http://wordpress.com"
         click_button "Register"
 
-        current_url.should =~ %r(^http://[^/]+/account/applications/#{ClientApplication.last.id}$)
+        current_url.should == "http://my.sublimevideo.dev/account/applications/#{ClientApplication.last.id}"
         page.should have_content('WordPress')
       end
     end
 
     describe "edit an OAuth applications" do
       scenario "shows a list of applications" do
-        visit "/account/applications"
-        current_url.should =~ %r(^http://[^/]+/account/applications$)
+        go 'my', '/account/applications'
 
         click_link "Edit"
 
-        current_url.should =~ %r(^http://[^/]+/account/applications/#{@application.id}/edit$)
+        current_url.should == "http://my.sublimevideo.dev/account/applications/#{@application.id}/edit"
         page.should have_content("Edit the application 'Agree2'")
 
         fill_in "Name", :with => "Agree3"
@@ -89,8 +87,7 @@ feature "OAuth applications" do
     # cannot fill in, no text field, text area or password field with id, name, or label 'Password' found
     pending "delete an OAuth applications" do
       scenario "shows a list of applications" do
-        visit "/account/applications"
-        current_url.should =~ %r(^http://[^/]+/account/applications$)
+        go 'my', '/account/applications'
         page.should have_content('Agree2')
 
         click_button "Delete"

@@ -844,7 +844,7 @@ describe User do
       end
     end
 
-    describe "#support" do
+    describe "#support & #email_support?" do
       context "user has no site" do
         before(:all) do
           @user = Factory.create(:user)
@@ -861,7 +861,8 @@ describe User do
         end
         subject { @user.reload }
         it { @free_plan.support.should eql "forum" }
-        it { subject.support.should eql "forum" }
+        its(:support) { should eq "forum" }
+        its(:email_support?) { should be_false }
       end
 
       context "user has at least one site with email support" do
@@ -872,12 +873,13 @@ describe User do
         end
         subject { @user.reload }
 
-        it { @free_plan.support.should eql "forum" }
-        it { @paid_plan.support.should eql "email" }
-        its(:support) { should eql "email" }
+        it { @free_plan.support.should eq "forum" }
+        it { @paid_plan.support.should eq "email" }
+        its(:support) { should eq "email" }
+        its(:email_support?) { should be_true }
       end
 
-      context "user has at least one site with vip support" do
+      context "user has at least one site with vip email support" do
         before(:all) do
           @user = Factory.create(:user)
           Factory.create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
@@ -888,8 +890,9 @@ describe User do
 
         it { @free_plan.support.should eql "forum" }
         it { @paid_plan.support.should eql "email" }
-        it { @custom_plan.support.should eql "vip" }
-        its(:support) { should eql "vip" }
+        it { @custom_plan.support.should eql "vip_email" }
+        its(:support) { should eql "vip_email" }
+        its(:email_support?) { should be_true }
       end
     end
 

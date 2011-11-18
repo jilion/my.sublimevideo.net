@@ -35,12 +35,12 @@
 -#  -#= raw "For any other question, please consult our #{link_to "Documentation", "http://docs.sublimevideo.net", :class => "hl"}, #{link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"}, #{link_to "FAQ", "http://docs.sublimevideo.net/faq", :class => "hl"} and #{link_to "Troubleshooting", "http://docs.sublimevideo.net/troubleshooting", :class => "hl"} pages first."
 -#
 
-%p.title_desc
-  - if @ticket
+- if @ticket
+  %p.title_desc
     = raw "If you can't find the answer you're looking for use the form below to submit your question and we'll personally get back to you as quickly as we can."
     %p.title_desc= raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
 
-    = form_for @ticket, url: ticket_path do |f|
+    = form_for @ticket, url: [:ticket] do |f|
       .entry.select.site_token
         = f.label :site_token, "", class: "icon"
         = f.select :site_token, ticket_site_token_options

@@ -3,22 +3,22 @@
 #suspended
   - failed_invoices = current_user.invoices.failed
 
-  %h3.section_title= "Suspension reason"
+  %h3.section_title Suspension reason
   - if failed_invoices.any?
     %p= "You currently have #{t('invoice.failed_invoices', count: failed_invoices.count)}."
 
-    = render 'users/billing_infos'
+    = render 'my/users/billing_infos'
 
-    %h3.section_title= "Your failed invoices"
+    %h3.section_title Your failed invoices
     #failed_invoices
       = t("user.have_to_pay_following_invoices", count: failed_invoices.size)
       %ul
         - failed_invoices.each do |invoice|
-          %li= render '/invoices/invoice_row', invoice: invoice
+          %li= render 'my/invoices/invoice_row', invoice: invoice
       - if !current_user.cc_expired?
         = form_tag retry_all_invoices_path, method: 'put' do
           .entry= submit_tag t('invoice.retry_invoices'), class: "submit_dynamic_button"
   - else
     %p
-      = "Unknown reason."
+      Unknown reason.
       = raw t('app.please_link_to_know_more_about_it', link: mail_to("billing@sublimevideo.net", "email us", encode: "hex", class: "hl"))

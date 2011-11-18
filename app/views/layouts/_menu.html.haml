@@ -7,7 +7,7 @@
         = activable_menu_restful_item(:li, :page, { url_options: { page: 'help', subdomain: 'my' }, link_options: { onclick: "SublimeVideo.makeSticky(this, '#menu')" }, link_text: "Help" })
         %li= link_to "Logout", destroy_user_session_url(subdomain: 'my')
         %li{ class: controller.request.url =~ /account/ ? 'active' : nil }
-          = link_to(edit_user_registration_path, class: "user", onclick: "MySublimeVideo.makeSticky(this, '#menu')") do
+          = link_to([:edit, :user], class: "user", onclick: "MySublimeVideo.makeSticky(this, '#menu')") do
             %strong
               %span.icon= truncate(current_user.try(:name) || cookies[:l], length: 45)
     - else

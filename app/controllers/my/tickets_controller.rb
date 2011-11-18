@@ -1,17 +1,11 @@
 class My::TicketsController < MyController
   respond_to :html
 
-  # GET /support
-  def new
-    @ticket = Ticket.new
-    respond_with(@ticket)
-  end
-
   # POST /support
   def create
     @ticket = Ticket.new(params[:ticket].merge({ user_id: current_user.id }))
     @ticket.save
-    respond_with(@ticket, location: new_ticket_url)
+    respond_with(@ticket, location: page_url('help'))
   end
 
 end

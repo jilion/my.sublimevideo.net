@@ -37,6 +37,7 @@ SublimeVideo.showPopup = (name) ->
     document.location.href = "http://my.#{document.location.host.split('.').slice(-2).join('.')}/sites"
   else if $("popup_#{name}")
     SublimeVideo.openSimplePopup("popup_#{name}")
+    $("popup_#{name}").down('#user_email').focus()
     if history && history.pushState
       history.pushState { showPopup: name }, '', document.location.href.replace(document.location.search, '') + "?p=#{name}"
 

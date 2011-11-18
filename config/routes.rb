@@ -14,13 +14,13 @@ MySublimeVideo::Application.routes.draw do
                  path: '',
                  path_names: { sign_in: 'login', sign_out: 'logout' },
                  skip: [:sessions, :invitations, :registrations] do
-        resource :user_registration, only: [], controller: 'users/registrations', path: '' do
+        resource :user, only: [], path: '' do
           get    :new,     path: '/signup', as: 'new'
           post   :create,  path: '/signup'
 
           get    :edit,    path: '/account', as: 'edit'
-          put    :update,  path: '/account/credentials'
-          delete :destroy, path: '/account'
+          put    :update,  path: '/account', as: 'update'
+          delete :destroy, path: '/account', as: 'destroy'
         end
         get '/logout' => 'users/sessions#destroy', as: 'destroy_user_session'
       end
@@ -32,7 +32,6 @@ MySublimeVideo::Application.routes.draw do
       get '/invitation/accept' => redirect('/signup?beta=over')
       post '/password/validate' => "users/passwords#validate"
 
-      resource :users, only: [:update], path: '/account/info'
       put '/hide_notice/:id' => 'users#hide_notice'
 
       scope 'account' do
@@ -223,8 +222,8 @@ MySublimeVideo::Application.routes.draw do
   end
 
   devise_scope :user do
-    get '/?p=signup' => 'my/users/registrations#new', as: 'signup'
-    post '/signup' => 'my/users/registrations#create'
+    get '/?p=signup' => 'my/users#new', as: 'signup'
+    post '/signup' => 'my/users#create'
     get '/?p=login' => 'my/users/sessions#new', as: 'login'
     post '/login' => 'my/users/sessions#create'
     get '/logout' => 'my/users/sessions#destroy'
@@ -245,7 +244,7 @@ MySublimeVideo::Application.routes.draw do
       end
 
       # My routes
-      %w[privacy terms sites].each do |path|
+      %w[privacy terms sites account].each do |path|
         match path => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://my.#{req.domain}/#{path}" }
       end
 
