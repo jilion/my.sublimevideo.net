@@ -40,6 +40,7 @@
               = yield :header
     = yield :middle
     %section#content
+      = render "layouts/flash", flash: flash if flash.present? && request.subdomain == 'my'
       .content_wrapper= yield
     = render "layouts/footer"
     = yield :bottom

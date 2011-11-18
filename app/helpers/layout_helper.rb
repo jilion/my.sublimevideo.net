@@ -52,8 +52,6 @@ module LayoutHelper
                 else
                   u
                 end
-        Rails.logger.info "subdomain: #{subdomain}"
-        Rails.logger.info "page: #{page}"
         controller.request.url =~ Regexp.new("^https?://#{subdomain}[^/]+#{(options[:namespace] || []).join('/')}/#{page}")
       end
     end
