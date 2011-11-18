@@ -3,7 +3,7 @@ class My::InvoicesController < MyController
 
   # GET /sites/:site_id/invoices
   def index
-    @sites    = current_user.sites.not_archived.with_not_canceled_invoices
+    @sites    = current_user.sites.billable.with_not_canceled_invoices # for sites_select_title
     @site     = current_user.sites.not_archived.find_by_token!(params[:site_id])
     @invoices = @site.invoices.not_canceled.by_date
 

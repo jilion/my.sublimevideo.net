@@ -7,6 +7,7 @@
 //= require prototype
 //= require prototype_ujs
 //= require scriptaculous/s2
+//= require prototype/sites_select_title
 
 function isEventSupported(eventName) {
   eventName = 'on' + eventName;
@@ -64,10 +65,6 @@ document.observe("dom:loaded", function() {
   // =====================================
   if ($("sites_table_wrap")) {
     MySublimeVideo.sitesPoller = new SitesPoller();
-  }
-  // Site quick switch
-  if ($('site_quick_switch_trigger')) {
-    MySublimeVideo.siteQuickSwitch = new SiteQuickSwitch($('site_quick_switch_trigger'), $('site_quick_switch_list'));
   }
 
   // ===================================================
@@ -214,45 +211,6 @@ var HideableNoticeManager = Class.create({
   updateUserAndHideNotice: function() {
     new Ajax.Request('/hide_notice/' + this.noticeId, { method: 'put' });
     this.noticeElement.fade({ after: function(){ this.noticeElement.remove(); } });
-  }
-});
-
-var SiteQuickSwitch = Class.create({
-  initialize: function(triggerLink, sitesList) {
-    this.sitesList   = sitesList;
-    this.triggerLink = triggerLink;
-    this.token       = triggerLink.readAttribute('data-token');
-
-    triggerLink.on('click', this.showSitesList.bind(this));
-    this.sitesList.select('li a').each(function(el) {
-      if (el.readAttribute('data-token') == this.token) {
-        el.on('click', this.hideSitesList.bind(this));
-      }
-      else {
-        el.on('click', this.changePage.bind(this));
-      }
-    }.bind(this));
-  },
-  showSitesList: function(event) {
-    event.stop();
-    this.triggerLink.hide();
-    this.sitesList.addClassName('expanded');
-  },
-  hideSitesList: function(event) {
-    if (event) event.stop();
-    this.sitesList.removeClassName('expanded');
-    this.triggerLink.show();
-  },
-  changePage: function(event) {
-    event.stop();
-    // Change the active link in the sites' list
-    // this.sitesList.select('.active')[0].removeClassName('active');
-    // event.target.addClassName('active');
-
-    // Change the current selected site text
-    this.triggerLink.update(event.target.innerText);
-    this.hideSitesList();
-    window.location.href = window.location.href.replace(this.token, event.target.readAttribute('data-token'));
   }
 });
 

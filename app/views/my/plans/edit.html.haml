@@ -1,8 +1,7 @@
 = title("Plan for #{truncate_middle(@site.hostname, length: 23)}")
-= content_header(site_quick_switch_trigger(@site))
+= render '/layouts/sites_select_title'
 
 #site.edit
-  = render '/layouts/site_quick_switch'
   = render '/layouts/segmented_menu'
 
   - if @site.hostname.blank?
