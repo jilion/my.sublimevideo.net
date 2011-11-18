@@ -64,13 +64,13 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     false
 
   showMore: ->
-    $('#show_more').text 'Show more...' # TODO remove with design implementation
+    $('#show_more').text 'Expanding...' # TODO remove with design implementation
     $('#show_more').addClass 'spinner'
     MSVStats.videos.change limit: 20
     false
 
   showLess: ->
-    $('#show_less').text 'Show less...' # TODO remove with design implementation
+    $('#show_less').text 'Reducing...' # TODO remove with design implementation
     $('#show_less').addClass 'spinner'
     MSVStats.videos.change limit: 5
     false

@@ -24,3 +24,11 @@
   -webkit-border-radius:$value;
   border-radius:$value;
 }
+
+@mixin mask-image($value) {
+  -webkit-mask-image:url($value);
+  -o-mask-image:url($value);
+  -moz-mask-image:url($value);
+  mask-image:url($value);
+}
+

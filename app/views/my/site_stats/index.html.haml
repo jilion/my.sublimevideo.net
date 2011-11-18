@@ -1,5 +1,4 @@
 = content_for :head do
-  = stylesheet_link_tag 'stats'
   = javascript_include_tag 'https://d3ds63zw57jt09.cloudfront.net/1.9/pusher.min.js', 'stats'
   :javascript
     document.write(unescape("%3Cscript src='" + (("https:" == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js' type='text/javascript'%3E%3C/script%3E"));
@@ -51,13 +50,15 @@
     #top_videos_content
     #playable_video
 
-  #bp
+  #bp.graph_box
     %h3.title Browser + OS
-    #bp_content
+    %h5.sub_title Based on page visits
+    #bp_content.content
 
-  #md
+  #md.graph_box
     %h3.title HTML5 vs Flash
-    #md_content
+    %h5.sub_title Based on video loads
+    #md_content.content
       #md_legend
       #md_pie_chart
 
@@ -65,4 +66,4 @@
 
   #plan_usage
 
-  %p Days period are in UTC
+  -# %p Days period are in UTC

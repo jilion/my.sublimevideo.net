@@ -32,6 +32,73 @@ header, header .shadow, header .lights {
   padding:40px 0;
 }
 
+#content h2 select {
+  height:60px;
+  padding:0 30px 0 10px;
+  background:url(<%= asset_data_uri "my/big_select_back.png" %>) no-repeat right top;
+  font-family:inherit;
+  color:#1e3966;
+  font-size:48px;
+  font-weight:100;
+  border: 1px solid #5e75a2;
+  text-shadow:rgba(255,255,255,0.25) 0 1px 0;
+  @include box-shadow(rgba(255,255,255,0.2) 0 1px 0);
+  -webkit-appearance:none;
+}
+
+#content .tooltip {
+  position:relative;
+  display:block;
+  padding-top:2px;
+  top:-2px;
+}
+
+#content .tooltip .icon {
+  display:block;
+  cursor:pointer;
+}
+
+#content .tooltip .content {
+  display:none;
+  position:absolute;
+  bottom:30px;
+  left:-54px;
+  z-index:10;
+  width:130px;
+  font-size:12px;
+  line-height:14px;
+  text-align:center;
+  color:#c5d4eb;
+  text-shadow:rgba(0,0,0,0.8) 0 -1px 0;
+  border: 1px solid #182437;
+  @include gradient(#46536c,#222f48,#35425b);
+  @include border-radius(5px);
+  @include box-shadow((inset rgba(255,255,255,0.2) 0 1px 0, #00183a 0 1px 5px));
+}
+
+#content .tooltip:hover .content {display:block;}
+
+#content .tooltip .content a {
+  color:#c5d4eb;
+  text-decoration:underline;
+}
+
+#content .tooltip .content .arrow {
+  display:block;
+  width:13px;
+  height:8px;
+  background:url(<%= asset_data_uri "my/tooltip_bottom_arrow.png" %>) no-repeat;
+  position:absolute;
+  bottom:-7px;
+  left:0;
+  right:0;
+  margin:0 auto;
+}
+
+#content .tooltip .content p {
+  padding:8px 6px;
+}
+
 #trial {display:none;}
 
 .stats #period_selectors {
@@ -298,6 +365,7 @@ header, header .shadow, header .lights {
   border:1px solid #263c5e;
   text-shadow:rgba(0,0,0,0.5) 0 -1px 0;
   padding:6px 12px;
+  cursor:pointer;
   @include gradient(#8b9cb8,#4a5e7e,#637898);
   @include border-radius(5px);
   @include box-shadow((inset rgba(255,255,255,0.22) 0 1px 0, #001d3d 0 1px 4px));
@@ -450,6 +518,7 @@ header, header .shadow, header .lights {
   line-height:0;
   float:left;
   overflow:hidden;
+  background:#000;
   @include border-radius(5px);
   @include box-shadow(#002564 0 1px 4px);
 }
@@ -457,6 +526,10 @@ header, header .shadow, header .lights {
 .stats #top_videos td.video a.play img {
   max-width:96px;
   max-height:54px;
+  -webkit-mask-image:url(<%= asset_path "my/stats/video_thumb_mask.png" %>);
+  -o-mask-image:url(<%= asset_path "my/stats/video_thumb_mask.png" %>);
+  -moz-mask-image:url(<%= asset_path "my/stats/video_thumb_mask.png" %>);
+  mask-image:url(<%= asset_path "my/stats/video_thumb_mask.png" %>);
 }
 
 .stats #top_videos td.video a.play .overlay {
@@ -481,6 +554,7 @@ header, header .shadow, header .lights {
   font-size:18px;
   font-weight:600;
   padding-bottom:2px;
+  float:left;
 }
 
 .stats #top_videos td.video .video_uid {
@@ -497,7 +571,14 @@ header, header .shadow, header .lights {
 }
 
 .stats #top_videos td.video .tooltip {
-  display:none;
+  float:left;
+  margin:0 0 0 7px;
+}
+
+.stats #top_videos .tooltip .icon {
+  width:22px;
+  height:22px;
+  background:url(<%= asset_data_uri "my/stats/warning_icon.png" %>) no-repeat;
 }
 
 .stats #top_videos td.loads, .stats #top_videos td.plays {
@@ -509,3 +590,275 @@ header, header .shadow, header .lights {
 .stats #top_videos td.period .sparkline {
   margin:0 auto;
 }
+
+.stats #top_videos .update_rows_number {
+  display:block;
+  text-align:center;
+}
+
+.stats #top_videos .update_rows_number a {
+  position:relative;
+  display:inline-block;
+  padding:6px 24px 6px 10px;
+  border:1px solid #3a5175;
+  border-top:none;
+  color:#f1f6ff;
+  font-size:16px;
+  font-weight:500;
+  text-shadow:rgba(0,0,0,0.6) 0 -1px 0;
+  @include gradient(rgba(35,65,106,0.4),rgba(22,51,92,0.5),#627796);
+  @include border-radius(0 0 5px 5px);
+  @include box-shadow(rgba(0,28,85,0.6) 0 1px 4px);
+}
+
+.stats #top_videos .update_rows_number a .arrow {
+  display:block;
+  position:absolute;
+  right:7px;
+  top:45%;
+  width:10px;
+  height:7px;
+  background:url(<%= asset_data_uri "my/stats/expand_videos_arrow_down.png" %>) no-repeat;
+}
+
+.stats #top_videos .update_rows_number a .arrow.up {
+  background:url(<%= asset_data_uri "my/stats/expand_videos_arrow_up.png" %>) no-repeat;  
+}
+
+.stats .graph_box {
+  float:left;
+  width:400px;
+  margin-bottom:40px;
+}
+
+.stats #bp.graph_box {
+  margin-right:40px;
+}
+
+.stats #md.graph_box {
+  margin-left:30px;
+}
+
+.stats .graph_box h3.title {
+  text-align:center;
+  padding-bottom:5px;
+}
+
+.stats .graph_box h5.sub_title {
+  text-align:center;
+  font-size:16px;
+  font-weight:normal;
+  color:#465b7d;
+}
+
+.stats .graph_box .content {
+  margin-top:20px;
+  overflow:hidden;
+  background:#8fa0c1;
+  background:rgba(0,36,91,0.1);
+  @include border-radius(5px);
+  @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.6) 0 1px 4px));
+}
+
+.stats .graph_box ul {
+  list-style-type:none;
+}
+
+.stats .graph_box li {
+  height:58px;
+  position:relative;
+  border-bottom:1px solid #657a9e;
+  @include box-shadow(rgba(255,255,255,0.14) 0 1px 0);
+}
+
+.stats .graph_box li:last-child {
+  border-bottom:none;
+  @include box-shadow(none);
+}
+
+.stats .graph_box li.html5, .stats .graph_box li.flash {
+  height:auto;
+}
+
+.stats .graph_box li li {
+  height:29px;
+}
+
+.stats .graph_box li .bar {
+  display:block;
+  position:absolute;
+  max-width:99%;
+  top:0;
+  left:0;
+  height:58px;
+  background:#83acae;
+  background:rgba(116,255,131,0.18);
+  background-image:url(<%= asset_data_uri "my/stats/chart_highlight_bar.png" %>);
+  background-position:right top;
+  background-repeat:repeat-y;
+}
+
+.stats .graph_box li:first-child .bar {@include border-radius(5px 0 0 0)}
+.stats .graph_box li:first-child li .bar {@include border-radius(0 0 0 0)}
+.stats .graph_box li:last-child .bar {@include border-radius(0 0 0 5px)}
+.stats .graph_box li:last-child li .bar, .stats .graph_box li.flash .bar {@include border-radius(0 0 0 0)}
+
+.stats .graph_box li li .bar {
+  height:29px;
+}
+
+.stats .graph_box li.html5 > .wrap, .stats .graph_box li.flash > .wrap {
+  border-bottom:1px solid #657a9e;
+  @include box-shadow(rgba(255,255,255,0.14) 0 1px 0);
+}
+
+.stats .graph_box li .wrap {
+  display:block;
+  position:relative;
+  z-index:2;
+  padding-left:6px;
+}
+
+.stats .graph_box li .browser, .stats .graph_box li .platform, .stats .graph_box li .icon {
+  display:block;
+  width:40px;
+  height:58px;
+  float:left;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+
+.stats .graph_box li li .icon {
+  height:29px;
+/*  width:20px;*/
+}
+
+.stats .graph_box li .browser {background-image:url(<%= asset_data_uri "my/stats/icons/browser_default.png" %>);}
+.stats .graph_box li.b_fir .browser {background-image:url(<%= asset_data_uri "my/stats/icons/firefox.png" %>);}
+.stats .graph_box li.b_iex .browser {background-image:url(<%= asset_data_uri "my/stats/icons/internet_explorer.png" %>);}
+.stats .graph_box li.b_chr .browser {background-image:url(<%= asset_data_uri "my/stats/icons/chrome.png" %>);}
+.stats .graph_box li.b_saf .browser {background-image:url(<%= asset_data_uri "my/stats/icons/safari.png" %>);}
+.stats .graph_box li.b_ope .browser {background-image:url(<%= asset_data_uri "my/stats/icons/opera.png" %>);}
+.stats .graph_box li.b_saf.p_iph .browser, .stats .graph_box li.b_saf.p_ipa .browser {background-image:url(<%= asset_data_uri "my/stats/icons/mobile_safari.png" %>);}
+
+/*.stats .graph_box li .platform {background-image:url(<%= asset_data_uri "my/stats/icons/browser_default.png" %>);}*/
+.stats .graph_box li.p_osx .platform {background-image:url(<%= asset_data_uri "my/stats/icons/mac.png" %>);}
+.stats .graph_box li.p_win .platform {background-image:url(<%= asset_data_uri "my/stats/icons/windows.png" %>);}
+.stats .graph_box li.p_and .platform {background-image:url(<%= asset_data_uri "my/stats/icons/android.png" %>);}
+.stats .graph_box li.p_iph .platform {background-image:url(<%= asset_data_uri "my/stats/icons/iphone.png" %>);}
+
+.stats .graph_box li.html5 .icon {background-image:url(<%= asset_data_uri "my/stats/icons/html5.png" %>);}
+.stats .graph_box li.flash .icon {background-image:url(<%= asset_data_uri "my/stats/icons/flash.png" %>);}
+
+.stats .graph_box li li.desktop .icon {background-image:url(<%= asset_data_uri "my/stats/icons/desktop.png" %>);}
+.stats .graph_box li li.mobile .icon {background-image:url(<%= asset_data_uri "my/stats/icons/smartphone.png" %>);}
+.stats .graph_box li li.tablet .icon {background-image:url(<%= asset_data_uri "my/stats/icons/tablet.png" %>);}
+
+.stats .graph_box li .title {
+  display:block;
+  float:left;
+  font-size:14px;
+  font-weight:600;
+  padding:20px 0 0 6px;
+}
+
+.stats .graph_box li li .title {
+  padding:6px 0 0 6px;
+}
+
+.stats .graph_box li .value {
+  display:block;
+  position:absolute;
+  top:10px;
+  right:10px;
+  text-align:right;
+}
+
+.stats .graph_box li li .value {
+  top:5px;
+}
+
+.stats .graph_box li .value .percent {
+  display:block;
+  font-size:18px;
+  font-weight:600;
+}
+
+.stats .graph_box li .value .metric {
+  font-size:13px;
+  color:#465b7d;
+}
+
+.stats .graph_box li.html5 .value .metric, .stats .graph_box li.flash .value .metric {color:#1e3966;}
+
+.stats .graph_box li li .value .percent, .stats .graph_box li li .value .metric {
+  display:inline;
+  color:#465b7d !important;
+  font-size:12px;
+  padding-left:6px;
+  font-weight:normal;
+}
+
+.stats .graph_box li li .value .percent {
+  font-size:14px;
+}
+
+.stats #plan_usage .wrap {
+  width:545px;
+  padding-bottom:40px;
+}
+
+.stats #plan_usage h3 {
+  font-size:24px;
+  padding-top:30px;
+}
+
+.stats #plan_usage p {
+  font-size:15px;
+  color:#465b7d;
+  line-height:22px;
+}
+
+.stats #plan_usage strong {
+  color:#1e3966;
+}
+
+.stats #plan_usage .progress_bar {
+  width:360px;
+  height:24px;
+  margin:10px 0;
+  position:relative;
+  background:#909db7;
+  background:rgba(30,57,102,0.2);
+  @include border-radius(4px);
+  @include box-shadow((inset rgba(0,30,76,0.3) 0 1px 1px, rgba(255,255,255,0.2) 0 1px 0));
+}
+
+.stats #plan_usage .progress_bar .bar {
+  position:absolute;
+  top:0;
+  left:0;
+  height:24px;
+  max-width:100%;
+  @include gradient(#304972, #1c355e, #27406a);
+  @include border-radius(4px);
+}
+
+.big_break {
+  width:868px;
+  height:21px;
+  margin:0 auto;
+  background:url(<%= asset_data_uri "my/big_break.png" %>);
+}
+
+
+
+
+
+
+
+
+
+
+
+

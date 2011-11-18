@@ -3,23 +3,42 @@
 - else
   %ul
     %li.html5
-      %span{ style: "width: #{@mdData.percentage(@mdData.mh)}%;"}
-      %span.title HTML5
-      %span.value= "#{Highcharts.numberFormat(@mdData.mh, 0)} (#{@mdData.percentage(@mdData.mh)}%)"
-      %ul.html5
+      %span.bar{ style: "width: #{@mdData.percentage(@mdData.mh)}%;"}
+      %span.wrap
+        %span.icon
+        %span.title HTML5
+        %span.value
+          %span.percent= "#{@mdData.percentage(@mdData.mh)}%"
+          %span.metric= "#{Highcharts.numberFormat(@mdData.mh, 0)} loads"
+        .spacer
+      %ul
         - for dh in @mdData.toArray('dh')
           %li{ class: dh[0].toLowerCase() }
-            %span{ style: "width: #{@mdData.percentage(dh[1], @mdData.mh)}%;" }
-            %span.title= dh[0]
-            %span.value= "#{Highcharts.numberFormat(dh[1], 0)} (#{@mdData.percentage(dh[1], @mdData.mh)}%)"
+            %span.bar{ style: "width: #{@mdData.percentage(dh[1], @mdData.mh)}%;" }
+            %span.wrap
+              %span.icon
+              %span.title= dh[0]
+              %span.value
+                %span.metric= "#{Highcharts.numberFormat(dh[1], 0)} loads"
+                %span.percent= "#{@mdData.percentage(dh[1], @mdData.mh)}%"
+              .spacer
     %li.flash
-      %span{ style: "width: #{@mdData.percentage(@mdData.mf)}%;"}
-      %span.title Flash
-      %span.value= "#{Highcharts.numberFormat(@mdData.mf, 0)} (#{@mdData.percentage(@mdData.mf)}%)"
-      %ul.html5
+      %span.bar{ style: "width: #{@mdData.percentage(@mdData.mf)}%;"}
+      %span.wrap
+        %span.icon
+        %span.title Flash
+        %span.value
+          %span.percent= "#{@mdData.percentage(@mdData.mf)}%"
+          %span.metric= "#{Highcharts.numberFormat(@mdData.mf, 0)} loads"
+        .spacer
+      %ul
         - for df in @mdData.toArray('df')
           %li{ class: df[0].toLowerCase() }
-            %span{ style: "width: #{@mdData.percentage(df[1], @mdData.mf)}%;" }
-            %span.title= df[0]
-            %span.value= "#{Highcharts.numberFormat(df[1], 0)} (#{@mdData.percentage(df[1], @mdData.mf)}%)"
-  %span.tooltip Counted on each video load (could be greather than one per page visit)
+            %span.bar{ style: "width: #{@mdData.percentage(df[1], @mdData.mf)}%;" }
+            %span.wrap
+              %span.icon
+              %span.title= df[0]
+              %span.value
+                %span.metric= "#{Highcharts.numberFormat(df[1], 0)} loads"
+                %span.percent= "#{@mdData.percentage(df[1], @mdData.mf)}%"
+              .spacer

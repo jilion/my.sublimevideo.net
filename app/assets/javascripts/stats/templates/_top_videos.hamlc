@@ -28,15 +28,20 @@
                 %h4= video.get('n')
                 - if video.get('uo') == 's' || video.get('no') == 's'
                   %span.tooltip
-                    Your video
-                    - if video.get('uo') == 's' && video.get('no') == 's'
-                      uid & name aren't
-                    - else if video.get('uo') == 's'
-                      uid isn't
-                    - else
-                      name isn't
-                    = "defined properly, please set data-* attribute(s) in your video tag."
-                    %a{ href: 'TODO docs link' } More info (TODO)
+                    %span.icon
+                    %span.content
+                      %span.arrow
+                      %p
+                        Your video
+                        - if video.get('uo') == 's' && video.get('no') == 's'
+                          uid & name aren't
+                        - else if video.get('uo') == 's'
+                          uid isn't
+                        - else
+                          name isn't
+                        = "defined properly, please set data-* attribute(s) in your video tag."
+                        %a{ href: 'TODO docs link' }= "More info (TODO)"
+                .spacer
                 %span.video_uid= "##{video.id}"
               .spacer
           %td.loads= Highcharts.numberFormat(video.vlTotal(), 0)
@@ -44,8 +49,15 @@
           %td.period
             .sparkline{ id: "sparkline_#{video.id}", style: "width:162px;height:44px" }
   - if @videos.limit == 5 && @videos.total > 5
-    %a#show_more Show more
+    .update_rows_number
+      %a.down#show_more{ href: "#", onclick: "return false" } 
+        More videos
+        %small (up to 20)
+        %span.arrow.down
   - if @videos.limit == 20 && @videos.total > 5
-    %a#show_less Show less
+    .update_rows_number
+      %a#show_less{ href: "#", onclick: "return false" }
+        Show only 5 videos
+        %span.arrow.up
 - else
   %p No data
