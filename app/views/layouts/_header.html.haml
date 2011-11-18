@@ -17,7 +17,7 @@
         - if user_signed_in?
           %li= link_to("Logout", destroy_user_session_path)
       - if user_signed_in?
-        = link_to(edit_user_registration_path, class: "user #{'active' if controller.request.url =~ /account/}", onclick: "MySublimeVideo.makeSticky(this, '#header')") do
+        = link_to([:edit, :user], class: "user #{'active' if controller.request.url =~ /account/}", onclick: "MySublimeVideo.makeSticky(this, '#header')") do
           %strong
             %span.icon= truncate(current_user.name, length: 45)
           %span.corner

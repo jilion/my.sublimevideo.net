@@ -2,14 +2,13 @@ require 'spec_helper'
 
 describe My::UsersController do
 
-  it { get(with_subdomain('my', 'signup')).should route_to('my/users/registrations#new') }
-  it { post(with_subdomain('my', 'signup')).should route_to('my/users/registrations#create') }
+  it { post('signup').should route_to('my/users#create') }
+  it { get(with_subdomain('my', 'signup')).should route_to('my/users#new') }
+  it { post(with_subdomain('my', 'signup')).should route_to('my/users#create') }
 
-  it { get(with_subdomain('my', 'account')).should             route_to('my/users/registrations#edit') }
-  it { put(with_subdomain('my', 'account/credentials')).should route_to('my/users/registrations#update') }
-  it { delete(with_subdomain('my', 'account')).should          route_to('my/users/registrations#destroy') }
-
+  it { get(with_subdomain('my', 'account')).should      route_to('my/users#edit') }
   it { put(with_subdomain('my', 'account/info')).should route_to('my/users#update') }
+  it { delete(with_subdomain('my', 'account')).should   route_to('my/users#destroy') }
 
   it { post(with_subdomain('my', 'login')).should route_to('my/users/sessions#create') }
   it { get(with_subdomain('my', 'logout')).should route_to('my/users/sessions#destroy') }
