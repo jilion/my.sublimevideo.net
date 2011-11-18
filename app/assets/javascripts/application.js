@@ -577,7 +577,7 @@ var PopupHandler = Class.create({
     }).update("<span>Close</span>");
     this.popupElement.insert({ bottom: closeButton });
 
-    $('global').insert({ after: this.popupElement });
+    $('content').insert({ after: this.popupElement });
 
     this.startKeyboardObservers();
 
