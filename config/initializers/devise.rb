@@ -103,7 +103,7 @@ Devise.setup do |config|
   when 'production'
     '.sublimevideo.net'
   end
-  config.cookie_options = { secure: true, domain: :all }
+  config.cookie_options = { secure: Rails.env.production? || Rails.env.staging?, domain: :all }
 
   # ==> Configuration for :validatable
   # Range for password length. Default is 6..128.
