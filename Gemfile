@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gem 'rake',                  '0.8.7'
 
-gem 'rails',                 '3.0.10'
+gem 'rails',                 '3.0.11'
 
 # Databases
 gem 'pg',                    '0.11.0'
