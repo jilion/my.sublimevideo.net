@@ -5,7 +5,7 @@ class My::TicketsController < MyController
   def create
     @ticket = Ticket.new(params[:ticket].merge({ user_id: current_user.id }))
     @ticket.save
-    respond_with(@ticket, location: new_ticket_url)
+    respond_with(@ticket, location: page_url('help'))
   end
 
 end

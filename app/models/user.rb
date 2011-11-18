@@ -187,6 +187,10 @@ class User < ActiveRecord::Base
     Plan::SUPPORT_LEVELS[support_level]
   end
 
+  def email_support?
+    %w[email vip_email].include?(support)
+  end
+
   def billable?
     sites.active.billable.any?
   end

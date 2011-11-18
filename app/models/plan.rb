@@ -6,7 +6,7 @@ class Plan < ActiveRecord::Base
   LEGACY_UNPAID_NAMES   = %w[dev]
   STANDARD_NAMES        = %w[silver gold]
   LEGACY_STANDARD_NAMES = %w[comet planet star galaxy]
-  SUPPORT_LEVELS        = %w[forum email vip]
+  SUPPORT_LEVELS        = %w[forum email vip_email]
 
   attr_accessible :name, :cycle, :video_views, :price, :support_level, :stats_retention_days
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9'), length: 12
