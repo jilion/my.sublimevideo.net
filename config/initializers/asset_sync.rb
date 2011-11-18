@@ -5,7 +5,7 @@ AssetSync.configure do |config|
   config.fog_directory         = 'assets.sublimevideo-staging.net'
 
   config.existing_remote_files = "delete"
-  # config.gzip_compression = true
+  config.gzip_compression = true
 
   # Increase upload performance by configuring your region
   # config.fog_region = 'eu-west-1'
