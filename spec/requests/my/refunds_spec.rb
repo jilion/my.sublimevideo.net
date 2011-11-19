@@ -9,7 +9,7 @@ feature "Refunds" do
     end
 
     scenario "visit /refund with no sites refundable" do
-      visit '/refund'
+      go 'my', '/refund'
       page.should have_content "Request a refund"
       page.should have_content I18n.t('site.refund.no_refund_possible')
     end
@@ -20,7 +20,7 @@ feature "Refunds" do
       @site.archive!
       @site.reload.should be_archived
 
-      visit '/refund'
+      go 'my', '/refund'
       page.should have_content "Request a refund"
 
       select "rymai.com", :from => "site_id"
@@ -36,7 +36,7 @@ feature "Refunds" do
     scenario "visit /refund with 1 site refundable" do
       @site = Factory.create(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
 
-      visit '/refund'
+      go 'my', '/refund'
       page.should have_content "Request a refund"
 
       select "rymai.com", :from => "site_id"
@@ -53,7 +53,7 @@ feature "Refunds" do
     scenario "visit /refund with 1 site refundable failing" do
       @site = Factory.create(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
 
-      visit '/refund'
+      go 'my', '/refund'
       page.should have_content "Request a refund"
       @site.update_attribute(:hostname, 'rymai') # make it invalid
 
@@ -69,13 +69,13 @@ feature "Refunds" do
     end
 
     scenario "not suspended user" do
-      visit "/refund"
+      go 'my', "/refund"
       current_url.should =~ %r(^http://[^/]+/refund$)
     end
 
     scenario "suspended user" do
       @current_user.suspend
-      visit "/refund"
+      go 'my', "/refund"
       current_url.should =~ %r(http://[^/]+/refund)
     end
 
