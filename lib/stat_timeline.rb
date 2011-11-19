@@ -122,6 +122,10 @@ module StatTimeline
       end
     end
 
+    def showable_vv
+      all.map { |s| s['vv']['m'].to_i + s['vv']['e'].to_i }
+    end
+
     def billable_vv
       all.map { |s| s['vv']['m'].to_i + s['vv']['e'].to_i + s['vv']['em'].to_i }
     end
