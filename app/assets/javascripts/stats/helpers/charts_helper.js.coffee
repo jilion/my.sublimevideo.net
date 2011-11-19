@@ -109,8 +109,6 @@ class MSVStats.Helpers.ChartsHelper
           showInLegend: false
           animation: false
         series:[{
-          pointInterval: MSVStats.period.pointInterval()
-          pointStart: MSVStats.period.startTime()
           shadow: false
           borderWidth: 0
           allowPointSelect: false
@@ -135,6 +133,8 @@ class MSVStats.Helpers.ChartsHelper
         type: stats.chartType()
         name: 'Page visits'
         data: stats.customPluck('pv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
+        pointInterval: MSVStats.period.pointInterval()
+        pointStart: MSVStats.period.startTime()
         shadow: false
         color: '#627c9f'
         lineColor: '#596e8c'
@@ -148,6 +148,8 @@ class MSVStats.Helpers.ChartsHelper
         type: stats.chartType()
         name: 'Video views'
         data: stats.customPluck('vv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
+        pointInterval: MSVStats.period.pointInterval()
+        pointStart: MSVStats.period.startTime()
         shadow: true
         color: '#578b8d'
         lineColor: '#74ff83'
