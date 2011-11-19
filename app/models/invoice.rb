@@ -131,6 +131,7 @@ class Invoice < ActiveRecord::Base
         plan_invoice_item.ended_at   = new_ended_at
         plan_invoice_item.save
 
+        invoice.site.first_paid_plan_started_at    = new_started_at
         invoice.site.pending_plan_started_at       = new_started_at
         invoice.site.pending_plan_cycle_started_at = new_started_at
         invoice.site.pending_plan_cycle_ended_at   = new_ended_at

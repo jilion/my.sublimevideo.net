@@ -280,7 +280,7 @@ module SiteModules::Invoice
         invoice.save!
 
         if instant_charging? && !invoice.paid?
-          @transaction = Transaction.charge_by_invoice_ids([invoice.id], { ip: remote_ip, credit_card: user.credit_card })
+          @transaction = Transaction.charge_by_invoice_ids([invoice.id], { ip: remote_ip })
         end
 
       elsif pending_plan_id_changed? && pending_plan_id? && (pending_plan.unpaid_plan? || trial_not_started_or_in_trial?)

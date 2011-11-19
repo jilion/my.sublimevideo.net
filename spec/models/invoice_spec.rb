@@ -465,7 +465,8 @@ describe Invoice do
         @invoice5.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
         @invoice5.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
 
-        @site1.reload.pending_plan_started_at.should == Time.utc(2011, 4, 8)
+        @site1.reload.first_paid_plan_started_at.should == Time.utc(2011, 4, 8)
+        @site1.pending_plan_started_at.should == Time.utc(2011, 4, 8)
         @site1.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 8)
         @site1.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 7).to_datetime.end_of_day.to_i
       end
