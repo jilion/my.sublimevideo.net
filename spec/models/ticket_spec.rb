@@ -156,10 +156,12 @@ describe Ticket do
     describe "#to_xml" do
       context "user has email support" do
         it "generates a xml" do
+          valid_ticket.user.support.should eql 'email'
           valid_ticket.to_xml.should eq <<-EOF
 <ticket>
   <subject>I have a request!</subject>
   <description>I have a request this is a long text!</description>
+  <set-tags>email-support</set-tags>
   <requester-name>#{@user.name}</requester-name>
   <requester-email>#{@user.email}</requester-email>
 </ticket>
@@ -169,12 +171,12 @@ EOF
 
       context "user has vip support" do
         it "generates a xml" do
-          vip_ticket.user.support.should eql 'vip'
+          vip_ticket.user.support.should eql 'vip_email'
           vip_ticket.to_xml.should eql <<-EOF
 <ticket>
   <subject>I have a request!</subject>
   <description>I have a request this is a long text!</description>
-  <set-tags>vip</set-tags>
+  <set-tags>vip_email-support</set-tags>
   <requester-name>#{@vip.name}</requester-name>
   <requester-email>#{@vip.email}</requester-email>
 </ticket>

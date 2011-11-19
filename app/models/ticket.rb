@@ -33,10 +33,6 @@ class Ticket
 
   def initialize(params = {})
     @params = params
-    # @user_id    = params.delete(:user_id)
-    # @site_token = params.delete(:site_token)
-    # @subject    = h(params[:subject].try(:to_s))
-    # @message    = message_with_site(params[:message])
   end
 
   def user
@@ -68,7 +64,7 @@ class Ticket
     xml.ticket do
       xml.tag!(:subject, subject)
       xml.tag!(:description, message)
-      xml.tag!(:"set-tags", user.support) if user.support == 'vip'
+      xml.tag!(:"set-tags", "#{user.support}-support") if user.email_support?
       if user.zendesk_id?
         xml.tag!(:"requester-id", user.zendesk_id)
       else
@@ -81,7 +77,7 @@ class Ticket
   private
 
   def user_can_send_ticket
-    if user && user.support == 'forum'
+    if user && !user.email_support?
       self.errors.add(:base, "You can't send new tickets!")
     end
   end
