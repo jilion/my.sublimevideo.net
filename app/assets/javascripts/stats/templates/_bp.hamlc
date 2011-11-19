@@ -1,6 +1,6 @@
 .content_wrap
   - if @bpData.isEmpty()
-    %p No data
+    %p.empty No page visits.
   - else
     %ul
       - for bp in @bps

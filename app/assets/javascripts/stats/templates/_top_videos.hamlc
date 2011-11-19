@@ -60,4 +60,5 @@
         Show only 5 videos
         %span.arrow.up
 - else
-  %p No data
+  .empty_box
+    %p= "No played or loaded videos."

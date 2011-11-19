@@ -3,7 +3,7 @@
   - if @site? && @site.inFreePlan()
     .pro_only
       %a{ href: "/sites/#{@site.get('token')}/plan/edit", title: "Upgrade your plan"}
-        %strong= "Pro Plan Only"
+        %strong= "Paid Plan Only"
         %em= "Upgrade now"
   - else
     .sparkline

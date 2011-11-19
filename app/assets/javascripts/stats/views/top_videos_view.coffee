@@ -16,18 +16,17 @@ class MSVStats.Views.TopVideosView extends Backbone.View
 
   render: =>
     if MSVStats.videos.isReady()
-      $(@el).show()
-      $('#top_videos').data().spinner.stop()
-
+      $(@el).data().spinner.stop()
+    
       @videos = MSVStats.videos
       $(@el).html(this.template(videos: @videos))
       this.renderSparklines()
       this.updateTitle()
-
+    
       return this
     else
-      $(@el).hide()
-      $('#top_videos').spin()
+      $(@el).empty();
+      $(@el).spin(color:'#1e3966',lines:10,length:5,width:4,radius:8,speed:1,trail:60,shadow:false)
       return this
 
   renderSparklines: ->

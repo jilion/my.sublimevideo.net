@@ -19,6 +19,7 @@ class MSVStats.Views.DatesRangeTitleView extends Backbone.View
       $('#dates_range_title').removeClass('editable')
       $('div.stats').addClass('free')
     else
+      $('div.stats').removeClass('free')
       $('#dates_range_title').addClass('editable')
     return this
 

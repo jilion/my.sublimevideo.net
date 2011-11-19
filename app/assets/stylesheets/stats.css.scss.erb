@@ -134,6 +134,13 @@
   color:#d5e5ff;
 }
 
+.stats p.days_period_note {
+  font-size:11px;
+  padding:0;
+  position:relative;
+  top:10px;
+}
+
 .stats #dates_range {
   position:relative;
 }
@@ -142,6 +149,7 @@
   float:left;
   margin:25px 0;
   font-weight:normal;
+  min-height:45px;
 }
 
 .stats #dates_range_title.editable {
@@ -390,6 +398,7 @@
 }
 
 .stats #vv {
+  min-height:100px;
   padding:16px 16px 4px;
   background:#6a86a8;
   background:rgba(0,36,91,0.25);
@@ -411,13 +420,25 @@
   padding:35px 0 10px;
 }
 
-.stats #top_videos table {
+.stats #top_videos_content {
+  min-height:100px;
+}
+
+.stats #top_videos table, .stats #top_videos .empty_box {
   width:100%;
   border-collapse:collapse;
   background:#8fa0c1;
   background:rgba(0,36,91,0.1);
   @include border-radius(5px);
   @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.6) 0 1px 4px));
+}
+
+.stats #top_videos .empty_box {
+  height:70px;
+  line-height:70px;
+  text-align:center;
+  color:#465b7d;
+  font-weight:600;
 }
 
 .stats #top_videos table col.alt {
@@ -641,6 +662,7 @@
 
 .stats .graph_box .content {
   margin-top:20px;
+  min-height:100px;
 }
 
 .stats .graph_box .content_wrap {
@@ -649,6 +671,13 @@
   background:rgba(0,36,91,0.1);
   @include border-radius(5px);
   @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.6) 0 1px 4px));  
+}
+
+.stats .graph_box p.empty {
+  color:#465b7d;
+  font-weight:600;
+  padding:30px 10px;
+  text-align:center;
 }
 
 .stats .graph_box ul {

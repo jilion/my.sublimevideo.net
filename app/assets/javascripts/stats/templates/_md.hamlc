@@ -1,6 +1,6 @@
 .content_wrap
   - if @mdData.isEmpty()
-    %p No data
+    %p.empty No loaded videos.
   - else
     %ul
       %li.html5
