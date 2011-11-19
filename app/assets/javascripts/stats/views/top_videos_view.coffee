@@ -51,14 +51,14 @@ class MSVStats.Views.TopVideosView extends Backbone.View
 
   sortByLoads: (event) ->
     unless MSVStats.videos.sortBy == 'vl'
-      $('#video_loads').text 'Loads...'
+      $('#video_loads').text 'Sorting...'
       $('#video_loads').addClass ' spinner'
       MSVStats.videos.change sortBy: 'vl'
     false
     
   sortByViews: (event) ->
     unless MSVStats.videos.sortBy == 'vv'
-      $('#video_views').text 'Views...'
+      $('#video_views').text 'Sorting...'
       $('#video_views').addClass ' spinner'
       MSVStats.videos.change sortBy: 'vv'
     false
