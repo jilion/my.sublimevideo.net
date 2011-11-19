@@ -2,20 +2,13 @@
   .big_break
   .wrap
     %h3.title Current Plan Info
-    %p 
+    %p
       Your currently have the
-      %strong Plus 
-      = "plan for dribbble.com. Your monthly video plays usage for the period between #{Highcharts.dateFormat('%e %b %Y', @plan.monthCycleStartTime)} and #{Highcharts.dateFormat('%e %b %Y', @plan.monthCycleEndTime)}:"
+      %strong.capitalize= @plan.name
+      = "plan for #{@site.title()}. Your monthly video plays usage for the period between #{Highcharts.dateFormat('%e %b %Y', @plan.monthCycleStartTime)} and #{Highcharts.dateFormat('%e %b %Y', @plan.monthCycleEndTime)}:"
     .progress_bar
       .bar{ style: "width:#{Highcharts.numberFormat(@plan.monthCycleVideoViews / @plan.videoViews * 100, 2)}%" }
     %p
-      You already consumed 
-      %strong= "#{Highcharts.numberFormat(@plan.monthCycleVideoViews / @plan.videoViews * 100, 2)}%" 
+      You already consumed
+      %strong= "#{Highcharts.numberFormat(@plan.monthCycleVideoViews / @plan.videoViews * 100, 2)}%"
       = "(#{Highcharts.numberFormat(@plan.monthCycleVideoViews, 0)} plays) of your current plan. It includes all kinds of plays (from main domain, extra domains and embeds)."
-  
-    -# %div
-    -#   %p= "Monthly video view usage ()"
-    -#   %p= "Plan video views limit: #{Highcharts.numberFormat(@plan.videoViews, 0)}"
-    -#   %p= "Plan month cycle video views: #{Highcharts.numberFormat(@plan.monthCycleVideoViews, 0)}"
-    -#   %p= "Plan percentage usage: #{Highcharts.numberFormat(@plan.monthCycleVideoViews / @plan.videoViews * 100, 2)}%"
-    -#   %span.tooltip main, extra & embed views counted

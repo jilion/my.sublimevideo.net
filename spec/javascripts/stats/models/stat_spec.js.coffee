@@ -154,21 +154,18 @@ describe 'MSVStats.Models.StatsDays', ->
     it 'set HTML5 devise totals', ->
       expect(@mdData.dh).toEqual
         'Desktop': 257760
-        'Mobile':  115200
-        'Tablet':  60480
+        'Mobile':  115200 + 60480
 
     it 'set Flash devise totals', ->
       expect(@mdData.df).toEqual
         'Desktop': 141120
         'Mobile': 0
-        'Tablet': 0
 
     describe 'toArray()', ->
       it 'has array data for HTML5 devise totals', ->
         expect(@mdData.toArray('dh')).toEqual [
           ['Desktop', 257760]
-          ['Mobile',  115200]
-          ['Tablet',   60480]
+          ['Mobile',  115200 + 60480]
         ]
 
       it 'has array data for Flash devise totals', ->
