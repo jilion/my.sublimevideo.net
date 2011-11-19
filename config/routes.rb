@@ -36,8 +36,18 @@ MySublimeVideo::Application.routes.draw do
 
       scope 'account' do
         resource :billing, only: [:edit, :update]
+        resources :applications, controller: 'client_applications', as: :client_applications # don't change this, used by oauth-plugin
       end
       get '/card(/*anything)' => redirect('/account/billing/edit')
+
+      scope "oauth" do
+        # OAuth 1 & 2
+        get '/authorize' => 'oauth#authorize', as: :oauth_authorize
+        delete '/revoke'    => 'oauth#revoke', as: :oauth_revoke
+
+        # OAuth 2
+        get '/access_token' => 'oauth#token', as: :oauth_token
+      end
 
       resources :sites, except: [:show] do
         get :state, on: :member
@@ -77,25 +87,6 @@ MySublimeVideo::Application.routes.draw do
 
       post '/pusher/auth' => 'pusher#auth'
 
-      # =======
-      # = API =
-      # =======
-
-      scope "oauth" do
-        # OAuth 2
-        get '/access_token' => 'oauth#token', as: :oauth_token
-
-        # OAuth 1 & 2
-        get '/authorize' => 'oauth#authorize', as: :oauth_authorize
-        delete '/revoke'    => 'oauth#revoke', as: :oauth_revoke
-      end
-
-      scope "account" do
-        resources :applications, controller: 'client_applications', as: :client_applications # don't change this, used by oauth-plugin
-      end
-
-      match '/api(/*rest)' => redirect { |params, req| "http://api.#{req.domain}/#{params[:rest]}" }
-
       unauthenticated :user do
         root to: redirect { |params, req| "http://#{req.domain}/?p=login" }
       end
@@ -109,11 +100,25 @@ MySublimeVideo::Application.routes.draw do
     end
   end # my.
 
+  namespace 'api' do
+    # Legacy routes
+    constraints subdomain: 'my', format: /json|xml/ do
+
+      get 'test_request' => 'apis#test_request'
+      resources :sites, only: [:index, :show] do
+        member do
+          get :usage
+        end
+      end
+
+    end
+  end
+
   scope module: 'api', as: 'api' do
     constraints subdomain: 'api', format: /json|xml/ do
 
-      match 'test_request' => 'api#test_request'
-      resources :sites do
+      match 'test_request' => 'apis#test_request'
+      resources :sites, only: [:index, :show] do
         member do
           get :usage
         end

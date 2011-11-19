@@ -1,4 +1,4 @@
-class Api::SitesController < Api::ApiController
+class Api::SitesController < Api::ApisController
   # self.responder.send(:include, Responders::HttpCacheResponder)
 
   before_filter :find_by_token!, :only => [:show, :usage]

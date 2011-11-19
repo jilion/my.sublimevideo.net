@@ -1,4 +1,4 @@
-class Api::ApiController < ActionController::Base
+class Api::ApisController < ActionController::Base
   # include AbstractController::Callbacks
   # include ActionController::Head
   # include ActionController::MimeResponds
