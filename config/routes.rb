@@ -29,7 +29,7 @@ MySublimeVideo::Application.routes.draw do
       %w[sign_up register].each { |action| get action => redirect { |params, req| "http://#{req.domain}/?p=signup" } }
       %w[login log_in sign_in signin].each    { |action| get action => redirect { |params, req| "http://#{req.domain}/?p=login" } }
       %w[log_out sign_out signout].each { |action| get action => redirect('/logout') }
-      get '/invitation/accept' => redirect('/signup?beta=over')
+      get '/invitation/accept' => redirect { |params, req| "http://#{req.domain}/?p=signup&beta=over" }
       post '/password/validate' => "users/passwords#validate"
 
       put '/hide_notice/:id' => 'users#hide_notice'
@@ -237,8 +237,8 @@ MySublimeVideo::Application.routes.draw do
   scope module: 'com', as: 'com' do
     constraints(NoSubdomain) do
       # Redirects
-      get '/signup' => redirect('/?p=signup')
-      get '/login' => redirect('/?p=login')
+      %w[signup sign_up register].each { |action| get action => redirect('/?p=signup') }
+      %w[login log_in sign_in signin].each    { |action| get action => redirect('/?p=login') }
 
       # Redirect to subdomains
       match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }

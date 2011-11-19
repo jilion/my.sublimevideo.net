@@ -105,32 +105,85 @@ feature "Com Pages" do
     describe "log in" do
       background do
         create_plans
-        create_user(user: {})
+        create_user user: {
+          name: "John Doe",
+          email: "john@doe.com",
+          password: "123456"
+        }
         go '/?p=login'
       end
 
-      scenario "it's possible to log in" do
-        fill_in 'Email',    with: @current_user.email
-        fill_in 'Password', with: '123456'
-        click_button 'Login'
-
-        current_url.should eq "http://my.sublimevideo.dev/sites/new"
+      describe "redirections" do
+        %w[login log_in sign_in signin].each do |path|
+          scenario "#{path} is redirected to /?p=login" do
+            go "/#{path}"
+            current_url.should eq "http://sublimevideo.dev/?p=login"
+          end
+        end
       end
 
-      scenario "displays errors if log in is not successful" do
-        fill_in 'Email',    with: ''
-        fill_in 'Password', with: ''
-        click_button 'Login'
+      context "With an active user" do
+        scenario "log in is successful" do
+          fill_in 'Email',    with: "john@doe.com"
+          fill_in 'Password', with: '123456'
+          click_button 'Login'
 
-        current_url.should eq "http://sublimevideo.dev/login"
-        page.should have_content "Invalid email or password"
+          current_url.should eq "http://my.sublimevideo.dev/sites/new"
+        end
+
+        scenario "displays errors if log in is not successful" do
+          fill_in 'Email',    with: ''
+          fill_in 'Password', with: ''
+          click_button 'Login'
+
+          current_url.should eq "http://sublimevideo.dev/login"
+          page.should have_content "Invalid email or password"
+        end
       end
+
+      context "With a suspended user" do
+        background do
+          @current_user.suspend
+        end
+
+        scenario "suspended user" do
+          fill_in "Email",    with: "john@doe.com"
+          fill_in "Password", with: "123456"
+          click_button "Login"
+
+          current_url.should eq "http://my.sublimevideo.dev/suspended"
+        end
+      end
+
+      context "With an archived user" do
+        background do
+          @current_user.skip_pwd { @current_user.archive }
+        end
+
+        scenario "archived user" do
+          fill_in "Email",    with: "john@doe.com"
+          fill_in "Password", with: "123456"
+          click_button "Login"
+
+          current_url.should eq "http://sublimevideo.dev/login"
+        end
+      end
+
     end
 
     describe "sign up" do
       background do
         create_plans
         go '/?p=signup'
+      end
+
+      describe "redirections" do
+        %w[signup register sign_up].each do |path|
+          scenario "#{path} is redirected to /?p=signup" do
+            go "/#{path}"
+            current_url.should eq "http://sublimevideo.dev/?p=signup"
+          end
+        end
       end
 
       scenario "it's possible to sign up" do
