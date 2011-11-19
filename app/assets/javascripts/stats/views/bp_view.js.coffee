@@ -1,7 +1,12 @@
 class MSVStats.Views.BPView extends Backbone.View
   template: JST['stats/templates/_bp']
 
+  events:
+    'click a#show_all':  'showAll'
+    'click a#show_less': 'showLess'
+
   initialize: () ->
+    @showAll = false
     @options.period.bind 'change', this.render
     @options.statsSeconds.bind 'change', this.renderIfSelected
     @options.statsSeconds.bind 'reset', this.renderIfSelected
@@ -16,7 +21,11 @@ class MSVStats.Views.BPView extends Backbone.View
       $('#bp').data().spinner.stop()
       
       @bpData = MSVStats.period.stats().bpData()
-      $(@el).html(this.template(bpData: @bpData))
+      bps     = @bpData.toArray()
+      @total  = bps.length
+      @limit  = 7
+      @bps    = if @showAll then bps else _.first(bps, @limit)
+      $(@el).html(this.template(bpData: @bpData, bps: @bps, total: @total, showAll: @showAll, limit: @limit))
       
       return this
     else
@@ -27,3 +36,12 @@ class MSVStats.Views.BPView extends Backbone.View
   renderIfSelected: (stats) =>
     this.render() if MSVStats.period.get('type') == stats.periodType()
 
+  showAll: ->
+    @showAll = true
+    this.render()
+    false
+
+  showLess: ->
+    @showAll = false
+    this.render()
+    false
