@@ -239,11 +239,9 @@ class MDData
     @dh =
       'Desktop': 0
       'Mobile': 0
-      'Tablet': 0
     @df =
       'Desktop': 0
       'Mobile': 0
-      'Tablet': 0
 
     @total = 0
 
@@ -257,7 +255,7 @@ class MDData
       switch dh
         when 'd' then this.dh['Desktop'] += hits
         when 'm' then this.dh['Mobile']  += hits
-        when 't' then this.dh['Tablet']  += hits
+        when 't' then this.dh['Mobile']  += hits
     , this)
     _.each(md.f, (hits, df) ->
       @mf     += hits
@@ -265,7 +263,7 @@ class MDData
       switch df
         when 'd' then this.df['Desktop'] += hits
         when 'm' then this.df['Mobile']  += hits
-        when 't' then this.df['Tablet']  += hits
+        when 't' then this.df['Mobile']  += hits
     , this)
 
   toArray: (field) ->

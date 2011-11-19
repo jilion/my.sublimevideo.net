@@ -109,7 +109,7 @@ class Site < ActiveRecord::Base
   def self.to_backbone_json
     scoped.to_json(
       only: [:token, :hostname],
-      methods: [:plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :stats_retention_days, :stats_trial_start_time]
+      methods: [:plan_name, :plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :stats_retention_days, :stats_trial_start_time]
     )
   end
 
