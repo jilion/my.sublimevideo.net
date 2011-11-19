@@ -20,6 +20,15 @@
   .company_name.left_field
     = f.label :company_name, "Company name", class: "icon"
     = f.text_field :company_name, class: "text no_icon", placeholder: "Company name"
+  .company_url.right_field
+    = f.label :company_url, "Company url", class: "icon"
+    = f.text_field :company_url, class: "text no_icon", placeholder: "Company url"
+  .spacer
+
+.entry.company_info.select
+  .company_name.left_field
+    = f.label :company_job_title, "Company job title", class: "icon"
+    = f.text_field :company_job_title, class: "text no_icon", placeholder: "Company job title"
   .company_employees.right_field
     = f.label :company_employees, "Company size", class: "icon"
     = f.select :company_employees, options_for_select(["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"], selected: f.object.company_employees)

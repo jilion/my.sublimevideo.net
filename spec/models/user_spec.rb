@@ -844,6 +844,44 @@ describe User do
       end
     end
 
+    describe "#more_infos_incomplete?" do
+      context "more infos complete" do
+        subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo') }
+
+        it { should_not be_more_infos_incomplete }
+      end
+
+      context "company_name is missing" do
+        subject { Factory.create(:user, company_name: '', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo') }
+
+        it { should be_more_infos_incomplete }
+      end
+
+      context "company_url is missing" do
+        subject { Factory.create(:user, company_name: 'Jilion', company_url: '', company_job_title: 'Foo', company_employees: 'foo') }
+
+        it { should be_more_infos_incomplete }
+      end
+
+      context "company_job_title is missing" do
+        subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: '', company_employees: 'foo') }
+
+        it { should be_more_infos_incomplete }
+      end
+
+      context "company_employees is missing" do
+        subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: '') }
+
+        it { should be_more_infos_incomplete }
+      end
+
+      context "use is missing" do
+        subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo', use_personal: nil) }
+
+        it { should be_more_infos_incomplete }
+      end
+    end
+
     describe "#support & #email_support?" do
       context "user has no site" do
         before(:all) do

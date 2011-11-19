@@ -181,6 +181,11 @@ class User < ActiveRecord::Base
     [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
   end
 
+  def more_infos_incomplete?
+    [billing_postal_code, billing_country, company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
+    [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
+  end
+
   def support
     support_level = sites.active.max { |a, b| a.plan.support_level <=> b.plan.support_level }.try(:plan).try(:support_level) || 0
 

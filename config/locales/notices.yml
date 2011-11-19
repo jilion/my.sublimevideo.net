@@ -1,3 +1,4 @@
 en:
   notices:
     checkout_v2_news: "<p>Check out the new %{link_to_stats}!</p>"
+    complete_more_infos: "<p>Please take some time to <a href='account'>fill your account information</a>.</p>"
