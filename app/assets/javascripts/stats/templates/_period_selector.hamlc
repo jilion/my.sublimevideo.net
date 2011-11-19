@@ -1,7 +1,10 @@
 %span.title
 .content
   - if @site? && @site.inFreePlan()
-    %a{ href: "/sites/#{@site.get('token')}/plan/edit", title: "Upgrade your plan"} PRO PLAN ONLY
+    .pro_only
+      %a{ href: "/sites/#{@site.get('token')}/plan/edit", title: "Upgrade your plan"}
+        %strong= "Pro Plan Only"
+        %em= "Upgrade now"
   - else
     .sparkline
     %span.vv_total

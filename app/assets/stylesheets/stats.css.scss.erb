@@ -105,11 +105,33 @@
   padding:0 0 4px;
 }
 
+.stats #period_selectors li .sparkline {
+  height:42px;
+}
+
 .stats #period_selectors li span.vv_total {
   display:block;
   font-size:18px;
   font-weight:500;
   padding:5px 0 0;
+}
+
+.stats #period_selectors li .pro_only {
+  padding:10px 0 0;
+}
+
+.stats #period_selectors li .pro_only a {
+  color:#fff;
+}
+
+.stats #period_selectors li .pro_only a strong {
+  font-weight:600;
+}
+
+.stats #period_selectors li .pro_only a em {
+  font-style:normal;
+  font-size:14px;
+  color:#d5e5ff;
 }
 
 .stats #dates_range {
@@ -556,12 +578,12 @@
   margin:0 auto;
 }
 
-.stats #top_videos .update_rows_number {
+.stats .expander {
   display:block;
   text-align:center;
 }
 
-.stats #top_videos .update_rows_number a {
+.stats .expander a {
   position:relative;
   display:inline-block;
   padding:6px 24px 6px 10px;
@@ -576,7 +598,7 @@
   @include box-shadow(rgba(0,28,85,0.6) 0 1px 4px);
 }
 
-.stats #top_videos .update_rows_number a .arrow {
+.stats .expander a .arrow {
   display:block;
   position:absolute;
   right:7px;
@@ -586,7 +608,7 @@
   background:url(<%= asset_data_uri "my/stats/expand_videos_arrow_down.png" %>) no-repeat;
 }
 
-.stats #top_videos .update_rows_number a .arrow.up {
+.stats .expander a .arrow.up {
   background:url(<%= asset_data_uri "my/stats/expand_videos_arrow_up.png" %>) no-repeat;  
 }
 
@@ -618,11 +640,14 @@
 
 .stats .graph_box .content {
   margin-top:20px;
+}
+
+.stats .graph_box .content_wrap {
   overflow:hidden;
   background:#8fa0c1;
   background:rgba(0,36,91,0.1);
   @include border-radius(5px);
-  @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.6) 0 1px 4px));
+  @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.6) 0 1px 4px));  
 }
 
 .stats .graph_box ul {

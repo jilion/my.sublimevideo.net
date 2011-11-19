@@ -10,14 +10,14 @@ class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
 
   render: =>
     $(@el).html(this.template(site: MSVStats.sites.selectedSite))
-    $(@el).find('span.title').html('last 60 seconds')    
+    $(@el).find('span.title').html('last 60 seconds')
     unless MSVStats.sites.selectedSite.inFreePlan()
       if @options.statsSeconds.isShowable()
         $(@el).find('.content').show()
         $(@el).data().spinner.stop()
       else
         $(@el).find('.content').hide()
-        $(@el).spin()
+        $(@el).spin(color:'#d5e5ff',lines:10,length:5,width:4,radius:8,speed:1,trail:60,shadow: false)
       if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
       vvTotal = @options.statsSeconds.vvTotal(0, 59)
       $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))

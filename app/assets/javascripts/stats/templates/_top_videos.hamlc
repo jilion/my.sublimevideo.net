@@ -48,17 +48,16 @@
           %td.plays= Highcharts.numberFormat(video.vvTotal(), 0)
           %td.period
             .sparkline{ id: "sparkline_#{video.id}", style: "width:162px;height:44px" }
-  - if @videos.total > 5
-    - if @videos.limit == 5
-      .update_rows_number
-        %a.down#show_more{ href: "#", onclick: "return false" } 
-          More videos
-          %small (up to 20)
-          %span.arrow.down
-    - if @videos.limit == 20
-      .update_rows_number
-        %a#show_less{ href: "#", onclick: "return false" }
-          Show only 5 videos
-          %span.arrow.up
+  - if @videos.limit == 5 && @videos.total > 5
+    .expander
+      %a.down#show_more{ href: "#", onclick: "return false" } 
+        More videos
+        %small (up to 20)
+        %span.arrow.down
+  - if @videos.limit == 20 && @videos.total > 5
+    .expander
+      %a#show_less{ href: "#", onclick: "return false" }
+        Show only 5 videos
+        %span.arrow.up
 - else
   %p No data
