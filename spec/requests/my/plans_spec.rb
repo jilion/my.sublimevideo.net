@@ -43,9 +43,38 @@ feature "Plan edit" do
       click_button "Update plan"
 
       site.reload
-      site.plan.should eql @paid_plan
+      site.plan.should eq @paid_plan
 
-      current_url.should == "http://my.sublimevideo.dev/sites"
+      current_url.should eq "http://my.sublimevideo.dev/sites"
+      page.should have_content(site.plan.title)
+    end
+
+    scenario "update free plan to paid plan and skip trial", :focus do
+      site = Factory.create(:site, user: @current_user, plan_id: @free_plan.id)
+
+      go 'my', "/sites/#{site.to_param}/plan/edit"
+
+      choose "plan_silver_month"
+      check "site_skip_trial"
+      VCR.use_cassette('ogone/visa_payment_generic') do
+        expect { click_button "Update plan" }.to change(@current_user.invoices, :count)
+      end
+
+      site.reload
+      site.plan.should eq @paid_plan
+      site.invoices.last.should be_paid
+      site.plan_id.should eq Plan.find_by_name_and_cycle("silver", "month").id
+      site.pending_plan_id.should be_nil
+      site.trial_started_at.should be_present
+      site.first_paid_plan_started_at.should be_present
+      site.plan_started_at.should be_present
+      site.plan_cycle_started_at.should be_present
+      site.plan_cycle_ended_at.should be_present
+      site.pending_plan_started_at.should be_nil
+      site.pending_plan_cycle_started_at.should be_nil
+      site.pending_plan_cycle_ended_at.should be_nil
+
+      current_url.should eq "http://my.sublimevideo.dev/sites"
       page.should have_content(site.plan.title)
     end
   end

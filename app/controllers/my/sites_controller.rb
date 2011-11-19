@@ -38,17 +38,10 @@ class My::SitesController < MyController
   def create
     @site = current_user.sites.build(params[:site].merge(remote_ip: request.try(:remote_ip)))
 
-    # setting user_attributes will set user.attributes only before validation (so, on the save below)
-    @site.user.assign_attributes(params[:site][:user_attributes]) # cc_register is checked in credit_card.rb anyways
-
     respond_with(@site) do |format|
-      if @site.save # will create invoice and charge...
-        if @site.last_transaction.try(:waiting_d3d?)
-          flash[:notice] = flash[:alert] = ""
-          format.html { render text: d3d_html_inject(@site.last_transaction.error) }
-        else
-          format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.last_transaction) }
-        end
+      if @site.save # will create site (& create invoice and charge it if skip_trial is true)
+        notice_and_alert = params[:site][:skip_trial] ? notice_and_alert_from_transaction(@site.last_transaction) : { notice: nil, alert: nil }
+        format.html { redirect_to :sites, notice_and_alert }
       else
         flash[:notice] = flash[:alert] = ""
         format.html { render :new }
