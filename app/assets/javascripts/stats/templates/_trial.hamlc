@@ -1,8 +1,13 @@
 - if @site.inFreePlan() && @site.statsTrialIsActivable()
-  %button Start 7 days trial
+  .wrap.before
+    %p
+      Enjoy the full 
+      %strong Real-time Stats
+      experience
+      %button Start 7 days trial now
 - else if @site.statsTrialEndTime() > new Date().getTime()
-  %p= "Stats trial will finish on #{Highcharts.dateFormat('%e %b %Y', @site.statsTrialEndTime())}"
-  %p
-    You can
-    %a{ href: "/sites/#{@site.get('token')}/plan/edit", title: 'Upgrade your plan' } upgrade our plan
-    too keep the full stats experience.
+  .wrap.during
+    %p
+      = "Stats trial will finish on #{Highcharts.dateFormat('%e %b %Y', @site.statsTrialEndTime())}."
+      %a{ href: "/sites/#{@site.get('token')}/plan/edit", title: 'Upgrade your plan' } Upgrade your plan now
+      to keep the full stats experience.

@@ -1,6 +1,70 @@
 @import "css3";
 
-/*#trial {display:none;}*/
+#trial .wrap {
+  width:960px;
+  height:42px;
+  position:relative;
+  top:3px;
+  left:-41px;
+  border: 1px solid #000;
+  text-align:center;
+  font-size:17px;
+  text-shadow:rgba(0,0,0,0.5) 0 -1px 0;
+  @include gradient(#2f5790,#1d3659,#264675);
+  @include border-radius(4px 4px 0 0);
+  @include box-shadow((inset #4783c8 0 1px 0, inset rgba(81,152,255,0.58) 0 0 20px, inset rgba(81,152,255,0.58) 0 0 20px));
+}
+
+#trial .wrap.during {
+  @include gradient(#d34a0f,#b72e09,#c53c0c);
+  @include box-shadow((inset #fec72c 0 1px 0, inset #ff7d1d 0 0 20px, inset #ff7d1d 0 0 20px));
+}
+
+#trial .before {
+  color:#bfd8ff;
+}
+
+#trial .during {
+  color:#ffe6dd;
+}
+
+#trial .before p {
+  padding:8px 0 0;
+}
+
+#trial .during p {
+  padding:11px 0 0;
+}
+
+#trial p strong, #trial a {
+  color:#fff;
+  font-weight:600;
+}
+
+#trial a {
+  font-weight:bold;
+  border-bottom:1px solid #d06948;
+}
+
+#trial button {
+  font-family:inherit;
+  color:#fff;
+  font-size:15px;
+  font-weight:600;
+  padding:4px 12px;
+  margin-left:10px;
+  cursor:pointer;
+  text-shadow:rgba(0,0,0,0.5) 0 1px 2px;
+  border: 1px solid #14325f;
+  @include gradient(#f69619,#bc1704,#da580f);
+  @include border-radius(20px);
+  @include box-shadow((inset #fbcb26 0 1px 0, rgba(255,255,255,0.3) 0 1px 0));
+}
+
+#trial button:active {
+  @include gradient(#bc1704,#f69619,#da580f);
+  @include box-shadow(rgba(255,255,255,0.3) 0 1px 0);
+}
 
 .stats #period_selectors {
   list-style-type:none;
