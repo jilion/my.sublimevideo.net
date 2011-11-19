@@ -86,6 +86,16 @@ header h1 a span {display:none}
   @include box-shadow((inset rgba(0,0,0,0.93) 0 1px 4px, rgba(144,191,255,0.2) 0 1px 0));
 }
 
+#menu li a.user {
+  text-transform:none;
+  letter-spacing:0;
+}
+
+#menu li a.user .icon {
+  background:url(<%= asset_data_uri "my/user_header_icon.png" %>) no-repeat 0 2px;
+  padding:0 0 0 20px;
+}
+
 #menu li.signup a {
   padding:7px 0 0;
   width:74px;
@@ -187,6 +197,8 @@ footer p.copyright {
 }
 
 .spacer {clear:both}
+
+.capitalize {text-transform:capitalize}
 
 a {
   text-decoration:none;

@@ -405,7 +405,7 @@ def create_stats(site_token=nil)
     VideoTag.where(st: site.token).delete_all
     Stat::Site.where(t: site.token).delete_all
     Stat::Video.where(st: site.token).delete_all
-    videos_count = 6
+    videos_count = 20
     # Video Tags
     videos_count.times do |video_i|
       VideoTag.create(st: site.token, u: "video#{video_i}",
@@ -538,19 +538,20 @@ def recurring_stats_update(site_token)
         sleep rand(1)
         last_second = second.to_i
         EM.defer do
-          # videos_count.times do |video_i|
-            video_i = second.to_i%videos_count
-            hits    = second.to_i%10
-            Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
-            Stat::Video.collection.update({ st: site.token, u:  "video#{video_i}", s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
-            json = {
-              site: { id: second.to_i, vv: hits },
-              videos: [
-                { id: second.to_i, u: "video#{video_i}", n: "Video #{video_i}", vv: hits }
-              ]
-            }
-            Pusher["presence-#{site.token}"].trigger_async('stats', json)
-          # end
+          videos_count.times do |video_i|
+            if rand(10) >= 8
+              hits = rand(10) #second.to_i%10
+              Stat::Site.collection.update({ t: site.token, s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
+              Stat::Video.collection.update({ st: site.token, u:  "video#{video_i}", s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
+              json = {
+                site: { id: second.to_i, vv: hits },
+                videos: [
+                  { id: second.to_i, u: "video#{video_i}", n: "Video #{video_i}", vv: hits }
+                ]
+              }
+              Pusher["presence-#{site.token}"].trigger_async('stats', json)
+            end
+          end
           puts "Stats updated at #{second}"
         end
       end

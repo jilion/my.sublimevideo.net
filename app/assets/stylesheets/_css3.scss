@@ -1,16 +1,16 @@
 @mixin transition($type, $time, $ease) {
-  -o-transition: $type $time $ease;
-  -moz-transition: $type $time $ease;
-  -webkit-transition: $type $time $ease;
-  transition: $type $time $ease;
+  -o-transition:$type $time $ease;
+  -moz-transition:$type $time $ease;
+  -webkit-transition:$type $time $ease;
+  transition:$type $time $ease;
 }
 
 @mixin gradient($from, $to, $middle) {
-  background: $middle;
-  background: -moz-linear-gradient($from, $to);
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
-  background: -webkit-linear-gradient($from, $to);
-  background: -o-linear-gradient($from, $to);
+  background:$middle;
+  background:-moz-linear-gradient($from, $to);
+  background:-webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
+  background:-webkit-linear-gradient($from, $to);
+  background:-o-linear-gradient($from, $to);
 }
 
 @mixin box-shadow($value) {
