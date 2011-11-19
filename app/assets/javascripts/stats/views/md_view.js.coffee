@@ -12,16 +12,15 @@ class MSVStats.Views.MDView extends Backbone.View
 
   render: =>    
     if MSVStats.period.get('type')?
-      $(@el).show()
-      $('#md').data().spinner.stop()
+      $(@el).data().spinner.stop()
       
       @mdData = MSVStats.period.stats().mdData()
       $(@el).html(this.template(mdData: @mdData))
       
       return this
     else
-      $(@el).hide()
-      $('#md').spin()
+      $(@el).empty()
+      $(@el).spin(color:'#1e3966',lines:10,length:5,width:4,radius:8,speed:1,trail:60,shadow:false)
       return this
       
   renderIfSelected: (stats) =>

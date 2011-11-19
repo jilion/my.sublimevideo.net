@@ -49,15 +49,16 @@
           %td.period
             .sparkline{ id: "sparkline_#{video.id}", style: "width:162px;height:44px" }
   - if @videos.limit == 5 && @videos.total > 5
-    .update_rows_number
+    .expander
       %a.down#show_more{ href: "#", onclick: "return false" } 
         More videos
         %small (up to 20)
         %span.arrow.down
   - if @videos.limit == 20 && @videos.total > 5
-    .update_rows_number
+    .expander
       %a#show_less{ href: "#", onclick: "return false" }
         Show only 5 videos
         %span.arrow.up
 - else
-  %p No data
+  .empty_box
+    %p= "No played or loaded videos."
