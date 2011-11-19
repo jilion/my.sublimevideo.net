@@ -158,14 +158,14 @@ describe SiteModules::Templates do
         subject { @site.reload }
 
         it "includes everything" do
-          subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", s: true, r: true }
+          subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true, s: true, r: true }
         end
 
         context "without extra_hostnames" do
           before { subject.extra_hostnames = '' }
 
           it "removes extra_hostnames from h: []" do
-            subject.license_hash.should == { h: ['jilion.com'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", s: true, r: true }
+            subject.license_hash.should == { h: ['jilion.com'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true, s: true, r: true }
           end
         end
 
@@ -173,7 +173,7 @@ describe SiteModules::Templates do
           before { subject.path = '' }
 
           it "doesn't include path key/value" do
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, s: true, r: true }
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, b: true, s: true, r: true }
           end
         end
 
@@ -181,7 +181,7 @@ describe SiteModules::Templates do
           before { subject.wildcard = false }
 
           it "doesn't include wildcard key/value" do
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], p: "foo", s: true, r: true }
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], p: "foo", b: true, s: true, r: true }
           end
         end
 
@@ -198,7 +198,7 @@ describe SiteModules::Templates do
 
           it "includes ssl: false" do
             subject.should be_in_free_plan
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo" }
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, b: true, p: "foo" }
           end
         end
 
@@ -207,7 +207,7 @@ describe SiteModules::Templates do
 
           it "doesn't includes r: true" do
             subject.should be_in_free_plan
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo" }
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true }
           end
         end
         
@@ -219,7 +219,7 @@ describe SiteModules::Templates do
 
           it "includes r: true" do
             subject.should be_in_free_plan
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", r: true }
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true, r: true }
           end
         end
       end
