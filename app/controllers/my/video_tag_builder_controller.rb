@@ -1,7 +1,7 @@
 class My::VideoTagBuilderController < MyController
   skip_before_filter :authenticate_user!
 
-  # GET /video_tag_builder
+  # GET /video-tag-builder
   def new
     if user_signed_in?
       @site = current_user.sites.find_by_token!(params[:site_id]) if params[:site_id]
@@ -9,7 +9,7 @@ class My::VideoTagBuilderController < MyController
     end
   end
 
-  # GET /video_tag_builder/iframe-embed
+  # GET /video-tag-builder/iframe-embed
   def iframe_embed
     render layout: false
   end

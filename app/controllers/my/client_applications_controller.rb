@@ -1,16 +1,19 @@
 class My::ClientApplicationsController < MyController
   before_filter :team_accessible_only
-  before_filter :get_client_application, :only => [:show, :edit, :update, :destroy]
+  before_filter :get_client_application, only: [:show, :edit, :update, :destroy]
 
+  # GET /account/applications
   def index
     @applications   = current_user.client_applications
     @authorizations = current_user.tokens.valid
   end
 
+  # GET /account/applications/new
   def new
     @application = ClientApplication.new
   end
 
+  # POST /account/applications
   def create
     @application = current_user.client_applications.build(params[:client_application])
     respond_with(@application) do |format|
@@ -22,18 +25,20 @@ class My::ClientApplicationsController < MyController
     end
   end
 
+  # GET /account/applications/:id
   def show
   end
 
   def edit
   end
 
-  # PUT /applications/:id
+  # PUT /account/applications/:id
   def update
     @application.update_attributes(params[:client_application])
     respond_with(@application)
   end
 
+  # DELETE /account/applications/:id
   def destroy
     @application.destroy
     respond_with(@application, notice: "The application was successfully destroyed.")

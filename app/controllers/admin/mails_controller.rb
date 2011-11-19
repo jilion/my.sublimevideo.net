@@ -9,7 +9,7 @@ class Admin::MailsController < Admin::AdminController
   # For both
   has_scope :by_date
 
-  # GET /admin/mails
+  # GET /mails
   def index
     if params[:mail_logs] || !(params[:mail_logs] || params[:mail_templates])
       @mail_logs = apply_scopes(MailLog.scoped).by_date.page(params[:page])
@@ -19,16 +19,16 @@ class Admin::MailsController < Admin::AdminController
     end
   end
 
-  # GET /admin/mails/new
+  # GET /mails/new
   def new
     @mail_log = MailLog.new
   end
 
-  # POST /admin/mails
+  # POST /mails
   def create
-    @mail_letter = MailLetter.new(params[:mail_log].merge(:admin_id => current_admin.id))
+    @mail_letter = MailLetter.new(params[:mail_log].merge(admin_id: current_admin.id))
     @mail_letter.delay.deliver_and_log
-    redirect_to [:admin, :mails], :notice => "Sending in progress..."
+    redirect_to [:admin, :mails], notice: "Sending in progress..."
   end
 
 end

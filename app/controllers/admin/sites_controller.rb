@@ -32,7 +32,7 @@ class Admin::SitesController < Admin::AdminController
   # search
   has_scope :search
 
-  # GET /admin/sites
+  # GET /sites
   def index
     @sites = Site.includes(:user, :plan)
     if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
@@ -42,18 +42,18 @@ class Admin::SitesController < Admin::AdminController
     respond_with(@sites, per_page: 50)
   end
 
-  # GET /admin/sites/:id
+  # GET /sites/:id
   def show
     redirect_to edit_admin_site_path(params[:id])
   end
 
-  # GET /admin/sites/:id/edit
+  # GET /sites/:id/edit
   def edit
     @site = Site.includes(:user).find_by_token(params[:id])
     respond_with(@site)
   end
 
-  # PUT /admin/sites/:id
+  # PUT /sites/:id
   def update
     @site = Site.find_by_token(params[:id])
     @site.player_mode = params[:site][:player_mode]
@@ -61,7 +61,7 @@ class Admin::SitesController < Admin::AdminController
     respond_with(@site, location: [:admin, :sites])
   end
 
-  # PUT /admin/sites/:id/sponsor
+  # PUT /sites/:id/sponsor
   def sponsor
     @site = Site.find_by_token(params[:id])
     @site.sponsor!

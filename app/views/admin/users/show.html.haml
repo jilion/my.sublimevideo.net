@@ -10,6 +10,8 @@
 
 %p= link_to "Signin as #{@user.name}", become_admin_user_path(@user)
 
+%h3 Basic infos
+
 %p
   = "State:"
   %strong= @user.state.humanize
@@ -34,16 +36,11 @@
   = "| Last sign in at: " + display_time(@user.last_sign_in_at)
   = "| Current sign in ip: #{@user.current_sign_in_ip}"
   = "| Last sign in ip: #{@user.last_sign_in_ip}"
+%br
 
-%p
-  = "Location: "
-  = content_tag(:strong, "#{@user.billing_country} (#{@user.billing_postal_code})")
-  = "| Personal use: " + display_bool(@user.use_personal)
-  = "| Use for clients: " + display_bool(@user.use_clients)
-  = "| Use for company: " + display_bool(@user.use_company)
+%h3 Billing infos
 
-- if @user.use_company
-  %p= "#{@user.company_job_title} at #{@user.company_name} (#{link_to(@user.company_url, url_with_protocol(@user.company_url))}); #{pluralize(@user.company_employees, 'employee')}; #{pluralize(number_with_delimiter(@user.company_videos_served), 'video')} served".html_safe
+%p= simple_format(@user.billing_address)
 
 %p
   = "Credit Card (#{content_tag(:strong, @user.cc_alias)}): ".html_safe
@@ -51,12 +48,25 @@
     = "#{content_tag(:strong, @user.cc_type.try(:titleize))} ending in #{content_tag(:strong, @user.cc_last_digits)}, ".html_safe
     = "expire on #{content_tag(:strong, display_time(@user.cc_expire_on, format: :month_fullyear))}".html_safe
     = "| Last update: #{display_time(@user.cc_updated_at)}"
+  - else
+    No credit card on file.
 
 - if @user.pending_cc?
   %p
     = "Pending Credit Card: #{content_tag(:strong, @user.pending_cc_type.try(:titleize))} ending in #{content_tag(:strong, @user.pending_cc_last_digits)}, ".html_safe
     = "expire on #{content_tag(:strong, display_time(@user.pending_cc_expire_on, format: :month_fullyear))}".html_safe
     = "| Last update: #{display_time(@user.pending_cc_updated_at)}"
+%br
+
+%h3 More infos
+
+%p
+  = "Personal use: " + display_bool(@user.use_personal)
+  = "| Use for clients: " + display_bool(@user.use_clients)
+  = "| Use for company: " + display_bool(@user.use_company)
+
+- if @user.use_company
+  %p= "#{@user.company_job_title || "Unknown job"} at #{@user.company_name || "Unknown company"} (#{link_to(@user.company_url, url_with_protocol(@user.company_url))}); #{pluralize(@user.company_employees, 'employee')}; #{pluralize(number_with_delimiter(@user.company_videos_served), 'video')} served".html_safe
 
 %br
 %hr
@@ -67,7 +77,7 @@
   - total_invoiced = paid_invoices.sum(:amount)
   %p
     = "Total paid: "
-    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(:user_id => @user.id))
+    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
     = "in #{content_tag(:strong, pluralize(paid_invoices.size, 'invoice'))}".html_safe
     = "(average #{content_tag(:strong, display_amount(total_invoiced / paid_invoices.size.to_f))} / invoice)".html_safe
 
@@ -76,7 +86,7 @@
   - total_invoiced = refunded_invoices.sum(:amount)
   %p
     = "Total refunded: "
-    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(:user_id => @user.id))
+    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
     = "in #{content_tag(:strong, pluralize(refunded_invoices.size, 'invoice'))}".html_safe
     = "(average #{content_tag(:strong, display_amount(total_invoiced / refunded_invoices.size.to_f))} / invoice)".html_safe
 
@@ -85,7 +95,7 @@
   - total_invoiced = unpaid_invoices.sum(:amount)
   %p
     = "Total still to be paid: "
-    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(:user_id => @user.id))
+    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
     = "in #{content_tag(:strong, pluralize(unpaid_invoices.size, 'invoice'))}".html_safe
     = "(average #{content_tag(:strong, display_amount(total_invoiced / unpaid_invoices.size.to_f))} / invoice)".html_safe
 

@@ -39,7 +39,13 @@ class Enthusiast < ActiveRecord::Base
   scope :by_interested_in_beta, lambda { |way = 'desc'| order(:interested_in_beta.send(way), :created_at.desc) }
   scope :by_invited,            lambda { |way = 'desc'| order(:invited_at.send(way), :created_at.desc) }
 
-  scope :search, lambda { |q| where(["LOWER(enthusiasts.email) LIKE LOWER(?) OR LOWER(enthusiasts.free_text) LIKE LOWER(?) OR LOWER(enthusiast_sites.hostname) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  def self.search(q)
+    joins(:sites).where {
+      (lower(:email) =~ lower("%#{q}%")) |
+      (lower(:free_text) =~ lower("%#{q}%")) |
+      (lower(sites.hostname) =~ lower("%#{q}%"))
+    }
+  end
 
   # ====================
   # = Instance Methods =

@@ -5,7 +5,7 @@
 <% end %>
 
 if ($('invited_at_enthusiast_<%= @enthusiast.id %>')) {
-  $('invited_at_enthusiast_<%= @enthusiast.id %>').update("<%= escape_javascript(display_date(@enthusiast.invited_at)) %>");
+  $('invited_at_enthusiast_<%= @enthusiast.id %>').update("<%= escape_javascript(display_time(@enthusiast.invited_at)) %>");
 }
 
 if ($('invite_enthusiast_form_<%= @enthusiast.id %>')) {

@@ -1,5 +1,5 @@
 class Admin::AdminController < ApplicationController
-  respond_to :html
+  responders Responders::FlashResponder
 
   before_filter :authenticate_admin!
 

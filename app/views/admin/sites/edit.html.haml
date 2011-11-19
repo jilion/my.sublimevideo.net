@@ -18,8 +18,8 @@
   %strong= @site.state.humanize
   - if @site.archived?
     = "since " + display_time(@site.archived_at)
-  = "| Created at: " + l(@site.created_at, :format => :seconds_timezone)
-  = "| Updated at: " + l(@site.updated_at, :format => :seconds_timezone)
+  = "| Created at: " + l(@site.created_at, format: :seconds_timezone)
+  = "| Updated at: " + l(@site.updated_at, format: :seconds_timezone)
 %p
   = "Mode: #{content_tag(:strong, @site.player_mode)}".html_safe
   = "| CDN #{@site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
@@ -59,14 +59,14 @@
 
   = form_for [:admin, @site] do |f|
     = f.select :player_mode, Site::PLAYER_MODES
-    = f.submit "Update player mode", :confirm => "Are you sure?"
+    = f.submit "Update player mode", confirm: "Are you sure?"
 
 %br
 
 - if (zeno? || mehdi?) && !@site.in_sponsored_plan?
   %h3 Sponsoring
   = form_for [:sponsor, :admin, @site] do |f|
-    = f.submit "Change current plan to sponsored plan", :confirm => "Are you sure?"
+    = f.submit "Change current plan to sponsored plan", confirm: "Are you sure?"
 
 %br
 %hr

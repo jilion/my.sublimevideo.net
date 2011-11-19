@@ -5,7 +5,7 @@ module CustomDevisePaths
     when :user
       sites_url(subdomain: 'my')
     when :admin
-      admin_delayed_jobs_url(subdomain: 'admin')
+      admin_sites_url(subdomain: 'admin')
     end
   end
 

@@ -1,28 +1,26 @@
 require 'spec_helper'
 
 feature "Users pagination:" do
+
   background do
     sign_in_as :admin
+    Factory.create(:site) # this create a billable user
     Responders::PaginatedResponder.stub(:per_page).and_return(1)
   end
 
   scenario "pagination links displayed only if count of users > User.per_page" do
-    Factory.create(:site)
-    User.count.should == 1
-    visit "/admin/users"
+    go 'admin', 'users'
 
-    page.should have_no_css('nav.pagination')
-    page.should have_no_css('span.prev')
-    page.should have_no_css('em.current')
-    page.should have_no_css('a.next')
+    page.should have_no_css 'nav.pagination'
+    page.should have_no_css 'span.current'
+    page.should have_no_selector "a[rel='next']"
 
-    Factory.create(:site)
-    User.count.should == 2
-    visit "/admin/users"
+    Factory.create(:site) # this create a billable user
+    go 'admin', 'users'
 
-    page.should have_css('nav.pagination')
-    page.should have_css('span.prev')
-    page.should have_css('em.current')
-    page.should have_css('a.next')
+    page.should have_css 'nav.pagination'
+    page.should have_css 'span.current'
+    page.should have_selector "a[rel='next']"
   end
+
 end

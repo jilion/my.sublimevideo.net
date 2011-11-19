@@ -13,9 +13,9 @@ class My::RefundsController < MyController
     respond_to do |format|
       if @site.archived? || @site.skip_pwd { @site.archive }
         @site.refund
-        format.html { redirect_to [:refunds], :notice => t('site.refund.refunded', hostname: @site.hostname) }
+        format.html { redirect_to [:refunds], notice: t('site.refund.refunded', hostname: @site.hostname) }
       else
-        format.html { redirect_to [:refunds], :alert => t('site.refund.refund_unsuccessful', hostname: @site.hostname) }
+        format.html { redirect_to [:refunds], alert: t('site.refund.refund_unsuccessful', hostname: @site.hostname) }
       end
     end
   end

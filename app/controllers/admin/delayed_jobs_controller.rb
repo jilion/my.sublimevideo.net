@@ -1,30 +1,30 @@
 class Admin::DelayedJobsController < Admin::AdminController
   respond_to :html
-  respond_to :js, :only => :index
+  respond_to :js, only: :index
 
-  before_filter :find_by_id, :only => [:show, :update, :destroy]
+  before_filter :find_by_id, only: [:show, :update, :destroy]
 
-  # GET /admin/djs
+  # GET /djs
   def index
     @delayed_jobs = Delayed::Job.order(sort_from_params)
     respond_with(@delayed_jobs)
   end
 
-  # GET /admin/djs/:id
+  # GET /djs/:id
   def show
     respond_with(@delayed_job)
   end
 
-  # PUT /admin/djs/:id
+  # PUT /djs/:id
   def update
-    @delayed_job.update_attributes(:locked_at => nil, :locked_by => nil)
-    respond_with(@site, :location => [:admin, :delayed_jobs])
+    @delayed_job.update_attributes(locked_at: nil, locked_by: nil)
+    respond_with(@site, location: [:admin, :delayed_jobs])
   end
 
-  # DELETE /admin/djs/:id
+  # DELETE /djs/:id
   def destroy
     @delayed_job.destroy
-    respond_with(@site, :location => [:admin, :delayed_jobs])
+    respond_with(@site, location: [:admin, :delayed_jobs])
   end
 
 private

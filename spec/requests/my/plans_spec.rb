@@ -49,7 +49,7 @@ feature "Plan edit" do
       page.should have_content(site.plan.title)
     end
 
-    scenario "update free plan to paid plan and skip trial", :focus do
+    scenario "update free plan to paid plan and skip trial" do
       site = Factory.create(:site, user: @current_user, plan_id: @free_plan.id)
 
       go 'my', "/sites/#{site.to_param}/plan/edit"
@@ -224,7 +224,7 @@ feature "Plan edit" do
       page.should have_content(site.plan.title)
       page.should have_content(I18n.t('site.status.payment_issue'))
 
-      visit edit_site_plan_path(site)
+      go 'my', "/sites/#{site.to_param}/plan/edit"
 
       page.should_not have_content(site.plan.title)
       page.should have_content("There has been a transaction error. Please review")

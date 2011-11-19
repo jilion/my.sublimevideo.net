@@ -3,18 +3,18 @@ class Api::SitesController < Api::ApisController
 
   before_filter :find_by_token!, :only => [:show, :usage]
 
-  # GET /api/v1/sites
+  # GET /sites
   def index
     @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
     respond_with(@sites, :api_template => api_template, :root => :sites)
   end
 
-  # GET /api/v1/sites/:id
+  # GET /sites/:id
   def show
     respond_with(@site, :api_template => api_template)
   end
 
-  # GET /api/v1/sites/:id/usage
+  # GET /sites/:id/usage
   def usage
     respond_with(@site, :api_template => api_template(:private, :usage))
   end

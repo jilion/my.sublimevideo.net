@@ -1,16 +1,16 @@
 class Admin::ReleasesController < Admin::AdminController
   respond_to :html
-  respond_to :js, :only => :index
+  respond_to :js, only: :index
 
   before_filter :allow_only_zeno
 
-  # GET /admin/releases
+  # GET /releases
   def index
     @releases = Release.order(:date.desc)
     respond_with(@releases)
   end
 
-  # POST /admin/releases
+  # POST /releases
   def create
     @release = Release.new(params[:release])
     respond_with(@release) do |format|
@@ -22,7 +22,7 @@ class Admin::ReleasesController < Admin::AdminController
     end
   end
 
-  # PUT /admin/releases/:id
+  # PUT /releases/:id
   def update
     @release = Release.find(params[:id])
     respond_with(@release) do |format|

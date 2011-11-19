@@ -1,6 +1,6 @@
-%tr[admin]{ :class => cycle("", "alt") }
+%tr[admin]{ class: cycle("", "alt") }
   %td.title
     = mail_to(admin.email)
   %td.confirmed
     = display_bool(!admin.invited?)
-  %td.delete= button_to('Delete', admin_admin_path(admin), :confirm => 'Are you sure?', :method => :delete)
+  %td.delete= button_to('Delete', url_for(controller: 'admin/admins', action: 'destroy', id: admin.id), confirm: 'Are you sure?', method: :delete)

@@ -1,14 +1,15 @@
 %table.main#enthusiasts
   %tr
-    %th= link_to_sort(:starred, :reverse => true)
-    %th= link_to_sort(:confirmed, :reverse => true)
-    %th= link_to_sort(:interested_in_beta, :label => "Beta", :reverse => true)
+    %th= link_to_sort(:starred, reverse: true)
+    %th= link_to_sort(:confirmed, reverse: true)
+    %th= link_to_sort(:interested_in_beta, label: "Beta", reverse: true)
     %th= link_to_sort(:email)
     %th= "Sites"
     %th= "Comment"
-    %th= link_to_sort(:date, :reverse => true, :default => true)
+    %th= link_to_sort(:date, reverse: true, default: true)
     %th= link_to_sort(:invited)
-    
+
   = render @enthusiasts
-  
-= will_paginate @enthusiasts
+
+= paginate @enthusiasts
+= page_entries_info @enthusiasts

@@ -138,7 +138,7 @@ module Spec
 
       def send_invite_to(resource_name, email = "invited@invited.com")
         sign_in_as :admin
-        go 'admin', "/#{resource_name.to_s.pluralize}/invitation/new"
+        go 'admin', "/#{resource_name.to_sym == :admin ? '' : "/#{resource_name.to_s.pluralize}"}invitation/new"
         fill_in 'Email', with: email
         yield if block_given?
         click_button 'Send'

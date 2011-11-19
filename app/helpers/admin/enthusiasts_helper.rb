@@ -12,11 +12,7 @@ module Admin::EnthusiastsHelper
     else
       ""
     end
-    "#{enthusiasts.total_entries} #{state} enthusiasts".titleize
-  end
-
-  def existing_tags_for(resource)
-    Tag.select("DISTINCT(name)").joins(:taggings).where("taggings.taggable_type = '#{resource.to_s.classify}'").map(&:name).join(", ")
+    "#{enthusiasts.total_count} #{state} enthusiasts".titleize
   end
 
 end

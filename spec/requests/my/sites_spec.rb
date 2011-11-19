@@ -455,9 +455,9 @@ feature "Sites index" do
         Responders::PaginatedResponder.stub(:per_page).and_return(1)
         go 'my', '/sites'
 
-        page.should have_no_content 'Next'
         page.should have_no_css 'nav.pagination'
-        page.should have_no_css 'span.next'
+        page.should have_no_css 'span.current'
+        page.should have_no_selector "a[rel='next']"
 
         Factory.create(:site, user: @current_user, hostname: 'google2.com')
         go 'my', '/sites'

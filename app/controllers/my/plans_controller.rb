@@ -28,7 +28,7 @@ class My::PlansController < MyController
   # DELETE /sites/:site_id/plan
   def destroy
     @site.update_attribute(:next_cycle_plan_id, nil)
-    respond_with(@site, :location => :sites)
+    respond_with(@site, location: :sites)
   end
 
 private

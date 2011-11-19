@@ -6,15 +6,15 @@ class MailTemplate < ActiveRecord::Base
   # = Associations =
   # ================
 
-  has_many :logs, :class_name => "MailLog", :foreign_key => "template_id"
+  has_many :logs, class_name: "MailLog", foreign_key: "template_id"
 
   # ===============
   # = Validations =
   # ===============
   
-  validates :title,   :presence => true, :uniqueness => true
-  validates :subject, :presence => true
-  validates :body,    :presence => true
+  validates :title,   presence: true, uniqueness: true
+  validates :subject, presence: true
+  validates :body,    presence: true
 
   # ==========
   # = Scopes =
@@ -29,7 +29,7 @@ class MailTemplate < ActiveRecord::Base
   # ====================
 
   def snapshotize
-    { :title => title, :subject => subject, :body => body }
+    { title: title, subject: subject, body: body }
   end
 
 end

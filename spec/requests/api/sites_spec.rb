@@ -14,7 +14,7 @@ feature "Sites API" do
 
   describe "/api/sites" do
     scenario do
-      visit '/api/sites?oauth_token=' + @token.token
+      go 'api', "sites?oauth_token=#{@token.token}"
 
       parsed_body.should be_kind_of(Hash)
       parsed_body["sites"].should be_kind_of(Array)
@@ -24,7 +24,7 @@ feature "Sites API" do
 
   describe "/api/sites/:token" do
     scenario "existing site token" do
-      visit "/api/sites/#{@site.token}?oauth_token=" + @token.token
+      go 'api', "sites/#{@site.token}?oauth_token=#{@token.token}"
 
       parsed_body.should be_kind_of(Hash)
       parsed_body['site'].should be_kind_of(Hash)
@@ -32,7 +32,7 @@ feature "Sites API" do
     end
 
     scenario "non-existing site token" do
-      visit "/api/sites/abc123?oauth_token=" + @token.token
+      go 'api', "sites/abc123?oauth_token=#{@token.token}"
 
       page.driver.status_code.should eql 404
       page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"
@@ -48,7 +48,7 @@ feature "Sites API" do
     end
 
     scenario do
-      visit "/api/sites/#{@site.token}/usage.json?oauth_token=" + @token.token
+      go 'api', "sites/#{@site.token}/usage.json?oauth_token=#{@token.token}"
 
       parsed_body.should be_kind_of(Hash)
       parsed_body["site"].should be_kind_of(Hash)

@@ -15,7 +15,7 @@ private
   end
 
   def info_for_paper_trail
-    { :admin_id => current_admin_id, :ip => request.remote_ip }
+    { admin_id: current_admin_id, ip: request.remote_ip }
   end
 
   def current_admin_id

@@ -153,14 +153,6 @@ MySublimeVideo::Application.routes.draw do
   scope module: 'admin', as: 'admin' do
     constraints subdomain: 'admin' do
 
-      unauthenticated :admin do
-        root to: redirect('/login')
-      end
-
-      authenticated :admin do
-        root to: redirect('/sites'), as: 'admin'
-      end
-
       match '/admin(/*rest)' => redirect { |params, req| "http://admin.#{req.domain}/#{params[:rest]}" }
 
       %w[log_in sign_in signin].each         { |action| get action => redirect('/login') }
@@ -218,6 +210,14 @@ MySublimeVideo::Application.routes.draw do
       end
 
       resources :delayed_jobs, only: [:index, :show, :update, :destroy], path: "djs"
+
+      unauthenticated :admin do
+        root to: redirect('/login')
+      end
+
+      authenticated :admin do
+        root to: redirect('/sites'), as: 'admin'
+      end
 
     end
   end # admin.

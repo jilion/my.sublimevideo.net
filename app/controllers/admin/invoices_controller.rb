@@ -19,35 +19,35 @@ class Admin::InvoicesController < Admin::AdminController
   # search
   has_scope :search
 
-  # GET /admin/invoices
+  # GET /invoices
   def index
     @invoices = apply_scopes(Invoice.includes(:site, :user)).by_id
-    respond_with(@invoices, :per_page => 50)
+    respond_with(@invoices, per_page: 50)
   end
 
-  # GET /admin/invoices/:id
+  # GET /invoices/:id
   def show
     @invoice = Invoice.includes(:user).find_by_reference(params[:id])
     respond_with(@invoice) do |format|
       if @invoice
-        format.html { render :template => '/invoices/show', :layout => 'invoices' }
+        format.html { render template: '/my/invoices/show', layout: 'invoices' }
       else
-        format.html { redirect_to [:admin, :invoices], :notice => "Invoice with reference ##{params[:id]} not found." }
+        format.html { redirect_to [:admin, :invoices], notice: "Invoice with reference ##{params[:id]} not found." }
       end
     end
   end
 
-  # GET /admin/invoices/:id/edit
+  # GET /invoices/:id/edit
   def edit
     @invoice = Invoice.includes(:user).find_by_reference(params[:id])
     respond_with(@invoice)
   end
 
-  # PUT /admin/invoices/:id/retry_charging
+  # PUT /invoices/:id/retry_charging
   def retry_charging
     @invoice = Invoice.find_by_reference(params[:id])
     @invoice.retry
-    respond_with(@invoice, :location => [:admin, :invoices])
+    respond_with(@invoice, location: [:admin, :invoices])
   end
 
   def monthly
