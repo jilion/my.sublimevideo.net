@@ -1,5 +1,6 @@
 development:
-  host: localhost
+  # host: localhost
+  uri: mongodb://backups:uftw86izrv3bgw44bkvCqweuo3yyCK@swan.mongohq.com:27021/app182505
   database: mysublime
 
 test:

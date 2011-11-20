@@ -15,7 +15,7 @@ gem 'squeel',                '~> 0.9.2'
 gem 'bson_ext',              '~> 1.3.0'
 gem 'bson',                  '~> 1.3.0'
 gem 'mongo',                 '~> 1.3.0'
-gem 'mongoid',               '~> 2.2.0'
+gem 'mongoid',               '~> 2.3.3'
 
 # Views
 gem 'haml',                  '~> 3.1.3'
