@@ -1,0 +1,9 @@
+*.psd
+*.pdf
+.gitconfig
+.rvmrc
+Guardfile
+test
+spec
+doc
+app/assets/images/old
