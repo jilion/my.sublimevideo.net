@@ -1,0 +1,27 @@
+%h3 Dedicated Email Support
+
+- if user_signed_in? && current_user.email_support?
+  %p.title_desc
+    = raw "If you can't find the answer you're looking for use the form below to submit your question and we'll personally get back to you as quickly as we can."
+    %p.title_desc= raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
+
+    = form_for @ticket, url: [:ticket] do |f|
+      .entry.select.site_token
+        = f.label :site_token, "", class: "icon"
+        = f.select :site_token, ticket_site_token_options
+        = "(if applicable)"
+
+      .entry.feedback_subject
+        = f.label :subject, "", class: "icon"
+        = f.text_field :subject, class: "text", placeholder: "Subject", required: true
+      .entry.message
+        = f.label :message, "", class: "icon"
+        = f.text_area :message, class: "text", placeholder: "Message", required: true
+      .entry.update
+        = f.submit 'Send', class: "submit small_button"
+
+- else
+  %p.title_desc
+    = raw "We offer dedicated email support for the #{link_to "Plus plan", com_page_url('plans', host: request.domain), class: "hl"} and VIP Email Support for the #{link_to "Premium plan", com_page_url('plans', host: request.domain), class: "hl"}."
+    %p.title_desc= raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
+  

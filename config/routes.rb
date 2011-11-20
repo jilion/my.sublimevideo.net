@@ -230,6 +230,8 @@ MySublimeVideo::Application.routes.draw do
     get '/?p=signup' => 'my/users#new', as: 'signup'
     post '/signup' => 'my/users#create'
     get '/?p=login' => 'my/users/sessions#new', as: 'login'
+    get '/gs-login' => 'my/users/sessions#new_gs', as: 'gs_login'
+    post '/gs-login' => 'my/users/sessions#create_gs'
     post '/login' => 'my/users/sessions#create'
     get '/logout' => 'my/users/sessions#destroy'
   end
