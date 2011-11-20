@@ -264,7 +264,9 @@ var PlanUpdateManager = Class.create({
     this.billingInfosDiv.toggle();
     $('billing_infos_' + billingInfosState).toggle();
 
-    if (billingInfosState !== 'present') $('site_submit').hide();
+    if (billingInfosState !== 'present' && this.billingInfosDiv.visible()) {
+      $('site_submit').hide();
+    }
     else {
       $('site_submit').show();
       if (this.planUpgradeInfoDiv) this.showPlanUpdateInfo(this.checkedPlan);
