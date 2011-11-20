@@ -106,7 +106,7 @@ MySublimeVideo.flashMessage = function(type, message) {
 
 MySublimeVideo.hideFlashMessageDelayed = function(flashEl) {
   setTimeout(function(){
-    flashEl.morph('top:-35px', { duration: 0.7 });
+    flashEl.morph('top:40px', { duration: 0.7 });
   }, 15000);
 };
 

@@ -1,0 +1,74 @@
+@import "css3";
+
+#sites {
+  position:relative;
+  padding-bottom:40px;
+}
+
+a.add_site {
+  position:absolute;
+  top:25px;
+  right:0;
+  display:inline-block;
+  padding:10px 15px;
+  color:#fff;
+  font-size:22px;
+  text-shadow:rgba(0,0,0,0.9) 0 -1px 0;
+  border: 1px solid #1a4224;
+  @include gradient(#00b95a,#007d31,#009843);
+  @include box-shadow((inset #00e896 0 1px 0, #001a41 0 1px 4px));
+  @include border-radius(6px);
+}
+
+a.add_site:active {
+  @include gradient(#007d31,#00b95a,#009843);
+}
+
+a.add_site span {
+  padding-left:25px;
+  background:url(<%= asset_data_uri "my/sites/add_site_cross.png" %>) no-repeat 0 4px;
+}
+
+#help_list {
+  margin-top:10px;
+  text-shadow:#fff 0 1px 0;
+  background:url(<%= asset_path "my/sites/help_list_back.png" %>);
+  padding:13px 15px 8px;
+  @include border-radius(4px);
+  @include box-shadow((inset #fff 0 1px 0, rgba(19,57,125,0.72) 0 1px 3px));
+}
+
+#help_list h4 {
+  font-weight:600;
+  font-size:22px;
+}
+
+#help_list h4 em {
+  font-weight:normal;
+  font-style:normal;
+  color:#7690b3;
+}
+
+#help_list ol {
+  padding:5px 0 0;
+  line-height:23px;
+  font-size:15px;
+  list-style-type:none;
+}
+
+#help_list li.complete {
+  color:#7690b3;
+  display:inline-block;
+  padding-right:15px;
+  background:url(<%= asset_data_uri "my/sites/check_icon_small.png" %>) no-repeat right center;
+}
+
+#help_list li a {
+  color:#1e3966;
+  font-weight:600;
+  border-bottom:1px solid #a7b3c7;
+}
+
+#help_list li.complete a {
+  color:#7690b3;
+}

@@ -39,8 +39,8 @@
               = render "layouts/menu"
               = yield :header
     = yield :middle
+    = render "layouts/flash", flash: flash if flash.present? && request.subdomain == 'my'
     %section#content
-      = render "layouts/flash", flash: flash if flash.present? && request.subdomain == 'my'
       .content_wrapper= yield
     = render "layouts/footer"
     = yield :bottom

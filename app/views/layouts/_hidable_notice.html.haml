@@ -1,3 +1,4 @@
-.hidable_notice{ "data-notice-id" => notice_id }
-  = button_tag 'X', class: 'close'
+.notice.hidable_notice{ "data-notice-id" => notice_id }
   = raw notice_content
+  %button.close
+    %span= "close"
