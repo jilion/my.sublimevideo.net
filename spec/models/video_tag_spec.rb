@@ -156,6 +156,19 @@ describe VideoTag do
 
   describe ".video_tags_from_trackers" do
 
+    it "parses only extra & main domain" do
+      described_class.stub(:only_video_tags_trackers).and_return({
+        "?t=site1234&e=l&d=d&h=e&vu[]=video123&pz[]=300x400" => 1,
+        "?t=site1234&e=l&d=d&h=m&vu[]=video124&pz[]=300x400" => 1,
+        "?t=site1234&e=l&d=d&h=i&vu[]=video125&pz[]=300x400" => 1,
+        "?t=site1234&e=l&d=d&h=d&vu[]=video126&pz[]=300x400" => 1
+      })
+      described_class.video_tags_from_trackers(nil).should eql({
+        ['site1234', 'video123'] => { 'z' => '300x400' },
+        ['site1234', 'video124'] => { 'z' => '300x400' }
+      })
+    end
+
     context "load event" do
 
       context "with 1 video" do
