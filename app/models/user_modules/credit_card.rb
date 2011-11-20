@@ -101,6 +101,12 @@ module UserModules::CreditCard
       end
     end
 
+    def reset_last_failed_cc_authorize_fields
+      %w[at status error].each do |att|
+        self.send("last_failed_cc_authorize_#{att}=", nil)
+      end
+    end
+
     # Be careful with this! Should be only used in dev and for special support-requested-credit-card-deletion purposes
     def reset_credit_card_infos
       %w[type last_digits expire_on updated_at].each do |att|
@@ -120,6 +126,7 @@ module UserModules::CreditCard
         self.send("cc_#{att}=", self.send("pending_cc_#{att}"))
         self.send("pending_cc_#{att}=", nil)
       end
+      reset_last_failed_cc_authorize_fields
       reset_credit_card
 
       self.save_skip_pwd
@@ -146,6 +153,7 @@ module UserModules::CreditCard
         nil
       end
 
+      self.cc_register = false
       process_credit_card_authorization_response(authorization.params) if authorization
     end
 
@@ -198,6 +206,16 @@ module UserModules::CreditCard
         @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.unknown") }
         Notify.send("Credit card authorization unknown status: #{authorization_params["STATUS"]}")
       end
+
+      set_last_failed_cc_authorize_fields_from_params(authorization_params) unless authorization_params["STATUS"] == "5"
+    end
+
+    def set_last_failed_cc_authorize_fields_from_params(authorization_params)
+      self.last_failed_cc_authorize_at     = Time.now.utc
+      self.last_failed_cc_authorize_status = authorization_params["STATUS"].to_i
+      self.last_failed_cc_authorize_error  = authorization_params["NCERRORPLUS"]
+
+      self.save_skip_pwd
     end
 
   private

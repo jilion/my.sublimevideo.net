@@ -2,9 +2,9 @@
 - conditions_sum = notices.inject(false) { |cond, notice| cond || notice[0] }
 
 - if current_user.billable? && conditions_sum
-  #sticky_notice
-    %h3 Warning
+  #sticky_notice.notices
+    -# %h3 Warning
     %ul
       - notices.each do |notice|
         - if current_user.billable? && notice[0]
-          %li= render "layouts/sticky_notices/#{notice[1]}"
+          %li.notice= render "layouts/sticky_notices/#{notice[1]}"

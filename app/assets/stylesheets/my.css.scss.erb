@@ -1,5 +1,6 @@
 /*
 *= require 'global'
+*= require 'sites'
 *= require 'stats'
 */
 
@@ -13,24 +14,84 @@ header, header .shadow, header .lights {
   height:268px;
 }
 
+
+.notices ul {
+  list-style-type:none;
+}
+
+.notice {
+  position:relative;
+  padding:10px 12px;
+  margin:7px 0;
+  font-size:14px;
+  color:#6e4b00;
+  text-shadow:rgba(255,255,255,0.8) 0 1px 0;
+  @include gradient(#fcf3cc,#f8e9a1,#faedb3);
+  @include border-radius(4px);
+  @include box-shadow((inset #fff 0 1px 0, rgba(0,33,68,0.5) 0 1px 3px));
+}
+
+.notice a {
+  color:#6e4b00;
+  font-weight:600;
+  border-bottom: 1px solid #d6c482;
+}
+
+.notice button.close {
+  position:absolute;
+  top:35%;
+  right:12px;
+  width:13px;
+  height:14px;
+  border:none;
+  cursor:pointer;
+  background:url(<%= asset_data_uri "my/notice_hide_arrow.png" %>);
+}
+
+.notice button.close span {display:none}
+
+#flash {
+  position:absolute;
+  width:880px;
+  height:40px;
+  margin:0 auto;
+  left:0;
+  right:0;
+  top:120px;
+  overflow:hidden;
+}
+
+#flash div {
+  margin:0;
+  padding:8px 12px 10px;
+}
+
+#flash .alert {
+  color:#6e0000;
+  @include gradient(#fccccc,#f8a1a1,#fcc1c1);
+}
+
 #content {
   width:968px;
   margin:-120px auto 0;
   background:url(<%= asset_path "my/top_rounded_box.png" %>) no-repeat;
   color:#1e3966;
   text-shadow:rgba(255,255,255,0.25) 0 1px 0;
+  position:relative;
+  z-index:2;
 }
 
 .content_wrapper {
   width:880px;
   margin:0 auto;
+  padding-top:20px;
 }
 
 #content h2 {
   color:#1e3966;
   font-size:48px;
   font-weight:100;
-  padding:40px 0;
+  padding:20px 0;
 }
 
 #content h2 select {
