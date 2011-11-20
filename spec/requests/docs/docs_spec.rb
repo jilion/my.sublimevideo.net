@@ -119,8 +119,6 @@ feature "write-proper-video-elements" do
     page.should have_content('<video class="sublime"')
     # code: last line
     page.should have_content('</video>')
-    # 2nd paragraph: first line
-    page.should have_content("(Note: You should write lines 1 to 4 on a single line)")
     # 2nd paragraph: last line
     page.should have_content("For more information about the HTML5 <video> element, please read the W3C specification.")
   end
