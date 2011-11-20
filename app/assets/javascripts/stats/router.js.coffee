@@ -48,6 +48,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
+      sites:        MSVStats.sites
 
     MSVStats.datePickersView = new MSVStats.Views.DatePickersView
       el: '#date_pickers'
@@ -93,7 +94,12 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
 
   home: (token) ->
     if (selectedSite = MSVStats.sites.selectedSite)?
-      MSVStats.pusher.unsubscribe("presence-#{selectedSite.get('token')}") 
+      MSVStats.pusher.unsubscribe("presence-#{selectedSite.get('token')}")
+    if MSVStats.sites.selectedSite.inFreePlan()
+      $('div.stats').addClass('free')
+    else
+      $('div.stats').removeClass('free')
+
     MSVStats.selectedSiteToken = token
     MSVStats.period.clear()
     MSVStats.sites.select(token)

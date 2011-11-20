@@ -11,6 +11,12 @@ class MSVStats.Views.PeriodSelectorDays30View extends Backbone.View
     $(@el).html(this.template(site: MSVStats.sites.selectedSite))
     $(@el).find('span.title').html('last 30 days')
     unless MSVStats.sites.selectedSite.inFreePlan()
+      if @options.statsDays.isShowable()
+        $(@el).find('.content').show()
+        $(@el).data().spinner.stop()
+      else
+        $(@el).find('.content').hide()
+        $(@el).spin(spinOptions)
       if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
       vvTotal = @options.statsDays.vvTotal(-30, -1)
       $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))

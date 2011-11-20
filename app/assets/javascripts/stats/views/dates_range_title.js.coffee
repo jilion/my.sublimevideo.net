@@ -5,21 +5,26 @@ class MSVStats.Views.DatesRangeTitleView extends Backbone.View
     'click': 'toggleDatePicker'
 
   initialize: ->
-    @options.period.bind 'change', this.render
+    @options.period.bind       'change', this.render
+    @options.sites.bind        'change', this.render
     @options.statsSeconds.bind 'change', this.renderIfSelected
-    @options.statsSeconds.bind 'reset', this.renderIfSelected
-    @options.statsMinutes.bind 'reset', this.renderIfSelected
-    @options.statsHours.bind   'reset', this.renderIfSelected
-    @options.statsDays.bind    'reset', this.renderIfSelected
+    @options.statsSeconds.bind 'reset',  this.renderIfSelected
+    @options.statsMinutes.bind 'reset',  this.renderIfSelected
+    @options.statsHours.bind   'reset',  this.renderIfSelected
+    @options.statsDays.bind    'reset',  this.renderIfSelected
     this.render()
 
   render: =>
+    $('#dates_range_title').removeClass('editable')
     $(@el).html(this.template(period: @options.period))
-    if MSVStats.sites.selectedSite.inFreePlan()
-      $('#dates_range_title').removeClass('editable')
-      $('div.stats').addClass('free')
+    if @options.period.get('type')?
+      $(@el).find('.content').show()
+      $(@el).data().spinner.stop()
     else
-      $('div.stats').removeClass('free')
+      $(@el).find('.content').hide()
+      $(@el).spin(spinOptions)
+    console.log MSVStats.sites.selectedSite.inFreePlan()
+    unless MSVStats.sites.selectedSite.inFreePlan()
       $('#dates_range_title').addClass('editable')
     return this
 

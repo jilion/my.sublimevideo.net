@@ -1,4 +1,4 @@
-- if @period.get('type')?
+.content
   %span.left
     %span.day= Highcharts.dateFormat('%e %b %Y', @period.startTime())
     %span.time= Highcharts.dateFormat('%H:%M:%S', @period.startTime())

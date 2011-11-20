@@ -17,7 +17,7 @@ class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
         $(@el).data().spinner.stop()
       else
         $(@el).find('.content').hide()
-        $(@el).spin(color:'#d5e5ff',lines:10,length:5,width:4,radius:8,speed:1,trail:60,shadow: false)
+        $(@el).spin(spinOptions)
       if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
       vvTotal = @options.statsSeconds.vvTotal(0, 59)
       $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))

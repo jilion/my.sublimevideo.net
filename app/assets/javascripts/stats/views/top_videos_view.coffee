@@ -26,7 +26,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
       return this
     else
       $(@el).empty();
-      $(@el).spin(color:'#1e3966',lines:10,length:5,width:4,radius:8,speed:1,trail:60,shadow:false)
+      $(@el).spin(spinOptions)
       return this
 
   renderSparklines: ->

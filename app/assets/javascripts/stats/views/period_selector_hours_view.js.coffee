@@ -10,6 +10,12 @@ class MSVStats.Views.PeriodSelectorHoursView extends Backbone.View
   render: =>
     $(@el).html(this.template())
     $(@el).find('span.title').html('last 24 hours')
+    if @options.statsHours.isShowable()
+      $(@el).find('.content').show()
+      $(@el).data().spinner.stop()
+    else
+      $(@el).find('.content').hide()
+      $(@el).spin(spinOptions)
     if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
     vvTotal = @options.statsHours.vvTotal()
     $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))

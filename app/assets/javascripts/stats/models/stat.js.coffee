@@ -41,8 +41,9 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       memo
     [], datesRange)
 
-  isUnactive: ->
-    this.pvTotal(0, -1) == 0 && this.vvTotal(0, -1) == 0
+  isUnactive: -> this.pvTotal(0, -1) == 0 && this.vvTotal(0, -1) == 0
+
+  isShowable: -> this.length >= 24
 
   bpData: ->
     unless MSVStats.period.isFullRange()

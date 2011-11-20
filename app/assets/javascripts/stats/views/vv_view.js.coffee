@@ -20,7 +20,7 @@ class MSVStats.Views.VVView extends Backbone.View
       return this
     else
       $('#vv_content').hide()
-      $('#vv').spin(color:'#1e3966',lines:10,length:5,width:4,radius:8,speed:1,trail:60,shadow:false)
+      $('#vv').spin(spinOptions)
       $(@el).html(this.template())
       return this
 
