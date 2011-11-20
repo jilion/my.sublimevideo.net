@@ -2,6 +2,7 @@ class My::UsersController < Devise::RegistrationsController
   include MyRedirectionFilters
 
   respond_to :html
+  respond_to :js, only: [:hide_notice]
 
   before_filter :redirect_suspended_user
 
@@ -68,7 +69,10 @@ class My::UsersController < Devise::RegistrationsController
     @user.hidden_notice_ids << params[:id].to_i
     @user.save
 
-    render nothing: true
+    respond_to do |format|
+      format.html { redirect_to [:sites] }
+      format.js { render nothing: true }
+    end
   end
 
 end

@@ -23,6 +23,7 @@ MySublimeVideo::Application.routes.draw do
           delete :destroy, path: '/account', as: 'destroy'
         end
         get '/logout' => 'users/sessions#destroy', as: 'destroy_user_session'
+        put '/hide_notice/:id' => 'users#hide_notice'
       end
       get '/account/edit' => redirect('/account')
 
@@ -31,8 +32,6 @@ MySublimeVideo::Application.routes.draw do
       %w[log_out sign_out signout].each { |action| get action => redirect('/logout') }
       get '/invitation/accept' => redirect { |params, req| "http://#{req.domain}/?p=signup&beta=over" }
       post '/password/validate' => "users/passwords#validate"
-
-      put '/hide_notice/:id' => 'users#hide_notice'
 
       scope 'account' do
         resource :billing, only: [:edit, :update]

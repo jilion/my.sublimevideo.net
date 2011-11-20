@@ -1,4 +1,5 @@
-.notice.hidable_notice{ "data-notice-id" => notice_id }
+.notice.hidable_notice{ id: "hidable_notice_#{notice_id}", "data-notice-id" => notice_id }
   = raw notice_content
-  %button.close
-    %span= "close"
+  = form_tag "/hide_notice/#{notice_id}", method: :put do
+    %button.close
+      %span= "close"
