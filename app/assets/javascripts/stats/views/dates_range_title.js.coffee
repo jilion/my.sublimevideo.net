@@ -23,7 +23,6 @@ class MSVStats.Views.DatesRangeTitleView extends Backbone.View
     else
       $(@el).find('.content').hide()
       $(@el).spin(spinOptions)
-    console.log MSVStats.sites.selectedSite.inFreePlan()
     unless MSVStats.sites.selectedSite.inFreePlan()
       $('#dates_range_title').addClass('editable')
     return this
