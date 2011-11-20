@@ -2,8 +2,8 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":1},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"true"}],"Resubscribe":true}'
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":6},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"true"}],"Resubscribe":true}'
     headers:
       user-agent:
       - createsend-ruby-0.8.1
@@ -24,8 +24,10 @@
       - 172.20.3.30
       content-type:
       - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Thu, 03 Nov 2011 09:18:47 GMT
+      - Sun, 20 Nov 2011 14:29:54 GMT
       content-length:
       - '16'
     body: ! '"cm2@jilion.com"'
@@ -33,8 +35,8 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
-    body: !!null 
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
+    body: 
     headers:
       user-agent:
       - createsend-ruby-0.8.1
@@ -46,70 +48,6 @@
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 172.20.3.28
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 03 Nov 2011 09:19:21 GMT
-      content-length:
-      - '207'
-    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","Date":"2011-11-02
-      17:51:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"1"},{"Key":"beta","Value":"true"}]}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :put
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
-    body: ! '{"EmailAddress":"cm_update_email@jilion.com","Name":"John Doe","CustomFields":[],"Resubscribe":true}'
-    headers:
-      user-agent:
-      - createsend-ruby-0.8.1
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 172.20.3.25
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 03 Nov 2011 09:19:44 GMT
-      content-length:
-      - '81'
-    body: ! '{"Code":201,"Message":"Sorry, that email address is already taken on
-      this list."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :post
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":6},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"true"}],"Resubscribe":true}'
-    headers:
-      user-agent:
-      - createsend-ruby-0.8.1
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 201
-      message: Created
     headers:
       server:
       - csw
@@ -122,16 +60,17 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Thu, 03 Nov 2011 09:43:16 GMT
+      - Sun, 20 Nov 2011 14:29:10 GMT
       content-length:
-      - '16'
-    body: ! '"cm2@jilion.com"'
+      - '207'
+    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","Date":"2011-11-20
+      15:24:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"6"},{"Key":"beta","Value":"true"}]}'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
-    method: :get
+    method: :put
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
-    body: !!null 
+    body: ! '{"EmailAddress":"402_cm2@jilion.com","Name":"John Doe","CustomFields":[],"Resubscribe":true}'
     headers:
       user-agent:
       - createsend-ruby-0.8.1
@@ -149,49 +88,12 @@
       cache-control:
       - private, s-maxage=0
       x-cs-node:
-      - 172.20.3.27
-      content-type:
-      - application/json; charset=utf-8
+      - 172.20.3.22
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Thu, 03 Nov 2011 09:43:20 GMT
+      - Sun, 20 Nov 2011 14:35:05 GMT
       content-length:
-      - '207'
-    body: ! '{"EmailAddress":"cm2@jilion.com","Name":"John Doe","Date":"2011-11-02
-      17:51:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"6"},{"Key":"beta","Value":"true"}]}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :put
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
-    body: ! '{"EmailAddress":"cm_update_email@jilion.com","Name":"John Doe","CustomFields":[],"Resubscribe":true}'
-    headers:
-      user-agent:
-      - createsend-ruby-0.8.1
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 172.20.3.23
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Thu, 03 Nov 2011 09:44:04 GMT
-      content-length:
-      - '81'
-    body: ! '{"Code":201,"Message":"Sorry, that email address is already taken on
-      this list."}'
+      - '0'
+    body: 
     http_version: '1.1'

@@ -471,6 +471,7 @@ def create_stats(site_token=nil)
         )
       end
     end
+    site.update_last_30_days_counters
   end
   puts "Fake site(s)/video(s) stats generated"
 end
@@ -562,17 +563,17 @@ end
 def random_site_stats_inc(i, force = nil)
   {
     # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 3 }
-    "pv.m"  => force || (i * rand(20)),
-    "pv.e"  => force || (i * rand(4)),
-    "pv.em" => force || (i * rand(2)),
-    "pv.d"  => force || (i * rand(2)),
-    "pv.i"  => force || (i * rand(2)),
+    "pv.m"  => force || (i * rand),
+    "pv.e"  => force || (i * rand / 2),
+    "pv.em" => force || (i * rand / 2),
+    "pv.d"  => force || (i * rand / 2),
+    "pv.i"  => force || (i * rand / 2),
     # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
-    "vv.m"  => force || (i * rand(10)),
-    "vv.e"  => force || (i * rand(3)),
-    "vv.em" => force || (i * rand(3)),
-    "vv.d"  => force || (i * rand(2)),
-    "vv.i"  => force || (i * rand(2)),
+    "vv.m"  => force || (i * rand / 2),
+    "vv.e"  => force || (i * rand / 4),
+    "vv.em" => force || (i * rand / 4),
+    "vv.d"  => force || (i * rand / 6),
+    "vv.i"  => force || (i * rand / 6),
     # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1, t (tablet) => 1 }, f (flash) => ... }
     "md.h.d" => i * rand(12),
     "md.h.m" => i * rand(5),
