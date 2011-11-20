@@ -7,10 +7,7 @@
   Here is how your @<video>@ element should look:
 :coderay
   #{coderay_options(:html, line_numbers: :inline, line_number_anchors: 'L', bold_every: false)}
-  <video class="sublime"
-         width="640" height="360"
-         poster="video-poster.jpg"
-         preload="none">
+  <video class="sublime" width="640" height="360" poster="video-poster.jpg" preload="none">
     <source src="http://yoursite.com/video.mp4" />
     <source src="http://yoursite.com/video-mobile.mp4" />
     <source src="http://yoursite.com/video.webm" />
@@ -18,20 +15,17 @@
   </video>
 :textile
 
-  (_Note_: You should write lines 1 to 4 on a *single line*)
-
   Let's go through the above code line by line.
 
   h4. The &lt;video&gt; attributes
 
-  *Line 1.* SublimeVideo only operates on @<video>@ elements that have the "_sublime_" @class@ (unless you use our "JavaScript API":/javascript-api), so adding this @class@ is mandatory.
-
-  *Line 2.* %(red)It is very important to provide the proper @width@ and @height@ attributes in order to be sure the *proportions* of the original video are maintained%. These values don't necessarily have to match the width and height of the original video: you can use smaller values to scale down the video, but be sure the proportions are maintained.
+  *Line 1.*
+  
+  * SublimeVideo only operates on @<video>@ elements that have the "_sublime_" @class@ (unless you use our "JavaScript API":/javascript-api), so adding this @class@ is mandatory.
+  * %(red)It is very important to provide the proper @width@ and @height@ attributes in order to be sure the *proportions* of the original video are maintained%. These values don't necessarily have to match the width and height of the original video: you can use smaller values to scale down the video, but be sure the proportions are maintained.
   _Example_: if the resolution of the original video is 1280x720, you could use @width="640" height="360"@ or @width="800" height="450"@ to have the video properly scaled down with its original proportions maintained.
-
-  *Line 3.* We recommend you always specify a poster frame. It's the image displayed behind the initial play button. It represents the video until the user starts playing it.
-
-  *Line 4.* The @preload="none"@ attribute allows you to save bandwidth by avoiding to start preloading (buffering) the video when the page is loaded. It is supported by most modern browsers (Safari 5, Chrome 6, Firefox 4 and Opera 10.6) . We recommend you always specify this attribute otherwise your videos might start preloading in the background even if the user never clicked the initial play button.
+  * We recommend you always specify a poster frame. It's the image displayed behind the initial play button. It represents the video until the user starts playing it.
+  * The @preload="none"@ attribute allows you to save bandwidth by avoiding to start preloading (buffering) the video when the page is loaded. It is supported by most modern browsers (Safari 5, Chrome 6, Firefox 4 and Opera 10.6) . We recommend you always specify this attribute otherwise your videos might start preloading in the background even if the user never clicked the initial play button.
 
   h4. The &lt;source&gt;s
 
