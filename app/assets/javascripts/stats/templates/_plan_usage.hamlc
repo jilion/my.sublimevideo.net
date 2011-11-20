@@ -3,7 +3,7 @@
   .wrap
     %h3.title Current Plan Info
     %p
-      Your currently have the
+      You currently have the
       %strong.capitalize= @plan.name
       = "plan for #{@site.title()}. Your monthly video plays usage for the period between #{Highcharts.dateFormat('%e %b %Y', @plan.monthCycleStartTime)} and #{Highcharts.dateFormat('%e %b %Y', @plan.monthCycleEndTime)}:"
     .progress_bar
