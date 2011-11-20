@@ -9,6 +9,7 @@ class My::UsersController < Devise::RegistrationsController
   def create
     build_resource
     @user = resource
+    @user.referrer_site_token = cookies[:r] if cookies[:r]
 
     if @user.save
       if @user.active_for_authentication?

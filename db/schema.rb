@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111120143816) do
+ActiveRecord::Schema.define(:version => 20111120195507) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -337,6 +337,7 @@ ActiveRecord::Schema.define(:version => 20111120143816) do
     t.datetime "last_failed_cc_authorize_at"
     t.integer  "last_failed_cc_authorize_status"
     t.string   "last_failed_cc_authorize_error"
+    t.string   "referrer_site_token"
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true
@@ -347,6 +348,7 @@ ActiveRecord::Schema.define(:version => 20111120143816) do
   add_index "users", ["last_invoiced_amount"], :name => "index_users_on_last_invoiced_amount"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["total_invoiced_amount"], :name => "index_users_on_total_invoiced_amount"
+  add_index "users", ["referrer_site_token"], :name => "index_users_on_referrer_site_token"
 
   create_table "versions", :force => true do |t|
     t.string   "item_type",  :null => false

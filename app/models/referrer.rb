@@ -2,11 +2,12 @@ class Referrer
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field :site_id,         :type => Integer
+  field :site_id,         type: Integer
   field :token
   field :url
-  field :hits,            :type => Integer
-  field :contextual_hits, :type => Integer
+  field :hits,            type: Integer, defautl: 0
+  field :badge_hits,      type: Integer, defautl: 0
+  field :contextual_hits, type: Integer, defautl: 0
 
   index :site_id
   index :token
@@ -16,7 +17,7 @@ class Referrer
   index :created_at
   index :updated_at
 
-  attr_accessible :token, :url, :hits, :contextual_hits
+  attr_accessible :token, :url, :hits, :contextual_hits, :badge_hits
 
   # ================
   # = Associations =
@@ -66,14 +67,20 @@ class Referrer
   end
 
   def self.create_or_update_from_type!(token, url, type = 'c')
-    if referrer = Referrer.where(:url => url, :token => token).first
-      referrer.contextual_hits = referrer.contextual_hits.to_i + 1 if type == 'c'
+    if referrer = Referrer.where(url: url, token: token).first
+      case type
+      when 'b'
+        referrer.badge_hits = referrer.badge_hits.to_i + 1
+      when 'c'
+        referrer.contextual_hits = referrer.contextual_hits.to_i + 1
+      end
       referrer.save
     else
       create(
-        :url             => url,
-        :token           => token,
-        :contextual_hits => type == 'c' ? 1 : 0
+        url:             url,
+        token:           token,
+        badge_hits:      (type == 'b' ? 1 : 0),
+        contextual_hits: (type == 'c' ? 1 : 0)
       )
     end
   end

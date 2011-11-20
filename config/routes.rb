@@ -260,7 +260,7 @@ MySublimeVideo::Application.routes.draw do
 
       get '/:page' => 'pages#show', as: :page
 
-      get '/r/:type/:token' => 'referrers#redirect', type: /c/, token: /[a-z0-9]{8}/
+      get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
 
       root to: 'pages#show', page: 'home'
     end
