@@ -88,11 +88,6 @@ document.observe("dom:loaded", function() {
       element.setStyle({ fontFamily:"Lucida Grande, Arial, sans-serif", fontSize:"15px" });
     });
   }
-
-  // Reproduce checkbox behavior for radio buttons for plans selection
-  if ($('plans')) {
-    new PlanUpdateManager();
-  }
 });
 
 // ====================
@@ -218,95 +213,6 @@ var HideableNoticeManager = Class.create({
     event.stop();
     new Ajax.Request('/hide_notice/' + this.noticeId, { method: 'put' });
     this.noticeElement.fade({ duration: 1.5, after: function(){ this.noticeElement.remove(); }.bind(this) });
-  }
-});
-
-var PlanUpdateManager = Class.create({
-  initialize: function() {
-    this.planUpgradeInfoDiv = $('plan_upgrade_info');
-    this.planCreateInfoDiv  = $('plan_create_info');
-    this.skipTrialDiv       = $('skip_trial');
-    this.skipTrialCheckbox  = $('site_skip_trial');
-    this.billingInfosDiv    = $('billing_infos');
-    this.hostnameDiv        = $('site_hostname');
-    this.checkedPlan        = null;
-    this.messages = $H();
-    ['in_trial_downgrade_to_free', 'in_trial_update', 'in_trial_instant_upgrade',
-     'upgrade', 'upgrade_from_free', 'delayed_upgrade',
-     'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'].each(function(name) {
-      divName = 'plan_' + name + '_info';
-      this.messages.set(name, $(divName));
-    }.bind(this));
-
-    $$('#plans input[type=radio]').each(function(element){
-      element.on('click', function(event) {
-        this.checkedPlan = element;
-        var select_box = element.up('.select_box');
-        $$('#plans ul .select_box').invoke('removeClassName', 'active');
-        if (select_box) select_box.addClassName('active');
-        this.handlePlanChange(element);
-      }.bind(this));
-    }.bind(this));
-
-    if (this.skipTrialCheckbox) {
-      this.skipTrialCheckbox.on("click", function(event) {
-        this.handleBillingInfos();
-      }.bind(this));
-    }
-  },
-  handlePlanChange: function(radioButton) {
-    var plan_price    = radioButton.readAttribute('data-plan_price');
-    var price_is_zero = plan_price === "$0";
-
-    if (this.hostnameDiv) this.hostnameDiv.required = !price_is_zero;
-    if (this.skipTrialDiv) {
-      price_is_zero ? this.skipTrialDiv.hide() : this.skipTrialDiv.show();
-    }
-    if (this.planUpgradeInfoDiv) {
-      this.showPlanUpdateInfo(this.checkedPlan);
-    }
-  },
-  handleBillingInfos: function() {
-    var billingInfosState = this.billingInfosDiv.readAttribute('data-state');
-    this.billingInfosDiv.toggle();
-    $('billing_infos_' + billingInfosState).toggle();
-
-    if (billingInfosState !== 'present' && this.billingInfosDiv.visible()) {
-      $('site_submit').hide();
-    }
-    else {
-      $('site_submit').show();
-      if (this.planUpgradeInfoDiv) this.showPlanUpdateInfo(this.checkedPlan);
-      if (this.planCreateInfoDiv) this.showPlanCreateInfo(this.checkedPlan);
-    }
-  },
-  updatePlanInfo_: function(infoDiv, radioButton) {
-    ['plan_title', 'plan_price', 'plan_price_vat', 'plan_update_price', 'plan_update_price_vat', 'plan_update_date'].each(function(className) {
-      infoDiv.select('.'+className).invoke("update", radioButton.readAttribute('data-'+className));
-    });
-    infoDiv.show();
-  },
-  showPlanCreateInfo: function(radioButton) {
-    this.planCreateInfoDiv.hide();
-    if (radioButton.readAttribute('data-plan_price') !== "$0" && this.skipTrialCheckbox.checked) {
-      this.updatePlanInfo_(this.planCreateInfoDiv, radioButton);
-    }
-  },
-  showPlanUpdateInfo: function(radioButton) {
-    this.messages.each(function(pair) {
-      pair.value.hide();
-    });
-
-    var planChangeType = radioButton.readAttribute('data-plan_change_type');
-    if (planChangeType == 'in_trial_update' && this.skipTrialCheckbox.checked) {
-      planChangeType = 'in_trial_instant_upgrade';
-    }
-    this.messages.each(function(pair) {
-      if (planChangeType === pair.key) {
-        this.updatePlanInfo_(pair.value, radioButton);
-        return;
-      }
-    }.bind(this));
   }
 });
 
