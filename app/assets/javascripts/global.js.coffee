@@ -54,7 +54,7 @@ SublimeVideo.replaceHistory = (contentId) ->
     history.replaceState { hidePopup: contentId.replace(/^popup_/, '') }, '', document.location.href.replace document.location.search, ''
 
 SublimeVideo.openSimplePopup = (contentId) -> # item can be site
-  if SublimeVideo.simplePopupHandler then SublimeVideo.simplePopupHandler.close()
+  SublimeVideo.closeSimplePopup(contentId)
   SublimeVideo.simplePopupHandler = new SimplePopupHandler(contentId, SublimeVideo.replaceHistory)
   SublimeVideo.simplePopupHandler.open()
 
@@ -63,9 +63,10 @@ SublimeVideo.openSimplePopup = (contentId) -> # item can be site
 # ====================
 
 SublimeVideo.closeSimplePopup = (contentId) ->
-  unless SublimeVideo.simplePopupHandler?
-    SublimeVideo.simplePopupHandler = new SimplePopupHandler(contentId, SublimeVideo.replaceHistory)
-  SublimeVideo.simplePopupHandler.close();
+  $$('.popup').each (popup) -> popup.hide()
+  if SublimeVideo.simplePopupHandler?
+    # SublimeVideo.simplePopupHandler = new SimplePopupHandler(contentId, SublimeVideo.replaceHistory)
+    SublimeVideo.simplePopupHandler.close();
 
   false
 
