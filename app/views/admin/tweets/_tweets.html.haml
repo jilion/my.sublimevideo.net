@@ -8,4 +8,5 @@
   = render @tweets
 
 .pagination_wrap
-  = paginate @tweets
+  = paginate @tweets, theme: 'admin'
+  = page_entries_info @tweets

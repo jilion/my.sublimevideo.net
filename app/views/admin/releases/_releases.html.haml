@@ -5,5 +5,5 @@
     %th= "Actions"
   = render @releases
 .pagination_wrap
-  = paginate @releases
+  = paginate @releases, theme: 'admin'
   = page_entries_info @releases
