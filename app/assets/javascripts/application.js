@@ -211,7 +211,7 @@ var HideableNoticeManager = Class.create({
   updateUserAndHideNotice: function(event) {
     event.stop();
     new Ajax.Request('/hide_notice/' + this.noticeId, { method: 'put' });
-    this.noticeElement.fade({ after: function(){ this.noticeElement.remove(); } });
+    this.noticeElement.fade({ duration: 1.5, after: function(){ this.noticeElement.remove(); }.bind(this) });
   }
 });
 
