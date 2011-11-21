@@ -24,7 +24,6 @@ module OneTime
             site.update_attribute(:trial_started_at, site.first_paid_plan_started_at - BusinessModel.days_for_trial.days)
             total += 1
           end
-          puts "500 more..." if total % 500 == 0
         end
         "Finished: in total, #{total} sites were updated!"
       end
@@ -68,7 +67,6 @@ module OneTime
 
           # puts
 
-          # puts "500 more..." if total.nonzero? && total % 500 == 0
         end
 
         # Cancel all upgrade & failed invoices

@@ -35,14 +35,14 @@ describe OneTime::User do
     end
   end
 
-  describe ".set_billing_address_from_current_infos" do
+  describe ".set_billing_name_from_name" do
     context "user has name" do
       subject { Factory.create(:user, name: 'Remy Coutable', billing_name: nil) }
 
       it "sets billing_name from name" do
         subject.billing_name.should be_nil
 
-        described_class.set_billing_address_from_current_infos
+        described_class.set_billing_name_from_name
 
         subject.reload.billing_name.should eq 'Remy Coutable'
       end
@@ -59,7 +59,7 @@ describe OneTime::User do
       it "doesn't set billing_name" do
         subject.billing_name.should be_nil
 
-        described_class.set_billing_address_from_current_infos
+        described_class.set_billing_name_from_name
 
         subject.reload.billing_name.should be_nil
       end

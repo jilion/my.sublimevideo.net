@@ -3,5 +3,5 @@
     - biggest_site = current_user.sites.by_last_30_days_billable_video_views.first
     = render 'layouts/hidable_notice', notice_id: 1, notice_content: t("notices.checkout_v2_news", link_to_stats: link_to("statistics feature", [biggest_site, :stats]))
 
-- if !current_user.notice_hidden?(2) && current_user.more_infos_incomplete?
+- if !current_user.notice_hidden?(2) && current_user.more_infos_incomplete? && (!current_user.billable? || current_user.billing_address_complete?)
   = render 'layouts/hidable_notice', notice_id: 2, notice_content: t("notices.complete_more_infos")
