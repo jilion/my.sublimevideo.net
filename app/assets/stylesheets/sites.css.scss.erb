@@ -56,9 +56,16 @@ a.add_site span {
   list-style-type:none;
 }
 
-#help_list li.complete {
-  color:#7690b3;
+#help_list li {
+  display:block;
+}
+
+#help_list li .wrap {
   display:inline-block;
+}
+
+#help_list li.complete .wrap {
+  color:#7690b3;
   padding-right:15px;
   background:url(<%= asset_data_uri "my/sites/check_icon_small.png" %>) no-repeat right center;
 }
