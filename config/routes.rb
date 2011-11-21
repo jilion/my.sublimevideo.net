@@ -9,6 +9,11 @@ MySublimeVideo::Application.routes.draw do
   scope module: 'my' do
     constraints subdomain: 'my' do
 
+      unauthenticated :user do
+        get '/sites' => redirect { |params, req| "http://#{req.domain}/?p=login" }
+        root to: redirect { |params, req| "http://#{req.domain}/?p=login" }
+      end
+
       devise_for :users,
                  module: 'my/users',
                  path: '',
@@ -85,10 +90,6 @@ MySublimeVideo::Application.routes.draw do
       get '/r/:type/:token' => 'referrers#redirect', type: /c/, token: /[a-z0-9]{8}/
 
       post '/pusher/auth' => 'pusher#auth'
-
-      unauthenticated :user do
-        root to: redirect { |params, req| "http://#{req.domain}/?p=login" }
-      end
 
       authenticated :user do
         root to: redirect('/sites')
