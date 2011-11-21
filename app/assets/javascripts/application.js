@@ -27,11 +27,10 @@ function isEventSupported(eventName) {
 }
 
 SublimeVideo.topDomainHost = function() {
-  document.location.host.split('.').slice(-2).join('.');
+  return document.location.host.split('.').slice(-2).join('.');
 }
 
 document.observe("dom:loaded", function() {
-
   S2.Extensions.webkitCSSTransitions = true;
 
   // ================================================================
