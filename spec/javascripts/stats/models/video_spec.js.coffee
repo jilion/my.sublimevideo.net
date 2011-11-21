@@ -8,11 +8,6 @@ describe 'Videos', ->
       MSVStats.videos = new MSVStats.Collections.Videos()
       MSVStats.videos.endTime = 62000
 
-    it 'has empty arrays', ->
-      @video = new MSVStats.Models.Video()
-      expect(@video.arraysLength()).toEqual(62)
-      expect(@video.arraysLength()).toEqual(62)
-
     it 'copies endTime from collection', ->
       @video = new MSVStats.Models.Video()
       expect(@video.endTime).toEqual(MSVStats.videos.endTime)
@@ -69,18 +64,17 @@ describe 'Videos', ->
 
       describe 'with vv_sum & vl_sum null', ->
         beforeEach ->
-          MSVStats.period       = new MSVStats.Models.Period(type: 'minutes')
-          MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
-          MSVStats.statsMinutes.reset(minutesStats)
+          MSVStats.period       = new MSVStats.Models.Period(type: 'seconds')
+          MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds({id: 1001})
           @video = new MSVStats.Models.Video
-            vl_array: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,0,0,0]
-            vv_array: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,5,6,0,0,0]
+            vl_hash: {1000: 1, 1001: 2, 1002: 3}
+            vv_hash: {1000: 1, 1001: 2, 1002: 3}
 
         it 'return 6 vlTotal', ->
-          expect(@video.vlTotal()).toEqual(6)
+          expect(@video.vlTotal()).toEqual(3)
 
         it 'return 15 for vvTotal', ->
-          expect(@video.vvTotal()).toEqual(15)
+          expect(@video.vvTotal()).toEqual(3)
 
       describe 'with vv_sum & vl_sum set', ->
         beforeEach ->
@@ -95,6 +89,18 @@ describe 'Videos', ->
 
         it 'return 2 for vvTotal', ->
           expect(@video.vvTotal()).toEqual(1)
+
+    describe 'vvArray()', ->
+      beforeEach ->
+        MSVStats.period       = new MSVStats.Models.Period(type: 'seconds')
+        MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds({id: 1060})
+        @video = new MSVStats.Models.Video
+          vl_hash: {1000: 1, 1001: 2, 1002: 3}
+          vv_hash: {1000: 1, 1001: 2, 1002: 3}
+
+      it 'return array with missing value', ->
+        expect(@video.vvArray()).toEqual([0, 1])
+
 
   describe 'MSVStats.Collections.Videos', ->
 

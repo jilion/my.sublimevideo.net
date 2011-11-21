@@ -10,13 +10,14 @@ class MSVStats.Models.Video extends Backbone.Model
     s: {}
     vl_sum: null # main + extra
     vv_sum: null # main + extra
-    # 62 0 arrays (didn't find a way to use a function to declare them, shame on me)
-    vl_array: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] # main + extra
-    vv_array: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] # main + extra
+    vl_array: []
+    vv_array: []
+    vl_hash: {}
+    vv_hash: {}
 
   initialize: ->
     @endTime = MSVStats.videos.endTime ? MSVStats.statsSeconds.lastStatTime()
-    @addedAt = @endTime
+    @addTime = @endTime
     this.fetchMetaData() unless this.metaDataPresent()
 
   metaDataPresent: -> this.get('uo')?
@@ -47,23 +48,37 @@ class MSVStats.Models.Video extends Backbone.Model
     else
       360
 
-  arraysLength: -> this.get('vl_array').length
+  isSecond: -> !this.get("vl_sum")?
 
   vlTotal: -> this.customSum('vl')
   vvTotal: -> this.customSum('vv')
   customSum: (field) ->
-    if this.get("#{field}_sum")?
-      parseInt(this.get("#{field}_sum"))
-    else
-      _.reduce(this.get("#{field}_array").slice(0, 60), (memo, hits) ->
-        memo + hits
+    if this.isSecond()
+      _.reduce(this.get("#{field}_hash"), (memo, hits, time) ->
+        if (MSVStats.period.startTime() / 1000) <= time <= (MSVStats.period.endTime() / 1000)
+          memo + hits
+        else
+          memo
       0)
+    else
+      parseInt(this.get("#{field}_sum"))
 
   vvArray: ->
-    if this.get("vv_sum")?
-      this.get('vv_array')
+    if this.isSecond()
+      hash  = this.get('vv_hash')
+      array = []
+      from  = MSVStats.period.startTime() / 1000
+      to    = MSVStats.period.endTime() / 1000
+      while from <= to
+        array.push(hash[from] ? 0)
+        from += 1
+      console.log this.id
+      console.log MSVStats.period.startTime() / 1000
+      console.log hash
+      console.log array
+      array
     else
-      this.get('vv_array').slice(0, 60)
+      this.get('vv_array')
 
   total: (field) ->
     switch field
@@ -71,7 +86,10 @@ class MSVStats.Models.Video extends Backbone.Model
       when 'vv' then this.vvTotal()
 
   isEmpty: ->
-    _.all(this.get('vl_array'), ((hit) -> hit == 0)) && _.all(this.get('vv_array'), ((hit) -> hit == 0))
+    if this.isSecond()
+      _.isEmpty(this.get('vl_hash')) && _.isEmpty(this.get('vv_hash'))
+    else
+      _.all(this.get('vl_array'), ((hit) -> hit == 0)) && _.all(this.get('vv_array'), ((hit) -> hit == 0))
 
   isShowable: -> this.vlTotal() > 0 || this.vvTotal() > 0
 
@@ -100,23 +118,13 @@ class MSVStats.Collections.Videos extends Backbone.Collection
     return [] if !data || data.period != MSVStats.period.get('type')
     @total     = parseInt(data.total)
     @limit     = parseInt(data.limit)
-    @startTime = parseInt(data.from) * 1000
-    @endTime   = parseInt(data.to) * 1000
     @period    = data.period
     @sortBy    = data.sort_by
     return data.videos
 
   clearCollectionAttributes: ->
     @total     = null
-    @startTime = null
-    @endTime   = null
     @period    = null
-
-  startDate: ->
-    new Date(@startTime)
-
-  endDate: ->
-    new Date(@endTime)
 
   change: (options = {}) ->
     @sortBy = options.sortBy if options.sortBy?
@@ -127,6 +135,12 @@ class MSVStats.Collections.Videos extends Backbone.Collection
       this.fetch()
 
   customModels: ->
+    console.log "Seconds Stats"
+    console.log MSVStats.period.startTime()
+    console.log MSVStats.period.stats().first().id
+    console.log MSVStats.period.stats().models
+    console.log MSVStats.period.stats().first()
+    console.log MSVStats.period.stats().customPluck('vv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
     if @period == 'seconds'
       iterator = switch @sortBy
         when 'vl' then ((video) -> video.vlTotal() )
@@ -139,39 +153,28 @@ class MSVStats.Collections.Videos extends Backbone.Collection
   isReady: ->
     @total? && @period == MSVStats.period.get('type')
 
-  isShowable: ->
-    _.any(this.customModels(), ((video) -> video.isShowable()))
+  isShowable: (models = this.customModels()) ->
+    _.any(models, ((video) -> video.isShowable()))
 
   updateSeconds: (secondTime) =>
-    @startTime = MSVStats.period.startTime()
-    @endTime   = secondTime
-    this.addEmptyNewStats(secondTime)
-    this.removeOldStats()
-    this.removeEmptyVideos()
-    @total     = this.models.length
+    this.removeOldStats(MSVStats.period.startTime() / 1000)
+    this.removeEmptyVideos(secondTime)
+    @total = this.models.length
     this.trigger('reset', this)
 
-  addEmptyNewStats: (endTime) ->
+  removeOldStats: (from) ->
     for video in this.models
-      unless video.endTime == endTime
-        video.endTime = endTime
-        vlArray = _.clone(video.get('vl_array'))
-        vlArray.push(0)
-        vvArray = _.clone(video.get('vv_array'))
-        vvArray.push(0)
-        video.set({ vl_array: vlArray, vv_array: vvArray }, silent: true)
+      vlHash = _.clone(video.get('vl_hash'))
+      vvHash = _.clone(video.get('vv_hash'))
+      _.each vlHash, (hits, time) -> 
+        delete vlHash[time] if time < from
+      _.each vvHash, (hits, time) -> 
+        delete vvHash[time] if time < from
+      video.set({ vl_hash: vlHash, vv_hash: vvHash }, silent: true)
 
-  removeOldStats: ->
-    for video in this.models
-      vlArray = _.clone(video.get('vl_array'))
-      vlArray.shift()
-      vvArray = _.clone(video.get('vv_array'))
-      vvArray.shift()
-      video.set({ vl_array: vlArray, vv_array: vvArray }, silent: true)
-
-  removeEmptyVideos: ->
+  removeEmptyVideos: (secondTime) ->
     for video in _.clone(this.models)
-      if (video.endTime - video.addedAt) > 10000 && video.isEmpty()
+      if (secondTime - video.addTime) > 10000 && video.isEmpty()
         this.remove(video, silent: true)
 
   customFetch: ->
@@ -190,48 +193,34 @@ class MSVStats.Collections.Videos extends Backbone.Collection
   fetchOldSeconds: =>
     $.get this.url(), (data) =>
       for videoData in data.videos
-        oldVlArray = videoData.vl_array
-        delete videoData.vl_array
-        oldVvArray = videoData.vv_array
-        delete videoData.vv_array
+        oldVlHash = videoData.vl_hash
+        delete videoData.vl_hash
+        oldVvHash = videoData.vv_hash
+        delete videoData.vv_hash
 
         video = this.getOrAdd(videoData.id, videoData)
 
-        oldArraysEndTime  = parseInt(data.to) * 1000
-        indexOffset       = (oldArraysEndTime - video.endTime) / 1000
+        vlHash = _.extend(_.clone(video.get('vl_hash')), oldVlHash)
+        vvHash = _.extend(_.clone(video.get('vv_hash')), oldVvHash)
 
-        vlArray = _.clone(video.get('vl_array'))
-        vvArray = _.clone(video.get('vv_array'))
-        newVlArray = oldVlArray.slice(Math.abs(indexOffset) - (vlArray.length - oldVlArray.length), oldVlArray.length)
-        newVvArray = oldVvArray.slice(Math.abs(indexOffset) - (vvArray.length - oldVvArray.length), oldVvArray.length)
-        newVlArray.push(vlArray.slice(vlArray.length + indexOffset, vlArray.length))
-        newVvArray.push(vvArray.slice(vvArray.length + indexOffset, vvArray.length))
-
-        video.set({ vl_array: _.flatten(newVlArray), vv_array: _.flatten(newVvArray) }, silent: true)
-
+        video.set({ vl_hash: vlHash, vv_hash: vvHash }, silent: true)
       @period = 'seconds'
-      this.trigger('reset', this)
 
   merge: (data, options) ->
+    console.log 'MERGE'
+    console.log data
     for videoData in data
-      video = this.getOrAdd(videoData.u, { id: videoData.u, n: videoData.n })
+      video  = this.getOrAdd(videoData.u, { id: videoData.u, n: videoData.n })
+      second = parseInt(videoData.id)
 
-      secondTime  = parseInt(videoData.id) * 1000
-      indexOffset = (secondTime - video.endTime) / 1000
-      lastIndex   = video.arraysLength() - 1
-      dataIndex   = lastIndex + indexOffset
+      vlHash = _.clone(video.get('vl_hash'))
+      vvHash = _.clone(video.get('vv_hash'))
+      if videoData.vl?
+        vlHash[second] = if vlHash[second]? then vlHash[second] + parseInt(videoData.vl) else parseInt(videoData.vl)
+      if videoData.vv?
+        vvHash[second] = if vvHash[second]? then vvHash[second] + parseInt(videoData.vv) else parseInt(videoData.vv)
 
-      vlArray = _.clone(video.get('vl_array'))
-      vvArray = _.clone(video.get('vv_array'))
-      if dataIndex <= lastIndex
-        vlArray[dataIndex] += parseInt(videoData.vl) if videoData.vl?
-        vvArray[dataIndex] += parseInt(videoData.vv) if videoData.vv?
-      else
-        video.endTime = secondTime
-        vlArray.push(videoData.vl ? 0)
-        vvArray.push(videoData.vv ? 0)
-
-      video.set({ vl_array: vlArray, vv_array: vvArray }, silent: true)
+      video.set({ vl_hash: vlHash, vv_hash: vvHash }, silent: true)
 
   getOrAdd: (id, attributes) ->
     unless (video = this.get(id))?
