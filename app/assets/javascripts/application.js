@@ -8,6 +8,11 @@
 //= require prototype_ujs
 //= require scriptaculous/s2
 //= require prototype/sites_select_title
+//= require_self
+//= require global
+
+var SublimeVideo   = SublimeVideo || {};
+var MySublimeVideo = MySublimeVideo || {};
 
 function isEventSupported(eventName) {
   eventName = 'on' + eventName;
@@ -21,7 +26,9 @@ function isEventSupported(eventName) {
   return isSupported;
 }
 
-var MySublimeVideo = MySublimeVideo || {};
+SublimeVideo.topDomainHost = function() {
+  document.location.host.split('.').slice(-2).join('.');
+}
 
 document.observe("dom:loaded", function() {
 

@@ -2,4 +2,9 @@
 #= require jquery_ujs
 #= require underscore
 
-window.MySublimeVideo = {}
+window.SublimeVideo   = window.SublimeVideo || {}
+window.MySublimeVideo = window.MySublimeVideo || {}
+
+SublimeVideo.topDomainHost = ->
+  document.location.host.split('.').slice(-2).join('.')
+
