@@ -3,7 +3,6 @@ require 'spec_helper'
 
 feature "Users" do
 
-
   context "logged-in user" do
     background do
       sign_in_as :user
@@ -89,7 +88,7 @@ feature "Users" do
     sign_in_as :user
     click_link('John Doe')
 
-    fill_in "Password", with: "newpassword"
+    fill_in "New password", with: "newpassword"
     click_button "user_credentials_submit"
 
     fill_in "Current password", with: "123456"

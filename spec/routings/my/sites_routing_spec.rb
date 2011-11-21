@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe My::SitesController do
 
-  it { get(with_subdomain('my', 'sites')).should         route_to('my/sites#index') }
+  # it { get(with_subdomain('my', 'sites')).should         route_to('my/sites#index') }
   it { get(with_subdomain('my', 'sites/new')).should     route_to('my/sites#new') }
   it { get(with_subdomain('my', 'sites/1/edit')).should  route_to('my/sites#edit', id: '1') }
   it { post(with_subdomain('my', 'sites')).should        route_to('my/sites#create') }
