@@ -19,9 +19,13 @@
           %td.video
             .wrap
               - if video.get('p')?
-                %a.play{ href: "#", onclick: "return false"}
-                  %img{ id: "img-#{video.id}", src: "#{video.get('p')}", alt: "#{video.get('n')} posterframe" }
-                  %span.overlay
+                %a.play{ href: "#", onclick: "return false" }
+                  .crop{ style: "width:96px; height:54px;" }
+                    %span.overlay
+                -# taller than wide poster http://static.wix.com/media/665a0253fa72e434ba1f2f2e8b80823b.wix_mp_256
+                %img{ id: "img-#{video.id}", src: "#{video.get('p')}", alt: "#{video.get('n')} posterframe", style: "display:none" }
+                %script{ type: "text/javascript" }
+                  SublimeVideo.cropPosterframe("img-#{video.id}")
               - else
                 default img
               .right
@@ -40,7 +44,7 @@
                         - else
                           name isn't
                         = "defined properly, please set data-* attribute(s) in your video tag."
-                        %a{ href: 'TODO docs link' }= "More info (TODO)"
+                        %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/stats", onclick: "window.open(this); return false" }= "More info (TODO)"
                 .spacer
                 %span.video_uid= "##{video.id}"
               .spacer

@@ -11,6 +11,6 @@
     = render partial: 'admin/mail_logs/mail_log', collection: @mail_logs
 
   .pagination_wrap
-    = paginate @mail_logs
+    = paginate @mail_logs, theme: 'admin'
     = page_entries_info @mail_logs
   - params[:mail_logs] = nil

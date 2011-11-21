@@ -8,5 +8,5 @@
   = render @referrers
 
 .pagination_wrap
-  = paginate @referrers
-  -#= page_entries_info @referrers
+  = paginate @referrers, theme: 'admin'
+  = page_entries_info @referrers

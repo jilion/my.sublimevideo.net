@@ -13,5 +13,5 @@
   = render 'delayed_job', collection: @delayed_jobs
 
 .pagination_wrap
-  = paginate @delayed_jobs
+  = paginate @delayed_jobs, theme: 'admin'
   = page_entries_info @delayed_jobs

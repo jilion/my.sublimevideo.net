@@ -1,5 +1,3 @@
-var SublimeVideo = SublimeVideo || {};
-
 document.observe("dom:loaded", function() {
   SublimeVideo.interactiveDemo = new InteractiveDemoHandler();
 

@@ -9,8 +9,8 @@
       %th= "Body"
       %th= link_to_sort :date, default_way: 'desc', default: true, label: "Created at"
     = render partial: 'admin/mail_templates/mail_template', collection: @mail_templates
-    
+
   .pagination_wrap
-    = paginate @mail_templates
+    = paginate @mail_templates, theme: 'admin'
     = page_entries_info @mail_templates
   - params[:mail_templates] = nil

@@ -20,7 +20,6 @@
       = javascript_include_tag 'application_jquery'
     - else
       = javascript_include_tag(request.subdomain.blank? ? 'com' : request.subdomain)
-      -#= javascript_include_tag 'application'
     = yield :head
 
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
@@ -46,19 +45,20 @@
     = render "layouts/footer"
     = yield :bottom
 
-    - display_signup = params[:p] == 'signup' || params[:commit] == 'Sign Up'
-    #popup_signup.popup{ style: "display:#{display_signup ? 'block' : 'none'}" }
-      .wrap
-        .content= render template: '/my/users/new'
-      = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('signup')" do
-        %span Close
+    - if request.subdomain.blank?
+      - display_signup = params[:p] == 'signup' || params[:commit] == 'Sign Up'
+      #popup_signup.popup{ style: "display:#{display_signup ? 'block' : 'none'}" }
+        .wrap
+          .content= render template: '/my/users/new'
+        = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('signup')" do
+          %span Close
 
-    - display_login = params[:p] == 'login' || params[:commit] == 'Login'
-    #popup_login.popup{ style: "display:#{display_login ? 'block' : 'none'}" }
-      .wrap
-        .content= render template: '/my/users/sessions/new'
-      = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('login')" do
-        %span Close
+      - display_login = params[:p] == 'login' || params[:commit] == 'Login'
+      #popup_login.popup{ style: "display:#{display_login ? 'block' : 'none'}" }
+        .wrap
+          .content= render template: '/my/users/sessions/new'
+        = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('login')" do
+          %span Close
 
     - if user_signed_in?
       = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name, current_user.id, Rails.env.production? || Rails.env.staging?)
