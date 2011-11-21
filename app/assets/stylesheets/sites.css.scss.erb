@@ -90,7 +90,6 @@ a.add_site span {
 #sites table.main {
   width:100%;
   border-collapse:collapse;
-  
 }
 
 #sites table.main col.usage {
@@ -366,20 +365,20 @@ a.add_site span {
   right:11px;
   display:inline-block;
   padding:4px 6px 3px;
-  color:#1e3966;
+  color:#f1f6ff;
   font-size:10px;
-  font-weight:600;
+/*  font-weight:600;*/
   text-transform:uppercase;
   letter-spacing:1px;
-  text-shadow:#fff 0 1px 0;
-  border:1px solid #62779a;
-  @include gradient(rgba(255,255,255,0.9),rgba(238,241,244,0.8),#e6ecf5);
-  @include box-shadow((inset #fff 0 1px 0, rgba(255,255,255,0.3) 0 1px 0));
+  text-shadow:rgba(0,0,0,0.8) 0 -1px 0;
+  border:1px solid #0e2a55;
+  @include gradient(#5f7da6,#2c4a76,#46658f);
+  @include box-shadow((inset rgba(255,255,255,0.24) 0 1px 0, rgba(255,255,255,0.3) 0 1px 0));
   @include border-radius(5px);
 }
 
 #sites table.main td.usage a.view_stats:active {
-  @include gradient(rgba(238,241,244,0.8),rgba(255,255,255,0.9),#e6ecf5);
+  @include gradient(#2c4a76,#5f7da6,#46658f);
 }
 
 #sites table.main td.code {
@@ -404,13 +403,9 @@ a.add_site span {
   @include gradient(#135bd7,#1e93e2,#1976dc);
 }
 
-#sites table.main td.status .wrap {
-  display:table;
-}
-
 #sites table.main td.status .tooltip {
   margin:0 auto;
-  display:table-caption;
+  top:30px;
 }
 
 #sites table.main td.status .tooltip.payment_issue {width:18px}
@@ -441,9 +436,25 @@ a.add_site span {
   background:url(<%= asset_data_uri "my/sites/dot_loading.gif" %>) no-repeat center;
 }
 
+#sites .pagination_wrap {
+  font-size:13px;
+  color:#4c6790;
+  padding:12px 20px 0;
+}
 
+#sites .pagination_wrap a {
+  color:#00235a;
+}
 
+#sites .pagination .next {
+  float:right;
+}
 
+#sites .pagination_wrap .page_info {
+  text-align:center;
+  position:relative;
+  top:-15px;
+}
 
 
 
