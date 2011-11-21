@@ -120,6 +120,16 @@ header, header .shadow, header .lights {
   cursor:pointer;
 }
 
+#content .tooltip.warning .icon {
+  width:22px;
+  height:22px;
+  background:url(<%= asset_data_uri "my/warning_icon.png" %>) no-repeat;
+}
+
+#content .tooltip .icon span {
+  display:none;
+}
+
 #content .tooltip .content {
   display:none;
   position:absolute;
@@ -157,8 +167,9 @@ header, header .shadow, header .lights {
   margin:0 auto;
 }
 
-#content .tooltip .content p {
-  padding:8px 6px;
+#content .tooltip .content .p {
+  display:block;
+  padding:8px 6px 9px;
 }
 
 .big_break {

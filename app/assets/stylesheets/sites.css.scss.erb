@@ -93,7 +93,11 @@ a.add_site span {
   
 }
 
-#sites table.main col.alt {
+#sites table.main col.usage {
+  background:rgba(0,52,110,1);
+}
+
+#sites table.main col.status {
   background:rgba(0,52,110,0.4);
 }
 
@@ -133,6 +137,10 @@ a.add_site span {
 
 #sites table.main th.code {
   width:158px;
+}
+
+#sites table.main th.status {
+  width:94px;
 }
 
 #sites table.main th strong {
@@ -241,11 +249,18 @@ a.add_site span {
   margin:23px 0 0 18px;
   color:#1e3966;
   font-size:18px;
+  float:left;
   text-shadow:#fff 0 1px 0;
   border: 1px solid #62779a;
   @include gradient(rgba(255,255,255,0.7),rgba(238,241,244,0.6),#e6ecf5);
   @include box-shadow((inset #fff 0 1px 0, rgba(0,44,94,0.5) 0 1px 4px));
   @include border-radius(5px);
+}
+
+#sites table.main td.site.empty a.domain {
+  padding-top:7px;
+  margin-top:22px;
+  color:#4a648e;
 }
 
 #sites table.main td.site a.domain:active {
@@ -269,12 +284,24 @@ a.add_site span {
   left:4px;
 }
 
+#sites table.main td.site.empty a.domain .settings_icon {
+  display:block;
+  position:static;
+  float:left;
+  margin:0 4px 0 -2px;
+}
+
 #sites table.main td.site a.domain:hover img {
   visibility:hidden;
 }
 
 #sites table.main td.site a.domain:hover .settings_icon {
   display:block;
+}
+
+#sites table.main td.site .tooltip {
+  float:left;
+  margin:32px 0 0 10px;
 }
 
 #sites table.main td.site .plan {
@@ -291,6 +318,11 @@ a.add_site span {
   color:#4a648e;
 }
 
+#sites table.main td.site .plan a .disabled {
+  opacity:0.7;
+  filter:alpha(opacity=70);
+}
+
 #sites table.main td.site .cycle {
   position:absolute;
   bottom:7px;
@@ -301,5 +333,123 @@ a.add_site span {
   color:#4a648e;
   letter-spacing:1px;
 }
+
+#sites table.main td.usage .sparkline {
+  margin:0 auto;
+  position:relative;
+  top:10px;
+}
+
+#sites table.main td.usage .plays {
+  position:absolute;
+  bottom:6px;
+  left:10px;
+  line-height:12px;
+}
+
+#sites table.main td.usage .plays strong {
+  font-weight:normal;
+  font-size:16px;
+  display:block;
+}
+
+#sites table.main td.usage .plays span {
+  font-size:9px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:#4a648e;
+}
+
+#sites table.main td.usage a.view_stats {
+  position:absolute;
+  bottom:10px;
+  right:11px;
+  display:inline-block;
+  padding:4px 6px 3px;
+  color:#1e3966;
+  font-size:10px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  text-shadow:#fff 0 1px 0;
+  border:1px solid #62779a;
+  @include gradient(rgba(255,255,255,0.9),rgba(238,241,244,0.8),#e6ecf5);
+  @include box-shadow((inset #fff 0 1px 0, rgba(255,255,255,0.3) 0 1px 0));
+  @include border-radius(5px);
+}
+
+#sites table.main td.usage a.view_stats:active {
+  @include gradient(rgba(238,241,244,0.8),rgba(255,255,255,0.9),#e6ecf5);
+}
+
+#sites table.main td.code {
+  text-align:center;
+}
+
+#sites table.main td.code a.embed_code {
+  display:inline-block;
+  margin-top:23px;
+  padding:8px 10px;
+  color:#fff;
+  font-size:14px;
+  text-transform:uppercase;
+  text-shadow:rgba(0,0,0,0.8) 0 -1px 0;
+  border:1px solid #194a7f;
+  @include gradient(#1e93e2,#135bd7,#1976dc);
+  @include box-shadow((inset #4ca9e8 0 1px 0, rgba(0,24,51,0.5) 0 1px 5px));
+  @include border-radius(5px);
+}
+
+#sites table.main td.code a.embed_code:active {
+  @include gradient(#135bd7,#1e93e2,#1976dc);
+}
+
+#sites table.main td.status .wrap {
+  display:table;
+}
+
+#sites table.main td.status .tooltip {
+  margin:0 auto;
+  display:table-caption;
+}
+
+#sites table.main td.status .tooltip.payment_issue {width:18px}
+#sites table.main td.status .tooltip.payment_issue .icon {
+  width:18px;
+  height:17px;
+  background:url(<%= asset_data_uri "my/alert_icon.png" %>) no-repeat;
+}
+
+#sites table.main td.status .tooltip.payment_waiting {width:18px}
+#sites table.main td.status .tooltip.payment_waiting .icon {
+  width:18px;
+  height:17px;
+  background:url(<%= asset_data_uri "my/warning_triangle_icon.png" %>) no-repeat;
+}
+
+#sites table.main td.status .tooltip.ok {width:23px}
+#sites table.main td.status .tooltip.ok .icon {
+  width:23px;
+  height:18px;
+  background:url(<%= asset_data_uri "my/sites/check_icon.png" %>) no-repeat;
+}
+
+#sites table.main td.status .tooltip.in_progress {width:15px}
+#sites table.main td.status .tooltip.in_progress .icon {
+  width:15px;
+  height:15px;
+  background:url(<%= asset_data_uri "my/sites/dot_loading.gif" %>) no-repeat center;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 

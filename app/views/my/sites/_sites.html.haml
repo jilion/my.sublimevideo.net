@@ -2,9 +2,9 @@
   .main_table_wrap
     %table.main
       %col
-      %col.alt
+      %col.usage
       %col
-      %col.alt
+      %col.status
       %tr
         %th.site
           .wrap
@@ -18,9 +18,9 @@
         %th.usage
           .wrap
             - if @sites.one?
-              Last 30 Days Views
+              Last 30 Days Plays
             - else
-            .sorting= link_to_sort :last_30_days_billable_video_views, label: "Last 30 Days Plays"
+              .sorting= link_to_sort :last_30_days_billable_video_views, label: "Last 30 Days Plays"
           -# = image_tag 'videos/info_icon.png'
           -# = info_box do
           -#   Views happening on your development domains are not taken into account.

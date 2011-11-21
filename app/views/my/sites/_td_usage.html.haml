@@ -2,13 +2,13 @@
   - if site.pending_plan_id?
     = "–"
   - else
-    .sponsored_number
-      = render 'my/sites/usage_sparkline', site: site
-      = link_to site_stats_url(site) do
-        %strong= number_with_delimiter(site.last_30_days_main_video_views + site.last_30_days_extra_video_views)
-        %em= (site.in_sponsored_plan? ? "sponsored" : "") + " video views"
-      = link_to "Peak Insurance ON", "http://docs.sublimevideo.net/peak-insurance", :class => "peak_insurance_label"
-      = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"
+    = render 'my/sites/usage_sparkline', site: site
+    .plays
+      %strong= number_with_delimiter(site.last_30_days_main_video_views + site.last_30_days_extra_video_views)
+      %span= "plays"
+    = link_to "View Stats", site_stats_url(site), class: "view_stats"
+    -# %em= (site.in_sponsored_plan? ? "sponsored" : "") + " video views"
+    -# = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"
 -#  - else
 -#    .progress_bar.box_hovering_zone
 -#      .plan_total= number_with_delimiter(site.last_30_days_billable_usages.sum)

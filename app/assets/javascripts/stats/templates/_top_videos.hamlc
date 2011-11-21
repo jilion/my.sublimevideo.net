@@ -27,11 +27,11 @@
               .right
                 %h4= video.get('n')
                 - if video.get('uo') == 's' || video.get('no') == 's'
-                  %span.tooltip
+                  %span.tooltip.warning
                     %span.icon
                     %span.content
                       %span.arrow
-                      %p
+                      %span.p
                         Your video
                         - if video.get('uo') == 's' && video.get('no') == 's'
                           uid & name aren't
