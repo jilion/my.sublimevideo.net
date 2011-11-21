@@ -19,8 +19,9 @@ class MSVStats.Views.TopVideosView extends Backbone.View
       $(@el).data().spinner.stop()
     
       @videos = MSVStats.videos
-      $(@el).html(this.template(videos: @videos))
-      this.renderSparklines()
+      @models = @videos.customModels()
+      $(@el).html(this.template(videos: @videos, models: @models))
+      this.renderSparklines(@models)
       this.updateTitle()
     
       return this
@@ -29,8 +30,8 @@ class MSVStats.Views.TopVideosView extends Backbone.View
       $(@el).spin(spinOptions)
       return this
 
-  renderSparklines: ->
-    for video in MSVStats.videos.customModels()
+  renderSparklines: (models) ->
+    for video in models
       if video.isShowable()
         MSVStats.chartsHelper.sparkline $("#sparkline_#{video.id}"), video.vvArray(),
           width:  '100%'

@@ -38,4 +38,17 @@ module ApplicationHelper
     end
   end
 
+  def tooltip_box(options = {}, &block)
+    content_tag(:div, class: "tooltip" + (options[:class] ? " #{options[:class]}" : "")) do
+      content_tag(
+        :a, 
+        (options[:class] ? "<span>#{options[:class]}</span>".html_safe : "<span></span>".html_safe), 
+        href: (options[:href] ? " #{options[:href]}" : ""), 
+        onclick: (options[:href] ? "" : "return false"), class: "icon") + 
+        content_tag(:span, class: "content") do
+          content_tag(:span, nil, class: "arrow") + capture_haml(&block).chomp.html_safe
+      end
+    end
+  end
+
 end

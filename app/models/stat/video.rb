@@ -119,24 +119,24 @@ private
 
   def self.fill_missing_values!(videos, options = {})
     step = 1.send(options[:period])
-    period_is_seconds = options[:period] == 'seconds'
-    videos.each do |video|
-      video["vv_array"] = []
-      video["vl_array"] = [] if period_is_seconds
-      from_step = options[:from]
-      while from_step <= options[:to]
-        video["vv_array"] << video["vv_hash"][from_step.to_s].to_i
-        video["vl_array"] << video["vl_hash"][from_step.to_s].to_i if period_is_seconds
-        from_step += step
-      end
-      video.delete("vv_hash")
-      if period_is_seconds
-        video.delete("vv_sum")
+    if options[:period] == 'seconds'
+      videos.each do |video|
+        video['vl_hash'].each { |k,v| video['vl_hash'][k] = v.to_i }
+        video['vv_hash'].each { |k,v| video['vv_hash'][k] = v.to_i }
         video.delete("vl_sum")
-        video.delete("vl_hash")
+        video.delete("vv_sum")
+      end
+    else
+      videos.each do |video|
+        video["vv_array"] = []
+        from_step = options[:from]
+        while from_step <= options[:to]
+          video["vv_array"] << video["vv_hash"][from_step.to_s].to_i
+          from_step += step
+        end
+        video.delete("vv_hash")
       end
     end
   end
-
 
 end
