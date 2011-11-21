@@ -4,7 +4,7 @@
       - if site.hostname.present?
         = link_to [:edit, site], class: "domain", title: "Edit #{hostname_with_path(site)}" do
           %span.settings_icon
-          = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=http://#{hostname_with_path(site)}/favicon.ico", onerror: "this.src='/sites/default_favicon.png';", alt: "Favicon", size: "16x16", id: "site_favicon_#{site.id}"
+          = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=http://#{hostname_with_path(site)}/favicon.ico", onerror: "this.src='#{asset_path "my/sites/default_favicon.png"}';", alt: "Favicon", size: "16x16", id: "site_favicon_#{site.id}"
           = truncate_middle(site.hostname, length: 35)
         - if site.in_paid_plan? && (site.need_path? || site.need_subdomain?)
           .warning.box_hovering_zone
@@ -35,17 +35,19 @@
       .spacer
 
   %td.usage{ class: td_usage_class(site) }
-    - if site.plan_id?
-      = render 'td_usage', site: site
-    - else
-      = "—"
+    .wrap
+      - if site.plan_id?
+        = render 'td_usage', site: site
+      - else
+        = "—"
 
   %td.code{ id: "code_#{site.token}" }
-    - if site.plan_id?
-      = link_to "Embed code", "", class: "embed_code", onclick: "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
-    - else
-      = "—"
-    %div{ id: "embed_code_site_content_#{site.token}", style: 'display:none' }= render 'code', site: site
+    .wrap
+      - if site.plan_id?
+        = link_to "Embed code", "", class: "embed_code", onclick: "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
+      - else
+        = "—"
+      %div{ id: "embed_code_site_content_#{site.token}", style: 'display:none' }= render 'code', site: site
 
   %td.status.box_hovering_zone
     .wrap

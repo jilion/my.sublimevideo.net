@@ -7,7 +7,7 @@ graph = Graph.new do |g|
   g.option(tooltip: { enabled: false })
   g.option(xAxis: { title: "", labels: { enabled: false } })
   g.option(yAxis: { title: "", endOnTick: false, labels: { enabled: false } })
-  g.option(series: [serie(billable_views.showable_vv, '', type: 'area', color: '#666', fill_color: 'rgba(204,204,204,.5)')])
+  g.option(series: [serie(billable_views.showable_vv, '', type: 'area', color: '#009f0f', fill_color: 'rgba(79,249,99,.7)')])
   g.option(plotOptions: { area: { lineWidth: 1, marker: { enabled: false }, states: { hover: { lineWidth: 1 } }, borderWidth: 0, pointPadding: 0, pointWidth: 4, shadow: false } })
   g.option(credits: { enabled: false })
 end
