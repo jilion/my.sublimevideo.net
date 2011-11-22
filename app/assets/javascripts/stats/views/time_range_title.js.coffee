@@ -1,5 +1,5 @@
-class MSVStats.Views.DatesRangeTitleView extends Backbone.View
-  template: JST['stats/templates/_dates_range_title']
+class MSVStats.Views.TimeRangeTitleView extends Backbone.View
+  template: JST['stats/templates/_time_range_title']
 
   events:
     'click': 'toggleDatePicker'
@@ -15,7 +15,7 @@ class MSVStats.Views.DatesRangeTitleView extends Backbone.View
     this.render()
 
   render: =>
-    $('#dates_range_title').removeClass('editable')
+    $('#time_range_title').removeClass('editable')
     $(@el).html(this.template(period: @options.period))
     if @options.period.get('type')?
       $(@el).find('.content').show()
@@ -24,7 +24,7 @@ class MSVStats.Views.DatesRangeTitleView extends Backbone.View
       $(@el).find('.content').hide()
       $(@el).spin(spinOptions)
     unless MSVStats.sites.selectedSite.inFreePlan()
-      $('#dates_range_title').addClass('editable')
+      $('#time_range_title').addClass('editable')
     return this
 
   renderIfSelected: (stats) =>

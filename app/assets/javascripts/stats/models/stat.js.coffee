@@ -26,20 +26,20 @@ class MSVStats.Collections.Stats extends Backbone.Collection
 
   customSum: (attribute, startIndex, endIndex) ->
     if startIndex? && endIndex?
-      datesRange = this.datesRange(startIndex, endIndex)
+      timeRange = this.timeRange(startIndex, endIndex)
       _.reduce(@models, (memo, stat) ->
-        if stat.time() >= datesRange[0] && stat.time() <= datesRange[1] then memo + stat.get(attribute) else memo
+        if timeRange[0] <= stat.time() <= timeRange[1] then memo + stat.get(attribute) else memo
       0)
     else
       _.reduce @models, ((memo, stat) -> memo + stat.get(attribute)), 0
 
   customPluck: (attribute, startIndex, endIndex) ->
     if startIndex? && endIndex?
-      datesRange = this.datesRange(startIndex, endIndex)
+      timeRange = this.timeRange(startIndex, endIndex)
     this.customReduce((memo, stat) ->
       memo.push(stat.get(attribute))
       memo
-    [], datesRange)
+    [], timeRange)
 
   isUnactive: -> this.pvTotal(0, -1) == 0 && this.vvTotal(0, -1) == 0
 
@@ -47,24 +47,24 @@ class MSVStats.Collections.Stats extends Backbone.Collection
 
   bpData: ->
     unless MSVStats.period.isFullRange()
-      datesRange = MSVStats.period.datesRange()
+      timeRange = MSVStats.period.timeRange()
     this.customReduce((memo, stat) ->
       _.each(stat.get('bp'), (hits, bp) -> memo.set(bp, hits))
       memo
-    new BPData, datesRange)
+    new BPData, timeRange)
 
   mdData: ->
     unless MSVStats.period.isFullRange()
-      datesRange = MSVStats.period.datesRange()
+      timeRange = MSVStats.period.timeRange()
     this.customReduce((memo, stat) ->
       memo.set(md) if md = stat.get('md')
       memo
-    new MDData, datesRange)
+    new MDData, timeRange)
 
-  customReduce: (iterator, context, datesRange) ->
-    if datesRange?
+  customReduce: (iterator, context, timeRange) ->
+    if timeRange?
       _.reduce(@models, (memo, stat) ->
-        if stat.time() >= datesRange[0] && stat.time() <= datesRange[1]
+        if timeRange[0] <= stat.time() <= timeRange[1]
           iterator(memo, stat)
         else
           memo
@@ -104,7 +104,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     else
       this.add data, options
 
-  datesRange: (startIndex, endIndex) ->
+  timeRange: (startIndex, endIndex) ->
     if this.isEmpty()
       [null, null]
     else
@@ -125,20 +125,44 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       !MSVStats.statsMinutes.isEmpty() && !MSVStats.statsHours.isEmpty() && !MSVStats.statsDays.isEmpty()
 
 class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
-  url: ->
-    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=seconds"
+
+  initialize: ->
+    @_isShowable = false
+
+  isShowable: -> @_isShowable
+
+  url: -> "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=seconds"
 
   # chartType: -> 'column'
   chartType: -> 'areaspline'
   periodType: -> 'seconds'
 
-  updateSeconds: (secondTime) =>
-    currentStatId = secondTime / 1000
-    unless this.get(currentStatId)?
-      this.add({ id: currentStatId }, silent: true)
+  customSum: (attribute) ->
+    _.reduce(@models, (memo, stat) ->
+      if MSVStats.period.get('startSecondsTime') <= stat.time() <= MSVStats.period.get('endSecondsTime')
+        memo + stat.get(attribute)
+      else
+        memo
+    0)
 
-    if this.length > 62
-      this.removeOldStats(62)
+  customPluck: (attribute) ->
+    array = []
+    from  = MSVStats.period.get('startSecondsTime') / 1000
+    to    = MSVStats.period.get('endSecondsTime') / 1000
+    while from <= to
+      stat = this.get(from)
+      array.push(if stat? then stat.get(attribute) else 0)
+      from += 1
+    array
+
+  updateSeconds: ->
+    this.removeOldStats()
+    this.trigger('change', this)
+
+  removeOldStats: ->
+    from = MSVStats.period.get('startSecondsTime') / 1000
+    while this.firstStatTime()? && (this.firstStatTime() < from)
+      this.remove(this.first(), silent: true)
 
   fetchOldSeconds: =>
     $.get this.url(), (data) =>
@@ -147,18 +171,11 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
           statSecond.set(stat, silent: true)
         else
           MSVStats.statsSeconds.add(stat, silent: true, at: 0)
-      this.removeOldStats(62)
+      @_isShowable = true
 
-  removeOldStats: (count) ->
-    while this.length > count
-      this.remove(this.first(), silent: true)
-      this.trigger('change', this)
-
-  isShowable: -> this.length >= 62
-
-  lastStatTime: ->
-    last = this.last()
-    if last? then last.time() else 0
+  firstStatTime: ->
+    first = this.first()
+    if first? then first.time() else null
 
 class MSVStats.Collections.StatsMinutes extends MSVStats.Collections.Stats
   url: ->
