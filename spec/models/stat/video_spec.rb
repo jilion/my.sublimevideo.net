@@ -66,7 +66,6 @@ describe Stat::Video do
 
       it "replaces vv_hash by vv_array and vl_hash by vl_hash" do
         Timecop.freeze @second do
-          puts Time.now
           videos = Stat::Video.top_videos('site1234', period: 'seconds', count: 5)[:videos].sort_by! { |video| video["n"] }.reverse
           video  = videos.first
           video["vv_sum"].should be_nil

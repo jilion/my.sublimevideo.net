@@ -268,7 +268,7 @@ feature "Site in sponsored plan" do
     go 'my', "/sites"
 
     page.should have_content "Sponsored"
-    page.should have_content "1,500 sponsored video views"
+    page.should have_content "1,500 plays"
 
     click_link "Sponsored"
 
