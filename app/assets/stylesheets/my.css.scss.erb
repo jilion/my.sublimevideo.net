@@ -217,13 +217,14 @@ form .entry input.text {
   @include box-shadow((inset rgba(0,34,85,0.3) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0));
 }
 
-form .entry ::-webkit-input-placeholder, form .entry input.text.placeholder {
-  color:#7690b3;
+form .entry input.text.errors {
+  background:#ffd9d9;
 }
 
-form .entry input:-moz-placeholder, form .entry textarea:-moz-placeholder {
-  color:#7690b3;
-}
+form .entry ::-webkit-input-placeholder, form .entry input.text.placeholder {color:#7690b3}
+form .entry .errors::-webkit-input-placeholder, form .entry input.text.errors.placeholder {color:#b37676}
+form .entry input:-moz-placeholder, form .entry textarea:-moz-placeholder {color:#7690b3}
+form .entry input.errors:-moz-placeholder, form .entry textarea.errors:-moz-placeholder {color:#b37676}
 
 form .entry .text:focus {
   outline:0;
@@ -269,6 +270,25 @@ form .entry .text:focus {
 .checkbox_wrap input:focus + label, .radio_wrap input:focus + span.bg {background-position:0 -68px}
 .checkbox_wrap input:focus:checked + label, .radio_wrap input:focus:checked + span.bg {background-position:0 -102px}
 
+form .inline_errors span {
+  padding:2px 5px 2px;
+  font-size:13px;
+  color:#fff;
+  text-shadow:rgba(0,0,0,0.4) 0 -1px 0;
+  display:inline;
+  position:relative;
+  top:-1px;
+  left:10px;
+  border:1px solid #264067;
+  z-index:2;
+  @include gradient(#df001b,#8c0006,#b40011);
+  @include border-radius(0 0 4px 4px);
+  @include box-shadow((inset #f4002d 0 1px 0, rgba(0,0,0,0.4) 0 1px 3px))
+}
+
+form .inline_errors.plan span {
+  @include border-radius(4px);
+}
 
 .big_break {
   width:868px;
@@ -294,6 +314,11 @@ form .entry .text:focus {
 .green_button:focus {
   outline:0;
   @include box-shadow((inset #00e896 0 1px 0, #001a41 0 1px 4px, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
+}
+
+.green_button:disabled {
+  opacity:0.5;
+  filter:alpha(opacity=50);
 }
 
 /* ======== */
