@@ -87,7 +87,7 @@ MySublimeVideo::Application.routes.draw do
       # match '/video-tag-builder' => 'video_tag_builder#new', via: :get, as: 'video_tag_builder'
       # match '/video-tag-builder/iframe-embed' => 'video_tag_builder#iframe_embed', via: :get
 
-      get '/r/:type/:token' => 'referrers#redirect', type: /c/, token: /[a-z0-9]{8}/
+      get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
 
       post '/pusher/auth' => 'pusher#auth'
 
