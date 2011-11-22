@@ -19,13 +19,19 @@
           %td.video
             .wrap
               - if video.get('p')?
-                %a.play{ href: "#", onclick: "return false" }
-                  .crop{ style: "width:96px; height:54px;" }
-                    %span.overlay
-                -# taller than wide poster http://static.wix.com/media/665a0253fa72e434ba1f2f2e8b80823b.wix_mp_256
-                %img{ id: "img-#{video.id}", src: "#{video.get('p')}", alt: "#{video.get('n')} posterframe", style: "display:none" }
-                %script{ type: "text/javascript" }
-                  SublimeVideo.cropPosterframe("img-#{video.id}")
+                - playClass = if MSVStats.period.isSeconds then 'disabled' else 'active'
+                %a{ href: "#", onclick: "return false", class: "play #{playClass}" }
+                  .crop{ id: "#{video.id}-crop", style: "width:96px; height:54px;" }
+                    - unless MSVStats.period.isSeconds
+                      %span.overlay
+                - if $("##{video.id}-cache").size() > 0
+                  %script{ type: "text/javascript" }
+                    $("##{video.id}-crop").prepend($("##{video.id}-cache").clone());
+                - else
+                  -# taller than wide poster http://static.wix.com/media/665a0253fa72e434ba1f2f2e8b80823b.wix_mp_256
+                  %img{ id: "#{video.id}-img", src: "#{video.get('p')}", alt: "#{video.get('n')} posterframe", style: "display:none" }
+                  %script{ type: "text/javascript" }
+                    SublimeVideo.cropPosterframe("#{video.id}");
               - else
                 default img
               .right
