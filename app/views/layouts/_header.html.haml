@@ -5,7 +5,7 @@
         %span= "SublimeVideo"
     - if user_signed_in? && controller_name != 'sessions'
       %ul#main_menu
-        %li{ class: controller_name == "sites" && action_name == "index" ? "active" : "", onclick: "MySublimeVideo.makeSticky(this, '#header')"}
+        %li{ class: controller_name == "sites" && action_name == "index" ? "active" : "", onclick: "SublimeVideo.makeSticky(this, '#header')"}
           = link_to "Sites", sites_path
     .right
       %ul.extra_links
@@ -17,7 +17,7 @@
         - if user_signed_in?
           %li= link_to("Logout", destroy_user_session_path)
       - if user_signed_in?
-        = link_to([:edit, :user], class: "user #{'active' if controller.request.url =~ /account/}", onclick: "MySublimeVideo.makeSticky(this, '#header')") do
+        = link_to([:edit, :user], class: "user #{'active' if controller.request.url =~ /account/}", onclick: "SublimeVideo.makeSticky(this, '#header')") do
           %strong
             %span.icon= truncate(current_user.name, length: 45)
           %span.corner

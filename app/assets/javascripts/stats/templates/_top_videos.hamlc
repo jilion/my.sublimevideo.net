@@ -50,7 +50,7 @@
                         - else
                           name isn't
                         = "defined properly, please set data-* attribute(s) in your video tag."
-                        %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/stats", onclick: "window.open(this); return false" }= "More info (TODO)"
+                        %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/video-stats", onclick: "window.open(this); return false" }= "More info (TODO)"
                 .spacer
                 %span.video_uid= "##{video.id}"
               .spacer
