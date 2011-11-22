@@ -121,7 +121,7 @@ feature "Site invoices page" do
 
       describe "retry the payment" do
         scenario "it is possible to retry the payment" do
-          VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('invoice.retry_invoices') }
+          VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('invoice.pay_invoices_above') }
 
           @site.invoices.failed.should be_empty
 

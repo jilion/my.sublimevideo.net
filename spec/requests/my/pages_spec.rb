@@ -31,7 +31,7 @@ feature "Help page" do
       scenario "is redirected to the login page" do
         go 'my', 'help'
 
-        current_url.should == "http://sublimevideo.dev/?p=login"
+        current_url.should eq "http://sublimevideo.dev/?p=login"
       end
     end
 
@@ -42,22 +42,22 @@ feature "Help page" do
 
       scenario "can access the page directly" do
         go 'my', '/help'
-        current_url.should == "http://my.sublimevideo.dev/help"
+        current_url.should eq "http://my.sublimevideo.dev/help"
       end
 
       scenario "can access the page via a link in the menu" do
         within '#menu' do
           click_link "Help"
         end
-        current_url.should == "http://my.sublimevideo.dev/help"
+        current_url.should eq "http://my.sublimevideo.dev/help"
       end
 
       scenario "redirect /feedback and /support" do
         go 'my', '/support'
-        current_url.should == "http://my.sublimevideo.dev/help"
+        current_url.should eq "http://my.sublimevideo.dev/help"
 
         go 'my', '/feedback'
-        current_url.should == "http://my.sublimevideo.dev/help"
+        current_url.should eq "http://my.sublimevideo.dev/help"
       end
     end
 
@@ -109,7 +109,7 @@ feature "Help page" do
         fill_in "Message", with: "I have a request this is a long text!"
         click_button "Send"
 
-        current_url.should == "http://my.sublimevideo.dev/help"
+        current_url.should eq "http://my.sublimevideo.dev/help"
         page.should have_content "Subject can't be blank"
         page.should have_no_content I18n.t('flash.tickets.create.notice')
         Delayed::Job.last.should_not eq 'Class#post_ticket'
@@ -120,7 +120,7 @@ feature "Help page" do
         fill_in "Message", with: ""
         click_button "Send"
 
-        current_url.should == "http://my.sublimevideo.dev/help"
+        current_url.should eq "http://my.sublimevideo.dev/help"
         page.should have_content "Message can't be blank"
         page.should have_no_content I18n.t('flash.tickets.create.notice')
         Delayed::Job.last.should_not eq 'Class#post_ticket'
@@ -143,7 +143,7 @@ feature "Suspended page" do
         create_plans
         go 'my', 'suspended'
 
-        current_url.should == "http://my.sublimevideo.dev/sites/new"
+        current_url.should eq "http://my.sublimevideo.dev/sites/new"
         page.should have_no_content 'Your account is suspended'
       end
     end
@@ -165,13 +165,13 @@ feature "Suspended page" do
       scenario "can't visit the edit account page" do
         go 'my', 'account'
 
-        current_url.should == "http://my.sublimevideo.dev/suspended"
+        current_url.should eq "http://my.sublimevideo.dev/suspended"
       end
 
       scenario "can visit the edit credit card page" do
         go 'my', 'account/billing/edit'
 
-        current_url.should == "http://my.sublimevideo.dev/account/billing/edit"
+        current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
       end
 
       scenario "and an expired credit card, should be able to visit the credit card form page" do
@@ -180,7 +180,7 @@ feature "Suspended page" do
         @current_user.reload.should be_cc_expired
         go 'my', 'sites'
 
-        current_url.should == "http://my.sublimevideo.dev/suspended"
+        current_url.should eq "http://my.sublimevideo.dev/suspended"
 
         page.should have_content "Your account is suspended"
         page.should have_content "Your credit card is expired"
@@ -193,18 +193,18 @@ feature "Suspended page" do
 
         click_link "Update credit card"
 
-        current_url.should == "http://my.sublimevideo.dev/account/billing/edit"
+        current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
       end
 
       scenario "and a valid credit card with 1 or more failed invoices" do
         ActionMailer::Base.deliveries.clear
         go 'my', 'suspended'
 
-        current_url.should == "http://my.sublimevideo.dev/suspended"
+        current_url.should eq "http://my.sublimevideo.dev/suspended"
 
         VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('invoice.retry_invoices') }
 
-        current_url.should == "http://my.sublimevideo.dev/sites"
+        current_url.should eq "http://my.sublimevideo.dev/sites"
 
         @site.invoices.failed.should be_empty
         @site.reload.should be_active
@@ -221,7 +221,7 @@ feature "Suspended page" do
         last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved."
 
         go 'my', 'suspended'
-        current_url.should == "http://my.sublimevideo.dev/sites"
+        current_url.should eq "http://my.sublimevideo.dev/sites"
       end
 
     end
