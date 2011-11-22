@@ -83,7 +83,10 @@ module My::PlansHelper
     options[:class] ||= "plan_radio"
     options["data-plan_title"] = new_plan.title(always_with_cycle: true)
     options["data-plan_price"] = display_amount(new_plan.price)
-    options["data-plan_price_vat"] = display_amount(new_plan.price, vat: true) if current_user.vat?
+    if current_user.vat?
+      options["data-vat"] = display_vat_percentage
+      options["data-plan_price_vat"] = display_amount(new_plan.price, vat: true)
+    end
 
     if site.persisted?
       options["data-plan_change_type"] = plan_change_type(site, current_plan, new_plan)
@@ -106,7 +109,7 @@ module My::PlansHelper
   end
 
   def vat_price_info(klass)
-    raw("Prices above exclude VAT, total amount charged will be #{content_tag(:strong, "?", class: klass)} (including #{display_vat_percentage} VAT).")
+    raw "Prices above exclude VAT, total amount charged will be #{content_tag(:span, "?", class: klass)}."
   end
 
   def credit_card_state(user)

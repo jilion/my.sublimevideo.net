@@ -20,7 +20,7 @@ class PlanUpdateManager
     @messages          = $H()
 
     this.setupMessages()
-    this.setupPlanObservers()
+    this.setupPlansObservers()
     if @skipTrialCheckbox? then this.setupSkipTrialObserver()
 
   setupMessages: =>
@@ -28,13 +28,13 @@ class PlanUpdateManager
       divName = "plan_#{name}_info"
       @messages.set(name, $(divName))
 
-  setupPlanObservers: ->
+  setupPlansObservers: ->
     $$('#plans input[type=radio]').each (element) =>
       element.on 'click', (event) =>
         @checkedPlan = element
-        select_box = element.up('.select_box')
+        selectBox = element.up('.select_box')
         $$('#plans ul .select_box').invoke 'removeClassName', 'active'
-        if select_box then select_box.addClassName 'active'
+        if selectBox? then selectBox.addClassName 'active'
         this.handlePlanChange()
 
   setupSkipTrialObserver: ->
@@ -43,20 +43,21 @@ class PlanUpdateManager
 
   handleBillingInfos: (show) ->
     billingInfosState = @billingInfosDiv.readAttribute 'data-state'
-    $("billing_infos_#{billingInfosState}").show()
     if show
       @billingInfosDiv.show()
       if billingInfosState isnt 'present'
-        @planUpdateInfoDiv.hide()
         $('site_submit').hide()
         if @planUpdateInfoDiv?
+          @planUpdateInfoDiv.hide()
           @messages.each (pair) -> pair.value.hide()
-        if @planCreateInfoDiv? then this.showPlanCreateInfo()
+      else
+        this.showPlanUpdateInfo()
+        this.showPlanCreateInfo()
     else
       @billingInfosDiv.hide()
       $('site_submit').show()
-      if @planUpdateInfoDiv? then this.showPlanUpdateInfo()
-      if @planCreateInfoDiv? then this.showPlanCreateInfo()
+      this.showPlanUpdateInfo()
+      this.showPlanCreateInfo()
 
   handlePlanChange: ->
     plan_price    = @checkedPlan.readAttribute('data-plan_price')
@@ -67,28 +68,42 @@ class PlanUpdateManager
 
     # new site & plan change on trial site
     if @skipTrialDiv?
-      if price_is_zero then @skipTrialDiv.hide() else @skipTrialDiv.show()
-
-    this.handleBillingInfos(@checkedPlan.readAttribute('data-plan_change_type') is 'upgrade')
+      if price_is_zero
+        @skipTrialDiv.hide()
+        @skipTrialCheckbox.checked = false
+      else
+        @skipTrialDiv.show()
+      this.handleBillingInfos(@skipTrialCheckbox.checked)
+    else
+      this.handleBillingInfos(@checkedPlan.readAttribute('data-plan_change_type') is 'upgrade')
 
   updatePlanInfo_: (infoDiv) ->
-    ['plan_title', 'plan_price', 'plan_price_vat', 'plan_update_price', 'plan_update_price_vat', 'plan_update_date'].each (className) =>
+    ['plan_title', 'plan_update_date'].each (className) =>
       infoDiv.select(".#{className}").invoke("update", @checkedPlan.readAttribute("data-#{className}"))
+
+    ['plan_price', 'plan_update_price'].each (className) =>
+      text = if @checkedPlan.readAttribute("data-vat")?
+        "<strong>#{@checkedPlan.readAttribute("data-#{className}_vat")}</strong> (including #{@checkedPlan.readAttribute("data-vat")} VAT)"
+      else
+        @checkedPlan.readAttribute("data-#{className}")
+      infoDiv.select(".#{className}").invoke("update", text)
     infoDiv.show()
 
   showPlanCreateInfo: ->
-    @planCreateInfoDiv.hide();
-    if @checkedPlan.readAttribute('data-plan_price') isnt "$0" && @skipTrialCheckbox.checked
-      this.updatePlanInfo_ @planCreateInfoDiv
+    if @planCreateInfoDiv?
+      @planCreateInfoDiv.hide();
+      if @checkedPlan.readAttribute('data-plan_price') isnt "$0" && @skipTrialCheckbox.checked
+        this.updatePlanInfo_ @planCreateInfoDiv
 
   showPlanUpdateInfo: ->
-    @messages.each (pair) -> pair.value.hide()
+    if @planUpdateInfoDiv?
+      @messages.each (pair) -> pair.value.hide()
 
-    planChangeType = @checkedPlan.readAttribute 'data-plan_change_type'
-    if planChangeType is 'in_trial_update' && @skipTrialCheckbox.checked
-      planChangeType = 'in_trial_instant_upgrade'
+      planChangeType = @checkedPlan.readAttribute 'data-plan_change_type'
+      if planChangeType is 'in_trial_update' && @skipTrialCheckbox.checked
+        planChangeType = 'in_trial_instant_upgrade'
 
-    @messages.each (pair) =>
-      if planChangeType is pair.key
-        this.updatePlanInfo_ pair.value
+      @messages.each (pair) =>
+        if planChangeType is pair.key
+          this.updatePlanInfo_ pair.value
 
