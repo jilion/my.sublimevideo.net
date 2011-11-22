@@ -46,11 +46,11 @@ MySublimeVideo::Application.routes.draw do
 
       scope "oauth" do
         # OAuth 1 & 2
-        get '/authorize' => 'oauth#authorize', as: :oauth_authorize
-        delete '/revoke'    => 'oauth#revoke', as: :oauth_revoke
+        match '/authorize' => 'oauth#authorize', as: :oauth_authorize, via: [:get, :post]
+        delete '/revoke' => 'oauth#revoke', as: :oauth_revoke
 
         # OAuth 2
-        get '/access_token' => 'oauth#token', as: :oauth_token
+        post '/access_token' => 'oauth#token', as: :oauth_token
       end
 
       resources :sites, except: [:show] do
