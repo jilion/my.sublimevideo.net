@@ -85,7 +85,7 @@ module Stat
       from, to = period_intervals(site_token, period)
 
       json_stats = if from.present? && to.present?
-        last_stats(token: site_token, period: period, from: from, to: to)
+        last_stats(token: site_token, period: period, from: from, to: to, fill_missing_days: period != 'seconds')
       else
         []
       end

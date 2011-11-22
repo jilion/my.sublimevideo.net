@@ -8,6 +8,7 @@
 //= require prototype_ujs
 //= require scriptaculous/s2
 //= require prototype/sites_select_title
+
 //= require_self
 //= require global
 
@@ -28,6 +29,15 @@ function isEventSupported(eventName) {
 
 SublimeVideo.topDomainHost = function() {
   return document.location.host.split('.').slice(-2).join('.');
+}
+
+SublimeVideo.makeSticky = function(element, css_selector) {
+  $$(css_selector + ' .active').each(function(el){
+    el.removeClassName('active');
+  });
+  element.addClassName("active");
+  var li = element.up('li');
+  if (li) li.addClassName("active");
 }
 
 document.observe("dom:loaded", function() {
@@ -125,15 +135,6 @@ MySublimeVideo.closePopup = function() {
   if (!MySublimeVideo.popupHandler) MySublimeVideo.popupHandler = new PopupHandler();
   MySublimeVideo.popupHandler.close();
   return false;
-};
-
-MySublimeVideo.makeSticky = function(element, css_selector) {
-  $$(css_selector + ' .active').each(function(el){
-    el.removeClassName('active');
-  });
-  element.addClassName("active");
-  var li = element.up('li');
-  if (li) li.addClassName("active");
 };
 
 MySublimeVideo.remoteSortLink = function(element) {

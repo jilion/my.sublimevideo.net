@@ -456,14 +456,12 @@ feature "Sites index" do
         go 'my', '/sites'
 
         page.should have_no_css 'nav.pagination'
-        page.should have_no_css 'span.current'
         page.should have_no_selector "a[rel='next']"
 
         Factory.create(:site, user: @current_user, hostname: 'google2.com')
         go 'my', '/sites'
 
         page.should have_css 'nav.pagination'
-        page.should have_css 'span.current'
         page.should have_selector "a[rel='next']"
       end
 

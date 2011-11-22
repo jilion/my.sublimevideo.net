@@ -2,7 +2,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
   template: JST['stats/templates/_top_videos']
 
   events:
-    'click a.play':        'prepareAndPlayVideo'
+    'click a.play.active': 'prepareAndPlayVideo'
     'click a#video_loads': 'sortByLoads'
     'click a#video_views': 'sortByViews'
     'click a#show_more':   'showMore'
@@ -17,13 +17,13 @@ class MSVStats.Views.TopVideosView extends Backbone.View
   render: =>
     if MSVStats.videos.isReady()
       $(@el).data().spinner.stop()
-    
+
       @videos = MSVStats.videos
       @models = @videos.customModels()
       $(@el).html(this.template(videos: @videos, models: @models))
       this.renderSparklines(@models)
       this.updateTitle()
-    
+
       return this
     else
       $(@el).empty();
@@ -46,7 +46,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     $('#top_videos_title').text("Most #{title} videos")
 
   prepareAndPlayVideo: (event) ->
-    videoID = $(event.currentTarget).children('img')[0].id.match(/img-(.*)/)[1]
+    videoID = $(event.currentTarget).find('img')[0].id.match(/img-(.*)/)[1]
     MSVStats.playableVideoView.renderAndPlay(videoID)
 
   sortByLoads: (event) ->
@@ -55,7 +55,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
       $('#video_loads').addClass ' spinner'
       MSVStats.videos.change sortBy: 'vl'
     false
-    
+
   sortByViews: (event) ->
     unless MSVStats.videos.sortBy == 'vv'
       $('#video_views').text 'Sorting...'

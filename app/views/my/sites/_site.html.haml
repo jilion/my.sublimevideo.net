@@ -28,10 +28,13 @@
               %span.disabled= " => #{site.next_cycle_plan.title}"
       .cycle
         - if site.in_paid_plan?
-          - if site.trial_not_started_or_in_trial?
-            = l(site.trial_started_at, format: :d_b_Y) + ' - ' + l(site.trial_end, format: :d_b_Y) + ' (trial)'
+          - if site.trial_ended?
+            - if site.plan_cycle_started_at? && site.plan_cycle_ended_at?
+              = l(site.plan_cycle_started_at, format: :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, format: :d_b_Y)
+            - else
+              = l(site.trial_started_at, format: :d_b_Y) + ' - ' + l(site.trial_end, format: :d_b_Y) + ' (trial ended)'
           - else
-            = l(site.plan_cycle_started_at, format: :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, format: :d_b_Y)
+            = l(site.trial_started_at, format: :d_b_Y) + ' - ' + l(site.trial_end, format: :d_b_Y) + ' (trial)'
       .spacer
 
   %td.usage{ class: td_usage_class(site) }
@@ -52,13 +55,13 @@
   %td.status
     .wrap
       - if site.invoices_failed?
-        = tooltip_box href: invoice_path(site), class: "payment_issue" do
+        = tooltip_box href: site_invoices_path(site), class: "payment_issue" do
           %span.p= t 'site.status.payment_issue'
       - elsif site.invoices_open?
-        = tooltip_box href: invoice_path(site), class: "payment_waiting" do
+        = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
           %span.p= t 'site.status.payment_open'
       - elsif site.invoices_waiting?
-        = tooltip_box href: invoice_path(site), class: "payment_waiting" do
+        = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
           %span.p= t 'site.status.payment_waiting'
       - elsif site.cdn_up_to_date?
         = tooltip_box class: "ok" do

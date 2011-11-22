@@ -98,14 +98,14 @@ feature "Admins pagination:" do
     go 'admin', 'admins'
 
     page.should have_no_css 'nav.pagination'
-    page.should have_no_css 'span.current'
+    page.should have_no_css 'em.current'
     page.should have_no_selector "a[rel='next']"
 
     Factory.create(:admin)
     go 'admin', 'admins'
 
     page.should have_css 'nav.pagination'
-    page.should have_css 'span.current'
+    page.should have_css 'em.current'
     page.should have_selector "a[rel='next']"
   end
 end

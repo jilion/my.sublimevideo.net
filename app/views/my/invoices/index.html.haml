@@ -32,13 +32,20 @@
               = raw t("app.please_link", link: link_to("update your credit card", [:edit, :billing], class: "hl"))
               = t('user.payment.retry_here')
           - else
-            %p
-              = "If necessary,"
-              = link_to "update your credit card", [:edit, :billing], class: "hl"
-              = "and then retry the payment via the button below."
+            - if @site.invoices_open?
+              = "Open invoices are automatically charged on your credit card, but you can still pay them manually if you prefer."
+            - else
+              %p
+                = "If necessary,"
+                = link_to "update your credit card", [:edit, :billing], class: "hl"
+                = "and then retry the payment via the button below."
+
+            %h3.section_title Current credit card on file
+            #credit_card_summary= render 'my/billings/cc_summary', user: current_user
+            %p= link_to "#{current_user.cc? ? 'Update' : 'Register'} credit card", [:edit, :billing]
 
             = form_for @site, url: retry_site_invoices_path(site_id: @site.to_param), html: { method: 'put' } do |f|
-              .entry= f.submit t('invoice.retry_invoices'), class: "submit_dynamic_button"
+              .entry= f.submit t('invoice.pay_invoices_above'), class: "submit_dynamic_button"
 
       - if @site.in_paid_plan? && (!@site.next_cycle_plan_id? || @site.next_cycle_plan.paid_plan?)
         .next_invoice

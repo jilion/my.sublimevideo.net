@@ -16,8 +16,7 @@ class MSVStats.Models.Video extends Backbone.Model
     vv_hash: {}
 
   initialize: ->
-    @endTime = MSVStats.videos.endTime ? MSVStats.statsSeconds.lastStatTime()
-    @addTime = @endTime
+    @addTime = MSVStats.period.endTime() + (2 * 1000)
     this.fetchMetaData() unless this.metaDataPresent()
 
   metaDataPresent: -> this.get('uo')?
@@ -72,10 +71,6 @@ class MSVStats.Models.Video extends Backbone.Model
       while from <= to
         array.push(hash[from] ? 0)
         from += 1
-      console.log this.id
-      console.log MSVStats.period.startTime() / 1000
-      console.log hash
-      console.log array
       array
     else
       this.get('vv_array')
@@ -135,12 +130,6 @@ class MSVStats.Collections.Videos extends Backbone.Collection
       this.fetch()
 
   customModels: ->
-    console.log "Seconds Stats"
-    console.log MSVStats.period.startTime()
-    console.log MSVStats.period.stats().first().id
-    console.log MSVStats.period.stats().models
-    console.log MSVStats.period.stats().first()
-    console.log MSVStats.period.stats().customPluck('vv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
     if @period == 'seconds'
       iterator = switch @sortBy
         when 'vl' then ((video) -> video.vlTotal() )
@@ -157,12 +146,13 @@ class MSVStats.Collections.Videos extends Backbone.Collection
     _.any(models, ((video) -> video.isShowable()))
 
   updateSeconds: (secondTime) =>
-    this.removeOldStats(MSVStats.period.startTime() / 1000)
+    this.removeOldStats()
     this.removeEmptyVideos(secondTime)
     @total = this.models.length
     this.trigger('reset', this)
 
-  removeOldStats: (from) ->
+  removeOldStats: ->
+    from = MSVStats.period.startTime() / 1000
     for video in this.models
       vlHash = _.clone(video.get('vl_hash'))
       vvHash = _.clone(video.get('vv_hash'))
@@ -207,8 +197,6 @@ class MSVStats.Collections.Videos extends Backbone.Collection
       @period = 'seconds'
 
   merge: (data, options) ->
-    console.log 'MERGE'
-    console.log data
     for videoData in data
       video  = this.getOrAdd(videoData.u, { id: videoData.u, n: videoData.n })
       second = parseInt(videoData.id)

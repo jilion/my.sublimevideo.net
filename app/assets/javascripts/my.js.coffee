@@ -1,7 +1,8 @@
-//= require prototype
-//= require modernizr
-//= require s2
-//= require application
+#= require prototype
+#= require modernizr
+#= require s2
+
+#= require application
 
 document.observe "dom:loaded", ->
   # Reproduce checkbox behavior for radio buttons for plans selection

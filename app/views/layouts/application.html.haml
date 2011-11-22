@@ -17,7 +17,7 @@
     /[if lte IE 9]
       = javascript_include_tag("http://html5shiv.googlecode.com/svn/trunk/html5.js")
     - if %w[site_stats].include?(controller_name)
-      = javascript_include_tag 'application_jquery'
+      = javascript_include_tag 'stats'
     - else
       = javascript_include_tag(request.subdomain.blank? ? 'com' : request.subdomain)
     = yield :head

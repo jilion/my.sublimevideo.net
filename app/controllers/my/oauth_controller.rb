@@ -6,11 +6,11 @@ class My::OauthController < MyController
 
   # GET /oauth/authorize
   def authorize
-    params[:access_token] = params[:oauth_token]
+    params[:access_token] ||= params[:oauth_token]
     super
   end
 
-  # GET /oauth/access_token
+  # POST /oauth/access_token
 
   # DELETE /oauth/revoke
   def revoke

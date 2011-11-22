@@ -46,11 +46,11 @@ MySublimeVideo::Application.routes.draw do
 
       scope "oauth" do
         # OAuth 1 & 2
-        get '/authorize' => 'oauth#authorize', as: :oauth_authorize
-        delete '/revoke'    => 'oauth#revoke', as: :oauth_revoke
+        match '/authorize' => 'oauth#authorize', as: :oauth_authorize, via: [:get, :post]
+        delete '/revoke' => 'oauth#revoke', as: :oauth_revoke
 
         # OAuth 2
-        get '/access_token' => 'oauth#token', as: :oauth_token
+        post '/access_token' => 'oauth#token', as: :oauth_token
       end
 
       resources :sites, except: [:show] do
@@ -87,7 +87,7 @@ MySublimeVideo::Application.routes.draw do
       # match '/video-tag-builder' => 'video_tag_builder#new', via: :get, as: 'video_tag_builder'
       # match '/video-tag-builder/iframe-embed' => 'video_tag_builder#iframe_embed', via: :get
 
-      get '/r/:type/:token' => 'referrers#redirect', type: /c/, token: /[a-z0-9]{8}/
+      get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
 
       post '/pusher/auth' => 'pusher#auth'
 

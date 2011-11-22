@@ -4,6 +4,9 @@ class MSVStats.Models.Period extends Backbone.Model
     # Custom Period (days)
     startIndex: 0
     endIndex: -1
+    # For Seconds stats
+    startSecondsTime: null
+    endSecondsTime: null
 
   pointInterval: ->
     switch this.get('type')
@@ -19,7 +22,7 @@ class MSVStats.Models.Period extends Backbone.Model
       when 'hours'   then MSVStats.statsHours
       when 'days'    then MSVStats.statsDays
 
-  datesRange: ->
+  timeRange: ->
     [this.startTime(), this.endTime()]
 
   isFullRange: ->
@@ -37,9 +40,8 @@ class MSVStats.Models.Period extends Backbone.Model
 
   startTime: (index = this.get('startIndex')) ->
     if this.stats()?
-      # ensure that there's always a 60s period for StatsSeconds
       if this.isSeconds()
-        this.endTime() - this.pointInterval() * 59
+        this.get('startSecondsTime')
       else
         this.stats().at(this.normalizeStatsIndex(index)).time()
     else
@@ -47,7 +49,10 @@ class MSVStats.Models.Period extends Backbone.Model
 
   endTime: (index = this.get('endIndex')) ->
     if this.stats()?
-      this.stats().at(this.normalizeStatsIndex(index)).time()
+      if this.isSeconds()
+        this.get('endSecondsTime')
+      else
+        this.stats().at(this.normalizeStatsIndex(index)).time()
     else
       0
 

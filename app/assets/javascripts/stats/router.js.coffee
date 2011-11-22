@@ -41,8 +41,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsDays: MSVStats.statsDays
       period: MSVStats.period
 
-    new MSVStats.Views.DatesRangeTitleView
-      el: '#dates_range_title'
+    new MSVStats.Views.TimeRangeTitleView
+      el: '#time_range_title'
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
@@ -134,14 +134,18 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       unless MSVStats.sites.selectedSite.inFreePlan()
         if data.s
           secondTime = data.s * 1000
-          MSVStats.statsSeconds.updateSeconds(secondTime)
+          MSVStats.period.set({
+            startSecondsTime: secondTime - (2 + 59) * 1000
+            endSecondsTime:   secondTime - 2 * 1000
+          }, silent: true)
+          MSVStats.statsSeconds.updateSeconds()
           MSVStats.videos.updateSeconds(secondTime) if MSVStats.period.isSeconds()
 
   initPusherPrivateSiteChannel: ->
     unless MSVStats.sites.selectedSite.inFreePlan()
       MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
   
-      MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
+      MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
         setTimeout MSVStats.statsSeconds.fetchOldSeconds, 2000
       
       MSVStats.presenceChannel.bind 'stats', (data) ->
