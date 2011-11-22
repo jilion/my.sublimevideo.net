@@ -5,6 +5,6 @@
 
 %ul.segmented_menu
   - [sites_item, plans_item].each do |i|
-    = activable_menu_restful_item(:li, i[0], i[1].merge(url_options: @site, onclick: "MySublimeVideo.makeSticky(this, '.segmented_menu')"))
+    = activable_menu_restful_item(:li, i[0], i[1].merge(url_options: @site, onclick: "SublimeVideo.makeSticky(this, '.segmented_menu')"))
   - unless dont_show_invoices_tab
-    = activable_menu_restful_item(:li, invoices_item[0], invoices_item[1].merge(url_options: @site, onclick: "MySublimeVideo.makeSticky(this, '.segmented_menu')"))
+    = activable_menu_restful_item(:li, invoices_item[0], invoices_item[1].merge(url_options: @site, onclick: "SublimeVideo.makeSticky(this, '.segmented_menu')"))
