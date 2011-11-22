@@ -9,7 +9,7 @@
         %th.site
           .wrap
             %strong
-              = image_tag (asset_path "my/small_spinner.gif"), class: "spinner", id: "table_spinner", style: "display:none"
+              = image_tag "my/small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
               Site
             - unless @sites.one?
               .sorting

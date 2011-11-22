@@ -6,7 +6,7 @@
 #sites
   = title_and_content_header("My sites")
 
-  = link_to new_site_path, :class => "add_site small_button" do
+  = link_to new_site_path, :class => "add_site green_button" do
     %span= "Add a site"
 
   - if @billable_views.zero?

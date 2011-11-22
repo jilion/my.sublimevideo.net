@@ -2,6 +2,7 @@
 *= require 'global'
 *= require 'sites'
 *= require 'stats'
+*= require 'plans'
 */
 
 @import "css3";
@@ -173,9 +174,200 @@ header, header .shadow, header .lights {
   padding:8px 6px 9px;
 }
 
+#content .tagline {
+  padding:0 0 25px;
+  text-align:center;
+}
+
+#content .tagline h3 {
+  font-size:36px;
+  font-weight:600;
+}
+
+#content .tagline h4 {
+  font-size:30px;
+  font-weight:100;
+  padding-top:5px;
+}
+
+form .entry {
+  position:relative;
+  margin:10px 0;
+}
+
+form label.icon {
+  display:block;
+  position:absolute;
+  text-indent:-9999px;
+  overflow:hidden;
+  z-index:2;
+}
+
+form .entry input.text {
+  width:385px;
+  height:40px;
+  background:#f1f6ff;
+  text-shadow:#fff 0 1px 0;
+  border:1px solid #335994;
+  font-size:22px;
+  font-family:inherit;
+  color:#1e3966;
+  padding:0 5px 0 40px;
+  @include border-radius(5px);
+  @include box-shadow((inset rgba(0,34,85,0.3) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0));
+}
+
+form .entry ::-webkit-input-placeholder, form .entry input.text.placeholder {
+  color:#7690b3;
+}
+
+form .entry input:-moz-placeholder, form .entry textarea:-moz-placeholder {
+  color:#7690b3;
+}
+
+form .entry .text:focus {
+  outline:0;
+  @include box-shadow((inset rgba(0,34,85,0.3) 0 1px 3px, rgba(255,255,255,0.1) 0 1px 0, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
+}
+
+.radio_wrap, .checkbox_wrap {
+  position:relative;
+}
+
+.radio_wrap input, .checkbox_wrap input {
+  position:relative;
+  top:0;
+  left:0;
+  opacity:0;
+  width:34px;
+  height:34px;
+  z-index:2;
+  float:left;
+}
+
+.checkbox_wrap label {
+  position:relative;
+  display:block;
+  height:24px;
+  padding:10px 0 0 40px;
+  left:-6px;
+  background:url(<%= asset_data_uri "my/custom_checkbox.png" %>) no-repeat;
+}
+
+.radio_wrap span.bg {
+  display:block;
+  position:absolute;
+  z-index:1;
+  top:0;
+  left:0;
+  width:34px;
+  height:34px;
+  background:url(<%= asset_data_uri "my/custom_radio.png" %>) no-repeat;
+}
+
+.checkbox_wrap input:checked + label, .radio_wrap input:checked + span.bg {background-position:0 -34px}
+.checkbox_wrap input:focus + label, .radio_wrap input:focus + span.bg {background-position:0 -68px}
+.checkbox_wrap input:focus:checked + label, .radio_wrap input:focus:checked + span.bg {background-position:0 -102px}
+
+
 .big_break {
   width:868px;
   height:21px;
   margin:0 auto;
   background:url(<%= asset_data_uri "my/big_break.png" %>);
 }
+
+.green_button {
+  font-family:inherit;
+  color:#fff;
+  text-shadow:rgba(0,0,0,0.9) 0 -1px 0;
+  border:1px solid #1a4224;
+  @include gradient(#00b95a,#007d31,#009843);
+  @include box-shadow((inset #00e896 0 1px 0, #001a41 0 1px 4px));
+  @include border-radius(6px);
+}
+
+.green_button:active {
+  @include gradient(#007d31,#00b95a,#009843);
+}
+
+.green_button:focus {
+  outline:0;
+  @include box-shadow((inset #00e896 0 1px 0, #001a41 0 1px 4px, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
+}
+
+/* ======== */
+/* = Site = */
+/* ======== */
+
+form .entry.site {
+  margin:25px 0;
+}
+
+form .entry.site .left {
+  float:left;
+}
+
+form .site label.icon {
+  width:20px;
+  height:21px;
+  background:url(<%= asset_data_uri "my/fields/domain_icon.png" %>) no-repeat;
+  top:12px;
+  left:10px;
+}
+
+form .entry.site p.desc {
+  float:left;
+  padding:12px 0 0 18px;
+  font-size:18px;
+}
+
+form .entry.site .checkbox_wrap {
+  margin:10px 0;
+}
+
+form .actions.center {
+  padding:35px 0 45px;
+  text-align:center;
+}
+
+form .actions.center .submit {
+  display:inline-block;
+  padding:15px 22px;
+  font-size:26px;
+  @inline border-radius(12px);
+}
+
+.update_plan_message_box {
+  margin-bottom:20px;
+}
+
+#billing_infos {
+  margin:15px 0;
+  width:398px;
+  padding:12px 16px;
+  line-height:22px;
+  background:#94a5c1;
+  background:rgba(30,57,102,0.1);
+  @include box-shadow((inset rgba(0,47,99,0.6) 0 1px 3px, inset rgba(255,255,255,0.2) 0 1px 0));
+  @include border-radius(4px);
+}
+
+#billing_infos a {
+  color:#1e3966;
+  font-weight:600;
+  border-bottom:1px solid #7387a6;
+}
+
+#credit_card_summary p.card {
+  margin-top:10px;
+  padding:4px 50px 8px;
+  background-repeat:no-repeat;
+}
+
+#credit_card_summary p.visa {background-image:url(<%= asset_data_uri "my/credit_cards/visa.png" %>)}
+#credit_card_summary p.master {background-image:url(<%= asset_data_uri "my/credit_cards/mastercard.png" %>)}
+
+
+
+

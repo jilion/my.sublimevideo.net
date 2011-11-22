@@ -74,7 +74,7 @@ module My::PlansHelper
              "#{plan.stats_retention_days}d"
            end
 
-    "#{text} Data Retention".html_safe
+    "#{content_tag :span, text} Data Retention".html_safe
   end
 
   def radio_button_options(site, current_plan, new_plan, options={})
