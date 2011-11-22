@@ -139,7 +139,7 @@ module SiteModules::Invoice
     end
 
     def plan_month_cycle_started_at
-      cycle = trial_not_started_or_in_trial? ? 'none' : plan.read_attribute(:cycle) # strange error in specs when using .cycle
+      cycle = trial_ended? && plan_cycle_started_at? ? plan.read_attribute(:cycle) : 'none' # strange error in specs when using .cycle
 
       case cycle
       when 'month'
@@ -152,7 +152,7 @@ module SiteModules::Invoice
     end
 
     def plan_month_cycle_ended_at
-      cycle = trial_not_started_or_in_trial? ? 'none' : plan.read_attribute(:cycle) # strange error in specs when using .cycle
+      cycle = trial_ended? && plan_cycle_ended_at? ? plan.read_attribute(:cycle) : 'none' # strange error in specs when using .cycle
 
       case cycle
       when 'month'
