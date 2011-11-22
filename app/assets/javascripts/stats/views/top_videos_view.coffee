@@ -46,7 +46,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     $('#top_videos_title').text("Most #{title} videos")
 
   prepareAndPlayVideo: (event) ->
-    videoID = $(event.currentTarget).find('img')[0].id.match(/img-(.*)/)[1]
+    videoID = $(event.currentTarget).find('img')[0].id.match(/(.*)-img/)[1]
     MSVStats.playableVideoView.renderAndPlay(videoID)
 
   sortByLoads: (event) ->

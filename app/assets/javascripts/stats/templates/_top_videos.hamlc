@@ -19,10 +19,10 @@
           %td.video
             .wrap
               - if video.get('p')?
-                - playClass = if MSVStats.period.isSeconds then 'disabled' else 'active'
+                - playClass = if MSVStats.period.isSeconds() then 'disabled' else 'active'
                 %a{ href: "#", onclick: "return false", class: "play #{playClass}" }
                   .crop{ id: "#{video.id}-crop", style: "width:96px; height:54px;" }
-                    - unless MSVStats.period.isSeconds
+                    - unless MSVStats.period.isSeconds()
                       %span.overlay
                 - if $("##{video.id}-cache").size() > 0
                   %script{ type: "text/javascript" }

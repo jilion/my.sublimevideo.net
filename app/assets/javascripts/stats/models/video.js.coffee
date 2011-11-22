@@ -156,9 +156,9 @@ class MSVStats.Collections.Videos extends Backbone.Collection
     for video in this.models
       vlHash = _.clone(video.get('vl_hash'))
       vvHash = _.clone(video.get('vv_hash'))
-      _.each vlHash, (hits, time) -> 
+      _.each vlHash, (hits, time) ->
         delete vlHash[time] if time < from
-      _.each vvHash, (hits, time) -> 
+      _.each vvHash, (hits, time) ->
         delete vvHash[time] if time < from
       video.set({ vl_hash: vlHash, vv_hash: vvHash }, silent: true)
 

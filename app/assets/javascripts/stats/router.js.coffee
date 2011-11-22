@@ -104,7 +104,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.period.clear()
     MSVStats.sites.select(token)
     this.resetAndFetchStats()
-    this.initPusherPrivateSiteChannel()
+    this.initPusherPresenceSiteChannel()
 
   initModels: ->
     MSVStats.period = new MSVStats.Models.Period()
@@ -119,7 +119,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.statsDays    = new MSVStats.Collections.StatsDays()
 
     MSVStats.videos = new MSVStats.Collections.Videos()
-    
+
   initHelpers: ->
     MSVStats.chartsHelper = new MSVStats.Helpers.ChartsHelper()
 
@@ -141,22 +141,23 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
           MSVStats.statsSeconds.updateSeconds()
           MSVStats.videos.updateSeconds(secondTime) if MSVStats.period.isSeconds()
 
-  initPusherPrivateSiteChannel: ->
+  initPusherPresenceSiteChannel: ->
     unless MSVStats.sites.selectedSite.inFreePlan()
       MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
-  
+
       MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
         setTimeout MSVStats.statsSeconds.fetchOldSeconds, 2000
-      
+
       MSVStats.presenceChannel.bind 'stats', (data) ->
         MSVStats.statsSeconds.merge(data.site, silent: true)
         MSVStats.videos.merge(data.videos, silent: true) if MSVStats.period.isSeconds()
-      
+
       MSVStats.presenceChannel.bind 'video_tag', (data) ->
         if (video = MSVStats.videos.get(data.u))?
           video.set(data.meta_data)
 
   resetAndFetchStats: ->
+    MSVStats.statsSeconds._isShowable = false
     MSVStats.statsSeconds.reset()
     MSVStats.statsMinutes.reset()
     MSVStats.statsHours.reset()
