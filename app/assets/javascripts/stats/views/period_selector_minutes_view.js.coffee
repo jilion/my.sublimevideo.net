@@ -8,14 +8,16 @@ class MSVStats.Views.PeriodSelectorMinutesView extends Backbone.View
     this.render()
 
   render: =>
-    $(@el).html(this.template())
+    selectedSite = MSVStats.sites.selectedSite
+    $(@el).html(this.template(site: selectedSite))
     $(@el).find('span.title').html('last 60 minutes')
-    if @options.statsMinutes.isShowable()
-      $(@el).find('.content').show()
-      $(@el).data().spinner.stop()
-    else
-      $(@el).find('.content').hide()
-      $(@el).spin(spinOptions)
+    unless selectedSite.inFreePlan()
+      if @options.statsMinutes.isShowable()
+        $(@el).find('.content').show()
+        $(@el).data().spinner.stop()
+      else
+        $(@el).find('.content').hide()
+        $(@el).spin(spinOptions)
     if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
     vvTotal = @options.statsMinutes.vvTotal()
     $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))
@@ -29,7 +31,11 @@ class MSVStats.Views.PeriodSelectorMinutesView extends Backbone.View
       click:    this.select
       selected: this.isSelected()
 
-  select: => MSVStats.period.setPeriod(type: 'minutes')
+  select: => 
+    if MSVStats.sites.selectedSite.inFreePlan()
+      window.location.href = $(@el).find('a')[0].href
+    else
+      MSVStats.period.setPeriod(type: 'minutes')
       
   isSelected: ->
     @options.period.isMinutes()

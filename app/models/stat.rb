@@ -99,9 +99,15 @@ module Stat
         to    = 2.seconds.ago.change(usec: 0).utc
         from  = to - 59.seconds
       when 'minutes'
-        last_minute_stat = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last
-        to   = last_minute_stat.try(:m) || 1.minute.ago.change(sec: 0)
-        from = to - 59.minutes
+        site  = ::Site.find_by_token(site_token)
+        if site.stats_retention_days == 0
+          to   = nil
+          from = nil
+        else
+          last_minute_stat = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last
+          to   = last_minute_stat.try(:m) || 1.minute.ago.change(sec: 0)
+          from = to - 59.minutes
+        end
       when 'hours'
         to   = 1.hour.ago.change(min: 0, sec: 0).utc
         from = to - 23.hours

@@ -294,6 +294,12 @@ describe Stat::Site do
         @mock_site.stub(:stats_retention_days).and_return(365)
       end
 
+      describe "with minutes period" do
+        subject { JSON.parse(Stat::Site.json(@site.token, 'minutes')) }
+
+        its(:size) { should eql(60) }
+      end
+
       describe "with days period" do
         subject { JSON.parse(Stat::Site.json(@site.token, 'days')) }
 
@@ -311,6 +317,12 @@ describe Stat::Site do
     context "with stats_retention_days at 0" do
       before(:each) do
         @mock_site.stub(:stats_retention_days).and_return(0)
+      end
+
+      describe "with minutes period" do
+        subject { JSON.parse(Stat::Site.json(@site.token, 'minutes')) }
+
+        its(:size) { should eql(0) }
       end
 
       describe "with days period" do

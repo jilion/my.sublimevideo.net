@@ -8,9 +8,10 @@ class MSVStats.Views.PeriodSelectorDays365View extends Backbone.View
     this.render()
 
   render: =>
-    $(@el).html(this.template(site: MSVStats.sites.selectedSite))
+    selectedSite = MSVStats.sites.selectedSite
+    $(@el).html(this.template(site: selectedSite))
     $(@el).find('span.title').html('last 365 days')
-    unless MSVStats.sites.selectedSite.inFreePlan()
+    unless selectedSite.inFreePlan()
       if @options.statsDays.isShowable()
         $(@el).find('.content').show()
         $(@el).data().spinner.stop()
@@ -31,7 +32,9 @@ class MSVStats.Views.PeriodSelectorDays365View extends Backbone.View
       selected: this.isSelected()
 
   select: =>
-    unless MSVStats.sites.selectedSite.inFreePlan()
+    if MSVStats.sites.selectedSite.inFreePlan()
+      window.location.href = $(@el).find('a')[0].href
+    else
       # $('#vv').spin()
       # setTimeout (-> MSVStats.period.setPeriod(type: 'days', startIndex: -365, endIndex: -1)), 50
       MSVStats.period.setPeriod(type: 'days', startIndex: -365, endIndex: -1)

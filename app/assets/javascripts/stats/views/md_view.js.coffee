@@ -15,7 +15,8 @@ class MSVStats.Views.MDView extends Backbone.View
       $(@el).data().spinner.stop()
       
       @mdData = MSVStats.period.stats().mdData()
-      $(@el).html(this.template(mdData: @mdData))
+      @site   = MSVStats.sites.selectedSite
+      $(@el).html(this.template(mdData: @mdData, site: @site))
       
       return this
     else

@@ -9,9 +9,10 @@ class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
     this.render()
 
   render: =>
-    $(@el).html(this.template(site: MSVStats.sites.selectedSite))
+    selectedSite = MSVStats.sites.selectedSite
+    $(@el).html(this.template(site: selectedSite))
     $(@el).find('span.title').html('last 60 seconds')
-    unless MSVStats.sites.selectedSite.inFreePlan()
+    unless selectedSite.inFreePlan()
       if @options.statsSeconds.isShowable()
         $(@el).find('.content').show()
         $(@el).data().spinner.stop()
@@ -32,6 +33,8 @@ class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
       selected: this.isSelected()
 
   select: =>
+    if MSVStats.sites.selectedSite.inFreePlan()
+      window.location.href = $(@el).find('a')[0].href
     if MSVStats.statsSeconds.isShowable()
       MSVStats.period.setPeriod type: 'seconds', startIndex: 0, endIndex: 59
 

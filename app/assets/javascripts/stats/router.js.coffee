@@ -163,13 +163,13 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.statsHours.reset()
     MSVStats.statsDays.reset()
 
-    MSVStats.statsMinutes.fetch
-      silent: true
-      success: -> MSVStats.statsRouter.syncFetchSuccess()
     MSVStats.statsHours.fetch
       silent: true
       success: -> MSVStats.statsRouter.syncFetchSuccess()
     unless MSVStats.sites.selectedSite.inFreePlan()
+      MSVStats.statsMinutes.fetch
+        silent: true
+        success: -> MSVStats.statsRouter.syncFetchSuccess()
       MSVStats.statsDays.fetch
         silent: true
         success: -> MSVStats.statsRouter.syncFetchSuccess()
