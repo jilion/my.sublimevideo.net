@@ -275,6 +275,8 @@ GEM
       multi_json
     launchy (2.0.5)
       addressable (~> 2.2.6)
+    letter_opener (0.0.2)
+      launchy
     libxml-ruby (2.2.2)
     liquid (2.2.2)
     log_buddy (0.6.0)
@@ -524,6 +526,7 @@ DEPENDENCIES
   jasminerice
   jquery-rails
   kaminari!
+  letter_opener
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
   log_buddy

@@ -134,6 +134,7 @@ group :development do
   gem 'powder'
   gem 'taps'
   gem 'silent-postgres'
+  gem 'letter_opener'
 
   gem 'em-http-request' # async pusher in populate
 
