@@ -7,7 +7,7 @@
       %li= link_to "Logout", destroy_user_session_url(subdomain: 'my')
       %li{ class: controller.request.url =~ /account/ ? 'active' : nil }
         = link_to([:edit, :user], class: "user", onclick: "SublimeVideo.makeSticky(this, '#menu')") do
-          %span.icon= truncate(current_user.try(:name) || cookies[:l], length: 45)
+          %span.icon= truncate(current_user.name, length: 45)
   - else
     %ul
       - [:features, :plans, :demo, ['customer-showcases', { link_text: "Showcases" }], [:help, { link_text: "Help", class: 'my_li' }], :blog].each do |r|
