@@ -65,4 +65,4 @@ SublimeVideo.cropPosterframe = (imgId) ->
       originalThumbClone.attr 'id', "#{imgId}-cache"
 
       $('#top_videos_posterframe_cache').append originalThumbClone
-    , 10
+    , 25
