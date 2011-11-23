@@ -179,19 +179,19 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
 
 class MSVStats.Collections.StatsMinutes extends MSVStats.Collections.Stats
   url: ->
-    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats"
+    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json"
 
   periodType: -> 'minutes'
 
 class MSVStats.Collections.StatsHours extends MSVStats.Collections.Stats
   url: ->
-    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats?period=hours"
+    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=hours"
 
   periodType: -> 'hours'
 
 class MSVStats.Collections.StatsDays extends MSVStats.Collections.Stats
   url: ->
-    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats?period=days"
+    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=days"
 
   periodType: -> 'days'
 
