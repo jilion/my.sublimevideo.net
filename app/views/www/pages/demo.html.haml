@@ -1,6 +1,6 @@
 = content_for :title, "Demo"
 = content_for :head do
-  = javascript_include_tag("http://cdn.sublimevideo.net/js/ibvjcopp.js")
+  = javascript_include_tag((Rails.env.production? || Rails.env.staging? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
   = javascript_include_tag("/javascripts/demo.js");
 
 %section#content

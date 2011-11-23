@@ -17,7 +17,7 @@ document.observe "dom:loaded", ->
 
 SublimeVideo.handleLoggedInAutoRedirection = ->
   path = document.location.pathname
-  my_host = "http://my.#{SublimeVideo.topDomainHost()}"
+  my_host = "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}"
   if path == '/'
     # We "kill" the cookie to ensure there will be no infinite redirect between /sites and /?p=login
     # When MSV session is dead but "l" cookie is still true
@@ -29,7 +29,7 @@ SublimeVideo.handleLoggedInAutoRedirection = ->
 
 SublimeVideo.showPopup = (name) ->
   if Cookie.get('l') is '1'
-    document.location.href = "http://my.#{SublimeVideo.topDomainHost()}/sites"
+    document.location.href = "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}/sites"
   else if $("popup_#{name}")
     SublimeVideo.openSimplePopup("popup_#{name}")
     $("popup_#{name}").down('#user_email').focus()
