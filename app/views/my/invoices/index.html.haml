@@ -1,4 +1,4 @@
-= title(@site.hostname? ? "Invoices for #{truncate_middle(@site.hostname || "##{@site.token}", length: 23)}" : "Site invoices")
+= title(@site.hostname? ? "Invoices for #{truncate_middle(@site.hostname_or_token, length: 23)}" : "Site invoices")
 = render '/layouts/sites_select_title'
 
 #site.edit

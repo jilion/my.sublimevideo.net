@@ -26,18 +26,4 @@ describe My::SitesHelper do
     it { helper.style_for_usage_bar_from_usage_percentage(0.783459).should eql "width:78.35%;" }
   end
 
-  describe "#hostname_or_token" do
-    context "site with a hostname" do
-      subject { Factory.create(:site, hostname: 'rymai.me') }
-
-      specify { helper.hostname_or_token(subject).should eql 'rymai.me' }
-    end
-
-    context "site without a hostname" do
-      subject { Factory.create(:site, plan_id: @free_plan.id, hostname: '') }
-
-      specify { helper.hostname_or_token(subject).should eql subject.token }
-    end
-  end
-
 end

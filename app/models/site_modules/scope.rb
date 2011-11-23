@@ -60,7 +60,7 @@ module SiteModules::Scope
     scope :created_between, lambda { |start_date, end_date| where { (created_at >= start_date) & (created_at < end_date) } }
 
     # sort
-    scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
+    scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way), :token.send(way)) }
     scope :by_user,        lambda { |way = 'desc'| includes(:user).order(users: [:name.send(way), :email.send(way)]) }
     scope :by_state,       lambda { |way = 'desc'| order(:state.send(way)) }
     scope :by_plan_price,  lambda { |way = 'desc'| includes(:plan).order(plans: :price.send(way)) }

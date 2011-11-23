@@ -188,6 +188,10 @@ class Site < ActiveRecord::Base
     list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
   end
 
+  def hostname_or_token(prefix = '#')
+    hostname.presence || "#{prefix}#{token}"
+  end
+
   # Boolean helpers
   def need_path?
     hostname_with_path_needed.present?
