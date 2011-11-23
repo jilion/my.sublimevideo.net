@@ -30,11 +30,12 @@ private
   end
 
   def set_cookie_for_menu
-    unless cookies[:l] == 'true'
+    unless cookies[:l] == '1'
       cookies[:l] = {
-        value: true,
+        value: '1',
         expires: 1.year.from_now,
-        domain: :all
+        domain: :all,
+        secure: Rails.env.production? || Rails.env.staging?
       }
     end
   end
