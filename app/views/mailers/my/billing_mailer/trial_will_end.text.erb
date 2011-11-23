@@ -5,7 +5,7 @@ We'd just like to remind you that the <%= BusinessModel.days_for_trial - 1 %>-da
 <% if @site.user.cc? %>
   Once the trial ends, we'll automatically charge your credit card <%= display_amount(@site.plan.price) %> for your <%= @site.plan.title %> plan.
 
-  If you don't want to activate your paid plan, you can downgrade your site to the Free plan here:
+  If you don't want to activate your Paid plan, you can downgrade your site to our Free plan here:
 
   <%= edit_site_plan_url(@site.to_param, protocol: 'https', subdomain: 'my') %>
 <% else %>
