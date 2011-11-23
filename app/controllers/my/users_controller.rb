@@ -25,7 +25,7 @@ class My::UsersController < Devise::RegistrationsController
     else
       clean_up_passwords(@user)
       params[:page] = 'home'
-      render 'com/pages/home'
+      render 'www/pages/home'
     end
   end
 

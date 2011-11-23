@@ -6,10 +6,8 @@
 #= require home
 
 document.observe "dom:loaded", ->
-  if Cookie.get('l') == 'true'
-    if document.location.host.split('.').length == 2 # topdomain and logged-in
-      SublimeVideo.handleLoggedInAutoRedirection()
-    SublimeVideo.handleLoggedInLinksModification()
+  if Cookie.get('l') == 'true' && document.location.host.split('.')[0] == 'www' # topdomain and logged-in
+    SublimeVideo.handleLoggedInAutoRedirection()
 
   Event.observe window, 'popstate', (event) ->
     if event.state? && event.state.hidePopup?
@@ -28,12 +26,6 @@ SublimeVideo.handleLoggedInAutoRedirection = ->
     document.location.href = "#{my_host}/sites"
   else if path == '/help'
     document.location.href = "#{my_host}#{path}"
-
-SublimeVideo.handleLoggedInLinksModification = ->
-  $('footer_home').hide()
-  $$('.my_li').each (li) ->
-    a = li.down('a')
-    a.href = a.href.replace(/sublimevideo/, 'my.sublimevideo')
 
 SublimeVideo.showPopup = (name) ->
   if Cookie.get('l') == 'true'

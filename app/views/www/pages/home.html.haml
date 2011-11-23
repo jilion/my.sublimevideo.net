@@ -4,7 +4,7 @@
   %h2= "The HTML5 Video Player Everyone Deserves"
 
   .video_wrap
-    %video.sublime{ width: "544", height: "306", poster: image_path("com/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none" }
+    %video.sublime{ width: "544", height: "306", poster: image_path("www/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none" }
       %source{ src: "http://zeno.name/@/videos/midnight_sun_720p.mp4", "data-quality" => "hd" }/
       %source{ src: "http://zeno.name/@/videos/midnight_sun_360p.mp4" }/
       %source{ src: "http://zeno.name/@/videos/midnight_sun_720p.webm", "data-quality" => "hd" }/
@@ -14,18 +14,18 @@
     %ul.slides
       %li.always_up_to_date.active
         %h3= "Always Up-To-Date"
-        = link_to (image_tag "com/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), www_page_path('features', anchor: 'always_up_to_date')
+        = link_to (image_tag "www/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), www_page_path('features', anchor: 'always_up_to_date')
       %li.works_in_any_browsers
         %h3= "Works in any browsers"
-        = link_to (image_tag "com/home/features/browsers/default.png", alt: "Works in any browsers"), www_page_path('features', anchor: 'default')
+        = link_to (image_tag "www/home/features/browsers/default.png", alt: "Works in any browsers"), www_page_path('features', anchor: 'default')
       %li.works_on_any_devices
         %h3= "Works on any mobile devices"
-        = link_to (image_tag "com/home/features/any_devices.png", alt: "Works on any mobile devices"), www_page_path('features', anchor: 'any_devices')
+        = link_to (image_tag "www/home/features/any_devices.png", alt: "Works on any mobile devices"), www_page_path('features', anchor: 'any_devices')
       %li.stats
         %h3= "Real-time Statistics"
-        = link_to (image_tag "com/home/features/stats.png", alt: "Real-time Statistics"), www_page_path('features', anchor: 'stats')
+        = link_to (image_tag "www/home/features/stats.png", alt: "Real-time Statistics"), www_page_path('features', anchor: 'stats')
       %li.instant_setup
-        = link_to (image_tag "com/home/features/instant_setup.png", alt: "Always Up-To-Date"), www_page_path('features', anchor: 'instant_setup')
+        = link_to (image_tag "www/home/features/instant_setup.png", alt: "Always Up-To-Date"), www_page_path('features', anchor: 'instant_setup')
         %h3.t1= "Instant Setup"
         %h3.t2= "Easy Integration"
     .slides_nav
@@ -57,20 +57,20 @@
   %h4.custom_break= "They use SublimeVideo"
   %table.logos
     %tr
-      %td= link_to (image_tag "com/home/logos/littlebigplanet.png", alt: "Little Big Planet"), ""
-      %td= link_to (image_tag "com/home/logos/cloudapp.png", alt: "CloudApp"), ""
+      %td= link_to (image_tag "www/home/logos/littlebigplanet.png", alt: "Little Big Planet"), ""
+      %td= link_to (image_tag "www/home/logos/cloudapp.png", alt: "CloudApp"), ""
     %tr
-      %td= link_to (image_tag "com/home/logos/taptaptap.png", alt: "Tap Tap Tap"), ""
-      %td= link_to (image_tag "com/home/logos/tetrapak.png", alt: "Tetra Pak"), ""
+      %td= link_to (image_tag "www/home/logos/taptaptap.png", alt: "Tap Tap Tap"), ""
+      %td= link_to (image_tag "www/home/logos/tetrapak.png", alt: "Tetra Pak"), ""
     %tr
-      %td= link_to (image_tag "com/home/logos/bigcartel.png", alt: "Big Cartel"), ""
-      %td= link_to (image_tag "com/home/logos/bredbandsbolaget.png", alt: "Little Big Planet"), ""
+      %td= link_to (image_tag "www/home/logos/bigcartel.png", alt: "Big Cartel"), ""
+      %td= link_to (image_tag "www/home/logos/bredbandsbolaget.png", alt: "Little Big Planet"), ""
     %tr
-      %td= link_to (image_tag "com/home/logos/5by5.png", alt: "5By5"), ""
-      %td= link_to (image_tag "com/home/logos/rock_am_ring.png", alt: "Rock Am Ring"), ""
+      %td= link_to (image_tag "www/home/logos/5by5.png", alt: "5By5"), ""
+      %td= link_to (image_tag "www/home/logos/rock_am_ring.png", alt: "Rock Am Ring"), ""
 
   .quote
-    = image_tag "com/home/showcases/tom_kiss.png", alt: "Tom Kiss"
+    = image_tag "www/home/showcases/tom_kiss.png", alt: "Tom Kiss"
     %blockquote= "“SublimeVideo allowed us to deliver our videos to a much wider audience”"
     %p.author
       = "Tom Kiss, Designer at "
