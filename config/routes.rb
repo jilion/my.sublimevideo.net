@@ -236,7 +236,7 @@ MySublimeVideo::Application.routes.draw do
     get '/logout' => 'my/users/sessions#destroy'
   end
 
-  scope module: 'www', as: 'www' do
+  scope module: 'www' do
     constraints(WwwSubdomain) do
       # Redirects
       %w[signup sign_up register].each { |action| get action => redirect('/?p=signup') }
