@@ -12,7 +12,7 @@ SublimeVideo.topDomainHost = ->
   document.location.host.split('.').slice(-2).join('.')
 
 SublimeVideo.makeSticky = (element, cssSelector) ->
-  $("#{cssSelector} .active").each -> $(this).removeClass 'active'
+  $("#{cssSelector} .active").removeClass 'active'
 
   $(element).addClass 'active'
   if li = $(element).parent 'li' then li.addClass 'active'

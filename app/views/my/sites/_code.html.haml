@@ -1,7 +1,7 @@
 %h3
   - if site.hostname?
     Embed code for
-    %strong= truncate_middle(site.hostname, :length => 40)
+    %strong= truncate_middle(site.hostname, length: 40)
   - else
     Embed code
 %p.desc= "Copy the code below, and paste it into the pages on #{truncate_middle(site.hostname)} where the SublimeVideo player will be used. We highly recommend you put it into the <code>&lt;head&gt;</code> tag.".html_safe
