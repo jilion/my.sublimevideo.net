@@ -111,11 +111,6 @@ group :production do
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end
 
-group :production, :staging do
-  gem 'rack-ssl-enforcer', '~> 0.2.3'
-  gem 'rack-no-www'
-end
-
 group :development, :test do
   gem 'log_buddy'
   gem 'timecop'

@@ -1,8 +1,5 @@
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
-
-  config.middleware.insert_before(Rack::Lock, Rack::NoWWW)
-  config.middleware.use(Rack::SslEnforcer, only_hosts: /[my|admin]\.sublimevideo\.net$/)
   config.middleware.use(Rack::GoogleAnalytics, tracker: 'UA-10280941-8')
   # require 'rack/throttle/custom_hourly'
   # config.middleware.use(Rack::Throttle::Hourly, :max => 3600, :cache => Rails.cache, :key_prefix => :throttle)
@@ -36,7 +33,7 @@ MySublimeVideo::Application.configure do
   config.action_dispatch.x_sendfile_header = nil
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
 
   # See everything in the log (default is :info)
   # config.log_level = :debug
@@ -51,11 +48,24 @@ MySublimeVideo::Application.configure do
   config.cache_store = :dalli_store
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  # config.action_controller.asset_host = "http://assets.example.com"
+  config.action_controller.asset_host = Proc.new do |source, request|
+    "#{request.ssl? ? 'https' : 'http'}://assets.sublimevideo.net.s3.amazonaws.com"
+  end
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_url_options = { host: 'sublimevideo.net' }
+
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :address        => "smtp.sendgrid.net",
+    :port           => "587",
+    :authentication => :plain,
+    :user_name      => ENV['SENDGRID_USERNAME'],
+    :password       => ENV['SENDGRID_PASSWORD'],
+    :domain         => ENV['SENDGRID_DOMAIN']
+  }
 
   # Enable threaded mode
   # config.threadsafe!
@@ -66,7 +76,7 @@ MySublimeVideo::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
-  
+
   # Use Dalli as the rack-cache metastore
   $cache = Dalli::Client.new
   config.middleware.use ::Rack::Cache, :metastore => $cache, :entitystore => 'file:tmp/cache/entity'
