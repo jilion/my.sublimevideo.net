@@ -19,3 +19,4 @@ vendor/ruby
 !.bundle
 !.bundle/*
 !public/assets/*.gz
+.env
