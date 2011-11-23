@@ -8,22 +8,23 @@
     = render 'my/users/credentials_form_fields', f: f
 
     .entry.update
-      = f.submit "Update", class: "submit small_button", id: "user_credentials_submit"
+      = f.submit "Update", class: "submit blue_button", id: "user_credentials_submit"
 
+    .break
   = form_for @user, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_more_infos" } do |f|
     = render 'my/users/more_infos_form_fields', f: f
 
     .entry.update
-      = f.submit "Update", id: 'user_submit', class: "submit small_button"
+      = f.submit "Update", id: 'user_submit', class: "submit blue_button"
   .spacer
 
-  - if current_user.email =~ /@jilion.com$/
-    %h3.section_title= link_to "API authorizations and applications (alpha)", [:client_applications]
+  -# - if current_user.email =~ /@jilion.com$/
+  -#   %h3.section_title= link_to "API authorizations and applications (alpha)", [:client_applications]
   .spacer
 
 .content_right
-  = render 'my/users/billing_infos'
   = render 'my/users/balance_infos'
+  = render 'my/users/billing_infos'
 
   - if current_user.archivable?
     #delete_account
@@ -36,7 +37,7 @@
           %li= raw "All your #{link_to "sites", sites_path, class: "hl"} will be deleted."
           %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
           %li= "We do not offer refunds."
-        .entry.delete
+        .entry
           = f.submit "Delete account", class: "submit link_looks delete"
 
   .spacer

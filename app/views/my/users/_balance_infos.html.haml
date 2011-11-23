@@ -1,7 +1,10 @@
 - if current_user.balance > 0
-  %h3.section_title Balance
-  Current balance:
-  %strong= display_amount(current_user.balance)
-  %p
-    = raw "You have a balance due to the recent #{link_to 'SublimeVideo pricing changes', ''}."
-    This balance will be automatically used for all your further invoices until it's empty.
+  #balance.dark_box
+    %h4 Balance
+    %p.current
+      Current balance:
+      %strong= display_amount(current_user.balance)
+    %p.desc
+      %em
+        = raw "You have a balance due to the recent #{link_to 'SublimeVideo pricing changes', '', class: "hl"}."
+        This balance will be automatically used for all your further invoices until it's empty.

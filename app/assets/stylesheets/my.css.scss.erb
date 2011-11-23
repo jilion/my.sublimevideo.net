@@ -190,10 +190,27 @@ header, header .shadow, header .lights {
   padding-top:5px;
 }
 
+#content .content_left {
+  width:432px;
+  padding-right:80px;
+  float:left;
+}
+
+#content .content_right {
+  width:368px;
+  float:left;
+/*  position:relative;*/
+}
+
 form .entry {
   position:relative;
   margin:10px 0;
 }
+
+form .entry .left_field, form .entry .right_field {
+  float:left;
+}
+
 
 form label.icon {
   display:block;
@@ -217,6 +234,20 @@ form .entry input.text {
   @include box-shadow((inset rgba(0,34,85,0.3) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0));
 }
 
+form .entry input.text.no_icon {
+  width:420px;
+  padding-left:10px;
+}
+
+form .entry .left_field input.text, form .entry .left_field input.text.no_icon {
+  width:194px;
+  margin-right:10px;
+}
+
+form .entry .right_field input.text, form .entry .right_field input.text.no_icon {
+  width:194px;
+}
+
 form .entry input.text.errors {
   background:#ffd9d9;
 }
@@ -231,8 +262,29 @@ form .entry .text:focus {
   @include box-shadow((inset rgba(0,34,85,0.3) 0 1px 3px, rgba(255,255,255,0.1) 0 1px 0, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
 }
 
+form .entry.select select {
+  height:41px;
+  font-family:inherit;
+  font-size:22px;
+  color:#4a648e;
+  padding-left:10px;
+  text-shadow:rgba(255,255,255,0.8) 0 1px 0;
+  background:url(<%= asset_data_uri "my/custom_select.png" %>) no-repeat right top;
+  border:1px solid #335994;
+  @include border-radius(5px);
+  @include box-shadow((inset rgba(255,255,255,0.8) 0 1px 0, rgba(255,255,255,0.3) 0 1px 0));
+  -webkit-appearance:none;
+}
+
+form .entry.select select:focus {
+  @include box-shadow((inset rgba(255,255,255,0.8) 0 1px 0, rgba(255,255,255,0.1) 0 1px 0, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
+}
+
+form .entry.select .left_field select, form .entry.select .right_field select {width:211px}
+
 .radio_wrap, .checkbox_wrap {
   position:relative;
+  margin-top:4px;
 }
 
 .radio_wrap input, .checkbox_wrap input {
@@ -297,7 +349,7 @@ form .inline_errors.plan span {
   background:url(<%= asset_data_uri "my/big_break.png" %>);
 }
 
-.green_button {
+.green_button, .blue_button {
   font-family:inherit;
   color:#fff;
   text-shadow:rgba(0,0,0,0.9) 0 -1px 0;
@@ -307,18 +359,146 @@ form .inline_errors.plan span {
   @include border-radius(6px);
 }
 
+.blue_button {
+  display:inline-block;
+  padding:10px 18px;
+  font-size:24px;
+  font-size:22px;
+  border-color:#15253b;
+  @include gradient(#6685ae,#314f78,#4b6a93);
+  @inline border-radius(12px);
+  @include box-shadow((inset #8da4c3 0 1px 0, #001a41 0 1px 4px));
+}
+
 .green_button:active {
   @include gradient(#007d31,#00b95a,#009843);
 }
 
-.green_button:focus {
+.blue_button:active {
+  @include gradient(#314f78,#6685ae,#4b6a93); 
+}
+
+.green_button:focus, .blue_button:focus {
   outline:0;
   @include box-shadow((inset #00e896 0 1px 0, #001a41 0 1px 4px, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
 }
 
-.green_button:disabled {
+.blue_button:focus {  
+  @include box-shadow((inset #8da4c3 0 1px 0, #001a41 0 1px 4px, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
+}
+
+.green_button:disabled, .blue_button:disabled {
   opacity:0.5;
   filter:alpha(opacity=50);
+}
+
+/* =============== */
+/* = Label Icons = */
+/* =============== */
+
+form .site label.icon {
+  width:20px;
+  height:21px;
+  background:url(<%= asset_data_uri "my/fields/domain_icon.png" %>) no-repeat;
+  top:12px;
+  left:10px;
+}
+
+form .entry.password label.icon {
+  width:16px;
+  height:21px;
+  background:url(<%= asset_data_uri "my/fields/password_icon.png" %>) no-repeat;
+  top:10px;
+  left:12px;
+}
+
+form .entry.email label.icon {
+  width:20px;
+  height:21px;
+  background:url(<%= asset_data_uri "my/fields/email_icon.png" %>) no-repeat;
+  top:12px;
+  left:10px;
+}
+
+form .entry .name label.icon {
+  width:18px;
+  height:18px;
+  background:url(<%= asset_data_uri "my/fields/user_icon.png" %>) no-repeat;
+  top:12px;
+  left:12px;
+}
+
+/* ================== */
+/* = Forms & Extras = */
+/* ================== */
+
+h3.section_title {
+  font-size:20px;
+  font-weight:600;
+  padding:15px 0 5px;
+}
+
+form .entry.update {
+  padding:10px 0 20px;
+}
+
+form .entry.use {
+  padding-top:10px;
+}
+
+form .break {
+  height:1px;
+  margin:15px 0 10px;
+  background:#728aab;
+  border-bottom:1px solid rgba(255,255,255,0.4);
+}
+
+form p.note {
+  margin:20px 0 -4px;
+  font-size:13px;
+  font-weight:600;
+  padding:2px 0 2px 22px;
+  background:url(<%= asset_data_uri "my/note_icon.png" %>) no-repeat;
+}
+
+.dark_box {
+  line-height:22px;
+  margin:5px 0 12px;
+  padding:14px 16px 12px;
+  background:#94a5c1;
+  background:rgba(30,57,102,0.1);
+  @include box-shadow((inset rgba(0,47,99,0.6) 0 1px 4px, rgba(255,255,255,0.3) 0 1px 0));
+  @include border-radius(4px);
+}
+
+.dark_box a {
+  color:#1e3966;
+  font-weight:600;
+  border-bottom:1px solid #7387a6;
+}
+
+.dark_box h4 {
+  font-size:18px;
+  font-weight:600;
+  padding:0 0 10px;
+}
+
+.dark_box p.link {
+  padding:10px 0 0;
+}
+
+.dark_box p.alert {
+  color:#9e0000;
+  padding:0 0 10px;
+}
+
+.dark_box p.alert a {
+  color:#9e0000;
+  border-color:#a67373;
+}
+
+#content .content_right .dark_box {
+  width:336px;
 }
 
 /* ======== */
@@ -331,14 +511,6 @@ form .entry.site {
 
 form .entry.site .left {
   float:left;
-}
-
-form .site label.icon {
-  width:20px;
-  height:21px;
-  background:url(<%= asset_data_uri "my/fields/domain_icon.png" %>) no-repeat;
-  top:12px;
-  left:10px;
 }
 
 form .entry.site p.desc {
@@ -367,25 +539,21 @@ form .actions.center .submit {
   margin-bottom:20px;
 }
 
-#billing_infos {
-  margin:15px 0;
-  width:398px;
-  padding:12px 16px;
-  line-height:22px;
-  background:#94a5c1;
-  background:rgba(30,57,102,0.1);
-  @include box-shadow((inset rgba(0,47,99,0.6) 0 1px 3px, inset rgba(255,255,255,0.2) 0 1px 0));
-  @include border-radius(4px);
+#balance p.current {
+  font-size:17px;
 }
 
-#billing_infos a {
-  color:#1e3966;
-  font-weight:600;
-  border-bottom:1px solid #7387a6;
+#balance p.desc {
+  font-size:13px;
+  padding:6px 0 0;
+  line-height:18px;
+}
+
+#billing_infos {
+  width:398px;
 }
 
 #credit_card_summary p.card {
-  margin-top:10px;
   padding:4px 50px 8px;
   background-repeat:no-repeat;
 }
@@ -393,6 +561,34 @@ form .actions.center .submit {
 #credit_card_summary p.visa {background-image:url(<%= asset_data_uri "my/credit_cards/visa.png" %>)}
 #credit_card_summary p.master {background-image:url(<%= asset_data_uri "my/credit_cards/mastercard.png" %>)}
 
+#delete_account {
+  font-size:13px;
+  line-height:18px;
+}
 
+#delete_account h3.section_title {
+  padding-bottom:10px;
+}
 
+#delete_account ul {
+  padding:0 20px;
+}
+
+#delete_account input.delete {
+  border:none;
+  background:url(<%= asset_data_uri "my/delete_account_cross.png" %>) no-repeat;
+  cursor:pointer;
+  font-family:inherit;
+  text-shadow:rgba(255,255,255,0.3) 0 1px 0;
+  color:#9e0000;
+  font-size:13px;
+  font-weight:600;
+  padding:0 0 4px 22px;
+}
+
+a.hl {
+  color:#1e3966;
+  font-weight:600;
+  border-bottom:1px solid #7387a6;
+}
 
