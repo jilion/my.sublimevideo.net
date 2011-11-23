@@ -80,7 +80,7 @@ class MSVStats.Models.Period extends Backbone.Model
 
   autosetPeriod: ->
     MSVStats.statsDays.trigger('init') # for planUsageView
-
+    
     if MSVStats.statsMinutes.vvTotal() > 0
       this.setPeriod type: 'minutes'
     else if MSVStats.statsHours.vvTotal() > 0 || MSVStats.sites.selectedSite.inFreePlan()
