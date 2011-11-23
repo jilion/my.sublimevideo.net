@@ -4,26 +4,26 @@
       .col
         %h4= "Product"
         %ul
-          %li#footer_home= link_to "Home", root_url(host: request.domain)
-          %li= link_to "Features", com_page_url('features', host: request.domain)
-          %li= link_to "Demo", com_page_url('demo', host: request.domain)
-          %li= link_to "Plans & Pricing", com_page_url('plans', host: request.domain)
+          %li#footer_home= link_to "Home", root_url(subdomain: 'www')
+          %li= link_to "Features", www_page_url('features', subdomain: 'www')
+          %li= link_to "Demo", www_page_url('demo', subdomain: 'www')
+          %li= link_to "Plans & Pricing", www_page_url('plans', subdomain: 'www')
           %li= link_to "My SublimeVideo", root_url(subdomain: 'my')
       .col
         %h4= "Community & Support"
         %ul
-          %li= link_to "Customer Showcases", com_page_url('customer-showcases', host: request.domain)
-          %li.my_li= link_to "Help", com_page_url('help', host: request.domain)
+          %li= link_to "Customer Showcases", www_page_url('customer-showcases', subdomain: 'www')
+          %li.my_li= link_to "Help", www_page_url('help', subdomain: 'www')
           %li= link_to "Documentation", root_url(subdomain: 'docs')
           %li= link_to "Community Forum", "http://getsatisfaction.com/sublimevideo"
           %li= link_to "Player Releases", docs_releases_url(subdomain: 'docs')
       .col
         %h4= "Stay Connected"
         %ul
-          %li= link_to "Blog", com_page_url('blog', host: request.domain)
+          %li= link_to "Blog", www_page_url('blog', subdomain: 'www')
           %li= link_to "Twitter", ""
-          %li= link_to "Contact us", com_page_url('contact', host: request.domain)
-          %li= link_to "About", com_page_url('about', host: request.domain)
+          %li= link_to "Contact us", www_page_url('contact', subdomain: 'www')
+          %li= link_to "About", www_page_url('about', subdomain: 'www')
     .right
       %p
         = "SublimeVideo is a service by"

@@ -1,4 +1,4 @@
-class Com::PagesController < ApplicationController
+class Www::PagesController < ApplicationController
 
   before_filter :cache_page
 

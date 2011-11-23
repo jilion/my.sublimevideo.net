@@ -10,7 +10,7 @@ feature "Access the account page" do
     scenario "is redirected to log in page" do
       go 'my', 'account'
 
-      current_url.should == "http://sublimevideo.dev/?p=login"
+      current_url.should == "http://www.sublimevideo.dev/?p=login"
     end
   end
 
@@ -66,7 +66,7 @@ feature "Credentials update" do
 
       fill_in "Current password", with: '123456'
       click_button "Done"
-      current_url.should eq "http://sublimevideo.dev/?p=login"
+      current_url.should eq "http://www.sublimevideo.dev/?p=login"
 
       fill_in 'Email',    with: email
       fill_in 'Password', with: '654321'

@@ -32,7 +32,7 @@ feature "Users" do
   describe "signup" do
     background do
       go '/?p=signup'
-      current_url.should eq "http://sublimevideo.dev/?p=signup"
+      current_url.should eq "http://www.sublimevideo.dev/?p=signup"
     end
 
     describe "with the email of an archived user" do
@@ -125,7 +125,7 @@ feature "Users" do
     fill_in "user_current_password", with: "123456"
 
     click_button "Done"
-    current_url.should eq "http://sublimevideo.dev/"
+    current_url.should eq "http://www.sublimevideo.dev/"
     page.should_not have_content "John Doe"
     @current_user.reload.should be_archived
 
@@ -137,7 +137,7 @@ feature "Users" do
 
   scenario "accept invitation should always redirect to /signup" do
     go 'my', "/invitation/accept"
-    current_url.should eq "http://sublimevideo.dev/?p=signup&beta=over"
+    current_url.should eq "http://www.sublimevideo.dev/?p=signup&beta=over"
   end
 
   context "with an authenticated user" do
@@ -158,7 +158,7 @@ feature "session" do
     page.should have_content "John Doe"
     click_link "Logout"
 
-    current_url.should eq "http://sublimevideo.dev/"
+    current_url.should eq "http://www.sublimevideo.dev/"
     page.should_not have_content "John Doe"
   end
 end

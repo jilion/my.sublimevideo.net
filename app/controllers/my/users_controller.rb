@@ -51,7 +51,7 @@ class My::UsersController < Devise::RegistrationsController
       if @user.archive
         format.html do
           sign_out(@user)
-          redirect_to root_url(host: request.domain), notice: I18n.t("devise.registrations.destroyed")
+          redirect_to root_url(subdomain: 'www'), notice: I18n.t("devise.registrations.destroyed")
         end
       else
         format.html { render :edit }

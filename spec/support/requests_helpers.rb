@@ -95,10 +95,6 @@ module Spec
         card_number(type)[-4,4]
       end
 
-      def switch_to_topdomain
-        switch_to_subdomain
-      end
-
       # http://stackoverflow.com/questions/4484435/rails3-how-do-i-visit-a-subdomain-in-a-steakrspec-spec-using-capybara
       def switch_to_subdomain(subdomain = nil)
         subdomain += '.' if subdomain.present?
@@ -107,7 +103,7 @@ module Spec
 
       def go(*subdomain_and_route)
         if subdomain_and_route.one?
-          switch_to_topdomain
+          switch_to_subdomain('www')
           visit *subdomain_and_route
         else
           switch_to_subdomain(subdomain_and_route[0])

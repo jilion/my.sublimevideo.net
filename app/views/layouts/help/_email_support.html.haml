@@ -22,6 +22,6 @@
 
 - else
   %p.title_desc
-    = raw "We offer dedicated email support for the #{link_to "Plus plan", com_page_url('plans', host: request.domain), class: "hl"} and VIP Email Support for the #{link_to "Premium plan", com_page_url('plans', host: request.domain), class: "hl"}."
+    = raw "We offer dedicated email support for the #{link_to "Plus plan", www_page_url('plans', subdomain: 'www'), class: "hl"} and VIP Email Support for the #{link_to "Premium plan", www_page_url('plans', subdomain: 'www'), class: "hl"}."
     %p.title_desc= raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
   

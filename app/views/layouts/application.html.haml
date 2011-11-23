@@ -19,7 +19,7 @@
     - if %w[site_stats].include?(controller_name)
       = javascript_include_tag 'stats'
     - else
-      = javascript_include_tag(request.subdomain.blank? ? 'com' : request.subdomain)
+      = javascript_include_tag(request.subdomain)
     = yield :head
 
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
@@ -45,7 +45,7 @@
     = render "layouts/footer"
     = yield :bottom
 
-    - if request.subdomain.blank?
+    - if request.subdomain == 'www'
       - display_signup = params[:p] == 'signup' || params[:commit] == 'Sign Up'
       #popup_signup.popup{ style: "display:#{display_signup ? 'block' : 'none'}" }
         .wrap

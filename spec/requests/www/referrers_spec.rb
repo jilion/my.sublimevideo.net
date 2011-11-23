@@ -6,9 +6,9 @@ feature "Referrer" do
   context "user signup after be redirected" do
 
     scenario "set user.referrer_site_token" do
-      go '/r/b/site1234'
+      go 'www', '/r/b/site1234'
       current_url.should eq "http://sublimevideo.net/"
-      go '/?p=signup'
+      go 'www', '/?p=signup'
 
       fill_in "Name",     with: "Thibaud Guillaume-Gentil"
       fill_in "Email",    with: "thibaud@jilion.com"

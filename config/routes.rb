@@ -1,6 +1,6 @@
-class NoSubdomain
+class WwwSubdomain
   def self.matches?(request)
-    request.subdomain.blank?
+    request.subdomain.blank? || request.subdomain == 'www'
   end
 end
 
@@ -10,8 +10,8 @@ MySublimeVideo::Application.routes.draw do
     constraints subdomain: 'my' do
 
       unauthenticated :user do
-        get '/sites' => redirect { |params, req| "http://#{req.domain}/?p=login" }
-        root to: redirect { |params, req| "http://#{req.domain}/?p=login" }
+        get '/sites' => redirect { |params, req| "http://www.#{req.domain}/?p=login" }
+        root to: redirect { |params, req| "http://www.#{req.domain}/?p=login" }
       end
 
       devise_for :users,
@@ -32,10 +32,10 @@ MySublimeVideo::Application.routes.draw do
       end
       get '/account/edit' => redirect('/account')
 
-      %w[sign_up register].each { |action| get action => redirect { |params, req| "http://#{req.domain}/?p=signup" } }
+      %w[sign_up register].each { |action| get action => redirect { |params, req| "http://www.#{req.domain}/?p=signup" } }
       %w[login log_in sign_in signin].each    { |action| get action => redirect { |params, req| "http://#{req.domain}/?p=login" } }
       %w[log_out sign_out signout].each { |action| get action => redirect('/logout') }
-      get '/invitation/accept' => redirect { |params, req| "http://#{req.domain}/?p=signup&beta=over" }
+      get '/invitation/accept' => redirect { |params, req| "http://www.#{req.domain}/?p=signup&beta=over" }
       post '/password/validate' => "users/passwords#validate"
 
       scope 'account' do
@@ -236,8 +236,8 @@ MySublimeVideo::Application.routes.draw do
     get '/logout' => 'my/users/sessions#destroy'
   end
 
-  scope module: 'com', as: 'com' do
-    constraints(NoSubdomain) do
+  scope module: 'www', as: 'www' do
+    constraints(WwwSubdomain) do
       # Redirects
       %w[signup sign_up register].each { |action| get action => redirect('/?p=signup') }
       %w[login log_in sign_in signin].each    { |action| get action => redirect('/?p=login') }
