@@ -1,7 +1,5 @@
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
-  config.middleware.insert_before(Rack::Lock, Rack::NoWWW)
-  config.middleware.use(Rack::SslEnforcer, only_hosts: /[my|admin]\.sublimevideo-stating\.net$/)
   config.middleware.insert_after(::Rack::Lock, "::Rack::Auth::Basic", "Staging") do |u, p|
     [u, p] == ['jilion', ENV['PRIVATE_CODE']]
   end
@@ -33,7 +31,7 @@ MySublimeVideo::Application.configure do
   config.action_dispatch.x_sendfile_header = nil
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
 
   # See everything in the log (default is :info)
   # config.log_level = :debug

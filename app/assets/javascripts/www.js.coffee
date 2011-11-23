@@ -6,18 +6,18 @@
 #= require home
 
 document.observe "dom:loaded", ->
-  if Cookie.get('l') == 'true' && document.location.host.split('.')[0] == 'www' # topdomain and logged-in
+  if Cookie.get('l') is '1' and document.location.host.split('.')[0] is 'www' # topdomain and logged-in
     SublimeVideo.handleLoggedInAutoRedirection()
 
   Event.observe window, 'popstate', (event) ->
-    if event.state? && event.state.hidePopup?
+    if event.state? and event.state.hidePopup?
       SublimeVideo.showPopup(event.state.hidePopup)
-    else if event.state? && event.state.showPopup?
+    else if event.state? and event.state.showPopup?
       SublimeVideo.showPopup(event.state.showPopup)
 
 SublimeVideo.handleLoggedInAutoRedirection = ->
   path = document.location.pathname
-  my_host = "http://my.#{document.location.host}"
+  my_host = "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}"
   if path == '/'
     # We "kill" the cookie to ensure there will be no infinite redirect between /sites and /?p=login
     # When MSV session is dead but "l" cookie is still true
@@ -28,8 +28,8 @@ SublimeVideo.handleLoggedInAutoRedirection = ->
     document.location.href = "#{my_host}#{path}"
 
 SublimeVideo.showPopup = (name) ->
-  if Cookie.get('l') == 'true'
-    document.location.href = "http://my.#{SublimeVideo.topDomainHost()}/sites"
+  if Cookie.get('l') is '1'
+    document.location.href = "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}/sites"
   else if $("popup_#{name}")
     SublimeVideo.openSimplePopup("popup_#{name}")
     $("popup_#{name}").down('#user_email').focus()
@@ -45,7 +45,7 @@ SublimeVideo.hidePopup = (name) ->
   false
 
 SublimeVideo.replaceHistory = (contentId) ->
-  if history && history.replaceState
+  if history and history.replaceState
     history.replaceState { hidePopup: contentId.replace(/^popup_/, '') }, '', document.location.href.replace document.location.search, ''
 
 SublimeVideo.openSimplePopup = (contentId) -> # item can be site

@@ -379,6 +379,20 @@ describe Site do
       end
     end
 
+    describe "#hostname_or_token" do
+      context "site with a hostname" do
+        subject { Factory.create(:site, hostname: 'rymai.me') }
+
+        specify { subject.hostname_or_token.should eql 'rymai.me' }
+      end
+
+      context "site without a hostname" do
+        subject { Factory.create(:site, plan_id: @free_plan.id, hostname: '') }
+
+        specify { subject.hostname_or_token.should eql "##{subject.token}" }
+      end
+    end
+
     describe "path=" do
       describe "sets to '' if nil is given" do
         subject { Factory.create(:site, path: nil) }

@@ -5,7 +5,7 @@
     %title= title_env_prefix + title_subdomain_prefix(request) + (title.present? ? " - #{title}" : '')
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-    = stylesheet_link_tag(request.subdomain.blank? ? 'com' : request.subdomain)
+    = stylesheet_link_tag(request.subdomain)
     = airbrake_javascript_notifier
     = csrf_meta_tag
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }

@@ -14,18 +14,18 @@
     %ul.slides
       %li.always_up_to_date.active
         %h3= "Always Up-To-Date"
-        = link_to (image_tag "www/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), www_page_path('features', anchor: 'always_up_to_date')
+        = link_to (image_tag "www/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), page_path('features', anchor: 'always_up_to_date')
       %li.works_in_any_browsers
         %h3= "Works in any browsers"
-        = link_to (image_tag "www/home/features/browsers/default.png", alt: "Works in any browsers"), www_page_path('features', anchor: 'default')
+        = link_to (image_tag "www/home/features/browsers/default.png", alt: "Works in any browsers"), page_path('features', anchor: 'default')
       %li.works_on_any_devices
         %h3= "Works on any mobile devices"
-        = link_to (image_tag "www/home/features/any_devices.png", alt: "Works on any mobile devices"), www_page_path('features', anchor: 'any_devices')
+        = link_to (image_tag "www/home/features/any_devices.png", alt: "Works on any mobile devices"), page_path('features', anchor: 'any_devices')
       %li.stats
         %h3= "Real-time Statistics"
-        = link_to (image_tag "www/home/features/stats.png", alt: "Real-time Statistics"), www_page_path('features', anchor: 'stats')
+        = link_to (image_tag "www/home/features/stats.png", alt: "Real-time Statistics"), page_path('features', anchor: 'stats')
       %li.instant_setup
-        = link_to (image_tag "www/home/features/instant_setup.png", alt: "Always Up-To-Date"), www_page_path('features', anchor: 'instant_setup')
+        = link_to (image_tag "www/home/features/instant_setup.png", alt: "Always Up-To-Date"), page_path('features', anchor: 'instant_setup')
         %h3.t1= "Instant Setup"
         %h3.t2= "Easy Integration"
     .slides_nav
@@ -50,7 +50,7 @@
           %span= "Free & Unlimited"
         .button_wrap
           = link_to "Get It Now", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button"
-          = link_to "see all plans", www_page_url('plans', subdomain: 'www'), class: "small"
+          = link_to "see all plans", page_url('plans', subdomain: 'www'), class: "small"
         %em.never_look_back= "And never look back!"
 
 %section.showcase
@@ -75,7 +75,7 @@
     %p.author
       = "Tom Kiss, Designer at "
       = link_to "MediaMolecule", "http://www.mediamolecule.com"
-    = link_to www_page_url('customer-showcases', subdomain: 'www'), class: "view_all_showcases" do
+    = link_to page_url('customer-showcases', subdomain: 'www'), class: "view_all_showcases" do
       %span= "View all showcases"
   .spacer
 .big_break
@@ -83,4 +83,4 @@
 %section.vision_tagline
   %h3
     = "HTML5 is the future of online video. Together with the SublimeVideo community,"
-    = link_to "we've made it a reality today", www_page_url('about', subdomain: 'www')
+    = link_to "we've made it a reality today", page_url('about', subdomain: 'www')

@@ -1,11 +1,5 @@
-<%= t("mailer.intro_generic") %>
+We'd like to notify you that we've activated Peak Insurance for your site <%= @site.hostname %> (<%= @site.plan.name.humanize %> plan) because you have reached or exceeded your monthly limit of video plays.
 
-We'd like to notify you that we have activated Peak Insurance for your site <%= @site.hostname %> (<%= @site.plan.name.humanize %> plan) because you have reached or exceeded your monthly limit of video views.
+Read more about Peak Insurance: <%= page_url('peak-insurance', protocol: 'https', subdomain: 'docs') %>
 
-Read more about Peak Insurance:
-http://docs.sublimevideo.net/peak-insurance
-
-If you have any questions, please use our support form:
-https://<%= ActionMailer::Base.default_url_options[:host] %>/support
-
-<%= t("mailer.signature") %>
+If you have any questions, please <%= raw mail_to I18n.t("mailer.billing_email"), "email us" %>.

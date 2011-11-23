@@ -10,8 +10,8 @@ MySublimeVideo::Application.routes.draw do
     constraints subdomain: 'my' do
 
       unauthenticated :user do
-        get '/sites' => redirect { |params, req| "http://www.#{req.domain}/?p=login" }
-        root to: redirect { |params, req| "http://www.#{req.domain}/?p=login" }
+        get '/sites' => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/?p=login" }
+        root to: redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/?p=login" }
       end
 
       devise_for :users,
@@ -32,10 +32,10 @@ MySublimeVideo::Application.routes.draw do
       end
       get '/account/edit' => redirect('/account')
 
-      %w[sign_up register].each { |action| get action => redirect { |params, req| "http://www.#{req.domain}/?p=signup" } }
-      %w[login log_in sign_in signin].each    { |action| get action => redirect { |params, req| "http://#{req.domain}/?p=login" } }
+      %w[sign_up register].each { |action| get action => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/?p=signup" } }
+      %w[login log_in sign_in signin].each    { |action| get action => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://#{req.domain}/?p=login" } }
       %w[log_out sign_out signout].each { |action| get action => redirect('/logout') }
-      get '/invitation/accept' => redirect { |params, req| "http://www.#{req.domain}/?p=signup&beta=over" }
+      get '/invitation/accept' => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/?p=signup&beta=over" }
       post '/password/validate' => "users/passwords#validate"
 
       scope 'account' do
@@ -152,9 +152,6 @@ MySublimeVideo::Application.routes.draw do
 
   scope module: 'admin', as: 'admin' do
     constraints subdomain: 'admin' do
-
-      match '/admin(/*rest)' => redirect { |params, req| "http://admin.#{req.domain}/#{params[:rest]}" }
-
       %w[log_in sign_in signin].each         { |action| get action => redirect('/login') }
       %w[log_out sign_out signout exit].each { |action| get action => redirect('/logout') }
 
@@ -236,23 +233,29 @@ MySublimeVideo::Application.routes.draw do
     get '/logout' => 'my/users/sessions#destroy'
   end
 
-  scope module: 'www', as: 'www' do
+  scope module: 'www' do
     constraints(WwwSubdomain) do
       # Redirects
       %w[signup sign_up register].each { |action| get action => redirect('/?p=signup') }
-      %w[login log_in sign_in signin].each    { |action| get action => redirect('/?p=login') }
+      %w[login log_in sign_in signin].each { |action| get action => redirect('/?p=login') }
 
       # Redirect to subdomains
-      match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
+      match '/docs(/*rest)' => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://docs.#{req.domain}/#{params[:rest]}" }
+      match '/admin(/*rest)' => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://admin.#{req.domain}/#{params[:rest]}" }
 
       # Docs routes
       %w[javascript-api releases].each do |path|
-        match path => redirect { |params, req| "http://docs.#{req.domain}/#{path}" }
+        get path => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://docs.#{req.domain}/#{path}" }
       end
 
       # My routes
       %w[privacy terms sites account].each do |path|
         match path => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://my.#{req.domain}/#{path}" }
+      end
+      authenticated :user do
+        %w[help].each do |path|
+          get path => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://my.#{req.domain}/#{path}" }
+        end
       end
 
       match '/notify(/:anything)' => redirect('/')
@@ -261,6 +264,9 @@ MySublimeVideo::Application.routes.draw do
       get '/:page' => 'pages#show', as: :page
 
       get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
+      
+      # Fake Maintenance pass-out
+      get '/private/:token' => 'application#maintenance_code'
 
       root to: 'pages#show', page: 'home'
     end

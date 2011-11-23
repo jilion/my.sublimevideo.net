@@ -16,8 +16,8 @@ class My::SitesController < MyController
     load_usages_for_initial_help
 
     respond_with(@sites, per_page: 10) do |format|
-      format.js
       format.html
+      format.js
       format.json { render json: @sites.to_backbone_json }
     end
   end
@@ -74,8 +74,8 @@ class My::SitesController < MyController
     @site = current_user.sites.not_archived.find(params[:id])
 
     respond_with(@site) do |format|
-      format.js
       format.html { redirect_to :sites }
+      format.js
     end
   end
 

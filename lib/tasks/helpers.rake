@@ -32,9 +32,9 @@ def disable_perform_deliveries(&block)
     original_perform_deliveries = ActionMailer::Base.perform_deliveries
     # Disabling perform_deliveries (avoid to spam fakes email adresses)
     ActionMailer::Base.perform_deliveries = false
-    
+
     yield
-    
+
     # Switch back to the original perform_deliveries
     ActionMailer::Base.perform_deliveries = original_perform_deliveries
   else

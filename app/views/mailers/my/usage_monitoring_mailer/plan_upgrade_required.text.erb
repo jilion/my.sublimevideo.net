@@ -1,9 +1,7 @@
-<%= t("mailer.intro_generic") %>
-
 You have reached your peak insurance with your plan <%= @site.plan.name.humanize %> plan's monthly limit for <%= @site.hostname %>.
 
 TODO
 
-https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.to_param %>/plan/edit
+<%= edit_site_plan_url(@site.to_param, protocol: 'https', subdomain: 'my') %>
 
-<%= t("mailer.signature") %>
+If you have any questions, please <%= raw mail_to I18n.t("mailer.billing_email"), "email us" %>.

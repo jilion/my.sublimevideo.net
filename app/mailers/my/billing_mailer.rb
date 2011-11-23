@@ -1,5 +1,5 @@
 class My::BillingMailer < MyMailer
-  default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.from_billing')
+  default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.billing_email')
 
   helper :application, 'my/invoices', 'my/sites'
   include My::SitesHelper # the only way to include view helpers in here
@@ -8,10 +8,12 @@ class My::BillingMailer < MyMailer
   def trial_will_end(site)
     @site = site
     @user = site.user
+    hostname = @site.hostname.presence || 'your site'
+    subject = full_days_until_trial_end(@site) > 1 ? I18n.t('mailer.billing_mailer.trial_will_end', hostname: hostname, days: full_days_until_trial_end(@site)) : I18n.t('mailer.billing_mailer.trial_will_end_tomorrow', hostname: hostname)
 
     mail(
       to: to(@user),
-      subject: I18n.t('mailer.billing_mailer.trial_will_end', hostname: @site.hostname.presence || 'your site', days: full_days_until_trial_end(@site))
+      subject: subject
     )
   end
 

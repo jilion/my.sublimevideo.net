@@ -111,11 +111,6 @@ group :production do
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end
 
-group :production, :staging do
-  gem 'rack-ssl-enforcer', '~> 0.2.3'
-  gem 'rack-no-www'
-end
-
 group :development, :test do
   gem 'log_buddy'
   gem 'timecop'
@@ -139,6 +134,7 @@ group :development do
   gem 'powder'
   gem 'taps'
   gem 'silent-postgres'
+  gem 'letter_opener'
 
   gem 'em-http-request' # async pusher in populate
 

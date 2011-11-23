@@ -21,7 +21,7 @@ describe My::UsageMonitoringMailer do
     end
 
     it "should set a body that contain the link to peak insurance docs" do
-      @last_delivery.body.encoded.should include "http://docs.sublimevideo.net/peak-insurance"
+      @last_delivery.body.encoded.should include "https://docs.#{ActionMailer::Base.default_url_options[:host]}/peak-insurance"
     end
   end
 
@@ -38,7 +38,7 @@ describe My::UsageMonitoringMailer do
     end
 
     it "should set a body that contain the link to edit the plan" do
-      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{subject.to_param}/plan/edit"
+      @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{subject.to_param}/plan/edit"
     end
   end
 
