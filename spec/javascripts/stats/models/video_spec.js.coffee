@@ -1,16 +1,20 @@
 describe 'Videos', ->
   beforeEach ->
+    MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds({id: 1060})
+    MSVStats.period = new MSVStats.Models.Period
+      type: 'seconds'
+      startSecondsTime: 1000 * 1000
+      endSecondsTime: 1059 * 1000
+
+  beforeEach ->
     MSVStats.sites = new MSVStats.Collections.Sites({token: 'site1234'})
     MSVStats.sites.select('site1234')
 
   describe 'MSVStats.Models.Video', ->
-    beforeEach ->
-      MSVStats.videos = new MSVStats.Collections.Videos()
-      MSVStats.videos.endTime = 62000
 
-    it 'copies endTime from collection', ->
+    it 'copies addTime from period', ->
       @video = new MSVStats.Models.Video()
-      expect(@video.endTime).toEqual(MSVStats.videos.endTime)
+      expect(@video.addTime).toEqual(MSVStats.period.endTime() + 2 * 1000)
 
     describe 'currentSources()', ->
       beforeEach ->
@@ -64,17 +68,15 @@ describe 'Videos', ->
 
       describe 'with vv_sum & vl_sum null', ->
         beforeEach ->
-          MSVStats.period       = new MSVStats.Models.Period(type: 'seconds')
-          MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds({id: 1001})
           @video = new MSVStats.Models.Video
-            vl_hash: {1000: 1, 1001: 2, 1002: 3}
-            vv_hash: {1000: 1, 1001: 2, 1002: 3}
+            vl_hash: {999: 1, 1001: 2, 1002: 3, 1059: 4, 1060: 5}
+            vv_hash: {999: 1, 1001: 2, 1002: 3, 1059: 4, 1060: 5}
 
         it 'return 6 vlTotal', ->
-          expect(@video.vlTotal()).toEqual(3)
+          expect(@video.vlTotal()).toEqual(9)
 
         it 'return 15 for vvTotal', ->
-          expect(@video.vvTotal()).toEqual(3)
+          expect(@video.vvTotal()).toEqual(9)
 
       describe 'with vv_sum & vl_sum set', ->
         beforeEach ->
@@ -92,40 +94,15 @@ describe 'Videos', ->
 
     describe 'vvArray()', ->
       beforeEach ->
-        MSVStats.period       = new MSVStats.Models.Period(type: 'seconds')
-        MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds({id: 1060})
         @video = new MSVStats.Models.Video
-          vl_hash: {1000: 1, 1001: 2, 1002: 3}
-          vv_hash: {1000: 1, 1001: 2, 1002: 3}
+          vl_hash: {999: 1, 1001: 2, 1002: 3, 1059: 4, 1060: 5}
+          vv_hash: {999: 1, 1001: 2, 1002: 3, 1059: 4, 1060: 5}
 
       it 'return array with missing value', ->
-        expect(@video.vvArray()).toEqual([0, 1])
+        expect(@video.vvArray()).toEqual([0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4])
 
 
   describe 'MSVStats.Collections.Videos', ->
-
-    describe 'addEmptyNewStats()', ->
-      beforeEach ->
-        @videos = new MSVStats.Collections.Videos [{
-          id: 'video1'
-          vl_array: [1,2,3]
-          vv_array: [1,2,3]
-        }]
-
-      it 'adds 0 to vl_array & vv_array', ->
-        @videos.addEmptyNewStats(1000)
-        expect(@videos.first().get('vl_array')).toEqual([1,2,3,0])
-        expect(@videos.first().get('vv_array')).toEqual([1,2,3,0])
-
-      it 'updates video endTime', ->
-        @videos.addEmptyNewStats(1000)
-        expect(@videos.first().endTime).toEqual(1000)
-
-      it 'skips update if already up-to-date', ->
-        @videos.addEmptyNewStats(1000)
-        expect(@videos.first().get('vl_array')).toEqual([1,2,3,0])
-        @videos.addEmptyNewStats(1000)
-        expect(@videos.first().get('vl_array')).toEqual([1,2,3,0])
 
     describe 'merge()', ->
 
@@ -133,34 +110,29 @@ describe 'Videos', ->
         beforeEach ->
           MSVStats.videos = new MSVStats.Collections.Videos [{
             id: 'video1'
-            vl_array: [1,2,3]
-            vv_array: [1,2,3]
+            vl_hash: {60: 1, 61: 2, 62: 3 }
+            vv_hash: {60: 1, 61: 2, 62: 3 }
           }]
-          MSVStats.videos.endTime = 62000
           @videos = MSVStats.videos
 
         it 'add data to the end', ->
           @videos.merge [{ id: 63, u: 'video1', vv: 1 }]
-          expect(@videos.first().get('vv_array')).toEqual([1,2,3,1])
-          expect(@videos.first().get('vl_array')).toEqual([1,2,3,0])
-          expect(@videos.first().endTime).toEqual(63000)
+          expect(@videos.first().get('vl_hash')).toEqual(60 : 1, 61 : 2, 62 : 3)
+          expect(@videos.first().get('vv_hash')).toEqual(60 : 1, 61 : 2, 62 : 3, 63: 1)
 
         it 'increment last data', ->
           @videos.merge [{ id: 62, u: 'video1', vv: 1 }]
-          expect(@videos.first().get('vv_array')).toEqual([1,2,4])
-          expect(@videos.first().get('vl_array')).toEqual([1,2,3])
-          expect(@videos.first().endTime).toEqual(62000)
+          expect(@videos.first().get('vl_hash')).toEqual(60 : 1, 61 : 2, 62 : 3)
+          expect(@videos.first().get('vv_hash')).toEqual(60 : 1, 61 : 2, 62 : 4)
 
         it 'increment pre-last data', ->
           @videos.merge [{ id: 61, u: 'video1', vl: 1 }]
-          expect(@videos.first().get('vv_array')).toEqual([1,2,3])
-          expect(@videos.first().get('vl_array')).toEqual([1,3,3])
-          expect(@videos.first().endTime).toEqual(62000)
+          expect(@videos.first().get('vl_hash')).toEqual(60 : 1, 61 : 3, 62 : 3)
+          expect(@videos.first().get('vv_hash')).toEqual(60 : 1, 61 : 2, 62 : 3)
 
         it 'adds new video', ->
           @videos.merge [{ id: 62, u: 'video2', n: 'video2', vl: 1 }]
           @video2 = @videos.get('video2')
-          expect(_.last(@video2.get('vl_array'))).toEqual(1)
-          expect(_.last(@video2.get('vv_array'))).toEqual(0)
-          expect(@video2.endTime).toEqual(62000)
+          expect(@video2.get('vl_hash')).toEqual(62 : 1)
+          expect(@video2.get('vv_hash')).toEqual({})
 
