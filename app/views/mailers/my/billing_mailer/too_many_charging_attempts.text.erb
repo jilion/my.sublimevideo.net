@@ -1,10 +1,10 @@
-The payment for <%= @invoice.site.hostname %> has failed multiple times, no further charging attempt will be made.
+The payment for <%= @invoice.site.hostname %> has failed multiple times, no further attempts will be made to charge this account.
 
 You can retry purchasing a plan for <%= @invoice.site.hostname %> on the following page:
 
 <%= edit_site_plan_url(@invoice.site.to_param, protocol: 'https', subdomain: 'my') %>
 
-Note that if the payment failed due to a problem with your credit card, you should probably update your credit card information via the following link:
+Please note that if the payment failed due to a problem with your credit card, you should update your credit card information via the following link:
 
 <%= edit_billing_url(protocol: 'https', subdomain: 'my') %>
 
