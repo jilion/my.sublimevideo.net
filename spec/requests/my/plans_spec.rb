@@ -110,7 +110,7 @@ feature "Plan edit" do
 
       click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
 
-      page.should have_content("Your new <strong>#{site.next_cycle_plan.title}</strong> plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
+      page.should have_content("Your new #{site.next_cycle_plan.title} plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
     end
 
     scenario "update free plan to paid plan" do
@@ -243,7 +243,7 @@ feature "Plan edit" do
 
       current_url.should == "http://my.sublimevideo.dev/sites/#{site.token}/plan/edit"
 
-      page.should have_content("Your new <strong>#{site.next_cycle_plan.title}</strong> plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
+      page.should have_content("Your new #{site.next_cycle_plan.title} plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
 
       click_button "Cancel"
 
@@ -272,8 +272,7 @@ feature "Site in sponsored plan" do
 
     click_link "Sponsored"
 
-    page.should have_content "Your plan is currently sponsored by Jilion."
-    page.should have_content "If you have any questions, please contact us."
+    page.should have_content "Your plan is currently sponsored, if you have any questions, please contact us."
   end
 end
 

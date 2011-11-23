@@ -105,7 +105,7 @@
       .left
         %p= raw "We also offer a #{content_tag :strong, 'Free LaunchPad Plan'}<br /> to test and work with SublimeVideo before launching your site."
       .right
-        %p= raw "Need more pageviews, custom support or have other enterprise-class requirements? Please #{mail_to "sales@sublimevideo.net", "contact us" }."
+        %p= raw "Need more pageviews, custom support or have other enterprise-class requirements? Please #{mail_to t('mailer.sales_email'), "contact us" }."
       = link_to "Sign Up", "https://my.sublimevideo.net/signup", :class => "big_button"
     .spacer
     #plans_faq

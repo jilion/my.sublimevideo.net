@@ -19,8 +19,8 @@ describe My::StatMailer do
       @last_delivery.body.encoded.should include "Dear #{@user.name},"
       @last_delivery.body.encoded.should include "2 days"
       @last_delivery.body.encoded.should include I18n.l(@site.stats_trial_ended_at, format: :named_date)
-      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit"
-      @last_delivery.body.encoded.should include "http://docs.sublimevideo.net"
+      @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit"
+      @last_delivery.body.encoded.should include "https://docs.#{ActionMailer::Base.default_url_options[:host]}"
     end
   end
 

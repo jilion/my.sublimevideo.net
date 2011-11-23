@@ -2,13 +2,15 @@ en:
   mailer:
     default:
       from: "SublimeVideo <info@sublimevideo.net>"
-    from_billing: "SublimeVideo Billing <billing@sublimevideo.net>"
+    billing_email: "SublimeVideo Billing <billing@sublimevideo.net>"
+    sales_email: "SublimeVideo Sales <sales@sublimevideo.net>"
     intro_generic: "Dear SublimeVideo user,"
     intro_name:    "Dear %{name},"
     signature:     "The SublimeVideo Team"
 
     billing_mailer:
       trial_will_end: "Trial for %{hostname} will expire in %{days} days"
+      trial_will_end_tomorrow: "Trial for %{hostname} will expire tomorrow"
       credit_card_will_expire: "Your credit card will expire at the end of this month"
       transaction_succeeded: "Payment approved"
       transaction_failed: "Problem processing your payment"

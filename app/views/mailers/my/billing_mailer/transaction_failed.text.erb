@@ -11,4 +11,4 @@ Please use the following link to see which sites encountered payment errors and 
 <%= sites_url(protocol: 'https', subdomain: 'my') %>
 <% end %>
 
-If you have any questions, please <%= raw mail_to I18n.t("mailer.from_billing"), "email us" %>.
+If you have any questions, please <%= raw mail_to I18n.t("mailer.billing_email"), "email us" %>.

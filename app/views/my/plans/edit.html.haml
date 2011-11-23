@@ -6,17 +6,17 @@
 
   - if @site.hostname.blank?
     .notice= raw t('site.plan.hostname_needed_for_paid_plan', link: link_to("add a hostname", [:edit, @site]))
-  - elsif @site.pending_plan_id? && !@site.pending_plan_id_changed?
-    .notice= t 'site.plan.upgrade_in_progress'
   - elsif @site.invoices_failed?
     .notice= raw t('site.plan.upgrade_in_progress_failed_link', link: link_to("your invoice", [@site, :invoices]))
   - elsif @site.invoices_open?
     .notice= raw t('site.plan.upgrade_in_progress_open_link', link: link_to("here", [@site, :invoices]))
   - elsif @site.invoices_waiting?
     .notice= t 'site.plan.upgrade_in_progress_waiting_link'
+  - elsif @site.pending_plan_id? && !@site.pending_plan_id_changed?
+    .notice= t 'site.plan.upgrade_in_progress'
   - elsif @site.in_sponsored_plan?
     .notice
-      %p= raw "Your plan is currently sponsored by Jilion. If you have any questions, please #{mail_to "sales@sublimevideo.net", "contact us"}."
+      %p= raw "Your plan is currently sponsored, if you have any questions, please #{mail_to t('mailer.sales_email'), "contact us"}."
   - else
     - if @site.errors.empty? && @site.next_cycle_plan_id?
       #next_cycle_plan_box.notice
@@ -37,5 +37,4 @@
         = render 'plan_change_messages'
         .spacer
 
-        .actions.center
-          = f.submit("Update plan", class: "submit green_button", id: 'site_submit', style: 'display:none') unless @site.in_custom_plan?
+        .actions.center= f.submit("Update plan", class: "submit green_button", id: 'site_submit', style: 'display:none') unless @site.in_custom_plan?
