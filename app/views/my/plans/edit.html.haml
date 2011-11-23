@@ -5,23 +5,22 @@
   = render '/layouts/segmented_menu'
 
   - if @site.hostname.blank?
-    .info_message_box= raw "Please #{link_to("add a hostname", [:edit, @site])} before choosing a paid plan."
+    .notice= raw t('site.plan.hostname_needed_for_paid_plan', link: link_to("add a hostname", [:edit, @site]))
   - elsif @site.pending_plan_id? && !@site.pending_plan_id_changed?
-    - if @site.invoices_failed?
-      .info_message_box= raw t('site.plan.upgrade_in_progress_failed_link', link: link_to("your invoice", [@site, :invoices]))
-    - elsif @site.invoices_open?
-      .info_message_box= raw t('site.plan.upgrade_in_progress_open_link', link: link_to("your invoice", [@site, :invoices]))
-    - elsif @site.invoices_waiting?
-      .info_message_box= t 'site.plan.upgrade_in_progress_waiting_link'
-    - else
-      .info_message_box= t 'site.plan.upgrade_in_progress'
+    .notice= t 'site.plan.upgrade_in_progress'
+  - elsif @site.invoices_failed?
+    .notice= raw t('site.plan.upgrade_in_progress_failed_link', link: link_to("your invoice", [@site, :invoices]))
+  - elsif @site.invoices_open?
+    .notice= raw t('site.plan.upgrade_in_progress_open_link', link: link_to("here", [@site, :invoices]))
+  - elsif @site.invoices_waiting?
+    .notice= t 'site.plan.upgrade_in_progress_waiting_link'
   - elsif @site.in_sponsored_plan?
-    .info_message_box
+    .notice
       %p= raw "Your plan is currently sponsored by Jilion. If you have any questions, please #{mail_to "sales@sublimevideo.net", "contact us"}."
   - else
     - if @site.errors.empty? && @site.next_cycle_plan_id?
-      #next_cycle_plan_box
-        %p= t 'site.plan.next_cycle_will_start_on', plan_title: @site.next_cycle_plan.title(always_with_cycle: true), date: l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date)
+      #next_cycle_plan_box.notice
+        %p= raw t('site.plan.next_cycle_will_start_on', plan_title: @site.next_cycle_plan.title(always_with_cycle: true), date: l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date))
         = button_to "Cancel", [@site, :plan], method: 'delete', class: "cancel_button submit_dynamic_button"
 
     #change_plan_box.section_box
@@ -39,4 +38,4 @@
         .spacer
 
         .actions.center
-          = f.submit("Update plan", class: "submit big", id: 'site_submit') unless @site.in_custom_plan?
+          = f.submit("Update plan", class: "submit green_button", id: 'site_submit', style: 'display:none') unless @site.in_custom_plan?

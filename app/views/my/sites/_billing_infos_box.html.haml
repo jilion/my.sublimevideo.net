@@ -2,8 +2,7 @@
   - if !current_user.cc? || !current_user.billing_address_complete?
     = raw t('site.plan.upgrade_need_billing_infos_first', link: link_to("fill your billing information", [:edit, :billing], class: "hl"))
   - elsif current_user.cc_expired?
-    = t('user.credit_card.expired')
-    = raw t("app.please_link", link: link_to(t('app.update_it'), [:edit, :billing], class: "hl")) + " and come back here to buy your plan."
+    = raw t('site.plan.upgrade_need_credit_card_up_to_date_first', link: link_to(t('app.update_it'), [:edit, :billing], class: "hl"))
   - else
     #credit_card_summary
       %strong Credit card used
