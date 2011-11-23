@@ -1,7 +1,0 @@
-Welcome <%= @resource.email %>!
-
-Please confirm your account via the link below:
-
-<%= confirmation_url(@resource, confirmation_token: @resource.confirmation_token) %>
-
-<%= t("mailer.signature") %>

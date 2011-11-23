@@ -424,9 +424,6 @@ feature "Sites index" do
       scenario "should redirect to /sites/new" do
         go 'my', '/sites'
         current_url.should eq "http://my.sublimevideo.dev/sites/new"
-        page.should have_selector '#signup_steps'
-        find('#signup_steps').find('li.active').should have_content '2'
-        page.should have_no_selector 'h2'
       end
     end
 

@@ -1,4 +1,5 @@
-class My::Users::PasswordsController < MyController
+class My::Users::PasswordsController < Devise::PasswordsController
+  include CustomDevisePaths
 
   # POST /password/validate
   def validate

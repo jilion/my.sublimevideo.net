@@ -9,6 +9,14 @@ module CustomDevisePaths
     end
   end
 
+  def after_resending_confirmation_instructions_path_for(resource_or_scope)
+    after_sign_out_path_for(resource_or_scope)
+  end
+
+  def after_sending_reset_password_instructions_path_for(resource_or_scope)
+    after_sign_out_path_for(resource_or_scope)
+  end
+
   def after_sign_out_path_for(resource_or_scope)
     case Devise::Mapping.find_scope!(resource_or_scope)
     when :user

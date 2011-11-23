@@ -1,4 +1,5 @@
-%p= flash[:alert]
+- if flash[:alert]
+  %p.alert= flash[:alert]
 
 = form_for @user || User.new, as: :user, url: signup_url(subdomain: 'www'), html: { class: "main_form" } do |f|
   .entry.email
@@ -23,7 +24,7 @@
   .entry.submit.signup
     = f.submit "Sign Up"
     .spacer
-    
+
 #signup_right
   .wrap
     Already an account?

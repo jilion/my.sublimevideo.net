@@ -2,12 +2,11 @@
 
 %p.title_desc= "You will receive an email with the confirmation instructions."
 
-= form_for resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post, :class => "main_form p_bottom" } do |f|
-  
+= form_for resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: "main_form p_bottom" } do |f|
+
   .entry.email
-    = f.label :email, "", :class => "icon"
-    = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
-  
-  .entry.submit
-    = f.submit "Resend"
+    = f.label :email, "", class: "icon"
+    = f.email_field :email, class: "text", placeholder: "Email", required: true
+
+  .actions= f.submit "Resend", class: 'submit blue_button'
   .spacer
