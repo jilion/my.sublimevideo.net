@@ -6,7 +6,7 @@ Your credit card could not be charged.
 
   <%= edit_billing_url(protocol: 'https', subdomain: 'my') %>
   <% else %>
-  Please use the following link to see the sites with payment errors and retry the payment:
+  Please use the following link to see which sites encountered payment errors and retry the payment:
 
   <%= sites_url(protocol: 'https', subdomain: 'my') %>
 <% end %>
