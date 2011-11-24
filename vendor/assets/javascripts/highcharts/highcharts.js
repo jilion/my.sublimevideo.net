@@ -2259,43 +2259,81 @@ SVGElement.prototype = {
 	 * Add a shadow to the element. Must be done after the element is added to the DOM
 	 * @param {Boolean} apply
 	 */
-	shadow: function (apply, group) {
-		var shadows = [],
-			i,
-			shadow,
-			element = this.element,
+  shadow: function (apply, group) {
+    var shadows = [],
+      i,
+      shadow,
+      element = this.element,
 
-			// compensate for inverted plot area
+      // compensate for inverted plot area
       // transform = this.parentInverted ? '(-1,-1)' : '(1,1)';
-			transform = '(0,0)';
+      transform = '(0,0)';
 
 
-		if (apply) {
-			for (i = 1; i <= 3; i++) {
-				shadow = element.cloneNode(0);
-				attr(shadow, {
-					'isShadow': 'true',
-					'stroke': 'rgb(116, 255, 131)',
-					'stroke-opacity': 0.05 * i,
-					'stroke-width': 16 - 2 * i,
-					'transform': 'translate' + transform,
-					'fill': NONE
-				});
+    if (apply) {
+      for (i = 1; i <= 3; i++) {
+        shadow = element.cloneNode(0);
+        attr(shadow, {
+          'isShadow': 'true',
+          'stroke': 'rgb(116, 255, 131)',
+          'stroke-opacity': 0.08 * i,
+          'stroke-width': 16 - 4 * i,
+          'transform': 'translate' + transform,
+          'fill': NONE
+        });
 
-				if (group) {
-					group.element.appendChild(shadow);
-				} else {
-					element.parentNode.insertBefore(shadow, element);
-				}
+        if (group) {
+          group.element.appendChild(shadow);
+        } else {
+          element.parentNode.insertBefore(shadow, element);
+        }
 
-				shadows.push(shadow);
-			}
+        shadows.push(shadow);
+      }
 
-			this.shadows = shadows;
-		}
-		return this;
+      this.shadows = shadows;
+    }
+    return this;
 
-	}
+  },
+  
+  shadowTooltip: function (apply, group) {
+    var shadows = [],
+      i,
+      shadow,
+      element = this.element,
+
+      // compensate for inverted plot area
+      // transform = this.parentInverted ? '(-1,-1)' : '(1,1)';
+      transform = '(0,0)';
+
+
+    if (apply) {
+      for (i = 1; i <= 3; i++) {
+        shadow = element.cloneNode(0);
+        attr(shadow, {
+          'isShadow': 'true',
+          'stroke': 'rgb(0, 0, 0)',
+          'stroke-opacity': 0.03 * i,
+          'stroke-width': 16 - 5 * i,
+          'transform': 'translate' + transform,
+          'fill': NONE
+        });
+
+        if (group) {
+          group.element.appendChild(shadow);
+        } else {
+          element.parentNode.insertBefore(shadow, element);
+        }
+
+        shadows.push(shadow);
+      }
+
+      this.shadows = shadows;
+    }
+    return this;
+
+  }
 };
 
 /**
@@ -2431,7 +2469,7 @@ SVGRenderer.prototype = {
 						attr(
 							tspan,
 							'style',
-							span.match(styleRegex)[1].replace(/(;| |^)color([ :])/, '$1fill$2')
+              span.match(styleRegex)[1].replace(/(;| |^)color([ :])/, '$1fill$2')
 						);
 					}
 					if (hrefRegex.test(span)) {
@@ -6075,8 +6113,8 @@ function Chart(options, callback) {
 					'stroke-width': borderWidth
 				})
 				.add(group)
-				.shadow(options.shadow),
-			label = renderer.text('', padding + boxOffLeft, pInt(style.fontSize) + padding + boxOffLeft, options.useHTML)
+				.shadowTooltip(options.shadow),
+			label = renderer.text('', padding + boxOffLeft, pInt(style.fontSize) + padding + boxOffLeft - 4, options.useHTML)
 				.attr({ zIndex: 1 })
 				.css(style)
 				.add(group);
@@ -6276,7 +6314,7 @@ function Chart(options, callback) {
 				// set the size of the box
 				box.attr({
 					width: boxWidth,
-					height: boxHeight,
+					height: boxHeight-6,
 					stroke: options.borderColor || point.color || currentSeries.color || '#606060'
 				});
 

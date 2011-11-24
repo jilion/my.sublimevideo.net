@@ -133,8 +133,7 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
 
   url: -> "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=seconds"
 
-  # chartType: -> 'column'
-  chartType: -> 'areaspline'
+  chartType: -> 'column'
   periodType: -> 'seconds'
 
   customSum: (attribute) ->
