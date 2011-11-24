@@ -4,7 +4,7 @@ AssetSync.configure do |config|
   config.aws_secret_access_key = 'aM1Az2wyqxAnPUotbxcMDG1GKJZ5ubpk69nvJabj'
 
   case Rails.env
-  when 'staging'; config.fog_directory = "assets.sublimevideo-staging.net"
+  when 'staging';    config.fog_directory = "assets.sublimevideo-staging.net"
   when 'production'; config.fog_directory = "assets.sublimevideo.net"
   end
 
