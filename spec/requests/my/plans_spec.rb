@@ -3,8 +3,8 @@ require 'spec_helper'
 feature "Plan edit" do
   background do
     sign_in_as :user
-    @gold_month = Plan.create(name: "gold", cycle: "month", video_views: 200_000, price: 4990)
-    @gold_year = Plan.create(name: "gold", cycle: "year", video_views: 200_000, price: 49900)
+    @premium_month = Plan.create(name: "premium", cycle: "month", video_views: 200_000, price: 4990)
+    @premium_year = Plan.create(name: "premium", cycle: "year", video_views: 200_000, price: 49900)
   end
 
   context "site in trial" do
@@ -24,7 +24,7 @@ feature "Plan edit" do
 
       choose "plan_free"
       has_checked_field?("plan_free").should be_true
-      has_unchecked_field?("plan_silver_month").should be_true
+      has_unchecked_field?("plan_plus_month").should be_true
       click_button "Update plan"
 
       site.reload
@@ -39,7 +39,7 @@ feature "Plan edit" do
 
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
-      choose "plan_silver_month"
+      choose "plan_plus_month"
       click_button "Update plan"
 
       site.reload
@@ -54,7 +54,7 @@ feature "Plan edit" do
 
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
-      choose "plan_silver_month"
+      choose "plan_plus_month"
       check "site_skip_trial"
       VCR.use_cassette('ogone/visa_payment_generic') do
         expect { click_button "Update plan" }.to change(@current_user.invoices, :count)
@@ -63,7 +63,7 @@ feature "Plan edit" do
       site.reload
       site.plan.should eq @paid_plan
       site.invoices.last.should be_paid
-      site.plan_id.should eq Plan.find_by_name_and_cycle("silver", "month").id
+      site.plan_id.should eq Plan.find_by_name_and_cycle("plus", "month").id
       site.pending_plan_id.should be_nil
       site.trial_started_at.should be_present
       site.first_paid_plan_started_at.should be_present
@@ -98,7 +98,7 @@ feature "Plan edit" do
       click_button "Update plan"
 
       has_checked_field?("plan_free").should be_true
-      has_unchecked_field?("plan_silver_month").should be_true
+      has_unchecked_field?("plan_plus_month").should be_true
 
       fill_in "Password", with: "123456"
       click_button "Done"
@@ -114,7 +114,7 @@ feature "Plan edit" do
     end
 
     scenario "update free plan to paid plan" do
-      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
+      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
       site.plan_id = @free_plan.id
       site.save_skip_pwd
       Timecop.travel(2.months.from_now) { site.prepare_pending_attributes; site.apply_pending_attributes }
@@ -123,7 +123,7 @@ feature "Plan edit" do
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
       VCR.use_cassette('ogone/visa_payment_generic') do
-        choose "plan_silver_month"
+        choose "plan_plus_month"
         click_button "Update plan"
       end
 
@@ -136,8 +136,8 @@ feature "Plan edit" do
     end
 
     scenario "update paid plan to paid plan and using registered credit card" do
-      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
-      site.plan.should eql @gold_month
+      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
+      site.plan.should eql @premium_month
       site.first_paid_plan_started_at.should be_present
       site.plan_started_at.should be_present
       site.plan_cycle_started_at.should be_present
@@ -148,9 +148,9 @@ feature "Plan edit" do
       page.should have_no_selector "#credit_card"
       page.should have_selector "#credit_card_summary"
 
-      choose "plan_gold_year"
+      choose "plan_premium_year"
 
-      has_checked_field?("plan_gold_year").should be_true
+      has_checked_field?("plan_premium_year").should be_true
       click_button "Update plan"
 
       VCR.use_cassette('ogone/visa_payment_generic') do
@@ -158,21 +158,21 @@ feature "Plan edit" do
         click_button "Done"
       end
 
-      site.reload.plan.should eql @gold_year
+      site.reload.plan.should eql @premium_year
 
       current_url.should == "http://my.sublimevideo.dev/sites"
       page.should have_content "#{site.plan.title}"
 
       click_link site.plan.title
-      has_checked_field?("plan_gold_year").should be_true
+      has_checked_field?("plan_premium_year").should be_true
     end
 
     context "When user has no credit card" do
       background do
         sign_in_as :user, without_cc: true, kill_user: true
         @current_user.should_not be_cc
-        @site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
-        @site.plan.should eql @gold_month
+        @site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
+        @site.plan.should eql @premium_month
         @site.first_paid_plan_started_at.should be_present
         @site.plan_started_at.should be_present
         @site.plan_cycle_started_at.should be_present
@@ -185,9 +185,9 @@ feature "Plan edit" do
         page.should have_selector "#billing_info"
         # page.should have_no_selector("#credit_card_summary")
 
-        choose "plan_gold_year"
+        choose "plan_premium_year"
         # set_credit_card(type: 'master')
-        has_checked_field?("plan_gold_year").should be_true
+        has_checked_field?("plan_premium_year").should be_true
 
         click_button "Update plan"
 
@@ -196,13 +196,13 @@ feature "Plan edit" do
           click_button "Done"
         end
 
-        @site.reload.plan.should eql @gold_year
+        @site.reload.plan.should eql @premium_year
 
         current_url.should == "http://my.sublimevideo.dev/sites"
         page.should have_content(@site.plan.title)
 
         click_link @site.plan.title
-        has_checked_field?("plan_gold_year").should be_true
+        has_checked_field?("plan_premium_year").should be_true
       end
     end
 
@@ -212,7 +212,7 @@ feature "Plan edit" do
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
       VCR.use_cassette('ogone/visa_payment_generic_failed') do
-        choose "plan_silver_month"
+        choose "plan_plus_month"
         click_button "Update plan"
       end
 

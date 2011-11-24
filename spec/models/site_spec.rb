@@ -413,9 +413,9 @@ describe Site do
 
     describe "plan_id=" do
       before(:all) do
-        @paid_plan2        = Factory.create(:plan, name: "gold",   cycle: "month", price: 5000)
-        @paid_plan_yearly  = Factory.create(:plan, name: "silver", cycle: "year",  price: 10000)
-        @paid_plan_yearly2 = Factory.create(:plan, name: "gold",   cycle: "year",  price: 50000)
+        @paid_plan2        = Factory.create(:plan, name: "premium",   cycle: "month", price: 5000)
+        @paid_plan_yearly  = Factory.create(:plan, name: "plus", cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = Factory.create(:plan, name: "premium",   cycle: "year",  price: 50000)
       end
 
       describe "when creating with a free plan" do
@@ -1066,9 +1066,9 @@ describe Site do
     describe "#recommended_plan" do
       before(:all) do
         Plan.delete_all
-        @silver_plan = Factory.create(:plan, name: "silver", video_views: 200_000)
-        @gold_plan = Factory.create(:plan, name: "gold", video_views: 1_000_000)
-        @site = Factory.create(:site, plan_id: @silver_plan.id)
+        @plus_plan = Factory.create(:plan, name: "plus", video_views: 200_000)
+        @premium_plan = Factory.create(:plan, name: "premium", video_views: 1_000_000)
+        @site = Factory.create(:site, plan_id: @plus_plan.id)
       end
       subject { @site }
 
@@ -1101,10 +1101,10 @@ describe Site do
           Factory.create(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 0 })
         end
 
-        its(:recommended_plan_name) { should eql "gold" }
+        its(:recommended_plan_name) { should eql "premium" }
       end
 
-      context "with regular usage and video_views smaller than silver" do
+      context "with regular usage and video_views smaller than plus" do
         before(:each) do
           @site.unmemoize_all
           Factory.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 50 })
@@ -1118,7 +1118,7 @@ describe Site do
         its(:recommended_plan_name) { should be_nil }
       end
 
-      context "with regular usage and video_views between silver and gold" do
+      context "with regular usage and video_views between plus and premium" do
         before(:each) do
           @site.unmemoize_all
           Factory.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 10_000 })
@@ -1129,7 +1129,7 @@ describe Site do
           Factory.create(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 10_000 })
         end
 
-        its(:recommended_plan_name) { should eql "gold" }
+        its(:recommended_plan_name) { should eql "premium" }
       end
 
       context "with non regular usage and lower than video_views but greather than average video_views" do
@@ -1143,7 +1143,7 @@ describe Site do
           Factory.create(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 1_000 })
         end
 
-        its(:recommended_plan_name) { should eql "gold" }
+        its(:recommended_plan_name) { should eql "premium" }
       end
 
       context "with too much video_views" do
@@ -1162,7 +1162,7 @@ describe Site do
       context "with recommended plan lower than current plan" do
         before(:each) do
           @site.unmemoize_all
-          @site.plan = @gold_plan
+          @site.plan = @premium_plan
           Factory.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 500 })
           Factory.create(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 500 })
           Factory.create(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 500 })

@@ -4,7 +4,7 @@ class Plan < ActiveRecord::Base
   CYCLES                = %w[month year none]
   UNPAID_NAMES          = %w[free sponsored]
   LEGACY_UNPAID_NAMES   = %w[dev]
-  STANDARD_NAMES        = %w[silver gold]
+  STANDARD_NAMES        = %w[plus premium]
   LEGACY_STANDARD_NAMES = %w[comet planet star galaxy]
   SUPPORT_LEVELS        = %w[forum email vip_email]
 

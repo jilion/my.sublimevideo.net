@@ -1399,9 +1399,10 @@ describe SiteModules::Invoice do
                 @site
               end
 
-              it "creates an invoice" do
+              it "creates an invoice, and one only" do
                 subject.plan_id = @paid_plan_yearly2.id
                 expect { subject.save! }.to change(subject.invoices, :count).by(1)
+                expect { subject.save! }.to_not change(subject.invoices, :count)
               end
             end
 
@@ -1491,7 +1492,7 @@ describe SiteModules::Invoice do
 
     describe "#set_trial_started_at" do
       before(:all) do
-        @foo_plan = Factory.create(:plan, name: "gold",  video_views: 1_000_000)
+        @foo_plan = Factory.create(:plan, name: "premium",  video_views: 1_000_000)
       end
 
       it "set if site created with free plan" do

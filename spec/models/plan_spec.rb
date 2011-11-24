@@ -9,7 +9,7 @@ describe Plan do
     after(:all) { @plan.delete }
     subject { @plan }
 
-    its(:name)                 { should =~ /silver\d+/ }
+    its(:name)                 { should =~ /plus\d+/ }
     its(:cycle)                { should eq "month" }
     its(:video_views)          { should eq 10_000 }
     its(:stats_retention_days) { should eq 365 }
@@ -221,8 +221,8 @@ describe Plan do
 
     describe "#support" do
       it { Factory.build(:plan, name: "free", support_level: 0).support.should eq "forum" }
-      it { Factory.build(:plan, name: "silver", support_level: 1).support.should eq "email" }
-      it { Factory.build(:plan, name: "gold", support_level: 2).support.should eq "vip_email" }
+      it { Factory.build(:plan, name: "plus", support_level: 1).support.should eq "email" }
+      it { Factory.build(:plan, name: "premium", support_level: 2).support.should eq "vip_email" }
     end
 
   end

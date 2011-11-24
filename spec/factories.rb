@@ -138,7 +138,7 @@ FactoryGirl.define do
   end
 
   factory :plan do
-    sequence(:name)      { |n| "silver#{n}" }
+    sequence(:name)      { |n| "plus#{n}" }
     cycle                "month"
     video_views          10_000
     stats_retention_days 365
