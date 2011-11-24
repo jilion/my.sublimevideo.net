@@ -10,12 +10,25 @@ module SiteModules::Usage
       self.last_30_days_dev_video_views     = 0
       self.last_30_days_invalid_video_views = 0
       self.last_30_days_embed_video_views   = 0
-      stats.d_between(30.days.ago.midnight, 1.day.ago.midnight).all.each do |site_stat|
-        self.last_30_days_main_video_views    += site_stat.vv['m'].to_i
-        self.last_30_days_extra_video_views   += site_stat.vv['e'].to_i
-        self.last_30_days_dev_video_views     += site_stat.vv['d'].to_i
-        self.last_30_days_invalid_video_views += site_stat.vv['i'].to_i
-        self.last_30_days_embed_video_views   += site_stat.vv['em'].to_i
+      self.last_30_days_billable_video_views_array = []
+
+      from = 30.days.ago.midnight
+      to   = 1.day.ago.midnight
+      last_30_days_stats = stats.d_between(from, to).entries
+
+      while from <= to
+        if last_30_days_stats.first.try(:[], 'd') == from
+          s = last_30_days_stats.shift
+          self.last_30_days_main_video_views    += s.vv['m'].to_i
+          self.last_30_days_extra_video_views   += s.vv['e'].to_i
+          self.last_30_days_dev_video_views     += s.vv['d'].to_i
+          self.last_30_days_invalid_video_views += s.vv['i'].to_i
+          self.last_30_days_embed_video_views   += s.vv['em'].to_i
+          self.last_30_days_billable_video_views_array << (s.vv['m'].to_i + s.vv['e'].to_i + s.vv['em'].to_i)
+        else
+          self.last_30_days_billable_video_views_array << 0
+        end
+        from += 1.day
       end
       self.save
     end

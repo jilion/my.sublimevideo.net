@@ -20,6 +20,8 @@ class Site < ActiveRecord::Base
 
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :plan_id, :skip_trial, :user_attributes, :remote_ip
 
+  serialize :last_30_days_billable_video_views_array, Array
+
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9')
 
   mount_uploader :license, LicenseUploader
