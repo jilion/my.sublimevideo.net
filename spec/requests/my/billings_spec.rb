@@ -10,7 +10,7 @@ feature "Access the account page" do
     scenario "is redirected to log in page" do
       go 'my', 'account'
 
-      current_url.should == "http://www.sublimevideo.dev/?p=login"
+      current_url.should eq "http://www.sublimevideo.dev/?p=login"
     end
   end
 
@@ -22,14 +22,14 @@ feature "Access the account page" do
     scenario "can access the page directly" do
       go 'my', 'account'
 
-      current_url.should == "http://my.sublimevideo.dev/account"
+      current_url.should eq "http://my.sublimevideo.dev/account"
     end
 
     scenario "can access the page via a link in the menu" do
       within '#menu' do
         click_link @current_user.name
 
-        current_url.should == "http://my.sublimevideo.dev/account"
+        current_url.should eq "http://my.sublimevideo.dev/account"
       end
     end
   end
@@ -78,16 +78,16 @@ feature "Credentials update" do
 
 end
 
-feature "'More infos' update" do
+feature "'More info' update" do
 
   context "When the user is logged-in" do
     background do
-      sign_in_as :user
+      sign_in_as :user, billing_address_1: ''
       go 'my', 'account'
     end
 
     scenario "It's possible to update billing_country and billing_postal_code directly from the edit account page" do
-      within '#edit_more_infos' do
+      within '#edit_more_info' do
         fill_in "Name",               with: "Bob Doe"
         fill_in "Zip or Postal Code", with: "91470"
         select  "France",             from: "Country"
@@ -105,7 +105,7 @@ feature "'More infos' update" do
     end
 
     scenario "It's possible to update only certain fields" do
-      within '#edit_more_infos' do
+      within '#edit_more_info' do
         fill_in "Name",               with: "Bob Doe"
         fill_in "Zip or Postal Code", with: ""
         select  "France",             from: "Country"
@@ -140,7 +140,7 @@ feature "Billing address update" do
 
       click_link "Update billing address"
 
-      current_url.should == "http://my.sublimevideo.dev/account/billing/edit"
+      current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
     end
 
     scenario "Update billing address successfully" do
@@ -151,7 +151,8 @@ feature "Billing address update" do
       fill_in "City",               with: "Limours"
       fill_in "Region",             with: ""
       select  "France",             from: "Country"
-      click_button "Update"
+      click_button "billing_address_submit"
+      go 'my', 'account'
 
       page.should have_content 'Bob Doe'
       page.should have_content '60 rue du hurepoix'
@@ -168,7 +169,7 @@ feature "Billing address update" do
       fill_in "City",               with: "Limours"
       fill_in "Region",             with: ""
       select  "France",             from: "Country"
-      click_button "Update"
+      click_button "billing_address_submit"
 
       page.should have_css '.inline_errors'
       page.should have_content "Postal code is too long (maximum is 10 characters)"
@@ -189,14 +190,14 @@ feature "Credit cards update" do
 
     scenario "And update is successful" do
       click_link "Register credit card"
-      current_url.should == "http://my.sublimevideo.dev/account/billing/edit"
+      current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
 
       set_credit_card type: 'master'
-      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "Update" }
+      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "credit_card_submit" }
 
       @current_user.reload.cc_type.should eql 'master'
       @current_user.cc_last_digits.should eql '9999'
-      should_save_billing_infos_successfully 'master'
+      should_save_billing_info_successfully 'master'
     end
   end
 
@@ -207,22 +208,22 @@ feature "Credit cards update" do
       go 'my', 'account'
       should_display_credit_card
       click_link "Update credit card"
-      current_url.should == "http://my.sublimevideo.dev/account/billing/edit"
+      current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
     end
 
     scenario "And update is successful" do
       set_credit_card type: 'master'
-      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "Update" }
+      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "credit_card_submit" }
 
       @current_user.reload.cc_type.should eq 'master'
       @current_user.cc_last_digits.should eq '9999'
-      should_save_billing_infos_successfully 'master'
+      should_save_billing_info_successfully 'master'
     end
 
     scenario "And update is successful after a successful 3-D Secure identification" do
       set_credit_card type: 'd3d'
 
-      VCR.use_cassette('ogone/3ds_authorization') { click_button "Update" }
+      VCR.use_cassette('ogone/3ds_authorization') { click_button "credit_card_submit" }
 
       @current_user.reload.pending_cc_type.should eq 'visa'
       @current_user.pending_cc_last_digits.should eq '0002'
@@ -244,7 +245,7 @@ feature "Credit cards update" do
 
     scenario "And update is waiting after a successful 3-D Secure identification" do
       set_credit_card type: 'd3d'
-      VCR.use_cassette('ogone/3ds_authorization') { click_button "Update" }
+      VCR.use_cassette('ogone/3ds_authorization') { click_button "credit_card_submit" }
       @current_user.reload.pending_cc_type.should eq 'visa'
       @current_user.pending_cc_last_digits.should eq '0002'
 
@@ -262,7 +263,7 @@ feature "Credit cards update" do
 
     scenario "And update is unsuccessful after an unsuccessful 3-D Secure identification" do
       set_credit_card type: 'd3d'
-      VCR.use_cassette('ogone/3ds_authorization') { click_button "Update" }
+      VCR.use_cassette('ogone/3ds_authorization') { click_button "credit_card_submit" }
       @current_user.reload.pending_cc_type.should eq 'visa'
       @current_user.pending_cc_last_digits.should eq '0002'
 
@@ -282,24 +283,24 @@ feature "Credit cards update" do
 
     scenario "And update is unsuccessful with a failed attempt first" do
       fill_in "Card number", with: "123123"
-      click_button "Update"
+      click_button "credit_card_submit"
 
-      current_url.should == "http://my.sublimevideo.dev/account/billing"
+      current_url.should eq "http://my.sublimevideo.dev/account/billing"
       page.should have_content "Name on card can't be blank"
       page.should have_content "Card number is invalid"
       page.should have_content "Expiration date expired"
       page.should have_content "CSC is required"
 
       set_credit_card type: 'master'
-      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "Update" }
+      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "credit_card_submit" }
 
-      should_save_billing_infos_successfully 'master'
+      should_save_billing_info_successfully 'master'
     end
 
     scenario "And update does nothing if credit card number is not present" do
       click_button "Update"
 
-      should_save_billing_infos_successfully
+      should_save_billing_info_successfully
     end
   end
 
@@ -316,8 +317,8 @@ def should_display_credit_card(type = 'visa')
   page.should have_content(last_digits(type))
 end
 
-def should_save_billing_infos_successfully(type = 'visa')
-  current_url.should == "http://my.sublimevideo.dev/account"
+def should_save_billing_info_successfully(type = 'visa')
+  current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
   should_display_credit_card(type)
   page.should have_content I18n.t('flash.billings.update.notice')
 end

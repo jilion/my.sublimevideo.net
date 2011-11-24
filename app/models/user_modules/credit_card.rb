@@ -108,7 +108,7 @@ module UserModules::CreditCard
     end
 
     # Be careful with this! Should be only used in dev and for special support-requested-credit-card-deletion purposes
-    def reset_credit_card_infos
+    def reset_credit_card_info
       %w[type last_digits expire_on updated_at].each do |att|
         self.send("cc_#{att}=", nil)
         self.send("pending_cc_#{att}=", nil)

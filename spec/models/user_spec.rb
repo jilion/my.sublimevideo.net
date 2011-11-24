@@ -571,7 +571,7 @@ describe User do
         its(:pending_cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
       end
 
-      context "when user has cc infos before" do
+      context "when user has cc info before" do
         subject { Factory.create(:user_real_cc) }
         before(:each) do
           subject.cc_type.should eq 'visa'
@@ -620,7 +620,7 @@ describe User do
           Delayed::Job.last.name.should eql "Class#update"
         end
 
-        it "updates infos in Campaign Monitor if user change his name" do
+        it "updates info in Campaign Monitor if user change his name" do
           subject
           expect { subject.update_attribute(:name, "bob") }.to change(Delayed::Job, :count).by(1)
           Delayed::Job.last.name.should eql "Class#update"
@@ -775,7 +775,7 @@ describe User do
     end
 
     describe "#billing_address" do
-      context "delegates to snail using billing infos" do
+      context "delegates to snail using billing info" do
         subject { Factory.create(:user, full_billing_address) }
 
         its(:billing_address) { should eq "Remy Coutable\nEPFL Innovation Square\nPSE-D\nNew York NY  1015\nUNITED STATES" }
@@ -844,41 +844,41 @@ describe User do
       end
     end
 
-    describe "#more_infos_incomplete?" do
-      context "more infos complete" do
+    describe "#more_info_incomplete?" do
+      context "more info complete" do
         subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo') }
 
-        it { should_not be_more_infos_incomplete }
+        it { should_not be_more_info_incomplete }
       end
 
       context "company_name is missing" do
         subject { Factory.create(:user, company_name: '', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo') }
 
-        it { should be_more_infos_incomplete }
+        it { should be_more_info_incomplete }
       end
 
       context "company_url is missing" do
         subject { Factory.create(:user, company_name: 'Jilion', company_url: '', company_job_title: 'Foo', company_employees: 'foo') }
 
-        it { should be_more_infos_incomplete }
+        it { should be_more_info_incomplete }
       end
 
       context "company_job_title is missing" do
         subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: '', company_employees: 'foo') }
 
-        it { should be_more_infos_incomplete }
+        it { should be_more_info_incomplete }
       end
 
       context "company_employees is missing" do
         subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: '') }
 
-        it { should be_more_infos_incomplete }
+        it { should be_more_info_incomplete }
       end
 
       context "use is missing" do
         subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo', use_personal: nil) }
 
-        it { should be_more_infos_incomplete }
+        it { should be_more_info_incomplete }
       end
     end
 

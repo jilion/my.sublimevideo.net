@@ -176,9 +176,9 @@ end
 def create_admins
   disable_perform_deliveries do
     puts "Creating admins..."
-    BASE_USERS.each do |admin_infos|
-      Admin.create(full_name: admin_infos[0], email: admin_infos[1], password: "123456")
-      puts "Admin #{admin_infos[1]}:123456"
+    BASE_USERS.each do |admin_info|
+      Admin.create(full_name: admin_info[0], email: admin_info[1], password: "123456")
+      puts "Admin #{admin_info[1]}:123456"
     end
   end
 end

@@ -1,14 +1,15 @@
 en:
   user:
-    billing_address_incomplete: "Your billing address is incomplete."
+    billing_address:
+      incomplete: "Your billing address is incomplete."
+      complete_it: "complete your billing address"
     credit_card:
       type:
         visa:   'Visa'
         master: 'MasterCard'
-      will_expire: "Your credit card will expire at the end of this month."
+      will_expire: "Your credit card expires at the end of the month."
       prevent_charging_problem: "Please %{link} to prevent any charging problem."
       expired: "Your credit card is expired."
-      expired_long: "This credit card is expired, please update it as soon as possible to prevent any charging problem."
     payment:
       retry_here: "and then retry the payment here."
 
@@ -17,4 +18,3 @@ en:
     have_to_pay_following_invoices:
       one: "Please pay the following invoice in order to reactivate your account:"
       other: "Please pay the following invoices in order to reactivate your account:"
-

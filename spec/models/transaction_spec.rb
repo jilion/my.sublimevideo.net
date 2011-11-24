@@ -79,7 +79,7 @@ describe Transaction do
     describe "before_save :set_fields_from_ogone_response" do
       context "with no response from Ogone" do
         it "should not set Ogone specific fields" do
-          subject.instance_variable_set(:@ogone_response_infos, nil)
+          subject.instance_variable_set(:@ogone_response_info, nil)
           subject.save
           subject.pay_id.should be_nil
           subject.status.should be_nil
@@ -89,7 +89,7 @@ describe Transaction do
 
       context "with a response from Ogone" do
         it "should set Ogone specific fields" do
-          subject.instance_variable_set(:@ogone_response_infos, {
+          subject.instance_variable_set(:@ogone_response_info, {
             "PAYID" => "123",
             "ACCEPTANCE" => "321",
             "NCSTATUS" => "0",
@@ -204,7 +204,7 @@ describe Transaction do
     end # Events
 
     describe "Transitions" do
-      describe "after_transition :on => [:succeed, :fail], :do => :update_invoices" do
+      describe "after_transition on: [:succeed, :fail], do: :update_invoices" do
         describe "initial invoices state" do
           specify do
             @invoice1.should be_open
@@ -243,7 +243,7 @@ describe Transaction do
         end
       end
 
-      describe "after_transition :on => :succeed, :do => :send_charging_succeeded_email" do
+      describe "after_transition on: :succeed, do: :send_charging_succeeded_email" do
         context "from open" do
           subject { Factory.create(:transaction, invoices: [Factory.create(:invoice)]) }
 
@@ -255,7 +255,7 @@ describe Transaction do
         end
       end
 
-      describe "after_transition :on => :fail, :do => :send_charging_failed_email" do
+      describe "after_transition on: :fail, do: :send_charging_failed_email" do
         context "from open" do
           subject { Factory.create(:transaction, invoices: [Factory.create(:invoice)]) }
 
@@ -474,32 +474,12 @@ describe Transaction do
           Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
         end
 
-        it "stores cc infos from the user's cc infos" do
+        it "stores cc info from the user's cc info" do
           Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
 
           @invoice1.last_transaction.cc_type.should        eq @user.cc_type
           @invoice1.last_transaction.cc_last_digits.should eq @user.cc_last_digits
           @invoice1.last_transaction.cc_expire_on.should   eq @user.cc_expire_on
-        end
-
-        context "user has pending cc infos" do
-          before do
-            %w[cc_type cc_last_digits cc_expire_on cc_updated_at].each do |attr|
-              @user.send("#{attr}=", nil)
-            end
-            @user.pending_cc_type        = 'master'
-            @user.pending_cc_last_digits = '9999'
-            @user.pending_cc_expire_on   = Time.now.utc.end_of_month.to_date
-            @user.save
-          end
-
-          it "stores cc infos from the user's pending cc infos" do
-            Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
-
-            @invoice1.last_transaction.cc_type.should        eq 'master'
-            @invoice1.last_transaction.cc_last_digits.should eq '9999'
-            @invoice1.last_transaction.cc_expire_on.should   eq Time.now.utc.end_of_month.to_date
-          end
         end
       end
 

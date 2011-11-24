@@ -1,11 +1,11 @@
-%h3.section_title More infos about you
+%h3.section_title More information about you
 .entry
   .name
     = f.label :name, "Name", class: "icon"
     = f.text_field :name, class: "text", placeholder: "Name", required: true
   .spacer
 
-- unless current_user.billable?
+- if !current_user.billable? && !current_user.billing_address_complete?
   .entry.select
     .postal_code.left_field
       = f.label :billing_postal_code, "Zip or Postal Code", class: "icon"

@@ -15,7 +15,7 @@
 
     = render 'skip_trial_box', site: @site, f: f
 
-    = render 'billing_infos_box'
+    = render 'billing_info_box'
 
     - if current_user.vat?
       #plan_create_info.update_plan_message_box.notice{ style: "display:none;" }

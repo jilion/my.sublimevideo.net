@@ -182,7 +182,7 @@ feature "Plan edit" do
       pending "update paid plan to paid plan and using new credit card" do
         go 'my', "/sites/#{@site.to_param}/plan/edit"
 
-        page.should have_selector "#billing_infos"
+        page.should have_selector "#billing_info"
         # page.should have_no_selector("#credit_card_summary")
 
         choose "plan_gold_year"

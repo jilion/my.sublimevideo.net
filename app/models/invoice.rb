@@ -23,7 +23,7 @@ class Invoice < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_validation :set_customer_infos, :set_site_infos, on: :create
+  before_validation :set_customer_info, :set_site_info, on: :create
 
   after_create :decrement_user_balance
   after_create do |record|
@@ -202,7 +202,7 @@ private
   end
 
   # before_validation on: :create
-  def set_customer_infos
+  def set_customer_info
     self.customer_full_name       ||= user.billing_name
     self.customer_email           ||= user.email
     self.customer_country         ||= user.billing_country
@@ -211,7 +211,7 @@ private
   end
 
   # before_validation on: :create
-  def set_site_infos
+  def set_site_info
     self.site_hostname ||= site.hostname
   end
 

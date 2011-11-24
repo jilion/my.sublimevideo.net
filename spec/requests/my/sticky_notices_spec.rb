@@ -22,15 +22,6 @@ feature "Sticky notices" do
       go 'my', '/sites'
     end
 
-    context "user is not billable" do
-      scenario "doesn't show a notice" do
-        @current_user.should_not be_billable
-
-        current_url.should eq "http://my.sublimevideo.dev/sites/new"
-        page.should have_no_content I18n.t("user.credit_card.will_expire")
-      end
-    end
-
     context "user is billable" do
       background do
         Factory.create(:site, user: @current_user)
@@ -84,7 +75,7 @@ feature "Sticky notices" do
         @current_user.should_not be_billable
 
         current_url.should eq "http://my.sublimevideo.dev/sites/new"
-        page.should have_no_content I18n.t("user.billing_address_incomplete")
+        page.should have_no_content I18n.t("user.billing_address.incomplete")
       end
     end
 
@@ -96,7 +87,7 @@ feature "Sticky notices" do
       end
 
       scenario "shows a notice" do
-        page.should have_content I18n.t("user.billing_address_incomplete")
+        page.should have_content I18n.t("user.billing_address.complete_it")
         page.should have_content I18n.t("app.update_it")
       end
     end

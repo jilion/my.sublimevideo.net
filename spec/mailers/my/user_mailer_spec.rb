@@ -16,7 +16,7 @@ describe My::UserMailer do
         @last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_suspended')
       end
 
-      it "should set a body that contain infos" do
+      it "should set a body that contain info" do
         @last_delivery.body.encoded.should include "Your account has been suspended."
       end
     end
@@ -32,7 +32,7 @@ describe My::UserMailer do
       @last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_unsuspended')
     end
 
-    it "should set a body that contain infos" do
+    it "should set a body that contain info" do
       @last_delivery.body.encoded.should include "Your account has been reactivated."
     end
   end
@@ -47,7 +47,7 @@ describe My::UserMailer do
       @last_delivery.subject.should eql I18n.t('mailer.user_mailer.account_archived')
     end
 
-    it "should set a body that contain infos" do
+    it "should set a body that contain info" do
       @last_delivery.body.encoded.should include "Your account has been deleted."
     end
   end

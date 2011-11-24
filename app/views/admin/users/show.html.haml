@@ -10,7 +10,7 @@
 
 %p= link_to "Signin as #{@user.name}", become_admin_user_path(@user)
 
-%h3 Basic infos
+%h3 Basic information
 
 %p
   = "State:"
@@ -38,7 +38,7 @@
   = "| Last sign in ip: #{@user.last_sign_in_ip}"
 %br
 
-%h3 Billing infos
+%h3 Billing information
 
 %p= simple_format(@user.billing_address)
 
@@ -58,7 +58,7 @@
     = "| Last update: #{display_time(@user.pending_cc_updated_at)}"
 %br
 
-%h3 More infos
+%h3 More information
 
 %p
   = "Personal use: " + display_bool(@user.use_personal)
