@@ -5,12 +5,11 @@ module OneTime
 
       def regenerate_all_loaders_and_licenses
         total = 0
-        ::Site.active.find_in_batches(batch_size: 100) do |sites|
-          sites.each do |site|
-            ::Site.delay(priority: 200).update_loader_and_license(site.id, { loader: true, license: true })
-          end
-          total += sites.count
+        ::Site.active.find_each(batch_size: 100) do |site|
+          ::Site.delay(priority: 200).update_loader_and_license(site.id, { loader: true, license: true })
+          total += 1
         end
+
         "Finished: in total, #{total} sites will have their loader and license re-generated"
       end
 
@@ -20,12 +19,11 @@ module OneTime
       def set_trial_started_at_for_sites_created_before_v2
         without_versioning do
           total = 0
-          ::Site.where { (first_paid_plan_started_at != nil) & (trial_started_at == nil) }.find_in_batches(batch_size: 100) do |sites|
-            sites.each do |site|
-              site.update_attribute(:trial_started_at, site.first_paid_plan_started_at - BusinessModel.days_for_trial.days)
-              total += 1
-            end
+          ::Site.where { (first_paid_plan_started_at != nil) & (trial_started_at == nil) }.find_each(batch_size: 100) do |site|
+            site.update_attribute(:trial_started_at, site.first_paid_plan_started_at - BusinessModel.days_for_trial.days)
+            total += 1
           end
+
           "Finished: in total, #{total} sites were updated!"
         end
       end

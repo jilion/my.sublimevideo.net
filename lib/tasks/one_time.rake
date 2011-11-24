@@ -51,6 +51,13 @@ namespace :one_time do
     end
   end
 
+  namespace :plans do
+    desc "Create the V2 plans"
+    task :create_v2_plans => :environment do
+      puts OneTime::Plan.create_v2_plans
+    end
+  end
+
   namespace :sites do
     desc "Reset sites caches"
     task :reset_caches => :environment do
@@ -82,7 +89,7 @@ namespace :one_time do
     task :current_sites_plans_migration => :environment do
       puts OneTime::Site.current_sites_plans_migration
     end
-    
+
     desc "Update last 30 days counters of all not archived sites"
     task :update_last_30_days_counters_for_not_archived_sites => :environment do
       Site.update_last_30_days_counters_for_not_archived_sites
