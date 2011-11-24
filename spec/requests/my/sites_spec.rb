@@ -50,8 +50,8 @@ feature "New site" do
     describe "paid plan" do
       context "with no hostname" do
         scenario "shows an error" do
-          choose "plan_silver_month"
-          has_checked_field?("plan_silver_month").should be_true
+          choose "plan_plus_month"
+          has_checked_field?("plan_plus_month").should be_true
           fill_in "Domain", with: ""
           expect { click_button "Create" }.to_not change(@current_user.invoices, :count)
 
@@ -62,8 +62,8 @@ feature "New site" do
 
       context "with a hostname" do
         scenario "creation is successful and site is in trial" do
-          choose "plan_silver_month"
-          has_checked_field?("plan_silver_month").should be_true
+          choose "plan_plus_month"
+          has_checked_field?("plan_plus_month").should be_true
           fill_in "Domain", with: "rymai.com"
           expect { click_button "Create" }.to_not change(@current_user.invoices, :count)
 
@@ -72,7 +72,7 @@ feature "New site" do
           site.hostname.should eq "rymai.com"
           site.loader.read.should include(site.token)
           site.license.read.should include(site.license_js_hash)
-          site.plan_id.should eq Plan.find_by_name_and_cycle("silver", "month").id
+          site.plan_id.should eq Plan.find_by_name_and_cycle("plus", "month").id
           site.pending_plan_id.should be_nil
           site.trial_started_at.should be_present
           site.first_paid_plan_started_at.should be_nil
@@ -91,8 +91,8 @@ feature "New site" do
 
         describe "user wants to skip trial" do
           scenario "creation is successful and site is not in trial but with a transaction error" do
-            choose "plan_silver_month"
-            has_checked_field?("plan_silver_month").should be_true
+            choose "plan_plus_month"
+            has_checked_field?("plan_plus_month").should be_true
             fill_in "Domain", with: "rymai.com"
             check "site_skip_trial"
             expect { click_button "Create" }.to change(@current_user.invoices, :count)
@@ -104,7 +104,7 @@ feature "New site" do
             site.loader.read.should be_nil
             site.license.read.should be_nil
             site.plan_id.should be_nil
-            site.pending_plan_id.should eq Plan.find_by_name_and_cycle("silver", "month").id
+            site.pending_plan_id.should eq Plan.find_by_name_and_cycle("plus", "month").id
             site.trial_started_at.should be_present
             site.first_paid_plan_started_at.should be_present
             site.plan_started_at.should be_nil
@@ -182,8 +182,8 @@ feature "New site" do
     describe "paid plan" do
       context "with a hostname" do
         scenario "creation is successful and site is in trial" do
-          choose "plan_silver_month"
-          has_checked_field?("plan_silver_month").should be_true
+          choose "plan_plus_month"
+          has_checked_field?("plan_plus_month").should be_true
           fill_in "Domain", with: "rymai.com"
           expect { click_button "Create" }.to_not change(@current_user.invoices, :count)
 
@@ -192,7 +192,7 @@ feature "New site" do
           site.hostname.should eq "rymai.com"
           site.loader.read.should include(site.token)
           site.license.read.should include(site.license_js_hash)
-          site.plan_id.should eq Plan.find_by_name_and_cycle("silver", "month").id
+          site.plan_id.should eq Plan.find_by_name_and_cycle("plus", "month").id
           site.pending_plan_id.should be_nil
           site.trial_started_at.should be_present
           site.first_paid_plan_started_at.should be_nil
@@ -211,8 +211,8 @@ feature "New site" do
 
         describe "user wants to skip trial" do
           scenario "creation is successful and site is not in trial and with no transaction error" do
-            choose "plan_silver_month"
-            has_checked_field?("plan_silver_month").should be_true
+            choose "plan_plus_month"
+            has_checked_field?("plan_plus_month").should be_true
             fill_in "Domain", with: "rymai.com"
             check "site_skip_trial"
             VCR.use_cassette('ogone/visa_payment_generic') do
@@ -225,7 +225,7 @@ feature "New site" do
             site.hostname.should eq "rymai.com"
             site.loader.read.should include(site.token)
             site.license.read.should include(site.license_js_hash)
-            site.plan_id.should eq Plan.find_by_name_and_cycle("silver", "month").id
+            site.plan_id.should eq Plan.find_by_name_and_cycle("plus", "month").id
             site.pending_plan_id.should be_nil
             site.trial_started_at.should be_present
             site.first_paid_plan_started_at.should be_present

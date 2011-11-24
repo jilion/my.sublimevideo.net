@@ -62,10 +62,10 @@ describe OneTime::Site do
         { name: "custom - 1", cycle: "year",  video_views: 10_000_000, price: 999900 },
 
         { name: "free",       cycle: "none",  video_views: 0,          price: 0 },
-        { name: "silver",     cycle: "month", video_views: 200_000,    price: 990 },
-        { name: "gold",       cycle: "month", video_views: 1_000_000,  price: 4990 },
-        { name: "silver",     cycle: "year",  video_views: 200_000,    price: 9900 },
-        { name: "gold",       cycle: "year",  video_views: 1_000_000,  price: 49900 }
+        { name: "plus",     cycle: "month", video_views: 200_000,    price: 990 },
+        { name: "premium",       cycle: "month", video_views: 1_000_000,  price: 4990 },
+        { name: "plus",     cycle: "year",  video_views: 200_000,    price: 9900 },
+        { name: "premium",       cycle: "year",  video_views: 1_000_000,  price: 49900 }
       ]
       plans_attributes.each { |attributes| Factory.create(:plan, attributes) }
       @dev_plan       = ::Plan.where(name: 'dev').first
@@ -81,10 +81,10 @@ describe OneTime::Site do
       @custom_plan    = ::Plan.where(name: 'custom - 1').first
 
       @free_plan     = ::Plan.where(name: 'free').first
-      @silver_m_plan = ::Plan.where(name: 'silver', cycle: 'month').first
-      @silver_y_plan = ::Plan.where(name: 'silver', cycle: 'year').first
-      @gold_m_plan   = ::Plan.where(name: 'gold', cycle: 'month').first
-      @gold_y_plan   = ::Plan.where(name: 'gold', cycle: 'year').first
+      @plus_m_plan = ::Plan.where(name: 'plus', cycle: 'month').first
+      @plus_y_plan = ::Plan.where(name: 'plus', cycle: 'year').first
+      @premium_m_plan   = ::Plan.where(name: 'premium', cycle: 'month').first
+      @premium_y_plan   = ::Plan.where(name: 'premium', cycle: 'year').first
 
       @site_dev       = Factory.create(:site, plan_id: @dev_plan.id)
 
@@ -161,70 +161,70 @@ describe OneTime::Site do
       @site_sponsored.user.balance.should eq 0
     end
 
-    it "comet month => silver month" do
-      @site_comet_m.reload.plan.should eq @silver_m_plan
+    it "comet month => plus month" do
+      @site_comet_m.reload.plan.should eq @plus_m_plan
       @site_comet_m.user.balance.should eq 0
     end
 
-    it "comet year => silver year" do
-      @site_comet_y.reload.plan.should eq @silver_y_plan
+    it "comet year => plus year" do
+      @site_comet_y.reload.plan.should eq @plus_y_plan
       @site_comet_y.user.balance.should eq 0
     end
 
-    it "planet month => silver month" do
-      @site_planet_m.reload.plan.should eq @silver_m_plan
+    it "planet month => plus month" do
+      @site_planet_m.reload.plan.should eq @plus_m_plan
       @site_planet_m.user.balance.should eq 0
     end
 
-    it "planet year => silver year" do
-      @site_planet_y.reload.plan.should eq @silver_y_plan
+    it "planet year => plus year" do
+      @site_planet_y.reload.plan.should eq @plus_y_plan
 
       @site_planet_y.user.balance.should eq (((19900 * (1.0 - 0.2) / 100).to_i * 100)*1.08).to_i - (((9900 * (1.0 - 0.2) / 100).to_i * 100)*1.08).to_i # include vat
     end
 
-    it "star month => gold month" do
-      @site_star_m.reload.plan.should eq @gold_m_plan
+    it "star month => premium month" do
+      @site_star_m.reload.plan.should eq @premium_m_plan
       @site_star_m.user.balance.should eq 0
     end
 
     it "updates open & renew invoice with new plans and prices" do
       last_invoice = @site_planet_m.invoices.order(:id).last
-      last_invoice.vat_amount.should eq (@silver_m_plan.price * last_invoice.vat_rate).round
-      last_invoice.amount.should eq @silver_m_plan.price + (@silver_m_plan.price * last_invoice.vat_rate).round
+      last_invoice.vat_amount.should eq (@plus_m_plan.price * last_invoice.vat_rate).round
+      last_invoice.amount.should eq @plus_m_plan.price + (@plus_m_plan.price * last_invoice.vat_rate).round
 
       last_plan_invoice_item = last_invoice.plan_invoice_items.last
-      last_plan_invoice_item.item.should eq @silver_m_plan
-      last_plan_invoice_item.price.should eq @silver_m_plan.price
-      last_plan_invoice_item.amount.should eq @silver_m_plan.price
+      last_plan_invoice_item.item.should eq @plus_m_plan
+      last_plan_invoice_item.price.should eq @plus_m_plan.price
+      last_plan_invoice_item.amount.should eq @plus_m_plan.price
     end
 
     it "updates failed & renew invoice with new plans and prices" do
       last_invoice = @site_star_m.invoices.order(:id.asc).last
-      last_invoice.vat_amount.should eq (@gold_m_plan.price * last_invoice.vat_rate).round
-      last_invoice.amount.should eq @gold_m_plan.price + (@gold_m_plan.price * last_invoice.vat_rate).round
+      last_invoice.vat_amount.should eq (@premium_m_plan.price * last_invoice.vat_rate).round
+      last_invoice.amount.should eq @premium_m_plan.price + (@premium_m_plan.price * last_invoice.vat_rate).round
 
       last_plan_invoice_item = last_invoice.plan_invoice_items.last
-      last_plan_invoice_item.item.should eq @gold_m_plan
-      last_plan_invoice_item.price.should eq @gold_m_plan.price
-      last_plan_invoice_item.amount.should eq @gold_m_plan.price
+      last_plan_invoice_item.item.should eq @premium_m_plan
+      last_plan_invoice_item.price.should eq @premium_m_plan.price
+      last_plan_invoice_item.amount.should eq @premium_m_plan.price
     end
 
-    it "star year => gold year" do
-      @site_star_y.reload.plan.should eq @gold_y_plan
+    it "star year => premium year" do
+      @site_star_y.reload.plan.should eq @premium_y_plan
       @site_star_y.user.balance.should eq 0
     end
 
     it "updates next cycle plan if it's not the same" do
-      @site_star_y.reload.next_cycle_plan.should eq @silver_y_plan
+      @site_star_y.reload.next_cycle_plan.should eq @plus_y_plan
     end
 
-    it "galaxy month => gold month" do
-      @site_galaxy_m.reload.plan.should eq @gold_m_plan
+    it "galaxy month => premium month" do
+      @site_galaxy_m.reload.plan.should eq @premium_m_plan
       @site_galaxy_m.user.balance.should eq 0
     end
 
-    it "galaxy year => gold year" do
-      @site_galaxy_y.reload.plan.should eq @gold_y_plan
+    it "galaxy year => premium year" do
+      @site_galaxy_y.reload.plan.should eq @premium_y_plan
       @site_galaxy_y.user.balance.should eq ((99900*1.08) - (49900*1.08)).to_i
     end
 
