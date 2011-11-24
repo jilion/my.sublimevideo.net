@@ -297,18 +297,16 @@ module SiteModules::Invoice
       first_paid_plan_started_at_changed?
     end
 
-    # Pending plan is a paid plan.
-    # Either first paid plan or upgrade between 2 paid plans
     def upgraded?
-      plan_id? && plan.upgrade?(pending_plan)
+      plan_id? && pending_plan_id_changed? && will_be_in_paid_plan? && plan.upgrade?(pending_plan)
     end
 
     def renewed?
       !!(
-      # the site must already be in a paid plan and not activated just now
-      in_paid_plan? && !activated? &&
-      !plan.upgrade?(pending_plan) &&
-      pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?
+        # the site must already be in a paid plan and not activated just now
+        in_paid_plan? && !activated? &&
+        !plan.upgrade?(pending_plan) &&
+        pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?
       )
     end
 
