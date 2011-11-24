@@ -37,10 +37,6 @@ module My::SitesHelper
     value if condition
   end
 
-  def display_block_if_or_none_otherwise(condition)
-    condition ? "display:block" : "display:none"
-  end
-
   def style_for_usage_bar_from_usage_percentage(fraction)
     case fraction
     when 0

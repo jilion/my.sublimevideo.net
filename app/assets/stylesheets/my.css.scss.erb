@@ -649,7 +649,7 @@ form .entry.float select {
   padding:0 20px;
 }
 
-#delete_account input.delete {
+#delete_account input.delete, input.delete_site {
   border:none;
   background:url(<%= asset_data_uri "my/delete_account_cross.png" %>) no-repeat;
   cursor:pointer;
@@ -699,7 +699,7 @@ ul.segmented_menu li a {
   color:#1e3966;
   font-size:20px;
   font-weight:600;
-  text-shadow:#fff 0 1px 0;
+  text-shadow:rgba(255,255,255,0.6) 0 1px 0;
   border:1px solid #576c88;
   border-left-width:0;
   @include gradient(rgba(255,255,255,0.4),rgba(255,255,255,0),transparent);
@@ -725,6 +725,72 @@ ul.segmented_menu li.active a {
   @include gradient(#114492, #207ec3, #1a65ae);
   @include box-shadow((inset rgba(0,0,0,0.9) 0 1px 13px, rgba(255,255,255,0.3) 0 1px 0));
   -webkit-font-smoothing:antialiased;
+}
+
+#site_settings_box {
+  padding:20px 0 0;
+}
+
+#site_setup_settings .left, #site_setup_settings .right {
+  float:left;
+}
+
+#site_setup_settings .left {
+  width:440px;
+  padding-right:40px;
+}
+
+#site_setup_settings .right {
+  width:400px;
+}
+
+#site_setup_settings .entry {
+  margin:10px 0;
+}
+
+#site_setup_settings .right input.text {
+  width:340px;
+  padding-left:30px;
+}
+
+#site_setup_settings h4.title {
+  font-size:20px;
+  font-weight:600;
+  padding:15px 0 10px;
+}
+
+#site_setup_settings p.info {
+  font-size:14px;
+  color:#3a5a8c;
+}
+
+#site_setup_settings p.info strong {
+  color:#1e3966;
+}
+
+#site_setup_settings .wildcard p.info {
+  padding-left:34px;
+}
+
+#site_setup_settings a.help {
+  margin:0 0 5px auto;
+  display:block;
+  width:32px;
+  height:33px;
+  background:url(<%= asset_data_uri "my/help_icon.png" %>) no-repeat;
+}
+
+#site_setup_settings a.help span {display:none}
+
+.entry.delete .delete_site {
+  float:left;
+  margin-right:10px;
+}
+
+.entry.delete p.desc {
+  font-size:13px;
+  color:#3a5a8c;
+  padding:0 0 30px 0;
 }
 
 a.hl {

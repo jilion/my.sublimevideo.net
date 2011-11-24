@@ -9,6 +9,6 @@
       = f.text_field :hostname, class: "text", placeholder: "yourdomain.com", autocomplete: :off
     %p.desc Add your domain or subdomain.
     .spacer
-  .break_line
+  .big_break
 
   = render('site_setup_settings', site: site, f: f) if site.persisted?
