@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
   # GET /private/:maintenance_code
   def maintenance_code
     cookies[:maintenance] = {
-      value: params[:token],
+      value: params[:maintenance_code],
       expires: 1.week.from_now,
       domain: :all,
       secure: true

@@ -266,7 +266,7 @@ MySublimeVideo::Application.routes.draw do
       get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
       
       # Fake Maintenance pass-out
-      get '/private/:token' => 'application#maintenance_code'
+      get '/private/:maintenance_code' => 'application#maintenance_code'
 
       root to: 'pages#show', page: 'home'
     end
