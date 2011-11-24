@@ -82,6 +82,11 @@ namespace :one_time do
     task :current_sites_plans_migration => :environment do
       puts OneTime::Site.current_sites_plans_migration
     end
+    
+    desc "Update last 30 days counters of all not archived sites"
+    task :update_last_30_days_counters_for_not_archived_sites => :environment do
+      Site.update_last_30_days_counters_for_not_archived_sites
+    end
   end
 
 end
