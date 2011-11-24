@@ -12,8 +12,6 @@ graph = Graph.new do |g|
   g.option(credits: { enabled: false })
 end
 
-if billable_views.showable_vv.any? { |sv| !sv.zero? }
 %>
 
 <div id="<%= "usage_sparkline_#{site.token}" %>" class="sparkline" style="width:190px;height:28px"><%= raw graph.draw(observe: request.xhr? ? false : "dom:loaded") %></div>
-<% end %>
