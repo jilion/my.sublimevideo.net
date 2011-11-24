@@ -42,26 +42,26 @@ namespace :one_time do
   namespace :users do
     desc "Set users' name from users' current first and last name"
     task :set_name_from_first_and_last_name => :environment do
-      puts OneTime::User.set_name_from_first_and_last_name
+      timed { puts OneTime::User.set_name_from_first_and_last_name }
     end
 
     desc "Set users' billing name from users' name"
     task :set_billing_name_from_name => :environment do
-      puts OneTime::User.set_billing_name_from_name
+      timed { puts OneTime::User.set_billing_name_from_name }
     end
   end
 
   namespace :plans do
     desc "Create the V2 plans"
     task :create_v2_plans => :environment do
-      puts OneTime::Plan.create_v2_plans
+      timed { puts OneTime::Plan.create_v2_plans }
     end
   end
 
   namespace :sites do
     desc "Reset sites caches"
     task :reset_caches => :environment do
-      Site.all.each { |site| site.delay(:priority => 400).reset_caches! }
+      timed { Site.all.each { |site| site.delay(:priority => 400).reset_caches! } }
     end
 
     desc "Parse all unparsed user_agents logs"
@@ -77,22 +77,22 @@ namespace :one_time do
 
     desc "Re-generate loader and license templates for all sites"
     task :regenerate_all_loaders_and_licenses => :environment do
-      puts OneTime::Site.regenerate_all_loaders_and_licenses
+      timed { puts OneTime::Site.regenerate_all_loaders_and_licenses }
     end
 
     desc "Set trial_started_at for sites created before v2"
     task :set_trial_started_at_for_sites_created_before_v2 => :environment do
-      puts OneTime::Site.set_trial_started_at_for_sites_created_before_v2
+      timed { puts OneTime::Site.set_trial_started_at_for_sites_created_before_v2 }
     end
 
     desc "Migrate current sites' plans to new business model plans"
     task :current_sites_plans_migration => :environment do
-      puts OneTime::Site.current_sites_plans_migration
+      timed { puts OneTime::Site.current_sites_plans_migration }
     end
 
     desc "Update last 30 days counters of all not archived sites"
     task :update_last_30_days_counters_for_not_archived_sites => :environment do
-      Site.update_last_30_days_counters_for_not_archived_sites
+      timed { Site.update_last_30_days_counters_for_not_archived_sites }
     end
   end
 
