@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111120195507) do
+ActiveRecord::Schema.define(:version => 20111124103434) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -248,6 +248,7 @@ ActiveRecord::Schema.define(:version => 20111120195507) do
     t.integer  "last_30_days_invalid_video_views",          :default => 0
     t.integer  "last_30_days_embed_video_views",            :default => 0
     t.datetime "stats_trial_started_at"
+    t.text     "last_30_days_billable_video_views_array"
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
@@ -346,9 +347,9 @@ ActiveRecord::Schema.define(:version => 20111120195507) do
   add_index "users", ["current_sign_in_at"], :name => "index_users_on_current_sign_in_at"
   add_index "users", ["email", "archived_at"], :name => "index_users_on_email_and_archived_at", :unique => true
   add_index "users", ["last_invoiced_amount"], :name => "index_users_on_last_invoiced_amount"
+  add_index "users", ["referrer_site_token"], :name => "index_users_on_referrer_site_token"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["total_invoiced_amount"], :name => "index_users_on_total_invoiced_amount"
-  add_index "users", ["referrer_site_token"], :name => "index_users_on_referrer_site_token"
 
   create_table "versions", :force => true do |t|
     t.string   "item_type",  :null => false

@@ -1,5 +1,5 @@
 <%
-billable_views = StatTimeline::SiteStat.new(token: site.token, from: 30.days.ago.midnight, to: 1.day.ago.midnight)
+billable_views = site.last_30_days_billable_video_views_array
 graph = Graph.new do |g|
   g.option(chart: { renderTo: "usage_sparkline_#{site.token}", margin: [0,0,0,0], borderWidth: 0, borderRadius: 0, backgroundColor: 'transparent' })
   g.option(title: { text: "" })
@@ -7,13 +7,11 @@ graph = Graph.new do |g|
   g.option(tooltip: { enabled: false })
   g.option(xAxis: { title: "", labels: { enabled: false } })
   g.option(yAxis: { title: "", endOnTick: false, labels: { enabled: false } })
-  g.option(series: [serie(billable_views.showable_vv, '', type: 'area', color: '#00ff18', fill_color: 'rgba(79,249,99,.4)')])
+  g.option(series: [serie(billable_views, '', type: 'area', color: '#00ff18', fill_color: 'rgba(79,249,99,.4)')])
   g.option(plotOptions: { area: { lineWidth: 1, marker: { enabled: false }, states: { hover: { lineWidth: 1 } }, borderWidth: 0, pointPadding: 0, pointWidth: 4, shadow: false } })
   g.option(credits: { enabled: false })
 end
 
-if billable_views.showable_vv.any? { |sv| !sv.zero? }
 %>
 
 <div id="<%= "usage_sparkline_#{site.token}" %>" class="sparkline" style="width:190px;height:28px"><%= raw graph.draw(observe: request.xhr? ? false : "dom:loaded") %></div>
-<% end %>
