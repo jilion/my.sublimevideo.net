@@ -18,7 +18,7 @@ class Admin::EnthusiastsController < Admin::AdminController
 
   # GET /enthusiasts
   def index
-    @enthusiasts = apply_scopes(Enthusiast.by_date('desc'))
+    @enthusiasts = apply_scopes(Enthusiast.by_date('asc').confirmed(true).interested_in_beta(true))
     respond_with(@enthusiasts)
   end
 
