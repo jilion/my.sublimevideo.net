@@ -24,7 +24,6 @@ MySublimeVideo::Application.configure do
   # Generate digests for assets URLs
   config.assets.digest = true
 
-
   # Specifies the header that your server uses for sending files
   # (comment out if your front-end server doesn't support this)
   # http://devcenter.heroku.com/articles/rails31_heroku_cedar
@@ -46,9 +45,7 @@ MySublimeVideo::Application.configure do
   config.cache_store = :dalli_store
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  config.action_controller.asset_host = Proc.new do |source, request|
-    "#{request.ssl? ? 'https' : 'http'}://assets.sublimevideo-staging.net.s3.amazonaws.com"
-  end
+  config.action_controller.asset_host = "https://assets.sublimevideo-staging.net.s3.amazonaws.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   # config.assets.precompile += %w( search.js )

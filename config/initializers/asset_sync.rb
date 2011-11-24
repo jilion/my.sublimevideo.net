@@ -2,7 +2,11 @@ AssetSync.configure do |config|
   config.fog_provider          = 'AWS'
   config.aws_access_key_id     = 'AKIAJVHSNREHOLGAAR4A'
   config.aws_secret_access_key = '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'
-  config.fog_directory         = "assets.sublimevideo#{Rails.env.production? ? '' : '-staging'}.net"
+
+  case Rails.env
+  when 'staging'; config.fog_directory = "assets.sublimevideo-staging.net"
+  when 'production'; config.fog_directory = "assets.sublimevideo.net"
+  end
 
   config.existing_remote_files = "delete"
   # config.gzip_compression = true # don't working, doesn't uploads gz files version
