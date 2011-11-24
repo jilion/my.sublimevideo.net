@@ -5,22 +5,21 @@ describe SiteModules::Usage do
   describe "#update_last_30_days_counters" do
     before(:all) do
       @site = Factory.create(:site, last_30_days_main_video_views: 1)
-      Factory.create(:site_stat, t: @site.token, d: Time.utc(2010,12,31).midnight, vv: { m: 1, e: 2, d: 3, i: 4, em: 5 })
-
-      Factory.create(:site_stat, t: @site.token, d: Time.utc(2011,1,1).midnight, vv: { m: 1, e: 2, d: 3, i: 4, em: 5 })
-      Factory.create(:site_stat, t: @site.token, d: Time.utc(2011,1,30).midnight, vv: { m: 1, e: 2, d: 3, i: 4, em: 5 })
-
-      Factory.create(:site_stat, t: @site.token, d: Time.utc(2011,1,31).midnight, vv: { m: 1, e: 2, d: 3, i: 4, em: 5 })
+      Factory.create(:site_stat, t: @site.token, d: Time.utc(2010, 12, 31).midnight, vv: { m: 1, e: 5, d: 9, i: 13, em: 17 })
+      Factory.create(:site_stat, t: @site.token, d: Time.utc(2011, 1, 1).midnight, vv: { m: 2, e: 6, d: 10, i: 14, em: 18 })
+      Factory.create(:site_stat, t: @site.token, d: Time.utc(2011, 1, 30).midnight, vv: { m: 3, e: 7, d: 11, i: 15, em: 19 })
+      Factory.create(:site_stat, t: @site.token, d: Time.utc(2011, 1, 31).midnight, vv: { m: 4, e: 8, d: 12, i: 16, em: 20 })
     end
 
-    it "should update counters of non-archived sites from last 30 days site_usages" do
-      Timecop.travel(Time.utc(2011,1,31, 12)) do
+    it "updates site counters from last 30 days site stats" do
+      Timecop.travel(Time.utc(2011, 1, 31, 12)) do
         @site.update_last_30_days_counters
-        @site.last_30_days_main_video_views.should    == 2
-        @site.last_30_days_extra_video_views.should   == 4
-        @site.last_30_days_dev_video_views.should     == 6
-        @site.last_30_days_invalid_video_views.should == 8
-        @site.last_30_days_embed_video_views.should   == 10
+        @site.last_30_days_main_video_views.should    eq 5
+        @site.last_30_days_extra_video_views.should   eq 13
+        @site.last_30_days_dev_video_views.should     eq 21
+        @site.last_30_days_invalid_video_views.should eq 29
+        @site.last_30_days_embed_video_views.should   eq 37
+        @site.last_30_days_billable_video_views_array.should eq [26, [0]*28, 29].flatten
       end
     end
   end
@@ -39,11 +38,11 @@ describe SiteModules::Usage do
     end
 
     describe "#current_monthly_billable_usages" do
-      specify { @site.current_monthly_billable_usages.should == [0, 0, 1, 0, 2, 3, 4] }
+      specify { @site.current_monthly_billable_usages.should eq [0, 0, 1, 0, 2, 3, 4] }
     end
 
     it "last_30_days_billable_usages should skip first zeros" do
-      @site.last_30_days_billable_usages.should == [1, 0, 2, 3, 4]
+      @site.last_30_days_billable_usages.should eq [1, 0, 2, 3, 4]
     end
   end
 
@@ -71,8 +70,8 @@ describe SiteModules::Usage do
       after(:each) { Timecop.return }
       subject { @site }
 
-      its("current_monthly_billable_usages.sum") { should == 11 + 15 }
-      its(:current_percentage_of_plan_used)      { should == 26 / 100.0 }
+      its("current_monthly_billable_usages.sum") { should eq 11 + 15 }
+      its(:current_percentage_of_plan_used)      { should eq 26 / 100.0 }
     end
 
     context "with monthly plan and overage" do
@@ -89,8 +88,8 @@ describe SiteModules::Usage do
       after(:all) { Timecop.return }
       subject { @site }
 
-      its("current_monthly_billable_usages.sum") { should == 19 + 23 }
-      its(:current_percentage_of_plan_used)      { should == 1 }
+      its("current_monthly_billable_usages.sum") { should eq 19 + 23 }
+      its(:current_percentage_of_plan_used)      { should eq 1 }
     end
 
     context "with yearly plan" do
@@ -107,8 +106,8 @@ describe SiteModules::Usage do
       after(:all) { Timecop.return }
       subject { @site }
 
-      its("current_monthly_billable_usages.sum") { should == 11 + 15 }
-      its(:current_percentage_of_plan_used)      { should == 26 / 100.0 }
+      its("current_monthly_billable_usages.sum") { should eq 11 + 15 }
+      its(:current_percentage_of_plan_used)      { should eq 26 / 100.0 }
     end
 
     context "with yearly plan (other date)" do
@@ -125,8 +124,8 @@ describe SiteModules::Usage do
       after(:all) { Timecop.return }
       subject { @site }
 
-      its("current_monthly_billable_usages.sum") { should == 3 + 7 }
-      its(:current_percentage_of_plan_used)      { should == 10 / 1000.0 }
+      its("current_monthly_billable_usages.sum") { should eq 3 + 7 }
+      its(:current_percentage_of_plan_used)      { should eq 10 / 1000.0 }
     end
   end
 
@@ -141,7 +140,7 @@ describe SiteModules::Usage do
     context "with free_plan" do
       subject { Factory.create(:site, plan_id: @free_plan.id) }
 
-      its(:percentage_of_days_over_daily_limit) { should == 0 }
+      its(:percentage_of_days_over_daily_limit) { should eq 0 }
     end
 
     context "with paid plan" do
@@ -157,7 +156,7 @@ describe SiteModules::Usage do
         after(:each) { Timecop.return }
         subject { @site }
 
-        its(:percentage_of_days_over_daily_limit) { should == 1.0 }
+        its(:percentage_of_days_over_daily_limit) { should eq 1.0 }
       end
 
       describe "with 2 historic days and 1 over limit" do
@@ -169,7 +168,7 @@ describe SiteModules::Usage do
         after(:each) { Timecop.return }
         subject { @site }
 
-        its(:percentage_of_days_over_daily_limit) { should == 0.5 }
+        its(:percentage_of_days_over_daily_limit) { should eq 0.5 }
       end
 
       describe "with 5 historic days and 2 over limit" do
@@ -182,7 +181,7 @@ describe SiteModules::Usage do
         after(:each) { Timecop.return }
         subject { @site }
 
-        its(:percentage_of_days_over_daily_limit) { should == 2 / 5.0 }
+        its(:percentage_of_days_over_daily_limit) { should eq 2 / 5.0 }
       end
 
       describe "with >60 historic days and 2 over limit" do
@@ -195,7 +194,7 @@ describe SiteModules::Usage do
         after(:each) { Timecop.return }
         subject { @site }
 
-        its(:percentage_of_days_over_daily_limit) { should == (2 / 60.0).round(2) }
+        its(:percentage_of_days_over_daily_limit) { should eq (2 / 60.0).round(2) }
       end
     end
   end
