@@ -15,7 +15,6 @@ class Stat::Site
   index [[:t, Mongo::ASCENDING], [:h, Mongo::ASCENDING]]
   index [[:t, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]
 
-
   # ====================
   # = Instance Methods =
   # ====================

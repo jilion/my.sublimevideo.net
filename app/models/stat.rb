@@ -74,7 +74,7 @@ module Stat
       fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
       reduce_function = ["function(doc, prev) {"]
       fields.inject(reduce_function) do |js, field_to_merge|
-        js << "prev.sum += isNaN(doc.#{options[:view_type]}.#{field_to_merge}) ? 0 : doc.#{options[:view_type]}.#{field_to_merge};"
+        js << "prev.sum += doc.#{options[:view_type]} ? (isNaN(doc.#{options[:view_type]}.#{field_to_merge}) ? 0 : doc.#{options[:view_type]}.#{field_to_merge}) : 0;"
         js
       end
 

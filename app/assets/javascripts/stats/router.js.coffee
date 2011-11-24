@@ -93,16 +93,12 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     'sites/:token/stats': 'home'
 
   home: (token) ->
-    if (selectedSite = MSVStats.sites.selectedSite)?
-      MSVStats.pusher.unsubscribe("presence-#{selectedSite.get('token')}")
-    if MSVStats.sites.selectedSite.inFreePlan()
-      $('div.stats').addClass('free')
-    else
-      $('div.stats').removeClass('free')
+    this.unsubscribePusherPresenceSiteChannel()
 
     MSVStats.selectedSiteToken = token
     MSVStats.period.clear()
     MSVStats.sites.select(token)
+    this.handleFreePlanClass()
     this.resetAndFetchStats()
     this.initPusherPresenceSiteChannel()
 
@@ -155,6 +151,16 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.presenceChannel.bind 'video_tag', (data) ->
         if (video = MSVStats.videos.get(data.u))?
           video.set(data.meta_data)
+
+  unsubscribePusherPresenceSiteChannel: ->
+    if (selectedSite = MSVStats.sites.selectedSite)?
+      MSVStats.pusher.unsubscribe("presence-#{selectedSite.get('token')}")
+
+  handleFreePlanClass: ->
+    if MSVStats.sites.selectedSite.inFreePlan()
+      $('div.stats').addClass('free')
+    else
+      $('div.stats').removeClass('free')
 
   resetAndFetchStats: ->
     MSVStats.statsSeconds._isShowable = false

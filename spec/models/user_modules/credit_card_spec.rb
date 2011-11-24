@@ -26,7 +26,7 @@ describe UserModules::CreditCard do
 
     describe "persisted record with pending cc" do
       before(:all) do
-        @user = Factory.build(:user_no_cc, valid_cc_attributes.merge(cc_register: '0'))
+        @user = Factory.build(:user_no_cc, valid_cc_attributes)
         @user.prepare_pending_credit_card
       end
       subject { @user }
@@ -55,7 +55,7 @@ describe UserModules::CreditCard do
 
     describe "persisted record with cc_number == ''" do
       before(:all) do
-        @user = Factory.create(:user_real_cc, cc_number: '')
+        @user = Factory.build(:user_no_cc, valid_cc_attributes.merge(cc_number: ''))
       end
       subject { @user }
 
@@ -79,34 +79,6 @@ describe UserModules::CreditCard do
       it { should be_valid }
       it { should_not be_credit_card }
       it { should_not be_pending_credit_card }
-    end
-
-    describe "persisted record with cc_register == '0'" do
-      before(:all) do
-        @user = Factory.create(:user_real_cc, cc_register: false)
-      end
-      subject { @user }
-
-      its(:cc_type)        { should be_nil }
-      its(:cc_last_digits) { should be_nil }
-      its(:cc_expire_on)   { should be_nil }
-      its(:cc_updated_at)  { should be_nil }
-
-      its(:pending_cc_type)        { should eq 'visa' }
-      its(:pending_cc_last_digits) { should eq '1111' }
-      its(:pending_cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
-      its(:pending_cc_updated_at)  { should be_present }
-
-      its(:cc_brand)              { should be_nil }
-      its(:cc_full_name)          { should be_nil }
-      its(:cc_number)             { should be_nil }
-      its(:cc_expiration_year)    { should be_nil }
-      its(:cc_expiration_month)   { should be_nil }
-      its(:cc_verification_value) { should be_nil }
-
-      it { should be_valid }
-      it { should_not be_credit_card }
-      it { should be_pending_credit_card }
     end
 
     describe "persisted record with saved cc" do
@@ -195,8 +167,8 @@ describe UserModules::CreditCard do
     end
 
     describe "credit card number" do
-      it "doesn't validate if cc_number is not presence" do
-        user = Factory.build(:user_no_cc, valid_cc_attributes.merge(cc_number: nil))
+      it "doesn't validate if cc_number is not present" do
+        user = Factory.build(:user_no_cc, valid_cc_attributes.merge(cc_number: ''))
         user.should be_valid
       end
 
@@ -381,7 +353,7 @@ describe UserModules::CreditCard do
 
     describe "#cc_type" do
       it "should take cc_type from cc_number if nil" do
-        Factory.create(:user_real_cc, cc_register: 1, cc_type: nil).cc_type.should eq 'visa'
+        Factory.create(:user_real_cc, cc_type: nil).cc_type.should eq 'visa'
       end
     end
 
@@ -459,7 +431,7 @@ describe UserModules::CreditCard do
       end
     end
 
-    describe "#reset_credit_card_infos" do
+    describe "#reset_credit_card_info" do
       subject { Factory.build(:user) }
 
       it "resets all pending_cc_xxx fields" do
@@ -468,7 +440,7 @@ describe UserModules::CreditCard do
         subject.cc_expire_on.should be_present
         subject.cc_updated_at.should be_present
 
-        subject.reset_credit_card_infos
+        subject.reset_credit_card_info
 
         subject.reload
         subject.cc_type.should be_nil
@@ -479,10 +451,11 @@ describe UserModules::CreditCard do
     end
 
     describe "#apply_pending_credit_card_info" do
+      use_vcr_cassette "ogone/void_authorization"
       before(:each) do
         @user = Factory.build(:user_no_cc, valid_cc_attributes)
         @user.prepare_pending_credit_card
-        @user.cc_register = false # fake #register_credit_card_on_file
+        @user.cc_register = false
       end
       subject { @user }
 
@@ -520,6 +493,7 @@ describe UserModules::CreditCard do
       subject { Factory.build(:user_no_cc, valid_cc_attributes) }
 
       it "should actually call Ogone" do
+        subject.prepare_pending_credit_card
         Ogone.should_receive(:authorize).with(100, subject.credit_card, {
           store: subject.cc_alias,
           email: subject.email,
@@ -576,6 +550,7 @@ describe UserModules::CreditCard do
           @user = Factory.create(:user_no_cc)
 
           @user.attributes = valid_cc_attributes
+          @user.credit_card(true) # reset credit card
           @user.prepare_pending_credit_card
           @user.cc_register = false # fake #register_credit_card_on_file
 
@@ -592,7 +567,7 @@ describe UserModules::CreditCard do
         subject { @user }
 
         context "authorization waiting for 3-D Secure identification" do
-          it "should return true and set d3d_html" do
+          it "returns true and set d3d_html" do
             subject.process_credit_card_authorization_response(@d3d_params)
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should eq "<html>No HTML.</html>"
@@ -661,7 +636,7 @@ describe UserModules::CreditCard do
         end
 
         context "authorization is invalid or incomplete" do
-          it "returns a hash with infos" do
+          it "returns a hash with info" do
             subject.process_credit_card_authorization_response(@invalid_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.invalid") }
             subject.d3d_html.should be_nil
@@ -731,6 +706,7 @@ describe UserModules::CreditCard do
           @user = Factory.create(:user, cc_updated_at: 5.seconds.ago)
 
           @user.attributes = valid_cc_attributes_master
+          @user.credit_card(true) # reset credit card
           @user.prepare_pending_credit_card
           @user.cc_register = false # fake #register_credit_card_on_file
 
@@ -773,7 +749,7 @@ describe UserModules::CreditCard do
         end
 
         context "authorized" do
-          it "should pend and apply pending cc infos" do
+          it "should pend and apply pending cc info" do
             subject.should_receive(:void_authorization).with("1234;RES")
             subject.process_credit_card_authorization_response(@authorized_params)
             subject.i18n_notice_and_alert.should be_nil
@@ -795,7 +771,7 @@ describe UserModules::CreditCard do
         end
 
         context "waiting" do
-          it "should set a notice/alert, not reset pending cc infos and save the user" do
+          it "should set a notice/alert, not reset pending cc info and save the user" do
             subject.process_credit_card_authorization_response(@waiting_params)
             subject.i18n_notice_and_alert.should == { notice: I18n.t("credit_card.errors.waiting") }
             subject.d3d_html.should be_nil
@@ -816,7 +792,7 @@ describe UserModules::CreditCard do
         end
 
         context "invalid or incomplete" do
-          it "should set a notice/alert, reset pending cc infos and save the user" do
+          it "should set a notice/alert, reset pending cc info and save the user" do
             subject.process_credit_card_authorization_response(@invalid_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.invalid") }
             subject.d3d_html.should be_nil
@@ -837,7 +813,7 @@ describe UserModules::CreditCard do
         end
 
         context "refused" do
-          it "should set a notice/alert, reset pending cc infos and save the user" do
+          it "should set a notice/alert, reset pending cc info and save the user" do
             subject.process_credit_card_authorization_response(@refused_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.refused") }
             subject.d3d_html.should be_nil
@@ -858,7 +834,7 @@ describe UserModules::CreditCard do
         end
 
         context "unknown" do
-          it "should set a notice/alert, not reset pending cc infos, send a notification and save the user" do
+          it "should set a notice/alert, not reset pending cc info, send a notification and save the user" do
             Notify.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
             subject.process_credit_card_authorization_response(@unknown_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.unknown") }

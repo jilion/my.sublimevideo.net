@@ -1,7 +1,6 @@
 en:
   app:
     please_link: "Please %{link}"
-    please_downcase_link: "please %{link}"
     please_link_to_know_more_about_it: "Please %{link} to know more about it."
     update_it: "update it"
     complete_it: "complete it"

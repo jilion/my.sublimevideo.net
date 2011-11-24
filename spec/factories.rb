@@ -25,7 +25,6 @@ FactoryGirl.define do
   end
 
   factory :user_real_cc, parent: :user_no_cc do
-    cc_register           '1'
     cc_brand              'visa'
     cc_full_name          'John Doe Huber'
     cc_number             '4111111111111111'

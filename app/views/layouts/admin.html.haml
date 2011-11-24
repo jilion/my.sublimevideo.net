@@ -11,13 +11,14 @@
     = javascript_include_tag "#{request.protocol}use.typekit.com/zwt2duv.js"
     :javascript
       try { Typekit.load(); } catch(e) { }
+
   %body
     #global
       = render 'admin/layouts/admin_header'
       #main
         #content
           = render 'layouts/flash', flash: flash if flash.present?
-          = image_tag "spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
+          = image_tag "admin/spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
           = yield
       #footer
         %p= "Copyright © 2010 - #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks"

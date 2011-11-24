@@ -1,6 +1,2 @@
 %li
-  = link_to(enthusiast_site.hostname, "http://#{enthusiast_site.hostname}")
-  = form_for [:admin, enthusiast_site], :remote => true do |f|
-    = f.label :tags_list, :id => "tags_list_enthusiast_site_label_#{enthusiast_site.id}"
-    = f.text_field :tags_list
-    = f.submit "Update tags"
+  = link_to(h(enthusiast_site.hostname), "http://#{h(enthusiast_site.hostname)}")

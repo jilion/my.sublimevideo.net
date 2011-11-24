@@ -27,7 +27,7 @@ class Admin::UsersController < Admin::AdminController
 
   # GET /users/:id
   def show
-    @user = User.find(params[:id])
+    @user = User.includes(:enthusiast).find(params[:id])
     respond_with(@user)
   end
 

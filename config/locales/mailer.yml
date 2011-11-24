@@ -9,15 +9,15 @@ en:
     signature:     "The SublimeVideo Team"
 
     billing_mailer:
-      trial_will_end: "Trial for %{hostname} will expire in %{days} days"
-      trial_will_end_tomorrow: "Trial for %{hostname} will expire tomorrow"
-      credit_card_will_expire: "Your credit card will expire at the end of this month"
+      trial_will_end: "Trial for %{hostname} expires in %{days} days"
+      trial_will_end_tomorrow: "Trial for %{hostname} expires tomorrow"
+      credit_card_will_expire: "Your credit card expires at the end of this month"
       transaction_succeeded: "Payment approved"
       transaction_failed: "Problem processing your payment"
       too_many_charging_attempts: "Payment for %{hostname} has failed multiple times"
 
     stat_mailer:
-      stats_trial_will_end: "Your stats trial for %{hostname} will expire in 2 days"
+      stats_trial_will_end: "Your stats trial for %{hostname} expires in 2 days"
 
     usage_monitoring_mailer:
       plan_overused: "Peak Insurance activated for %{hostname}"

@@ -2,28 +2,25 @@
 
 .status
   %h3= "Status"
-  %br
-  .starred
-    %strong= "Starred:"
-    %span{ :id => "star_enthusiast_#{@enthusiast.id}" }
-      = render "star_form", :enthusiast => @enthusiast
-  %br
+  -#%br
+  -#.starred
+  -#  %strong= "Starred:"
+  -#  %span{ id: "star_enthusiast_#{@enthusiast.id}" }
+  -#    = render "star_form", enthusiast: @enthusiast
+  -#%br
 
   .invited
-    %strong= "Invited: "
-    %p
-      - if @enthusiast.interested_in_beta && @enthusiast.confirmed?
-        %span{ :id => "invited_at_enthusiast_#{@enthusiast.id}" }
-          = display_time(@enthusiast.invited_at)
-      - else
-        = "Not interested in beta or not confirmed."
+    - if @enthusiast.interested_in_beta && @enthusiast.confirmed? && @enthusiast.invited_at?
+      = "Invited on #{display_time(@enthusiast.invited_at)}"
+    - else
+      = "Not interested in beta or not confirmed."
 
 %br
 %hr
 %br
 
 .info
-  %h3= "Info"
+  %h3= "Information"
   %br
   .confirmed
     %strong= "Confirmed:"
@@ -36,6 +33,14 @@
   .email
     %strong= "Email:"
     = mail_to @enthusiast.email
+  %br
+
+  .user
+    %strong= "Linked user:"
+    - if @enthusiast.user
+      = link_to(@enthusiast.user.name, admin_user_path(@enthusiast.user))
+    - else
+      = "No user"
   %br
 
   .free_text
@@ -59,9 +64,7 @@
   %h3= "Sites"
   %br
   - if @enthusiast.sites.present?
-    = render 'admin/enthusiast_sites/enthusiast_sites'
-    %br
-    %p= "Existing tags: #{existing_tags_for(:enthusiast_site)}"
+    = render 'admin/enthusiast_sites/enthusiast_sites', sites: @enthusiast.sites
   - else
     = "No sites."
 %br

@@ -80,13 +80,9 @@ module UserModules::CreditCard
     end
     alias :cc_expired? :credit_card_expired?
 
-    # before_validation if cc_number.present?
-    def force_update_of_credit_card
-      pending_cc_type_will_change!
-    end
-
-    # before_save if cc_number.present? && credit_card.valid?
+    # before_save if credit_card(true).valid?
     def prepare_pending_credit_card
+      self.cc_register = true
       self.pending_cc_type        = credit_card.type
       self.pending_cc_last_digits = credit_card.last_digits
       self.pending_cc_expire_on   = Time.utc(credit_card.year, credit_card.month).end_of_month.to_date
@@ -108,7 +104,7 @@ module UserModules::CreditCard
     end
 
     # Be careful with this! Should be only used in dev and for special support-requested-credit-card-deletion purposes
-    def reset_credit_card_infos
+    def reset_credit_card_info
       %w[type last_digits expire_on updated_at].each do |att|
         self.send("cc_#{att}=", nil)
         self.send("pending_cc_#{att}=", nil)
@@ -127,12 +123,11 @@ module UserModules::CreditCard
         self.send("pending_cc_#{att}=", nil)
       end
       reset_last_failed_cc_authorize_fields
-      reset_credit_card
 
       self.save_skip_pwd
     end
 
-    # Called from User#after_save
+    # Called from User#after_save if cc_register
     def register_credit_card_on_file(options = {})
       @i18n_notice_and_alert = nil
 
@@ -160,6 +155,7 @@ module UserModules::CreditCard
     # Called from UserModules::CreditCard#register_credit_card_on_file and from TransactionsController#callback
     def process_credit_card_authorization_response(authorization_params)
       @d3d_html = nil
+      reset_credit_card
 
       case authorization_params["STATUS"]
       # Waiting for identification (3-D Secure)
@@ -207,7 +203,9 @@ module UserModules::CreditCard
         Notify.send("Credit card authorization unknown status: #{authorization_params["STATUS"]}")
       end
 
-      set_last_failed_cc_authorize_fields_from_params(authorization_params) unless authorization_params["STATUS"] == "5"
+      unless authorization_params["STATUS"] == "5"
+        set_last_failed_cc_authorize_fields_from_params(authorization_params)
+      end
     end
 
     def set_last_failed_cc_authorize_fields_from_params(authorization_params)

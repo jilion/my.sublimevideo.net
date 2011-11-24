@@ -2,15 +2,45 @@
 
 = content_header(raw "#{@user.name} <#{mail_to @user.email}>")
 
+%p= link_to "Signin as #{@user.name}", become_admin_user_path(@user)
+
 = render '/admin/shared/date_chooser'
 %br.spacer
 
 = render partial: 'timeline_usage', locals: { user: @user }
 -#= render partial: 'timeline_invoices', locals: { user: @user }
+%br
 
-%p= link_to "Signin as #{@user.name}", become_admin_user_path(@user)
+- if @user.enthusiast
+  %h3 Enthusiast information
 
-%h3 Basic infos
+  .email
+    %strong= "Enthusiast email: "
+    = mail_to @user.enthusiast.email
+    ="("
+    - if @user.enthusiast.interested_in_beta && @user.enthusiast.confirmed? && @user.enthusiast.invited_at?
+      = "invited on #{display_time(@user.enthusiast.invited_at)}"
+    - else
+      = "not interested in beta or not confirmed"
+    = ")"
+
+  .free_text
+    %strong= "Comment: "
+    %p
+      - if @user.enthusiast.free_text.present?
+        = h @user.enthusiast.free_text
+      - else
+        = "No comment."
+
+  .sites
+    %strong= "Registered sites at the time: "
+    - if @user.enthusiast.sites.present?
+      = render 'admin/enthusiast_sites/enthusiast_sites', sites: @user.enthusiast.sites
+    - else
+      %p= "No sites."
+  %br.spacer
+
+%h3 Basic information
 
 %p
   = "State:"
@@ -21,9 +51,9 @@
     = "since " + display_time(@user.confirmed_at)
   - unless @user.confirmed?
     = "| Confirmation sent at: " + display_time(@user.confirmation_sent_at)
-  = "| Enthusiast ID: #{@user.enthusiast_id}"
   = "| Zendesk ID: #{@user.zendesk_id? ? link_to(@user.zendesk_id, Zendesk.base_url + "/users/#{@user.zendesk_id}") : "-"}".html_safe
   = "| Newsletter: " + display_bool(@user.newsletter)
+  = "| Hidden notices: #{@user.hidden_notice_ids.inspect}"
 
 %p
   = "Created #{time_ago_in_words(@user.created_at)} ago"
@@ -38,27 +68,44 @@
   = "| Last sign in ip: #{@user.last_sign_in_ip}"
 %br
 
-%h3 Billing infos
+%h3 Billing information
+
+%br
+%h4 Billing address
 
 %p= simple_format(@user.billing_address)
 
+%br
+%h4= "Credit card ##{@user.cc_alias}"
 %p
-  = "Credit Card (#{content_tag(:strong, @user.cc_alias)}): ".html_safe
   - if @user.cc?
     = "#{content_tag(:strong, @user.cc_type.try(:titleize))} ending in #{content_tag(:strong, @user.cc_last_digits)}, ".html_safe
-    = "expire on #{content_tag(:strong, display_time(@user.cc_expire_on, format: :month_fullyear))}".html_safe
-    = "| Last update: #{display_time(@user.cc_updated_at)}"
+    = "expires on #{content_tag(:strong, display_time(@user.cc_expire_on, format: :month_fullyear))}".html_safe
+    = "| Last updated at #{display_time(@user.cc_updated_at)}"
   - else
-    No credit card on file.
+    = "No credit card on file."
 
 - if @user.pending_cc?
+  %h4= "Pending credit card ##{@user.cc_alias}"
   %p
-    = "Pending Credit Card: #{content_tag(:strong, @user.pending_cc_type.try(:titleize))} ending in #{content_tag(:strong, @user.pending_cc_last_digits)}, ".html_safe
-    = "expire on #{content_tag(:strong, display_time(@user.pending_cc_expire_on, format: :month_fullyear))}".html_safe
-    = "| Last update: #{display_time(@user.pending_cc_updated_at)}"
+    = "#{content_tag(:strong, @user.pending_cc_type.try(:titleize))} ending in #{content_tag(:strong, @user.pending_cc_last_digits)}, ".html_safe
+    = "expires on #{content_tag(:strong, display_time(@user.pending_cc_expire_on, format: :month_fullyear))}".html_safe
+  %p= "Last updated at #{display_time(@user.pending_cc_updated_at)}"
+
+- if @user.last_failed_cc_authorize_at?
+  %p= "Last failed authorize at #{display_time(@user.last_failed_cc_authorize_at)}"
+  %p= "Last failed authorize status: #{@user.last_failed_cc_authorize_status}"
+  %p= "Last failed authorize error: #{@user.last_failed_cc_authorize_error}"
+
+- if @user.balance > 0
+  %br
+  %h4= "Balance"
+  %p
+    Current balance:
+    %strong= display_amount(@user.balance)
 %br
 
-%h3 More infos
+%h3 More information
 
 %p
   = "Personal use: " + display_bool(@user.use_personal)
@@ -71,6 +118,11 @@
 %br
 %hr
 %br
+
+%h3 Invoicing
+
+%p= "Last invoiced amount: #{display_amount(@user.last_invoiced_amount)}"
+%p= "Total invoiced amount: #{display_amount(@user.total_invoiced_amount)}"
 
 - paid_invoices = @user.invoices.paid
 - if paid_invoices.present?
@@ -112,10 +164,8 @@
       %ul
         - @user.sites.not_archived.each do |site|
           %li
-            = site.hostname? ? link_to(site.hostname, "http://#{site.hostname}") : "no hostname"
-            (
-            = link_to "details", [:edit, :admin, site]
-            )
+            = site.hostname? ? link_to(site.hostname, "http://#{site.hostname}") : "##{site.token}"
+            = raw "(#{link_to "details", [:edit, :admin, site]})"
       %h4= "Archived (#{@user.sites.archived.count})"
       %ul
         - @user.sites.archived.each do |site|

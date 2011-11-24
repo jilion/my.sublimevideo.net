@@ -11,7 +11,6 @@ graph = Graph.new do |g|
   g.option(plotOptions: { area: { lineWidth: 1, marker: { enabled: false }, states: { hover: { lineWidth: 1 } }, borderWidth: 0, pointPadding: 0, pointWidth: 4, shadow: false } })
   g.option(credits: { enabled: false })
 end
-
 %>
 
 <div id="<%= "usage_sparkline_#{site.token}" %>" class="sparkline" style="width:190px;height:28px"><%= raw graph.draw(observe: request.xhr? ? false : "dom:loaded") %></div>

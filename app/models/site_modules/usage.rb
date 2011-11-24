@@ -42,6 +42,11 @@ module SiteModules::Usage
       end
     end
 
+    def last_30_days_billable_video_views
+      last_30_days_main_video_views.to_i + last_30_days_extra_video_views.to_i + last_30_days_embed_video_views.to_i
+    end
+    memoize :last_30_days_billable_video_views
+
     def last_30_days_billable_usages
       billable_usages(from: 30.days.ago.midnight, to: 1.day.ago.midnight, drop_first_zeros: true)
     end

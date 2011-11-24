@@ -297,7 +297,7 @@ describe Invoice do
       before(:all) { @invoice = Factory.create(:invoice) }
       subject { @invoice }
 
-      describe "#set_customer_infos" do
+      describe "#set_customer_info" do
         its(:customer_full_name)       { should eql @invoice.user.billing_name }
         its(:customer_email)           { should eql @invoice.user.email }
         its(:customer_country)         { should eql @invoice.user.billing_country }
@@ -305,8 +305,8 @@ describe Invoice do
         its(:customer_billing_address) { should eql @invoice.user.billing_address }
       end
 
-      describe "#set_site_infos" do
-        its(:site_hostname)         { should eql @invoice.site.hostname }
+      describe "#set_site_info" do
+        its(:site_hostname) { should eql @invoice.site.hostname }
       end
     end
 

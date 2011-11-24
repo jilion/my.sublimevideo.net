@@ -65,15 +65,11 @@ class User < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  # hack to explicitely declare changes on cc fields (needed when we save from an association. e.g. site.save)
-  # DO WE NEED THIS???!!!
-  before_validation :force_update_of_credit_card, if: proc { |u| u.cc_number.present? }
-
   before_save :set_password
 
-  before_save :prepare_pending_credit_card, if: proc { |u| u.cc_number.present? && u.credit_card.valid? } # in user/credit_card
+  before_save :prepare_pending_credit_card, if: proc { |u| u.credit_card(true).valid? } # in user/credit_card
 
-  after_save :register_credit_card_on_file, if: proc { |u| u.cc_register && u.credit_card.valid? } # in user/credit_card
+  after_save :register_credit_card_on_file, if: proc { |u| u.cc_register } # in user/credit_card
   after_save :newsletter_update
 
   after_update :zendesk_update
@@ -181,7 +177,7 @@ class User < ActiveRecord::Base
     [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
   end
 
-  def more_infos_incomplete?
+  def more_info_incomplete?
     [billing_postal_code, billing_country, company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
     [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
   end

@@ -16,9 +16,9 @@ class PlanUpdateManager
     @processDetailsDiv = $("plan_#{@formType}_info")
     @skipTrialDiv      = $('skip_trial')
     @skipTrialCheckbox = $('site_skip_trial')
-    @billingInfosDiv   = $('billing_infos')
+    @billingInfoDiv    = $('billing_info')
     @checkedPlan       = null
-    @billingInfosState = @billingInfosDiv.readAttribute 'data-state'
+    @billingInfoState  = @billingInfoDiv.readAttribute 'data-state'
 
     this.setupPlansObservers()
     this.setupSkipTrialObserver() if this.siteIsInTrial()
@@ -32,7 +32,7 @@ class PlanUpdateManager
 
   setupSkipTrialObserver: ->
     @skipTrialCheckbox.on 'click', (event) =>
-      this.handleBillingInfos(this.skippingTrial())
+      this.handleBillingInfo(this.skippingTrial())
 
   selectCheckboxWrappingBox: ->
     $$('#plans ul .select_box').invoke 'removeClassName', 'active'
@@ -46,10 +46,10 @@ class PlanUpdateManager
       else
         @skipTrialDiv.hide()
         @skipTrialCheckbox.checked = false
-    this.handleBillingInfos(planChangeAndIsNotFree and ((!this.siteIsInTrial() and this.checkedPlanIsAnUpgrade()) or this.skippingTrial()))
+    this.handleBillingInfo(planChangeAndIsNotFree and ((!this.siteIsInTrial() and this.checkedPlanIsAnUpgrade()) or this.skippingTrial()))
 
-  handleBillingInfos: (show) ->
-    if show then @billingInfosDiv.show() else @billingInfosDiv.hide()
+  handleBillingInfo: (show) ->
+    if show then @billingInfoDiv.show() else @billingInfoDiv.hide()
     this.handleProcessDetails()
 
   handleSubmitButtonDisplay: (show) ->
@@ -82,12 +82,12 @@ class NewSitePlanUpdateManager extends PlanUpdateManager
     @hostnameDiv.required = !this.checkedPlanPriceIsZero()
     super
 
-  handleBillingInfos: (show) ->
+  handleBillingInfo: (show) ->
     super
-    this.handleSubmitButtonDisplay(this.checkedPlanPriceIsZero() or !this.skippingTrial() or @billingInfosState is 'present')
+    this.handleSubmitButtonDisplay(this.checkedPlanPriceIsZero() or !this.skippingTrial() or @billingInfoState is 'present')
 
   handleProcessDetails: ->
-    if !this.checkedPlanPriceIsZero() and this.skippingTrial() and @billingInfosState is 'present'
+    if !this.checkedPlanPriceIsZero() and this.skippingTrial() and @billingInfoState is 'present'
       @processDetailsDiv.select(".plan_price").invoke "update", this.priceWithVATText('plan_price')
       @processDetailsDiv.show()
     else
@@ -106,12 +106,12 @@ class PersistedSitePlanUpdateManager extends PlanUpdateManager
     ['in_trial_downgrade_to_free', 'in_trial_update', 'in_trial_instant_upgrade', 'upgrade', 'upgrade_from_free', 'delayed_upgrade', 'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'].each (name) =>
       @processDetailsMessages.set(name, $("plan_#{name}_info"))
 
-  handleBillingInfos: (show) ->
+  handleBillingInfo: (show) ->
     super
     this.handleSubmitButtonDisplay(this.checkedPlanPriceIsZero() or (!this.checkedPlanIsCurrentPlan() and this.siteIsUpdatable()))
 
   siteIsUpdatable: ->
-    (this.siteIsInTrial() and (!this.skippingTrial() or @billingInfosState is 'present')) or (!this.siteIsInTrial() and (!this.checkedPlanIsAnUpgrade() or @billingInfosState is 'present'))
+    (this.siteIsInTrial() and (!this.skippingTrial() or @billingInfoState is 'present')) or (!this.siteIsInTrial() and (!this.checkedPlanIsAnUpgrade() or @billingInfoState is 'present'))
 
   handleProcessDetails: ->
     @processDetailsMessages.each (pair) -> pair.value.hide()
