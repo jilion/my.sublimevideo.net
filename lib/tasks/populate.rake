@@ -212,7 +212,6 @@ def create_users(user_id = nil)
         billing_country: COUNTRIES.sample,
         use_personal: true,
         terms_and_conditions: "1",
-        cc_register: true,
         cc_brand: 'visa',
         cc_full_name: BASE_USERS[i][0],
         cc_number: "4111111111111111",

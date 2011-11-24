@@ -558,17 +558,20 @@ describe User do
 
   describe "Callbacks" do
 
-    describe "before_save :prepare_pending_credit_card" do
+    describe "before_save :prepare_pending_credit_card & after_save :register_credit_card_on_file" do
 
-      context "when user had no cc infos before" do
-        subject { Factory.create(:user_no_cc, valid_cc_attributes.merge(cc_register: false)) }
+      context "when user had no cc info before" do
+        use_vcr_cassette "ogone/void_authorization"
+        subject { Factory.create(:user_no_cc, valid_cc_attributes) }
 
-        its(:cc_type)                { should be_nil }
-        its(:cc_last_digits)         { should be_nil }
-        its(:cc_expire_on)           { should be_nil }
-        its(:pending_cc_type)        { should eq 'visa' }
-        its(:pending_cc_last_digits) { should eq '1111' }
-        its(:pending_cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
+        it { should be_valid }
+        its(:cc_type)        { should eq 'visa' }
+        its(:cc_last_digits) { should eq '1111' }
+        its(:cc_expire_on)   { should eq 1.year.from_now.end_of_month.to_date }
+
+        its(:pending_cc_type)        { should be_nil }
+        its(:pending_cc_last_digits) { should be_nil }
+        its(:pending_cc_expire_on)   { should be_nil }
       end
 
       context "when user has cc info before" do
@@ -578,16 +581,19 @@ describe User do
           subject.cc_last_digits.should eq '1111'
           subject.cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
 
-          subject.attributes = valid_cc_attributes_master.merge(cc_register: false)
-          subject.save!
+          subject.attributes = valid_cc_attributes_master
+          VCR.use_cassette("ogone/void_authorization") { subject.save! }
+          subject.reload
         end
 
-        its(:cc_type)                { should eq 'visa' }
-        its(:cc_last_digits)         { should eq '1111' }
-        its(:cc_expire_on)           { should eq 1.year.from_now.end_of_month.to_date }
-        its(:pending_cc_type)        { should eq 'master' }
-        its(:pending_cc_last_digits) { should eq '9999' }
-        its(:pending_cc_expire_on)   { should eq 2.years.from_now.end_of_month.to_date }
+        it { should be_valid }
+        its(:cc_type)        { should eq 'master' }
+        its(:cc_last_digits) { should eq '9999' }
+        its(:cc_expire_on)   { should eq 2.years.from_now.end_of_month.to_date }
+
+        its(:pending_cc_type)        { should be_nil }
+        its(:pending_cc_last_digits) { should be_nil }
+        its(:pending_cc_expire_on)   { should be_nil }
       end
     end
 

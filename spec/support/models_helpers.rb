@@ -4,7 +4,6 @@ module Spec
 
       def nil_cc_attributes
         {
-          cc_register:           1,
           cc_brand:              nil,
           cc_full_name:          nil,
           cc_number:             nil,
@@ -16,7 +15,6 @@ module Spec
 
       def valid_cc_attributes
         {
-          cc_register:           1,
           cc_brand:              'visa',
           cc_full_name:          'John Doe Huber',
           cc_number:             '4111111111111111',
@@ -28,7 +26,6 @@ module Spec
 
       def valid_cc_attributes_master
         {
-          cc_register:           1,
           cc_brand:              'master',
           cc_full_name:          'Bob Doe Hicks',
           cc_number:             '5399999999999999',
@@ -40,7 +37,6 @@ module Spec
 
       def valid_cc_d3d_attributes
         {
-          cc_register:           1,
           cc_brand:              'visa',
           cc_full_name:          'John Doe Huber',
           cc_number:             '4000000000000002',
@@ -52,7 +48,6 @@ module Spec
 
       def invalid_cc_attributes
         {
-          cc_register:           1,
           cc_brand:              'visa',
           cc_full_name:          'John Doe Huber',
           cc_number:             '4111113333333333',
@@ -64,7 +59,6 @@ module Spec
 
       def uncertain_cc_attributes
         {
-          cc_register:           1,
           cc_brand:              'visa',
           cc_full_name:          'John Doe Huber',
           cc_number:             '4111116666666666',
