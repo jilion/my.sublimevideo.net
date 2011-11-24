@@ -24,7 +24,7 @@ class Transaction < ActiveRecord::Base
 
   before_save :set_fields_from_ogone_response
 
-  before_create :reject_paid_invoices, :set_user, :set_amount
+  before_create :reject_paid_invoices, :set_user_and_set_cc_info, :set_amount
 
   # =================
   # = State Machine =
@@ -89,18 +89,18 @@ class Transaction < ActiveRecord::Base
     options = options.merge({
       order_id: transaction.order_id,
       description: transaction.description,
-      store: transaction.user.cc_alias,
       email: transaction.user.email,
-      billing_address: { address1: transaction.user.billing_address_1, zip: transaction.user.billing_postal_code, city: transaction.user.billing_city, country: transaction.user.billing_country },
-      d3d: true,
+      billing_address: {
+        address1: transaction.user.billing_address_1,
+        zip: transaction.user.billing_postal_code,
+        city: transaction.user.billing_city,
+        country: transaction.user.billing_country
+      },
       paramplus: "PAYMENT=TRUE"
     })
-    credit_card = options.delete(:credit_card)
-    payment_method = credit_card && credit_card.valid? ? credit_card : transaction.user.cc_alias
-    transaction.store_cc_infos(payment_method)
 
     payment = begin
-      Ogone.purchase(transaction.amount, payment_method, options)
+      Ogone.purchase(transaction.amount, transaction.user.cc_alias, options)
     rescue => ex
       Notify.send("Charging failed: #{ex.message}", exception: ex)
       transaction.error = ex.message
@@ -139,24 +139,14 @@ class Transaction < ActiveRecord::Base
 
   # Called from Transaction.charge_by_invoice_ids and from TransactionsController#callback
   def process_payment_response(payment_params)
-    @ogone_response_infos = payment_params
+    @ogone_response_info = payment_params
 
     case payment_params["STATUS"]
-
-    # Waiting for identification (3-D Secure)
-    # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
-    when "46"
-      @ogone_response_infos.delete("NCERRORPLUS")
-      self.error = Base64.decode64(payment_params["HTML_ANSWER"])
-
-      self.wait_d3d
 
     # STATUS == 9, Payment requested:
     #   The payment has been accepted.
     #   An authorization code is available in the field "ACCEPTANCE".
     when "9"
-      self.user.apply_pending_credit_card_info if user.pending_credit_card?
-
       self.succeed
 
     # STATUS == 51, Authorization waiting:
@@ -178,7 +168,10 @@ class Transaction < ActiveRecord::Base
     #     The customer can retry the authorization process after selecting a different payment method (or card brand).
     #   STATUS == 93, Payment refused:
     #     A technical problem arose.
-    when "0", "2", "93"
+    #
+    # STATUS == 46, Waiting for identification (3-D Secure):
+    # THIS SHOULD NEVER HAPPEN...
+    when "0", "2", "46", "93"
       self.fail
 
     # STATUS == 52, Authorization not known; STATUS == 92, Payment uncertain:
@@ -203,19 +196,6 @@ class Transaction < ActiveRecord::Base
     @description ||= "SublimeVideo Invoices: " + self.invoices.order(:created_at).all.map { |invoice| "##{invoice.reference}" }.join(", ")
   end
 
-  def store_cc_infos(payment_method)
-    is_cc_alias = payment_method.is_a?(String) # it's a cc_alias
-    if is_cc_alias
-      self.cc_type        = self.user.cc_type || self.user.pending_cc_type
-      self.cc_last_digits = self.user.cc_last_digits || self.user.pending_cc_last_digits
-      self.cc_expire_on   = self.user.cc_expire_on || self.user.pending_cc_expire_on
-    else
-      self.cc_type        = payment_method.type
-      self.cc_last_digits = payment_method.last_digits
-      self.cc_expire_on   = Time.utc(payment_method.year, payment_method.month).end_of_month.to_date
-    end
-  end
-
 private
 
   # validates
@@ -225,16 +205,18 @@ private
 
   # validates
   def all_invoices_belong_to_same_user
-    self.errors.add(:base, :all_invoices_must_belong_to_the_same_user) if invoices.any? { |invoice| invoice.user != invoices.first.user }
+    if invoices.any? { |invoice| invoice.user != invoices.first.user }
+      self.errors.add(:base, :all_invoices_must_belong_to_the_same_user)
+    end
   end
 
   # before_save
   def set_fields_from_ogone_response
-    if @ogone_response_infos.present?
-      self.pay_id    = @ogone_response_infos["PAYID"]
-      self.nc_status = @ogone_response_infos["NCSTATUS"].to_i
-      self.status    = @ogone_response_infos["STATUS"].to_i
-      self.error     = @ogone_response_infos["NCERRORPLUS"] if @ogone_response_infos["NCERRORPLUS"] # use a specific field to store the 3dsecure code
+    if @ogone_response_info.present?
+      self.pay_id    = @ogone_response_info["PAYID"]
+      self.nc_status = @ogone_response_info["NCSTATUS"].to_i
+      self.status    = @ogone_response_info["STATUS"].to_i
+      self.error     = @ogone_response_info["NCERRORPLUS"]
     end
   end
 
@@ -244,8 +226,11 @@ private
   end
 
   # before_create
-  def set_user
-    self.user = invoices.first.user unless user_id?
+  def set_user_and_set_cc_info
+    self.user           = invoices.first.user unless user_id?
+    self.cc_type        = self.user.cc_type
+    self.cc_last_digits = self.user.cc_last_digits
+    self.cc_expire_on   = self.user.cc_expire_on
   end
 
   # before_create

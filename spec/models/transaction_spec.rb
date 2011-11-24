@@ -395,62 +395,6 @@ describe Transaction do
     end # .charge_invoices_by_user_id
 
     describe ".charge_by_invoice_ids" do
-      context "with a new credit card given through options[:credit_card]" do
-        before do
-          @user = Factory.create(:user_no_cc)
-          @site1 = Factory.build(:new_site, user: @user)
-          @site1.user.assign_attributes(valid_cc_attributes.merge(cc_register: false))
-          @site1.save_skip_pwd # fake sites_controller
-
-          @user.reload
-          @user.pending_cc_type.should eq 'visa'
-          @user.pending_cc_last_digits.should eq '1111'
-          @user.pending_cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
-          @user.cc_type.should be_nil
-          @user.cc_last_digits.should be_nil
-          @user.cc_expire_on.should be_nil
-
-          @invoice1 = Factory.create(:invoice, site: @site1, state: 'open')
-        end
-
-        it "should charge Ogone for the total amount of the open and failed invoices" do
-          Ogone.should_receive(:purchase).with(@invoice1.amount, @site1.user.credit_card, {
-            order_id: an_instance_of(String),
-            description: an_instance_of(String),
-            store: @user.cc_alias,
-            email: @user.email,
-            billing_address: { address1: @user.billing_address_1, zip: @user.billing_postal_code, city: @user.billing_city, country: @user.billing_country },
-            d3d: true,
-            paramplus: "PAYMENT=TRUE"
-          })
-          Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @site1.user.credit_card })
-        end
-
-        it "should not reset the user's credit card infos" do
-          VCR.use_cassette("ogone/visa_payment_2000_credit_card") do
-            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @site1.user.credit_card }).should be_true
-          end
-
-          @user.reload
-          @user.pending_cc_type.should be_nil
-          @user.pending_cc_last_digits.should be_nil
-          @user.pending_cc_expire_on.should be_nil
-          @user.cc_type.should eq 'visa'
-          @user.cc_last_digits.should eq '1111'
-          @user.cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
-        end
-
-        it "should store cc infos from the credit card" do
-          VCR.use_cassette("ogone/visa_payment_2000_credit_card") do
-            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @site1.user.credit_card }).should be_true
-          end
-
-          @invoice1.last_transaction.cc_type.should eq @site1.user.credit_card.type
-          @invoice1.last_transaction.cc_last_digits.should eq @site1.user.credit_card.last_digits
-          @invoice1.last_transaction.cc_expire_on.should eq Time.utc(@site1.user.credit_card.year, @site1.user.credit_card.month).end_of_month.to_date
-        end
-      end
-
       context "with a credit card alias" do
         use_vcr_cassette "ogone/visa_payment_2000_alias"
 
@@ -465,10 +409,13 @@ describe Transaction do
           Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @user.cc_alias, {
             order_id: an_instance_of(String),
             description: an_instance_of(String),
-            store: @user.cc_alias,
             email: @user.email,
-            billing_address: { address1: @user.billing_address_1, zip: @user.billing_postal_code, city: @user.billing_city, country: @user.billing_country },
-            d3d: true,
+            billing_address: {
+              address1: @user.billing_address_1,
+              zip: @user.billing_postal_code,
+              city: @user.billing_city,
+              country: @user.billing_country
+            },
             paramplus: "PAYMENT=TRUE"
           })
           Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
@@ -513,26 +460,16 @@ describe Transaction do
 
         context "with a purchase that need a 3d secure authentication" do
           before do
-            Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "5", "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }) }
-          end
-
-          context "credit card" do
-            it "should set transaction and invoices to waiting_d3d state" do
-              @invoice1.should be_open
-              Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_true
-              @invoice1.last_transaction.should be_waiting_d3d
-              @invoice1.last_transaction.error.should eq "<html>No HTML.</html>"
-              @invoice1.reload.should be_open
-            end
+            Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "5", "STATUS" => "46", "NCERRORPLUS" => "!" }) }
           end
 
           context "alias" do
             it "should set transaction and invoices to waiting_d3d state" do
               @invoice1.should be_open
               Transaction.charge_by_invoice_ids([@invoice1.id]).should be_true
-              @invoice1.last_transaction.should be_waiting_d3d
-              @invoice1.last_transaction.error.should eq "<html>No HTML.</html>"
-              @invoice1.reload.should be_open
+              @invoice1.last_transaction.should be_failed
+              @invoice1.last_transaction.error.should eq "!"
+              @invoice1.reload.should be_failed
             end
           end
         end
@@ -555,7 +492,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to an invalid credit card" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "5", "STATUS" => "0", "NCERRORPLUS" => "invalid" }) } }
+          before(:each) { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "5", "STATUS" => "0", "NCERRORPLUS" => "invalid" }) } }
           it "should set transaction and invoices to failed state" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
@@ -565,7 +502,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a refused purchase" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "3", "STATUS" => "93", "NCERRORPLUS" => "refused" }) } }
+          before(:each) { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "3", "STATUS" => "93", "NCERRORPLUS" => "refused" }) } }
           it "should set transaction and invoices to failed state" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
@@ -574,7 +511,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a waiting authorization" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "0", "STATUS" => "51", "NCERRORPLUS" => "waiting" }) } }
+          before(:each) { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "0", "STATUS" => "51", "NCERRORPLUS" => "waiting" }) } }
           it "should not succeed nor fail transaction nor invoices" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
@@ -584,7 +521,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a uncertain result" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "2", "STATUS" => "92", "NCERRORPLUS" => "unknown" }) } }
+          before(:each) { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "2", "STATUS" => "92", "NCERRORPLUS" => "unknown" }) } }
           it "should not succeed nor fail transaction nor invoices, with status 2" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
@@ -658,7 +595,7 @@ describe Transaction do
       context "for a refundable site with 1 failed transaction" do
         before do
           expect { @site = Factory.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
-          transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
+          transactions = Transaction.paid.joins(:invoices).where(invoices: { site_id: @site.id }).order(:id)
           transactions.should have(1).item
 
           @transaction = Transaction.find(transactions.first.id)
@@ -856,34 +793,6 @@ describe Transaction do
       end
       subject { Factory.create(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
 
-      context "STATUS is 46" do
-        it "puts transaction in 'waiting_d3d' state" do
-          subject.should be_unprocessed
-          subject.error.should be_nil
-
-          subject.process_payment_response(@d3d_params)
-
-          subject.reload.should   be_waiting_d3d
-          subject.error.should    eq "<html>No HTML.</html>"
-          @invoice1.reload.should be_open
-          @invoice2.reload.should be_failed
-        end
-
-        it "doesn't clear pending cc infos of the user" do
-          subject.user.reload.should_not be_pending_cc
-          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
-          subject.user.save!
-          subject.user.reload.should be_pending_cc
-
-          subject.process_payment_response(@invalid_params)
-
-          subject.user.reload.cc_type.should eq 'visa'
-          subject.user.cc_last_digits.should eq '1111'
-          subject.user.cc_expire_on.should   eq 1.year.from_now.end_of_month.to_date
-          subject.user.should be_pending_cc
-        end
-      end
-
       context "STATUS is 9" do
         it "puts transaction in 'paid' state" do
           subject.should be_unprocessed
@@ -894,21 +803,6 @@ describe Transaction do
           @invoice1.reload.should be_paid
           @invoice2.reload.should be_paid
         end
-
-        it "applies pending cc infos to the user" do
-          subject.user.reload.should_not be_pending_cc
-          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
-          subject.user.save!
-          subject.user.reload.should be_pending_cc
-
-          subject.process_payment_response(@success_params)
-
-          subject.user.reload.cc_type.should eq 'master'
-          subject.user.cc_last_digits.should eq '9999'
-          subject.user.cc_expire_on.should   eq 2.years.from_now.end_of_month.to_date
-          subject.user.should_not be_pending_cc
-        end
-
       end
 
       context "STATUS is 51" do
@@ -923,20 +817,6 @@ describe Transaction do
           subject.error.should     eq "waiting"
           @invoice1.reload.should  be_waiting
           @invoice2.reload.should  be_waiting
-        end
-
-        it "doesn't clear pending cc infos of the user" do
-          subject.user.reload.should_not be_pending_cc
-          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
-          subject.user.save!
-          subject.user.reload.should be_pending_cc
-
-          subject.process_payment_response(@invalid_params)
-
-          subject.user.reload.cc_type.should eq 'visa'
-          subject.user.cc_last_digits.should eq '1111'
-          subject.user.cc_expire_on.should   eq 1.year.from_now.end_of_month.to_date
-          subject.user.should be_pending_cc
         end
       end
 
@@ -953,19 +833,19 @@ describe Transaction do
           @invoice1.reload.should  be_failed
           @invoice2.reload.should  be_failed
         end
+      end
 
-        it "doesn't clear pending cc infos of the user" do
-          subject.user.reload.should_not be_pending_cc
-          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
-          subject.user.save!
-          subject.user.reload.should be_pending_cc
+      context "STATUS is 46" do
+        it "puts transaction in 'failed' state" do
+          subject.should be_unprocessed
+          subject.error.should be_nil
 
-          subject.process_payment_response(@invalid_params)
+          subject.process_payment_response(@d3d_params)
 
-          subject.user.reload.cc_type.should eq 'visa'
-          subject.user.cc_last_digits.should eq '1111'
-          subject.user.cc_expire_on.should   eq 1.year.from_now.end_of_month.to_date
-          subject.user.should be_pending_cc
+          subject.reload.should   be_failed
+          subject.error.should    eq "!"
+          @invoice1.reload.should be_failed
+          @invoice2.reload.should be_failed
         end
       end
 
@@ -982,20 +862,6 @@ describe Transaction do
 
           @invoice1.reload.should be_failed
           @invoice2.reload.should be_failed
-        end
-
-        it "doesn't clear pending cc infos of the user" do
-          subject.user.reload.should_not be_pending_cc
-          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
-          subject.user.save!
-          subject.user.reload.should be_pending_cc
-
-          subject.process_payment_response(@refused_params)
-
-          subject.user.reload.cc_type.should eq 'visa'
-          subject.user.cc_last_digits.should eq '1111'
-          subject.user.cc_expire_on.should   eq 1.year.from_now.end_of_month.to_date
-          subject.user.should be_pending_cc
         end
       end
 
@@ -1014,65 +880,10 @@ describe Transaction do
           @invoice1.reload.should be_waiting
           @invoice2.reload.should be_waiting
         end
-
-        it "doesn't clear pending cc infos of the user" do
-          subject.user.reload.should_not be_pending_cc
-          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
-          subject.user.save!
-          subject.user.reload.should be_pending_cc
-
-          subject.process_payment_response(@unknown_params)
-
-          subject.user.reload.cc_type.should eq 'visa'
-          subject.user.cc_last_digits.should eq '1111'
-          subject.user.cc_expire_on.should   eq 1.year.from_now.end_of_month.to_date
-          subject.user.should be_pending_cc
-        end
-      end
-
-      context "first STATUS is 46, second is 9" do
-        it "puts transaction in 'waiting_d3d' state, and then puts it in 'paid' state" do
-          subject.user.reload.should_not be_pending_cc
-          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
-          subject.user.save!
-          subject.user.reload.should be_pending_cc
-          subject.should be_unprocessed
-
-          subject.process_payment_response(@d3d_params)
-
-          subject.reload.should    be_waiting_d3d
-          subject.nc_status.should eq 0
-          subject.status.should    eq 46
-          subject.error.should     eq "<html>No HTML.</html>"
-          subject.should           be_waiting_d3d
-          subject.user.reload.should be_pending_cc
-
-          @invoice1.reload.should be_open
-          @invoice2.reload.should be_failed
-
-          subject.process_payment_response(@success_params)
-
-          subject.reload.should    be_paid
-          subject.nc_status.should eq 0
-          subject.status.should    eq 9
-          subject.error.should     eq "!"
-
-          subject.user.reload.should_not be_pending_cc
-          subject.user.reload.cc_type.should eq 'master'
-          subject.user.cc_last_digits.should eq '9999'
-          subject.user.cc_expire_on.should   eq 2.years.from_now.end_of_month.to_date
-
-          @invoice1.reload.should be_paid
-          @invoice2.reload.should be_paid
-        end
       end
 
       context "first STATUS is 51, second is 9" do
         it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
-          subject.user.reload.should_not be_pending_cc
-          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
-          subject.user.save!
-          subject.user.reload.should be_pending_cc
           subject.should be_unprocessed
 
           subject.process_payment_response(@waiting_params)
@@ -1082,7 +893,6 @@ describe Transaction do
           subject.status.should    eq 51
           subject.error.should     eq "waiting"
           subject.should be_waiting
-          subject.user.reload.should be_pending_cc
 
           @invoice1.reload.should be_waiting
           @invoice2.reload.should be_waiting
@@ -1094,11 +904,6 @@ describe Transaction do
           subject.status.should    eq 9
           subject.error.should     eq "!"
 
-          subject.user.reload.should_not be_pending_cc
-          subject.user.reload.cc_type.should eq 'master'
-          subject.user.cc_last_digits.should eq '9999'
-          subject.user.cc_expire_on.should   eq 2.years.from_now.end_of_month.to_date
-
           @invoice1.reload.should be_paid
           @invoice2.reload.should be_paid
         end
@@ -1106,10 +911,6 @@ describe Transaction do
 
       context "first STATUS is 92, second is 9" do
         it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
-          subject.user.reload.should_not be_pending_cc
-          subject.user.attributes = valid_cc_attributes_master.merge(cc_register: false)
-          subject.user.save!
-          subject.user.reload.should be_pending_cc
           subject.should be_unprocessed
           Notify.should_receive(:send)
 
@@ -1119,7 +920,6 @@ describe Transaction do
           subject.nc_status.should eq 2
           subject.status.should    eq 92
           subject.error.should     eq "unknown"
-          subject.user.reload.should be_pending_cc
 
           @invoice1.reload.should be_waiting
           @invoice2.reload.should be_waiting
@@ -1130,11 +930,6 @@ describe Transaction do
           subject.nc_status.should eq 0
           subject.status.should    eq 9
           subject.error.should     eq "!"
-
-          subject.user.reload.should_not be_pending_cc
-          subject.user.reload.cc_type.should eq 'master'
-          subject.user.cc_last_digits.should eq '9999'
-          subject.user.cc_expire_on.should   eq 2.years.from_now.end_of_month.to_date
 
           @invoice1.reload.should be_paid
           @invoice2.reload.should be_paid
