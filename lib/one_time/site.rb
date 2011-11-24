@@ -34,7 +34,8 @@ module OneTime
 
           # NOTE TO SELF:
           # We will have to handle sites with a pending plan
-          ::Site.where { (plan_id != nil) | (pending_plan_id != nil) }.find_each(batch_size: 100) do |site|
+          legacy_plans = Plan.where { name >> (Plan::LEGACY_UNPAID_NAMES + Plan::LEGACY_STANDARD_NAMES) }.map(&:id)
+          ::Site.active.where { (plan_id >> legacy_plans) | (pending_plan_id >> legacy_plans) }.find_each(batch_size: 100) do |site|
             add_to_balance = 0
 
             new_plan        = plan_switch(site.plan)
@@ -57,8 +58,8 @@ module OneTime
             site.send(:write_attribute, :pending_plan_id, nil)
             site.send(:write_attribute, :next_cycle_plan_id, next_cycle_plan.try(:id))
             # print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
-            site.save_skip_pwd
             # puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+            site.skip_pwd { site.save(validate: false) }
             total += 1
 
             unless add_to_balance.zero?
