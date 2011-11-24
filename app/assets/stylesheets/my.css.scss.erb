@@ -280,7 +280,8 @@ form .entry.select select {
   -webkit-appearance:none;
 }
 
-form .entry.select select:focus {
+form .entry.select select:focus, #content h2 select:focus {
+  border:1px solid #000;
   @include box-shadow((inset rgba(255,255,255,0.8) 0 1px 0, rgba(255,255,255,0.1) 0 1px 0, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
 }
 
@@ -438,6 +439,14 @@ form .entry.card_number label.icon {
   background:url(<%= asset_data_uri "my/fields/card_icon.png" %>) no-repeat;
   top:14px;
   left:12px;
+}
+
+form .entry.path label.icon {
+  width:11px;
+  height:19px;
+  background:url(<%= asset_data_uri "my/fields/path_icon.png" %>) no-repeat;
+  top:12px;
+  left:14px;
 }
 
 /* ================== */
@@ -666,6 +675,56 @@ form .entry.float select {
   font-size:12px;
   line-height:20px;
   padding:0 0 20px;
+}
+
+/* ============= */
+/* = Edit Site = */
+/* ============= */
+
+ul.segmented_menu {
+  list-style-type:none;
+  position:absolute;
+  top:46px;
+  right:40px;
+}
+
+ul.segmented_menu li {
+  float:left;
+  display:block;
+}
+
+ul.segmented_menu li a {
+  display:block;
+  padding:10px 16px;
+  color:#1e3966;
+  font-size:20px;
+  font-weight:600;
+  text-shadow:#fff 0 1px 0;
+  border:1px solid #576c88;
+  border-left-width:0;
+  @include gradient(rgba(255,255,255,0.4),rgba(255,255,255,0),transparent);
+  @include box-shadow((inset #f5f8fc 0 1px 0, rgba(255,255,255,0.3) 0 1px 0));
+}
+
+ul.segmented_menu li.first a {
+  border-left-width:1px;
+  @include border-radius(5px 0 0 5px);
+}
+
+ul.segmented_menu li.last a {
+  @include border-radius(0 5px 5px 0);  
+}
+
+ul.segmented_menu li.active a {
+  position:relative;
+  left:-1px;
+  margin-right:-1px;
+  border:1px solid #000;
+  color:#f1f6ff;
+  text-shadow:rgba(0,0,0,0.6) 0 -1px 0;
+  @include gradient(#114492, #207ec3, #1a65ae);
+  @include box-shadow((inset rgba(0,0,0,0.9) 0 1px 13px, rgba(255,255,255,0.3) 0 1px 0));
+  -webkit-font-smoothing:antialiased;
 }
 
 a.hl {
