@@ -235,8 +235,12 @@ form .entry input.text {
 }
 
 form .entry input.text.no_icon {
-  width:420px;
+  width:415px;
   padding-left:10px;
+}
+
+form .entry.small_field input.text {
+  width:104px;
 }
 
 form .entry .left_field input.text, form .entry .left_field input.text.no_icon {
@@ -267,7 +271,7 @@ form .entry.select select {
   font-family:inherit;
   font-size:22px;
   color:#4a648e;
-  padding-left:10px;
+  padding:0 24px 0 10px;
   text-shadow:rgba(255,255,255,0.8) 0 1px 0;
   background:url(<%= asset_data_uri "my/custom_select.png" %>) no-repeat right top;
   border:1px solid #335994;
@@ -307,7 +311,7 @@ form .entry.select .left_field select, form .entry.select .right_field select {w
   background:url(<%= asset_data_uri "my/custom_checkbox.png" %>) no-repeat;
 }
 
-.radio_wrap span.bg {
+.radio_wrap span.bg, form .entry .radio_wrap label {
   display:block;
   position:absolute;
   z-index:1;
@@ -318,9 +322,9 @@ form .entry.select .left_field select, form .entry.select .right_field select {w
   background:url(<%= asset_data_uri "my/custom_radio.png" %>) no-repeat;
 }
 
-.checkbox_wrap input:checked + label, .radio_wrap input:checked + span.bg {background-position:0 -34px}
-.checkbox_wrap input:focus + label, .radio_wrap input:focus + span.bg {background-position:0 -68px}
-.checkbox_wrap input:focus:checked + label, .radio_wrap input:focus:checked + span.bg {background-position:0 -102px}
+.checkbox_wrap input:checked + label, form .entry .radio_wrap input:checked + label, .radio_wrap input:checked + span.bg {background-position:0 -34px}
+.checkbox_wrap input:focus + label, form .entry .radio_wrap input:focus + label, .radio_wrap input:focus + span.bg {background-position:0 -68px}
+.checkbox_wrap input:focus:checked + label, form .entry .radio_wrap input:focus:checked + label, .radio_wrap input:focus:checked + span.bg {background-position:0 -102px}
 
 form .inline_errors span {
   padding:2px 5px 2px;
@@ -338,7 +342,7 @@ form .inline_errors span {
   @include box-shadow((inset #f4002d 0 1px 0, rgba(0,0,0,0.4) 0 1px 3px))
 }
 
-form .inline_errors.plan span {
+form .inline_errors.plan span, #content form .entry.card .inline_errors span {
   @include border-radius(4px);
 }
 
@@ -420,11 +424,19 @@ form .entry.email label.icon {
   left:10px;
 }
 
-form .entry .name label.icon {
+form .name label.icon {
   width:18px;
   height:18px;
   background:url(<%= asset_data_uri "my/fields/user_icon.png" %>) no-repeat;
   top:12px;
+  left:12px;
+}
+
+form .entry.card_number label.icon {
+  width:20px;
+  height:16px;
+  background:url(<%= asset_data_uri "my/fields/card_icon.png" %>) no-repeat;
+  top:14px;
   left:12px;
 }
 
@@ -446,7 +458,7 @@ form .entry.use {
   padding-top:10px;
 }
 
-form .break {
+form .break, .small_note .break {
   height:1px;
   margin:15px 0 10px;
   background:#728aab;
@@ -535,6 +547,56 @@ form .actions.center .submit {
   @inline border-radius(12px);
 }
 
+form .entry.card .radio_wrap {
+  float:left;
+  margin-right:32px;
+}
+
+form .entry.card label {
+  height:25px;
+  padding:9px 0 0 36px;
+  position:relative;
+}
+
+form .entry.card label span {
+  display:block;
+  text-indent:-9999px;
+  width:43px;
+  height:29px;
+  position:relative;
+  top:-6px;
+}
+
+form .entry.card label.visa span {
+  background-repeat:no-repeat;
+}
+
+form .entry.float, form .entry.small_field {
+  float:left;
+}
+
+form .entry.small_field {
+  margin-left:20px;
+}
+
+form .entry.float label, form .entry.small_field label {
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  padding:0 0 4px;
+}
+
+form .entry.float select {
+  margin-right:5px;
+}
+
+#content form .entry .radio_wrap .inline_errors {
+  position:absolute;
+  left:200px;
+  top:7px;
+  white-space:nowrap;
+}
+
 .update_plan_message_box {
   margin-bottom:20px;
 }
@@ -553,13 +615,17 @@ form .actions.center .submit {
   width:398px;
 }
 
+#billing_address {
+  padding-bottom:10px;
+}
+
 #credit_card_summary p.card {
   padding:4px 50px 8px;
   background-repeat:no-repeat;
 }
 
-#credit_card_summary p.visa {background-image:url(<%= asset_data_uri "my/credit_cards/visa.png" %>)}
-#credit_card_summary p.master {background-image:url(<%= asset_data_uri "my/credit_cards/mastercard.png" %>)}
+#credit_card_summary p.visa, form .entry.card label.visa span {background-image:url(<%= asset_data_uri "my/credit_cards/visa.png" %>)}
+#credit_card_summary p.master, form .entry.card label.master span {background-image:url(<%= asset_data_uri "my/credit_cards/mastercard.png" %>)}
 
 #delete_account {
   font-size:13px;
@@ -584,6 +650,22 @@ form .actions.center .submit {
   font-size:13px;
   font-weight:600;
   padding:0 0 4px 22px;
+}
+
+#content .content_right .dark_box.info_secure_note {
+  width:270px;
+  padding-left:82px;
+  font-size:14px;
+  background-image:url(<%= asset_data_uri "my/credit_cards/secure_icon.png" %>);
+  background-repeat:no-repeat;
+  background-position:20px 50%;
+}
+
+.small_note {
+  width:430px;
+  font-size:12px;
+  line-height:20px;
+  padding:0 0 20px;
 }
 
 a.hl {

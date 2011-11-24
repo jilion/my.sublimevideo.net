@@ -9,7 +9,7 @@
       = f.label :cc_brand, content_tag(:span, "MasterCard"), class: "master", title: "MasterCard", for: "user_cc_brand_master"
     .spacer
 
-  .entry.first_name
+  .entry.name
     = f.label :cc_full_name, nil, class: "icon", for: "user_cc_full_name"
     = f.text_field :cc_full_name, class: "text", placeholder: "Name on card", autocomplete: :off, id: "user_cc_full_name"
 
@@ -24,12 +24,6 @@
 
   .entry.small_field
     = f.label :cc_verification_value, "Security Code", for: "user_cc_verification_value"
-    = f.text_field :cc_verification_value, class: "text", placeholder: "CSC", autocomplete: :off, id: "user_cc_verification_value"
+    = f.text_field :cc_verification_value, class: "text no_icon", placeholder: "CSC", autocomplete: :off, id: "user_cc_verification_value"
 
-.right
-  .billing_info
-    %p
-      = "Your credit card information is protected with secure socket layer (SSL) encryption."
-      %br
-      = mail_to("billing@sublimevideo.net", "Questions about billing?", encode: "hex", class: "hl")
 .spacer
