@@ -11,5 +11,6 @@
 
   = render @enthusiasts
 
-= paginate @enthusiasts, theme: 'admin'
-= page_entries_info @enthusiasts
+.pagination_wrap
+  = paginate @enthusiasts, theme: 'admin'
+  = page_entries_info @enthusiasts
