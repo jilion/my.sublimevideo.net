@@ -121,7 +121,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     if index < 0 then this.length + index else index
 
   @allPresent: ->
-    if MSVStats.sites.selectedSite.inFreePlan()
+    if MSVStats.sites.selectedSiteIsInFreePlan()
       !MSVStats.statsHours.isEmpty()
     else
       !MSVStats.statsMinutes.isEmpty() && !MSVStats.statsHours.isEmpty() && !MSVStats.statsDays.isEmpty()

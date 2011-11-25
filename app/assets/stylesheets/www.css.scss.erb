@@ -8,6 +8,10 @@ body {
   background:#ecf2f8 url(<%= asset_data_uri "www/back_texture.png" %>);
 }
 
+/* ======== */
+/* = Home = */
+/* ======== */
+
 .home header h2 {
   color:#c1d3f0;
   font-size:40px;
@@ -66,6 +70,23 @@ body {
 }
 
 .home header .slides li.works_in_any_browsers h3 {padding:15px 0 30px}
+
+.home header .slides li.works_in_any_browsers a {
+  display:block;
+  width:300px;
+  height:100px;
+  background:url(<%= asset_path "www/home/features/browsers/default.png" %>) no-repeat center;
+}
+
+.home header .slides li.works_in_any_browsers a.chrome {background-image:url(<%= asset_path "www/home/features/browsers/chrome.png" %>)}
+.home header .slides li.works_in_any_browsers a.safari {background-image:url(<%= asset_path "www/home/features/browsers/safari.png" %>)}
+.home header .slides li.works_in_any_browsers a.firefox {background-image:url(<%= asset_path "www/home/features/browsers/firefox.png" %>)}
+.home header .slides li.works_in_any_browsers a.opera {background-image:url(<%= asset_path "www/home/features/browsers/opera.png" %>)}
+
+.home header .slides li.works_in_any_browsers a img {
+  display:none;
+}
+
 .home header .slides li.works_on_any_devices h3 {padding:10px 0 10px}
 
 .home header .slides li.instant_setup {
@@ -319,6 +340,16 @@ body {
   padding-right:24px;
   background:url(<%= asset_data_uri "www/home/vison_arrow.png" %>) no-repeat right 50%;
 }
+
+/* ============ */
+/* = Features = */
+/* ============ */
+
+
+
+/* ================= */
+/* = Globals Stuff = */
+/* ================= */
 
 .big_break {
   width:895px;

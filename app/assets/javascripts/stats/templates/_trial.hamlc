@@ -1,4 +1,4 @@
-- if @site.inFreePlan() && @site.statsTrialIsActivable()
+- if @site.isInFreePlan() && @site.statsTrialIsActivable()
   .wrap.before
     %p
       Enjoy the full 

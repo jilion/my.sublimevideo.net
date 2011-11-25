@@ -16,4 +16,4 @@ class MSVStats.Views.SitesSelectTitleView extends Backbone.View
 
   updatePage: (event) ->
     selectedToken = this.$('select').val()
-    MSVStats.statsRouter.navigate("sites/#{selectedToken}/stats", true)
+    MSVStats.statsRouter.navigate("#{selectedToken}", true)

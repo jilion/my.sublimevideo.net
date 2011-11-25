@@ -21,7 +21,7 @@ class MSV.Models.Site extends Backbone.Model
   statsRetentionDays: ->
     this.get('stats_retention_days')
 
-  inFreePlan: ->
+  isInFreePlan: ->
     this.get('stats_retention_days') == 0
 
   statsTrialStartTime: ->
@@ -33,9 +33,10 @@ class MSV.Models.Site extends Backbone.Model
     startTimeMidnight + 8 * 24 * 3600 * 1000
 
   statsTrialIsActivable: ->
-    this.inFreePlan() && this.statsTrialStartTime() == 0
+    this.isInFreePlan() && this.statsTrialStartTime() == 0
 
 class MSV.Collections.Sites extends Backbone.Collection
+
   model: MSV.Models.Site
   url: '/sites'
 
@@ -43,3 +44,8 @@ class MSV.Collections.Sites extends Backbone.Collection
     @selectedSite = _.find this.models, (site) =>
       site.get('token') == token
     this.trigger('change')
+    
+  selectedSiteIsInFreePlan: ->
+    if @selectedSite?
+      @selectedSite.isInFreePlan()
+

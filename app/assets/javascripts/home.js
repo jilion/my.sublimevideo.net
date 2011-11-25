@@ -1,5 +1,7 @@
 document.observe("dom:loaded", function() {
-  slideshow = new Slideshow(4, 0.6);
+  if ($('features_slides')) {
+    slideshow = new Slideshow(4, 0.6);
+  }
 });
 
 Slideshow = Class.create({
@@ -38,6 +40,8 @@ Slideshow = Class.create({
           style: 'opacity:0',
           after: function() {
             if (this.timer) {
+              currentBox.setStyle({zIndex:'auto'});
+              nextBox.setStyle({zIndex:2});
               this.updateActiveClasses(this.slideNames[index]);
               this.fadeOutAnimation = new S2.FX.Morph(nextBox, {
                 duration:this.speed,
@@ -52,6 +56,7 @@ Slideshow = Class.create({
         });
         this.fadeInAnimation.play();
       } else {
+        // no timer
         if (this.fadeInAnimation) {
           this.fadeInAnimation.cancel();
           this.fadeInAnimation = null;
@@ -61,12 +66,15 @@ Slideshow = Class.create({
           this.fadeOutAnimation.cancel();
           this.fadeOutAnimation = null;
         }
+        
+        currentBox.setStyle({zIndex:'auto'});
 
         this.updateActiveClasses(this.slideNames[index]);
         currentBox.removeAttribute('style');
         currentBox.setOpacity(0);
         nextBox.removeAttribute('style');
         nextBox.setOpacity(1);
+        nextBox.setStyle({zIndex:2});
       }
       
       this.activeBoxIndex = index;
