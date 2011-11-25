@@ -15,7 +15,7 @@
       %style{ :type => "text/css", :media => "screen" }
         == body {background:#fff;display:none;}
     /[if lte IE 9]
-      = javascript_include_tag("http://html5shiv.googlecode.com/svn/trunk/html5.js")
+      = javascript_include_tag("#{request.protocol}html5shiv.googlecode.com/svn/trunk/html5.js")
     - if %w[site_stats].include?(controller_name)
       = javascript_include_tag 'stats'
     - else
