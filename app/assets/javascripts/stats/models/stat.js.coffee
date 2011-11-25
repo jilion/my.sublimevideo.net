@@ -18,6 +18,8 @@ class MSVStats.Collections.Stats extends Backbone.Collection
 
   chartType: -> 'areaspline'
 
+  pointWidth: (containerWidth) -> Math.round(containerWidth / _.size(@models)) - 1
+
   pvTotal: (startIndex, endIndex) ->
     this.customSum('pv', startIndex, endIndex)
 
@@ -133,7 +135,7 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
 
   url: -> "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=seconds"
 
-  chartType: -> 'column'
+  chartType: -> 'areaspline'
   periodType: -> 'seconds'
 
   customSum: (attribute) ->
