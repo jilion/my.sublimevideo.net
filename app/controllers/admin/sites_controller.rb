@@ -4,6 +4,7 @@ class Admin::SitesController < Admin::AdminController
   #filter
   has_scope :free
   has_scope :sponsored
+  has_scope :in_paid_plan
   has_scope :with_state do |controller, scope, value|
     scope.with_state(value.to_sym)
   end

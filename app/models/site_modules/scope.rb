@@ -88,8 +88,8 @@ module SiteModules::Scope
 
     def search(q)
       joins(:user).where {
-        (lower(:email) =~ lower("%#{q}%")) |
-        (lower(:name) =~ lower("%#{q}%")) |
+        (lower(user.email) =~ lower("%#{q}%")) |
+        (lower(user.name) =~ lower("%#{q}%")) |
         (lower(:hostname) =~ lower("%#{q}%")) |
         (lower(:dev_hostnames) =~ lower("%#{q}%")) |
         (lower(:extra_hostnames) =~ lower("%#{q}%"))
