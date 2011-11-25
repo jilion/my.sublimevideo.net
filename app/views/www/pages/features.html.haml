@@ -1,3 +1,101 @@
 = content_for :title, "Features"
 = content_for :header do
-  %h2= "Features"
+  %h2= "Your video never looked this good."
+  %p.sub= raw "SublimeVideo Player gives your site universal playback of your videos on any browser or device. Check out the #{link_to "player",""} and #{link_to "service",""} features and #{link_to "sign up",""} for free today."
+
+%section.player
+  %section.browsers_and_devices.f
+    .browsers#browsers_box= image_tag "www/features/browsers/default.png", alt: "Support for any browser or device"
+    %h3.title= "Support for any browser or device"
+    = image_tag "www/features/devices_icon.png", alt: "Support for any browser or device", class: "devices"
+    %p= "Reaching your audience on any platform is key. SublimeVideo maximizes the use of HTML5 in the latest browsers, while providing full support for legacy browsers with automatic Flash fallback. Wide mobile device support allows your videos to play seamlessly on iPhones, iPads, Android devices and almost any other mobile platforms."
+    .spacer
+  %section.consistency.f
+    = image_tag "www/features/html5_flash_consistency.png", alt: "Consistent User Interface"
+    %h3.title= "Consistent User Interface"
+    %p= raw "SublimeVideo provides the highest-quality user experience by using a beautiful and consistent user interface in both the HTML5 and Flash player. Take a look at the #{link_to "demo page",""} to see it in action."
+    .spacer
+  %section.lightbox.f
+    = link_to "video.mp4", class: "sublime" do
+      = image_tag "www/features/lightbox_thumb.jpg", alt: "Integrated Lightbox"
+      %span.overlay
+      %span.magnifying_glass
+    %h3.title= "Integrated Lightbox"
+    %p= raw "Quickly and easily give your audience another great way to view your videos with SublimeVideo's integrated lightbox."
+    .spacer
+  %section.playlist.f
+    .box
+    %h3.title= "Playlist Support"
+    %p= "Playlist support using our powerful API makes it possible for you to link multiple videos or chapters to the same player."
+    .spacer
+  %section.column_wrap.first
+    %section.hd.col.f
+      .i_wrap= image_tag "www/features/hd_icon.png", alt: "HD Switching"
+      %h3.title= "HD Switching"
+      %p= "Switch video sources with a single click using SublimeVideo's new HD Switch, built straight into the player's UI."
+      %p
+        = raw "#{link_to "Learn more",""}."
+    %section.embed.col.f
+      .i_wrap= image_tag "www/features/embed_icon.png", alt: "Embed"
+      %h3.title= "Embed"
+      %p= "Your audience can now easily share your videos by embedding them into their own sites or elsewhere on the web."
+      %p
+        = raw "#{link_to "Learn more",""}."
+    %section.api.col.f
+      .i_wrap= image_tag "www/features/api_icon.png", alt: "Player API"
+      %h3.title= "Player API"
+      %p= "Our powerful and flexible API gives you the ability to control the player via JavaScript and easily implement custom and advanced functionality."
+      %p
+        = raw "#{link_to "Learn more",""}."
+    .spacer
+  %section.column_wrap.second
+    %section.js_independent.col.f
+      .i_wrap= image_tag "www/features/js_independent_icon.png", alt: "JS Independent"
+      %h3.title= "JS Independent"
+      %p= "SublimeVideo is a pure JavaScript application not based on any JS library. This ensures that it never creates conflicts and runs safely alongside any other JS libraries present in your page."
+    %section.compatibility.col.f
+      .i_wrap= image_tag "www/features/compatibility_icon.png", alt: "Highly Compatible"
+      %h3.title= "Highly Compatible"
+      %p= "We've designed SublimeVideo to be highly compatible with your site's existing code, meaning that you don't need to recode a thing to use it."
+    %section.multi_sources.col.f
+      .i_wrap= image_tag "www/features/multi_sources_icon.png", alt: "Your Video Sources"
+      %h3.title= "Your Video Sources"
+      %p= "We provide the player, while you keep full control of your videos by maintaining the flexibility of using your preferred hosting and encoding service(s)."
+    .spacer
+.big_break
+
+%section.service
+  .tagline
+    %h2.title= "SublimeVideo Player in The Cloud."
+    %p.sub= "Because the player is in the cloud you'll always be running the latest version of SublimeVideo Player — without having to lift a finger."
+  %section.always_up_to_date.f
+    %h3.title= "Always Up-To-Date"
+    == <div style="float:left;clear:left;height:26px;width:0px;"></div><div style="float:left;clear:left;height:26px;width:10px;"></div><div style="float:left;clear:left;height:26px;width:20px;"></div><div style="float:left;clear:left;height:26px;width:10px;"></div>
+    %p= "SublimeVideo is the world's first zero maintenance HTML5 video player as a service solution. You'll always have the latest version of the player; we provide automatic browser support updates, bug fixes and new features so that you never have to lift a finger."
+  %section.fast_and_reliable.f
+    %h3.title= "Fast & Reliable"
+    == <div style="float:right;clear:right;height:26px;width:15px;"></div><div style="float:right;clear:right;height:26px;width:25px;"></div><div style="float:right;clear:right;height:26px;width:20px;"></div><div style="float:right;clear:right;height:26px;width:11px;"></div>
+    %p= "Thanks to our integration with a state of the art Content Delivery Network (CDN), SublimeVideo Player is delivered to your global audience both quickly and reliably; our CDN has had 100% uptime over the last two years."
+  %section.instant_setup.f
+    %h3.title= "Instant Setup & Easy Integration"
+    == <div style="float:left;clear:left;height:26px;width:14px;"></div><div style="float:left;clear:left;height:26px;width:15px;"></div><div style="float:left;clear:left;height:26px;width:15px;"></div>
+    %p= raw "No download, no installation; #{link_to "Sign up", ""} for free today and be up and running in seconds. It couldn't be simpler to integrate SublimeVideo into your site: Just add a single line of code to enable it on your page."
+  %section.real_time_stats.f
+    %h3.title= "Real-time Stats"
+    %p= "View real-time statistics of video usage on your site with our Real-Time Stats feature; monitor page and video views, browser and device statistics, HTML5 or Flash usage and more."
+
+.big_break
+
+%section.integration
+  .tagline
+    %h2.title= "CMS Integration."
+    %p.sub= "We're building plugins to make it easier to integrate SublimeVideo Player with your preferred CMS. Starting with WordPress today and more to come."
+  %section.wordpress.f
+    %h3.title= "WordPress Plugin"
+    == <div style="float:left;clear:left;height:26px;width:14px;"></div><div style="float:left;clear:left;height:26px;width:15px;"></div><div style="float:left;clear:left;height:26px;width:15px;"></div>
+    %p= raw "Our powerful and customizable plugin make it easier than ever for you to use SublimeVideo in your WordPress installation. Once installed, just click on the SV button in the toolbar to start embedding your videos. #{link_to "Learn more", ""}"
+  .sign_up_box
+    %h4= "Add SublimeVideo to your site for free today."
+    %h5= "All paid plans are free for the first 14 days. No credit card required."
+    .button_wrap
+      = link_to "Get It Now", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button"
