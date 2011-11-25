@@ -1290,6 +1290,7 @@ end
 #  last_30_days_invalid_video_views          :integer         default(0)
 #  last_30_days_embed_video_views            :integer         default(0)
 #  stats_trial_started_at                    :datetime
+#  last_30_days_billable_video_views_array   :text
 #
 # Indexes
 #
