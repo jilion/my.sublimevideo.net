@@ -9,7 +9,7 @@ class MSVStats.Views.PeriodSelectorDays365View extends Backbone.View
 
   render: =>
     if (selectedSite = MSVStats.sites.selectedSite)?
-      $(@el).html(this.template(site: selectedSite))
+      $(@el).html(this.template(site: selectedSite, period: 'last_365_days'))
       $(@el).find('span.title').html('last 365 days')
       unless selectedSite.isInFreePlan()
         if @options.statsDays.isShowable()
