@@ -69,6 +69,8 @@ MySublimeVideo::Application.routes.draw do
 
         resources :video_tags, only: [:show]
       end
+      # for backbone
+      get '/sites/stats(/:token)' => 'site_stats#index', as: 'site_stats'
 
       resources :invoices, only: [:show] do
         put :retry_all, on: :collection
@@ -264,7 +266,7 @@ MySublimeVideo::Application.routes.draw do
       get '/:page' => 'pages#show', as: :page
 
       get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
-      
+
       # Fake Maintenance pass-out
       get '/private/:maintenance_code' => 'application#maintenance_code'
 

@@ -1,5 +1,5 @@
 .content_wrap
-  - if @site.inFreePlan()
+  - if @site.isInFreePlan()
     %P TODO A FAKE IMG WITH UPGRADE LINK
   - else
     - if @mdData.isEmpty()

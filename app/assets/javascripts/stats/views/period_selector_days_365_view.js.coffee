@@ -8,20 +8,20 @@ class MSVStats.Views.PeriodSelectorDays365View extends Backbone.View
     this.render()
 
   render: =>
-    selectedSite = MSVStats.sites.selectedSite
-    $(@el).html(this.template(site: selectedSite))
-    $(@el).find('span.title').html('last 365 days')
-    unless selectedSite.inFreePlan()
-      if @options.statsDays.isShowable()
-        $(@el).find('.content').show()
-        $(@el).data().spinner.stop()
-      else
-        $(@el).find('.content').hide()
-        $(@el).spin(spinOptions)
-      if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
-      vvTotal = @options.statsDays.vvTotal(-365, -1)
-      $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))
-      this.renderSparkline()
+    if (selectedSite = MSVStats.sites.selectedSite)?
+      $(@el).html(this.template(site: selectedSite))
+      $(@el).find('span.title').html('last 365 days')
+      unless selectedSite.isInFreePlan()
+        if @options.statsDays.isShowable()
+          $(@el).find('.content').show()
+          $(@el).data().spinner.stop()
+        else
+          $(@el).find('.content').hide()
+          $(@el).spin(spinOptions)
+        if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
+        vvTotal = @options.statsDays.vvTotal(-365, -1)
+        $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))
+        this.renderSparkline()
     return this
 
   renderSparkline: ->
@@ -32,7 +32,7 @@ class MSVStats.Views.PeriodSelectorDays365View extends Backbone.View
       selected: this.isSelected()
 
   select: =>
-    if MSVStats.sites.selectedSite.inFreePlan()
+    if MSVStats.sites.selectedSiteisInFreePlan()
       window.location.href = $(@el).find('a')[0].href
     else
       # $('#vv').spin()

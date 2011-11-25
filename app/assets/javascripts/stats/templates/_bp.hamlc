@@ -1,5 +1,5 @@
 .content_wrap
-  - if @site.inFreePlan()
+  - if @site.isInFreePlan()
     %P TODO A FAKE IMG WITH UPGRADE LINK
   - else
     - if @bpData.isEmpty()
@@ -17,7 +17,7 @@
               %span.value
                 %span.percent= "#{percentage}%"
                 %span.metric= "#{Highcharts.numberFormat(bp[1], 0)} visits"
-- if !@site.inFreePlan() && @total > @limit
+- if !@site.isInFreePlan() && @total > @limit
   - if @showAll
     .expander
       %a#show_less{ href: "#", onclick: "return false" }
