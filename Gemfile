@@ -134,7 +134,8 @@ group :development do
   gem 'powder'
   gem 'taps'
   gem 'silent-postgres'
-  gem 'letter_opener'
+  # gem 'letter_opener'
+  gem 'letter_opener', git: 'git://github.com/pcg79/letter_opener.git' # includes a fix not merged yet
 
   gem 'em-http-request' # async pusher in populate
 
