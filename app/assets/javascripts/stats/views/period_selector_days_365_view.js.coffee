@@ -32,7 +32,7 @@ class MSVStats.Views.PeriodSelectorDays365View extends Backbone.View
       selected: this.isSelected()
 
   select: =>
-    if MSVStats.sites.selectedSiteisInFreePlan()
+    if MSVStats.sites.selectedSiteIsInFreePlan()
       window.location.href = $(@el).find('a')[0].href
     else
       # $('#vv').spin()
