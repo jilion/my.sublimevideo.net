@@ -329,62 +329,68 @@ end
 #
 # Table name: users
 #
-#  id                     :integer         not null, primary key
-#  state                  :string(255)
-#  email                  :string(255)     default(""), not null
-#  encrypted_password     :string(128)     default(""), not null
-#  confirmation_token     :string(255)
-#  confirmed_at           :datetime
-#  confirmation_sent_at   :datetime
-#  reset_password_token   :string(255)
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer         default(0)
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :string(255)
-#  last_sign_in_ip        :string(255)
-#  failed_attempts        :integer         default(0)
-#  locked_at              :datetime
-#  cc_type                :string(255)
-#  cc_last_digits         :string(255)
-#  cc_expire_on           :date
-#  cc_updated_at          :datetime
-#  created_at             :datetime
-#  updated_at             :datetime
-#  invitation_token       :string(20)
-#  invitation_sent_at     :datetime
-#  zendesk_id             :integer
-#  enthusiast_id          :integer
-#  first_name             :string(255)
-#  last_name              :string(255)
-#  billing_postal_code    :string(255)
-#  billing_country        :string(255)
-#  use_personal           :boolean
-#  use_company            :boolean
-#  use_clients            :boolean
-#  company_name           :string(255)
-#  company_url            :string(255)
-#  company_job_title      :string(255)
-#  company_employees      :string(255)
-#  company_videos_served  :string(255)
-#  cc_alias               :string(255)
-#  pending_cc_type        :string(255)
-#  pending_cc_last_digits :string(255)
-#  pending_cc_expire_on   :date
-#  pending_cc_updated_at  :datetime
-#  archived_at            :datetime
-#  newsletter             :boolean         default(TRUE)
-#  last_invoiced_amount   :integer         default(0)
-#  total_invoiced_amount  :integer         default(0)
-#  balance                :integer         default(0)
-#  hidden_notice_ids      :text
-#  name                   :string(255)
-#  billing_name           :string(255)
-#  billing_address_1      :string(255)
-#  billing_address_2      :string(255)
-#  billing_city           :string(255)
-#  billing_region         :string(255)
+#  id                              :integer         not null, primary key
+#  state                           :string(255)
+#  email                           :string(255)     default(""), not null
+#  encrypted_password              :string(128)     default(""), not null
+#  password_salt                   :string(255)     default(""), not null
+#  confirmation_token              :string(255)
+#  confirmed_at                    :datetime
+#  confirmation_sent_at            :datetime
+#  reset_password_token            :string(255)
+#  remember_created_at             :datetime
+#  sign_in_count                   :integer         default(0)
+#  current_sign_in_at              :datetime
+#  last_sign_in_at                 :datetime
+#  current_sign_in_ip              :string(255)
+#  last_sign_in_ip                 :string(255)
+#  failed_attempts                 :integer         default(0)
+#  locked_at                       :datetime
+#  cc_type                         :string(255)
+#  cc_last_digits                  :string(255)
+#  cc_expire_on                    :date
+#  cc_updated_at                   :datetime
+#  created_at                      :datetime
+#  updated_at                      :datetime
+#  invitation_token                :string(20)
+#  invitation_sent_at              :datetime
+#  zendesk_id                      :integer
+#  enthusiast_id                   :integer
+#  first_name                      :string(255)
+#  last_name                       :string(255)
+#  billing_postal_code             :string(255)
+#  billing_country                 :string(255)
+#  use_personal                    :boolean
+#  use_company                     :boolean
+#  use_clients                     :boolean
+#  company_name                    :string(255)
+#  company_url                     :string(255)
+#  company_job_title               :string(255)
+#  company_employees               :string(255)
+#  company_videos_served           :string(255)
+#  cc_alias                        :string(255)
+#  pending_cc_type                 :string(255)
+#  pending_cc_last_digits          :string(255)
+#  pending_cc_expire_on            :date
+#  pending_cc_updated_at           :datetime
+#  archived_at                     :datetime
+#  newsletter                      :boolean         default(TRUE)
+#  last_invoiced_amount            :integer         default(0)
+#  total_invoiced_amount           :integer         default(0)
+#  balance                         :integer         default(0)
+#  hidden_notice_ids               :text
+#  name                            :string(255)
+#  billing_name                    :string(255)
+#  billing_address_1               :string(255)
+#  billing_address_2               :string(255)
+#  billing_city                    :string(255)
+#  billing_region                  :string(255)
+#  last_failed_cc_authorize_at     :datetime
+#  last_failed_cc_authorize_status :integer
+#  last_failed_cc_authorize_error  :string(255)
+#  referrer_site_token             :string(255)
+#  reset_password_sent_at          :datetime
+#  remember_token                  :string(255)
 #
 # Indexes
 #
@@ -394,6 +400,7 @@ end
 #  index_users_on_current_sign_in_at     (current_sign_in_at)
 #  index_users_on_email_and_archived_at  (email,archived_at) UNIQUE
 #  index_users_on_last_invoiced_amount   (last_invoiced_amount)
+#  index_users_on_referrer_site_token    (referrer_site_token)
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
 #  index_users_on_total_invoiced_amount  (total_invoiced_amount)
 #

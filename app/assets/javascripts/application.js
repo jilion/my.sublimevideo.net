@@ -6,7 +6,7 @@
 //
 //= require prototype
 //= require prototype_ujs
-//= require scriptaculous/s2
+//= require s2
 //= require prototype/sites_select_title
 
 //= require_self

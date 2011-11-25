@@ -1,7 +1,3 @@
-//= require prototype
-//= require modernizr
-//= require s2
-
 document.observe("dom:loaded", function() {
   slideshow = new Slideshow(4, 0.6);
 });
