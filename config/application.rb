@@ -36,6 +36,7 @@ module MySublimeVideo
     %w[global com my admin].each do |subdomain|
       config.assets.precompile += ["#{subdomain}.js", "#{subdomain}.css"]
     end
+    config.assets.initialize_on_precompile = false
 
     # Activate observers that should always be running
     # config.active_record.observers = :site_observer
