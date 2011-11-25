@@ -86,7 +86,7 @@ feature "New site" do
           current_url.should eq "http://my.sublimevideo.dev/sites"
           page.should have_content "Site was successfully created."
           page.should have_content 'rymai.com'
-          page.should have_content 'Silver'
+          page.should have_content 'Plus'
         end
 
         describe "user wants to skip trial" do
@@ -117,7 +117,7 @@ feature "New site" do
             current_url.should eq "http://my.sublimevideo.dev/sites"
             page.should have_content "Site was successfully created."
             page.should have_content 'rymai.com'
-            page.should have_no_content 'Silver'
+            page.should have_no_content 'Plus'
           end
         end
       end
@@ -206,7 +206,7 @@ feature "New site" do
           current_url.should eq "http://my.sublimevideo.dev/sites"
           page.should have_content "Site was successfully created."
           page.should have_content 'rymai.com'
-          page.should have_content 'Silver'
+          page.should have_content 'Plus'
         end
 
         describe "user wants to skip trial" do
@@ -239,7 +239,7 @@ feature "New site" do
             current_url.should eq "http://my.sublimevideo.dev/sites"
             page.should have_content "Site was successfully created."
             page.should have_content 'rymai.com'
-            page.should have_content 'Silver'
+            page.should have_content 'Plus'
           end
         end
       end

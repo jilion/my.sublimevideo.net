@@ -34,7 +34,7 @@ module OneTime
 
           # NOTE TO SELF:
           # We will have to handle sites with a pending plan
-          legacy_plans = Plan.where { name >> (Plan::LEGACY_UNPAID_NAMES + Plan::LEGACY_STANDARD_NAMES) }.map(&:id)
+          legacy_plans = ::Plan.where { name >> (::Plan::LEGACY_UNPAID_NAMES + ::Plan::LEGACY_STANDARD_NAMES) }.map(&:id)
           ::Site.active.where { (plan_id >> legacy_plans) | (pending_plan_id >> legacy_plans) }.find_each(batch_size: 100) do |site|
             add_to_balance = 0
 
