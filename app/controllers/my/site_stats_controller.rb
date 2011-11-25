@@ -2,7 +2,8 @@ class My::SiteStatsController < MyController
   before_filter :redirect_suspended_user
   before_filter :find_site_by_token!
 
-  # GET /sites/:id/stats
+  # GET /sites/stats/:site_id
+  # GET /sites/stats(/:token)
   def index
     respond_to do |format|
       format.html
@@ -27,7 +28,7 @@ class My::SiteStatsController < MyController
 private
 
   def find_site_by_token!
-    @site = current_user.sites.not_archived.find_by_token!(params[:site_id])
+    @site = current_user.sites.not_archived.find_by_token!(params[:site_id]) if params[:site_id]
   end
 
 end

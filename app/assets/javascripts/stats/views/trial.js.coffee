@@ -10,9 +10,10 @@ class MSVStats.Views.TrialView extends Backbone.View
     this.render()
 
   render: =>
-    MSVStats.Routers.StatsRouter.setHighchartsUTC(false) # don't use UTC date here
-    $(@el).html(this.template(site: MSVStats.sites.selectedSite))
-    MSVStats.Routers.StatsRouter.setHighchartsUTC()
+    if (selectedSite = MSVStats.sites.selectedSite)?
+      MSVStats.Routers.StatsRouter.setHighchartsUTC(false) # don't use UTC date here
+      $(@el).html(this.template(site: selectedSite))
+      MSVStats.Routers.StatsRouter.setHighchartsUTC()
     return this
 
   startTrial: (event) ->

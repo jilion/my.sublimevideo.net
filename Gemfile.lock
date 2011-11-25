@@ -26,6 +26,13 @@ GIT
     useragent (0.2.3)
 
 GIT
+  remote: git://github.com/pcg79/letter_opener.git
+  revision: 770282bc220d5ed7427d5cc316711fe0423ab67b
+  specs:
+    letter_opener (0.0.2)
+      launchy
+
+GIT
   remote: git://github.com/rymai/active_merchant.git
   revision: 66e1960276f3e7248ecfba969b7a6d341f1aab18
   branch: 3ds_from_ZenCocoon
@@ -275,8 +282,6 @@ GEM
       multi_json
     launchy (2.0.5)
       addressable (~> 2.2.6)
-    letter_opener (0.0.2)
-      launchy
     libxml-ruby (2.2.2)
     liquid (2.2.2)
     log_buddy (0.6.0)
@@ -526,7 +531,7 @@ DEPENDENCIES
   jasminerice
   jquery-rails
   kaminari!
-  letter_opener
+  letter_opener!
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
   log_buddy

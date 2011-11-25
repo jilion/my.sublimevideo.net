@@ -90,12 +90,24 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsDays: MSVStats.statsDays
 
   routes:
-    'sites/:token/stats': 'home'
+    ':token': 'home'
 
   home: (token) ->
+    # console.log window.MSVStats.pusher.connection.state
+    # 
+    # console.log MSVStats.pusherKey
+    # @pusher = new Pusher(MSVStats.pusherKey, encrypted: true)
+    # @pusher.connection.bind 'connected', ->
+    #   console.log 'Pusher connection connected'
+    #   alert 'Pusher connection connected'
+    # @pusher.connection.bind 'initialized', ->
+    #   console.log 'Pusher connection initialized'
+    #   alert 'Pusher connection initialized'
+    # @pusher.connection.bind 'failed', ->
+    #   console.log 'Pusher connection failed'
+    #   alert 'Pusher connection failed'
+    # console.log @pusher.connection.state    
     this.unsubscribePusherPresenceSiteChannel()
-
-    MSVStats.selectedSiteToken = token
     MSVStats.period.clear()
     MSVStats.sites.select(token)
     this.handleFreePlanClass()
@@ -119,7 +131,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
   initHelpers: ->
     MSVStats.chartsHelper = new MSVStats.Helpers.ChartsHelper()
 
-  initPusherStatsChannel: ->
+  initPusherStatsChannel: ->    
     MSVStats.statsChannel = MSVStats.pusher.subscribe("stats")
     MSVStats.statsChannel.bind 'tick', (data) ->
       MSVStats.statsMinutes.fetch() if data.m
@@ -127,7 +139,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.statsDays.fetch()    if data.d
       if (data.m && MSVStats.period.isMinutes()) || (data.h && MSVStats.period.isHours()) || (data.d && MSVStats.period.isDays())
         MSVStats.videos.fetch()
-      unless MSVStats.sites.selectedSite.inFreePlan()
+      unless MSVStats.sites.selectedSiteIsInFreePlan()
         if data.s
           secondTime = data.s * 1000
           MSVStats.period.set({
@@ -138,8 +150,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
           MSVStats.videos.updateSeconds(secondTime) if MSVStats.period.isSeconds()
 
   initPusherPresenceSiteChannel: ->
-    unless MSVStats.sites.selectedSite.inFreePlan()
-      MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
+    if (selectedSite = MSVStats.sites.selectedSite)? && !selectedSite.isInFreePlan()
+      MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{selectedSite.get('token')}")
 
       MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
         setTimeout MSVStats.statsSeconds.fetchOldSeconds, 2000
@@ -157,7 +169,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.pusher.unsubscribe("presence-#{selectedSite.get('token')}")
 
   handleFreePlanClass: ->
-    if MSVStats.sites.selectedSite.inFreePlan()
+    if MSVStats.sites.selectedSiteIsInFreePlan()
       $('div.stats').addClass('free')
     else
       $('div.stats').removeClass('free')
@@ -172,7 +184,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.statsHours.fetch
       silent: true
       success: -> MSVStats.statsRouter.syncFetchSuccess()
-    unless MSVStats.sites.selectedSite.inFreePlan()
+    unless MSVStats.sites.selectedSiteIsInFreePlan()
       MSVStats.statsMinutes.fetch
         silent: true
         success: -> MSVStats.statsRouter.syncFetchSuccess()

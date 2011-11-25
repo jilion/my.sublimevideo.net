@@ -1,6 +1,6 @@
 %span.title
 .content
-  - if @site? && @site.inFreePlan()
+  - if @site? && @site.isInFreePlan()
     .pro_only
       %a{ href: "/sites/#{@site.get('token')}/plan/edit", title: "Upgrade your plan"}
         %strong= "Paid Plan Only"
