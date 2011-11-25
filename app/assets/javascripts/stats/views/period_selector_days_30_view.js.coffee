@@ -9,7 +9,7 @@ class MSVStats.Views.PeriodSelectorDays30View extends Backbone.View
 
   render: =>
     if (selectedSite = MSVStats.sites.selectedSite)?
-      $(@el).html(this.template(site: selectedSite))
+      $(@el).html(this.template(site: selectedSite, period: 'last_30_days'))
       $(@el).find('span.title').html('last 30 days')
       unless selectedSite.isInFreePlan()
         if @options.statsDays.isShowable()
@@ -28,7 +28,7 @@ class MSVStats.Views.PeriodSelectorDays30View extends Backbone.View
     MSVStats.chartsHelper.sparkline $(@el).find('.sparkline'), @options.statsDays.customPluck('vv', -30, -1),
       width:    '100%'
       height:   '42px'
-      click:   this.select
+      click:    this.select
       selected: this.isSelected()
 
   select: =>

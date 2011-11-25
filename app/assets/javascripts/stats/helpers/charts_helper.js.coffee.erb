@@ -6,6 +6,65 @@ class MSVStats.Helpers.ChartsHelper
       height: options.height
       lineColor: options.lineColor ? (if options.selected then '#00ff18' else 'rgba(97,255,114,0.7)')
       fillColor: options.fillColor ? (if options.selected then 'rgba(116,255,131,0.46)' else 'rgba(116,255,131,0.24)')
+    
+    # Highchart sparkline, too heavy
+    # new Highcharts.Chart
+    #   chart:
+    #     renderTo: el.attr('id'),
+    #     backgroundColor: 'transparent'
+    #     plotBackgroundColor: null
+    #     animation: false
+    #     plotShadow: false
+    #     margin: [0,0,0,0]
+    #     borderWidth: 0
+    #     borderRadius: 0
+    #     events:
+    #       click: (e) -> options.click()
+    #   credits:
+    #     enabled: false
+    #   title:
+    #     text: null
+    #   legend:
+    #     enabled: false
+    #   tooltip:
+    #     enabled: false
+    #   navigator:
+    #     enabled: false
+    #   scrollbar:
+    #     enabled: false
+    #   plotOptions:
+    #     areaspline:
+    #       events:
+    #         click: (e) -> options.click()
+    #       showInLegend: false
+    #       animation: false
+    #       states:
+    #         hover:
+    #           lineWidth: 1
+    #       lineWidth: 1
+    #       marker:
+    #         enabled: false
+    #       borderWidth: 0
+    #       pointPadding: 0
+    #       pointWidth: 4
+    #       shadow: false
+    #   xAxis:
+    #     title: null
+    #     labels:
+    #       enabled: false
+    #   yAxis:
+    #     title: null
+    #     endOnTick: false
+    #     labels:
+    #       enabled: false
+    #   series: [{
+    #     type: 'areaspline'
+    #     name: null
+    #     data: serie
+    #     shadow: false
+    #     fillColor: if options.selected then 'rgba(116,255,131,0.46)' else 'rgba(116,255,131,0.24)' # 'rgba(9,250,33,0.15)'
+    #     lineColor: if options.selected then '#00ff18' else 'rgba(97,255,114,0.7)' # '#00ff18'
+    #   }]
 
     # new Highcharts.Chart
     #   chart:

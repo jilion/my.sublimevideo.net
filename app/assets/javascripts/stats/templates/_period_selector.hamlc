@@ -6,5 +6,5 @@
         %strong= "Paid Plan Only"
         %em= "Upgrade now"
   - else
-    .sparkline
+    .sparkline{ id: "#{@period}_sparkline" }
     %span.vv_total

@@ -10,7 +10,7 @@ class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
 
   render: =>
     if (selectedSite = MSVStats.sites.selectedSite)?
-      $(@el).html(this.template(site: selectedSite))
+      $(@el).html(this.template(site: selectedSite, period: 'last_60_seconds'))
       $(@el).find('span.title').html('last 60 seconds')
       unless selectedSite.isInFreePlan()
         if @options.statsSeconds.isShowable()

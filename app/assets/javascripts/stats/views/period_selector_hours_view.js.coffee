@@ -8,7 +8,7 @@ class MSVStats.Views.PeriodSelectorHoursView extends Backbone.View
     this.render()
 
   render: =>
-    $(@el).html(this.template())
+    $(@el).html(this.template(period: 'last_24_hours'))
     $(@el).find('span.title').html('last 24 hours')
     if @options.statsHours.isShowable()
       $(@el).find('.content').show()
