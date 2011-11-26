@@ -3,9 +3,11 @@
   = javascript_include_tag((Rails.env.production? || Rails.env.staging? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
   = javascript_include_tag("/javascripts/demo.js");
 
+= content_for :header do
+  %h2= "Player Demo"
+
 %section#content
   %section#demo
-    %h2.headline= "Player Demo"
     %nav
       %ul
         %li#nav_single

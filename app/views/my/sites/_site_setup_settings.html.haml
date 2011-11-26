@@ -4,7 +4,7 @@
     %p.info= raw "Add extra domains separated by commas. Extra domains are meant to be used #{content_tag(:strong, "exclusively")} for staging domains and alias domains (multiple domain names that point to the #{content_tag(:strong, "same content")})."
     .entry.site#site_setup_extra_hostnames
       = f.label :extra_hostnames, "", class: "icon"
-      = f.text_field :extra_hostnames, class: "text", placeholder: "staging.yourdomain.com", autocomplete: :off
+      = f.text_field :extra_hostnames, class: "text", placeholder: "staging-yourdomain.com", autocomplete: :off
 
     %h4.title Development domains
     %p.info= "Add (local only) development domains separated by commas."
@@ -44,7 +44,7 @@
   -#- if site.in_free_plan?
   -#  .more_settings_desc><
   -#    = raw "More settings like alias and staging domains, custom path and wildcard option, are available on paid plans. #{link_to "Read more", "http://docs.sublimevideo.net/site-settings", class: "hl"}."
-  = link_to "http://docs.sublimevideo.net/site-settings", class: "help", onclick: "window.open(this); return false" do
+  = link_to page_url('site-settings', subdomain: 'docs'), class: "help", onclick: "window.open(this); return false" do
     %span= "Read more"
 
   - if @site.in_free_plan?
