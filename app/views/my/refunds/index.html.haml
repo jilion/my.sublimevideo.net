@@ -14,4 +14,4 @@
       .entry.select
         = select_tag :site_id, options_from_collection_for_select(@sites, 'id', 'hostname')
       .entry
-        = submit_tag t('site.refund.request'), :class => "submit_dynamic_button"
+        = submit_tag t('site.refund.request'), class: "submit blue_button"
