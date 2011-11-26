@@ -155,7 +155,7 @@ group :development do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
-  gem 'guard-jasmine'
+  # gem 'guard-jasmine'
   gem 'guard-yard'
 end
 
