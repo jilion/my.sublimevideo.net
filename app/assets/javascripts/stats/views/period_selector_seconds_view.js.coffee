@@ -1,30 +1,31 @@
 class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
   template: JST['stats/templates/_period_selector']
-  
+
   initialize: () ->
     @options.period.bind 'change', this.render
     @options.statsSeconds.bind 'change', this.render
     @options.statsSeconds.bind 'reset', this.render
+    @options.pusher.connection.bind 'failed', this.render
     $(@el).bind 'click', this.select
     this.render()
 
   render: =>
     if (selectedSite = MSVStats.sites.selectedSite)?
-      $(@el).html(this.template(site: selectedSite, period: 'last_60_seconds'))
-      $(@el).find('span.title').html('last 60 seconds')
+      $(@el).html(this.template(pusherState: @options.pusher.connection.state, site: selectedSite, period: 'last_60_seconds'))
       unless selectedSite.isInFreePlan()
         if @options.statsSeconds.isShowable()
           $(@el).find('.content').show()
-          $(@el).data().spinner.stop()
-        else
+          $(@el).find('.spin').remove()
+        else if @options.pusher.connection.state != 'failed'
           $(@el).find('.content').hide()
-          $(@el).spin(spinOptions)
+          $(@el).find('.spin').spin(spinOptions)
         if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
         vvTotal = @options.statsSeconds.vvTotal(0, 59)
         $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))
-        this.renderSparkline() 
+        this.renderSparkline()
+    $(@el).find('span.title').html('last 60 seconds')
     return this
-      
+
   renderSparkline: ->
     MSVStats.chartsHelper.sparkline $(@el).find('.sparkline'), @options.statsSeconds.customPluck('vv', 0, 59),
       width:    '100%'
@@ -38,5 +39,4 @@ class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
     if MSVStats.statsSeconds.isShowable()
       MSVStats.period.setPeriod type: 'seconds', startIndex: 0, endIndex: 59
 
-  isSelected: ->
-    @options.period.isSeconds()
+  isSelected: -> @options.period.isSeconds()

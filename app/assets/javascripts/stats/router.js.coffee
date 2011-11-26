@@ -24,6 +24,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       el: '#period_selectors .seconds'
       statsSeconds: MSVStats.statsSeconds
       period: MSVStats.period
+      pusher: MSVStats.pusher
     new MSVStats.Views.PeriodSelectorMinutesView
       el: '#period_selectors .minutes'
       statsMinutes: MSVStats.statsMinutes
@@ -93,20 +94,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     ':token': 'home'
 
   home: (token) ->
-    # console.log window.MSVStats.pusher.connection.state
-    # 
-    # console.log MSVStats.pusherKey
-    # @pusher = new Pusher(MSVStats.pusherKey, encrypted: true)
-    # @pusher.connection.bind 'connected', ->
-    #   console.log 'Pusher connection connected'
-    #   alert 'Pusher connection connected'
-    # @pusher.connection.bind 'initialized', ->
-    #   console.log 'Pusher connection initialized'
-    #   alert 'Pusher connection initialized'
-    # @pusher.connection.bind 'failed', ->
-    #   console.log 'Pusher connection failed'
-    #   alert 'Pusher connection failed'
-    # console.log @pusher.connection.state    
     this.unsubscribePusherPresenceSiteChannel()
     MSVStats.period.clear()
     MSVStats.sites.select(token)
@@ -131,7 +118,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
   initHelpers: ->
     MSVStats.chartsHelper = new MSVStats.Helpers.ChartsHelper()
 
-  initPusherStatsChannel: ->    
+  initPusherStatsChannel: ->
     MSVStats.statsChannel = MSVStats.pusher.subscribe("stats")
     MSVStats.statsChannel.bind 'tick', (data) ->
       MSVStats.statsMinutes.fetch() if data.m

@@ -1,10 +1,18 @@
 %span.title
-.content
-  - if @site? && @site.isInFreePlan()
-    .pro_only
+- if @site? && @site.isInFreePlan()
+  .content
+    .message.pro_only
       %a{ href: "/sites/#{@site.get('token')}/plan/edit", title: "Upgrade your plan"}
         %strong= "Paid Plan Only"
         %em= "Upgrade now"
-  - else
+- else if @pusherState? && @pusherState == 'failed'
+  .content
+    .message.flash_required
+      %a{ href: "http://get.adobe.com/flashplayer", title: "Install or upgrade flash."}
+        %strong= "Flash Required"
+        %em= "Install or Upgrade"
+- else
+  .spin
+  .content
     .sparkline{ id: "#{@period}_sparkline" }
     %span.vv_total

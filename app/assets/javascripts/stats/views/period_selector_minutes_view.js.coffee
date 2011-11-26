@@ -14,10 +14,10 @@ class MSVStats.Views.PeriodSelectorMinutesView extends Backbone.View
       unless selectedSite.isInFreePlan()
         if @options.statsMinutes.isShowable()
           $(@el).find('.content').show()
-          $(@el).data().spinner.stop()
+          $(@el).find('.spin').remove()
         else
           $(@el).find('.content').hide()
-          $(@el).spin(spinOptions)
+          $(@el).find('.spin').spin(spinOptions)
       if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
       vvTotal = @options.statsMinutes.vvTotal()
       $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))
@@ -37,5 +37,4 @@ class MSVStats.Views.PeriodSelectorMinutesView extends Backbone.View
     else
       MSVStats.period.setPeriod(type: 'minutes')
       
-  isSelected: ->
-    @options.period.isMinutes()
+  isSelected: ->  @options.period.isMinutes()

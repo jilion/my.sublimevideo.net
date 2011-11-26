@@ -14,10 +14,10 @@ class MSVStats.Views.PeriodSelectorDays30View extends Backbone.View
       unless selectedSite.isInFreePlan()
         if @options.statsDays.isShowable()
           $(@el).find('.content').show()
-          $(@el).data().spinner.stop()
+          $(@el).find('.spin').remove()
         else
           $(@el).find('.content').hide()
-          $(@el).spin(spinOptions)
+          $(@el).find('.spin').spin(spinOptions)
         if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
         vvTotal = @options.statsDays.vvTotal(-30, -1)
         $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))
@@ -37,6 +37,5 @@ class MSVStats.Views.PeriodSelectorDays30View extends Backbone.View
     else
       MSVStats.period.setPeriod type: 'days', startIndex: -30, endIndex: -1
 
-  isSelected: ->
-    @options.period.isSelected('days', -30, -1)
+  isSelected: -> @options.period.isSelected('days', -30, -1)
 
