@@ -1,5 +1,3 @@
-= content_for :head, javascript_include_tag('highcharts/prototype-adapter', 'highcharts/highcharts')
-
 = render 'layouts/sticky_notices'
 = render 'layouts/hidable_notices'
 
@@ -11,7 +9,7 @@
 
   - if @billable_views.zero?
     #help_list
-      %h4 
+      %h4
         Almost done!
         %em There are only a few things left to do:
       %ol
