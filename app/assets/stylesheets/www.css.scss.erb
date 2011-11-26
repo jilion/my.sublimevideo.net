@@ -426,7 +426,7 @@ body {
   padding-top:50px;
 }
 
-.features section.lightbox a.sublime {
+.features section.lightbox a.zoomable {
   display:block;
   width:320px;
   height:188px;
@@ -436,13 +436,13 @@ body {
   margin-left:35px;
 }
 
-.features section.lightbox a.sublime img {
+.features section.lightbox a.zoomable img {
   position:relative;
   top:9px;
   left:10px;
 }
 
-.features section.lightbox a.sublime .overlay {
+.features section.lightbox a.zoomable .overlay {
   display:block;
   position:absolute;
   top:0;
@@ -452,7 +452,7 @@ body {
   background:url(<%= asset_data_uri "www/features/lightbox_thumb_overlay.png" %>) no-repeat;
 }
 
-.features section.lightbox a.sublime .magnifying_glass {
+.features section.lightbox a.zoomable .magnifying_glass {
   display:block;
   position:absolute;
   bottom:15px;
@@ -465,7 +465,7 @@ body {
   @include transition(opacity,0.3s,linear);
 }
 
-.features section.lightbox a.sublime:hover .magnifying_glass {
+.features section.lightbox a.zoomable:hover .magnifying_glass {
   opacity: 1;
   filter: alpha(opacity=100);
 }
