@@ -80,13 +80,13 @@ describe OneTime::Site do
       @galaxy_y_plan  = ::Plan.where(name: 'galaxy', cycle: 'year').first
       @custom_plan    = ::Plan.where(name: 'custom - 1').first
 
-      @free_plan     = ::Plan.where(name: 'free').first
-      @plus_m_plan = ::Plan.where(name: 'plus', cycle: 'month').first
-      @plus_y_plan = ::Plan.where(name: 'plus', cycle: 'year').first
-      @premium_m_plan   = ::Plan.where(name: 'premium', cycle: 'month').first
-      @premium_y_plan   = ::Plan.where(name: 'premium', cycle: 'year').first
+      @free_plan      = ::Plan.where(name: 'free').first
+      @plus_m_plan    = ::Plan.where(name: 'plus', cycle: 'month').first
+      @plus_y_plan    = ::Plan.where(name: 'plus', cycle: 'year').first
+      @premium_m_plan = ::Plan.where(name: 'premium', cycle: 'month').first
+      @premium_y_plan = ::Plan.where(name: 'premium', cycle: 'year').first
 
-      @site_dev       = Factory.create(:site, plan_id: @dev_plan.id)
+      @site_dev = Factory.create(:site, plan_id: @dev_plan.id)
 
       @site_sponsored = Factory.create(:site)
       @site_sponsored.sponsor!
@@ -94,6 +94,7 @@ describe OneTime::Site do
       @site_comet_m   = Factory.create(:site_with_invoice, plan_id: @comet_m_plan.id)
 
       @site_comet_y   = Factory.create(:site_with_invoice, plan_id: @comet_y_plan.id)
+      @site_comet_y.skip_pwd { @site_comet_y.suspend! }
 
       @site_planet_m  = Factory.create(:site_with_invoice, plan_id: @planet_m_plan.id)
       Timecop.travel(35.days.from_now) do

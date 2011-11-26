@@ -32,10 +32,8 @@ module OneTime
         without_versioning do
           total = 0
 
-          # NOTE TO SELF:
-          # We will have to handle sites with a pending plan
           legacy_plans = ::Plan.where { name >> (::Plan::LEGACY_UNPAID_NAMES + ::Plan::LEGACY_STANDARD_NAMES) }.map(&:id)
-          ::Site.active.where { (plan_id >> legacy_plans) | (pending_plan_id >> legacy_plans) }.find_each(batch_size: 100) do |site|
+          ::Site.not_archived.where { (plan_id >> legacy_plans) | (pending_plan_id >> legacy_plans) }.find_each(batch_size: 100) do |site|
             add_to_balance = 0
 
             new_plan        = plan_switch(site.plan)
@@ -53,21 +51,21 @@ module OneTime
 
             next_cycle_plan = nil if next_cycle_plan == new_plan
 
-            # print "##{site.token} (##{site.id} #{site.hostname}): #{site.plan.title} (##{site.plan.id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+            print "##{site.token} (##{site.id} #{site.hostname}): #{site.plan.title} (##{site.plan.id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
             site.send(:write_attribute, :plan_id, new_plan.id)
             site.send(:write_attribute, :pending_plan_id, nil)
             site.send(:write_attribute, :next_cycle_plan_id, next_cycle_plan.try(:id))
-            # print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
-            # puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+            print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
             site.skip_pwd { site.save(validate: false) }
+            puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
             total += 1
 
             unless add_to_balance.zero?
               site.user.increment!(:balance, add_to_balance)
-              # puts "$#{add_to_balance/100.0} added to #{site.user.name}'s balance for ##{site.token} (##{site.id} #{site.hostname})!"
+              puts "$#{add_to_balance/100.0} added to #{site.user.name}'s balance for ##{site.token} (##{site.id} #{site.hostname})!"
             end
 
-            # puts
+            puts
 
           end
 
