@@ -107,6 +107,7 @@ group :assets do
 end
 
 group :production do
+  gem 'rack-ssl-enforcer'
   gem 'rack-cache'
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end
