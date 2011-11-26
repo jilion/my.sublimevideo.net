@@ -3,8 +3,7 @@
 
 - if current_user.billable? && conditions_sum
   #sticky_notice.notices
-    -# %h3 Warning
     %ul
       - notices.each do |notice|
-        - if current_user.billable? && notice[0]
+        - if notice[0]
           %li.notice= render "layouts/sticky_notices/#{notice[1]}"
