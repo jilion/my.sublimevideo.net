@@ -345,18 +345,6 @@ body {
   padding:38px 0 15px;
 }
 
-.features header p.sub {
-  font-size:22px;
-  color:#afceff;
-  line-height:33px;
-  text-shadow:rgba(0,0,0,0.8) 0 1px 3px;
-  -webkit-font-smoothing:antialiased;
-}
-
-.features header p.sub a {
-  color:#e4efff;
-}
-
 .features #content {
   width:960px;
   margin:0 auto;
@@ -898,6 +886,129 @@ body {
   font-weight:600;
   color:#003165;
   padding-bottom:10px;
+}
+
+/* ======== */
+/* = Help = */
+/* ======== */
+
+.help header, .help header .shadow, .help header .lights {
+  height:268px;
+}
+
+.help header h2 {
+  padding:40px 0 5px 270px;
+  text-align:left;
+}
+
+.help header p.sub {
+  padding-left:270px;
+  text-align:left;
+}
+
+.help #content {
+  width:960px;
+  margin:0 auto;
+  position:relative;
+  z-index:2;
+  padding-bottom:60px;
+}
+
+.help span.life_belt {
+  width:253px;
+  height:253px;
+  background:url(<%= asset_data_uri "www/help/sublimevideo_life_belt.png" %>) no-repeat;
+  position:absolute;
+  top:-156px;
+  left:-14px;
+}
+
+.help #content h3.title {
+  color:#003165;
+  font-size:36px;
+  font-weight:600;
+  padding:50px 0 30px;
+  text-align:center;
+}
+
+.help .help_box {
+  font-size:21px;
+  line-height:33px;
+  padding:36px 44px;
+  background:#eef3f6;
+  background:rgba(34,67,117,0.07);
+  @include border-radius(4px);
+  @include box-shadow((inset rgba(25,57,109,0.3) 0 1px 1px, #fff 0 1px 0));
+}
+
+.help .help_box a {
+  color:#1185ff;
+  border-bottom:1px solid #81bbfc;
+}
+
+.help .help_box form {
+  padding:20px 0 0;
+}
+
+.help .help_box form label {display:none}
+
+.help .help_box input.text {
+  width:480px;
+  height:42px;
+  text-shadow:rgba(255,255,255,0.5) 0 1px 0;
+  border:none;
+  font-size:21px;
+  font-family:inherit;
+  font-weight:600;
+  color:#465b7d;
+  padding:0 8px;
+  margin-right:10px;
+  background:#c1cddf;
+  @include border-radius(4px);
+  @include box-shadow((inset rgba(24,53,96,0.54) 0 1px 4px, rgba(255,255,255,0.5) 0 1px 0));
+  @include transition(background,0.25s,linear);
+}
+
+.help .help_box input.text:focus {
+  background:#cfdcef;
+  outline:0;
+  @include box-shadow((inset rgba(0,34,85,0.3) 0 1px 3px, rgba(255,255,255,0.1) 0 1px 0, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
+}
+
+.help .help_box input.submit, .help .help_box input[type=submit] {
+  color:#eff7ff;
+  font-family:inherit;
+  font-size:21px;
+  font-weight:normal;
+  text-shadow:rgba(0,0,0,0.5) 0 -1px 0;
+  height:42px;
+  padding:0 15px;
+  border:1px solid #1d4179;
+  @include gradient(#196cbb,#114da0,#155dae);
+  @include box-shadow((inset rgba(255,255,255,0.32) 0 1px 0, rgba(0,0,0,0.75) 0 1px 5px));
+  @include border-radius(4px);
+}
+
+.help .help_box input.submit:active {
+  @include gradient(#114da0,#196cbb,#155dae);
+}
+
+.help .help_box input.submit:focus {
+  outline:0;
+  @include box-shadow((inset rgba(255,255,255,0.32) 0 1px 0, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
+}
+
+#gsfn_search_results {
+  padding:20px 0 0;
+}
+
+#gsfn_search_results ul {
+  list-style-type:none;
+}
+
+#gsfn_search_results li {
+  padding:10px;
+  margin:5px 0;
 }
 
 /* ================= */
