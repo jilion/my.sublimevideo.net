@@ -15,5 +15,5 @@
         - opts = r.is_a?(Array) ? r[1] : { link_text: name.to_s.titleize }
         - subdomain = [:help].include?(name) && request.subdomain == 'my' ?  'my' : 'www'
         = activable_menu_item(:li, page_url(name, { subdomain: subdomain }), opts.merge(onclick: "SublimeVideo.makeSticky(this, '#menu')"))
-      %li= link_to "Login", root_url(subdomain: 'www', p: 'login'), onclick: "return SublimeVideo.showPopup('login')"
-      %li.signup= link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')"
+      %li= link_to "Login", root_url(subdomain: 'www', p: 'login'), onclick: params[:page] == 'demo' ? nil : "return SublimeVideo.showPopup('login')"
+      %li.signup= link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: params[:page] == 'demo' ? nil : "return SublimeVideo.showPopup('signup')"
