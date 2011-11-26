@@ -1,7 +1,3 @@
-AssetSync.configure do |config|
-  config.fog_directory = "assets.sublimevideo-staging.net"
-end
-
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
   config.middleware.insert_after(::Rack::Lock, "::Rack::Auth::Basic", "Staging") do |u, p|

@@ -1,7 +1,3 @@
-AssetSync.configure do |config|
-  config.fog_directory = "assets.sublimevideo.net"
-end
-
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
   config.middleware.use(Rack::GoogleAnalytics, tracker: 'UA-10280941-8')
