@@ -2,10 +2,10 @@
 
 = render '/admin/shared/date_chooser'
 
-#timeline.dashboard_timeline
-  %h3 Usage
-  - cache "total_usage_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}", :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
-    = render 'timeline_usage'
+-##timeline.dashboard_timeline
+-#  %h3 Usage
+-#  - cache "total_usage_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}", :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
+-#    = render 'timeline_usage'
 
 %h2.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
 %h3.revenue= "Date range revenue: #{display_amount(Invoice.between(range_start_date, range_end_date).total_revenue)}"
@@ -37,8 +37,8 @@
 
 %h3 Users
 
-- cache "users_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}", :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
-  = render 'admin/users/timeline'
+-#- cache "users_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}", :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
+-#  = render 'admin/users/timeline'
 
 - total_users = User.active.count
 - today_signups = User.active.where(:created_at.gte => Time.now.utc.midnight, :created_at.lt => Time.now.utc.tomorrow.midnight)
