@@ -2,7 +2,7 @@
 
 - if user_signed_in? && current_user.email_support?
   %p.title_desc
-    = "If you can't find the answer you're looking for use the form below to submit your question and we'll personally get back to you as quickly as we can."
+    = "As a paid customer, you can use the form below to submit your question and we'll personally get back to you as quickly as we can."
     = raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
 
     = form_for @ticket, url: [:ticket] do |f|
@@ -22,6 +22,4 @@
 
 - else
   %p.title_desc
-    = raw "We offer dedicated email support for the #{link_to "Plus plan", page_url('plans', subdomain: 'www'), class: "hl"} and VIP Email Support for the #{link_to "Premium plan", page_url('plans', subdomain: 'www'), class: "hl"}."
-    = raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
-  
+    = raw "We offer dedicated email support to customers of our #{link_to "paid plans", page_path('plans'), class: "hl"} - just use the #{link_to "support form", ""} to email us directly and we'll send you a personal response as soon as we can. Customers of our Premium plan benefit from VIP priority email support."
