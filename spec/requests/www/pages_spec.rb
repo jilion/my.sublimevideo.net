@@ -59,9 +59,6 @@ feature "Com Pages" do
           click_link 'Plans & Pricing'
           current_url.should eq "http://www.sublimevideo.dev/plans"
 
-          click_link 'My SublimeVideo'
-          current_url.should eq "http://www.sublimevideo.dev/?p=login"
-
           click_link 'Customer Showcases'
           current_url.should eq "http://www.sublimevideo.dev/customer-showcases"
 
@@ -77,7 +74,7 @@ feature "Com Pages" do
           click_link 'Blog'
           current_url.should eq "http://www.sublimevideo.dev/blog"
 
-          click_link 'Contact us'
+          click_link 'Contact'
           current_url.should eq "http://www.sublimevideo.dev/contact"
 
           click_link 'About'

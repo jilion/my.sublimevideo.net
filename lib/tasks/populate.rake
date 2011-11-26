@@ -203,6 +203,8 @@ def create_users(user_id = nil)
         email: BASE_USERS[i][1],
         password: "123456",
         name: BASE_USERS[i][0],
+        postal_code: Faker::Address.zip_code,
+        country: COUNTRIES.sample,
         billing_name: BASE_USERS[i][0],
         billing_address_1: Faker::Address.street_address,
         billing_address_2: Faker::Address.secondary_address,
@@ -245,7 +247,7 @@ def create_sites
   create_users if User.all.empty?
   create_plans if Plan.all.empty?
 
-  unpaid_plans   = Plan.unpaid_plans.where { name != "sponsored" }.all
+  free_plan      = Plan.free_plan
   standard_plans = Plan.standard_plans.all
   custom_plans   = Plan.custom_plans.all
 
@@ -256,7 +258,7 @@ def create_sites
 
   User.all.each do |user|
     BASE_SITES.each do |hostname|
-      plan_id = rand > 0.4 ? (rand > 0.8 ? custom_plans.sample.token : standard_plans.sample.id) : unpaid_plans.sample.id
+      plan_id = rand > 0.4 ? (rand > 0.8 ? custom_plans.sample.token : standard_plans.sample.id) : free_plan.id
       site = user.sites.build(
         plan_id: plan_id,
         hostname: hostname
@@ -265,7 +267,7 @@ def create_sites
         site.save_skip_pwd
       end
 
-      if rand > 0.5
+      if rand > 0.3
         site.cdn_up_to_date = true
         site.save_skip_pwd
       end

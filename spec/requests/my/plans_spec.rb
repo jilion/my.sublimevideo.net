@@ -272,7 +272,7 @@ feature "Site in sponsored plan" do
 
     click_link "Sponsored"
 
-    page.should have_content "Your plan is currently sponsored, if you have any questions, please contact us."
+    page.should have_content "Your plan is currently sponsored, if you have any questions, please email #{I18n.t('mailer.sales.email')}."
   end
 end
 

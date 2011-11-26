@@ -7,7 +7,9 @@ en:
         extra_hostnames: "Extra domains"
       user:
         terms_and_conditions: "Terms & Conditions"
+        billing_address_1: "Street"
         billing_postal_code: "Postal code"
+        billing_city: "City"
         cc_brand:     "Card type"
         cc_number:    "Card number"
         cc_expiration_month: ""

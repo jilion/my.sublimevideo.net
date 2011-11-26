@@ -14,7 +14,8 @@ class User < ActiveRecord::Base
   liquid_methods :email, :name
 
   attr_accessor :terms_and_conditions, :use, :current_password, :remote_ip
-  attr_accessible :email, :name, :remember_me, :password, :current_password, :hidden_notice_ids,
+  attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
+                  :name, :postal_code, :country,
                   :billing_name, :billing_address_1, :billing_address_2, :billing_postal_code, :billing_city, :billing_region, :billing_country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
@@ -53,8 +54,7 @@ class User < ActiveRecord::Base
   end
 
   validates :name, presence: true
-  validates :billing_country, presence: true, if: :billable?
-  validates :billing_postal_code, length: { maximum: 20 }, allow_blank: true
+  validates :postal_code, :billing_postal_code, length: { maximum: 20 }, allow_blank: true
   validates :company_url, hostname: true, allow_blank: true
   validates :terms_and_conditions, acceptance: { accept: "1" }, on: :create
 
@@ -104,7 +104,7 @@ class User < ActiveRecord::Base
   # Devise overriding
   # avoid the "not active yet" flash message to be displayed for archived users!
   def self.find_for_authentication(conditions = {})
-    where(conditions).where{state != 'archived'}.first
+    where(conditions).where { state != 'archived' }.first
   end
 
   def update_tracked_fields!(request)

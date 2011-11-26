@@ -97,6 +97,132 @@ feature "Users" do
     User.last.valid_password?("newpassword").should be_true
   end
 
+  describe "Access the account page" do
+
+    context "When the user is not logged-in" do
+      background do
+        create_user(user: {})
+      end
+
+      scenario "is redirected to log in page" do
+        go 'my', 'account'
+
+        current_url.should eq "http://www.sublimevideo.dev/?p=login"
+      end
+    end
+
+    context "When the user is logged-in" do
+      background do
+        sign_in_as :user
+      end
+
+      scenario "can access the page directly" do
+        go 'my', 'account'
+
+        current_url.should eq "http://my.sublimevideo.dev/account"
+      end
+
+      scenario "can access the page via a link in the menu" do
+        within '#menu' do
+          click_link @current_user.name
+
+          current_url.should eq "http://my.sublimevideo.dev/account"
+        end
+      end
+    end
+
+  end
+
+  describe "Credentials update" do
+
+    context "When the user is logged-in" do
+      background do
+        sign_in_as :user
+        go 'my', 'account'
+      end
+
+      scenario "It's possible to update email" do
+        within '#edit_credentials' do
+          fill_in "Email", with: "zeno@jilion.com"
+
+          click_button "Update"
+        end
+
+        fill_in "Current password", with: '123456'
+        click_button "Done"
+
+        User.find(@current_user.id).email.should eq "zeno@jilion.com"
+      end
+
+      scenario "It's possible to update password" do
+        email = @current_user.email
+        within '#edit_credentials' do
+          fill_in "New password", with: "654321"
+          click_button "Update"
+        end
+
+        fill_in "Current password", with: '123456'
+        click_button "Done"
+        current_url.should eq "http://www.sublimevideo.dev/?p=login"
+
+        fill_in 'Email',    with: email
+        fill_in 'Password', with: '654321'
+        click_button 'Login'
+
+        current_url.should eq "http://my.sublimevideo.dev/sites/new"
+      end
+    end
+
+  end
+
+  describe "'More info' update" do
+
+    context "When the user is logged-in" do
+      background do
+        sign_in_as :user, billing_address_1: ''
+        go 'my', 'account'
+      end
+
+      scenario "It's possible to update postal_code and country from the edit account page" do
+        within '#edit_more_info' do
+          fill_in "Name",               with: "Bob Doe"
+          fill_in "Zip or Postal Code", with: "91470"
+          select  "France",             from: "Country"
+          fill_in "Company name",       with: "Jilion"
+          select  "6-20 employees",     from: "Company size"
+          check "user_use_company"
+          click_button "Update"
+        end
+
+        @current_user.reload.name.should eq "Bob Doe"
+        y @current_user
+        @current_user.postal_code.should eq "91470"
+        @current_user.country.should eq "FR"
+        @current_user.company_name.should eq "Jilion"
+        @current_user.company_employees.should eq "6-20 employees"
+      end
+
+      scenario "It's possible to update only certain fields" do
+        within '#edit_more_info' do
+          fill_in "Name",               with: "Bob Doe"
+          fill_in "Zip or Postal Code", with: ""
+          select  "France",             from: "Country"
+          fill_in "Company name",       with: ""
+          select  "6-20 employees",     from: "Company size"
+          check "user_use_company"
+          click_button "Update"
+        end
+
+        @current_user.reload.name.should eq "Bob Doe"
+        @current_user.postal_code.should eq ""
+        @current_user.country.should eq "FR"
+        @current_user.company_name.should eq ""
+        @current_user.company_employees.should eq "6-20 employees"
+      end
+    end
+
+  end
+
   describe "API" do
     scenario "API pages are not accessible" do
       sign_in_as :user

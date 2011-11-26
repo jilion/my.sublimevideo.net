@@ -1,135 +1,60 @@
 require 'spec_helper'
 
-feature "Access the account page" do
-
-  context "When the user is not logged-in" do
-    background do
-      create_user(user: {})
-    end
-
-    scenario "is redirected to log in page" do
-      go 'my', 'account'
-
-      current_url.should eq "http://www.sublimevideo.dev/?p=login"
-    end
-  end
-
-  context "When the user is logged-in" do
-    background do
-      sign_in_as :user
-    end
-
-    scenario "can access the page directly" do
-      go 'my', 'account'
-
-      current_url.should eq "http://my.sublimevideo.dev/account"
-    end
-
-    scenario "can access the page via a link in the menu" do
-      within '#menu' do
-        click_link @current_user.name
-
-        current_url.should eq "http://my.sublimevideo.dev/account"
-      end
-    end
-  end
-
-end
-
-feature "Credentials update" do
-
-  context "When the user is logged-in" do
-    background do
-      sign_in_as :user
-      go 'my', 'account'
-    end
-
-    scenario "It's possible to update email" do
-      within '#edit_credentials' do
-        fill_in "Email", with: "zeno@jilion.com"
-
-        click_button "Update"
-      end
-
-      fill_in "Current password", with: '123456'
-      click_button "Done"
-
-      User.find(@current_user.id).email.should eq "zeno@jilion.com"
-    end
-
-    scenario "It's possible to update password" do
-      email = @current_user.email
-      within '#edit_credentials' do
-        fill_in "New password", with: "654321"
-        click_button "Update"
-      end
-
-      fill_in "Current password", with: '123456'
-      click_button "Done"
-      current_url.should eq "http://www.sublimevideo.dev/?p=login"
-
-      fill_in 'Email',    with: email
-      fill_in 'Password', with: '654321'
-      click_button 'Login'
-
-      current_url.should eq "http://my.sublimevideo.dev/sites/new"
-    end
-  end
-
-end
-
-feature "'More info' update" do
-
-  context "When the user is logged-in" do
-    background do
-      sign_in_as :user, billing_address_1: ''
-      go 'my', 'account'
-    end
-
-    scenario "It's possible to update billing_country and billing_postal_code directly from the edit account page" do
-      within '#edit_more_info' do
-        fill_in "Name",               with: "Bob Doe"
-        fill_in "Zip or Postal Code", with: "91470"
-        select  "France",             from: "Country"
-        fill_in "Company name",       with: "Jilion"
-        select  "6-20 employees",     from: "Company size"
-        check "user_use_company"
-        click_button "Update"
-      end
-
-      @current_user.reload.name.should eq "Bob Doe"
-      @current_user.billing_postal_code.should eq "91470"
-      @current_user.billing_country.should eq "FR"
-      @current_user.company_name.should eq "Jilion"
-      @current_user.company_employees.should eq "6-20 employees"
-    end
-
-    scenario "It's possible to update only certain fields" do
-      within '#edit_more_info' do
-        fill_in "Name",               with: "Bob Doe"
-        fill_in "Zip or Postal Code", with: ""
-        select  "France",             from: "Country"
-        fill_in "Company name",       with: ""
-        select  "6-20 employees",     from: "Company size"
-        check "user_use_company"
-        click_button "Update"
-      end
-
-      @current_user.reload.name.should eq "Bob Doe"
-      @current_user.billing_postal_code.should eq ""
-      @current_user.billing_country.should eq "FR"
-      @current_user.company_name.should eq ""
-      @current_user.company_employees.should eq "6-20 employees"
-    end
-  end
-
-end
-
 feature "Billing address update" do
 
-  context "When the user is logged-in" do
+  context "When the user is not billable" do
     background do
       sign_in_as :user
+      go 'my', 'account'
+
+      page.should have_no_content 'Avenue de France 71'
+      page.should have_no_content 'Batiment B'
+      page.should have_no_content '1004 Lausanne'
+      page.should have_no_content 'SWITZERLAND'
+
+      go 'my', 'account/billing/edit'
+
+      current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
+    end
+
+    scenario "Update billing address successfully" do
+      fill_in "Name",               with: "Bob Doe"
+      fill_in "Street 1",           with: "60 rue du hurepoix"
+      fill_in "Street 2",           with: ""
+      fill_in "Zip or Postal Code", with: "91470"
+      fill_in "City",               with: "Limours"
+      fill_in "Region",             with: ""
+      select  "France",             from: "Country"
+      click_button "billing_address_submit"
+      go 'my', 'account'
+
+      @current_user.reload.billing_name.should eq "Bob Doe"
+      @current_user.billing_address_1.should eq "60 rue du hurepoix"
+      @current_user.billing_postal_code.should eq "91470"
+      @current_user.billing_city.should eq "Limours"
+      @current_user.billing_country.should eq "FR"
+    end
+
+    scenario "Update billing address unsuccessfully" do
+      fill_in "Name",               with: ""
+      fill_in "Street 1",           with: "60 rue du hurepoix"
+      fill_in "Street 2",           with: ""
+      fill_in "Zip or Postal Code", with: "1"*21
+      fill_in "City",               with: "Limours"
+      fill_in "Region",             with: ""
+      select  "France",             from: "Country"
+      click_button "billing_address_submit"
+
+      page.should have_css '.inline_errors'
+      page.should have_content "Postal code is too long (maximum is 20 characters)"
+      @current_user.reload.billing_postal_code.should eq "1004"
+    end
+  end
+
+  context "When the user is billable" do
+    background do
+      sign_in_as :user
+      Factory.create(:site, user: @current_user)
       go 'my', 'account'
 
       page.should have_content 'John Doe'
@@ -159,20 +84,24 @@ feature "Billing address update" do
       page.should have_content '91470 Limours'
       page.should have_content 'FRANCE'
       @current_user.reload.billing_name.should eq "Bob Doe"
+      @current_user.billing_address_1.should eq "60 rue du hurepoix"
+      @current_user.billing_postal_code.should eq "91470"
+      @current_user.billing_city.should eq "Limours"
+      @current_user.billing_country.should eq "FR"
     end
 
     scenario "Update billing address unsuccessfully" do
       fill_in "Name",               with: ""
       fill_in "Street 1",           with: "60 rue du hurepoix"
       fill_in "Street 2",           with: ""
-      fill_in "Zip or Postal Code", with: "12345678910"
+      fill_in "Zip or Postal Code", with: "1"*21
       fill_in "City",               with: "Limours"
       fill_in "Region",             with: ""
       select  "France",             from: "Country"
       click_button "billing_address_submit"
 
       page.should have_css '.inline_errors'
-      page.should have_content "Postal code is too long (maximum is 10 characters)"
+      page.should have_content "Postal code is too long (maximum is 20 characters)"
       @current_user.reload.billing_postal_code.should eq "1004"
     end
   end
