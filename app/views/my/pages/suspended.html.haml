@@ -21,4 +21,4 @@
   - else
     %p
       Unknown reason.
-      = raw t('app.please_link_to_know_more_about_it', link: mail_to("billing@sublimevideo.net", "email us", encode: "hex", class: "hl"))
+      = raw t('app.please_email_to_know_more_about_it', email: mail_to(t("mailer.billing.email_full").html_safe, t("mailer.billing.email"), encode: "hex", class: "hl"))

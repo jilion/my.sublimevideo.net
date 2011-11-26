@@ -1,5 +1,5 @@
 class My::BillingMailer < MyMailer
-  default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.billing_email')
+  default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.billing.email_full')
 
   helper :application, 'my/invoices', 'my/sites'
   include My::SitesHelper # the only way to include view helpers in here

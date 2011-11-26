@@ -12,4 +12,4 @@ You can review the invoices associated with this transaction via the following l
 <%= invoice_url(invoice.to_param, protocol: 'https', subdomain: 'my') %>
 <% end %>
 
-If you have any questions, please <%= mail_to I18n.t("mailer.billing_email"), "email us" %>.
+If you have any questions, please email <%= I18n.t("mailer.billing.email") %>.

@@ -1,9 +1,14 @@
 en:
   mailer:
-    default:
-      from: "SublimeVideo <info@sublimevideo.net>"
-    billing_email: "SublimeVideo Billing <billing@sublimevideo.net>"
-    sales_email: "SublimeVideo Sales <sales@sublimevideo.net>"
+    info:
+      email:      "info@sublimevideo.net"
+      email_full: "SublimeVideo <info@sublimevideo.net>"
+    billing:
+      email:      "billing@sublimevideo.net"
+      email_full: "SublimeVideo Billing <billing@sublimevideo.net>"
+    sales:
+      email:      "sales@sublimevideo.net"
+      email_full: "SublimeVideo Sales <sales@sublimevideo.net>"
     intro_generic: "Dear SublimeVideo user,"
     intro_name:    "Dear %{name},"
     signature:     "The SublimeVideo Team"

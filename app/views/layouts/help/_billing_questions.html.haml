@@ -1,2 +1,2 @@
 %h3 Billing Questions
-%p.title_desc= raw "For billing questions, please #{mail_to("billing@sublimevideo.net", "email us", encode: "hex", class: "hl")}."
+%p.title_desc= raw "For billing questions, please email #{mail_to(t("mailer.billing.email_full").html_safe, t("mailer.billing.email"), encode: "hex", class: "hl")}."

@@ -34,8 +34,7 @@
     %p
       = "Your credit card information is protected with secure socket layer (SSL) encryption."
       %br
-      = mail_to("billing@sublimevideo.net", "Questions about billing?", encode: "hex", class: "hl")
-  
+      = mail_to(t("mailer.billing.email_full").html_safe, "Questions about billing?", encode: "hex", class: "hl")
 
 .spacer
 
