@@ -120,7 +120,7 @@
           .sign_up_wrap
             = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
   .spacer
-  #need_more= raw "Need more, have other enterprise-class requirements or looking for custom integration with your site? Please #{mail_to t('mailer.sales_email'), "contact us"}."
+  #need_more= raw "Need a custom integration with your site or other enterprise-class requirements? Please #{mail_to t('mailer.sales.email_full'), "contact us"}."
 
 .logos_banner
   %h4.custom_break= "They use SublimeVideo"

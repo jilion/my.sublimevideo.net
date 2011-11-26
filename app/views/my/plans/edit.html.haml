@@ -16,7 +16,7 @@
     .notice= t 'site.plan.upgrade_in_progress'
   - elsif @site.in_sponsored_plan?
     .notice
-      %p= raw "Your plan is currently sponsored, if you have any questions, please #{mail_to t('mailer.sales_email'), "contact us"}."
+      %p= raw "Your plan is currently sponsored, if you have any questions, please email #{mail_to t('mailer.sales.email_full').html_safe, t('mailer.sales.email')}."
   - else
     - if @site.errors.empty? && @site.next_cycle_plan_id?
       #next_cycle_plan_box.notice

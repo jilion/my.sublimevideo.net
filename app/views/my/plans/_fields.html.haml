@@ -34,7 +34,7 @@
   -#     %p.note
   -#       = raw "Your usage in the last 30 days: #{content_tag :strong, number_with_delimiter(site.last_30_days_billable_usages.sum)} video views =>"
   -#       - if site.recommended_plan_name == 'custom'
-  -#         = raw "Recommended plan: <strong>Custom</strong> (please #{mail_to t('mailer.sales_email'), "contact us"})"
+  -#         = raw "Recommended plan: <strong>Custom</strong> (please #{mail_to t('mailer.sales.email'), "contact us"})"
   -#       - else
   -#         = raw "Recommended plan: <strong>#{site.recommended_plan_name.titleize}</strong>"
 
@@ -128,4 +128,4 @@
     .spacer
 
     #need_more{ class: (site.recommended_plan_name == 'custom' ? 'recommended' : '') }
-      %p= raw "Need more or have other enterprise-class requirements? Please #{mail_to t('mailer.sales_email'), "contact us"}."
+      %p= raw "Need a custom integration with your site or other enterprise-class requirements? Please #{mail_to t('mailer.sales.email_full'), "contact us"}."
