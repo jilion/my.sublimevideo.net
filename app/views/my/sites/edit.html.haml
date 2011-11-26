@@ -3,8 +3,7 @@
 
 #site.edit
   = render '/layouts/segmented_menu'
-  
-  
+
   #site_settings_box.section_box
     .big_break
     = form_for @site, html: { id: "edit_site_settings", "data-password-protected" => @site.in_paid_plan? && @site.trial_ended? } do |f|
@@ -24,6 +23,5 @@
         .entry.delete
           = f.submit "Delete site", class: "delete_site", confirm: "Are you really sure?"
           %p.desc
-            - if @site.hostname.present?
-              = raw t 'site.edit.delete_site_info1', domain: truncate_middle(@site.hostname, length: 20)
+            = raw t 'site.edit.delete_site_info1', domain: truncate_middle(@site.hostname_or_token, length: 20)
             = raw t 'site.edit.delete_site_info2'
