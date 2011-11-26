@@ -10,7 +10,7 @@
     %th.failed_at= link_to_sort :failed_at, :default_way => 'desc'
     %th.unlock= "Unlock"
     %th.delete= "Delete"
-  = render 'delayed_job', collection: @delayed_jobs
+  = render partial: 'delayed_job', collection: @delayed_jobs
 
 .pagination_wrap
   = paginate @delayed_jobs, theme: 'admin'
