@@ -114,7 +114,7 @@ end
 group :development, :test do
   gem 'log_buddy'
   gem 'timecop'
-  gem 'rspec-rails', '~> 2.7.0'
+  gem 'rspec-rails'
   # gem 'ruby-debug19'
 
   gem 'rack-livereload'
@@ -151,7 +151,7 @@ group :development do
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
-  gem 'guard-spork', git: 'git://github.com/guard/guard-spork.git'
+  gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
   gem 'guard-jasmine'
