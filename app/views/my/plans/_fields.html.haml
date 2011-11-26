@@ -73,7 +73,6 @@
               - if site.persisted? && plan && plan == free_plan
                 %span.current_label= "Current"
             .spacer
-        .bottom
 
       - i = 1
       - standard_plans.each do |standard_plan|
@@ -89,6 +88,7 @@
                   %span.icon
                   .right
                     %h4= plan_plays(standard_plan)
+                    %p.small_desc= "Per month"
                   .spacer
                 %li.stats
                   %span.icon
@@ -125,7 +125,6 @@
                     %span.current_label= "Current"
                   %span.save_label= "save 2 months"
               .spacer
-          .bottom
     .spacer
 
     #need_more{ class: (site.recommended_plan_name == 'custom' ? 'recommended' : '') }

@@ -1,131 +1,161 @@
 = content_for :title, "Plans & Pricing".html_safe
+= content_for :header do
+  %h2= "All paid plans are free for the first 14 days"
+  %p.sub= "No credit card required."
 
-%section#content
-  %section#plans
-    %h2.headline= "Plans & Pricing"
-    %h3.subheadline
-      = "All plans include a"
-      %strong= "30 Day Money Back Guarantee."
-    %ul#plans_box
-      %li.box_1
+#plans
+  %ul
+    %li.free.box_0
+      .wrapper
         .header
-          %h3.title= "Comet"
-          %h4.number= "3,000"
-          %h5.label= "Video pageviews per month"
+          %h3.title= "Free"
         %ul.features
-          %li= "Standard Support"
-          %li= "Peak Insurance"
-          %li= "SSL Serving"
-        .price
-          .monthly
-            %strong
-              = "$9"
-              %sup= ".90"
-            %em.label= "per site/month"
-          .or_separator= "or"
-          .yearly
-            %strong
-              = "$99"
-            %em.label= "per site/year"
-          .two_months_free= "2 months free"
-      %li.box_2
-        .header
-          %h3.title= "Planet"
-          %h4.number= "50,000"
-          %h5.label= "Video pageviews per month"
-        %ul.features
-          %li= "Standard Support"
-          %li= "Peak Insurance"
-          %li= "SSL Serving"
-        .price
-          .monthly
-            %strong
-              = "$19"
-              %sup= ".90"
-            %em.label= "per site/month"
-          .or_separator= "or"
-          .yearly
-            %strong
-              = "$199"
-            %em.label= "per site/year"
-          .two_months_free= "2 months free"
-      %li.box_3
-        .header
-          %h3.title= "Star"
-          %h4.number= "200,000"
-          %h5.label= "Video pageviews per month"
-        %ul.features
-          %li
-            %strong= "Priority"
-            = "Support"
-          %li= "Peak Insurance"
-          %li= "SSL Serving"
-        .price
-          .monthly
-            %strong
-              = "$49"
-              %sup= ".90"
-            %em.label= "per site/month"
-          .or_separator= "or"
-          .yearly
-            %strong
-              = "$499"
-            %em.label= "per site/year"
-          .two_months_free= "2 months free"
-      %li.box_4
-        .header
-          %h3.title= "Galaxy"
-          %h4.number= "1,000,000"
-          %h5.label= "Video pageviews per month"
-        %ul.features
-          %li
-            %strong= "Priority"
-            = "Support"
-          %li= "Peak Insurance"
-          %li= "SSL Serving"
-        .price
-          .monthly
-            %strong
-              = "$99"
-              %sup= ".90"
-            %em.label= "per site/month"
-          .or_separator= "or"
-          .yearly
-            %strong
-              = "$999"
-            %em.label= "per site/year"
-          .two_months_free= "2 months free"
-    .spacer
-    %h3.subheadline
-      = "No cut corners."
-      %strong= "All plans include all features."
-    .sign_up_box
-      .blue_halo
-      .left
-        %p= raw "We also offer a #{content_tag :strong, 'Free LaunchPad Plan'}<br /> to test and work with SublimeVideo before launching your site."
-      .right
-        %p= raw "Need more pageviews, custom support or have other enterprise-class requirements? Please #{mail_to t('mailer.sales_email'), "contact us" }."
-      = link_to "Sign Up", "https://my.sublimevideo.net/signup", :class => "big_button"
-    .spacer
-    #plans_faq
-      .left
-        %h3.title= "How does the 30 day money back guarantee work?"
-        :textile
-          p(desc). We offer a 30 day money back guarantee on all paid plans. If for any reason you are unsatisfied with our service, you can request a refund at any time within 30 days of the purchase date. "Read more":http://docs.sublimevideo.net/30-day-money-back.
-        %h3.title= 'What does "per site" mean?'
-        :textile
-          p(desc). Each plan is per site. However, if you have multiple domains showing or pointing to the same content as your main domain, then you don't need to purchase a separate plan for each of these domains: you can share the same plan via the _Alias domains_ option and also across all your subdomains. "Read more":http://docs.sublimevideo.net/site-settings.
-        %h3.title= "Advanced domain settings"
-        :textile
-          p(desc). All paid plans come with advanced domain settings, including the possibility to specify staging domains and a wildcard option to extend your SublimeVideo license to subdomains of your main domain. "Read more":http://docs.sublimevideo.net/site-settings.
-      .right
-        %h3.title= "What is Peak Insurance?"
-        :textile
-          p(desc). All paid plans include *Peak Insurance*, a flexible feature which allows your site to exceed the monthly limit of video pageviews in the event of a temporary burst of traffic. We are not going to block your player when you need it the most, and we are not going to ask you to upgrade unless you have exceeded your monthly pageview quota and your site has been above its average daily limit for more than 50% of the last 60 days.
-        %h3.title= "Can I upgrade or downgrade my plan?"
-        :textile
-          p(desc). Absolutely. You can upgrade, downgrade or change monthly and yearly cycles at any time. In case of a downgrade or a change from a yearly to monthly cycle, the change will come into effect at the end of the current plan's cycle.
-        %h3.title= "Can I test SublimeVideo for free?"
-        :textile
-          p(desc). Absolutely. While you are working on your site development, you can use LaunchPad, our free & unlimited plan for developers. Likewise, once you are subscribed to a paid plan, you can continue testing SublimeVideo on your local development domains with unlimited pageviews.
-      .spacer
+          %li.plays
+            %span.icon
+            .right
+              %h4= "Unlimited Plays"
+              %p.small_desc= "With SublimeVideo badge*"
+            .spacer
+          %li.stats
+            %span.icon
+            .right
+              %h4= "Standard Stats"
+              %p.value
+                = "24h"
+                %span="Data Retention"
+            .spacer
+          %li.support
+            %span.icon
+            .right
+              %h4= "Forum Support"
+            .spacer
+        .sign_up_wrap
+          = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
+
+      %li.plus.box_2
+        .wrapper
+          .header
+            %h3.title= "Plus"
+          %ul.features
+            %li.plays
+              %span.icon
+              .right
+                %h4= "200,000 Plays"
+                %p.small_desc= "Per month"
+              .spacer
+            %li.stats
+              %span.icon
+              .right
+                %h4= "Real-Time Stats"
+                %p.value
+                  = "365d"
+                  %span= "Data Retention"
+              .spacer
+            %li.support
+              %span.icon
+              .right
+                %h4= "Email Support"
+              .spacer
+            %li.ssl
+              %span.icon
+              .right
+                %h4= "SSL Serving"
+              .spacer
+          .pricing
+            .monthly.box
+              %strong.price
+                = "$9"
+                %sup><= ".90"
+              %span.details_label= "per site/month"
+            .yearly.box
+              %strong.price
+                = "$99"
+              %span.details_label= "per site/year"
+              %span.save_label= "save 2 months"
+            .spacer
+          .sign_up_wrap
+            = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
+  
+      %li.premium.box_3
+        .wrapper
+          .header
+            %h3.title= "Premium"
+          %ul.features
+            %li.plays
+              %span.icon
+              .right
+                %h4= "1,000,000 Plays"
+                %p.small_desc= "Per month"
+              .spacer
+            %li.stats
+              %span.icon
+              .right
+                %h4= "Real-Time Stats"
+                %p.value
+                  = "Unlimited"
+                  %span= "Data Retention"
+              .spacer
+            %li.support
+              %span.icon
+              .right
+                %h4= "VIP Email Support"
+              .spacer
+            %li.ssl
+              %span.icon
+              .right
+                %h4= "SSL Serving"
+              .spacer
+          .pricing
+            .monthly.box
+              %strong.price
+                = "$49"
+                %sup><= ".90"
+              %span.details_label= "per site/month"
+            .yearly.box
+              %strong.price
+                = "$499"
+              %span.details_label= "per site/year"
+              %span.save_label= "save 2 months"
+          .spacer
+          .sign_up_wrap
+            = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
+  .spacer
+  #need_more= raw "Need more or have other enterprise-class requirements? Please #{mail_to t('mailer.sales_email'), "contact us"}."
+
+.logos_banner
+  %h4.custom_break= "They use SublimeVideo"
+  %ul.logos
+    %li= link_to (image_tag "www/home/logos/littlebigplanet.png", alt: "Little Big Planet"), ""
+    %li= link_to (image_tag "www/home/logos/taptaptap.png", alt: "Tap Tap Tap"), ""
+    %li= link_to (image_tag "www/home/logos/tetrapak.png", alt: "Tetra Pak"), ""
+    %li= link_to (image_tag "www/home/logos/bredbandsbolaget.png", alt: "Little Big Planet"), ""
+    %li= link_to (image_tag "www/home/logos/bigcartel.png", alt: "Big Cartel"), ""
+    %li= link_to (image_tag "www/home/logos/rock_am_ring.png", alt: "Rock Am Ring"), ""
+  .spacer
+.big_break
+
+%section.faq
+  .col_left
+    .box
+      %h4= "The free plan seems too good to be true, is it really free and unlimited?"
+      %p= "Yes and yes, it's completely free and gives you unlimited video plays. Unlike the unbranded player offered with our paid plans, our free player will display a discreet SublimeVideo badge for a few seconds after video playback begins."
+    .box
+      %h4= "What does 'per-site' mean?"
+      %p= raw "Each plan is per-site. However, simply use the wildcard option to extend your SublimeVideo player license to any subdomains of your main domain. Also, if you have multiple domains showing or pointing to the same content as your main domain, you can share the same plan across these via our Alias domains option. #{link_to "Read more", ""}."
+    .box
+      %h4= "Advanced domain settings"
+      %p= raw "All plans come with advanced domain settings, including the ability to specify staging domains and a wildcard option to extend your SublimeVideo license to subdomains of your main domain. #{link_to "Read more", ""}."
+  .col_right
+    .box
+      %h4= "How does the '14 days free' offer work?"
+      %p= "We offer 14 days free for every new paid plan - no credit card required. When your 14 days are almost up we'll send you a reminder to enter your credit card details if you wish to continue your paid plan. Otherwise, you'll automatically be downgraded to our free plan."
+    .box
+      %h4= "Can I upgrade or downgrade my plan?"
+      %p= "Absolutely. You can upgrade, downgrade or change monthly and yearly billing cycles at any time. In case of a downgrade or a change from a yearly to monthly cycle, the change will come into effect at the end of the current plan's cycle."
+    .box
+      %h4= "Forum & Support"
+      %p= raw "All users have access to our extensive documentation and community forum. Additionally, customers of our paid plans also benefit from dedicated email support. Customers of our Advanced plan also benefit from VIP email support. Find out more on the #{link_to "help page", ""}."
+    .box
+      %h4= "What happens if I exceed my monthly limit?"
+      %p= "All paid plans include Peak Insurance, a flexible feature that allows your site's videos or video embeds to exceed the monthly limit of video plays in the event of a temporary burst of traffic."
+  .spacer
