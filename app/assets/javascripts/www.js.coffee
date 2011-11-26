@@ -1,5 +1,3 @@
-#= require modernizr
-
 #= require application
 #= require home
 

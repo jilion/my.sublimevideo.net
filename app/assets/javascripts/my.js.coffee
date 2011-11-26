@@ -1,8 +1,6 @@
-#= require prototype
-#= require modernizr
-#= require s2
-
 #= require application
+#= require highcharts/prototype-adapter
+#= require highcharts/highcharts
 
 document.observe "dom:loaded", ->
   if $('plans')
