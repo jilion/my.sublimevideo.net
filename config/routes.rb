@@ -136,7 +136,7 @@ MySublimeVideo::Application.routes.draw do
 
       resources :releases, only: :index
 
-      get '/*page' => 'pages#show'
+      get '/*page' => 'pages#show', as: :page
 
       root to: redirect('/quickstart-guide')
     end
