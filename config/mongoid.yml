@@ -1,23 +1,41 @@
 development:
   host: localhost
-  database: mysublime
+  database: sublimevideo_dev
 
 test:
   host: localhost
-  database: msv_test
+  database: sublimevideo_test
 
 staging:
-  uri: <%= ENV['MONGOHQ_URL'] %>
-  host: localhost
-  persist_in_safe_mode: true
+  database: sublimevideo-staging
+  username: <%= ENV['MONGOHQ_USERNAME'] %>
+  password: <%= ENV['MONGOHQ_PASSWORD'] %>
+  hosts:
+    - - sublimevideo.member0.mongolayer.com
+      - 27017
+    - - sublimevideo.member1.mongolayer.com
+      - 27017
+    - - sublimevideo.member2.mongolayer.com
+      - 27017
+  max_retries_on_connection_failure: 3
+  logger: false
 
 production:
-<% if ENV['MONGOHQ_URL'] %>
-  uri: <%= ENV['MONGOHQ_URL'] %>
+<% if ENV['MONGOHQ_USERNAME'] %>
+  database: sublimevideo
+  username: <%= ENV['MONGOHQ_USERNAME'] %>
+  password: <%= ENV['MONGOHQ_PASSWORD'] %>
+  hosts:
+    - - sublimevideo.member0.mongolayer.com
+      - 27017
+    - - sublimevideo.member1.mongolayer.com
+      - 27017
+    - - sublimevideo.member2.mongolayer.com
+      - 27017
+  max_retries_on_connection_failure: 3
+  logger: false
 <% else %>
   # make rake asset:precompile work
   host: localhost
-  database: mysublime
+  database: sublimevideo
 <% end %>
-  persist_in_safe_mode: true
-  logger: false
