@@ -9,7 +9,7 @@
           %li= link_to "Features", page_url('features', subdomain: 'www')
           %li= link_to "Demo", page_url('demo', subdomain: 'www')
           %li= link_to "Plans & Pricing", page_url('plans', subdomain: 'www')
-          %li= link_to "My SublimeVideo", root_url(subdomain: 'my')
+          %li= link_to "Player Releases", docs_releases_url(subdomain: 'docs')
       .col
         %h4= "Community & Support"
         %ul
@@ -17,13 +17,12 @@
           %li= link_to "Help", page_url('help', subdomain: request.subdomain == 'my' ?  'my' : 'www')
           %li= link_to "Documentation", root_url(subdomain: 'docs')
           %li= link_to "Community Forum", "http://getsatisfaction.com/sublimevideo"
-          %li= link_to "Player Releases", docs_releases_url(subdomain: 'docs')
       .col
         %h4= "Stay Connected"
         %ul
           %li= link_to "Blog", page_url('blog', subdomain: 'www')
           %li= link_to "Twitter", ""
-          %li= link_to "Contact us", page_url('contact', subdomain: 'www')
+          %li= link_to "Contact", page_url('contact', subdomain: 'www')
           %li= link_to "About", page_url('about', subdomain: 'www')
     .right
       %p
@@ -38,6 +37,6 @@
     .footer_break
     %p.copyright
       = link_to "Terms & Conditions", page_url('terms', subdomain: 'my')
-      = "|" 
+      = "|"
       = link_to "Privacy Policy", page_url('privacy', subdomain: 'my')
       = "| Copyright © #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks."
