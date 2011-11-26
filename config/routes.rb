@@ -1,6 +1,6 @@
-class WwwSubdomain
+class NoSubdomain
   def self.matches?(request)
-    request.subdomain.blank? || request.subdomain == 'www'
+    request.subdomain.blank?
   end
 end
 
@@ -235,8 +235,12 @@ MySublimeVideo::Application.routes.draw do
     get '/logout' => 'my/users/sessions#destroy'
   end
 
+  constraints(NoSubdomain) do
+    match '(*path)' => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/#{params[:path]}" }
+  end
+
   scope module: 'www' do
-    constraints(WwwSubdomain) do
+    constraints subdomain: 'www' do
       # Redirects
       %w[signup sign_up register].each { |action| get action => redirect('/?p=signup') }
       %w[login log_in sign_in signin].each { |action| get action => redirect('/?p=login') }
