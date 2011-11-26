@@ -5,7 +5,7 @@ module My::TicketsHelper
   end
 
   def ticket_site_token_options
-    options_for_select([[t("ticket.site_token.choose-site_token"), ''], ["-"*16, '-']] + current_user.sites.active.map { |s| [s.hostname, s.token] }, selected: params[:ticket] ? params[:ticket][:site_token] : nil, disabled: ['-'])
+    options_for_select([[t("ticket.site_token.choose-site_token"), ''], ["-"*16, '-']] + current_user.sites.active.map { |s| [s.hostname_or_token, s.token] }, selected: params[:ticket] ? params[:ticket][:site_token] : nil, disabled: ['-'])
   end
 
 end
