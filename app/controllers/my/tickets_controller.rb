@@ -4,8 +4,13 @@ class My::TicketsController < MyController
   # POST /support
   def create
     @ticket = Ticket.new(params[:ticket].merge({ user_id: current_user.id }))
-    @ticket.save
-    respond_with(@ticket, location: page_url('help'))
+    respond_with(@ticket) do |format|
+      if @ticket.save
+        format.html { redirect_to page_path('help') }
+      else
+        format.html { render 'my/pages/help' }
+      end
+    end
   end
 
 end
