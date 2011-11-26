@@ -7,7 +7,8 @@
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
     = stylesheet_link_tag(request.subdomain)
     = airbrake_javascript_notifier
-    %script{ src: "//cdn.optimizely.com/js/#{Optimizely.experiment_id}.js" }
+    - unless request.subdomain == 'my'
+      %script{ src: "//cdn.optimizely.com/js/#{Optimizely.experiment_id}.js" }
     = csrf_meta_tag
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
 
