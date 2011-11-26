@@ -35,14 +35,14 @@ describe OneTime::User do
     end
   end
 
-  describe ".set_billing_name_from_name" do
+  describe ".set_billing_info" do
     context "user has name" do
       subject { Factory.create(:user, name: 'Remy Coutable', billing_name: nil) }
 
       it "sets billing_name from name" do
         subject.billing_name.should be_nil
 
-        described_class.set_billing_name_from_name
+        described_class.set_billing_info
 
         subject.reload.billing_name.should eq 'Remy Coutable'
       end
@@ -59,9 +59,57 @@ describe OneTime::User do
       it "doesn't set billing_name" do
         subject.billing_name.should be_nil
 
-        described_class.set_billing_name_from_name
+        described_class.set_billing_info
 
         subject.reload.billing_name.should be_nil
+      end
+    end
+
+    context "user has no billing_postal_code" do
+      subject { Factory.create(:user, billing_postal_code: nil, postal_code: '1234') }
+
+      it "doesn't set billing_name" do
+        subject.billing_postal_code.should be_nil
+
+        described_class.set_billing_info
+
+        subject.reload.billing_postal_code.should eq '1234'
+      end
+    end
+
+    context "user has a billing_postal_code code" do
+      subject { Factory.create(:user, billing_postal_code: '91470', postal_code: '1234') }
+
+      it "doesn't set billing_name" do
+        subject.billing_postal_code.should eq '91470'
+
+        described_class.set_billing_info
+
+        subject.reload.billing_postal_code.should eq '91470'
+      end
+    end
+
+    context "user has no billing_country" do
+      subject { Factory.create(:user, billing_country: nil, country: 'FR') }
+
+      it "doesn't set billing_name" do
+        subject.billing_country.should be_nil
+
+        described_class.set_billing_info
+
+        subject.reload.billing_country.should eq 'FR'
+      end
+    end
+
+    context "user has a billing_country" do
+      subject { Factory.create(:user, billing_country: 'CH', country: 'FR') }
+
+      it "doesn't set billing_name" do
+        subject.billing_country.should eq 'CH'
+
+        described_class.set_billing_info
+
+        subject.reload.billing_country.should eq 'CH'
       end
     end
   end

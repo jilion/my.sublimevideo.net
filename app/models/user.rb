@@ -53,8 +53,8 @@ class User < ActiveRecord::Base
   end
 
   validates :name, presence: true
-  validates :billing_postal_code, length: { maximum: 10 }, allow_blank: true
   validates :billing_country, presence: true, if: :billable?
+  validates :billing_postal_code, length: { maximum: 20 }, allow_blank: true
   validates :company_url, hostname: true, allow_blank: true
   validates :terms_and_conditions, acceptance: { accept: "1" }, on: :create
 
