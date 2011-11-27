@@ -1,8 +1,8 @@
 - sites = user.sites.reject { |s| s.archived? }
 - last_invoice = user.invoices.last
-%tr[user]{ :class => cycle("", "alt") }
+%tr[user]{ class: cycle("", "alt") }
   %td.name
-    = link_to user.name, [:admin, user], :title => "#{user.name} <#{user.email}>"
+    = link_to user.name || "no name", [:admin, user], title: user.email
   %td.state
     = user.state.titleize
   %td.sites
@@ -12,19 +12,19 @@
           - sites[0,2].each do |site|
             = content_tag :li do
               = links_to_hostnames(site)
-          %li= link_to("view all (#{sites.size-2} more)", admin_sites_path(:user_id => user.id)) if sites.size > 2
+          %li= link_to("view all (#{sites.size-2} more)", admin_sites_path(user_id: user.id)) if sites.size > 2
     - else
       %small= '-'
   %td.number
     %small= number_with_delimiter(sites.sum { |s| s.last_30_days_main_video_views.to_i + s.last_30_days_extra_video_views.to_i })
   %td.number
     - if last_invoice.present?
-      %small= link_to display_amount(user.last_invoiced_amount), [:admin, last_invoice], :title => "Invoice page"
+      %small= link_to display_amount(user.last_invoiced_amount), [:admin, last_invoice], title: "Invoice page"
     - else
       %small= '-'
   %td.number
     - if last_invoice.present?
-      %small= link_to display_amount(user.total_invoiced_amount), admin_invoices_path(:user_id => user.id), :title => "See all user invoices"
+      %small= link_to display_amount(user.total_invoiced_amount), admin_invoices_path(user_id: user.id), title: "See all user invoices"
     - else
       %small= '-'
   - if params[:with_balance] == "true"
