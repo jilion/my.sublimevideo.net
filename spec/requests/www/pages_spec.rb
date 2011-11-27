@@ -24,7 +24,7 @@ feature "Com Pages" do
           click_link 'Demo'
           current_url.should eq "http://www.sublimevideo.dev/demo"
 
-          click_link 'Showcases'
+          VCR.use_cassette('twitter/showcases') { click_link 'Showcases' }
           current_url.should eq "http://www.sublimevideo.dev/customer-showcases"
 
           click_link 'Help'
@@ -59,7 +59,7 @@ feature "Com Pages" do
           click_link 'Plans & Pricing'
           current_url.should eq "http://www.sublimevideo.dev/plans"
 
-          click_link 'Customer Showcases'
+          VCR.use_cassette('twitter/showcases') { click_link 'Customer Showcases' }
           current_url.should eq "http://www.sublimevideo.dev/customer-showcases"
 
           click_link 'Help'
