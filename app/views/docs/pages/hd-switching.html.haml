@@ -1,11 +1,11 @@
-= page_title "HD source switching"
+= page_title "HD switching"
 
 :textile
-  SublimeVideo comes with integrated HD source switching. It's really easy to set up: all you need to do is add an additional @<source />@ element and set its @data-quality@ attribute to "_hd_".
+  SublimeVideo comes with an integrated HD switch allowing you to toggle SD-HD video sources with a single click. It's really easy to set up: all you need to do is add an additional @<source />@ element and set its @data-quality@ attribute to "_hd_".
 
   Follow the examples below to get started.
 
-  h4. Universal HD source switching (MP4 and WebM)
+  h4. Universal HD switching (MP4 and WebM)
 :coderay
   #{coderay_options(:html)}
   <video class="sublime" width="640" height="360" poster="http://yoursite.com/video-poster.jpg" preload="none">
@@ -16,7 +16,7 @@
   </video>
 :textile
 
-  h4. MP4-only HD source switching
+  h4. MP4-only HD switching
 :coderay
   #{coderay_options(:html)}
   <video class="sublime" width="640" height="360" poster="http://yoursite.com/video-poster.jpg" preload="none">
@@ -26,7 +26,7 @@
   </video>
 :textile
 
-  h4. Play HD source first
+  h4. Play HD first
 :coderay
   #{coderay_options(:html)}
   <video class="sublime" width="640" height="360" poster="http://yoursite.com/video-poster.jpg" preload="none">
@@ -39,7 +39,7 @@
 
   **Notes**
 
-  Due to a Flash limitation, if you switch sources in Flash mode, the player won't remember the playback position and the video will start playing from the beginning. If you use _Universal HD source switching_ you will almost never encounter this issue (except in old versions of IE).
+  If you switch sources in Flash mode, the player won't remember the playback position and the video will start playing from the beginning. If you use _Universal HD switching_ you will almost never encounter this issue (except in old versions of IE).
 
   h3. Demo
 
