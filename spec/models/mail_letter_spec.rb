@@ -88,8 +88,8 @@ describe MailLetter do
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
           end
 
-          it "should not create a new MailLog record" do
-            expect { subject }.to_not change(MailLog, :count)
+          it "should create a new MailLog record" do
+            expect { subject }.to change(MailLog, :count).by(1)
           end
         end
       end
