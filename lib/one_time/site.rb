@@ -48,13 +48,13 @@ module OneTime
 
             next_cycle_plan = nil if next_cycle_plan == new_plan
 
-            print "##{site.token} (##{site.id} #{site.hostname}): #{site.plan.title} (##{site.plan.id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+            # print "##{site.token} (##{site.id} #{site.hostname}): #{site.plan.title} (##{site.plan.id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
             site.send(:write_attribute, :plan_id, new_plan.id)
             site.send(:write_attribute, :pending_plan_id, nil)
             site.send(:write_attribute, :next_cycle_plan_id, next_cycle_plan.try(:id))
-            print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+            # print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
             site.skip_pwd { site.save(validate: false) }
-            puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+            # puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
             total += 1
 
             unless add_to_balance.zero?
