@@ -30,6 +30,7 @@ module My::TweetsHelper
     end
 
     tweet_text = tweet_text.gsub(/(\s?\/\s*cc\s\@\w+)/, '') if options[:strip_cc]
+    tweet_text = tweet_text.gsub(/\s*[:-]\s*$/, '') if options[:strip_cc]
 
     tweet_text.strip
   end
