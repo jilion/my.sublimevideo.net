@@ -24,12 +24,13 @@
           == body {background:#fff;display:none;}
     /[if lte IE 9]
       = javascript_include_tag("#{request.protocol}html5shiv.googlecode.com/svn/trunk/html5.js")
+    = yield :head_before
     - if %w[site_stats].include?(controller_name)
       = javascript_include_tag 'stats'
     - else
       = javascript_include_tag(request.subdomain)
     = yield :head
-
+    
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
     :javascript
       try { Typekit.load(); } catch(e) { }
