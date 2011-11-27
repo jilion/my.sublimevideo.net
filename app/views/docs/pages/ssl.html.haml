@@ -3,14 +3,17 @@
 :textile
   SSL Serving of the SublimeVideo Player is included with all paid plans.
 
-= raw "In order to use SublimeVideo on a secure page (https://), you have to check the #{content_tag(:em, '"Deliver with SSL for secure pages"')} checkbox in the #{link_to content_tag(:em, '"My sites"'), sites_url(subdomain: 'my'), onclick: "window.open(this); return false"} page under “embed code”."
+  In order to use SublimeVideo on a secure page (https://), you have to check the #{content_tag(:em, '"Deliver with SSL for secure pages"')} checkbox in the #{link_to content_tag(:em, '"My sites"'), sites_url(subdomain: 'my'), onclick: "window.open(this); return false"} after clicking the “embed code”.
 
-:textile
-  If your site includes both HTTP and HTTPS pages, you can also use the following simple script that will load the right version of SublimeVideo depending on the page's current security level:
+  h4. Mixed serving
+
+  If your site includes both secure (https://) and non-secure (http://) pages, you can also use the following script. This will load the right version of SublimeVideo depending on the page's current security level:
 
 :coderay
   #{coderay_options(:javascript)}
-  <script type="text/javascript">document.write(unescape("%3Cscript src='" + (("https:" == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/YOUR_TOKEN.js' type='text/javascript'%3E%3C/script%3E"));</script>
-  
-= raw "All you have to do is to replace #{content_tag(:em, 'YOUR_TOKEN')} with your actual site's token (you can find it in the in the #{link_to content_tag(:em, '"My sites"'), sites_url(subdomain: 'my'), onclick: "window.open(this); return false"} page under “embed code”."
-  
+  <script type="text/javascript">
+    document.write(unescape("%3Cscript src='" + (("https:" == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/YOUR_TOKEN.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+:textile
+  All you have to do is replacing _YOUR_TOKEN_ with your actual site's token (you can find it in the #{link_to content_tag(:em, '"My sites"'), sites_url(subdomain: 'my'), onclick: "window.open(this); return false"} after clicking the “embed code”).
