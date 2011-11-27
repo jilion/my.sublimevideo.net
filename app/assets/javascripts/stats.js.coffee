@@ -1,7 +1,6 @@
 #= require application_jquery
 
 #= require backbone
-# https://github.com/timrwood/underscore.date
 #= require underscore.date
 #= require hamlcoffee
 #= require spin/jquery.spin
@@ -9,9 +8,13 @@
 #= require jquery.ui.datepicker.min
 #= require highcharts/highcharts
 
-#= require_self
 #= require base
-#= require_tree ./stats
+#= require_self
+#= require_tree ./stats/models
+#= require_tree ./stats/templates
+#= require_tree ./stats/helpers
+#= require_tree ./stats/views
+#= require stats/router
 
 window.MSVStats =
   Models: {}
