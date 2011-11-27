@@ -15,9 +15,11 @@ class MailLetter
 
     users = case @criteria
             when 'dev'
-              User.where(:email => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"])
+              User.where(email: ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"])
             when 'all'
               User.all
+            when 'not_archived'
+              User.where { state != 'archived' }.all
             else
               User.send(@criteria)
             end
@@ -25,7 +27,7 @@ class MailLetter
     users.uniq.each { |u| self.class.delay.deliver(u, @template) }
 
     unless @criteria == 'dev'
-      @template.logs.create(:admin_id => @admin_id, :criteria => @criteria, :user_ids => users.map(&:id))
+      @template.logs.create(admin_id: @admin_id, criteria: @criteria, user_ids: users.map(&:id))
     end
   end
 
