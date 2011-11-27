@@ -107,6 +107,8 @@ group :assets do
 end
 
 group :production do
+  gem 'therubyracer' # for hamc templates
+
   gem 'rack-ssl-enforcer'
   gem 'rack-cache'
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
@@ -155,7 +157,7 @@ group :development do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
-  # gem 'guard-jasmine'
+  gem 'guard-jasmine'
   gem 'guard-yard'
 end
 
