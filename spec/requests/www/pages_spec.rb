@@ -30,8 +30,8 @@ feature "Com Pages" do
           click_link 'Help'
           current_url.should eq "http://www.sublimevideo.dev/help"
 
-          click_link 'Blog'
-          current_url.should eq "http://www.sublimevideo.dev/blog"
+          # click_link 'Blog'
+          # current_url.should eq "http://www.sublimevideo.dev/blog"
 
           click_link 'Login'
           current_url.should eq "http://www.sublimevideo.dev/?p=login"
@@ -71,8 +71,8 @@ feature "Com Pages" do
           click_link 'Player Releases'
           current_url.should eq "http://docs.sublimevideo.dev/releases"
 
-          click_link 'Blog'
-          current_url.should eq "http://www.sublimevideo.dev/blog"
+          # click_link 'Blog'
+          # current_url.should eq "http://www.sublimevideo.dev/blog"
 
           click_link 'Contact'
           current_url.should eq "http://www.sublimevideo.dev/contact"
