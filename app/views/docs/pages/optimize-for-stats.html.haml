@@ -6,26 +6,36 @@
 %p= raw "You can access the individual statistics page for each of your site via the \"View Stats\" button on #{link_to "this page", sites_url(subdomain: 'my')}."
 
 :textile
-  By default, there is *nothing to setup* in order to start viewing your video statistics. However, if you think your videos' URLs might change in future or if you'd like to customize the name of the videos that are shown in your statistics page, you should read the following sections.
+  By default, there is *nothing to setup* in order to start viewing your video statistics. However, if you think your @<source />@ elements might change in future or if you'd like to customize the name of the videos that are shown in your statistics page, you should read the following sections.
 
   h4. The @data-uid@ attribute
 
-  Although the default behavior is totally fine if you never modify your @<source>@ elements, this will cause a problem if you do.
-  In fact, the @<source>@ modification will make the video appear as a new video in your statistics page since we use the first @<source>@ to track a video.
+  Although the default behavior should be totally fine if you never modify your @<source />@ elements, this will cause a problem if you do.
+  In fact, the @<source />@ modification will make the video appear as a new video in your statistics page since we use the first @<source />@ to track a video.
 
-  To avoid this, you can set a unique id to your @<video>@ element by adding a @data-uid@ attribute to it. Your video will then be identified by this unique id instead of by its first @<source>@.
+  To avoid this, you can set a unique id to your @<video>@ element by adding a @data-uid@ attribute to it. Your video will then be identified by this unique id instead of by its first @<source />@. Here is an example:
 
-  Although this id can be any string (with a maximum of 50 characters), we recommend as much as possible that you use small strings (between 6 and 12 characters depending on the number of videos you have).
+:coderay
+  #{coderay_options(:html)}
+  <video class="sublime" poster="some-great-landscapes.jpg" data-uid="landscape1">
+    <source src="http://yoursite.com/some-great-landscapes.mp4" />
+    <source src="http://yoursite.com/some-great-landscapes.webm" />
+  </video>
+
+:textile
+  Although this id can be any string, we recommend that you use small strings (between 4 and 20 characters, probably depending on the number of videos you have).
+
+  Note that if you plan to use the video statistics extensively, we recommend that you always set the @data-uid@ attribute to all of your @<video>@ elements.
 
   h4. The @data-name@ attribute
 
-  By default, we will use the first @<source>@'s @src@ attribute to display your video in the statistics page.
+  By default, we will use the first @<source />@'s @src@ to display your video in the statistics page.
 
   For instance, if you have a @video@ element like the following:
 
 :coderay
   #{coderay_options(:html)}
-  <video poster="some-great-landscapes.jpg" class="sublime">
+  <video class="sublime" poster="some-great-landscapes.jpg">
     <source src="http://yoursite.com/some-great-landscapes.mp4" />
     <source src="http://yoursite.com/some-great-landscapes.webm" />
   </video>
@@ -33,6 +43,6 @@
 :textile
   We will use _"Some great landscapes"_ to show you video (along with its posterframe) in the statistics page of your site.
 
-  However if you'd like to display the title that appears in your statistics page, you can then add a @data-name@ attribute to your @<video>@. The attribute content will replace the default title we use in your statistics page.
+  However if you'd like to customize the title that appears in your statistics page, you can then add a @data-name@ attribute to your @<video>@. The attribute content will replace the default title we use in your statistics page.
 
   *Note*: You can update the @data-name@ as often as you'd like. Such change will be reflected in the statistics page in near real-time.
