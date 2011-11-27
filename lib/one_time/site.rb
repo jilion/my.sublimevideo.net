@@ -21,7 +21,8 @@ module OneTime
         without_versioning do
           total = 0
           ::Site.where { (first_paid_plan_started_at != nil) & (trial_started_at == nil) }.find_each(batch_size: 100) do |site|
-            site.update_attribute(:trial_started_at, site.first_paid_plan_started_at - BusinessModel.days_for_trial.days)
+            site.trial_started_at = site.first_paid_plan_started_at - BusinessModel.days_for_trial.days
+            site.save!(validate: false)
             total += 1
             puts "#{total} sites updated..." if (total % 100) == 0
           end
@@ -53,7 +54,8 @@ module OneTime
             site.send(:write_attribute, :pending_plan_id, nil)
             site.send(:write_attribute, :next_cycle_plan_id, next_cycle_plan.try(:id))
             # print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
-            site.skip_pwd { site.save(validate: false) }
+            site.badged = site.in_free_plan?
+            site.save!(validate: false)
             # puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
             total += 1
 
