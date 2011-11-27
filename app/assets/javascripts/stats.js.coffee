@@ -8,7 +8,6 @@
 #= require jquery.ui.datepicker.min
 #= require highcharts/highcharts
 
-#= require base
 #= require_self
 #= require_tree ./stats/models
 # require_tree ./stats/templates
