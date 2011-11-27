@@ -90,6 +90,11 @@ namespace :one_time do
       timed { puts OneTime::Site.current_sites_plans_migration }
     end
 
+    desc "Set sites' badged attribute"
+    task set_badged: :environment do
+      timed { puts OneTime::Site.set_badged }
+    end
+
     desc "Update last 30 days counters of all not archived sites"
     task update_last_30_days_counters_for_not_archived_sites: :environment do
       timed { Site.update_last_30_days_counters_for_not_archived_sites }

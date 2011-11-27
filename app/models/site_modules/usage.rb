@@ -30,7 +30,7 @@ module SiteModules::Usage
         end
         from += 1.day
       end
-      self.save
+      self.save_skip_pwd
     end
 
     def billable_usages(options = {})
