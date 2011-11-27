@@ -1,8 +1,0 @@
-%li.video_plays
-  - if @stats?
-    = Highcharts.numberFormat(@stats.vvTotal(MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex')), 0)
-  %span.title video plays
-%li.page_visits
-  - if @stats?
-    = Highcharts.numberFormat(@stats.pvTotal(MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex')), 0)
-  %span.title page visits
