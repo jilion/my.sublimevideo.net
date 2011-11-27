@@ -2,8 +2,8 @@
 = content_for :header do
   %h2= "Need some help?"
   %p.sub
-    = raw "Have a look at our #{link_to "documentation", ""} or ask our #{link_to "community", ""}."
-    = raw "And if you got a paid plan you can directly #{link_to "email",""} our support team."
+    = raw "Have a look at our #{link_to "documentation", '#documentation'} or ask our #{link_to "community", '#community_forum'}."
+    = raw "And if you got a paid plan you can directly #{link_to "email", '#email_support'} our support team."
 
 %span.life_belt
 = render 'layouts/help/documentation'
