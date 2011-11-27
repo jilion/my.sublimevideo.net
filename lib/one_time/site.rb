@@ -35,7 +35,7 @@ module OneTime
         without_versioning do
           total = 0
           ::Site.not_archived.where { badged == nil }.find_each(batch_size: 100) do |site|
-            site.badged = (new_plan.name == 'free')
+            site.badged = (site.plan.name == 'free')
             site.skip_pwd { site.save!(validate: false) }
             total += 1
             puts "#{total} sites updated..." if (total % 100) == 0
