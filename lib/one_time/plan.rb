@@ -10,9 +10,9 @@ module OneTime
           { name: "premium", cycle: "month", video_views: 1_000_000, stats_retention_days: nil, price: 4990,  support_level: 2 },
           { name: "plus",    cycle: "year",  video_views: 200_000,   stats_retention_days: 365, price: 9900,  support_level: 1 },
           { name: "premium", cycle: "year",  video_views: 1_000_000, stats_retention_days: nil, price: 49900, support_level: 2 }
-        ].each { |attributes| ::Plan.create!(attributes) }
+        ].each { |attributes| ::Plan.create(attributes) }
 
-        Plan.sponsored_plan.update_attributes(stats_retention_days: nil, support_level: 2)
+        ::Plan.sponsored_plan.update_attributes(stats_retention_days: nil, support_level: 2)
 
         "New plans created!"
       end
