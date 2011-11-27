@@ -13,13 +13,17 @@
       %strong= raw "included #{link_to("in all paid plans", [:edit, site, :plan])}"
       = "."
     - else
-      .radio_wrap{ id: "toggle_embed_with_ssl_#{site.token}" }
-        = label_tag "embed_with_ssl_switcher_#{site.token}", "SSL delivery switcher:"
-        = select_tag :ssl_serving, options_for_select([["Deliver without SSL", 'no'], ["Deliver with SSL for secure pages", 'yes'], ["Deliver with SSL or non-SSL depending on the page's protocol", 'mixed']]), onclick: "MySublimeVideo.showSiteEmbedCodeWithSSL(this, '#{site.token}');", id: "embed_with_ssl_switcher_#{site.token}"
+      .checkbox_wrap
+        = check_box_tag :wildcard, '1', false, id: "toggle_embed_with_ssl_#{site.id}", onclick: "MySublimeVideo.showSiteEmbedCodeWithSSL(this);"
+        = label_tag "toggle_embed_with_ssl_#{site.id}", 'Deliver with SSL for secure pages.'
+
+      -#.radio_wrap{ id: "toggle_embed_with_ssl_#{site.token}" }
+      -#  = label_tag "embed_with_ssl_switcher_#{site.token}", "SSL delivery switcher:"
+      -#  = select_tag :ssl_serving, options_for_select([["Deliver without SSL", 'no'], ["Deliver with SSL for secure pages", 'yes'], ["Deliver with SSL or non-SSL depending on the page's protocol", 'mixed']]), onclick: "MySublimeVideo.showSiteEmbedCodeWithSSL(this, '#{site.token}');", id: "embed_with_ssl_switcher_#{site.token}"
       = link_to "Learn more about SSL serving.", page_url('using-sublimevideo-on-https-sites', subdomain: 'docs')
 
 %p.note
   = raw "Need help to build your first <code>&lt;video&gt;</code> elements? Consult our #{link_to "documentation", "http://docs.sublimevideo.net/write-proper-video-elements"}."
   -# = "Discover our #{link_to "video tag builder", video_tag_builder_path(site_id: site.token)}!"
 -# %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
-%p.desc= raw "If you're using a plugin or service that asks for a SublimeVideo Site Token, you can use this: <code>#{site.token}</code>"
+%p.desc= raw "If a plugin or service asks for a site's token, here it is: <code>#{site.token}</code>"

@@ -183,20 +183,28 @@ MySublimeVideo.showSiteEmbedCode = function(siteToken) {
 };
 
 MySublimeVideo.showSiteEmbedCodeWithSSL = function(element, siteToken) {
-  var text = '';
-  switch (element.value) {
-  case 'no':
-    text += ' src="http://cdn.sublimevideo.net/js/' + siteToken + '.js">';
-    break;
-  case 'yes':
-    text += ' src="https://4076.voxcdn.com/js/' + siteToken + '.js">';
-    break;
-  case 'mixed':
-    text += '>document.write(unescape("%3Cscript src=\'" + ((\'https:\' == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/' + siteToken + '.js\' type=\'text/javascript\'%3E%3C/script%3E"));';
-    break;
+  var textarea = element.up().previous('textarea');
+  if (element.checked) {
+    textarea.value = textarea.value.gsub('http://cdn.sublimevideo.net', 'https://4076.voxcdn.com');
+  } else {
+    textarea.value = textarea.value.gsub('https://4076.voxcdn.com', 'http://cdn.sublimevideo.net');
   }
-  element.up().previous('textarea').value = '<script type="text/javascript"' + text + '</script>';
   return false;
+    
+  // var text = '';
+  // switch (element.value) {
+  // case 'no':
+  //   text += ' src="http://cdn.sublimevideo.net/js/' + siteToken + '.js">';
+  //   break;
+  // case 'yes':
+  //   text += ' src="https://4076.voxcdn.com/js/' + siteToken + '.js">';
+  //   break;
+  // case 'mixed':
+  //   text += '>document.write(unescape("%3Cscript src=\'" + ((\'https:\' == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/' + siteToken + '.js\' type=\'text/javascript\'%3E%3C/script%3E"));';
+  //   break;
+  // }
+  // element.up().previous('textarea').value = '<script type="text/javascript"' + text + '</script>';
+  // return false;
 };
 
 MySublimeVideo.showSiteUsage = function(siteId) {
