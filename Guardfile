@@ -19,11 +19,11 @@ group :frontend do
     watch(%r{^app/.+\.(erb|haml|hamlc|js|css|scss|coffee|eco|png|gif|jpg)})
   end
 
-  guard :jasmine, :server => :none, :jasmine_url => 'http://sublimevideo.dev/jasmine', :all_on_start => false do
-    watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
-    watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
-    watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
-  end
+  # guard :jasmine, :server => :none, :jasmine_url => 'http://sublimevideo.dev/jasmine', :all_on_start => false do
+  #   watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+  #   watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+  #   watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
+  # end
 
 end
 
