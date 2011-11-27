@@ -34,7 +34,7 @@
     :javascript
       try { Typekit.load(); } catch(e) { }
 
-  %body{ class: params[:page] ? h(params[:page]) : nil }
+  %body{ class: request.subdomain + (params[:page] ? h(" #{params[:page]}") : "") }
     %header
       .lights
         .shadow
@@ -45,11 +45,14 @@
                   %span= "SublimeVideo"
               = render "layouts/menu"
               = yield :header
+              = render "layouts/docs/header" if request.subdomain == 'docs'
     = yield :middle
     = render "layouts/flash", flash: flash if flash.present? && request.subdomain == 'my'
-    = render "layouts/docs/menu" if request.subdomain == 'docs'
     %section#content
-      .content_wrapper= yield
+      = render "layouts/docs/menu" if request.subdomain == 'docs'
+      .content_wrapper
+        = yield
+      .spacer
     = render "layouts/footer"
     = yield :bottom
 
