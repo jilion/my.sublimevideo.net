@@ -20,7 +20,7 @@ feature "faq" do
 
     current_url.should =~ %r(http://[^/]+/faq)
     # first line
-    page.should have_content("What are “video pageviews” and how are they counted?")
+    page.should have_content("What are “plays” and how are they counted?")
   end
 end
 
