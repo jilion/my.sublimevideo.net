@@ -10,7 +10,7 @@ document.observe "dom:loaded", ->
       SublimeVideo.showPopup(event.state.hidePopup)
     else if event.state? and event.state.showPopup?
       SublimeVideo.showPopup(event.state.showPopup)
-  
+
   if ($('browsers_box'))
     SublimeVideo.allBrowsers()
 
@@ -26,12 +26,16 @@ SublimeVideo.handleLoggedInAutoRedirection = ->
   else if path == '/help'
     document.location.href = "#{my_host}#{path}"
 
-SublimeVideo.showPopup = (name) ->
+SublimeVideo.showPopup = (name, successUrl = null) ->
+  failurePath ?= ''
+  successUrl ?= "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}/sites"
   if Cookie.get('l') is '1'
-    document.location.href = "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}/sites"
+    document.location.href = successUrl
   else if $("popup_#{name}")
     SublimeVideo.openSimplePopup("popup_#{name}")
     $("popup_#{name}").down('#user_email').focus()
+    $("user_#{name}").insert({ top: new Element("input", { name: "success_url", type: 'hidden', value: successUrl }) })
+
     if history && history.pushState
       history.pushState { showPopup: name }, '', document.location.href.replace(document.location.search, '') + "?p=#{name}"
 
@@ -108,7 +112,7 @@ class SimplePopupHandler
 
 SublimeVideo.allBrowsers = ->
   browsersBox = $('browsers_box')
-  
+
   if (Prototype.Browser.WebKit)
     if (navigator.userAgent.indexOf('Chrome') != -1)
       browsersBox.addClassName("chrome")

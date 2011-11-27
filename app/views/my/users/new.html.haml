@@ -1,7 +1,7 @@
 - if flash[:alert]
   %p.alert= flash[:alert]
 
-= form_for @user || User.new, as: :user, url: signup_url(subdomain: 'www'), html: { class: "main_form" } do |f|
+= form_for @user || User.new, as: :user, url: signup_url(subdomain: 'www'), html: { id: 'user_signup', class: "main_form" } do |f|
   .entry.email
     = f.label :email, "Email", class: "icon"
     = f.text_field :email, class: "text", placeholder: "Email", required: true, value: params[:user].try(:[], :email)

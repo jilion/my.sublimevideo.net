@@ -33,7 +33,7 @@ private
     unless cookies[:l] == '1'
       cookies[:l] = {
         value: '1',
-        expires: 1.year.from_now,
+        expires: 2.weeks.from_now,
         domain: :all,
         secure: Rails.env.production? || Rails.env.staging?
       }
