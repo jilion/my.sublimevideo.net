@@ -4,7 +4,7 @@ document.observe("dom:loaded", function() {
   SublimeVideo.playlistDemo = new PlaylistDemo("playlist");
 });
 
-if (sublimevideo) {
+if (typeof(sublimevideo) != "undefined") {
   sublimevideo.ready(function(){
     sublimevideo.onStart(function(sv){
       if (sv.element.id=="single_video" && !SublimeVideo.detectedMobile) {
@@ -37,6 +37,8 @@ SublimeVideo.updateModeBox = function(mode) {
 
 var PlaylistDemo = Class.create({
   initialize: function(interactiveWrapperId) {
+    if (!$(interactiveWrapperId)) return;
+    
     this.interactiveWrapperId = interactiveWrapperId;
     this.videosCount = $$("#" + this.interactiveWrapperId + " .video_wrap").size();
     
