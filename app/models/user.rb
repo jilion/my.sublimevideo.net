@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   end
 
   # Mail template
-  liquid_methods :email, :name
+  liquid_methods :email, :name, :plan_title
 
   attr_accessor :terms_and_conditions, :use, :current_password, :remote_ip
   attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
@@ -186,6 +186,10 @@ class User < ActiveRecord::Base
     support_level = sites.active.max { |a, b| a.plan.support_level <=> b.plan.support_level }.try(:plan).try(:support_level) || 0
 
     Plan::SUPPORT_LEVELS[support_level]
+  end
+
+  def plan_title
+    plan.try(:title)
   end
 
   def email_support?
