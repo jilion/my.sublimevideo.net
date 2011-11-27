@@ -11,7 +11,7 @@
 
   .right
     %ul.slides#features_slides
-      %li.always_up_to_date.active
+      %li.always_up_to_date.active{style: "z-index:2"}
         %h3= "Always Up-To-Date"
         = link_to (image_tag "www/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), page_path('features', anchor: 'always_up_to_date')
       %li.works_in_any_browsers
