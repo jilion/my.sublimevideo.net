@@ -1,10 +1,12 @@
 development:
   host: localhost
   database: sublimevideo_dev
+  preload_models: true
 
 test:
   host: localhost
   database: sublimevideo_test
+  preload_models: true
 
 staging:
   database: sublimevideo-staging
@@ -17,11 +19,16 @@ staging:
       - 27017
     - - sublimevideo.member2.mongolayer.com
       - 27017
-  max_retries_on_connection_failure: 3
+  preload_models: true
   logger: false
 
 production:
-<% if ENV['MONGOHQ_USERNAME'] %>
+<% if ARGV.join.include? 'assets:precompile' %>
+  # make rake asset:precompile work
+  preload_models: false
+  host: localhost
+  database: sublimevideo
+<% else %>
   database: sublimevideo
   username: <%= ENV['MONGOHQ_USERNAME'] %>
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
@@ -32,10 +39,6 @@ production:
       - 27017
     - - sublimevideo.member2.mongolayer.com
       - 27017
-  max_retries_on_connection_failure: 3
+  preload_models: true
   logger: false
-<% else %>
-  # make rake asset:precompile work
-  host: localhost
-  database: sublimevideo
 <% end %>

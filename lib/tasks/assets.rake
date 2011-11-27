@@ -8,6 +8,11 @@ namespace :assets do
         puts "Skipping connection to Mongo DB"
       end
     end
+    module ::Rails::Mongoid
+      def load_models(app)
+        puts "Skipping Mongoid models loading"
+      end
+    end
 
     pt.execute
   end

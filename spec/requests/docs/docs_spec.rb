@@ -5,8 +5,7 @@ feature "encode-videos-for-the-web" do
   it "should contain text" do
     go 'docs', 'encode-videos-for-the-web'
 
-    current_url.should =~ %r(http://[^/]+/encode-videos-for-the-web)
-
+    current_url.should eq "http://docs.sublimevideo.dev/encode-videos-for-the-web"
     # first line
     page.should have_content("A <video> element can link to multiple video files encoded in different formats")
     # last line
@@ -18,7 +17,7 @@ feature "faq" do
   it "should contain text" do
     go 'docs', 'faq'
 
-    current_url.should =~ %r(http://[^/]+/faq)
+    current_url.should eq "http://docs.sublimevideo.dev/faq"
     # first line
     page.should have_content("What are “plays” and how are they counted?")
   end
@@ -28,7 +27,7 @@ feature "javascript-api" do
   it "should contain text" do
     go 'docs', 'javascript-api'
 
-    current_url.should =~ %r(http://[^/]+/javascript-api/usage)
+    current_url.should eq "http://docs.sublimevideo.dev/javascript-api/usage"
     # title
     page.should have_content("Using the JavaScript API")
     page.should have_content("API Object")
@@ -40,7 +39,7 @@ feature "put-video-in-a-floating-lightbox" do
   it "should contain text" do
     go 'docs', 'put-video-in-a-floating-lightbox'
 
-    current_url.should =~ %r(http://[^/]+/put-video-in-a-floating-lightbox)
+    current_url.should eq "http://docs.sublimevideo.dev/put-video-in-a-floating-lightbox"
     # 1st paragraph: first line
     page.should have_content("SublimeVideo comes with integrated zooming capabilities to load and display videos in a floating “lightbox”.")
     # 1st paragraph: last line
@@ -52,7 +51,7 @@ feature "put-video-in-a-floating-lightbox" do
     # 2nd paragraph: first line
     page.should have_content("The first 3 lines represent the “clickable thumbnail”:")
     # 2nd paragraph: last line
-    page.should have_content("Line 5. It needs the zoom class (in addition to the sublime class)")
+    page.should have_content("It needs the zoom class (in addition to the sublime class)")
   end
 end
 
@@ -60,7 +59,7 @@ feature "quickstart-guide" do
   it "should contain text" do
     go 'docs', 'quickstart-guide'
 
-    current_url.should =~ %r(http://[^/]+/quickstart-guide)
+    current_url.should eq "http://docs.sublimevideo.dev/quickstart-guide"
     # 1st paragraph: first line
     page.should have_content("Step 1: Add your site")
     # 1st paragraph: last line
@@ -78,7 +77,7 @@ feature "supported-browsers-and-platforms" do
   it "should contain text" do
     go 'docs', 'supported-browsers-and-platforms'
 
-    current_url.should =~ %r(http://[^/]+/supported-browsers-and-platforms)
+    current_url.should eq "http://docs.sublimevideo.dev/supported-browsers-and-platforms"
     # first line
     page.should have_css("table#supported_browsers")
     # last line
@@ -90,7 +89,7 @@ feature "troubleshooting" do
   it "should contain text" do
     go 'docs', 'troubleshooting'
 
-    current_url.should =~ %r(http://[^/]+/troubleshooting)
+    current_url.should eq "http://docs.sublimevideo.dev/troubleshooting"
     # 1st paragraph: first line
     page.should have_content("Videos don’t start playing")
     # 1st paragraph: last line
@@ -102,7 +101,7 @@ feature "releases" do
   it "should be accessible" do
     go 'docs', 'releases'
 
-    current_url.should =~ %r(http://[^/]+/releases)
+    current_url.should eq "http://docs.sublimevideo.dev/releases"
   end
 end
 
@@ -110,7 +109,7 @@ feature "write-proper-video-elements" do
   it "should contain text" do
     go 'docs', 'write-proper-video-elements'
 
-    current_url.should =~ %r(http://[^/]+/write-proper-video-elements)
+    current_url.should eq "http://docs.sublimevideo.dev/write-proper-video-elements"
     # 1st paragraph: first line
     page.should have_content("The <video> tag is the core element used to embed video clips in HTML5.")
     # 1st paragraph: last line

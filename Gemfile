@@ -22,7 +22,7 @@ gem 'haml',                  '~> 3.1.3'
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              git: 'git://github.com/amatsuda/kaminari.git'
 gem 'liquid',                '~> 2.2.2'
-gem 'RedCloth',              '~> 4.2.8'
+gem 'RedCloth',              '~> 4.2.9'
 
 # Auth / invitations
 gem 'devise',                '~> 1.5.1'

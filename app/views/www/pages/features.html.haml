@@ -1,4 +1,4 @@
-= content_for :head_before, javascript_include_tag((request.protocol =~ /^https/ ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
+= content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
 
 = content_for :title, "Features"
 
@@ -25,16 +25,52 @@
       = image_tag "www/features/lightbox_thumb.jpg", alt: "Integrated Lightbox"
       %span.overlay
       %span.magnifying_glass
-    %video.sublime.zoom{ width: "544", height: "306", poster: image_path("www/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none", style: 'display:none' }
-      %source{ src: "http://zeno.name/@/videos/midnight_sun_sv_edit1_360p.mp4" }/
-      %source{ src: "http://zeno.name/@/videos/midnight_sun_sv_edit1_720p.mp4", "data-quality" => "hd" }/
-      %source{ src: "http://zeno.name/@/videos/midnight_sun_sv_edit1_360p.webm" }/
-      %source{ src: "http://zeno.name/@/videos/midnight_sun_sv_edit1_720p.webm", "data-quality" => "hd" }/
+    %video.sublime.zoom{ width: "768", height: "432", poster: image_path("www/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none", style: 'display:none' }
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
+      -#%source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_450p.mp4" }/
+      -#%source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_450p.webm" }/
     %h3.title= "Integrated Lightbox"
     %p= raw "Quickly and easily give your audience another great way to view your videos with SublimeVideo's integrated lightbox."
     .spacer
-  %section.playlist.f
-    .box
+  %section#playlist.playlist.f
+    -#.box
+    -#.video_wrap.active
+    -#  %video#video1.sublime{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun1_800.jpg"), preload: "none" }
+    -#    %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4" }/
+    -#    %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_270p.mp4" }/
+    -#    %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm" }/
+    .video_wrap.active
+      %video#video2.sublime{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun2_800.jpg"), preload: "none" }
+        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_360p.mp4" }/
+        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_270p.mp4" }/
+        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_360p.webm" }/
+    .video_wrap
+      %video#video3{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun3_800.jpg"), preload: "none" }
+        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_360p.mp4" }/
+        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_270p.mp4" }/
+        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_360p.webm" }/
+    .video_wrap
+      %video#video4{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun4_800.jpg"), preload: "none" }
+        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_360p.mp4" }/
+        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_270p.mp4" }/
+        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_360p.webm" }/
+    %ul
+      -#%li#thumbnail_video1
+      -#  %a{ href: "" }
+      -#    = image_tag "www/demo/midnight_sun1_176.jpg", alt: "", width: "176", height: "99"
+      %li#thumbnail_video2
+        %a{ href: "" }
+          = image_tag("www/demo/midnight_sun2_176.jpg", alt: "", width: "176", height: "99")
+      %li#thumbnail_video3
+        %a{ href: "" }
+          = image_tag("www/demo/midnight_sun3_176.jpg", alt: "", width: "176", height: "99")
+      %li#thumbnail_video4
+        %a{ href: "" }
+          = image_tag("www/demo/midnight_sun4_176.jpg", alt: "", width: "176", height: "99")
+    .spacer
     %h3.title= "Playlist Support"
     %p= "Playlist support using our powerful API makes it possible for you to link multiple videos or chapters to the same player."
     .spacer

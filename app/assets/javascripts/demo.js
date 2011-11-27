@@ -4,18 +4,23 @@ document.observe("dom:loaded", function() {
   SublimeVideo.playlistDemo = new PlaylistDemo("playlist");
 });
 
-sublimevideo.ready(function(){
-  sublimevideo.onStart(function(sv){
-    if (sv.element.id=="single_video" && !SublimeVideo.detectedMobile) {
-      SublimeVideo.updateModeBox(sv.mode);
-    }
+if (typeof(sublimevideo) != "undefined") {
+  sublimevideo.ready(function(){
+    sublimevideo.onStart(function(sv){
+      if (sv.element.id=="single_video" && !SublimeVideo.detectedMobile) {
+        SublimeVideo.updateModeBox(sv.mode);
+      }
+    });
+    sublimevideo.onEnd(function(sv){
+      if (sv.element.id.match(/video[1-4]/)) {
+        SublimeVideo.playlistDemo.handleAutoNext(sv.element.id);
+      }
+      else {
+        sublimevideo.stop();
+      }
+    });
   });
-  sublimevideo.onEnd(function(sv){
-    if (sv.element.id.match(/video[1-4]/)) {
-      SublimeVideo.playlistDemo.handleAutoNext(sv.element.id);
-    }
-  });
-});
+}
 
 var ua = navigator.userAgent;
 SublimeVideo.detectedMobile = ua.indexOf("Mobile")!=-1 ||
@@ -32,6 +37,8 @@ SublimeVideo.updateModeBox = function(mode) {
 
 var PlaylistDemo = Class.create({
   initialize: function(interactiveWrapperId) {
+    if (!$(interactiveWrapperId)) return;
+    
     this.interactiveWrapperId = interactiveWrapperId;
     this.videosCount = $$("#" + this.interactiveWrapperId + " .video_wrap").size();
     
