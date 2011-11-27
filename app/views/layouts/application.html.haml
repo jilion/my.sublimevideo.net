@@ -24,17 +24,18 @@
           == body {background:#fff;display:none;}
     /[if lte IE 9]
       = javascript_include_tag("#{request.protocol}html5shiv.googlecode.com/svn/trunk/html5.js")
+    = yield :head_before
     - if %w[site_stats].include?(controller_name)
       = javascript_include_tag 'stats'
     - else
       = javascript_include_tag(request.subdomain)
     = yield :head
-
+    
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
     :javascript
       try { Typekit.load(); } catch(e) { }
 
-  %body{ class: params[:page] ? h(params[:page]) : nil }
+  %body{ class: request.subdomain + (params[:page] ? h(" #{params[:page]}") : "") }
     %header
       .lights
         .shadow
@@ -45,11 +46,14 @@
                   %span= "SublimeVideo"
               = render "layouts/menu"
               = yield :header
+              = render "layouts/docs/header" if request.subdomain == 'docs'
     = yield :middle
     = render "layouts/flash", flash: flash if flash.present? && request.subdomain == 'my'
-    = render "layouts/docs/menu" if request.subdomain == 'docs'
     %section#content
-      .content_wrapper= yield
+      = render "layouts/docs/menu" if request.subdomain == 'docs'
+      .content_wrapper
+        = yield
+      .spacer
     = render "layouts/footer"
     = yield :bottom
 

@@ -5,7 +5,7 @@
 
   h3. How can I customize the appearance of the initial play button?
 
-  There is currently no built-in way of customizing the appearance of the initial play button. However, there is a pretty straightforward solution (using the JavaScript API) "documented here":/customizing-the-initial-play-button.
+  There is currently no built-in way of customizing the appearance of the initial play button. However, there is a pretty straightforward solution – using the JavaScript API – "documented here":/customizing-the-initial-play-button.
 
   h3. I have my video hidden, but it still shows up when the page loads, why?
 
@@ -15,26 +15,23 @@
 
   SublimeVideo currently only supports videos delivered through HTTP. This is because HTTP is currently the only protocol supported by HTML5 Video consistently on all browsers.
 
-  RTMP support is something we plan to add in future, but it means our player will be forced into Flash mode, because HTML5 doesn't (and will probably never) support RTMP.
+  RTMP support is something we plan to add in future, but it means our player will be forced into Flash mode, because HTML5 doesn't – and will probably never – support RTMP.
 
-  h3. My site uses the HTTPS protocol, how can I embed SublimeVideo in it?
+  h3. My site is secured with SSL (https://), how can I use SublimeVideo in it?
 
-  SublimeVideo can be served via HTTPS, it requires to change the embed code you include in your pages. This is "documented here":/using-sublimevideo-on-ssl-sites.
+  SublimeVideo can be served via SSL for secure pages, this requires you to change your embed code. "Learn more":/using-sublimevideo-on-ssl-sites.
 
   <br />
 
   h2. Service FAQ
 
-  h3. What are "video pageviews" and how are they counted?
+  h3. What are "plays" and how are they counted?
 
-  Video pageviews represent the number of times SublimeVideo player's code has been loaded.
-  If you add the one-line player’s embed code to a page with some @<video>@ elements in it, the video pageviews count will be incremented every time the page is loaded/visited.
-  The video pageviews count is incremented by 1 even if you have multiple videos on the page (because the player's code only needs to be downloaded once regardless of the number of videos you have on the page).
-  Video pageviews are not counted if you don’t have any videos on the page.
+  Video "plays" represent the number of videos using SublimeVideo that have been started.
 
   h3. Can I test SublimeVideo on _localhost_ or another development domain?
 
-  Sure. By default SublimeVideo always works on _localhost_ and _127.0.0.1_. If you want to use a more specific development domain, please edit your "site settings":/site-settings. You can test the player on your local development domains with no limit: video pageviews will not be counted in this case.
+  Sure. By default SublimeVideo always works on _localhost_ and _127.0.0.1_. If you want to use a more specific development domain, please edit your "site settings":/site-settings. You can test the player on your local development domains with no limit: video plays will not be counted in this case.
 
   h3. I have multiple subdomains of my main domain, should I buy a separate plan for each one of them?
 

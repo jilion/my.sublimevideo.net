@@ -10,10 +10,11 @@
           %span.icon= truncate(current_user.name, length: 45)
   - else
     %ul
-      - [:features, :plans, :demo, ['customer-showcases', { link_text: "Showcases" }], [:help, { link_text: "Help" }], :blog].each do |r|
+      - [:features, :plans, :demo, ['customer-showcases', { link_text: "Showcases" }], [:help, { link_text: "Help", link_options: { class: 'my_link' } }]].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
         - opts = r.is_a?(Array) ? r[1] : { link_text: name.to_s.titleize }
         - subdomain = [:help].include?(name) && request.subdomain == 'my' ?  'my' : 'www'
         = activable_menu_item(:li, page_url(name, { subdomain: subdomain }), opts.merge(onclick: "SublimeVideo.makeSticky(this, '#menu')"))
+      = activable_menu_item(:li, "http://blog.jilion.com/tags/sublimevideo", link_text: "Blog", link_options: { onclick: "window.open(this); return false" })
       %li= link_to "Login", root_url(subdomain: 'www', p: 'login'), onclick: params[:page] == 'demo' ? nil : "return SublimeVideo.showPopup('login')"
       %li.signup= link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: params[:page] == 'demo' ? nil : "return SublimeVideo.showPopup('signup')"

@@ -180,7 +180,7 @@ describe OneTime::Site do
     it "planet year => plus year" do
       @site_planet_y.reload.plan.should eq @plus_y_plan
 
-      @site_planet_y.user.balance.should eq (((19900 * (1.0 - 0.2) / 100).to_i * 100)*1.08).to_i - (((9900 * (1.0 - 0.2) / 100).to_i * 100)*1.08).to_i # include vat
+      @site_planet_y.user.balance.should eq 19900 - 9900
     end
 
     it "star month => premium month" do
@@ -226,7 +226,7 @@ describe OneTime::Site do
 
     it "galaxy year => premium year" do
       @site_galaxy_y.reload.plan.should eq @premium_y_plan
-      @site_galaxy_y.user.balance.should eq ((99900*1.08) - (49900*1.08)).to_i
+      @site_galaxy_y.user.balance.should eq 99900 - 49900
     end
 
     it "clears next cycle plan if it's the same" do

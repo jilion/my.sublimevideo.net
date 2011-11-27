@@ -3,7 +3,7 @@ en:
     am: AM # fundamental !!!!!!!!
     pm: PM # fundamental !!!!!!!!
     formats:
-      tweet: "%l:%M %p %b %{ordinal_day} %Y"
+      tweet: "%b %{ordinal_day} %Y"
       date: "%B %e, %Y"
       named_date: "%a, %e %b %Y"
       minutes: "%d %b %Y, %R"

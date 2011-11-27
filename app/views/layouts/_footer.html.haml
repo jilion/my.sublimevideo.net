@@ -5,7 +5,7 @@
         %h4= "Product"
         %ul
           - if request.subdomain != 'my'
-            %li= link_to "Home", root_url(subdomain: 'www')
+            %li.not_logged_in_only= link_to "Home", root_url(subdomain: 'www')
           %li= link_to "Features", page_url('features', subdomain: 'www')
           %li= link_to "Demo", page_url('demo', subdomain: 'www')
           %li= link_to "Plans & Pricing", page_url('plans', subdomain: 'www')
@@ -14,13 +14,13 @@
         %h4= "Community & Support"
         %ul
           %li= link_to "Customer Showcases", page_url('customer-showcases', subdomain: 'www')
-          %li= link_to "Help", page_url('help', subdomain: request.subdomain == 'my' ?  'my' : 'www')
+          %li= link_to "Help", page_url('help', subdomain: request.subdomain == 'my' ?  'my' : 'www'), class: 'my_link'
           %li= link_to "Documentation", root_url(subdomain: 'docs')
-          %li= link_to "Community Forum", "http://getsatisfaction.com/sublimevideo"
+          %li= link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", onclick: "window.open(this); return false"
       .col
         %h4= "Stay Connected"
         %ul
-          %li= link_to "Blog", page_url('blog', subdomain: 'www')
+          %li= link_to "Blog", "http://blog.jilion.com/tags/sublimevideo", onclick: "window.open(this); return false"
           %li= link_to "Twitter", ""
           %li= link_to "Contact", page_url('contact', subdomain: 'www')
           %li= link_to "About", page_url('about', subdomain: 'www')

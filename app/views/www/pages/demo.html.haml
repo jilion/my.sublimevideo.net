@@ -1,32 +1,201 @@
+= content_for :head_before, javascript_include_tag((request.protocol =~ /^https/ ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
+
 = content_for :title, "Demo"
-= content_for :head do
-  = javascript_include_tag((Rails.env.production? || Rails.env.staging? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
-  = javascript_include_tag("/javascripts/demo.js");
 
 = content_for :header do
   %h2= "Player Demo"
 
+%style{ :type => "text/css", :media => "screen" }
+  == #demo {
+  ==   padding:20px 0;
+  ==   width:1000px;
+  ==   margin:0 auto;
+  == }
+  == 
+  == #demo h2.headline {
+  ==   padding:40px 0 0;
+  ==   float:left;
+  ==   font-size:40px;
+  ==   font-weight:600;
+  ==   text-shadow:rgba(255,255,255,0.5) 0 1px 0;
+  == }
+  == 
+  == #demo .video_wrap {
+  ==   background:#000;
+  ==   margin-bottom:20px;
+  ==   -webkit-box-shadow:rgba(0,0,0,0.4) 0 4px 15px;
+  ==   -moz-box-shadow:rgba(0,0,0,0.4) 0 4px 15px;
+  ==   box-shadow:rgba(0,0,0,0.4) 0 4px 15px;
+  == }
+  == 
+  == #demo section {
+  ==   padding:40px 0;
+  ==   width:800px;
+  ==   margin:0 auto;
+  ==   border-bottom: 1px solid #b6bac2;
+  ==   -moz-box-shadow: rgba(255,255,255,0.5) 0 1px 0;
+  ==   -webkit-box-shadow: rgba(255,255,255,0.5) 0 1px 0;
+  ==   box-shadow: rgba(255,255,255,0.5) 0 1px 0;
+  == }
+  == 
+  == #demo section h3 {
+  ==   color:#1c263b;
+  ==   font-size:26px;
+  ==   font-weight:600;
+  ==   padding-top:20px;
+  == }
+  == 
+  == #demo section p.desc {
+  ==   line-height:25px;
+  ==   font-size:15px;
+  ==   padding:10px 0;
+  == }
+  ==
+  == /* ============ */
+  == /* = Mode box = */
+  == /* ============ */
+  == 
+  == #mode_switcher {
+  ==   float:right;
+  ==   margin-top:20px;
+  ==   display:none;
+  ==   text-align:right;
+  == }
+  == 
+  == #mode_switcher.active {display:block}
+  == 
+  == #mode_switcher span {display:none}
+  == 
+  == #mode_switcher.html5 span.html5, #mode_switcher.flash span.flash {display:inline}
+  == 
+  == #mode_switcher strong {
+  ==   color:#1c263b;
+  == }
+  == 
+  == /* =============== */
+  == /* = Single Demo = */
+  == /* =============== */
+  == 
+  == #single .video_wrap {
+  ==   width:544px;
+  ==   height:306px;
+  ==   margin:0 0 20px;
+  == }
+  ==
+  == /* ============= */
+  == /* = Zoom Demo = */
+  == /* ============= */
+  == 
+  == #zoom ul {
+  ==   list-style-type:none;
+  ==   width:474px;
+  == }
+  == 
+  == #zoom li {
+  ==   padding:0 30px 30px 0;
+  == }
+  == 
+  == #zoom li a {
+  ==   display:block;
+  ==   width:192px;
+  ==   height:108px;
+  ==   background:#000;
+  ==   position:relative;
+  ==   -webkit-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+  ==   -moz-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+  ==   box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+  == }
+  == 
+  == #zoom li a span {
+  ==   display:block;
+  ==   width:100%;
+  ==   height:100%;
+  ==   position:absolute;
+  ==   top:0;
+  ==   left:0;
+  ==   background:url(<%= asset_data_uri 'main/demo/zoom_icon.png' %>) no-repeat bottom right;
+  ==   opacity:0.3;
+  ==   -o-transition:opacity 0.25s;
+  ==   -moz-transition:opacity 0.25s;
+  ==   -webkit-transition:opacity 0.25s;
+  ==   transition:opacity 0.25s;
+  == }
+  == 
+  == #zoom li a:hover span {opacity:1}
+  == 
+  == #zoom .section_text {
+  ==   width:380px;
+  ==   float:right;
+  == }
+  == 
+  == #zoom .section_text h3 {
+  ==   padding-top:0;
+  == }
+  == 
+  == /* ================= */
+  == /* = Playlist Demo = */
+  == /* ================= */
+  == 
+  == #playlist .video_wrap {
+  ==   width:768px;
+  ==   height:432px;
+  ==   display:none;
+  == }
+  == 
+  == #playlist .video_wrap.active {
+  ==   display:block;
+  == }
+  == 
+  == #playlist ul {
+  ==   list-style-type:none;
+  == }
+  == 
+  == #playlist li {
+  ==   display:block;
+  ==   width:176px;
+  ==   height:99px;
+  ==   margin-right:16px;
+  ==   margin-bottom:16px;
+  ==   padding:5px;
+  ==   background:#fff;
+  ==   -webkit-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+  ==   -moz-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+  ==   box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+  ==   -moz-border-radius:4px;
+  ==   -webkit-border-radius:4px;
+  ==   border-radius:4px;
+  == }
+  == 
+  == #playlist li.active {
+  ==   background:#000;
+  == }
+  == 
+  == #playlist li a {
+  ==   display:block;
+  == }
+  == 
+  == #playlist li img {
+  ==   opacity:0.7;
+  ==   -o-transition:opacity 0.25s;
+  ==   -moz-transition:opacity 0.25s;
+  ==   -webkit-transition:opacity 0.25s;
+  ==   transition:opacity 0.25s;
+  == }
+  == 
+  == #playlist li a:hover img, #playlist li.active img {
+  ==   opacity:1;
+  == }
+
+
 %section#content
   %section#demo
-    %nav
-      %ul
-        %li#nav_single
-          %a{ href: "#single" }= "Single"
-        %li#nav_zoom
-          %a{ href: "#zoom" }= "Zoom"
-        %li#nav_interactive
-          %a{ href: "#interactive" }= "Interactive"
-        %li#nav_features
-          %a{ href: "#features" }= "Features"
-
-    .spacer
     %section#single
       .video_wrap
-        %video#single_video.sublime{ width: "800", height: "340", poster: image_path("demo/dartmoor.jpg"), preload: "none" }
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.mp4" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.webm" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }/
+        %video#single_video.sublime{ width: "544", height: "306", poster: image_path("www/demo/midnight_sun_800.jpg"), preload: "none" }
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
       #mode_switcher
         = "SublimeVideo mode:"
         %span.html5
@@ -43,107 +212,102 @@
     %section#zoom
       %ul
         %li
-          %a.sublime{ href: "http://medias.jilion.com/sublimevideo/dartmoor1-mobile.mp4" }
-            = image_tag("demo/dartmoor1_800.jpg", alt: "", width: "180", height: "76")
+          %a.sublime{ href: "" }
+            = image_tag("www/demo/midnight_sun1_800.jpg", alt: "", width: "192", height: "108")
             %span.icon
-          %video.sublime.zoom{ style: "display:none", width: "700", height: "294", poster: image_path("demo/dartmoor1_800.jpg"), preload: "none" }
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1_800.mp4" }/
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1-mobile.mp4" }/
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1_800.ogv" }/
+          %video.sublime.zoom{ style: "display:none", width: "704", height: "396", poster: image_path("www/demo/midnight_sun1_800.jpg"), preload: "none" }
+            %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.mp4" }/
+            %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.webm" }/
         %li
-          %a.sublime{ href: "http://medias.jilion.com/sublimevideo/dartmoor2-mobile.mp4" }
-            = image_tag("demo/dartmoor2_800.jpg", alt: "", width: "180", height: "76")
+          %a.sublime{ href: "" }
+            = image_tag("www/demo/midnight_sun2_800.jpg", alt: "", width: "192", height: "108")
             %span.icon
-          %video.sublime.zoom{ style: "display:none", width: "700", height: "294", poster: "demo/dartmoor2_800.jpg", preload: "none" }
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2_800.mp4" }/
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2-mobile.mp4" }/
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2_800.ogv" }/
+          %video.sublime.zoom{ style: "display:none", width: "704", height: "396", poster: image_path("www/demo/midnight_sun2_800.jpg"), preload: "none" }
+            %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.mp4" }/
+            %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.webm" }/
         %li
-          %a.sublime{ href: "http://medias.jilion.com/sublimevideo/dartmoor3-mobile.mp4" }
-            = image_tag("demo/dartmoor3_800.jpg", alt: "", width: "180", height: "76")
+          %a.sublime{ href: "" }
+            = image_tag("www/demo/midnight_sun3_800.jpg", alt: "", width: "192", height: "108")
             %span.icon
-          %video.sublime.zoom{ style: "display:none", width: "700", height: "294", poster: image_path("demo/dartmoor3_800.jpg"), preload: "none" }
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3_800.mp4" }/
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3-mobile.mp4" }/
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3_800.ogv" }/
+          %video.sublime.zoom{ style: "display:none", width: "704", height: "396", poster: image_path("www/demo/midnight_sun3_800.jpg"), preload: "none" }
+            %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.mp4" }/
+            %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.webm" }/
         %li
-          %a.sublime{ href: "http://medias.jilion.com/sublimevideo/dartmoor4-mobile.mp4" }
-            = image_tag("demo/dartmoor4_800.jpg", alt: "", width: "180", height: "76")
+          %a.sublime{ href: "" }
+            = image_tag("www/demo/midnight_sun4_800.jpg", alt: "", width: "192", height: "108")
             %span.icon
-          %video.sublime.zoom{ style: "display:none", width: "700", height: "294", poster: image_path("demo/dartmoor4_800.jpg"), preload: "none" }
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4_800.mp4" }/
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4-mobile.mp4" }/
-            %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4_800.ogv" }/
+          %video.sublime.zoom{ style: "display:none", width: "704", height: "396", poster: image_path("www/demo/midnight_sun4_800.jpg"), preload: "none" }
+            %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.mp4" }/
+            %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.webm" }/
 
       .section_text
-        %h3= "Zoomable thumbnails"
+        %h3= "Integrated lightbox"
         :textile
-          p(desc). Here is a demo showing SublimeVideo  integrated zooming capabilities to display videos in a floating player. It offers the easiest and best possible "lightbox" integration for your videos.
+          p(desc). Here is a demo showing SublimeVideo integrated lightbox to display videos in a floating player. It offers the easiest and best possible lightbox integration for your videos.
       .spacer
-    %section#interactive
+    %section#playlist
       .video_wrap.active
-        %video#video1.sublime{ width: "800", height: "336", poster: image_path("demo/dartmoor1_800.jpg"), preload: "none" }
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1_800.mp4" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1-mobile.mp4" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor1_800.ogv" }/
+        %video#video1.sublime{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun1_800.jpg"), preload: "none" }
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.mp4" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_270p.mp4" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.webm" }/
       .video_wrap
-        %video#video2{ width: "800", height: "336", poster: image_path("demo/dartmoor2_800.jpg"), preload: "none" }
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2_800.mp4" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2-mobile.mp4" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor2_800.ogv" }/
+        %video#video2{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun2_800.jpg"), preload: "none" }
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.mp4" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_270p.mp4" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.webm" }/
       .video_wrap
-        %video#video3{ width: "800", height: "336", poster: image_path("demo/dartmoor3_800.jpg"), preload: "none" }
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3_800.mp4" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3-mobile.mp4" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor3_800.ogv" }/
+        %video#video3{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun3_800.jpg"), preload: "none" }
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.mp4" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_270p.mp4" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.webm" }/
       .video_wrap
-        %video#video4{ width: "800", height: "336", poster: image_path("demo/dartmoor4_800.jpg"), preload: "none" }
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4_800.mp4" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4-mobile.mp4" }/
-          %source{ src: "http://medias.jilion.com/sublimevideo/dartmoor4_800.ogv" }/
+        %video#video4{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun4_800.jpg"), preload: "none" }
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.mp4" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_270p.mp4" }/
+          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.webm" }/
       %ul
-        %li#thumb_video1
+        %li#thumbnail_video1
           %a{ href: "" }
-            = image_tag("demo/dartmoor1_178.jpg", alt: "", width: "178", height: "76")
-        %li#thumb_video2
+            = image_tag "www/demo/midnight_sun1_176.jpg", alt: "", width: "176", height: "99"
+        %li#thumbnail_video2
           %a{ href: "" }
-            = image_tag("demo/dartmoor2_178.jpg", alt: "", width: "178", height: "76")
-        %li#thumb_video3
+            = image_tag("www/demo/midnight_sun2_176.jpg", alt: "", width: "176", height: "99")
+        %li#thumbnail_video3
           %a{ href: "" }
-            = image_tag("demo/dartmoor3_178.jpg", alt: "", width: "178", height: "76")
-        %li#thumb_video4
+            = image_tag("www/demo/midnight_sun3_176.jpg", alt: "", width: "176", height: "99")
+        %li#thumbnail_video4
           %a{ href: "" }
-            = image_tag("demo/dartmoor4_178.jpg", alt: "", width: "178", height: "76")
+            = image_tag("www/demo/midnight_sun4_176.jpg", alt: "", width: "176", height: "99")
       .spacer
-      %h3= "Interactive thumbnails"
-      %p.desc= "SublimeVideo Player offers a simple yet powerful JavaScript API that allows all kinds of different integrations in your page. Here are 4 different videos with their clickable thumbnail."
-      -#%p.desc= "SublimeVideo Player offers a simple yet powerful JavaScript API that allows all kinds of different integrations in your page. Here are 4 different videos with their clickable thumbnail; when a video finishes playing, the next one is automatically started."
+      %h3= "Video Playlist"
+      %p.desc
+        =raw "SublimeVideo Player offers a simple yet powerful #{link_to("JavaScript API", "http://docs.sublimevideo.net/javascript-api/")} that allows all kinds of different integrations in your page. Here are 4 different videos with their clickable thumbnail: when a video finishes playing, the next one in the playlist is automatically started."
     %section#features
       %h3= "UI features"
       %ul
         %li
           %strong= "Seek ahead:"
-          =raw "jump anywhere in the video and it will start buffering from that point (Flash mode requires streaming server)"
+          =raw "jump anywhere in the video and it will start buffering from that point"
         %li
           %strong= "Uniform UI across all browsers"
-        %li
-          %strong= "Volume controls:"
-          =raw "saving audio level for each site (cookie-less HTML5/Flash local storage)"
         %li
           %strong= "Time display:"
           =raw "mouse over elapsed time to view remaining time with click to stick"
         %li
+          %strong= "Volume controls:"
+          =raw "saving audio level for each site (cookie-less HTML5/Flash local storage)"
+        %li
           %strong= "Full-window mode:"
           %ul
             %li= "More advanced controls on a draggable pane"
-            %li= "Sleek zoom-in/out transitions"
             %li= "Live-resizing (when resizing the browser window)"
             %li= "Double-click video to enter full-window"
             %li= "Press spacebar to play/pause and Esc to exit full-window"
         %li
           %strong= "Full-screen mode:"
-          = raw "hold down Command (Mac) or Ctrl (Windows/Linux) while entering full-window. Currently only supported in #{link_to("Safari 5", "http://www.apple.com/safari")} and in the Flash version of the player."
+          = raw "hold down Command (Mac) or Ctrl (Windows/Linux) while entering full-window. Currently requires #{link_to("Safari 5", "http://www.apple.com/safari")}, #{link_to("Chrome 15", "http://www.google.com/chrome")}, #{link_to("Firefox 10", "http://www.mozilla.org/firefox")} or the Flash version of the player."
     %section#credits
       :textile
-        p(desc). Video Credits: _Dartmoor_ by "James Watson":http://james-watson.net (Desktop: HD 720p. iPhone/iPad Wi-Fi: 640x272)
+        p(desc). Credits: Video by *Joe Capra* - "http://scientifantastic.com":http://scientifantastic.com
 

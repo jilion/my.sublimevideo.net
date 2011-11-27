@@ -4,14 +4,14 @@
 
   .video_wrap
     %video.sublime{ width: "544", height: "306", poster: image_path("www/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none" }
-      %source{ src: "http://zeno.name/@/videos/midnight_sun_sv_edit1_360p.mp4" }/
-      %source{ src: "http://zeno.name/@/videos/midnight_sun_sv_edit1_720p.mp4", "data-quality" => "hd" }/
-      %source{ src: "http://zeno.name/@/videos/midnight_sun_sv_edit1_360p.webm" }/
-      %source{ src: "http://zeno.name/@/videos/midnight_sun_sv_edit1_720p.webm", "data-quality" => "hd" }/
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
 
   .right
     %ul.slides#features_slides
-      %li.always_up_to_date.active
+      %li.always_up_to_date.active{style: "z-index:2"}
         %h3= "Always Up-To-Date"
         = link_to (image_tag "www/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), page_path('features', anchor: 'always_up_to_date')
       %li.works_in_any_browsers

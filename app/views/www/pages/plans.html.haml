@@ -120,7 +120,7 @@
           .sign_up_wrap
             = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
   .spacer
-  #need_more= raw "Need a custom integration with your site or other enterprise-class requirements? Please #{mail_to t('mailer.sales.email_full'), "contact us"}."
+  #need_more= raw "Need a custom integration with your site or have other enterprise-class requirements? Please #{mail_to t('mailer.sales.email_full'), "contact us"}."
 
 .logos_banner
   %h4.custom_break= "They use SublimeVideo"
@@ -154,7 +154,7 @@
       %p= "Absolutely. You can upgrade, downgrade or change monthly and yearly billing cycles at any time. In case of a downgrade or a change from a yearly to monthly cycle, the change will come into effect at the end of the current plan's cycle."
     .box
       %h4= "Forum & Support"
-      %p= raw "All users have access to our extensive documentation and community forum. Additionally, we offer dedicated email support to customers of our paid plans. Customers of our Premium plan also benefit from VIP priority email support. Find out more on the #{link_to "help page", page_path('help')}."
+      %p= raw "All users have access to our extensive documentation and community forum. Additionally, we offer dedicated email support to customers of our paid plans. Customers of our Premium plan also benefit from VIP priority email support. Find out more on the #{link_to "help page", page_path('help'), class: 'my_link'}."
     .box
       %h4= "What happens if I exceed my monthly limit?"
       %p= "All paid plans include Peak Insurance, a flexible feature that allows your site's videos or video embeds to exceed the monthly limit of video plays in the event of a temporary burst of traffic."

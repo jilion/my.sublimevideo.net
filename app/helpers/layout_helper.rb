@@ -65,12 +65,12 @@ module LayoutHelper
   end
 
   def activable_menu_item(tag, url, options = {})
-    options.reverse_merge!(urls: [url], link_text: url.to_s.titleize)
+    options.reverse_merge!(urls: [url], link_text: url.to_s.titleize, link_options: {})
 
     link = url.to_s
 
     activable_content_tag(tag, options) do
-      block_given? ? link_to(link) { yield } : link_to(options[:link_text], link)
+      block_given? ? link_to(link, options[:link_options]) { yield } : link_to(options[:link_text], link, options[:link_options])
     end
   end
 

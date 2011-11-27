@@ -339,7 +339,7 @@ body {
   height:320px;
 }
 
-.features header h2 {
+.features header h2, .docs header h2 {
   text-align:left;
   font-size:44px;
   padding:38px 0 15px;
@@ -892,7 +892,8 @@ body {
 /* = Help = */
 /* ======== */
 
-.help header, .help header .shadow, .help header .lights {
+.help header, .help header .shadow, .help header .lights, 
+.customer-showcases header, .customer-showcases header .shadow, .customer-showcases header .lights {
   height:268px;
 }
 
@@ -1009,6 +1010,208 @@ body {
 #gsfn_search_results li {
   padding:10px;
   margin:5px 0;
+}
+
+/* ====================== */
+/* = Customer Showcases = */
+/* ====================== */
+
+.customer-showcases h2 {
+  padding-bottom:10px;
+}
+
+.customer-showcases header p.sub {
+  text-align:center;
+  font-size:33px;
+}
+
+.customer-showcases header p.sub a {
+  color:#cee6ff;
+  padding-right:30px;
+  background:url(<%= asset_data_uri "www/showcases/header_link_arrow.png" %>) no-repeat right 10px;
+}
+
+.customer-showcases #content {
+  width:960px;
+  margin:0 auto;
+}
+
+.customer-showcases section.showcases {
+  width:560px;
+  float:left;
+  margin-right:70px;
+}
+
+.customer-showcases section.showcases ul.quotes {
+  list-style-type:none;
+}
+
+.customer-showcases section.showcases li {
+  padding:50px 0 70px;
+  background:url(<%= asset_data_uri "www/showcases/showcase_breakline.png" %>) no-repeat center bottom;
+  position:relative;
+}
+
+.customer-showcases section.showcases li h2.title a {
+  font-size:38px;
+  font-weight:600;
+  color:#003165;
+}
+
+.customer-showcases section.showcases li a.read_showcase {
+  position:absolute;
+  top:66px;
+  right:0;
+  color:#003165;
+  padding-bottom:5px;
+  font-size:16px;
+  font-weight:600;
+  padding-right:22px;
+  background:url(<%= asset_data_uri "www/showcases/showcase_arrow.png" %>) no-repeat right 3px;
+}
+
+.customer-showcases section.showcases li blockquote {
+  font-family:chaparral-pro-1,chaparral-pro-2, Georgia, Times, serif;
+  font-style:italic;
+  font-size:21px;
+  line-height:32px;
+  margin-top:10px;
+}
+
+.customer-showcases section.showcases li blockquote p {
+  padding-bottom:10px;
+}
+
+.customer-showcases section.showcases li img.avatar {
+  float:left;
+  margin:5px 30px 10px 0;
+  @include border-radius(5px);
+  @include box-shadow((#002660 0 1px 5px));
+}
+
+.customer-showcases section.showcases li img.logo {
+  float:right;
+  margin:15px 0 5px 20px;
+}
+
+.customer-showcases section.showcases p.author {
+  padding:10px 15px;
+}
+
+.customer-showcases section.showcases p.view_all {
+  text-align:center;
+  font-size:31px;
+  padding:40px 0 10px;
+}
+
+.customer-showcases section.twitter_love p.view_all {
+  padding-right:20px;
+  text-align:right;
+}
+
+.customer-showcases p.view_all a {
+  color:#7690b3;
+  font-weight:600;
+  padding-right:22px;
+  background:url(<%= asset_data_uri "www/showcases/view_all_arrow.png" %>) no-repeat 100% center;
+}
+
+.customer-showcases p.view_all a.showcases {
+  padding-right:26px;
+  background-position:100% 11px;
+}
+
+.customer-showcases section.twitter_love {
+  width:330px;
+  float:left;
+  margin-top:65px;
+  background:url(<%= asset_data_uri "www/showcases/twitter_list_back.png" %>) no-repeat;
+}
+
+.customer-showcases section.twitter_love h3.title {
+  display:block;
+  font-size:28px;
+  font-weight:600;
+  text-align:center;
+  padding:90px 0 0;
+  margin:40px 0 20px;
+  background:url(<%= asset_data_uri "www/showcases/twitter_bird.png" %>) no-repeat center top;
+}
+
+.customer-showcases section.twitter_love ul {
+  padding:0 20px;
+  list-style-type:none;
+}
+
+.customer-showcases section.twitter_love li {
+  padding-bottom:35px;
+}
+
+.customer-showcases section.twitter_love li blockquote {
+  position:relative;
+  margin:0 0 15px;
+  padding:6px 10px 5px;
+  color:#7690b3;
+  font-family:chaparral-pro-1,chaparral-pro-2, Georgia, Times, serif;
+  font-style:italic;
+  font-size:18px;
+  line-height:24px;
+  border: 1px solid #798eae;
+  @include gradient(#e2ecf9,#d8e5f7,#dee9f8);
+  @include border-radius(4px);
+  @include box-shadow((inset rgba(255,255,255,0.9) 0 1px 0, rgba(0,38,97,0.4) 0 1px 3px));
+}
+
+.customer-showcases section.twitter_love li blockquote .arrow {
+  display:block;
+  width:12px;
+  height:8px;
+  background:url(<%= asset_data_uri "www/showcases/twitter_quote_arrow_bottom.png" %>) no-repeat;
+  position:absolute;
+  bottom:-8px;
+  left:22px;
+}
+
+.customer-showcases section.twitter_love li .left {
+  float:left;
+  width:48px;
+  height:48px;
+  margin:0 5px;
+  position:relative;
+}
+
+.customer-showcases section.twitter_love li .left img {
+  @include border-radius(4px);
+  @include box-shadow(rgba(255,255,255,1) 0 1px 0);
+}
+
+.customer-showcases section.twitter_love li .left .shadow {
+  position:absolute;
+  top:0;
+  left:0;
+  display:block;
+  width:48px;
+  height:48px;
+  @include border-radius(4px);
+  @include box-shadow(inset rgba(0,0,0,0.5) 0 0 6px);
+}
+
+.customer-showcases section.twitter_love li .right {
+  float:left;
+  padding:3px 0 0 6px;
+}
+
+.customer-showcases section.twitter_love li .right h4 a {
+  color:#003165;
+  font-size:16px;
+  font-weight:600;
+}
+
+.customer-showcases section.twitter_love li .right em a {
+  font-size:12px;
+  font-style:normal;
+  color:#7690b3;
+  border-bottom:1px solid #c5d4e2;
 }
 
 /* ================= */

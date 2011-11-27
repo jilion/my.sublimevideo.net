@@ -8,6 +8,7 @@ module OneTime
         ::Site.active.find_each(batch_size: 100) do |site|
           ::Site.delay(priority: 200).update_loader_and_license(site.id, { loader: true, license: true })
           total += 1
+          puts "#{total} sites updated..." if (total % 100) == 0
         end
 
         "Finished: in total, #{total} sites will have their loader and license re-generated"
@@ -22,6 +23,7 @@ module OneTime
           ::Site.where { (first_paid_plan_started_at != nil) & (trial_started_at == nil) }.find_each(batch_size: 100) do |site|
             site.update_attribute(:trial_started_at, site.first_paid_plan_started_at - BusinessModel.days_for_trial.days)
             total += 1
+            puts "#{total} sites updated..." if (total % 100) == 0
           end
 
           "Finished: in total, #{total} sites were updated!"
@@ -40,33 +42,27 @@ module OneTime
             next_cycle_plan = plan_switch(site.next_cycle_plan)
 
             if [planet_y_plan, galaxy_y_plan].include?(site.plan)
-              new_discounted_price = if site.last_paid_invoice.plan_invoice_items.last.discounted_percentage.nil?
-                new_plan.price
-              else
-                (new_plan.price * (1.0 - (site.last_paid_invoice.plan_invoice_items.last.discounted_percentage || 0)) / 100).to_i * 100
-              end
-
-              add_to_balance = site.last_paid_invoice.amount - (new_discounted_price * (1.0 + Vat.for_country(site.user.billing_country))).round
+              add_to_balance = site.plan.price - new_plan.price
+              balance_detail = "$#{site.plan.price/100.0} - $#{new_plan.price/100.0}"
             end
 
             next_cycle_plan = nil if next_cycle_plan == new_plan
 
-            print "##{site.token} (##{site.id} #{site.hostname}): #{site.plan.title} (##{site.plan.id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+            # print "##{site.token} (##{site.id} #{site.hostname}): #{site.plan.title} (##{site.plan.id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
             site.send(:write_attribute, :plan_id, new_plan.id)
             site.send(:write_attribute, :pending_plan_id, nil)
             site.send(:write_attribute, :next_cycle_plan_id, next_cycle_plan.try(:id))
-            print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+            # print " => #{site.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
             site.skip_pwd { site.save(validate: false) }
-            puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
+            # puts " => #{site.reload.plan.title} (##{site.plan_id}) [next: #{site.next_cycle_plan.try(:title)} (##{site.next_cycle_plan_id})]"
             total += 1
 
             unless add_to_balance.zero?
               site.user.increment!(:balance, add_to_balance)
-              puts "$#{add_to_balance/100.0} added to #{site.user.name}'s balance for ##{site.token} (##{site.id} #{site.hostname})!"
+              puts "$#{add_to_balance/100.0} (#{balance_detail}) added to #{site.user.name}'s balance for ##{site.token} (##{site.id} #{site.hostname})!"
             end
 
-            puts
-
+            puts "#{total} sites updated..." if (total % 100) == 0
           end
 
           # Cancel all upgrade & failed invoices
@@ -124,10 +120,10 @@ module OneTime
       def custom_plan   ; ::Plan.where(name: 'custom - 1').first; end
 
       def free_plan     ; ::Plan.where(name: 'free').first; end
-      def plus_m_plan ; ::Plan.where(name: 'plus', cycle: 'month').first; end
-      def plus_y_plan ; ::Plan.where(name: 'plus', cycle: 'year').first; end
-      def premium_m_plan   ; ::Plan.where(name: 'premium', cycle: 'month').first; end
-      def premium_y_plan   ; ::Plan.where(name: 'premium', cycle: 'year').first; end
+      def plus_m_plan   ; ::Plan.where(name: 'plus', cycle: 'month').first; end
+      def plus_y_plan   ; ::Plan.where(name: 'plus', cycle: 'year').first; end
+      def premium_m_plan; ::Plan.where(name: 'premium', cycle: 'month').first; end
+      def premium_y_plan; ::Plan.where(name: 'premium', cycle: 'year').first; end
 
       def without_versioning
         was_enabled = PaperTrail.enabled?

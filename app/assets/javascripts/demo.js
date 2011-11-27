@@ -1,58 +1,27 @@
-document.observe("dom:loaded", function() {
-  SublimeVideo.interactiveDemo = new InteractiveDemoHandler();
+var SublimeVideo = SublimeVideo || {};
 
-  $$("#demo nav li a").each(function(navEl){
-    navEl.on("click", function(event){
-      event.stop();
-      var sectionName = navEl.readAttribute("href").replace(/^.*#/,''); 
-      $(sectionName).scrollTo();
-    });
-  });
+document.observe("dom:loaded", function() {
+  SublimeVideo.playlistDemo = new PlaylistDemo("playlist");
 });
 
 sublimevideo.ready(function(){
   sublimevideo.onStart(function(sv){
-    if (sv.element.id=="single_video") {
+    if (sv.element.id=="single_video" && !SublimeVideo.detectedMobile) {
       SublimeVideo.updateModeBox(sv.mode);
     }
   });
   sublimevideo.onEnd(function(sv){
     if (sv.element.id.match(/video[1-4]/)) {
-      SublimeVideo.interactiveDemo.handleAutoNext(sv.element.id);
+      SublimeVideo.playlistDemo.handleAutoNext(sv.element.id);
     }
   });
-  
-  SublimeVideo.detectedChrome = navigator.userAgent.indexOf("Chrome")!=-1;
-  SublimeVideo.detectedWindows = navigator.userAgent.indexOf("Windows")!=-1;
-  SublimeVideo.detectedMac = navigator.userAgent.indexOf("Mac")!=-1;
-  
-  // Disable box shadows on Chrome Mac ( because of this issue http://code.google.com/p/chromium/issues/detail?id=59340 ) 
-  // UPDATE: They've finally fixed it in Chrome 11!
-  // if (SublimeVideo.detectedChrome && SublimeVideo.detectedMac) {
-  //   $(document.body).addClassName('chrome_mac');
-  // }
 });
 
-SublimeVideo.isWebkitAnimationSupported = function() { // remember to cache the result
-  return (typeof WebKitAnimationEvent === "object" || typeof WebKitAnimationEvent === "function");
-};
-
-SublimeVideo.fadeInSublimeVideosContainer = function(video, speed) {
-  if (SublimeVideo.detectedChrome && SublimeVideo.detectedWindows) return;
-  
-  // Need mini delay because it's called after prepare() needs a bit of time to move video to its wrapper at the bottom of DOM
-  setTimeout(function(){
-    var videoWrapper = video.up();
-    if (videoWrapper) {
-      var animClass = speed=='slow' ? 'slow_fade_in' : 'fade_in';
-      videoWrapper.addClassName(animClass);
-      var animEnd = videoWrapper.on("webkitAnimationEnd", function(event) {
-        animEnd.stop(); // observe "once" behavior
-        videoWrapper.removeClassName(animClass);
-      });
-    }
-  },0);
-};
+var ua = navigator.userAgent;
+SublimeVideo.detectedMobile = ua.indexOf("Mobile")!=-1 ||
+                              ua.indexOf('Windows Phone') != -1 ||
+                              ua.indexOf('Android') != -1 ||
+                              ua.indexOf('webOS') != -1;
 
 SublimeVideo.updateModeBox = function(mode) {
   var modeSwitcher = $('mode_switcher');
@@ -61,74 +30,79 @@ SublimeVideo.updateModeBox = function(mode) {
   modeSwitcher.down("small em").update(newModeText);
 };
 
-var InteractiveDemoHandler = Class.create({
-  initialize: function() {
-    this.loadDemo();
-    this.supportsWebkitAnimation = SublimeVideo.isWebkitAnimationSupported(); // to cache the result
+var PlaylistDemo = Class.create({
+  initialize: function(interactiveWrapperId) {
+    this.interactiveWrapperId = interactiveWrapperId;
+    this.videosCount = $$("#" + this.interactiveWrapperId + " .video_wrap").size();
     
-    $$("#interactive li").each(function(thumb){
-      thumb.on("click", function(event){
+    var matches = $$("#" + this.interactiveWrapperId + " video")[0].id.match(/^video(\d+)$/);
+    this.firstVideoIndex = parseInt(matches[1], 10);
+    
+    this.setupObservers();
+    
+    this.loadDemo();
+  },
+  setupObservers: function() {
+    $$("#" + this.interactiveWrapperId + " li").each(function(thumb) {
+      thumb.on("click", function(event) {
         event.stop();
-        if (!thumb.hasClassName('active')) {
-          this.clickOnThumb(thumb.readAttribute('id'));
+
+        if (!thumb.hasClassName("active")) {
+          this.clickOnThumbnail(thumb.readAttribute("id"));
         }
       }.bind(this));
     }.bind(this));
   },
-  reset: function() {
-    // Hide it active video
-    $$("#interactive .video_wrap.active").first().removeClassName('active');
-    // Get current active video and unprepare it
-    sublimevideo.unprepare(this.activeVideoId); // we could have called unprepare() without any arguments, but this is faster
-    // PAY ATTENTION, the unprepare method has hidden the video tag
-    $(this.activeVideoId).show();
-    // Deselect its thumb
-    this.deselectThumb(this.activeVideoId);
-  },
-  clickOnThumb: function(thumbId) {
-    // Basically undo all the stuff and bring it back to the point before js kicked in 
-    this.reset();
-    
-    // Set new active video
-    this.activeVideoId = thumbId.replace(/thumb_/,'');
-    
-    // Show it
-    var newVideo = this.showVideo(this.activeVideoId);
-    
-    // PREPARE and play it
-    sublimevideo.prepareAndPlay(newVideo);
-    
-    if (this.supportsWebkitAnimation)
-      SublimeVideo.fadeInSublimeVideosContainer(newVideo, 'slow');
-  },
   loadDemo: function() {
-    if (this.activeVideoId) { //if not the first time here
-      this.reset();
-    }
-    
-    this.activeVideoId = "video1";
-    
+    // Only if not the first time here
+    if (this.activeVideoId) this.reset();
+
+    this.activeVideoId = "video" + this.firstVideoIndex;
+
     // Show first video
-    var firstVideo = this.showVideo(this.activeVideoId);
+    this.showActiveVideo();
   },
-  selectThumb: function(videoId) {
-    $("thumb_"+videoId).addClassName('active');
+  reset: function() {
+    // Hide the current active video
+    $$("#" + this.interactiveWrapperId + " .video_wrap.active").first().removeClassName("active");
+
+    // Get current active video and unprepare it
+    // we could have called sublimevideo.unprepare() without any arguments, but this is faster
+    sublimevideo.unprepare(this.activeVideoId);
+
+    // Deselect its thumbnail
+    this.deselectThumbnail(this.activeVideoId);
   },
-  deselectThumb: function(videoId) {
-    $("thumb_"+videoId).removeClassName('active');
+  clickOnThumbnail: function(thumbnailId) {
+    // Basically undo all the stuff and bring it back to the point before js kicked in
+    this.reset();
+
+    // Set the new active video
+    this.activeVideoId = thumbnailId.replace(/^thumbnail_/, "");
+
+    // And show the video
+    this.showActiveVideo();
+
+    // And finally, prepare and play it
+    sublimevideo.prepareAndPlay(this.activeVideoId);
   },
-  showVideo: function(videoId) {
-    var video = $(videoId);
-    // Show it 
-    video.up().addClassName('active');
-    // Select its thumb
-    this.selectThumb(videoId);
-    return video;
+  selectThumbnail: function(videoId) {
+    $("thumbnail_" + videoId).addClassName("active");
+  },
+  deselectThumbnail: function(videoId) {
+    $("thumbnail_" + videoId).removeClassName("active");
+  },
+  showActiveVideo: function() {
+    // Select its thumbnail
+    this.selectThumbnail(this.activeVideoId);
+
+    // Show it
+    $(this.activeVideoId).up().addClassName("active");
   },
   handleAutoNext: function(endedVideoId) {
-    var nextId = parseInt(endedVideoId.replace(/video/,''),10) + 1;
-    if (nextId>1 && nextId<5) {
-      this.clickOnThumb('thumb_video'+nextId);
+    var nextId = parseInt(endedVideoId.replace(/^video/, ""), 10) + 1;
+    if (nextId > 1 && nextId < this.firstVideoIndex + this.videosCount) {
+      this.clickOnThumbnail("thumbnail_video" + nextId);
     }
   }
 });

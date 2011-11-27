@@ -14,10 +14,11 @@ module SiteModules::Scope
     scope :not_archived, where { state != 'archived' }
 
     # plans
-    scope :free,         includes(:plan).where { plans.name == "free" }
-    scope :sponsored,    includes(:plan).where { plans.name == "sponsored" }
-    scope :custom,       includes(:plan).where { plans.name =~ "custom%" }
-    scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
+    scope :free,           includes(:plan).where { plans.name == "free" }
+    scope :sponsored,      includes(:plan).where { plans.name == "sponsored" }
+    scope :in_custom_plan, includes(:plan).where { plans.name =~ "custom%" }
+    scope :in_paid_plan,   lambda { joins(:plan).merge(Plan.paid_plans) }
+    scope :in_plan,        lambda { |plan_name| includes(:plan).where { plans.name == plan_name } }
 
     # attributes queries
     scope :with_wildcard,        where { wildcard == true }
