@@ -4,6 +4,7 @@
 document.observe "dom:loaded", ->
   if Cookie.get('l') is '1' and document.location.host.split('.')[0] is 'www' # topdomain and logged-in
     SublimeVideo.handleLoggedInAutoRedirection()
+    SublimeVideo.handleLoggedInLinksTweaking()
 
   Event.observe window, 'popstate', (event) ->
     if event.state? and event.state.hidePopup?
@@ -25,6 +26,10 @@ SublimeVideo.handleLoggedInAutoRedirection = ->
     document.location.href = "#{my_host}/sites"
   else if path == '/help'
     document.location.href = "#{my_host}#{path}"
+
+SublimeVideo.handleLoggedInLinksTweaking = ->
+  $$('li.not_logged_in_only').invoke 'hide'
+  $$('a.my_link').each (a) -> a.href = a.href.replace /www/, 'my'
 
 SublimeVideo.showPopup = (name, successUrl = null) ->
   failurePath ?= ''
