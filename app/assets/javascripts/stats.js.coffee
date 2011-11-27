@@ -10,11 +10,7 @@
 
 #= require base
 #= require_self
-#= require_tree ./stats/models
-#= require_tree ./stats/templates
-#= require_tree ./stats/helpers
-#= require_tree ./stats/views
-#= require stats/router
+#= require_tree ./stats
 
 window.MSVStats =
   Models: {}
