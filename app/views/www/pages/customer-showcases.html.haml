@@ -1,3 +1,14 @@
 = content_for :title, "Customer Showcases"
 = content_for :header do
   %h2= "Customer Showcases"
+
+  #signup_right
+    %h3.title= "What people say"
+    %ul#twitter_quotes
+      - random_favorite_tweets.each do |tweet|
+        %li
+          .left= image_tag tweet.bigger_profile_image, alt: clean_tweet_from_user(tweet), size: "60x60"
+          .right
+            %blockquote= clean_tweet_text(tweet, strip_cc: true, strip_urls: true)
+          .spacer
+          %p.quote_info= raw "—#{clean_tweet_from_user(tweet)}, #{link_to l(tweet.created_at, format: :tweet, ordinal_day: tweet.created_at.day.ordinalize), "https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}"}"
