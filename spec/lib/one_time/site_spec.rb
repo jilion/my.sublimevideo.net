@@ -16,7 +16,7 @@ describe OneTime::Site do
       count_before = Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count
       lambda { described_class.regenerate_all_loaders_and_licenses }.should change(Delayed::Job, :count).by(2)
       djs = Delayed::Job.where(:handler.matches => "%update_loader_and_license%")
-      djs.count.should == count_before + 2
+      djs.should have(count_before + 2).items
     end
   end
 

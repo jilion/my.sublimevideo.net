@@ -182,14 +182,14 @@ describe Invoice do
             let(:non_paid_invoice) { Factory.create(:invoice, state: state, site: site) }
 
             it "should not call #apply_pending_attributes on the site only if there are still non-paid invoices" do
-              non_paid_invoice.state.should == state
+              non_paid_invoice.state.should eq state
 
               non_paid_invoice.site.should_not_receive(:apply_pending_attributes)
               Factory.create(:invoice, site: site).succeed!
             end
 
             it "should call #apply_pending_attributes on the site if there are no more non-paid invoices" do
-              non_paid_invoice.state.should == state
+              non_paid_invoice.state.should eq state
 
               non_paid_invoice.site.should_receive(:apply_pending_attributes).once
               Factory.create(:invoice, site: site).succeed!
@@ -217,8 +217,8 @@ describe Invoice do
           old_user_total_invoiced_amount = subject.user.total_invoiced_amount
           subject.succeed!
           subject.user.reload
-          subject.user.last_invoiced_amount.should_not == old_user_last_invoiced_amount
-          subject.user.total_invoiced_amount.should_not == old_user_total_invoiced_amount
+          subject.user.last_invoiced_amount.should_not eq old_user_last_invoiced_amount
+          subject.user.total_invoiced_amount.should_not eq old_user_total_invoiced_amount
         end
       end
 
@@ -369,39 +369,39 @@ describe Invoice do
     end
 
     describe "#between" do
-      specify { Invoice.between(24.hours.ago, 15.hours.ago).should == [@waiting_invoice, @paid_invoice] }
+      specify { Invoice.between(24.hours.ago, 15.hours.ago).should eq [@waiting_invoice, @paid_invoice] }
     end
 
     describe "#open" do
-      specify { Invoice.open.order(:id).should == [@open_invoice] }
+      specify { Invoice.open.order(:id).should eq [@open_invoice] }
     end
 
     describe "#paid" do
-      specify { Invoice.paid.order(:id).should == [@paid_invoice] }
+      specify { Invoice.paid.order(:id).should eq [@paid_invoice] }
     end
 
     describe "#refunded" do
-      specify { Invoice.refunded.order(:id).should == [@refunded_invoice] }
+      specify { Invoice.refunded.order(:id).should eq [@refunded_invoice] }
     end
 
     describe "#failed" do
-      specify { Invoice.failed.order(:id).should == [@failed_invoice] }
+      specify { Invoice.failed.order(:id).should eq [@failed_invoice] }
     end
 
     describe "#waiting" do
-      specify { Invoice.waiting.order(:id).should == [@waiting_invoice] }
+      specify { Invoice.waiting.order(:id).should eq [@waiting_invoice] }
     end
 
     describe "#open_or_failed" do
-      specify { Invoice.open_or_failed.order(:id).should == [@open_invoice, @failed_invoice] }
+      specify { Invoice.open_or_failed.order(:id).should eq [@open_invoice, @failed_invoice] }
     end
 
     describe "#not_canceled" do
-      specify { Invoice.not_canceled.order(:id).should == [@open_invoice, @failed_invoice, @waiting_invoice, @paid_invoice, @refunded_invoice] }
+      specify { Invoice.not_canceled.order(:id).should eq [@open_invoice, @failed_invoice, @waiting_invoice, @paid_invoice, @refunded_invoice] }
     end
 
     describe "#not_paid" do
-      specify { Invoice.not_paid.order(:id).should == [@open_invoice, @failed_invoice, @waiting_invoice] }
+      specify { Invoice.not_paid.order(:id).should eq [@open_invoice, @failed_invoice, @waiting_invoice] }
     end
 
   end # Scopes
@@ -446,29 +446,29 @@ describe Invoice do
       end
 
       it "should update pending dates in the site and the plan invoice item of the invoices where renew flag == false by user" do
-        @site1.pending_plan_started_at.should == Time.utc(2011, 4, 4)
-        @site1.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 4)
-        @site1.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 3).to_datetime.end_of_day.to_i
+        @site1.pending_plan_started_at.should eq Time.utc(2011, 4, 4)
+        @site1.pending_plan_cycle_started_at.should eq Time.utc(2011, 4, 4)
+        @site1.pending_plan_cycle_ended_at.to_i.should eq Time.utc(2011, 5, 3).to_datetime.end_of_day.to_i
 
         Timecop.travel(Time.utc(2011, 4, 8)) do
           Invoice.update_pending_dates_for_first_not_paid_invoices
         end
 
-        @invoice1.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 8)
-        @invoice1.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 7).end_of_day.to_i
-        @invoice2.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
-        @invoice2.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
-        @invoice3.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
-        @invoice3.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
-        @invoice4.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
-        @invoice4.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
-        @invoice5.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
-        @invoice5.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
+        @invoice1.reload.invoice_items.first.started_at.should eq Time.utc(2011, 4, 8)
+        @invoice1.invoice_items.first.ended_at.to_i.should eq Time.utc(2011, 5, 7).end_of_day.to_i
+        @invoice2.reload.invoice_items.first.started_at.should eq Time.utc(2011, 4, 4)
+        @invoice2.invoice_items.first.ended_at.to_i.should eq Time.utc(2011, 5, 3).end_of_day.to_i
+        @invoice3.reload.invoice_items.first.started_at.should eq Time.utc(2011, 4, 4)
+        @invoice3.invoice_items.first.ended_at.to_i.should eq Time.utc(2011, 5, 3).end_of_day.to_i
+        @invoice4.reload.invoice_items.first.started_at.should eq Time.utc(2011, 4, 4)
+        @invoice4.invoice_items.first.ended_at.to_i.should eq Time.utc(2011, 5, 3).end_of_day.to_i
+        @invoice5.reload.invoice_items.first.started_at.should eq Time.utc(2011, 4, 4)
+        @invoice5.invoice_items.first.ended_at.to_i.should eq Time.utc(2011, 5, 3).end_of_day.to_i
 
-        @site1.reload.first_paid_plan_started_at.should == Time.utc(2011, 4, 8)
-        @site1.pending_plan_started_at.should == Time.utc(2011, 4, 8)
-        @site1.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 8)
-        @site1.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 7).to_datetime.end_of_day.to_i
+        @site1.reload.first_paid_plan_started_at.should eq Time.utc(2011, 4, 8)
+        @site1.pending_plan_started_at.should eq Time.utc(2011, 4, 8)
+        @site1.pending_plan_cycle_started_at.should eq Time.utc(2011, 4, 8)
+        @site1.pending_plan_cycle_ended_at.to_i.should eq Time.utc(2011, 5, 7).to_datetime.end_of_day.to_i
       end
     end
 
@@ -487,15 +487,15 @@ describe Invoice do
         end
         subject { @invoice }
 
-        specify { subject.invoice_items.size.should == 1 } # 1 plan
-        specify { subject.invoice_items.all? { |ii| ii.item == @paid_plan }.should be_true }
-        specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+        specify { subject.invoice_items.should have(1).item } # 1 plan
+        specify { subject.invoice_items.all? { |ii| ii.item eq @paid_plan }.should be_true }
+        specify { subject.invoice_items.all? { |ii| ii.site eq @site }.should be_true }
         specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
 
-        its(:invoice_items_amount) { should == 1000 } # paid_plan.price
-        its(:vat_rate)             { should == 0.0 }
-        its(:vat_amount)           { should == 0 }
-        its(:amount)               { should == 1000 } # paid_plan.price
+        its(:invoice_items_amount) { should eq 1000 } # paid_plan.price
+        its(:vat_rate)             { should eq 0.0 }
+        its(:vat_amount)           { should eq 0 }
+        its(:amount)               { should eq 1000 } # paid_plan.price
         its(:paid_at)              { should be_nil }
         its(:last_failed_at)       { should be_nil }
         it { should be_open }
@@ -515,20 +515,20 @@ describe Invoice do
           end
           subject { @invoice }
 
-          it { subject.invoice_items.size.should == 2 }
-          it { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+          it { subject.invoice_items.should have(2).items }
+          it { subject.invoice_items.all? { |ii| ii.site eq @site }.should be_true }
           it { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
-          it { subject.invoice_items.first.item.should == @paid_plan }
-          it { subject.invoice_items.first.price.should == 1000 }
-          it { subject.invoice_items.first.amount.should == -1000 }
-          it { subject.invoice_items.second.item.should == @paid_plan2 }
-          it { subject.invoice_items.second.price.should == 3000 }
-          it { subject.invoice_items.second.amount.should == 3000 }
+          it { subject.invoice_items.first.item.should eq @paid_plan }
+          it { subject.invoice_items.first.price.should eq 1000 }
+          it { subject.invoice_items.first.amount.should eq -1000 }
+          it { subject.invoice_items.second.item.should eq @paid_plan2 }
+          it { subject.invoice_items.second.price.should eq 3000 }
+          it { subject.invoice_items.second.amount.should eq 3000 }
 
-          its(:invoice_items_amount) { should == 2000 } # paid_plan2.price - paid_plan.price
-          its(:vat_rate)             { should == 0.0 }
-          its(:vat_amount)           { should == 0 }
-          its(:amount)               { should == 2000 } # paid_plan2.price - paid_plan.price
+          its(:invoice_items_amount) { should eq 2000 } # paid_plan2.price - paid_plan.price
+          its(:vat_rate)             { should eq 0.0 }
+          its(:vat_amount)           { should eq 0 }
+          its(:amount)               { should eq 2000 } # paid_plan2.price - paid_plan.price
           its(:paid_at)              { should be_nil }
           its(:last_failed_at)       { should be_nil }
           it { should be_open }
@@ -547,16 +547,16 @@ describe Invoice do
           end
           subject { @invoice }
 
-          specify { subject.invoice_items.size.should == 1 }
-          specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+          specify { subject.invoice_items.should have(1).item }
+          specify { subject.invoice_items.all? { |ii| ii.site eq @site }.should be_true }
           specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
-          specify { subject.invoice_items.first.item.should == @paid_plan }
-          specify { subject.invoice_items.first.price.should == 3000 }
+          specify { subject.invoice_items.first.item.should eq @paid_plan }
+          specify { subject.invoice_items.first.price.should eq 3000 }
 
-          its(:invoice_items_amount) { should == 3000 } # paid_plan.price
-          its(:vat_rate)             { should == 0.0 }
-          its(:vat_amount)           { should == 0 }
-          its(:amount)               { should == 3000 } # paid_plan.price
+          its(:invoice_items_amount) { should eq 3000 } # paid_plan.price
+          its(:vat_rate)             { should eq 0.0 }
+          its(:vat_amount)           { should eq 0 }
+          its(:amount)               { should eq 3000 } # paid_plan.price
           its(:paid_at)              { should be_nil }
           its(:last_failed_at)       { should be_nil }
           it { should be_open }
@@ -582,17 +582,17 @@ describe Invoice do
           end
           subject { @invoice }
 
-          it { subject.invoice_items.size.should == 1 }
-          it { subject.invoice_items.first.site.should == @site }
-          it { subject.invoice_items.first.invoice.should == subject }
-          it { subject.invoice_items.first.item.should == @paid_plan2 }
-          it { subject.invoice_items.first.price.should == 500 }
-          it { subject.invoice_items.first.amount.should == 500 }
+          it { subject.invoice_items.should have(1).item }
+          it { subject.invoice_items.first.site.should eq @site }
+          it { subject.invoice_items.first.invoice.should eq subject }
+          it { subject.invoice_items.first.item.should eq @paid_plan2 }
+          it { subject.invoice_items.first.price.should eq 500 }
+          it { subject.invoice_items.first.amount.should eq 500 }
 
-          its(:invoice_items_amount) { should == 500 } # paid_plan2.price
-          its(:vat_rate)             { should == 0.0 }
-          its(:vat_amount)           { should == 0 }
-          its(:amount)               { should == 500 } # paid_plan2.price
+          its(:invoice_items_amount) { should eq 500 } # paid_plan2.price
+          its(:vat_rate)             { should eq 0.0 }
+          its(:vat_amount)           { should eq 0 }
+          its(:amount)               { should eq 500 } # paid_plan2.price
           its(:paid_at)              { should be_nil }
           its(:last_failed_at)       { should be_nil }
           it { should be_open }
@@ -609,10 +609,10 @@ describe Invoice do
         end
         subject { @invoice }
 
-        its(:invoice_items_amount) { should == 1000 }
-        its(:vat_rate)             { should == 0.0 }
-        its(:vat_amount)           { should == 0 }
-        its(:amount)               { should == 1000 }
+        its(:invoice_items_amount) { should eq 1000 }
+        its(:vat_rate)             { should eq 0.0 }
+        its(:vat_amount)           { should eq 0 }
+        its(:amount)               { should eq 1000 }
       end
 
       describe "with a Swiss user" do
@@ -623,10 +623,10 @@ describe Invoice do
         end
         subject { @invoice }
 
-        its(:invoice_items_amount) { should == 1000 }
-        its(:vat_rate)             { should == 0.08 }
-        its(:vat_amount)           { should == (1000 * 0.08).round }
-        its(:amount)               { should == 1000 + (1000 * 0.08).round }
+        its(:invoice_items_amount) { should eq 1000 }
+        its(:vat_rate)             { should eq 0.08 }
+        its(:vat_amount)           { should eq (1000 * 0.08).round }
+        its(:amount)               { should eq 1000 + (1000 * 0.08).round }
       end
 
       describe "with a user that has a balance" do
@@ -687,15 +687,15 @@ describe Invoice do
     subject { @invoice }
 
     describe "#paid_plan_invoice_item" do
-      it { subject.paid_plan_invoice_item.should == @paid_plan_invoice_item }
+      it { subject.paid_plan_invoice_item.should eq @paid_plan_invoice_item }
     end
 
     describe "#paid_plan" do
-      it { subject.paid_plan.should == @paid_plan }
+      it { subject.paid_plan.should eq @paid_plan }
     end
 
     describe "#last_transaction" do
-      it { subject.last_transaction.should == @paid_transaction }
+      it { subject.last_transaction.should eq @paid_transaction }
     end
 
     describe "#first_site_invoice?" do

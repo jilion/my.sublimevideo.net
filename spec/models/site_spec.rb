@@ -3,30 +3,6 @@ require 'spec_helper'
 
 describe Site do
 
-  # describe "Test site with and without invoice" do
-  #
-  #   context "WITH INVOICE" do
-  #     subject { Factory.create(:site_with_invoice) }
-  #     it "should be slow" do
-  #       start_time = Time.now
-  #       subject.plan_id.should be_present
-  #       subject.invoices.count.should == 1
-  #       puts "WITH INVOICE: Done in #{Time.now - start_time} seconds!"
-  #     end
-  #   end
-  #
-  #   context "WITHOUT INVOICE" do
-  #     subject { Factory.create(:site) }
-  #     it "should be quick" do
-  #       start_time = Time.now
-  #       subject.plan_id.should be_present
-  #       subject.invoices.count.should == 0
-  #       puts "WITHOUT INVOICE: Done in #{Time.now - start_time} seconds!"
-  #     end
-  #   end
-  #
-  # end
-
   context "Factory" do
     before(:all) { @site = Factory.create(:site) }
     subject { @site.reload }
@@ -69,7 +45,7 @@ describe Site do
       subject { Factory.create(:site_with_invoice, plan_id: @paid_plan.id) }
 
       it "should return the last paid invoice" do
-        subject.last_invoice.should == subject.invoices.last
+        subject.last_invoice.should eq subject.invoices.last
       end
     end
   end
@@ -88,9 +64,9 @@ describe Site do
     it { should allow_value('stable').for(:player_mode) }
     it { should_not allow_value('fake').for(:player_mode) }
 
-    specify { Site.validators_on(:hostname).map(&:class).should == [ActiveModel::Validations::PresenceValidator, HostnameValidator, HostnameUniquenessValidator] }
-    specify { Site.validators_on(:extra_hostnames).map(&:class).should == [ExtraHostnamesValidator] }
-    specify { Site.validators_on(:dev_hostnames).map(&:class).should == [DevHostnamesValidator] }
+    specify { Site.validators_on(:hostname).map(&:class).should eq [ActiveModel::Validations::PresenceValidator, HostnameValidator, HostnameUniquenessValidator] }
+    specify { Site.validators_on(:extra_hostnames).map(&:class).should eq [ExtraHostnamesValidator] }
+    specify { Site.validators_on(:dev_hostnames).map(&:class).should eq [DevHostnamesValidator] }
 
     describe "plan" do
       context "with no plan" do
@@ -101,7 +77,7 @@ describe Site do
 
       context "with no plan but a pending_plan" do
         subject { Factory.build(:new_site, plan: nil, plan_id: @paid_plan.id) }
-        its(:pending_plan) { should == @paid_plan }
+        its(:pending_plan) { should eq @paid_plan }
         it { should be_valid }
       end
     end
@@ -397,17 +373,17 @@ describe Site do
       describe "sets to '' if nil is given" do
         subject { Factory.create(:site, path: nil) }
 
-        its(:path) { should == '' }
+        its(:path) { should eq '' }
       end
       describe "removes first and last /" do
         subject { Factory.create(:site, path: '/users/thibaud/') }
 
-        its(:path) { should == 'users/thibaud' }
+        its(:path) { should eq 'users/thibaud' }
       end
       describe "downcases path" do
         subject { Factory.create(:site, path: '/Users/thibaud') }
 
-        its(:path) { should == 'users/thibaud' }
+        its(:path) { should eq 'users/thibaud' }
       end
     end
 
@@ -879,9 +855,9 @@ describe Site do
             subject.reload
             subject.plan_id = @paid_plan.id
             VCR.use_cassette('ogone/visa_payment_generic') { subject.save_skip_pwd }
-            subject.pending_plan_id.should == @paid_plan.id
+            subject.pending_plan_id.should eq @paid_plan.id
             subject.reload # apply_pending_attributes called
-            subject.plan_id.should == @paid_plan.id
+            subject.plan_id.should eq @paid_plan.id
             subject.pending_plan_id.should be_nil
           end
         end
@@ -916,8 +892,8 @@ describe Site do
         Timecop.travel(10.minutes.ago) { @site = Factory.create(:site, hostname: 'sublimevideo.net') }
         VCR.use_cassette('sites/ranks') { @worker.work_off }
         @site.reload
-        @site.google_rank.should == 6
-        @site.alexa_rank.should == 127373
+        @site.google_rank.should eq 6
+        @site.alexa_rank.should eq 127373
       end
     end # after_create
 
@@ -943,7 +919,7 @@ describe Site do
       subject { Factory.create(:site_not_in_trial, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
-        subject.hostname.should == "rymai.com"
+        subject.hostname.should eq "rymai.com"
         subject.hostname = "remy.com"
         subject.save
         subject.should_not be_valid
@@ -951,15 +927,15 @@ describe Site do
       end
 
       it "should not ask password when calling this method" do
-        subject.hostname.should == "rymai.com"
+        subject.hostname.should eq "rymai.com"
         subject.hostname = "remy.com"
         subject.skip_pwd { subject.save }
         subject.should have(0).error_on(:base)
-        subject.reload.hostname.should == "remy.com"
+        subject.reload.hostname.should eq "remy.com"
       end
 
       it "should return the result of the given block" do
-        subject.skip_pwd { "foo" }.should == "foo"
+        subject.skip_pwd { "foo" }.should eq "foo"
       end
     end
 
@@ -967,7 +943,7 @@ describe Site do
       subject { Factory.create(:site_not_in_trial, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
-        subject.hostname.should == "rymai.com"
+        subject.hostname.should eq "rymai.com"
         subject.hostname = "remy.com"
         subject.save
         subject.should_not be_valid
@@ -975,15 +951,15 @@ describe Site do
       end
 
       it "should not ask password when calling this method" do
-        subject.hostname.should == "rymai.com"
+        subject.hostname.should eq "rymai.com"
         subject.hostname = "remy.com"
         subject.save_skip_pwd
         subject.should have(0).error_on(:base)
-        subject.reload.hostname.should == "remy.com"
+        subject.reload.hostname.should eq "remy.com"
       end
 
       it "should return the result of the given block" do
-        subject.skip_pwd { "foo" }.should == "foo"
+        subject.skip_pwd { "foo" }.should eq "foo"
       end
     end
 
@@ -1010,7 +986,7 @@ describe Site do
           subject.next_cycle_plan_id.should be_nil
           subject.pending_plan_id.should be_nil
           subject.plan_started_at.should be_present
-          subject.plan_started_at.should == initial_plan_started_at # same as an upgrade
+          subject.plan_started_at.should eq initial_plan_started_at # same as an upgrade
           subject.plan_cycle_started_at.should be_nil
           subject.plan_cycle_ended_at.should be_nil
         end
@@ -1021,12 +997,12 @@ describe Site do
       context "with web.me.com hostname" do
         subject { Factory.build(:site, hostname: 'web.me.com') }
         its(:need_path?)                { should be_true }
-        its(:hostname_with_path_needed) { should == 'web.me.com' }
+        its(:hostname_with_path_needed) { should eq 'web.me.com' }
       end
       context "with homepage.mac.com, web.me.com extra hostnames" do
         subject { Factory.build(:site, extra_hostnames: 'homepage.mac.com, web.me.com') }
         its(:need_path?)                { should be_true }
-        its(:hostname_with_path_needed) { should == 'web.me.com' }
+        its(:hostname_with_path_needed) { should eq 'web.me.com' }
       end
       context "with web.me.com hostname & path" do
         subject { Factory.build(:site, hostname: 'web.me.com', path: 'users/thibaud') }
@@ -1044,12 +1020,12 @@ describe Site do
       context "with tumblr.com hostname" do
         subject { Factory.build(:site, wildcard: true, hostname: 'tumblr.com') }
         its(:need_subdomain?)                { should be_true }
-        its(:hostname_with_subdomain_needed) { should == 'tumblr.com' }
+        its(:hostname_with_subdomain_needed) { should eq 'tumblr.com' }
       end
       context "with tumblr.com extra hostnames" do
         subject { Factory.build(:site, wildcard: true, extra_hostnames: 'web.mac.com, tumblr.com') }
         its(:need_subdomain?)                { should be_true }
-        its(:hostname_with_subdomain_needed) { should == 'tumblr.com' }
+        its(:hostname_with_subdomain_needed) { should eq 'tumblr.com' }
       end
       context "with wildcard only" do
         subject { Factory.build(:site, wildcard: true) }

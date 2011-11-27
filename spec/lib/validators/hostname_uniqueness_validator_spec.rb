@@ -8,19 +8,19 @@ describe HostnameUniquenessValidator do
     it "should scope by user" do
       site2 = Factory.build(:new_site, :user => site.user)
       validate_hostname_uniqueness(site2, :hostname, site.hostname)
-      site2.errors[:hostname].size.should == 1
+      site2.errors[:hostname].should have(1).item
     end
 
     it "should not add an error if the hostname is blank" do
       site2 = Factory.build(:new_site)
       validate_hostname_uniqueness(site2, :hostname, nil)
-      site2.errors[:hostname].size.should == 0
+      site2.errors[:hostname].should be_empty
     end
 
     it "should allow 2 users to register the same hostname" do
       site2 = Factory.build(:new_site, :user => Factory.create(:user))
       validate_hostname_uniqueness(site2, :hostname, site.hostname)
-      site2.errors[:hostname].size.should == 0
+      site2.errors[:hostname].should be_empty
     end
 
     it "should ignore archived sites" do
@@ -30,7 +30,7 @@ describe HostnameUniquenessValidator do
       site.should be_archived
       site2 = Factory.build(:new_site, :user => site.user)
       validate_hostname_uniqueness(site2, :hostname, site.hostname)
-      site2.errors[:hostname].size.should == 0
+      site2.errors[:hostname].should be_empty
     end
   end
 
@@ -39,18 +39,18 @@ describe HostnameUniquenessValidator do
 
     it "should scope by user" do
       validate_hostname_uniqueness(subject, :hostname, site.hostname)
-      subject.errors[:hostname].size.should == 1
+      subject.errors[:hostname].should have(1).item
     end
 
     it "should not add an error if the hostname is blank" do
       validate_hostname_uniqueness(subject, :hostname, nil)
-      subject.errors[:hostname].size.should == 0
+      subject.errors[:hostname].should be_empty
     end
 
     it "should allow 2 users to register the same hostname" do
       site2 = Factory.create(:site, :user => Factory.create(:user))
       validate_hostname_uniqueness(site2, :hostname, site.hostname)
-      site2.errors[:hostname].size.should == 0
+      site2.errors[:hostname].should be_empty
     end
 
     it "should ignore archived sites" do
@@ -59,7 +59,7 @@ describe HostnameUniquenessValidator do
       site.archive
       site.should be_archived
       validate_hostname_uniqueness(subject, :hostname, site.hostname)
-      subject.errors[:hostname].size.should == 0
+      subject.errors[:hostname].should be_empty
     end
   end
 end

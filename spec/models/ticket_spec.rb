@@ -95,7 +95,7 @@ describe Ticket do
           end
           Ticket.post_ticket(params)
           VCR.use_cassette("ticket/zendesk_tickets_after_post") do
-            JSON[Zendesk.get("/rules/1614956.json").body].size.should eq zendesk_tickets_count_before_post + 1
+            JSON[Zendesk.get("/rules/1614956.json").body].should have(zendesk_tickets_count_before_post + 1).items
           end
         end
 

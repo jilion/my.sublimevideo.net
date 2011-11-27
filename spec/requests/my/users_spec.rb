@@ -169,7 +169,7 @@ feature "Users" do
         fill_in 'Password', with: '654321'
         click_button 'Login'
 
-        current_url.should eq "http://my.sublimevideo.dev/sites/new"
+        current_url.should eq "http://my.sublimevideo.dev/account"
       end
     end
 
@@ -195,7 +195,6 @@ feature "Users" do
         end
 
         @current_user.reload.name.should eq "Bob Doe"
-        y @current_user
         @current_user.postal_code.should eq "91470"
         @current_user.country.should eq "FR"
         @current_user.company_name.should eq "Jilion"

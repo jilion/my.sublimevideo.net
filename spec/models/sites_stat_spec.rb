@@ -15,7 +15,7 @@ describe SitesStat do
 
     it "should delay create_sites_stats for next hour" do
       SitesStat.delay_create_sites_stats
-      Delayed::Job.last.run_at.should == Time.new.utc.tomorrow.midnight
+      Delayed::Job.last.run_at.should eq Time.new.utc.tomorrow.midnight
     end
 
   end
@@ -39,7 +39,7 @@ describe SitesStat do
 
       it "should create sites stats for states & plans" do
         SitesStat.create_sites_stats
-        SitesStat.count.should == 1
+        SitesStat.count.should eq 1
         sites_stat = SitesStat.last
         sites_stat.states_count.should == {
           "active"    => 1,

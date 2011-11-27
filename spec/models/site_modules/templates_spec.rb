@@ -111,14 +111,14 @@ describe SiteModules::Templates do
         it "should delay update_loader_and_license once" do
           subject
           lambda { subject.update_attribute(:player_mode, 'beta') }.should change(Delayed::Job, :count).by(1)
-          Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
+          Delayed::Job.where(:handler.matches => "%update_loader_and_license%").should have(1).item
         end
 
         it "should update loader content" do
           old_loader_content = subject.loader.read
           subject.update_attribute(:player_mode, 'beta')
           @worker.work_off
-          subject.reload.loader.read.should_not == old_loader_content
+          subject.reload.loader.read.should_not eq old_loader_content
         end
 
         it "should purge loader on CDN" do

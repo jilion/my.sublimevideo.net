@@ -220,7 +220,7 @@ describe Log::Voxcast do
       #   it "doesn't save the record" do
       #     logs_count = Log::Voxcast.count
       #     expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to raise_error(Aws::AwsError)
-      #     Log::Voxcast.count.should eql logs_count
+      #     Log::Voxcast.should have(logs_count).items
       #   end
       #
       #   it "raises exception" do

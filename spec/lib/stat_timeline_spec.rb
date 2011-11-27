@@ -25,12 +25,12 @@ describe StatTimeline::SiteUsage do
 
         context "return a hash" do
           it "of size 16" do
-            subject.size.should == 20
+            subject.should have(20).items
           end
 
           it "which should contain a key 'all_usage' with 1 as a value for the first day" do
-            subject["all_usage"][0].should == 1
-            subject["all_usage"][1].should == 2
+            subject["all_usage"][0].should eq 1
+            subject["all_usage"][1].should eq 2
           end
         end
       end
@@ -44,17 +44,18 @@ describe StatTimeline::SiteUsage do
 
         context "return a hash" do
           it "of size 16" do
-            subject.size.should == 20
+            subject.should have(20).items
           end
 
           it "which should contain a first hash with 1 as a value for the key 'all_usage'" do
-            subject["all_usage"][0].should == 1
-            subject["all_usage"][1].should == 2
-            subject["all_usage"][2].should == 3
+            subject["all_usage"][0].should eq 1
+            subject["all_usage"][1].should eq 2
+            subject["all_usage"][2].should eq 3
           end
         end
 
       end
     end
   end
+
 end

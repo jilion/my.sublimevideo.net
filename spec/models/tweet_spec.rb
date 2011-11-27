@@ -7,14 +7,14 @@ describe Tweet do
     subject { @tweet }
 
     its(:tweet_id)          { should be_present }
-    its(:keywords)          { should == %w[sublimevideo jilion] }
-    its(:from_user_id)      { should == 1 }
-    its(:from_user)         { should == 'toto' }
-    its(:to_user_id)        { should == 2 }
-    its(:to_user)           { should == 'tata' }
-    its(:iso_language_code) { should == 'en' }
-    its(:profile_image_url) { should == 'http://yourimage.com/img.jpg' }
-    its(:content)           { should == "This is my first tweet!" }
+    its(:keywords)          { should eq %w[sublimevideo jilion] }
+    its(:from_user_id)      { should eq 1 }
+    its(:from_user)         { should eq 'toto' }
+    its(:to_user_id)        { should eq 2 }
+    its(:to_user)           { should eq 'tata' }
+    its(:iso_language_code) { should eq 'en' }
+    its(:profile_image_url) { should eq 'http://yourimage.com/img.jpg' }
+    its(:content)           { should eq "This is my first tweet!" }
     its(:tweeted_at)        { should be_present }
     its(:favorited)         { should be_false }
 
@@ -31,7 +31,7 @@ describe Tweet do
       tweet2.retweeted_tweet = tweet1
       tweet2.save
 
-      tweet2.retweeted_tweet.should == tweet1
+      tweet2.retweeted_tweet.should eq tweet1
     end
 
     it "retweets should be the inverse of retweeted_tweet" do
@@ -40,7 +40,7 @@ describe Tweet do
       tweet2.retweeted_tweet = tweet1
       tweet2.save
 
-      tweet1.retweets.should == [tweet2]
+      tweet1.retweets.should eq [tweet2]
     end
 
     it "should have many retweets" do
@@ -52,7 +52,7 @@ describe Tweet do
       tweet1.retweets << tweet3
       tweet1.save
 
-      tweet1.retweets.should == [tweet2, tweet3]
+      tweet1.retweets.order(:tweet_id.asc).should eq [tweet2, tweet3]
     end
 
     it "retweeted_tweet should be the inverse of retweets" do
@@ -64,8 +64,8 @@ describe Tweet do
       tweet1.retweets << tweet3
       tweet1.save
 
-      tweet2.retweeted_tweet.should == tweet1
-      tweet3.retweeted_tweet.should == tweet1
+      tweet2.retweeted_tweet.should eq tweet1
+      tweet3.retweeted_tweet.should eq tweet1
     end
   end
 

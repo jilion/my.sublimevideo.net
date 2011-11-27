@@ -27,16 +27,16 @@ describe Referrer do
 
     let(:site) { Site.find_by_token('k8qaaj1l') }
 
-    it { Referrer.count.should == 5 }
+    it { Referrer.count.should eq 5 }
 
     describe "second referrer" do
       subject { Referrer.all.first }
 
       it "should have valid attributes" do
-        subject.url.should == 'http://www.killy.net/'
-        subject.token.should == site.token
-        subject.site_id.should == site.id
-        subject.hits.should == 3
+        subject.url.should eq 'http://www.killy.net/'
+        subject.token.should eq site.token
+        subject.site_id.should eq site.id
+        subject.hits.should eq 3
         subject.created_at.should be_present
         subject.updated_at.should be_present
       end
@@ -44,8 +44,8 @@ describe Referrer do
       it "should update hits if same referrer reparsed" do
         Referrer.create_or_update_from_trackers!(@trackers)
 
-        subject.reload.hits.should == 6
-        Referrer.count.should == 5
+        subject.reload.hits.should eq 6
+        Referrer.count.should eq 5
       end
 
       it "should update updated_at on hits incrementation" do
@@ -63,26 +63,26 @@ describe Referrer do
 
     it "should create referrer and set contextual_hits to 1 if url/token doesn't exist" do
       expect { Referrer.create_or_update_from_type!(site.token, 'http://www.bob.com', 'c') }.should change(Referrer, :count).by(1)
-      Referrer.last.contextual_hits.should == 1
+      Referrer.last.contextual_hits.should eq 1
     end
 
     it "should increment contextual_hits if referrer url/token already exsits" do
       Referrer.create_or_update_from_type!(site.token, 'http://www.bob.com', 'c')
-      Referrer.last.contextual_hits.should == 1
+      Referrer.last.contextual_hits.should eq 1
       expect { Referrer.create_or_update_from_type!(site.token, 'http://www.bob.com', 'c') }.should change(Referrer, :count).by(0)
-      Referrer.last.contextual_hits.should == 2
+      Referrer.last.contextual_hits.should eq 2
     end
 
     it "should create referrer and set badge_hits to 1 if url/token doesn't exist" do
       expect { Referrer.create_or_update_from_type!(site.token, 'http://www.bob.com', 'b') }.should change(Referrer, :count).by(1)
-      Referrer.last.badge_hits.should == 1
+      Referrer.last.badge_hits.should eq 1
     end
 
     it "should increment badge_hits if referrer url/token already exsits" do
       Referrer.create_or_update_from_type!(site.token, 'http://www.bob.com', 'b')
-      Referrer.last.badge_hits.should == 1
+      Referrer.last.badge_hits.should eq 1
       expect { Referrer.create_or_update_from_type!(site.token, 'http://www.bob.com', 'b') }.should change(Referrer, :count).by(0)
-      Referrer.last.badge_hits.should == 2
+      Referrer.last.badge_hits.should eq 2
     end
   end
 end
