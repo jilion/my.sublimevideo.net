@@ -38,27 +38,25 @@ describe SiteModules::Scope do
   describe "plan" do
     before(:all) do
       Site.delete_all
-      @site_free       = Factory.create(:site, user: @user, plan_id: @free_plan.id)
+      @site_free      = Factory.create(:site, user: @user, plan_id: @free_plan.id)
       @site_sponsored = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
       @site_sponsored.sponsor!
       @site_custom    = Factory.create(:site, user: @user, plan_id: @custom_plan.token)
       @site_paid      = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
     end
 
-    describe ".free" do
-      specify { Site.free.all.should =~ [@site_free] }
-    end
-
-    describe ".sponsored" do
-      specify { Site.sponsored.all.should =~ [@site_sponsored] }
-    end
-
     describe ".custom" do
-      specify { Site.custom.all.should =~ [@site_custom] }
+      specify { Site.in_custom_plan.all.should =~ [@site_custom] }
     end
 
     describe ".in_paid_plan" do
       specify { Site.in_paid_plan.all.should =~ [@site_custom, @site_paid] }
+    end
+
+    describe ".in_plan" do
+      specify { Site.in_plan('free').all.should eq [@site_free] }
+      specify { Site.in_plan('sponsored').all.should eq [@site_sponsored] }
+      specify { Site.in_plan('plus').all.should eq [@site_paid] }
     end
   end
 

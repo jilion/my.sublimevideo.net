@@ -27,5 +27,7 @@
       %small= link_to display_amount(user.total_invoiced_amount), admin_invoices_path(:user_id => user.id), :title => "See all user invoices"
     - else
       %small= '-'
+  - if params[:with_balance] == "true"
+    %td= display_amount(user.balance)
   %td
     %small= display_time(user.created_at)

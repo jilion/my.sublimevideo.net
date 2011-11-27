@@ -15,9 +15,9 @@ module UserModules::Scope
     scope :with_balance, where { balance > 0 }
 
     # state
-    scope :invited,           where { invitation_token != nil }
-    scope :beta,              where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } # some beta users don't come from svs but were directly invited from msv!!
-    scope :active,            where(state: 'active')
+    scope :invited, where { invitation_token != nil }
+    scope :beta,    where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } # some beta users don't come from svs but were directly invited from msv!!
+    scope :active,  where(state: 'active')
 
     # attributes queries
     scope :use_personal,      where(use_personal: true)
@@ -27,8 +27,8 @@ module UserModules::Scope
     scope :signed_in_between, lambda { |start_date, end_date| where { (current_sign_in_at >= start_date) & (current_sign_in_at < end_date) } }
 
     # sort
-    scope :by_name_or_email,   lambda { |way='asc'| order("users.name #{way.upcase}, users.email #{way.upcase}") }
-    scope :by_sites_last_30_days_billable_video_views,  lambda { |way='desc'|
+    scope :by_name_or_email, lambda { |way='asc'| order("users.name #{way.upcase}, users.email #{way.upcase}") }
+    scope :by_sites_last_30_days_billable_video_views, lambda { |way='desc'|
       joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_video_views) + SUM(sites.last_30_days_extra_video_views) #{way}")
     }
     # TODO: To test

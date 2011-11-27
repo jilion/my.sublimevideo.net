@@ -138,13 +138,13 @@
   .col_left
     .box
       %h4= "The free plan seems too good to be true, is it really free and unlimited?"
-      %p= "Yes and yes, it's completely free and gives you unlimited video plays. Unlike the unbranded player offered with our paid plans, our free player will display a discreet SublimeVideo badge for a few seconds after video playback begins."
+      %p= raw "Yes and yes, it's completely free and gives you unlimited video plays. Unlike the unbranded player offered with our paid plans, our free player will display a discreet #{link_to "SublimeVideo badge", "http://test.sublimevideo.net/badge"} for a few seconds after video playback begins."
     .box
       %h4= "What does 'per-site' mean?"
-      %p= raw "Each plan is per-site. However, simply use the wildcard option to extend your SublimeVideo player license to any subdomains of your main domain. Also, if you have multiple domains showing or pointing to the same content as your main domain, you can share the same plan across these via our Alias domains option. #{link_to "Read more", ""}."
+      %p= raw "Each plan is per-site. However, simply use the wildcard option to extend your SublimeVideo player license to any subdomains of your main domain. Also, if you have multiple domains showing or pointing to the same content as your main domain, you can share the same plan across these via our Alias domains option. #{link_to "Read more", page_url('site-settings', subdomain: 'docs')}."
     .box
       %h4= "Advanced domain settings"
-      %p= raw "All plans come with advanced domain settings, including the ability to specify staging domains and a wildcard option to extend your SublimeVideo license to subdomains of your main domain. #{link_to "Read more", ""}."
+      %p= raw "All plans come with advanced domain settings, including the ability to specify staging domains and a wildcard option to extend your SublimeVideo license to subdomains of your main domain. #{link_to "Read more", page_url('site-settings', subdomain: 'docs')}."
   .col_right
     .box
       %h4= "How does the '14 days free' offer work?"
@@ -154,7 +154,7 @@
       %p= "Absolutely. You can upgrade, downgrade or change monthly and yearly billing cycles at any time. In case of a downgrade or a change from a yearly to monthly cycle, the change will come into effect at the end of the current plan's cycle."
     .box
       %h4= "Forum & Support"
-      %p= raw "All users have access to our extensive documentation and community forum. Additionally, we offer dedicated email support to customers of our paid plans. Customers of our Premium plan also benefit from VIP priority email support. Find out more on the #{link_to "help page", ""}."
+      %p= raw "All users have access to our extensive documentation and community forum. Additionally, we offer dedicated email support to customers of our paid plans. Customers of our Premium plan also benefit from VIP priority email support. Find out more on the #{link_to "help page", page_path('help')}."
     .box
       %h4= "What happens if I exceed my monthly limit?"
       %p= "All paid plans include Peak Insurance, a flexible feature that allows your site's videos or video embeds to exceed the monthly limit of video plays in the event of a temporary burst of traffic."

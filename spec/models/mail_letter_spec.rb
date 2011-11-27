@@ -40,16 +40,16 @@ describe MailLetter do
           before(:each) { User.stub!(:where).with(email: ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"]).and_return([@user]) }
           subject { @mail_letter.deliver_and_log }
 
-          it "should delay delivery of mails" do
-            lambda { subject }.should change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)
+          it "delays delivery of mails" do
+            expect { subject }.to change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)
           end
 
-          it "should actually send email when workers do their jobs" do
+          it "actually sends email when workers do their jobs" do
             subject
             lambda { @worker.work_off }.should change(ActionMailer::Base.deliveries, :size).by(1)
           end
 
-          it "should send email to user with activity sites and should send appropriate template" do
+          it "sends email to user with activity sites and should send appropriate template" do
             ActionMailer::Base.deliveries.clear
             subject
             @worker.work_off
@@ -58,40 +58,71 @@ describe MailLetter do
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
           end
 
-          it "should not create a new MailLog record" do
-            lambda { subject }.should_not change(MailLog, :count)
+          it "doesn't create a new MailLog record" do
+            expect { subject }.to_not change(MailLog, :count)
           end
         end
 
-        context "with the 'not_archived' filter" do
+        describe "the 'active_and_billable' and 'active_and_not_billable' filters" do
           before(:all) do
             @archived_user = Factory.create(:user, state: 'archived')
-            @mail_letter = MailLetter.new(@attributes.merge(criteria: 'not_archived'))
-          end
-          subject { @mail_letter.deliver_and_log }
-
-          it "should delay delivery of mails" do
-            lambda { subject }.should change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)
+            @billable_user = Factory.create(:user)
+            Factory.create(:site, user: @billable_user)
           end
 
-          it "should actually send email when workers do their jobs" do
-            subject
-            expect { @worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
+          context "with the 'active_and_billable' filter" do
+            subject { MailLetter.new(@attributes.merge(criteria: 'active_and_billable')).deliver_and_log }
+
+            it "delays delivery of mails" do
+              expect { subject }.to change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)
+            end
+
+            it "actually sends email when workers do their jobs" do
+              subject
+              expect { @worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
+            end
+
+            it "sends email to active and billable users and should send appropriate template" do
+              ActionMailer::Base.deliveries.clear
+              subject
+              @worker.work_off
+
+              ActionMailer::Base.deliveries.last.to.should eq [@billable_user.email]
+              ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
+            end
+
+            it "creates a new MailLog record" do
+              expect { subject }.to change(MailLog, :count).by(1)
+            end
           end
 
-          it "should send email to non-archived users and should send appropriate template" do
-            ActionMailer::Base.deliveries.clear
-            subject
-            @worker.work_off
+          context "with the 'active_and_billable' filter" do
+            subject { MailLetter.new(@attributes.merge(criteria: 'active_and_not_billable')).deliver_and_log }
 
-            ActionMailer::Base.deliveries.last.to.should eq [@user.email]
-            ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
-          end
+            it "delays delivery of mails" do
+              expect { subject }.to change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)
+            end
 
-          it "should create a new MailLog record" do
-            expect { subject }.to change(MailLog, :count).by(1)
+            it "actually sends email when workers do their jobs" do
+              subject
+              expect { @worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
+            end
+
+            it "sends email to active and billable users and should send appropriate template" do
+              ActionMailer::Base.deliveries.clear
+              subject
+              @worker.work_off
+
+              ActionMailer::Base.deliveries.last.to.should eq [@user.email]
+              ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
+            end
+
+            it "creates a new MailLog record" do
+              expect { subject }.to change(MailLog, :count).by(1)
+            end
           end
         end
+        
       end
 
     end

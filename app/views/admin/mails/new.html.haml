@@ -8,7 +8,7 @@
   .entry.criteria
     = f.label :criteria
     = "Users: "
-    = f.select :criteria, [["dev team only", "dev"], ["with activity", "with_activity"], ["non-archived", "not_archived"], ["all", "all"]]
+    = f.select :criteria, [["dev team only", "dev"], ["with activity", "with_activity"], ["active and billable", "active_and_billable"], ["active and not billable", "active_and_not_billable"], ["all", "all"]]
 
   %br
 
