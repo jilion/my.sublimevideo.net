@@ -3,7 +3,7 @@
 :textile
   h3. Step 1: Add your site
 
-  Log into "MySublimeVideo":https://my.sublimevideo.net, choose a plan and enter the domain of the site where you want to integrate SublimeVideo. This will generate a player that will only work on that site. For instance if you plan to have the player at _http://yourdomain.com/test/page.html_ you only need to enter _yourdomain.com_.
+  Log into #{link_to "MySublimeVideo", sites_url(subdomain: 'my')}, choose a plan and enter the domain of the site where you want to integrate SublimeVideo. This will generate a player that will only work on that site. For instance if you plan to have the player at _http://yourdomain.com/test/page.html_ you only need to enter _yourdomain.com_.
 
   *Notes:*
   * Your site's domain can be updated at any time.
@@ -12,7 +12,7 @@
 
   h3. Step 2: Embed the player's code
 
-  Copy the SublimeVideo Player embed code for "your site":https://my.sublimevideo.net/sites and paste it into the page where you plan to add your video(s).  It's a single line of code that will load the player you've created in the previous step. We highly recommend you paste this line inside the @<head>@ tag[^"1":#fn-1^]:
+  Copy the SublimeVideo Player embed code for #{link_to "your site", sites_url(subdomain: 'my')} and paste it into the page where you plan to add your video(s). It's a single line of code that will load the player you've created in the previous step. We highly recommend you paste this line inside the @<head>@ tag[^"1":#fn-1^]:
 
 :coderay
   #{coderay_options(:html)}
@@ -45,5 +45,5 @@
   Please read "how to write proper @<video>@ elements":/write-proper-video-elements to learn more about this.
 
   <div class="footnotes">
-  #(#fn-1) If you want to put it elsewhere, please be sure it's before any @<video>@ element. This is necessary to ensure compatibility with old browsers that do not support HTML5.
+  #(#fn-1) If you want to put it elsewhere, please make sure it's before any @<video>@ element. This is necessary to ensure compatibility with old browsers that do not support HTML5.
   </div>
