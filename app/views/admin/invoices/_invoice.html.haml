@@ -1,11 +1,11 @@
-%tr[invoice]{ :class => cycle("", "alt") }
+%tr[invoice]{ class: cycle("", "alt") }
   %td.id
     = link_to "##{invoice.id}", [:admin, invoice]
   %td.reference
     = link_to invoice.reference, [:admin, invoice]
   %td.user
     %small
-      = link_to invoice.user.name, [:admin, invoice.user], :title => "#{invoice.user.name} <#{invoice.user.email}>"
+      = link_to invoice.user.name_or_email, [:admin, invoice.user], title: invoice.user.email
       - if invoice.user.beta?
         = "("
         = "beta" if invoice.user.beta?
@@ -17,14 +17,14 @@
   %td.period
     %small
       - if invoice.paid_at
-        = "Paid: #{l(invoice.paid_at, :format => :minutes)}"
-        = ", Refund. #{l(invoice.site.refunded_at, :format => :minutes)}" if invoice.refunded?
+        = "Paid: #{l(invoice.paid_at, format: :minutes)}"
+        = ", Refund. #{l(invoice.site.refunded_at, format: :minutes)}" if invoice.refunded?
       - elsif invoice.canceled?
         = "Canceled"
       - elsif invoice.last_failed_at
-        = "Failed: #{l(invoice.last_failed_at, :format => :minutes)}"
+        = "Failed: #{l(invoice.last_failed_at, format: :minutes)}"
       - else
-        = "Created: #{l(invoice.created_at, :format => :minutes)}"
+        = "Created: #{l(invoice.created_at, format: :minutes)}"
   %td.invoice_items_count
     %strong
       - if invoice.invoice_items_count > 1

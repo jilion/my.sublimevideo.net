@@ -9,9 +9,11 @@
 //= require prototype_ujs
 //= require s2
 //= require prototype/sites_select_title
-//= require global
 
 //= require_self
+
+//= require base
+//= require global
 
 var SublimeVideo   = SublimeVideo || {};
 var MySublimeVideo = MySublimeVideo || {};

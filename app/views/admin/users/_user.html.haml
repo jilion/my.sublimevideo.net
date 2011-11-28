@@ -2,7 +2,7 @@
 - last_invoice = user.invoices.last
 %tr[user]{ class: cycle("", "alt") }
   %td.name
-    = link_to user.name || "no name", [:admin, user], title: user.email
+    = link_to user.name_or_email, [:admin, user], title: user.email
   %td.state
     = user.state.titleize
   %td.sites

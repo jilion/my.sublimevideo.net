@@ -46,7 +46,6 @@ describe User do
 
     # Devise checks presence/uniqueness/format of email, presence/length of password
     it { should validate_presence_of(:email) }
-    it { should validate_presence_of(:name) }
     it { should ensure_length_of(:billing_postal_code).is_at_most(20) }
     it { should validate_acceptance_of(:terms_and_conditions) }
 
@@ -68,88 +67,6 @@ describe User do
         end
       end
     end
-
-    # describe "billing info" do
-    #   before(:all) do
-    #     Site.delete_all
-    #     @billable_user = Factory.create(:user)
-    #     @non_billable_user = Factory.create(:user)
-    # 
-    #     # billable
-    #     Factory.create(:site, user: @billable_user, plan_id: @paid_plan.id)
-    # 
-    #     # not billable
-    #     Factory.create(:site, user: @non_billable_user, plan_id: @free_plan.id)
-    #   end
-    #   
-    #   describe "billing_address_1" do
-    #     context "user is billable" do
-    #       it "is not valid" do
-    #         @billable_user.billing_address_1 = ''
-    #         @billable_user.should_not be_valid
-    #         @billable_user.should have(1).error_on(:billing_address_1)
-    #       end
-    #     end
-    # 
-    #     context "user is not billable" do
-    #       it "is valid" do
-    #         @non_billable_user.billing_address_1 = ''
-    #         @non_billable_user.should be_valid
-    #       end
-    #     end
-    #   end
-    # 
-    #   describe "billing_postal_code" do
-    #     context "user is billable" do
-    #       it "is not valid" do
-    #         @billable_user.billing_postal_code = ''
-    #         @billable_user.should_not be_valid
-    #         @billable_user.should have(1).error_on(:billing_postal_code)
-    #       end
-    #     end
-    # 
-    #     context "user is not billable" do
-    #       it "is valid" do
-    #         @non_billable_user.billing_postal_code = ''
-    #         @non_billable_user.should be_valid
-    #       end
-    #     end
-    #   end
-    # 
-    #   describe "billing_city" do
-    #     context "user is billable" do
-    #       it "is not valid" do
-    #         @billable_user.billing_city = ''
-    #         @billable_user.should_not be_valid
-    #         @billable_user.should have(1).error_on(:billing_city)
-    #       end
-    #     end
-    # 
-    #     context "user is not billable" do
-    #       it "is valid" do
-    #         @non_billable_user.billing_city = ''
-    #         @non_billable_user.should be_valid
-    #       end
-    #     end
-    #   end
-    # 
-    #   describe "billing_country" do
-    #     context "user is billable" do
-    #       it "is not valid" do
-    #         @billable_user.billing_country = ''
-    #         @billable_user.should_not be_valid
-    #         @billable_user.should have(1).error_on(:billing_country)
-    #       end
-    #     end
-    # 
-    #     context "user is not billable" do
-    #       it "is valid" do
-    #         @non_billable_user.billing_country = ''
-    #         @non_billable_user.should be_valid
-    #       end
-    #     end
-    #   end
-    # end
 
     describe "company_url" do
       context "is present" do
@@ -830,6 +747,18 @@ describe User do
         subject { Factory.create(:user, billing_country: 'US') }
 
         its(:vat?) { should be_false }
+      end
+    end
+
+    describe "#name_or_email" do
+      context "user has no name" do
+        subject { Factory.create(:user, name: nil, email: "john@doe.com") }
+        its(:name_or_email) { should eq "john@doe.com" }
+      end
+
+      context "user has a name" do
+        subject { Factory.create(:user, name: "John Doe", email: "john@doe.com") }
+        its(:name_or_email) { should eq "John Doe" }
       end
     end
 

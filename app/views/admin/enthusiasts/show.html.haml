@@ -38,7 +38,7 @@
   .user
     %strong= "Linked user:"
     - if @enthusiast.user
-      = link_to(@enthusiast.user.name, admin_user_path(@enthusiast.user))
+      = link_to(@enthusiast.user.name_or_email, admin_user_path(@enthusiast.user))
     - else
       = "No user"
   %br

@@ -1,5 +1,5 @@
 - last_30_days_billable_video_views = site.last_30_days_main_video_views.to_i + site.last_30_days_extra_video_views.to_i
-%tr[site]{ :class => cycle("", "alt") }
+%tr[site]{ class: cycle("", "alt") }
   %td.id
     = link_to "##{site.id}", [:edit, :admin, site]
   %td.id
@@ -8,7 +8,7 @@
     = links_to_hostnames(site)
   %td.user
     %small
-      = link_to site.user.name, [:admin, site.user], :title => "#{site.user.name} <#{site.user.email}>"
+      = link_to site.user.name_or_email, [:admin, site.user], title: site.user.email
   %td.state
     %small= site.state.humanize
   %td.plan

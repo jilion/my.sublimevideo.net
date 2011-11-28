@@ -10,7 +10,7 @@
     %small= link_to(enthusiast.email, admin_enthusiast_path(enthusiast))
   %td
     - if enthusiast.user
-      %small= link_to(enthusiast.user.name, admin_user_path(enthusiast.user))
+      %small= link_to(enthusiast.user.name_or_email, admin_user_path(enthusiast.user))
     - else
       = "-"
   %td
