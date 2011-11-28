@@ -32,11 +32,12 @@
 
   h3(#not-properly-registered). I'm seeing the message "SublimeVideo Player is not properly registered for this site", why?
 
-  There are two reasons this alert message could be appearing:
+  The alert is displayed if you have multiple sites registered on #{link_to "MySublimeVideo", sites_url(subdomain: 'my')} and are using another site’s SublimeVideo Player embed code in the site receiving the error message. Please check that the embed code you are using on your site is the same as the one displayed when you click the 'Embed Code' button for that site on #{link_to "MySublimeVideo", sites_url(subdomain: 'my')}.
 
-  The alert is displayed if you have multiple sites registered on "MySublimeVideo":https://my.sublimevideo.net/sites and are using another site’s SublimeVideo Player embed code in the site receiving the error message. Please check that the embed code you are using on your site is the same as the one displayed when you click the ‘Embed Code’ button for that site on "MySublimeVideo":https://my.sublimevideo.net/sites.
-
-  This alert is also displayed if you have a Free LaunchPad plan and are trying to use the player in production. The LaunchPad Plan only works on your local domains - if you want to use the player in production you can upgrade your LaunchPad plan to a paid plan.
+  This alert is also displayed if:
+  * You are using the player on a development domain that is not specified in the "_Development domains_":/site-settings#dev_domains field.
+  * You are using the player on a production site, but you didn't provide any _"Main":/site-settings#main_domain, "Staging or alias":/site-settings#extra_domains_ domain.
+  * You are using the player on a subdomain of your _Main, Staging or alias domain_, but you didn't enable the "Wildcard option":/site-settings#wildcard.
 
 -#  h3. The player has a strange behavior or looking
 -#
