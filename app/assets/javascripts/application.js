@@ -12,8 +12,8 @@
 
 //= require_self
 
-//= require base
 //= require global
+//= require base_prototype
 
 var SublimeVideo   = SublimeVideo || {};
 var MySublimeVideo = MySublimeVideo || {};
