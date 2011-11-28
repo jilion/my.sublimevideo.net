@@ -184,7 +184,6 @@ feature "Com Pages" do
       end
 
       scenario "it's possible to sign up" do
-        fill_in 'Name',     with: 'Rémy Coutable'
         fill_in 'Email',    with: 'remy@jilion.com'
         fill_in 'Password', with: '123456'
         check "user_terms_and_conditions"
@@ -200,7 +199,6 @@ feature "Com Pages" do
         end
 
         scenario "archived user" do
-          fill_in 'Name',     with: 'Rémy Coutable'
           fill_in 'Email',    with: @archived_user.email
           fill_in 'Password', with: '123456'
           check "user_terms_and_conditions"
@@ -214,13 +212,11 @@ feature "Com Pages" do
       scenario "displays errors if sign up is not successful" do
         go 'www', '/?p=signup'
 
-        fill_in 'Name',     with: ''
         fill_in 'Email',    with: ''
         fill_in 'Password', with: ''
         click_button 'Sign Up'
 
         current_url.should eq "http://www.sublimevideo.dev/signup"
-        page.should have_content "Name can't be blank"
         page.should have_content "Email can't be blank"
         page.should have_content "Password can't be blank"
         page.should have_content "Terms & Conditions must be accepted"
