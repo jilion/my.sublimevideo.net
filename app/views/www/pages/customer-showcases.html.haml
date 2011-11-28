@@ -68,6 +68,6 @@
             %h4= link_to clean_tweet_from_user(tweet), "http://twitter.com/#{tweet.user.screen_name}"
             %em.date= link_to l(tweet.created_at, format: :tweet, ordinal_day: tweet.created_at.day.ordinalize), "https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}"
         .spacer
-  %p.view_all= link_to "View all tweets", "http://twitter.com/sublimevideo/favorites", class: "tweets"
+  -# %p.view_all= link_to "View all tweets", "http://twitter.com/sublimevideo/favorites", class: "tweets"
 .spacer
 = render "www/sign_up_box"
