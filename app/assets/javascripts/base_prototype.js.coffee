@@ -19,17 +19,10 @@ document.observe "dom:loaded", ->
 SublimeVideo.handleLoggedInAutoRedirection = ->
   path = document.location.pathname
   my_host = "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}"
-  if path == '/'
-    # We "kill" the cookie to ensure there will be no infinite redirect between /sites and /?p=login
-    # When MSV session is dead but "l" cookie is still true
-    # Setting the cookie to false here will force the MyController to reset it to true if user is actually logged-in.
-    Cookie.set('l', 'false', { domain: ".#{SublimeVideo.topDomainHost()}"})
-    document.location.href = "#{my_host}/sites"
-  else if path == '/help'
+  if path == '/help'
     document.location.href = "#{my_host}#{path}"
 
 SublimeVideo.handleLoggedInLinksTweaking = ->
-  $$('li.not_logged_in_only').invoke 'hide'
   $$('a.my_link').each (a) -> a.href = a.href.replace /www/, 'my'
 
 SublimeVideo.showPopup = (name, successUrl = null) ->

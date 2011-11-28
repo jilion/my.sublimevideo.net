@@ -4,8 +4,7 @@
       .col
         %h4= "Product"
         %ul
-          - if request.subdomain != 'my'
-            %li.not_logged_in_only= link_to "Home", root_url(subdomain: 'www')
+          %li= link_to "Home", root_url(subdomain: 'www')
           %li= link_to "Features", page_url('features', subdomain: 'www')
           %li= link_to "Demo", page_url('demo', subdomain: 'www')
           %li= link_to "Plans & Pricing", page_url('plans', subdomain: 'www')

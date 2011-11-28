@@ -12,8 +12,7 @@ MySublimeVideo::Application.routes.draw do
     constraints subdomain: 'my' do
 
       unauthenticated :user do
-        get '/sites' => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/?p=login" }
-        root to: redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/?p=login" }
+        %w[/ sites].each { |action| get action => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/?p=login" } }
       end
 
       devise_for :users,
