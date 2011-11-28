@@ -483,22 +483,15 @@ var PopupHandler = Class.create({
     this.popupElement   = null;
     this.anchorId       = null;
   },
-  startKeyboardObservers: function() {
+  startObservers: function() {
+    this.clickHandler = this.popupElement.on("click", this.click.bind(this));
     this.keyDownHandler.start();
+    this.clickHandler.start();
   },
-  stopKeyboardObservers: function() {
+  stopObservers: function() {
     this.keyDownHandler.stop();
   },
   open: function(itemId, idPrefix, url, className, anchorId) {
-    // Creates the base skeleton for the popup, and will render it's content via an ajax request:
-    //
-    // <div class='popup loading'>
-    //   <div class='wrap'>
-    //     <div class='content'></div>
-    //   </div>
-    //   <a class='close'><span>Close</span></a>
-    // </div>
-
     this.className = className;
     this.anchorId  = anchorId;
     this.close();
@@ -511,7 +504,7 @@ var PopupHandler = Class.create({
 
     $('content').insert({ after: this.popupElement });
 
-    this.startKeyboardObservers();
+    this.startObservers();
 
     if(url != null) {
       //js.erb of the called method will take care of replacing the wrap div with the response content
@@ -519,7 +512,7 @@ var PopupHandler = Class.create({
     }
   },
   close: function() {
-    this.stopKeyboardObservers();
+    this.stopObservers();
     if (this.anchorId && this.popupElement) {
       $(this.anchorId).update(this.popupElement.down(".content").innerHTML);
     }
@@ -533,6 +526,9 @@ var PopupHandler = Class.create({
         this.close();
         break;
     }
+  },
+  click: function(event) {
+    if (event.target == this.popupElement) this.close();
   }
 });
 
