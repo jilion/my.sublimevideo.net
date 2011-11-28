@@ -1,7 +1,7 @@
 = title(@site.hostname? ? "Invoices for #{truncate_middle(@site.hostname_or_token, length: 23)}" : "Site invoices")
 = render '/layouts/sites_select_title'
 
-#site.edit
+#site.invoices
   = render '/layouts/segmented_menu'
 
   - if @invoices.empty?
@@ -10,17 +10,17 @@
 
   - else
     #invoices_summary
-      - if @site.invoices_failed? || @site.invoices_open?
+      - if @site.invoices_failed? # || @site.invoices_open?
         .failed_invoices
           - if @site.invoices_failed?
             - failed_invoices = @invoices.select { |invoice| invoice.failed? }
             %p.desc
               = raw t('invoice.count_failed_invoices_with_total_amount', count: failed_invoices.size, total_amount: display_amount(failed_invoices.sum(&:amount)))
 
-          - if @site.invoices_open?
-            - open_invoices = @invoices.select { |invoice| invoice.open? }
-            %p.desc
-              = raw t('invoice.count_open_invoices_with_total_amount', count: open_invoices.size, total_amount: display_amount(open_invoices.sum(&:amount)))
+          -# - if @site.invoices_open?
+          -#   - open_invoices = @invoices.select { |invoice| invoice.open? }
+          -#   %p.desc
+          -#     = raw t('invoice.count_open_invoices_with_total_amount', count: open_invoices.size, total_amount: display_amount(open_invoices.sum(&:amount)))
 
           - if !current_user.cc?
             %p
@@ -32,13 +32,13 @@
               = raw t("app.please_link", link: link_to("update your credit card", [:edit, :billing], class: "hl"))
               = t('user.payment.retry_here')
           - else
-            - if @site.invoices_open?
-              = "Open invoices are automatically charged on your credit card, but you can still pay them manually if you prefer."
-            - else
-              %p
-                = "If necessary,"
-                = link_to "update your credit card", [:edit, :billing], class: "hl"
-                = "and then retry the payment via the button below."
+            -# - if @site.invoices_open?
+            -#   = "Open invoices are automatically charged on your credit card, but you can still pay them manually if you prefer."
+            -# - else
+            %p
+              = "If necessary,"
+              = link_to "update your credit card", [:edit, :billing], class: "hl"
+              = "and then retry the payment via the button below."
 
             %h3.section_title Current credit card on file
             #credit_card_summary= render 'my/billings/cc_summary', user: current_user

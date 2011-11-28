@@ -29,9 +29,10 @@ MySublimeVideo::Application.routes.draw do
           put    :update,  path: '/account', as: 'update'
           delete :destroy, path: '/account', as: 'destroy'
         end
-        get '/logout' => 'users/sessions#destroy', as: 'destroy_user_session'
-        put '/hide_notice/:id' => 'users#hide_notice'
+        get  '/logout' => 'users/sessions#destroy', as: 'destroy_user_session'
+        put  '/hide_notice/:id' => 'users#hide_notice'
         post '/password/validate' => "users/passwords#validate"
+        get  '/account/more-info'  => "users#more_info", as: 'more_user_info'
       end
       get '/account/edit' => redirect('/account')
 

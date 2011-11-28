@@ -13,7 +13,7 @@
       .col
         %h4= "Community & Support"
         %ul
-          %li= link_to "Customer Showcases", page_url('customer-showcases', subdomain: 'www')
+          %li= link_to "Customer Showcase", page_url('customer-showcase', subdomain: 'www')
           %li= link_to "Help", page_url('help', subdomain: request.subdomain == 'my' ?  'my' : 'www'), class: 'my_link'
           %li= link_to "Documentation", root_url(subdomain: 'docs')
           %li= link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", onclick: "window.open(this); return false"
@@ -21,7 +21,7 @@
         %h4= "Stay Connected"
         %ul
           %li= link_to "Blog", "http://blog.jilion.com/tags/sublimevideo", onclick: "window.open(this); return false"
-          %li= link_to "Twitter", ""
+          %li= link_to "Twitter", "http://twitter.com/jilion"
           %li= link_to "Contact", page_url('contact', subdomain: 'www')
           %li= link_to "About", page_url('about', subdomain: 'www')
     .right
@@ -31,8 +31,6 @@
           %span= "Jilion"
       %p.twitter
         = "Follow"
-        = link_to "@sublimevideo", "http://twitter.com/sublimevideo"
-        = "by"
         = link_to "@jilion", "http://twitter.com/jilion"
     .footer_break
     %p.copyright

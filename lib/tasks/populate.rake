@@ -41,7 +41,7 @@ namespace :db do
 
     desc "Load Enthusiast development fixtures."
     task enthusiasts: :environment do
-      timed { empty_tables(EnthusiastSite, Enthusiast)                                 }
+      timed { empty_tables(EnthusiastSite, Enthusiast) }
       timed { create_enthusiasts(argv_user) }
     end
 
@@ -56,6 +56,13 @@ namespace :db do
     task sites: :environment do
       timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
       timed { create_sites }
+      empty_tables("delayed_jobs")
+    end
+
+    desc "Load Site development fixtures."
+    task invoices: :environment do
+      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction) }
+      timed { create_invoices(argv_user) }
       empty_tables("delayed_jobs")
     end
 
@@ -281,6 +288,29 @@ def create_sites
   puts "#{BASE_SITES.size} beautiful sites created for each user!"
 end
 
+def create_invoices(user_id = nil)
+  users = user_id ? [User.find(user_id)] : User.all
+  plans = Plan.standard_plans.all
+  users.each do |user|
+    user.sites.active.each do |site|
+      if site.in_paid_plan?
+        site.first_paid_plan_started_at = 2.months.ago
+        site.trial_started_at = 3.months.ago
+        site.save(validate: false)
+        (5 + rand(15)).times do |n|
+          Timecop.travel(n.months.from_now) do
+            site.prepare_pending_attributes
+            invoice = ::Invoice.construct(site: site, renew: rand > 0.5)
+            puts invoice.errors.inspect unless invoice.valid?
+            invoice.save!
+            puts "Invoice created: $#{invoice.amount / 100.0}"
+          end
+        end
+      end
+    end
+  end
+end
+
 def create_site_usages
   end_date = Date.today
   player_hits_total = 0
@@ -338,7 +368,7 @@ def create_site_usages
   puts "#{player_hits_total} video-page views total!"
 end
 
-def create_site_stats(user_id=nil)
+def create_site_stats(user_id = nil)
   users = user_id ? [User.find(user_id)] : User.all
   users.each do |user|
     user.sites.each do |site|
@@ -400,7 +430,7 @@ def create_site_stats(user_id=nil)
   puts "Fake site(s) stats generated"
 end
 
-def create_stats(site_token=nil)
+def create_stats(site_token = nil)
   sites = site_token ? [Site.find_by_token(site_token)] : Site.all
   sites.each do |site|
     VideoTag.where(st: site.token).delete_all

@@ -68,19 +68,19 @@
   %ul.thumbs
     %li#thumbnail_video1
       %a{ href: "" }
-        = image_tag "www/demo/midnight_sun1_176.jpg", alt: "", width: "144", height: "81"
+        = image_tag "www/demo/midnight_sun1_144.jpg", alt: "", width: "144", height: "81"
         %span.play
     %li#thumbnail_video2
       %a{ href: "" }
-        = image_tag "www/demo/midnight_sun2_176.jpg", alt: "", width: "144", height: "81"
+        = image_tag "www/demo/midnight_sun2_144.jpg", alt: "", width: "144", height: "81"
         %span.play
     %li#thumbnail_video3
       %a{ href: "" }
-        = image_tag "www/demo/midnight_sun3_176.jpg", alt: "", width: "144", height: "81"
+        = image_tag "www/demo/midnight_sun3_144.jpg", alt: "", width: "144", height: "81"
         %span.play
     %li#thumbnail_video4
       %a{ href: "" }
-        = image_tag "www/demo/midnight_sun4_176.jpg", alt: "", width: "144", height: "81"
+        = image_tag "www/demo/midnight_sun4_144.jpg", alt: "", width: "144", height: "81"
         %span.play
   .video_wrap.active
     %video#video1.sublime{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun1_800.jpg"), preload: "none" }
@@ -104,20 +104,20 @@
       %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.webm" }/
   .spacer
   %h3.title= "Video Playlist"
-  %p.desc=raw "SublimeVideo Player offers a simple yet powerful #{link_to("JavaScript API", "http://docs.sublimevideo.net/javascript-api/")} that allows all kinds of different integrations in your page. Here are 4 different videos with their clickable thumbnail: when a video finishes playing, the next one in the playlist is automatically started."
+  %p.desc= raw "SublimeVideo Player offers a simple yet powerful #{link_to("JavaScript API", "http://docs.sublimevideo.net/javascript-api/")} that allows all kinds of different integrations in your page. Here are 4 different videos with clickable thumbnails: when a video finishes playing, the next one in the playlist is begins automatically."
 .big_break
 %section#features
   %h3.title= "UI features"
   %ul
     %li
       %strong= "Seek ahead:"
-      =raw "jump anywhere in the video and it will start buffering from that point (HTML5 Mode only)"
+      =raw "Jump anywhere in the video and it will start buffering from that point"
     %li
       %strong= "Time display:"
-      =raw "mouse over elapsed time to view remaining time with click to stick"
+      =raw "Mouse over elapsed time to view remaining time with click to stick"
     %li
       %strong= "Volume controls:"
-      =raw "saving audio level for each site (cookie-less HTML5/Flash local storage)"
+      =raw "Save audio levels for each site (cookie-less HTML5/Flash local storage)"
     %li
       %strong= "Full-window mode:"
       %ul
@@ -127,7 +127,7 @@
         %li= "Press spacebar to play/pause and Esc to exit full-window"
     %li
       %strong= "Full-screen mode:"
-      = raw "hold down Command (Mac) or Ctrl (Windows/Linux) while entering full-window. Currently requires #{link_to("Safari 5", "http://www.apple.com/safari")}, #{link_to("Chrome 15", "http://www.google.com/chrome")}, #{link_to("Firefox 10", "http://www.mozilla.org/firefox")} or the Flash version of the player."
+      = raw "Hold down Command (Mac) or Ctrl (Windows/Linux) while entering full-window. Currently requires #{link_to("Safari 5", "http://www.apple.com/safari")}, #{link_to("Chrome 15", "http://www.google.com/chrome")}, #{link_to("Firefox 10", "http://www.mozilla.org/firefox")} or the Flash version of the player."
 .big_break
 %section#credits
   :textile

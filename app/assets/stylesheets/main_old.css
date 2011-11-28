@@ -317,7 +317,7 @@ section.middle_headline li {
   font-weight:600;
 }
 
-#content #customer_showcases {
+#content #customer_showcase {
   width:960px;
   height:260px;
   background:url(<%= asset_data_uri 'main/middle_headline_pane.png' %>) no-repeat;
@@ -328,14 +328,14 @@ section.middle_headline li {
   border-bottom:1px solid #fff;
 }
 
-#content #customer_showcases a.view_all {
+#content #customer_showcase a.view_all {
   position:absolute;
   bottom:15px;
   right:20px;
   z-index:4;
 }
 
-#content #customer_showcases .wrap {
+#content #customer_showcase .wrap {
   width:1820px;
   height:290px;
   position:absolute;
@@ -344,14 +344,14 @@ section.middle_headline li {
   -webkit-font-smoothing:antialiased;
 }
 
-#content #customer_showcases .showcase {
+#content #customer_showcase .showcase {
   width:400px;
   height:220px;
   padding:15px 0 0 55px;
   float:left;
 }
 
-#content #customer_showcases img.portrait {
+#content #customer_showcase img.portrait {
   width:56px;
   height:56px;
   border:3px solid #fff;
@@ -367,34 +367,34 @@ section.middle_headline li {
   border-radius: 3px;
 }
 
-#content #customer_showcases a.logo {
+#content #customer_showcase a.logo {
   float:right;
 }
 
-#content #customer_showcases a.logo img {
+#content #customer_showcase a.logo img {
 /*  float:right;*/
   padding:4px 0 0 8px;
 }
 
-#content #customer_showcases blockquote {
+#content #customer_showcase blockquote {
   font-style:italic;
   font-size:15px;
   line-height:23px;
 }
 
-#content #customer_showcases blockquote a {
+#content #customer_showcase blockquote a {
   color:#133c66;
 }
 
-#content #customer_showcases .quote_info {
+#content #customer_showcase .quote_info {
   font-size:12px;
 }
 
-#content #customer_showcases .quote_info p {
+#content #customer_showcase .quote_info p {
   padding:8px 0 14px;
 }
 
-#content #customer_showcases .quote_info a.read_showcase {
+#content #customer_showcase .quote_info a.read_showcase {
   color:#d4e0ed;
   background:#6984a2;
   padding:1px 7px;
@@ -409,7 +409,7 @@ section.middle_headline li {
   box-shadow: rgba(255,255,255,0.6) 0 1px 0;
 }
 
-#content #customer_showcases a.arrow {
+#content #customer_showcase a.arrow {
   display:block;
   width:25px;
   height:25px;
@@ -417,18 +417,18 @@ section.middle_headline li {
   top:130px;
 }
 
-#content #customer_showcases a.arrow.left {
+#content #customer_showcase a.arrow.left {
   background:url(<%= asset_data_uri 'main/left_arrow_button.png' %>) no-repeat;
   left:15px;
 }
-#content #customer_showcases a.arrow.right {
+#content #customer_showcase a.arrow.right {
   background:url(<%= asset_data_uri 'main/right_arrow_button.png' %>) no-repeat;
   right:15px;
 }
 
-#content #customer_showcases a.arrow:active {background-position:0 -25px}
+#content #customer_showcase a.arrow:active {background-position:0 -25px}
 
-#content #customer_showcases a.arrow span {display:none}
+#content #customer_showcase a.arrow span {display:none}
 
 section.sublimevideo_cloud {
   padding-top:20px;

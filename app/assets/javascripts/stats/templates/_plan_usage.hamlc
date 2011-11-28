@@ -5,10 +5,10 @@
     %p
       You currently have the
       %strong.capitalize= @plan.name
-      = "plan for #{@site.title()}. Your monthly video plays usage for the period between #{Highcharts.dateFormat('%e %b %Y', @plan.monthCycleStartTime)} and #{Highcharts.dateFormat('%e %b %Y', @plan.monthCycleEndTime)}:"
+      = "plan for #{@site.title()}. Your current usage (video plays) for the period between #{Highcharts.dateFormat('%e %b %Y', @plan.monthCycleStartTime)} and #{Highcharts.dateFormat('%e %b %Y', @plan.monthCycleEndTime)} is:"
     .progress_bar
       .bar{ style: "width:#{Highcharts.numberFormat(@plan.monthCycleVideoViews / @plan.videoViews * 100, 2)}%" }
     %p
-      You already consumed
+      You've already consumed
       %strong= "#{Highcharts.numberFormat(@plan.monthCycleVideoViews / @plan.videoViews * 100, 2)}%"
-      = "(#{Highcharts.numberFormat(@plan.monthCycleVideoViews, 0)} plays) of your current plan. It includes all kinds of plays (from main domain, extra domains and embeds)."
+      = "(#{Highcharts.numberFormat(@plan.monthCycleVideoViews, 0)} plays) of your current plan's allowance. This includes all kinds of plays (from the main domain, extra domains and embeds)."

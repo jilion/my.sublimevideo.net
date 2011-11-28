@@ -63,8 +63,10 @@ feature "Hidable notices" do
 
   describe "notice 2: 'More info incomplete'" do
     background do
-      sign_in_as :user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo'
-      @site = Factory.create(:site, user: @current_user)
+      Timecop.travel(3.weeks.ago) do
+        sign_in_as :user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo'
+        @site = Factory.create(:site, user: @current_user)
+      end
     end
 
     context "user didn't hide the notice" do

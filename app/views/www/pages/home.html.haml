@@ -15,18 +15,18 @@
         %h3= "Always Up-To-Date"
         = link_to (image_tag "www/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), page_path('features', anchor: 'always_up_to_date')
       %li.works_in_any_browsers
-        %h3= "Works in any browsers"
-        = link_to (image_tag "www/home/features/browsers/default.png", alt: "Works in any browsers"), page_path('features', anchor: 'works_everywhere'), id: "browsers_box"
+        %h3= "Works in any browser"
+        = link_to (image_tag "www/home/features/browsers/default.png", alt: "Works in any browser"), page_path('features', anchor: 'works_everywhere'), id: "browsers_box"
       %li.works_on_any_devices
-        %h3= "Works on any mobile devices"
-        = link_to (image_tag "www/home/features/any_devices.png", alt: "Works on any mobile devices"), page_path('features', anchor: 'works_everywhere')
+        %h3= "Works on all mobile devices"
+        = link_to (image_tag "www/home/features/any_devices.png", alt: "Works on all mobile devices"), page_path('features', anchor: 'works_everywhere')
       %li.stats
-        %h3= "Real-time Statistics"
-        = link_to (image_tag "www/home/features/stats.png", alt: "Real-time Statistics"), page_path('features', anchor: 'real_time_stats')
+        %h3= "Real-Time Statistics"
+        = link_to (image_tag "www/home/features/stats.png", alt: "Real-Time Statistics"), page_path('features', anchor: 'real_time_stats')
       %li.instant_setup
-        = link_to (image_tag "www/home/features/instant_setup.png", alt: "Instant Setup & Easy Integration"), page_path('features', anchor: 'instant_setup')
-        %h3.t1= "Instant Setup"
-        %h3.t2= "Easy Integration"
+        = link_to (image_tag "www/home/features/instant_setup.png", alt: "Instant setup & easy integration"), page_path('features', anchor: 'instant_setup')
+        %h3.t1= "Instant setup"
+        %h3.t2= "Easy integration"
     .slides_nav
       = link_to "", class: "always_up_to_date active" do
         %span= "Always Up-To-Date"
@@ -57,7 +57,7 @@
   %table.logos
     %tr
       %td= link_to (image_tag "www/home/logos/littlebigplanet.png", alt: "Little Big Planet"), ""
-      %td= link_to (image_tag "www/home/logos/cloudapp.png", alt: "CloudApp"), ""
+      %td= link_to (image_tag "www/home/logos/css_tricks.png", alt: "CSS-Tricks"), ""
     %tr
       %td= link_to (image_tag "www/home/logos/taptaptap.png", alt: "Tap Tap Tap"), ""
       %td= link_to (image_tag "www/home/logos/tetrapak.png", alt: "Tetra Pak"), ""
@@ -65,16 +65,28 @@
       %td= link_to (image_tag "www/home/logos/bigcartel.png", alt: "Big Cartel"), ""
       %td= link_to (image_tag "www/home/logos/bredbandsbolaget.png", alt: "Little Big Planet"), ""
     %tr
-      %td= link_to (image_tag "www/home/logos/5by5.png", alt: "5By5"), ""
+      %td= link_to (image_tag "www/home/logos/method_and_craft.png", alt: "Method & Craft"), ""
       %td= link_to (image_tag "www/home/logos/rock_am_ring.png", alt: "Rock Am Ring"), ""
+    -# %tr
+    -#   %td= link_to (image_tag "www/home/logos/littlebigplanet.png", alt: "Little Big Planet"), ""
+    -#   %td= link_to (image_tag "www/home/logos/cloudapp.png", alt: "CloudApp"), ""
+    -# %tr
+    -#   %td= link_to (image_tag "www/home/logos/taptaptap.png", alt: "Tap Tap Tap"), ""
+    -#   %td= link_to (image_tag "www/home/logos/tetrapak.png", alt: "Tetra Pak"), ""
+    -# %tr
+    -#   %td= link_to (image_tag "www/home/logos/bigcartel.png", alt: "Big Cartel"), ""
+    -#   %td= link_to (image_tag "www/home/logos/bredbandsbolaget.png", alt: "Little Big Planet"), ""
+    -# %tr
+    -#   %td= link_to (image_tag "www/home/logos/5by5.png", alt: "5By5"), ""
+    -#   %td= link_to (image_tag "www/home/logos/rock_am_ring.png", alt: "Rock Am Ring"), ""
 
   .quote
-    = image_tag "www/home/showcases/tom_kiss.png", alt: "Tom Kiss"
+    = image_tag "www/home/showcase/tom_kiss.png", alt: "Tom Kiss"
     %blockquote= "“SublimeVideo allowed us to deliver our videos to a much wider audience”"
     %p.author
       = "Tom Kiss, Designer at "
       = link_to "MediaMolecule", "http://www.mediamolecule.com"
-    = link_to page_path('customer-showcases'), class: "view_all_showcases" do
+    = link_to page_path('customer-showcase'), class: "view_all_showcases" do
       %span= "View all showcases"
   .spacer
 .big_break
