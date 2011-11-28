@@ -1,9 +1,9 @@
-= content_for :head_before, javascript_include_tag((request.protocol =~ /^https/ ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
+= content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
 = content_for :header do
   %h2= "The HTML5 Video Player Everyone Deserves"
 
   .video_wrap
-    %video#home_video.sublime{ width: "544", height: "306", poster: image_path("www/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none" }
+    %video#home_video.sublime{ width: "544", height: "306", poster: image_path("www/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none", "data-uid" => "home", "data-name" => "Home" }
       %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
       %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
       %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" }/
@@ -69,18 +69,6 @@
     %tr
       %td= link_to (image_tag "www/home/logos/method_and_craft.png", alt: "Method & Craft"), ""
       %td= link_to (image_tag "www/home/logos/rock_am_ring.png", alt: "Rock Am Ring"), ""
-    -# %tr
-    -#   %td= link_to (image_tag "www/home/logos/littlebigplanet.png", alt: "Little Big Planet"), ""
-    -#   %td= link_to (image_tag "www/home/logos/cloudapp.png", alt: "CloudApp"), ""
-    -# %tr
-    -#   %td= link_to (image_tag "www/home/logos/taptaptap.png", alt: "Tap Tap Tap"), ""
-    -#   %td= link_to (image_tag "www/home/logos/tetrapak.png", alt: "Tetra Pak"), ""
-    -# %tr
-    -#   %td= link_to (image_tag "www/home/logos/bigcartel.png", alt: "Big Cartel"), ""
-    -#   %td= link_to (image_tag "www/home/logos/bredbandsbolaget.png", alt: "Little Big Planet"), ""
-    -# %tr
-    -#   %td= link_to (image_tag "www/home/logos/5by5.png", alt: "5By5"), ""
-    -#   %td= link_to (image_tag "www/home/logos/rock_am_ring.png", alt: "Rock Am Ring"), ""
 
   .quote
     = image_tag "www/home/showcase/tom_kiss.png", alt: "Tom Kiss"
