@@ -126,5 +126,8 @@ var PlaylistDemo = Class.create({
     if (nextId > 1 && nextId < this.firstVideoIndex + this.videosCount) {
       this.clickOnThumbnail("thumbnail_video" + nextId);
     }
+    else { // last video in the playlist
+      sublimevideo.stop();
+    }
   }
 });

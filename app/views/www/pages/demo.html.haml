@@ -11,8 +11,8 @@
     %video#single_video.sublime{ width: "544", height: "306", poster: image_path("www/demo/midnight_sun_800.jpg"), preload: "none" }
       %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
       %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" }/
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm", "data-quality"=>"hd" }/
   .right
     %h3.title= "Single video"
     %p.desc= "The most common and basic integration of SublimeVideo Player in a page. One of the best ways to display and highlight a video on your site."
@@ -111,7 +111,7 @@
   %ul
     %li
       %strong= "Seek ahead:"
-      =raw "jump anywhere in the video and it will start buffering from that point"
+      =raw "jump anywhere in the video and it will start buffering from that point (HTML5 Mode only)"
     %li
       %strong= "Time display:"
       =raw "mouse over elapsed time to view remaining time with click to stick"
@@ -131,5 +131,5 @@
 .big_break
 %section#credits
   :textile
-    p(desc). Credits: Video by *Joe Capra* - "scientifantastic.com":http://scientifantastic.com
+    p(desc). Video credits: Special edit of _Midnight Sun | Iceland_ by *Joe Capra* - "scientifantastic.com":http://scientifantastic.com
 
