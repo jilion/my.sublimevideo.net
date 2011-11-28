@@ -7,26 +7,32 @@ describe Site do
     before(:all) { @site = Factory.create(:site) }
     subject { @site.reload }
 
-    its(:user)                          { should be_present }
-    its(:plan)                          { should be_present }
-    its(:pending_plan)                  { should be_nil }
-    its(:hostname)                      { should =~ /jilion[0-9]+\.com/ }
-    its(:dev_hostnames)                 { should eql "127.0.0.1, localhost" }
-    its(:extra_hostnames)               { should be_nil }
-    its(:path)                          { should be_nil }
-    its(:wildcard)                      { should be_false }
-    its(:badged)                        { should be_false }
-    its(:token)                         { should =~ /^[a-z0-9]{8}$/ }
-    its(:license)                       { should_not be_present }
-    its(:loader)                        { should_not be_present }
-    its(:player_mode)                   { should eql "stable" }
-    its(:plan_started_at)               { should eql Time.now.utc.midnight }
-    its(:plan_cycle_started_at)         { should be_nil }
-    its(:plan_cycle_ended_at)           { should be_nil }
-    its(:pending_plan_started_at)       { should be_nil }
-    its(:pending_plan_cycle_started_at) { should be_nil }
-    its(:pending_plan_cycle_ended_at)   { should be_nil }
-    its(:next_cycle_plan_id)            { should be_nil }
+    its(:user)                                    { should be_present }
+    its(:plan)                                    { should be_present }
+    its(:pending_plan)                            { should be_nil }
+    its(:hostname)                                { should =~ /jilion[0-9]+\.com/ }
+    its(:dev_hostnames)                           { should eql "127.0.0.1, localhost" }
+    its(:extra_hostnames)                         { should be_nil }
+    its(:path)                                    { should be_nil }
+    its(:wildcard)                                { should be_false }
+    its(:badged)                                  { should be_false }
+    its(:token)                                   { should =~ /^[a-z0-9]{8}$/ }
+    its(:license)                                 { should_not be_present }
+    its(:loader)                                  { should_not be_present }
+    its(:player_mode)                             { should eql "stable" }
+    its(:plan_started_at)                         { should eql Time.now.utc.midnight }
+    its(:plan_cycle_started_at)                   { should be_nil }
+    its(:plan_cycle_ended_at)                     { should be_nil }
+    its(:pending_plan_started_at)                 { should be_nil }
+    its(:pending_plan_cycle_started_at)           { should be_nil }
+    its(:pending_plan_cycle_ended_at)             { should be_nil }
+    its(:next_cycle_plan_id)                      { should be_nil }
+    its(:last_30_days_main_video_views)           { should eq 0 }
+    its(:last_30_days_extra_video_views)          { should eq 0 }
+    its(:last_30_days_dev_video_views)            { should eq 0 }
+    its(:last_30_days_invalid_video_views)        { should eq 0 }
+    its(:last_30_days_embed_video_views)          { should eq 0 }
+    its(:last_30_days_billable_video_views_array) { should have(30).items }
 
     it { should be_active } # initial state
     it { should_not be_in_free_plan }
