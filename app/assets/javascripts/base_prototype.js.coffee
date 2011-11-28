@@ -5,6 +5,11 @@ document.observe "dom:loaded", ->
     SublimeVideo.handleLoggedInAutoRedirection()
     SublimeVideo.handleLoggedInLinksTweaking()
 
+  $$('.popup').each (popup) ->
+    if popup.visible()
+      SublimeVideo.simplePopupHandler = new SimplePopupHandler(popup.id, SublimeVideo.replaceHistory)
+      SublimeVideo.simplePopupHandler.startObservers()
+
   Event.observe window, 'popstate', (event) ->
     if event.state? and event.state.hidePopup?
       SublimeVideo.showPopup(event.state.hidePopup)
@@ -73,34 +78,32 @@ class SimplePopupHandler
     @contentId       = contentId
     @contentDiv      = $(contentId)
     @keyDownHandler  = document.on "keydown", this.keyDown.bind(this)
+    @clickHandler    = @contentDiv.on "click", this.click.bind(this)
     @onCloseCallback = onCloseCallback
 
-  startKeyboardObservers: ->
+  startObservers: ->
     @keyDownHandler.start()
+    @clickHandler.start()
 
-  stopKeyboardObservers: ->
+  stopObservers: ->
     @keyDownHandler.stop()
+    @clickHandler.stop()
 
   open: (contentId) ->
-    # Creates the base skeleton for the popup, and will render it's content via an ajax request:
-    #
-    # <div class='popup loading'>
-    #   <div class='wrap'>
-    #     <div class='content'></div>
-    #   </div>
-    #   <a class='close'><span>Close</span></a>
-    # </div>
     this.close()
 
     @contentDiv.show()
 
-    this.startKeyboardObservers()
+    this.startObservers()
 
   close: ->
-    this.stopKeyboardObservers()
+    this.stopObservers()
     @onCloseCallback(@contentId)
     @contentDiv.hide()
 
   keyDown: (event) ->
     switch event.keyCode
       when Event.KEY_ESC then this.close()
+
+  click: (event) ->
+    if event.target is @contentDiv then this.close()
