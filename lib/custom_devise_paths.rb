@@ -9,6 +9,25 @@ module CustomDevisePaths
     end
   end
 
+  def after_sign_up_path_for(resource_or_scope)
+    case Devise::Mapping.find_scope!(resource_or_scope)
+    when :user
+      new_site_url(subdomain: 'my')
+    when :admin
+      admin_sites_url(subdomain: 'admin')
+    end
+  end
+
+  # The path used after confirmation.
+  def after_confirmation_path_for(resource_name, resource)
+    case Devise::Mapping.find_scope!(resource)
+    when :user
+      more_user_info_url(subdomain: 'my')
+    when :admin
+      admin_sites_url(subdomain: 'admin')
+    end
+  end
+
   def after_resending_confirmation_instructions_path_for(resource_or_scope)
     after_sign_out_path_for(resource_or_scope)
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111125093738) do
+ActiveRecord::Schema.define(:version => 20111128142033) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -345,6 +345,7 @@ ActiveRecord::Schema.define(:version => 20111125093738) do
     t.string   "last_failed_cc_authorize_error"
     t.string   "referrer_site_token"
     t.datetime "reset_password_sent_at"
+    t.text     "confirmation_comment"
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true

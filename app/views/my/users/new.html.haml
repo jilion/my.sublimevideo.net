@@ -8,16 +8,10 @@
     = f.label :email, "Email", class: "icon"
     = f.text_field :email, class: "text", placeholder: "Email", required: true, value: params[:user].try(:[], :email)
 
-  -# .entry
-  -#   .name
-  -#     = f.label :name, "Name", class: "icon"
-  -#     = f.text_field :name, class: "text", placeholder: "Name", required: true, value: params[:user].try(:[], :name)
-  -#   .spacer
-  -# 
   .entry.password
     = f.label :password, "", class: "icon"
     = f.password_field :password, class: "text show_password", placeholder: "Password", required: true
-  
+
   .break
   .entry.terms
     .checkbox_wrap
@@ -27,8 +21,3 @@
   .entry.submit.sign_up
     = f.submit "Sign Up"
     .spacer
-
--# #signup_right
--#   .wrap
--#     Already an account?
--#     = link_to "Login Here", '/?p=login', onclick: "return SublimeVideo.showPopup('login')", class: "button"
