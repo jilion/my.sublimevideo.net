@@ -11,7 +11,7 @@ if (typeof(sublimevideo) != "undefined") {
         SublimeVideo.updateModeBox(sv.mode);
       }
       else if (sv.element.id=="home_video") {
-        SublimeVideo.showCredits();
+        SublimeVideo.showCredits(true);
       }
     });
     sublimevideo.onEnd(function(sv){
@@ -20,6 +20,10 @@ if (typeof(sublimevideo) != "undefined") {
       }
       else {
         sublimevideo.stop();
+        
+        if (sv.element.id=="home_video") {
+          SublimeVideo.showCredits(false);
+        }
       }
     });
   });
@@ -38,15 +42,23 @@ SublimeVideo.updateModeBox = function(mode) {
   modeSwitcher.down("small em").update(newModeText);
 };
 
-SublimeVideo.showCredits = function() {
+SublimeVideo.showCredits = function(onOff) {
   var credits = $('video_credits');
+  var timerIn, timerOut;
   if (credits) {
-    setTimeout(function(){
-      credits.appear({ duration:1 });
-    },1000);
-    setTimeout(function(){
+    if (onOff) {
+      timerIn = setTimeout(function(){
+        credits.appear({ duration:1 });
+      },2500);
+      // timerOut = setTimeout(function(){
+      //   credits.fade({ duration:1 });
+      // },20000);
+    }
+    else {
+      clearTimeout(timerIn);
+      clearTimeout(timerOut);
       credits.fade({ duration:1 });
-    },10000);
+    }
   }
 };
 
