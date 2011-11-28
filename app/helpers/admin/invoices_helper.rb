@@ -4,7 +4,7 @@ module Admin::InvoicesHelper
     pluralized_invoices = pluralize(invoices.total_count, 'invoice')
     state = if params[:user_id]
       user = User.find(params[:user_id])
-      " for user #{user.name.titleize}" if user
+      " for user #{user.name_or_email}" if user
     elsif state = %w[paid open waiting refunded failed].detect { |state| params.key?(state) }
       " #{state}"
     elsif params[:search].present?

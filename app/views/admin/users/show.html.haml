@@ -1,8 +1,8 @@
-= title("User: #{@user.name}")
+= title("User: #{@user.name_or_email}")
 
-= content_header(raw "#{@user.name} <#{mail_to @user.email}>")
+= content_header(raw "#{@user.name_or_email} <#{mail_to @user.email}>")
 
-%p= link_to "Signin as #{@user.name}", become_admin_user_path(@user)
+%p= link_to "Signin as #{@user.name_or_email}", become_admin_user_path(@user)
 
 = render '/admin/shared/date_chooser'
 %br.spacer

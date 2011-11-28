@@ -53,7 +53,6 @@ class User < ActiveRecord::Base
     v.validates_length_of   :password, within: Devise.password_length, allow_blank: true
   end
 
-  validates :name, presence: true
   validates :postal_code, :billing_postal_code, length: { maximum: 20 }, allow_blank: true
   validates :company_url, hostname: true, allow_blank: true
   validates :terms_and_conditions, acceptance: { accept: "1" }, on: :create
@@ -159,6 +158,10 @@ class User < ActiveRecord::Base
 
   def vat?
     Vat.for_country?(billing_country)
+  end
+
+  def name_or_email
+    name.presence || email
   end
 
   def billing_address

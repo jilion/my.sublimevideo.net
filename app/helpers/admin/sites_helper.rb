@@ -16,7 +16,7 @@ module Admin::SitesHelper
       " with peak insurance"
     elsif params[:user_id]
       user = User.find(params[:user_id])
-      " for #{user.name.titleize}" if user
+      " for #{user.name_or_email}" if user
     elsif params[:search].present?
       " matching '#{params[:search]}'"
     else
