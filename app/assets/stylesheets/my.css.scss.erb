@@ -625,6 +625,71 @@ ul.segmented_menu li.active a {
   color:#A50015;
 }
 
+/* ================ */
+/* = Generic Text = */
+/* ================ */
+
+section.text {
+  line-height:24px;
+  padding-bottom:40px;
+}
+
+section.text h3 {
+  font-size:24px;
+  font-weight:600;
+  padding:15px 0 5px;
+}
+
+section.text p {
+  padding:10px 0;
+}
+
+section.text ol {
+  list-style-type:none;
+}
+
+section.text > ol{
+  padding:5px 0;
+  list-style-type:none;
+}
+
+section.text ol ol{
+  padding-left:18px;
+  list-style-type:none;
+}
+section.text ol li {
+  padding:5px 0;
+}
+
+section.text ol ol ol{
+  list-style-type:lower-latin;
+}
+
+section.text ol ol ol ol{
+  list-style-type:lower-roman
+}
+
+section.text ol ol li {
+  position:relative;
+  padding-left:12px
+}
+
+section.text ol ol li span.number {
+  position:absolute;
+  top:5px;
+  left:-18px
+}
+
+section.text ol ol ol li, section.text ol ol ol ol li {
+  padding-left:0;
+  position:static
+}
+
+section.text ul {
+  padding:5px 20px 10px;
+}
+
+
 /* ========= */
 /* = Popup = */
 /* ========= */
@@ -691,7 +756,7 @@ p.label {
   line-height:18px;
 }
 
-a.hl {
+a.hl, section.text a {
   color:#1e3966;
   font-weight:600;
   border-bottom:1px solid #7387a6;
