@@ -24,7 +24,7 @@ en:
     confirmations:
       user:
         send_instructions: 'You will receive an email with instructions to confirm your account in a few minutes.'
-        confirmed: 'Your account e-mail was successfully confirmed.'
+        confirmed: 'Your account email was successfully confirmed.'
     users:
       signed_up: 'You have signed up successfully, a confirmation was sent to your e-mail.'
       updated: 'Account was successfully updated.'
