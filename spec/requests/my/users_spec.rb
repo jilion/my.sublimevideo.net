@@ -48,11 +48,11 @@ feature "Users" do
 
         new_user = User.last
         new_user.should_not eq archived_user
-        new_user.name.should eq "Rémy Coutable"
+        new_user.name.should be_nil
         new_user.email.should eq archived_user.email
 
         current_url.should eq "http://my.sublimevideo.dev/sites/new"
-        page.should have_content "Rémy Coutable"
+        page.should have_content archived_user.email
       end
     end
   end
