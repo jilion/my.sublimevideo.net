@@ -49,10 +49,7 @@ SublimeVideo.showCredits = function(onOff) {
     if (onOff) {
       timerIn = setTimeout(function(){
         credits.appear({ duration:1 });
-      },2500);
-      // timerOut = setTimeout(function(){
-      //   credits.fade({ duration:1 });
-      // },20000);
+      },3000);
     }
     else {
       clearTimeout(timerIn);
