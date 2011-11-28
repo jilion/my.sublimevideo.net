@@ -12,7 +12,6 @@
     <source src="http://yoursite.com/video.mp4" />
     <source src="http://yoursite.com/video-mobile.mp4" />
     <source src="http://yoursite.com/video.webm" />
-    <source src="http://yoursite.com/video.ogv" />
   </video>
 :textile
 
@@ -22,21 +21,21 @@
 
   *Line 1.*
   
-  * SublimeVideo only operates on @<video>@ elements that have the "_sublime_" @class@ (unless you use our "JavaScript API":/javascript-api), so adding this @class@ is mandatory.
-  * %(red)It is very important to provide the proper @width@ and @height@ attributes in order to be sure the *proportions* of the original video are maintained%. These values don't necessarily have to match the width and height of the original video: you can use smaller values to scale down the video, but be sure the proportions are maintained.
+  * SublimeVideo only operates on @<video>@ elements that have the "_sublime_" @class@, unless you use our "JavaScript API":/javascript-api to prepare your @<video>@s.
+  * %(red)We highly recommend that you to provide the proper @width@ and @height@ attributes in order to be sure the *proportions* of the original video are maintained%. These values don't necessarily have to match the width and height of the original video: you can use smaller values to scale down the video, but be sure the proportions are maintained. Otherwise your video will appear with black bars above/below it or on the sides (a.k.a _letterboxed_ or _pillarboxed_).
   _Example_: if the resolution of the original video is 1280x720, you could use @width="640" height="360"@ or @width="800" height="450"@ to have the video properly scaled down with its original proportions maintained.
   * We recommend you always specify a poster frame. It's the image displayed behind the initial play button. It represents the video until the user starts playing it.
   * The @preload="none"@ attribute allows you to save bandwidth by avoiding to start preloading (buffering) the video when the page is loaded. It is supported by most modern browsers (Safari 5, Chrome 6, Firefox 4 and Opera 10.6) . We recommend you always specify this attribute otherwise your videos might start preloading in the background even if the user never clicked the initial play button.
 
-  h4. The &lt;source&gt;s
+  h4. The &lt;source&gt; elements
 
   A @<video>@ element can link to multiple video files through @<source>@ elements. These are different versions (in different formats) of the same video. The browser will choose the first source it can actually play.
 
   *Line 2.* You must provide at least one @<source>@ element linking to the MP4/H.264 video file. This will enable SublimeVideo HTML5 mode in browsers like Chrome and Safari. But if you only specify this source you won't get HTML5 mode in Firefox and Opera (although the video will still be visible on those browsers through SublimeVideo's Flash mode). %(red)Please do not forget the *closing slash* @/>@ at the end of every @<source>@ element%, this is necessary to ensure compatibility with IE 6, 7, 8.
 
-  *Line 3.* In case the MP4 source specified above (line 5.) exceeds the maximum resolution/bitrate supported by the iPhone and other mobile platforms, you need to provide a specific version of the video encoded for these mobile devices. Learn more about "how to encode for mobile devices":http://diveintohtml5.info/video.html#handbrake-gui.
+  *Line 3.* In case the MP4 source specified above (line 2.) exceeds the maximum resolution/bitrate supported by the iPhone and other mobile platforms, you need to provide a specific version of the video encoded for these mobile devices. Learn more about "how to encode for mobile devices":http://diveintohtml5.info/video.html#handbrake-gui.
 
-  *Lines 4./5.* Providing the Ogg source (in addition to MP4) enables SublimeVideo HTML5 mode in all HTML5-capable browsers, meaning Flash mode will only be used on browsers that do not support HTML5 (like IE 6, 7, 8). If you’re already providing an Ogg source, the WebM source is not needed (right now encoding WebM can be really slow and many people still choose to use Ogg over WebM, but this will probably change in the future). As stated, you are not obliged to provide an Ogg or WebM source: *you could completely omit line 4 and 5* and the video would still be watchable on all browsers; BUT in this case SublimeVideo will switch to Flash mode on Firefox and Opera.
+  *Lines 4.* Providing the WebM source (in addition to MP4) enables SublimeVideo HTML5 mode in all modern HTML5-capable browsers, meaning Flash mode will only be used on browsers that do not support HTML5 (like IE 6, 7, 8) and on very old versions of Firefox that did not support WebM (v3.6 and earlier). You are not obliged to provide a WebM source: *you could completely omit line 4* and the video would still be watchable on all browsers; BUT in this case SublimeVideo will switch to Flash mode on Firefox and Opera.
 
   h4. Additional information
 
