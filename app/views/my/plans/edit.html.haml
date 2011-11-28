@@ -30,7 +30,8 @@
 
         = render 'fields', f: f
 
-        = render 'my/sites/skip_trial_box', site: @site, f: f
+        - if @site.trial_not_started_or_in_trial?
+          = render 'my/sites/skip_trial_box', f: f
 
         = render 'my/sites/billing_info_box'
 

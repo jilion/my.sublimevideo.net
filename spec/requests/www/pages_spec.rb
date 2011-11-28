@@ -24,8 +24,8 @@ feature "Com Pages" do
           click_link 'Demo'
           current_url.should eq "http://www.sublimevideo.dev/demo"
 
-          VCR.use_cassette('twitter/showcases') { click_link 'Showcases' }
-          current_url.should eq "http://www.sublimevideo.dev/customer-showcases"
+          VCR.use_cassette('twitter/showcase') { click_link 'Showcase' }
+          current_url.should eq "http://www.sublimevideo.dev/customer-showcase"
 
           click_link 'Help'
           current_url.should eq "http://www.sublimevideo.dev/help"
@@ -59,8 +59,8 @@ feature "Com Pages" do
           click_link 'Plans & Pricing'
           current_url.should eq "http://www.sublimevideo.dev/plans"
 
-          VCR.use_cassette('twitter/showcases') { click_link 'Customer Showcases' }
-          current_url.should eq "http://www.sublimevideo.dev/customer-showcases"
+          VCR.use_cassette('twitter/showcase') { click_link 'Customer Showcase' }
+          current_url.should eq "http://www.sublimevideo.dev/customer-showcase"
 
           click_link 'Help'
           current_url.should eq "http://www.sublimevideo.dev/help"
@@ -263,7 +263,7 @@ feature "Com Pages" do
           page.should have_no_content 'Features'
           page.should have_no_content 'Plans'
           page.should have_no_content 'Demo'
-          page.should have_no_content 'Showcases'
+          page.should have_no_content 'Showcase'
           page.should have_no_content 'Blog'
           page.should have_no_content 'Login'
 

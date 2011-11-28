@@ -895,7 +895,7 @@ body {
 /* ======== */
 
 .help header, .help header .shadow, .help header .lights, 
-.customer-showcases header, .customer-showcases header .shadow, .customer-showcases header .lights {
+.customer-showcase header, .customer-showcase header .shadow, .customer-showcase header .lights {
   height:268px;
 }
 
@@ -1018,49 +1018,49 @@ body {
 /* = Customer Showcases = */
 /* ====================== */
 
-.customer-showcases h2 {
+.customer-showcase h2 {
   padding-bottom:10px;
 }
 
-.customer-showcases header p.sub {
+.customer-showcase header p.sub {
   text-align:center;
   font-size:33px;
 }
 
-.customer-showcases header p.sub a {
+.customer-showcase header p.sub a {
   color:#cee6ff;
   padding-right:30px;
-  background:url(<%= asset_data_uri "www/showcases/header_link_arrow.png" %>) no-repeat right 10px;
+  background:url(<%= asset_data_uri "www/showcase/header_link_arrow.png" %>) no-repeat right 10px;
 }
 
-.customer-showcases #content {
+.customer-showcase #content {
   width:960px;
   margin:0 auto;
 }
 
-.customer-showcases section.showcases {
+.customer-showcase section.showcase {
   width:560px;
   float:left;
   margin-right:70px;
 }
 
-.customer-showcases section.showcases ul.quotes {
+.customer-showcase section.showcase ul.quotes {
   list-style-type:none;
 }
 
-.customer-showcases section.showcases li {
+.customer-showcase section.showcase li {
   padding:50px 0 70px;
-  background:url(<%= asset_data_uri "www/showcases/showcase_breakline.png" %>) no-repeat center bottom;
+  background:url(<%= asset_data_uri "www/showcase/showcase_breakline.png" %>) no-repeat center bottom;
   position:relative;
 }
 
-.customer-showcases section.showcases li h2.title a {
+.customer-showcase section.showcase li h2.title a {
   font-size:38px;
   font-weight:600;
   color:#003165;
 }
 
-.customer-showcases section.showcases li a.read_showcase {
+.customer-showcase section.showcase li a.read_showcase {
   position:absolute;
   top:66px;
   right:0;
@@ -1069,10 +1069,10 @@ body {
   font-size:16px;
   font-weight:600;
   padding-right:22px;
-  background:url(<%= asset_data_uri "www/showcases/showcase_arrow.png" %>) no-repeat right 3px;
+  background:url(<%= asset_data_uri "www/showcase/showcase_arrow.png" %>) no-repeat right 3px;
 }
 
-.customer-showcases section.showcases li blockquote {
+.customer-showcase section.showcase li blockquote {
   font-family:chaparral-pro-1,chaparral-pro-2, Georgia, Times, serif;
   font-style:italic;
   font-size:21px;
@@ -1080,76 +1080,76 @@ body {
   margin-top:10px;
 }
 
-.customer-showcases section.showcases li blockquote p {
+.customer-showcase section.showcase li blockquote p {
   padding-bottom:10px;
 }
 
-.customer-showcases section.showcases li img.avatar {
+.customer-showcase section.showcase li img.avatar {
   float:left;
   margin:5px 30px 10px 0;
   @include border-radius(5px);
   @include box-shadow((#002660 0 1px 5px));
 }
 
-.customer-showcases section.showcases li img.logo {
+.customer-showcase section.showcase li img.logo {
   float:right;
   margin:15px 0 5px 20px;
 }
 
-.customer-showcases section.showcases p.author {
+.customer-showcase section.showcase p.author {
   padding:10px 15px;
 }
 
-.customer-showcases section.showcases p.view_all {
+.customer-showcase section.showcase p.view_all {
   text-align:center;
   font-size:31px;
   padding:40px 0 10px;
 }
 
-.customer-showcases section.twitter_love p.view_all {
+.customer-showcase section.twitter_love p.view_all {
   padding-right:20px;
   text-align:right;
 }
 
-.customer-showcases p.view_all a {
+.customer-showcase p.view_all a {
   color:#7690b3;
   font-weight:600;
   padding-right:22px;
-  background:url(<%= asset_data_uri "www/showcases/view_all_arrow.png" %>) no-repeat 100% center;
+  background:url(<%= asset_data_uri "www/showcase/view_all_arrow.png" %>) no-repeat 100% center;
 }
 
-.customer-showcases p.view_all a.showcases {
+.customer-showcase p.view_all a.showcase {
   padding-right:26px;
   background-position:100% 11px;
 }
 
-.customer-showcases section.twitter_love {
+.customer-showcase section.twitter_love {
   width:330px;
   float:left;
   margin-top:65px;
-  background:url(<%= asset_data_uri "www/showcases/twitter_list_back.png" %>) no-repeat;
+  background:url(<%= asset_data_uri "www/showcase/twitter_list_back.png" %>) no-repeat;
 }
 
-.customer-showcases section.twitter_love h3.title {
+.customer-showcase section.twitter_love h3.title {
   display:block;
   font-size:28px;
   font-weight:600;
   text-align:center;
   padding:90px 0 0;
   margin:40px 0 20px;
-  background:url(<%= asset_data_uri "www/showcases/twitter_bird.png" %>) no-repeat center top;
+  background:url(<%= asset_data_uri "www/showcase/twitter_bird.png" %>) no-repeat center top;
 }
 
-.customer-showcases section.twitter_love ul {
+.customer-showcase section.twitter_love ul {
   padding:0 20px;
   list-style-type:none;
 }
 
-.customer-showcases section.twitter_love li {
+.customer-showcase section.twitter_love li {
   padding-bottom:35px;
 }
 
-.customer-showcases section.twitter_love li blockquote {
+.customer-showcase section.twitter_love li blockquote {
   position:relative;
   margin:0 0 15px;
   padding:6px 10px 5px;
@@ -1164,17 +1164,17 @@ body {
   @include box-shadow((inset rgba(255,255,255,0.9) 0 1px 0, rgba(0,38,97,0.4) 0 1px 3px));
 }
 
-.customer-showcases section.twitter_love li blockquote .arrow {
+.customer-showcase section.twitter_love li blockquote .arrow {
   display:block;
   width:12px;
   height:8px;
-  background:url(<%= asset_data_uri "www/showcases/twitter_quote_arrow_bottom.png" %>) no-repeat;
+  background:url(<%= asset_data_uri "www/showcase/twitter_quote_arrow_bottom.png" %>) no-repeat;
   position:absolute;
   bottom:-8px;
   left:22px;
 }
 
-.customer-showcases section.twitter_love li .left {
+.customer-showcase section.twitter_love li .left {
   float:left;
   width:48px;
   height:48px;
@@ -1182,12 +1182,12 @@ body {
   position:relative;
 }
 
-.customer-showcases section.twitter_love li .left img {
+.customer-showcase section.twitter_love li .left img {
   @include border-radius(4px);
   @include box-shadow(rgba(255,255,255,1) 0 1px 0);
 }
 
-.customer-showcases section.twitter_love li .left .shadow {
+.customer-showcase section.twitter_love li .left .shadow {
   position:absolute;
   top:0;
   left:0;
@@ -1198,18 +1198,18 @@ body {
   @include box-shadow(inset rgba(0,0,0,0.5) 0 0 6px);
 }
 
-.customer-showcases section.twitter_love li .right {
+.customer-showcase section.twitter_love li .right {
   float:left;
   padding:3px 0 0 6px;
 }
 
-.customer-showcases section.twitter_love li .right h4 a {
+.customer-showcase section.twitter_love li .right h4 a {
   color:#003165;
   font-size:16px;
   font-weight:600;
 }
 
-.customer-showcases section.twitter_love li .right em a {
+.customer-showcase section.twitter_love li .right em a {
   font-size:12px;
   font-style:normal;
   color:#7690b3;
