@@ -1,6 +1,8 @@
 class My::UsersController < Devise::RegistrationsController
   include MyRedirectionFilters
 
+  responders Responders::FlashResponder
+
   respond_to :html
   respond_to :js, only: [:hide_notice]
 

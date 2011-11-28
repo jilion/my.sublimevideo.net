@@ -10,6 +10,9 @@ if (typeof(sublimevideo) != "undefined") {
       if (sv.element.id=="single_video" && !SublimeVideo.detectedMobile) {
         SublimeVideo.updateModeBox(sv.mode);
       }
+      else if (sv.element.id=="home_video") {
+        SublimeVideo.showCredits();
+      }
     });
     sublimevideo.onEnd(function(sv){
       if (sv.element.id.match(/video[1-4]/)) {
@@ -35,6 +38,18 @@ SublimeVideo.updateModeBox = function(mode) {
   modeSwitcher.down("small em").update(newModeText);
 };
 
+SublimeVideo.showCredits = function() {
+  var credits = $('video_credits');
+  if (credits) {
+    setTimeout(function(){
+      credits.appear({ duration:1 });
+    },1000);
+    setTimeout(function(){
+      credits.fade({ duration:1 });
+    },10000);
+  }
+};
+
 var PlaylistDemo = Class.create({
   initialize: function(interactiveWrapperId) {
     if (!$(interactiveWrapperId)) return;
@@ -53,7 +68,7 @@ var PlaylistDemo = Class.create({
     $$("#" + this.interactiveWrapperId + " li").each(function(thumb) {
       thumb.on("click", function(event) {
         event.stop();
-
+        
         if (!thumb.hasClassName("active")) {
           this.clickOnThumbnail(thumb.readAttribute("id"));
         }
@@ -63,33 +78,33 @@ var PlaylistDemo = Class.create({
   loadDemo: function() {
     // Only if not the first time here
     if (this.activeVideoId) this.reset();
-
+    
     this.activeVideoId = "video" + this.firstVideoIndex;
-
+    
     // Show first video
     this.showActiveVideo();
   },
   reset: function() {
     // Hide the current active video
     $$("#" + this.interactiveWrapperId + " .video_wrap.active").first().removeClassName("active");
-
+    
     // Get current active video and unprepare it
     // we could have called sublimevideo.unprepare() without any arguments, but this is faster
     sublimevideo.unprepare(this.activeVideoId);
-
+    
     // Deselect its thumbnail
     this.deselectThumbnail(this.activeVideoId);
   },
   clickOnThumbnail: function(thumbnailId) {
     // Basically undo all the stuff and bring it back to the point before js kicked in
     this.reset();
-
+    
     // Set the new active video
     this.activeVideoId = thumbnailId.replace(/^thumbnail_/, "");
-
+    
     // And show the video
     this.showActiveVideo();
-
+    
     // And finally, prepare and play it
     sublimevideo.prepareAndPlay(this.activeVideoId);
   },
@@ -102,7 +117,7 @@ var PlaylistDemo = Class.create({
   showActiveVideo: function() {
     // Select its thumbnail
     this.selectThumbnail(this.activeVideoId);
-
+    
     // Show it
     $(this.activeVideoId).up().addClassName("active");
   },
@@ -110,6 +125,9 @@ var PlaylistDemo = Class.create({
     var nextId = parseInt(endedVideoId.replace(/^video/, ""), 10) + 1;
     if (nextId > 1 && nextId < this.firstVideoIndex + this.videosCount) {
       this.clickOnThumbnail("thumbnail_video" + nextId);
+    }
+    else { // last video in the playlist
+      sublimevideo.stop();
     }
   }
 });

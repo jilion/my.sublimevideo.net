@@ -52,12 +52,16 @@
     %section#content
       = render "layouts/docs/menu" if request.subdomain == 'docs'
       .content_wrapper
-        = yield
+        - if request.subdomain == 'docs' && controller_name == 'pages'
+          - cache "docs/pages/#{params[:page]}" do
+            = yield
+        - else
+          = yield
       .spacer
     = render "layouts/footer"
     = yield :bottom
 
-    - if request.subdomain == 'www'
+    - if %w[www docs].include?(request.subdomain)
       - display_signup = params[:p] == 'signup' || params[:commit] == 'Sign Up'
       #popup_signup.popup{ style: "display:#{display_signup ? 'block' : 'none'}" }
         .popup_wrap
@@ -75,5 +79,5 @@
               %span Close
 
     - if user_signed_in?
-      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name, current_user.id, Rails.env.production? || Rails.env.staging?)
+      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name.presence || 'no name', current_user.id, Rails.env.production? || Rails.env.staging?)
     = render 'layouts/gosquared' if Rails.env.production?

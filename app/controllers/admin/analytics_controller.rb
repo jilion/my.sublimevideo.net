@@ -1,4 +1,4 @@
-class Admin::AnalyticsController < Admin::AdminController
+class Admin::AnalyticsController < AdminController
   
   # GET /analytics
   def index

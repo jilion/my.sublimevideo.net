@@ -1,4 +1,4 @@
-class Admin::MailTemplatesController < Admin::AdminController
+class Admin::MailTemplatesController < AdminController
   respond_to :html
 
   # GET /mails/templates/new

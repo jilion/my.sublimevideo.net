@@ -1,3 +1,6 @@
+= content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/t0cf1489.js")
+-# THIS IS THE BADGED PLAYER!
+
 = content_for :title, "Plans & Pricing".html_safe
 = content_for :header do
   %h2= "All paid plans are free for the first 14 days."
@@ -138,7 +141,14 @@
   .col_left
     .box
       %h4= "The free plan seems too good to be true, is it really free and unlimited?"
-      %p= raw "Yes and yes, it's completely free and gives you unlimited video plays. Unlike the unbranded player offered with our paid plans, our free player will display a discreet #{link_to "SublimeVideo badge", "http://test.sublimevideo.net/badge"} for a few seconds after video playback begins."
+      %p
+        = raw "Yes and yes, it's completely free and gives you unlimited video plays. Unlike the unbranded player offered with our paid plans, our free player will display a discreet"
+        -#= raw "#{link_to "SublimeVideo badge", "http://test.sublimevideo.net/badge"}"
+        %a.sublime{ href: "" }= "SublimeVideo badge"
+        %video.sublime.zoom.sv_force_badge{ width: "576", height: "324", poster: image_path("www/demo/midnight_sun_800.jpg"), preload: "none", style: "display:none" }
+          %source{ src:"http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }
+          %source{ src:"http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" }
+        = "for a few seconds after video playback begins."
     .box
       %h4= "What does 'per-site' mean?"
       %p= raw "Each plan is per-site. However, simply use the wildcard option to extend your SublimeVideo player license to any subdomains of your main domain. Also, if you have multiple domains showing or pointing to the same content as your main domain, you can share the same plan across these via our Alias domains option. #{link_to "Read more", page_url('site-settings', subdomain: 'docs')}."

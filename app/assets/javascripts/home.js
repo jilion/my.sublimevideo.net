@@ -9,13 +9,13 @@ Slideshow = Class.create({
     this.pauseDuration = pause *1000;
     this.speed = speed;
     this.slideShowWrapper = $$('body.home ul.slides')[0];
-    
+
     this.slideNames = [];
     $$('body.home .slides li').each(function(element){
       if (!element.hasClassName('active')) element.setOpacity(0);
       this.slideNames.push(this.getBoxName(element));
     }.bind(this));
-    
+
     this.activeBoxIndex = 0;
     this.startTimer();
     this.setupObservers();
@@ -32,7 +32,7 @@ Slideshow = Class.create({
     if (this.activeBoxIndex != index) {
       var currentBox = $$('.slides li.'+this.slideNames[this.activeBoxIndex])[0];
       var nextBox = $$('.slides li.'+this.slideNames[index])[0];
-      
+
       if (this.timer) {
         // animation
         this.fadeInAnimation = new S2.FX.Morph(currentBox, {
@@ -50,7 +50,7 @@ Slideshow = Class.create({
               this.fadeOutAnimation.play();
             } else {
               currentBox.setOpacity(0);
-              
+
             }
           }.bind(this)
         });
@@ -61,12 +61,12 @@ Slideshow = Class.create({
           this.fadeInAnimation.cancel();
           this.fadeInAnimation = null;
         }
-        
+
         if (this.fadeOutAnimation) {
           this.fadeOutAnimation.cancel();
           this.fadeOutAnimation = null;
         }
-        
+
         currentBox.setStyle({zIndex:'auto'});
 
         this.updateActiveClasses(this.slideNames[index]);
@@ -76,7 +76,7 @@ Slideshow = Class.create({
         nextBox.setOpacity(1);
         nextBox.setStyle({zIndex:2});
       }
-      
+
       this.activeBoxIndex = index;
     }
   },
@@ -95,7 +95,7 @@ Slideshow = Class.create({
         if (this.timer) {
           clearInterval(this.timer);
           this.timer = null;
-        } 
+        }
         index = this.slideNames.indexOf(this.getBoxName(element));
         this.nextSlide(index);
         e.preventDefault();

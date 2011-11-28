@@ -1,4 +1,4 @@
-class Admin::AdminController < ApplicationController
+class AdminController < ApplicationController
   responders Responders::FlashResponder
 
   before_filter :authenticate_admin!

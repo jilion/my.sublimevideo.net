@@ -1,3 +1,5 @@
+# No Prototype / jQuery in here !!
+
 # C IS FOR COOKIE
 window.Cookie =
   get: (name) ->
@@ -17,3 +19,38 @@ window.Cookie =
       if options.domain  then newcookie.push "domain=#{options.domain}"
       if options.secure  then newcookie.push "secure"
     document.cookie = newcookie.join '; '
+
+class ImagePreloader
+  constructor: (imageUrl, callback) ->
+     @callback = callback
+     @imageSrc = imageUrl
+     @problem  = false
+     this.preload()
+
+  preload: ->
+    @image = new Image()
+
+    @image['onload']  = this.didComplete
+    @image['onerror'] = this.didFail
+    @image['onabort'] = this.didAbort
+    @image['src']     = @imageSrc
+
+  didFail: =>
+    @problem = true
+    this.didComplete()
+
+  didAbort: =>
+    @problem = true
+    this.didComplete()
+
+  didComplete: =>
+    @callback(@problem, @imageSrc, { width: @image['width'], height: @image['height'] })
+
+class VideoPreloader
+  constructor: (videoUrl, callback) ->
+     @callback = callback
+     @videoSrc = videoUrl
+     this.preload()
+
+  preload: ->
+    SublimeVideoSizeChecker.getVideoSize @videoSrc, @callback

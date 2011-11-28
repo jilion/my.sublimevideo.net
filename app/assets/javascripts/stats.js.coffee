@@ -8,9 +8,16 @@
 #= require jquery.ui.datepicker.min
 #= require highcharts/highcharts
 
-#= require base
 #= require_self
+#= require_tree ./models
+#= require_tree ./templates
 #= require_tree ./stats
+
+window.MSV =
+  Models: {}
+  Collections: {}
+  Routers: {}
+  Views: {}
 
 window.MSVStats =
   Models: {}

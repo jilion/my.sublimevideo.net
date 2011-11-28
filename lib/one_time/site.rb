@@ -75,7 +75,7 @@ module OneTime
 
             unless add_to_balance.zero?
               site.user.increment!(:balance, add_to_balance)
-              puts "$#{add_to_balance/100.0} (#{balance_detail}) added to #{site.user.name}'s balance for ##{site.token} (##{site.id} #{site.hostname})!"
+              puts "$#{add_to_balance/100.0} (#{balance_detail}) added to #{site.user.name_or_email}'s balance for ##{site.token} (##{site.id} #{site.hostname})!"
             end
 
             puts "#{total} sites updated..." if (total % 100) == 0

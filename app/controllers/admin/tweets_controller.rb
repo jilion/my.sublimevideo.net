@@ -1,4 +1,4 @@
-class Admin::TweetsController < Admin::AdminController
+class Admin::TweetsController < AdminController
   respond_to :js, :html
 
   has_scope :keywords

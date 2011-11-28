@@ -3,6 +3,7 @@
 #= require underscore
 
 #= require_self
+
 #= require global
 
 window.SublimeVideo   = window.SublimeVideo || {}

@@ -1,4 +1,4 @@
-class Admin::ReferrersController < Admin::AdminController
+class Admin::ReferrersController < AdminController
   respond_to :js, :html
 
   has_scope :by_url

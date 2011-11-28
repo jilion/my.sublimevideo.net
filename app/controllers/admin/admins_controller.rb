@@ -1,4 +1,4 @@
-class Admin::AdminsController < Admin::AdminController
+class Admin::AdminsController < AdminController
   respond_to :js, :html
 
   has_scope :by_date

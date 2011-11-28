@@ -32,7 +32,7 @@ module MySublimeVideo
     end
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w[demo.js stats.js application_ie.css invoices.css invoices_print.css]
+    config.assets.precompile += %w[player.js stats.js application_ie.css invoices.css invoices_print.css]
     %w[global www my admin docs].each do |subdomain|
       config.assets.precompile += ["#{subdomain}.js", "#{subdomain}.css"]
     end

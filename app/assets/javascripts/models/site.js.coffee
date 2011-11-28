@@ -10,7 +10,7 @@ class MSV.Models.Site extends Backbone.Model
     stats_trial_start_time: null
 
   title: ->
-    this.get('hostname') ? "##{this.get('token')}"
+    if this.get('hostname')? && this.get('hostname') != '' then this.get('hostname') else "##{this.get('token')}"
 
   planMonthCycleStartTime: ->
     parseInt(this.get('plan_month_cycle_start_time')) * 1000

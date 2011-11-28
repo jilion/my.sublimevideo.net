@@ -81,7 +81,7 @@ class Site < ActiveRecord::Base
   before_save :prepare_pending_attributes, if: :pending_plan_id_changed? # in site_modules/invoice
   before_save :set_trial_started_at # in site_modules/invoice
 
-  after_create :delay_ranks_update # in site_modules/templates
+  after_create :delay_ranks_update, :update_last_30_days_counters # in site_modules/templates
 
   after_save :create_and_charge_invoice # in site_modules/invoice
   after_save :execute_cdn_update # in site_modules/templates
