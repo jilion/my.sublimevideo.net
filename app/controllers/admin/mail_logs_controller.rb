@@ -1,4 +1,4 @@
-class Admin::MailLogsController < Admin::AdminController
+class Admin::MailLogsController < AdminController
   respond_to :html
 
   # GET /mails/logs/:id/edit

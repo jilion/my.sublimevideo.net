@@ -1,4 +1,4 @@
-class Admin::DelayedJobsController < Admin::AdminController
+class Admin::DelayedJobsController < AdminController
   respond_to :html
   respond_to :js, only: :index
 

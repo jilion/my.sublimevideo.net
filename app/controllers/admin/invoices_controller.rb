@@ -1,4 +1,4 @@
-class Admin::InvoicesController < Admin::AdminController
+class Admin::InvoicesController < AdminController
   respond_to :js, :html
 
   # filter

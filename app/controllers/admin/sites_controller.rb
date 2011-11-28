@@ -1,4 +1,4 @@
-class Admin::SitesController < Admin::AdminController
+class Admin::SitesController < AdminController
   respond_to :js, :html
 
   #filter

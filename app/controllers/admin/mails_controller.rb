@@ -1,4 +1,4 @@
-class Admin::MailsController < Admin::AdminController
+class Admin::MailsController < AdminController
   respond_to :js, :html
 
   # For MailLog

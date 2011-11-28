@@ -1,4 +1,4 @@
-class Admin::StatsController < Admin::AdminController
+class Admin::StatsController < AdminController
   
   def index
   end

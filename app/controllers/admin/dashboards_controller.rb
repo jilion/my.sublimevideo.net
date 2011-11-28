@@ -1,4 +1,4 @@
-class Admin::DashboardsController < Admin::AdminController
+class Admin::DashboardsController < AdminController
 
   def show
     # Legacy metric
