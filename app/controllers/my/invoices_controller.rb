@@ -7,14 +7,14 @@ class My::InvoicesController < MyController
     @site     = current_user.sites.not_archived.find_by_token!(params[:site_id])
     @invoices = @site.invoices.not_canceled.by_date
 
-    render :index, layout: 'application'
+    render :index
   end
 
   # GET /invoices/:id
   def show
     @invoice = current_user.invoices.not_canceled.find_by_reference!(params[:id])
 
-    respond_with(@invoice)
+    respond_with(@invoice, layout: 'invoices')
   end
 
   # PUT /invoices/:site_id/retry
