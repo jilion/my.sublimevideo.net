@@ -1,6 +1,6 @@
 - dont_show_invoices_tab = @site.in_free_plan? && @site.invoices.not_canceled.empty?
-- sites_item = [:edit_site, { link_text: "Settings", class: 'first', urls: %W[sites/#{@site.token}/edit$] }]
-- plans_item = [:edit_site_plan, { link_text: "Plan", class: (dont_show_invoices_tab ? 'last' : ''), urls: %W[sites/#{@site.token}/plan/edit$] }]
+- sites_item = [:edit_site, { link_text: "Settings", class: 'first', urls: %W[sites/#{@site.token}/edit$ sites/#{@site.token}$] }]
+- plans_item = [:edit_site_plan, { link_text: "Plan", class: (dont_show_invoices_tab ? 'last' : ''), urls: %W[sites/#{@site.token}/plan/edit$ sites/#{@site.token}/plan$] }]
 - invoices_item = [:site_invoices, { link_text: "Invoices", class: "last", urls: %W[sites/#{@site.token}/invoices$] }]
 
 %ul.segmented_menu
