@@ -1,5 +1,6 @@
 class My::UsersController < Devise::RegistrationsController
   include MyRedirectionFilters
+  include CustomDevisePaths
 
   responders Responders::FlashResponder
 
@@ -18,7 +19,7 @@ class My::UsersController < Devise::RegistrationsController
       if @user.active_for_authentication?
         set_flash_message :notice, :signed_up if is_navigational_format?
         sign_in(resource_name, @user)
-        respond_with resource, location: sites_url(subdomain: 'my')
+        respond_with resource, location: after_sign_up_path_for(@user)
       else
         set_flash_message :notice, :inactive_signed_up, reason: inactive_reason(@user) if is_navigational_format?
         expire_session_data_after_sign_in!
@@ -37,7 +38,8 @@ class My::UsersController < Devise::RegistrationsController
 
     respond_with(@user) do |format|
       if @user.update_attributes(params[:user])
-        format.html { redirect_to [:edit, :user] }
+        set_flash_message :notice, :updated if is_navigational_format?
+        format.html { redirect_to params[:more_info_form] ? sites_url(subdomain: 'my') : [:edit, :user] }
       else
         format.html { render :edit }
       end
@@ -53,12 +55,20 @@ class My::UsersController < Devise::RegistrationsController
       if @user.archive
         format.html do
           sign_out(@user)
-          redirect_to root_url(subdomain: 'www'), notice: I18n.t("devise.registrations.destroyed")
+          set_flash_message :notice, :destroyed if is_navigational_format?
+          redirect_to root_url(subdomain: 'www')
         end
       else
         format.html { render :edit }
       end
     end
+  end
+
+  # GET /account/more_info
+  def more_info
+    @user = User.find(current_user.id)
+
+    render :more_info
   end
 
   def after_update_path_for(resource_or_scope)

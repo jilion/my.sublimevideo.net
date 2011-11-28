@@ -41,7 +41,6 @@ feature "Users" do
         archived_user.current_password = '123456'
         archived_user.archive
 
-        fill_in "Name",     with: "Rémy Coutable"
         fill_in "Email",    with: archived_user.email
         fill_in "Password", with: "123456"
         check "user_terms_and_conditions"
@@ -49,11 +48,12 @@ feature "Users" do
 
         new_user = User.last
         new_user.should_not eq archived_user
-        new_user.name.should eq "Rémy Coutable"
+        new_user.name.should be_nil
         new_user.email.should eq archived_user.email
 
         current_url.should eq "http://my.sublimevideo.dev/sites/new"
-        page.should have_content "Rémy Coutable"
+        page.should have_content I18n.t("devise.users.user.signed_up")
+        page.should have_content archived_user.email
       end
     end
   end
@@ -294,6 +294,19 @@ feature "confirmation" do
 
     go 'my', "/confirmation?confirmation_token=#{user.confirmation_token}"
 
+    current_url.should eq "http://my.sublimevideo.dev/account/more-info"
+    page.should have_content I18n.t("devise.confirmations.user.confirmed")
+
+    fill_in "Name",               with: "John Doe"
+    fill_in "Zip or Postal Code", with: "2001"
+    select  "France",             from: "Country"
+    fill_in "Company name",       with: "Unknown SA"
+    select  "6-20 employees",     from: "Company size"
+    check "user_use_company"
+    fill_in "user_confirmation_comment", with: "I love this player!"
+    click_button "Continue"
+
     current_url.should eq "http://my.sublimevideo.dev/sites/new"
+    page.should have_content "John Doe"
   end
 end

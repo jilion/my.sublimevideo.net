@@ -10,7 +10,6 @@ feature "Referrer" do
       current_url.should eq "http://www.sublimevideo.net/"
       go 'www', '/?p=signup'
 
-      fill_in "Name",     with: "Thibaud Guillaume-Gentil"
       fill_in "Email",    with: "thibaud@jilion.com"
       fill_in "Password", with: "123456"
       check "user_terms_and_conditions"
