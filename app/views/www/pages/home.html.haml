@@ -3,12 +3,14 @@
   %h2= "The HTML5 Video Player Everyone Deserves"
 
   .video_wrap
-    %video.sublime{ width: "544", height: "306", poster: image_path("www/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none" }
+    %video#home_video.sublime{ width: "544", height: "306", poster: image_path("www/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none" }
       %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
       %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
-
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" }/
+      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm", "data-quality"=>"hd" }/
+    #video_credits{ style: "opacity:0" }
+      = "Video by "
+      = link_to "Joe Capra.", "http://scientifantastic.com", onclick: "window.open(this); return false"
   .right
     %ul.slides#features_slides
       %li.always_up_to_date.active{style: "z-index:2"}
