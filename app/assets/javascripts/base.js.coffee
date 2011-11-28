@@ -1,11 +1,5 @@
 #= require_self
 
-window.MSV =
-  Models: {}
-  Collections: {}
-  Routers: {}
-  Views: {}
-
 document.observe "dom:loaded", ->
   if Cookie.get('l') is '1' and document.location.host.split('.')[0] is 'www' # topdomain and logged-in
     SublimeVideo.handleLoggedInAutoRedirection()
