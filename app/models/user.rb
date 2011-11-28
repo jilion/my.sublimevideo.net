@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
 
   attr_accessor :terms_and_conditions, :use, :current_password, :remote_ip
   attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
-                  :name, :postal_code, :country,
+                  :name, :postal_code, :country, :confirmation_comment,
                   :billing_name, :billing_address_1, :billing_address_2, :billing_postal_code, :billing_city, :billing_region, :billing_country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,

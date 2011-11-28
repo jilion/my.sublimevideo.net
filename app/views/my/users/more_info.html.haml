@@ -14,7 +14,7 @@
         = f.text_area :confirmation_comment, placeholder: "Write us anything you want", class: "text"
       .spacer
 
-    %p.label= raw "We are not going to share this information, please check our #{link_to "Privacy Policy", page_url('privacy', subdomain: 'my'), onclick: "window.open('#{page_url('privacy', subdomain: 'my')}'); return false;", class: "hl"}."
+    %p.label= raw "We are not going to share this information, please check our #{link_to "Privacy Policy", page_path('privacy'), onclick: "window.open(this); return false;", class: "hl"}."
 
     .entry.continue
       = hidden_field_tag :more_info_form, true
