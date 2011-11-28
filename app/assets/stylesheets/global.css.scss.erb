@@ -432,6 +432,14 @@ form .entry.path label.icon {
   left:14px;
 }
 
+form .entry.ticket_subject label.icon {
+  width:21px;
+  height:19px;
+  background:url(<%= asset_data_uri "my/fields/ticket_icon.png" %>) no-repeat;
+  top:12px;
+  left:12px;
+}
+
 ul.form_list {
   list-style-type:none;
   margin:40px 0 5px;
@@ -454,7 +462,7 @@ ul.form_list li a {
 /* = Buttons = */
 /* =========== */
 
-.green_button, .blue_button {
+.green_button, .blue_button, #help #gsfn_search_results input {
   font-family:inherit;
   color:#fff;
   text-shadow:rgba(0,0,0,0.9) 0 -1px 0;
@@ -464,7 +472,7 @@ ul.form_list li a {
   @include border-radius(6px);
 }
 
-.blue_button {
+.blue_button, #help #gsfn_search_results input {
   display:inline-block;
   padding:10px 18px;
   font-size:24px;
@@ -479,20 +487,20 @@ ul.form_list li a {
   @include gradient(#007d31,#00b95a,#009843);
 }
 
-.blue_button:active {
+.blue_button:active, #help #gsfn_search_results input:active {
   @include gradient(#314f78,#6685ae,#4b6a93); 
 }
 
-.green_button:focus, .blue_button:focus {
+.green_button:focus, .blue_button:focus, #help #gsfn_search_results input:focus {
   outline:0;
   @include box-shadow((inset #00e896 0 1px 0, #001a41 0 1px 4px, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
 }
 
-.blue_button:focus {  
+.blue_button:focus, #help #gsfn_search_results input:focus {  
   @include box-shadow((inset #8da4c3 0 1px 0, #001a41 0 1px 4px, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
 }
 
-.green_button:disabled, .blue_button:disabled {
+.green_button:disabled, .blue_button:disabled, #help #gsfn_search_results input:disabled {
   opacity:0.5;
   filter:alpha(opacity=50);
 }

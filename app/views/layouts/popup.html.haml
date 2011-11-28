@@ -5,7 +5,7 @@
     %title= title_env_prefix + title_subdomain_prefix(request) + (title.present? ? " - #{title}" : '')
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-    = stylesheet_link_tag(request.subdomain)
+    = stylesheet_link_tag('my')
     = airbrake_javascript_notifier
     = csrf_meta_tag
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
@@ -15,8 +15,8 @@
       %style{ :type => "text/css", :media => "screen" }
         == body {background:#fff;display:none;}
     /[if lte IE 9]
-      = javascript_include_tag("http://html5shiv.googlecode.com/svn/trunk/html5.js")
-    = javascript_include_tag(request.subdomain)
+      = javascript_include_tag("https://html5shiv.googlecode.com/svn/trunk/html5.js")
+    = javascript_include_tag('my')
     = yield :head
 
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
@@ -24,31 +24,10 @@
       try { Typekit.load(); } catch(e) { }
 
   %body{ class: params[:page] ? h(params[:page]) : nil }
-    %header
-      .lights
-        .shadow
-          .stars
-            .wrap
-              %h1
-                = link_to "/" do
-                  %span= "SublimeVideo"
-              = render "layouts/menu"
-              = yield :header
-    = yield :middle
-    %section#content
-      = render "layouts/flash", flash: flash if flash.present? && request.subdomain == 'my'
-      .content_wrapper= yield
+    #popup_layout
+      %h1
+        %span= "SublimeVideo"
+      = yield
     = yield :bottom
 
-    - if Rails.env.production?
-      :javascript
-        var GoSquared={};
-        GoSquared.acct = "GSN-706041-F";
-        (function(w){
-            function gs(){
-                w._gstc_lt=+(new Date); var d=document;
-                var g = d.createElement("script"); g.type = "text/javascript"; g.async = true; g.src = "//d1l6p2sc9645hc.cloudfront.net/tracker.js";
-                var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(g, s);
-            }
-            w.addEventListener?w.addEventListener("load",gs,false):w.attachEvent("onload",gs);
-        })(window);
+    = render 'layouts/gosquared' if Rails.env.production?

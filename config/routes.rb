@@ -29,6 +29,8 @@ MySublimeVideo::Application.routes.draw do
           put    :update,  path: '/account', as: 'update'
           delete :destroy, path: '/account', as: 'destroy'
         end
+        get '/gs-login' => 'users/sessions#new_gs'
+        post '/gs-login' => 'users/sessions#create_gs', as: 'gs_login'
         get  '/logout' => 'users/sessions#destroy', as: 'destroy_user_session'
         put  '/hide_notice/:id' => 'users#hide_notice'
         post '/password/validate' => "users/passwords#validate"
@@ -232,8 +234,6 @@ MySublimeVideo::Application.routes.draw do
     get '/?p=signup' => 'my/users#new'
     post '/signup' => 'my/users#create', as: 'signup'
     get '/?p=login' => 'my/users/sessions#new'
-    get '/gs-login' => 'my/users/sessions#new_gs'
-    post '/gs-login' => 'my/users/sessions#create_gs', as: 'gs_login'
     post '/login' => 'my/users/sessions#create', as: 'login'
     get '/logout' => 'my/users/sessions#destroy'
   end

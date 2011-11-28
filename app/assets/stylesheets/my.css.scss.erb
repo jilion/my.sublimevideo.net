@@ -625,6 +625,60 @@ ul.segmented_menu li.active a {
   color:#A50015;
 }
 
+/* ======== */
+/* = Help = */
+/* ======== */
+
+#help {
+  padding-bottom:40px;
+}
+
+.help_box {
+  line-height:22px;
+  margin:5px 0 12px;
+  padding:14px 16px 12px;
+  background:#94a5c1;
+  background:rgba(30,57,102,0.1);
+  @include box-shadow((inset rgba(0,47,99,0.6) 0 1px 4px, rgba(255,255,255,0.3) 0 1px 0));
+  @include border-radius(4px);
+}
+
+#help h3.title {
+  padding:25px 0 10px;
+  font-size:28px;
+  font-weight:600;
+}
+
+.help_box .entry.update {
+  padding:0;
+  margin-bottom:5px;
+}
+
+#help .getsatisfaction label {display:none;}
+
+#help .getsatisfaction input.blue_button {
+  padding:7px 15px;
+  margin-left:10px;
+}
+
+/*#gsfn_search_results {
+  padding:20px 0 0;
+}*/
+
+#gsfn_search_results ul {
+  list-style-type:none;
+}
+
+#gsfn_search_results li {
+  padding:10px;
+  margin:5px 0;
+}
+
+#help #gsfn_search_results input {
+  font-size:20px;
+  margin-right:5px;
+}
+
 /* ================ */
 /* = Generic Text = */
 /* ================ */
@@ -689,7 +743,6 @@ section.text ul {
   padding:5px 20px 10px;
 }
 
-
 /* ========= */
 /* = Popup = */
 /* ========= */
@@ -743,6 +796,34 @@ section.text ul {
   margin-left:10px;
 }
 
+/* ========================== */
+/* = Get Satisfaction Login = */
+/* ========================== */
+
+#popup_layout {
+  width:432px;
+  margin:0 auto;
+  padding:70px 0;
+  color:#1e3966;
+  text-shadow:rgba(255,255,255,0.2) 0 1px 0;
+}
+
+#popup_layout h1 {
+  display:block;
+  width:391px;
+  height:53px;
+  background:url(<%= asset_data_uri "my/getsatisfaction/sublimevideo.png" %>) no-repeat;
+  margin-bottom:40px;
+}
+
+#popup_layout h1 span {display:none}
+
+#popup_layout h2.title {
+  font-size:30px;
+  font-weight:600;
+  padding-bottom:10px;
+}
+
 p.bigger {
   width:432px;
   line-height:28px;
@@ -756,7 +837,7 @@ p.label {
   line-height:18px;
 }
 
-a.hl, section.text a {
+a.hl, section.text a, #gsfn_search_results a {
   color:#1e3966;
   font-weight:600;
   border-bottom:1px solid #7387a6;

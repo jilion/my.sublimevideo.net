@@ -1,12 +1,13 @@
 = title_and_content_header("Support")
 
-= render 'layouts/help/documentation'
+#help
+  = render 'layouts/help/documentation'
 
-- if current_user.email_support?
-  = render 'layouts/help/email_support'
-  = render 'layouts/help/community_forum'
-- else
-  = render 'layouts/help/community_forum'
-  = render 'layouts/help/email_support'
+  - if current_user.email_support?
+    = render 'layouts/help/email_support'
+    = render 'layouts/help/community_forum'
+  - else
+    = render 'layouts/help/community_forum'
+    = render 'layouts/help/email_support'
 
-= render 'layouts/help/billing_questions'
+  = render 'layouts/help/billing_questions'
