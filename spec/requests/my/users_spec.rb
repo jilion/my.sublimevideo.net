@@ -41,7 +41,6 @@ feature "Users" do
         archived_user.current_password = '123456'
         archived_user.archive
 
-        fill_in "Name",     with: "Rémy Coutable"
         fill_in "Email",    with: archived_user.email
         fill_in "Password", with: "123456"
         check "user_terms_and_conditions"
@@ -167,7 +166,7 @@ feature "Users" do
 
         fill_in 'Email',    with: email
         fill_in 'Password', with: '654321'
-        click_button 'Login'
+        click_button 'Log In'
 
         current_url.should eq "http://my.sublimevideo.dev/account"
       end

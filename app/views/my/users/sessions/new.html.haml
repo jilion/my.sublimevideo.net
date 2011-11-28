@@ -18,7 +18,7 @@
       = f.label :remember_me
 
   .entry.submit.login
-    = f.submit "Log In", class: "blue_button"  
+    = f.submit "Log In", class: "blue_button"
     %ul.form_list
       %li.signup= link_to "Don't have an account yet?", signup_url
       %li= link_to "Forgot your password?", new_user_password_url(subdomain: 'my')
