@@ -18,22 +18,20 @@
         %tr{ class: "#{if i % 2 == 0 then 'alt' else ''}" }
           %td.video
             .wrap
-              - if video.get('p')?
-                - playClass = if MSVStats.period.isSeconds() then 'disabled' else 'active'
-                %a{ href: "#", onclick: "return false", class: "play #{playClass}" }
-                  .crop{ id: "#{video.id}-crop", style: "width:96px; height:54px;" }
-                    - unless MSVStats.period.isSeconds()
-                      %span.overlay
-                - if $("##{video.id}-cache").size() > 0
-                  %script{ type: "text/javascript" }
-                    $("##{video.id}-crop").prepend($("##{video.id}-cache").clone());
-                - else
-                  -# taller than wide poster http://static.wix.com/media/665a0253fa72e434ba1f2f2e8b80823b.wix_mp_256
-                  %img{ id: "#{video.id}-img", src: "#{video.get('p')}", alt: "#{video.get('n')} posterframe", style: "display:none" }
-                  %script{ type: "text/javascript" }
-                    SublimeVideo.cropPosterframe("#{video.id}");
+              - playClass = if MSVStats.period.isSeconds() then 'disabled' else 'active'
+              %a{ href: "#", onclick: "return false", class: "play #{playClass}" }
+                .crop{ id: "#{video.id}-crop", style: "width:96px; height:54px;" }
+                  -#- unless video.get('p')?
+                  -#  %img{ src: "<%= asset_path 'my/sites/default_favicon.png' %>", alt: "Default poster frame" }
+                  - unless MSVStats.period.isSeconds()
+                    %span.overlay
+              - if $("##{video.id}-cache").size() > 0
+                %script{ type: "text/javascript" }
+                  $("##{video.id}-crop").prepend($("##{video.id}-cache").clone());
               - else
-                default img
+                - if video.get('p')?
+                  %script{ type: "text/javascript" }
+                    new SublimeVideo.ImagePreloader("#{video.get('p')}", SublimeVideo.cropPosterframe, { "imgId": "#{video.id}" });
               .right
                 %h4= video.get('n')
                 - if video.get('uo') == 's' || video.get('no') == 's'

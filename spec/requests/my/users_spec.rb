@@ -52,7 +52,7 @@ feature "Users" do
         new_user.email.should eq archived_user.email
 
         current_url.should eq "http://my.sublimevideo.dev/sites/new"
-        page.should have_content I18n.t("devise.users.user.signed_up")
+        page.should have_content I18n.t("devise.users.signed_up")
         page.should have_content archived_user.email
       end
     end
