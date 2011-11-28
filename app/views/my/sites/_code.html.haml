@@ -24,7 +24,7 @@
 
 .dark_box
   %p
-    = raw "Need help to build your first <code>&lt;video&gt;</code> elements? Consult our #{link_to "documentation", "http://docs.sublimevideo.net/write-proper-video-elements"}."
+    = raw "Need help to build your first <code>&lt;video&gt;</code> elements? Consult our #{link_to "documentation", page_url('write-proper-video-elements', subdomain: 'docs')}."
     -# = "Discover our #{link_to "video tag builder", video_tag_builder_path(site_id: site.token)}!"
     -# %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
     = raw "If a plugin or service asks for a site's token, here it is: <code>#{site.token}</code>"
