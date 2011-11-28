@@ -17,10 +17,7 @@ if (MySublimeVideo.passwordCheckerManager) {
     MySublimeVideo.passwordCheckerManager.originForm.submit();
 
   <% else %>
-    MySublimeVideo.passwordCheckerManager.popup.setStyle({
-      background: '#f00'
-    });
-    MySublimeVideo.passwordCheckerManager.popup.shake();
+    MySublimeVideo.passwordCheckerManager.popup.down('.popup_wrap').shake();
     $('password_check').clear();
   <% end %>
 }

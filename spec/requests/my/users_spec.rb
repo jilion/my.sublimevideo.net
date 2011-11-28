@@ -167,7 +167,7 @@ feature "Users" do
 
         fill_in 'Email',    with: email
         fill_in 'Password', with: '654321'
-        click_button 'Login'
+        click_button 'Log In'
 
         current_url.should eq "http://my.sublimevideo.dev/account"
       end

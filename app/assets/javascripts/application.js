@@ -316,7 +316,7 @@ var PasswordCheckerManager = Class.create({
       "<div class='entry password'>" +
       "<label for='password_check' class='icon'>" + passwordState + " Password</label>" +
       "<input type='password' id='password_check' name='password' placeholder='Your" + passwordState + " password' class='text' />" +
-      "<div class='actions'><input type='submit' class='small_button' value='Done' /></div>" +
+      "<div class='actions'><input type='submit' class='blue_button' value='Done' /></div>" +
       "<div class='spacer'></div>" +
       "</div>");
       passwordCheckerForm.store("originFormId", this.originForm.id);
@@ -507,13 +507,7 @@ var PopupHandler = Class.create({
     this.popupElement = new Element("div", {
       id: popupId,
       className: this.className + " loading"
-    }).update("<div class='wrap'><div class='content " + idPrefix + "'></div></div>");
-    var closeButton = new Element("a", {
-      href: "",
-      className: "close",
-      onclick: "return MySublimeVideo.closePopup()"
-    }).update("<span>Close</span>");
-    this.popupElement.insert({ bottom: closeButton });
+    }).update("<div class='popup_wrap'><div class='lights'><div class='content " + idPrefix + "'></div></div><a href='' onclick='return MySublimeVideo.closePopup()' class='close'><span>Close</span></a></div>");
 
     $('content').insert({ after: this.popupElement });
 

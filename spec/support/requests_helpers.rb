@@ -128,7 +128,7 @@ module Spec
         fill_in 'Password', with: options[resource_name][:password] || '123456'
         check   'Remember me' if options[:remember_me] == true
         yield if block_given?
-        click_button 'Login'
+        click_button 'Log In'
         resource
       end
 

@@ -123,7 +123,7 @@ feature "Com Pages" do
         scenario "log in is successful" do
           fill_in 'Email',    with: "john@doe.com"
           fill_in 'Password', with: '123456'
-          click_button 'Login'
+          click_button 'Log In'
 
           current_url.should eq "http://my.sublimevideo.dev/sites/new"
         end
@@ -131,7 +131,7 @@ feature "Com Pages" do
         scenario "displays errors if log in is not successful" do
           fill_in 'Email',    with: ''
           fill_in 'Password', with: ''
-          click_button 'Login'
+          click_button 'Log In'
 
           current_url.should eq "http://www.sublimevideo.dev/login"
           page.should have_content "Invalid email or password"
@@ -146,7 +146,7 @@ feature "Com Pages" do
         scenario "suspended user" do
           fill_in "Email",    with: "john@doe.com"
           fill_in "Password", with: "123456"
-          click_button "Login"
+          click_button 'Log In'
 
           current_url.should eq "http://my.sublimevideo.dev/suspended"
         end
@@ -160,7 +160,7 @@ feature "Com Pages" do
         scenario "archived user" do
           fill_in "Email",    with: "john@doe.com"
           fill_in "Password", with: "123456"
-          click_button "Login"
+          click_button 'Log In'
 
           current_url.should eq "http://www.sublimevideo.dev/login"
         end

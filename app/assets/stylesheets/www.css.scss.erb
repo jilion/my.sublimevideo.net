@@ -184,6 +184,7 @@ body {
   padding-top:11px;
   background:url(<%= asset_data_uri "www/home/get_it_now_btn.png" %>) no-repeat;
   color:#fff;
+  font-family:inherit;
   font-size:29px;
   font-weight:500;
   text-align:center;
@@ -471,8 +472,9 @@ body {
 }
 
 .features section.playlist .box {
-  width:572px;
-  height:254px;
+  width:575px;
+  height:245px;
+  padding:13px;
   float:left;
   margin-right:40px;
   background:#c5d0d9;
@@ -1340,7 +1342,17 @@ body {
   display:none;
 }
 
-.demo #content #playlist .video_wrap.active {
+.features #content #playlist .video_wrap {
+  width:432px;
+  height:243px;
+  display:none;
+  float:left;
+  background:#fff;
+  padding:1px;
+  @include box-shadow(rgba(0,23,60,0.5) 0 4px 17px);
+}
+
+#content #playlist .video_wrap.active {
   display:block;
 }
 
@@ -1348,6 +1360,10 @@ body {
   list-style-type:none;
   width:180px;
   float:left;
+}
+
+.features #playlist ul.thumbs {
+  width:139px;
 }
 
 #playlist li {
@@ -1361,6 +1377,12 @@ body {
   @include box-shadow(rgba(0,23,60,0.5) 0 2px 10px);
 }
 
+.features #playlist li {
+  width:127px;
+  height:71px;
+  margin:0 0 13px 12px;
+}
+
 #playlist li.active {
   border-color:#fff;
 }
@@ -1369,6 +1391,7 @@ body {
   display:block;
   position:relative;
 }
+
 #playlist li a span.play {
   display:block;
   width:144px;
@@ -1380,6 +1403,11 @@ body {
   left:0;
   @include box-shadow(inset rgba(255,255,255,0.3) 0 1px 0);
   @include transition(background-color,0.25s,linear);
+}
+
+.features #playlist li a span.play {
+  width:127px;
+  height:71px;
 }
 
 #playlist li a:hover span.play {

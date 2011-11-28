@@ -20,43 +20,6 @@ window.Cookie =
       if options.secure  then newcookie.push "secure"
     document.cookie = newcookie.join '; '
 
-class SimplePopupHandler
-  constructor: (contentId, onCloseCallback) ->
-    @contentId       = contentId
-    @contentDiv      = $(contentId)
-    @keyDownHandler  = document.on "keydown", this.keyDown.bind(this)
-    @onCloseCallback = onCloseCallback
-
-  startKeyboardObservers: ->
-    @keyDownHandler.start()
-
-  stopKeyboardObservers: ->
-    @keyDownHandler.stop()
-
-  open: (contentId) ->
-    # Creates the base skeleton for the popup, and will render it's content via an ajax request:
-    #
-    # <div class='popup loading'>
-    #   <div class='wrap'>
-    #     <div class='content'></div>
-    #   </div>
-    #   <a class='close'><span>Close</span></a>
-    # </div>
-    this.close()
-
-    @contentDiv.show()
-
-    this.startKeyboardObservers()
-
-  close: ->
-    this.stopKeyboardObservers()
-    @onCloseCallback(@contentId)
-    @contentDiv.hide()
-
-  keyDown: (event) ->
-    switch event.keyCode
-      when Event.KEY_ESC then this.close()
-
 class ImagePreloader
   constructor: (imageUrl, callback) ->
      @callback = callback

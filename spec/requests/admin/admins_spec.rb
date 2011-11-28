@@ -9,7 +9,7 @@ feature "Admin session:" do
     page.should have_no_content 'john@doe.com'
     fill_in "Email",     with: "john@doe.com"
     fill_in "Password",  with: "123456"
-    click_button "Login"
+    click_button "Log In"
 
     current_url.should eq "http://admin.sublimevideo.dev/sites"
     page.should have_content 'john@doe.com'
