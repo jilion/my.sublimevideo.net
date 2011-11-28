@@ -12,6 +12,8 @@ document.observe "dom:loaded", ->
 class PlanUpdateManager
   constructor: ->
     @processDetailsDiv = $("plan_#{@formType}_info")
+    @badgedDiv         = $('badged')
+    @badgedCheckbox    = $('site_badged')
     @skipTrialDiv      = $('skip_trial')
     @skipTrialCheckbox = $('site_skip_trial')
     @billingInfoDiv    = $('billing_info')
@@ -44,8 +46,12 @@ class PlanUpdateManager
     planChangeAndIsNotFree = !this.checkedPlanIsCurrentPlan() and !this.checkedPlanPriceIsZero()
     if this.siteIsInTrial()
       if planChangeAndIsNotFree
+        @badgedDiv.show() if @badgedDiv?
         @skipTrialDiv.show()
       else
+        if @badgedDiv?
+          @badgedDiv.hide()
+          @badgedCheckbox.checked = true
         @skipTrialDiv.hide()
         @skipTrialCheckbox.checked = false
     this.handleBillingInfo(planChangeAndIsNotFree and ((!this.siteIsInTrial() and this.checkedPlanIsAnUpgrade()) or this.skippingTrial()))

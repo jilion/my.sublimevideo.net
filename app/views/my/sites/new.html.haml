@@ -12,7 +12,12 @@
     .big_break
     = render 'fields', site: @site, f: f
 
-    = render 'skip_trial_box', site: @site, f: f
+    .checkbox_wrap#badged{ style: 'display:none' }
+      = f.check_box :badged, checked: true
+      = f.label :badged, "Enable SublimeVideo badge"
+
+    - if @site.trial_not_started_or_in_trial?
+      = render 'skip_trial_box', f: f
 
     = render 'billing_info_box'
 

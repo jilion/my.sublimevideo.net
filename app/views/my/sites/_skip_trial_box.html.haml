@@ -1,4 +1,3 @@
-- if site.trial_not_started_or_in_trial?
-  .checkbox_wrap#skip_trial{ style: 'display:none' }
-    = f.check_box :skip_trial
-    = f.label :skip_trial, "Skip the free #{BusinessModel.days_for_trial - 1}-day trial and pay immediately."
+.checkbox_wrap#skip_trial{ style: 'display:none' }
+  = f.check_box :skip_trial
+  = f.label :skip_trial, "Skip the free #{BusinessModel.days_for_trial - 1}-day trial and pay immediately."
