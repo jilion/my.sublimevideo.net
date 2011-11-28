@@ -34,7 +34,6 @@ SublimeVideo.showPopup = (name, successUrl = null) ->
     document.location.href = successUrl
   else if $("popup_#{name}")
     SublimeVideo.openSimplePopup("popup_#{name}")
-    $("popup_#{name}").down('#user_email').focus()
     $("user_#{name}").insert({ top: new Element("input", { name: "success_url", type: 'hidden', value: successUrl }) })
 
     if history && history.pushState
@@ -68,3 +67,40 @@ SublimeVideo.closeSimplePopup = (contentId) ->
     SublimeVideo.simplePopupHandler.close();
 
   false
+
+class SimplePopupHandler
+  constructor: (contentId, onCloseCallback) ->
+    @contentId       = contentId
+    @contentDiv      = $(contentId)
+    @keyDownHandler  = document.on "keydown", this.keyDown.bind(this)
+    @onCloseCallback = onCloseCallback
+
+  startKeyboardObservers: ->
+    @keyDownHandler.start()
+
+  stopKeyboardObservers: ->
+    @keyDownHandler.stop()
+
+  open: (contentId) ->
+    # Creates the base skeleton for the popup, and will render it's content via an ajax request:
+    #
+    # <div class='popup loading'>
+    #   <div class='wrap'>
+    #     <div class='content'></div>
+    #   </div>
+    #   <a class='close'><span>Close</span></a>
+    # </div>
+    this.close()
+
+    @contentDiv.show()
+
+    this.startKeyboardObservers()
+
+  close: ->
+    this.stopKeyboardObservers()
+    @onCloseCallback(@contentId)
+    @contentDiv.hide()
+
+  keyDown: (event) ->
+    switch event.keyCode
+      when Event.KEY_ESC then this.close()
