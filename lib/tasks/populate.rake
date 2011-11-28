@@ -444,7 +444,7 @@ def create_stats(site_token = nil)
         n: "Video #{video_i}",
         no: "s",
         cs:	["83cb4c27","af355ec8","1d1e3c63"],
-        p: "http://sublimevideo.net/demo/dartmoor1_800.jpg",
+        p: "http://www.sublimevideo.net/demo/dartmoor1_800.jpg",
         z: "600x252",
         s: {
           "83cb4c27" => { u: "http://medias.jilion.com/sublimevideo/dartmoor1_800.mp4", q: "base", f: "mp4" },

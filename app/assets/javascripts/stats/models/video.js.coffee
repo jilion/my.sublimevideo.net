@@ -49,6 +49,9 @@ class MSVStats.Models.Video extends Backbone.Model
 
   isSecond: -> !this.get("vl_sum")?
 
+  sslPosterframe: ->
+    "https://data.sublimevideo.net/proxy?u=#{encodeURIComponent(this.get('p'))}"
+
   vlTotal: -> this.customSum('vl')
   vvTotal: -> this.customSum('vv')
   customSum: (field) ->
