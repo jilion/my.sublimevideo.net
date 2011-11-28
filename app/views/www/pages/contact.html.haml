@@ -1,9 +1,10 @@
 = content_for :title, "Contact"
 = content_for :header do
   %h2= "Contact Us"
+  %p.sub= "We'd love to hear from you! Find here more info about the different ways you can contact us."
 
-%p.title_desc= raw "For technical support please visit our #{link_to "Help page", page_path('help')}."
+%p= raw "For technical support please visit our #{link_to "Help page", page_path('help')}."
 
-%p.title_desc= raw "For inquiries about custom and Enterprise plans please email #{mail_to(t("mailer.sales.email_full").html_safe, t("mailer.sales.email"), encode: "hex", class: "hl")}."
+%p= raw "For inquiries about custom and Enterprise plans please email #{mail_to(t("mailer.sales.email_full").html_safe, t("mailer.sales.email"), encode: "hex", class: "hl")}."
 
-%p.title_desc= raw "For all other inquiries please email #{mail_to(t("mailer.info.email_full").html_safe, t("mailer.info.email"), encode: "hex", class: "hl")}. Unfortunately we don't respond to technical support requests sent to this address; please view our #{link_to "Help page", page_path('help')} if you need help or support for SublimeVideo."
+%p= raw "For all other inquiries please email #{mail_to(t("mailer.info.email_full").html_safe, t("mailer.info.email"), encode: "hex", class: "hl")}. Unfortunately we don't respond to technical support requests sent to this address; please view our #{link_to "Help page", page_path('help')} if you need help or support for SublimeVideo."
