@@ -4,7 +4,7 @@
     %strong= truncate_middle(site.hostname, length: 40)
   - else
     Embed code
-%p.desc= "Copy the code below, and paste it into the pages on #{truncate_middle(site.hostname)} where the SublimeVideo player will be used. We highly recommend you put it into the <code>&lt;head&gt;</code> tag.".html_safe
+%p.desc= "Copy the code below and paste it into the pages on #{truncate_middle(site.hostname)} where the SublimeVideo player will be used. We highly recommend you put it into the <code>&lt;head&gt;</code> tag.".html_safe
 %form
   .embed_code.entry
     = text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, onclick: "this.focus();this.select();"
@@ -23,8 +23,7 @@
       %p.learn_more= link_to "Learn more about SSL serving.", page_url('ssl', subdomain: 'docs'), class: "hl"
 
 .dark_box
-  %p
-    = raw "Need help to build your first <code>&lt;video&gt;</code> elements? Consult our #{link_to "documentation", page_url('write-proper-video-elements', subdomain: 'docs')}."
-    -# = "Discover our #{link_to "video tag builder", video_tag_builder_path(site_id: site.token)}!"
-    -# %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
-    = raw "If a plugin or service asks for your site token, here it is: #{content_tag(:code, site.token)}"
+  %p= raw "Need help building your first #{content_tag(:code, '<video>')} elements? Read our #{link_to "documentation", page_url('write-proper-video-elements', subdomain: 'docs')}."
+  -# = "Discover our #{link_to "video tag builder", video_tag_builder_path(site_id: site.token)}!"
+  -# %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
+  %p= raw "If a plugin or service asks for your site's token, it is: #{content_tag(:code, site.token)}"

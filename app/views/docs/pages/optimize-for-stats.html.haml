@@ -1,12 +1,12 @@
 = content_for :title, "Optimize video elements for stats"
 = content_tag :h2, "Optimize <video> elements for stats"
 
-%p= raw "The video statistics feature (currently in beta) gives you insights on your most popular videos, even in real-time for all #{link_to "Paid plans", page_url('plans', subdomain: 'www')}."
-
-%p= raw "You can access the individual statistics page for each of your site via the \"View Stats\" button on #{link_to "this page", sites_url(subdomain: 'my')}."
-
 :textile
-  By default, there is *nothing to setup* in order to start viewing your video statistics. However, if you think your @<source />@ elements might change in future or if you'd like to customize the name of the videos that are shown in your statistics page, you should read the following sections.
+  Our video statistics feature (currently in beta) offers a comprehensive, real-time picture of your site's video traffic for all #{link_to "Paid plans", page_url('plans', subdomain: 'www')}.
+
+  You can access the individual statistics page for each of your sites via the "View Stats" button on #{link_to "this page", sites_url(subdomain: 'my')}.
+
+  By default, there is nothing to set up in order to start viewing your video statistics. However, if you think your @<source />@ elements might change in future or if you’d like to customize the name of the videos that are shown in your statistics page, you should read the following sections.
 
   h4. The @data-uid@ attribute
 
@@ -25,11 +25,11 @@
 :textile
   Although this id can be any string, we recommend that you use small strings (between 4 and 20 characters, probably depending on the number of videos you have).
 
-  Note that if you plan to use the video statistics extensively, we recommend that you always set the @data-uid@ attribute to all of your @<video>@ elements.
+  Note that if you plan to use video statistics extensively, we recommend that you always set the @data-uid@ attribute to all of your @<video>@ elements.
 
   h4. The @data-name@ attribute
 
-  By default, we will use the first @<source />@'s @src@ to display your video in the statistics page.
+  By default, we will generate a name based on the first @<source />@'s @src@ value to display your video in the statistics page
 
   For instance, if you have a @video@ element like the following:
 
@@ -41,8 +41,8 @@
   </video>
 
 :textile
-  We will use _"Some great landscapes"_ to show you video (along with its posterframe) in the statistics page of your site.
+  Your video will appear (along with a small thumbnail of its poster frame) with the name _"Some great landscapes"_.
 
   However if you'd like to customize the title that appears in your statistics page, you can then add a @data-name@ attribute to your @<video>@. The attribute content will replace the default title we use in your statistics page.
 
-  *Note*: You can update the @data-name@ as often as you'd like. Such change will be reflected in the statistics page in near real-time.
+  *Note*: You can update the @data-name@ as often as you’d like. Such changes will be reflected in the statistics page in near real-time.
