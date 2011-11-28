@@ -57,7 +57,7 @@
     = render "layouts/footer"
     = yield :bottom
 
-    - if request.subdomain == 'www'
+    - if %w[www docs].include?(request.subdomain)
       - display_signup = params[:p] == 'signup' || params[:commit] == 'Sign Up'
       #popup_signup.popup{ style: "display:#{display_signup ? 'block' : 'none'}" }
         .wrap
