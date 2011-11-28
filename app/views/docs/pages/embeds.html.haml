@@ -1,15 +1,59 @@
 = page_title "Embeds"
 
 :textile
+  SublimeVideo embeds allow you to embed your SublimeVideo Player on other pages than just the one hosted on your "registered domains":/site-settings. This can give your audience the chance to embed your videos on their own website.
 
-  SublimeVideo embeds allows you to embed the SublimeVideo Player into another web page using an iframe. 
+  SublimeVideo embeds are done by using an @<iframe>@ element, which is basically an element containing a web page that can be inserted inside another web page. The contained web page has to be hosted on a domain that you've registered on #{link_to "MySublimeVideo", sites_url(subdomain: 'my')} in order for the @<video>@ inside it to be played by SublimeVideo.
 
-  Your audience can now easily share your videos by embedding them into their own sites or elsewhere on the web.
+  h4. The &lt;iframe&gt; content
 
-  Please refer to the code in the test page below
+  The @<iframe>@ content should just contain your embed code and the video you'd like to embed on other sites:
 
-  Pay attention to the grey-colored comments in the code, in particular the need of the "sv_iframe_embed" class.
+:coderay
+  #{coderay_options(:html)}
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type="text/javascript" src="http://cdn.sublimevideo.net/js/YOUR_TOKEN.js"></script>
+  </head>
+  <body>
+    <video style="display:none" class="sublime sv_iframe_embed" poster="poster.jpg" preload="none">
+      <source src="http://yoursite.com/video.mp4" />
+      <source src="http://yoursite.com/video_hd.mp4" data-quality="hd" />
+      <source src="http://yoursite.com/video-mobile.mp4" />
+      <source src="http://yoursite.com/video.webm" />
+      <source src="http://yoursite.com/video_hd.webm" data-quality="hd" />
+    </video>
+  </body>
 
-  http://test.sublimevideo.net/iframe-embed/ (pay attention to the grey-colored comments in the code, in particular the need of the "sv_iframe_embed" class)
+:textile
+  A few explanation:
 
-  The <iframe> line of code is the one visitors can copy and paste on another site.
+  * Replace _YOUR_TOKEN_ with your actual site's token (you can find it in the #{link_to content_tag(:em, '"My sites"'), sites_url(subdomain: 'my')} page after clicking the "embed code" button).
+  * Add the _"sv_iframe_embed"_ @class@ to your @<video>@ element and *omit its @width@ and @height@ attributes*.
+  * @style="display:none"@ is optional, but it prevents the @<iframe>@ scrollbars from quickly showing up and disappearing when the iframe is first loaded.
+  * Host this file on a domain that is registered on #{link_to "MySublimeVideo", sites_url(subdomain: 'my')}. For instance, if your registered domain is _yourdomain.com_, you could save this page at _http://yourdomain.com/embeds/video1.html_.
+
+  h4. The embed code
+
+  Now that your embed page is ready, @<iframe>@ elements pointing to the embed page's address can be inserted on any web pages. @<iframe>@ element should be written like this:
+
+  <pre>
+  <iframe src="http://yourdomain.com/embeds/video1.html" width="400" height="168"
+    frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen>
+  </iframe>
+  </pre>
+
+:textile
+  _Note that you should write this code on a single line._
+
+  A little explanation:
+
+  * Replace _http://yourdomain.com/embeds/video1.html_ with the actual embed page address.
+  * Set the @width@ and @height@ attributes according to your actual video dimensions.
+  * You should always set the @frameborder@ attribute to "0" to avoid unwanted border.
+  * The @allowfullscreen@, @webkitallowfullscreen@ and @mozallowfullscreen@ attributes are mandatory to enable your video to go fullscreen.
+
+  This @<iframe>@ line of code is the one visitors can copy and paste on another site.

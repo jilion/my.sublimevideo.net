@@ -31,7 +31,7 @@
               - else
                 - if video.get('p')?
                   %script{ type: "text/javascript" }
-                    new SublimeVideo.ImagePreloader("#{video.get('p')}", SublimeVideo.cropPosterframe, { "imgId": "#{video.id}" });
+                    new SublimeVideo.ImagePreloader("#{video.sslPosterframe()}", SublimeVideo.cropPosterframe, { "imgId": "#{video.id}" });
               .right
                 %h4= video.get('n')
                 - if video.get('uo') == 's' || video.get('no') == 's'
@@ -58,7 +58,7 @@
             .sparkline{ id: "sparkline_#{video.id}", style: "width:162px;height:44px" }
   - if @videos.limit == 5 && @videos.total > 5
     .expander
-      %a.down#show_more{ href: "#", onclick: "return false" } 
+      %a.down#show_more{ href: "#", onclick: "return false" }
         More videos
         %small (up to 20)
         %span.arrow.down

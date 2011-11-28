@@ -283,6 +283,10 @@ form p.note {
   border-color:#a67373;
 }
 
+.dark_box strong {
+  font-weight:600;
+}
+
 #content .content_right .dark_box {
   width:336px;
 }
@@ -562,6 +566,128 @@ ul.segmented_menu li.active a {
 /* = Invoices = */
 /* ============ */
 
+#no_invoices {
+  margin:80px auto;
+  text-align:center;
+  font-size:32px;
+  font-weight:600;
+  color:#465b7d;
+}
+
+#site.invoices {
+  padding:20px 0 40px;
+}
+
+#site.invoices p.desc {
+  line-height:22px;
+  padding:0 0 20px;
+}
+
+#site.invoices .failed_invoices p.top {
+  padding-left:25px;
+  background:url(<%= asset_data_uri "my/alert_icon.png" %>) no-repeat 0 1px;
+}
+
+#site.invoices h3.section_title  {
+  padding-top:0;
+}
+
+#site.invoices .past_invoices ul {
+  list-style-type:none;
+}
+
+#site.invoices .past_invoices li {
+  padding:10px 0 10px 36px;
+  background:url(<%= asset_data_uri "my/invoice_icon.png" %>) no-repeat 0 50%;
+  border-bottom:1px solid #4a648e;
+  border-top:1px solid rgba(255,255,255,0.2);
+}
+
+#site.invoices .past_invoices li:first-child {
+  border-top:none;
+}
+
+#site.invoices .past_invoices li:last-child {
+  border-bottom:none;
+}
+
+#site.invoices .past_invoices li .right {
+  font-size:13px;
+  float:right;
+}
+
+#site.invoices .past_invoices li .status {
+  font-size:14px;
+  line-height:18px;
+}
+
+#site.invoices .past_invoices li strong.failed {
+  color:#A50015;
+}
+
+/* ================ */
+/* = Generic Text = */
+/* ================ */
+
+section.text {
+  line-height:24px;
+  padding-bottom:40px;
+}
+
+section.text h3 {
+  font-size:24px;
+  font-weight:600;
+  padding:15px 0 5px;
+}
+
+section.text p {
+  padding:10px 0;
+}
+
+section.text ol {
+  list-style-type:none;
+}
+
+section.text > ol{
+  padding:5px 0;
+  list-style-type:none;
+}
+
+section.text ol ol{
+  padding-left:18px;
+  list-style-type:none;
+}
+section.text ol li {
+  padding:5px 0;
+}
+
+section.text ol ol ol{
+  list-style-type:lower-latin;
+}
+
+section.text ol ol ol ol{
+  list-style-type:lower-roman
+}
+
+section.text ol ol li {
+  position:relative;
+  padding-left:12px
+}
+
+section.text ol ol li span.number {
+  position:absolute;
+  top:5px;
+  left:-18px
+}
+
+section.text ol ol ol li, section.text ol ol ol ol li {
+  padding-left:0;
+  position:static
+}
+
+section.text ul {
+  padding:5px 20px 10px;
+}
 
 
 /* ========= */
@@ -630,7 +756,7 @@ p.label {
   line-height:18px;
 }
 
-a.hl {
+a.hl, section.text a {
   color:#1e3966;
   font-weight:600;
   border-bottom:1px solid #7387a6;

@@ -28,9 +28,8 @@
       .entry.badged
         .checkbox_wrap
           = f.check_box :badged, disabled: site.in_free_plan?
-          = f.label :badged, "Enable SublimeVideo badge"
-          - if site.in_free_plan?
-            = raw t("site.settings.badge_disabling_note", link: link_to("paid plan", [:edit, site, :plan]))
+          = f.label :badged, "Enable SublimeVideo badge."
+        %p.info= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
     -#.entry.ssl
     -#  .checkbox_wrap
     -#    = check_box_tag :ssl, 1, checked: !site.in_free_plan?, disabled: true

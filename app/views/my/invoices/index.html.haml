@@ -9,12 +9,12 @@
       %p= "No invoices"
 
   - else
-    #invoices_summary
+    #invoices_summary.content_left
       - if @site.invoices_failed? # || @site.invoices_open?
         .failed_invoices
           - if @site.invoices_failed?
             - failed_invoices = @invoices.select { |invoice| invoice.failed? }
-            %p.desc
+            %p.top.desc
               = raw t('invoice.count_failed_invoices_with_total_amount', count: failed_invoices.size, total_amount: display_amount(failed_invoices.sum(&:amount)))
 
           -# - if @site.invoices_open?
@@ -23,11 +23,11 @@
           -#     = raw t('invoice.count_open_invoices_with_total_amount', count: open_invoices.size, total_amount: display_amount(open_invoices.sum(&:amount)))
 
           - if !current_user.cc?
-            %p
+            %p.desc
               = raw t("app.please_link", link: link_to("add a valid credit card", [:edit, :billing], class: "hl"))
               = t('user.payment.retry_here')
           - elsif current_user.cc_expired?
-            %p
+            %p.desc
               = t('user.credit_card.expired')
               = raw t("app.please_link", link: link_to("update your credit card", [:edit, :billing], class: "hl"))
               = t('user.payment.retry_here')
@@ -35,27 +35,27 @@
             -# - if @site.invoices_open?
             -#   = "Open invoices are automatically charged on your credit card, but you can still pay them manually if you prefer."
             -# - else
-            %p
+            %p.desc
               = "If necessary,"
               = link_to "update your credit card", [:edit, :billing], class: "hl"
               = "and then retry the payment via the button below."
 
             %h3.section_title Current credit card on file
-            #credit_card_summary= render 'my/billings/cc_summary', user: current_user
-            %p= link_to "#{current_user.cc? ? 'Update' : 'Register'} credit card", [:edit, :billing]
+            #credit_card_summary.dark_box
+              = render 'my/billings/cc_summary', user: current_user
 
             = form_for @site, url: retry_site_invoices_path(site_id: @site.to_param), html: { method: 'put' } do |f|
-              .entry= f.submit t('invoice.pay_invoices_above'), class: "submit_dynamic_button"
+              .entry.update= f.submit t('invoice.pay_invoices_above'), class: "blue_button"
 
       - if @site.in_paid_plan? && (!@site.next_cycle_plan_id? || @site.next_cycle_plan.paid_plan?)
-        .next_invoice
+        .next_invoice.dark_box
           %h3.section_title= "Next invoice"
           - next_plan = @site.next_cycle_plan || @site.plan
           %p
             = raw "#{content_tag(:strong, display_amount(next_plan.price))}"
             = "(excl. VAT)" if current_user.vat?
             = " on #{l(@invoices.first.paid_plan_invoice_item.ended_at.tomorrow, format: :d_b_Y)}."
-      .past_invoices
+      .past_invoices.dark_box
         %h3.section_title= "Past invoices"
         %ul
           - @invoices.each do |invoice|
