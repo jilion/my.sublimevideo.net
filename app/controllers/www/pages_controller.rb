@@ -9,7 +9,6 @@ class Www::PagesController < ApplicationController
     else
       render params[:page]
     end
-    render params[:page]
   end
 
 end
