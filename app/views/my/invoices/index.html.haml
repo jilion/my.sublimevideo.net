@@ -10,17 +10,11 @@
 
   - else
     #invoices_summary.content_left
-      - if @site.invoices_failed? # || @site.invoices_open?
+      - if @site.invoices_failed?
         .failed_invoices
-          - if @site.invoices_failed?
-            - failed_invoices = @invoices.select { |invoice| invoice.failed? }
-            %p.top.desc
-              = raw t('invoice.count_failed_invoices_with_total_amount', count: failed_invoices.size, total_amount: display_amount(failed_invoices.sum(&:amount)))
-
-          -# - if @site.invoices_open?
-          -#   - open_invoices = @invoices.select { |invoice| invoice.open? }
-          -#   %p.desc
-          -#     = raw t('invoice.count_open_invoices_with_total_amount', count: open_invoices.size, total_amount: display_amount(open_invoices.sum(&:amount)))
+          - failed_invoices = @invoices.select { |invoice| invoice.failed? }
+          %p.top.desc
+            = raw t('invoice.count_failed_invoices_with_total_amount', count: failed_invoices.size, total_amount: display_amount(failed_invoices.sum(&:amount)))
 
           - if !current_user.cc?
             %p.desc
