@@ -52,7 +52,11 @@
     %section#content
       = render "layouts/docs/menu" if request.subdomain == 'docs'
       .content_wrapper
-        = yield
+        - if request.subdomain == 'docs' && controller_name == 'pages'
+          - cache "docs/pages/#{params[:page]}" do
+            = yield
+        - else
+          = yield
       .spacer
     = render "layouts/footer"
     = yield :bottom
@@ -73,5 +77,5 @@
           %span Close
 
     - if user_signed_in?
-      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name, current_user.id, Rails.env.production? || Rails.env.staging?)
+      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name.presence || 'no name', current_user.id, Rails.env.production? || Rails.env.staging?)
     = render 'layouts/gosquared' if Rails.env.production?
