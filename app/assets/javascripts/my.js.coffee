@@ -15,7 +15,7 @@ class PlanUpdateManager
     @skipTrialDiv      = $('skip_trial')
     @skipTrialCheckbox = $('site_skip_trial')
     @billingInfoDiv    = $('billing_info')
-    @checkedPlan       = null
+    @checkedPlan       = $$('#plans input[type=radio][checked]')[0]
     @billingInfoState  = @billingInfoDiv.readAttribute 'data-state'
 
     this.setupPlansObservers()
@@ -28,9 +28,13 @@ class PlanUpdateManager
         this.selectCheckboxWrappingBox()
         this.handlePlanChange()
 
+    this.handlePlanChange()
+
   setupSkipTrialObserver: ->
     @skipTrialCheckbox.on 'click', (event) =>
       this.handleBillingInfo(this.skippingTrial())
+
+    this.handleBillingInfo(this.skippingTrial())
 
   selectCheckboxWrappingBox: ->
     $$('#plans ul .select_box').invoke 'removeClassName', 'active'
@@ -85,11 +89,12 @@ class NewSitePlanUpdateManager extends PlanUpdateManager
     this.handleSubmitButtonDisplay(this.checkedPlanPriceIsZero() or !this.skippingTrial() or @billingInfoState is 'present')
 
   handleProcessDetails: ->
-    if !this.checkedPlanPriceIsZero() and this.skippingTrial() and @billingInfoState is 'present'
-      @processDetailsDiv.select(".plan_price").invoke "update", this.priceWithVATText('plan_price')
-      @processDetailsDiv.show()
-    else
-      @processDetailsDiv.hide()
+    if @processDetailsDiv?
+      if !this.checkedPlanPriceIsZero() and this.skippingTrial() and @billingInfoState is 'present'
+        @processDetailsDiv.select(".plan_price").invoke "update", this.priceWithVATText('plan_price')
+        @processDetailsDiv.show()
+      else
+        @processDetailsDiv.hide()
 
 
 # Plan update manager for sites that are persisted (they can be in trial or not) [/sites/:token/plan/edit]
