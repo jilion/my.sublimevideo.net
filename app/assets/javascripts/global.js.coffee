@@ -20,12 +20,13 @@ window.Cookie =
       if options.secure  then newcookie.push "secure"
     document.cookie = newcookie.join '; '
 
-class ImagePreloader
-  constructor: (imageUrl, callback) ->
-     @callback = callback
-     @imageSrc = imageUrl
-     @problem  = false
-     this.preload()
+class SublimeVideo.ImagePreloader
+  constructor: (imageUrl, callback, options = {}) ->
+    @callback = callback
+    @imageSrc = imageUrl
+    @options  = options
+    @problem  = false
+    this.preload()
 
   preload: ->
     @image = new Image()
@@ -44,7 +45,9 @@ class ImagePreloader
     this.didComplete()
 
   didComplete: =>
-    @callback(@problem, @imageSrc, { width: @image['width'], height: @image['height'] })
+    @options['width']  = @image['width']
+    @options['height'] = @image['height']
+    @callback(@problem, @imageSrc, @options)
 
 class VideoPreloader
   constructor: (videoUrl, callback) ->
