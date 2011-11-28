@@ -28,13 +28,13 @@ class PlanUpdateManager
         this.selectCheckboxWrappingBox()
         this.handlePlanChange()
 
-    this.handlePlanChange()
+    this.handlePlanChange() if @checkedPlan?
 
   setupSkipTrialObserver: ->
     @skipTrialCheckbox.on 'click', (event) =>
       this.handleBillingInfo(this.skippingTrial())
 
-    this.handleBillingInfo(this.skippingTrial())
+    this.handleBillingInfo(this.skippingTrial()) if @checkedPlan?
 
   selectCheckboxWrappingBox: ->
     $$('#plans ul .select_box').invoke 'removeClassName', 'active'
