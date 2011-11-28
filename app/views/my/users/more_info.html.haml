@@ -1,6 +1,6 @@
 = title("More information about you")
 
-%p.bigger= "Please let us serve you better by telling us more about your and your needs"
+%p.bigger= "Please let us serve you better by telling us more about you and your needs"
 
 .content_left
   = form_for @current_user, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_more_info" } do |f|
@@ -9,8 +9,7 @@
 
     .entry
       .comment
-        %h3.section_title
-          = f.label :confirmation_comment, "Write us anything you want:"
+        %h3.section_title= f.label :confirmation_comment, "Write us anything you want:"
         = f.text_area :confirmation_comment, class: "text"
       .spacer
 
