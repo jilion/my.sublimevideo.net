@@ -26,10 +26,10 @@
       %span.overlay
       %span.magnifying_glass
     %video.sublime.zoom{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun_800.jpg"), preload: "none", style: "display:none", "data-uid" => "features-lightbox", "data-name" => "Features Lightbox" }
-      == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_360p.mp4" />
-      == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_720p.mp4" data-quality="hd" />
-      == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_360p.webm" />
-      == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_720p.webm" data-quality="hd" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4" data-quality="hd" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm" data-quality="hd" />
     %h3.title= "Integrated lightbox"
     %p= raw "Quickly and easily give your audience another great way to view your videos with SublimeVideo's integrated lightbox."
     .spacer
@@ -42,19 +42,19 @@
       -#    %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm" }/
       .video_wrap.active
         %video#video2.sublime{ width: "432", height: "243", poster: image_path("www/demo/midnight_sun2_800.jpg"), preload: "none", "data-uid" => "features-playlist-2", "data-name" => "Features Playlist #2" }
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_2_360p.mp4" />
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_2_270p.mp4" />
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_2_360p.webm" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_2_360p.mp4" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_2_270p.mp4" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_2_360p.webm" />
       .video_wrap
         %video#video3{ width: "432", height: "243", poster: image_path("www/demo/midnight_sun3_800.jpg"), preload: "none", "data-uid" => "features-playlist-3", "data-name" => "Features Playlist #3" }
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_3_360p.mp4" />
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_3_270p.mp4" />
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_3_360p.webm" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_3_360p.mp4" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_3_270p.mp4" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_3_360p.webm" />
       .video_wrap
         %video#video4{ width: "432", height: "243", poster: image_path("www/demo/midnight_sun4_800.jpg"), preload: "none", "data-uid" => "features-playlist-4", "data-name" => "Features Playlist #4" }
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_4_360p.mp4" />
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_4_270p.mp4" />
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_4_360p.webm" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_4_360p.mp4" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_4_270p.mp4" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_4_360p.webm" />
       %ul.thumbs
         -#%li#thumbnail_video1
         -#  %a{ href: "" }
@@ -126,7 +126,7 @@
   %section#instant_setup.instant_setup.f
     %h3.title= "Instant setup & easy integration"
     == <div style="float:left;clear:left;height:26px;width:14px;"></div><div style="float:left;clear:left;height:26px;width:15px;"></div><div style="float:left;clear:left;height:26px;width:15px;"></div>
-    %p= raw "No download, no installation; #{link_to "Sign up", root_path(p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')"} for free today and be up and running in seconds. It couldn't be simpler to integrate SublimeVideo into your site: Just add a single line of code to enable it on your page."
+    %p= raw "No download, no installation; #{link_to "Sign up", root_path(p: 'signup')} for free today and be up and running in seconds. It couldn't be simpler to integrate SublimeVideo into your site: Just add a single line of code to enable it on your page."
   %section#real_time_stats.real_time_stats.f
     %h3.title= "Real-Time stats"
     %p= "View real-time statistics of video usage on your site with our Real-Time Stats feature; monitor page and video views, browser and device statistics, HTML5 or Flash usage and more."

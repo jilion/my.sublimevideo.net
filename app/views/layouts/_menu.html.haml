@@ -16,5 +16,5 @@
         - subdomain = [:help].include?(name) && request.subdomain == 'my' ?  'my' : 'www'
         = activable_menu_item(:li, page_url(name, { subdomain: subdomain }), opts.merge(onclick: "SublimeVideo.makeSticky(this, '#menu')"))
       = activable_menu_item(:li, "http://blog.jilion.com/tags/sublimevideo", link_text: "Blog", link_options: { onclick: "window.open(this); return false" })
-      %li= link_to "Login", root_url(subdomain: 'www', p: 'login'), onclick: params[:page] == 'demo' ? nil : "return SublimeVideo.showPopup('login')"
-      %li.signup= link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: params[:page] == 'demo' ? nil : "return SublimeVideo.showPopup('signup')"
+      %li= link_to "Login", root_url(subdomain: 'www', p: 'login'), onclick: %w[demo features].include?(params[:page]) ? nil : "return SublimeVideo.showPopup('login')"
+      %li.signup= link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: %w[demo features].include?(params[:page]) ? nil : "return SublimeVideo.showPopup('signup')"
