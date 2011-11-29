@@ -19,8 +19,8 @@ module SiteModules::Templates
         site.cdn_up_to_date = true
         site.save!
 
-        # site.purge_template(:loader) if purge_loader
-        # site.purge_template(:license) if purge_license
+        site.purge_template(:loader) if purge_loader
+        site.purge_template(:license) if purge_license
       end
     end
 
