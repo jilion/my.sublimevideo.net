@@ -19,7 +19,7 @@
       # MSVStats.pusher.connection.bind 'failed', ->
       #   console.log 'Pusher connection failed'
 
-      window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.not_archived.order(:hostname, :token).to_backbone_json})
+      window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.not_archived.with_plan.order(:hostname, :token).to_backbone_json})
       window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
       Backbone.history.start(pushState: true, root: "/sites/stats/")
 
