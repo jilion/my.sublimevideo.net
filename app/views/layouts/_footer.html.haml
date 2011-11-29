@@ -38,3 +38,7 @@
       = "|"
       = link_to "Privacy Policy", page_url('privacy', subdomain: 'my')
       = raw "| Copyright &copy; #{Time.now.utc.year} Jilion&reg; &mdash; SublimeVideo and Jilion are registered trademarks."
+      %span.networks
+        == <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://sublimevideo.net" data-text="Check out SublimeVideo HTML5 Video Player by @Jilion —" data-count="horizontal" data-related="jilion:Follow @Jilion for the latest news!">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+        == <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fsublimevideo&amp;send=false&amp;layout=button_count&amp;width=130&amp;show_faces=false&amp;action=like&amp;colorscheme=dark&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:130px; height:21px;" allowTransparency="true"></iframe>
+      
