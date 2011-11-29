@@ -13,9 +13,9 @@ staging:
   username: <%= ENV['MONGOHQ_USERNAME'] %>
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
   hosts:
-    - - hurley.member0.mongolayer.com
+    - - hurley.member0.mongohq.com
       - 10006
-    - - hurley.member1.mongolayer.com
+    - - hurley.member1.mongohq.com
       - 10006
   preload_models: true
   skip_version_check: true
@@ -32,9 +32,9 @@ production:
   username: <%= ENV['MONGOHQ_USERNAME'] %>
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
   hosts:
-    - - hurley.member0.mongolayer.com
+    - - hurley.member0.mongohq.com
       - 10006
-    - - hurley.member1.mongolayer.com
+    - - hurley.member1.mongohq.com
       - 10006
   preload_models: true
   skip_version_check: true
