@@ -2,24 +2,25 @@ class Admin::SitesController < AdminController
   respond_to :js, :html
 
   #filter
-  has_scope :free
-  has_scope :sponsored
-  has_scope :in_paid_plan
+  has_scope :free, type: :boolean
+  has_scope :sponsored, type: :boolean
+  has_scope :in_paid_plan, type: :boolean
   has_scope :with_state do |controller, scope, value|
     scope.with_state(value.to_sym)
   end
-  has_scope :with_wildcard
-  has_scope :with_path
-  has_scope :with_extra_hostnames
+  has_scope :with_wildcard, type: :boolean
+  has_scope :with_path, type: :boolean
+  has_scope :with_extra_hostnames, type: :boolean
+  has_scope :with_badge, type: :boolean
   has_scope :billable do |controller, scope|
     scope.billable
   end
   has_scope :not_billable do |controller, scope|
     scope.not_billable
   end
-  has_scope :overusage_notified
-  has_scope :user_id
-  has_scope :with_next_cycle_plan
+  has_scope :overusage_notified, type: :boolean
+  has_scope :user_id, type: :boolean
+  has_scope :with_next_cycle_plan, type: :boolean
 
   # sort
   has_scope :by_hostname
@@ -36,9 +37,7 @@ class Admin::SitesController < AdminController
   # GET /sites
   def index
     @sites = Site.includes(:user, :plan)
-    if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
-      @sites = @sites.active
-    end
+    @sites = @sites.not_archived if params[:with_state].nil?
     @sites = apply_scopes(@sites).by_date
     respond_with(@sites, per_page: 50)
   end
