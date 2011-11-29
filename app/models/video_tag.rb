@@ -23,7 +23,7 @@ class VideoTag
   # = Callbacks =
   # =============
 
-  after_save :push_new_meta_data
+  # after_save :push_new_meta_data
 
   # ====================
   # = Instance Methods =
