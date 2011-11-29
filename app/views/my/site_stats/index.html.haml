@@ -11,7 +11,7 @@
       #  window.console.log(message) if (window.console && window.console.log)
       # Flash fallback logging - don't include this in production
       # WEB_SOCKET_DEBUG = true
-      
+
       window.MSVStats.pusher = new Pusher("#{PusherConfig.key}", encrypted: true)
       # window.MSVStats.pusherKey = "#{PusherConfig.key}"
       # MSVStats.pusher.connection.bind 'connected', ->
@@ -35,7 +35,7 @@
     %li.seconds
 
   .spacer
-  %p.days_period_note * Days period are in UTC
+  %p.days_period_note * Day periods are in UTC
   #dates_range
     %h3#time_range_title
     #date_pickers
