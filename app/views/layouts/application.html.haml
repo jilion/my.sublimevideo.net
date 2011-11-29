@@ -52,8 +52,8 @@
     %section#content
       = render "layouts/docs/menu" if request.subdomain == 'docs'
       .content_wrapper
-        - if request.subdomain == 'docs' && controller_name == 'pages'
-          - cache "docs/pages/#{params[:page]}" do
+        - if request.subdomain == 'docs'
+          - cache "docs/#{controller_name}/#{action_name}#{"/#{params[:page]}" if params[:page]}" do
             = yield
         - else
           = yield
