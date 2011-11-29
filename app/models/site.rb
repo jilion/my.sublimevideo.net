@@ -243,9 +243,14 @@ private
 
   def self.update_ranks(site_id)
     site  = Site.find(site_id)
-    ranks = PageRankr.ranks(site.hostname, :alexa_global, :google)
-    site.google_rank = ranks[:google] || 0
-    site.alexa_rank  = ranks[:alexa_global]
+    if site.hostname.present?
+      ranks = PageRankr.ranks(site.hostname, :alexa_global, :google)
+      site.google_rank = ranks[:google] || 0
+      site.alexa_rank  = ranks[:alexa_global]
+    else
+      site.google_rank = 0
+      site.alexa_rank  = 0
+    end
     site.save
   end
 

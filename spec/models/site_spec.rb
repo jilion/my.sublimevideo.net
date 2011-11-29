@@ -894,13 +894,26 @@ describe Site do
         expect { Factory.create(:site) }.to change(Delayed::Job.where { handler =~ "%update_ranks%" }, :count).by(1)
       end
 
-      it "should update ranks" do
-        Timecop.travel(10.minutes.ago) { @site = Factory.create(:site, hostname: 'sublimevideo.net') }
-        VCR.use_cassette('sites/ranks') { @worker.work_off }
-        @site.reload
-        @site.google_rank.should eq 6
-        @site.alexa_rank.should eq 127373
+      context "site has a hostname" do
+        it "should update ranks" do
+          Timecop.travel(10.minutes.ago) { @site = Factory.create(:site, hostname: 'sublimevideo.net') }
+          VCR.use_cassette('sites/ranks') { @worker.work_off }
+          @site.reload
+          @site.google_rank.should eq 6
+          @site.alexa_rank.should eq 127373
+        end
       end
+
+      context "site has no hostname" do
+        it "should update ranks" do
+          Timecop.travel(10.minutes.ago) { @site = Factory.create(:site, hostname: '', plan_id: @free_plan.id) }
+          VCR.use_cassette('sites/ranks') { @worker.work_off }
+          @site.reload
+          @site.google_rank.should eq 0
+          @site.alexa_rank.should eq 0
+        end
+      end
+
     end # after_create
 
   end # Callbacks
