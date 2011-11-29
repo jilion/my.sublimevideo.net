@@ -19,7 +19,7 @@ class Admin::UsersController < AdminController
 
   # GET /users
   def index
-    params[:active_and_billable] = true if !params.key?(:active_and_not_billable) && !params.key?(:with_state) && !params.key?(:search)
+    params[:active_and_billable] = true unless params.keys.any? { |k| %w[active_and_not_billable with_state search with_balance].include?(k) }
     @users = User.includes(:sites, :invoices)
     @users = @users.select("users.*") unless params.key?(:by_sites_last_30_days_billable_video_views)
     @users = apply_scopes(@users).by_date
