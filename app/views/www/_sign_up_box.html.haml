@@ -2,4 +2,4 @@
   %h4= "Add SublimeVideo to your site for free today."
   %h5= "All paid plans are free for the first 14 days. No credit card required."
   .button_wrap
-    = link_to "Get It Now", root_path(p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
+    = link_to "Get It Now", root_path(p: 'signup'), onclick: %w[demo features].include?(params[:page]) ? nil : "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
