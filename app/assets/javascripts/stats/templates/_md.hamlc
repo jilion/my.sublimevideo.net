@@ -1,6 +1,7 @@
 .content_wrap
   - if @site.isInFreePlan()
-    %P TODO A FAKE IMG WITH UPGRADE LINK
+    %a.paid_plan_only{ href: "/sites/#{@site.get('token')}/plan/edit", title: "Upgrade your plan"}
+      %span= "Paid Plan Only. Upgrade Now"
   - else
     - if @mdData.isEmpty()
       %p.empty No loaded videos.

@@ -671,6 +671,20 @@
   @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.6) 0 1px 4px));  
 }
 
+.stats .graph_box a.paid_plan_only {
+  display:block;
+  width:400px;
+  height:412px;
+  background:url(<%= asset_path "my/stats/browser_os_blur.png" %>) no-repeat;
+}
+
+.stats #md.graph_box a.paid_plan_only {
+  height:207px;
+  background:url(<%= asset_path "my/stats/html5_flash_blur.png" %>) no-repeat;
+}
+
+.stats .graph_box a.paid_plan_only span {display:none}
+
 .stats .graph_box p.empty {
   color:#465b7d;
   font-weight:600;
