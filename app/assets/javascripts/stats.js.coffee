@@ -38,9 +38,12 @@ window.spinOptions =
 
 SublimeVideo.cropPosterframe = (problem, imageSrc, options) ->
   imgId = options['imgId']
-  originalThumb = $('<img>').attr('src', imageSrc)
+  originalThumb = $('<img>').attr('src', imageSrc).attr('id', "#{imgId}-img")
 
-  unless problem
+  if problem
+    $("##{imgId}-crop").parent('a').removeClass('active').addClass('disabled')
+    $("##{imgId}-crop").find('span.overlay').remove()
+  else
     if options['width'] > options['height']
       newHeight = 54
       scaleY    = Math.round(options['height'] / newHeight)

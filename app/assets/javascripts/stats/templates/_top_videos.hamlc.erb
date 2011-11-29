@@ -21,8 +21,6 @@
               - playClass = if MSVStats.period.isSeconds() then 'disabled' else 'active'
               %a{ href: "#", onclick: "return false", class: "play #{playClass}" }
                 .crop{ id: "#{video.id}-crop", style: "width:96px; height:54px;" }
-                  -#- unless video.get('p')?
-                  -#  %img{ src: "<%= asset_path 'my/sites/default_favicon.png' %>", alt: "Default poster frame" }
                   - unless MSVStats.period.isSeconds()
                     %span.overlay
               - if $("##{video.id}-cache").size() > 0
