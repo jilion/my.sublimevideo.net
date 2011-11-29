@@ -109,7 +109,7 @@ module My::PlansHelper
   end
 
   def vat_price_info(klass)
-    raw "Prices above exclude VAT, total amount charged will be #{content_tag(:span, "?", class: klass)}."
+    raw "Prices above exclude VAT, the total amount charged will be #{content_tag(:span, "?", class: klass)}."
   end
 
   def credit_card_state(user)
