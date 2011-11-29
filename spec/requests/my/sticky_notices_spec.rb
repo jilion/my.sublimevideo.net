@@ -80,15 +80,34 @@ feature "Sticky notices" do
     end
 
     context "user is billable" do
-      background do
-        Factory.create(:site, user: @current_user)
-        @current_user.should be_billable
-        go 'my', '/sites'
+      context "user has a credit card" do
+        background do
+          Factory.create(:site, user: @current_user)
+          @current_user.should be_billable
+          go 'my', '/sites'
+        end
+
+        scenario "shows a notice" do
+          page.should have_content I18n.t("user.billing_address.complete_it")
+          page.should have_content I18n.t("app.update_it")
+        end
       end
 
-      scenario "shows a notice" do
-        page.should have_content I18n.t("user.billing_address.complete_it")
-        page.should have_content I18n.t("app.update_it")
+      pending "user has no credit card" do
+        background do
+          Factory.create(:site, user: @current_user)
+          @current_user.reset_credit_card_attributes
+          user = @current_user
+          @current_user.save
+          sign_out :user
+          sign_in_as :user, user
+          go 'my', '/sites'
+        end
+
+        scenario "doesn't show a notice" do
+          page.should have_no_content I18n.t("user.billing_address.complete_it")
+          page.should have_no_content I18n.t("app.update_it")
+        end
       end
     end
   end
