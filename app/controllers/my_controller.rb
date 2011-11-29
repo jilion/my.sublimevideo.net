@@ -40,7 +40,7 @@ private
         value: '1',
         expires: 2.weeks.from_now,
         domain: :all,
-        secure: Rails.env.production? || Rails.env.staging?
+        secure: request.ssl?
       }
     end
   end
