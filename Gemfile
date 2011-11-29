@@ -106,6 +106,10 @@ group :assets do
   gem 'execjs'
 end
 
+group :production, :staging do
+  gem 'newrelic_rpm'
+end
+
 group :production do
   gem 'rack-ssl-enforcer'
   gem 'rack-cache'
