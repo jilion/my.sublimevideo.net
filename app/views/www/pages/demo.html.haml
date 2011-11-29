@@ -9,10 +9,10 @@
 %section#single
   .video_wrap
     %video#single_video.sublime{ width: "544", height: "306", poster: image_path("www/demo/midnight_sun_800.jpg"), preload: "none", "data-uid" => "demo-single", "data-name" => "Demo Single" }
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm", "data-quality"=>"hd" }/
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4" data-quality="hd" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm" data-quality="hd" />
   .right
     %h3.title= "Single video"
     %p.desc= "The most common and basic integration of SublimeVideo Player in a page. One of the best ways to display and highlight a video on your site."
@@ -39,29 +39,29 @@
         = image_tag("www/demo/midnight_sun1_800.jpg", alt: "", width: "192", height: "108")
         %span.icon
       %video.sublime.zoom{ style: "display:none", width: "704", height: "396", poster: image_path("www/demo/midnight_sun1_800.jpg"), preload: "none", "data-uid" => "demo-lightbox-1", "data-name" => "Demo Lightbox #1" }
-        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.mp4" }/
-        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.webm" }/
+        == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.mp4" />
+        == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.webm" />
     %li
       %a.sublime{ href: "" }
         = image_tag("www/demo/midnight_sun2_800.jpg", alt: "", width: "192", height: "108")
         %span.icon
       %video.sublime.zoom{ style: "display:none", width: "704", height: "396", poster: image_path("www/demo/midnight_sun2_800.jpg"), preload: "none", "data-uid" => "demo-lightbox-2", "data-name" => "Demo Lightbox #2" }
-        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.mp4" }/
-        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.webm" }/
+        == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.mp4" />
+        == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.webm" />
     %li
       %a.sublime{ href: "" }
         = image_tag("www/demo/midnight_sun3_800.jpg", alt: "", width: "192", height: "108")
         %span.icon
       %video.sublime.zoom{ style: "display:none", width: "704", height: "396", poster: image_path("www/demo/midnight_sun3_800.jpg"), preload: "none", "data-uid" => "demo-lightbox-3", "data-name" => "Demo Lightbox #3" }
-        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.mp4" }/
-        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.webm" }/
+        == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.mp4" />
+        == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.webm" />
     %li
       %a.sublime{ href: "" }
         = image_tag("www/demo/midnight_sun4_800.jpg", alt: "", width: "192", height: "108")
         %span.icon
       %video.sublime.zoom{ style: "display:none", width: "704", height: "396", poster: image_path("www/demo/midnight_sun4_800.jpg"), preload: "none", "data-uid" => "demo-lightbox-4", "data-name" => "Demo Lightbox #4" }
-        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.mp4" }/
-        %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.webm" }/
+        == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.mp4" />
+        == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.webm" />
   .spacer
 .big_break
 %section#playlist
@@ -84,24 +84,24 @@
         %span.play
   .video_wrap.active
     %video#video1.sublime{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun1_800.jpg"), preload: "none", "data-uid" => "demo-playlist-1", "data-name" => "Demo Playlist #1" }
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_270p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.webm" }/
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_1_270p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_1_450p.webm" />
   .video_wrap
     %video#video2{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun2_800.jpg"), preload: "none", "data-uid" => "demo-playlist-2", "data-name" => "Demo Playlist #2" }
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_270p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.webm" }/
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_2_270p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_2_450p.webm" />
   .video_wrap
     %video#video3{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun3_800.jpg"), preload: "none", "data-uid" => "demo-playlist-3", "data-name" => "Demo Playlist #3" }
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_270p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.webm" }/
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_3_270p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_3_450p.webm" />
   .video_wrap
     %video#video4{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun4_800.jpg"), preload: "none", "data-uid" => "demo-playlist-4", "data-name" => "Demo Playlist #4" }
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_270p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.webm" }/
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_4_270p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.webm" />
   .spacer
   %h3.title= "Video Playlist"
   %p.desc= raw "SublimeVideo Player offers a simple yet powerful #{link_to("JavaScript API", "http://docs.sublimevideo.net/javascript-api/")} that allows all kinds of different integrations in your page. Here are 4 different videos with clickable thumbnails: when a video finishes playing, the next one in the playlist is begins automatically."
