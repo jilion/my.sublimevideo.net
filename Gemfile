@@ -12,9 +12,9 @@ gem 'rails-backbone'
 gem 'pg',                    '~> 0.11.0'
 gem 'squeel',                '~> 0.9.2'
 
-gem 'bson_ext',              '~> 1.5.0'
-gem 'bson',                  '~> 1.5.0'
-gem 'mongo',                 '~> 1.5.0'
+gem 'bson_ext',              '~> 1.3.0'
+gem 'bson',                  '~> 1.3.0'
+gem 'mongo',                 '~> 1.3.0'
 gem 'mongoid',               '~> 2.3.3'
 
 # Views
