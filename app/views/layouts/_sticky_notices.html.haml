@@ -1,4 +1,4 @@
-- notices = [[current_user.cc_expire_this_month? || current_user.cc_expired?, 'credit_card_warning'], [!current_user.billing_address_complete?, 'billing_address_incomplete']]
+- notices = [[current_user.cc_expire_this_month? || current_user.cc_expired?, 'credit_card_warning'], [current_user.cc? && !current_user.billing_address_complete?, 'billing_address_incomplete']]
 - conditions_sum = notices.inject(false) { |cond, notice| cond || notice[0] }
 
 - if current_user.billable? && conditions_sum
