@@ -345,6 +345,7 @@ end
 #  confirmed_at                    :datetime
 #  confirmation_sent_at            :datetime
 #  reset_password_token            :string(255)
+#  remember_token                  :string(255)
 #  remember_created_at             :datetime
 #  sign_in_count                   :integer         default(0)
 #  current_sign_in_at              :datetime
@@ -365,8 +366,8 @@ end
 #  enthusiast_id                   :integer
 #  first_name                      :string(255)
 #  last_name                       :string(255)
-#  billing_postal_code             :string(255)
-#  billing_country                 :string(255)
+#  postal_code                     :string(255)
+#  country                         :string(255)
 #  use_personal                    :boolean
 #  use_company                     :boolean
 #  use_clients                     :boolean
@@ -390,14 +391,16 @@ end
 #  billing_name                    :string(255)
 #  billing_address_1               :string(255)
 #  billing_address_2               :string(255)
+#  billing_postal_code             :string(255)
 #  billing_city                    :string(255)
 #  billing_region                  :string(255)
+#  billing_country                 :string(255)
 #  last_failed_cc_authorize_at     :datetime
 #  last_failed_cc_authorize_status :integer
 #  last_failed_cc_authorize_error  :string(255)
 #  referrer_site_token             :string(255)
 #  reset_password_sent_at          :datetime
-#  remember_token                  :string(255)
+#  confirmation_comment            :text
 #
 # Indexes
 #

@@ -17,8 +17,11 @@ document.observe "dom:loaded", ->
       SublimeVideo.showPopup(event.state.showPopup)
 
 SublimeVideo.handleLoggedInAutoRedirection = ->
-  path = document.location.pathname
+  path   = document.location.pathname
+  search = document.location.search
   my_host = "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}"
+  if /login/.test(path) or /signup/.test(path) or /login/.test(search) or /signup/.test(search)
+    Cookie.set('l', '0', { secure: /https/.test(document.location.protocol), domain: ".#{SublimeVideo.topDomainHost()}" })
   if path == '/help'
     document.location.href = "#{my_host}#{path}"
 

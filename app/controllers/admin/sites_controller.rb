@@ -11,7 +11,7 @@ class Admin::SitesController < AdminController
   has_scope :with_wildcard, type: :boolean
   has_scope :with_path, type: :boolean
   has_scope :with_extra_hostnames, type: :boolean
-  has_scope :with_badge, type: :boolean
+  has_scope :badged
   has_scope :billable do |controller, scope|
     scope.billable
   end

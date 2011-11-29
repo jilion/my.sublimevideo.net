@@ -16,8 +16,8 @@ module Admin::SitesHelper
       " with peak insurance"
     elsif params[:with_next_cycle_plan]
       " will downgrade"
-    elsif params[:with_badge]
-      " with badge"
+    elsif params[:badged]
+      " with#{'out' if params[:badged] == 'false'} badge"
     elsif params[:user_id]
       user = User.find(params[:user_id])
       " for #{user.name_or_email}" if user
