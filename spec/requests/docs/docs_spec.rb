@@ -18,8 +18,6 @@ feature "faq" do
     go 'docs', 'faq'
 
     current_url.should eq "http://docs.sublimevideo.dev/faq"
-    # first line
-    page.should have_content("What are “plays” and how are they counted?")
   end
 end
 
