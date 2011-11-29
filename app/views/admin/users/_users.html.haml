@@ -3,7 +3,8 @@
     %th= link_to_sort :name_or_email, label: "Full name / email"
     %th State
     %th Sites
-    %th= link_to_sort :sites_last_30_days_billable_video_views, default_way: 'desc', label: "Last 30 days billable hits", title: "Last 30 days billable (main+extra) hits (+cached) sum (of all sites)"
+    %th Billable plays (Last 30 days)
+    -# %th= link_to_sort :sites_last_30_days_billable_video_views, default_way: 'desc', label: "Last 30 days billable hits", title: "Last 30 days billable (main+extra) hits (+cached) sum (of all sites)"
     %th= link_to_sort :last_invoiced_amount, default_way: 'desc', label: "Last invoiced amount"
     %th= link_to_sort :total_invoiced_amount, default_way: 'desc', label: "Total invoiced amount"
     - if params[:with_balance] == "true"

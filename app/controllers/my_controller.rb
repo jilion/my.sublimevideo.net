@@ -4,8 +4,9 @@ class MyController < ApplicationController
 
   responders Responders::FlashResponder
 
+  before_filter :delete_logged_in_cookie
   before_filter :authenticate_user!
-  before_filter :set_cookie_for_menu
+  before_filter :set_logged_in_cookie
 
 private
 
@@ -29,13 +30,17 @@ private
     redirect_to [:new, :site] if @sites.empty?
   end
 
-  def set_cookie_for_menu
+  def delete_logged_in_cookie
+    cookies.delete :l, domain: :all
+  end
+
+  def set_logged_in_cookie
     unless cookies[:l] == '1'
       cookies[:l] = {
         value: '1',
         expires: 2.weeks.from_now,
         domain: :all,
-        secure: Rails.env.production? || Rails.env.staging?
+        secure: request.ssl?
       }
     end
   end

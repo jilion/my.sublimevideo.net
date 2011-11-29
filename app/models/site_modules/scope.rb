@@ -23,6 +23,7 @@ module SiteModules::Scope
     # attributes queries
     scope :with_wildcard,        where { wildcard == true }
     scope :with_path,            where { (path != nil) & (path != '') & (path != ' ') }
+    scope :badged,               lambda { |bool| where { badged == bool } }
     scope :with_extra_hostnames, where { (extra_hostnames != nil) & (extra_hostnames != '') }
     scope :with_plan,            where { plan_id != nil }
     scope :with_next_cycle_plan, where { next_cycle_plan_id != nil }

@@ -106,6 +106,10 @@ group :assets do
   gem 'execjs'
 end
 
+group :production, :staging do
+  gem 'newrelic_rpm'
+end
+
 group :production do
   gem 'rack-ssl-enforcer'
   gem 'rack-cache'
@@ -155,7 +159,7 @@ group :development do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
-  gem 'guard-jasmine'
+  # gem 'guard-jasmine'
   gem 'guard-yard'
 end
 
