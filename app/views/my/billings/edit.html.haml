@@ -1,29 +1,25 @@
 = title_and_content_header("Update billing information")
 
 .content_left
-  = form_for @user, url: [:billing], html: { class: "full_form" } do |f|
-    #billing_address
-      %h3.section_title Billing Address
-      - unless current_user.billing_address_complete?
-        %p.alert= t("user.billing_address.incomplete")
-      = render 'my/users/billing_form_fields', f: f
-    .entry.update
-      = f.submit 'Update', id: 'billing_address_submit', class: "submit blue_button"
-    .break
+  - if !@user.billing_address_complete? && !@user.cc?
+    = form_for @user, url: [:billing], html: { class: "full_form" } do |f|
+      = render 'billing_address_fields', f: f, user: @user
+      = render 'credit_card_fields', f: f, user: @user
+      .entry.update
+        = f.submit 'Update', id: 'billing_info_submit', class: "submit blue_button"
+      .break
 
-  = form_for @user, url: [:billing], html: { class: "full_form" } do |f|
-    #credit_card
-      %h3.section_title
-        - if @user.cc?
-          = "Update credit card"
-        - else
-          = "Register a credit card"
+  - else
+    = form_for @user, url: [:billing], html: { class: "full_form" } do |f|
+      = render 'billing_address_fields', f: f, user: @user
+      .entry.update
+        = f.submit 'Update', id: 'billing_address_submit', class: "submit blue_button"
+      .break
 
-      #credit_card_box
-        = render 'cc_fields', f: f
-
-    .entry.update
-      = f.submit 'Update', id: 'credit_card_submit', class: "submit blue_button"
+    = form_for @user, url: [:billing], html: { class: "full_form" } do |f|
+      = render 'credit_card_fields', f: f, user: @user
+      .entry.update
+        = f.submit 'Update', id: 'credit_card_submit', class: "submit blue_button"
 
 .content_right
   - if @user.cc?

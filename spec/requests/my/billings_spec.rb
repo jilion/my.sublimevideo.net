@@ -3,51 +3,99 @@ require 'spec_helper'
 feature "Billing address update" do
 
   context "When the user is not billable" do
-    background do
-      sign_in_as :user
-      go 'my', 'account'
+    context "with an incomplete billing address and no credit card" do
+      background do
+        sign_in_as :user, billing_address_1: '', without_cc: true
+        go 'my', 'account'
+        page.should have_no_content 'Batiment B'
+        page.should have_no_content '1004 Lausanne'
+        page.should have_no_content 'SWITZERLAND'
+        go 'my', 'account/billing/edit'
+        current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
+      end
 
-      page.should have_no_content 'Avenue de France 71'
-      page.should have_no_content 'Batiment B'
-      page.should have_no_content '1004 Lausanne'
-      page.should have_no_content 'SWITZERLAND'
+      scenario "Updates his billing address and credit card successfully" do
+        fill_in "Name",               with: "Bob Doe"
+        fill_in "Street 1",           with: "60 rue du hurepoix"
+        fill_in "Street 2",           with: ""
+        fill_in "Zip or Postal Code", with: "91470"
+        fill_in "City",               with: "Limours"
+        fill_in "Region",             with: ""
+        select  "France",             from: "Country"
+        set_credit_card type: 'master'
+        VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "billing_info_submit" }
+        go 'my', 'account'
 
-      go 'my', 'account/billing/edit'
+        @current_user.reload.billing_name.should eq "Bob Doe"
+        @current_user.billing_address_1.should eq "60 rue du hurepoix"
+        @current_user.billing_postal_code.should eq "91470"
+        @current_user.billing_city.should eq "Limours"
+        @current_user.billing_country.should eq "FR"
+      end
 
-      current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
+      scenario "Update billing address and credit card unsuccessfully" do
+        fill_in "Name",               with: ""
+        fill_in "Street 1",           with: "60 rue du hurepoix"
+        fill_in "Street 2",           with: ""
+        fill_in "Zip or Postal Code", with: "1"*21
+        fill_in "City",               with: "Limours"
+        fill_in "Region",             with: ""
+        select  "France",             from: "Country"
+        set_credit_card type: 'master'
+        VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "billing_info_submit" }
+
+        page.should have_css '.inline_errors'
+        page.should have_content "Postal code is too long (maximum is 20 characters)"
+        @current_user.reload.billing_postal_code.should eq "1004"
+      end
     end
 
-    scenario "Update billing address successfully" do
-      fill_in "Name",               with: "Bob Doe"
-      fill_in "Street 1",           with: "60 rue du hurepoix"
-      fill_in "Street 2",           with: ""
-      fill_in "Zip or Postal Code", with: "91470"
-      fill_in "City",               with: "Limours"
-      fill_in "Region",             with: ""
-      select  "France",             from: "Country"
-      click_button "billing_address_submit"
-      go 'my', 'account'
+    context "with an incomplete billing address and a credit card" do
+      background do
+        sign_in_as :user, billing_address_1: ''
+        go 'my', 'account'
+        page.should have_no_content 'Avenue de France 71'
+        page.should have_no_content 'Batiment B'
+        page.should have_no_content '1004 Lausanne'
+        page.should have_no_content 'SWITZERLAND'
+        go 'my', 'account/billing/edit'
+        current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
+      end
 
-      @current_user.reload.billing_name.should eq "Bob Doe"
-      @current_user.billing_address_1.should eq "60 rue du hurepoix"
-      @current_user.billing_postal_code.should eq "91470"
-      @current_user.billing_city.should eq "Limours"
-      @current_user.billing_country.should eq "FR"
-    end
+      scenario "Updates his billing address and credit card successfully" do
+        fill_in "Name",               with: "Bob Doe"
+        fill_in "Street 1",           with: "60 rue du hurepoix"
+        fill_in "Street 2",           with: ""
+        fill_in "Zip or Postal Code", with: "91470"
+        fill_in "City",               with: "Limours"
+        fill_in "Region",             with: ""
+        select  "France",             from: "Country"
+        set_credit_card type: 'master'
+        VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "billing_address_submit" }
+        go 'my', 'account'
 
-    scenario "Update billing address unsuccessfully" do
-      fill_in "Name",               with: ""
-      fill_in "Street 1",           with: "60 rue du hurepoix"
-      fill_in "Street 2",           with: ""
-      fill_in "Zip or Postal Code", with: "1"*21
-      fill_in "City",               with: "Limours"
-      fill_in "Region",             with: ""
-      select  "France",             from: "Country"
-      click_button "billing_address_submit"
+        @current_user.reload.billing_name.should eq "Bob Doe"
+        @current_user.billing_address_1.should eq "60 rue du hurepoix"
+        @current_user.billing_postal_code.should eq "91470"
+        @current_user.billing_city.should eq "Limours"
+        @current_user.billing_country.should eq "FR"
+      end
 
-      page.should have_css '.inline_errors'
-      page.should have_content "Postal code is too long (maximum is 20 characters)"
-      @current_user.reload.billing_postal_code.should eq "1004"
+      scenario "Update billing address and credit card unsuccessfully" do
+        fill_in "Name",               with: ""
+        fill_in "Street 1",           with: "60 rue du hurepoix"
+        fill_in "Street 2",           with: ""
+        fill_in "Zip or Postal Code", with: "1"*21
+        fill_in "City",               with: "Limours"
+        fill_in "Region",             with: ""
+        select  "France",             from: "Country"
+        set_credit_card type: 'master'
+        VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "billing_address_submit" }
+
+        page.should have_css '.inline_errors'
+        page.should have_content "Postal code is too long (maximum is 20 characters)"
+        @current_user.reload.billing_postal_code.should eq "1004"
+      end
     end
   end
 
@@ -132,7 +180,7 @@ feature "Credit cards update" do
 
   context "When the user is logged-in and has initially a credit card on file" do
     background do
-      sign_in_as :user
+      sign_in_as :user, kill_user: true
       @current_user.should be_credit_card
       go 'my', 'account'
       should_display_credit_card
