@@ -5,15 +5,15 @@
     %title= title_env_prefix + title_subdomain_prefix(request) + (title.present? ? " - #{title}" : '')
     -# %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", content: "text/html;charset=UTF-8" }
-    
+
     %meta{ content: 'SublimeVideo - HTML5 Video Player', property: 'og:title' }
     %meta{ content: 'product', property: 'og:type' }
     %meta{ content: 'http://sublimevideo.net', property: 'og:url' }
     %meta{ content: 'http://media.jilion.s3.amazonaws.com/facebook/sublimevideo_facebook.png', property: 'og:image' }
     %meta{ content: "SublimeVideo is the world's first cloud-based HTML5 video player; a universal and pain-free solution that allows video to play flawlessly on any device or browser.", property: 'og:description'}
-    
+
     = stylesheet_link_tag(request.subdomain)
-    = airbrake_javascript_notifier
+    -# = airbrake_javascript_notifier
     - unless request.subdomain == 'my'
       %script{ src: "//cdn.optimizely.com/js/#{Optimizely.experiment_id}.js" }
     = csrf_meta_tag
@@ -39,7 +39,7 @@
     - else
       = javascript_include_tag(request.subdomain)
     = yield :head
-    
+
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
     :javascript
       try { Typekit.load(); } catch(e) { }
