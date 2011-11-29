@@ -12,13 +12,33 @@ Slideshow = Class.create({
 
     this.slideNames = [];
     $$('body.home .slides li').each(function(element){
-      if (!element.hasClassName('active')) element.setOpacity(0);
+      if (!element.hasClassName('active')) {
+        this.hideElement(element);
+      }
       this.slideNames.push(this.getBoxName(element));
     }.bind(this));
 
     this.activeBoxIndex = 0;
     this.startTimer();
     this.setupObservers();
+  },
+  isIE: function() {
+    return (Prototype.Browser.IE);
+  },
+  hideElement: function(element) {
+    if (this.isIE()) {
+      element.hide();
+    } else {
+      element.show();
+      element.setOpacity(0);
+    }
+  },
+  showElement: function(element) {
+    if (this.isIE()) {
+      element.show();
+    } else {
+      element.setOpacity(1);
+    }
   },
   getBoxName: function(element) {
     return element.className.gsub(/(box|active|\s)/, '');
@@ -32,8 +52,7 @@ Slideshow = Class.create({
     if (this.activeBoxIndex != index) {
       var currentBox = $$('.slides li.'+this.slideNames[this.activeBoxIndex])[0];
       var nextBox = $$('.slides li.'+this.slideNames[index])[0];
-
-      if (this.timer) {
+      if (this.timer && !this.isIE()) {
         // animation
         this.fadeInAnimation = new S2.FX.Morph(currentBox, {
           duration:this.speed,
@@ -56,7 +75,7 @@ Slideshow = Class.create({
         });
         this.fadeInAnimation.play();
       } else {
-        // no timer
+        // no timer or ie
         if (this.fadeInAnimation) {
           this.fadeInAnimation.cancel();
           this.fadeInAnimation = null;
@@ -71,9 +90,9 @@ Slideshow = Class.create({
 
         this.updateActiveClasses(this.slideNames[index]);
         currentBox.removeAttribute('style');
-        currentBox.setOpacity(0);
+        this.hideElement(currentBox);
         nextBox.removeAttribute('style');
-        nextBox.setOpacity(1);
+        this.showElement(nextBox);
         nextBox.setStyle({zIndex:2});
       }
 

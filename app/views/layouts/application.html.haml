@@ -3,7 +3,7 @@
   %head
     - title = yield(:title)
     %title= title_env_prefix + title_subdomain_prefix(request) + (title.present? ? " - #{title}" : '')
-    %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
+    -# %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
     = stylesheet_link_tag(request.subdomain)
     = airbrake_javascript_notifier
@@ -18,10 +18,12 @@
         %style{ :type => "text/css", :media => "screen" }
           == body {background:#fff;display:none;}
     - else
-      /[if lte IE 6]
+      /[if lte IE 7]
         %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
         %style{ :type => "text/css", :media => "screen" }
           == body {background:#fff;display:none;}
+    /[if lte IE 8]
+      = stylesheet_link_tag("ie")
     /[if lte IE 9]
       = javascript_include_tag("#{request.protocol}html5shiv.googlecode.com/svn/trunk/html5.js")
     = yield :head_before
