@@ -26,10 +26,10 @@
       %span.overlay
       %span.magnifying_glass
     %video.sublime.zoom{ width: "768", height: "432", poster: image_path("www/demo/midnight_sun_800.jpg"), preload: "none", style: "display:none", "data-uid" => "features-lightbox", "data-name" => "Features Lightbox" }
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" }/
-      %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm", "data-quality"=>"hd" }/
+      %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_360p.mp4" }/
+      %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_720p.mp4", "data-quality"=>"hd" }/
+      %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_360p.webm" }/
+      %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_720p.webm", "data-quality"=>"hd" }/
     %h3.title= "Integrated lightbox"
     %p= raw "Quickly and easily give your audience another great way to view your videos with SublimeVideo's integrated lightbox."
     .spacer
@@ -42,19 +42,19 @@
       -#    %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm" }/
       .video_wrap.active
         %video#video2.sublime{ width: "432", height: "243", poster: image_path("www/demo/midnight_sun2_800.jpg"), preload: "none", "data-uid" => "features-playlist-2", "data-name" => "Features Playlist #2" }
-          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_360p.mp4" }/
-          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_270p.mp4" }/
-          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_2_360p.webm" }/
+          %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_2_360p.mp4" }/
+          %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_2_270p.mp4" }/
+          %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_2_360p.webm" }/
       .video_wrap
         %video#video3{ width: "432", height: "243", poster: image_path("www/demo/midnight_sun3_800.jpg"), preload: "none", "data-uid" => "features-playlist-3", "data-name" => "Features Playlist #3" }
-          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_360p.mp4" }/
-          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_270p.mp4" }/
-          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_3_360p.webm" }/
+          %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_3_360p.mp4" }/
+          %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_3_270p.mp4" }/
+          %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_3_360p.webm" }/
       .video_wrap
         %video#video4{ width: "432", height: "243", poster: image_path("www/demo/midnight_sun4_800.jpg"), preload: "none", "data-uid" => "features-playlist-4", "data-name" => "Features Playlist #4" }
-          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_360p.mp4" }/
-          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_270p.mp4" }/
-          %source{ src: "http://media.jilion.com/videos/demo/midnight_sun_sv1_4_360p.webm" }/
+          %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_4_360p.mp4" }/
+          %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_4_270p.mp4" }/
+          %source{ src: "https://dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_4_360p.webm" }/
       %ul.thumbs
         -#%li#thumbnail_video1
         -#  %a{ href: "" }
@@ -76,13 +76,13 @@
     %p= "Playlist support using our powerful API makes it possible for you to link multiple videos or chapters to the same player."
     .spacer
   %section.column_wrap.first
-    %section.hd.col.f
+    %section.hd.col.f#hd_switching
       .i_wrap= image_tag "www/features/hd_icon.png", alt: "HD switching"
       %h3.title= "HD switching"
       %p= "Switch SD-HD video sources with a single click using SublimeVideo's new HD Switch, built straight into the player's UI."
       %p
-        = raw "#{link_to "Learn more", docs_page_url('hd-source-switching', subdomain: 'docs')}."
-    %section.embed.col.f
+        = raw "#{link_to "Learn more", docs_page_url('hd-switching', subdomain: 'docs')}."
+    %section.embed.col.f#embeds
       .i_wrap= image_tag "www/features/embed_icon.png", alt: "Embed"
       %h3.title= "Embed"
       %p= "Your audience can now easily share your videos by embedding them into their own sites or elsewhere on the web."

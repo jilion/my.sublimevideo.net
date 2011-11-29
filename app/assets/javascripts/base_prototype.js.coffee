@@ -7,14 +7,8 @@ document.observe "dom:loaded", ->
 
   $$('.popup').each (popup) ->
     if popup.visible()
-      SublimeVideo.simplePopupHandler = new SimplePopupHandler(popup.id, SublimeVideo.replaceHistory)
+      SublimeVideo.simplePopupHandler = new SimplePopupHandler(popup.id)
       SublimeVideo.simplePopupHandler.startObservers()
-
-  Event.observe window, 'popstate', (event) ->
-    if event.state? and event.state.hidePopup?
-      SublimeVideo.showPopup(event.state.hidePopup)
-    else if event.state? and event.state.showPopup?
-      SublimeVideo.showPopup(event.state.showPopup)
 
 SublimeVideo.handleLoggedInAutoRedirection = ->
   path   = document.location.pathname
@@ -37,9 +31,6 @@ SublimeVideo.showPopup = (name, successUrl = null) ->
     SublimeVideo.openSimplePopup("popup_#{name}")
     $("user_#{name}").insert({ top: new Element("input", { name: "success_url", type: 'hidden', value: successUrl }) })
 
-    if history && history.pushState
-      history.pushState { showPopup: name }, '', document.location.href.replace(document.location.search, '') + "?p=#{name}"
-
   false
 
 SublimeVideo.hidePopup = (name) ->
@@ -48,13 +39,9 @@ SublimeVideo.hidePopup = (name) ->
 
   false
 
-SublimeVideo.replaceHistory = (contentId) ->
-  if history and history.replaceState
-    history.replaceState { hidePopup: contentId.replace(/^popup_/, '') }, '', document.location.href.replace document.location.search, ''
-
 SublimeVideo.openSimplePopup = (contentId) -> # item can be site
   SublimeVideo.closeSimplePopup(contentId)
-  SublimeVideo.simplePopupHandler = new SimplePopupHandler(contentId, SublimeVideo.replaceHistory)
+  SublimeVideo.simplePopupHandler = new SimplePopupHandler(contentId)
   SublimeVideo.simplePopupHandler.open()
 
 # ====================
@@ -64,18 +51,16 @@ SublimeVideo.openSimplePopup = (contentId) -> # item can be site
 SublimeVideo.closeSimplePopup = (contentId) ->
   $$('.popup').each (popup) -> popup.hide()
   if SublimeVideo.simplePopupHandler?
-    # SublimeVideo.simplePopupHandler = new SimplePopupHandler(contentId, SublimeVideo.replaceHistory)
     SublimeVideo.simplePopupHandler.close();
 
   false
 
 class SimplePopupHandler
-  constructor: (contentId, onCloseCallback) ->
+  constructor: (contentId) ->
     @contentId       = contentId
     @contentDiv      = $(contentId)
     @keyDownHandler  = document.on "keydown", this.keyDown.bind(this)
     @clickHandler    = @contentDiv.on "click", this.click.bind(this)
-    @onCloseCallback = onCloseCallback
 
   startObservers: ->
     @keyDownHandler.start()
@@ -94,7 +79,6 @@ class SimplePopupHandler
 
   close: ->
     this.stopObservers()
-    @onCloseCallback(@contentId)
     @contentDiv.hide()
 
   keyDown: (event) ->
