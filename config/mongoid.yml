@@ -9,17 +9,16 @@ test:
   preload_models: true
 
 staging:
-  database: sublimevideo-staging
+  database: sublimevideo_production
   username: <%= ENV['MONGOHQ_USERNAME'] %>
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
   hosts:
-    - - sublimevideo.member0.mongolayer.com
-      - 27017
-    - - sublimevideo.member1.mongolayer.com
-      - 27017
-    - - sublimevideo.member2.mongolayer.com
-      - 27017
+    - - hurley.member0.mongolayer.com
+      - 10006
+    - - hurley.member1.mongolayer.com
+      - 10006
   preload_models: true
+  skip_version_check: true
   logger: false
 
 production:
@@ -27,18 +26,17 @@ production:
   # make rake asset:precompile work
   preload_models: false
   host: localhost
-  database: sublimevideo
+  database: sublimevideo_production
 <% else %>
-  database: sublimevideo
+  database: sublimevideo_production
   username: <%= ENV['MONGOHQ_USERNAME'] %>
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
   hosts:
-    - - sublimevideo.member0.mongolayer.com
-      - 27017
-    - - sublimevideo.member1.mongolayer.com
-      - 27017
-    - - sublimevideo.member2.mongolayer.com
-      - 27017
+    - - hurley.member0.mongolayer.com
+      - 10006
+    - - hurley.member1.mongolayer.com
+      - 10006
   preload_models: true
+  skip_version_check: true
   logger: false
 <% end %>
