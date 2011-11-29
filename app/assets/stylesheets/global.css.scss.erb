@@ -93,8 +93,9 @@ header p.sub a {
   letter-spacing:1px;
   border:1px solid transparent;
   text-shadow:#000 0 1px 2px;
-  font-weight:100;
+/*  font-weight:100;*/
   @include transition(color,0.25s,linear);
+  -webkit-font-smoothing:antialiased;
 }
 
 #menu li a:hover {
@@ -133,6 +134,7 @@ header p.sub a {
   text-shadow:#000 0 1px 2px;
   background:url(<%= asset_data_uri "global/header_signup_btn.png" %>) no-repeat;
   text-align:center;
+  -webkit-font-smoothing:subpixel-antialiased;
 }
 
 #menu li.signup a:active {background-position:0 -30px;}
@@ -289,7 +291,7 @@ form .entry input.text.errors {
   background:#ffd9d9;
 }
 
-form .entry ::-webkit-input-placeholder, form .entry input.text.placeholder {color:#7690b3}
+form .entry input::-webkit-input-placeholder, form .entry textarea::-webkit-input-placeholder, form .entry input.text.placeholder {color:#7690b3}
 form .entry .errors::-webkit-input-placeholder, form .entry input.text.errors.placeholder {color:#b37676}
 form .entry input:-moz-placeholder, form .entry textarea:-moz-placeholder {color:#7690b3}
 form .entry input.errors:-moz-placeholder, form .entry textarea.errors:-moz-placeholder {color:#b37676}
@@ -622,11 +624,11 @@ ul.form_list li a {
   float:left;
   padding:20px 0;
   font-size:28px;
-  width:164px;
+  width:144px;
 }
 
 .popup .entry.login ul.form_list {
-  width:226px;
+  width:246px;
   float:left;
   font-size:13px;
   padding:8px 11px;
@@ -648,6 +650,7 @@ ul.form_list li a {
 
 a {
   text-decoration:none;
+  outline:0;
 }
 
 header, section, nav, aside {display:block}

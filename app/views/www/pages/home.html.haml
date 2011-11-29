@@ -16,6 +16,9 @@
       %li.always_up_to_date.active{style: "z-index:2"}
         %h3= "Always Up-To-Date"
         = link_to (image_tag "www/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), page_path('features', anchor: 'always_up_to_date')
+      %li.html5_flash
+        %h3= "Universal compatibility"
+        = link_to (image_tag "www/home/features/html5_flash.png", alt: "Universal compatibility"), page_path('features', anchor: 'consistent_ui')
       %li.works_in_any_browsers
         %h3= "Works in any browser"
         = link_to (image_tag "www/home/features/browsers/default.png", alt: "Works in any browser"), page_path('features', anchor: 'works_everywhere'), id: "browsers_box"
@@ -32,6 +35,8 @@
     .slides_nav
       = link_to "", class: "always_up_to_date active" do
         %span= "Always Up-To-Date"
+      = link_to "", class: "html5_flash" do
+        %span= "Universal compatibility"
       = link_to "", class: "works_in_any_browsers" do
         %span= "Works in any browsers"
       = link_to "", class: "works_on_any_devices" do
