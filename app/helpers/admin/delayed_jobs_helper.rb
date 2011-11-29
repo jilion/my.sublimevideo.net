@@ -2,7 +2,7 @@ module Admin::DelayedJobsHelper
 
   def job_name(job)
     case job.name
-    when "Module#send_credit_card_expiration"
+    when "Class#send_credit_card_expiration"
       "Send credit card expiration email"
     when "Module#monitor_sites_usages"
       "Usage monitoring"
@@ -47,7 +47,7 @@ module Admin::DelayedJobsHelper
 
   def recurring_job?(job)
     %w[
-      Module#send_credit_card_expiration
+      Class#send_credit_card_expiration
       Module#monitor_sites_usages
       Module#invoices_processing
       Module#clear_old_seconds_minutes_and_hours_stats
