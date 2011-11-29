@@ -277,7 +277,4 @@ MySublimeVideo::Application.routes.draw do
     end
   end
 
-  # Fake Maintenance pass-out
-  # get '/private/:maintenance_code' => 'application#maintenance_code'
-
 end
