@@ -144,7 +144,7 @@
       %p
         = raw "Yes and yes, it's completely free and gives you unlimited video plays. Unlike the unbranded player offered with our paid plans, our free player will display a discreet"
         -#= raw "#{link_to "SublimeVideo badge", "http://test.sublimevideo.net/badge"}"
-        %a.sublime{ href: "" }= "SublimeVideo badge"
+        %a.sublime{ href: (image_path "www/plans/sv-badge-sample.jpg") }= "SublimeVideo badge"
         %video.sublime.zoom.sv_force_badge{ width: "576", height: "324", poster: image_path("www/demo/midnight_sun_800.jpg"), preload: "none", style: "display:none" }
           %source{ src:"http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" }
           %source{ src:"http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" }

@@ -1,14 +1,14 @@
 module My::TweetsHelper
 
   # Fetch +count+ tweets randomly from the 20 cached last favorite tweets, sorted by date desc
-  def random_favorite_tweets(count=3)
+  def random_favorite_tweets(count = 3)
     cached_last_favorite_tweets(20).sample(count).sort { |a, b| b.created_at <=> a.created_at }
   end
 
   # Fetch +count+ last favorite tweets and cache the array for 1 hour
   def cached_last_favorite_tweets(count)
     favorite_tweets_options = { user_doublon: false, count: count, random: true, since_date: Time.utc(2011,3,29), include_entities: true }
-    Rails.cache.fetch("what_people_say_#{count}", :expires_in => 1.hour) do
+    Rails.cache.fetch("what_people_say_#{count}", expires_in: 1.hour) do
       # Rails.logger.debug("CACHED #{count} last favorites tweets!")
       Tweet.favorites_tweets(favorite_tweets_options)
     end

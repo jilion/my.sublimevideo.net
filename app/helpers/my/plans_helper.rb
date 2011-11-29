@@ -55,7 +55,7 @@ module My::PlansHelper
 
   def plan_support(plan)
     text = case plan.support
-           when 'vip'
+           when 'vip_email'
              "VIP Email"
            else
              plan.support.titleize

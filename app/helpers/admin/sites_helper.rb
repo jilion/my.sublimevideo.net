@@ -14,11 +14,25 @@ module Admin::SitesHelper
       " with ssl"
     elsif params[:overusage_notified]
       " with peak insurance"
+    elsif params[:with_next_cycle_plan]
+      " will downgrade"
+    elsif params[:with_badge]
+      " with badge"
     elsif params[:user_id]
       user = User.find(params[:user_id])
       " for #{user.name_or_email}" if user
     elsif params[:search].present?
       " matching '#{params[:search]}'"
+    elsif params[:billable]
+      " billable"
+    elsif params[:not_billable]
+      " not billable"
+    elsif params[:free]
+      " in free plan"
+    elsif params[:in_paid_plan]
+      " in paid plan"
+    elsif params[:sponsored]
+      " sponsored"
     else
       " active"
     end
