@@ -51,7 +51,13 @@ class MSVStats.Models.Video extends Backbone.Model
 
   sslPosterframe: ->
     "https://data.sublimevideo.net/proxy?u=#{encodeURIComponent(this.get('p'))}"
-
+    
+  name: (length = null) ->
+    if length? && this.get('n').length > length
+      this.get('n').substring(0, length) + '...'
+    else
+      this.get('n')
+  
   vlTotal: -> this.customSum('vl')
   vvTotal: -> this.customSum('vv')
   customSum: (field) ->

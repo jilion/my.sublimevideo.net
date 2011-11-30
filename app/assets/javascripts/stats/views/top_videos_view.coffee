@@ -23,7 +23,6 @@ class MSVStats.Views.TopVideosView extends Backbone.View
       $(@el).html(this.template(videos: @videos, models: @models))
       this.renderSparklines(@models)
       this.updateTitle()
-      this.truncateVideoTitles()
 
       return this
     else
@@ -45,9 +44,6 @@ class MSVStats.Views.TopVideosView extends Backbone.View
       when 'vl' then 'loaded'
       when 'vv' then 'played'
     $('#top_videos_title').text("Most #{title} videos")
-
-  truncateVideoTitles: ->
-    $(@el).find('h4').truncate(length: 22)
 
   prepareAndPlayVideo: (event) ->
     videoUid = $(event.currentTarget).attr("data-video-uid")
