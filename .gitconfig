@@ -12,7 +12,7 @@
   url   = git@heroku.com:sublimevideo.git
   fetch = +refs/heads/master:refs/remotes/production/master
   push  = master:master
-[remote "wwwwproduction"]
+[remote "wwwproduction"]
   url   = git@heroku.com:wwwsublimevideo.git
   fetch = +refs/heads/master:refs/remotes/wwwwproduction/master
   push  = master:master
