@@ -1,4 +1,4 @@
 - if invoice.customer_billing_address?
-  = simple_format(current_user.billing_address)
+  = simple_format(invoice.customer_billing_address)
 - else
   %p= invoice.customer_full_name
