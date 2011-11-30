@@ -47,7 +47,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     $('#top_videos_title').text("Most #{title} videos")
 
   truncateVideoTitles: ->
-    $(@el).find('h4').truncate(length: 18, ellipsisText: '', moreText: '...', lessText: ' <')
+    $(@el).find('h4').truncate(length: 22)
 
   prepareAndPlayVideo: (event) ->
     videoID = $(event.currentTarget).find('img')[0].id.match(/(.*)-img/)[1]
