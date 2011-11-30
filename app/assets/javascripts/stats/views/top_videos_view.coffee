@@ -50,8 +50,8 @@ class MSVStats.Views.TopVideosView extends Backbone.View
     $(@el).find('h4').truncate(length: 22)
 
   prepareAndPlayVideo: (event) ->
-    videoID = $(event.currentTarget).find('img')[0].id.match(/(.*)-img/)[1]
-    MSVStats.playableVideoView.renderAndPlay(videoID)
+    videoUid = $(event.currentTarget).attr("data-video-uid")
+    MSVStats.playableVideoView.renderAndPlay(videoUid)
 
   sortByLoads: (event) ->
     unless MSVStats.videos.sortBy == 'vl'

@@ -441,15 +441,16 @@ def create_stats(site_token = nil)
     videos_count.times do |video_i|
       VideoTag.create(st: site.token, u: "video#{video_i}",
         uo:	"s",
-        n: "Video #{video_i}",
+        n: "Video #{video_i} long name test truncate",
         no: "s",
-        cs:	["83cb4c27","af355ec8","1d1e3c63"],
-        p: "http://www.sublimevideo.net/demo/dartmoor1_800.jpg",
-        z: "600x252",
+        cs:	["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
+        p: "https://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
+        z: "544x306",
         s: {
-          "83cb4c27" => { u: "http://medias.jilion.com/sublimevideo/dartmoor1_800.mp4", q: "base", f: "mp4" },
-          "af355ec8" => { u: "http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4", q: "mobile", f: "ogg" },
-          "1d1e3c63" => { u: "http://medias.jilion.com/sublimevideo/dartmoor1_800.ogv", q: "base", f: "ogg" }
+          "83cb4c27" => { u: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4", q: "base", f: "mp4" },
+          "83cb4c57" => { u: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", q: "hd", f: "mp4" },
+          "af355ec8" => { u: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm", q: "base", f: "webm" },
+          "af355ec9" => { u: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm", q: "hd", f: "webm" },
         }
       )
     end

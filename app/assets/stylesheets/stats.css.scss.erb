@@ -548,6 +548,10 @@ span.beta_badge {
   @include box-shadow(#002564 0 1px 4px);
 }
 
+.stats #top_videos td.video a.play.disabled {
+  cursor:default;
+}
+
 .stats #top_videos td.video a.play img {
   -webkit-mask-image:url(<%= asset_path "my/stats/video_thumb_mask.png" %>);
   -o-mask-image:url(<%= asset_path "my/stats/video_thumb_mask.png" %>);
@@ -639,7 +643,7 @@ span.beta_badge {
 }
 
 .stats .expander a .arrow.up {
-  background:url(<%= asset_data_uri "my/stats/expand_videos_arrow_up.png" %>) no-repeat;  
+  background:url(<%= asset_data_uri "my/stats/expand_videos_arrow_up.png" %>) no-repeat;
 }
 
 .stats .graph_box {
@@ -678,7 +682,7 @@ span.beta_badge {
   background:#8fa0c1;
   background:rgba(0,36,91,0.1);
   @include border-radius(5px);
-  @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.6) 0 1px 4px));  
+  @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.6) 0 1px 4px));
 }
 
 .stats .graph_box a.paid_plan_only {
