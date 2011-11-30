@@ -75,8 +75,10 @@ class My::UsersController < Devise::RegistrationsController
   # PUT /hide_notice/:id
   def hide_notice
     @user = User.find(current_user.id)
-    @user.hidden_notice_ids << params[:id].to_i
-    @user.save
+    unless @user.hidden_notice_ids.include?(params[:id].to_i)
+      @user.hidden_notice_ids << params[:id].to_i
+      @user.save
+    end
 
     respond_to do |format|
       format.html { redirect_to [:sites] }
