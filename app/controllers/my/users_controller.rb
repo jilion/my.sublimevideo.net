@@ -8,6 +8,7 @@ class My::UsersController < Devise::RegistrationsController
   respond_to :js, only: [:hide_notice]
 
   before_filter :redirect_suspended_user
+  before_filter :authenticate_user!, only: [:more_info, :hide_notice]
 
   # POST /signup
   def create
