@@ -24,7 +24,7 @@ module SiteModules::Usage
           self.last_30_days_dev_video_views     += s.vv['d'].to_i
           self.last_30_days_invalid_video_views += s.vv['i'].to_i
           self.last_30_days_embed_video_views   += s.vv['em'].to_i
-          self.last_30_days_billable_video_views_array << (s.vv['m'].to_i + s.vv['e'].to_i + s.vv['em'].to_i)
+          self.last_30_days_billable_video_views_array << (s.vv['m'].to_i + s.vv['e'].to_i)
         else
           self.last_30_days_billable_video_views_array << 0
         end

@@ -19,7 +19,7 @@ describe SiteModules::Usage do
         @site.last_30_days_dev_video_views.should     eq 21
         @site.last_30_days_invalid_video_views.should eq 29
         @site.last_30_days_embed_video_views.should   eq 37
-        @site.last_30_days_billable_video_views_array.should eq [26, [0]*28, 29].flatten
+        @site.last_30_days_billable_video_views_array.should eq [8, [0]*28, 10].flatten
       end
     end
   end
