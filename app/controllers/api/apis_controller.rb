@@ -11,7 +11,7 @@ class Api::ApisController < ActionController::Base
   include OAuth::Controllers::ApplicationControllerMethods
 
   self.responder = ActsAsApi::Responder
-  
+
   respond_to :json, :xml
 
   before_filter :set_version_and_content_type

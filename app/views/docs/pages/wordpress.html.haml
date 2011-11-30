@@ -3,7 +3,7 @@
 = page_title "WordPress plugin"
 
 :textile
-  This plugin allows you to easily integrate SublimeVideo with your WordPress site. It automatically connects to your account on #{link_to "MySublimeVideo", sites_url(subdomain: 'my'), onclick: 'window.open(this); return false'}, gathers the necessary license information and provide an easy-to-use visual editor that will help you generate "shortcodes":#shortcode-documentation for your videos.
+  This plugin allows you to easily integrate SublimeVideo with your WordPress site. It automatically connects to your #{link_to "SublimeVideo", sites_url(subdomain: 'my'), onclick: 'window.open(this); return false'} account, gathers the necessary license information and provide an easy-to-use visual editor that will help you generate "shortcodes":#shortcode-documentation for your videos.
 
   Check out the short demo video below to see just how easy it is to use.
 
@@ -17,9 +17,9 @@
 
   # Download the plugin from the "WordPress Plugin Directory":http://wordpress.org/extend/plugins/sublimevideo-official and upload the @sublimevideo-official@ folder to the @/wp-content/plugins/@ directory. Alternatively, you can install the plugin via the _Install Plugins_ section in your WordPress admin area.
   # Activate the plugin through the 'Plugins' menu item in your WordPress admin area.
-  # Go to the SublimeVideo plugin settings page and authorize the plugin to access some of your MySublimeVideo data. You will be redirected to the MySublimeVideo site to complete the authorization process.
-  # Once the authorization is complete, you will see your SublimeVideo sites listed in a dropdown menu in the plugin settings page; you'll have to choose the one matching the domain of your WordPress site. If you only have one site on MySublimeVideo, it'll be selected automatically.
-  # In the plugin settings page you can also set the default width for all videos you embed.
+  # Go to the SublimeVideo plugin settings page and authorize the plugin to access some of your SublimeVideo data. You will be redirected to the SublimeVideo site to complete the authorization process.
+  # Once the authorization is complete, you will see your SublimeVideo sites listed in a drop-down menu in the plugin settings page; you'll have to choose the one matching the domain of your WordPress site. If you only have one site registered in your SublimeVideo account, it'll be selected automatically.
+  # In the plugin settings page you can also set the default width for all the videos you will embed.
   # Go to the post editor, you should see the new #{image_tag('docs/wordpress/sv_toolbar_icon.png', class: 'icon', title: 'SV')} button next to the media icons (image, video, audio, etc) – the plugin's installation is now complete. If you don't see it, please refer to the "Troubleshooting":#troubleshooting section below.
 
   h3(#usage). Usage
@@ -108,7 +108,7 @@
 
   h4. I don't see any sites in the settings page, why?
 
-  It's probably because your WordPress site's domain is not properly registered on #{link_to "MySublimeVideo", sites_url(subdomain: 'my')}. Please find the possible reasons why in the "Troubleshooting":/troubleshooting#not-properly-registered page.
+  It's probably because your WordPress site's domain is not properly registered in your #{link_to "SublimeVideo", sites_url(subdomain: 'my')} account. Please find the possible reasons why in the "Troubleshooting":/troubleshooting#not-properly-registered page.
 
   h3. Changelog
 
