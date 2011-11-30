@@ -72,10 +72,6 @@ class My::UsersController < Devise::RegistrationsController
     render :more_info
   end
 
-  def after_update_path_for(resource_or_scope)
-    [:edit, :"#{Devise::Mapping.find_scope!(resource_or_scope)}"]
-  end
-
   # PUT /hide_notice/:id
   def hide_notice
     @user = User.find(current_user.id)

@@ -44,6 +44,10 @@ module CustomDevisePaths
     after_sign_out_path_for(resource_or_scope)
   end
 
+  def after_update_path_for(resource_or_scope)
+    [:edit, :"#{Devise::Mapping.find_scope!(resource_or_scope)}"]
+  end
+
   def after_sign_out_path_for(resource_or_scope)
     case Devise::Mapping.find_scope!(resource_or_scope)
     when :user
