@@ -5,6 +5,7 @@
 #= require hamlcoffee
 #= require spin/jquery.spin
 #= require jquery.sparkline
+#= require jquery.truncate
 #= require jquery.ui.datepicker.min
 #= require highcharts/highcharts
 
