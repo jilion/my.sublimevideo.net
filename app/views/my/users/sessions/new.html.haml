@@ -4,7 +4,7 @@
   .alert
     %p.inline_alert= flash[:alert]
 
-= form_for User.new, as: :user, url: (action_name == 'new_gs' ? gs_login_url(subdomain: 'www', protocol: 'https') : login_url(subdomain: 'www', protocol: 'https')), html: { method: :post, id: 'user_login', class: "main_form" } do |f|
+= form_for User.new, as: :user, url: (action_name == 'new_gs' ? gs_login_url(subdomain: 'www', protocol: https_if_prod_or_staging) : login_url(subdomain: 'www', protocol: https_if_prod_or_staging)), html: { method: :post, id: 'user_login', class: "main_form" } do |f|
   .entry.email
     = f.label :email, "", class: "icon"
     = f.email_field :email, class: "text", placeholder: "Email", required: true, value: params[:user].try(:[], :email)

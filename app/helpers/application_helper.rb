@@ -51,4 +51,8 @@ module ApplicationHelper
     end
   end
 
+  def https_if_prod_or_staging
+    Rails.env.production? || Rails.env.staging? ? 'https' : 'http'
+  end
+
 end
