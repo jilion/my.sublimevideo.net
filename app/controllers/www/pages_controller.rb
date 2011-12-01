@@ -1,6 +1,6 @@
 class Www::PagesController < ApplicationController
 
-  caches_action :show, layout: false
+  # caches_action :show, layout: false
 
   def show
     params[:page] ||= 'home'
