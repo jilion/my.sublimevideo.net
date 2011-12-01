@@ -1,4 +1,4 @@
-ah ouiMySublimeVideo::Application.configure do
+MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
   config.middleware.use(Rack::GoogleAnalytics, tracker: 'UA-10280941-8')
   config.middleware.use(Rack::SslEnforcer, except: [/^\/demo/, /^\/features/], strict: true)
