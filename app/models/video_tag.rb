@@ -1,3 +1,5 @@
+# coding: utf-8
+
 class VideoTag
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -89,7 +91,7 @@ private
               end
             end
           when 's'
-            if all_needed_params_present?(params, %w[t vu vuo vn vno vs vc vcs vsq vsf vp])
+            if all_needed_params_present?(params, %w[t vu vuo vn vno vs vc vcs vsq vsf])
               %w[uo n no p cs].each do |key|
                 video_tags[[params['t'],params['vu']]][key] = params["v#{key}"]
               end

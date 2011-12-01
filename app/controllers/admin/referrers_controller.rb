@@ -3,6 +3,7 @@ class Admin::ReferrersController < AdminController
 
   has_scope :by_url
   has_scope :by_hits
+  has_scope :by_badge_hits
   has_scope :by_contextual_hits
   has_scope :by_updated_at
   has_scope :by_created_at

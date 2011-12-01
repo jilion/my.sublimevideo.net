@@ -1,3 +1,5 @@
+# coding: utf-8
+
 require 'spec_helper'
 
 describe VideoTag do
@@ -205,14 +207,14 @@ describe VideoTag do
       context "with 1 video" do
         before(:each) do
           described_class.stub(:only_video_tags_trackers).and_return({
-            "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
-            "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source34.webm&vc=source34&vcs[]=source12&vcs[]=source34&vsq=base&vsf=webm&vsr=460x340&vp=http%3A//posters.sublimevideo.net/video123.png" => 1
+            "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720" => 1,
+            "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source34.webm&vc=source34&vcs[]=source12&vcs[]=source34&vsq=base&vsf=webm&vsr=460x340" => 1
           })
         end
 
         specify { described_class.video_tags_from_trackers(nil).should eql({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
-            'p'  => 'http://posters.sublimevideo.net/video123.png',
+            'p'  => nil,
             'cs' => ['source12', 'source34'],
             's'  => {
               'source12' => { 'u' => 'http://videos.sublimevideo.net/source12.mp4', 'q' => 'hd', 'f' => 'mp4', 'r' => '1280x720' },

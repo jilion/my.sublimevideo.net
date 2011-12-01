@@ -13,6 +13,7 @@ class Referrer
   index :token
   index :url
   index :hits
+  index :badge_hits
   index :contextual_hits
   index :created_at
   index :updated_at
@@ -41,6 +42,7 @@ class Referrer
 
   scope :by_url,             lambda { |way = 'desc'| order_by([:url, way.to_sym]) }
   scope :by_hits,            lambda { |way = 'desc'| order_by([:hits, way.to_sym]) }
+  scope :by_badge_hits,      lambda { |way = 'desc'| order_by([:badge_hits, way.to_sym]) }
   scope :by_contextual_hits, lambda { |way = 'desc'| order_by([:contextual_hits, way.to_sym]) }
   scope :by_updated_at,      lambda { |way = 'desc'| order_by([:updated_at, way.to_sym]) }
   scope :by_created_at,      lambda { |way = 'desc'| order_by([:created_at, way.to_sym]) }
