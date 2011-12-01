@@ -17,7 +17,7 @@
     - unless request.subdomain == 'my'
       %script{ src: "//cdn.optimizely.com/js/#{Optimizely.experiment_id}.js" }
     = csrf_meta_tag
-    %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
+    %link{ :rel => "shortcut icon", :href => "https://www.sublimevideo.net/favicon.ico", :type => "image/x-icon" }
 
     - if request.subdomain == 'my'
       /[if lte IE 8]
