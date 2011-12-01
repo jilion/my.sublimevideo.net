@@ -1,6 +1,6 @@
 class Www::PagesController < ApplicationController
 
-  before_filter :cache_page
+  caches_action :show
 
   def show
     params[:page] ||= 'home'

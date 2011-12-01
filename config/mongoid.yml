@@ -10,7 +10,7 @@ test:
 
 staging:
   database: sublimevideo_production
-  username: <%= ENV['MONGOHQ_USERNAME'] %>
+  username: backups
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
   hosts:
     - - hurley.member0.mongohq.com
