@@ -79,7 +79,7 @@ private
     video_tags = Hash.new { |h,k| h[k] = Hash.new }
     trackers.each do |request, hits|
       begin
-        params = Addressable::URI.parse(CGI.unescape(request)).query_values || {}
+        params = Addressable::URI.parse(request).query_values || {}
         if %w[m e].include?(params['h'])
           case params['e']
           when 'l'
