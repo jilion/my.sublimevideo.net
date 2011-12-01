@@ -1,8 +1,4 @@
----
 staging:
-<% if ARGV.join.include? 'assets:precompile' %>
-  agent_enabled: false
-<% end %>
   error_collector:
     capture_source: true
     enabled: true
