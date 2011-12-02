@@ -93,10 +93,10 @@ class Invoice < ActiveRecord::Base
   # search
   def self.search(q)
     joins(:site, :user).where {
-      (lower(:email) =~ lower("%#{q}%")) |
-      (lower(:name) =~ lower("%#{q}%")) |
-      (lower(:"sites.hostname") =~ lower("%#{q}%")) |
-      (lower(:reference) =~ lower("%#{q}%"))
+      (lower(user.email) =~ lower("%#{q}%")) |
+      (lower(user.name) =~ lower("%#{q}%")) |
+      (lower(site.hostname) =~ lower("%#{q}%")) |
+      (lower(reference) =~ lower("%#{q}%"))
     }
   end
 
