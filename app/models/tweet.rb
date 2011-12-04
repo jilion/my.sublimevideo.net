@@ -50,6 +50,7 @@ class Tweet
   end
 
   def self.save_new_tweets_and_sync_favorite_tweets
+    delay_save_new_tweets_and_sync_favorite_tweets
     return unless enough_remaining_twitter_calls?
 
     search = TwitterApi.search.new
@@ -71,7 +72,6 @@ class Tweet
       end while TwitterApi.with_rescue_and_retry(5) { results_count < 500 && search.fetch_next_page }
     end
     self.sync_favorite_tweets
-    delay_save_new_tweets_and_sync_favorite_tweets
   end
 
   def self.create_from_twitter_tweet!(tweet)
