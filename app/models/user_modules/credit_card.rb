@@ -233,7 +233,7 @@ module UserModules::CreditCard
 
     # Recurring task
     def delay_send_credit_card_expiration(interval = 1.week)
-      unless Delayed::Job.already_delayed?('%UserModules::CreditCard%send_credit_card_expiration%')
+      unless Delayed::Job.already_delayed?('%User%send_credit_card_expiration%')
         delay(run_at: interval.from_now).send_credit_card_expiration
       end
     end
