@@ -1,7 +1,8 @@
 #= require_self
 
 document.observe "dom:loaded", ->
-  if Cookie.get('l') is '1' and document.location.host.split('.')[0] is 'www' # topdomain and logged-in
+  host = document.location.host.split('.')
+  if Cookie.get('l') is '1' and host.length == 2 or host[0] is 'www' # topdomain and logged-in
     SublimeVideo.handleLoggedInAutoRedirection()
     SublimeVideo.handleLoggedInLinksTweaking()
 
@@ -15,8 +16,8 @@ SublimeVideo.handleLoggedInAutoRedirection = ->
   search = document.location.search
   my_host = "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}"
   if /login/.test(path) or /signup/.test(path) or /login/.test(search) or /signup/.test(search)
-    Cookie.set('l', '0', { secure: /https/.test(document.location.protocol), domain: ".#{SublimeVideo.topDomainHost()}" })
-  if path == '/help'
+    Cookie.set('l', '0', { domain: ".#{SublimeVideo.topDomainHost()}" })
+  else if path == '/help'
     document.location.href = "#{my_host}#{path}"
 
 SublimeVideo.handleLoggedInLinksTweaking = ->

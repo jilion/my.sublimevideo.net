@@ -2,8 +2,6 @@ require 'spec_helper'
 
 describe My::UsersController do
 
-  it { post('signup').should route_to('my/users#create') }
-
   it { get(with_subdomain('my', 'signup')).should  route_to('my/users#new') }
   it { post(with_subdomain('my', 'signup')).should route_to('my/users#create') }
 

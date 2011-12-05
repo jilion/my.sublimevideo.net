@@ -2,7 +2,7 @@
 = content_for :header do
   %h2= "We're proud to have great customers."
   %p.sub
-    = link_to "Join them today", root_path(p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')"
+    = link_to "Join them today", signup_url(subdomain: 'my'), onclick: "return SublimeVideo.showPopup('signup')"
 
 %section.showcase
   %ul.quotes

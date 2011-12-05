@@ -1,10 +1,6 @@
 %h2.title= "Log in to SublimeVideo"
 
-- if flash[:alert]
-  .alert
-    %p.inline_alert= flash[:alert]
-
-- action = action_name == 'new_gs' ? gs_login_url(subdomain: 'www', protocol: https_if_prod_or_staging) : login_url(subdomain: 'www', protocol: https_if_prod_or_staging)
+- action = action_name == 'new_gs' ? gs_login_url(subdomain: 'my', protocol: https_if_prod_or_staging) : login_url(subdomain: 'my', protocol: https_if_prod_or_staging)
 = form_for User.new, as: :user, url: action, html: { method: :post, id: 'user_login', class: "main_form" } do |f|
   .entry.email
     = f.label :email, "", class: "icon"

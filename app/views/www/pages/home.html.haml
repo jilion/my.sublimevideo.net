@@ -1,13 +1,13 @@
-= content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
+= content_for :head_before, javascript_include_tag("http://cdn.sublimevideo.net/js/ibvjcopp.js")
 = content_for :header do
   %h2= "The HTML5 Video Player Everyone Deserves"
 
   .video_wrap
     %video#home_video.sublime{ width: "544", height: "306", poster: image_path("www/home/poster_frame.jpg"), preload: "none", "data-sublime-settings" => "initial-overlay:none", "data-uid" => "home", "data-name" => "Home" }
-      == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_360p.mp4" />
-      == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_720p.mp4" data-quality="hd" />
-      == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_360p.webm" />
-      == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_720p.webm" data-quality="hd" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4" data-quality="hd" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" />
+      == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm" data-quality="hd" />
     #video_credits{ style: "display:none" }
       = "Video by "
       = link_to "Joe Capra.", "http://scientifantastic.com", onclick: "window.open(this); return false"
@@ -15,21 +15,21 @@
     %ul.slides#features_slides
       %li.always_up_to_date.active{style: "z-index:2"}
         %h3= "Always Up-To-Date"
-        = link_to (image_tag "www/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), page_path('features', protocol: 'http', anchor: 'always_up_to_date')
+        = link_to (image_tag "www/home/features/always_up_to_date.png", alt: "Always Up-To-Date"), page_path('features', anchor: 'always_up_to_date')
       %li.html5_flash{style: "display:none"}
         %h3= "Universal compatibility"
-        = link_to (image_tag "www/home/features/html5_flash.png", alt: "Universal compatibility"), page_path('features', protocol: 'http', anchor: 'consistent_ui')
+        = link_to (image_tag "www/home/features/html5_flash.png", alt: "Universal compatibility"), page_path('features', anchor: 'consistent_ui')
       %li.works_in_any_browsers{style: "display:none"}
         %h3= "Works in any browser"
-        = link_to (image_tag "www/home/features/browsers/default.png", alt: "Works in any browser"), page_path('features', protocol: 'http', anchor: 'works_everywhere'), id: "browsers_box"
+        = link_to (image_tag "www/home/features/browsers/default.png", alt: "Works in any browser"), page_path('features', anchor: 'works_everywhere'), id: "browsers_box"
       %li.works_on_any_devices{style: "display:none"}
         %h3= "Works on all mobile devices"
-        = link_to (image_tag "www/home/features/any_devices.png", alt: "Works on all mobile devices"), page_path('features', protocol: 'http', anchor: 'works_everywhere')
+        = link_to (image_tag "www/home/features/any_devices.png", alt: "Works on all mobile devices"), page_path('features', anchor: 'works_everywhere')
       %li.stats{style: "display:none"}
         %h3= "Real-Time Statistics"
-        = link_to (image_tag "www/home/features/stats.png", alt: "Real-Time Statistics"), page_path('features', protocol: 'http', anchor: 'real_time_stats')
+        = link_to (image_tag "www/home/features/stats.png", alt: "Real-Time Statistics"), page_path('features', anchor: 'real_time_stats')
       %li.instant_setup{style: "display:none"}
-        = link_to (image_tag "www/home/features/instant_setup.png", alt: "Instant setup & easy integration"), page_path('features', protocol: 'http', anchor: 'instant_setup')
+        = link_to (image_tag "www/home/features/instant_setup.png", alt: "Instant setup & easy integration"), page_path('features', anchor: 'instant_setup')
         %h3.t1= "Instant setup"
         %h3.t2= "Easy integration"
     .slides_nav
@@ -55,7 +55,7 @@
           = "Now"
           %span= "Free & Unlimited"
         .button_wrap
-          = link_to "Get It Now", root_path(p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button"
+          = link_to "Get It Now", signup_url(subdomain: 'my'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button"
           = link_to "see all plans", page_path('plans'), class: "small"
         %em.never_look_back= "And never look back!"
 

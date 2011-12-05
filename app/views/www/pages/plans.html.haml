@@ -33,7 +33,7 @@
               %h4= "Forum Support"
             .spacer
         .sign_up_wrap
-          = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
+          = link_to "Sign Up", signup_url(subdomain: 'my'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
 
       %li.plus.box_2
         .wrapper
@@ -77,7 +77,7 @@
               %span.save_label= "save 2 months"
             .spacer
           .sign_up_wrap
-            = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
+            = link_to "Sign Up", signup_url(subdomain: 'my'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
   
       %li.premium.box_3
         .wrapper
@@ -121,7 +121,7 @@
               %span.save_label= "save 2 months"
           .spacer
           .sign_up_wrap
-            = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
+            = link_to "Sign Up", signup_url(subdomain: 'my'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
   .spacer
   #need_more= raw "Need a custom integration with your site or have other enterprise-class requirements? Please #{mail_to t('mailer.sales.email_full'), "contact us"}."
 

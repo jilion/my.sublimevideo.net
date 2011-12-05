@@ -3,7 +3,6 @@
   %head
     - title = yield(:title)
     %title= title_env_prefix + title_subdomain_prefix(request) + (title.present? ? " - #{title}" : '')
-    -# %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", content: "text/html;charset=UTF-8" }
 
     %meta{ content: 'SublimeVideo - HTML5 Video Player', property: 'og:title' }
@@ -12,37 +11,40 @@
     %meta{ content: 'http://media.jilion.s3.amazonaws.com/facebook/sublimevideo_facebook.png', property: 'og:image' }
     %meta{ content: "SublimeVideo is the world's first cloud-based HTML5 video player; a universal and pain-free solution that allows video to play flawlessly on any device or browser.", property: 'og:description'}
 
-    = stylesheet_link_tag(request.subdomain)
+    = stylesheet_link_tag(request.subdomain.presence || 'www')
     -# = airbrake_javascript_notifier
-    - unless request.subdomain == 'my'
+    - if Rails.env.production? && request.subdomain != 'my'
       %script{ src: "//cdn.optimizely.com/js/#{Optimizely.experiment_id}.js" }
     = csrf_meta_tag
-    %link{ :rel => "shortcut icon", :href => "https://www.sublimevideo.net/favicon.ico", :type => "image/x-icon" }
+    %link{ rel: "shortcut icon", href: "http://sublimevideo.net/favicon.ico", type: "image/x-icon" }
 
     - if request.subdomain == 'my'
       /[if lte IE 8]
-        %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
-        %style{ :type => "text/css", :media => "screen" }
+        %meta{ "http-equiv" => "Refresh", content: "0;url=http://jilion.com/ie" }
+        %style{ type: "text/css", media: "screen" }
           == body {background:#fff;display:none;}
     - else
       /[if lte IE 7]
-        %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
-        %style{ :type => "text/css", :media => "screen" }
+        %meta{ "http-equiv" => "Refresh", content: "0;url=http://jilion.com/ie" }
+        %style{ type: "text/css", media: "screen" }
           == body {background:#fff;display:none;}
+
     /[if lte IE 8]
       = stylesheet_link_tag("ie")
     /[if lte IE 9]
       = javascript_include_tag("#{request.protocol}html5shiv.googlecode.com/svn/trunk/html5.js")
+
     = yield :head_before
+
     - if %w[site_stats].include?(controller_name)
       = javascript_include_tag 'stats'
     - else
-      = javascript_include_tag(request.subdomain)
+      = javascript_include_tag(request.subdomain.presence || 'www')
+
     = yield :head
 
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
-    :javascript
-      try { Typekit.load(); } catch(e) { }
+    = javascript_tag "try { Typekit.load(); } catch(e) { }"
 
   %body{ class: request.subdomain + (params[:page] ? h(" #{params[:page]}") : "") }
     %header
@@ -65,21 +67,20 @@
     = render "layouts/footer"
     = yield :bottom
 
-    - if %w[www docs].include?(request.subdomain)
-      #popup_signup.popup{ style: "display:#{(params[:p] == 'signup' || request.path == '/signup') ? 'block' : 'none'}" }
+    - if request.subdomain.blank? || %w[www docs].include?(request.subdomain)
+      #popup_signup.popup{ style: "display:#{params[:p] == 'signup' ? 'block' : 'none'}" }
         .popup_wrap
           .lights
             .content= render template: '/my/users/new'
             = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('signup')" do
               %span Close
 
-      #popup_login.popup{ style: "display:#{(params[:p] == 'login' || request.path == '/login') ? 'block' : 'none'}" }
+      #popup_login.popup{ style: "display:#{params[:p] == 'login' ? 'block' : 'none'}" }
         .popup_wrap
           .lights
             .content= render template: '/my/users/sessions/new'
             = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('login')" do
               %span Close
 
-    - if user_signed_in?
-      = raw FastPass.script(GetSatisfaction.consumer_key, GetSatisfaction.consumer_secret, current_user.email, current_user.name.presence || 'no name', current_user.id, Rails.env.production? || Rails.env.staging?)
+    = render 'layouts/fastpass' if request.subdomain == 'my' && user_signed_in?
     = render 'layouts/gosquared' if Rails.env.production?

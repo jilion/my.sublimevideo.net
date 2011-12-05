@@ -38,7 +38,7 @@ describe My::BillingMailer do
         it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
         it { @last_delivery.body.encoded.should include I18n.l(@site.trial_end, format: :named_date) }
         it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
-        it { @last_delivery.body.encoded.should include "https://www.#{ActionMailer::Base.default_url_options[:host]}/help" }
+        it { @last_delivery.body.encoded.should include "http://#{ActionMailer::Base.default_url_options[:host]}/help" }
       end
     end
 
