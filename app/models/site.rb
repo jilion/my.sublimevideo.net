@@ -241,13 +241,14 @@ class Site < ActiveRecord::Base
 
 private
 
+  # after_create
   def self.update_ranks(site_id)
     site  = Site.find(site_id)
-    if site.hostname.present?
+    begin
       ranks = PageRankr.ranks(site.hostname, :alexa_global, :google)
       site.google_rank = ranks[:google] || 0
       site.alexa_rank  = ranks[:alexa_global]
-    else
+    rescue
       site.google_rank = 0
       site.alexa_rank  = 0
     end

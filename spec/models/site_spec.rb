@@ -904,9 +904,19 @@ describe Site do
         end
       end
 
-      context "site has no hostname" do
+      context "site has blank hostname" do
         it "should update ranks" do
           Timecop.travel(10.minutes.ago) { @site = Factory.create(:site, hostname: '', plan_id: @free_plan.id) }
+          VCR.use_cassette('sites/ranks') { @worker.work_off }
+          @site.reload
+          @site.google_rank.should eq 0
+          @site.alexa_rank.should eq 0
+        end
+      end
+
+      context "site has no hostname" do
+        it "should update ranks" do
+          Timecop.travel(10.minutes.ago) { @site = Factory.create(:site, hostname: nil, plan_id: @free_plan.id) }
           VCR.use_cassette('sites/ranks') { @worker.work_off }
           @site.reload
           @site.google_rank.should eq 0
