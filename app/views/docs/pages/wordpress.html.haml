@@ -1,4 +1,4 @@
-= content_for :head, javascript_include_tag("http://cdn.sublimevideo.net/js/ibvjcopp.js")
+= content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
 
 = page_title "WordPress plugin"
 
@@ -112,9 +112,16 @@
 
   h3. Changelog
 
+  h4. 1.2.0
+
+  * Fix issue with SSL certificate verification.
+  * Ignore the port if any.
+  * Support @data_uid@ and @data_name@ attributes (mapping to @data-uid@ and @data-name@ HTML attribute). See "here":/optimize-for-stats for details.
+  * Support HD sources. See "here":/hd-switching for details.
+
   h4. 1.1.0
 
-  * Update for the new API endpoint which is https://api.sublimevideo.net
+  * Update for the new API endpoint which is https://api.sublimevideo.net.
 
   h4. 1.0.0
 
