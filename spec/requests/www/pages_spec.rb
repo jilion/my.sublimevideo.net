@@ -16,28 +16,28 @@ feature "Com Pages" do
           current_url.should eq "http://www.sublimevideo.dev/"
 
           click_link 'Features'
-          current_url.should eq "http://www.sublimevideo.dev/features"
+          current_url.should eq "http://sublimevideo.dev/features"
 
           click_link 'Plans'
-          current_url.should eq "http://www.sublimevideo.dev/plans"
+          current_url.should eq "http://sublimevideo.dev/plans"
 
           click_link 'Demo'
-          current_url.should eq "http://www.sublimevideo.dev/demo"
+          current_url.should eq "http://sublimevideo.dev/demo"
 
           VCR.use_cassette('twitter/showcase') { click_link 'Showcase' }
-          current_url.should eq "http://www.sublimevideo.dev/customer-showcase"
+          current_url.should eq "http://sublimevideo.dev/customer-showcase"
 
           click_link 'Help'
-          current_url.should eq "http://www.sublimevideo.dev/help"
+          current_url.should eq "http://sublimevideo.dev/help"
 
           # click_link 'Blog'
           # current_url.should eq "http://www.sublimevideo.dev/blog"
 
           click_link 'Login'
-          current_url.should eq "http://www.sublimevideo.dev/?p=login"
+          current_url.should eq "http://sublimevideo.dev/?p=login"
 
           click_link 'Sign Up'
-          current_url.should eq "http://www.sublimevideo.dev/?p=signup"
+          current_url.should eq "http://sublimevideo.dev/?p=signup"
         end
       end
     end
@@ -48,22 +48,22 @@ feature "Com Pages" do
 
         within 'footer' do
           click_link 'Home'
-          current_url.should eq "http://www.sublimevideo.dev/"
+          current_url.should eq "http://sublimevideo.dev/"
 
           click_link 'Features'
-          current_url.should eq "http://www.sublimevideo.dev/features"
+          current_url.should eq "http://sublimevideo.dev/features"
 
           click_link 'Demo'
-          current_url.should eq "http://www.sublimevideo.dev/demo"
+          current_url.should eq "http://sublimevideo.dev/demo"
 
           click_link 'Plans & Pricing'
-          current_url.should eq "http://www.sublimevideo.dev/plans"
+          current_url.should eq "http://sublimevideo.dev/plans"
 
           VCR.use_cassette('twitter/showcase') { click_link 'Customer Showcase' }
-          current_url.should eq "http://www.sublimevideo.dev/customer-showcase"
+          current_url.should eq "http://sublimevideo.dev/customer-showcase"
 
           click_link 'Help'
-          current_url.should eq "http://www.sublimevideo.dev/help"
+          current_url.should eq "http://sublimevideo.dev/help"
 
           click_link 'Documentation'
           current_url.should eq "http://docs.sublimevideo.dev/quickstart-guide"
@@ -72,13 +72,13 @@ feature "Com Pages" do
           current_url.should eq "http://docs.sublimevideo.dev/releases"
 
           # click_link 'Blog'
-          # current_url.should eq "http://www.sublimevideo.dev/blog"
+          # current_url.should eq "http://sublimevideo.dev/blog"
 
           click_link 'Contact'
-          current_url.should eq "http://www.sublimevideo.dev/contact"
+          current_url.should eq "http://sublimevideo.dev/contact"
 
           click_link 'About'
-          current_url.should eq "http://www.sublimevideo.dev/about"
+          current_url.should eq "http://sublimevideo.dev/about"
 
           click_link 'Terms & Conditions'
           current_url.should eq "http://my.sublimevideo.dev/terms"
@@ -95,7 +95,7 @@ feature "Com Pages" do
 
         click_link 'Get It Now'
 
-        current_url.should eq "http://www.sublimevideo.dev/?p=signup"
+        current_url.should eq "http://sublimevideo.dev/?p=signup"
       end
     end
 
@@ -111,10 +111,21 @@ feature "Com Pages" do
       end
 
       describe "redirections" do
-        %w[login log_in sign_in signin].each do |path|
-          scenario "#{path} is redirected to /?p=login" do
-            go 'www', "/#{path}"
-            current_url.should eq "http://www.sublimevideo.dev/?p=login"
+        context "with www" do
+          %w[login log_in sign_in signin].each do |path|
+            scenario "#{path} is redirected to /?p=login" do
+              go 'www', "/#{path}"
+              current_url.should eq "http://www.sublimevideo.dev/?p=login"
+            end
+          end
+        end
+
+        context "without www" do
+          %w[login log_in sign_in signin].each do |path|
+            scenario "#{path} is redirected to /?p=login" do
+              go "/#{path}"
+              current_url.should eq "http://sublimevideo.dev/?p=login"
+            end
           end
         end
       end
@@ -133,7 +144,7 @@ feature "Com Pages" do
           fill_in 'Password', with: ''
           click_button 'Log In'
 
-          current_url.should eq "http://www.sublimevideo.dev/login"
+          current_url.should eq "http://my.sublimevideo.dev/login"
           page.should have_content "Invalid email or password"
         end
       end
@@ -162,7 +173,7 @@ feature "Com Pages" do
           fill_in "Password", with: "123456"
           click_button 'Log In'
 
-          current_url.should eq "http://www.sublimevideo.dev/login"
+          current_url.should eq "http://my.sublimevideo.dev/login"
         end
       end
 
@@ -175,10 +186,21 @@ feature "Com Pages" do
       end
 
       describe "redirections" do
-        %w[signup register sign_up].each do |path|
-          scenario "#{path} is redirected to /?p=signup" do
-            go 'www', "/#{path}"
-            current_url.should eq "http://www.sublimevideo.dev/?p=signup"
+        context "with www" do
+          %w[signup register sign_up].each do |path|
+            scenario "#{path} is redirected to /?p=signup" do
+              go 'www', "/#{path}"
+              current_url.should eq "http://www.sublimevideo.dev/?p=signup"
+            end
+          end
+        end
+
+        context "without www" do
+          %w[signup register sign_up].each do |path|
+            scenario "#{path} is redirected to /?p=signup" do
+              go "/#{path}"
+              current_url.should eq "http://sublimevideo.dev/?p=signup"
+            end
           end
         end
       end
@@ -204,7 +226,7 @@ feature "Com Pages" do
           check "user_terms_and_conditions"
           click_button 'Sign Up'
 
-          current_url.should =~ %r(^http://my.[^/]+/sites/new$)
+          current_url.should eq "http://my.sublimevideo.dev/sites/new"
           User.last.should_not eq @archived_user
         end
       end
@@ -216,7 +238,7 @@ feature "Com Pages" do
         fill_in 'Password', with: ''
         click_button 'Sign Up'
 
-        current_url.should eq "http://www.sublimevideo.dev/signup"
+        current_url.should eq "http://my.sublimevideo.dev/signup"
         page.should have_content "Email can't be blank"
         page.should have_content "Password can't be blank"
         page.should have_content "Terms & Conditions must be accepted"

@@ -55,7 +55,7 @@
           = "Now"
           %span= "Free & Unlimited"
         .button_wrap
-          = link_to "Get It Now", signup_url(subdomain: 'my'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button"
+          = link_to "Get It Now", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button"
           = link_to "see all plans", page_path('plans'), class: "small"
         %em.never_look_back= "And never look back!"
 

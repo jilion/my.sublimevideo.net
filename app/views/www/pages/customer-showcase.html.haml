@@ -2,7 +2,7 @@
 = content_for :header do
   %h2= "We're proud to have great customers."
   %p.sub
-    = link_to "Join them today", signup_url(subdomain: 'my'), onclick: "return SublimeVideo.showPopup('signup')"
+    = link_to "Join them today", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')"
 
 %section.showcase
   %ul.quotes
@@ -61,12 +61,12 @@
           %span.arrow
         .left
           = link_to "http://twitter.com/#{tweet.user.screen_name}" do
-            = image_tag tweet.bigger_profile_image.sub(/http:/, 'https:'), alt: clean_tweet_from_user(tweet), size: "48x48"
+            = image_tag tweet.bigger_profile_image, alt: clean_tweet_from_user(tweet), size: "48x48"
             %span.shadow
         .right
           %p.info
             %h4= link_to clean_tweet_from_user(tweet), "http://twitter.com/#{tweet.user.screen_name}"
-            %em.date= link_to l(tweet.created_at, format: :tweet, ordinal_day: tweet.created_at.day.ordinalize), "https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}"
+            %em.date= link_to l(tweet.created_at, format: :tweet, ordinal_day: tweet.created_at.day.ordinalize), "http://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}"
         .spacer
   -# %p.view_all= link_to "View all tweets", "http://twitter.com/sublimevideo/favorites", class: "tweets"
 .spacer

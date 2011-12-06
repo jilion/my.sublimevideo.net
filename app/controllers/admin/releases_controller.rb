@@ -37,7 +37,7 @@ class Admin::ReleasesController < AdminController
 private
 
   def allow_only_zeno
-    redirect_to '/admin' unless zeno?
+    redirect_to root_url(subdomain: 'admin') unless zeno?
   end
 
 end

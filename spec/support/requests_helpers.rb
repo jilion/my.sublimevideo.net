@@ -103,7 +103,7 @@ module Spec
 
       def go(*subdomain_and_route)
         if subdomain_and_route.one?
-          switch_to_subdomain('www')
+          switch_to_subdomain(nil)
           visit *subdomain_and_route
         else
           switch_to_subdomain(subdomain_and_route[0])

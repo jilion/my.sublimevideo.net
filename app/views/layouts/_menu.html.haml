@@ -16,5 +16,10 @@
         - subdomain = (name == :help && request.subdomain == 'my' ?  'my' : '')
         = activable_menu_item(:li, page_url(name, { host: subdomain + request.domain }), opts.merge(onclick: "SublimeVideo.makeSticky(this, '#menu')"))
       = activable_menu_item(:li, "http://blog.jilion.com/tags/sublimevideo", link_text: "Blog", link_options: { onclick: "window.open(this); return false" })
-      %li= link_to "Login", login_url(subdomain: 'my'), onclick: request.subdomain == 'my' ? nil : "return SublimeVideo.showPopup('login')"
-      %li.signup= link_to "Sign Up", signup_url(subdomain: 'my'), onclick: request.subdomain == 'my' ? nil : "return SublimeVideo.showPopup('signup')"
+
+      - if request.subdomain == 'my'
+        %li= link_to "Login", login_url
+        %li.signup= link_to "Sign Up", signup_url
+      - else
+        %li= link_to "Login", root_url(host: request.domain, p: 'login'), onclick: "return SublimeVideo.showPopup('login')"
+        %li.signup= link_to "Sign Up", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')"

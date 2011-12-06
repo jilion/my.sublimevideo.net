@@ -32,7 +32,7 @@ feature "Users" do
   describe "signup" do
     background do
       go '/?p=signup'
-      current_url.should eq "http://www.sublimevideo.dev/?p=signup"
+      current_url.should eq "http://sublimevideo.dev/?p=signup"
     end
 
     describe "with the email of an archived user" do
@@ -107,7 +107,7 @@ feature "Users" do
       scenario "is redirected to log in page" do
         go 'my', 'account'
 
-        current_url.should eq "http://www.sublimevideo.dev/?p=login"
+        current_url.should eq "http://my.sublimevideo.dev/login"
       end
     end
 
@@ -163,7 +163,7 @@ feature "Users" do
 
         fill_in "Current password", with: '123456'
         click_button "Done"
-        current_url.should eq "http://www.sublimevideo.dev/?p=login"
+        current_url.should eq "http://my.sublimevideo.dev/login"
 
         fill_in 'Email',    with: email
         fill_in 'Password', with: '654321'
@@ -250,7 +250,7 @@ feature "Users" do
     fill_in "user_current_password", with: "123456"
 
     click_button "Done"
-    current_url.should eq "http://www.sublimevideo.dev/"
+    current_url.should eq "http://sublimevideo.dev/"
     page.should_not have_content "John Doe"
     @current_user.reload.should be_archived
 
@@ -258,22 +258,6 @@ feature "Users" do
     last_delivery.to.should eq [@current_user.email]
     last_delivery.subject.should eq "Your account has been deleted"
     last_delivery.body.encoded.should include "Your account has been deleted."
-  end
-
-  scenario "accept invitation should always redirect to /signup" do
-    go 'my', "/invitation/accept"
-    current_url.should eq "http://www.sublimevideo.dev/?p=signup&beta=over"
-  end
-
-  context "with an authenticated user" do
-    background do
-      sign_in_as :user
-    end
-
-    scenario "accept invitation should redirect to /sites/new" do
-      go 'my', "/invitation/accept"
-      current_url.should eq "http://my.sublimevideo.dev/sites/new"
-    end
   end
 end
 
@@ -283,7 +267,7 @@ feature "session" do
     page.should have_content "John Doe"
     click_link "Logout"
 
-    current_url.should eq "http://www.sublimevideo.dev/"
+    current_url.should eq "http://sublimevideo.dev/"
     page.should_not have_content "John Doe"
   end
 end

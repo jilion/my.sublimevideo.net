@@ -39,6 +39,6 @@ describe Admin::DelayedJobsController do
     end
   end
 
-  it_should_behave_like "redirect when connected as", '/login', [:user, :guest], { get: [:index, :show], put: :update, delete: :destroy }
+  it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: [:index, :show], put: :update, delete: :destroy }
 
 end

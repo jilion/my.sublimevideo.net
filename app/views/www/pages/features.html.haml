@@ -4,7 +4,7 @@
 
 = content_for :header do
   %h2= "Your video never looked this good."
-  %p.sub= raw "SublimeVideo Player gives your site universal playback of your videos on any browser or device. Check out the #{link_to "player", '#player_features'} and #{link_to "service", '#service_features'} features and #{link_to "sign up", signup_url(subdomain: 'my'), onclick: "return SublimeVideo.showPopup('signup')"} for free today."
+  %p.sub= raw "SublimeVideo Player gives your site universal playback of your videos on any browser or device. Check out the #{link_to "player", '#player_features'} and #{link_to "service", '#service_features'} features and #{link_to "sign up", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')"} for free today."
 
 %a{ id: 'player_features' }
 %section.player
@@ -126,7 +126,7 @@
   %section#instant_setup.instant_setup.f
     %h3.title= "Instant setup & easy integration"
     == <div style="float:left;clear:left;height:26px;width:14px;"></div><div style="float:left;clear:left;height:26px;width:15px;"></div><div style="float:left;clear:left;height:26px;width:15px;"></div>
-    %p= raw "No download, no installation; #{link_to "Sign up", signup_url(subdomain: 'my'), onclick: "return SublimeVideo.showPopup('signup')"} for free today and be up and running in seconds. It couldn't be simpler to integrate SublimeVideo into your site: Just add a single line of code to enable it on your page."
+    %p= raw "No download, no installation; #{link_to "Sign up", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')"} for free today and be up and running in seconds. It couldn't be simpler to integrate SublimeVideo into your site: Just add a single line of code to enable it on your page."
   %section#real_time_stats.real_time_stats.f
     %h3.title= "Real-Time stats"
     %p= "View real-time statistics of video usage on your site with our Real-Time Stats feature; monitor page and video views, browser and device statistics, HTML5 or Flash usage and more."
