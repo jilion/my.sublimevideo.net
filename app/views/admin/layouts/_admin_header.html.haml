@@ -16,8 +16,7 @@
     %ul#favorite_links
       - [:sites, :users, :invoices, [:releases, { :link_text => "Player" }], [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }]].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
-        - if zeno? || name != :releases
-          = activable_menu_restful_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))
+        = activable_menu_restful_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))
 
   .right
     %ul.extra_links
