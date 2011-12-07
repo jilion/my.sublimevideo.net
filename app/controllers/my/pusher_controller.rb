@@ -3,8 +3,8 @@ class My::PusherController < MyController
   protect_from_forgery except: :auth
 
   def auth
-    if current_user && current_user.accessible_channel?(params[:channel_name])
-      response = Pusher[params[:channel_name]].authenticate(params[:socket_id], user_id: current_user.id)
+    if User.accessible_channel?(params[:channel_name], current_user)
+      response = Pusher[params[:channel_name]].authenticate(params[:socket_id])
       render json: response
     else
       render text: "Not authorized", status: '403'
