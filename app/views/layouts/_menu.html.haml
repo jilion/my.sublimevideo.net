@@ -10,11 +10,10 @@
           %span.icon= truncate(current_user.name_or_email, length: 35)
   - else
     %ul
-      - [:features, :plans, :demo, ['customer-showcase', { link_text: "Showcase" }], [:help, { link_text: "Help", link_options: { class: 'my_link' } }]].each do |r|
+      - [:features, :plans, :demo, ['customer-showcase', { link_text: "Showcase" }], [:help, { link_text: "Help", link_options: { class: 'my_link' } }], :news].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
         - opts = r.is_a?(Array) ? r[1] : { link_text: name.to_s.titleize }
         - subdomain = [:help].include?(name) && request.subdomain == 'my' ?  'my' : 'www'
         = activable_menu_item(:li, page_url(name, { subdomain: subdomain }), opts.merge(onclick: "SublimeVideo.makeSticky(this, '#menu')"))
-      = activable_menu_item(:li, "http://blog.jilion.com/tags/sublimevideo", link_text: "Blog", link_options: { onclick: "window.open(this); return false" })
       %li= link_to "Login", root_url(subdomain: 'www', p: 'login'), onclick: %w[demo features].include?(params[:page]) ? nil : "return SublimeVideo.showPopup('login')"
       %li.signup= link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: %w[demo features].include?(params[:page]) ? nil : "return SublimeVideo.showPopup('signup')"
