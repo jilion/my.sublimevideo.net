@@ -18,11 +18,6 @@ MySublimeVideo::Application.routes.draw do
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
   match '/admin(/*rest)' => redirect { |params, req| "#{https_if_prod_or_staging}://admin.#{req.domain}/#{params[:rest]}" }
 
-  # Docs routes
-  %w[javascript-api releases].each do |path|
-    get path => redirect { |params, req| "http://docs.#{req.domain}/#{path}" }
-  end
-
   scope module: 'my' do
     constraints subdomain: 'my' do
       devise_for :users,
@@ -236,6 +231,11 @@ MySublimeVideo::Application.routes.draw do
       # Redirects
       %w[signup sign_up register].each { |action| get action => redirect('/?p=signup') }
       %w[login log_in sign_in signin].each { |action| get action => redirect('/?p=login') }
+
+      # Docs routes
+      %w[javascript-api releases].each do |path|
+        get path => redirect { |params, req| "http://docs.#{req.domain}/#{path}" }
+      end
 
       # My routes
       %w[privacy terms sites account].each do |path|
