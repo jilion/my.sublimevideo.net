@@ -19,6 +19,7 @@
       .col
         %h4= "Stay Connected"
         %ul
+          %li= link_to "News", page_url('news', subdomain: 'www')
           %li= link_to "Blog", "http://blog.jilion.com/tags/sublimevideo", onclick: "window.open(this); return false"
           %li= link_to "Twitter", "http://twitter.com/jilion"
           %li= link_to "Contact", page_url('contact', host: request.domain)
@@ -39,7 +40,6 @@
       = link_to "Privacy Policy", page_url('privacy', subdomain: 'my')
       = raw "| Copyright &copy; #{Time.now.utc.year} Jilion&reg; &mdash; SublimeVideo and Jilion are registered trademarks."
       %span.networks
-        %a{ href: "http://twitter.com/share", class: "twitter-share-button", data: { url: "http://sublimevideo.net", text: "Check out SublimeVideo HTML5 Video Player by @Jilion —", count: "horizontal", related: "jilion:Follow @Jilion for the latest news!" } } Tweet
+        %a{ href: "http://twitter.com/share", class: "twitter-share-button", data: { url: "http://sublimevideo.net", text: "Check out SublimeVideo HTML5 Video Player by @Jilion &mdash;", count: "horizontal", related: "jilion:Follow @Jilion for the latest news!" } } Tweet
         = javascript_include_tag "//platform.twitter.com/widgets.js"
         %iframe{ src: "//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fsublimevideo&send=false&layout=button_count&width=130&show_faces=false&action=like&colorscheme=dark&font&height=21", scrolling: "no", frameborder: "0", style: "border:none; overflow:hidden; width:130px; height:21px;", allowTransparency: "true" }
-      

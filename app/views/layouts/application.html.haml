@@ -46,7 +46,7 @@
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
     = javascript_tag "try { Typekit.load(); } catch(e) { }"
 
-  %body{ class: request.subdomain + (params[:page] ? h(" #{params[:page]}") : "") }
+  %body{ class: request.subdomain + (@body_class ? h(" #{@body_class}") : "") }
     %header
       .lights
         .shadow

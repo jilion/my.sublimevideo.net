@@ -54,16 +54,15 @@
 %hr
 %br
 
-- if zeno?
-  %h3 Mode update
+%h3 Mode update
 
-  = form_for [:admin, @site] do |f|
-    = f.select :player_mode, Site::PLAYER_MODES
-    = f.submit "Update player mode", confirm: "Are you sure?"
+= form_for [:admin, @site] do |f|
+  = f.select :player_mode, Site::PLAYER_MODES
+  = f.submit "Update player mode", confirm: "Are you sure?"
 
 %br
 
-- if (zeno? || mehdi?) && !@site.in_sponsored_plan?
+- unless @site.in_sponsored_plan?
   %h3 Sponsoring
   = form_for [:sponsor, :admin, @site] do |f|
     = f.submit "Change current plan to sponsored plan", confirm: "Are you sure?"
