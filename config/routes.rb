@@ -267,6 +267,8 @@ MySublimeVideo::Application.routes.draw do
       match '/notify(/:anything)' => redirect('/')
       match '/enthusiasts(/:anything)' => redirect('/')
 
+      get '/pr/:page' => 'press_releases#show', as: :pr
+
       get '/:page' => 'pages#show', as: :page
 
       get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
