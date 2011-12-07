@@ -12,9 +12,9 @@ gem 'rails-backbone'
 gem 'pg',                    '~> 0.11.0'
 gem 'squeel',                '~> 0.9.2'
 
-gem 'bson_ext',              '~> 1.3.0'
-gem 'bson',                  '~> 1.3.0'
-gem 'mongo',                 '~> 1.3.0'
+gem 'bson_ext',              '~> 1.5.1'
+gem 'bson',                  '~> 1.5.1'
+gem 'mongo',                 '~> 1.5.1'
 gem 'mongoid',               '~> 2.3.3'
 
 # Views
@@ -65,7 +65,7 @@ gem 'public_suffix_service', '~> 0.9.0'
 gem 'useragent',             git: 'git://github.com/jilion/useragent.git'
 
 gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
-gem 'countries',             '0.6.2'
+gem 'countries',             '~> 0.7.0'
 gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.0.1', require: 'page_rankr'
 gem 'twitter',               '~> 1.7.2'
@@ -159,7 +159,7 @@ group :development do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
-  # gem 'guard-jasmine'
+  gem 'guard-jasmine'
   gem 'guard-yard'
 end
 

@@ -8,6 +8,10 @@ MySublimeVideo::Application.routes.draw do
 
   get 'press' => redirect("http://jilion.com/press/sublimevideo")
 
+  if %w[development test].include? Rails.env
+    mount Jasminerice::Engine => "/jasmine"
+  end
+
   scope module: 'my' do
     constraints subdomain: 'my' do
 
@@ -220,10 +224,6 @@ MySublimeVideo::Application.routes.draw do
 
     end
   end # admin.
-
-  if %w[development test].include? Rails.env
-    mount Jasminerice::Engine => "/jasmine"
-  end
 
   devise_scope :user do
     get '/?p=signup' => 'my/users#new'
