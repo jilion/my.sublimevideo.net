@@ -20,25 +20,10 @@ module LogsFileFormat
     def self.report_trackers
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
       analyze.frequency(:stats, :title => :stats,
-        :category => lambda { |r| [remove_timestamp(r[:path_query]), r[:useragent]] },
-        :if       => lambda { |r| gif_request?(r[:path_stem]) && countable_hit?(r) && good_token?(r[:path_query]) }
+        :category => lambda { |r| [remove_timestamp(r), r[:useragent]] },
+        :if       => lambda { |r| gif_request?(r) && countable_hit?(r) && good_token?(r) }
       )
       analyze.trackers
-    end
-
-  private
-
-    def self.remove_timestamp(path_query)
-      # removed timestamps
-      path_query.gsub(/&i=[0-9]+/, '')
-    end
-
-    def self.gif_request?(path_stem)
-      path_stem == "/_.gif"
-    end
-
-    def self.good_token?(path_query)
-      path_query =~ /t=([a-z0-9]{8})/
     end
 
   end
