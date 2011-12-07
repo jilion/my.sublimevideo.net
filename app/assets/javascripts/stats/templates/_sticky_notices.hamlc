@@ -1,0 +1,3 @@
+- if @site? && @site.isDemo()
+  %ul
+    %li.notice= "Stats demo with fake data, bla bla bla..."

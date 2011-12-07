@@ -38,6 +38,9 @@ class MSV.Models.Site extends Backbone.Model
 
   statsTrialIsActivable: ->
     this.isInFreePlan() && this.statsTrialStartTime() == 0 && this.trialStartTime() == 0
+    
+  isDemo: ->
+    this.get('token') == 'demo'
 
 class MSV.Collections.Sites extends Backbone.Collection
 
