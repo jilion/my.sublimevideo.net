@@ -6,8 +6,6 @@ end
 
 MySublimeVideo::Application.routes.draw do
 
-  get 'press' => redirect("http://jilion.com/press/sublimevideo")
-
   scope module: 'my' do
     constraints subdomain: 'my' do
 
