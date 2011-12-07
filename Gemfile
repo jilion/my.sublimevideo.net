@@ -111,10 +111,10 @@ end
 
 group :production, :staging do
   gem 'newrelic_rpm'
+  gem 'rack-ssl-enforcer'
 end
 
 group :production do
-  gem 'rack-ssl-enforcer'
   # gem 'rack-cache'
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end
