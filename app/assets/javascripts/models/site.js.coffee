@@ -8,6 +8,7 @@ class MSV.Models.Site extends Backbone.Model
     plan_month_cycle_end_time: null
     stats_retention_days: null
     stats_trial_start_time: null
+    trial_start_time: null
 
   title: ->
     if this.get('hostname')? && this.get('hostname') != '' then this.get('hostname') else "##{this.get('token')}"
@@ -27,13 +28,16 @@ class MSV.Models.Site extends Backbone.Model
   statsTrialStartTime: ->
     parseInt(this.get('stats_trial_start_time')) * 1000
 
+  trialStartTime: ->
+    parseInt(this.get('trial_start_time')) * 1000
+
   statsTrialEndTime: (statsTrialStartTime = this.statsTrialStartTime()) ->
     date = new Date(statsTrialStartTime)
     startTimeMidnight = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
     startTimeMidnight + 8 * 24 * 3600 * 1000
 
   statsTrialIsActivable: ->
-    this.isInFreePlan() && this.statsTrialStartTime() == 0
+    this.isInFreePlan() && this.statsTrialStartTime() == 0 && this.trialStartTime() == 0
 
 class MSV.Collections.Sites extends Backbone.Collection
 
@@ -44,7 +48,7 @@ class MSV.Collections.Sites extends Backbone.Collection
     @selectedSite = _.find this.models, (site) =>
       site.get('token') == token
     this.trigger('change')
-    
+
   selectedSiteIsInFreePlan: ->
     if @selectedSite?
       @selectedSite.isInFreePlan()
