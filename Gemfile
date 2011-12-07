@@ -93,6 +93,9 @@ gem 'pusher',                '~> 0.8.3'
 gem 'coderay',               '~> 1.0.4'
 gem 'haml-coderay',          '~> 0.1.2'
 
+# Press
+gem "feedzirra", git: "https://github.com/pauldix/feedzirra.git"
+
 gem 'asset_sync'
 
 # Gems used only for assets and not required

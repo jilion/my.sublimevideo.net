@@ -7,6 +7,7 @@ class Www::PagesController < ApplicationController
     if params[:p] && user_signed_in?
       redirect_to sites_url(subdomain: 'my')
     else
+      @body_class = params[:page]
       render params[:page]
     end
   end
