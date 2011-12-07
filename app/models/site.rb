@@ -111,7 +111,7 @@ class Site < ActiveRecord::Base
   def self.to_backbone_json
     scoped.to_json(
       only: [:token, :hostname],
-      methods: [:plan_name, :plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :stats_retention_days, :stats_trial_start_time]
+      methods: [:trial_start_time, :plan_name, :plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :stats_retention_days, :stats_trial_start_time]
     )
   end
 
@@ -237,6 +237,10 @@ class Site < ActiveRecord::Base
 
   def save_skip_pwd
     skip_pwd { self.save! }
+  end
+  
+  def trial_start_time
+    trial_started_at.to_i
   end
 
 private
