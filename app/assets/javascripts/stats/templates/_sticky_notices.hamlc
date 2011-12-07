@@ -5,7 +5,7 @@
       %p
         The statistics shown for the last 365 days - last 60 minutes are generated for this demo, and do not represent actual traffic for
         %a{ href: 'http://sublimevideo.net'} sublimevideo.net
-        = ". The last statistics for the last 60 seconds' (real-time) are a combination of data generated for this demo and real statistics from"
+        = ". The statistics for the last 60 seconds' (real-time) are a combination of data generated for this demo and real statistics from"
         %a{ href: 'http://sublimevideo.net'} sublimevideo.net
         = "."
       %p

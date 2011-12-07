@@ -1,11 +1,10 @@
 = content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js")
 = content_for :head, javascript_include_tag('https://d3ds63zw57jt09.cloudfront.net/1.9/pusher.min.js')
 
-#sticky_notice.notices
 
 .stats
   = title("Stats")
-  %span.beta_badge
+  %span.beta_badge  
   :coffeescript
     $ ->
       # Enable pusher logging - don't include this in production
@@ -71,3 +70,5 @@
   .spacer
 
   #plan_usage
+  
+  #sticky_notice.notices
