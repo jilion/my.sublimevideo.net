@@ -1,7 +1,7 @@
 = content_for :title, "News"
 = content_for :header do
   %h2= "News"
-  %p.sub= raw "Find the latest SublimeVideo news and press coverage here. You can also find out more about SublimeVideo on our #{link_to "About", page_path('about')} page."
+  %p.sub= raw "Find the latest SublimeVideo news, blog posts and press coverage here."
 
 %section.content_left
   %h3.title= "SublimeVideo News"
@@ -28,7 +28,7 @@
       = link_to "SublimeVideo - The World's First Cloud-based HTML5 Video Player Launches Free and Unlimited Player, Alongside Enhanced Paid Plans and Universal, Real-Time Stats Platform", pr_url("2011-11-29")
       %em.date= l Time.parse("2011-11-29"), format: :date
     %li
-      = link_to "Jilion commercializes highly anticipated SublimeVideo Cloud-based HTML5 Player Service", pr_url("2011-03-30")
+      = link_to "Jilion Commercializes Highly Anticipated SublimeVideo Cloud-based HTML5 Player Service", pr_url("2011-03-30")
       %em.date= l Time.parse("2011-03-30"), format: :date
   .break
   %h3.title= "Selected Articles"

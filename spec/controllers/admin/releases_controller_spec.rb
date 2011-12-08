@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Admin::ReleasesController do
 
-  context "with logged in admin Zeno" do
-    before(:each) { sign_in :admin, authenticated_admin(email: "zeno@jilion.com") }
+  context "with logged in admin" do
+    before(:each) { sign_in :admin, authenticated_admin }
 
     it "responds with success to GET :index" do
       get :index
@@ -50,7 +50,6 @@ describe Admin::ReleasesController do
     end
   end
 
-  it_should_behave_like "redirect when connected as", '/admin', [[:admin, { email: "remy@jilion.com" }]], { get: :index, post: :create, put: :update }
   it_should_behave_like "redirect when connected as", '/login', [:authenticated_user, :guest], { get: :index, post: :create, put: :update }
 
 end

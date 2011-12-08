@@ -2,8 +2,6 @@ class Admin::ReleasesController < AdminController
   respond_to :html
   respond_to :js, only: :index
 
-  before_filter :allow_only_zeno
-
   # GET /releases
   def index
     @releases = Release.order(:date.desc)
@@ -32,12 +30,6 @@ class Admin::ReleasesController < AdminController
         format.html { render :index }
       end
     end
-  end
-
-private
-
-  def allow_only_zeno
-    redirect_to '/admin' unless zeno?
   end
 
 end
