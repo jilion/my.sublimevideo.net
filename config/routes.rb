@@ -74,7 +74,7 @@ MySublimeVideo::Application.routes.draw do
         resources :video_tags, only: [:show]
       end
       # for backbone
-      get '/sites/stats(/:token)' => 'site_stats#index', as: 'site_stats'
+      get '/sites/stats(/:token)' => 'site_stats#index', as: 'site_stats', format: false
 
       resources :invoices, only: [:show] do
         put :retry_all, on: :collection
