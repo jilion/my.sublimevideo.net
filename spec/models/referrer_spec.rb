@@ -25,18 +25,18 @@ describe Referrer do
     end
     before(:each) { Referrer.create_or_update_from_trackers!(@trackers) }
 
-    let(:site) { Site.find_by_token('k8qaaj1l') }
+    let(:site) { Site.find_by_token('ibvjcopp') }
 
-    it { Referrer.count.should eq 5 }
+    it { Referrer.count.should eq 2 }
 
     describe "second referrer" do
       subject { Referrer.all.first }
 
       it "should have valid attributes" do
-        subject.url.should eq 'http://www.killy.net/'
+        subject.url.should eq "http://www.sublimevideo.net/demo"
         subject.token.should eq site.token
         subject.site_id.should eq site.id
-        subject.hits.should eq 3
+        subject.hits.should eq 1
         subject.created_at.should be_present
         subject.updated_at.should be_present
       end
@@ -44,8 +44,8 @@ describe Referrer do
       it "should update hits if same referrer reparsed" do
         Referrer.create_or_update_from_trackers!(@trackers)
 
-        subject.reload.hits.should eq 6
-        Referrer.count.should eq 5
+        subject.reload.hits.should eq 2
+        Referrer.count.should eq 2
       end
 
       it "should update updated_at on hits incrementation" do
