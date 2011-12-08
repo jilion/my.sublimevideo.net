@@ -32,6 +32,10 @@ SublimeVideo.showPopup = (name, successUrl = null) ->
     SublimeVideo.openSimplePopup("popup_#{name}")
     $("user_#{name}").insert({ top: new Element("input", { name: "success_url", type: 'hidden', value: successUrl }) })
 
+    if navigator.userAgent.indexOf("iPad") isnt -1
+      sublimevideo.pause()
+      $("popup_#{name}").down("#user_email").focus()
+
   false
 
 SublimeVideo.hidePopup = (name) ->
