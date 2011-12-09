@@ -23,7 +23,7 @@ describe My::BillingMailer do
           @last_delivery = ActionMailer::Base.deliveries.last
         end
 
-        it { @last_delivery.subject.should eq I18n.t("mailer.billing_mailer.trial_will_end", hostname: 'your site', days: BusinessModel.days_for_trial-9) }
+        it { @last_delivery.subject.should eq I18n.t("mailer.billing_mailer.trial_will_end", hostname: 'your site', days: BusinessModel.days_for_trial-8) }
       end
 
       context "site has a hostname" do
