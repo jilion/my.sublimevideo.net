@@ -1,0 +1,24 @@
+= title("Stats")
+
+%h2#page_title
+
+.stats
+  :coffeescript
+    $ ->
+      window.SVStats.usersStats = new SVStats.Collections.UsersStats(#{UsersStat.json(params[:start], params[:end])})
+      window.SVStats.statsRouter = new SVStats.Routers.StatsRouter()
+      # Backbone.history.start(pushState: true)
+
+  %ul#period_selectors
+    %li.days365
+    %li.days30
+    %li.hours
+    %li.minutes
+    %li.seconds
+
+  .spacer
+  #chart
+    -# = UsersStat.all.entries.inspect
+    -# = SitesStat.all.entries.inspect
+
+  .spacer

@@ -165,9 +165,18 @@ MySublimeVideo::Application.routes.draw do
 
       resources :enthusiast_sites, only: [:update]
 
-      resources :analytics, only: [:index]
-
-      match '/analytics/:report' => 'analytics#show', as: "analytic"
+      # resources :analytics, only: [:index]
+      #
+      # match '/analytics/:report' => 'analytics#show', as: "analytic"
+      resources :stats, only: [:index] do
+        collection do
+          get :users
+          # get :sites
+        end
+        member do
+          get '/single/:page' => 'stats#show'
+        end
+      end
 
       resources :users, only: [:index, :show] do
         member do

@@ -84,6 +84,13 @@ namespace :db do
       timed { create_site_stats(argv_user) }
     end
 
+    desc "Create fake users & sites stats"
+    task users_and_sites_stats: :environment do
+      timed { empty_tables(UsersStat, SitesStat) }
+      timed { create_users_stats }
+      timed { create_sites_stats }
+    end
+
     desc "Create fake site stats"
     task recurring_site_stats: :environment do
       timed { empty_tables(Stat::Site) }
@@ -368,6 +375,54 @@ def create_site_usages
   puts "#{player_hits_total} video-page views total!"
 end
 
+def create_users_stats
+  day = 2.years.ago.midnight
+  hash = { fr: User.free.count, pa: User.paying.count, su: User.suspended.count, ar: User.archived.count}
+
+  while day <= Time.now.utc.midnight
+    hash[:d]   = day
+    hash[:fr] += rand(100)
+    hash[:pa] += rand(25)
+    hash[:su] += rand(2)
+    hash[:ar] += rand(4)
+
+    UsersStat.create(hash)
+
+    day += 1.day
+  end
+  puts "Fake users stats generated"
+end
+
+def create_sites_stats
+  day = 2.years.ago.midnight
+  hash_for_active_sites = { fr: 2, sp: 0, tr: { plus: 10, premium: 3 }, pa: { plus: 0, premium: 0 } }
+  hash_for_passive_sites = { su: 0, ar: 0 }
+
+  while day <= Time.now.utc.midnight
+    hash_for_active_sites[:fr] += rand(100)
+    hash_for_active_sites[:sp] += rand(2)
+    hash_for_active_sites[:tr][:plus] += rand(100)
+    hash_for_active_sites[:tr][:premium] += rand(50)
+    hash_for_active_sites[:pa][:plus] += rand(30)
+    hash_for_active_sites[:pa][:premium] += rand(15)
+    hash_for_passive_sites[:su] += rand(2)
+    hash_for_passive_sites[:ar] += rand(4)
+
+    SitesStat.create(
+      d: day,
+      # Legacy counters
+      # states_count: states_count,
+      # plans_count: plans_count,
+      # New counters
+      active: hash_for_active_sites,
+      passive: hash_for_passive_sites
+    )
+
+    day += 1.day
+  end
+  puts "Fake sites stats generated"
+end
+
 def create_site_stats(user_id = nil)
   users = user_id ? [User.find(user_id)] : User.all
   users.each do |user|
@@ -440,10 +495,10 @@ def create_stats(site_token = nil)
     # Video Tags
     videos_count.times do |video_i|
       VideoTag.create(st: site.token, u: "video#{video_i}",
-        uo:	"s",
+        uo: "s",
         n: "Video #{video_i} long name test truncate",
         no: "s",
-        cs:	["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
+        cs: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
         p: "https://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
         z: "544x306",
         s: {
