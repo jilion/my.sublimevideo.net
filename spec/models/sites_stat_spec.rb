@@ -23,11 +23,18 @@ describe SitesStat do
   context "with a bunch of different sites" do
     before(:all) do
       user = Factory.create(:user)
-      @plan1 = Factory.create(:plan)
-      @plan2 = Factory.create(:plan)
-      Factory.create(:site, user: user, state: 'active', plan_id: @plan1.id)
-      Factory.create(:site, user: user, state: 'archived', plan_id: @plan1.id)
-      Factory.create(:site, user: user, state: 'suspended', plan_id: @plan2.id)
+      @plan = Factory.create(:plan, name: @paid_plan.name, cycle: 'year')
+      Factory.create(:site, user: user, state: 'active', plan_id: @free_plan.id)
+      site = Factory.create(:site, user: user, state: 'active', plan_id: @free_plan.id)
+      site.sponsor!
+      Factory.create(:site, user: user, state: 'active', plan_id: @paid_plan.id) # in trial
+      Factory.create(:site, user: user, state: 'active', plan_id: @custom_plan.token) # in trial
+      Factory.create(:site, user: user, state: 'active', plan_id: @custom_plan.token) # in trial
+      Factory.create(:site_not_in_trial, user: user, state: 'active', plan_id: @paid_plan.id) # not in trial
+      Factory.create(:site_not_in_trial, user: user, state: 'active', plan_id: @plan.id) # not in trial
+      Factory.create(:site_not_in_trial, user: user, state: 'active', plan_id: @custom_plan.token) # not in trial
+      Factory.create(:site, user: user, state: 'suspended', plan_id: @custom_plan.token)
+      Factory.create(:site, user: user, state: 'archived', plan_id: @paid_plan.id)
     end
 
     describe ".create_sites_stats" do
@@ -42,13 +49,32 @@ describe SitesStat do
         SitesStat.count.should eq 1
         sites_stat = SitesStat.last
         sites_stat.states_count.should == {
-          "active"    => 1,
+          "active"    => 8,
           "archived"  => 1,
           "suspended" => 1
         }
         sites_stat.plans_count.should == {
-          @plan1.id.to_s => 2,
-          @plan2.id.to_s => 1
+          @free_plan.id.to_s => 1,
+          @paid_plan.id.to_s => 3,
+          @sponsored_plan.id.to_s => 1,
+          @custom_plan.id.to_s => 4,
+          @plan.id.to_s => 1
+        }
+        sites_stat.active.should == {
+          "fr" => 1,
+          "sp" => 1,
+          "tr" => {
+            @paid_plan.name => 1,
+            @custom_plan.name => 2
+          },
+          "pa" => {
+            @paid_plan.name => 2,
+            @custom_plan.name => 1
+          }
+        }
+        sites_stat.passive.should == {
+          "su" => 1,
+          "ar" => 1
         }
       end
 
@@ -57,7 +83,7 @@ describe SitesStat do
     describe ".states_count" do
       it "should include all used states" do
         SitesStat.states_count.should == {
-          "active"    => 1,
+          "active"    => 8,
           "archived"  => 1,
           "suspended" => 1
         }
@@ -67,8 +93,11 @@ describe SitesStat do
     describe ".plans_count" do
       it "should include all used plans" do
         SitesStat.plans_count.should == {
-          @plan1.id.to_s => 2,
-          @plan2.id.to_s => 1
+          @free_plan.id.to_s => 1,
+          @paid_plan.id.to_s => 3,
+          @sponsored_plan.id.to_s => 1,
+          @custom_plan.id.to_s => 4,
+          @plan.id.to_s => 1
         }
       end
     end
