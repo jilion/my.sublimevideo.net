@@ -197,10 +197,16 @@ FactoryGirl.define do
   end
 
   factory :users_stat do
+    d             Time.now.utc.midnight
     states_count  { {} }
+    fr            2
+    pa            1
+    su            1
+    ar            1
   end
 
   factory :sites_stat do
+    d             Time.now.utc.midnight
     states_count  { {} }
     plans_count   { {} }
   end
