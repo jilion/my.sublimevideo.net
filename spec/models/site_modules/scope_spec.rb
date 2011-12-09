@@ -39,25 +39,40 @@ describe SiteModules::Scope do
     before(:all) do
       Site.delete_all
       @site_free      = Factory.create(:site, user: @user, plan_id: @free_plan.id)
+      @site_free.update_attribute(:next_cycle_plan_id, @paid_plan.id)
       @site_sponsored = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
       @site_sponsored.sponsor!
       @site_custom    = Factory.create(:site, user: @user, plan_id: @custom_plan.token)
       @site_paid      = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
+      @site_paid.update_attribute(:next_cycle_plan_id, @free_plan.id)
     end
 
-    describe ".custom" do
-      specify { Site.in_custom_plan.all.should =~ [@site_custom] }
+    describe ".custom_plan" do
+      specify { Site.custom_plan.all.should =~ [@site_custom] }
     end
 
-    describe ".in_paid_plan" do
-      specify { Site.in_paid_plan.all.should =~ [@site_custom, @site_paid] }
+    describe ".paid_plan" do
+      specify { Site.paid_plan.all.should =~ [@site_custom, @site_paid] }
+    end
+
+    describe ".paid_next_plan_or_no_next_plan" do
+      specify { Site.paid_next_plan_or_no_next_plan.all.should =~ [@site_free, @site_sponsored, @site_custom] }
+    end
+
+    describe ".unpaid_plan" do
+      specify { Site.unpaid_plan.all.should =~ [@site_free, @site_sponsored] }
     end
 
     describe ".in_plan" do
       specify { Site.in_plan('free').all.should eq [@site_free] }
-      specify { Site.in_plan('sponsored').all.should eq [@site_sponsored] }
-      specify { Site.in_plan('plus').all.should eq [@site_paid] }
+      specify { Site.in_plan(['sponsored', 'plus']).order(:id).all.should eq [@site_sponsored, @site_paid] }
     end
+
+    describe ".in_plan_id" do
+      specify { Site.in_plan_id(@free_plan.id).all.should eq [@site_free] }
+      specify { Site.in_plan_id([@free_plan.id, @sponsored_plan.id]).all.should eq [@site_free, @site_sponsored] }
+    end
+
   end
 
   describe "attributes queries" do
@@ -98,31 +113,6 @@ describe SiteModules::Scope do
 
     describe ".with_not_canceled_invoices" do
       specify { Site.with_not_canceled_invoices.all.should =~ [@site_with_paid_invoice] }
-    end
-  end
-
-  describe "billing" do
-    before(:all) do
-      Site.delete_all
-      # billable
-      @site_billable     = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
-      @site_will_be_paid = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
-      @site_will_be_paid.update_attribute(:next_cycle_plan_id, Factory.create(:plan).id)
-
-      # not billable
-      @site_free         = Factory.create(:site, user: @user, plan_id: @free_plan.id)
-      @site_will_be_free = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
-      @site_will_be_free.update_attribute(:next_cycle_plan_id, @free_plan.id)
-      @site_archived    = Factory.create(:site, user: @user, state: "archived", archived_at: Time.utc(2010,2,28))
-      @site_suspended   = Factory.create(:site, user: @user, state: "suspended")
-    end
-
-    describe "#billable" do
-      specify { Site.billable.all.should =~ [@site_billable, @site_will_be_paid] }
-    end
-
-    describe "#not_billable" do
-      specify { Site.not_billable.all.should =~ [@site_free, @site_will_be_free, @site_archived, @site_suspended] }
     end
   end
 

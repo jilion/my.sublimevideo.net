@@ -1,32 +1,37 @@
 %p
   = link_to "#{content_tag(:strong, Site.with_state(:active).count)} Active".html_safe, admin_sites_path(with_state: 'active')
-  |
+  %ul
+    %li
+      = link_to "#{content_tag(:strong, Site.active.unpaid_plan.count)} in Unpaid Plan".html_safe, admin_sites_path(unpaid_plan: true)
+      (
+      = link_to "#{content_tag(:strong, Site.active.in_plan('free').count)} Free".html_safe, admin_sites_path(in_plan: 'free')
+      |
+      = link_to "#{content_tag(:strong, Site.active.in_plan('sponsored').count)} Sponsored".html_safe, admin_sites_path(in_plan: 'sponsored')
+      )
+    %li
+      = link_to "#{content_tag(:strong, Site.active.paid_plan.count)} in Paid Plan".html_safe, admin_sites_path(paid_plan: true)
+      (
+      = link_to "#{content_tag(:strong, Site.active.in_plan('plus').count)} Plus".html_safe, admin_sites_path(in_plan: 'plus')
+      |
+      = link_to "#{content_tag(:strong, Site.active.in_plan('premium').count)} Premium".html_safe, admin_sites_path(in_plan: 'premium')
+      )
+
+%p
   = link_to "#{content_tag(:strong, Site.with_state(:suspended).count)} Suspended".html_safe, admin_sites_path(with_state: 'suspended')
   |
   = link_to "#{content_tag(:strong, Site.with_state(:archived).count)} Archived".html_safe, admin_sites_path(with_state: 'archived')
-  %p In the not-archived (active + suspended):
 
   %p
-    = link_to "#{content_tag(:strong, Site.not_archived.billable.count)} Billable".html_safe, admin_sites_path(billable: true)
-    |
-    = link_to "#{content_tag(:strong, Site.not_archived.not_billable.count)} Not Billable".html_safe, admin_sites_path(not_billable: true)
-    (
-    = link_to "#{content_tag(:strong, Site.not_archived.free.count)} Free".html_safe, admin_sites_path(free: true)
-    |
-    = link_to "#{content_tag(:strong, Site.not_archived.in_paid_plan.count)} In Paid Plan".html_safe, admin_sites_path(in_paid_plan: true)
-    |
-    = link_to "#{content_tag(:strong, Site.not_archived.sponsored.count)} Sponsored".html_safe, admin_sites_path(sponsored: true)
-    )
 
   %p
-    = link_to "#{content_tag(:strong, Site.not_archived.overusage_notified.count)} With Peak Insurance".html_safe, admin_sites_path(overusage_notified: true)
+    = link_to "#{content_tag(:strong, Site.active.overusage_notified.count)} With Peak Insurance".html_safe, admin_sites_path(overusage_notified: true)
     |
-    = link_to "#{content_tag(:strong, Site.not_archived.with_next_cycle_plan.count)} Will downgrade".html_safe, admin_sites_path(with_next_cycle_plan: true)
+    = link_to "#{content_tag(:strong, Site.active.with_next_cycle_plan.count)} Will downgrade".html_safe, admin_sites_path(with_next_cycle_plan: true)
     |
-    = link_to "#{content_tag(:strong, Site.not_archived.with_extra_hostnames.count)} With extra hostnames".html_safe, admin_sites_path(with_extra_hostnames: true)
+    = link_to "#{content_tag(:strong, Site.active.with_extra_hostnames.count)} With extra hostnames".html_safe, admin_sites_path(with_extra_hostnames: true)
     |
-    = link_to "#{content_tag(:strong, Site.not_archived.with_wildcard.count)} With wildcard".html_safe, admin_sites_path(with_wildcard: true)
+    = link_to "#{content_tag(:strong, Site.active.with_wildcard.count)} With wildcard".html_safe, admin_sites_path(with_wildcard: true)
     |
-    = link_to "#{content_tag(:strong, Site.not_archived.with_path.count)} With path".html_safe, admin_sites_path(with_path: true)
+    = link_to "#{content_tag(:strong, Site.active.with_path.count)} With path".html_safe, admin_sites_path(with_path: true)
     |
-    = link_to "#{content_tag(:strong, Site.not_archived.badged(false).count)} Without badge".html_safe, admin_sites_path(badged: false)
+    = link_to "#{content_tag(:strong, Site.active.badged(false).count)} Without badge".html_safe, admin_sites_path(badged: false)

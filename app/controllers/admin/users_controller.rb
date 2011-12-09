@@ -1,9 +1,9 @@
 class Admin::UsersController < AdminController
-  respond_to :js, :html
+  respond_to :html, :js
 
   # filter
-  has_scope :active_and_billable, type: :boolean
-  has_scope :active_and_not_billable, type: :boolean
+  has_scope :free, type: :boolean
+  has_scope :paying, type: :boolean
   has_scope :with_state do |controller, scope, value|
     scope.with_state(value.to_sym)
   end
@@ -19,13 +19,14 @@ class Admin::UsersController < AdminController
 
   # GET /users
   def index
-    params[:active_and_billable] = true unless params.keys.any? { |k| %w[active_and_not_billable with_state search with_balance by_sites_last_30_days_billable_video_views].include?(k) }
+    params[:with_state] = 'active' unless params.keys.any? { |k| %w[free with_state search with_balance by_sites_last_30_days_billable_video_views].include?(k) }
     # @users = if params.key?(:by_sites_last_30_days_billable_video_views)
     #   User
     # else
     @users = User.includes(:sites, :invoices).select("users.*")
     # end
     @users = apply_scopes(@users).by_date
+
     respond_with(@users, per_page: 50)
   end
 

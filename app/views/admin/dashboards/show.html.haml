@@ -15,15 +15,15 @@
 - sponsored_sites    = Site.active.in_plan('sponsored').count
 - plus_sites         = Site.active.in_plan('plus').count
 - premium_sites      = Site.active.in_plan('premium').count
-- custom_sites       = Site.active.in_custom_plan.count
+- custom_sites       = Site.active.custom_plan.count
 
-- total_users        = User.active.count
-- today_signups      = User.active.where { (created_at >= Time.now.utc.midnight) & (created_at < Time.now.utc.tomorrow.midnight) }
-- yesterday_signups  = User.active.where { (created_at >= Time.now.utc.yesterday.midnight) & (created_at < Time.now.utc.midnight) }
-- billable_customers = User.active_and_billable.count
-- non_billable_customers = User.active_and_not_billable.count
+- total_users       = User.active.count
+- today_signups     = User.active.where { (created_at >= Time.now.utc.midnight) & (created_at < Time.now.utc.tomorrow.midnight) }
+- yesterday_signups = User.active.where { (created_at >= Time.now.utc.yesterday.midnight) & (created_at < Time.now.utc.midnight) }
+- paying_users      = User.paying.count
+- free_users        = User.free.count
 
-- top_10_countries = User.select("billing_country, COUNT(billing_country) as billing_country_count").where(id: User.select("DISTINCT(users.id)").active_and_billable.map(&:id)).group(:billing_country).order("billing_country_count DESC").map { |u| [u.billing_country, u.billing_country_count.to_i] }
+- top_10_countries = User.select("billing_country, COUNT(billing_country) as billing_country_count").where(id: User.select("DISTINCT(users.id)").paying.map(&:id)).group(:billing_country).order("billing_country_count DESC").map { |u| [u.billing_country, u.billing_country_count.to_i] }
 
 %table
   %tr
@@ -68,18 +68,18 @@
           %td= (variation < 0 ? "-" : "+") + " #{display_percentage(today_signups.count.to_f / total_users)}"
         %tr{ style: 'border:solid 1px' }
           %td
-            %strong Non billable
+            %strong Free users
           %td
-            %strong= non_billable_customers
+            %strong= free_users
           %td
-            %strong= display_percentage(non_billable_customers.to_f / total_users)
+            %strong= display_percentage(free_users.to_f / total_users)
         %tr{ style: 'border:solid 1px' }
           %td
-            %strong Billable
+            %strong Paying users
           %td
-            %strong= billable_customers
+            %strong= paying_users
           %td
-            %strong= display_percentage(billable_customers.to_f / total_users)
+            %strong= display_percentage(paying_users.to_f / total_users)
         %tr{ style: 'border:solid 1px' }
           %td
             %strong Total
@@ -124,19 +124,19 @@
           %tr{ style: 'border:solid 1px' }
             %td= Country[top_10_countries[i][0]].name
             %td= top_10_countries[i][1]
-            %td= display_percentage(top_10_countries[i][1].to_f / billable_customers)
+            %td= display_percentage(top_10_countries[i][1].to_f / paying_users)
         %tr{ style: 'border:solid 1px' }
           %td= "Rest of the world"
-          - rest = billable_customers - total_top_ten
+          - rest = paying_users - total_top_ten
           %td= rest
-          %td= display_percentage(rest.to_f / billable_customers)
+          %td= display_percentage(rest.to_f / paying_users)
         %tr{ style: 'border:solid 1px' }
           %td
             %strong Total
           %td
-            %strong= billable_customers
+            %strong= paying_users
           %td
-            %strong= display_percentage(billable_customers.to_f / billable_customers)
+            %strong= display_percentage(paying_users.to_f / paying_users)
 
 -#- cache "users_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}", expires_in: (Time.now.utc.end_of_day - Time.now.utc) do
 -#  = render 'admin/users/timeline'

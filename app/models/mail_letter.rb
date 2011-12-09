@@ -18,10 +18,10 @@ class MailLetter
               User.where(email: ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"])
             when 'all'
               User.all
-            when 'active_and_billable'
-              User.active_and_billable.all
-            when 'active_and_not_billable'
-              User.active_and_not_billable.all
+            when 'paying'
+              User.paying.all
+            when 'free'
+              User.free.all
             else
               User.send(@criteria)
             end

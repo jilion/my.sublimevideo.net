@@ -2,10 +2,10 @@
   %h1
     - if admin_signed_in?
       = link_to [:admin, :dashboard] do
-        = "#{"DEV" if Rails.env.development?} MySublimeVideo"
+        = "SublimeVideo"
         %em= "Admin"
     - else
-      = "MySublimeVideo"
+      = "SublimeVideo"
       %em= "Admin"
   - if admin_signed_in?
     .popup_menu
@@ -14,7 +14,7 @@
         - [:plans, :referrers, :tweets, :mails, :admins, :enthusiasts].each do |name|
           = activable_menu_restful_item(:li, name, {}.reverse_merge!(:namespace => 'admin'))
     %ul#favorite_links
-      - [:sites, :users, :invoices, [:releases, { :link_text => "Player" }], [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }]].each do |r|
+      - [:stats, :sites, :users, :invoices, [:releases, { :link_text => "Player" }], [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }]].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
         = activable_menu_restful_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))
 

@@ -4,14 +4,14 @@ module Admin::UsersHelper
     pluralized_users = pluralize(users.total_count, 'user')
     # pluralized_users = pluralize(users.group_by(&:id).count, 'user')
 
-    state = if params[:active_and_not_billable]
-      " not billable"
+    state = if params[:free]
+      " free"
     elsif params[:with_state]
       " #{params[:with_state]}"
     elsif params[:search].present?
       " matching '#{params[:search]}'"
     else
-      " billable"
+      " paying"
     end
     "#{pluralized_users.titleize}#{state}"
   end

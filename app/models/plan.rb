@@ -3,9 +3,7 @@ class Plan < ActiveRecord::Base
 
   CYCLES                = %w[month year none]
   UNPAID_NAMES          = %w[free sponsored]
-  LEGACY_UNPAID_NAMES   = %w[dev]
   STANDARD_NAMES        = %w[plus premium]
-  LEGACY_STANDARD_NAMES = %w[comet planet star galaxy]
   SUPPORT_LEVELS        = %w[forum email vip_email]
 
   attr_accessible :name, :cycle, :video_views, :price, :support_level, :stats_retention_days
@@ -102,7 +100,7 @@ class Plan < ActiveRecord::Base
   end
 
   # unpaid plan
-  (UNPAID_NAMES + LEGACY_UNPAID_NAMES).each do |plan_name|
+  UNPAID_NAMES.each do |plan_name|
     define_method "#{plan_name}_plan?" do
       name == plan_name
     end
@@ -110,7 +108,7 @@ class Plan < ActiveRecord::Base
 
   # paid plan
   def standard_plan?
-    (STANDARD_NAMES + LEGACY_STANDARD_NAMES).include?(name.gsub(/\d/, ''))
+    STANDARD_NAMES.include?(name.gsub(/\d/, ''))
   end
 
   # paid plan

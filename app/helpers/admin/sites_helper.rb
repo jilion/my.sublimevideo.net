@@ -23,16 +23,12 @@ module Admin::SitesHelper
       " for #{user.name_or_email}" if user
     elsif params[:search].present?
       " matching '#{params[:search]}'"
-    elsif params[:billable]
-      " billable"
-    elsif params[:not_billable]
-      " not billable"
-    elsif params[:free]
-      " in free plan"
-    elsif params[:in_paid_plan]
+    elsif params[:paid_plan]
       " in paid plan"
-    elsif params[:sponsored]
-      " sponsored"
+    elsif params[:unpaid_plan]
+      " in unpaid plan"
+    elsif params[:in_plan]
+      " in the #{params[:in_plan].titleize} plan"
     else
       " active"
     end

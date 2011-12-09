@@ -21,8 +21,8 @@ unless users_stats.empty?
     }))
 
     g.option(series: [
-      serie(users_stats.timeline(:active_and_not_billable_count), 'Active & NOT Billable', type: 'area', color: '#00b600', visible: false),
-      serie(users_stats.timeline(:active_and_billable_count), 'Active & Billable', type: 'area', color: '#00ff00'),
+      serie(users_stats.timeline(:active_and_not_billable_count), 'Free', type: 'area', color: '#00b600', visible: false),
+      serie(users_stats.timeline(:active_and_billable_count), 'Paying', type: 'area', color: '#00ff00'),
       serie(users_stats.timeline(:archived_count), 'Archived', type: 'area', color: '#b00000', visible: false),
       serie(users_stats.timeline(:suspended_count), 'Suspended', type: 'area', color: '#fe2617', visible: false)
     ].flatten)

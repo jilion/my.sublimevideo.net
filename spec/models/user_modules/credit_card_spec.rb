@@ -227,7 +227,7 @@ describe UserModules::CreditCard do
         end
       end
 
-      context "not billable user" do
+      context "free user" do
         it "doesn't send 'cc is expired' email when user's credit card will expire at the end of the current month" do
           @user = Factory.create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year))
           @site = Factory.create(:site, user: @user, plan_id: @free_plan.id)
@@ -236,10 +236,10 @@ describe UserModules::CreditCard do
         end
       end
 
-      context "billable user" do
+      context "paying user" do
         it "sends 'cc will expire' email when user's credit card will expire at the end of the current month" do
           @user = Factory.create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year))
-          @site = Factory.create(:site, user: @user)
+          @site = Factory.create(:site_not_in_trial, user: @user)
 
           @user.cc_expire_on.should eq Time.now.utc.end_of_month.to_date
           expect { User.send_credit_card_expiration }.to change(ActionMailer::Base.deliveries, :size).by(1)
