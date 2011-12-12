@@ -4,9 +4,8 @@ class MSVStats.Views.StickyNoticesView extends Backbone.View
   initialize: ->
     @options.sites.bind 'change', this.render
     @options.sites.bind 'reset', this.render
-
     this.render()
 
   render: =>
-    $(@el).html(this.template(site: @options.sites.selectedSite))
+    $(@el).html(this.template(statsRouter: MSVStats.statsRouter))
     this

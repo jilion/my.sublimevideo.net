@@ -1,5 +1,5 @@
-- if @sites.selectedSite? && @sites.selectedSite.isDemo()
-  %h2 Demo stats page
+- if @statsRouter? && @statsRouter.isDemo()
+  %h2 Public stats for sublimevideo.net
 - else
   %h2 Stats for
     %select

@@ -82,10 +82,14 @@ module Stat
     end
 
     def json(site_token, period = 'days')
+      if site_token == 'demo'
+        site_token = SiteToken.www
+        demo       = true
+      end
       from, to = period_intervals(site_token, period)
 
       json_stats = if from.present? && to.present?
-        last_stats(token: site_token, period: period, from: from, to: to, fill_missing_days: period != 'seconds')
+        last_stats(token: site_token, period: period, from: from, to: to, fill_missing_days: period != 'seconds', demo: demo)
       else
         []
       end
@@ -149,6 +153,9 @@ module Stat
       conditions[:t] = { "$in" => Array.wrap(options[:token]) } if options[:token]
       conditions.deep_merge!(options[:period].chr.to_sym => { "$gte" => options[:from] }) if options[:from]
       conditions.deep_merge!(options[:period].chr.to_sym => { "$lte" => options[:to] }) if options[:to]
+      if options[:demo] && options[:period] == 'days'
+        conditions.deep_merge!(options[:period].chr.to_sym => { "$gte" => Time.utc(2011,11,29) }) if options[:from]
+      end
 
       stats = if (!options[:token] && !options[:stats]) || (options[:token] && options[:token].is_a?(Array))
         collection.group(

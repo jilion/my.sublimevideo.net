@@ -11,19 +11,19 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     new MSVStats.Views.StickyNoticesView
       el: '#sticky_notice'
       sites: MSVStats.sites
-
+    
     new MSVStats.Views.PageTitleView
       el: 'h2'
       sites: MSVStats.sites
-
+    
     new MSVStats.Views.SitesSelectTitleView
       el: '#sites_select_title'
       sites: MSVStats.sites
-
+    
     new MSVStats.Views.TrialView
       el: '#trial'
       sites: MSVStats.sites
-
+    
     new MSVStats.Views.PeriodSelectorSecondsView
       el: '#period_selectors .seconds'
       statsSeconds: MSVStats.statsSeconds
@@ -45,7 +45,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       el: '#period_selectors .days365'
       statsDays: MSVStats.statsDays
       period: MSVStats.period
-
+    
     new MSVStats.Views.TimeRangeTitleView
       el: '#time_range_title'
       statsSeconds: MSVStats.statsSeconds
@@ -54,10 +54,10 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
       sites:        MSVStats.sites
-
+    
     MSVStats.datePickersView = new MSVStats.Views.DatePickersView
       el: '#date_pickers'
-
+    
     new MSVStats.Views.VVView
       el: '#vv_chart_legend'
       statsSeconds: MSVStats.statsSeconds
@@ -65,15 +65,15 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
-
+    
     MSVStats.topVideosView = new MSVStats.Views.TopVideosView
       el: '#top_videos_content'
       period: MSVStats.period
       videos: MSVStats.videos
-
+    
     MSVStats.playableVideoView = new MSVStats.Views.PlayableVideoView
       el: '#playable_video'
-
+    
     new MSVStats.Views.BPView
       el: '#bp_content'
       statsSeconds: MSVStats.statsSeconds
@@ -81,7 +81,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
-
+    
     new MSVStats.Views.MDView
       el: '#md_content'
       statsSeconds: MSVStats.statsSeconds
@@ -89,7 +89,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
-
+    
     new MSVStats.Views.PlanUsageView
       el: '#plan_usage'
       statsDays: MSVStats.statsDays
@@ -209,3 +209,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     $.fn.sparkline.defaults.line.chartRangeClip  = true
     $.fn.sparkline.defaults.line.chartRangeMin   = 0
     # $.fn.sparkline.defaults.line.chartRangeMax   = 0
+
+  isDemo: ->
+    /(\/|#)demo/.test(window.location.href)

@@ -38,9 +38,12 @@ class MSV.Models.Site extends Backbone.Model
 
   statsTrialIsActivable: ->
     this.isInFreePlan() && this.statsTrialStartTime() == 0 && this.trialStartTime() == 0
-    
-  isDemo: ->
-    this.get('token') == 'demo'
+
+  token: ->
+    if MSVStats.statsRouter? && MSVStats.statsRouter.isDemo?
+      'demo'
+    else
+      this.get('token')
 
 class MSV.Collections.Sites extends Backbone.Collection
 
@@ -48,6 +51,7 @@ class MSV.Collections.Sites extends Backbone.Collection
   url: '/sites'
 
   select: (token) ->
+    token = '<%= SiteToken.www %>' if token == 'demo'
     @selectedSite = _.find this.models, (site) =>
       site.get('token') == token
     this.trigger('change')

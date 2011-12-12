@@ -1,14 +1,10 @@
-- if @site? && @site.isDemo()
+- if @statsRouter? && @statsRouter.isDemo()
   %ul
     %li.notice
-      %p This is a publicly viewable demo of SublimeVideo's Universal, Real-Time Statistics Dashboard.
+      %p Welcome to the demo of SublimeVideo's Universal, Real-Time Statistics.
       %p
-        The statistics shown for the last 365 days - last 60 minutes are generated for this demo, and do not represent actual traffic for
+        This page displays real-time video statistics for
         %a{ href: 'http://sublimevideo.net'} sublimevideo.net
-        = ". The statistics for the last 60 seconds' (real-time) are a combination of data generated for this demo and real statistics from"
-        %a{ href: 'http://sublimevideo.net'} sublimevideo.net
-        = "."
-      %p
         Try watching one of the videos on
         %a{ href: 'http://sublimevideo.net'} sublimevideo.net
         on any device to see your page view(s) and video play(s) logged in real-time on this page.

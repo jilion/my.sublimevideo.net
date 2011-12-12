@@ -11,7 +11,7 @@ class MSVStats.Views.SitesSelectTitleView extends Backbone.View
     this.render()
 
   render: =>
-    $(@el).html(this.template(sites: @options.sites))
+    $(@el).html(this.template(sites: @options.sites, statsRouter: MSVStats.statsRouter))
     this
 
   updatePage: (event) ->
