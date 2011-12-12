@@ -51,10 +51,11 @@ describe SiteModules::Recurring do
   describe ".send_trial_will_end" do
     before(:all) do
       Site.delete_all
-      @site_not_in_trial = Factory.create(:site, trial_started_at: BusinessModel.days_for_trial.days.ago)
+      @sites_not_in_trial = [Factory.create(:site, trial_started_at: BusinessModel.days_for_trial.days.ago)]
       @sites_in_trial = []
 
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
+        @sites_not_in_trial << Factory.create(:site, state: 'archived', trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
         @sites_in_trial << Factory.create(:site, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
       end
     end

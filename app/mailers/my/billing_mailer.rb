@@ -9,7 +9,7 @@ class My::BillingMailer < MyMailer
     @site = site
     @user = site.user
     hostname = @site.hostname.presence || 'your site'
-    subject = full_days_until_trial_end(@site) > 1 ? I18n.t('mailer.billing_mailer.trial_will_end', hostname: hostname, days: full_days_until_trial_end(@site)) : I18n.t('mailer.billing_mailer.trial_will_end_tomorrow', hostname: hostname)
+    subject = full_days_until_trial_end(@site) > 1 ? I18n.t('mailer.billing_mailer.trial_will_end', hostname: hostname, days: full_days_until_trial_end(@site) + 1) : I18n.t('mailer.billing_mailer.trial_will_end_tomorrow', hostname: hostname)
 
     mail(
       to: to(@user),
