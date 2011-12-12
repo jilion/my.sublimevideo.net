@@ -31,26 +31,16 @@ class SVStats.Routers.StatsRouter extends Backbone.Router
     #   statsDays: MSVStats.statsDays
     #   period: MSVStats.period
     #
-    # new MSVStats.Views.TimeRangeTitleView
-    #   el: '#time_range_title'
-    #   statsSeconds: MSVStats.statsSeconds
-    #   statsMinutes: MSVStats.statsMinutes
-    #   statsHours:   MSVStats.statsHours
-    #   statsDays:    MSVStats.statsDays
-    #   period:       MSVStats.period
-    #   sites:        MSVStats.sites
-    #
-    # MSVStats.datePickersView = new MSVStats.Views.DatePickersView
-    #   el: '#date_pickers'
-
     SVStats.graphView = new SVStats.Views.GraphView
       el: '#chart'
-      usersStats: SVStats.usersStats
-      # sitesStats: SVStats.sitesStats
+      collection: SVStats.stats
+
+    SVStats.seriesSelectorView = new SVStats.Views.SeriesSelectorView
+      el: '#selectors'
 
   # routes:
   #   'stats': 'home'
-  # 
+  #
   # home: ->
   #   this.fetchStats()
 
@@ -67,15 +57,15 @@ class SVStats.Routers.StatsRouter extends Backbone.Router
   initHelpers: ->
     SVStats.chartsHelper = new SVStats.Helpers.ChartsHelper()
 
-  fetchStats: ->
-    # SVStats.usersStats.reset()
-    # SVStats.sitesStats.reset()
-    SVStats.usersStats.fetch
-      silent: true
-    # success: -> SVStats.graphView.render()
-    # MSVStats.sitesStats.fetch
-    #   silent: true
-    #   # success: -> SVStats.statsRouter.syncFetchSuccess()
+  # fetchStats: ->
+  #   # SVStats.usersStats.reset()
+  #   # SVStats.sitesStats.reset()
+  #   SVStats.usersStats.fetch
+  #     silent: true
+  #   # success: -> SVStats.graphView.render()
+  #   # MSVStats.sitesStats.fetch
+  #   #   silent: true
+  #   #   # success: -> SVStats.statsRouter.syncFetchSuccess()
 
   initHighcharts: ->
     Highcharts.setOptions

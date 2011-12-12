@@ -8,27 +8,58 @@ class SVStats.Helpers.ChartsHelper
       fillColor: options.fillColor ? (if options.selected then 'rgba(116,255,131,0.46)' else 'rgba(116,255,131,0.24)')
 
   chart: (collections) ->
+    series = this.buildSeries(collections)
     SVStats.chart = new Highcharts.StockChart
       chart:
         renderTo: 'chart'
-        # backgroundColor: 'transparent'
-        # plotBackgroundColor: null
-        # animation: false
-        # plotShadow: false
-        # marginTop: 10
-        # marginRight: 10
-        # marginBottom: 50
-        # marginLeft: 50
-        # spacingTop: 5
-        # spacingRight: 5
-        # spacingBottom: 5
-        # spacingLeft: 5
-        # height: 300
-        # width: 848
       credits:
         enabled: false
       title:
         text: null
+      rangeSelector:
+        buttonTheme:
+          fill: 'none'
+          # stroke: 'none'
+          style:
+            color: '#039'
+            fontWeight: 'bold'
+          states:
+            hover:
+              fill: 'white'
+            select:
+              style:
+                color: 'white'
+        inputStyle:
+          color: '#039'
+          fontWeight: 'bold'
+        labelStyle:
+          color: 'silver'
+          fontWeight: 'bold'
+        buttons: [{
+          type: 'all'
+          text: 'All'
+        }, {
+          type: 'year'
+          count: 1
+          text: '1 y'
+        }, {
+          type: 'month'
+          count: 6
+          text: '6 m'
+        }, {
+          type: 'month'
+          count: 3
+          text: '3 m'
+        }, {
+          type: 'month'
+          count: 1
+          text: '30 d'
+        }, {
+          type: 'week'
+          count: 1
+          text: '7 d'
+        }]
+        selected: 4
       # tooltip:
       #   enabled: MSVStats.period.get('type') != 'seconds'
       #   backgroundColor:
@@ -98,41 +129,11 @@ class SVStats.Helpers.ChartsHelper
       #       hover:
       #         lineWidth: 2
       #   }]
-      series: [
-        #_.each collections, (collection) ->
-        data: collections[0].customPluck('fr')
-        type: collections[0].chartType()
-        pointStart: collections[0].startTime()
-        pointInterval: 24 * 60 * 60 * 1000
-      ]
-      #   type: stats.chartType()
-      #   name: 'Page visits'
-      #   data: stats.customPluck('pv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
-      #   pointInterval: MSVStats.period.pointInterval()
-      #   pointStart: MSVStats.period.startTime()
-      #   shadow: false
-      #   fillColor: 'rgba(74,100,142,0.3)'
-      #   color: '#596e8c'
-      #   lineColor: '#596e8c'
-      #   marker:
-      #     enabled: false
-      #   },{
-      #   type: stats.chartType()
-      #   name: 'Video views'
-      #   data: stats.customPluck('vv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
-      #   pointInterval: MSVStats.period.pointInterval()
-      #   pointStart: MSVStats.period.startTime()
-      #   shadow: true
-      #   fillColor: 'rgba(9,250,33,0.15)'
-      #   color: '#00ff18'
-      #   lineColor: '#00ff18'
-      #   marker:
-      #     symbol: "url(<%= asset_path 'my/stats/graph_dot.png' %>)"
-      # }]
+      series: series
       xAxis:
         lineWidth: 0
         tickWidth: 0
-        gridLineWidth: 1
+        gridLineWidth: 0
         type: 'datetime'
         gridLineColor: '#5d7493'
         labels:
@@ -160,4 +161,33 @@ class SVStats.Helpers.ChartsHelper
             fontSize: "14px"
             color: '#1e3966'
         title:
-          text: null
+          text: "Users & Sites evolution"
+
+  buildSeries: (collections) ->
+    series = []
+    _.each collections, (collection) ->
+      series.push
+        id: collection.id()
+        name: collection.title()
+        data: collection.customPluck()
+        type: collection.chartType()
+        pointStart: collection.startTime()
+        pointInterval: 24 * 60 * 60 * 1000
+
+    series.push this.timelineEvents()
+    series
+
+  timelineEvents: ->
+    type: 'flags'
+    data: [{
+      x: Date.UTC(2011, 2, 29)
+      title: 'V1'
+      text: 'SublimeVideo commercial launch!'
+    }, {
+      x: Date.UTC(2011, 10, 29)
+      title: 'V2'
+      text: 'SublimeVideo unleashed!'
+    }]
+    onSeries: 'sites'
+    shape: 'circlepin'
+    width: 16

@@ -171,7 +171,7 @@ MySublimeVideo::Application.routes.draw do
       resources :stats, only: [:index] do
         collection do
           get :users
-          # get :sites
+          get :sites
         end
         member do
           get '/single/:page' => 'stats#show'

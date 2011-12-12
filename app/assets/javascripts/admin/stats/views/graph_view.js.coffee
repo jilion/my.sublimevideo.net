@@ -1,14 +1,13 @@
 class SVStats.Views.GraphView extends Backbone.View
 
   initialize: ->
-    @options.usersStats.bind 'reset',  this.render
-    @options.usersStats.bind 'change', this.render
+    _.each @collection, (stat) => stat.bind 'change', this.render
     this.render()
 
   render: =>
-    if @options.usersStats.isEmpty()
-      console.log "no usersStats ? #{@options.usersStats}"
+    if _.isEmpty(@collection)
+      console.log "no stats !"
     else
-      SVStats.chartsHelper.chart([@options.usersStats])
+      SVStats.chartsHelper.chart(@collection)
 
     this

@@ -5,20 +5,85 @@
 .stats
   :coffeescript
     $ ->
-      window.SVStats.usersStats = new SVStats.Collections.UsersStats(#{UsersStat.json(params[:start], params[:end])})
+      window.SVStats.stats = {}
+      window.SVStats.stats["users"] = new SVStats.Collections.UsersStats(#{UsersStat.json(params[:start], params[:end])})
+      window.SVStats.stats["sites"] = new SVStats.Collections.SitesStats(#{SitesStat.json(params[:start], params[:end])})
       window.SVStats.statsRouter = new SVStats.Routers.StatsRouter()
       # Backbone.history.start(pushState: true)
 
-  %ul#period_selectors
-    %li.days365
-    %li.days30
-    %li.hours
-    %li.minutes
-    %li.seconds
-
-  .spacer
   #chart
-    -# = UsersStat.all.entries.inspect
-    -# = SitesStat.all.entries.inspect
 
   .spacer
+
+  #selectors
+    %table
+      %tr
+        %td
+          %h3
+            %a.selector{ href: "#", data: { value: 'users.all' } } Users
+          %ul
+            %li
+              %a.selector{ href: "#", data: { value: 'users.active' } } Active
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'users.fr' } } Free
+                %li
+                  %a.selector{ href: "#", data: { value: 'users.pa' } } Paying
+            %li
+              %a.selector{ href: "#", data: { value: 'users.passive' } } Passive
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'users.su' } } Suspended
+                %li
+                  %a.selector{ href: "#", data: { value: 'users.ar' } } Archived
+        %td
+          %h3
+            %a.selector{ href: "#", data: { value: 'sites.all' } } Sites
+          %ul
+            %li
+              %a.selector{ href: "#", data: { value: 'sites.active' } } Active
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'sites.fr' } } Free
+                %li
+                  %a.selector{ href: "#", data: { value: 'sites.tr' } } Trial
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.tr_details.plus' } } Plus
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.tr_details.plus.m' } } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.tr_details.plus.y' } } Yearly
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.tr_details.premium' } } Premium
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.tr_details.premium.m' } } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.tr_details.premium.y' } } Yearly
+                %li
+                  %a.selector{ href: "#", data: { value: 'sites.pa' } } Paying
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.pa_details.plus' } } Plus
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.pa_details.plus.m' } } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.pa_details.plus.y' } } Yearly
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.pa_details.premium' } } Premium
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.pa_details.premium.m' } } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.pa_details.premium.y' } } Yearly
+            %li
+              %a.selector{ href: "#", data: { value: 'sites.passive' } } Passive
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'sites.su' } } Suspended
+                %li
+                  %a.selector{ href: "#", data: { value: 'sites.ar' } } Archived
+    

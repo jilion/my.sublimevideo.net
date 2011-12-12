@@ -377,7 +377,7 @@ end
 
 def create_users_stats
   day = 2.years.ago.midnight
-  hash = { fr: User.free.count, pa: User.paying.count, su: User.suspended.count, ar: User.archived.count}
+  hash = { fr: 0, pa: 0, su: 0, ar: 0 }
 
   while day <= Time.now.utc.midnight
     hash[:d]   = day
@@ -395,28 +395,28 @@ end
 
 def create_sites_stats
   day = 2.years.ago.midnight
-  hash_for_active_sites = { fr: 2, sp: 0, tr: { plus: 10, premium: 3 }, pa: { plus: 0, premium: 0 } }
-  hash_for_passive_sites = { su: 0, ar: 0 }
+  hash = { fr: 0, sp: 0, tr: 0, pa: 0, tr_details: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, pa_details: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, su: 0, ar: 0 }
 
   while day <= Time.now.utc.midnight
-    hash_for_active_sites[:fr] += rand(100)
-    hash_for_active_sites[:sp] += rand(2)
-    hash_for_active_sites[:tr][:plus] += rand(100)
-    hash_for_active_sites[:tr][:premium] += rand(50)
-    hash_for_active_sites[:pa][:plus] += rand(30)
-    hash_for_active_sites[:pa][:premium] += rand(15)
-    hash_for_passive_sites[:su] += rand(2)
-    hash_for_passive_sites[:ar] += rand(4)
+    hash[:d]   = day
+    hash[:fr] += rand(50)
+    hash[:sp] += rand(2)
 
-    SitesStat.create(
-      d: day,
-      # Legacy counters
-      # states_count: states_count,
-      # plans_count: plans_count,
-      # New counters
-      active: hash_for_active_sites,
-      passive: hash_for_passive_sites
-    )
+    hash[:tr_details][:plus][:m]    += rand(10)
+    hash[:tr_details][:plus][:y]    += rand(5)
+    hash[:tr_details][:premium][:m] += rand(5)
+    hash[:tr_details][:premium][:y] += rand(2)
+    hash[:pa_details][:plus][:m]    += rand(7)
+    hash[:pa_details][:plus][:y]    += rand(3)
+    hash[:pa_details][:premium][:m] += rand(4)
+    hash[:pa_details][:premium][:y] += rand(2)
+
+    hash[:tr] += hash[:tr_details][:plus][:m] + hash[:tr_details][:plus][:y] + hash[:tr_details][:premium][:m] + hash[:tr_details][:premium][:y]
+    hash[:pa] += hash[:pa_details][:plus][:m] + hash[:pa_details][:plus][:y] + hash[:pa_details][:premium][:m] + hash[:pa_details][:premium][:y]
+    hash[:su] += rand(3)
+    hash[:ar] += rand(6)
+
+    SitesStat.create(hash)
 
     day += 1.day
   end

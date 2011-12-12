@@ -10,7 +10,13 @@ class Admin::StatsController < AdminController
 
   def users
     respond_to do |format|
-      format.json { render json: UsersStat.json(params[:start], params[:end]) }
+      format.json { render json: UsersStat.json }
+    end
+  end
+
+  def sites
+    respond_to do |format|
+      format.json { render json: SitesStat.json }
     end
   end
 

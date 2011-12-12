@@ -23,7 +23,7 @@ describe SitesStat do
   context "with a bunch of different sites" do
     before(:all) do
       user = Factory.create(:user)
-      @plan = Factory.create(:plan, name: @paid_plan.name, cycle: 'year')
+      @yearly_plan = Factory.create(:plan, name: @paid_plan.name, cycle: 'year')
       Factory.create(:site, user: user, state: 'active', plan_id: @free_plan.id)
       site = Factory.create(:site, user: user, state: 'active', plan_id: @free_plan.id)
       site.sponsor!
@@ -31,7 +31,7 @@ describe SitesStat do
       Factory.create(:site, user: user, state: 'active', plan_id: @custom_plan.token) # in trial
       Factory.create(:site, user: user, state: 'active', plan_id: @custom_plan.token) # in trial
       Factory.create(:site_not_in_trial, user: user, state: 'active', plan_id: @paid_plan.id) # not in trial
-      Factory.create(:site_not_in_trial, user: user, state: 'active', plan_id: @plan.id) # not in trial
+      Factory.create(:site_not_in_trial, user: user, state: 'active', plan_id: @yearly_plan.id) # not in trial
       Factory.create(:site_not_in_trial, user: user, state: 'active', plan_id: @custom_plan.token) # not in trial
       Factory.create(:site, user: user, state: 'suspended', plan_id: @custom_plan.token)
       Factory.create(:site, user: user, state: 'archived', plan_id: @paid_plan.id)
@@ -58,24 +58,22 @@ describe SitesStat do
           @paid_plan.id.to_s => 3,
           @sponsored_plan.id.to_s => 1,
           @custom_plan.id.to_s => 4,
-          @plan.id.to_s => 1
+          @yearly_plan.id.to_s => 1
         }
-        sites_stat.active.should == {
-          "fr" => 1,
-          "sp" => 1,
-          "tr" => {
-            @paid_plan.name => 1,
-            @custom_plan.name => 2
-          },
-          "pa" => {
-            @paid_plan.name => 2,
-            @custom_plan.name => 1
-          }
+        sites_stat["fr"].should eq 1
+        sites_stat["sp"].should eq 1
+        sites_stat["tr"].should eq 3
+        sites_stat["pa"].should eq 3
+        sites_stat["tr_details"].should == {
+          @paid_plan.name => { "m" => 1, "y" => 0 },
+          @custom_plan.name => { "m" => 2 }
         }
-        sites_stat.passive.should == {
-          "su" => 1,
-          "ar" => 1
+        sites_stat["pa_details"].should == {
+          @paid_plan.name => { "m" => 1, "y" => 1 },
+          @custom_plan.name => { "m" => 1 }
         }
+        sites_stat["su"].should eq 1
+        sites_stat["ar"].should eq 1
       end
 
     end
@@ -97,7 +95,7 @@ describe SitesStat do
           @paid_plan.id.to_s => 3,
           @sponsored_plan.id.to_s => 1,
           @custom_plan.id.to_s => 4,
-          @plan.id.to_s => 1
+          @yearly_plan.id.to_s => 1
         }
       end
     end

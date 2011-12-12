@@ -101,4 +101,69 @@ namespace :one_time do
     end
   end
 
+  namespace :stats do
+    desc "Migrate old to new UsersStats"
+    task migrate_old_users_stats: :environment do
+      timed do
+        UsersStat.where(d: nil).each do |stat|
+          stat.update_attributes(
+            d:  stat.created_at.midnight,
+            fr: stat.states_count['active_and_not_billable_count'],
+            pa: stat.states_count['active_and_billable_count'],
+            su: stat.states_count['suspended_count'],
+            ar: stat.states_count['archived_count']
+          )
+        end
+      end
+    end
+
+    desc "Migrate old to new SitesStats"
+    task migrate_old_sites_stats: :environment do
+      dev_plan_id       = Plan.where { name == 'dev' }.first.id
+      free_plan_id      = Plan.free_plan.id
+      sponsored_plan_id = Plan.sponsored_plan.id
+      comet_m_id        = Plan.where { (name == 'comet') & (cycle == 'month') }.first.id
+      comet_y_id        = Plan.where { (name == 'comet') & (cycle == 'year') }.first.id
+      planet_m_id       = Plan.where { (name == 'planet') & (cycle == 'month') }.first.id
+      planet_y_id       = Plan.where { (name == 'planet') & (cycle == 'year') }.first.id
+      star_m_id         = Plan.where { (name == 'star') & (cycle == 'month') }.first.id
+      star_y_id         = Plan.where { (name == 'star') & (cycle == 'year') }.first.id
+      galaxy_m_id       = Plan.where { (name == 'galaxy') & (cycle == 'month') }.first.id
+      galaxy_y_id       = Plan.where { (name == 'galaxy') & (cycle == 'year') }.first.id
+
+      plus_m_id    = Plan.where { (name == 'plus') & (cycle == 'month') }.first.id
+      plus_y_id    = Plan.where { (name == 'plus') & (cycle == 'year') }.first.id
+      premium_m_id = Plan.where { (name == 'premium') & (cycle == 'month') }.first.id
+      premium_y_id = Plan.where { (name == 'premium') & (cycle == 'year') }.first.id
+
+      timed do
+        SitesStat.where(d: nil).each do |stat|
+          stat.update_attributes(
+            d:  stat.created_at.midnight,
+            fr: stat.plans_count[dev_plan_id.to_s].to_i + stat.plans_count[free_plan_id.to_s].to_i,
+            sp: stat.plans_count[sponsored_plan_id.to_s].to_i,
+            tr: 0,
+            pa: stat.plans_count[comet_m_id.to_s].to_i + stat.plans_count[comet_y_id.to_s].to_i + stat.plans_count[planet_m_id.to_s].to_i + stat.plans_count[planet_y_id.to_s].to_i + stat.plans_count[star_m_id.to_s].to_i + stat.plans_count[star_y_id.to_s].to_i + stat.plans_count[galaxy_m_id.to_s].to_i + stat.plans_count[galaxy_y_id.to_s].to_i + stat.plans_count[plus_m_id.to_s].to_i + stat.plans_count[plus_y_id.to_s].to_i + stat.plans_count[premium_m_id.to_s].to_i + stat.plans_count[premium_y_id.to_s].to_i,
+            tr_details: {
+              plus: { m: 0, y: 0 },
+              premium: { m: 0, y: 0 }
+            },
+            pa_details: {
+              plus: {
+                m: stat.plans_count[comet_m_id.to_s].to_i + stat.plans_count[planet_m_id.to_s].to_i + stat.plans_count[plus_m_id.to_s].to_i,
+                y: stat.plans_count[comet_y_id.to_s].to_i + stat.plans_count[planet_y_id.to_s].to_i + stat.plans_count[plus_y_id.to_s].to_i
+              },
+              premium: {
+                m: stat.plans_count[star_m_id.to_s].to_i + stat.plans_count[galaxy_m_id.to_s].to_i + stat.plans_count[premium_m_id.to_s].to_i,
+                y: stat.plans_count[star_y_id.to_s].to_i + stat.plans_count[galaxy_y_id.to_s].to_i + stat.plans_count[premium_y_id.to_s].to_i
+              }
+            },
+            su: stat.states_count['suspended'].to_i,
+            ar: stat.states_count['archived'].to_i
+          )
+        end
+      end
+    end
+  end
+
 end

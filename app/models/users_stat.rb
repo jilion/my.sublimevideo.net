@@ -3,7 +3,7 @@ class UsersStat
   include Mongoid::Timestamps
 
   # Legacy
-  field :states_count, :type => Hash
+  field :states_count, type: Hash
 
   # New
   field :d,  type: DateTime  # Day
@@ -21,11 +21,7 @@ class UsersStat
   # = Scopes =
   # ==========
 
-  scope :between, lambda { |start_date, end_date| where(created_at: { "$gte" => start_date, "$lt" => end_date }) }
-
-  # =================
-  # = Class Methods =
-  # =================
+  scope :between, lambda { |start_date, end_date| where(d: { "$gte" => start_date, "$lt" => end_date }) }
 
   # send time as id for backbonejs model
   def as_json(options = nil)
@@ -33,6 +29,10 @@ class UsersStat
     json['id'] = d.to_i
     json
   end
+
+  # =================
+  # = Class Methods =
+  # =================
 
   class << self
 
@@ -43,7 +43,7 @@ class UsersStat
         scoped
       end
 
-      json_stats.to_json(only: [:fr, :pa, :su, :ar])
+      json_stats.order_by([:d, :asc]).to_json(only: [:fr, :pa, :su, :ar])
     end
 
     def delay_create_users_stats
