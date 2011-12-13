@@ -1,6 +1,6 @@
 class SVStats.Routers.StatsRouter extends Backbone.Router
-  initialize: (options) ->
 
+  initialize: (options) ->
     this.initHighcharts()
     # this.initSparkline()
     this.initModels()
@@ -38,11 +38,11 @@ class SVStats.Routers.StatsRouter extends Backbone.Router
     SVStats.seriesSelectorView = new SVStats.Views.SeriesSelectorView
       el: '#selectors'
 
-  # routes:
-  #   'stats': 'home'
-  #
-  # home: ->
-  #   this.fetchStats()
+  routes:
+    'stats': 'home'
+
+  home: ->
+    this.fetchStats()
 
   initModels: ->
     # MSVStats.period = new MSVStats.Models.Period()
@@ -51,21 +51,27 @@ class SVStats.Routers.StatsRouter extends Backbone.Router
     #     MSVStats.Routers.StatsRouter.setHighchartsUTC()
     #     MSVStats.videos.customFetch()
 
-    # SVStats.usersStats = new SVStats.Collections.UsersStats()
-    # SVStats.sitesStats = new SVStats.Collections.SitesStats()
+    SVStats.stats["users"] = new SVStats.Collections.UsersStats()
+    SVStats.stats["sites"] = new SVStats.Collections.SitesStats()
+    SVStats.stats["tweets"] = new SVStats.Collections.TweetsStats()
 
   initHelpers: ->
     SVStats.chartsHelper = new SVStats.Helpers.ChartsHelper()
 
-  # fetchStats: ->
-  #   # SVStats.usersStats.reset()
-  #   # SVStats.sitesStats.reset()
-  #   SVStats.usersStats.fetch
-  #     silent: true
-  #   # success: -> SVStats.graphView.render()
-  #   # MSVStats.sitesStats.fetch
-  #   #   silent: true
-  #   #   # success: -> SVStats.statsRouter.syncFetchSuccess()
+  fetchStats: ->
+    SVStats.stats["users"].fetch
+      silent: true
+      success: -> SVStats.statsRouter.syncFetchSuccess()
+    SVStats.stats["sites"].fetch
+      silent: true
+      success: -> SVStats.statsRouter.syncFetchSuccess()
+    SVStats.stats["tweets"].fetch
+      silent: true
+      success: -> SVStats.statsRouter.syncFetchSuccess()
+
+  syncFetchSuccess: ->
+    if SVStats.stats["users"].length > 0 and SVStats.stats["sites"].length > 0 and SVStats.stats["tweets"].length > 0
+      SVStats.graphView.render()
 
   initHighcharts: ->
     Highcharts.setOptions

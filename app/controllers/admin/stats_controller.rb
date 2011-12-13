@@ -20,4 +20,10 @@ class Admin::StatsController < AdminController
     end
   end
 
+  def tweets
+    respond_to do |format|
+      format.json { render json: TweetsStat.json(keyword: 'sublimevideo') }
+    end
+  end
+
 end

@@ -6,10 +6,10 @@
   :coffeescript
     $ ->
       window.SVStats.stats = {}
-      window.SVStats.stats["users"] = new SVStats.Collections.UsersStats(#{UsersStat.json(params[:start], params[:end])})
-      window.SVStats.stats["sites"] = new SVStats.Collections.SitesStats(#{SitesStat.json(params[:start], params[:end])})
       window.SVStats.statsRouter = new SVStats.Routers.StatsRouter()
-      # Backbone.history.start(pushState: true)
+
+      $('#chart').spin(spinOptions)
+      Backbone.history.start(pushState: true)
 
   #chart
 
@@ -18,7 +18,7 @@
   #selectors
     %table
       %tr
-        %td
+        %td{ style: 'background: rgba(0,0,255,0.2)' }
           %h3
             %a.selector{ href: "#", data: { value: 'users.all' } } Users
           %ul
@@ -36,7 +36,8 @@
                   %a.selector{ href: "#", data: { value: 'users.su' } } Suspended
                 %li
                   %a.selector{ href: "#", data: { value: 'users.ar' } } Archived
-        %td
+
+        %td{ style: 'background: rgba(255,0,0,0.2)' }
           %h3
             %a.selector{ href: "#", data: { value: 'sites.all' } } Sites
           %ul
@@ -86,4 +87,8 @@
                   %a.selector{ href: "#", data: { value: 'sites.su' } } Suspended
                 %li
                   %a.selector{ href: "#", data: { value: 'sites.ar' } } Archived
+
+        %td{ style: 'background: rgba(0,255,0,0.2)' }
+          %h3
+            %a.selector{ href: "#", data: { value: 'tweets.sublimevideo' } } "sublimevideo" Tweets
     

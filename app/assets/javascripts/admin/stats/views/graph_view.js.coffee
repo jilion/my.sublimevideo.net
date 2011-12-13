@@ -2,7 +2,6 @@ class SVStats.Views.GraphView extends Backbone.View
 
   initialize: ->
     _.each @collection, (stat) => stat.bind 'change', this.render
-    this.render()
 
   render: =>
     if _.isEmpty(@collection)

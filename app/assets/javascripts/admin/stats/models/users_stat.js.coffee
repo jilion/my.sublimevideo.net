@@ -21,6 +21,8 @@ class SVStats.Collections.UsersStats extends Backbone.Collection
 
   chartType: -> 'line'
 
+  color: -> 'blue'
+
   id: -> 'users'
 
   title: ->
@@ -33,11 +35,7 @@ class SVStats.Collections.UsersStats extends Backbone.Collection
       when 'passive' then 'Passive users (suspended or archived)'
       else 'Users'
 
-  startTime: ->
-    _.min(@models, (m) -> m.id).time()
-
-  endTime: ->
-    _.max(@models, (m) -> m.id).time()
+  startTime: -> this.at(0).time()
 
   customPluck: ->
     array = []

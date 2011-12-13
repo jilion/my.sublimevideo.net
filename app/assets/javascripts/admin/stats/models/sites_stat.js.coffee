@@ -24,6 +24,8 @@ class SVStats.Collections.SitesStats extends Backbone.Collection
 
   chartType: -> 'line'
 
+  color: -> 'red'
+
   id: -> 'sites'
 
   title: ->
@@ -45,11 +47,7 @@ class SVStats.Collections.SitesStats extends Backbone.Collection
         else
           'Sites'
 
-  startTime: ->
-    _.min(@models, (m) -> m.id).time()
-
-  endTime: ->
-    _.max(@models, (m) -> m.id).time()
+  startTime: -> this.at(0).time()
 
   customPluck: ->
     array = []
@@ -59,24 +57,23 @@ class SVStats.Collections.SitesStats extends Backbone.Collection
     while from <= to
       stat = this.get(from)
 
-      value = if _.isArray(@selected)
-        el = stat.get(_.first(@selected))
-        if @selected.length > 1 # attribute is something like: ["tr_details", "premium", "y"]
-          _.each _.rest(@selected), (e) -> el = el[e]
-          unless _.isEmpty(_.values(el))
-            el = _.reduce(_.values(el), ((memo, num) -> return memo + num), 0)
+      value = if stat?
+        if _.isArray(@selected)
+          el = stat.get(_.first(@selected))
+          if @selected.length > 1 # attribute is something like: ["tr_details", "premium", "y"]
+            _.each _.rest(@selected), (e) -> el = el[e]
+            unless _.isEmpty(_.values(el))
+              el = _.reduce(_.values(el), ((memo, num) -> return memo + num), 0)
 
-        el
-      else
-        value = if stat?
+          el
+        else
           switch @selected
             when 'all' then stat.get('fr') + stat.get('tr') + stat.get('pa') + stat.get('su') + stat.get('ar')
             when 'active' then stat.get('fr') + stat.get('tr') + stat.get('pa')
             when 'passive' then stat.get('su') + stat.get('ar')
             else stat.get(@selected)
-        else
-          0
-
+      else
+        0
       array.push value
       from += 3600 * 24
 

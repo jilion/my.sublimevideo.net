@@ -166,18 +166,21 @@ class SVStats.Helpers.ChartsHelper
   buildSeries: (collections) ->
     series = []
     _.each collections, (collection) ->
-      series.push
-        id: collection.id()
-        name: collection.title()
-        data: collection.customPluck()
-        type: collection.chartType()
-        pointStart: collection.startTime()
-        pointInterval: 24 * 60 * 60 * 1000
+      if collection.length > 0
+        series.push
+          id: collection.id()
+          name: collection.title()
+          data: collection.customPluck()
+          type: collection.chartType()
+          color: collection.color()
+          pointStart: collection.startTime()
+          pointInterval: 24 * 60 * 60 * 1000
 
-    series.push this.timelineEvents()
+    series.push this.timelineSitesEvents()
+    series.push this.timelineTweetsEvents()
     series
 
-  timelineEvents: ->
+  timelineSitesEvents: ->
     type: 'flags'
     data: [{
       x: Date.UTC(2011, 2, 29)
@@ -189,5 +192,24 @@ class SVStats.Helpers.ChartsHelper
       text: 'SublimeVideo unleashed!'
     }]
     onSeries: 'sites'
+    shape: 'circlepin'
+    width: 16
+
+  timelineTweetsEvents: ->
+    type: 'flags'
+    data: [{
+      x: Date.UTC(2011, 5, 10)
+      title: 'CS1'
+      text: 'Customer Showcase: WordPress 101'
+    }, {
+      x: Date.UTC(2011, 8, 20)
+      title: 'WP'
+      text: "Introducing the Official SublimeVideo WordPress Plugin"
+    }, {
+      x: Date.UTC(2011, 6, 27)
+      title: 'FS'
+      text: "World's First True HTML5 Fullscreen Video"
+    }]
+    onSeries: 'tweets'
     shape: 'circlepin'
     width: 16
