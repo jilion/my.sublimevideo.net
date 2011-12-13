@@ -56,6 +56,7 @@ describe SiteModules::Recurring do
 
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
         @sites_not_in_trial << Factory.create(:site, state: 'archived', trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
+        @sites_not_in_trial << Factory.create(:site, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago, first_paid_plan_started_at: 2.months.ago)
         @sites_in_trial << Factory.create(:site, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
       end
     end
