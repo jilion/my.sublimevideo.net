@@ -1,21 +1,18 @@
 class SVStats.Helpers.ChartsHelper
 
-  sparkline: (el, serie, options = {}) ->
-    el.sparkline serie,
-      width: options.width
-      height: options.height
-      lineColor: options.lineColor ? (if options.selected then '#00ff18' else 'rgba(97,255,114,0.7)')
-      fillColor: options.fillColor ? (if options.selected then 'rgba(116,255,131,0.46)' else 'rgba(116,255,131,0.24)')
-
   chart: (collections) ->
-    series = this.buildSeries(collections)
     SVStats.chart = new Highcharts.StockChart
       chart:
         renderTo: 'chart'
+
+      series: this.buildSeries(collections)
+
       credits:
         enabled: false
+
       title:
         text: null
+
       rangeSelector:
         buttonTheme:
           fill: 'none'
@@ -57,6 +54,7 @@ class SVStats.Helpers.ChartsHelper
           text: '7 d'
         }]
         selected: 4
+
       tooltip:
         enabled: true
         backgroundColor:
@@ -89,7 +87,7 @@ class SVStats.Helpers.ChartsHelper
           if @point?
             title += ["<span style=\"color:#a2b1c9;font-weight:normal\">#{@point.text}</span>"]
           else if @points?
-            title += _.map(@points, (point) ->
+            title += _.map(_.sortBy(@points, (p) -> 1/p.y), (point) ->
               "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)}"
             ).join("<br/>")
           title
@@ -97,51 +95,12 @@ class SVStats.Helpers.ChartsHelper
       plotOptions:
         flags:
           shape: 'circlepin'
-          tooltip:
-            formatter: ->
-              title = ["#{Highcharts.dateFormat('%e %b %Y, %H:%M:%S', @x)}<br/>"]
-              console.log(this);
-              # title += _.map(@points, (point) ->
-              #   t = "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)}"
-              #   t += "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.name}</span>" if point.name?
-              #   t
-              # ).join("<br/>")
-              title.join("<br/>")
-      #   areaspline:
-      #     showInLegend: false
-      #     animation: false
-      #     states:
-      #       hover:
-      #         lineWidth: 2
-      #   column:
-      #     borderWidth: 0
-      #     pointPadding: 0
-      #     # pointWidth: stats.pointWidth(788)
-      #     showInLegend: false
-      #     animation: false
-      #   series:[{
-      #     shadow: false
-      #     borderWidth: 0
-      #     allowPointSelect: false
-      #     stickyTracking: false
-      #     lineWidth: 2
-      #     marker:
-      #       enabled: true
-      #       radius: 1
-      #       lineWidth: 2
-      #       states:
-      #         hover:
-      #           enabled: false
-      #     states:
-      #       hover:
-      #         lineWidth: 2
-      #   }]
-      series: series
+
       xAxis:
-        lineWidth: 0
-        tickWidth: 0
-        gridLineWidth: 0
         type: 'datetime'
+        # lineWidth: 0
+        # tickWidth: 0
+        # gridLineWidth: 0
         gridLineColor: '#5d7493'
         labels:
           y: 21
@@ -149,16 +108,19 @@ class SVStats.Helpers.ChartsHelper
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
             color: '#1e3966'
+
       yAxis:
-        lineWidth: 0
-        offset: 0
-        min: 0
+        lineWidth: 1
+        # offset: 10
+        # min: 0
         gridLineColor: '#5d7493'
         allowDecimals: false
         startOnTick: false
         showFirstLabel: false
         labels:
           align: 'right'
+          x: -4
+          y: 4
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
@@ -177,10 +139,10 @@ class SVStats.Helpers.ChartsHelper
           type: collection.chartType()
           color: collection.color()
           pointStart: collection.startTime()
-          pointInterval: 24 * 60 * 60 * 1000
+          pointInterval: 3600 * 24 * 1000
 
-    series.push this.timelineSitesEvents()
-    series.push this.timelineTweetsEvents()
+    # series.push this.timelineSitesEvents()
+    # series.push this.timelineTweetsEvents()
     series
 
   timelineSitesEvents: ->

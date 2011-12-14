@@ -11,7 +11,9 @@ class SVStats.Collections.TweetsStats extends SVStats.Collections.Stats
 
   title: ->
     switch @selected
+      when 'jilion' then 'Jilion tweets'
       when 'sublimevideo' then 'SublimeVideo tweets'
+      when 'aelios' then 'Aelios tweets'
 
   startTime: -> this.at(0).time() + (3600 * 24 * 1000) # we add one day to be sure we have only full day stats
 

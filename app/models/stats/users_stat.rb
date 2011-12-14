@@ -9,7 +9,7 @@ module Stats
     field :states_count, type: Hash
 
     # New
-    field :d,  type: DateTime  # Day
+    field :d,  type: DateTime # Day
     field :fr, type: Integer # free
     field :pa, type: Integer # paying
     field :su, type: Integer # suspended
