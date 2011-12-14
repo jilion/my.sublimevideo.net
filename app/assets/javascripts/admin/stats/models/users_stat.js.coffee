@@ -1,29 +1,15 @@
-class SVStats.Models.UsersStat extends Backbone.Model
+class SVStats.Models.UsersStat extends SVStats.Models.Stat
   defaults:
     fr: 0 # free
     pa: 0 # paying
     su: 0 # suspended
     ar: 0 # archived
 
-  time: ->
-    parseInt(this.id) * 1000
-
-  date: ->
-    new Date(this.time())
-
-class SVStats.Collections.UsersStats extends Backbone.Collection
+class SVStats.Collections.UsersStats extends SVStats.Collections.Stats
   model: SVStats.Models.UsersStat
-
-  initialize: ->
-    @selected = 'active'
-
-  url: -> "/stats/users.json"
-
-  chartType: -> 'line'
-
-  color: -> 'blue'
-
+  url: -> '/stats/users.json'
   id: -> 'users'
+  color: -> 'rgba(0,0,255,0.5)'
 
   title: ->
     switch @selected
@@ -33,9 +19,6 @@ class SVStats.Collections.UsersStats extends Backbone.Collection
       when 'ar' then 'Archived users'
       when 'active' then 'Active users (free or paying)'
       when 'passive' then 'Passive users (suspended or archived)'
-      else 'Users'
-
-  startTime: -> this.at(0).time()
 
   customPluck: ->
     array = []

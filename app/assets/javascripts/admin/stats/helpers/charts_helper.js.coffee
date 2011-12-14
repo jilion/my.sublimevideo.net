@@ -19,16 +19,13 @@ class SVStats.Helpers.ChartsHelper
       rangeSelector:
         buttonTheme:
           fill: 'none'
-          # stroke: 'none'
           style:
             color: '#039'
             fontWeight: 'bold'
           states:
-            hover:
-              fill: 'white'
             select:
               style:
-                color: 'white'
+                color: 'black'
         inputStyle:
           color: '#039'
           fontWeight: 'bold'
@@ -60,46 +57,56 @@ class SVStats.Helpers.ChartsHelper
           text: '7 d'
         }]
         selected: 4
-      # tooltip:
-      #   enabled: MSVStats.period.get('type') != 'seconds'
-      #   backgroundColor:
-      #     linearGradient: [0, 0, 0, 60]
-      #     stops: [
-      #         [0, 'rgba(22,37,63,0.8)']
-      #         [1, 'rgba(0,0,0,0.7)']
-      #     ]
-      #   # snap: 50
-      #   shared: true
-      #   borderColor: "#000"
-      #   borderWidth: 1
-      #   borderRadius: 5
-      #   shadow: true,
-      #   style:
-      #     padding: "10"
-      #     fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
-      #     fontSize: "15px"
-      #     fontWeight: "bold"
-      #     textAlign: "right"
-      #     color: '#fff'
-      #     textShadow: 'rgba(0,0,0,0.8) 0 -1px 0'
-      #     WebkitFontSmoothing: "antialiased"
-      #   crosshairs:[{
-      #     width: 1
-      #     color: '#5d7493'
-      #   }]
-      #   formatter: ->
-      #     title = ["#{Highcharts.dateFormat('%e %b %Y, %H:%M:%S', @x)}<br/>"]
-      #     title += _.map(@points, (point) ->
-      #       "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)} hits"
-      #     ).join("<br/>")
-      # navigator:
-      #   enabled: false
-      # scrollbar:
-      #   enabled: false
-      # rangeSelector:
-      #   buttons: []
-      #   enabled: MSVStats.period.isDays()
-      # plotOptions:
+      tooltip:
+        enabled: true
+        backgroundColor:
+          linearGradient: [0, 0, 0, 60]
+          stops: [
+              [0, 'rgba(22,37,63,0.8)']
+              [1, 'rgba(0,0,0,0.7)']
+          ]
+        # snap: 50
+        shared: true
+        borderColor: "#000"
+        borderWidth: 1
+        borderRadius: 5
+        shadow: true,
+        style:
+          padding: "10"
+          fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
+          fontSize: "15px"
+          fontWeight: "bold"
+          textAlign: "right"
+          color: '#fff'
+          textShadow: 'rgba(0,0,0,0.8) 0 -1px 0'
+          WebkitFontSmoothing: "antialiased"
+        crosshairs:[{
+          width: 1
+          color: '#5d7493'
+        }]
+        formatter: ->
+          title = ["#{Highcharts.dateFormat('%e %b %Y, %H:%M:%S', @x)}<br/>"]
+          if @point?
+            title += ["<span style=\"color:#a2b1c9;font-weight:normal\">#{@point.text}</span>"]
+          else if @points?
+            title += _.map(@points, (point) ->
+              "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)}"
+            ).join("<br/>")
+          title
+
+      plotOptions:
+        flags:
+          shape: 'circlepin'
+          tooltip:
+            formatter: ->
+              title = ["#{Highcharts.dateFormat('%e %b %Y, %H:%M:%S', @x)}<br/>"]
+              console.log(this);
+              # title += _.map(@points, (point) ->
+              #   t = "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)}"
+              #   t += "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.name}</span>" if point.name?
+              #   t
+              # ).join("<br/>")
+              title.join("<br/>")
       #   areaspline:
       #     showInLegend: false
       #     animation: false
@@ -142,10 +149,6 @@ class SVStats.Helpers.ChartsHelper
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
             color: '#1e3966'
-            # fontWeight: 'bold'
-        # min: MSVStats.period.startTime()
-        # max: MSVStats.period.endTime()
-        # max: MSVStats.period.startTime() + 59 * MSVStats.period.pointInterval()
       yAxis:
         lineWidth: 0
         offset: 0
@@ -161,7 +164,7 @@ class SVStats.Helpers.ChartsHelper
             fontSize: "14px"
             color: '#1e3966'
         title:
-          text: "Users & Sites evolution"
+          text: "Users, sites & tweets evolution"
 
   buildSeries: (collections) ->
     series = []
@@ -187,29 +190,27 @@ class SVStats.Helpers.ChartsHelper
       title: 'V1'
       text: 'SublimeVideo commercial launch!'
     }, {
-      x: Date.UTC(2011, 10, 29)
+      x: Date.UTC(2011, 10, 29, 22)
       title: 'V2'
       text: 'SublimeVideo unleashed!'
     }]
-    onSeries: 'sites'
-    shape: 'circlepin'
+    # onSeries: 'sites'
     width: 16
 
   timelineTweetsEvents: ->
     type: 'flags'
     data: [{
       x: Date.UTC(2011, 5, 10)
-      title: 'CS1'
+      title: 'BP1'
       text: 'Customer Showcase: WordPress 101'
     }, {
       x: Date.UTC(2011, 8, 20)
-      title: 'WP'
+      title: 'BP2'
       text: "Introducing the Official SublimeVideo WordPress Plugin"
     }, {
       x: Date.UTC(2011, 6, 27)
-      title: 'FS'
+      title: 'BP3'
       text: "World's First True HTML5 Fullscreen Video"
     }]
-    onSeries: 'tweets'
-    shape: 'circlepin'
+    # onSeries: 'tweets'
     width: 16

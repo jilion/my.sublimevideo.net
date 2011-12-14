@@ -1,32 +1,19 @@
-class SVStats.Models.TweetsStat extends Backbone.Model
+class SVStats.Models.TweetsStat extends SVStats.Models.Stat
   defaults:
     total: 0
 
-  time: ->
-    parseInt(this.id) * 1000
-
-  date: ->
-    new Date(this.time())
-
-class SVStats.Collections.TweetsStats extends Backbone.Collection
+class SVStats.Collections.TweetsStats extends SVStats.Collections.Stats
   model: SVStats.Models.TweetsStat
-
-  initialize: ->
-    @selected = 'sublimevideo'
-
+  initialize: -> @selected = 'sublimevideo'
   url: -> '/stats/tweets.json'
-
-  chartType: -> 'line'
-
-  color: -> 'green'
-
   id: -> 'tweets'
+  color: -> 'rgba(0,255,0,0.5)'
 
   title: ->
     switch @selected
       when 'sublimevideo' then 'SublimeVideo tweets'
 
-  startTime: -> this.at(0).time() + 3600 * 24 * 1000
+  startTime: -> this.at(0).time() + (3600 * 24 * 1000) # we add one day to be sure we have only full day stats
 
   customPluck: ->
     array = []

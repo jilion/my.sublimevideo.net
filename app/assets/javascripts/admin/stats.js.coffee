@@ -11,6 +11,7 @@
 #= require highstock/highstock
 
 #= require_self
+#= require ./stats/models/stat
 #= require_tree ./stats
 
 window.SVStats =

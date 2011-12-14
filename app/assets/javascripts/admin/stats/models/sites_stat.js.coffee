@@ -1,4 +1,4 @@
-class SVStats.Models.SitesStat extends Backbone.Model
+class SVStats.Models.SitesStat extends SVStats.Models.Stat
   defaults:
     fr: 0 # free
     tr: 0 # paying
@@ -8,25 +8,11 @@ class SVStats.Models.SitesStat extends Backbone.Model
     su: 0 # suspended
     ar: 0 # archived
 
-  time: ->
-    parseInt(this.id) * 1000
-
-  date: ->
-    new Date(this.time())
-
-class SVStats.Collections.SitesStats extends Backbone.Collection
+class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
   model: SVStats.Models.SitesStat
-
-  initialize: ->
-    @selected = 'active'
-
-  url: -> "/stats/sites.json"
-
-  chartType: -> 'line'
-
-  color: -> 'red'
-
+  url: -> '/stats/sites.json'
   id: -> 'sites'
+  color: -> 'rgba(255,0,0,0.5)'
 
   title: ->
     switch @selected
@@ -46,8 +32,6 @@ class SVStats.Collections.SitesStats extends Backbone.Collection
           text
         else
           'Sites'
-
-  startTime: -> this.at(0).time()
 
   customPluck: ->
     array = []

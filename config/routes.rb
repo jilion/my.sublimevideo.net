@@ -173,6 +173,7 @@ MySublimeVideo::Application.routes.draw do
           get :users
           get :sites
           get :tweets
+          get :usages
         end
         member do
           get '/single/:page' => 'stats#show'
