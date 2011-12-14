@@ -35,7 +35,7 @@ describe VideoTag do
       video_tag = VideoTag.new(st: 'site1234', u: 'video123', n: 'Video 123')
       mock_channel = mock('channel')
       mock_channel.should_receive(:trigger).once.with('video_tag', u: 'video123', meta_data: video_tag.meta_data)
-      Pusher.stub(:[]).with("presence-site1234") { mock_channel }
+      Pusher.stub(:[]).with("private-site1234") { mock_channel }
       video_tag.save
     end
 

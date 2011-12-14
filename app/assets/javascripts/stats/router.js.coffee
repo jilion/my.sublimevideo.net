@@ -8,6 +8,10 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initPusherStatsChannel()
     sublimevideo.load()
 
+    new MSVStats.Views.DemoNoticeView
+      el: '#notices'
+      sites: MSVStats.sites
+
     new MSVStats.Views.PageTitleView
       el: 'h2'
       sites: MSVStats.sites
@@ -94,12 +98,12 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     ':token': 'home'
 
   home: (token) ->
-    this.unsubscribePusherPresenceSiteChannel()
+    this.unsubscribePusherPrivateSiteChannel()
     MSVStats.period.clear()
     MSVStats.sites.select(token)
-    this.handleFreePlanClass()
+    this.handleStatsDivClasses()
     this.resetAndFetchStats()
-    this.initPusherPresenceSiteChannel()
+    this.initPusherPrivateSiteChannel()
 
   initModels: ->
     MSVStats.period = new MSVStats.Models.Period()
@@ -136,30 +140,40 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
           MSVStats.statsSeconds.updateSeconds()
           MSVStats.videos.updateSeconds(secondTime) if MSVStats.period.isSeconds()
 
-  initPusherPresenceSiteChannel: ->
+  initPusherPrivateSiteChannel: ->
     if (selectedSite = MSVStats.sites.selectedSite)? && !selectedSite.isInFreePlan()
-      MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{selectedSite.get('token')}")
+      MSVStats.privateChannel = MSVStats.pusher.subscribe("private-#{selectedSite.get('token')}")
 
-      MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
+      MSVStats.privateChannel.bind 'pusher:subscription_succeeded', ->
         setTimeout MSVStats.statsSeconds.fetchOldSeconds, 2000
 
-      MSVStats.presenceChannel.bind 'stats', (data) ->
+      MSVStats.privateChannel.bind 'stats', (data) ->
         MSVStats.statsSeconds.merge(data.site, silent: true)
         MSVStats.videos.merge(data.videos, silent: true) if MSVStats.period.isSeconds()
 
-      MSVStats.presenceChannel.bind 'video_tag', (data) ->
+      MSVStats.privateChannel.bind 'video_tag', (data) ->
         if (video = MSVStats.videos.get(data.u))?
           video.set(data.meta_data)
 
-  unsubscribePusherPresenceSiteChannel: ->
+  unsubscribePusherPrivateSiteChannel: ->
     if (selectedSite = MSVStats.sites.selectedSite)?
-      MSVStats.pusher.unsubscribe("presence-#{selectedSite.get('token')}")
+      MSVStats.pusher.unsubscribe("private-#{selectedSite.get('token')}")
+
+  handleStatsDivClasses: ->
+    this.handleFreePlanClass()
+    this.handleDemoClass()
 
   handleFreePlanClass: ->
     if MSVStats.sites.selectedSiteIsInFreePlan()
       $('div.stats').addClass('free')
     else
       $('div.stats').removeClass('free')
+
+  handleDemoClass: ->
+    if this.isDemo()
+      $('div.stats').addClass('demo')
+    else
+      $('div.stats').removeClass('demo')
 
   resetAndFetchStats: ->
     MSVStats.statsSeconds._isShowable = false
@@ -205,3 +219,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     $.fn.sparkline.defaults.line.chartRangeClip  = true
     $.fn.sparkline.defaults.line.chartRangeMin   = 0
     # $.fn.sparkline.defaults.line.chartRangeMax   = 0
+
+  isDemo: ->
+    /(\/|#)demo/.test(window.location.href)
