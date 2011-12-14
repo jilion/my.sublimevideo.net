@@ -11,8 +11,6 @@ module RecurringJob
   stats_tasks = [
     '%UsersStat%create_users_stats%',
     '%SitesStat%create_sites_stats%',
-    '%Site%stop_stats_trial%',
-    '%Site%send_stats_trial_will_end%'
   ]
 
   NAMES = [
@@ -53,8 +51,6 @@ module RecurringJob
       # Stats
       UsersStat.delay_create_users_stats
       SitesStat.delay_create_sites_stats
-      Site.delay_stop_stats_trial
-      Site.delay_send_stats_trial_will_end
 
       # Others
       SiteModules::UsageMonitoring.delay_monitor_sites_usages

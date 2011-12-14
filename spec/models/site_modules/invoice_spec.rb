@@ -173,7 +173,7 @@ describe SiteModules::Invoice do
 
   describe "Instance Methods" do
 
-    %w[trial_started_at stats_trial_started_at first_paid_plan_started_at pending_plan_started_at pending_plan_cycle_started_at].each do |attr|
+    %w[trial_started_at first_paid_plan_started_at pending_plan_started_at pending_plan_cycle_started_at].each do |attr|
       describe "##{attr}=" do
         subject { Factory.build(:new_site) }
 
