@@ -27,7 +27,7 @@ module SiteModules::Recurring
       delay_send_trial_will_end
 
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
-        active.in_trial.trial_expires_on(days_before_trial_end.days.from_now).find_each(batch_size: 100) do |site|
+        Site.in_trial.billable.where(first_paid_plan_started_at: nil).trial_expires_on(days_before_trial_end.days.from_now).find_each(batch_size: 100) do |site|
           My::BillingMailer.trial_will_end(site).deliver!
         end
       end
