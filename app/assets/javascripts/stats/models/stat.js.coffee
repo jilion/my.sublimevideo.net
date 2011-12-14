@@ -17,6 +17,8 @@ class MSVStats.Collections.Stats extends Backbone.Collection
   model: MSVStats.Models.Stat
 
   chartType: -> 'areaspline'
+  isMarkerEnabled: ->
+    MSVStats.period.endIndex() - MSVStats.period.startIndex() < 60
 
   pointWidth: (containerWidth) -> Math.round(containerWidth / _.size(@models)) - 1
 
