@@ -1,18 +1,7 @@
 development:
-  # host: localhost
-  # database: sublimevideo_dev
-  # preload_models: true
-  database: sublimevideo_production
-  username: backups
-  password: uftw86izrv3bgw44bkvCqweuo3yyCK
-  hosts:
-    - - hurley.member0.mongohq.com
-      - 10006
-    - - hurley.member1.mongohq.com
-      - 10006
+  host: localhost
+  database: sublimevideo_dev
   preload_models: true
-  skip_version_check: true
-  logger: false
 
 test:
   host: localhost

@@ -1,5 +1,5 @@
-class MSVStats.Views.StickyNoticesView extends Backbone.View
-  template: JST['stats/templates/_sticky_notices']
+class MSVStats.Views.DemoNoticeView extends Backbone.View
+  template: JST['stats/templates/_demo_notice']
 
   initialize: ->
     @options.sites.bind 'change', this.render

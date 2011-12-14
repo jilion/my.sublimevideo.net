@@ -8,8 +8,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initPusherStatsChannel()
     sublimevideo.load()
 
-    new MSVStats.Views.StickyNoticesView
-      el: '#sticky_notice'
+    new MSVStats.Views.DemoNoticeView
+      el: '#demo_notice'
       sites: MSVStats.sites
     
     new MSVStats.Views.PageTitleView
