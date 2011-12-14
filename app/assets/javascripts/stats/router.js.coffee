@@ -9,7 +9,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     sublimevideo.load()
 
     new MSVStats.Views.DemoNoticeView
-      el: '#demo_notice'
+      el: '#notices'
       sites: MSVStats.sites
     
     new MSVStats.Views.PageTitleView

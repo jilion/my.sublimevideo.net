@@ -1,11 +1,10 @@
 - if @statsRouter? && @statsRouter.isDemo()
-  %ul
-    %li.notice
-      %p Welcome to the demo of SublimeVideo's Universal, Real-Time Statistics.
-      %p
-        This page displays real-time video statistics for
-        %a{ href: 'http://sublimevideo.net'} sublimevideo.net
-        %span>= '. '
-        Try watching one of the videos on
-        %a{ href: 'http://sublimevideo.net'} sublimevideo.net
-        on any device to see your page view(s) and video play(s) logged in real-time on this page.
+  #demo_notice.notices
+    %h4 Welcome to the demo of SublimeVideo's Universal, Real-Time Statistics.
+    %p
+      This page displays real-time video statistics for
+      %a{ href: 'http://sublimevideo.net'} sublimevideo.net
+      %span>= '. '
+      Try watching one of the videos on
+      %a{ href: 'http://sublimevideo.net'} sublimevideo.net
+      on any device to see your page view(s) and video play(s) logged in real-time on this page.
