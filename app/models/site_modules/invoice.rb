@@ -26,7 +26,7 @@ module SiteModules::Invoice
 
   module InstanceMethods
 
-    %w[trial_started_at stats_trial_started_at first_paid_plan_started_at pending_plan_started_at pending_plan_cycle_started_at].each do |attr|
+    %w[trial_started_at first_paid_plan_started_at pending_plan_started_at pending_plan_cycle_started_at].each do |attr|
       define_method :"#{attr}=" do |attribute|
         write_attribute(:"#{attr}", attribute.try(:midnight))
       end

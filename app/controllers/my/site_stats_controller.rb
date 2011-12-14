@@ -11,13 +11,6 @@ class My::SiteStatsController < MyController
     end
   end
 
-  # PUT /sites/:id/stats/trial
-  def trial
-    @site.stats_trial_started_at ||= Time.now.utc
-    @site.save
-    render nothing: true
-  end
-
   # GET /sites/:id/stats/videos
   def videos
     respond_to do |format|

@@ -33,34 +33,6 @@ module SiteModules::Recurring
       end
     end
 
-    def delay_stop_stats_trial
-      unless Delayed::Job.already_delayed?('%Site%stop_stats_trial%')
-        delay(run_at: Time.now.utc.tomorrow.midnight).stop_stats_trial
-      end
-    end
-
-    def stop_stats_trial
-      delay_stop_stats_trial
-
-      active.where(stats_trial_started_at: BusinessModel.days_for_stats_trial.days.ago.midnight).find_each(batch_size: 100) do |site|
-        Site.delay.update_loader_and_license(site.id, license: true)
-      end
-    end
-
-    def delay_send_stats_trial_will_end
-      unless Delayed::Job.already_delayed?('%Site%send_stats_trial_will_end%')
-        delay(run_at: Time.now.utc.tomorrow.midnight).send_stats_trial_will_end
-      end
-    end
-
-    def send_stats_trial_will_end
-      delay_send_stats_trial_will_end
-
-      active.where(stats_trial_started_at: BusinessModel.days_before_stats_trial_end.days.ago.midnight).find_each(batch_size: 100) do |site|
-        My::StatMailer.stats_trial_will_end(site).deliver!
-      end
-    end
-
   end
 
 end

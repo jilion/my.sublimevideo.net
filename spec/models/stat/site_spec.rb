@@ -219,7 +219,7 @@ describe Stat::Site do
       Factory.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { e: 102 })
       Factory.create(:site_stat, t: @site.token, d: Time.now.utc.midnight, vv: { e: 103 })
 
-      @mock_site = mock_model(Site, stats_retention_days: nil)
+      @mock_site = mock_model(Site, plan_stats_retention_days: nil)
       Site.stub(:find_by_token).and_return(@mock_site)
     end
 
@@ -289,9 +289,9 @@ describe Stat::Site do
       it { subject[364]['id'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
     end
 
-    context "with stats_retention_days at 365" do
+    context "with plan_stats_retention_days at 365" do
       before(:each) do
-        @mock_site.stub(:stats_retention_days).and_return(365)
+        @mock_site.stub(:plan_stats_retention_days).and_return(365)
       end
 
       describe "with minutes period" do
@@ -314,9 +314,9 @@ describe Stat::Site do
       end
     end
 
-    context "with stats_retention_days at 0" do
+    context "with plan_stats_retention_days at 0" do
       before(:each) do
-        @mock_site.stub(:stats_retention_days).and_return(0)
+        @mock_site.stub(:plan_stats_retention_days).and_return(0)
       end
 
       describe "with minutes period" do

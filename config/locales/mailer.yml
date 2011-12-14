@@ -21,9 +21,6 @@ en:
       transaction_failed: "Problem processing your payment"
       too_many_charging_attempts: "Payment for %{hostname} has failed multiple times"
 
-    stat_mailer:
-      stats_trial_will_end: "Your stats trial for %{hostname} expires in 2 days"
-
     usage_monitoring_mailer:
       plan_overused: "Peak Insurance activated for %{hostname}"
       plan_upgrade_required: "You need to upgrade your plan for %{hostname}"
