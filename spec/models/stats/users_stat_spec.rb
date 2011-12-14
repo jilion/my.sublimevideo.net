@@ -1,19 +1,19 @@
 require 'spec_helper'
 
-describe UsersStat do
+describe Stats::UsersStat do
 
   describe ".delay_create_users_stats" do
     it "should delay create_users_stats if not already delayed" do
-      expect { UsersStat.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%UsersStat%create_users_stats%'), :count).by(1)
+      expect { described_class.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%UsersStat%create_users_stats%'), :count).by(1)
     end
 
     it "should not delay create_users_stats if already delayed" do
-      UsersStat.delay_create_users_stats
-      expect { UsersStat.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%UsersStat%create_users_stats%'), :count).by(0)
+      described_class.delay_create_users_stats
+      expect { described_class.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%UsersStat%create_users_stats%'), :count).by(0)
     end
 
     it "should delay create_users_stats for next hour" do
-      UsersStat.delay_create_users_stats
+      described_class.delay_create_users_stats
       Delayed::Job.last.run_at.should == Time.new.utc.tomorrow.midnight
     end
   end
@@ -32,15 +32,15 @@ describe UsersStat do
     end
 
     it "should delay itself" do
-      UsersStat.should_receive(:delay_create_users_stats)
-      UsersStat.create_users_stats
+      described_class.should_receive(:delay_create_users_stats)
+      described_class.create_users_stats
     end
 
     it "should create users stats for states" do
-      UsersStat.create_users_stats
+      described_class.create_users_stats
 
-      UsersStat.count.should == 1
-      users_stat = UsersStat.last
+      described_class.count.should == 1
+      users_stat = described_class.last
       users_stat.states_count.should == {
         "active_and_billable_count"     => 2,
         "active_and_not_billable_count" => 3,
@@ -60,7 +60,7 @@ describe UsersStat do
     end
 
     describe "set the id as the 'd' field as an integer" do
-      subject { JSON.parse(UsersStat.json) }
+      subject { JSON.parse(described_class.json) }
 
       its(:size) { should eql(1) }
       it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }

@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-describe SitesStat do
+describe Stats::SitesStat do
 
   describe ".delay_create_sites_stats" do
 
     it "should delay create_sites_stats if not already delayed" do
-      expect { SitesStat.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%SitesStat%create_sites_stats%'), :count).by(1)
+      expect { described_class.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%SitesStat%create_sites_stats%'), :count).by(1)
     end
 
     it "should not delay create_sites_stats if already delayed" do
-      SitesStat.delay_create_sites_stats
-      expect { SitesStat.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%SitesStat%create_sites_stats%'), :count).by(0)
+      described_class.delay_create_sites_stats
+      expect { described_class.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%SitesStat%create_sites_stats%'), :count).by(0)
     end
 
     it "should delay create_sites_stats for next hour" do
-      SitesStat.delay_create_sites_stats
+      described_class.delay_create_sites_stats
       Delayed::Job.last.run_at.should eq Time.new.utc.tomorrow.midnight
     end
 
@@ -40,14 +40,14 @@ describe SitesStat do
     describe ".create_sites_stats" do
 
       it "should delay itself" do
-        SitesStat.should_receive(:delay_create_sites_stats)
-        SitesStat.create_sites_stats
+        described_class.should_receive(:delay_create_sites_stats)
+        described_class.create_sites_stats
       end
 
       it "should create sites stats for states & plans" do
-        SitesStat.create_sites_stats
-        SitesStat.count.should eq 1
-        sites_stat = SitesStat.last
+        described_class.create_sites_stats
+        described_class.count.should eq 1
+        sites_stat = described_class.last
         sites_stat.states_count.should == {
           "active"    => 8,
           "archived"  => 1,
@@ -80,7 +80,7 @@ describe SitesStat do
 
     describe ".states_count" do
       it "should include all used states" do
-        SitesStat.states_count.should == {
+        described_class.states_count.should == {
           "active"    => 8,
           "archived"  => 1,
           "suspended" => 1
@@ -90,7 +90,7 @@ describe SitesStat do
 
     describe ".plans_count" do
       it "should include all used plans" do
-        SitesStat.plans_count.should == {
+        described_class.plans_count.should == {
           @free_plan.id.to_s => 1,
           @paid_plan.id.to_s => 3,
           @sponsored_plan.id.to_s => 1,
