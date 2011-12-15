@@ -888,7 +888,7 @@ describe Site do
         end
       end
 
-      describe "#send_trial_started_email" do
+      pending "#send_trial_started_email" do
         context "new site" do
           it "calls #send_trial_started_email" do
             site = Factory.build(:new_site)
