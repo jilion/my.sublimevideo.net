@@ -127,7 +127,6 @@ group :development, :test do
 
   gem 'rack-livereload'
   gem 'rails-dev-tweaks', '~> 0.5.0'
-  gem 'ruby-graphviz', require: 'graphviz'
   gem 'ffaker'
 
   # Javascript test
