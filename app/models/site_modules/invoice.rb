@@ -86,7 +86,19 @@ module SiteModules::Invoice
 
     # Tells if trial **actually** started and **now** ended
     def trial_ended?
-      trial_started_at? && trial_started_at <= BusinessModel.days_for_trial.days.ago
+      trial_started_at? && trial_started_at < (BusinessModel.days_for_trial - 1).days.ago.midnight
+    end
+
+    def trial_expires_on(timestamp)
+      trial_started_at? && trial_started_at.midnight == (timestamp - BusinessModel.days_for_trial.days).midnight
+    end
+
+    def trial_expires_in_less_than_or_equal_to(timestamp)
+      trial_started_at? && !trial_ended? && trial_started_at.midnight <= (timestamp - BusinessModel.days_for_trial.days).midnight
+    end
+
+    def trial_end
+      trial_started_at? ? (trial_started_at + BusinessModel.days_for_trial.days).yesterday.end_of_day : nil
     end
 
     # DEPRECATED, TO BE REMOVED 30 DAYS AFTER NEW BUSINESS MODEL DEPLOYMENT
@@ -132,10 +144,6 @@ module SiteModules::Invoice
       offset = offset - (offset % 12) + 11 if plan.yearly?
 
       (offset + 1).months - 1.day
-    end
-
-    def trial_end
-      trial_started_at? ? trial_started_at + BusinessModel.days_for_trial.days : nil
     end
 
     def plan_month_cycle_started_at

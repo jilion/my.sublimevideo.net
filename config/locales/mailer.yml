@@ -14,8 +14,10 @@ en:
     signature:     "The SublimeVideo Team"
 
     billing_mailer:
-      trial_will_end: "Trial for %{hostname} expires in %{days} days"
-      trial_will_end_tomorrow: "Trial for %{hostname} expires tomorrow"
+      trial_will_expire:
+        today: "Trial expires today (%{hostname})"
+        tomorrow: "Trial expires tomorrow (%{hostname})"
+        in_days: "Trial expires in %{days} days (%{hostname})"
       credit_card_will_expire: "Your credit card expires at the end of this month"
       transaction_succeeded: "Payment approved"
       transaction_failed: "Problem processing your payment"

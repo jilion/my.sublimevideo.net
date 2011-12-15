@@ -621,11 +621,24 @@ describe SiteModules::Invoice do
       before(:all) do
         Site.delete_all
         @site_not_in_trial = Factory.create(:site, plan_id: @free_plan.id)
-        @site_in_trial = Factory.create(:site, trial_started_at: 1.day.ago)
+        @site_in_trial = Factory.create(:site)
       end
 
       specify { @site_not_in_trial.trial_end.should be_nil }
-      specify { @site_in_trial.trial_end.should eql (BusinessModel.days_for_trial-1).days.from_now.midnight }
+      specify { @site_in_trial.trial_end.should eq BusinessModel.days_for_trial.days.from_now.yesterday.end_of_day }
+    end
+    
+    describe "#trial_expires_on & #trial_expires_in_less_than_or_equal_to" do
+      before(:all) do
+        Site.delete_all
+        @site_not_in_trial = Factory.create(:site, plan_id: @free_plan.id)
+        @site_in_trial = Factory.create(:site)
+      end
+
+      specify { @site_in_trial.trial_expires_on(BusinessModel.days_for_trial.days.from_now).should be_true }
+      specify { @site_in_trial.trial_expires_in_less_than_or_equal_to(BusinessModel.days_for_trial.days.from_now - 1.day).should be_false }
+      specify { @site_in_trial.trial_expires_in_less_than_or_equal_to(BusinessModel.days_for_trial.days.from_now).should be_true }
+      specify { @site_in_trial.trial_expires_in_less_than_or_equal_to(BusinessModel.days_for_trial.days.from_now + 1.day).should be_true }
     end
 
     describe "#refund" do

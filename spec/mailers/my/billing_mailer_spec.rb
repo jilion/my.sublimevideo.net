@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe My::BillingMailer do
 
-  it_should_behave_like "common mailer checks", %w[trial_will_end], from: [I18n.t('mailer.billing.email')], params: Factory.create(:site)
+  it_should_behave_like "common mailer checks", %w[trial_will_expire], from: [I18n.t('mailer.billing.email')], params: Factory.create(:site), content_type: %r{text/html; charset=UTF-8}
   it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: Factory.create(:user, cc_expire_on: 1.day.from_now)
   it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: [I18n.t('mailer.billing.email')], params: Factory.create(:transaction, invoices: [Factory.create(:invoice)])
   it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: [I18n.t('mailer.billing.email')], params: lambda { Factory.create(:invoice) }
@@ -15,30 +15,22 @@ describe My::BillingMailer do
       @transaction = Factory.create(:transaction, invoices: [@invoice])
     end
 
-    describe "#trial_will_end" do
-      context "site has no hostname" do
-        before(:all) do
-          @site.hostname = nil
-          described_class.trial_will_end(@site).deliver
-          @last_delivery = ActionMailer::Base.deliveries.last
-        end
 
-        it { @last_delivery.subject.should eq I18n.t("mailer.billing_mailer.trial_will_end", hostname: 'your site', days: BusinessModel.days_for_trial-8) }
+    describe "#trial_will_expire" do
+      before(:all) do
+        @site.reload
+        @site.update_attribute(:trial_started_at, (BusinessModel.days_for_trial-1).days.ago)
+        described_class.trial_will_expire(@site).deliver
+        @last_delivery = ActionMailer::Base.deliveries.last
       end
 
-      context "site has a hostname" do
-        before(:all) do
-          @site.reload
-          @site.update_attribute(:trial_started_at, (BusinessModel.days_for_trial-1).days.ago)
-          described_class.trial_will_end(@site).deliver
-          @last_delivery = ActionMailer::Base.deliveries.last
-        end
+      it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', hostname: @site.hostname, days: 1) }
+      it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
+      it { @last_delivery.body.encoded.should include I18n.l(@site.trial_end, format: :named_date) }
+      it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
+      it { @last_delivery.body.encoded.should include "https://www.#{ActionMailer::Base.default_url_options[:host]}/help" }
+    end
 
-        it { @last_delivery.subject.should eq   I18n.t("mailer.billing_mailer.trial_will_end_tomorrow", hostname: @site.hostname) }
-        it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
-        it { @last_delivery.body.encoded.should include I18n.l(@site.trial_end, format: :named_date) }
-        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
-        it { @last_delivery.body.encoded.should include "https://www.#{ActionMailer::Base.default_url_options[:host]}/help" }
       end
     end
 
@@ -48,7 +40,7 @@ describe My::BillingMailer do
         @last_delivery = ActionMailer::Base.deliveries.last
       end
 
-      it { @last_delivery.subject.should eq  I18n.t("mailer.billing_mailer.credit_card_will_expire") }
+      it { @last_delivery.subject.should eq  I18n.t('mailer.billing_mailer.credit_card_will_expire') }
       it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
       it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
       it { @last_delivery.body.encoded.should include "If you have any questions, please email #{h I18n.t("mailer.billing.email")}." }
