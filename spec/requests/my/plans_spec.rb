@@ -106,9 +106,9 @@ feature "Plan edit" do
       site.reload
 
       current_url.should == "http://my.sublimevideo.dev/sites"
-      page.should have_content("#{site.plan.title} => #{site.next_cycle_plan.title}")
+      page.should have_content("#{site.plan.title} plan => #{site.next_cycle_plan.title} plan")
 
-      click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
+      click_link "#{site.plan.title} plan => #{site.next_cycle_plan.title} plan"
 
       page.should have_content("Your new #{site.next_cycle_plan.title} plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
     end
@@ -237,9 +237,9 @@ feature "Plan edit" do
 
       go 'my', "/sites"
 
-      page.should have_content("#{site.plan.title} => #{site.next_cycle_plan.title}")
+      page.should have_content("#{site.plan.title} plan => #{site.next_cycle_plan.title} plan")
 
-      click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
+      click_link "#{site.plan.title} plan => #{site.next_cycle_plan.title} plan"
 
       current_url.should == "http://my.sublimevideo.dev/sites/#{site.token}/plan/edit"
 
