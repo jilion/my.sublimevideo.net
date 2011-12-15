@@ -23,9 +23,9 @@
       .plan
         - if site.plan_id?
           = link_to [:edit, site, :plan] do
-            = site.plan.title
+            = "#{site.plan.title} plan"
             - if site.next_cycle_plan_id?
-              %span.disabled= " => #{site.next_cycle_plan.title}"
+              %span.disabled= " => #{site.next_cycle_plan.title} plan"
       .cycle
         - if site.in_paid_plan?
           - if site.trial_ended?

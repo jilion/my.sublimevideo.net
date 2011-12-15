@@ -167,7 +167,7 @@ feature "New site" do
           page.should have_content "Site was successfully created."
           page.should have_content 'rymai.com'
           page.should have_content 'Custom'
-          page.should have_content I18n.l(site.trial_started_at + BusinessModel.days_for_trial.days, format: :d_b_Y)
+          page.should have_content I18n.l(site.trial_end, format: :d_b_Y)
         end
       end
     end # custom plan

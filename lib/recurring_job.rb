@@ -11,12 +11,10 @@ module RecurringJob
   stats_tasks = [
     '%UsersStat%create_users_stats%',
     '%SitesStat%create_sites_stats%',
-    '%Site%stop_stats_trial%',
-    '%Site%send_stats_trial_will_end%'
   ]
 
   NAMES = [
-    '%Site%send_trial_will_end%',
+    '%Site%send_trial_will_expire%',
     '%User%send_credit_card_expiration%',
     '%RecurringJob%invoices_processing%',
     '%SiteModules::UsageMonitoring%monitor_sites_usages%',
@@ -47,14 +45,12 @@ module RecurringJob
 
       # Billing
       RecurringJob.delay_invoices_processing
-      Site.delay_send_trial_will_end
+      Site.delay_send_trial_will_expire
       User.delay_send_credit_card_expiration
 
       # Stats
       UsersStat.delay_create_users_stats
       SitesStat.delay_create_sites_stats
-      Site.delay_stop_stats_trial
-      Site.delay_send_stats_trial_will_end
 
       # Others
       SiteModules::UsageMonitoring.delay_monitor_sites_usages

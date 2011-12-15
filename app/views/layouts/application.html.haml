@@ -82,5 +82,6 @@
             = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('login')" do
               %span Close
 
-    = render 'layouts/fastpass' if request.subdomain == 'my' && user_signed_in?
-    = render 'layouts/gosquared' if Rails.env.production?
+    - if Rails.env.production?
+      = render 'layouts/fastpass' if request.subdomain == 'my' && user_signed_in?
+      = render 'layouts/gosquared'

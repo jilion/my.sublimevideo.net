@@ -23,10 +23,10 @@ class MSVStats.Models.Video extends Backbone.Model
 
   fetchMetaData: =>
     $.get this.metaDataUrl(), (data) =>
-      this.set(data)
+      this.set(data, silent: true) if data?
 
   metaDataUrl: =>
-    "/sites/#{MSVStats.sites.selectedSite.get('token')}/video_tags/#{this.id}.json"
+    "/sites/#{MSVStats.sites.selectedSite.token()}/video_tags/#{this.id}.json"
 
   currentSources: ->
     sources = []
@@ -51,7 +51,7 @@ class MSVStats.Models.Video extends Backbone.Model
 
   sslPosterframe: ->
     "https://data.sublimevideo.net/proxy?u=#{encodeURIComponent(this.get('p'))}"
-    
+
   name: (length = null) ->
     if this.get('n')?
       if length? && this.get('n').length > length
@@ -60,7 +60,7 @@ class MSVStats.Models.Video extends Backbone.Model
         this.get('n')
     else
       '–'
-  
+
   vlTotal: -> this.customSum('vl')
   vvTotal: -> this.customSum('vv')
   customSum: (field) ->
@@ -109,7 +109,7 @@ class MSVStats.Collections.Videos extends Backbone.Collection
     @sortBy = 'vv'
 
   url: ->
-    "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats/videos.json?#{this.urlParams()}"
+    "/sites/#{MSVStats.sites.selectedSite.token()}/stats/videos.json?#{this.urlParams()}"
 
   urlParams: ->
     params = [
@@ -223,7 +223,9 @@ class MSVStats.Collections.Videos extends Backbone.Collection
       video.set({ vl_hash: vlHash, vv_hash: vvHash }, silent: true)
 
   getOrAdd: (id, attributes) ->
-    unless (video = this.get(id))?
+    if (video = this.get(id))?
+      video.set(n: attributes.n, silent: true) if attributes.n?
+    else
       this.add(attributes, silent: true)
       video = this.get(id)
     video

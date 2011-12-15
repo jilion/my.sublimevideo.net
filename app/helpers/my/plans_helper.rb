@@ -97,7 +97,7 @@ module My::PlansHelper
       options["data-plan_update_price_vat"] = display_amount(update_price, vat: true) if current_user.vat?
 
       options["data-plan_update_date"] = l(if site.trial_not_started_or_in_trial?
-        (site.trial_end || BusinessModel.days_for_trial.days.from_now).midnight
+        (site.trial_end || BusinessModel.days_for_trial.days.from_now).tomorrow
       elsif current_plan.upgrade?(new_plan)
         site.plan_cycle_started_at || Time.now.utc.midnight
       else

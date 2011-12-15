@@ -6,7 +6,7 @@ class MSVStats.Helpers.ChartsHelper
       height: options.height
       lineColor: options.lineColor ? (if options.selected then '#00ff18' else 'rgba(97,255,114,0.7)')
       fillColor: options.fillColor ? (if options.selected then 'rgba(116,255,131,0.46)' else 'rgba(116,255,131,0.24)')
-    
+
     # Highchart sparkline, too heavy
     # new Highcharts.Chart
     #   chart:
@@ -227,6 +227,7 @@ class MSVStats.Helpers.ChartsHelper
         color: '#00ff18'
         lineColor: '#00ff18'
         marker:
+          enabled: stats.isMarkerEnabled()
           symbol: "url(<%= asset_path 'my/stats/graph_dot.png' %>)"
       }]
       xAxis:
