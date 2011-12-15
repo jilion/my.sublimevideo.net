@@ -12,6 +12,10 @@ module My::SitesHelper
     end
   end
 
+  def trial_will_expire_sentence(site)
+    I18n.t('site.trial.will_end', hostname: site.hostname, count: full_days_until_trial_end(site))
+  end
+
   def sublimevideo_script_tag_for(site)
     %{<script type="text/javascript" src="http://cdn.sublimevideo.net/js/%s.js"></script>} % [site.token]
   end
