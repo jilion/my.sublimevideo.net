@@ -9,7 +9,9 @@ module SiteModules::Invoice
           site.prepare_activation
           site.prepare_pending_attributes
         else
+          trial_plan   = site.plan
           site.plan_id = Plan.free_plan.id
+          My::BillingMailer.trial_has_expired(site, trial_plan).deliver!
         end
         site.save_skip_pwd
       end

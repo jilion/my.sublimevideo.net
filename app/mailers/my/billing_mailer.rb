@@ -28,6 +28,15 @@ class My::BillingMailer < MyMailer
       subject: I18n.t("mailer.billing_mailer.trial_will_expire.#{key}", hostname: @site.hostname, days: @days_until_end)
     )
   end
+
+  def trial_has_expired(site, trial_plan)
+    @site = site
+    @trial_plan = trial_plan
+    @user = site.user
+
+    mail(
+      to: to(@user),
+      subject: I18n.t("mailer.billing_mailer.trial_has_expired", hostname: @site.hostname)
     )
   end
 

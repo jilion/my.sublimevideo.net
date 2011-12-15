@@ -18,6 +18,7 @@ en:
         today: "Trial expires today (%{hostname})"
         tomorrow: "Trial expires tomorrow (%{hostname})"
         in_days: "Trial expires in %{days} days (%{hostname})"
+      trial_has_expired: "Trial for %{hostname} has expired"
       credit_card_will_expire: "Your credit card expires at the end of this month"
       transaction_succeeded: "Payment approved"
       transaction_failed: "Problem processing your payment"
