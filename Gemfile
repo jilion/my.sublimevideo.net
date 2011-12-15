@@ -131,7 +131,7 @@ group :development, :test do
   gem 'ffaker'
 
   # Javascript test
-  gem "jasminerice"
+  gem 'jasminerice'
 end
 
 group :development do

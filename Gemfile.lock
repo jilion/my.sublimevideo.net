@@ -1,13 +1,15 @@
 GIT
   remote: git://github.com/amatsuda/kaminari.git
-  revision: aee027c91bd7aa13312a8162d5edc79a501ebe3d
+  revision: 5894d6805e31b856e5dd99a9013cc4a5cbf83ec1
   specs:
     kaminari (0.12.4)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
       railties (>= 3.0.0)
 
 GIT
   remote: git://github.com/ctran/annotate_models.git
-  revision: a709a87dc08c5c3cee31ece0e698c4cbea400b31
+  revision: 672a22abf6165d6cc1dfb4d29dff5839f88af769
   specs:
     annotate (2.4.1.beta1)
 
@@ -114,7 +116,7 @@ GEM
       activesupport (>= 3.0.0)
       rack (>= 1.1.0)
     addressable (2.2.6)
-    airbrake (3.0.6)
+    airbrake (3.0.8)
       activesupport
       builder
     arel (2.2.1)
@@ -129,8 +131,9 @@ GEM
     bcrypt-ruby (3.0.1)
     braintree (2.13.1)
       builder (>= 2.0.0)
-    bson (1.5.1)
-    bson_ext (1.5.1)
+    bson (1.5.2)
+    bson_ext (1.5.2)
+      bson (= 1.5.2)
     builder (3.0.0)
     capybara (1.1.2)
       mime-types (>= 1.16)
@@ -169,7 +172,7 @@ GEM
     curb (0.7.16)
     currencies (0.4.0)
     daemons (1.1.4)
-    dalli (1.1.3)
+    dalli (1.1.4)
     database_cleaner (0.7.0)
     delayed_job (2.1.4)
       activesupport (~> 3.0)
@@ -199,7 +202,7 @@ GEM
     escape_utils (0.2.4)
     eventmachine (0.12.10)
     excon (0.7.12)
-    execjs (1.2.11)
+    execjs (1.2.12)
       multi_json (~> 1.0)
     factory_girl (2.3.2)
       activesupport
@@ -239,10 +242,10 @@ GEM
     guard-bundler (0.1.3)
       bundler (>= 1.0.0)
       guard (>= 0.2.2)
-    guard-coffeescript (0.5.2)
+    guard-coffeescript (0.5.3)
       coffee-script (>= 2.2.0)
       guard (>= 0.8.3)
-    guard-jasmine (0.8.6)
+    guard-jasmine (0.8.8)
       guard (>= 0.8.3)
       multi_json (~> 1.0.3)
       rack (~> 1.3.5)
@@ -256,7 +259,7 @@ GEM
       guard (>= 0.3.0)
     guard-rspec (0.5.9)
       guard (>= 0.8.4)
-    guard-spork (0.4.0)
+    guard-spork (0.4.1)
       guard (>= 0.8.4)
       spork (>= 0.8.4)
     guard-yard (1.0.2)
@@ -266,12 +269,12 @@ GEM
     haml-coderay (0.1.2)
       coderay
       haml
-    haml_coffee_assets (0.3.0)
+    haml_coffee_assets (0.5.1)
       execjs (~> 1.2.9)
       rails (>= 3.1)
     has_scope (0.5.1)
     hashie (1.1.0)
-    heroku (2.15.3)
+    heroku (2.16.2)
       launchy (>= 0.3.2)
       rest-client (~> 1.6.1)
       rubyzip
@@ -305,8 +308,8 @@ GEM
     money (4.0.1)
       i18n (~> 0.4)
       json
-    mongo (1.5.1)
-      bson (= 1.5.1)
+    mongo (1.5.2)
+      bson (= 1.5.2)
     mongoid (2.3.4)
       activemodel (~> 3.1)
       mongo (~> 1.3)
@@ -370,7 +373,7 @@ GEM
       coffee-script (~> 2.2.0)
       ejs (~> 1.0.0)
       rails (~> 3.1.0)
-    rails-dev-tweaks (0.5.1)
+    rails-dev-tweaks (0.5.2)
       rails (~> 3.1.0)
     railties (3.1.3)
       actionpack (= 3.1.3)
@@ -403,7 +406,7 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.7.0)
-    ruby-graphviz (1.0.0)
+    ruby-graphviz (1.0.2)
     ruby-hmac (0.4.0)
     ruby-progressbar (0.0.10)
     rubyzip (0.9.5)
@@ -415,7 +418,7 @@ GEM
       tilt (~> 1.3.2)
     sax-machine (0.1.0)
       nokogiri (> 0.0.0)
-    selenium-webdriver (2.14.0)
+    selenium-webdriver (2.15.0)
       childprocess (>= 0.2.1)
       ffi (~> 1.0.9)
       multi_json (~> 1.0.4)
@@ -471,7 +474,7 @@ GEM
       mime-types
       mime-types
     tzinfo (0.3.31)
-    uglifier (1.1.0)
+    uglifier (1.2.0)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
     uniquify (0.1.0)
