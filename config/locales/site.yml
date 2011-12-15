@@ -1,7 +1,7 @@
 en:
   site:
     trial:
-      provide_cc_before_trial_end: "Please provide a %{billing_link} to keep access to all your plan features."
+      provide_cc_before_trial_end: "Please provide a %{billing_link} to continue enjoying all of your current plan's features."
       will_end:
         one: "Trial for %{hostname} <strong>expires today</strong>."
         other: "Trial for %{hostname} <strong>expires in %{count} days</strong>."
