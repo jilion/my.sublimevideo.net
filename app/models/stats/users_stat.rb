@@ -50,7 +50,7 @@ module Stats
       end
 
       def delay_create_users_stats
-        unless Delayed::Job.already_delayed?('%UsersStat%create_users_stats%')
+        unless Delayed::Job.already_delayed?('%Stats::UsersStat%create_users_stats%')
           delay(:run_at => Time.now.utc.tomorrow.midnight).create_users_stats # every day
         end
       end

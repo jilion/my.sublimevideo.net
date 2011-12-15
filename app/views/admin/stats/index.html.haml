@@ -18,79 +18,85 @@
   #selectors
     %table
       %tr
-        %td{ style: 'background: rgba(0,0,255,0.2)' }
-          %h3
-            %a.selector{ href: "#", data: { value: 'users.all' } } Users
+        %td#users{ style: 'background: rgba(0,0,255,0.2)' }
           %ul
             %li
-              %a.selector{ href: "#", data: { value: 'users.active' } } Active
+              %h3
+                %a.selector{ href: "#", data: { value: 'users.all' } } Users
               %ul
                 %li
-                  %a.selector{ href: "#", data: { value: 'users.fr' } } Free
-                %li
-                  %a.selector{ href: "#", data: { value: 'users.pa' } } Paying
-            %li
-              %a.selector{ href: "#", data: { value: 'users.passive' } } Passive
-              %ul
-                %li
-                  %a.selector{ href: "#", data: { value: 'users.su' } } Suspended
-                %li
-                  %a.selector{ href: "#", data: { value: 'users.ar' } } Archived
-
-        %td{ style: 'background: rgba(255,0,0,0.2)' }
-          %h3
-            %a.selector{ href: "#", data: { value: 'sites.all' } } Sites
-          %ul
-            %li
-              %a.selector{ href: "#", data: { value: 'sites.active' } } Active
-              %ul
-                %li
-                  %a.selector{ href: "#", data: { value: 'sites.fr' } } Free
-                %li
-                  %a.selector{ href: "#", data: { value: 'sites.tr' } } Trial
+                  %a.selector.active{ href: "#", data: { value: 'users.active' } } Active
                   %ul
                     %li
-                      %a.selector{ href: "#", data: { value: 'sites.tr_details.plus' } } Plus
-                      %ul
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.tr_details.plus.m' } } Monthly
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.tr_details.plus.y' } } Yearly
+                      %a.selector{ href: "#", data: { value: 'users.fr' } } Free
                     %li
-                      %a.selector{ href: "#", data: { value: 'sites.tr_details.premium' } } Premium
-                      %ul
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.tr_details.premium.m' } } Monthly
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.tr_details.premium.y' } } Yearly
+                      %a.selector{ href: "#", data: { value: 'users.pa' } } Paying
                 %li
-                  %a.selector{ href: "#", data: { value: 'sites.pa' } } Paying
+                  %a.selector{ href: "#", data: { value: 'users.passive' } } Passive
                   %ul
                     %li
-                      %a.selector{ href: "#", data: { value: 'sites.pa_details.plus' } } Plus
-                      %ul
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.pa_details.plus.m' } } Monthly
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.pa_details.plus.y' } } Yearly
+                      %a.selector{ href: "#", data: { value: 'users.su' } } Suspended
                     %li
-                      %a.selector{ href: "#", data: { value: 'sites.pa_details.premium' } } Premium
-                      %ul
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.pa_details.premium.m' } } Monthly
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.pa_details.premium.y' } } Yearly
-            %li
-              %a.selector{ href: "#", data: { value: 'sites.passive' } } Passive
-              %ul
-                %li
-                  %a.selector{ href: "#", data: { value: 'sites.su' } } Suspended
-                %li
-                  %a.selector{ href: "#", data: { value: 'sites.ar' } } Archived
+                      %a.selector{ href: "#", data: { value: 'users.ar' } } Archived
 
-        %td{ style: 'background: rgba(0,255,0,0.2)' }
-          %h3 Tweets
+        %td#sites{ style: 'background: rgba(255,0,0,0.2)' }
           %ul
             %li
-              %a.selector{ href: "#", data: { value: 'tweets.sublimevideo' } } SublimeVideo
+              %h3
+                %a.selector{ href: "#", data: { value: 'sites.all' } } Sites
+              %ul
+                %li
+                  %a.selector.active{ href: "#", data: { value: 'sites.active' } } Active
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.fr' } } Free
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.tr' } } Trial
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.tr.plus' } } Plus
+                          %ul
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.tr.plus.m' } } Monthly
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.tr.plus.y' } } Yearly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.tr.premium' } } Premium
+                          %ul
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.tr.premium.m' } } Monthly
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.tr.premium.y' } } Yearly
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.pa' } } Paying
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.pa.plus' } } Plus
+                          %ul
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.pa.plus.m' } } Monthly
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.pa.plus.y' } } Yearly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.pa.premium' } } Premium
+                          %ul
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.pa.premium.m' } } Monthly
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.pa.premium.y' } } Yearly
+                %li
+                  %a.selector{ href: "#", data: { value: 'sites.passive' } } Passive
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.su' } } Suspended
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.ar' } } Archived
+
+        %td#tweets{ style: 'background: rgba(0,255,0,0.2)' }
+          %ul
+            %li
+              %h3 Tweets
+              %ul
+                %li
+                  %a.selector.active{ href: "#", data: { value: 'tweets.sublimevideo' } } SublimeVideo
             

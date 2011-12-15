@@ -19,6 +19,8 @@ class SVStats.Collections.UsersStats extends SVStats.Collections.Stats
       when 'ar' then 'Archived users'
       when 'active' then 'Active users (free or paying)'
       when 'passive' then 'Passive users (suspended or archived)'
+      else
+        'Users'
 
   customPluck: ->
     array = []

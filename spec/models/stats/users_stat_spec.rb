@@ -4,12 +4,12 @@ describe Stats::UsersStat do
 
   describe ".delay_create_users_stats" do
     it "should delay create_users_stats if not already delayed" do
-      expect { described_class.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%UsersStat%create_users_stats%'), :count).by(1)
+      expect { described_class.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%Stats::UsersStat%create_users_stats%'), :count).by(1)
     end
 
     it "should not delay create_users_stats if already delayed" do
       described_class.delay_create_users_stats
-      expect { described_class.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%UsersStat%create_users_stats%'), :count).by(0)
+      expect { described_class.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%Stats::UsersStat%create_users_stats%'), :count).by(0)
     end
 
     it "should delay create_users_stats for next hour" do

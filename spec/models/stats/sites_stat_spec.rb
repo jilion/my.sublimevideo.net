@@ -5,12 +5,12 @@ describe Stats::SitesStat do
   describe ".delay_create_sites_stats" do
 
     it "should delay create_sites_stats if not already delayed" do
-      expect { described_class.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%SitesStat%create_sites_stats%'), :count).by(1)
+      expect { described_class.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%Stats::SitesStat%create_sites_stats%'), :count).by(1)
     end
 
     it "should not delay create_sites_stats if already delayed" do
       described_class.delay_create_sites_stats
-      expect { described_class.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%SitesStat%create_sites_stats%'), :count).by(0)
+      expect { described_class.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%Stats::SitesStat%create_sites_stats%'), :count).by(0)
     end
 
     it "should delay create_sites_stats for next hour" do
@@ -62,13 +62,11 @@ describe Stats::SitesStat do
         }
         sites_stat["fr"].should eq 1
         sites_stat["sp"].should eq 1
-        sites_stat["tr"].should eq 3
-        sites_stat["pa"].should eq 3
-        sites_stat["tr_details"].should == {
+        sites_stat["tr"].should == {
           @paid_plan.name => { "m" => 1, "y" => 0 },
           @custom_plan.name => { "m" => 2 }
         }
-        sites_stat["pa_details"].should == {
+        sites_stat["pa"].should == {
           @paid_plan.name => { "m" => 1, "y" => 1 },
           @custom_plan.name => { "m" => 1 }
         }

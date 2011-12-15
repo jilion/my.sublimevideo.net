@@ -86,7 +86,6 @@ namespace :db do
 
     desc "Create fake users & sites stats"
     task users_and_sites_stats: :environment do
-      timed { empty_tables(UsersStat, SitesStat) }
       timed { create_users_stats }
       timed { create_sites_stats }
     end
@@ -386,7 +385,7 @@ def create_users_stats
     hash[:su] += rand(2)
     hash[:ar] += rand(4)
 
-    UsersStat.create(hash)
+    Stats::UsersStat.create(hash)
 
     day += 1.day
   end
@@ -395,28 +394,26 @@ end
 
 def create_sites_stats
   day = 2.years.ago.midnight
-  hash = { fr: 0, sp: 0, tr: 0, pa: 0, tr_details: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, pa_details: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, su: 0, ar: 0 }
+  hash = { fr: 0, sp: 0, tr: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, su: 0, ar: 0 }
 
   while day <= Time.now.utc.midnight
     hash[:d]   = day
     hash[:fr] += rand(50)
     hash[:sp] += rand(2)
 
-    hash[:tr_details][:plus][:m]    += rand(10)
-    hash[:tr_details][:plus][:y]    += rand(5)
-    hash[:tr_details][:premium][:m] += rand(5)
-    hash[:tr_details][:premium][:y] += rand(2)
-    hash[:pa_details][:plus][:m]    += rand(7)
-    hash[:pa_details][:plus][:y]    += rand(3)
-    hash[:pa_details][:premium][:m] += rand(4)
-    hash[:pa_details][:premium][:y] += rand(2)
+    hash[:tr][:plus][:m]    += rand(10)
+    hash[:tr][:plus][:y]    += rand(5)
+    hash[:tr][:premium][:m] += rand(5)
+    hash[:tr][:premium][:y] += rand(2)
+    hash[:pa][:plus][:m]    += rand(7)
+    hash[:pa][:plus][:y]    += rand(3)
+    hash[:pa][:premium][:m] += rand(4)
+    hash[:pa][:premium][:y] += rand(2)
 
-    hash[:tr] += hash[:tr_details][:plus][:m] + hash[:tr_details][:plus][:y] + hash[:tr_details][:premium][:m] + hash[:tr_details][:premium][:y]
-    hash[:pa] += hash[:pa_details][:plus][:m] + hash[:pa_details][:plus][:y] + hash[:pa_details][:premium][:m] + hash[:pa_details][:premium][:y]
     hash[:su] += rand(3)
     hash[:ar] += rand(6)
 
-    SitesStat.create(hash)
+    Stats::SitesStat.create(hash)
 
     day += 1.day
   end

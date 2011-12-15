@@ -105,7 +105,7 @@ namespace :one_time do
     desc "Migrate old to new UsersStats"
     task migrate_old_users_stats: :environment do
       timed do
-        UsersStat.where(d: nil).each do |stat|
+        Stats::UsersStat.where(d: nil).each do |stat|
           stat.update_attributes(
             d:  stat.created_at.midnight,
             fr: stat.states_count['active_and_not_billable_count'],
@@ -138,18 +138,16 @@ namespace :one_time do
       premium_y_id = Plan.where { (name == 'premium') & (cycle == 'year') }.first.id
 
       timed do
-        SitesStat.where(d: nil).each do |stat|
+        Stats::SitesStat.where(d: nil).each do |stat|
           stat.update_attributes(
             d:  stat.created_at.midnight,
             fr: stat.plans_count[beta_plan_id.to_s].to_i + stat.plans_count[dev_plan_id.to_s].to_i + stat.plans_count[free_plan_id.to_s].to_i,
             sp: stat.plans_count[sponsored_plan_id.to_s].to_i,
-            tr: 0,
-            pa: stat.plans_count[comet_m_id.to_s].to_i + stat.plans_count[comet_y_id.to_s].to_i + stat.plans_count[planet_m_id.to_s].to_i + stat.plans_count[planet_y_id.to_s].to_i + stat.plans_count[star_m_id.to_s].to_i + stat.plans_count[star_y_id.to_s].to_i + stat.plans_count[galaxy_m_id.to_s].to_i + stat.plans_count[galaxy_y_id.to_s].to_i + stat.plans_count[plus_m_id.to_s].to_i + stat.plans_count[plus_y_id.to_s].to_i + stat.plans_count[premium_m_id.to_s].to_i + stat.plans_count[premium_y_id.to_s].to_i,
-            tr_details: {
+            tr: {
               plus: { m: 0, y: 0 },
               premium: { m: 0, y: 0 }
             },
-            pa_details: {
+            pa: {
               plus: {
                 m: stat.plans_count[comet_m_id.to_s].to_i + stat.plans_count[planet_m_id.to_s].to_i + stat.plans_count[plus_m_id.to_s].to_i,
                 y: stat.plans_count[comet_y_id.to_s].to_i + stat.plans_count[planet_y_id.to_s].to_i + stat.plans_count[plus_y_id.to_s].to_i

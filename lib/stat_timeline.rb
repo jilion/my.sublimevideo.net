@@ -153,7 +153,7 @@ module StatTimeline
 
     def initialize(start_time, end_time, options = {})
       @start_time, @end_time = start_time, end_time
-      @collection = ::UsersStat.between(@start_time.midnight, @end_time.end_of_day)
+      @collection = ::Stats::UsersStat.between(@start_time.midnight, @end_time.end_of_day)
     end
 
     def timeline(attribute)

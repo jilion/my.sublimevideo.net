@@ -9,8 +9,8 @@ module RecurringJob
   ]
 
   stats_tasks = [
-    '%UsersStat%create_users_stats%',
-    '%SitesStat%create_sites_stats%',
+    '%Stats::UsersStat%create_users_stats%',
+    '%Stats::SitesStat%create_sites_stats%',
     '%Site%stop_stats_trial%',
     '%Site%send_stats_trial_will_end%'
   ]
@@ -51,8 +51,8 @@ module RecurringJob
       User.delay_send_credit_card_expiration
 
       # Stats
-      UsersStat.delay_create_users_stats
-      SitesStat.delay_create_sites_stats
+      Stats::UsersStat.delay_create_users_stats
+      Stats::SitesStat.delay_create_sites_stats
       Site.delay_stop_stats_trial
       Site.delay_send_stats_trial_will_end
 

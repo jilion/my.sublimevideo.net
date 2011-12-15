@@ -13,10 +13,8 @@ module Stats
     field :d,  type: DateTime  # Day
     field :fr, type: Integer # free
     field :sp, type: Integer # sponsored
-    field :tr, type: Integer # trial
-    field :pa, type: Integer # paying
-    field :tr_details, type: Hash # trial { "plus" => { m => 23, y => 20 }, "premium" => { m => 13, y => 10 } }
-    field :pa_details, type: Hash # paying { "plus" => { m => 23, y => 20 }, "premium" => { m => 13, y => 10 } }
+    field :tr, type: Hash # trial
+    field :pa, type: Hash # paying
     field :su, type: Integer # suspended
     field :ar, type: Integer # archived
 
@@ -59,7 +57,7 @@ module Stats
       end
 
       def delay_create_sites_stats
-        unless Delayed::Job.already_delayed?('%SitesStat%create_sites_stats%')
+        unless Delayed::Job.already_delayed?('%Stats::SitesStat%create_sites_stats%')
           delay(:run_at => Time.now.utc.tomorrow.midnight).create_sites_stats # every hour
         end
       end
@@ -79,10 +77,8 @@ module Stats
         hash = {
           fr: Site.active.in_plan('free').count,
           sp: Site.active.in_plan('sponsored').count,
-          tr: 0,
-          pa: 0,
-          tr_details: {},
-          pa_details: {},
+          tr: {},
+          pa: {},
           su: Site.suspended.count,
           ar: Site.archived.count
         }
@@ -90,12 +86,10 @@ module Stats
         Plan.paid_plans.each do |plan|
           scope = Site.active.in_plan_id(plan.id)
           sites_in_trial_count = scope.in_trial.count
-          (hash[:tr_details][plan.name] ||= {})[plan.cycle[0]] = scope.in_trial.count
-          hash[:tr] += sites_in_trial_count
+          (hash[:tr][plan.name] ||= {})[plan.cycle[0]] = scope.in_trial.count
 
           sites_paying_count = scope.not_in_trial.count
-          (hash[:pa_details][plan.name] ||= {})[plan.cycle[0]] = scope.not_in_trial.count
-          hash[:pa] += sites_paying_count
+          (hash[:pa][plan.name] ||= {})[plan.cycle[0]] = scope.not_in_trial.count
         end
 
         hash

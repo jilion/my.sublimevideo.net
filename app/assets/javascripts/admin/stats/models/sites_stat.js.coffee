@@ -1,10 +1,8 @@
 class SVStats.Models.SitesStat extends SVStats.Models.Stat
   defaults:
     fr: 0 # free
-    tr: 0 # paying
-    pa: 0 # paying
-    tr_details: {} # trial details
-    pa_details: {} # paying details
+    tr: {} # trial
+    pa: {} # paying
     su: 0 # suspended
     ar: 0 # archived
 
@@ -26,7 +24,7 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
       else
         if _.isArray(@selected)
           text = "Sites with the "
-          if @selected.length == 3 # attribute is something like: ["tr_details", "premium", "y"]
+          if @selected.length == 3 # attribute is something like: ["tr", "premium", "y"]
             text += if @selected[2] == "y" then "yearly" else "monthly"
           text += " #{@selected[1]} plan"
           text
@@ -43,17 +41,17 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
 
       value = if stat?
         if _.isArray(@selected)
-          el = stat.get(_.first(@selected))
-          if @selected.length > 1 # attribute is something like: ["tr_details", "premium", "y"]
-            _.each _.rest(@selected), (e) -> el = el[e]
-            unless _.isEmpty(_.values(el))
-              el = _.reduce(_.values(el), ((memo, num) -> return memo + num), 0)
-
-          el
+          value = stat.get(_.first(@selected))
+          if @selected.length > 1 # attribute is something like: ["tr", "premium", "y"]
+            _.each _.rest(@selected), (e) -> value = value[e]
+            value = this.recursiveHashSum(value)
+          value
+        else if !_.isEmpty(_.values(stat.get(@selected)))
+          this.recursiveHashSum(stat.get(@selected))
         else
           switch @selected
-            when 'all' then stat.get('fr') + stat.get('tr') + stat.get('pa') + stat.get('su') + stat.get('ar')
-            when 'active' then stat.get('fr') + stat.get('tr') + stat.get('pa')
+            when 'all' then stat.get('fr') + this.recursiveHashSum(stat.get('tr')) + this.recursiveHashSum(stat.get('pa')) + stat.get('su') + stat.get('ar')
+            when 'active' then stat.get('fr') + this.recursiveHashSum(stat.get('tr')) + this.recursiveHashSum(stat.get('pa'))
             when 'passive' then stat.get('su') + stat.get('ar')
             else stat.get(@selected)
       else
@@ -62,3 +60,13 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
       from += 3600 * 24
 
     array
+
+  recursiveHashSum: (hash) ->
+    sum = 0
+    if _.isNumber(hash)
+      sum = hash
+    else
+      _.each _.values(hash), (value) =>
+        sum += this.recursiveHashSum(value)
+
+    sum
