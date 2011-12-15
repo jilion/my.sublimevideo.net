@@ -299,6 +299,11 @@ module SiteModules::Invoice
       end
     end
 
+    # after_save
+    def send_trial_started_email
+      My::BillingMailer.trial_started(self).deliver!
+    end
+
     # ========================
     # = Dirty state checkers =
     # ========================

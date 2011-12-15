@@ -84,6 +84,7 @@ class Site < ActiveRecord::Base
   after_create :delay_ranks_update, :update_last_30_days_counters # in site_modules/templates
 
   after_save :create_and_charge_invoice # in site_modules/invoice
+  after_save :send_trial_started_email, if: proc { |s| s.trial_started_at_changed? && s.trial_started_at_was.nil? && trial_not_started_or_in_trial? } # in site_modules/invoice
   after_save :execute_cdn_update # in site_modules/templates
 
   # =================
@@ -238,7 +239,7 @@ class Site < ActiveRecord::Base
   def save_skip_pwd
     skip_pwd { self.save! }
   end
-  
+
   def trial_start_time
     trial_started_at.to_i
   end

@@ -5,11 +5,16 @@ class My::BillingMailer < MyMailer
   include My::SitesHelper # the only way to include view helpers in here
                           # I don't feel dirty doing this since the email's subject IS a view so...
 
+  def trial_started(site)
     @site = site
     @user = site.user
 
     mail(
       to: to(@user),
+      subject: I18n.t("mailer.billing_mailer.trial_started", hostname: @site.hostname, days: @days_until_end)
+    )
+  end
+
   def trial_will_expire(site)
     @site = site
     @user = site.user
