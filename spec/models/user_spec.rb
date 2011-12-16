@@ -927,22 +927,22 @@ describe User do
         Site.delete_all
         @billable_user_1 = Factory.create(:user)
         @billable_user_2 = Factory.create(:user)
+        @billable_user_3 = Factory.create(:user)
         @non_billable_user_1 = Factory.create(:user)
         @non_billable_user_2 = Factory.create(:user)
         @non_billable_user_3 = Factory.create(:user)
-        @non_billable_user_4 = Factory.create(:user)
 
         # billable
         Factory.create(:site, user: @billable_user_1, plan_id: @paid_plan.id)
         site_will_be_paid = Factory.create(:site, user: @billable_user_2, plan_id: @paid_plan.id)
         site_will_be_paid.update_attribute(:next_cycle_plan_id, Factory.create(:plan).id)
+        site_will_be_free = Factory.create(:site, user: @billable_user_3, plan_id: @paid_plan.id)
+        site_will_be_free.update_attribute(:next_cycle_plan_id, @free_plan.id)
 
         # not billable
         Factory.create(:site, user: @non_billable_user_1, plan_id: @free_plan.id)
-        site_will_be_free = Factory.create(:site, user: @non_billable_user_2, plan_id: @paid_plan.id)
-        site_will_be_free.update_attribute(:next_cycle_plan_id, @free_plan.id)
-        site_archived = Factory.create(:site, user: @non_billable_user_3, state: "archived", archived_at: Time.utc(2010,2,28))
-        Factory.create(:site, user: @non_billable_user_4, state: "suspended")
+        site_archived = Factory.create(:site, user: @non_billable_user_2, state: "archived", archived_at: Time.utc(2010,2,28))
+        Factory.create(:site, user: @non_billable_user_3, state: "suspended")
       end
 
       it { @billable_user_1.should be_billable }
@@ -950,7 +950,6 @@ describe User do
       it { @non_billable_user_1.should_not be_billable }
       it { @non_billable_user_2.should_not be_billable }
       it { @non_billable_user_3.should_not be_billable }
-      it { @non_billable_user_4.should_not be_billable }
     end
 
     describe "#archivable?" do

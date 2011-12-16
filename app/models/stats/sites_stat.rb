@@ -20,8 +20,6 @@ module Stats
 
     index :d
     index :created_at
-    index [[:d, Mongo::ASCENDING], [:active, Mongo::ASCENDING]]
-    index [[:d, Mongo::ASCENDING], [:passive, Mongo::ASCENDING]]
 
     # ==========
     # = Scopes =
