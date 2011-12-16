@@ -14,7 +14,7 @@ en:
     signature:     "The SublimeVideo Team"
 
     billing_mailer:
-      trial_started: "Trial started (%{hostname})"
+      trial_has_started: "Trial for %{hostname} has started"
       trial_will_expire:
         today: "Trial expires today (%{hostname})"
         tomorrow: "Trial expires tomorrow (%{hostname})"

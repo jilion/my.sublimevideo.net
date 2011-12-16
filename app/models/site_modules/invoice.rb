@@ -301,7 +301,7 @@ module SiteModules::Invoice
 
     # after_save
     def send_trial_started_email
-      My::BillingMailer.trial_started(self).deliver!
+      My::BillingMailer.trial_has_started(self).deliver!
     end
 
     # ========================
