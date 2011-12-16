@@ -1,12 +1,6 @@
 = title("Users")
 = content_header(admin_users_page_title(@users), id: "users_title")
 
--#= render '/admin/shared/date_chooser', skip_moving_avg: true
-
-#timeline
-  - cache "users_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}", expires_in: (Time.now.utc.end_of_day - Time.now.utc) do
-    = render 'timeline'
-
 .search_form
   = form_tag [:admin, :users], method: :get, id: 'search_form' do
     = text_field_tag :search, '', value: params[:search], id: 'search_input', placeholder: "Search", type: "search", autofocus: true, autosave: "admin_search", results: "5"

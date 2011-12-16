@@ -2,9 +2,7 @@ module Admin::SitesHelper
 
   def admin_sites_page_title(sites)
     pluralized_sites = pluralize(sites.total_count, 'site')
-    state = if params[:with_state]
-      " #{params[:with_state]}"
-    elsif params[:with_wildcard]
+    state = if params[:with_wildcard]
       " with wildcard"
     elsif params[:with_path]
       " with path"
@@ -24,11 +22,11 @@ module Admin::SitesHelper
     elsif params[:search].present?
       " matching '#{params[:search]}'"
     elsif params[:paid_plan]
-      " in paid plan"
-    elsif params[:unpaid_plan]
-      " in unpaid plan"
+      params[:in_trial] ? " trial" : " paying"
     elsif params[:in_plan]
-      " in the #{params[:in_plan].titleize} plan"
+      " in #{"trial of " if params[:in_trial]}the #{params[:in_plan].titleize} plan"
+    elsif params[:with_state]
+      " #{params[:with_state]}"
     else
       " active"
     end

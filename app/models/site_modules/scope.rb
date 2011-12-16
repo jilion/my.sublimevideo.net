@@ -14,12 +14,12 @@ module SiteModules::Scope
     scope :not_archived, where { state != 'archived' }
 
     # plans
-    scope :custom_plan,    includes(:plan).where { plans.name =~ "custom%" }
-    scope :paid_plan,      lambda { active.where { plan_id >> Plan.paid_plans.map(&:id) } }
+    scope :custom_plan,    lambda { in_plan_id(Plan.custom_plans.map(&:id)) }
+    scope :paid_plan,      lambda { active.in_plan_id(Plan.paid_plans.map(&:id)) }
+    scope :unpaid_plan,    lambda { active.in_plan_id(Plan.unpaid_plans.map(&:id)) }
     scope :paid_next_plan_or_no_next_plan, lambda { active.where { next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) } }
-    scope :unpaid_plan,    lambda { active.where { plan_id << Plan.paid_plans.map(&:id) } }
-    scope :in_plan,        lambda { |plan_name| joins(:plan).where { plans.name >> Array.wrap(plan_name) } }
-    scope :in_plan_id,     lambda { |plan_id| joins(:plan).where { plans.id >> Array.wrap(plan_id) } }
+    scope :in_plan,        lambda { |plan_names| in_plan_id(Plan.where { name >> Array.wrap(plan_names) }.map(&:id)) }
+    scope :in_plan_id,     lambda { |plan_ids| where { plan_id >> Array.wrap(plan_ids) } }
 
     # attributes queries
     scope :with_wildcard,        where { wildcard == true }

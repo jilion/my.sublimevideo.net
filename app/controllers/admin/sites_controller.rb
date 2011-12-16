@@ -2,7 +2,7 @@ class Admin::SitesController < AdminController
   respond_to :js, :html
 
   #filter
-  has_scope :in_plan
+  has_scope :in_trial, :not_in_trial, :in_plan
   has_scope :with_state do |controller, scope, value|
     scope.with_state(value.to_sym)
   end
@@ -11,7 +11,6 @@ class Admin::SitesController < AdminController
   has_scope :with_extra_hostnames, type: :boolean
   has_scope :badged
   has_scope :paid_plan, type: :boolean
-  has_scope :unpaid_plan, type: :boolean
   has_scope :overusage_notified, type: :boolean
   has_scope :user_id, type: :boolean
   has_scope :with_next_cycle_plan, type: :boolean
