@@ -28,16 +28,16 @@
                   %a.selector.active{ href: "#", data: { value: 'users.active' } } Active
                   %ul
                     %li
-                      %a.selector{ href: "#", data: { value: 'users.fr' } } Free
+                      %a.selector{ href: "#", data: { value: 'users.fr' }, title: "Users with no paying sites" } Free
                     %li
-                      %a.selector{ href: "#", data: { value: 'users.pa' } } Paying
+                      %a.selector{ href: "#", data: { value: 'users.pa' }, title: "Users with at least 1 paying sites" } Paying
                 %li
                   %a.selector{ href: "#", data: { value: 'users.passive' } } Passive
                   %ul
                     %li
-                      %a.selector{ href: "#", data: { value: 'users.su' } } Suspended
+                      %a.selector{ href: "#", data: { value: 'users.su' }, title: "Users who have too many payment issues" } Suspended
                     %li
-                      %a.selector{ href: "#", data: { value: 'users.ar' } } Archived
+                      %a.selector{ href: "#", data: { value: 'users.ar' }, title: "Users who chose to delete their account OR users that didn't accept their beta invitation" } Archived
 
         %td#sites{ style: 'background: rgba(255,0,0,0.2)' }
           %ul
@@ -50,6 +50,14 @@
                   %ul
                     %li
                       %a.selector{ href: "#", data: { value: 'sites.fr' } } Free
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.fr.beta' } } Beta
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.fr.dev' } } Dev
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.fr.free' } } Freemium
+                      
                     %li
                       %a.selector{ href: "#", data: { value: 'sites.tr' } } Trial
                       %ul
@@ -98,5 +106,5 @@
               %h3 Tweets
               %ul
                 %li
-                  %a.selector.active{ href: "#", data: { value: 'tweets.sublimevideo' } } SublimeVideo
+                  %a.selector{ href: "#", data: { value: 'tweets.sublimevideo' } } SublimeVideo
             

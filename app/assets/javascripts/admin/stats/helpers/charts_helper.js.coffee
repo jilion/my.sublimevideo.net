@@ -1,9 +1,14 @@
 class SVStats.Helpers.ChartsHelper
 
   chart: (collections) ->
+    console.log "selected range: #{SVStats.statsRouter.selectedRange}"
     SVStats.chart = new Highcharts.StockChart
       chart:
         renderTo: 'chart'
+        events:
+          click: (e) ->
+            console.log Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', e.xAxis[0].value), e.yAxis[0].value
+
 
       series: this.buildSeries(collections)
 
@@ -12,7 +17,7 @@ class SVStats.Helpers.ChartsHelper
 
       title:
         text: null
-
+        
       rangeSelector:
         buttonTheme:
           fill: 'none'
@@ -53,7 +58,7 @@ class SVStats.Helpers.ChartsHelper
           count: 1
           text: '7 d'
         }]
-        selected: 4
+        selected: SVStats.statsRouter.selectedRange
 
       tooltip:
         enabled: true
@@ -131,15 +136,15 @@ class SVStats.Helpers.ChartsHelper
   buildSeries: (collections) ->
     series = []
     _.each collections, (collection) ->
-      if collection.length > 0
-        series.push
-          id: collection.id()
-          name: collection.title()
-          data: collection.customPluck()
-          type: collection.chartType()
-          color: collection.color()
-          pointStart: collection.startTime()
-          pointInterval: 3600 * 24 * 1000
+      if collection.length > 0 and !_.isEmpty(collection.selected)
+        _.each collection.selected, (selected) ->
+          series.push
+            name: collection.title(selected.split('.'))
+            data: collection.customPluck(selected.split('.'))
+            type: collection.chartType()
+            color: collection.color()
+            pointStart: collection.startTime()
+            pointInterval: 3600 * 24 * 1000
 
     # series.push this.timelineSitesEvents()
     # series.push this.timelineTweetsEvents()

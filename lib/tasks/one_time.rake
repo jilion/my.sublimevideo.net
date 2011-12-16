@@ -136,7 +136,11 @@ namespace :one_time do
         Stats::SitesStat.where(d: nil).each do |stat|
           stat.update_attributes(
             d:  stat.created_at.midnight,
-            fr: stat.plans_count[beta_plan_id.to_s].to_i + stat.plans_count[dev_plan_id.to_s].to_i + stat.plans_count[free_plan_id.to_s].to_i,
+            fr: {
+              beta: stat.plans_count[beta_plan_id.to_s].to_i,
+              dev: stat.plans_count[dev_plan_id.to_s].to_i,
+              free: stat.plans_count[free_plan_id.to_s].to_i
+            },
             sp: stat.plans_count[sponsored_plan_id.to_s].to_i,
             tr: {
               plus: { m: 0, y: 0 },
@@ -144,12 +148,12 @@ namespace :one_time do
             },
             pa: {
               plus: {
-                m: stat.plans_count[comet_m_id.to_s].to_i + stat.plans_count[planet_m_id.to_s].to_i + stat.plans_count[plus_m_id.to_s].to_i,
-                y: stat.plans_count[comet_y_id.to_s].to_i + stat.plans_count[planet_y_id.to_s].to_i + stat.plans_count[plus_y_id.to_s].to_i
+                m: 0,#stat.plans_count[comet_m_id.to_s].to_i + stat.plans_count[planet_m_id.to_s].to_i + stat.plans_count[plus_m_id.to_s].to_i,
+                y: 0,#stat.plans_count[comet_y_id.to_s].to_i + stat.plans_count[planet_y_id.to_s].to_i + stat.plans_count[plus_y_id.to_s].to_i
               },
               premium: {
-                m: stat.plans_count[star_m_id.to_s].to_i + stat.plans_count[galaxy_m_id.to_s].to_i + stat.plans_count[premium_m_id.to_s].to_i,
-                y: stat.plans_count[star_y_id.to_s].to_i + stat.plans_count[galaxy_y_id.to_s].to_i + stat.plans_count[premium_y_id.to_s].to_i
+                m: 0,#stat.plans_count[star_m_id.to_s].to_i + stat.plans_count[galaxy_m_id.to_s].to_i + stat.plans_count[premium_m_id.to_s].to_i,
+                y: 0,#stat.plans_count[star_y_id.to_s].to_i + stat.plans_count[galaxy_y_id.to_s].to_i + stat.plans_count[premium_y_id.to_s].to_i
               }
             },
             su: stat.states_count['suspended'].to_i,

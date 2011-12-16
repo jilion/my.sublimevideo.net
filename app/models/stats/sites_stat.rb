@@ -68,7 +68,7 @@ module Stats
       def hash_for_sites
         hash = {
           d: Time.now.utc.midnight,
-          fr: Site.active.in_plan('free').count,
+          fr: { free: Site.active.in_plan('free').count },
           sp: Site.active.in_plan('sponsored').count,
           tr: {},
           pa: {},

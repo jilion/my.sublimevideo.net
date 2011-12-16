@@ -1,6 +1,7 @@
 class SVStats.Routers.StatsRouter extends Backbone.Router
 
   initialize: (options) ->
+    @selectedRange = 4
     this.initHighcharts()
     this.initModels()
     this.initHelpers()

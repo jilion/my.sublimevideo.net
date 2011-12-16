@@ -48,7 +48,7 @@ describe Stats::SitesStat do
         described_class.create_sites_stats
         described_class.count.should eq 1
         sites_stat = described_class.last
-        sites_stat["fr"].should eq 1
+        sites_stat["fr"].should == { "free" => 1 }
         sites_stat["sp"].should eq 1
         sites_stat["tr"].should == {
           @paid_plan.name => { "m" => 1, "y" => 0 },

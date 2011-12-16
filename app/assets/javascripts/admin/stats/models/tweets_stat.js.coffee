@@ -4,13 +4,13 @@ class SVStats.Models.TweetsStat extends SVStats.Models.Stat
 
 class SVStats.Collections.TweetsStats extends SVStats.Collections.Stats
   model: SVStats.Models.TweetsStat
-  initialize: -> @selected = 'sublimevideo'
+  initialize: -> @selected = []
   url: -> '/stats/tweets.json'
   id: -> 'tweets'
   color: -> 'rgba(0,255,0,0.5)'
 
-  title: ->
-    switch @selected
+  title: (selected) ->
+    switch selected[0]
       when 'jilion' then 'Jilion tweets'
       when 'sublimevideo' then 'SublimeVideo tweets'
       when 'aelios' then 'Aelios tweets'

@@ -11,18 +11,18 @@ class SVStats.Collections.UsersStats extends SVStats.Collections.Stats
   id: -> 'users'
   color: -> 'rgba(0,0,255,0.5)'
 
-  title: ->
-    switch @selected
-      when 'fr' then 'Free users'
-      when 'pa' then 'Paying users'
-      when 'su' then 'Suspended users'
-      when 'ar' then 'Archived users'
-      when 'active' then 'Active users (free or paying)'
-      when 'passive' then 'Passive users (suspended or archived)'
-      else
-        'Users'
+  title: (selected) ->
+    if selected.length == 1
+      switch selected[0]
+        when 'fr' then 'Free users'
+        when 'pa' then 'Paying users'
+        when 'su' then 'Suspended users'
+        when 'ar' then 'Archived users'
+        when 'active' then 'Active users (free or paying)'
+        when 'passive' then 'Passive users (suspended or archived)'
+        when 'all' then 'Users'
 
-  customPluck: ->
+  customPluck: (selected) ->
     array = []
     from  = this.at(0).id
     to    = this.at(this.length - 1).id
@@ -30,11 +30,11 @@ class SVStats.Collections.UsersStats extends SVStats.Collections.Stats
     while from <= to
       stat = this.get(from)
       value = if stat?
-        switch @selected
+        switch selected[0]
           when 'all' then stat.get('fr') + stat.get('pa') + stat.get('su') + stat.get('ar')
           when 'active' then stat.get('fr') + stat.get('pa')
           when 'passive' then stat.get('su') + stat.get('ar')
-          else stat.get(@selected)
+          else stat.get(selected[0])
       else
         0
       array.push value
