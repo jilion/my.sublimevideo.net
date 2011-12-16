@@ -1,5 +1,15 @@
 = content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{SiteToken.my}.js")
 = content_for :head, javascript_include_tag('https://d3ds63zw57jt09.cloudfront.net/1.10/pusher.min.js')
+- if @token == 'demo'
+  = content_for :header do
+    %h2= "Integrated Real-Time Statistics"
+    %p.sub= "Comprehensive, real-time picture of your entire site’s video traffic, generated from any platform."
+
+  %span.stats_icon
+  
+  .com_text
+    %p= raw "Our new, player integrated, Real-Time Stats platform is the world’s first to offer a truly comprehensive, real-time picture of your entire site’s video traffic, generated from any platform – whether mobile or desktop, HTML5 or Flash. #{link_to "Read more", ""}."
+    %p= raw "This demo page displays the actual video statistics for our own #{link_to "sublimevideo.net", "http://sublimevideo.net"} domain. Watch any video on #{link_to "sublimevideo.net", "http://sublimevideo.net"} from any device and see your activity logged in real-time on this page. Enjoy!"
 
 .stats
   = title("Stats")

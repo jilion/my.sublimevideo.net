@@ -171,9 +171,9 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
 
   handleDemoClass: ->
     if this.isDemo()
-      $('div.stats').addClass('demo')
+      $('body').addClass('stats_demo')
     else
-      $('div.stats').removeClass('demo')
+      $('body').removeClass('stats_demo')
 
   resetAndFetchStats: ->
     MSVStats.statsSeconds._isShowable = false
