@@ -141,7 +141,7 @@ describe SiteModules::Templates do
         subject.should_not be_settings_changed
       end
 
-      { hostname: "jilion.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true, badged: true, stats_trial_started_at: Time.now }.each do |attribute, value|
+      { hostname: "jilion.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true, badged: true }.each do |attribute, value|
         it "should return true if #{attribute} has changed" do
           subject.send("#{attribute}=", value)
           subject.should be_settings_changed
@@ -208,18 +208,6 @@ describe SiteModules::Templates do
           it "doesn't includes r: true" do
             subject.should be_in_free_plan
             subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true }
-          end
-        end
-        
-        context "with realtime data (free plan with stats trial)" do
-          before do
-            subject.plan_id = @free_plan.id; subject.apply_pending_attributes
-            subject.touch(:stats_trial_started_at)
-          end
-
-          it "includes r: true" do
-            subject.should be_in_free_plan
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true, r: true }
           end
         end
       end

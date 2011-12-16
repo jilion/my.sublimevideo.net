@@ -6,6 +6,8 @@ class MSVStats.Views.PageTitleView extends Backbone.View
     this.render()
 
   render: =>
-    if (selectedSite = MSVStats.sites.selectedSite)?
+    if MSVStats.statsRouter? && MSVStats.statsRouter.isDemo()
+      document.title = "SublimeVideo - Public Stats for sublimevideo.net"
+    else if (selectedSite = MSVStats.sites.selectedSite)?
       document.title = "MySublimeVideo - Stats for #{selectedSite.title()}"
     this

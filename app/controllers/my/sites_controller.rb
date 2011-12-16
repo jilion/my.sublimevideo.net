@@ -36,7 +36,7 @@ class My::SitesController < MyController
 
   # POST /sites
   def create
-    @site = current_user.sites.build(params[:site].merge(remote_ip: request.try(:remote_ip)))
+    @site = current_user.sites.build((params[:site] || {}).merge(remote_ip: request.try(:remote_ip)))
 
     respond_with(@site) do |format|
       if @site.save # will create site (& create invoice and charge it if skip_trial is true)

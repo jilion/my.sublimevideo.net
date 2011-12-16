@@ -81,10 +81,14 @@ module Stat
     end
 
     def json(site_token, period = 'days')
+      if site_token == 'demo'
+        site_token = SiteToken.www
+        demo       = true
+      end
       from, to = period_intervals(site_token, period)
 
       json_stats = if from.present? && to.present?
-        last_stats(token: site_token, period: period, from: from, to: to, fill_missing_days: period != 'seconds')
+        last_stats(token: site_token, period: period, from: from, to: to, fill_missing_days: period != 'seconds', demo: demo)
       else
         []
       end
@@ -100,7 +104,7 @@ module Stat
 
       when 'minutes'
         site  = ::Site.find_by_token(site_token)
-        if site.stats_retention_days == 0
+        if site.plan_stats_retention_days == 0
           to   = nil
           from = nil
         else
@@ -118,7 +122,7 @@ module Stat
         stats = self.where(t: site_token, d: { "$ne" => nil }).order_by([:d, :asc])
         to    = 1.day.ago.midnight
 
-        case site.stats_retention_days
+        case site.plan_stats_retention_days
         when 0
           to   = nil
           from = nil
@@ -127,7 +131,7 @@ module Stat
           from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
 
         else
-          from = to - (site.stats_retention_days - 1).days
+          from = to - (site.plan_stats_retention_days - 1).days
         end
 
       end
@@ -156,6 +160,9 @@ module Stat
       conditions[:t] = { "$in" => Array.wrap(options[:token]) } if options[:token]
       conditions.deep_merge!(options[:period].chr.to_sym => { "$gte" => options[:from] }) if options[:from]
       conditions.deep_merge!(options[:period].chr.to_sym => { "$lte" => options[:to] }) if options[:to]
+      if options[:demo] && options[:period] == 'days'
+        conditions.deep_merge!(options[:period].chr.to_sym => { "$gte" => Time.utc(2011,11,29) }) if options[:from]
+      end
 
       stats = if (!options[:token] && !options[:stats]) || (options[:token] && options[:token].is_a?(Array))
         collection.group(

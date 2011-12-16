@@ -5,9 +5,9 @@ describe My::SitesHelper do
   describe "#full_days_until_trial_end" do
     before(:each) { BusinessModel.stub(:days_for_trial) { 3 } }
 
-    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: Time.now.utc.midnight + 3.hours)).should eq 2 }
-    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 1.day.ago.midnight + 3.hours)).should eq 1 }
-    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 2.days.ago.midnight + 3.hours)).should eq 0 }
+    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: Time.now.utc.midnight + 3.hours)).should eq 3 }
+    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 1.day.ago.midnight + 3.hours)).should eq 2 }
+    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 2.days.ago.midnight + 3.hours)).should eq 1 }
     it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 3.days.ago.midnight + 3.hours)).should eq 0 }
     it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 3.days.ago.midnight - 1.minute)).should eq 0 }
   end

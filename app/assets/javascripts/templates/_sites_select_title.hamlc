@@ -1,3 +1,6 @@
+-#- if @statsRouter? && @statsRouter.isDemo()
+-#  %h2 Public stats for sublimevideo.net
+-#- else
 %h2 Stats for
   %select
     - for site in @sites.models

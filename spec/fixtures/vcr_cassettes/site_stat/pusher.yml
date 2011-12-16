@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: !ruby/regexp /^http:\/\/api.pusherapp.com:80\/apps\/<%= Pusher.app_id %>\/channels\/presence-\w{8}\/events?.+$/
+    uri: !ruby/regexp /^http:\/\/api.pusherapp.com:80\/apps\/<%= Pusher.app_id %>\/channels\/private-\w{8}\/events?.+$/
     body: ! '{}'
     headers:
       content-type:

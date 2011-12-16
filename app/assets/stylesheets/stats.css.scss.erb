@@ -7,7 +7,7 @@ span.beta_badge {
   background:url(<%= asset_data_uri "my/stats/beta_badge.png" %>) no-repeat;
   position:absolute;
   top:58px;
-  right:50px;
+  right:44px;
 }
 
 #trial .wrap {
@@ -76,6 +76,11 @@ span.beta_badge {
   @include box-shadow(rgba(255,255,255,0.3) 0 1px 0);
 }
 
+.stats #sticky_notice {
+  width: 872px;
+  margin: 0px 0 20px 0;
+}
+
 .stats #period_selectors {
   list-style-type:none;
 }
@@ -84,7 +89,7 @@ span.beta_badge {
   width:138px;
   height:82px;
   padding:8px 10px;
-  margin-right:18px;
+  margin-right:20px;
   float:left;
   border: 1px solid #192d4c;
   text-align:center;
@@ -890,4 +895,8 @@ span.beta_badge {
   max-width:100%;
   @include gradient(#304972, #1c355e, #27406a);
   @include border-radius(4px);
+}
+
+.stats #demo_notice {
+  margin-bottom:40px;
 }

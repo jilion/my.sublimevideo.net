@@ -7,7 +7,6 @@ class Site < ActiveRecord::Base
   include SiteModules::Scope
   include SiteModules::Templates
   include SiteModules::Usage
-  include SiteModules::Stats
 
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]
@@ -28,6 +27,7 @@ class Site < ActiveRecord::Base
   mount_uploader :loader, LoaderUploader
 
   delegate :name, to: :plan, prefix: true
+  delegate :stats_retention_days, to: :plan, prefix: true
   delegate :video_views, to: :plan, prefix: true
 
   # ================
@@ -62,8 +62,8 @@ class Site < ActiveRecord::Base
   validates :player_mode, inclusion: PLAYER_MODES
 
   validates :hostname,        presence: { if: proc { |s| s.in_or_will_be_in_paid_plan? } }, hostname: true, hostname_uniqueness: true
-  validates :dev_hostnames,   dev_hostnames: true
-  validates :extra_hostnames, extra_hostnames: true
+  validates :dev_hostnames,   dev_hostnames: true, length: { maximum: 255 }
+  validates :extra_hostnames, extra_hostnames: true, length: { maximum: 255 }
   validates :badged,          inclusion: [true], if: :in_free_plan?
 
   validate  :validates_current_password
@@ -84,6 +84,7 @@ class Site < ActiveRecord::Base
   after_create :delay_ranks_update, :update_last_30_days_counters # in site_modules/templates
 
   after_save :create_and_charge_invoice # in site_modules/invoice
+  after_save :send_trial_started_email, if: proc { |s| s.trial_started_at_changed? && s.trial_started_at_was.nil? && trial_not_started_or_in_trial? } # in site_modules/invoice
   after_save :execute_cdn_update # in site_modules/templates
 
   # =================
@@ -111,7 +112,7 @@ class Site < ActiveRecord::Base
   def self.to_backbone_json
     scoped.to_json(
       only: [:token, :hostname],
-      methods: [:trial_start_time, :plan_name, :plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :stats_retention_days, :stats_trial_start_time]
+      methods: [:trial_start_time, :plan_name, :plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :plan_stats_retention_days]
     )
   end
 
@@ -238,7 +239,7 @@ class Site < ActiveRecord::Base
   def save_skip_pwd
     skip_pwd { self.save! }
   end
-  
+
   def trial_start_time
     trial_started_at.to_i
   end
@@ -363,7 +364,6 @@ end
 #  badged                                    :boolean
 #  last_30_days_invalid_video_views          :integer         default(0)
 #  last_30_days_embed_video_views            :integer         default(0)
-#  stats_trial_started_at                    :datetime
 #  last_30_days_billable_video_views_array   :text
 #
 # Indexes

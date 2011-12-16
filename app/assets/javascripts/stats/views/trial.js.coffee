@@ -2,7 +2,7 @@ class MSVStats.Views.TrialView extends Backbone.View
   template: JST['stats/templates/_trial']
 
   events:
-    'click button': 'startTrial'
+    'click button': 'startTrialOrUpgrade'
 
   initialize: ->
     @options.sites.bind 'change', this.render
@@ -16,17 +16,6 @@ class MSVStats.Views.TrialView extends Backbone.View
       MSVStats.Routers.StatsRouter.setHighchartsUTC()
     return this
 
-  startTrial: (event) ->
-    site         = MSVStats.sites.selectedSite
-    siteToken    = site.get('token')
+  startTrialOrUpgrade: ->
+    siteToken = MSVStats.sites.selectedSite.get('token')
     window.location.href = "/sites/#{siteToken}/plan/edit"
-
-    # trialEndTime = site.statsTrialEndTime(new Date().getTime())
-    # MSVStats.Routers.StatsRouter.setHighchartsUTC(false) # don't use UTC date here
-    # if confirm("Are you sure you want to start stats trial? It'll end on #{Highcharts.dateFormat('%e %b %Y', trialEndTime)}")
-    #   $.post "/sites/#{siteToken}/stats/trial", _method: 'PUT', ->
-    #     MSVStats.sites.fetch # removes trial button
-    #       success: ->
-    #         MSVStats.sites.select(siteToken)
-    #         MSVStats.statsRouter.home(siteToken)
-    # MSVStats.Routers.StatsRouter.setHighchartsUTC()

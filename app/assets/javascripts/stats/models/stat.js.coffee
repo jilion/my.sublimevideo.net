@@ -17,6 +17,8 @@ class MSVStats.Collections.Stats extends Backbone.Collection
   model: MSVStats.Models.Stat
 
   chartType: -> 'areaspline'
+  isMarkerEnabled: ->
+    MSVStats.period.endIndex() - MSVStats.period.startIndex() < 60
 
   pointWidth: (containerWidth) -> Math.round(containerWidth / _.size(@models)) - 1
 
@@ -133,7 +135,7 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
 
   isShowable: -> @_isShowable
 
-  url: -> "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=seconds"
+  url: -> "/sites/#{MSVStats.sites.selectedSite.token()}/stats.json?period=seconds"
 
   chartType: -> 'areaspline'
   periodType: -> 'seconds'
@@ -179,17 +181,17 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
     if first? then first.time() else null
 
 class MSVStats.Collections.StatsMinutes extends MSVStats.Collections.Stats
-  url: -> "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json"
+  url: -> "/sites/#{MSVStats.sites.selectedSite.token()}/stats.json"
 
   periodType: -> 'minutes'
 
 class MSVStats.Collections.StatsHours extends MSVStats.Collections.Stats
-  url: -> "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=hours"
+  url: -> "/sites/#{MSVStats.sites.selectedSite.token()}/stats.json?period=hours"
 
   periodType: -> 'hours'
 
 class MSVStats.Collections.StatsDays extends MSVStats.Collections.Stats
-  url: -> "/sites/#{MSVStats.sites.selectedSite.get('token')}/stats.json?period=days"
+  url: -> "/sites/#{MSVStats.sites.selectedSite.token()}/stats.json?period=days"
 
   periodType: -> 'days'
 
