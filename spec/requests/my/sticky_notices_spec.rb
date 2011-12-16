@@ -112,4 +112,56 @@ feature "Sticky notices" do
     end
   end
 
+  context "sites reach end of trial" do
+    context "user has a cc" do
+      background do
+        sign_in_as :user
+        Factory.create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago)
+        go 'my', '/sites'
+      end
+
+      scenario "doesn't show a notice" do
+        page.should have_no_content "Trial for"
+      end
+    end
+
+    context "user has no cc" do
+      context "trial expires today" do
+        background do
+          sign_in_as :user, without_cc: true
+          @site = Factory.create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago)
+          go 'my', '/sites'
+        end
+
+        scenario "shows a notice" do
+          page.should have_content "Trial for #{@site.hostname} expires today."
+        end
+      end
+
+      context "trial expires tomorrow" do
+        background do
+          sign_in_as :user, without_cc: true
+          @site = Factory.create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 2).days.ago)
+          go 'my', '/sites'
+        end
+
+        scenario "shows a notice" do
+          page.should have_content "Trial for #{@site.hostname} expires in 2 days."
+        end
+      end
+
+      context "trial expires today" do
+        background do
+          sign_in_as :user, without_cc: true
+          @site = Factory.create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 3).days.ago)
+          go 'my', '/sites'
+        end
+
+        scenario "shows a notice" do
+          page.should have_content "Trial for #{@site.hostname} expires in 3 days."
+        end
+      end
+    end
+  end
+
 end
