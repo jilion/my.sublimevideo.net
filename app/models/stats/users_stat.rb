@@ -8,7 +8,6 @@ module Stats
     # Legacy
     field :states_count, type: Hash
 
-    # New
     field :d,  type: DateTime # Day
     field :fr, type: Integer # free
     field :pa, type: Integer # paying
@@ -57,14 +56,6 @@ module Stats
         delay_create_users_stats
         self.create(
           d: Time.now.utc.midnight,
-          # Legacy counters
-          states_count: {
-            active_and_billable_count:     User.paying.count,
-            active_and_not_billable_count: User.free.count,
-            suspended_count:               User.suspended.count,
-            archived_count:                User.archived.count
-          },
-          # New counters
           fr: User.free.count,
           pa: User.paying.count,
           su: User.suspended.count,

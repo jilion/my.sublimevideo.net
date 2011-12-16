@@ -9,12 +9,11 @@ module Stats
     field :states_count, type: Hash
     field :plans_count,  type: Hash
 
-    # New
-    field :d,  type: DateTime  # Day
+    field :d,  type: DateTime # Day
     field :fr, type: Integer # free
     field :sp, type: Integer # sponsored
-    field :tr, type: Hash # trial
-    field :pa, type: Hash # paying
+    field :tr, type: Hash # trial: { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
+    field :pa, type: Hash # paying: { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
     field :su, type: Integer # suspended
     field :ar, type: Integer # archived
 
@@ -63,16 +62,12 @@ module Stats
       def create_sites_stats
         delay_create_sites_stats
 
-        self.create(hash_for_sites.merge({
-          d: Time.now.utc.midnight,
-          # Legacy counters
-          states_count: states_count,
-          plans_count: plans_count
-        }))
+        self.create(hash_for_sites)
       end
 
       def hash_for_sites
         hash = {
+          d: Time.now.utc.midnight,
           fr: Site.active.in_plan('free').count,
           sp: Site.active.in_plan('sponsored').count,
           tr: {},
@@ -91,23 +86,6 @@ module Stats
         end
 
         hash
-      end
-
-      # Legacy counters
-      def states_count
-        states = Site.select("DISTINCT(state), id").order(:id).map(&:state)
-        states.inject({}) do |states_count, state|
-          states_count[state] = Site.with_state(state.to_sym).count
-          states_count
-        end
-      end
-
-      def plans_count
-        plan_ids = Site.select("DISTINCT(plan_id)").order(:plan_id).map(&:plan_id)
-        plan_ids.inject({}) do |plans_count, plan_id|
-          plans_count[plan_id.to_s] = Site.in_plan_id(plan_id).count
-          plans_count
-        end
       end
 
     end

@@ -41,12 +41,6 @@ describe Stats::UsersStat do
 
       described_class.count.should == 1
       users_stat = described_class.last
-      users_stat.states_count.should == {
-        "active_and_billable_count"     => 2,
-        "active_and_not_billable_count" => 3,
-        "suspended_count"               => 1,
-        "archived_count"                => 1
-      }
       users_stat.fr.should eq 3
       users_stat.pa.should eq 2
       users_stat.su.should eq 1

@@ -48,18 +48,6 @@ describe Stats::SitesStat do
         described_class.create_sites_stats
         described_class.count.should eq 1
         sites_stat = described_class.last
-        sites_stat.states_count.should == {
-          "active"    => 8,
-          "archived"  => 1,
-          "suspended" => 1
-        }
-        sites_stat.plans_count.should == {
-          @free_plan.id.to_s => 1,
-          @paid_plan.id.to_s => 3,
-          @sponsored_plan.id.to_s => 1,
-          @custom_plan.id.to_s => 4,
-          @yearly_plan.id.to_s => 1
-        }
         sites_stat["fr"].should eq 1
         sites_stat["sp"].should eq 1
         sites_stat["tr"].should == {
@@ -74,28 +62,6 @@ describe Stats::SitesStat do
         sites_stat["ar"].should eq 1
       end
 
-    end
-
-    describe ".states_count" do
-      it "should include all used states" do
-        described_class.states_count.should == {
-          "active"    => 8,
-          "archived"  => 1,
-          "suspended" => 1
-        }
-      end
-    end
-
-    describe ".plans_count" do
-      it "should include all used plans" do
-        described_class.plans_count.should == {
-          @free_plan.id.to_s => 1,
-          @paid_plan.id.to_s => 3,
-          @sponsored_plan.id.to_s => 1,
-          @custom_plan.id.to_s => 4,
-          @yearly_plan.id.to_s => 1
-        }
-      end
     end
 
   end

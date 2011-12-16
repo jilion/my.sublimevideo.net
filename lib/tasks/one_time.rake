@@ -102,8 +102,8 @@ namespace :one_time do
   end
 
   namespace :stats do
-    desc "Migrate old to new UsersStats"
-    task migrate_old_users_stats: :environment do
+    desc "Migrate old to new Stats::UsersStats & Stats::SitesStats"
+    task migrate_old_stats: :environment do
       timed do
         Stats::UsersStat.where(d: nil).each do |stat|
           stat.update_attributes(
@@ -114,30 +114,25 @@ namespace :one_time do
             ar: stat.states_count['archived_count']
           )
         end
-      end
-    end
 
-    desc "Migrate old to new SitesStats"
-    task migrate_old_sites_stats: :environment do
-      beta_plan_id      = Plan.where { name == 'beta' }.first.id
-      dev_plan_id       = Plan.where { name == 'dev' }.first.id
-      free_plan_id      = Plan.free_plan.id
-      sponsored_plan_id = Plan.sponsored_plan.id
-      comet_m_id        = Plan.where { (name == 'comet') & (cycle == 'month') }.first.id
-      comet_y_id        = Plan.where { (name == 'comet') & (cycle == 'year') }.first.id
-      planet_m_id       = Plan.where { (name == 'planet') & (cycle == 'month') }.first.id
-      planet_y_id       = Plan.where { (name == 'planet') & (cycle == 'year') }.first.id
-      star_m_id         = Plan.where { (name == 'star') & (cycle == 'month') }.first.id
-      star_y_id         = Plan.where { (name == 'star') & (cycle == 'year') }.first.id
-      galaxy_m_id       = Plan.where { (name == 'galaxy') & (cycle == 'month') }.first.id
-      galaxy_y_id       = Plan.where { (name == 'galaxy') & (cycle == 'year') }.first.id
+        beta_plan_id      = Plan.where { name == 'beta' }.first.id
+        dev_plan_id       = Plan.where { name == 'dev' }.first.id
+        free_plan_id      = Plan.free_plan.id
+        sponsored_plan_id = Plan.sponsored_plan.id
+        comet_m_id        = Plan.where { (name == 'comet') & (cycle == 'month') }.first.id
+        comet_y_id        = Plan.where { (name == 'comet') & (cycle == 'year') }.first.id
+        planet_m_id       = Plan.where { (name == 'planet') & (cycle == 'month') }.first.id
+        planet_y_id       = Plan.where { (name == 'planet') & (cycle == 'year') }.first.id
+        star_m_id         = Plan.where { (name == 'star') & (cycle == 'month') }.first.id
+        star_y_id         = Plan.where { (name == 'star') & (cycle == 'year') }.first.id
+        galaxy_m_id       = Plan.where { (name == 'galaxy') & (cycle == 'month') }.first.id
+        galaxy_y_id       = Plan.where { (name == 'galaxy') & (cycle == 'year') }.first.id
 
-      plus_m_id    = Plan.where { (name == 'plus') & (cycle == 'month') }.first.id
-      plus_y_id    = Plan.where { (name == 'plus') & (cycle == 'year') }.first.id
-      premium_m_id = Plan.where { (name == 'premium') & (cycle == 'month') }.first.id
-      premium_y_id = Plan.where { (name == 'premium') & (cycle == 'year') }.first.id
+        plus_m_id    = Plan.where { (name == 'plus') & (cycle == 'month') }.first.id
+        plus_y_id    = Plan.where { (name == 'plus') & (cycle == 'year') }.first.id
+        premium_m_id = Plan.where { (name == 'premium') & (cycle == 'month') }.first.id
+        premium_y_id = Plan.where { (name == 'premium') & (cycle == 'year') }.first.id
 
-      timed do
         Stats::SitesStat.where(d: nil).each do |stat|
           stat.update_attributes(
             d:  stat.created_at.midnight,
