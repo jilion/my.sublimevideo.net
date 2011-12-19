@@ -40,7 +40,7 @@ group :backend do
     watch('spec/spec_helper.rb')
   end
 
-  guard :rspec, :version => 2, :cli => "--color -f doc --drb", :all_after_pass => false, :all_on_start => false, :keep_failed => false do
+  guard :rspec, :version => 2, :cli => "--color -f doc", :all_after_pass => false, :all_on_start => false, :keep_failed => false do
     watch('spec/spec_helper.rb')                                               { "spec" }
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }

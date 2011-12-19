@@ -64,6 +64,8 @@ describe Site do
     end
 
     it { should validate_presence_of(:user) }
+    it { should ensure_length_of(:extra_hostnames).is_at_most(255) }
+    it { should ensure_length_of(:dev_hostnames).is_at_most(255) }
 
     it { should allow_value('dev').for(:player_mode) }
     it { should allow_value('beta').for(:player_mode) }
@@ -71,8 +73,8 @@ describe Site do
     it { should_not allow_value('fake').for(:player_mode) }
 
     specify { Site.validators_on(:hostname).map(&:class).should eq [ActiveModel::Validations::PresenceValidator, HostnameValidator, HostnameUniquenessValidator] }
-    specify { Site.validators_on(:extra_hostnames).map(&:class).should eq [ExtraHostnamesValidator] }
-    specify { Site.validators_on(:dev_hostnames).map(&:class).should eq [DevHostnamesValidator] }
+    specify { Site.validators_on(:extra_hostnames).map(&:class).should include ExtraHostnamesValidator }
+    specify { Site.validators_on(:dev_hostnames).map(&:class).should include DevHostnamesValidator }
 
     describe "plan" do
       context "with no plan" do
@@ -826,7 +828,7 @@ describe Site do
       describe "#set_user_attributes"  do
         subject { Factory.create(:user, name: "Bob") }
 
-        it "should set only current_password" do
+        it "sets only current_password" do
           subject.name.should eql "Bob"
           site = Factory.create(:site, user: subject, plan_id: @paid_plan.id)
           site.update_attributes(user_attributes: { name: "John", 'current_password' => '123456' })
@@ -857,7 +859,7 @@ describe Site do
 
       describe "#prepare_pending_attributes" do
         context "when pending_plan_id has changed" do
-          it "should call #prepare_pending_attributes" do
+          it "calls #prepare_pending_attributes" do
             subject.reload
             subject.plan_id = @paid_plan.id
             VCR.use_cassette('ogone/visa_payment_generic') { subject.save_skip_pwd }
@@ -869,7 +871,7 @@ describe Site do
         end
 
         context "when pending_plan_id doesn't change" do
-          it "should not call #prepare_pending_attributes" do
+          it "doesn't call #prepare_pending_attributes" do
             subject.hostname = 'test.com'
             subject.save_skip_pwd
             subject.pending_plan_id.should be_nil
@@ -882,20 +884,50 @@ describe Site do
       subject { Factory.create(:site) }
 
       describe "#create_and_charge_invoice" do
-        it "should call #create_and_charge_invoice" do
+        it "calls #create_and_charge_invoice" do
           subject.should_receive(:create_and_charge_invoice)
           subject.save!
+        end
+      end
+
+      describe "#send_trial_started_email" do
+        context "new site" do
+          it "calls #send_trial_started_email" do
+            site = Factory.build(:new_site)
+            site.should_receive(:send_trial_started_email)
+            site.save!
+          end
+        end
+
+        context "persisted site" do
+          context "trial never started before" do
+            it "calls #send_trial_started_email" do
+              site = Factory.create(:site, plan_id: @free_plan.id)
+              site.should_receive(:send_trial_started_email)
+              site.plan_id = @paid_plan.id
+              site.save!
+            end
+          end
+
+          context "trial already started" do
+            it "doesn't call #send_trial_started_email" do
+              site = Factory.create(:site)
+              site.should_not_receive(:send_trial_started_email)
+              site.trial_started_at = Time.now.utc
+              site.save!
+            end
+          end
         end
       end
     end
 
     describe "after_create" do
-      it "should delay update_ranks" do
+      it "delays update_ranks" do
         expect { Factory.create(:site) }.to change(Delayed::Job.where { handler =~ "%update_ranks%" }, :count).by(1)
       end
 
       context "site has a hostname" do
-        it "should update ranks" do
+        it "updates ranks" do
           Timecop.travel(10.minutes.ago) { @site = Factory.create(:site, hostname: 'sublimevideo.net') }
           VCR.use_cassette('sites/ranks') { @worker.work_off }
           @site.reload
@@ -905,7 +937,7 @@ describe Site do
       end
 
       context "site has blank hostname" do
-        it "should update ranks" do
+        it "updates ranks" do
           Timecop.travel(10.minutes.ago) { @site = Factory.create(:site, hostname: '', plan_id: @free_plan.id) }
           VCR.use_cassette('sites/ranks') { @worker.work_off }
           @site.reload
@@ -915,7 +947,7 @@ describe Site do
       end
 
       context "site has no hostname" do
-        it "should update ranks" do
+        it "updates ranks" do
           Timecop.travel(10.minutes.ago) { @site = Factory.create(:site, hostname: nil, plan_id: @free_plan.id) }
           VCR.use_cassette('sites/ranks') { @worker.work_off }
           @site.reload

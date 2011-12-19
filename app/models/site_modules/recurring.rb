@@ -17,18 +17,18 @@ module SiteModules::Recurring
       end
     end
 
-    def delay_send_trial_will_end
-      unless Delayed::Job.already_delayed?('%Site%send_trial_will_end%')
-        delay(run_at: Time.now.utc.tomorrow.midnight).send_trial_will_end
+    def delay_send_trial_will_expire
+      unless Delayed::Job.already_delayed?('%Site%send_trial_will_expire%')
+        delay(run_at: Time.now.utc.tomorrow.midnight).send_trial_will_expire
       end
     end
 
-    def send_trial_will_end
-      delay_send_trial_will_end
+    def send_trial_will_expire
+      delay_send_trial_will_expire
 
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
         Site.in_trial.billable.where(first_paid_plan_started_at: nil).trial_expires_on(days_before_trial_end.days.from_now).find_each(batch_size: 100) do |site|
-          My::BillingMailer.trial_will_end(site).deliver!
+          My::BillingMailer.trial_will_expire(site).deliver! unless site.user.cc?
         end
       end
     end

@@ -6,10 +6,14 @@ module My::SitesHelper
 
   def full_days_until_trial_end(site)
     if site.trial_not_started_or_in_trial?
-      ((site.trial_started_at.midnight + BusinessModel.days_for_trial.days - 1 - Time.now.utc.midnight) / (3600 * 24)).to_i
+      ((site.trial_started_at.midnight + BusinessModel.days_for_trial.days - Time.now.utc.midnight) / (3600 * 24)).to_i
     else
       0
     end
+  end
+
+  def trial_will_expire_sentence(site)
+    I18n.t('site.trial.will_end', hostname: site.hostname, count: full_days_until_trial_end(site))
   end
 
   def sublimevideo_script_tag_for(site)

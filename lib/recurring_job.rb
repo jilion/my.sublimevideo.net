@@ -14,7 +14,7 @@ module RecurringJob
   ]
 
   NAMES = [
-    '%Site%send_trial_will_end%',
+    '%Site%send_trial_will_expire%',
     '%User%send_credit_card_expiration%',
     '%RecurringJob%invoices_processing%',
     '%SiteModules::UsageMonitoring%monitor_sites_usages%',
@@ -45,7 +45,7 @@ module RecurringJob
 
       # Billing
       RecurringJob.delay_invoices_processing
-      Site.delay_send_trial_will_end
+      Site.delay_send_trial_will_expire
       User.delay_send_credit_card_expiration
 
       # Stats

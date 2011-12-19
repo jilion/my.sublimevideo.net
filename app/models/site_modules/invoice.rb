@@ -9,7 +9,9 @@ module SiteModules::Invoice
           site.prepare_activation
           site.prepare_pending_attributes
         else
+          trial_plan   = site.plan
           site.plan_id = Plan.free_plan.id
+          My::BillingMailer.trial_has_expired(site, trial_plan).deliver!
         end
         site.save_skip_pwd
       end
@@ -86,7 +88,19 @@ module SiteModules::Invoice
 
     # Tells if trial **actually** started and **now** ended
     def trial_ended?
-      trial_started_at? && trial_started_at <= BusinessModel.days_for_trial.days.ago
+      trial_started_at? && trial_started_at < (BusinessModel.days_for_trial - 1).days.ago.midnight
+    end
+
+    def trial_expires_on(timestamp)
+      trial_started_at? && trial_started_at.midnight == (timestamp - BusinessModel.days_for_trial.days).midnight
+    end
+
+    def trial_expires_in_less_than_or_equal_to(timestamp)
+      trial_started_at? && !trial_ended? && trial_started_at.midnight <= (timestamp - BusinessModel.days_for_trial.days).midnight
+    end
+
+    def trial_end
+      trial_started_at? ? (trial_started_at + BusinessModel.days_for_trial.days).yesterday.end_of_day : nil
     end
 
     # DEPRECATED, TO BE REMOVED 30 DAYS AFTER NEW BUSINESS MODEL DEPLOYMENT
@@ -132,10 +146,6 @@ module SiteModules::Invoice
       offset = offset - (offset % 12) + 11 if plan.yearly?
 
       (offset + 1).months - 1.day
-    end
-
-    def trial_end
-      trial_started_at? ? trial_started_at + BusinessModel.days_for_trial.days : nil
     end
 
     def plan_month_cycle_started_at
@@ -287,6 +297,11 @@ module SiteModules::Invoice
         # directly update for unpaid plans or any plans during trial
         self.apply_pending_attributes
       end
+    end
+
+    # after_save
+    def send_trial_started_email
+      My::BillingMailer.trial_has_started(self).deliver!
     end
 
     # ========================

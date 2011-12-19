@@ -6,8 +6,8 @@ class My::SiteStatsController < MyController
   # GET /sites/stats/:site_id
   # GET /sites/stats(/:token)
   def index
-    @sites = current_user ? current_user.sites.not_archived.with_plan.order(:hostname, :token) : Site.where(token: SiteToken.www)
-    Rails.logger.debug @sites
+    @sites = demo_site? ? Site.where(token: SiteToken.www) : current_user.sites.not_archived.with_plan.order(:hostname, :token)
+
     respond_to do |format|
       format.html
       format.json { render json: Stat::Site.json(@token, params[:period] || 'minutes') }
@@ -32,7 +32,7 @@ private
       @token = @site.token
     end
   end
-  
+
   def demo_site?
     (params[:token] || params[:site_id] || params[:id]) == 'demo'
   end
