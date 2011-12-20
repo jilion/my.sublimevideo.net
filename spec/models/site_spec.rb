@@ -64,6 +64,8 @@ describe Site do
     end
 
     it { should validate_presence_of(:user) }
+    it { should ensure_length_of(:extra_hostnames).is_at_most(255) }
+    it { should ensure_length_of(:dev_hostnames).is_at_most(255) }
 
     it { should allow_value('dev').for(:player_mode) }
     it { should allow_value('beta').for(:player_mode) }
@@ -71,8 +73,8 @@ describe Site do
     it { should_not allow_value('fake').for(:player_mode) }
 
     specify { Site.validators_on(:hostname).map(&:class).should eq [ActiveModel::Validations::PresenceValidator, HostnameValidator, HostnameUniquenessValidator] }
-    specify { Site.validators_on(:extra_hostnames).map(&:class).should eq [ExtraHostnamesValidator] }
-    specify { Site.validators_on(:dev_hostnames).map(&:class).should eq [DevHostnamesValidator] }
+    specify { Site.validators_on(:extra_hostnames).map(&:class).should include ExtraHostnamesValidator }
+    specify { Site.validators_on(:dev_hostnames).map(&:class).should include DevHostnamesValidator }
 
     describe "plan" do
       context "with no plan" do
@@ -888,7 +890,7 @@ describe Site do
         end
       end
 
-      pending "#send_trial_started_email" do
+      describe "#send_trial_started_email" do
         context "new site" do
           it "calls #send_trial_started_email" do
             site = Factory.build(:new_site)

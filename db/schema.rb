@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111128142033) do
+ActiveRecord::Schema.define(:version => 20111214134523) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -249,7 +249,6 @@ ActiveRecord::Schema.define(:version => 20111128142033) do
     t.boolean  "badged"
     t.integer  "last_30_days_invalid_video_views",          :default => 0
     t.integer  "last_30_days_embed_video_views",            :default => 0
-    t.datetime "stats_trial_started_at"
     t.text     "last_30_days_billable_video_views_array"
   end
 

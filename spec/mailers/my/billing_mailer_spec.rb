@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe My::BillingMailer do
 
-  it_should_behave_like "common mailer checks", %w[trial_started], from: [I18n.t('mailer.billing.email')], params: Factory.create(:site), content_type: %r{text/html; charset=UTF-8}
+  it_should_behave_like "common mailer checks", %w[trial_has_started], from: [I18n.t('mailer.billing.email')], params: Factory.create(:site), content_type: %r{text/html; charset=UTF-8}
   it_should_behave_like "common mailer checks", %w[trial_will_expire], from: [I18n.t('mailer.billing.email')], params: Factory.create(:site), content_type: %r{text/html; charset=UTF-8}
   it_should_behave_like "common mailer checks", %w[trial_has_expired], from: [I18n.t('mailer.billing.email')], params: [Factory.create(:site), Factory.create(:plan)], content_type: %r{text/html; charset=UTF-8}
   it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: Factory.create(:user, cc_expire_on: 1.day.from_now)
@@ -17,10 +17,29 @@ describe My::BillingMailer do
       @transaction = Factory.create(:transaction, invoices: [@invoice])
     end
 
-    describe "#trial_started" do
-      before(:all) do
-        described_class.trial_started(@site.reload).deliver
-        @last_delivery = ActionMailer::Base.deliveries.last
+    describe "#trial_has_started" do
+      context "user has a cc" do
+        before(:all) do
+          described_class.trial_has_started(@site.reload).deliver
+          @last_delivery = ActionMailer::Base.deliveries.last
+        end
+
+        it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_has_started', hostname: @site.hostname) }
+        it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
+        it { @last_delivery.body.encoded.should include I18n.l(@site.trial_end.tomorrow, format: :named_date) }
+        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
+      end
+      
+      context "user has no cc" do
+        before(:all) do
+          @user.reset_credit_card_info
+          described_class.trial_has_started(@site.reload).deliver
+          @last_delivery = ActionMailer::Base.deliveries.last
+        end
+
+        it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_has_started', hostname: @site.hostname) }
+        it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
+        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
       end
 
       it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_started', hostname: @site.hostname) }

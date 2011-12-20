@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe VideoTag do
-  before(:each) { Pusher.stub(:[]) { mock('channel', trigger: nil) } }
+  before(:each) { Pusher.stub(:[]) { mock('channel', trigger: nil, stats: { occupied: true }) } }
 
   let(:video_tag) { VideoTag.create(
     'st' => 'site1234',
@@ -31,10 +31,20 @@ describe VideoTag do
 
   describe "#push_new_meta_data" do
 
-    it "push after save" do
+    it "push after save if channel occupided" do
       video_tag = VideoTag.new(st: 'site1234', u: 'video123', n: 'Video 123')
       mock_channel = mock('channel')
+      mock_channel.should_receive(:stats).once.and_return({occupied: true})
       mock_channel.should_receive(:trigger).once.with('video_tag', u: 'video123', meta_data: video_tag.meta_data)
+      Pusher.stub(:[]).with("private-site1234") { mock_channel }
+      video_tag.save
+    end
+
+    it "doesn't push after save if channel isn't occupided" do
+      video_tag = VideoTag.new(st: 'site1234', u: 'video123', n: 'Video 123')
+      mock_channel = mock('channel')
+      mock_channel.should_receive(:stats).once.and_return({occupied: false})
+      mock_channel.should_not_receive(:trigger)
       Pusher.stub(:[]).with("private-site1234") { mock_channel }
       video_tag.save
     end

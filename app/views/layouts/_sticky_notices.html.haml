@@ -1,8 +1,9 @@
 - credit_card_warning = [current_user.cc_expire_this_month? || current_user.cc_expired?, 'credit_card_warning']
 - billing_address_incomplete = [current_user.cc? && !current_user.billing_address_complete?, 'billing_address_incomplete']
 - trials_expire = []
-- @sites.each do |site|
-  - trials_expire << site if site.trial_not_started_or_in_trial? && site.trial_expires_in_less_than_or_equal_to(5.days.from_now)
+- unless current_user.cc?
+  - @sites.each do |site|
+    - trials_expire << site if site.trial_not_started_or_in_trial? && site.trial_expires_in_less_than_or_equal_to(5.days.from_now)
 
 - notices = [credit_card_warning, billing_address_incomplete]
 - conditions_sum = notices.inject(false) { |cond, notice| cond || notice[0] }
