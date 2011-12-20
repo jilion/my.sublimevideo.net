@@ -149,7 +149,7 @@ group :development do
   gem 'rb-fsevent', '0.9.0.pre3'
   gem 'growl_notify'
 
-  gem 'guard', '~> 0.8.3'
+  gem 'guard', '~> 0.8.8'
   # gem 'ruby_gntp'
   # platforms :ruby do
   #   gem 'rb-readline'

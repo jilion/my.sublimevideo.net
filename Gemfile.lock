@@ -533,7 +533,7 @@ DEPENDENCIES
   foreman
   fuubar
   growl_notify
-  guard (~> 0.8.3)
+  guard (~> 0.8.8)
   guard-bundler
   guard-coffeescript
   guard-jasmine
