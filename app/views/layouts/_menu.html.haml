@@ -13,7 +13,7 @@
       - [:features, :plans, :demo, ['customer-showcase', { link_text: "Showcase" }], [:help, { link_text: "Help", link_options: { class: 'my_link' } }], :news].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
         - opts = r.is_a?(Array) ? r[1] : { link_text: name.to_s.titleize }
-        - subdomain = (name == :help && request.subdomain == 'my' ?  'my' : '')
+        - subdomain = (name == :help && request.subdomain == 'my' ?  'my.' : '')
         = activable_menu_item(:li, page_url(name, { host: subdomain + request.domain, protocol: 'http' }), opts.merge(onclick: "SublimeVideo.makeSticky(this, '#menu')"))
 
       - if request.subdomain == 'my'
