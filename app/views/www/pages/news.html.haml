@@ -4,33 +4,6 @@
   %p.sub= raw "Find the latest SublimeVideo news, blog posts and press coverage here."
 
 %section.content_left
-  %h3.title= "SublimeVideo News"
-  %h4.title= "On the blog"
-  %ul.news
-    -# %li
-    -#   = link_to "SublimeVideo Unleashed!", ""
-    -#   %em.date= "November 29th, 2011"
-    -# %li
-    -#   = link_to "Nissan's 'Zen to Z' Web Campaign Powered by HTML5 and SublimeVideo", ""
-    -#   %em.date= "November 29th, 2011"
-    -# %li
-    -#   = link_to "Introducing the Official SublimeVideo WordPress Plugin", ""
-    -#   %em.date= "November 29th, 2011"
-    - cached_latest_sublimevideo_news(3).each do |news|
-      %li
-        = link_to news.title, news.url
-        %em.date= l news.date, format: :date
-  .read_more
-    = link_to "Read more", "http://blog.jilion.com/tags/sublimevideo"
-  %h4.title= "Press releases"
-  %ul.press_releases
-    %li
-      = link_to "SublimeVideo - The World's First Cloud-based HTML5 Video Player Launches Free and Unlimited Player, Alongside Enhanced Paid Plans and Universal, Real-Time Stats Platform", pr_url("2011-11-29")
-      %em.date= l Time.parse("2011-11-29"), format: :date
-    %li
-      = link_to "Jilion Commercializes Highly Anticipated SublimeVideo Cloud-based HTML5 Player Service", pr_url("2011-03-30")
-      %em.date= l Time.parse("2011-03-30"), format: :date
-  .break
   %h3.title= "Selected Articles"
   %ul.articles
     %li.techcrunch
@@ -63,6 +36,33 @@
       %em.date
         = "Daring Fireball,"
         = l Time.parse("2010-02-01"), format: :date
+  .break
+  %h3.title= "SublimeVideo News"
+  %h4.title= "On the blog"
+  %ul.news
+    -# %li
+    -#   = link_to "SublimeVideo Unleashed!", ""
+    -#   %em.date= "November 29th, 2011"
+    -# %li
+    -#   = link_to "Nissan's 'Zen to Z' Web Campaign Powered by HTML5 and SublimeVideo", ""
+    -#   %em.date= "November 29th, 2011"
+    -# %li
+    -#   = link_to "Introducing the Official SublimeVideo WordPress Plugin", ""
+    -#   %em.date= "November 29th, 2011"
+    - cached_latest_sublimevideo_news(3).each do |news|
+      %li
+        = link_to news.title, news.url
+        %em.date= l news.date, format: :date
+  .read_more
+    = link_to "Read more", "http://blog.jilion.com/tags/sublimevideo"
+  %h4.title= "Press releases"
+  %ul.press_releases
+    %li
+      = link_to "SublimeVideo - The World's First Cloud-based HTML5 Video Player Launches Free and Unlimited Player, Alongside Enhanced Paid Plans and Universal, Real-Time Stats Platform", pr_url("2011-11-29")
+      %em.date= l Time.parse("2011-11-29"), format: :date
+    %li
+      = link_to "Jilion Commercializes Highly Anticipated SublimeVideo Cloud-based HTML5 Player Service", pr_url("2011-03-30")
+      %em.date= l Time.parse("2011-03-30"), format: :date
 %aside.content_right
   .press_kit
     = link_to press_kit_url, class: "button" do
