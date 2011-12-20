@@ -1,7 +1,11 @@
-class NoSubdomain
+class WwwOrNoSubdomain
   def self.matches?(request)
-    request.subdomain.blank?
+    request.subdomain.blank? || request.subdomain == 'www'
   end
+end
+
+def https_if_prod_or_staging
+  Rails.env.production? || Rails.env.staging? ? 'https' : 'http'
 end
 
 MySublimeVideo::Application.routes.draw do
@@ -10,18 +14,17 @@ MySublimeVideo::Application.routes.draw do
     mount Jasminerice::Engine => "/jasmine"
   end
 
+  # Redirect to subdomains
+  match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
+  match '/admin(/*rest)' => redirect { |params, req| "#{https_if_prod_or_staging}://admin.#{req.domain}/#{params[:rest]}" }
+
   scope module: 'my' do
     constraints subdomain: 'my' do
-
-      unauthenticated :user do
-        %w[/ sites].each { |action| get action => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/?p=login" } }
-      end
-
       devise_for :users,
                  module: 'my/users',
                  path: '',
                  path_names: { sign_in: 'login', sign_out: 'logout' },
-                 skip: [:sessions, :invitations, :registrations] do
+                 skip: [:invitations, :registrations] do
         resource :user, only: [], path: '' do
           get    :new,     path: '/signup', as: 'new'
           post   :create,  path: '/signup'
@@ -30,17 +33,20 @@ MySublimeVideo::Application.routes.draw do
           put    :update,  path: '/account', as: 'update'
           delete :destroy, path: '/account', as: 'destroy'
         end
-        get  '/logout' => 'users/sessions#destroy', as: 'destroy_user_session'
-        put  '/hide_notice/:id' => 'users#hide_notice'
-        post '/password/validate' => "users/passwords#validate"
+        get  '/gs-login' => 'users/sessions#new_gs'
+        post '/gs-login' => 'users/sessions#create_gs', as: 'gs_login'
+
         get  '/account/more-info'  => "users#more_info", as: 'more_user_info'
+
+        put  '/hide_notice/:id' => 'users#hide_notice'
+
+        post '/password/validate' => "users/passwords#validate"
       end
       get '/account/edit' => redirect('/account')
 
-      %w[sign_up register].each { |action| get action => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/?p=signup" } }
-      %w[login log_in sign_in signin].each    { |action| get action => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://#{req.domain}/?p=login" } }
+      %w[sign_up register].each         { |action| get action => redirect('/signup') }
+      %w[log_in sign_in signin].each    { |action| get action => redirect('/login') }
       %w[log_out sign_out signout].each { |action| get action => redirect('/logout') }
-      get '/invitation/accept' => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/?p=signup&beta=over" }
 
       scope 'account' do
         resource :billing, only: [:edit, :update]
@@ -94,12 +100,9 @@ MySublimeVideo::Application.routes.draw do
 
       post '/pusher/auth' => 'pusher#auth'
 
-      authenticated :user do
-        root to: redirect('/sites')
-      end
-
       get '/:page' => 'pages#show', as: :page
 
+      root to: redirect('/sites')
     end
   end # my.
 
@@ -129,19 +132,6 @@ MySublimeVideo::Application.routes.draw do
 
     end
   end # api.
-
-  scope module: 'docs', as: 'docs' do
-    constraints subdomain: 'docs' do
-      # Deprecated routes
-      %w[javascript-api js-api].each { |r| match r => redirect('/javascript-api/usage') }
-
-      resources :releases, only: :index
-
-      get '/*page' => 'pages#show', as: :page
-
-      root to: redirect('/quickstart-guide')
-    end
-  end
 
   # We put this block out of the following scope to avoid double admin_admin in url helpers...
   devise_for :admins,
@@ -222,42 +212,37 @@ MySublimeVideo::Application.routes.draw do
     end
   end # admin.
 
-  devise_scope :user do
-    get '/?p=signup' => 'my/users#new'
-    post '/signup' => 'my/users#create', as: 'signup'
-    get '/?p=login' => 'my/users/sessions#new'
-    post '/login' => 'my/users/sessions#create', as: 'login'
-    get '/logout' => 'my/users/sessions#destroy'
-    get '/gs-login' => 'my/users/sessions#new_gs'
-    post '/gs-login' => 'my/users/sessions#create_gs', as: 'gs_login'
-  end
+  scope module: 'docs', as: 'docs' do
+    constraints subdomain: 'docs' do
+      # Deprecated routes
+      %w[javascript-api js-api].each { |r| match r => redirect('/javascript-api/usage') }
 
-  constraints(NoSubdomain) do
-    match '(*path)' => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://www.#{req.domain}/#{params[:path]}" }
+      resources :releases, only: :index
+
+      get '/*page' => 'pages#show', as: :page
+
+      root to: redirect('/quickstart-guide')
+    end
   end
 
   scope module: 'www' do
-    constraints subdomain: 'www' do
+    constraints(WwwOrNoSubdomain) do
       # Redirects
       %w[signup sign_up register].each { |action| get action => redirect('/?p=signup') }
       %w[login log_in sign_in signin].each { |action| get action => redirect('/?p=login') }
 
-      # Redirect to subdomains
-      match '/docs(/*rest)' => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://docs.#{req.domain}/#{params[:rest]}" }
-      match '/admin(/*rest)' => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://admin.#{req.domain}/#{params[:rest]}" }
-
       # Docs routes
       %w[javascript-api releases].each do |path|
-        get path => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://docs.#{req.domain}/#{path}" }
+        get path => redirect { |params, req| "http://docs.#{req.domain}/#{path}" }
       end
 
       # My routes
       %w[privacy terms sites account].each do |path|
-        match path => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://my.#{req.domain}/#{path}" }
+        match path => redirect { |params, req| "#{https_if_prod_or_staging}://my.#{req.domain}/#{path}" }
       end
       authenticated :user do
         %w[help].each do |path|
-          get path => redirect { |params, req| "http#{Rails.env.production? ? 's' : ''}://my.#{req.domain}/#{path}" }
+          get path => redirect { |params, req| "#{https_if_prod_or_staging}://my.#{req.domain}/#{path}" }
         end
       end
 

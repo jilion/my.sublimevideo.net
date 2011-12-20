@@ -1,9 +1,11 @@
 class My::Users::SessionsController < Devise::SessionsController
   include CustomDevisePaths
 
+  prepend_before_filter :require_no_authentication, only: [:new, :create, :new_gs, :create_gs]
+
   # GET /gs-login
   def new_gs
-    render template: '/my/users/sessions/new', layout: 'popup'
+    render :new, layout: 'popup'
   end
 
   # POST /gs-login
@@ -16,7 +18,7 @@ class My::Users::SessionsController < Devise::SessionsController
 
   # POST /login
   def create
-    resource = warden.authenticate!(scope: resource_name, recall: 'www/pages#show')
+    resource = warden.authenticate!(scope: resource_name, recall: 'my/users/sessions#new')
     set_flash_message(:notice, :signed_in) if is_navigational_format?
     sign_in(resource_name, resource)
     session["#{resource_name}_return_to"] = params[:success_url] if params[:success_url]
