@@ -69,7 +69,10 @@ private
 
   # after_save
   def push_new_meta_data
-    Pusher["private-#{st}"].trigger('video_tag', u: u, meta_data: meta_data)
+    channel = Pusher["private-#{st}"]
+    if channel.stats[:occupied]
+      channel.trigger('video_tag', u: u, meta_data: meta_data)
+    end
   end
 
   # Merge each videos tag in one big hash
