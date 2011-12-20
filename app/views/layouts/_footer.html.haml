@@ -4,26 +4,26 @@
       .col
         %h4= "Product"
         %ul
-          %li= link_to "Home", root_url(host: request.domain)
-          %li= link_to "Features", page_url('features', host: request.domain)
-          %li= link_to "Demo", page_url('demo', host: request.domain)
-          %li= link_to "Plans & Pricing", page_url('plans', host: request.domain)
-          %li= link_to "Player Releases", docs_releases_url(subdomain: 'docs')
+          %li= link_to "Home", root_url(host: request.domain, protocol: 'http' )
+          %li= link_to "Features", page_url('features', host: request.domain, protocol: 'http')
+          %li= link_to "Demo", page_url('demo', host: request.domain, protocol: 'http')
+          %li= link_to "Plans & Pricing", page_url('plans', host: request.domain, protocol: 'http')
+          %li= link_to "Player Releases", docs_releases_url(subdomain: 'docs', protocol: 'http')
       .col
         %h4= "Community & Support"
         %ul
-          %li= link_to "Customer Showcase", page_url('customer-showcase', host: request.domain)
+          %li= link_to "Customer Showcase", page_url('customer-showcase', host: request.domain, protocol: 'http')
           %li= link_to "Help", page_url('help', host: (request.subdomain == 'my' ? 'my.' : '') + request.domain), class: 'my_link'
-          %li= link_to "Documentation", root_url(subdomain: 'docs')
+          %li= link_to "Documentation", root_url(subdomain: 'docs', protocol: 'http')
           %li= link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", onclick: "window.open(this); return false"
       .col
         %h4= "Stay Connected"
         %ul
-          %li= link_to "News", page_url('news', subdomain: 'www')
+          %li= link_to "News", page_url('news', host: request.domain, protocol: 'http')
           %li= link_to "Blog", "http://blog.jilion.com/tags/sublimevideo", onclick: "window.open(this); return false"
           %li= link_to "Twitter", "http://twitter.com/jilion"
-          %li= link_to "Contact", page_url('contact', host: request.domain)
-          %li= link_to "About", page_url('about', host: request.domain)
+          %li= link_to "Contact", page_url('contact', host: request.domain, protocol: 'http')
+          %li= link_to "About", page_url('about', host: request.domain, protocol: 'http')
     .right
       %p
         = "SublimeVideo is a service by"
