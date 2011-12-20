@@ -51,7 +51,7 @@ gem 'responders',            '~> 0.6.4'
 gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
-gem 'fog',                   '~> 1.0.0'
+gem 'fog',                   '~> 1.1.2'
 gem 'carrierwave',           '~> 0.5.7'
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'voxel_hapi',            git: 'git://github.com/thibaudgg/voxel_hapi.git', branch: '1.9.2' # VoxCast CDN
@@ -147,13 +147,13 @@ group :development do
   gem 'em-http-request' # async pusher in populate
 
   gem 'rb-fsevent', '0.9.0.pre3'
+  gem 'growl_notify'
 
-  gem 'ruby_gntp'
-  # gem 'guard', :git => 'git://github.com/guard/guard.git', :branch => 'dev'
+  gem 'guard', '~> 0.8.8'
+  # gem 'ruby_gntp'
   # platforms :ruby do
   #   gem 'rb-readline'
   # end
-  # gem 'growl_notify'
 
   gem 'guard-bundler'
   gem 'guard-pow'
