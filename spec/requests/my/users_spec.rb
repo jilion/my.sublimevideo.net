@@ -97,6 +97,32 @@ feature "Users" do
     User.last.valid_password?("newpassword").should be_true
   end
 
+  scenario "recover password (with archived user with same email)" do
+    email = 'thibaud@jilion.com'
+    archived_user = Factory.create(:user, email: email, password: '123456')
+    archived_user.current_password = '123456'
+    archived_user.archive
+    user = Factory.create(:user, email: email, password: '123456')
+
+    go 'my', 'password/new'
+
+    fill_in "Email", with: email
+    click_button "Send"
+
+    user.reload.reset_password_token.should be_present
+
+    last_delivery = ActionMailer::Base.deliveries.last
+    last_delivery.to.should eq [user.email]
+    last_delivery.subject.should eq "Reset password instructions"
+
+    go 'my', "password/edit?reset_password_token=#{user.reset_password_token}"
+
+    fill_in "Password", with: 'newpassword'
+    click_button "Change"
+
+    user.reload.valid_password?("newpassword").should be_true
+  end
+
   describe "Access the account page" do
 
     context "When the user is not logged-in" do
