@@ -283,6 +283,10 @@ body {
   right:-60px;
 }
 
+.home .showcase .quote.katabatic img {
+  top:-16px;
+}
+
 .home .showcase .quote blockquote {
   padding:50px 0 0;
   font-family:chaparral-pro-1,chaparral-pro-2, Georgia, Times, serif;
@@ -295,6 +299,12 @@ body {
   right:-70px;
 }
 
+.home .showcase .quote.katabatic blockquote {
+  text-align:right;
+  margin-left:-20px;
+  right:-40px;
+}
+
 .home .showcase .quote p.author {
   padding:10px 0 0 130px;
   text-align:right;
@@ -302,11 +312,18 @@ body {
   line-height:18px;
 }
 
+.home .showcase .quote.katabatic p.author {
+  position:relative;
+  right:-37px;
+  padding-left:80px;
+}
+
 .home .showcase .quote p.author a {
   color:#38527c;
 }
 
 .home .showcase a.view_all_showcases {
+  position:absolute;
   display:inline-block;
   color:#38527c;
   padding:10px 10px 10px 12px;
@@ -315,6 +332,10 @@ body {
   @include gradient(rgba(255,255,255,0.6), rgba(255,255,255,0), transparent);
   @include border-radius(8px);
   @include box-shadow((inset #fff 0 1px 0, #fff 0 1px 0));
+}
+
+.home .showcase .quote.katabatic a.view_all_showcases {
+  margin-left:106px;
 }
 
 .home .showcase a.view_all_showcases:active {
