@@ -548,7 +548,7 @@ DEPENDENCIES
   has_scope (~> 0.5.1)
   heroku
   jasminerice
-  jquery-rails
+  jquery-rails (~> 1.0.19)
   kaminari!
   letter_opener!
   libxml-ruby (~> 2.2.0)

@@ -5,7 +5,7 @@ gem 'rails',                 '3.1.3'
 gem 'thin'
 
 gem 'prototype-rails'
-gem 'jquery-rails'
+gem 'jquery-rails', '~> 1.0.19'
 gem 'rails-backbone'
 
 # Databases
