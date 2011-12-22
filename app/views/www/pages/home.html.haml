@@ -75,16 +75,28 @@
     %tr
       %td= link_to (image_tag "www/home/logos/method_and_craft.png", alt: "Method & Craft"), "http://blog.jilion.com/2011/04/18/customer-showcase-method-and-craft"
       %td= link_to (image_tag "www/home/logos/rock_am_ring.png", alt: "Rock Am Ring"), "http://blog.jilion.com/2011/07/22/customer-showcase-rock-am-ring"
-
-  .quote
-    = image_tag "www/home/showcase/tom_kiss.png", alt: "Tom Kiss"
-    %blockquote= raw "&ldquo;SublimeVideo allowed us to deliver our videos to a much wider audience&rdquo;"
-    %p.author
-      = "Tom Kiss, Designer at"
-      %br
-      = raw "#{link_to "Media Molecule", "http://www.mediamolecule.com"}, part of Sony Computer Entertainment"
-    = link_to page_path('customer-showcase'), class: "view_all_showcases" do
-      %span= "View all showcases"
+  - active = rand(1..2)
+  - case active
+    - when 1
+      .quote.mediamolecule
+        = image_tag "www/home/showcase/tom_kiss.png", alt: "Tom Kiss"
+        %blockquote= raw "&ldquo;SublimeVideo allowed us to deliver our videos to a much wider audience&rdquo;"
+        %p.author
+          = "Tom Kiss, Designer at"
+          %br
+          = "Media Molecule part of Sony Computer Entertainment"
+        = link_to page_path('customer-showcase'), class: "view_all_showcases" do
+          %span= "View all showcases"
+    - when 2
+      .quote.katabatic
+        = image_tag "www/home/showcase/emery_wells.png", alt: "Emery Wells"
+        %blockquote= raw "&ldquo;SublimeVideo ensures our videos look beautiful on any browser.&rdquo;"
+        %p.author
+          = "Emery Wells, Founder/CTO"
+          %br
+          = "Katabatic Digital"
+        = link_to page_path('customer-showcase'), class: "view_all_showcases" do
+          %span= "View all showcases"
   .spacer
 .big_break
 
