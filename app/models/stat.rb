@@ -300,6 +300,7 @@ private
           end
         end
       rescue StatRequestParser::BadParamsError
+      end
     end
 
     incs
