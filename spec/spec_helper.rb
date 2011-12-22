@@ -57,7 +57,7 @@ Spork.prefork do
     end
 
     config.before(:each) do
-      Capybara.default_host = "http://www.sublimevideo.dev"
+      Capybara.default_host = "http://sublimevideo.dev"
       Capybara.reset_sessions!
       DatabaseCleaner.start
     end

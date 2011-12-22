@@ -13,7 +13,7 @@ feature "Com Pages" do
         go 'www', '/'
 
         within '#menu' do
-          current_url.should eq "http://www.sublimevideo.dev/"
+          current_url.should eq "http://sublimevideo.dev/"
 
           click_link 'Features'
           current_url.should eq "http://sublimevideo.dev/features"
@@ -31,7 +31,7 @@ feature "Com Pages" do
           current_url.should eq "http://sublimevideo.dev/help"
 
           # click_link 'Blog'
-          # current_url.should eq "http://www.sublimevideo.dev/blog"
+          # current_url.should eq "http://sublimevideo.dev/blog"
 
           click_link 'Login'
           current_url.should eq "http://sublimevideo.dev/?p=login"
@@ -115,7 +115,7 @@ feature "Com Pages" do
           %w[login log_in sign_in signin].each do |path|
             scenario "#{path} is redirected to /?p=login" do
               go 'www', "/#{path}"
-              current_url.should eq "http://www.sublimevideo.dev/?p=login"
+              current_url.should eq "http://sublimevideo.dev/?p=login"
             end
           end
         end
@@ -190,7 +190,7 @@ feature "Com Pages" do
           %w[signup register sign_up].each do |path|
             scenario "#{path} is redirected to /?p=signup" do
               go 'www', "/#{path}"
-              current_url.should eq "http://www.sublimevideo.dev/?p=signup"
+              current_url.should eq "http://sublimevideo.dev/?p=signup"
             end
           end
         end
