@@ -70,9 +70,9 @@ class Stat::Video
 
     conditions = { st: site_token, period_sym => { "$gte" => Time.at(options[:from]), "$lte" => Time.at(options[:to]) } }
     if demo
-      conditions[:u] = { "$in" => %w[home features-lightbox features-playlist-1 features-playlist-2 features-playlist-3 features-playlist-4 demo-single demo-lightbox-1 demo-lightbox-2 demo-lightbox-3 demo-lightbox-4 demo-playlist-1 demo-playlist-2 demo-playlist-3 demo-playlist-4] }     
+      conditions[:u] = { "$in" => %w[home features-lightbox features-playlist-1 features-playlist-2 features-playlist-3 features-playlist-4 demo-single demo-lightbox-1 demo-lightbox-2 demo-lightbox-3 demo-lightbox-4 demo-playlist-1 demo-playlist-2 demo-playlist-3 demo-playlist-4] }
     end
-      
+
     videos = collection.group(
       key: :u,
       cond: conditions,

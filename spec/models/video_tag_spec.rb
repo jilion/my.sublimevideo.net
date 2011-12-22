@@ -29,6 +29,31 @@ describe VideoTag do
     }) }
   end
 
+  describe "#update_with_latest_data" do
+
+    it "doesn't change when updating with same uo attribute" do
+      Pusher.should_receive(:[]).once
+      video_tag.update_with_latest_data('uo' => 'a')
+    end
+    it "changes when updating uo attribute" do
+      Pusher.should_receive(:[]).twice
+      video_tag.update_with_latest_data('uo' => 's')
+    end
+
+    it "doesn't change when updating with same s attribute" do
+      Pusher.should_receive(:[]).once
+      video_tag.update_with_latest_data('s' => { 'source11' => { 'u' => 'http://videos.sublimevideo.net/source11.mp4', 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' } })
+    end
+    it "changes when updating s attribute" do
+      Pusher.should_receive(:[]).twice
+      video_tag.update_with_latest_data('s' => { 'source12' => { 'u' => 'http://videos.sublimevideo.net/source12.mp4', 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' } })
+      video_tag.s.should eq({
+        "source11" => {"u"=>"http://videos.sublimevideo.net/source11.mp4", "q"=>"base", "f"=>"mp4", "r"=>"460x340"},
+        "source12" => {"u"=>"http://videos.sublimevideo.net/source12.mp4", "q"=>"base", "f"=>"mp4", "r"=>"460x340"}
+      })
+    end
+  end
+
   describe "#push_new_meta_data" do
 
     it "push after save if channel occupided" do
