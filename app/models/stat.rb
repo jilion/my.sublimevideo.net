@@ -285,21 +285,21 @@ private
 
         # Site
         site = params_inc[:site]
-        site[:inc].each do |inc, value|
-          incs[site[:t]][:inc][inc] += value
+        if site[:inc].present?
+          site[:inc].each do |inc, value|
+            incs[site[:t]][:inc][inc] += value
+          end
         end
 
         # Videos
         params_inc[:videos].each do |video|
-          video[:inc].each do |inc, value|
-            incs[video[:st]][:videos][video[:u]][inc] += value
+          if video[:inc].present?
+            video[:inc].each do |inc, value|
+              incs[video[:st]][:videos][video[:u]][inc] += value
+            end
           end
         end
-      # rescue StatRequestParser::BadParamsError
-      rescue => ex
-        Notify.send("Stat parsing issue with request (#{request}): #{ex.message}", :exception => ex)
-        raise ex
-      end
+      rescue StatRequestParser::BadParamsError
     end
 
     incs
