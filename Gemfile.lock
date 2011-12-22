@@ -1,13 +1,4 @@
 GIT
-  remote: git://github.com/amatsuda/kaminari.git
-  revision: aa99b78c1bdd71c637da10ffba53c0d9affbb8a0
-  specs:
-    kaminari (0.12.4)
-      actionpack (>= 3.0.0)
-      activesupport (>= 3.0.0)
-      railties (>= 3.0.0)
-
-GIT
   remote: git://github.com/ctran/annotate_models.git
   revision: 672a22abf6165d6cc1dfb4d29dff5839f88af769
   specs:
@@ -293,6 +284,10 @@ GEM
     json (1.6.3)
     jsonpath (0.4.2)
       multi_json
+    kaminari (0.13.0)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
+      railties (>= 3.0.0)
     launchy (2.0.5)
       addressable (~> 2.2.6)
     libxml-ruby (2.2.2)
@@ -549,7 +544,7 @@ DEPENDENCIES
   heroku
   jasminerice
   jquery-rails (~> 1.0.19)
-  kaminari!
+  kaminari (~> 0.13.0)
   letter_opener!
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
