@@ -4,6 +4,20 @@ class WwwOrNoSubdomain
   end
 end
 
+class WwwPages
+  def self.matches?(request)
+    pages = Dir.glob('app/views/www/pages/*.html.haml').map { |p| p.match(%r(app/views/www/pages/(.*)\.html\.haml))[1] }
+    pages.include?(request.params["page"])
+  end
+end
+
+class DocsPages
+  def self.matches?(request)
+    pages = Dir.glob('app/views/docs/pages/**/*.html.haml').map { |p| p.match(%r(app/views/docs/pages/(.*)\.html\.haml))[1] }
+    pages.include?(request.params["page"])
+  end
+end
+
 def https_if_prod_or_staging
   Rails.env.production? || Rails.env.staging? ? 'https' : 'http'
 end
@@ -219,7 +233,7 @@ MySublimeVideo::Application.routes.draw do
 
       resources :releases, only: :index
 
-      get '/*page' => 'pages#show', as: :page
+      get '/*page' => 'pages#show', as: :page, constraints: DocsPages
 
       root to: redirect('/quickstart-guide')
     end
@@ -252,7 +266,7 @@ MySublimeVideo::Application.routes.draw do
       get '/pr/:page' => 'press_releases#show', as: :pr
       get '/press-kit' => redirect('http://cl.ly/433P3t1P2a1m202w2Y3D/content'), as: :press_kit
 
-      get '/:page' => 'pages#show', as: :page
+      get '/:page' => 'pages#show', as: :page, constraints: WwwPages
 
       get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
 
