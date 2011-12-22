@@ -295,7 +295,10 @@ private
             incs[video[:st]][:videos][video[:u]][inc] += value
           end
         end
-      rescue StatRequestParser::BadParamsError
+      # rescue StatRequestParser::BadParamsError
+      rescue => ex
+        Notify.send("Stat parsing issue with request (#{request}): #{ex.message}", :exception => ex)
+        raise ex
       end
     end
 
