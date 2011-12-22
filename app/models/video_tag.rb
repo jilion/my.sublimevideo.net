@@ -35,12 +35,8 @@ class VideoTag
     %w[uo n no p cs z].each do |key|
       self.send("#{key}=", attributes[key]) if attributes.key?(key)
     end
-    # Properly change sources without falsely trig dirty attribute tracking
-    if attributes.key?('s')
-      current_sources = self.read_attribute('s')
-      new_sources     = current_sources.merge(attributes['s'])
-      self.s = new_sources if current_sources != new_sources
-    end
+    # Properly update sources
+    self.s = read_attribute('s').merge(attributes['s']) if attributes.key?('s')
 
     save
   end
@@ -69,7 +65,12 @@ private
 
   # after_save
   def push_new_meta_data
-    Pusher["private-#{st}"].trigger('video_tag', u: u, meta_data: meta_data)
+    if changed?
+      channel = Pusher["private-#{st}"]
+      if channel.stats[:occupied]
+        channel.trigger('video_tag', u: u, meta_data: meta_data)
+      end
+    end
   end
 
   # Merge each videos tag in one big hash

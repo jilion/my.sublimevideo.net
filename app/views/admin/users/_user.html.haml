@@ -13,7 +13,7 @@
     - else
       %small= '-'
   %td.left
-    %small= link_to h(user.confirmation_comment || "No comment"), [:admin, user], title: h(user.confirmation_comment)
+    %small= link_to user.confirmation_comment? ? h(user.confirmation_comment) : "-", [:admin, user], title: h(user.confirmation_comment)
   %td.number
     %small= number_with_delimiter(sites.sum { |s| s.last_30_days_main_video_views.to_i + s.last_30_days_extra_video_views.to_i + s.last_30_days_embed_video_views.to_i })
   %td.number

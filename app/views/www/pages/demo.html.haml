@@ -1,4 +1,4 @@
-= content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{SiteToken.www}.js")
+= content_for :head_before, javascript_include_tag("http://cdn.sublimevideo.net/js/#{SiteToken.www}.js")
 
 = content_for :title, "Demo"
 
@@ -104,7 +104,7 @@
       == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_4_450p.webm" />
   .spacer
   %h3.title= "Video Playlist"
-  %p.desc= raw "SublimeVideo Player offers a simple yet powerful #{link_to("JavaScript API", "http://docs.sublimevideo.net/javascript-api/")} that allows all kinds of different integrations in your page. Here are 4 different videos with clickable thumbnails: when a video finishes playing, the next one in the playlist is begins automatically."
+  %p.desc= raw "SublimeVideo Player offers a simple yet powerful #{link_to("JavaScript API", docs_page_url('javascript-api/usage', subdomain: 'docs'))} that allows all kinds of different integrations in your page. Here are 4 different videos with clickable thumbnails: when a video finishes playing, the next one in the playlist is begins automatically."
 .big_break
 %section#features
   %h3.title= "UI features"
@@ -132,4 +132,3 @@
 %section#credits
   :textile
     p(desc). Video credits: Special edit of _Midnight Sun | Iceland_ by *Joe Capra* - "scientifantastic.com":http://scientifantastic.com
-

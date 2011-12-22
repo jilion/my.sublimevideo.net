@@ -39,8 +39,7 @@ private
       cookies[:l] = {
         value: '1',
         expires: 2.weeks.from_now,
-        domain: :all,
-        secure: request.ssl?
+        domain: :all
       }
     end
   end

@@ -5,7 +5,7 @@ gem 'rails',                 '3.1.3'
 gem 'thin'
 
 gem 'prototype-rails'
-gem 'jquery-rails'
+gem 'jquery-rails', '~> 1.0.19'
 gem 'rails-backbone'
 
 # Databases
@@ -20,7 +20,7 @@ gem 'mongoid',               '~> 2.3.3'
 # Views
 gem 'haml',                  '~> 3.1.3'
 gem 'coffee-filter',         '~> 0.1.1'
-gem 'kaminari',              git: 'git://github.com/amatsuda/kaminari.git'
+gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.9'
 
@@ -97,6 +97,7 @@ gem 'haml-coderay',          '~> 0.1.2'
 gem "feedzirra", git: "https://github.com/pauldix/feedzirra.git"
 
 gem 'asset_sync'
+gem 'rack-no-www'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -111,10 +112,10 @@ end
 
 group :production, :staging do
   gem 'newrelic_rpm'
+  gem 'rack-ssl-enforcer'
 end
 
 group :production do
-  gem 'rack-ssl-enforcer'
   # gem 'rack-cache'
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end

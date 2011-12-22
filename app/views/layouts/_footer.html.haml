@@ -4,26 +4,26 @@
       .col
         %h4= "Product"
         %ul
-          %li= link_to "Home", root_url(subdomain: 'www')
-          %li= link_to "Features", page_url('features', subdomain: 'www')
-          %li= link_to "Demo", page_url('demo', subdomain: 'www')
-          %li= link_to "Plans & Pricing", page_url('plans', subdomain: 'www')
-          %li= link_to "Player Releases", docs_releases_url(subdomain: 'docs')
+          %li= link_to "Home", root_url(host: request.domain, protocol: 'http' )
+          %li= link_to "Features", page_url('features', host: request.domain, protocol: 'http')
+          %li= link_to "Demo", page_url('demo', host: request.domain, protocol: 'http')
+          %li= link_to "Plans & Pricing", page_url('plans', host: request.domain, protocol: 'http')
+          %li= link_to "Player Releases", docs_releases_url(subdomain: 'docs', protocol: 'http')
       .col
         %h4= "Community & Support"
         %ul
-          %li= link_to "Customer Showcase", page_url('customer-showcase', subdomain: 'www')
-          %li= link_to "Help", page_url('help', subdomain: request.subdomain == 'my' ?  'my' : 'www'), class: 'my_link'
-          %li= link_to "Documentation", root_url(subdomain: 'docs')
-          %li= link_to "Community Forum", "https://getsatisfaction.com/sublimevideo", onclick: "window.open(this); return false"
+          %li= link_to "Customer Showcase", page_url('customer-showcase', host: request.domain, protocol: 'http')
+          %li= link_to "Help", page_url('help', host: (request.subdomain == 'my' ? 'my.' : '') + request.domain), class: 'my_link'
+          %li= link_to "Documentation", root_url(subdomain: 'docs', protocol: 'http')
+          %li= link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", onclick: "window.open(this); return false"
       .col
         %h4= "Stay Connected"
         %ul
-          %li= link_to "News", page_url('news', subdomain: 'www')
+          %li= link_to "News", page_url('news', host: request.domain, protocol: 'http')
           %li= link_to "Blog", "http://blog.jilion.com/tags/sublimevideo", onclick: "window.open(this); return false"
           %li= link_to "Twitter", "http://twitter.com/jilion"
-          %li= link_to "Contact", page_url('contact', subdomain: 'www')
-          %li= link_to "About", page_url('about', subdomain: 'www')
+          %li= link_to "Contact", page_url('contact', host: request.domain, protocol: 'http')
+          %li= link_to "About", page_url('about', host: request.domain, protocol: 'http')
     .right
       %p
         = "SublimeVideo is a service by"
@@ -40,6 +40,6 @@
       = link_to "Privacy Policy", page_url('privacy', subdomain: 'my')
       = raw "| Copyright &copy; #{Time.now.utc.year} Jilion&reg; &mdash; SublimeVideo and Jilion are registered trademarks."
       %span.networks
-        == <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://sublimevideo.net" data-text="Check out SublimeVideo HTML5 Video Player by @Jilion &mdash;" data-count="horizontal" data-related="jilion:Follow @Jilion for the latest news!">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
-        == <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fsublimevideo&amp;send=false&amp;layout=button_count&amp;width=130&amp;show_faces=false&amp;action=like&amp;colorscheme=dark&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:130px; height:21px;" allowTransparency="true"></iframe>
-      
+        %a{ href: "http://twitter.com/share", class: "twitter-share-button", data: { url: "http://sublimevideo.net", text: "Check out SublimeVideo HTML5 Video Player by @Jilion -", count: "horizontal", related: "jilion:Follow @Jilion for the latest news!" } } Tweet
+        = javascript_include_tag "//platform.twitter.com/widgets.js"
+        %iframe{ src: "//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fsublimevideo&send=false&layout=button_count&width=130&show_faces=false&action=like&colorscheme=dark&font&height=21", scrolling: "no", frameborder: "0", style: "border:none; overflow:hidden; width:130px; height:21px;", allowTransparency: "true" }

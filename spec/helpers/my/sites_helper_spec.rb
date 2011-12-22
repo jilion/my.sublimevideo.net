@@ -39,7 +39,7 @@ describe My::SitesHelper do
     context "site without a hostname" do
       subject { Factory.create(:site, plan_id: @free_plan.id, hostname: '') }
 
-      specify { helper.hostname_or_token(subject).should eq subject.token }
+      specify { helper.hostname_or_token(subject).should eq "##{subject.token}" }
     end
   end
 
