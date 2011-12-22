@@ -1384,6 +1384,14 @@ describe SiteModules::Invoice do
                 expect { subject.save! }.to_not change(subject.invoices, :count)
               end
             end
+
+            describe "save with first_paid_plan_started_at changed" do
+              it "doesn't create an invoice" do
+                subject.first_paid_plan_started_at = Time.now
+                subject.prepare_pending_attributes
+                expect { subject.save! }.to_not change(subject.invoices, :count)
+              end
+            end
           end
 
           context "not in trial, during second cycle" do

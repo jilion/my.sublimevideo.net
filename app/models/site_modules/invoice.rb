@@ -309,7 +309,7 @@ module SiteModules::Invoice
     # ========================
 
     def activated?
-      first_paid_plan_started_at_changed?
+      first_paid_plan_started_at_changed? && first_paid_plan_started_at_was.nil?
     end
 
     def upgraded?
@@ -319,7 +319,7 @@ module SiteModules::Invoice
     def renewed?
       !!(
         # the site must already be in a paid plan and not activated just now
-        in_paid_plan? && !activated? &&
+        in_paid_plan? && !first_paid_plan_started_at_changed? &&
         !plan.upgrade?(pending_plan) &&
         pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?
       )
