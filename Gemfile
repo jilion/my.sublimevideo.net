@@ -97,6 +97,7 @@ gem 'haml-coderay',          '~> 0.1.2'
 gem "feedzirra", git: "https://github.com/pauldix/feedzirra.git"
 
 gem 'asset_sync'
+gem 'rack-no-www'
 
 # Gems used only for assets and not required
 # in production environments by default.
