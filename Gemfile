@@ -147,14 +147,14 @@ group :development do
 
   gem 'em-http-request' # async pusher in populate
 
-  gem 'rb-fsevent', '0.9.0.pre3'
-  gem 'growl_notify'
+  # gem 'rb-fsevent', '0.9.0.pre3'
+  # gem 'growl_notify'
+  # gem 'guard', '~> 0.8.8'
 
-  gem 'guard', '~> 0.8.8'
-  # gem 'ruby_gntp'
-  # platforms :ruby do
-  #   gem 'rb-readline'
-  # end
+  gem 'ruby_gntp'
+  platforms :ruby do
+    gem 'rb-readline'
+  end
 
   gem 'guard-bundler'
   gem 'guard-pow'
