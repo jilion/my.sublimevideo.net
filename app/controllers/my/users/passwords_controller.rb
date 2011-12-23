@@ -3,7 +3,12 @@ class My::Users::PasswordsController < Devise::PasswordsController
 
   # POST /password
   def create
-    self.resource = User.active.find_by_email(params[resource_name][:email]).send_reset_password_instructions()
+    if self.resource = User.active.find_by_email(params[resource_name][:email])
+      resource.send_reset_password_instructions()
+    else
+      self.resource = User.new(email: params[resource_name][:email])
+      resource.errors.add(:email, resource.email.present? ? :invalid : :blank)
+    end
 
     if successfully_sent?(resource)
       respond_with({}, :location => after_sending_reset_password_instructions_path_for(resource_name))
