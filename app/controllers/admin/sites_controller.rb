@@ -2,7 +2,7 @@ class Admin::SitesController < AdminController
   respond_to :js, :html
 
   #filter
-  has_scope :in_trial, :not_in_trial, :in_plan
+  has_scope :in_trial, :not_in_trial, :in_plan, type: :boolean
   has_scope :with_state do |controller, scope, value|
     scope.with_state(value.to_sym)
   end
