@@ -2,7 +2,7 @@
 = MAIN DOMAIN =
 ===============
 
-should be validate by PublicSuffixService (http://publicsuffix.org)
+should be validate by PublicSuffix (http://publicsuffix.org)
 
 - remove trd == www
 - uniq domain
@@ -12,7 +12,7 @@ should be validate by PublicSuffixService (http://publicsuffix.org)
 = ALIAS DOMAINS =
 =================
 
-should be validate by PublicSuffixService (http://publicsuffix.org)
+should be validate by PublicSuffix (http://publicsuffix.org)
 
 - should not be publicly accessible or with similar content as main domain
 - will be manually verified (abuse can be sanctioned (domain blacklisted))
@@ -24,7 +24,7 @@ should be validate by PublicSuffixService (http://publicsuffix.org)
 ===============
 
 *.local
-should NOT be validate by PublicSuffixService (http://publicsuffix.org)
+should NOT be validate by PublicSuffix (http://publicsuffix.org)
 
 - list of uniqu domain possible
 - != main domain

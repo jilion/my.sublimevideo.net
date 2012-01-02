@@ -61,7 +61,7 @@ gem 'request-log-analyzer',  '~> 1.11.1', require: 'request_log_analyzer'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
 # gem 'activemerchant',        git: 'git://github.com/ZenCocoon/active_merchant.git' # with the fix for Ogone#parse and more
 gem 'activemerchant',        git: 'git://github.com/rymai/active_merchant.git', branch: '3ds_from_ZenCocoon'
-gem 'public_suffix_service', '~> 0.9.0'
+gem 'public_suffix',         '~> 1.0.0'
 gem 'useragent',             git: 'git://github.com/jilion/useragent.git'
 
 gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
@@ -147,23 +147,21 @@ group :development do
 
   gem 'em-http-request' # async pusher in populate
 
-  # gem 'rb-fsevent', '0.9.0.pre3'
+  gem 'rb-fsevent', '0.9.0.pre5'
   # gem 'growl_notify'
-  # gem 'guard', '~> 0.8.8'
 
   gem 'ruby_gntp'
   platforms :ruby do
     gem 'rb-readline'
   end
 
-  gem 'guard-bundler'
+  # gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
-  gem 'guard-coffeescript'
   gem 'guard-jasmine'
-  gem 'guard-yard'
+  # gem 'guard-yard'
 end
 
 group :test do
