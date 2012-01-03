@@ -12,10 +12,10 @@ gem 'rails-backbone'
 gem 'pg',                    '~> 0.12.1'
 gem 'squeel',                '~> 0.9.2'
 
-gem 'bson_ext',              '~> 1.5.1'
-gem 'bson',                  '~> 1.5.1'
-gem 'mongo',                 '~> 1.5.1'
-gem 'mongoid',               '~> 2.3.3'
+gem 'bson_ext',              '~> 1.5.2'
+gem 'bson',                  '~> 1.5.2'
+gem 'mongo',                 '~> 1.5.2'
+gem 'mongoid',               '~> 2.3.4'
 
 # Views
 gem 'haml',                  '~> 3.1.3'
@@ -27,7 +27,7 @@ gem 'RedCloth',              '~> 4.2.9'
 # Auth / invitations
 gem 'devise',                '~> 1.5.1'
 # gem 'devise',                git: 'git://github.com/plataformatec/devise.git'
-gem 'devise_invitable',      '~> 0.6.0' # currently, devise_invitable requires devise ~ 1.4.1...
+gem 'devise_invitable',      '~> 0.6.1' # currently, devise_invitable requires devise ~ 1.4.1...
 
 # API
 gem 'oauth',                 '~> 0.4.5'
