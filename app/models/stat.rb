@@ -300,6 +300,9 @@ private
           end
         end
       rescue StatRequestParser::BadParamsError
+      rescue => ex
+        Notify.send("Request parsing problem: #{request}", :exception => ex)
+        raise ex
       end
     end
 
