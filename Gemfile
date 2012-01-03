@@ -9,7 +9,7 @@ gem 'jquery-rails', '~> 1.0.19'
 gem 'rails-backbone'
 
 # Databases
-gem 'pg',                    '~> 0.11.0'
+gem 'pg',                    '~> 0.12.1'
 gem 'squeel',                '~> 0.9.2'
 
 gem 'bson_ext',              '~> 1.5.1'
