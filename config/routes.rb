@@ -11,6 +11,13 @@ class WwwPages
   end
 end
 
+class MyPages
+  def self.matches?(request)
+    pages = Dir.glob('app/views/my/pages/*.html.haml').map { |p| p.match(%r(app/views/my/pages/(.*)\.html\.haml))[1] }
+    pages.include?(request.params["page"])
+  end
+end
+
 class DocsPages
   def self.matches?(request)
     pages = Dir.glob('app/views/docs/pages/**/*.html.haml').map { |p| p.match(%r(app/views/docs/pages/(.*)\.html\.haml))[1] }
@@ -114,7 +121,7 @@ MySublimeVideo::Application.routes.draw do
 
       post '/pusher/auth' => 'pusher#auth'
 
-      get '/:page' => 'pages#show', as: :page
+      get '/:page' => 'pages#show', as: :page, constraints: MyPages
 
       root to: redirect('/sites')
     end
