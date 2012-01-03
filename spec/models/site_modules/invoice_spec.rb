@@ -627,7 +627,7 @@ describe SiteModules::Invoice do
       specify { @site_not_in_trial.trial_end.should be_nil }
       specify { @site_in_trial.trial_end.should eq BusinessModel.days_for_trial.days.from_now.yesterday.end_of_day }
     end
-    
+
     describe "#trial_expires_on & #trial_expires_in_less_than_or_equal_to" do
       before(:all) do
         Site.delete_all
@@ -1512,10 +1512,6 @@ describe SiteModules::Invoice do
     end
 
     describe "#set_trial_started_at" do
-      before(:all) do
-        @foo_plan = Factory.create(:plan, name: "premium",  video_views: 1_000_000)
-      end
-
       it "set if site created with free plan" do
         site = Factory.create(:site, plan_id: @free_plan.id)
         site.trial_started_at.should be_nil
@@ -1532,16 +1528,17 @@ describe SiteModules::Invoice do
 
         first_trial_started_at = site.trial_started_at
         site.update_attribute(:plan_id, @free_plan.id)
-        site.reload.trial_started_at.should eql first_trial_started_at
+        site.reload.trial_started_at.should eq first_trial_started_at
       end
 
       it "not reset on upgrade" do
+        @foo_plan = Factory.create(:plan, name: "premium", video_views: 1_000_000)
         site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id)
         site.trial_started_at.should be_present
 
         first_trial_started_at = site.trial_started_at
         site.update_attribute(:plan_id, @foo_plan.id)
-        site.reload.trial_started_at.should eql first_trial_started_at
+        site.reload.trial_started_at.should eq first_trial_started_at
       end
 
       it "not reset if site created with paid plan and downgraded to free plan and reupgraded to paid plan" do
@@ -1550,11 +1547,97 @@ describe SiteModules::Invoice do
 
         first_trial_started_at = site.trial_started_at
         site.update_attribute(:plan_id, @free_plan.id)
-        site.reload.trial_started_at.should eql first_trial_started_at
+        site.reload.trial_started_at.should eq first_trial_started_at
 
         site.update_attribute(:plan_id, @paid_plan.id)
-        site.reload.trial_started_at.should eql first_trial_started_at
+        site.reload.trial_started_at.should eq first_trial_started_at
       end
+    end
+
+    describe "#set_first_paid_plan_started_at" do
+      context "site in trial" do
+        it "set if site created with free plan" do
+          site = Factory.create(:site, plan_id: @free_plan.id)
+          site.first_paid_plan_started_at.should be_nil
+        end
+
+        it "set if site created with paid plan" do
+          site = Factory.create(:site, plan_id: @paid_plan.id)
+          site.first_paid_plan_started_at.should be_nil
+        end
+
+        it "not set on downgrade" do
+          site = Factory.create(:site, plan_id: @paid_plan.id)
+          site.first_paid_plan_started_at.should be_nil
+
+          site.update_attribute(:plan_id, @free_plan.id)
+          site.reload.first_paid_plan_started_at.should be_nil
+        end
+
+        it "not set on upgrade" do
+          @foo_plan = Factory.create(:plan, name: "premium", video_views: 1_000_000)
+          site = Factory.create(:site, plan_id: @paid_plan.id)
+          site.first_paid_plan_started_at.should be_nil
+
+          site.update_attribute(:plan_id, @foo_plan.id)
+          site.reload.first_paid_plan_started_at.should be_nil
+        end
+
+        it "not reset if site created with paid plan and downgraded to free plan and reupgraded to paid plan" do
+          site = Factory.create(:site, plan_id: @paid_plan.id)
+          site.first_paid_plan_started_at.should be_nil
+
+          site.update_attribute(:plan_id, @free_plan.id)
+          site.reload.first_paid_plan_started_at.should be_nil
+
+          site.update_attribute(:plan_id, @paid_plan.id)
+          site.reload.first_paid_plan_started_at.should be_nil
+        end
+      end
+
+      context "site not in trial" do
+        it "set if site created with free plan" do
+          site = Factory.create(:new_site, plan_id: @free_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+          site.first_paid_plan_started_at.should be_nil
+        end
+
+        it "set if site created with paid plan" do
+          site = Factory.create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+          site.first_paid_plan_started_at.should be_present
+        end
+
+        it "not reset on downgrade" do
+          site = Factory.create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+          site.first_paid_plan_started_at.should be_present
+
+          first_first_paid_plan_started_at = site.first_paid_plan_started_at
+          site.update_attribute(:plan_id, @free_plan.id)
+          site.reload.first_paid_plan_started_at.should eq first_first_paid_plan_started_at
+        end
+
+        it "not set on upgrade" do
+          @foo_plan = Factory.create(:plan, name: "premium", video_views: 1_000_000)
+          site = Factory.create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+          site.first_paid_plan_started_at.should be_present
+
+          first_first_paid_plan_started_at = site.first_paid_plan_started_at
+          site.update_attribute(:plan_id, @foo_plan.id)
+          site.reload.first_paid_plan_started_at.should eq first_first_paid_plan_started_at
+        end
+
+        it "not reset if site created with paid plan and downgraded to free plan and reupgraded to paid plan" do
+          site = Factory.create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+          site.first_paid_plan_started_at.should be_present
+
+          first_first_paid_plan_started_at = site.first_paid_plan_started_at
+          site.update_attribute(:plan_id, @free_plan.id)
+          site.reload.first_paid_plan_started_at.should eq first_first_paid_plan_started_at
+
+          site.update_attribute(:plan_id, @paid_plan.id)
+          site.reload.first_paid_plan_started_at.should eq first_first_paid_plan_started_at
+        end
+      end
+
     end
 
   end # Instance Methods

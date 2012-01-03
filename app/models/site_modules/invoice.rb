@@ -283,6 +283,11 @@ module SiteModules::Invoice
       self.trial_started_at = Time.now.utc if !trial_started_at? && in_or_will_be_in_paid_plan?
     end
 
+    # before_save
+    def set_first_paid_plan_started_at
+      self.first_paid_plan_started_at = Time.now.utc if trial_ended? && !first_paid_plan_started_at? && pending_plan_id_changed? && will_be_in_paid_plan?
+    end
+
     # after_save (BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self)
     def create_and_charge_invoice
       if trial_ended? && (activated? || upgraded? || renewed?)
