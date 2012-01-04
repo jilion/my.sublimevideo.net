@@ -81,14 +81,19 @@ module SiteModules::Invoice
       in_paid_plan? || will_be_in_paid_plan?
     end
 
-    # Tells if trial has **never been** started or is **not yet** ended
-    def trial_not_started_or_in_trial?
-      !trial_ended?
+    # Tells if trial **actually** started and is **not yet** ended
+    def in_trial?
+      trial_started_at? && trial_started_at >= (BusinessModel.days_for_trial - 1).days.ago.midnight
     end
 
     # Tells if trial **actually** started and **now** ended
     def trial_ended?
       trial_started_at? && trial_started_at < (BusinessModel.days_for_trial - 1).days.ago.midnight
+    end
+
+    # Tells if trial has **never been** started or is **not yet** ended
+    def trial_not_started_or_in_trial?
+      !trial_ended?
     end
 
     def trial_expires_on(timestamp)
@@ -204,7 +209,8 @@ module SiteModules::Invoice
 
       # new paid plan (creation, activation, upgrade or downgrade)
       if (pending_plan_id_changed? && pending_plan_id?) ||
-         first_paid_plan_started_at_changed? # Activation
+         first_paid_plan_started_at_changed? || # Activation
+         skip_trial?
 
         # Downgrade
         if plan_cycle_ended?

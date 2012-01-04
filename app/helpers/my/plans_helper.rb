@@ -20,7 +20,7 @@ module My::PlansHelper
 
   def plan_change_type(site, old_plan, new_plan)
     if old_plan == new_plan
-      nil
+      site.in_trial? ? "skipping_trial" : nil
     elsif site.trial_not_started_or_in_trial?
       new_plan.free_plan? ? "in_trial_downgrade_to_free" : "in_trial_update"
     elsif new_plan.free_plan?
