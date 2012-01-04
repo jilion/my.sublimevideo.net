@@ -250,7 +250,7 @@ private
   def self.update_ranks(site_id)
     site  = Site.find(site_id)
     begin
-      ranks = PageRankr.ranks(site.hostname, :alexa_global, :google)
+      ranks = PageRankr.ranks("http://#{site.hostname}", :alexa_global, :google)
       site.google_rank = ranks[:google] || 0
       site.alexa_rank  = ranks[:alexa_global]
     rescue
