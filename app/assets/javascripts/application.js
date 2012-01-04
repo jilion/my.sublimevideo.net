@@ -479,7 +479,7 @@ PopupHandler handles creation and behavior of SV pop-up (used for showing the em
 var PopupHandler = Class.create({
   initialize: function(popup) {
     this.keyDownHandler = document.on("keydown", this.keyDown.bind(this));
-    this.className      = null;
+    this.className      = 'popup';
     this.popupElement   = null;
     this.anchorId       = null;
   },
