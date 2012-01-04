@@ -13,7 +13,7 @@ describe Stats::SitesStat do
       expect { described_class.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%Stats::SitesStat%create_sites_stats%'), :count).by(0)
     end
 
-    it "should delay create_sites_stats for next hour" do
+    it "should delay create_sites_stats for next day" do
       described_class.delay_create_sites_stats
       Delayed::Job.last.run_at.should eq Time.new.utc.tomorrow.midnight
     end

@@ -12,6 +12,8 @@ module Admin::DelayedJobsHelper
       "Users stats"
     when "Class#create_sites_stats"
       "Sites stats"
+    when "Class#create_site_stats_stats"
+      "Site stats stats"
     when "Class#save_new_tweets_and_sync_favorite_tweets"
       "Tweets processing"
     when "Module#clear_old_seconds_minutes_and_hours_stats"
@@ -49,6 +51,7 @@ module Admin::DelayedJobsHelper
       Module#clear_old_seconds_minutes_and_hours_stats
       Class#create_users_stats
       Class#create_sites_stats
+      Class#create_site_stats_stats
       Class#save_new_tweets_and_sync_favorite_tweets
       Class#update_last_30_days_counters_for_not_archived_sites
       Class#send_trial_will_expire

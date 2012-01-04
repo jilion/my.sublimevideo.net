@@ -25,7 +25,13 @@ class Admin::StatsController < AdminController
       format.json { render json: Stats::TweetsStat.json(keyword: 'sublimevideo') }
     end
   end
-
+  
+  def site_stats
+    respond_to do |format|
+      format.json { render json: Stats::SiteStatsStat.json }
+    end
+  end
+  
   def usages
     respond_to do |format|
       # format.json { render json: Stat::Site.json(nil, 'days') }

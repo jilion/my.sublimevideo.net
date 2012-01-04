@@ -33,9 +33,9 @@ module Stats
       json
     end
 
-    def active
-      fr.to_i + sp.to_i + tr.inject(0) { |sum, s| sum + s.value.inject(0) { |sum2, s2| sum2 += s2.value } }
-    end
+    # def active
+    #   fr.to_i + sp.to_i + tr.inject(0) { |sum, s| sum + s.value.inject(0) { |sum2, s2| sum2 += s2.value } }
+    # end
 
     # =================
     # = Class Methods =
@@ -55,7 +55,7 @@ module Stats
 
       def delay_create_sites_stats
         unless Delayed::Job.already_delayed?('%Stats::SitesStat%create_sites_stats%')
-          delay(:run_at => Time.now.utc.tomorrow.midnight).create_sites_stats # every hour
+          delay(:run_at => Time.now.utc.tomorrow.midnight).create_sites_stats # every day
         end
       end
 

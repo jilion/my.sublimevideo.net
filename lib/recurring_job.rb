@@ -10,7 +10,8 @@ module RecurringJob
 
   stats_tasks = [
     '%Stats::UsersStat%create_users_stats%',
-    '%Stats::SitesStat%create_sites_stats%'
+    '%Stats::SitesStat%create_sites_stats%',
+    '%Stats::SiteStatsStat%create_site_stats_stats%'
   ]
 
   NAMES = [
@@ -51,6 +52,7 @@ module RecurringJob
       # Stats
       Stats::UsersStat.delay_create_users_stats
       Stats::SitesStat.delay_create_sites_stats
+      Stats::SiteStatsStat.delay_create_site_stats_stats
 
       # Others
       SiteModules::UsageMonitoring.delay_monitor_sites_usages
