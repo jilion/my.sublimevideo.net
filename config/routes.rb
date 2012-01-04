@@ -121,7 +121,7 @@ MySublimeVideo::Application.routes.draw do
 
       post '/pusher/auth' => 'pusher#auth'
 
-      get '/:page' => 'pages#show', as: :page, constraints: MyPages
+      get '/:page' => 'pages#show', as: :page, constraints: MyPages, format: false
 
       root to: redirect('/sites')
     end
@@ -251,7 +251,7 @@ MySublimeVideo::Application.routes.draw do
 
       resources :releases, only: :index
 
-      get '/*page' => 'pages#show', as: :page, constraints: DocsPages
+      get '/*page' => 'pages#show', as: :page, constraints: DocsPages, format: false
 
       root to: redirect('/quickstart-guide')
     end
@@ -281,10 +281,10 @@ MySublimeVideo::Application.routes.draw do
       match '/notify(/:anything)' => redirect('/')
       match '/enthusiasts(/:anything)' => redirect('/')
 
-      get '/pr/:page' => 'press_releases#show', as: :pr
+      get '/pr/:page' => 'press_releases#show', as: :pr, format: false
       get '/press-kit' => redirect('http://cl.ly/433P3t1P2a1m202w2Y3D/content'), as: :press_kit
 
-      get '/:page' => 'pages#show', as: :page, constraints: WwwPages
+      get '/:page' => 'pages#show', as: :page, constraints: WwwPages, format: false
 
       get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
 

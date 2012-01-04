@@ -1,5 +1,4 @@
 class Www::PagesController < ApplicationController
-
   # caches_action :show, layout: false
 
   def show
