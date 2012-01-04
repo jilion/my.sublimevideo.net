@@ -108,11 +108,6 @@ module SiteModules::Invoice
       trial_started_at? ? (trial_started_at + BusinessModel.days_for_trial.days).yesterday.end_of_day : nil
     end
 
-    # DEPRECATED, TO BE REMOVED 30 DAYS AFTER NEW BUSINESS MODEL DEPLOYMENT
-    def refundable?
-      first_paid_plan_started_at? && first_paid_plan_started_at > BusinessModel.days_for_refund.days.ago && !refunded_at?
-    end
-
     def refunded?
       archived? && refunded_at?
     end
@@ -185,14 +180,6 @@ module SiteModules::Invoice
 
     def plan_month_cycle_end_time
       plan_month_cycle_ended_at.to_i
-    end
-
-    # DEPRECATED, TO BE REMOVED 30 DAYS AFTER NEW BUSINESS MODEL DEPLOYMENT
-    def refund
-      Site.transaction do
-        self.touch(:refunded_at)
-        Transaction.delay.refund_by_site_id(self.id)
-      end
     end
 
     # before_save :if => :pending_plan_id_changed? / also called from SiteModules::Invoice.renew_active_sites

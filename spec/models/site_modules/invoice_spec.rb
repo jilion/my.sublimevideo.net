@@ -509,21 +509,6 @@ describe SiteModules::Invoice do
       specify { @site_not_in_trial.should_not be_trial_not_started_or_in_trial }
     end
 
-    describe "#refundable?" do
-      before(:all) do
-        Site.delete_all
-        @site_refundable = Factory.create(:site, first_paid_plan_started_at: (BusinessModel.days_for_refund-1).days.ago)
-        @site_not_refundable0 = Factory.create(:site, plan_id: @free_plan.id)
-        @site_not_refundable1 = Factory.create(:site, first_paid_plan_started_at: (BusinessModel.days_for_refund+1).days.ago)
-        @site_not_refundable2 = Factory.create(:site, first_paid_plan_started_at: (BusinessModel.days_for_refund-1).days.ago, refunded_at: Time.now.utc)
-      end
-
-      specify { @site_refundable.should be_refundable }
-      specify { @site_not_refundable0.should_not be_refundable }
-      specify { @site_not_refundable1.should_not be_refundable }
-      specify { @site_not_refundable2.should_not be_refundable }
-    end
-
     describe "#refunded?" do
       before(:all) do
         Site.delete_all
@@ -657,22 +642,6 @@ describe SiteModules::Invoice do
       specify { @site_in_trial.trial_expires_in_less_than_or_equal_to(BusinessModel.days_for_trial.days.from_now).should be_true }
       specify { @site_in_trial.trial_expires_in_less_than_or_equal_to(BusinessModel.days_for_trial.days.from_now + 1.day).should be_true }
     end
-
-    describe "#refund" do
-      before(:all) do
-        @site = Factory.create(:new_site, first_paid_plan_started_at: nil)
-      end
-
-      it "touches refunded_at" do
-        @site.refunded_at.should be_nil
-        @site.refund
-        @site.reload.refunded_at.should be_present
-      end
-
-      it "delays Transactions.refund_by_site_id" do
-        expect { @site.refund }.to change(Delayed::Job.where(:handler.matches => "%refund_by_site_id%"), :count).by(1)
-      end
-    end # #refund
 
     describe "#prepare_pending_attributes" do
       before(:all) do

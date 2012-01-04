@@ -111,28 +111,6 @@ class Transaction < ActiveRecord::Base
     payment ? transaction.process_payment_response(payment.params) : transaction
   end
 
-  def self.refund_by_site_id(site_id)
-    if site = Site.refunded.find_by_id(site_id)
-      site.invoices.refunded.order(:created_at).each do |invoice|
-        begin
-          refund = Ogone.refund(invoice.amount, "#{invoice.transactions.paid.first.pay_id};SAL")
-
-          unless refund.success?
-            Notify.send("Refund failed for invoice ##{invoice.reference} (amount: #{invoice.amount}, transaction order_id:##{invoice.transactions.paid.first.order_id})")
-          end
-        rescue => ex
-          Notify.send("Refund failed for invoice ##{invoice.reference} (amount: #{invoice.amount}, transaction order_id: ##{invoice.transactions.paid.first.order_id}", exception: ex)
-        end
-      end
-
-      user = site.user
-      paid_invoices = user.invoices.paid.order(:paid_at.asc).all
-      user.last_invoiced_amount  = paid_invoices.present? ? paid_invoices.last.amount : 0
-      user.total_invoiced_amount = paid_invoices.sum(&:amount)
-      user.save
-    end
-  end
-
   # ====================
   # = Instance Methods =
   # ====================

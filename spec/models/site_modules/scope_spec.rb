@@ -156,17 +156,6 @@ describe SiteModules::Scope do
     specify { Site.renewable.all.should =~ [@site_renewable] }
   end
 
-  describe "#refundable" do
-    before(:all) do
-      Site.delete_all
-      @site_refundable = Factory.create(:site, user: @user, first_paid_plan_started_at: (BusinessModel.days_for_refund-1).days.ago)
-      @site_not_refundable1 = Factory.create(:site, user: @user, first_paid_plan_started_at: (BusinessModel.days_for_refund+1).days.ago)
-      @site_not_refundable2 = Factory.create(:site, user: @user, refunded_at: Time.now.utc)
-    end
-
-    specify { Site.refundable.all.should =~ [@site_refundable] }
-  end
-
   describe "#refunded" do
     before(:all) do
       Site.delete_all

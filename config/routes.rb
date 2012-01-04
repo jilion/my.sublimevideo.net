@@ -108,11 +108,6 @@ MySublimeVideo::Application.routes.draw do
 
       post '/transaction/callback' => 'transactions#callback'
 
-      # DEPRECATED
-      get '/refund' => 'refunds#index', as: 'refunds'
-      post '/refund' => 'refunds#create', as: 'refund'
-      # DEPRECATED
-
       resource :ticket, only: [:create], path: '/help'
       %w[support feedback].each { |action| get action, to: redirect('/help') }
 
