@@ -534,7 +534,7 @@ describe SiteModules::Invoice do
       context "with the last paid invoice refunded" do
         before(:all) do
           @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id)
-          @site.refund
+          @site.update_attribute(:refunded_at, Time.now.utc)
         end
         subject { @site.reload }
 
