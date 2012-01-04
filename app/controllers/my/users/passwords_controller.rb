@@ -1,6 +1,6 @@
 class My::Users::PasswordsController < Devise::PasswordsController
   include CustomDevisePaths
-  before_filter :authenticate_user!, :only => [:validate]
+  prepend_before_filter :authenticate_scope!, :only => [:validate]
 
   # POST /password
   def create
@@ -24,6 +24,14 @@ class My::Users::PasswordsController < Devise::PasswordsController
     respond_to do |format|
       format.js
     end
+  end
+
+protected
+
+  # Authenticates the current scope and gets the current resource from the session.
+  def authenticate_scope!
+    send(:"authenticate_#{resource_name}!", :force => true)
+    self.resource = send(:"current_#{resource_name}")
   end
 
 end
