@@ -77,9 +77,6 @@ end
 Spork.each_run do
   # This code will be run each time you run your specs.
 
-  # Fix RSpec 2.7 issue https://github.com/guard/guard-rspec/issues/61#issuecomment-2428083
-  $rspec_start_time = Time.now
-
   # Factory need to be required each launch to prevent loading of all models
   require 'factory_girl'
   require Rails.root.join("spec/factories")
