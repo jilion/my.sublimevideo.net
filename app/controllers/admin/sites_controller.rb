@@ -2,30 +2,13 @@ class Admin::SitesController < AdminController
   respond_to :js, :html
 
   #filter
-  has_scope :in_trial, :not_in_trial, :in_plan, type: :boolean
+  has_scope :in_plan, :badged
+  has_scope :in_trial, :not_in_trial, :paid_plan, :overusage_notified, :user_id, :with_wildcard, :with_path, :with_extra_hostnames, :with_next_cycle_plan, type: :boolean
   has_scope :with_state do |controller, scope, value|
     scope.with_state(value.to_sym)
   end
-  has_scope :with_wildcard, type: :boolean
-  has_scope :with_path, type: :boolean
-  has_scope :with_extra_hostnames, type: :boolean
-  has_scope :badged
-  has_scope :paid_plan, type: :boolean
-  has_scope :overusage_notified, type: :boolean
-  has_scope :user_id, type: :boolean
-  has_scope :with_next_cycle_plan, type: :boolean
-
   # sort
-  has_scope :by_hostname
-  has_scope :by_user
-  has_scope :by_state
-  has_scope :by_plan_price
-  has_scope :by_last_30_days_billable_video_views
-  has_scope :by_last_30_days_extra_video_views_percentage
-  has_scope :by_last_30_days_plan_usage_persentage
-  has_scope :by_date
-  # search
-  has_scope :search
+  has_scope :by_hostname, :by_user, :by_state, :by_plan_price, :by_last_30_days_billable_video_views, :by_last_30_days_extra_video_views_percentage, :by_last_30_days_plan_usage_persentage, :by_date, :search
 
   # GET /sites
   def index
