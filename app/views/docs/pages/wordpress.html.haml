@@ -66,12 +66,6 @@
 
   @[sublimevideo class="sublime" poster="video-poster.jpg" src1="video.mp4" src2="video.ogv" width="640" height="360"]@
 
-  h4. CSS classes
-
-  Usage: @class="sublime another_class"@
-
-  You can add more classes to the @class@ attribute as long as they are space-separated. Or, you can even remove the _"sublime"_ @class@ entirely if you prefer to use the "JavaScript API":/javascript-api/usage to prepare your @<video>@ elements.
-
   h4. Poster frame
 
   Usage: @poster="http://yoursite.com/your_video_image.jpg"@
@@ -84,15 +78,25 @@
 
   You can add as many sources as you want with the @srcN@ attribute (as long as @N@ is an integer). Sources are ordered by their @N@ (i.e. @src1@ before @src2@, @src2@ before @src3@ etc...).
 
-  h4. DOM id
+  h4. HD sources
 
-  Usage: @id="a_unique_id"@
+  Usage: @src1="http://yoursite.com/video.mp4" src2="(hd)http://yoursite.com/video_hd.mp4" src3="http://yoursite.com/video.webm" src4="(hd)http://yoursite.com/video_hd.webm"@
+
+  You can define a source to be HD by adding @(hd)@ just before the URL. In the example above, "http://yoursite.com/video_hd.mp4" would be the HD version of "http://yoursite.com/video.mp4" and "http://yoursite.com/video_hd.webm" would be the HD version of "http://yoursite.com/video.webm". Learn more about "HD Switching":/hd-switching.
 
   h4. Preload
 
   Usage: @preload="none|metadata|auto"@ (defaults to "none")
 
   Setting @preload@ to "none" will save you bandwidth by preventing preloading (buffering) of the video upon page load.
+
+  h4. Statistics-related attributes
+
+  The following attributes are useful if you're using the "SublimeVideo statistics feature":/optimize-for-stats.
+
+  Usage: @data_uid="unique_id"@ and @data_name="A nice name here"@
+
+  @data_uid@ maps directly to the @data-uid@ attribute while @data_name@ maps to the @data-name@ attribute. To learn more about the @data-uid@ and @data-name@ attributes, please consult our "Optimize &lt;video&gt; elements for stats":/optimize-for-stats page.
 
   h4. Autoplay
 
@@ -104,6 +108,20 @@
 
   Usage: @loop@ (without value)
 
+  h4. DOM id
+
+  Usage: @id="a_unique_id"@
+
+  h4. CSS classes
+
+  Usage: @class="sublime another_class"@
+
+  You can add more classes to the @class@ attribute as long as they are space-separated. Or, you can even remove the _"sublime"_ @class@ entirely if you prefer to use the "JavaScript API":/javascript-api/usage to prepare your @<video>@ elements.
+
+  h4. CSS style
+
+  Usage: @style="display:none;"@
+
   h3(#troubleshooting). Troubleshooting
 
   h4. I don't see any sites in the settings page, why?
@@ -111,6 +129,11 @@
   It's probably because your WordPress site's domain is not properly registered in your #{link_to "SublimeVideo", sites_url(subdomain: 'my')} account. Please find the possible reasons why in the "Troubleshooting":/troubleshooting#not-properly-registered page.
 
   h3. Changelog
+
+  h4. 1.2.1
+
+  * Fix issue that prevented the HD switch from being displayed in the live preview.
+  * Added support for "style" attribute in shortcode.
 
   h4. 1.2.0
 
