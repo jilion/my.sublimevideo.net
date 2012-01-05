@@ -1,6 +1,6 @@
 module My::PasswordHelper
 
-  def password_box(options={})
+  def password_box(options = {})
     resource       = options.delete(:resource)
     password_state = options.delete(:password_state)
 

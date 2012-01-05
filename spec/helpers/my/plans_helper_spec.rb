@@ -12,16 +12,17 @@ describe My::PlansHelper do
       @paid_plan_yearly2  = Factory.create(:plan, cycle: "year", price: 20000)
     end
 
-    it { helper.plan_change_type(@site_in_trial, @paid_plan_monthly, @paid_plan_monthly).should  be_nil }
-    it { helper.plan_change_type(@site_in_trial, @paid_plan_monthly, @paid_plan_yearly).should   eq "in_trial_update" }
-    it { helper.plan_change_type(@site_in_trial, @paid_plan_yearly, @paid_plan_yearly2).should   eq "in_trial_update" }
-    it { helper.plan_change_type(@site_in_trial, @free_plan, @paid_plan_monthly).should          eq "in_trial_update" }
-    it { helper.plan_change_type(@site_in_trial, @paid_plan_yearly, @paid_plan_monthly).should   eq "in_trial_update" }
-    it { helper.plan_change_type(@site_in_trial, @paid_plan_yearly2, @paid_plan_monthly).should  eq "in_trial_update" }
-    it { helper.plan_change_type(@site_in_trial, @paid_plan_monthly2, @paid_plan_monthly).should eq "in_trial_update" }
-    it { helper.plan_change_type(@site_in_trial, @paid_plan_yearly, @paid_plan_monthly2).should  eq "in_trial_update" }
-    it { helper.plan_change_type(@site_in_trial, @paid_plan_yearly, @free_plan).should           eq "in_trial_downgrade_to_free" }
-    it { helper.plan_change_type(@site_in_trial, @paid_plan_monthly, @free_plan).should          eq "in_trial_downgrade_to_free" }
+    it { helper.plan_change_type(@site_in_trial, @paid_plan_monthly, @paid_plan_monthly).should     eq "skipping_trial" }
+    it { helper.plan_change_type(@site_not_in_trial, @paid_plan_monthly, @paid_plan_monthly).should be_nil }
+    it { helper.plan_change_type(@site_in_trial, @paid_plan_monthly, @paid_plan_yearly).should      eq "in_trial_update" }
+    it { helper.plan_change_type(@site_in_trial, @paid_plan_yearly, @paid_plan_yearly2).should      eq "in_trial_update" }
+    it { helper.plan_change_type(@site_in_trial, @free_plan, @paid_plan_monthly).should             eq "in_trial_update" }
+    it { helper.plan_change_type(@site_in_trial, @paid_plan_yearly, @paid_plan_monthly).should      eq "in_trial_update" }
+    it { helper.plan_change_type(@site_in_trial, @paid_plan_yearly2, @paid_plan_monthly).should     eq "in_trial_update" }
+    it { helper.plan_change_type(@site_in_trial, @paid_plan_monthly2, @paid_plan_monthly).should    eq "in_trial_update" }
+    it { helper.plan_change_type(@site_in_trial, @paid_plan_yearly, @paid_plan_monthly2).should     eq "in_trial_update" }
+    it { helper.plan_change_type(@site_in_trial, @paid_plan_yearly, @free_plan).should              eq "in_trial_downgrade_to_free" }
+    it { helper.plan_change_type(@site_in_trial, @paid_plan_monthly, @free_plan).should             eq "in_trial_downgrade_to_free" }
 
     it { helper.plan_change_type(@site_not_in_trial, @paid_plan_monthly, @paid_plan_monthly).should  be_nil }
     it { helper.plan_change_type(@site_not_in_trial, @paid_plan_monthly, @paid_plan_yearly).should   eq "upgrade" }

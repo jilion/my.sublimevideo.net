@@ -43,17 +43,21 @@ class PlanUpdateManager
     @checkedPlan.up('.select_box').addClassName 'active'
 
   handlePlanChange: ->
-    planChangeAndIsNotFree = !this.checkedPlanIsCurrentPlan() and !this.checkedPlanPriceIsZero()
-    if this.siteIsInTrial()
-      if planChangeAndIsNotFree
-        @badgedDiv.show() if @badgedDiv?
-        @skipTrialDiv.show()
+    if @badgedDiv?
+      if !this.checkedPlanPriceIsZero()
+        @badgedDiv.show()
       else
-        if @badgedDiv?
-          @badgedDiv.hide()
-          @badgedCheckbox.checked = true
+        @badgedDiv.hide()
+        @badgedCheckbox.checked = true
+
+    if this.siteIsInTrial()
+      if this.checkedPlanPriceIsZero()
         @skipTrialDiv.hide()
         @skipTrialCheckbox.checked = false
+      else
+        @skipTrialDiv.show()
+
+    planChangeAndIsNotFree = !(this.checkedPlanIsCurrentPlan() or this.checkedPlanPriceIsZero())
     this.handleBillingInfo(planChangeAndIsNotFree and ((!this.siteIsInTrial() and this.checkedPlanIsAnUpgrade()) or this.skippingTrial()))
 
   handleBillingInfo: (show) ->
@@ -112,23 +116,28 @@ class PersistedSitePlanUpdateManager extends PlanUpdateManager
     this.setupProcessDetailsMessages()
 
   setupProcessDetailsMessages: =>
-    ['in_trial_downgrade_to_free', 'in_trial_update', 'in_trial_instant_upgrade', 'upgrade', 'upgrade_from_free', 'delayed_upgrade', 'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'].each (name) =>
+    ['in_trial_downgrade_to_free', 'in_trial_update', 'in_trial_instant_upgrade', 'skipping_trial', 'upgrade', 'upgrade_from_free', 'delayed_upgrade', 'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'].each (name) =>
       @processDetailsMessages.set(name, $("plan_#{name}_info"))
 
   handleBillingInfo: (show) ->
     super
-    this.handleSubmitButtonDisplay(this.checkedPlanPriceIsZero() or (!this.checkedPlanIsCurrentPlan() and this.siteIsUpdatable()))
+    this.handleSubmitButtonDisplay(this.checkedPlanPriceIsZero() or this.siteIsUpdatable())
 
+  # Site is updatable if:
+  #  - it's in trial and don't skip trial, or skip trial and billing infos present
+  #  - it's not in trial and don't upgrade, or upgrade and billing infos present
   siteIsUpdatable: ->
-    (this.siteIsInTrial() and (!this.skippingTrial() or @billingInfoState is 'present')) or (!this.siteIsInTrial() and (!this.checkedPlanIsAnUpgrade() or @billingInfoState is 'present'))
+    (this.siteIsInTrial() and (!this.skippingTrial() or @billingInfoState is 'present')) or (!this.siteIsInTrial() and !this.checkedPlanIsCurrentPlan() and (!this.checkedPlanIsAnUpgrade() or @billingInfoState is 'present'))
 
   handleProcessDetails: ->
     @processDetailsMessages.each (pair) -> pair.value.hide()
 
-    if !this.checkedPlanIsCurrentPlan() and this.siteIsUpdatable()
+    # if !this.checkedPlanIsCurrentPlan() and this.siteIsUpdatable()
+    if this.siteIsUpdatable()
       planChangeType = @checkedPlan.readAttribute 'data-plan_change_type'
       planChangeType = 'in_trial_instant_upgrade' if planChangeType is 'in_trial_update' and this.skippingTrial()
-
+      planChangeType = '' if planChangeType is 'skipping_trial' and !this.skippingTrial()
+      console.log(planChangeType);
       @processDetailsMessages.each (pair) =>
         this.updateProcessDetailsMessages(pair.value) if planChangeType is pair.key
 

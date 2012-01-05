@@ -2,6 +2,7 @@ class My::Users::SessionsController < Devise::SessionsController
   include CustomDevisePaths
 
   prepend_before_filter :require_no_authentication, only: [:new, :create, :new_gs, :create_gs]
+  prepend_before_filter :allow_params_authentication!, only: [:create, :create_gs]
 
   # GET /gs-login
   def new_gs

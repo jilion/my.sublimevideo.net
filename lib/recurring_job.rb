@@ -28,7 +28,7 @@ module RecurringJob
 
     def delay_invoices_processing
       unless Delayed::Job.already_delayed?('%RecurringJob%invoices_processing%')
-        delay(priority: 2, run_at: Time.now.utc.tomorrow.midnight + 2.hours).invoices_processing
+        delay(priority: 2, run_at: Time.now.utc.tomorrow.midnight).invoices_processing
       end
     end
 

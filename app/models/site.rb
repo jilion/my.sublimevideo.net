@@ -78,7 +78,7 @@ class Site < ActiveRecord::Base
 
   before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
-  before_save :prepare_pending_attributes, if: :pending_plan_id_changed? # in site_modules/invoice
+  before_save :prepare_pending_attributes, if: proc { |s| s.pending_plan_id_changed? || s.skip_trial? } # in site_modules/invoice
   before_save :set_trial_started_at, :set_first_paid_plan_started_at # in site_modules/invoice
 
   after_create :delay_ranks_update, :update_last_30_days_counters # in site_modules/templates

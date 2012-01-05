@@ -43,9 +43,6 @@ module SiteModules::Scope
     }
 
     scope :renewable,  lambda { active.where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) } }
-    scope :refundable, lambda {
-      where { (first_paid_plan_started_at >= BusinessModel.days_for_refund.days.ago) & (refunded_at == nil) }
-    }
     scope :refunded,   where { (state == 'archived') & (refunded_at != nil) }
 
     # admin

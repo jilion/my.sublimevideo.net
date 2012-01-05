@@ -359,34 +359,6 @@ describe SiteModules::Invoice do
       end
     end # #instant_charging?
 
-    describe "#in_or_will_be_in_paid_plan?" do
-      context "site in paid plan" do
-        subject { Factory.create(:site, plan_id: @paid_plan.id) }
-
-        it { should be_in_or_will_be_in_paid_plan }
-      end
-
-      context "site is free and updated to paid" do
-        before(:each) do
-          @site = Factory.create(:site, plan_id: @free_plan.id)
-          @site.plan_id = @paid_plan.id
-        end
-        subject { @site }
-
-        it { should be_in_or_will_be_in_paid_plan }
-      end
-
-      context "site is paid is now paid" do
-        before(:each) do
-          @site = Factory.create(:site, plan_id: @paid_plan.id)
-          @site.plan_id = @free_plan.id
-        end
-        subject { @site }
-
-        it { should be_in_or_will_be_in_paid_plan }
-      end
-    end # #in_or_will_be_in_paid_plan?
-
     describe "#will_be_in_free_plan?" do
 
       context "site in free plan" do
@@ -458,21 +430,49 @@ describe SiteModules::Invoice do
       end
     end # #will_be_in_paid_plan?
 
-    describe "#trial_not_started_or_in_trial?" do
+    describe "#in_or_will_be_in_paid_plan?" do
+      context "site in paid plan" do
+        subject { Factory.create(:site, plan_id: @paid_plan.id) }
+
+        it { should be_in_or_will_be_in_paid_plan }
+      end
+
+      context "site is free and updated to paid" do
+        before(:each) do
+          @site = Factory.create(:site, plan_id: @free_plan.id)
+          @site.plan_id = @paid_plan.id
+        end
+        subject { @site }
+
+        it { should be_in_or_will_be_in_paid_plan }
+      end
+
+      context "site is paid is now paid" do
+        before(:each) do
+          @site = Factory.create(:site, plan_id: @paid_plan.id)
+          @site.plan_id = @free_plan.id
+        end
+        subject { @site }
+
+        it { should be_in_or_will_be_in_paid_plan }
+      end
+    end # #in_or_will_be_in_paid_plan?
+
+    describe "#in_trial?" do
       before(:all) do
         Site.delete_all
         @site_in_trial1 = Factory.build(:site)
         @site_in_trial2 = Factory.create(:site)
         Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = Factory.create(:site) }
-        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_in_trial4 = Factory.create(:site, plan_id: @free_plan.id) }
-        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial = Factory.create(:site) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial1 = Factory.create(:site, plan_id: @free_plan.id) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial2 = Factory.create(:site) }
       end
 
-      specify { @site_in_trial1.should be_trial_not_started_or_in_trial }
-      specify { @site_in_trial2.should be_trial_not_started_or_in_trial }
-      specify { @site_in_trial3.should be_trial_not_started_or_in_trial }
-      specify { @site_in_trial4.should be_trial_not_started_or_in_trial }
-      specify { @site_not_in_trial.should_not be_trial_not_started_or_in_trial }
+      specify { @site_in_trial1.should be_in_trial }
+      specify { @site_in_trial2.should be_in_trial }
+      specify { @site_in_trial3.should be_in_trial }
+      specify { @site_not_in_trial1.should_not be_in_trial }
+      specify { @site_not_in_trial2.should_not be_in_trial }
     end
 
     describe "#trial_ended?" do
@@ -492,19 +492,21 @@ describe SiteModules::Invoice do
       specify { @site_not_in_trial.should be_trial_ended }
     end
 
-    describe "#refundable?" do
+    describe "#trial_not_started_or_in_trial?" do
       before(:all) do
         Site.delete_all
-        @site_refundable = Factory.create(:site, first_paid_plan_started_at: (BusinessModel.days_for_refund-1).days.ago)
-        @site_not_refundable0 = Factory.create(:site, plan_id: @free_plan.id)
-        @site_not_refundable1 = Factory.create(:site, first_paid_plan_started_at: (BusinessModel.days_for_refund+1).days.ago)
-        @site_not_refundable2 = Factory.create(:site, first_paid_plan_started_at: (BusinessModel.days_for_refund-1).days.ago, refunded_at: Time.now.utc)
+        @site_in_trial1 = Factory.build(:site)
+        @site_in_trial2 = Factory.create(:site)
+        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = Factory.create(:site) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_in_trial4 = Factory.create(:site, plan_id: @free_plan.id) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial = Factory.create(:site) }
       end
 
-      specify { @site_refundable.should be_refundable }
-      specify { @site_not_refundable0.should_not be_refundable }
-      specify { @site_not_refundable1.should_not be_refundable }
-      specify { @site_not_refundable2.should_not be_refundable }
+      specify { @site_in_trial1.should be_trial_not_started_or_in_trial }
+      specify { @site_in_trial2.should be_trial_not_started_or_in_trial }
+      specify { @site_in_trial3.should be_trial_not_started_or_in_trial }
+      specify { @site_in_trial4.should be_trial_not_started_or_in_trial }
+      specify { @site_not_in_trial.should_not be_trial_not_started_or_in_trial }
     end
 
     describe "#refunded?" do
@@ -532,7 +534,7 @@ describe SiteModules::Invoice do
       context "with the last paid invoice refunded" do
         before(:all) do
           @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id)
-          @site.refund
+          @site.update_attribute(:refunded_at, Time.now.utc)
         end
         subject { @site.reload }
 
@@ -640,22 +642,6 @@ describe SiteModules::Invoice do
       specify { @site_in_trial.trial_expires_in_less_than_or_equal_to(BusinessModel.days_for_trial.days.from_now).should be_true }
       specify { @site_in_trial.trial_expires_in_less_than_or_equal_to(BusinessModel.days_for_trial.days.from_now + 1.day).should be_true }
     end
-
-    describe "#refund" do
-      before(:all) do
-        @site = Factory.create(:new_site, first_paid_plan_started_at: nil)
-      end
-
-      it "touches refunded_at" do
-        @site.refunded_at.should be_nil
-        @site.refund
-        @site.reload.refunded_at.should be_present
-      end
-
-      it "delays Transactions.refund_by_site_id" do
-        expect { @site.refund }.to change(Delayed::Job.where(:handler.matches => "%refund_by_site_id%"), :count).by(1)
-      end
-    end # #refund
 
     describe "#prepare_pending_attributes" do
       before(:all) do
