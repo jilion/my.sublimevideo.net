@@ -39,3 +39,7 @@
       %small= '-'
   %td
     %small= display_time(site.created_at)
+
+  - if params[:in_trial]
+    %td
+      %small= display_time(site.trial_end)
