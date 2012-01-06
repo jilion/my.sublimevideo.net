@@ -143,7 +143,8 @@ class Tweet
       })
 
       page = 1
-      tweets, favorites = [], TwitterApi.favorites(options[:user], page: page, include_entities: options[:include_entities])
+      tweets = []
+      favorites = TwitterApi.favorites(options[:user], page: page, include_entities: options[:include_entities]) || []
 
       while favorites.present?
         favorites.each do |tweet|
@@ -152,7 +153,7 @@ class Tweet
           tweets << tweet
         end
         page += 1
-        favorites = TwitterApi.favorites(options[:user], page: page, include_entities: options[:include_entities])
+        favorites = TwitterApi.favorites(options[:user], page: page, include_entities: options[:include_entities]) || []
       end
 
       count = if options[:count] == 0
@@ -170,11 +171,8 @@ class Tweet
       end
 
       selected_tweets.each do |tweet|
-        begin
-          tweet.bigger_profile_image = TwitterApi.profile_image(tweet.user.id, size: 'bigger')
-        rescue Twitter::Error
-          selected_tweets.delete(tweet)
-        end
+        tweet.bigger_profile_image = TwitterApi.profile_image(tweet.user.id, size: 'bigger')
+        selected_tweets.delete(tweet) if tweet.bigger_profile_image.nil?
       end
       selected_tweets.sort { |a, b| b.created_at <=> a.created_at }[0...count]
     end
@@ -185,13 +183,15 @@ class Tweet
     end
 
     def enough_remaining_twitter_calls?(count=0)
-      TwitterApi.rate_limit_status.remaining_hits >= (count.zero? ? KEYWORDS.size * 3 : count)
+      rate_limit_status = TwitterApi.rate_limit_status
+      (rate_limit_status.nil? ? KEYWORDS.size * 3 : rate_limit_status.remaining_hits) >= (count.zero? ? KEYWORDS.size * 3 : count)
     end
 
     def time_until_next_twitter_calls_limit_reset
-      Time.zone.at(TwitterApi.rate_limit_status.reset_time_in_seconds) - Time.now.utc
+      rate_limit_status = TwitterApi.rate_limit_status
+      Time.zone.at(rate_limit_status.nil? ? Time.now.utc : rate_limit_status.reset_time_in_seconds) - Time.now.utc
     end
-  
+
   end
 
   # ====================
@@ -199,12 +199,12 @@ class Tweet
   # ====================
 
   def favorite!
-    if favorited?
+    result = if favorited?
       TwitterApi.favorite_destroy(self.tweet_id)
     else
       TwitterApi.favorite_create(self.tweet_id)
     end
-    self.update_attribute(:favorited, !favorited)
+    self.update_attribute(:favorited, !favorited) unless result.nil?
   end
 
 end

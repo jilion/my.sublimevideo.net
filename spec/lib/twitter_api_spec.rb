@@ -4,9 +4,9 @@ describe TwitterApi do
 
   describe "method_missing" do
     it "delegates to Twitter if possible" do
-      TwitterApi.should_receive(:search)
+      TwitterApi.should_receive(:favorites)
 
-      TwitterApi.search
+      TwitterApi.favorites
     end
   end
 

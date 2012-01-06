@@ -15,8 +15,13 @@ module TwitterApi
       method_name = method_name.to_sym
 
       if Twitter.respond_to?(method_name)
-        with_rescue_and_retry(5) do
-          Twitter.send(method_name, *args)
+        begin
+          with_rescue_and_retry(3) do
+            Twitter.send(method_name, *args)
+          end
+        rescue => ex
+          Notify.send("Exception during call to Twitter: #{ex.message}", exception: ex)
+          nil
         end
       else
         super

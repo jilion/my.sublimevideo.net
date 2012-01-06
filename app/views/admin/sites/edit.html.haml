@@ -18,22 +18,29 @@
   %strong= @site.state.humanize
   - if @site.archived?
     = "since " + display_time(@site.archived_at)
-  = "| Created at: " + l(@site.created_at, format: :seconds_timezone)
-  = "| Updated at: " + l(@site.updated_at, format: :seconds_timezone)
+  %strong= "|"
+  = "Created at: " + l(@site.created_at, format: :seconds_timezone)
+  %strong= "|"
+  = "Updated at: " + l(@site.updated_at, format: :seconds_timezone)
 %p
   = "Mode: #{content_tag(:strong, @site.player_mode)}".html_safe
-  = "| CDN #{@site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
+  %strong= "|"
+  = "Badge: #{content_tag(:strong, @site.badged? ? 'ON' : 'OFF')}".html_safe
+  %strong= "|"
+  = "CDN #{@site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
+  %strong= "|"
+  = link_to "See license content", "http://cdn.sublimevideo.net/l/#{@site.token}.js", onclick: "window.open(this); return false"
 %br
 
 %h3 Hostnames
 
 %p
   = "Main hostname:"
-  = @site.hostname? ? link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}") : "no hostname"
+  %strong= @site.hostname? ? link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}") : "no hostname"
 %p
   = "Extra hostnames:"
-  - extra_hostnames = @site.extra_hostnames.to_s.split(", ").map { |h| content_tag(:strong, link_to(h, "http://#{h}")) }
-  = extra_hostnames.present? ? raw(extra_hostnames.join(", ")) : "–"
+  - extra_hostnames = @site.extra_hostnames.to_s.split(", ").map { |h| link_to(h, "http://#{h}") }
+  %strong= extra_hostnames.present? ? raw(extra_hostnames.join(", ")) : "–"
 %p
   = "Dev hostnames:"
   = content_tag(:strong, @site.dev_hostnames)
