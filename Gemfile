@@ -69,7 +69,7 @@ gem 'countries',             '~> 0.7.0'
 gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.1.0', require: 'page_rankr'
 gem 'twitter',               '~> 1.7.2'
-gem 'settingslogic',         '~> 2.0.6'
+gem 'settingslogic',         '2.0.6' # 2.0.7 has ruby-debug19 & jeweler as dependencies => UNACCEPTABLE
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 1.0.0' # Campaign Monitor
 
@@ -160,7 +160,7 @@ group :development do
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
-  gem 'guard-jasmine'
+  gem 'guard-jasmine', git: 'git://github.com/netzpirat/guard-jasmine.git'
   # gem 'guard-yard'
 end
 
