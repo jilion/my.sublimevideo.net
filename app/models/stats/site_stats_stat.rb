@@ -71,7 +71,7 @@ module Stats
       def create_site_stats_stat(day)
         site_stats = Stat::Site.where(d: day.to_time).all
         self.create(
-          d: day,
+          d:  day.to_time,
           pv: hashes_values_sum(site_stats, :pv),
           vv: hashes_values_sum(site_stats, :vv),
           bp: hashes_values_sum(site_stats, :bp),

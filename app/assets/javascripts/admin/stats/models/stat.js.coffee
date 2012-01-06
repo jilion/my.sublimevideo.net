@@ -5,4 +5,5 @@ class SVStats.Models.Stat extends Backbone.Model
 class SVStats.Collections.Stats extends Backbone.Collection
   initialize: -> @selected = ['active']
   chartType: -> 'spline'
+  yAxis: (selected) -> 0
   startTime: -> this.at(0).time()

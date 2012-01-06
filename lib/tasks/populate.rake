@@ -647,17 +647,17 @@ end
 def random_site_stats_inc(i, force = nil)
   {
     # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 3 }
-    "pv.m"  => force || (i * rand),
-    "pv.e"  => force || (i * rand / 2),
-    "pv.em" => force || (i * rand / 2),
-    "pv.d"  => force || (i * rand / 2),
-    "pv.i"  => force || (i * rand / 2),
+    "pv.m"  => force || (i * rand).round,
+    "pv.e"  => force || (i * rand / 2).round,
+    "pv.em" => force || (i * rand / 2).round,
+    "pv.d"  => force || (i * rand / 2).round,
+    "pv.i"  => force || (i * rand / 2).round,
     # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
-    "vv.m"  => force || (i * rand / 2),
-    "vv.e"  => force || (i * rand / 4),
-    "vv.em" => force || (i * rand / 4),
-    "vv.d"  => force || (i * rand / 6),
-    "vv.i"  => force || (i * rand / 6),
+    "vv.m"  => force || (i * rand / 2).round,
+    "vv.e"  => force || (i * rand / 4).round,
+    "vv.em" => force || (i * rand / 4).round,
+    "vv.d"  => force || (i * rand / 6).round,
+    "vv.i"  => force || (i * rand / 6).round,
     # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1, t (tablet) => 1 }, f (flash) => ... }
     "md.h.d" => i * rand(12),
     "md.h.m" => i * rand(5),
@@ -671,7 +671,7 @@ def random_site_stats_inc(i, force = nil)
     "bp.fir-osx" => i * rand(8),
     "bp.chr-win" => i * rand(11), # 21% in total
     "bp.chr-osx" => i * rand(10),
-    "bp.saf-win" => i * rand(1), # 6% in total
+    "bp.saf-win" => i * rand(1).round, # 6% in total
     "bp.saf-osx" => i * rand(5),
     "bp.saf-ipo" => i * rand(1),
     "bp.saf-iph" => i * rand(2),
@@ -683,17 +683,17 @@ end
 def random_video_stats_inc(i, force = nil)
   {
     # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 3 }
-    "vl.m"  => force || (i * rand(20)),
-    "vl.e"  => force || (i * rand(4)),
-    "vl.em" => force || (i * rand(2)),
-    "vl.d"  => force || (i * rand(2)),
-    "vl.i"  => force || (i * rand(2)),
+    "vl.m"  => force || (i * rand(20)).round,
+    "vl.e"  => force || (i * rand(4)).round,
+    "vl.em" => force || (i * rand(2)).round,
+    "vl.d"  => force || (i * rand(2)).round,
+    "vl.i"  => force || (i * rand(2)).round,
     # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
-    "vv.m"  => force || (i * rand(10)),
-    "vv.e"  => force || (i * rand(3)),
-    "vv.em" => force || (i * rand(3)),
-    "vv.d"  => force || (i * rand(2)),
-    "vv.i"  => force || (i * rand(2)),
+    "vv.m"  => force || (i * rand(10)).round,
+    "vv.e"  => force || (i * rand(3)).round,
+    "vv.em" => force || (i * rand(3)).round,
+    "vv.d"  => force || (i * rand(2)).round,
+    "vv.i"  => force || (i * rand(2)).round,
     # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1, t (tablet) => 1 }, f (flash) => ... }
     "md.h.d" => i * rand(12),
     "md.h.m" => i * rand(5),
@@ -707,7 +707,7 @@ def random_video_stats_inc(i, force = nil)
     "bp.fir-osx" => i * rand(8),
     "bp.chr-win" => i * rand(11), # 21% in total
     "bp.chr-osx" => i * rand(10),
-    "bp.saf-win" => i * rand(1), # 6% in total
+    "bp.saf-win" => i * rand(1).round, # 6% in total
     "bp.saf-osx" => i * rand(5),
     "bp.saf-ipo" => i * rand(1),
     "bp.saf-iph" => i * rand(2),

@@ -57,7 +57,7 @@
                           %a.selector{ href: "#", data: { value: 'sites.fr.dev' } } Dev
                         %li
                           %a.selector{ href: "#", data: { value: 'sites.fr.free' } } Freemium
-                      
+
                     %li
                       %a.selector{ href: "#", data: { value: 'sites.tr' } } Trial
                       %ul
@@ -100,6 +100,50 @@
                     %li
                       %a.selector{ href: "#", data: { value: 'sites.ar' } } Archived
 
+        %td#site_stats{ style: 'background: rgba(100,100,200,0.2)' }
+          %ul
+            %li
+              %h3
+                %a.selector{ href: "#", data: { value: 'site_stats.pv.all' } } Page visits
+              %ul
+                %li
+                  %a.selector.active{ href: "#", data: { value: 'site_stats.pv.billable' } } Billable
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.pv.m' } } Main
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.pv.e' } } Extra
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.pv.em' }, title: "Extra & Main embed only" } Embed
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.pv.d' } } Dev
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.pv.i' } } Invalid
+            %li
+              %h3
+                %a.selector{ href: "#", data: { value: 'site_stats.vv.all' } } Video plays
+              %ul
+                %li
+                  %a.selector.active{ href: "#", data: { value: 'site_stats.vv.billable' } } Billable
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.vv.m' } } Main
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.vv.e' } } Extra
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.vv.em' }, title: "Extra & Main embed only" } Embed
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.vv.d' } } Dev
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.vv.i' } } Invalid
+            %li
+              %h3 Player Mode & Device
+              %ul
+                %li
+                  %a.selector.active{ href: "#", data: { value: 'site_stats.md.html5_proportion' } } HTML5 proportion
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.md.mobile_proportion' } } Mobile (tablet included) proportion
+
         %td#tweets{ style: 'background: rgba(0,255,0,0.2)' }
           %ul
             %li
@@ -107,4 +151,3 @@
               %ul
                 %li
                   %a.selector{ href: "#", data: { value: 'tweets.sublimevideo' } } SublimeVideo
-            

@@ -17,7 +17,7 @@ class SVStats.Helpers.ChartsHelper
 
       title:
         text: null
-        
+
       rangeSelector:
         buttonTheme:
           fill: 'none'
@@ -93,7 +93,8 @@ class SVStats.Helpers.ChartsHelper
             title += ["<span style=\"color:#a2b1c9;font-weight:normal\">#{@point.text}</span>"]
           else if @points?
             title += _.map(_.sortBy(@points, (p) -> 1/p.y), (point) ->
-              "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)}"
+              num = if point.series.yAxis.axisTitle.textStr == 'Percentages' then 4 else 0
+              "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, num)}"
             ).join("<br/>")
           title
 
@@ -114,10 +115,10 @@ class SVStats.Helpers.ChartsHelper
             fontSize: "14px"
             color: '#1e3966'
 
-      yAxis:
+      yAxis: [{
         lineWidth: 1
-        # offset: 10
-        # min: 0
+        height: 250,
+        offset: 0
         gridLineColor: '#5d7493'
         allowDecimals: false
         startOnTick: false
@@ -132,6 +133,45 @@ class SVStats.Helpers.ChartsHelper
             color: '#1e3966'
         title:
           text: "Users, sites & tweets evolution"
+      }, {
+        lineWidth: 1
+        top: 300,
+        height: 140,
+        offset: 0
+        gridLineColor: '#5d7493'
+        allowDecimals: false
+        startOnTick: false
+        showFirstLabel: false
+        labels:
+          align: 'right'
+          x: -4
+          y: 4
+          style:
+            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
+            fontSize: "14px"
+            color: '#1e3966'
+        title:
+          text: "Site Stats"
+      }, {
+        lineWidth: 1
+        top: 450,
+        height: 90,
+        offset: 0
+        gridLineColor: '#5d7493'
+        allowDecimals: true
+        startOnTick: false
+        showFirstLabel: false
+        labels:
+          align: 'right'
+          x: -4
+          y: 4
+          style:
+            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
+            fontSize: "14px"
+            color: '#1e3966'
+        title:
+          text: "Percentages"
+      }]
 
   buildSeries: (collections) ->
     series = []
@@ -142,6 +182,7 @@ class SVStats.Helpers.ChartsHelper
             name: collection.title(selected.split('.'))
             data: collection.customPluck(selected.split('.'))
             type: collection.chartType()
+            yAxis: collection.yAxis(selected.split('.'))
             color: collection.color()
             pointStart: collection.startTime()
             pointInterval: 3600 * 24 * 1000

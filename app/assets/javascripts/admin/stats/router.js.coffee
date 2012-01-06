@@ -23,9 +23,10 @@ class SVStats.Routers.StatsRouter extends Backbone.Router
     this.fetchStats()
 
   initModels: ->
-    SVStats.stats["users"]  = new SVStats.Collections.UsersStats()
-    SVStats.stats["sites"]  = new SVStats.Collections.SitesStats()
-    SVStats.stats["tweets"] = new SVStats.Collections.TweetsStats()
+    SVStats.stats["users"]      = new SVStats.Collections.UsersStats()
+    SVStats.stats["sites"]      = new SVStats.Collections.SitesStats()
+    SVStats.stats["site_stats"] = new SVStats.Collections.SiteStatsStats()
+    SVStats.stats["tweets"]     = new SVStats.Collections.TweetsStats()
     # SVStats.stats["usages"] = new SVStats.Collections.UsagesStats()
 
   initHelpers: ->
