@@ -20,7 +20,7 @@ module TwitterApi
             Twitter.send(method_name, *args)
           end
         rescue => ex
-          Notify.send("Exception during call to Twitter: #{ex.message}", exception: ex)
+          # Notify.send("Exception during call to Twitter: #{ex.message}", exception: ex)
           nil
         end
       else
