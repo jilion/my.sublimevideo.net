@@ -15,7 +15,7 @@ gem 'squeel',                '~> 0.9.2'
 gem 'bson_ext',              '~> 1.5.2'
 gem 'bson',                  '~> 1.5.2'
 gem 'mongo',                 '~> 1.5.2'
-gem 'mongoid',               '~> 2.3.4'
+gem 'mongoid',               '~> 2.4.0'
 
 # Views
 gem 'haml',                  '~> 3.1.3'
@@ -161,7 +161,7 @@ group :development do
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
-  gem 'guard-jasmine'#, git: 'git://github.com/netzpirat/guard-jasmine.git'
+  gem 'guard-jasmine'
   # gem 'guard-yard'
 end
 
