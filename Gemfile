@@ -144,6 +144,7 @@ group :development do
   gem 'silent-postgres'
   # gem 'letter_opener'
   gem 'letter_opener', git: 'git://github.com/pcg79/letter_opener.git' # includes a fix not merged yet
+  gem 'pry'
 
   gem 'em-http-request' # async pusher in populate
 
@@ -160,7 +161,7 @@ group :development do
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
-  gem 'guard-jasmine', git: 'git://github.com/netzpirat/guard-jasmine.git'
+  gem 'guard-jasmine'#, git: 'git://github.com/netzpirat/guard-jasmine.git'
   # gem 'guard-yard'
 end
 
