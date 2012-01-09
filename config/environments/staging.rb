@@ -46,9 +46,14 @@ MySublimeVideo::Application.configure do
   config.cache_store = :dalli_store
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  config.action_controller.asset_host = Proc.new do |source, request|
-    "#{request.ssl? ? 'https' : 'http'}://d1p69vb2iuddhr.cloudfront.net"
-  end
+  # http://stackoverflow.com/questions/7324292/rails-3-1-cant-compile-assets-on-prod-due-to-asset-host-config
+  config.action_controller.asset_host = ->(source, request = nil, *_) {
+    if request && !request.ssl?
+      "http://d1p69vb2iuddhr.cloudfront.net"
+    else
+      "https://d1p69vb2iuddhr.cloudfront.net"
+    end
+  }
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   # config.assets.precompile += %w( search.js )
