@@ -50,7 +50,9 @@ MySublimeVideo::Application.configure do
   config.cache_store = :dalli_store
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  config.action_controller.asset_host = "https://d1p69vb2iuddhr.cloudfront.net"
+  config.action_controller.asset_host = Proc.new do |source, request|
+    "#{request.ssl? ? 'https' : 'http'}://d1p69vb2iuddhr.cloudfront.net"
+  end
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
