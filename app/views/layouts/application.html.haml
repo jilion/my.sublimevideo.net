@@ -13,8 +13,6 @@
 
     = stylesheet_link_tag(request.subdomain.presence || 'www')
     -# = airbrake_javascript_notifier
-    - if Rails.env.production? && request.subdomain != 'my'
-      %script{ src: "//cdn.optimizely.com/js/#{Optimizely.experiment_id}.js" }
     = csrf_meta_tag
     %link{ rel: "shortcut icon", href: "http://sublimevideo.net/favicon.ico", type: "image/x-icon" }
 
