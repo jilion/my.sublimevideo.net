@@ -14,7 +14,7 @@ class Admin::ReferrersController < AdminController
     %w[by_url by_hits by_updated_at by_created_at by_contextual_hits by_badge_hits].each do |by|
       @referrers = @referrers.send(by.to_sym, params[by.to_sym]) if params[by.to_sym]
     end
-    @referrers.by_created_at if @referrers.scoped[:order_by].nil?
+    @referrers.by_created_at if @referrers.criteria.options[:sort].nil?
     respond_with(@referrers, per_page: 100)
   end
 
