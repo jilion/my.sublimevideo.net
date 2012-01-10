@@ -49,7 +49,7 @@ class SublimeVideo.ImagePreloader
     @options['height'] = @image['height']
     @callback(@problem, @imageSrc, @options)
 
-class VideoPreloader
+class SublimeVideo.VideoPreloader
   constructor: (videoUrl, callback) ->
      @callback = callback
      @videoSrc = videoUrl

@@ -1,3 +1,5 @@
+#= require application_jquery
+
 #= require backbone
 #= require video-size-checker/sublimevideo-size-checker.min.js
 #= require spin/jquery.spin
@@ -8,6 +10,11 @@
 #= require_tree ./video_tag_builder
 
 
+window.MSV =
+  Models: {}
+  Collections: {}
+  Routers: {}
+  Views: {}
 
 window.MSVVideoTagBuilder =
   Models: {}

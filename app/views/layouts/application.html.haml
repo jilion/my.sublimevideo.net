@@ -36,6 +36,8 @@
 
     - if %w[site_stats].include?(controller_name)
       = javascript_include_tag 'stats'
+    - elsif %w[video_tag_builder].include?(controller_name)
+      = javascript_include_tag 'video_tag_builder'
     - else
       = javascript_include_tag(request.subdomain.presence || 'www')
 

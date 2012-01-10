@@ -1,5 +1,5 @@
 class MSVVideoTagBuilder.Views.Loader extends Backbone.View
-  template: JST['templates/_site_select']
+  template: JST['../templates/_site_select_title']
 
   events:
     'change select': 'updateToken'
