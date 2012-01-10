@@ -17,13 +17,13 @@
   <label for='start_with_hd'>Start with HD version</label>
 </div>
 
+<div id='video_data_uid'>
+  Video unique ID:
+  <input id='data_uid' type='text' value='<%= @source.get('dataUID') %>' size='8' />
+</div>
+
 <div id='video_data_name'>
   Video name:
   <input id='data_name' type='text' value='<%= @source.get('dataName') %>' size='50' />
   <p class='note'>This name identifies the video for your video-stats reporting. For more advanced video stats configuration, please consult <a href="http://docs.sublimevideo.net/stats" onclick="window.open(this); return false">our documentation</a>.</p>
 </div>
-
-<!-- <div id='video_data_uid'>
-  Video unique ID:
-  <input id='data_uid' type='text' value='<%= @source.get('dataUID') %>' size='8' />
-</div> -->

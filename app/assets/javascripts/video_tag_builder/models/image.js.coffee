@@ -3,6 +3,7 @@ class MSVVideoTagBuilder.Models.Image extends Backbone.Model
     src: ""
     width: null
     height: null
+    validSrc: true
 
   srcIsUrl: ->
     /^https?:\/\/.+\.\w+(\?+.*)?$/.test this.get('src')
@@ -10,10 +11,10 @@ class MSVVideoTagBuilder.Models.Image extends Backbone.Model
   setAndPreloadSrc: (src) ->
     unless src is this.get('src')
       this.set(src: src)
-      this.preloadSrc() if this.srcIsUrl()
+      this.preloadSrc() unless this.get('src') is ''
 
   preloadSrc: ->
-    new MSV.ImagePreloader(this.get('src'), this.setDimensions)
+    new SublimeVideo.ImagePreloader(this.get('src'), this.setDimensions)
 
   setDimensions: (problem, imageSrc, dimensions) =>
     this.set(src: imageSrc) if imageSrc isnt this.get('src')
@@ -21,6 +22,7 @@ class MSVVideoTagBuilder.Models.Image extends Backbone.Model
       this.set(width: 0)  unless this.get('width')
       this.set(height: 0) unless this.get('height')
       this.set(ratio: 0)  unless this.get('ratio')
+      this.set(validSrc: false)
     else
       newWidth  = parseInt(dimensions['width'])
       newHeight = parseInt(dimensions['height'])
@@ -29,9 +31,14 @@ class MSVVideoTagBuilder.Models.Image extends Backbone.Model
       this.set(width: newWidth)   unless newWidth  is this.get('width')
       this.set(height: newHeight) unless newHeight is this.get('height')
       this.set(ratio: newRatio)   unless newRatio  is this.get('ratio')
+      this.set(validSrc: true)
 
 class MSVVideoTagBuilder.Models.Thumbnail extends MSVVideoTagBuilder.Models.Image
   defaults:
+    src: ""
+    width: null
+    height: null
+    validSrc: true
     ratio: null
     thumbWidth: null
     thumbHeight: null
