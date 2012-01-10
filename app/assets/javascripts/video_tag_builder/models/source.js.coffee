@@ -33,7 +33,7 @@ class MSVVideoTagBuilder.Models.Source extends Backbone.Model
     this.set(dataName: name.charAt(0).toUpperCase() + name.slice(1))
 
   preloadSrc: ->
-    new MSV.VideoPreloader(this.get('src'), this.setDimensions)
+    new SublimeVideo.VideoPreloader(this.get('src'), this.setDimensions)
 
   setDimensions: (videoSrc, dimensions) =>
     if !dimensions?

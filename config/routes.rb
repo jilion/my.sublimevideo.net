@@ -110,8 +110,8 @@ MySublimeVideo::Application.routes.draw do
       resource :ticket, only: [:create], path: 'help'
       %w[support feedback].each { |action| get action, to: redirect('/help') }
 
-      # match '/video-tag-builder' => 'video_tag_builder#new', via: :get, as: 'video_tag_builder'
-      # match '/video-tag-builder/iframe-embed' => 'video_tag_builder#iframe_embed', via: :get
+      match '/video-tag-builder' => 'video_tag_builder#new', via: :get, as: 'video_tag_builder'
+      match '/video-tag-builder/iframe-embed' => 'video_tag_builder#iframe_embed', via: :get
 
       post '/pusher/auth' => 'pusher#auth'
 
