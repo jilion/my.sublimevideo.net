@@ -247,7 +247,7 @@ describe User do
   end
 
   describe "State Machine" do
-    before(:all) do
+    before(:each) do
       @user           = Factory.create(:user)
       @free_site      = Factory.create(:site, user: @user, plan_id: @free_plan.id, hostname: "octavez.com")
       @paid_site      = Factory.create(:site, user: @user, hostname: "rymai.com")
@@ -261,8 +261,6 @@ describe User do
     end
 
     describe "#suspend" do
-      before(:all) do
-      end
       subject { @user }
 
       context "from active state" do
@@ -385,11 +383,8 @@ describe User do
         end
 
         context "with an open invoice" do
-          before(:all) do
-            @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
-          end
-
           it "archives the user" do
+            @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
             subject.archive!.should be_true
             subject.should be_archived
             @open_invoice.reload.should be_canceled
@@ -397,11 +392,8 @@ describe User do
         end
 
         context "with a failed invoice" do
-          before(:all) do
-            @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
-          end
-
           it "archives the user" do
+            @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
             subject.archive!.should be_true
             subject.should be_archived
             @failed_invoice.reload.should be_canceled
@@ -409,11 +401,8 @@ describe User do
         end
 
         context "with a waiting invoice" do
-          before(:all) do
-            @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-          end
-
           it "archives the user" do
+            @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
             subject.archive.should be_false
             subject.should_not be_archived
             @waiting_invoice.reload.should be_waiting
@@ -430,11 +419,8 @@ describe User do
         end
 
         context "with an open invoice" do
-          before(:all) do
-            @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
-          end
-
           it "doesn't archive the user" do
+            @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
             subject.archive.should be_false
             subject.should_not be_archived
             @open_invoice.reload.should be_open
@@ -442,11 +428,8 @@ describe User do
         end
 
         context "with a failed invoice" do
-          before(:all) do
-            @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
-          end
-
           it "doesn't archive the user" do
+            @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
             subject.archive.should be_false
             subject.should_not be_archived
             @failed_invoice.reload.should be_failed
@@ -454,11 +437,8 @@ describe User do
         end
 
         context "with a waiting invoice" do
-          before(:all) do
-            @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-          end
-
           it "doesn't archive the user" do
+            @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
             subject.archive.should be_false
             subject.should_not be_archived
             @waiting_invoice.reload.should be_waiting

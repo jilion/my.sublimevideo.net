@@ -80,7 +80,7 @@ describe SiteModules::Invoice do
       end
 
       describe "activatable sites belonging to a user with credit card" do
-        before do
+        before(:each) do
           Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial }
         end
         subject { @site_not_in_trial_with_cc_1.reload }

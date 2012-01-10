@@ -39,7 +39,7 @@ describe SiteModules::Templates do
     end
 
     describe "on save" do
-      before do
+      before(:each) do
         VoxcastCDN.stub(:purge)
       end
 

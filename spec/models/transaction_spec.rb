@@ -30,8 +30,7 @@ describe Transaction do
 
   describe "Validations" do
     describe "#at_least_one_invoice" do
-      before(:all) { @transaction = Factory.build(:transaction) }
-      subject { @transaction }
+      subject { Factory.build(:transaction) }
 
       specify { subject.invoices.should be_empty }
       specify { subject.should_not be_valid }
@@ -117,7 +116,7 @@ describe Transaction do
   end # Callbacks
 
   describe "State Machine" do
-    before(:all) do
+    before(:each) do
       @site        = Factory.create(:site)
       @invoice1    = Factory.create(:invoice, site: @site, state: 'open')
       @invoice2    = Factory.create(:invoice, site: @site, state: 'failed')
@@ -271,7 +270,7 @@ describe Transaction do
   end # State Machine
 
   describe "Scopes" do
-    before(:all) do
+    before(:each) do
       @site                    = Factory.create(:site)
       @invoice                 = Factory.create(:invoice, site: @site, state: 'open')
       @transaction_unprocessed = Factory.create(:transaction, invoices: [@invoice])
@@ -325,7 +324,7 @@ describe Transaction do
         @invoice3 = Factory.create(:invoice, site: @site1, state: 'open', renew: true)
         @invoice4 = Factory.create(:invoice, site: @site2, state: 'failed', renew: false) # first invoice
       end
-      before do
+      before(:each) do
         @user1.reload
         @user2.reload
         Delayed::Job.delete_all
@@ -398,7 +397,7 @@ describe Transaction do
       context "with a credit card alias" do
         use_vcr_cassette "ogone/visa_payment_2000_alias"
 
-        before do
+        before(:each) do
           @user.reload
           @invoice1 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'open')
           @invoice2 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'failed')
@@ -431,7 +430,7 @@ describe Transaction do
       end
 
       context "with a succeeding purchase" do
-        before do
+        before(:each) do
           @user.reload
           @invoice1 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'open')
         end
@@ -459,7 +458,7 @@ describe Transaction do
         end
 
         context "with a purchase that need a 3d secure authentication" do
-          before do
+          before(:each) do
             Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "5", "STATUS" => "46", "NCERRORPLUS" => "!" }) }
           end
 
@@ -476,7 +475,7 @@ describe Transaction do
       end
 
       context "with a failing purchase" do
-        before do
+        before(:each) do
           @invoice1 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'open')
         end
 
