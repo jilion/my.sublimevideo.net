@@ -59,6 +59,7 @@ module MySublimeVideo
     end
 
     config.assets.enabled = true
+    config.assets.prefix = 'assets' # Fix for asset_sync 2.0.4
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"

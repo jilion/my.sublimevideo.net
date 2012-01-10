@@ -963,7 +963,7 @@ describe User do
         end
 
         context "with an open invoice" do
-          before(:all) do
+          before(:each) do
             @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
           end
 
@@ -971,7 +971,7 @@ describe User do
         end
 
         context "with a failed invoice" do
-          before(:all) do
+          before(:each) do
             @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
           end
 
@@ -979,7 +979,7 @@ describe User do
         end
 
         context "with a waiting invoice" do
-          before(:all) do
+          before(:each) do
             @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
           end
 
@@ -995,7 +995,7 @@ describe User do
         end
 
         context "with an open invoice" do
-          before(:all) do
+          before(:each) do
             @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
           end
 
@@ -1003,7 +1003,7 @@ describe User do
         end
 
         context "with a failed invoice" do
-          before(:all) do
+          before(:each) do
             @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
           end
 
@@ -1011,7 +1011,7 @@ describe User do
         end
 
         context "with a waiting invoice" do
-          before(:all) do
+          before(:each) do
             @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
           end
 
