@@ -11,7 +11,7 @@
 require 'spec_helper'
 
 describe Ticket do
-  before(:all) do
+  before(:each) do
     @user = Factory.create(:user, name: "Remy")
     @site = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
     @loser = Factory.create(:user)
@@ -22,10 +22,7 @@ describe Ticket do
 
   describe "Factory" do
     context "without site" do
-      before(:all) do
-        @ticket = Ticket.new({ user_id: @user.id, subject: "Subject", message: "Message" })
-      end
-      subject { @ticket }
+      subject { Ticket.new({ user_id: @user.id, subject: "Subject", message: "Message" }) }
 
       its(:subject) { should eql "Subject" }
       its(:message) { should eql "Message" }
@@ -34,10 +31,7 @@ describe Ticket do
     end
 
     context "with site" do
-      before(:all) do
-        @ticket = Ticket.new({ user_id: @user.id, site_token: @site.token, subject: "Subject", message: "Message" })
-      end
-      subject { @ticket }
+      subject { Ticket.new({ user_id: @user.id, site_token: @site.token, subject: "Subject", message: "Message" })}
 
       its(:subject) { should eql "Subject" }
       its(:message) { should eql "Request for site: (#{@site.token}) #{@site.hostname}\n\nMessage" }
