@@ -22,8 +22,7 @@ describe Tweet do
   end
 
   describe "Associations" do
-    before(:all) { @tweet = Factory.create(:user) }
-    subject { @tweet }
+    subject { Factory.create(:user)  }
 
     it "should belongs to retweeted_tweet" do
       tweet1 = Factory.create(:tweet, tweet_id: 1)

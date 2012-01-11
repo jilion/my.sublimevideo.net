@@ -3,8 +3,7 @@ require 'spec_helper'
 describe MailTemplate do
 
   context "Factory" do
-    before(:all) { @mail_template = Factory.create(:mail_template) }
-    subject { @mail_template }
+    subject { Factory.create(:mail_template) }
 
     its(:title)   { should =~ /Pricing survey \d+/ }
     its(:subject) { should include "{{user.name}} ({{user.email}}), help us shaping the right pricing" }
@@ -14,8 +13,7 @@ describe MailTemplate do
   end
 
   describe "Associations" do
-    before(:all) { @mail_template = Factory.create(:mail_template) }
-    subject { @mail_template }
+    subject { Factory.create(:mail_template) }
 
     it { should have_many :logs }
   end
@@ -26,7 +24,11 @@ describe MailTemplate do
       it { should validate_presence_of(attr) }
     end
 
-    it { should validate_uniqueness_of(:title) }
+    context "with an already mail template" do
+      before { Factory.create(:mail_template) }
+
+      it { should validate_uniqueness_of(:title) }
+    end
   end
 
 end
