@@ -10,7 +10,7 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
   model: SVStats.Models.SitesStat
   url: -> '/stats/sites.json'
   id: -> 'sites'
-  color: -> 'rgba(255,0,0,0.5)'
+  color: (selected) -> 'rgba(255,0,0,0.7)'
 
   title: (selected) ->
     if selected.length > 1

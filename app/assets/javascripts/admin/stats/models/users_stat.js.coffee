@@ -9,7 +9,7 @@ class SVStats.Collections.UsersStats extends SVStats.Collections.Stats
   model: SVStats.Models.UsersStat
   url: -> '/stats/users.json'
   id: -> 'users'
-  color: -> 'rgba(0,0,255,0.5)'
+  color: (selected) -> 'rgba(0,0,255,0.7)'
 
   title: (selected) ->
     if selected.length == 1
