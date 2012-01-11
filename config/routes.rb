@@ -170,9 +170,6 @@ MySublimeVideo::Application.routes.draw do
 
       resources :enthusiast_sites, only: [:update]
 
-      # resources :analytics, only: [:index]
-      #
-      # match '/analytics/:report' => 'analytics#show', as: "analytic"
       resources :stats, only: [:index] do
         collection do
           get :users
@@ -180,9 +177,8 @@ MySublimeVideo::Application.routes.draw do
           get :tweets
           get :usages
           get :site_stats
-        end
-        member do
-          get '/single/:page' => 'stats#show'
+          get :more
+          get '/single/:page' => 'stats#show', as: 'single'
         end
       end
 
@@ -199,11 +195,11 @@ MySublimeVideo::Application.routes.draw do
       end
 
       resources :invoices,  only: [:index, :show, :edit] do
-        member do
-          put :retry_charging
-        end
         collection do
           get :monthly
+        end
+        member do
+          put :retry_charging
         end
       end
 
