@@ -36,9 +36,7 @@ gem 'acts_as_api',           '~> 0.3.10'
 # gem 'rack-throttle',         git: 'git://github.com/rymai/rack-throttle.git', require: 'rack/throttle'
 
 # Internals
-gem 'delayed_job',           '~> 2.1.4'
-# gem 'delayed_job',           '~> 3.0.0.pre'
-# gem 'delayed_job_active_record'
+gem 'delayed_job_active_record', '~> 0.3.1'
 gem 'rescue_me',             '~> 0.1.0'
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'
@@ -69,7 +67,7 @@ gem 'countries',             '~> 0.7.0'
 gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.1.0', require: 'page_rankr'
 gem 'twitter',               '~> 1.7.2'
-gem 'settingslogic',         '2.0.6' # 2.0.7 has ruby-debug19 & jeweler as dependencies => UNACCEPTABLE
+gem 'settingslogic',         '~> 2.0.8'
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 1.0.0' # Campaign Monitor
 
