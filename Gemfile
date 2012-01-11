@@ -1,4 +1,5 @@
 source 'http://rubygems.org'
+source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com account
 
 gem 'rails',                 '3.1.3'
 
@@ -75,8 +76,7 @@ gem 'airbrake',              '~> 3.0.5'
 gem 'prowl',                 '~> 0.1.3'
 
 gem 'addressable',           '~> 2.2.6'
-# Need to be updated manually until https://github.com/carlhuda/bundler/issues/67 is fixed.
-gem 'stat_request_parser',   path: 'vendor/sv_stat_request_parser'
+gem 'stat_request_parser',   '~> 1.0.0' # hosted on gemfury
 
 # Perf
 gem 'dalli',                 '~> 1.1.3'
