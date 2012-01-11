@@ -10,7 +10,7 @@ describe My::BillingMailer do
   it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: [I18n.t('mailer.billing.email')], params: lambda { Factory.create(:invoice) }
 
   describe "specific checks" do
-    before(:all) do
+    before(:each) do
       @user        = Factory.create(:user, cc_expire_on: 1.day.from_now)
       @site        = Factory.create(:site, user: @user, trial_started_at: 8.days.ago)
       @invoice     = Factory.create(:invoice)
@@ -19,7 +19,7 @@ describe My::BillingMailer do
 
     describe "#trial_has_started" do
       context "user has a cc" do
-        before(:all) do
+        before(:each) do
           described_class.trial_has_started(@site.reload).deliver
           @last_delivery = ActionMailer::Base.deliveries.last
         end
@@ -29,9 +29,9 @@ describe My::BillingMailer do
         it { @last_delivery.body.encoded.should include I18n.l(@site.trial_end.tomorrow, format: :named_date) }
         it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
       end
-      
+
       context "user has no cc" do
-        before(:all) do
+        before(:each) do
           @user.reset_credit_card_info
           described_class.trial_has_started(@site.reload).deliver
           @last_delivery = ActionMailer::Base.deliveries.last
@@ -44,7 +44,7 @@ describe My::BillingMailer do
     end
 
     describe "#trial_will_expire" do
-      before(:all) do
+      before(:each) do
         @site.reload
         @site.update_attribute(:trial_started_at, (BusinessModel.days_for_trial-1).days.ago)
         described_class.trial_will_expire(@site).deliver
@@ -59,7 +59,7 @@ describe My::BillingMailer do
     end
 
     describe "#trial_has_expired" do
-      before(:all) do
+      before(:each) do
         @site.reload
         @site.update_attribute(:trial_started_at, BusinessModel.days_for_trial.days.ago)
         described_class.trial_has_expired(@site, Factory.create(:plan)).deliver
@@ -72,7 +72,7 @@ describe My::BillingMailer do
     end
 
     describe "#credit_card_will_expire" do
-      before(:all) do
+      before(:each) do
         described_class.credit_card_will_expire(@user).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
@@ -84,7 +84,7 @@ describe My::BillingMailer do
     end
 
     describe "#transaction_succeeded" do
-      before(:all) do
+      before(:each) do
         described_class.transaction_succeeded(@transaction).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
@@ -97,7 +97,7 @@ describe My::BillingMailer do
     end
 
     describe "#transaction_failed" do
-      before(:all) do
+      before(:each) do
         described_class.transaction_failed(@transaction).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
@@ -110,7 +110,7 @@ describe My::BillingMailer do
     end
 
     describe "#too_many_charging_attempts" do
-      before(:all) do
+      before(:each) do
         described_class.too_many_charging_attempts(@invoice).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
