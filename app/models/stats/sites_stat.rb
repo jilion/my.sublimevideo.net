@@ -10,12 +10,12 @@ module Stats
     field :plans_count,  type: Hash
 
     field :d,  type: DateTime # Day
-    field :fr, type: Integer # free
-    field :sp, type: Integer # sponsored
-    field :tr, type: Hash # trial: { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
-    field :pa, type: Hash # paying: { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
-    field :su, type: Integer # suspended
-    field :ar, type: Integer # archived
+    field :fr, type: Hash     # free { "beta" => 2, "dev" => 3, "free" => 4 }
+    field :sp, type: Integer  # sponsored
+    field :tr, type: Hash     # trial: { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
+    field :pa, type: Hash     # paying: { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
+    field :su, type: Integer  # suspended
+    field :ar, type: Integer  # archived
 
     index :d
     index :created_at

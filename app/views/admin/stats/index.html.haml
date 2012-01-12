@@ -11,7 +11,7 @@
       $('#chart').spin(spinOptions)
       Backbone.history.start(pushState: true)
 
-  #chart
+  #chart{ style: "height:400px" }
 
   .spacer
 
@@ -27,6 +27,8 @@
                 %li
                   %a.selector.active{ href: "#", data: { value: 'users.active' } } Active
                   %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'users.be' }, title: "Beta users" } Beta
                     %li
                       %a.selector{ href: "#", data: { value: 'users.fr' }, title: "Users with no paying sites" } Free
                     %li
@@ -49,14 +51,11 @@
                   %a.selector.active{ href: "#", data: { value: 'sites.active' } } Active
                   %ul
                     %li
-                      %a.selector{ href: "#", data: { value: 'sites.fr' } } Free
-                      %ul
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.fr.beta' } } Beta
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.fr.dev' } } Dev
-                        %li
-                          %a.selector{ href: "#", data: { value: 'sites.fr.free' } } Freemium
+                      %a.selector{ href: "#", data: { value: 'sites.fr.beta' } } Beta
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.fr.dev' } } Dev
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.fr.free' } } Free
 
                     %li
                       %a.selector{ href: "#", data: { value: 'sites.tr' } } Trial

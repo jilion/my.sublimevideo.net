@@ -9,6 +9,7 @@ module Stats
     field :states_count, type: Hash
 
     field :d,  type: DateTime # Day
+    field :be, type: Integer # beta
     field :fr, type: Integer # free
     field :pa, type: Integer # paying
     field :su, type: Integer # suspended
@@ -43,7 +44,7 @@ module Stats
           scoped
         end
 
-        json_stats.order_by([:d, :asc]).to_json(only: [:fr, :pa, :su, :ar])
+        json_stats.order_by([:d, :asc]).to_json(only: [:be, :fr, :pa, :su, :ar])
       end
 
       def delay_create_users_stats
@@ -56,6 +57,7 @@ module Stats
         delay_create_users_stats
         self.create(
           d: Time.now.utc.midnight,
+          be: 0,
           fr: User.free.count,
           pa: User.paying.count,
           su: User.suspended.count,

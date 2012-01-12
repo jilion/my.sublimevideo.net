@@ -21,12 +21,11 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
       text
     else
       switch selected[0]
-        when 'fr' then 'Free sites'
         when 'tr' then 'Sites in trial'
         when 'pa' then 'Paying sites'
         when 'su' then 'Suspended sites'
         when 'ar' then 'Archived sites'
-        when 'active' then 'Active sites (free, in trial or paying)'
+        when 'active' then 'Active sites (beta, dev, free, in trial or paying)'
         when 'passive' then 'Passive sites (suspended or archived)'
         when 'all' then 'Sites'
 
