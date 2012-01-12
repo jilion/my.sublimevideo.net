@@ -131,11 +131,11 @@ describe Stat do
       })}
     end
 
-    context "view event " do
+    context "view event" do
       before(:each) do
         described_class.stub(:only_stats_trackers).and_return({
-          ["?t=ovjigy83&e=s&d=d&h=m&vu=abcd1234&vn=My%20Video&vcs[]=source12&vcs[]=source34", user_agent] => 1,
-          ["?t=site1234&e=s&d=d&h=i&vu=abcd1234&vn=My%20Video&vcs[]=source12&vcs[]=source34", user_agent] => 1
+          ["?t=ovjigy83&e=s&d=d&h=m&vu=abcd1234&vn=My%20Video&vc=source12&vcs[]=source12&vcs[]=source34", user_agent] => 1,
+          ["?t=site1234&e=s&d=d&h=i&vu=abcd1234&vn=My%20Video&vc=source12&vcs[]=source12&vcs[]=source34", user_agent] => 1
         })
       end
 
@@ -162,8 +162,8 @@ describe Stat do
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=f", user_agent] => 1,
           ["?t=ovjigy83&e=l&d=d&h=e&vu[]=efgh5678&pm[]=f", user_agent] => 1,
           ["?t=site1234&e=l&d=m&h=m&vu[]=abcd1234&vu[]=efgh5678&pm[]=h&pm[]=h", user_agent] => 3,
-          ["?t=ovjigy83&e=s&d=d&h=m&vu=abcd1234&vn=My%20Video&vcs[]=source12&vcs[]=source34", user_agent] => 1,
-          ["?t=site1234&e=s&d=d&h=i&vu=abcd1234&vn=My%20Video&vcs[]=source12&vcs[]=source34", user_agent] => 1
+          ["?t=ovjigy83&e=s&d=d&h=m&vu=abcd1234&vn=My%20Video&vc=source12&vcs[]=source12&vcs[]=source34", user_agent] => 1,
+          ["?t=site1234&e=s&d=d&h=i&vu=abcd1234&vn=My%20Video&vc=source12&vcs[]=source12&vcs[]=source34", user_agent] => 1
         })
       end
 
