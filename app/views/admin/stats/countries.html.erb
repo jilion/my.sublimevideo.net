@@ -1,3 +1,4 @@
+<%= title_and_content_header("Repartition of Users by Country") %>
 <%
   minimum_users = 100
   countries = User.active.select("country, COUNT(*) as total").group(:country).order("total DESC").map! { |u| [u.country || "Unknown", u.total.to_i] }
@@ -13,7 +14,7 @@
 %>
 
 <script type = "text/javascript" charset="utf-8">
-document.observe("dom:loaded", function() {
+$(document).ready(function() {
   new Highcharts.Chart({
     chart: {
       renderTo: 'countries',
@@ -54,7 +55,7 @@ document.observe("dom:loaded", function() {
     }],
     credits: {
       enabled: true,
-      text: "Generation time: <%= Time.now.to_s(:format => :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
+      text: "Generation time: <%= Time.now.to_s(format: :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
       href: "http://sublimevideo.net"
     }
   });
@@ -77,6 +78,6 @@ document.observe("dom:loaded", function() {
   <% end %>
 </table>
 
-<div id="countries" style="float:left; width:50%; height:350px;"></div>
+<div id="countries" style="float:left; width:65%;"></div>
 
 <br class="spacer" />

@@ -20,93 +20,119 @@ namespace :db do
 
     desc "Load all development fixtures."
     task all: :environment do
-      delete_all_files_in_public('uploads/releases')
-      delete_all_files_in_public('uploads/s3')
-      delete_all_files_in_public('uploads/tmp')
-      delete_all_files_in_public('uploads/voxcast')
-      timed { create_plans }
-      timed { create_admins }
-      timed { create_users(argv_user) }
-      timed { create_sites }
-      timed { create_site_usages }
-      timed { create_site_stats }
-      timed { create_mail_templates }
+      disable_perform_deliveries do
+        delete_all_files_in_public('uploads/releases')
+        delete_all_files_in_public('uploads/s3')
+        delete_all_files_in_public('uploads/tmp')
+        delete_all_files_in_public('uploads/voxcast')
+        timed { create_plans }
+        timed { create_admins }
+        timed { create_users(argv_user) }
+        timed { create_sites }
+        timed { create_site_usages }
+        timed { create_site_stats }
+        timed { create_mail_templates }
+      end
     end
 
     desc "Load Admin development fixtures."
     task admins: :environment do
-      timed { empty_tables(Admin) }
-      timed { create_admins }
+      disable_perform_deliveries do
+        timed { empty_tables(Admin) }
+        timed { create_admins }
+      end
     end
 
     desc "Load Enthusiast development fixtures."
     task enthusiasts: :environment do
-      timed { empty_tables(EnthusiastSite, Enthusiast) }
-      timed { create_enthusiasts(argv_user) }
+      disable_perform_deliveries do
+        timed { empty_tables(EnthusiastSite, Enthusiast) }
+        timed { create_enthusiasts(argv_user) }
+      end
     end
 
     desc "Load User development fixtures."
     task users: :environment do
-      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
-      timed { create_users(argv_user) }
-      empty_tables("delayed_jobs")
+      disable_perform_deliveries do
+        timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
+        timed { create_users(argv_user) }
+        empty_tables("delayed_jobs")
+      end
     end
 
     desc "Load Site development fixtures."
     task sites: :environment do
-      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
-      timed { create_sites }
-      empty_tables("delayed_jobs")
+      disable_perform_deliveries do
+        timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
+        timed { create_sites }
+        empty_tables("delayed_jobs")
+      end
     end
 
     desc "Load Site development fixtures."
     task invoices: :environment do
-      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction) }
-      timed { create_invoices(argv_user) }
-      empty_tables("delayed_jobs")
+      disable_perform_deliveries do
+        timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction) }
+        timed { create_invoices(argv_user) }
+        empty_tables("delayed_jobs")
+      end
     end
 
     desc "Load Mail templates development fixtures."
     task mail_templates: :environment do
-      timed { empty_tables(MailTemplate) }
-      timed { create_mail_templates }
+      disable_perform_deliveries do
+        timed { empty_tables(MailTemplate) }
+        timed { create_mail_templates }
+      end
     end
 
     desc "Create fake usages"
     task site_usages: :environment do
-      timed { empty_tables(SiteUsage) }
-      timed { create_site_usages }
+      disable_perform_deliveries do
+        timed { empty_tables(SiteUsage) }
+        timed { create_site_usages }
+      end
     end
 
     desc "Create fake site stats"
     task site_stats: :environment do
-      timed { empty_tables(Stat::Site) }
-      timed { create_site_stats(argv_user) }
+      disable_perform_deliveries do
+        timed { empty_tables(Stat::Site) }
+        timed { create_site_stats(argv_user) }
+      end
     end
 
     desc "Create fake users & sites stats"
     task users_and_sites_stats: :environment do
-      timed { create_users_stats }
-      timed { create_sites_stats }
+      disable_perform_deliveries do
+        timed { create_users_stats }
+        timed { create_sites_stats }
+      end
     end
 
     desc "Create fake site stats"
     task recurring_site_stats: :environment do
-      timed { empty_tables(Stat::Site) }
-      timed { create_site_stats(argv_user) }
-      timed { recurring_site_stats_update(argv_user) }
+      disable_perform_deliveries do
+        timed { empty_tables(Stat::Site) }
+        timed { create_site_stats(argv_user) }
+        timed { recurring_site_stats_update(argv_user) }
+      end
     end
 
     desc "Create fake site & video stats"
     task recurring_stats: :environment do
-      timed { create_stats(argv('site')) }
-      timed { recurring_stats_update(argv('site')) }
+      disable_perform_deliveries do
+        timed { create_stats(argv('site')) }
+        timed { recurring_stats_update(argv('site')) }
+      end
     end
 
     desc "Create fake plans"
     task plans: :environment do
-      timed { empty_tables(Plan) }
-      timed { create_plans }
+      disable_perform_deliveries do
+        timed { empty_tables(Plan) }
+        timed { create_plans }
+      end
     end
 
   end

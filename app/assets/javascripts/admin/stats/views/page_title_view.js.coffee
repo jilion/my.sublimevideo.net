@@ -4,5 +4,5 @@ class SVStats.Views.PageTitleView extends Backbone.View
     this.render()
 
   render: =>
-    $(@el).html "SublimeVideo Admin - Stats"
+    $(@el).html "SublimeVideo Statistics"
     this

@@ -5,6 +5,8 @@ class SVStats.Views.SeriesSelectorView extends Backbone.View
 
   updateSelected: (event) ->
     value = $(event.currentTarget).data('value').split('.')
+    SVStats.statsRouter.xAxisMin = SVStats.chart.xAxis[0].getExtremes()['min']
+    SVStats.statsRouter.xAxisMax = SVStats.chart.xAxis[0].getExtremes()['max']
 
     rest = _.rest(value)
     new_selected = if rest.length == 1 then rest[0] else rest.join('.')
@@ -17,7 +19,4 @@ class SVStats.Views.SeriesSelectorView extends Backbone.View
       SVStats.stats[value[0]].selected.splice(index, 1)
       $(event.currentTarget).removeClass 'active'
 
-    console.log "SVStats.chart.options.rangeSelector.selected : #{SVStats.chart.options.rangeSelector.selected}"
-    SVStats.statsRouter.selectedRange = SVStats.chart.options.rangeSelector.selected
-    console.log "SVStats.statsRouter.selectedRange : #{SVStats.statsRouter.selectedRange}"
     SVStats.stats[value[0]].trigger('change')

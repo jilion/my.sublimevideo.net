@@ -5,7 +5,7 @@ class Admin::StatsController < AdminController
   end
 
   def show
-    render params[:id]
+    render params[:page]
   end
 
   def users
@@ -36,6 +36,15 @@ class Admin::StatsController < AdminController
     respond_to do |format|
       # format.json { render json: Stat::Site.json(nil, 'days') }
     end
+  end
+
+  def more
+    # Legacy metric
+    @last_30_days_video_pageviews = SiteUsage.between(31.days.ago.utc, Time.now.utc.yesterday).sum(:player_hits).to_i
+    @total_video_pageviews = SiteUsage.sum(:player_hits).to_i
+
+    @last_30_days_video_views = Stat::Site.views_sum(from: 31.days.ago.utc, to: Time.now.utc.yesterday)
+    @total_video_views = Stat::Site.views_sum # all time views sum! FUCK YEAH!
   end
 
 end

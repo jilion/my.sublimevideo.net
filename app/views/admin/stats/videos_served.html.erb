@@ -1,15 +1,16 @@
+<%= title_and_content_header("# of Videos Served per Month") %>
 <%
-videos_served = User.beta.select("company_videos_served, COUNT(*) as total").group(:company_videos_served).order("total DESC").map! { |u| [u.company_videos_served || "Not a company", u.total.to_i] }
+videos_served = User.beta.select("company_videos_served, COUNT(*) as total").group(:company_videos_served).order("total DESC").map! { |u| [u.company_videos_served || "Not Available", u.total.to_i] }
 
 videos_served_with_wrong_label = videos_served.detect { |e| e[0] == "Nr. of videos served" }
-videos_served_not_a_company    = videos_served.detect { |e| e[0] == "Not a company" }
+videos_served_not_a_company    = videos_served.detect { |e| e[0] == "Not Available" }
 if videos_served_with_wrong_label
   videos_served_not_a_company[1] += videos_served_with_wrong_label[1]
   videos_served.delete(videos_served_with_wrong_label)
 end
 %>
 <script type = "text/javascript" charset="utf-8">
-document.observe("dom:loaded", function() {
+$(document).ready(function() {
   new Highcharts.Chart({
     chart: {
       renderTo: 'videos_served',
@@ -50,10 +51,10 @@ document.observe("dom:loaded", function() {
     }],
     credits: {
       enabled: true,
-      text: "Generation time: <%= Time.now.to_s(:format => :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
+      text: "Generation time: <%= Time.now.to_s(format: :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
       href: "http://sublimevideo.net"
     }
   });
 });
 </script>
-<div id="videos_served" style="width:100%; height:350px;"></div>
+<div id="videos_served" style="width:100%"></div>

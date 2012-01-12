@@ -4,7 +4,7 @@
       .col
         %h4= "Product"
         %ul
-          %li= link_to "Home", root_url(host: request.domain, protocol: 'http' )
+          %li= link_to "Home", root_url(host: request.domain, protocol: 'http')
           %li= link_to "Features", page_url('features', host: request.domain, protocol: 'http')
           %li= link_to "Demo", page_url('demo', host: request.domain, protocol: 'http')
           %li= link_to "Plans & Pricing", page_url('plans', host: request.domain, protocol: 'http')

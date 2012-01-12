@@ -11,7 +11,7 @@ class SVStats.Collections.UsagesStats extends SVStats.Collections.Stats
   initialize: -> @selected = 'production'
   url: -> '/stats/usages.json'
   id: -> 'usages'
-  color: -> 'rgba(255,255,0,0.5)'
+  color: (selected) -> 'rgba(255,255,0,0.7)'
 
   title: ->
     switch @selected

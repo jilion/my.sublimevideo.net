@@ -7,7 +7,7 @@ class SVStats.Collections.TweetsStats extends SVStats.Collections.Stats
   initialize: -> @selected = []
   url: -> '/stats/tweets.json'
   id: -> 'tweets'
-  color: -> 'rgba(0,255,0,0.5)'
+  color: (selected) -> 'rgba(0,255,0,0.7)'
 
   title: (selected) ->
     switch selected[0]

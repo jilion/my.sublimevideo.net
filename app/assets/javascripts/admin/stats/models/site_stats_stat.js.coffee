@@ -6,30 +6,41 @@ class SVStats.Models.SiteStatsStat extends SVStats.Models.Stat
     bp: {} # Browser + Plateform hash
 
   customGet: (selected) ->
-    this.get(selected[0])[selected[1]] || 0
+    this.get(selected[0])[selected[1]] or 0
 
   html5Proportion: ->
     md = this.get('md')
     mdh = if md.h? then (md.h.d || 0) + (md.h.m || 0) + (md.h.t || 0) else 0
     mdf = if md.f? then (md.f.d || 0) + (md.f.m || 0) + (md.f.t || 0) else 0
-    console.log mdh
-    console.log mdf
+    # console.log mdh
+    # console.log mdf
+
     mdh / (mdh + mdf) * 100
 
   mobileProportion: ->
     md = this.get('md')
     mdd = if md.h? then (md.h.d || 0) else 0 + if md.f? then (md.f.d || 0) else 0
     mdm = if md.h? then (md.h.m || 0) + (md.h.t || 0) else 0 + if md.f? then (md.f.m || 0) + (md.f.t || 0) else 0
-    console.log mdd
-    console.log mdm
+    # console.log mdd
+    # console.log mdm
+
     mdm / (mdd + mdm) * 100
 
 class SVStats.Collections.SiteStatsStats extends SVStats.Collections.Stats
   model: SVStats.Models.SiteStatsStat
   initialize: -> @selected = ['pv.billable', 'vv.billable', 'md.html5_proportion']
   url: -> '/stats/site_stats.json'
+  chartType: (selected) ->
+    switch selected[0]
+      when 'pv', 'vv' then 'column'
+      when 'md' then 'line'
+
   id: -> 'site_stats'
-  color: -> 'rgba(100,100,200,0.5)'
+  color: (selected) ->
+    switch selected[0]
+      when 'pv' then 'rgba(150,100,250,0.7)'
+      when 'vv' then 'rgba(150,250,100,0.7)'
+      when 'md' then 'rgba(250,150,100,0.7)'
 
   yAxis: (selected) ->
     switch selected[0]
@@ -48,8 +59,9 @@ class SVStats.Collections.SiteStatsStats extends SVStats.Collections.Stats
       when 'em' then 'Embed (Main & Extra embeds only)'
       when 'd' then 'Dev'
       when 'i' then 'Invalid'
-      when 'html5_proportion' then 'HTML5 %'
-      when 'mobile_proportion' then 'Mobile %'
+      when 'html5_proportion' then 'HTML5'
+      when 'mobile_proportion' then 'Mobile'
+
     "#{type} #{top}"
 
   customPluck: (selected) ->
@@ -60,7 +72,7 @@ class SVStats.Collections.SiteStatsStats extends SVStats.Collections.Stats
       stat = this.get(from)
       value = if stat?
         switch selected[0]
-          when "pv", 'vv'
+          when 'pv', 'vv'
             switch selected[1]
               when 'billable' then stat.customGet([selected[0], 'm']) + stat.customGet([selected[0], 'e']) + stat.customGet([selected[0], 'em'])
               else stat.customGet(selected)
@@ -72,4 +84,5 @@ class SVStats.Collections.SiteStatsStats extends SVStats.Collections.Stats
         0
       array.push value
       from += 3600 * 24
+
     array
