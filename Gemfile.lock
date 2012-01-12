@@ -5,6 +5,14 @@ GIT
     annotate (2.4.1.beta1)
 
 GIT
+  remote: git://github.com/guard/guard.git
+  revision: 0bcdd48e4683652b71c63fc568000564e3c27e09
+  specs:
+    guard (0.10.0)
+      ffi (>= 0.5.0)
+      thor (~> 0.14.6)
+
+GIT
   remote: git://github.com/jilion/useragent.git
   revision: 156f42d4d4888251f6a4220e4d73e59766baf52a
   specs:
@@ -223,9 +231,6 @@ GEM
       rspec (~> 2.0)
       rspec-instafail (~> 0.1.8)
       ruby-progressbar (~> 0.0.10)
-    guard (0.10.0)
-      ffi (>= 0.5.0)
-      thor (~> 0.14.6)
     guard-jasmine (0.9.4)
       childprocess (~> 0.2.8)
       guard (>= 0.8.3)
@@ -376,7 +381,6 @@ GEM
     rb-readline (0.4.2)
     rdoc (3.12)
       json (~> 1.4)
-    request-log-analyzer (1.11.1)
     rescue_me (0.1.0)
     responders (0.6.4)
     rest-client (1.6.7)
@@ -526,6 +530,7 @@ DEPENDENCIES
   fog (~> 1.1.2)
   foreman
   fuubar
+  guard!
   guard-jasmine
   guard-livereload
   guard-pow
@@ -565,7 +570,6 @@ DEPENDENCIES
   rails-dev-tweaks (~> 0.5.0)
   rb-fsevent (= 0.9.0.pre5)
   rb-readline
-  request-log-analyzer (~> 1.11.1)
   rescue_me (~> 0.1.0)
   responders (~> 0.6.4)
   rspec-rails

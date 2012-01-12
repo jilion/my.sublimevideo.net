@@ -54,14 +54,14 @@ gem 'fog',                   '~> 1.1.2'
 gem 'carrierwave',           '~> 0.5.7'
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'voxel_hapi',            git: 'git://github.com/thibaudgg/voxel_hapi.git', branch: '1.9.2' # VoxCast CDN
-gem 'request-log-analyzer',  '~> 1.11.1', require: 'request_log_analyzer'
 
 # gem 'activemerchant',        '~> 1.9.1'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
 # gem 'activemerchant',        git: 'git://github.com/ZenCocoon/active_merchant.git' # with the fix for Ogone#parse and more
 gem 'activemerchant',        git: 'git://github.com/rymai/active_merchant.git', branch: '3ds_from_ZenCocoon'
 gem 'public_suffix',         '~> 1.0.0'
-gem 'useragent',             git: 'git://github.com/jilion/useragent.git'
+gem 'useragent',             git: 'git://github.com/jilion/useragent.git' # needed for stat_request_parser
+gem 'stat_request_parser',   '~> 1.0.0' # hosted on gemfury
 
 gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
 gem 'countries',             '~> 0.7.0'
@@ -76,7 +76,6 @@ gem 'airbrake',              '~> 3.0.5'
 gem 'prowl',                 '~> 0.1.3'
 
 gem 'addressable',           '~> 2.2.6'
-gem 'stat_request_parser',   '~> 1.0.0' # hosted on gemfury
 
 # Perf
 gem 'dalli',                 '~> 1.1.3'
@@ -153,7 +152,8 @@ group :development do
   platforms :ruby do
     gem 'rb-readline'
   end
-
+  gem 'guard', git: 'git://github.com/guard/guard.git'
+  
   # gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
