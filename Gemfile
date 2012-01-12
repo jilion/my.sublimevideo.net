@@ -54,6 +54,7 @@ gem 'fog',                   '~> 1.1.2'
 gem 'carrierwave',           '~> 0.5.7'
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'voxel_hapi',            git: 'git://github.com/thibaudgg/voxel_hapi.git', branch: '1.9.2' # VoxCast CDN
+gem 'request-log-analyzer',  '~> 1.11.1', require: 'request_log_analyzer'
 
 # gem 'activemerchant',        '~> 1.9.1'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
@@ -153,7 +154,7 @@ group :development do
     gem 'rb-readline'
   end
   gem 'guard', git: 'git://github.com/guard/guard.git'
-  
+
   # gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
