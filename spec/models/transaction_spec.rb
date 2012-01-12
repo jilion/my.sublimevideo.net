@@ -303,7 +303,7 @@ describe Transaction do
         expect { Transaction.charge_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%"), :count).by(1)
         djs = Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%")
         djs.should have(1).item
-        djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@invoice1.reload.site.user.id]
+        djs.map { |dj| YAML.load(dj.handler).args[0] }.should =~ [@invoice1.reload.site.user.id]
       end
     end # .charge_invoices
 
