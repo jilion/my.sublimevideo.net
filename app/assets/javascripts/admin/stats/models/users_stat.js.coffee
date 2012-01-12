@@ -11,6 +11,7 @@ class SVStats.Collections.UsersStats extends SVStats.Collections.Stats
   url: -> '/stats/users.json'
   id: -> 'users'
   color: (selected) -> 'rgba(0,0,255,0.7)'
+  shadow: (selected) -> true
 
   title: (selected) ->
     if selected.length == 1
@@ -20,8 +21,8 @@ class SVStats.Collections.UsersStats extends SVStats.Collections.Stats
         when 'pa' then 'Paying users'
         when 'su' then 'Suspended users'
         when 'ar' then 'Archived users'
-        when 'active' then 'Active users (beta, free or paying)'
-        when 'passive' then 'Passive users (suspended or archived)'
+        when 'active' then 'Active users'
+        when 'passive' then 'Passive users'
         when 'all' then 'Users'
 
   customPluck: (selected) ->

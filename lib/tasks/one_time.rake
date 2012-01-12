@@ -123,7 +123,6 @@ namespace :one_time do
           su: 0,
           ar: archived_sum
         )
-        puts s.inspect
         day += 1.day
       end
 

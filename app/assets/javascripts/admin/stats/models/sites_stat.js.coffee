@@ -11,6 +11,7 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
   url: -> '/stats/sites.json'
   id: -> 'sites'
   color: (selected) -> 'rgba(255,0,0,0.7)'
+  shadow: (selected) -> true
 
   title: (selected) ->
     if selected.length > 1
@@ -25,8 +26,8 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
         when 'pa' then 'Paying sites'
         when 'su' then 'Suspended sites'
         when 'ar' then 'Archived sites'
-        when 'active' then 'Active sites (beta, dev, free, in trial or paying)'
-        when 'passive' then 'Passive sites (suspended or archived)'
+        when 'active' then 'Active sites'
+        when 'passive' then 'Passive sites'
         when 'all' then 'Sites'
 
   customPluck: (selected) ->
