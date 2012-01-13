@@ -87,7 +87,7 @@ class SVStats.Helpers.ChartsHelper
         }]
 
         formatter: ->
-          title = ["#{Highcharts.dateFormat('%e %b %Y, %H:%M:%S', @x)}<br/>"]
+          title = ["#{Highcharts.dateFormat('%e %b %Y', @x)}<br/>"]
           if @point?
             title += ["<span style=\"color:#a2b1c9;font-weight:normal\">#{@point.text}</span>"]
           else if @points?
@@ -140,12 +140,16 @@ class SVStats.Helpers.ChartsHelper
     _.each collections, (collection) =>
       if collection.length > 0 and !_.isEmpty(collection.selected)
         _.each collection.selected, (selected) =>
+          selected = selected.split('.')
           series.push
-            name: collection.title(selected.split('.'))
-            data: collection.customPluck(selected.split('.'))
-            type: collection.chartType(selected.split('.'))
-            yAxis: _.min([_.max(@usedYAxis), @usedYAxis.length - 1, collection.yAxis(selected.split('.'))])
-            color: collection.color(selected.split('.'))
+            name: collection.title(selected)
+            data: collection.customPluck(selected)
+            type: collection.chartType(selected)
+            yAxis: _.min([_.max(@usedYAxis), @usedYAxis.length - 1, collection.yAxis(selected)])
+            fillColor: collection.fillColor(selected)
+            color: collection.color(selected)
+            lineColor: collection.lineColor(selected)
+            shadow: collection.lineColor(selected)
             pointStart: collection.startTime()
             pointInterval: 3600 * 24 * 1000
 
@@ -157,10 +161,6 @@ class SVStats.Helpers.ChartsHelper
     yAxis = []
     yAxis.push
       lineWidth: 1
-      height: 250,
-      offset: 0
-      min: 0
-      max: 20000
       gridLineColor: '#5d7493'
       allowDecimals: false
       startOnTick: true
@@ -179,11 +179,6 @@ class SVStats.Helpers.ChartsHelper
     if _.include(@usedYAxis, 1)
       yAxis.push
         lineWidth: 1
-        top: 300,
-        height: 140,
-        offset: 0
-        min: 0
-        max: 125000
         gridLineColor: '#5d7493'
         allowDecimals: false
         startOnTick: true
@@ -202,18 +197,16 @@ class SVStats.Helpers.ChartsHelper
     if _.include(@usedYAxis, 2)
       yAxis.push
         lineWidth: 1
-        top: 450,
-        height: 90,
-        offset: 0
+        opposite: true
         min: 0
-        max: 25
+        max: 100
         gridLineColor: '#5d7493'
         allowDecimals: true
         startOnTick: true
         showFirstLabel: false
         labels:
-          align: 'right'
-          x: -4
+          align: 'left'
+          x: 4
           y: 4
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"

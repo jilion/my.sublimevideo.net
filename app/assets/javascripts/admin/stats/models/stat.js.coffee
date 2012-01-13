@@ -7,3 +7,7 @@ class SVStats.Collections.Stats extends Backbone.Collection
   chartType: (selected) -> 'spline'
   yAxis: (selected) -> 0
   startTime: -> this.at(0).time()
+  fillColor: (selected) -> null
+  color: (selected) -> null
+  lineColor: (selected) -> null
+  shadow: (selected) -> false
