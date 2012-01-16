@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 0bcdd48e4683652b71c63fc568000564e3c27e09
+  revision: f9f77a97a77b22eb522adceec40db8ad87f7dbab
   specs:
     guard (0.10.0)
       ffi (>= 0.5.0)
@@ -141,7 +141,7 @@ GEM
     carrierwave-mongoid (0.1.3)
       carrierwave (>= 0.5.6)
       mongoid (~> 2.1)
-    childprocess (0.2.9)
+    childprocess (0.3.0)
       ffi (~> 1.0.6)
     coderay (1.0.5)
     coffee-filter (0.1.1)
@@ -167,7 +167,7 @@ GEM
     currencies (0.4.0)
     daemons (1.1.5)
     dalli (1.1.4)
-    database_cleaner (0.7.0)
+    database_cleaner (0.7.1)
     delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
@@ -198,10 +198,10 @@ GEM
     excon (0.9.4)
     execjs (1.2.13)
       multi_json (~> 1.0)
-    factory_girl (2.3.2)
+    factory_girl (2.4.0)
       activesupport
-    factory_girl_rails (1.4.0)
-      factory_girl (~> 2.3.0)
+    factory_girl_rails (1.5.0)
+      factory_girl (~> 2.4.0)
       railties (>= 3.0.0)
     faraday (0.7.5)
       addressable (~> 2.2.6)
@@ -221,7 +221,7 @@ GEM
       net-ssh (>= 2.1.3)
       nokogiri (~> 1.5.0)
       ruby-hmac
-    foreman (0.32.0)
+    foreman (0.33.0)
       term-ansicolor (~> 1.0.5)
       thor (>= 0.13.6)
     formatador (0.2.1)
@@ -229,10 +229,10 @@ GEM
       rspec (~> 2.0)
       rspec-instafail (~> 0.1.8)
       ruby-progressbar (~> 0.0.10)
-    guard-jasmine (0.9.5)
-      childprocess (~> 0.2.8)
+    guard-jasmine (0.9.3)
       guard (>= 0.8.3)
       multi_json (~> 1.0.3)
+      rack
       thor
     guard-livereload (0.4.0)
       em-websocket (>= 0.2.0)
@@ -271,7 +271,7 @@ GEM
     jquery-rails (1.0.19)
       railties (~> 3.0)
       thor (~> 0.14)
-    json (1.6.4)
+    json (1.6.5)
     jsonpath (0.4.2)
       multi_json
     kaminari (0.13.0)
@@ -296,7 +296,7 @@ GEM
       json
     mongo (1.5.2)
       bson (= 1.5.2)
-    mongoid (2.4.0)
+    mongoid (2.4.1)
       activemodel (~> 3.1)
       mongo (~> 1.3)
       tzinfo (~> 0.3.22)
@@ -361,10 +361,10 @@ GEM
       activesupport (= 3.1.3)
       bundler (~> 1.0)
       railties (= 3.1.3)
-    rails-backbone (0.5.5)
+    rails-backbone (0.6.0)
       coffee-script (~> 2.2.0)
       ejs (~> 1.0.0)
-      rails (~> 3.1.0)
+      railties (~> 3.1.0)
     rails-dev-tweaks (0.5.2)
       rails (~> 3.1.0)
     railties (3.1.3)
@@ -472,7 +472,7 @@ GEM
       mime-types
       mime-types
     tzinfo (0.3.31)
-    uglifier (1.2.1)
+    uglifier (1.2.2)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
     uniquify (0.1.0)
