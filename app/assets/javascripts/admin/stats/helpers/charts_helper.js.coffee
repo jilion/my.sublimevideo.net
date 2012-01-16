@@ -98,10 +98,13 @@ class SVStats.Helpers.ChartsHelper
             _.each yAxis, (yAx) =>
               points = _.filter(@points, (point) -> point.series.yAxis is yAx)
               title += _.map(_.sortBy(points, (p) -> 1/p.y), (point) ->
-                if point.series.yAxis.axisTitle.textStr is 'Percentages'
-                  "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 1)} %"
-                else
-                  "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)}"
+                switch point.series.yAxis.axisTitle.textStr
+                  when 'Percentages'
+                    "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 1)} %"
+                  when 'Traffic (GB)'
+                    "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 2)}"
+                  else
+                    "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)}"
               ).join("<br/>")
               title += "<br/><br/>" unless _.indexOf(yAxis, yAx) is yAxis.length - 1
 
@@ -195,7 +198,7 @@ class SVStats.Helpers.ChartsHelper
             fontSize: "14px"
             color: '#1e3966'
         title:
-          text: "Site Stats"
+          text: "Site Stats/Usages"
 
     if _.include(@usedYAxis, 2)
       yAxis.push
@@ -219,6 +222,28 @@ class SVStats.Helpers.ChartsHelper
             color: '#1e3966'
         title:
           text: "Percentages"
+
+    if _.include(@usedYAxis, 3)
+      yAxis.push
+        lineWidth: 1
+        opposite: true
+        min: 0
+        alignTicks: false
+        gridLineColor: '#5d7493'
+        allowDecimals: true
+        startOnTick: true
+        showFirstLabel: true
+        showLastLabel: true
+        labels:
+          align: 'left'
+          x: 4
+          y: 4
+          style:
+            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
+            fontSize: "14px"
+            color: '#1e3966'
+        title:
+          text: "Traffic (GB)"
 
     yAxis
 

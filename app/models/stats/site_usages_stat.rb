@@ -41,7 +41,7 @@ module Stats
           scoped
         end
 
-        json_stats.order_by([:d, :asc]).to_json(only: [:pv, :vv, :md, :pb])
+        json_stats.order_by([:d, :asc]).to_json(only: [:lh, :ph, :fh, :sr, :tr])
       end
 
       def delay_create_site_usages_stats
@@ -86,16 +86,16 @@ module Stats
         all_ssl_lh = site_usages.sum(:ssl_loader_hits).to_i
         { ns: all_lh - all_ssl_lh, s: all_ssl_lh }
       end
-      
+
       def ph_hashes_values_sum(site_usages)
-        { 
+        {
           m: site_usages.sum(:main_player_hits).to_i,    mc: site_usages.sum(:main_player_hits_cached).to_i,
           e: site_usages.sum(:extra_player_hits).to_i,   ec: site_usages.sum(:extra_player_hits_cached).to_i,
           d: site_usages.sum(:dev_player_hits).to_i,     dc: site_usages.sum(:dev_player_hits_cached).to_i,
           i: site_usages.sum(:invalid_player_hits).to_i, ic: site_usages.sum(:invalid_player_hits_cached).to_i
         }
       end
-      
+
       def tr_hashes_values_sum(site_usages)
         { s: site_usages.sum(:traffic_s3).to_i, v: site_usages.sum(:traffic_voxcast).to_i }
       end

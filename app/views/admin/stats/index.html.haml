@@ -100,6 +100,7 @@
                       %a.selector{ href: "#", data: { value: 'sites.ar' }, title: "Sites deleted by their owner" } Archived
 
         %td#site_stats{ style: 'background: rgba(0,255,0,0.5)' }
+          %h2 Site Stats (new)
           %ul
             %li
               %h3
@@ -142,6 +143,47 @@
                   %a.selector{ href: "#", data: { value: 'site_stats.md.html5_proportion' } } HTML5 %
                 %li
                   %a.selector{ href: "#", data: { value: 'site_stats.md.mobile_proportion' }, title: "Mobile (tablet included) %" } Mobile %
+
+        %td#site_usages{ style: 'background: rgba(0,255,125,0.5)' }
+          %h2 Site Usages (old)
+          %ul
+            %li
+              %h3
+                %a.selector{ href: "#", data: { value: 'site_usages.lh.all' } } Loader hits
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_usages.lh.ns' } } Non-SSL
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_usages.lh.s' } } SSL
+            %li
+              %h3
+                %a.selector{ href: "#", data: { value: 'site_usages.ph.all' } } Player hits
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_usages.ph.billable' } } Billable
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_usages.ph.m' } } Main
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_usages.ph.e' } } Extra
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_usages.ph.d' } } Dev
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_usages.ph.i' } } Invalid
+            %li
+              %h3
+                %a.selector{ href: "#", data: { value: 'site_usages.fh' } } Flash hits
+            %li
+              %h3
+                %a.selector{ href: "#", data: { value: 'site_usages.sr' } } S3 requests
+
+            %li
+              %h3 Traffic
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_usages.tr.s' } } S3 (GB)
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_usages.tr.v' } } Voxcast (GB)
 
         %td#tweets{ style: 'background: rgba(255,125,0,0.5)' }
           %ul

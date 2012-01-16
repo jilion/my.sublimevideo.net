@@ -32,9 +32,9 @@ class Admin::StatsController < AdminController
     end
   end
   
-  def usages
+  def site_usages
     respond_to do |format|
-      # format.json { render json: Stat::Site.json(nil, 'days') }
+      format.json { render json: Stats::SiteUsagesStat.json }
     end
   end
 
