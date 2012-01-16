@@ -14,6 +14,8 @@ module LayoutHelper
       "MySublimeVideo"
     when 'docs'
       "SublimeVideo Documentation"
+    when 'admin'
+      "ADMIN SublimeVideo"
     else
       "SublimeVideo - HTML5 Video Player"
     end

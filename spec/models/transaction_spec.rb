@@ -1,14 +1,13 @@
 require 'spec_helper'
 
 describe Transaction do
-  before(:all) do
+  before(:each) do
     @user = Factory.create(:user)
     @user_with_no_cc = Factory.create(:user_no_cc)
   end
 
   context "Factory" do
-    before(:all) { @transaction = Factory.create(:transaction, invoices: [Factory.create(:invoice, amount: 1000, state: 'open')]) }
-    subject { @transaction }
+    subject { @transaction = Factory.create(:transaction, invoices: [Factory.create(:invoice, amount: 1000, state: 'open')]) }
 
     its(:user)      { should be_present }
     its(:invoices)  { should be_present }
@@ -30,8 +29,7 @@ describe Transaction do
 
   describe "Validations" do
     describe "#at_least_one_invoice" do
-      before(:all) { @transaction = Factory.build(:transaction) }
-      subject { @transaction }
+      subject { Factory.build(:transaction) }
 
       specify { subject.invoices.should be_empty }
       specify { subject.should_not be_valid }
@@ -39,12 +37,11 @@ describe Transaction do
     end
 
     describe "#all_invoices_belong_to_same_user" do
-      before(:all) do
-        site1 = Factory.create(:site)
-        site2 = Factory.create(:site)
-        @transaction = Factory.build(:transaction, invoices: [Factory.create(:invoice, site: site1), Factory.create(:invoice, site: site2)])
+      before(:each) do
+        @site1 = Factory.create(:site)
+        @site2 = Factory.create(:site)
       end
-      subject { @transaction }
+      subject { Factory.build(:transaction, invoices: [Factory.create(:invoice, site: @site1), Factory.create(:invoice, site: @site2)]) }
 
       specify { subject.should_not be_valid }
       specify { subject.should have(1).error_on(:base) }
@@ -52,7 +49,7 @@ describe Transaction do
   end # Validations
 
   describe "Callbacks" do
-    before(:all) do
+    before(:each) do
       @site = Factory.create(:site)
       @invoice1 = Factory.create(:invoice, site: @site, amount: 200, state: 'open')
       @invoice2 = Factory.create(:invoice, site: @site, amount: 300, state: 'paid')
@@ -117,7 +114,7 @@ describe Transaction do
   end # Callbacks
 
   describe "State Machine" do
-    before(:all) do
+    before(:each) do
       @site        = Factory.create(:site)
       @invoice1    = Factory.create(:invoice, site: @site, state: 'open')
       @invoice2    = Factory.create(:invoice, site: @site, state: 'failed')
@@ -271,7 +268,7 @@ describe Transaction do
   end # State Machine
 
   describe "Scopes" do
-    before(:all) do
+    before(:each) do
       @site                    = Factory.create(:site)
       @invoice                 = Factory.create(:invoice, site: @site, state: 'open')
       @transaction_unprocessed = Factory.create(:transaction, invoices: [@invoice])
@@ -287,7 +284,7 @@ describe Transaction do
   describe "Class Methods" do
 
     describe ".charge_invoices" do
-      before(:all) do
+      before(:each) do
         Invoice.delete_all
         @user1    = Factory.create(:user)
         @user2    = Factory.create(:user, state: 'suspended')
@@ -306,17 +303,17 @@ describe Transaction do
         expect { Transaction.charge_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%"), :count).by(1)
         djs = Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%")
         djs.should have(1).item
-        djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@invoice1.reload.site.user.id]
+        djs.map { |dj| YAML.load(dj.handler).args[0] }.should =~ [@invoice1.reload.site.user.id]
       end
     end # .charge_invoices
 
     describe ".charge_invoices_by_user_id" do
       use_vcr_cassette "ogone/visa_payment_generic"
-      before(:all) do
+      before(:each) do
         Invoice.delete_all
         @user1    = Factory.create(:user)
         @user2    = Factory.create(:user)
-        @site1    = Factory.create(:site, user: @user1, first_paid_plan_started_at: (BusinessModel.days_for_refund+1).days.ago)
+        @site1    = Factory.create(:site, user: @user1, first_paid_plan_started_at: Time.now.utc)
         @site2    = Factory.create(:site, user: @user2)
         @site1.invoices.delete_all
         @site2.invoices.delete_all
@@ -325,7 +322,7 @@ describe Transaction do
         @invoice3 = Factory.create(:invoice, site: @site1, state: 'open', renew: true)
         @invoice4 = Factory.create(:invoice, site: @site2, state: 'failed', renew: false) # first invoice
       end
-      before do
+      before(:each) do
         @user1.reload
         @user2.reload
         Delayed::Job.delete_all
@@ -398,7 +395,7 @@ describe Transaction do
       context "with a credit card alias" do
         use_vcr_cassette "ogone/visa_payment_2000_alias"
 
-        before do
+        before(:each) do
           @user.reload
           @invoice1 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'open')
           @invoice2 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'failed')
@@ -431,7 +428,7 @@ describe Transaction do
       end
 
       context "with a succeeding purchase" do
-        before do
+        before(:each) do
           @user.reload
           @invoice1 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'open')
         end
@@ -459,7 +456,7 @@ describe Transaction do
         end
 
         context "with a purchase that need a 3d secure authentication" do
-          before do
+          before(:each) do
             Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "5", "STATUS" => "46", "NCERRORPLUS" => "!" }) }
           end
 
@@ -476,7 +473,7 @@ describe Transaction do
       end
 
       context "with a failing purchase" do
-        before do
+        before(:each) do
           @invoice1 = Factory.create(:invoice, site: Factory.create(:site, user: @user), state: 'open')
         end
 
@@ -534,203 +531,12 @@ describe Transaction do
 
     end # .charge_by_invoice_ids
 
-    describe ".refund_by_site_id" do
-      let(:mock_refund) { mock_refund = mock('refund', :success? => true) }
-
-      context "for a non-refundable site" do
-        describe "because of a not present refunded_at" do
-          it "does nothing!" do
-            site = Factory.create(:site, refunded_at: nil)
-            expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
-          end
-        end
-        describe "because of a too old first_paid_plan_started_at" do
-          it "does nothing!" do
-            site = Factory.create(:site, first_paid_plan_started_at: 31.days.ago, refunded_at: Time.now.utc)
-            expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
-          end
-        end
-        describe "because of a non-archived site" do
-          it "does nothing!" do
-            site = Factory.create(:site, first_paid_plan_started_at: 29.days.ago, refunded_at: Time.now.utc)
-            expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
-          end
-        end
-      end
-
-      context "for a refundable site with 1 paid transaction containing 2 invoices with 2 different sites" do
-        before do
-          expect { @site = Factory.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
-          Site.refunded.should include(@site)
-          @site.invoices.where(state: 'paid').should have(1).item
-
-          transactions = Transaction.paid.joins(:invoices).where { invoices.site_id == my{@site.id} }.order(:id)
-          transactions.should have(1).item
-
-          @transaction = transactions.first
-          @transaction.invoices.where(state: 'paid').should have(1).item
-          @transaction.invoices << Factory.create(:invoice, site: Factory.create(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
-          @transaction.save
-          @transaction.reload.invoices.where(state: 'paid').should have(2).items
-          @transaction.should be_paid
-        end
-
-        it "delays one Ogone.refund" do
-          Ogone.should_receive(:refund).with(@site.invoices.first.amount, "#{@transaction.pay_id};SAL") { mock_refund }
-
-          Transaction.refund_by_site_id(@site.id)
-        end
-
-        it "deducts refunded invoices from the user's total_invoiced_amount and update the last_invoiced_amount" do
-          @site.user.last_invoiced_amount.should eq @site.invoices.where(state: 'paid').order(:paid_at.desc).first.amount
-          @site.user.total_invoiced_amount.should eq @site.invoices.where(state: 'paid').order(:paid_at.desc).first.amount
-          Ogone.should_receive(:refund).with(@site.invoices.first.amount, "#{@transaction.pay_id};SAL") { mock_refund }
-
-          Transaction.refund_by_site_id(@site.id)
-          @site.user.reload.last_invoiced_amount.should eq 0
-          @site.user.total_invoiced_amount.should eq 0
-        end
-      end
-
-      context "for a refundable site with 1 failed transaction" do
-        before do
-          expect { @site = Factory.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
-          transactions = Transaction.paid.joins(:invoices).where(invoices: { site_id: @site.id }).order(:id)
-          transactions.should have(1).item
-
-          @transaction = Transaction.find(transactions.first.id)
-          @transaction.invoices.where(state: 'paid').should have(1).item
-          @transaction.reload.update_attribute(:state, 'failed')
-          @transaction.reload.should be_failed
-          @transaction.invoices.first.update_attribute(:state, 'failed')
-          @transaction.reload.invoices.where(state: 'paid').should be_empty
-          @transaction.invoices.first.should be_failed
-        end
-
-        it "should delay one Ogone.refund" do
-          Ogone.should_not_receive(:refund)
-
-          Transaction.refund_by_site_id(@site.id)
-        end
-      end
-
-      context "for a refundable site with multiple transactions all paid" do
-        before do
-          expect { @site = Factory.create(:site_with_invoice) }.to change(Invoice, :count).by(1)
-          expect { @site2 = Factory.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc) }.to change(Invoice, :count).by(1)
-          @site.plan_id = @custom_plan.token # upgrade
-          expect { VCR.use_cassette("ogone/visa_payment_generic") { @site.save_skip_pwd } }.to change(Invoice, :count).by(1)
-          @site.skip_pwd { @site.reload.archive }
-          @site.refund
-
-          transactions = Transaction.paid.joins(:invoices).where { invoices.site_id == my{@site.id} }.order(:id.asc)
-          transactions.should have(2).items
-          @transaction1 = Transaction.find(transactions.first.id)
-          @transaction1.reload.update_attribute(:amount, 3209999)
-          @transaction2 = Transaction.find(transactions.last.id)
-          @transaction2.reload.update_attribute(:amount, 23213)
-
-          @transaction1.invoices.where(state: 'paid').should have(1).item
-          @transaction2.invoices.where(state: 'paid').should have(1).item
-
-          # the transaction is with 2 invoices for 2 different sites
-          @transaction2.invoices << Factory.create(:invoice, site: Factory.create(:site), state: 'failed')
-          @transaction2.save
-          @transaction2.reload.invoices.where(state: 'paid').should have(1).item
-
-          @transaction1.should be_paid
-          @transaction2.should be_paid
-
-          @site.invoices.first.amount.should_not eq @transaction1.amount
-          @site.invoices.last.amount.should_not eq @transaction2.amount
-        end
-
-        it "calls one Ogone.refund" do
-          Ogone.should_receive(:refund).ordered.with(@transaction1.invoices.order(:id.asc).first.amount, "#{@transaction1.pay_id};SAL") { mock_refund }
-          Ogone.should_receive(:refund).ordered.with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
-          Notify.should_not_receive(:send)
-
-          Transaction.refund_by_site_id(@site.id)
-        end
-
-        it "calls one Ogone.refund (fake unsucessful refund)" do
-          mock_refund = mock('refund', :success? => false)
-          Ogone.should_receive(:refund).ordered.with(@transaction1.invoices.order(:id.asc).first.amount, "#{@transaction1.pay_id};SAL") { mock_refund }
-          Ogone.should_receive(:refund).ordered.with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
-          Notify.should_receive(:send).twice
-
-          Transaction.refund_by_site_id(@site.id)
-        end
-
-        it "deducts refunded invoices from the user's total_invoiced_amount and update the last_invoiced_amount" do
-          @site.user.update_attribute(:last_invoiced_amount, 20000)
-          @site.user.update_attribute(:total_invoiced_amount, 100000)
-          @site.reload.user.last_invoiced_amount.should eq 20000
-          @site.user.total_invoiced_amount.should eq 100000
-          Ogone.should_receive(:refund).ordered.with(@transaction1.invoices.order(:id.asc).first.amount, "#{@transaction1.pay_id};SAL") { mock_refund }
-          Ogone.should_receive(:refund).ordered.with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
-
-          Transaction.refund_by_site_id(@site.id)
-          @site.user.reload.last_invoiced_amount.should eq @site2.last_paid_invoice.amount
-          @site.user.total_invoiced_amount.should eq @site2.last_paid_invoice.amount
-        end
-      end
-
-      context "for a refundable site with multiple transactions: 1 paid and 1 failed" do
-        before do
-          expect { @site = Factory.create(:site_with_invoice) }.to change(Invoice, :count).by(1)
-          expect { @site2 = Factory.create(:site_with_invoice, user: @site.user) }.to change(Invoice, :count).by(1)
-          @site.plan_id = @custom_plan.token # upgrade
-          expect { VCR.use_cassette("ogone/visa_payment_generic") { @site.save_skip_pwd } }.to change(Invoice, :count).by(1)
-          @site.skip_pwd { @site.reload.archive }
-          @site.refund
-
-          transactions = Transaction.paid.joins(:invoices).where{ invoices.site_id == my{@site.id} }.order(:id.asc)
-          transactions.should have(2).items
-
-          @transaction1 = Transaction.find(transactions.first.id)
-          @transaction1.reload.update_attribute(:amount, 3209999)
-          @transaction1.invoices.first.update_attribute(:state, 'failed')
-          @transaction2 = Transaction.find(transactions.last.id)
-          @transaction2.reload.update_attribute(:amount, 23213)
-
-          # the transaction is with 2 invoices for 2 different sites
-          @transaction1.invoices << Factory.create(:invoice, site: Factory.create(:site), state: 'paid')
-          # the transaction is with 2 invoices for 2 different sites
-          @transaction2.invoices << Factory.create(:invoice, site: Factory.create(:site), state: 'failed')
-          @transaction1.save
-          @transaction2.save
-
-          @transaction1.invoices.first.amount.should_not eq @transaction1.amount
-          @transaction2.invoices.first.amount.should_not eq @transaction2.amount
-        end
-
-        it "delays one Ogone.refund" do
-          Ogone.should_receive(:refund).with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
-
-          Transaction.refund_by_site_id(@site.id)
-        end
-
-        it "deducts refunded invoices from the user's total_invoiced_amount and update the last_invoiced_amount" do
-          @site.user.update_attribute(:last_invoiced_amount, 20000)
-          @site.user.update_attribute(:total_invoiced_amount, 100000)
-          @site.reload.user.last_invoiced_amount.should eq 20000
-          @site.user.total_invoiced_amount.should eq 100000
-          Ogone.should_receive(:refund).with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
-
-          Transaction.refund_by_site_id(@site.id)
-          @site.user.reload.last_invoiced_amount.should eq @site2.last_paid_invoice.amount
-          @site.user.total_invoiced_amount.should eq @site2.last_paid_invoice.amount
-        end
-      end
-    end
-
   end # Class Methods
 
   describe "Instance Methods" do
 
     describe "#process_payment_response" do
-      before(:all) do
+      before(:each) do
         @user.reload
         @site1    = Factory.create(:site, user: @user, plan_id: @free_plan.id)
         @site2    = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
@@ -938,7 +744,7 @@ describe Transaction do
     end
 
     describe "#description" do
-      before(:all) do
+      before(:each) do
         @site1    = Factory.create(:site, user: @user, plan_id: @free_plan.id)
         @site2    = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
         @invoice1 = Factory.create(:invoice, site: @site1, state: 'open')

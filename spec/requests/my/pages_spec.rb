@@ -31,7 +31,7 @@ feature "Help page" do
       scenario "is redirected to the login page" do
         go 'my', 'help'
 
-        current_url.should eq "http://www.sublimevideo.dev/?p=login"
+        current_url.should eq "http://my.sublimevideo.dev/login"
       end
     end
 

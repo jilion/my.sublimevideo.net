@@ -50,6 +50,6 @@ describe Admin::ReleasesController do
     end
   end
 
-  it_should_behave_like "redirect when connected as", '/login', [:authenticated_user, :guest], { get: :index, post: :create, put: :update }
+  it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:authenticated_user, :guest], { get: :index, post: :create, put: :update }
 
 end

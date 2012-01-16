@@ -1,4 +1,4 @@
-= content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/t0cf1489.js")
+= content_for :head_before, javascript_include_tag("http://cdn.sublimevideo.net/js/t0cf1489.js")
 -# THIS IS THE BADGED PLAYER!
 
 = content_for :title, "Plans & Pricing".html_safe
@@ -33,7 +33,7 @@
               %h4= "Forum Support"
             .spacer
         .sign_up_wrap
-          = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
+          = link_to "Sign Up", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
 
       %li.plus.box_2
         .wrapper
@@ -77,7 +77,7 @@
               %span.save_label= "save 2 months"
             .spacer
           .sign_up_wrap
-            = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
+            = link_to "Sign Up", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
   
       %li.premium.box_3
         .wrapper
@@ -121,7 +121,7 @@
               %span.save_label= "save 2 months"
           .spacer
           .sign_up_wrap
-            = link_to "Sign Up", root_url(subdomain: 'www', p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
+            = link_to "Sign Up", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')", class: "big_button sign_up_btn"
   .spacer
   #need_more= raw "Need a custom integration with your site or have other enterprise-class requirements? Please #{mail_to t('mailer.sales.email_full'), "contact us"}."
 
@@ -143,11 +143,10 @@
       %h4= "The free plan seems too good to be true, is it really free and unlimited?"
       %p
         = raw "Yes and yes, it's completely free and gives you unlimited video plays. Unlike the unbranded player offered with our paid plans, our free player will display a discreet"
-        -#= raw "#{link_to "SublimeVideo badge", "http://test.sublimevideo.net/badge"}"
         %a.sublime{ href: (image_path "www/plans/sv-badge-sample.jpg") }= "SublimeVideo badge"
         %video.sublime.zoom.sv_force_badge{ width: "576", height: "324", poster: image_path("www/demo/midnight_sun_800.jpg"), preload: "none", style: "display:none" }
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_360p.mp4" />
-          == <source src="https://4076.voxcdn.com/demo-videos/midnight_sun_sv1_360p.webm" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4" />
+          == <source src="http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm" />
         = "for a few seconds after video playback begins."
     .box
       %h4= "What does 'per-site' mean?"

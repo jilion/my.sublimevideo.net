@@ -1,33 +1,34 @@
 source 'http://rubygems.org'
+source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com account
 
 gem 'rails',                 '3.1.3'
 
 gem 'thin'
 
 gem 'prototype-rails'
-gem 'jquery-rails'
+gem 'jquery-rails', '~> 1.0.19'
 gem 'rails-backbone'
 
 # Databases
-gem 'pg',                    '~> 0.11.0'
+gem 'pg',                    '~> 0.12.1'
 gem 'squeel',                '~> 0.9.2'
 
-gem 'bson_ext',              '~> 1.5.1'
-gem 'bson',                  '~> 1.5.1'
-gem 'mongo',                 '~> 1.5.1'
-gem 'mongoid',               '~> 2.3.3'
+gem 'bson_ext',              '~> 1.5.2'
+gem 'bson',                  '~> 1.5.2'
+gem 'mongo',                 '~> 1.5.2'
+gem 'mongoid',               '~> 2.4.0'
 
 # Views
 gem 'haml',                  '~> 3.1.3'
 gem 'coffee-filter',         '~> 0.1.1'
-gem 'kaminari',              git: 'git://github.com/amatsuda/kaminari.git'
+gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.9'
 
 # Auth / invitations
 gem 'devise',                '~> 1.5.1'
 # gem 'devise',                git: 'git://github.com/plataformatec/devise.git'
-gem 'devise_invitable',      '~> 0.6.0' # currently, devise_invitable requires devise ~ 1.4.1...
+gem 'devise_invitable',      '~> 0.6.1' # currently, devise_invitable requires devise ~ 1.4.1...
 
 # API
 gem 'oauth',                 '~> 0.4.5'
@@ -61,15 +62,16 @@ gem 'request-log-analyzer',  '~> 1.11.1', require: 'request_log_analyzer'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
 # gem 'activemerchant',        git: 'git://github.com/ZenCocoon/active_merchant.git' # with the fix for Ogone#parse and more
 gem 'activemerchant',        git: 'git://github.com/rymai/active_merchant.git', branch: '3ds_from_ZenCocoon'
-gem 'public_suffix_service', '~> 0.9.0'
-gem 'useragent',             git: 'git://github.com/jilion/useragent.git'
+gem 'public_suffix',         '~> 1.0.0'
+gem 'useragent',             git: 'git://github.com/jilion/useragent.git' # needed for stat_request_parser
+gem 'stat_request_parser',   '~> 1.0.0' # hosted on gemfury
 
 gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
 gem 'countries',             '~> 0.7.0'
 gem 'snail',                 '~> 0.5.7'
-gem 'PageRankr',             '~> 3.0.1', require: 'page_rankr'
+gem 'PageRankr',             '~> 3.1.0', require: 'page_rankr'
 gem 'twitter',               '~> 1.7.2'
-gem 'settingslogic',         '~> 2.0.6'
+gem 'settingslogic',         '2.0.6' # 2.0.7 has ruby-debug19 & jeweler as dependencies => UNACCEPTABLE
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 1.0.0' # Campaign Monitor
 
@@ -77,8 +79,6 @@ gem 'airbrake',              '~> 3.0.5'
 gem 'prowl',                 '~> 0.1.3'
 
 gem 'addressable',           '~> 2.2.6'
-# Need to be updated manually until https://github.com/carlhuda/bundler/issues/67 is fixed.
-gem 'stat_request_parser',   path: 'vendor/sv_stat_request_parser'
 
 # Perf
 gem 'dalli',                 '~> 1.1.3'
@@ -97,6 +97,7 @@ gem 'haml-coderay',          '~> 0.1.2'
 gem "feedzirra", git: "https://github.com/pauldix/feedzirra.git"
 
 gem 'asset_sync'
+gem 'rack-no-www'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -111,10 +112,10 @@ end
 
 group :production, :staging do
   gem 'newrelic_rpm'
+  gem 'rack-ssl-enforcer'
 end
 
 group :production do
-  gem 'rack-ssl-enforcer'
   # gem 'rack-cache'
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end
@@ -143,26 +144,26 @@ group :development do
   gem 'silent-postgres'
   # gem 'letter_opener'
   gem 'letter_opener', git: 'git://github.com/pcg79/letter_opener.git' # includes a fix not merged yet
+  gem 'pry'
 
   gem 'em-http-request' # async pusher in populate
 
-  gem 'rb-fsevent', '0.9.0.pre3'
-  gem 'growl_notify'
+  gem 'rb-fsevent', '0.9.0.pre5'
+  # gem 'growl_notify'
 
-  gem 'guard', '~> 0.8.3'
-  # gem 'ruby_gntp'
-  # platforms :ruby do
-  #   gem 'rb-readline'
-  # end
+  gem 'ruby_gntp'
+  platforms :ruby do
+    gem 'rb-readline'
+  end
+  gem 'guard', git: 'git://github.com/guard/guard.git'
 
-  gem 'guard-bundler'
+  # gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
-  gem 'guard-coffeescript'
   gem 'guard-jasmine'
-  gem 'guard-yard'
+  # gem 'guard-yard'
 end
 
 group :test do

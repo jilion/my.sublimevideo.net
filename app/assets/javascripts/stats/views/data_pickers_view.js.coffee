@@ -59,7 +59,7 @@ class MSVStats.Views.DatePickersView extends Backbone.View
       $('#start_time_picker').datepicker('setDate', new Date(MSVStats.period.startTime()))
       $('#end_time_picker').datepicker('setDate', new Date(MSVStats.period.endTime()))
     else
-      $('#start_time_picker').datepicker('setDate', MSVStats.statsDays.first().date())
+      $('#start_time_picker').datepicker('setDate', new Date(MSVStats.statsDays.last().time() - 7 * 24 * 3600 * 1000) )
       $('#end_time_picker').datepicker('setDate', MSVStats.statsDays.last().date())
 
   destroyDatePickers: ->

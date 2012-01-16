@@ -33,7 +33,7 @@ describe MailLetter do
       end
 
       context "with multiple users to send emails to" do
-        context "with the 'dev' filter" do
+        describe "with the 'dev' filter" do
           before(:all) do
             @mail_letter = MailLetter.new(@attributes.merge(criteria: 'dev'))
           end
@@ -63,15 +63,15 @@ describe MailLetter do
           end
         end
 
-        describe "the 'active_and_billable' and 'active_and_not_billable' filters" do
+        describe "the 'paying' and 'free' filters" do
           before(:all) do
             @archived_user = Factory.create(:user, state: 'archived')
-            @billable_user = Factory.create(:user)
-            Factory.create(:site, user: @billable_user)
+            @paying_user = Factory.create(:user)
+            Factory.create(:site_not_in_trial, user: @paying_user)
           end
 
-          context "with the 'active_and_billable' filter" do
-            subject { MailLetter.new(@attributes.merge(criteria: 'active_and_billable')).deliver_and_log }
+          context "with the 'paying' filter" do
+            subject { MailLetter.new(@attributes.merge(criteria: 'paying')).deliver_and_log }
 
             it "delays delivery of mails" do
               expect { subject }.to change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)
@@ -82,12 +82,12 @@ describe MailLetter do
               expect { @worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
             end
 
-            it "sends email to active and billable users and should send appropriate template" do
+            it "sends email to paying users and should send appropriate template" do
               ActionMailer::Base.deliveries.clear
               subject
               @worker.work_off
 
-              ActionMailer::Base.deliveries.last.to.should eq [@billable_user.email]
+              ActionMailer::Base.deliveries.last.to.should eq [@paying_user.email]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
             end
 
@@ -96,8 +96,8 @@ describe MailLetter do
             end
           end
 
-          context "with the 'active_and_billable' filter" do
-            subject { MailLetter.new(@attributes.merge(criteria: 'active_and_not_billable')).deliver_and_log }
+          context "with the 'free' filter" do
+            subject { MailLetter.new(@attributes.merge(criteria: 'free')).deliver_and_log }
 
             it "delays delivery of mails" do
               expect { subject }.to change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)
@@ -108,7 +108,7 @@ describe MailLetter do
               expect { @worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
             end
 
-            it "sends email to active and billable users and should send appropriate template" do
+            it "sends email to free users and should send appropriate template" do
               ActionMailer::Base.deliveries.clear
               subject
               @worker.work_off

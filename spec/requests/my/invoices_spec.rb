@@ -130,7 +130,7 @@ feature "Site invoices page" do
           page.should have_no_content 'failed invoices for a total'
           within '.past_invoices' do
             page.should have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
-            page.should have_content "Status: Paid on #{I18n.l(@invoice.paid_at, format: :minutes_timezone)}"
+            page.should have_content "Status: Paid on #{I18n.l(@invoice.reload.paid_at, format: :minutes_timezone)}"
             page.should have_no_content "Status: Payment failed"
           end
         end

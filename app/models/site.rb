@@ -78,8 +78,8 @@ class Site < ActiveRecord::Base
 
   before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
-  before_save :prepare_pending_attributes, if: :pending_plan_id_changed? # in site_modules/invoice
-  before_save :set_trial_started_at # in site_modules/invoice
+  before_save :prepare_pending_attributes, if: proc { |s| s.pending_plan_id_changed? || s.skip_trial? } # in site_modules/invoice
+  before_save :set_trial_started_at, :set_first_paid_plan_started_at # in site_modules/invoice
 
   after_create :delay_ranks_update, :update_last_30_days_counters # in site_modules/templates
 
@@ -141,7 +141,7 @@ class Site < ActiveRecord::Base
 
     if attribute.to_s == attribute.to_i.to_s # id passed
       new_plan = Plan.find_by_id(attribute.to_i)
-      return unless new_plan.standard_plan? || new_plan.free_plan? || new_plan.dev_plan?
+      return unless new_plan.standard_plan? || new_plan.free_plan?
     else # token passed
       new_plan = Plan.find_by_token(attribute)
     end
@@ -250,7 +250,7 @@ private
   def self.update_ranks(site_id)
     site  = Site.find(site_id)
     begin
-      ranks = PageRankr.ranks(site.hostname, :alexa_global, :google)
+      ranks = PageRankr.ranks("http://#{site.hostname}", :alexa_global, :google)
       site.google_rank = ranks[:google] || 0
       site.alexa_rank  = ranks[:alexa_global]
     rescue

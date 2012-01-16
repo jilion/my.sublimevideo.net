@@ -31,9 +31,9 @@ Spork.prefork do
   RSpec.configure do |config|
     config.extend VCR::RSpec::Macros
 
-    config.filter_run :focus => true
-    config.run_all_when_everything_filtered = true
     config.treat_symbols_as_metadata_keys_with_true_values = true
+    config.run_all_when_everything_filtered = true
+    # config.filter_run_including :focus => true # don't seem to work with RSpec 2.8 bug? use .rspec instead
 
     config.mock_with :rspec
     config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -57,7 +57,7 @@ Spork.prefork do
     end
 
     config.before(:each) do
-      Capybara.default_host = "http://www.sublimevideo.dev"
+      Capybara.default_host = "http://sublimevideo.dev"
       Capybara.reset_sessions!
       DatabaseCleaner.start
     end
@@ -76,9 +76,6 @@ end
 
 Spork.each_run do
   # This code will be run each time you run your specs.
-
-  # Fix RSpec 2.7 issue https://github.com/guard/guard-rspec/issues/61#issuecomment-2428083
-  $rspec_start_time = Time.now
 
   # Factory need to be required each launch to prevent loading of all models
   require 'factory_girl'

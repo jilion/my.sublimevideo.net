@@ -1,4 +1,4 @@
-= title("Settings for #{truncate_middle(@site.hostname_or_token, :length => 23)}")
+= title("Settings for #{hostname_or_token(@site)}")
 = render '/layouts/sites_select_title'
 
 #site.edit
@@ -23,5 +23,5 @@
         .entry.delete
           = f.submit "Delete site", class: "delete_site", confirm: "Are you really sure?"
           %p.desc
-            = raw t 'site.edit.delete_site_info1', domain: truncate_middle(@site.hostname_or_token, length: 20)
+            = raw t 'site.edit.delete_site_info1', domain: hostname_or_token(@site, length: 20)
             = raw t 'site.edit.delete_site_info2'

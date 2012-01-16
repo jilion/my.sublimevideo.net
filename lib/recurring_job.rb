@@ -9,8 +9,9 @@ module RecurringJob
   ]
 
   stats_tasks = [
-    '%UsersStat%create_users_stats%',
-    '%SitesStat%create_sites_stats%',
+    '%Stats::UsersStat%create_users_stats%',
+    '%Stats::SitesStat%create_sites_stats%',
+    '%Stats::SiteStatsStat%create_site_stats_stats%'
   ]
 
   NAMES = [
@@ -27,7 +28,7 @@ module RecurringJob
 
     def delay_invoices_processing
       unless Delayed::Job.already_delayed?('%RecurringJob%invoices_processing%')
-        delay(priority: 2, run_at: Time.now.utc.tomorrow.midnight + 2.hours).invoices_processing
+        delay(priority: 2, run_at: Time.now.utc.tomorrow.midnight).invoices_processing
       end
     end
 
@@ -49,8 +50,9 @@ module RecurringJob
       User.delay_send_credit_card_expiration
 
       # Stats
-      UsersStat.delay_create_users_stats
-      SitesStat.delay_create_sites_stats
+      Stats::UsersStat.delay_create_users_stats
+      Stats::SitesStat.delay_create_sites_stats
+      Stats::SiteStatsStat.delay_create_site_stats_stats
 
       # Others
       SiteModules::UsageMonitoring.delay_monitor_sites_usages

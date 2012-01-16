@@ -38,20 +38,3 @@
   * You are using the player on a development domain that is not specified in the "_Development domains_":/site-settings#dev_domains field.
   * You are using the player on a production site, but you didn't provide any _"Main":/site-settings#main_domain, "Staging or alias":/site-settings#extra_domains_ domain.
   * You are using the player on a subdomain of your _Main, Staging or alias domain_, but you didn't enable the "Wildcard option":/site-settings#wildcard.
-
--#  h3. The player has a strange behavior or looking
--#
--#  In normal mode, if *the controls bar disappears when hovering*,
--#  or if *the play button is not in the center* but on the extreme left of the video.
--#
--#  Check that you declare a DOCTYPE a the top of your Web page, like this:
--#.code
--#  :harsh
--#    = "#!harsh #{harsh_options(:html)}"
--#    <!DOCTYPE html>
--#    <html>
--#      ...
--#    </html>
--#  .spacer
--#:textile
--#  Then, if the issue is still here, please send us a "bug report":https://my.sublimevideo.net/feedback.

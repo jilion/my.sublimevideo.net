@@ -101,4 +101,154 @@ namespace :one_time do
     end
   end
 
+  namespace :stats do
+
+    task calculate_beta_users: :environment do
+      Stats::UsersStat.where(d: { "$lt" => Time.utc(2011,3,30) }).delete_all
+
+      day = Time.utc(2010,9,14)
+      beta_sum, archived_sum = 0, 0
+      while day < Time.utc(2011,3,30) do
+        beta_new_count = User.beta.where { (date_trunc('day', created_at) == day.midnight) & ((archived_at == nil) | (archived_at > day.midnight)) }.count
+        beta_archived_count = User.beta.where { date_trunc('day', archived_at) == day.midnight }.count
+        beta_sum += beta_new_count - beta_archived_count
+        puts "On #{day}, there was #{beta_sum} beta users (#{beta_new_count} new and #{beta_archived_count} archived)."
+
+        archived_sum += User.where { date_trunc('day', archived_at) == day.midnight }.count
+        s = Stats::UsersStat.create!(
+          d:  day,
+          be: beta_sum,
+          fr: 0,
+          pa: 0,
+          su: 0,
+          ar: archived_sum
+        )
+        day += 1.day
+      end
+
+      Stats::UsersStat.where(be: nil).each do |stat|
+        stat.update_attributes(be: 0)
+      end
+    end
+
+    task calculate_beta_sites: :environment do
+      Stats::SitesStat.where(d: { "$lt" => Time.utc(2011,3,30) }).delete_all
+
+      day = Time.utc(2010,9,14)
+      beta_sum, archived_sum = 0, 0
+      while day < Time.utc(2011,3,30) do
+        beta_new_count = Site.where { (date_trunc('day', created_at) == day.midnight) & ((archived_at == nil) | (archived_at > day.midnight)) }.count
+        archived_count = Site.where { date_trunc('day', archived_at) == day.midnight }.count
+        beta_sum += beta_new_count - archived_count
+        archived_sum += archived_count
+        puts "On #{day}, there was #{beta_sum} beta sites (#{beta_new_count} new and #{archived_count} archived)."
+
+        s = Stats::SitesStat.create!(
+          d:  day,
+          fr: {
+            beta: beta_sum,
+            dev: 0,
+            free: 0
+          },
+          sp: 0,
+          tr: {
+            plus: { m: 0, y: 0 },
+            premium: { m: 0, y: 0 }
+          },
+          pa: {
+            plus: {
+              m: 0,
+              y: 0
+            },
+            premium: {
+              m: 0,
+              y: 0
+            }
+          },
+          su: 0,
+          ar: archived_sum
+        )
+        day += 1.day
+      end
+    end
+
+    task fix_dev_sites: :environment do
+      day = Time.utc(2010,9,14)
+      archived_dev_count_sum = 0
+      while day < Time.utc(2011,11,30) do
+        archived_dev_count = Site.in_plan(['dev', 'beta']).where { date_trunc('day', archived_at) == day.midnight }.count
+        archived_dev_count_sum += archived_dev_count
+
+        stat = Stats::SitesStat.where(d: day).first
+        old_stat_fr_dev = stat.fr['dev']
+        stat.fr['dev'] -= archived_dev_count_sum
+        stat.save!
+        puts "On #{day}, there was #{old_stat_fr_dev} dev sites, there are now #{stat.fr['dev']} (#{archived_dev_count_sum} sites less)."
+
+        day += 1.day
+      end
+    end
+
+    desc "Migrate old to new Stats::UsersStats & Stats::SitesStats"
+    task migrate_old_stats: :environment do
+      timed do
+        Stats::UsersStat.where(d: nil).each do |stat|
+          stat.update_attributes(
+            d:  stat.created_at.midnight,
+            fr: stat.states_count['active_and_not_billable_count'],
+            pa: stat.states_count['active_and_billable_count'],
+            su: stat.states_count['suspended_count'],
+            ar: stat.states_count['archived_count']
+          )
+        end
+
+        beta_plan_id      = Plan.where { name == 'beta' }.first.id
+        dev_plan_id       = Plan.where { name == 'dev' }.first.id
+        free_plan_id      = Plan.free_plan.id
+        sponsored_plan_id = Plan.sponsored_plan.id
+        comet_m_id        = Plan.where { (name == 'comet') & (cycle == 'month') }.first.id
+        comet_y_id        = Plan.where { (name == 'comet') & (cycle == 'year') }.first.id
+        planet_m_id       = Plan.where { (name == 'planet') & (cycle == 'month') }.first.id
+        planet_y_id       = Plan.where { (name == 'planet') & (cycle == 'year') }.first.id
+        star_m_id         = Plan.where { (name == 'star') & (cycle == 'month') }.first.id
+        star_y_id         = Plan.where { (name == 'star') & (cycle == 'year') }.first.id
+        galaxy_m_id       = Plan.where { (name == 'galaxy') & (cycle == 'month') }.first.id
+        galaxy_y_id       = Plan.where { (name == 'galaxy') & (cycle == 'year') }.first.id
+
+        plus_m_id    = Plan.where { (name == 'plus') & (cycle == 'month') }.first.id
+        plus_y_id    = Plan.where { (name == 'plus') & (cycle == 'year') }.first.id
+        premium_m_id = Plan.where { (name == 'premium') & (cycle == 'month') }.first.id
+        premium_y_id = Plan.where { (name == 'premium') & (cycle == 'year') }.first.id
+
+        Stats::SitesStat.where(d: nil).each do |stat|
+          stat.update_attributes(
+            d:  stat.created_at.midnight,
+            fr: {
+              beta: stat.plans_count[beta_plan_id.to_s].to_i,
+              dev: stat.plans_count[dev_plan_id.to_s].to_i,
+              free: stat.plans_count[free_plan_id.to_s].to_i
+            },
+            sp: stat.plans_count[sponsored_plan_id.to_s].to_i,
+            tr: {
+              plus: { m: 0, y: 0 },
+              premium: { m: 0, y: 0 }
+            },
+            pa: {
+              plus: {
+                m: 0, # stat.plans_count[comet_m_id.to_s].to_i + stat.plans_count[planet_m_id.to_s].to_i + stat.plans_count[plus_m_id.to_s].to_i,
+                y: 0 # stat.plans_count[comet_y_id.to_s].to_i + stat.plans_count[planet_y_id.to_s].to_i + stat.plans_count[plus_y_id.to_s].to_i
+              },
+              premium: {
+                m: 0, # stat.plans_count[star_m_id.to_s].to_i + stat.plans_count[galaxy_m_id.to_s].to_i + stat.plans_count[premium_m_id.to_s].to_i,
+                y: 0 # stat.plans_count[star_y_id.to_s].to_i + stat.plans_count[galaxy_y_id.to_s].to_i + stat.plans_count[premium_y_id.to_s].to_i
+              }
+            },
+            su: stat.states_count['suspended'].to_i,
+            ar: stat.states_count['archived'].to_i
+          )
+        end
+      end
+    end
+  end
+
 end

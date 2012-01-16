@@ -196,11 +196,17 @@ FactoryGirl.define do
   factory :transaction do
   end
 
-  factory :users_stat do
+  factory :users_stat, class: Stats::UsersStat do
+    d             Time.now.utc.midnight
     states_count  { {} }
+    fr            2
+    pa            1
+    su            1
+    ar            1
   end
 
-  factory :sites_stat do
+  factory :sites_stat, class: Stats::SitesStat do
+    d             Time.now.utc.midnight
     states_count  { {} }
     plans_count   { {} }
   end

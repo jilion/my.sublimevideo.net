@@ -593,17 +593,20 @@ ul.form_list li a {
   display:inline-block;
 }
 
-.popup .checkbox_wrap a {
+.checkbox_wrap a {
   color:#224375;
   border-bottom:1px solid #708aa5;
 }
 
-.popup .entry.sign_up {
+form .entry.sign_up {
   padding:20px 0 0;
+}
+
+.popup .entry.sign_up {  
   text-align:center;
 }
 
-.popup .entry.sign_up input {
+form .entry.sign_up input {
   text-align:center;
   width:150px;
   height:56px;
@@ -619,25 +622,25 @@ ul.form_list li a {
   @include box-shadow(rgba(0,36,89,0.65) 0 1px 8px);
 }
 
-.popup .entry.sign_up input:active {background-position:0 -56px}
+form .entry.sign_up input:active {background-position:0 -56px}
 
-.popup .entry.sign_up input:focus {
+form .entry.sign_up input:focus {
   outline:0;
   @include box-shadow((rgba(0,36,89,0.65) 0 1px 8px, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
 }
 
-.popup .entry.login {
+.entry.login {
   padding:20px 0 0;
 }
 
-.popup .entry.login .blue_button {
+.entry.login .blue_button {
   float:left;
   padding:20px 0;
   font-size:28px;
   width:144px;
 }
 
-.popup .entry.login ul.form_list {
+.entry.login ul.form_list {
   width:246px;
   float:left;
   font-size:13px;

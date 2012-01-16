@@ -62,7 +62,7 @@ private
 
   def find_sites_or_redirect_to_new_site
     # for sites_select_title
-    @sites = current_user.sites.billable | current_user.sites.not_archived.with_not_canceled_invoices
+    @sites = current_user.sites.paid_plan | current_user.sites.not_archived.with_not_canceled_invoices
 
     redirect_to [:new, :site] if @sites.empty?
   end

@@ -33,12 +33,12 @@
 :coderay
   #{coderay_options(:javascript)}
   sublimevideo.ready(function() {
-    $("img.custom_play_button").each(function() {
-      $(this).click(function(event) {
+    jQuery("img.custom_play_button").each(function() {
+      jQuery(this).click(function(event) {
         event.preventDefault();
         // Hide the posterframe and prepare and play the video
-        sublimevideo.prepareAndPlay($(this).attr("id").replace(/^posterframe_/, ""));
-        $(this).hide();
+        sublimevideo.prepareAndPlay(jQuery(this).attr("id").replace(/^posterframe_/, ""));
+        jQuery(this).hide();
       });
     });
   });

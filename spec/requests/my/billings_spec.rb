@@ -265,7 +265,6 @@ feature "Credit cards update" do
       current_url.should eq "http://my.sublimevideo.dev/account/billing"
       page.should have_content "Name on card can't be blank"
       page.should have_content "Card number is invalid"
-      page.should have_content "Expiration date expired"
       page.should have_content "CSC is required"
 
       set_credit_card type: 'master'

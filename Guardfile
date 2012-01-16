@@ -13,8 +13,6 @@ group :frontend do
     watch(%r{^config/initializers/.+\.rb})
   end
 
-  # guard 'coffeescript', :input => 'app/assets/javascripts', :noop => true, :hide_success => true
-
   guard :livereload, host: 'my.sublimevideo.dev' do
     watch(%r{^app/.+\.(erb|haml|hamlc|js|css|scss|coffee|eco|png|gif|jpg)})
   end
@@ -40,8 +38,8 @@ group :backend do
     watch('spec/spec_helper.rb')
   end
 
-  guard :rspec, :version => 2, :cli => "--color -f doc", :all_after_pass => false, :all_on_start => false, :keep_failed => false do
-    watch('spec/spec_helper.rb')                                               { "spec" }
+  guard :rspec, :version => 2, :cli => "--color -f doc --drb", :all_after_pass => false, :all_on_start => false, :keep_failed => false do
+    # watch('spec/spec_helper.rb')                                               { "spec" }
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }
     watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/#{m[1]}" }

@@ -200,7 +200,7 @@ class User < ActiveRecord::Base
   end
 
   def billable?
-    sites.active.billable.any?
+    sites.active.paid_plan.any?
   end
 
   def archivable?

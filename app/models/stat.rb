@@ -37,7 +37,6 @@ module Stat
   # =================
   module ClassMethods
 
-
     # Returns the sum of all the usage for the given token(s) (optional) and between the given dates (optional).
     #
     # @option options [String] token a valid site token
@@ -102,6 +101,7 @@ module Stat
       when 'seconds'
         to    = 2.seconds.ago.change(usec: 0).utc
         from  = to - 59.seconds
+
       when 'minutes'
         site  = ::Site.find_by_token(site_token)
         if site.plan_stats_retention_days == 0
@@ -112,23 +112,30 @@ module Stat
           to   = last_minute_stat.try(:m) || 1.minute.ago.change(sec: 0)
           from = to - 59.minutes
         end
+
       when 'hours'
         to   = 1.hour.ago.change(min: 0, sec: 0).utc
         from = to - 23.hours
+
       when 'days'
         site  = ::Site.find_by_token(site_token)
         stats = self.where(t: site_token, d: { "$ne" => nil }).order_by([:d, :asc])
         to    = 1.day.ago.midnight
+
         case site.plan_stats_retention_days
         when 0
           to   = nil
           from = nil
+
         when nil
           from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
+
         else
           from = to - (site.plan_stats_retention_days - 1).days
         end
+
       end
+
       [from, to]
     end
 
@@ -225,6 +232,7 @@ module Stat
         Stat::Site.collection.update({ t: site_token, h: log.hour },   { "$inc" => site_inc }, upsert: true)
         Stat::Site.collection.update({ t: site_token, d: log.day },    { "$inc" => site_inc }, upsert: true)
       end
+
       values[:videos].each do |video_ui, video_inc|
         if video_inc.present?
           Stat::Video.collection.update({ st: site_token, u: video_ui, m: log.minute }, { "$inc" => video_inc }, upsert: true)
@@ -233,6 +241,7 @@ module Stat
         end
       end
     end
+
     begin
       json = { m: true }
       json[:h] = true if log.hour == log.minute
@@ -273,6 +282,7 @@ private
         request, user_agent = tracker
         params     = Addressable::URI.parse(request).query_values.try(:symbolize_keys) || {}
         params_inc = StatRequestParser.stat_incs(params, user_agent, hits)
+
         # Site
         site = params_inc[:site]
         if site[:inc].present?
@@ -280,6 +290,7 @@ private
             incs[site[:t]][:inc][inc] += value
           end
         end
+
         # Videos
         params_inc[:videos].each do |video|
           if video[:inc].present?
@@ -289,8 +300,11 @@ private
           end
         end
       rescue StatRequestParser::BadParamsError
+      rescue TypeError => ex
+        Notify.send("Request parsing problem: #{request}", :exception => ex)
       end
     end
+
     incs
   end
 

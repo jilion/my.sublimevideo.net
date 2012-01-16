@@ -29,8 +29,10 @@ module My::SitesHelper
     site.path.present? ? "#{site.hostname}/#{site.path}" : site.hostname
   end
 
-  def hostname_or_token(site)
-    site.hostname.presence || site.token
+  def hostname_or_token(site, options = {})
+    options.reverse_merge!(length: 22, prefix: '#')
+    name = site.hostname_or_token(options[:prefix])
+    truncate_middle name, length: options[:length]
   end
 
   def display_none_if(condition, value=nil)

@@ -15,8 +15,10 @@
       %style{ :type => "text/css", :media => "screen" }
         == body {background:#fff;display:none;}
     /[if lte IE 9]
-      = javascript_include_tag("https://html5shiv.googlecode.com/svn/trunk/html5.js")
+      = javascript_include_tag("#{request.protocol}html5shiv.googlecode.com/svn/trunk/html5.js")
+
     = javascript_include_tag('my')
+
     = yield :head
 
     = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"

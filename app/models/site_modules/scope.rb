@@ -14,11 +14,12 @@ module SiteModules::Scope
     scope :not_archived, where { state != 'archived' }
 
     # plans
-    scope :free,           includes(:plan).where { plans.name == "free" }
-    scope :sponsored,      includes(:plan).where { plans.name == "sponsored" }
-    scope :in_custom_plan, includes(:plan).where { plans.name =~ "custom%" }
-    scope :in_paid_plan,   lambda { joins(:plan).merge(Plan.paid_plans) }
-    scope :in_plan,        lambda { |plan_name| includes(:plan).where { plans.name == plan_name } }
+    scope :custom_plan,    lambda { in_plan_id(Plan.custom_plans.map(&:id)) }
+    scope :paid_plan,      lambda { active.in_plan_id(Plan.paid_plans.map(&:id)) }
+    scope :unpaid_plan,    lambda { active.in_plan_id(Plan.unpaid_plans.map(&:id)) }
+    scope :paid_next_plan_or_no_next_plan, lambda { active.where { next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) } }
+    scope :in_plan,        lambda { |plan_names| in_plan_id(Plan.where { name >> Array.wrap(plan_names) }.map(&:id)) }
+    scope :in_plan_id,     lambda { |plan_ids| where { plan_id >> Array.wrap(plan_ids) } }
 
     # attributes queries
     scope :with_wildcard,        where { wildcard == true }
@@ -40,22 +41,8 @@ module SiteModules::Scope
     scope :trial_expires_on, lambda { |timestamp|
       where { date_trunc('day', trial_started_at) == (timestamp - BusinessModel.days_for_trial.days).midnight }
     }
-    scope :billable, lambda {
-      active.where { plan_id >> Plan.paid_plans.map(&:id) & next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) }
-    }
-    scope :not_billable, lambda {
-      where {
-        (state != 'active') |
-        (
-          (plan_id >> Plan.unpaid_plans.map(&:id) & (next_cycle_plan_id == nil)) |
-          (next_cycle_plan_id >> Plan.unpaid_plans.map(&:id))
-        )
-      }
-    }
-    scope :renewable,  active.where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
-    scope :refundable, lambda {
-      where { (first_paid_plan_started_at >= BusinessModel.days_for_refund.days.ago) & (refunded_at == nil) }
-    }
+
+    scope :renewable,  lambda { active.where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) } }
     scope :refunded,   where { (state == 'archived') & (refunded_at != nil) }
 
     # admin

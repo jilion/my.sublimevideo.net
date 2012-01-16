@@ -241,36 +241,27 @@ describe Site do
         end
 
         context "with an open invoice" do
-          before(:all) do
+          it "archives the site" do
             Invoice.delete_all
             @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
-          end
-
-          it "archives the site" do
             subject.archive!.should be_true
             subject.errors[:base].should be_empty
           end
         end
 
         context "with a failed invoice" do
-          before(:all) do
+          it "archives the site" do
             Invoice.delete_all
             @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
-          end
-
-          it "archives the site" do
             subject.archive!.should be_true
             subject.errors[:base].should be_empty
           end
         end
 
         context "with a waiting invoice" do
-          before(:all) do
+          it "archives the site" do
             Invoice.delete_all
             @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-          end
-
-          it "archives the site" do
             subject.archive.should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.not_paid_invoices_prevent_archive', :count => 1)
           end
@@ -284,36 +275,27 @@ describe Site do
         end
 
         context "with an open invoice" do
-          before(:all) do
+          it "doesn't archive the site" do
             Invoice.delete_all
             @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
-          end
-
-          it "doesn't archive the site" do
             subject.archive.should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.not_paid_invoices_prevent_archive', :count => 1)
           end
         end
 
         context "with a failed invoice" do
-          before(:all) do
+          it "doesn't archive the site" do
             Invoice.delete_all
             @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
-          end
-
-          it "doesn't archive the site" do
             subject.archive.should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.not_paid_invoices_prevent_archive', :count => 1)
           end
         end
 
         context "with a waiting invoice" do
-          before(:all) do
+          it "doesn't archive the site" do
             Invoice.delete_all
             @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-          end
-
-          it "doesn't archive the site" do
             subject.archive.should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.not_paid_invoices_prevent_archive', :count => 1)
           end
@@ -396,24 +378,21 @@ describe Site do
     end
 
     describe "plan_id=" do
-      before(:all) do
+      before(:each) do
         @paid_plan2        = Factory.create(:plan, name: "premium",   cycle: "month", price: 5000)
         @paid_plan_yearly  = Factory.create(:plan, name: "plus", cycle: "year",  price: 10000)
         @paid_plan_yearly2 = Factory.create(:plan, name: "premium",   cycle: "year",  price: 50000)
       end
 
       describe "when creating with a free plan" do
-        before(:all) do
-          @site = Factory.build(:new_site, plan_id: @free_plan.id)
-        end
-        subject { @site }
+        subject { Factory.build(:new_site, plan_id: @free_plan.id) }
 
         its(:plan_id)            { should be_nil }
         its(:pending_plan_id)    { should eql @free_plan.id }
         its(:next_cycle_plan_id) { should be_nil }
 
         describe "should prevent new plan_id update while pending_plan_id is present" do
-          before(:all) { subject.plan_id = @paid_plan.id }
+          before(:each) { subject.plan_id = @paid_plan.id }
 
           its(:plan_id)            { should be_nil }
           its(:pending_plan_id)    { should eql @free_plan.id }
@@ -422,10 +401,7 @@ describe Site do
       end
 
       describe "when creating a with a custom plan (token)" do
-        before(:all) do
-          @site = Factory.build(:new_site, plan_id: @custom_plan.token)
-        end
-        subject { @site }
+        subject { Factory.build(:new_site, plan_id: @custom_plan.token) }
 
         its(:plan_id)            { should be_nil }
         its(:pending_plan_id)    { should eql @custom_plan.id }
@@ -433,10 +409,7 @@ describe Site do
       end
 
       describe "when creating a with a custom plan (id)" do
-        before(:all) do
-          @site = Factory.build(:new_site, plan_id: @custom_plan.id)
-        end
-        subject { @site }
+        subject { Factory.build(:new_site, plan_id: @custom_plan.id) }
 
         its(:plan_id)            { should be_nil }
         its(:pending_plan_id)    { should be_nil }
@@ -445,7 +418,7 @@ describe Site do
 
       describe "upgrade" do
         describe "free =>" do
-          before(:all) do
+          before(:each) do
             @site = Factory.create(:new_site, plan: @free_plan)
           end
 
@@ -478,7 +451,7 @@ describe Site do
         end
 
         describe "monthly =>" do
-          before(:all) do
+          before(:each) do
             @site = Factory.create(:new_site, plan: @paid_plan)
           end
 
@@ -584,7 +557,7 @@ describe Site do
       end
 
       describe "upgrade yearly => yearly" do
-        before(:all) do
+        before(:each) do
           @site = Factory.build(:new_site, plan: @paid_plan_yearly)
           @site.plan_id = @paid_plan_yearly2.id
         end
@@ -598,7 +571,7 @@ describe Site do
       describe "downgrade" do
         context "during trial" do
           describe "monthly =>" do
-            before(:all) do
+            before(:each) do
               @site = Factory.create(:new_site, plan: @paid_plan2)
               @site.should be_trial_not_started_or_in_trial
             end
@@ -618,7 +591,7 @@ describe Site do
 
         context "after trial" do
           context "first_paid_plan_started_at is nil" do
-            before(:all) do
+            before(:each) do
               @site = Factory.create(:site_not_in_trial, plan: @paid_plan2, first_paid_plan_started_at: nil)
               @site.first_paid_plan_started_at.should be_nil
               @site.should_not be_trial_not_started_or_in_trial
@@ -637,7 +610,7 @@ describe Site do
           end
 
           context "first_paid_plan_started_at is not nil" do
-            before(:all) do
+            before(:each) do
               @site = Factory.create(:site_with_invoice, plan_id: @paid_plan2.id, first_paid_plan_started_at: Time.now.utc)
               @site.first_paid_plan_started_at.should be_present
               @site.should_not be_trial_not_started_or_in_trial
@@ -725,20 +698,16 @@ describe Site do
         end
 
         context "first invoice" do
-          subject { @site.reload; @site.user.current_password = '123456'; @site }
-
-          before(:all) do
+          before(:each) do
             @site = Factory.create(:new_site, first_paid_plan_started_at: nil)
             Invoice.delete_all
             @site.first_paid_plan_started_at.should be_nil
           end
+          subject { @site.reload; @site.user.current_password = '123456'; @site }
 
           context "with an open invoice" do
-            before(:all) do
-              @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
-            end
-
             it "archives the site" do
+              @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
               subject.archive!.should be_true
               subject.should be_archived
               @open_invoice.reload.should be_canceled
@@ -746,11 +715,8 @@ describe Site do
           end
 
           context "with a failed invoice" do
-            before(:all) do
-              @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
-            end
-
             it "archives the site" do
+              @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
               subject.archive!.should be_true
               subject.should be_archived
               @failed_invoice.reload.should be_canceled
@@ -758,11 +724,8 @@ describe Site do
           end
 
           context "with a waiting invoice" do
-            before(:all) do
-              @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-            end
-
             it "archives the site" do
+              @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
               subject.archive.should be_false
               subject.should_not be_archived
               @waiting_invoice.reload.should be_waiting
@@ -780,11 +743,8 @@ describe Site do
 
           %w[open failed waiting].each do |invoice_state|
             context "with a #{invoice_state} invoice" do
-              before(:all) do
-                @invoice = Factory.create(:invoice, site: @site, state: invoice_state)
-              end
-
               it "doesn't archive the site" do
+                @invoice = Factory.create(:invoice, site: @site, state: invoice_state)
                 subject.archive.should be_false
                 subject.should_not be_archived
                 @invoice.reload.state.should eql invoice_state
@@ -1101,7 +1061,7 @@ describe Site do
     end
 
     describe "#recommended_plan" do
-      before(:all) do
+      before(:each) do
         Plan.delete_all
         @plus_plan = Factory.create(:plan, name: "plus", video_views: 200_000)
         @premium_plan = Factory.create(:plan, name: "premium", video_views: 1_000_000)
@@ -1215,14 +1175,14 @@ describe Site do
       subject { @site.reload }
 
       context "first invoice" do
-        before(:all) do
+        before(:each) do
           Invoice.delete_all
           @site = Factory.create(:new_site, first_paid_plan_started_at: nil)
           @site.first_paid_plan_started_at.should be_nil
         end
 
         context "with an open invoice" do
-          before(:all) do
+          before(:each) do
             @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
           end
 
@@ -1230,7 +1190,7 @@ describe Site do
         end
 
         context "with a failed invoice" do
-          before(:all) do
+          before(:each) do
             @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
           end
 
@@ -1238,7 +1198,7 @@ describe Site do
         end
 
         context "with a waiting invoice" do
-          before(:all) do
+          before(:each) do
             @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
           end
 
@@ -1247,14 +1207,14 @@ describe Site do
       end
 
       context "not first invoice" do
-        before(:all) do
+        before(:each) do
           Invoice.delete_all
           @site = Factory.create(:new_site, first_paid_plan_started_at: Time.now.utc)
           @site.first_paid_plan_started_at.should be_present
         end
 
         context "with an open invoice" do
-          before(:all) do
+          before(:each) do
             @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
           end
 
@@ -1262,7 +1222,7 @@ describe Site do
         end
 
         context "with a failed invoice" do
-          before(:all) do
+          before(:each) do
             @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
           end
 
@@ -1270,7 +1230,7 @@ describe Site do
         end
 
         context "with a waiting invoice" do
-          before(:all) do
+          before(:each) do
             @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
           end
 

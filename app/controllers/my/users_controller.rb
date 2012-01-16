@@ -28,8 +28,7 @@ class My::UsersController < Devise::RegistrationsController
       end
     else
       clean_up_passwords(@user)
-      params[:page] = 'home'
-      render 'www/pages/home'
+      render :new
     end
   end
 
@@ -57,7 +56,7 @@ class My::UsersController < Devise::RegistrationsController
         format.html do
           sign_out(@user)
           set_flash_message :notice, :destroyed if is_navigational_format?
-          redirect_to root_url(subdomain: 'www')
+          redirect_to root_url(host: request.domain)
         end
       else
         format.html { render :edit }

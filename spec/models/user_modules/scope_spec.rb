@@ -10,15 +10,15 @@ describe UserModules::Scope do
       @user_active  = Factory.create(:user)
     end
 
-    describe "#invited" do
+    describe ".invited" do
       specify { User.invited.all.should =~ [@user_invited] }
     end
 
-    describe "#beta" do
+    describe ".beta" do
       specify { User.beta.all.should =~ [@user_beta] }
     end
 
-    describe "#active" do
+    describe ".active" do
       specify { User.active.all.should =~ [@user_active] }
     end
   end
@@ -30,11 +30,11 @@ describe UserModules::Scope do
       @user_cc    = Factory.create(:user, cc_type: 'visa', cc_last_digits: '1234')
     end
 
-    describe "#without_cc" do
+    describe ".without_cc" do
       specify { User.without_cc.all.should =~ [@user_no_cc] }
     end
 
-    describe "#with_cc" do
+    describe ".with_cc" do
       specify { User.with_cc.all.should =~ [@user_cc] }
     end
   end
@@ -42,46 +42,42 @@ describe UserModules::Scope do
   describe "billing" do
     before(:all) do
       User.delete_all
-      # Billable because of 1 paid plan
+      # Paying because of 1 paid plan not in trial
       @user1 = Factory.create(:user)
-      Factory.create(:site, user: @user1, plan_id: @paid_plan.id)
-      Factory.create(:site, user: @user1, plan_id: @paid_plan.id)
-      Factory.create(:site, user: @user1, plan_id: @free_plan.id)
+      Factory.create(:site_not_in_trial, user: @user1, plan_id: @paid_plan.id)
 
-      # Billable because next cycle plan is another paid plan
+      # Paying because of 1 paid plan not in trial (+ next plan is paid)
       @user2 = Factory.create(:user)
-      Factory.create(:site, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, Factory.create(:plan).id)
+      Factory.create(:site_not_in_trial, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, Factory.create(:plan).id)
 
-      # Not billable because next cycle plan is the free plan
+      # Paying because of 1 paid plan not in trial (+ next plan is free)
       @user3 = Factory.create(:user)
-      Factory.create(:site, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
+      Factory.create(:site_not_in_trial, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
 
-      # Not billable because his site has been archived
+      # Free because no paying (and active) sites
       @user4 = Factory.create(:user)
-      Factory.create(:site, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
+      Factory.create(:site_not_in_trial, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
 
-      # Billable because next cycle plan is another paid plan, but not active
+      # Free because of no paid plan
       @user5 = Factory.create(:user)
-      Factory.create(:site, user: @user5, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, Factory.create(:plan).id)
+      Factory.create(:site, user: @user5, plan_id: @free_plan.id)
 
-      # Not billable nor active
-      @user6 = Factory.create(:user, state: 'archived')
+      # Free because of 1 paid plan in trial
+      @user6 = Factory.create(:user)
+      Factory.create(:site, user: @user6, plan_id: @paid_plan.id)
+
+      # Archived and that's it
+      @user7 = Factory.create(:user, state: 'archived')
+      Factory.create(:site, user: @user7, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, Factory.create(:plan).id)
+      @user8 = Factory.create(:user, state: 'archived')
     end
 
-    describe ".billable" do
-      specify { User.billable.all.should =~ [@user1, @user2, @user5] }
+    describe ".free" do
+      specify { User.free.all.should =~ [@user4, @user5, @user6] }
     end
 
-    describe ".not_billable" do
-      specify { User.not_billable.all.should =~ [@user3, @user4, @user6] }
-    end
-
-    describe ".active_and_billable" do
-      specify { User.active_and_billable.all.should =~ [@user1, @user2, @user5] }
-    end
-
-    describe ".active_and_not_billable" do
-      specify { User.active_and_not_billable.all.should =~ [@user3, @user4] }
+    describe ".paying" do
+      specify { User.paying.all.should =~ [@user1, @user2, @user3] }
     end
   end
 

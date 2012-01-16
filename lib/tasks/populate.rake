@@ -20,87 +20,119 @@ namespace :db do
 
     desc "Load all development fixtures."
     task all: :environment do
-      delete_all_files_in_public('uploads/releases')
-      delete_all_files_in_public('uploads/s3')
-      delete_all_files_in_public('uploads/tmp')
-      delete_all_files_in_public('uploads/voxcast')
-      timed { create_plans }
-      timed { create_admins }
-      timed { create_users(argv_user) }
-      timed { create_sites }
-      timed { create_site_usages }
-      timed { create_site_stats }
-      timed { create_mail_templates }
+      disable_perform_deliveries do
+        delete_all_files_in_public('uploads/releases')
+        delete_all_files_in_public('uploads/s3')
+        delete_all_files_in_public('uploads/tmp')
+        delete_all_files_in_public('uploads/voxcast')
+        timed { create_plans }
+        timed { create_admins }
+        timed { create_users(argv_user) }
+        timed { create_sites }
+        timed { create_site_usages }
+        timed { create_site_stats }
+        timed { create_mail_templates }
+      end
     end
 
     desc "Load Admin development fixtures."
     task admins: :environment do
-      timed { empty_tables(Admin) }
-      timed { create_admins }
+      disable_perform_deliveries do
+        timed { empty_tables(Admin) }
+        timed { create_admins }
+      end
     end
 
     desc "Load Enthusiast development fixtures."
     task enthusiasts: :environment do
-      timed { empty_tables(EnthusiastSite, Enthusiast) }
-      timed { create_enthusiasts(argv_user) }
+      disable_perform_deliveries do
+        timed { empty_tables(EnthusiastSite, Enthusiast) }
+        timed { create_enthusiasts(argv_user) }
+      end
     end
 
     desc "Load User development fixtures."
     task users: :environment do
-      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
-      timed { create_users(argv_user) }
-      empty_tables("delayed_jobs")
+      disable_perform_deliveries do
+        timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
+        timed { create_users(argv_user) }
+        empty_tables("delayed_jobs")
+      end
     end
 
     desc "Load Site development fixtures."
     task sites: :environment do
-      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
-      timed { create_sites }
-      empty_tables("delayed_jobs")
+      disable_perform_deliveries do
+        timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
+        timed { create_sites }
+        empty_tables("delayed_jobs")
+      end
     end
 
     desc "Load Site development fixtures."
     task invoices: :environment do
-      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction) }
-      timed { create_invoices(argv_user) }
-      empty_tables("delayed_jobs")
+      disable_perform_deliveries do
+        timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction) }
+        timed { create_invoices(argv_user) }
+        empty_tables("delayed_jobs")
+      end
     end
 
     desc "Load Mail templates development fixtures."
     task mail_templates: :environment do
-      timed { empty_tables(MailTemplate) }
-      timed { create_mail_templates }
+      disable_perform_deliveries do
+        timed { empty_tables(MailTemplate) }
+        timed { create_mail_templates }
+      end
     end
 
     desc "Create fake usages"
     task site_usages: :environment do
-      timed { empty_tables(SiteUsage) }
-      timed { create_site_usages }
+      disable_perform_deliveries do
+        timed { empty_tables(SiteUsage) }
+        timed { create_site_usages }
+      end
     end
 
     desc "Create fake site stats"
     task site_stats: :environment do
-      timed { empty_tables(Stat::Site) }
-      timed { create_site_stats(argv_user) }
+      disable_perform_deliveries do
+        timed { empty_tables(Stat::Site) }
+        timed { create_site_stats(argv_user) }
+      end
+    end
+
+    desc "Create fake users & sites stats"
+    task users_and_sites_stats: :environment do
+      disable_perform_deliveries do
+        timed { create_users_stats }
+        timed { create_sites_stats }
+      end
     end
 
     desc "Create fake site stats"
     task recurring_site_stats: :environment do
-      timed { empty_tables(Stat::Site) }
-      timed { create_site_stats(argv_user) }
-      timed { recurring_site_stats_update(argv_user) }
+      disable_perform_deliveries do
+        timed { empty_tables(Stat::Site) }
+        timed { create_site_stats(argv_user) }
+        timed { recurring_site_stats_update(argv_user) }
+      end
     end
 
     desc "Create fake site & video stats"
     task recurring_stats: :environment do
-      timed { create_stats(argv('site')) }
-      timed { recurring_stats_update(argv('site')) }
+      disable_perform_deliveries do
+        timed { create_stats(argv('site')) }
+        timed { recurring_stats_update(argv('site')) }
+      end
     end
 
     desc "Create fake plans"
     task plans: :environment do
-      timed { empty_tables(Plan) }
-      timed { create_plans }
+      disable_perform_deliveries do
+        timed { empty_tables(Plan) }
+        timed { create_plans }
+      end
     end
 
   end
@@ -368,6 +400,52 @@ def create_site_usages
   puts "#{player_hits_total} video-page views total!"
 end
 
+def create_users_stats
+  day = 2.years.ago.midnight
+  hash = { fr: 0, pa: 0, su: 0, ar: 0 }
+
+  while day <= Time.now.utc.midnight
+    hash[:d]   = day
+    hash[:fr] += rand(100)
+    hash[:pa] += rand(25)
+    hash[:su] += rand(2)
+    hash[:ar] += rand(4)
+
+    Stats::UsersStat.create(hash)
+
+    day += 1.day
+  end
+  puts "Fake users stats generated"
+end
+
+def create_sites_stats
+  day = 2.years.ago.midnight
+  hash = { fr: 0, sp: 0, tr: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, su: 0, ar: 0 }
+
+  while day <= Time.now.utc.midnight
+    hash[:d]   = day
+    hash[:fr] += rand(50)
+    hash[:sp] += rand(2)
+
+    hash[:tr][:plus][:m]    += rand(10)
+    hash[:tr][:plus][:y]    += rand(5)
+    hash[:tr][:premium][:m] += rand(5)
+    hash[:tr][:premium][:y] += rand(2)
+    hash[:pa][:plus][:m]    += rand(7)
+    hash[:pa][:plus][:y]    += rand(3)
+    hash[:pa][:premium][:m] += rand(4)
+    hash[:pa][:premium][:y] += rand(2)
+
+    hash[:su] += rand(3)
+    hash[:ar] += rand(6)
+
+    Stats::SitesStat.create(hash)
+
+    day += 1.day
+  end
+  puts "Fake sites stats generated"
+end
+
 def create_site_stats(user_id = nil)
   users = user_id ? [User.find(user_id)] : User.all
   users.each do |user|
@@ -440,10 +518,10 @@ def create_stats(site_token = nil)
     # Video Tags
     videos_count.times do |video_i|
       VideoTag.create(st: site.token, u: "video#{video_i}",
-        uo:	"s",
+        uo: "s",
         n: "Video #{video_i} long name test truncate",
         no: "s",
-        cs:	["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
+        cs: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
         p: "https://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
         z: "544x306",
         s: {
@@ -595,17 +673,17 @@ end
 def random_site_stats_inc(i, force = nil)
   {
     # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 3 }
-    "pv.m"  => force || (i * rand),
-    "pv.e"  => force || (i * rand / 2),
-    "pv.em" => force || (i * rand / 2),
-    "pv.d"  => force || (i * rand / 2),
-    "pv.i"  => force || (i * rand / 2),
+    "pv.m"  => force || (i * rand).round,
+    "pv.e"  => force || (i * rand / 2).round,
+    "pv.em" => force || (i * rand / 2).round,
+    "pv.d"  => force || (i * rand / 2).round,
+    "pv.i"  => force || (i * rand / 2).round,
     # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
-    "vv.m"  => force || (i * rand / 2),
-    "vv.e"  => force || (i * rand / 4),
-    "vv.em" => force || (i * rand / 4),
-    "vv.d"  => force || (i * rand / 6),
-    "vv.i"  => force || (i * rand / 6),
+    "vv.m"  => force || (i * rand / 2).round,
+    "vv.e"  => force || (i * rand / 4).round,
+    "vv.em" => force || (i * rand / 4).round,
+    "vv.d"  => force || (i * rand / 6).round,
+    "vv.i"  => force || (i * rand / 6).round,
     # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1, t (tablet) => 1 }, f (flash) => ... }
     "md.h.d" => i * rand(12),
     "md.h.m" => i * rand(5),
@@ -619,7 +697,7 @@ def random_site_stats_inc(i, force = nil)
     "bp.fir-osx" => i * rand(8),
     "bp.chr-win" => i * rand(11), # 21% in total
     "bp.chr-osx" => i * rand(10),
-    "bp.saf-win" => i * rand(1), # 6% in total
+    "bp.saf-win" => i * rand(1).round, # 6% in total
     "bp.saf-osx" => i * rand(5),
     "bp.saf-ipo" => i * rand(1),
     "bp.saf-iph" => i * rand(2),
@@ -631,17 +709,17 @@ end
 def random_video_stats_inc(i, force = nil)
   {
     # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 3 }
-    "vl.m"  => force || (i * rand(20)),
-    "vl.e"  => force || (i * rand(4)),
-    "vl.em" => force || (i * rand(2)),
-    "vl.d"  => force || (i * rand(2)),
-    "vl.i"  => force || (i * rand(2)),
+    "vl.m"  => force || (i * rand(20)).round,
+    "vl.e"  => force || (i * rand(4)).round,
+    "vl.em" => force || (i * rand(2)).round,
+    "vl.d"  => force || (i * rand(2)).round,
+    "vl.i"  => force || (i * rand(2)).round,
     # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
-    "vv.m"  => force || (i * rand(10)),
-    "vv.e"  => force || (i * rand(3)),
-    "vv.em" => force || (i * rand(3)),
-    "vv.d"  => force || (i * rand(2)),
-    "vv.i"  => force || (i * rand(2)),
+    "vv.m"  => force || (i * rand(10)).round,
+    "vv.e"  => force || (i * rand(3)).round,
+    "vv.em" => force || (i * rand(3)).round,
+    "vv.d"  => force || (i * rand(2)).round,
+    "vv.i"  => force || (i * rand(2)).round,
     # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1, t (tablet) => 1 }, f (flash) => ... }
     "md.h.d" => i * rand(12),
     "md.h.m" => i * rand(5),
@@ -655,7 +733,7 @@ def random_video_stats_inc(i, force = nil)
     "bp.fir-osx" => i * rand(8),
     "bp.chr-win" => i * rand(11), # 21% in total
     "bp.chr-osx" => i * rand(10),
-    "bp.saf-win" => i * rand(1), # 6% in total
+    "bp.saf-win" => i * rand(1).round, # 6% in total
     "bp.saf-osx" => i * rand(5),
     "bp.saf-ipo" => i * rand(1),
     "bp.saf-iph" => i * rand(2),

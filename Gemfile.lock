@@ -1,21 +1,20 @@
 GIT
-  remote: git://github.com/amatsuda/kaminari.git
-  revision: aa99b78c1bdd71c637da10ffba53c0d9affbb8a0
-  specs:
-    kaminari (0.12.4)
-      actionpack (>= 3.0.0)
-      activesupport (>= 3.0.0)
-      railties (>= 3.0.0)
-
-GIT
   remote: git://github.com/ctran/annotate_models.git
-  revision: 672a22abf6165d6cc1dfb4d29dff5839f88af769
+  revision: 032565653b98e0790ddd8a070579566eb60a850c
   specs:
     annotate (2.4.1.beta1)
 
 GIT
+  remote: git://github.com/guard/guard.git
+  revision: 0bcdd48e4683652b71c63fc568000564e3c27e09
+  specs:
+    guard (0.10.0)
+      ffi (>= 0.5.0)
+      thor (~> 0.14.6)
+
+GIT
   remote: git://github.com/jilion/useragent.git
-  revision: bc6ab85b0d7afc76504bf6fa3763130dad9d3e7c
+  revision: 156f42d4d4888251f6a4220e4d73e59766baf52a
   specs:
     useragent (0.2.3)
 
@@ -64,20 +63,15 @@ GIT
       rdoc (~> 3.8)
       sax-machine (~> 0.1.0)
 
-PATH
-  remote: vendor/sv_stat_request_parser
-  specs:
-    stat_request_parser (0.0.1)
-      activesupport (>= 3.0.0)
-
 GEM
   remote: http://rubygems.org/
+  remote: https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/
   specs:
-    PageRankr (3.0.2)
+    PageRankr (3.1.0)
       json (>= 1.4.6)
       jsonpath (>= 0.4.2)
       nokogiri (>= 1.4.1)
-      public_suffix_service (>= 0.9.0)
+      public_suffix (>= 0.9.0)
       typhoeus (>= 0.2.1)
     RedCloth (4.2.9)
     actionmailer (3.1.3)
@@ -121,7 +115,7 @@ GEM
       builder
     arel (2.2.1)
     array_stats (0.6.0)
-    asset_sync (0.2.3)
+    asset_sync (0.2.5)
       activemodel
       fog
     aws (2.5.6)
@@ -129,7 +123,7 @@ GEM
       uuidtools
       xml-simple
     bcrypt-ruby (3.0.1)
-    braintree (2.13.1)
+    braintree (2.13.2)
       builder (>= 2.0.0)
     bson (1.5.2)
     bson_ext (1.5.2)
@@ -147,9 +141,9 @@ GEM
     carrierwave-mongoid (0.1.3)
       carrierwave (>= 0.5.6)
       mongoid (~> 2.1)
-    childprocess (0.2.3)
+    childprocess (0.2.9)
       ffi (~> 1.0.6)
-    coderay (1.0.4)
+    coderay (1.0.5)
     coffee-filter (0.1.1)
       coffee-script (>= 2.2.0)
       haml (>= 3.0.18)
@@ -159,7 +153,7 @@ GEM
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.1.3)
+    coffee-script-source (1.2.0)
     configuration (1.3.1)
     countries (0.7.0)
       currencies (= 0.4.0)
@@ -169,7 +163,7 @@ GEM
       hashie (~> 1.0)
       httparty (~> 0.8)
       json
-    curb (0.7.16)
+    curb (0.7.17)
     currencies (0.4.0)
     daemons (1.1.5)
     dalli (1.1.4)
@@ -181,9 +175,9 @@ GEM
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.0.3)
       warden (~> 1.1)
-    devise_invitable (0.6.0)
+    devise_invitable (0.6.1)
       devise (>= 1.4.6, < 1.6)
-      rails (>= 3.0.0, < 3.2)
+      rails (~> 3.1.0)
     diff-lcs (1.1.3)
     eco (1.0.0)
       coffee-script
@@ -195,14 +189,14 @@ GEM
       addressable (>= 2.0.0)
       escape_utils
       eventmachine (>= 0.12.9)
-    em-websocket (0.3.5)
+    em-websocket (0.3.6)
       addressable (>= 2.1.1)
       eventmachine (>= 0.12.9)
     erubis (2.7.0)
     escape_utils (0.2.4)
     eventmachine (0.12.10)
-    excon (0.9.2)
-    execjs (1.2.12)
+    excon (0.9.4)
+    execjs (1.2.13)
       multi_json (~> 1.0)
     factory_girl (2.3.2)
       activesupport
@@ -215,7 +209,7 @@ GEM
       rack (>= 1.1.0, < 2)
     faraday_middleware (0.7.0)
       faraday (~> 0.7.3)
-    ffaker (1.10.1)
+    ffaker (1.12.1)
     ffi (1.0.11)
     fog (1.1.2)
       builder
@@ -227,7 +221,7 @@ GEM
       net-ssh (>= 2.1.3)
       nokogiri (~> 1.5.0)
       ruby-hmac
-    foreman (0.27.0)
+    foreman (0.32.0)
       term-ansicolor (~> 1.0.5)
       thor (>= 0.13.6)
     formatador (0.2.1)
@@ -235,46 +229,33 @@ GEM
       rspec (~> 2.0)
       rspec-instafail (~> 0.1.8)
       ruby-progressbar (~> 0.0.10)
-    growl_notify (0.0.3)
-      rb-appscript
-    guard (0.8.8)
-      thor (~> 0.14.6)
-    guard-bundler (0.1.3)
-      bundler (>= 1.0.0)
-      guard (>= 0.2.2)
-    guard-coffeescript (0.5.4)
-      coffee-script (>= 2.2.0)
-      guard (>= 0.8.3)
-    guard-jasmine (0.9.0)
+    guard-jasmine (0.9.5)
+      childprocess (~> 0.2.8)
       guard (>= 0.8.3)
       multi_json (~> 1.0.3)
-      rack (~> 1.3.5)
-      thor (~> 0.14.6)
-      version (~> 1.0.0)
-    guard-livereload (0.3.1)
+      thor
+    guard-livereload (0.4.0)
       em-websocket (>= 0.2.0)
-      guard (>= 0.4.0)
+      guard (>= 0.10.0)
       multi_json (~> 1.0.3)
     guard-pow (0.2.1)
       guard (>= 0.3.0)
-    guard-rspec (0.5.9)
-      guard (>= 0.8.4)
-    guard-spork (0.4.1)
-      guard (>= 0.8.4)
+    guard-rspec (0.6.0)
+      guard (>= 0.10.0)
+    guard-spork (0.5.1)
+      guard (>= 0.10.0)
       spork (>= 0.8.4)
-    guard-yard (1.0.2)
-      guard (>= 0.2.2)
-      yard (>= 0.7.0)
     haml (3.1.4)
     haml-coderay (0.1.2)
       coderay
       haml
-    haml_coffee_assets (0.5.3)
-      execjs (~> 1.2.9)
-      rails (>= 3.1)
+    haml_coffee_assets (0.6.0)
+      execjs (>= 1.2.9)
+      sprockets (>= 2.0.3)
+      tilt (>= 1.3.3)
     has_scope (0.5.1)
     hashie (1.1.0)
-    heroku (2.16.3)
+    heroku (2.18.1)
       launchy (>= 0.3.2)
       rest-client (~> 1.6.1)
       rubyzip
@@ -290,9 +271,13 @@ GEM
     jquery-rails (1.0.19)
       railties (~> 3.0)
       thor (~> 0.14)
-    json (1.6.3)
+    json (1.6.4)
     jsonpath (0.4.2)
       multi_json
+    kaminari (0.13.0)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
+      railties (>= 3.0.0)
     launchy (2.0.5)
       addressable (~> 2.2.6)
     libxml-ruby (2.2.2)
@@ -304,13 +289,14 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    method_source (0.7.0)
     mime-types (1.17.2)
     money (4.0.1)
       i18n (~> 0.4)
       json
     mongo (1.5.2)
       bson (= 1.5.2)
-    mongoid (2.3.4)
+    mongoid (2.4.0)
       activemodel (~> 3.1)
       mongo (~> 1.3)
       tzinfo (~> 0.3.22)
@@ -319,7 +305,7 @@ GEM
     multipart-post (1.1.4)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
-    net-ssh (2.2.1)
+    net-ssh (2.3.0)
     newrelic_rpm (3.3.1)
     nokogiri (1.5.0)
     oauth (0.4.5)
@@ -328,13 +314,13 @@ GEM
       oauth (~> 0.4.4)
       oauth2
       rack
-    oauth2 (0.5.1)
-      faraday (~> 0.7.4)
-      multi_json (~> 1.0.3)
-    orm_adapter (0.0.5)
+    oauth2 (0.5.2)
+      faraday (~> 0.7)
+      multi_json (~> 1.0)
+    orm_adapter (0.0.6)
     paper_trail (2.4.1)
       rails (~> 3)
-    pg (0.11.0)
+    pg (0.12.2)
     polyamorous (0.5.0)
       activerecord (~> 3.0)
     polyglot (0.3.3)
@@ -343,12 +329,17 @@ GEM
     prototype-rails (3.1.0)
       rails (~> 3.1)
     prowl (0.1.3)
-    public_suffix_service (0.9.0)
+    pry (0.9.6)
+      coderay (>= 0.9.8)
+      method_source (>= 0.6.5)
+      ruby_parser (>= 2.0.5)
+      slop (~> 2.1.0)
+    public_suffix (1.0.0)
     pusher (0.8.5)
       multi_json (~> 1.0)
       ruby-hmac (~> 0.4.0)
       signature (~> 0.1.2)
-    rack (1.3.5)
+    rack (1.3.6)
     rack-cache (1.1)
       rack (>= 0.4)
     rack-google-analytics (0.9.2)
@@ -356,6 +347,7 @@ GEM
       rack
     rack-mount (0.8.3)
       rack (>= 1.0.0)
+    rack-no-www (0.0.2)
     rack-ssl (1.3.2)
       rack
     rack-ssl-enforcer (0.2.4)
@@ -383,8 +375,8 @@ GEM
       rdoc (~> 3.4)
       thor (~> 0.14.6)
     rake (0.9.2.2)
-    rb-appscript (0.6.1)
-    rb-fsevent (0.9.0.pre3)
+    rb-fsevent (0.9.0.pre5)
+    rb-readline (0.4.2)
     rdoc (3.12)
       json (~> 1.4)
     request-log-analyzer (1.11.1)
@@ -392,22 +384,25 @@ GEM
     responders (0.6.4)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    rspec (2.7.0)
-      rspec-core (~> 2.7.0)
-      rspec-expectations (~> 2.7.0)
-      rspec-mocks (~> 2.7.0)
-    rspec-core (2.7.1)
-    rspec-expectations (2.7.0)
+    rspec (2.8.0)
+      rspec-core (~> 2.8.0)
+      rspec-expectations (~> 2.8.0)
+      rspec-mocks (~> 2.8.0)
+    rspec-core (2.8.0)
+    rspec-expectations (2.8.0)
       diff-lcs (~> 1.1.2)
     rspec-instafail (0.1.9)
-    rspec-mocks (2.7.0)
-    rspec-rails (2.7.0)
-      actionpack (~> 3.0)
-      activesupport (~> 3.0)
-      railties (~> 3.0)
-      rspec (~> 2.7.0)
+    rspec-mocks (2.8.0)
+    rspec-rails (2.8.1)
+      actionpack (>= 3.0)
+      activesupport (>= 3.0)
+      railties (>= 3.0)
+      rspec (~> 2.8.0)
     ruby-hmac (0.4.0)
     ruby-progressbar (0.0.10)
+    ruby_gntp (0.3.4)
+    ruby_parser (2.3.1)
+      sexp_processor (~> 3.0)
     rubyzip (0.9.5)
     sass (3.1.12)
     sass-rails (3.1.5)
@@ -417,13 +412,14 @@ GEM
       tilt (~> 1.3.2)
     sax-machine (0.1.0)
       nokogiri (> 0.0.0)
-    selenium-webdriver (2.15.0)
-      childprocess (>= 0.2.1)
+    selenium-webdriver (2.16.0)
+      childprocess (>= 0.2.5)
       ffi (~> 1.0.9)
       multi_json (~> 1.0.4)
       rubyzip
     sequel (3.20.0)
     settingslogic (2.0.6)
+    sexp_processor (3.0.10)
     shoulda-matchers (1.0.0)
     signature (0.1.2)
       ruby-hmac
@@ -431,6 +427,7 @@ GEM
     simple_oauth (0.1.5)
     sinatra (1.0)
       rack (>= 1.0)
+    slop (2.1.0)
     snail (0.5.7)
     spork (0.9.0.rc9)
     sprockets (2.0.3)
@@ -444,7 +441,9 @@ GEM
       activerecord (~> 3.0)
       activesupport (~> 3.0)
       polyamorous (~> 0.5.0)
-    state_machine (1.1.0)
+    stat_request_parser (1.0.0)
+      activesupport (>= 3.0.0)
+    state_machine (1.1.1)
     taps (0.3.23)
       rack (>= 1.0.1)
       rest-client (>= 1.4.0, < 1.7.0)
@@ -473,13 +472,12 @@ GEM
       mime-types
       mime-types
     tzinfo (0.3.31)
-    uglifier (1.2.0)
+    uglifier (1.2.1)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
     uniquify (0.1.0)
     uuidtools (2.1.2)
     vcr (1.10.3)
-    version (1.0.0)
     warden (1.1.0)
       rack (>= 1.0)
     webmock (1.6.4)
@@ -489,14 +487,13 @@ GEM
     xml-simple (1.0.16)
     xpath (0.1.4)
       nokogiri (~> 1.3)
-    yard (0.7.4)
     zip (2.0.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  PageRankr (~> 3.0.1)
+  PageRankr (~> 3.1.0)
   RedCloth (~> 4.2.9)
   activemerchant!
   acts_as_api (~> 0.3.10)
@@ -506,8 +503,8 @@ DEPENDENCIES
   array_stats (~> 0.6.0)
   asset_sync
   aws (~> 2.5.6)
-  bson (~> 1.5.1)
-  bson_ext (~> 1.5.1)
+  bson (~> 1.5.2)
+  bson_ext (~> 1.5.2)
   capybara
   carrierwave (~> 0.5.7)
   carrierwave-mongoid (~> 0.1.1)
@@ -522,7 +519,7 @@ DEPENDENCIES
   database_cleaner
   delayed_job (~> 2.1.4)
   devise (~> 1.5.1)
-  devise_invitable (~> 0.6.0)
+  devise_invitable (~> 0.6.1)
   eco
   em-http-request
   execjs
@@ -532,59 +529,59 @@ DEPENDENCIES
   fog (~> 1.1.2)
   foreman
   fuubar
-  growl_notify
-  guard (~> 0.8.3)
-  guard-bundler
-  guard-coffeescript
+  guard!
   guard-jasmine
   guard-livereload
   guard-pow
   guard-rspec
   guard-spork
-  guard-yard
   haml (~> 3.1.3)
   haml-coderay (~> 0.1.2)
   haml_coffee_assets
   has_scope (~> 0.5.1)
   heroku
   jasminerice
-  jquery-rails
-  kaminari!
+  jquery-rails (~> 1.0.19)
+  kaminari (~> 0.13.0)
   letter_opener!
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
   log_buddy
-  mongo (~> 1.5.1)
-  mongoid (~> 2.3.3)
+  mongo (~> 1.5.2)
+  mongoid (~> 2.4.0)
   newrelic_rpm
   oauth (~> 0.4.5)
   oauth-plugin (~> 0.4.0.pre7)
   paper_trail (~> 2.4.0)
-  pg (~> 0.11.0)
+  pg (~> 0.12.1)
   powder
   prototype-rails
   prowl (~> 0.1.3)
-  public_suffix_service (~> 0.9.0)
+  pry
+  public_suffix (~> 1.0.0)
   pusher (~> 0.8.3)
   rack-google-analytics (~> 0.9.2)
   rack-livereload
+  rack-no-www
   rack-ssl-enforcer
   rails (= 3.1.3)
   rails-backbone
   rails-dev-tweaks (~> 0.5.0)
-  rb-fsevent (= 0.9.0.pre3)
+  rb-fsevent (= 0.9.0.pre5)
+  rb-readline
   request-log-analyzer (~> 1.11.1)
   rescue_me (~> 0.1.0)
   responders (~> 0.6.4)
   rspec-rails
+  ruby_gntp
   sass-rails (~> 3.1.5)
-  settingslogic (~> 2.0.6)
+  settingslogic (= 2.0.6)
   shoulda-matchers
   silent-postgres
   snail (~> 0.5.7)
   spork (~> 0.9.0.rc9)
   squeel (~> 0.9.2)
-  stat_request_parser!
+  stat_request_parser (~> 1.0.0)
   state_machine (~> 1.1.0)
   taps
   thin

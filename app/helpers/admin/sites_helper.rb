@@ -2,9 +2,7 @@ module Admin::SitesHelper
 
   def admin_sites_page_title(sites)
     pluralized_sites = pluralize(sites.total_count, 'site')
-    state = if params[:with_state]
-      " #{params[:with_state]}"
-    elsif params[:with_wildcard]
+    state = if params[:with_wildcard]
       " with wildcard"
     elsif params[:with_path]
       " with path"
@@ -23,16 +21,12 @@ module Admin::SitesHelper
       " for #{user.name_or_email}" if user
     elsif params[:search].present?
       " matching '#{params[:search]}'"
-    elsif params[:billable]
-      " billable"
-    elsif params[:not_billable]
-      " not billable"
-    elsif params[:free]
-      " in free plan"
-    elsif params[:in_paid_plan]
-      " in paid plan"
-    elsif params[:sponsored]
-      " sponsored"
+    elsif params[:paid_plan]
+      params[:in_trial] ? " trial" : " paying"
+    elsif params[:in_plan]
+      " in #{"trial of " if params[:in_trial]}the #{params[:in_plan].titleize} plan"
+    elsif params[:with_state]
+      " #{params[:with_state]}"
     else
       " active"
     end

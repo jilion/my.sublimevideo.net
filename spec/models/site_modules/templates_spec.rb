@@ -39,7 +39,7 @@ describe SiteModules::Templates do
     end
 
     describe "on save" do
-      before do
+      before(:each) do
         VoxcastCDN.stub(:purge)
       end
 
@@ -67,7 +67,7 @@ describe SiteModules::Templates do
         [:badged, :b, true]
       ].each do |attr, key, value|
         describe "and #{attr} setting has changed" do
-          before(:all) do
+          before(:each) do
             @site = Factory.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: false)
             @worker.work_off
           end

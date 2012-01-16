@@ -1,0 +1,152 @@
+= title("Statistics")
+
+%h2#page_title
+
+.stats
+  :coffeescript
+    $ ->
+      window.SVStats.stats = {}
+      window.SVStats.statsRouter = new SVStats.Routers.StatsRouter()
+
+      $('#chart').spin(spinOptions)
+      Backbone.history.start(pushState: true)
+
+  #chart{ style: "height:400px" }
+
+  .spacer
+
+  #selectors
+    %table
+      %tr
+        %td#users{ style: 'background: rgba(0,0,255,0.5)' }
+          %ul
+            %li
+              %h3
+                %a.selector{ href: "#", data: { value: 'users.all' } } Users
+              %ul
+                %li
+                  %a.selector.active{ href: "#", data: { value: 'users.active' }, title: "Beta users, users with no paying sites and users with at least 1 paying sites" } Active
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'users.be' }, title: "Beta users" } Beta
+                    %li
+                      %a.selector{ href: "#", data: { value: 'users.fr' }, title: "Users with no paying sites" } Free
+                    %li
+                      %a.selector{ href: "#", data: { value: 'users.pa' }, title: "Users with at least 1 paying sites" } Paying
+                %li
+                  %a.selector{ href: "#", data: { value: 'users.passive' } } Passive
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'users.su' }, title: "Users with too many payment issues" } Suspended
+                    %li
+                      %a.selector{ href: "#", data: { value: 'users.ar' }, title: "Users who chose to delete their account OR who never accept their beta invitation" } Archived
+
+        %td#sites{ style: 'background: rgba(255,0,0,0.5)' }
+          %ul
+            %li
+              %h3
+                %a.selector{ href: "#", data: { value: 'sites.all' } } Sites
+              %ul
+                %li
+                  %a.selector.active{ href: "#", data: { value: 'sites.active' }, title: "Sites in beta, dev, free or in any paying plan (including in trial)" } Active
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.fr.beta' }, title: "Sites in the beta plan" } Beta
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.fr.dev' }, title: "Sites in the dev plan" } Dev
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.fr.free' }, title: "Sites in the free plan" } Free
+
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.tr' }, title: "Sites in trial" } Trial
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.tr.plus' }, title: "Sites in trial of the Plus plan" } Plus
+                          %ul
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.tr.plus.m' } } Monthly
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.tr.plus.y' } } Yearly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.tr.premium' }, title: "Sites in trial of the Premium plan" } Premium
+                          %ul
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.tr.premium.m' } } Monthly
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.tr.premium.y' } } Yearly
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.pa' } } Paying
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.pa.plus' }, title: "Sites in the Plus plan" } Plus
+                          %ul
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.pa.plus.m' } } Monthly
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.pa.plus.y' } } Yearly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sites.pa.premium' }, title: "Sites in the Premium plan" } Premium
+                          %ul
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.pa.premium.m' } } Monthly
+                            %li
+                              %a.selector{ href: "#", data: { value: 'sites.pa.premium.y' } } Yearly
+                %li
+                  %a.selector{ href: "#", data: { value: 'sites.passive' } } Passive
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.su' }, title: "Sites for which the user is suspended" } Suspended
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sites.ar' }, title: "Sites deleted by their owner" } Archived
+
+        %td#site_stats{ style: 'background: rgba(0,255,0,0.5)' }
+          %ul
+            %li
+              %h3
+                %a.selector{ href: "#", data: { value: 'site_stats.pv.all' } } Page visits
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.pv.billable' } } Billable
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.pv.m' } } Main
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.pv.e' } } Extra
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.pv.em' }, title: "Extra & Main embed only" } Embed
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.pv.d' } } Dev
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.pv.i' } } Invalid
+            %li
+              %h3
+                %a.selector{ href: "#", data: { value: 'site_stats.vv.all' } } Video plays
+              %ul
+                %li
+                  %a.selector.active{ href: "#", data: { value: 'site_stats.vv.billable' } } Billable
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.vv.m' } } Main
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.vv.e' } } Extra
+                    %li
+                      %a.selector{ href: "#", data: { value: 'site_stats.vv.em' }, title: "Extra & Main embed only" } Embed
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.vv.d' } } Dev
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.vv.i' } } Invalid
+            %li
+              %h3 Player Mode & Device
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.md.html5_proportion' } } HTML5 %
+                %li
+                  %a.selector{ href: "#", data: { value: 'site_stats.md.mobile_proportion' }, title: "Mobile (tablet included) %" } Mobile %
+
+        %td#tweets{ style: 'background: rgba(255,125,0,0.5)' }
+          %ul
+            %li
+              %h3 Tweets
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'tweets.sublimevideo' } } SublimeVideo

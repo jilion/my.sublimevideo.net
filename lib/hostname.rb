@@ -71,7 +71,7 @@ module Hostname
       hostname.downcase!
       hostname.gsub!(%r(^.+://), '')
       begin
-        pss = PublicSuffixService.parse(hostname)
+        pss = PublicSuffix.parse(hostname)
         if pss.trd == 'www'
           hostname = [pss.sld, pss.tld].compact.join('.')
         else
@@ -88,14 +88,14 @@ module Hostname
     
     def valid_one?(hostname)
       return true if ["blogspot.com", "appspot.com", "operaunite.com"].include?(hostname)
-      ssp = PublicSuffixService.parse(hostname)
+      ssp = PublicSuffix.parse(hostname)
       ssp.sld.present? && !PSEUDO_TLD.include?(ssp.tld)
     rescue
       ipv4?(hostname) && !ipv4_local?(hostname)
     end
     
     def dev_valid_one?(hostname)
-      ssp = PublicSuffixService.parse(hostname)
+      ssp = PublicSuffix.parse(hostname)
       PSEUDO_TLD.include?(ssp.tld)
     rescue
       !ipv4?(hostname) || ipv4_local?(hostname)

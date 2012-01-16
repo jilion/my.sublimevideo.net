@@ -1,0 +1,60 @@
+<%= title_and_content_header("# of Videos Served per Month") %>
+<%
+videos_served = User.beta.select("company_videos_served, COUNT(*) as total").group(:company_videos_served).order("total DESC").map! { |u| [u.company_videos_served || "Not Available", u.total.to_i] }
+
+videos_served_with_wrong_label = videos_served.detect { |e| e[0] == "Nr. of videos served" }
+videos_served_not_a_company    = videos_served.detect { |e| e[0] == "Not Available" }
+if videos_served_with_wrong_label
+  videos_served_not_a_company[1] += videos_served_with_wrong_label[1]
+  videos_served.delete(videos_served_with_wrong_label)
+end
+%>
+<script type = "text/javascript" charset="utf-8">
+$(document).ready(function() {
+  new Highcharts.Chart({
+    chart: {
+      renderTo: 'videos_served',
+      backgroundColor: '#EEEEEE',
+      animation: false
+    },
+    title: {
+      text: 'Number of videos served per month'
+    },
+    tooltip: {
+      borderWidth: 0,
+      backgroundColor: "rgba(0, 0, 0, .70)",
+      style: {
+      	color: '#FFFFFF',
+      	padding: '5px'
+      },
+      formatter: function() {
+        return "<strong>" + this.point.name + "</strong>: " + Highcharts.numberFormat(this.y, 0) + " users";
+      }
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          distance: 30,
+          color: 'black',
+          formatter: function() {
+            return "<strong>" + this.point.name + "</strong>: " + Highcharts.numberFormat(this.percentage, 1) + " %";
+          }
+        }
+      }
+    },
+    series: [{
+      type: 'pie',
+      data: <%= raw videos_served.to_json %>
+    }],
+    credits: {
+      enabled: true,
+      text: "Generation time: <%= Time.now.to_s(format: :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
+      href: "http://sublimevideo.net"
+    }
+  });
+});
+</script>
+<div id="videos_served" style="width:100%"></div>
