@@ -3,8 +3,9 @@
 = content_for :title, "Demo"
 
 = content_for :header do
-  %h2= "Player Demo"
-  %p.sub= raw "Here are a few examples of what you can achieve with SublimeVideo. Read our #{link_to "documentation", root_url(subdomain: 'docs')} to see how to implement these functionalities on your site."
+  %h2= "Demo"
+  -# %p.sub= raw "Here are a few examples of what you can achieve with SublimeVideo. Read our #{link_to "documentation", root_url(subdomain: 'docs')} to see how to implement these functionalities on your site."
+  %p.sub= raw "Here are a few examples of what you can achieve with SublimeVideo. You can also check out a live demo of our #{ link_to "Universal, Real-Time Statistics", site_stats_url('demo', subdomain: 'my')}."
 
 %section#single
   .video_wrap
@@ -105,6 +106,9 @@
   .spacer
   %h3.title= "Video Playlist"
   %p.desc= raw "SublimeVideo Player offers a simple yet powerful #{link_to("JavaScript API", docs_page_url('javascript-api/usage', subdomain: 'docs'))} that allows all kinds of different integrations in your page. Here are 4 different videos with clickable thumbnails: when a video finishes playing, the next one in the playlist is begins automatically."
+.big_break
+%section#stats_demo
+  %p.desc= raw "View real-time statistics of video usage on your site, including video views, browser and device statistics, HTML5 or Flash usage and more."
 .big_break
 %section#features
   %h3.title= "UI features"
