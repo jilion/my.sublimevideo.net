@@ -20,7 +20,7 @@ describe Stats::SiteUsagesStat do
 
   end
 
-  context "with a bunch of different site_usage", :focus do
+  context "with a bunch of different site_usage" do
     before(:each) do
       site = Factory.create(:site)
       Factory.create(:site_usage, site_id: site.id, day: 5.days.ago.midnight, loader_hits: 2)
