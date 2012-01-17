@@ -11,6 +11,8 @@ class Log
   field :parsed_at,  :type => DateTime
 
   index :name, :unique => true
+  index [[:name, Mongo::DESCENDING]]
+  index :_type
   index :started_at
   index :ended_at
 
