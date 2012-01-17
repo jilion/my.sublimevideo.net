@@ -22,6 +22,7 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
       text
     else
       switch selected[0]
+        when 'sp' then 'Sponsored sites'
         when 'tr' then 'Sites in trial'
         when 'pa' then 'Paying sites'
         when 'su' then 'Suspended sites'
