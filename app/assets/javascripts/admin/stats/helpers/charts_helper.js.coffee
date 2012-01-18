@@ -165,6 +165,7 @@ class SVStats.Helpers.ChartsHelper
     if _.include(@usedYAxis, 0)
       yAxis.push
         lineWidth: 1
+        min: 0
         gridLineColor: '#5d7493'
         allowDecimals: false
         startOnTick: true
@@ -184,6 +185,7 @@ class SVStats.Helpers.ChartsHelper
     if _.include(@usedYAxis, 1)
       yAxis.push
         lineWidth: 1
+        min: 0
         gridLineColor: '#5d7493'
         allowDecimals: false
         startOnTick: true
