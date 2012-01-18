@@ -67,16 +67,17 @@ class SVStats.Collections.SiteStatsStats extends SVStats.Collections.Stats
       when 'vv' then 'Video plays'
       else ''
     type = switch selected[1]
-      when 'billable' then 'Billable'
-      when 'm' then 'Main'
-      when 'e' then 'Extra'
-      when 'em' then 'Embed (Main & Extra embeds only)'
-      when 'd' then 'Dev'
-      when 'i' then 'Invalid'
+      when 'billable' then 'Billable '
+      when 'm' then 'Main '
+      when 'e' then 'Extra '
+      when 'em' then 'Embed (Main & Extra embeds only) '
+      when 'd' then 'Dev '
+      when 'i' then 'Invalid '
       when 'html5_proportion' then 'HTML5'
       when 'mobile_proportion' then 'Mobile'
+      else ''
 
-    "#{type} #{top}"
+    "#{type}#{top}"
 
   customPluck: (selected) ->
     array = []
@@ -88,6 +89,7 @@ class SVStats.Collections.SiteStatsStats extends SVStats.Collections.Stats
         switch selected[0]
           when 'pv', 'vv'
             switch selected[1]
+              when 'all' then stat.customGet([selected[0], 'm']) + stat.customGet([selected[0], 'e']) + stat.customGet([selected[0], 'em']) + stat.customGet([selected[0], 'd']) + stat.customGet([selected[0], 'i'])
               when 'billable' then stat.customGet([selected[0], 'm']) + stat.customGet([selected[0], 'e']) + stat.customGet([selected[0], 'em'])
               else stat.customGet(selected)
           when 'md'
