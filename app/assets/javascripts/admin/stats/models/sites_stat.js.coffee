@@ -15,10 +15,12 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
 
   title: (selected) ->
     if selected.length > 1
-      text = "Sites with the "
+      text = "Sites "
       if selected.length == 3 # attribute is something like: ["tr", "premium", "y"]
-        text += if selected[2] == "y" then "yearly" else "monthly"
-      text += " #{selected[1]} plan"
+        text += "in trial " if selected[0] == "tr"
+        text += "with the "
+        text += if selected[2] == "y" then "yearly " else "monthly "
+      text += "#{selected[1]} plan"
       text
     else
       switch selected[0]
