@@ -45,20 +45,20 @@ class SVStats.Collections.SiteUsagesStats extends SVStats.Collections.Stats
       when 'tr' then 'Traffic (GB)'
       else ''
     type = switch selected[1]
-      when 'billable' then 'Billable'
-      when 'ns' then 'Non-SSL'
+      when 'billable' then 'Billable '
+      when 'ns' then 'Non-SSL '
       when 's'
         switch selected[0]
-          when 'lh' then 'SSL'
-          when 'tr' then 'S3'
-      when 'm' then 'Main'
-      when 'e' then 'Extra'
-      when 'd' then 'Dev'
-      when 'i' then 'Invalid'
-      when 'v' then 'Voxcast'
+          when 'lh' then 'SSL '
+          when 'tr' then 'S3 '
+      when 'm' then 'Main '
+      when 'e' then 'Extra '
+      when 'd' then 'Dev '
+      when 'i' then 'Invalid '
+      when 'v' then 'Voxcast '
       else ''
 
-    "#{type} #{top}"
+    "#{type}#{top}"
 
   customPluck: (selected) ->
     array = []
@@ -74,6 +74,7 @@ class SVStats.Collections.SiteUsagesStats extends SVStats.Collections.Stats
               else stat.customGet(selected)
           when 'ph'
             switch selected[1]
+              when 'all' then stat.customGet([selected[0], 'm']) + stat.customGet([selected[0], 'mc']) + stat.customGet([selected[0], 'e']) + stat.customGet([selected[0], 'ec']) + stat.customGet([selected[0], 'd']) + stat.customGet([selected[0], 'dc']) + stat.customGet([selected[0], 'i']) + stat.customGet([selected[0], 'ic'])
               when 'billable' then stat.customGet([selected[0], 'm']) + stat.customGet([selected[0], 'mc']) + stat.customGet([selected[0], 'e']) + stat.customGet([selected[0], 'ec'])
               else stat.customGet(selected) + stat.customGet([selected[0], "#{selected[1]}c"])
           when 'fh' then stat.get('fh')
