@@ -5,7 +5,7 @@
 = content_for :header do
   %h2= "Demo"
   -# %p.sub= raw "Here are a few examples of what you can achieve with SublimeVideo. Read our #{link_to "documentation", root_url(subdomain: 'docs')} to see how to implement these functionalities on your site."
-  %p.sub= raw "Here are a few examples of what you can achieve with SublimeVideo. You can also check out a live demo of our #{ link_to "Universal, Real-Time Statistics", site_stats_url('demo', subdomain: 'my')}."
+  %p.sub= raw "Here are a few examples of what you can achieve with SublimeVideo. You can also check out a live demo of our #{ link_to "Universal Real-Time Statistics", site_stats_url('demo', subdomain: 'my')}."
 
 %section#single
   .video_wrap
@@ -108,7 +108,17 @@
   %p.desc= raw "SublimeVideo Player offers a simple yet powerful #{link_to("JavaScript API", docs_page_url('javascript-api/usage', subdomain: 'docs'))} that allows all kinds of different integrations in your page. Here are 4 different videos with clickable thumbnails: when a video finishes playing, the next one in the playlist is begins automatically."
 .big_break
 %section#stats_demo
-  %p.desc= raw "View real-time statistics of video usage on your site, including video views, browser and device statistics, HTML5 or Flash usage and more."
+  .left
+    = link_to (image_tag "www/demo/stats_demo_screenshot.png", alt: "Universal Real-Time Statistics Screenshot Icon"), site_stats_url('demo', subdomain: 'my')
+    = link_to site_stats_url('demo', subdomain: 'my'), class: "button" do
+      %span= "Live demo"
+  .right
+    %a.sublime.watch{ href: "" }
+      = image_tag "www/demo/stats_video_thumb.png", alt: "Universal Real-Time Statistics Demo Video"
+      %span.play
+    %h5= "Watch the video overview"
+  %h3.title= "Universal Real-Time Statistics"
+  %p.desc= raw "Check out the live demo of our Real-Time Statistics dashboard to see how you can get access to real-time video usage statistics, including video plays, browser and device statistics, HTML5 or Flash usage and more."
 .big_break
 %section#features
   %h3.title= "UI features"
