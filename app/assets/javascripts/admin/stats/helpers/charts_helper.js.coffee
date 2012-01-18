@@ -17,6 +17,7 @@ class SVStats.Helpers.ChartsHelper
         text: null
 
       rangeSelector:
+        buttonSpacing: 3
         buttonTheme:
           fill: 'none'
           style:
@@ -24,8 +25,7 @@ class SVStats.Helpers.ChartsHelper
             fontWeight: 'bold'
           states:
             select:
-              style:
-                color: 'black'
+              fill: 'none'
         inputStyle:
           color: '#039'
           fontWeight: 'bold'
