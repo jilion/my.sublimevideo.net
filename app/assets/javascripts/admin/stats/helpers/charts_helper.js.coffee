@@ -149,9 +149,9 @@ class SVStats.Helpers.ChartsHelper
             data: collection.customPluck(selected)
             type: collection.chartType(selected)
             yAxis: _.indexOf(_.sortBy(@usedYAxis, (x) -> x), collection.yAxis(selected))
-            fillColor: collection.fillColor(selected)
-            color: collection.color(selected)
-            lineColor: collection.lineColor(selected)
+            # fillColor: collection.fillColor(selected)
+            # color: collection.color(selected)
+            # lineColor: collection.lineColor(selected)
             shadow: collection.lineColor(selected)
             pointStart: collection.startTime()
             pointInterval: 3600 * 24 * 1000
