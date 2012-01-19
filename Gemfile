@@ -111,6 +111,7 @@ group :assets do
 end
 
 group :production, :staging do
+  gem 'rpm_contrib'
   gem 'newrelic_rpm'
   gem 'rack-ssl-enforcer'
 end
