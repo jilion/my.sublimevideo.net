@@ -18,11 +18,11 @@
   #selectors
     %table
       %tr
-        %td#users{ style: 'background: rgba(0,0,255,0.5)' }
+        %td.users
           %h2 Users
           %ul
             %li
-              %a.selector.active{ href: "#", data: { value: 'users.active' }, title: "Beta users, users with no paying sites and users with at least 1 paying sites" } Active
+              %a.title.selector.active{ href: "#", data: { value: 'users.active' }, title: "Beta users, users with no paying sites and users with at least 1 paying sites" } Active
               %ul
                 %li
                   %a.selector{ href: "#", data: { value: 'users.be' }, title: "Beta users" } Beta
@@ -31,18 +31,18 @@
                 %li
                   %a.selector{ href: "#", data: { value: 'users.pa' }, title: "Users with at least 1 paying sites" } Paying
             %li
-              %a.selector{ href: "#", data: { value: 'users.passive' } } Passive
+              %a.title.selector{ href: "#", data: { value: 'users.passive' } } Passive
               %ul
                 %li
                   %a.selector{ href: "#", data: { value: 'users.su' }, title: "Users with too many payment issues" } Suspended
                 %li
                   %a.selector{ href: "#", data: { value: 'users.ar' }, title: "Users who chose to delete their account OR who never accept their beta invitation" } Archived
 
-        %td#sites{ style: 'background: rgba(255,0,0,0.5)' }
+        %td.sites
           %h2 Sites
           %ul
             %li
-              %a.selector.active{ href: "#", data: { value: 'sites.active' }, title: "Sites in beta, dev, free or in any paying plan (including in trial)" } Active
+              %a.title.selector.active{ href: "#", data: { value: 'sites.active' }, title: "Sites in beta, dev, free or in any paying plan (including in trial)" } Active
               %ul
                 %li
                   %a.selector{ href: "#", data: { value: 'sites.fr.beta' }, title: "Sites in the beta plan" } Beta
@@ -88,19 +88,18 @@
                         %li
                           %a.selector{ href: "#", data: { value: 'sites.pa.premium.y' } } Yearly
             %li
-              %a.selector{ href: "#", data: { value: 'sites.passive' } } Passive
+              %a.title.selector{ href: "#", data: { value: 'sites.passive' } } Passive
               %ul
                 %li
                   %a.selector{ href: "#", data: { value: 'sites.su' }, title: "Sites for which the user is suspended" } Suspended
                 %li
                   %a.selector{ href: "#", data: { value: 'sites.ar' }, title: "Sites deleted by their owner" } Archived
 
-        %td#site_stats{ style: 'background: rgba(0,255,0,0.5)' }
+        %td.site_stats
           %h2 Site Stats (new)
           %ul
             %li
-              %h3
-                %a.selector{ href: "#", data: { value: 'site_stats.pv.all' } } Page visits
+              %a.title.selector{ href: "#", data: { value: 'site_stats.pv.all' } } Page visits
               %ul
                 %li
                   %a.selector{ href: "#", data: { value: 'site_stats.pv.billable' } } Billable
@@ -116,8 +115,7 @@
                 %li
                   %a.selector{ href: "#", data: { value: 'site_stats.pv.i' } } Invalid
             %li
-              %h3
-                %a.selector{ href: "#", data: { value: 'site_stats.vv.all' } } Video plays
+              %a.title.selector{ href: "#", data: { value: 'site_stats.vv.all' } } Video plays
               %ul
                 %li
                   %a.selector.active{ href: "#", data: { value: 'site_stats.vv.billable' } } Billable
@@ -133,27 +131,22 @@
                 %li
                   %a.selector{ href: "#", data: { value: 'site_stats.vv.i' } } Invalid
             %li
-              %h3 Player Mode & Device
-              %ul
-                %li
-                  %a.selector{ href: "#", data: { value: 'site_stats.md.html5_proportion' } } HTML5 %
-                %li
-                  %a.selector{ href: "#", data: { value: 'site_stats.md.mobile_proportion' }, title: "Mobile (tablet included) %" } Mobile %
+              %a.title.selector{ href: "#", data: { value: 'site_stats.md.html5_proportion' } } HTML5 Mode %
+            %li
+              %a.title.selector{ href: "#", data: { value: 'site_stats.md.mobile_proportion' }, title: "Mobile (tablet included) %" } Mobile %
 
-        %td#site_usages{ style: 'background: rgba(0,255,125,0.5)' }
+        %td.site_usages
           %h2 Site Usages (old)
           %ul
             %li
-              %h3
-                %a.selector{ href: "#", data: { value: 'site_usages.lh.all' } } Loader hits
+              %a.title.selector{ href: "#", data: { value: 'site_usages.lh.all' } } Loader hits
               %ul
                 %li
                   %a.selector{ href: "#", data: { value: 'site_usages.lh.ns' } } Non-SSL
                 %li
                   %a.selector{ href: "#", data: { value: 'site_usages.lh.s' } } SSL
             %li
-              %h3
-                %a.selector{ href: "#", data: { value: 'site_usages.ph.all' } } Player hits
+              %a.title.selector{ href: "#", data: { value: 'site_usages.ph.all' } } Player hits
               %ul
                 %li
                   %a.selector{ href: "#", data: { value: 'site_usages.ph.billable' } } Billable
@@ -167,21 +160,15 @@
                 %li
                   %a.selector{ href: "#", data: { value: 'site_usages.ph.i' } } Invalid
             %li
-              %h3
-                %a.selector{ href: "#", data: { value: 'site_usages.fh' } } Flash hits
+              %a.title.selector{ href: "#", data: { value: 'site_usages.fh' } } Flash hits
             %li
-              %h3
-                %a.selector{ href: "#", data: { value: 'site_usages.sr' } } S3 requests
-
+              %a.title.selector{ href: "#", data: { value: 'site_usages.sr' } } S3 requests
             %li
-              %h3 Traffic
-              %ul
-                %li
-                  %a.selector{ href: "#", data: { value: 'site_usages.tr.s' } } S3 (GB)
-                %li
-                  %a.selector{ href: "#", data: { value: 'site_usages.tr.v' } } Voxcast (GB)
+              %a.title.selector{ href: "#", data: { value: 'site_usages.tr.s' } } Traffic S3 (GB)
+            %li
+              %a.title.selector{ href: "#", data: { value: 'site_usages.tr.v' } } Traffic Voxcast (GB)
 
-        %td#tweets{ style: 'background: rgba(255,125,0,0.5)' }
+        %td.tweets
           %h2 Tweets
           %ul
             %li
