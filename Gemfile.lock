@@ -198,10 +198,10 @@ GEM
     excon (0.9.5)
     execjs (1.2.13)
       multi_json (~> 1.0)
-    factory_girl (2.4.2)
+    factory_girl (2.3.2)
       activesupport
-    factory_girl_rails (1.5.0)
-      factory_girl (~> 2.4.0)
+    factory_girl_rails (1.4.0)
+      factory_girl (~> 2.3.0)
       railties (>= 3.0.0)
     faraday (0.7.5)
       addressable (~> 2.2.6)
@@ -526,7 +526,7 @@ DEPENDENCIES
   eco
   em-http-request
   execjs
-  factory_girl_rails
+  factory_girl_rails (~> 1.4.0)
   feedzirra!
   ffaker
   fog (~> 1.1.2)
