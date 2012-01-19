@@ -12,7 +12,6 @@ module Stats
     field :bp, type: Hash, default: {} # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
 
     index :d
-    index :created_at
 
     # ==========
     # = Scopes =

@@ -18,7 +18,6 @@ module Stats
     field :ar, type: Integer  # archived
 
     index :d
-    index :created_at
 
     # ==========
     # = Scopes =

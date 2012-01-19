@@ -16,6 +16,8 @@ class Tweet
   field :retweets_count,    type: Integer, default: 0 # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
   field :favorited,         type: Boolean, default: false # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
 
+  index :tweet_id
+  index :favorited
   index :tweeted_at
   index :keywords
 
