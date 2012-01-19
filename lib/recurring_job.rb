@@ -82,7 +82,7 @@ module RecurringJob
   private
 
     def any_job_not_delayed?(time = 5)
-      if time = 0
+      if time == 0
         true
       else
         if not_delayed.any?
