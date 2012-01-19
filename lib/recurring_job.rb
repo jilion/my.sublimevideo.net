@@ -70,11 +70,8 @@ module RecurringJob
         Notify.send("WARNING!!! There is more than #{max_jobs_allowed} delayed jobs, please investigate quickly!")
       end
       # check if recurring jobs are all delayed
-      if not_delayed.any?
-        sleep 20
-        if not_delayed.any?
-          Notify.send("WARNING!!! The following jobs are not delayed: #{not_delayed.join(", ")}; please investigate quickly!")
-        end
+      if any_job_not_delayed?
+        Notify.send("WARNING!!! The following jobs are not delayed: #{not_delayed.join(", ")}; please investigate quickly!")
       end
     end
 
@@ -83,6 +80,19 @@ module RecurringJob
     end
 
   private
+
+    def any_job_not_delayed?(time = 5)
+      if time = 0
+        true
+      else
+        if not_delayed.any?
+          sleep time
+          any_job_not_delayed?(time - 1)
+        else
+          false
+        end
+      end
+    end
 
     def not_delayed
       NAMES.reject { |name| Delayed::Job.already_delayed?(name) }
