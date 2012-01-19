@@ -534,6 +534,7 @@ def create_stats(site_token = nil)
     end
 
     # Days
+    puts "Generating 95 days of stats for #{site.hostname}"
     95.times.each do |i|
       time = i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
       Stat::Site.collection.update(
@@ -545,7 +546,9 @@ def create_stats(site_token = nil)
         )
       end
     end
+
     # Hours
+    puts "Generating 25 hours of stats for #{site.hostname}"
     25.times.each do |i|
       time = i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time
       Stat::Site.collection.update(
@@ -557,7 +560,9 @@ def create_stats(site_token = nil)
         )
       end
     end
+
     # Minutes
+    puts "Generating 60 minutes of stats for #{site.hostname}"
     60.times.each do |i|
       time = i.minutes.ago.change(sec: 0, usec: 0).to_time
       Stat::Site.collection.update(
@@ -569,7 +574,9 @@ def create_stats(site_token = nil)
         )
       end
     end
-    # seconds
+
+    # Seconds
+    puts "Generating 60 seconds of stats for #{site.hostname}"
     60.times.each do |i|
       time = i.seconds.ago.change(usec: 0).to_time
       Stat::Site.collection.update(

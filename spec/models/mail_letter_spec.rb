@@ -5,7 +5,7 @@ describe MailLetter do
   describe "Class Methods" do
 
     describe "#deliver_and_log" do
-      before(:all) do
+      before(:each) do
         @user          = Factory.create(:user, created_at: Time.utc(2011,1,1))
         @admin         = Factory.create(:admin)
         @mail_template = Factory.create(:mail_template)
@@ -34,10 +34,10 @@ describe MailLetter do
 
       context "with multiple users to send emails to" do
         describe "with the 'dev' filter" do
-          before(:all) do
+          before(:each) do
             @mail_letter = MailLetter.new(@attributes.merge(criteria: 'dev'))
+            User.stub!(:where).with(email: ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"]).and_return([@user])
           end
-          before(:each) { User.stub!(:where).with(email: ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"]).and_return([@user]) }
           subject { @mail_letter.deliver_and_log }
 
           it "delays delivery of mails" do
@@ -64,7 +64,7 @@ describe MailLetter do
         end
 
         describe "the 'paying' and 'free' filters" do
-          before(:all) do
+          before(:each) do
             @archived_user = Factory.create(:user, state: 'archived')
             @paying_user = Factory.create(:user)
             Factory.create(:site_not_in_trial, user: @paying_user)
@@ -122,7 +122,7 @@ describe MailLetter do
             end
           end
         end
-        
+
       end
 
     end
