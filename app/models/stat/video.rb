@@ -12,7 +12,9 @@ class Stat::Video
   field :bp, type: Hash, default: {} # Browser + Plateform { "saf-win" => 2, "saf-osx" => 4, ...}
   field :vs, type: Hash, default: {} # Video Sources View { '5062d010' (video source crc32) => 32, ... }
 
+  index :s
   index :m
+  index :h
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:s, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:m, Mongo::ASCENDING]]

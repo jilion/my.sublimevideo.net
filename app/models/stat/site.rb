@@ -10,7 +10,9 @@ class Stat::Site
   field :md, type: Hash, default: {} # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1 }, f (flash) => ... }
   field :bp, type: Hash, default: {} # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
 
+  index :s
   index :m
+  index :h
   index [[:t, Mongo::ASCENDING], [:s, Mongo::ASCENDING]]
   index [[:t, Mongo::ASCENDING], [:m, Mongo::ASCENDING]]
   index [[:t, Mongo::ASCENDING], [:h, Mongo::ASCENDING]]
