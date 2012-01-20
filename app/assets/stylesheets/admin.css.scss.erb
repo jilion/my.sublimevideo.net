@@ -412,7 +412,6 @@ table#countries_table td {
  margin:0 0;
 }
 
-
 #chart {
   width:100%;
   height:650px;
@@ -465,16 +464,13 @@ table#countries_table td {
   list-style-type:none;
 }
 
-#selectors li {
-  
-}
-
 #selectors li a, #selectors li h3 {
   display:block;
   color:#888;
-  font-size:15px;
+  font-size:16px;
+  font-weight:600;
   padding:10px 10px 10px 30px;
-  background:url(<%= asset_data_uri "admin/selectors_indicator_off.png" %>) no-repeat 8px 50%;
+  background:rgba(15,15,15,0.3) url(<%= asset_data_uri "admin/selectors_indicator_off.png" %>) no-repeat 8px 50%;
   border-bottom:1px solid #222;
 /*  border-left:1px solid #222;
   border-right:1px solid #222;*/
@@ -482,19 +478,27 @@ table#countries_table td {
 }
 
 #selectors li li a {
-  padding-left:45px;
-  background-position:23px 50%;
+  font-weight:normal;
+  background-color:rgba(140,140,140,0.3);
+  color:#999;
+  font-size:13px;
+  padding-top:5px;
+  padding-bottom:5px;
+/*  padding-left:45px;*/
+/*  background-position:23px 50%;*/
 }
 
 #selectors li li li a {
-  padding-left:60px;
-  background-position:38px 50%;
-}
+  background-color:rgba(86,86,86,0.3);
+  font-size:12px;
+/*  padding-left:45px;
+  background-position:23px 50%;
+*/}
 
-#selectors li a.title, #selectors li h3 {
+/*#selectors li a.title, #selectors li h3 {
   background-color:rgba(255,255,255,0.08);
   color:#999;
-}
+}*/
 
 #selectors li a.active {
   color:#fff;
