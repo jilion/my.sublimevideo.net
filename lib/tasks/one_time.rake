@@ -249,6 +249,51 @@ namespace :one_time do
         end
       end
     end
+
+    desc "Merge duplicate VideoStats and delete bad VideoTags based on wrong CRC32 generation (? params included)"
+    task merge_duplicate_video_stats_and_delete_bad_video_tags: :environment do
+      timed do
+        site_tokens = [
+          '2xrynuh2', 'lfmxr9gt', 'g39fmpp1', '1gt8yor7', '7k9odjzv', 'txohtl11', 'vfzh18bi', '2l7axk8c', 'iaruw1qi', 'avd44aef', 'nn8698ww',
+          '4aeqofw0', 'nne3u3qd', 'h5qegk5j', 'op0mkqtn', 'suwutgs8', 'rrj45mbt', 'uvrkjs6y', '87r9xy5e', '0apmxu9m', 'bo6onvdp', 't1el7q92',
+          'wtlrh4a1', '8pettr2l', 'ovjigy83', 'ipemdsdc', '8z30ym0w', '5ataduh2', 'mtrrhukx', 'wwaswim5', 'f5n04h63', '4md5tnvw', 'd4jhdmde',
+          '29a31wy1', 'kaxf52ke', 'jag8liea', 'q87gxah0', 'alv676x0', 'b13hmic3', 'qn3ort3a', 'q7z31dji', 'pn1nfhuj', '7aph6o5g', '8hgvyvlc',
+          'wsj6kezk', 'd8rjro54', '9pkh3pou', 'erfb5jxm', 'eq916p01', '7l6sr5hh', 'j9q1y3m1', '95ahxpcg', 'why96mtw', 'oqdmk4t6', 'xqnzpou9',
+          'j0lqevol', 'lbshmaxk', 'lv9n9gdv', 'dsopijh8', 'fq1qtj48', '83y67ght', '8e7bgm4a', '3w98phzh', 'r7mul5tt', '2b4x0kwg', 'y7areitu',
+          'o8ptoe09', 'ai42982g', 'oaiknkun', 'm0lzy3xt', 'quq4zs1k', 'ybjtuko4', 'gf2gv810', '0l5c6oby', 'ytxg2sy5', 'ykfg8c0a', 'j4nw7nem',
+          'aoq66s9z', '7b8nn1v4', 'd67d4bn4', 'jpjr8p4d', '9majtpzr', 'mmvg0rfl', 'v8tqssb9', 'tbhdl70s', 'szejjut1', 'uo742m30', '2ir8o5ky',
+          'ngyd2tdi', '3y0866sj', 'mur4c2aa', 'mkkaahxf', 'jv4dcx3o', '6j4zanab', 'jx5qyjz1', '55woyzoi', 'q43b92jx', '7gd9zazc', '6n6lb66i',
+          'fj76pfnh', 'l45d3c3u', 'ikfqgbx0', 'kpcxti7e', '4ot5x0w2', 'ibvjcopp', 'pczql2wt', 'xwccapc5', '9cu26xxg', '4ptfsgbk', '0ljd7qrk',
+          'mb27lban', '8vnlactg', 'rm8w0f9k', 'qdvuigm7', 'vwftwdte', 'estq9huv', 'ihuf4f5u', 'kq8zmtdf', 'uazs3te5', 'ql0355zz', 'y5uk4rpd',
+          '6pdo240s', 'qeiwa7fu', 'qsr700iv'
+        ]
+        # Site.where(token: '2xrynuh2') do |site|
+        # Site.where { last_30_days_main_video_views > 0 }.find_each(batch_size: 100) do |site|
+
+          # VideoTag.where(st: site.token).only(:s).each do |video_tag|
+        criteria = VideoTag.where(st: { '$nin' => site_tokens }, uo: { '$ne' => nil })
+        counter = criteria.count
+        puts "#{site_tokens.uniq.size} sites with VideoTag including ?"
+        puts "#{counter} VideoTag not scanned yet."
+        while counter > 0
+          counter -= 1000
+          counter = 0 if counter < 0
+          puts "left #{counter}"
+          criteria.offset(counter).limit(1000).each do |video_tag|
+            next if site_tokens.include?(video_tag.st)
+            video_tag.s.values.each do |source|
+              if source['u'].include?('?')
+                puts "? in video source found for site: #{video_tag.st})"
+                site_tokens << video_tag.st
+                break
+              end
+            end
+          end
+        end
+        puts "+++++++++++++++++++"
+        puts site_tokens
+      end
+    end
   end
 
 end
