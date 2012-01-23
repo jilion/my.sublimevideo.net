@@ -51,7 +51,7 @@ module SiteModules::Templates
       hash[:p] = path if path?
       hash[:b] = badged
       hash[:s] = true unless in_free_plan? # SSL
-      hash[:r] = true if plan_stats_retention_days != 0 # Realtime Stats
+      hash[:r] = true if plan_id? && plan_stats_retention_days != 0 # Realtime Stats
       hash
     end
 
