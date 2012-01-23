@@ -14,7 +14,12 @@ group :frontend do
   end
 
   guard :livereload, host: 'my.sublimevideo.dev' do
-    watch(%r{^app/.+\.(erb|haml|hamlc|js|css|scss|coffee|eco|png|gif|jpg)})
+    watch(%r{app/views/.+\.(erb|haml)})
+    watch(%r{app/helpers/.+\.rb})
+    watch(%r{public/.+\.(css|js|html)})
+    watch(%r{(app|vendor)/assets/\w+/(.+\.(css|js|html)).*})  { |m| "/assets/#{m[2]}" }
+    watch(%r{app/assets/\w+/(.+)\.hamlc.*})                   { |m| "/assets/#{m[1]}.js" }
+    watch(%r{config/locales/.+\.yml})
   end
 
   guard :jasmine, :server => :none, :jasmine_url => 'http://sublimevideo.dev/jasmine', :all_on_start => false do
