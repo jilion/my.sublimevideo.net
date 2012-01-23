@@ -10,36 +10,36 @@
 </video></div>
 
 :textile
-  #{image_tag('docs/real-time-stats/stats_preview.jpg', class: 'screenshot', title: 'Stats preview')}
-
   To access the Real-Time Statistics dashboard, simply click the 'View Stats' button next to
   your site(s) on the #{link_to "My Sites", sites_url(subdomain: 'my')} page.
+
+  #{image_tag('docs/real-time-stats/stats_preview.jpg', class: 'screenshot', title: 'Stats preview')}
 
   h3(#statistics-over-time). Statistics Over Time
 
   At the top of the Real-Time Stats dashboard you'll find buttons to show video statistics for the chosen site from the last 60 seconds (real-time), last 60 minutes, last 24 hours, last 30 days and last 365 days.
 
-  #{image_tag('docs/real-time-stats/time_period_selector.jpg', class: 'screenshot', title: 'Time period selector')}
+  #{link_to(image_tag('docs/real-time-stats/time_period_selector.jpg', width: 640, class: 'screenshot', title: 'Time period selector'), asset_path('docs/real-time-stats/time_period_selector.jpg'), class: 'sublime zoom')}
 
   It's worth noting that these buttons display miniature graph previews that update in real-time. Obviously this is most visible for the last 60 seconds, but it can sometimes be useful to keep an eye on your stats for the last 60 minutes or even 24 hours (for example, if you've just released a new video and are primarily monitoring traffic in real-time).
 
   Selecting a time range updates the entire page to display stats for the chosen time. You can also use the drop-down selector to enter a custom time range. On the large graph, video plays (in green) VS page visits (in gray) are displayed, so you can get an idea for how popular your video is compared to the rest of a page's content. At this time, statistics for video plays from videos embedded elsewhere are not displayed.
 
-  #{image_tag('docs/real-time-stats/graph.jpg', class: 'screenshot', title: 'Video plays VS page visits graph')}
+  #{link_to(image_tag('docs/real-time-stats/graph.jpg', width: 640, class: 'screenshot', title: 'Video plays VS page visits graph'), asset_path('docs/real-time-stats/graph.jpg'), class: 'sublime zoom')}
 
   h3(#video-popularity). Video Popularity
 
   You can also see a list of all the videos you may have on a page, complete with loads VS plays and a graph preview for the currently selected time range. The list and graph previews are updated in real-time, making it easy to keep an eye on which videos are most popular - especially during periods of heavy traffic.
 
-  #{image_tag('docs/real-time-stats/most_played_videos.jpg', class: 'screenshot', title: 'Most played videos')}
+  #{link_to(image_tag('docs/real-time-stats/most_played_videos.jpg', width: 640, class: 'screenshot', title: 'Most played videos'), asset_path('docs/real-time-stats/most_played_videos.jpg'), class: 'sublime zoom')}
 
-  Please note that it is highly recommended that you set a custom id (@data-uid@) and custom name (@data-name@) for each of your video tags. "Read more":/optimize-for-stats.
+  Please note that it is **highly recommended** that you set a custom id (@data-uid@) and custom name (@data-name@) for each of your video tags. "Read more":/optimize-for-stats.
 
   h3(#browser-device-html5-flash-stats). Browser, Device & HTML5 / Flash Statistics
 
   Finally, Browser + OS and HTML5 / Flash statistics are clearly displayed alongside device type usage (mobile or desktop), showing you what the most popular load-cases are for your videos within the currently selected time range. These statistics are also updated in real-time.
 
-  #{image_tag('docs/real-time-stats/browser_os_and_HTML5_flash.jpg', class: 'screenshot', title: 'Browser, Device & HTML5 / Flash Statistics')}
+  #{link_to(image_tag('docs/real-time-stats/browser_os_and_HTML5_flash.jpg', width: 640, class: 'screenshot', title: 'Browser, Device & HTML5 / Flash Statistics'), asset_path('docs/real-time-stats/browser_os_and_HTML5_flash.jpg'), class: 'sublime zoom')}
 
   Please note that SublimeVideo's Real-Time Statistics are currently still in beta and we'll continue to improve the feature over time.
 
