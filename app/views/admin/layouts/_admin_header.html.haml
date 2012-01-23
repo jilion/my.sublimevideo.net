@@ -4,27 +4,27 @@
     %em= "Admin"
   - if admin_signed_in?
     .popup_menu
-      %h3= link_to "Sites", "", onclick: "return false"
+      %h3= link_to "Sites", [:admin, :sites]
       %ul
         %li= link_to "All", [:admin, :sites]
         - [:plans, :referrers].each do |name|
           = activable_menu_restful_item(:li, name, namespace: 'admin')
 
     .popup_menu
-      %h3= link_to "Users", "", onclick: "return false"
+      %h3= link_to "Users", [:admin, :users]
       %ul
         %li= link_to "All", [:admin, :users]
         - [:enthusiasts, :admins].each do |name|
           = activable_menu_restful_item(:li, name, namespace: 'admin')
 
     .popup_menu
-      %h3= link_to "Invoices", "", onclick: "return false"
+      %h3= link_to "Invoices", [:admin, :invoices]
       %ul
         %li= link_to "All", [:admin, :invoices]
         %li= link_to "Monthly", [:monthly, :admin, :invoices]
 
     .popup_menu
-      %h3= link_to "Stats", "", onclick: "return false"
+      %h3= link_to "Stats", [:admin, :stats]
       %ul
         %li= link_to "All", [:admin, :stats]
         %li= link_to "Countries", single_admin_stats_path(page: 'countries')
@@ -34,10 +34,10 @@
         %li= link_to "More...", [:more, :admin, :stats]
 
     .popup_menu
-      %h3= link_to "Other", "", onclick: "return false"
+      %h3= link_to "Other", [:admin, :delayed_jobs]
       %ul
-        %li= link_to "Mails", [:admin, :mails]
         %li= link_to "DJs", [:admin, :delayed_jobs]
+        %li= link_to "Mails", [:admin, :mails]
 
     %ul.favorite_links
       %li= link_to "Player", [:admin, :releases]

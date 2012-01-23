@@ -1,6 +1,6 @@
 class SVStats.Models.SitesStat extends SVStats.Models.Stat
   defaults:
-    fr: 0 # free
+    fr: {} # free
     tr: {} # trial
     pa: {} # paying
     su: 0 # suspended
@@ -16,10 +16,11 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
   title: (selected) ->
     if selected.length > 1
       text = "Sites "
-      if selected.length == 3 # attribute is something like: ["tr", "premium", "y"]
+      if selected.length > 1 # attribute is something like: ["tr", "premium", "y"]
         text += "in trial " if selected[0] == "tr"
         text += "with the "
-        text += if selected[2] == "y" then "yearly " else "monthly "
+        if selected.length > 2
+          text += if selected[2] == "y" then "yearly " else "monthly "
       text += "#{selected[1]} plan"
       text
     else
@@ -44,7 +45,7 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
       value = if stat?
         if selected.length > 1
           value = stat.get(selected[0])
-          if value.length > 1 # attribute is something like: ["tr", "premium", "y"]
+          if selected.length > 1 # attribute is something like: ["tr", "premium", "y"]
             _.each _.rest(selected), (e) -> value = value[e]
             value = this.recursiveHashSum(value)
           value

@@ -5,6 +5,7 @@ class SVStats.Helpers.ChartsHelper
       chart:
         renderTo: 'chart'
         spacingBottom: 45
+        reflow: false
 
       series: this.buildSeries(collections)
 
@@ -61,8 +62,11 @@ class SVStats.Helpers.ChartsHelper
         floating: true
         align: 'left'
         margin: 50
-        y: 35
+        y: 25
         borderWidth: 0
+        itemHoverStyle:
+          cursor: 'default'
+          color: '#3E576F'
 
       tooltip:
         enabled: true
@@ -119,6 +123,10 @@ class SVStats.Helpers.ChartsHelper
       plotOptions:
         flags:
           shape: 'circlepin'
+        series:
+          events:
+            legendItemClick: ->
+              false
 
       xAxis:
         type: 'datetime'

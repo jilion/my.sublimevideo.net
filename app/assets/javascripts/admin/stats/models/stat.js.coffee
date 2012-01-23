@@ -22,17 +22,10 @@ class SVStats.Collections.Stats extends Backbone.Collection
     result
 
   select: (newSelection) ->
-    console.log('select');
-    console.log(newSelection);
-    console.log(@selected);
     @selected.push newSelection
-    console.log(@selected);
 
   unselect: (oldSelection) ->
     joinedOldSelection = oldSelection.join('.')
-    console.log('unselect');
-    console.log(oldSelection);
-    console.log(@selected);
 
     index = -1
     i = 0
@@ -41,7 +34,6 @@ class SVStats.Collections.Stats extends Backbone.Collection
       i += 1
 
     @selected.splice(index, 1) # remove the selection from the current selection
-    console.log(@selected);
 
   recursiveHashSum: (hash) ->
     sum = 0

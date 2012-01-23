@@ -5,6 +5,7 @@ class SVStats.Routers.StatsRouter extends Backbone.Router
     this.initHighcharts()
     this.initModels()
     this.initHelpers()
+    this.chartHeight = 400
 
     new SVStats.Views.PageTitleView
       el: '#page_title'
@@ -21,6 +22,11 @@ class SVStats.Routers.StatsRouter extends Backbone.Router
 
   home: ->
     this.fetchStats()
+
+  storeCurrentExtremes: ->
+    if SVStats.chart?
+      @xAxisMin = SVStats.chart.xAxis[0].getExtremes()['min']
+      @xAxisMax = SVStats.chart.xAxis[0].getExtremes()['max']
 
   initModels: ->
     SVStats.stats["users"]       = new SVStats.Collections.UsersStats()
