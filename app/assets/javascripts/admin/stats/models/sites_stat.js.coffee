@@ -44,7 +44,7 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
       value = if stat?
         if selected.length > 1
           value = stat.get(selected[0])
-          if selected.length > 1 # attribute is something like: ["tr", "premium", "y"]
+          if value.length > 1 # attribute is something like: ["tr", "premium", "y"]
             _.each _.rest(selected), (e) -> value = value[e]
             value = this.recursiveHashSum(value)
           value
@@ -62,13 +62,3 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
       from += 3600 * 24
 
     array
-
-  recursiveHashSum: (hash) ->
-    sum = 0
-    if _.isNumber(hash)
-      sum = hash
-    else
-      _.each _.values(hash), (value) =>
-        sum += this.recursiveHashSum(value)
-
-    sum

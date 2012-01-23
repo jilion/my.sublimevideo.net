@@ -4,9 +4,7 @@ class SVStats.Helpers.ChartsHelper
     SVStats.chart = new Highcharts.StockChart
       chart:
         renderTo: 'chart'
-        events:
-          click: (e) ->
-            console.log Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', e.xAxis[0].value), e.yAxis[0].value
+        spacingBottom: 45
 
       series: this.buildSeries(collections)
 
@@ -57,6 +55,14 @@ class SVStats.Helpers.ChartsHelper
           text: '7 d'
         }]
         selected: 4
+
+      legend:
+        enabled: true
+        floating: true
+        align: 'left'
+        margin: 50
+        y: 35
+        borderWidth: 0
 
       tooltip:
         enabled: true
@@ -137,13 +143,12 @@ class SVStats.Helpers.ChartsHelper
     @usedYAxis = []
     _.each collections, (collection) =>
       _.each collection.selected, (selected) =>
-        if collection.length > 0 and !_.isEmpty(collection.selected) and !_.include(@usedYAxis, collection.yAxis(selected.split('.')))
-          @usedYAxis.push(collection.yAxis(selected.split('.')))
+        if collection.length > 0 and !_.isEmpty(collection.selected) and !_.include(@usedYAxis, collection.yAxis(selected))
+          @usedYAxis.push(collection.yAxis(selected))
 
     _.each collections, (collection) =>
       if collection.length > 0 and !_.isEmpty(collection.selected)
         _.each collection.selected, (selected) =>
-          selected = selected.split('.')
           series.push
             name: collection.title(selected)
             data: collection.customPluck(selected)

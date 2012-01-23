@@ -45,7 +45,7 @@ module Stats
 
       def json(from = nil, to = nil)
         json_stats = if from.present?
-          between(from: from, to: to || Time.now.utc.midnight)
+          between(from, to || Time.now.utc.midnight)
         else
           scoped
         end
@@ -55,7 +55,7 @@ module Stats
 
       def delay_create_sites_stats
         unless Delayed::Job.already_delayed?('%Stats::SitesStat%create_sites_stats%')
-          delay(:run_at => Time.now.utc.tomorrow.midnight).create_sites_stats # every day
+          delay(run_at: Time.now.utc.tomorrow.midnight).create_sites_stats # every day
         end
       end
 

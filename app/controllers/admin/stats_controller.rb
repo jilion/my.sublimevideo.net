@@ -22,7 +22,7 @@ class Admin::StatsController < AdminController
 
   def tweets
     respond_to do |format|
-      format.json { render json: Stats::TweetsStat.json(keyword: 'sublimevideo') }
+      format.json { render json: Stats::TweetsStat.json }
     end
   end
   

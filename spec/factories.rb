@@ -211,6 +211,11 @@ FactoryGirl.define do
     plans_count   { {} }
   end
 
+  factory :tweets_stat, class: Stats::TweetsStat do
+    d             Time.now.utc.midnight
+    k  { {} }
+  end
+
   factory :site_stat, class: Stat::Site do
   end
 
@@ -218,7 +223,6 @@ FactoryGirl.define do
   end
 
   factory :video_tag do
-
   end
 
   factory :tweet do

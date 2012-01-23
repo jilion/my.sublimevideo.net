@@ -24,12 +24,12 @@ class SVStats.Models.SiteStatsStat extends SVStats.Models.Stat
 
 class SVStats.Collections.SiteStatsStats extends SVStats.Collections.Stats
   model: SVStats.Models.SiteStatsStat
-  initialize: -> @selected = ['vv.billable'] # ['pv.billable', 'vv.billable', 'md.html5_proportion']
+  initialize: -> @selected = [['vv', 'billable']]
   url: -> '/stats/site_stats.json'
   chartType: (selected) ->
     switch selected[0]
-      when 'pv', 'vv' then 'areaspline'
-      when 'md' then 'line'
+      when 'pv', 'vv' then 'spline'
+      when 'md' then 'spline'
 
   id: -> 'site_stats'
 

@@ -4,17 +4,17 @@ describe Stats::UsersStat do
 
   describe ".delay_create_users_stats" do
     it "should delay create_users_stats if not already delayed" do
-      expect { described_class.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%Stats::UsersStat%create_users_stats%'), :count).by(1)
+      expect { described_class.delay_create_users_stats }.to change(Delayed::Job.where(:handler.matches => '%Stats::UsersStat%create_users_stats%'), :count).by(1)
     end
 
     it "should not delay create_users_stats if already delayed" do
       described_class.delay_create_users_stats
-      expect { described_class.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%Stats::UsersStat%create_users_stats%'), :count).by(0)
+      expect { described_class.delay_create_users_stats }.to_not change(Delayed::Job.where(:handler.matches => '%Stats::UsersStat%create_users_stats%'), :count)
     end
 
     it "should delay create_users_stats for next hour" do
       described_class.delay_create_users_stats
-      Delayed::Job.last.run_at.should == Time.new.utc.tomorrow.midnight
+      Delayed::Job.last.run_at.should eq Time.now.utc.tomorrow.midnight
     end
   end
 
@@ -39,7 +39,7 @@ describe Stats::UsersStat do
     it "should create users stats for states" do
       described_class.create_users_stats
 
-      described_class.count.should == 1
+      described_class.count.should eq 1
       users_stat = described_class.last
       users_stat.fr.should eq 3
       users_stat.pa.should eq 2
@@ -56,7 +56,7 @@ describe Stats::UsersStat do
     describe "set the id as the 'd' field as an integer" do
       subject { JSON.parse(described_class.json) }
 
-      its(:size) { should eql(1) }
+      its(:size) { should eq 1 }
       it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
     end
   end
