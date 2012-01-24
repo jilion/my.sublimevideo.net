@@ -2,24 +2,6 @@ require 'spec_helper'
 
 describe Stats::TweetsStat do
 
-  describe ".delay_create_tweets_stats" do
-
-    it "should delay create_tweets_stats if not already delayed" do
-      expect { described_class.delay_create_tweets_stats }.to change(Delayed::Job.where(:handler.matches => '%Stats::TweetsStat%create_tweets_stats%'), :count).by(1)
-    end
-
-    it "should not delay create_tweets_stats if already delayed" do
-      described_class.delay_create_tweets_stats
-      expect { described_class.delay_create_tweets_stats }.to_not change(Delayed::Job.where(:handler.matches => '%Stats::TweetsStat%create_tweets_stats%'), :count)
-    end
-
-    it "should delay create_tweets_stats for next day" do
-      described_class.delay_create_tweets_stats
-      Delayed::Job.last.run_at.should eq Time.now.utc.tomorrow.midnight
-    end
-
-  end
-
   context "with a bunch of different tweet" do
     before(:each) do
       Factory.create(:tweet, tweeted_at: 5.days.ago.midnight, keywords: %w[sublimevideo])
