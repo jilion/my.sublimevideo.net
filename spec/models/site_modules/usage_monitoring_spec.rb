@@ -2,17 +2,6 @@ require 'spec_helper'
 
 describe SiteModules::UsageMonitoring do
 
-  describe ".delay_monitor_sites_usages" do
-    it "should delay monitor_sites_usage if not already delayed" do
-      expect { SiteModules::UsageMonitoring.delay_monitor_sites_usages }.should change(Delayed::Job.where(:handler.matches => '%SiteModules::UsageMonitoring%monitor_sites_usage%'), :count).by(1)
-    end
-
-    it "should not delay monitor_sites_usage if already delayed" do
-      SiteModules::UsageMonitoring.delay_monitor_sites_usages
-      expect { SiteModules::UsageMonitoring.delay_monitor_sites_usages }.should change(Delayed::Job.where(:handler.matches => '%SiteModules::UsageMonitoring%monitor_sites_usage%'), :count).by(0)
-    end
-  end
-
   describe ".monitor_sites_usages" do
     before(:all) { @plan = Factory.create(:plan, video_views: 30 * 100) }
 

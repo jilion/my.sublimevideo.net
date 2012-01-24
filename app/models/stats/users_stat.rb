@@ -47,14 +47,7 @@ module Stats
         json_stats.order_by([:d, :asc]).to_json(only: [:be, :fr, :pa, :su, :ar])
       end
 
-      def delay_create_users_stats
-        unless Delayed::Job.already_delayed?('%Stats::UsersStat%create_users_stats%')
-          delay(:run_at => Time.now.utc.tomorrow.midnight).create_users_stats # every day
-        end
-      end
-
       def create_users_stats
-        delay_create_users_stats
         self.create(
           d: Time.now.utc.midnight,
           be: 0,

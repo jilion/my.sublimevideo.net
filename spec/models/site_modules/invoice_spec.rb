@@ -4,6 +4,40 @@ describe SiteModules::Invoice do
 
   describe "Class Methods" do
 
+    describe ".send_trial_will_expire" do
+      before(:all) do
+        Site.delete_all
+        @user_without_cc    = Factory.create(:user_no_cc)
+        @user_with_cc       = Factory.create(:user)
+        @sites_not_in_trial = [Factory.create(:site, trial_started_at: BusinessModel.days_for_trial.days.ago)]
+        @sites_in_trial     = []
+
+        BusinessModel.days_before_trial_end.each do |days_before_trial_end|
+          @sites_not_in_trial << Factory.create(:site, user: @user_without_cc, state: 'archived', trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
+          @sites_not_in_trial << Factory.create(:site, user: @user_without_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago, first_paid_plan_started_at: 2.months.ago)
+          @sites_not_in_trial << Factory.create(:site, user: @user_with_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
+          @sites_in_trial << Factory.create(:site, user: @user_without_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
+        end
+      end
+
+      it "delays itself" do
+        Site.should_receive(:send_trial_will_expire)
+        Site.send_trial_will_expire
+      end
+
+      it "sends 'trial will end' email" do
+        ActionMailer::Base.deliveries.clear
+        expect { Site.send_trial_will_expire }.to change(ActionMailer::Base.deliveries, :size).by(@sites_in_trial.size)
+      end
+
+      context "when we move 2 days in the future" do
+        it "doesn't send 'trial will end' email" do
+          ActionMailer::Base.deliveries.clear
+          Timecop.travel(2.days.from_now) { expect { Site.send_trial_will_expire }.to_not change(ActionMailer::Base.deliveries, :size) }
+        end
+      end
+    end
+
     describe ".activate_or_downgrade_sites_leaving_trial" do
       before(:all) do
         Site.delete_all

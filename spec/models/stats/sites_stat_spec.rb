@@ -2,24 +2,6 @@ require 'spec_helper'
 
 describe Stats::SitesStat do
 
-  describe ".delay_create_sites_stats" do
-
-    it "should delay create_sites_stats if not already delayed" do
-      expect { described_class.delay_create_sites_stats }.to change(Delayed::Job.where(:handler.matches => '%Stats::SitesStat%create_sites_stats%'), :count).by(1)
-    end
-
-    it "should not delay create_sites_stats if already delayed" do
-      described_class.delay_create_sites_stats
-      expect { described_class.delay_create_sites_stats }.to_not change(Delayed::Job.where(:handler.matches => '%Stats::SitesStat%create_sites_stats%'), :count)
-    end
-
-    it "should delay create_sites_stats for next day" do
-      described_class.delay_create_sites_stats
-      Delayed::Job.last.run_at.should eq Time.now.utc.tomorrow.midnight
-    end
-
-  end
-
   context "with a bunch of different sites" do
     before(:all) do
       user = Factory.create(:user)

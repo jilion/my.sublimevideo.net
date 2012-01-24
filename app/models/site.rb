@@ -2,7 +2,6 @@ class Site < ActiveRecord::Base
   extend ActiveSupport::Memoizable
   include SiteModules::Api
   include SiteModules::Invoice
-  include SiteModules::Recurring
   include SiteModules::Referrer
   include SiteModules::Scope
   include SiteModules::Templates

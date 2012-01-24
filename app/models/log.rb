@@ -40,15 +40,6 @@ class Log
   # = Class Methods =
   # =================
 
-  # Recurring task
-  def self.delay_download_or_fetch_and_create_new_logs
-    # Sites
-    Log::Voxcast.download_and_create_new_logs
-    Log::Amazon::S3::Player.delay_fetch_and_create_new_logs
-    Log::Amazon::S3::Loaders.delay_fetch_and_create_new_logs
-    Log::Amazon::S3::Licenses.delay_fetch_and_create_new_logs
-  end
-
   def self.config
     yml[self.to_s.gsub("Log::", '').to_sym].symbolize_keys
   end
