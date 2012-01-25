@@ -59,9 +59,9 @@ describe Transaction do
 
     describe "before_create :reject_paid_invoices" do
       it "should reject any paid invoices" do
-        subject.invoices.should eq [@invoice1, @invoice2, @invoice3]
+        subject.invoices.should =~ [@invoice1, @invoice2, @invoice3]
         subject.save!
-        subject.reload.invoices.should eq [@invoice1, @invoice3]
+        subject.reload.invoices.should =~ [@invoice1, @invoice3]
       end
     end
 

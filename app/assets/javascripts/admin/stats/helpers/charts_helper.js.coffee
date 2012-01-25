@@ -145,7 +145,7 @@ class SVStats.Helpers.ChartsHelper
             name: collection.title(selected)
             data: collection.customPluck(selected)
             type: collection.chartType(selected)
-            yAxis: _.min([_.max(@usedYAxis), @usedYAxis.length - 1, collection.yAxis(selected)])
+            yAxis: _.indexOf(_.sortBy(@usedYAxis, (x) -> x), collection.yAxis(selected))
             fillColor: collection.fillColor(selected)
             color: collection.color(selected)
             lineColor: collection.lineColor(selected)
@@ -159,22 +159,24 @@ class SVStats.Helpers.ChartsHelper
 
   buildYAxis: ->
     yAxis = []
-    yAxis.push
-      lineWidth: 1
-      gridLineColor: '#5d7493'
-      allowDecimals: false
-      startOnTick: true
-      showFirstLabel: false
-      labels:
-        align: 'right'
-        x: -4
-        y: 4
-        style:
-          fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
-          fontSize: "14px"
-          color: '#1e3966'
-      title:
-        text: "Users, sites & tweets evolution"
+    if _.include(@usedYAxis, 0)
+      yAxis.push
+        lineWidth: 1
+        gridLineColor: '#5d7493'
+        allowDecimals: false
+        startOnTick: true
+        showFirstLabel: true
+        showLastLabel: true
+        labels:
+          align: 'right'
+          x: -4
+          y: 4
+          style:
+            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
+            fontSize: "14px"
+            color: '#1e3966'
+        title:
+          text: "Users, sites & tweets evolution"
 
     if _.include(@usedYAxis, 1)
       yAxis.push
@@ -182,7 +184,8 @@ class SVStats.Helpers.ChartsHelper
         gridLineColor: '#5d7493'
         allowDecimals: false
         startOnTick: true
-        showFirstLabel: false
+        showFirstLabel: true
+        showLastLabel: true
         labels:
           align: 'right'
           x: -4
@@ -200,10 +203,12 @@ class SVStats.Helpers.ChartsHelper
         opposite: true
         min: 0
         max: 100
+        alignTicks: false
         gridLineColor: '#5d7493'
         allowDecimals: true
         startOnTick: true
-        showFirstLabel: false
+        showFirstLabel: true
+        showLastLabel: true
         labels:
           align: 'left'
           x: 4

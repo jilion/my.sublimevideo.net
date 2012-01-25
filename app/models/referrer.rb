@@ -10,8 +10,7 @@ class Referrer
   field :contextual_hits, type: Integer, defautl: 0
 
   index :site_id
-  index :token
-  index :url
+  index [[:token, Mongo::ASCENDING], [:url, Mongo::ASCENDING]]
   index :hits
   index :badge_hits
   index :contextual_hits

@@ -11,8 +11,7 @@ class Log
   field :parsed_at,  :type => DateTime
 
   index :name, :unique => true
-  index :started_at
-  index :ended_at
+  index [[:created_at, Mongo::ASCENDING], [:_type, Mongo::ASCENDING]], background: true # Log::Amazon#fetch_new_logs_names & Log::Voxcast#next_log_ended_at
 
   # ensure there is no confusion about S3 Class
   autoload :Amazon, 'log/amazon'

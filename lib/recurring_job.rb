@@ -11,7 +11,8 @@ module RecurringJob
   stats_tasks = [
     '%Stats::UsersStat%create_users_stats%',
     '%Stats::SitesStat%create_sites_stats%',
-    '%Stats::SiteStatsStat%create_site_stats_stats%'
+    '%Stats::SiteStatsStat%create_site_stats_stats%',
+    '%Stats::SiteUsagesStat%create_site_usages_stats%'
   ]
 
   NAMES = [
@@ -53,6 +54,7 @@ module RecurringJob
       Stats::UsersStat.delay_create_users_stats
       Stats::SitesStat.delay_create_sites_stats
       Stats::SiteStatsStat.delay_create_site_stats_stats
+      Stats::SiteUsagesStat.delay_create_site_usages_stats
 
       # Others
       SiteModules::UsageMonitoring.delay_monitor_sites_usages
@@ -68,11 +70,8 @@ module RecurringJob
         Notify.send("WARNING!!! There is more than #{max_jobs_allowed} delayed jobs, please investigate quickly!")
       end
       # check if recurring jobs are all delayed
-      if not_delayed.any?
-        sleep 20
-        if not_delayed.any?
-          Notify.send("WARNING!!! The following jobs are not delayed: #{not_delayed.join(", ")}; please investigate quickly!")
-        end
+      if any_job_not_delayed?
+        Notify.send("WARNING!!! The following jobs are not delayed: #{not_delayed.join(", ")}; please investigate quickly!")
       end
     end
 
@@ -82,12 +81,39 @@ module RecurringJob
 
   private
 
+    def any_job_not_delayed?(not_delayed_jobs = NAMES, time = 8)
+      if time == 0
+        true
+      else
+        not_delayed_jobs -= delayed
+        if not_delayed_jobs.any?
+          sleep time
+          any_job_not_delayed?(not_delayed_jobs, time - 1)
+        else
+          false
+        end
+      end
+    end
+
+    def delayed
+      NAMES.select { |name| Delayed::Job.already_delayed?(name) }
+    end
+
     def not_delayed
       NAMES.reject { |name| Delayed::Job.already_delayed?(name) }
     end
 
-    def too_much_jobs?(max)
-      Delayed::Job.count > max
+    def too_much_jobs?(max, time = 5)
+      if time == 0
+        true
+      else
+        if Delayed::Job.count > max
+          sleep time
+          too_much_jobs?(max, time - 1)
+        else
+          false
+        end
+      end
     end
 
   end

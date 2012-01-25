@@ -12,7 +12,6 @@ module Stats
     field :bp, type: Hash, default: {} # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
 
     index :d
-    index :created_at
 
     # ==========
     # = Scopes =
@@ -69,7 +68,7 @@ module Stats
       end
 
       def create_site_stats_stat(day)
-        site_stats = Stat::Site.where(d: day.to_time).all
+        site_stats = Stat::Site.where(d: day.to_time)
         self.create(
           d:  day.to_time,
           pv: hashes_values_sum(site_stats, :pv),
@@ -80,11 +79,11 @@ module Stats
       end
 
       def hashes_values_sum(site_stats, attribute)
-        site_stats.map(&attribute).inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
+        site_stats.only(attribute).map(&attribute).inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
       end
 
       def md_hashes_values_sum(site_stats)
-        md = site_stats.map(&:md)
+        md = site_stats.only(:md).map(&:md)
         h  = md.map { |h| h["h"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
         f  = md.map { |h| h["f"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
         { h: h, f: f }

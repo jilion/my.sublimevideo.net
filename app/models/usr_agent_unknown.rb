@@ -4,4 +4,6 @@ class UsrAgentUnknown
 
   field :user_agent
   field :unknowns, :type => Array
+
+  index :user_agent
 end

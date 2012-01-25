@@ -210,6 +210,17 @@ describe SiteModules::Templates do
             subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true }
           end
         end
+
+        context "with only a pending plan" do
+          before { subject.send(:write_attribute, :plan_id, nil); subject.pending_plan_id = @paid_plan.id }
+
+          it "doesn't includes r: true" do
+            subject.plan_id.should be_nil
+            subject.plan.should be_nil
+            subject.pending_plan.should be_present
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true, s: true }
+          end
+        end
       end
 
     end
