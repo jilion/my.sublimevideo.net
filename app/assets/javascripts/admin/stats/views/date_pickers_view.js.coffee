@@ -30,12 +30,10 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
       this.destroyDatePickers()
 
   apply: ->
-    startTime = this.convertDateToUTC('#start_time_picker')
-    endTime   = this.convertDateToUTC('#end_time_picker')
-    # AdminSublimeVideo.period.setCustomPeriod(startTime, endTime)
-    AdminSublimeVideo.statsRouter.xAxisMin = startTime
-    AdminSublimeVideo.statsRouter.xAxisMax = endTime
+    AdminSublimeVideo.period.start = new Date this.convertDateToUTC('#start_time_picker')
+    AdminSublimeVideo.period.end   = new Date this.convertDateToUTC('#end_time_picker')
     this.close()
+    AdminSublimeVideo.period.trigger('change')
 
   stopPropagation: (event) ->
     event.stopPropagation()
@@ -48,8 +46,8 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
       changeMonth: true
       changeYear:  true
       dateFormat:  'yy-m-d'
-      minDate:     new Date(AdminSublimeVideo.statsRouter.xAxisMin)
-      maxDate:     new Date(AdminSublimeVideo.statsRouter.xAxisMax)
+      minDate:     new Date Date.UTC(2010, 8, 14)
+      maxDate:     new Date()
       onSelect: (selectedDate) ->
         if (this.id == "start_time_picker")
           option    = "minDate"
@@ -58,10 +56,8 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
           option    = "maxDate"
           endTime   = datePickersView.convertPickerDate(selectedDate)
         dates.not(this).datepicker('option', option, selectedDate)
-    # $('#start_time_picker').datepicker('setDate', new Date(AdminSublimeVideo.period.startTime()))
-    # $('#end_time_picker').datepicker('setDate', new Date(AdminSublimeVideo.period.endTime()))
-    $('#start_time_picker').datepicker('setDate', new Date(AdminSublimeVideo.statsRouter.xAxisMin))
-    $('#end_time_picker').datepicker('setDate', new Date(AdminSublimeVideo.statsRouter.xAxisMax))
+    $('#start_time_picker').datepicker('setDate', AdminSublimeVideo.period.start)
+    $('#end_time_picker').datepicker('setDate', AdminSublimeVideo.period.end)
 
   destroyDatePickers: ->
     $('#start_time_picker, #end_time_picker').datepicker('destroy')

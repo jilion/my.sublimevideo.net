@@ -1,10 +1,11 @@
 class AdminSublimeVideo.Views.GraphView extends Backbone.View
   initialize: ->
     _.each @collection, (stat) => stat.bind 'change', this.render
+    @options.period.bind 'change', this.render
 
   render: =>
-    AdminSublimeVideo.statsRouter.storeCurrentExtremes()
     $(@el).resizable('destroy')
+
     unless _.isEmpty(@collection)
       AdminSublimeVideo.chartsHelper.chart(@collection)
 

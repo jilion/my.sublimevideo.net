@@ -1,15 +1,14 @@
 class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
   initialize: (options) ->
-    @selectedRange = 4
-    this.initHighcharts()
     this.initModels()
     this.initHelpers()
-    this.chartHeight = 400
+
+    this.initHighcharts()
 
     new AdminSublimeVideo.Views.PageTitleView
       el: '#page_title'
 
-    new AdminSublimeVideo.Views.TimeRangeTitleView
+    AdminSublimeVideo.timeRangeTitleView = new AdminSublimeVideo.Views.TimeRangeTitleView
       el: '#time_range_title'
       period: AdminSublimeVideo.period
 
@@ -19,6 +18,7 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
     AdminSublimeVideo.graphView = new AdminSublimeVideo.Views.GraphView
       el: '#chart'
       collection: AdminSublimeVideo.stats
+      period: AdminSublimeVideo.period
 
     AdminSublimeVideo.seriesSelectorView = new AdminSublimeVideo.Views.SeriesSelectorView
       el: '#selectors'
@@ -28,11 +28,6 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
 
   home: ->
     this.fetchStats()
-
-  storeCurrentExtremes: ->
-    if AdminSublimeVideo.statsChart?
-      @xAxisMin = AdminSublimeVideo.statsChart.xAxis[0].getExtremes()['min']
-      @xAxisMax = AdminSublimeVideo.statsChart.xAxis[0].getExtremes()['max']
 
   initModels: ->
     AdminSublimeVideo.period = new AdminSublimeVideo.Models.Period(type: 'days')
@@ -46,6 +41,11 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
   initHelpers: ->
     AdminSublimeVideo.chartsHelper = new AdminSublimeVideo.Helpers.ChartsHelper()
 
+  initHighcharts: ->
+    Highcharts.setOptions
+      global:
+        useUTC: true
+
   fetchStats: ->
     _.each AdminSublimeVideo.stats, (stat) ->
       stat.fetch
@@ -55,8 +55,3 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
   syncFetchSuccess: ->
     if _.all(AdminSublimeVideo.stats, (e) -> e.length > 0)
       AdminSublimeVideo.graphView.render()
-
-  initHighcharts: ->
-    Highcharts.setOptions
-      global:
-        useUTC: true

@@ -1,11 +1,11 @@
 class AdminSublimeVideo.Views.TimeRangeTitleView extends Backbone.View
-  template: JST['templates/_time_range_title']
+  template: JST['admin/stats/templates/_time_range_title']
 
   events:
     'click': 'toggleDatePicker'
 
   initialize: ->
-    @options.period.bind       'change', this.render
+    @options.period.bind 'change', this.render
     this.render()
 
   render: =>
@@ -18,7 +18,8 @@ class AdminSublimeVideo.Views.TimeRangeTitleView extends Backbone.View
       $(@el).find('.content').hide()
       $(@el).spin(spinOptions)
       $('#time_range_title').addClass('editable')
-    return this
+
+    this
 
   toggleDatePicker: (event) ->
     event.stopPropagation()

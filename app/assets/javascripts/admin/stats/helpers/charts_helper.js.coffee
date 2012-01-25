@@ -8,6 +8,11 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         reflow: false
         animation: false
         plotShadow: false
+        events:
+          redraw: (event) ->
+            AdminSublimeVideo.period.start = new Date @xAxis[0].getExtremes()['min']
+            AdminSublimeVideo.period.end   = new Date @xAxis[0].getExtremes()['max']
+            AdminSublimeVideo.timeRangeTitleView.render()
 
       series: this.buildSeries(collections)
 
@@ -18,12 +23,14 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         text: null
 
       rangeSelector:
+        inputEnabled: false
         buttonSpacing: 3
         buttonTheme:
           fill: 'none'
           style:
             color: '#039'
             fontWeight: 'bold'
+            float: 'right'
           states:
             select:
               fill: 'none'
@@ -57,7 +64,6 @@ class AdminSublimeVideo.Helpers.ChartsHelper
           count: 1
           text: '7 d'
         }]
-        selected: 4
 
       legend:
         enabled: true
@@ -78,7 +84,6 @@ class AdminSublimeVideo.Helpers.ChartsHelper
               [0, 'rgba(22,37,63,0.8)']
               [1, 'rgba(0,0,0,0.7)']
           ]
-        # snap: 50
         shared: true
         borderColor: "#000"
         borderWidth: 1
@@ -132,9 +137,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
       xAxis:
         type: 'datetime'
-        # lineWidth: 0
-        # tickWidth: 0
-        # gridLineWidth: 0
+        min: AdminSublimeVideo.period.start
+        max: AdminSublimeVideo.period.end
         gridLineColor: '#5d7493'
         labels:
           y: 21
@@ -144,9 +148,6 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             color: '#1e3966'
 
       yAxis: this.buildYAxis()
-
-    if AdminSublimeVideo.statsRouter.xAxisMin? and AdminSublimeVideo.statsRouter.xAxisMax?
-      AdminSublimeVideo.statsChart.xAxis[0].setExtremes(AdminSublimeVideo.statsRouter.xAxisMin, AdminSublimeVideo.statsRouter.xAxisMax)
 
   buildSeries: (collections) ->
     series = []

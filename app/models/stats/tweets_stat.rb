@@ -61,7 +61,7 @@ module Stats
         if TweetsStat.present?
           TweetsStat.order_by([:d, :asc]).last.try(:d)
         else
-          Tweet.where(tweeted_at: { "$ne" => nil }).order_by([:tweeted_at, :asc]).first.tweeted_at - 1.day
+          (Tweet.where(tweeted_at: { "$ne" => nil }).order_by([:tweeted_at, :asc]).first.tweeted_at - 1.day).midnight
         end
       end
 
