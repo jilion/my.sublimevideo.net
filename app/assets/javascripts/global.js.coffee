@@ -1,5 +1,26 @@
 # No Prototype / jQuery in here !!
 
+window.SublimeVideo   =
+  Models: {}
+  Collections: {}
+  Helpers: {}
+  Routers: {}
+  Views: {}
+
+window.MySublimeVideo =
+  Models: {}
+  Collections: {}
+  Helpers: {}
+  Routers: {}
+  Views: {}
+
+window.AdminSublimeVideo =
+  Models: {}
+  Collections: {}
+  Helpers: {}
+  Routers: {}
+  Views: {}
+
 # C IS FOR COOKIE
 window.Cookie =
   get: (name) ->
@@ -49,7 +70,7 @@ class SublimeVideo.ImagePreloader
     @options['height'] = @image['height']
     @callback(@problem, @imageSrc, @options)
 
-class VideoPreloader
+class SublimeVideo.VideoPreloader
   constructor: (videoUrl, callback) ->
      @callback = callback
      @videoSrc = videoUrl

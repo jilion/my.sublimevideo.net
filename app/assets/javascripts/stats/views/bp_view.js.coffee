@@ -7,7 +7,7 @@ class MSVStats.Views.BPView extends Backbone.View
 
   initialize: () ->
     @showAll = false
-    @options.period.bind 'change', this.render
+    @options.period.bind       'change', this.render
     @options.statsSeconds.bind 'change', this.renderIfSelected
     @options.statsSeconds.bind 'reset', this.renderIfSelected
     @options.statsMinutes.bind 'reset', this.renderIfSelected

@@ -1,11 +1,13 @@
-class SVStats.Helpers.ChartsHelper
+class AdminSublimeVideo.Helpers.ChartsHelper
 
   chart: (collections) ->
-    SVStats.chart = new Highcharts.StockChart
+    AdminSublimeVideo.statsChart = new Highcharts.StockChart
       chart:
         renderTo: 'chart'
         spacingBottom: 45
         reflow: false
+        animation: false
+        plotShadow: false
 
       series: this.buildSeries(collections)
 
@@ -143,8 +145,8 @@ class SVStats.Helpers.ChartsHelper
 
       yAxis: this.buildYAxis()
 
-    if SVStats.statsRouter.xAxisMin? and SVStats.statsRouter.xAxisMax?
-      SVStats.chart.xAxis[0].setExtremes(SVStats.statsRouter.xAxisMin, SVStats.statsRouter.xAxisMax)
+    if AdminSublimeVideo.statsRouter.xAxisMin? and AdminSublimeVideo.statsRouter.xAxisMax?
+      AdminSublimeVideo.statsChart.xAxis[0].setExtremes(AdminSublimeVideo.statsRouter.xAxisMin, AdminSublimeVideo.statsRouter.xAxisMax)
 
   buildSeries: (collections) ->
     series = []

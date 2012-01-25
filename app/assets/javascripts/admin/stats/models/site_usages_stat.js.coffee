@@ -1,4 +1,6 @@
-class SVStats.Models.SiteUsagesStat extends SVStats.Models.Stat
+#= require ./stat
+
+class AdminSublimeVideo.Models.SiteUsagesStat extends AdminSublimeVideo.Models.Stat
   defaults:
     
     lh: {} # Loader hits: { ns (non-ssl) => 2, s (ssl) => 1 }
@@ -10,8 +12,8 @@ class SVStats.Models.SiteUsagesStat extends SVStats.Models.Stat
   customGet: (selected) ->
     this.get(selected[0])[selected[1]] or 0
 
-class SVStats.Collections.SiteUsagesStats extends SVStats.Collections.Stats
-  model: SVStats.Models.SiteUsagesStat
+class AdminSublimeVideo.Collections.SiteUsagesStats extends AdminSublimeVideo.Collections.Stats
+  model: AdminSublimeVideo.Models.SiteUsagesStat
   initialize: -> @selected = []
   url: -> '/stats/site_usages.json'
   id: -> 'site_usages'

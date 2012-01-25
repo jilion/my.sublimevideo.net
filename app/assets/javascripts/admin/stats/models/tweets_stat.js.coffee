@@ -1,9 +1,11 @@
-class SVStats.Models.TweetsStat extends SVStats.Models.Stat
+#= require ./stat
+
+class AdminSublimeVideo.Models.TweetsStat extends AdminSublimeVideo.Models.Stat
   defaults:
     k: {}
 
-class SVStats.Collections.TweetsStats extends SVStats.Collections.Stats
-  model: SVStats.Models.TweetsStat
+class AdminSublimeVideo.Collections.TweetsStats extends AdminSublimeVideo.Collections.Stats
+  model: AdminSublimeVideo.Models.TweetsStat
   initialize: -> @selected = []
   url: -> '/stats/tweets.json'
   id: -> 'tweets'

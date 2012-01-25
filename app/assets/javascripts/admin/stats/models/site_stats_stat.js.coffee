@@ -1,4 +1,6 @@
-class SVStats.Models.SiteStatsStat extends SVStats.Models.Stat
+#= require ./stat
+
+class AdminSublimeVideo.Models.SiteStatsStat extends AdminSublimeVideo.Models.Stat
   defaults:
     pv: {} # Page Visit
     vv: {} # Video views
@@ -22,8 +24,8 @@ class SVStats.Models.SiteStatsStat extends SVStats.Models.Stat
 
     mdm / (mdd + mdm) * 100
 
-class SVStats.Collections.SiteStatsStats extends SVStats.Collections.Stats
-  model: SVStats.Models.SiteStatsStat
+class AdminSublimeVideo.Collections.SiteStatsStats extends AdminSublimeVideo.Collections.Stats
+  model: AdminSublimeVideo.Models.SiteStatsStat
   initialize: -> @selected = [['vv', 'billable']]
   url: -> '/stats/site_stats.json'
   chartType: (selected) ->

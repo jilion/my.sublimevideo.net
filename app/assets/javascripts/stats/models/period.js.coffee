@@ -1,6 +1,6 @@
 class MSVStats.Models.Period extends Backbone.Model
   defaults:
-    type:  null  # minutes / hours / days
+    type: null  # minutes / hours / days
     # Custom Period (days)
     startIndex: 0
     endIndex: -1

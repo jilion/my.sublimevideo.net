@@ -1,15 +1,20 @@
 = title("Statistics")
+:coffeescript
+  $ ->
+    window.AdminSublimeVideo.stats = {}
+    window.AdminSublimeVideo.statsRouter = new AdminSublimeVideo.Routers.StatsRouter()
+
+    $('#chart').spin(spinOptions)
+    Backbone.history.start(pushState: true)
 
 %h2#page_title
 
 .stats
-  :coffeescript
-    $ ->
-      window.SVStats.stats = {}
-      window.SVStats.statsRouter = new SVStats.Routers.StatsRouter()
+  #dates_range
+    %h3#time_range_title
+    #date_pickers
 
-      $('#chart').spin(spinOptions)
-      Backbone.history.start(pushState: true)
+  .spacer
 
   #chart{ style: "height:400px" }
 
@@ -171,15 +176,6 @@
         %td.tweets
           %h2 Tweets
           %ul
-            %li
-              %a.selector{ href: "#", data: { value: 'tweets.jilion' } } Jilion
-            %li
-              %a.selector{ href: "#", data: { value: 'tweets.sublimevideo' } } SublimeVideo
-            %li
-              %a.selector{ href: "#", data: { value: 'tweets.aelios' } } Aelios
-            %li
-              %a.selector{ href: "#", data: { value: 'tweets.aeliosapp' } } Aeliosapp
-            %li
-              %a.selector{ href: "#", data: { value: 'tweets.videojs' } } VideoJS
-            %li
-              %a.selector{ href: "#", data: { value: 'tweets.jw player' } } JW Player
+            - Tweet::KEYWORDS.each do |keyword|
+              %li
+                %a.selector{ href: "#", data: { value: "tweets.#{keyword}" } }= keyword.titleize

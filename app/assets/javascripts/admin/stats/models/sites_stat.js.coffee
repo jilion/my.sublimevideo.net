@@ -1,4 +1,6 @@
-class SVStats.Models.SitesStat extends SVStats.Models.Stat
+#= require ./stat
+
+class AdminSublimeVideo.Models.SitesStat extends AdminSublimeVideo.Models.Stat
   defaults:
     fr: {} # free
     tr: {} # trial
@@ -6,8 +8,8 @@ class SVStats.Models.SitesStat extends SVStats.Models.Stat
     su: 0 # suspended
     ar: 0 # archived
 
-class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
-  model: SVStats.Models.SitesStat
+class AdminSublimeVideo.Collections.SitesStats extends AdminSublimeVideo.Collections.Stats
+  model: AdminSublimeVideo.Models.SitesStat
   url: -> '/stats/sites.json'
   id: -> 'sites'
   color: (selected) -> 'rgba(255,0,0,0.7)'

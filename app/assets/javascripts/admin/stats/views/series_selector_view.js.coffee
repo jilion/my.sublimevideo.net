@@ -1,5 +1,4 @@
-class SVStats.Views.SeriesSelectorView extends Backbone.View
-
+class AdminSublimeVideo.Views.SeriesSelectorView extends Backbone.View
   events:
     'click a.selector': 'updateSelected'
 
@@ -10,13 +9,13 @@ class SVStats.Views.SeriesSelectorView extends Backbone.View
     this.toggleSubCategory(selection[0], _.rest(selection))
     this.toggleFilterStyle(clickedFilter)
 
-    SVStats.stats[selection[0]].trigger('change') # redraw the chart
+    AdminSublimeVideo.stats[selection[0]].trigger('change') # redraw the chart
 
   toggleSubCategory: (category, subCategory) ->
-    if SVStats.stats[category].currentlySelected(subCategory)
-      SVStats.stats[category].unselect(subCategory)
+    if AdminSublimeVideo.stats[category].currentlySelected(subCategory)
+      AdminSublimeVideo.stats[category].unselect(subCategory)
     else
-      SVStats.stats[category].select(subCategory)
+      AdminSublimeVideo.stats[category].select(subCategory)
 
   toggleFilterStyle: (filterLink) ->
     filterLink.toggleClass 'active'
