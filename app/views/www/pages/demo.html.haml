@@ -116,6 +116,13 @@
     %a.sublime.watch{ href: "" }
       = image_tag "www/demo/stats_video_thumb.png", alt: "Universal Real-Time Statistics Demo Video"
       %span.play
+    == <video class="sublime zoom" width="640" height="360" poster="http://media.jilion.com/videos/sublimevideo-real-time-statistics.jpg" preload="none" style="display:none" data-uid="real-time-stats" data-name="Real-Time Statistics">
+    ==   <source src="http://media.jilion.com/videos/sublimevideo-real-time-statistics-720p.mp4" data-quality="hd" />
+    ==   <source src="http://media.jilion.com/videos/sublimevideo-real-time-statistics-360p.mp4" />
+    ==   <source src="http://media.jilion.com/videos/sublimevideo-real-time-statistics-720p.webm" data-quality="hd" />
+    ==   <source src="http://media.jilion.com/videos/sublimevideo-real-time-statistics-360p.webm" />
+    == </video>
+    
     %h5= "Watch the video overview"
   %h3.title= "Universal Real-Time Statistics"
   %p.desc= raw "Check out the live demo of our Real-Time Statistics dashboard to see how you can get access to real-time video usage statistics, including video plays, browser and device statistics, HTML5 or Flash usage and more."
