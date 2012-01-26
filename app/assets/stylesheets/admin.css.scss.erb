@@ -417,13 +417,13 @@ table#countries_table td {
   height:650px;
 }
 
-#selectors table {
+#series_selectors table {
   border-collapse:collapse;
   background:#333;
   @include border-radius(8px)
 }
 
-#selectors table td {
+#series_selectors table td {
   min-width:200px;
   padding:0;
   vertical-align:top;
@@ -434,16 +434,16 @@ table#countries_table td {
   @include box-shadow(rgba(255,255,255,0.1) 2px 0 0);
 }
 
-#selectors table td:first-child {
+#series_selectors table td:first-child {
   border-left:none;
 }
 
-#selectors table td:last-child {
+#series_selectors table td:last-child {
   border-right:none;
   @include box-shadow(none);
 }
 
-#selectors table td h2 {
+#series_selectors table td h2 {
   font-size:16px;
   font-weight:400;
   text-transform:uppercase;
@@ -455,16 +455,16 @@ table#countries_table td {
   @include box-shadow(rgba(255,255,255,0.1) 1px 1px 0);
 }
 
-#selectors table td:last-child h2 {
+#series_selectors table td:last-child h2 {
   border-right:none;
   @include box-shadow(rgba(255,255,255,0.1) 0 1px 0);
 }
 
-#selectors ul {
+#series_selectors ul {
   list-style-type:none;
 }
 
-#selectors li a, #selectors li h3 {
+#series_selectors li a, #series_selectors li h3 {
   display:block;
   color:#888;
   font-size:16px;
@@ -477,7 +477,7 @@ table#countries_table td {
   @include box-shadow(rgba(255,255,255,0.1) 0 1px 0);
 }
 
-#selectors li li a {
+#series_selectors li li a {
   font-weight:normal;
   background-color:rgba(140,140,140,0.3);
   color:#999;
@@ -488,24 +488,24 @@ table#countries_table td {
 /*  background-position:23px 50%;*/
 }
 
-#selectors li li li a {
+#series_selectors li li li a {
   background-color:rgba(86,86,86,0.3);
   font-size:12px;
 /*  padding-left:45px;
   background-position:23px 50%;
 */}
 
-/*#selectors li a.title, #selectors li h3 {
+/*#series_selectors li a.title, #series_selectors li h3 {
   background-color:rgba(255,255,255,0.08);
   color:#999;
 }*/
 
-#selectors li a.active {
+#series_selectors li a.active {
   color:#fff;
   background-image:url(<%= asset_data_uri "admin/selectors_indicator_on.png" %>);
 }
 
-#selectors li h3 {
+#series_selectors li h3 {
   font-weight:normal;
   background-image:none;
   padding-left:10px;

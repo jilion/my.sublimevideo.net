@@ -16,11 +16,27 @@
 
   .spacer
 
+  %ul#period_selectors
+    %li.all
+      %a{ href: '#' } All
+    %li.years-1
+      %a{ href: '#' } 1 Year
+    %li.months-6
+      %a{ href: '#' } 6 Months
+    %li.months-3
+      %a{ href: '#' } 3 Months
+    %li.days-30
+      %a{ href: '#' } 30 Days
+    %li.days-7
+      %a{ href: '#' } 7 Days
+
+  .spacer
+
   #chart{ style: "height:400px" }
 
   .spacer
 
-  #selectors
+  #series_selectors
     %table
       %tr
         %td.users

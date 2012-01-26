@@ -23,47 +23,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         text: null
 
       rangeSelector:
-        inputEnabled: false
-        buttonSpacing: 3
-        buttonTheme:
-          fill: 'none'
-          style:
-            color: '#039'
-            fontWeight: 'bold'
-            float: 'right'
-          states:
-            select:
-              fill: 'none'
-        inputStyle:
-          color: '#039'
-          fontWeight: 'bold'
-        labelStyle:
-          color: 'silver'
-          fontWeight: 'bold'
-        buttons: [{
-          type: 'all'
-          text: 'All'
-        }, {
-          type: 'year'
-          count: 1
-          text: '1 y'
-        }, {
-          type: 'month'
-          count: 6
-          text: '6 m'
-        }, {
-          type: 'month'
-          count: 3
-          text: '3 m'
-        }, {
-          type: 'month'
-          count: 1
-          text: '30 d'
-        }, {
-          type: 'week'
-          count: 1
-          text: '7 d'
-        }]
+        enabled: false
 
       legend:
         enabled: true

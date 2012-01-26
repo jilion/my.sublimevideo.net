@@ -12,6 +12,9 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
       el: '#time_range_title'
       period: AdminSublimeVideo.period
 
+    new AdminSublimeVideo.Views.PeriodSelector
+      el: '#period_selectors'
+
     AdminSublimeVideo.datePickersView = new AdminSublimeVideo.Views.DatePickersView
       el: '#date_pickers'
 
@@ -21,7 +24,7 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
       period: AdminSublimeVideo.period
 
     AdminSublimeVideo.seriesSelectorView = new AdminSublimeVideo.Views.SeriesSelectorView
-      el: '#selectors'
+      el: '#series_selectors'
 
   routes:
     'stats': 'home'
