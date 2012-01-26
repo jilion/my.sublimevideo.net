@@ -16,7 +16,7 @@ gem 'squeel',                '~> 0.9.2'
 gem 'bson_ext',              '~> 1.5.2'
 gem 'bson',                  '~> 1.5.2'
 gem 'mongo',                 '~> 1.5.2'
-gem 'mongoid',               '2.4.1' # https://github.com/mongoid/mongoid/issues/1632
+gem 'mongoid',               '~> 2.4.2' # https://github.com/mongoid/mongoid/issues/1632
 
 # Views
 gem 'haml',                  '~> 3.1.3'
@@ -122,7 +122,6 @@ group :production do
 end
 
 group :development, :test do
-  gem 'log_buddy'
   gem 'timecop'
   gem 'rspec-rails'
   # gem 'ruby-debug19'
