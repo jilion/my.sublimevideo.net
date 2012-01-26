@@ -10,10 +10,10 @@ class AdminSublimeVideo.Models.UsersStat extends AdminSublimeVideo.Models.Stat
 
 class AdminSublimeVideo.Collections.UsersStats extends AdminSublimeVideo.Collections.Stats
   model: AdminSublimeVideo.Models.UsersStat
+  initialize: -> @selected = []
   url: -> '/stats/users.json'
   id: -> 'users'
-  color: (selected) -> 'rgba(0,0,255,0.7)'
-  shadow: (selected) -> true
+  yAxis: (selected) -> 1
 
   title: (selected) ->
     if selected.length == 1

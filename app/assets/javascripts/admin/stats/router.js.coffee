@@ -2,7 +2,6 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
   initialize: (options) ->
     this.initModels()
     this.initHelpers()
-
     this.initHighcharts()
 
     new AdminSublimeVideo.Views.PageTitleView
@@ -35,6 +34,7 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
   initModels: ->
     AdminSublimeVideo.period = new AdminSublimeVideo.Models.Period(type: 'days')
 
+    AdminSublimeVideo.stats["sales"]       = new AdminSublimeVideo.Collections.SalesStats()
     AdminSublimeVideo.stats["users"]       = new AdminSublimeVideo.Collections.UsersStats()
     AdminSublimeVideo.stats["sites"]       = new AdminSublimeVideo.Collections.SitesStats()
     AdminSublimeVideo.stats["site_stats"]  = new AdminSublimeVideo.Collections.SiteStatsStats()

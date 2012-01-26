@@ -9,14 +9,12 @@ class AdminSublimeVideo.Collections.TweetsStats extends AdminSublimeVideo.Collec
   initialize: -> @selected = []
   url: -> '/stats/tweets.json'
   id: -> 'tweets'
-  color: (selected) -> 'orange'
+  yAxis: (selected) -> 1
 
   title: (selected) ->
     switch selected[0]
-      when 'jilion' then 'Jilion tweets'
       when 'sublimevideo' then 'SublimeVideo tweets'
-      when 'aelios' then 'Aelios tweets'
-      else selected[0]
+      else "#{selected[0].capitalize()} tweets"
 
   customPluck: (selected) ->
     array = []

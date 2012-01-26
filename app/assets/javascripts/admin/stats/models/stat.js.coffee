@@ -5,12 +5,7 @@ class AdminSublimeVideo.Models.Stat extends Backbone.Model
 class AdminSublimeVideo.Collections.Stats extends Backbone.Collection
   initialize: -> @selected = [['active']]
   chartType: (selected) -> 'spline'
-  yAxis: (selected) -> 0
   startTime: -> this.at(0).time()
-  fillColor: (selected) -> null
-  color: (selected) -> null
-  lineColor: (selected) -> null
-  shadow: (selected) -> false
 
   currentlySelected: (selection) ->
     joinedSelection = selection.join('.')

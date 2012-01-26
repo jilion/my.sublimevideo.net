@@ -27,11 +27,9 @@ describe Stats::TweetsStat do
       it "should create site_stats stats for the last 2 days" do
         described_class.create(d: 2.days.ago.midnight)
         described_class.create_tweets_stats
-        described_class.count.should eq 1 + 1
+        described_class.count.should eq 1 + 2
       end
-
     end
-
   end
 
 end

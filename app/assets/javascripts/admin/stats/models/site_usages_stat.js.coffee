@@ -2,7 +2,6 @@
 
 class AdminSublimeVideo.Models.SiteUsagesStat extends AdminSublimeVideo.Models.Stat
   defaults:
-    
     lh: {} # Loader hits: { ns (non-ssl) => 2, s (ssl) => 1 }
     ph: {} # Player hits: { m (main non-cached) => 3, mc (main cached) => 1, e (extra non-cached) => 3, ec (extra cached) => 1, d (dev non-cached) => 3, dc (dev cached) => 1, i (invalid non-cached) => 3, ic (invalid cached) => 1 }
     fh: 0  # Flash hits
@@ -14,29 +13,13 @@ class AdminSublimeVideo.Models.SiteUsagesStat extends AdminSublimeVideo.Models.S
 
 class AdminSublimeVideo.Collections.SiteUsagesStats extends AdminSublimeVideo.Collections.Stats
   model: AdminSublimeVideo.Models.SiteUsagesStat
-  initialize: -> @selected = []
+  initialize: -> @selected = [['tr', 'v']]
   url: -> '/stats/site_usages.json'
   id: -> 'site_usages'
-
-  fillColor: (selected) ->
-    switch selected[0]
-      when 'lh', 'ph', 'fh', 'sr' then 'rgba(74,100,142,0.3)'
-      when 'tr' then 'rgba(250,150,100,0.7)'
-
-  color: (selected) ->
-    switch selected[0]
-      when 'lh', 'ph', 'fh', 'sr' then 'rgba(74,100,142,0.3)'
-      when 'tr' then 'rgba(250,150,100,0.7)'
-
-  lineColor: (selected) ->
-    switch selected[0]
-      when 'lh', 'ph', 'fh', 'sr' then 'rgba(74,100,142,0.3)'
-      when 'tr' then 'rgba(250,150,100,0.7)'
-
   yAxis: (selected) ->
     switch selected[0]
-      when 'lh', 'ph', 'fh', 'sr' then 1
-      when 'tr' then 3
+      when 'lh', 'ph', 'fh', 'sr' then 2
+      when 'tr' then 4
 
   title: (selected) ->
     top = switch selected[0]
@@ -44,7 +27,7 @@ class AdminSublimeVideo.Collections.SiteUsagesStats extends AdminSublimeVideo.Co
       when 'ph' then 'Player hits'
       when 'fh' then 'Flash hits'
       when 'sr' then 'S3 Requests'
-      when 'tr' then 'Traffic (GB)'
+      when 'tr' then 'Traffic'
       else ''
     type = switch selected[1]
       when 'billable' then 'Billable '

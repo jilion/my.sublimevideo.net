@@ -19,7 +19,7 @@ describe Stats::UsersStat do
   end
 
   describe ".create_users_stats" do
-    before(:all) do
+    before(:each) do
       Factory.create(:user) # free (no sites)
       Factory.create(:site, plan_id: @free_plan.id) # free (only free sites)
       Factory.create(:site, plan_id: @paid_plan.id) # free (site is in trial)

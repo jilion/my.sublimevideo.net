@@ -75,13 +75,16 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             _.each yAxis, (yAx) =>
               points = _.filter(@points, (point) -> point.series.yAxis is yAx)
               title += _.map(_.sortBy(points, (p) -> 1/p.y), (point) ->
-                switch point.series.yAxis.axisTitle.textStr
-                  when 'Percentages'
-                    "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 1)} %"
-                  when 'Traffic (GB)'
-                    "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 2)}"
-                  else
-                    "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)}"
+                t = "<span style=\"color:#{point.series.color};font-weight:bold\">#{point.series.name}</span>"
+                t += if point.series.yAxis.axisTitle.textStr.match /sales/i
+                  "$ #{Highcharts.numberFormat(point.y, 2)}"
+                else if point.series.yAxis.axisTitle.textStr.match /traffic/i
+                  "#{Highcharts.numberFormat(point.y, 2)} GB"
+                else if point.series.yAxis.axisTitle.textStr.match /percentages/i
+                  "#{Highcharts.numberFormat(point.y, 2)} %"
+                else
+                  "#{Highcharts.numberFormat(point.y, 0)}"
+                t
               ).join("<br/>")
               title += "<br/><br/>" unless _.indexOf(yAxis, yAx) is yAxis.length - 1
 
@@ -125,10 +128,6 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             data: collection.customPluck(selected)
             type: collection.chartType(selected)
             yAxis: _.indexOf(_.sortBy(@usedYAxis, (x) -> x), collection.yAxis(selected))
-            # fillColor: collection.fillColor(selected)
-            # color: collection.color(selected)
-            # lineColor: collection.lineColor(selected)
-            shadow: collection.lineColor(selected)
             pointStart: collection.startTime()
             pointInterval: 3600 * 24 * 1000
 
@@ -138,12 +137,12 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
   buildYAxis: ->
     yAxis = []
+
     if _.include(@usedYAxis, 0)
       yAxis.push
         lineWidth: 1
         min: 0
-        gridLineColor: '#5d7493'
-        allowDecimals: false
+        allowDecimals: true
         startOnTick: true
         showFirstLabel: true
         showLastLabel: true
@@ -154,15 +153,13 @@ class AdminSublimeVideo.Helpers.ChartsHelper
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
-            color: '#1e3966'
         title:
-          text: "Users, sites & tweets evolution"
+          text: "Sales ($)"
 
     if _.include(@usedYAxis, 1)
       yAxis.push
         lineWidth: 1
         min: 0
-        gridLineColor: '#5d7493'
         allowDecimals: false
         startOnTick: true
         showFirstLabel: true
@@ -174,19 +171,15 @@ class AdminSublimeVideo.Helpers.ChartsHelper
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
-            color: '#1e3966'
         title:
-          text: "Site Stats/Usages"
+          text: "Users, sites & tweets evolution"
 
     if _.include(@usedYAxis, 2)
       yAxis.push
         lineWidth: 1
         opposite: true
         min: 0
-        max: 100
-        alignTicks: false
-        gridLineColor: '#5d7493'
-        allowDecimals: true
+        allowDecimals: false
         startOnTick: true
         showFirstLabel: true
         showLastLabel: true
@@ -197,17 +190,15 @@ class AdminSublimeVideo.Helpers.ChartsHelper
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
-            color: '#1e3966'
         title:
-          text: "Percentages"
+          text: "Site Stats/Usages"
 
     if _.include(@usedYAxis, 3)
       yAxis.push
         lineWidth: 1
         opposite: true
         min: 0
-        alignTicks: false
-        gridLineColor: '#5d7493'
+        max: 100
         allowDecimals: true
         startOnTick: true
         showFirstLabel: true
@@ -219,7 +210,25 @@ class AdminSublimeVideo.Helpers.ChartsHelper
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
-            color: '#1e3966'
+        title:
+          text: "Percentages"
+
+    if _.include(@usedYAxis, 4)
+      yAxis.push
+        lineWidth: 1
+        opposite: true
+        min: 0
+        allowDecimals: true
+        startOnTick: true
+        showFirstLabel: true
+        showLastLabel: true
+        labels:
+          align: 'left'
+          x: 4
+          y: 4
+          style:
+            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
+            fontSize: "14px"
         title:
           text: "Traffic (GB)"
 

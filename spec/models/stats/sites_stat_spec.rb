@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Stats::SitesStat do
 
   describe ".delay_create_sites_stats" do
-
     it "should delay create_sites_stats if not already delayed" do
       expect { described_class.delay_create_sites_stats }.to change(Delayed::Job.where(:handler.matches => '%Stats::SitesStat%create_sites_stats%'), :count).by(1)
     end
@@ -17,11 +16,10 @@ describe Stats::SitesStat do
       described_class.delay_create_sites_stats
       Delayed::Job.last.run_at.should eq Time.now.utc.tomorrow.midnight
     end
-
   end
 
   context "with a bunch of different sites" do
-    before(:all) do
+    before(:each) do
       user = Factory.create(:user)
       @yearly_plan = Factory.create(:plan, name: @paid_plan.name, cycle: 'year')
       Factory.create(:site, user: user, state: 'active', plan_id: @free_plan.id)
@@ -61,9 +59,7 @@ describe Stats::SitesStat do
         sites_stat["su"].should eq 1
         sites_stat["ar"].should eq 1
       end
-
     end
-
   end
 
 end

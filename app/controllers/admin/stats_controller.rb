@@ -8,6 +8,12 @@ class Admin::StatsController < AdminController
     render params[:page]
   end
 
+  def sales
+    respond_to do |format|
+      format.json { render json: Stats::SalesStat.json }
+    end
+  end
+
   def users
     respond_to do |format|
       format.json { render json: Stats::UsersStat.json }
@@ -25,13 +31,13 @@ class Admin::StatsController < AdminController
       format.json { render json: Stats::TweetsStat.json }
     end
   end
-  
+
   def site_stats
     respond_to do |format|
       format.json { render json: Stats::SiteStatsStat.json }
     end
   end
-  
+
   def site_usages
     respond_to do |format|
       format.json { render json: Stats::SiteUsagesStat.json }

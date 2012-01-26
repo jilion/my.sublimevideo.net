@@ -49,20 +49,25 @@ module Stats
 
       def delay_create_users_stats
         unless Delayed::Job.already_delayed?('%Stats::UsersStat%create_users_stats%')
-          delay(:run_at => Time.now.utc.tomorrow.midnight).create_users_stats # every day
+          delay(:run_at => Time.now.utc.tomorrow.midnight).create_users_stats
         end
       end
 
       def create_users_stats
         delay_create_users_stats
-        self.create(
-          d: Time.now.utc.midnight,
+
+        self.create(users_hash(Time.now.utc.midnight))
+      end
+
+      def users_hash(day)
+        {
+          d: day.to_time,
           be: 0,
           fr: User.free.count,
           pa: User.paying.count,
           su: User.suspended.count,
           ar: User.archived.count
-        )
+        }
       end
 
     end

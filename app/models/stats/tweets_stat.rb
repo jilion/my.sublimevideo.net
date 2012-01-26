@@ -42,7 +42,7 @@ module Stats
 
       def delay_create_tweets_stats
         unless Delayed::Job.already_delayed?('%Stats::TweetsStat%create_tweets_stats%')
-          delay(run_at: Time.now.utc.tomorrow.midnight).create_tweets_stats # every day
+          delay(run_at: Time.now.utc.tomorrow.midnight).create_tweets_stats
         end
       end
 
@@ -51,9 +51,9 @@ module Stats
 
         last_stat_day = determine_last_stat_day
 
-        while last_stat_day < 1.day.ago.midnight do
-          last_stat_day += 1.day
+        while last_stat_day < Time.now.utc.midnight do
           create_tweets_stat(last_stat_day)
+          last_stat_day += 1.day
         end
       end
 
@@ -61,22 +61,24 @@ module Stats
         if TweetsStat.present?
           TweetsStat.order_by([:d, :asc]).last.try(:d)
         else
-          (Tweet.where(tweeted_at: { "$ne" => nil }).order_by([:tweeted_at, :asc]).first.tweeted_at - 1.day).midnight
+          (Tweet.order_by([:tweeted_at, :asc]).first.tweeted_at).midnight
         end
       end
 
       def create_tweets_stat(day)
         tweets = Tweet.between(day.beginning_of_day, day.end_of_day).all
-        self.create(
-          d: day.to_time,
-          k: hashes_for_tweets(tweets)
-        )
+
+        self.create(tweets_hash(day, tweets))
       end
 
-      def hashes_for_tweets(tweets)
-        hash = Hash.new(0)
+      def tweets_hash(day, tweets)
+        hash = {
+          d: day.to_time,
+          k: Hash.new(0)
+        }
+
         tweets.each do |tweet|
-          tweet.keywords.each { |keyword| hash[keyword] += 1 }
+          tweet.keywords.each { |keyword| hash[:k][keyword] += 1 }
         end
 
         hash
@@ -85,5 +87,4 @@ module Stats
     end
 
   end
-
 end

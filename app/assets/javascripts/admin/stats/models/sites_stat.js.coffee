@@ -12,18 +12,16 @@ class AdminSublimeVideo.Collections.SitesStats extends AdminSublimeVideo.Collect
   model: AdminSublimeVideo.Models.SitesStat
   url: -> '/stats/sites.json'
   id: -> 'sites'
-  color: (selected) -> 'rgba(255,0,0,0.7)'
-  shadow: (selected) -> true
+  yAxis: (selected) -> 1
 
   title: (selected) ->
-    if selected.length > 1
+    if selected.length > 1 # attribute is something like: ["tr", "premium"] or ["tr", "premium", "y"]
       text = "Sites "
-      if selected.length > 1 # attribute is something like: ["tr", "premium", "y"]
-        text += "in trial " if selected[0] == "tr"
-        text += "with the "
-        if selected.length > 2
-          text += if selected[2] == "y" then "yearly " else "monthly "
-      text += "#{selected[1]} plan"
+      text += "in trial " if selected[0] == "tr"
+      text += "with the "
+      if selected.length > 2 # attribute is something like: ["tr", "premium", "y"]
+        text += if selected[2] == "y" then "yearly " else "monthly "
+      text += "#{selected[1].capitalize()} plan"
       text
     else
       switch selected[0]
@@ -45,12 +43,10 @@ class AdminSublimeVideo.Collections.SitesStats extends AdminSublimeVideo.Collect
       stat = this.get(from)
 
       value = if stat?
-        if selected.length > 1
+        if selected.length > 1 # attribute is something like: ["tr", "premium"]
           value = stat.get(selected[0])
-          if selected.length > 1 # attribute is something like: ["tr", "premium", "y"]
-            _.each _.rest(selected), (e) -> value = value[e]
-            value = this.recursiveHashSum(value)
-          value
+          _.each _.rest(selected), (e) -> if value[e]? then value = value[e] else value = 0
+          this.recursiveHashSum(value)
         else if !_.isEmpty(_.values(stat.get(selected[0])))
           this.recursiveHashSum(stat.get(selected[0]))
         else

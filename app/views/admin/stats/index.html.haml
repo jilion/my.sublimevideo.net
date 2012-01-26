@@ -39,11 +39,80 @@
   #series_selectors
     %table
       %tr
+        %td.sales
+          %h2 Sales
+          %ul
+            %li
+              %a.title.selector.active{ href: "#", data: { value: 'sales.total' }, title: "All sales (new & renew subscriptions)" } Total
+              %ul
+                %li
+                  %a.selector{ href: "#", data: { value: 'sales.ne' }, title: "Revenue from new subscriptions" } New
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sales.ne.plus' }, title: "Revenue from new Plus plan subscriptions" } Plus
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.ne.plus.m' }, title: "Revenue from new monthly Plus plan subscriptions" } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.ne.plus.y' }, title: "Revenue from new yearly Plus plan subscriptions" } Yearly
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sales.ne.premium' }, title: "Revenue from new Premium plan subscriptions" } Premium
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.ne.premium.m' }, title: "Revenue from new monthly Premium plan subscriptions" } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.ne.premium.y' }, title: "Revenue from new yearly Premium plan subscriptions" } Yearly
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sales.ne.comet' }, title: "Revenue from new Comet plan subscriptions" } Comet
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.ne.comet.m' }, title: "Revenue from new monthly Comet plan subscriptions" } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.ne.comet.y' }, title: "Revenue from new yearly Comet plan subscriptions" } Yearly
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sales.ne.planet' }, title: "Revenue from new Planet plan subscriptions" } Planet
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.ne.planet.m' }, title: "Revenue from new monthly Planet plan subscriptions" } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.ne.planet.y' }, title: "Revenue from new yearly Planet plan subscriptions" } Yearly
+                %li
+                  %a.selector{ href: "#", data: { value: 'sales.re' }, title: "Revenue from renewed subscriptions" } Renew
+                  %ul
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sales.re.plus' }, title: "Revenue from renewed Plus plan subscriptions" } Plus
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.re.plus.m' }, title: "Revenue from renewed monthly Plus plan subscriptions" } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.re.plus.y' }, title: "Revenue from renewed yearly Plus plan subscriptions" } Yearly
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sales.re.premium' }, title: "Revenue from renewed Premium plan subscriptions" } Premium
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.re.premium.m' }, title: "Revenue from renewed monthly Premium plan subscriptions" } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.re.premium.y' }, title: "Revenue from renewed yearly Premium plan subscriptions" } Yearly
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sales.re.comet' }, title: "Revenue from renewed Comet plan subscriptions" } Comet
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.re.comet.m' }, title: "Revenue from renewed monthly Comet plan subscriptions" } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.re.comet.y' }, title: "Revenue from renewed yearly Comet plan subscriptions" } Yearly
+                    %li
+                      %a.selector{ href: "#", data: { value: 'sales.re.planet' }, title: "Revenue from renewed Planet plan subscriptions" } Planet
+                      %ul
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.re.planet.m' }, title: "Revenue from renewed monthly Planet plan subscriptions" } Monthly
+                        %li
+                          %a.selector{ href: "#", data: { value: 'sales.re.planet.y' }, title: "Revenue from renewed yearly Planet plan subscriptions" } Yearly
+
         %td.users
           %h2 Users
           %ul
             %li
-              %a.title.selector.active{ href: "#", data: { value: 'users.active' }, title: "Beta users, users with no paying sites and users with at least 1 paying sites" } Active
+              %a.title.selector{ href: "#", data: { value: 'users.active' }, title: "Beta users, users with no paying sites and users with at least 1 paying sites" } Active
               %ul
                 %li
                   %a.selector{ href: "#", data: { value: 'users.be' }, title: "Beta users" } Beta
@@ -152,7 +221,7 @@
                 %li
                   %a.selector{ href: "#", data: { value: 'site_stats.vv.i' } } Invalid
             %li
-              %a.title.selector{ href: "#", data: { value: 'site_stats.md.html5_proportion' } } HTML5 Mode %
+              %a.title.selector.active{ href: "#", data: { value: 'site_stats.md.html5_proportion' } } HTML5 Mode %
             %li
               %a.title.selector{ href: "#", data: { value: 'site_stats.md.mobile_proportion' }, title: "Mobile (tablet included) %" } Mobile %
 
@@ -187,7 +256,7 @@
             %li
               %a.title.selector{ href: "#", data: { value: 'site_usages.tr.s' } } Traffic S3 (GB)
             %li
-              %a.title.selector{ href: "#", data: { value: 'site_usages.tr.v' } } Traffic Voxcast (GB)
+              %a.title.selector.active{ href: "#", data: { value: 'site_usages.tr.v' } } Traffic Voxcast (GB)
 
         %td.tweets
           %h2 Tweets

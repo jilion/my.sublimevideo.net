@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Stats::SiteUsagesStat do
 
   describe ".delay_create_site_usages_stats" do
-
     it "should delay create_site_usages_stats if not already delayed" do
       expect { described_class.delay_create_site_usages_stats }.to change(Delayed::Job.where(:handler.matches => '%Stats::SiteUsagesStat%create_site_usages_stats%'), :count).by(1)
     end
@@ -17,7 +16,6 @@ describe Stats::SiteUsagesStat do
       described_class.delay_create_site_usages_stats
       Delayed::Job.last.run_at.should eq (Time.now.utc.tomorrow.midnight + 5.hours)
     end
-
   end
 
   context "with a bunch of different site_usage" do
@@ -31,7 +29,6 @@ describe Stats::SiteUsagesStat do
     end
 
     describe ".create_site_usages_stats" do
-
       it "should delay itself" do
         described_class.should_receive(:delay_create_site_usages_stats)
         described_class.create_site_usages_stats
@@ -51,11 +48,9 @@ describe Stats::SiteUsagesStat do
       it "should create site_stats stats for the last 2 days" do
         described_class.create(d: 2.days.ago.midnight)
         described_class.create_site_usages_stats
-        described_class.count.should eq 1 + 1
+        described_class.count.should eq 1 + 2
       end
-
     end
-
   end
 
 end

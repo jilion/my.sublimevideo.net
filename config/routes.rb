@@ -172,6 +172,7 @@ MySublimeVideo::Application.routes.draw do
 
       resources :stats, only: [:index] do
         collection do
+          get :sales
           get :users
           get :sites
           get :tweets

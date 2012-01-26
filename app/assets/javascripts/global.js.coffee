@@ -41,6 +41,9 @@ window.Cookie =
       if options.secure  then newcookie.push "secure"
     document.cookie = newcookie.join '; '
 
+String.prototype.capitalize = ->
+  this.replace(/^\w/, ($0) -> $0.toUpperCase())
+
 class SublimeVideo.ImagePreloader
   constructor: (imageUrl, callback, options = {}) ->
     @callback = callback

@@ -69,7 +69,8 @@ class Invoice < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :between, lambda { |started_at, ended_at| where { (created_at >= started_at) & (created_at <= ended_at) } }
+  scope :between,      lambda { |started_at, ended_at| where { (created_at >= started_at) & (created_at <= ended_at) } }
+  scope :paid_between, lambda { |started_at, ended_at| where { (paid_at >= started_at) & (paid_at <= ended_at) } }
 
   scope :open,           where(state: 'open')
   scope :paid,           where(state: 'paid').includes(:site).where { sites.refunded_at == nil }

@@ -4,9 +4,10 @@ class AdminSublimeVideo.Views.GraphView extends Backbone.View
     @options.period.bind 'change', this.render
 
   render: =>
-    $(@el).resizable('destroy')
-
     unless _.isEmpty(@collection)
+      $(@el).resizable('destroy')
+      currentScroll = $(window).scrollTop()
+
       AdminSublimeVideo.chartsHelper.chart(@collection)
 
       $(@el).resizable
@@ -15,5 +16,7 @@ class AdminSublimeVideo.Views.GraphView extends Backbone.View
         helper: "ui-resizable-helper"
         stop: (event, ui) =>
           this.render()
+
+      setTimeout((=> $(window).scrollTop(currentScroll)), 1)
 
     this

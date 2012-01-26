@@ -13,20 +13,6 @@
 #= require_tree ../templates
 #= require_tree ./stats
 
-# window.MSV =
-#   Models: {}
-#   Collections: {}
-#   Helpers: {}
-#   Routers: {}
-#   Views: {}
-# 
-# window.SVStats =
-#   Models: {}
-#   Collections: {}
-#   Helpers: {}
-#   Routers: {}
-#   Views: {}
-
 window.spinOptions =
   color:  '#d5e5ff'
   lines:  10
