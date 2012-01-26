@@ -6,7 +6,6 @@ class AdminSublimeVideo.Models.TweetsStat extends AdminSublimeVideo.Models.Stat
 
 class AdminSublimeVideo.Collections.TweetsStats extends AdminSublimeVideo.Collections.Stats
   model: AdminSublimeVideo.Models.TweetsStat
-  initialize: -> @selected = []
   url: -> '/stats/tweets.json'
   id: -> 'tweets'
   yAxis: (selected) -> 1

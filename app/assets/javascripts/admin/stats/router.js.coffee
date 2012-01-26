@@ -1,8 +1,10 @@
 class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
   initialize: (options) ->
+    @selectedSeries = options['selectedSeries']
     this.initModels()
     this.initHelpers()
     this.initHighcharts()
+    this.fetchStats()
 
     new AdminSublimeVideo.Views.PageTitleView
       el: '#page_title'
@@ -25,21 +27,15 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
     AdminSublimeVideo.seriesSelectorView = new AdminSublimeVideo.Views.SeriesSelectorView
       el: '#series_selectors'
 
-  routes:
-    'stats': 'home'
-
-  home: ->
-    this.fetchStats()
-
   initModels: ->
     AdminSublimeVideo.period = new AdminSublimeVideo.Models.Period(type: 'days')
 
-    AdminSublimeVideo.stats["sales"]       = new AdminSublimeVideo.Collections.SalesStats()
-    AdminSublimeVideo.stats["users"]       = new AdminSublimeVideo.Collections.UsersStats()
-    AdminSublimeVideo.stats["sites"]       = new AdminSublimeVideo.Collections.SitesStats()
-    AdminSublimeVideo.stats["site_stats"]  = new AdminSublimeVideo.Collections.SiteStatsStats()
-    AdminSublimeVideo.stats["site_usages"] = new AdminSublimeVideo.Collections.SiteUsagesStats()
-    AdminSublimeVideo.stats["tweets"]      = new AdminSublimeVideo.Collections.TweetsStats()
+    AdminSublimeVideo.stats["sales"]       = new AdminSublimeVideo.Collections.SalesStats(this.selectedSeriesFor('sales'))
+    AdminSublimeVideo.stats["users"]       = new AdminSublimeVideo.Collections.UsersStats(this.selectedSeriesFor('users'))
+    AdminSublimeVideo.stats["sites"]       = new AdminSublimeVideo.Collections.SitesStats(this.selectedSeriesFor('sites'))
+    AdminSublimeVideo.stats["site_stats"]  = new AdminSublimeVideo.Collections.SiteStatsStats(this.selectedSeriesFor('site_stats'))
+    AdminSublimeVideo.stats["site_usages"] = new AdminSublimeVideo.Collections.SiteUsagesStats(this.selectedSeriesFor('site_usages'))
+    AdminSublimeVideo.stats["tweets"]      = new AdminSublimeVideo.Collections.TweetsStats(this.selectedSeriesFor('tweets'))
 
   initHelpers: ->
     AdminSublimeVideo.chartsHelper = new AdminSublimeVideo.Helpers.ChartsHelper()
@@ -58,3 +54,6 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
   syncFetchSuccess: ->
     if _.all(AdminSublimeVideo.stats, (e) -> e.length > 0)
       AdminSublimeVideo.graphView.render()
+
+  selectedSeriesFor: (statName) ->
+    _.map(_.select(@selectedSeries, (selectedSerie) -> selectedSerie[0] is statName), (selectedSerie) -> _.rest(selectedSerie))

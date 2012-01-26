@@ -3,6 +3,7 @@ class AdminSublimeVideo.Views.PeriodSelector extends Backbone.View
     'click a': 'applyPreset'
 
   applyPreset: (event) ->
+    event.stopPropagation()
     preset = $(event.target).parent('li').attr('class').split('-')
 
     minStart = AdminSublimeVideo.statsChart.series[0].xAxis.getExtremes()['min']
@@ -20,6 +21,8 @@ class AdminSublimeVideo.Views.PeriodSelector extends Backbone.View
       AdminSublimeVideo.period.start = new Date _.max([minStart, AdminSublimeVideo.period.endTime() - (newStartScale * preset[1])])
 
     AdminSublimeVideo.period.trigger('change')
+
+    false
 
   day: -> 1000 * 3600 * 24
   month: -> this.day() * 30

@@ -2,6 +2,7 @@ class Admin::StatsController < AdminController
   respond_to :html, :json
 
   def index
+    @selected_series = params.select { |p| %w[controller action].exclude? p }.keys.map { |p| p.split('.') }
   end
 
   def show

@@ -3,7 +3,7 @@ class AdminSublimeVideo.Models.Stat extends Backbone.Model
   date: -> new Date(this.time())
 
 class AdminSublimeVideo.Collections.Stats extends Backbone.Collection
-  initialize: -> @selected = [['active']]
+  initialize: (selectedSeries) -> @selected = selectedSeries
   chartType: (selected) -> 'spline'
   startTime: -> this.at(0).time()
 

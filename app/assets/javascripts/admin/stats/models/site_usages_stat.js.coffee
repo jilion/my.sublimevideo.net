@@ -13,7 +13,6 @@ class AdminSublimeVideo.Models.SiteUsagesStat extends AdminSublimeVideo.Models.S
 
 class AdminSublimeVideo.Collections.SiteUsagesStats extends AdminSublimeVideo.Collections.Stats
   model: AdminSublimeVideo.Models.SiteUsagesStat
-  initialize: -> @selected = [['tr', 'v']]
   url: -> '/stats/site_usages.json'
   id: -> 'site_usages'
   yAxis: (selected) ->

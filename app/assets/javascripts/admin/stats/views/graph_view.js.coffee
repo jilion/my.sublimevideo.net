@@ -4,7 +4,7 @@ class AdminSublimeVideo.Views.GraphView extends Backbone.View
     @options.period.bind 'change', this.render
 
   render: =>
-    unless _.isEmpty(@collection)
+    unless _.isEmpty(@collection) or _.all(@collection, (stats) -> stats.selected.length is 0)
       $(@el).resizable('destroy')
       currentScroll = $(window).scrollTop()
 

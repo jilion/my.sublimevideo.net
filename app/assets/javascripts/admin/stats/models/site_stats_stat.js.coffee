@@ -26,7 +26,6 @@ class AdminSublimeVideo.Models.SiteStatsStat extends AdminSublimeVideo.Models.St
 
 class AdminSublimeVideo.Collections.SiteStatsStats extends AdminSublimeVideo.Collections.Stats
   model: AdminSublimeVideo.Models.SiteStatsStat
-  initialize: -> @selected = [['vv', 'billable'], ['md', 'html5_proportion']]
   url: -> '/stats/site_stats.json'
   id: -> 'site_stats'
   yAxis: (selected) ->

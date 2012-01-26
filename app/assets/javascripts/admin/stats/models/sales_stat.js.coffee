@@ -7,7 +7,6 @@ class AdminSublimeVideo.Models.SalesStat extends AdminSublimeVideo.Models.Stat
 
 class AdminSublimeVideo.Collections.SalesStats extends AdminSublimeVideo.Collections.Stats
   model: AdminSublimeVideo.Models.SalesStat
-  initialize: -> @selected = [['total']]
   url: -> '/stats/sales.json'
   id: -> 'sales'
   chartType: (selected) -> 'spline'
