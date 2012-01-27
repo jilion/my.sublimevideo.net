@@ -4,7 +4,7 @@ describe AdminRole do
 
   describe ".roles" do
     it "has 3 roles for now" do
-      subject.roles.should eq %w[marcom invoices god]
+      described_class.roles.should eq %w[marcom player invoices god]
     end
   end
 
