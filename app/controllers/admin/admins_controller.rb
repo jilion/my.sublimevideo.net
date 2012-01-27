@@ -1,6 +1,8 @@
 class Admin::AdminsController < AdminController
   respond_to :js, :html
 
+  before_filter { |controller| require_role?('god') }
+
   has_scope :by_date
 
   def index

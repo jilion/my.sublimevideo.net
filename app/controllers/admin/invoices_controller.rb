@@ -1,6 +1,8 @@
 class Admin::InvoicesController < AdminController
   respond_to :js, :html
 
+  before_filter { |controller| require_role?('invoices') }
+
   # filter
   has_scope :paid
   has_scope :open do |controller, scope|
@@ -51,7 +53,6 @@ class Admin::InvoicesController < AdminController
   end
 
   def monthly
-
   end
 
 end

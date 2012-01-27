@@ -1,6 +1,8 @@
 class Admin::SitesController < AdminController
   respond_to :js, :html
 
+  before_filter { |controller| require_role?('god') if %w[update sponsor].include?(action_name) }
+
   #filter
   has_scope :in_plan, :badged
   has_scope :in_trial, :not_in_trial, :paid_plan, :overusage_notified, :user_id, :with_wildcard, :with_path, :with_extra_hostnames, :with_next_cycle_plan, type: :boolean

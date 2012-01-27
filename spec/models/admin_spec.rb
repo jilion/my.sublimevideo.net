@@ -6,9 +6,16 @@ describe Admin do
     subject { @admin }
 
     its(:email) { should match /email\d+@admin.com/ }
+    its(:roles) { should eq [] }
 
     it { should be_valid }
   end # Factory
+
+  describe "Module inclusion" do
+    it "includes the AdminRoleMethods module" do
+      described_class.included_modules.should include(AdminRoleMethods)
+    end
+  end
 
   describe "Associations" do
     before(:all) { @admin = Factory.create(:admin) }
@@ -21,8 +28,18 @@ describe Admin do
     before(:all) { @admin = Factory.create(:admin) }
     subject { @admin }
 
-    [:email, :password, :password_confirmation, :remember_me].each do |attr|
+    [:email, :password, :password_confirmation, :remember_me, :roles].each do |attr|
       it { should allow_mass_assignment_of(attr) }
+    end
+
+    it "can have defined roles" do
+      AdminRole.roles.each do |role|
+        Factory.build(:admin, roles: [role]).should be_valid
+      end
+    end
+
+    it "cannot have undefined roles" do
+      Factory.build(:admin, roles: ['foo']).should_not be_valid
     end
   end # Validations
 
