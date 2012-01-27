@@ -207,7 +207,7 @@ MySublimeVideo::Application.routes.draw do
 
       resources :plans,  only: [:index, :new, :create]
 
-      resources :admins, only: [:index, :destroy]
+      resources :admins, only: [:index, :edit, :update, :destroy]
 
       resources :mails,  only: [:index, :new, :create]
       scope 'mails' do
