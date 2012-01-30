@@ -2,18 +2,18 @@ require 'spec_helper'
 
 describe Stats::SalesStat do
 
-  describe ".delay_create_sales_stats" do
+  describe ".delay_create_stats" do
     it "should delay create_sites_stats if not already delayed" do
-      expect { described_class.delay_create_sales_stats }.to change(Delayed::Job.where(:handler.matches => '%Stats::SalesStat%create_sales_stats%'), :count).by(1)
+      expect { described_class.delay_create_stats }.to change(Delayed::Job.where { handler =~ '%Stats::SalesStat%create_stats%' }, :count).by(1)
     end
 
-    it "should not delay create_sales_stats if already delayed" do
-      described_class.delay_create_sales_stats
-      expect { described_class.delay_create_sales_stats }.to_not change(Delayed::Job.where(:handler.matches => '%Stats::SalesStat%create_sales_stats%'), :count)
+    it "should not delay create_stats if already delayed" do
+      described_class.delay_create_stats
+      expect { described_class.delay_create_stats }.to_not change(Delayed::Job.where { handler =~ '%Stats::SalesStat%create_stats%' }, :count)
     end
 
-    it "should delay create_sales_stats for next day" do
-      described_class.delay_create_sales_stats
+    it "should delay create_stats for next day" do
+      described_class.delay_create_stats
       Delayed::Job.last.run_at.should eq Time.now.utc.tomorrow.midnight
     end
   end
@@ -40,15 +40,15 @@ describe Stats::SalesStat do
       Factory.create(:invoice, state: 'canceled', site: site, renew: true, invoice_items: [Factory.create(:plan_invoice_item, item: @premium_yearly_plan)], amount: 11)
     end
 
-    describe ".create_sales_stats" do
+    describe ".create_stats" do
 
       it "should delay itself" do
-        described_class.should_receive(:delay_create_sales_stats)
-        described_class.create_sales_stats
+        described_class.should_receive(:delay_create_stats)
+        described_class.create_stats
       end
 
       it "should create sites stats for states & plans" do
-        described_class.create_sales_stats
+        described_class.create_stats
         described_class.count.should eq 1
         sales_stat = described_class.last
         sales_stat["ne"].should == {

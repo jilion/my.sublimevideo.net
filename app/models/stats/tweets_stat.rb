@@ -40,14 +40,14 @@ module Stats
         json_stats.order_by([:d, :asc]).to_json(only: [:k])
       end
 
-      def delay_create_tweets_stats
-        unless Delayed::Job.already_delayed?('%Stats::TweetsStat%create_tweets_stats%')
-          delay(run_at: Time.now.utc.tomorrow.midnight).create_tweets_stats
+      def delay_create_stats
+        unless Delayed::Job.already_delayed?('%Stats::TweetsStat%create_stats%')
+          delay(run_at: Time.now.utc.tomorrow.midnight).create_stats
         end
       end
 
-      def create_tweets_stats
-        delay_create_tweets_stats
+      def create_stats
+        delay_create_stats
 
         last_stat_day = determine_last_stat_day
 

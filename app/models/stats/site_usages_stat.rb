@@ -44,14 +44,14 @@ module Stats
         json_stats.order_by([:d, :asc]).to_json(only: [:lh, :ph, :fh, :sr, :tr])
       end
 
-      def delay_create_site_usages_stats
-        unless Delayed::Job.already_delayed?('%Stats::SiteUsagesStat%create_site_usages_stats%')
-          delay(run_at: Time.now.utc.tomorrow.midnight + 5.hours).create_site_usages_stats # with 5 yours delay to be sure to have all S3 logs
+      def delay_create_stats
+        unless Delayed::Job.already_delayed?('%Stats::SiteUsagesStat%create_stats%')
+          delay(run_at: Time.now.utc.tomorrow.midnight + 5.hours).create_stats # with 5 yours delay to be sure to have all S3 logs
         end
       end
 
-      def create_site_usages_stats
-        delay_create_site_usages_stats
+      def create_stats
+        delay_create_stats
 
         last_stat_day = determine_last_stat_day
 

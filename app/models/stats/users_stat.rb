@@ -47,14 +47,14 @@ module Stats
         json_stats.order_by([:d, :asc]).to_json(only: [:be, :fr, :pa, :su, :ar])
       end
 
-      def delay_create_users_stats
-        unless Delayed::Job.already_delayed?('%Stats::UsersStat%create_users_stats%')
-          delay(:run_at => Time.now.utc.tomorrow.midnight).create_users_stats
+      def delay_create_stats
+        unless Delayed::Job.already_delayed?('%Stats::UsersStat%create_stats%')
+          delay(:run_at => Time.now.utc.tomorrow.midnight).create_stats
         end
       end
 
-      def create_users_stats
-        delay_create_users_stats
+      def create_stats
+        delay_create_stats
 
         self.create(users_hash(Time.now.utc.midnight))
       end

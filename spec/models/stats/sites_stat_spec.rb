@@ -2,18 +2,18 @@ require 'spec_helper'
 
 describe Stats::SitesStat do
 
-  describe ".delay_create_sites_stats" do
-    it "should delay create_sites_stats if not already delayed" do
-      expect { described_class.delay_create_sites_stats }.to change(Delayed::Job.where(:handler.matches => '%Stats::SitesStat%create_sites_stats%'), :count).by(1)
+  describe ".delay_create_stats" do
+    it "should delay create_stats if not already delayed" do
+      expect { described_class.delay_create_stats }.to change(Delayed::Job.where { handler =~ '%Stats::SitesStat%create_stats%' }, :count).by(1)
     end
 
-    it "should not delay create_sites_stats if already delayed" do
-      described_class.delay_create_sites_stats
-      expect { described_class.delay_create_sites_stats }.to_not change(Delayed::Job.where(:handler.matches => '%Stats::SitesStat%create_sites_stats%'), :count)
+    it "should not delay create_stats if already delayed" do
+      described_class.delay_create_stats
+      expect { described_class.delay_create_stats }.to_not change(Delayed::Job.where { handler =~ '%Stats::SitesStat%create_stats%' }, :count)
     end
 
-    it "should delay create_sites_stats for next day" do
-      described_class.delay_create_sites_stats
+    it "should delay create_stats for next day" do
+      described_class.delay_create_stats
       Delayed::Job.last.run_at.should eq Time.now.utc.tomorrow.midnight
     end
   end
@@ -35,15 +35,15 @@ describe Stats::SitesStat do
       Factory.create(:site, user: user, state: 'archived', plan_id: @paid_plan.id)
     end
 
-    describe ".create_sites_stats" do
+    describe ".create_stats" do
 
       it "should delay itself" do
-        described_class.should_receive(:delay_create_sites_stats)
-        described_class.create_sites_stats
+        described_class.should_receive(:delay_create_stats)
+        described_class.create_stats
       end
 
       it "should create sites stats for states & plans" do
-        described_class.create_sites_stats
+        described_class.create_stats
         described_class.count.should eq 1
         sites_stat = described_class.last
         sites_stat["fr"].should == { "free" => 1 }

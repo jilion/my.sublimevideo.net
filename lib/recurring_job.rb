@@ -9,11 +9,11 @@ module RecurringJob
   ]
 
   stats_tasks = [
-    '%Stats::UsersStat%create_users_stats%',
-    '%Stats::SitesStat%create_sites_stats%',
-    '%Stats::SiteStatsStat%create_site_stats_stats%',
-    '%Stats::SiteUsagesStat%create_site_usages_stats%',
-    '%Stats::TweetsStat%create_tweets_stats%'
+    '%Stats::UsersStat%create_stats%',
+    '%Stats::SitesStat%create_stats%',
+    '%Stats::SiteStatsStat%create_stats%',
+    '%Stats::SiteUsagesStat%create_stats%',
+    '%Stats::TweetsStat%create_stats%'
   ]
 
   NAMES = [

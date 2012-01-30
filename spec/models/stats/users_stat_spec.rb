@@ -2,23 +2,23 @@ require 'spec_helper'
 
 describe Stats::UsersStat do
 
-  describe ".delay_create_users_stats" do
-    it "should delay create_users_stats if not already delayed" do
-      expect { described_class.delay_create_users_stats }.to change(Delayed::Job.where(:handler.matches => '%Stats::UsersStat%create_users_stats%'), :count).by(1)
+  describe ".delay_create_stats" do
+    it "should delay create_stats if not already delayed" do
+      expect { described_class.delay_create_stats }.to change(Delayed::Job.where { handler =~ '%Stats::UsersStat%create_stats%' }, :count).by(1)
     end
 
-    it "should not delay create_users_stats if already delayed" do
-      described_class.delay_create_users_stats
-      expect { described_class.delay_create_users_stats }.to_not change(Delayed::Job.where(:handler.matches => '%Stats::UsersStat%create_users_stats%'), :count)
+    it "should not delay create_stats if already delayed" do
+      described_class.delay_create_stats
+      expect { described_class.delay_create_stats }.to_not change(Delayed::Job.where { handler =~ '%Stats::UsersStat%create_stats%' }, :count)
     end
 
-    it "should delay create_users_stats for next hour" do
-      described_class.delay_create_users_stats
+    it "should delay create_stats for next hour" do
+      described_class.delay_create_stats
       Delayed::Job.last.run_at.should eq Time.now.utc.tomorrow.midnight
     end
   end
 
-  describe ".create_users_stats" do
+  describe ".create_stats" do
     before(:each) do
       Factory.create(:user) # free (no sites)
       Factory.create(:site, plan_id: @free_plan.id) # free (only free sites)
@@ -32,12 +32,12 @@ describe Stats::UsersStat do
     end
 
     it "should delay itself" do
-      described_class.should_receive(:delay_create_users_stats)
-      described_class.create_users_stats
+      described_class.should_receive(:delay_create_stats)
+      described_class.create_stats
     end
 
     it "should create users stats for states" do
-      described_class.create_users_stats
+      described_class.create_stats
 
       described_class.count.should eq 1
       users_stat = described_class.last

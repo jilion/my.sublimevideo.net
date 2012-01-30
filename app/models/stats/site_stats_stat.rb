@@ -43,14 +43,14 @@ module Stats
         json_stats.order_by([:d, :asc]).to_json(only: [:pv, :vv, :md, :pb])
       end
 
-      def delay_create_site_stats_stats
-        unless Delayed::Job.already_delayed?('%Stats::SiteStatsStat%create_site_stats_stats%')
-          delay(run_at: Time.now.utc.tomorrow.midnight + 5.minutes).create_site_stats_stats
+      def delay_create_stats
+        unless Delayed::Job.already_delayed?('%Stats::SiteStatsStat%create_stats%')
+          delay(run_at: Time.now.utc.tomorrow.midnight + 5.minutes).create_stats
         end
       end
 
-      def create_site_stats_stats
-        delay_create_site_stats_stats
+      def create_stats
+        delay_create_stats
 
         last_stat_day = determine_last_stat_day
 
