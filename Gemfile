@@ -163,7 +163,6 @@ group :development do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-jasmine'
-  gem 'guard-brakeman'
   # gem 'guard-yard'
 end
 
