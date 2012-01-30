@@ -120,9 +120,15 @@ namespace :db do
     end
 
     desc "Create fake site & video stats"
-    task recurring_stats: :environment do
+    task stats: :environment do
       disable_perform_deliveries do
         timed { create_stats(argv('site')) }
+      end
+    end
+
+    desc "Create recurring fake site & video stats"
+    task recurring_stats: :environment do
+      disable_perform_deliveries do
         timed { recurring_stats_update(argv('site')) }
       end
     end
@@ -536,7 +542,7 @@ def create_stats(site_token = nil)
         n: "Video #{video_i} long name test truncate",
         no: "s",
         cs: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
-        p: "https://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
+        p: "http#{'s' if video_i.even?}://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
         z: "544x306",
         s: {
           "83cb4c27" => { u: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4", q: "base", f: "mp4" },
@@ -548,6 +554,7 @@ def create_stats(site_token = nil)
     end
 
     # Days
+    puts "Generating 95 days of stats for #{site.hostname}"
     95.times.each do |i|
       time = i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
       Stat::Site.collection.update(
@@ -559,7 +566,9 @@ def create_stats(site_token = nil)
         )
       end
     end
+
     # Hours
+    puts "Generating 25 hours of stats for #{site.hostname}"
     25.times.each do |i|
       time = i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time
       Stat::Site.collection.update(
@@ -571,7 +580,9 @@ def create_stats(site_token = nil)
         )
       end
     end
+
     # Minutes
+    puts "Generating 60 minutes of stats for #{site.hostname}"
     60.times.each do |i|
       time = i.minutes.ago.change(sec: 0, usec: 0).to_time
       Stat::Site.collection.update(
@@ -583,7 +594,9 @@ def create_stats(site_token = nil)
         )
       end
     end
-    # seconds
+
+    # Seconds
+    puts "Generating 60 seconds of stats for #{site.hostname}"
     60.times.each do |i|
       time = i.seconds.ago.change(usec: 0).to_time
       Stat::Site.collection.update(

@@ -49,6 +49,15 @@ GIT
       xml-simple (~> 1.0.12)
 
 GIT
+  remote: git://github.com/titanous/rpm_contrib.git
+  revision: 5ba7563619e0e5c851e6cec6a1e36716341d8045
+  branch: mongoid-instrumentation
+  specs:
+    rpm_contrib (2.1.6.beta1)
+      newrelic_rpm (>= 3.1.1)
+      newrelic_rpm (>= 3.1.1)
+
+GIT
   remote: https://github.com/pauldix/feedzirra.git
   revision: dee1454980e7b93022776cd047ad419da3999332
   specs:
@@ -518,7 +527,7 @@ DEPENDENCIES
   eco
   em-http-request
   execjs
-  factory_girl_rails
+  factory_girl_rails (~> 1.4.0)
   feedzirra!
   ffaker
   fog (~> 1.1.2)
@@ -566,6 +575,7 @@ DEPENDENCIES
   request-log-analyzer (~> 1.11.1)
   rescue_me (~> 0.1.0)
   responders (~> 0.6.4)
+  rpm_contrib!
   rspec-rails
   ruby_gntp
   sass-rails (~> 3.1.5)

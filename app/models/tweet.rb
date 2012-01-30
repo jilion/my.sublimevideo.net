@@ -16,6 +16,8 @@ class Tweet
   field :retweets_count,    type: Integer, default: 0 # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
   field :favorited,         type: Boolean, default: false # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
 
+  index :tweet_id
+  index :favorited
   index :tweeted_at
   index :keywords
 
@@ -112,14 +114,14 @@ class Tweet
         end
       end
 
-      if to_remove.present?
-        Notify.send("These tweets are marked as favorite locally but not on Twitter: #{to_remove.join(', ')}")
-        to_remove.each do |fav_tweet_id_to_remove|
-          if tweet = self.where(tweet_id: fav_tweet_id_to_remove).first
-            tweet.update_attribute(:favorited, false)
-          end
-        end
-      end
+      # if to_remove.present?
+      #   Notify.send("These tweets are marked as favorite locally but not on Twitter: #{to_remove.join(', ')}")
+      #   to_remove.each do |fav_tweet_id_to_remove|
+      #     if tweet = self.where(tweet_id: fav_tweet_id_to_remove).first
+      #       tweet.update_attribute(:favorited, false)
+      #     end
+      #   end
+      # end
     end
 
     # Return a certain number of random favorites tweets of a user, ordered by date desc FROM Twitter.

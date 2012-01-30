@@ -3,7 +3,7 @@ require 'spec_helper'
 feature "Mail templates index:" do
 
   background do
-    sign_in_as :admin
+    sign_in_as :admin, roles: ['god']
     Factory.create(:user)
   end
 

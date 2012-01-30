@@ -2,10 +2,8 @@ require 'spec_helper'
 
 describe Admin::SitesController do
 
-  context "with logged in admin" do
-    before :each do
-      sign_in :admin, authenticated_admin
-    end
+  context "with logged in admin with the god role" do
+    before(:each) { sign_in :admin, authenticated_admin(roles: ['god']) }
 
     it "responds with success to GET :index" do
       get :index
@@ -61,5 +59,6 @@ describe Admin::SitesController do
   end
 
   it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: [:index, :edit], put: [:update, :sponsor] }
+  it_should_behave_like "redirect when connected as", 'http://admin.test.host/sites', [[:admin, { roles: ['marcom'] }]], { put: [:update, :sponsor] }
 
 end

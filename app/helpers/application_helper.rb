@@ -55,4 +55,8 @@ module ApplicationHelper
     Rails.env.production? || Rails.env.staging? ? 'https' : 'http'
   end
 
+  def demo_stats_page?
+    request.subdomain == 'my' && request.path == '/sites/stats/demo'
+  end
+
 end

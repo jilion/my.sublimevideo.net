@@ -78,6 +78,9 @@ class SimplePopupHandler
   open: (contentId) ->
     this.close()
 
+    if typeof(sublimevideo)=="object" && Prototype.Browser.MobileSafari
+      sublimevideo.stop()
+
     @contentDiv.show()
 
     this.startObservers()

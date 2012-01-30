@@ -1,8 +1,8 @@
 %small
-- if octave? || zeno?
+- if has_role?('twitter')
   .favorite_form
-    = form_tag [:favorite, :admin, tweet], :method => :put, :remote => true do
-      = submit_tag "#{tweet.favorited? ? "★" : "✩"}", :onclick => "$('table_spinner').show();"
+    = form_tag [:favorite, :admin, tweet], method: :put, remote: true do
+      = submit_tag "#{tweet.favorited? ? "★" : "✩"}", onclick: "$('table_spinner').show();"
   .spacer
 - else
   = tweet.favorited? ? "★" : "✩"

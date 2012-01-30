@@ -29,7 +29,7 @@ MySublimeVideo::Application.configure do
   config.assets.compress = false
 
   # Expands the lines which load the assets
-  config.assets.debug = false
+  config.assets.debug = true
 
   # https://github.com/wavii/rails-dev-tweaks
   config.dev_tweaks.autoload_rules do

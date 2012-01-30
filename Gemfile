@@ -111,6 +111,7 @@ group :assets do
 end
 
 group :production, :staging do
+  gem 'rpm_contrib', git: 'git://github.com/titanous/rpm_contrib.git', branch: 'mongoid-instrumentation'
   gem 'newrelic_rpm'
   gem 'rack-ssl-enforcer'
 end
@@ -175,5 +176,5 @@ group :test do
   gem 'vcr',      '~> 1.10.3'
 
   gem 'database_cleaner'
-  gem 'factory_girl_rails', require: false # loaded in spec_helper Spork.each_run
+  gem 'factory_girl_rails', '~> 1.4.0', require: false # loaded in spec_helper Spork.each_run
 end

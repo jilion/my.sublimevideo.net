@@ -44,7 +44,7 @@ window.spinOptions =
 
 SublimeVideo.cropPosterframe = (problem, imageSrc, options) ->
   imgId = options['imgId']
-  originalThumb = $('<img>').attr('src', imageSrc).attr('id', "#{imgId}-img")
+  originalThumb = $('<img />').attr('src', imageSrc).attr('id', "#{imgId}-img")
 
   unless problem
     if options['width'] > options['height']

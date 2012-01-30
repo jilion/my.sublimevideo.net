@@ -9,6 +9,7 @@ backup.db
 public/uploads
 logfile
 db/*.sqlite3
+db/backups/*
 log/
 tmp/
 .sass-cache/

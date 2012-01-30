@@ -3,7 +3,7 @@ require 'spec_helper'
 feature "Mail logs show:" do
 
   background do
-    sign_in_as :admin
+    sign_in_as :admin, roles: ['god']
     @mail_log = Factory.create(:mail_log)
     Factory.create(:user)
   end

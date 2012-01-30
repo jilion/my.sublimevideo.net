@@ -1,5 +1,5 @@
 class HostnameValidator < ActiveModel::EachValidator
-  
+
   def validate_each(record, attribute, hostname)
     if hostname.present?
       if Hostname.wildcard?(hostname)
@@ -9,5 +9,5 @@ class HostnameValidator < ActiveModel::EachValidator
       end
     end
   end
-  
+
 end

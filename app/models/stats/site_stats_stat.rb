@@ -12,7 +12,6 @@ module Stats
     field :bp, type: Hash, default: {} # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
 
     index :d
-    index :created_at
 
     # ==========
     # = Scopes =
@@ -77,7 +76,7 @@ module Stats
       end
 
       def hashes_values_sum(site_stats, attribute)
-        site_stats.map(&attribute).inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
+        site_stats.only(attribute).map(&attribute).inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
       end
 
       def player_mode_hashes_values_sum(site_stats)

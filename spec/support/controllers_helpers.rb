@@ -6,7 +6,6 @@ module Spec
       shared_examples_for "redirect when connected as" do |url, roles, verb_actions, params = {}|
         roles = Array.wrap(roles)
         roles.each do |role|
-
           role_name, role_stubs = if role.is_a?(Array)
             [role[0], role[1]]
           else

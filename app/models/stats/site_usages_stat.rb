@@ -13,7 +13,6 @@ module Stats
     field :tr, type: Hash,    default: {} # Traffic (bytes): { s (s3) => 2123, v (voxcast) => 1231 }
 
     index :d
-    index :created_at
 
     # ==========
     # = Scopes =

@@ -18,4 +18,11 @@ class Admin::Admins::InvitationsController < Devise::InvitationsController
     end
   end
 
+  private
+
+  def has_role?(role)
+    admin_signed_in? && current_admin.has_role?(role)
+  end
+  helper_method :has_role?
+
 end

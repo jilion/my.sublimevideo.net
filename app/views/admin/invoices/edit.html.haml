@@ -1,6 +1,5 @@
 = title_and_content_header("Invoice ##{@invoice.reference} - #{invoice_dates(@invoice)} (#{link_to(@invoice.user.name_or_email, [:admin, @invoice.user])})")
 
-
 %h2 TODO
 %h3= charging_status(@invoice)
 
@@ -19,10 +18,9 @@
 -#%hr
 -#%br
 -#
--#-#- if zeno? && @invoice.failed?
--#-#  %h3 Retry charging
--#-#  = form_for [:retry_charging, :admin, @invoice] do |f|
--#-#    = f.submit "Retry charging"
+-#  %h3 Retry charging
+-#  = form_for [:retry_charging, :admin, @invoice] do |f|
+-#    = f.submit "Retry charging"
 -#
 -#%br
 -#%hr
