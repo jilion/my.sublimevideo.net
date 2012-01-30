@@ -52,9 +52,10 @@
 = render 'video_views', site: @site
 %br
 
-= render '/admin/shared/invoices_table', object: @site
-
+- if has_role?('invoices')
+  = render '/admin/shared/invoices_table', object: @site
 %br
+
 = render 'referrers_table', site: @site
 
 %br
