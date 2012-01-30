@@ -527,7 +527,7 @@ DEPENDENCIES
   eco
   em-http-request
   execjs
-  factory_girl_rails (~> 1.4.0)
+  factory_girl_rails
   feedzirra!
   ffaker
   fog (~> 1.1.2)

@@ -176,5 +176,5 @@ group :test do
   gem 'vcr',      '~> 1.10.3'
 
   gem 'database_cleaner'
-  gem 'factory_girl_rails', '~> 1.4.0', require: false # loaded in spec_helper Spork.each_run
+  gem 'factory_girl_rails', require: false # loaded in spec_helper Spork.each_run
 end
