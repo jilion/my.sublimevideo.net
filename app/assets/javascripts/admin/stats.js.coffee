@@ -5,7 +5,6 @@
 #= require underscore.date
 #= require hamlcoffee
 #= require spin/jquery.spin
-# require jquery.sparkline
 #= require jquery.ui.datepicker.min
 #= require highstock/highstock
 

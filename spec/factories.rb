@@ -183,8 +183,8 @@ FactoryGirl.define do
 
   factory :invoice_item do
     invoice
-    started_at  { Time.now.utc.beginning_of_month }
-    ended_at    { Time.now.utc.end_of_month }
+    started_at { Time.now.utc.beginning_of_month }
+    ended_at   { Time.now.utc.end_of_month }
   end
 
   factory :plan_invoice_item, parent: :invoice_item, class: InvoiceItem::Plan do
@@ -197,29 +197,31 @@ FactoryGirl.define do
   end
 
   factory :users_stat, class: Stats::UsersStat do
-    d             Time.now.utc.midnight
-    states_count  { {} }
-    fr            2
-    pa            1
-    su            1
-    ar            1
+    d            Time.now.utc.midnight
+    states_count { {} }
+    fr           2
+    pa           1
+    su           1
+    ar           1
   end
 
   factory :sites_stat, class: Stats::SitesStat do
-    d             Time.now.utc.midnight
-    states_count  { {} }
-    plans_count   { {} }
+    d            Time.now.utc.midnight
+    states_count { {} }
+    plans_count  { {} }
   end
 
   factory :tweets_stat, class: Stats::TweetsStat do
-    d             Time.now.utc.midnight
-    k  { {} }
+    d Time.now.utc.midnight
+    k { {} }
   end
 
   factory :site_stat, class: Stat::Site do
+    d Time.now.utc.midnight
   end
 
   factory :video_stat, class: Stat::Video do
+    d Time.now.utc.midnight
   end
 
   factory :video_tag do
@@ -227,16 +229,16 @@ FactoryGirl.define do
 
   factory :tweet do
     sequence(:tweet_id) { |n| n }
-    keywords            %w[sublimevideo jilion]
-    from_user_id        1
-    from_user           'toto'
-    to_user_id          2
-    to_user             'tata'
-    iso_language_code   'en'
-    profile_image_url   'http://yourimage.com/img.jpg'
-    content             "This is my first tweet!"
-    tweeted_at          { Time.now.utc }
-    favorited           false
+    keywords          %w[sublimevideo jilion]
+    from_user_id      1
+    from_user         'toto'
+    to_user_id        2
+    to_user           'tata'
+    iso_language_code 'en'
+    profile_image_url 'http://yourimage.com/img.jpg'
+    content           "This is my first tweet!"
+    tweeted_at        { Time.now.utc }
+    favorited         false
   end
 
   factory :client_application do
