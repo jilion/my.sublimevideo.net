@@ -1047,8 +1047,8 @@ describe SiteModules::Invoice do
             subject { @site }
 
             its(:pending_plan_started_at)       { should eql 1.month.from_now.midnight }
-            its(:pending_plan_cycle_started_at) { should eql 2.months.from_now.midnight }
-            its(:pending_plan_cycle_ended_at)   { should eql (3.months.from_now - 1.day).to_datetime.end_of_day }
+            its(:pending_plan_cycle_started_at) { should eql (1.month.from_now.midnight + 1.month) }
+            its(:pending_plan_cycle_ended_at)   { should eql (1.month.from_now.midnight + 2.months - 1.day).to_datetime.end_of_day }
             its(:plan)                          { should eql @paid_plan2 }
             its(:pending_plan)                  { should eql @paid_plan }
             its(:next_cycle_plan)               { should be_nil }

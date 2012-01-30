@@ -1,20 +1,19 @@
-class SVStats.Models.TweetsStat extends SVStats.Models.Stat
+#= require ./stat
+
+class AdminSublimeVideo.Models.TweetsStat extends AdminSublimeVideo.Models.Stat
   defaults:
     k: {}
 
-class SVStats.Collections.TweetsStats extends SVStats.Collections.Stats
-  model: SVStats.Models.TweetsStat
-  initialize: -> @selected = []
+class AdminSublimeVideo.Collections.TweetsStats extends AdminSublimeVideo.Collections.Stats
+  model: AdminSublimeVideo.Models.TweetsStat
   url: -> '/stats/tweets.json'
   id: -> 'tweets'
-  color: (selected) -> 'orange'
+  yAxis: (selected) -> 1
 
   title: (selected) ->
     switch selected[0]
-      when 'jilion' then 'Jilion tweets'
       when 'sublimevideo' then 'SublimeVideo tweets'
-      when 'aelios' then 'Aelios tweets'
-      else selected[0]
+      else "#{selected[0].capitalize()} tweets"
 
   customPluck: (selected) ->
     array = []
@@ -28,6 +27,7 @@ class SVStats.Collections.TweetsStats extends SVStats.Collections.Stats
         if stat.get('k')[selected[0]] then stat.get('k')[selected[0]] else 0
       else
         0
+
       array.push value
       from += 3600 * 24
 

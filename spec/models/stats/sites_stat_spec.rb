@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Stats::SitesStat do
 
   context "with a bunch of different sites" do
-    before(:all) do
+    before(:each) do
       user = Factory.create(:user)
       @yearly_plan = Factory.create(:plan, name: @paid_plan.name, cycle: 'year')
       Factory.create(:site, user: user, state: 'active', plan_id: @free_plan.id)
@@ -19,15 +19,10 @@ describe Stats::SitesStat do
       Factory.create(:site, user: user, state: 'archived', plan_id: @paid_plan.id)
     end
 
-    describe ".create_sites_stats" do
-
-      it "should delay itself" do
-        described_class.should_receive(:delay_create_sites_stats)
-        described_class.create_sites_stats
-      end
+    describe ".create_stats" do
 
       it "should create sites stats for states & plans" do
-        described_class.create_sites_stats
+        described_class.create_stats
         described_class.count.should eq 1
         sites_stat = described_class.last
         sites_stat["fr"].should == { "free" => 1 }
@@ -43,9 +38,7 @@ describe Stats::SitesStat do
         sites_stat["su"].should eq 1
         sites_stat["ar"].should eq 1
       end
-
     end
-
   end
 
 end

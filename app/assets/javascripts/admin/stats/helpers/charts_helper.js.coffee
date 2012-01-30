@@ -1,11 +1,18 @@
-class SVStats.Helpers.ChartsHelper
+class AdminSublimeVideo.Helpers.ChartsHelper
 
   chart: (collections) ->
-    SVStats.chart = new Highcharts.StockChart
+    AdminSublimeVideo.statsChart = new Highcharts.StockChart
       chart:
         renderTo: 'chart'
         spacingBottom: 45
-        reflow: false
+        reflow: true
+        animation: false
+        plotShadow: false
+        events:
+          redraw: (event) ->
+            AdminSublimeVideo.period.start = new Date @xAxis[0].getExtremes()['min']
+            AdminSublimeVideo.period.end   = new Date @xAxis[0].getExtremes()['max']
+            AdminSublimeVideo.timeRangeTitleView.render()
 
       series: this.buildSeries(collections)
 
@@ -16,46 +23,7 @@ class SVStats.Helpers.ChartsHelper
         text: null
 
       rangeSelector:
-        buttonSpacing: 3
-        buttonTheme:
-          fill: 'none'
-          style:
-            color: '#039'
-            fontWeight: 'bold'
-          states:
-            select:
-              fill: 'none'
-        inputStyle:
-          color: '#039'
-          fontWeight: 'bold'
-        labelStyle:
-          color: 'silver'
-          fontWeight: 'bold'
-        buttons: [{
-          type: 'all'
-          text: 'All'
-        }, {
-          type: 'year'
-          count: 1
-          text: '1 y'
-        }, {
-          type: 'month'
-          count: 6
-          text: '6 m'
-        }, {
-          type: 'month'
-          count: 3
-          text: '3 m'
-        }, {
-          type: 'month'
-          count: 1
-          text: '30 d'
-        }, {
-          type: 'week'
-          count: 1
-          text: '7 d'
-        }]
-        selected: 4
+        enabled: false
 
       legend:
         enabled: true
@@ -76,7 +44,6 @@ class SVStats.Helpers.ChartsHelper
               [0, 'rgba(22,37,63,0.8)']
               [1, 'rgba(0,0,0,0.7)']
           ]
-        # snap: 50
         shared: true
         borderColor: "#000"
         borderWidth: 1
@@ -108,13 +75,16 @@ class SVStats.Helpers.ChartsHelper
             _.each yAxis, (yAx) =>
               points = _.filter(@points, (point) -> point.series.yAxis is yAx)
               title += _.map(_.sortBy(points, (p) -> 1/p.y), (point) ->
-                switch point.series.yAxis.axisTitle.textStr
-                  when 'Percentages'
-                    "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 1)} %"
-                  when 'Traffic (GB)'
-                    "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 2)}"
-                  else
-                    "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)}"
+                t = "<span style=\"color:#{point.series.color};font-weight:bold\">#{point.series.name}</span>"
+                t += if point.series.yAxis.axisTitle.textStr.match /sales/i
+                  "$ #{Highcharts.numberFormat(point.y, 2)}"
+                else if point.series.yAxis.axisTitle.textStr.match /traffic/i
+                  "#{Highcharts.numberFormat(point.y, 2)} GB"
+                else if point.series.yAxis.axisTitle.textStr.match /percentages/i
+                  "#{Highcharts.numberFormat(point.y, 2)} %"
+                else
+                  "#{Highcharts.numberFormat(point.y, 0)}"
+                t
               ).join("<br/>")
               title += "<br/><br/>" unless _.indexOf(yAxis, yAx) is yAxis.length - 1
 
@@ -130,9 +100,8 @@ class SVStats.Helpers.ChartsHelper
 
       xAxis:
         type: 'datetime'
-        # lineWidth: 0
-        # tickWidth: 0
-        # gridLineWidth: 0
+        min: AdminSublimeVideo.period.start
+        max: AdminSublimeVideo.period.end
         gridLineColor: '#5d7493'
         labels:
           y: 21
@@ -142,9 +111,6 @@ class SVStats.Helpers.ChartsHelper
             color: '#1e3966'
 
       yAxis: this.buildYAxis()
-
-    if SVStats.statsRouter.xAxisMin? and SVStats.statsRouter.xAxisMax?
-      SVStats.chart.xAxis[0].setExtremes(SVStats.statsRouter.xAxisMin, SVStats.statsRouter.xAxisMax)
 
   buildSeries: (collections) ->
     series = []
@@ -162,10 +128,6 @@ class SVStats.Helpers.ChartsHelper
             data: collection.customPluck(selected)
             type: collection.chartType(selected)
             yAxis: _.indexOf(_.sortBy(@usedYAxis, (x) -> x), collection.yAxis(selected))
-            # fillColor: collection.fillColor(selected)
-            # color: collection.color(selected)
-            # lineColor: collection.lineColor(selected)
-            shadow: collection.lineColor(selected)
             pointStart: collection.startTime()
             pointInterval: 3600 * 24 * 1000
 
@@ -175,12 +137,12 @@ class SVStats.Helpers.ChartsHelper
 
   buildYAxis: ->
     yAxis = []
+
     if _.include(@usedYAxis, 0)
       yAxis.push
         lineWidth: 1
         min: 0
-        gridLineColor: '#5d7493'
-        allowDecimals: false
+        allowDecimals: true
         startOnTick: true
         showFirstLabel: true
         showLastLabel: true
@@ -191,15 +153,13 @@ class SVStats.Helpers.ChartsHelper
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
-            color: '#1e3966'
         title:
-          text: "Users, sites & tweets evolution"
+          text: "Sales ($)"
 
     if _.include(@usedYAxis, 1)
       yAxis.push
         lineWidth: 1
         min: 0
-        gridLineColor: '#5d7493'
         allowDecimals: false
         startOnTick: true
         showFirstLabel: true
@@ -211,19 +171,15 @@ class SVStats.Helpers.ChartsHelper
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
-            color: '#1e3966'
         title:
-          text: "Site Stats/Usages"
+          text: "Users, sites & tweets evolution"
 
     if _.include(@usedYAxis, 2)
       yAxis.push
         lineWidth: 1
         opposite: true
         min: 0
-        max: 100
-        alignTicks: false
-        gridLineColor: '#5d7493'
-        allowDecimals: true
+        allowDecimals: false
         startOnTick: true
         showFirstLabel: true
         showLastLabel: true
@@ -234,17 +190,15 @@ class SVStats.Helpers.ChartsHelper
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
-            color: '#1e3966'
         title:
-          text: "Percentages"
+          text: "Site Stats/Usages"
 
     if _.include(@usedYAxis, 3)
       yAxis.push
         lineWidth: 1
         opposite: true
         min: 0
-        alignTicks: false
-        gridLineColor: '#5d7493'
+        max: 100
         allowDecimals: true
         startOnTick: true
         showFirstLabel: true
@@ -256,7 +210,25 @@ class SVStats.Helpers.ChartsHelper
           style:
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
-            color: '#1e3966'
+        title:
+          text: "Percentages"
+
+    if _.include(@usedYAxis, 4)
+      yAxis.push
+        lineWidth: 1
+        opposite: true
+        min: 0
+        allowDecimals: true
+        startOnTick: true
+        showFirstLabel: true
+        showLastLabel: true
+        labels:
+          align: 'left'
+          x: 4
+          y: 4
+          style:
+            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
+            fontSize: "14px"
         title:
           text: "Traffic (GB)"
 

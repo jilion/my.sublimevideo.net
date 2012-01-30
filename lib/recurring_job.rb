@@ -19,7 +19,7 @@ module RecurringJob
 
   class << self
 
-    def self.delay_download_or_fetch_and_create_new_logs
+    def delay_download_or_fetch_and_create_new_logs
       Log::Voxcast.download_and_create_new_logs
       Log::Amazon::S3::Player.delay_fetch_and_create_new_logs
       Log::Amazon::S3::Loaders.delay_fetch_and_create_new_logs
@@ -50,35 +50,33 @@ module RecurringJob
       end
     end
 
-    def invoices_processing
-      Invoice.update_pending_dates_for_first_not_paid_invoices
-      Site.activate_or_downgrade_sites_leaving_trial
-      Site.renew_active_sites
-      Transaction.charge_invoices
+    def invoices_processing(priority=2)
+      Invoice.delay(priority: priority).update_pending_dates_for_first_not_paid_invoices
+      Site.delay(priority: priority).activate_or_downgrade_sites_leaving_trial
+      Site.delay(priority: priority).renew_active_sites
+      Transaction.delay(priority: priority).charge_invoices
 
       delay_invoices_processing
     end
 
-    def sites_processing
-      Site.send_trial_will_expire
-      Site.monitor_sites_usages
-      Site.update_last_30_days_counters_for_not_archived_sites
+    def sites_processing(priority=3)
+      Site.delay(priority: priority).send_trial_will_expire
+      Site.delay(priority: priority).monitor_sites_usages
+      Site.delay(priority: priority).update_last_30_days_counters_for_not_archived_sites
 
       delay_sites_processing
     end
 
-    def users_processing
-      User.send_credit_card_expiration
+    def users_processing(priority=4)
+      User.delay(priority: priority).send_credit_card_expiration
 
       delay_users_processing
     end
 
-    def stats_processing
-      Stats::UsersStat.create_users_stats
-      Stats::SitesStat.create_sites_stats
-      Stats::SiteStatsStat.create_site_stats_stats
-      Stats::SiteUsagesStat.create_site_usages_stats
-      Stats::TweetsStat.create_tweets_stats
+    def stats_processing(priority=5)
+      %w[Users Sites Sales SiteStats SiteUsages Tweets].each do |stats_klass|
+        "Stats::#{stats_klass}Stat".constantize.delay(priority: priority).create_stats
+      end
 
       delay_stats_processing
     end

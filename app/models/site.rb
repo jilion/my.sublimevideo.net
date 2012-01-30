@@ -6,6 +6,7 @@ class Site < ActiveRecord::Base
   include SiteModules::Scope
   include SiteModules::Templates
   include SiteModules::Usage
+  include SiteModules::UsageMonitoring
 
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]

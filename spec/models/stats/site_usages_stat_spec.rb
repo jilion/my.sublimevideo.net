@@ -12,15 +12,10 @@ describe Stats::SiteUsagesStat do
       Factory.create(:site_usage, site_id: site.id, day: Time.now.midnight,   loader_hits: 2, ssl_loader_hits: 1)
     end
 
-    describe ".create_site_usages_stats" do
-
-      it "should delay itself" do
-        described_class.should_receive(:delay_create_site_usages_stats)
-        described_class.create_site_usages_stats
-      end
+    describe ".create_stats" do
 
       it "should create site_stats stats for the last 5 days" do
-        described_class.create_site_usages_stats
+        described_class.create_stats
         described_class.count.should eq 5
         site_usages_stat = described_class.last
         site_usages_stat.lh.should eq({ 'ns' => 8, 's' => 5 })
@@ -32,12 +27,11 @@ describe Stats::SiteUsagesStat do
 
       it "should create site_stats stats for the last 2 days" do
         described_class.create(d: 2.days.ago.midnight)
-        described_class.create_site_usages_stats
-        described_class.count.should eq 1 + 1
+        described_class.create_stats
+        described_class.count.should eq 1 + 2
       end
 
     end
-
   end
 
 end

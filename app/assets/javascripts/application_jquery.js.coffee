@@ -2,12 +2,9 @@
 #= require jquery_ujs
 #= require underscore
 
-#= require_self
-
 #= require global
 
-window.SublimeVideo   = window.SublimeVideo || {}
-window.MySublimeVideo = window.MySublimeVideo || {}
+#= require_self
 
 SublimeVideo.topDomainHost = ->
   document.location.host.split('.').slice(-2).join('.')

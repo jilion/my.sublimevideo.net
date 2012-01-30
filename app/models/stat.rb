@@ -4,10 +4,10 @@ module Stat
   included do
 
     # DateTime periods
-    field :s,  type: DateTime  # Second
-    field :m,  type: DateTime  # Minute
-    field :h,  type: DateTime  # Hour
-    field :d,  type: DateTime  # Day
+    field :s, type: DateTime # Second
+    field :m, type: DateTime # Minute
+    field :h, type: DateTime # Hour
+    field :d, type: DateTime # Day
 
     # ==========
     # = Scopes =

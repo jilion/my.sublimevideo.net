@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Stats::UsersStat do
 
-  describe ".create_users_stats" do
-    before(:all) do
+  describe ".create_stats" do
+    before(:each) do
       Factory.create(:user) # free (no sites)
       Factory.create(:site, plan_id: @free_plan.id) # free (only free sites)
       Factory.create(:site, plan_id: @paid_plan.id) # free (site is in trial)
@@ -15,13 +15,8 @@ describe Stats::UsersStat do
       Factory.create(:user, state: 'archived') # archived
     end
 
-    it "should delay itself" do
-      described_class.should_receive(:delay_create_users_stats)
-      described_class.create_users_stats
-    end
-
     it "should create users stats for states" do
-      described_class.create_users_stats
+      described_class.create_stats
 
       described_class.count.should eq 1
       users_stat = described_class.last

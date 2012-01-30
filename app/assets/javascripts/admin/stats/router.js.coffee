@@ -1,54 +1,59 @@
-class SVStats.Routers.StatsRouter extends Backbone.Router
-
+class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
   initialize: (options) ->
-    @selectedRange = 4
-    this.initHighcharts()
+    @selectedSeries = options['selectedSeries']
     this.initModels()
     this.initHelpers()
-    this.chartHeight = 400
-
-    new SVStats.Views.PageTitleView
-      el: '#page_title'
-
-    SVStats.graphView = new SVStats.Views.GraphView
-      el: '#chart'
-      collection: SVStats.stats
-
-    SVStats.seriesSelectorView = new SVStats.Views.SeriesSelectorView
-      el: '#selectors'
-
-  routes:
-    'stats': 'home'
-
-  home: ->
+    this.initHighcharts()
     this.fetchStats()
 
-  storeCurrentExtremes: ->
-    if SVStats.chart?
-      @xAxisMin = SVStats.chart.xAxis[0].getExtremes()['min']
-      @xAxisMax = SVStats.chart.xAxis[0].getExtremes()['max']
+    new AdminSublimeVideo.Views.PageTitleView
+      el: '#page_title'
+
+    AdminSublimeVideo.timeRangeTitleView = new AdminSublimeVideo.Views.TimeRangeTitleView
+      el: '#time_range_title'
+      period: AdminSublimeVideo.period
+
+    new AdminSublimeVideo.Views.PeriodSelector
+      el: '#period_selectors'
+
+    AdminSublimeVideo.datePickersView = new AdminSublimeVideo.Views.DatePickersView
+      el: '#date_pickers'
+
+    AdminSublimeVideo.graphView = new AdminSublimeVideo.Views.GraphView
+      el: '#chart'
+      collection: AdminSublimeVideo.stats
+      period: AdminSublimeVideo.period
+
+    AdminSublimeVideo.seriesSelectorView = new AdminSublimeVideo.Views.SeriesSelectorView
+      el: '#series_selectors'
 
   initModels: ->
-    SVStats.stats["users"]       = new SVStats.Collections.UsersStats()
-    SVStats.stats["sites"]       = new SVStats.Collections.SitesStats()
-    SVStats.stats["site_stats"]  = new SVStats.Collections.SiteStatsStats()
-    SVStats.stats["site_usages"] = new SVStats.Collections.SiteUsagesStats()
-    SVStats.stats["tweets"]      = new SVStats.Collections.TweetsStats()
+    AdminSublimeVideo.period = new AdminSublimeVideo.Models.Period(type: 'days')
+
+    AdminSublimeVideo.stats["sales"]       = new AdminSublimeVideo.Collections.SalesStats(this.selectedSeriesFor('sales'))
+    AdminSublimeVideo.stats["users"]       = new AdminSublimeVideo.Collections.UsersStats(this.selectedSeriesFor('users'))
+    AdminSublimeVideo.stats["sites"]       = new AdminSublimeVideo.Collections.SitesStats(this.selectedSeriesFor('sites'))
+    AdminSublimeVideo.stats["site_stats"]  = new AdminSublimeVideo.Collections.SiteStatsStats(this.selectedSeriesFor('site_stats'))
+    AdminSublimeVideo.stats["site_usages"] = new AdminSublimeVideo.Collections.SiteUsagesStats(this.selectedSeriesFor('site_usages'))
+    AdminSublimeVideo.stats["tweets"]      = new AdminSublimeVideo.Collections.TweetsStats(this.selectedSeriesFor('tweets'))
 
   initHelpers: ->
-    SVStats.chartsHelper = new SVStats.Helpers.ChartsHelper()
-
-  fetchStats: ->
-    _.each SVStats.stats, (stat) ->
-      stat.fetch
-        silent: true
-        success: -> SVStats.statsRouter.syncFetchSuccess()
-
-  syncFetchSuccess: ->
-    if _.all(SVStats.stats, (e) -> e.length > 0)
-      SVStats.graphView.render()
+    AdminSublimeVideo.chartsHelper = new AdminSublimeVideo.Helpers.ChartsHelper()
 
   initHighcharts: ->
     Highcharts.setOptions
       global:
         useUTC: true
+
+  fetchStats: ->
+    _.each AdminSublimeVideo.stats, (stat) ->
+      stat.fetch
+        silent: true
+        success: -> AdminSublimeVideo.statsRouter.syncFetchSuccess()
+
+  syncFetchSuccess: ->
+    if _.all(AdminSublimeVideo.stats, (e) -> e.length > 0)
+      AdminSublimeVideo.graphView.render()
+
+  selectedSeriesFor: (statName) ->
+    _.map(_.select(@selectedSeries, (selectedSerie) -> selectedSerie[0] is statName), (selectedSerie) -> _.rest(selectedSerie))

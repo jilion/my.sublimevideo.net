@@ -43,12 +43,12 @@ module Stats
         json_stats.order_by([:d, :asc]).to_json(only: [:pv, :vv, :md, :pb])
       end
 
-      def create_site_stats_stats
+      def create_stats
         last_stat_day = determine_last_stat_day
 
-        while last_stat_day < 1.day.ago.midnight do
-          last_stat_day += 1.day
+        while last_stat_day < Time.now.utc.midnight do
           create_site_stats_stat(last_stat_day)
+          last_stat_day += 1.day
         end
       end
 
@@ -56,30 +56,37 @@ module Stats
         if SiteStatsStat.present?
           SiteStatsStat.order_by([:d, :asc]).last.try(:d)
         else
-          Stat::Site.where(d: { "$ne" => nil }).order_by([:d, :asc]).first.d - 1.day
+          Stat::Site.where(d: { "$ne" => nil }).order_by([:d, :asc]).first.d
         end
       end
 
       def create_site_stats_stat(day)
         site_stats = Stat::Site.where(d: day.to_time).all
-        self.create(
+
+        self.create(site_stats_hash(day, site_stats))
+      end
+
+      def site_stats_hash(day, site_stats)
+        {
           d:  day.to_time,
           pv: hashes_values_sum(site_stats, :pv),
           vv: hashes_values_sum(site_stats, :vv),
           bp: hashes_values_sum(site_stats, :bp),
-          md: md_hashes_values_sum(site_stats)
-        )
+          md: player_mode_hashes_values_sum(site_stats)
+        }
       end
 
       def hashes_values_sum(site_stats, attribute)
         site_stats.map(&attribute).inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
       end
 
-      def md_hashes_values_sum(site_stats)
+      def player_mode_hashes_values_sum(site_stats)
         md = site_stats.map(&:md)
-        h  = md.map { |h| h["h"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
-        f  = md.map { |h| h["f"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
-        { h: h, f: f }
+
+        {
+          h: md.map { |h| h["h"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } },
+          f: md.map { |h| h["f"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
+        }
       end
 
     end

@@ -47,15 +47,19 @@ module Stats
         json_stats.order_by([:d, :asc]).to_json(only: [:be, :fr, :pa, :su, :ar])
       end
 
-      def create_users_stats
-        self.create(
-          d: Time.now.utc.midnight,
+      def create_stats
+        self.create(users_hash(Time.now.utc.midnight))
+      end
+
+      def users_hash(day)
+        {
+          d: day.to_time,
           be: 0,
           fr: User.free.count,
           pa: User.paying.count,
           su: User.suspended.count,
           ar: User.archived.count
-        )
+        }
       end
 
     end

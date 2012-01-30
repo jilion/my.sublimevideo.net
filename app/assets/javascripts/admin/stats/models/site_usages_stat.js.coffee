@@ -1,6 +1,7 @@
-class SVStats.Models.SiteUsagesStat extends SVStats.Models.Stat
+#= require ./stat
+
+class AdminSublimeVideo.Models.SiteUsagesStat extends AdminSublimeVideo.Models.Stat
   defaults:
-    
     lh: {} # Loader hits: { ns (non-ssl) => 2, s (ssl) => 1 }
     ph: {} # Player hits: { m (main non-cached) => 3, mc (main cached) => 1, e (extra non-cached) => 3, ec (extra cached) => 1, d (dev non-cached) => 3, dc (dev cached) => 1, i (invalid non-cached) => 3, ic (invalid cached) => 1 }
     fh: 0  # Flash hits
@@ -10,31 +11,14 @@ class SVStats.Models.SiteUsagesStat extends SVStats.Models.Stat
   customGet: (selected) ->
     this.get(selected[0])[selected[1]] or 0
 
-class SVStats.Collections.SiteUsagesStats extends SVStats.Collections.Stats
-  model: SVStats.Models.SiteUsagesStat
-  initialize: -> @selected = []
+class AdminSublimeVideo.Collections.SiteUsagesStats extends AdminSublimeVideo.Collections.Stats
+  model: AdminSublimeVideo.Models.SiteUsagesStat
   url: -> '/stats/site_usages.json'
   id: -> 'site_usages'
-
-  fillColor: (selected) ->
-    switch selected[0]
-      when 'lh', 'ph', 'fh', 'sr' then 'rgba(74,100,142,0.3)'
-      when 'tr' then 'rgba(250,150,100,0.7)'
-
-  color: (selected) ->
-    switch selected[0]
-      when 'lh', 'ph', 'fh', 'sr' then 'rgba(74,100,142,0.3)'
-      when 'tr' then 'rgba(250,150,100,0.7)'
-
-  lineColor: (selected) ->
-    switch selected[0]
-      when 'lh', 'ph', 'fh', 'sr' then 'rgba(74,100,142,0.3)'
-      when 'tr' then 'rgba(250,150,100,0.7)'
-
   yAxis: (selected) ->
     switch selected[0]
-      when 'lh', 'ph', 'fh', 'sr' then 1
-      when 'tr' then 3
+      when 'lh', 'ph', 'fh', 'sr' then 2
+      when 'tr' then 4
 
   title: (selected) ->
     top = switch selected[0]
@@ -42,7 +26,7 @@ class SVStats.Collections.SiteUsagesStats extends SVStats.Collections.Stats
       when 'ph' then 'Player hits'
       when 'fh' then 'Flash hits'
       when 'sr' then 'S3 Requests'
-      when 'tr' then 'Traffic (GB)'
+      when 'tr' then 'Traffic'
       else ''
     type = switch selected[1]
       when 'billable' then 'Billable '
@@ -72,16 +56,21 @@ class SVStats.Collections.SiteUsagesStats extends SVStats.Collections.Stats
             switch selected[1]
               when 'all' then stat.customGet(['lh', 'ns']) + stat.customGet(['lh', 's'])
               else stat.customGet(selected)
+
           when 'ph'
             switch selected[1]
               when 'all' then stat.customGet([selected[0], 'm']) + stat.customGet([selected[0], 'mc']) + stat.customGet([selected[0], 'e']) + stat.customGet([selected[0], 'ec']) + stat.customGet([selected[0], 'd']) + stat.customGet([selected[0], 'dc']) + stat.customGet([selected[0], 'i']) + stat.customGet([selected[0], 'ic'])
+
               when 'billable' then stat.customGet([selected[0], 'm']) + stat.customGet([selected[0], 'mc']) + stat.customGet([selected[0], 'e']) + stat.customGet([selected[0], 'ec'])
+
               else stat.customGet(selected) + stat.customGet([selected[0], "#{selected[1]}c"])
+
           when 'fh' then stat.get('fh')
           when 'sr' then stat.get('sr')
           when 'tr' then stat.customGet(selected) / (1024 * 1024 * 1024)  # GB
       else
         0
+
       array.push value
       from += 3600 * 24
 
