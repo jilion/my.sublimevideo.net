@@ -34,7 +34,7 @@ class AdminSublimeVideo.Collections.SiteStatsStats extends AdminSublimeVideo.Col
       when 'md' then 3
   chartType: (selected) ->
     switch selected[0]
-      when 'pv', 'vv' then 'spline'
+      when 'pv', 'vv' then 'areaspline'
       when 'md' then 'spline'
 
   title: (selected) ->

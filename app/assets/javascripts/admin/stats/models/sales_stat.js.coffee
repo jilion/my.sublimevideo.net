@@ -9,7 +9,7 @@ class AdminSublimeVideo.Collections.SalesStats extends AdminSublimeVideo.Collect
   model: AdminSublimeVideo.Models.SalesStat
   url: -> '/stats/sales.json'
   id: -> 'sales'
-  chartType: (selected) -> 'spline'
+  chartType: (selected) -> 'column'
   yAxis: (selected) -> 0
 
   title: (selected) ->

@@ -542,7 +542,7 @@ DEPENDENCIES
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
   mongo (~> 1.5.2)
-  mongoid (~> 2.4.2)
+  mongoid (~> 2.4.3)
   newrelic_rpm
   oauth (~> 0.4.5)
   oauth-plugin (~> 0.4.0.pre7)

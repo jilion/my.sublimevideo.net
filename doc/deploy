@@ -1,55 +1,16 @@
-In your .git/config:
-
-[user]
-  name  = YOUR NAME
-  email = YOUR EMAIL
-
-
-[core]
-  repositoryformatversion = 0
-  filemode                = true
-  bare                    = false
-  logallrefupdates        = true
-  ignorecase              = true
-
-
-[heroku]
-  remote = production
-
-
-[remote "origin"]
-  url   = git@jime1.epfl.ch:my.sublimevideo.net.git
-  fetch = +refs/heads/*:refs/remotes/origin/*
-
-[remote "staging"]
-  url   = git@heroku.com:mysublime-staging.git
-  fetch = +master:refs/remotes/staging/master
-  push  = HEAD:master
-
-[remote "production"]
-  url   = git@heroku.com:mysublime.git
-  fetch = +master:refs/remotes/production/master
-  push  = master:master
-
-
-[branch "master"]
-  remote   = origin
-  merge    = refs/heads/master
-  database = true # only if you want to use a different database for this branch
-
-[branch "v2"]
-  remote   = origin
-  merge    = refs/heads/v2
-  database = true # only if you want to use a different database for this branch
-
 ==================================================================================
 
 From any branch:
-  git push staging # will push the current branch in staging
+  git push staging # will push the current branch to the staging remote (i.e. the sublimevideo-staging heroku app)
 
 ==================================================================================
 
 From master only:
-  git push production # will push the master branch in production (checkout the master branch before doing this)
+  git push production # will ALWAYS push the master branch to the production remote (i.e. the sublimevideo heroku app: my, api, docs, admin subdomains)
+
+==================================================================================
+
+From master only:
+  git push wwwproduction # will ALWAYS push the master branch to the wwwproduction remote (i.e. the wwwsublimevideo heroku app)
 
 ==================================================================================
