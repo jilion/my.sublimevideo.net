@@ -52,11 +52,15 @@ class AdminSublimeVideo.Collections.SitesStats extends AdminSublimeVideo.Collect
         else
           switch selected[0]
             when 'all' then this.recursiveHashSum(stat.get('fr')) + this.recursiveHashSum(stat.get('tr')) + this.recursiveHashSum(stat.get('pa')) + stat.get('su') + stat.get('ar')
+
             when 'active' then this.recursiveHashSum(stat.get('fr')) + this.recursiveHashSum(stat.get('tr')) + this.recursiveHashSum(stat.get('pa'))
+
             when 'passive' then stat.get('su') + stat.get('ar')
+
             else stat.get(selected[0])
       else
         0
+
       array.push value
       from += 3600 * 24
 

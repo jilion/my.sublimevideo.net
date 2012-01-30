@@ -2,8 +2,8 @@
 
 class AdminSublimeVideo.Models.SalesStat extends AdminSublimeVideo.Models.Stat
   defaults:
-    ne: {} # new
-    re: {} # renew
+    ne: 0 # new
+    re: 0 # renew
 
 class AdminSublimeVideo.Collections.SalesStats extends AdminSublimeVideo.Collections.Stats
   model: AdminSublimeVideo.Models.SalesStat
@@ -39,15 +39,23 @@ class AdminSublimeVideo.Collections.SalesStats extends AdminSublimeVideo.Collect
 
       value = if stat?
         if selected.length > 1 # attribute is something like: ["ne", "premium"] or ["ne", "premium", "y"]
-          value = stat.get(selected[0])
-          _.each _.rest(selected), (e) -> if value[e]? then value = value[e] else value = 0
-          this.recursiveHashSum(value)
+          v = stat.get(selected[0])
+          _.each _.rest(selected), (e) -> if v[e]? then v = v[e] else v = 0
+          this.recursiveHashSum(v)
+
         else if !_.isEmpty(_.values(stat.get(selected[0])))
-          this.recursiveHashSum(stat.get(selected[0]))
+          this.recursiveHashSum(stat.get(selected[0]) or 0)
+
         else if selected[0] is 'total'
-          this.recursiveHashSum(stat.get('ne')) + this.recursiveHashSum(stat.get('re'))
+          this.recursiveHashSum(stat.get('ne') or 0) + this.recursiveHashSum(stat.get('re') or 0)
+
+        else
+          v = stat.get(selected[0])
+          if _.isEmpty(v) then 0 else v
+
       else
         0
+
       array.push value / 100
       from += 3600 * 24
 

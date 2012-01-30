@@ -41,6 +41,7 @@ class AdminSublimeVideo.Collections.UsersStats extends AdminSublimeVideo.Collect
           else stat.get(selected[0])
       else
         0
+
       array.push value
       from += 3600 * 24
 

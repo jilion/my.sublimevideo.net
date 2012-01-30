@@ -27,6 +27,7 @@ class AdminSublimeVideo.Collections.TweetsStats extends AdminSublimeVideo.Collec
         if stat.get('k')[selected[0]] then stat.get('k')[selected[0]] else 0
       else
         0
+
       array.push value
       from += 3600 * 24
 

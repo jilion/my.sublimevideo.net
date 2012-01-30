@@ -66,14 +66,18 @@ class AdminSublimeVideo.Collections.SiteStatsStats extends AdminSublimeVideo.Col
           when 'pv', 'vv'
             switch selected[1]
               when 'all' then stat.customGet([selected[0], 'm']) + stat.customGet([selected[0], 'e']) + stat.customGet([selected[0], 'em']) + stat.customGet([selected[0], 'd']) + stat.customGet([selected[0], 'i'])
+
               when 'billable' then stat.customGet([selected[0], 'm']) + stat.customGet([selected[0], 'e']) + stat.customGet([selected[0], 'em'])
+
               else stat.customGet(selected)
+
           when 'md'
             switch selected[1]
               when 'html5_proportion' then stat.html5Proportion()
               when 'mobile_proportion' then stat.mobileProportion()
       else
         0
+
       array.push value
       from += 3600 * 24
 

@@ -5,7 +5,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
       chart:
         renderTo: 'chart'
         spacingBottom: 45
-        reflow: false
+        reflow: true
         animation: false
         plotShadow: false
         events:
