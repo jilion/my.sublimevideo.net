@@ -1,5 +1,6 @@
 class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
   initialize: (options) ->
+    @selectedPeriod = options['selectedPeriod']
     @selectedSeries = options['selectedSeries']
     this.initModels()
     this.initHelpers()
@@ -29,6 +30,9 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
 
   initModels: ->
     AdminSublimeVideo.period = new AdminSublimeVideo.Models.Period(type: 'days')
+    unless _.isEmpty @selectedPeriod
+      AdminSublimeVideo.period.start = new Date parseInt(@selectedPeriod[0])
+      AdminSublimeVideo.period.end   = new Date parseInt(@selectedPeriod[1])
 
     AdminSublimeVideo.stats["sales"]       = new AdminSublimeVideo.Collections.SalesStats(this.selectedSeriesFor('sales'))
     AdminSublimeVideo.stats["users"]       = new AdminSublimeVideo.Collections.UsersStats(this.selectedSeriesFor('users'))
@@ -57,3 +61,32 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
 
   selectedSeriesFor: (statName) ->
     _.map(_.select(@selectedSeries, (selectedSerie) -> selectedSerie[0] is statName), (selectedSerie) -> _.rest(selectedSerie))
+
+  clearUrl: ->
+    if history and history.pushState
+      currentLocation = document.location
+      history.pushState({}, document.title, "#{currentLocation.protocol}//#{currentLocation.hostname}#{currentLocation.pathname}")
+
+  updateUrl: (key, value) ->
+    if history and history.pushState
+      value = encodeURIComponent(value)
+      currentLocation = document.location
+      currentSearch = _.compact currentLocation.search.replace('?', '').split('&')
+      newParam = if key? then "#{key}=#{value}" else value
+
+      indexOfParams = if key?
+        v = _.find(currentSearch, (param) -> param.indexOf("#{key}=") isnt -1)
+        _.indexOf(currentSearch, v)
+      else
+        _.indexOf(currentSearch, newParam)
+
+      if indexOfParams isnt -1
+        currentSearch.splice(indexOfParams, 1)
+
+      if key? or indexOfParams is -1
+        currentSearch.push newParam
+
+      currentSearch = currentSearch.join('&')
+      if !_.isEmpty(currentSearch) then currentSearch = "?#{currentSearch}"
+
+      history.pushState({}, document.title, "#{currentLocation.protocol}//#{currentLocation.hostname}#{currentLocation.pathname}#{currentSearch}")

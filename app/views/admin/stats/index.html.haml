@@ -1,10 +1,13 @@
 = title("Statistics")
 :coffeescript
   $ ->
+    selectedPeriod = #{@selected_period.to_json}
     selectedSeries = #{@selected_series.to_json}
     selectedSeriesString = _.map(selectedSeries, (selectedSerie) -> selectedSerie.join('.'))
     window.AdminSublimeVideo.stats = {}
-    window.AdminSublimeVideo.statsRouter = new AdminSublimeVideo.Routers.StatsRouter({ selectedSeries: selectedSeries })
+    window.AdminSublimeVideo.statsRouter = new AdminSublimeVideo.Routers.StatsRouter
+      selectedPeriod: selectedPeriod
+      selectedSeries: selectedSeries
 
     $('a.selector').each () ->
       if _.any(selectedSeriesString, (selectedSerieString) => selectedSerieString is $(this).data('value'))

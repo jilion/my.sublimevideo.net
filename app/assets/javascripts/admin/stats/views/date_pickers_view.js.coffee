@@ -30,8 +30,11 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
       this.destroyDatePickers()
 
   apply: ->
-    AdminSublimeVideo.period.start = new Date this.convertDateToUTC('#start_time_picker')
-    AdminSublimeVideo.period.end   = new Date this.convertDateToUTC('#end_time_picker')
+    newStart = this.convertDateToUTC('#start_time_picker')
+    newEnd   = this.convertDateToUTC('#end_time_picker')
+    AdminSublimeVideo.period.start = new Date newStart
+    AdminSublimeVideo.period.end   = new Date newEnd
+    AdminSublimeVideo.statsRouter.updateUrl('p', "#{newStart}-#{newEnd}")
     this.close()
     AdminSublimeVideo.period.trigger('change')
 

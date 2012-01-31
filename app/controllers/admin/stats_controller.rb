@@ -3,6 +3,7 @@ class Admin::StatsController < AdminController
 
   def index
     @selected_series = params.select { |p| %w[controller action].exclude? p }.keys.map { |p| p.split('.') }
+    @selected_period = (params[:p] || "").split('-')
   end
 
   def show
