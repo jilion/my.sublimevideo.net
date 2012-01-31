@@ -122,8 +122,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
       xAxis:
         type: 'datetime'
-        min: AdminSublimeVideo.period.start
-        max: AdminSublimeVideo.period.end
+        min: AdminSublimeVideo.period.startTime()
+        max: AdminSublimeVideo.period.endTime()
         gridLineColor: '#5d7493'
         lineWidth: 2
         lineColor: '#000'

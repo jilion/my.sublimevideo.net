@@ -23,7 +23,7 @@ class AdminSublimeVideo.Views.PeriodSelector extends Backbone.View
       AdminSublimeVideo.period.start = new Date newStart
 
     AdminSublimeVideo.statsRouter.updateUrl('p', "#{newStart}-#{newEnd.getTime()}")
-    AdminSublimeVideo.period.trigger('change')
+    AdminSublimeVideo.graphView.render()
 
     false
 

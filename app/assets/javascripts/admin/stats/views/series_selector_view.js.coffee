@@ -11,7 +11,7 @@ class AdminSublimeVideo.Views.SeriesSelectorView extends Backbone.View
     this.toggleFilterStyle(clickedFilter)
     AdminSublimeVideo.statsRouter.updateUrl(null, clickedFilter.data('value'))
 
-    AdminSublimeVideo.stats[selection[0]].trigger('change') # redraw the chart
+    AdminSublimeVideo.graphView.render()
 
     false
 

@@ -57,7 +57,7 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
         _.each AdminSublimeVideo.stats, (collection) -> collection.selected = []
         $('a.selector').removeClass 'active'
         this.clearUrl()
-        AdminSublimeVideo.period.trigger('change') # redraw the chart
+        AdminSublimeVideo.period.change() # redraw the chart
 
   fetchStats: ->
     _.each AdminSublimeVideo.stats, (stat) ->

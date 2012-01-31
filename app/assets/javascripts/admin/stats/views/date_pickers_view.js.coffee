@@ -36,7 +36,7 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
     AdminSublimeVideo.period.end   = new Date newEnd
     AdminSublimeVideo.statsRouter.updateUrl('p', "#{newStart}-#{newEnd}")
     this.close()
-    AdminSublimeVideo.period.trigger('change')
+    AdminSublimeVideo.graphView.render()
 
   stopPropagation: (event) ->
     event.stopPropagation()
