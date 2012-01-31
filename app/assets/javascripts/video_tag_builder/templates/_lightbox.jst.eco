@@ -1,24 +1,32 @@
-<hr />
+<h5>Starting link</h5>
+<div id="starting_link">
+  <div class="radio_wrap">
+    <input type='radio' id='initial_link_image' name='initial_link' value='image' <%= 'checked' if @initialLink is 'image' %> />
+    <label for="">Image</label>
+  </div>
+  <div class="radio_wrap">
+    <input type='radio' id='initial_link_text' name='initial_link' value='text' <%= 'checked' if @initialLink is 'text' %> />
+    <label for="">Text</label>
+  </div>  
+</div>
+<div class="spacer"></div>
 
-<p>
-  Initial link: <input type='radio' name='initial_link' value='image' <%= 'checked' if @initialLink is 'image' %> /> Image <input type='radio' name='initial_link' value='text' <%= 'checked' if @initialLink is 'text' %> /> Text
-</p>
-
-<p>
-  <input type='text' name='thumb_src' size='50' id='thumb_src' value='<%= @thumbnail.get('src') %>' />
+<div class="entry">
+  <input type='text' class="text no_icon" placeholder="" name='thumb_src' size='50' id='thumb_src' value='<%= @thumbnail.get('src') %>' />
   <span id='thumb_src_invalid' class='inline_alert' style='display:none'>Please provide a valid image URL.</span>
-</p>
+</div>
 
-<p class='extra'>
-  <label for='thumb_width'>Size</label>:
-  <input type='text' name='thumb_width' id='thumb_width' value='<%= @thumbnail.get('thumbWidth') %>' size='4' maxlength='4' />
+<h5>Size</h5>
+<div class='extra entry size'>
+  <input name='thumb_width' id='thumb_width' class="text no_icon" type='text' value='<%= @thumbnail.get('thumbWidth') %>' size='4' maxlength='4' />
   x
-  <input type='text' name='thumb_height' id='thumb_height' value='<%= @thumbnail.get('thumbHeight') %>' readonly size='4' maxlength='4' />
-  <a href='' class='reset'>Reset</a>
-</p>
+  <input name='thumb_height' id='thumb_height' class="text no_icon" type='text' value='<%= @thumbnail.get('thumbHeight') %>' readonly size='4' maxlength='4' />
+</div>
+<p><a href='' class='hl reset'>Reset to original size</a></p>
 
-<p class='extra'>
+<div class="checkbox_wrap">
   <input type='checkbox' name='thumb_magnifying_glass' id='thumb_magnifying_glass' <%= "checked" if @thumbnail.get('magnifyingGlass') %> />
   <label for='thumb_magnifying_glass'>Add a magnifying glass</label>
-</p>
-<hr />
+</div>
+
+<div class="big_break"></div>
