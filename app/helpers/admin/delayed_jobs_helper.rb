@@ -53,6 +53,7 @@ module Admin::DelayedJobsHelper
       Module#sites_processing
       Module#users_processing
       Class#save_new_tweets_and_sync_favorite_tweets
+      Module#clear_old_seconds_minutes_and_hours_stats
       Module#stats_processing
     ].include?(job.name)
   end

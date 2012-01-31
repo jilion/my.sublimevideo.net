@@ -13,7 +13,7 @@ class AdminSublimeVideo.Collections.TweetsStats extends AdminSublimeVideo.Collec
   title: (selected) ->
     switch selected[0]
       when 'sublimevideo' then 'SublimeVideo tweets'
-      else "#{selected[0].capitalize()} tweets"
+      else "#{SublimeVideo.capitalize(selected[0])} tweets"
 
   customPluck: (selected) ->
     array = []
