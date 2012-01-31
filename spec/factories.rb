@@ -202,10 +202,10 @@ FactoryGirl.define do
     m  nil
     s  nil
     t  '123456'
-    pv {}
-    vv {}
-    bp {}
-    md {}
+    # pv {}
+    # vv {}
+    # bp {}
+    # md {}
   end
 
   factory :video_stat, class: Stat::Video do
