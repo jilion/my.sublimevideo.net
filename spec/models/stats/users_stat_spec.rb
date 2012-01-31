@@ -29,7 +29,7 @@ describe Stats::UsersStat do
 
   describe ".json" do
     before(:each) do
-      Factory.create(:users_stat)
+      Factory.create(:users_stat, d: Time.now.utc.midnight)
     end
 
     describe "set the id as the 'd' field as an integer" do

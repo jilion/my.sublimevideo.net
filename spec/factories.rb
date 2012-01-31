@@ -196,26 +196,6 @@ FactoryGirl.define do
   factory :transaction do
   end
 
-  factory :users_stat, class: Stats::UsersStat do
-    d            nil
-    states_count {}
-    fr           2
-    pa           1
-    su           1
-    ar           1
-  end
-
-  factory :sites_stat, class: Stats::SitesStat do
-    d            nil
-    states_count {}
-    plans_count  {}
-  end
-
-  factory :tweets_stat, class: Stats::TweetsStat do
-    d Time.now.utc.midnight
-    k {}
-  end
-
   factory :site_stat, class: Stat::Site do
     d  nil
     h  nil
@@ -256,6 +236,32 @@ FactoryGirl.define do
     favorited         false
   end
 
+  # ================
+  # = Stats models =
+  # ================
+  factory :users_stat, class: Stats::UsersStat do
+    d            Time.now.utc.midnight
+    states_count {}
+    fr           2
+    pa           1
+    su           1
+    ar           1
+  end
+
+  factory :sites_stat, class: Stats::SitesStat do
+    d            Time.now.utc.midnight
+    states_count {}
+    plans_count  {}
+  end
+
+  factory :tweets_stat, class: Stats::TweetsStat do
+    d Time.now.utc.midnight
+    k {}
+  end
+
+  # ==============
+  # = API models =
+  # ==============
   factory :client_application do
     user
     name         "Agree2"
