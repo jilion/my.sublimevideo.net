@@ -120,6 +120,57 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             legendItemClick: ->
               false
 
+            click: (event) ->
+              if /sales/i.test(event.point.series.name)
+                $('#invoicePopUp').remove()
+                position = "#{event.pageX}, #{event.pageY}"
+                startedAt = new Date event.point.x
+                year  = startedAt.getFullYear()
+                month = startedAt.getMonth()
+                day   = startedAt.getDate()
+                renewParam = if /total/i.test(event.point.series.name)
+                  ''
+                else if /renew/i.test(event.point.series.name)
+                  'renew=true&'
+                else if /new/i.test(event.point.series.name)
+                  'renew=false&'
+                startedAt = encodeURIComponent "#{year}-#{month+1}-#{day} 00:00:00"
+                endedAt   = encodeURIComponent "#{year}-#{month+1}-#{day} 23:59:59"
+
+                $.ajax
+                  url: "/invoices.json?#{renewParam}paid_between[started_at]=#{startedAt}&paid_between[ended_at]=#{endedAt}",
+                  context: document.body,
+                  success: (data, textStatus, jqXHR) ->
+                    content = "<ul>"
+                    _.each data, (invoice) ->
+                      content += "<li>"
+                      if invoice.renew
+                        content += "<p>Renewing invoice for $ #{Highcharts.numberFormat(invoice.amount/100, 2)}</p>"
+                      else
+                        content += "<p>New subscription for $ #{Highcharts.numberFormat(invoice.amount/100, 2)}</p>"
+                      content += "<p>Site: <a href='/invoices/#{invoice.reference}'>#{invoice.site_hostname}</a></p>"
+                      content += "<p>User: #{invoice.customer_full_name}</p>"
+                      content += "</li>"
+                    content += "</ul>"
+                    popUp = $('<div>').attr('id', 'invoicePopUp').css
+                      position: 'absolute'
+                      top: event.pageY
+                      left: event.pageX
+                      'z-index': '1000000'
+                      width: '200px'
+                      padding: '20px'
+                      'background-color': 'white'
+                      'border': '1px solid #999'
+                      'border-radius': '13px'
+                      'display': 'none'
+                    popUp.html content
+                    popUp.click (event) -> popUp.remove()
+                    $("#content}").append popUp
+
+                    if event.pageX + popUp.width() > $(window).width()
+                      popUp.css('left', $(window).width() - popUp.width() - 70)
+                    popUp.show()
+
       xAxis:
         type: 'datetime'
         min: AdminSublimeVideo.period.startTime()

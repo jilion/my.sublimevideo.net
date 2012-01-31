@@ -1,16 +1,19 @@
 class Admin::InvoicesController < AdminController
-  respond_to :js, :html
+  respond_to :js, :html, :json
+  respond_to :json, only: [:index]
 
   before_filter { |controller| require_role?('invoices') }
 
   # filter
   has_scope :paid
+  has_scope :paid_between, using: [:started_at, :ended_at]
   has_scope :open do |controller, scope|
     scope.open
   end
   has_scope :waiting
   has_scope :refunded
   has_scope :failed
+  has_scope :renew
   has_scope :user_id
   has_scope :site_id
   # sort

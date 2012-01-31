@@ -79,8 +79,9 @@ class Invoice < ActiveRecord::Base
   scope :waiting,        where(state: 'waiting')
   scope :canceled,       where(state: 'canceled')
   scope :open_or_failed, where(state: %w[open failed])
-  scope :not_canceled,   where(:state.not_eq => 'canceled')
+  scope :not_canceled,   where { state != 'canceled' }
   scope :not_paid,       where(state: %w[open waiting failed])
+  scope :renew,          lambda { |bool=true| where(renew: bool) }
   scope :site_id,        lambda { |site_id| where(site_id: site_id) }
   scope :user_id,        lambda { |user_id| joins(:user).where { user.id == user_id } }
 
