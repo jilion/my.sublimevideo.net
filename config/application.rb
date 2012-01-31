@@ -24,6 +24,8 @@ module MySublimeVideo
     require 'oauth/rack/oauth_filter'
     config.middleware.use OAuth::Rack::OAuthFilter
 
+    require 'fastpass'
+
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W[#{config.root}/lib]
     Dir["#{config.root}/lib/{log_file_format,responders,validators}/**/*.rb"].each do |f|
