@@ -1,7 +1,7 @@
 class MSVVideoTagBuilder.Views.VideoEmbedTypeSelector extends Backbone.View
 
   events:
-    'click a': 'updateBuilderClass'
+    'click input': 'updateBuilderClass'
 
   initialize: ->
     _.bindAll this, 'render', 'renderSpecializedBox'
@@ -11,17 +11,12 @@ class MSVVideoTagBuilder.Views.VideoEmbedTypeSelector extends Backbone.View
   # EVENTS
   #
   updateBuilderClass: (event) ->
-    @model.set({ builderClass: event.target.id })
-    event.stopPropagation()
-    false
+    @model.set({ builderClass: event.target.id.replace('type_', '') })
 
   #
   # BINDINGS
   #
   renderSpecializedBox: ->
-    this.$("li").removeClass('active')
-    this.$(event.target).parent('li').addClass('active')
-
     $(".specialized_video_embed_type_box").hide()
 
     switch @model.get('builderClass')

@@ -4,7 +4,7 @@
   :javascript
     document.write(unescape("%3Cscript src='" + (("https:" == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{SiteToken.my}.js' type='text/javascript'%3E%3C/script%3E"));
 
-= title_and_content_header("Video tag generator")
+= title_and_content_header("Video code generator")
 
 - if user_signed_in?
   - token = @site.try(:token) || @sites.first.token
@@ -26,50 +26,62 @@
       SublimeVideoSizeChecker.setRoot('/video-size-checker/')
       window.MSVVideoTagBuilder.builderRouter = new MSVVideoTagBuilder.Routers.BuilderRouter()
 
-%input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/posters/day2.jpg" }
-%input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/videos/day22.m4v" }
-%input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/videos/day9.m4v" }
-%input{ type: "text", size: 60, value: "http://medias.jilion.com/sublimevideo/dartmoor.webm" }
-%input{ type: "text", size: 60, value: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }
-
-%p.desc.help= raw "WordPress user? Check-out #{link_to 'our WordPress plugin', 'http://docs.sublimevideo.net/wordpress', onclick: "window.open(this); return false"} instead!"
+-# %input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/posters/day2.jpg" }
+-# %input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/videos/day22.m4v" }
+-# %input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/videos/day9.m4v" }
+-# %input{ type: "text", size: 60, value: "http://medias.jilion.com/sublimevideo/dartmoor.webm" }
+-# %input{ type: "text", size: 60, value: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }
+-# 
+-# %p.desc.help= raw "WordPress user? Check-out #{link_to 'our WordPress plugin', 'http://docs.sublimevideo.net/wordpress', onclick: "window.open(this); return false"} instead!"
 
 - if user_signed_in?
   %p
     = "This video will be embedded on: "
     %span#site_selector
 
-%h3 Demo bootstrap
-#demo_bootstrap
-  %input{ type: "checkbox", name: "use_demo_assets", id: "use_demo_assets" }
-  %label{ for: 'use_demo_assets' } Use demo assets
+#video_embed_type_selector
+  .radio_wrap
+    = radio_button_tag "type", "standard", checked: true
+    = label_tag "type_standard", "Standard"  
+  .radio_wrap
+    = radio_button_tag "type", "lightbox"
+    = label_tag "type_lightbox", "Lightbox"  
+  .radio_wrap
+    = radio_button_tag "type", "embed"
+    = label_tag "type_embed", "Iframe Embed"  
 
-%ul#video_embed_type_selector
-  %li.active= link_to "Standard", '', id: 'standard'
-  %li= link_to "Lightbox", '', id: 'lightbox'
-  %li= link_to "Iframe embed", '', id: 'iframe_embed'
+%a.green_button#demo_urls{ href: "" }= "Use demo videos urls"
 
-#lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
-
-#iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
-
-%h3 Poster frame
-%p#poster
+-# #demo_bootstrap
+-#   %input{ type: "checkbox", name: "use_demo_assets", id: "use_demo_assets" }
+-#   %label{ for: 'use_demo_assets' } Use demo assets
+  
 .spacer
 
-%h3 Video sources
-#sources
-.spacer
+.big_break
 
-%p.desc.help= raw "Need help on video encoding? Check-out our #{link_to '"Encode videos for the web and HTML5"', 'http://docs.sublimevideo.net/encode-videos-for-the-web', onclick: "window.open(this); return false"} documentation page!"
+%form#video_code_form
+  #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
 
-%h3 Settings
-#settings
-.spacer
+  #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
 
-%h3 Preview
-#preview
-.spacer
+  #poster
+  .spacer
 
-%h3 Code to paste in your page
-#code
+  #sources
+  .spacer
+
+  %p.desc.help= raw "Need help on video encoding? Check-out our #{link_to '"Encode videos for the web and HTML5"', 'http://docs.sublimevideo.net/encode-videos-for-the-web', onclick: "window.open(this); return false"} documentation page!"
+  
+  .big_break
+
+  %h3 Settings
+  #settings
+  .spacer
+
+  %h3 Preview
+  #preview
+  .spacer
+
+  %h3 Code to paste in your page
+  #code

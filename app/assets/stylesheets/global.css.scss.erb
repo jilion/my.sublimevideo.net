@@ -440,20 +440,18 @@ form .entry.select .left_field select, form .entry.select .right_field select {w
   background:url(<%= asset_data_uri "my/custom_checkbox.png" %>) no-repeat;
 }
 
-.radio_wrap span.bg, form .entry .radio_wrap label {
+.radio_wrap span.bg, .radio_wrap label {
   display:block;
-  position:absolute;
-  z-index:1;
-  top:0;
-  left:0;
-  width:34px;
-  height:34px;
+  font-weight:600;
+  height:24px;
+  padding:9px 0 0 38px;
+  left:-6px;
   background:url(<%= asset_data_uri "my/custom_radio.png" %>) no-repeat;
 }
 
-.checkbox_wrap input:checked + label, form .entry .radio_wrap input:checked + label, .radio_wrap input:checked + span.bg {background-position:0 -34px}
-.checkbox_wrap input:focus + label, form .entry .radio_wrap input:focus + label, .radio_wrap input:focus + span.bg {background-position:0 -68px}
-.checkbox_wrap input:focus:checked + label, form .entry .radio_wrap input:focus:checked + label, .radio_wrap input:focus:checked + span.bg {background-position:0 -102px}
+.checkbox_wrap input:checked + label, .radio_wrap input:checked + label, .radio_wrap input:checked + span.bg {background-position:0 -34px}
+.checkbox_wrap input:focus + label, .radio_wrap input:focus + label, .radio_wrap input:focus + span.bg {background-position:0 -68px}
+.checkbox_wrap input:focus:checked + label, .radio_wrap input:focus:checked + label, .radio_wrap input:focus:checked + span.bg {background-position:0 -102px}
 
 form .inline_errors span, .inline_alert {
   padding:2px 5px 2px;
