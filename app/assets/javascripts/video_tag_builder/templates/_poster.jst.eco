@@ -1,2 +1,4 @@
-<label for='poster_src'>Poster</label>
-<input type='text' name='poster_src' id='poster_src' size='50' value='<%= @poster.get('src') %>' />
+<div class="entry">
+<label for='poster_src' class='icon'>Poster frame url</label>
+<input type='text' name='poster_src' id='poster_src' class='text no_icon' size='50' placeholder='Poster frame url' value='<%= @poster.get('src') %>' />
+</div>

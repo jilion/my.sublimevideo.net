@@ -1,4 +1,4 @@
-<table border='1' width='100%'>
+<!-- <table border='1' width='100%'>
   <tr>
     <% for source in @sources.models: %>
       <% if currentFormat != source.get('format'): %>
@@ -32,4 +32,31 @@
       <% end %>
     <% end %>
   </tr>
-</table>
+</table> -->
+
+<div class="content_left">
+  <h4>MP4 sources</h4>
+  <div class="entry">
+    <label class="icon" for="">SD url</label>
+    <input type="text" name="" value="" class="text no_icon" placeholder="SD url" />
+  </div>
+  <div class="checkbox_wrap">
+    <input type="checkbox" name="" value="" />
+    <label for="">Add HD version</label>
+  </div>
+  <div class="checkbox_wrap">
+    <input type="checkbox" name="" value="" />
+    <label for="">Add a mobile version (lower resolution/bitrate)</label>
+  </div>
+</div>
+<div class="content_right">
+  <h4>WebM or Ogg sources</h4>
+  <div class="entry">
+    <label class="icon" for="">SD url</label>
+    <input type="text" name="" value="" class="text no_icon" placeholder="SD url" />
+  </div>
+  <div class="checkbox_wrap">
+    <input type="checkbox" name="" value="" />
+    <label for="">Add HD version</label>
+  </div>
+</div>
