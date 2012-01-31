@@ -5,6 +5,7 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
     this.initModels()
     this.initHelpers()
     this.initHighcharts()
+    this.initKeyboardShortcuts()
     this.fetchStats()
 
     new AdminSublimeVideo.Views.PageTitleView
@@ -48,6 +49,15 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
     Highcharts.setOptions
       global:
         useUTC: true
+
+  initKeyboardShortcuts: ->
+    $(document).keypress (event) =>
+      if event.which == 114 and !event.metaKey
+        event.preventDefault()
+        _.each AdminSublimeVideo.stats, (collection) -> collection.selected = []
+        $('a.selector').removeClass 'active'
+        this.clearUrl()
+        AdminSublimeVideo.period.trigger('change') # redraw the chart
 
   fetchStats: ->
     _.each AdminSublimeVideo.stats, (stat) ->
