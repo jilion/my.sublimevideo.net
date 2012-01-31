@@ -354,7 +354,7 @@ describe Invoice do
     end
 
     describe "#between" do
-      specify { Invoice.between(24.hours.ago, 15.hours.ago).should eq [@waiting_invoice, @paid_invoice] }
+      specify { Invoice.between(24.hours.ago, 15.hours.ago).order(:id).should eq [@waiting_invoice, @paid_invoice] }
     end
 
     describe "#open" do
