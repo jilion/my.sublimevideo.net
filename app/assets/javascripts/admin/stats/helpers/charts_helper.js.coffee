@@ -1,6 +1,8 @@
 class AdminSublimeVideo.Helpers.ChartsHelper
 
   chart: (collections) ->
+    firstCollection = _.find(collections, (collection) => !_.isEmpty(collection.selected))
+
     AdminSublimeVideo.statsChart = new Highcharts.StockChart
       chart:
         renderTo: 'chart'
@@ -13,6 +15,21 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             AdminSublimeVideo.period.start = new Date @xAxis[0].getExtremes()['min']
             AdminSublimeVideo.period.end   = new Date @xAxis[0].getExtremes()['max']
             AdminSublimeVideo.timeRangeTitleView.render()
+
+      navigator:
+        series:
+          type: firstCollection.chartType(firstCollection.selected[0]),
+          color: '#4572A7',
+          fillOpacity: 0.4,
+          dataGrouping:
+            smoothed: true
+          lineWidth: 1
+          marker:
+            enabled: false
+          shadow: false
+        xAxis:
+          labels:
+            y: -15
 
       series: this.buildSeries(collections)
 
@@ -93,6 +110,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
       plotOptions:
         flags:
           shape: 'circlepin'
+        areaspline:
+          fillOpacity: 0.25
         series:
           events:
             legendItemClick: ->
@@ -103,6 +122,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         min: AdminSublimeVideo.period.start
         max: AdminSublimeVideo.period.end
         gridLineColor: '#5d7493'
+        lineWidth: 2
+        lineColor: '#000'
         labels:
           y: 21
           style:
@@ -123,10 +144,13 @@ class AdminSublimeVideo.Helpers.ChartsHelper
     _.each collections, (collection) =>
       if collection.length > 0 and !_.isEmpty(collection.selected)
         _.each collection.selected, (selected) =>
+          stack = if collection.id() is 'sales' and selected[0] isnt 'total' then 1 else null
+          # console.log("#{collection.id()} - #{selected[0]} - #{stack}");
           series.push
             name: collection.title(selected)
             data: collection.customPluck(selected)
             type: collection.chartType(selected)
+            stack: stack
             yAxis: _.indexOf(_.sortBy(@usedYAxis, (x) -> x), collection.yAxis(selected))
             pointStart: collection.startTime()
             pointInterval: 3600 * 24 * 1000
@@ -140,7 +164,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
     if _.include(@usedYAxis, 0)
       yAxis.push
-        lineWidth: 1
+        lineWidth: 2
+        lineColor: '#000'
         min: 0
         allowDecimals: true
         startOnTick: true
@@ -158,7 +183,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
     if _.include(@usedYAxis, 1)
       yAxis.push
-        lineWidth: 1
+        lineWidth: 2
+        lineColor: '#000'
         min: 0
         allowDecimals: false
         startOnTick: true
@@ -176,7 +202,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
     if _.include(@usedYAxis, 2)
       yAxis.push
-        lineWidth: 1
+        lineWidth: 2
+        lineColor: '#000'
         opposite: true
         min: 0
         allowDecimals: false
@@ -195,7 +222,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
     if _.include(@usedYAxis, 3)
       yAxis.push
-        lineWidth: 1
+        lineWidth: 2
+        lineColor: '#000'
         opposite: true
         min: 0
         max: 100
@@ -215,7 +243,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
     if _.include(@usedYAxis, 4)
       yAxis.push
-        lineWidth: 1
+        lineWidth: 2
+        lineColor: '#000'
         opposite: true
         min: 0
         allowDecimals: true
