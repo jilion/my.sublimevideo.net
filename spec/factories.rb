@@ -115,7 +115,7 @@ FactoryGirl.define do
 
   factory :referrer do
     url   "http://bob.com"
-    token { Factory.create(:site).token }
+    token { '123456' }
     hits  12
   end
 
@@ -218,6 +218,7 @@ FactoryGirl.define do
 
   factory :site_stat, class: Stat::Site do
     d Time.now.utc.midnight
+    t { '123456' }
   end
 
   factory :video_stat, class: Stat::Video do
