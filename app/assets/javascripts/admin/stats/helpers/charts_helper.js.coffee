@@ -12,8 +12,11 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         plotShadow: false
         events:
           redraw: (event) ->
-            AdminSublimeVideo.period.start = new Date @xAxis[0].getExtremes()['min']
-            AdminSublimeVideo.period.end   = new Date @xAxis[0].getExtremes()['max']
+            newStart = parseInt @xAxis[0].getExtremes()['min']
+            newEnd   = parseInt @xAxis[0].getExtremes()['max']
+            AdminSublimeVideo.period.start = new Date newStart
+            AdminSublimeVideo.period.end   = new Date newEnd
+            AdminSublimeVideo.statsRouter.updateUrl('p', "#{newStart}-#{newEnd}")
             AdminSublimeVideo.timeRangeTitleView.render()
 
       navigator:
