@@ -197,7 +197,7 @@ FactoryGirl.define do
   end
 
   factory :users_stat, class: Stats::UsersStat do
-    d            Time.now.utc.midnight
+    d            nil
     states_count {}
     fr           2
     pa           1
@@ -206,7 +206,7 @@ FactoryGirl.define do
   end
 
   factory :sites_stat, class: Stats::SitesStat do
-    d            Time.now.utc.midnight
+    d            nil
     states_count {}
     plans_count  {}
   end
@@ -217,18 +217,19 @@ FactoryGirl.define do
   end
 
   factory :site_stat, class: Stat::Site do
-    d Time.now.utc.midnight
-    h Time.now.utc.midnight
-    m Time.now.utc.midnight
-    s Time.now.utc.midnight
-    t '123456'
+    d  nil
+    h  nil
+    m  nil
+    s  nil
+    t  '123456'
+    vv {}
   end
 
   factory :video_stat, class: Stat::Video do
-    d            Time.now.utc.midnight
+    d            nil
     st           '123456'
     sequence(:u) { |n| "video#{n}" }
-    h            Time.now.utc.midnight
+    h            nil
   end
 
   factory :video_tag do

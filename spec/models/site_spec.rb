@@ -78,13 +78,13 @@ describe Site do
 
     describe "plan" do
       context "with no plan" do
-        subject { Factory.build(:new_site, plan: nil) }
+        subject { Factory.build(:new_site, plan_id: nil) }
         it { should_not be_valid }
         it { should have(1).error_on(:plan) }
       end
 
       context "with no plan but a pending_plan" do
-        subject { Factory.build(:new_site, plan: nil, plan_id: @paid_plan.id) }
+        subject { Factory.build(:new_site, plan_id: @paid_plan.id) }
         its(:pending_plan) { should eq @paid_plan }
         it { should be_valid }
       end
