@@ -3,11 +3,6 @@ require 'spec_helper'
 describe SiteModules::Usage do
 
   describe ".update_last_30_days_counters_for_not_archived_sites" do
-    it "delays itself" do
-      Site.should_receive(:delay_update_last_30_days_counters_for_not_archived_sites)
-      Site.update_last_30_days_counters_for_not_archived_sites
-    end
-
     it "calls update_last_30_days_counters on each non-archived sites" do
       @active_site = Factory.create(:site, state: 'active')
       Factory.create(:site_stat, t: @active_site.token, d: Time.utc(2011,1,15).midnight, vv: { m: 6 })

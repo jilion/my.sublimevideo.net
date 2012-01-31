@@ -198,7 +198,7 @@ FactoryGirl.define do
 
   factory :users_stat, class: Stats::UsersStat do
     d            Time.now.utc.midnight
-    states_count { {} }
+    states_count {}
     fr           2
     pa           1
     su           1
@@ -207,25 +207,35 @@ FactoryGirl.define do
 
   factory :sites_stat, class: Stats::SitesStat do
     d            Time.now.utc.midnight
-    states_count { {} }
-    plans_count  { {} }
+    states_count {}
+    plans_count  {}
   end
 
   factory :tweets_stat, class: Stats::TweetsStat do
     d Time.now.utc.midnight
-    k { {} }
+    k {}
   end
 
   factory :site_stat, class: Stat::Site do
     d Time.now.utc.midnight
-    t { '123456' }
+    h Time.now.utc.midnight
+    m Time.now.utc.midnight
+    s Time.now.utc.midnight
+    t '123456'
   end
 
   factory :video_stat, class: Stat::Video do
-    d Time.now.utc.midnight
+    d            Time.now.utc.midnight
+    st           '123456'
+    sequence(:u) { |n| "video#{n}" }
+    h            Time.now.utc.midnight
   end
 
   factory :video_tag do
+    st           '123456'
+    sequence(:u) { |n| "video#{n}" }
+    sequence(:n) { |n| "Video #{n}" }
+    no           'a'
   end
 
   factory :tweet do
