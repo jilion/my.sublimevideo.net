@@ -23,7 +23,6 @@ gem 'haml',                  '~> 3.1.3'
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
-gem 'RedCloth',              '~> 4.2.9'
 
 # Auth / invitations
 gem 'devise',                '~> 1.5.1'
@@ -110,25 +109,28 @@ group :assets do
   gem 'execjs'
 end
 
-group :production, :staging do
-  gem 'rpm_contrib', git: 'git://github.com/titanous/rpm_contrib.git', branch: 'mongoid-instrumentation'
-  gem 'newrelic_rpm'
-  gem 'rack-ssl-enforcer'
-end
-
 group :production do
   # gem 'rack-cache'
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end
 
+group :staging, :production do
+  gem 'rpm_contrib', git: 'git://github.com/titanous/rpm_contrib.git', branch: 'mongoid-instrumentation'
+  gem 'newrelic_rpm'
+  gem 'rack-ssl-enforcer'
+end
+
+group :development, :staging, :production do
+  gem 'RedCloth', '~> 4.2.9'
+end
+
 group :development, :test do
   gem 'timecop'
+  gem 'ffaker'
   gem 'rspec-rails'
-  # gem 'ruby-debug19'
 
   gem 'rack-livereload'
   gem 'rails-dev-tweaks', '~> 0.5.0'
-  gem 'ffaker'
 
   # Javascript test
   gem 'jasminerice'
@@ -149,7 +151,6 @@ group :development do
   gem 'em-http-request' # async pusher in populate
 
   gem 'rb-fsevent', '0.9.0.pre5'
-  # gem 'growl_notify'
 
   gem 'ruby_gntp'
   platforms :ruby do
