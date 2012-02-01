@@ -23,6 +23,7 @@ gem 'haml',                  '~> 3.1.3'
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
+gem 'RedCloth',              '~> 4.2.9'
 
 # Auth / invitations
 gem 'devise',                '~> 1.5.1'
@@ -118,10 +119,6 @@ group :staging, :production do
   gem 'rpm_contrib', git: 'git://github.com/titanous/rpm_contrib.git', branch: 'mongoid-instrumentation'
   gem 'newrelic_rpm'
   gem 'rack-ssl-enforcer'
-end
-
-group :development, :staging, :production do
-  gem 'RedCloth', '~> 4.2.9'
 end
 
 group :development, :test do
