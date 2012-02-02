@@ -8,9 +8,9 @@ class Www::ReferrersController < MyController
   rescue => ex
     Notify.send("Referrer (type: #{params[:type]}) creation problem from #{request.referer} for #{params[:token]}", :exception => ex)
   ensure
-    redirect_to "http://sublimevideo.net"
+    redirect_to root_url(host: request.domain)
   end
-  
+
 private
 
   def set_referrer_token_in_cookie
