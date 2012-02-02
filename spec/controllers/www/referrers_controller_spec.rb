@@ -13,7 +13,7 @@ describe Www::ReferrersController do
     it "should redirect from" do
       Referrer.stub(:create_or_update_from_type!)
       get :redirect, token: 'nln2ofdf', type: 'c'
-      response.should redirect_to("http://sublimevideo.net")
+      response.should redirect_to("http://test.host/")
     end
 
   end
