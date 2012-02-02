@@ -115,6 +115,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
           shape: 'circlepin'
         areaspline:
           fillOpacity: 0.25
+        column:
+          stacking: 'normal'
         series:
           events:
             legendItemClick: ->
@@ -132,24 +134,22 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                   ''
                 else if /renew/i.test(event.point.series.name)
                   'renew=true&'
-                else if /new/i.test(event.point.series.name)
+                else if /subscription/i.test(event.point.series.name)
                   'renew=false&'
                 startedAt = encodeURIComponent "#{year}-#{month+1}-#{day} 00:00:00"
                 endedAt   = encodeURIComponent "#{year}-#{month+1}-#{day} 23:59:59"
 
                 $.ajax
-                  url: "/invoices.json?#{renewParam}paid_between[started_at]=#{startedAt}&paid_between[ended_at]=#{endedAt}",
+                  url: "/invoices.json?#{renewParam}paid_between[started_at]=#{startedAt}&paid_between[ended_at]=#{endedAt}&by_amount=desc",
                   context: document.body,
                   success: (data, textStatus, jqXHR) ->
                     content = "<ul>"
                     _.each data, (invoice) ->
-                      content += "<li>"
-                      if invoice.renew
-                        content += "<p>Renewing invoice for $ #{Highcharts.numberFormat(invoice.amount/100, 2)}</p>"
-                      else
-                        content += "<p>New subscription for $ #{Highcharts.numberFormat(invoice.amount/100, 2)}</p>"
-                      content += "<p>Site: <a href='/invoices/#{invoice.reference}'>#{invoice.site_hostname}</a></p>"
-                      content += "<p>User: #{invoice.customer_full_name}</p>"
+
+                      content += "<li><p>"
+                      content += if invoice.renew then "Renew" else "<strong>New</strong>"
+                      content += " / <a href='/sites/#{invoice.site.token}/edit'>#{invoice.site_hostname}</a> / <a href='/invoices/#{invoice.reference}'>$#{Highcharts.numberFormat(invoice.amount/100, 2)}</a></p>"
+                      content += "<p>User: <a href='/users/#{invoice.site.user_id}'>#{invoice.user.name or invoice.user.email}</a></p>"
                       content += "</li>"
                     content += "</ul>"
                     popUp = $('<div>').attr('id', 'invoicePopUp').css
@@ -157,7 +157,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                       top: event.pageY
                       left: event.pageX
                       'z-index': '1000000'
-                      width: '200px'
+                      width: '350px'
                       padding: '20px'
                       'background-color': 'white'
                       'border': '1px solid #999'
