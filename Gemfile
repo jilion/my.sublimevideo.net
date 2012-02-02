@@ -147,7 +147,7 @@ group :development do
 
   gem 'em-http-request' # async pusher in populate
 
-  gem 'rb-fsevent', '0.9.0.pre5'
+  gem 'rb-fsevent'
 
   gem 'ruby_gntp'
   platforms :ruby do
@@ -174,6 +174,6 @@ group :test do
   gem 'vcr',      '~> 1.10.3'
 
   gem 'database_cleaner'
-  gem 'factory_girl', git: 'git://github.com/thoughtbot/factory_girl.git' # https://github.com/thoughtbot/factory_girl/issues/285 should have fixed the issue, but still not
+  gem 'factory_girl', git: 'git://github.com/thoughtbot/factory_girl.git', branch: 'private-methods-on-object-as-overrides' # https://github.com/thoughtbot/factory_girl/issues/285 should have fixed the issue, but still not
   gem 'factory_girl_rails', require: false # loaded in spec_helper Spork.each_run
 end
