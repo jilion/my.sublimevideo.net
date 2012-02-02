@@ -197,29 +197,12 @@ FactoryGirl.define do
   end
 
   factory :site_stat, class: Stat::Site do
-    d  nil
-    h  nil
-    m  nil
-    s  nil
-    t  '123456'
-    # pv {}
-    # vv {}
-    # bp {}
-    # md {}
   end
 
   factory :video_stat, class: Stat::Video do
-    d            nil
-    st           '123456'
-    sequence(:u) { |n| "video#{n}" }
-    h            nil
   end
 
   factory :video_tag do
-    st           '123456'
-    sequence(:u) { |n| "video#{n}" }
-    sequence(:n) { |n| "Video #{n}" }
-    no           'a'
   end
 
   factory :tweet do
@@ -240,23 +223,12 @@ FactoryGirl.define do
   # = Stats models =
   # ================
   factory :users_stat, class: Stats::UsersStat do
-    d            Time.now.utc.midnight
-    states_count {}
-    fr           2
-    pa           1
-    su           1
-    ar           1
   end
 
   factory :sites_stat, class: Stats::SitesStat do
-    d            Time.now.utc.midnight
-    states_count {}
-    plans_count  {}
   end
 
   factory :tweets_stat, class: Stats::TweetsStat do
-    d Time.now.utc.midnight
-    k {}
   end
 
   # ==============
