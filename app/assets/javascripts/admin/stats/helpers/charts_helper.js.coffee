@@ -84,7 +84,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         }]
 
         formatter: ->
-          title = ["#{Highcharts.dateFormat('%e %b %Y', @x)}<br/>"]
+          title = ["#{Highcharts.dateFormat('%e %b %Y', @x)}<br />"]
           if @point?
             title += ["<span style=\"color:#a2b1c9;font-weight:normal\">#{@point.text}</span>"]
           else if @points?
@@ -143,32 +143,34 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                   url: "/invoices.json?#{renewParam}paid_between[started_at]=#{startedAt}&paid_between[ended_at]=#{endedAt}&by_amount=desc",
                   context: document.body,
                   success: (data, textStatus, jqXHR) ->
-                    content = "<ul>"
+                    content = "<strong>#{Highcharts.dateFormat('%e %b %Y', event.point.x)}</strong><br />"
+                    content += "<ul>"
                     _.each data, (invoice) ->
-
                       content += "<li><p>"
                       content += if invoice.renew then "Renew" else "<strong>New</strong>"
                       content += " / <a href='/sites/#{invoice.site.token}/edit'>#{invoice.site_hostname}</a> / <a href='/invoices/#{invoice.reference}'>$#{Highcharts.numberFormat(invoice.amount/100, 2)}</a></p>"
-                      content += "<p>User: <a href='/users/#{invoice.site.user_id}'>#{invoice.user.name or invoice.user.email}</a></p>"
+                      content += "<p>by <a href='/users/#{invoice.site.user_id}'>#{invoice.user.name or invoice.user.email}</a></p>"
                       content += "</li>"
                     content += "</ul>"
+
                     popUp = $('<div>').attr('id', 'invoice_popup').css
                       position: 'absolute'
-                      top: event.pageY
+                      top: event.pageY - 60
                       left: event.pageX
                       'z-index': '1000000'
                       width: '350px'
                       padding: '10px 20px'
-                      # 'background-color': 'white'
-                      # 'border': '1px solid #999'
-                      # 'border-radius': '13px'
                       'display': 'none'
                     popUp.html content
+
+                    $(document).keydown (event) -> if event.which is 27 then popUp.remove() # the 'esc' key is pressed
                     popUp.click (event) -> popUp.remove()
+
                     $("#content}").append popUp
 
-                    if event.pageX + popUp.width() > $(window).width()
-                      popUp.css('left', $(window).width() - popUp.width() - 70)
+                    # Move the popup left if too close to the right window's border
+                    if event.pageX + popUp.outerWidth() + 30 > $(window).width()
+                      popUp.css('left', $(window).width() - popUp.outerWidth() - 30)
                     popUp.show()
 
       xAxis:

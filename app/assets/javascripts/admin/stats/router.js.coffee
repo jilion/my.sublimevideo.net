@@ -52,7 +52,7 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
 
   initKeyboardShortcuts: ->
     $(document).keypress (event) =>
-      if event.which == 114 and !event.metaKey
+      if event.which is 114 and !event.metaKey # the 'r' key is pressed without the 'cmd' key
         event.preventDefault()
         _.each AdminSublimeVideo.stats, (collection) -> collection.selected = []
         $('a.selector').removeClass 'active'
