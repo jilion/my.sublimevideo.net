@@ -116,14 +116,14 @@ module RecurringJob
 
   private
 
-    def any_job_not_delayed?(not_delayed_jobs = NAMES, time = 8)
-      if time == 0
+    def any_job_not_delayed?(not_delayed_jobs=NAMES, times=8)
+      if times.zero?
         true
       else
         not_delayed_jobs -= delayed
         if not_delayed_jobs.any?
-          sleep time
-          any_job_not_delayed?(not_delayed_jobs, time - 1)
+          sleep 10
+          any_job_not_delayed?(not_delayed_jobs, times - 1)
         else
           false
         end
@@ -138,13 +138,13 @@ module RecurringJob
       NAMES.reject { |name| Delayed::Job.already_delayed?(name) }
     end
 
-    def too_much_jobs?(max, time = 5)
-      if time == 0
+    def too_much_jobs?(max, times=6)
+      if times.zero?
         true
       else
         if Delayed::Job.count > max
-          sleep time
-          too_much_jobs?(max, time - 1)
+          sleep 10
+          too_much_jobs?(max, times - 1)
         else
           false
         end
