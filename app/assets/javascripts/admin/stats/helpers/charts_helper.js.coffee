@@ -112,7 +112,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
       plotOptions:
         flags:
-          shape: 'circlepin'
+          shape: 'flag'
         areaspline:
           fillOpacity: 0.25
         column:
@@ -164,7 +164,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                     popUp.html content
 
                     $(document).keydown (event) -> if event.which is 27 then popUp.remove() # the 'esc' key is pressed
-                    popUp.click (event) -> popUp.remove()
+                    popUp.click (event) -> if !event.metaKey then popUp.remove()
 
                     $("#content}").append popUp
 
@@ -201,7 +201,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
       if collection.length > 0 and !_.isEmpty(collection.selected)
         _.each collection.selected, (selected) =>
           stack = if collection.id() is 'sales' and selected[0] isnt 'total' then 1 else null
-          # console.log("#{collection.id()} - #{selected[0]} - #{stack}");
+
           series.push
             name: collection.title(selected)
             data: collection.customPluck(selected)
@@ -322,11 +322,11 @@ class AdminSublimeVideo.Helpers.ChartsHelper
   timelineSitesEvents: ->
     type: 'flags'
     data: [{
-      x: Date.UTC(2011, 2, 29)
+      x: Date.UTC(2011, 2, 30)
       title: 'V1'
       text: 'SublimeVideo commercial launch!'
     }, {
-      x: Date.UTC(2011, 10, 29, 22)
+      x: Date.UTC(2011, 10, 29)
       title: 'V2'
       text: 'SublimeVideo unleashed!'
     }]
