@@ -49,14 +49,7 @@ class Tweet
 
   class << self
 
-    def delay_save_new_tweets_and_sync_favorite_tweets
-      unless Delayed::Job.already_delayed?('%Tweet%save_new_tweets_and_sync_favorite_tweets%')
-        delay(priority: 200, run_at: 30.minutes.from_now).save_new_tweets_and_sync_favorite_tweets
-      end
-    end
-
     def save_new_tweets_and_sync_favorite_tweets
-      delay_save_new_tweets_and_sync_favorite_tweets
       return unless enough_remaining_twitter_calls?
 
       search = TwitterApi.search.new

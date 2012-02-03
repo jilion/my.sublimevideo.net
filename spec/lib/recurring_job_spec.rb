@@ -84,6 +84,20 @@ describe RecurringJob do
     end
   end
 
+  describe ".tweets_processing" do
+    it "calls 1 method" do
+      described_class.tweets_processing
+
+      Delayed::Job.where { handler =~ '%Tweet%save_new_tweets_and_sync_favorite_tweets%' }.count.should eq 1
+    end
+
+    it "calls delay_tweets_processing" do
+      described_class.should_receive(:delay_tweets_processing)
+
+      described_class.tweets_processing
+    end
+  end
+
   describe ".stats_processing" do
     it "calls 5 methods" do
       described_class.stats_processing
@@ -120,14 +134,14 @@ describe RecurringJob do
     it "doesn't notify if all recurring jobs are delayed" do
       subject.launch_all
       Notify.should_not_receive(:send)
-      subject.supervise
+      subject.supervise(50, 1, 1)
     end
 
     it "notifies if all recurring jobs aren't delayed" do
       subject.launch_all
       Delayed::Job.last.delete
       Notify.should_receive(:send)
-      subject.supervise
+      subject.supervise(50, 1, 1)
     end
   end
 

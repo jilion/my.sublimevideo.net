@@ -12,10 +12,19 @@ module RecurringJob
     '%RecurringJob%invoices_processing%',
     '%RecurringJob%sites_processing%',
     '%RecurringJob%users_processing%',
-    '%Tweet%save_new_tweets_and_sync_favorite_tweets%',
+    '%RecurringJob%tweets_processing%',
     '%Stat%clear_old_seconds_minutes_and_hours_stats%',
     '%RecurringJob%stats_processing%'
   ] + logs_tasks
+
+  PRIORITIES = {
+    logs: 1,
+    invoices: 2,
+    sites: 3,
+    users: 4,
+    tweets: 5,
+    stats: 6
+  }
 
   class << self
 
@@ -26,31 +35,37 @@ module RecurringJob
       Log::Amazon::S3::Licenses.delay_fetch_and_create_new_logs
     end
 
-    def delay_invoices_processing
+    def delay_invoices_processing(priority=PRIORITIES[:invoices])
       unless Delayed::Job.already_delayed?('%RecurringJob%invoices_processing%')
-        delay(priority: 2, run_at: Time.now.utc.tomorrow.midnight).invoices_processing
+        delay(priority: priority, run_at: Time.now.utc.tomorrow.midnight).invoices_processing(priority)
       end
     end
 
-    def delay_sites_processing
+    def delay_sites_processing(priority=PRIORITIES[:sites])
       unless Delayed::Job.already_delayed?('%RecurringJob%sites_processing%')
-        delay(priority: 3, run_at: Time.now.utc.tomorrow.midnight).sites_processing
+        delay(priority: priority, run_at: Time.now.utc.tomorrow.midnight).sites_processing(priority)
       end
     end
 
-    def delay_users_processing
+    def delay_users_processing(priority=PRIORITIES[:users])
       unless Delayed::Job.already_delayed?('%RecurringJob%users_processing%')
-        delay(priority: 4, run_at: 1.week.from_now).users_processing
+        delay(priority: priority, run_at: 1.week.from_now).users_processing(priority)
       end
     end
 
-    def delay_stats_processing
+    def delay_tweets_processing(priority=PRIORITIES[:tweets])
+      unless Delayed::Job.already_delayed?('%RecurringJob%tweets_processing%')
+        delay(priority: priority, run_at: 45.minutes.from_now).tweets_processing(priority)
+      end
+    end
+
+    def delay_stats_processing(priority=PRIORITIES[:stats])
       unless Delayed::Job.already_delayed?('%RecurringJob%stats_processing%')
-        delay(priority: 5, run_at: Time.now.utc.tomorrow.midnight + 5.minutes).stats_processing
+        delay(priority: priority, run_at: Time.now.utc.tomorrow.midnight + 5.minutes).stats_processing(priority)
       end
     end
 
-    def invoices_processing(priority=2)
+    def invoices_processing(priority=PRIORITIES[:invoices])
       Invoice.delay(priority: priority).update_pending_dates_for_first_not_paid_invoices
       Site.delay(priority: priority).activate_or_downgrade_sites_leaving_trial
       Site.delay(priority: priority).renew_active_sites
@@ -59,7 +74,7 @@ module RecurringJob
       delay_invoices_processing
     end
 
-    def sites_processing(priority=3)
+    def sites_processing(priority=PRIORITIES[:sites])
       Site.delay(priority: priority).send_trial_will_expire
       Site.delay(priority: priority).monitor_sites_usages
       Site.delay(priority: priority).update_last_30_days_counters_for_not_archived_sites
@@ -67,13 +82,19 @@ module RecurringJob
       delay_sites_processing
     end
 
-    def users_processing(priority=4)
+    def users_processing(priority=PRIORITIES[:users])
       User.delay(priority: priority).send_credit_card_expiration
 
       delay_users_processing
     end
 
-    def stats_processing(priority=5)
+    def tweets_processing(priority=PRIORITIES[:tweets])
+      Tweet.delay(priority: priority).save_new_tweets_and_sync_favorite_tweets
+
+      delay_tweets_processing
+    end
+
+    def stats_processing(priority=PRIORITIES[:stats])
       %w[Users Sites Sales SiteStats SiteUsages Tweets].each do |stats_klass|
         "Stats::#{stats_klass}Stat".constantize.delay(priority: priority).create_stats
       end
@@ -89,23 +110,20 @@ module RecurringJob
       RecurringJob.delay_invoices_processing
       RecurringJob.delay_sites_processing
       RecurringJob.delay_users_processing
-
-      # Others
-      Tweet.delay_save_new_tweets_and_sync_favorite_tweets
-      Stat.delay_clear_old_seconds_minutes_and_hours_stats
+      RecurringJob.delay_tweets_processing
 
       # Stats
+      Stat.delay_clear_old_seconds_minutes_and_hours_stats
       RecurringJob.delay_stats_processing
     end
 
-    def supervise
+    def supervise(max_jobs_allowed = 50, too_much_jobs_times=6, any_job_not_delayed=8)
       # check if there is no too much delayed jobs
-      max_jobs_allowed = 50
-      if too_much_jobs?(max_jobs_allowed)
+      if too_much_jobs?(max_jobs_allowed, too_much_jobs_times)
         Notify.send("WARNING!!! There is more than #{max_jobs_allowed} delayed jobs, please investigate quickly!")
       end
       # check if recurring jobs are all delayed
-      if any_job_not_delayed?
+      if any_job_not_delayed?(NAMES, any_job_not_delayed)
         Notify.send("WARNING!!! The following jobs are not delayed: #{not_delayed.join(", ")}; please investigate quickly!")
       end
     end
@@ -116,7 +134,20 @@ module RecurringJob
 
   private
 
-    def any_job_not_delayed?(not_delayed_jobs=NAMES, times=8)
+    def too_much_jobs?(max, times)
+      if times.zero?
+        true
+      else
+        if Delayed::Job.count > max
+          sleep 10
+          too_much_jobs?(max, times - 1)
+        else
+          false
+        end
+      end
+    end
+
+    def any_job_not_delayed?(not_delayed_jobs, times)
       if times.zero?
         true
       else
@@ -136,19 +167,6 @@ module RecurringJob
 
     def not_delayed
       NAMES.reject { |name| Delayed::Job.already_delayed?(name) }
-    end
-
-    def too_much_jobs?(max, times=6)
-      if times.zero?
-        true
-      else
-        if Delayed::Job.count > max
-          sleep 10
-          too_much_jobs?(max, times - 1)
-        else
-          false
-        end
-      end
     end
 
   end
