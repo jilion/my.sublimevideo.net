@@ -124,7 +124,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
             click: (event) ->
               if /sales/i.test(event.point.series.name)
-                $('#invoicePopUp').remove()
+                $('#invoice_popup').remove()
                 position = "#{event.pageX}, #{event.pageY}"
                 startedAt = new Date event.point.x
                 year  = startedAt.getFullYear()
@@ -152,16 +152,16 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                       content += "<p>User: <a href='/users/#{invoice.site.user_id}'>#{invoice.user.name or invoice.user.email}</a></p>"
                       content += "</li>"
                     content += "</ul>"
-                    popUp = $('<div>').attr('id', 'invoicePopUp').css
+                    popUp = $('<div>').attr('id', 'invoice_popup').css
                       position: 'absolute'
                       top: event.pageY
                       left: event.pageX
                       'z-index': '1000000'
                       width: '350px'
-                      padding: '20px'
-                      'background-color': 'white'
-                      'border': '1px solid #999'
-                      'border-radius': '13px'
+                      padding: '10px 20px'
+                      # 'background-color': 'white'
+                      # 'border': '1px solid #999'
+                      # 'border-radius': '13px'
                       'display': 'none'
                     popUp.html content
                     popUp.click (event) -> popUp.remove()
