@@ -16,8 +16,7 @@ gem 'squeel',                '~> 0.9.2'
 gem 'bson_ext',              '~> 1.5.2'
 gem 'bson',                  '~> 1.5.2'
 gem 'mongo',                 '~> 1.5.2'
-# gem 'mongoid',               '~> 2.4.3'
-gem 'mongoid',               '~> 2.4.3', git: 'git://github.com/rymai/mongoid.git', branch: 'fix_logger_issue-2.4.0-stable' # https://github.com/mongoid/mongoid/pull/1666
+gem 'mongoid',               '~> 2.4.3', git: 'git://github.com/mongoid/mongoid.git', branch: '2.4.0-stable' # waiting for 2.4.4 release
 
 # Views
 gem 'haml',                  '~> 3.1.3'
@@ -175,6 +174,6 @@ group :test do
   gem 'vcr',      '~> 1.10.3'
 
   gem 'database_cleaner'
-  gem 'factory_girl', git: 'git://github.com/thoughtbot/factory_girl.git', branch: 'private-methods-on-object-as-overrides' # https://github.com/thoughtbot/factory_girl/issues/285 should have fixed the issue, but still not
+  gem 'factory_girl'
   gem 'factory_girl_rails', require: false # loaded in spec_helper Spork.each_run
 end
