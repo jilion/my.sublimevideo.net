@@ -18,12 +18,12 @@ module RecurringJob
   ] + logs_tasks
 
   PRIORITIES = {
-    logs: 1,
+    logs:     1,
     invoices: 2,
-    sites: 3,
-    users: 4,
-    tweets: 5,
-    stats: 6
+    sites:    3,
+    users:    4,
+    tweets:   5,
+    stats:    6
   }
 
   class << self

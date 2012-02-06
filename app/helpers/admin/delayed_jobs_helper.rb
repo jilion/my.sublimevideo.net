@@ -29,7 +29,7 @@ module Admin::DelayedJobsHelper
     when "Module#users_processing"
       "Users processing"
 
-    when "Class#save_new_tweets_and_sync_favorite_tweets"
+    when "Module#tweets_processing"
       "Tweets processing"
 
     when "Module#clear_old_seconds_minutes_and_hours_stats"
@@ -52,7 +52,7 @@ module Admin::DelayedJobsHelper
       Module#invoices_processing
       Module#sites_processing
       Module#users_processing
-      Class#save_new_tweets_and_sync_favorite_tweets
+      Module#tweets_processing
       Module#clear_old_seconds_minutes_and_hours_stats
       Module#stats_processing
     ].include?(job.name)
