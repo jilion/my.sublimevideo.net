@@ -1,7 +1,7 @@
 Welcome to MySublimeVideo Admin!
 Here is your personal admin invitation:
 
-<%= accept_invitation_url(@resource, :invitation_token => @resource.invitation_token) %>
+<%= accept_invitation_url(@resource, invitation_token: @resource.invitation_token, protocol: 'https', subdomain: 'admin') %>
 
 If you don't want to be an admin, just ignore this email.
 Your account will not be created until you access the link above and fill up the form.
