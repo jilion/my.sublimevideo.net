@@ -44,9 +44,9 @@ module Stats
       def create_stats
         last_stat_day = determine_last_stat_day
 
-        while last_stat_day < Time.now.utc.midnight do
-          create_sales_stat(last_stat_day)
+        while last_stat_day < 1.day.ago.midnight do
           last_stat_day += 1.day
+          create_sales_stat(last_stat_day)
         end
       end
 
