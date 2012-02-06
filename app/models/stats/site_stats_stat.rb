@@ -55,7 +55,7 @@ module Stats
         if SiteStatsStat.present?
           SiteStatsStat.order_by([:d, :asc]).last.try(:d)
         else
-          Stat::Site.where(d: { "$ne" => nil }).order_by([:d, :asc]).first.d
+          Stat::Site.where(d: { "$ne" => nil }).order_by([:d, :asc]).first.d - 1.day
         end
       end
 

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Stats::SitesStat do
 
   context "with a bunch of different sites" do
+
     before(:each) do
       user = Factory.create(:user)
       @yearly_plan = Factory.create(:plan, name: @paid_plan.name, cycle: 'year')
@@ -20,7 +21,6 @@ describe Stats::SitesStat do
     end
 
     describe ".create_stats" do
-
       it "should create sites stats for states & plans" do
         described_class.create_stats
         described_class.count.should eq 1
@@ -39,6 +39,7 @@ describe Stats::SitesStat do
         sites_stat["ar"].should eq 1
       end
     end
+
   end
 
 end

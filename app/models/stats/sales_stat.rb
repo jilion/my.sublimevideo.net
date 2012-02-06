@@ -54,7 +54,7 @@ module Stats
         if SalesStat.present?
           SalesStat.order_by([:d, :asc]).last.try(:d)
         else
-          (Invoice.paid.order(:paid_at.asc).first.paid_at).midnight
+          (Invoice.paid.order(:paid_at.asc).first.paid_at).midnight - 1.day
         end
       end
 

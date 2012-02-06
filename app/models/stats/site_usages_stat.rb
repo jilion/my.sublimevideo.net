@@ -56,7 +56,7 @@ module Stats
         if SiteUsagesStat.present?
           SiteUsagesStat.order_by([:d, :asc]).last.try(:d)
         else
-          SiteUsage.order_by([:day, :asc]).first.day
+          SiteUsage.order_by([:day, :asc]).first.day - 1.day
         end
       end
 

@@ -53,7 +53,7 @@ module Stats
         if TweetsStat.present?
           TweetsStat.order_by([:d, :asc]).last.try(:d)
         else
-          (Tweet.order_by([:tweeted_at, :asc]).first.tweeted_at).midnight
+          (Tweet.order_by([:tweeted_at, :asc]).first.tweeted_at).midnight - 1.day
         end
       end
 
