@@ -10,7 +10,7 @@
     = text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, onclick: "this.focus();this.select();"
     - if site.in_free_plan?
       = "SSL delivery for secure pages is "
-      %strong= raw "included #{link_to("in all paid plans", [:edit, site, :plan])}"
+      %strong= raw "included #{link_to("in all paid plans", [:edit, site, :plan], class: "hl")}"
       = "."
     - else
       .checkbox_wrap
