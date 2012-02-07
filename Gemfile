@@ -27,7 +27,6 @@ gem 'RedCloth',              '~> 4.2.9'
 
 # Auth / invitations
 gem 'devise',                '~> 1.5.1'
-# gem 'devise',                git: 'git://github.com/plataformatec/devise.git'
 gem 'devise_invitable',      '~> 0.6.1' # currently, devise_invitable requires devise ~ 1.4.1...
 
 # API
@@ -45,7 +44,7 @@ gem 'rescue_me',             '~> 0.1.1', git: 'git://github.com/rymai/rescue_me.
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'
 
-gem 'state_machine',         '~> 1.1.0'
+gem 'state_machine',         '~> 1.1.2'
 gem 'paper_trail',           '~> 2.4.0'
 gem 'uniquify',              '~> 0.1.0'
 
@@ -71,7 +70,7 @@ gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
 gem 'countries',             '~> 0.7.0'
 gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.1.0', require: 'page_rankr'
-gem 'twitter',               '~> 1.7.2'
+gem 'twitter',               '~> 2.1.0'
 gem 'settingslogic',         '2.0.6' # 2.0.7 has ruby-debug19 & jeweler as dependencies => UNACCEPTABLE
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 1.0.0' # Campaign Monitor

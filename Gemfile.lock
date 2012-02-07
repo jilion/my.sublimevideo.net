@@ -222,8 +222,6 @@ GEM
       addressable (~> 2.2)
       multipart-post (~> 1.1)
       rack (~> 1.1)
-    faraday_middleware (0.7.0)
-      faraday (~> 0.7.3)
     ffaker (1.12.1)
     ffi (1.0.11)
     fog (1.1.2)
@@ -470,13 +468,11 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
-    twitter (1.7.2)
-      faraday (~> 0.7.4)
-      faraday_middleware (~> 0.7.0)
-      hashie (~> 1.1.0)
-      multi_json (~> 1.0.0)
-      multi_xml (~> 0.4.0)
-      simple_oauth (~> 0.1.5)
+    twitter (2.1.0)
+      activesupport (>= 2.3.9, < 4)
+      faraday (~> 0.7)
+      multi_json (~> 1.0)
+      simple_oauth (~> 0.1)
     typhoeus (0.2.4)
       mime-types
       mime-types
@@ -592,11 +588,11 @@ DEPENDENCIES
   spork (~> 0.9.0)
   squeel (~> 0.9.5)
   stat_request_parser (~> 1.0.0)
-  state_machine (~> 1.1.0)
+  state_machine (~> 1.1.2)
   taps
   thin
   timecop
-  twitter (~> 1.7.2)
+  twitter (~> 2.1.0)
   typhoeus (~> 0.2.0)
   uglifier
   uniquify (~> 0.1.0)
