@@ -49,6 +49,12 @@ GIT
       money
 
 GIT
+  remote: git://github.com/rymai/rescue_me.git
+  revision: df3c0b4ad1e7a3a925496fb9225d68a858566b66
+  specs:
+    rescue_me (0.1.1)
+
+GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: 590c89b458e21be52825ea9f7532182c68310715
   branch: 1.9.2
@@ -393,7 +399,6 @@ GEM
     rdoc (3.12)
       json (~> 1.4)
     request-log-analyzer (1.11.1)
-    rescue_me (0.1.0)
     responders (0.6.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
@@ -580,7 +585,7 @@ DEPENDENCIES
   rb-fsevent
   rb-readline
   request-log-analyzer (~> 1.11.1)
-  rescue_me (~> 0.1.0)
+  rescue_me (~> 0.1.1)!
   responders (~> 0.6.4)
   rpm_contrib!
   rspec-rails
