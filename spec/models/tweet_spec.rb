@@ -91,7 +91,11 @@ describe Tweet do
 
   describe "Class Methods" do
     describe ".save_new_tweets_and_sync_favorite_tweets" do
-      before(:each) { described_class.send(:remove_const, :KEYWORDS); described_class::KEYWORDS = %w[rymai] } # fake keywords to not fill the cassette...
+      before do
+        # fake keywords to not fill the cassette...
+        described_class.send(:remove_const, :KEYWORDS)
+        described_class::KEYWORDS = %w[rymai]
+      end
       use_vcr_cassette "twitter/save_new_tweets_and_sync_favorite_tweets"
       subject { described_class.save_new_tweets_and_sync_favorite_tweets }
 
