@@ -1,6 +1,6 @@
 module RecurringJob
 
-  logs_tasks = [
+  LOGS_TASKS = [
     '%Log::Voxcast%download_and_create_new_non_ssl_logs%',
     '%Log::Voxcast%download_and_create_new_ssl_logs%',
     '%Log::Amazon::S3::Player%fetch_and_create_new_logs%',
@@ -15,7 +15,7 @@ module RecurringJob
     '%RecurringJob%tweets_processing%',
     '%Stat%clear_old_seconds_minutes_and_hours_stats%',
     '%RecurringJob%stats_processing%'
-  ] + logs_tasks
+  ] + LOGS_TASKS
 
   PRIORITIES = {
     logs:     1,
@@ -117,13 +117,13 @@ module RecurringJob
       RecurringJob.delay_stats_processing
     end
 
-    def supervise(max_jobs_allowed = 50)
+    def supervise(max_jobs_allowed=50, too_much_jobs_times=20, any_job_not_delayed=20)
       # check if there is no too much delayed jobs
-      if too_much_jobs?(max_jobs_allowed, 20)
+      if too_much_jobs?(max_jobs_allowed, too_much_jobs_times)
         Notify.send("WARNING!!! There is more than #{max_jobs_allowed} delayed jobs, please investigate quickly!")
       end
       # check if recurring jobs are all delayed
-      if any_job_not_delayed?(NAMES, 20)
+      if any_job_not_delayed?(NAMES, any_job_not_delayed)
         Notify.send("WARNING!!! The following jobs are not delayed: #{not_delayed.join(", ")}; please investigate quickly!")
       end
     end
@@ -139,7 +139,7 @@ module RecurringJob
         true
       else
         if Delayed::Job.count > max
-          sleep time
+          sleep times
           too_much_jobs?(max, times - 1)
         else
           false
@@ -153,7 +153,7 @@ module RecurringJob
       else
         not_delayed_jobs -= delayed
         if not_delayed_jobs.any?
-          sleep time
+          sleep times
           any_job_not_delayed?(not_delayed_jobs, times - 1)
         else
           false
