@@ -166,7 +166,7 @@ group :development do
 end
 
 group :test do
-  gem 'spork', '~> 0.9.0.rc9'
+  gem 'spork', '~> 0.9.0'
   gem 'fuubar'
   gem 'shoulda-matchers'
   gem 'capybara'
