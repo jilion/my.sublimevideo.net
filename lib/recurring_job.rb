@@ -117,13 +117,13 @@ module RecurringJob
       RecurringJob.delay_stats_processing
     end
 
-    def supervise(max_jobs_allowed = 50, too_much_jobs_times=6, any_job_not_delayed=8)
+    def supervise(max_jobs_allowed = 50)
       # check if there is no too much delayed jobs
-      if too_much_jobs?(max_jobs_allowed, too_much_jobs_times)
+      if too_much_jobs?(max_jobs_allowed, 20)
         Notify.send("WARNING!!! There is more than #{max_jobs_allowed} delayed jobs, please investigate quickly!")
       end
       # check if recurring jobs are all delayed
-      if any_job_not_delayed?(NAMES, any_job_not_delayed)
+      if any_job_not_delayed?(NAMES, 20)
         Notify.send("WARNING!!! The following jobs are not delayed: #{not_delayed.join(", ")}; please investigate quickly!")
       end
     end
@@ -139,7 +139,7 @@ module RecurringJob
         true
       else
         if Delayed::Job.count > max
-          sleep 10
+          sleep time
           too_much_jobs?(max, times - 1)
         else
           false
@@ -153,7 +153,7 @@ module RecurringJob
       else
         not_delayed_jobs -= delayed
         if not_delayed_jobs.any?
-          sleep 10
+          sleep time
           any_job_not_delayed?(not_delayed_jobs, times - 1)
         else
           false
