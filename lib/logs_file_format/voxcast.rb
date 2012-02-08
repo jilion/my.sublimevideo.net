@@ -51,11 +51,11 @@ module LogsFileFormat
     end
 
     def player_token_from(request)
-      request[:path].match(/^\/p(\/.*)?\/sublime\.js\?t=([a-z0-9]{8}).*/) && $2
+      request[:path].match(/^\/p(\/.*)?\/sublime\.js(\.jgz|\.gz)?\?t=([a-z0-9]{8}).*/) && $3
     end
 
     def player_token?(request)
-      request[:path] =~ /^\/p(\/.*)?\/sublime\.js\?t=[a-z0-9]{8}.*/
+      request[:path] =~ /^\/p(\/.*)?\/sublime\.js(\.jgz|\.gz)?\?t=[a-z0-9]{8}.*/
     end
 
     def loader_token_from(request)
