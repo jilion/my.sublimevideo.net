@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   include UserModules::Pusher
   include UserModules::Scope
 
+  extend ActiveSupport::Memoizable
+
   devise :database_authenticatable, :invitable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :lockable
 
@@ -36,7 +38,11 @@ class User < ActiveRecord::Base
 
   has_many :sites
   has_many :invoices, through: :sites
-  has_one  :last_invoice, through: :sites, source: :invoices, order: :created_at.desc
+
+  def last_invoice
+    invoices.last
+  end
+  memoize :last_invoice
 
   # API
   has_many :client_applications
