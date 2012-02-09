@@ -69,7 +69,7 @@ module RecurringJob
       Invoice.delay(priority: priority).update_pending_dates_for_first_not_paid_invoices
       Site.delay(priority: priority).activate_or_downgrade_sites_leaving_trial
       Site.delay(priority: priority).renew_active_sites
-      Transaction.delay(priority: priority).charge_invoices
+      Transaction.delay(priority: priority + 1, run_at: 5.minutes.from_now).charge_invoices
 
       delay_invoices_processing
     end
