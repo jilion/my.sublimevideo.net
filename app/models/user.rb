@@ -98,8 +98,8 @@ class User < ActiveRecord::Base
     before_transition on: :unsuspend, do: :unsuspend_sites
     after_transition  on: :unsuspend, do: :send_account_unsuspended_email
 
-    before_transition on: :archive, do: [:set_archived_at, :archive_sites]
-    after_transition  on: :archive, do: [:invalidate_tokens, :newsletter_unsubscribe, :send_account_archived_email]
+    before_transition on: :archive, do: [:set_archived_at, :invalidate_tokens, :newsletter_unsubscribe]
+    after_transition  on: :archive, do: [:archive_sites, :send_account_archived_email]
   end
 
   # =================
@@ -210,7 +210,7 @@ class User < ActiveRecord::Base
   end
 
   def archivable?
-    sites.active.all? { |site| site.archivable? }
+    sites.not_archived.all?(&:archivable?)
   end
 
   def skip_pwd
@@ -221,6 +221,10 @@ class User < ActiveRecord::Base
   end
 
   def save_skip_pwd
+    skip_pwd { self.save }
+  end
+
+  def save_skip_pwd!
     skip_pwd { self.save! }
   end
 
@@ -253,7 +257,7 @@ private
 
   # before_transition on: :suspend
   def suspend_sites
-    sites.includes(:invoices).where(invoices: { state: 'failed' }).map(&:suspend)
+    sites.active.includes(:invoices).where(invoices: { state: 'failed' }).map(&:suspend)
   end
 
   # after_transition on: :suspend
@@ -336,8 +340,6 @@ private
   end
 
 end
-
-
 # == Schema Information
 #
 # Table name: users
@@ -420,4 +422,3 @@ end
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
 #  index_users_on_total_invoiced_amount  (total_invoiced_amount)
 #
-
