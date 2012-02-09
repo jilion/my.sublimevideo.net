@@ -34,7 +34,7 @@ module Spec
           Factory.create(:user_no_cc, options[:user] || {})
         else
           attrs = Factory.attributes_for(:user)
-          user = Factory.create(:user_real_cc, (options[:user] || {}).merge({
+          user = Factory(:user_real_cc, (options[:user] || {}).merge({
             cc_register:           '1',
             cc_brand:              options[:cc_type],
             cc_full_name:          attrs[:billing_name],

@@ -34,7 +34,6 @@ describe User do
 
     it { should have_many :sites }
     it { should have_many(:invoices).through(:sites) }
-    it { should have_one(:last_invoice).through(:sites) }
     it { should have_many :client_applications }
     it { should have_many :tokens }
   end
