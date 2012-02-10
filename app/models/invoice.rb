@@ -51,10 +51,6 @@ class Invoice < ActiveRecord::Base
     event(:wait)    { transition [:open, :failed, :waiting] => :waiting }
     event(:cancel)  { transition [:open, :failed] => :canceled }
 
-    state :canceled do
-      validate :ensure_first_invoice_of_site
-    end
-
     before_transition on: :succeed, do: :set_paid_at
     after_transition  on: :succeed, do: :apply_site_pending_attributes, if: proc { |invoice| invoice.site.invoices.not_paid.empty? }
     after_transition  on: :succeed, do: :update_user_invoiced_amount
@@ -197,11 +193,6 @@ class Invoice < ActiveRecord::Base
   end
 
 private
-
-  # validate (canceled state)
-  def ensure_first_invoice_of_site
-    self.errors.add(:base, :not_first_invoice) if site.first_paid_plan_started_at?
-  end
 
   # before_validation on: :create
   def set_customer_info
