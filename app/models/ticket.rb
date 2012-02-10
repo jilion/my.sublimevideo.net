@@ -44,7 +44,7 @@ class Ticket
   end
 
   def subject
-    @subject ||= h(@params[:subject].try(:to_s))
+    @subject ||= @params[:subject].try(:to_s)
   end
 
   def message
@@ -84,7 +84,7 @@ class Ticket
 
   def message_with_site(message)
     full_message  = site ? "Request for site: (#{site.token}) #{site.hostname}\n\n" : ''
-    full_message += h(message.try(:to_s))
+    full_message += message.to_s
   end
 
 end

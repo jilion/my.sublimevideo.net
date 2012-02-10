@@ -4,7 +4,7 @@ feature "Mails index" do
 
   describe "With no logs and no templates" do
     background do
-      sign_in_as :admin
+      sign_in_as :admin, roles: ['god']
     end
 
     scenario "should be 0 template and 0 log created" do
@@ -27,7 +27,7 @@ feature "Mails index" do
 
   describe "With logs and templates" do
     background do
-      sign_in_as :admin
+      sign_in_as :admin, roles: ['god']
       @mail_log      = Factory.create(:mail_log, admin_id: @current_admin.id)
       @mail_template = @mail_log.template
     end
@@ -62,7 +62,7 @@ feature "Mails sending" do
 
   background do
     @user = Factory.create(:user)
-    sign_in_as :admin
+    sign_in_as :admin, roles: ['god']
     @mail_template = Factory.create(:mail_template)
   end
 

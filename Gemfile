@@ -16,7 +16,7 @@ gem 'squeel',                '~> 0.9.2'
 gem 'bson_ext',              '~> 1.5.2'
 gem 'bson',                  '~> 1.5.2'
 gem 'mongo',                 '~> 1.5.2'
-gem 'mongoid',               '~> 2.4.0'
+gem 'mongoid',               '~> 2.4.3', git: 'git://github.com/mongoid/mongoid.git', branch: '2.4.0-stable' # waiting for 2.4.4 release
 
 # Views
 gem 'haml',                  '~> 3.1.3'
@@ -40,7 +40,8 @@ gem 'acts_as_api',           '~> 0.3.10'
 gem 'delayed_job',           '~> 2.1.4'
 # gem 'delayed_job',           '~> 3.0.0.pre'
 # gem 'delayed_job_active_record'
-gem 'rescue_me',             '~> 0.1.0'
+# gem 'rescue_me',             '~> 0.1.0'
+gem 'rescue_me',             '~> 0.1.1', git: 'git://github.com/rymai/rescue_me.git' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'
 
@@ -110,26 +111,24 @@ group :assets do
   gem 'execjs'
 end
 
-group :production, :staging do
-  gem 'rpm_contrib'
-  gem 'newrelic_rpm'
-  gem 'rack-ssl-enforcer'
-end
-
 group :production do
   # gem 'rack-cache'
   gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
 end
 
+group :staging, :production do
+  gem 'rpm_contrib', git: 'git://github.com/titanous/rpm_contrib.git', branch: 'mongoid-instrumentation'
+  gem 'newrelic_rpm'
+  gem 'rack-ssl-enforcer'
+end
+
 group :development, :test do
-  gem 'log_buddy'
   gem 'timecop'
+  gem 'ffaker'
   gem 'rspec-rails'
-  # gem 'ruby-debug19'
 
   gem 'rack-livereload'
   gem 'rails-dev-tweaks', '~> 0.5.0'
-  gem 'ffaker'
 
   # Javascript test
   gem 'jasminerice'
@@ -149,8 +148,7 @@ group :development do
 
   gem 'em-http-request' # async pusher in populate
 
-  gem 'rb-fsevent', '0.9.0.pre5'
-  # gem 'growl_notify'
+  gem 'rb-fsevent'
 
   gem 'ruby_gntp'
   platforms :ruby do
@@ -168,7 +166,7 @@ group :development do
 end
 
 group :test do
-  gem 'spork', '~> 0.9.0.rc9'
+  gem 'spork', '~> 0.9.0'
   gem 'fuubar'
   gem 'shoulda-matchers'
   gem 'capybara'
@@ -177,5 +175,6 @@ group :test do
   gem 'vcr',      '~> 1.10.3'
 
   gem 'database_cleaner'
-  gem 'factory_girl_rails', '~> 1.4.0', require: false # loaded in spec_helper Spork.each_run
+  gem 'factory_girl'
+  gem 'factory_girl_rails', require: false # loaded in spec_helper Spork.each_run
 end

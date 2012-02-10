@@ -3,8 +3,8 @@
     %th= "Keywords"
     %th= "Fav"
     %th= "Tweet"
-    -#%th= link_to_sort :retweets_count, :label => "Retweets"
-    %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Created at"
+    -#%th= link_to_sort :retweets_count, label: "Retweets"
+    %th= link_to_sort :date, default_way: 'desc', default: true, label: "Created at"
   = render @tweets
 
 .pagination_wrap

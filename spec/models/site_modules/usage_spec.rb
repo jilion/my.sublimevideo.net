@@ -2,6 +2,21 @@ require 'spec_helper'
 
 describe SiteModules::Usage do
 
+  describe ".update_last_30_days_counters_for_not_archived_sites" do
+    it "calls update_last_30_days_counters on each non-archived sites" do
+      @active_site = Factory.create(:site, state: 'active')
+      Factory.create(:site_stat, t: @active_site.token, d: Time.utc(2011,1,15).midnight, vv: { m: 6 })
+      @archived_site = Factory.create(:site, state: 'archived')
+      Factory.create(:site_stat, t: @archived_site.token, d: Time.utc(2011,1,15).midnight, vv: { m: 6 })
+
+      Timecop.travel(Time.utc(2011,1,31, 12)) do
+        Site.update_last_30_days_counters_for_not_archived_sites
+        @active_site.reload.last_30_days_main_video_views.should == 6
+        @archived_site.reload.last_30_days_main_video_views.should == 0
+      end
+    end
+  end
+
   describe "#update_last_30_days_counters" do
     before(:all) do
       @site = Factory.create(:site, last_30_days_main_video_views: 1)

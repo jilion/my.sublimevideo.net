@@ -51,10 +51,6 @@ class Invoice < ActiveRecord::Base
     event(:wait)    { transition [:open, :failed, :waiting] => :waiting }
     event(:cancel)  { transition [:open, :failed] => :canceled }
 
-    state :canceled do
-      validate :ensure_first_invoice_of_site
-    end
-
     before_transition on: :succeed, do: :set_paid_at
     after_transition  on: :succeed, do: :apply_site_pending_attributes, if: proc { |invoice| invoice.site.invoices.not_paid.empty? }
     after_transition  on: :succeed, do: :update_user_invoiced_amount
@@ -69,7 +65,8 @@ class Invoice < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :between, lambda { |started_at, ended_at| where { (created_at >= started_at) & (created_at <= ended_at) } }
+  scope :between,      lambda { |started_at, ended_at| where { (created_at >= started_at) & (created_at <= ended_at) } }
+  scope :paid_between, lambda { |started_at, ended_at| where { (paid_at >= started_at) & (paid_at <= ended_at) } }
 
   scope :open,           where(state: 'open')
   scope :paid,           where(state: 'paid').includes(:site).where { sites.refunded_at == nil }
@@ -78,8 +75,9 @@ class Invoice < ActiveRecord::Base
   scope :waiting,        where(state: 'waiting')
   scope :canceled,       where(state: 'canceled')
   scope :open_or_failed, where(state: %w[open failed])
-  scope :not_canceled,   where(:state.not_eq => 'canceled')
+  scope :not_canceled,   where { state != 'canceled' }
   scope :not_paid,       where(state: %w[open waiting failed])
+  scope :renew,          lambda { |bool=true| where(renew: bool) }
   scope :site_id,        lambda { |site_id| where(site_id: site_id) }
   scope :user_id,        lambda { |user_id| joins(:user).where { user.id == user_id } }
 
@@ -195,11 +193,6 @@ class Invoice < ActiveRecord::Base
   end
 
 private
-
-  # validate (canceled state)
-  def ensure_first_invoice_of_site
-    self.errors.add(:base, :not_first_invoice) if site.first_paid_plan_started_at?
-  end
 
   # before_validation on: :create
   def set_customer_info

@@ -103,88 +103,20 @@ namespace :one_time do
 
   namespace :stats do
 
-    task calculate_beta_users: :environment do
-      Stats::UsersStat.where(d: { "$lt" => Time.utc(2011,3,30) }).delete_all
-
+    task fix_beta_sites: :environment do
       day = Time.utc(2010,9,14)
       beta_sum, archived_sum = 0, 0
-      while day < Time.utc(2011,3,30) do
-        beta_new_count = User.beta.where { (date_trunc('day', created_at) == day.midnight) & ((archived_at == nil) | (archived_at > day.midnight)) }.count
-        beta_archived_count = User.beta.where { date_trunc('day', archived_at) == day.midnight }.count
-        beta_sum += beta_new_count - beta_archived_count
-        puts "On #{day}, there was #{beta_sum} beta users (#{beta_new_count} new and #{beta_archived_count} archived)."
-
-        archived_sum += User.where { date_trunc('day', archived_at) == day.midnight }.count
-        s = Stats::UsersStat.create!(
-          d:  day,
-          be: beta_sum,
-          fr: 0,
-          pa: 0,
-          su: 0,
-          ar: archived_sum
-        )
-        day += 1.day
-      end
-
-      Stats::UsersStat.where(be: nil).each do |stat|
-        stat.update_attributes(be: 0)
-      end
-    end
-
-    task calculate_beta_sites: :environment do
-      Stats::SitesStat.where(d: { "$lt" => Time.utc(2011,3,30) }).delete_all
-
-      day = Time.utc(2010,9,14)
-      beta_sum, archived_sum = 0, 0
-      while day < Time.utc(2011,3,30) do
-        beta_new_count = Site.where { (date_trunc('day', created_at) == day.midnight) & ((archived_at == nil) | (archived_at > day.midnight)) }.count
-        archived_count = Site.where { date_trunc('day', archived_at) == day.midnight }.count
+      while day < Time.utc(2011,4,17) do
+        beta_new_count = Site.where { (created_at < PublicLaunch.beta_transition_started_on.midnight) & (date_trunc('day', created_at) == day.midnight) & ((archived_at == nil) | (archived_at > day.midnight)) }.count
+        archived_count = Site.where { (created_at < PublicLaunch.beta_transition_started_on.midnight) & (date_trunc('day', archived_at) == day.midnight) }.count
         beta_sum += beta_new_count - archived_count
         archived_sum += archived_count
-        puts "On #{day}, there was #{beta_sum} beta sites (#{beta_new_count} new and #{archived_count} archived)."
-
-        s = Stats::SitesStat.create!(
-          d:  day,
-          fr: {
-            beta: beta_sum,
-            dev: 0,
-            free: 0
-          },
-          sp: 0,
-          tr: {
-            plus: { m: 0, y: 0 },
-            premium: { m: 0, y: 0 }
-          },
-          pa: {
-            plus: {
-              m: 0,
-              y: 0
-            },
-            premium: {
-              m: 0,
-              y: 0
-            }
-          },
-          su: 0,
-          ar: archived_sum
-        )
-        day += 1.day
-      end
-    end
-
-    task fix_dev_sites: :environment do
-      day = Time.utc(2010,9,14)
-      archived_dev_count_sum = 0
-      while day < Time.utc(2011,11,30) do
-        archived_dev_count = Site.in_plan(['dev', 'beta']).where { date_trunc('day', archived_at) == day.midnight }.count
-        archived_dev_count_sum += archived_dev_count
 
         stat = Stats::SitesStat.where(d: day).first
-        old_stat_fr_dev = stat.fr['dev']
-        stat.fr['dev'] -= archived_dev_count_sum
+        old_stat_fr_beta = stat.fr['beta']
+        stat.fr['beta'] = beta_sum
         stat.save!
-        puts "On #{day}, there was #{old_stat_fr_dev} dev sites, there are now #{stat.fr['dev']} (#{archived_dev_count_sum} sites less)."
-
+        puts "On #{day}, there was #{old_stat_fr_beta} beta sites, there are now #{stat.fr['beta']} (#{archived_count} sites less)."
         day += 1.day
       end
     end

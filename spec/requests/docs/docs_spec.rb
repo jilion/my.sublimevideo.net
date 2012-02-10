@@ -109,7 +109,7 @@ feature "write-proper-video-elements" do
 
     current_url.should eq "http://docs.sublimevideo.dev/write-proper-video-elements"
     # 1st paragraph: first line
-    page.should have_content("The <video> tag is the core element used to embed video clips in HTML5.")
+    page.should have_content("The <video> tag is the core element used to embed videos in HTML5.")
     # 1st paragraph: last line
     page.should have_content("Here is how your <video> element should look:")
     # code: first line

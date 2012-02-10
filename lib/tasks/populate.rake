@@ -120,9 +120,15 @@ namespace :db do
     end
 
     desc "Create fake site & video stats"
-    task recurring_stats: :environment do
+    task stats: :environment do
       disable_perform_deliveries do
         timed { create_stats(argv('site')) }
+      end
+    end
+
+    desc "Create recurring fake site & video stats"
+    task recurring_stats: :environment do
+      disable_perform_deliveries do
         timed { recurring_stats_update(argv('site')) }
       end
     end
@@ -135,6 +141,20 @@ namespace :db do
       end
     end
 
+    desc "Import MongoDB production databases locally (not the other way around don't worry!)"
+    task import_mongo_prod: :environment do
+      mongo_db_pwd = argv('password')
+      raise "Please provide a password to access the production database like this: rake db:populate:import_mongo_prod password=MONGOHQ_PASSWORD" if mongo_db_pwd.nil?
+
+      %w[sales_stats site_stats_stats site_usages_stats sites_stats tweets_stats users_stats tweets].each do |collection|
+        timed do
+          puts "Exporting production '#{collection}' collection"
+          `mongodump -h hurley.member0.mongohq.com:10006 -d sublimevideo_production -u heroku -p #{mongo_db_pwd} -o db/backups/ --collection #{collection}`
+          puts "Importing '#{collection}' collection locally"
+          `mongorestore -h localhost -d sublimevideo_dev --collection #{collection} --drop -v db/backups/sublimevideo_production/#{collection}.bson`
+        end
+      end
+    end
   end
 
 end
@@ -522,7 +542,7 @@ def create_stats(site_token = nil)
         n: "Video #{video_i} long name test truncate",
         no: "s",
         cs: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
-        p: "https://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
+        p: "http#{'s' if video_i.even?}://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
         z: "544x306",
         s: {
           "83cb4c27" => { u: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4", q: "base", f: "mp4" },

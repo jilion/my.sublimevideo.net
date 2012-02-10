@@ -45,80 +45,6 @@ describe Invoice do
     it { should validate_numericality_of(:vat_amount) }
     it { should validate_numericality_of(:balance_deduction_amount) }
     it { should validate_numericality_of(:amount) }
-
-    describe "ensure_first_invoice_of_site" do
-
-      context "first invoice" do
-        before(:each) do
-          Invoice.delete_all
-          @site = Factory.create(:new_site, first_paid_plan_started_at: nil)
-          @site.first_paid_plan_started_at.should be_nil
-        end
-
-        context "with an open invoice" do
-          subject { Factory.create(:invoice, site: @site, state: 'open') }
-
-          it "cancels the invoice" do
-            subject.cancel!.should be_true
-            subject.should be_canceled
-          end
-        end
-
-        context "with a failed invoice" do
-          subject { Factory.create(:invoice, site: @site, state: 'failed') }
-
-          it "cancels the invoice" do
-            subject.cancel!.should be_true
-            subject.should be_canceled
-          end
-        end
-
-        context "with a waiting invoice" do
-          subject { Factory.create(:invoice, site: @site, state: 'waiting') }
-
-          it "cancels the invoice" do
-            subject.cancel.should be_false
-            subject.should be_waiting
-          end
-        end
-      end
-
-      context "not first invoice" do
-        before(:each) do
-          Invoice.delete_all
-          @site = Factory.create(:new_site, first_paid_plan_started_at: Time.now.utc)
-          @site.first_paid_plan_started_at.should be_present
-        end
-
-        context "with an open invoice" do
-           subject { Factory.create(:invoice, site: @site, state: 'open') }
-
-          it "doesn't cancel the invoice" do
-            subject.cancel.should be_false
-            subject.should be_open
-          end
-        end
-
-        context "with a failed invoice" do
-          subject { Factory.create(:invoice, site: @site, state: 'failed') }
-
-          it "doesn't cancel the invoice" do
-            subject.cancel.should be_false
-            subject.should be_failed
-          end
-        end
-
-        context "with a waiting invoice" do
-          subject { Factory.create(:invoice, site: @site, state: 'waiting') }
-
-          it "doesn't cancel the invoice" do
-            subject.cancel.should be_false
-            subject.should be_waiting
-          end
-        end
-      end
-    end
-
   end # Validations
 
   describe "State Machine" do
@@ -354,7 +280,7 @@ describe Invoice do
     end
 
     describe "#between" do
-      specify { Invoice.between(24.hours.ago, 15.hours.ago).should eq [@waiting_invoice, @paid_invoice] }
+      specify { Invoice.between(24.hours.ago, 15.hours.ago).order(:id).should eq [@waiting_invoice, @paid_invoice] }
     end
 
     describe "#open" do

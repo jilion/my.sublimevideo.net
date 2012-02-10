@@ -1,0 +1,5 @@
+= title_and_content_header("Edit information")
+
+= form_for @admin, url: "/admins/#{@admin.id}" do |f|
+  = render 'admin/admins/form', f: f
+.spacer

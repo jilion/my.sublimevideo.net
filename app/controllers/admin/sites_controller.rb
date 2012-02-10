@@ -1,6 +1,8 @@
 class Admin::SitesController < AdminController
   respond_to :js, :html
 
+  before_filter { |controller| require_role?('god') if %w[update sponsor].include?(action_name) }
+
   #filter
   has_scope :in_plan, :badged
   has_scope :in_trial, :not_in_trial, :paid_plan, :overusage_notified, :user_id, :with_wildcard, :with_path, :with_extra_hostnames, :with_next_cycle_plan, type: :boolean
@@ -8,13 +10,13 @@ class Admin::SitesController < AdminController
     scope.with_state(value.to_sym)
   end
   # sort
-  has_scope :by_hostname, :by_user, :by_state, :by_plan_price, :by_last_30_days_billable_video_views, :by_last_30_days_extra_video_views_percentage, :by_last_30_days_plan_usage_persentage, :by_date, :search
+  has_scope :by_hostname, :by_user, :by_state, :by_plan_price, :by_last_30_days_billable_video_views, :by_last_30_days_extra_video_views_percentage, :by_last_30_days_plan_usage_persentage, :by_date, :by_trial_started_at, :search
 
   # GET /sites
   def index
     @sites = Site.includes(:user, :plan)
     @sites = @sites.active if params[:with_state].nil?
-    @sites = apply_scopes(@sites).by_date
+    @sites = apply_scopes(@sites).send(params[:in_trial] ? :by_trial_started_at : :by_date)
     respond_with(@sites, per_page: 50)
   end
 

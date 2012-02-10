@@ -11,8 +11,7 @@ class Log
   field :parsed_at,  :type => DateTime
 
   index :name, :unique => true
-  index [[:created_at, Mongo::ASCENDING], [:name, Mongo::DESCENDING], [:_type, Mongo::ASCENDING]] # Log::Amazon#fetch_new_logs_names
-  index [[:ended_at, Mongo::DESCENDING], [:hostname, Mongo::ASCENDING]] # Log::Voxcast#next_log_ended_at
+  index [[:created_at, Mongo::ASCENDING], [:_type, Mongo::ASCENDING]], background: true # Log::Amazon#fetch_new_logs_names & Log::Voxcast#next_log_ended_at
 
   # ensure there is no confusion about S3 Class
   autoload :Amazon, 'log/amazon'
@@ -39,15 +38,6 @@ class Log
   # =================
   # = Class Methods =
   # =================
-
-  # Recurring task
-  def self.delay_download_or_fetch_and_create_new_logs
-    # Sites
-    Log::Voxcast.download_and_create_new_logs
-    Log::Amazon::S3::Player.delay_fetch_and_create_new_logs
-    Log::Amazon::S3::Loaders.delay_fetch_and_create_new_logs
-    Log::Amazon::S3::Licenses.delay_fetch_and_create_new_logs
-  end
 
   def self.config
     yml[self.to_s.gsub("Log::", '').to_sym].symbolize_keys

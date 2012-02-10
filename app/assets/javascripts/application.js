@@ -10,13 +10,10 @@
 //= require s2
 //= require prototype/sites_select_title
 
-//= require_self
-
 //= require global
-//= require base_prototype
 
-var SublimeVideo   = SublimeVideo || {};
-var MySublimeVideo = MySublimeVideo || {};
+//= require_self
+//= require base_prototype
 
 function isEventSupported(eventName) {
   eventName = 'on' + eventName;

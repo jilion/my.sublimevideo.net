@@ -50,57 +50,64 @@ module LogsFileFormat
       )
     end
 
-    def player_token_from(request)
-      request[:path].match(/^\/p(\/.*)?\/sublime\.js\?t=([a-z0-9]{8}).*/) && $2
-    end
-
-    def player_token?(request)
-      request[:path] =~ /^\/p(\/.*)?\/sublime\.js\?t=[a-z0-9]{8}.*/
-    end
-
-    def loader_token_from(request)
-      request[:path].match(/^\/js\/([a-z0-9]{8})\.js.*/) && $1
-    end
-
-    def loader_token?(request)
-      request[:path] =~ /^\/js\/[a-z0-9]{8}\.js.*/
-    end
-
-    def flash_token_from(request)
-      request[:path].match(/^\/p(\/.*)?\/sublime\.swf\?t=([a-z0-9]{8}).*/) && $2
-    end
-
-    def flash_token?(request)
-      request[:path] =~ /^\/p(\/.*)?\/sublime\.swf\?t=[a-z0-9]{8}.*/
-    end
-
     def token_from(request)
-      request[:path].match(/^.*(\/|t\=)([a-z0-9]{8})($|&|\.|\/)/) && $2
+      if token = request[:path].match(/^.*(\/|t\=)([a-z0-9]{8})($|&|\.|\/)/)
+        token[2]
+      end
     end
 
     def token?(request)
-      request[:path] =~ /^.*(\/|t\=)[a-z0-9]{8}($|&|\.|\/)/
+      !!token_from(request)
+    end
+
+    def loader_token_from(request)
+      if loader_token = request[:path].match(/^\/js\/([a-z0-9]{8})\.js.*/)
+        loader_token[1]
+      end
+    end
+
+    def loader_token?(request)
+      !!loader_token_from(request)
+    end
+
+    def player_token_from(request)
+      if player_token = request[:path].match(/^\/p(\/.*)?\/sublime\.js(\.jgz|\.gz)?\?t=([a-z0-9]{8}).*/)
+        player_token[3]
+      end
+    end
+
+    def player_token?(request)
+      !!player_token_from(request)
+    end
+
+    def flash_token_from(request)
+      if flash_token = request[:path].match(/^\/p(\/.*)?\/sublime\.swf\?t=([a-z0-9]{8}).*/)
+        flash_token[2]
+      end
+    end
+
+    def flash_token?(request)
+      !!flash_token_from(request)
     end
 
     def countable_hit?(request)
       request[:cache_miss_reason] != 3
     end
 
-    def remove_timestamp(request)
-      # removed timestamps
-      request[:path_query].gsub(/&i=[0-9]+/, '')
-    end
-
     def gif_request?(request)
       request[:path_stem] == "/_.gif"
     end
 
-    def event_is?(request, event_code = 'l')
+    def event_is?(request, event_code='l')
       request[:path_query] =~ /[\?&]?e=#{event_code}&?/
     end
 
     def good_token?(request)
-      request[:path_query] =~ /t=([a-z0-9]{8})/
+      request[:path_query] =~ /[\?&]t=([a-z0-9]{8})(&|$)/
+    end
+
+    def remove_timestamp(request)
+      request[:path_query].gsub(/&i=[0-9]+/, '')
     end
 
   end

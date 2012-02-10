@@ -52,30 +52,30 @@
 = render 'video_views', site: @site
 %br
 
-= render '/admin/shared/invoices_table', object: @site
-
+- if has_role?('invoices')
+  = render '/admin/shared/invoices_table', object: @site
 %br
+
 = render 'referrers_table', site: @site
 
 %br
 %hr
 %br
 
-%h3 Mode update
+- if has_role?('god')
+  %h3 Mode update
 
-= form_for [:admin, @site] do |f|
-  = f.select :player_mode, Site::PLAYER_MODES
-  = f.submit "Update player mode", confirm: "Are you sure?"
+  = form_for [:admin, @site] do |f|
+    = f.select :player_mode, Site::PLAYER_MODES
+    = f.submit "Update player mode", confirm: "Are you sure?"
+  %br
 
-%br
-
-- unless @site.in_sponsored_plan?
-  %h3 Sponsoring
-  = form_for [:sponsor, :admin, @site] do |f|
-    = f.submit "Change current plan to sponsored plan", confirm: "Are you sure?"
-
-%br
-%hr
-%br
+  - unless @site.in_sponsored_plan?
+    %h3 Sponsoring
+    = form_for [:sponsor, :admin, @site] do |f|
+      = f.submit "Change current plan to sponsored plan", confirm: "Are you sure?"
+  %br
+  %hr
+  %br
 
 %p= link_to "Back to sites", [:admin, :sites]

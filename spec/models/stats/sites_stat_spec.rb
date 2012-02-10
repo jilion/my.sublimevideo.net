@@ -2,26 +2,9 @@ require 'spec_helper'
 
 describe Stats::SitesStat do
 
-  describe ".delay_create_sites_stats" do
-
-    it "should delay create_sites_stats if not already delayed" do
-      expect { described_class.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%Stats::SitesStat%create_sites_stats%'), :count).by(1)
-    end
-
-    it "should not delay create_sites_stats if already delayed" do
-      described_class.delay_create_sites_stats
-      expect { described_class.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%Stats::SitesStat%create_sites_stats%'), :count).by(0)
-    end
-
-    it "should delay create_sites_stats for next day" do
-      described_class.delay_create_sites_stats
-      Delayed::Job.last.run_at.should eq Time.new.utc.tomorrow.midnight
-    end
-
-  end
-
   context "with a bunch of different sites" do
-    before(:all) do
+
+    before(:each) do
       user = Factory.create(:user)
       @yearly_plan = Factory.create(:plan, name: @paid_plan.name, cycle: 'year')
       Factory.create(:site, user: user, state: 'active', plan_id: @free_plan.id)
@@ -37,15 +20,9 @@ describe Stats::SitesStat do
       Factory.create(:site, user: user, state: 'archived', plan_id: @paid_plan.id)
     end
 
-    describe ".create_sites_stats" do
-
-      it "should delay itself" do
-        described_class.should_receive(:delay_create_sites_stats)
-        described_class.create_sites_stats
-      end
-
+    describe ".create_stats" do
       it "should create sites stats for states & plans" do
-        described_class.create_sites_stats
+        described_class.create_stats
         described_class.count.should eq 1
         sites_stat = described_class.last
         sites_stat["fr"].should == { "free" => 1 }
@@ -61,7 +38,6 @@ describe Stats::SitesStat do
         sites_stat["su"].should eq 1
         sites_stat["ar"].should eq 1
       end
-
     end
 
   end

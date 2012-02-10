@@ -19,7 +19,7 @@ staging:
       - 10006
   preload_models: true
   skip_version_check: true
-  logger: false
+  logger: true
 
 production:
 <% if ARGV.join.include? 'assets:precompile' %>
