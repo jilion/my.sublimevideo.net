@@ -2,163 +2,6 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/tickets.xml
-    body: ! "<ticket>\n  <subject>I have a request!</subject>\n  <description>I have
-      a request this is a long text!</description>\n  <set-tags>idea standard-support</set-tags>\n
-      \ <requester-name>John Doe</requester-name>\n  <requester-email>email3@user.com</requester-email>\n</ticket>\n"
-    headers:
-      content-type:
-      - application/xml
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 201
-      message: Created
-    headers:
-      server:
-      - nginx/0.8.53
-      date:
-      - Tue, 17 May 2011 12:24:13 GMT
-      content-type:
-      - application/xml; charset=utf-8
-      connection:
-      - keep-alive
-      status:
-      - 201 Created
-      p3p:
-      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      location:
-      - http://sublimevideo.zendesk.com/tickets/1200.xml
-      x-runtime:
-      - '645'
-      content-length:
-      - '1'
-      set-cookie:
-      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH7WjSTToVYXV0aGVudGljYXRlZF9hdGwrB%2B1o0k06D3Nlc3Npb25faWQiJTRkZjczMjQ2ODgyZTdmZmVjMGU4NmEzNjY0ZWFiMTA0IhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVODJlbGxxb3RwLXE4cjA4bw%3D%3D--8094d25be714d56b892ea8231f3fcfe45cfd240a;
-        path=/; HttpOnly
-      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
-      cache-control:
-      - no-cache
-    body: ! ' '
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/tickets/1200.json
-    body: !!null 
-    headers: !!null 
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      server:
-      - nginx/0.8.53
-      date:
-      - Tue, 17 May 2011 12:24:14 GMT
-      content-type:
-      - application/json; charset=utf-8
-      connection:
-      - keep-alive
-      status:
-      - 200 OK
-      etag:
-      - ! '"417c07cf7198da101fa2a0fa55b3342d"'
-      p3p:
-      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      x-runtime:
-      - '581'
-      content-length:
-      - '1040'
-      set-cookie:
-      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKwfuaNJNOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToVYXV0aGVudGljYXRlZF9hdGwrB%2B5o0k06D3Nlc3Npb25faWQiJWUwNGU1ZTFmMWIzMWU3ZDJkNTEyZWNjYmFlYWNiYWEwIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIUZHRzbGw5dDFsdmsybnhp--957f05482a1cbded25c0272100903264e6ddd2a2;
-        path=/; HttpOnly
-      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
-      cache-control:
-      - private, max-age=0, must-revalidate
-    body: ! '{"channel":null,"nice_id":1200,"initially_assigned_at":"2011/05/17 14:24:13
-      +0200","entry_id":null,"created_at":"2011/05/17 14:24:13 +0200","problem_id":null,"resolution_time":null,"priority_id":0,"current_tags":"idea
-      standard-support","assignee_id":15308267,"linkings":[],"updated_at":"2011/05/17
-      14:24:13 +0200","score":36,"ticket_type_id":0,"status_updated_at":"2011/05/17
-      14:24:13 +0200","solved_at":null,"original_recipient_address":null,"external_id":null,"assigned_at":"2011/05/17
-      14:24:13 +0200","via_id":5,"subject":"I have a request!","recipient":null,"group_id":88332,"comments":[{"created_at":"2011/05/17
-      14:24:13 +0200","via_id":5,"value":"I have a request this is a long text!","type":"Comment","attachments":[],"is_public":true,"author_id":59438671}],"submitter_id":15308267,"base_score":36,"ticket_field_entries":[],"latest_recipients":null,"due_date":null,"current_collaborators":null,"status_id":1,"description":"I
-      have a request this is a long text!","organization_id":null,"updated_by_type_id":0,"requester_id":59438671}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :post
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: ! '{"EmailAddress":"email826@user.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":2},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
-    headers:
-      user-agent:
-      - createsend-ruby-0.7.8
-      content-type:
-      - application/json
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 201
-      message: Created
-    headers:
-      cache-control:
-      - private, s-maxage=0
-      content-type:
-      - application/json; charset=utf-8
-      server:
-      - CMWEB08
-      x-aspnetmvc-version:
-      - '2.0'
-      x-aspnet-version:
-      - 4.0.30319
-      x-powered-by:
-      - ASP.NET
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Thu, 09 Jun 2011 09:56:59 GMT
-      content-length:
-      - '19'
-    body: ! '"email826@user.com"'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :put
-    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.xml
-    body: <user><password>d41d8cd98f00b204e9800998ecf8427e</password><is-verified>true</is-verified></user>
-    headers:
-      content-type:
-      - application/xml
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      server:
-      - nginx/0.8.53
-      date:
-      - Thu, 09 Jun 2011 09:57:01 GMT
-      content-type:
-      - application/xml; charset=utf-8
-      connection:
-      - keep-alive
-      status:
-      - 200 OK
-      p3p:
-      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      x-runtime:
-      - '358'
-      content-length:
-      - '1'
-      set-cookie:
-      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH7ZjwTToVYXV0aGVudGljYXRlZF9hdGwrB%2B2Y8E06D3Nlc3Npb25faWQiJTE3ZWFkYWQ5Y2I0MmJhODU4YmVkOTk0MzI4YmQxM2EwIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIUYXFrbG1qcnh3ZHl2Y2Vt--e3ede01655c2d9a5ea376217f277780ecc91577c;
-        path=/; HttpOnly
-      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
-      cache-control:
-      - no-cache
-    body: ! ' '
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :post
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
     body: ! '{"EmailAddress":"email908@user.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":7},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
     headers:
@@ -188,4 +31,92 @@
       content-length:
       - '19'
     body: ! '"email908@user.com"'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/tickets.xml
+    body: ! "<ticket>\n  <subject>I have a request!</subject>\n  <description>I have
+      a request this is a long text!</description>\n  <set-tags>email-support</set-tags>\n
+      \ <requester-name>Remy</requester-name>\n  <requester-email>email19@user.com</requester-email>\n</ticket>\n"
+    headers:
+      content-type:
+      - application/xml
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      server:
+      - nginx/0.8.53
+      date:
+      - Fri, 10 Feb 2012 09:22:29 GMT
+      content-type:
+      - application/xml; charset=utf-8
+      connection:
+      - keep-alive
+      status:
+      - 201 Created
+      location:
+      - https://sublimevideo.zendesk.com/tickets/2016.xml
+      x-runtime:
+      - '782'
+      content-length:
+      - '1'
+      x-api-deprecated:
+      - Please use /api/v1/tickets.xml
+      set-cookie:
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6D3Nlc3Npb25faWQiJTAyOTc0MjBkYmVmYmI3NzgwYTAyY2YzNmVlMTk2MjdlOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneSITd2FyZGVuLm1lc3NhZ2V7ADoHaWQiFGJqNGx6NXIyM2s3NWh2MzoVYXV0aGVudGljYXRlZF9hdGwrB9XhNE8%3D--9602d709abd34c6be02773a4d702a8b607932e98;
+        path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      x-zendesk-api-version:
+      - v1
+      cache-control:
+      - no-cache
+    body: ! ' '
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/tickets/2016.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/0.8.53
+      date:
+      - Fri, 10 Feb 2012 09:22:31 GMT
+      content-type:
+      - application/json; charset=utf-8
+      connection:
+      - keep-alive
+      status:
+      - 200 OK
+      etag:
+      - ! '"120c442b5af03cea67954a63058eb8d1"'
+      x-runtime:
+      - '449'
+      content-length:
+      - '1231'
+      x-api-deprecated:
+      - Please use /api/v1/tickets/2016.json
+      set-cookie:
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6D3Nlc3Npb25faWQiJTkyNmIyNGY0MzM4NGVlM2ZlNDRlYjE5N2E4MDA4NjExOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneSITd2FyZGVuLm1lc3NhZ2V7ADoHaWQiFWJpOGx6YXNobC15ZG1ob2I6FWF1dGhlbnRpY2F0ZWRfYXRsKwfW4TRP--c50b61dd6b7ec9fb947c2eb3105e826bb64055b4;
+        path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      cache-control:
+      - private, max-age=0, must-revalidate
+      x-zendesk-api-version:
+      - v1
+    body: ! '{"nice_id":2016,"initially_assigned_at":"2012/02/10 10:22:29 +0100","ticket_field_entries":[],"channel":null,"entry_id":null,"created_at":"2012/02/10
+      10:22:29 +0100","resolution_time":null,"priority_id":0,"current_tags":"email-support","assignee_id":15308267,"updated_at":"2012/02/10
+      10:22:29 +0100","linkings":[],"score":36,"ticket_type_id":0,"status_updated_at":"2012/02/10
+      10:22:29 +0100","solved_at":null,"original_recipient_address":null,"external_id":null,"assigned_at":"2012/02/10
+      10:22:29 +0100","via_id":5,"subject":"I have a request!","recipient":null,"group_id":88332,"problem_id":null,"submitter_id":15308267,"base_score":36,"latest_recipients":null,"due_date":null,"current_collaborators":null,"permissions":{"can_edit_ticket_tags":true,"can_make_comments":true,"can_update_ticket":true,"can_delete_ticket":true,"can_make_public_comments":true,"can_merge_ticket":true},"status_id":1,"description":"I
+      have a request this is a long text!","has_incidents":false,"organization_id":null,"comments":[{"created_at":"2012/02/10
+      10:22:29 +0100","via_id":5,"value":"I have a request this is a long text!","type":"Comment","is_public":true,"author_id":161723906,"attachments":[]}],"updated_by_type_id":0,"requester_id":161723906}'
     http_version: '1.1'
