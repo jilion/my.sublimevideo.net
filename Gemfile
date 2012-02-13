@@ -7,16 +7,16 @@ gem 'thin'
 
 gem 'prototype-rails'
 gem 'jquery-rails', '~> 1.0.19'
-gem 'rails-backbone'
+gem 'rails-backbone', '~> 0.6.0'
 
 # Databases
-gem 'pg',                    '~> 0.12.1'
-gem 'squeel',                '~> 0.9.2'
+gem 'pg',                    '~> 0.13.0'
+gem 'squeel',                '~> 0.9.5'
 
 gem 'bson_ext',              '~> 1.5.2'
 gem 'bson',                  '~> 1.5.2'
 gem 'mongo',                 '~> 1.5.2'
-gem 'mongoid',               '~> 2.4.3', git: 'git://github.com/mongoid/mongoid.git', branch: '2.4.0-stable' # waiting for 2.4.4 release
+gem 'mongoid',               '~> 2.4.4'
 
 # Views
 gem 'haml',                  '~> 3.1.3'
@@ -49,7 +49,7 @@ gem 'state_machine',         '~> 1.1.0'
 gem 'paper_trail',           '~> 2.4.0'
 gem 'uniquify',              '~> 0.1.0'
 
-gem 'responders',            '~> 0.6.4'
+gem 'responders',            '~> 0.6.5'
 gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
@@ -57,7 +57,7 @@ gem 'fog',                   '~> 1.1.2'
 gem 'carrierwave',           '~> 0.5.7'
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'voxel_hapi',            git: 'git://github.com/thibaudgg/voxel_hapi.git', branch: '1.9.2' # VoxCast CDN
-gem 'request-log-analyzer',  '~> 1.11.1', require: 'request_log_analyzer'
+gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
 
 # gem 'activemerchant',        '~> 1.9.1'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
