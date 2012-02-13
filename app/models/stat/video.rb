@@ -17,6 +17,10 @@ class Stat::Video
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:m, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:h, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]
+  index [[:st, Mongo::ASCENDING], [:s, Mongo::ASCENDING]]
+  index [[:st, Mongo::ASCENDING], [:m, Mongo::ASCENDING]]
+  index [[:st, Mongo::ASCENDING], [:h, Mongo::ASCENDING]]
+  index [[:st, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]
 
   # ====================
   # = Instance Methods =
