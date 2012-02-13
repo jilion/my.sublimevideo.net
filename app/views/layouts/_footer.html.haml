@@ -25,14 +25,18 @@
           %li= link_to "Contact", page_url('contact', host: request.domain, protocol: 'http')
           %li= link_to "About", page_url('about', host: request.domain, protocol: 'http')
     .right
-      %p
-        = "SublimeVideo is a service by"
-        = link_to "http://jilion.com", class: "jilion" do
-          %span= "Jilion"
       %p.twitter
         = "Follow"
         = link_to "@jilion", "http://twitter.com/jilion"
         = "for the latest news."
+      .newsletter
+        %form{ action: "http://jilion.createsend.com/t/r/s/shylrr/", method: "post", id: "subForm" }
+          %p
+            %label{ for: "shylrr-shylrr" }= "Subscribe for news & exclusive promotions"
+          .field_wrap
+            %input.field{ type: "text", name: "cm-shylrr-shylrr", id: "shylrr-shylrr", size: "25", placeholder: "Email" }
+            %button{ type: "submit" }
+              %span= "Subscribe"
       .networks
         %a{ href: "http://twitter.com/share", class: "twitter-share-button", data: { url: "http://sublimevideo.net", text: "Check out SublimeVideo HTML5 Video Player by @Jilion -", count: "horizontal", related: "jilion:Follow @Jilion for the latest news!" } } Tweet
         = javascript_include_tag "//platform.twitter.com/widgets.js"
@@ -44,6 +48,10 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
           })();
         %iframe{ src: "//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fsublimevideo&send=false&layout=button_count&width=130&show_faces=false&action=like&colorscheme=dark&font&height=21", scrolling: "no", frameborder: "0", style: "border:none; overflow:hidden; width:130px; height:21px;", allowTransparency: "true" }
+      %p.service_by
+        = "SublimeVideo is a service by"
+        = link_to "http://jilion.com", class: "jilion" do
+          %span= "Jilion"
     .footer_break
     %p.copyright
       = link_to "Terms & Conditions", page_url('terms', subdomain: 'my')
