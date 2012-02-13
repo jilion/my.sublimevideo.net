@@ -3,11 +3,12 @@ module My::PlansHelper
   def plan_label_content(plan, site=nil, options={})
     content_tag(:span, class: "pricing") do
       price_box = content_tag(:strong, class: "price") do
-        display_amount_with_sup(plan.price)
+        display_amount_with_sup(plan.price(site))
       end
 
       price_box += content_tag(:span, class: "details_label") do
-        (plan.yearly? ? "per site/year" : "per site/month")
+        prefix = plan.discounted?(site) ? 'first' : 'per'
+        "#{prefix} #{plan.cycle}"
       end
 
       price_box += content_tag(:span, class: "name") do
@@ -82,15 +83,15 @@ module My::PlansHelper
     options[:id]    ||= new_plan.free_plan? ? "plan_free" : "plan_#{new_plan.name}_#{new_plan.cycle}"
     options[:class] ||= "plan_radio"
     options["data-plan_title"] = new_plan.title(always_with_cycle: true)
-    options["data-plan_price"] = display_amount(new_plan.price)
+    options["data-plan_price"] = display_amount(new_plan.price(site))
     if current_user.vat?
       options["data-vat"] = display_vat_percentage
-      options["data-plan_price_vat"] = display_amount(new_plan.price, vat: true)
+      options["data-plan_price_vat"] = display_amount(new_plan.price(site), vat: true)
     end
 
     if site.persisted?
       options["data-plan_change_type"] = plan_change_type(site, current_plan, new_plan)
-      update_price = current_plan.upgrade?(new_plan) ? new_plan.price - site.last_paid_plan_price : new_plan.price
+      update_price = current_plan.upgrade?(new_plan) ? new_plan.price(site) - site.last_paid_plan_price : new_plan.price(site)
 
       options["data-plan_update_price"] = display_amount(update_price)
 

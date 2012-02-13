@@ -1,6 +1,8 @@
 = title_and_content_header("Choose a plan for your site")
 
 #site.new
+  = render 'my/deals/deal_available'
+
   = form_for @site, html: { class: "full", onsubmit: "$('site_submit').disable();" } do |f|
 
     = render 'my/plans/fields', site: @site, f: f

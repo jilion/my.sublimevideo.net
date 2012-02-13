@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120127102215) do
+ActiveRecord::Schema.define(:version => 20120206144727) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -56,6 +56,31 @@ ActiveRecord::Schema.define(:version => 20120127102215) do
   end
 
   add_index "client_applications", ["key"], :name => "index_client_applications_on_key", :unique => true
+
+  create_table "deal_activations", :force => true do |t|
+    t.integer  "deal_id"
+    t.integer  "user_id"
+    t.datetime "activated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "deal_activations", ["deal_id", "user_id"], :name => "index_deal_activations_on_deal_id_and_user_id", :unique => true
+
+  create_table "deals", :force => true do |t|
+    t.string   "token"
+    t.string   "name"
+    t.text     "description"
+    t.string   "kind"
+    t.float    "value"
+    t.string   "availability_scope"
+    t.datetime "started_at"
+    t.datetime "ended_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "deals", ["token"], :name => "index_deals_on_token", :unique => true
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -111,8 +136,10 @@ ActiveRecord::Schema.define(:version => 20120127102215) do
     t.integer  "amount"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "deal_id"
   end
 
+  add_index "invoice_items", ["deal_id"], :name => "index_invoice_items_on_deal_id"
   add_index "invoice_items", ["invoice_id"], :name => "index_invoice_items_on_invoice_id"
   add_index "invoice_items", ["item_type", "item_id"], :name => "index_invoice_items_on_item_type_and_item_id"
 

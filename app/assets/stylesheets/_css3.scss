@@ -32,3 +32,10 @@
   mask-image:url($value);
 }
 
+@mixin rotate($value) {
+  -webkit-transform:rotate($value);
+  -moz-transform:rotate($value);
+  -o-transform:rotate($value);
+  -ms-transform:rotate($value);
+  transform:rotate($value);
+}

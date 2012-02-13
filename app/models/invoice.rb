@@ -9,9 +9,9 @@ class Invoice < ActiveRecord::Base
   # ================
 
   belongs_to :site
-
   has_one :user, through: :site
 
+  # Invoice items
   has_many :invoice_items
   has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, class_name: "InvoiceItem"
 

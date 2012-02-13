@@ -34,6 +34,7 @@ describe User do
 
     it { should have_many :sites }
     it { should have_many(:invoices).through(:sites) }
+    it { should have_many :deal_activations }
     it { should have_many :client_applications }
     it { should have_many :tokens }
   end
@@ -793,6 +794,44 @@ describe User do
         subject { Factory(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo', use_personal: nil) }
 
         it { should be_more_info_incomplete }
+      end
+    end
+
+    describe "#activated_deals" do
+      subject { Factory(:user) }
+
+      context "without deals activated" do
+        its(:activated_deals) { should be_empty }
+      end
+
+      context "with deals activated" do
+        let(:deal1) { Factory(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+        let(:deal2) { Factory(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
+        before(:each) do
+          @deal_activation1 = Factory(:deal_activation, deal: deal1, user: subject)
+          @deal_activation2 = Factory(:deal_activation, deal: deal2, user: subject)
+        end
+
+        its(:activated_deals) { should eq [deal2, deal1] }
+      end
+    end
+
+    describe "#latest_activated_deal" do
+      subject { Factory(:user) }
+
+      context "without deals activated" do
+        its(:latest_activated_deal) { should be_nil }
+      end
+
+      context "with deals activated" do
+        let(:deal1) { Factory(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+        let(:deal2) { Factory(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
+        before(:each) do
+          @deal_activation1 = Factory(:deal_activation, deal: deal1, user: subject)
+          @deal_activation2 = Factory(:deal_activation, deal: deal2, user: subject)
+        end
+
+        its(:latest_activated_deal) { should eq deal2 }
       end
     end
 

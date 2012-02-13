@@ -37,12 +37,20 @@ class User < ActiveRecord::Base
   belongs_to :enthusiast
 
   has_many :sites
+
+  # Invoices
   has_many :invoices, through: :sites
 
   def last_invoice
     invoices.last
   end
   memoize :last_invoice
+
+  # Deals
+  has_many :deal_activations
+
+  # Deals
+  has_many :deal_activations
 
   # API
   has_many :client_applications
@@ -112,14 +120,6 @@ class User < ActiveRecord::Base
     where(conditions).where { state != 'archived' }.first
   end
 
-  def update_tracked_fields!(request)
-    # Don't update user when he's accessing the API
-    if !request.params.key?(:oauth_token) &&
-       (!request.headers.key?('HTTP_AUTHORIZATION') || !request.headers['HTTP_AUTHORIZATION'] =~ /OAuth/)
-      super(request)
-    end
-  end
-
   def self.suspend(user_id)
     user = find(user_id)
     user.suspend
@@ -133,6 +133,14 @@ class User < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
+
+  def update_tracked_fields!(request)
+    # Don't update user when he's accessing the API
+    if !request.params.key?(:oauth_token) &&
+       (!request.headers.key?('HTTP_AUTHORIZATION') || !request.headers['HTTP_AUTHORIZATION'] =~ /OAuth/)
+      super(request)
+    end
+  end
 
   # Devise overriding
   def password=(new_password)
@@ -199,6 +207,14 @@ class User < ActiveRecord::Base
 
   def plan_title
     plan.try(:title)
+  end
+
+  def activated_deals
+    deal_activations.active.order(:activated_at.desc).map(&:deal)
+  end
+
+  def latest_activated_deal
+    deal_activations.active.order(:activated_at.desc).first.try(:deal)
   end
 
   def email_support?

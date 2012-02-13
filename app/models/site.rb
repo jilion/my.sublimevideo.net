@@ -35,10 +35,13 @@ class Site < ActiveRecord::Base
   # ================
 
   belongs_to :user, validate: true, autosave: true
+
+  # Plans
   belongs_to :plan
   belongs_to :next_cycle_plan, class_name: "Plan"
   belongs_to :pending_plan,    class_name: "Plan"
 
+  # Invoices
   has_many :invoices, class_name: "::Invoice"
   has_one  :last_invoice, class_name: "::Invoice", order: :created_at.desc
 

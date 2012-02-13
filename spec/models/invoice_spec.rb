@@ -21,7 +21,8 @@ describe Invoice do
     subject { Factory.create(:invoice) }
 
     it { should belong_to :site }
-    it { should have_one :user }
+    it { should have_one :user } # through :site
+
     it { should have_many :invoice_items }
     it { should have_and_belong_to_many :transactions }
   end # Associations
@@ -578,16 +579,16 @@ describe Invoice do
           its(:amount)                   { should eql 0 }
         end
       end
-
     end # .construct
 
   end # Class Methods
 
   describe "Instance Methods" do
-    before(:each) do
-      @invoice = Factory.create(:invoice)
+    before do
+      @invoice = Factory.build(:invoice)
       @paid_plan_invoice_item = Factory.create(:plan_invoice_item, invoice: @invoice, item: @paid_plan, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
       @invoice.invoice_items << @paid_plan_invoice_item
+      @invoice.save!
 
       Factory.create(:transaction, invoices: [@invoice], state: 'failed', created_at: 4.days.ago)
       @failed_transaction2 = Factory.create(:transaction, invoices: [@invoice], state: 'failed', created_at: 3.days.ago)
@@ -596,11 +597,11 @@ describe Invoice do
     subject { @invoice }
 
     describe "#paid_plan_invoice_item" do
-      it { subject.paid_plan_invoice_item.should eq @paid_plan_invoice_item }
+      it { subject.reload.paid_plan_invoice_item.should eq @paid_plan_invoice_item }
     end
 
     describe "#paid_plan" do
-      it { subject.paid_plan.should eq @paid_plan }
+      it { subject.reload.paid_plan.should eq @paid_plan }
     end
 
     describe "#last_transaction" do
@@ -636,8 +637,6 @@ describe Invoice do
   end # Instance Methods
 
 end
-
-
 
 
 # == Schema Information

@@ -170,6 +170,7 @@ group :test do
   gem 'fuubar'
   gem 'shoulda-matchers'
   gem 'capybara'
+  gem 'show_me_the_cookies'
   gem 'webmock',  '~> 1.6.0'
   gem 'typhoeus', '~> 0.2.0'
   gem 'vcr',      '~> 1.10.3'

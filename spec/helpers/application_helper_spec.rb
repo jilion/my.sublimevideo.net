@@ -50,6 +50,8 @@ describe ApplicationHelper do
 
   describe "#display_amount_with_sup" do
     it { helper.display_amount_with_sup(1990).should eq "$19<sup>.90</sup>" }
+    it { helper.display_amount_with_sup(1990.0).should eq "$19<sup>.90</sup>" }
+    it { helper.display_amount_with_sup(7920).should eq "$79<sup>.20</sup>" }
     it { helper.display_amount_with_sup(1900).should eq "$19" }
   end
 

@@ -7,6 +7,7 @@ class MyController < ApplicationController
   before_filter :delete_logged_in_cookie
   before_filter :authenticate_user!
   before_filter :set_logged_in_cookie
+  before_filter :activate_deal_from_cookie
 
 private
 
@@ -35,13 +36,17 @@ private
   end
 
   def set_logged_in_cookie
-    unless cookies[:l] == '1'
+    if !cookies[:l] || cookies[:l][:value] == '1'
       cookies[:l] = {
         value: '1',
         expires: 2.weeks.from_now,
         domain: :all
       }
     end
+  end
+
+  def activate_deal_from_cookie
+    redirect_to deal_path(id: cookies[:d]) if cookies[:d] && params[:id] != cookies[:d]
   end
 
   module DeviseInvitable::Controllers::Helpers

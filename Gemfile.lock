@@ -430,6 +430,8 @@ GEM
     sequel (3.20.0)
     settingslogic (2.0.6)
     shoulda-matchers (1.0.0)
+    show_me_the_cookies (1.1.0)
+      capybara (~> 1.0)
     signature (0.1.2)
       ruby-hmac
     silent-postgres (0.1.1)
@@ -587,6 +589,7 @@ DEPENDENCIES
   sass-rails (~> 3.1.5)
   settingslogic (= 2.0.6)
   shoulda-matchers
+  show_me_the_cookies
   silent-postgres
   snail (~> 0.5.7)
   spork (~> 0.9.0)

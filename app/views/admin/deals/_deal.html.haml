@@ -1,0 +1,18 @@
+%tr[deal]{ class: cycle("", "alt") }
+  %td.id= deal.id
+
+  %td.token= deal.token
+
+  %td.name= deal.name
+
+  %td.description= deal.description
+
+  %td.kind= deal.kind
+
+  %td.value= deal.value
+
+  %td.availability_scope= deal.availability_scope
+
+  %td.started_at= display_time(deal.started_at)
+
+  %td.ended_at= display_time(deal.ended_at)

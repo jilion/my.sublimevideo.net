@@ -230,6 +230,34 @@
   @include box-shadow(rgba(0,0,0,0.75) 0 1px 2px);
 }
 
+#plans .select_box span.old_price {
+  position:absolute;
+  top:12px;
+  left:0;
+  right:0;
+  margin:0 auto;
+  display:block;
+  width:100px;
+  text-align:center;
+  color:#728bb2;
+  font-size:19px;
+  font-weight:600;
+}
+
+#plans .select_box span.old_price .bar {
+  width:51px;
+  height:2px;
+  background:#00235a;
+  position:absolute;
+  top:9px;
+  left:25px;
+  @include rotate(-25deg);
+}
+
+#plans .select_box.active span.old_price .bar {
+  background:#deebff;
+}
+
 #plans .current_label {
   font-size:9px;
   color:#224375;
