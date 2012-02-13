@@ -37,9 +37,9 @@ gem 'acts_as_api',           '~> 0.3.10'
 # gem 'rack-throttle',         git: 'git://github.com/rymai/rack-throttle.git', require: 'rack/throttle'
 
 # Internals
-gem 'delayed_job',           '~> 2.1.4'
+# gem 'delayed_job',           '~> 2.1.4'
 # gem 'delayed_job',           '~> 3.0.0.pre'
-# gem 'delayed_job_active_record'
+gem 'delayed_job_active_record'
 # gem 'rescue_me',             '~> 0.1.0'
 gem 'rescue_me',             '~> 0.1.1', git: 'git://github.com/rymai/rescue_me.git' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
 gem 'configuration',         '~> 1.3.1'
