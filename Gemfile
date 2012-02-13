@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com account
 
-gem 'rails',                 '3.1.3'
+gem 'rails',                 '3.2.1'
 
 gem 'thin'
 
@@ -26,9 +26,8 @@ gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.9'
 
 # Auth / invitations
-gem 'devise',                '~> 1.5.1'
-# gem 'devise',                git: 'git://github.com/plataformatec/devise.git'
-gem 'devise_invitable',      '~> 0.6.1' # currently, devise_invitable requires devise ~ 1.4.1...
+gem 'devise',                '~> 2.0.1'
+gem 'devise_invitable',      '~> 1.0.0'
 
 # API
 gem 'oauth',                 '~> 0.4.5'
@@ -95,7 +94,7 @@ gem 'coderay',               '~> 1.0.4'
 gem 'haml-coderay',          '~> 0.1.2'
 
 # Press
-gem "feedzirra", git: "https://github.com/pauldix/feedzirra.git"
+gem "feedzirra", git: "git://github.com/pauldix/feedzirra.git"
 
 gem 'asset_sync'
 gem 'rack-no-www'
@@ -103,8 +102,8 @@ gem 'rack-no-www'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.1.5'
-  gem 'coffee-rails', '~> 3.1.1'
+  gem 'sass-rails',   '~> 3.2.0'
+  gem 'coffee-rails', '~> 3.2.0'
   gem 'eco'
   gem 'uglifier'
   gem 'haml_coffee_assets'
@@ -128,7 +127,7 @@ group :development, :test do
   gem 'rspec-rails'
 
   gem 'rack-livereload'
-  gem 'rails-dev-tweaks', '~> 0.5.0'
+  gem 'rails-dev-tweaks', '~> 0.6.0'
 
   # Javascript test
   gem 'jasminerice'

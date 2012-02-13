@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120213135152) do
+ActiveRecord::Schema.define(:version => 20120213144210) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(:version => 20120213135152) do
     t.integer  "invited_by_id"
     t.string   "invited_by_type"
     t.text     "roles"
+    t.string   "unconfirmed_email"
   end
 
   add_index "admins", ["email"], :name => "index_admins_on_email", :unique => true
@@ -347,6 +348,7 @@ ActiveRecord::Schema.define(:version => 20120213135152) do
     t.string   "referrer_site_token"
     t.datetime "reset_password_sent_at"
     t.text     "confirmation_comment"
+    t.string   "unconfirmed_email"
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true

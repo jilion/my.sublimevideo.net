@@ -68,13 +68,11 @@ class Log
   end
 
   def day
-    started_at.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
+    @day ||= started_at.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
   end
-  memoize :day
   def month
-    started_at.change(day: 1, hour: 0, min: 0, sec: 0, usec: 0).to_time
+    @month ||= started_at.change(day: 1, hour: 0, min: 0, sec: 0, usec: 0).to_time
   end
-  memoize :month
 
   def trackers(log_format)
     with_log_file_in_tmp { |file| LogAnalyzer.parse(file, log_format) }
