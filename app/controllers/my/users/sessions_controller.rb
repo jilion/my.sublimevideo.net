@@ -4,6 +4,8 @@ class My::Users::SessionsController < Devise::SessionsController
   prepend_before_filter :require_no_authentication, only: [:new, :create, :new_gs, :create_gs]
   prepend_before_filter :allow_params_authentication!, only: [:create, :create_gs]
 
+  # Important note: the /gs-login path is used to log-in from GetSatisfaction (it's optimized to be shown in a popup)
+
   # GET /gs-login
   def new_gs
     render :new, layout: 'popup'

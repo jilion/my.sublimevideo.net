@@ -1,13 +1,3 @@
-# == Schema Information
-#
-#  type            :integer   not null
-#  subject         :string    not null
-#  message         :text      not null
-#  requester_name  :string
-#  requester_email :string
-#
-#
-
 require 'spec_helper'
 
 describe Ticket do
@@ -182,3 +172,12 @@ EOF
   end
 
 end
+# == Schema Information
+#
+#  type            :integer   not null
+#  subject         :string    not null
+#  message         :text      not null
+#  requester_name  :string
+#  requester_email :string
+#
+#

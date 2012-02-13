@@ -1,14 +1,12 @@
 defaults: &defaults_dev_test
-  base_url:  http://sublimevideo.zendesk.com
+  base_url:  https://sublimevideo.zendesk.com
   username:  zendesk@sublimevideo.net
-  password:  wrank8
   api_token: oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy
 
 # sublimevideo's credentials
 defaults_stage_prod: &defaults_stage_prod
   base_url:  heroku_env
   username:  heroku_env
-  password:  heroku_env
   api_token: heroku_env
 
 development:

@@ -390,33 +390,6 @@ describe User do
             end
           end
         end
-
-        # context "with an open invoice" do
-        #   it "doesn't archive the user" do
-        #     @open_invoice = Factory(:invoice, site: @site, state: 'open')
-        #     subject.archive.should be_false
-        #     subject.should_not be_archived
-        #     @open_invoice.reload.should be_open
-        #   end
-        # end
-        # 
-        # context "with a failed invoice" do
-        #   it "doesn't archive the user" do
-        #     @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
-        #     subject.archive.should be_false
-        #     subject.should_not be_archived
-        #     @failed_invoice.reload.should be_failed
-        #   end
-        # end
-        # 
-        # context "with a waiting invoice" do
-        #   it "doesn't archive the user" do
-        #     @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
-        #     subject.archive.should be_false
-        #     subject.should_not be_archived
-        #     @waiting_invoice.reload.should be_waiting
-        #   end
-        # end
       end
 
       describe "Callbacks" do
