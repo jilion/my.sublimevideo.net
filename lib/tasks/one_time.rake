@@ -182,9 +182,12 @@ namespace :one_time do
       end
     end
 
+    require 'zlib'
+
     desc "Merge duplicate VideoStats and delete bad VideoTags based on wrong CRC32 generation (? params included)"
     task merge_duplicate_video_stats_and_delete_bad_video_tags: :environment do
       timed do
+        # Sites using video sources with ?
         site_tokens = [
           '2xrynuh2', 'lfmxr9gt', 'g39fmpp1', '1gt8yor7', '7k9odjzv', 'txohtl11', 'vfzh18bi', '2l7axk8c', 'iaruw1qi', 'avd44aef', 'nn8698ww',
           '4aeqofw0', 'nne3u3qd', 'h5qegk5j', 'op0mkqtn', 'suwutgs8', 'rrj45mbt', 'uvrkjs6y', '87r9xy5e', '0apmxu9m', 'bo6onvdp', 't1el7q92',
@@ -199,33 +202,89 @@ namespace :one_time do
           'mb27lban', '8vnlactg', 'rm8w0f9k', 'qdvuigm7', 'vwftwdte', 'estq9huv', 'ihuf4f5u', 'kq8zmtdf', 'uazs3te5', 'ql0355zz', 'y5uk4rpd',
           '6pdo240s', 'qeiwa7fu', 'qsr700iv'
         ]
-        # Site.where(token: '2xrynuh2') do |site|
-        # Site.where { last_30_days_main_video_views > 0 }.find_each(batch_size: 100) do |site|
-
-          # VideoTag.where(st: site.token).only(:s).each do |video_tag|
-        criteria = VideoTag.where(st: { '$nin' => site_tokens }, uo: { '$ne' => nil })
+        criteria = VideoTag.where(st: { '$in' => site_tokens }, uo: { '$ne' => 'a' }, created_at: { "$lte" => Time.utc(2012, 1, 19) })
         counter = criteria.count
         puts "#{site_tokens.uniq.size} sites with VideoTag including ?"
         puts "#{counter} VideoTag not scanned yet."
+        limit = 10000
         while counter > 0
-          counter -= 1000
+          counter -= limit
           counter = 0 if counter < 0
           puts "left #{counter}"
-          criteria.offset(counter).limit(1000).each do |video_tag|
-            next if site_tokens.include?(video_tag.st)
-            video_tag.s.values.each do |source|
-              if source['u'].include?('?')
-                puts "? in video source found for site: #{video_tag.st})"
-                site_tokens << video_tag.st
-                break
+          criteria.offset(counter).limit(limit).each do |video_tag|
+            case video_tag.uo
+            when 's'
+              video_crc = video_tag.cs.first
+              if video_tag.s[video_crc]
+                video_source = video_tag.s[video_crc]['u']
+              else
+                video_crc, hash = video_tag.s.first
+                video_source = hash['u']
+              end
+
+              if video_source.include?('?')
+                good_video_crc = Zlib.crc32(video_source.match(/^(.*)\?/)[1]).to_s(16)
+                if good_video_crc != video_crc
+                  bad_video_stat_crit  = Stat::Video.where(st: video_tag.st, u: video_crc)
+                  bad_video_stat_count = bad_video_stat_crit.count
+                  case bad_video_stat_count
+                  when 1
+                    bad_video_stat = bad_video_stat_crit.first
+                    if good_video_stat = Stat::Video.where(st: video_tag.st, u: good_video_crc, d: bad_video_stat.d).first
+                      merge_video_stat(bad_video_stat, good_video_stat)
+                      bad_video_stat.delete
+                    else
+                      update_bad_video_stat(bad_video_stat, good_video_crc)
+                    end
+
+                    if Stat::Video.where(st: video_tag.st, u: good_video_crc).exists?
+                      video_tag.delete
+                    else
+                      update_bad_video_tag(video_tag, good_video_crc)
+                    end
+                  when 0
+                    # nothing special to do
+                    video_tag.delete
+                  end
+                end
+              end
+            else # nil
+              bad_video_stat_crit = Stat::Video.where(st: video_tag.st, u: video_tag.u)
+              bad_video_stat_count = bad_video_stat_crit.count
+              if bad_video_stat_count <= 1
+                bad_video_stat_crit.delete
+                video_tag.delete
               end
             end
           end
         end
-        puts "+++++++++++++++++++"
-        puts site_tokens
       end
     end
+  end
+
+  def merge_video_stat(bad_video_stat, good_video_stat)
+    inc = {}
+    bad_video_stat.bp.each { |k, v| inc["bp.#{k}"] = v }
+    bad_video_stat.md.each { |k1, v| v.each { |k, v| inc["md.#{k1}.#{k}"] = v } }
+    bad_video_stat.vl.each { |k, v| inc["vl.#{k}"] = v }
+    bad_video_stat.vv.each { |k, v| inc["vv.#{k}"] = v }
+    inc["vs.#{good_video_stat.u}"] = bad_video_stat.vs[bad_video_stat.u]
+    Stat::Video.collection.update({ st: good_video_stat.st, u: good_video_stat.u, d: good_video_stat.d.to_time }, { "$inc" => inc }, upsert: true)
+  end
+
+  def update_bad_video_stat(bad_video_stat, good_video_crc)
+    bad_video_stat.vs = { good_video_crc => bad_video_stat.vs[bad_video_stat.u] }
+    bad_video_stat.u = good_video_crc
+    bad_video_stat.save!
+  end
+
+  def update_bad_video_tag(bad_video_tag, good_video_crc)
+    if source = bad_video_tag.s[bad_video_tag.u]
+      bad_video_tag.s = { good_video_crc => source }
+    end
+    bad_video_tag.cs = [good_video_crc]
+    bad_video_tag.u = good_video_crc
+    bad_video_tag.save!
   end
 
 end
