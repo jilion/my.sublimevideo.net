@@ -172,10 +172,11 @@ MySublimeVideo::Application.routes.draw do
 
       resources :stats, only: [:index] do
         collection do
+          get :sales
           get :users
           get :sites
           get :tweets
-          get :usages
+          get :site_usages
           get :site_stats
           get :more
           get '/single/:page' => 'stats#show', as: 'single'
@@ -207,7 +208,7 @@ MySublimeVideo::Application.routes.draw do
 
       resources :plans,  only: [:index, :new, :create]
 
-      resources :admins, only: [:index, :destroy]
+      resources :admins, only: [:index, :edit, :update, :destroy]
 
       resources :mails,  only: [:index, :new, :create]
       scope 'mails' do

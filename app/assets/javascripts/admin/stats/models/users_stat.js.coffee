@@ -1,4 +1,6 @@
-class SVStats.Models.UsersStat extends SVStats.Models.Stat
+#= require ./stat
+
+class AdminSublimeVideo.Models.UsersStat extends AdminSublimeVideo.Models.Stat
   defaults:
     be: 0 # beta
     fr: 0 # free
@@ -6,12 +8,11 @@ class SVStats.Models.UsersStat extends SVStats.Models.Stat
     su: 0 # suspended
     ar: 0 # archived
 
-class SVStats.Collections.UsersStats extends SVStats.Collections.Stats
-  model: SVStats.Models.UsersStat
+class AdminSublimeVideo.Collections.UsersStats extends AdminSublimeVideo.Collections.Stats
+  model: AdminSublimeVideo.Models.UsersStat
   url: -> '/stats/users.json'
   id: -> 'users'
-  color: (selected) -> 'rgba(0,0,255,0.7)'
-  shadow: (selected) -> true
+  yAxis: (selected) -> 1
 
   title: (selected) ->
     if selected.length == 1
@@ -40,6 +41,7 @@ class SVStats.Collections.UsersStats extends SVStats.Collections.Stats
           else stat.get(selected[0])
       else
         0
+
       array.push value
       from += 3600 * 24
 

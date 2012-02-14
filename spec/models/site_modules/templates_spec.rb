@@ -48,7 +48,7 @@ describe SiteModules::Templates do
         before(:each) { subject.plan_id = @paid_plan.id }
 
         it "delays .update_loader_and_license once" do
-          expect { subject.save! }.to change(Delayed::Job.where(:handler.matches => "%update_loader_and_license%"), :count).by(1)
+          expect { subject.save! }.to change(Delayed::Job.where { handler =~ "%update_loader_and_license%" }, :count).by(1)
         end
 
         it "purges loader & license on CDN" do

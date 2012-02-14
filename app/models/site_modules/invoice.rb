@@ -3,6 +3,14 @@ module SiteModules::Invoice
 
   module ClassMethods
 
+    def send_trial_will_expire
+      BusinessModel.days_before_trial_end.each do |days_before_trial_end|
+        Site.in_trial.paid_plan.where(first_paid_plan_started_at: nil).trial_expires_on(days_before_trial_end.days.from_now).find_each(batch_size: 100) do |site|
+          My::BillingMailer.trial_will_expire(site).deliver! unless site.user.credit_card?
+        end
+      end
+    end
+
     def activate_or_downgrade_sites_leaving_trial
       Site.not_in_trial.paid_plan.where(first_paid_plan_started_at: nil).find_each(batch_size: 100) do |site|
         if site.user.credit_card?

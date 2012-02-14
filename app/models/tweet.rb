@@ -30,9 +30,10 @@ class Tweet
 
   attr_accessible :tweet_id, :keywords, :from_user_id, :from_user, :to_user_id, :to_user, :iso_language_code, :profile_image_url, :source, :content, :tweeted_at, :retweets_count
 
-  scope :keywords,  lambda { |keywords| where(keywords: keywords) }
-  scope :favorites, lambda { |favorite=true| where(favorited: favorite) }
-  scope :by_date,   lambda { |way='desc'| order_by([:tweeted_at, way]) }
+  scope :keywords,          lambda { |keywords| where(keywords: keywords) }
+  scope :favorites,         lambda { |favorite=true| where(favorited: true) }
+  scope :between,           lambda { |start_date, end_date| where(tweeted_at: { "$gte" => start_date, "$lt" => end_date }) }
+  scope :by_date,           lambda { |way='desc'| order_by([:tweeted_at, way]) }
   scope :by_retweets_count, lambda { |way='desc'| order_by([:retweets_count, way]) }
 
   # ===============
@@ -48,14 +49,7 @@ class Tweet
 
   class << self
 
-    def delay_save_new_tweets_and_sync_favorite_tweets
-      unless Delayed::Job.already_delayed?('%Tweet%save_new_tweets_and_sync_favorite_tweets%')
-        delay(priority: 200, run_at: 30.minutes.from_now).save_new_tweets_and_sync_favorite_tweets
-      end
-    end
-
     def save_new_tweets_and_sync_favorite_tweets
-      delay_save_new_tweets_and_sync_favorite_tweets
       return unless enough_remaining_twitter_calls?
 
       search = TwitterApi.search.new

@@ -2,6 +2,8 @@ class Admin::ReleasesController < AdminController
   respond_to :html
   respond_to :js, only: :index
 
+  before_filter { |controller| require_role?('player') }
+
   # GET /releases
   def index
     @releases = Release.order(:date.desc)

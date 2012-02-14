@@ -2,17 +2,17 @@ class Site < ActiveRecord::Base
   extend ActiveSupport::Memoizable
   include SiteModules::Api
   include SiteModules::Invoice
-  include SiteModules::Recurring
   include SiteModules::Referrer
   include SiteModules::Scope
   include SiteModules::Templates
   include SiteModules::Usage
+  include SiteModules::UsageMonitoring
 
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]
 
   # Versioning
-  has_paper_trail ignore: [:cdn_up_to_date, :license, :loader]
+  has_paper_trail ignore: [:cdn_up_to_date, :license, :loader, :last_30_days_main_video_views, :last_30_days_extra_video_views, :last_30_days_dev_video_views, :last_30_days_invalid_video_views, :last_30_days_embed_video_views, :last_30_days_billable_video_views_array]
 
   attr_accessor :loader_needs_update, :license_needs_update
   attr_accessor :user_attributes, :last_transaction, :remote_ip, :skip_trial
@@ -100,7 +100,8 @@ class Site < ActiveRecord::Base
       validate :prevent_archive_with_non_paid_invoices
     end
 
-    before_transition on: :archive, do: [:set_archived_at, :cancel_open_or_failed_invoices]
+    before_transition on: :archive, do: [:set_archived_at]
+    after_transition  on: :archive, do: [:cancel_open_or_failed_invoices]
 
     after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
   end
@@ -172,7 +173,7 @@ class Site < ActiveRecord::Base
   def sponsor!
     write_attribute(:pending_plan_id, Plan.sponsored_plan.id)
     write_attribute(:next_cycle_plan_id, nil)
-    save_skip_pwd
+    save_skip_pwd!
   end
 
   def to_param
@@ -180,18 +181,20 @@ class Site < ActiveRecord::Base
   end
 
   def hostname_with_path_needed
-    return nil if path?
-    list = %w[web.me.com web.mac.com homepage.mac.com cargocollective.com]
-    list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
+    unless path?
+      list = %w[web.me.com web.mac.com homepage.mac.com cargocollective.com]
+      list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
+    end
   end
 
   def hostname_with_subdomain_needed
-    return nil unless wildcard?
-    list = %w[tumblr.com squarespace.com posterous.com blogspot.com typepad.com]
-    list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
+    if wildcard?
+      list = %w[tumblr.com squarespace.com posterous.com blogspot.com typepad.com]
+      list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
+    end
   end
 
-  def hostname_or_token(prefix = '#')
+  def hostname_or_token(prefix='#')
     hostname.presence || "#{prefix}#{token}"
   end
 
@@ -237,6 +240,10 @@ class Site < ActiveRecord::Base
   end
 
   def save_skip_pwd
+    skip_pwd { self.save }
+  end
+
+  def save_skip_pwd!
     skip_pwd { self.save! }
   end
 
@@ -248,7 +255,7 @@ private
 
   # after_create
   def self.update_ranks(site_id)
-    site  = Site.find(site_id)
+    site = Site.find(site_id)
     begin
       ranks = PageRankr.ranks("http://#{site.hostname}", :alexa_global, :google)
       site.google_rank = ranks[:google] || 0
@@ -304,7 +311,7 @@ private
 
   # after_create
   def delay_ranks_update
-    Site.delay(priority: 100, run_at: 30.seconds.from_now).update_ranks(self.id)
+    Site.delay(priority: 100, run_at: 30.seconds.from_now).update_ranks(id)
   end
 
   # before_transition on: :archive
@@ -314,14 +321,10 @@ private
 
   # before_transition on: :archive
   def cancel_open_or_failed_invoices
-    invoices.open_or_failed.each do |invoice|
-      invoice.cancel
-    end
+    invoices.open_or_failed.map(&:cancel)
   end
 
 end
-
-
 # == Schema Information
 #
 # Table name: sites
@@ -378,4 +381,3 @@ end
 #  index_sites_on_plan_id                           (plan_id)
 #  index_sites_on_user_id                           (user_id)
 #
-

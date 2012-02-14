@@ -44,7 +44,7 @@ module Stats
 
       def json(from = nil, to = nil)
         json_stats = if from.present?
-          between(from: from, to: to || Time.now.utc.midnight)
+          between(from, to || Time.now.utc.midnight)
         else
           scoped
         end
@@ -52,25 +52,17 @@ module Stats
         json_stats.order_by([:d, :asc]).to_json(only: [:fr, :sp, :tr, :pa, :tr_details, :pa_details, :su, :ar])
       end
 
-      def delay_create_sites_stats
-        unless Delayed::Job.already_delayed?('%Stats::SitesStat%create_sites_stats%')
-          delay(:run_at => Time.now.utc.tomorrow.midnight).create_sites_stats # every day
-        end
+      def create_stats
+        self.create(sites_hash(Time.now.utc.midnight))
       end
 
-      def create_sites_stats
-        delay_create_sites_stats
-
-        self.create(hash_for_sites)
-      end
-
-      def hash_for_sites
+      def sites_hash(day)
         hash = {
-          d: Time.now.utc.midnight,
+          d: day.to_time,
           fr: { free: Site.active.in_plan('free').count },
           sp: Site.active.in_plan('sponsored').count,
-          tr: {},
-          pa: {},
+          tr: Hash.new { |h,k| h[k] = Hash.new(0) },
+          pa: Hash.new { |h,k| h[k] = Hash.new(0) },
           su: Site.suspended.count,
           ar: Site.archived.count
         }
@@ -78,10 +70,10 @@ module Stats
         Plan.paid_plans.each do |plan|
           scope = Site.active.in_plan_id(plan.id)
           sites_in_trial_count = scope.in_trial.count
-          (hash[:tr][plan.name] ||= {})[plan.cycle[0]] = scope.in_trial.count
+          hash[:tr][plan.name][plan.cycle[0]] = scope.in_trial.count
 
           sites_paying_count = scope.not_in_trial.count
-          (hash[:pa][plan.name] ||= {})[plan.cycle[0]] = scope.not_in_trial.count
+          hash[:pa][plan.name][plan.cycle[0]] = scope.not_in_trial.count
         end
 
         hash

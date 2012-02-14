@@ -1,6 +1,16 @@
 module SiteModules::Usage
   extend ActiveSupport::Concern
 
+  module ClassMethods
+
+    def update_last_30_days_counters_for_not_archived_sites
+      not_archived.find_each(batch_size: 100) do |site|
+        site.update_last_30_days_counters
+      end
+    end
+
+  end
+
   module InstanceMethods
     extend ActiveSupport::Memoizable
 

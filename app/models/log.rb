@@ -6,11 +6,11 @@ class Log
 
   field :name
   field :hostname
-  field :started_at, :type => DateTime
-  field :ended_at,   :type => DateTime
-  field :parsed_at,  :type => DateTime
+  field :started_at, type: DateTime
+  field :ended_at,   type: DateTime
+  field :parsed_at,  type: DateTime
 
-  index :name, :unique => true
+  index :name, unique: true
   index [[:created_at, Mongo::ASCENDING], [:_type, Mongo::ASCENDING]], background: true # Log::Amazon#fetch_new_logs_names & Log::Voxcast#next_log_ended_at
 
   # ensure there is no confusion about S3 Class
@@ -25,9 +25,9 @@ class Log
   # = Validations =
   # ===============
 
-  validates :name,       :presence => true, :uniqueness => true
-  validates :started_at, :presence => true
-  validates :ended_at,   :presence => true
+  validates :name,       presence: true, uniqueness: true
+  validates :started_at, presence: true
+  validates :ended_at,   presence: true
 
   # =============
   # = Callbacks =
@@ -38,15 +38,6 @@ class Log
   # =================
   # = Class Methods =
   # =================
-
-  # Recurring task
-  def self.delay_download_or_fetch_and_create_new_logs
-    # Sites
-    Log::Voxcast.download_and_create_new_logs
-    Log::Amazon::S3::Player.delay_fetch_and_create_new_logs
-    Log::Amazon::S3::Loaders.delay_fetch_and_create_new_logs
-    Log::Amazon::S3::Licenses.delay_fetch_and_create_new_logs
-  end
 
   def self.config
     yml[self.to_s.gsub("Log::", '').to_sym].symbolize_keys

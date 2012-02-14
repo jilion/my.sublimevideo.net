@@ -1,8 +1,10 @@
 %tr[invoice]{ class: cycle("", "alt") }
   %td.id
-    = link_to "##{invoice.id}", [:admin, invoice]
+    %small= link_to "##{invoice.id}", [:admin, invoice]
+
   %td.reference
-    = link_to invoice.reference, [:admin, invoice]
+    %small= link_to invoice.reference, [:admin, invoice]
+
   %td.user
     %small
       = link_to invoice.user.name_or_email, [:admin, invoice.user], title: invoice.user.email
@@ -11,31 +13,38 @@
         = "beta" if invoice.user.beta?
         = "#{', ' if invoice.user.beta?}archived" if invoice.user.archived?
         = ")"
+
   %td.site
-    = links_to_hostnames(invoice.site)
-    = "(#{invoice.site.state})" unless invoice.site.active?
+    %small
+      = links_to_hostnames(invoice.site)
+      = "(#{invoice.site.state})" unless invoice.site.active?
+
   %td.period
     %small
       - if invoice.paid_at
-        = "Paid: #{l(invoice.paid_at, format: :minutes)}"
-        = ", Refund. #{l(invoice.site.refunded_at, format: :minutes)}" if invoice.refunded?
+        = "Paid: #{display_time(invoice.paid_at)}"
+        = ", Refund. #{display_time(invoice.site.refunded_at)}" if invoice.refunded?
       - elsif invoice.canceled?
         = "Canceled"
       - elsif invoice.last_failed_at
-        = "Failed: #{l(invoice.last_failed_at, format: :minutes)}"
+        = "Failed: #{display_time(invoice.last_failed_at)}"
       - else
-        = "Created: #{l(invoice.created_at, format: :minutes)}"
+        = "Created: #{display_time(invoice.created_at)}"
+
   %td.invoice_items_count
-    %strong
-      - if invoice.invoice_items_count > 1
-        = "Upgrade"
-      - elsif invoice.renew
-        = "Renew"
-      - else
-        = "New"
-    = "/ #{invoice.paid_plan.cycle}"
+    %small
+      %strong
+        - if invoice.invoice_items_count > 1
+          = "Upgrade"
+        - elsif invoice.renew
+          = "Renew"
+        - else
+          = "New"
+      = "/ #{invoice.paid_plan.cycle}"
+
   %td.amount
-    = display_amount(invoice.amount)
+    %small= display_amount(invoice.amount)
+
   %td.state
     %small
       - case invoice.state

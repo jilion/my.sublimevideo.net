@@ -137,7 +137,6 @@ class PersistedSitePlanUpdateManager extends PlanUpdateManager
       planChangeType = @checkedPlan.readAttribute 'data-plan_change_type'
       planChangeType = 'in_trial_instant_upgrade' if planChangeType is 'in_trial_update' and this.skippingTrial()
       planChangeType = '' if planChangeType is 'skipping_trial' and !this.skippingTrial()
-      console.log(planChangeType);
       @processDetailsMessages.each (pair) =>
         this.updateProcessDetailsMessages(pair.value) if planChangeType is pair.key
 

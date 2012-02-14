@@ -1,5 +1,4 @@
-class SVStats.Views.PageTitleView extends Backbone.View
-
+class AdminSublimeVideo.Views.PageTitleView extends Backbone.View
   initialize: ->
     this.render()
 

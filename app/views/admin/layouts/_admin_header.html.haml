@@ -4,43 +4,48 @@
     %em= "Admin"
   - if admin_signed_in?
     .popup_menu
-      %h3= link_to "Sites", "", onclick: "return false"
+      %h3= link_to "Sites", [:admin, :sites]
       %ul
         %li= link_to "All", [:admin, :sites]
-        - [:plans, :referrers].each do |name|
-          = activable_menu_restful_item(:li, name, namespace: 'admin')
+        - if has_role?('god')
+          %li= link_to "Plans", [:admin, :plans]
+        %li= link_to "Referrers", [:admin, :referrers]
 
     .popup_menu
-      %h3= link_to "Users", "", onclick: "return false"
+      %h3= link_to "Users", [:admin, :users]
       %ul
         %li= link_to "All", [:admin, :users]
-        - [:enthusiasts, :admins].each do |name|
-          = activable_menu_restful_item(:li, name, namespace: 'admin')
+        %li= link_to "Enthusiasts", [:admin, :enthusiasts]
+        - if has_role?('god')
+          %li= link_to "Admins", [:admin, :admins]
+
+    - if has_role?('invoices')
+      .popup_menu
+        %h3= link_to "Invoices", [:admin, :invoices]
+        %ul
+          %li= link_to "All", [:admin, :invoices]
+          %li= link_to "Monthly", [:monthly, :admin, :invoices]
 
     .popup_menu
-      %h3= link_to "Invoices", "", onclick: "return false"
+      %h3= link_to "Stats", [:admin, :stats]
       %ul
-        %li= link_to "All", [:admin, :invoices]
-        %li= link_to "Monthly", [:monthly, :admin, :invoices]
-
-    .popup_menu
-      %h3= link_to "Stats", "", onclick: "return false"
-      %ul
-        %li= link_to "All", [:admin, :stats]
+        %li= link_to "Dashboard", [:admin, :stats]
         %li= link_to "Countries", single_admin_stats_path(page: 'countries')
         %li= link_to "Employees", single_admin_stats_path(page: 'employees')
         %li= link_to "Videos served", single_admin_stats_path(page: 'videos_served')
         %li= link_to "Tweets", [:admin, :tweets]
         %li= link_to "More...", [:more, :admin, :stats]
 
-    .popup_menu
-      %h3= link_to "Other", "", onclick: "return false"
-      %ul
-        %li= link_to "Mails", [:admin, :mails]
-        %li= link_to "DJs", [:admin, :delayed_jobs]
+    - if has_role?('god')
+      .popup_menu
+        %h3= link_to "Other", [:admin, :delayed_jobs]
+        %ul
+          %li= link_to "Mails", [:admin, :mails]
+          %li= link_to "DJs", [:admin, :delayed_jobs]
 
-    %ul.favorite_links
-      %li= link_to "Player", [:admin, :releases]
+    - if has_role?('player')
+      %ul.favorite_links
+        %li= link_to "Player", [:admin, :releases]
 
   .right
     %ul.extra_links

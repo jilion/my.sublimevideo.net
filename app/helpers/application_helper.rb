@@ -5,7 +5,7 @@ module ApplicationHelper
     boolean == 0 || boolean.blank? || !boolean ? "-" : "✓"
   end
 
-  def display_time(date, options = { format: :minutes })
+  def display_time(date, options = { format: :minutes_y })
     date ? l(date, format: options[:format]) : "-"
   end
 

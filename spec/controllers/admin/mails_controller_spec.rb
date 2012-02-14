@@ -2,8 +2,11 @@ require 'spec_helper'
 
 describe Admin::MailsController do
 
-  context "with logged in admin" do
-    before(:each) { sign_in :admin, authenticated_admin }
+  context "with logged in admin with the god role" do
+    before(:each) do
+      @admin = authenticated_admin(roles: ['god'])
+      sign_in :admin, @admin
+    end
 
     it "should assign mail logs array as @mail_logs and mail templates array as @mail_templates and render :index on GET :index" do
       MailLog.stub_chain(:scoped, :by_date, :page) { [mock_mail_log] }
@@ -26,7 +29,7 @@ describe Admin::MailsController do
     end
 
     it "should redirect to /admin/mails if create_and_deliver succeed on POST :create" do
-      MailLetter.stub(:new).with({ "template_id" => '1', "criteria" => "foo", "admin_id" => authenticated_admin.id }) { mock_mail_letter }
+      MailLetter.stub(:new).with({ "template_id" => '1', "criteria" => "foo", "admin_id" => @admin.id }) { mock_mail_letter }
       mock_mail_letter.stub_chain(:delay, :deliver_and_log) { mock_mail_log }
 
       post :create, mail_log: { template_id: '1', criteria: "foo" }
@@ -35,5 +38,6 @@ describe Admin::MailsController do
   end
 
   it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: [:index, :new], post: :create }
+  it_should_behave_like "redirect when connected as", 'http://admin.test.host/sites', [[:admin, { roles: ['marcom'] }]], { get: [:index, :new], post: :create }
 
 end

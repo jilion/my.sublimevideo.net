@@ -2,7 +2,8 @@
 = content_for :header do
   %h2= "We're proud to have great customers."
   %p.sub
-    = link_to "Join them today", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')"
+    = link_to "View all showcases", "http://blog.jilion.com/tags/sublimevideo-showcase"
+    -# = link_to "Join them today", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')"
 
 %section.showcase
   %ul.quotes
@@ -49,7 +50,7 @@
         %p= "“The SublimeVideo player has set a real benchmark for high quality HTML5 video players. By using it on littlebigplanet.com, it’s allowed us to deliver our videos across a broad spectrum of devices and operating systems to a much wider audience, including the latest smartphone handsets – an ever increasing proportion of our site visitors. Additionally, the Jilion team have been really helpful and supportive, allowing us to deliver the best experience for our users.”"
       %p.author= "—Tom Kiss, Designer at Media Molecule."
 
-  %p.view_all= link_to "View all showcases", "http://blog.jilion.com/tags/customer-showcase", class: "showcase"
+  %p.view_all= link_to "View all showcases", "http://blog.jilion.com/tags/sublimevideo-showcase", class: "showcase"
 
 %section.twitter_love
   %h3.title= "Twitter Love"

@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Admin::DelayedJobsController do
 
-  context "with logged in admin" do
+  context "with logged in admin with the god role" do
     before :each do
-      sign_in :admin, authenticated_admin
+      sign_in :admin, authenticated_admin(roles: ['god'])
       Delayed::Job.stub(:find).with('1') { mock_delayed_job }
     end
 
@@ -40,5 +40,6 @@ describe Admin::DelayedJobsController do
   end
 
   it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: [:index, :show], put: :update, delete: :destroy }
+  it_should_behave_like "redirect when connected as", 'http://admin.test.host/sites', [[:admin, { roles: ['marcom'] }]], { get: [:index, :show], put: :update, delete: :destroy }
 
 end

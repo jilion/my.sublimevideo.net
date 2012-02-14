@@ -2,10 +2,18 @@ class Admin::StatsController < AdminController
   respond_to :html, :json
 
   def index
+    @selected_series = params.select { |p| %w[controller action].exclude? p }.keys.map { |p| p.split('.') }
+    @selected_period = (params[:p] || "").split('-')
   end
 
   def show
     render params[:page]
+  end
+
+  def sales
+    respond_to do |format|
+      format.json { render json: Stats::SalesStat.json }
+    end
   end
 
   def users
@@ -22,19 +30,19 @@ class Admin::StatsController < AdminController
 
   def tweets
     respond_to do |format|
-      format.json { render json: Stats::TweetsStat.json(keyword: 'sublimevideo') }
+      format.json { render json: Stats::TweetsStat.json }
     end
   end
-  
+
   def site_stats
     respond_to do |format|
       format.json { render json: Stats::SiteStatsStat.json }
     end
   end
-  
-  def usages
+
+  def site_usages
     respond_to do |format|
-      # format.json { render json: Stat::Site.json(nil, 'days') }
+      format.json { render json: Stats::SiteUsagesStat.json }
     end
   end
 

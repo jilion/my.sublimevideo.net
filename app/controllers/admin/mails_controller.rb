@@ -1,6 +1,8 @@
 class Admin::MailsController < AdminController
   respond_to :js, :html
 
+  before_filter { |controller| require_role?('god') }
+
   # For MailLog
   has_scope :by_admin_email
   has_scope :by_template_title

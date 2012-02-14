@@ -1,21 +1,5 @@
 = title_and_content_header("Edit information")
 
-= form_for resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => "main_form section" } do |f|
-  %h3.section_title= "Email & Password"
-  .entry.email
-    = f.label :email, "", :class => "icon"
-    = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
-
-  %p.note= "Leave blank if you don't want to change it"
-  .entry.password
-    = f.label :password, "", :class => "icon"
-    = f.password_field :password, :class => "text show_password", :placeholder => "New password"
-
-  %p.note= "We need your current password to confirm your changes"
-  .entry.password
-    = f.label :current_password, "", :class => "icon"
-    = f.password_field :current_password, :class => "text show_password", :placeholder => "Current password", :required => true
-
-  .entry.update
-    = f.submit "Update", :class => "submit small"
+= form_for resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "main_form section" } do |f|
+  = render 'admin/admins/form', f: f
 .spacer

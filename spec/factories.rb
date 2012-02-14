@@ -115,7 +115,7 @@ FactoryGirl.define do
 
   factory :referrer do
     url   "http://bob.com"
-    token { Factory.create(:site).token }
+    token { '123456' }
     hits  12
   end
 
@@ -183,8 +183,8 @@ FactoryGirl.define do
 
   factory :invoice_item do
     invoice
-    started_at  { Time.now.utc.beginning_of_month }
-    ended_at    { Time.now.utc.end_of_month }
+    started_at { Time.now.utc.beginning_of_month }
+    ended_at   { Time.now.utc.end_of_month }
   end
 
   factory :plan_invoice_item, parent: :invoice_item, class: InvoiceItem::Plan do
@@ -194,21 +194,6 @@ FactoryGirl.define do
   end
 
   factory :transaction do
-  end
-
-  factory :users_stat, class: Stats::UsersStat do
-    d             { Time.now.utc.midnight }
-    states_count  { {} }
-    fr            2
-    pa            1
-    su            1
-    ar            1
-  end
-
-  factory :sites_stat, class: Stats::SitesStat do
-    d             { Time.now.utc.midnight }
-    states_count  { {} }
-    plans_count   { {} }
   end
 
   factory :site_stat, class: Stat::Site do
@@ -222,18 +207,33 @@ FactoryGirl.define do
 
   factory :tweet do
     sequence(:tweet_id) { |n| n }
-    keywords            %w[sublimevideo jilion]
-    from_user_id        1
-    from_user           'toto'
-    to_user_id          2
-    to_user             'tata'
-    iso_language_code   'en'
-    profile_image_url   'http://yourimage.com/img.jpg'
-    content             "This is my first tweet!"
-    tweeted_at          { Time.now.utc }
-    favorited           false
+    keywords          %w[sublimevideo jilion]
+    from_user_id      1
+    from_user         'toto'
+    to_user_id        2
+    to_user           'tata'
+    iso_language_code 'en'
+    profile_image_url 'http://yourimage.com/img.jpg'
+    content           "This is my first tweet!"
+    tweeted_at        { Time.now.utc }
+    favorited         false
   end
 
+  # ================
+  # = Stats models =
+  # ================
+  factory :users_stat, class: Stats::UsersStat do
+  end
+
+  factory :sites_stat, class: Stats::SitesStat do
+  end
+
+  factory :tweets_stat, class: Stats::TweetsStat do
+  end
+
+  # ==============
+  # = API models =
+  # ==============
   factory :client_application do
     user
     name         "Agree2"

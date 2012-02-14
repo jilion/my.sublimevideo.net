@@ -5,7 +5,7 @@ module Zendesk
 
   heroku_config_file 'zendesk.yml'
 
-  heroku_config_accessor 'ZENDESK', :base_url, :username, :password, :api_token
+  heroku_config_accessor 'ZENDESK', :base_url, :username, :api_token
 
   class << self
 
@@ -13,11 +13,11 @@ module Zendesk
       Zendesk::Request.new(url, :get).execute
     end
 
-    def post(url, params = {})
+    def post(url, params={})
       Zendesk::Request.new(url, :post, params).execute
     end
 
-    def put(url, params = {})
+    def put(url, params={})
       Zendesk::Request.new(url, :put, params).execute
     end
 
@@ -28,7 +28,7 @@ module Zendesk
   end
 
   class Request
-    def initialize(url, verb, params = {})
+    def initialize(url, verb, params={})
       @verb    = verb.to_s
       @url     = URI.parse("#{Zendesk.base_url}#{url}")
       @params  = params
@@ -38,7 +38,7 @@ module Zendesk
 
     def execute
       rescue_and_retry(5, Net::HTTPServerException) do
-        response = Net::HTTP.start(@url.host, @url.port) do |http|
+        response = Net::HTTP.start(@url.host, @url.port, use_ssl: true) do |http|
           if @params.present?
             @headers.content_type = "application/xml"
             http.request(@headers, @params)

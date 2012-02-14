@@ -203,14 +203,14 @@ describe Stat do
 
     it "delete old seconds, minutes and hours site stats, but keep all days site stats" do
       Timecop.freeze(Time.now) do
-        Factory.create(:site_stat, s: 62.seconds.ago)
-        Factory.create(:site_stat, s: 63.seconds.ago)
-        Factory.create(:site_stat, m: 62.minutes.ago.change(s: 0))
-        Factory.create(:site_stat, m: 61.minutes.ago.change(s: 0))
-        Factory.create(:site_stat, h: 26.hours.ago.change(m: 0))
-        Factory.create(:site_stat, h: 25.hours.ago.change(m: 0))
-        Factory.create(:site_stat, d: 99.days.ago.change(h: 0))
-        Factory.create(:site_stat, d: 30.days.ago.change(h: 0))
+        Factory.create(:site_stat, d: nil, h: nil, m: nil, s: 62.seconds.ago)
+        Factory.create(:site_stat, d: nil, h: nil, m: nil, s: 63.seconds.ago)
+        Factory.create(:site_stat, d: nil, h: nil, m: 62.minutes.ago.change(s: 0), s: nil)
+        Factory.create(:site_stat, d: nil, h: nil, m: 61.minutes.ago.change(s: 0), s: nil)
+        Factory.create(:site_stat, d: nil, h: 26.hours.ago.change(m: 0), m: nil, s: nil)
+        Factory.create(:site_stat, d: nil, h: 25.hours.ago.change(m: 0), m: nil, s: nil)
+        Factory.create(:site_stat, d: 99.days.ago.change(h: 0), h: nil, m: nil, s: nil)
+        Factory.create(:site_stat, d: 30.days.ago.change(h: 0), h: nil, m: nil, s: nil)
 
         Stat::Site.count.should eql(8)
         Stat::Site.s_before(60.seconds.ago).count.should eql(2)

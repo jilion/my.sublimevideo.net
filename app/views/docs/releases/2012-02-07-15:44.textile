@@ -1,0 +1,1 @@
+* <span class="label fixed">fixed</span> Issue with upscaled videos on older versions of Safari (prior to version 5.1).

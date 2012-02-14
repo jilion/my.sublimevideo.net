@@ -141,6 +141,20 @@ namespace :db do
       end
     end
 
+    desc "Import MongoDB production databases locally (not the other way around don't worry!)"
+    task import_mongo_prod: :environment do
+      mongo_db_pwd = argv('password')
+      raise "Please provide a password to access the production database like this: rake db:populate:import_mongo_prod password=MONGOHQ_PASSWORD" if mongo_db_pwd.nil?
+
+      %w[sales_stats site_stats_stats site_usages_stats sites_stats tweets_stats users_stats tweets].each do |collection|
+        timed do
+          puts "Exporting production '#{collection}' collection"
+          `mongodump -h hurley.member0.mongohq.com:10006 -d sublimevideo_production -u heroku -p #{mongo_db_pwd} -o db/backups/ --collection #{collection}`
+          puts "Importing '#{collection}' collection locally"
+          `mongorestore -h localhost -d sublimevideo_dev --collection #{collection} --drop -v db/backups/sublimevideo_production/#{collection}.bson`
+        end
+      end
+    end
   end
 
 end

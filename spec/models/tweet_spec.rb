@@ -95,11 +95,6 @@ describe Tweet do
       use_vcr_cassette "twitter/save_new_tweets_and_sync_favorite_tweets"
       subject { described_class.save_new_tweets_and_sync_favorite_tweets }
 
-      it "should delay itself" do
-        expect { subject }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.run_at.should be_within(60).of(30.minutes.from_now)
-      end
-
       it "should create new tweets" do
         expect { subject }.to change(Tweet, :count)
       end

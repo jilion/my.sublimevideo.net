@@ -2,10 +2,8 @@ require 'spec_helper'
 
 describe Admin::PlansController do
 
-  context "with logged in admin" do
-    before :each do
-      sign_in :admin, authenticated_admin
-    end
+  context "with logged in admin with the god role" do
+    before(:each) { sign_in :admin, authenticated_admin(roles: ['god']) }
 
     describe "GET :index" do
       it "should render :index" do
@@ -43,9 +41,9 @@ describe Admin::PlansController do
       end
     end
 
-
   end
 
   it_should_behave_like "redirect when connected as", 'http://admin.test.host/login', [:user, :guest], { get: [:index, :new], post: :create }
+  it_should_behave_like "redirect when connected as", 'http://admin.test.host/sites', [[:admin, { roles: ['marcom'] }]], { get: [:index, :new], post: :create }
 
 end

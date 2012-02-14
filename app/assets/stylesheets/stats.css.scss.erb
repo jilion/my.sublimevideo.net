@@ -799,6 +799,7 @@ span.beta_badge {
 /*.stats .graph_box li .platform {background-image:url(<%= asset_data_uri "my/stats/icons/browser_default.png" %>);}*/
 .stats .graph_box li.p_osx .platform {background-image:url(<%= asset_data_uri "my/stats/icons/mac.png" %>);}
 .stats .graph_box li.p_win .platform {background-image:url(<%= asset_data_uri "my/stats/icons/windows.png" %>);}
+.stats .graph_box li.p_lin .platform {background-image:url(<%= asset_data_uri "my/stats/icons/linux.png" %>);}
 .stats .graph_box li.p_and .platform {background-image:url(<%= asset_data_uri "my/stats/icons/android.png" %>);}
 .stats .graph_box li.p_iph .platform {background-image:url(<%= asset_data_uri "my/stats/icons/iphone.png" %>);}
 .stats .graph_box li.p_ipa .platform {background-image:url(<%= asset_data_uri "my/stats/icons/ipad.png" %>);}
@@ -904,8 +905,12 @@ body.my.stats_demo {
   background:#8ea6c2 url(<%= asset_data_uri "www/back_texture.png" %>);
 }
 
+body.my.stats_demo header, body.my.stats_demo header .shadow, body.my.stats_demo header .lights {
+  height:258px;
+}
+
 body.my.stats_demo header h2 {
-  padding:40px 0 5px 250px;
+  padding:58px 0 5px 250px;
   text-align:left;
 }
 
@@ -933,7 +938,7 @@ body.my.stats_demo span.stats_icon {
   height:184px;
   background:url(<%= asset_data_uri "my/stats/stats_icon.png" %>) no-repeat;
   position:absolute;
-  top:-161px;
+  top:-151px;
   left:0;
 }
 

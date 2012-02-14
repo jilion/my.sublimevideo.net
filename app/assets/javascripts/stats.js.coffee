@@ -13,6 +13,12 @@
 #= require_tree ./templates
 #= require_tree ./stats
 
+window.SV =
+  Models: {}
+  Collections: {}
+  Routers: {}
+  Views: {}
+
 window.MSV =
   Models: {}
   Collections: {}
