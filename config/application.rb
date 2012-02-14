@@ -24,8 +24,6 @@ module MySublimeVideo
     require 'oauth/rack/oauth_filter'
     config.middleware.use OAuth::Rack::OAuthFilter
 
-    require 'fastpass'
-
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W[#{config.root}/lib]
     Dir["#{config.root}/lib/{log_file_format,responders,validators}/**/*.rb"].each do |f|
@@ -36,7 +34,7 @@ module MySublimeVideo
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
     config.assets.precompile += %w[player.js stats.js admin/stats.js ie.css invoices.css invoices_print.css]
     %w[global www my admin docs].each do |subdomain|
-      config.assets.precompile += ["#{subdomain}.js", "#{subdomain}.css"]
+      config.assets.precompile += %W[#{subdomain}.js #{subdomain}.css]
     end
 
     # Activate observers that should always be running
@@ -59,7 +57,6 @@ module MySublimeVideo
     end
 
     config.assets.enabled = true
-    config.assets.prefix = 'assets' # Fix for asset_sync 2.0.4
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"

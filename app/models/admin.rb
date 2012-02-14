@@ -1,15 +1,26 @@
+require 'admin_role'
+
 class Admin < ActiveRecord::Base
+  include AdminRoleMethods
 
   devise :database_authenticatable, :invitable, :registerable, :recoverable,
          :rememberable, :trackable, :validatable, :lockable
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :roles
+
+  serialize :roles, Array
 
   # ================
   # = Associations =
   # ================
 
-  has_many :mail_logs, :class_name => "MailLog"
+  has_many :mail_logs, class_name: "MailLog"
+
+  # ===============
+  # = Validations =
+  # ===============
+
+  validates :roles, admin_roles: true
 
   # ==========
   # = Scopes =

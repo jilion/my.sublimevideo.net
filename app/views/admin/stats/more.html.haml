@@ -1,14 +1,10 @@
-= title_and_content_header("Dashboard")
+= title_and_content_header("More stats!")
 
 = render '/admin/shared/date_chooser'
 
--##timeline.dashboard_timeline
--#  %h3 Usage
--#  - cache "total_usage_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}", expires_in: (Time.now.utc.end_of_day - Time.now.utc) do
--#    = render 'timeline_usage'
-
-%h2.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
-%h3.revenue= "Date range revenue: #{display_amount(Invoice.between(range_start_date, range_end_date).total_revenue)}"
+- if has_role?('invoices')
+  %h2.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
+  %h3.revenue= "Date range revenue: #{display_amount(Invoice.between(range_start_date, range_end_date).total_revenue)}"
 
 - not_archived_sites = Site.not_archived.count
 - free_sites         = Site.active.in_plan('free').count

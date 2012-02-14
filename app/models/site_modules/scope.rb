@@ -50,13 +50,14 @@ module SiteModules::Scope
     scope :created_between, lambda { |start_date, end_date| where { (created_at >= start_date) & (created_at < end_date) } }
 
     # sort
-    scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way), :token.send(way)) }
-    scope :by_user,        lambda { |way = 'desc'| includes(:user).order(users: [:name.send(way), :email.send(way)]) }
-    scope :by_state,       lambda { |way = 'desc'| order(:state.send(way)) }
-    scope :by_plan_price,  lambda { |way = 'desc'| includes(:plan).order(plans: :price.send(way)) }
-    scope :by_google_rank, lambda { |way = 'desc'| where { google_rank >= 0 }.order(:google_rank.send(way)) }
-    scope :by_alexa_rank,  lambda { |way = 'desc'| where { alexa_rank >= 1 }.order(:alexa_rank.send(way)) }
-    scope :by_date,        lambda { |way = 'desc'| order(:created_at.send(way)) }
+    scope :by_hostname,         lambda { |way = 'asc'| order(:hostname.send(way), :token.send(way)) }
+    scope :by_user,             lambda { |way = 'desc'| includes(:user).order(users: [:name.send(way), :email.send(way)]) }
+    scope :by_state,            lambda { |way = 'desc'| order(:state.send(way)) }
+    scope :by_plan_price,       lambda { |way = 'desc'| includes(:plan).order(plans: :price.send(way)) }
+    scope :by_google_rank,      lambda { |way = 'desc'| where { google_rank >= 0 }.order(:google_rank.send(way)) }
+    scope :by_alexa_rank,       lambda { |way = 'desc'| where { alexa_rank >= 1 }.order(:alexa_rank.send(way)) }
+    scope :by_date,             lambda { |way = 'desc'| order(:created_at.send(way)) }
+    scope :by_trial_started_at, lambda { |way = 'desc'| order(:trial_started_at.send(way)) }
     scope :by_last_30_days_billable_video_views, lambda { |way = 'desc'|
       order("(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views + sites.last_30_days_embed_video_views) #{way}")
     }

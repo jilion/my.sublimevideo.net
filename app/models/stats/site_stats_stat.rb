@@ -12,7 +12,6 @@ module Stats
     field :bp, type: Hash, default: {} # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
 
     index :d
-    index :created_at
 
     # ==========
     # = Scopes =
@@ -35,7 +34,7 @@ module Stats
 
       def json(from = nil, to = nil)
         json_stats = if from.present?
-          between(from: from, to: to || Time.now.utc.midnight)
+          between(from, to || Time.now.utc.midnight)
         else
           scoped
         end
@@ -43,15 +42,7 @@ module Stats
         json_stats.order_by([:d, :asc]).to_json(only: [:pv, :vv, :md, :pb])
       end
 
-      def delay_create_site_stats_stats
-        unless Delayed::Job.already_delayed?('%Stats::SiteStatsStat%create_site_stats_stats%')
-          delay(:run_at => Time.now.utc.tomorrow.midnight + 5.minutes).create_site_stats_stats # every day
-        end
-      end
-
-      def create_site_stats_stats
-        delay_create_site_stats_stats
-
+      def create_stats
         last_stat_day = determine_last_stat_day
 
         while last_stat_day < 1.day.ago.midnight do
@@ -70,24 +61,33 @@ module Stats
 
       def create_site_stats_stat(day)
         site_stats = Stat::Site.where(d: day.to_time).all
-        self.create(
+
+        self.create(site_stats_hash(day, site_stats))
+      end
+
+      def site_stats_hash(day, site_stats)
+        {
           d:  day.to_time,
           pv: hashes_values_sum(site_stats, :pv),
           vv: hashes_values_sum(site_stats, :vv),
           bp: hashes_values_sum(site_stats, :bp),
-          md: md_hashes_values_sum(site_stats)
-        )
+          md: player_mode_hashes_values_sum(site_stats)
+        }
       end
 
       def hashes_values_sum(site_stats, attribute)
-        site_stats.map(&attribute).inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
+        site_stats.only(attribute).map(&attribute).inject({}) do |memo, el|
+          memo.merge(el) { |k, old_v, new_v| old_v + new_v }
+        end
       end
 
-      def md_hashes_values_sum(site_stats)
+      def player_mode_hashes_values_sum(site_stats)
         md = site_stats.map(&:md)
-        h  = md.map { |h| h["h"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
-        f  = md.map { |h| h["f"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
-        { h: h, f: f }
+
+        {
+          h: md.map { |h| h["h"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } },
+          f: md.map { |h| h["f"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
+        }
       end
 
     end

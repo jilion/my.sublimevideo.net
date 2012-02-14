@@ -16,6 +16,8 @@ class Tweet
   field :retweets_count,    type: Integer, default: 0 # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
   field :favorited,         type: Boolean, default: false # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
 
+  index :tweet_id
+  index :favorited
   index :tweeted_at
   index :keywords
 
@@ -28,9 +30,10 @@ class Tweet
 
   attr_accessible :tweet_id, :keywords, :from_user_id, :from_user, :to_user_id, :to_user, :iso_language_code, :profile_image_url, :source, :content, :tweeted_at, :retweets_count
 
-  scope :keywords,  lambda { |keywords| where(keywords: keywords) }
-  scope :favorites, lambda { |favorite=true| where(favorited: true) }
-  scope :by_date,   lambda { |way='desc'| order_by([:tweeted_at, way]) }
+  scope :keywords,          lambda { |keywords| where(keywords: keywords) }
+  scope :favorites,         lambda { |favorite=true| where(favorited: true) }
+  scope :between,           lambda { |start_date, end_date| where(tweeted_at: { "$gte" => start_date, "$lt" => end_date }) }
+  scope :by_date,           lambda { |way='desc'| order_by([:tweeted_at, way]) }
   scope :by_retweets_count, lambda { |way='desc'| order_by([:retweets_count, way]) }
 
   # ===============
@@ -46,14 +49,7 @@ class Tweet
 
   class << self
 
-    def delay_save_new_tweets_and_sync_favorite_tweets
-      unless Delayed::Job.already_delayed?('%Tweet%save_new_tweets_and_sync_favorite_tweets%')
-        delay(priority: 200, run_at: 30.minutes.from_now).save_new_tweets_and_sync_favorite_tweets
-      end
-    end
-
     def save_new_tweets_and_sync_favorite_tweets
-      delay_save_new_tweets_and_sync_favorite_tweets
       return unless enough_remaining_twitter_calls?
 
       search = TwitterApi.search.new
@@ -111,14 +107,14 @@ class Tweet
         end
       end
 
-      if to_remove.present?
-        Notify.send("These tweets are marked as favorite locally but not on Twitter: #{to_remove.join(', ')}")
-        to_remove.each do |fav_tweet_id_to_remove|
-          if tweet = self.where(tweet_id: fav_tweet_id_to_remove).first
-            tweet.update_attribute(:favorited, false)
-          end
-        end
-      end
+      # if to_remove.present?
+      #   Notify.send("These tweets are marked as favorite locally but not on Twitter: #{to_remove.join(', ')}")
+      #   to_remove.each do |fav_tweet_id_to_remove|
+      #     if tweet = self.where(tweet_id: fav_tweet_id_to_remove).first
+      #       tweet.update_attribute(:favorited, false)
+      #     end
+      #   end
+      # end
     end
 
     # Return a certain number of random favorites tweets of a user, ordered by date desc FROM Twitter.

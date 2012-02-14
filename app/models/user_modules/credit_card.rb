@@ -231,15 +231,7 @@ module UserModules::CreditCard
 
   module ClassMethods
 
-    # Recurring task
-    def delay_send_credit_card_expiration(interval = 1.week)
-      unless Delayed::Job.already_delayed?('%User%send_credit_card_expiration%')
-        delay(run_at: interval.from_now).send_credit_card_expiration
-      end
-    end
-
     def send_credit_card_expiration
-      delay_send_credit_card_expiration
       User.paying.where(cc_expire_on: Time.now.utc.end_of_month.to_date).each do |user|
         My::BillingMailer.credit_card_will_expire(user).deliver!
       end

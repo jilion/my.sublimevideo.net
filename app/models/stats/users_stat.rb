@@ -9,13 +9,13 @@ module Stats
     field :states_count, type: Hash
 
     field :d,  type: DateTime # Day
+    field :be, type: Integer # beta
     field :fr, type: Integer # free
     field :pa, type: Integer # paying
     field :su, type: Integer # suspended
     field :ar, type: Integer # archived
 
     index :d
-    index :created_at
 
     # ==========
     # = Scopes =
@@ -38,29 +38,27 @@ module Stats
 
       def json(from = nil, to = nil)
         json_stats = if from.present?
-          between(from: from, to: to || Time.now.utc.midnight)
+          between(from, to || Time.now.utc.midnight)
         else
           scoped
         end
 
-        json_stats.order_by([:d, :asc]).to_json(only: [:fr, :pa, :su, :ar])
+        json_stats.order_by([:d, :asc]).to_json(only: [:be, :fr, :pa, :su, :ar])
       end
 
-      def delay_create_users_stats
-        unless Delayed::Job.already_delayed?('%Stats::UsersStat%create_users_stats%')
-          delay(:run_at => Time.now.utc.tomorrow.midnight).create_users_stats # every day
-        end
+      def create_stats
+        self.create(users_hash(Time.now.utc.midnight))
       end
 
-      def create_users_stats
-        delay_create_users_stats
-        self.create(
-          d: Time.now.utc.midnight,
+      def users_hash(day)
+        {
+          d: day.to_time,
+          be: 0,
           fr: User.free.count,
           pa: User.paying.count,
           su: User.suspended.count,
           ar: User.archived.count
-        )
+        }
       end
 
     end

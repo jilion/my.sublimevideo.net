@@ -28,7 +28,7 @@ end
 
 feature "Admins actions:" do
   background do
-    sign_in_as :admin, { email: "old@jilion.com" }
+    sign_in_as :admin, email: "old@jilion.com"
   end
 
   scenario "update email" do
@@ -50,7 +50,7 @@ feature "Admins invitations:" do
   end
 
   scenario "new invitation" do
-    sign_in_as :admin, { email: "john@doe.com" }
+    sign_in_as :admin, email: "john@doe.com", roles: ['god']
 
     click_link 'Admins'
     click_link 'Invite an admin'
@@ -81,16 +81,13 @@ feature "Admins invitations:" do
     current_url.should eq "http://admin.sublimevideo.dev/sites"
     invited_admin.email.should eq "invited@admin.com"
     invited_admin.reload.invitation_token.should be_nil
-
-    click_link 'Admins'
-    page.should have_content "invited@admin.com"
   end
 
 end
 
 feature "Admins pagination:" do
   background do
-    sign_in_as :admin
+    sign_in_as :admin, roles: ['god']
     Responders::PaginatedResponder.stub(:per_page).and_return(1)
   end
 

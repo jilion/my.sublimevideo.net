@@ -1,17 +1,7 @@
-# == Schema Information
-#
-#  type            :integer   not null
-#  subject         :string    not null
-#  message         :text      not null
-#  requester_name  :string
-#  requester_email :string
-#
-#
-
 require 'spec_helper'
 
 describe Ticket do
-  before(:all) do
+  before(:each) do
     @user = Factory.create(:user, name: "Remy")
     @site = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
     @loser = Factory.create(:user)
@@ -22,25 +12,19 @@ describe Ticket do
 
   describe "Factory" do
     context "without site" do
-      before(:all) do
-        @ticket = Ticket.new({ user_id: @user.id, subject: "Subject", message: "Message" })
-      end
-      subject { @ticket }
+      subject { Ticket.new({ user_id: @user.id, subject: "Subject", message: "Message" }) }
 
-      its(:subject) { should eql "Subject" }
-      its(:message) { should eql "Message" }
+      its(:subject) { should eq "Subject" }
+      its(:message) { should eq "Message" }
 
       it { should be_valid }
     end
 
     context "with site" do
-      before(:all) do
-        @ticket = Ticket.new({ user_id: @user.id, site_token: @site.token, subject: "Subject", message: "Message" })
-      end
-      subject { @ticket }
+      subject { Ticket.new({ user_id: @user.id, site_token: @site.token, subject: "Subject", message: "Message" })}
 
-      its(:subject) { should eql "Subject" }
-      its(:message) { should eql "Request for site: (#{@site.token}) #{@site.hostname}\n\nMessage" }
+      its(:subject) { should eq "Subject" }
+      its(:message) { should eq "Request for site: (#{@site.token}) #{@site.hostname}\n\nMessage" }
 
       it { should be_valid }
     end
@@ -141,7 +125,7 @@ describe Ticket do
     describe "#save" do
       it "delays Ticket.post_ticket" do
         valid_ticket.save
-        Delayed::Job.last.name.should eql "Class#post_ticket"
+        Delayed::Job.last.name.should eq "Class#post_ticket"
       end
 
       it "returns true if all is good" do
@@ -156,7 +140,7 @@ describe Ticket do
     describe "#to_xml" do
       context "user has email support" do
         it "generates a xml" do
-          valid_ticket.user.support.should eql 'email'
+          valid_ticket.user.support.should eq 'email'
           valid_ticket.to_xml.should eq <<-EOF
 <ticket>
   <subject>I have a request!</subject>
@@ -171,8 +155,8 @@ EOF
 
       context "user has vip support" do
         it "generates a xml" do
-          vip_ticket.user.support.should eql 'vip_email'
-          vip_ticket.to_xml.should eql <<-EOF
+          vip_ticket.user.support.should eq 'vip_email'
+          vip_ticket.to_xml.should eq <<-EOF
 <ticket>
   <subject>I have a request!</subject>
   <description>I have a request this is a long text!</description>
@@ -188,3 +172,12 @@ EOF
   end
 
 end
+# == Schema Information
+#
+#  type            :integer   not null
+#  subject         :string    not null
+#  message         :text      not null
+#  requester_name  :string
+#  requester_email :string
+#
+#

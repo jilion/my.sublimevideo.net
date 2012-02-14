@@ -1,25 +1,16 @@
-#= require jquery
-#= require jquery_ujs
-#= require underscore
+#= require application_jquery
+#= require jquery.ui.1.8.17.custom.min
 
 #= require backbone
 #= require underscore.date
 #= require hamlcoffee
 #= require spin/jquery.spin
-#= require jquery.sparkline
 #= require jquery.ui.datepicker.min
 #= require highstock/highstock
 
 #= require_self
-#= require ./stats/models/stat
+#= require_tree ../templates
 #= require_tree ./stats
-
-window.SVStats =
-  Models: {}
-  Collections: {}
-  Helpers: {}
-  Routers: {}
-  Views: {}
 
 window.spinOptions =
   color:  '#d5e5ff'

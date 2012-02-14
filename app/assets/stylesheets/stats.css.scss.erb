@@ -796,6 +796,7 @@ span.beta_badge {
 /*.stats .graph_box li .platform {background-image:url(<%= asset_data_uri "my/stats/icons/browser_default.png" %>);}*/
 .stats .graph_box li.p_osx .platform {background-image:url(<%= asset_data_uri "my/stats/icons/mac.png" %>);}
 .stats .graph_box li.p_win .platform {background-image:url(<%= asset_data_uri "my/stats/icons/windows.png" %>);}
+.stats .graph_box li.p_lin .platform {background-image:url(<%= asset_data_uri "my/stats/icons/linux.png" %>);}
 .stats .graph_box li.p_and .platform {background-image:url(<%= asset_data_uri "my/stats/icons/android.png" %>);}
 .stats .graph_box li.p_iph .platform {background-image:url(<%= asset_data_uri "my/stats/icons/iphone.png" %>);}
 .stats .graph_box li.p_ipa .platform {background-image:url(<%= asset_data_uri "my/stats/icons/ipad.png" %>);}
@@ -897,6 +898,72 @@ span.beta_badge {
   @include border-radius(4px);
 }
 
-.stats #demo_notice {
-  margin-bottom:40px;
+body.my.stats_demo {
+  background:#8ea6c2 url(<%= asset_data_uri "www/back_texture.png" %>);
+}
+
+body.my.stats_demo header, body.my.stats_demo header .shadow, body.my.stats_demo header .lights {
+  height:258px;
+}
+
+body.my.stats_demo header h2 {
+  padding:58px 0 5px 250px;
+  text-align:left;
+}
+
+body.my.stats_demo header p.sub {
+  padding-left:250px;
+  text-align:left;
+}
+
+body.my.stats_demo #content {
+  width:960px;
+  margin:0 auto;
+  background:none;
+  position:relative;
+  z-index:2;
+  min-height:606px;
+}
+
+body.my.stats_demo .content_wrapper {
+  padding:20px 0 40px;
+  width:960px;
+}
+
+body.my.stats_demo span.stats_icon {
+  width:215px;
+  height:184px;
+  background:url(<%= asset_data_uri "my/stats/stats_icon.png" %>) no-repeat;
+  position:absolute;
+  top:-151px;
+  left:0;
+}
+
+body.my.stats_demo .com_text {
+  padding:22px 0 30px;
+}
+
+body.my.stats_demo .com_text p {
+  font-size:20px;
+  line-height:30px;
+  padding:12px 0;
+  color:#7690b3;
+  text-shadow:rgba(255,255,255,0.9) 0 1px 0;
+}
+
+body.my.stats_demo .com_text p a {
+  color:#1185ff;
+  border-bottom:1px solid #81bbfc;
+}
+
+body.my.stats_demo div.stats {
+  width:880px;
+  padding:20px 40px;
+  position:relative;
+  background:#ecf2f8 url(<%= asset_data_uri "my/back_texture.png" %>);
+  color:#1e3966;
+  text-shadow:rgba(255,255,255,0.25) 0 1px 0;
+  border: 1px solid #728ab2;
+  @include border-radius(4px);
+  @include box-shadow((inset rgba(255,255,255,0.5) 0 1px 0, rgba(0,39,104,0.8) 0 1px 8px));
 }

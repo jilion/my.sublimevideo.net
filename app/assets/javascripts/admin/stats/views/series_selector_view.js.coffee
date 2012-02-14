@@ -1,23 +1,25 @@
-class SVStats.Views.SeriesSelectorView extends Backbone.View
-
+class AdminSublimeVideo.Views.SeriesSelectorView extends Backbone.View
   events:
     'click a.selector': 'updateSelected'
 
   updateSelected: (event) ->
-    value = $(event.currentTarget).data('value').split('.')
+    event.stopPropagation()
+    clickedFilter = $(event.currentTarget)
+    selection     = clickedFilter.data('value').split('.')
 
-    rest = _.rest(value)
-    new_selected = if rest.length == 1 then rest[0] else rest.join('.')
+    this.toggleSubCategory(selection[0], _.rest(selection))
+    this.toggleFilterStyle(clickedFilter)
+    AdminSublimeVideo.statsRouter.updateUrl(null, clickedFilter.data('value'))
 
-    index = _.indexOf(SVStats.stats[value[0]].selected, new_selected)
-    if -1 == index
-      SVStats.stats[value[0]].selected.push new_selected
-      $(event.currentTarget).addClass 'active'
+    AdminSublimeVideo.graphView.render()
+
+    false
+
+  toggleSubCategory: (category, subCategory) ->
+    if AdminSublimeVideo.stats[category].currentlySelected(subCategory)
+      AdminSublimeVideo.stats[category].unselect(subCategory)
     else
-      SVStats.stats[value[0]].selected.splice(index, 1)
-      $(event.currentTarget).removeClass 'active'
+      AdminSublimeVideo.stats[category].select(subCategory)
 
-    console.log "SVStats.chart.options.rangeSelector.selected : #{SVStats.chart.options.rangeSelector.selected}"
-    SVStats.statsRouter.selectedRange = SVStats.chart.options.rangeSelector.selected
-    console.log "SVStats.statsRouter.selectedRange : #{SVStats.statsRouter.selectedRange}"
-    SVStats.stats[value[0]].trigger('change')
+  toggleFilterStyle: (filterLink) ->
+    filterLink.toggleClass 'active'

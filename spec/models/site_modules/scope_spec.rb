@@ -1,13 +1,10 @@
 require 'spec_helper'
 
 describe SiteModules::Scope do
-
-  before(:all) do
-    @user = Factory.create(:user)
-  end
+  before { @user = Factory.create(:user) }
 
   describe "state" do
-    before(:all) do
+    before(:each) do
       Site.delete_all
       @site_active    = Factory.create(:site, user: @user)
       @site_archived  = Factory.create(:site, user: @user, state: "archived", archived_at: Time.utc(2010,2,28))
@@ -36,7 +33,7 @@ describe SiteModules::Scope do
   end
 
   describe "plan" do
-    before(:all) do
+    before(:each) do
       Site.delete_all
       @site_free      = Factory.create(:site, user: @user, plan_id: @free_plan.id)
       @site_free.update_attribute(:next_cycle_plan_id, @paid_plan.id)
@@ -76,7 +73,7 @@ describe SiteModules::Scope do
   end
 
   describe "attributes queries" do
-    before(:all) do
+    before(:each) do
       Site.delete_all
       @site_wildcard        = Factory.create(:site, user: @user, wildcard: true)
       @site_path            = Factory.create(:site, user: @user, path: "foo", path: 'foo')
@@ -103,7 +100,7 @@ describe SiteModules::Scope do
   end
 
   describe "invoices" do
-    before(:all) do
+    before(:each) do
       Site.delete_all
       @site_with_no_invoice = Factory.create(:site, user: @user)
       @site_with_paid_invoice = Factory.create(:site_with_invoice, user: @user)
@@ -117,7 +114,7 @@ describe SiteModules::Scope do
   end
 
   describe "trial" do
-    before(:all) do
+    before(:each) do
       Site.delete_all
       @site_not_in_trial = Factory.create(:site, user: @user, trial_started_at: BusinessModel.days_for_trial.days.ago.midnight)
       @site_trial_ends_in_1_day = Factory.create(:site, user: @user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago.midnight)
@@ -138,7 +135,7 @@ describe SiteModules::Scope do
   end
 
   describe "#renewable" do
-    before(:all) do
+    before(:each) do
       Site.delete_all
       Timecop.travel(2.months.ago) do
         @site_renewable      = Factory.create(:site_not_in_trial, user: @user, first_paid_plan_started_at: Time.now.utc)
@@ -157,7 +154,7 @@ describe SiteModules::Scope do
   end
 
   describe "#refunded" do
-    before(:all) do
+    before(:each) do
       Site.delete_all
       @site_refunded_1     = Factory.create(:site, user: @user, state: 'archived', refunded_at: Time.now.utc)
       @site_not_refunded_1 = Factory.create(:site, user: @user, state: 'active', refunded_at: Time.now.utc)

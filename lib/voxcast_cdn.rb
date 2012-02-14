@@ -9,29 +9,37 @@ module VoxcastCDN
   class << self
 
     def devices_list
-      client.voxel_devices_list
+      rescue_and_retry(3, Timeout::Error) do
+        client.voxel_devices_list
+      end
     end
 
     def purge(paths)
-      client.voxel_voxcast_ondemand_content_purge_file(device_id: device_id, paths: parse_paths(paths))
+      rescue_and_retry(3, Timeout::Error) do
+        client.voxel_voxcast_ondemand_content_purge_file(device_id: device_id, paths: parse_paths(paths))
+      end
     end
 
     def purge_dir(paths)
-      client.voxel_voxcast_ondemand_content_purge_directory(device_id: device_id, paths: parse_paths(paths))
+      rescue_and_retry(3, Timeout::Error) do
+        client.voxel_voxcast_ondemand_content_purge_directory(device_id: device_id, paths: parse_paths(paths))
+      end
     end
 
     def verify(path)
-      client.voxel_voxcast_ondemand_testing_get_url_per_pop(device_id: device_id, path: path)
+      rescue_and_retry(3, Timeout::Error) do
+        client.voxel_voxcast_ondemand_testing_get_url_per_pop(device_id: device_id, path: path)
+      end
     end
 
     def download_log(filename)
-      # rescue_and_retry(5) do
+      rescue_and_retry(3) do
         xml = client.voxel_voxcast_ondemand_logs_download(:filename => filename)
         tempfile = Tempfile.new('log', Rails.root.join('tmp'), :encoding => 'ASCII-8BIT')
         tempfile.write(Base64.decode64(xml['data']['content']))
         tempfile.flush
         tempfile
-      # end
+      end
     rescue VoxelHAPI::Backend => ex
       ex.to_s =~ /log file not found/ ? false : raise(ex)
     end

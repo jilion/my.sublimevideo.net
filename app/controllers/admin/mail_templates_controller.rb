@@ -1,6 +1,8 @@
 class Admin::MailTemplatesController < AdminController
   respond_to :html
 
+  before_filter { |controller| require_role?('god') }
+
   # GET /mails/templates/new
   def new
     @mail_template = MailTemplate.new

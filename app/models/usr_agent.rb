@@ -7,8 +7,7 @@ class UsrAgent # fucking name conflict with UserAgent gem
   field :platforms, :type => Hash # { "iPad" => { "iOS 3.2" => 32, "iOS 4.2" => 31, "Unknown" => 12 }, "Unknown" => 123 }
   field :browsers,  :type => Hash # { "Safari" => { "versions" => { "4.0.4" => 123, "5.0" => 12, "Unknown" => 123 }, "platforms" => { "iPad" => 12, "Windows" => 12, "Unknown" => 123 } }, "Unknown" => 123 }
 
-  index :token
-  index :month
+  index [[:month, Mongo::ASCENDING], [:token, Mongo::ASCENDING]] # UsrAgent#create_or_update_from_trackers
 
   attr_accessible :token, :platforms, :browsers, :month
 

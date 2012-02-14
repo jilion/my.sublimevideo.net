@@ -20,95 +20,141 @@ namespace :db do
 
     desc "Load all development fixtures."
     task all: :environment do
-      delete_all_files_in_public('uploads/releases')
-      delete_all_files_in_public('uploads/s3')
-      delete_all_files_in_public('uploads/tmp')
-      delete_all_files_in_public('uploads/voxcast')
-      timed { create_plans }
-      timed { create_admins }
-      timed { create_users(argv_user) }
-      timed { create_sites }
-      timed { create_site_usages }
-      timed { create_site_stats }
-      timed { create_mail_templates }
+      disable_perform_deliveries do
+        delete_all_files_in_public('uploads/releases')
+        delete_all_files_in_public('uploads/s3')
+        delete_all_files_in_public('uploads/tmp')
+        delete_all_files_in_public('uploads/voxcast')
+        timed { create_plans }
+        timed { create_admins }
+        timed { create_users(argv_user) }
+        timed { create_sites }
+        timed { create_site_usages }
+        timed { create_site_stats }
+        timed { create_mail_templates }
+      end
     end
 
     desc "Load Admin development fixtures."
     task admins: :environment do
-      timed { empty_tables(Admin) }
-      timed { create_admins }
+      disable_perform_deliveries do
+        timed { empty_tables(Admin) }
+        timed { create_admins }
+      end
     end
 
     desc "Load Enthusiast development fixtures."
     task enthusiasts: :environment do
-      timed { empty_tables(EnthusiastSite, Enthusiast) }
-      timed { create_enthusiasts(argv_user) }
+      disable_perform_deliveries do
+        timed { empty_tables(EnthusiastSite, Enthusiast) }
+        timed { create_enthusiasts(argv_user) }
+      end
     end
 
     desc "Load User development fixtures."
     task users: :environment do
-      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
-      timed { create_users(argv_user) }
-      empty_tables("delayed_jobs")
+      disable_perform_deliveries do
+        timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
+        timed { create_users(argv_user) }
+        empty_tables("delayed_jobs")
+      end
     end
 
     desc "Load Site development fixtures."
     task sites: :environment do
-      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
-      timed { create_sites }
-      empty_tables("delayed_jobs")
+      disable_perform_deliveries do
+        timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
+        timed { create_sites }
+        empty_tables("delayed_jobs")
+      end
     end
 
     desc "Load Site development fixtures."
     task invoices: :environment do
-      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction) }
-      timed { create_invoices(argv_user) }
-      empty_tables("delayed_jobs")
+      disable_perform_deliveries do
+        timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction) }
+        timed { create_invoices(argv_user) }
+        empty_tables("delayed_jobs")
+      end
     end
 
     desc "Load Mail templates development fixtures."
     task mail_templates: :environment do
-      timed { empty_tables(MailTemplate) }
-      timed { create_mail_templates }
+      disable_perform_deliveries do
+        timed { empty_tables(MailTemplate) }
+        timed { create_mail_templates }
+      end
     end
 
     desc "Create fake usages"
     task site_usages: :environment do
-      timed { empty_tables(SiteUsage) }
-      timed { create_site_usages }
+      disable_perform_deliveries do
+        timed { empty_tables(SiteUsage) }
+        timed { create_site_usages }
+      end
     end
 
     desc "Create fake site stats"
     task site_stats: :environment do
-      timed { empty_tables(Stat::Site) }
-      timed { create_site_stats(argv_user) }
+      disable_perform_deliveries do
+        timed { empty_tables(Stat::Site) }
+        timed { create_site_stats(argv_user) }
+      end
     end
 
     desc "Create fake users & sites stats"
     task users_and_sites_stats: :environment do
-      timed { create_users_stats }
-      timed { create_sites_stats }
+      disable_perform_deliveries do
+        timed { create_users_stats }
+        timed { create_sites_stats }
+      end
     end
 
     desc "Create fake site stats"
     task recurring_site_stats: :environment do
-      timed { empty_tables(Stat::Site) }
-      timed { create_site_stats(argv_user) }
-      timed { recurring_site_stats_update(argv_user) }
+      disable_perform_deliveries do
+        timed { empty_tables(Stat::Site) }
+        timed { create_site_stats(argv_user) }
+        timed { recurring_site_stats_update(argv_user) }
+      end
     end
 
     desc "Create fake site & video stats"
+    task stats: :environment do
+      disable_perform_deliveries do
+        timed { create_stats(argv('site')) }
+      end
+    end
+
+    desc "Create recurring fake site & video stats"
     task recurring_stats: :environment do
-      timed { create_stats(argv('site')) }
-      timed { recurring_stats_update(argv('site')) }
+      disable_perform_deliveries do
+        timed { recurring_stats_update(argv('site')) }
+      end
     end
 
     desc "Create fake plans"
     task plans: :environment do
-      timed { empty_tables(Plan) }
-      timed { create_plans }
+      disable_perform_deliveries do
+        timed { empty_tables(Plan) }
+        timed { create_plans }
+      end
     end
 
+    desc "Import MongoDB production databases locally (not the other way around don't worry!)"
+    task import_mongo_prod: :environment do
+      mongo_db_pwd = argv('password')
+      raise "Please provide a password to access the production database like this: rake db:populate:import_mongo_prod password=MONGOHQ_PASSWORD" if mongo_db_pwd.nil?
+
+      %w[sales_stats site_stats_stats site_usages_stats sites_stats tweets_stats users_stats tweets].each do |collection|
+        timed do
+          puts "Exporting production '#{collection}' collection"
+          `mongodump -h hurley.member0.mongohq.com:10006 -d sublimevideo_production -u heroku -p #{mongo_db_pwd} -o db/backups/ --collection #{collection}`
+          puts "Importing '#{collection}' collection locally"
+          `mongorestore -h localhost -d sublimevideo_dev --collection #{collection} --drop -v db/backups/sublimevideo_production/#{collection}.bson`
+        end
+      end
+    end
   end
 
 end
@@ -496,7 +542,7 @@ def create_stats(site_token = nil)
         n: "Video #{video_i} long name test truncate",
         no: "s",
         cs: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
-        p: "https://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
+        p: "http#{'s' if video_i.even?}://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
         z: "544x306",
         s: {
           "83cb4c27" => { u: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4", q: "base", f: "mp4" },
@@ -508,6 +554,7 @@ def create_stats(site_token = nil)
     end
 
     # Days
+    puts "Generating 95 days of stats for #{site.hostname}"
     95.times.each do |i|
       time = i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
       Stat::Site.collection.update(
@@ -519,7 +566,9 @@ def create_stats(site_token = nil)
         )
       end
     end
+
     # Hours
+    puts "Generating 25 hours of stats for #{site.hostname}"
     25.times.each do |i|
       time = i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time
       Stat::Site.collection.update(
@@ -531,7 +580,9 @@ def create_stats(site_token = nil)
         )
       end
     end
+
     # Minutes
+    puts "Generating 60 minutes of stats for #{site.hostname}"
     60.times.each do |i|
       time = i.minutes.ago.change(sec: 0, usec: 0).to_time
       Stat::Site.collection.update(
@@ -543,7 +594,9 @@ def create_stats(site_token = nil)
         )
       end
     end
-    # seconds
+
+    # Seconds
+    puts "Generating 60 seconds of stats for #{site.hostname}"
     60.times.each do |i|
       time = i.seconds.ago.change(usec: 0).to_time
       Stat::Site.collection.update(

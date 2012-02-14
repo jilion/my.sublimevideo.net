@@ -1,4 +1,5 @@
 class Admin::PlansController < AdminController
+  before_filter { |controller| require_role?('god') }
 
   # GET /plans
   def index

@@ -3,8 +3,7 @@ require 'spec_helper'
 describe Invoice do
 
   describe "Factory" do
-    before(:all) { @invoice = Factory.create(:invoice) }
-    subject { @invoice }
+    subject { Factory.create(:invoice) }
 
     its(:site)                     { should be_present }
     its(:reference)                { should =~ /^[a-z1-9]{8}$/ }
@@ -19,8 +18,7 @@ describe Invoice do
   end # Factory
 
   describe "Associations" do
-    before(:all) { @invoice = Factory.create(:invoice) }
-    subject { @invoice }
+    subject { Factory.create(:invoice) }
 
     it { should belong_to :site }
     it { should have_one :user }
@@ -29,8 +27,7 @@ describe Invoice do
   end # Associations
 
   describe "Validations" do
-    before(:all) { @invoice = Factory.create(:invoice) }
-    subject { @invoice }
+    subject { Factory.create(:invoice) }
 
     [:site, :renew].each do |attr|
       it { should allow_mass_assignment_of(attr) }
@@ -48,98 +45,10 @@ describe Invoice do
     it { should validate_numericality_of(:vat_amount) }
     it { should validate_numericality_of(:balance_deduction_amount) }
     it { should validate_numericality_of(:amount) }
-
-    describe "ensure_first_invoice_of_site" do
-      subject { @invoice }
-
-      context "first invoice" do
-        before(:all) do
-          Invoice.delete_all
-          @site = Factory.create(:new_site, first_paid_plan_started_at: nil)
-          @site.first_paid_plan_started_at.should be_nil
-        end
-
-        context "with an open invoice" do
-          before(:all) do
-            @invoice = Factory.create(:invoice, site: @site, state: 'open')
-          end
-
-          it "cancels the invoice" do
-            subject.cancel!.should be_true
-            subject.should be_canceled
-          end
-        end
-
-        context "with a failed invoice" do
-          before(:all) do
-            @invoice = Factory.create(:invoice, site: @site, state: 'failed')
-          end
-
-          it "cancels the invoice" do
-            subject.cancel!.should be_true
-            subject.should be_canceled
-          end
-        end
-
-        context "with a waiting invoice" do
-          before(:all) do
-            @invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-          end
-
-          it "cancels the invoice" do
-            subject.cancel.should be_false
-            subject.should be_waiting
-          end
-        end
-      end
-
-      context "not first invoice" do
-        before(:all) do
-          Invoice.delete_all
-          @site = Factory.create(:new_site, first_paid_plan_started_at: Time.now.utc)
-          @site.first_paid_plan_started_at.should be_present
-        end
-
-        context "with an open invoice" do
-          before(:all) do
-            @invoice = Factory.create(:invoice, site: @site, state: 'open')
-          end
-
-          it "doesn't cancel the invoice" do
-            subject.cancel.should be_false
-            subject.should be_open
-          end
-        end
-
-        context "with a failed invoice" do
-          before(:all) do
-            @invoice = Factory.create(:invoice, site: @site, state: 'failed')
-          end
-
-          it "doesn't cancel the invoice" do
-            subject.cancel.should be_false
-            subject.should be_failed
-          end
-        end
-
-        context "with a waiting invoice" do
-          before(:all) do
-            @invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-          end
-
-          it "doesn't cancel the invoice" do
-            subject.cancel.should be_false
-            subject.should be_waiting
-          end
-        end
-      end
-    end
-
   end # Validations
 
   describe "State Machine" do
-    before(:all) { @invoice = Factory.create(:invoice) }
-    subject { @invoice }
+    subject { Factory.create(:invoice) }
 
     describe "Initial state" do
       it { should be_open }
@@ -147,7 +56,8 @@ describe Invoice do
 
     describe "Transitions" do
       describe "before_transition :on => :succeed, :do => :set_paid_at" do
-        subject { @invoice.reload }
+        before { subject.reload }
+
         it "should set paid_at" do
           subject.paid_at.should be_nil
           subject.succeed!
@@ -156,7 +66,8 @@ describe Invoice do
       end
 
       describe "before_transition :on => :fail, :do => :set_last_failed_at" do
-        subject { @invoice.reload }
+        before { subject.reload }
+
         it "should set last_failed_at" do
           subject.last_failed_at.should be_nil
           subject.fail!
@@ -200,7 +111,7 @@ describe Invoice do
       end
 
       describe "after_transition :on => :succeed, :do => :update_user_invoiced_amount" do
-        subject { @invoice.reload }
+        before  { subject.reload }
 
         it "should update user.last_invoiced_amount" do
           subject.user.update_attribute(:last_invoiced_amount, 500)
@@ -223,7 +134,7 @@ describe Invoice do
       end
 
       describe "after_transition :on => :succeed, :do => :unsuspend_user" do
-        subject { @invoice.reload }
+        before  { subject.reload }
 
         context "with a non-suspended user" do
           %w[open failed].each do |state|
@@ -276,7 +187,7 @@ describe Invoice do
       end
 
       describe "after_transition :on => :cancel, :do => :increment_user_balance" do
-        subject { @invoice.reload }
+        before  { subject.reload }
 
         it "increments user balance" do
           subject.update_attribute(:balance_deduction_amount, 2000)
@@ -294,7 +205,7 @@ describe Invoice do
 
   describe "Callbacks" do
     describe "#before_validation, on: create" do
-      before(:all) { @invoice = Factory.create(:invoice) }
+      before  { @invoice = Factory.create(:invoice) } # need to have access to invoice inside its block
       subject { @invoice }
 
       describe "#set_customer_info" do
@@ -314,7 +225,7 @@ describe Invoice do
       context "balance > invoice amount" do
 
         describe "succeed invoice with amount == 0" do
-          before(:all) do
+          before(:each) do
             @user = Factory.create(:user, billing_country: 'FR', balance: 2000)
             @site = Factory.build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -329,7 +240,7 @@ describe Invoice do
         end
 
         describe "#decrement_user_balance" do
-          before(:all) do
+          before(:each) do
             @user = Factory.create(:user, billing_country: 'FR', balance: 2000)
             @site = Factory.build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -347,7 +258,7 @@ describe Invoice do
   end
 
   describe "Scopes" do
-    before(:all) do
+    before(:each) do
       @site             = Factory.create(:new_site, plan_id: @paid_plan.id, refunded_at: nil)
       @site2            = Factory.create(:new_site)
 
@@ -369,7 +280,7 @@ describe Invoice do
     end
 
     describe "#between" do
-      specify { Invoice.between(24.hours.ago, 15.hours.ago).should eq [@waiting_invoice, @paid_invoice] }
+      specify { Invoice.between(24.hours.ago, 15.hours.ago).order(:id).should eq [@waiting_invoice, @paid_invoice] }
     end
 
     describe "#open" do
@@ -409,7 +320,7 @@ describe Invoice do
   describe "Class Methods" do
 
     describe ".update_pending_dates_for_first_not_paid_invoices" do
-      before(:all) do
+      before(:each) do
         Timecop.travel(Time.utc(2011, 4, 4, 6)) do
           @user = Factory.create(:user)
 
@@ -473,12 +384,10 @@ describe Invoice do
     end
 
     describe ".construct" do
-      before(:all) do
-        @paid_plan = Factory.create(:plan, cycle: "month", price: 1000)
-      end
+      before { @paid_plan = Factory.create(:plan, cycle: "month", price: 1000) }
 
       describe "standard invoice" do
-        before(:all) do
+        before(:each) do
           @user = Factory.create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
           Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
             @site    = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
@@ -503,7 +412,7 @@ describe Invoice do
 
       describe "with a site upgraded" do
         context "from a paid plan" do
-          before(:all) do
+          before(:each) do
             @user = Factory.create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site       = Factory.create(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
@@ -535,7 +444,7 @@ describe Invoice do
         end
 
         context "from a free plan" do
-          before(:all) do
+          before(:each) do
             @user = Factory.create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site      = Factory.create(:site, user: @user, plan_id: @free_plan.id)
@@ -565,7 +474,7 @@ describe Invoice do
 
       describe "with a site downgraded" do
         context "from a paid plan" do
-          before(:all) do
+          before(:each) do
             @user = Factory.create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(Time.utc(2011,5,1)) do
               @site       = Factory.create(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
@@ -600,7 +509,7 @@ describe Invoice do
       end
 
       describe "with a site created" do
-        before(:all) do
+        before(:each) do
           @user    = Factory.create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
           Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
             @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
@@ -616,7 +525,7 @@ describe Invoice do
       end
 
       describe "with a Swiss user" do
-        before(:all) do
+        before(:each) do
           @user    = Factory.create(:user, billing_country: 'CH')
           @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
           @invoice = Invoice.construct(site: @site)
@@ -631,7 +540,7 @@ describe Invoice do
 
       describe "with a user that has a balance" do
         context "balance < invoice amount" do
-          before(:all) do
+          before(:each) do
             @user    = Factory.create(:user, billing_country: 'FR', balance: 100)
             @site    = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -644,7 +553,7 @@ describe Invoice do
         end
 
         context "balance == invoice amount" do
-          before(:all) do
+          before(:each) do
             @user    = Factory.create(:user, billing_country: 'FR', balance: 1000)
             @site    = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -657,7 +566,7 @@ describe Invoice do
         end
 
         context "balance > invoice amount" do
-          before(:all) do
+          before(:each) do
             @user    = Factory.create(:user, billing_country: 'FR', balance: 2000)
             @site    = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -675,7 +584,7 @@ describe Invoice do
   end # Class Methods
 
   describe "Instance Methods" do
-    before(:all) do
+    before(:each) do
       @invoice = Factory.create(:invoice)
       @paid_plan_invoice_item = Factory.create(:plan_invoice_item, invoice: @invoice, item: @paid_plan, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
       @invoice.invoice_items << @paid_plan_invoice_item
@@ -699,7 +608,7 @@ describe Invoice do
     end
 
     describe "#first_site_invoice?" do
-      before(:all) { @site = Factory.create(:site) }
+      before { @site = Factory.create(:site) }
 
       it { Factory.build(:invoice).should be_first_site_invoice }
       it { subject.should be_first_site_invoice }

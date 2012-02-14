@@ -4,22 +4,22 @@ class Log::Amazon < Log
   # = Validations =
   # ===============
 
-  validates :file, :presence => true, :on => :update
+  validates :file, presence: true, on: :update
 
   # =============
   # = Callbacks =
   # =============
 
-  before_validation :set_hostname, :on => :create
-  before_validation :set_log_file, :on => :create
+  before_validation :set_hostname, on: :create
+  before_validation :set_log_file, on: :create
 
   # =================
   # = Class Methods =
   # =================
 
-  def self.delay_fetch_and_create_new_logs(interval = 1.hour)
+  def self.delay_fetch_and_create_new_logs(interval=1.hour)
     unless Delayed::Job.already_delayed?("%#{self.to_s}%fetch_and_create_new_logs%")
-      delay(:priority => 10, :run_at => interval.from_now).fetch_and_create_new_logs
+      delay(priority: 10, run_at: interval.from_now).fetch_and_create_new_logs
     end
   end
 
@@ -36,7 +36,7 @@ private
       'prefix' => config[:store_dir],
       :remove_prefix => true
     }
-    if last_log = self.desc(:name).first
+    if last_log = self.where(created_at: { "$gt" => 7.day.ago }).desc(:name).first
       options['marker'] = config[:store_dir] + marker(last_log)
     end
     rescue_and_retry(7, Aws::AwsError) { ::S3.logs_name_list(options) }
@@ -67,3 +67,4 @@ private
   end
 
 end
+

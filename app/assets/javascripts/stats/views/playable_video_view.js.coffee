@@ -5,4 +5,5 @@ class MSVStats.Views.PlayableVideoView extends Backbone.View
     if (video = MSVStats.videos.get(videoID))?
       $(@el).html(this.template(video: video))
       sublimevideo.prepareAndPlay("playable_video_#{video.id}")
-    return this
+
+    this

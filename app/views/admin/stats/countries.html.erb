@@ -1,82 +1,86 @@
+<%= title_and_content_header("Repartition of Users by Country") %>
 <%
   minimum_users = 100
-  countries = User.active.select("country, COUNT(*) as total").group(:country).order("total DESC").map! { |u| [u.country || "Unknown", u.total.to_i] }
-  other_countries = ["Other (less than #{minimum_users} users)", 0]
-  countries_with_others = countries.inject([]) do |memo, country|
-    if country[1] < minimum_users
-      other_countries[1] += country[1]
-    else
-      memo << [Country[country[0]].try(:name) || "Unknown", country[1]]
-    end
-    memo
-  end << other_countries
-%>
 
-<script type = "text/javascript" charset="utf-8">
-document.observe("dom:loaded", function() {
-  new Highcharts.Chart({
-    chart: {
-      renderTo: 'countries',
-      backgroundColor: '#EEEEEE',
-      animation: false
-    },
-    title: {
-      text: 'Repartition of users by country'
-    },
-    tooltip: {
-      borderWidth: 0,
-      backgroundColor: "rgba(0, 0, 0, .70)",
-      style: {
-      	color: '#FFFFFF',
-      	padding: '5px'
+  %w[country].each do |c|
+    countries = User.active.select("#{c}, COUNT(*) as total").group(c).order("total DESC").map! { |u| [u.send(c) || "Unknown", u.total.to_i] }
+    other_countries = ["Other (less than #{minimum_users} users)", 0]
+    countries_with_others = countries.inject([]) do |memo, country|
+      if country[1] < minimum_users
+        other_countries[1] += country[1]
+      else
+        country_name = Country[country[0]] ? Country[country[0]].name : "Unknown"
+        memo << [country_name, country[1]]
+      end
+      memo
+    end << other_countries
+%>
+  <script type = "text/javascript" charset="utf-8">
+  $(document).ready(function() {
+    new Highcharts.Chart({
+      chart: {
+        renderTo: '<%= c %>',
+        backgroundColor: '#EEEEEE',
+        animation: false
       },
-      formatter: function() {
-        return "<strong>" + this.point.name + "</strong>: " + Highcharts.numberFormat(this.y, 0) + " users";
-      }
-    },
-    plotOptions: {
-      pie: {
-        allowPointSelect: true,
-        cursor: 'pointer',
-        dataLabels: {
-          enabled: true,
-          distance: 30,
-          color: 'black',
-          formatter: function() {
-            return "<strong>" + this.point.name + "</strong>: " + Highcharts.numberFormat(this.percentage, 1) + " %";
+      title: {
+        text: 'Repartition of users by <%= c %>'
+      },
+      tooltip: {
+        borderWidth: 0,
+        backgroundColor: "rgba(0, 0, 0, .70)",
+        style: {
+          color: '#FFFFFF',
+          padding: '5px'
+        },
+        formatter: function() {
+          return "<strong>" + this.point.name + "</strong>: " + Highcharts.numberFormat(this.y, 0) + " users";
+        }
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            distance: 30,
+            color: 'black',
+            formatter: function() {
+              return "<strong>" + this.point.name + "</strong>: " + Highcharts.numberFormat(this.percentage, 1) + " %";
+            }
           }
         }
+      },
+      series: [{
+        type: 'pie',
+        data: <%= raw countries_with_others.to_json %>
+      }],
+      credits: {
+        enabled: true,
+        text: "Generation time: <%= Time.now.to_s(format: :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
+        href: "http://sublimevideo.net"
       }
-    },
-    series: [{
-      type: 'pie',
-      data: <%= raw countries_with_others.to_json %>
-    }],
-    credits: {
-      enabled: true,
-      text: "Generation time: <%= Time.now.to_s(:format => :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
-      href: "http://sublimevideo.net"
-    }
+    });
   });
-});
-</script>
+  </script>
 
-<table id="countries_table">
-  <tr>
-    <th>Rank</th>
-    <th>Country</th>
-    <th># of users</th>
-  </tr>
-  <% countries.each_with_index do |country, i| %>
-    <% c = Country[country.first] %>
+  <table id="countries_table">
     <tr>
-      <td><%= i + 1 %></td>
-      <td><%= c ? c.name : "Unknown" %></td>
-      <td><%= country.second %></td>
+      <th>Rank</th>
+      <th>Country</th>
+      <th># of users</th>
     </tr>
-  <% end %>
-</table>
+    <% countries.each_with_index do |country, i|
+      c2 = Country[country.first] %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= c2 ? c2.name : "Unknown" %></td>
+        <td><%= country.second %></td>
+      </tr>
+    <% end %>
+  </table>
 
-<div id="countries" style="float:left; width:50%; height:350px;"></div>
+  <div id="<%= c %>" style="float:left; width:65%;"></div>
 
-<br class="spacer" />
+  <br class="spacer" />
+<% end %>

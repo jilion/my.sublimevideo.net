@@ -1,5 +1,26 @@
 # No Prototype / jQuery in here !!
 
+window.SublimeVideo =
+  Models: {}
+  Collections: {}
+  Helpers: {}
+  Routers: {}
+  Views: {}
+
+window.MySublimeVideo =
+  Models: {}
+  Collections: {}
+  Helpers: {}
+  Routers: {}
+  Views: {}
+
+window.AdminSublimeVideo =
+  Models: {}
+  Collections: {}
+  Helpers: {}
+  Routers: {}
+  Views: {}
+
 # C IS FOR COOKIE
 window.Cookie =
   get: (name) ->
@@ -19,6 +40,9 @@ window.Cookie =
       if options.domain  then newcookie.push "domain=#{options.domain}"
       if options.secure  then newcookie.push "secure"
     document.cookie = newcookie.join '; '
+
+SublimeVideo.capitalize = (str) ->
+  str.replace(/^\w/, ($0) -> $0.toUpperCase())
 
 class SublimeVideo.ImagePreloader
   constructor: (imageUrl, callback, options = {}) ->

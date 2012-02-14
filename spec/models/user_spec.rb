@@ -8,7 +8,7 @@ describe User do
   end
 
   context "Factory" do
-    before(:all) { @user = Factory.create(:user) }
+    before(:all) { @user = Factory(:user) }
     subject { @user }
 
     its(:terms_and_conditions) { should be_true }
@@ -29,12 +29,11 @@ describe User do
   end
 
   describe "Associations" do
-    before(:all) { @user = Factory.create(:user) }
+    before(:all) { @user = Factory(:user) }
     subject { @user }
 
     it { should have_many :sites }
     it { should have_many(:invoices).through(:sites) }
-    it { should have_one(:last_invoice).through(:sites) }
     it { should have_many :client_applications }
     it { should have_many :tokens }
   end
@@ -52,7 +51,7 @@ describe User do
     describe "email" do
       context "email already taken by an active user" do
         it "is not valid" do
-          active_user = Factory.create(:user, state: 'active', email: "john@doe.com")
+          active_user = Factory(:user, state: 'active', email: "john@doe.com")
           user = Factory.build(:user, email: active_user.email)
           user.should_not be_valid
           user.should have(1).error_on(:email)
@@ -61,7 +60,7 @@ describe User do
 
       context "email already taken by an archived user" do
         it "is valid" do
-          archived_user = Factory.create(:user, state: 'archived', email: "john@doe.com")
+          archived_user = Factory(:user, state: 'archived', email: "john@doe.com")
           user = Factory.build(:user, email: archived_user.email)
           user.should be_valid
         end
@@ -87,19 +86,19 @@ describe User do
 
     context "when update email" do
       it "should validate current_password presence" do
-        user = Factory.create(:user)
+        user = Factory(:user)
         user.update_attributes(email: "bob@doe.com").should be_false
         user.errors[:current_password].should eq ["can't be blank"]
       end
 
       it "should validate current_password" do
-        user = Factory.create(:user)
+        user = Factory(:user)
         user.update_attributes(email: "bob@doe.com", current_password: "wrong").should be_false
         user.errors[:current_password].should eq ["is invalid"]
       end
 
       it "should not validate current_password with other errors" do
-        user = Factory.create(:user)
+        user = Factory(:user)
         user.update_attributes(password: "newone", email: 'wrong').should be_false
         user.errors[:current_password].should be_empty
       end
@@ -107,19 +106,19 @@ describe User do
 
     context "when update password" do
       it "should validate current_password presence" do
-        user = Factory.create(:user)
+        user = Factory(:user)
         user.update_attributes(password: "newone").should be_false
         user.errors[:current_password].should eq ["can't be blank"]
       end
 
       it "should validate current_password" do
-        user = Factory.create(:user)
+        user = Factory(:user)
         user.update_attributes(password: "newone", current_password: "wrong").should be_false
         user.errors[:current_password].should eq ["is invalid"]
       end
 
       it "should not validate current_password with other errors" do
-        user = Factory.create(:user)
+        user = Factory(:user)
         user.update_attributes(password: "newone", email: '').should be_false
         user.errors[:current_password].should be_empty
       end
@@ -127,56 +126,42 @@ describe User do
 
     context "when archive" do
       it "should validate current_password presence" do
-        user = Factory.create(:user)
+        user = Factory(:user)
         user.archive.should be_false
         user.errors[:current_password].should eq ["can't be blank"]
       end
 
       it "should validate current_password" do
-        user = Factory.create(:user)
+        user = Factory(:user)
         user.current_password = 'wrong'
         user.archive.should be_false
         user.errors[:current_password].should eq ["is invalid"]
       end
 
       describe "prevent_archive_with_non_paid_invoices" do
-        subject { @site.reload; @site.user.current_password = '123456'; @site.user }
+        subject { @site.user }
+        before { Invoice.delete_all }
 
         context "first invoice" do
-          before(:all) do
-            @site = Factory.create(:new_site, first_paid_plan_started_at: nil)
+          before do
+            @site = Factory(:new_site, first_paid_plan_started_at: nil)
             @site.first_paid_plan_started_at.should be_nil
+            @site.user.current_password = '123456'
           end
 
-          context "with an open invoice" do
-            before(:all) do
-              Invoice.delete_all
-              @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
-            end
+          %w[open failed].each do |invoice_state|
+            context "with an #{invoice_state} invoice" do
+              before { Factory(:invoice, site: @site, state: invoice_state) }
 
-            it "archives the user" do
-              subject.archive!.should be_true
-              subject.errors[:base].should be_empty
-            end
-          end
-
-          context "with a failed invoice" do
-            before(:all) do
-              Invoice.delete_all
-              @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
-            end
-
-            it "archives the user" do
-              subject.archive!.should be_true
-              subject.errors[:base].should be_empty
+              it "archives the user" do
+                subject.archive.should be_true
+                subject.errors[:base].should be_empty
+              end
             end
           end
 
           context "with a waiting invoice" do
-            before(:all) do
-              Invoice.delete_all
-              @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-            end
+            before { Factory(:invoice, site: @site, state: 'waiting') }
 
             it "archives the user" do
               subject.archive.should be_false
@@ -186,44 +171,20 @@ describe User do
         end
 
         context "not first invoice" do
-          before(:all) do
-            @site = Factory.create(:new_site, first_paid_plan_started_at: Time.now.utc)
+          before do
+            @site = Factory(:new_site, first_paid_plan_started_at: Time.now.utc)
             @site.first_paid_plan_started_at.should be_present
+            @site.user.current_password = '123456'
           end
 
-          context "with an open invoice" do
-            before(:all) do
-              Invoice.delete_all
-              @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
-            end
+          %w[open waiting failed].each do |invoice_state|
+            context "with an #{invoice_state} invoice" do
+              before { Factory(:invoice, site: @site, state: invoice_state) }
 
-            it "doesn't archive the user" do
-              subject.archive.should be_false
-              subject.errors[:base].should include I18n.t('activerecord.errors.models.user.attributes.base.not_paid_invoices_prevent_archive', count: 1)
-            end
-          end
-
-          context "with a failed invoice" do
-            before(:all) do
-              Invoice.delete_all
-              @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
-            end
-
-            it "doesn't archive the user" do
-              subject.archive.should be_false
-              subject.errors[:base].should include I18n.t('activerecord.errors.models.user.attributes.base.not_paid_invoices_prevent_archive', count: 1)
-            end
-          end
-
-          context "with a waiting invoice" do
-            before(:all) do
-              Invoice.delete_all
-              @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-            end
-
-            it "doesn't archive the user" do
-              subject.archive.should be_false
-              subject.errors[:base].should include I18n.t('activerecord.errors.models.user.attributes.base.not_paid_invoices_prevent_archive', count: 1)
+              it "doesn't archive the user" do
+                subject.archive.should be_false
+                subject.errors[:base].should include I18n.t('activerecord.errors.models.user.attributes.base.not_paid_invoices_prevent_archive', count: 1)
+              end
             end
           end
         end
@@ -233,7 +194,7 @@ describe User do
   end
 
   context "invited" do
-    subject { Factory.create(:user).tap { |u| u.assign_attributes({ invitation_token: '123', invitation_sent_at: Time.now, email: "bob@bob.com", enthusiast_id: 12 }, without_protection: true); u.save(validate: false) } }
+    subject { Factory(:user).tap { |u| u.assign_attributes({ invitation_token: '123', invitation_sent_at: Time.now, email: "bob@bob.com", enthusiast_id: 12 }, without_protection: true); u.save(validate: false) } }
 
     it "should set enthusiast_id" do
       subject.should be_invited
@@ -247,12 +208,12 @@ describe User do
   end
 
   describe "State Machine" do
-    before(:all) do
-      @user           = Factory.create(:user)
-      @free_site      = Factory.create(:site, user: @user, plan_id: @free_plan.id, hostname: "octavez.com")
-      @paid_site      = Factory.create(:site, user: @user, hostname: "rymai.com")
-      @suspended_site = Factory.create(:site, user: @user, hostname: "rymai.me", state: 'suspended')
-      Factory.create(:invoice, site: @paid_site, state: 'failed')
+    before do
+      @user           = Factory(:user)
+      @free_site      = Factory(:site, user: @user, plan_id: @free_plan.id, hostname: "octavez.com")
+      @paid_site      = Factory(:site, user: @user, hostname: "rymai.com")
+      @suspended_site = Factory(:site, user: @user, hostname: "rymai.me", state: 'suspended')
+      Factory(:invoice, site: @paid_site, state: 'failed')
     end
 
     describe "Initial State" do
@@ -261,8 +222,6 @@ describe User do
     end
 
     describe "#suspend" do
-      before(:all) do
-      end
       subject { @user }
 
       context "from active state" do
@@ -276,7 +235,7 @@ describe User do
       describe "Callbacks" do
         describe "before_transition on: :suspend, do: :suspend_sites" do
           it "should suspend all user' active sites that have failed invoices" do
-            @archived_site  = Factory.create(:site, user: @user, hostname: "rymai.tv", state: 'archived')
+            @archived_site  = Factory(:site, user: @user, hostname: "rymai.tv", state: 'archived')
             @paid_site.reload.should be_active
             @free_site.reload.should be_active
             @archived_site.reload.should be_archived
@@ -379,17 +338,14 @@ describe User do
         subject { @site.reload; @site.user.current_password = '123456'; @site.user }
 
         before(:all) do
-          @site = Factory.create(:new_site, first_paid_plan_started_at: nil)
+          @site = Factory(:new_site, first_paid_plan_started_at: nil)
           Invoice.delete_all
           @site.first_paid_plan_started_at.should be_nil
         end
 
         context "with an open invoice" do
-          before(:all) do
-            @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
-          end
-
           it "archives the user" do
+            @open_invoice = Factory(:invoice, site: @site, state: 'open')
             subject.archive!.should be_true
             subject.should be_archived
             @open_invoice.reload.should be_canceled
@@ -397,11 +353,8 @@ describe User do
         end
 
         context "with a failed invoice" do
-          before(:all) do
-            @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
-          end
-
           it "archives the user" do
+            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
             subject.archive!.should be_true
             subject.should be_archived
             @failed_invoice.reload.should be_canceled
@@ -409,11 +362,8 @@ describe User do
         end
 
         context "with a waiting invoice" do
-          before(:all) do
-            @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-          end
-
           it "archives the user" do
+            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
             subject.archive.should be_false
             subject.should_not be_archived
             @waiting_invoice.reload.should be_waiting
@@ -422,46 +372,22 @@ describe User do
       end
 
       context "not first invoice" do
-        subject { @site.reload; @site.user.current_password = '123456'; @site }
-        before(:all) do
-          @site = Factory.create(:new_site, first_paid_plan_started_at: Time.now.utc)
-          Invoice.delete_all
+        subject { @site.user }
+        before do
+          @site = Factory(:new_site, first_paid_plan_started_at: Time.now.utc)
+          @site.user.current_password = '123456'
           @site.first_paid_plan_started_at.should be_present
+          Invoice.delete_all
         end
 
-        context "with an open invoice" do
-          before(:all) do
-            @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
-          end
+        %w[open waiting failed].each do |invoice_state|
+          context "with an #{invoice_state} invoice" do
+            before { Factory(:invoice, site: @site, state: invoice_state) }
 
-          it "doesn't archive the user" do
-            subject.archive.should be_false
-            subject.should_not be_archived
-            @open_invoice.reload.should be_open
-          end
-        end
-
-        context "with a failed invoice" do
-          before(:all) do
-            @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
-          end
-
-          it "doesn't archive the user" do
-            subject.archive.should be_false
-            subject.should_not be_archived
-            @failed_invoice.reload.should be_failed
-          end
-        end
-
-        context "with a waiting invoice" do
-          before(:all) do
-            @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
-          end
-
-          it "doesn't archive the user" do
-            subject.archive.should be_false
-            subject.should_not be_archived
-            @waiting_invoice.reload.should be_waiting
+            it "doesn't archive the user" do
+              subject.archive.should be_false
+              subject.errors[:base].should include I18n.t('activerecord.errors.models.user.attributes.base.not_paid_invoices_prevent_archive', count: 1)
+            end
           end
         end
       end
@@ -490,7 +416,7 @@ describe User do
 
         describe "after_transition on: :archive, do: [:invalidate_tokens, :newsletter_unsubscribe, :send_account_archived_email]" do
           it "invalidates all user's tokens" do
-            Factory.create(:oauth2_token, user: subject)
+            Factory(:oauth2_token, user: subject)
             subject.reload.tokens.first.should_not be_invalidated_at
             subject.current_password = "123456"
             subject.archive
@@ -505,7 +431,7 @@ describe User do
 
           describe ":newsletter_unsubscribe" do
             use_vcr_cassette "user/newsletter_unsubscribe"
-            subject { Factory.create(:user, newsletter: "1", email: "john@doe.com") }
+            subject { Factory(:user, newsletter: "1", email: "john@doe.com") }
 
             it "subscribes new email and unsubscribe old email on user destroy" do
               subject # explicitly create the subject
@@ -532,7 +458,7 @@ describe User do
 
       context "when user had no cc info before" do
         use_vcr_cassette "ogone/void_authorization"
-        subject { Factory.create(:user_no_cc, valid_cc_attributes) }
+        subject { Factory(:user_no_cc, valid_cc_attributes) }
 
         it { should be_valid }
         its(:cc_type)        { should eq 'visa' }
@@ -545,7 +471,7 @@ describe User do
       end
 
       context "when user has cc info before" do
-        subject { Factory.create(:user_real_cc) }
+        subject { Factory(:user_real_cc) }
         before(:each) do
           subject.cc_type.should eq 'visa'
           subject.cc_last_digits.should eq '1111'
@@ -570,7 +496,7 @@ describe User do
     describe "after_save :newsletter_update" do
       context "user sign-up" do
         context "user subscribes on sign-up" do
-          subject { Factory.create(:user, newsletter: "1", email: "newsletter_sign_up@jilion.com") }
+          subject { Factory(:user, newsletter: "1", email: "newsletter_sign_up@jilion.com") }
 
           it "registers user's email on Campaign Monitor" do
             expect { subject }.to change(Delayed::Job, :count).by(1)
@@ -579,7 +505,7 @@ describe User do
         end
 
         context "user doesn't subscribe on sign-up" do
-          subject { Factory.create(:user, newsletter: "0", email: "no_newsletter_sign_up@jilion.com") }
+          subject { Factory(:user, newsletter: "0", email: "no_newsletter_sign_up@jilion.com") }
 
           it "doesn't register user's email on Campaign Monitor" do
             expect { subject }.to_not change(Delayed::Job, :count)
@@ -588,7 +514,7 @@ describe User do
       end
 
       context "user update" do
-        subject { Factory.create(:user, newsletter: "1", email: "newsletter_update@jilion.com") }
+        subject { Factory(:user, newsletter: "1", email: "newsletter_update@jilion.com") }
 
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
           subject
@@ -613,7 +539,7 @@ describe User do
     end
 
     describe "after_update :zendesk_update" do
-      subject { Factory.create(:user) }
+      subject { Factory(:user) }
       before(:each) do
         CampaignMonitor.stub(:subscribe)
         CampaignMonitor.stub(:update)
@@ -662,7 +588,7 @@ describe User do
   end
 
   describe "attributes accessor" do
-    subject { Factory.create(:user, email: "BoB@CooL.com") }
+    subject { Factory(:user, email: "BoB@CooL.com") }
 
     describe "email=" do
       it "downcases email" do
@@ -683,7 +609,7 @@ describe User do
   end
 
   describe "Instance Methods" do
-    subject { Factory.create(:user) }
+    subject { Factory(:user) }
 
     describe "#notice_hidden?" do
       before(:each) do
@@ -715,22 +641,22 @@ describe User do
 
     describe "#beta?" do
       context "with active beta user" do
-        subject { Factory.create(:user, created_at: Time.utc(2010,10,10), invitation_token: nil) }
+        subject { Factory(:user, created_at: Time.utc(2010,10,10), invitation_token: nil) }
 
         its(:beta?) { should be_true }
       end
       context "with un active beta user" do
-        subject { Factory.create(:user, created_at: Time.utc(2010,10,10), invitation_token: 'xxx') }
+        subject { Factory(:user, created_at: Time.utc(2010,10,10), invitation_token: 'xxx') }
 
         its(:beta?) { should be_false }
       end
       context "with a standard user (limit)" do
-        subject { Factory.create(:user, created_at: Time.utc(2011,3,29).midnight, invitation_token: nil) }
+        subject { Factory(:user, created_at: Time.utc(2011,3,29).midnight, invitation_token: nil) }
 
         its(:beta?) { should be_false }
       end
       context "with a standard user" do
-        subject { Factory.create(:user, created_at: Time.utc(2011,3,30), invitation_token: nil) }
+        subject { Factory(:user, created_at: Time.utc(2011,3,30), invitation_token: nil) }
 
         its(:beta?) { should be_false }
       end
@@ -738,13 +664,13 @@ describe User do
 
     describe "#vat?" do
       context "with Swiss user" do
-        subject { Factory.create(:user, billing_country: 'CH') }
+        subject { Factory(:user, billing_country: 'CH') }
 
         its(:vat?) { should be_true }
       end
 
       context "with USA user" do
-        subject { Factory.create(:user, billing_country: 'US') }
+        subject { Factory(:user, billing_country: 'US') }
 
         its(:vat?) { should be_false }
       end
@@ -752,37 +678,37 @@ describe User do
 
     describe "#name_or_email" do
       context "user has no name" do
-        subject { Factory.create(:user, name: nil, email: "john@doe.com") }
+        subject { Factory(:user, name: nil, email: "john@doe.com") }
         its(:name_or_email) { should eq "john@doe.com" }
       end
 
       context "user has a name" do
-        subject { Factory.create(:user, name: "John Doe", email: "john@doe.com") }
+        subject { Factory(:user, name: "John Doe", email: "john@doe.com") }
         its(:name_or_email) { should eq "John Doe" }
       end
     end
 
     describe "#billing_address" do
       context "delegates to snail using billing info" do
-        subject { Factory.create(:user, full_billing_address) }
+        subject { Factory(:user, full_billing_address) }
 
         its(:billing_address) { should eq "Remy Coutable\nEPFL Innovation Square\nPSE-D\nNew York NY  1015\nUNITED STATES" }
       end
 
       context "billing_name is missing" do
-        subject { Factory.create(:user, full_billing_address.merge(billing_name: "")) }
+        subject { Factory(:user, full_billing_address.merge(billing_name: "")) }
 
         its(:billing_address) { should eq "John Doe\nEPFL Innovation Square\nPSE-D\nNew York NY  1015\nUNITED STATES" }
       end
 
       context "billing_postal_code is missing" do
-        subject { Factory.create(:user, full_billing_address.merge(billing_postal_code: "")) }
+        subject { Factory(:user, full_billing_address.merge(billing_postal_code: "")) }
 
         its(:billing_address) { should eq "Remy Coutable\nEPFL Innovation Square\nPSE-D\nNew York NY  \nUNITED STATES" }
       end
 
       context "billing_country is missing" do
-        subject { Factory.create(:user, full_billing_address.merge(billing_country: "")) }
+        subject { Factory(:user, full_billing_address.merge(billing_country: "")) }
 
         its(:billing_address) { should eq "Remy Coutable\nEPFL Innovation Square\nPSE-D\nNew York NY  1015" }
       end
@@ -790,43 +716,43 @@ describe User do
 
     describe "#billing_address_complete?" do
       context "complete billing address" do
-        subject { Factory.create(:user, full_billing_address) }
+        subject { Factory(:user, full_billing_address) }
 
         it { should be_billing_address_complete }
       end
 
       context "billing address is missing billing_address_2" do
-        subject { Factory.create(:user, full_billing_address.merge(billing_address_2: "")) }
+        subject { Factory(:user, full_billing_address.merge(billing_address_2: "")) }
 
         it { should be_billing_address_complete }
       end
 
       context "billing address is missing billing_region" do
-        subject { Factory.create(:user, full_billing_address.merge(billing_region: "")) }
+        subject { Factory(:user, full_billing_address.merge(billing_region: "")) }
 
         it { should be_billing_address_complete }
       end
 
       context "billing address is missing billing_address_1" do
-        subject { Factory.create(:user, full_billing_address.merge(billing_address_1: "")) }
+        subject { Factory(:user, full_billing_address.merge(billing_address_1: "")) }
 
         it { should_not be_billing_address_complete }
       end
 
       context "billing address is missing billing_postal_code" do
-        subject { Factory.create(:user, full_billing_address.merge(billing_postal_code: "")) }
+        subject { Factory(:user, full_billing_address.merge(billing_postal_code: "")) }
 
         it { should_not be_billing_address_complete }
       end
 
       context "billing address is missing billing_city" do
-        subject { Factory.create(:user, full_billing_address.merge(billing_city: "")) }
+        subject { Factory(:user, full_billing_address.merge(billing_city: "")) }
 
         it { should_not be_billing_address_complete }
       end
 
       context "billing address is missing billing_country" do
-        subject { Factory.create(:user, full_billing_address.merge(billing_country: "")) }
+        subject { Factory(:user, full_billing_address.merge(billing_country: "")) }
 
         it { should_not be_billing_address_complete }
       end
@@ -834,37 +760,37 @@ describe User do
 
     describe "#more_info_incomplete?" do
       context "more info complete" do
-        subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo') }
+        subject { Factory(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo') }
 
         it { should_not be_more_info_incomplete }
       end
 
       context "company_name is missing" do
-        subject { Factory.create(:user, company_name: '', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo') }
+        subject { Factory(:user, company_name: '', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo') }
 
         it { should be_more_info_incomplete }
       end
 
       context "company_url is missing" do
-        subject { Factory.create(:user, company_name: 'Jilion', company_url: '', company_job_title: 'Foo', company_employees: 'foo') }
+        subject { Factory(:user, company_name: 'Jilion', company_url: '', company_job_title: 'Foo', company_employees: 'foo') }
 
         it { should be_more_info_incomplete }
       end
 
       context "company_job_title is missing" do
-        subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: '', company_employees: 'foo') }
+        subject { Factory(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: '', company_employees: 'foo') }
 
         it { should be_more_info_incomplete }
       end
 
       context "company_employees is missing" do
-        subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: '') }
+        subject { Factory(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: '') }
 
         it { should be_more_info_incomplete }
       end
 
       context "use is missing" do
-        subject { Factory.create(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo', use_personal: nil) }
+        subject { Factory(:user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo', use_personal: nil) }
 
         it { should be_more_info_incomplete }
       end
@@ -873,7 +799,7 @@ describe User do
     describe "#support & #email_support?" do
       context "user has no site" do
         before(:all) do
-          @user = Factory.create(:user)
+          @user = Factory(:user)
         end
         subject { @user.reload }
 
@@ -882,8 +808,8 @@ describe User do
 
       context "user has only sites with forum support" do
         before(:all) do
-          @user = Factory.create(:user)
-          Factory.create(:site, user: @user, plan_id: @free_plan.id,)
+          @user = Factory(:user)
+          Factory(:site, user: @user, plan_id: @free_plan.id,)
         end
         subject { @user.reload }
         it { @free_plan.support.should eql "forum" }
@@ -893,9 +819,9 @@ describe User do
 
       context "user has at least one site with email support" do
         before(:all) do
-          @user = Factory.create(:user)
-          Factory.create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
-          Factory.create(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
+          @user = Factory(:user)
+          Factory(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
+          Factory(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
         end
         subject { @user.reload }
 
@@ -907,10 +833,10 @@ describe User do
 
       context "user has at least one site with vip email support" do
         before(:all) do
-          @user = Factory.create(:user)
-          Factory.create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
-          Factory.create(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
-          Factory.create(:site, user: @user, plan_id: @custom_plan.token, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
+          @user = Factory(:user)
+          Factory(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
+          Factory(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
+          Factory(:site, user: @user, plan_id: @custom_plan.token, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
         end
         subject { @user.reload }
 
@@ -925,24 +851,24 @@ describe User do
     describe "#billable?" do
       before(:all) do
         Site.delete_all
-        @billable_user_1 = Factory.create(:user)
-        @billable_user_2 = Factory.create(:user)
-        @billable_user_3 = Factory.create(:user)
-        @non_billable_user_1 = Factory.create(:user)
-        @non_billable_user_2 = Factory.create(:user)
-        @non_billable_user_3 = Factory.create(:user)
+        @billable_user_1 = Factory(:user)
+        @billable_user_2 = Factory(:user)
+        @billable_user_3 = Factory(:user)
+        @non_billable_user_1 = Factory(:user)
+        @non_billable_user_2 = Factory(:user)
+        @non_billable_user_3 = Factory(:user)
 
         # billable
-        Factory.create(:site, user: @billable_user_1, plan_id: @paid_plan.id)
-        site_will_be_paid = Factory.create(:site, user: @billable_user_2, plan_id: @paid_plan.id)
-        site_will_be_paid.update_attribute(:next_cycle_plan_id, Factory.create(:plan).id)
-        site_will_be_free = Factory.create(:site, user: @billable_user_3, plan_id: @paid_plan.id)
+        Factory(:site, user: @billable_user_1, plan_id: @paid_plan.id)
+        site_will_be_paid = Factory(:site, user: @billable_user_2, plan_id: @paid_plan.id)
+        site_will_be_paid.update_attribute(:next_cycle_plan_id, Factory(:plan).id)
+        site_will_be_free = Factory(:site, user: @billable_user_3, plan_id: @paid_plan.id)
         site_will_be_free.update_attribute(:next_cycle_plan_id, @free_plan.id)
 
         # not billable
-        Factory.create(:site, user: @non_billable_user_1, plan_id: @free_plan.id)
-        site_archived = Factory.create(:site, user: @non_billable_user_2, state: "archived", archived_at: Time.utc(2010,2,28))
-        Factory.create(:site, user: @non_billable_user_3, state: "suspended")
+        Factory(:site, user: @non_billable_user_1, plan_id: @free_plan.id)
+        site_archived = Factory(:site, user: @non_billable_user_2, state: "archived", archived_at: Time.utc(2010,2,28))
+        Factory(:site, user: @non_billable_user_3, state: "suspended")
       end
 
       it { @billable_user_1.should be_billable }
@@ -958,13 +884,13 @@ describe User do
       context "first invoice" do
         before(:all) do
           Invoice.delete_all
-          @site = Factory.create(:new_site, first_paid_plan_started_at: nil)
+          @site = Factory(:new_site, first_paid_plan_started_at: nil)
           @site.first_paid_plan_started_at.should be_nil
         end
 
         context "with an open invoice" do
           before(:each) do
-            @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
+            @open_invoice = Factory(:invoice, site: @site, state: 'open')
           end
 
           it { should be_archivable }
@@ -972,7 +898,7 @@ describe User do
 
         context "with a failed invoice" do
           before(:each) do
-            @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
+            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
           end
 
           it { should be_archivable }
@@ -980,7 +906,7 @@ describe User do
 
         context "with a waiting invoice" do
           before(:each) do
-            @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
+            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
           end
 
           it { should_not be_archivable }
@@ -990,13 +916,13 @@ describe User do
       context "not first invoice" do
         before(:all) do
           Invoice.delete_all
-          @site = Factory.create(:new_site, first_paid_plan_started_at: Time.now.utc)
+          @site = Factory(:new_site, first_paid_plan_started_at: Time.now.utc)
           @site.first_paid_plan_started_at.should be_present
         end
 
         context "with an open invoice" do
           before(:each) do
-            @open_invoice = Factory.create(:invoice, site: @site, state: 'open')
+            @open_invoice = Factory(:invoice, site: @site, state: 'open')
           end
 
           it { should_not be_archivable }
@@ -1004,7 +930,7 @@ describe User do
 
         context "with a failed invoice" do
           before(:each) do
-            @failed_invoice = Factory.create(:invoice, site: @site, state: 'failed')
+            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
           end
 
           it { should_not be_archivable }
@@ -1012,7 +938,7 @@ describe User do
 
         context "with a waiting invoice" do
           before(:each) do
-            @waiting_invoice = Factory.create(:invoice, site: @site, state: 'waiting')
+            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
           end
 
           it { should_not be_archivable }
@@ -1038,12 +964,6 @@ describe User do
   end
 
 end
-
-
-
-
-
-
 # == Schema Information
 #
 # Table name: users
@@ -1126,4 +1046,3 @@ end
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
 #  index_users_on_total_invoiced_amount  (total_invoiced_amount)
 #
-

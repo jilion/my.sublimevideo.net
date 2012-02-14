@@ -1,32 +1,45 @@
-- sites = user.sites.reject { |s| s.archived? }
-- last_invoice = user.invoices.last
+- sites = user.sites.not_archived.all
 %tr[user]{ class: cycle("", "alt") }
-  %td.name= link_to user.name_or_email, [:admin, user], title: user.email
-  %td.state= user.state.titleize
+
+  %td.name
+    %small= link_to user.name_or_email, [:admin, user], title: user.email
+
+  %td.state
+    %small= user.state.titleize
+
   %td.sites
-    - if sites.present?
-      %small
+    %small
+      - if sites.present?
         %ul.no_bullet
           - sites[0,2].each do |site|
             = content_tag :li, links_to_hostnames(site)
           %li= link_to("view all (#{sites.size-2} more)", admin_sites_path(user_id: user.id)) if sites.size > 2
-    - else
-      %small= '-'
+      - else
+        = '-'
+
   %td.left
     %small= link_to user.confirmation_comment? ? h(user.confirmation_comment) : "-", [:admin, user], title: h(user.confirmation_comment)
+
   %td.number
-    %small= number_with_delimiter(sites.sum { |s| s.last_30_days_main_video_views.to_i + s.last_30_days_extra_video_views.to_i + s.last_30_days_embed_video_views.to_i })
+    %small= number_with_delimiter(sites.sum { |s| s.last_30_days_billable_video_views })
+
   %td.number
-    - if last_invoice.present?
-      %small= link_to display_amount(user.last_invoiced_amount), [:admin, last_invoice], title: "Invoice page"
-    - else
-      %small= '-'
+    %small
+      - if user.last_invoice.present?
+        = link_to display_amount(user.last_invoiced_amount), [:admin, user.last_invoice], title: "Invoice page"
+      - else
+        = '-'
+
   %td.number
-    - if last_invoice.present?
-      %small= link_to display_amount(user.total_invoiced_amount), admin_invoices_path(user_id: user.id), title: "See all user invoices"
-    - else
-      %small= '-'
+    %small
+      - if user.last_invoice.present?
+        = link_to display_amount(user.total_invoiced_amount), admin_invoices_path(user_id: user.id), title: "See all user invoices"
+      - else
+        = '-'
+
   - if params[:with_balance] == "true"
-    %td= display_amount(user.balance)
+    %td
+      %small= display_amount(user.balance)
+
   %td
     %small= display_time(user.created_at)

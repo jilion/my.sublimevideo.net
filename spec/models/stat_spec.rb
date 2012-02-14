@@ -131,11 +131,11 @@ describe Stat do
       })}
     end
 
-    context "view event " do
+    context "view event" do
       before(:each) do
         described_class.stub(:only_stats_trackers).and_return({
-          ["?t=ovjigy83&e=s&d=d&h=m&vu=abcd1234&vn=My%20Video&vcs[]=source12&vcs[]=source34", user_agent] => 1,
-          ["?t=site1234&e=s&d=d&h=i&vu=abcd1234&vn=My%20Video&vcs[]=source12&vcs[]=source34", user_agent] => 1
+          ["?t=ovjigy83&e=s&d=d&h=m&vu=abcd1234&vn=My%20Video&vc=source12&vcs[]=source12&vcs[]=source34", user_agent] => 1,
+          ["?t=site1234&e=s&d=d&h=i&vu=abcd1234&vn=My%20Video&vc=source12&vcs[]=source12&vcs[]=source34", user_agent] => 1
         })
       end
 
@@ -162,8 +162,8 @@ describe Stat do
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=f", user_agent] => 1,
           ["?t=ovjigy83&e=l&d=d&h=e&vu[]=efgh5678&pm[]=f", user_agent] => 1,
           ["?t=site1234&e=l&d=m&h=m&vu[]=abcd1234&vu[]=efgh5678&pm[]=h&pm[]=h", user_agent] => 3,
-          ["?t=ovjigy83&e=s&d=d&h=m&vu=abcd1234&vn=My%20Video&vcs[]=source12&vcs[]=source34", user_agent] => 1,
-          ["?t=site1234&e=s&d=d&h=i&vu=abcd1234&vn=My%20Video&vcs[]=source12&vcs[]=source34", user_agent] => 1
+          ["?t=ovjigy83&e=s&d=d&h=m&vu=abcd1234&vn=My%20Video&vc=source12&vcs[]=source12&vcs[]=source34", user_agent] => 1,
+          ["?t=site1234&e=s&d=d&h=i&vu=abcd1234&vn=My%20Video&vc=source12&vcs[]=source12&vcs[]=source34", user_agent] => 1
         })
       end
 
@@ -203,14 +203,14 @@ describe Stat do
 
     it "delete old seconds, minutes and hours site stats, but keep all days site stats" do
       Timecop.freeze(Time.now) do
-        Factory.create(:site_stat, s: 62.seconds.ago)
-        Factory.create(:site_stat, s: 63.seconds.ago)
-        Factory.create(:site_stat, m: 62.minutes.ago.change(s: 0))
-        Factory.create(:site_stat, m: 61.minutes.ago.change(s: 0))
-        Factory.create(:site_stat, h: 26.hours.ago.change(m: 0))
-        Factory.create(:site_stat, h: 25.hours.ago.change(m: 0))
-        Factory.create(:site_stat, d: 99.days.ago.change(h: 0))
-        Factory.create(:site_stat, d: 30.days.ago.change(h: 0))
+        Factory.create(:site_stat, d: nil, h: nil, m: nil, s: 62.seconds.ago)
+        Factory.create(:site_stat, d: nil, h: nil, m: nil, s: 63.seconds.ago)
+        Factory.create(:site_stat, d: nil, h: nil, m: 62.minutes.ago.change(s: 0), s: nil)
+        Factory.create(:site_stat, d: nil, h: nil, m: 61.minutes.ago.change(s: 0), s: nil)
+        Factory.create(:site_stat, d: nil, h: 26.hours.ago.change(m: 0), m: nil, s: nil)
+        Factory.create(:site_stat, d: nil, h: 25.hours.ago.change(m: 0), m: nil, s: nil)
+        Factory.create(:site_stat, d: 99.days.ago.change(h: 0), h: nil, m: nil, s: nil)
+        Factory.create(:site_stat, d: 30.days.ago.change(h: 0), h: nil, m: nil, s: nil)
 
         Stat::Site.count.should eql(8)
         Stat::Site.s_before(60.seconds.ago).count.should eql(2)

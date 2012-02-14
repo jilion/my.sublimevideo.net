@@ -1,10 +1,10 @@
--#- if @statsRouter? && @statsRouter.isDemo()
--#  %h2 Public stats for sublimevideo.net
--#- else
-%h2 Stats for
-  %select
-    - for site in @sites.models
-      - if @sites.selectedSite == site
-        %option{ value: site.get('token'), selected: 'selected' }= site.title()
-      - else
-        %option{ value: site.get('token') }= site.title()
+- if @statsRouter? && @statsRouter.isDemo()
+  %h2 Stats for sublimevideo.net
+- else
+  %h2 Stats for
+    %select
+      - for site in @sites.models
+        - if @sites.selectedSite == site
+          %option{ value: site.get('token'), selected: 'selected' }= site.title()
+        - else
+          %option{ value: site.get('token') }= site.title()

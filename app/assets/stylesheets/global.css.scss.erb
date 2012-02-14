@@ -187,23 +187,11 @@ footer .col ul {
 footer .right {
   float:left;
   font-size:20px;
-  padding:26px 0 0 40px;
+  padding:0 0 0 40px;
 }
-
-footer a.jilion {
-  display:inline-block;
-  background:url(<%= asset_data_uri "global/jilion.png" %>) no-repeat;
-  width:89px;
-  height:23px;
-  position:relative;
-  top:4px;
-  left:2px;
-}
-
-footer a.jilion span {display:none}
 
 footer p.twitter {
-  margin:10px 0 0;
+  margin:0 0 0;
   padding:4px 0 0 48px;
   background:url(<%= asset_data_uri "global/twitter.png" %>) no-repeat;
 }
@@ -211,6 +199,93 @@ footer p.twitter {
 footer p.twitter a {
   color:#38ceff;
 }
+
+footer .newsletter {
+  margin:20px 0 0;
+  width:298px;
+}
+
+footer .newsletter label {
+  display:block;
+  color:#667b9f;
+  font-size:14px;
+  font-weight:600;
+  padding:0 0 5px;
+  
+}
+
+footer .newsletter .field_wrap {
+  position:relative;
+}
+
+footer .newsletter input.field {
+  width:276px;
+  height:36px;
+  background:#f1f6ff;
+  text-shadow:rgba(255,255,255,0.2) 0 1px 0;
+  border:1px solid #162237;
+  font-size:17px;
+  font-weight:600;
+  font-family:inherit;
+  color:#1e3966;
+  padding:0 10px;
+  @include gradient(#627696,#7d91b1,#6e82a2);
+  @include border-radius(5px);
+  @include box-shadow((inset rgba(0,0,0,0.6) 0 1px 3px, rgba(255,255,255,0.09) 0 1px 0));
+}
+
+footer .newsletter input::-webkit-input-placeholder, footer .newsletter input.field.placeholder {color:#455773}
+footer .newsletter input:-moz-placeholder {color:#455773}
+
+footer .newsletter button {
+  width:26px;
+  height:26px;
+  position:absolute;
+  top:6px;
+  right:6px;
+  border: 1px solid #000;
+  @include gradient(#2e4263,#1b263a,#253550);
+  @include border-radius(3px);
+  @include box-shadow((inset #456395 0 1px 0, rgba(0,0,0,0.75) 0 1px 4px));
+}
+
+footer .newsletter button:active {
+  @include gradient(#1b263a,#2e4263,#253550);
+}
+
+footer .newsletter button:focus {
+  outline:0;
+  @include box-shadow((inset #456395 0 1px 0, rgba(0,0,0,0.75) 0 1px 4px, inset rgba(0,34,85,0.3) 0 1px 3px, rgba(255,255,255,0.1) 0 1px 0, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
+}
+
+footer .newsletter button span {
+  overflow:hidden;
+  display:block;
+  width:8px;
+  height:12px;
+  margin:0 auto;
+  position:relative;
+  top:1px;
+  text-indent:-999px;
+  background:url(<%= asset_data_uri "global/newsletter_btn_arrow.png" %>) no-repeat;
+}
+
+footer p.service_by {
+  font-size:15px;
+  margin:13px 0 34px;
+}
+
+footer a.jilion {
+  display:inline-block;
+  background:url(<%= asset_data_uri "global/jilion.png" %>) no-repeat;
+  width:67px;
+  height:19px;
+  position:relative;
+  top:4px;
+  left:2px;
+}
+
+footer a.jilion span {display:none}
 
 footer .footer_break {
   clear:both;
@@ -226,14 +301,21 @@ footer p.copyright {
   text-align:center;
 }
 
-footer p.copyright .networks {
+footer .networks {
+  margin:25px 0 0;
   position:relative;
-  top:5px;
-  margin-left:5px;
+/*  top:36px;
+  left:36px;
+*/}
+
+footer .networks > div {
+  position:relative !important;
+  top:-2px !important;
 }
 
 footer p.copyright iframe {
   display:inline;
+  margin-top:5px;
 }
 
 /* ========= */
@@ -306,7 +388,7 @@ form .entry .errors::-webkit-input-placeholder, form .entry input.text.errors.pl
 form .entry input:-moz-placeholder, form .entry textarea:-moz-placeholder {color:#7690b3}
 form .entry input.errors:-moz-placeholder, form .entry textarea.errors:-moz-placeholder {color:#b37676}
 
-form .entry .text:focus, form .entry textarea:focus {
+form .entry .text:focus, form .entry textarea:focus, footer .newsletter input.field:focus {
   outline:0;
   @include box-shadow((inset rgba(0,34,85,0.3) 0 1px 3px, rgba(255,255,255,0.1) 0 1px 0, #2a93ff 0 0 9px, #2a93ff 0 0 9px, #2a93ff 0 0 9px));
 }

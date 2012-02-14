@@ -1,29 +1,39 @@
+[user]
+  name  = YOUR NAME
+  email = YOUR EMAIL
+
+
 [core]
-	repositoryformatversion = 0
-	filemode                = true
-	bare                    = false
-	logallrefupdates        = true
-	ignorecase              = true
+  repositoryformatversion = 0
+  filemode                = true
+  bare                    = false
+  logallrefupdates        = true
+  ignorecase              = true
 
 [remote "origin"]
   url   = git@github.com:jilion/sublimevideo.net.git
   fetch = +refs/heads/*:refs/remotes/origin/*
-[remote "production"]
-  url   = git@heroku.com:sublimevideo.git
-  fetch = +refs/heads/master:refs/remotes/production/master
-  push  = master:master
-[remote "wwwproduction"]
-  url   = git@heroku.com:wwwsublimevideo.git
-  fetch = +refs/heads/master:refs/remotes/wwwwproduction/master
-  push  = master:master
+
 [remote "staging"]
   url   = git@heroku.com:sublimevideo-staging.git
   fetch = +refs/heads/master:refs/remotes/staging/master
 
+[remote "production"]
+  url   = git@heroku.com:sublimevideo.git
+  fetch = +refs/heads/master:refs/remotes/production/master
+  push  = master:master
+
+[remote "wwwproduction"]
+  url   = git@heroku.com:wwwsublimevideo.git
+  fetch = +refs/heads/master:refs/remotes/wwwwproduction/master
+  push  = master:master
+
+
 [branch "master"]
-	remote   = origin
-	merge    = refs/heads/master
-	database = true
+  remote   = origin
+  merge    = refs/heads/master
+  database = true
+
 
 [heroku]
-	remote = staging
+  remote = staging # change this to production if you know what you're doing

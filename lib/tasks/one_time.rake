@@ -102,6 +102,25 @@ namespace :one_time do
   end
 
   namespace :stats do
+
+    task fix_beta_sites: :environment do
+      day = Time.utc(2010,9,14)
+      beta_sum, archived_sum = 0, 0
+      while day < Time.utc(2011,4,17) do
+        beta_new_count = Site.where { (created_at < PublicLaunch.beta_transition_started_on.midnight) & (date_trunc('day', created_at) == day.midnight) & ((archived_at == nil) | (archived_at > day.midnight)) }.count
+        archived_count = Site.where { (created_at < PublicLaunch.beta_transition_started_on.midnight) & (date_trunc('day', archived_at) == day.midnight) }.count
+        beta_sum += beta_new_count - archived_count
+        archived_sum += archived_count
+
+        stat = Stats::SitesStat.where(d: day).first
+        old_stat_fr_beta = stat.fr['beta']
+        stat.fr['beta'] = beta_sum
+        stat.save!
+        puts "On #{day}, there was #{old_stat_fr_beta} beta sites, there are now #{stat.fr['beta']} (#{archived_count} sites less)."
+        day += 1.day
+      end
+    end
+
     desc "Migrate old to new Stats::UsersStats & Stats::SitesStats"
     task migrate_old_stats: :environment do
       timed do
@@ -148,12 +167,12 @@ namespace :one_time do
             },
             pa: {
               plus: {
-                m: 0,#stat.plans_count[comet_m_id.to_s].to_i + stat.plans_count[planet_m_id.to_s].to_i + stat.plans_count[plus_m_id.to_s].to_i,
-                y: 0,#stat.plans_count[comet_y_id.to_s].to_i + stat.plans_count[planet_y_id.to_s].to_i + stat.plans_count[plus_y_id.to_s].to_i
+                m: 0, # stat.plans_count[comet_m_id.to_s].to_i + stat.plans_count[planet_m_id.to_s].to_i + stat.plans_count[plus_m_id.to_s].to_i,
+                y: 0 # stat.plans_count[comet_y_id.to_s].to_i + stat.plans_count[planet_y_id.to_s].to_i + stat.plans_count[plus_y_id.to_s].to_i
               },
               premium: {
-                m: 0,#stat.plans_count[star_m_id.to_s].to_i + stat.plans_count[galaxy_m_id.to_s].to_i + stat.plans_count[premium_m_id.to_s].to_i,
-                y: 0,#stat.plans_count[star_y_id.to_s].to_i + stat.plans_count[galaxy_y_id.to_s].to_i + stat.plans_count[premium_y_id.to_s].to_i
+                m: 0, # stat.plans_count[star_m_id.to_s].to_i + stat.plans_count[galaxy_m_id.to_s].to_i + stat.plans_count[premium_m_id.to_s].to_i,
+                y: 0 # stat.plans_count[star_y_id.to_s].to_i + stat.plans_count[galaxy_y_id.to_s].to_i + stat.plans_count[premium_y_id.to_s].to_i
               }
             },
             su: stat.states_count['suspended'].to_i,

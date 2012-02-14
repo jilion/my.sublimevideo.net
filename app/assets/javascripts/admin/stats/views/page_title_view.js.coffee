@@ -1,8 +1,7 @@
-class SVStats.Views.PageTitleView extends Backbone.View
-
+class AdminSublimeVideo.Views.PageTitleView extends Backbone.View
   initialize: ->
     this.render()
 
   render: =>
-    $(@el).html "SublimeVideo Admin - Stats"
+    $(@el).html "SublimeVideo Statistics"
     this

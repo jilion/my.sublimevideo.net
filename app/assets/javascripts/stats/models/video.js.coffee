@@ -50,7 +50,10 @@ class MSVStats.Models.Video extends Backbone.Model
   isSecond: -> !this.get("vl_sum")?
 
   sslPosterframe: ->
-    "https://data.sublimevideo.net/proxy?u=#{encodeURIComponent(this.get('p'))}"
+    if this.get('p').match(/^https/)
+      this.get('p')
+    else
+      "https://data.sublimevideo.net/proxy?u=#{encodeURIComponent(this.get('p'))}"
 
   name: (length = null) ->
     if this.get('n')?

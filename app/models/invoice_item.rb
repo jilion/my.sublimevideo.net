@@ -8,23 +8,23 @@ class InvoiceItem < ActiveRecord::Base
   # = Associations =
   # ================
 
-  belongs_to :invoice, :counter_cache => true
-  belongs_to :item, :polymorphic => true
+  belongs_to :invoice, counter_cache: true
+  belongs_to :item, polymorphic: true
 
-  delegate :site, :to => :invoice
-  delegate :user, :to => :site
+  delegate :site, to: :invoice
+  delegate :user, to: :site
 
   # ===============
   # = Validations =
   # ===============
 
-  validates :invoice,    :presence => true
-  validates :item_type,  :presence => true
-  validates :item_id,    :presence => true
-  validates :started_at, :presence => true
-  validates :ended_at,   :presence => true
-  validates :price,      :presence => true, :numericality => true
-  validates :amount,     :presence => true, :numericality => true
+  validates :invoice,    presence: true
+  validates :item_type,  presence: true
+  validates :item_id,    presence: true
+  validates :started_at, presence: true
+  validates :ended_at,   presence: true
+  validates :price,      presence: true, numericality: true
+  validates :amount,     presence: true, numericality: true
 
 end
 

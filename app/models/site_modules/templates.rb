@@ -3,36 +3,34 @@ module SiteModules::Templates
 
   module ClassMethods
 
-    # delayed method
-    def update_loader_and_license(site_id, options = {})
-      site = Site.find(site_id)
-      transaction do
-        if options[:loader]
-          purge_loader = site.loader.present?
-          site.set_template(:loader)
-        end
-        if options[:license]
-          purge_license = site.license.present?
-          site.license_hash
-          site.set_template(:license)
-        end
-        site.cdn_up_to_date = true
-        site.save!
+    TEMPLATES = [:loader, :license]
 
-        site.purge_template(:loader) if purge_loader
-        site.purge_template(:license) if purge_license
+    # delayed method
+    def update_loader_and_license(site_id, templates={})
+      site = Site.find(site_id)
+      templates_to_purge = []
+
+      templates.each do |template, needs_update|
+        if needs_update
+          templates_to_purge << template if site.send(template).present?
+          site.set_template(template)
+        end
       end
+      site.cdn_up_to_date = true
+      site.save!
+
+      templates_to_purge.each { |template| site.purge_template(template) }
     end
 
     # delayed method
     def remove_loader_and_license(site_id)
       site = Site.find(site_id)
-      transaction do
-        site.remove_loader, site.remove_license = true, true
-        site.cdn_up_to_date = false
-        %w[loader license].each { |template| site.purge_template(template) }
-        site.save!
-      end
+
+      site.remove_loader, site.remove_license = true, true
+      site.cdn_up_to_date = false
+      site.save!
+
+      TEMPLATES.each { |template| site.purge_template(template) }
     end
 
   end
@@ -51,7 +49,7 @@ module SiteModules::Templates
       hash[:p] = path if path?
       hash[:b] = badged
       hash[:s] = true unless in_free_plan? # SSL
-      hash[:r] = true if plan_stats_retention_days != 0 # Realtime Stats
+      hash[:r] = true if plan_id? && plan_stats_retention_days != 0 # Realtime Stats
       hash
     end
 
@@ -86,8 +84,8 @@ module SiteModules::Templates
       if state_change == ['suspended', 'active']
         @loader_needs_update = @license_needs_update = true
       else
-        @loader_needs_update  = plan_id_changed? || player_mode_changed?
-        @license_needs_update = plan_id_changed? || settings_changed?
+        @loader_needs_update  = plan_id? && (plan_id_changed? || player_mode_changed?)
+        @license_needs_update = plan_id? && (plan_id_changed? || settings_changed?)
       end
       self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update)
 

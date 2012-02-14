@@ -7,15 +7,20 @@ class Stat::Video
   field :u,  type: String # Video uid
 
   field :vl, type: Hash, default: {} # Video Loads: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 2 }
-  field :vv, type: Hash, default: {} # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 2 }
-  field :md, type: Hash, default: {} # Player Mode + Device { h (html5) => { d (desktop) => 2, m (mobile) => 1 }, f (flash) => ... }
-  field :bp, type: Hash, default: {} # Browser + Plateform { "saf-win" => 2, "saf-osx" => 4, ...}
   field :vs, type: Hash, default: {} # Video Sources View { '5062d010' (video source crc32) => 32, ... }
 
+  index :s
+  index :m
+  index :h
+  index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:s, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:m, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:h, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]
+  index [[:st, Mongo::ASCENDING], [:s, Mongo::ASCENDING]]
+  index [[:st, Mongo::ASCENDING], [:m, Mongo::ASCENDING]]
+  index [[:st, Mongo::ASCENDING], [:h, Mongo::ASCENDING]]
+  index [[:st, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]
 
   # ====================
   # = Instance Methods =
@@ -71,6 +76,15 @@ class Stat::Video
     conditions = { st: site_token, period_sym => { "$gte" => Time.at(options[:from]), "$lte" => Time.at(options[:to]) } }
     if demo
       conditions[:u] = { "$in" => %w[home features-lightbox features-playlist-1 features-playlist-2 features-playlist-3 features-playlist-4 demo-single demo-lightbox-1 demo-lightbox-2 demo-lightbox-3 demo-lightbox-4 demo-playlist-1 demo-playlist-2 demo-playlist-3 demo-playlist-4] }
+    end
+    # Reduce number of stats to group if too many.
+    if period_sym == :d
+      stats_count = Stat::Video.where(conditions).count
+      if stats_count >= 100_000
+        conditions["vl.m"] = {"$gte" => 100}
+      elsif stats_count >= 20_000
+        conditions["vl.m"] = {"$gte" => 10}
+      end
     end
 
     videos = collection.group(

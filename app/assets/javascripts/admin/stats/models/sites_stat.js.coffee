@@ -1,33 +1,37 @@
-class SVStats.Models.SitesStat extends SVStats.Models.Stat
+#= require ./stat
+
+class AdminSublimeVideo.Models.SitesStat extends AdminSublimeVideo.Models.Stat
   defaults:
-    fr: 0 # free
+    fr: {} # free
     tr: {} # trial
     pa: {} # paying
     su: 0 # suspended
     ar: 0 # archived
 
-class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
-  model: SVStats.Models.SitesStat
+class AdminSublimeVideo.Collections.SitesStats extends AdminSublimeVideo.Collections.Stats
+  model: AdminSublimeVideo.Models.SitesStat
   url: -> '/stats/sites.json'
   id: -> 'sites'
-  color: -> 'rgba(255,0,0,0.5)'
+  yAxis: (selected) -> 1
 
   title: (selected) ->
-    if selected.length > 1
-      text = "Sites with the "
-      if selected.length == 3 # attribute is something like: ["tr", "premium", "y"]
-        text += if selected[2] == "y" then "yearly" else "monthly"
-      text += " #{selected[1]} plan"
+    if selected.length > 1 # attribute is something like: ["tr", "premium"] or ["tr", "premium", "y"]
+      text = "Sites "
+      text += "in trial " if selected[0] == "tr"
+      text += "with the "
+      if selected.length > 2 # attribute is something like: ["tr", "premium", "y"]
+        text += if selected[2] == "y" then "yearly " else "monthly "
+      text += "#{SublimeVideo.capitalize(selected[1])} plan"
       text
     else
       switch selected[0]
-        when 'fr' then 'Free sites'
+        when 'sp' then 'Sponsored sites'
         when 'tr' then 'Sites in trial'
         when 'pa' then 'Paying sites'
         when 'su' then 'Suspended sites'
         when 'ar' then 'Archived sites'
-        when 'active' then 'Active sites (free, in trial or paying)'
-        when 'passive' then 'Passive sites (suspended or archived)'
+        when 'active' then 'Active sites'
+        when 'passive' then 'Passive sites'
         when 'all' then 'Sites'
 
   customPluck: (selected) ->
@@ -39,33 +43,25 @@ class SVStats.Collections.SitesStats extends SVStats.Collections.Stats
       stat = this.get(from)
 
       value = if stat?
-        if selected.length > 1
+        if selected.length > 1 # attribute is something like: ["tr", "premium"]
           value = stat.get(selected[0])
-          if selected.length > 1 # attribute is something like: ["tr", "premium", "y"]
-            _.each _.rest(selected), (e) -> value = value[e]
-            value = this.recursiveHashSum(value)
-          value
+          _.each _.rest(selected), (e) -> if value[e]? then value = value[e] else value = 0
+          this.recursiveHashSum(value)
         else if !_.isEmpty(_.values(stat.get(selected[0])))
           this.recursiveHashSum(stat.get(selected[0]))
         else
           switch selected[0]
             when 'all' then this.recursiveHashSum(stat.get('fr')) + this.recursiveHashSum(stat.get('tr')) + this.recursiveHashSum(stat.get('pa')) + stat.get('su') + stat.get('ar')
+
             when 'active' then this.recursiveHashSum(stat.get('fr')) + this.recursiveHashSum(stat.get('tr')) + this.recursiveHashSum(stat.get('pa'))
+
             when 'passive' then stat.get('su') + stat.get('ar')
+
             else stat.get(selected[0])
       else
         0
+
       array.push value
       from += 3600 * 24
 
     array
-
-  recursiveHashSum: (hash) ->
-    sum = 0
-    if _.isNumber(hash)
-      sum = hash
-    else
-      _.each _.values(hash), (value) =>
-        sum += this.recursiveHashSum(value)
-
-    sum

@@ -69,7 +69,7 @@
       - Fri, 12 Aug 2011 16:20:56 GMT
       content-length:
       - '0'
-    body: !!null 
+    body: 
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
@@ -112,8 +112,8 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.json
-    body: !!null 
-    headers: !!null 
+    body: 
+    headers: 
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
@@ -146,4 +146,84 @@
     body: ! '{"name":"Remy","locale_id":null,"openid_url":null,"created_at":"2011/05/17
       13:54:12 +0200","current_tags":"","last_login":null,"details":null,"photo_url":"http://sublimevideo.zendesk.com/images/types/user_sm.png","updated_at":"2011/08/12
       18:20:57 +0200","notes":null,"external_id":null,"is_verified":true,"restriction_id":4,"id":59438671,"email":"email3@user.com","phone":null,"is_active":true,"time_zone":"Bern","roles":0,"organization_id":null,"groups":[],"uses_12_hour_clock":false}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/users/59438671.xml
+    body: <user><name>Remy</name><is-verified>true</is-verified></user>
+    headers:
+      content-type:
+      - application/xml
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/0.8.53
+      date:
+      - Fri, 10 Feb 2012 16:20:24 GMT
+      content-type:
+      - application/xml; charset=utf-8
+      connection:
+      - keep-alive
+      status:
+      - 200 OK
+      x-runtime:
+      - '535'
+      content-length:
+      - '1'
+      x-api-deprecated:
+      - Please use /api/v1/users/59438671.xml
+      set-cookie:
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6D3Nlc3Npb25faWQiJTFlMmY4NDllZGUzOGZmM2JhYmVhYTU2Y2IxY2M3YjMzOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneSITd2FyZGVuLm1lc3NhZ2V7ADoHaWQiFDNzY2x6NGpsdmU1ZnYzMToVYXV0aGVudGljYXRlZF9hdGwrB8dDNU8%3D--04d331b68f6d5db810c0209683806142402cb26d;
+        path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      x-zendesk-api-version:
+      - v1
+      cache-control:
+      - no-cache
+    body: ! ' '
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/users/59438671.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/0.8.53
+      date:
+      - Fri, 10 Feb 2012 16:20:24 GMT
+      content-type:
+      - application/json; charset=utf-8
+      connection:
+      - keep-alive
+      status:
+      - 200 OK
+      etag:
+      - ! '"6258598893bc5784b6d1c7e20ed8b38e"'
+      x-runtime:
+      - '55'
+      content-length:
+      - '508'
+      x-api-deprecated:
+      - Please use /api/v1/users/59438671.json
+      set-cookie:
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6D3Nlc3Npb25faWQiJTQyZWExYTc3ZWY1N2VhNzczN2ZkZWY5NzFkYTU2NjVhOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneSITd2FyZGVuLm1lc3NhZ2V7ADoHaWQiFDNzbmx6a2c4MWFqNmw1ajoVYXV0aGVudGljYXRlZF9hdGwrB8hDNU8%3D--efaa188015d2150a4800dc512985602eccc64d76;
+        path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      cache-control:
+      - private, max-age=0, must-revalidate
+      x-zendesk-api-version:
+      - v1
+    body: ! '{"name":"Remy","locale_id":null,"uses_12_hour_clock":false,"openid_url":null,"created_at":"2011/05/17
+      13:54:12 +0200","last_login":null,"details":null,"custom_role_id":null,"updated_at":"2012/02/10
+      11:01:49 +0100","notes":null,"external_id":null,"restriction_id":4,"id":59438671,"is_verified":true,"phone":null,"is_active":true,"time_zone":"Bern","current_tags":"","roles":0,"organization_id":null,"groups":[],"photo_url":"https://sublimevideo.zendesk.com/images/types/user_sm.png","email":"email3@user.com"}'
     http_version: '1.1'

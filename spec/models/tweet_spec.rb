@@ -22,8 +22,7 @@ describe Tweet do
   end
 
   describe "Associations" do
-    before(:all) { @tweet = Factory.create(:user) }
-    subject { @tweet }
+    subject { Factory.create(:user)  }
 
     it "should belongs to retweeted_tweet" do
       tweet1 = Factory.create(:tweet, tweet_id: 1)
@@ -95,11 +94,6 @@ describe Tweet do
       before(:each) { described_class.send(:remove_const, :KEYWORDS); described_class::KEYWORDS = %w[rymai] } # fake keywords to not fill the cassette...
       use_vcr_cassette "twitter/save_new_tweets_and_sync_favorite_tweets"
       subject { described_class.save_new_tweets_and_sync_favorite_tweets }
-
-      it "should delay itself" do
-        expect { subject }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.run_at.should be_within(60).of(30.minutes.from_now)
-      end
 
       it "should create new tweets" do
         expect { subject }.to change(Tweet, :count)

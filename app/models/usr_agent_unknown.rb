@@ -3,5 +3,7 @@ class UsrAgentUnknown
   include Mongoid::Timestamps
 
   field :user_agent
-  field :unknowns, :type => Array
+  field :unknowns, type: Array
+
+  index :user_agent
 end

@@ -5,7 +5,7 @@ module ApplicationHelper
     boolean == 0 || boolean.blank? || !boolean ? "-" : "✓"
   end
 
-  def display_time(date, options = { format: :minutes })
+  def display_time(date, options = { format: :minutes_y })
     date ? l(date, format: options[:format]) : "-"
   end
 
@@ -53,6 +53,10 @@ module ApplicationHelper
 
   def https_if_prod_or_staging
     Rails.env.production? || Rails.env.staging? ? 'https' : 'http'
+  end
+
+  def demo_stats_page?
+    request.subdomain == 'my' && request.path == '/sites/stats/demo'
   end
 
 end

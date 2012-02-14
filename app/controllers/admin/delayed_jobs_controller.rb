@@ -2,6 +2,7 @@ class Admin::DelayedJobsController < AdminController
   respond_to :html
   respond_to :js, only: :index
 
+  before_filter { |controller| require_role?('god') }
   before_filter :find_by_id, only: [:show, :update, :destroy]
 
   # GET /djs

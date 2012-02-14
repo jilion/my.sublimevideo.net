@@ -1,35 +1,33 @@
-class SVStats.Models.TweetsStat extends SVStats.Models.Stat
-  defaults:
-    total: 0
+#= require ./stat
 
-class SVStats.Collections.TweetsStats extends SVStats.Collections.Stats
-  model: SVStats.Models.TweetsStat
-  initialize: -> @selected = []
+class AdminSublimeVideo.Models.TweetsStat extends AdminSublimeVideo.Models.Stat
+  defaults:
+    k: {}
+
+class AdminSublimeVideo.Collections.TweetsStats extends AdminSublimeVideo.Collections.Stats
+  model: AdminSublimeVideo.Models.TweetsStat
   url: -> '/stats/tweets.json'
   id: -> 'tweets'
-  color: -> 'rgba(0,255,0,0.5)'
+  yAxis: (selected) -> 1
 
   title: (selected) ->
     switch selected[0]
-      when 'jilion' then 'Jilion tweets'
       when 'sublimevideo' then 'SublimeVideo tweets'
-      when 'aelios' then 'Aelios tweets'
+      else "#{SublimeVideo.capitalize(selected[0])} tweets"
 
-  startTime: -> this.at(0).time() + (3600 * 24 * 1000) # we add one day to be sure we have only full day stats
-
-  customPluck: ->
+  customPluck: (selected) ->
     array = []
     from  = this.at(0).id
     to    = this.at(this.length - 1).id
-    last_total = 0
 
     while from <= to
       stat = this.get(from)
 
       value = if stat?
-        last_total = stat.get('total')
+        if stat.get('k')[selected[0]] then stat.get('k')[selected[0]] else 0
       else
-        last_total
+        0
+
       array.push value
       from += 3600 * 24
 

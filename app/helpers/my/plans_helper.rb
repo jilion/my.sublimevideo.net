@@ -64,7 +64,7 @@ module My::PlansHelper
     "#{text} Support".html_safe
   end
 
-  def plan_stats_rentention_days(plan)
+  def plan_stats_retention_days(plan)
     text = case plan.stats_retention_days
            when nil
              "Unlimited"

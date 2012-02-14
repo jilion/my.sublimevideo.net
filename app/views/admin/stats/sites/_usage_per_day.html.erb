@@ -233,7 +233,7 @@ prorated_plan_limit = (28..31).include?(days_count) ? plans_limit[selected_plan]
       },
       credits: {
         enabled: true,
-        text: "Generation time: <%= Time.now.to_s(:format => :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
+        text: "Generation time: <%= Time.now.to_s(format: :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
         href: "http://sublimevideo.net"
       }
     });

@@ -1,0 +1,2 @@
+Restoring a pg dump locally
+pg_restore --verbose --clean --no-acl --no-owner -d msv_development_master db/backups/sublimevideo.pgdump

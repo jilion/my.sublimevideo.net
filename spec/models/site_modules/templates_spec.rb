@@ -39,7 +39,7 @@ describe SiteModules::Templates do
     end
 
     describe "on save" do
-      before do
+      before(:each) do
         VoxcastCDN.stub(:purge)
       end
 
@@ -48,7 +48,7 @@ describe SiteModules::Templates do
         before(:each) { subject.plan_id = @paid_plan.id }
 
         it "delays .update_loader_and_license once" do
-          expect { subject.save! }.to change(Delayed::Job.where(:handler.matches => "%update_loader_and_license%"), :count).by(1)
+          expect { subject.save! }.to change(Delayed::Job.where { handler =~ "%update_loader_and_license%" }, :count).by(1)
         end
 
         it "purges loader & license on CDN" do
@@ -67,7 +67,7 @@ describe SiteModules::Templates do
         [:badged, :b, true]
       ].each do |attr, key, value|
         describe "and #{attr} setting has changed" do
-          before(:all) do
+          before(:each) do
             @site = Factory.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: false)
             @worker.work_off
           end
@@ -208,6 +208,17 @@ describe SiteModules::Templates do
           it "doesn't includes r: true" do
             subject.should be_in_free_plan
             subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true }
+          end
+        end
+
+        context "with only a pending plan" do
+          before { subject.send(:write_attribute, :plan_id, nil); subject.pending_plan_id = @paid_plan.id }
+
+          it "doesn't includes r: true" do
+            subject.plan_id.should be_nil
+            subject.plan.should be_nil
+            subject.pending_plan.should be_present
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true, s: true }
           end
         end
       end
