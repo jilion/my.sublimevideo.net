@@ -104,11 +104,11 @@ gem 'rack-no-www'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.1.5'
-  gem 'coffee-rails', '~> 3.1.1'
+  gem 'sass-rails',         '~> 3.1.5'
+  gem 'coffee-rails',       '~> 3.1.1'
   gem 'eco'
   gem 'uglifier'
-  gem 'haml_coffee_assets'
+  gem 'haml_coffee_assets', '0.8.1'
   gem 'execjs'
 end
 
@@ -168,7 +168,6 @@ end
 
 group :test do
   gem 'spork', '~> 0.9.0'
-  gem 'fuubar'
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'webmock',  '~> 1.6.0'
