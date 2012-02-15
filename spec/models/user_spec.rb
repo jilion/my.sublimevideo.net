@@ -553,35 +553,47 @@ describe User do
       end
 
       context "user has a zendesk_id" do
-        before(:each) do
-          subject.update_attribute(:zendesk_id, 59438671)
-        end
+        before { subject.update_attribute(:zendesk_id, 59438671) }
 
-        it "should delay Module#put if the user has a zendesk_id and his email has changed" do
-          expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
-          Delayed::Job.all.select { |dj| dj.name == 'Module#put' }.should have(1).item
-        end
+        context "user updated his email" do
+          it "delays Module#put if the user has a zendesk_id and his email has changed" do
+            expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
+            Delayed::Job.where { handler =~ '%Module%put%' }.should have(1).item
+          end
 
-        it "should update user's email on Zendesk if this user has a zendesk_id and his email has changed" do
-          expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
+          it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
+            expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
 
-          VCR.use_cassette("zendesk/update_email") do
-            @worker.work_off
-            Delayed::Job.last.should be_nil
-            JSON[Zendesk.get("/users/59438671/user_identities.json").body].select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@jilion.com")
+            VCR.use_cassette("zendesk/update_email") do
+              @worker.work_off
+              Delayed::Job.last.should be_nil
+              JSON[Zendesk.get("/users/59438671/user_identities.json").body].select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@jilion.com")
+            end
           end
         end
 
-        it "should update user's name on Zendesk if this user has a zendesk_id and his name has changed" do
-          expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(2)
+        context "user updated his name" do
+          it "delays Module#put" do
+            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(2)
+            Delayed::Job.where { handler =~ '%Module%put%' }.should have(1).item
+          end
 
-          VCR.use_cassette("zendesk/update_name") do
-            @worker.work_off
-            Delayed::Job.last.should be_nil
-            JSON[Zendesk.get("/users/59438671.json").body]['name'].should eq "Remy"
+          it "updates user's name on Zendesk" do
+            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(2)
+
+            VCR.use_cassette("zendesk/update_name") do
+              @worker.work_off
+              Delayed::Job.last.should be_nil
+              JSON[Zendesk.get("/users/59438671.json").body]['name'].should eq "Remy"
+            end
+          end
+
+          context "name has changed to ''" do
+            it "doesn't update user's name on Zendesk" do
+              expect { subject.update_attribute(:name, "") }.to_not change(Delayed::Job, :count)
+            end
           end
         end
-
       end
     end
 

@@ -22,9 +22,9 @@ describe Configurator do
       Rails.stub(:env) { 'development' }
     end
 
-    its(:config_path) { should eql Rails.root.join('config', 'configurable_module.yml') }
-    its(:prefix)      { should eql 'CONFIGURABLE_MODULE' }
-    its(:yml_options) { should eql @conf['development'].symbolize_keys }
+    its(:config_path) { should eq Rails.root.join('config', 'configurable_module.yml') }
+    its(:prefix)      { should eq 'CONFIGURABLE_MODULE' }
+    its(:yml_options) { should eq @conf['development'].symbolize_keys }
   end
 
   describe "heroku_config_accessor" do
@@ -37,9 +37,9 @@ describe Configurator do
           Rails.should_receive(:env) { 'development' }
         end
 
-        its(:bar) { should eql 'dev_bar' }
-        its(:baz) { should eql 'dev_baz' }
-        its(:bla) { should eql false }
+        its(:bar) { should eq 'dev_bar' }
+        its(:baz) { should eq 'dev_baz' }
+        its(:bla) { should eq false }
       end
 
       context "production env" do
@@ -48,9 +48,9 @@ describe Configurator do
           Rails.should_receive(:env) { 'production' }
         end
 
-        its(:bar) { should eql 'prod_bar' }
-        its(:baz) { should eql 'prod_baz' }
-        its(:bla) { should eql false }
+        its(:bar) { should eq 'prod_bar' }
+        its(:baz) { should eq 'prod_baz' }
+        its(:bla) { should eq false }
       end
     end
 

@@ -738,7 +738,7 @@ span.beta_badge {
 .stats .graph_box li .bar {
   display:block;
   position:absolute;
-  max-width:99%;
+/*  max-width:99%;*/
   top:0;
   left:0;
   height:58px;
@@ -750,8 +750,11 @@ span.beta_badge {
 }
 
 .stats .graph_box li:first-child .bar {@include border-radius(5px 0 0 0)}
+.stats .graph_box li:first-child .bar.percent_100, .stats .graph_box li:first-child .bar.percent_99 {@include border-radius(5px 5px 0 0)}
 .stats .graph_box li:first-child li .bar {@include border-radius(0 0 0 0)}
 .stats .graph_box li:last-child .bar, .stats .graph_box li.flash li:last-child .bar {@include border-radius(0 0 0 5px)}
+.stats .graph_box li:last-child .bar.percent_100, .stats .graph_box li.flash li:last-child .bar.percent_100,
+.stats .graph_box li:last-child .bar.percent_99, .stats .graph_box li.flash li:last-child .bar.percent_99 {@include border-radius(0 0 5px 5px)}
 .stats .graph_box li:last-child li .bar, .stats .graph_box li.flash .bar {@include border-radius(0 0 0 0)}
 
 .stats .graph_box li li .bar {

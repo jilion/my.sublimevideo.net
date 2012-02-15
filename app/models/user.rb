@@ -310,7 +310,7 @@ private
 
   # after_save
   def newsletter_update
-    if newsletter_changed? || email_changed? || name_changed?
+    if newsletter_changed? || email_changed? || (name_changed? && name.present?)
       if email_was.present?
         CampaignMonitor.delay.update(self)
         CampaignMonitor.delay(run_at: 30.seconds.from_now).unsubscribe(email) unless newsletter?
@@ -322,7 +322,7 @@ private
 
   # after_update
   def zendesk_update
-    if zendesk_id.present? && (email_changed? || name_changed?)
+    if zendesk_id.present? && (email_changed? || (name_changed? && name.present?))
       body = email_changed? ? "<email>#{email}</email>" : "<name>#{name}</name>"
       Zendesk.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user>#{body}<is-verified>true</is-verified></user>")
     end
