@@ -1,0 +1,28 @@
+<% for source in @sources.models: %>
+  <% if currentFormat != source.get('format'): %>
+    <% currentFormat = source.get('format') %>
+    <div class="content_left">
+      <h4><%= source.formatTitle() %> sources</h4>
+    </div>
+  <% end %>
+
+  <% if source.get('quality') isnt 'base': %>
+    <div class="checkbox_wrap">
+      <input type="checkbox" id="<%= source.formatQuality() %>_use_source" class="use_source" <%= "checked" if source.srcIsUrl() %> />
+      <label for="<%= source.formatQuality() %>_use_source">
+        <%= "Add mobile version (lower resolution/bitrate)" if source.get('quality') == 'mobile' %>
+        <%= "Add HD version" if source.get('quality') == 'hd' %>
+      </label>
+    </div>
+
+    <div id="<%= source.formatQuality() %>_src_box" class="entry" <%= "style='display:none'" unless source.srcIsUrl() %>>
+      <label class="icon" for="<%= source.formatQuality() %>_src"><%= source.qualityTitle() %></label>
+      <input type="text" id="<%= source.formatQuality() %>_src" class="text no_icon source" placeholder="<%= source.qualityTitle() %> version url" value="<%= source.get('src') %>" />
+    </div>
+  <% else: %>
+    <div class="entry">
+      <label class="icon" for=""><%= source.qualityTitle() %> url</label>
+      <input type="text" id="<%= source.formatQuality() %>_src" class="text no_icon" placeholder="<%= source.qualityTitle() %> version url" value="<%= source.get('src') %>" />
+    </div>
+  <% end %>
+<% end %>

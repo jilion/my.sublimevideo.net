@@ -1,0 +1,90 @@
+#video_embed_type_selector {
+  float:left;
+  margin:0 0 30px;
+}
+
+#video_embed_type_selector .radio_wrap, #starting_link .radio_wrap {
+  float:left;
+  margin-right:20px;
+}
+
+button#use_demo_assets {
+  padding:10px 16px;
+  font-size:20px;
+  float:right;
+  position:absolute;
+  top:115px;
+  right:50px;
+}
+
+#poster {
+  margin-top:30px;
+}
+
+#video_code_form .big_break {
+  margin-top:30px;
+}
+
+#content #video_code_form .content_left {
+  padding-right:17px;
+}
+
+#video_code_form h4 {
+  font-size:20px;
+  font-weight:600;
+  padding-top:20px;
+}
+
+#video_code_form h5 {
+  font-size:16px;
+  font-weight:600;
+  padding:15px 0 0;
+}
+
+#video_code_form .entry.size input.text {
+  width:80px;
+  text-align:center;
+  padding:0;
+}
+
+/* Lightbox */
+a.zoomable {
+  display:block;
+/*  width:180px;
+  height:76px;
+*/  background:#000;
+  position:relative;
+  -webkit-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+  -moz-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+  box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+}
+
+a.zoomable span.zoom_icon {
+  display:block;
+  width:100%;
+  height:100%;
+  position:absolute;
+  top:0;
+  left:0;
+  background:url(<%= asset_data_uri 'my/sv_zoom_icon.png' %>) no-repeat bottom right;
+  opacity:0.3;
+  -o-transition:opacity 0.25s;
+  -moz-transition:opacity 0.25s;
+  -webkit-transition:opacity 0.25s;
+  transition:opacity 0.25s;
+}
+
+a.zoomable:hover span.zoom_icon {opacity:1}
+
+#code .warning {
+  color:red;
+  font-weight:bold;
+}
+
+a.reset {
+  font-size:13px;
+}
+
+pre.prettyprint {
+  border:0;
+}
