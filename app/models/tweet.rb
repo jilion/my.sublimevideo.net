@@ -26,8 +26,6 @@ class Tweet
 
   KEYWORDS = ["jilion", "sublimevideo", "aelios", "aeliosapp", "videojs", "jw player"]
 
-  attr_accessor :bigger_profile_image
-
   attr_accessible :tweet_id, :keywords, :from_user_id, :from_user, :to_user_id, :to_user, :iso_language_code, :profile_image_url, :source, :content, :tweeted_at, :retweets_count
 
   scope :keywords,          lambda { |keywords| where(keywords: keywords) }
@@ -52,25 +50,28 @@ class Tweet
     def save_new_tweets_and_sync_favorite_tweets
       return unless enough_remaining_twitter_calls?
 
-      search = TwitterApi.search.new
-
       KEYWORDS.each do |keyword|
-        results_count = 0
-        search.clear
-        search.containing("\"#{keyword}\"").result_type("recent").per_page(100)
-
-        begin
-          search.fetch.each do |tweet|
-            results_count += 1
+        page = 1
+        while page < 6 && search = remote_search(keyword, page: page)
+          search.each do |tweet|
             if t = self.where(tweet_id: tweet.id).first
               t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
             else
               self.create_from_twitter_tweet!(tweet)
             end
           end
-        end while TwitterApi.with_rescue_and_retry(5) { results_count < 500 && search.fetch_next_page }
+          page += 1
+        end
       end
       self.sync_favorite_tweets
+    end
+
+    def remote_search(keyword, options={})
+      TwitterApi.search("\"#{keyword}\"", result_type: 'recent', rpp: 100, page: options[:page])
+    end
+
+    def remote_favorites(user, options={})
+      TwitterApi.favorites(user, page: options[:page], include_entities: options[:include_entities])
     end
 
     def create_from_twitter_tweet!(tweet)
@@ -85,7 +86,7 @@ class Tweet
         profile_image_url: tweet.profile_image_url,
         source:            tweet.source,
         content:           tweet.text,
-        tweeted_at:        Time.zone.parse(tweet.created_at)
+        tweeted_at:        tweet.created_at
       )
     end
 
@@ -95,8 +96,8 @@ class Tweet
     def sync_favorite_tweets
       return unless enough_remaining_twitter_calls?(10)
 
-      twitter_favorites_ids = self.favorites_tweets.map(&:id)
-      local_favorites_ids   = self.favorites.only(:tweet_id).map(&:tweet_id)
+      twitter_favorites_ids = (remote_favorites(include_entities: false) || []).map(&:id)
+      local_favorites_ids   = favorites.only(:tweet_id).map(&:tweet_id)
 
       to_add    = twitter_favorites_ids - local_favorites_ids
       to_remove = local_favorites_ids - twitter_favorites_ids
@@ -126,7 +127,7 @@ class Tweet
     # - random: if you want to return tweets randomly (default: false)
     # - since_date: return favorites only after since_date (default: nil)
     # - include_entities: wether to include entities in results or not (default: false)
-    def favorites_tweets(*args)
+    def pretty_remote_favorites(*args)
       options = args.extract_options!
       options.assert_valid_keys([:user_doublon, :count, :random, :since_date, :include_entities])
       options = options.reverse_merge({
@@ -140,16 +141,14 @@ class Tweet
 
       page = 1
       tweets = []
-      favorites = TwitterApi.favorites(options[:user], page: page, include_entities: options[:include_entities]) || []
 
-      while favorites.present?
+      while favorites = remote_favorites(options[:user], page: page, include_entities: options[:include_entities])
+        break if favorites.blank?
         favorites.each do |tweet|
-          tweet = self.tweet_with_parsed_date(tweet)
           break if options[:since_date] && tweet.created_at < options[:since_date]
           tweets << tweet
         end
         page += 1
-        favorites = TwitterApi.favorites(options[:user], page: page, include_entities: options[:include_entities]) || []
       end
 
       count = if options[:count] == 0
@@ -166,16 +165,7 @@ class Tweet
         end
       end
 
-      selected_tweets.each do |tweet|
-        tweet.bigger_profile_image = TwitterApi.profile_image(tweet.user.id, size: 'bigger')
-        selected_tweets.delete(tweet) if tweet.bigger_profile_image.nil?
-      end
       selected_tweets.sort { |a, b| b.created_at <=> a.created_at }[0...count]
-    end
-
-    def tweet_with_parsed_date(tweet)
-      tweet.created_at = Time.zone.parse(tweet.created_at)
-      tweet
     end
 
     def enough_remaining_twitter_calls?(count=0)

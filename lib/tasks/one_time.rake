@@ -181,6 +181,101 @@ namespace :one_time do
         end
       end
     end
+
+    require 'zlib'
+
+    desc "Merge duplicate VideoStats and delete bad VideoTags based on wrong CRC32 generation (? params included)"
+    task merge_duplicate_video_stats_and_delete_bad_video_tags: :environment do
+      timed do
+        # Sites using video sources with ?
+        site_tokens = [
+          '2xrynuh2', 'lfmxr9gt', 'g39fmpp1', '1gt8yor7', '7k9odjzv', 'txohtl11', 'vfzh18bi', '2l7axk8c', 'iaruw1qi', 'avd44aef', 'nn8698ww',
+          '4aeqofw0', 'nne3u3qd', 'h5qegk5j', 'op0mkqtn', 'suwutgs8', 'rrj45mbt', 'uvrkjs6y', '87r9xy5e', '0apmxu9m', 'bo6onvdp', 't1el7q92',
+          'wtlrh4a1', '8pettr2l', 'ovjigy83', 'ipemdsdc', '8z30ym0w', '5ataduh2', 'mtrrhukx', 'wwaswim5', 'f5n04h63', '4md5tnvw', 'd4jhdmde',
+          '29a31wy1', 'kaxf52ke', 'jag8liea', 'q87gxah0', 'alv676x0', 'b13hmic3', 'qn3ort3a', 'q7z31dji', 'pn1nfhuj', '7aph6o5g', '8hgvyvlc',
+          'wsj6kezk', 'd8rjro54', '9pkh3pou', 'erfb5jxm', 'eq916p01', '7l6sr5hh', 'j9q1y3m1', '95ahxpcg', 'why96mtw', 'oqdmk4t6', 'xqnzpou9',
+          'j0lqevol', 'lbshmaxk', 'lv9n9gdv', 'dsopijh8', 'fq1qtj48', '83y67ght', '8e7bgm4a', '3w98phzh', 'r7mul5tt', '2b4x0kwg', 'y7areitu',
+          'o8ptoe09', 'ai42982g', 'oaiknkun', 'm0lzy3xt', 'quq4zs1k', 'ybjtuko4', 'gf2gv810', '0l5c6oby', 'ytxg2sy5', 'ykfg8c0a', 'j4nw7nem',
+          'aoq66s9z', '7b8nn1v4', 'd67d4bn4', 'jpjr8p4d', '9majtpzr', 'mmvg0rfl', 'v8tqssb9', 'tbhdl70s', 'szejjut1', 'uo742m30', '2ir8o5ky',
+          'ngyd2tdi', '3y0866sj', 'mur4c2aa', 'mkkaahxf', 'jv4dcx3o', '6j4zanab', 'jx5qyjz1', '55woyzoi', 'q43b92jx', '7gd9zazc', '6n6lb66i',
+          'fj76pfnh', 'l45d3c3u', 'ikfqgbx0', 'kpcxti7e', '4ot5x0w2', 'ibvjcopp', 'pczql2wt', 'xwccapc5', '9cu26xxg', '4ptfsgbk', '0ljd7qrk',
+          'mb27lban', '8vnlactg', 'rm8w0f9k', 'qdvuigm7', 'vwftwdte', 'estq9huv', 'ihuf4f5u', 'kq8zmtdf', 'uazs3te5', 'ql0355zz', 'y5uk4rpd',
+          '6pdo240s', 'qeiwa7fu', 'qsr700iv'
+        ]
+        criteria = VideoTag.where(st: { '$in' => site_tokens }, uo: { '$ne' => 'a' }, created_at: { "$lte" => Time.utc(2012, 1, 19) })
+        criteria.each do |video_tag|
+          case video_tag.uo
+          when 's'
+            video_crc = video_tag.cs.first
+            if video_tag.s[video_crc]
+              video_source = video_tag.s[video_crc]['u']
+            else
+              video_crc, hash = video_tag.s.first
+              video_source = hash['u']
+            end
+
+            if video_source.include?('?')
+              good_video_crc = Zlib.crc32(video_source.match(/^(.*)\?/)[1]).to_s(16)
+              if good_video_crc != video_crc
+                bad_video_stat_crit  = Stat::Video.where(st: video_tag.st, u: video_crc)
+                bad_video_stat_count = bad_video_stat_crit.count
+                case bad_video_stat_count
+                when 1                    
+                  bad_video_stat = bad_video_stat_crit.first
+                  if good_video_stat = Stat::Video.where(st: video_tag.st, u: good_video_crc, d: bad_video_stat.d).first
+                    merge_video_stat(bad_video_stat, good_video_stat)
+                    bad_video_stat.delete
+                  else
+                    update_bad_video_stat(bad_video_stat, good_video_crc)
+                  end
+                  
+                  if VideoTag.where(st: video_tag.st, u: good_video_crc).exists?
+                    video_tag.delete
+                  else
+                    update_bad_video_tag(video_tag, good_video_crc)
+                  end
+                when 0
+                  # nothing special to do
+                  video_tag.delete
+                end
+              end
+            end
+          else # nil
+            bad_video_stat_crit = Stat::Video.where(st: video_tag.st, u: video_tag.u)
+            bad_video_stat_count = bad_video_stat_crit.count
+            if bad_video_stat_count <= 1
+              bad_video_stat_crit.delete
+              video_tag.delete
+            end
+          end
+        end
+      end
+    end
+  end
+
+  def merge_video_stat(bad_video_stat, good_video_stat)
+    inc = {}
+    bad_video_stat.bp.each { |k, v| inc["bp.#{k}"] = v }
+    bad_video_stat.md.each { |k1, v| v.each { |k, v| inc["md.#{k1}.#{k}"] = v } }
+    bad_video_stat.vl.each { |k, v| inc["vl.#{k}"] = v }
+    bad_video_stat.vv.each { |k, v| inc["vv.#{k}"] = v }
+    inc["vs.#{good_video_stat.u}"] = bad_video_stat.vs[bad_video_stat.u]
+    Stat::Video.collection.update({ st: good_video_stat.st, u: good_video_stat.u, d: good_video_stat.d.to_time }, { "$inc" => inc }, upsert: true)
+  end
+
+  def update_bad_video_stat(bad_video_stat, good_video_crc)
+    bad_video_stat.vs = { good_video_crc => bad_video_stat.vs[bad_video_stat.u] }
+    bad_video_stat.u = good_video_crc
+    bad_video_stat.save!
+  end
+
+  def update_bad_video_tag(bad_video_tag, good_video_crc)
+    if source = bad_video_tag.s[bad_video_tag.u]
+      bad_video_tag.s = { good_video_crc => source }
+    end
+    bad_video_tag.cs = [good_video_crc]
+    bad_video_tag.u = good_video_crc
+    bad_video_tag.save!
   end
 
 end
