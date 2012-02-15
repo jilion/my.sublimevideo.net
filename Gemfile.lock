@@ -552,6 +552,7 @@ DEPENDENCIES
   letter_opener!
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
+  mime-types
   mongo (~> 1.5.2)
   mongoid (~> 2.4.4)
   newrelic_rpm
