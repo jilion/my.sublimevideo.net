@@ -8,12 +8,7 @@
       accept:
       - application/json
       user-agent:
-      - Twitter Ruby Gem 1.3.0
-      authorization:
-      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="2117d6aa3d1036007d799bcf58dd98c7",
-        oauth_signature="8dJhXuV%2F0XMVZ1EzhWEsipz7Q5U%3D", oauth_signature_method="HMAC-SHA1",
-        oauth_timestamp="1306426553", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI",
-        oauth_version="1.0"
+      - Twitter Ruby Gem 2.1.0
       accept-encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
   response: !ruby/struct:VCR::Response
@@ -22,70 +17,324 @@
       message: OK
     headers:
       date:
-      - Thu, 26 May 2011 16:15:55 GMT
-      server:
-      - hi
+      - Wed, 15 Feb 2012 12:53:16 GMT
       status:
       - 200 OK
-      x-transaction:
-      - 1306426555-83394-55844
-      etag:
-      - ! '"a8c40997450e096cc641887d8ba2e575"-gzip'
+      x-transaction-mask:
+      - a6183ffa5f8ca943ff1b53b5644ef114cb4f1545
       x-frame-options:
       - SAMEORIGIN
-      last-modified:
-      - Thu, 26 May 2011 16:15:55 GMT
-      x-runtime:
-      - '0.06200'
-      x-transaction-mask:
-      - a6183ffa5f8ca943ff1b53b5644ef114959af87b
-      content-type:
-      - application/json; charset=utf-8
       pragma:
       - no-cache
-      x-access-level:
-      - read-write
-      x-revision:
-      - DEV
       expires:
       - Tue, 31 Mar 1981 05:00:00 GMT
+      x-revision:
+      - DEV
+      last-modified:
+      - Wed, 15 Feb 2012 12:53:16 GMT
+      etag:
+      - ! '"60dedef0d8acbb693aa3e0281b419c77"'
+      x-transaction:
+      - f06fac71dca2a871
+      x-runtime:
+      - '0.00722'
       cache-control:
       - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      content-type:
+      - application/json; charset=utf-8
       x-mid:
-      - 343a5430d8dd941cbb060871190019b1cdcdd6ec
+      - cdb6e4284d245b62addaf83c82e5c25061887c79
       set-cookie:
-      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCHE8Fy0wAToHaWQiJWUyYTIzMjk2NWUzODU1%250AOWZlNTBiZTk4ZDc2YmQ4ODBlIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--84dc62d9e3e3a7798a4fb32c74507c2c983293c8;
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCLnuEoE1AToHaWQiJTU3OGFiOGJmNjQyMzQ5%250ANTNjZDYyNzkyZDFlNTZkNTgwIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--ddd6420de72fb92a0bcd8845475d51cca9566d43;
         domain=.twitter.com; path=/; HttpOnly
-      - guest_id=130642655546386432; path=/; expires=Sat, 25 Jun 2011 16:15:55 GMT
-      - k=128.179.67.94.1306426555459451; path=/; expires=Thu, 02-Jun-11 16:15:55
-        GMT; domain=.twitter.com
-      - lang=en; path=/
+      - guest_id=v1%3A132931039608855537; domain=.twitter.com; path=/; expires=Sat,
+        15-Feb-2014 00:53:16 GMT
+      - k=10.35.19.138.1329310396084859; path=/; expires=Wed, 22-Feb-12 12:53:16 GMT;
+        domain=.twitter.com
       vary:
       - Accept-Encoding
       content-encoding:
       - gzip
       content-length:
       - '125'
+      server:
+      - tfe
     body: !binary |-
-      H4sIAAAAAAAAA03MMQ6DMAxA0atYXtshTgihvgNbdwu1UWOJBImEAVXcHbr1
-      z0//i2nZ1nmXWbM2ZOfNHddYY5OmOYoWqfG1lHdFJmf6zj4GH/4JMj7TBuO0
-      g+2BApNhH+BmrsAaIvzpPGnR8pGk7Tq5bjhOydUBMnoAAAA=
+      H4sIAAAAAAAAA02MMQ7CMAwAv2J5JYOdEInkAXyB0SrUopaaVGrCgBB/b9i4
+      8XS6D+7atEu3opjxpjNc9Q4cgUOOlCnBiQbgiT26UZfJqtWnLNYbZj4nh8v2
+      2te3rFasDxXJ/V3FqjR9bHX+5cGnwOFC6XsAQdiXIHoAAAA=
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: https://api.twitter.com:443/1/favorites/sublimevideo.json?include_entities=false&page=1
+    uri: https://search.twitter.com:443/search.json?page=1&q=%22rymai%22&result_type=recent&rpp=100
     body: 
     headers:
       accept:
       - application/json
       user-agent:
-      - Twitter Ruby Gem 1.3.0
-      authorization:
-      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="2eea40301fe81406d2108c578ad751f9",
-        oauth_signature="e5TvCf4d%2F%2Fis6D0AMvxdG78yxks%3D", oauth_signature_method="HMAC-SHA1",
-        oauth_timestamp="1306426558", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI",
-        oauth_version="1.0"
+      - Twitter Ruby Gem 2.1.0
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - max-age=15, must-revalidate, max-age=300
+      expires:
+      - Wed, 15 Feb 2012 12:58:17 GMT
+      content-type:
+      - application/json;charset=utf-8
+      vary:
+      - Accept-Encoding
+      date:
+      - Wed, 15 Feb 2012 12:53:17 GMT
+      x-varnish:
+      - '1398451646'
+      age:
+      - '0'
+      via:
+      - 1.1 varnish
+      set-cookie:
+      - k=128.179.67.94.8a54274e22f1faac; path=/; expires=Wed, 22-Feb-2012 12:53:17
+        UTC; domain=.search.twitter.com; httponly
+      server:
+      - tfe
+      content-encoding:
+      - gzip
+      content-length:
+      - '914'
+    body: !binary |-
+      H4sIAAAAAAAC/7SWWW/bOBCA/wpLYPNSw6KoW0HQHIgXi7a7Rbf7tF4IjExb
+      TCVS4VHHDfLfl5TlxIdyPKSGTYMczgxn+A3JO1iKpq2pprOCcZijMcbJCDbk
+      tmAzmPtxkiUxRjjz/TCNsghvZIXSEubwcAIcwZYsqNUdwRtD5crO+g1juWoI
+      s/9WLOlcUlUVRtZW9kExXlJr8eTQ1tHNyb6qMrVWMP/3DpaSErdsoq2ViWQj
+      4CMwoVcAIx8DP8wxyjEG75H9WNW5FE1hFHWrLluqVVlxttgWdBGHKfLDMEl2
+      x/toN8IdLU4aGy28qCRTWrQV+LJlfEEFzLmp6xF8Kp/P55IpUdSEL4zNaVGK
+      mXNFuRU0VJMZ0QTmd31aCr1qnVjSknIN7+1GSDFntU1u47TX+a60bnPPI3is
+      l6xZjO3+ezvzlOcHKAv8DIWR9xBVESJ0a38FF7Ih9fi6deEdOCicedW7UdaP
+      YugtHClhZOmCO6r1MQGVZejk6MYIfdzHY31oTWXnZS04WujjJb1yCh5xHWtG
+      01tHy++GyBmQovyu3oFv1S045VT/bJkkegROO94A4TNwqit2Rcxs4ZagRY/P
+      ejv7bgfN/sh6Q3dH15i4sfvRS/CiLEc498NBeLvlHXDr2AljPIhtLxui9uvU
+      IHSZNStwIYwmVzUdhDbNYj/0fRTFCNvfLrR7wl8JbfAsS4EN1E+xx+myID+s
+      G/nWtL7k4UVMmTacqjFp7Znb+TDKs50Nvh6bhSizGc2y9EOjT3y81gaS1r0h
+      LuairsXyEfJva10wFxJ8JuUQ8I98bzENzsDm8AdEqUrUFLA5WAkDloRrYKEQ
+      LeNM8Hfb+MMHW3C3CvwwiDKcZIeVADciuF8P8DMrK0Jr8JEqVVvzFh5eSNrW
+      q8LOVJpoozZXUZpGUZgEYWyPYEvbE1O3wNydD19ReN2tESSDhbcgjNu7rxY/
+      aNPRvFuBOEyTKIrT4avjQTpUhVOTJJd4auLJWQg+/fHXn8NFiCMcZ10oQZSG
+      e0W4K3yiCK/JL745Umy/SYqwt9Z80/p71vhrboiu6q5b7xVFNTUBikPXhl0b
+      B65NEtem5wB01ca+VILToYJz084mXdupnHVGziPXTi46U5ed2bQz6E9NenGe
+      rN2BzYJtErzF3x//wan/9U0voP8eXlJFayX9ew3Zc33zGLMvwcdOTxmC9/8D
+      AAD//wMAd6Ksji8KAAA=
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://search.twitter.com:443/search.json?page=2&q=%22rymai%22&result_type=recent&rpp=100
+    body: 
+    headers:
+      accept:
+      - application/json
+      user-agent:
+      - Twitter Ruby Gem 2.1.0
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - max-age=15, must-revalidate, max-age=300
+      expires:
+      - Wed, 15 Feb 2012 12:58:19 GMT
+      content-type:
+      - application/json;charset=utf-8
+      vary:
+      - Accept-Encoding
+      date:
+      - Wed, 15 Feb 2012 12:53:19 GMT
+      x-varnish:
+      - '3209092354'
+      age:
+      - '0'
+      via:
+      - 1.1 varnish
+      set-cookie:
+      - k=128.179.67.94.2b1dd20ab9fe91ae; path=/; expires=Wed, 22-Feb-2012 12:53:19
+        UTC; domain=.search.twitter.com; httponly
+      server:
+      - tfe
+      content-encoding:
+      - gzip
+      content-length:
+      - '196'
+    body: !binary |-
+      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8WsK1tG1h6UMiFtGpFryssxpJ9O+tphX4
+      0tPhMOcyMw/I6tIW2GKuTQUyXHMuGJTpXZscJE/2uyThcSTEJt4KnoTzTLuW
+      QMJSAAws4c3UndM2vaAXHQZUPHg71dITNGoVRdSXqfEYkLWKh2PSGBAxaDqk
+      3kf9yPyY8EzorrqjYqhxpsrwn4bR6rqidSCPpw/RFmna2dczmPP8W75kOjyE
+      5wsAAP//AwDUG5MHPAEAAA==
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://search.twitter.com:443/search.json?page=3&q=%22rymai%22&result_type=recent&rpp=100
+    body: 
+    headers:
+      accept:
+      - application/json
+      user-agent:
+      - Twitter Ruby Gem 2.1.0
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - max-age=15, must-revalidate, max-age=300
+      expires:
+      - Wed, 15 Feb 2012 12:58:20 GMT
+      content-type:
+      - application/json;charset=utf-8
+      vary:
+      - Accept-Encoding
+      date:
+      - Wed, 15 Feb 2012 12:53:20 GMT
+      x-varnish:
+      - '1489769150'
+      age:
+      - '0'
+      via:
+      - 1.1 varnish
+      set-cookie:
+      - k=128.179.67.94.c8df395def532dc5; path=/; expires=Wed, 22-Feb-2012 12:53:20
+        UTC; domain=.search.twitter.com; httponly
+      server:
+      - tfe
+      content-encoding:
+      - gzip
+      content-length:
+      - '196'
+    body: !binary |-
+      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8WmJXZcUF6UMiFtGpFryssxpJ9O+tZhb4
+      0tPhMOcyMw8o2tpW2GOpTQOK74WIGdT5XZsSlJBpIqWQPInSWCahXGfa9QQK
+      tgJgYAlvph2ctvkFvegwYRYGb2e29QRdtgtDGuvceAzI2kxwPiXNARGDbkAa
+      fdSPzI8Jz4TuqgeqphpnmgL/aZitbqh6B+p4Wom2SMvOvp7BJ8+/5UuWwzk8
+      XwAAAP//AwB3A/s9PAEAAA==
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://search.twitter.com:443/search.json?page=4&q=%22rymai%22&result_type=recent&rpp=100
+    body: 
+    headers:
+      accept:
+      - application/json
+      user-agent:
+      - Twitter Ruby Gem 2.1.0
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - max-age=15, must-revalidate, max-age=300
+      expires:
+      - Wed, 15 Feb 2012 12:58:21 GMT
+      content-type:
+      - application/json;charset=utf-8
+      vary:
+      - Accept-Encoding
+      date:
+      - Wed, 15 Feb 2012 12:53:21 GMT
+      x-varnish:
+      - '1833803544'
+      age:
+      - '0'
+      via:
+      - 1.1 varnish
+      set-cookie:
+      - k=128.179.67.94.9e678930d81e7b49; path=/; expires=Wed, 22-Feb-2012 12:53:21
+        UTC; domain=.search.twitter.com; httponly
+      server:
+      - tfe
+      content-encoding:
+      - gzip
+      content-length:
+      - '196'
+    body: !binary |-
+      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8kthd03BB+pCIRXSqBS/rrBtJ9O+tZhb4
+      0tPhMOcyMw8o2tpU2GOpdAOSbRkXIdT5XekSJE/SfZLwJE5jkaZcRMtM2Z5A
+      wloAIRjCm26dVSa/oBcdRsyi4O3M1p6gyzZC0FDn2mNAxmScsTFpCtiF0Dmk
+      wUf9yPyY8Exor8pRNdZY3RT4T8Nkta7qLcjjaSHKIM07+/oQPnn+LV8yH87g
+      +QIAAP//AwBDMW0kPAEAAA==
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://search.twitter.com:443/search.json?page=5&q=%22rymai%22&result_type=recent&rpp=100
+    body: 
+    headers:
+      accept:
+      - application/json
+      user-agent:
+      - Twitter Ruby Gem 2.1.0
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - max-age=15, must-revalidate, max-age=300
+      expires:
+      - Wed, 15 Feb 2012 12:58:23 GMT
+      content-type:
+      - application/json;charset=utf-8
+      vary:
+      - Accept-Encoding
+      date:
+      - Wed, 15 Feb 2012 12:53:23 GMT
+      x-varnish:
+      - '1633424337'
+      age:
+      - '0'
+      via:
+      - 1.1 varnish
+      set-cookie:
+      - k=128.179.67.94.0652c55ac457f9e1; path=/; expires=Wed, 22-Feb-2012 12:53:23
+        UTC; domain=.search.twitter.com; httponly
+      server:
+      - tfe
+      content-encoding:
+      - gzip
+      content-length:
+      - '197'
+    body: !binary |-
+      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8ktj1stLC0odELKJTLWiusxpJ9O+tphX4
+      0tPhMOcyMw8omtpW2GGpzRUk2zIeh1Dnd21KkFzsMiF4Fmcpi5hIRLLMtOsI
+      JKwFEIIlvJmmd9rmZ/Si/YgqCd5OtfYErdpEEQ11bjwGZK3ijI1JU0AaQtsj
+      DT7qR+bHhCdCd9E9VWONM9cC/2mYrK6vOgfycPwQbZHmnX19CEuef8uXzIcz
+      eL4AAAD//wMAFM5aojwBAAA=
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://api.twitter.com:443/1/account/rate_limit_status.json
+    body: 
+    headers:
+      accept:
+      - application/json
+      user-agent:
+      - Twitter Ruby Gem 2.1.0
       accept-encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
   response: !ruby/struct:VCR::Response
@@ -94,35 +343,25 @@
       message: OK
     headers:
       date:
-      - Thu, 26 May 2011 16:16:00 GMT
-      server:
-      - hi
+      - Wed, 15 Feb 2012 12:53:24 GMT
       status:
       - 200 OK
       x-transaction:
-      - 1306426559-57689-18700
-      x-ratelimit-limit:
-      - '350'
+      - 9cd0702af2285789
       etag:
-      - ! '"51f3e8c99791ddbdc1707c9197d84b9c"-gzip'
+      - ! '"b3f704c51f67880c463ce3cd4c757f36"'
       x-frame-options:
       - SAMEORIGIN
       last-modified:
-      - Thu, 26 May 2011 16:15:59 GMT
-      x-ratelimit-remaining:
-      - '347'
+      - Wed, 15 Feb 2012 12:53:24 GMT
       x-runtime:
-      - '0.47990'
+      - '0.00757'
       x-transaction-mask:
-      - a6183ffa5f8ca943ff1b53b5644ef114959af87b
+      - a6183ffa5f8ca943ff1b53b5644ef114cb4f1545
       content-type:
       - application/json; charset=utf-8
       pragma:
       - no-cache
-      x-access-level:
-      - read-write
-      x-ratelimit-class:
-      - api_identified
       x-revision:
       - DEV
       expires:
@@ -130,1089 +369,24 @@
       cache-control:
       - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
       x-mid:
-      - 2179a346a3b7bf44d89d3630e1f25515f94ac0d2
-      x-ratelimit-reset:
-      - '1306429857'
+      - 0e3dd56801895eed4cde80d62b07aef958820f37
       set-cookie:
-      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCMtNFy0wAToHaWQiJWNjMGRkOTdjMTczNzVi%250AM2M0YmIwNWQyMjlmMGEwNWQyIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--b21f6c234a934b1e70e0204e677847bb465c7c65;
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCKwQE4E1AToHaWQiJThiMDU0MmI1MGUwNTNh%250AYTlhY2I2YzVlYmYzYTU5OTgxIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--4d2994a7375909b86381df420fd0b1c09c92b77b;
         domain=.twitter.com; path=/; HttpOnly
-      - guest_id=130642655994137607; path=/; expires=Sat, 25 Jun 2011 16:15:59 GMT
-      - k=128.179.67.94.1306426559938548; path=/; expires=Thu, 02-Jun-11 16:15:59
-        GMT; domain=.twitter.com
-      - lang=en; path=/
+      - guest_id=v1%3A132931040477912326; domain=.twitter.com; path=/; expires=Sat,
+        15-Feb-2014 00:53:24 GMT
+      - k=10.35.19.138.1329310404776164; path=/; expires=Wed, 22-Feb-12 12:53:24 GMT;
+        domain=.twitter.com
       vary:
       - Accept-Encoding
       content-encoding:
       - gzip
       content-length:
-      - '5261'
-    body: !binary |-
-      H4sIAAAAAAAAA+2dC3PbRpKA/8qYV5VcaikK88KDVVtnPWPFcdYXykluj1es
-      ATAkYYEYBg8x9Nb+9+sG+CZBPShp47VFu0yRIDjT09Nfd0/P+H//0YiSXqrH
-      8bSXm14WpFonvUSNdKPd+CGKI5M0mmuXFJlOe1HYy/IULrEldyzHonARvtFo
-      /6MRR1muw15giiRvtJlwm41xavpRrHu+Cm4GKbyBb8cGb9D34WE3ymtyHcAn
-      G+2+ijO981PRSA10r0hj+OQwz8ft7nH3WFmtfBKNBq3AjLrHdZ/KuseMu5w5
-      vHvs3wyOcv1HXqSatj6OB/D1fRPHZqLTbN5w6TKr2YhNoHIUQrvxoXMC181E
-      cxoNyJlKcx3Da1mucuj94qMUpAJXmjzqR9XHs61OPaAn8+bb3LFdT7rdY0q5
-      wyyHiR63rF5i0pGKZ/1YjAwVzBOe5cJroe6rIs57sxsu2lLkQc/0+5mGNh8x
-      ySxr2T4Uz2KQPOq6NsMxXm+vHw2CUgjY4O0vqlq+1fUsCrWv0h78Ei++4sK7
-      5JeyvAcoYTSeCf00jZIB/CH5UBP4KpKb8il+bQtFv6awi/bAO7FKBvCSTho7
-      NSlfFQTcRKHOKhBE43pYkJNxSixOqNO23Db1yF8s+CEgIBRnlPXyVCVZrHJs
-      +uwetzqF4V5R30qjYOL8Xugs72UaVWP+nro1RRrlS52xuYSX00gn4VKPBFu2
-      PY6Sm4W0TujJucXK4S4vK0d6W8K+SUOYrfNPaafP+gI+FZgkTyO/gPZnPZ0o
-      P15pdx6NdO+TSVCg77AhKkrINbxI/vNDh3wDap+oUH2Hwh9C/xQMYpRA63Rv
-      pMNIbfQ/wlGYvTLQZuvb5k2G+bM1ZWcX/XO9wY12UsRxs5HqfKL1qsHI0yIJ
-      1OorSztlcU8wbrsgK89zy3FEFYe3Xldmjkw0+VhkOckmUR4MdUgMDCnq2xSG
-      ivhaFTCfi5jcgnANGcdqqtMWucpJbMxNRlQSkolJ4dkAtekVWcySHGZH9/jN
-      21/kH29PN6xpZTp6OIxVr9ZVsdClKoIGgioyt22xhSpStLnQikDPP7rDSoNe
-      zQx0pSpbYoBBhN7hPRrdwrL4mSLDVPf/2l1O8igvEp211Hgc68owFWCM4Ffo
-      GYgq1ylcEwrLc1y853+N8r9S1m2QVMdwm8RUetCt7n9xXX2E9E1K3qmg+lK4
-      XfVuo5oaODNWBnGXvKpxncnMgJ5HCchtoRygaht6sgDSP5t7mFcrydXv2006
-      6u0FXcDwcRjo6H1BxzzJbebYYKIHrUHU3wU4uGiNb4A71KxYqwEYLAL3Q/UH
-      W5tp1VqSD6iXwWx5q4bJDvQ5FkLkMeij+9BHOZXM9mxbdI8HYEiPbqPgSN2q
-      XKVHrA6AnDrS8jz5FASkAh/bBAxKadyAMA5HYD/ExxYCP/wG4AuGESoNmN/A
-      jKcTnCApUTl5fa6zaJD8onMQd4ucmaOgSJFLxPTJ64lWoP066cMcb5EOUCvX
-      A1Dacva9Pk9VP/eNSsOT8bhF3hjfn+KbYO4zPYpgDINsm7HLHq9ANtsHWTDL
-      m4ztFEll2Cix7DZ122LFsFnPxVjKmNiCrMtrGNtn3OLWnLFzZboTsouPPS9k
-      K6Hewdjqov2IxWuegrDS4zYH1jDhMEcIz14StlP4MXTtlxKc/pTMiTtUWWlg
-      Rga0bpACypCvb67f/SgJ3D7GxpKRVhn46Rm5+vZWE41MzkAdWw8CaQemSqlv
-      NmG0TWlbyIeCdPYWPNvq6T0gOjKTQRxFlXWL8mxaC8grePPVy2PRei4ssv3x
-      n1X+vEz8Jy0qbcdb+C09gGNN9MepuwbHU5UPm+TD2yUHzxU4gqQzivLhDg4y
-      j4vHcZDv46Bj29ylriNBoxSzzM2tU0c/m7rSY9Y94VfHPX4hBJXb3JtMJi01
-      1Cosp1l0qw/Hn+ednXG+hb9ftU/CEnIw8+PoFoPBua+Nz8Fu4uC0yPn8IiDf
-      ZZSE7/Tp9Or9rF3rDBuA3ofqVh8SJr4DA9bRY2K5hErQl7Z4iTBR0O0okdMa
-      gkGIeCrlnGAzhbgTYC7zzuXFQwD2o0nCMk/0/AHhk9EK4m3qcYvatsellKyG
-      VlVsF0c3miiSwPCD1a6MfelDgcUrFbJiVhUZgkIqMlFTQJvKv4XAMIZfwJ8e
-      YywZQnNK9QXjH2HHyUoyJW/FU6CDe/PL2/xBeLtMoyplAbrIgW1tRg/A26Zo
-      7oE3NAel9EMd3JSmqz7+g6vO4ao/G+Ieme3ch7Y+Pnaibb+ZrDPYTx8nCmlJ
-      cGUgTvxDU+r2+xzieB443AoCpkLZ9/vaZ27fFbVpUrrOyaIPjTVN8tP/LFF5
-      CWbwBmKT5KNO86jxLPEhKLrHHM/qHr8fGhg4k/RQ948sekQpzJIetVuU18DS
-      dZnrUebUWu21OJG6Vm2caJc/u3nJxJGc4Wiv0d8w70zeAU4a4GMLnFcJuDgq
-      QDgDG291bMYAx9f/XYBxVsmZGY1VMm2Skz6Gkhf9PmhoRk5ggLK8SSrrdxFG
-      IIUmQQYvb/ENOU3NJMnIpUq20NoPA9CqQ8CKvvpP5pZYDmGszZ22sJZg9e7i
-      0hZf9zNpF4F2BI5uDWFt5miPzgg716Lmhgcs7kSusPDRWKfqhYKbpHVR4Ya/
-      KVyxC7AvBFMOvKC2xcA5tQUvnc6N5OoqVIGJFS/flzlUEmVkpEpfbjQF1PY1
-      yQwZFcGQQOgX6fQVIb/odErA2MetVmtJzKy6aYndVqLz7vGDqPmrDsk7lRKO
-      mtXmvM0PzK5uyWGFnBPtryOuis0/kyBO7o3h6Ak9pZdPmNqcm/V8qEeLf719
-      yUwI7NY5lJpRrMG8vUXTuiDRz7rwNQYMNzc6PTqfmmzHXAIges8Qu1GwDlyC
-      CQNGXb37vieZ5/WgF+BQ1sVw0rHAoLgHxnD7mJR+9EtZhCCKqtmHBXFMMsG8
-      LRb9aABCaTHwYUQuaZOEZlCtmGD6J0JQwfTdkWxMjfEzdRBNMNNYDHA1z3Lb
-      0m1z+yXCtG2Mu3VreezyjF1czqO02ZDfiQzqwqx70ijtz5dR5FR6nEtXWJw6
-      Qqxg5XuTDZvk9ccSLsCTtZitWpqbhW5ZbhJkSzwlA5NCX4qsRa6qlb5JlA3h
-      +VCFELFBX8qQLspfPZYiFNeK2+C3PD722uzyl7c+92wMo3cs0PXLn8Moxg+k
-      GPPW044RBDOJbhNhtySFiJw17ZYtmeu6S6adhGmkEvLWZCMVfNKT7CbaVZPC
-      LPc5ilI4KBVQTVC4sGxIL7uZ1vDMccE/KlMt98EZt2ujrEXSeLOpNyiEp+DY
-      QhnWOXYepaAZ1epa9WXgq/bziUp1E53YKvtYjVoT/kXLgrlKiJ9gQmavtgBX
-      3eTQPOQPRVzaHw5xQNta5n4s57kAJ3espFFRFyYtxgtt3EwLnoFwp+BGvADf
-      nqwoBa09cy1LSJs6nkNXkpBXZKKSstrJ11X6cVGmMgQH9opAkyakGLfI9VBH
-      6VpRChmaLMdwqsxOBnpeoDJSn+DVFnlbhCZ7RbrHJAjI6086McGjiecAstqW
-      dxjx1mRwz2yjDoZArqSa67U0u6iu+tPlGvOPoKox6NTedCNMYOHZrtf4irSv
-      SPuKtK9I+zyQRpmwpQUosDhfqQJ5vTB6gK98CMLE6H9KQNFIMNRq3CQqyAvo
-      5XRONWh0WAQ5Zgj7UQoRWxCrDOK3Gbp2rtissAsaIzzheNRyhQvNontBJuy2
-      fDDI5iZ6CbO13v8JYdbYkkrjXxeh7WEXE/j4V6ye8XuunoG/YnnSYwz4t3i3
-      NU52rpMxaq2XW54U6KQ1yfVvS+6Nh1EcACxG5cLKk4ONUtezwc2yJbwHX9VL
-      9KQqoqxLQLq2EJy591sX21c/yX3hiHB3DnKl1w9fHuOuewf3tNe3+ts7C94U
-      mQ8ga5K+AjOUgvHJMhNEuD4/r2kh4YyNTfINGeOy4iBV4+EUHOyqVLJFzvDS
-      WbXlSOdDE8I9Ayys3E5mro/uYXQE78iSuGzBRFs6L7Q+NsPNFjl5XWrTEm4/
-      WGxTmCnT5vIYde4GpxQ2c9zGg+omN71FyqT38DWypySjkJwzhwkBeGArOxCu
-      cW9LFZ3FUwIjlCkc/tLPmict10pMZnFed61WpdtoQnAYBUPcyYDZzA2FbMK9
-      dEZgho10Cooek24BnOPL9TQwXmn3OMum4wPiQcbb7LB4cF1M/z5raPxPUwjJ
-      LZfZHm6EG/SGZqTrijs819lYVYsGw9wAtebPSh19Y24hNPiw5Ni1GZG3UbZr
-      cQ08Zfs50MZsh2LOHNAWmkkSGxUuoabXqz3AMxMuO3BVTQb42E203IxuoPu4
-      Jn1YzLZQin2lHbOyR3CKT4AvQxNjjZrGPQPINNBBzCTBu+9Vmh+hASV/NyM/
-      0vNqSqygXAzsh7fofIPDjavyUzLWWO0PtkIF5QDi2kmK98NxH2PddgIjqOEP
-      aX+3RbyZHA7ajYdboHD9zil349ltKl8iFpQ7HA1RQznuO5a250UglXLdSbTF
-      yP5br9/hNlVbCioYwHclvXkJKqTA/w0IuKDZK3JVFkoSPwXlj1C9dtCu/R35
-      +Xoe9LXXl/yiVa4BQ8GrjWLs8tY2vE8a/BDn4tGAgyARNxAcBLh1qXwJCc9D
-      9g/spaa2tRvwJ6TmzgwnlWWKsya04+sJzk5OTlUcmvGwSbDyMdAr9SfGB2v7
-      M5AvDXdVnmAl0WPYyO4ojgSVkxCdYdiHxZE1YKTScTmX9uHZTF7+7Mhm+qbI
-      WyPdPU7TuRAOwKPS2g/8LTxew1whF0k+LLIIrEw37SYnaaBCTS4hoCMxbuzF
-      Fxcljd3jBUVx3ftX7TfJ3zrkt5Jy0d86O+pSfFTmeRdmdOunD6VbWbiNdHNx
-      XxL32kK8QHWKtaM6xaqBmx8Km9NldUqpIPdIdHIwcw+hGzgnUfZ57SlHSy6l
-      bcE88FwhHWcl11lVpmRAtf9YrVJEUCVmAsZbhdNS12Ypzgh9r6kpCPS/iCHs
-      Q9cuAjeL5OmUbFHsxE9G0z/UARQTAtTtMIqt9f1rocrTFarsJZ7whRL+sxNv
-      H/Ds9YNROujMAfNSMARqZaN4DFPaJOcg011xIHuOKJBzWwiLO0C6IPzRDEzn
-      90Kleg68qj8rvKNgZi2b33uHuOs+GHnouwWVKEIQxVOs5J2fX1xc2jt2ypXr
-      deQqwQ2zIflZYRVAE2xIR6kOhG1lUYDG81Q0OtU5TJ1ROX+wCvN9iiTMp2US
-      LStUDE8jvBN6MPAsLEBo0xa5LLWBlGdixGZAXl/NL7q6PoMPV/fXeG4L7k4v
-      CRtPt7Oh6+rx6PgQrdoPRUIshgTFPy+yk3yboJZTu1LoilOxIOhM5e5E6JkF
-      o3z+MIQGOJ0++7NaSrZYFIIk5jKH2WLJ1ZOJzgz0LohNERJfZTD6O0LFeeHL
-      0VaUiPCtixT3bSy4e7HxbuKyQxOj61LZlxj9vIDHhdiLPOazvnCfu4xlL/IE
-      d+xN6FXRXZQFpknOVs4G+8moIenk5kbvSoB6UnjPsrbHhRSuSx3c5279IWsP
-      BpPCcYVgT8G8uqIVnfmFTmDqgCSyUhBPcDpKX4ee2IIeJjWT6iyUUwOOM0zV
-      KparnpX4GVV7QNb5MzK47NcHM5UcnJ8cp4QJ5I+0AAQvkJ/cEcFxry49qbgq
-      l15LK1IN/t2nmMjQd+SXSh/hSM9mjFHHWV2nuz9MWuTXag0OQjiTbK7ElWkF
-      5WcmLnINH8OEBO476CbdZCPQi37vh8al+A64tMF8y8MhGAIXyT0MQ2vi+Rr4
-      PRkHvf25Ti6R+0+IwX0rhI5rQSDlrpW21KwSUinWN4G/i5JEq7GB3jVJ+Utm
-      8pXIsBOYPCfvdJR8wnWrQvNSDbf2tFqufIZ0qAC9ZS7HbKhwLNGj1KWWJzzm
-      UQG/MZdyC1eee9ySFJ2tnrA913FpL6krApWScfveQKV78qY1x61kKLFRJbBn
-      O2nlqgofq1LPsrgTqZqr8fxvk4C3BC+W2kBgGg5L5xstfafTrPbz4R3GUZCX
-      RzZhXAn/5lgeg8+RF1h0UGrxOo5Xe3gojy+1TyybUIa1o+wl1gspLu5vEpnW
-      lcUsNmSWtaOl8jzDqSxn0ORUxZ/5qWKAG+oxAbYP+GCXR2/soHGzOqgwUZ8+
-      TWcB4SwUnNXCICzKcC5DHuPFZ6B3qfoLyWAcy5PIAgwsTVEqq69zhVvNg6EO
-      bkqIF9sneoanZ3+3/n5+AIs5uIvsMBavCefLY7F4tph0P4vPHXwcxmJ2TxYL
-      CTGjJZfHlsVmYGoXI8V6yc4bU2RlYcdqnWlnqCYJeaOzG7379DJqP8fpZZie
-      tagrLdY9/j7dX3kKGkjvf3zZXqiK8md3ZjbW/RxYo6sTxp4gTL3k+NhiayfC
-      LCr1XLdZHWTog5bOzjUrt2rNzuYMCA4uuE0T7aNlyiqsjlPcJB8CoGH8IdbI
-      ysOlCJrXKAHi5YYMdTzGip0gBgrlGRmrrARwlKJlG+s8wqZs52HnEjj0yGy0
-      agBdBtD12tx5gWVMjHg3mWvXFemEUmi2WMecaded1F1M8y+Ouow71GWCOTZz
-      Vk9Hezclc5u+I/PaJDVnfTYxXobZGm1Gyu1Nqupfp7dqJB5NVdmWzuohD4+h
-      6nrnv0a4T7e0ae2vgbV5cGii9741sFR6LnMhGFwM0dGeEh8q16j6fgjaG4LF
-      HUYrce1JEqZ6Qr4HosV6uoOrEEdaz1HgwyzJHOHh0abXQ93JARm1XBUSfu79
-      v0LsO+tM2fjYUeRTimFQSeFwolqMSrp9pMzVtyMCkiSKZOMIJkOTgMEjuG86
-      vkH/fYKAnZg0DnecKxOq9CZMy/LX+3JvzynWzELsQbjJ5QtgT/Lt7C9jdh33
-      lOiLxRmgs9G/uzp1LvN7c2//aWWHpH9fFHzMYTCbBOWO7XHqriw9/qhzAl3L
-      Zgd73nH4TLRysrWO9QBrWst8L27hLx3AAtcuZyeCzvc7KjBDSXkJvgExaBTj
-      nYoE/D78LylaD/7fI5CKzMNttNQ9bJ/+pmS+RCr+3/8DY92+jS9pAAA=
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://api.twitter.com:443/1/favorites/sublimevideo.json?include_entities=false&page=2
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 1.3.0
-      authorization:
-      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="f47bd6fcc02cd9ea987ff92a1b2c846d",
-        oauth_signature="66lr462ZQ8FCS6Flzxs%2Bc2YD7YQ%3D", oauth_signature_method="HMAC-SHA1",
-        oauth_timestamp="1306426560", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI",
-        oauth_version="1.0"
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      date:
-      - Thu, 26 May 2011 16:16:02 GMT
-      server:
-      - hi
-      status:
-      - 200 OK
-      x-transaction:
-      - 1306426562-72094-55948
-      x-ratelimit-limit:
-      - '350'
-      etag:
-      - ! '"d751713988987e9331980363e24189ce"-gzip'
-      x-frame-options:
-      - SAMEORIGIN
-      last-modified:
-      - Thu, 26 May 2011 16:16:02 GMT
-      x-ratelimit-remaining:
-      - '346'
-      x-runtime:
-      - '0.02639'
-      x-transaction-mask:
-      - a6183ffa5f8ca943ff1b53b5644ef114959af87b
-      content-type:
-      - application/json; charset=utf-8
-      pragma:
-      - no-cache
-      x-access-level:
-      - read-write
-      x-ratelimit-class:
-      - api_identified
-      x-revision:
-      - DEV
-      expires:
-      - Tue, 31 Mar 1981 05:00:00 GMT
-      cache-control:
-      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
-      x-mid:
-      - 14b6cff8867ed12f934b127f356638b030ba5126
-      x-ratelimit-reset:
-      - '1306429857'
-      set-cookie:
-      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCLlWFy0wAToHaWQiJTdlOWIyNzFiNjBjYzc0%250AZjhjYjAyODNhNWZkOGY3NGJjIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--3c5132cedf704a1990ee42a756e0a5a224fffa6e;
-        domain=.twitter.com; path=/; HttpOnly
-      - guest_id=130642656222487279; path=/; expires=Sat, 25 Jun 2011 16:16:02 GMT
-      - k=128.179.67.94.1306426561909055; path=/; expires=Thu, 02-Jun-11 16:16:01
-        GMT; domain=.twitter.com
-      - lang=en; path=/
-      vary:
-      - Accept-Encoding
-      content-encoding:
-      - gzip
-      content-length:
-      - '22'
-    body: !binary |-
-      H4sIAAAAAAAAA4uOBQApu0wNAgAAAA==
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 1.3.0
-      authorization:
-      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="7b78490adb472370b7b87191a8b66054",
-        oauth_signature="P6UFBiQLkhWKgsSOs4n4d%2BAK%2Fzg%3D", oauth_signature_method="HMAC-SHA1",
-        oauth_timestamp="1310633227", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI",
-        oauth_version="1.0"
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      date:
-      - Thu, 14 Jul 2011 08:47:09 GMT
-      server:
-      - hi
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Thu, 14 Jul 2011 08:52:09 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      content-encoding:
-      - gzip
-      transfer-encoding:
-      - chunked
-    body: !binary |-
-      H4sIAAAAAAAAA+yXa2/bNhSG/wojYBmGGRYvulFBEANp1qJrsHxIMQzrIHAy
-      bTOhRIUi7TjF/vuOfFl9bTcMAfIhhmFDfMnzUuc8OKI+B6WpGi2dHBaqDnLc
-      pzHrBZV4LNQwyDkhnPCYU04TkqQ4XktF62yQB3t60AsaMZZBTnrBg5d2DpO+
-      o9TOK6HgH2QrR1a2k8JbDdpFq+pSQsDzvVCnD+e7K1uvXRvkv38OSitFt2fh
-      IMivcthDhKH3XiOKCUEkzXGaE4p+xPCBpSNrqsK3stvzIuLm2OJOSRLTNNoe
-      Xd3kUoIVY2mCHLyNsUNVg3+3lyjpx7DvLOsl/YRRQpI/eoGbN5CD4Mao2gV/
-      9YIjufxqHlVrCi3qsYd8FqUZdgFHFoRKOjEUTnR7WeakWPlZWcqlYWPNSGlI
-      bNWtXuZ64lyTh6FgfTdT1bgPlQ+35rUhYZglKScZDWs5K8QUbGxRG1sJ3b9r
-      xuDeGm/LzuxUuzOBJlDP89MHb9zZKr5yvpZtXzSA1cLDtyFchGDqnLShGkaY
-      pxnnPLuo3Dmhy9XISr0KVJuR0drMllenY3d2u1yLRsaia1F21qHoBNiQk48d
-      BIPRnRijwVAoPa+MU6ZGV4+l1Boygk7Q2Q/oRlhUmtpZiabGt6iBO7FKPiHv
-      lFZQchjuxEaLOVx0MtIS5lk5VXIGQfKbzs+sSeocvwwsMIICkjihm4OrEq8U
-      KM636AV0Y5yT7CC9K89teP9xPUDv2vcYvlk/i5MkSXu0z2LMs/QovjgmGYmy
-      iGCOcZRt4bujPSe+9Di+MSMx5RHLwpEVdWlUW0C6vNSq/o8Qz2YzsJHSDWV5
-      31n9K0hh/huYfxDPRdtBH3750EPl97J1SAs09RINJSonACFcvvUKcEXSAeNu
-      i7R1z9pEbd2x9khb9as90G69BNDoF9AozinLo+xltUmcpRwQSiKcpsAS3+Rs
-      VzvCWa1f2+SRNvnu49urE/TJAwCXg4m05t7nHW5P6A6q0KJ3i6EThFbbdLC3
-      cPzbzz9dTz8uVr3ZwbD2Wu9D2I1+G0DC8xgAjF8cgNDKUsoY40nK0h0At7Qj
-      AMLPK4Bfe05fLlqgr9GtdFa1aPzJY3zFBTyrL06e4SF7BD2Svjz0WIp5BJM4
-      Z8kuepva6xHx/6AH6xS6eAbSrk0NpJGN41yWY5bHL400xnCU0ihmGc9ohLdI
-      29GOkCbrV9KOkSZHo3sxRwM3UX8KPxzDm0kFhRLWtAYNaumeGmWFg1FR+5G4
-      dxDr0hiN3ETU9+12C1wG2z3+0ThjODt0/lsqB5rgxPfg7WKjCbKcpvA9iGYj
-      GqhzbaZSi/03jjTNIp4RdvidY60uOP0bAAD//62YywrCMBBFf6W4cNmkorYq
-      RUTBH3DjQmSi6QNrJjSpWsF/N62tlKrQhcvMkAfMIXPnYi0Sio2eNxmb7knN
-      lDtwhtRzGuB95H6AJ/UfwKMN8JSOD6ecHHkAxTktDtthp2ZQis6zRIgYVgSq
-      TEpMNckx0xnjhMWCgFBXntoyn0eJz0UfznL2ivnOeDhy3Q5YrssrvtG4iaBs
-      ryulwFpCeoEkQiuAu0FYo5VkGsQRLYY3Xss+8147TEjASLo9L+Lumm/39mn2
-      0uQqM4ia/6V2enrTxqKqPO09nmjCaYuKEgAA
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=1&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Thu, 09 Feb 2012 18:00:54 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Thu, 09 Feb 2012 17:55:54 GMT
-      x-varnish:
-      - '1837724916'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.ad05cf69c8f94a74; path=/; expires=Thu, 16-Feb-2012 17:55:54
-        UTC; domain=.search.twitter.com; httponly
+      - '127'
       server:
       - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '1215'
     body: !binary |-
-      H4sIAAAAAAAC/+xYa2/bNhT9K6yGpRjm2aRE61UEeTXpiqxAsbYohmUVGJu2
-      uUqkSlJ1jTb/fZeUGj+bdFg65EMNixZ5X7zUOZe0PgYjVdUlt3xcCBnkuI9J
-      3Asq9qEQ4yAncZxmGMcZpoSmUZJcywpjdZAH2wpBL6jZlINtL3jXcL0ArR/D
-      UC8qJuAXxJpPNDezotElyA6MkCMOHve3fe292980NU1pTZD/+TEYac7ctJkF
-      Ly8b3kM4QWf8EoWYhIjQPIRvgn7G8AHTiVZV0RjuZu09ro75ZOMkS2gcrg93
-      eXayNRvJKkgz+P2iwfg0qxboRDWWXZYctKZcBblsyrIXfGkdb15DYVRRMjlt
-      YC2LkRq7SFyCoOKWjZllQf6xW47CLmon1nzEpQ2u4AFoNRElLGrlrNt1nllb
-      54MBi/p2LqppH577YE3PDEiEI0iUpOFA8nnB3kMYSFPpipX9v+tpsMNz4fya
-      zr+BAEbg/xTBqEaPXDp7pX3E0AzQsr/3rlH2UZeBsI3kps9qgK2P0ZgBdAYQ
-      1FquB2JMcZakWZalB5XdJ2FrjTQvO0dSTVRZqnnb25vaRy9bWzRRGj1jIxd6
-      wJwAJmT5B4ewozk3quIPUP4TumgAYyeHVrP3woxEjl5z9JbXFi1Ug+ZMWCGn
-      PXTZWDTjmiNhkTAPUDd/C5MeTMiTs5R+IMiFipaN9/zYRVUdWFsQdV2P082R
-      Fkbroy023dhV71aq4ByTPMp2UuW5ZvCgXouSAU853yJNmKYpxXhIdtLmWrqL
-      OL+p97xc+AC7GRNGWRRBPcoojSneYMy68AuMsbM7YAy5Ac8piWAW8TAbPC+e
-      6+KEFmlUnETF0dH8bonz1YFu5c9lyUZvL7nWCx+oo82/JMmxc3LsnLjqd3S6
-      izEXweE596U2B8bg0zDy7WPfHrk2Iq7Fvg2T5QjJet6CthbH/j7zLfbydMXT
-      8aqdH/H3UdjbikpbraG/T7f9tRZkZSZtVJysjK9a02W8dqSNFmVL2zavVhqF
-      y5jdLFek3RzpMqvWG03RD+cc+ZVEnz6hpW5n3WWN3rz5poXjRSOhcAyXhSMk
-      OaX5kN6bPTZMYqAJzZIkiki4UTE2hN/32Pu3x14Ev6o5qprRDNVcQWw01kK+
-      RRVbwOWtS24MsjMm0QxU7YwvOh1h+xcBejrxe/CIyYcWZsPGiAE+nB5cQo9R
-      zbTbjWG7XvTXdmT+zJD6/A/5P1MI52GWw8i9odAwwcOYJGQY4yzepNC68DuF
-      7h+FjuHQ+dRh3VPioUFSWaRkuUBWN9xbnmkulwxzp1RWGuVFFZMLdNpoVXNg
-      WKvR/6aMONMCGBGtnEaTHPYVQnYywrl4db5FCUojmg6zZCcnPgt3HkG5kuhF
-      Jfw5cYsMQ5rSLAupgzxc6//ZNoXfkgzhDVAlw4xm4TCMB6+kFbbk41/IZ6jW
-      8i7IcHuEW8kwn8/7fDQDQEsf4iuwftqq78L4YXsUcoV+CugGpHLol4iNx9pt
-      D8LVf2S4HHsd97cNmWYKyVihJGwfLdhNc1mKih+s4vu65q5C/LribqJ8pd6u
-      Q31Xtb366/r9RVGDZveWBEON/fwKJMhXOl0IHFz9AwAA//8DABW3IhClEQAA
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=2&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Thu, 09 Feb 2012 18:00:55 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Thu, 09 Feb 2012 17:55:55 GMT
-      x-varnish:
-      - '728092681'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.bb34ecf40744c2f6; path=/; expires=Thu, 16-Feb-2012 17:55:55
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '196'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQbQuCMBD+Lwf5SWKb4HIg/ZCIIXrVQG3eXCTRf2+aVuCX
-      Pj083PNydw8or42tscdKmxYU2zLOY2iKuzYVKJ7KNJXZTshECs6TTCwz7XoC
-      BWsBxGAJb+bqnbbFGYNoP2LOo7czX3uiLt8IQUNTmIARWZtzxsakKSCUdh5p
-      CFE/sjAmPBG6i/ZUjzXOtCX+0zBZna97B+pw/BBtkeadQ30MS154y5fMhzN4
-      vgAAAP//AwA0EgblPAEAAA==
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=3&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Thu, 09 Feb 2012 18:00:56 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Thu, 09 Feb 2012 17:55:56 GMT
-      x-varnish:
-      - '2115165982'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.5b7d0c7f6f655ff4; path=/; expires=Thu, 16-Feb-2012 17:55:56
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '197'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8klgvrbaw9CERi+hUC17WWY0k+vdW0wp8
-      6elwmHOZmQfkTWVK7LBQugbBtmzPfaiyu9IFiIAnnCf7NGVBxONdGsbLTNmO
-      QMBaAD4YwptueqtMdkEnOowoQ+/tlGuP18pNGNJQZdqhR8bIgLExaQqIfGh7
-      pMFF/cjcmPBMaK+qp3KssbrO8Z+GyWr7srMgjqcPUQZp3tnV+7Dkubd8yXw4
-      g+cLAAD//wMAIVUUkzwBAAA=
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=4&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Thu, 09 Feb 2012 18:00:58 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Thu, 09 Feb 2012 17:55:58 GMT
-      x-varnish:
-      - '735886285'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.d0b7b4a0af499a75; path=/; expires=Thu, 16-Feb-2012 17:55:58
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '197'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8ktjVXFOQPiRiEZ1qwcs660YS/XuraQW+
-      9HQ4zLnMzAOKttYV9lhK1UDKtoyHPtT5XaoSUi5iIeIkiRLB9xFP2G6ZSdMT
-      pLAWgA+a8KZaa6TOL+hEhxGz0Hs7s7XH67JNENBQ58qhR1pnnLExaQpwpZ1F
-      GlzUj8yNCc+E5iotVWONUU2B/zRMVmOr3kB6PH2I1Ejzzq7ehyXPveVL5sMZ
-      PF8AAAD//wMA+/jfJjwBAAA=
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=5&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Thu, 09 Feb 2012 18:00:59 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Thu, 09 Feb 2012 17:55:59 GMT
-      x-varnish:
-      - '2534062257'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.ee2be02bcc92941e; path=/; expires=Thu, 16-Feb-2012 17:55:59
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '197'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8WmK1XHVB+pCIRXSqBS/rrEYS/XuraQW+
-      9HQ4zLnMzAPypjIldlgoXYPkW5/HDKrsrnQB0heREFGSxOEu8kUQhcEyU7Yj
-      kLAWAANDeNNNb5XJLuhEhxHTvfd2pmuP16abIKChyrRDj4xJfc7HpCkgZND2
-      SIOL+pG5MeGZ0F5VT+VYY3Wd4z8Nk9X2ZWdBHk8fogzSvLOrZ7Dkubd8yXw4
-      h+cLAAD//wMA13U+XjwBAAA=
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=1&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Mon, 13 Feb 2012 11:29:47 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Mon, 13 Feb 2012 11:24:47 GMT
-      x-varnish:
-      - '1481790053'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.f50c12cb492c5e34; path=/; expires=Mon, 20-Feb-2012 11:24:47
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '1275'
-    body: !binary |-
-      H4sIAAAAAAAC/+xYbW/bNhD+K6yGBRhmRCRFvRZBY7tJMaTdgq5DPyyrQMu0
-      xVZvJak6Xtv/PoqSY9lWXgak2z7MsM8Sj3fHI5+HR+mzlZR5lTHF5jEvrAge
-      Q+SNrJxex3xuRcjzQ9/DEIcIkcANXbzRxVIJK7IOO1gjq6JLpm1H1seaibXu
-      9T3GYp1Trv+1WrCFYDKNa5Fp3TPJi4RpjyeHvo4+nuybyjpT0op+/2wlgtFm
-      2FRpL+eCjwCC4JzNAIYIA0QiDCOMwY9Qf7TpQpR5XEvWjDqpmJJJWvBlX2Ey
-      JgFEhPj+bnuX7Ua5Y1XQXGdrTVPBpSqrFFz2nC9ZaUVFnWUj67b5vHsuuSzj
-      jBbLWs9pnJTzJhQrtCJnis6polb0uZuWWK2rRi1YwgplfdULIcoFz/Tk5o11
-      O9+pUlVk2xQfqxXPl8d6/e2dftJGDgwdFELi2jdZxQTCa/2Li1LkNDt+XzXp
-      HQSIG/eyCyN1HMnhYwSSZS2SJrmjTD2lINUYOjn6WJfqaZePjqEUEyZKqzha
-      qqcrNmsMbNrcaDeKXTdoeVFTMQeiTD7IJ+BNeg1OC6b+rLigagRODd4ALebg
-      VKV8Ruv5shmCKjv4tMvZ3RrQ7Le0C7rb2sKkafs6ug+8MIwgjhAZBK8Z3gFu
-      G+wQDw/CttMNofb1VQ3hWZivwbSsFZ1lbBC0QeghghB0PYj1bxe0e8pvCVrn
-      Tiw5OlEUYLtgq5h+0mHEY6P1vgj3wpSrumDymFZ6zzUxamnrmw18bT4nMNQz
-      GobBs1ydINxaA8GyzlFRLsosK1dbkL9pbcGiFOAVTYYAv8V3D9NgDDabP6BS
-      pmXGAF+AdVmDFS0U0KAoK17wsnjSh79148vaZQEijhtiPzxkgrVRWft8sF7x
-      JKUsAxdMyky71+ApYsGqbB3rnlJRVctNKQoC1yW+Qzy9BWu03dK1B8zd/tYD
-      iGeqhuMPEm9JeaFrX1Z+YrlB8y4DMQl81/WC4dJxox1i4VXt+2f4qvbOxwS8
-      /OmXn4dJiF3shSYVxw3IHgl3lbeQ8D39xpUjwPrrBxDbreWj8u9O5w+pEIZ1
-      7yv7AaS6qh3okUYSIz2nkb7fyGACgGEbv0zLgg0Rruk2PjfSmIyNk4nbyPOp
-      cXVm3AbGIbqqg+nEb8OBzYD1JNjLXy9+wwF6/U0L0JuajQD0d09P+jvMg3+h
-      AHlBCKGnDwr6YOT4vreD/X3l/wXov1eAxismy5w9AdEP4KrWGJueKkE/cZnw
-      CLxl4AOrVFd5uOLFcgRmtQIpE7okKcD1Ma1PigV6cR6QawSaUM5WGM/P/2Gq
-      wAiiyAkHqXIpqF6otzyj+imHscOaEQSBPuu6aLhmbLRDxHmpy1C2NgGGGYOd
-      0HH001xIdAGEe4zZVd7CGJU+AmPQXRs6cvQoPDe0L+NLEU9JHDjx1InH49Uj
-      V46HBrqXP7OMJh9mTIi1CdTR5m+SZNI4mTROmt1vfDZYQazTC2a22kgzBp5h
-      x8jnRo4b6aBGQiOxv21B4chYkNZiYq5DI6HRBz1Pk76daTHXDh4dRCVtL9dc
-      B4f+WgvUG0kbFfq99r412cZrW9poTri1bfNqtQ7exuxG2dN2YyTbrFpvJADf
-      XTDQPtR9+QK2fTvrLmvw7t2jbhx/3LytiCut6d6JQE3EzQsPK+rddNyE1te/
-      AAAA//8DAIjvzC+TEQAA
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=2&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Mon, 13 Feb 2012 11:29:49 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Mon, 13 Feb 2012 11:24:49 GMT
-      x-varnish:
-      - '2975942688'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.cd4dc02efe0ecd23; path=/; expires=Mon, 20-Feb-2012 11:24:49
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '194'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQbQuCMBD+Lwf5acScYGww+iERQ/Sqgdq8uUii/940rcAv
-      fXp4uOfl7h5QXhtXY4+VsS0ovuUZg6a4G1uBSnPJU8klz6QUOyFzvsyM7wkU
-      rAXAwBHe7DV444ozRtF+RJ0mb6dee5JOb4SgoSlsxISc0ymfkqYAwaALSEOM
-      +pHFMeGJ0F9MoHqs8bYt8Z+GyepD3XtQh+OHGIc07xzrGSx58StfMh/O4fkC
-      AAD//wMAlhyNDzsBAAA=
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=3&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Mon, 13 Feb 2012 11:29:50 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Mon, 13 Feb 2012 11:24:50 GMT
-      x-varnish:
-      - '2115792712'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.a89ef594c9ec11f0; path=/; expires=Mon, 20-Feb-2012 11:24:50
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '195'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQbQuCMBD+Lwf5acQ2IdxA+iERQ/Sqgdq8uUii/940rcAv
-      fXp4uOfl7h5QXhtXY4+VsS1ovuVCMmiKu7EVaLFTXCiu0kyKTCoh+TIzvifQ
-      sBYAA0d4s9fgjSvOGEX7EXOZvJ352pN0+UZKGprCRkzIuVzwKWkKSBl0AWmI
-      UT+yOCY8EfqLCVSPNd62Jf7TMFl9qHsP+nD8EOOQ5p1jPYMlL77lS+bDOTxf
-      AAAA//8DAHHoi5Y8AQAA
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=4&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Mon, 13 Feb 2012 11:29:51 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Mon, 13 Feb 2012 11:24:51 GMT
-      x-varnish:
-      - '2171652034'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.720f307eaaa975ee; path=/; expires=Mon, 20-Feb-2012 11:24:51
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '196'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8ktg1s1xY+pCIRXSqBS/rrBtJ9O+tphX4
-      0tNwOLeZeUDeVKbEDgulaxBszXgcQpXdlS5A8CRlPOWM7ZLdNo3ieD9zynYE
-      ApYCCMEQ3nTjrDLZBb3oMEy5Cd5OufQErVxFEfVVpv0MyBjp6SFpDPALtQ6p
-      91E/Mk8TngntVTkqhxqr6xz/aRit1pWdBXE8fYAySNPO3hvCnOff8gXT4Qye
-      LwAAAP//AwBykO2IPAEAAA==
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=5&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Mon, 13 Feb 2012 11:29:53 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Mon, 13 Feb 2012 11:24:53 GMT
-      x-varnish:
-      - '2283970652'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.a5227a9ae7d464cc; path=/; expires=Mon, 20-Feb-2012 11:24:53
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '197'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8WmLXtHJB+pCIRXSqBS/rrBtJ9O+tphX4
-      0tPhMOcyMw/Im8qU2GGhdA2Sr7nYMKiyu9IFSLFNuEgE38Ui5GEi9tE8U7Yj
-      kLAUAANDeNONs8pkF/Siw4BpFLyd6dITtOkqDKmvMu0xIGNSwfmQNAbEDFqH
-      1PuoH5kfE54J7VU5Kocaq+sc/2kYrdaVnQV5PH2IMkjTzr6ewZzn3/Il0+Ec
-      ni8AAAD//wMA/n5b/TwBAAA=
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=1&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Mon, 13 Feb 2012 11:29:55 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Mon, 13 Feb 2012 11:24:55 GMT
-      x-varnish:
-      - '2236570144'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.64e4bbee2508b2d0; path=/; expires=Mon, 20-Feb-2012 11:24:55
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '1275'
-    body: !binary |-
-      H4sIAAAAAAAC/+xYbW/bNhD+K6yGBRhmRCRFvRZBY7tJMaTdgq5DPyyrQMu0
-      xVZvJak6Xtv/PoqSY9lWXgak2z7MsM8Sj3fHI5+HR+mzlZR5lTHF5jEvrAge
-      Q+SNrJxex3xuRcjzQ9/DEIcIkcANXbzRxVIJK7IOO1gjq6JLpm1H1seaibXu
-      9T3GYp1Trv+1WrCFYDKNa5Fp3TPJi4RpjyeHvo4+nuybyjpT0op+/2wlgtFm
-      2FRpL+eCjwCC4JzNAIYIA0QiDCOMwY9Qf7TpQpR5XEvWjDqpmJJJWvBlX2Ey
-      JgFEhPj+bnuX7Ua5Y1XQXGdrTVPBpSqrFFz2nC9ZaUVFnWUj67b5vHsuuSzj
-      jBbLWs9pnJTzJhQrtCJnis6polb0uZuWWK2rRi1YwgplfdULIcoFz/Tk5o11
-      O9+pUlVk2xQfqxXPl8d6/e2dftJGDgwdFELi2jdZxQTCa/2Li1LkNDt+XzXp
-      HQSIG/eyCyN1HMnhYwSSZS2SJrmjTD2lINUYOjn6WJfqaZePjqEUEyZKqzha
-      qqcrNmsMbNrcaDeKXTdoeVFTMQeiTD7IJ+BNeg1OC6b+rLigagRODd4ALebg
-      VKV8Ruv5shmCKjv4tMvZ3RrQ7Le0C7rb2sKkafs6ug+8MIwgjhAZBK8Z3gFu
-      G+wQDw/CttMNofb1VQ3hWZivwbSsFZ1lbBC0QeghghB0PYj1bxe0e8pvCVrn
-      Tiw5OlEUYLtgq5h+0mHEY6P1vgj3wpSrumDymFZ6zzUxamnrmw18bT4nMNQz
-      GobBs1ydINxaA8GyzlFRLsosK1dbkL9pbcGiFOAVTYYAv8V3D9NgDDabP6BS
-      pmXGAF+AdVmDFS0U0KAoK17wsnjSh79148vaZQEijhtiPzxkgrVRWft8sF7x
-      JKUsAxdMyky71+ApYsGqbB3rnlJRVctNKQoC1yW+Qzy9BWu03dK1B8zd/tYD
-      iGeqhuMPEm9JeaFrX1Z+YrlB8y4DMQl81/WC4dJxox1i4VXt+2f4qvbOxwS8
-      /OmXn4dJiF3shSYVxw3IHgl3lbeQ8D39xpUjwPrrBxDbreWj8u9O5w+pEIZ1
-      7yv7AaS6qh3okUYSIz2nkb7fyGACgGEbv0zLgg0Rruk2PjfSmIyNk4nbyPOp
-      cXVm3AbGIbqqg+nEb8OBzYD1JNjLXy9+wwF6/U0L0JuajQD0d09P+jvMg3+h
-      AHlBCKGnDwr6YOT4vreD/X3l/wXov1eAxismy5w9AdEP4KrWGJueKkE/cZnw
-      CLxl4AOrVFd5uOLFcgRmtQIpE7okKcD1Ma1PigV6cR6QawSaUM5WGM/P/2Gq
-      wAiiyAkHqXIpqF6otzyj+imHscOaEQSBPuu6aLhmbLRDxHmpy1C2NgGGGYOd
-      0HH001xIdAGEe4zZVd7CGJU+AmPQXRs6cvQoPDe0L+NLEU9JHDjx1InH49Uj
-      V46HBrqXP7OMJh9mTIi1CdTR5m+SZNI4mTROmt1vfDZYQazTC2a22kgzBp5h
-      x8jnRo4b6aBGQiOxv21B4chYkNZiYq5DI6HRBz1Pk76daTHXDh4dRCVtL9dc
-      B4f+WgvUG0kbFfq99r412cZrW9poTri1bfNqtQ7exuxG2dN2YyTbrFpvJADf
-      XTDQPtR9+QK2fTvrLmvw7t2jbhx/3LytiCut6d6JQE3EzQsPK+rddNyE1te/
-      AAAA//8DAIjvzC+TEQAA
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=2&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Mon, 13 Feb 2012 11:29:57 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Mon, 13 Feb 2012 11:24:57 GMT
-      x-varnish:
-      - '2047749299'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.c05d10bd85bbd48b; path=/; expires=Mon, 20-Feb-2012 11:24:57
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '196'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8WmJX8QrSh0QsolMteFln3Uiif281rcCX
-      ng6HOZeZeUDZNbrGASupWsj4nouYQVPcpaogE1HKRSr8IAkDHsRhlKwzaQaC
-      DLYCYKAJb6qzRurigk50mDAX3tuZbz1en+98n8amUA490joXnE9Jc4DPoLdI
-      o4v6kbkx4ZnQXKWleqoxqi3xn4bZamw9GMiOpw+RGmnZ2dUzWPPcW75kOZzD
-      8wUAAP//AwBURZFyPAEAAA==
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=3&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Mon, 13 Feb 2012 11:29:58 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Mon, 13 Feb 2012 11:24:58 GMT
-      x-varnish:
-      - '2682065045'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.51a06ebfe7a5686d; path=/; expires=Mon, 20-Feb-2012 11:24:58
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '196'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8khgVr7D0IRGL6FQLXtZZjST691bTCnzp
-      6XCYc5mZBxRtrSvqqZSqgQz3iAm6UOd3qUrIvChFL/UCjMMoCeMkjNaZND1D
-      BlsBuKCZbqodjNT5hazoMKHwnbdTbD1OJ3a+z2OdK4sOay08xClpDghc6Abi
-      0Ub9yOyY6cxkrnLgaqoxqinon4bZaoaqN5AdTx8iNfGys613Yc2zf/mS5XCE
-      5wsAAP//AwDKBGZ/PQEAAA==
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=4&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Mon, 13 Feb 2012 11:29:59 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Mon, 13 Feb 2012 11:24:59 GMT
-      x-varnish:
-      - '1844243305'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.5b2da7ec68462353; path=/; expires=Mon, 20-Feb-2012 11:24:59
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '197'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8kthVS12QPiRiEZ1qwcs660YS/XuraQW+
-      9HQ4zLnMzAOKttYV9lhK1YBgWxbsfKjzu1QlCL5PGU95GKZxwpI4CqJlJk1P
-      IGAtAB804U211kidX9CJDiNmofd2ZmuP12WbIKChzpVDj7TOOGNj0hTgSjuL
-      NLioH5kbE54JzVVaqsYao5oC/2mYrMZWvQFxPH2I1Ejzzq7ehyXPveVL5sMZ
-      PF8AAAD//wMANIpXEDwBAAA=
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://search.twitter.com:443/search.json?page=5&q=%22rymai%22&result_type=recent&rpp=100
-    body: 
-    headers:
-      accept:
-      - application/json
-      user-agent:
-      - Twitter Ruby Gem 2.1.0
-      accept-encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      cache-control:
-      - max-age=15, must-revalidate, max-age=300
-      expires:
-      - Mon, 13 Feb 2012 11:30:01 GMT
-      content-type:
-      - application/json;charset=utf-8
-      vary:
-      - Accept-Encoding
-      date:
-      - Mon, 13 Feb 2012 11:25:01 GMT
-      x-varnish:
-      - '1419105467'
-      age:
-      - '0'
-      via:
-      - 1.1 varnish
-      set-cookie:
-      - k=128.179.67.94.d56e0df647f6d931; path=/; expires=Mon, 20-Feb-2012 11:25:01
-        UTC; domain=.search.twitter.com; httponly
-      server:
-      - tfe
-      content-encoding:
-      - gzip
-      content-length:
-      - '196'
-    body: !binary |-
-      H4sIAAAAAAAC/4xQ2wqCQBD9l4F8ktj1isLSh0QsolMteFln3Uiif281rcCX
-      ng7DnNvMA8qu0TUOWEnVQs72nMc+NMVdqgpynmSMZzxMwzSOkixOsnUnzUCQ
-      w5YAPmjCm+qskbq4oCMdJhSR91aKrcbrxS4IaGwK5dAjrQVnbHKaDVyh3iKN
-      zuqH5taEZ0JzlZbqKcaotsR/EmapsfVgID+ePoPUSEtnF+/D6ufe8h2Wwxk8
-      XwAAAP//AwD6WmexPAEAAA==
+      H4sIAAAAAAAAA6tWKkotTi2JL8nMTY3PzIsvTk3Oz0spVrIyNDayNDY0tjCw
+      1AEqyU3MzMvMS4/PyCwByZmABWH6lKyUwlNTFNxSkxQMTRUMja1MDawMLBW0
+      DYBAwcjA0EhJRykjv7QopzI+JzM3swRogKlBLQAgo+Q4egAAAA==
     http_version: '1.1'
