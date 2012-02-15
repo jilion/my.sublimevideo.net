@@ -108,7 +108,7 @@ group :assets do
   gem 'coffee-rails',       '~> 3.1.1'
   gem 'eco'
   gem 'uglifier'
-  gem 'haml_coffee_assets', '0.8.2' # THE 0.8.1 WAS CAUSING THE SHIT
+  gem 'haml_coffee_assets', '0.7.1' # THE 0.8.1 (0.8.0?) WAS CAUSING THE SHIT
   gem 'execjs'
 end
 
