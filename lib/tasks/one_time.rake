@@ -203,58 +203,49 @@ namespace :one_time do
           '6pdo240s', 'qeiwa7fu', 'qsr700iv'
         ]
         criteria = VideoTag.where(st: { '$in' => site_tokens }, uo: { '$ne' => 'a' }, created_at: { "$lte" => Time.utc(2012, 1, 19) })
-        counter = criteria.count
-        puts "#{site_tokens.uniq.size} sites with VideoTag including ?"
-        puts "#{counter} VideoTag not scanned yet."
-        limit = 10000
-        while counter > 0
-          counter -= limit
-          counter = 0 if counter < 0
-          puts "left #{counter}"
-          criteria.offset(counter).limit(limit).each do |video_tag|
-            case video_tag.uo
-            when 's'
-              video_crc = video_tag.cs.first
-              if video_tag.s[video_crc]
-                video_source = video_tag.s[video_crc]['u']
-              else
-                video_crc, hash = video_tag.s.first
-                video_source = hash['u']
-              end
+        criteria.each do |video_tag|
+          case video_tag.uo
+          when 's'
+            video_crc = video_tag.cs.first
+            if video_tag.s[video_crc]
+              video_source = video_tag.s[video_crc]['u']
+            else
+              video_crc, hash = video_tag.s.first
+              video_source = hash['u']
+            end
 
-              if video_source.include?('?')
-                good_video_crc = Zlib.crc32(video_source.match(/^(.*)\?/)[1]).to_s(16)
-                if good_video_crc != video_crc
-                  bad_video_stat_crit  = Stat::Video.where(st: video_tag.st, u: video_crc)
-                  bad_video_stat_count = bad_video_stat_crit.count
-                  case bad_video_stat_count
-                  when 1
-                    bad_video_stat = bad_video_stat_crit.first
-                    if good_video_stat = Stat::Video.where(st: video_tag.st, u: good_video_crc, d: bad_video_stat.d).first
-                      merge_video_stat(bad_video_stat, good_video_stat)
-                      bad_video_stat.delete
-                    else
-                      update_bad_video_stat(bad_video_stat, good_video_crc)
-                    end
-
-                    if Stat::Video.where(st: video_tag.st, u: good_video_crc).exists?
-                      video_tag.delete
-                    else
-                      update_bad_video_tag(video_tag, good_video_crc)
-                    end
-                  when 0
-                    # nothing special to do
-                    video_tag.delete
+            if video_source.include?('?')
+              good_video_crc = Zlib.crc32(video_source.match(/^(.*)\?/)[1]).to_s(16)
+              if good_video_crc != video_crc
+                bad_video_stat_crit  = Stat::Video.where(st: video_tag.st, u: video_crc)
+                bad_video_stat_count = bad_video_stat_crit.count
+                case bad_video_stat_count
+                when 1                    
+                  bad_video_stat = bad_video_stat_crit.first
+                  if good_video_stat = Stat::Video.where(st: video_tag.st, u: good_video_crc, d: bad_video_stat.d).first
+                    merge_video_stat(bad_video_stat, good_video_stat)
+                    bad_video_stat.delete
+                  else
+                    update_bad_video_stat(bad_video_stat, good_video_crc)
                   end
+                  
+                  if VideoTag.where(st: video_tag.st, u: good_video_crc).exists?
+                    video_tag.delete
+                  else
+                    update_bad_video_tag(video_tag, good_video_crc)
+                  end
+                when 0
+                  # nothing special to do
+                  video_tag.delete
                 end
               end
-            else # nil
-              bad_video_stat_crit = Stat::Video.where(st: video_tag.st, u: video_tag.u)
-              bad_video_stat_count = bad_video_stat_crit.count
-              if bad_video_stat_count <= 1
-                bad_video_stat_crit.delete
-                video_tag.delete
-              end
+            end
+          else # nil
+            bad_video_stat_crit = Stat::Video.where(st: video_tag.st, u: video_tag.u)
+            bad_video_stat_count = bad_video_stat_crit.count
+            if bad_video_stat_count <= 1
+              bad_video_stat_crit.delete
+              video_tag.delete
             end
           end
         end
