@@ -1,0 +1,7 @@
+<% unless video.get('sources').mp4Base().srcIsUrl(): %>
+  <p class='warning'>Please provide a MP4 video source.</p>
+<% end %>
+
+<% unless video.get('width') && @video.get('height'): %>
+  <p class='warning'>Please provide dimensions for the &lt;video&gt; element.</p>
+<% end %>

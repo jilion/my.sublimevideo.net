@@ -6,6 +6,18 @@
 
 #= require_self
 
+window.SV =
+  Models: {}
+  Collections: {}
+  Routers: {}
+  Views: {}
+
+window.MSV =
+  Models: {}
+  Collections: {}
+  Routers: {}
+  Views: {}
+
 SublimeVideo.topDomainHost = ->
   document.location.host.split('.').slice(-2).join('.')
 
@@ -19,7 +31,7 @@ $ ->
     $('#menu .active').removeClass 'active'
     $(event.target).addClass 'active'
     if li = $(event.target).parent 'li' then li.addClass 'active'
-    
+
     # Needed to work on Safari (if not used, dom aren't redraw before page reloading)
     setTimeout (-> window.location.href = event.target.href), 1
     false

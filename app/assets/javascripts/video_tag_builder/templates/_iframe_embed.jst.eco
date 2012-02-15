@@ -1,6 +1,0 @@
-<hr />
-<p>
-  <label for='iframe_src'>Iframe source (url of the actual page containing the <code>&lt;video&gt;</code> element – the page must be hosted on a domain registered on MySublimeVideo)</label>:
-  <input type='text' name='iframe_src' size='50' id='iframe_src' value='<%= @iframe.get('src') %>' />
-</p>
-<hr />

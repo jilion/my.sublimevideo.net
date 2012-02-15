@@ -4,7 +4,7 @@
 #sites
   = title_and_content_header("My sites")
 
-  = link_to new_site_path, :class => "add_site green_button" do
+  = link_to new_site_path, class: "add_site green_button" do
     %span= "Add a site"
 
   - if @billable_views.zero?
@@ -19,7 +19,7 @@
           .wrap= "2. Add your embed code to your pages. Click on #{@sites.one? ? 'the' : 'the appropriate'} \"Embed Code\" button below."
         %li{ class: ('complete' if @dev_views > 0) }
           .wrap= raw "3. Add #{content_tag(:code, '<video>')} elements to your pages. #{link_to "Need help?", page_url('write-proper-video-elements', subdomain: 'docs'), onclick: "window.open(this); return false"}"
-          -#= raw "Learn more about our #{link_to "video tag builder", video_tag_builder_path}!"
+          -#= raw "Learn more about our #{link_to "video code generator", video_code_generator_path}!"
         %li
           .wrap 4. Deploy your SublimeVideo players on your website in production.
 

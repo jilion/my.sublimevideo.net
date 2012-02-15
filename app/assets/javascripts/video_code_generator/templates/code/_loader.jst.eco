@@ -1,0 +1,6 @@
+<% if @builderClass isnt 'iframe_embed': %>
+  Copy and paste this <code class='prettyprint language-html'>&lt;script&gt;&lt;/script&gt;</code> tag into the pages on <%= if @loader.get('hostname') then @loader.get('hostname') else 'the domain' %> where the SublimeVideo player will be used. We highly recommend you put it into the <code class='prettyprint language-html'>&lt;head&gt;&lt;/head&gt;</code> tag.
+<% end %>
+
+<% extra_spaces = if @builderClass is 'iframe_embed' then "    " else "" %>
+<pre class='prettyprint'><code class='language-html'><%= extra_spaces %>&lt;script type="text/javascript" src="http://cdn.sublimevideo.net/js/<%= if @loader then MSVVideoCodeGenerator.loader.get('token') else 'YOUR_TOKEN' %>.js"&gt;&lt;/script&gt;</code></pre>
