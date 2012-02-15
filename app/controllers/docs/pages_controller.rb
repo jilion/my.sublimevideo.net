@@ -4,7 +4,10 @@ class Docs::PagesController < ApplicationController
 
   def show
     @body_class = params[:page]
-    render "docs/pages/#{params[:page]}"
+
+    respond_to do |format|
+      format.html { render "docs/pages/#{params[:page]}" }
+    end
   end
 
 end
