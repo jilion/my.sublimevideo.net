@@ -129,7 +129,7 @@
     %p= raw "No download, no installation; #{link_to "Sign up", root_url(host: request.domain, p: 'signup'), onclick: "return SublimeVideo.showPopup('signup')"} for free today and be up and running in seconds. It couldn't be simpler to integrate SublimeVideo into your site: Just add a single line of code to enable it on your page."
   %section#real_time_stats.real_time_stats.f
     %h3.title= "Universal, Real-Time stats"
-    %p= raw "Get a comprehensive, real-time overview of your site's video traffic with our Real-Time Statistics platform; monitor page and video views, browser and device statistics, HTML5 / Flash usage and more. #{link_to "Visit our live demo", site_stats_url('demo', subdomain: 'my')} to check it out."
+    %p= raw "Get a comprehensive, real-time overview of your site's video traffic with our Real-Time Statistics platform; monitor page and video views, browser and device statistics, HTML5 / Flash usage and more. #{link_to "Visit our live demo", site_stats_url('demo', subdomain: 'my', protocol: 'https')} to check it out."
 
 .big_break
 
