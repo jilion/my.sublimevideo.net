@@ -71,6 +71,8 @@ private
         channel.trigger('video_tag', u: u, meta_data: meta_data)
       end
     end
+  rescue Pusher::HTTPError
+    # do nothing
   end
 
   # Merge each videos tag in one big hash
