@@ -67,17 +67,6 @@ ActiveRecord::Schema.define(:version => 20120216113706) do
 
   add_index "deal_activations", ["deal_id", "user_id"], :name => "index_deal_activations_on_deal_id_and_user_id", :unique => true
 
-  create_table "deal_utilizations", :force => true do |t|
-    t.integer  "deal_id"
-    t.integer  "site_id"
-    t.integer  "invoice_id"
-    t.datetime "used_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "deal_utilizations", ["deal_id", "site_id"], :name => "index_deal_utilizations_on_deal_id_and_site_id", :unique => true
-
   create_table "deals", :force => true do |t|
     t.string   "token"
     t.string   "name"

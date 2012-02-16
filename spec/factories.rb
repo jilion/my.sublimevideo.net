@@ -233,12 +233,6 @@ FactoryGirl.define do
     user
   end
 
-  factory :deal_utilization do
-    deal
-    site
-    invoice
-  end
-
   factory :tweet do
     sequence(:tweet_id) { |n| n }
     keywords          %w[sublimevideo jilion]
