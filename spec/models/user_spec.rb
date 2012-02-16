@@ -21,7 +21,7 @@ describe User do
     its(:billing_region)       { should eq "VD" }
     its(:billing_country)      { should eq "CH" }
     its(:use_personal)         { should be_true }
-    its(:newsletter)           { should be_true }
+    its(:newsletter)           { should be_false }
     its(:email)                { should match /email\d+@user.com/ }
     its(:hidden_notice_ids)    { should eq [] }
 
@@ -501,7 +501,7 @@ describe User do
 
           it "registers user's email on Campaign Monitor" do
             expect { subject }.to change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should eql "Class#subscribe"
+            Delayed::Job.last.name.should eq "Class#subscribe"
           end
         end
 
@@ -520,21 +520,19 @@ describe User do
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
           subject
           expect { subject.update_attribute(:email, "newsletter_update2@jilion.com") }.to change(Delayed::Job, :count).by(1)
-          Delayed::Job.last.name.should eql "Class#update"
+          Delayed::Job.last.name.should eq "Class#update"
         end
 
         it "updates info in Campaign Monitor if user change his name" do
           subject
           expect { subject.update_attribute(:name, "bob") }.to change(Delayed::Job, :count).by(1)
-          Delayed::Job.last.name.should eql "Class#update"
+          Delayed::Job.last.name.should eq "Class#update"
         end
 
         it "updates subscribing state in Campaign Monitor if user change his newsletter state" do
           subject
-          expect { subject.update_attribute(:newsletter, false) }.to change(Delayed::Job, :count).by(2)
-          djs = Delayed::Job.limit(2).order(:created_at.desc).all
-          djs[0].name.should eql "Class#unsubscribe"
-          djs[1].name.should eql "Class#update"
+          expect { subject.update_attribute(:newsletter, false) }.to change(Delayed::Job, :count).by(1)
+          djs = Delayed::Job.last.name.should eq "Class#unsubscribe"
         end
       end
     end
@@ -548,7 +546,7 @@ describe User do
 
       context "user has no zendesk_id" do
         it "should not delay Module#put" do
-          expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
+          expect { subject.update_attribute(:email, "new@jilion.com") }.to_not change(Delayed::Job, :count)
           Delayed::Job.all.any? { |dj| dj.name == 'Module#put' }.should be_false
         end
       end
@@ -558,12 +556,12 @@ describe User do
 
         context "user updated his email" do
           it "delays Module#put if the user has a zendesk_id and his email has changed" do
-            expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
+            expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(1)
             Delayed::Job.where { handler =~ '%Module%put%' }.should have(1).item
           end
 
           it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
-            expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
+            expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(1)
 
             VCR.use_cassette("zendesk/update_email") do
               @worker.work_off
@@ -575,12 +573,12 @@ describe User do
 
         context "user updated his name" do
           it "delays Module#put" do
-            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(2)
+            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(1)
             Delayed::Job.where { handler =~ '%Module%put%' }.should have(1).item
           end
 
           it "updates user's name on Zendesk" do
-            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(2)
+            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(1)
 
             VCR.use_cassette("zendesk/update_name") do
               @worker.work_off
@@ -854,7 +852,7 @@ describe User do
         end
         subject { @user.reload }
 
-        it { subject.support.should eql "forum" }
+        it { subject.support.should eq "forum" }
       end
 
       context "user has only sites with forum support" do
@@ -863,7 +861,7 @@ describe User do
           Factory(:site, user: @user, plan_id: @free_plan.id,)
         end
         subject { @user.reload }
-        it { @free_plan.support.should eql "forum" }
+        it { @free_plan.support.should eq "forum" }
         its(:support) { should eq "forum" }
         its(:email_support?) { should be_false }
       end
@@ -891,10 +889,10 @@ describe User do
         end
         subject { @user.reload }
 
-        it { @free_plan.support.should eql "forum" }
-        it { @paid_plan.support.should eql "email" }
-        it { @custom_plan.support.should eql "vip_email" }
-        its(:support) { should eql "vip_email" }
+        it { @free_plan.support.should eq "forum" }
+        it { @paid_plan.support.should eq "email" }
+        it { @custom_plan.support.should eq "vip_email" }
+        its(:support) { should eq "vip_email" }
         its(:email_support?) { should be_true }
       end
     end
