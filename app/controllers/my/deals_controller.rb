@@ -5,8 +5,9 @@ class My::DealsController < MyController
   before_filter :find_deal_by_token!
 
   def show
-    current_user.deal_activations.create(deal_id: @deal.id)
-    cookies.delete :d, domain: :all
+    if current_user.deal_activations.create(deal_id: @deal.id)
+      cookies.delete :d, domain: :all
+    end
 
     respond_to do |format|
       format.html { redirect_to :sites }
@@ -19,7 +20,7 @@ private
     if params[:id]
       cookies[:d] = {
         value: params[:id],
-        expires: 2.weeks.from_now,
+        expires: 2.hours.from_now,
         domain: :all,
         httponly: true
       }
