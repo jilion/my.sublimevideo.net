@@ -205,7 +205,7 @@ describe Invoice do
   end # State Machine
 
   describe "Callbacks" do
-    describe "#before_validation, on: create" do
+    describe "#before_create" do
       before  { @invoice = Factory.create(:invoice) } # need to have access to invoice inside its block
       subject { @invoice }
 
