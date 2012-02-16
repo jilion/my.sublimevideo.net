@@ -133,7 +133,7 @@ class User < ActiveRecord::Base
     user = User.find(user_id)
 
     CampaignMonitor.lists.each do |name, list|
-      return user.update_column(:newsletter, true) if CampaignMonitor.subscriber(user.email, list[:list_id])
+      return user.update_column(:newsletter, true) if CampaignMonitor.subscriber(user.email, list["list_id"])
     end
   end
 
