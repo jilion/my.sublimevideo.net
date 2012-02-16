@@ -1,3 +1,4 @@
+# http://ablogaboutcode.com/2012/01/12/a-simple-rails-boot-time-improvement/
 source 'http://rubygems.org'
 source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com account
 
@@ -6,17 +7,17 @@ gem 'rails',                 '3.1.3'
 gem 'thin'
 
 gem 'prototype-rails'
-gem 'jquery-rails', '~> 1.0.19'
-gem 'rails-backbone'
+gem 'jquery-rails',          '~> 1.0.19'
+gem 'rails-backbone',        '~> 0.6.0'
 
 # Databases
-gem 'pg',                    '~> 0.12.1'
-gem 'squeel',                '~> 0.9.2'
+gem 'pg',                    '~> 0.13.0'
+gem 'squeel',                '~> 0.9.5'
 
 gem 'bson_ext',              '~> 1.5.2'
 gem 'bson',                  '~> 1.5.2'
 gem 'mongo',                 '~> 1.5.2'
-gem 'mongoid',               '~> 2.4.3', git: 'git://github.com/mongoid/mongoid.git', branch: '2.4.0-stable' # waiting for 2.4.4 release
+gem 'mongoid',               '~> 2.4.4'
 
 # Views
 gem 'haml',                  '~> 3.1.3'
@@ -27,7 +28,6 @@ gem 'RedCloth',              '~> 4.2.9'
 
 # Auth / invitations
 gem 'devise',                '~> 1.5.1'
-# gem 'devise',                git: 'git://github.com/plataformatec/devise.git'
 gem 'devise_invitable',      '~> 0.6.1' # currently, devise_invitable requires devise ~ 1.4.1...
 
 # API
@@ -45,19 +45,19 @@ gem 'rescue_me',             '~> 0.1.1', git: 'git://github.com/rymai/rescue_me.
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'
 
-gem 'state_machine',         '~> 1.1.0'
+gem 'state_machine',         '~> 1.1.2'
 gem 'paper_trail',           '~> 2.4.0'
 gem 'uniquify',              '~> 0.1.0'
 
-gem 'responders',            '~> 0.6.4'
+gem 'responders',            '~> 0.6.5'
 gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
 gem 'fog',                   '~> 1.1.2'
 gem 'carrierwave',           '~> 0.5.7'
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
-gem 'voxel_hapi',            git: 'git://github.com/thibaudgg/voxel_hapi.git', branch: '1.9.2' # VoxCast CDN
-gem 'request-log-analyzer',  '~> 1.11.1', require: 'request_log_analyzer'
+gem 'voxel_hapi',            git: 'git://github.com/thibaudgg/voxel_hapi.git', branch: '1.9.2', require: false # VoxCast CDN
+gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
 
 # gem 'activemerchant',        '~> 1.9.1'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
@@ -68,6 +68,7 @@ gem 'useragent',             git: 'git://github.com/jilion/useragent.git' # need
 gem 'stat_request_parser',   '~> 1.0.0' # hosted on gemfury
 
 gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
+gem 'mime-types'
 gem 'countries',             '~> 0.7.0'
 gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.1.0', require: 'page_rankr'
@@ -103,11 +104,11 @@ gem 'rack-no-www'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.1.5'
-  gem 'coffee-rails', '~> 3.1.1'
+  gem 'sass-rails',         '~> 3.1.5'
+  gem 'coffee-rails',       '~> 3.1.1'
   gem 'eco'
   gem 'uglifier'
-  gem 'haml_coffee_assets'
+  gem 'haml_coffee_assets', '0.7.1' # THE 0.8.1 (0.8.0?) WAS CAUSING THE SHIT
   gem 'execjs'
 end
 
@@ -167,7 +168,6 @@ end
 
 group :test do
   gem 'spork', '~> 0.9.0'
-  gem 'fuubar'
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'webmock',  '~> 1.6.0'
