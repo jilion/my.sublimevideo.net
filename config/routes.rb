@@ -218,9 +218,9 @@ MySublimeVideo::Application.routes.draw do
         end
       end
 
-
       resources :delayed_jobs, only: [:index, :show, :update, :destroy], path: 'djs'
       resources :deals, only: [:index]
+      resources :deal_activations, only: [:index], path: 'deals/activations'
       resources :mails,  only: [:index, :new, :create]
       scope 'mails' do
         resources :mail_templates, only: [:new, :create, :edit, :update], path: 'templates'

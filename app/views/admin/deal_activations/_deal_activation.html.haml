@@ -1,0 +1,9 @@
+%tr[deal_activation]{ class: cycle("", "alt") }
+  %td.id= deal_activation.id
+
+  %td.token= deal_activation.deal.token
+
+  %td.user
+    %small= link_to deal_activation.user.name_or_email, [:admin, deal_activation.user], title: deal_activation.user.email
+
+  %td.activated_at= display_time(deal_activation.activated_at)

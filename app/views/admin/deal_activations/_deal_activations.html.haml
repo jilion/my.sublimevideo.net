@@ -1,0 +1,11 @@
+%table.main#deals
+  %tr
+    %th= link_to_sort :id
+    %th Deal
+    %th User
+    %th Activated
+  = render @deal_activations
+
+.pagination_wrap
+  = paginate @deal_activations, theme: 'admin'
+  = page_entries_info @deal_activations
