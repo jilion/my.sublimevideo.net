@@ -120,3 +120,42 @@
       have a request this is a long text!","has_incidents":false,"organization_id":null,"comments":[{"created_at":"2012/02/10
       10:22:29 +0100","via_id":5,"value":"I have a request this is a long text!","type":"Comment","is_public":true,"author_id":161723906,"attachments":[]}],"updated_by_type_id":0,"requester_id":161723906}'
     http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/users/161723906.xml
+    body: <user><password>381a3572f728a51f0b1c53477a</password><is-verified>true</is-verified></user>
+    headers:
+      content-type:
+      - application/xml
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/0.8.53
+      date:
+      - Wed, 15 Feb 2012 23:01:14 GMT
+      content-type:
+      - application/xml; charset=utf-8
+      connection:
+      - keep-alive
+      status:
+      - 200 OK
+      x-runtime:
+      - '127'
+      content-length:
+      - '1'
+      x-api-deprecated:
+      - Please use /api/v1/users/161723906.xml
+      set-cookie:
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og9zZXNzaW9uX2lkIiU5MmFiZmU2ODYzNTJmMzFlNDhiZTM0OWI0ODJhN2UwMDoVYXV0aGVudGljYXRlZF9hdGwrBzk5PE8iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhQ5OGpsejFwNXVhcnp3ZXI%3D--6fa37fac9236fd62b3ee66f85f911a90e17300cd;
+        path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      x-zendesk-api-version:
+      - v1
+      cache-control:
+      - no-cache
+    body: ! ' '
+    http_version: '1.1'

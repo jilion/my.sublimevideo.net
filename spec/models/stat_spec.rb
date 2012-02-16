@@ -190,7 +190,7 @@ describe Stat do
   describe ".delay_clear_old_seconds_minutes_and_hours_stats" do
     it "delays clear_old_seconds_minutes_and_hours_stats if not already delayed" do
       expect { Stat.delay_clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(1)
-      Delayed::Job.last.run_at.should be_within(60).of(1.minutes.from_now)
+      Delayed::Job.last.run_at.should be_within(60).of(10.minutes.from_now)
     end
 
     it "delays nothing if already delayed" do
@@ -253,7 +253,7 @@ describe Stat do
 
     it "delays itself" do
       expect { Stat.clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(1)
-      Delayed::Job.last.run_at.should be_within(60).of(1.minutes.from_now)
+      Delayed::Job.last.run_at.should be_within(60).of(10.minutes.from_now)
     end
   end
 

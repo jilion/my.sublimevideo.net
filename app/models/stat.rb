@@ -258,7 +258,7 @@ module Stat
 
   def self.delay_clear_old_seconds_minutes_and_hours_stats
     unless Delayed::Job.already_delayed?('%Stat%clear_old_seconds_minutes_and_hours_stats%')
-      delay(priority: 100, run_at: 1.minutes.from_now).clear_old_seconds_minutes_and_hours_stats
+      delay(priority: 5, run_at: 10.minutes.from_now).clear_old_seconds_minutes_and_hours_stats
     end
   end
 

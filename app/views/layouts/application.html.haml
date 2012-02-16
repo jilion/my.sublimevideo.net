@@ -51,7 +51,7 @@
           .stars
             .wrap
               %h1
-                = link_to root_url(demo_stats_page? || request.subdomain.blank? ? { host: request.domain } : { subdomain: request.subdomain }) do
+                = link_to root_url(demo_stats_page? || request.subdomain.blank? ? { host: request.domain, protocol: 'http' } : { subdomain: request.subdomain }) do
                   %span= "SublimeVideo"
               = render "layouts/menu"
               = yield :header

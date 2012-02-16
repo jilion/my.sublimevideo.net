@@ -7,10 +7,6 @@ module TwitterApi
 
   class << self
 
-    def search
-      Twitter::Search
-    end
-
     def method_missing(method_name, *args)
       method_name = method_name.to_sym
 
@@ -35,7 +31,7 @@ module TwitterApi
     end
 
     def with_rescue_and_retry(times)
-      rescue_and_retry(times, Errno::ETIMEDOUT, Errno::ECONNRESET, Twitter::BadGateway, Twitter::ServiceUnavailable, Twitter::InternalServerError) do
+      rescue_and_retry(times, Errno::ETIMEDOUT, Errno::ECONNRESET, Twitter::Error::BadGateway, Twitter::Error::ServiceUnavailable, Twitter::Error::InternalServerError) do
         yield
       end
     end
