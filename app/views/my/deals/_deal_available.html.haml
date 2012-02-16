@@ -1,5 +1,4 @@
 - if deal = current_user.latest_activated_deal
   .notice
-    %h3
-      = deal.description
-      = " before #{l(deal.ended_at, format: :deal, ordinal_day: deal.ended_at.day.ordinalize)}."
+    = raw deal.description
+    = " before #{l(deal.ended_at, format: :deal, ordinal_day: deal.ended_at.day.ordinalize)}."
