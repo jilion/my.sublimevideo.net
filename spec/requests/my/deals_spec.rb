@@ -38,11 +38,10 @@ feature "Deal activation" do
       fill_in "Email",    with: 'toto@titi.com'
       fill_in "Password", with: "123456"
       check "user_terms_and_conditions"
-      click_button 'Sign Up'
+      expect { click_button 'Sign Up' }.to change(DealActivation, :count).by(1)
 
       current_url.should eq "http://my.sublimevideo.dev/sites/new"
       get_me_the_cookies.map { |c| c['name'] }.should_not include("d")
-      DealActivation.count.should eq 1
     end
   end
 
