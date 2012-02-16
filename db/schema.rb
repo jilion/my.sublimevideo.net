@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120206144727) do
+ActiveRecord::Schema.define(:version => 20120216113706) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -66,6 +66,17 @@ ActiveRecord::Schema.define(:version => 20120206144727) do
   end
 
   add_index "deal_activations", ["deal_id", "user_id"], :name => "index_deal_activations_on_deal_id_and_user_id", :unique => true
+
+  create_table "deal_utilizations", :force => true do |t|
+    t.integer  "deal_id"
+    t.integer  "site_id"
+    t.integer  "invoice_id"
+    t.datetime "used_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "deal_utilizations", ["deal_id", "site_id"], :name => "index_deal_utilizations_on_deal_id_and_site_id", :unique => true
 
   create_table "deals", :force => true do |t|
     t.string   "token"
@@ -310,9 +321,9 @@ ActiveRecord::Schema.define(:version => 20120206144727) do
 
   create_table "users", :force => true do |t|
     t.string   "state"
-    t.string   "email",                                          :default => "",   :null => false
-    t.string   "encrypted_password",              :limit => 128, :default => "",   :null => false
-    t.string   "password_salt",                                  :default => "",   :null => false
+    t.string   "email",                                          :default => "",    :null => false
+    t.string   "encrypted_password",              :limit => 128, :default => "",    :null => false
+    t.string   "password_salt",                                  :default => "",    :null => false
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
@@ -354,7 +365,7 @@ ActiveRecord::Schema.define(:version => 20120206144727) do
     t.date     "pending_cc_expire_on"
     t.datetime "pending_cc_updated_at"
     t.datetime "archived_at"
-    t.boolean  "newsletter",                                     :default => true
+    t.boolean  "newsletter",                                     :default => false
     t.integer  "last_invoiced_amount",                           :default => 0
     t.integer  "total_invoiced_amount",                          :default => 0
     t.integer  "balance",                                        :default => 0
