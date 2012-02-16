@@ -20,7 +20,7 @@ class DealActivation < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :active, includes(:deal).merge(Deal.active)
+  scope :active, lambda { includes(:deal).merge(Deal.active) }
 
   # =============
   # = Callbacks =
