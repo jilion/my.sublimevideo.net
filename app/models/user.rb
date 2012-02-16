@@ -221,6 +221,10 @@ class User < ActiveRecord::Base
   end
 
   def latest_activated_deal
+    deal_activations.order(:activated_at.desc).first.try(:deal)
+  end
+
+  def latest_activated_deal_still_active
     deal_activations.active.order(:activated_at.desc).first.try(:deal)
   end
 

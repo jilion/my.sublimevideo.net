@@ -877,6 +877,35 @@ describe User do
         end
 
         its(:latest_activated_deal) { should eq deal2 }
+
+        it "returns a deal even if it not active anymore" do
+          Timecop.travel(4.days.from_now) do
+            subject.latest_activated_deal.should eq deal2
+          end
+        end
+      end
+    end
+
+    describe "#latest_activated_deal_still_active" do
+      subject { Factory(:user) }
+
+      context "without deals activated" do
+        its(:latest_activated_deal_still_active) { should be_nil }
+      end
+
+      context "with deals activated" do
+        let(:deal1) { Factory(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+        let(:deal2) { Factory(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
+        before(:each) do
+          @deal_activation1 = Factory(:deal_activation, deal: deal1, user: subject)
+          @deal_activation2 = Factory(:deal_activation, deal: deal2, user: subject)
+        end
+
+        it "returns only a deal that is still active" do
+          Timecop.travel(4.days.from_now) do
+            subject.latest_activated_deal_still_active.should be_nil
+          end
+        end
       end
     end
 

@@ -233,8 +233,8 @@ describe Plan do
       let(:site2) { Factory(:site, user: user) }
       let(:deal1) { Factory(:deal, kind: 'plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
       let(:deal2) { Factory(:deal, kind: 'yearly_plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-      let(:plan1) { Factory.create(:plan, cycle: 'month') }
-      let(:plan2) { Factory.create(:plan, cycle: 'year') }
+      let(:plan1) { Factory(:plan, name: 'foo', cycle: 'month') }
+      let(:plan2) { Factory(:plan, name: 'bar', cycle: 'year') }
 
       context "site's user doesn't have access to a discounted price" do
         it "return false" do
@@ -343,8 +343,6 @@ describe Plan do
   end
 
 end
-
-
 # == Schema Information
 #
 # Table name: plans
@@ -365,4 +363,3 @@ end
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #  index_plans_on_token           (token) UNIQUE
 #
-

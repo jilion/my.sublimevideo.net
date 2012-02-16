@@ -156,7 +156,7 @@ class Plan < ActiveRecord::Base
 
   def discounted?(site)
     if site && deal = site.user.latest_activated_deal
-      if (site.trial_started_at? && site.trial_started_at <= deal.ended_at) || deal.active?
+      if (site.trial_started_at? && site.trial_started_at >= deal.started_at && site.trial_started_at <= deal.ended_at) || deal.active?
         return deal if %W[plans_discount #{cycle}ly_plans_discount #{name}_plan_discount].include?(deal.kind)
       end
     end
@@ -177,8 +177,6 @@ class Plan < ActiveRecord::Base
   end
 
 end
-
-
 # == Schema Information
 #
 # Table name: plans
@@ -199,4 +197,3 @@ end
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #  index_plans_on_token           (token) UNIQUE
 #
-
