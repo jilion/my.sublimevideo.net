@@ -49,7 +49,7 @@ class InvoiceItem::Plan < InvoiceItem
 private
 
   def deal_applicable?
-    !site.plan || site.skip_trial || (!deduct && site.plan.upgrade?(item))
+    !invoice.renew && !deduct
   end
 
 end
