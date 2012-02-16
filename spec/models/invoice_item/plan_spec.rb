@@ -5,8 +5,8 @@ describe InvoiceItem::Plan do
   describe ".construct(attributes = {})" do
     before(:all) do
       @deal = Factory(:deal, value: 0.2, kind: 'plans_discount', started_at: 2.days.ago, ended_at: 2.days.from_now)
-      @user1 = Factory(:user, invitation_token: "123asd", created_at: Time.utc(2010,10,10))
-      @user2 = Factory(:user, invitation_token: "123asd", created_at: Time.utc(2010,10,10))
+      @user1 = Factory(:user)
+      @user2 = Factory(:user)
       Factory(:deal_activation, deal: @deal, user: @user1)
 
       @plan1 = Factory(:plan, price: 1000)
@@ -17,6 +17,7 @@ describe InvoiceItem::Plan do
         @site2 = Factory(:site_not_in_trial, user: @user1, plan_id: @plan2.id)
         @site3 = Factory(:site_with_invoice, user: @user1, plan_id: @plan1.id)
         @site4 = Factory(:site_with_invoice, user: @user2, plan_id: @plan1.id)
+        @site5 = Factory(:site_with_invoice, user: @user1, plan_id: @plan1.id)
       end
 
       Timecop.travel(Time.utc(2011,6,15)) do
@@ -38,11 +39,13 @@ describe InvoiceItem::Plan do
         # normal renew
         @site3.prepare_pending_attributes
       end
+      @site5.skip_trial = true
 
       @invoice1 = Factory.build(:invoice, site: @site1)
       @invoice2 = Factory.build(:invoice, site: @site2)
       @invoice3 = Factory.build(:invoice, site: @site3)
       @invoice4 = Factory.build(:invoice, site: @site4)
+      @invoice5 = Factory.build(:invoice, site: @site5)
     end
 
     describe "creation or upgrade" do
@@ -55,6 +58,18 @@ describe InvoiceItem::Plan do
         its(:amount)                { should eq 2000 * (1-@deal.value) }
         its(:started_at)            { should eq Time.utc(2011,6,1) }
         its(:ended_at)              { should eq Time.utc(2011,6,30).to_datetime.end_of_day }
+        its(:discounted_percentage) { should eq @deal.value }
+      end
+
+      context "with standard params, site skip trial and a deal" do
+        subject { InvoiceItem::Plan.construct(invoice: @invoice5, item: @plan2) }
+
+        its(:item)                  { should eq @plan2 }
+        its(:deal)                  { should eq @deal }
+        its(:price)                 { should eq 2000 * (1-@deal.value) }
+        its(:amount)                { should eq 2000 * (1-@deal.value) }
+        its(:started_at)            { should eq Time.utc(2011,5,1) }
+        its(:ended_at)              { should eq Time.utc(2011,5,31).to_datetime.end_of_day }
         its(:discounted_percentage) { should eq @deal.value }
       end
 
