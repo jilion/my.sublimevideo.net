@@ -13,7 +13,7 @@
         %h4= "Community & Support"
         %ul
           %li= link_to "Customer Showcase", page_url('customer-showcase', host: request.domain, protocol: 'http')
-          %li= link_to "Help", page_url('help', host: (request.subdomain == 'my' ? 'my.' : '') + request.domain), class: 'my_link'
+          %li= link_to "Help", page_url('help', host: request.domain)
           %li= link_to "Documentation", root_url(subdomain: 'docs', protocol: 'http')
           %li= link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", onclick: "window.open(this); return false"
       .col
