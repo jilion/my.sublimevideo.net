@@ -159,3 +159,71 @@
       - no-cache
     body: ! ' '
     http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email420@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 61f7521bff0f6982dccb049cf86da030
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 16:11:15 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email420@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - a710208ebad601232c7775c67eaae2e1
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 16:11:10 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'

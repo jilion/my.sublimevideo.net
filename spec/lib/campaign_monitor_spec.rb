@@ -4,8 +4,9 @@ describe CampaignMonitor do
   let(:user) { Factory.create(:user, email: "cm2@jilion.com", name: "John Doe", created_at: Time.utc(2010,10,10), invitation_token: nil) }
 
   specify { CampaignMonitor.api_key.should eq "8844ec1803ffbe6501c3d7e9cfa23bf3" }
-  specify { CampaignMonitor.list_id.should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
-  specify { CampaignMonitor.segment.should eq "test" }
+  specify { CampaignMonitor.lists.sublimevideo.list_id.should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
+  specify { CampaignMonitor.lists.sublimevideo.segment.should eq "test" }
+  specify { CampaignMonitor.lists.sublimevideo_newsletter.list_id.should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
 
   describe ".subscribe" do
     use_vcr_cassette "campaign_monitor/subscribe"
@@ -16,7 +17,7 @@ describe CampaignMonitor do
       subscriber["EmailAddress"].should eq user.email
       subscriber["Name"].should         eq user.name
       subscriber["State"].should        eq "Active"
-      subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should eq CampaignMonitor.segment
+      subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should eq CampaignMonitor.lists.sublimevideo.segment
       subscriber["CustomFields"].detect { |h| h.values.include?("user_id") }["Value"].should be_present
       subscriber["CustomFields"].detect { |h| h.values.include?("beta") }["Value"].should eq "true"
     end
@@ -39,19 +40,19 @@ describe CampaignMonitor do
       user2 = Factory.create(:user, email: "bob2@bob.com", created_at: Time.utc(2011,10,10), invitation_token: nil)
       CampaignMonitor.import([user1, user2]).should be_true
       # user 1
-      subscriber = CreateSend::Subscriber.get(CampaignMonitor.list_id, user1.email)
+      subscriber = CreateSend::Subscriber.get(CampaignMonitor.lists.sublimevideo.list_id, user1.email)
       subscriber["EmailAddress"].should eq user1.email
       subscriber["Name"].should         eq user1.name
       subscriber["State"].should        eq "Active"
-      subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should eq CampaignMonitor.segment
+      subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should eq CampaignMonitor.lists.sublimevideo.segment
       subscriber["CustomFields"].detect { |h| h.values.include?("user_id") }["Value"].should be_present
       subscriber["CustomFields"].detect { |h| h.values.include?("beta") }["Value"].should eq "true"
       # user 2
-      subscriber = CreateSend::Subscriber.get(CampaignMonitor.list_id, user2.email)
+      subscriber = CreateSend::Subscriber.get(CampaignMonitor.lists.sublimevideo.list_id, user2.email)
       subscriber["EmailAddress"].should eq user2.email
       subscriber["Name"].should         eq user2.name
       subscriber["State"].should        eq "Active"
-      subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should eq CampaignMonitor.segment
+      subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should eq CampaignMonitor.lists.sublimevideo.segment
       subscriber["CustomFields"].detect { |h| h.values.include?("user_id") }["Value"].should be_present
       subscriber["CustomFields"].detect { |h| h.values.include?("beta") }["Value"].should eq "false"
     end

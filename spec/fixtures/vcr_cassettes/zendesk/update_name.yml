@@ -227,3 +227,343 @@
       13:54:12 +0200","last_login":null,"details":null,"custom_role_id":null,"updated_at":"2012/02/10
       11:01:49 +0100","notes":null,"external_id":null,"restriction_id":4,"id":59438671,"is_verified":true,"phone":null,"is_active":true,"time_zone":"Bern","current_tags":"","roles":0,"organization_id":null,"groups":[],"photo_url":"https://sublimevideo.zendesk.com/images/types/user_sm.png","email":"email3@user.com"}'
     http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email47@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - b7f2986dad578c0c808688560fbf6723
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 15:32:32 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email66@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 303d5e73b046241aeedb3b04f9903092
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 15:34:26 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email1@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - b7f2986dad578c0c808688560fbf6723
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 15:38:25 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email5@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - f5a423776d4e0709450a9813dd10d5c4
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 15:39:50 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email111@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - b7f2986dad578c0c808688560fbf6723
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 15:44:25 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email111@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 303d5e73b046241aeedb3b04f9903092
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 15:44:28 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email62@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - b37a14074e0c71eaab3e8e16a4a87bdd
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 16:02:02 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email62@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 9ef49f8657f83d34e8e633bb4b803561
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 16:02:10 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email148@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - cf26f7c5d2c145c44fc88c3428f020d0
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 16:09:54 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email148@user.com
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.3
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 303d5e73b046241aeedb3b04f9903092
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Thu, 16 Feb 2012 16:09:47 GMT
+      content-length:
+      - '119'
+    body: ! '{"Code":404,"Message":"We couldn''t find the resource you''re looking
+      for. Please check the documentation and try again"}'
+    http_version: '1.1'

@@ -5,7 +5,8 @@ class My::DealsController < MyController
   before_filter :find_deal_by_token!
 
   def show
-    if current_user.deal_activations.create(deal_id: @deal.id)
+    deal_activation = current_user.deal_activations.build(deal_id: @deal.id)
+    if deal_activation.save
       cookies.delete :d, domain: :all
     end
 

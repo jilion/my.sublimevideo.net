@@ -494,6 +494,39 @@ describe User do
       end
     end
 
+    describe "after_create :delay_set_newsletter" do
+      subject { Factory(:user, email: "newsletter_sign_up@jilion.com") }
+
+      it "delays set_newsletter" do
+        expect { subject }.to change(Delayed::Job, :count).by(1)
+        Delayed::Job.last.name.should eq "Class#set_newsletter"
+      end
+
+      context "user is subscribed in CM" do
+        before do
+          CampaignMonitor.should_receive(:subscriber) { true }
+        end
+
+        it "set newsletter" do
+          subject.newsletter.should be_false
+          @worker.work_off
+          subject.reload.newsletter.should be_true
+        end
+      end
+
+      context "user isn't subscribed in CM" do
+        before do
+          CampaignMonitor.should_receive(:subscriber).twice { nil }
+        end
+
+        it "set newsletter" do
+          subject.newsletter.should be_false
+          @worker.work_off
+          subject.reload.newsletter.should be_false
+        end
+      end
+    end
+
     describe "after_save :newsletter_update" do
       context "user sign-up" do
         context "user subscribes on sign-up" do
@@ -506,16 +539,17 @@ describe User do
         end
 
         context "user doesn't subscribe on sign-up" do
-          subject { Factory(:user, newsletter: "0", email: "no_newsletter_sign_up@jilion.com") }
+          subject { Factory(:user, newsletter: false, email: "no_newsletter_sign_up@jilion.com") }
 
           it "doesn't register user's email on Campaign Monitor" do
-            expect { subject }.to_not change(Delayed::Job, :count)
+            expect { subject }.to change(Delayed::Job, :count).by(1)
+            Delayed::Job.last.name.should_not eq "Class#subscribe"
           end
         end
       end
 
       context "user update" do
-        subject { Factory(:user, newsletter: "1", email: "newsletter_update@jilion.com") }
+        subject { Factory(:user, newsletter: true, email: "newsletter_update@jilion.com") }
 
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
           subject
@@ -545,7 +579,8 @@ describe User do
       end
 
       context "user has no zendesk_id" do
-        it "should not delay Module#put" do
+        it "doesn't delay Module#put" do
+          subject
           expect { subject.update_attribute(:email, "new@jilion.com") }.to_not change(Delayed::Job, :count)
           Delayed::Job.all.any? { |dj| dj.name == 'Module#put' }.should be_false
         end

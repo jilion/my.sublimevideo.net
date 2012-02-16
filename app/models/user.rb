@@ -49,9 +49,6 @@ class User < ActiveRecord::Base
   # Deals
   has_many :deal_activations
 
-  # Deals
-  has_many :deal_activations
-
   # API
   has_many :client_applications
   has_many :tokens, class_name: "OauthToken", order: :authorized_at.desc, include: [:client_application]
@@ -81,6 +78,8 @@ class User < ActiveRecord::Base
   before_save :set_password
 
   before_save :prepare_pending_credit_card, if: proc { |u| u.credit_card(true).valid? } # in user/credit_card
+
+  after_create :delay_set_newsletter, unless: :newsletter?
 
   after_save :register_credit_card_on_file, if: proc { |u| u.cc_register } # in user/credit_card
   after_save :newsletter_update
@@ -128,6 +127,14 @@ class User < ActiveRecord::Base
   def self.unsuspend(user_id)
     user = find(user_id)
     user.unsuspend
+  end
+
+  def self.set_newsletter(user_id)
+    user = User.find(user_id)
+
+    CampaignMonitor.lists.each do |name, list|
+      return user.update_column(:newsletter, true) if CampaignMonitor.subscriber(user.email, list[:list_id])
+    end
   end
 
   # ====================
@@ -322,6 +329,11 @@ private
       self.encrypted_password = password_digest(@password)
       @password = nil
     end
+  end
+
+  # after_create
+  def delay_set_newsletter
+    User.delay.set_newsletter(id)
   end
 
   # after_save

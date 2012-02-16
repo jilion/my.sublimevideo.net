@@ -34,11 +34,22 @@ feature "Deal activation" do
       current_url.should eq "http://my.sublimevideo.dev/login"
 
       visit '/signup'
+      get_me_the_cookie("d")[:value].should eq 'rts3'
 
       fill_in "Email",    with: 'toto@titi.com'
       fill_in "Password", with: "123456"
       check "user_terms_and_conditions"
-      expect { click_button 'Sign Up' }.to change(DealActivation, :count).by(1)
+      CampaignMonitor.should_receive(:subscriber) { true }
+      expect { click_button 'Sign Up' }.to_not change(DealActivation, :count)
+
+      User.last.newsletter.should be_false
+      @worker.work_off
+      User.last.newsletter.should be_true
+
+      current_url.should eq "http://my.sublimevideo.dev/sites/new"
+      get_me_the_cookie("d")[:value].should eq 'rts3'
+
+      expect { visit '/sites' }.to change(DealActivation, :count).by(1)
 
       current_url.should eq "http://my.sublimevideo.dev/sites/new"
       get_me_the_cookies.map { |c| c['name'] }.should_not include("d")
