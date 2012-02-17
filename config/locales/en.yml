@@ -4,6 +4,7 @@ en:
     pm: PM # fundamental !!!!!!!!
     formats:
       tweet: "%b %{ordinal_day} %Y"
+      deal: "%B %{ordinal_day}, %Y"
       feed: "%B %d, %Y - %H:%M"
       date: "%B %e, %Y"
       named_date: "%a, %e %b %Y"

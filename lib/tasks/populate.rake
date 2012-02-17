@@ -31,6 +31,7 @@ namespace :db do
         timed { create_sites }
         timed { create_site_usages }
         timed { create_site_stats }
+        timed { create_deals }
         timed { create_mail_templates }
       end
     end
@@ -75,6 +76,14 @@ namespace :db do
         timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction) }
         timed { create_invoices(argv_user) }
         empty_tables("delayed_jobs")
+      end
+    end
+
+    desc "Load Deals development fixtures."
+    task deals: :environment do
+      disable_perform_deliveries do
+        timed { empty_tables(DealActivation, Deal) }
+        timed { create_deals }
       end
     end
 
@@ -781,6 +790,16 @@ def create_plans
   ]
   plans_attributes.each { |attributes| Plan.create!(attributes) }
   puts "#{plans_attributes.size} plans created!"
+end
+
+def create_deals
+  deals_attributes = [
+    { token: 'rts1', name: 'Real-Time Stats promotion #1', description: 'Exclusive Newsletter Promotion: Save 20% on all yearly plans', kind: 'yearly_plans_discount', value: 0.2, availability_scope: 'newsletter', started_at: Time.now.utc.midnight, ended_at: Time.utc(2012, 2, 29).end_of_day },
+    { token: 'rts2', name: 'Premium promotion #1', description: '30% discount on the Premium plan', kind: 'premium_plan_discount', value: 0.3, availability_scope: 'newsletter', started_at: 3.weeks.from_now.midnight, ended_at: 5.weeks.from_now.end_of_day }
+  ]
+
+  deals_attributes.each { |attributes| Deal.create!(attributes) }
+  puts "#{deals_attributes.size} deals created!"
 end
 
 def create_mail_templates(count = 5)

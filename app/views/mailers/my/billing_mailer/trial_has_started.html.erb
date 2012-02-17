@@ -2,7 +2,7 @@
 
 <% if @user.cc? %>
 
-<p>You'll see your first bill of <%= display_amount(@site.plan.price) %><%= " (excl. VAT)" if @user.vat? %> on <%= l(@site.trial_end.tomorrow, format: :named_date) %>, when the trial is over. You can <%= link_to("downgrade", edit_site_plan_url(@site, protocol: 'https', subdomain: 'my')) %> to our Free plan at any time before the end of the trial and we won't charge you anything.</p>
+<p>You'll see your first bill of <%= display_amount(@site.plan.price(@site)) %><%= " (excl. VAT)" if @user.vat? %> on <%= l(@site.trial_end.tomorrow, format: :named_date) %>, when the trial is over. You can <%= link_to("downgrade", edit_site_plan_url(@site, protocol: 'https', subdomain: 'my')) %> to our Free plan at any time before the end of the trial and we won't charge you anything.</p>
 
 <p>Thank you for choosing SublimeVideo!</p>
 

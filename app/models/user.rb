@@ -37,12 +37,17 @@ class User < ActiveRecord::Base
   belongs_to :enthusiast
 
   has_many :sites
+
+  # Invoices
   has_many :invoices, through: :sites
 
   def last_invoice
     invoices.last
   end
   memoize :last_invoice
+
+  # Deals
+  has_many :deal_activations
 
   # API
   has_many :client_applications
@@ -73,6 +78,8 @@ class User < ActiveRecord::Base
   before_save :set_password
 
   before_save :prepare_pending_credit_card, if: proc { |u| u.credit_card(true).valid? } # in user/credit_card
+
+  after_create :delay_set_newsletter, unless: :newsletter?
 
   after_save :register_credit_card_on_file, if: proc { |u| u.cc_register } # in user/credit_card
   after_save :newsletter_update
@@ -112,14 +119,6 @@ class User < ActiveRecord::Base
     where(conditions).where { state != 'archived' }.first
   end
 
-  def update_tracked_fields!(request)
-    # Don't update user when he's accessing the API
-    if !request.params.key?(:oauth_token) &&
-       (!request.headers.key?('HTTP_AUTHORIZATION') || !request.headers['HTTP_AUTHORIZATION'] =~ /OAuth/)
-      super(request)
-    end
-  end
-
   def self.suspend(user_id)
     user = find(user_id)
     user.suspend
@@ -130,9 +129,25 @@ class User < ActiveRecord::Base
     user.unsuspend
   end
 
+  def self.set_newsletter(user_id)
+    user = User.find(user_id)
+
+    CampaignMonitor.lists.each do |name, list|
+      return user.update_column(:newsletter, true) if CampaignMonitor.subscriber(user.email, list["list_id"])
+    end
+  end
+
   # ====================
   # = Instance Methods =
   # ====================
+
+  def update_tracked_fields!(request)
+    # Don't update user when he's accessing the API
+    if !request.params.key?(:oauth_token) &&
+       (!request.headers.key?('HTTP_AUTHORIZATION') || !request.headers['HTTP_AUTHORIZATION'] =~ /OAuth/)
+      super(request)
+    end
+  end
 
   # Devise overriding
   def password=(new_password)
@@ -199,6 +214,18 @@ class User < ActiveRecord::Base
 
   def plan_title
     plan.try(:title)
+  end
+
+  def activated_deals
+    deal_activations.active.order(:activated_at.desc).map(&:deal)
+  end
+
+  def latest_activated_deal
+    deal_activations.order(:activated_at.desc).first.try(:deal)
+  end
+
+  def latest_activated_deal_still_active
+    deal_activations.active.order(:activated_at.desc).first.try(:deal)
   end
 
   def email_support?
@@ -308,21 +335,31 @@ private
     end
   end
 
+  # after_create
+  def delay_set_newsletter
+    User.delay.set_newsletter(id)
+  end
+
   # after_save
   def newsletter_update
-    if newsletter_changed? || email_changed? || (name_changed? && name.present?)
-      if email_was.present?
-        CampaignMonitor.delay.update(self)
-        CampaignMonitor.delay(run_at: 30.seconds.from_now).unsubscribe(email) unless newsletter?
-      elsif newsletter? # on sign-up
+    if newsletter_changed?
+      if newsletter?
         CampaignMonitor.delay.subscribe(self)
+      else
+        CampaignMonitor.delay.unsubscribe(email)
+      end
+    end
+
+    if newsletter?
+      if (email_changed? && email_was.present?) || (name_changed? && name_was.present? && name?)
+        CampaignMonitor.delay(run_at: 30.seconds.from_now).update(self)
       end
     end
   end
 
   # after_update
   def zendesk_update
-    if zendesk_id.present? && (email_changed? || (name_changed? && name.present?))
+    if zendesk_id? && (email_changed? || (name_changed? && name?))
       body = email_changed? ? "<email>#{email}</email>" : "<name>#{name}</name>"
       Zendesk.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user>#{body}<is-verified>true</is-verified></user>")
     end

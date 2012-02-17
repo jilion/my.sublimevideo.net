@@ -1,4 +1,8 @@
 FactoryGirl.define do
+
+  # ===============
+  # = User models =
+  # ===============
   factory :enthusiast do
     sequence(:email) { |n| "email#{n}@enthusiast.com" }
     free_text        "Love you!"
@@ -31,6 +35,7 @@ FactoryGirl.define do
     cc_expiration_month   { 1.year.from_now.month }
     cc_expiration_year    { 1.year.from_now.year }
     cc_verification_value '111'
+
     after_build  { |user| VCR.insert_cassette('ogone/void_authorization') }
     after_create do |user|
       VCR.eject_cassette
@@ -50,6 +55,9 @@ FactoryGirl.define do
     password         "123456"
   end
 
+  # ===============
+  # = Site models =
+  # ===============
   factory :new_site, class: Site do
     sequence(:hostname) { |n| "jilion#{n}.com" }
     dev_hostnames       '127.0.0.1, localhost'
@@ -89,6 +97,9 @@ FactoryGirl.define do
     after_create { |site| VCR.eject_cassette }
   end
 
+  # ==============
+  # = Log models =
+  # ==============
   factory :log_voxcast, class: Log::Voxcast do
     name "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
   end
@@ -119,6 +130,9 @@ FactoryGirl.define do
     hits  12
   end
 
+  # ===============
+  # = Mail models =
+  # ===============
   factory :mail_template, class: MailTemplate do
     sequence(:title) { |n| "Pricing survey #{n}" }
     subject          "{{user.name}} ({{user.email}}), help us shaping the right pricing - The SublimeVideo Team"
@@ -137,6 +151,9 @@ FactoryGirl.define do
              }
   end
 
+  # ===============
+  # = Plan models =
+  # ===============
   factory :plan do
     sequence(:name)      { |n| "plus#{n}" }
     cycle                "month"
@@ -173,6 +190,9 @@ FactoryGirl.define do
     support_level        2
   end
 
+  # ================================
+  # = Invoice & transaction models =
+  # ================================
   factory :invoice do
     site
     invoice_items_amount 10000
@@ -196,13 +216,21 @@ FactoryGirl.define do
   factory :transaction do
   end
 
-  factory :site_stat, class: Stat::Site do
+  # ===============
+  # = Deal models =
+  # ===============
+  factory :deal do
+    sequence(:token)   { |n| "rts#{n}" }
+    name               "Real-Time Stats promotion #1"
+    kind               'yearly_plans_discount'
+    availability_scope 'active'
+    started_at         { 2.weeks.ago }
+    ended_at           { 2.weeks.from_now }
   end
 
-  factory :video_stat, class: Stat::Video do
-  end
-
-  factory :video_tag do
+  factory :deal_activation do
+    deal
+    user
   end
 
   factory :tweet do
@@ -217,6 +245,18 @@ FactoryGirl.define do
     content           "This is my first tweet!"
     tweeted_at        { Time.now.utc }
     favorited         false
+  end
+
+  # ===================
+  # = My stats models =
+  # ===================
+  factory :site_stat, class: Stat::Site do
+  end
+
+  factory :video_stat, class: Stat::Video do
+  end
+
+  factory :video_tag do
   end
 
   # ================

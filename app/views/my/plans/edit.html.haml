@@ -1,8 +1,10 @@
 = title("Plan for #{hostname_or_token(@site)}")
-= render '/layouts/sites_select_title'
+= render 'layouts/sites_select_title'
 
 #site.edit
-  = render '/layouts/segmented_menu'
+  = render 'layouts/segmented_menu'
+
+  = render 'my/deals/deal_available'
 
   - if @site.hostname.blank?
     .notice= raw t('site.plan.hostname_needed_for_paid_plan', link: link_to("add a hostname", [:edit, @site]))

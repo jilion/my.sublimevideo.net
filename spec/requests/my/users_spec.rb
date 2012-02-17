@@ -13,18 +13,21 @@ feature "Users" do
         page.should have_content @current_user.name
         go 'my', '/log_out'
         page.should have_no_content @current_user.name
+        get_me_the_cookies.map { |c| c['name'] }.should_not include("l")
       end
 
       scenario "redirect /sign_out to /logout" do
         page.should have_content @current_user.name
         go 'my', '/sign_out'
         page.should have_no_content @current_user.name
+        get_me_the_cookies.map { |c| c['name'] }.should_not include("l")
       end
 
       scenario "redirect /signout to /logout" do
         page.should have_content @current_user.name
         go 'my', '/signout'
         page.should have_no_content @current_user.name
+        get_me_the_cookies.map { |c| c['name'] }.should_not include("l")
       end
     end
   end
@@ -52,6 +55,7 @@ feature "Users" do
         new_user.email.should eq archived_user.email
 
         current_url.should eq "http://my.sublimevideo.dev/sites/new"
+        get_me_the_cookie("l")[:value].should eq '1'
         page.should have_content I18n.t("devise.users.signed_up")
         page.should have_content archived_user.email
       end
@@ -261,7 +265,6 @@ feature "Users" do
     scenario "API pages are accessible to @jilion.com emails" do
       sign_in_as :user, email: "remy@jilion.com"
       click_link('John Doe')
-      # page.should have_content("API")
 
       go 'my', "/account/applications"
       current_url.should eq "http://my.sublimevideo.dev/account/applications"
@@ -277,6 +280,7 @@ feature "Users" do
 
     click_button "Done"
     current_url.should eq "http://sublimevideo.dev/"
+    get_me_the_cookies.map { |c| c['name'] }.should_not include("l")
     page.should_not have_content "John Doe"
     @current_user.reload.should be_archived
 
@@ -317,6 +321,7 @@ feature "confirmation" do
     click_button "Continue"
 
     current_url.should eq "http://my.sublimevideo.dev/sites/new"
+    get_me_the_cookie("l")[:value].should eq '1'
     page.should have_content "John Doe"
   end
 end

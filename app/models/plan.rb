@@ -22,9 +22,13 @@ class Plan < ActiveRecord::Base
 
   validates :name,          presence: true, uniqueness: { scope: :cycle }
   validates :video_views,   presence: true, numericality: true
-  validates :price,         presence: true, numericality: true
   validates :cycle,         presence: true, inclusion: CYCLES
   validates :support_level, presence: true, inclusion: (0...SUPPORT_LEVELS.size)
+  validate :price_is_present_and_numeric
+
+  def price_is_present_and_numeric
+    errors.add(:price, "must be present.") if read_attribute(:price).nil?
+  end
 
   # ==========
   # = Scopes =
@@ -151,16 +155,28 @@ class Plan < ActiveRecord::Base
   end
 
   def discounted?(site)
-    false
+    if site && deal = site.user.latest_activated_deal
+      if (site.trial_started_at? && site.trial_started_at >= deal.started_at && site.trial_started_at <= deal.ended_at) || deal.active?
+        return deal if %W[plans_discount #{cycle}ly_plans_discount #{name}_plan_discount].include?(deal.kind)
+      end
+    end
+
+    nil
   end
 
-  def discounted_percentage
-    0.2
+  def discounted_percentage(site=nil)
+    if deal = discounted?(site)
+      deal.value
+    else
+      0
+    end
+  end
+
+  def price(site=nil)
+    read_attribute(:price) * (1 - discounted_percentage(site))
   end
 
 end
-
-
 # == Schema Information
 #
 # Table name: plans
@@ -181,4 +197,3 @@ end
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #  index_plans_on_token           (token) UNIQUE
 #
-

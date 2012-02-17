@@ -8,6 +8,13 @@
     -# %h3.section_title More information about you
     = render 'my/users/more_info_form_fields', f: f
 
+    .break
+    .entry.terms
+      .checkbox_wrap
+        = f.check_box :newsletter
+        = f.label :newsletter, "Subscribe for news & exclusive promotions."
+
+    .break
     .entry
       .comment
         -# %h3.section_title= f.label :confirmation_comment, "Write us anything you want:"

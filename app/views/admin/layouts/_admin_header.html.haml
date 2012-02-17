@@ -40,8 +40,10 @@
       .popup_menu
         %h3= link_to "Other", [:admin, :delayed_jobs]
         %ul
-          %li= link_to "Mails", [:admin, :mails]
           %li= link_to "DJs", [:admin, :delayed_jobs]
+          %li= link_to "Deals", [:admin, :deals]
+          %li= link_to "Deal activations", [:admin, :deal_activations]
+          %li= link_to "Mails", [:admin, :mails]
 
     - if has_role?('player')
       %ul.favorite_links
