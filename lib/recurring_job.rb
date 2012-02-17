@@ -117,7 +117,7 @@ module RecurringJob
       RecurringJob.delay_stats_processing
     end
 
-    def supervise(max_jobs_allowed=100) #, too_much_jobs_times=20, any_job_not_delayed=20)
+    def supervise(max_jobs_allowed=100, too_much_jobs_times=5)#, any_job_not_delayed=20)
       # check if there is no too much delayed jobs
       if too_much_jobs?(max_jobs_allowed, too_much_jobs_times)
         Notify.send("WARNING!!! There is more than #{max_jobs_allowed} delayed jobs, please investigate quickly!")
