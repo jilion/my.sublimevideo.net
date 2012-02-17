@@ -81,9 +81,9 @@ class Stat::Video
     if period_sym == :d
       stats_count = Stat::Video.where(conditions).count
       if stats_count >= 100_000
-        conditions["vl.m"] = {"$gte" => 100}
+        conditions["vl.m"] = {"$gte" => 1000}
       elsif stats_count >= 20_000
-        conditions["vl.m"] = {"$gte" => 10}
+        conditions["vl.m"] = {"$gte" => 50}
       end
     end
 
