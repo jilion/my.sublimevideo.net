@@ -11,13 +11,12 @@
     .break
     .entry.terms
       .checkbox_wrap
-        = f.check_box :newsletter
+        = f.check_box :newsletter, checked: true
         = f.label :newsletter, "Subscribe for news & exclusive promotions."
 
     .break
     .entry
       .comment
-        -# %h3.section_title= f.label :confirmation_comment, "Write us anything you want:"
         = f.text_area :confirmation_comment, placeholder: "Please leave any comments here.", class: "text"
       .spacer
 
