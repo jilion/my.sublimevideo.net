@@ -26,12 +26,6 @@
       SublimeVideoSizeChecker.setRoot('/video-size-checker/')
       window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter()
 
--# %input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/posters/day2.jpg" }
--# %input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/videos/day22.m4v" }
--# %input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/videos/day9.m4v" }
--# %input{ type: "text", size: 60, value: "http://medias.jilion.com/sublimevideo/dartmoor.webm" }
--# %input{ type: "text", size: 60, value: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }
--#
 -# %p.desc.help= raw "WordPress user? Check-out #{link_to 'our WordPress plugin', 'http://docs.sublimevideo.net/wordpress', onclick: "window.open(this); return false"} instead!"
 
 - if user_signed_in?
@@ -47,8 +41,8 @@
     = radio_button_tag "type", "lightbox"
     = label_tag "type_lightbox", "Lightbox"
   .radio_wrap
-    = radio_button_tag "type", "embed"
-    = label_tag "type_embed", "Iframe Embed"
+    = radio_button_tag "type", "iframe_embed"
+    = label_tag "type_iframe_embed", "Iframe Embed"
 
 #demo_bootstrap
   %button.green_button#use_demo_assets= "Use demo videos urls"

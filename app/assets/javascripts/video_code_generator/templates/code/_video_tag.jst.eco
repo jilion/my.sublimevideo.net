@@ -1,11 +1,11 @@
 <% poster = if @video.get('poster').get('src') then " poster='#{@video.get('poster').get('src')}'" else '' %>
-<% sizes = if @builderClass isnt 'iframe_embed' then " width='#{@video.get('width')}' height='#{@video.get('height')}' " else '' %>
-<% style = if @builderClass is 'iframe_embed' then " style='display:none'" else '' %>
+<% sizes = if @builder.get('builderClass') isnt 'iframe_embed' then " width='#{@video.get('width')}' height='#{@video.get('height')}' " else '' %>
+<% style = if @builder.get('builderClass') is 'iframe_embed' then " style='display:none'" else '' %>
 <% data_name = if @video.get('sources').mp4Base().get('dataName') then " data-name='#{@video.get('sources').mp4Base().get('dataName')}'" else '' %>
 <% data_uid = if @video.get('sources').mp4Base().get('dataUID') then " data-uid='#{@video.get('sources').mp4Base().get('dataUID')}'" else '' %>
 <% sortedSources = @video.get('sources').sortedSources(MSVVideoCodeGenerator.builder.get('startWithHd')) %>
 
-<% if @builderClass is 'lightbox': %>
+<% if @builder.get('builderClass') is 'lightbox': %>
   <% mp4Mobile = @video.get('sources').mp4Mobile() %>
 
   <pre class='prettyprint'><code class='language-html'>&lt;a href='<%= mp4Mobile.get('src') %>' class='sublime<%= " zoomable" if @video.get('thumbnail').get('magnifyingGlass') %>'&gt;</code></pre>
@@ -22,7 +22,7 @@
   <pre class='prettyprint'><code class='language-html'>&lt;/a&gt;</code></pre>
 <% end %>
 
-<% extra_spaces = if @builderClass is 'iframe_embed' then "    " else "" %>
+<% extra_spaces = if @builder.get('builderClass') is 'iframe_embed' then "    " else "" %>
 <pre class='prettyprint'><code class='language-html'><%= extra_spaces %>&lt;video class='<%= @video.get('classes') %>'<%= poster %><%= sizes %>preload='none'<%= data_name %><%= data_uid %><%= style %>&gt;</code></pre>
 
 <% for source in sortedSources: %>

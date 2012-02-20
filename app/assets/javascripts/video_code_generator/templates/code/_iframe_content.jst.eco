@@ -2,9 +2,9 @@
 <pre class='prettyprint'><code class='language-html'>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;</code></pre>
-<%- @loader_content %>
+<%- @loaderContent %>
 <pre class='prettyprint'><code class='language-html'>  &lt;/head&gt;
   &lt;body&gt;</code></pre>
-<%- @video_content %>
+<%- @videoContent %>
 <pre class='prettyprint'><code class='language-html'>  &lt;/body&gt;
 &lt;/html&gt;</code></pre>
