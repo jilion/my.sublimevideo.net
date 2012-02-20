@@ -191,7 +191,7 @@ describe Site do
             end
 
             it "don't need current_password with other errors" do
-              subject.update_attributes(hostname: "", email: "").should be_false
+              subject.update_attributes(hostname: "", dev_hostnames: "").should be_false
               subject.errors[:base].should be_empty
             end
           end
@@ -746,7 +746,8 @@ describe Site do
       it "doesn't version when :#{attr} changes" do
         with_versioning do
           expect do
-            subject.update_attributes(attr => "bob.com", user_attributes: { 'current_password' => '123456' })
+            subject.send("#{attr}=", "bob.com")
+            subject.save
           end.to_not change(subject.versions, :count)
         end
       end

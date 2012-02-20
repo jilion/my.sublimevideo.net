@@ -10,9 +10,4 @@ module SiteUsage::Api
     end
   end
 
-  module ClassMethods
-  end
-
-  module InstanceMethods
-  end
 end

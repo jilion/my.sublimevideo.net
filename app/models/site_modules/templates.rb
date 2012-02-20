@@ -2,7 +2,6 @@ module SiteModules::Templates
   extend ActiveSupport::Concern
 
   module ClassMethods
-
     TEMPLATES = [:loader, :license]
 
     # delayed method
@@ -32,79 +31,70 @@ module SiteModules::Templates
 
       TEMPLATES.each { |template| site.purge_template(template) }
     end
-
   end
 
-  # ====================
-  # = Instance Methods =
-  # ====================
+  def license_hash
+    hash = { h: [hostname] }
+    hash[:h] += extra_hostnames.split(', ') if extra_hostnames?
+    hash[:d] = dev_hostnames.split(', ') if dev_hostnames?
+    hash[:w] = wildcard if wildcard?
+    hash[:p] = path if path?
+    hash[:b] = badged
+    hash[:s] = true unless in_free_plan? # SSL
+    hash[:r] = true if plan_id? && plan_stats_retention_days != 0 # Realtime Stats
+    hash
+  end
 
-  module InstanceMethods
+  def license_js_hash
+    license_hash.to_s.gsub(/:|\s/, '').gsub(/\=\>/, ':')
+  end
 
-    def license_hash
-      hash = { h: [hostname] }
-      hash[:h] += extra_hostnames.split(', ') if extra_hostnames?
-      hash[:d] = dev_hostnames.split(', ') if dev_hostnames?
-      hash[:w] = wildcard if wildcard?
-      hash[:p] = path if path?
-      hash[:b] = badged
-      hash[:s] = true unless in_free_plan? # SSL
-      hash[:r] = true if plan_id? && plan_stats_retention_days != 0 # Realtime Stats
-      hash
+  def purge_template(name)
+    mapping = { loader: 'js', license: 'l' }
+    VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
+  end
+
+  def set_template(name)
+    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name.to_s}.js.erb")).read)
+
+    tempfile = Tempfile.new(["#{name}-#{token}-#{Time.now.utc}", '.js'], "#{Rails.root}/tmp")
+    tempfile.print template.result(binding)
+    tempfile.flush
+
+    self.send("#{name}=", tempfile)
+  end
+
+private
+
+  def settings_changed?
+    (changed & %w[hostname extra_hostnames dev_hostnames path wildcard badged]).present?
+  end
+
+  # before_save
+  def prepare_cdn_update
+    @loader_needs_update = @license_needs_update = false
+    if state_change == ['suspended', 'active']
+      @loader_needs_update = @license_needs_update = true
+    else
+      @loader_needs_update  = plan_id? && (plan_id_changed? || player_mode_changed?)
+      @license_needs_update = plan_id? && (plan_id_changed? || settings_changed?)
     end
+    self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update)
 
-    def license_js_hash
-      license_hash.to_s.gsub(/:|\s/, '').gsub(/\=\>/, ':')
+    true
+  end
+
+  # after_save
+  def execute_cdn_update
+    if @loader_needs_update || @license_needs_update
+      Site.delay.update_loader_and_license(self.id, loader: @loader_needs_update, license: @license_needs_update)
     end
+    @loader_needs_update = @license_needs_update = false
+  end
 
-    def purge_template(name)
-      mapping = { loader: 'js', license: 'l' }
-      VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
-    end
-
-    def set_template(name)
-      template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name.to_s}.js.erb")).read)
-
-      tempfile = Tempfile.new(["#{name}-#{token}-#{Time.now.utc}", '.js'], "#{Rails.root}/tmp")
-      tempfile.print template.result(binding)
-      tempfile.flush
-
-      self.send("#{name}=", tempfile)
-    end
-
-  private
-
-    def settings_changed?
-      (changed & %w[hostname extra_hostnames dev_hostnames path wildcard badged]).present?
-    end
-
-    # before_save
-    def prepare_cdn_update
-      @loader_needs_update = @license_needs_update = false
-      if state_change == ['suspended', 'active']
-        @loader_needs_update = @license_needs_update = true
-      else
-        @loader_needs_update  = plan_id? && (plan_id_changed? || player_mode_changed?)
-        @license_needs_update = plan_id? && (plan_id_changed? || settings_changed?)
-      end
-      self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update)
-
-      true
-    end
-
-    # after_save
-    def execute_cdn_update
-      if @loader_needs_update || @license_needs_update
-        Site.delay.update_loader_and_license(self.id, loader: @loader_needs_update, license: @license_needs_update)
-      end
-      @loader_needs_update = @license_needs_update = false
-    end
-
-    # after_transition :to => [:suspended, :archived]
-    def delay_remove_loader_and_license
-      Site.delay.remove_loader_and_license(self.id)
-    end
-
+  # after_transition :to => [:suspended, :archived]
+  def delay_remove_loader_and_license
+    Site.delay.remove_loader_and_license(self.id)
   end
 
 end

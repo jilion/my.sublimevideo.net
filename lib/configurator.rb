@@ -45,7 +45,4 @@ module Configurator
 
   end
 
-  module InstanceMethods
-  end
-
 end

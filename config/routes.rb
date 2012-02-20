@@ -41,11 +41,8 @@ MySublimeVideo::Application.routes.draw do
 
   scope module: 'my' do
     constraints subdomain: 'my' do
-      devise_for :users,
-                 module: 'my/users',
-                 path: '',
-                 path_names: { sign_in: 'login', sign_out: 'logout' },
-                 skip: [:invitations, :registrations] do
+      devise_for :user, module: 'my/users', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:invitations, :registrations]
+      devise_scope :user do
         resource :user, only: [], path: '' do
           get    :new,     path: '/signup', as: 'new'
           post   :create,  path: '/signup'
@@ -152,12 +149,8 @@ MySublimeVideo::Application.routes.draw do
   end # api.
 
   # We put this block out of the following scope to avoid double admin_admin in url helpers...
-  devise_for :admins,
-             constraints: { subdomain: 'admin' },
-             module: 'admin/admins',
-             path: '',
-             path_names: { sign_in: 'login', sign_out: 'logout' },
-             skip: [:registrations] do
+  devise_for :admin, constraints: { subdomain: 'admin' }, module: 'admin/admins', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
+  devise_scope :admin do
     resource :admin_registration, only: [:edit, :update, :destroy], controller: 'admin/admins/registrations', constraints: { subdomain: 'admin' }, path: 'account'
   end
 

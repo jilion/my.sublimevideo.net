@@ -1,6 +1,4 @@
 class Log
-  extend ActiveSupport::Memoizable
-
   include Mongoid::Document
   include Mongoid::Timestamps
 

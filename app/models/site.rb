@@ -1,5 +1,4 @@
 class Site < ActiveRecord::Base
-  extend ActiveSupport::Memoizable
   include SiteModules::Api
   include SiteModules::Invoice
   include SiteModules::Referrer
@@ -232,8 +231,8 @@ class Site < ActiveRecord::Base
       end
       name
     end
+    @recommended_plan_name ||= name
   end
-  memoize :recommended_plan_name
 
   def skip_pwd
     @skip_password_validation = true
@@ -252,6 +251,11 @@ class Site < ActiveRecord::Base
 
   def trial_start_time
     trial_started_at.to_i
+  end
+
+  def unmemoize_all
+    @recommended_plan_name = nil
+    unmemoize_all_usages
   end
 
 private
@@ -290,7 +294,7 @@ private
 
   # validate
   def validates_current_password
-    return if @skip_password_validation
+    return true if @skip_password_validation
 
     if persisted? && in_paid_plan? && trial_ended? && errors.empty? &&
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)

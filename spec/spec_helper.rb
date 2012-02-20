@@ -93,7 +93,6 @@ Spork.each_run do
 end
 
 def recreate_default_plans
-  Plan.unmemoize_all
   @free_plan      = Factory.create(:free_plan, support_level: 0)
   @paid_plan      = Factory.create(:plan, name: "plus", video_views: 3_000, support_level: 1)
   @sponsored_plan = Factory.create(:sponsored_plan, support_level: 2)

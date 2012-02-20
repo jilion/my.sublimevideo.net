@@ -203,8 +203,7 @@ describe User do
     end
 
     it "should not be able to update enthusiast_id" do
-      subject.update_attributes(enthusiast_id: 13)
-      subject.enthusiast_id.should == 12
+      lambda { subject.update_attributes(enthusiast_id: 13) }.should raise_error
     end
   end
 

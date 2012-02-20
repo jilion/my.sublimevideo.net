@@ -28,12 +28,9 @@ module Stat
   # ====================
   # = Instance Methods =
   # ====================
-  module InstanceMethods
 
-    def time
-      (s || m || h || d).to_i
-    end
-
+  def time
+    (s || m || h || d).to_i
   end
 
   # =================

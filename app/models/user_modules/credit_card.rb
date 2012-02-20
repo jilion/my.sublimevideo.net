@@ -117,10 +117,10 @@ module UserModules::CreditCard
     # We need the '_will_change!' calls since this methods is called in an after_save callback...
     def apply_pending_credit_card_info
       %w[type last_digits expire_on updated_at].each do |att|
-        self.send("cc_#{att}_will_change!")
-        self.send("pending_cc_#{att}_will_change!")
         self.send("cc_#{att}=", self.send("pending_cc_#{att}"))
         self.send("pending_cc_#{att}=", nil)
+        self.send("cc_#{att}_will_change!")
+        self.send("pending_cc_#{att}_will_change!")
       end
       reset_last_failed_cc_authorize_fields
 
