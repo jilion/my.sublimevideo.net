@@ -78,12 +78,12 @@ class Stat::Video
       conditions[:u] = { "$in" => %w[home features-lightbox features-playlist-1 features-playlist-2 features-playlist-3 features-playlist-4 demo-single demo-lightbox-1 demo-lightbox-2 demo-lightbox-3 demo-lightbox-4 demo-playlist-1 demo-playlist-2 demo-playlist-3 demo-playlist-4] }
     end
     # Reduce number of stats to group if too many.
-    if period_sym == :d
+    if [:h, :d].include?(period_sym)
       stats_count = Stat::Video.where(conditions).count
       if stats_count >= 100_000
-        conditions["vl.m"] = {"$gte" => 1000}
+        conditions["vl.m"] = {"$gte" => 2000}
       elsif stats_count >= 20_000
-        conditions["vl.m"] = {"$gte" => 50}
+        conditions["vl.m"] = {"$gte" => 100}
       end
     end
 
