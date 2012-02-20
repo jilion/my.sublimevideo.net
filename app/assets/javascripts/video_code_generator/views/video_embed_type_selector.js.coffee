@@ -12,7 +12,6 @@ class MSVVideoCodeGenerator.Views.VideoEmbedTypeSelector extends Backbone.View
   #
   updateBuilderClass: (event) ->
     newBuilderClass = event.target.id.replace('type_', '')
-
     baseMp4 = MSVVideoCodeGenerator.sources.mp4Base()
     attributes =
       poster: MSVVideoCodeGenerator.poster

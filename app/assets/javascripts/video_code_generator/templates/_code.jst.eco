@@ -1,25 +1,27 @@
+<% loaderContent = this.loaderTemplate(builder: @builder, loader: @loader, video: @video) %>
+<% videoContent = this.embedTemplate(builder: @builder, iframe: @iframe, video: @video) %>
 <div id="warnings" style="background-color:#DDD; margin-bottom:20px;">
-  <%= warningsTemplate(video: @video) %>
+  <%- this.warningsTemplate(video: @video) %>
 </div>
 
-<% if @builderClass isnt 'iframe_embed': %>
+<% if @builder.get('builderClass') isnt 'iframe_embed': %>
   <div id="loader_block" style="background-color:#DDD; margin-bottom:20px;">
-    <%- @loader_block() %>
+    <%- loaderContent %>
   </div>
 <% end %>
 
 <div id="video_embed_block" style="background-color:#DDD; margin-bottom:20px;">
-  <%- @video_embed_block() %>
+  <%- videoContent %>
 </div>
 
-<% if @builderClass is 'iframe_embed': %>
+<% if @builder.get('builderClass') is 'iframe_embed': %>
   <div id="iframe_content_block" style="background-color:#DDD; margin-bottom:20px;">
-    <%- @iframe_content_block() %>
+    <%- this.iframeContentTemplate(loader: @loader, iframe: @iframe, loaderContent: loaderContent, videoContent: videoContent) %>
   </div>
 <% end %>
 
-<% if @builderClass is 'lightbox' and @video.get('thumbnail').get('magnifyingGlass'): %>
+<% if @builder.get('builderClass') is 'lightbox' and @video.get('thumbnail').get('magnifyingGlass'): %>
   <div id="css_block" style="background-color:#DDD">
-    <%- @css_block() %>
+    <%- this.cssTemplate(video: @video) %>
   </div>
 <% end %>
