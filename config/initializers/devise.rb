@@ -9,6 +9,9 @@ Devise.setup do |config|
   # Configure the class responsible to send e-mails.
   config.mailer = "DeviseMailer"
 
+  # Disable apply schema
+  config.apply_schema = false
+
   # ==> ORM configuration
   # Load and configure the ORM. Supports :active_record (default) and
   # :mongoid (bson_ext recommended) by default. Other ORMs may be
@@ -114,7 +117,7 @@ Devise.setup do |config|
 
   # Options to be passed to the created cookie. For instance, you can set
   # :secure => true in order to force SSL only cookies.
-  config.cookie_options = { secure: Rails.env.production? || Rails.env.staging?, domain: :all }
+  config.rememberable_options = { secure: Rails.env.production? || Rails.env.staging?, domain: :all }
 
   # ==> Configuration for :validatable
   # Range for password length. Default is 6..128.
