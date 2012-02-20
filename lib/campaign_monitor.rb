@@ -6,10 +6,10 @@ class CampaignMonitor < Settingslogic
 
     def subscribe(user)
       set_api_key
-      CreateSend::Subscriber.add(self.list_id, user.email, user.name,
+      CreateSend::Subscriber.add(self.lists.sublimevideo.list_id, user.email, user.name,
         [
           { Key: 'user_id', Value: user.id },
-          { Key: 'segment', Value: self.segment },
+          { Key: 'segment', Value: self.lists.sublimevideo.segment },
           { Key: 'beta',    Value: user.beta?.to_s }
         ],
         true
@@ -26,19 +26,19 @@ class CampaignMonitor < Settingslogic
           Name: user.name,
           CustomFields: [
             { Key: 'user_id', Value: user.id },
-            { Key: 'segment', Value: self.segment },
+            { Key: 'segment', Value: self.lists.sublimevideo.segment },
             { Key: 'beta',    Value: user.beta?.to_s }
           ]
         }
       end
-      CreateSend::Subscriber.import(self.list_id, subscribers, false)
+      CreateSend::Subscriber.import(self.lists.sublimevideo.list_id, subscribers, false)
     rescue CreateSend::BadRequest => ex
       log_bad_request(ex)
     end
 
     def unsubscribe(email)
       set_api_key
-      CreateSend::Subscriber.new(self.list_id, email).unsubscribe
+      CreateSend::Subscriber.new(self.lists.sublimevideo.list_id, email).unsubscribe
       true
     rescue CreateSend::BadRequest => ex
       log_bad_request(ex)
@@ -47,7 +47,7 @@ class CampaignMonitor < Settingslogic
 
     def update(user)
       set_api_key
-      if subscriber = CreateSend::Subscriber.new(self.list_id, user.email_was.presence || user.email)
+      if subscriber = CreateSend::Subscriber.new(self.lists.sublimevideo.list_id, user.email_was.presence || user.email)
         subscriber.update(user.email, user.name, [], user.newsletter?)
       end
     rescue CreateSend::BadRequest => ex
@@ -55,13 +55,15 @@ class CampaignMonitor < Settingslogic
       false
     end
 
-    def subscriber(email)
+    def subscriber(email, list_id=self.lists.sublimevideo.list_id)
       set_api_key
-      if subscriber = CreateSend::Subscriber.get(self.list_id, email)
+      if subscriber = CreateSend::Subscriber.get(list_id, email)
         subscriber
       else
         nil
       end
+    rescue CreateSend::NotFound => ex
+      nil
     rescue CreateSend::BadRequest => ex
       log_bad_request(ex)
       nil

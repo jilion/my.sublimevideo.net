@@ -4,6 +4,8 @@
 #sites
   = title_and_content_header("My sites")
 
+  = render 'my/deals/deal_available'
+
   = link_to new_site_path, class: "add_site green_button" do
     %span= "Add a site"
 

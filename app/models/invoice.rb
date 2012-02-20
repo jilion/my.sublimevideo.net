@@ -9,9 +9,9 @@ class Invoice < ActiveRecord::Base
   # ================
 
   belongs_to :site
-
   has_one :user, through: :site
 
+  # Invoice items
   has_many :invoice_items
   has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, class_name: "InvoiceItem"
 
@@ -23,7 +23,7 @@ class Invoice < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_validation :set_customer_info, :set_site_info, on: :create
+  before_create :set_customer_info, :set_site_info
 
   after_create :decrement_user_balance
   after_create do |record|
@@ -194,18 +194,18 @@ class Invoice < ActiveRecord::Base
 
 private
 
-  # before_validation on: :create
+  # before_create
   def set_customer_info
-    self.customer_full_name       ||= user.billing_name
-    self.customer_email           ||= user.email
-    self.customer_country         ||= user.billing_country
-    self.customer_company_name    ||= user.company_name
-    self.customer_billing_address ||= user.billing_address
+    self.customer_full_name       = user.billing_name
+    self.customer_email           = user.email
+    self.customer_country         = user.billing_country
+    self.customer_company_name    = user.company_name
+    self.customer_billing_address = user.billing_address
   end
 
-  # before_validation on: :create
+  # before_create
   def set_site_info
-    self.site_hostname ||= site.hostname
+    self.site_hostname = site.hostname
   end
 
   # after_create

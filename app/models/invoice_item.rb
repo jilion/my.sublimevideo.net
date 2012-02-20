@@ -9,7 +9,12 @@ class InvoiceItem < ActiveRecord::Base
   # ================
 
   belongs_to :invoice, counter_cache: true
+  has_one :site, through: :invoice
+  has_one :user, through: :site
+
   belongs_to :item, polymorphic: true
+
+  belongs_to :deal
 
   delegate :site, to: :invoice
   delegate :user, to: :site
@@ -46,9 +51,11 @@ end
 #  amount                :integer
 #  created_at            :datetime
 #  updated_at            :datetime
+#  deal_id               :integer
 #
 # Indexes
 #
+#  index_invoice_items_on_deal_id                (deal_id)
 #  index_invoice_items_on_invoice_id             (invoice_id)
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
 #

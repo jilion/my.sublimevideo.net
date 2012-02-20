@@ -75,7 +75,7 @@ MySublimeVideo::Application.routes.draw do
       end
       get '/card(/*anything)' => redirect('/account/billing/edit')
 
-      scope "oauth" do
+      scope 'oauth' do
         # OAuth 1 & 2
         match '/authorize' => 'oauth#authorize', as: :oauth_authorize, via: [:get, :post]
         delete '/revoke' => 'oauth#revoke', as: :oauth_revoke
@@ -108,7 +108,9 @@ MySublimeVideo::Application.routes.draw do
 
       post '/transaction/callback' => 'transactions#callback'
 
-      resource :ticket, only: [:create], path: '/help'
+      resources :deals, only: [:show], path: 'd'
+
+      resource :ticket, only: [:create], path: 'help'
       %w[support feedback].each { |action| get action, to: redirect('/help') }
 
       match '/video-code-generator' => 'video_code_generator#new', via: :get, as: 'video_code_generator'
@@ -164,29 +166,12 @@ MySublimeVideo::Application.routes.draw do
       %w[log_in sign_in signin].each         { |action| get action => redirect('/login') }
       %w[log_out sign_out signout exit].each { |action| get action => redirect('/logout') }
 
-      resource  :dashboard, only: [:show]
-
-      resources :enthusiasts, only: [:index, :show, :update]
-
-      resources :enthusiast_sites, only: [:update]
-
-      resources :stats, only: [:index] do
-        collection do
-          get :sales
-          get :users
-          get :sites
-          get :tweets
-          get :site_usages
-          get :site_stats
-          get :more
-          get '/single/:page' => 'stats#show', as: 'single'
-        end
+      unauthenticated :admin do
+        root to: redirect('/login')
       end
 
-      resources :users, only: [:index, :show] do
-        member do
-          get :become
-        end
+      authenticated :admin do
+        root to: redirect('/sites'), as: 'admin'
       end
 
       resources :sites, only: [:index, :show, :edit, :update] do
@@ -194,6 +179,17 @@ MySublimeVideo::Application.routes.draw do
           put :sponsor
         end
       end
+      resources :plans,  only: [:index, :new, :create]
+      resources :referrers, only: [:index]
+
+      resources :users, only: [:index, :show] do
+        member do
+          get :become
+        end
+      end
+      resources :enthusiasts, only: [:index, :show, :update]
+      resources :enthusiast_sites, only: [:update]
+      resources :admins, only: [:index, :edit, :update, :destroy]
 
       resources :invoices,  only: [:index, :show, :edit] do
         collection do
@@ -204,36 +200,34 @@ MySublimeVideo::Application.routes.draw do
         end
       end
 
-      resources :referrers, only: [:index]
-
-      resources :plans,  only: [:index, :new, :create]
-
-      resources :admins, only: [:index, :edit, :update, :destroy]
-
-      resources :mails,  only: [:index, :new, :create]
-      scope 'mails' do
-        resources :mail_templates, only: [:new, :create, :edit, :update], path: "templates"
-        resources :mail_logs,      only: [:show],                         path: "logs"
+      resources :stats, only: [:index] do
+        collection do
+          get '/single/:page' => 'stats#show', as: 'single'
+          get :more
+          get :sales
+          get :users
+          get :sites
+          get :site_stats
+          get :site_usages
+          get :tweets
+        end
       end
-
-      resources :releases, only: [:index, :create, :update]
-
       resources :tweets, only: [:index] do
         member do
           put :favorite
         end
       end
 
-      resources :delayed_jobs, only: [:index, :show, :update, :destroy], path: "djs"
-
-      unauthenticated :admin do
-        root to: redirect('/login')
+      resources :delayed_jobs, only: [:index, :show, :update, :destroy], path: 'djs'
+      resources :deals, only: [:index]
+      resources :deal_activations, only: [:index], path: 'deals/activations'
+      resources :mails,  only: [:index, :new, :create]
+      scope 'mails' do
+        resources :mail_templates, only: [:new, :create, :edit, :update], path: 'templates'
+        resources :mail_logs,      only: [:show],                         path: 'logs'
       end
 
-      authenticated :admin do
-        root to: redirect('/sites'), as: 'admin'
-      end
-
+      resources :releases, only: [:index, :create, :update]
     end
   end # admin.
 

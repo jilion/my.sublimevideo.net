@@ -7,15 +7,15 @@ describe InvoiceItem do
     subject { @invoice_item }
 
     its(:invoice)   { should be_present }
-    its(:site)      { should == @invoice_item.invoice.site }
-    its(:user)      { should == @invoice_item.site.user }
-    its(:type)      { should == 'InvoiceItem::Plan' }
-    its(:item_type) { should == 'Plan' }
+    its(:site)      { should eq @invoice_item.invoice.site }
+    its(:user)      { should eq @invoice_item.site.user }
+    its(:type)      { should eq 'InvoiceItem::Plan' }
+    its(:item_type) { should eq 'Plan' }
     its(:item_id)   { should be_present }
-    specify { subject.started_at.to_i.should == Time.now.utc.beginning_of_month.to_i }
-    specify { subject.ended_at.to_i.should == Time.now.utc.end_of_month.to_i }
-    its(:price)     { should == 1000 }
-    its(:amount)    { should == 1000 }
+    specify         { subject.started_at.to_i.should eq Time.now.utc.beginning_of_month.to_i }
+    specify         { subject.ended_at.to_i.should eq Time.now.utc.end_of_month.to_i }
+    its(:price)     { should eq 1000 }
+    its(:amount)    { should eq 1000 }
 
     it { should be_valid }
   end # Factory
@@ -25,6 +25,11 @@ describe InvoiceItem do
     subject { @invoice_item }
 
     it { should belong_to :invoice }
+    it { should have_one :site } # through :invoice
+    it { should have_one :user } # through :site
+
+    it { should belong_to :deal }
+
     it { should belong_to :item }
   end # Associations
 
@@ -46,9 +51,6 @@ describe InvoiceItem do
   end # Validations
 
 end
-
-
-
 # == Schema Information
 #
 # Table name: invoice_items
@@ -65,9 +67,11 @@ end
 #  amount                :integer
 #  created_at            :datetime
 #  updated_at            :datetime
+#  deal_id               :integer
 #
 # Indexes
 #
+#  index_invoice_items_on_deal_id                (deal_id)
 #  index_invoice_items_on_invoice_id             (invoice_id)
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
 #

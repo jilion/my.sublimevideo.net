@@ -7,7 +7,6 @@
       = render 'credit_card_fields', f: f, user: @user
       .entry.update
         = f.submit 'Update', id: 'billing_info_submit', class: "submit blue_button"
-      .break
 
   - else
     = form_for @user, url: [:billing], html: { class: "full_form" } do |f|

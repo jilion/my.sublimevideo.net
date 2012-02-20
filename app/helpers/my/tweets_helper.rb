@@ -11,25 +11,28 @@ module My::TweetsHelper
     if from_cache = Rails.cache.fetch("what_people_say_#{count}")
       from_cache
     else
-      favorites_tweets = Tweet.favorites_tweets(favorite_tweets_options)
+      favorites_tweets = Tweet.pretty_remote_favorites(favorite_tweets_options)
       Rails.cache.write("what_people_say_#{count}", favorites_tweets, expires_in: 1.hour) if favorites_tweets.present?
       favorites_tweets
     end
   end
 
   def clean_tweet_text(tweet, *args)
-    tweet_text     = tweet.text
-    tweet_entities = tweet.entities
-    options        = args.extract_options!
-    indices_for_stripping = []
+    tweet_text = tweet.text
+    options    = args.extract_options!
 
-    indices_for_stripping << tweet_entities.user_mentions.map(&:indices) if options[:strip_user_mentions]
-    indices_for_stripping << tweet_entities.urls.map(&:indices)          if options[:strip_urls]
-    indices_for_stripping << tweet_entities.hashtags.map(&:indices)      if options[:strip_hastags]
+    if tweet.attrs
+      tweet_entities = tweet.attrs['entities'].to_options
+      indices_for_stripping = []
 
-    # order indices array by indices descending and then slicing entities to remove
-    indices_for_stripping.flatten(1).sort { |a, b| b[0] <=> a[0] }.each do |indices|
-      tweet_text.slice!(indices[0]..indices[1])
+      indices_for_stripping << tweet_entities[:user_mentions].map { |h| h['indices'] } if options[:strip_user_mentions]
+      indices_for_stripping << tweet_entities[:urls].map { |h| h['indices'] }          if options[:strip_urls]
+      indices_for_stripping << tweet_entities[:hashtags].map { |h| h['indices'] }      if options[:strip_hastags]
+
+      # order indices array by indices descending and then slicing entities to remove
+      indices_for_stripping.flatten(1).sort { |a, b| b[0] <=> a[0] }.each do |indices|
+        tweet_text.slice!(indices[0]..indices[1])
+      end
     end
 
     tweet_text = tweet_text.gsub(/(\s?\/\s*cc\s\@\w+)/, '') if options[:strip_cc]

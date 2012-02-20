@@ -4,6 +4,7 @@ class My::SitesController < MyController
   respond_to :json, only: :index
 
   before_filter :redirect_suspended_user
+  before_filter :activate_deal_from_cookie, only: [:index, :new]
   before_filter :find_sites_or_redirect_to_new_site, only: [:index, :edit, :update, :destroy]
   before_filter :find_by_token!, only: [:edit, :update, :destroy]
 
@@ -80,6 +81,17 @@ class My::SitesController < MyController
   end
 
   private
+
+  def activate_deal_from_cookie
+    if cookies[:d]
+      if deal = Deal.find_by_token(cookies[:d])
+        deal_activation = current_user.deal_activations.build(deal_id: deal.id)
+        if deal_activation.save
+          cookies.delete :d, domain: :all
+        end
+      end
+    end
+  end
 
   def find_by_token!
     @site = current_user.sites.not_archived.find_by_token!(params[:id])

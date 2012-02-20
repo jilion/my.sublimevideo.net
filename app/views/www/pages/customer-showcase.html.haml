@@ -62,7 +62,7 @@
           %span.arrow
         .left
           = link_to "http://twitter.com/#{tweet.user.screen_name}" do
-            = image_tag tweet.bigger_profile_image, alt: clean_tweet_from_user(tweet), size: "48x48"
+            = image_tag tweet.user.profile_image_url, alt: clean_tweet_from_user(tweet), size: "48x48"
             %span.shadow
         .right
           %p.info

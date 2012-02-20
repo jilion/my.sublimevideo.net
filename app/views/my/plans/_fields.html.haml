@@ -65,7 +65,7 @@
                   %h4= plan_support(free_plan)
                 .spacer
           .select_box_wrap
-            .select_box{ class: current_plan && current_plan == free_plan ? 'active' : '' + ' no_discount' }
+            .select_box{ class: current_plan && current_plan == free_plan ? 'active' : '' }
               = f.label :plan_id, (content_tag :span, "Free", class: "title"), for: "plan_#{free_plan.name}"
               .radio_wrap
                 = f.radio_button :plan_id, free_plan.id, radio_button_options(site, current_plan, free_plan, checked: current_plan && current_plan == free_plan)
@@ -78,6 +78,7 @@
       - standard_plans.each do |standard_plan|
         - next if standard_plan.yearly?
         - standard_yearly_plan = standard_plans.find { |p| p.name == standard_plan.name && p.yearly? }
+        - deal = standard_plan.discounted?(site)
         - i += 1
         %li{ class: "#{standard_plan.name} box_#{i}" + (standard_plan.name == site.recommended_plan_name ? ' recommended' : '') }
           .wrapper
@@ -108,22 +109,29 @@
                   .spacer
               -# %span.recommended_label= "Recommended"
             .select_box_wrap
-              .monthly.select_box{ class: current_plan && current_plan == standard_plan ? 'active' : '' + ' no_discount' }
+              .monthly.select_box{ class: current_plan && current_plan == standard_plan ? 'active' : '' + (deal ? ' discount' : '') }
                 = f.label :plan_id, raw(plan_label_content(standard_plan, site)), for: "plan_#{standard_plan.name}_#{standard_plan.cycle}"
                 .radio_wrap
                   = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, current_plan, standard_plan, checked: current_plan && current_plan == standard_plan)
                   %span.bg
                 - if site.persisted? && plan == standard_plan
                   %span.current_label= "Current"
+
               - if standard_yearly_plan
-                .yearly.select_box{ class: current_plan && current_plan == standard_yearly_plan ? 'active' : '' + ' no_discount' }
+                - deal = standard_yearly_plan.discounted?(site)
+                .yearly.select_box{ class: current_plan && current_plan == standard_yearly_plan ? 'active' : '' + (deal ? ' discount' : '') }
                   = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), for: "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
                   .radio_wrap
                     = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, current_plan, standard_yearly_plan, checked: current_plan && current_plan == standard_yearly_plan)
                     %span.bg
                   - if site.persisted? && plan == standard_yearly_plan
-                    %span.current_label= "Current"
-                  %span.save_label= "save 2 months"
+                    %span.current_label= "Current"  
+                  - if deal
+                    = render 'my/deals/deal_details', deal: deal, plan: standard_yearly_plan
+                  - else
+                    %span.save_label
+                      = "save 2 months"
+
               .spacer
     .spacer
 

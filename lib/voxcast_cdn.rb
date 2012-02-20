@@ -33,7 +33,7 @@ module VoxcastCDN
     end
 
     def download_log(filename)
-      rescue_and_retry(3) do
+      rescue_and_retry(5) do
         xml = client.voxel_voxcast_ondemand_logs_download(:filename => filename)
         tempfile = Tempfile.new('log', Rails.root.join('tmp'), :encoding => 'ASCII-8BIT')
         tempfile.write(Base64.decode64(xml['data']['content']))

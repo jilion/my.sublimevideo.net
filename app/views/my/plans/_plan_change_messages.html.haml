@@ -1,13 +1,9 @@
--# You are upgrading from the Trial Plan to the Personal Plan. The cost of this upgrade is $24.99.
--#
--# After this upgrade is complete, you will be charged the annual fee of $24.99/year.
-
 #plan_update_info
   #plan_in_trial_downgrade_to_free_info.update_plan_message_box.notice{ style: "display:none;" }
     %p= raw "The plan change will take effect immediately. We won't charge you anything."
 
   #plan_in_trial_update_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "The plan change will take effect immediately but we will only charge you #{content_tag(:span, "?", class: "plan_price")} at the end of your #{BusinessModel.days_for_trial}-day free trial, on #{content_tag(:strong, "?", class: "plan_update_date")}."
+    %p= raw "The plan change will take effect immediately but we will only charge you #{content_tag(:span, "?", class: "plan_price")} at the end of your #{BusinessModel.days_for_trial}-day trial, on #{content_tag(:strong, "?", class: "plan_update_date")}."
 
   #plan_skipping_trial_info.update_plan_message_box.notice{ style: "display:none;" }
     %p= raw "The trial for your #{content_tag(:strong, "?", class: "plan_title")} plan will stop immediately and we will charge you #{content_tag(:span, "?", class: "plan_update_price")}."

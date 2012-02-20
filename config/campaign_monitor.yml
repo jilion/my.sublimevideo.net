@@ -3,20 +3,36 @@ defaults: &defaults
 
 development:
   <<: *defaults
-  list_id: a064dfc4b8ccd774252a2e9c9deb9244
-  segment: dev
+  lists:
+    sublimevideo:
+      list_id: a064dfc4b8ccd774252a2e9c9deb9244
+      segment: dev
+    sublimevideo_newsletter:
+      list_id: a064dfc4b8ccd774252a2e9c9deb9244
 
 test:
   <<: *defaults
-  list_id: a064dfc4b8ccd774252a2e9c9deb9244
-  segment: test
+  lists:
+    sublimevideo:
+      list_id: a064dfc4b8ccd774252a2e9c9deb9244
+      segment: test
+    sublimevideo_newsletter:
+      list_id: a064dfc4b8ccd774252a2e9c9deb9244
 
 staging:
   <<: *defaults
-  list_id: a064dfc4b8ccd774252a2e9c9deb9244
-  segment: staging
+  lists:
+    sublimevideo:
+      list_id: a064dfc4b8ccd774252a2e9c9deb9244
+      segment: staging
+    sublimevideo_newsletter:
+      list_id: a064dfc4b8ccd774252a2e9c9deb9244
 
 production:
   <<: *defaults
-  list_id: 1defd3a2fa342e3534126166f32e02d2
-  segment: my.sublimevideo.net
+  lists:
+    sublimevideo:
+      list_id: 1defd3a2fa342e3534126166f32e02d2
+      segment: my.sublimevideo.net
+    sublimevideo_newsletter:
+      list_id: 6cc4f36f7befd39080e43b82ade6794e

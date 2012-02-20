@@ -69,6 +69,14 @@ describe Release do
           all_users_grantee.perms.should == ["READ"]
         end
       end
+      
+      it "should put zip files inside dev dir with good content-type & content-encoding" do
+        S3.player_bucket.keys('prefix' => 'dev').each do |key|
+          key.head # refresh headers
+          key.headers['content-type'].should eq Release.content_type(key.to_s)
+          key.headers['content-encoding'].should eq Release.content_encoding(key.to_s)
+        end
+      end
     end
   end
 
@@ -85,6 +93,15 @@ describe Release do
     it "should purge /p/beta when flagged (becoming the stable release)" do
       VoxcastCDN.should_receive(:purge_dir).with('/p/beta')
       subject.flag
+    end
+
+    it "should copy dev files inside dev dir with good content-type & content-encoding" do
+      dev_release
+      S3.player_bucket.keys('prefix' => 'dev').each do |key|
+        key.head # refresh headers
+        key.headers['content-type'].should eq Release.content_type(key.to_s)
+        key.headers['content-encoding'].should eq Release.content_encoding(key.to_s)
+      end
     end
 
     describe "when flagged" do
@@ -112,6 +129,15 @@ describe Release do
           all_users_grantee.perms.should == ["READ"]
         end
       end
+
+      it "should copy dev files inside beta dir with good content-type & content-encoding" do
+        S3.player_bucket.keys('prefix' => 'beta').each do |key|
+          key.head # refresh headers
+          key.headers['content-type'].should eq Release.content_type(key.to_s)
+          key.headers['content-encoding'].should eq Release.content_encoding(key.to_s)
+        end
+      end
+
     end
 
     describe "when archived" do
@@ -151,6 +177,17 @@ describe Release do
         keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'stable/', :remove_prefix => true)
         keys_names.sort.should == subject.files_in_zip.map(&:to_s).sort
       end
+
+      it "should copy beta files inside stable dir with good content-type & content-encoding" do
+        S3.player_bucket.keys('prefix' => 'stable/').each do |key|
+          unless key.to_s == 'stable/'
+            key.head # refresh headers
+            key.headers['content-type'].should eq Release.content_type(key.to_s)
+            key.headers['content-encoding'].should eq Release.content_encoding(key.to_s)
+          end
+        end
+      end
+
       it "should archive old stable_release" do
         @stable_release.reload.should be_archived
       end

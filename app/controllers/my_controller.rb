@@ -4,7 +4,6 @@ class MyController < ApplicationController
 
   responders Responders::FlashResponder
 
-  before_filter :delete_logged_in_cookie
   before_filter :authenticate_user!
   before_filter :set_logged_in_cookie
 
@@ -30,18 +29,12 @@ private
     redirect_to [:new, :site] if @sites.empty?
   end
 
-  def delete_logged_in_cookie
-    cookies.delete :l, domain: :all
-  end
-
   def set_logged_in_cookie
-    unless cookies[:l] == '1'
-      cookies[:l] = {
-        value: '1',
-        expires: 2.weeks.from_now,
-        domain: :all
-      }
-    end
+    cookies[:l] = {
+      value: '1',
+      expires: 2.weeks.from_now,
+      domain: :all
+    }
   end
 
   module DeviseInvitable::Controllers::Helpers

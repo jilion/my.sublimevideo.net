@@ -1,0 +1,16 @@
+%table.main#deals
+  %tr
+    %th= link_to_sort :id
+    %th Token
+    %th Name
+    %th Description
+    %th Kind
+    %th Value
+    %th Availability Scope
+    %th= link_to_sort :started_at, default_way: 'asc', default: true
+    %th= link_to_sort :ended_at, default_way: 'asc'
+  = render @deals
+
+.pagination_wrap
+  = paginate @deals, theme: 'admin'
+  = page_entries_info @deals

@@ -65,7 +65,7 @@ module SiteModules::Templates
     def set_template(name)
       template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name.to_s}.js.erb")).read)
 
-      tempfile = Tempfile.new(name.to_s, "#{Rails.root}/tmp")
+      tempfile = Tempfile.new(["#{name}-#{token}-#{Time.now.utc}", '.js'], "#{Rails.root}/tmp")
       tempfile.print template.result(binding)
       tempfile.flush
 
