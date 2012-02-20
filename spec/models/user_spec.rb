@@ -21,7 +21,7 @@ describe User do
     its(:billing_region)       { should eq "VD" }
     its(:billing_country)      { should eq "CH" }
     its(:use_personal)         { should be_true }
-    its(:newsletter)           { should be_true }
+    its(:newsletter)           { should be_false }
     its(:email)                { should match /email\d+@user.com/ }
     its(:hidden_notice_ids)    { should eq [] }
 
@@ -34,6 +34,7 @@ describe User do
 
     it { should have_many :sites }
     it { should have_many(:invoices).through(:sites) }
+    it { should have_many :deal_activations }
     it { should have_many :client_applications }
     it { should have_many :tokens }
   end
@@ -493,6 +494,39 @@ describe User do
       end
     end
 
+    describe "after_create :delay_set_newsletter" do
+      subject { Factory(:user, email: "newsletter_sign_up@jilion.com") }
+
+      it "delays set_newsletter" do
+        expect { subject }.to change(Delayed::Job, :count).by(1)
+        Delayed::Job.last.name.should eq "Class#set_newsletter"
+      end
+
+      context "user is subscribed in CM" do
+        before do
+          CampaignMonitor.should_receive(:subscriber) { true }
+        end
+
+        it "set newsletter" do
+          subject.newsletter.should be_false
+          @worker.work_off
+          subject.reload.newsletter.should be_true
+        end
+      end
+
+      context "user isn't subscribed in CM" do
+        before do
+          CampaignMonitor.should_receive(:subscriber).twice { nil }
+        end
+
+        it "set newsletter" do
+          subject.newsletter.should be_false
+          @worker.work_off
+          subject.reload.newsletter.should be_false
+        end
+      end
+    end
+
     describe "after_save :newsletter_update" do
       context "user sign-up" do
         context "user subscribes on sign-up" do
@@ -500,40 +534,39 @@ describe User do
 
           it "registers user's email on Campaign Monitor" do
             expect { subject }.to change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should eql "Class#subscribe"
+            Delayed::Job.last.name.should eq "Class#subscribe"
           end
         end
 
         context "user doesn't subscribe on sign-up" do
-          subject { Factory(:user, newsletter: "0", email: "no_newsletter_sign_up@jilion.com") }
+          subject { Factory(:user, newsletter: false, email: "no_newsletter_sign_up@jilion.com") }
 
           it "doesn't register user's email on Campaign Monitor" do
-            expect { subject }.to_not change(Delayed::Job, :count)
+            expect { subject }.to change(Delayed::Job, :count).by(1)
+            Delayed::Job.last.name.should_not eq "Class#subscribe"
           end
         end
       end
 
       context "user update" do
-        subject { Factory(:user, newsletter: "1", email: "newsletter_update@jilion.com") }
+        subject { Factory(:user, newsletter: true, email: "newsletter_update@jilion.com") }
 
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
           subject
           expect { subject.update_attribute(:email, "newsletter_update2@jilion.com") }.to change(Delayed::Job, :count).by(1)
-          Delayed::Job.last.name.should eql "Class#update"
+          Delayed::Job.last.name.should eq "Class#update"
         end
 
         it "updates info in Campaign Monitor if user change his name" do
           subject
           expect { subject.update_attribute(:name, "bob") }.to change(Delayed::Job, :count).by(1)
-          Delayed::Job.last.name.should eql "Class#update"
+          Delayed::Job.last.name.should eq "Class#update"
         end
 
         it "updates subscribing state in Campaign Monitor if user change his newsletter state" do
           subject
-          expect { subject.update_attribute(:newsletter, false) }.to change(Delayed::Job, :count).by(2)
-          djs = Delayed::Job.limit(2).order(:created_at.desc).all
-          djs[0].name.should eql "Class#unsubscribe"
-          djs[1].name.should eql "Class#update"
+          expect { subject.update_attribute(:newsletter, false) }.to change(Delayed::Job, :count).by(1)
+          djs = Delayed::Job.last.name.should eq "Class#unsubscribe"
         end
       end
     end
@@ -546,42 +579,55 @@ describe User do
       end
 
       context "user has no zendesk_id" do
-        it "should not delay Module#put" do
-          expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
+        it "doesn't delay Module#put" do
+          subject
+          expect { subject.update_attribute(:email, "new@jilion.com") }.to_not change(Delayed::Job, :count)
           Delayed::Job.all.any? { |dj| dj.name == 'Module#put' }.should be_false
         end
       end
 
       context "user has a zendesk_id" do
-        before(:each) do
-          subject.update_attribute(:zendesk_id, 59438671)
-        end
+        before { subject.update_attribute(:zendesk_id, 59438671) }
 
-        it "should delay Module#put if the user has a zendesk_id and his email has changed" do
-          expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
-          Delayed::Job.all.select { |dj| dj.name == 'Module#put' }.should have(1).item
-        end
+        context "user updated his email" do
+          it "delays Module#put if the user has a zendesk_id and his email has changed" do
+            expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(1)
+            Delayed::Job.where { handler =~ '%Module%put%' }.should have(1).item
+          end
 
-        it "should update user's email on Zendesk if this user has a zendesk_id and his email has changed" do
-          expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
+          it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
+            expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(1)
 
-          VCR.use_cassette("zendesk/update_email") do
-            @worker.work_off
-            Delayed::Job.last.should be_nil
-            JSON[Zendesk.get("/users/59438671/user_identities.json").body].select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@jilion.com")
+            VCR.use_cassette("zendesk/update_email") do
+              @worker.work_off
+              Delayed::Job.last.should be_nil
+              JSON[Zendesk.get("/users/59438671/user_identities.json").body].select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@jilion.com")
+            end
           end
         end
 
-        it "should update user's name on Zendesk if this user has a zendesk_id and his name has changed" do
-          expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(2)
+        context "user updated his name" do
+          it "delays Module#put" do
+            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(1)
+            Delayed::Job.where { handler =~ '%Module%put%' }.should have(1).item
+          end
 
-          VCR.use_cassette("zendesk/update_name") do
-            @worker.work_off
-            Delayed::Job.last.should be_nil
-            JSON[Zendesk.get("/users/59438671.json").body]['name'].should eq "Remy"
+          it "updates user's name on Zendesk" do
+            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(1)
+
+            VCR.use_cassette("zendesk/update_name") do
+              @worker.work_off
+              Delayed::Job.last.should be_nil
+              JSON[Zendesk.get("/users/59438671.json").body]['name'].should eq "Remy"
+            end
+          end
+
+          context "name has changed to ''" do
+            it "doesn't update user's name on Zendesk" do
+              expect { subject.update_attribute(:name, "") }.to_not change(Delayed::Job, :count)
+            end
           end
         end
-
       end
     end
 
@@ -796,6 +842,73 @@ describe User do
       end
     end
 
+    describe "#activated_deals" do
+      subject { Factory(:user) }
+
+      context "without deals activated" do
+        its(:activated_deals) { should be_empty }
+      end
+
+      context "with deals activated" do
+        let(:deal1) { Factory(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+        let(:deal2) { Factory(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
+        before(:each) do
+          @deal_activation1 = Factory(:deal_activation, deal: deal1, user: subject)
+          @deal_activation2 = Factory(:deal_activation, deal: deal2, user: subject)
+        end
+
+        its(:activated_deals) { should eq [deal2, deal1] }
+      end
+    end
+
+    describe "#latest_activated_deal" do
+      subject { Factory(:user) }
+
+      context "without deals activated" do
+        its(:latest_activated_deal) { should be_nil }
+      end
+
+      context "with deals activated" do
+        let(:deal1) { Factory(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+        let(:deal2) { Factory(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
+        before(:each) do
+          @deal_activation1 = Factory(:deal_activation, deal: deal1, user: subject)
+          @deal_activation2 = Factory(:deal_activation, deal: deal2, user: subject)
+        end
+
+        its(:latest_activated_deal) { should eq deal2 }
+
+        it "returns a deal even if it not active anymore" do
+          Timecop.travel(4.days.from_now) do
+            subject.latest_activated_deal.should eq deal2
+          end
+        end
+      end
+    end
+
+    describe "#latest_activated_deal_still_active" do
+      subject { Factory(:user) }
+
+      context "without deals activated" do
+        its(:latest_activated_deal_still_active) { should be_nil }
+      end
+
+      context "with deals activated" do
+        let(:deal1) { Factory(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+        let(:deal2) { Factory(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
+        before(:each) do
+          @deal_activation1 = Factory(:deal_activation, deal: deal1, user: subject)
+          @deal_activation2 = Factory(:deal_activation, deal: deal2, user: subject)
+        end
+
+        it "returns only a deal that is still active" do
+          Timecop.travel(4.days.from_now) do
+            subject.latest_activated_deal_still_active.should be_nil
+          end
+        end
+      end
+    end
+
     describe "#support & #email_support?" do
       context "user has no site" do
         before(:all) do
@@ -803,7 +916,7 @@ describe User do
         end
         subject { @user.reload }
 
-        it { subject.support.should eql "forum" }
+        it { subject.support.should eq "forum" }
       end
 
       context "user has only sites with forum support" do
@@ -812,7 +925,7 @@ describe User do
           Factory(:site, user: @user, plan_id: @free_plan.id,)
         end
         subject { @user.reload }
-        it { @free_plan.support.should eql "forum" }
+        it { @free_plan.support.should eq "forum" }
         its(:support) { should eq "forum" }
         its(:email_support?) { should be_false }
       end
@@ -840,10 +953,10 @@ describe User do
         end
         subject { @user.reload }
 
-        it { @free_plan.support.should eql "forum" }
-        it { @paid_plan.support.should eql "email" }
-        it { @custom_plan.support.should eql "vip_email" }
-        its(:support) { should eql "vip_email" }
+        it { @free_plan.support.should eq "forum" }
+        it { @paid_plan.support.should eq "email" }
+        it { @custom_plan.support.should eq "vip_email" }
+        its(:support) { should eq "vip_email" }
         its(:email_support?) { should be_true }
       end
     end

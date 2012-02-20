@@ -33,10 +33,10 @@ class VideoTag
 
   def update_with_latest_data(attributes)
     %w[uo n no p cs z].each do |key|
-      self.send("#{key}=", attributes[key]) if attributes.key?(key)
+      self.send("#{key}=", attributes[key]) if attributes[key].present?
     end
     # Properly update sources
-    self.s = read_attribute('s').merge(attributes['s']) if attributes.key?('s')
+    self.s = read_attribute('s').merge(attributes['s']) if attributes['s'].present?
 
     save
   end
@@ -71,6 +71,8 @@ private
         channel.trigger('video_tag', u: u, meta_data: meta_data)
       end
     end
+  rescue Pusher::HTTPError
+    # do nothing
   end
 
   # Merge each videos tag in one big hash

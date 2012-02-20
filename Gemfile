@@ -1,3 +1,4 @@
+# http://ablogaboutcode.com/2012/01/12/a-simple-rails-boot-time-improvement/
 source 'http://rubygems.org'
 source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com account
 
@@ -6,8 +7,8 @@ gem 'rails',                 '3.2.1'
 gem 'thin'
 
 gem 'prototype-rails'
-gem 'jquery-rails', '~> 1.0.19'
-gem 'rails-backbone', '~> 0.6.0'
+gem 'jquery-rails',          '~> 1.0.19'
+gem 'rails-backbone',        '~> 0.6.0'
 
 # Databases
 gem 'pg',                    '~> 0.13.0'
@@ -36,15 +37,15 @@ gem 'acts_as_api',           '~> 0.3.10'
 # gem 'rack-throttle',         git: 'git://github.com/rymai/rack-throttle.git', require: 'rack/throttle'
 
 # Internals
-# gem 'delayed_job',           '~> 2.1.4'
+gem 'delayed_job',           '~> 2.1.4'
 # gem 'delayed_job',           '~> 3.0.0.pre'
-gem 'delayed_job_active_record'
+# gem 'delayed_job_active_record'
 # gem 'rescue_me',             '~> 0.1.0'
 gem 'rescue_me',             '~> 0.1.1', git: 'git://github.com/rymai/rescue_me.git' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'
 
-gem 'state_machine',         '~> 1.1.0'
+gem 'state_machine',         '~> 1.1.2'
 gem 'paper_trail',           '~> 2.4.0'
 gem 'uniquify',              '~> 0.1.0'
 
@@ -67,10 +68,11 @@ gem 'useragent',             git: 'git://github.com/jilion/useragent.git' # need
 gem 'stat_request_parser',   '~> 1.0.0' # hosted on gemfury
 
 gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
+gem 'mime-types'
 gem 'countries',             '~> 0.7.0'
 gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.1.0', require: 'page_rankr'
-gem 'twitter',               '~> 1.7.2'
+gem 'twitter',               '~> 2.1.0'
 gem 'settingslogic',         '2.0.6' # 2.0.7 has ruby-debug19 & jeweler as dependencies => UNACCEPTABLE
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 1.0.0' # Campaign Monitor
@@ -106,7 +108,7 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.0'
   gem 'eco'
   gem 'uglifier'
-  gem 'haml_coffee_assets'
+  gem 'haml_coffee_assets', '0.7.1' # THE 0.8.1 (0.8.0?) WAS CAUSING THE SHIT
   gem 'execjs'
 end
 
@@ -166,9 +168,9 @@ end
 
 group :test do
   gem 'spork', '~> 0.9.0'
-  gem 'fuubar'
   gem 'shoulda-matchers'
   gem 'capybara'
+  gem 'show_me_the_cookies'
   gem 'webmock',  '~> 1.6.0'
   gem 'typhoeus', '~> 0.2.0'
   gem 'vcr',      '~> 1.10.3'

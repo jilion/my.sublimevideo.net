@@ -40,6 +40,7 @@ end
 #  encrypted_password     :string(128)     default(""), not null
 #  password_salt          :string(255)     default(""), not null
 #  reset_password_token   :string(255)
+#  remember_token         :string(255)
 #  remember_created_at    :datetime
 #  sign_in_count          :integer         default(0)
 #  current_sign_in_at     :datetime
@@ -53,11 +54,11 @@ end
 #  created_at             :datetime
 #  updated_at             :datetime
 #  reset_password_sent_at :datetime
-#  remember_token         :string(255)
 #  invitation_accepted_at :datetime
 #  invitation_limit       :integer
 #  invited_by_id          :integer
 #  invited_by_type        :string(255)
+#  roles                  :text
 #
 # Indexes
 #

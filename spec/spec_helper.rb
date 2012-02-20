@@ -31,6 +31,14 @@ Spork.prefork do
   RSpec.configure do |config|
     config.extend VCR::RSpec::Macros
 
+    # config.include Shoulda::ActionController::Matchers
+    config.include Devise::TestHelpers, type: :controller
+
+    config.include ShowMeTheCookies, type: :request
+
+    # FactoryGirl http://railscasts.com/episodes/158-factories-not-fixtures-revised
+    config.include Factory::Syntax::Methods
+
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true
     # config.filter_run_including :focus => true # don't seem to work with RSpec 2.8 bug? use .rspec instead
@@ -82,14 +90,6 @@ Spork.each_run do
   require Rails.root.join("spec/factories")
 
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
-
-  RSpec.configure do |config|
-    # config.include Shoulda::ActionController::Matchers
-    config.include Devise::TestHelpers, type: :controller
-
-    # FactoryGirl http://railscasts.com/episodes/158-factories-not-fixtures-revised
-    config.include Factory::Syntax::Methods
-  end
 end
 
 def recreate_default_plans

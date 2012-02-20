@@ -579,11 +579,33 @@ describe SiteModules::Invoice do
       end
     end # #last_paid_invoice
 
+    describe "#last_paid_plan" do
+      context "site with no invoice" do
+        subject { Factory.create(:site, plan_id: @free_plan.id) }
+
+        its(:last_paid_plan) { should be_nil }
+      end
+
+      context "site with at least one paid invoice" do
+        before(:all) do
+          @plan1 = Factory.create(:plan, price: 10_000)
+          @plan2 = Factory.create(:plan, price: 5_000)
+          @site  = Factory.create(:site_with_invoice, plan_id: @plan1.id)
+          @site.plan_id = @plan2.id
+        end
+        subject { @site }
+
+        it "should return the plan of the last InvoiceItem::Plan with an price > 0" do
+          subject.last_paid_plan.should eq @plan1
+        end
+      end
+    end # #last_paid_plan
+
     describe "#last_paid_plan_price" do
       context "site with no invoice" do
         subject { Factory.create(:site, plan_id: @free_plan.id) }
 
-        its(:last_paid_plan_price) { should == 0 }
+        its(:last_paid_plan_price) { should eq 0 }
       end
 
       context "site with at least one paid invoice" do
@@ -596,7 +618,7 @@ describe SiteModules::Invoice do
         subject { @site }
 
         it "should return the price of the last InvoiceItem::Plan with an price > 0" do
-          subject.last_paid_plan_price.should == @plan1.price
+          subject.last_paid_plan_price.should eq @plan1.price
         end
       end
     end # #last_paid_plan_price

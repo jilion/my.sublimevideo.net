@@ -38,9 +38,12 @@ describe Plan do
 
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:video_views) }
-    it { should validate_presence_of(:price) }
     it { should validate_presence_of(:cycle) }
     it { should validate_presence_of(:support_level) }
+
+    it "price can't be blank" do
+      Factory.build(:plan, price: nil).should have(1).error_on(:price)
+    end
 
     describe "uniqueness of name scoped by cycle" do
       before(:each) do
@@ -52,7 +55,6 @@ describe Plan do
     end
 
     it { should validate_numericality_of(:video_views) }
-    it { should validate_numericality_of(:price) }
 
     it { should allow_value("month").for(:cycle) }
     it { should allow_value("year").for(:cycle) }
@@ -225,11 +227,122 @@ describe Plan do
       it { Factory.build(:plan, name: "premium", support_level: 2).support.should eq "vip_email" }
     end
 
+    describe "#discounted?" do
+      let(:user)  { Factory(:user) }
+      let(:site1) { Factory(:site) }
+      let(:site2) { Factory(:site, user: user) }
+      let(:deal1) { Factory(:deal, kind: 'plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+      let(:deal2) { Factory(:deal, kind: 'yearly_plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+      let(:plan1) { Factory(:plan, name: 'foo', cycle: 'month') }
+      let(:plan2) { Factory(:plan, name: 'bar', cycle: 'year') }
+
+      context "site's user doesn't have access to a discounted price" do
+        it "return false" do
+          subject.discounted?(site1).should be_nil
+        end
+      end
+
+      context "site's user has access to a discounted price" do
+        it "price isn't discounted for this plan" do
+          Factory(:deal_activation, deal: deal2, user: user)
+          plan1.discounted?(site2).should be_nil
+        end
+
+        it "price is discounted for this plan" do
+          Factory(:deal_activation, deal: deal2, user: user)
+          plan2.discounted?(site2).should eq deal2
+        end
+
+        it "price is discounted for this plan" do
+          Factory(:deal_activation, deal: deal1, user: user)
+          plan1.discounted?(site2).should eq deal1
+        end
+
+        it "price is discounted for this plan" do
+          Factory(:deal_activation, deal: deal1, user: user)
+          plan2.discounted?(site2).should eq deal1
+        end
+
+        context "site trial started during deal" do
+          it "price is discounted for this plan" do
+            Factory(:deal_activation, deal: deal2, user: user)
+            site2.trial_started_at.should eq Time.now.utc.midnight
+
+            Timecop.travel(3.days.from_now) do
+              deal2.should_not be_active
+              plan2.discounted?(site2).should eq deal2
+            end
+          end
+        end
+
+        context "site trial started after the deal end" do
+          it "price isn't discounted for this plan" do
+            Factory(:deal_activation, deal: deal2, user: user)
+
+            Timecop.travel(3.days.from_now) do
+              site2.trial_started_at.should eq Time.now.utc.midnight
+              deal2.should_not be_active
+              plan2.discounted?(site2).should be_nil
+            end
+          end
+        end
+      end
+    end
+
+    describe "#discounted_percentage" do
+      let(:site) { Factory(:site) }
+      let(:deal) { Factory(:deal, value: 0.3) }
+      subject { Factory.create(:plan) }
+
+      context "site doesn't have access to a discounted price" do
+        before(:each) do
+          subject.should_receive(:discounted?).with(site) { false }
+        end
+
+        it "return 0" do
+          subject.discounted_percentage(site).should eq 0
+        end
+      end
+
+      context "site has access to a discounted price" do
+        before(:each) do
+          subject.should_receive(:discounted?).with(site) { deal }
+        end
+
+        it "return the deal's value" do
+          subject.discounted_percentage(site).should eq deal.value
+        end
+      end
+    end
+
+    describe "#price" do
+      let(:site) { Factory(:site) }
+      subject { Factory.create(:plan) }
+
+      context "site doesn't have access to a discounted price" do
+        before(:each) do
+          subject.should_receive(:discounted_percentage).with(site) { 0 }
+        end
+
+        it "price is not discounted" do
+          subject.price(site).should eq subject.read_attribute(:price) * (1 - 0)
+        end
+      end
+
+      context "site has access to a discounted price" do
+        before(:each) do
+          subject.should_receive(:discounted_percentage).with(site) { 0.3 }
+        end
+
+        it "price is discounted" do
+          subject.price(site).should eq subject.read_attribute(:price) * (1 - 0.3)
+        end
+      end
+    end
+
   end
 
 end
-
-
 # == Schema Information
 #
 # Table name: plans
@@ -250,4 +363,3 @@ end
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #  index_plans_on_token           (token) UNIQUE
 #
-

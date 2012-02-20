@@ -11,7 +11,10 @@
         %p.period
           = "Period: #{invoice_item_dates(invoice_item)}"
           - if invoice_item.discounted_percentage?
-            = "(-#{number_to_percentage(invoice_item.discounted_percentage * 100.0, precision: 0)} beta discount)"
+            - if invoice_item.deal
+              = "(-#{number_to_percentage(invoice_item.discounted_percentage * 100.0, precision: 0)} promotional discount)"
+            - else
+              = "(-#{number_to_percentage(invoice_item.discounted_percentage * 100.0, precision: 0)} beta discount)"
       %td.total= display_amount(invoice_item.amount, decimals: 2)
 
   - if invoice.vat_amount > 0

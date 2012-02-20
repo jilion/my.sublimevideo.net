@@ -1,34 +1,15 @@
 #= require_self
 
 document.observe "dom:loaded", ->
-  host = document.location.host.split('.')
-  if Cookie.get('l') is '1' and host.length == 2 or host[0] is 'www' # topdomain and logged-in
-    SublimeVideo.handleLoggedInAutoRedirection()
-    SublimeVideo.handleLoggedInLinksTweaking()
-
   $$('.popup').each (popup) ->
     if popup.visible()
       SublimeVideo.simplePopupHandler = new SimplePopupHandler(popup.id)
       SublimeVideo.simplePopupHandler.startObservers()
 
-SublimeVideo.handleLoggedInAutoRedirection = ->
-  path   = document.location.pathname
-  search = document.location.search
-  my_host = "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}"
-  if /login/.test(path) or /signup/.test(path) or /login/.test(search) or /signup/.test(search)
-    Cookie.set('l', '0', { domain: ".#{SublimeVideo.topDomainHost()}" })
-  else if path == '/help'
-    document.location.href = "#{my_host}#{path}"
-
-SublimeVideo.handleLoggedInLinksTweaking = ->
-  $$('a.my_link').each (a) -> a.href = a.href.replace /www/, 'my'
-
 SublimeVideo.showPopup = (name, successUrl = null) ->
   failurePath ?= ''
   successUrl ?= "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}/sites"
-  if Cookie.get('l') is '1'
-    document.location.href = successUrl
-  else if $("popup_#{name}")
+  if $("popup_#{name}")
     SublimeVideo.openSimplePopup("popup_#{name}")
     $("user_#{name}").insert({ top: new Element("input", { name: "success_url", type: 'hidden', value: successUrl }) })
 

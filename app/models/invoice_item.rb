@@ -9,7 +9,12 @@ class InvoiceItem < ActiveRecord::Base
   # ================
 
   belongs_to :invoice, counter_cache: true
+  has_one :site, through: :invoice
+  has_one :user, through: :site
+
   belongs_to :item, polymorphic: true
+
+  belongs_to :deal
 
   delegate :site, to: :invoice
   delegate :user, to: :site

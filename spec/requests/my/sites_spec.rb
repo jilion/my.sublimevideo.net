@@ -95,7 +95,7 @@ feature "New site" do
             has_checked_field?("plan_plus_month").should be_true
             fill_in "Domain", with: "rymai.com"
             check "site_skip_trial"
-            expect { click_button "Create" }.to change(@current_user.invoices, :count)
+            expect { click_button "Create" }.to change(@current_user.invoices, :count).by(1)
 
             @worker.work_off
             site = @current_user.sites.last

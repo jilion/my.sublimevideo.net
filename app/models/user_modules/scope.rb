@@ -26,11 +26,12 @@ module UserModules::Scope
     scope :not_archived, where { state != 'archived' }
 
     # attributes queries
-    scope :use_personal,      where(use_personal: true)
-    scope :use_company,       where(use_company: true)
-    scope :use_clients,       where(use_clients: true)
+    scope :use_personal,      lambda { |bool=true| where { use_personal == bool } }
+    scope :use_company,       lambda { |bool=true| where { use_company == bool } }
+    scope :use_clients,       lambda { |bool=true| where { use_clients == bool } }
     scope :created_between,   lambda { |start_date, end_date| where { (created_at >= start_date) & (created_at < end_date) } }
     scope :signed_in_between, lambda { |start_date, end_date| where { (current_sign_in_at >= start_date) & (current_sign_in_at < end_date) } }
+    scope :newsletter,        lambda { |bool=true| where { newsletter == bool } }
 
     # sort
     scope :by_name_or_email, lambda { |way='asc'| order("users.name #{way.upcase}, users.email #{way.upcase}") }

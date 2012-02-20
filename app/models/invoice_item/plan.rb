@@ -10,6 +10,7 @@ class InvoiceItem::Plan < InvoiceItem
   def self.construct(attributes = {})
     instance = new(attributes)
 
+    instance.set_deal
     instance.set_discounted_percentage
     instance.set_started_at_and_ended_at
     instance.set_price_and_amount
@@ -21,8 +22,12 @@ class InvoiceItem::Plan < InvoiceItem
   # = Instance Methods =
   # ====================
 
+  def set_deal
+    self.deal = deal_applicable? ? item.discounted?(site) : nil
+  end
+
   def set_discounted_percentage
-    self.discounted_percentage = item.discounted_percentage if !deduct && item.discounted?(site)
+    self.discounted_percentage = deal_applicable? ? item.discounted_percentage(site) : 0
   end
 
   def set_started_at_and_ended_at
@@ -31,14 +36,23 @@ class InvoiceItem::Plan < InvoiceItem
   end
 
   def set_price_and_amount
-    self.price  = deduct ? site.last_paid_plan_price : item.price
+    self.price = if deal_applicable?
+      item.price(site)
+    elsif deduct
+      site.last_paid_plan_price
+    else
+      item.price
+    end
     self.amount = (deduct ? -1 : 1) * price
   end
 
+private
+
+  def deal_applicable?
+    !invoice.renew && !deduct
+  end
+
 end
-
-
-
 # == Schema Information
 #
 # Table name: invoice_items
