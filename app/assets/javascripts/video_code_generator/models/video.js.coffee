@@ -2,9 +2,13 @@ class MSVVideoCodeGenerator.Models.Video extends Backbone.Model
   defaults:
     poster: null
     sources: null
-    width: null
-    height: null
     classes: 'sublime'
+
+  width: ->
+    this.get('sources').mp4Base().get('embedWidth')
+
+  height: ->
+    this.get('sources').mp4Base().get('embedHeight')
 
 class MSVVideoCodeGenerator.Models.VideoLightbox extends MSVVideoCodeGenerator.Models.Video
   defaults:

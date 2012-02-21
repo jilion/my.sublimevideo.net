@@ -35,6 +35,7 @@ class MSVVideoCodeGenerator.Models.Image extends Backbone.Model
 
 class MSVVideoCodeGenerator.Models.Thumbnail extends MSVVideoCodeGenerator.Models.Image
   defaults:
+    initialLink: 'image'
     src: ""
     width: null
     height: null
