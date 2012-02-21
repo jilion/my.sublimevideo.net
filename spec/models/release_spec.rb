@@ -242,13 +242,23 @@ describe Release do
     end
 
     describe "#files_in_zip" do
+      let(:ds_store)  { mock('ds_store', file?: true, name: '.DS_Store') }
+      let(:macosx)    { mock('macosx', file?: true, name: '__MACOSX') }
+      let(:sublimejs) { mock('sublimejs', file?: true, name: 'sublime.js') }
+
+      it "excludes .DS_Store and __MACOSX files" do
+        subject.stub(:zipfile) { [ds_store, macosx, sublimejs] }
+        subject.files_in_zip.should eq [sublimejs]
+      end
+
       it "auto-clears the local zip file when called with a block" do
         subject.files_in_zip do |files_in_zip_array|
           File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_true
         end
         File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_false
       end
-      it "doens't clear the local zip file when called without block" do
+
+      it "doesn't clear the local zip file when called without block" do
         subject.files_in_zip
         File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_true
       end
