@@ -15,4 +15,3 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
 
     MSVVideoCodeGenerator.posterView.render()
     MSVVideoCodeGenerator.sourcesView.render()
-    MSVVideoCodeGenerator.codeView.render()

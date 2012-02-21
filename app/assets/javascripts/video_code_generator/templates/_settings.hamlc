@@ -1,0 +1,40 @@
+.content_left
+  %h4 Settings
+  %h5 Size
+  .dimensions.entry.size{ style: "float:left" }
+    %input#embed_width.text.no_icon{ type: "text", value: @source.get('embedWidth'), size: 4, maxlength: 4 }
+    x
+    - read = @source.get('keepRatio')
+    %input#embed_height.text.no_icon(readonly=read){ type: "text", value: @source.get('embedHeight'), size: 4, maxlength: 4 }
+
+  .checkbox_wrap{ style: "float:left;margin:14px 0 0 12px" }
+    - @checked = @source.get('keepRatio')
+    %input#keep_ratio(checked=@checked){ type: "checkbox" }
+    %label{ for: "keep_ratio" } Keep original ratio
+
+  .spacer
+  %a.reset.hl{ href: "" } Reset to original size
+
+  .spacer
+
+  #start_with_hd_box.checkbox_wrap{ style: "display:#{if @sources.hdPresent() then 'block' else 'none'}" }
+    - check = @builder.get('startWithHd')
+    %input#start_with_hd(checked=check){ type: "checkbox" }
+    %label{ for: "start_with_hd" } Start with HD version
+
+.content_right
+  %h4 Stats
+  #video_data_uid.entry
+    %label.icon{ for: "data_uid" } Video unique ID
+    %input#data_uid.text.no_icon{ type: "text", placeholder: "Video unique ID", value: @source.get('dataUID'), size: 8 }
+
+  #video_data_name.entry
+    %label.icon{ for: "data_name" } Video name
+    %input#data_name.text.no_icon{ type: "text", placeholder: "Video name", value: @source.get('dataName'), size: 50 }
+
+    %p.note
+      This name identifies the video for your video-stats reporting. For more advanced video stats configuration, please consult
+      %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/optimize-for-stats", onclick: "window.open(this); return false" } our documentation
+      .
+
+.spacer
