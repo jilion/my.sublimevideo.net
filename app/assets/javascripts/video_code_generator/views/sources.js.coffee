@@ -7,12 +7,12 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
 
   initialize: ->
     _.bindAll this, 'render', 'refreshSettings', 'toggleSrcBox', 'renderEmbedWidth', 'renderEmbedHeight'
-    MSVVideoCodeGenerator.sources.bind 'change:src',      this.refreshSettings
-    MSVVideoCodeGenerator.sources.bind 'change:dataUID',  this.refreshSettings
-    MSVVideoCodeGenerator.sources.bind 'change:dataName', this.refreshSettings
-    MSVVideoCodeGenerator.sources.bind 'change:isUsed',   this.toggleSrcBox
-    MSVVideoCodeGenerator.sources.bind 'change:width',    this.renderEmbedWidth
-    MSVVideoCodeGenerator.sources.bind 'change:height',   this.renderEmbedHeight
+    @collection.bind 'change:src',      this.refreshSettings
+    @collection.bind 'change:dataUID',  this.refreshSettings
+    @collection.bind 'change:dataName', this.refreshSettings
+    @collection.bind 'change:isUsed',   this.toggleSrcBox
+    @collection.bind 'change:width',    this.renderEmbedWidth
+    @collection.bind 'change:height',   this.renderEmbedHeight
 
     this.render()
 
@@ -20,16 +20,16 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
   # EVENTS
   #
   updateSrc: (event) ->
-    MSVVideoCodeGenerator.sources.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).setAndPreloadSrc(event.target.value)
+    @collection.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).setAndPreloadSrc(event.target.value)
 
   updateIsUsed: (event) ->
-    MSVVideoCodeGenerator.sources.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).set(isUsed: event.target.checked)
+    @collection.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).set(isUsed: event.target.checked)
 
   #
   # BINDINGS
   #
   render: ->
-    $(@el).html(this.template(sources: MSVVideoCodeGenerator.sources))
+    $(@el).html(this.template(sources: @collection))
 
     this
 
@@ -37,16 +37,16 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     MSVVideoCodeGenerator.settingsView.render()
 
   toggleSrcBox: ->
-    _.each MSVVideoCodeGenerator.sources.allNonBase(), (source) ->
+    _.each @collection.allNonBase(), (source) ->
       srcBox = this.$("##{source.formatQuality()}_src_box")
       if source.get('isUsed') then srcBox.show() else srcBox.hide()
     this.refreshSettings()
 
   renderEmbedWidth: ->
-    $("#embed_width").attr(value: MSVVideoCodeGenerator.sources.mp4Base().get('embedWidth'))
+    $("#embed_width").attr(value: @collection.mp4Base().get('embedWidth'))
 
   renderEmbedHeight: ->
-    $("#embed_height").attr(value: MSVVideoCodeGenerator.sources.mp4Base().get('embedHeight'))
+    $("#embed_height").attr(value: @collection.mp4Base().get('embedHeight'))
 
   #
   # PRIVATE

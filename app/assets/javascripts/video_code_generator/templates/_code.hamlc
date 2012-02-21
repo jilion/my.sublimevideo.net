@@ -1,16 +1,20 @@
 - loaderContent = this.loaderTemplate(builder: @builder, loader: @loader, video: @video)
 - videoContent = this.embedTemplate(builder: @builder, iframe: @iframe, video: @video)
 
-#warnings{ style: "background-color:#DDD; margin-bottom:20px;" }!= @warningsTemplate(video: @video)
+- if @showCode
+  #warnings{ style: "background-color:#DDD; margin-bottom:20px;" }!= @warningsTemplate(video: @video)
 
-- if @builder.get('builderClass') isnt 'iframe_embed'
-  #loader_block{ style: "background-color:#DDD; margin-bottom:20px;" }!= loaderContent
+  - if @builder.get('builderClass') isnt 'iframe_embed'
+    #loader_block{ style: "background-color:#DDD; margin-bottom:20px;" }!= loaderContent
 
-#video_embed_block{ style: "background-color:#DDD; margin-bottom:20px;" }!= videoContent
+  #video_embed_block{ style: "background-color:#DDD; margin-bottom:20px;" }!= videoContent
 
-- if @builder.get('builderClass') is 'iframe_embed'
-  #iframe_content_block{ style: "background-color:#DDD; margin-bottom:20px;" }
-    != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, loaderTemplate: @loaderTemplate, videoTagTemplate: @videoTagTemplate)
+  - if @builder.get('builderClass') is 'iframe_embed'
+    #iframe_content_block{ style: "background-color:#DDD; margin-bottom:20px;" }
+      != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, loaderTemplate: @loaderTemplate, videoTagTemplate: @videoTagTemplate)
 
-- if @builder.get('builderClass') is 'lightbox' and @video.get('thumbnail').get('magnifyingGlass')
-  #css_block{ style: "background-color:#DDD" }!= @cssTemplate(video: @video)
+  - if @builder.get('builderClass') is 'lightbox' and @video.get('thumbnail').get('magnifyingGlass')
+    #css_block{ style: "background-color:#DDD" }!= @cssTemplate(video: @video)
+
+- else
+  %button.blue_button#get_the_code{ style: "margin:auto" }= "Get the Code"

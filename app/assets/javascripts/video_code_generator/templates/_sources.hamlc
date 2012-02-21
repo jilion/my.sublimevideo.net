@@ -7,7 +7,8 @@
 
       - if source.get('quality') isnt 'base'
         .checkbox_wrap
-          != MSVVideoCodeGenerator.helper.checkbox(id: "#{source.formatQuality()}_use_source", class: "use_source", checked: source.srcIsUrl())
+          - check = source.srcIsUrl()
+          %input.use_source(checked=check){ type: "checkbox", id: "#{source.formatQuality()}_use_source" }
           %label{ for: "#{source.formatQuality()}_use_source" }
             = "Add mobile version (lower resolution/bitrate)" if source.get('quality') == 'mobile'
             = "Add HD version" if source.get('quality') == 'hd'

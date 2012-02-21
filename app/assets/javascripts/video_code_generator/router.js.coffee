@@ -10,43 +10,10 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCodeGenerator.demoPoster  = 'http://sublimevideo.net/assets/www/demo/midnight_sun_800.jpg'
     MSVVideoCodeGenerator.demoSources =
-      # MSVVideoCodeGenerator.demoSources = new MSVVideoCodeGenerator.Collections.Sources([
-      #   new MSVVideoCodeGenerator.Models.Source
-      #     format: 'mp4'
-      #     src: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4'
-      #     embedWidth: 544
-      #     embedHeight: 306
-      #     ratio: 306/544
-      #   new MSVVideoCodeGenerator.Models.Source
-      #     format: 'mp4'
-      #     src: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4'
-      #     quality: 'hd'
-      #   new MSVVideoCodeGenerator.Models.Source
-      #     format: 'webmogg'
-      #     src: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm'
-      #   new MSVVideoCodeGenerator.Models.Source
-      #     format: 'webmogg'
-      #     src: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm'
-      #     quality: 'hd'
-      # ])
       mp4_base: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4'
-      # embedWidth: 544
-      # embedHeight: 306
-      # ratio: 306/544
       mp4_hd: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4'
       webmogg_base: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm'
       webmogg_hd: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm'
-    # new MSVVideoCodeGenerator.Models.Source
-    #   format: 'mp4'
-    #   src: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4'
-    #   quality: 'hd'
-    # new MSVVideoCodeGenerator.Models.Source
-    #   format: 'webmogg'
-    #   src: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm'
-    # new MSVVideoCodeGenerator.Models.Source
-    #   format: 'webmogg'
-    #   src: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm'
-    #   quality: 'hd'
 
     MSVVideoCodeGenerator.poster  = new MSVVideoCodeGenerator.Models.Image
     MSVVideoCodeGenerator.sources = new MSVVideoCodeGenerator.Collections.Sources([
@@ -75,11 +42,6 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCodeGenerator.helper = new MSVVideoCodeGenerator.Helpers.Helper()
 
   initViews: ->
-    # new MSVVideoCodeGenerator.Views.Loader
-    #   model: MSVVideoCodeGenerator.loader
-    #   sites: MSVVideoCodeGenerator.sites
-    #   el: '#site_selector'
-
     new MSVVideoCodeGenerator.Views.DemoBootstrap
       model: MSVVideoCodeGenerator.builder
       el: '#demo_bootstrap'
@@ -101,7 +63,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       el: '#poster'
 
     MSVVideoCodeGenerator.sourcesView = new MSVVideoCodeGenerator.Views.Sources
-      # collection: MSVVideoCodeGenerator.sources
+      collection: MSVVideoCodeGenerator.sources
       el: '#sources'
 
     MSVVideoCodeGenerator.settingsView = new MSVVideoCodeGenerator.Views.Settings
@@ -114,6 +76,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       builder: MSVVideoCodeGenerator.builder
       loader: MSVVideoCodeGenerator.loader
       poster: MSVVideoCodeGenerator.poster
+      sources: MSVVideoCodeGenerator.sources
       thumbnail: MSVVideoCodeGenerator.thumbnail
       iframe: MSVVideoCodeGenerator.iframe
       sources: MSVVideoCodeGenerator.sources
@@ -121,5 +84,10 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCodeGenerator.previewView = new MSVVideoCodeGenerator.Views.Preview
       builder: MSVVideoCodeGenerator.builder
-      video: MSVVideoCodeGenerator.video
+      loader: MSVVideoCodeGenerator.loader
+      poster: MSVVideoCodeGenerator.poster
+      sources: MSVVideoCodeGenerator.sources
+      thumbnail: MSVVideoCodeGenerator.thumbnail
+      iframe: MSVVideoCodeGenerator.iframe
+      sources: MSVVideoCodeGenerator.sources
       el: '#preview'

@@ -7,27 +7,26 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
   iframeContentTemplate: JST['video_code_generator/templates/code/_iframe_content']
   cssTemplate: JST['video_code_generator/templates/code/_css']
 
+  events:
+    'click #get_the_code': 'show'
+
   initialize: ->
     @builder   = @options.builder
     @loader    = @options.loader
     @poster    = @options.poster
+    @sources   = @options.sources
     @thumbnail = @options.thumbnail
     @iframe    = @options.iframe
+    @showCode  = false
 
-    _.bindAll this, 'render'
-    @builder.bind   'change:builderClass',     this.render
-    @builder.bind   'change:startWithHd',     this.render
-    @loader.bind    'change',     this.render
-    @poster.bind    'change:src', this.render
-    @thumbnail.bind 'change',     this.render
-    @iframe.bind    'change:src', this.render
-    MSVVideoCodeGenerator.sources.bind   'change',     this.render
+    this.render()
 
   #
   # BINDINGS
   #
   render: ->
     $(@el).html this.template
+      showCode: @showCode
       builder: @builder
       loader: @loader
       iframe: @iframe
@@ -42,13 +41,6 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
 
     prettyPrint() # syntax highlighting
 
-    baseMp4 = MSVVideoCodeGenerator.sources.mp4Base()
-    if baseMp4.srcIsUrl() && baseMp4.get('embedWidth')
-      # $(MSVVideoCodeGenerator.previewView.el).spin()
-      MSVVideoCodeGenerator.previewView.render()
-    else
-      MSVVideoCodeGenerator.previewView.hide()
-
     this
 
   #
@@ -59,3 +51,11 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
       this.iframeTagTemplate
     else
       this.videoTagTemplate
+
+  show: ->
+    @showCode = true
+    this.render()
+
+  hide: ->
+    @showCode = false
+    this.render()
