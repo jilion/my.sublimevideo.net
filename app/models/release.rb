@@ -66,7 +66,7 @@ class Release < ActiveRecord::Base
   end
 
   def files_in_zip
-    @files_in_zip ||= zipfile.select { |file| file.file? && !file.name.match(/__MACOSX/) }
+    @files_in_zip ||= zipfile.select { |file| file.file? && file.name !~ /__MACOSX|\.DS_Store/ }
     if block_given?
       @files_in_zip.each { |e| yield e }
       delete_zipfile # clean tmp file
