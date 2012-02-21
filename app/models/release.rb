@@ -93,8 +93,8 @@ private
     S3.player_bucket.delete_folder('dev')
     files_in_zip do |file|
       S3.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, "public-read",
-        'content-type' => Release.content_type(file.to_s),
-        'content-encoding' => Release.content_encoding(file.to_s)
+        'content-type' => FileHeader.content_type(file.to_s),
+        'content-encoding' => FileHeader.content_encoding(file.to_s)
       )
     end
   end
@@ -133,28 +133,7 @@ private
     end
   end
 
-  def self.content_type(filename)
-    case File.extname(filename)
-    when '.js', '.jgz'
-      'text/javascript'
-    else
-      MIME::Types.type_for(filename).first.content_type
-    end
-  end
-
-  def self.content_encoding(filename)
-    case File.extname(filename)
-    when '.jgz', '.gz'
-      'gzip'
-    else
-      nil
-    end
-  end
-
 end
-
-
-
 # == Schema Information
 #
 # Table name: releases
@@ -171,4 +150,3 @@ end
 #
 #  index_releases_on_state  (state)
 #
-
