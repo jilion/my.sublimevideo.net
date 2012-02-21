@@ -1,7 +1,10 @@
 #= require application_jquery
 
 #= require backbone
+#= require hamlcoffee
 #= require video-size-checker/sublimevideo-size-checker.min.js
+#= require crc32
+#= require inflection
 #= require spin/jquery.spin
 
 #= require_self
@@ -12,5 +15,6 @@
 window.MSVVideoCodeGenerator =
   Models: {}
   Collections: {}
+  Helpers: {}
   Routers: {}
   Views: {}

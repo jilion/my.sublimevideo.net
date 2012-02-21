@@ -35,6 +35,8 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
       warningsTemplate: this.warningsTemplate
       loaderTemplate: this.loaderTemplate
       embedTemplate: this.embedTemplate()
+      iframeTagTemplate: this.iframeTagTemplate
+      videoTagTemplate: this.videoTagTemplate
       iframeContentTemplate: this.iframeContentTemplate
       cssTemplate: this.cssTemplate
 

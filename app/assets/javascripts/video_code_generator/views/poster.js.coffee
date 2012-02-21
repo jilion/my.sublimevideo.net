@@ -5,8 +5,7 @@ class MSVVideoCodeGenerator.Views.Poster extends Backbone.View
     'change #poster_src': 'updateSrc'
 
   initialize: ->
-    _.bindAll this, 'render', 'preloadSrc'
-    @model.bind 'change:src', this.preloadSrc
+    _.bindAll this, 'render'
 
     this.render()
 
@@ -14,11 +13,7 @@ class MSVVideoCodeGenerator.Views.Poster extends Backbone.View
   # EVENTS
   #
   updateSrc: (event) ->
-    @model.set(src: event.target.value)
-
-  preloadSrc: ->
-    if @model.srcIsUrl()
-      @model.preloadSrc()
+    @model.setAndPreloadSrc(event.target.value)
 
   #
   # BINDINGS

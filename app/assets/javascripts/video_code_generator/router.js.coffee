@@ -1,6 +1,7 @@
 class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
   initialize: (options) ->
     this.initModels()
+    this.initHelpers()
     this.initViews()
     sublimevideo.load()
     MSVVideoCodeGenerator.codeView.render()
@@ -70,6 +71,9 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
     # Iframe embed specific models
     MSVVideoCodeGenerator.iframe = new MSVVideoCodeGenerator.Models.Iframe
+
+  initHelpers: ->
+    MSVVideoCodeGenerator.helper = new MSVVideoCodeGenerator.Helpers.Helper()
 
   initViews: ->
     # new MSVVideoCodeGenerator.Views.Loader

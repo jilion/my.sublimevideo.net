@@ -2,9 +2,9 @@
 <pre class='prettyprint'><code class='language-html'>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;</code></pre>
-<%- @loaderContent %>
+<%- @loaderTemplate(builder: @builder, loader: @loader, video: @video) %>
 <pre class='prettyprint'><code class='language-html'>  &lt;/head&gt;
   &lt;body&gt;</code></pre>
-<%- @videoContent %>
+<%- @videoTagTemplate(builder: @builder, iframe: @iframe, video: @video) %>
 <pre class='prettyprint'><code class='language-html'>  &lt;/body&gt;
 &lt;/html&gt;</code></pre>

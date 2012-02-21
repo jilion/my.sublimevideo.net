@@ -11,7 +11,7 @@ class MSVVideoCodeGenerator.Models.Image extends Backbone.Model
   setAndPreloadSrc: (src) ->
     unless src is this.get('src')
       this.set(src: src)
-      this.preloadSrc() unless this.get('src') is ''
+      this.preloadSrc()
 
   preloadSrc: ->
     new SublimeVideo.ImagePreloader(this.get('src'), this.setDimensions)
