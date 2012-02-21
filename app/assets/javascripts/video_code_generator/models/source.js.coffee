@@ -18,19 +18,23 @@ class MSVVideoCodeGenerator.Models.Source extends Backbone.Model
   srcIsUrl: ->
     /^https?:\/\/.+\.\w+(\?+.*)?$/.test this.get('src')
 
-  setSrc: (src) ->
+  setAndPreloadSrc: (src) ->
     unless src is this.get('src')
       this.set(src: src)
       this.preloadSrc() if this.formatQuality() is 'mp4_base'
+      this.setDefaultDataUID() unless this.get('dataUID')
       this.setDefaultDataName() unless this.get('dataName')
 
   setKeepRatio: (keepRatio) ->
     this.set(keepRatio: keepRatio)
     this.setEmbedHeightWithRatio() if this.get('keepRatio')
 
+  setDefaultDataUID: ->
+    this.set(dataUID: crc32(this.get('src')))
+
   setDefaultDataName: ->
     name = this.get('src').slice(this.get('src').lastIndexOf('/') + 1, this.get('src').lastIndexOf('.'))
-    this.set(dataName: name.charAt(0).toUpperCase() + name.slice(1))
+    this.set(dataName: name.titleize())
 
   preloadSrc: ->
     new SublimeVideo.VideoPreloader(this.get('src'), this.setDimensions)

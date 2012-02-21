@@ -7,18 +7,12 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
   # EVENTS
   #
   updateUseDemoAssets: (event) ->
-    # console.log(MSVVideoCodeGenerator.video.get('poster'));
     MSVVideoCodeGenerator.poster.set(src: MSVVideoCodeGenerator.demoPoster)
-    # console.log(MSVVideoCodeGenerator.video.get('poster'));
-    _.each MSVVideoCodeGenerator.demoSources, (source, key) ->
-      MSVVideoCodeGenerator.sources.byFormatAndQuality(key.split('_')).set(src: source, isUsed: true)
-      # MSVVideoCodeGenerator.video.set(sources: MSVVideoCodeGenerator.demoSources)
-    # MSVVideoCodeGenerator.poster  = MSVVideoCodeGenerator.demoPoster
-    # MSVVideoCodeGenerator.sources = MSVVideoCodeGenerator.demoSources
+    _.each MSVVideoCodeGenerator.demoSources, (src, key) ->
+      source = MSVVideoCodeGenerator.sources.byFormatAndQuality(key.split('_'))
+      source.setAndPreloadSrc(src)
+      source.set(isUsed: true)
 
     MSVVideoCodeGenerator.posterView.render()
     MSVVideoCodeGenerator.sourcesView.render()
     MSVVideoCodeGenerator.codeView.render()
-
-    # @poster.set(src: MSVVideoCodeGenerator.demoPoster.get('src'))
-    # @sources = MSVVideoCodeGenerator.demoSources

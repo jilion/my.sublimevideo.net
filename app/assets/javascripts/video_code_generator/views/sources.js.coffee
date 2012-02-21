@@ -8,6 +8,7 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
   initialize: ->
     _.bindAll this, 'render', 'refreshSettings', 'toggleSrcBox', 'renderEmbedWidth', 'renderEmbedHeight'
     MSVVideoCodeGenerator.sources.bind 'change:src',      this.refreshSettings
+    MSVVideoCodeGenerator.sources.bind 'change:dataUID',  this.refreshSettings
     MSVVideoCodeGenerator.sources.bind 'change:dataName', this.refreshSettings
     MSVVideoCodeGenerator.sources.bind 'change:isUsed',   this.toggleSrcBox
     MSVVideoCodeGenerator.sources.bind 'change:width',    this.renderEmbedWidth
@@ -19,7 +20,7 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
   # EVENTS
   #
   updateSrc: (event) ->
-    MSVVideoCodeGenerator.sources.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).setSrc(event.target.value)
+    MSVVideoCodeGenerator.sources.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).setAndPreloadSrc(event.target.value)
 
   updateIsUsed: (event) ->
     MSVVideoCodeGenerator.sources.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).set(isUsed: event.target.checked)

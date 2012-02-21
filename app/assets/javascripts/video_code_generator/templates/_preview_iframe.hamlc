@@ -1,0 +1,3 @@
+- params = "?poster=#{encodeURIComponent(@posterSrc) + @video.get('sources').constructParamsFromSources(@builder.get('startWithHd'))}"
+
+%iframe{ src: "/video-code-generator/iframe-embed#{params}", width: @video.get('width'), height: @video.get('height'), frameborder: '0', allowfullscreen: '', webkitallowfullscreen: '', mozallowfullscreen: '' }
