@@ -51,7 +51,7 @@ describe Tweet do
       tweet1.retweets << tweet3
       tweet1.save
 
-      tweet1.retweets.order(:tweet_id.asc).entries.should eq [tweet2, tweet3]
+      tweet1.retweets.entries.sort_by(&:tweet_id).should eq [tweet2, tweet3]
     end
 
     it "retweeted_tweet should be the inverse of retweets" do
