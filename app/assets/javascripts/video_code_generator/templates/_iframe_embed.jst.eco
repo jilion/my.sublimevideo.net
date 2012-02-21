@@ -1,6 +1,0 @@
-<div class="entry">
-  <label for='iframe_src' class='icon'>Iframe source url (the actual page containing the <code>&lt;video&gt;</code> element – the page must be hosted on a domain registered on MySublimeVideo)</label>
-  <input type='text' name='iframe_src' id='iframe_src' class='text no_icon' size='50' placeholder='Iframe source url' value='<%= @iframe.get('src') %>' />
-</div>
-
-<div class="big_break"></div>

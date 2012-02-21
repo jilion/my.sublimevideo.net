@@ -1,0 +1,21 @@
+- if @builder.get('builderClass') is 'lightbox'
+  - zoomable_class = 'zoomable' if @video.get('thumbnail').srcIsUrl() and @video.get('thumbnail').get('magnifyingGlass')
+  %a.sublime{ href: "#{@video.get('sources').mp4Mobile().get('src')}", class: zoomable_class }
+    - if @video.get('thumbnail').get('initialLink') is 'image'
+      %img{ src: "#{@video.get('thumbnail').get('src')}", width: "#{@video.get('thumbnail').get('thumbWidth')}", height: "#{@video.get('thumbnail').get('thumbHeight')}" }/
+
+      - if @video.get('thumbnail').get('magnifyingGlass')
+        %span.zoom_icon
+        %style{ type: "text/css", media: "screen" }
+          a.zoomable {
+          = "  width:#{@video.get('thumbnail').get('thumbWidth')}px;"
+          = "  height:#{@video.get('thumbnail').get('thumbHeight')}px;"
+          }
+
+    - else
+      = @video.get('thumbnail').get('src')
+
+%video{ class: "#{@video.get('classes')}", poster: "#{@posterSrc}", width: "#{@video.width()}", height: "#{@video.height()}" preload: "none" }
+  - for source in @sortedSources
+    - if source.get('isUsed') and source.srcIsUrl()
+      != "<source src='#{source.get('src')}' #{if source.needDataQualityAttribute() then "data-quality='#{source.get('quality')}' " else '' }/>"
