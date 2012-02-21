@@ -1,5 +1,5 @@
 class MSVStats.Views.SitesSelectTitleView extends Backbone.View
-  template: JST['templates/_sites_select_title']
+  template: JST['_sites_select_title']
 
   events:
     'change select': 'updatePage'
