@@ -1,7 +1,6 @@
 class MSVVideoCodeGenerator.Models.Source extends Backbone.Model
   defaults:
     format: "mp4"
-    formatTitle: null
     quality: "base"
     dataName: ""
     dataUID: ""
@@ -59,7 +58,7 @@ class MSVVideoCodeGenerator.Models.Source extends Backbone.Model
 
   setEmbedWidth: (newEmbedWidth) ->
     newEmbedWidth = parseInt(newEmbedWidth)
-    newEmbedWidth = 200 if _.isNaN(newEmbedWidth) || newEmbedWidth < 200
+    newEmbedWidth = 200 if _.isNaN(newEmbedWidth) or newEmbedWidth < 200
     newEmbedWidth = 2000 if newEmbedWidth > 2000
 
     if newEmbedWidth isnt this.get('embedWidth')
@@ -68,12 +67,6 @@ class MSVVideoCodeGenerator.Models.Source extends Backbone.Model
 
   setEmbedHeightWithRatio: ->
     this.set(embedHeight: parseInt(this.get('embedWidth') * this.get('ratio')))
-
-  formatTitle: ->
-    switch this.get('format')
-      when 'mp4' then 'MP4'
-      when 'webmogg' then 'WebM or Ogg'
-      else this.get('format').charAt(0).toUpperCase() + this.get('format').slice(1);
 
   qualityTitle: ->
     switch this.get('quality')

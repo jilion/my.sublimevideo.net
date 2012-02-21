@@ -29,8 +29,9 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
     @thumbnail.setThumbWidth(event.target.value)
 
   updateInitialLink: (event) ->
+    console.log(event.target.value);
     _.each $('input[name=initial_link]'), (el) =>
-      @initialLink = el.value if el.checked
+      @thumbnail.set(initialLink: el.value) if el.checked
 
     this.render()
 
@@ -43,14 +44,13 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
     event.stopPropagation()
     false
 
-  initialLinkIsImage: ->
-    @initialLink is 'image'
+  initialLinkIsImage: -> @thumbnail.get('initialLink') is 'image'
 
   #
   # BINDINGS
   #
   render: ->
-    $(@el).html(this.template(thumbnail: @thumbnail, initialLink: @initialLink))
+    $(@el).html(this.template(thumbnail: @thumbnail))
     this.renderExtra()
     this.renderInvalidSrcError()
     $(@el).show()

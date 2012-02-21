@@ -1,11 +1,11 @@
 <h5>Starting link</h5>
 <div id="starting_link">
   <div class="radio_wrap">
-    <input type='radio' id='initial_link_image' name='initial_link' value='image' <%= 'checked' if @initialLink is 'image' %> />
+    <input type='radio' id='initial_link_image' name='initial_link' value='image' <%= 'checked' if @thumbnail.get('initialLink') is 'image' %> />
     <label for="">Image</label>
   </div>
   <div class="radio_wrap">
-    <input type='radio' id='initial_link_text' name='initial_link' value='text' <%= 'checked' if @initialLink is 'text' %> />
+    <input type='radio' id='initial_link_text' name='initial_link' value='text' <%= 'checked' if @thumbnail.get('initialLink') is 'text' %> />
     <label for="">Text</label>
   </div>  
 </div>

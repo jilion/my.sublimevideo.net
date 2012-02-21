@@ -16,8 +16,6 @@ class MSVVideoCodeGenerator.Views.VideoEmbedTypeSelector extends Backbone.View
     attributes =
       poster: MSVVideoCodeGenerator.poster
       sources: MSVVideoCodeGenerator.sources
-      width: baseMp4.get('embedWidth')
-      height: baseMp4.get('embedHeight')
 
     MSVVideoCodeGenerator.video = switch newBuilderClass
       when 'lightbox'
