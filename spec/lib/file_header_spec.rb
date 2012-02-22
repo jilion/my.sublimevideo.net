@@ -17,7 +17,7 @@ describe FileHeader do
     end
 
     it "returns nil for unguessable content-type" do
-      described_class.content_type('.DS_Store').should be_nil
+      described_class.content_type('.DS_Store').should eq ""
     end
   end
 

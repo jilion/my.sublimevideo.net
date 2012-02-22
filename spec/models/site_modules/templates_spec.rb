@@ -87,7 +87,7 @@ describe SiteModules::Templates do
             @worker.work_off
 
             subject.reload
-            subject.license.read.should_not == old_license_content
+            subject.license.read.should_not eq old_license_content
           end
 
           it "purges license on CDN" do
@@ -228,7 +228,7 @@ describe SiteModules::Templates do
     describe "#license_js_hash" do
       subject{ Factory.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
-      its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true}" }
+      its(:license_js_hash) { should eq "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true}" }
     end
 
     describe "#set_template" do
@@ -240,7 +240,7 @@ describe SiteModules::Templates do
         subject { @site }
 
         it "should set license file with license_hash" do
-          subject.license.read.should == "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true});"
+          subject.license.read.should eq "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true});"
         end
       end
 
