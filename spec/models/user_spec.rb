@@ -458,7 +458,12 @@ describe User do
 
       context "when user had no cc info before" do
         use_vcr_cassette "ogone/void_authorization"
-        subject { Factory(:user_no_cc, valid_cc_attributes) }
+        subject do
+          user = Factory(:user_no_cc)
+          user.reload
+          user.update_attributes(valid_cc_attributes)
+          user
+        end
 
         it { should be_valid }
         its(:cc_type)        { should eq 'visa' }
@@ -552,7 +557,10 @@ describe User do
 
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
           subject
-          expect { subject.update_attribute(:email, "newsletter_update2@jilion.com") }.to change(Delayed::Job, :count).by(1)
+          expect {
+            subject.update_attribute(:email, "newsletter_update2@jilion.com")
+            subject.confirm!
+          }.to change(Delayed::Job, :count).by(1)
           Delayed::Job.last.name.should eq "Class#update"
         end
 
@@ -580,7 +588,10 @@ describe User do
       context "user has no zendesk_id" do
         it "doesn't delay Module#put" do
           subject
-          expect { subject.update_attribute(:email, "new@jilion.com") }.to_not change(Delayed::Job, :count)
+          expect {
+            subject.update_attribute(:email, "new@jilion.com")
+            subject.confirm!
+          }.to_not change(Delayed::Job, :count)
           Delayed::Job.all.any? { |dj| dj.name == 'Module#put' }.should be_false
         end
       end
@@ -590,12 +601,18 @@ describe User do
 
         context "user updated his email" do
           it "delays Module#put if the user has a zendesk_id and his email has changed" do
-            expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(1)
+            expect {
+              subject.update_attribute(:email, "new@jilion.com")
+              subject.confirm!
+            }.to change(Delayed::Job, :count).by(1)
             Delayed::Job.where { handler =~ '%Module%put%' }.should have(1).item
           end
 
           it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
-            expect { subject.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(1)
+            expect {
+              subject.update_attribute(:email, "new@jilion.com")
+              subject.confirm!
+            }.to change(Delayed::Job, :count).by(1)
 
             VCR.use_cassette("zendesk/update_email") do
               @worker.work_off
