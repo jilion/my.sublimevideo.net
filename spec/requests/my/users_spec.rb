@@ -72,20 +72,33 @@ feature "Users" do
     fill_in "Current password", with: "abc'def"
     click_button "Done"
 
-    User.last.email.should eq "new@jilion.com"
+    User.last.email.should eq "old@jilion.com"
+    User.last.unconfirmed_email.should eq "new@jilion.com"
   end
 
   scenario "update email (with current password confirmation)" do
     sign_in_as :user, { email: "old@jilion.com" }
-    click_link('John Doe')
+    Timecop.travel(Time.now + 1.minute) do # for after_confirmation_path_for
+      click_link('John Doe')
 
-    fill_in "Email", with: "New@jilion.com"
-    click_button "user_credentials_submit"
+      fill_in "Email", with: "New@jilion.com"
+      click_button "user_credentials_submit"
 
-    fill_in "Current password", with: "123456"
-    click_button "Done"
+      fill_in "Current password", with: "123456"
+      click_button "Done"
 
-    User.last.email.should eq "new@jilion.com"
+      User.last.email.should eq "old@jilion.com"
+      User.last.unconfirmed_email.should eq "new@jilion.com"
+
+      last_delivery = ActionMailer::Base.deliveries.last
+      last_delivery.to.should eq [User.last.unconfirmed_email]
+      last_delivery.subject.should eq "Confirmation instructions"
+
+      go 'my', "confirmation?confirmation_token=#{User.last.confirmation_token}"
+
+      User.last.email.should eq "new@jilion.com"
+      current_url.should eq "http://my.sublimevideo.dev/sites/new" # redirected from /sites
+    end
   end
 
   scenario "update password (with current password confirmation)" do
@@ -114,6 +127,7 @@ feature "Users" do
     click_button "Send"
 
     user.reload.reset_password_token.should be_present
+
 
     last_delivery = ActionMailer::Base.deliveries.last
     last_delivery.to.should eq [user.email]
@@ -181,7 +195,11 @@ feature "Users" do
         fill_in "Current password", with: '123456'
         click_button "Done"
 
-        User.find(@current_user.id).email.should eq "zeno@jilion.com"
+        User.find(@current_user.id).unconfirmed_email.should eq "zeno@jilion.com"
+
+        last_delivery = ActionMailer::Base.deliveries.last
+        last_delivery.to.should eq ["zeno@jilion.com"]
+        last_delivery.subject.should eq "Confirmation instructions"
       end
 
       scenario "It's possible to update password" do

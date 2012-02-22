@@ -30,7 +30,11 @@ module CustomDevisePaths
   def after_confirmation_path_for(resource_name, resource)
     case Devise::Mapping.find_scope!(resource)
     when :user
-      more_user_info_url(subdomain: 'my')
+      if resource.created_at.to_i == resource.confirmation_sent_at.to_i
+        more_user_info_url(subdomain: 'my')
+      else
+        sites_url(subdomain: 'my')
+      end
     when :admin
       admin_sites_url(subdomain: 'admin')
     end

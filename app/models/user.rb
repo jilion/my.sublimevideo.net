@@ -260,6 +260,7 @@ private
   # validate
   def validates_current_password
     return if @skip_password_validation
+    return if @bypass_postpone # For devise reconfirmation
 
     if persisted? &&
       ((state_changed? && archived?) || @password.present? || email_changed?) &&
