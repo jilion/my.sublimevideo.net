@@ -5,7 +5,7 @@ module FileHeader
     when '.js', '.jgz'
       'text/javascript'
     else
-      MIME::Types.type_for(filename).first.try(:content_type)
+      MIME::Types.type_for(filename).first.to_s
     end
   end
 

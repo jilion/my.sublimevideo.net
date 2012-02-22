@@ -1,5 +1,6 @@
 class LoaderUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
+  include Custom::CarrierWave::MimeTypes
 
   process :set_content_type
 
