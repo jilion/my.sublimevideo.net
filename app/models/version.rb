@@ -1,3 +1,3 @@
 class Version < ActiveRecord::Base
-  attr_accessible :admin_ip, :ip # for paper_trail, overwritten
+  attr_accessible :admin_id, :ip # for paper_trail, overwritten
 end
