@@ -17,7 +17,6 @@ class Site < ActiveRecord::Base
   attr_accessor :user_attributes, :last_transaction, :remote_ip, :skip_trial
 
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :plan_id, :skip_trial, :user_attributes, :remote_ip
-  attr_accessible :admin_ip, :ip # for paper_trail, overwritten
 
   serialize :last_30_days_billable_video_views_array, Array
 
