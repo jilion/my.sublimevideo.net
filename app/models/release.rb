@@ -66,7 +66,7 @@ class Release < ActiveRecord::Base
   end
 
   def files_in_zip
-    @files_in_zip ||= zipfile.select { |file| file.file? && !file.name.match(/__MACOSX/) }
+    @files_in_zip ||= zipfile.select { |file| file.file? && file.name !~ /__MACOSX|\.DS_Store/ }
     if block_given?
       @files_in_zip.each { |e| yield e }
       delete_zipfile # clean tmp file
@@ -92,7 +92,10 @@ private
   def overwrite_dev_with_zip_content
     S3.player_bucket.delete_folder('dev')
     files_in_zip do |file|
-      S3.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, "public-read")
+      S3.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, "public-read",
+        'content-type' => FileHeader.content_type(file.to_s),
+        'content-encoding' => FileHeader.content_encoding(file.to_s)
+      )
     end
   end
 
@@ -131,9 +134,6 @@ private
   end
 
 end
-
-
-
 # == Schema Information
 #
 # Table name: releases
@@ -150,4 +150,3 @@ end
 #
 #  index_releases_on_state  (state)
 #
-

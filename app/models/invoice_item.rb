@@ -51,9 +51,11 @@ end
 #  amount                :integer
 #  created_at            :datetime
 #  updated_at            :datetime
+#  deal_id               :integer
 #
 # Indexes
 #
+#  index_invoice_items_on_deal_id                (deal_id)
 #  index_invoice_items_on_invoice_id             (invoice_id)
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
 #

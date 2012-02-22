@@ -36,7 +36,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=john@doe.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-0.8.1
@@ -94,13 +94,13 @@
       - Tue, 01 Nov 2011 15:07:03 GMT
       content-length:
       - '0'
-    body: 
+    body:
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=john@doe.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-0.8.1
@@ -133,7 +133,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email27@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -167,7 +167,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=john@doe.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -201,7 +201,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email18@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -235,7 +235,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email66@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -269,7 +269,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email68@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -303,7 +303,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email68@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -337,7 +337,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email156@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -371,7 +371,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email156@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -405,7 +405,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email230@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -439,7 +439,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email230@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -473,7 +473,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email93@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -507,7 +507,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email93@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -541,7 +541,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email45@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -575,7 +575,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/.json?email=email45@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -609,7 +609,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email104@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -642,7 +642,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email104@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -675,7 +675,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email106@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -708,7 +708,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email106@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -741,7 +741,7 @@
   request: !ruby/struct:VCR::Request
     method: :get
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email10@user.com
-    body: 
+    body:
     headers:
       user-agent:
       - createsend-ruby-1.0.3
@@ -770,368 +770,4 @@
       - '179'
     body: ! '{"EmailAddress":"email10@user.com","Name":"John Doe","Date":"2011-03-28
       15:44:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"2"}]}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email16@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 2ec6ba42dc70527f06c79f059a4773e3
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 11:08:46 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email16@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 2ec6ba42dc70527f06c79f059a4773e3
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 11:08:47 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1085@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 5b6906600f00c22e6cd5042f3e83b658
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 12:52:39 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1085@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - b37a14074e0c71eaab3e8e16a4a87bdd
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 12:52:32 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email55@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - cf26f7c5d2c145c44fc88c3428f020d0
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 14:28:09 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email55@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 303d5e73b046241aeedb3b04f9903092
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 14:28:08 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1581@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 303d5e73b046241aeedb3b04f9903092
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 15:31:31 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1581@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - cf26f7c5d2c145c44fc88c3428f020d0
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 15:31:35 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1582@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 61f7521bff0f6982dccb049cf86da030
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 15:40:05 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1582@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 2ec6ba42dc70527f06c79f059a4773e3
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 15:39:56 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email48@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 9ef49f8657f83d34e8e633bb4b803561
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Mon, 20 Feb 2012 15:54:48 GMT
-      content-length:
-      - '216'
-    body: ! '{"EmailAddress":"email48@user.com","Name":"John Coutable","Date":"2011-08-12
-      18:21:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"54"},{"Key":"beta","Value":"false"}]}'
     http_version: '1.1'

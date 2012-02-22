@@ -937,6 +937,7 @@
     body: ! '{"EmailAddress":"email48@user.com","Name":"John Coutable","Date":"2011-08-12
       18:21:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"54"},{"Key":"beta","Value":"false"}]}'
     http_version: '1.1'
+<<<<<<< HEAD
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
@@ -1267,3 +1268,5 @@
       - '76'
     body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
     http_version: '1.1'
+=======
+>>>>>>> master

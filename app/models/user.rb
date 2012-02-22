@@ -46,6 +46,9 @@ class User < ActiveRecord::Base
   # Deals
   has_many :deal_activations
 
+  # Deals
+  has_many :deal_activations
+
   # API
   has_many :client_applications
   has_many :tokens, class_name: "OauthToken", order: :authorized_at.desc, include: [:client_application]
@@ -424,7 +427,7 @@ end
 #  pending_cc_expire_on            :date
 #  pending_cc_updated_at           :datetime
 #  archived_at                     :datetime
-#  newsletter                      :boolean         default(TRUE)
+#  newsletter                      :boolean         default(FALSE)
 #  last_invoiced_amount            :integer         default(0)
 #  total_invoiced_amount           :integer         default(0)
 #  balance                         :integer         default(0)
@@ -456,3 +459,4 @@ end
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
 #  index_users_on_total_invoiced_amount  (total_invoiced_amount)
 #
+
