@@ -5,7 +5,9 @@ class MSVVideoCodeGenerator.Views.Poster extends Backbone.View
     'change #poster_src': 'updateSrc'
 
   initialize: ->
-    _.bindAll this, 'render'
+    _.bindAll this, 'render', 'renderErrors'
+    @model.bind 'change:src',   this.renderErrors
+    @model.bind 'change:found', this.renderErrors
 
     this.render()
 
@@ -22,3 +24,10 @@ class MSVVideoCodeGenerator.Views.Poster extends Backbone.View
     $(@el).html(this.template(poster: @model))
 
     this
+
+  renderErrors: ->
+    srcInvalidErrorDiv = $('#poster_src_invalid')
+    notFoundErrorDiv   = $('#poster_not_found')
+
+    if @model.srcIsEmptyOrUrl() then srcInvalidErrorDiv.hide() else srcInvalidErrorDiv.show()
+    if @model.get('found') then notFoundErrorDiv.hide() else notFoundErrorDiv.show()

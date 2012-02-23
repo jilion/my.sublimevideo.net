@@ -8,4 +8,4 @@
 
 - extra_spaces = if @builder.get('builderClass') is 'iframe_embed' then "    " else ""
 %pre.prettyprint><
-  %code.language-html= "#{extra_spaces}<script type='text/javascript' src='http://cdn.sublimevideo.net/js/#{if @loader then MSVVideoCodeGenerator.loader.get('token') else 'YOUR_TOKEN'}.js'></script>"
+  %code.language-html= "#{extra_spaces}<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/js/#{if @loader then MSVVideoCodeGenerator.loader.get('token') else 'YOUR_TOKEN'}.js\"></script>"

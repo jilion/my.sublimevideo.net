@@ -4,15 +4,6 @@ describe 'Source, Sources', ->
     beforeEach ->
       @source = new MSVVideoCodeGenerator.Models.Source(_.first(sources))
 
-    describe 'srcIsUrl()', ->
-      it 'returns false when not an URL', ->
-        @source.set(src: 'test')
-        expect(@source.srcIsUrl()).toBeFalsy()
-
-      it 'returns true when an URL', ->
-        @source.set(src: 'http://test.com')
-        expect(@source.srcIsUrl()).toBeTruthy()
-
     describe 'formatQuality()', ->
       it 'check of format', ->
         expect(@source.get('format')).toEqual('mp4')
@@ -68,10 +59,10 @@ describe 'Source, Sources', ->
 
     describe 'setDefaultDataName()', ->
       it 'sets dataName from src without the extension and capitalized', ->
-        @source.set(src: 'http://sublimevideo.net/demo/dartmoor.mp4')
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.mp4')
         @source.setDefaultDataName()
 
-        expect(@source.get('dataName')).toEqual("Dartmoor")
+        expect(@source.get('dataName')).toEqual("Dartmoor Foo Bar 12")
 
     describe 'setDimensions()', ->
       it 'sets the width, height and ratio', ->
@@ -114,6 +105,54 @@ describe 'Source, Sources', ->
         @source.set(embedWidth:300, ratio:0.5)
         @source.setEmbedHeightWithRatio()
         expect(@source.get('embedHeight')).toEqual(150)
+
+    describe 'extension()', ->
+      it 'returns the extension', ->
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.mp4')
+        expect(@source.extension()).toEqual('mp4')
+
+      it 'returns the extension', ->
+        @source.set(src: '')
+        expect(@source.extension()).toEqual('')
+
+    describe 'expectedMimeType()', ->
+      it 'returns video/mp4 for mp4 file', ->
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.mp4')
+        expect(@source.expectedMimeType()).toEqual('video/mp4')
+      it 'returns video/mp4 for m4v file', ->
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.m4v')
+        expect(@source.expectedMimeType()).toEqual('video/mp4')
+
+      it 'returns video/webm for webm file', ->
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.webm')
+        expect(@source.expectedMimeType()).toEqual('video/webm')
+
+      it 'returns video/ogg for ogv file', ->
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.ogv')
+        expect(@source.expectedMimeType()).toEqual('video/ogv')
+      it 'returns video/ogg for ogg file', ->
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.ogg')
+        expect(@source.expectedMimeType()).toEqual('video/ogv')
+
+      it 'returns the current mime type for unknown file', ->
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.mov')
+        @source.set(currentMimeType: 'video/quicktime')
+        expect(@source.expectedMimeType()).toEqual('video/quicktime')
+
+    describe 'validMimeType()', ->
+      it 'returns true if currentMimeType is empty', ->
+        @source.set(currentMimeType: '')
+        expect(@source.validMimeType()).toBeTruthy()
+
+      it 'returns true if mime type correspond to the expected mime type', ->
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.m4v')
+        @source.set(currentMimeType: 'video/mp4')
+        expect(@source.validMimeType()).toBeTruthy()
+
+      it 'returns false if mime type doesn\'t correspond to the expected mime type', ->
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.m4v')
+        @source.set(currentMimeType: 'video/webm')
+        expect(@source.validMimeType()).toBeFalsy()
 
   describe 'MSVVideoCodeGenerator.Collections.Sources', ->
     beforeEach ->

@@ -1,5 +1,5 @@
 - if @builder.get('builderClass') is 'lightbox'
-  - zoomable_class = 'zoomable' if @video.get('thumbnail').srcIsUrl() and @video.get('thumbnail').get('magnifyingGlass')
+  - zoomable_class = 'zoomable' if @video.get('thumbnail').srcIsEmptyOrUrl() and @video.get('thumbnail').get('magnifyingGlass')
   %a.sublime{ href: "#{@video.get('sources').mp4Mobile().get('src')}", class: zoomable_class }
     - if @video.get('thumbnail').get('initialLink') is 'image'
       %img{ src: "#{@video.get('thumbnail').get('src')}", width: "#{@video.get('thumbnail').get('thumbWidth')}", height: "#{@video.get('thumbnail').get('thumbHeight')}" }/
@@ -17,5 +17,5 @@
 
 %video{ class: "#{@video.get('classes')}", poster: "#{@posterSrc}", width: "#{@video.width()}", height: "#{@video.height()}" preload: "none" }
   - for source in @sortedSources
-    - if source.get('isUsed') and source.srcIsUrl()
+    - if source.get('isUsed') and source.srcIsEmptyOrUrl()
       != "<source src='#{source.get('src')}' #{if source.needDataQualityAttribute() then "data-quality='#{source.get('quality')}' " else '' }/>"

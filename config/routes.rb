@@ -113,8 +113,13 @@ MySublimeVideo::Application.routes.draw do
       resource :ticket, only: [:create], path: 'help'
       %w[support feedback].each { |action| get action, to: redirect('/help') }
 
-      match '/video-code-generator' => 'video_code_generator#new', via: :get, as: 'video_code_generator'
-      match '/video-code-generator/iframe-embed' => 'video_code_generator#iframe_embed', via: :get
+      resource :video_code_generator, only: [], controller: 'video_code', path: 'video-code-generator' do
+        collection do
+          get :new, path: '/'
+          get :iframe_embed, path: 'iframe-embed'
+          post :mime_type_check, path: 'mime-type-check'
+        end
+      end
 
       post '/pusher/auth' => 'pusher#auth'
 
