@@ -7,16 +7,20 @@
 
       - if source.get('quality') isnt 'base'
         .checkbox_wrap
-          - check = source.srcIsUrl()
+          - check = source.get('isUsed')
           %input.use_source(checked=check){ type: "checkbox", id: "#{source.formatQuality()}_use_source" }
           %label{ for: "#{source.formatQuality()}_use_source" }
             = "Add mobile version (lower resolution/bitrate)" if source.get('quality') == 'mobile'
             = "Add HD version" if source.get('quality') == 'hd'
 
-        %div.entry{ id: "#{source.formatQuality()}_src_box", style: "#{if source.srcIsUrl() then '' else 'display:none' }" }
+        .entry{ id: "#{source.formatQuality()}_src_box", style: "#{if check then '' else 'display:none' }" }
           %label.icon{ for: "#{source.formatQuality()}_src" }= source.qualityTitle()
           %input.text.no_icon.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} version url", value: source.get('src') }
+          %span.inline_alert{ id: "#{source.formatQuality()}_src_invalid", style: "display:none" } Please provide a valid video URL
       - else
         .entry
           %label.icon{ for: "#{source.formatQuality()}_src" }= "#{source.qualityTitle()} url"
           %input.text.no_icon.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} version url", value: source.get('src') }
+          %span.inline_alert{ id: "#{source.formatQuality()}_src_invalid", style: "display:none" } Please provide a valid video URL
+          %span.inline_alert{ id: "#{source.formatQuality()}_mime_type_invalid", style: "display:none" }= "Check your MIME-Types. <a href='http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting'>Learn more</a>"
+          %span.inline_alert{ id: "#{source.formatQuality()}_not_found", style: "display:none" } This file doesn't seem to exist

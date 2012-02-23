@@ -1,17 +1,9 @@
-class MSVVideoCodeGenerator.Models.Image extends Backbone.Model
-  defaults:
-    src: ""
-    width: null
-    height: null
-    validSrc: true
-
-  srcIsUrl: ->
-    /^https?:\/\/.+\.\w+(\?+.*)?$/.test this.get('src')
-
+class MSVVideoCodeGenerator.Models.Image extends MSVVideoCodeGenerator.Models.Asset
   setAndPreloadSrc: (src) ->
     unless src is this.get('src')
       this.set(src: src)
-      this.preloadSrc()
+
+      if this.srcIsUrl() then this.preloadSrc() else this.set(found: true)
 
   preloadSrc: ->
     new SublimeVideo.ImagePreloader(this.get('src'), this.setDimensions)
@@ -22,7 +14,7 @@ class MSVVideoCodeGenerator.Models.Image extends Backbone.Model
       this.set(width: 0)  unless this.get('width')
       this.set(height: 0) unless this.get('height')
       this.set(ratio: 0)  unless this.get('ratio')
-      this.set(validSrc: false)
+      this.set(found: false) if problem
     else
       newWidth  = parseInt(dimensions['width'])
       newHeight = parseInt(dimensions['height'])
@@ -31,19 +23,19 @@ class MSVVideoCodeGenerator.Models.Image extends Backbone.Model
       this.set(width: newWidth)   unless newWidth  is this.get('width')
       this.set(height: newHeight) unless newHeight is this.get('height')
       this.set(ratio: newRatio)   unless newRatio  is this.get('ratio')
-      this.set(validSrc: true)
+      this.set(found: true)
 
 class MSVVideoCodeGenerator.Models.Thumbnail extends MSVVideoCodeGenerator.Models.Image
   defaults:
     initialLink: 'image'
-    src: ""
-    width: null
-    height: null
-    validSrc: true
-    ratio: null
     thumbWidth: null
     thumbHeight: null
     magnifyingGlass: false
+
+  setAndPreloadSrc: (src) ->
+    if src isnt this.get('src')
+      this.set(src: src)
+      this.preloadSrc() if this.get('initialLink') is 'image'
 
   setDimensions: (problem, imageSrc, dimensions) =>
     super(problem, imageSrc, dimensions)

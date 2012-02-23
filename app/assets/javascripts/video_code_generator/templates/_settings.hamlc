@@ -35,6 +35,6 @@
     %p.note
       This name identifies the video for your video-stats reporting. For more advanced video stats configuration, please consult
       %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/optimize-for-stats", onclick: "window.open(this); return false" } our documentation
-      .
+      = "."
 
 .spacer

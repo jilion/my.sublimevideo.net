@@ -9,14 +9,14 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
     'click .reset':                   'resetThumbDimensions'
 
   initialize: ->
-    @thumbnail = @options.thumbnail
+    @thumbnail   = @options.thumbnail
     @initialLink = 'image'
 
-    _.bindAll this, 'render', 'renderExtra', 'renderThumbWidth', 'renderThumbHeight', 'renderInvalidSrcError'
-    @thumbnail.bind 'change:src',         this.renderExtra
+    _.bindAll this, 'render', 'renderExtraAndErrors', 'renderNotFoundErrors', 'renderThumbWidth', 'renderThumbHeight'
+    @thumbnail.bind 'change:src',         this.renderExtraAndErrors
+    @thumbnail.bind 'change:found',       this.renderNotFoundErrors
     @thumbnail.bind 'change:thumbWidth',  this.renderThumbWidth
     @thumbnail.bind 'change:thumbHeight', this.renderThumbHeight
-    @thumbnail.bind 'change:validSrc',    this.renderInvalidSrcError
 
   #
   # EVENTS
@@ -25,13 +25,10 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
     @thumbnail.setAndPreloadSrc(event.target.value)
 
   updateThumbWidth: (event) ->
-    event.target.value = parseInt(event.target.value)
-    @thumbnail.setThumbWidth(event.target.value)
+    @thumbnail.setThumbWidth(parseInt(event.target.value))
 
   updateInitialLink: (event) ->
-    console.log(event.target.value);
-    _.each $('input[name=initial_link]'), (el) =>
-      @thumbnail.set(initialLink: el.value) if el.checked
+    @thumbnail.set(initialLink: event.target.value)
 
     this.render()
 
@@ -44,15 +41,12 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
     event.stopPropagation()
     false
 
-  initialLinkIsImage: -> @thumbnail.get('initialLink') is 'image'
-
   #
   # BINDINGS
   #
   render: ->
     $(@el).html(this.template(thumbnail: @thumbnail))
-    this.renderExtra()
-    this.renderInvalidSrcError()
+    this.renderExtraAndErrors()
     $(@el).show()
 
     this
@@ -60,16 +54,25 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   hide: ->
     $(@el).hide()
 
-  renderExtra: ->
+  renderExtraAndErrors: ->
     extraDiv = $('.extra')
-    if this.initialLinkIsImage() then extraDiv.show() else extraDiv.hide()
+    errorDiv = $('#thumb_src_invalid')
+    if @thumbnail.get('initialLink') is 'image'
+      extraDiv.show()
+      if @thumbnail.srcIsEmptyOrUrl() then errorDiv.hide() else errorDiv.show()
+    else
+      extraDiv.hide()
+      errorDiv.hide()
+
+  renderNotFoundErrors: ->
+    errorDiv = $('#thumb_not_found')
+    if @thumbnail.get('found')
+      errorDiv.hide()
+    else
+      errorDiv.show()
 
   renderThumbWidth: ->
     $("#thumb_width").attr(value: @thumbnail.get('thumbWidth'))
 
   renderThumbHeight: ->
     $("#thumb_height").attr(value: @thumbnail.get('thumbHeight'))
-
-  renderInvalidSrcError: ->
-    errorDiv = $('#thumb_src_invalid')
-    if !this.initialLinkIsImage() or @thumbnail.get('validSrc') then errorDiv.hide() else errorDiv.show()

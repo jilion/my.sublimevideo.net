@@ -1,4 +1,4 @@
-class MSVVideoCodeGenerator.Models.Source extends Backbone.Model
+class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.Asset
   defaults:
     format: "mp4"
     quality: "base"
@@ -6,21 +6,19 @@ class MSVVideoCodeGenerator.Models.Source extends Backbone.Model
     dataUID: ""
     optional: false
     isUsed: true
-    src: ""
-    width: null
-    height: null
-    ratio: null
     keepRatio: true
     embedWidth: null
     embedHeight: null
-
-  srcIsUrl: ->
-    /^https?:\/\/.+\.\w+(\?+.*)?$/.test this.get('src')
+    currentMimeType: ""
 
   setAndPreloadSrc: (src) ->
     unless src is this.get('src')
       this.set(src: src)
-      this.preloadSrc() if this.formatQuality() is 'mp4_base'
+
+      if this.srcIsUrl()
+        this.preloadSrc() if this.formatQuality() is 'mp4_base'
+        this.checkMimeType()
+
       this.setDefaultDataUID() unless this.get('dataUID')
       this.setDefaultDataName() unless this.get('dataName')
 
@@ -37,6 +35,37 @@ class MSVVideoCodeGenerator.Models.Source extends Backbone.Model
 
   preloadSrc: ->
     new SublimeVideo.VideoPreloader(this.get('src'), this.setDimensions)
+
+  checkMimeType: ->
+    $.ajax
+      type: "POST"
+      url: "/video-code-generator/mime-type-check"
+      data: { url: this.get('src') }
+      dataType: 'text'
+      context: document.body
+      success: (data, textStatus, jqXHR) =>
+        if data is "4"
+          this.set(found: false)
+        else
+          this.set(currentMimeType: data)
+          this.set(found: true)
+
+  extension: ->
+    this.get('src').slice(this.get('src').lastIndexOf('.') + 1)
+
+  expectedMimeType: ->
+    switch this.extension()
+      when 'mp4', 'm4v'
+        'video/mp4'
+      when 'webm'
+        'video/webm'
+      when 'ogv', 'ogg'
+        'video/ogv'
+      else
+        this.get('currentMimeType')
+
+  validMimeType: ->
+    this.get('currentMimeType') is "" or this.get('currentMimeType') is this.expectedMimeType()
 
   setDimensions: (videoSrc, dimensions) =>
     if dimensions?
@@ -98,7 +127,6 @@ class MSVVideoCodeGenerator.Collections.Sources extends Backbone.Collection
   allByFormat: (format) ->
     this.select (source) -> source.get('format') is format
 
-  # Finders
   allByQuality: (quality) ->
     this.select (source) -> source.get('quality') is quality
 
@@ -129,7 +157,7 @@ class MSVVideoCodeGenerator.Collections.Sources extends Backbone.Collection
     i = 1
     params = ""
     _.each this.sortedSources(startWithHd), (source) ->
-      if source.get('isUsed') and source.srcIsUrl()
+      if source.get('isUsed') and source.srcIsEmptyOrUrl()
         params += "&src#{i}=" + encodeURIComponent("(#{source.get('quality')})#{source.get('src')}")
         i++
 

@@ -15,6 +15,7 @@
 .entry
   %input#thumb_src.text.no_icon{ type: "text", name: "thumb_src", value: @thumbnail.get('src'), size: 50 }
   %span#thumb_src_invalid.inline_alert{ style: "display:none" } Please provide a valid image URL
+  %span#thumb_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
 
 .extra.entry.size
   %h5 Size

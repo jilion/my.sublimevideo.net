@@ -1,7 +1,5 @@
 describe 'MSV.Models.Site', ->
   beforeEach ->
-    console.log(MSV);
-    console.log(MSVVideoCodeGenerator);
     @site = new MSV.Models.Site
 
   describe 'title()', ->

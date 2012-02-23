@@ -17,17 +17,13 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
     @poster.bind    'change:src',          this.render
     @sources.bind   'change',              this.render
     @thumbnail.bind 'change',              this.render
-    @iframe.bind    'change:src',          this.render
-    # MSVVideoCodeGenerator.sources.bind 'change',     this.render
 
   #
   # BINDINGS
   #
   render: ->
     MSVVideoCodeGenerator.codeView.hide()
-    $(@el).spin()
-    baseMp4 = @sources.mp4Base()
-    if baseMp4.srcIsUrl() && baseMp4.get('embedWidth')
+    if this.videoPreviewable()
       currentScroll = $(window).scrollTop()
       $(@el).hide()
 
@@ -41,13 +37,17 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
 
       sublimevideo.prepare($('video').get(0)) if $('video').length
 
-      $(@el).data().spinner.stop()
       $(@el).show()
       $(window).scrollTop(currentScroll)
     else
-      MSVVideoCodeGenerator.previewView.hide()
+      this.hide()
 
     this
 
   hide: ->
     $(@el).hide()
+
+  videoPreviewable: ->
+    baseMp4 = @sources.mp4Base()
+
+    baseMp4.srcIsUrl() and baseMp4.get('embedWidth') and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.video.get('thumbnail').srcIsUrl())

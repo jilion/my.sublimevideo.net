@@ -17,4 +17,4 @@
     #css_block{ style: "background-color:#DDD" }!= @cssTemplate(video: @video)
 
 - else
-  %button.blue_button#get_the_code{ style: "margin:auto" }= "Get the Code"
+  %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code

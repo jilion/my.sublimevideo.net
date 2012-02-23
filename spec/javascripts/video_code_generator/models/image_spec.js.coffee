@@ -4,15 +4,6 @@ describe 'Image and Thumbnail', ->
     beforeEach ->
       @image = new MSVVideoCodeGenerator.Models.Image
 
-    describe 'srcIsUrl()', ->
-      it 'returns false when not an URL', ->
-        @image.set(src: 'test')
-        expect(@image.srcIsUrl()).toBeFalsy()
-
-      it 'returns true when an URL', ->
-        @image.set(src: 'http://test.com')
-        expect(@image.srcIsUrl()).toBeTruthy()
-
     describe 'setAndPreloadSrc()', ->
       it 'sets the src', ->
         @image.setAndPreloadSrc('http://sublimevideo.net/demo/dartmoor.jpg')
