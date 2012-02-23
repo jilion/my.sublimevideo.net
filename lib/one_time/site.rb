@@ -8,7 +8,10 @@ module OneTime
         ::Site.active.find_each(batch_size: 100) do |site|
           ::Site.delay(priority: 200).update_loader_and_license(site.id, { loader: true, license: true })
           total += 1
-          puts "#{total} sites updated..." if (total % 100) == 0
+          if (total % 100).zero?
+            puts "#{total} sites updated... sleeping 5 seconds..."
+            sleep(5)
+          end
         end
 
         "Finished: in total, #{total} sites will have their loader and license re-generated"
