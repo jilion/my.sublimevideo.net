@@ -19,24 +19,29 @@ class Admin::DelayedJobsController < AdminController
   # PUT /djs/:id
   def update
     @delayed_job.update_attributes(locked_at: nil, locked_by: nil)
-    respond_with(@site, location: [:admin, :delayed_jobs])
+    respond_with(@site, location: admin_delayed_jobs_path(sort_params))
   end
 
   # DELETE /djs/:id
   def destroy
     @delayed_job.destroy
-    respond_with(@site, location: [:admin, :delayed_jobs])
+    respond_with(@site, location: admin_delayed_jobs_path(sort_params))
   end
 
 private
+
+  def sort_params
+    params.select { |k, v| k =~ /^by_\w+$/ }
+  end
+  helper_method :sort_params
 
   def find_by_id
     @delayed_job = Delayed::Job.find(params[:id])
   end
 
   def sort_from_params
-    if key = params.keys.detect { |k| k =~ /^by_(\w+)$/ }
-      $1.to_sym.send(params[key.to_sym])
+    if param = sort_params.first
+      param[0].sub('by_', '').to_sym.send(param[1])
     else
       :created_at.desc
     end
