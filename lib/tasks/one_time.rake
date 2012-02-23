@@ -40,22 +40,9 @@ namespace :one_time do
   end
 
   namespace :users do
-    desc "Set users' name from users' current first and last name"
-    task set_name_from_first_and_last_name: :environment do
-      timed { puts OneTime::User.set_name_from_first_and_last_name }
-    end
-
-    desc "Set users' billing name from users' name"
-    task set_billing_info: :environment do
-      timed { puts OneTime::User.set_billing_info }
-    end
   end
 
   namespace :plans do
-    desc "Create the V2 plans"
-    task create_v2_plans: :environment do
-      timed { puts OneTime::Plan.create_v2_plans }
-    end
   end
 
   namespace :sites do
@@ -78,21 +65,6 @@ namespace :one_time do
     desc "Re-generate loader and license templates for all sites"
     task regenerate_all_loaders_and_licenses: :environment do
       timed { puts OneTime::Site.regenerate_all_loaders_and_licenses }
-    end
-
-    desc "Set trial_started_at for sites created before v2"
-    task set_trial_started_at_for_sites_created_before_v2: :environment do
-      timed { puts OneTime::Site.set_trial_started_at_for_sites_created_before_v2 }
-    end
-
-    desc "Migrate current sites' plans to new business model plans"
-    task current_sites_plans_migration: :environment do
-      timed { puts OneTime::Site.current_sites_plans_migration }
-    end
-
-    desc "Set sites' badged attribute"
-    task set_badged: :environment do
-      timed { puts OneTime::Site.set_badged }
     end
 
     desc "Update last 30 days counters of all not archived sites"
