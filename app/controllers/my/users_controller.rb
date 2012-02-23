@@ -7,8 +7,8 @@ class My::UsersController < Devise::RegistrationsController
   respond_to :html
   respond_to :js, only: [:hide_notice]
 
+  prepend_before_filter :authenticate_scope!, only: [:edit, :update, :destroy, :more_info, :hide_notice]
   before_filter :redirect_suspended_user
-  prepend_before_filter :authenticate_scope!, :only => [:edit, :update, :destroy, :more_info, :hide_notice]
 
   # POST /signup
   def create
@@ -49,7 +49,7 @@ class My::UsersController < Devise::RegistrationsController
   # /account
   def destroy
     @user = User.find(current_user.id)
-    @user.current_password = params[:user] && params[:user][:current_password]
+    @user.attributes = params[:user] # set the current password
 
     respond_with(@user) do |format|
       if @user.archive
