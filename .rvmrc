@@ -1,13 +1,1 @@
-r=`rvm list | grep 'ruby-1.9.3-p0-perf'`
-
-if [[ $? = 0 ]] ; then
-  rvm use ruby-1.9.3-p0-perf
-else
-  r=`rvm list | grep 'ruby-1.9.3-p0'`
-
-  if [[ $? = 0 ]] ; then
-    rvm use ruby-1.9.3
-  else
-    rvm use ruby-1.9.2
-  fi
-fi
+rvm use ruby-1.9.3-p125
