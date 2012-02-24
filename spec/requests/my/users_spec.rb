@@ -295,8 +295,8 @@ feature "Users" do
     click_button "Delete account"
 
     fill_in "user_current_password", with: "123456"
-
     click_button "Done"
+
     current_url.should eq "http://sublimevideo.dev/"
     get_me_the_cookies.map { |c| c['name'] }.should_not include("l")
     page.should_not have_content "John Doe"

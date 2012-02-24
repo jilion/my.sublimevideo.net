@@ -16,7 +16,7 @@ module SiteModules::Referrer
   end
 
   def referrer_type(referrer, timestamp=Time.now.utc)
-    return "invalid" if referrer.nil?
+    return "invalid" if referrer.nil? || referrer.length < 10
     if past_site = version_at(timestamp)
       referrer.gsub!(/\[|\]/, '')
       if past_site.main_referrer?(referrer)

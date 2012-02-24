@@ -4,11 +4,15 @@ module OneTime
     class << self
 
       def regenerate_all_loaders_and_licenses
-        total = 0
+        total, delay = 0, 5
         ::Site.active.find_each(batch_size: 100) do |site|
-          ::Site.delay(priority: 200).update_loader_and_license(site.id, { loader: true, license: true })
+          ::Site.delay(priority: 200, run_at: delay.seconds.from_now).update_loader_and_license(site.id, { loader: true, license: true })
           total += 1
-          puts "#{total} sites updated..." if (total % 100) == 0
+
+          if (total % 100).zero?
+            puts "#{total} sites scheduled..."
+            delay += 5
+          end
         end
 
         "Finished: in total, #{total} sites will have their loader and license re-generated"
