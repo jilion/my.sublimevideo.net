@@ -1,5 +1,5 @@
 # http://ablogaboutcode.com/2012/01/12/a-simple-rails-boot-time-improvement/
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com account
 
 gem 'rails',                 '3.1.3'
@@ -14,10 +14,10 @@ gem 'rails-backbone',        '~> 0.6.0'
 gem 'pg',                    '~> 0.13.0'
 gem 'squeel',                '~> 0.9.5'
 
-gem 'bson_ext',              '~> 1.5.2'
-gem 'bson',                  '~> 1.5.2'
-gem 'mongo',                 '~> 1.5.2'
-gem 'mongoid',               '~> 2.4.4'
+gem 'bson_ext',              '~> 1.6.0'
+gem 'bson',                  '~> 1.6.0'
+gem 'mongo',                 '~> 1.6.0'
+gem 'mongoid',               '~> 2.4.5'
 
 # Views
 gem 'haml',                  '~> 3.1.3'
