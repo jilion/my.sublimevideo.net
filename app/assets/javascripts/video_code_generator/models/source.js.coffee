@@ -9,6 +9,7 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
     keepRatio: true
     embedWidth: null
     embedHeight: null
+    found: true
     currentMimeType: ""
 
   setAndPreloadSrc: (src) ->
