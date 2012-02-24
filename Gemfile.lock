@@ -79,7 +79,7 @@ GIT
       sax-machine (~> 0.1.0)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   remote: https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/
   specs:
     PageRankr (3.1.1)
@@ -140,9 +140,9 @@ GEM
     bcrypt-ruby (3.0.1)
     braintree (2.13.4)
       builder (>= 2.0.0)
-    bson (1.5.2)
-    bson_ext (1.5.2)
-      bson (= 1.5.2)
+    bson (1.6.0)
+    bson_ext (1.6.0)
+      bson (= 1.6.0)
     builder (3.0.0)
     capybara (1.1.2)
       mime-types (>= 1.16)
@@ -302,9 +302,9 @@ GEM
     money (4.0.2)
       i18n (~> 0.4)
       json
-    mongo (1.5.2)
-      bson (= 1.5.2)
-    mongoid (2.4.4)
+    mongo (1.6.0)
+      bson (= 1.6.0)
+    mongoid (2.4.5)
       activemodel (~> 3.1)
       mongo (~> 1.3)
       tzinfo (~> 0.3.22)
@@ -386,7 +386,7 @@ GEM
     rb-readline (0.4.2)
     rdoc (3.12)
       json (~> 1.4)
-    request-log-analyzer (1.12.0)
+    request-log-analyzer (1.12.1)
     responders (0.6.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
@@ -504,8 +504,8 @@ DEPENDENCIES
   array_stats (~> 0.6.0)
   asset_sync
   aws (~> 2.5.6)
-  bson (~> 1.5.2)
-  bson_ext (~> 1.5.2)
+  bson (~> 1.6.0)
+  bson_ext (~> 1.6.0)
   capybara
   carrierwave (~> 0.5.7)
   carrierwave-mongoid (~> 0.1.1)
@@ -548,8 +548,8 @@ DEPENDENCIES
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
   mime-types
-  mongo (~> 1.5.2)
-  mongoid (~> 2.4.4)
+  mongo (~> 1.6.0)
+  mongoid (~> 2.4.5)
   newrelic_rpm
   oauth (~> 0.4.5)
   oauth-plugin (~> 0.4.0.pre7)

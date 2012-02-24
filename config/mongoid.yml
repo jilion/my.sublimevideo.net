@@ -38,7 +38,5 @@ production:
       - 10006
   preload_models: true
   skip_version_check: true
-  op_timeout: 30
-  connect_timeout: 30
   logger: false
 <% end %>
