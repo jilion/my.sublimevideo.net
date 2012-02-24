@@ -1,10 +1,14 @@
+= content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{SiteToken.my}.js")
 = content_for :head do
   = stylesheet_link_tag 'prettify/prettify', 'video_code_generator'
-  = javascript_include_tag 'prettify/prettify', 'video_code_generator'
-  :javascript
-    document.write(unescape("%3Cscript src='" + (("https:" == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{SiteToken.my}.js' type='text/javascript'%3E%3C/script%3E"));
+  = javascript_include_tag 'prettify/prettify', 'zeroclipboard/ZeroClipboard', 'video_code_generator'
 
-= title_and_content_header("Video Code Generator")
+-# = content_for :bottom do
+-#   :coffeescript
+-#     $ ->
+-#       ZeroClipboard.setMoviePath 'assets/zeroclipboard/ZeroClipboard.swf'
+
+= title_and_content_header "Video Code Generator"
 
 - if user_signed_in?
   - token = @site.try(:token) || @sites.first.token
@@ -26,11 +30,11 @@
       SublimeVideoSizeChecker.setRoot('/video-size-checker/')
       window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter()
 
--# %p.desc.help= raw "WordPress user? Check-out #{link_to 'our WordPress plugin', 'http://docs.sublimevideo.net/wordpress', onclick: "window.open(this); return false"} instead!"
+%p.desc.help= raw "WordPress user? Check-out our #{link_to "WordPress plugin", docs_page_url('wordpress', subdomain: 'docs'), onclick: "window.open(this); return false"} instead!"
 
 - if user_signed_in?
   %p
-    = "This video will be embedded on: "
+    This video will be embedded on:
     %span#site_selector
 
 #video_embed_type_selector
@@ -45,7 +49,7 @@
     = label_tag "type_iframe_embed", "Iframe Embed"
 
 #demo_bootstrap
-  %button.green_button#use_demo_assets= "Use demo videos urls"
+  %button.green_button#use_demo_assets Use demo videos urls
 
 .spacer
 

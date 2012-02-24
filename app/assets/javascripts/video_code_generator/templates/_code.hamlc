@@ -6,15 +6,31 @@
 
   - if @builder.get('builderClass') isnt 'iframe_embed'
     #loader_block{ style: "background-color:#DDD; margin-bottom:20px;" }!= loaderContent
+    #copy_loader_code_container{ style: "position:relative" }
+      #copy_loader_code_button Copy to Clipboard
+    -# :coffeescript
+    -#   new ZeroClipboard.Client().glue('copy_loader_code_button', 'copy_loader_code_container')
 
   #video_embed_block{ style: "background-color:#DDD; margin-bottom:20px;" }!= videoContent
+  #copy_video_embed_code_container{ style: "position:relative" }
+    #copy_video_embed_code_button Copy to Clipboard
+  -# :coffeescript
+  -#   new ZeroClipboard.Client().glue('copy_video_embed_code_button', 'copy_video_embed_code_container')
 
   - if @builder.get('builderClass') is 'iframe_embed'
     #iframe_content_block{ style: "background-color:#DDD; margin-bottom:20px;" }
       != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, loaderTemplate: @loaderTemplate, videoTagTemplate: @videoTagTemplate)
+    #copy_iframe_content_code_container{ style: "position:relative" }
+      #copy_iframe_content_code_button Copy to Clipboard
+    -# :coffeescript
+    -#   new ZeroClipboard.Client().glue('copy_iframe_content_code_button', 'copy_iframe_content_code_container')
 
   - if @builder.get('builderClass') is 'lightbox' and @video.get('thumbnail').get('magnifyingGlass')
     #css_block{ style: "background-color:#DDD" }!= @cssTemplate(video: @video)
+    #copy_css_code_container{ style: "position:relative" }
+      #copy_css_code_button Copy to Clipboard
+    -# :coffeescript
+    -#   new ZeroClipboard.Client().glue('copy_css_code_button', 'copy_css_code_container')
 
 - else
   %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code

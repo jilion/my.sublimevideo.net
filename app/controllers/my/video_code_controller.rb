@@ -4,7 +4,7 @@ class My::VideoCodeController < MyController
   # GET /video-code-generator
   def new
     if user_signed_in?
-      @site  = current_user.sites.find_by_token!(params[:site_id]) if params[:site_id]
+      @site  = current_user.sites.find_by_token!(params[:t]) if params[:t]
       @sites = current_user.sites.order(:hostname).select([:token, :hostname])
     end
   end
