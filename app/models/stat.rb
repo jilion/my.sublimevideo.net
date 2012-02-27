@@ -18,9 +18,9 @@ module Stat
     # ==========
 
     %w[s m h d].each do |period|
-      scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date.to_i }).order_by([period.to_sym, :asc]) }
-      scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lte" => date.to_i }).order_by([period.to_sym, :asc]) }
-      scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lte" => end_date.to_i }).order_by([period.to_sym, :asc]) }
+      scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date.to_i }) }
+      scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lte" => date.to_i }) }
+      scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lte" => end_date.to_i }) }
     end
 
   end
@@ -256,22 +256,45 @@ module Stat
     end
   end
 
-  def self.delay_clear_old_seconds_minutes_and_hours_stats
-    unless Delayed::Job.already_delayed?('%Stat%clear_old_seconds_minutes_and_hours_stats%')
-      delay(priority: 5, run_at: 10.minutes.from_now).clear_old_seconds_minutes_and_hours_stats
+  def self.delay_clear_old_second_stats
+    unless Delayed::Job.already_delayed?('%Stat%clear_old_second_stats%')
+      delay(priority: 5, run_at: 1.second.from_now).clear_old_second_stats
+    end
+  end
+
+  def self.delay_clear_old_minute_stats
+    unless Delayed::Job.already_delayed?('%Stat%clear_old_minute_stats%')
+      delay(priority: 5, run_at: 1.minute.from_now).clear_old_minute_stats
+    end
+  end
+
+  def self.delay_clear_old_hour_stats
+    unless Delayed::Job.already_delayed?('%Stat%clear_old_hour_stats%')
+      delay(priority: 5, run_at: 1.hour.from_now).clear_old_hour_stats
     end
   end
 
 private
 
-  def self.clear_old_seconds_minutes_and_hours_stats
-    delay_clear_old_seconds_minutes_and_hours_stats
+  def self.clear_old_second_stats
+    delay_clear_old_second_stats
 
-    { s: 63.seconds, m: 62.minutes, h: 26.hours }.each do |period, value|
-      [Stat::Site, Stat::Video].each do |klass|
-        klass.send("#{period}_before", value.ago).delete_all
-      end
-    end
+    Stat::Site.s_before(63.seconds.ago).delete_all
+    Stat::Video.s_before(63.seconds.ago).delete_all
+  end
+
+  def self.clear_old_minute_stats
+    delay_clear_old_minute_stats
+
+    Stat::Site.m_before(62.minutes.ago).delete_all
+    Stat::Video.m_before(62.minutes.ago).delete_all
+  end
+
+  def self.clear_old_hour_stats
+    delay_clear_old_hour_stats
+
+    Stat::Site.h_before(26.hours.ago).delete_all
+    Stat::Video.h_before(26.hours.ago).delete_all
   end
 
   # Merge each trackers params on one big hash
