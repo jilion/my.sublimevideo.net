@@ -18,9 +18,9 @@ module Stat
     # ==========
 
     %w[s m h d].each do |period|
-      scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date.to_i }) }
-      scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lte" => date.to_i }) }
-      scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lte" => end_date.to_i }) }
+      scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date.to_i }).order_by([period.to_sym, :asc]) }
+      scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lte" => date.to_i }).order_by([period.to_sym, :asc]) }
+      scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lte" => end_date.to_i }).order_by([period.to_sym, :asc]) }
     end
 
   end
