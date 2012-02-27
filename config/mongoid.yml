@@ -36,6 +36,7 @@ production:
       - 10006
     - - hurley.member1.mongohq.com
       - 10006
+  read: :secondary
   preload_models: true
   skip_version_check: true
   logger: false
