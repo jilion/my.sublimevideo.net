@@ -15,7 +15,7 @@
 
       .entry{ id: "#{source.formatQuality()}_src_box", style: "#{if check then '' else 'display:none' }" }
         %label.icon{ for: "#{source.formatQuality()}_src" }= "#{source.qualityTitle()} url"
-        %input.text.no_icon.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} version url", value: source.get('src') }
+        %input.text.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} version url", value: source.get('src') }
         %span.inline_alert{ id: "#{source.formatQuality()}_src_invalid", style: "display:none" } Please provide a valid video URL
         %span.inline_alert{ id: "#{source.formatQuality()}_mime_type_invalid", style: "display:none" }= "Check your MIME-Types. <a href='http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting'>Learn more</a>"
         %span.inline_alert{ id: "#{source.formatQuality()}_not_found", style: "display:none" } This file doesn't seem to exist

@@ -16,7 +16,6 @@ class MSVVideoCodeGenerator.Views.Poster extends Backbone.View
   #
   updateSrc: (event) ->
     @model.setAndPreloadSrc(event.target.value)
-
   #
   # BINDINGS
   #

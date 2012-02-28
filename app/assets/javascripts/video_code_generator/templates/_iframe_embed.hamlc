@@ -3,6 +3,6 @@
     Iframe source url (the actual page containing the
     %code= "<video>"
     element – the page must be hosted on a domain registered on MySublimeVideo)
-  %input.text.no_icon{ type: "text", name: "iframe_src", id: "iframe_src", size: "50", placeholder: "Iframe source url",  value : "#{@iframe.get('src')}" }/
+  %input.text{ type: "text", name: "iframe_src", id: "iframe_src", size: "50", placeholder: "Iframe source url",  value : "#{@iframe.get('src')}" }/
 
 .big_break
