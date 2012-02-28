@@ -1,3 +1,5 @@
+@import "css3";
+
 #video_embed_type_selector {
   float:left;
   margin:0 0 30px;
@@ -15,10 +17,6 @@ button#use_demo_assets {
   position:absolute;
   top:115px;
   right:50px;
-}
-
-#poster {
-  margin-top:30px;
 }
 
 #video_code_form .big_break {
@@ -41,10 +39,34 @@ button#use_demo_assets {
   padding:15px 0 0;
 }
 
+#video_code_form .entry input.text {
+  width:415px;
+  padding-left:10px;
+}
+
+#video_code_form .entry.valid input.text {
+  width:385px;
+  padding-left:40px;  
+}
+
 #video_code_form .entry.size input.text {
   width:80px;
   text-align:center;
   padding:0;
+}
+
+#video_code_form .entry label.icon {
+  opacity:0;
+  @include transition(opacity,0.5s,ease);
+}
+
+#video_code_form .entry.valid label.icon {
+  opacity:1;
+  width:18px;
+  height:18px;
+  background:url(<%= asset_data_uri "my/fields/valid_icon.png" %>) no-repeat;
+  top:12px;
+  left:12px;
 }
 
 /* Lightbox */

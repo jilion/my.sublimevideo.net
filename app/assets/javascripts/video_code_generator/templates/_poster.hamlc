@@ -1,6 +1,7 @@
-.entry
+%h4 Poster
+.entry#poster_box
   %label.icon{ for: "poster_src" } Poster frame url
-  %input.text.no_icon{ type: "text", name: "poster_src", id: "poster_src", size: "50", placeholder: "Poster frame url", value: @poster.get('src') }/
+  %input.text{ type: "text", name: "poster_src", id: "poster_src", size: "50", placeholder: "Poster frame url", value: @poster.get('src') }/
   %span#poster_src_invalid.inline_alert{ style: "display:none" } Please provide a valid image URL
   %span#poster_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
 
