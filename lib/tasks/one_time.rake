@@ -37,6 +37,32 @@ namespace :one_time do
         skip += 1000
       end
     end
+
+    task reparse_logs_custom: :environment do
+      from = Time.utc(2012, 2, 28)
+      to   = Time.now.utc.change(sec: 0)
+      Stat::Site.d_after(from).delete_all
+      Stat::Video.d_after(from).delete_all
+      SiteUsage.after(from).delete_all
+      Log::Voxcast.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
+        log.safely.update_attributes(parsed_at: nil, stats_parsed_at: nil, video_tags_parsed_at: nil)
+        Log::Voxcast.delay(priority: 30).parse_log_for_stats(log.id)
+        Log::Voxcast.delay(priority: 30).parse_log(log.id)
+        Log::Voxcast.delay(priority: 30).parse_log_for_video_tags(log.id)
+      end
+      Log::Amazon::S3::Licenses.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
+        log.safely.update_attributes(parsed_at: nil)
+        Log::Amazon::S3::Licenses.delay(priority: 30).parse_log(log.id)
+      end
+      Log::Amazon::S3::Loaders.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
+        log.safely.update_attributes(parsed_at: nil)
+        Log::Amazon::S3::Loaders.delay(priority: 30).parse_log(log.id)
+      end
+      Log::Amazon::S3::Player.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
+        log.safely.update_attributes(parsed_at: nil)
+        Log::Amazon::S3::Player.delay(priority: 30).parse_log(log.id)
+      end
+    end
   end
 
   namespace :users do
@@ -192,7 +218,7 @@ namespace :one_time do
                 bad_video_stat_crit  = Stat::Video.where(st: video_tag.st, u: video_crc)
                 bad_video_stat_count = bad_video_stat_crit.count
                 case bad_video_stat_count
-                when 1                    
+                when 1
                   bad_video_stat = bad_video_stat_crit.first
                   if good_video_stat = Stat::Video.where(st: video_tag.st, u: good_video_crc, d: bad_video_stat.d).first
                     merge_video_stat(bad_video_stat, good_video_stat)
@@ -200,7 +226,7 @@ namespace :one_time do
                   else
                     update_bad_video_stat(bad_video_stat, good_video_crc)
                   end
-                  
+
                   if VideoTag.where(st: video_tag.st, u: good_video_crc).exists?
                     video_tag.delete
                   else

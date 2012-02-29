@@ -55,7 +55,7 @@ class Log
     log = find(id)
     unless log.parsed_at?
       log.parse_and_create_usages!
-      log.update_attribute(:parsed_at, Time.now.utc)
+      log.safely.update_attribute(:parsed_at, Time.now.utc)
     end
   end
 

@@ -71,7 +71,7 @@ class Log::Voxcast < Log
         log = find(id)
         unless log.send "#{type}_parsed_at?"
           log.send "parse_and_create_#{type}!"
-          log.update_attribute("#{type}_parsed_at", Time.now.utc)
+          log.safely.update_attribute("#{type}_parsed_at", Time.now.utc)
         end
       end
     end
