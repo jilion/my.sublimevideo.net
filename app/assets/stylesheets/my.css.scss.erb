@@ -107,7 +107,14 @@ header, header .shadow, header .lights {
   border: 1px solid #5e75a2;
   text-shadow:rgba(255,255,255,0.25) 0 1px 0;
   @include box-shadow(rgba(255,255,255,0.2) 0 1px 0);
+  @include border-radius(5px);
   -webkit-appearance:none;
+}
+
+@-moz-document url-prefix() {
+  #content h2 select {
+    padding-right:10px;
+  }
 }
 
 #content .tooltip {
