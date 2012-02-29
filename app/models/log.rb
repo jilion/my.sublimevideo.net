@@ -46,7 +46,7 @@ class Log
   def self.create_new_logs(new_logs_names)
     existings_logs_names = only(:name).any_in(name: new_logs_names).map(&:name)
     (new_logs_names - existings_logs_names).each do |name|
-      delay(:priority => 20).create(name: name)
+      delay(:priority => 20).safely.create(name: name)
     end
   end
 
