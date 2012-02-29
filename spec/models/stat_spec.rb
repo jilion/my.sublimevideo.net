@@ -14,6 +14,10 @@ describe Stat do
 
       context "mixed view event & load event" do
         before(:each) do
+          site = Factory.create(:site)
+          site.update_attribute(:token, 'ovjigy83')
+          site = Factory.create(:site)
+          site.update_attribute(:token, 'site1234')
           described_class.stub(:incs_from_trackers).and_return({
             "ovjigy83"=> {
               :inc => { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
