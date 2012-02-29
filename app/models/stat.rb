@@ -231,15 +231,17 @@ module Stat
   def self.create_stats_from_trackers!(log, trackers)
     tracker_incs = incs_from_trackers(trackers)
     tracker_incs.each do |site_token, values|
+      site = ::Site.where(token: site_token).includes(:plan).first
+
       if (site_inc = values[:inc]).present?
-        Stat::Site.collection.update({ t: site_token, m: log.minute }, { "$inc" => site_inc }, upsert: true)
+        Stat::Site.collection.update({ t: site_token, m: log.minute }, { "$inc" => site_inc }, upsert: true) unless site.in_free_plan?
         Stat::Site.collection.update({ t: site_token, h: log.hour },   { "$inc" => site_inc }, upsert: true)
         Stat::Site.collection.update({ t: site_token, d: log.day },    { "$inc" => site_inc }, upsert: true)
       end
 
       values[:videos].each do |video_ui, video_inc|
         if video_inc.present?
-          Stat::Video.collection.update({ st: site_token, u: video_ui, m: log.minute }, { "$inc" => video_inc }, upsert: true)
+          Stat::Video.collection.update({ st: site_token, u: video_ui, m: log.minute }, { "$inc" => video_inc }, upsert: true) unless site.in_free_plan?
           Stat::Video.collection.update({ st: site_token, u: video_ui, h: log.hour },   { "$inc" => video_inc }, upsert: true)
           Stat::Video.collection.update({ st: site_token, u: video_ui, d: log.day },    { "$inc" => video_inc }, upsert: true)
         end
