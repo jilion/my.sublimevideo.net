@@ -45,21 +45,27 @@ namespace :one_time do
       Stat::Video.d_after(from).delete_all
       SiteUsage.after(from).delete_all
       Log::Voxcast.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
-        log.safely.update_attributes(parsed_at: nil, stats_parsed_at: nil, video_tags_parsed_at: nil)
+        log.parsed_at            = nil
+        log.stats_parsed_at      = nil
+        log.video_tags_parsed_at = nil
+        log.safely.save
         Log::Voxcast.delay(priority: 30).parse_log_for_stats(log.id)
         Log::Voxcast.delay(priority: 30).parse_log(log.id)
         Log::Voxcast.delay(priority: 30).parse_log_for_video_tags(log.id)
       end
       Log::Amazon::S3::Licenses.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
-        log.safely.update_attributes(parsed_at: nil)
+        log.parsed_at = nil
+        log.safely.save
         Log::Amazon::S3::Licenses.delay(priority: 30).parse_log(log.id)
       end
       Log::Amazon::S3::Loaders.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
-        log.safely.update_attributes(parsed_at: nil)
+        log.parsed_at = nil
+        log.safely.save
         Log::Amazon::S3::Loaders.delay(priority: 30).parse_log(log.id)
       end
       Log::Amazon::S3::Player.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
-        log.safely.update_attributes(parsed_at: nil)
+        log.parsed_at = nil
+        log.safely.save
         Log::Amazon::S3::Player.delay(priority: 30).parse_log(log.id)
       end
     end
