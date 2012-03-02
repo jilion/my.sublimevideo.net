@@ -36,7 +36,7 @@ module SiteModules::Referrer
         Notify.send("No past site for id #{self.id}, timestamp #{timestamp}")
       end
     rescue => ex
-      Notify.send("Referrer (#{referrer}), site_id (#{self.id}), timestamp #{timestamp} type could not be guessed: #{ex.message}", :exception => ex)
+      # Notify.send("Referrer (#{referrer}), site_id (#{self.id}), timestamp #{timestamp} type could not be guessed: #{ex.message}", :exception => ex)
       "invalid"
     end
 
