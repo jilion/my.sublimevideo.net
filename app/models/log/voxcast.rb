@@ -47,7 +47,7 @@ class Log::Voxcast < Log
     while (new_log_ended_at = next_log_ended_at(hostname, new_log_ended_at)) < Time.now.utc do
       new_log_name = log_name(hostname, new_log_ended_at)
       new_log_file = VoxcastCDN.download_log(new_log_name)
-      rescue_and_retry(7) { safely.create!(name: new_log_name, file: new_log_file) } if new_log_file
+      safely.create(name: new_log_name, file: new_log_file) if new_log_file
     end
     unless Delayed::Job.already_delayed?("%Log::Voxcast%#{method}%")
       delay(priority: RecurringJob::PRIORITIES[:logs], run_at: new_log_ended_at).send(method)
@@ -121,9 +121,9 @@ private
 
   # after_create
   def delay_parse
-    self.class.delay(priority: 0).parse_log_for_stats(id)
-    self.class.delay(priority: 1).parse_log(id)
-    self.class.delay(priority: 2).parse_log_for_video_tags(id)
+    self.class.delay(priority: 0, run_at: 1.second.from_now).parse_log_for_stats(id)
+    self.class.delay(priority: 1, run_at: 1.second.from_now).parse_log(id)
+    self.class.delay(priority: 2, run_at: 5.seconds.from_now).parse_log_for_video_tags(id)
     self.class.delay(priority: 3, run_at: 15.seconds.from_now).parse_log_for_user_agents(id)
     self.class.delay(priority: 4, run_at: 15.seconds.from_now).parse_log_for_referrers(id)
   end
