@@ -394,7 +394,8 @@ GEM
     rdoc (3.12)
       json (~> 1.4)
     request-log-analyzer (1.12.2)
-    responders (0.6.5)
+    responders (0.7.0)
+      railties (~> 3.1)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec (2.8.0)
@@ -578,7 +579,7 @@ DEPENDENCIES
   rb-readline
   request-log-analyzer (~> 1.12.0)
   rescue_me (~> 0.1.1)!
-  responders (~> 0.6.5)
+  responders (~> 0.7.0)
   rpm_contrib!
   rspec-rails
   ruby_gntp

@@ -84,7 +84,8 @@ feature "New site" do
           site.pending_plan_cycle_ended_at.should be_nil
 
           current_url.should eq "http://my.sublimevideo.dev/sites"
-          page.should have_content "Site was successfully created."
+
+          # page.should have_content "Site was successfully created."
           page.should have_content 'rymai.com'
           page.should have_content 'Plus'
         end
@@ -115,7 +116,7 @@ feature "New site" do
             site.pending_plan_cycle_ended_at.should be_present
 
             current_url.should eq "http://my.sublimevideo.dev/sites"
-            page.should have_content "Site was successfully created."
+            # page.should have_content "Site was successfully created."
             page.should have_content 'rymai.com'
             page.should have_no_content 'Plus'
           end
@@ -164,7 +165,7 @@ feature "New site" do
           site.pending_plan_cycle_ended_at.should be_nil
 
           current_url.should eq "http://my.sublimevideo.dev/sites"
-          page.should have_content "Site was successfully created."
+          # page.should have_content "Site was successfully created."
           page.should have_content 'rymai.com'
           page.should have_content 'Custom'
           page.should have_content I18n.l(site.trial_end, format: :d_b_Y)
@@ -204,7 +205,7 @@ feature "New site" do
           site.pending_plan_cycle_ended_at.should be_nil
 
           current_url.should eq "http://my.sublimevideo.dev/sites"
-          page.should have_content "Site was successfully created."
+          # page.should have_content "Site was successfully created."
           page.should have_content 'rymai.com'
           page.should have_content 'Plus'
         end
@@ -237,7 +238,7 @@ feature "New site" do
             site.pending_plan_cycle_ended_at.should be_nil
 
             current_url.should eq "http://my.sublimevideo.dev/sites"
-            page.should have_content "Site was successfully created."
+            # page.should have_content "Site was successfully created."
             page.should have_content 'rymai.com'
             page.should have_content 'Plus'
           end
