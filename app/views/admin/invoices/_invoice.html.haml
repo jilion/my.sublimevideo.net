@@ -48,7 +48,7 @@
   %td.state
     %small
       - case invoice.state
-      - when "open", "waiting", "canceled"
+      - when "open", "waiting", "canceled", "refunded"
         %span{ style: "color:orange" }= invoice.state
       - when "failed"
         %strong{ style: "color:red" }= 'failed'

@@ -1509,29 +1509,40 @@ describe SiteModules::Invoice do
       context "with plan_started_at 2011,1,1" do
         before(:all) { @site.plan_started_at = Time.utc(2011,1,1) }
 
-        specify { Timecop.travel(Time.utc(2011,1,1))  { @site.months_since(nil).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,1,1))  { @site.months_since(@site.plan_started_at).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,1,31)) { @site.months_since(@site.plan_started_at).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,2,1))  { @site.months_since(@site.plan_started_at).should == 1 } }
-        specify { Timecop.travel(Time.utc(2011,2,15)) { @site.months_since(@site.plan_started_at).should == 1 } }
-        specify { Timecop.travel(Time.utc(2011,2,28)) { @site.months_since(@site.plan_started_at).should == 1 } }
-        specify { Timecop.travel(Time.utc(2012,1,1))  { @site.months_since(@site.plan_started_at).should == 12 } }
-        specify { Timecop.travel(Time.utc(2013,1,15)) { @site.months_since(@site.plan_started_at).should == 24 } }
+        specify { Timecop.travel(Time.utc(2011,1,1))  { @site.months_since(nil).should eq 0 } }
+        specify { Timecop.travel(Time.utc(2011,1,1))  { @site.months_since(@site.plan_started_at).should eq 0 } }
+        specify { Timecop.travel(Time.utc(2011,1,31)) { @site.months_since(@site.plan_started_at).should eq 0 } }
+        specify { Timecop.travel(Time.utc(2011,2,1))  { @site.months_since(@site.plan_started_at).should eq 1 } }
+        specify { Timecop.travel(Time.utc(2011,2,15)) { @site.months_since(@site.plan_started_at).should eq 1 } }
+        specify { Timecop.travel(Time.utc(2011,2,28)) { @site.months_since(@site.plan_started_at).should eq 1 } }
+        specify { Timecop.travel(Time.utc(2012,1,1))  { @site.months_since(@site.plan_started_at).should eq 12 } }
+        specify { Timecop.travel(Time.utc(2013,1,15)) { @site.months_since(@site.plan_started_at).should eq 24 } }
       end
 
       context "with plan_started_at 2011,6,15" do
         before(:all) { @site.plan_started_at = Time.utc(2011,6,15) }
 
-        specify { Timecop.travel(Time.utc(2011,6,20)) { @site.months_since(nil).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,6,20)) { @site.months_since(@site.plan_started_at).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,6,31)) { @site.months_since(@site.plan_started_at).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,7,10)) { @site.months_since(@site.plan_started_at).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,7,15)) { @site.months_since(@site.plan_started_at).should == 1 } }
-        specify { Timecop.travel(Time.utc(2011,7,25)) { @site.months_since(@site.plan_started_at).should == 1 } }
-        specify { Timecop.travel(Time.utc(2012,6,10)) { @site.months_since(@site.plan_started_at).should == 11 } }
-        specify { Timecop.travel(Time.utc(2012,6,15)) { @site.months_since(@site.plan_started_at).should == 12 } }
-        specify { Timecop.travel(Time.utc(2012,6,20)) { @site.months_since(@site.plan_started_at).should == 12 } }
-        specify { Timecop.travel(Time.utc(2012,6,25)) { @site.months_since(@site.plan_started_at).should == 12 } }
+        specify { Timecop.travel(Time.utc(2011,6,20)) { @site.months_since(nil).should eq 0 } }
+        specify { Timecop.travel(Time.utc(2011,6,20)) { @site.months_since(@site.plan_started_at).should eq 0 } }
+        specify { Timecop.travel(Time.utc(2011,6,31)) { @site.months_since(@site.plan_started_at).should eq 0 } }
+        specify { Timecop.travel(Time.utc(2011,7,10)) { @site.months_since(@site.plan_started_at).should eq 0 } }
+        specify { Timecop.travel(Time.utc(2011,7,15)) { @site.months_since(@site.plan_started_at).should eq 1 } }
+        specify { Timecop.travel(Time.utc(2011,7,25)) { @site.months_since(@site.plan_started_at).should eq 1 } }
+        specify { Timecop.travel(Time.utc(2012,6,10)) { @site.months_since(@site.plan_started_at).should eq 11 } }
+        specify { Timecop.travel(Time.utc(2012,6,15)) { @site.months_since(@site.plan_started_at).should eq 12 } }
+        specify { Timecop.travel(Time.utc(2012,6,20)) { @site.months_since(@site.plan_started_at).should eq 12 } }
+        specify { Timecop.travel(Time.utc(2012,6,25)) { @site.months_since(@site.plan_started_at).should eq 12 } }
+      end
+
+      context "with plan_started_at 2011,6,30" do
+        before(:all) { @site.plan_started_at = Time.utc(2011,6,30) }
+
+        specify { Timecop.travel(Time.utc(2011,7,20)) { @site.months_since(nil).should eq 0 } }
+        specify { Timecop.travel(Time.utc(2011,7,20)) { @site.months_since(@site.plan_started_at).should eq 0 } }
+        specify { Timecop.travel(Time.utc(2011,7,31)) { @site.months_since(@site.plan_started_at).should eq 1 } }
+        specify { Timecop.travel(Time.utc(2011,8,15)) { @site.months_since(@site.plan_started_at).should eq 1 } }
+        specify { Timecop.travel(Time.utc(2011,8,30)) { @site.months_since(@site.plan_started_at).should eq 2 } }
+        specify { Timecop.travel(Time.utc(2012,2,29)) { @site.months_since(@site.plan_started_at).should eq 8 } }
       end
     end
 
