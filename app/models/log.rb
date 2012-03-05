@@ -44,7 +44,7 @@ class Log
   def self.create_new_logs(new_logs_names)
     existings_logs_names = only(:name).any_in(name: new_logs_names).map(&:name)
     (new_logs_names - existings_logs_names).each do |name|
-      delay(:priority => 20).create(name: name)
+      safely.create(name: name)
     end
   end
 
@@ -52,7 +52,7 @@ class Log
     log = find(id)
     unless log.parsed_at?
       log.parse_and_create_usages!
-      log.update_attribute(:parsed_at, Time.now.utc)
+      log.safely.update_attribute(:parsed_at, Time.now.utc)
     end
   end
 

@@ -14,6 +14,10 @@ describe Stat do
 
       context "mixed view event & load event" do
         before(:each) do
+          site = Factory.create(:site)
+          site.update_attribute(:token, 'ovjigy83')
+          site = Factory.create(:site)
+          site.update_attribute(:token, 'site1234')
           described_class.stub(:incs_from_trackers).and_return({
             "ovjigy83"=> {
               :inc => { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
@@ -187,73 +191,141 @@ describe Stat do
 
   end
 
-  describe ".delay_clear_old_seconds_minutes_and_hours_stats" do
-    it "delays clear_old_seconds_minutes_and_hours_stats if not already delayed" do
-      expect { Stat.delay_clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(1)
-      Delayed::Job.last.run_at.should be_within(60).of(10.minutes.from_now)
+  describe ".delay_clear_old_second_stats" do
+    it "delays clear_old_second_stats if not already delayed" do
+      expect { Stat.delay_clear_old_second_stats }.to change(Delayed::Job, :count).by(1)
+      Delayed::Job.last.run_at.should be_within(1).of(1.second.from_now)
     end
 
     it "delays nothing if already delayed" do
-      Stat.delay_clear_old_seconds_minutes_and_hours_stats
-      expect { Stat.delay_clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(0)
+      Stat.delay_clear_old_second_stats
+      expect { Stat.delay_clear_old_second_stats }.to change(Delayed::Job, :count).by(0)
     end
   end
 
-  describe ".clear_old_seconds_minutes_and_hours_stats" do
+  describe ".clear_old_second_stats" do
 
-    it "delete old seconds, minutes and hours site stats, but keep all days site stats" do
+    it "delete old second site stats" do
       Timecop.freeze(Time.now) do
         Factory.create(:site_stat, d: nil, h: nil, m: nil, s: 62.seconds.ago)
         Factory.create(:site_stat, d: nil, h: nil, m: nil, s: 63.seconds.ago)
-        Factory.create(:site_stat, d: nil, h: nil, m: 62.minutes.ago.change(s: 0), s: nil)
-        Factory.create(:site_stat, d: nil, h: nil, m: 61.minutes.ago.change(s: 0), s: nil)
-        Factory.create(:site_stat, d: nil, h: 26.hours.ago.change(m: 0), m: nil, s: nil)
-        Factory.create(:site_stat, d: nil, h: 25.hours.ago.change(m: 0), m: nil, s: nil)
-        Factory.create(:site_stat, d: 99.days.ago.change(h: 0), h: nil, m: nil, s: nil)
-        Factory.create(:site_stat, d: 30.days.ago.change(h: 0), h: nil, m: nil, s: nil)
 
-        Stat::Site.count.should eql(8)
+        Stat::Site.count.should eql(2)
         Stat::Site.s_before(60.seconds.ago).count.should eql(2)
-        Stat::Site.m_before(60.minutes.ago).count.should eql(2)
-        Stat::Site.h_before(20.hours.ago).count.should eql(2)
-        Stat::Site.d_before(10.days.ago).count.should eql(2)
-        Stat.clear_old_seconds_minutes_and_hours_stats
-        Stat::Site.count.should eql(5)
+        Stat.clear_old_second_stats
+        Stat::Site.count.should eql(1)
         Stat::Site.s_before(60.seconds.ago).count.should eql(1)
-        Stat::Site.m_before(60.minutes.ago).count.should eql(1)
-        Stat::Site.h_before(20.hours.ago).count.should eql(1)
-        Stat::Site.d_before(10.days.ago).count.should eql(2)
       end
     end
 
-    it "delete old seconds, minutes and hours video stats, but keep all days video stats" do
+    it "delete old second video stats" do
       Timecop.freeze(Time.now) do
         Factory.create(:video_stat, s: 62.seconds.ago)
         Factory.create(:video_stat, s: 63.seconds.ago)
-        Factory.create(:video_stat, m: 62.minutes.ago.change(s: 0))
-        Factory.create(:video_stat, m: 61.minutes.ago.change(s: 0))
-        Factory.create(:video_stat, h: 26.hours.ago.change(m: 0))
-        Factory.create(:video_stat, h: 25.hours.ago.change(m: 0))
-        Factory.create(:video_stat, d: 99.days.ago.change(h: 0))
-        Factory.create(:video_stat, d: 30.days.ago.change(h: 0))
 
-        Stat::Video.count.should eql(8)
+        Stat::Video.count.should eql(2)
         Stat::Video.s_before(60.seconds.ago).count.should eql(2)
-        Stat::Video.m_before(60.minutes.ago).count.should eql(2)
-        Stat::Video.h_before(20.hours.ago).count.should eql(2)
-        Stat::Video.d_before(10.days.ago).count.should eql(2)
-        Stat.clear_old_seconds_minutes_and_hours_stats
-        Stat::Video.count.should eql(5)
+        Stat.clear_old_second_stats
+        Stat::Video.count.should eql(1)
         Stat::Video.s_before(60.seconds.ago).count.should eql(1)
-        Stat::Video.m_before(60.minutes.ago).count.should eql(1)
-        Stat::Video.h_before(20.hours.ago).count.should eql(1)
-        Stat::Video.d_before(10.days.ago).count.should eql(2)
       end
     end
 
     it "delays itself" do
-      expect { Stat.clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(1)
-      Delayed::Job.last.run_at.should be_within(60).of(10.minutes.from_now)
+      expect { Stat.clear_old_second_stats }.to change(Delayed::Job, :count).by(1)
+      Delayed::Job.last.run_at.should be_within(1).of(1.second.from_now)
+    end
+  end
+
+  describe ".delay_clear_old_minute_stats" do
+    it "delays clear_old_minute_stats if not already delayed" do
+      expect { Stat.delay_clear_old_minute_stats }.to change(Delayed::Job, :count).by(1)
+      Delayed::Job.last.run_at.should be_within(1).of(1.minute.from_now)
+    end
+
+    it "delays nothing if already delayed" do
+      Stat.delay_clear_old_minute_stats
+      expect { Stat.delay_clear_old_minute_stats }.to change(Delayed::Job, :count).by(0)
+    end
+  end
+
+  describe ".clear_old_minute_stats" do
+
+    it "delete old minute site stats" do
+      Timecop.freeze(Time.now) do
+        Factory.create(:site_stat, d: nil, h: nil, m: 62.minutes.ago.change(s: 0), s: nil)
+        Factory.create(:site_stat, d: nil, h: nil, m: 61.minutes.ago.change(s: 0), s: nil)
+
+        Stat::Site.count.should eql(2)
+        Stat::Site.m_before(60.minutes.ago).count.should eql(2)
+        Stat.clear_old_minute_stats
+        Stat::Site.count.should eql(1)
+        Stat::Site.m_before(60.minutes.ago).count.should eql(1)
+      end
+    end
+
+    it "delete old minute video stats" do
+      Timecop.freeze(Time.now) do
+        Factory.create(:video_stat, m: 62.minutes.ago.change(s: 0))
+        Factory.create(:video_stat, m: 61.minutes.ago.change(s: 0))
+
+        Stat::Video.count.should eql(2)
+        Stat::Video.m_before(60.minutes.ago).count.should eql(2)
+        Stat.clear_old_minute_stats
+        Stat::Video.count.should eql(1)
+        Stat::Video.m_before(60.minutes.ago).count.should eql(1)
+      end
+    end
+
+    it "delays itself" do
+      expect { Stat.clear_old_minute_stats }.to change(Delayed::Job, :count).by(1)
+      Delayed::Job.last.run_at.should be_within(1).of(1.minute.from_now)
+    end
+  end
+
+  describe ".delay_clear_old_hour_stats" do
+    it "delays clear_old_hour_stats if not already delayed" do
+      expect { Stat.delay_clear_old_hour_stats }.to change(Delayed::Job, :count).by(1)
+      Delayed::Job.last.run_at.should be_within(1).of(1.hour.from_now)
+    end
+
+    it "delays nothing if already delayed" do
+      Stat.delay_clear_old_hour_stats
+      expect { Stat.delay_clear_old_hour_stats }.to change(Delayed::Job, :count).by(0)
+    end
+  end
+
+  describe ".clear_old_hour_stats" do
+
+    it "delete old hour site stats" do
+      Timecop.freeze(Time.now) do
+        Factory.create(:site_stat, d: nil, h: 26.hours.ago.change(m: 0), m: nil, s: nil)
+        Factory.create(:site_stat, d: nil, h: 25.hours.ago.change(m: 0), m: nil, s: nil)
+
+        Stat::Site.count.should eql(2)
+        Stat::Site.h_before(20.hours.ago).count.should eql(2)
+        Stat.clear_old_hour_stats
+        Stat::Site.count.should eql(1)
+        Stat::Site.h_before(20.hours.ago).count.should eql(1)
+      end
+    end
+
+    it "delete old hour video stats" do
+      Timecop.freeze(Time.now) do
+        Factory.create(:video_stat, h: 26.hours.ago.change(m: 0))
+        Factory.create(:video_stat, h: 25.hours.ago.change(m: 0))
+
+        Stat::Video.count.should eql(2)
+        Stat::Video.h_before(20.hours.ago).count.should eql(2)
+        Stat.clear_old_hour_stats
+        Stat::Video.count.should eql(1)
+        Stat::Video.h_before(20.hours.ago).count.should eql(1)
+      end
+    end
+
+    it "delays itself" do
+      expect { Stat.clear_old_hour_stats }.to change(Delayed::Job, :count).by(1)
+      Delayed::Job.last.run_at.should be_within(1).of(1.hour.from_now)
     end
   end
 

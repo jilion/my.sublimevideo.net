@@ -69,7 +69,7 @@ gem 'stat_request_parser',   '~> 1.0.0' # hosted on gemfury
 
 gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
 gem 'mime-types'
-gem 'countries',             '~> 0.7.0'
+gem 'countries',             '~> 0.8.0'
 gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.1.0', require: 'page_rankr'
 gem 'twitter',               '~> 2.1.0'
@@ -96,7 +96,7 @@ gem 'coderay',               '~> 1.0.4'
 gem 'haml-coderay',          '~> 0.1.2'
 
 # Press
-gem "feedzirra", git: "git://github.com/pauldix/feedzirra.git"
+gem "feedzirra", git: "git://github.com/pauldix/feedzirra.git", ref: 'dee14'
 
 gem 'asset_sync'
 gem 'rack-no-www'

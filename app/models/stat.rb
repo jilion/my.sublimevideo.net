@@ -228,15 +228,17 @@ module Stat
   def self.create_stats_from_trackers!(log, trackers)
     tracker_incs = incs_from_trackers(trackers)
     tracker_incs.each do |site_token, values|
+      site = ::Site.where(token: site_token).includes(:plan).first
+
       if (site_inc = values[:inc]).present?
-        Stat::Site.collection.update({ t: site_token, m: log.minute }, { "$inc" => site_inc }, upsert: true)
+        Stat::Site.collection.update({ t: site_token, m: log.minute }, { "$inc" => site_inc }, upsert: true) unless site.in_free_plan?
         Stat::Site.collection.update({ t: site_token, h: log.hour },   { "$inc" => site_inc }, upsert: true)
         Stat::Site.collection.update({ t: site_token, d: log.day },    { "$inc" => site_inc }, upsert: true)
       end
 
       values[:videos].each do |video_ui, video_inc|
         if video_inc.present?
-          Stat::Video.collection.update({ st: site_token, u: video_ui, m: log.minute }, { "$inc" => video_inc }, upsert: true)
+          Stat::Video.collection.update({ st: site_token, u: video_ui, m: log.minute }, { "$inc" => video_inc }, upsert: true) unless site.in_free_plan?
           Stat::Video.collection.update({ st: site_token, u: video_ui, h: log.hour },   { "$inc" => video_inc }, upsert: true)
           Stat::Video.collection.update({ st: site_token, u: video_ui, d: log.day },    { "$inc" => video_inc }, upsert: true)
         end
@@ -253,22 +255,45 @@ module Stat
     end
   end
 
-  def self.delay_clear_old_seconds_minutes_and_hours_stats
-    unless Delayed::Job.already_delayed?('%Stat%clear_old_seconds_minutes_and_hours_stats%')
-      delay(priority: 5, run_at: 10.minutes.from_now).clear_old_seconds_minutes_and_hours_stats
+  def self.delay_clear_old_second_stats
+    unless Delayed::Job.already_delayed?('%Stat%clear_old_second_stats%')
+      delay(priority: 5, run_at: 1.second.from_now).clear_old_second_stats
+    end
+  end
+
+  def self.delay_clear_old_minute_stats
+    unless Delayed::Job.already_delayed?('%Stat%clear_old_minute_stats%')
+      delay(priority: 5, run_at: 1.minute.from_now).clear_old_minute_stats
+    end
+  end
+
+  def self.delay_clear_old_hour_stats
+    unless Delayed::Job.already_delayed?('%Stat%clear_old_hour_stats%')
+      delay(priority: 5, run_at: 1.hour.from_now).clear_old_hour_stats
     end
   end
 
 private
 
-  def self.clear_old_seconds_minutes_and_hours_stats
-    delay_clear_old_seconds_minutes_and_hours_stats
+  def self.clear_old_second_stats
+    delay_clear_old_second_stats
 
-    { s: 63.seconds, m: 62.minutes, h: 26.hours }.each do |period, value|
-      [Stat::Site, Stat::Video].each do |klass|
-        klass.send("#{period}_before", value.ago).delete_all
-      end
-    end
+    Stat::Site.s_before(63.seconds.ago).delete_all
+    Stat::Video.s_before(63.seconds.ago).delete_all
+  end
+
+  def self.clear_old_minute_stats
+    delay_clear_old_minute_stats
+
+    Stat::Site.m_before(62.minutes.ago).delete_all
+    Stat::Video.m_before(62.minutes.ago).delete_all
+  end
+
+  def self.clear_old_hour_stats
+    delay_clear_old_hour_stats
+
+    Stat::Site.h_before(26.hours.ago).delete_all
+    Stat::Video.h_before(26.hours.ago).delete_all
   end
 
   # Merge each trackers params on one big hash
