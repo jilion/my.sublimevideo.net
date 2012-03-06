@@ -343,3 +343,53 @@ feature "confirmation" do
     page.should have_content "John Doe"
   end
 end
+
+feature "password reset", :focus do
+  context "user is active" do
+    scenario "send reset password email" do
+      user = create_user user: { name: "John Doe", email: "john@doe.com", password: "123456" }
+      user.should be_active
+
+      go 'my', "/password/new"
+
+      current_url.should eq "http://my.sublimevideo.dev/password/new"
+
+      fill_in "Email", with: "john@doe.com"
+      expect { click_button "Send" }.to change(ActionMailer::Base.deliveries, :count).by(1)
+
+      current_url.should eq "http://my.sublimevideo.dev/login"
+    end
+  end
+
+  context "user is suspended" do
+    scenario "send reset password email" do
+      user = create_user user: { name: "John Doe", email: "john@doe.com", password: "123456", state: 'suspended' }
+      user.should be_suspended
+
+      go 'my', "/password/new"
+
+      current_url.should eq "http://my.sublimevideo.dev/password/new"
+
+      fill_in "Email", with: "john@doe.com"
+      expect { click_button "Send" }.to change(ActionMailer::Base.deliveries, :count).by(1)
+
+      current_url.should eq "http://my.sublimevideo.dev/login"
+    end
+  end
+
+  context "user is archived" do
+    scenario "doesn't send reset password email" do
+      user = create_user user: { name: "John Doe", email: "john@doe.com", password: "123456", state: 'archived' }
+      user.should be_archived
+
+      go 'my', "/password/new"
+
+      current_url.should eq "http://my.sublimevideo.dev/password/new"
+
+      fill_in "Email", with: "john@doe.com"
+      expect { click_button "Send" }.to_not change(ActionMailer::Base.deliveries, :count)
+
+      current_url.should eq "http://my.sublimevideo.dev/password"
+    end
+  end
+end

@@ -45,7 +45,7 @@ module CustomDevisePaths
   end
 
   def after_sending_reset_password_instructions_path_for(resource_or_scope)
-    after_sign_out_path_for(resource_or_scope)
+    login_url(subdomain: 'my')
   end
 
   def after_update_path_for(resource_or_scope)
