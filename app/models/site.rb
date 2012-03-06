@@ -49,7 +49,7 @@ class Site < ActiveRecord::Base
     SiteUsage.where(site_id: id)
   end
   def referrers
-    ::Referrer.where(site_id: id)
+    ::Referrer.where(token: token)
   end
   def stats
     Stat::Site.where(t: token)

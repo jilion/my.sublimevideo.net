@@ -1,7 +1,6 @@
 class Admin::ReferrersController < AdminController
   respond_to :js, :html
 
-  has_scope :by_url
   has_scope :by_hits
   has_scope :by_badge_hits
   has_scope :by_contextual_hits
@@ -11,7 +10,7 @@ class Admin::ReferrersController < AdminController
   # GET /referrers
   def index
     @referrers = Referrer.criteria
-    %w[by_url by_hits by_updated_at by_created_at by_contextual_hits by_badge_hits].each do |by|
+    %w[by_hits by_updated_at by_created_at by_contextual_hits by_badge_hits].each do |by|
       @referrers = @referrers.send(by.to_sym, params[by.to_sym]) if params[by.to_sym]
     end
     @referrers.by_created_at if @referrers.criteria.options[:sort].nil?

@@ -2,14 +2,12 @@ class Referrer
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field :site_id,         type: Integer
   field :token
   field :url
   field :hits,            type: Integer, defautl: 0
   field :badge_hits,      type: Integer, defautl: 0
   field :contextual_hits, type: Integer, defautl: 0
 
-  index :site_id
   index [[:token, Mongo::ASCENDING], [:url, Mongo::ASCENDING]]
   index :hits
   index :badge_hits
@@ -24,7 +22,7 @@ class Referrer
   # ================
 
   def site
-    Site.find_by_id(site_id)
+    Site.find_by_token(token)
   end
 
   # ===============
@@ -57,11 +55,7 @@ class Referrer
         referrer.hits = referrer.hits.to_i + hits
         referrer.save
       else
-        create(
-          url:   url,
-          token: token,
-          hits:  hits
-        )
+        create(url: url, token: token, hits: hits)
       end
     end
   end
@@ -83,15 +77,6 @@ class Referrer
         contextual_hits: (type == 'c' ? 1 : 0)
       )
     end
-  end
-
-  # ====================
-  # = Instance Methods =
-  # ====================
-
-  def token=(token)
-    write_attribute(:token, token)
-    write_attribute(:site_id, Site.find_by_token(token).try(:id))
   end
 
 end
