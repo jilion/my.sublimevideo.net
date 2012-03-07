@@ -617,7 +617,7 @@ describe User do
             VCR.use_cassette("zendesk/update_email") do
               @worker.work_off
               Delayed::Job.last.should be_nil
-              JSON[Zendesk.get("/users/59438671/user_identities.json").body].select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@jilion.com")
+              Zendesk.get("/users/59438671/user_identities.json").body.select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@jilion.com")
             end
           end
         end
@@ -634,7 +634,7 @@ describe User do
             VCR.use_cassette("zendesk/update_name") do
               @worker.work_off
               Delayed::Job.last.should be_nil
-              JSON[Zendesk.get("/users/59438671.json").body]['name'].should eq "Remy"
+              Zendesk.get("/users/59438671.json").body['name'].should eq "Remy"
             end
           end
 
