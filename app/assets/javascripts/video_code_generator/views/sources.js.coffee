@@ -8,11 +8,11 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
   initialize: ->
     @settingsView = @options.settingsView
 
-    _.bindAll this, 'render', 'refreshSettings', 'toggleSrcBox', 'renderEmbedWidth', 'renderEmbedHeight', 'renderSrcErrors', 'renderMimeTypeErrors', 'renderNotFoundErrors'
+    _.bindAll this, 'render', 'refreshSettings', 'toggleSrcBox', 'renderEmbedWidth', 'renderEmbedHeight', 'renderSrcErrors'
     @collection.bind 'change:src',             this.refreshSettings
     @collection.bind 'change:src',             this.renderSrcErrors
-    @collection.bind 'change:currentMimeType', this.renderMimeTypeErrors
-    @collection.bind 'change:found',           this.renderNotFoundErrors
+    @collection.bind 'change:currentMimeType', this.renderSrcErrors
+    @collection.bind 'change:found',           this.renderSrcErrors
     @collection.bind 'change:dataUID',         this.refreshSettings
     @collection.bind 'change:dataName',        this.refreshSettings
     @collection.bind 'change:isUsed',          this.toggleSrcBox
@@ -54,39 +54,30 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     $("#embed_height").attr(value: @collection.mp4Base().get('embedHeight'))
 
   renderSrcErrors: (source) ->
-    errorSrcInvalidDiv = $("##{source.formatQuality()}_src_invalid")
-    if source.srcIsEmptyOrUrl()
-      errorSrcInvalidDiv.hide()
-    else
-      errorSrcInvalidDiv.show()
-    this.renderValidSource(source)
-
-  renderMimeTypeErrors: (source) ->
+    errorSrcInvalidDiv      = $("##{source.formatQuality()}_src_invalid")
+    errorNotFoundDiv        = $("##{source.formatQuality()}_not_found")
     errorMimeTypeInvalidDiv = $("##{source.formatQuality()}_mime_type_invalid")
+    sourceEntryDiv          = $("##{source.formatQuality()}_src_box")
+    sourceEntryInput        = $("##{source.formatQuality()}_src")
 
-    if source.validMimeType()
-      errorMimeTypeInvalidDiv.hide()
-    else
-      # errorMimeTypeInvalidDiv.html("\"#{source.get('currentMimeType')}\" is not a valid MIME-Type for this video, it should be \"#{source.expectedContentType()}\". <a href='http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting'>Learn more</a>.")
-      errorMimeTypeInvalidDiv.show()
-    this.renderValidSource(source)
+    errorSrcInvalidDiv.hide()
+    errorNotFoundDiv.hide()
+    errorMimeTypeInvalidDiv.hide()
+    sourceEntryDiv.removeClass 'valid'
+    sourceEntryInput.addClass 'errors'
 
-  renderNotFoundErrors: (source) ->
-    errorNotFoundDiv = $("##{source.formatQuality()}_not_found")
-
-    if source.get('found')
-      errorNotFoundDiv.hide()
-    else
-      errorNotFoundDiv.show()
-    this.renderValidSource(source)
-
-  renderValidSource: (source) ->
-    sourceEntryDiv = $("##{source.formatQuality()}_src_box")
-
-    if source.srcIsUrl() and source.get('found') and source.validMimeType()
-      sourceEntryDiv.addClass 'valid'
-    else
+    if source.srcIsEmpty()
       sourceEntryDiv.removeClass 'valid'
+      sourceEntryInput.removeClass 'errors'
+    else if !source.srcIsUrl()
+      errorSrcInvalidDiv.show()
+    else if !source.get('found')
+      errorNotFoundDiv.show()
+    else if !source.validMimeType()
+      errorMimeTypeInvalidDiv.show()
+    else
+      sourceEntryDiv.addClass 'valid'
+      sourceEntryInput.removeClass 'errors'
 
   #
   # PRIVATE
