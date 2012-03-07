@@ -69,7 +69,7 @@ gem 'stat_request_parser',   '~> 1.0.0' # hosted on gemfury
 
 gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
 gem 'mime-types'
-gem 'countries',             git: 'git://github.com/jilion/countries.git', branch: 'html_safe'
+gem 'countries',             '~> 0.8.2'
 gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.1.0', require: 'page_rankr'
 gem 'twitter',               '~> 2.1.0'

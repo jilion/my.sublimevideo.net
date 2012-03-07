@@ -13,15 +13,6 @@ GIT
       thor (~> 0.14.6)
 
 GIT
-  remote: git://github.com/jilion/countries.git
-  revision: ede036e661cd25c2587d55d75cc5ff78f32123c2
-  branch: html_safe
-  specs:
-    countries (0.8.1)
-      currencies (= 0.4.0)
-      currencies (>= 0.2.0)
-
-GIT
   remote: git://github.com/jilion/useragent.git
   revision: 179acf1ff70bfdf8da53fddb18f2d8a009344eed
   specs:
@@ -179,6 +170,9 @@ GEM
       execjs
     coffee-script-source (1.2.0)
     configuration (1.3.1)
+    countries (0.8.2)
+      currencies (= 0.4.0)
+      currencies (>= 0.2.0)
     crack (0.1.8)
     createsend (1.0.3)
       hashie (~> 1.0)
@@ -520,7 +514,7 @@ DEPENDENCIES
   coffee-filter (~> 0.1.1)
   coffee-rails (~> 3.2.0)
   configuration (~> 1.3.1)
-  countries!
+  countries (~> 0.8.2)
   crack (~> 0.1.8)
   createsend (~> 1.0.0)
   dalli (~> 1.1.3)
