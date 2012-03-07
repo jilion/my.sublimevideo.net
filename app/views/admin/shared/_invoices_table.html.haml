@@ -1,9 +1,7 @@
-- invoices = object.invoices.order(:created_at.desc).limit(12).uniq
-
-%h3 Last 12 invoices
+%h3 Invoices
 
 %ul
-  - invoices.each do |invoice|
+  - object.invoices.order(:created_at.desc).each do |invoice|
     %li
       = link_to(invoice_dates(invoice), [:admin, invoice])
       = " / "
@@ -11,8 +9,8 @@
       = " ( #{invoice.state}"
       - case invoice.state
       - when 'paid'
-        = " on " + l(invoice.paid_at, :format => :d_b_Y)
-        = ", refunded on #{l(invoice.site.refunded_at, :format => :d_b_Y)}" if invoice.refunded?
+        = " on " + l(invoice.paid_at,:format: :d_b_Y)
+        = ", refunded on #{l(invoice.site.refunded_at, format: :d_b_Y)}" if invoice.refunded?
       - when 'failed'
-        = " on " + l(invoice.last_failed_at, :format => :d_b_Y)
+        = " on " + l(invoice.last_failed_at, format: :d_b_Y)
       = ")"
