@@ -344,7 +344,7 @@ feature "confirmation" do
   end
 end
 
-feature "password reset", :focus do
+feature "password reset" do
   context "user is active" do
     scenario "send reset password email" do
       user = create_user user: { name: "John Doe", email: "john@doe.com", password: "123456" }
