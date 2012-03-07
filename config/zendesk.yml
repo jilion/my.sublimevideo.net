@@ -1,5 +1,5 @@
 defaults: &defaults_dev_test
-  base_url:  https://sublimevideo.zendesk.com
+  base_url:  https://sublimevideo.zendesk.com/api/v1
   username:  zendesk@sublimevideo.net
   api_token: oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy
 

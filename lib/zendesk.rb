@@ -38,7 +38,7 @@ module Zendesk
 
     def execute
       rescue_and_retry(5, Net::HTTPServerException) do
-        response = Net::HTTP.start(@url.host, @url.port, use_ssl: true) do |http|
+        http_response = Net::HTTP.start(@url.host, @url.port, use_ssl: true) do |http|
           if @params.present?
             @headers.content_type = "application/xml"
             http.request(@headers, @params)
@@ -47,13 +47,31 @@ module Zendesk
           end
         end
 
-        case response
-        when Net::HTTPSuccess
-          response
-        else
-          response.error!
-        end
+        Zendesk::Response.new(http_response)
       end
+    end
+  end
+
+  class Response
+    attr_accessor :http_response
+
+    def initialize(http_response)
+      @http_response = http_response
+
+      case @http_response
+      when Net::HTTPSuccess
+        self
+      else
+        @http_response.error!
+      end
+    end
+
+    def location
+      @http_response['location']
+    end
+
+    def body
+      JSON[@http_response.body]
     end
   end
 

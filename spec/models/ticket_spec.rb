@@ -75,20 +75,20 @@ describe Ticket do
 
         it "creates the ticket on Zendesk" do
           zendesk_tickets_count_before_post = VCR.use_cassette("ticket/zendesk_tickets_before_post") do
-            JSON[Zendesk.get("/rules/1614956.json").body].size
+            Zendesk.get("/rules/1614956.json").body.size
           end
           Ticket.post_ticket(params)
           VCR.use_cassette("ticket/zendesk_tickets_after_post") do
-            JSON[Zendesk.get("/rules/1614956.json").body].should have(zendesk_tickets_count_before_post + 1).items
+            Zendesk.get("/rules/1614956.json").body.should have(zendesk_tickets_count_before_post + 1).items
           end
         end
 
         it "sets the subject for the ticket based on its subject" do
-          JSON[Zendesk.get("/tickets/#{Ticket.post_ticket(params)}.json").body]["subject"].should eq params[:subject]
+          Zendesk.get("/tickets/#{Ticket.post_ticket(params)}.json").body["subject"].should eq params[:subject]
         end
 
         it "sets the message for the ticket based on its message" do
-          JSON[Zendesk.get("/tickets/#{Ticket.post_ticket(params)}.json").body]["description"].should eq params[:message]
+          Zendesk.get("/tickets/#{Ticket.post_ticket(params)}.json").body["description"].should eq params[:message]
         end
 
         it "sets the zendesk_id of the user if he didn't have one already" do

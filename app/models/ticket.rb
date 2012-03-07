@@ -12,12 +12,12 @@ class Ticket
     ticket = Ticket.new(params)
 
     response  = Zendesk.post("/tickets.xml", ticket.to_xml)
-    ticket_id = response['location'][%r{#{Zendesk.base_url}/tickets/(\d+)\.xml}, 1].to_i
+    ticket_id = response.location[%r{/tickets/(\d+)\.xml}, 1].to_i
 
-    raise "Can't find ticket at: #{response['location']}!" if ticket_id.blank?
+    raise "Can't find ticket at: #{response.location}!" if ticket_id.zero?
 
     if !ticket.user.zendesk_id? &&
-      zendesk_requester_id = JSON[Zendesk.get("/tickets/#{ticket_id}.json").body]["requester_id"].to_i
+      zendesk_requester_id = Zendesk.get("/tickets/#{ticket_id}.json").body["requester_id"].to_i
       ticket.user.update_attribute(:zendesk_id, zendesk_requester_id)
       Ticket.delay(priority: 25).verify_user(ticket.user.id)
     end
