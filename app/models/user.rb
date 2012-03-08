@@ -155,10 +155,6 @@ class User < ActiveRecord::Base
     # set in #set_password
   end
 
-  def current_password=(new_current_password)
-    @current_password = new_current_password.nil? ? nil : CGI::unescapeHTML(new_current_password)
-  end
-
   def email=(email)
     write_attribute(:email, email.try(:downcase))
   end
