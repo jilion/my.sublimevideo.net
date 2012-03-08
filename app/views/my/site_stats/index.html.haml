@@ -1,5 +1,5 @@
 = content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{SiteToken.my}.js")
-= content_for :head, javascript_include_tag('https://d3dy5gmtp8yhk7.cloudfront.net/1.11/pusher.min.js')
+= content_for :head, javascript_include_tag('stats', 'https://d3dy5gmtp8yhk7.cloudfront.net/1.11/pusher.min.js')
 
 - if demo_stats_page?
   = content_for :header do

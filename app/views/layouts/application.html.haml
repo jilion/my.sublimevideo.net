@@ -19,13 +19,11 @@
     - if request.subdomain == 'my'
       /[if lte IE 8]
         %meta{ "http-equiv" => "Refresh", content: "0;url=http://jilion.com/ie" }
-        %style{ type: "text/css", media: "screen" }
-          == body {background:#fff;display:none;}
+        %style{ type: "text/css", media: "screen" }== body {background:#fff;display:none;}
     - else
       /[if lte IE 7]
         %meta{ "http-equiv" => "Refresh", content: "0;url=http://jilion.com/ie" }
-        %style{ type: "text/css", media: "screen" }
-          == body {background:#fff;display:none;}
+        %style{ type: "text/css", media: "screen" }== body {background:#fff;display:none;}
 
     /[if lte IE 8]
       = stylesheet_link_tag("ie")
@@ -34,9 +32,7 @@
 
     = yield :head_before
 
-    - if %w[site_stats].include?(controller_name)
-      = javascript_include_tag 'stats'
-    - else
+    - if %w[site_stats video_code].exclude?(controller_name)
       = javascript_include_tag(request.subdomain.presence || 'www')
 
     = yield :head
