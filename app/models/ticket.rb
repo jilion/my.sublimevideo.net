@@ -88,11 +88,3 @@ class Ticket
   end
 
 end
-# == Schema Information
-#
-#  type            :integer   not null
-#  subject         :string    not null
-#  message         :text      not null
-#  requester_name  :string
-#  requester_email :string
-#

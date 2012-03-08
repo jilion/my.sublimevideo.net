@@ -240,14 +240,3 @@ module UserModules::CreditCard
   end
 
 end
-
-# == Schema Information
-#
-# Table name: users
-#
-#  cc_type              :string(255)
-#  cc_last_digits       :string(255)
-#  cc_expire_on         :date
-#  cc_updated_at        :datetime
-#  cc_alias             :string
-#

@@ -25,11 +25,3 @@ module SiteModules::UsageMonitoring
   end
 
 end
-
-# == Schema Information
-#
-# Table name: sites
-#
-#  overusage_notification_sent_at :datetime
-#  first_plan_upgrade_required_alert_sent_at :datetime
-#

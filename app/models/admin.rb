@@ -57,6 +57,7 @@ end
 #  invited_by_id          :integer
 #  invited_by_type        :string(255)
 #  roles                  :text
+#  unconfirmed_email      :string(255)
 #
 # Indexes
 #
@@ -64,3 +65,4 @@ end
 #  index_admins_on_invitation_token      (invitation_token)
 #  index_admins_on_reset_password_token  (reset_password_token) UNIQUE
 #
+

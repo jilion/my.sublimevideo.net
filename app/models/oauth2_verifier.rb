@@ -35,8 +35,6 @@ class Oauth2Verifier < OauthToken
   end
 
 end
-
-
 # == Schema Information
 #
 # Table name: oauth_tokens

@@ -410,8 +410,6 @@ end
 #  invitation_sent_at              :datetime
 #  zendesk_id                      :integer
 #  enthusiast_id                   :integer
-#  first_name                      :string(255)
-#  last_name                       :string(255)
 #  postal_code                     :string(255)
 #  country                         :string(255)
 #  use_personal                    :boolean
@@ -447,6 +445,7 @@ end
 #  referrer_site_token             :string(255)
 #  reset_password_sent_at          :datetime
 #  confirmation_comment            :text
+#  unconfirmed_email               :string(255)
 #
 # Indexes
 #
