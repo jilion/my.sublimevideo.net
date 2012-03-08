@@ -8,7 +8,7 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
   cssTemplate: JST['video_code_generator/templates/code/_css']
 
   events:
-    'click #get_the_code': 'show'
+    'click #get_the_code': 'render'
 
   initialize: ->
     @builder   = @options.builder
@@ -17,16 +17,14 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
     @sources   = @options.sources
     @thumbnail = @options.thumbnail
     @iframe    = @options.iframe
-    @showCode  = false
 
-    this.render()
+    @popup = new MSV.SimplePopupHandler("popup_code")
 
   #
   # BINDINGS
   #
   render: ->
-    $(@el).html this.template
-      showCode: @showCode
+    $("#code_content").html this.template
       builder: @builder
       loader: @loader
       iframe: @iframe
@@ -41,6 +39,8 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
 
     prettyPrint() # syntax highlighting
 
+    @popup.open()
+
     this
 
   #
@@ -52,10 +52,5 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
     else
       this.videoTagTemplate
 
-  show: ->
-    @showCode = true
-    this.render()
-
   hide: ->
-    @showCode = false
-    this.render()
+    @popup.close()

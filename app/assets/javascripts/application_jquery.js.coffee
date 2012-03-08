@@ -35,3 +35,39 @@ $ ->
     # Needed to work on Safari (if not used, dom aren't redraw before page reloading)
     setTimeout (-> window.location.href = event.target.href), 1
     false
+
+class MSV.SimplePopupHandler
+  constructor: (contentId) ->
+    @contentId       = contentId
+    @contentDiv      = $("##{contentId}")
+    # @keyDownHandler  = 
+    # @clickHandler    = 
+
+  startObservers: ->
+    $(document).on "keydown", this.keyDown
+    @contentDiv.on "click", this.click
+
+  stopObservers: ->
+    $(document).off "keydown", this.keyDown
+    @contentDiv.off "click", this.click
+
+  open: (contentId) ->
+    this.close()
+
+    # if typeof(sublimevideo)=="object" && Prototype.Browser.MobileSafari
+    #   sublimevideo.stop()
+
+    @contentDiv.show()
+
+    this.startObservers()
+
+  close: ->
+    this.stopObservers()
+    @contentDiv.hide()
+
+  keyDown: (event) ->
+    switch event.which
+      when 27 then this.close() # ESC
+
+  click: (event) ->
+    if event.target is @contentDiv then this.close()

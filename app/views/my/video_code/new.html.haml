@@ -76,8 +76,16 @@
 
   .big_break
 
-  %h4 Preview
-  #preview
-  .spacer
+%h4 Preview
+#preview
+.spacer
 
-  #code
+#code
+  %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code
+
+  #popup_code.popup{ style: "display:none" }
+    .popup_wrap
+      .lights
+        .content#code_content
+        = link_to "/", class: 'close', onclick: "MSVVideoCodeGenerator.codeView.popup.close(); return false" do
+          %span Close
