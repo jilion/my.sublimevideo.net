@@ -1,1 +1,11 @@
-exclude = "{$exclude,db/backups,public/uploads,run,script,config.sqlite}"
+# Variables
+TM_ORGANIZATION_NAME = 'Jilion SA'
+
+# Settings
+projectDirectory = "$CWD"
+exclude          = "{$exclude,db/backups,public/uploads,run,script,config.sqlite}"
+
+# I recommend you put the following settings into your ~/.tm_properties
+# include     = "{$include,.tm_properties,.htaccess,.gitignore,.git/config,.travis.yml}"
+# exclude     = "{$exclude,log,vendor/ruby,tmp,tags,tmtags}"
+# windowTitle = "${TM_DIRECTORY/\A(?:\/Users\/remy\w+\/?(.*)|(.+))\z/${2:?${2/\A\/Users\/remy/~/}:${1/\A(?=.)/ – /}}/}/$TM_DISPLAYNAME – $TM_SCM_BRANCH"
