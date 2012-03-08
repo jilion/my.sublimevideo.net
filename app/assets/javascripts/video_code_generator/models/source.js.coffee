@@ -16,9 +16,13 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
     unless src is this.get('src')
       this.set(src: src)
 
-      if this.srcIsUrl()
+      if this.srcIsEmpty()
+        this.set(found: true)
+      else if this.srcIsUrl()
         this.preloadSrc() if this.formatQuality() is 'mp4_base'
         this.checkMimeType()
+      else
+        this.set(found: false)
 
       this.setDefaultDataUID() unless this.get('dataUID')
       this.setDefaultDataName() unless this.get('dataName')

@@ -37,8 +37,6 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
       iframeContentTemplate: this.iframeContentTemplate
       cssTemplate: this.cssTemplate
 
-    prettyPrint() # syntax highlighting
-
     @popup.open()
 
     this

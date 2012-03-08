@@ -1,38 +1,38 @@
 %br/
 Add this CSS to your stylesheets or directly in the page inside a
-%code.prettyprint.language-html= "<style></style>"
+%code= "<style></style>"
 element.
 
-%pre.prettyprint
-  %code.language-css
-    :preserve
-      a.zoomable {
-        display:block;
-    = "  width:#{@video.get('thumbnail').get('thumbWidth')}px;"
-    = "  height:#{@video.get('thumbnail').get('thumbHeight')}px;"
-    :preserve
-        background:#000;
-        position:relative;
-        -webkit-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
-        -moz-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
-        box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
-      }
+%form
+  .embed_code.entry
+    %textarea{ rows: 30, readonly: true, onclick: "this.focus();this.select();" }
+      :preserve
+        a.zoomable {
+          display:block;
+          width:#{@video.get('thumbnail').get('thumbWidth')}px;
+          height:#{@video.get('thumbnail').get('thumbHeight')}px;
+          background:#000;
+          position:relative;
+          -webkit-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+          -moz-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+          box-shadow:rgba(0,0,0,0.4) 0 4px 10px;
+        }
 
-      a.zoomable span.zoom_icon {
-        display:block;
-        width:100%;
-        height:100%;
-        position:absolute;
-        top:0;
-        left:0;
-        background:url('sv_zoom_icon.png') no-repeat bottom right;
-        opacity:0.3;
-        -o-transition:opacity 0.25s;
-        -moz-transition:opacity 0.25s;
-        -webkit-transition:opacity 0.25s;
-        transition:opacity 0.25s;
-      }
+        a.zoomable span.zoom_icon {
+          display:block;
+          width:100%;
+          height:100%;
+          position:absolute;
+          top:0;
+          left:0;
+          background:url('sv_zoom_icon.png') no-repeat bottom right;
+          opacity:0.3;
+          -o-transition:opacity 0.25s;
+          -moz-transition:opacity 0.25s;
+          -webkit-transition:opacity 0.25s;
+          transition:opacity 0.25s;
+        }
 
-      a.zoomable:hover span.zoom_icon {
-        opacity:1
-      }
+        a.zoomable:hover span.zoom_icon {
+          opacity:1
+        }

@@ -1,13 +1,12 @@
 = "The content of #{@iframe.get('src')} (loaded by the <iframe>). This page must be hosted on #{if @loader.get('hostname') then @loader.get('hostname') else 'a domain registered on MySublimeVideo'}."
 
-%pre.prettyprint
-  %code.language-html
-    = "<!DOCTYPE html>"
-    = "<html>"
-    = "  <head>"
-!= @loaderTemplate(builder: @builder, loader: @loader, video: @video)
-%pre.prettyprint>
-  %code.language-html= "  </head>\n  <body>"
-!= @videoTagTemplate(builder: @builder, iframe: @iframe, video: @video)
-%pre.prettyprint>
-  %code.language-html= "  </body>\n</html>"
+%form
+  .embed_code.entry
+    %textarea{ readonly: true, onclick: "this.focus();this.select();" }
+      = "<!DOCTYPE html>"
+      = "<html>"
+      = "  <head>"
+      != @loaderTemplate(builder: @builder, loader: @loader, video: @video)
+      = "  </head>\n  <body>"
+      != @videoTagTemplate(builder: @builder, iframe: @iframe, video: @video)
+      = "  </body>\n</html>"

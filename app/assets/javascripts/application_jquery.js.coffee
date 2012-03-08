@@ -18,13 +18,6 @@ window.MSV =
   Routers: {}
   Views: {}
 
-SublimeVideo.topDomainHost = ->
-  document.location.host.split('.').slice(-2).join('.')
-
-SublimeVideo.makeSticky = (element, cssSelector) ->
-  # do nothing and handle the click event with the hackish $('#menu li').click workaround
-  false
-
 $ ->
   # .segmented menu not accessible with jQuery, so only #menu is Stickyzed
   $('#menu li').click (event) ->
@@ -36,26 +29,33 @@ $ ->
     setTimeout (-> window.location.href = event.target.href), 1
     false
 
+SublimeVideo.topDomainHost = ->
+  document.location.host.split('.').slice(-2).join('.')
+
+SublimeVideo.makeSticky = (element, cssSelector) ->
+  # do nothing and handle the click event with the hackish $('#menu li').click workaround
+  false
+
+SublimeVideo.iOS = ->
+  navigator.userAgent.match(/(iPhone|iPod|iPad)/)
+
 class MSV.SimplePopupHandler
   constructor: (contentId) ->
-    @contentId       = contentId
-    @contentDiv      = $("##{contentId}")
-    # @keyDownHandler  = 
-    # @clickHandler    = 
+    @contentDiv = $("##{contentId}")
 
   startObservers: ->
-    $(document).on "keydown", this.keyDown
-    @contentDiv.on "click", this.click
+    $(document).on "keydown", { popup: this }, this.keyDown
+    @contentDiv.on "click", { popup: this }, this.click
 
   stopObservers: ->
     $(document).off "keydown", this.keyDown
     @contentDiv.off "click", this.click
 
-  open: (contentId) ->
+  open: ->
     this.close()
 
-    # if typeof(sublimevideo)=="object" && Prototype.Browser.MobileSafari
-    #   sublimevideo.stop()
+    if typeof(sublimevideo)=="object" && SublimeVideo.iOS
+      sublimevideo.stop()
 
     @contentDiv.show()
 
@@ -67,7 +67,7 @@ class MSV.SimplePopupHandler
 
   keyDown: (event) ->
     switch event.which
-      when 27 then this.close() # ESC
+      when 27 then event.data.popup.close() # ESC
 
   click: (event) ->
-    if event.target is @contentDiv then this.close()
+    if event.target is event.data.popup.contentDiv[0] then event.data.popup.close()

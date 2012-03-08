@@ -1,3 +1,2 @@
 You need to set the src, width and height attributes and leave the others as they are.
-%pre.prettyprint
-  %code.language-html= "<iframe src=\"#{@iframe.get('src')}\" width=\"#{@video.width()}\" height=\"#{@video.height()}\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>"
+= "<iframe src=\"#{@iframe.get('src')}\" width=\"#{@video.width()}\" height=\"#{@video.height()}\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>"

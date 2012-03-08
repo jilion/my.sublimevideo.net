@@ -1,13 +1,6 @@
 class MSVVideoCodeGenerator.Models.Asset extends Backbone.Model
-  defaults:
-    src: ""
-    width: null
-    height: null
-    ratio: null
-    found: true
-
   srcIsEmpty: ->
-    this.get('src') is ""
+    !this.get('src')
 
   srcIsUrl: ->
     /^https?:\/\/.+\.\w+(\?+.*)?$/.test this.get('src')

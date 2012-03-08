@@ -1,5 +1,7 @@
 class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
   initialize: (options) ->
+    @loggedIn = options['logged_in']
+
     this.initModels()
     this.initHelpers()
     this.initViews()
@@ -7,6 +9,8 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
   initModels: ->
     MSVVideoCodeGenerator.builder = new MSVVideoCodeGenerator.Models.Builder
+
+    MSVVideoCodeGenerator.loader = new MSVVideoCodeGenerator.Models.Loader
 
     MSVVideoCodeGenerator.demoPoster  = 'http://sublimevideo.net/assets/www/demo/midnight_sun_800.jpg'
     MSVVideoCodeGenerator.demoSources =
@@ -42,6 +46,11 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCodeGenerator.helper = new MSVVideoCodeGenerator.Helpers.Helper()
 
   initViews: ->
+    if @loggedIn
+      new MSVVideoCodeGenerator.Views.SitesSelectTitleView
+        loader: MSVVideoCodeGenerator.loader
+        el: '#site_selector'
+
     new MSVVideoCodeGenerator.Views.DemoBootstrap
       model: MSVVideoCodeGenerator.builder
       el: '#demo_bootstrap'

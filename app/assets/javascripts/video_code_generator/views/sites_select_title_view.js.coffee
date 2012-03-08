@@ -2,9 +2,11 @@ class MSVVideoCodeGenerator.Views.SitesSelectTitleView extends Backbone.View
   template: JST['_sites_select_title']
 
   events:
-    'change select': 'updatePage'
+    'change select': 'updateToken'
 
   initialize: ->
+    @loader = @options.loader
+
     @options.sites.bind 'change', this.render
     @options.sites.bind 'reset', this.render
 
@@ -14,6 +16,5 @@ class MSVVideoCodeGenerator.Views.SitesSelectTitleView extends Backbone.View
     $(@el).html(this.template(sites: @options.sites, statsRouter: MSVStats.statsRouter))
     this
 
-  updatePage: (event) ->
-    selectedToken = this.$('select').val()
-    MSVStats.statsRouter.navigate("#{selectedToken}", true)
+  updateToken: (event) ->
+    @loader.set(token: this.$('select').val())

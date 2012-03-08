@@ -17,6 +17,13 @@ class MSVVideoCodeGenerator.Views.VideoEmbedTypeSelector extends Backbone.View
       poster: MSVVideoCodeGenerator.poster
       sources: MSVVideoCodeGenerator.sources
 
+    if newBuilderClass is 'iframe_embed' and !MSVVideoCodeGenerator.builderRouter.loggedIn
+      $('.login_needed').hide()
+      $('#login_needed_for_iframe_embed').show()
+    else
+      $('.login_needed').show()
+      $('#login_needed_for_iframe_embed').hide()
+
     MSVVideoCodeGenerator.video = switch newBuilderClass
       when 'lightbox'
         attributes = $.extend({}, attributes, { thumbnail: MSVVideoCodeGenerator.thumbnail })

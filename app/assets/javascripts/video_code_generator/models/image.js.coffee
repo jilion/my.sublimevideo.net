@@ -1,9 +1,17 @@
 class MSVVideoCodeGenerator.Models.Image extends MSVVideoCodeGenerator.Models.Asset
+  defaults:
+    found: true
+
   setAndPreloadSrc: (src) ->
     unless src is this.get('src')
       this.set(src: src)
 
-      if this.srcIsUrl() then this.preloadSrc() else this.set(found: true)
+      if this.srcIsEmpty()
+        this.set(found: true)
+      else if this.srcIsUrl()
+        this.preloadSrc()
+      else
+        this.set(found: false)
 
   preloadSrc: ->
     new SublimeVideo.ImagePreloader(this.get('src'), this.setDimensions)
@@ -31,11 +39,18 @@ class MSVVideoCodeGenerator.Models.Thumbnail extends MSVVideoCodeGenerator.Model
     thumbWidth: null
     thumbHeight: null
     magnifyingGlass: false
+    found: true
 
   setAndPreloadSrc: (src) ->
-    if src isnt this.get('src')
+    unless src is this.get('src')
       this.set(src: src)
-      this.preloadSrc() if this.get('initialLink') is 'image'
+
+      if this.srcIsEmpty()
+        this.set(found: true)
+      else if this.srcIsUrl()
+        this.preloadSrc()
+      else
+        this.set(found: false)
 
   setDimensions: (problem, imageSrc, dimensions) =>
     super(problem, imageSrc, dimensions)

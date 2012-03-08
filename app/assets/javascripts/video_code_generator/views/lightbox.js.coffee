@@ -2,9 +2,9 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   template: JST['video_code_generator/templates/_lightbox']
 
   events:
+    'click input[name=initial_link]': 'updateInitialLink'
     'change #thumb_src':              'updateSrc'
     'change #thumb_width':            'updateThumbWidth'
-    'click input[name=initial_link]': 'updateInitialLink'
     'click #thumb_magnifying_glass':  'updateMagnifyingGlass'
     'click .reset':                   'resetThumbDimensions'
 
@@ -12,9 +12,10 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
     @thumbnail   = @options.thumbnail
     @initialLink = 'image'
 
-    _.bindAll this, 'render', 'renderExtraAndErrors', 'renderNotFoundErrors', 'renderThumbWidth', 'renderThumbHeight'
-    @thumbnail.bind 'change:src',         this.renderExtraAndErrors
-    @thumbnail.bind 'change:found',       this.renderNotFoundErrors
+    _.bindAll this, 'render', 'renderExtraSettings', 'renderThumbWidth', 'renderThumbHeight', 'renderErrors'
+    @thumbnail.bind 'change:initialLink', this.renderExtraSettings
+    @thumbnail.bind 'change:src',         this.renderErrors
+    @thumbnail.bind 'change:found',       this.renderErrors
     @thumbnail.bind 'change:thumbWidth',  this.renderThumbWidth
     @thumbnail.bind 'change:thumbHeight', this.renderThumbHeight
 
@@ -30,15 +31,12 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   updateInitialLink: (event) ->
     @thumbnail.set(initialLink: event.target.value)
 
-    this.render()
-
   updateMagnifyingGlass: (event) ->
     @thumbnail.set(magnifyingGlass: event.target.checked)
 
   resetThumbDimensions: (event) ->
     @thumbnail.setThumbWidth(@thumbnail.get('width'))
 
-    event.stopPropagation()
     false
 
   #
@@ -46,33 +44,48 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   #
   render: ->
     $(@el).html(this.template(thumbnail: @thumbnail))
-    this.renderExtraAndErrors()
     $(@el).show()
+    this.renderErrors()
 
     this
 
   hide: ->
     $(@el).hide()
 
-  renderExtraAndErrors: ->
+  renderExtraSettings: ->
     extraDiv = $('.extra')
-    errorDiv = $('#thumb_src_invalid')
     if @thumbnail.get('initialLink') is 'image'
       extraDiv.show()
-      if @thumbnail.srcIsEmptyOrUrl() then errorDiv.hide() else errorDiv.show()
     else
       extraDiv.hide()
-      errorDiv.hide()
-
-  renderNotFoundErrors: ->
-    errorDiv = $('#thumb_not_found')
-    if @thumbnail.get('found')
-      errorDiv.hide()
-    else
-      errorDiv.show()
+    this.renderErrors()
 
   renderThumbWidth: ->
     $("#thumb_width").attr(value: @thumbnail.get('thumbWidth'))
 
   renderThumbHeight: ->
     $("#thumb_height").attr(value: @thumbnail.get('thumbHeight'))
+
+  renderErrors: ->
+    this.hideErrors()
+
+    return if @thumbnail.get('initialLink') isnt 'image' or @thumbnail.srcIsEmpty()
+
+    if !@thumbnail.srcIsUrl()
+      this.renderError('src_invalid')
+    else if !@thumbnail.get('found')
+      this.renderError('not_found')
+    else
+      this.renderValid()
+
+  hideErrors: ->
+    $("#thumb_box").removeClass 'valid'
+    $("#thumb_src").removeClass 'errors'
+    $("#thumb_box .inline_alert").each -> $(this).hide()
+
+  renderValid: ->
+    $("#thumb_box").addClass 'valid'
+
+  renderError: (name) ->
+    $("#thumb_#{name}").show()
+    $("#thumb_src").addClass 'errors'

@@ -1,39 +1,37 @@
-- poster = if @video.get('poster').get('src') then "poster=\"#{@video.get('poster').get('src')}\" " else ''
-- sizes = if @builder.get('builderClass') isnt 'iframe_embed' then "width=\"#{@video.width()}\" height=\"#{@video.height()}\" " else ''
-- style = if @builder.get('builderClass') is 'iframe_embed' then "style=\"display:none\" " else ''
-- data_name = if @video.get('sources').mp4Base().get('dataName') then "data-name=\"#{@video.get('sources').mp4Base().get('dataName')}\" " else ''
-- data_uid = if @video.get('sources').mp4Base().get('dataUID') then "data-uid=\"#{@video.get('sources').mp4Base().get('dataUID')}\" " else ''
-- sortedSources = @video.get('sources').sortedSources(MSVVideoCodeGenerator.builder.get('startWithHd'))
+- poster          = if @video.get('poster').get('src') then "poster=\"#{@video.get('poster').get('src')}\" " else ''
+- sizes           = if @builder.get('builderClass') isnt 'iframe_embed' then "width=\"#{@video.width()}\" height=\"#{@video.height()}\" " else ''
+- style           = if @builder.get('builderClass') is 'iframe_embed' then "style=\"display:none\" " else ''
+- dataName        = if @video.get('sources').mp4Base().get('dataName') then "data-name=\"#{@video.get('sources').mp4Base().get('dataName')}\" " else ''
+- dataUID         = if @video.get('sources').mp4Base().get('dataUID') then "data-uid=\"#{@video.get('sources').mp4Base().get('dataUID')}\" " else ''
+- sortedSources   = @video.get('sources').sortedSources(MSVVideoCodeGenerator.builder.get('startWithHd'))
+- textareaContent = ""
 
 - if @builder.get('builderClass') is 'lightbox'
   - mp4Mobile = @video.get('sources').mp4Mobile()
 
-  %pre.prettyprint
-    %code.language-html= "<a href=\"#{mp4Mobile.get('src')}\" class=\"sublime#{if @video.get('thumbnail').get('magnifyingGlass') then " zoomable" else ""}\">"
+  - textareaContent += "<a href=\"#{mp4Mobile.get('src')}\" class=\"sublime#{if @video.get('thumbnail').get('magnifyingGlass') then " zoomable" else ""}\">\n  "
 
   - if @video.get('thumbnail').get('initialLink') is 'image'
-    %pre.prettyprint
-      %code.language-html= "  <img src=\"#{@video.get('thumbnail').get('src')}\" width=\"#{@video.get('thumbnail').get('thumbWidth')}\" height=\"#{@video.get('thumbnail').get('thumbHeight')}\" />"
+    - textareaContent += "<img src=\"#{@video.get('thumbnail').get('src')}\" width=\"#{@video.get('thumbnail').get('thumbWidth')}\" height=\"#{@video.get('thumbnail').get('thumbHeight')}\" />"
 
     - if @video.get('thumbnail').get('magnifyingGlass')
-      %pre.prettyprint
-        %code.language-html= "  <span class=\"zoom_icon\"></span>"
+      - textareaContent += "\n  <span class=\"zoom_icon\"></span>"
 
   - else
-    %pre.prettyprint
-      %code.language-html= "  #{@video.get('thumbnail').get('src')}"
-  %pre.prettyprint
-    %code.language-html= "</a>"
+    - textareaContent += "#{@video.get('thumbnail').get('src')}"
+  - textareaContent += "\n</a>\n"
 
-- extra_spaces = if @builder.get('builderClass') is 'iframe_embed' then "    " else ""
-%pre.prettyprint
-  %code.language-html= "#{extra_spaces}<video class=\"#{@video.get('classes')}\" #{poster}#{sizes}#{data_name}#{data_uid}#{style}preload=\"none\">"
-
+- extraSpaces = if @builder.get('builderClass') is 'iframe_embed' then "    " else ""
+- textareaContent += "#{extraSpaces}<video class=\"#{@video.get('classes')}\" #{poster}#{sizes}#{dataName}#{dataUID}#{style}preload=\"none\">\n"
 - for source in sortedSources
   - if source.get('isUsed') and source.srcIsUrl()
     - dataQuality = if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ""
-    %pre.prettyprint
-      %code.language-html= "#{extra_spaces}  <source src=\"#{source.get('src')}\" #{dataQuality}/>"
+    - textareaContent += "#{extraSpaces}  <source src=\"#{source.get('src')}\" #{dataQuality}/>\n"
+- textareaContent += "#{extraSpaces}</video>"
 
-%pre.prettyprint
-  %code.language-html= "#{extra_spaces}</video>"
+Copy the code below and paste it into your page.
+
+%form
+  .embed_code.entry
+    %textarea{ rows: sortedSources.length*3, readonly: true, onclick: "this.focus();this.select();" }
+      = textareaContent

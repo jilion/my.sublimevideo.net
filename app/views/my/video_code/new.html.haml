@@ -3,32 +3,13 @@
   = stylesheet_link_tag 'prettify/prettify', 'video_code_generator'
   = javascript_include_tag 'prettify/prettify', 'zeroclipboard/ZeroClipboard', 'video_code_generator'
 
--# = content_for :bottom do
--#   :coffeescript
--#     $ ->
--#       ZeroClipboard.setMoviePath 'assets/zeroclipboard/ZeroClipboard.swf'
-
 = title_and_content_header "Video Code Generator"
 
-- if user_signed_in?
-  - token = @site.try(:token) || @sites.first.token
-  - hostname = @site.try(:hostname) || @sites.first.hostname
-  :coffeescript
-    $ ->
-      window.MSVVideoCodeGenerator.loader = new MSVVideoCodeGenerator.Models.Loader
-      window.MSVVideoCodeGenerator.sites = new MSV.Collections.Sites(#{@sites.to_json})
-      if window.MSVVideoCodeGenerator.sites.length
-        window.MSVVideoCodeGenerator.sites.select('#{token}')
-        window.MSVVideoCodeGenerator.loader.set(token: '#{token}')
-        window.MSVVideoCodeGenerator.loader.set(hostname: '#{hostname}')
-      SublimeVideoSizeChecker.setRoot('/video-size-checker/')
-      window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter()
-- else
-  :coffeescript
-    $ ->
-      window.MSVVideoCodeGenerator.loader = new MSVVideoCodeGenerator.Models.Loader
-      SublimeVideoSizeChecker.setRoot('/video-size-checker/')
-      window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter()
+:coffeescript
+  $ ->
+    window.MSVVideoCodeGenerator.sites  = new MSV.Collections.Sites(#{@sites.try(:to_json)})
+    SublimeVideoSizeChecker.setRoot('/video-size-checker/')
+    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(logged_in: #{user_signed_in?})
 
 %p.desc.help= raw "WordPress user? Check-out our #{link_to "WordPress plugin", docs_page_url('wordpress', subdomain: 'docs'), onclick: "window.open(this); return false"} instead!"
 
@@ -48,44 +29,48 @@
     = radio_button_tag "type", "iframe_embed"
     = label_tag "type_iframe_embed", "Iframe Embed"
 
-#demo_bootstrap
-  %button.green_button#use_demo_assets Use demo videos urls
+.login_needed
+  #demo_bootstrap
+    %button.green_button#use_demo_assets Use demo videos urls
 
-.spacer
-
-.big_break
-
-%form#video_code_form
-  #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
-
-  #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
-
-  #poster
-  .spacer
-
-  #sources
-  .spacer
-
-  -# %p.desc.help= raw "Need help on video encoding? Check-out our #{link_to '"Encode videos for the web and HTML5"', 'http://docs.sublimevideo.net/encode-videos-for-the-web', onclick: "window.open(this); return false"} documentation page!"
-
-  .big_break
-
-  -# %h4 Settings
-  #settings
   .spacer
 
   .big_break
 
-%h4 Preview
-#preview
+  %form#video_code_form
+    #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+
+    #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+
+    #poster
+    .spacer
+
+    #sources
+    .spacer
+
+    -# %p.desc.help= raw "Need help on video encoding? Check-out our #{link_to '"Encode videos for the web and HTML5"', 'http://docs.sublimevideo.net/encode-videos-for-the-web', onclick: "window.open(this); return false"} documentation page!"
+
+    .big_break
+
+    -# %h4 Settings
+    #settings
+    .spacer
+
+    .big_break
+
+  %h4 Preview
+  #preview
+  .spacer
+
+  #code
+    %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code
+
+    #popup_code.popup{ style: "display:none" }
+      .popup_wrap
+        .lights
+          .content#code_content
+          = link_to "/", class: 'close', onclick: "MSVVideoCodeGenerator.codeView.popup.close(); return false" do
+            %span Close
 .spacer
 
-#code
-  %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code
-
-  #popup_code.popup{ style: "display:none" }
-    .popup_wrap
-      .lights
-        .content#code_content
-        = link_to "/", class: 'close', onclick: "MSVVideoCodeGenerator.codeView.popup.close(); return false" do
-          %span Close
+#login_needed_for_iframe_embed{ style: "display:none" }= "Please #{link_to "Log In", login_url(subdomain: 'my')} or #{link_to "Sign Up", signup_url(subdomain: 'my')} to generate an iframe embed code.".html_safe
