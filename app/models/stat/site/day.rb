@@ -1,5 +1,6 @@
-class Stat::SiteDayStat
+class Stat::Site::Day
   include Mongoid::Document
-  include Stat::SiteStat
+  include Stat::Site
   store_in :site_day_stats
 end
+

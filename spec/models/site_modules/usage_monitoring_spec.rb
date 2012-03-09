@@ -20,7 +20,7 @@ describe SiteModules::UsageMonitoring do
       before(:each) do
         Timecop.travel(Time.utc(2011,1,1)) { @site = Factory.create(:site, plan_id: @plan.id) }
         (1..20).each do |day|
-          Factory.create(:site_stat, t: @site.token, d: Time.utc(2011,1,day), vv: { m: 200 })
+          Factory.create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,day), vv: { m: 200 })
         end
       end
 
@@ -44,7 +44,7 @@ describe SiteModules::UsageMonitoring do
     context "with reached player hits site" do
       before(:each) do
         Timecop.travel(Time.utc(2011,1,1)) { @site = Factory.create(:site_not_in_trial, plan_id: @plan.id) }
-        Factory.create(:site_stat, t: @site.token, d: Time.utc(2011,1,1), vv: { m: 3001 })
+        Factory.create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,1), vv: { m: 3001 })
       end
 
       it "should send player hits reached notification" do

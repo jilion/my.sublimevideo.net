@@ -41,8 +41,8 @@ namespace :one_time do
     # task reparse_logs_custom: :environment do
     #   from = Time.utc(2012, 2, 28)
     #   to   = Time.now.utc.change(sec: 0)
-    #   Stat::Site.d_after(from).delete_all
-    #   Stat::Video.d_after(from).delete_all
+    #   LegacyStat::Site.d_after(from).delete_all
+    #   LegacyStat::Video.d_after(from).delete_all
     #   SiteUsage.after(from).delete_all
     #   Log::Voxcast.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
     #     log.parsed_at            = nil
@@ -189,23 +189,23 @@ namespace :one_time do
     desc "Split site_stats collection to separate minute/hour/day collection"
     task split_site_stats_collection: :environment do
       timed do
-        Stat::Site.where(m: { '$ne' => nil }).all.each do |stat|
+        LegacyStat::Site.where(m: { '$ne' => nil }).all.each do |stat|
           attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
-          Stat::SiteMinuteStat.create(attributes.merge(d: stat.m))
+          Stat::Site::Minute.create(attributes.merge(d: stat.m))
         end
         p "Split site minute stats"
       end
       timed do
-        Stat::Site.where(h: { '$ne' => nil }).all.each do |stat|
+        LegacyStat::Site.where(h: { '$ne' => nil }).all.each do |stat|
           attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
-          Stat::SiteHourStat.create(attributes.merge(d: stat.h))
+          Stat::Site::Hour.create(attributes.merge(d: stat.h))
         end
         p "Split site hour stats"
       end
       timed do
-        Stat::Site.where(d: { '$ne' => nil }).all.each do |stat|
+        LegacyStat::Site.where(d: { '$ne' => nil }).all.each do |stat|
           attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
-          Stat::SiteDayStat.create(attributes.merge(d: stat.d))
+          Stat::Site::Day.create(attributes.merge(d: stat.d))
         end
         p "Split site day stats"
       end
@@ -214,35 +214,29 @@ namespace :one_time do
     desc "Split video_stats collection to separate minute/hour/day collection"
     task split_video_stats_collection: :environment do
       timed do
-        Stat::Video.where(m: { '$ne' => nil }).all.each do |stat|
+        LegacyStat::Video.where(m: { '$ne' => nil }).all.each do |stat|
           attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.m)
-          Stat::VideoMinuteStat.create(attributes)
-          top_attributes = attributes.slice('st', 'u', 'd')
-          top_attributes['vl'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
-          top_attributes['vv'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
-          Stat::TopVideoMinuteStat.create(top_attributes)
+          attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
+          attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
+          Stat::Video::Minute.create(attributes)
         end
         p "Split video minute stats"
       end
       timed do
-        Stat::Video.where(h: { '$ne' => nil }).all.each do |stat|
+        LegacyStat::Video.where(h: { '$ne' => nil }).all.each do |stat|
           attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.h)
-          Stat::VideoHourStat.create(attributes)
-          top_attributes = attributes.slice('st', 'u', 'd')
-          top_attributes['vl'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
-          top_attributes['vv'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
-          Stat::TopVideoHourStat.create(top_attributes)
+          attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
+          attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
+          Stat::Video::Hour.create(attributes)
         end
         p "Split video hour stats"
       end
       timed do
-        Stat::Video.where(d: { '$ne' => nil }).all.each do |stat|
+        LegacyStat::Video.where(d: { '$ne' => nil }).all.each do |stat|
           attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.d)
-          Stat::VideoDayStat.create(attributes)
-          top_attributes = attributes.slice('st', 'u', 'd')
-          top_attributes['vl'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
-          top_attributes['vv'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
-          Stat::TopVideoDayStat.create(top_attributes)
+          attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
+          attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
+          Stat::Video::Day.create(attributes)
         end
         p "Split video day stats"
       end
@@ -282,12 +276,12 @@ namespace :one_time do
     #         if video_source.include?('?')
     #           good_video_crc = Zlib.crc32(video_source.match(/^(.*)\?/)[1]).to_s(16)
     #           if good_video_crc != video_crc
-    #             bad_video_stat_crit  = Stat::Video.where(st: video_tag.st, u: video_crc)
+    #             bad_video_stat_crit  = LegacyStat::Video.where(st: video_tag.st, u: video_crc)
     #             bad_video_stat_count = bad_video_stat_crit.count
     #             case bad_video_stat_count
     #             when 1
     #               bad_video_stat = bad_video_stat_crit.first
-    #               if good_video_stat = Stat::Video.where(st: video_tag.st, u: good_video_crc, d: bad_video_stat.d).first
+    #               if good_video_stat = LegacyStat::Video.where(st: video_tag.st, u: good_video_crc, d: bad_video_stat.d).first
     #                 merge_video_stat(bad_video_stat, good_video_stat)
     #                 bad_video_stat.delete
     #               else
@@ -306,7 +300,7 @@ namespace :one_time do
     #           end
     #         end
     #       else # nil
-    #         bad_video_stat_crit = Stat::Video.where(st: video_tag.st, u: video_tag.u)
+    #         bad_video_stat_crit = LegacyStat::Video.where(st: video_tag.st, u: video_tag.u)
     #         bad_video_stat_count = bad_video_stat_crit.count
     #         if bad_video_stat_count <= 1
     #           bad_video_stat_crit.delete
@@ -325,7 +319,7 @@ namespace :one_time do
   #   bad_video_stat.vl.each { |k, v| inc["vl.#{k}"] = v }
   #   bad_video_stat.vv.each { |k, v| inc["vv.#{k}"] = v }
   #   inc["vs.#{good_video_stat.u}"] = bad_video_stat.vs[bad_video_stat.u]
-  #   Stat::Video.collection.update({ st: good_video_stat.st, u: good_video_stat.u, d: good_video_stat.d.to_time }, { "$inc" => inc }, upsert: true)
+  #   LegacyStat::Video.collection.update({ st: good_video_stat.st, u: good_video_stat.u, d: good_video_stat.d.to_time }, { "$inc" => inc }, upsert: true)
   # end
   #
   # def update_bad_video_stat(bad_video_stat, good_video_crc)

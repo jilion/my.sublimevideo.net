@@ -9,7 +9,7 @@ describe Stat do
       @log      = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
     end
 
-    describe ".create_stats_from_trackers!"  do
+    describe ".create_stats_from_trackers!" do
       use_vcr_cassette "stat/pusher", erb: true
 
       context "mixed view event & load event" do
@@ -22,15 +22,15 @@ describe Stat do
             "ovjigy83"=> {
               :inc => { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
               :videos   => {
-                "abcd1234" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vs.source12" => 1 },
-                "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
+                "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
+                "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vvc" => 0 }
               }
             },
             "site1234"=> {
               :inc => {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
               :videos   => {
-                "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
-                "efgh5678" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
+                "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "vvc" => 0, "bp.saf-osx" => 3, "md.h.m" => 3 },
+                "efgh5678" => { "vl.m" => 3, "vlc" => 3, "vvc" => 0, "bp.saf-osx" => 3, "md.h.m" => 3 }
               }
             }
           })
@@ -38,91 +38,85 @@ describe Stat do
 
         it "create three minute site stats for each token" do
           Stat.create_stats_from_trackers!(@log, nil)
-          Stat::SiteMinuteStat.count.should eql(2)
-          Stat::SiteMinuteStat.where(t: 'ovjigy83', d: @log.minute).should be_present
-          Stat::SiteMinuteStat.where(t: 'site1234', d: @log.minute).should be_present
+          Stat::Site::Minute.count.should eql(2)
+          Stat::Site::Minute.where(t: 'ovjigy83', d: @log.minute).should be_present
+          Stat::Site::Minute.where(t: 'site1234', d: @log.minute).should be_present
         end
         it "create three minute video stats for each token" do
           Stat.create_stats_from_trackers!(@log, nil)
-          Stat::VideoMinuteStat.count.should eql(4)
-          Stat::VideoMinuteStat.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).should be_present
-          Stat::VideoMinuteStat.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).should be_present
-          Stat::VideoMinuteStat.where(st: 'site1234', u: 'abcd1234', d: @log.minute).should be_present
-          Stat::VideoMinuteStat.where(st: 'site1234', u: 'efgh5678', d: @log.minute).should be_present
-        end
-        it "create three minute top video stats for each token" do
-          Stat.create_stats_from_trackers!(@log, nil)
-          Stat::TopVideoMinuteStat.count.should eql(4)
-          Stat::TopVideoMinuteStat.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vv.should eq(1)
-          Stat::TopVideoMinuteStat.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vl.should eq(3)
-          Stat::TopVideoMinuteStat.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vv.should eq(0)
-          Stat::TopVideoMinuteStat.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vl.should eq(3)
-          Stat::TopVideoMinuteStat.where(st: 'site1234', u: 'abcd1234', d: @log.minute).first.vv.should eq(0)
-          Stat::TopVideoMinuteStat.where(st: 'site1234', u: 'efgh5678', d: @log.minute).first.vl.should eq(3)
+          Stat::Video::Minute.count.should eql(4)
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).should be_present
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vlc.should eq(3)
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vvc.should eq(1)
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).should be_present
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vlc.should eq(3)
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vvc.should eq(0)
+          Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).should be_present
+          Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).first.vlc.should eq(3)
+          Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).first.vvc.should eq(0)
+          Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).should be_present
+          Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).first.vlc.should eq(3)
+          Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).first.vvc.should eq(0)
         end
         it "create three hour site stats for each token" do
           Stat.create_stats_from_trackers!(@log, nil)
-          Stat::SiteHourStat.count.should eql(2)
-          Stat::SiteHourStat.where(t: 'ovjigy83', d: @log.hour).should be_present
-          Stat::SiteHourStat.where(t: 'site1234', d: @log.hour).should be_present
+          Stat::Site::Hour.count.should eql(2)
+          Stat::Site::Hour.where(t: 'ovjigy83', d: @log.hour).should be_present
+          Stat::Site::Hour.where(t: 'site1234', d: @log.hour).should be_present
         end
         it "create three hour video stats for each token" do
           Stat.create_stats_from_trackers!(@log, nil)
-          Stat::VideoHourStat.count.should eql(4)
-          Stat::VideoHourStat.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).should be_present
-          Stat::VideoHourStat.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).should be_present
-          Stat::VideoHourStat.where(st: 'site1234', u: 'abcd1234', d: @log.hour).should be_present
-          Stat::VideoHourStat.where(st: 'site1234', u: 'efgh5678', d: @log.hour).should be_present
-        end
-        it "create three hour top video stats for each token" do
-          Stat.create_stats_from_trackers!(@log, nil)
-          Stat::TopVideoHourStat.count.should eql(4)
-          Stat::TopVideoHourStat.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vv.should eq(1)
-          Stat::TopVideoHourStat.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vl.should eq(3)
-          Stat::TopVideoHourStat.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).first.vv.should eq(0)
-          Stat::TopVideoHourStat.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).first.vl.should eq(3)
-          Stat::TopVideoHourStat.where(st: 'site1234', u: 'abcd1234', d: @log.hour).first.vv.should eq(0)
-          Stat::TopVideoHourStat.where(st: 'site1234', u: 'efgh5678', d: @log.hour).first.vl.should eq(3)
+          Stat::Video::Hour.count.should eql(4)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).should be_present
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vlc.should eq(3)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vvc.should eq(1)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).should be_present
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).first.vlc.should eq(3)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).should be_present
+          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).first.vlc.should eq(3)
+          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).should be_present
+          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).first.vlc.should eq(3)
+          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).first.vvc.should eq(0)
         end
         it "create three day site stats for each token" do
           Stat.create_stats_from_trackers!(@log, nil)
-          Stat::SiteDayStat.count.should eql(2)
-          Stat::SiteDayStat.where(t: 'ovjigy83', d: @log.day).should be_present
-          Stat::SiteHourStat.where(t: 'site1234', d: @log.day).should be_present
+          Stat::Site::Day.count.should eql(2)
+          Stat::Site::Day.where(t: 'ovjigy83', d: @log.day).should be_present
+          Stat::Site::Hour.where(t: 'site1234', d: @log.day).should be_present
         end
         it "create three day video stats for each token" do
           Stat.create_stats_from_trackers!(@log, nil)
-          Stat::VideoDayStat.count.should eql(4)
-          Stat::VideoHourStat.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).should be_present
-          Stat::VideoHourStat.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).should be_present
-          Stat::VideoHourStat.where(st: 'site1234', u: 'abcd1234', d: @log.day).should be_present
-          Stat::VideoHourStat.where(st: 'site1234', u: 'efgh5678', d: @log.day).should be_present
-        end
-        it "create three day top video stats for each token" do
-          Stat.create_stats_from_trackers!(@log, nil)
-          Stat::TopVideoDayStat.count.should eql(4)
-          Stat::TopVideoDayStat.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vv.should eq(1)
-          Stat::TopVideoDayStat.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vl.should eq(3)
-          Stat::TopVideoDayStat.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vv.should eq(0)
-          Stat::TopVideoDayStat.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vl.should eq(3)
-          Stat::TopVideoDayStat.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vv.should eq(0)
-          Stat::TopVideoDayStat.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vl.should eq(3)
+          Stat::Video::Day.count.should eql(4)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).should be_present
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vlc.should eq(3)
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vvc.should eq(1)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).should be_present
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vlc.should eq(3)
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.day).should be_present
+          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vlc.should eq(3)
+          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.day).should be_present
+          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vlc.should eq(3)
+          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vvc.should eq(0)
         end
 
         it "update existing h/d stat" do
           Stat.create_stats_from_trackers!(@log, nil)
-          Stat::SiteMinuteStat.count.should eql(2)
-          Stat::SiteHourStat.count.should eql(2)
-          Stat::SiteDayStat.count.should eql(2)
+          Stat::Site::Minute.count.should eql(2)
+          Stat::Site::Hour.count.should eql(2)
+          Stat::Site::Day.count.should eql(2)
           log_time = 5.days.ago.change(hour: 0).to_i + 1.minute
           log  = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
           Stat.create_stats_from_trackers!(log, nil)
-          Stat::SiteMinuteStat.count.should eql(4)
-          Stat::SiteHourStat.count.should eql(2)
-          Stat::SiteDayStat.count.should eql(2)
-          Stat::SiteMinuteStat.where(t: 'ovjigy83').before(Time.now).count.should eql(2)
-          Stat::SiteMinuteStat.where(t: 'ovjigy83', d: log.minute).first.bp.should eql({ "saf-osx" => 4 })
-          Stat::SiteDayStat.where(t: 'ovjigy83', d: log.day).first.bp.should eql({ "saf-osx" => 8 })
+          Stat::Site::Minute.count.should eql(4)
+          Stat::Site::Hour.count.should eql(2)
+          Stat::Site::Day.count.should eql(2)
+          Stat::Site::Minute.where(t: 'ovjigy83').before(Time.now).count.should eql(2)
+          Stat::Site::Minute.where(t: 'ovjigy83', d: log.minute).first.bp.should eql({ "saf-osx" => 4 })
+          Stat::Site::Day.where(t: 'ovjigy83', d: log.day).first.bp.should eql({ "saf-osx" => 8 })
         end
 
         it "triggers Pusher on the right private channel for each site" do
@@ -153,8 +147,8 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 2, "md.f.d" => 2 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
-            "efgh5678" => { "vl.e" => 1, "bp.saf-osx" => 1, "md.f.d" => 1 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vvc" => 0 },
+            "efgh5678" => { "vl.e" => 1, "vlc" => 1, "bp.saf-osx" => 1, "md.f.d" => 1, "vvc" => 0 }
           }
         }
       })}
@@ -174,15 +168,15 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
-            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vvc" => 0 },
+            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vvc" => 0 }
           }
         },
         "site1234"=> {
           :inc => { "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
-            "efgh5678" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3, "vvc" => 0 },
+            "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3, "vvc" => 0 }
           }
         }
       })}
@@ -200,13 +194,13 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "vv.m" => 1 },
           :videos   => {
-            "abcd1234" => { "vv.m" => 1, "vs.source12" => 1 }
+            "abcd1234" => { "vv.m" => 1, "vs.source12" => 1, "vlc" => 0, "vvc" => 1 }
           }
         },
         "site1234"=> {
           :inc => { "vv.i" => 1 },
           :videos   => {
-            "abcd1234" => { "vv.i" => 1 }
+            "abcd1234" => { "vv.i" => 1, "vvc" => 0, "vlc" => 0 }
           }
         }
       })}
@@ -228,15 +222,15 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vs.source12" => 1 },
-            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
+            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vvc" => 0 }
           }
         },
         "site1234"=> {
           :inc => {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
           :videos   => {
-            "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
-            "efgh5678" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
+            "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3, "vvc" => 0 },
+            "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3, "vvc" => 0 }
           }
         }
       })}

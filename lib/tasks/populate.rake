@@ -482,7 +482,7 @@ def create_site_stats(user_id = nil)
       # Days
       95.times.each do |i|
         stats = random_site_stats_inc(24 * 60 * 60)
-        Stat::SiteDayStat.collection.update(
+        Stat::Site::Day.collection.update(
           { t: site.token, d: i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time },
           { "$inc" => stats },
           upsert: true
@@ -509,7 +509,7 @@ def create_site_stats(user_id = nil)
       end
       # Hours
       25.times.each do |i|
-        Stat::SiteHourStat.collection.update(
+        Stat::Site::Hour.collection.update(
           { t: site.token, d: i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time },
           { "$inc" => random_site_stats_inc(60 * 60) },
           upsert: true
@@ -517,7 +517,7 @@ def create_site_stats(user_id = nil)
       end
       # Minutes
       60.times.each do |i|
-        Stat::SiteMinuteStat.collection.update(
+        Stat::Site::Minute.collection.update(
           { t: site.token, d: i.minutes.ago.change(sec: 0, usec: 0).to_time },
           { "$inc" => random_site_stats_inc(60) },
           upsert: true
@@ -525,7 +525,7 @@ def create_site_stats(user_id = nil)
       end
       # seconds
       60.times.each do |i|
-        Stat::SiteSecondStat.collection.update(
+        Stat::Site::Second.collection.update(
           { t: site.token, d: i.seconds.ago.change(usec: 0).to_time },
           { "$inc" => random_site_stats_inc(1) },
           upsert: true
@@ -541,14 +541,14 @@ def create_stats(site_token = nil)
   sites = site_token ? [Site.find_by_token(site_token)] : Site.all
   sites.each do |site|
     VideoTag.where(st: site.token).delete_all
-    Stat::SiteDayStat.where(t: site.token).delete_all
-    Stat::SiteHourStat.where(t: site.token).delete_all
-    Stat::SiteMinuteStat.where(t: site.token).delete_all
-    Stat::SiteSecondStat.where(t: site.token).delete_all
-    Stat::VideoDayStat.where(st: site.token).delete_all
-    Stat::VideoHourStat.where(st: site.token).delete_all
-    Stat::VideoMinuteStat.where(st: site.token).delete_all
-    Stat::VideoSecondStat.where(st: site.token).delete_all
+    Stat::Site::Day.where(t: site.token).delete_all
+    Stat::Site::Hour.where(t: site.token).delete_all
+    Stat::Site::Minute.where(t: site.token).delete_all
+    Stat::Site::Second.where(t: site.token).delete_all
+    Stat::Video::Day.where(st: site.token).delete_all
+    Stat::Video::Hour.where(st: site.token).delete_all
+    Stat::Video::Minute.where(st: site.token).delete_all
+    Stat::Video::Second.where(st: site.token).delete_all
     videos_count = 20
     # Video Tags
     videos_count.times do |video_i|
@@ -572,11 +572,11 @@ def create_stats(site_token = nil)
     puts "Generating 95 days of stats for #{site.hostname}"
     95.times.each do |i|
       time = i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
-      Stat::SiteDayStat.collection.update(
+      Stat::Site::Day.collection.update(
         { t: site.token, d: time }, { "$inc" => random_site_stats_inc(24 * 60 * 60) }, upsert: true
       )
       videos_count.times do |video_i|
-        Stat::VideoDayStat.collection.update(
+        Stat::Video::Day.collection.update(
           { st: site.token, u: "video#{video_i}", d: time }, { "$inc" => random_video_stats_inc(24 * 60 * 60) }, upsert: true
         )
       end
@@ -586,11 +586,11 @@ def create_stats(site_token = nil)
     puts "Generating 25 hours of stats for #{site.hostname}"
     25.times.each do |i|
       time = i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time
-      Stat::SiteHourStat.collection.update(
+      Stat::Site::Hour.collection.update(
         { t: site.token, d: time }, { "$inc" => random_site_stats_inc(60 * 60) }, upsert: true
       )
       videos_count.times do |video_i|
-        Stat::VideoHourStat.collection.update(
+        Stat::Video::Hour.collection.update(
           { st: site.token, u: "video#{video_i}", d: time }, { "$inc" => random_video_stats_inc(60 * 60) }, upsert: true
         )
       end
@@ -600,11 +600,11 @@ def create_stats(site_token = nil)
     puts "Generating 60 minutes of stats for #{site.hostname}"
     60.times.each do |i|
       time = i.minutes.ago.change(sec: 0, usec: 0).to_time
-      Stat::SiteMinuteStat.collection.update(
+      Stat::Site::Minute.collection.update(
         { t: site.token, d: time }, { "$inc" => random_site_stats_inc(60) }, upsert: true
       )
       videos_count.times do |video_i|
-        Stat::VideoMinuteStat.collection.update(
+        Stat::Video::Minute.collection.update(
           { st: site.token, u: "video#{video_i}", d: time }, { "$inc" => random_video_stats_inc(60) }, upsert: true
         )
       end
@@ -614,11 +614,11 @@ def create_stats(site_token = nil)
     puts "Generating 60 seconds of stats for #{site.hostname}"
     60.times.each do |i|
       time = i.seconds.ago.change(usec: 0).to_time
-      Stat::SiteSecondStat.collection.update(
+      Stat::Site::Second.collection.update(
         { t: site.token, d: time }, { "$inc" => random_site_stats_inc(1) }, upsert: true
       )
       videos_count.times do |video_i|
-        Stat::VideoSecondStat.collection.update(
+        Stat::Video::Second.collection.update(
           { st: site.token, u: "video#{video_i}", d: time }, { "$inc" => random_video_stats_inc(1) }, upsert: true
         )
       end
@@ -636,7 +636,7 @@ def recurring_site_stats_update(user_id)
       second = Time.now.utc.change(usec: 0).to_time
       sites.each do |site|
         inc = random_site_stats_inc(1)
-        Stat::SiteSecondStat.collection.update({ t: site.token, d: second }, { "$inc" => inc }, upsert: true)
+        Stat::Site::Second.collection.update({ t: site.token, d: second }, { "$inc" => inc }, upsert: true)
       end
       # puts "Site(s) stats seconds updated at #{second}"
       sleep 1
@@ -648,9 +648,9 @@ def recurring_site_stats_update(user_id)
       if now.change(usec: 0) == now.change(sec: 0, usec: 0)
         sites.each do |site|
           inc = random_site_stats_inc(60)
-          Stat::SiteMinuteStat.collection.update({ t: site.token, d: (now - 1.minute).change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
-          Stat::SiteHourStat.collection.update({ t: site.token, d: (now - 1.minute).change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
-          Stat::SiteDayStat.collection.update({ t: site.token, d: (now - 1.minute).change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
+          Stat::Site::Minute.collection.update({ t: site.token, d: (now - 1.minute).change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
+          Stat::Site::Hour.collection.update({ t: site.token, d: (now - 1.minute).change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
+          Stat::Site::Day.collection.update({ t: site.token, d: (now - 1.minute).change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
         end
 
         json = {}
@@ -694,8 +694,8 @@ def recurring_stats_update(site_token)
           videos_count.times do |video_i|
             if rand(10) >= 8
               hits = rand(10) #second.to_i%10
-              Stat::SiteSecondStat.collection.update({ t: site.token, d: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
-              Stat::VideoSecondStat.collection.update({ st: site.token, d:  "video#{video_i}", s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
+              Stat::Site::Second.collection.update({ t: site.token, d: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
+              Stat::Video::Second.collection.update({ st: site.token, d:  "video#{video_i}", s: second }, { "$inc" => { 'vv.m' => hits } }, upsert: true)
               json = {
                 site: { id: second.to_i, vv: hits },
                 videos: [

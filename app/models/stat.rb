@@ -2,16 +2,21 @@ module Stat
   extend ActiveSupport::Concern
 
   included do
-
-    # DateTime periods
-    field :s, type: DateTime # Second
-    field :m, type: DateTime # Minute
-    field :h, type: DateTime # Hour
-    field :d, type: DateTime # Day
+    field :d, type: DateTime
 
     field :vv, type: Hash, default: {} # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 2 }
     field :md, type: Hash, default: {} # Player Mode + Device { h (html5) => { d (desktop) => 2, m (mobile) => 1 }, f (flash) => ... }
     field :bp, type: Hash, default: {} # Browser + Plateform { "saf-win" => 2, "saf-osx" => 4, ...}
+    
+    index :d
+    
+    scope :after,   lambda { |date| where(d: { "$gte" => date.to_i }).order_by([:d, :asc]) }
+    scope :before,  lambda { |date| where(d: { "$lte" => date.to_i }).order_by([:d, :asc]) }
+    scope :between, lambda { |start_date, end_date| where(d: { "$gte" => start_date.to_i, "$lte" => end_date.to_i }).order_by([:d, :asc]) }
+  end
+
+  def time
+    d.to_i
   end
 
   def self.create_stats_from_trackers!(log, trackers)
@@ -20,23 +25,23 @@ module Stat
       site = ::Site.where(token: site_token).includes(:plan).first
 
       if (site_inc = values[:inc]).present?
-        Stat::SiteMinuteStat.collection.update({ t: site_token, d: log.minute }, { "$inc" => site_inc }, upsert: true) unless site.in_free_plan?
-        Stat::SiteHourStat.collection.update({ t: site_token, d: log.hour },   { "$inc" => site_inc }, upsert: true)
-        Stat::SiteDayStat.collection.update({ t: site_token, d: log.day },    { "$inc" => site_inc }, upsert: true)
+        Stat::Site::Minute.collection.update({ t: site_token, d: log.minute }, { "$inc" => site_inc }, upsert: true) unless site.in_free_plan?
+        Stat::Site::Hour.collection.update({ t: site_token, d: log.hour },   { "$inc" => site_inc }, upsert: true)
+        Stat::Site::Day.collection.update({ t: site_token, d: log.day },    { "$inc" => site_inc }, upsert: true)
       end
 
       values[:videos].each do |video_ui, video_inc|
         if video_inc.present?
-          Stat::VideoMinuteStat.collection.update({ st: site_token, u: video_ui, d: log.minute }, { "$inc" => video_inc }, upsert: true) unless site.in_free_plan?
-          Stat::VideoHourStat.collection.update({ st: site_token, u: video_ui, d: log.hour },   { "$inc" => video_inc }, upsert: true)
-          Stat::VideoDayStat.collection.update({ st: site_token, u: video_ui, d: log.day },    { "$inc" => video_inc }, upsert: true)
-          # ==============
-          # = TOP VIDEOS =
-          # ==============
-          top_video_inc = top_video_inc(video_inc)
-          Stat::TopVideoMinuteStat.collection.update({ st: site_token, u: video_ui, d: log.minute }, { "$inc" => top_video_inc }, upsert: true) unless site.in_free_plan?
-          Stat::TopVideoHourStat.collection.update({ st: site_token, u: video_ui, d: log.hour },   { "$inc" => top_video_inc }, upsert: true)
-          Stat::TopVideoDayStat.collection.update({ st: site_token, u: video_ui, d: log.day },    { "$inc" => top_video_inc }, upsert: true)
+          Stat::Video::Minute.collection.update({ st: site_token, u: video_ui, d: log.minute }, { "$inc" => video_inc }, upsert: true) unless site.in_free_plan?
+          Stat::Video::Hour.collection.update({ st: site_token, u: video_ui, d: log.hour },   { "$inc" => video_inc }, upsert: true)
+          Stat::Video::Day.collection.update({ st: site_token, u: video_ui, d: log.day },    { "$inc" => video_inc }, upsert: true)
+          # # ==============
+          # # = TOP VIDEOS =
+          # # ==============
+          # top_video_inc = top_video_inc(video_inc)
+          # Stat::Video::Minute.collection.update({ st: site_token, u: video_ui, d: log.minute }, { "$inc" => top_video_inc }, upsert: true) unless site.in_free_plan?
+          # Stat::Video::Hour.collection.update({ st: site_token, u: video_ui, d: log.hour },   { "$inc" => top_video_inc }, upsert: true)
+          # Stat::Video::Day.collection.update({ st: site_token, u: video_ui, d: log.day },    { "$inc" => top_video_inc }, upsert: true)
         end
       end
     end
@@ -80,6 +85,9 @@ private
             video[:inc].each do |inc, value|
               incs[video[:st]][:videos][video[:u]][inc] += value
             end
+            # top_video specific fields
+            incs[video[:st]][:videos][video[:u]]['vlc'] += video[:inc]["vl.m"].to_i + video[:inc]["vl.e"].to_i
+            incs[video[:st]][:videos][video[:u]]['vvc'] += video[:inc]["vv.m"].to_i + video[:inc]["vv.e"].to_i
           end
         end
       rescue StatRequestParser::BadParamsError

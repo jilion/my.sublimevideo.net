@@ -129,7 +129,7 @@ module StatTimeline
     private
 
     def all
-      @all ||= ::Stat::SiteDayStat.last_stats(@options)
+      @all ||= ::Stat::Site::Day.last_stats(@options)
     end
 
   end

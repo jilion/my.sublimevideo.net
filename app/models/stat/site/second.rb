@@ -1,5 +1,5 @@
-class Stat::SiteSecondStat
+class Stat::Site::Second
   include Mongoid::Document
-  include Stat::SiteStat
+  include Stat::Site
   store_in :site_second_stats
 end

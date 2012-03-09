@@ -11,7 +11,7 @@ feature "Hidable notices" do
     context "user didn't hide the notice" do
       context "and has video views" do
         background do
-          Factory.create(:site_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
+          Factory.create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
           go 'my', '/sites'
         end
 
@@ -43,7 +43,7 @@ feature "Hidable notices" do
 
       context "and has video views" do
         background do
-          Factory.create(:site_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
+          Factory.create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
           go 'my', '/sites'
         end
 
