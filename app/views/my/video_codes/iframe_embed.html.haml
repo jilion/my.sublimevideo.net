@@ -1,8 +1,7 @@
 !!! 5
-%html{ "xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en" }
+%html
   %head
-    :javascript
-      document.write(unescape("%3Cscript src='" + (("https:" == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{SiteToken.my}.js' type='text/javascript'%3E%3C/script%3E"));
+    = javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{SiteToken.my}.js")
   %body
     %video.sublime.sv_iframe_embed{ poster: params[:poster], preload: 'none', style: 'display:none' }
       - params.select { |k, v| k =~ /^src\d+$/ }.each do |k, v|

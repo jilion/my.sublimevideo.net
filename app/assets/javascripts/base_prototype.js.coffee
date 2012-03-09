@@ -11,7 +11,7 @@ SublimeVideo.showPopup = (name, successUrl = null) ->
   successUrl ?= "#{document.location.protocol}//my.#{SublimeVideo.topDomainHost()}/sites"
   if $("popup_#{name}")
     SublimeVideo.openSimplePopup("popup_#{name}")
-    $("user_#{name}").insert({ top: new Element("input", { name: "success_url", type: 'hidden', value: successUrl }) })
+    $("user_#{name}").insert({ top: new Element("input", { name: "user_return_to", type: 'hidden', value: successUrl }) })
 
     if navigator.userAgent.indexOf("iPad") isnt -1
       sublimevideo.pause()

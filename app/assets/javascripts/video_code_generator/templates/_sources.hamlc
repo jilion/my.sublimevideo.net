@@ -13,9 +13,23 @@
             = "Add mobile version (lower resolution/bitrate)" if source.get('quality') == 'mobile'
             = "Add HD version" if source.get('quality') is 'hd'
 
-      .entry{ id: "#{source.formatQuality()}_src_box", style: "#{if check then '' else 'display:none' }" }
+      .entry{ id: "#{source.formatQuality()}_box", style: "#{if check then '' else 'display:none' }" }
         %label.icon{ for: "#{source.formatQuality()}_src" }= "#{source.qualityTitle()} url"
         %input.text.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} version url", value: source.get('src') }
         %span.inline_alert{ id: "#{source.formatQuality()}_src_invalid", style: "display:none" } Please provide a valid video URL
-        %span.inline_alert{ id: "#{source.formatQuality()}_mime_type_invalid", style: "display:none" }= "Check your MIME-Types. <a href='http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting'>Learn more</a>"
+        %span.inline_alert{ id: "#{source.formatQuality()}_mime_type_invalid", style: "display:none" } Please check your MIME Type
         %span.inline_alert{ id: "#{source.formatQuality()}_not_found", style: "display:none" } This file doesn't seem to exist
+
+.spacer
+
+#global_errors.notices
+  %ul
+    %li.notice.source_error.no_usable_source{ style: 'display: none' } Please provide a valid video source.
+
+#global_warnings.notices
+  %ul
+    %li.notice.source_warning.mime_type_invalid{ style: 'display: none' }
+      Please find more information on how to fix MIME Type misconfiguration
+      %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting#videos-dont-start-playing", onclick: "window.open(this); return false" }
+        in our documentation
+      = "."

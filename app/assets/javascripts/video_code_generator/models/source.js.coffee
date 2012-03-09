@@ -67,7 +67,8 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
       when 'ogv', 'ogg'
         'video/ogv'
       else
-        this.get('currentMimeType')
+        'video/mp4'
+        # this.get('currentMimeType')
 
   validMimeType: ->
     this.get('currentMimeType') is "" or this.get('currentMimeType') is this.expectedMimeType()

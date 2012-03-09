@@ -19,8 +19,9 @@ module Spec
         plans_attributes.each { |attributes| Plan.create(attributes) }
       end
 
-      def create_user(options = {})
+      def create_user(options={})
         User.delete_all
+        options[:user] = {} unless options[:user]
 
         options[:confirm]    = options[:user].delete(:confirm) || options[:confirm]
         options[:without_cc] = options[:user].delete(:without_cc) || options[:without_cc]
@@ -31,7 +32,7 @@ module Spec
         cc_expire_on = options[:user].delete(:cc_expire_on) || options[:cc_expire_on] || 2.years.from_now
 
         @current_user = if options[:without_cc] == true
-          Factory.create(:user_no_cc, options[:user] || {})
+          Factory(:user_no_cc, options[:user] || {})
         else
           attrs = Factory.attributes_for(:user)
           user = Factory(:user_real_cc, (options[:user] || {}).merge({

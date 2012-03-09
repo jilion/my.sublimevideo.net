@@ -4,34 +4,37 @@
 - dataName        = if @video.get('sources').mp4Base().get('dataName') then "data-name=\"#{@video.get('sources').mp4Base().get('dataName')}\" " else ''
 - dataUID         = if @video.get('sources').mp4Base().get('dataUID') then "data-uid=\"#{@video.get('sources').mp4Base().get('dataUID')}\" " else ''
 - sortedSources   = @video.get('sources').sortedSources(MSVVideoCodeGenerator.builder.get('startWithHd'))
-- textareaContent = ""
+- code = ""
 
 - if @builder.get('builderClass') is 'lightbox'
   - mp4Mobile = @video.get('sources').mp4Mobile()
 
-  - textareaContent += "<a href=\"#{mp4Mobile.get('src')}\" class=\"sublime#{if @video.get('thumbnail').get('magnifyingGlass') then " zoomable" else ""}\">\n  "
+  - code += "<a href=\"#{mp4Mobile.get('src')}\" class=\"sublime#{if @video.get('thumbnail').get('magnifyingGlass') then " zoomable" else ""}\">\n  "
 
   - if @video.get('thumbnail').get('initialLink') is 'image'
-    - textareaContent += "<img src=\"#{@video.get('thumbnail').get('src')}\" width=\"#{@video.get('thumbnail').get('thumbWidth')}\" height=\"#{@video.get('thumbnail').get('thumbHeight')}\" />"
+    - code += "<img src=\"#{@video.get('thumbnail').get('src')}\" width=\"#{@video.get('thumbnail').get('thumbWidth')}\" height=\"#{@video.get('thumbnail').get('thumbHeight')}\" />"
 
     - if @video.get('thumbnail').get('magnifyingGlass')
-      - textareaContent += "\n  <span class=\"zoom_icon\"></span>"
+      - code += "\n  <span class=\"zoom_icon\"></span>"
 
   - else
-    - textareaContent += "#{@video.get('thumbnail').get('src')}"
-  - textareaContent += "\n</a>\n"
+    - code += "#{@video.get('thumbnail').get('src')}"
+  - code += "\n</a>\n"
 
 - extraSpaces = if @builder.get('builderClass') is 'iframe_embed' then "    " else ""
-- textareaContent += "#{extraSpaces}<video class=\"#{@video.get('classes')}\" #{poster}#{sizes}#{dataName}#{dataUID}#{style}preload=\"none\">\n"
+- code += "#{extraSpaces}<video class=\"#{@video.get('classes')}\" #{poster}#{sizes}#{dataName}#{dataUID}#{style}preload=\"none\">\n"
 - for source in sortedSources
   - if source.get('isUsed') and source.srcIsUrl()
     - dataQuality = if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ""
-    - textareaContent += "#{extraSpaces}  <source src=\"#{source.get('src')}\" #{dataQuality}/>\n"
-- textareaContent += "#{extraSpaces}</video>"
+    - code += "#{extraSpaces}  <source src=\"#{source.get('src')}\" #{dataQuality}/>\n"
+- code += "#{extraSpaces}</video>"
 
-Copy the code below and paste it into your page.
+- if @codeOnly
+  = code
+- else
+  Copy the code below and paste it into your page.
 
-%form
-  .embed_code.entry
-    %textarea{ rows: sortedSources.length*3, readonly: true, onclick: "this.focus();this.select();" }
-      = textareaContent
+  %form
+    .embed_code.entry
+      %textarea{ rows: sortedSources.length*3, readonly: true, onclick: "this.focus();this.select();" }
+        = code

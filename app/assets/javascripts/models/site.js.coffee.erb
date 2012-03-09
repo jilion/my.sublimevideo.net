@@ -10,7 +10,7 @@ class MSV.Models.Site extends Backbone.Model
     trial_start_time: null
 
   title: ->
-    if this.get('hostname')? && this.get('hostname') != '' then this.get('hostname') else "##{this.get('token')}"
+    if this.get('hostname')? && this.get('hostname') isnt '' then this.get('hostname') else "##{this.get('token')}"
 
   planMonthCycleStartTime: ->
     parseInt(this.get('plan_month_cycle_start_time')) * 1000
@@ -19,13 +19,13 @@ class MSV.Models.Site extends Backbone.Model
     parseInt(this.get('plan_month_cycle_end_time')) * 1000
 
   isInFreePlan: ->
-    this.get('plan_stats_retention_days') == 0
+    this.get('plan_stats_retention_days') is 0
 
   trialStartTime: ->
     parseInt(this.get('trial_start_time')) * 1000
 
   trialIsActivable: ->
-    this.isInFreePlan() && this.trialStartTime() == 0
+    this.isInFreePlan() && this.trialStartTime() is 0
 
   token: ->
     if MSVStats.statsRouter? && MSVStats.statsRouter.isDemo()
@@ -38,12 +38,11 @@ class MSV.Collections.Sites extends Backbone.Collection
   url: '/sites'
 
   select: (token) ->
-    token = '<%= SiteToken.www %>' if token == 'demo'
+    token = '<%= SiteToken.www %>' if token is 'demo'
     @selectedSite = _.find this.models, (site) =>
-      site.get('token') == token
+      site.get('token') is token
     this.trigger('change')
 
   selectedSiteIsInFreePlan: ->
     if @selectedSite?
       @selectedSite.isInFreePlan()
-

@@ -11,6 +11,5 @@ class MSVVideoCodeGenerator.Models.Iframe extends Backbone.Model
 
 class MSVVideoCodeGenerator.Models.Loader extends Backbone.Model
   defaults:
-    token: 'YOUR_TOKEN'
-    hostname: ''
+    site: null
     ssl: false

@@ -1,8 +1,17 @@
+%p
+  Embed for:
+  %select#site_select
+    - for site in @sites.models
+      - select = @sites.selectedSite is site
+      %option(selected=select){ value: site.get('token') }= site.title()
+
+%h4 Iframe source
 .entry
-  %label.icon{ for: "iframe_src" }
-    Iframe source url (the actual page containing the
+  %label{ for: "iframe_src" }
+    The URL of the actual page containing the
     %code= "<video>"
-    element – the page must be hosted on a domain registered on MySublimeVideo)
+    element – the page must be hosted on #{@loader.get('site').get('hostname')} (or any of its "Alias and staging domains").
+  %br
   %input.text{ type: "text", name: "iframe_src", id: "iframe_src", size: "50", placeholder: "Iframe source url",  value : "#{@iframe.get('src')}" }/
 
 .big_break

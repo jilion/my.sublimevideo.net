@@ -1,5 +1,0 @@
-- unless @video.get('sources').mp4Base().srcIsUrl()
-  %p.warning Please provide a MP4 video source.
-
-- unless @video.width() and @video.height()
-  %p.warning Please provide dimensions for the <video> element.

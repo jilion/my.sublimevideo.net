@@ -11,11 +11,12 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   initialize: ->
     @thumbnail   = @options.thumbnail
     @initialLink = 'image'
+    @uiHelper    = new MSVVideoCodeGenerator.Helpers.UIAssetHelper 'thumb'
 
-    _.bindAll this, 'render', 'renderExtraSettings', 'renderThumbWidth', 'renderThumbHeight', 'renderErrors'
+    _.bindAll this, 'render', 'renderExtraSettings', 'renderThumbWidth', 'renderThumbHeight', 'renderStatus'
     @thumbnail.bind 'change:initialLink', this.renderExtraSettings
-    @thumbnail.bind 'change:src',         this.renderErrors
-    @thumbnail.bind 'change:found',       this.renderErrors
+    @thumbnail.bind 'change:src',         this.renderStatus
+    @thumbnail.bind 'change:found',       this.renderStatus
     @thumbnail.bind 'change:thumbWidth',  this.renderThumbWidth
     @thumbnail.bind 'change:thumbHeight', this.renderThumbHeight
 
@@ -43,9 +44,9 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).html(this.template(thumbnail: @thumbnail))
+    $(@el).html this.template(thumbnail: @thumbnail)
     $(@el).show()
-    this.renderErrors()
+    this.renderStatus()
 
     this
 
@@ -58,7 +59,7 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
       extraDiv.show()
     else
       extraDiv.hide()
-    this.renderErrors()
+    this.renderStatus()
 
   renderThumbWidth: ->
     $("#thumb_width").attr(value: @thumbnail.get('thumbWidth'))
@@ -66,26 +67,14 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   renderThumbHeight: ->
     $("#thumb_height").attr(value: @thumbnail.get('thumbHeight'))
 
-  renderErrors: ->
-    this.hideErrors()
+  renderStatus: ->
+    @uiHelper.hideErrors()
 
     return if @thumbnail.get('initialLink') isnt 'image' or @thumbnail.srcIsEmpty()
 
     if !@thumbnail.srcIsUrl()
-      this.renderError('src_invalid')
+      @uiHelper.renderError('src_invalid')
     else if !@thumbnail.get('found')
-      this.renderError('not_found')
+      @uiHelper.renderError('not_found')
     else
-      this.renderValid()
-
-  hideErrors: ->
-    $("#thumb_box").removeClass 'valid'
-    $("#thumb_src").removeClass 'errors'
-    $("#thumb_box .inline_alert").each -> $(this).hide()
-
-  renderValid: ->
-    $("#thumb_box").addClass 'valid'
-
-  renderError: (name) ->
-    $("#thumb_#{name}").show()
-    $("#thumb_src").addClass 'errors'
+      @uiHelper.renderValid()

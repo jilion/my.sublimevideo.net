@@ -25,7 +25,7 @@ class My::Users::SessionsController < Devise::SessionsController
     resource = warden.authenticate!(scope: resource_name, recall: 'my/users/sessions#new')
     set_flash_message(:notice, :signed_in) if is_navigational_format?
     sign_in(resource_name, resource)
-    session["#{resource_name}_return_to"] = params[:success_url] if params[:success_url]
+    session["#{resource_name}_return_to"] = params[:"#{resource_name}_return_to"] if params[:"#{resource_name}_return_to"]
     respond_with resource, location: after_sign_in_path_for(resource)
   end
 

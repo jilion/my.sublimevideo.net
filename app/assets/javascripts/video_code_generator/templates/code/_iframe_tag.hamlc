@@ -1,2 +1,6 @@
 You need to set the src, width and height attributes and leave the others as they are.
-= "<iframe src=\"#{@iframe.get('src')}\" width=\"#{@video.width()}\" height=\"#{@video.height()}\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>"
+
+%form
+  .embed_code.entry
+    %textarea{ rows: 2, readonly: true, onclick: "this.focus();this.select();" }
+      = "<iframe src=\"#{@iframe.get('src')}\" width=\"#{@video.width()}\" height=\"#{@video.height()}\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>"

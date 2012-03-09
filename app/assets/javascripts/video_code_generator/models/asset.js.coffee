@@ -1,4 +1,8 @@
 class MSVVideoCodeGenerator.Models.Asset extends Backbone.Model
+  defaults:
+    src: ""
+    found: true
+
   srcIsEmpty: ->
     !this.get('src')
 
@@ -7,3 +11,6 @@ class MSVVideoCodeGenerator.Models.Asset extends Backbone.Model
 
   srcIsEmptyOrUrl: ->
     this.srcIsEmpty() or this.srcIsUrl()
+
+  srcIsUsable: ->
+    this.srcIsUrl() and this.get('found')

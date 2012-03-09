@@ -1,16 +1,18 @@
 class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
   initialize: (options) ->
     @loggedIn = options['logged_in']
+    @sites    = options['sites']
 
     this.initModels()
-    this.initHelpers()
     this.initViews()
     sublimevideo.load()
 
   initModels: ->
+    MSVVideoCodeGenerator.sites = new MSV.Collections.Sites(@sites)
+
     MSVVideoCodeGenerator.builder = new MSVVideoCodeGenerator.Models.Builder
 
-    MSVVideoCodeGenerator.loader = new MSVVideoCodeGenerator.Models.Loader
+    MSVVideoCodeGenerator.loader = new MSVVideoCodeGenerator.Models.Loader(site: MSVVideoCodeGenerator.sites.at(0))
 
     MSVVideoCodeGenerator.demoPoster  = 'http://sublimevideo.net/assets/www/demo/midnight_sun_800.jpg'
     MSVVideoCodeGenerator.demoSources =
@@ -42,15 +44,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     # Iframe embed specific models
     MSVVideoCodeGenerator.iframe = new MSVVideoCodeGenerator.Models.Iframe
 
-  initHelpers: ->
-    MSVVideoCodeGenerator.helper = new MSVVideoCodeGenerator.Helpers.Helper()
-
   initViews: ->
-    if @loggedIn
-      new MSVVideoCodeGenerator.Views.SitesSelectTitleView
-        loader: MSVVideoCodeGenerator.loader
-        el: '#site_selector'
-
     new MSVVideoCodeGenerator.Views.DemoBootstrap
       model: MSVVideoCodeGenerator.builder
       el: '#demo_bootstrap'
@@ -65,6 +59,8 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCodeGenerator.iframeEmbedView = new MSVVideoCodeGenerator.Views.IframeEmbed
       model: MSVVideoCodeGenerator.iframe
+      loader: MSVVideoCodeGenerator.loader
+      sites: MSVVideoCodeGenerator.sites
       el: '#iframe_embed_attributes'
 
     MSVVideoCodeGenerator.posterView = new MSVVideoCodeGenerator.Views.Poster
@@ -79,10 +75,12 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCodeGenerator.sourcesView = new MSVVideoCodeGenerator.Views.Sources
       collection: MSVVideoCodeGenerator.sources
+      video: MSVVideoCodeGenerator.video
       settingsView: MSVVideoCodeGenerator.settingsView
       el: '#sources'
 
     MSVVideoCodeGenerator.codeView = new MSVVideoCodeGenerator.Views.Code
+      model: MSVVideoCodeGenerator.video
       builder: MSVVideoCodeGenerator.builder
       loader: MSVVideoCodeGenerator.loader
       poster: MSVVideoCodeGenerator.poster
@@ -93,6 +91,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       el: '#code'
 
     MSVVideoCodeGenerator.previewView = new MSVVideoCodeGenerator.Views.Preview
+      model: MSVVideoCodeGenerator.video
       builder: MSVVideoCodeGenerator.builder
       loader: MSVVideoCodeGenerator.loader
       poster: MSVVideoCodeGenerator.poster

@@ -5,9 +5,10 @@ class MSVVideoCodeGenerator.Views.Poster extends Backbone.View
     'change #poster_src': 'updateSrc'
 
   initialize: ->
-    _.bindAll this, 'render', 'renderErrors'
-    @model.bind 'change:src',   this.renderErrors
-    @model.bind 'change:found', this.renderErrors
+    @uiHelper = new MSVVideoCodeGenerator.Helpers.UIAssetHelper 'poster'
+
+    _.bindAll this, 'render', 'renderStatus'
+    @model.bind 'change', this.renderStatus
 
     this.render()
 
@@ -21,31 +22,19 @@ class MSVVideoCodeGenerator.Views.Poster extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).html(this.template(poster: @model))
-    this.renderErrors()
+    $(@el).html this.template(poster: @model)
+    this.renderStatus()
 
     this
 
-  renderErrors: ->
-    this.hideErrors()
+  renderStatus: ->
+    @uiHelper.hideErrors()
 
     return if @model.srcIsEmpty()
 
     if !@model.srcIsUrl()
-      this.renderError('src_invalid')
+      @uiHelper.renderError('src_invalid')
     else if !@model.get('found')
-      this.renderError('not_found')
+      @uiHelper.renderError('not_found')
     else
-      this.renderValid()
-
-  hideErrors: ->
-    $("#poster_box").removeClass 'valid'
-    $("#poster_src").removeClass 'errors'
-    $("#poster_box .inline_alert").each -> $(this).hide()
-
-  renderValid: ->
-    $("#poster_box").addClass 'valid'
-
-  renderError: (name) ->
-    $("#poster_#{name}").show()
-    $("#poster_src").addClass 'errors'
+      @uiHelper.renderValid()

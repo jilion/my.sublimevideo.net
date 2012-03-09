@@ -1,15 +1,19 @@
-#warnings{ style: "background-color:#DDD; margin-bottom:20px;" }!= @warningsTemplate(video: @video)
-
--# - if @builder.get('builderClass') isnt 'iframe_embed'
--#  != this.loaderTemplate(builder: @builder, loader: @loader, video: @video)
--#  .spacer
-
-!= this.embedTemplate(builder: @builder, iframe: @iframe, video: @video)
-.spacer
-
-- if @builder.get('builderClass') is 'iframe_embed'
-  != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, loaderTemplate: @loaderTemplate, videoTagTemplate: @videoTagTemplate)
+- if @video.videoViewable()
+  != this.embedTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video)
   .spacer
 
-- if @builder.get('builderClass') is 'lightbox' and @video.get('thumbnail').get('magnifyingGlass')
-  != @cssTemplate(video: @video)
+  - if @builder.get('builderClass') is 'iframe_embed'
+    != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, loaderTemplate: @loaderTemplate, videoTagTemplate: @videoTagTemplate)
+    .spacer
+
+  - if @builder.get('builderClass') is 'lightbox' and @video.get('thumbnail').get('magnifyingGlass')
+    != @cssTemplate(video: @video)
+
+- else
+  .notices
+    %ul
+      %li.notice.source_error.no_usable_source Please provide a valid video source.
+
+  -# unless @video.width() and @video.height()
+  -#  %p.warning Please provide dimensions for the <video> element.
+  

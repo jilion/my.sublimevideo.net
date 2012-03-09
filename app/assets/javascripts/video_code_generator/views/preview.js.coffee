@@ -23,7 +23,7 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
   #
   render: ->
     MSVVideoCodeGenerator.codeView.hide()
-    if this.videoPreviewable()
+    if @model.videoViewable()
       currentScroll = $(window).scrollTop()
       $(@el).hide()
 
@@ -31,9 +31,9 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
 
       $(@el).html (if @builder.get('builderClass') is 'iframe_embed' then this.iframe_template else this.template)
         builder: @builder
-        posterSrc: MSVVideoCodeGenerator.video.get('poster').get('src')
-        video: MSVVideoCodeGenerator.video
-        sortedSources: MSVVideoCodeGenerator.video.get('sources').sortedSources(@builder.get('startWithHd'))
+        posterSrc: @model.get('poster').get('src')
+        video: @model
+        sortedSources: @model.get('sources').sortedSources(@builder.get('startWithHd'))
 
       sublimevideo.prepare($('video').get(0)) if $('video').length
 
@@ -48,6 +48,13 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
     $(@el).hide()
 
   videoPreviewable: ->
-    baseMp4 = @sources.mp4Base()
-
-    baseMp4.srcIsUrl() and baseMp4.get('embedWidth') and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.video.get('thumbnail').srcIsUrl())
+    result = false
+    @sources.each (source) ->
+      if source.srcIsUsable()
+        result = true
+        return
+    result
+    # baseMp4 = @sources.mp4Base()
+    # 
+    # baseMp4.srcIsUsable() and baseMp4.get('embedWidth') and
+    #   (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.video.get('thumbnail').srcIsUsable())

@@ -1,13 +1,2 @@
-- if @builder.get('builderClass') isnt 'iframe_embed'
-  Copy the code below and paste it into the pages on 
-  - if @loader.get('hostname') then @loader.get('hostname') else 'the domain'
-  where the SublimeVideo player will be used. We highly recommend you put it into the
-  %code= "<head></head>"
-  tag.
-
-- extra_spaces = if @builder.get('builderClass') is 'iframe_embed' then "    " else ""
-
-%form
-  .embed_code.entry
-    %textarea{ readonly: true, onclick: "this.focus();this.select();" }
-      = "#{extra_spaces}<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/js/#{if @loader then MSVVideoCodeGenerator.loader.get('token') else 'YOUR_TOKEN'}.js\"></script>"
+:preserve
+  <script type="text/javascript" src="#{if @loader.get('ssl') then 'https://4076.voxcdn.com' else 'http://cdn.sublimevideo.net'}/js/#{@loader.get('site').get('token')}.js"></script>

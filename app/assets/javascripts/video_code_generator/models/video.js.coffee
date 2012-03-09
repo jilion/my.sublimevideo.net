@@ -10,6 +10,15 @@ class MSVVideoCodeGenerator.Models.Video extends Backbone.Model
   height: ->
     this.get('sources').mp4Base().get('embedHeight')
 
+  videoViewable: ->
+    result = false
+    this.get('sources').each (source) ->
+      if source.srcIsUsable()
+        result = true
+        return
+
+    result
+
 class MSVVideoCodeGenerator.Models.VideoLightbox extends MSVVideoCodeGenerator.Models.Video
   defaults:
     classes: 'sublime zoom'

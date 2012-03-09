@@ -1,12 +1,15 @@
-= "The content of #{@iframe.get('src')} (loaded by the <iframe>). This page must be hosted on #{if @loader.get('hostname') then @loader.get('hostname') else 'a domain registered on MySublimeVideo'}."
+= "The content of #{@iframe.get('src')} (loaded by the <iframe>). This page must be hosted on #{if @loader.get('site') then @loader.get('site').get('hostname') else 'a domain registered on MySublimeVideo'}."
 
 %form
   .embed_code.entry
     %textarea{ readonly: true, onclick: "this.focus();this.select();" }
-      = "<!DOCTYPE html>"
-      = "<html>"
-      = "  <head>"
-      != @loaderTemplate(builder: @builder, loader: @loader, video: @video)
-      = "  </head>\n  <body>"
-      != @videoTagTemplate(builder: @builder, iframe: @iframe, video: @video)
-      = "  </body>\n</html>"
+      :preserve
+        <!DOCTYPE html>
+        <html>
+          <head>
+            #{@loaderTemplate(codeOnly: true, builder: @builder, loader: @loader, video: @video)}
+          </head>
+          <body>
+        #{@videoTagTemplate(codeOnly: true, builder: @builder, iframe: @iframe, video: @video)}
+          </body>
+        </html>

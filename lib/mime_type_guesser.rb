@@ -21,6 +21,8 @@ private
     else
       { 'content-type' => "" }
     end
+  rescue => ex
+    { 'content-type' => "4" }
   end
 
 end

@@ -6,13 +6,15 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     'click .use_source': 'updateIsUsed'
 
   initialize: ->
+    @video        = @options.video
     @settingsView = @options.settingsView
+    this.initUIHelpers()
 
-    _.bindAll this, 'render', 'refreshSettings', 'toggleSrcBox', 'renderEmbedWidth', 'renderEmbedHeight', 'renderErrors'
+    _.bindAll this, 'render', 'refreshSettings', 'toggleSrcBox', 'renderEmbedWidth', 'renderEmbedHeight', 'renderStatus'
     @collection.bind 'change:src',             this.refreshSettings
-    @collection.bind 'change:src',             this.renderErrors
-    @collection.bind 'change:currentMimeType', this.renderErrors
-    @collection.bind 'change:found',           this.renderErrors
+    @collection.bind 'change:src',             this.renderStatus
+    @collection.bind 'change:currentMimeType', this.renderStatus
+    @collection.bind 'change:found',           this.renderStatus
     @collection.bind 'change:dataUID',         this.refreshSettings
     @collection.bind 'change:dataName',        this.refreshSettings
     @collection.bind 'change:isUsed',          this.toggleSrcBox
@@ -20,6 +22,11 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     @collection.bind 'change:height',          this.renderEmbedHeight
 
     this.render()
+
+  initUIHelpers: ->
+    @uiHelper = {}
+    @collection.each (source) =>
+      @uiHelper[source.cid] = new MSVVideoCodeGenerator.Helpers.UISourceHelper(source.formatQuality())
 
   #
   # EVENTS
@@ -35,7 +42,7 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
   #
   render: ->
     $(@el).html this.template(sources: @collection)
-    _.each @collection.models, (source) => this.renderErrors(source)
+    _.each @collection.models, (source) => this.renderStatus(source)
 
     this
 
@@ -44,7 +51,7 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
 
   toggleSrcBox: ->
     _.each @collection.allNonBase(), (source) ->
-      srcBox = this.$("##{source.formatQuality()}_src_box")
+      srcBox = this.$("##{source.formatQuality()}_box")
       if source.get('isUsed') then srcBox.show() else srcBox.hide()
     this.refreshSettings()
 
@@ -54,31 +61,31 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
   renderEmbedHeight: ->
     $("#embed_height").attr(value: @collection.mp4Base().get('embedHeight'))
 
-  renderErrors: (source) ->
-    errorSrcInvalidDiv      = $("##{source.formatQuality()}_src_invalid")
-    errorNotFoundDiv        = $("##{source.formatQuality()}_not_found")
-    errorMimeTypeInvalidDiv = $("##{source.formatQuality()}_mime_type_invalid")
-    entryDiv                = $("##{source.formatQuality()}_src_box")
-    entryInput              = $("##{source.formatQuality()}_src")
+  renderStatus: (source) ->
+    @uiHelper[source.cid].hideErrors()
 
-    errorSrcInvalidDiv.hide()
-    errorNotFoundDiv.hide()
-    errorMimeTypeInvalidDiv.hide()
-    entryDiv.removeClass 'valid'
-    entryInput.addClass 'errors'
+    return if source.srcIsEmpty()
 
-    if source.srcIsEmpty()
-      entryDiv.removeClass 'valid'
-      entryInput.removeClass 'errors'
-    else if !source.srcIsUrl()
-      errorSrcInvalidDiv.show()
+    unless @video.videoViewable()
+      $('.no_usable_source').show()
+
+    if !source.srcIsUrl()
+      @uiHelper[source.cid].renderError('src_invalid')
     else if !source.get('found')
-      errorNotFoundDiv.show()
+      @uiHelper[source.cid].renderError('not_found')
     else if !source.validMimeType()
-      errorMimeTypeInvalidDiv.show()
+      @uiHelper[source.cid].renderError('mime_type_invalid')
     else
-      entryDiv.addClass 'valid'
-      entryInput.removeClass 'errors'
+      @uiHelper[source.cid].renderValid(source)
+
+    this.renderAdditionalInformation()
+
+  renderAdditionalInformation: ->
+    $('.mime_type_invalid').hide()
+    @collection.each (source) ->
+      unless source.validMimeType()
+        $('.mime_type_invalid').show()
+        return
 
   #
   # PRIVATE

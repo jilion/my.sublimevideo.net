@@ -7,16 +7,10 @@
 
 :coffeescript
   $ ->
-    window.MSVVideoCodeGenerator.sites  = new MSV.Collections.Sites(#{@sites.try(:to_json)})
     SublimeVideoSizeChecker.setRoot('/video-size-checker/')
-    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(logged_in: #{user_signed_in?})
+    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(logged_in: #{user_signed_in?}, sites: #{@sites.try(:to_json)})
 
-%p.desc.help= raw "WordPress user? Check-out our #{link_to "WordPress plugin", docs_page_url('wordpress', subdomain: 'docs'), onclick: "window.open(this); return false"} instead!"
-
-- if user_signed_in?
-  %p
-    This video will be embedded on:
-    %span#site_selector
+-# %p.desc.help= raw "WordPress user? Check-out our #{link_to "WordPress plugin", docs_page_url('wordpress', subdomain: 'docs'), onclick: "window.open(this); return false"} instead!"
 
 #video_embed_type_selector
   .radio_wrap
@@ -58,7 +52,6 @@
 
     .big_break
 
-  %h4 Preview
   #preview
   .spacer
 
@@ -73,4 +66,4 @@
             %span Close
 .spacer
 
-#login_needed_for_iframe_embed{ style: "display:none" }= "Please #{link_to "Log In", login_url(subdomain: 'my')} or #{link_to "Sign Up", signup_url(subdomain: 'my')} to generate an iframe embed code.".html_safe
+#login_needed_for_iframe_embed{ style: "display:none" }= "Please #{link_to "Log In", login_url(subdomain: 'my', user_return_to: video_code_path)} or #{link_to "Sign Up", signup_url(subdomain: 'my')} to generate an iframe embed code.".html_safe
