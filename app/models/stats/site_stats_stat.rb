@@ -55,12 +55,12 @@ module Stats
         if SiteStatsStat.present?
           SiteStatsStat.order_by([:d, :asc]).last.try(:d)
         else
-          Stat::Site.where(d: { "$ne" => nil }).order_by([:d, :asc]).first.d - 1.day
+          Stat::SiteDayStat.order_by([:d, :asc]).first.d - 1.day
         end
       end
 
       def create_site_stats_stat(day)
-        site_stats = Stat::Site.where(d: day.to_time).all
+        site_stats = Stat::SiteDayStat.where(d: day.to_time).all
 
         self.create(site_stats_hash(day, site_stats))
       end

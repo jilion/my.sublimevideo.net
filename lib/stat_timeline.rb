@@ -100,7 +100,7 @@ module StatTimeline
 
   end
 
-  class SiteStat
+  class SiteDayStat
 
     # Used to display a site usages chart
     #
@@ -129,7 +129,7 @@ module StatTimeline
     private
 
     def all
-      @all ||= ::Stat::Site.last_stats(@options)
+      @all ||= ::Stat::SiteDayStat.last_stats(@options)
     end
 
   end

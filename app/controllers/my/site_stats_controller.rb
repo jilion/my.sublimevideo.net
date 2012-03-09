@@ -10,14 +10,14 @@ class My::SiteStatsController < MyController
 
     respond_to do |format|
       format.html
-      format.json { render json: Stat::Site.json(@token, params[:period] || 'minutes') }
+      format.json { render json: Stat::SiteStat.json(@token, params[:period] || 'minutes') }
     end
   end
 
   # GET /sites/:id/stats/videos
   def videos
     respond_to do |format|
-      format.json { render json: Stat::Video.top_videos(@token, params) }
+      format.json { render json: Stat::TopVideoStat.top_videos(@token, params) }
     end
   end
 

@@ -1,5 +1,6 @@
-Exporting a single collection from production:
-→ mongodump -h hurley.member0.mongohq.com:10006 -d sublimevideo_production -u heroku -p PASSWORD -o db/backups/ --collection sites_stats
+# Exporting a single collection from production:
+mongodump -h hurley.member0.mongohq.com:10006 -d sublimevideo_production -u heroku -p PASSWORD -o db/backups/ --collection sites_stats
 
-Restoring a single collection locally:
-→ mongorestore -h localhost -d sublimevideo_dev --collection sites_stats --drop -v db/backups/sublimevideo_production/sites_stats.bson
+# Restoring a single collection locally:
+mongorestore -h localhost -d sublimevideo_dev --collection site_stats --drop -v db/backups/sublimevideo_production/site_stats.bson
+mongorestore -h localhost -d sublimevideo_dev --collection video_stats --drop -v db/backups/sublimevideo_production/video_stats.bson

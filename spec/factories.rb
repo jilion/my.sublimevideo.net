@@ -250,10 +250,30 @@ FactoryGirl.define do
   # ===================
   # = My stats models =
   # ===================
-  factory :site_stat, class: Stat::Site do
+  
+  factory :site_second_stat, class: Stat::SiteSecondStat do
   end
-
-  factory :video_stat, class: Stat::Video do
+  factory :site_minute_stat, class: Stat::SiteMinuteStat do
+  end
+  factory :site_hour_stat, class: Stat::SiteHourStat do
+  end
+  factory :site_day_stat, class: Stat::SiteDayStat do
+  end
+  factory :video_second_stat, class: Stat::VideoSecondStat do
+  end
+  factory :video_minute_stat, class: Stat::VideoMinuteStat do
+  end
+  factory :video_hour_stat, class: Stat::VideoHourStat do
+  end
+  factory :video_day_stat, class: Stat::VideoDayStat do
+  end
+  factory :top_video_second_stat, class: Stat::TopVideoSecondStat do
+  end
+  factory :top_video_minute_stat, class: Stat::TopVideoMinuteStat do
+  end
+  factory :top_video_hour_stat, class: Stat::TopVideoHourStat do
+  end
+  factory :top_video_day_stat, class: Stat::TopVideoDayStat do
   end
 
   factory :video_tag do

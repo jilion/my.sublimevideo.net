@@ -51,8 +51,8 @@ class Site < ActiveRecord::Base
   def referrers
     ::Referrer.where(site_id: id)
   end
-  def stats
-    Stat::Site.where(t: token)
+  def day_stats
+    Stat::SiteDayStat.where(t: token)
   end
 
   # ===============

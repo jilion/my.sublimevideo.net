@@ -1,1 +1,1 @@
-exclude = "{$exclude,db/backups,public/uploads,run,script,config.sqlite}"
+exclude = "{$exclude,db/backups,public/uploads,run,script,config.sqlite,tmp,vendor/ruby,log}"

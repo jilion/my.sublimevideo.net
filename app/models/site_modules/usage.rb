@@ -19,7 +19,7 @@ module SiteModules::Usage
 
     from = 30.days.ago.midnight
     to   = 1.day.ago.midnight
-    last_30_days_stats = stats.d_between(from, to).entries
+    last_30_days_stats = day_stats.between(from, to).entries
 
     while from <= to
       if last_30_days_stats.first.try(:[], 'd') == from
@@ -39,7 +39,7 @@ module SiteModules::Usage
   end
 
   def billable_usages(options = {})
-    monthly_usages = stats.d_between(options[:from], options[:to]).map(&:billable_vv)
+    monthly_usages = day_stats.between(options[:from], options[:to]).map(&:billable_vv)
     if options[:drop_first_zeros]
       monthly_usages.drop_while { |usage| usage == 0 }
     else
@@ -77,7 +77,7 @@ module SiteModules::Usage
   def percentage_of_days_over_daily_limit(max_days = 60)
     if in_paid_plan?
       last_days       = [days_since(first_paid_plan_started_at), max_days].min
-      over_limit_days = stats.d_between(last_days.days.ago.utc.midnight, 1.day.ago.midnight).to_a.count { |su| su.billable_vv > (plan.video_views / 30.0) }
+      over_limit_days = day_stats.between(last_days.days.ago.utc.midnight, 1.day.ago.midnight).to_a.count { |su| su.billable_vv > (plan.video_views / 30.0) }
 
       [(over_limit_days / last_days.to_f).round(2), 1].min
     else

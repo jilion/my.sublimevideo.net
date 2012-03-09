@@ -14,6 +14,7 @@ log/
 tmp/
 .sass-cache/
 vendor/ruby
+vendor/bundler
 !Guardfile
 !Gemfile
 !Gemfile.lock
