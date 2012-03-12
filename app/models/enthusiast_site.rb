@@ -23,7 +23,6 @@ class EnthusiastSite < ActiveRecord::Base
   end
 
 end
-
 # == Schema Information
 #
 # Table name: enthusiast_sites

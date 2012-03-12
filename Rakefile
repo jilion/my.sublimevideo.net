@@ -6,4 +6,8 @@ require File.expand_path('../config/application', __FILE__)
 require 'rake'
 require 'delayed/tasks'
 
+# Annotate settings
+ENV['position_in_class'] = "before"
+ENV['show_indexes']      = "true"
+
 MySublimeVideo::Application.load_tasks

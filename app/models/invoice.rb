@@ -246,10 +246,6 @@ private
   end
 
 end
-
-
-
-
 # == Schema Information
 #
 # Table name: invoices

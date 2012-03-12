@@ -98,11 +98,3 @@ private
   end
 
 end
-
-# == Schema Information
-#
-# Table name: sites
-#
-#  license                                    :string(255)
-#  loader                                     :string(255)
-#  cdn_up_to_date                             :boolean

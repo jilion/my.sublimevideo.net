@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120216113706) do
+ActiveRecord::Schema.define(:version => 20120308114325) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -337,8 +337,6 @@ ActiveRecord::Schema.define(:version => 20120216113706) do
     t.datetime "invitation_sent_at"
     t.integer  "zendesk_id"
     t.integer  "enthusiast_id"
-    t.string   "first_name"
-    t.string   "last_name"
     t.string   "postal_code"
     t.string   "country"
     t.boolean  "use_personal"

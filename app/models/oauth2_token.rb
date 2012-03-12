@@ -33,8 +33,6 @@ class Oauth2Token < OauthToken
   end
 
 end
-
-
 # == Schema Information
 #
 # Table name: oauth_tokens

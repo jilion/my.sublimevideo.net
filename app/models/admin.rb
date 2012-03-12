@@ -26,11 +26,9 @@ class Admin < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :by_date, lambda { |way = 'desc'| order(:created_at.send(way)) }
+  scope :by_date, lambda { |way='desc'| order(:created_at.send(way)) }
 
 end
-
-
 # == Schema Information
 #
 # Table name: admins
@@ -59,6 +57,7 @@ end
 #  invited_by_id          :integer
 #  invited_by_type        :string(255)
 #  roles                  :text
+#  unconfirmed_email      :string(255)
 #
 # Indexes
 #

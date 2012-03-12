@@ -74,6 +74,7 @@ end
 #  invited_by_id          :integer
 #  invited_by_type        :string(255)
 #  roles                  :text
+#  unconfirmed_email      :string(255)
 #
 # Indexes
 #

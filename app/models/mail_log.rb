@@ -48,9 +48,6 @@ private
   end
 
 end
-
-
-
 # == Schema Information
 #
 # Table name: mail_logs
