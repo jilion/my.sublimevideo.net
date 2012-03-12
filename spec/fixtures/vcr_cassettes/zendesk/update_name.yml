@@ -21,13 +21,13 @@
       cache-control:
       - private, s-maxage=0
       x-cs-node:
-      - cf26f7c5d2c145c44fc88c3428f020d0
+      - 9ef49f8657f83d34e8e633bb4b803561
       content-type:
       - application/json; charset=utf-8
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Wed, 22 Feb 2012 13:06:54 GMT
+      - Mon, 12 Mar 2012 15:24:55 GMT
       content-length:
       - '209'
     body: ! '{"EmailAddress":"email1@user.com","Name":"John Doe","Date":"2011-03-28
@@ -49,7 +49,7 @@
       server:
       - nginx/0.8.53
       date:
-      - Wed, 22 Feb 2012 13:07:45 GMT
+      - Mon, 12 Mar 2012 15:25:42 GMT
       content-type:
       - application/xml; charset=utf-8
       connection:
@@ -57,15 +57,17 @@
       status:
       - 200 OK
       x-runtime:
-      - '98'
+      - '170'
       content-length:
       - '1'
       x-api-deprecated:
       - Please use /api/v1/users/59438671.xml
       set-cookie:
-      - _zendesk_session=BAh7CjoPc2Vzc2lvbl9pZCIlZGYzMDU1YzQ1N2QwZDJiZTZkNGEwMmQzY2JmZjYzOWIiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlekiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhU3aXNtMDdpdWwtc2RmbTE1OgxhY2NvdW50aQI3qQ%3D%3D--2a3125c817d450bc08829c82a65db7c185547ba5;
+      - _zendesk_apps_session=eyJ1c2VyX3JvbGUiOjIsImFjY291bnRfaWQiOjQzMzE5LCJ1c2VyX2lkIjox%0ANTMwODI2NywidXNlcl9uYW1lIjoiU3VibGltZVZpZGVvIiwidXNlcl9sb2Nh%0AbGUiOiJlbi1VUy14LTEifQ%3D%3D%0A;
         path=/; HttpOnly
-      - _zendesk_shared_session=eyJ3YXJkZW4udXNlci5kZWZhdWx0LmtleSI6MTUzMDgyNjcsImF1dGhlbnRp%0AY2F0ZWRfYXQiOjEzMjk5MTYwNjUsImFjY291bnQiOjQzMzE5LCJhdXRoX3Zp%0AYSI6IkJhc2ljU3RyYXRlZ3kifQ%3D%3D%0A--1d2e4986b6e180c4a7bea7af4f89fbd5cbc37fae;
+      - _zendesk_session=BAh7CiIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6D3Nlc3Npb25faWQiJWU4ODNlM2NjMGNjMzNmMGFhMDgwNGE2OWQ1YzI4ZTI3IhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIUNmlvbTBvY2tta2tybTg1--2dc1da318abe2303b282d6780a7241bbe54d8e88;
+        path=/; HttpOnly
+      - _zendesk_shared_session=eyJ3YXJkZW4udXNlci5kZWZhdWx0LmtleSI6MTUzMDgyNjcsImF1dGhlbnRp%0AY2F0ZWRfYXQiOjEzMzE1NjU5NDIsImFjY291bnQiOjQzMzE5LCJhdXRoX3Zp%0AYSI6IkJhc2ljU3RyYXRlZ3kifQ%3D%3D%0A--92b7d81c714f789376d9cfbfb7a39c641d6a07fc;
         path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       x-zendesk-api-version:
@@ -73,7 +75,7 @@
       cache-control:
       - no-cache
       x-zendesk-appnode:
-      - app20
+      - app27
     body: ! ' '
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
@@ -90,7 +92,7 @@
       server:
       - nginx/0.8.53
       date:
-      - Wed, 22 Feb 2012 13:07:46 GMT
+      - Mon, 12 Mar 2012 15:25:43 GMT
       content-type:
       - application/json; charset=utf-8
       connection:
@@ -98,17 +100,19 @@
       status:
       - 200 OK
       etag:
-      - ! '"5406d0259f4bfd5448b7523dadbbfb5e"'
+      - ! '"ecd86eadd6543abf44e4e5f6a8d28ca0"'
       x-runtime:
-      - '38'
+      - '46'
       content-length:
       - '508'
       x-api-deprecated:
       - Please use /api/v1/users/59438671.json
       set-cookie:
-      - _zendesk_session=BAh7CjoPc2Vzc2lvbl9pZCIlNjYyMTM4NjY0NTVjMWQ5ZTZiODRkODgyYTUyNTAzNzAiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlekiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhU3aWdsenFsOXEtamdmNXduOgxhY2NvdW50aQI3qQ%3D%3D--4b2e3e34620b802e2f5f8c4b349f1545c15ccb0a;
+      - _zendesk_apps_session=eyJ1c2VyX3JvbGUiOjIsImFjY291bnRfaWQiOjQzMzE5LCJ1c2VyX2lkIjox%0ANTMwODI2NywidXNlcl9uYW1lIjoiU3VibGltZVZpZGVvIiwidXNlcl9sb2Nh%0AbGUiOiJlbi1VUy14LTEifQ%3D%3D%0A;
         path=/; HttpOnly
-      - _zendesk_shared_session=eyJ3YXJkZW4udXNlci5kZWZhdWx0LmtleSI6MTUzMDgyNjcsImF1dGhlbnRp%0AY2F0ZWRfYXQiOjEzMjk5MTYwNjYsImFjY291bnQiOjQzMzE5LCJhdXRoX3Zp%0AYSI6IkJhc2ljU3RyYXRlZ3kifQ%3D%3D%0A--9d9d1385dd492349edca10bc5eb46608d569e53e;
+      - _zendesk_session=BAh7CiIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6D3Nlc3Npb25faWQiJWU1NzBhZWVlZGRhMzkwOWViODk5ZjNiNDdiM2NiYTFmIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVNmpubTByeTg2LW9jYjdleg%3D%3D--3c3c7f3974eed3d5bd2210b448707d0d9bb2d7d5;
+        path=/; HttpOnly
+      - _zendesk_shared_session=eyJ3YXJkZW4udXNlci5kZWZhdWx0LmtleSI6MTUzMDgyNjcsImF1dGhlbnRp%0AY2F0ZWRfYXQiOjEzMzE1NjU5NDMsImFjY291bnQiOjQzMzE5LCJhdXRoX3Zp%0AYSI6IkJhc2ljU3RyYXRlZ3kifQ%3D%3D%0A--1d50b5a49f3e3365dd99b1031646dc5cc45389c2;
         path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control:
@@ -116,114 +120,15 @@
       x-zendesk-api-version:
       - v1
       x-zendesk-appnode:
-      - app20
-    body: ! '{"name":"Remy","locale_id":null,"openid_url":null,"created_at":"2011/05/17
-      13:54:12 +0200","last_login":null,"details":null,"updated_at":"2012/02/10 11:01:49
-      +0100","notes":null,"is_verified":true,"external_id":null,"photo_url":"https://sublimevideo.zendesk.com/images/types/user_sm.png","restriction_id":4,"id":59438671,"current_tags":"","uses_12_hour_clock":false,"phone":null,"is_active":true,"time_zone":"Bern","custom_role_id":null,"roles":0,"organization_id":null,"groups":[],"email":"email3@user.com"}'
+      - app27
+    body: ! '{"custom_role_id":null,"name":"Remy","locale_id":null,"openid_url":null,"created_at":"2011/05/17
+      13:54:12 +0200","last_login":null,"details":null,"photo_url":"https://sublimevideo.zendesk.com/images/types/user_sm.png","updated_at":"2012/03/12
+      16:25:42 +0100","notes":null,"external_id":null,"uses_12_hour_clock":false,"restriction_id":4,"id":59438671,"phone":null,"is_active":true,"time_zone":"Bern","current_tags":"","roles":0,"organization_id":null,"groups":[],"is_verified":true,"email":"email3@user.com"}'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email36@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 2ec6ba42dc70527f06c79f059a4773e3
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 13:07:13 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email36@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - b37a14074e0c71eaab3e8e16a4a87bdd
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 13:07:14 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1684@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - b7f2986dad578c0c808688560fbf6723
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 13:15:47 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1684@user.com
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email80@user.com
     body: 
     headers:
       user-agent:
@@ -248,7 +153,7 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Wed, 22 Feb 2012 13:15:49 GMT
+      - Mon, 12 Mar 2012 15:25:52 GMT
       content-length:
       - '76'
     body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
@@ -256,73 +161,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email717@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - b7f2986dad578c0c808688560fbf6723
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 14:00:05 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email717@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - b7f2986dad578c0c808688560fbf6723
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 14:00:05 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email898@user.com
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email80@user.com
     body: 
     headers:
       user-agent:
@@ -347,428 +186,7 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Wed, 22 Feb 2012 14:25:36 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email898@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 61f7521bff0f6982dccb049cf86da030
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 14:25:36 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email655@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - cf26f7c5d2c145c44fc88c3428f020d0
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 14:41:27 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email655@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - b37a14074e0c71eaab3e8e16a4a87bdd
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 14:41:28 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1290@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 9ef49f8657f83d34e8e633bb4b803561
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 14:50:24 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email1290@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 9ef49f8657f83d34e8e633bb4b803561
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 14:50:25 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email353@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 9ef49f8657f83d34e8e633bb4b803561
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Wed, 22 Feb 2012 14:56:23 GMT
-      content-length:
-      - '212'
-    body: ! '{"EmailAddress":"email353@user.com","Name":"John Doe","Date":"2011-11-09
-      01:45:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"12"},{"Key":"beta","Value":"false"}]}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email72@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - f5a423776d4e0709450a9813dd10d5c4
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Thu, 23 Feb 2012 10:01:01 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email72@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - b7f2986dad578c0c808688560fbf6723
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Thu, 23 Feb 2012 10:00:11 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email772@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - a710208ebad601232c7775c67eaae2e1
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Fri, 24 Feb 2012 08:19:14 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email772@user.com
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-      - 2ec6ba42dc70527f06c79f059a4773e3
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Fri, 24 Feb 2012 08:19:17 GMT
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-<<<<<<< HEAD
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email54@user.com
-=======
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email78@user.com
->>>>>>> master
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-<<<<<<< HEAD
-      - a710208ebad601232c7775c67eaae2e1
-=======
-      - 61f7521bff0f6982dccb049cf86da030
->>>>>>> master
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-<<<<<<< HEAD
-      - Tue, 06 Mar 2012 10:33:18 GMT
-=======
-      - Thu, 08 Mar 2012 11:50:12 GMT
->>>>>>> master
-      content-length:
-      - '76'
-    body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
-<<<<<<< HEAD
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email54@user.com
-=======
-    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email78@user.com
->>>>>>> master
-    body: 
-    headers:
-      user-agent:
-      - createsend-ruby-1.0.3
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      server:
-      - csw
-      cache-control:
-      - private, s-maxage=0
-      x-cs-node:
-<<<<<<< HEAD
-      - 5b6906600f00c22e6cd5042f3e83b658
-=======
-      - b7f2986dad578c0c808688560fbf6723
->>>>>>> master
-      content-type:
-      - application/json; charset=utf-8
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-<<<<<<< HEAD
-      - Tue, 06 Mar 2012 10:33:23 GMT
-=======
-      - Thu, 08 Mar 2012 11:50:32 GMT
->>>>>>> master
+      - Mon, 12 Mar 2012 15:25:23 GMT
       content-length:
       - '76'
     body: ! '{"Code":203,"Message":"Subscriber not in list or has already been removed."}'
