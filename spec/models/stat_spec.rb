@@ -23,14 +23,14 @@ describe Stat do
               :inc => { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
               :videos   => {
                 "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
-                "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vvc" => 0 }
+                "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
               }
             },
             "site1234"=> {
               :inc => {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
               :videos   => {
-                "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "vvc" => 0, "bp.saf-osx" => 3, "md.h.m" => 3 },
-                "efgh5678" => { "vl.m" => 3, "vlc" => 3, "vvc" => 0, "bp.saf-osx" => 3, "md.h.m" => 3 }
+                "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
+                "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
               }
             }
           })
@@ -147,8 +147,8 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 2, "md.f.d" => 2 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vvc" => 0 },
-            "efgh5678" => { "vl.e" => 1, "vlc" => 1, "bp.saf-osx" => 1, "md.f.d" => 1, "vvc" => 0 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
+            "efgh5678" => { "vl.e" => 1, "vlc" => 1, "bp.saf-osx" => 1, "md.f.d" => 1 }
           }
         }
       })}
@@ -168,15 +168,15 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vvc" => 0 },
-            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vvc" => 0 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
+            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
           }
         },
         "site1234"=> {
           :inc => { "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3, "vvc" => 0 },
-            "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3, "vvc" => 0 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
+            "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
           }
         }
       })}
@@ -194,13 +194,13 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "vv.m" => 1 },
           :videos   => {
-            "abcd1234" => { "vv.m" => 1, "vs.source12" => 1, "vlc" => 0, "vvc" => 1 }
+            "abcd1234" => { "vv.m" => 1, "vs.source12" => 1, "vvc" => 1 }
           }
         },
         "site1234"=> {
           :inc => { "vv.i" => 1 },
           :videos   => {
-            "abcd1234" => { "vv.i" => 1, "vvc" => 0, "vlc" => 0 }
+            "abcd1234" => { "vv.i" => 1 }
           }
         }
       })}
@@ -223,14 +223,14 @@ describe Stat do
           :inc => { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
           :videos   => {
             "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
-            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vvc" => 0 }
+            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
           }
         },
         "site1234"=> {
           :inc => {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
           :videos   => {
-            "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3, "vvc" => 0 },
-            "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3, "vvc" => 0 }
+            "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
+            "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
           }
         }
       })}

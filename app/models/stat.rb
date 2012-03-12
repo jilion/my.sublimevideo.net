@@ -7,9 +7,9 @@ module Stat
     field :vv, type: Hash, default: {} # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 2 }
     field :md, type: Hash, default: {} # Player Mode + Device { h (html5) => { d (desktop) => 2, m (mobile) => 1 }, f (flash) => ... }
     field :bp, type: Hash, default: {} # Browser + Plateform { "saf-win" => 2, "saf-osx" => 4, ...}
-    
+
     index :d
-    
+
     scope :after,   lambda { |date| where(d: { "$gte" => date.to_i }).order_by([:d, :asc]) }
     scope :before,  lambda { |date| where(d: { "$lte" => date.to_i }).order_by([:d, :asc]) }
     scope :between, lambda { |start_date, end_date| where(d: { "$gte" => start_date.to_i, "$lte" => end_date.to_i }).order_by([:d, :asc]) }
@@ -35,13 +35,6 @@ module Stat
           Stat::Video::Minute.collection.update({ st: site_token, u: video_ui, d: log.minute }, { "$inc" => video_inc }, upsert: true) unless site.in_free_plan?
           Stat::Video::Hour.collection.update({ st: site_token, u: video_ui, d: log.hour },   { "$inc" => video_inc }, upsert: true)
           Stat::Video::Day.collection.update({ st: site_token, u: video_ui, d: log.day },    { "$inc" => video_inc }, upsert: true)
-          # # ==============
-          # # = TOP VIDEOS =
-          # # ==============
-          # top_video_inc = top_video_inc(video_inc)
-          # Stat::Video::Minute.collection.update({ st: site_token, u: video_ui, d: log.minute }, { "$inc" => top_video_inc }, upsert: true) unless site.in_free_plan?
-          # Stat::Video::Hour.collection.update({ st: site_token, u: video_ui, d: log.hour },   { "$inc" => top_video_inc }, upsert: true)
-          # Stat::Video::Day.collection.update({ st: site_token, u: video_ui, d: log.day },    { "$inc" => top_video_inc }, upsert: true)
         end
       end
     end
@@ -85,9 +78,6 @@ private
             video[:inc].each do |inc, value|
               incs[video[:st]][:videos][video[:u]][inc] += value
             end
-            # top_video specific fields
-            incs[video[:st]][:videos][video[:u]]['vlc'] += video[:inc]["vl.m"].to_i + video[:inc]["vl.e"].to_i
-            incs[video[:st]][:videos][video[:u]]['vvc'] += video[:inc]["vv.m"].to_i + video[:inc]["vv.e"].to_i
           end
         end
       rescue StatRequestParser::BadParamsError
@@ -97,13 +87,6 @@ private
     end
 
     incs
-  end
-
-  def self.top_video_inc(video_inc)
-    {
-      vv: video_inc["vv.m"].to_i + video_inc["vv.e"].to_i,
-      vl: video_inc["vl.m"].to_i + video_inc["vl.e"].to_i
-    }
   end
 
   def self.only_stats_trackers(trackers)

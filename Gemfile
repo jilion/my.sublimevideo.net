@@ -65,7 +65,7 @@ gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
 gem 'activemerchant',        git: 'git://github.com/rymai/active_merchant.git', branch: '3ds_from_ZenCocoon'
 gem 'public_suffix',         '~> 1.0.0'
 gem 'useragent',             git: 'git://github.com/jilion/useragent.git' # needed for stat_request_parser
-gem 'stat_request_parser',   '~> 1.0.0' # hosted on gemfury
+gem 'stat_request_parser',   '~> 1.1.0' # hosted on gemfury
 
 gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
 gem 'mime-types'

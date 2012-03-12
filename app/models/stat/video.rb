@@ -8,7 +8,7 @@ module Stat::Video
 
     field :vl, type: Hash, default: {} # Video Loads: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 2 }
     field :vs, type: Hash, default: {} # Video Sources View { '5062d010' (video source crc32) => 32, ... }
-    
+
     # top_video specific query field
     field :vlc, type: Integer, default: 0 # Video Loads Chart (main + extra)
     field :vvc, type: Integer, default: 0 # Video Views Chart (main + extra)
@@ -96,7 +96,7 @@ private
       key: :u,
       cond: conditions,
       initial: { "#{options[:sort_by]}_sum" => 0 },
-      reduce: "function(doc, prev) { prev.#{options[:sort_by]}_sum += doc.#{options[:sort_by]}c }"
+      reduce: "function(doc, prev) { if(!isNaN(doc.#{options[:sort_by]}c)) prev.#{options[:sort_by]}_sum += doc.#{options[:sort_by]}c }"
     )
     videos.sort_by! { |video| video["#{options[:sort_by]}_sum"] }.reverse!
 
