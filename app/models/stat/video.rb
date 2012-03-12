@@ -32,11 +32,6 @@ module Stat::Video
     read_attribute(:u)
   end
 
-  # only main & extra hostname are counted in charts
-  def chart_vv
-    vv['m'].to_i + vv['e'].to_i
-  end
-
   # =================
   # = Class Methods =
   # =================
