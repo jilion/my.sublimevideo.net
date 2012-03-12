@@ -2,6 +2,12 @@ class MSVVideoCodeGenerator.Helpers.UIAssetHelper
 
   constructor: (@scope) ->
 
+  hide: ->
+    $("##{@scope}_box").hide()
+
+  show: ->
+    $("##{@scope}_box").show()
+
   hideErrors: ->
     $("##{@scope}_box").removeClass 'valid'
     $("##{@scope}_src").removeClass 'errors'
@@ -17,10 +23,7 @@ class MSVVideoCodeGenerator.Helpers.UIAssetHelper
 class MSVVideoCodeGenerator.Helpers.UISourceHelper extends MSVVideoCodeGenerator.Helpers.UIAssetHelper
   hideErrors: ->
     super
-    # $(".source_error").each -> $(this).hide()
-    # $(".source_warning").each -> $(this).hide()
 
   renderError: (name) ->
     super name
-    # if $(".#{name}") then $(".#{name}").show()
 

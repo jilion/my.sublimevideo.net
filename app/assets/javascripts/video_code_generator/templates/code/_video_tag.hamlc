@@ -3,7 +3,6 @@
 - style           = if @builder.get('builderClass') is 'iframe_embed' then "style=\"display:none\" " else ''
 - dataName        = if @video.get('sources').mp4Base().get('dataName') then "data-name=\"#{@video.get('sources').mp4Base().get('dataName')}\" " else ''
 - dataUID         = if @video.get('sources').mp4Base().get('dataUID') then "data-uid=\"#{@video.get('sources').mp4Base().get('dataUID')}\" " else ''
-- sortedSources   = @video.get('sources').sortedSources(MSVVideoCodeGenerator.builder.get('startWithHd'))
 - code = ""
 
 - if @builder.get('builderClass') is 'lightbox'
@@ -23,10 +22,9 @@
 
 - extraSpaces = if @builder.get('builderClass') is 'iframe_embed' then "    " else ""
 - code += "#{extraSpaces}<video class=\"#{@video.get('classes')}\" #{poster}#{sizes}#{dataName}#{dataUID}#{style}preload=\"none\">\n"
-- for source in sortedSources
-  - if source.get('isUsed') and source.srcIsUrl()
-    - dataQuality = if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ""
-    - code += "#{extraSpaces}  <source src=\"#{source.get('src')}\" #{dataQuality}/>\n"
+- for source in @video.get('sources').sortedSources(@builder.get('startWithHd'))
+  - dataQuality = if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ""
+  - code += "#{extraSpaces}  <source src=\"#{source.get('src')}\" #{dataQuality}/>\n"
 - code += "#{extraSpaces}</video>"
 
 - if @codeOnly
@@ -36,5 +34,5 @@
 
   %form
     .embed_code.entry
-      %textarea{ rows: sortedSources.length*3, readonly: true, onclick: "this.focus();this.select();" }
+      %textarea{ readonly: true, onclick: "this.focus();this.select();" }
         = code

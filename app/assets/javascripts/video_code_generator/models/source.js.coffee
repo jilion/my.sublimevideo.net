@@ -1,5 +1,6 @@
 class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.Asset
   defaults:
+    src: ""
     format: "mp4"
     quality: "base"
     dataName: ""
@@ -9,6 +10,7 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
     keepRatio: true
     embedWidth: null
     embedHeight: null
+    ratio: 9/16
     found: true
     currentMimeType: ""
 
@@ -67,8 +69,7 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
       when 'ogv', 'ogg'
         'video/ogv'
       else
-        'video/mp4'
-        # this.get('currentMimeType')
+        this.get('currentMimeType')
 
   validMimeType: ->
     this.get('currentMimeType') is "" or this.get('currentMimeType') is this.expectedMimeType()
@@ -139,21 +140,26 @@ class MSVVideoCodeGenerator.Collections.Sources extends Backbone.Collection
   allNonBase: ->
     this.select (source) -> source.get('quality') isnt 'base'
 
+  allUsedNotEmpty: ->
+    this.select (source) -> source.get('isUsed') and !source.srcIsEmpty()
+
   byQuality: (quality) ->
     this.find (source) -> source.get('quality') is quality
 
   byFormatAndQuality: (format_and_quality) ->
     this.find (source) -> source.formatQuality() is "#{format_and_quality[0]}_#{format_and_quality[1]}"
 
+  # Return used and usable sources, sorted by MP4 first and then WebM/Ogg
+  # and putting HD sources first if +startWithHd+ is true.
   sortedSources: (startWithHd) ->
     mp4Sources     = this.allByFormat('mp4')
     webmoggSources = this.allByFormat('webmogg')
     sortedSources  = []
 
     _.each [mp4Sources, webmoggSources], (family) ->
-      baseSource   = _.find(family, (source) -> source.get('quality') is 'base')
-      hdSource     = _.find(family, (source) -> source.get('quality') is 'hd')
-      mobileSource = _.find(family, (source) -> source.get('quality') is 'mobile')
+      baseSource   = _.find(family, (source) -> source.get('isUsed') and source.srcIsUsable() and source.get('quality') is 'base')
+      hdSource     = _.find(family, (source) -> source.get('isUsed') and source.srcIsUsable() and source.get('quality') is 'hd')
+      mobileSource = _.find(family, (source) -> source.get('isUsed') and source.srcIsUsable() and source.get('quality') is 'mobile')
       sources      = if startWithHd then [hdSource, baseSource] else [baseSource, hdSource]
       sortedSources.push([sources, mobileSource])
 

@@ -1,6 +1,5 @@
 class MSVVideoCodeGenerator.Views.Code extends Backbone.View
   template: JST['video_code_generator/templates/_code']
-  loaderTemplate: JST['video_code_generator/templates/code/_loader']
   videoTagTemplate: JST['video_code_generator/templates/code/_video_tag']
   iframeTagTemplate: JST['video_code_generator/templates/code/_iframe_tag']
   iframeContentTemplate: JST['video_code_generator/templates/code/_iframe_content']
@@ -27,8 +26,7 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
       builder: @builder
       loader: @loader
       iframe: @iframe
-      video: @model
-      loaderTemplate: this.loaderTemplate
+      video: MSVVideoCodeGenerator.video
       embedTemplate: this.embedTemplate()
       iframeTagTemplate: this.iframeTagTemplate
       videoTagTemplate: this.videoTagTemplate

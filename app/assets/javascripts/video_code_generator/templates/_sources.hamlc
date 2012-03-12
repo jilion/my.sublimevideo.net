@@ -24,12 +24,12 @@
 
 #global_errors.notices
   %ul
-    %li.notice.source_error.no_usable_source{ style: 'display: none' } Please provide a valid video source.
+    %li.notice.no_usable_source{ style: 'display: none' } Please provide a valid video source.
 
 #global_warnings.notices
   %ul
-    %li.notice.source_warning.mime_type_invalid{ style: 'display: none' }
-      Please find more information on how to fix MIME Type misconfiguration
-      %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting#videos-dont-start-playing", onclick: "window.open(this); return false" }
+    %li.notice.mime_type_invalid{ style: 'display: none' }><
+      != "Please find more information on how to fix MIME Type misconfiguration&nbsp;"
+      %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting#videos-dont-start-playing", onclick: "window.open(this); return false" }><
         in our documentation
       = "."

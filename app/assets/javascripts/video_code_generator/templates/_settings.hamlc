@@ -25,16 +25,19 @@
 .content_right
   %h4 Stats
   #video_data_uid.entry
-    %label.icon{ for: "data_uid" } Video unique ID
+    %h5
+      %label{ for: "data_uid" } UID
     %input#data_uid.text.no_icon{ type: "text", placeholder: "Video unique ID", value: @source.get('dataUID'), size: 8 }
 
   #video_data_name.entry
-    %label.icon{ for: "data_name" } Video name
+    %h5
+      %label{ for: "data_name" } Name
     %input#data_name.text.no_icon{ type: "text", placeholder: "Video name", value: @source.get('dataName'), size: 50 }
 
-    %p.note
-      This name identifies the video for your video-stats reporting. For more advanced video stats configuration, please consult
-      %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/optimize-for-stats", onclick: "window.open(this); return false" } our documentation
+    %p.note><
+      != "These attributes are useful to optimize your videos for the&nbsp;"
+      %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/optimize-for-stats", onclick: "window.open(this); return false" }><
+        Universal Real-Time Statistics feature
       = "."
 
 .spacer

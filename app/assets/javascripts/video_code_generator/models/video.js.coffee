@@ -10,9 +10,9 @@ class MSVVideoCodeGenerator.Models.Video extends Backbone.Model
   height: ->
     this.get('sources').mp4Base().get('embedHeight')
 
-  videoViewable: ->
+  viewable: ->
     result = false
-    this.get('sources').each (source) ->
+    this.get('sources').allUsedNotEmpty().each (source) ->
       if source.srcIsUsable()
         result = true
         return

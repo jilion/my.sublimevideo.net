@@ -1,14 +1,14 @@
-= content_for :head_before, javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{SiteToken.my}.js")
+= content_for :head_before, sublimevideo_include_tag(request.ssl?, SiteToken.my)
 = content_for :head do
-  = stylesheet_link_tag 'prettify/prettify', 'video_code_generator'
-  = javascript_include_tag 'prettify/prettify', 'zeroclipboard/ZeroClipboard', 'video_code_generator'
+  = stylesheet_link_tag 'video_code_generator'
+  = javascript_include_tag 'video_code_generator'
 
 = title_and_content_header "Video Code Generator"
 
 :coffeescript
   $ ->
     SublimeVideoSizeChecker.setRoot('/video-size-checker/')
-    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(logged_in: #{user_signed_in?}, sites: #{@sites.try(:to_json)})
+    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(logged_in: #{user_signed_in?}, sites: #{@sites.try(:to_json) || []})
 
 -# %p.desc.help= raw "WordPress user? Check-out our #{link_to "WordPress plugin", docs_page_url('wordpress', subdomain: 'docs'), onclick: "window.open(this); return false"} instead!"
 

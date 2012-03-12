@@ -37,7 +37,7 @@ Spork.prefork do
     config.include ShowMeTheCookies, type: :request
 
     # FactoryGirl http://railscasts.com/episodes/158-factories-not-fixtures-revised
-    config.include Factory::Syntax::Methods
+    config.include FactoryGirl::Syntax::Methods
 
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true

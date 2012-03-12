@@ -24,9 +24,9 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     this.render()
 
   initUIHelpers: ->
-    @uiHelper = {}
+    @uiHelpers = {}
     @collection.each (source) =>
-      @uiHelper[source.cid] = new MSVVideoCodeGenerator.Helpers.UISourceHelper(source.formatQuality())
+      @uiHelpers[source.cid] = new MSVVideoCodeGenerator.Helpers.UISourceHelper(source.formatQuality())
 
   #
   # EVENTS
@@ -50,9 +50,9 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     @settingsView.render()
 
   toggleSrcBox: ->
-    _.each @collection.allNonBase(), (source) ->
-      srcBox = this.$("##{source.formatQuality()}_box")
-      if source.get('isUsed') then srcBox.show() else srcBox.hide()
+    _.each @collection.allNonBase(), (source) =>
+      if source.get('isUsed') then @uiHelpers[source.cid].show() else @uiHelpers[source.cid].hide()
+      this.renderStatus(source)
     this.refreshSettings()
 
   renderEmbedWidth: ->
@@ -62,28 +62,29 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     $("#embed_height").attr(value: @collection.mp4Base().get('embedHeight'))
 
   renderStatus: (source) ->
-    @uiHelper[source.cid].hideErrors()
-
-    return if source.srcIsEmpty()
-
-    unless @video.videoViewable()
-      $('.no_usable_source').show()
-
-    if !source.srcIsUrl()
-      @uiHelper[source.cid].renderError('src_invalid')
-    else if !source.get('found')
-      @uiHelper[source.cid].renderError('not_found')
-    else if !source.validMimeType()
-      @uiHelper[source.cid].renderError('mime_type_invalid')
-    else
-      @uiHelper[source.cid].renderValid(source)
+    @uiHelpers[source.cid].hideErrors()
 
     this.renderAdditionalInformation()
 
+    return if source.srcIsEmpty()
+
+    if !source.srcIsUrl()
+      @uiHelpers[source.cid].renderError('src_invalid')
+    else if !source.get('found')
+      @uiHelpers[source.cid].renderError('not_found')
+    else if !source.validMimeType()
+      @uiHelpers[source.cid].renderError('mime_type_invalid')
+    else
+      @uiHelpers[source.cid].renderValid(source)
+
   renderAdditionalInformation: ->
+    $('.no_usable_source').hide()
     $('.mime_type_invalid').hide()
-    @collection.each (source) ->
-      unless source.validMimeType()
+
+    $('.no_usable_source').show() unless @video.viewable()
+
+    @collection.allUsedNotEmpty().each (source) ->
+      if !source.validMimeType()
         $('.mime_type_invalid').show()
         return
 
