@@ -30,11 +30,11 @@
 
   It is probably an encoding issue with your MP4 videos. Try to re-encode them using the free application "Handbrake":http://handbrake.fr, and be sure to check the "*Web optimized*" option which will allows the video to start playing (in Flash mode) even if it is not fully preloaded. Read more about "H.264 video encoding":/encode-videos-for-the-web.
 
-  h3(#videos-dont-play-until-fully-preloaded). Videos only show the poster frame and no play button in Internet Explorer 9
+  h3(#no-play-button-on-ie9). Videos only show the poster frame and no play button in Internet Explorer 9
 
-  Since SublimeVideo is designed with HTML5 video in mind, just use @<!DOCTYPE html>@ before anything else at the top of your document. Do not even place a comment line before the DOCTYPE declaration or it would trigger IE into "Quirks Mode":http://en.wikipedia.org/wiki/Quirks_mode.
+  Since SublimeVideo is designed with HTML5 video in mind, just use @<!DOCTYPE html>@ before anything else at the top of your document. Do not place a comment line before the DOCTYPE declaration, or it will trigger IE to run in "Quirks Mode":http://en.wikipedia.org/wiki/Quirks_mode.
 
-  Here is a good and simple example:
+  Here is a valid example:
 
 :coderay
   #{coderay_options(:html)}
