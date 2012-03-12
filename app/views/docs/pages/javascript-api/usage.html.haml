@@ -1,7 +1,7 @@
 = page_title "Using the JavaScript API"
 
 :textile
-  h3. API Object
+  h3(#api-object). "API Object":#api-object
 
   The SublimeVideo Player comes with an integrated JavaScript API. Once loaded, SublimeVideo Player instantiate a unique API object called @sublimevideo@. All calls to the API must be done through this object.
 
@@ -9,7 +9,7 @@
 
   The @sublimevideo@ API object might not be immediately available when the DOM is loaded. You should avoid making calls to the SublimeVideo JavaScript API in your own DOM loaded/ready method (e.g. @DOMContentLoaded@, jQuery's @.ready()@ or Prototype's @dom:loaded@), but you should rather use our "(c)@sublimevideo.ready@":/javascript-api/listeners#ready listener.
 
-  h3. API Methods and Listeners
+  h3(#api-methods-and-listeners). "API Methods and Listeners":#api-methods-and-listeners
 
   h4. "Methods":/javascript-api/methods
 
