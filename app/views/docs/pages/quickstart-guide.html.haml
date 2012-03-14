@@ -1,7 +1,7 @@
 = page_title "Quickstart Guide"
 
 :textile
-  h3. Step 1: Add your site
+  h3(#step-1). "Step 1: Add your site":#step-1
 
   Log into #{link_to "MySublimeVideo", sites_url(subdomain: 'my')}, choose a plan and enter the domain of the site where you want to integrate SublimeVideo. This will generate a player that will only work on that site. For instance if you plan to have the player at _http://yourdomain.com/test/page.html_ you only need to enter _yourdomain.com_.
 
@@ -10,7 +10,7 @@
   * You can share the same plan across all your subdomains via the "wildcard option":/site-settings#wildcard.
   * You can share the same plan across domains that are displaying or pointing to the *same content* as your main domain via the "staging and alias domains option":/site-settings#extra_domains.
 
-  h3. Step 2: Embed the player's code
+  h3(#step-2). "Step 2: Embed the player's code":#step-2
 
   Copy the SublimeVideo Player embed code for #{link_to "your site", sites_url(subdomain: 'my')} and paste it into the page where you plan to add your video(s). It's a single line of code that will load the player you've created in the previous step. We highly recommend you paste this line inside the @<head>@ tag[^"1":#fn-1^]:
 
@@ -30,7 +30,7 @@
 :textile
   If you have multiple videos on the same page, you only need to add this line once.
 
-  h3. Step 3: Add video
+  h3(#step-3). "Step 3: Add video":#step-3
 
   For every video you want to add to your page, you need a "proper @<video>@ tag":/write-proper-video-elements with the @class@ attribute set to "_sublime_". When the page is loaded, the player will automatically look for all the @<video>@ elements with the "_sublime_" @class@ and take care of the rest. Here is how your @<video>@ element should look:
 

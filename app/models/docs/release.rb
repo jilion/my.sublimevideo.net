@@ -11,10 +11,8 @@ class Docs::Release
     path.entries.inject([]) do |releases, file_path|
       if matches = file_path.to_s.match(/([0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}:[0-9]{2})\.textile/)
         releases << new(
-          :datetime => DateTime.parse(matches[0]),
-          :content  => RedCloth.new(
-            File.new(path.join(file_path)).read
-          ).to_html.html_safe
+          datetime: DateTime.parse(matches[0]),
+          content: RedCloth.new(File.new(path.join(file_path)).read).to_html.html_safe
         )
       end
       releases

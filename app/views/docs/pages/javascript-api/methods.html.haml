@@ -8,17 +8,17 @@
   <div class="breakline"></div>
 
 
-  h3(#load). @sublimevideo.load()@
+  h3(#load). "@sublimevideo.load()@":#load
 
   SublimeVideo Player and the @sublimevideo@ API object are automatically loaded on page load if there is at least one @<video>@ element in the DOM. If you have no videos initially on the page (and you plan for instance to add them dynamically later with JavaScript) you can use this method to force loading the player and the @sublimevideo@ API object.
 
 
-  h3(#pause). @sublimevideo.pause()@
+  h3(#pause). "@sublimevideo.pause()@":#pause
 
   Pauses the currently playing video.
 
 
-  h3(#play). @sublimevideo.play([video])@
+  h3(#play). "@sublimevideo.play([video])@":#play
 
   * <span class="param">@video@</span> (@DOM Element@ | @String@) - The @<video>@ DOM element to play, or its @id@. Set it to @null@ (or omit this parameter) if you want to resume playback of a paused video. Default is @null@.
 
@@ -31,14 +31,14 @@
   * "Loop a video":/loop-a-video
 
 
-  h3(#prepare). @sublimevideo.prepare(video)@
+  h3(#prepare). "@sublimevideo.prepare(video)@":#prepare
 
   * <span class="param">@video@</span> (@DOM Element@ | @String@) - The @<video>@ DOM element to prepare, or its @id@.
 
   Sometimes you don't want SublimeVideo to be setup on page load because you might have some @<video>@ elements hidden in the page that you want to show on demand using JavaScript. In this case, when you initially build your @<video>@ element (in HTML or JavaScript) you *don't have to add the "_sublime_" @class@* to it. When you are ready to show the video you then call this method by passing the @<video>@ element (or its @id@) as an argument.
 
 
-  h3(#prepareAndPlay). @sublimevideo.prepareAndPlay(video)@
+  h3(#prepareAndPlay). "@sublimevideo.prepareAndPlay(video)@":#prepareAndPlay
 
   * <span class="param">@video@</span> (@DOM Element@ | @String@) - The @<video>@ DOM element to prepare and play, or its @id@.
 
@@ -56,7 +56,8 @@
   * "Customizing the initial play button":/customizing-the-initial-play-button
   * "Autoplay video upon page load":/autoplay-video-upon-page-load
 
-  h3(#resize). @sublimevideo.resize(video, width, [height])@
+
+  h3(#resize). "@sublimevideo.resize(video, width, [height])@":#resize
 
   * <span class="param">@video@</span> (@DOM Element@ | @String@) - The @<video>@ DOM element to resize, or its @id@.
   * <span class="param">@width@</span> (@Number@) - An integer representing the number of pixels. Set it to @null@ if you want to modify only the height of the video.
@@ -72,14 +73,16 @@
   **Example**
   * "Resize API method test page":http://test.sublimevideo.net/resize
 
-  h3(#stop). @sublimevideo.stop()@
+
+  h3(#stop). "@sublimevideo.stop()@":#stop
 
   Stops the currently started (playing or paused) video and shows the initial play button.
 
   **Example**
   * "Returning to the initial state once video playback ends":/returning-to-the-initial-state-once-video-playback-ends
 
-  h3(#unprepare). @sublimevideo.unprepare([video])@
+
+  h3(#unprepare). "@sublimevideo.unprepare([video])@":#unprepare
 
   * <span class="param">@video@</span> (@DOM Element@ | @String@) - The @<video>@ DOM element to unprepare, or its @id@. Set it to @null@ (or omit this parameter) if you want all @<video>@ elements in the page to be unprepared. Default is @null@.
 
