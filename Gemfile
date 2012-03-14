@@ -6,7 +6,8 @@ gem 'rails',                 '3.2.2'
 
 gem 'thin'
 
-gem 'prototype-rails'
+gem 'prototype-rails',       '~> 3.2.1'
+gem 'modernizr',             '~> 2.5.3'
 gem 'jquery-rails',          '~> 1.0.19'
 gem 'rails-backbone',        '~> 0.6.0'
 

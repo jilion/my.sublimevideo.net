@@ -226,7 +226,7 @@ describe SiteModules::Templates do
     end
 
     describe "#license_js_hash" do
-      subject{ Factory.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
+      subject { create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
       its(:license_js_hash) { should eq "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true}" }
     end
@@ -234,28 +234,71 @@ describe SiteModules::Templates do
     describe "#set_template" do
       context "license" do
         before(:all) do
-          @site = Factory.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+          @site = create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
           @site.tap { |s| s.set_template("license") }
         end
         subject { @site }
 
-        it "should set license file with license_hash" do
+        it "sets license file with license_hash" do
           subject.license.read.should eq "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true});"
         end
       end
 
-      context "loader" do
-        before(:all) do
-          @site = Factory.create(:site).tap { |s| s.set_template("loader") }
-        end
-        subject { @site }
+      context "license with prefix" do
+        context "file exists" do
+          before do
+            @site = create(:site)
+            File.should_receive(:new).with(Rails.root.join("app/templates/sites/foo_license.js.erb")) { @file = mock('file', read: "new license") }
+            @site.set_template("license", prefix: 'foo')
+          end
+          subject { @site }
 
-        it "should set loader file with token" do
+          it "uses prefixed license template" do
+            subject.license.read.should eq "new license"
+          end
+        end
+
+        context "file doesn't exist" do
+          subject { create(:site, hostname: "jilion.com").tap { |s| s.set_template("license", prefix: 'bar') } }
+
+          it "use standard license" do
+            subject.license.read.should eq "jilion.sublime.video.sites({h:[\"jilion.com\"],d:[\"127.0.0.1\",\"localhost\"],b:false,s:true,r:true});"
+          end
+        end
+      end
+
+      context "loader" do
+        subject { create(:site).tap { |s| s.set_template("loader") } }
+
+        it "sets loader file with token" do
           subject.loader.read.should include(subject.token)
         end
 
-        it "should set loader file with stable player_mode" do
+        it "sets loader file with stable player_mode" do
           subject.loader.read.should include("/p/sublime.js?t=#{subject.token}")
+        end
+      end
+
+      context "loader with prefix" do
+        context "file exists" do
+          before do
+            @site = create(:site)
+            File.should_receive(:new).with(Rails.root.join("app/templates/sites/foo_loader.js.erb")) { @file = mock('file', read: "new loader") }
+            @site.set_template("loader", prefix: 'foo')
+          end
+          subject { @site }
+
+          it "uses prefixed loader template" do
+            subject.loader.read.should eq "new loader"
+          end
+        end
+
+        context "file doesn't exist" do
+          subject { create(:site).tap { |s| s.set_template("loader", prefix: 'bar') } }
+
+          it "use standard loader" do
+            subject.loader.read.should include("/p/sublime.js?t=#{subject.token}")
+          end
         end
       end
     end
