@@ -62,8 +62,8 @@ describe Log::Voxcast do
       subject # trigger log creation
       jobs = Delayed::Job.all.sort_by { |j| j.priority }
       jobs[0].name.should eq 'Class#parse_log_for_stats'
-      jobs[1].name.should eq 'Class#parse_log'
-      jobs[2].name.should eq 'Class#parse_log_for_video_tags'
+      jobs[1].name.should eq 'Class#parse_log_for_video_tags'
+      jobs[2].name.should eq 'Class#parse_log'
       jobs[3].name.should eq 'Class#parse_log_for_user_agents'
       jobs[4].name.should eq 'Class#parse_log_for_referrers'
     end
