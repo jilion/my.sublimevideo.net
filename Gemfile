@@ -18,7 +18,9 @@ gem 'squeel',                '~> 0.9.5'
 gem 'bson_ext',              '~> 1.6.0'
 gem 'bson',                  '~> 1.6.0'
 gem 'mongo',                 '~> 1.6.0'
-gem 'mongoid',               '~> 2.4.5'
+# gem 'mongoid',               '~> 2.4.5'
+gem 'mongoid', git: 'git://github.com/mongoid/mongoid.git', branch: '2.4.0-stable'
+
 
 # Views
 gem 'haml',                  '~> 3.1.3'
