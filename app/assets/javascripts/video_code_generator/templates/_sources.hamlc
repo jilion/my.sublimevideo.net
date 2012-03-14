@@ -1,3 +1,15 @@
+#global_errors.notices
+  %ul
+    %li.notice.no_usable_source{ style: 'display: none' } Please provide a valid video source.
+
+#global_warnings.notices
+  %ul
+    %li.notice.mime_type_invalid{ style: 'display: none' }><
+      != "Please find more information on how to fix MIME Type misconfiguration&nbsp;"
+      %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting#videos-dont-start-playing", onclick: "window.open(this); return false" }><
+        in our documentation
+      = "."
+
 - for format, formatTitle of { mp4: 'MP4', webmogg: 'WebM or Ogg' }
   %div{ class: "content_#{if format is 'mp4' then 'left' else 'right'}" }
     %h4= "#{formatTitle} sources"
@@ -22,14 +34,3 @@
 
 .spacer
 
-#global_errors.notices
-  %ul
-    %li.notice.no_usable_source{ style: 'display: none' } Please provide a valid video source.
-
-#global_warnings.notices
-  %ul
-    %li.notice.mime_type_invalid{ style: 'display: none' }><
-      != "Please find more information on how to fix MIME Type misconfiguration&nbsp;"
-      %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting#videos-dont-start-playing", onclick: "window.open(this); return false" }><
-        in our documentation
-      = "."

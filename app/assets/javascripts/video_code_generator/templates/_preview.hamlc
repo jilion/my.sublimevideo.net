@@ -15,6 +15,6 @@
     - else
       = @video.get('thumbnail').get('src')
 
-%video{ class: "#{@video.get('classes')}", poster: "#{@posterSrc}", width: "#{@video.width()}", height: "#{@video.height()}" preload: "none" }
+%video{ class: "#{@video.get('classes')}", poster: "#{@posterSrc}", width: "#{@video.width()}", height: "#{@video.height()}" preload: "none", style: "margin:0 auto;" }
   - for source in @video.get('sources').sortedSources(@builder.get('startWithHd'))
     != "<source src='#{source.get('src')}' #{if source.needDataQualityAttribute() then "data-quality='#{source.get('quality')}' " else '' }/>"
