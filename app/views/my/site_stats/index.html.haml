@@ -36,52 +36,57 @@
       window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
       Backbone.history.start(pushState: true, root: "/sites/stats/")
 
+
   #trial
 
   #sites_select_title
 
-  #notices
+  .notice
+    %p We're upgrading our stats database and will be back in a few hours.
+    %p.team —The Jilion Team
 
-  %ul#period_selectors
-    %li.days365
-    %li.days30
-    %li.hours
-    %li.minutes
-    %li.seconds
-
-  .spacer
-  %p.days_period_note * Day periods are in UTC
-  #dates_range
-    %h3#time_range_title
-    #date_pickers
-  %ul#vv_chart_legend
-  .spacer
-  #vv
-    #vv_content
-      #vv_chart
-      %p.note Note: Plays and visits from embeds are not considered.
-
-  .spacer
-
-  #top_videos
-    %h3.title#top_videos_title Most played videos
-    #top_videos_content
-    #playable_video
-  #top_videos_posterframe_cache{ style: "display: none" }
-
-  #bp.graph_box
-    %h3.title Browser + OS
-    %h5.sub_title Based on page visits
-    #bp_content.content
-
-  #md.graph_box
-    %h3.title HTML5 / Flash
-    %h5.sub_title Based on video loads
-    #md_content.content
-      #md_legend
-      #md_pie_chart
-
-  .spacer
-
-  #plan_usage
+-#  #notices
+-#
+-#  %ul#period_selectors
+-#    %li.days365
+-#    %li.days30
+-#    %li.hours
+-#    %li.minutes
+-#    %li.seconds
+-#
+-#  .spacer
+-#  %p.days_period_note * Day periods are in UTC
+-#  #dates_range
+-#    %h3#time_range_title
+-#    #date_pickers
+-#  %ul#vv_chart_legend
+-#  .spacer
+-#  #vv
+-#    #vv_content
+-#      #vv_chart
+-#      %p.note Note: Plays and visits from embeds are not considered.
+-#
+-#  .spacer
+-#
+-#  #top_videos
+-#    %h3.title#top_videos_title Most played videos
+-#    #top_videos_content
+-#    #playable_video
+-#  #top_videos_posterframe_cache{ style: "display: none" }
+-#
+-#  #bp.graph_box
+-#    %h3.title Browser + OS
+-#    %h5.sub_title Based on page visits
+-#    #bp_content.content
+-#
+-#  #md.graph_box
+-#    %h3.title HTML5 / Flash
+-#    %h5.sub_title Based on video loads
+-#    #md_content.content
+-#      #md_legend
+-#      #md_pie_chart
+-#
+-#  .spacer
+-#
+-#  #plan_usage
 
