@@ -186,61 +186,61 @@ namespace :one_time do
       end
     end
 
-    desc "Split site_stats collection to separate minute/hour/day collection"
-    task split_site_stats_collection: :environment do
-      timed do
-        LegacyStat::Site.where(m: { '$ne' => nil }).all.each do |stat|
-          attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
-          Stat::Site::Minute.create(attributes.merge(d: stat.m))
-        end
-        p "Split site minute stats"
-      end
-      timed do
-        LegacyStat::Site.where(h: { '$ne' => nil }).all.each do |stat|
-          attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
-          Stat::Site::Hour.create(attributes.merge(d: stat.h))
-        end
-        p "Split site hour stats"
-      end
-      timed do
-        LegacyStat::Site.where(d: { '$ne' => nil }).all.each do |stat|
-          attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
-          Stat::Site::Day.create(attributes.merge(d: stat.d))
-        end
-        p "Split site day stats"
-      end
-    end
-    
-    desc "Split video_stats collection to separate minute/hour/day collection"
-    task split_video_stats_collection: :environment do
-      timed do
-        LegacyStat::Video.where(m: { '$ne' => nil }).all.each do |stat|
-          attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.m)
-          attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
-          attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
-          Stat::Video::Minute.create(attributes)
-        end
-        p "Split video minute stats"
-      end
-      timed do
-        LegacyStat::Video.where(h: { '$ne' => nil }).all.each do |stat|
-          attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.h)
-          attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
-          attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
-          Stat::Video::Hour.create(attributes)
-        end
-        p "Split video hour stats"
-      end
-      timed do
-        LegacyStat::Video.where(d: { '$ne' => nil }).all.each do |stat|
-          attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.d)
-          attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
-          attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
-          Stat::Video::Day.create(attributes)
-        end
-        p "Split video day stats"
-      end
-    end
+    # desc "Split site_stats collection to separate minute/hour/day collection"
+    # task split_site_stats_collection: :environment do
+    #   timed do
+    #     LegacyStat::Site.where(m: { '$ne' => nil }).all.each do |stat|
+    #       attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
+    #       Stat::Site::Minute.create(attributes.merge(d: stat.m))
+    #     end
+    #     p "Split site minute stats"
+    #   end
+    #   timed do
+    #     LegacyStat::Site.where(h: { '$ne' => nil }).all.each do |stat|
+    #       attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
+    #       Stat::Site::Hour.create(attributes.merge(d: stat.h))
+    #     end
+    #     p "Split site hour stats"
+    #   end
+    #   timed do
+    #     LegacyStat::Site.where(d: { '$ne' => nil }).all.each do |stat|
+    #       attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
+    #       Stat::Site::Day.create(attributes.merge(d: stat.d))
+    #     end
+    #     p "Split site day stats"
+    #   end
+    # end
+    #
+    # desc "Split video_stats collection to separate minute/hour/day collection"
+    # task split_video_stats_collection: :environment do
+    #   timed do
+    #     LegacyStat::Video.where(m: { '$ne' => nil }).all.each do |stat|
+    #       attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.m)
+    #       attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
+    #       attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
+    #       Stat::Video::Minute.create(attributes)
+    #     end
+    #     p "Split video minute stats"
+    #   end
+    #   timed do
+    #     LegacyStat::Video.where(h: { '$ne' => nil }).all.each do |stat|
+    #       attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.h)
+    #       attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
+    #       attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
+    #       Stat::Video::Hour.create(attributes)
+    #     end
+    #     p "Split video hour stats"
+    #   end
+    #   timed do
+    #     LegacyStat::Video.where(d: { '$ne' => nil }).all.each do |stat|
+    #       attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.d)
+    #       attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
+    #       attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
+    #       Stat::Video::Day.create(attributes)
+    #     end
+    #     p "Split video day stats"
+    #   end
+    # end
 
     # require 'zlib'
     # desc "Merge duplicate VideoStats and delete bad VideoTags based on wrong CRC32 generation (? params included)"
