@@ -39,13 +39,13 @@ describe SiteModules::Templates do
     end
 
     describe "on save" do
-      before(:each) do
+      before do
         VoxcastCDN.stub(:purge)
       end
 
       describe "plan_id has changed" do
         subject { Factory.create(:site, plan_id: @free_plan.id) }
-        before(:each) { subject.plan_id = @paid_plan.id }
+        before { subject.plan_id = @paid_plan.id }
 
         it "delays .update_loader_and_license once" do
           expect { subject.save! }.to change(Delayed::Job.where { handler =~ "%update_loader_and_license%" }, :count).by(1)
@@ -67,8 +67,8 @@ describe SiteModules::Templates do
         [:badged, :b, true]
       ].each do |attr, key, value|
         describe "and #{attr} setting has changed" do
-          before(:each) do
-            @site = Factory.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: false)
+          before do
+            @site = create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: false)
             @worker.work_off
           end
           subject { @site.reload }
@@ -103,7 +103,7 @@ describe SiteModules::Templates do
 
       describe "player_mode has changed" do
         subject do
-          site = Factory.create(:site, player_mode: 'dev')
+          site = create(:site, player_mode: 'dev')
           @worker.work_off
           site.reload
         end
@@ -135,7 +135,7 @@ describe SiteModules::Templates do
   describe "Instance Methods" do
 
     describe "#settings_changed?" do
-      subject { Factory.create(:site) }
+      subject { build(:site) }
 
       it "should return false if no attribute has changed" do
         subject.should_not be_settings_changed
@@ -150,12 +150,8 @@ describe SiteModules::Templates do
     end
 
     describe "#license_hash" do
-      before(:all) do
-        @site = Factory.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: true)
-      end
-
       describe "common settings" do
-        subject { @site.reload }
+        subject { build(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: true) }
 
         it "includes everything" do
           subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true, s: true, r: true }
@@ -226,16 +222,29 @@ describe SiteModules::Templates do
     end
 
     describe "#license_js_hash" do
-      subject { create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
+      subject { build(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
       its(:license_js_hash) { should eq "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true}" }
     end
 
     describe "#set_template" do
+      context "unknown template" do
+        before(:all) do
+          @site = build(:site)
+          @site.license.read.should be_nil
+          @site.set_template("foobar")
+        end
+        subject { @site }
+
+        it "sets license file with license_hash" do
+          subject.license.read.should be_nil
+        end
+      end
+
       context "license" do
         before(:all) do
-          @site = create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
-          @site.tap { |s| s.set_template("license") }
+          @site = build(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+          @site.set_template("license")
         end
         subject { @site }
 
@@ -247,7 +256,7 @@ describe SiteModules::Templates do
       context "license with prefix" do
         context "file exists" do
           before do
-            @site = create(:site)
+            @site = build(:site)
             File.should_receive(:new).with(Rails.root.join("app/templates/sites/foo_license.js.erb")) { @file = mock('file', read: "new license") }
             @site.set_template("license", prefix: 'foo')
           end
@@ -259,7 +268,7 @@ describe SiteModules::Templates do
         end
 
         context "file doesn't exist" do
-          subject { create(:site, hostname: "jilion.com").tap { |s| s.set_template("license", prefix: 'bar') } }
+          subject { build(:site, hostname: "jilion.com").tap { |s| s.set_template("license", prefix: 'bar') } }
 
           it "use standard license" do
             subject.license.read.should eq "jilion.sublime.video.sites({h:[\"jilion.com\"],d:[\"127.0.0.1\",\"localhost\"],b:false,s:true,r:true});"
@@ -268,7 +277,7 @@ describe SiteModules::Templates do
       end
 
       context "loader" do
-        subject { create(:site).tap { |s| s.set_template("loader") } }
+        subject { build(:site).tap { |s| s.set_template("loader") } }
 
         it "sets loader file with token" do
           subject.loader.read.should include(subject.token)
@@ -282,7 +291,7 @@ describe SiteModules::Templates do
       context "loader with prefix" do
         context "file exists" do
           before do
-            @site = create(:site)
+            @site = build(:site)
             File.should_receive(:new).with(Rails.root.join("app/templates/sites/foo_loader.js.erb")) { @file = mock('file', read: "new loader") }
             @site.set_template("loader", prefix: 'foo')
           end
@@ -294,7 +303,7 @@ describe SiteModules::Templates do
         end
 
         context "file doesn't exist" do
-          subject { create(:site).tap { |s| s.set_template("loader", prefix: 'bar') } }
+          subject { build(:site).tap { |s| s.set_template("loader", prefix: 'bar') } }
 
           it "use standard loader" do
             subject.loader.read.should include("/p/sublime.js?t=#{subject.token}")

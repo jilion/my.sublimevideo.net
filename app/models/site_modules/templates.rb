@@ -55,9 +55,12 @@ module SiteModules::Templates
   end
 
   def set_template(name, options={})
+    name = name.to_s
+    return unless %w[loader license].include?(name)
+
     template = begin
       prefix   = options[:prefix].to_s.present? ? "#{options[:prefix].to_s}_" : ''
-      filename = Rails.root.join("app/templates/sites/#{prefix}#{name.to_s}.js.erb")
+      filename = Rails.root.join("app/templates/sites/#{prefix}#{name}.js.erb")
       ERB.new(File.new(filename).read)
     rescue Errno::ENOENT
       options[:prefix] = nil
