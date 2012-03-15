@@ -24,6 +24,13 @@
 
 .content_right
   %h4 Stats
+
+  %p.note><
+    != "These attributes are useful to optimize your videos for the&nbsp;"
+    %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/optimize-for-stats", onclick: "window.open(this); return false" }><
+      Universal Real-Time Statistics feature
+    = "."
+
   %h5
     %label{ for: "data_uid" } UID
   #video_data_uid.entry
@@ -33,11 +40,5 @@
     %label{ for: "data_name" } Name
   #video_data_name.entry
     %input#data_name.text.no_icon{ type: "text", placeholder: "Video name", value: @source.get('dataName'), size: 50 }
-
-    %p.note><
-      != "These attributes are useful to optimize your videos for the&nbsp;"
-      %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/optimize-for-stats", onclick: "window.open(this); return false" }><
-        Universal Real-Time Statistics feature
-      = "."
 
 .spacer

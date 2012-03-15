@@ -39,7 +39,6 @@ class MSVVideoCodeGenerator.Views.Settings extends Backbone.View
     @model.setEmbedWidth(_.min([@model.get('width'), 852]))
     this.render()
 
-    event.stopPropagation()
     false
 
   updateStartWithHd: (event) ->

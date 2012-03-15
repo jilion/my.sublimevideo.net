@@ -5,6 +5,7 @@ class MSVVideoCodeGenerator.Views.Poster extends Backbone.View
     'change #poster_src': 'updateSrc'
 
   initialize: ->
+    @builder  = @options.builder
     @uiHelper = new MSVVideoCodeGenerator.Helpers.UIAssetHelper 'poster'
 
     _.bindAll this, 'render', 'renderStatus'
@@ -17,6 +18,7 @@ class MSVVideoCodeGenerator.Views.Poster extends Backbone.View
   #
   updateSrc: (event) ->
     @model.setAndPreloadSrc(event.target.value)
+    @builder.set(demoAssetsUsed: false)
 
   #
   # BINDINGS

@@ -70,6 +70,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCodeGenerator.posterView = new MSVVideoCodeGenerator.Views.Poster
       model: MSVVideoCodeGenerator.poster
+      builder: MSVVideoCodeGenerator.builder
       el: '#poster'
 
     MSVVideoCodeGenerator.settingsView = new MSVVideoCodeGenerator.Views.Settings
@@ -80,6 +81,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCodeGenerator.sourcesView = new MSVVideoCodeGenerator.Views.Sources
       collection: MSVVideoCodeGenerator.sources
+      builder: MSVVideoCodeGenerator.builder
       video: MSVVideoCodeGenerator.video
       settingsView: MSVVideoCodeGenerator.settingsView
       el: '#sources'

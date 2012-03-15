@@ -6,6 +6,7 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     'click .use_source': 'updateIsUsed'
 
   initialize: ->
+    @builder      = @options.builder
     @video        = @options.video
     @settingsView = @options.settingsView
     this.initUIHelpers()
@@ -48,6 +49,7 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     this
 
   refreshSettings: ->
+    @builder.set(demoAssetsUsed: false)
     @settingsView.render()
 
   toggleSrcBox: ->

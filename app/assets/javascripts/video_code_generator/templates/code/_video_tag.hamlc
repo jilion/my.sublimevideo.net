@@ -30,7 +30,12 @@
 - if @codeOnly
   = code
 - else
-  Copy the code below and paste it into your page.
+  %p
+    This is the
+    %code &lt;video&gt;
+    element generated from the assets and settings you've set.
+  %p
+    Simply copy the code below and paste it into your page at the place where you'd like your video to appear.
 
   %form
     .embed_code.entry

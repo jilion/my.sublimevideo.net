@@ -10,6 +10,9 @@
 
 -# %p.desc.help= raw "WordPress user? Check-out our #{link_to "WordPress plugin", docs_page_url('wordpress', subdomain: 'docs'), onclick: "window.open(this); return false"} instead!"
 
+.com_text
+  = "The SublimeVideo code generator helps you build well-configured <video> elements easily, and also avoid common mistakes to ensure the optimal viewing experience for all your audience."
+
 #video_embed_type_selector
   .radio_wrap
     = radio_button_tag "type", "standard", checked: true
@@ -23,7 +26,10 @@
 
 .login_needed
   #demo_bootstrap
-    %button.green_button#use_demo_assets Use demo videos urls
+    %p.note
+      You don't have you video assets yet, or just want to test-drive SublimeVideo?
+    %button.green_button#use_demo_assets Use our demo assets!
+    %a.reset.hl{ href: "", style: 'display:none' } Reset demo assets
 
   .spacer
 
@@ -40,11 +46,12 @@
     #sources
     .spacer
 
-    -# %p.desc.help= raw "Need help on video encoding? Check-out our #{link_to '"Encode videos for the web and HTML5"', 'http://docs.sublimevideo.net/encode-videos-for-the-web', onclick: "window.open(this); return false"} documentation page!"
-
+    %p.note><
+      != "You can find help to encode your videos in our&nbsp;"
+      = link_to "documentation", login_url(page: 'encode-videos-for-the-web', subdomain: 'docs'), onclick: "window.open(this); return false"
+      = "."
     .big_break
 
-    -# %h4 Settings
     #settings
     .spacer
 

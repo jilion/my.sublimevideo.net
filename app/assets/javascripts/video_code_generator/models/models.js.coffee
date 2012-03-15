@@ -2,6 +2,7 @@ class MSVVideoCodeGenerator.Models.Builder extends Backbone.Model
   defaults:
     builderClass: 'standard'
     startWithHd: false
+    demoAssetsUsed: false
 
 class MSVVideoCodeGenerator.Models.Iframe extends Backbone.Model
   defaults:
