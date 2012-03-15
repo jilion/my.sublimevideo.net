@@ -12,11 +12,8 @@ staging:
   database: sublimevideo-stats
   username: backups
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
-  hosts:
-    - - hurley.member0.mongohq.com
-      - 10006
-    - - hurley.member1.mongohq.com
-      - 10006
+  host: sublimevideo.member0.mongolayer.com
+  port: 27017
   preload_models: true
   skip_version_check: true
   logger: false
