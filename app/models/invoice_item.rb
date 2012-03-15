@@ -32,9 +32,6 @@ class InvoiceItem < ActiveRecord::Base
   validates :amount,     presence: true, numericality: true
 
 end
-
-
-
 # == Schema Information
 #
 # Table name: invoice_items

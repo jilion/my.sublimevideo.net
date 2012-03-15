@@ -6,7 +6,8 @@ gem 'rails',                 '3.2.2'
 
 gem 'thin'
 
-gem 'prototype-rails'
+gem 'prototype-rails',       '~> 3.2.1'
+gem 'modernizr',             '~> 2.5.3'
 gem 'jquery-rails',          '~> 1.0.19'
 gem 'rails-backbone',        '~> 0.6.0'
 
@@ -17,7 +18,9 @@ gem 'squeel',                '~> 0.9.5'
 gem 'bson_ext',              '~> 1.6.0'
 gem 'bson',                  '~> 1.6.0'
 gem 'mongo',                 '~> 1.6.0'
-gem 'mongoid',               '~> 2.4.5'
+# gem 'mongoid',               '~> 2.4.5'
+gem 'mongoid', git: 'git://github.com/mongoid/mongoid.git', branch: '2.4.0-stable'
+
 
 # Views
 gem 'haml',                  '~> 3.1.3'
@@ -65,7 +68,7 @@ gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
 gem 'activemerchant',        git: 'git://github.com/rymai/active_merchant.git', branch: '3ds_from_ZenCocoon'
 gem 'public_suffix',         '~> 1.0.0'
 gem 'useragent',             git: 'git://github.com/jilion/useragent.git' # needed for stat_request_parser
-gem 'stat_request_parser',   '~> 1.0.0' # hosted on gemfury
+gem 'stat_request_parser',   '~> 1.1.0' # hosted on gemfury
 
 gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
 gem 'mime-types'

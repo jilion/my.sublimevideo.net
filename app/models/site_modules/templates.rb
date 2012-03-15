@@ -54,8 +54,18 @@ module SiteModules::Templates
     VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
   end
 
-  def set_template(name)
-    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name.to_s}.js.erb")).read)
+  def set_template(name, options={})
+    name = name.to_s
+    return unless %w[loader license].include?(name)
+
+    template = begin
+      prefix   = options[:prefix].to_s.present? ? "#{options[:prefix].to_s}_" : ''
+      filename = Rails.root.join("app/templates/sites/#{prefix}#{name}.js.erb")
+      ERB.new(File.new(filename).read)
+    rescue Errno::ENOENT
+      options[:prefix] = nil
+      retry
+    end
 
     tempfile = Tempfile.new(["#{name}-#{token}-#{Time.now.utc}", '.js'], "#{Rails.root}/tmp")
     tempfile.print template.result(binding)
@@ -98,11 +108,3 @@ private
   end
 
 end
-
-# == Schema Information
-#
-# Table name: sites
-#
-#  license                                    :string(255)
-#  loader                                     :string(255)
-#  cdn_up_to_date                             :boolean

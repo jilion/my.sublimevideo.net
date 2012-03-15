@@ -465,7 +465,7 @@ feature "Sites index" do
 
       context "user has billable views" do
         background do
-          Factory.create(:site_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
+          Factory.create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
         end
 
         scenario "views notice 1" do

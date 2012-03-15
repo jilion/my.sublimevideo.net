@@ -9,7 +9,7 @@ describe Stat do
       @log      = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
     end
 
-    describe ".create_stats_from_trackers!"  do
+    describe ".create_stats_from_trackers!" do
       use_vcr_cassette "stat/pusher", erb: true
 
       context "mixed view event & load event" do
@@ -22,54 +22,101 @@ describe Stat do
             "ovjigy83"=> {
               :inc => { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
               :videos   => {
-                "abcd1234" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vs.source12" => 1 },
-                "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
+                "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
+                "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
               }
             },
             "site1234"=> {
               :inc => {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
               :videos   => {
-                "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
-                "efgh5678" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
+                "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
+                "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
               }
             }
           })
         end
 
-        it "create three stats m/h/d for each token" do
+        it "create three minute site stats for each token" do
           Stat.create_stats_from_trackers!(@log, nil)
-          Stat::Site.count.should eql(6)
-          Stat::Video.count.should eql(12)
-          Stat::Site.where(t: 'ovjigy83', m: @log.minute).should be_present
-          Stat::Site.where(t: 'ovjigy83', h: @log.hour).should be_present
-          Stat::Site.where(t: 'ovjigy83', d: @log.day).should be_present
-          Stat::Video.where(st: 'ovjigy83', u: 'abcd1234', m: @log.minute).should be_present
-          Stat::Video.where(st: 'ovjigy83', u: 'abcd1234', h: @log.hour).should be_present
-          Stat::Video.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).should be_present
-          Stat::Video.where(st: 'ovjigy83', u: 'efgh5678', m: @log.minute).should be_present
-          Stat::Video.where(st: 'ovjigy83', u: 'efgh5678', h: @log.hour).should be_present
-          Stat::Video.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).should be_present
-          Stat::Site.where(t: 'site1234', m: @log.minute).should be_present
-          Stat::Site.where(t: 'site1234', h: @log.hour).should be_present
-          Stat::Site.where(t: 'site1234', d: @log.day).should be_present
-          Stat::Video.where(st: 'site1234', u: 'abcd1234', m: @log.minute).should be_present
-          Stat::Video.where(st: 'site1234', u: 'abcd1234', h: @log.hour).should be_present
-          Stat::Video.where(st: 'site1234', u: 'abcd1234', d: @log.day).should be_present
-          Stat::Video.where(st: 'site1234', u: 'efgh5678', m: @log.minute).should be_present
-          Stat::Video.where(st: 'site1234', u: 'efgh5678', h: @log.hour).should be_present
-          Stat::Video.where(st: 'site1234', u: 'efgh5678', d: @log.day).should be_present
+          Stat::Site::Minute.count.should eql(2)
+          Stat::Site::Minute.where(t: 'ovjigy83', d: @log.minute).should be_present
+          Stat::Site::Minute.where(t: 'site1234', d: @log.minute).should be_present
+        end
+        it "create three minute video stats for each token" do
+          Stat.create_stats_from_trackers!(@log, nil)
+          Stat::Video::Minute.count.should eql(4)
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).should be_present
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vlc.should eq(3)
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vvc.should eq(1)
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).should be_present
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vlc.should eq(3)
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vvc.should eq(0)
+          Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).should be_present
+          Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).first.vlc.should eq(3)
+          Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).first.vvc.should eq(0)
+          Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).should be_present
+          Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).first.vlc.should eq(3)
+          Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).first.vvc.should eq(0)
+        end
+        it "create three hour site stats for each token" do
+          Stat.create_stats_from_trackers!(@log, nil)
+          Stat::Site::Hour.count.should eql(2)
+          Stat::Site::Hour.where(t: 'ovjigy83', d: @log.hour).should be_present
+          Stat::Site::Hour.where(t: 'site1234', d: @log.hour).should be_present
+        end
+        it "create three hour video stats for each token" do
+          Stat.create_stats_from_trackers!(@log, nil)
+          Stat::Video::Hour.count.should eql(4)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).should be_present
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vlc.should eq(3)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vvc.should eq(1)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).should be_present
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).first.vlc.should eq(3)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).should be_present
+          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).first.vlc.should eq(3)
+          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).should be_present
+          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).first.vlc.should eq(3)
+          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).first.vvc.should eq(0)
+        end
+        it "create three day site stats for each token" do
+          Stat.create_stats_from_trackers!(@log, nil)
+          Stat::Site::Day.count.should eql(2)
+          Stat::Site::Day.where(t: 'ovjigy83', d: @log.day).should be_present
+          Stat::Site::Hour.where(t: 'site1234', d: @log.day).should be_present
+        end
+        it "create three day video stats for each token" do
+          Stat.create_stats_from_trackers!(@log, nil)
+          Stat::Video::Day.count.should eql(4)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).should be_present
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vlc.should eq(3)
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vvc.should eq(1)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).should be_present
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vlc.should eq(3)
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.day).should be_present
+          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vlc.should eq(3)
+          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.day).should be_present
+          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vlc.should eq(3)
+          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vvc.should eq(0)
         end
 
-        it "update existing h/d stats" do
+        it "update existing h/d stat" do
           Stat.create_stats_from_trackers!(@log, nil)
-          Stat::Site.count.should eql(6)
+          Stat::Site::Minute.count.should eql(2)
+          Stat::Site::Hour.count.should eql(2)
+          Stat::Site::Day.count.should eql(2)
           log_time = 5.days.ago.change(hour: 0).to_i + 1.minute
           log  = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
           Stat.create_stats_from_trackers!(log, nil)
-          Stat::Site.count.should eql(8)
-          Stat::Site.where(t: 'ovjigy83').m_before(Time.now).count.should eql(2)
-          Stat::Site.where(t: 'ovjigy83', m: log.minute).first.bp.should eql({ "saf-osx" => 4 })
-          Stat::Site.where(t: 'ovjigy83', d: log.day).first.bp.should eql({ "saf-osx" => 8 })
+          Stat::Site::Minute.count.should eql(4)
+          Stat::Site::Hour.count.should eql(2)
+          Stat::Site::Day.count.should eql(2)
+          Stat::Site::Minute.where(t: 'ovjigy83').before(Time.now).count.should eql(2)
+          Stat::Site::Minute.where(t: 'ovjigy83', d: log.minute).first.bp.should eql({ "saf-osx" => 4 })
+          Stat::Site::Day.where(t: 'ovjigy83', d: log.day).first.bp.should eql({ "saf-osx" => 8 })
         end
 
         it "triggers Pusher on the right private channel for each site" do
@@ -100,8 +147,8 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 2, "md.f.d" => 2 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
-            "efgh5678" => { "vl.e" => 1, "bp.saf-osx" => 1, "md.f.d" => 1 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
+            "efgh5678" => { "vl.e" => 1, "vlc" => 1, "bp.saf-osx" => 1, "md.f.d" => 1 }
           }
         }
       })}
@@ -121,15 +168,15 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
-            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
+            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
           }
         },
         "site1234"=> {
           :inc => { "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
-            "efgh5678" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
+            "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
           }
         }
       })}
@@ -147,7 +194,7 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "vv.m" => 1 },
           :videos   => {
-            "abcd1234" => { "vv.m" => 1, "vs.source12" => 1 }
+            "abcd1234" => { "vv.m" => 1, "vs.source12" => 1, "vvc" => 1 }
           }
         },
         "site1234"=> {
@@ -175,158 +222,20 @@ describe Stat do
         "ovjigy83"=> {
           :inc => { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
           :videos   => {
-            "abcd1234" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vs.source12" => 1 },
-            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
+            "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
+            "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
           }
         },
         "site1234"=> {
           :inc => {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
           :videos   => {
-            "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
-            "efgh5678" => { "vl.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
+            "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
+            "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
           }
         }
       })}
     end
 
-  end
-
-  describe ".delay_clear_old_second_stats" do
-    it "delays clear_old_second_stats if not already delayed" do
-      expect { Stat.delay_clear_old_second_stats }.to change(Delayed::Job, :count).by(1)
-      Delayed::Job.last.run_at.should be_within(1).of(1.second.from_now)
-    end
-
-    it "delays nothing if already delayed" do
-      Stat.delay_clear_old_second_stats
-      expect { Stat.delay_clear_old_second_stats }.to change(Delayed::Job, :count).by(0)
-    end
-  end
-
-  describe ".clear_old_second_stats" do
-
-    it "delete old second site stats" do
-      Timecop.freeze(Time.now) do
-        Factory.create(:site_stat, d: nil, h: nil, m: nil, s: 62.seconds.ago)
-        Factory.create(:site_stat, d: nil, h: nil, m: nil, s: 63.seconds.ago)
-
-        Stat::Site.count.should eql(2)
-        Stat::Site.s_before(60.seconds.ago).count.should eql(2)
-        Stat.clear_old_second_stats
-        Stat::Site.count.should eql(1)
-        Stat::Site.s_before(60.seconds.ago).count.should eql(1)
-      end
-    end
-
-    it "delete old second video stats" do
-      Timecop.freeze(Time.now) do
-        Factory.create(:video_stat, s: 62.seconds.ago)
-        Factory.create(:video_stat, s: 63.seconds.ago)
-
-        Stat::Video.count.should eql(2)
-        Stat::Video.s_before(60.seconds.ago).count.should eql(2)
-        Stat.clear_old_second_stats
-        Stat::Video.count.should eql(1)
-        Stat::Video.s_before(60.seconds.ago).count.should eql(1)
-      end
-    end
-
-    it "delays itself" do
-      expect { Stat.clear_old_second_stats }.to change(Delayed::Job, :count).by(1)
-      Delayed::Job.last.run_at.should be_within(1).of(1.second.from_now)
-    end
-  end
-
-  describe ".delay_clear_old_minute_stats" do
-    it "delays clear_old_minute_stats if not already delayed" do
-      expect { Stat.delay_clear_old_minute_stats }.to change(Delayed::Job, :count).by(1)
-      Delayed::Job.last.run_at.should be_within(1).of(1.minute.from_now)
-    end
-
-    it "delays nothing if already delayed" do
-      Stat.delay_clear_old_minute_stats
-      expect { Stat.delay_clear_old_minute_stats }.to change(Delayed::Job, :count).by(0)
-    end
-  end
-
-  describe ".clear_old_minute_stats" do
-
-    it "delete old minute site stats" do
-      Timecop.freeze(Time.now) do
-        Factory.create(:site_stat, d: nil, h: nil, m: 62.minutes.ago.change(s: 0), s: nil)
-        Factory.create(:site_stat, d: nil, h: nil, m: 61.minutes.ago.change(s: 0), s: nil)
-
-        Stat::Site.count.should eql(2)
-        Stat::Site.m_before(60.minutes.ago).count.should eql(2)
-        Stat.clear_old_minute_stats
-        Stat::Site.count.should eql(1)
-        Stat::Site.m_before(60.minutes.ago).count.should eql(1)
-      end
-    end
-
-    it "delete old minute video stats" do
-      Timecop.freeze(Time.now) do
-        Factory.create(:video_stat, m: 62.minutes.ago.change(s: 0))
-        Factory.create(:video_stat, m: 61.minutes.ago.change(s: 0))
-
-        Stat::Video.count.should eql(2)
-        Stat::Video.m_before(60.minutes.ago).count.should eql(2)
-        Stat.clear_old_minute_stats
-        Stat::Video.count.should eql(1)
-        Stat::Video.m_before(60.minutes.ago).count.should eql(1)
-      end
-    end
-
-    it "delays itself" do
-      expect { Stat.clear_old_minute_stats }.to change(Delayed::Job, :count).by(1)
-      Delayed::Job.last.run_at.should be_within(1).of(1.minute.from_now)
-    end
-  end
-
-  describe ".delay_clear_old_hour_stats" do
-    it "delays clear_old_hour_stats if not already delayed" do
-      expect { Stat.delay_clear_old_hour_stats }.to change(Delayed::Job, :count).by(1)
-      Delayed::Job.last.run_at.should be_within(1).of(1.hour.from_now)
-    end
-
-    it "delays nothing if already delayed" do
-      Stat.delay_clear_old_hour_stats
-      expect { Stat.delay_clear_old_hour_stats }.to change(Delayed::Job, :count).by(0)
-    end
-  end
-
-  describe ".clear_old_hour_stats" do
-
-    it "delete old hour site stats" do
-      Timecop.freeze(Time.now) do
-        Factory.create(:site_stat, d: nil, h: 26.hours.ago.change(m: 0), m: nil, s: nil)
-        Factory.create(:site_stat, d: nil, h: 25.hours.ago.change(m: 0), m: nil, s: nil)
-
-        Stat::Site.count.should eql(2)
-        Stat::Site.h_before(20.hours.ago).count.should eql(2)
-        Stat.clear_old_hour_stats
-        Stat::Site.count.should eql(1)
-        Stat::Site.h_before(20.hours.ago).count.should eql(1)
-      end
-    end
-
-    it "delete old hour video stats" do
-      Timecop.freeze(Time.now) do
-        Factory.create(:video_stat, h: 26.hours.ago.change(m: 0))
-        Factory.create(:video_stat, h: 25.hours.ago.change(m: 0))
-
-        Stat::Video.count.should eql(2)
-        Stat::Video.h_before(20.hours.ago).count.should eql(2)
-        Stat.clear_old_hour_stats
-        Stat::Video.count.should eql(1)
-        Stat::Video.h_before(20.hours.ago).count.should eql(1)
-      end
-    end
-
-    it "delays itself" do
-      expect { Stat.clear_old_hour_stats }.to change(Delayed::Job, :count).by(1)
-      Delayed::Job.last.run_at.should be_within(1).of(1.hour.from_now)
-    end
   end
 
 end

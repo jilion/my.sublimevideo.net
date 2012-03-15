@@ -22,7 +22,7 @@ group :frontend do
     watch(%r{config/locales/.+\.yml})
   end
 
-  guard :jasmine, :server => :none, :jasmine_url => 'http://sublimevideo.dev/jasmine', :all_on_start => false do
+  guard :jasmine, server: :none, jasmine_url: 'http://sublimevideo.dev/jasmine', all_on_start: false do
     watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
@@ -32,7 +32,7 @@ end
 
 group :backend do
 
-  guard :spork, :wait => 70 do
+  guard :spork, wait: 70 do
     watch('Gemfile')
     # watch('Gemfile.lock')
     watch('config/boot.rb')
@@ -43,7 +43,7 @@ group :backend do
     watch('spec/spec_helper.rb')
   end
 
-  guard :rspec, :version => 2, :cli => "--color -f doc --drb", :all_after_pass => false, :all_on_start => false, :keep_failed => false do
+  guard :rspec, version: 2, bundler: false, cli: "--color -f doc --drb", all_after_pass: false, all_on_start: false, keep_failed: false do
     # watch('spec/spec_helper.rb')                                               { "spec" }
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }

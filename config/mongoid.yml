@@ -9,7 +9,7 @@ test:
   preload_models: true
 
 staging:
-  database: sublimevideo_production
+  database: sublimevideo-stats
   username: backups
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
   hosts:
@@ -26,17 +26,14 @@ production:
   # make rake asset:precompile work
   preload_models: false
   host: localhost
-  database: sublimevideo_production
+  database: sublimevideo-stats
 <% else %>
-  database: sublimevideo_production
+  database: 'sublimevideo-stats'
   username: <%= ENV['MONGOHQ_USERNAME'] %>
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
-  hosts:
-    - - hurley.member0.mongohq.com
-      - 10006
-    - - hurley.member1.mongohq.com
-      - 10006
-  read: :secondary
+  host: sublimevideo.member0.mongolayer.com
+  port: 27017
+  # read: :secondary
   preload_models: true
   skip_version_check: true
   logger: false

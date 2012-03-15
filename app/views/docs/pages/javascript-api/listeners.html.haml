@@ -6,15 +6,14 @@
 
   See also "Using the JavaScript API":/javascript-api/usage and "Methods":/javascript-api/methods.
 
-  <div class="breakline"></div>
-
   h4. Note on using listeners
 
   Always write your listeners inside the "(c)@sublimevideo.ready@":#ready callback in order to be sure the @sublimevideo@ API object is actually available.
 
   <div class="breakline"></div>
 
-  h3(#onEnd). @sublimevideo.onEnd(handler)@
+
+  h3(#onEnd). "@sublimevideo.onEnd(handler)@":#onEnd
 
   * <span class="param">@handler@</span> (@Function@) - The function to call when the event occurs.
 
@@ -27,8 +26,8 @@
   function handler(videoObject){
     // Code to execute once a video ends!
   });
-
 :textile
+
   *_videoObject_* is the video that generated the event ("ended" in this case) and it has the following properties:
     * @element@: a reference to the @<video>@ DOM element
     * @mode@: either "_html5_" or "_flash_"
@@ -42,12 +41,13 @@
       alert("Video has ended!");
     });
   });
-
 :textile
+
   You can use this listener to restore the video to its initial state (that shows the poster frame and the play button) automatically when the video ends.
   See "Returning to the initial state once video playback ends":/returning-to-the-initial-state-once-video-playback-ends for further instructions.
 
-  h3(#onStart). @sublimevideo.onStart(handler)@
+
+  h3(#onStart). "@sublimevideo.onStart(handler)@":#onStart
 
   * <span class="param">@handler@</span> (@Function@) - The function to call when the event occurs.
 
@@ -61,8 +61,8 @@
   function handler(videoObject){
     // Code to execute once a video starts!
   });
-
 :textile
+
   *_videoObject_* is the video that generated the event ("started" in this case) and it has the following properties:
     * @element@: a reference to the @<video>@ DOM element
     * @mode@: either "_html5_" or "_flash_"
@@ -76,8 +76,8 @@
       alert("Video has started!");
     });
   });
-
 :textile
+
   You can see a real example on our "demo page":http://sublimevideo.net/demo where we use "(c)@sublimevideo.onStart@":#onStart to update the label showing the current mode of the player (HTML5 or Flash). We only do this for the first video in the demo, but there are different videos on that page. In order to target the first video we use the *_videoObject_* parameter passed to the handler function.
 
   Here is the code we use in the demo page to detect when the @<video>@ with the "_single_video_" @id@ has started:
@@ -91,9 +91,10 @@
       }
     });
   });
-
 :textile
-  h3(#ready). @sublimevideo.ready(handler)@
+
+
+  h3(#ready). "@sublimevideo.ready(handler)@":#ready
 
   * <span class="param">@handler@</span> (@Function@) - The function to call when the event occurs.
 
@@ -110,8 +111,8 @@
   function handler(){
     // Code to execute once the SublimeVideo JS API is ready!
   });
-
 :textile
+
   **Example**
 
 :coderay

@@ -1050,12 +1050,12 @@ describe Site do
       context "with less than 5 days of usage" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 1000 })
-          Factory(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 1000 })
-          Factory(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 1000 })
-          Factory(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 1000 })
-          Factory(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 0 })
-          Factory(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 0 })
+          Factory.create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 1000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 1000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 1000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 1000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 0 })
+          Factory.create(:site_day_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 0 })
         end
 
         its(:recommended_plan_name) { should be_nil }
@@ -1064,12 +1064,12 @@ describe Site do
       context "with less than 5 days of usage (but with 0 between)" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 30_000 })
-          Factory(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 30_000 })
-          Factory(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 0 })
-          Factory(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 30_000 })
-          Factory(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 30_000 })
-          Factory(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 0 })
+          Factory.create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 30_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 30_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 0 })
+          Factory.create(:site_day_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 30_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 30_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 0 })
         end
 
         its(:recommended_plan_name) { should eql "premium" }
@@ -1078,12 +1078,12 @@ describe Site do
       context "with regular usage and video_views smaller than plus" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 50 })
-          Factory(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 50 })
-          Factory(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 50 })
-          Factory(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 50 })
-          Factory(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 50 })
-          Factory(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 50 })
+          Factory.create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 50 })
+          Factory.create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 50 })
+          Factory.create(:site_day_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 50 })
+          Factory.create(:site_day_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 50 })
+          Factory.create(:site_day_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 50 })
+          Factory.create(:site_day_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 50 })
         end
 
         its(:recommended_plan_name) { should be_nil }
@@ -1092,12 +1092,12 @@ describe Site do
       context "with regular usage and video_views between plus and premium" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 10_000 })
-          Factory(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 10_000 })
-          Factory(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 10_000 })
-          Factory(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 10_000 })
-          Factory(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 10_000 })
-          Factory(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 10_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 10_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 10_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 10_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 10_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 10_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 10_000 })
         end
 
         its(:recommended_plan_name) { should eql "premium" }
@@ -1106,12 +1106,12 @@ describe Site do
       context "with non regular usage and lower than video_views but greather than average video_views" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 12_000 })
-          Factory(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 12_000 })
-          Factory(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 12_000 })
-          Factory(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 12_000 })
-          Factory(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 12_000 })
-          Factory(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 1_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 12_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 12_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 12_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 12_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 12_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 1_000 })
         end
 
         its(:recommended_plan_name) { should eql "premium" }
@@ -1120,11 +1120,11 @@ describe Site do
       context "with too much video_views" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 500_000 })
-          Factory(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 500_000 })
-          Factory(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 500_000 })
-          Factory(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 500_000 })
-          Factory(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 500_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 500_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 500_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 500_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 500_000 })
+          Factory.create(:site_day_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 500_000 })
         end
 
         its(:recommended_plan_name) { should eql "custom" }
@@ -1134,11 +1134,11 @@ describe Site do
         before(:each) do
           @site.unmemoize_all
           @site.plan = @premium_plan
-          Factory(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 500 })
-          Factory(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 500 })
-          Factory(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 500 })
-          Factory(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 500 })
-          Factory(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 500 })
+          Factory.create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 500 })
+          Factory.create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 500 })
+          Factory.create(:site_day_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 500 })
+          Factory.create(:site_day_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 500 })
+          Factory.create(:site_day_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 500 })
         end
 
         its(:recommended_plan_name) { should be_nil }

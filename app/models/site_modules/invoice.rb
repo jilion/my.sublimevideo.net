@@ -331,14 +331,3 @@ private
   end
 
 end
-
-# == Schema Information
-#
-# Table name: sites
-#
-#  first_paid_plan_started_at                 :datetime
-#  plan_started_at                            :datetime
-#  plan_cycle_started_at                      :datetime
-#  plan_cycle_ended_at                        :datetime
-#  next_cycle_plan_id                         :integer
-#

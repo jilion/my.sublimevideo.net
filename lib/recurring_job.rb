@@ -13,9 +13,6 @@ module RecurringJob
     '%RecurringJob%sites_processing%',
     '%RecurringJob%users_processing%',
     '%RecurringJob%tweets_processing%',
-    '%Stat%clear_old_second_stats%',
-    '%Stat%clear_old_minute_stats%',
-    '%Stat%clear_old_hour_stats%',
     '%RecurringJob%stats_processing%'
   ] + LOGS_TASKS
 
@@ -115,9 +112,6 @@ module RecurringJob
       RecurringJob.delay_tweets_processing
 
       # Stats
-      Stat.delay_clear_old_second_stats
-      Stat.delay_clear_old_minute_stats
-      Stat.delay_clear_old_hour_stats
       RecurringJob.delay_stats_processing
     end
 

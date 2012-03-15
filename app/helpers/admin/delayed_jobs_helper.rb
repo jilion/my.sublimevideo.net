@@ -32,13 +32,6 @@ module Admin::DelayedJobsHelper
     when "Module#tweets_processing"
       "Tweets processing"
 
-    when "Module#clear_old_second_stats"
-      "Clear old site/video second stats"
-    when "Module#clear_old_minute_stats"
-      "Clear old site/video minute stats"
-    when "Module#clear_old_hour_stats"
-      "Clear old site/video hour stats"
-
     when "Module#stats_processing"
       "Stats processing"
 
@@ -57,9 +50,6 @@ module Admin::DelayedJobsHelper
       Module#sites_processing
       Module#users_processing
       Module#tweets_processing
-      Module#clear_old_second_stats
-      Module#clear_old_minute_stats
-      Module#clear_old_hour_stats
       Module#stats_processing
     ].include?(job.name)
   end

@@ -25,3 +25,21 @@ feature "Sites pagination:" do
   end
 
 end
+
+feature "Sites page" do
+
+  background do
+    sign_in_as :admin
+    @site = Factory(:site) # this create a billable user
+    Factory(:invoice, site: @site)
+  end
+
+  scenario "page displays well" do
+    go 'admin', "sites/#{@site.to_param}"
+
+    page.should have_content @site.id
+    page.should have_content @site.token
+    page.should have_content @site.hostname
+  end
+
+end

@@ -24,3 +24,19 @@ feature "Users pagination:" do
   end
 
 end
+
+feature "Users page" do
+
+  background do
+    sign_in_as :admin
+    @site = Factory(:site) # this create a billable user
+    Factory(:invoice, site: @site)
+  end
+
+  scenario "page displays well" do
+    go 'admin', "users/#{@site.user.to_param}"
+
+    page.should have_content @site.user.name
+  end
+
+end
