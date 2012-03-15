@@ -3,7 +3,7 @@
 = page_title "WordPress plugin"
 
 :textile
-  This plugin allows you to easily integrate SublimeVideo with your WordPress site. It automatically connects to your #{link_to "SublimeVideo", sites_url(subdomain: 'my'), onclick: 'window.open(this); return false'} account, gathers the necessary license information and provide an easy-to-use visual editor that will help you generate "shortcodes":#shortcode-documentation for your videos.
+  This plugin allows you to easily integrate SublimeVideo with your WordPress site. It automatically connects to your #{link_to "SublimeVideo", sites_url(subdomain: 'my'), onclick: 'window.open(this); return false'} account, gathers the necessary license information and provide an easy-to-use visual editor that will help you generate "shortcodes":#shortcodes for your videos.
 
   Check out the short demo video below to see just how easy it is to use.
 
@@ -60,11 +60,15 @@
   When you're satisfied with the result, click the "Add to my post" button. This will generate and insert a "shortcode":http://codex.wordpress.org/Shortcode into your post.
   If you want to modify this shortcode, please see the next section.
 
-  h3(#shortcode). "Shortcode":#shortcode
+  h3(#shortcodes). "Shortcodes":#shortcodes
 
   A basic generated "shortcode":http://codex.wordpress.org/Shortcode looks like this:
 
-  @[sublimevideo class="sublime" poster="video-poster.jpg" src1="video.mp4" src2="video.ogv" width="640" height="360"]@
+  @[sublimevideo poster="video-poster.jpg" src1="video.mp4" src2="video.ogv" width="640" height="360"]@
+
+  If you want to use the lightbox feature, you can modify this shortcode a bit to make it look like this:
+
+  @[sublimevideo-zoom poster="video-poster.jpg" src1="video.mp4" src2="video.ogv" width="640" height="360"]thumbnail or text[/sublimevideo-zoom]@
 
   h4. Poster frame
 
@@ -116,7 +120,7 @@
 
   Usage: @class="sublime another_class"@
 
-  You can add more classes to the @class@ attribute as long as they are space-separated. Or, you can even remove the _"sublime"_ @class@ entirely if you prefer to use the "JavaScript API":/javascript-api/usage to prepare your @<video>@ elements.
+  By default, the _"sublime"_ @class@ is used but you can add more classes (space-separated) by setting the @class@ attribute. If you do so, be sure to add the _"sublime"_ @class@ manually since defining @class@ overwrite the default. Or, you can even remove the _"sublime"_ @class@ entirely with @class=""@ if you prefer to use the "JavaScript API":/javascript-api/usage to prepare your @<video>@ elements.
 
   h4. CSS style
 
