@@ -84,7 +84,7 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
 
     $('.no_usable_source').show() unless @video.viewable()
 
-    @collection.allUsedNotEmpty().each (source) ->
+    _.each @collection.allUsedNotEmpty(), (source) ->
       if !source.validMimeType()
         $('.mime_type_invalid').show()
         return

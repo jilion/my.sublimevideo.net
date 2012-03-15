@@ -1,7 +1,7 @@
 - if @video.viewable()
   - errors   = { src_invalid: 0, not_found: 0 }
   - warnings = { mime_type_invalid: 0 }
-  - @video.get('sources').allUsedNotEmpty().each (source) ->
+  - _.each @video.get('sources').allUsedNotEmpty(), (source) ->
     - if !source.srcIsUrl()
       - errors['src_invalid'] += 1
     - else if !source.get('found')

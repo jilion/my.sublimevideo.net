@@ -12,7 +12,7 @@ class MSVVideoCodeGenerator.Models.Video extends Backbone.Model
 
   viewable: ->
     result = false
-    this.get('sources').allUsedNotEmpty().each (source) ->
+    _.each this.get('sources').allUsedNotEmpty(), (source) ->
       if source.srcIsUsable()
         result = true
         return

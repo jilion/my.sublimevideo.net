@@ -2,10 +2,9 @@
 
 #= require backbone
 #= require hamlcoffee
-#= require video-size-checker/sublimevideo-size-checker.min.js
+#= require video-size-checker/sublimevideo-size-checker.min
 #= require crc32
 #= require inflection
-#= require spin/jquery.spin
 
 #= require_self
 #= require_tree ./models
