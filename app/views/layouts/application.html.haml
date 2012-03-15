@@ -32,7 +32,7 @@
 
     = yield :head_before
 
-    - if %w[site_stats video_code].exclude?(controller_name)
+    - if %w[site_stats video_codes].exclude?(controller_name)
       = javascript_include_tag(request.subdomain.presence || 'www')
 
     = yield :head

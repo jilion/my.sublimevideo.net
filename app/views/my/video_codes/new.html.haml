@@ -1,7 +1,5 @@
 = content_for :head_before, sublimevideo_include_tag(request.ssl?, SiteToken.my)
-= content_for :head do
-  = stylesheet_link_tag 'video_code_generator'
-  = javascript_include_tag 'video_code_generator'
+= content_for :head, javascript_include_tag('video_code_generator')
 
 = title_and_content_header "Video Code Generator"
 
