@@ -21,7 +21,7 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     @collection.bind 'change:width',           this.renderEmbedWidth
     @collection.bind 'change:height',          this.renderEmbedHeight
 
-    this.render()
+    this.render(true)
 
   initUIHelpers: ->
     @uiHelpers = {}
@@ -40,9 +40,10 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
   #
   # BINDINGS
   #
-  render: ->
+  render: (init=false)->
     $(@el).html this.template(sources: @collection)
-    _.each @collection.models, (source) => this.renderStatus(source)
+    unless init
+      _.each @collection.models, (source) => this.renderStatus(source)
 
     this
 

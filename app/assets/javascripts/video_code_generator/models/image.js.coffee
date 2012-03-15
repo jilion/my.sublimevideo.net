@@ -1,6 +1,7 @@
 class MSVVideoCodeGenerator.Models.Image extends MSVVideoCodeGenerator.Models.Asset
   defaults:
     found: true
+    ratio: 1
 
   setAndPreloadSrc: (src) ->
     unless src is this.get('src')
@@ -40,6 +41,7 @@ class MSVVideoCodeGenerator.Models.Thumbnail extends MSVVideoCodeGenerator.Model
     thumbHeight: null
     magnifyingGlass: false
     found: true
+    ratio: 1
 
   setAndPreloadSrc: (src) ->
     unless src is this.get('src')

@@ -24,16 +24,16 @@ class MSVVideoCodeGenerator.Views.VideoEmbedTypeSelector extends Backbone.View
       $('.login_needed').show()
       $('#login_needed_for_iframe_embed').hide()
 
-    MSVVideoCodeGenerator.video = switch newBuilderClass
-      when 'lightbox'
-        attributes = $.extend({}, attributes, { thumbnail: MSVVideoCodeGenerator.thumbnail })
-        new MSVVideoCodeGenerator.Models.VideoLightbox(attributes)
-      when 'iframe_embed'
-        new MSVVideoCodeGenerator.Models.VideoIframeEmbed(attributes)
-      else
-        new MSVVideoCodeGenerator.Models.Video(attributes)
+      MSVVideoCodeGenerator.video = switch newBuilderClass
+        when 'lightbox'
+          attributes = $.extend({}, attributes, { thumbnail: MSVVideoCodeGenerator.thumbnail })
+          new MSVVideoCodeGenerator.Models.VideoLightbox(attributes)
+        when 'iframe_embed'
+          new MSVVideoCodeGenerator.Models.VideoIframeEmbed(attributes)
+        else
+          new MSVVideoCodeGenerator.Models.Video(attributes)
 
-    @model.set(builderClass: newBuilderClass)
+      @model.set(builderClass: newBuilderClass)
 
   #
   # BINDINGS

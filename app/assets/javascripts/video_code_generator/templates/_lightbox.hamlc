@@ -1,5 +1,6 @@
-%h5 Starting link
-#starting_link
+%h5 Initial link
+
+#initial_link
   .radio_wrap
     - check = @thumbnail.get('initialLink') is 'image'
     %input#initial_link_image(checked=check){ type: "radio", name: "initial_link", value: "image" }
