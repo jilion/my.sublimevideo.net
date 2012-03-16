@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: a91e57354f0199360050670b58c1d3ace2feccbf
+  revision: 91de76b46eca70e296898a1b854231bcb9a83218
   specs:
     guard (1.0.1)
       ffi (>= 0.5.0)
