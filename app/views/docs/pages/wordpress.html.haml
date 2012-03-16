@@ -58,17 +58,25 @@
   h4. Add the video to your post
 
   When you're satisfied with the result, click the "Add to my post" button. This will generate and insert a "shortcode":http://codex.wordpress.org/Shortcode into your post.
-  If you want to modify this shortcode, please see the next section.
+  If you want to modify this shortcode, please see the two next sections.
 
   h3(#shortcodes). "Shortcodes":#shortcodes
+
+  h4. Basic shortcode
 
   A basic generated "shortcode":http://codex.wordpress.org/Shortcode looks like this:
 
   @[sublimevideo poster="video-poster.jpg" src1="video.mp4" src2="video.ogv" width="640" height="360"]@
 
-  If you want to use the lightbox feature, you can modify this shortcode a bit to make it look like this:
+  h4. Floating lightbox shortcode
 
-  @[sublimevideo-zoom poster="video-poster.jpg" src1="video.mp4" src2="video.ogv" width="640" height="360"]thumbnail or text[/sublimevideo-zoom]@
+  If you want to use the floating lightbox feature, the shortcode is slightly different. It is composed of two parts: @[sublimevideo-zoom attributes...]@ and @[/sublimevideo-zoom]@ that wraps the initial element that will trigger the opening of the floating lightbox. Here is a simple example:
+
+  @[sublimevideo-zoom poster="video-poster.jpg" src1="video.mp4" src2="video.ogv" width="640" height="360"]initial element[/sublimevideo-zoom]@
+
+  The initial element can be an image or a simple text. To use an image, simply click the "Add Media" button but when you've made your choice, be sure to set "Link URL" to "None" before clicking the "Insert into Post" button (the floating lightbox takes care of wrapping the initial element inside a link).
+
+  h3(#shortcodes-attributes). "Shortcodes attributes":#shortcodes-attributes
 
   h4. Poster frame
 
@@ -134,17 +142,22 @@
 
   h3(#changelog). "Changelog":#changelog
 
+  h4. 1.3.0
+
+  * Fixed issue: @src1@ declared after @src2@ was leading to a wrong sources' order in the generated code.
+  * Added support for the floating lightbox feature in shortcode.
+
   h4. 1.2.1
 
-  * Fix issue that prevented the HD switch from being displayed in the live preview.
-  * Added support for "style" attribute in shortcode.
+  * Fixed issue: HD switch wasn't displayed in the live preview.
+  * Added support for the "style" attribute in shortcode.
 
   h4. 1.2.0
 
-  * Fix issue with SSL certificate verification.
-  * Ignore the port if any.
-  * Support @data_uid@ and @data_name@ attributes (mapping to @data-uid@ and @data-name@ HTML attribute). See "here":/optimize-for-stats for details.
-  * Support HD sources. See "here":/hd-switching for details.
+  * Fixed issue: SSL certificate verification.
+  * Fixed issue: Custom port was preventing the plugin from working properly.
+  * Added support for the @data_uid@ and @data_name@ attributes (mapping to @data-uid@ and @data-name@ HTML attribute). See "here":/optimize-for-stats for details.
+  * Added support for HD sources. See "here":/hd-switching for details.
 
   h4. 1.1.0
 
