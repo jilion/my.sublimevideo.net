@@ -39,4 +39,5 @@ production:
   logger: false
   op_timeout: 30
   connect_timeout: 30
+  pool_size: 10
 <% end %>
