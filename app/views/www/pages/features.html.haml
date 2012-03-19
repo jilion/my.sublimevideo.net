@@ -81,19 +81,19 @@
       %h3.title= "HD switching"
       %p= "Switch SD-HD video sources with a single click using SublimeVideo's new HD Switch, built straight into the player's UI."
       %p
-        = raw "#{link_to "Learn more", docs_page_url('hd-switching', subdomain: 'docs')}."
+        = raw "#{link_to "Learn more", docs_url('hd-switching')}."
     %section.embed.col.f#embeds
       .i_wrap= image_tag "www/features/embed_icon.png", alt: "Embed"
       %h3.title= "Embed"
       %p= "Your audience can now easily share your videos by embedding them into their own sites or elsewhere on the web."
       %p
-        = raw "#{link_to "Learn more", docs_page_url('embeds', subdomain: 'docs')}."
+        = raw "#{link_to "Learn more", docs_url('embeds')}."
     %section.api.col.f
       .i_wrap= image_tag "www/features/api_icon.png", alt: "Player API"
       %h3.title= "Player API"
       %p= "Our powerful and flexible API gives you the ability to control the player via JavaScript and easily implement custom and advanced functionality."
       %p
-        = raw "#{link_to "Learn more", docs_page_url('javascript-api/usage', subdomain: 'docs')}."
+        = raw "#{link_to "Learn more", docs_url('javascript-api/usage')}."
     .spacer
   %section.column_wrap.second
     %section.js_independent.col.f
@@ -140,5 +140,5 @@
   %section.wordpress.f
     %h3.title= "WordPress plugin"
     == <div style="float:left;clear:left;height:26px;width:14px;"></div><div style="float:left;clear:left;height:26px;width:15px;"></div><div style="float:left;clear:left;height:26px;width:15px;"></div>
-    %p= raw "Our powerful and customizable plugin makes it easier than ever for you to use SublimeVideo in your WordPress installation. Once installed, just click on the SV button in the toolbar to start embedding your videos. #{link_to "Learn more", docs_page_url('wordpress', subdomain: 'docs')}."
+    %p= raw "Our powerful and customizable plugin makes it easier than ever for you to use SublimeVideo in your WordPress installation. Once installed, just click on the SV button in the toolbar to start embedding your videos. #{link_to "Learn more", docs_url('wordpress')}."
   = render "www/sign_up_box"

@@ -1,1 +1,0 @@
-* <span class="label improved">improved</span> Better volume controls interaction in Flash mode (volume slider can be controlled even if mouse exits the volume pane while sliding).

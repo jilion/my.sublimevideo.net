@@ -1,2 +1,0 @@
-* <span class="label new">new</span> Added support for Windows Phone 7.
-* <span class="label improved">improved</span> More compatibility with existing CSS (lightbox visibility could be affected by existing overflow property).

@@ -1,2 +1,0 @@
-* <span class="label fixed">fixed</span> Issue with the "(c)@sublimevideo.prepareAndPlay@":http://docs.sublimevideo.net/javascript-api/methods#prepareAndPlay API method on iOS devices when the method is called on page load or in other situations that are not a consequence of a user tap.
-

@@ -1,4 +1,0 @@
-* <span class="label improved">improved</span> More compatibility with existing CSS (improved positions and box-shadows compatibility)
-* <span class="label fixed">fixed</span> Progress bar width issue in full-window.
-* <span class="label fixed">fixed</span> Volume pane hover bug preventing the full-window button to be clicked.
-* <span class="label fixed">fixed</span> Bug when pressing spacebar during video playback.

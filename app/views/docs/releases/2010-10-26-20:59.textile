@@ -1,1 +1,0 @@
-* <span class="label new">new</span> Lightbox effect can start from a text box too (it doesn't require an @<img>@ inside the @<a>@ element anymore).

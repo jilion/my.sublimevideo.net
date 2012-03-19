@@ -1,3 +1,0 @@
-* <span class="label improved">improved</span> Support for latest Firefox 4 beta 7.
-* <span class="label fixed">fixed</span> Issue on Chrome not filling the buffer bar for fully preloaded videos.
-* <span class="label fixed">fixed</span> A JavaScript error thrown on IE9 (in some cases).

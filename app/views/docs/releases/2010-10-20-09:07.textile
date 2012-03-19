@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Lightbox bug on Windows when clicking the dimmed background to close the lightbox.

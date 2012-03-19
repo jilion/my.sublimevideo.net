@@ -1,2 +1,0 @@
-* <span class="label new">new</span> Added support for Android "Honeycomb" tablets (like the Motorola Xoom and other upcoming Android 3.0 tablets).
-* <span class="label new">new</span> Added AirPlay Video support: you can now send the video to your Apple TV when playing it on your iPhone or iPad (running iOS 4.3 or later).

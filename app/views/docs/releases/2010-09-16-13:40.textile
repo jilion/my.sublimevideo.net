@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> More compatibility with existing CSS (borders and cursor in full-window pane).
-* <span class="label fixed">fixed</span> Issue with styled @<video>@ elements on IE 6 and IE 7.

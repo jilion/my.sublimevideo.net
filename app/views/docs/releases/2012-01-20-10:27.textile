@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Issue with hidden iframe embeds on IE9.

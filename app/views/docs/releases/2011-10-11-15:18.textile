@@ -1,1 +1,0 @@
-* <span class="label new">new</span> Added "True HTML5 fullscreen":http://blog.jilion.com/2011/07/27/world-s-first-true-html5-fullscreen-video support for the upcoming Firefox 10.

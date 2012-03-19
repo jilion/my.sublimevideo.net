@@ -1,2 +1,0 @@
-* <span class="label new">new</span> When Flash is not installed, a message is displayed to invite the user to install the latest version of Adobe Flash.
-* <span class="label fixed">fixed</span> Issue causing a JavaScript error on IE when starting Flash mode.

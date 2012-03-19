@@ -1,1 +1,0 @@
-* <span class="label improved">improved</span> Better compatibility with existing style properties on the video element (margin property).

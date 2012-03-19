@@ -18,13 +18,6 @@ class MyPages
   end
 end
 
-class DocsPages
-  def self.matches?(request)
-    pages = Dir.glob('app/views/docs/pages/**/*.html.haml').map { |p| p.match(%r(app/views/docs/pages/(.*)\.html\.haml))[1] }
-    pages.include?(request.params["page"])
-  end
-end
-
 def https_if_prod_or_staging
   Rails.env.production? || Rails.env.staging? ? 'https' : 'http'
 end
@@ -223,19 +216,6 @@ MySublimeVideo::Application.routes.draw do
       resources :releases, only: [:index, :create, :update]
     end
   end # admin.
-
-  scope module: 'docs', as: 'docs' do
-    constraints subdomain: 'docs' do
-      # Deprecated routes
-      %w[javascript-api js-api].each { |r| match r => redirect('/javascript-api/usage') }
-
-      resources :releases, only: :index
-
-      get '/*page' => 'pages#show', as: :page, constraints: DocsPages, format: false
-
-      root to: redirect('/quickstart-guide')
-    end
-  end
 
   scope module: 'www' do
     constraints(WwwOrNoSubdomain) do

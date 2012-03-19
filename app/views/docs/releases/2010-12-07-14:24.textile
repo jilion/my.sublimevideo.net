@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Issue with the latest build of Chrome 8 preventing some videos from playing.

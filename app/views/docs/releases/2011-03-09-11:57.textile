@@ -1,3 +1,0 @@
-* <span class="label fixed">fixed</span> Issue preventing the elapsed time bar from being properly rendered when dragging the progress indicator to the far left (HTML5 mode).
-* <span class="label fixed">fixed</span> Issue with the "(c)@sublimevideo.onEnd@":http://docs.sublimevideo.net/javascript-api/listeners#onEnd event not being fired after a seek operation occurred (HTML5 mode).
-* <span class="label fixed">fixed</span> Issue preventing the controls bar from disappearing on mouseout after a seek operation occurred (HTML5 mode).

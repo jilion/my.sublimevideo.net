@@ -1,2 +1,0 @@
-* <span class="label new">new</span> "True HTML5 fullscreen":http://blog.jilion.com/2011/07/27/world-s-first-true-html5-fullscreen-video (currently requires Safari 5.1).
-* <span class="label improved">improved</span> Poster frame remains visible immediately after the video starts and while loading (HTML5 mode).

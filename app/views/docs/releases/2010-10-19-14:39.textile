@@ -1,1 +1,0 @@
-* <span class="label new">new</span> Lightbox close button disappears with the controls when mouse cursor is not over the video.

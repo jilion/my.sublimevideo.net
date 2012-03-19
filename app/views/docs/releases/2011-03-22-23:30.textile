@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Bug in the newly released Firefox 4 preventing the buffer bar from being filled (HTML5 mode).

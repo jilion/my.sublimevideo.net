@@ -1,1 +1,0 @@
-* <span class="label improved">improved</span> Performance of lightbox transitions.

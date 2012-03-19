@@ -1,2 +1,0 @@
-* <span class="label fixed">fixed</span> Issue preventing full-window mode from exiting on IE9.
-* <span class="label fixed">fixed</span> Issue preventing the full-window controls pane from being dragged on IE9 (HTML5 mode).

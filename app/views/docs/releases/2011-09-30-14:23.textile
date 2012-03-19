@@ -1,1 +1,0 @@
-* <span class="label new">new</span> API method "(c)@sublimevideo.resize@":http://docs.sublimevideo.net/javascript-api/methods#resize.

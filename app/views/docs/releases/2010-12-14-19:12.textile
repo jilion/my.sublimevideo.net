@@ -1,1 +1,0 @@
-* <span class="label new">new</span> API method "(c)@sublimevideo.load@":http://docs.sublimevideo.net/javascript-api/methods#load that can be used to instantiate the player object in case there are no videos initially on the page (and in case videos are loaded later with AJAX).

@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Bug in IE9 preventing the buffer bar from being filled in some cases (HTML5 mode).

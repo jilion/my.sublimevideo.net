@@ -1,1 +1,0 @@
-* <span class="label improved">improved</span> Re-enabled HTML5 mode support for Opera 11.60 (and later).

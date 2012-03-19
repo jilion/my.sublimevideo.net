@@ -1,1 +1,0 @@
-* <span class="label improved">improved</span> Support for the newly released IE9.

@@ -8,7 +8,7 @@
           %li= link_to "Features", page_url('features', host: request.domain, protocol: 'http')
           %li= link_to "Demo", page_url('demo', host: request.domain, protocol: 'http')
           %li= link_to "Plans & Pricing", page_url('plans', host: request.domain, protocol: 'http')
-          %li= link_to "Player Releases", docs_releases_url(subdomain: 'docs', protocol: 'http')
+          %li= link_to "Player Releases", docs_url('releases')
       .col
         %h4= "Community & Support"
         %ul
