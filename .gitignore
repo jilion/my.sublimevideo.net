@@ -3,7 +3,7 @@ coverage
 rdoc
 *.dat
 public/assets
-config/database.yml
+!config/database.yml
 tmp/restart.txt
 backup.db
 public/uploads
