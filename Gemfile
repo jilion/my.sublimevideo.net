@@ -6,6 +6,8 @@ gem 'rails',                 '3.2.2'
 
 gem 'thin'
 
+gem 'sublimevideo_layout', git: 'git@github.com:jilion/sublimevideo_layout.git'
+
 gem 'prototype-rails',       '~> 3.2.1'
 gem 'modernizr',             '~> 2.5.3'
 gem 'jquery-rails',          '~> 1.0.19'

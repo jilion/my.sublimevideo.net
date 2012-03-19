@@ -89,6 +89,16 @@ GIT
       newrelic_rpm (>= 3.1.1)
       newrelic_rpm (>= 3.1.1)
 
+GIT
+  remote: git@github.com:jilion/sublimevideo_layout.git
+  revision: b64c2da46b5329e581f2b272c7f44a297daad046
+  specs:
+    sublimevideo_layout (0.0.1)
+      coffee-rails (~> 3.2.0)
+      haml
+      prototype-rails (~> 3.2.0)
+      rails (~> 3.2.0)
+
 GEM
   remote: https://rubygems.org/
   remote: https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/
@@ -595,6 +605,7 @@ DEPENDENCIES
   squeel (~> 0.9.5)
   stat_request_parser (~> 1.1.0)
   state_machine (~> 1.1.2)
+  sublimevideo_layout!
   taps
   thin
   timecop
