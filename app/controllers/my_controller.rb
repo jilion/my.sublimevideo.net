@@ -15,11 +15,15 @@ private
   end
 
   def info_for_paper_trail
-    { admin_id: current_admin_id, ip: request.remote_ip }
+    { admin_id: current_admin_id, ip: current_ip }
   end
 
   def current_admin_id
     current_admin.try(:id) rescue nil
+  end
+
+  def current_ip
+    request.remote_ip rescue nil
   end
 
   def find_sites_or_redirect_to_new_site
