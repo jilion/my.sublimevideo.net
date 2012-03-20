@@ -37,7 +37,8 @@ private
     cookies[:l] = {
       value: '1',
       expires: 2.weeks.from_now,
-      domain: :all
+      domain: :all,
+      secure: false
     }
   end
 
