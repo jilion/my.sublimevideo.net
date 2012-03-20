@@ -80,15 +80,6 @@ GIT
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
 
-GIT
-  remote: git://github.com/titanous/rpm_contrib.git
-  revision: 5ba7563619e0e5c851e6cec6a1e36716341d8045
-  branch: mongoid-instrumentation
-  specs:
-    rpm_contrib (2.1.6.beta1)
-      newrelic_rpm (>= 3.1.1)
-      newrelic_rpm (>= 3.1.1)
-
 GEM
   remote: https://rubygems.org/
   remote: https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/
@@ -400,6 +391,9 @@ GEM
       railties (~> 3.1)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    rpm_contrib (2.1.8)
+      newrelic_rpm (>= 3.1.1)
+      newrelic_rpm (>= 3.1.1)
     rspec (2.9.0)
       rspec-core (~> 2.9.0)
       rspec-expectations (~> 2.9.0)
@@ -582,7 +576,7 @@ DEPENDENCIES
   request-log-analyzer (~> 1.12.0)
   rescue_me (~> 0.1.1)!
   responders (~> 0.7.0)
-  rpm_contrib!
+  rpm_contrib
   rspec-rails
   ruby_gntp
   sass-rails (~> 3.2.0)
