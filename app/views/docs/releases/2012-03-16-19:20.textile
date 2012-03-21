@@ -1,0 +1,1 @@
+* <span class="label fixed">fixed</span> Issue with protocol agnostic source URLs on IE6-8.

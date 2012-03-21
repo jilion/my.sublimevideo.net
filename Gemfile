@@ -121,7 +121,7 @@ group :production do
 end
 
 group :staging, :production do
-  gem 'rpm_contrib', git: 'git://github.com/titanous/rpm_contrib.git', branch: 'mongoid-instrumentation'
+  gem 'rpm_contrib'
   gem 'newrelic_rpm'
   gem 'rack-ssl-enforcer'
 end
