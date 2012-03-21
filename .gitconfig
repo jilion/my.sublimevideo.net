@@ -17,6 +17,7 @@
 [remote "staging"]
   url   = git@heroku.com:sublimevideo-staging.git
   fetch = +refs/heads/master:refs/remotes/staging/master
+  push  = HEAD:master
 
 [remote "production"]
   url   = git@heroku.com:sublimevideo.git
