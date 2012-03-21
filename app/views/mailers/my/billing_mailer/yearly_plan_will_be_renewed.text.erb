@@ -1,0 +1,33 @@
+Your <%= @site.plan.name.titleize %> plan's for <%= @site.hostname %> will be renewed in 5 days (on <%= l(@site.plan_cycle_ended_at.tomorrow, format: :named_date) %>).
+
+If you want to update your plan before this date, you can do it via the following link:
+
+<%= edit_site_plan_url(@site, protocol: 'https', subdomain: 'my') %>
+
+<% if @user.cc_expired? %>
+
+Also, we noticed that your credit card has expired.
+
+Please update your credit card information via the following link:
+
+<%= edit_billing_url(protocol: 'https', subdomain: 'my') %>
+
+<% elsif @user.cc_expire_this_month? %>
+
+Also, we noticed that your credit card expires at the end of this month.
+
+Please update your credit card information via the following link:
+
+<%= edit_billing_url(protocol: 'https', subdomain: 'my') %>
+
+<% elsif !@user.cc? %>
+
+In order to prevent any charging issue, you'll need to provide valid credit card details via the following link:</p>
+
+<%= edit_billing_url(protocol: 'https', subdomain: 'my') %>
+
+<% end %>
+
+Thank you for choosing SublimeVideo!
+
+If you have any questions, please email <%= I18n.t("mailer.billing.email") %>.
