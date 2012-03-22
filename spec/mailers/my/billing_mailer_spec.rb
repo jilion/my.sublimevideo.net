@@ -43,85 +43,6 @@ describe My::BillingMailer do
       end
     end
 
-    describe "#yearly_plan_will_be_renewed" do
-      before do
-        @yearly_plan  = create(:plan, cycle: 'year')
-      end
-      after { Timecop.return }
-
-      context "user has a cc that won't expire this month" do
-        before do
-          @site = create(:site_not_in_trial, user: @user, plan_id: @yearly_plan.id)
-
-          Timecop.travel((1.year - 5.days).from_now)
-          @user.update_attribute(:cc_expire_on, 2.months.from_now.end_of_month.to_date)
-          @user.should_not be_cc_expire_this_month
-          described_class.yearly_plan_will_be_renewed(@site).deliver
-          @last_delivery = ActionMailer::Base.deliveries.last
-        end
-
-        it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.yearly_plan_will_be_renewed', hostname: @site.hostname) }
-        it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
-        it { @last_delivery.body.encoded.should include I18n.l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date) }
-        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
-        it { @last_delivery.body.encoded.should_not include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
-      end
-
-      context "user has a cc that will expire this month" do
-        before do
-          @site = create(:site_not_in_trial, user: @user, plan_id: @yearly_plan.id)
-
-          Timecop.travel((1.year - 5.days).from_now)
-          @user.update_attribute(:cc_expire_on, Time.now.utc.end_of_month.to_date)
-          @user.should be_cc_expire_this_month
-          described_class.yearly_plan_will_be_renewed(@site).deliver
-          @last_delivery = ActionMailer::Base.deliveries.last
-        end
-
-        it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.yearly_plan_will_be_renewed', hostname: @site.hostname) }
-        it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
-        it { @last_delivery.body.encoded.should include I18n.l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date) }
-        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
-        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
-      end
-
-      context "user has a cc that is expired" do
-        before do
-          @site = create(:site_not_in_trial, user: @user, plan_id: @yearly_plan.id)
-
-          Timecop.travel((1.year - 5.days).from_now)
-          @user.update_attribute(:cc_expire_on, 1.day.ago)
-          @user.should be_cc_expired
-          described_class.yearly_plan_will_be_renewed(@site).deliver
-          @last_delivery = ActionMailer::Base.deliveries.last
-        end
-
-        it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.yearly_plan_will_be_renewed', hostname: @site.hostname) }
-        it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
-        it { @last_delivery.body.encoded.should include I18n.l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date) }
-        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
-        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
-      end
-
-      context "user has no cc" do
-        before do
-          @user.reset_credit_card_info
-          @user.should_not be_cc
-          @site = create(:site_not_in_trial, user: @user, plan_id: @yearly_plan.id)
-
-          Timecop.travel((1.year - 5.days).from_now)
-          described_class.yearly_plan_will_be_renewed(@site).deliver
-          @last_delivery = ActionMailer::Base.deliveries.last
-        end
-
-        it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.yearly_plan_will_be_renewed', hostname: @site.hostname) }
-        it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
-        it { @last_delivery.body.encoded.should include I18n.l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date) }
-        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
-        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
-      end
-    end
-
     describe "#trial_will_expire" do
       before do
         @site.reload
@@ -148,6 +69,78 @@ describe My::BillingMailer do
       it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_has_expired', hostname: @site.hostname, count: 1) }
       it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
       it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
+    end
+
+    describe "#yearly_plan_will_be_renewed" do
+      before do
+        @yearly_plan  = create(:plan, cycle: 'year')
+      end
+      after { Timecop.return }
+
+      context "user has a cc that won't expire this month" do
+        before do
+          @site = create(:site_not_in_trial, user: @user, plan_id: @yearly_plan.id)
+
+          Timecop.travel((1.year - 5.days).from_now)
+          @user.update_attribute(:cc_expire_on, 2.months.from_now.end_of_month.to_date)
+          @user.should_not be_cc_expire_this_month
+          described_class.yearly_plan_will_be_renewed(@site).deliver
+          @last_delivery = ActionMailer::Base.deliveries.last
+        end
+
+        it { @last_delivery.subject.should          eq       I18n.t('mailer.billing_mailer.yearly_plan_will_be_renewed', hostname: @site.hostname, date: I18n.l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date)) }
+        it { @last_delivery.subject.should          include  @site.hostname }
+        it { @last_delivery.body.encoded.should     include "Dear #{@user.name}," }
+        it { @last_delivery.body.encoded.should     include @site.hostname }
+        it { @last_delivery.body.encoded.should     include I18n.l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date) }
+        it { @last_delivery.body.encoded.should     include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
+        it { @last_delivery.body.encoded.should_not include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
+      end
+
+      context "user has a cc that will expire this month" do
+        before do
+          @site = create(:site_not_in_trial, user: @user, plan_id: @yearly_plan.id)
+
+          Timecop.travel((1.year - 5.days).from_now)
+          @user.update_attribute(:cc_expire_on, Time.now.utc.end_of_month.to_date)
+          @user.should be_cc_expire_this_month
+          described_class.yearly_plan_will_be_renewed(@site).deliver
+          @last_delivery = ActionMailer::Base.deliveries.last
+        end
+
+        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
+        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
+      end
+
+      context "user has a cc that is expired" do
+        before do
+          @site = create(:site_not_in_trial, user: @user, plan_id: @yearly_plan.id)
+
+          Timecop.travel((1.year - 5.days).from_now)
+          @user.update_attribute(:cc_expire_on, 1.day.ago)
+          @user.should be_cc_expired
+          described_class.yearly_plan_will_be_renewed(@site).deliver
+          @last_delivery = ActionMailer::Base.deliveries.last
+        end
+
+        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
+        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
+      end
+
+      context "user has no cc" do
+        before do
+          @user.reset_credit_card_info
+          @user.should_not be_cc
+          @site = create(:site_not_in_trial, user: @user, plan_id: @yearly_plan.id)
+
+          Timecop.travel((1.year - 5.days).from_now)
+          described_class.yearly_plan_will_be_renewed(@site).deliver
+          @last_delivery = ActionMailer::Base.deliveries.last
+        end
+
+        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.to_param}/plan/edit" }
+        it { @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/account/billing/edit" }
+      end
     end
 
     describe "#credit_card_will_expire" do

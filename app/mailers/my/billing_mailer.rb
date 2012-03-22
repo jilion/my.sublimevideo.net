@@ -14,15 +14,6 @@ class My::BillingMailer < MyMailer
     )
   end
 
-  def yearly_plan_will_be_renewed(site)
-    extract_site_and_user(site)
-
-    mail(
-      to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.yearly_plan_will_be_renewed", hostname: @site.hostname)
-    )
-  end
-
   def trial_will_expire(site)
     extract_site_and_user(site)
     @days_until_end = full_days_until_trial_end(@site)
@@ -49,6 +40,16 @@ class My::BillingMailer < MyMailer
     mail(
       to: to(@user),
       subject: I18n.t("mailer.billing_mailer.trial_has_expired", hostname: @site.hostname)
+    )
+  end
+
+  def yearly_plan_will_be_renewed(site)
+    extract_site_and_user(site)
+    @formatted_renewal_date = I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :named_date)
+
+    mail(
+      to: to(@user),
+      subject: I18n.t("mailer.billing_mailer.yearly_plan_will_be_renewed", hostname: @site.hostname, date: @formatted_renewal_date)
     )
   end
 
