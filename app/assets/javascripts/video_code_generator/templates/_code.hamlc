@@ -24,12 +24,12 @@
       %ul
         %li.notice.warning= "#{warnings['mime_type_invalid']} source#{if warnings['mime_type_invalid'] > 1 then 's seem' else ' seems'} to have an invalid MIME Type."
 
-  != this.embedTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video)
-  .spacer
-
   - if @builder.get('builderClass') is 'iframe_embed'
     != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, videoTagTemplate: @videoTagTemplate)
     .spacer
+
+  != this.embedTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video)
+  .spacer
 
   - if @builder.get('builderClass') is 'lightbox' and @video.get('thumbnail').get('magnifyingGlass')
     != @cssTemplate(video: @video)
