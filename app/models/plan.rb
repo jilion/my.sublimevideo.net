@@ -38,6 +38,7 @@ class Plan < ActiveRecord::Base
   scope :paid_plans,     where { name << ["free", "sponsored"] }
   scope :standard_plans, where { name >> STANDARD_NAMES }
   scope :custom_plans,   where { name =~ "custom%" }
+  scope :yearly_plans,   where { cycle == "year" }
 
   # =================
   # = Class Methods =

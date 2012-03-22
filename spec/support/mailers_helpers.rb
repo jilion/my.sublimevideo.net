@@ -37,6 +37,10 @@ module Spec
               @last_delivery.content_type.should =~ options[:content_type]
             end
 
+            it "should find the translation for the subject" do
+              @last_delivery.subject.should_not =~ /translation missing/
+            end
+
             it "should include the default signature" do
               @last_delivery.body.encoded.should include I18n.t("mailer.signature")
             end
