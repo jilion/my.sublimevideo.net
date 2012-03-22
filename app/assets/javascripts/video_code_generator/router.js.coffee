@@ -3,9 +3,14 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     @loggedIn = options['logged_in']
     @sites    = options['sites']
 
+    this.handlePublicClass()
     this.initModels()
     this.initViews()
     sublimevideo.load()
+
+  handlePublicClass: ->
+    unless @loggedIn
+      $('body').addClass('mysv_public')
 
   initModels: ->
     MSVVideoCodeGenerator.sites = new MSV.Collections.Sites(@sites)
