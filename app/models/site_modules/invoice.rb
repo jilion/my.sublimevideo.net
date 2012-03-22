@@ -3,14 +3,16 @@ module SiteModules::Invoice
 
   module ClassMethods
     def send_yearly_plan_will_be_renewed
-      Site.not_in_trial.in_plan_id(Plan.yearly_plans.map(&:id)).plan_will_be_renewed_on(5.days.from_now).find_each(batch_size: 100) do |site|
+      Site.not_in_trial.in_plan_id(Plan.yearly_plans.map(&:id)).plan_will_be_renewed_on(5.days.from_now).
+      find_each(batch_size: 100) do |site|
         My::BillingMailer.yearly_plan_will_be_renewed(site).deliver!
       end
     end
 
     def send_trial_will_expire
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
-        Site.in_trial.paid_plan.where(first_paid_plan_started_at: nil).trial_expires_on(days_before_trial_end.days.from_now).find_each(batch_size: 100) do |site|
+        Site.in_trial.paid_plan.where(first_paid_plan_started_at: nil).trial_expires_on(days_before_trial_end.days.from_now).
+        find_each(batch_size: 100) do |site|
           My::BillingMailer.trial_will_expire(site).deliver! unless site.user.credit_card?
         end
       end
