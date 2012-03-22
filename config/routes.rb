@@ -1,16 +1,3 @@
-class WwwOrNoSubdomain
-  def self.matches?(request)
-    request.subdomain.blank? || request.subdomain == 'www'
-  end
-end
-
-class WwwPages
-  def self.matches?(request)
-    pages = Dir.glob('app/views/www/pages/*.html.haml').map { |p| p.match(%r(app/views/www/pages/(.*)\.html\.haml))[1] }
-    pages.include?(request.params["page"])
-  end
-end
-
 class MyPages
   def self.matches?(request)
     pages = Dir.glob('app/views/my/pages/*.html.haml').map { |p| p.match(%r(app/views/my/pages/(.*)\.html\.haml))[1] }
@@ -216,40 +203,5 @@ MySublimeVideo::Application.routes.draw do
       resources :releases, only: [:index, :create, :update]
     end
   end # admin.
-
-  scope module: 'www' do
-    constraints(WwwOrNoSubdomain) do
-      # Redirects
-      %w[signup sign_up register].each { |action| get action => redirect('/?p=signup') }
-      %w[login log_in sign_in signin].each { |action| get action => redirect('/?p=login') }
-
-      # Docs routes
-      %w[javascript-api releases].each do |path|
-        get path => redirect { |params, req| "http://docs.#{req.domain}/#{path}" }
-      end
-
-      # My routes
-      %w[privacy terms sites account].each do |path|
-        match path => redirect { |params, req| "#{https_if_prod_or_staging}://my.#{req.domain}/#{path}" }
-      end
-      authenticated :user do
-        %w[help].each do |path|
-          get path => redirect { |params, req| "#{https_if_prod_or_staging}://my.#{req.domain}/#{path}" }
-        end
-      end
-
-      match '/notify(/:anything)' => redirect('/')
-      match '/enthusiasts(/:anything)' => redirect('/')
-
-      get '/pr/:page' => 'press_releases#show', as: :pr, format: false
-      get '/press-kit' => redirect('http://cl.ly/433P3t1P2a1m202w2Y3D/content'), as: :press_kit
-
-      get '/:page' => 'pages#show', as: :page, constraints: WwwPages, format: false
-
-      get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
-
-      root to: 'pages#show', page: 'home', format: :html
-    end
-  end
 
 end
