@@ -5,4 +5,8 @@
   %span#poster_src_invalid.inline_alert{ style: "display:none" } Please provide a valid image URL
   %span#poster_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
 
-.big_break
+%p.note><
+  != "Need help creating poster frames for your videos? Read our&nbsp;"
+  %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/create-poster-frame", onclick: "window.open(this); return false" }><
+    documentation
+  = "."

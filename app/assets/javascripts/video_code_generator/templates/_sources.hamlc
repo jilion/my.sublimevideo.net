@@ -5,9 +5,9 @@
 #global_warnings.notices
   %ul
     %li.notice.mime_type_invalid{ style: 'display: none' }><
-      != "Please find more information on how to fix MIME Type misconfiguration&nbsp;"
+      != "Please find more information on how to fix MIME Type misconfiguration in our&nbsp;"
       %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting#videos-dont-start-playing", onclick: "window.open(this); return false" }><
-        in our documentation
+        documentation
       = "."
 
 - for format, formatTitle of { mp4: 'MP4', webmogg: 'WebM or Ogg' }
@@ -34,3 +34,8 @@
 
 .spacer
 
+%p.note><
+  != "Need help encoding your video sources? Read our&nbsp;"
+  %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/encode-videos-for-the-web", onclick: "window.open(this); return false" }><
+    documentation
+  = "."

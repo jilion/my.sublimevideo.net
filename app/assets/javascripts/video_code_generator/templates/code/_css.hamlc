@@ -1,7 +1,7 @@
 %br/
 Add this CSS to your stylesheets or directly in the page inside a
 %code= "<style></style>"
-element.
+element to add a magnifying glass icon over your lightbox trigger image.
 
 %form
   .embed_code.entry

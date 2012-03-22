@@ -1,4 +1,4 @@
-= "The content of #{@iframe.get('src')} (loaded by the <iframe>). This page must be hosted on #{if @loader.get('site') then @loader.get('site').get('hostname') else 'a domain registered on MySublimeVideo'}."
+!= "This is the HTML for the simple page that will contain the video you wish to embed. Simply paste this code into a new page hosted at <code>#{@iframe.get('src')}</code>."
 
 %form
   .embed_code.entry

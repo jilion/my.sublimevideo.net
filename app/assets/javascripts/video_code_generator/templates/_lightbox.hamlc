@@ -1,4 +1,11 @@
+.intro
+  %p SublimeVideo comes with integrated zooming capabilities to load and display videos in a floating “lightbox”.
+
 %h5 Initial link
+
+%p.note
+  When clicked, the lightbox trigger will launch the player in a lightbox.
+  The trigger can be either an image or text.
 
 #initial_link
   .radio_wrap

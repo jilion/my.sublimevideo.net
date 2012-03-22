@@ -32,10 +32,9 @@
 - else
   %p
     This is the
-    %code &lt;video&gt;
-    element generated from the assets and settings you've set.
-  %p
-    Simply copy the code below and paste it into your page at the place where you'd like your video to appear.
+    %code= "<video>"
+    code generated from the assets and settings you provided.
+  %p Simply copy the code below and paste it into your page where you'd like your video to appear.
 
   %form
     .embed_code.entry

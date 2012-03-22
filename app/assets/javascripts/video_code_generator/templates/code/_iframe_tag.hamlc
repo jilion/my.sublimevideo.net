@@ -1,4 +1,4 @@
-You need to set the src, width and height attributes and leave the others as they are.
+This is the code your audience can use to embed your video on their sites and around the Web.
 
 %form
   .embed_code.entry

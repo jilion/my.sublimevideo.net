@@ -1,5 +1,9 @@
 .content_left
   %h4 Settings
+
+  %p.note
+    Make sure that 'Keep original ratio' is checked unless you specifically want to stretch your video to a new aspect ratio.
+
   %h5 Size
   .dimensions.entry.size{ style: "float:left" }
     %input#embed_width.text.no_icon{ type: "text", value: @source.get('embedWidth'), size: 4, maxlength: 4 }
@@ -26,9 +30,9 @@
   %h4 Stats
 
   %p.note><
-    != "These attributes are useful to optimize your videos for the&nbsp;"
-    %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/optimize-for-stats", onclick: "window.open(this); return false" }><
-      Universal Real-Time Statistics feature
+    != "Fill in these attributes to optimize your videos for SublimeVideo's&nbsp;"
+    %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/real-time-stats", onclick: "window.open(this); return false" }><
+      Universal Real-Time Statistics platform
     = "."
 
   %h5
