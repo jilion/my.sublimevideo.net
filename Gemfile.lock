@@ -1,12 +1,12 @@
 GIT
   remote: git://github.com/ctran/annotate_models.git
-  revision: a43c08f0eb4d69a48c6830630ebb60e35ccb2d2d
+  revision: ff1131daee8c03dbcc4966b7914b77a7e3a62f02
   specs:
     annotate (2.4.1.beta1)
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 80025dc555dacc0fd8e793657827b091c0209bce
+  revision: 8611541b3934735c7af8ccfcddd7eaa0be91eba1
   specs:
     guard (1.0.1)
       ffi (>= 0.5.0)
@@ -14,19 +14,9 @@ GIT
 
 GIT
   remote: git://github.com/jilion/useragent.git
-  revision: 179acf1ff70bfdf8da53fddb18f2d8a009344eed
+  revision: 923ab1e668bc60389ab1e7a983ca72c5b4a14a6f
   specs:
     useragent (0.2.3)
-
-GIT
-  remote: git://github.com/mongoid/mongoid.git
-  revision: 08170f553f1c02d9d0f46cc0d9a74b602a9ec358
-  branch: 2.4.0-stable
-  specs:
-    mongoid (2.4.7)
-      activemodel (~> 3.1)
-      mongo (~> 1.3)
-      tzinfo (~> 0.3.22)
 
 GIT
   remote: git://github.com/pauldix/feedzirra.git
@@ -183,7 +173,7 @@ GEM
     currencies (0.4.0)
     daemons (1.1.8)
     dalli (1.1.5)
-    database_cleaner (0.7.1)
+    database_cleaner (0.7.2)
     delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
@@ -300,7 +290,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     method_source (0.7.1)
-    mime-types (1.17.2)
+    mime-types (1.18)
     modernizr (2.5.3)
       sprockets (~> 2.0)
     money (4.0.2)
@@ -308,6 +298,10 @@ GEM
       json
     mongo (1.6.1)
       bson (~> 1.6.1)
+    mongoid (2.4.7)
+      activemodel (~> 3.1)
+      mongo (~> 1.3)
+      tzinfo (~> 0.3.22)
     multi_json (1.0.4)
     multi_xml (0.4.2)
     multipart-post (1.1.5)
@@ -552,7 +546,7 @@ DEPENDENCIES
   mime-types
   modernizr (~> 2.5.3)
   mongo (~> 1.6.0)
-  mongoid!
+  mongoid (~> 2.4.7)
   newrelic_rpm
   oauth (~> 0.4.5)
   oauth-plugin (~> 0.4.0.pre7)
