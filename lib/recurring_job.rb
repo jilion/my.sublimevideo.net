@@ -75,6 +75,7 @@ module RecurringJob
 
     def sites_processing(priority=PRIORITIES[:sites])
       Site.delay(priority: priority).send_trial_will_expire
+      Site.delay(priority: priority).send_yearly_plan_will_be_renewed
       Site.delay(priority: priority).monitor_sites_usages
       Site.delay(priority: priority).update_last_30_days_counters_for_not_archived_sites
 

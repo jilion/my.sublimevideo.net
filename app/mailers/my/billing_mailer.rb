@@ -6,8 +6,7 @@ class My::BillingMailer < MyMailer
                           # I don't feel dirty doing this since the email's subject IS a view so...
 
   def trial_has_started(site)
-    @site = site
-    @user = site.user
+    extract_site_and_user(site)
 
     mail(
       to: to(@user),
@@ -16,9 +15,9 @@ class My::BillingMailer < MyMailer
   end
 
   def trial_will_expire(site)
-    @site = site
-    @user = site.user
+    extract_site_and_user(site)
     @days_until_end = full_days_until_trial_end(@site)
+
     key = case @days_until_end
     when 1
       'today'
@@ -35,13 +34,22 @@ class My::BillingMailer < MyMailer
   end
 
   def trial_has_expired(site, trial_plan)
-    @site = site
+    extract_site_and_user(site)
     @trial_plan = trial_plan
-    @user = site.user
 
     mail(
       to: to(@user),
       subject: I18n.t("mailer.billing_mailer.trial_has_expired", hostname: @site.hostname)
+    )
+  end
+
+  def yearly_plan_will_be_renewed(site)
+    extract_site_and_user(site)
+    @formatted_renewal_date = I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :named_date)
+
+    mail(
+      to: to(@user),
+      subject: I18n.t("mailer.billing_mailer.yearly_plan_will_be_renewed", hostname: @site.hostname, date: @formatted_renewal_date)
     )
   end
 
@@ -56,7 +64,7 @@ class My::BillingMailer < MyMailer
 
   def transaction_succeeded(transaction)
     @transaction = transaction
-    @user = transaction.user
+    @user        = transaction.user
 
     mail(
       to: to(@user),
@@ -66,7 +74,7 @@ class My::BillingMailer < MyMailer
 
   def transaction_failed(transaction)
     @transaction = transaction
-    @user = transaction.user
+    @user        = transaction.user
 
     mail(
       to: to(@user),
@@ -76,12 +84,19 @@ class My::BillingMailer < MyMailer
 
   def too_many_charging_attempts(invoice)
     @invoice = invoice
-    @user = invoice.user
+    @user    = invoice.user
 
     mail(
       to: to(@user),
       subject: I18n.t('mailer.billing_mailer.too_many_charging_attempts', hostname: @invoice.site.hostname)
     )
+  end
+
+private
+
+  def extract_site_and_user(site)
+    @site = site
+    @user = site.user
   end
 
 end

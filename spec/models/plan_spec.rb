@@ -24,6 +24,14 @@ describe Plan do
     specify { Plan.paid_plans.all.should =~ [@paid_plan, @custom_plan] }
     specify { Plan.standard_plans.all.should =~ [@paid_plan] }
     specify { Plan.custom_plans.all.should =~ [@custom_plan] }
+    context "with yearly plans" do
+      before(:all) do
+        @yearly_plan1 = create(:plan, cycle: 'year')
+        @yearly_plan2 = create(:plan, cycle: 'year')
+      end
+
+      specify { Plan.yearly_plans.all.should =~ [@yearly_plan1, @yearly_plan2] }
+    end
   end
 
   describe "Associations" do

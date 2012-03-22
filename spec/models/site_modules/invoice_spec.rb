@@ -4,6 +4,57 @@ describe SiteModules::Invoice do
 
   describe "Class Methods" do
 
+    describe ".send_yearly_plan_will_be_renewed" do
+      before(:all) do
+        Site.delete_all
+        @yearly_plan  = create(:plan, cycle: 'year')
+        @user         = create(:user)
+        @monthly_site = create(:site_not_in_trial, user: @user)
+        @yearly_site  = create(:site_not_in_trial, user: @user, plan_id: @yearly_plan.id)
+        create(:site_not_in_trial, state: 'archived', user: @user, plan_id: @yearly_plan.id)
+      end
+
+      context "5 days before renewal of the monthly site" do
+        before { Timecop.travel((1.month - 5.days).from_now) }
+        after { Timecop.return }
+
+        it "doesn't send 'yearly plan will be renewed' email" do
+          ActionMailer::Base.deliveries.clear
+          expect { Site.send_yearly_plan_will_be_renewed }.to_not change(ActionMailer::Base.deliveries, :size)
+        end
+      end
+
+      context "6 days before renewal of the yearly site" do
+        before { Timecop.travel((1.year - 6.days).from_now) }
+        after { Timecop.return }
+
+        it "doesn't send 'yearly plan will be renewed' email" do
+          ActionMailer::Base.deliveries.clear
+          expect { Site.send_yearly_plan_will_be_renewed }.to_not change(ActionMailer::Base.deliveries, :size)
+        end
+      end
+
+      context "5 days before renewal of the yearly site" do
+        before { Timecop.travel((1.year - 5.days).from_now) }
+        after { Timecop.return }
+
+        it "sends 'yearly plan will be renewed' email" do
+          ActionMailer::Base.deliveries.clear
+          expect { Site.send_yearly_plan_will_be_renewed }.to change(ActionMailer::Base.deliveries, :size).by(1)
+        end
+      end
+
+      context "4 days before renewal of the yearly site" do
+        before { Timecop.travel((1.year - 4.days).from_now) }
+        after { Timecop.return }
+
+        it "doesn't send 'yearly plan will be renewed' email" do
+          ActionMailer::Base.deliveries.clear
+          expect { Site.send_yearly_plan_will_be_renewed }.to_not change(ActionMailer::Base.deliveries, :size)
+        end
+      end
+    end
+
     describe ".send_trial_will_expire" do
       before(:all) do
         Site.delete_all
@@ -18,11 +69,6 @@ describe SiteModules::Invoice do
           @sites_not_in_trial << Factory.create(:site, user: @user_with_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
           @sites_in_trial << Factory.create(:site, user: @user_without_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
         end
-      end
-
-      it "delays itself" do
-        Site.should_receive(:send_trial_will_expire)
-        Site.send_trial_will_expire
       end
 
       it "sends 'trial will end' email" do
