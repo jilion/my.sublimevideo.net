@@ -1,7 +1,0 @@
-$('sites_table_wrap').update("<%= escape_javascript(render 'sites') %>");
-$('table_spinner').hide();
-<% if params[:search] %>
-  $('sites_title').update("<%= admin_sites_page_title(@sites) %>");
-<% end %>
-$(document.body).scrollTo();
-$('search_button').disabled = false;
