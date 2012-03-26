@@ -70,9 +70,9 @@
 
   h4. Floating lightbox shortcode
 
-  If you want to use the floating lightbox feature, the shortcode is slightly different. It is composed of two parts: @[sublimevideo-zoom attributes...]@ and @[/sublimevideo-zoom]@ that wraps the initial element that will trigger the opening of the floating lightbox. Here is a simple example:
+  If you want to use the floating lightbox feature, the shortcode is slightly different. It is composed of two parts: @[sublimevideo-lightbox attributes...]@ and @[/sublimevideo-lightbox]@ that wraps the initial element that will trigger the opening of the floating lightbox. Here is a simple example:
 
-  @[sublimevideo-zoom poster="video-poster.jpg" src1="video.mp4" src2="video.ogv" width="640" height="360"]initial element[/sublimevideo-zoom]@
+  @[sublimevideo-lightbox poster="video-poster.jpg" src1="video.mp4" src2="video.ogv" width="640" height="360"]initial element[/sublimevideo-lightbox]@
 
   The initial element can be an image or a simple text. To use an image, simply click the "Add Media" button but when you've made your choice, be sure to set "Link URL" to "None" before clicking the "Insert into Post" button (the floating lightbox takes care of wrapping the initial element inside a link).
 
@@ -141,6 +141,10 @@
   It's probably because your WordPress site's domain is not properly registered in your #{link_to "SublimeVideo", sites_url(subdomain: 'my')} account. Please find the possible reasons why in the "Troubleshooting":/troubleshooting#not-properly-registered page.
 
   h3(#changelog). "Changelog":#changelog
+
+  h4. 1.3.1
+
+  * Update: the lightbox shortcode is now @[sublimevideo-lightbox][/sublimevideo-lightbox]@.
 
   h4. 1.3.0
 
