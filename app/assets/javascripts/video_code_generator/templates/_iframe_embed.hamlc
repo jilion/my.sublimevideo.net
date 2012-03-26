@@ -1,16 +1,17 @@
 - if !MSVVideoCodeGenerator.builderRouter.loggedIn
-  %p><
-    != "Please&nbsp;"
-    %a.hl{ href: "https://my.#{SublimeVideo.topDomainHost()}/login?user_return_to=/video-code-generator" }><
-      Log In
-    != "&nbsp;or&nbsp;"
-    %a.hl{ href: "https://my.#{SublimeVideo.topDomainHost()}/signup?user_return_to=/video-code-generator" }><
-      Sign Up
-    != "&nbsp;to generate an iframe embed code."
+  .help_list
+    %p><
+      != "Please&nbsp;"
+      %a.hl{ href: "https://my.#{SublimeVideo.topDomainHost()}/login?user_return_to=/video-code-generator" }><
+        Log In
+      != "&nbsp;or&nbsp;"
+      %a.hl{ href: "https://my.#{SublimeVideo.topDomainHost()}/signup?user_return_to=/video-code-generator" }><
+        Sign Up
+      != "&nbsp;to generate an iframe embed code."
 
-  %p To create an iframe embed code the generator must have access to the iframe source's site-specific token.
+    %p To create an iframe embed code the generator must have access to the iframe source's site-specific token.
 - else
-  .intro
+  .help_list
     %p SublimeVideo embeds allow your audience to easily share your videos by embedding them into their own sites or elsewhere on the Web.
 
     %p><
@@ -28,17 +29,17 @@
       - select = @sites.selectedSite is site
       %option(selected=select){ value: site.get('token') }= site.title()
 
-  .entry
-    %h4 Iframe source
+  %h4 Iframe source
 
-    %p.note
-      The iframe source must be the URL of the actual page containing the
-      %code= "<video>"
-      element – the page must be hosted on #{@loader.get('site').get('hostname')} (or any of its Alias or staging domains).
-      != "If you need help, make sure to read our&nbsp;"
-      %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/encode-videos-for-the-web", onclick: "window.open(this); return false" }><
-        documentation
-      = "."
+  %p.info
+    The iframe source must be the URL of the actual page containing the
+    %code= "<video>"
+    element – the page must be hosted on #{@loader.get('site').get('hostname')} (or any of its Alias or staging domains).
+    != "If you need help, make sure to read our&nbsp;"
+    %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/encode-videos-for-the-web", onclick: "window.open(this); return false" }><
+      documentation
+    = "."
+  .entry
 
     %label.icon{ for: "iframe_src" } Iframe source url
     %input.text{ type: "text", name: "iframe_src", id: "iframe_src", size: "50", placeholder: "Iframe source url", value: "#{@iframe.get('src')}" }/

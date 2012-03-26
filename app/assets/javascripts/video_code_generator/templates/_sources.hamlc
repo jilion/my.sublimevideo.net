@@ -34,8 +34,8 @@
 
 .spacer
 
-%p.note><
+%p.info><
   != "Need help encoding your video sources? Read our&nbsp;"
-  %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/encode-videos-for-the-web", onclick: "window.open(this); return false" }><
+  %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/encode-videos-for-the-web", onclick: "window.open(this); return false" }><
     documentation
   = "."

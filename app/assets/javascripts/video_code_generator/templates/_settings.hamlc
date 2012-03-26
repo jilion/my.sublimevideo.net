@@ -1,7 +1,7 @@
 .content_left
   %h4 Settings
 
-  %p.note
+  %p.info
     Make sure that 'Keep original ratio' is checked unless you specifically want to stretch your video to a new aspect ratio.
 
   %h5 Size
@@ -29,7 +29,7 @@
 .content_right
   %h4 Stats
 
-  %p.note><
+  %p.info><
     != "Fill in these attributes to optimize your videos for SublimeVideo's&nbsp;"
     %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/real-time-stats", onclick: "window.open(this); return false" }><
       Universal Real-Time Statistics platform

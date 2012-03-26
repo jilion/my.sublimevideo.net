@@ -13,8 +13,10 @@
 .com_text
   - if user_signed_in?
     = content_header "Video Code Generator"
-    %p= "SublimeVideo's Video Code Generator helps you easily generate properly configured <video> elements, avoiding common mistakes and ensuring the optimal viewing experience for your viewers."
-    %p= "Simply select the type of player implementation you require and enter the URLs of your video assets in the fields below to see a live preview of your SublimeVideo player at the bottom of the page. Once you’re happy with the settings all you need to do is copy the code and paste it into the appropriate page(s) on your site."
+    .help_box
+      %p{ style: "padding-bottom:10px"}= "SublimeVideo's Video Code Generator helps you easily generate properly configured <video> elements, avoiding common mistakes and ensuring the optimal viewing experience for your viewers."
+      %p= "Simply select the type of player implementation you require and enter the URLs of your video assets in the fields below to see a live preview of your SublimeVideo player at the bottom of the page. Once you’re happy with the settings all you need to do is copy the code and paste it into the appropriate page(s) on your site."
+    .big_break
   - else
     = content_for :header do
       %h2= "Video Code Generator"
@@ -23,54 +25,56 @@
     %p= raw "It's crucial to properly configure the <code>&lt;video&gt;</code> code to properly enable HTML5 Video on your page; incorrectly configured <code>&lt;video&gt;</code> elements are one of the most common causes of problems with HTML5 Video."
     %p= raw "SublimeVideo's Video Code Generator helps you easily generate properly configured <code>&lt;video&gt;</code> elements for use with SublimeVideo. It's also the easiest way to quickly test SublimeVideo player with your own video sources - simply fill in the fields below and check out the live preview at the bottom of the page to see how your video will look being played by SublimeVideo!"
 
-#video_embed_type_selector
-  .radio_wrap
-    = radio_button_tag "type", "standard", checked: true
-    = label_tag "type_standard", "Standard"
-  .radio_wrap
-    = radio_button_tag "type", "lightbox"
-    = label_tag "type_lightbox", "Lightbox"
-  .radio_wrap
-    = radio_button_tag "type", "iframe_embed"
-    = label_tag "type_iframe_embed", "Iframe Embed"
+.video_code_generator
+  #video_embed_type_selector
+    .radio_wrap
+      = radio_button_tag "type", "standard", checked: true
+      = label_tag "type_standard", "Standard"
+    .radio_wrap
+      = radio_button_tag "type", "lightbox"
+      = label_tag "type_lightbox", "Lightbox"
+    .radio_wrap
+      = radio_button_tag "type", "iframe_embed"
+      = label_tag "type_iframe_embed", "Iframe Embed"
 
-.login_needed
-  #demo_bootstrap
-    %p.note
-      Don't have your video assets yet, or just want to test-drive SublimeVideo?
-    %button.green_button#use_demo_assets Use demo assets
-    %a.reset.hl{ href: "", style: 'display:none' } Reset demo assets
+  .login_needed
+    #demo_bootstrap
+      = tooltip_box class: "info" do
+        %span.p= raw "Don't have your video assets yet, or just want to test-drive SublimeVideo?"
+      
+      %button.green_button#use_demo_assets Use demo assets
+      %a.reset.hl{ href: "", style: 'display:none' } Reset demo assets
 
+    .spacer
+    .big_break
+
+    %form#video_code_form
+      #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+
+      #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+
+      #poster
+      .spacer
+      .big_break
+
+      #sources
+      .spacer
+      .big_break
+
+      #settings
+      .spacer
+      .big_break
+
+    #preview
+    .spacer
+
+    #code
+      %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code
+
+    #popup_code.popup{ style: "display:none" }
+      .popup_wrap
+        .lights
+          .content#code_content
+          = link_to "/", class: 'close', onclick: "MSVVideoCodeGenerator.codeView.popup.close(); return false" do
+            %span Close
   .spacer
-  .big_break
-
-  %form#video_code_form
-    #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
-
-    #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
-
-    #poster
-    .spacer
-    .big_break
-
-    #sources
-    .spacer
-    .big_break
-
-    #settings
-    .spacer
-    .big_break
-
-  #preview
-  .spacer
-
-  #code
-    %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code
-
-  #popup_code.popup{ style: "display:none" }
-    .popup_wrap
-      .lights
-        .content#code_content
-        = link_to "/", class: 'close', onclick: "MSVVideoCodeGenerator.codeView.popup.close(); return false" do
-          %span Close
-.spacer

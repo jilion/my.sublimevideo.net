@@ -136,6 +136,12 @@ header, header .shadow, header .lights {
   background:url(<%= asset_data_uri "my/warning_icon.png" %>) no-repeat;
 }
 
+#content .tooltip.info .icon {
+  width:20px;
+  height:21px;
+  background:url(<%= asset_data_uri "my/info_icon.png" %>) no-repeat;
+}
+
 #content .tooltip .icon span {
   display:none;
 }
@@ -157,6 +163,8 @@ header, header .shadow, header .lights {
   @include border-radius(5px);
   @include box-shadow((inset rgba(255,255,255,0.2) 0 1px 0, #00183a 0 1px 5px));
 }
+
+#content .tooltip.info .content {left:-55px}
 
 #content .tooltip:hover .content {display:block;}
 
@@ -540,12 +548,12 @@ ul.segmented_menu li.active a {
   padding:15px 0 10px;
 }
 
-#site_setup_settings p.info {
+#site_setup_settings p.info, .video_code_generator p.info {
   font-size:14px;
   color:#3a5a8c;
 }
 
-#site_setup_settings p.info strong {
+#site_setup_settings p.info strong, .video_code_generator p.info strong {
   color:#1e3966;
 }
 
@@ -845,6 +853,70 @@ section.oauth section.text {
 
 section.oauth .entry.update .blue_button {
   margin-right:15px;
+}
+
+/* ============== */
+/* = Com Layout = */
+/* ============== */
+
+body.my.mysv_public {
+  background:#8ea6c2 url(<%= asset_data_uri "www/back_texture.png" %>);
+}
+
+body.my.mysv_public header, body.my.mysv_public header .shadow, body.my.mysv_public header .lights {
+  height:240px;
+}
+
+body.my.mysv_public header h2 {
+  padding:30px 0 5px 0px;
+  text-align:left;
+}
+
+body.my.mysv_public header p.sub {
+  text-align:left;
+}
+
+body.my.mysv_public #content {
+  width:960px;
+  margin:0 auto;
+  background:none;
+  position:relative;
+  z-index:2;
+  min-height:606px;
+}
+
+body.my.mysv_public .content_wrapper {
+  padding:20px 0 40px;
+  width:960px;
+}
+
+body.my.mysv_public .com_text {
+  padding:22px 0 30px;
+}
+
+body.my.mysv_public .com_text p {
+  font-size:20px;
+  line-height:30px;
+  padding:12px 0;
+  color:#7690b3;
+  text-shadow:rgba(255,255,255,0.9) 0 1px 0;
+}
+
+body.my.mysv_public .com_text p a {
+  color:#1185ff;
+  border-bottom:1px solid #81bbfc;
+}
+
+body.my.mysv_public div.video_code_generator {
+  width:880px;
+  padding:34px 40px 20px;
+  position:relative;
+  background:#ecf2f8 url(<%= asset_data_uri "my/back_texture.png" %>);
+  color:#1e3966;
+  text-shadow:rgba(255,255,255,0.25) 0 1px 0;
+  border: 1px solid #728ab2;
+  @include border-radius(4px);
+  @include box-shadow((inset rgba(255,255,255,0.5) 0 1px 0, rgba(0,39,104,0.8) 0 1px 8px));
 }
 
 p.bigger {

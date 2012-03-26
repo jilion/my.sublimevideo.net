@@ -1,5 +1,10 @@
 @import "css3";
 
+.video_code_generator {
+  position:relative;
+  padding:18px 0px 20px;
+}
+
 #video_embed_type_selector {
   float:left;
   margin:0 0 30px;
@@ -10,13 +15,37 @@
   margin-right:20px;
 }
 
+#demo_bootstrap {
+  float:right;
+  position:absolute;
+  top:18px;
+  right:0;
+}
+
+body.my.mysv_public #demo_bootstrap {
+  top:30px;
+  right:39px;
+}
+
 button#use_demo_assets {
   padding:10px 16px;
   font-size:20px;
-  float:right;
+}
+
+#content #demo_bootstrap .tooltip {
   position:absolute;
-  top:115px;
-  right:50px;
+  left:-38px;
+  top:10px;
+}
+
+.video_code_generator .intro {
+  font-size:18px;
+  line-height:26px;
+  color:#3a5a8c;
+}
+
+.video_code_generator .intro p {
+  padding-top:20px;
 }
 
 #video_code_form .big_break {
@@ -113,6 +142,10 @@ a.zoomable:hover span.zoom_icon {opacity:1}
 
 a.reset {
   font-size:13px;
+}
+
+.video_code_generator p.info {
+  padding-top:10px;
 }
 
 .popup .popup_wrap {
