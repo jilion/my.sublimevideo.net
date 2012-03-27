@@ -122,10 +122,6 @@ button#use_demo_assets {
   padding:30px 0 60px;
 }
 
-#popup_code.popup .entry.embed_code textarea {
-  height:200px;
-}
-
 /* Lightbox */
 a.zoomable {
   display:block;
@@ -162,18 +158,27 @@ a.reset {
   padding-top:10px;
 }
 
-.popup .popup_wrap {
+.video_code_generator .popup .popup_wrap {
   width:900px;
 }
 
-form .entry textarea {
+.video_code_generator form .entry textarea {
   width:800px;
 }
 
-.popup .entry.embed_code textarea {
+.video_code_generator .popup .entry.embed_code textarea {
   font-size:14px;
   color:#4a648e;
   line-height:20px;
   resize:none;
   text-shadow:none;
 }
+
+#popup_code.popup .entry.embed_code textarea {
+  height:200px;
+}
+
+#popup_code.popup .entry.embed_code textarea.small_height {
+  height:60px;
+}
+
