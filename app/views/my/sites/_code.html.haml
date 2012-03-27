@@ -23,8 +23,6 @@
       %p.learn_more= link_to "Learn more about SSL serving.", page_url('ssl', subdomain: 'docs'), class: "hl"
 
 .dark_box
-  %p
-    -#= raw "Need help building your first #{content_tag(:code, '<video>')} elements? Read our #{link_to "documentation", page_url('write-proper-video-elements', subdomain: 'docs')}."
-    = raw "Discover our #{link_to "video code generator", video_code_path}!"
+  -#= raw "Need help building your first #{content_tag(:code, '<video>')} elements? Read our #{link_to "documentation", page_url('write-proper-video-elements', subdomain: 'docs')}."
   -# %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
   %p= raw "If you're asked for your site's token, use this: #{content_tag(:code, site.token)}"
