@@ -46,11 +46,11 @@ module Spec
       end
 
       def mock_user(stubs = {})
-        @mock_user ||= Factory.create(:user, stubs)
+        @mock_user ||= create(:user, stubs)
       end
 
       def mock_admin(stubs = {})
-        @mock_admin ||= Factory.create(:admin, stubs)
+        @mock_admin ||= create(:admin, stubs)
       end
 
       def mock_release(stubs = {})

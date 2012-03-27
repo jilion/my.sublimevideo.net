@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Oauth2Token do
   
   context "Factory" do
-    before(:all) { @token = Factory.create(:oauth2_token) }
+    before(:all) { @token = create(:oauth2_token) }
     subject { @token }
 
     its(:user)               { should be_present }

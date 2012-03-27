@@ -61,7 +61,7 @@ FactoryGirl.define do
   factory :new_site, class: Site do
     sequence(:hostname) { |n| "jilion#{n}.com" }
     dev_hostnames       '127.0.0.1, localhost'
-    plan_id             { Factory.create(:plan).id }
+    plan_id             { FactoryGirl.create(:plan).id }
     user
   end
 
@@ -208,7 +208,7 @@ FactoryGirl.define do
   end
 
   factory :plan_invoice_item, parent: :invoice_item, class: InvoiceItem::Plan do
-    item   { Factory.create(:plan) }
+    item   { FactoryGirl.create(:plan) }
     price  1000
     amount 1000
   end

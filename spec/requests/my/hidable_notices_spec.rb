@@ -5,13 +5,13 @@ feature "Hidable notices" do
   describe "notice 1: 'Checkout the v2 new features'" do
     background do
       sign_in_as :user
-      @site = Factory.create(:site, user: @current_user)
+      @site = create(:site, user: @current_user)
     end
 
     context "user didn't hide the notice" do
       context "and has video views" do
         background do
-          Factory.create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
+          create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
           go 'my', '/sites'
         end
 
@@ -43,7 +43,7 @@ feature "Hidable notices" do
 
       context "and has video views" do
         background do
-          Factory.create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
+          create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
           go 'my', '/sites'
         end
 
@@ -65,7 +65,7 @@ feature "Hidable notices" do
     background do
       Timecop.travel(3.weeks.ago) do
         sign_in_as :user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo'
-        @site = Factory.create(:site, user: @current_user)
+        @site = create(:site, user: @current_user)
       end
     end
 
@@ -80,7 +80,7 @@ feature "Hidable notices" do
         context "and user is not billable" do
           background do
             @site.delete
-            @site = Factory.create(:site, user: @current_user, plan_id: @free_plan.id)
+            @site = create(:site, user: @current_user, plan_id: @free_plan.id)
             @current_user.should_not be_billable
             go 'my', '/sites'
           end

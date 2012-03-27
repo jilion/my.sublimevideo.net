@@ -37,7 +37,7 @@ Spork.prefork do
     config.include ShowMeTheCookies, type: :request
 
     # FactoryGirl http://railscasts.com/episodes/158-factories-not-fixtures-revised
-    config.include Factory::Syntax::Methods
+    config.include FactoryGirl::Syntax::Methods
 
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true
@@ -93,10 +93,10 @@ Spork.each_run do
 end
 
 def recreate_default_plans
-  @free_plan      = Factory.create(:free_plan, support_level: 0)
-  @paid_plan      = Factory.create(:plan, name: "plus", video_views: 3_000, support_level: 1)
-  @sponsored_plan = Factory.create(:sponsored_plan, support_level: 2)
-  @custom_plan    = Factory.create(:custom_plan, support_level: 2)
+  @free_plan      = create(:free_plan, support_level: 0)
+  @paid_plan      = create(:plan, name: "plus", video_views: 3_000, support_level: 1)
+  @sponsored_plan = create(:sponsored_plan, support_level: 2)
+  @custom_plan    = create(:custom_plan, support_level: 2)
 end
 
 # Thanks to Jonas Pfenniger for this!

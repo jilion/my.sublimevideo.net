@@ -2,19 +2,19 @@ require 'spec_helper'
 
 describe My::BillingMailer do
 
-  it_should_behave_like "common mailer checks", %w[trial_has_started trial_will_expire], from: [I18n.t('mailer.billing.email')], params: Factory.create(:site), content_type: %r{text/html; charset=UTF-8}
-  it_should_behave_like "common mailer checks", %w[yearly_plan_will_be_renewed], from: [I18n.t('mailer.billing.email')], params: Factory.create(:site_not_in_trial)
-  it_should_behave_like "common mailer checks", %w[trial_has_expired], from: [I18n.t('mailer.billing.email')], params: [Factory.create(:site), Factory.create(:plan)], content_type: %r{text/html; charset=UTF-8}
-  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: Factory.create(:user, cc_expire_on: 1.day.from_now)
-  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: [I18n.t('mailer.billing.email')], params: Factory.create(:transaction, invoices: [Factory.create(:invoice)])
-  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: [I18n.t('mailer.billing.email')], params: lambda { Factory.create(:invoice) }
+  it_should_behave_like "common mailer checks", %w[trial_has_started trial_will_expire], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:site), content_type: %r{text/html; charset=UTF-8}
+  it_should_behave_like "common mailer checks", %w[yearly_plan_will_be_renewed], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:site_not_in_trial)
+  it_should_behave_like "common mailer checks", %w[trial_has_expired], from: [I18n.t('mailer.billing.email')], params: [FactoryGirl.create(:site), FactoryGirl.create(:plan)], content_type: %r{text/html; charset=UTF-8}
+  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:user, cc_expire_on: 1.day.from_now)
+  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)])
+  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:invoice) }
 
   describe "specific checks" do
     before do
-      @user        = Factory.create(:user)
-      @site        = Factory.create(:site, user: @user, trial_started_at: 8.days.ago)
-      @invoice     = Factory.create(:invoice)
-      @transaction = Factory.create(:transaction, invoices: [@invoice])
+      @user        = create(:user)
+      @site        = create(:site, user: @user, trial_started_at: 8.days.ago)
+      @invoice     = create(:invoice)
+      @transaction = create(:transaction, invoices: [@invoice])
     end
 
     describe "#trial_has_started" do
@@ -62,7 +62,7 @@ describe My::BillingMailer do
       before do
         @site.reload
         @site.update_attribute(:trial_started_at, BusinessModel.days_for_trial.days.ago)
-        described_class.trial_has_expired(@site, Factory.create(:plan)).deliver
+        described_class.trial_has_expired(@site, create(:plan)).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
 

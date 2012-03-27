@@ -98,7 +98,7 @@ feature "Admins pagination:" do
     page.should have_no_css 'em.current'
     page.should have_no_selector "a[rel='next']"
 
-    Factory.create(:admin)
+    create(:admin)
     go 'admin', 'admins'
 
     page.should have_css 'nav.pagination'

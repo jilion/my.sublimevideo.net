@@ -4,11 +4,11 @@ feature "Mail templates index:" do
 
   background do
     sign_in_as :admin, roles: ['god']
-    Factory.create(:user)
+    create(:user)
   end
 
   scenario "should be possible to edit mail template" do
-    mail_template = Factory.create(:mail_template)
+    mail_template = create(:mail_template)
     MailTemplate.all.should have(1).item
 
     go 'admin', "mails/templates/#{mail_template.id}/edit"

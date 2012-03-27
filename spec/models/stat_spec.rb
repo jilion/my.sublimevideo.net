@@ -3,20 +3,20 @@ require 'spec_helper'
 describe Stat do
 
   context "with cdn.sublimevideo.net.log.1310993640-1310993700.gz logs file" do
-    before(:each) do
+    before do
       @log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1313499060-1313499120.gz'))
       log_time  = 5.days.ago.change(hour: 0).to_i
-      @log      = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
+      @log      = build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
     end
 
     describe ".create_stats_from_trackers!" do
       use_vcr_cassette "stat/pusher", erb: true
 
       context "mixed view event & load event" do
-        before(:each) do
-          site = Factory.create(:site)
+        before do
+          site = create(:site)
           site.update_attribute(:token, 'ovjigy83')
-          site = Factory.create(:site)
+          site = create(:site)
           site.update_attribute(:token, 'site1234')
           described_class.stub(:incs_from_trackers).and_return({
             "ovjigy83"=> {
@@ -46,17 +46,17 @@ describe Stat do
           Stat.create_stats_from_trackers!(@log, nil)
           Stat::Video::Minute.count.should eql(4)
           Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).should be_present
-          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vlc.should eq(3)
-          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vvc.should eq(1)
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vlc.should be 3
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'abcd1234', d: @log.minute).first.vvc.should be 1
           Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).should be_present
-          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vlc.should eq(3)
-          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vvc.should eq(0)
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vlc.should be 3
+          Stat::Video::Minute.where(st: 'ovjigy83', u: 'efgh5678', d: @log.minute).first.vvc.should be 0
           Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).should be_present
-          Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).first.vlc.should eq(3)
-          Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).first.vvc.should eq(0)
+          Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).first.vlc.should be 3
+          Stat::Video::Minute.where(st: 'site1234', u: 'abcd1234', d: @log.minute).first.vvc.should be 0
           Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).should be_present
-          Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).first.vlc.should eq(3)
-          Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).first.vvc.should eq(0)
+          Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).first.vlc.should be 3
+          Stat::Video::Minute.where(st: 'site1234', u: 'efgh5678', d: @log.minute).first.vvc.should be 0
         end
         it "create three hour site stats for each token" do
           Stat.create_stats_from_trackers!(@log, nil)
@@ -68,17 +68,17 @@ describe Stat do
           Stat.create_stats_from_trackers!(@log, nil)
           Stat::Video::Hour.count.should eql(4)
           Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).should be_present
-          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vlc.should eq(3)
-          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vvc.should eq(1)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vlc.should be 3
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.hour).first.vvc.should be 1
           Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).should be_present
-          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).first.vlc.should eq(3)
-          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).first.vlc.should be 3
+          Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.hour).first.vvc.should be 0
           Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).should be_present
-          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).first.vlc.should eq(3)
-          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).first.vlc.should be 3
+          Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.hour).first.vvc.should be 0
           Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).should be_present
-          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).first.vlc.should eq(3)
-          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).first.vvc.should eq(0)
+          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).first.vlc.should be 3
+          Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).first.vvc.should be 0
         end
         it "create three day site stats for each token" do
           Stat.create_stats_from_trackers!(@log, nil)
@@ -90,17 +90,17 @@ describe Stat do
           Stat.create_stats_from_trackers!(@log, nil)
           Stat::Video::Day.count.should eql(4)
           Stat::Video::Hour.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).should be_present
-          Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vlc.should eq(3)
-          Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vvc.should eq(1)
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vlc.should be 3
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vvc.should be 1
           Stat::Video::Hour.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).should be_present
-          Stat::Video::Day.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vlc.should eq(3)
-          Stat::Video::Day.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vvc.should eq(0)
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vlc.should be 3
+          Stat::Video::Day.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vvc.should be 0
           Stat::Video::Hour.where(st: 'site1234', u: 'abcd1234', d: @log.day).should be_present
-          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vlc.should eq(3)
-          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vvc.should eq(0)
+          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vlc.should be 3
+          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vvc.should be 0
           Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.day).should be_present
-          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vlc.should eq(3)
-          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vvc.should eq(0)
+          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vlc.should be 3
+          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vvc.should be 0
         end
 
         it "update existing h/d stat" do
@@ -109,7 +109,7 @@ describe Stat do
           Stat::Site::Hour.count.should eql(2)
           Stat::Site::Day.count.should eql(2)
           log_time = 5.days.ago.change(hour: 0).to_i + 1.minute
-          log  = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
+          log  = build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
           Stat.create_stats_from_trackers!(log, nil)
           Stat::Site::Minute.count.should eql(4)
           Stat::Site::Hour.count.should eql(2)

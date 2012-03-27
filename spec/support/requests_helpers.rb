@@ -31,10 +31,10 @@ module Spec
         cc_expire_on = options[:user].delete(:cc_expire_on) || options[:cc_expire_on] || 2.years.from_now
 
         @current_user = if options[:without_cc] == true
-          Factory.create(:user_no_cc, options[:user] || {})
+          create(:user_no_cc, options[:user] || {})
         else
-          attrs = Factory.attributes_for(:user)
-          user = Factory(:user_real_cc, (options[:user] || {}).merge({
+          attrs = attributes_for(:user)
+          user = create(:user_real_cc, (options[:user] || {}).merge({
             cc_register:           '1',
             cc_brand:              options[:cc_type],
             cc_full_name:          attrs[:billing_name],
@@ -60,7 +60,7 @@ module Spec
         options[:locked]            = options[:admin].delete(:locked) || options[:locked]
 
         @current_admin ||= begin
-          admin = Factory.create(:admin, options[:admin] || {})
+          admin = create(:admin, options[:admin] || {})
           admin.accept_invitation if options[:accept_invitation] == true
           admin.lock! if options[:locked] == true
           admin

@@ -4,23 +4,23 @@ describe InvoiceItem::Plan do
 
   describe ".construct" do
     before(:all) do
-      @deal = Factory(:deal, value: 0.2, kind: 'plans_discount', started_at: 2.days.ago, ended_at: 2.days.from_now)
-      @user1 = Factory(:user)
-      @user2 = Factory(:user)
-      @user3 = Factory(:user)
-      Factory(:deal_activation, deal: @deal, user: @user1)
-      Factory(:deal_activation, deal: @deal, user: @user3)
+      @deal = create(:deal, value: 0.2, kind: 'plans_discount', started_at: 2.days.ago, ended_at: 2.days.from_now)
+      @user1 = create(:user)
+      @user2 = create(:user)
+      @user3 = create(:user)
+      create(:deal_activation, deal: @deal, user: @user1)
+      create(:deal_activation, deal: @deal, user: @user3)
 
-      @plan1 = Factory(:plan, price: 1000)
-      @plan2 = Factory(:plan, price: 2000)
+      @plan1 = create(:plan, price: 1000)
+      @plan2 = create(:plan, price: 2000)
 
-      @site1 = Factory(:site_with_invoice, user: @user1, plan_id: @plan1.id)
-      @site2 = Factory(:site_not_in_trial, user: @user1, plan_id: @plan2.id)
-      @site3 = Factory(:site_with_invoice, user: @user1, plan_id: @plan1.id)
-      @site4 = Factory(:site_with_invoice, user: @user2, plan_id: @plan1.id)
-      @site5 = Factory(:site_with_invoice, user: @user1, plan_id: @plan1.id)
+      @site1 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
+      @site2 = create(:site_not_in_trial, user: @user1, plan_id: @plan2.id)
+      @site3 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
+      @site4 = create(:site_with_invoice, user: @user2, plan_id: @plan1.id)
+      @site5 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
 
-      @site6 = Factory(:site_with_invoice, user: @user3, plan_id: @plan1.id)
+      @site6 = create(:site_with_invoice, user: @user3, plan_id: @plan1.id)
       Timecop.travel(BusinessModel.days_for_trial.days.from_now) do
         @site6.prepare_activation
         @site6.prepare_pending_attributes
@@ -48,12 +48,12 @@ describe InvoiceItem::Plan do
       end
       @site5.skip_trial = true
 
-      @invoice1 = Factory.build(:invoice, site: @site1)
-      @invoice2 = Factory.build(:invoice, site: @site2, renew: true)
-      @invoice3 = Factory.build(:invoice, site: @site3, renew: true)
-      @invoice4 = Factory.build(:invoice, site: @site4)
-      @invoice5 = Factory.build(:invoice, site: @site5)
-      @invoice6 = Factory.build(:invoice, site: @site6)
+      @invoice1 = build(:invoice, site: @site1)
+      @invoice2 = build(:invoice, site: @site2, renew: true)
+      @invoice3 = build(:invoice, site: @site3, renew: true)
+      @invoice4 = build(:invoice, site: @site4)
+      @invoice5 = build(:invoice, site: @site5)
+      @invoice6 = build(:invoice, site: @site6)
     end
 
     describe "creation or upgrade" do

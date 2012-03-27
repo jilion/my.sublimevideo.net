@@ -3,15 +3,15 @@ include ActionView::Helpers::SanitizeHelper
 
 feature "Deal activation" do
   background do
-    Factory.create(:deal, token: 'rts1', availability_scope: 'use_clients')
-    Factory.create(:deal, token: 'rts2', availability_scope: 'use_clients(false)')
-    Factory.create(:deal, token: 'rts3', availability_scope: 'newsletter(true)')
+    create(:deal, token: 'rts1', availability_scope: 'use_clients')
+    create(:deal, token: 'rts2', availability_scope: 'use_clients(false)')
+    create(:deal, token: 'rts3', availability_scope: 'newsletter(true)')
   end
 
   context "user is not logged-in" do
     background do
-      @user = Factory(:user, use_clients: true)
-      Factory(:site, user: @user)
+      @user = create(:user, use_clients: true)
+      create(:site, user: @user)
     end
 
     scenario "deal is activated with a after-login redirect" do
@@ -59,7 +59,7 @@ feature "Deal activation" do
   context "user is logged-in" do
     background do
       sign_in_as :user, use_clients: true
-      Factory(:site, user: @current_user)
+      create(:site, user: @current_user)
     end
 
     context "and can activate the deal" do

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Oauth2Verifier do
 
   context "Factory" do
-    before(:all) { @verifier = Factory.create(:oauth2_verifier) }
+    before(:all) { @verifier = create(:oauth2_verifier) }
     subject { @verifier }
 
     its(:user)               { should be_present }
@@ -19,7 +19,7 @@ describe Oauth2Verifier do
 
   describe "exchange for oauth2 token" do
     before(:all) do
-      @verifier = Factory.create(:oauth2_verifier)
+      @verifier = create(:oauth2_verifier)
       @token    = @verifier.exchange!
     end
     subject { @token.reload }

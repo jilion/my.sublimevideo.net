@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Deal do
   context "Factory" do
-    subject { Factory(:deal) }
+    subject { create(:deal) }
 
     its(:token)              { should be_present }
     its(:name)               { should be_present }
@@ -17,14 +17,14 @@ describe Deal do
   end # Factory
 
   describe "Associations" do
-    subject { Factory(:deal) }
+    subject { create(:deal) }
 
     it { should have_many :deal_activations }
     it { should have_many :invoice_items }
   end # Associations
 
   describe "Validations" do
-    subject { Factory(:deal) }
+    subject { create(:deal) }
 
     [:token, :name, :description, :kind, :value, :availability_scope, :started_at, :ended_at].each do |attr|
       it { should allow_mass_assignment_of(attr) }
@@ -41,13 +41,13 @@ describe Deal do
   describe "Callbacks" do
     describe "ensure availability_scope is valid" do
       it "adds an error if availability_scope isn't valid" do
-        deal = Factory.build(:deal, availability_scope: 'foo')
+        deal = build(:deal, availability_scope: 'foo')
         deal.should_not be_valid
         deal.should have(1).error
       end
 
       it "doesn't add an error if availability_scope is valid" do
-        deal = Factory.build(:deal, availability_scope: 'use_clients')
+        deal = build(:deal, availability_scope: 'use_clients')
         deal.should be_valid
       end
     end
@@ -55,7 +55,7 @@ describe Deal do
 
   describe "Scopes" do
     describe ".active" do
-      before(:each) { @deal = Factory(:deal, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+      before(:each) { @deal = create(:deal, started_at: 2.days.ago, ended_at: 2.days.from_now) }
 
       context "now is before the deal has started" do
         before(:each) { Timecop.travel(3.days.ago) }
@@ -85,7 +85,7 @@ describe Deal do
 
   describe "Instance methods" do
     describe "#active?" do
-      before(:each) { @deal = Factory(:deal, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+      before(:each) { @deal = create(:deal, started_at: 2.days.ago, ended_at: 2.days.from_now) }
       subject { @deal }
 
       context "now is before the deal has started" do
@@ -108,9 +108,9 @@ describe Deal do
     end
 
     describe "#available_to?" do
-      let(:user_dont_use_for_clients) { Factory(:user, use_clients: false) }
-      let(:user_use_for_clients)      { Factory(:user, use_clients: true) }
-      let(:deal)                      { Factory(:deal, availability_scope: 'use_clients') }
+      let(:user_dont_use_for_clients) { create(:user, use_clients: false) }
+      let(:user_use_for_clients)      { create(:user, use_clients: true) }
+      let(:deal)                      { create(:deal, availability_scope: 'use_clients') }
 
       it "return false if user is nil" do
         deal.available_to?(nil).should be_false

@@ -5,24 +5,24 @@ describe Stats::SalesStat do
   context "with a bunch of different invoices" do
 
     before(:each) do
-      site = Factory.create(:site)
+      site = create(:site)
       @plus_monthly_plan    = @paid_plan
-      @premium_monthly_plan = Factory.create(:plan, name: 'premium', cycle: 'month')
-      @plus_yearly_plan     = Factory.create(:plan, name: 'plus', cycle: 'year')
-      @premium_yearly_plan  = Factory.create(:plan, name: 'premium', cycle: 'year')
+      @premium_monthly_plan = create(:plan, name: 'premium', cycle: 'month')
+      @plus_yearly_plan     = create(:plan, name: 'plus', cycle: 'year')
+      @premium_yearly_plan  = create(:plan, name: 'premium', cycle: 'year')
 
-      Factory.create(:invoice, state: 'paid', paid_at: 5.days.ago, site: site, renew: false, invoice_items: [Factory.create(:plan_invoice_item, item: @plus_monthly_plan)], amount: 1)
-      Factory.create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: false, invoice_items: [Factory.create(:plan_invoice_item, item: @plus_monthly_plan)], amount: 2)
-      Factory.create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: false, invoice_items: [Factory.create(:plan_invoice_item, item: @plus_yearly_plan)], amount: 3)
-      Factory.create(:invoice, state: 'paid', paid_at: Time.now.utc.midnight, site: site, renew: false, invoice_items: [Factory.create(:plan_invoice_item, item: @premium_monthly_plan)], amount: 4)
-      Factory.create(:invoice, state: 'failed', site: site, renew: false, invoice_items: [Factory.create(:plan_invoice_item, item: @plus_yearly_plan)], amount: 5)
+      create(:invoice, state: 'paid', paid_at: 5.days.ago, site: site, renew: false, invoice_items: [create(:plan_invoice_item, item: @plus_monthly_plan)], amount: 1)
+      create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: false, invoice_items: [create(:plan_invoice_item, item: @plus_monthly_plan)], amount: 2)
+      create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: false, invoice_items: [create(:plan_invoice_item, item: @plus_yearly_plan)], amount: 3)
+      create(:invoice, state: 'paid', paid_at: Time.now.utc.midnight, site: site, renew: false, invoice_items: [create(:plan_invoice_item, item: @premium_monthly_plan)], amount: 4)
+      create(:invoice, state: 'failed', site: site, renew: false, invoice_items: [create(:plan_invoice_item, item: @plus_yearly_plan)], amount: 5)
 
-      Factory.create(:invoice, state: 'paid', paid_at: 5.days.ago, site: site, renew: true, invoice_items: [Factory.create(:plan_invoice_item, item: @plus_monthly_plan)], amount: 6)
-      Factory.create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, invoice_items: [Factory.create(:plan_invoice_item, item: @premium_monthly_plan)], amount: 7)
-      Factory.create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, invoice_items: [Factory.create(:plan_invoice_item, item: @premium_monthly_plan)], amount: 8)
-      Factory.create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, invoice_items: [Factory.create(:plan_invoice_item, item: @premium_yearly_plan)], amount: 9)
-      Factory.create(:invoice, state: 'paid', paid_at: Time.now.utc.midnight, site: site, renew: true, invoice_items: [Factory.create(:plan_invoice_item, item: @premium_yearly_plan)], amount: 10)
-      Factory.create(:invoice, state: 'canceled', site: site, renew: true, invoice_items: [Factory.create(:plan_invoice_item, item: @premium_yearly_plan)], amount: 11)
+      create(:invoice, state: 'paid', paid_at: 5.days.ago, site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @plus_monthly_plan)], amount: 6)
+      create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @premium_monthly_plan)], amount: 7)
+      create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @premium_monthly_plan)], amount: 8)
+      create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @premium_yearly_plan)], amount: 9)
+      create(:invoice, state: 'paid', paid_at: Time.now.utc.midnight, site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @premium_yearly_plan)], amount: 10)
+      create(:invoice, state: 'canceled', site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @premium_yearly_plan)], amount: 11)
     end
 
     describe ".create_stats" do

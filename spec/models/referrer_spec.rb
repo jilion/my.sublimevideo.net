@@ -20,7 +20,7 @@ describe Referrer do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960'))
       @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastReferrers')
       %w[0w1o1q3c k8qaaj1l ibvjcopp hp1lepyq].each do |token|
-        Factory.create(:site).update_attribute(:token, token)
+        create(:site).update_attribute(:token, token)
       end
     end
     before(:each) { Referrer.create_or_update_from_trackers!(@trackers) }
@@ -58,7 +58,7 @@ describe Referrer do
   end
 
   describe ".create_or_update_from_type" do
-    let(:site) { Factory.create(:site) }
+    let(:site) { create(:site) }
 
     it "should create referrer and set contextual_hits to 1 if url/token doesn't exist" do
       expect { Referrer.create_or_update_from_type(site.token, 'http://www.bob.com', 'c') }.should change(Referrer, :count).by(1)

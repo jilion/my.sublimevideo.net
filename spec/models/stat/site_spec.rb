@@ -4,32 +4,32 @@ describe Stat::Site do
 
   describe ".json" do
     before(:all) do
-      @site = Factory.create(:site)
+      @site = create(:site)
     end
 
     before(:each) do
       @second = Time.now.utc.change(usec: 0)
-      Factory.create(:site_second_stat, t: @site.token, d: (@second - 62.seconds), vv: { e: 1 })
-      Factory.create(:site_second_stat, t: @site.token, d: (@second - 61.seconds), vv: { e: 2 })
-      Factory.create(:site_second_stat, t: @site.token, d: (@second - 60.seconds), vv: { e: 3 })
-      Factory.create(:site_second_stat, t: @site.token, d: (@second - 2.second), vv: { e: 4 })
-      Factory.create(:site_second_stat, t: @site.token, d: (@second - 1.second), vv: { e: 5 })
-      Factory.create(:site_second_stat, t: @site.token, d: @second, vv: { e: 5 })
+      create(:site_second_stat, t: @site.token, d: (@second - 62.seconds), vv: { e: 1 })
+      create(:site_second_stat, t: @site.token, d: (@second - 61.seconds), vv: { e: 2 })
+      create(:site_second_stat, t: @site.token, d: (@second - 60.seconds), vv: { e: 3 })
+      create(:site_second_stat, t: @site.token, d: (@second - 2.second), vv: { e: 4 })
+      create(:site_second_stat, t: @site.token, d: (@second - 1.second), vv: { e: 5 })
+      create(:site_second_stat, t: @site.token, d: @second, vv: { e: 5 })
 
-      Factory.create(:site_minute_stat, t: @site.token, d: 60.minutes.ago.change(sec: 0), vv: { e: 2 })
-      Factory.create(:site_minute_stat, t: @site.token, d: 59.minutes.ago.change(sec: 0), vv: { e: 3 })
-      Factory.create(:site_minute_stat, t: @site.token, d: 1.minute.ago.change(sec: 0), vv: { e: 4 })
-      Factory.create(:site_minute_stat, t: @site.token, d: Time.now.utc.change(sec: 0), vv: { e: 5 })
+      create(:site_minute_stat, t: @site.token, d: 60.minutes.ago.change(sec: 0), vv: { e: 2 })
+      create(:site_minute_stat, t: @site.token, d: 59.minutes.ago.change(sec: 0), vv: { e: 3 })
+      create(:site_minute_stat, t: @site.token, d: 1.minute.ago.change(sec: 0), vv: { e: 4 })
+      create(:site_minute_stat, t: @site.token, d: Time.now.utc.change(sec: 0), vv: { e: 5 })
 
-      Factory.create(:site_hour_stat, t: @site.token, d: 24.hours.ago.change(min: 0, sec: 0), vv: { e: 47 })
-      Factory.create(:site_hour_stat, t: @site.token, d: 23.hours.ago.change(min: 0, sec: 0), vv: { e: 48 })
-      Factory.create(:site_hour_stat, t: @site.token, d: 1.hours.ago.change(min: 0, sec: 0), vv: { e: 49 })
-      Factory.create(:site_hour_stat, t: @site.token, d: Time.now.utc.change(min: 0, sec: 0), vv: { e: 50 })
+      create(:site_hour_stat, t: @site.token, d: 24.hours.ago.change(min: 0, sec: 0), vv: { e: 47 })
+      create(:site_hour_stat, t: @site.token, d: 23.hours.ago.change(min: 0, sec: 0), vv: { e: 48 })
+      create(:site_hour_stat, t: @site.token, d: 1.hours.ago.change(min: 0, sec: 0), vv: { e: 49 })
+      create(:site_hour_stat, t: @site.token, d: Time.now.utc.change(min: 0, sec: 0), vv: { e: 50 })
 
-      @day400 = Factory.create(:site_day_stat, t: @site.token, d: 400.days.ago.midnight, vv: { e: 100 })
-      Factory.create(:site_day_stat, t: @site.token, d: 3.days.ago.midnight, vv: { e: 101 })
-      Factory.create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { e: 102 })
-      Factory.create(:site_day_stat, t: @site.token, d: Time.now.utc.midnight, vv: { e: 103 })
+      @day400 = create(:site_day_stat, t: @site.token, d: 400.days.ago.midnight, vv: { e: 100 })
+      create(:site_day_stat, t: @site.token, d: 3.days.ago.midnight, vv: { e: 101 })
+      create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { e: 102 })
+      create(:site_day_stat, t: @site.token, d: Time.now.utc.midnight, vv: { e: 103 })
 
       @mock_site = mock_model(Site, plan_stats_retention_days: nil)
       Site.stub(:find_by_token).and_return(@mock_site)
@@ -157,14 +157,14 @@ describe Stat::Site::Day do
 
   describe ".views_sum" do
     before(:all) do
-      @site1 = Factory.create(:site)
-      @site2 = Factory.create(:site)
+      @site1 = create(:site)
+      @site2 = create(:site)
     end
     before(:each) do
-      Factory.create(:site_day_stat, t: @site1.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
-      Factory.create(:site_day_stat, t: @site1.token, d: Time.now.utc.midnight, pv: { e: 3 }, vv: { m: 4 })
-      Factory.create(:site_day_stat, t: @site2.token, d: 30.days.ago.midnight, pv: { e: 5 }, vv: { m: 6 })
-      Factory.create(:site_day_stat, t: @site2.token, d: Time.now.utc.midnight, pv: { e: 7 }, vv: { m: 8 })
+      create(:site_day_stat, t: @site1.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
+      create(:site_day_stat, t: @site1.token, d: Time.now.utc.midnight, pv: { e: 3 }, vv: { m: 4 })
+      create(:site_day_stat, t: @site2.token, d: 30.days.ago.midnight, pv: { e: 5 }, vv: { m: 6 })
+      create(:site_day_stat, t: @site2.token, d: Time.now.utc.midnight, pv: { e: 7 }, vv: { m: 8 })
     end
 
     describe "options" do
@@ -206,14 +206,14 @@ describe Stat::Site::Day do
 
   describe ".last_stats" do
     before(:all) do
-      @site1 = Factory.create(:site)
-      @site2 = Factory.create(:site)
+      @site1 = create(:site)
+      @site2 = create(:site)
     end
     before(:each) do
-      Factory.create(:site_day_stat, t: @site1.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
-      Factory.create(:site_day_stat, t: @site1.token, d: Time.now.utc.midnight, pv: { e: 3 }, vv: { m: 4 })
-      Factory.create(:site_day_stat, t: @site2.token, d: 30.days.ago.midnight, pv: { e: 5 }, vv: { m: 6 })
-      Factory.create(:site_day_stat, t: @site2.token, d: Time.now.utc.midnight, pv: { e: 7 }, vv: { m: 8 })
+      create(:site_day_stat, t: @site1.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
+      create(:site_day_stat, t: @site1.token, d: Time.now.utc.midnight, pv: { e: 3 }, vv: { m: 4 })
+      create(:site_day_stat, t: @site2.token, d: 30.days.ago.midnight, pv: { e: 5 }, vv: { m: 6 })
+      create(:site_day_stat, t: @site2.token, d: Time.now.utc.midnight, pv: { e: 7 }, vv: { m: 8 })
     end
 
     describe "options" do

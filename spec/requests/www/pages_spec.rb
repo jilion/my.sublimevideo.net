@@ -216,7 +216,7 @@ feature "Com Pages" do
 
       context "with the email of an archived user" do
         background do
-          @archived_user = Factory.create(:user)
+          @archived_user = create(:user)
           @archived_user.skip_pwd { @archived_user.archive }
         end
 

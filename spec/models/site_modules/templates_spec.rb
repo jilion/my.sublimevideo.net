@@ -5,7 +5,7 @@ describe SiteModules::Templates do
   describe "Callbacks" do
 
     context "on create" do
-      subject { Factory.build(:new_site) }
+      subject { build(:new_site) }
 
       it "delays .update_loader_and_license once" do
         expect { subject.save! }.to change(Delayed::Job.where(:handler.matches => "%update_loader_and_license%"), :count).by(1)
@@ -44,7 +44,7 @@ describe SiteModules::Templates do
       end
 
       describe "plan_id has changed" do
-        subject { Factory.create(:site, plan_id: @free_plan.id) }
+        subject { create(:site, plan_id: @free_plan.id) }
         before { subject.plan_id = @paid_plan.id }
 
         it "delays .update_loader_and_license once" do

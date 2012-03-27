@@ -5,16 +5,16 @@ describe My::SitesHelper do
   describe "#full_days_until_trial_end" do
     before(:each) { BusinessModel.stub(:days_for_trial) { 3 } }
 
-    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: Time.now.utc.midnight + 3.hours)).should eq 3 }
-    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 1.day.ago.midnight + 3.hours)).should eq 2 }
-    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 2.days.ago.midnight + 3.hours)).should eq 1 }
-    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 3.days.ago.midnight + 3.hours)).should eq 0 }
-    it { helper.full_days_until_trial_end(Factory.build(:new_site, trial_started_at: 3.days.ago.midnight - 1.minute)).should eq 0 }
+    it { helper.full_days_until_trial_end(build(:new_site, trial_started_at: Time.now.utc.midnight + 3.hours)).should eq 3 }
+    it { helper.full_days_until_trial_end(build(:new_site, trial_started_at: 1.day.ago.midnight + 3.hours)).should eq 2 }
+    it { helper.full_days_until_trial_end(build(:new_site, trial_started_at: 2.days.ago.midnight + 3.hours)).should eq 1 }
+    it { helper.full_days_until_trial_end(build(:new_site, trial_started_at: 3.days.ago.midnight + 3.hours)).should eq 0 }
+    it { helper.full_days_until_trial_end(build(:new_site, trial_started_at: 3.days.ago.midnight - 1.minute)).should eq 0 }
   end
 
   describe "#sublimevideo_script_tag_for" do
     it "is should generate sublimevideo script_tag" do
-      site = Factory.create(:site)
+      site = create(:site)
       helper.sublimevideo_script_tag_for(site).should eq "<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/js/#{site.token}.js\"></script>"
     end
   end
@@ -31,13 +31,13 @@ describe My::SitesHelper do
 
   describe "#hostname_or_token" do
     context "site with a hostname" do
-      subject { Factory.create(:site, hostname: 'rymai.me') }
+      subject { create(:site, hostname: 'rymai.me') }
 
       specify { helper.hostname_or_token(subject).should eq 'rymai.me' }
     end
 
     context "site without a hostname" do
-      subject { Factory.create(:site, plan_id: @free_plan.id, hostname: '') }
+      subject { create(:site, plan_id: @free_plan.id, hostname: '') }
 
       specify { helper.hostname_or_token(subject).should eq "##{subject.token}" }
     end

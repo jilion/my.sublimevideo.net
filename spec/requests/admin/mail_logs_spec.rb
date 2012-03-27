@@ -4,8 +4,8 @@ feature "Mail logs show:" do
 
   background do
     sign_in_as :admin, roles: ['god']
-    @mail_log = Factory.create(:mail_log)
-    Factory.create(:user)
+    @mail_log = create(:mail_log)
+    create(:user)
   end
 
   scenario "should be possible to show mail log" do

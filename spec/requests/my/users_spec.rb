@@ -40,7 +40,7 @@ feature "Users" do
 
     describe "with the email of an archived user" do
       scenario "archived user" do
-        archived_user = Factory.create(:user)
+        archived_user = create(:user)
         archived_user.current_password = '123456'
         archived_user.archive
 
@@ -116,10 +116,10 @@ feature "Users" do
 
   scenario "recover password (with archived user with same email)" do
     email = 'thibaud@jilion.com'
-    archived_user = Factory.create(:user, email: email, password: '123456')
+    archived_user = create(:user, email: email, password: '123456')
     archived_user.current_password = '123456'
     archived_user.archive
-    user = Factory.create(:user, email: email, password: '123456')
+    user = create(:user, email: email, password: '123456')
 
     go 'my', 'password/new'
 

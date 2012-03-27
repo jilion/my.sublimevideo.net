@@ -4,7 +4,7 @@ describe Www::ReferrersController do
 
   describe "GET redirect" do
     before(:each) do
-      Factory.create(:site, token: 'nln2ofdf')
+      create(:site, token: 'nln2ofdf')
     end
 
     context "referer is present" do
