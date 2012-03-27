@@ -24,10 +24,11 @@
 
   %h4
     %label{ for: "site_select" } The embed will be hosted on
-  %select#site_select
-    - for site in @sites.models
-      - select = @sites.selectedSite is site
-      %option(selected=select){ value: site.get('token') }= site.title()
+  .entry.select
+    %select#site_select
+      - for site in @sites.models
+        - select = @sites.selectedSite is site
+        %option(selected=select){ value: site.get('token') }= site.title()
 
   %h4 Iframe source
 
