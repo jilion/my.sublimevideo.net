@@ -29,11 +29,9 @@
 .content_right
   %h4 Stats
 
-  %p.info><
-    != "Fill in these attributes to optimize your videos for SublimeVideo's&nbsp;"
-    %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/real-time-stats", onclick: "window.open(this); return false" }><
-      Universal Real-Time Statistics platform
-    = "."
+  %p.info
+    Fill in these attributes to optimize your videos for SublimeVideo's
+    <a class='hl' href='http://docs.#{SublimeVideo.topDomainHost()}/real-time-stats' onclick='window.open(this); return false'>Universal Real-Time Statistics platform</a>.
 
   %h5
     %label{ for: "data_uid" } UID

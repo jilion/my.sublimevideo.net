@@ -2,5 +2,5 @@ This is the code your audience can use to embed your video on their sites and ar
 
 %form
   .embed_code.entry
-    %textarea{ rows: 2, readonly: true, onclick: "this.focus();this.select();" }
+    %textarea{ rows: 2, readonly: true, class: 'small_height', onclick: "this.focus();this.select();" }
       = "<iframe src=\"#{@iframe.get('src')}\" width=\"#{@video.width()}\" height=\"#{@video.height()}\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>"

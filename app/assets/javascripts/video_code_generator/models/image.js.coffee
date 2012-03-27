@@ -61,7 +61,7 @@ class MSVVideoCodeGenerator.Models.Thumbnail extends MSVVideoCodeGenerator.Model
   setThumbWidth: (newThumbWidth) ->
     newThumbWidth = parseInt(newThumbWidth)
     newThumbWidth = 20 if _.isNaN(newThumbWidth) || newThumbWidth < 20
-    newThumbWidth = 2000 if newThumbWidth > 2000
+    newThumbWidth = 800 if newThumbWidth > 800
 
     if newThumbWidth isnt this.get('thumbWidth')
       this.set(thumbWidth: newThumbWidth)
