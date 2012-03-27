@@ -29,10 +29,10 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
     _.each MSVVideoCodeGenerator.demoSources, (src, key) ->
       source = MSVVideoCodeGenerator.sources.byFormatAndQuality(key.split('_'))
       source.setAndPreloadSrc('')
-      # source.set(isUsed: true)
     @model.set(demoAssetsUsed: false)
 
     MSVVideoCodeGenerator.posterView.render()
+    MSVVideoCodeGenerator.lightboxView.render() if @model.get('builderClass') is 'lightbox'
     MSVVideoCodeGenerator.sourcesView.render()
 
     false
