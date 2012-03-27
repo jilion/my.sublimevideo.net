@@ -1,4 +1,0 @@
-%tr[release]{ :class => cycle("", "alt") }
-  %td= release.date
-  %td= link_to "zip archive", release.zip.url
-  %td= button_to "flag as dev", [:admin, release], :confirm => 'Are you sure?', :method => :put

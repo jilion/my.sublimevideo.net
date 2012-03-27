@@ -1,7 +1,0 @@
-%small{ :class => "with_spinner" }
-  %span{ :id => "star_enthusiast_#{enthusiast.id}" }
-    %span{ :id => "star_form_#{enthusiast.id}" }
-      = form_for([:admin, enthusiast], :remote => true, :html => { :class => "starring_form" }) do |f|
-        = display_bool(enthusiast.starred?)
-        = f.hidden_field :starred, :value => !enthusiast.starred?
-        = f.submit "#{enthusiast.starred? ? "Uns" : "S"}tar"
