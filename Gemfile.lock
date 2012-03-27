@@ -1,12 +1,12 @@
 GIT
   remote: git://github.com/ctran/annotate_models.git
-  revision: a43c08f0eb4d69a48c6830630ebb60e35ccb2d2d
+  revision: ff1131daee8c03dbcc4966b7914b77a7e3a62f02
   specs:
     annotate (2.4.1.beta1)
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 80025dc555dacc0fd8e793657827b091c0209bce
+  revision: 8611541b3934735c7af8ccfcddd7eaa0be91eba1
   specs:
     guard (1.0.1)
       ffi (>= 0.5.0)
@@ -14,19 +14,9 @@ GIT
 
 GIT
   remote: git://github.com/jilion/useragent.git
-  revision: 179acf1ff70bfdf8da53fddb18f2d8a009344eed
+  revision: 923ab1e668bc60389ab1e7a983ca72c5b4a14a6f
   specs:
     useragent (0.2.3)
-
-GIT
-  remote: git://github.com/mongoid/mongoid.git
-  revision: 08170f553f1c02d9d0f46cc0d9a74b602a9ec358
-  branch: 2.4.0-stable
-  specs:
-    mongoid (2.4.7)
-      activemodel (~> 3.1)
-      mongo (~> 1.3)
-      tzinfo (~> 0.3.22)
 
 GIT
   remote: git://github.com/pauldix/feedzirra.git
@@ -80,6 +70,7 @@ GIT
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
 
+<<<<<<< HEAD
 GIT
   remote: git://github.com/titanous/rpm_contrib.git
   revision: 5ba7563619e0e5c851e6cec6a1e36716341d8045
@@ -99,6 +90,8 @@ GIT
       prototype-rails (~> 3.2.0)
       rails (~> 3.2.0)
 
+=======
+>>>>>>> master
 GEM
   remote: https://rubygems.org/
   remote: https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/
@@ -202,7 +195,7 @@ GEM
     currencies (0.4.0)
     daemons (1.1.8)
     dalli (1.1.5)
-    database_cleaner (0.7.1)
+    database_cleaner (0.7.2)
     delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
@@ -234,16 +227,16 @@ GEM
     excon (0.9.6)
     execjs (1.3.0)
       multi_json (~> 1.0)
-    factory_girl (2.6.4)
-      activesupport (>= 2.3.9)
-    factory_girl_rails (1.7.0)
-      factory_girl (~> 2.6.0)
+    factory_girl (3.0.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (3.0.0)
+      factory_girl (~> 3.0.0)
       railties (>= 3.0.0)
     faraday (0.7.6)
       addressable (~> 2.2)
       multipart-post (~> 1.1)
       rack (~> 1.1)
-    ffaker (1.13.0)
+    ffaker (1.14.0)
     ffi (1.0.11)
     fog (1.1.2)
       builder
@@ -284,7 +277,7 @@ GEM
       tilt (>= 1.3.3)
     has_scope (0.5.1)
     hashie (1.2.0)
-    heroku (2.21.3)
+    heroku (2.22.0)
       launchy (>= 0.3.2)
       netrc (~> 0.7.1)
       rest-client (~> 1.6.1)
@@ -319,7 +312,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     method_source (0.7.1)
-    mime-types (1.17.2)
+    mime-types (1.18)
     modernizr (2.5.3)
       sprockets (~> 2.0)
     money (4.0.2)
@@ -327,6 +320,10 @@ GEM
       json
     mongo (1.6.1)
       bson (~> 1.6.1)
+    mongoid (2.4.7)
+      activemodel (~> 3.1)
+      mongo (~> 1.3)
+      tzinfo (~> 0.3.22)
     multi_json (1.0.4)
     multi_xml (0.4.2)
     multipart-post (1.1.5)
@@ -345,7 +342,7 @@ GEM
     oauth2 (0.5.2)
       faraday (~> 0.7)
       multi_json (~> 1.0)
-    orm_adapter (0.0.6)
+    orm_adapter (0.0.7)
     paper_trail (2.6.2)
       rails (~> 3)
     pg (0.13.2)
@@ -410,6 +407,9 @@ GEM
       railties (~> 3.1)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    rpm_contrib (2.1.8)
+      newrelic_rpm (>= 3.1.1)
+      newrelic_rpm (>= 3.1.1)
     rspec (2.9.0)
       rspec-core (~> 2.9.0)
       rspec-expectations (~> 2.9.0)
@@ -568,7 +568,7 @@ DEPENDENCIES
   mime-types
   modernizr (~> 2.5.3)
   mongo (~> 1.6.0)
-  mongoid!
+  mongoid (~> 2.4.7)
   newrelic_rpm
   oauth (~> 0.4.5)
   oauth-plugin (~> 0.4.0.pre7)
@@ -592,7 +592,7 @@ DEPENDENCIES
   request-log-analyzer (~> 1.12.0)
   rescue_me (~> 0.1.1)!
   responders (~> 0.7.0)
-  rpm_contrib!
+  rpm_contrib
   rspec-rails
   ruby_gntp
   sass-rails (~> 3.2.0)

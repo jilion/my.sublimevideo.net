@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe SiteModules::Scope do
-  before { @user = Factory.create(:user) }
+  before { @user = create(:user) }
 
   describe "state" do
     before(:each) do
       Site.delete_all
-      @site_active    = Factory.create(:site, user: @user)
-      @site_archived  = Factory.create(:site, user: @user, state: "archived", archived_at: Time.utc(2010,2,28))
-      @site_suspended = Factory.create(:site, user: @user, state: "suspended")
+      @site_active    = create(:site, user: @user)
+      @site_archived  = create(:site, user: @user, state: "archived", archived_at: Time.utc(2010,2,28))
+      @site_suspended = create(:site, user: @user, state: "suspended")
     end
 
     describe "#active" do
@@ -35,12 +35,12 @@ describe SiteModules::Scope do
   describe "plan" do
     before(:each) do
       Site.delete_all
-      @site_free      = Factory.create(:site, user: @user, plan_id: @free_plan.id)
+      @site_free      = create(:site, user: @user, plan_id: @free_plan.id)
       @site_free.update_attribute(:next_cycle_plan_id, @paid_plan.id)
-      @site_sponsored = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
+      @site_sponsored = create(:site, user: @user, plan_id: @paid_plan.id)
       @site_sponsored.sponsor!
-      @site_custom    = Factory.create(:site, user: @user, plan_id: @custom_plan.token)
-      @site_paid      = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
+      @site_custom    = create(:site, user: @user, plan_id: @custom_plan.token)
+      @site_paid      = create(:site, user: @user, plan_id: @paid_plan.id)
       @site_paid.update_attribute(:next_cycle_plan_id, @free_plan.id)
     end
 
@@ -75,10 +75,10 @@ describe SiteModules::Scope do
   describe "attributes queries" do
     before(:each) do
       Site.delete_all
-      @site_wildcard        = Factory.create(:site, user: @user, wildcard: true)
-      @site_path            = Factory.create(:site, user: @user, path: "foo", path: 'foo')
-      @site_extra_hostnames = Factory.create(:site, user: @user, extra_hostnames: "foo.com")
-      @site_next_cycle_plan = Factory.create(:site, user: @user)
+      @site_wildcard        = create(:site, user: @user, wildcard: true)
+      @site_path            = create(:site, user: @user, path: "foo", path: 'foo')
+      @site_extra_hostnames = create(:site, user: @user, extra_hostnames: "foo.com")
+      @site_next_cycle_plan = create(:site, user: @user)
       @site_next_cycle_plan.update_attribute(:next_cycle_plan_id, @free_plan.id)
     end
 
@@ -100,11 +100,10 @@ describe SiteModules::Scope do
   end
 
   describe "invoices" do
-    before(:each) do
-      Site.delete_all
-      @site_with_no_invoice = Factory.create(:site, user: @user)
-      @site_with_paid_invoice = Factory.create(:site_with_invoice, user: @user)
-      @site_with_canceled_invoice = Factory.create(:site_with_invoice, user: @user)
+    before do
+      @site_with_no_invoice = create(:site, user: @user)
+      @site_with_paid_invoice = create(:site_with_invoice, user: @user)
+      @site_with_canceled_invoice = create(:site_with_invoice, user: @user)
       @site_with_canceled_invoice.invoices.last.update_attribute(:state, 'canceled')
     end
 
@@ -114,10 +113,9 @@ describe SiteModules::Scope do
   end
 
   describe "trial" do
-    before(:each) do
-      Site.delete_all
-      @site_not_in_trial = Factory.create(:site, user: @user, trial_started_at: BusinessModel.days_for_trial.days.ago.midnight)
-      @site_trial_ends_in_1_day = Factory.create(:site, user: @user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago.midnight)
+    before do
+      @site_not_in_trial = create(:site, user: @user, trial_started_at: BusinessModel.days_for_trial.days.ago.midnight)
+      @site_trial_ends_in_1_day = create(:site, user: @user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago.midnight)
     end
 
     describe "#in_trial" do
@@ -134,20 +132,32 @@ describe SiteModules::Scope do
     end
   end
 
+  describe "plan cycles" do
+    before do
+      @site_will_be_renewed_in_1_day  = create(:new_site, user: @user).tap { |s| s.update_attribute(:plan_cycle_ended_at, Time.now.utc.end_of_day) }
+      @site_will_be_renewed_in_2_days = create(:new_site, user: @user).tap { |s| s.update_attribute(:plan_cycle_ended_at, 1.day.from_now.end_of_day) }
+    end
+
+    describe "#plan_will_be_renewed_on" do
+      specify { Site.plan_will_be_renewed_on(1.day.from_now).all.should eq [@site_will_be_renewed_in_1_day] }
+      specify { Site.plan_will_be_renewed_on(2.days.from_now).all.should eq [@site_will_be_renewed_in_2_days] }
+    end
+  end
+
   describe "#renewable" do
     before(:each) do
       Site.delete_all
       Timecop.travel(2.months.ago) do
-        @site_renewable      = Factory.create(:site_not_in_trial, user: @user, first_paid_plan_started_at: Time.now.utc)
-        @site_suspended      = Factory.create(:site_not_in_trial, user: @user, state: 'suspended', first_paid_plan_started_at: Time.now.utc)
-        @site_archived       = Factory.create(:site_with_invoice, user: @user, first_paid_plan_started_at: Time.now.utc)
+        @site_renewable      = create(:site_not_in_trial, user: @user, first_paid_plan_started_at: Time.now.utc)
+        @site_suspended      = create(:site_not_in_trial, user: @user, state: 'suspended', first_paid_plan_started_at: Time.now.utc)
+        @site_archived       = create(:site_with_invoice, user: @user, first_paid_plan_started_at: Time.now.utc)
         @site_archived.user.current_password = '123456'
         @site_archived.archive!
         @site_archived.should be_archived
-        @site_not_renewable3 = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
+        @site_not_renewable3 = build(:new_site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
       end
       @site_not_renewable3.pending_plan_id.should eql @paid_plan.id
-      @site_not_renewable4 = Factory.create(:site_with_invoice, user: @user, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+      @site_not_renewable4 = create(:site_with_invoice, user: @user, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
     end
 
     specify { Site.renewable.all.should =~ [@site_renewable] }
@@ -156,9 +166,9 @@ describe SiteModules::Scope do
   describe "#refunded" do
     before(:each) do
       Site.delete_all
-      @site_refunded_1     = Factory.create(:site, user: @user, state: 'archived', refunded_at: Time.now.utc)
-      @site_not_refunded_1 = Factory.create(:site, user: @user, state: 'active', refunded_at: Time.now.utc)
-      @site_not_refunded_2 = Factory.create(:site, user: @user, state: 'archived', refunded_at: nil)
+      @site_refunded_1     = create(:site, user: @user, state: 'archived', refunded_at: Time.now.utc)
+      @site_not_refunded_1 = create(:site, user: @user, state: 'active', refunded_at: Time.now.utc)
+      @site_not_refunded_2 = create(:site, user: @user, state: 'archived', refunded_at: nil)
     end
 
     specify { Site.refunded.all.should =~ [@site_refunded_1] }

@@ -66,7 +66,7 @@ feature "Help page" do
   context "user has the 'forum' support level" do
     background do
       sign_in_as :user
-      Factory.create(:site, user: @current_user, plan_id: @free_plan.id)
+      create(:site, user: @current_user, plan_id: @free_plan.id)
       go 'my', '/help'
     end
 
@@ -81,7 +81,7 @@ feature "Help page" do
   context "user has the 'email' support level" do
     background do
       sign_in_as :user
-      Factory.create(:site, user: @current_user, plan_id: @paid_plan.id)
+      create(:site, user: @current_user, plan_id: @paid_plan.id)
       go 'my', '/help'
     end
 
@@ -150,13 +150,13 @@ feature "Suspended page" do
 
     context "with a suspended user" do
       background do
-        @site  = Factory.create(:site, user: @current_user)
+        @site  = create(:site, user: @current_user)
         @site.pending_plan_started_at = Time.now.utc
         @site.pending_plan_cycle_started_at = Time.now.utc
         @site.pending_plan_cycle_ended_at = Time.now.utc
         @site.save!(validate: false)
-        @invoice = Factory.create(:invoice, site: @site, state: 'failed', last_failed_at: Time.utc(2010,2,10), amount: 1990)
-        @transaction = Factory.create(:transaction, invoices: [@invoice], state: 'failed', error: "Credit Card expired")
+        @invoice = create(:invoice, site: @site, state: 'failed', last_failed_at: Time.utc(2010,2,10), amount: 1990)
+        @transaction = create(:transaction, invoices: [@invoice], state: 'failed', error: "Credit Card expired")
         @current_user.suspend
         @site.reload.should be_suspended
         @current_user.reload.should be_suspended

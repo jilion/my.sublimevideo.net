@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Enthusiast do
-  subject { Factory(:enthusiast) }
+  subject { create(:enthusiast) }
 
   context "with valid attributes" do
     its(:email) { should match /email\d+@enthusiast.com/ }

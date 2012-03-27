@@ -102,7 +102,7 @@ feature "Billing address update" do
   context "When the user is billable" do
     background do
       sign_in_as :user
-      Factory.create(:site, user: @current_user)
+      create(:site, user: @current_user)
       go 'my', 'account'
 
       page.should have_content 'John Doe'

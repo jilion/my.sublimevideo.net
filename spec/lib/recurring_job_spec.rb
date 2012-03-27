@@ -59,6 +59,7 @@ describe RecurringJob do
       described_class.sites_processing
 
       Delayed::Job.where { handler =~ '%Site%send_trial_will_expire%' }.should have(1).item
+      Delayed::Job.where { handler =~ '%Site%send_yearly_plan_will_be_renewed%' }.should have(1).item
       Delayed::Job.where { handler =~ '%Site%monitor_sites_usages%' }.should have(1).item
       Delayed::Job.where { handler =~ '%Site%update_last_30_days_counters_for_not_archived_sites%' }.should have(1).item
     end

@@ -11,7 +11,7 @@ feature "Site invoices page" do
 
     context "site in free plan with 0 invoices" do
       background do
-        @site = Factory(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
         go 'my', '/sites'
         click_link "Edit rymai.com"
       end
@@ -27,8 +27,8 @@ feature "Site invoices page" do
 
     context "site in free plan with invoices" do
       background do
-        @site = Factory(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
-        Factory(:invoice, site: @site)
+        @site = create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
+        create(:invoice, site: @site)
         go 'my', "/sites/#{@site.to_param}/edit"
       end
 
@@ -43,7 +43,7 @@ feature "Site invoices page" do
 
     context "site in paid plan with 0 invoices (possible during trial)" do
       background do
-        @site = Factory(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         go 'my', "/sites/#{@site.to_param}/edit"
       end
 
@@ -58,7 +58,7 @@ feature "Site invoices page" do
 
     context "site in paid plan with invoices" do
       background do
-        @site    = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
         go 'my', "/sites/#{@site.to_param}/edit"
       end
@@ -101,7 +101,7 @@ feature "Site invoices page" do
 
     context "site in paid plan with 1 failed invoice" do
       background do
-        @site    = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
         @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
         @invoice.last_transaction.update_attribute(:error, "Credit card refused")
@@ -140,7 +140,7 @@ feature "Site invoices page" do
 
     context "site in paid plan with 1 failed invoice having the 3d secure html as the error" do
       background do
-        @site    = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
         @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
         @invoice.last_transaction.update_attribute(:error, "<html>secure.ogone...</html>")
@@ -161,8 +161,8 @@ feature "Site invoices page" do
 
     context "site in paid plan with 1 failed invoice and 1 failed invoice for another site" do
       background do
-        @site1 = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-        @site2 = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user)
+        @site1 = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site2 = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user)
         @invoice1 = @site1.last_invoice
         @invoice2 = @site2.last_invoice
         @invoice1.update_attributes(state: 'failed', last_failed_at: 2.days.ago)
@@ -194,7 +194,7 @@ feature "Site invoices page" do
   context "user has no credit card" do
     background do
       sign_in_as :user, without_cc: true, kill_user: true
-      @site    = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = @site.last_invoice
       @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
       @invoice.last_transaction.update_attribute(:error, "Credit card refused")
@@ -217,7 +217,7 @@ feature "Site invoices page" do
     background do
       sign_in_as :user, cc_expire_on: 2.years.ago, kill_user: true
       @current_user.should be_cc_expired
-      @site    = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = @site.last_invoice
       @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
       @invoice.last_transaction.update_attribute(:error, "Credit card refused")
@@ -248,7 +248,7 @@ feature "Site invoice page" do
 
     context "normal invoice" do
       background do
-        @site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
 
         go 'my', "/invoices/#{@invoice.reference}"
@@ -282,7 +282,7 @@ feature "Site invoice page" do
         Timecop.travel(Time.utc(2010,10,10)) do
           @current_user.update_attribute(:created_at, Time.now.utc)
           @current_user.update_attribute(:billing_country, 'US')
-          @site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+          @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
           VCR.use_cassette('ogone/visa_payment_generic') do
             @site.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
           end
@@ -301,7 +301,7 @@ feature "Site invoice page" do
 
     context "invoice has balance deduction" do
       background do
-        @site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
         @invoice.update_attribute(:balance_deduction_amount, 20000) # $20
 
@@ -318,8 +318,8 @@ feature "Site invoice page" do
 
     context "invoice has a deal discount" do
       background do
-        @site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-        @deal = Factory(:deal, value: 0.3, name: 'Foo bar Deal')
+        @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @deal = create(:deal, value: 0.3, name: 'Foo bar Deal')
         @invoice = @site.last_invoice
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:discounted_percentage, 0.3)
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:deal_id, @deal.id)
@@ -334,7 +334,7 @@ feature "Site invoice page" do
 
     context "invoice has beta discount" do
       background do
-        @site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
 
         @invoice = @site.last_invoice
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:discounted_percentage, 0.2)
@@ -351,7 +351,7 @@ feature "Site invoice page" do
   context "user has VAT" do
     background do
       sign_in_as :user, billing_country: 'CH'
-      site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = site.last_invoice
 
       go 'my', "/invoices/#{@invoice.reference}"

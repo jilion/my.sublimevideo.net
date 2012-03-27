@@ -4,12 +4,12 @@ describe My::PlansHelper do
 
   describe ".plan_change_type" do
     before(:all) do
-      @site_in_trial      = Factory.create(:site)
-      @site_not_in_trial  = Factory.create(:site_not_in_trial)
-      @paid_plan_monthly  = Factory.create(:plan, cycle: "month", price: 1000)
-      @paid_plan_monthly2 = Factory.create(:plan, cycle: "month", price: 2000)
-      @paid_plan_yearly   = Factory.create(:plan, cycle: "year", price: 10000)
-      @paid_plan_yearly2  = Factory.create(:plan, cycle: "year", price: 20000)
+      @site_in_trial      = create(:site)
+      @site_not_in_trial  = create(:site_not_in_trial)
+      @paid_plan_monthly  = create(:plan, cycle: "month", price: 1000)
+      @paid_plan_monthly2 = create(:plan, cycle: "month", price: 2000)
+      @paid_plan_yearly   = create(:plan, cycle: "year", price: 10000)
+      @paid_plan_yearly2  = create(:plan, cycle: "year", price: 20000)
     end
 
     it { helper.plan_change_type(@site_in_trial, @paid_plan_monthly, @paid_plan_monthly).should     eq "skipping_trial" }

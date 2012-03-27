@@ -5,8 +5,8 @@ feature "OAuth applications" do
     background do
       sign_in_as :user
 
-      @application = Factory.create(:client_application, user: @current_user)
-      @token       = Factory.create(:oauth2_token, user: @current_user, client_application: @application)
+      @application = create(:client_application, user: @current_user)
+      @token       = create(:oauth2_token, user: @current_user, client_application: @application)
     end
 
     describe "list OAuth applications" do
@@ -35,8 +35,8 @@ feature "OAuth applications" do
     background do
       sign_in_as :user, email: "remy@jilion.com"
 
-      @application = Factory.create(:client_application, user: @current_user)
-      @token       = Factory.create(:oauth2_token, user: @current_user, client_application: @application)
+      @application = create(:client_application, user: @current_user)
+      @token       = create(:oauth2_token, user: @current_user, client_application: @application)
     end
 
     describe "list OAuth applications" do

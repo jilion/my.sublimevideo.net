@@ -5,10 +5,10 @@ describe Stats::TweetsStat do
   context "with a bunch of different tweets" do
 
     before(:each) do
-      Factory.create(:tweet, tweeted_at: 5.days.ago.midnight, keywords: %w[sublimevideo])
-      Factory.create(:tweet, tweeted_at: 1.day.ago.midnight, keywords: %w[jilion videojs sublimevideo])
-      Factory.create(:tweet, tweeted_at: 1.day.ago.midnight, keywords: ["jw player", "videojs"])
-      Factory.create(:tweet, tweeted_at: 1.day.ago.midnight, keywords: %w[jilion aelios aeliosapp])
+      create(:tweet, tweeted_at: 5.days.ago.midnight, keywords: %w[sublimevideo])
+      create(:tweet, tweeted_at: 1.day.ago.midnight, keywords: %w[jilion videojs sublimevideo])
+      create(:tweet, tweeted_at: 1.day.ago.midnight, keywords: ["jw player", "videojs"])
+      create(:tweet, tweeted_at: 1.day.ago.midnight, keywords: %w[jilion aelios aeliosapp])
     end
 
     describe ".create_stats" do

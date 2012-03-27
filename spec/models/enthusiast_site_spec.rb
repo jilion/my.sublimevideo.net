@@ -4,7 +4,7 @@ require 'spec_helper'
 describe EnthusiastSite do
 
   context "with valid attributes" do
-    before(:all) { @site = Factory.create(:enthusiast_site) }
+    before(:all) { @site = create(:enthusiast_site) }
     subject { @site.reload }
 
     its(:hostname)   { should eq "youtube.com" }
@@ -14,7 +14,7 @@ describe EnthusiastSite do
   end
 
   describe "Validations" do
-    subject { Factory.create(:enthusiast_site) }
+    subject { create(:enthusiast_site) }
 
     [:hostname].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CampaignMonitor do
-  let(:user) { Factory.create(:user, email: "cm2@jilion.com", name: "John Doe", created_at: Time.utc(2010,10,10), invitation_token: nil) }
+  let(:user) { create(:user, email: "cm2@jilion.com", name: "John Doe", created_at: Time.utc(2010,10,10), invitation_token: nil) }
 
   specify { CampaignMonitor.api_key.should eq "8844ec1803ffbe6501c3d7e9cfa23bf3" }
   specify { CampaignMonitor.lists.sublimevideo.list_id.should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
@@ -36,8 +36,8 @@ describe CampaignMonitor do
     use_vcr_cassette "campaign_monitor/import"
 
     it "should subscribe a list of user" do
-      user1 = Factory.create(:user, email: "bob1@bob.com", created_at: Time.utc(2010,10,10), invitation_token: nil)
-      user2 = Factory.create(:user, email: "bob2@bob.com", created_at: Time.utc(2011,10,10), invitation_token: nil)
+      user1 = create(:user, email: "bob1@bob.com", created_at: Time.utc(2010,10,10), invitation_token: nil)
+      user2 = create(:user, email: "bob2@bob.com", created_at: Time.utc(2011,10,10), invitation_token: nil)
       CampaignMonitor.import([user1, user2]).should be_true
       # user 1
       subscriber = CreateSend::Subscriber.get(CampaignMonitor.lists.sublimevideo.list_id, user1.email)

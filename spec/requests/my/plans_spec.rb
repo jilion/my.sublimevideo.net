@@ -9,7 +9,7 @@ feature "Plan edit" do
 
   context "site in trial" do
     scenario "view with a free plan without hostname" do
-      site = Factory.create(:site, user: @current_user, plan_id: @free_plan.id, hostname: nil)
+      site = create(:site, user: @current_user, plan_id: @free_plan.id, hostname: nil)
 
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
@@ -18,7 +18,7 @@ feature "Plan edit" do
     end
 
     scenario "update paid plan to free plan" do
-      site = Factory.create(:site, user: @current_user, plan_id: @paid_plan.id)
+      site = create(:site, user: @current_user, plan_id: @paid_plan.id)
 
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
@@ -35,7 +35,7 @@ feature "Plan edit" do
     end
 
     scenario "update free plan to paid plan" do
-      site = Factory.create(:site, user: @current_user, plan_id: @free_plan.id)
+      site = create(:site, user: @current_user, plan_id: @free_plan.id)
 
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
@@ -50,7 +50,7 @@ feature "Plan edit" do
     end
 
     scenario "update free plan to paid plan and skip trial" do
-      site = Factory.create(:site, user: @current_user, plan_id: @free_plan.id)
+      site = create(:site, user: @current_user, plan_id: @free_plan.id)
 
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
@@ -81,7 +81,7 @@ feature "Plan edit" do
 
   context "site not in trial" do
     scenario "view with a free plan without hostname" do
-      site = Factory.create(:site_not_in_trial, user: @current_user, plan_id: @free_plan.id, hostname: nil)
+      site = create(:site_not_in_trial, user: @current_user, plan_id: @free_plan.id, hostname: nil)
 
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
@@ -90,7 +90,7 @@ feature "Plan edit" do
     end
 
     scenario "update paid plan to free plan" do
-      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
+      site = create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
 
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
@@ -114,7 +114,7 @@ feature "Plan edit" do
     end
 
     scenario "update free plan to paid plan" do
-      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
+      site = create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
       site.plan_id = @free_plan.id
       site.save_skip_pwd
       Timecop.travel(2.months.from_now) { site.prepare_pending_attributes; site.apply_pending_attributes }
@@ -136,7 +136,7 @@ feature "Plan edit" do
     end
 
     scenario "update paid plan to paid plan and using registered credit card" do
-      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
+      site = create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
       site.plan.should eql @premium_month
       site.first_paid_plan_started_at.should be_present
       site.plan_started_at.should be_present
@@ -171,7 +171,7 @@ feature "Plan edit" do
       background do
         sign_in_as :user, without_cc: true, kill_user: true
         @current_user.should_not be_cc
-        @site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
+        @site = create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
         @site.plan.should eql @premium_month
         @site.first_paid_plan_started_at.should be_present
         @site.plan_started_at.should be_present
@@ -207,7 +207,7 @@ feature "Plan edit" do
     end
 
     scenario "failed update" do
-      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @free_plan.id)
+      site = create(:site_with_invoice, user: @current_user, plan_id: @free_plan.id)
 
       go 'my', "/sites/#{site.to_param}/plan/edit"
 
@@ -231,7 +231,7 @@ feature "Plan edit" do
     end
 
     scenario "cancel next plan automatic update" do
-      site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
+      site = create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
 
       site.update_attribute(:next_cycle_plan_id, @free_plan.id)
 
@@ -262,7 +262,7 @@ feature "Site in sponsored plan" do
   end
 
   scenario "view" do
-    site = Factory.create(:site, user: @current_user, last_30_days_main_video_views: 1000, last_30_days_extra_video_views: 500)
+    site = create(:site, user: @current_user, last_30_days_main_video_views: 1000, last_30_days_extra_video_views: 500)
     site.sponsor!
 
     go 'my', "/sites"
@@ -296,7 +296,7 @@ feature "Site in custom plan" do
   end
 
   scenario "view" do
-    site = Factory.create(:site, user: @current_user, plan_id: @custom_plan.token)
+    site = create(:site, user: @current_user, plan_id: @custom_plan.token)
 
     go 'my', "/sites"
 
@@ -307,7 +307,7 @@ feature "Site in custom plan" do
   end
 
   scenario "upgrade site" do
-    site = Factory.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
+    site = create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
 
     go 'my', "/sites/#{site.to_param}/plan/edit?custom_plan=#{@custom_plan.token}"
 

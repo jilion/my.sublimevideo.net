@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Admin do
   context "Factory" do
-    before(:all) { @admin = Factory.create(:admin) }
+    before(:all) { @admin = create(:admin) }
     subject { @admin }
 
     its(:email) { should match /email\d+@admin.com/ }
@@ -18,14 +18,14 @@ describe Admin do
   end
 
   describe "Associations" do
-    before(:all) { @admin = Factory.create(:admin) }
+    before(:all) { @admin = create(:admin) }
     subject { @admin }
 
     it { should have_many :mail_logs }
   end # Associations
 
   describe "Validations" do
-    before(:all) { @admin = Factory.create(:admin) }
+    before(:all) { @admin = create(:admin) }
     subject { @admin }
 
     [:email, :password, :password_confirmation, :remember_me, :roles].each do |attr|
@@ -34,12 +34,12 @@ describe Admin do
 
     it "can have defined roles" do
       AdminRole.roles.each do |role|
-        Factory.build(:admin, roles: [role]).should be_valid
+        build(:admin, roles: [role]).should be_valid
       end
     end
 
     it "cannot have undefined roles" do
-      Factory.build(:admin, roles: ['foo']).should_not be_valid
+      build(:admin, roles: ['foo']).should_not be_valid
     end
   end # Validations
 

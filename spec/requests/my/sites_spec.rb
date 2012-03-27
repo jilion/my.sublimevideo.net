@@ -252,11 +252,11 @@ end
 feature "Edit site" do
   background do
     sign_in_as :user
-    @free_site = Factory.create(:site, user: @current_user, plan_id: @free_plan.id, hostname: 'rymai.com')
+    @free_site = create(:site, user: @current_user, plan_id: @free_plan.id, hostname: 'rymai.com')
 
-    @paid_site_in_trial = Factory.create(:site, user: @current_user, hostname: 'rymai.eu')
+    @paid_site_in_trial = create(:site, user: @current_user, hostname: 'rymai.eu')
 
-    @paid_site_not_in_trial = Factory.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.ch')
+    @paid_site_not_in_trial = create(:site_not_in_trial, user: @current_user, hostname: 'rymai.ch')
 
     @free_site.should be_badged
     @paid_site_in_trial.should_not be_badged
@@ -343,13 +343,13 @@ feature "Site archive" do
 
   describe "archive" do
     background do
-      @paid_site_in_trial = Factory.create(:site, user: @current_user, hostname: 'rymai.me')
+      @paid_site_in_trial = create(:site, user: @current_user, hostname: 'rymai.me')
 
-      @paid_site_with_paid_invoices = Factory.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.fr')
-      Factory.create(:invoice, site: @paid_site_with_paid_invoices, state: 'paid')
+      @paid_site_with_paid_invoices = create(:site_not_in_trial, user: @current_user, hostname: 'rymai.fr')
+      create(:invoice, site: @paid_site_with_paid_invoices, state: 'paid')
 
-      @paid_site_with_open_invoices = Factory.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.ch')
-      Factory.create(:invoice, site: @paid_site_with_open_invoices, state: 'open')
+      @paid_site_with_open_invoices = create(:site_not_in_trial, user: @current_user, hostname: 'rymai.ch')
+      create(:invoice, site: @paid_site_with_open_invoices, state: 'open')
 
       go 'my', '/sites'
     end
@@ -381,8 +381,8 @@ feature "Site archive" do
     end
 
     scenario "a paid site with a failed invoice" do
-      site = Factory.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
-      Factory.create(:invoice, site: site, state: 'failed')
+      site = create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
+      create(:invoice, site: site, state: 'failed')
 
       go 'my', '/sites'
       page.should have_content 'google.com'
@@ -392,8 +392,8 @@ feature "Site archive" do
     end
 
     scenario "a paid site with a waiting invoice" do
-      site = Factory.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
-      Factory.create(:invoice, site: site, state: 'waiting')
+      site = create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
+      create(:invoice, site: site, state: 'waiting')
 
       go 'my', '/sites'
       page.should have_content('google.com')
@@ -430,7 +430,7 @@ feature "Sites index" do
 
     context "with sites" do
       background do
-        @site = Factory.create(:site, user: @current_user, hostname: 'google.com')
+        @site = create(:site, user: @current_user, hostname: 'google.com')
       end
 
       scenario "sort buttons displayed only if count of sites > 1" do
@@ -439,7 +439,7 @@ feature "Sites index" do
         page.should have_no_css 'div.sorting'
         page.should have_no_css 'a.sort'
 
-        Factory.create(:site, user: @current_user, hostname: 'google2.com')
+        create(:site, user: @current_user, hostname: 'google2.com')
         go 'my', '/sites'
 
         page.should have_content 'google.com'
@@ -456,7 +456,7 @@ feature "Sites index" do
         page.should have_no_css 'nav.pagination'
         page.should have_no_selector "a[rel='next']"
 
-        Factory.create(:site, user: @current_user, hostname: 'google2.com')
+        create(:site, user: @current_user, hostname: 'google2.com')
         go 'my', '/sites'
 
         page.should have_css 'nav.pagination'
@@ -465,7 +465,7 @@ feature "Sites index" do
 
       context "user has billable views" do
         background do
-          Factory.create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
+          create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
         end
 
         scenario "views notice 1" do

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ClientApplication do
   before(:all) do
-    @application = Factory.create(:client_application)
+    @application = create(:client_application)
   end
   subject { @application.reload }
 

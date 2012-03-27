@@ -4,9 +4,9 @@ describe UserModules::Scope do
 
   describe "state" do
     before do
-      @user_invited = Factory(:user, invitation_token: '123', state: 'archived')
-      @user_beta    = Factory(:user, invitation_token: nil, created_at: PublicLaunch.beta_transition_started_on - 1.day, state: 'suspended')
-      @user_active  = Factory(:user)
+      @user_invited = create(:user, invitation_token: '123', state: 'archived')
+      @user_beta    = create(:user, invitation_token: nil, created_at: PublicLaunch.beta_transition_started_on - 1.day, state: 'suspended')
+      @user_active  = create(:user)
     end
 
     describe ".invited" do
@@ -24,8 +24,8 @@ describe UserModules::Scope do
 
   describe "credit card" do
     before do
-      @user_no_cc = Factory(:user, cc_type: nil, cc_last_digits: nil)
-      @user_cc    = Factory(:user, cc_type: 'visa', cc_last_digits: '1234')
+      @user_no_cc = create(:user, cc_type: nil, cc_last_digits: nil)
+      @user_cc    = create(:user, cc_type: 'visa', cc_last_digits: '1234')
     end
 
     describe ".without_cc" do
@@ -40,33 +40,33 @@ describe UserModules::Scope do
   describe "billing" do
     before do
       # Paying because of 1 paid plan not in trial
-      @user1 = Factory(:user)
-      Factory(:site_not_in_trial, user: @user1, plan_id: @paid_plan.id)
+      @user1 = create(:user)
+      create(:site_not_in_trial, user: @user1, plan_id: @paid_plan.id)
 
       # Paying because of 1 paid plan not in trial (+ next plan is paid)
-      @user2 = Factory(:user)
-      Factory(:site_not_in_trial, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, Factory(:plan).id)
+      @user2 = create(:user)
+      create(:site_not_in_trial, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
 
       # Paying because of 1 paid plan not in trial (+ next plan is free)
-      @user3 = Factory(:user)
-      Factory(:site_not_in_trial, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
+      @user3 = create(:user)
+      create(:site_not_in_trial, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
 
       # Free because no paying (and active) sites
-      @user4 = Factory(:user)
-      Factory(:site_not_in_trial, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
+      @user4 = create(:user)
+      create(:site_not_in_trial, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
 
       # Free because of no paid plan
-      @user5 = Factory(:user)
-      Factory(:site, user: @user5, plan_id: @free_plan.id)
+      @user5 = create(:user)
+      create(:site, user: @user5, plan_id: @free_plan.id)
 
       # Free because of 1 paid plan in trial
-      @user6 = Factory(:user)
-      Factory(:site, user: @user6, plan_id: @paid_plan.id)
+      @user6 = create(:user)
+      create(:site, user: @user6, plan_id: @paid_plan.id)
 
       # Archived and that's it
-      @user7 = Factory(:user, state: 'archived')
-      Factory(:site, user: @user7, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, Factory(:plan).id)
-      @user8 = Factory(:user, state: 'archived')
+      @user7 = create(:user, state: 'archived')
+      create(:site, user: @user7, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
+      @user8 = create(:user, state: 'archived')
     end
 
     describe ".free" do
@@ -80,8 +80,8 @@ describe UserModules::Scope do
 
   describe ".newsletter" do
     before do
-      @user1 = Factory(:user, newsletter: true)
-      @user2 = Factory(:user, newsletter: false)
+      @user1 = create(:user, newsletter: true)
+      @user2 = create(:user, newsletter: false)
     end
 
     specify { User.newsletter.all.should eq [@user1] }
@@ -91,11 +91,11 @@ describe UserModules::Scope do
 
   describe ".search" do
     before do
-      @user1 = Factory(:user, email: "remy@jilion.com", name: "Marcel Jacques")
-      @site1 = Factory(:site, user: @user1, hostname: "bob.com", plan_id: @free_plan.id)
+      @user1 = create(:user, email: "remy@jilion.com", name: "Marcel Jacques")
+      @site1 = create(:site, user: @user1, hostname: "bob.com", plan_id: @free_plan.id)
       # THIS IS HUGELY SLOW DUE TO IPAddr.new('*.dev')!!!!!!!
-      @site2 = Factory(:new_site, user: @user1, dev_hostnames: "foo.dev, bar.dev")
-      @site3 = Factory(:new_site, user: @user1, dev_hostnames: "192.168.0.0, 192.168.0.30")
+      @site2 = create(:new_site, user: @user1, dev_hostnames: "foo.dev, bar.dev")
+      @site3 = create(:new_site, user: @user1, dev_hostnames: "192.168.0.0, 192.168.0.30")
     end
 
     specify { User.search("remy").all.should eq [@user1] }

@@ -6,7 +6,7 @@ describe LoaderUploader do
 
   before do
     described_class.enable_processing = true
-    @uploader = described_class.new(Factory(:site), :file)
+    @uploader = described_class.new(create(:site), :file)
   end
 
   after do

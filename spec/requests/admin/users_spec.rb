@@ -4,7 +4,7 @@ feature "Users pagination:" do
 
   background do
     sign_in_as :admin
-    Factory.create(:site) # this create a billable user
+    create(:site) # this create a billable user
     Responders::PaginatedResponder.stub(:per_page).and_return(1)
   end
 
@@ -15,7 +15,7 @@ feature "Users pagination:" do
     page.should have_no_css 'em.current'
     page.should have_no_selector "a[rel='next']"
 
-    Factory.create(:site) # this create a billable user
+    create(:site) # this create a billable user
     go 'admin', 'users'
 
     page.should have_css 'nav.pagination'
@@ -29,8 +29,8 @@ feature "Users page" do
 
   background do
     sign_in_as :admin
-    @site = Factory(:site) # this create a billable user
-    Factory(:invoice, site: @site)
+    @site = create(:site) # this create a billable user
+    create(:invoice, site: @site)
   end
 
   scenario "page displays well" do

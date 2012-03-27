@@ -1,18 +1,18 @@
 require 'spec_helper'
 
 describe My::MailMailer do
-  subject { Factory.create(:user) }
+  subject { create(:user) }
 
-  before(:each) do
-    @template = Factory.create(:mail_template)
+  before(:all) do
+    @template = create(:mail_template)
     subject # send confirmation mail
     ActionMailer::Base.deliveries.clear
   end
 
-  it_should_behave_like "common mailer checks", %w[send_mail_with_template], params: [Factory.create(:user), Factory.create(:mail_template)], content_type: %r{text/html; charset=UTF-8}
+  it_should_behave_like "common mailer checks", %w[send_mail_with_template], params: [FactoryGirl.create(:user), FactoryGirl.create(:mail_template)], content_type: %r{text/html; charset=UTF-8}
 
   describe "#send_mail_with_template" do
-    before(:each) do
+    before do
       described_class.send_mail_with_template(subject, @template).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end

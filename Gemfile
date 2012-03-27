@@ -20,9 +20,7 @@ gem 'squeel',                '~> 0.9.5'
 gem 'bson_ext',              '~> 1.6.0'
 gem 'bson',                  '~> 1.6.0'
 gem 'mongo',                 '~> 1.6.0'
-# gem 'mongoid',               '~> 2.4.5'
-gem 'mongoid', git: 'git://github.com/mongoid/mongoid.git', branch: '2.4.0-stable'
-
+gem 'mongoid',               '~> 2.4.7'
 
 # Views
 gem 'haml',                  '~> 3.1.3'
@@ -123,7 +121,7 @@ group :production do
 end
 
 group :staging, :production do
-  gem 'rpm_contrib', git: 'git://github.com/titanous/rpm_contrib.git', branch: 'mongoid-instrumentation'
+  gem 'rpm_contrib'
   gem 'newrelic_rpm'
   gem 'rack-ssl-enforcer'
 end

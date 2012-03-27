@@ -3,10 +3,10 @@ require 'spec_helper'
 
 feature "API" do
   before(:all) do
-    @user        = Factory.create(:user)
-    @site        = Factory.create(:site, user: @user)
-    @application = Factory.create(:client_application, user: @user)
-    @token       = Factory.create(:oauth2_token, user: @user, client_application: @application)
+    @user        = create(:user)
+    @site        = create(:site, user: @user)
+    @application = create(:client_application, user: @user)
+    @token       = create(:oauth2_token, user: @user, client_application: @application)
   end
   before(:each) do
     @parsed_body = nil
@@ -180,10 +180,10 @@ end
 
 feature "legacy routes API" do
   before(:all) do
-    @user        = Factory.create(:user)
-    @site        = Factory.create(:site, user: @user)
-    @application = Factory.create(:client_application, user: @user)
-    @token       = Factory.create(:oauth2_token, user: @user, client_application: @application)
+    @user        = create(:user)
+    @site        = create(:site, user: @user)
+    @application = create(:client_application, user: @user)
+    @token       = create(:oauth2_token, user: @user, client_application: @application)
   end
   before(:each) do
     @parsed_body = nil

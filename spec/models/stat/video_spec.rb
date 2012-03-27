@@ -12,10 +12,10 @@ describe Stat::Video do
       end
       before(:each) do
         6.times do |video_i|
-          Factory.create(:video_tag, st: 'site1234', u: "video#{video_i}", n: "Video #{video_i}", no: 'a')
+          create(:video_tag, st: 'site1234', u: "video#{video_i}", n: "Video #{video_i}", no: 'a')
           24.times do |hour_i|
             next if hour_i%2 == 0
-            Factory.create(:video_hour_stat, st: 'site1234', u: "video#{video_i}", d: (hour_i + 1).hours.ago.utc.change(min: 0),
+            create(:video_hour_stat, st: 'site1234', u: "video#{video_i}", d: (hour_i + 1).hours.ago.utc.change(min: 0),
               vvc: 2 * (video_i + hour_i),
               vlc: 2 * (video_i * hour_i)
             )
@@ -51,10 +51,10 @@ describe Stat::Video do
       after(:all) { Timecop.return }
       before(:each) do
         6.times do |video_i|
-          Factory.create(:video_tag, st: 'site1234', u: "video#{video_i}", n: "Video #{video_i}", no: 'a')
+          create(:video_tag, st: 'site1234', u: "video#{video_i}", n: "Video #{video_i}", no: 'a')
           62.times do |second_i|
             next if second_i%2 == 0
-            Factory.create(:video_second_stat, st: 'site1234', u: "video#{video_i}", d: (second_i).seconds.ago.utc.change(usec: 0),
+            create(:video_second_stat, st: 'site1234', u: "video#{video_i}", d: (second_i).seconds.ago.utc.change(usec: 0),
               vvc: 2 * (video_i + second_i),
               vlc: 2 * (video_i * second_i)
             )

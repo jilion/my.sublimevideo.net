@@ -5,7 +5,7 @@ feature "Enthusiasts actions:" do
   background do
     sign_in_as :admin
     Enthusiast.stub!(:per_page).and_return(2)
-    3.times { |i| Factory.create(:enthusiast) }
+    3.times { |i| create(:enthusiast) }
   end
 
   scenario "list enthusiasts by clicking on the menu button" do

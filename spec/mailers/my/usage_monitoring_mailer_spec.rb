@@ -3,15 +3,15 @@ require 'spec_helper'
 describe My::UsageMonitoringMailer do
 
   before(:all) do
-    @site = Factory.create(:site)
-    Factory.create(:plan, price: @site.plan.price + 100)
+    @site = create(:site)
+    create(:plan, price: @site.plan.price + 100)
   end
   subject { @site }
 
-  it_should_behave_like "common mailer checks", %w[plan_overused], params: Factory.create(:site)
+  it_should_behave_like "common mailer checks", %w[plan_overused plan_upgrade_required], params: FactoryGirl.create(:site)
 
   describe "#plan_overused" do
-    before(:each) do
+    before do
       described_class.plan_overused(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
@@ -25,10 +25,8 @@ describe My::UsageMonitoringMailer do
     end
   end
 
-  it_should_behave_like "common mailer checks", %w[plan_upgrade_required], params: Factory.create(:site)
-
   describe "#plan_upgrade_required" do
-    before(:each) do
+    before do
       described_class.plan_upgrade_required(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end

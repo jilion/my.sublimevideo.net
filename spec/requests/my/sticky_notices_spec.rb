@@ -4,7 +4,7 @@ feature "Sticky notices" do
   context "no notice" do
     background do
       sign_in_as :user, kill_user: true
-      Factory.create(:site, user: @current_user)
+      create(:site, user: @current_user)
       go 'my', '/sites'
     end
 
@@ -24,7 +24,7 @@ feature "Sticky notices" do
 
     context "user is billable" do
       background do
-        Factory.create(:site, user: @current_user)
+        create(:site, user: @current_user)
         @current_user.should be_billable
         go 'my', '/sites'
       end
@@ -51,7 +51,7 @@ feature "Sticky notices" do
 
     context "user is billable" do
       background do
-        Factory.create(:site, user: @current_user)
+        create(:site, user: @current_user)
         @current_user.should be_billable
         go 'my', '/sites'
       end
@@ -82,7 +82,7 @@ feature "Sticky notices" do
     context "user is billable" do
       context "user has a credit card" do
         background do
-          Factory.create(:site, user: @current_user)
+          create(:site, user: @current_user)
           @current_user.should be_billable
           go 'my', '/sites'
         end
@@ -95,7 +95,7 @@ feature "Sticky notices" do
 
       pending "user has no credit card" do
         background do
-          Factory.create(:site, user: @current_user)
+          create(:site, user: @current_user)
           @current_user.reset_credit_card_attributes
           user = @current_user
           @current_user.save
@@ -116,7 +116,7 @@ feature "Sticky notices" do
     context "user has a cc" do
       background do
         sign_in_as :user
-        Factory.create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago)
+        create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago)
         go 'my', '/sites'
       end
 
@@ -129,7 +129,7 @@ feature "Sticky notices" do
       context "trial expires today" do
         background do
           sign_in_as :user, without_cc: true
-          @site = Factory.create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago)
+          @site = create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago)
           go 'my', '/sites'
         end
 
@@ -141,7 +141,7 @@ feature "Sticky notices" do
       context "trial expires tomorrow" do
         background do
           sign_in_as :user, without_cc: true
-          @site = Factory.create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 2).days.ago)
+          @site = create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 2).days.ago)
           go 'my', '/sites'
         end
 
@@ -153,7 +153,7 @@ feature "Sticky notices" do
       context "trial expires today" do
         background do
           sign_in_as :user, without_cc: true
-          @site = Factory.create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 3).days.ago)
+          @site = create(:site, user: @current_user, trial_started_at: (BusinessModel.days_for_trial - 3).days.ago)
           go 'my', '/sites'
         end
 
