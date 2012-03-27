@@ -21,6 +21,7 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
     @model.set(demoAssetsUsed: true)
 
     MSVVideoCodeGenerator.posterView.render()
+    MSVVideoCodeGenerator.lightboxView.render() if @model.get('builderClass') is 'lightbox'
     MSVVideoCodeGenerator.sourcesView.render()
 
   resetDemoAssets: (event) ->
