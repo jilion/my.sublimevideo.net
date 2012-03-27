@@ -1,0 +1,17 @@
+- @page_title = "Create a poster frame"
+
+%h2= @page_title
+
+:textile
+  It's important that your poster frame should have the same aspect ratio than as your video file, or your viewers will see a change in the video's aspect ratio when clicking the play button.
+
+  h3(#installation). "Easily create a poster frame using VLC":#introduction
+
+  "VLC":http://www.videolan.org/vlc is a free and open source cross-platform multimedia player and framework that allows you to easily take a snapshot of your video.
+
+  To take a snapshot using VLC, simply open your MP4/H.264 video file, scrub to the timecode where you'd like to take a snapshot and Right-click -> Snapshot (or @ctrl+alt+s@ on Windows/Linux, @cmd+alt+s@ on Mac).
+
+  #{image_tag('docs/create-poster-frame/vlc-snapshot.png', title: 'VLC snapshot')}
+
+  All you need to do with the generated snapshot is rename it and resize it – using a simple image editing tool such as Paint (Windows), Preview (Mac) or "Gimp":http://www.gimp.org/downloads (Windows, Mac and Linux) – to the same dimensions as your video embed.
+  Be sure to respect the video's aspect ratio when resizing the image.
