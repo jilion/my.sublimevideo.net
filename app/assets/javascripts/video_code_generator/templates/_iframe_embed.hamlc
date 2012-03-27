@@ -1,26 +1,25 @@
 - if !MSVVideoCodeGenerator.builderRouter.loggedIn
   .help_list
-    %p><
-      != "Please&nbsp;"
-      %a.hl{ href: "https://my.#{SublimeVideo.topDomainHost()}/login?user_return_to=/video-code-generator" }><
-        Log In
-      != "&nbsp;or&nbsp;"
-      %a.hl{ href: "https://my.#{SublimeVideo.topDomainHost()}/signup?user_return_to=/video-code-generator" }><
-        Sign Up
-      != "&nbsp;to generate an iframe embed code."
+    %p
+      Please <a class='hl' href='http://#{SublimeVideo.topDomainHost()}/?p=login&user_return_to=%2Fvideo-code-generator'>Log In</a>
+      or <a class='hl' href='http://#{SublimeVideo.topDomainHost()}/?p=signup&user_return_to=%2Fvideo-code-generator'>Sign Up</a>
+      to generate an iframe embed code.
 
     %p To create an iframe embed code the generator must have access to the iframe source's site-specific token.
 - else
   .help_list
-    %p SublimeVideo embeds allow your audience to easily share your videos by embedding them into their own sites or elsewhere on the Web.
+    %p
+      SublimeVideo embeds allow your audience to easily share your videos by embedding them
+      into their own sites or elsewhere on the Web.
 
-    %p><
-      != "In order for this to work, you need to create a simple HTML page for every video you’d like to be able to embed, and host this page on one of your registered domains on&nbsp;"
-      %a.hl{ href: "https://my.#{SublimeVideo.topDomainHost()}", onclick: "window.open(this); return false" }><
-        MySublimeVideo
-      = "."
+    %p
+      In order for this to work, you need to create a simple HTML page for every video
+      you’d like to be able to embed, and host this page on one of your registered domains on
+      <a class='hl' href='https://my.#{SublimeVideo.topDomainHost()}' onclick='window.open(this); return false'>MySublimeVideo</a>.
 
-    %p The final snippet of code available to your audience to share is an &lt;iframe&gt; element pointing to that HTML page.
+    %p
+      The final snippet of code available to your audience to share is an
+      <code>&lt;iframe&gt;&lt;/iframe&gt;</code> element pointing to that HTML page.
 
   %h4
     %label{ for: "site_select" } The embed will be hosted on
@@ -33,13 +32,9 @@
   %h4 Iframe source
 
   %p.info
-    The iframe source must be the URL of the actual page containing the
-    %code= "<video>"
+    The iframe source must be the URL of the actual page containing the <code>&lt;video&gt;</code>
     element – the page must be hosted on #{@loader.get('site').get('hostname')} (or any of its Alias or staging domains).
-    != "If you need help, make sure to read our&nbsp;"
-    %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/encode-videos-for-the-web", onclick: "window.open(this); return false" }><
-      documentation
-    = "."
+    If you need help, make sure to read our <a class='hl' href='http://docs.#{SublimeVideo.topDomainHost()}/embeds' onclick='window.open(this); return false'>documentation</a>.
   .entry
 
     %label.icon{ for: "iframe_src" } Iframe source url

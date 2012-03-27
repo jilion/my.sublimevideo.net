@@ -8,13 +8,11 @@
     SublimeVideoSizeChecker.setRoot('/video-size-checker/')
     window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(logged_in: #{user_signed_in?}, sites: #{@sites.try(:to_json) || []})
 
--# %p.desc.help= raw "WordPress user? Check-out our #{link_to "WordPress plugin", docs_page_url('wordpress', subdomain: 'docs'), onclick: "window.open(this); return false"} instead!"
-
 .com_text
   - if user_signed_in?
     = content_header "Video Code Generator"
     .help_box
-      %p{ style: "padding-bottom:10px"}!= "SublimeVideo's Video Code Generator helps you easily generate properly configured <code>&lt;video&gt;</code> elements, avoiding common mistakes and ensuring the optimal viewing experience for your viewers."
+      %p{ style: "padding-bottom:10px"}= raw "SublimeVideo's Video Code Generator helps you easily generate properly configured <code>&lt;video&gt;</code> elements, avoiding common mistakes and ensuring the optimal viewing experience for your viewers."
       %p= "Simply select the type of player implementation you require and enter the URLs of your video assets in the fields below to see a live preview of your SublimeVideo player at the bottom of the page. Once you’re happy with the settings all you need to do is copy the code and paste it into the appropriate page(s) on your site."
     .big_break
   - else
@@ -37,40 +35,39 @@
       = radio_button_tag "type", "iframe_embed"
       = label_tag "type_iframe_embed", "Iframe Embed"
 
-  .login_needed
-    #demo_bootstrap
-      = tooltip_box class: "info" do
-        %span.p= raw "Don't have your video assets yet, or just want to test-drive SublimeVideo?"
-      
-      %button.green_button#use_demo_assets Use demo assets
-      %a.reset.hl{ href: "", style: 'display:none' } Reset demo assets
+  #demo_bootstrap
+    = tooltip_box class: "info" do
+      %span.p= raw "Don't have your video assets yet, or just want to test-drive SublimeVideo?"
 
-    .spacer
-    .big_break
+    %button.green_button#use_demo_assets Use demo assets
+    %a.reset.hl{ href: "", style: 'display:none' } Reset demo assets
 
-    %form#video_code_form
-      #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+  .spacer
+  .big_break
 
-      #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+  %form#video_code_form
+    #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
 
-      .login_needed
-        #poster
-        .spacer
-        .big_break
+    #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
 
-        #sources
-        .spacer
-        .big_break
+    #login_needed
+      #poster
+      .spacer
+      .big_break
 
-        #settings
-        .spacer
-        .big_break
+      #sources
+      .spacer
+      .big_break
 
-        #preview
-        .spacer
+      #settings
+      .spacer
+      .big_break
 
-        #code
-          %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code
+      #preview
+      .spacer
+
+      #code
+        %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code
 
     #popup_code.popup{ style: "display:none" }
       .popup_wrap
