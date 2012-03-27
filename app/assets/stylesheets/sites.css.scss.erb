@@ -19,13 +19,24 @@ a.add_site span {
   background:url(<%= asset_data_uri "my/sites/add_site_cross.png" %>) no-repeat 0 4px;
 }
 
+#sites a.generate_code {
+  font-size:14px;
+  position:absolute;
+  top:80px;
+  right:10px;
+}
+
 #help_list, .help_list {
-  margin-top:10px;
+  margin-top:16px;
   text-shadow:#fff 0 1px 0;
   background:url(<%= asset_path "my/sites/help_list_back.png" %>);
   padding:13px 15px 8px;
   @include border-radius(4px);
   @include box-shadow((inset #fff 0 1px 0, rgba(19,57,125,0.72) 0 1px 3px));
+}
+
+.help_list {
+  margin-top:10px;
 }
 
 #help_list h4 {

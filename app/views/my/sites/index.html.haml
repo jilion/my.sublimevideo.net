@@ -8,6 +8,7 @@
 
   = link_to new_site_path, class: "add_site green_button" do
     %span= "Add a site"
+  = link_to "Generate video code", video_code_path, class: "generate_code hl"
 
   - if @billable_views.zero?
     #help_list
