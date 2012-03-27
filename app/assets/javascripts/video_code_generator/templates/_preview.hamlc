@@ -1,7 +1,9 @@
+%h4 Preview
 - thumbnail = @video.get('thumbnail')
 - if @builder.get('builderClass') is 'lightbox'
   - zoomable_class = 'zoomable' if thumbnail.get('initialLink') is 'image' and thumbnail.srcIsEmptyOrUrl() and thumbnail.get('magnifyingGlass')
-  %a.sublime{ href: "#{@video.get('sources').mp4Mobile().get('src')}", class: zoomable_class }
+  - text_class = ' hl' if thumbnail.get('initialLink') is 'text'
+  %a.sublime{ href: "#{@video.get('sources').mp4Mobile().get('src')}", class: zoomable_class + text_class }
     - if thumbnail.get('initialLink') is 'image'
       %img{ src: "#{thumbnail.get('src')}", width: "#{thumbnail.get('thumbWidth')}", height: "#{thumbnail.get('thumbHeight')}" }/
 
@@ -19,3 +21,4 @@
 %video{ class: "#{@video.get('classes')}", poster: "#{@posterSrc}", width: "#{@video.width()}", height: "#{@video.height()}" preload: "none", style: "margin:0 auto;" }
   - for source in @video.get('sources').sortedSources(@builder.get('startWithHd'))
     != "<source src='#{source.get('src')}' #{if source.needDataQualityAttribute() then "data-quality='#{source.get('quality')}' " else '' }/>"
+.big_break
