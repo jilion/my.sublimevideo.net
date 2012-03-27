@@ -19,8 +19,9 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCodeGenerator.loader = new MSVVideoCodeGenerator.Models.Loader(site: MSVVideoCodeGenerator.sites.at(0))
 
-    MSVVideoCodeGenerator.demoPoster  = 'http://sublimevideo.net/assets/www/demo/midnight_sun_800.jpg'
-    MSVVideoCodeGenerator.demoSources =
+    MSVVideoCodeGenerator.demoPoster    = 'http://media.jilion.com/images/midnight_sun_800.jpg'
+    MSVVideoCodeGenerator.demoThumbnail = 'http://media.jilion.com/images/midnight_sun1_144.jpg'
+    MSVVideoCodeGenerator.demoSources   =
       mp4_base: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4'
       mp4_hd: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4'
       webmogg_base: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm'

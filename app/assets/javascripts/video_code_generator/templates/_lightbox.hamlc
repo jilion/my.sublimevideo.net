@@ -25,16 +25,16 @@
     %span#thumb_src_invalid.inline_alert{ style: "display:none" } Please provide a valid image URL
     %span#thumb_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
 
-.content_right
+.extra.content_right
   %h5 Size
-  .extra.entry.size{ style: "margin-top:14px" }
+  .entry.size{ style: "margin-top:14px" }
     %input#thumb_width.text{ type: "text", name: "thumb_width", value: @thumbnail.get('thumbWidth'), size: 4, maxlength: 4 }
     x
     %input#thumb_height.text{ type: "text", name: "thumb_height", value: @thumbnail.get('thumbHeight'), size: 4, maxlength: 4, readonly: "" }
     %p
       %a.hl.reset{ href: "" } Reset to original size
 .spacer
-.checkbox_wrap
+.extra.checkbox_wrap
   - check = @thumbnail.get('magnifyingGlass')
   %input#thumb_magnifying_glass(checked=check){ type: "checkbox", name: "thumb_magnifying_glass" }
   %label{ for: "thumb_magnifying_glass" } Add a magnifying glass
