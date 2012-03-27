@@ -20,8 +20,8 @@
       %label{ for: "initial_link_text" } Text
   .spacer
   .entry#thumb_box
-    %label.icon{ for: "thumb_src" } Thumbnail url
-    %input#thumb_src.text.source{ type: "text", value: @thumbnail.get('src'), size: 50 }
+    %label.icon{ for: "thumb_src" } Image url or text
+    %input#thumb_src.text.source{ type: "text", placeholder: "Image url or text", value: @thumbnail.get('src'), size: 50 }
     %span#thumb_src_invalid.inline_alert{ style: "display:none" } Please provide a valid image URL
     %span#thumb_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
 

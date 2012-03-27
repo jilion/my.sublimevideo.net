@@ -1,4 +1,4 @@
-%h4 Poster
+%h4 Poster frame
 .entry#poster_box
   %label.icon{ for: "poster_src" } Poster frame url
   %input#poster_src.text.source{ type: "text", size: "50", placeholder: "Poster frame url", value: @poster.get('src') }/
