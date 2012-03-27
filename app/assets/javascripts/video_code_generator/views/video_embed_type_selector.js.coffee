@@ -40,3 +40,8 @@ class MSVVideoCodeGenerator.Views.VideoEmbedTypeSelector extends Backbone.View
       when 'standard'
         MSVVideoCodeGenerator.lightboxView.hide()
         MSVVideoCodeGenerator.iframeEmbedView.hide()
+
+    if MSVVideoCodeGenerator.builderRouter.loggedIn or @model.get('builderClass') isnt 'iframe_embed'
+      $('.login_needed').show()
+    else
+      $('.login_needed').hide()
