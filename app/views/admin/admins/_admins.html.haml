@@ -1,0 +1,12 @@
+%table.main#admins
+  %tr
+    %th.title
+      .wrap
+        %strong= "Email"
+    %th= "Confirmed?"
+    %th.delete
+  = render @admins
+
+.pagination_wrap
+  = paginate @admins, theme: 'admin'
+  = page_entries_info @admins

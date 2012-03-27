@@ -1,0 +1,45 @@
+<%
+usage_old = StatTimeline::SiteUsage.timeline(graph_start_date, graph_end_date, { site_ids: [site.id], labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true })
+billable_usage_old = usage_old["main_usage"].zip(usage_old["extra_usage"]).map { |item| item.reduce(:+) }
+
+stats_timeline_new = StatTimeline::SiteDayStat.new(token: site.token, from: graph_start_date, to: graph_end_date)
+
+graph = Graph.new do |g|
+  g.option(chart: chart('timeline_usage'))
+  g.option(title: { text: "Video views for #{truncated_hostname(site)}" })
+  g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
+  g.option(legend: legend)
+  g.option(xAxis: x_axis(start_at: range_start_date, end_at: range_end_date))
+  g.raw_option(y_axis(""))
+  g.raw_option(tooltip(formatter: %(
+    var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
+    var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";
+
+    if (["Invalid", "Dev", "Dev cached", "Extra", "Main"].indexOf(this.series.name) != -1)
+      label += " of " + Highcharts.numberFormat(this.total, 0) + " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
+
+    return date + this.series.name + ":<br/>" + label;
+  )))
+
+  usage_old_main_size = usage_old["main_usage"][moving_average_length-1..-1].size
+  plan_limits = site.plan.video_views > 0 ? [
+    serie(Array.new(usage_old_main_size, site.plan.daily_video_views), "AVG #{site.plan.title}", type: 'line', stack: 0, visible: false),
+    serie(Array.new(usage_old_main_size, site.plan.video_views), "LIM #{site.plan.title}", type: 'line', visible: false, stack: 1)
+  ] : []
+  g.option(series: [
+    serie(usage_old["dev_usage"][moving_average_length-1..-1], 'Dev (old)', type: 'column', visible: false, stack: 1),
+    serie(usage_old["extra_usage"][moving_average_length-1..-1], 'Extra (old)', type: 'column', visible: false, stack: 1),
+    serie(usage_old["main_usage"][moving_average_length-1..-1], 'Main (old)', type: 'column', visible: false, stack: 1),
+    serie(moving_average(billable_usage_old, moving_average_length), 'AVG Billable (old)', type: 'line', stack: 2),
+
+    serie(stats_timeline_new.d_vv[moving_average_length-1..-1], 'Dev (new)', type: 'column', visible: false, stack: 3),
+    serie(stats_timeline_new.e_vv[moving_average_length-1..-1], 'Extra (new)', type: 'column', stack: 3),
+    serie(stats_timeline_new.m_vv[moving_average_length-1..-1], 'Main (new)', type: 'column', stack: 3),
+    serie(moving_average(stats_timeline_new.billable_vv, moving_average_length), 'AVG Billable (new)', type: 'line', stack: 4)
+    ] + plan_limits)
+  g.option(plotOptions: plot_options(range_start_date))
+  g.option(credits: credits)
+end
+%>
+
+<div id="timeline_usage" style="width: 100%; height: 300px;"><%= raw graph.draw %></div>

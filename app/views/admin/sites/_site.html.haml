@@ -1,0 +1,51 @@
+%tr[site]{ class: cycle("", "alt") }
+  %td.id
+    %small= link_to "##{site.id}", [:edit, :admin, site]
+
+  %td.token
+    %small= link_to site.token, [:edit, :admin, site]
+
+  %td.hostname
+    %small= links_to_hostnames(site)
+
+  %td.user
+    %small= link_to site.user.name_or_email, [:admin, site.user], title: site.user.email
+
+  %td.state
+    %small= site.state.humanize
+
+  %td.plan
+    %small
+      - if site.plan
+        = site.plan.name.humanize
+        - if site.plan.standard_plan?
+          = " (" + site.plan.read_attribute(:cycle) + ")"  # conflict with cycle method?
+          - if site.next_cycle_plan
+            = " => #{site.next_cycle_plan.name}"
+          = " [trial]" unless site.trial_ended?
+      - else
+        = '-'
+
+  %td.number
+    %small= number_with_delimiter(site.last_30_days_billable_video_views)
+
+  %td.percentage
+    %small
+      - if site.plan && site.last_30_days_billable_video_views > 0
+        = display_percentage(site.last_30_days_extra_video_views / site.last_30_days_billable_video_views.to_f)
+      - else
+        = '-'
+
+  %td.percentage
+    %small
+      - if site.plan && site.plan.video_views > 0
+        = display_percentage(site.last_30_days_billable_video_views / site.plan.video_views.to_f)
+      - else
+        = '-'
+
+  %td
+    %small= display_time(site.created_at)
+
+  - if params[:in_trial]
+    %td
+      %small= display_time(site.trial_end)

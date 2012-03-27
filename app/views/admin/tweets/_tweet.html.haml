@@ -1,0 +1,12 @@
+%tr[tweet]{ class: cycle("", "alt") }
+  %td.keywords
+    %small= tweet.keywords.join(', ')
+  %td.favorite= render 'favorite_td', tweet: tweet
+  %td.content{ style: "text-align:left;" }
+    = image_tag tweet.profile_image_url || '', alt: tweet.from_user, size: "30x30"
+    = raw tweet.content
+    = "—"
+    = link_to tweet.from_user || tweet.from_user_id, "https://twitter.com/#{tweet.from_user}"
+  -#%td.retweets= tweet.retweets.count
+  %td
+    %small= link_to display_time(tweet.tweeted_at), "https://twitter.com/#{tweet.from_user}/status/#{tweet.tweet_id}"

@@ -1,0 +1,34 @@
+= title_and_content_header("Mail template '#{@mail_template.title}'")
+
+%h3 Final look
+%br
+
+%p
+  %strong= "Subject: "
+  = Liquid::Template.parse(@mail_template.subject).render("user" => User.first)
+%br
+
+= raw Liquid::Template.parse(@mail_template.body).render("user" => User.first)
+
+%br
+%hr
+%br
+
+%h3 Send email
+%br
+
+%p= link_to "Send a new mail with this template", new_admin_mail_path(template_id: @mail_template.id)
+
+%br
+%hr
+%br
+
+%h3 Edition
+
+= render 'form', mail_template: @mail_template
+
+%br
+%hr
+%br
+
+%p= link_to "Back to mails", admin_mails_path

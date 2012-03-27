@@ -1,0 +1,19 @@
+<% if params[:enthusiast][:tags_list] %>
+  if ($('tags_list_enthusiast_label_<%= @enthusiast.id %>')) {
+    $('tags_list_enthusiast_label_<%= @enthusiast.id %>').update("Tags list [saved at <%= escape_javascript(l(Time.now.utc, :format => :semi_full_seconds)) %>]");
+  }
+<% end %>
+
+if ($('invited_at_enthusiast_<%= @enthusiast.id %>')) {
+  $('invited_at_enthusiast_<%= @enthusiast.id %>').update("<%= escape_javascript(display_time(@enthusiast.invited_at)) %>");
+}
+
+if ($('invite_enthusiast_form_<%= @enthusiast.id %>')) {
+  $('invite_enthusiast_form_<%= @enthusiast.id %>').update("<%= escape_javascript(render('invite_form', :enthusiast => @enthusiast)) %>");
+  new SpinnerForElement($('invite_enthusiast_form_<%= @enthusiast.id %>').down('.with_spinner'), true);
+}
+
+if ($('star_enthusiast_<%= @enthusiast.id %>')) {
+  $('star_enthusiast_<%= @enthusiast.id %>').update("<%= escape_javascript(render('star_form', :enthusiast => @enthusiast)) %>");
+  new SpinnerForElement($('star_enthusiast_<%= @enthusiast.id %>').down('.with_spinner'), true);
+}

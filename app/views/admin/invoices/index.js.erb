@@ -1,0 +1,5 @@
+$('invoices_table_wrap').update("<%= escape_javascript(render 'invoices') %>");
+$('table_spinner').hide();
+<% if params[:search] %>
+  $('invoices_title').update("<%= admin_invoices_page_title(@invoices) %>");
+<% end %>

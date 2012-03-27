@@ -1,0 +1,10 @@
+%tr[mail_template]{ class: cycle("", "alt") }
+  %td.title
+    = link_to mail_template.title, [:edit, :admin, mail_template]
+  %td.subject
+    %small
+      = link_to mail_template.subject, [:edit, :admin, mail_template], title: mail_template.subject
+  %td.body
+    %small= link_to truncate(mail_template.body), [:edit, :admin, mail_template], title: mail_template.body
+  %td
+    %small= display_time(mail_template.created_at)

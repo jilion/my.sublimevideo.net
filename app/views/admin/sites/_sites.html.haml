@@ -1,0 +1,19 @@
+%table.main#sites
+  %tr
+    %th ID
+    %th Token
+    %th= link_to_sort :hostname
+    %th= link_to_sort :user
+    %th= link_to_sort :state
+    %th= link_to_sort :plan_price, label: "Plan", title: "Sort by plan prices"
+    %th= link_to_sort :last_30_days_billable_video_views, default_way: 'desc', label: "Last 30 days bill. hits", title: "Last 30 days billable (main+extra) hits (+cached)"
+    %th= link_to_sort :last_30_days_extra_video_views_percentage, default_way: 'desc', label: "Extra hits %", title: "Last 30 days extra hits (+cached) percentage"
+    %th= link_to_sort :last_30_days_plan_usage_persentage, default_way: 'desc', label: "Plan %", title: "Plan usage percentage (base on last 30 days billable (main+extra) hits)"
+    %th= link_to_sort :date, default_way: 'desc', default: !params[:in_trial], label: "Created"
+    - if params[:in_trial]
+      %th= link_to_sort :trial_started_at, default_way: 'desc', default: true, label: "Trial end"
+  = render @sites
+
+.pagination_wrap
+  = paginate @sites, theme: 'admin'
+  = page_entries_info @sites

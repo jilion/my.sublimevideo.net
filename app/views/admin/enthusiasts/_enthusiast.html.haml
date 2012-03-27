@@ -1,0 +1,32 @@
+%tr{ class: cycle("", "alt") }
+  -#%td{ id: "star_enthusiast_#{enthusiast.id}"}= render "star_form", enthusiast: enthusiast
+  -#%td
+  -#  %small
+  -#    = display_bool(enthusiast.confirmed?)
+  -#    = raw "&sup2;" if !enthusiast.confirmed? && enthusiast.confirmation_resent?
+  -#%td
+  -#  %small= display_bool(enthusiast.interested_in_beta?)
+  %td
+    %small= link_to(enthusiast.email, admin_enthusiast_path(enthusiast))
+  %td
+    - if enthusiast.user
+      %small= link_to(enthusiast.user.name_or_email, admin_user_path(enthusiast.user))
+    - else
+      = "-"
+  %td
+    %small
+      %ul.no_bullet
+        - enthusiast.sites[0,2].each do |s|
+          = content_tag(:li, link_to(s.hostname, "http://#{s.hostname}"))
+        - if enthusiast.sites.size > 2
+          %li= link_to("#{enthusiast.sites.size-2} more", admin_enthusiast_path(enthusiast), title: enthusiast.sites[2..-1].map(&:hostname).join(', '))
+  %td.left
+    %small
+      = link_to(h(enthusiast.free_text) || "No comment", admin_enthusiast_path(enthusiast), title: h(enthusiast.free_text))
+  %td
+    %small= display_time(enthusiast.created_at)
+  %td
+    - if enthusiast.invited_at?
+      %small= display_time(enthusiast.invited_at)
+    - else
+      = "-"

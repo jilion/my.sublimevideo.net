@@ -6,3 +6,4 @@ Guardfile
 test
 spec
 doc
+app/assets/images/old

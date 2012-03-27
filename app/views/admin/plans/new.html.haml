@@ -1,0 +1,25 @@
+= title_and_content_header("Create new custom plan")
+
+= form_for [:admin, @plan] do |f|
+  .entry.cycle
+    = f.label :name
+    %span
+      custom -
+      = f.text_field :name, size: 19
+
+  .entry.cycle
+    = f.label :cycle
+    = f.select :cycle, %w[month year]
+
+  .entry.video_views
+    = f.label :video_views
+    = f.text_field :video_views
+
+  .entry.price
+    = f.label :price, "Price per cycle (in cents)"
+    = f.text_field :price
+
+  .spacer
+  .entry.submit.send
+    = f.submit "Create", :confirm => 'Are you sure?'
+    .spacer

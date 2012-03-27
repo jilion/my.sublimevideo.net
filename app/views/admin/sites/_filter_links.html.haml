@@ -1,0 +1,39 @@
+%ul
+  %li
+    = link_to "#{content_tag(:strong, Site.with_state(:active).count)} Active".html_safe, admin_sites_path(with_state: 'active')
+    %ul{ style: 'padding:5px 0 5px 18px;' }
+      %li
+        = link_to "#{content_tag(:strong, Site.active.in_plan('free').count)} Free".html_safe, admin_sites_path(in_plan: 'free')
+      %li
+        = link_to "#{content_tag(:strong, Site.active.in_trial.paid_plan.count)} Trial".html_safe, admin_sites_path(in_trial: true, paid_plan: true)
+        (
+        = link_to "#{content_tag(:strong, Site.active.in_trial.in_plan('plus').count)} Plus".html_safe, admin_sites_path(in_trial: true, in_plan: 'plus')
+        |
+        = link_to "#{content_tag(:strong, Site.active.in_trial.in_plan('premium').count)} Premium".html_safe, admin_sites_path(in_trial: true, in_plan: 'premium')
+        )
+      %li
+        = link_to "#{content_tag(:strong, Site.active.not_in_trial.paid_plan.count)} Paying".html_safe, admin_sites_path(not_in_trial: true, paid_plan: true)
+        (
+        = link_to "#{content_tag(:strong, Site.active.not_in_trial.in_plan('plus').count)} Plus".html_safe, admin_sites_path(not_in_trial: true, in_plan: 'plus')
+        |
+        = link_to "#{content_tag(:strong, Site.active.not_in_trial.in_plan('premium').count)} Premium".html_safe, admin_sites_path(not_in_trial: true, in_plan: 'premium')
+        )
+      %li
+        = link_to "#{content_tag(:strong, Site.active.in_plan('sponsored').count)} Sponsored".html_safe, admin_sites_path(in_plan: 'sponsored')
+  %li= link_to "#{content_tag(:strong, Site.with_state(:suspended).count)} Suspended".html_safe, admin_sites_path(with_state: 'suspended')
+  %li= link_to "#{content_tag(:strong, Site.with_state(:archived).count)} Archived".html_safe, admin_sites_path(with_state: 'archived')
+
+= "-----------------------------------------------"
+
+%p
+  = link_to "#{content_tag(:strong, Site.active.overusage_notified.count)} With Peak Insurance".html_safe, admin_sites_path(with_state: 'active', overusage_notified: true)
+  |
+  = link_to "#{content_tag(:strong, Site.active.with_next_cycle_plan.count)} Will downgrade".html_safe, admin_sites_path(with_state: 'active', with_next_cycle_plan: true)
+  |
+  = link_to "#{content_tag(:strong, Site.active.with_extra_hostnames.count)} With extra hostnames".html_safe, admin_sites_path(with_state: 'active', with_extra_hostnames: true)
+  |
+  = link_to "#{content_tag(:strong, Site.active.with_wildcard.count)} With wildcard".html_safe, admin_sites_path(with_state: 'active', with_wildcard: true)
+  |
+  = link_to "#{content_tag(:strong, Site.active.with_path.count)} With path".html_safe, admin_sites_path(with_state: 'active', with_path: true)
+  |
+  = link_to "#{content_tag(:strong, Site.active.badged(false).count)} Without badge".html_safe, admin_sites_path(with_state: 'active', badged: false)

@@ -1,0 +1,29 @@
+= title_and_content_header("Invoice ##{@invoice.reference} - #{invoice_dates(@invoice)} (#{link_to(@invoice.user.name_or_email, [:admin, @invoice.user])})")
+
+%h2 TODO
+%h3= charging_status(@invoice)
+
+-#.spacer
+-#
+-#
+-#%br
+-#%hr
+-#%br
+-#
+-#-#= render "/invoices/sites", :invoice => @invoice
+-#
+-#-#= render "/invoices/total", :invoice => @invoice
+-#
+-#%br
+-#%hr
+-#%br
+-#
+-#  %h3 Retry charging
+-#  = form_for [:retry_charging, :admin, @invoice] do |f|
+-#    = f.submit "Retry charging"
+-#
+-#%br
+-#%hr
+-#%br
+
+%p= link_to "Back to invoices", [:admin, :invoices]

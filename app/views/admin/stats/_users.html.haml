@@ -1,0 +1,31 @@
+- users_created_during_range = User.created_between(range_start_date, range_end_date).count
+- users_created_yesterday    = User.created_between(Time.now.yesterday.midnight, Time.now.yesterday.end_of_day).count
+- users_created_today        = User.created_between(Date.today, Time.now).count
+
+- users_signed_in_during_range = User.signed_in_between(range_start_date, range_end_date).count
+- users_signed_in_yesterday    = User.signed_in_between(Time.now.yesterday.midnight, Time.now.yesterday.end_of_day).count
+- users_signed_in_today        = User.signed_in_between(Date.today, Time.now).count
+
+%h4 New users
+
+%p.summary
+  = number_to_human(users_created_during_range, :significant => false, :precision => 2, :delimiter => "'")
+  = " between #{l(range_start_date, :format => :Y_m_d)} and #{l(range_end_date, :format => :Y_m_d)}"
+  %br
+  = number_to_human(users_created_yesterday, :significant => false, :precision => 2, :delimiter => "'")
+  = " yesterday"
+  %br
+  = number_to_human(users_created_today, :significant => false, :precision => 2, :delimiter => "'")
+  = " today"
+
+%h4 Signed-in users
+
+%p.summary
+  = number_to_human(users_signed_in_during_range, :significant => false, :precision => 2, :delimiter => "'")
+  = " between #{l(range_start_date, :format => :Y_m_d)} and #{l(range_end_date, :format => :Y_m_d)}"
+  %br
+  = number_to_human(users_signed_in_yesterday, :significant => false, :precision => 2, :delimiter => "'")
+  = " yesterday"
+  %br
+  = number_to_human(users_signed_in_today, :significant => false, :precision => 2, :delimiter => "'")
+  = " today"

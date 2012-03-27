@@ -1,0 +1,16 @@
+%table
+  %tr
+    %th Month
+    %th Invoiced (CH, VAT incl)
+    %th Invoiced (not CH)
+    %th Invoiced (Total)
+  - from = DateTime.new(2011,3).utc
+  - to   = Time.now.utc.end_of_month
+  - while from <= to do
+    - invoices = Invoice.between(from, from.end_of_month).paid
+    %tr{ style: from.end_of_month > 30.days.ago ? "font-style:italic;" : "" }
+      %td= l from.end_of_month, format: :month_fullyear
+      %td= display_amount invoices.where { customer_country == 'CH' }.sum(:amount)
+      %td= display_amount invoices.where { customer_country != 'CH' }.sum(:amount)
+      %td= display_amount invoices.sum(:amount)
+    - from = from + 1.month
