@@ -1,4 +1,4 @@
-- if @video.viewable()
+- if @video.viewable() and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.thumbnail.viewable())
   - errors   = { src_invalid: 0, not_found: 0 }
   - warnings = { mime_type_invalid: 0 }
   - _.each @video.get('sources').allUsedNotEmpty(), (source) ->
@@ -37,4 +37,7 @@
 - else
   .notices
     %ul
-      %li.notice.error.no_usable_source Please provide a valid video source.
+      - if !@video.viewable()
+        %li.notice.error Please provide a valid video source.
+      - if @builder.get('builderClass') is 'lightbox' and !MSVVideoCodeGenerator.thumbnail.viewable()
+        %li.notice.error Please provide a valid lightbox image or text.

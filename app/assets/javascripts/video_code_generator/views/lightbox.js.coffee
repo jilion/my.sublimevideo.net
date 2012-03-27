@@ -9,6 +9,7 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
     'click .reset':                   'resetThumbDimensions'
 
   initialize: ->
+    @builder     = @options.builder
     @thumbnail   = @options.thumbnail
     @initialLink = 'image'
     @uiHelper    = new MSVVideoCodeGenerator.Helpers.UIAssetHelper 'thumb'
@@ -25,6 +26,7 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   #
   updateSrc: (event) ->
     @thumbnail.setAndPreloadSrc(event.target.value)
+    @builder.set(demoAssetsUsed: false)
 
   updateThumbWidth: (event) ->
     @thumbnail.setThumbWidth(parseInt(event.target.value))

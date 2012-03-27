@@ -8,7 +8,7 @@ class MSVVideoCodeGenerator.Models.Image extends MSVVideoCodeGenerator.Models.As
       this.set(src: src)
 
       if this.srcIsEmpty()
-        this.set(found: true)
+        this.reset()
       else if this.srcIsUrl()
         this.preloadSrc()
       else
@@ -48,7 +48,7 @@ class MSVVideoCodeGenerator.Models.Thumbnail extends MSVVideoCodeGenerator.Model
       this.set(src: src)
 
       if this.srcIsEmpty()
-        this.set(found: true)
+        this.reset()
       else if this.srcIsUrl()
         this.preloadSrc()
       else
@@ -69,3 +69,12 @@ class MSVVideoCodeGenerator.Models.Thumbnail extends MSVVideoCodeGenerator.Model
 
   setThumbHeightWithRatio: ->
     this.set(thumbHeight: parseInt(this.get('thumbWidth') * this.get('ratio')))
+
+  viewable: ->
+    (this.get('initialLink') is 'text' and !this.srcIsEmpty()) or (this.get('initialLink') is 'image' and this.srcIsUsable())
+
+  reset: ->
+    super()
+    this.set(initialLink: 'image')
+    this.set(thumbWidth: null)
+    this.set(thumbHeight: null)

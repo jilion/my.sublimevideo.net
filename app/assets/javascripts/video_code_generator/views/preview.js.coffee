@@ -21,7 +21,7 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
   #
   render: ->
     MSVVideoCodeGenerator.codeView.hide()
-    if MSVVideoCodeGenerator.video.viewable() and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.thumbnail.get('initialLink') is 'text' or MSVVideoCodeGenerator.thumbnail.srcIsUrl())
+    if MSVVideoCodeGenerator.video.viewable() and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.thumbnail.viewable())
       currentScroll = $(window).scrollTop()
       $(@el).hide()
 

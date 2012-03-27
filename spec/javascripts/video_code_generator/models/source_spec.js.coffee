@@ -29,33 +29,36 @@ describe 'Source, Sources', ->
 
     describe 'setKeepRatio()', ->
       it 'recalculate only embedHeight from embedWidth and ratio when keepRatio is set to true', ->
-        @source.set(width: 2000)
-        @source.set(height: 1000)
+        @source.set(width: 500)
+        @source.set(height: 250)
         @source.set(ratio: 0.5)
 
-        @source.setEmbedWidth(1000)
-        expect(@source.get('embedWidth')).toEqual(1000)
-        expect(@source.get('embedHeight')).toEqual(500)
+        @source.setEmbedWidth(500)
+        expect(@source.get('embedWidth')).toEqual(500)
+        expect(@source.get('embedHeight')).toEqual(250)
+
         @source.set(keepRatio: false)
         @source.set(embedHeight: 100)
+        expect(@source.get('embedWidth')).toEqual(500)
+        expect(@source.get('embedHeight')).toEqual(100)
 
         @source.setKeepRatio(true)
-        expect(@source.get('embedWidth')).toEqual(1000)
-        expect(@source.get('embedHeight')).toEqual(500)
+        expect(@source.get('embedWidth')).toEqual(500)
+        expect(@source.get('embedHeight')).toEqual(250)
 
       it 'don\'t recalculate anything when keepRatio is set to false', ->
-        @source.set(width: 2000)
-        @source.set(height: 1000)
+        @source.set(width: 500)
+        @source.set(height: 250)
         @source.set(ratio: 0.5)
 
-        @source.set(keepRatio: true)
-        @source.setEmbedWidth(1000)
-        expect(@source.get('embedWidth')).toEqual(1000)
-        expect(@source.get('embedHeight')).toEqual(500)
+        # @source.set(keepRatio: true)
+        @source.setEmbedWidth(250)
+        expect(@source.get('embedWidth')).toEqual(250)
+        expect(@source.get('embedHeight')).toEqual(125)
 
         @source.setKeepRatio(false)
-        expect(@source.get('embedWidth')).toEqual(1000)
-        expect(@source.get('embedHeight')).toEqual(500)
+        expect(@source.get('embedWidth')).toEqual(250)
+        expect(@source.get('embedHeight')).toEqual(125)
 
     describe 'setDefaultDataName()', ->
       it 'sets dataName from src without the extension and capitalized', ->
@@ -96,9 +99,9 @@ describe 'Source, Sources', ->
         @source.setEmbedWidth(50)
         expect(@source.get('embedWidth')).toEqual(200)
 
-      it 'maximum is 2000', ->
+      it 'maximum is 880', ->
         @source.setEmbedWidth(5000)
-        expect(@source.get('embedWidth')).toEqual(2000)
+        expect(@source.get('embedWidth')).toEqual(880)
 
     describe 'setEmbedHeightWithRatio()', ->
       it 'sets embedHeight from embedWidth and ratio', ->
@@ -129,10 +132,10 @@ describe 'Source, Sources', ->
 
       it 'returns video/ogg for ogv file', ->
         @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.ogv')
-        expect(@source.expectedMimeType()).toEqual('video/ogv')
+        expect(@source.expectedMimeType()).toEqual('video/ogg')
       it 'returns video/ogg for ogg file', ->
         @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.ogg')
-        expect(@source.expectedMimeType()).toEqual('video/ogv')
+        expect(@source.expectedMimeType()).toEqual('video/ogg')
 
       it 'returns the current mime type for unknown file', ->
         @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.mov')
@@ -153,6 +156,40 @@ describe 'Source, Sources', ->
         @source.set(src: 'http://sublimevideo.net/demo/dartmoor_foo_bar_12.m4v')
         @source.set(currentMimeType: 'video/webm')
         expect(@source.validMimeType()).toBeFalsy()
+
+    describe 'reset()', ->
+      it 'resets the dataName, dataUID, keepRatio, embedWidth, embedHeight and currentMimeType attributes', ->
+        @source.set(format: 'webm')
+        @source.set(quality: 'hd')
+        @source.set(dataName: 'foo')
+        @source.set(dataUID: 'bar')
+        @source.set(isUsed: false)
+        @source.set(keepRatio: false)
+        @source.set(embedWidth: 12)
+        @source.set(embedHeight: 42)
+        @source.set(currentMimeType: 'video/webm')
+
+        expect(@source.get('format')).toEqual('webm')
+        expect(@source.get('quality')).toEqual('hd')
+        expect(@source.get('dataName')).toEqual('foo')
+        expect(@source.get('dataUID')).toEqual('bar')
+        expect(@source.get('isUsed')).toBeFalsy()
+        expect(@source.get('keepRatio')).toBeFalsy()
+        expect(@source.get('embedWidth')).toEqual(12)
+        expect(@source.get('embedHeight')).toEqual(42)
+        expect(@source.get('currentMimeType')).toEqual('video/webm')
+
+        @source.reset()
+
+        expect(@source.get('format')).toEqual('webm')
+        expect(@source.get('quality')).toEqual('hd')
+        expect(@source.get('dataName')).toEqual('')
+        expect(@source.get('dataUID')).toEqual('')
+        expect(@source.get('isUsed')).toBeFalsy()
+        expect(@source.get('keepRatio')).toBeTruthy()
+        expect(@source.get('embedWidth')).toEqual(null)
+        expect(@source.get('embedHeight')).toEqual(null)
+        expect(@source.get('currentMimeType')).toEqual('')
 
   describe 'MSVVideoCodeGenerator.Collections.Sources', ->
     beforeEach ->

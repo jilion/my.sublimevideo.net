@@ -12,7 +12,9 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
   # EVENTS
   #
   updateUseDemoAssets: (event) ->
+    this.resetAll()
     MSVVideoCodeGenerator.poster.setAndPreloadSrc(MSVVideoCodeGenerator.demoPoster)
+    MSVVideoCodeGenerator.thumbnail.reset()
     MSVVideoCodeGenerator.thumbnail.setAndPreloadSrc(MSVVideoCodeGenerator.demoThumbnail)
     _.each MSVVideoCodeGenerator.demoSources, (src, key) ->
       source = MSVVideoCodeGenerator.sources.byFormatAndQuality(key.split('_'))
@@ -20,23 +22,26 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
       source.set(isUsed: true)
     @model.set(demoAssetsUsed: true)
 
-    MSVVideoCodeGenerator.posterView.render()
-    MSVVideoCodeGenerator.lightboxView.render() if @model.get('builderClass') is 'lightbox'
-    MSVVideoCodeGenerator.sourcesView.render()
+    this.renderViews()
 
   resetDemoAssets: (event) ->
-    MSVVideoCodeGenerator.poster.setAndPreloadSrc('')
-    MSVVideoCodeGenerator.thumbnail.setAndPreloadSrc('')
-    _.each MSVVideoCodeGenerator.demoSources, (src, key) ->
-      source = MSVVideoCodeGenerator.sources.byFormatAndQuality(key.split('_'))
-      source.setAndPreloadSrc('')
+    this.resetAll()
     @model.set(demoAssetsUsed: false)
 
-    MSVVideoCodeGenerator.posterView.render()
-    MSVVideoCodeGenerator.lightboxView.render() if @model.get('builderClass') is 'lightbox'
-    MSVVideoCodeGenerator.sourcesView.render()
-
+    this.renderViews()
     false
 
   toggleResetDemoAssetsLink: ->
     if @model.get('demoAssetsUsed') then this.$("a.reset").show() else this.$(".reset").hide()
+
+  resetAll: ->
+    MSVVideoCodeGenerator.poster.reset()
+    MSVVideoCodeGenerator.thumbnail.reset()
+    _.each MSVVideoCodeGenerator.demoSources, (src, key) ->
+      source = MSVVideoCodeGenerator.sources.byFormatAndQuality(key.split('_'))
+      source.reset()
+
+  renderViews: ->
+    MSVVideoCodeGenerator.posterView.render()
+    MSVVideoCodeGenerator.lightboxView.render() if @model.get('builderClass') is 'lightbox'
+    MSVVideoCodeGenerator.sourcesView.render()

@@ -2,8 +2,7 @@
   .help_list
     %p
       Please <a class='hl' href='http://#{SublimeVideo.topDomainHost()}/?p=login&user_return_to=%2Fvideo-code-generator'>Log In</a>
-      or <a class='hl' href='http://#{SublimeVideo.topDomainHost()}/?p=signup&user_return_to=%2Fvideo-code-generator'>Sign Up</a>
-      to generate an iframe embed code.
+      or <a class='hl' href='http://#{SublimeVideo.topDomainHost()}/?p=signup&user_return_to=%2Fvideo-code-generator'>Sign Up</a>.
 
     %p To create an iframe embed code the generator must have access to the iframe source's site-specific token.
 - else

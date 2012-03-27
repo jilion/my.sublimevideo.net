@@ -42,3 +42,19 @@ describe 'Asset', ->
       it 'returns true when an URL', ->
         @asset.set(src: 'http://test.com')
         expect(@asset.srcIsEmptyOrUrl()).toBeTruthy()
+
+    describe 'reset()', ->
+      it 'resets the src, found and ratio attributes', ->
+        @asset.set(src: 'test')
+        @asset.set(found: false)
+        @asset.set(ratio: 2)
+
+        expect(@asset.get('src')).toEqual('test')
+        expect(@asset.get('found')).toBeFalsy()
+        expect(@asset.get('ratio')).toEqual(2)
+
+        @asset.reset()
+
+        expect(@asset.get('src')).toEqual('')
+        expect(@asset.get('found')).toBeTruthy()
+        expect(@asset.get('ratio')).toEqual(1)

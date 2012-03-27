@@ -40,9 +40,9 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       new MSVVideoCodeGenerator.Models.Source
         format: 'mp4', quality: 'mobile', isUsed: false
       new MSVVideoCodeGenerator.Models.Source
-        format: 'webmogg', optional: true
+        format: 'webmogg'
       new MSVVideoCodeGenerator.Models.Source
-        format: 'webmogg', optional: true, quality: 'hd', isUsed: false
+        format: 'webmogg', quality: 'hd', isUsed: false
     ])
 
     MSVVideoCodeGenerator.video = new MSVVideoCodeGenerator.Models.Video
@@ -65,6 +65,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       el: '#video_embed_type_selector'
 
     MSVVideoCodeGenerator.lightboxView = new MSVVideoCodeGenerator.Views.Lightbox
+      builder: MSVVideoCodeGenerator.builder
       thumbnail: MSVVideoCodeGenerator.thumbnail
       el: '#lightbox_attributes'
 

@@ -1,25 +1,24 @@
 class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.Asset
   defaults:
-    src: ""
-    format: "mp4"
-    quality: "base"
-    dataName: ""
-    dataUID: ""
-    optional: false
+    src: ''
+    found: true
+    ratio: 9/16
+    format: 'mp4'
+    quality: 'base'
+    dataName: ''
+    dataUID: ''
     isUsed: true
     keepRatio: true
     embedWidth: null
     embedHeight: null
-    ratio: 9/16
-    found: true
-    currentMimeType: ""
+    currentMimeType: ''
 
   setAndPreloadSrc: (src) ->
     unless src is this.get('src')
       this.set(src: src)
 
       if this.srcIsEmpty()
-        this.set(found: true)
+        this.reset()
       else if this.srcIsUrl()
         this.preloadSrc() if this.formatQuality() is 'mp4_base'
         this.checkMimeType()
@@ -34,11 +33,12 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
     this.setEmbedHeightWithRatio() if this.get('keepRatio')
 
   setDefaultDataUID: ->
-    this.set(dataUID: crc32(this.get('src')))
+    this.set(dataUID: crc32(this.get('src'))) unless this.srcIsEmpty()
 
   setDefaultDataName: ->
-    name = this.get('src').slice(this.get('src').lastIndexOf('/') + 1, this.get('src').lastIndexOf('.'))
-    this.set(dataName: name.titleize())
+    unless this.srcIsEmpty()
+      name = this.get('src').slice(this.get('src').lastIndexOf('/') + 1, this.get('src').lastIndexOf('.'))
+      this.set(dataName: name.titleize())
 
   preloadSrc: ->
     new SublimeVideo.VideoPreloader(this.get('src'), this.setDimensions)
@@ -67,7 +67,7 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
       when 'webm'
         'video/webm'
       when 'ogv', 'ogg'
-        'video/ogv'
+        'video/ogg'
       else
         this.get('currentMimeType')
 
@@ -115,6 +115,15 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
 
   needDataQualityAttribute: ->
     !_.include(['base', 'mobile'], this.get('quality'))
+
+  reset: ->
+    super()
+    this.set(dataName: '')
+    this.set(dataUID: '')
+    this.set(keepRatio: true)
+    this.set(embedWidth: null)
+    this.set(embedHeight: null)
+    this.set(currentMimeType: '')
 
 class MSVVideoCodeGenerator.Collections.Sources extends Backbone.Collection
   model: MSVVideoCodeGenerator.Models.Source
