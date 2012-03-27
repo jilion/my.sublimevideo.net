@@ -1,0 +1,12 @@
+%table.main#plans
+  %tr
+    %th.title
+      .wrap
+        %strong= "Name"
+    %th= "Cycle"
+    %th= "VPV"
+    %th= "Price per cycle"
+    %th= "Custom token"
+    %th= "# active sites"
+    -#%th= "Monthly revenue"
+  = render @plans

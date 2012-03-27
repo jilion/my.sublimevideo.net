@@ -1,0 +1,16 @@
+%h3 Invoices
+
+%ul
+  - object.invoices.order(:created_at.desc).each do |invoice|
+    %li
+      = link_to(invoice_dates(invoice), [:admin, invoice])
+      = " / "
+      = display_amount(invoice.amount)
+      = " ( #{invoice.state}"
+      - case invoice.state
+      - when 'paid'
+        = " on " + l(invoice.paid_at, format: :d_b_Y)
+        = ", refunded on #{l(invoice.site.refunded_at, format: :d_b_Y)}" if invoice.refunded?
+      - when 'failed'
+        = " on " + l(invoice.last_failed_at, format: :d_b_Y)
+      = ")"

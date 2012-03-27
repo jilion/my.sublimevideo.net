@@ -1,0 +1,12 @@
+%p
+  = link_to "#{content_tag(:strong, Invoice.count)} All".html_safe, admin_invoices_path
+  |
+  = link_to "#{content_tag(:strong, Invoice.paid.count)} Paid".html_safe, admin_invoices_path(:paid => true)
+  |
+  = link_to "#{content_tag(:strong, Invoice.open.count)} Open".html_safe, admin_invoices_path(:open => true)
+  |
+  = link_to "#{content_tag(:strong, Invoice.waiting.count)} Waiting".html_safe, admin_invoices_path(:waiting => true)
+  |
+  = link_to "#{content_tag(:strong, Invoice.refunded.count)} Refunded".html_safe, admin_invoices_path(:refunded => true)
+  |
+  = link_to "#{content_tag(:strong, Invoice.failed.count)} Failed".html_safe, admin_invoices_path(:failed => true)

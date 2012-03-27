@@ -1,0 +1,13 @@
+= title_and_content_header("Mails")
+
+%h3 Logs
+= link_to "Send a new mail", new_admin_mail_path
+
+#mail_logs_table_wrap= render 'mail_logs'
+
+%br
+
+%h3 Templates
+= link_to "Create a new mail template", new_admin_mail_template_path
+
+#mail_templates_table_wrap= render 'mail_templates'

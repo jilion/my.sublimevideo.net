@@ -1,0 +1,9 @@
+-#  Link to the "Previous" page
+-#  available local variables
+-#    url:           url to the previous page
+-#    current_page:  a page object for the currently displayed page
+-#    num_pages:     total number of pages
+-#    per_page:      number of items to fetch per page
+-#    remote:        data-remote
+%span.prev{ :class => current_page.first? ? "disabled" : "" }
+  = link_to_unless current_page.first?, raw(t 'views.pagination.previous'), params.merge(:page => current_page - 1, :format => nil), :remote => true, :onclick => "MySublimeVideo.showTableSpinner()", :class => 'prev', :rel => 'prev'

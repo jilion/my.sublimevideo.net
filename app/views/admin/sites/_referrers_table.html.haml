@@ -1,0 +1,15 @@
+%h3 Active pages
+
+%table
+  %tr
+    %th{ :style => "width:80%;" } Popular URL
+    %th{ :style => "width:10%;" } Hits
+    %th{ :style => "width:10%;" } Last hit
+  = render partial: 'referrer', collection: site.referrers.by_hits.limit(10)
+
+%table
+  %tr
+    %th{ :style => "width:80%;" } Last URL
+    %th{ :style => "width:10%;" } Hits
+    %th{ :style => "width:10%;" } Last hit
+  = render partial: 'referrer', collection: site.referrers.by_updated_at.limit(5)

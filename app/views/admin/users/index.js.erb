@@ -1,0 +1,7 @@
+$('users_table_wrap').update("<%= escape_javascript(render 'users') %>");
+$('table_spinner').hide();
+<% if params[:search] %>
+  $('users_title').update("<%= admin_users_page_title(@users) %>");
+<% end %>
+$(document.body).scrollTo();
+$('search_button').disabled = false;
