@@ -25,6 +25,7 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
 
   resetDemoAssets: (event) ->
     MSVVideoCodeGenerator.poster.setAndPreloadSrc('')
+    MSVVideoCodeGenerator.thumbnail.setAndPreloadSrc('')
     _.each MSVVideoCodeGenerator.demoSources, (src, key) ->
       source = MSVVideoCodeGenerator.sources.byFormatAndQuality(key.split('_'))
       source.setAndPreloadSrc('')

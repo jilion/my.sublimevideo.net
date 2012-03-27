@@ -1,6 +1,5 @@
 class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
   template: JST['video_code_generator/templates/_preview']
-  iframe_template: JST['video_code_generator/templates/_preview_iframe']
 
   initialize: ->
     @builder   = @options.builder
@@ -28,7 +27,7 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
 
       sublimevideo.unprepare($('video').get(0)) if $('video').length
 
-      $(@el).html (if @builder.get('builderClass') is 'iframe_embed' then this.iframe_template else this.template)
+      $(@el).html this.template
         builder: @builder
         posterSrc: MSVVideoCodeGenerator.video.get('poster').get('src')
         video: MSVVideoCodeGenerator.video

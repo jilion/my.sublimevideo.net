@@ -1,24 +1,29 @@
 %h4 Preview
-- thumbnail = @video.get('thumbnail')
-- if @builder.get('builderClass') is 'lightbox'
-  - zoomable_class = 'zoomable' if thumbnail.get('initialLink') is 'image' and thumbnail.srcIsEmptyOrUrl() and thumbnail.get('magnifyingGlass')
-  - text_class = ' hl' if thumbnail.get('initialLink') is 'text'
-  %a.sublime{ href: "#{@video.get('sources').mp4Mobile().get('src')}", class: zoomable_class + text_class }
-    - if thumbnail.get('initialLink') is 'image'
-      %img{ src: "#{thumbnail.get('src')}", width: "#{thumbnail.get('thumbWidth')}", height: "#{thumbnail.get('thumbHeight')}" }/
+- if @builder.get('builderClass') is 'iframe_embed'
+  - params = "?poster=#{encodeURIComponent(@posterSrc) + @video.get('sources').constructParamsFromSources(@builder.get('startWithHd'))}"
+  %iframe{ src: "/video-code-generator/iframe-embed#{params}", width: @video.width(), height: @video.height(), frameborder: '0', allowfullscreen: '', webkitallowfullscreen: '', mozallowfullscreen: '' }
+- else
+  - thumbnail = @video.get('thumbnail')
+  - if @builder.get('builderClass') is 'lightbox'
+    - zoomable_class = if thumbnail.get('initialLink') is 'image' and thumbnail.srcIsEmptyOrUrl() and thumbnail.get('magnifyingGlass') then 'zoomable' else ''
+    - text_class = if thumbnail.get('initialLink') is 'text' then ' hl' else ''
+    %a.sublime{ href: "#{@video.get('sources').mp4Mobile().get('src')}", class: zoomable_class + text_class }
+      - if thumbnail.get('initialLink') is 'image'
+        %img{ src: "#{thumbnail.get('src')}", width: "#{thumbnail.get('thumbWidth')}", height: "#{thumbnail.get('thumbHeight')}" }/
 
-      - if thumbnail.get('magnifyingGlass')
-        %span.zoom_icon
-        %style{ type: "text/css", media: "screen" }
-          a.zoomable {
-          = "  width:#{thumbnail.get('thumbWidth')}px;"
-          = "  height:#{thumbnail.get('thumbHeight')}px;"
-          }
+        - if thumbnail.get('magnifyingGlass')
+          %span.zoom_icon
+          %style{ type: "text/css", media: "screen" }
+            a.zoomable {
+            = "  width:#{thumbnail.get('thumbWidth')}px;"
+            = "  height:#{thumbnail.get('thumbHeight')}px;"
+            }
 
-    - else
-      = thumbnail.get('src')
+      - else
+        = thumbnail.get('src')
 
-%video{ class: "#{@video.get('classes')}", poster: "#{@posterSrc}", width: "#{@video.width()}", height: "#{@video.height()}" preload: "none", style: "margin:0 auto;" }
-  - for source in @video.get('sources').sortedSources(@builder.get('startWithHd'))
-    != "<source src='#{source.get('src')}' #{if source.needDataQualityAttribute() then "data-quality='#{source.get('quality')}' " else '' }/>"
+  %video{ class: "#{@video.get('classes')}", poster: "#{@posterSrc}", width: "#{@video.width()}", height: "#{@video.height()}" preload: "none", style: "margin:0 auto;" }
+    - for source in @video.get('sources').sortedSources(@builder.get('startWithHd'))
+      != "<source src='#{source.get('src')}' #{if source.needDataQualityAttribute() then "data-quality='#{source.get('quality')}' " else '' }/>"
+
 .big_break

@@ -35,7 +35,7 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
 
     @popup.open()
 
-    this
+    false
 
   #
   # HELPERS
