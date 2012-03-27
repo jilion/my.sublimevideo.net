@@ -97,9 +97,9 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
     newEmbedWidth = 200 if _.isNaN(newEmbedWidth) or newEmbedWidth < 200
     newEmbedWidth = 880 if newEmbedWidth > 880
 
-    if newEmbedWidth isnt this.get('embedWidth')
-      this.set(embedWidth: newEmbedWidth)
-      this.setEmbedHeightWithRatio() if this.get('keepRatio')
+    this.set(embedWidth: newEmbedWidth)
+    this.setEmbedHeightWithRatio() if this.get('keepRatio')
+    this.trigger('change:embedWidth')
 
   setEmbedHeightWithRatio: ->
     this.set(embedHeight: parseInt(this.get('embedWidth') * this.get('ratio')))

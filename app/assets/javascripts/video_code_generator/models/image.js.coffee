@@ -63,9 +63,9 @@ class MSVVideoCodeGenerator.Models.Thumbnail extends MSVVideoCodeGenerator.Model
     newThumbWidth = 20 if _.isNaN(newThumbWidth) || newThumbWidth < 20
     newThumbWidth = 800 if newThumbWidth > 800
 
-    if newThumbWidth isnt this.get('thumbWidth')
-      this.set(thumbWidth: newThumbWidth)
-      this.setThumbHeightWithRatio()
+    this.set(thumbWidth: newThumbWidth)
+    this.setThumbHeightWithRatio()
+    this.trigger('change:thumbWidth')
 
   setThumbHeightWithRatio: ->
     this.set(thumbHeight: parseInt(this.get('thumbWidth') * this.get('ratio')))
