@@ -53,6 +53,7 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
       success: (data, textStatus, jqXHR) =>
         if data is "4"
           this.set(found: false)
+          this.set(currentMimeType: '')
         else
           this.set(currentMimeType: data)
           this.set(found: true)
