@@ -51,7 +51,6 @@ describe 'Source, Sources', ->
         @source.set(height: 250)
         @source.set(ratio: 0.5)
 
-        # @source.set(keepRatio: true)
         @source.setEmbedWidth(250)
         expect(@source.get('embedWidth')).toEqual(250)
         expect(@source.get('embedHeight')).toEqual(125)
@@ -99,9 +98,9 @@ describe 'Source, Sources', ->
         @source.setEmbedWidth(50)
         expect(@source.get('embedWidth')).toEqual(200)
 
-      it 'maximum is 880', ->
+      it 'maximum is 1280', ->
         @source.setEmbedWidth(5000)
-        expect(@source.get('embedWidth')).toEqual(880)
+        expect(@source.get('embedWidth')).toEqual(1280)
 
     describe 'setEmbedHeightWithRatio()', ->
       it 'sets embedHeight from embedWidth and ratio', ->
