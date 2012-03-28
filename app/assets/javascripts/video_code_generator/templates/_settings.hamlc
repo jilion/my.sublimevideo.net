@@ -8,8 +8,7 @@
   .dimensions.entry.size{ style: "float:left" }
     %input#embed_width.text.no_icon{ type: "text", value: @source.get('embedWidth'), size: 4, maxlength: 4 }
     x
-    - read = @source.get('keepRatio')
-    %input#embed_height.text.no_icon(readonly=read){ type: "text", value: @source.get('embedHeight'), size: 4, maxlength: 4 }
+    %input#embed_height.text.no_icon{ type: "text", value: @source.get('embedHeight'), size: 4, maxlength: 4 }
 
   .checkbox_wrap{ style: "float:left;margin:14px 0 0 12px" }
     - @checked = @source.get('keepRatio')

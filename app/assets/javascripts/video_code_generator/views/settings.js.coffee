@@ -28,7 +28,7 @@ class MSVVideoCodeGenerator.Views.Settings extends Backbone.View
 
   updateEmbedHeight: (event) ->
     embedHeight = parseInt(event.target.value)
-    @model.set(embedHeight: embedHeight)
+    @model.setEmbedHeight(embedHeight)
 
   updateKeepRatio: (event) ->
     @model.setKeepRatio(event.target.checked)

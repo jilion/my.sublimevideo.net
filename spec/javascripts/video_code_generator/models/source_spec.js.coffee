@@ -102,11 +102,38 @@ describe 'Source, Sources', ->
         @source.setEmbedWidth(5000)
         expect(@source.get('embedWidth')).toEqual(1280)
 
+    describe 'setEmbedHeight()', ->
+      it 'sets embedHeight to 100 if it is not a number', ->
+        @source.setEmbedHeight('a')
+        expect(@source.get('embedHeight')).toEqual(100)
+
+      it 'cast the given height to integer', ->
+        @source.setEmbedHeight('250')
+        expect(@source.get('embedHeight')).toEqual(250)
+
+      it 'sets the given height casted to integer', ->
+        @source.setEmbedHeight(250.4)
+        expect(@source.get('embedHeight')).toEqual(250)
+
+      it 'minimum is 100', ->
+        @source.setEmbedHeight(50)
+        expect(@source.get('embedHeight')).toEqual(100)
+
+      it 'maximum is 720', ->
+        @source.setEmbedHeight(9999)
+        expect(@source.get('embedHeight')).toEqual(720)
+
     describe 'setEmbedHeightWithRatio()', ->
       it 'sets embedHeight from embedWidth and ratio', ->
         @source.set(embedWidth:300, ratio:0.5)
         @source.setEmbedHeightWithRatio()
         expect(@source.get('embedHeight')).toEqual(150)
+
+    describe 'setEmbedWidthWithRatio()', ->
+      it 'sets embedWidth from embedHeight and ratio', ->
+        @source.set(embedHeight:300, ratio:0.5)
+        @source.setEmbedWidthWithRatio()
+        expect(@source.get('embedWidth')).toEqual(600)
 
     describe 'extension()', ->
       it 'returns the extension', ->
