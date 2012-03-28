@@ -12,17 +12,20 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
   # EVENTS
   #
   updateUseDemoAssets: (event) ->
-    this.resetAll()
-    MSVVideoCodeGenerator.poster.setAndPreloadSrc(MSVVideoCodeGenerator.demoPoster)
-    MSVVideoCodeGenerator.thumbnail.reset()
-    MSVVideoCodeGenerator.thumbnail.setAndPreloadSrc(MSVVideoCodeGenerator.demoThumbnail)
-    _.each MSVVideoCodeGenerator.demoSources, (src, key) ->
-      source = MSVVideoCodeGenerator.sources.byFormatAndQuality(key.split('_'))
-      source.setAndPreloadSrc(src)
-      source.set(isUsed: true)
-    @model.set(demoAssetsUsed: true)
+    resetFields = if !@model.get('demoAssetsUsed') and this.anyAssetNotEmpty() then confirm('All fields will be overwritten, continue?') else true
 
-    this.renderViews()
+    if resetFields
+      this.resetAll()
+      MSVVideoCodeGenerator.poster.setAndPreloadSrc(MSVVideoCodeGenerator.demoPoster)
+      MSVVideoCodeGenerator.thumbnail.reset()
+      MSVVideoCodeGenerator.thumbnail.setAndPreloadSrc(MSVVideoCodeGenerator.demoThumbnail)
+      _.each MSVVideoCodeGenerator.demoSources, (src, key) ->
+        source = MSVVideoCodeGenerator.sources.byFormatAndQuality(key.split('_'))
+        source.setAndPreloadSrc(src)
+        source.set(isUsed: true)
+      @model.set(demoAssetsUsed: true)
+
+      this.renderViews()
 
   resetDemoAssets: (event) ->
     this.resetAll()
@@ -33,6 +36,9 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
 
   toggleResetDemoAssetsLink: ->
     if @model.get('demoAssetsUsed') then this.$("a.reset").show() else this.$(".reset").hide()
+
+  anyAssetNotEmpty: ->
+    !MSVVideoCodeGenerator.poster.srcIsEmpty() or !MSVVideoCodeGenerator.thumbnail.srcIsEmpty() or (_.any MSVVideoCodeGenerator.sources, (src, key) -> src.get('isUsed') and !src.srcIsEmpty())
 
   resetAll: ->
     MSVVideoCodeGenerator.poster.reset()
