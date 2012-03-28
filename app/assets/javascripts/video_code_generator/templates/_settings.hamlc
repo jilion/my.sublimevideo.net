@@ -2,7 +2,7 @@
   %h4 Settings
 
   %p.info
-    Make sure that 'Keep original ratio' is checked unless you specifically want to stretch your video to a new aspect ratio.
+    Make sure that 'Keep original ratio' is checked unless you specifically want your video to be displayed with black bars (letter or pillarboxes).
 
   %h5 Size
   .dimensions.entry.size{ style: "float:left" }
