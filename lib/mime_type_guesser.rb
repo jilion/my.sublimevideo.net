@@ -9,8 +9,8 @@ private
   def self.head(uri_str)
     uri = URI.parse(uri_str)
 
-    response = Net::HTTP.start(uri.host, uri.port) do |http|
-      http.request(Net::HTTP::Head.new(uri.path))
+    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.head(uri.path)
     end
 
     case response
@@ -22,6 +22,7 @@ private
       { 'content-type' => "" }
     end
   rescue => ex
+    Notify.send("MIME Type guessing failed for: #{uri_str}", exception: ex)
     { 'content-type' => "4" }
   end
 
