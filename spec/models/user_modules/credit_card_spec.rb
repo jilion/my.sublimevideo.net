@@ -1,5 +1,5 @@
 require 'spec_helper'
-#require 'base64'
+require 'base64'
 
 describe UserModules::CreditCard do
 

@@ -11,20 +11,20 @@ describe SiteModules::Api do
       subject { @site }
 
       it "selects a subset of fields, as a hash" do
-        @response.should                            be_a Hash
-        @response[:token].should                    eq   subject.token
-        @response[:main_domain].should              eq   'rymai.me'
-        @response[:dev_domains].should              eq   ['rymai.local']
-        @response[:extra_domains].should            eq   ['rymai.com']
-        @response[:wildcard].should                 eq   true
-        @response[:path].should                     eq   'test'
-        @response[:plan].should                     eq   subject.plan.as_api_response(:v1_private_self)
-        @response[:next_plan].should                eq   nil
-        @response[:started_at].to_i.should          eq   Time.now.utc.midnight.to_i
-        @response[:cycle_started_at].to_i.should    eq   Time.now.utc.midnight.to_i
-        @response[:cycle_ended_at].to_i.should      eq   (1.month.from_now.end_of_day - 1.day).to_i
-        @response[:peak_insurance_activated].should eq   false
-        @response[:upgrade_required].should         eq   false
+        @response.should be_a(Hash)
+        @response[:token].should == subject.token
+        @response[:main_domain].should == 'rymai.me'
+        @response[:dev_domains].should == ['rymai.local']
+        @response[:extra_domains].should == ['rymai.com']
+        @response[:wildcard].should == true
+        @response[:path].should == 'test'
+        @response[:plan].should == subject.plan.as_api_response(:v1_private_self)
+        @response[:next_plan].should == nil
+        @response[:started_at].to_i.should == Time.now.utc.midnight.to_i
+        @response[:cycle_started_at].to_i.should == Time.now.utc.midnight.to_i
+        @response[:cycle_ended_at].to_i.should == (1.month.from_now.end_of_day - 1.day).to_i
+        @response[:peak_insurance_activated].should == false
+        @response[:upgrade_required].should == false
       end
     end
 
@@ -37,20 +37,20 @@ describe SiteModules::Api do
       subject { @site }
 
       it "selects a subset of fields, as a hash" do
-        @response.should                            be_a Hash
-        @response[:token].should                    eq   subject.token
-        @response[:main_domain].should              eq   'rymai.me'
-        @response[:dev_domains].should              eq   []
-        @response[:extra_domains].should            eq   []
-        @response[:wildcard].should                 eq   false
-        @response[:path].should                     eq   ''
-        @response[:plan].should                     eq   subject.plan.as_api_response(:v1_private_self)
-        @response[:next_plan].should                eq   nil
-        @response[:started_at].to_i.should          eq   Time.now.utc.midnight.to_i
-        @response[:cycle_started_at].should         eq   nil
-        @response[:cycle_ended_at].should           eq   nil
-        @response[:peak_insurance_activated].should eq   false
-        @response[:upgrade_required].should         eq   false
+        @response.should be_a(Hash)
+        @response[:token].should == subject.token
+        @response[:main_domain].should == 'rymai.me'
+        @response[:dev_domains].should == []
+        @response[:extra_domains].should == []
+        @response[:wildcard].should == false
+        @response[:path].should == ''
+        @response[:plan].should == subject.plan.as_api_response(:v1_private_self)
+        @response[:next_plan].should == nil
+        @response[:started_at].to_i.should == Time.now.utc.midnight.to_i
+        @response[:cycle_started_at].should == nil
+        @response[:cycle_ended_at].should == nil
+        @response[:peak_insurance_activated].should == false
+        @response[:upgrade_required].should == false
       end
     end
   end
@@ -68,8 +68,8 @@ describe SiteModules::Api do
 
       it "selects a subset of fields, as a hash" do
         @response.should be_a(Hash)
-        @response[:token].should eq subject.token
-        @response[:usage].should eq subject.usages.between(60.days.ago.midnight, Time.now.utc.end_of_day).as_api_response(:v1_private_self)
+        @response[:token].should == subject.token
+        @response[:usage].should == subject.usages.between(60.days.ago.midnight, Time.now.utc.end_of_day).as_api_response(:v1_private_self)
       end
     end
   end

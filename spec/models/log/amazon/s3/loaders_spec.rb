@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Log::Amazon::S3::Loaders do
   use_vcr_cassette "s3/loaders/logs_list"
-  let(:log_s3_loaders) { Factory.create(:log_s3_loaders) }
+  let(:log_s3_loaders) { create(:log_s3_loaders) }
 
   context "Factory" do
     subject { log_s3_loaders }

@@ -1,0 +1,9 @@
+- if plan = site.plan
+  - if site.pending_plan_id?
+    = "–"
+  - else
+    = render 'sites/usage_sparkline', site: site
+    .plays
+      %strong= number_with_delimiter(site.last_30_days_main_video_views + site.last_30_days_extra_video_views + site.last_30_days_embed_video_views)
+      %span= "plays"
+    = link_to "View Stats", site_stats_url(site), class: "view_stats"

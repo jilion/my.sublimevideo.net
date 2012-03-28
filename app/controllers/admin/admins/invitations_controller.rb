@@ -1,5 +1,6 @@
 class Admin::Admins::InvitationsController < Devise::InvitationsController
-
+  skip_before_filter :set_logged_in_cookie
+  skip_before_filter :authenticate_user!
   layout 'admin'
 
   def devise_controller?
@@ -12,6 +13,7 @@ class Admin::Admins::InvitationsController < Devise::InvitationsController
 
     if resource.invited?
       set_flash_message(:notice, :send_instructions, email: params[resource_name][:email])
+      puts url_for([:admin, :admins])
       redirect_to [:admin, :admins]
     else
       render_with_scope :new

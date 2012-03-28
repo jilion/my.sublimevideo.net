@@ -1,0 +1,23 @@
+- if flash[:alert]
+  %p.alert= flash[:alert]
+
+%h2.title= "Create your account"
+
+= form_for @user || User.new, as: :user, url: signup_user_url(subdomain: 'my', protocol: https_if_prod_or_staging), html: { id: 'user_signup', class: "main_form" } do |f|
+  .entry.email
+    = f.label :email, "Email", class: "icon"
+    = f.text_field :email, class: "text", placeholder: "Email", required: true, value: params[:user].try(:[], :email)
+
+  .entry.password
+    = f.label :password, "", class: "icon"
+    = f.password_field :password, class: "text show_password", placeholder: "Password", required: true
+
+  .break
+  .entry.terms
+    .checkbox_wrap
+      = f.check_box :terms_and_conditions
+      = f.label :terms_and_conditions, "I agree to the #{link_to("Terms & Conditions", page_url('terms', subdomain: 'my'), onclick: "window.open(this); return false")}.".html_safe
+
+  .entry.submit.sign_up
+    = f.submit "Sign Up"
+    .spacer

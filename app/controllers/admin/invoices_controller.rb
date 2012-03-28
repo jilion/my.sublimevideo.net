@@ -1,4 +1,4 @@
-class Admin::InvoicesController < AdminController
+class Admin::InvoicesController < Admin::AdminController
   respond_to :js, :html, :json
   respond_to :json, only: [:index]
 

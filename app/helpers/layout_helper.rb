@@ -1,35 +1,12 @@
 module LayoutHelper
 
-  def body_class
-    params[:page] ? h(params[:page]) : nil
-  end
-
-  def title_env_prefix
-    Rails.env.production? ? '' : "[#{Rails.env.upcase}] "
-  end
-
-  def title_subdomain_prefix(request)
-    case request.subdomain
-    when 'my'
-      "MySublimeVideo"
-    when 'docs'
-      "SublimeVideo Documentation"
-    when 'admin'
-      "ADMIN SublimeVideo"
-    else
-      "SublimeVideo - HTML5 Video Player"
-    end
-  end
-
   def title_and_content_header(text, options = {})
     title(text)
     content_header(text, options)
   end
 
   def title(text)
-    content_for :title do
-      strip_tags(text)
-    end
+    @page_title = strip_tags(text)
   end
 
   def content_header(text, options = {})

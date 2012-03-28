@@ -9,8 +9,8 @@ describe SiteUsage::Api do
   subject { @site_usage }
 
   it "selects a subset of fields, as a hash" do
-    @response.should               be_a Hash
-    @response[:day].should         eq   subject.day.strftime("%Y-%m-%d")
-    @response[:video_views].should eq   2700
+    @response.should be_a(Hash)
+    @response[:day].should == subject.day.strftime("%Y-%m-%d")
+    @response[:video_views].should == 2700
   end
 end

@@ -11,8 +11,8 @@ describe SiteModules::Usage do
 
       Timecop.travel(Time.utc(2011,1,31, 12)) do
         Site.update_last_30_days_counters_for_not_archived_sites
-        @active_site.reload.last_30_days_main_video_views.should   eq 6
-        @archived_site.reload.last_30_days_main_video_views.should eq 0
+        @active_site.reload.last_30_days_main_video_views.should == 6
+        @archived_site.reload.last_30_days_main_video_views.should == 0
       end
     end
   end
@@ -29,11 +29,11 @@ describe SiteModules::Usage do
     it "updates site counters from last 30 days site stats" do
       Timecop.travel(Time.utc(2011, 1, 31, 12)) do
         @site.update_last_30_days_counters
-        @site.last_30_days_main_video_views.should           eq 5
-        @site.last_30_days_extra_video_views.should          eq 13
-        @site.last_30_days_dev_video_views.should            eq 21
-        @site.last_30_days_invalid_video_views.should        eq 29
-        @site.last_30_days_embed_video_views.should          eq 37
+        @site.last_30_days_main_video_views.should    eq 5
+        @site.last_30_days_extra_video_views.should   eq 13
+        @site.last_30_days_dev_video_views.should     eq 21
+        @site.last_30_days_invalid_video_views.should eq 29
+        @site.last_30_days_embed_video_views.should   eq 37
         @site.last_30_days_billable_video_views_array.should eq [26, [0]*28, 29].flatten
       end
     end
@@ -155,7 +155,7 @@ describe SiteModules::Usage do
     context "with free_plan" do
       subject { create(:site, plan_id: @free_plan.id) }
 
-      its(:percentage_of_days_over_daily_limit) { should be 0 }
+      its(:percentage_of_days_over_daily_limit) { should eq 0 }
     end
 
     context "with paid plan" do

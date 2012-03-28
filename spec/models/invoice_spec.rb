@@ -3,8 +3,7 @@ require 'spec_helper'
 describe Invoice do
 
   describe "Factory" do
-    before(:all) { @invoice = create(:invoice) }
-    subject { @invoice }
+    subject { create(:invoice) }
 
     its(:site)                     { should be_present }
     its(:reference)                { should =~ /^[a-z1-9]{8}$/ }
@@ -19,8 +18,7 @@ describe Invoice do
   end # Factory
 
   describe "Associations" do
-    before(:all) { @invoice = create(:invoice) }
-    subject { @invoice }
+    subject { create(:invoice) }
 
     it { should belong_to :site }
     it { should have_one :user } # through :site
@@ -30,8 +28,7 @@ describe Invoice do
   end # Associations
 
   describe "Validations" do
-    before(:all) { @invoice = create(:invoice) }
-    subject { @invoice }
+    subject { create(:invoice) }
 
     [:site, :renew].each do |attr|
       it { should allow_mass_assignment_of(attr) }
@@ -52,8 +49,7 @@ describe Invoice do
   end # Validations
 
   describe "State Machine" do
-    before(:all) { @invoice = create(:invoice) }
-    subject { @invoice.reload }
+    subject { create(:invoice) }
 
     describe "Initial state" do
       it { should be_open }
@@ -61,6 +57,8 @@ describe Invoice do
 
     describe "Transitions" do
       describe "before_transition :on => :succeed, :do => :set_paid_at" do
+        before { subject.reload }
+
         it "should set paid_at" do
           subject.paid_at.should be_nil
           subject.succeed!
@@ -69,6 +67,8 @@ describe Invoice do
       end
 
       describe "before_transition :on => :fail, :do => :set_last_failed_at" do
+        before { subject.reload }
+
         it "should set last_failed_at" do
           subject.last_failed_at.should be_nil
           subject.fail!
@@ -78,10 +78,10 @@ describe Invoice do
 
       describe "after_transition :on => :succeed, :do => :apply_site_pending_attributes" do
         context "with a site with no more non-paid invoices" do
-          let(:site) { create(:site) }
-          let(:invoice) { create(:invoice, site: site) }
-
           it "should call #apply_pending_attributes on the site" do
+            site = create(:site)
+
+            invoice = create(:invoice, site: site)
             invoice.site.should_receive(:apply_pending_attributes)
             invoice.succeed!
             invoice.reload.should be_paid
@@ -89,7 +89,7 @@ describe Invoice do
         end
 
         %w[open waiting failed].each do |state|
-          context "with a site with a #{state} invoice present" do
+          context "with a site with an #{state} invoice present" do
             let(:site) { create(:site) }
             let(:non_paid_invoice) { create(:invoice, state: state, site: site) }
 
@@ -112,7 +112,7 @@ describe Invoice do
       end
 
       describe "after_transition :on => :succeed, :do => :update_user_invoiced_amount" do
-        before { subject.reload }
+        before  { subject.reload }
 
         it "should update user.last_invoiced_amount" do
           subject.user.update_attribute(:last_invoiced_amount, 500)
@@ -140,7 +140,7 @@ describe Invoice do
         context "with a non-suspended user" do
           %w[open failed].each do |state|
             context "from #{state}" do
-              before do
+              before(:each) do
                 subject.reload.update_attributes(state: state, amount: 0)
                 subject.user.should be_active
               end
@@ -157,7 +157,7 @@ describe Invoice do
         context "with a suspended user" do
           %w[open failed].each do |state|
             context "from #{state}" do
-              before do
+              before(:each) do
                 subject.reload.update_attributes(state: state, amount: 0)
                 subject.user.update_attribute(:state, 'suspended')
                 subject.user.should be_suspended
@@ -172,7 +172,7 @@ describe Invoice do
               end
 
               context "with more failed invoice" do
-                before do
+                before(:each) do
                   create(:invoice, site: create(:site, user: subject.user), state: 'failed')
                 end
 
@@ -188,7 +188,7 @@ describe Invoice do
       end
 
       describe "after_transition :on => :cancel, :do => :increment_user_balance" do
-        before { subject.reload }
+        before  { subject.reload }
 
         it "increments user balance" do
           subject.update_attribute(:balance_deduction_amount, 2000)
@@ -206,7 +206,7 @@ describe Invoice do
 
   describe "Callbacks" do
     describe "#before_create" do
-      before(:all) { @invoice = create(:invoice) }
+      before  { @invoice = create(:invoice) } # need to have access to invoice inside its block
       subject { @invoice }
 
       describe "#set_customer_info" do
@@ -226,7 +226,7 @@ describe Invoice do
       context "balance > invoice amount" do
 
         describe "succeed invoice with amount == 0" do
-          before do
+          before(:each) do
             @user = create(:user, billing_country: 'FR', balance: 2000)
             @site = build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -259,7 +259,7 @@ describe Invoice do
   end
 
   describe "Scopes" do
-    before(:all) do
+    before(:each) do
       @site             = create(:new_site, plan_id: @paid_plan.id, refunded_at: nil)
       @site2            = create(:new_site)
 
@@ -321,7 +321,7 @@ describe Invoice do
   describe "Class Methods" do
 
     describe ".update_pending_dates_for_first_not_paid_invoices" do
-      before(:all) do
+      before(:each) do
         Timecop.travel(Time.utc(2011, 4, 4, 6)) do
           @user = create(:user)
 
@@ -353,7 +353,9 @@ describe Invoice do
           @invoice1.should eql @site1.invoices.by_date('asc').first
         end
       end
-      before { Delayed::Job.delete_all }
+      before(:each) do
+        Delayed::Job.delete_all
+      end
 
       it "should update pending dates in the site and the plan invoice item of the invoices where renew flag == false by user" do
         @site1.pending_plan_started_at.should eq Time.utc(2011, 4, 4)
@@ -383,10 +385,10 @@ describe Invoice do
     end
 
     describe ".construct" do
-      before(:all) { @paid_plan = create(:plan, cycle: "month", price: 1000) }
+      before { @paid_plan = create(:plan, cycle: "month", price: 1000) }
 
       describe "standard invoice" do
-        before(:all) do
+        before(:each) do
           @user = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
           Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
             @site    = create(:site, user: @user, plan_id: @paid_plan.id)
@@ -411,7 +413,7 @@ describe Invoice do
 
       describe "with a site upgraded" do
         context "from a paid plan" do
-          before(:all) do
+          before(:each) do
             @user = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site       = create(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
@@ -443,7 +445,7 @@ describe Invoice do
         end
 
         context "from a free plan" do
-          before(:all) do
+          before(:each) do
             @user = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site      = create(:site, user: @user, plan_id: @free_plan.id)
@@ -473,7 +475,7 @@ describe Invoice do
 
       describe "with a site downgraded" do
         context "from a paid plan" do
-          before(:all) do
+          before(:each) do
             @user = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(Time.utc(2011,5,1)) do
               @site       = create(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
@@ -508,7 +510,7 @@ describe Invoice do
       end
 
       describe "with a site created" do
-        before(:all) do
+        before(:each) do
           @user    = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
           Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
             @site = build(:new_site, user: @user, plan_id: @paid_plan.id)
@@ -524,7 +526,7 @@ describe Invoice do
       end
 
       describe "with a Swiss user" do
-        before(:all) do
+        before(:each) do
           @user    = create(:user, billing_country: 'CH')
           @site = build(:new_site, user: @user, plan_id: @paid_plan.id)
           @invoice = Invoice.construct(site: @site)
@@ -539,7 +541,7 @@ describe Invoice do
 
       describe "with a user that has a balance" do
         context "balance < invoice amount" do
-          before(:all) do
+          before(:each) do
             @user    = create(:user, billing_country: 'FR', balance: 100)
             @site    = build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -552,7 +554,7 @@ describe Invoice do
         end
 
         context "balance == invoice amount" do
-          before(:all) do
+          before(:each) do
             @user    = create(:user, billing_country: 'FR', balance: 1000)
             @site    = build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -565,7 +567,7 @@ describe Invoice do
         end
 
         context "balance > invoice amount" do
-          before(:all) do
+          before(:each) do
             @user    = create(:user, billing_country: 'FR', balance: 2000)
             @site    = build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -582,7 +584,7 @@ describe Invoice do
   end # Class Methods
 
   describe "Instance Methods" do
-    before(:all) do
+    before do
       @invoice = build(:invoice)
       @paid_plan_invoice_item = create(:plan_invoice_item, invoice: @invoice, item: @paid_plan, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
       @invoice.invoice_items << @paid_plan_invoice_item
@@ -607,12 +609,13 @@ describe Invoice do
     end
 
     describe "#first_site_invoice?" do
+      before { @site = create(:site) }
+
       it { build(:invoice).should be_first_site_invoice }
       it { subject.should be_first_site_invoice }
 
       context "first invoice was canceled" do
-        before(:all) do
-          @site = create(:site)
+        before(:each) do
           @canceled_invoice   = create(:invoice, site: @site, state: 'canceled')
           @first_site_invoice = create(:invoice, site: @site)
         end
@@ -622,8 +625,7 @@ describe Invoice do
       end
 
       context "already one non-canceled invoice" do
-        before(:all) do
-          @site = create(:site)
+        before(:each) do
           @first_site_invoice  = create(:invoice, site: @site)
           @second_site_invoice = create(:invoice, site: @site)
         end

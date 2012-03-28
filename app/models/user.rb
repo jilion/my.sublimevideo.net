@@ -287,7 +287,7 @@ private
 
   # after_transition on: :suspend
   def send_account_suspended_email
-    My::UserMailer.account_suspended(self).deliver!
+    UserMailer.account_suspended(self).deliver!
   end
 
   # before_transition on: :unsuspend
@@ -297,7 +297,7 @@ private
 
   # after_transition on: :unsuspend
   def send_account_unsuspended_email
-    My::UserMailer.account_unsuspended(self).deliver!
+    UserMailer.account_unsuspended(self).deliver!
   end
 
   # before_transition on: :archive
@@ -322,7 +322,7 @@ private
 
   # after_transition on: :archive
   def send_account_archived_email
-    My::UserMailer.account_archived(self).deliver!
+    UserMailer.account_archived(self).deliver!
   end
 
   # before_save

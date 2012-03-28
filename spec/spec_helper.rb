@@ -42,6 +42,7 @@ Spork.prefork do
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true
     config.filter_run_including :focus => true
+    config.fail_fast = true
 
     config.mock_with :rspec
     config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -79,6 +80,7 @@ Spork.prefork do
     config.after(:all) do
       DatabaseCleaner.clean_with(:truncation) # clean all the databases
     end
+
   end
 end
 

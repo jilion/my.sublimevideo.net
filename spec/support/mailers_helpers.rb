@@ -3,7 +3,7 @@ module Spec
     module MailersHelpers
 
       # it_should_behave_like "common mailer checks", %w[is_expired will_expire], params: [FactoryGirl.create(:user, cc_expire_on: 1.day.from_now)]
-      shared_examples_for "common mailer checks" do |methods = [], *args|
+      shared_examples_for "common mailer checks" do |methods=[], *args|
         options = args.extract_options!
         options.reverse_merge!(from: [I18n.t('mailer.info.email')], to: nil, content_type: %r{text/plain; charset=UTF-8})
 
@@ -35,10 +35,6 @@ module Spec
 
             it "should set content_type to #{options[:content_type]} (set by default by the Mail gem)" do
               @last_delivery.content_type.should =~ options[:content_type]
-            end
-
-            it "should find the translation for the subject" do
-              @last_delivery.subject.should_not =~ /translation missing/
             end
 
             it "should include the default signature" do

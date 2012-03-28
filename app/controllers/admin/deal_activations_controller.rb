@@ -1,4 +1,4 @@
-class Admin::DealActivationsController < AdminController
+class Admin::DealActivationsController < Admin::AdminController
   respond_to :html, :js
 
   def index

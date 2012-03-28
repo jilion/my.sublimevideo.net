@@ -1,4 +1,4 @@
-class Admin::UsersController < AdminController
+class Admin::UsersController < Admin::AdminController
   respond_to :html, :js
 
   # filter

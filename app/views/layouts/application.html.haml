@@ -1,85 +1,19 @@
-!!! 5
-%html{ "xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en" }
-  %head
-    - title = yield(:title)
-    %title= title_env_prefix + title_subdomain_prefix(request) + (title.present? ? " - #{title}" : '')
-    %meta{ "http-equiv" => "Content-Type", content: "text/html;charset=UTF-8" }
+- @ie_min = 8
 
-    %meta{ content: 'SublimeVideo - HTML5 Video Player', property: 'og:title' }
-    %meta{ content: 'product', property: 'og:type' }
-    %meta{ content: 'http://sublimevideo.net', property: 'og:url' }
-    %meta{ content: 'http://media.jilion.s3.amazonaws.com/facebook/sublimevideo_facebook.png', property: 'og:image' }
-    %meta{ content: "SublimeVideo is the world's first cloud-based HTML5 video player; a universal and pain-free solution that allows video to play flawlessly on any device or browser.", property: 'og:description'}
+= content_for :javascript do
+  - if %w[site_stats].include?(controller_name)
+    = javascript_include_tag 'stats'
+  - else
+    = javascript_include_tag(request.subdomain.presence || 'www')
+  
+= content_for :middle do
+  = render "layouts/flash", flash: flash if flash.present?
 
-    = stylesheet_link_tag(request.subdomain.presence || 'www')
-    -# = airbrake_javascript_notifier
-    = csrf_meta_tag
-    %link{ rel: "shortcut icon", href: "http://sublimevideo.net/favicon.ico", type: "image/x-icon" }
+  
+= render 'layouts/menu'
+= render template: 'layouts/sublimevideo'
 
-    - if request.subdomain == 'my'
-      /[if lte IE 8]
-        %meta{ "http-equiv" => "Refresh", content: "0;url=http://jilion.com/ie" }
-        %style{ type: "text/css", media: "screen" }
-          == body {background:#fff;display:none;}
-    - else
-      /[if lte IE 7]
-        %meta{ "http-equiv" => "Refresh", content: "0;url=http://jilion.com/ie" }
-        %style{ type: "text/css", media: "screen" }
-          == body {background:#fff;display:none;}
-
-    /[if lte IE 8]
-      = stylesheet_link_tag("ie")
-    /[if lte IE 9]
-      = javascript_include_tag("#{request.protocol}html5shiv.googlecode.com/svn/trunk/html5.js")
-
-    = yield :head_before
-
-    - if %w[site_stats].include?(controller_name)
-      = javascript_include_tag 'stats'
-    - else
-      = javascript_include_tag(request.subdomain.presence || 'www')
-
-    = yield :head
-
-    = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
-    = javascript_tag "try { Typekit.load(); } catch(e) { }"
-
-  %body{ class: request.subdomain + (@body_class ? h(" #{@body_class}") : "") }
-    %header
-      .lights
-        .shadow
-          .stars
-            .wrap
-              %h1
-                = link_to root_url(demo_stats_page? || request.subdomain.blank? ? { host: request.domain, protocol: 'http' } : { subdomain: request.subdomain }) do
-                  %span= "SublimeVideo"
-              = render "layouts/menu"
-              = yield :header
-              = render "layouts/docs/header" if request.subdomain == 'docs'
-    = yield :middle
-    = render "layouts/flash", flash: flash if flash.present? && request.subdomain == 'my'
-    %section#content
-      = render "layouts/docs/menu" if request.subdomain == 'docs'
-      .content_wrapper= yield
-      .spacer
-    = render "layouts/footer"
-    = yield :bottom
-
-    - if request.subdomain.blank? || %w[www docs].include?(request.subdomain)
-      #popup_signup.popup{ style: "display:#{params[:p] == 'signup' ? 'block' : 'none'}" }
-        .popup_wrap
-          .lights
-            .content= render template: '/my/users/new'
-            = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('signup')" do
-              %span Close
-
-      #popup_login.popup{ style: "display:#{params[:p] == 'login' ? 'block' : 'none'}" }
-        .popup_wrap
-          .lights
-            .content= render template: '/my/users/sessions/new'
-            = link_to "/", class: 'close', onclick: "return SublimeVideo.hidePopup('login')" do
-              %span Close
-
-    - if Rails.env.production?
-      = render 'layouts/fastpass' if request.subdomain == 'my' && user_signed_in?
-      = render 'layouts/gosquared'
+= content_for :javascript_bottom do
+  - if Rails.env.production?
+    = render 'layouts/fastpass' if request.subdomain == 'my' && user_signed_in?
+    = render 'layouts/gosquared'

@@ -1,4 +1,4 @@
-class Admin::MailTemplatesController < AdminController
+class Admin::MailTemplatesController < Admin::AdminController
   respond_to :html
 
   before_filter { |controller| require_role?('god') }

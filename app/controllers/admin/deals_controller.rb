@@ -1,4 +1,4 @@
-class Admin::DealsController < AdminController
+class Admin::DealsController < Admin::AdminController
   respond_to :html, :js
 
   # sort

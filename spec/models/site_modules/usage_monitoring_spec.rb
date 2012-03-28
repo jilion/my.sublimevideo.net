@@ -8,8 +8,8 @@ describe SiteModules::UsageMonitoring do
     it "should do nothing" do
       Timecop.travel(Time.utc(2011,1,1)) { @site = create(:site, plan_id: @plan.id) }
 
-      My::UsageMonitoringMailer.should_not_receive(:plan_overused)
-      My::UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
+      UsageMonitoringMailer.should_not_receive(:plan_overused)
+      UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
       Site.monitor_sites_usages
       @site.reload
       @site.overusage_notification_sent_at.should be_nil
@@ -26,7 +26,7 @@ describe SiteModules::UsageMonitoring do
 
       it "should required upgrade and send alert" do
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil
-        My::UsageMonitoringMailer.should_receive(:plan_upgrade_required).with(@site).and_return ( mock(:deliver! => true) )
+        UsageMonitoringMailer.should_receive(:plan_upgrade_required).with(@site).and_return ( mock(:deliver! => true) )
         Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages }
         @site.reload.first_plan_upgrade_required_alert_sent_at.should be_present
       end
@@ -35,7 +35,7 @@ describe SiteModules::UsageMonitoring do
         @site.touch(:first_plan_upgrade_required_alert_sent_at)
         first_plan_upgrade_required_alert_sent_at = @site.first_plan_upgrade_required_alert_sent_at
 
-        My::UsageMonitoringMailer.should_not_receive(:plan_upgrade_required).with(@site)
+        UsageMonitoringMailer.should_not_receive(:plan_upgrade_required).with(@site)
         Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages }
         @site.reload.first_plan_upgrade_required_alert_sent_at.should be_within(5).of(first_plan_upgrade_required_alert_sent_at) # no change
       end
@@ -49,7 +49,7 @@ describe SiteModules::UsageMonitoring do
 
       it "should send player hits reached notification" do
         @site.overusage_notification_sent_at.should be_nil
-        My::UsageMonitoringMailer.should_receive(:plan_overused).with(@site).and_return ( mock(:deliver! => true) )
+        UsageMonitoringMailer.should_receive(:plan_overused).with(@site).and_return ( mock(:deliver! => true) )
         Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages }
         @site.reload.overusage_notification_sent_at.should be_present
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil
@@ -58,8 +58,8 @@ describe SiteModules::UsageMonitoring do
       it "should send player hits reached notification if not sent during the site cycle" do
         Timecop.travel(Time.utc(2010,12,20)) { @site.touch(:overusage_notification_sent_at) }
 
-        My::UsageMonitoringMailer.should_receive(:plan_overused).with(@site).and_return ( mock(:deliver! => true) )
-        My::UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
+        UsageMonitoringMailer.should_receive(:plan_overused).with(@site).and_return ( mock(:deliver! => true) )
+        UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
         Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages }
         @site.reload
         @site.overusage_notification_sent_at.should > Time.utc(2011,1,22)
@@ -69,8 +69,8 @@ describe SiteModules::UsageMonitoring do
       it "should not send player hits reached notification if already sent during the site cycle" do
         Timecop.travel(Time.utc(2011,1,20)) { @site.touch(:overusage_notification_sent_at) }
 
-        My::UsageMonitoringMailer.should_not_receive(:plan_overused)
-        My::UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
+        UsageMonitoringMailer.should_not_receive(:plan_overused)
+        UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
         Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages }
         @site.reload
         @site.overusage_notification_sent_at.should_not be_nil

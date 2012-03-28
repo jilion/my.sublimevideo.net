@@ -100,7 +100,8 @@ describe SiteModules::Scope do
   end
 
   describe "invoices" do
-    before do
+    before(:each) do
+      Site.delete_all
       @site_with_no_invoice = create(:site, user: @user)
       @site_with_paid_invoice = create(:site_with_invoice, user: @user)
       @site_with_canceled_invoice = create(:site_with_invoice, user: @user)
@@ -113,7 +114,8 @@ describe SiteModules::Scope do
   end
 
   describe "trial" do
-    before do
+    before(:each) do
+      Site.delete_all
       @site_not_in_trial = create(:site, user: @user, trial_started_at: BusinessModel.days_for_trial.days.ago.midnight)
       @site_trial_ends_in_1_day = create(:site, user: @user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago.midnight)
     end
@@ -129,18 +131,6 @@ describe SiteModules::Scope do
     describe "#trial_expires_on" do
       specify { Site.trial_expires_on(2.days.from_now).all.should be_empty }
       specify { Site.trial_expires_on(1.day.from_now).all.should =~ [@site_trial_ends_in_1_day] }
-    end
-  end
-
-  describe "plan cycles" do
-    before do
-      @site_will_be_renewed_in_1_day  = create(:new_site, user: @user).tap { |s| s.update_attribute(:plan_cycle_ended_at, Time.now.utc.end_of_day) }
-      @site_will_be_renewed_in_2_days = create(:new_site, user: @user).tap { |s| s.update_attribute(:plan_cycle_ended_at, 1.day.from_now.end_of_day) }
-    end
-
-    describe "#plan_will_be_renewed_on" do
-      specify { Site.plan_will_be_renewed_on(1.day.from_now).all.should eq [@site_will_be_renewed_in_1_day] }
-      specify { Site.plan_will_be_renewed_on(2.days.from_now).all.should eq [@site_will_be_renewed_in_2_days] }
     end
   end
 

@@ -1,3 +1,0 @@
-class MyMailer < ApplicationMailer
-
-end

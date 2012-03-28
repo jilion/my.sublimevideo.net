@@ -13,7 +13,7 @@
   width:260px;
   height:500px;
   position:relative;
-  background:url(<%= asset_path "my/sites/help_list_back.png" %>);
+  background:url(<%= asset_path "sites/help_list_back.png" %>);
   @include border-radius(4px);
   @include box-shadow((inset #fff 0 1px 0, rgba(0,53,137,0.78) 0 1px 5px));
 }
@@ -30,7 +30,7 @@
 #plans li h3.title {
   width:276px;
   height:74px;
-  background:url(<%= asset_data_uri "my/plans/plan_banner_1.png" %>) no-repeat;
+  background:url(<%= asset_data_uri "plans/plan_banner_1.png" %>) no-repeat;
   position:relative;
   left:-8px;
   margin-top:10px;
@@ -43,7 +43,7 @@
 }
 
 #plans li.plus h3.title, #plans li.premium h3.title {
-  background:url(<%= asset_data_uri "my/plans/plan_banner_2.png" %>) no-repeat;
+  background:url(<%= asset_data_uri "plans/plan_banner_2.png" %>) no-repeat;
 }
 
 #plans ul.features {
@@ -53,7 +53,7 @@
 
 #plans ul.features li {
   padding:13px 0;
-  background:url(<%= asset_data_uri "my/plans/features_break.png" %>) no-repeat center bottom;
+  background:url(<%= asset_data_uri "plans/features_break.png" %>) no-repeat center bottom;
 }
 
 #plans ul.features li.ssl {background:none;}
@@ -68,10 +68,10 @@
   background-repeat:no-repeat;
 }
 
-#plans ul.features li.plays .icon {background-image:url(<%= asset_data_uri "my/plans/plays_icon.png" %>)}
-#plans ul.features li.stats .icon {background-image:url(<%= asset_data_uri "my/plans/stats_icon.png" %>)}
-#plans ul.features li.support .icon {background-image:url(<%= asset_data_uri "my/plans/support_icon.png" %>)}
-#plans ul.features li.ssl .icon {background-image:url(<%= asset_data_uri "my/plans/ssl_icon.png" %>)}
+#plans ul.features li.plays .icon {background-image:url(<%= asset_data_uri "plans/plays_icon.png" %>)}
+#plans ul.features li.stats .icon {background-image:url(<%= asset_data_uri "plans/stats_icon.png" %>)}
+#plans ul.features li.support .icon {background-image:url(<%= asset_data_uri "plans/support_icon.png" %>)}
+#plans ul.features li.ssl .icon {background-image:url(<%= asset_data_uri "plans/ssl_icon.png" %>)}
 
 #plans ul.features li .right {
   float:left;

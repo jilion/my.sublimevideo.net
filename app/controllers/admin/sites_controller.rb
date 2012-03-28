@@ -1,4 +1,4 @@
-class Admin::SitesController < AdminController
+class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
 
   before_filter { |controller| require_role?('god') if %w[update sponsor].include?(action_name) }

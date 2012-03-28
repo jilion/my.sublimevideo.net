@@ -1,5 +1,6 @@
 class Admin::Admins::SessionsController < Devise::SessionsController
-
+  skip_before_filter :set_logged_in_cookie
+  skip_before_filter :authenticate_user!
   layout 'admin'
 
   private

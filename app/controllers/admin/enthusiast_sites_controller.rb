@@ -1,4 +1,4 @@
-class Admin::EnthusiastSitesController < AdminController
+class Admin::EnthusiastSitesController < Admin::AdminController
   respond_to :js
 
   # POST /enthusiast_sites/1

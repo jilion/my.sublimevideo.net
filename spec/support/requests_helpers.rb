@@ -33,7 +33,7 @@ module Spec
         @current_user = if options[:without_cc] == true
           create(:user_no_cc, options[:user] || {})
         else
-          attrs = attributes_for(:user)
+          attrs = FactoryGirl.attributes_for(:user)
           user = create(:user_real_cc, (options[:user] || {}).merge({
             cc_register:           '1',
             cc_brand:              options[:cc_type],
@@ -118,7 +118,7 @@ module Spec
 
         resource = case resource_name
         when :user
-          go '/?p=login'
+          go 'my', '/login'
           create_user(options)
         when :admin
           go 'admin', '/login'

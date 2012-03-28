@@ -1,0 +1,24 @@
+%h3.section_title Billing information
+
+#credit_card_summary.dark_box
+  %h4 Credit Card
+  - if current_user.cc?
+    = render 'billings/cc_summary', user: current_user
+  - else
+    %p No credit card on file.
+  %p.link= link_to "#{current_user.cc? ? 'Update' : 'Register'} credit card", [:edit, :billing]
+
+- if current_user.billable?
+  #billing_info.dark_box
+    %h4 Billing Address
+
+    - if !current_user.billing_address_complete?
+      %p.alert
+        = t("user.billing_address.incomplete")
+        %br
+        = raw t('app.please_link', link: link_to(t('app.update_it'), [:edit, :billing])) + '.'
+
+    = simple_format(current_user.billing_address)
+
+    %p.link= link_to "Update billing address", [:edit, :billing]
+  

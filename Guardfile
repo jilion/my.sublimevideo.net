@@ -22,7 +22,7 @@ group :frontend do
     watch(%r{config/locales/.+\.yml})
   end
 
-  guard :jasmine, server: :none, jasmine_url: 'http://sublimevideo.dev/jasmine', all_on_start: false do
+  guard :jasmine, server: :none, jasmine_url: 'http://my.sublimevideo.dev/jasmine', all_on_start: false do
     watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
@@ -57,8 +57,3 @@ group :backend do
   end
 
 end
-
-# guard :yard do
-#   watch(%r{^app/.+\.rb$})
-#   watch(%r{^lib/.+\.rb$})
-# end
