@@ -5,4 +5,9 @@ namespace :scheduler do
     RecurringJob.supervise
   end
 
+  desc "Launch all recurring jobs if they are not already scheduled"
+  task :launch_all => :environment do
+    RecurringJob.launch_all
+  end
+
 end
