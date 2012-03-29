@@ -51,7 +51,7 @@ gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
 gem 'fog',                   '~> 1.3.1'
-gem 'carrierwave',           '~> 0.5.7'
+gem 'carrierwave',           '~> 0.6.0'
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'voxel_hapi',            git: 'git://github.com/thibaudgg/voxel_hapi.git', branch: '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'

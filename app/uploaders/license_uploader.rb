@@ -4,7 +4,7 @@ class LicenseUploader < CarrierWave::Uploader::Base
 
   process :set_content_type
 
-  def s3_bucket
+  def fog_directory
     S3Bucket.licenses
   end
 
