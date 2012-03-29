@@ -83,7 +83,7 @@ private
       stats_count = video_class(options[:period]).where(conditions).count
 
       if stats_count >= 20_000
-        conditions['vlc'] = { "$gte" => stats_count / 20_000 }
+        conditions['vlc'] = { "$gte" => 10 + stats_count / 20_000 }
       end
     end
 
