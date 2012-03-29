@@ -84,6 +84,7 @@ feature "Help page" do
 
         page.should have_content I18n.t('flash.tickets.create.notice')
 
+        CampaignMonitor.stub(:subscriber)
         VCR.use_cassette("ticket/post_ticket") do
           expect { @worker.work_off }.to change(Delayed::Job.where { handler =~ "%post_ticket%" }, :count).by(-1)
         end

@@ -430,19 +430,21 @@ describe User do
           end
 
           describe ":newsletter_unsubscribe" do
-            use_vcr_cassette "user/newsletter_unsubscribe"
             subject { create(:user, newsletter: "1", email: "john@doe.com") }
 
             it "subscribes new email and unsubscribe old email on user destroy" do
-              subject # explicitly create the subject
-              @worker.work_off
-              CampaignMonitor.subscriber(subject.email)["State"].should eq "Active"
+              VCR.use_cassette('user/newsletter_unsubscribe') do
+                subject # explicitly create the subject
+                @worker.work_off
+                CampaignMonitor.subscriber(subject.email)["State"].should eq "Active"
+                subject.current_password = "123456"
+                expect { subject.archive }.to change(Delayed::Job, :count).by(1)
+                @worker.work_off
+              end
 
-              subject.current_password = "123456"
-              expect { subject.archive }.to change(Delayed::Job, :count).by(1)
-              @worker.work_off
-
-              CampaignMonitor.subscriber(subject.email)["State"].should eq "Unsubscribed"
+              VCR.use_cassette('user/newsletter_unsubscribe_unsubscribed') do
+                CampaignMonitor.subscriber(subject.email)["State"].should eq "Unsubscribed"
+              end
             end
           end
         end
@@ -629,6 +631,7 @@ describe User do
           end
 
           it "updates user's name on Zendesk" do
+            CampaignMonitor.stub(:subscriber)
             expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(1)
 
             VCR.use_cassette("zendesk/update_name") do

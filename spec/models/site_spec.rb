@@ -856,6 +856,8 @@ describe Site do
     end
 
     describe "after_create" do
+      before { CampaignMonitor.stub(:subscriber) }
+      
       it "delays update_ranks" do
         expect { create(:site) }.to change(Delayed::Job.where { handler =~ "%update_ranks%" }, :count).by(1)
       end
@@ -866,7 +868,7 @@ describe Site do
           VCR.use_cassette('sites/ranks') { @worker.work_off }
           @site.reload
           @site.google_rank.should eq 6
-          @site.alexa_rank.should eq 127373
+          @site.alexa_rank.should eq 91386
         end
       end
 

@@ -70,7 +70,7 @@ describe Ticket do
 
     describe ".post_ticket" do
       describe "common behavior" do
-         let(:params) { { user_id: @user.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" } }
+        let(:params) { { user_id: @user.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" } }
         use_vcr_cassette "ticket/post_ticket"
 
         it "creates the ticket on Zendesk" do
