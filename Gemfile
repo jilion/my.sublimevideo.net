@@ -76,9 +76,6 @@ gem 'prowl',                 '~> 0.1.3'
 
 gem 'addressable',           '~> 2.2.6'
 
-# Perf
-gem 'dalli',                 '~> 1.1.3'
-
 # Stats
 gem 'crack',                 '~> 0.1.8'
 gem 'pusher',                '~> 0.8.3'
@@ -101,6 +98,7 @@ end
 
 group :staging, :production do
   gem 'thin'
+  gem 'dalli', '~> 2.0.0'
   gem 'rpm_contrib'
   gem 'newrelic_rpm'
 end
