@@ -6,4 +6,4 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 %span.prev{ :class => current_page.first? ? "disabled" : "" }
-  = link_to_unless current_page.first?, raw(t 'views.pagination.previous'), params.merge(:page => current_page - 1, :format => nil), :remote => true, :onclick => "MySublimeVideo.showTableSpinner()", :class => 'prev', :rel => 'prev'
+  = link_to_unless current_page.first?, raw(t 'views.pagination.previous'), params.merge(:page => current_page - 1, :format => nil), :remote => true, :onclick => "SublimeVideo.UI.Table.showSpinner()", :class => 'prev', :rel => 'prev'

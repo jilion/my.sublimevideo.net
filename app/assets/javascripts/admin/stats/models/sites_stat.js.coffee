@@ -21,7 +21,7 @@ class AdminSublimeVideo.Collections.SitesStats extends AdminSublimeVideo.Collect
       text += "with the "
       if selected.length > 2 # attribute is something like: ["tr", "premium", "y"]
         text += if selected[2] == "y" then "yearly " else "monthly "
-      text += "#{SublimeVideo.capitalize(selected[1])} plan"
+      text += "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} plan"
       text
     else
       switch selected[0]

@@ -6,8 +6,12 @@
 
 #= require_self
 
-SublimeVideo.topDomainHost = ->
-  document.location.host.split('.').slice(-2).join('.')
+window.AdminSublimeVideo =
+  Models: {}
+  Collections: {}
+  Helpers: {}
+  Routers: {}
+  Views: {}
 
 SublimeVideo.makeSticky = (element, cssSelector) ->
   # do nothing and handle the click event with the hackish $('#menu li').click workaround
