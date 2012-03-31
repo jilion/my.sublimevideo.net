@@ -11,7 +11,7 @@
 
 :coderay
   #{coderay_options(:html)}
-  <div id="playlist1" class="interactive">
+  <div id="playlist1" class="playlist">
     <div class="video_wrap">
       <video id="video1" class="sublime" poster="posterframe1.jpg" width="640" height="360" preload="none">
         <source src="video1.mp4" />
@@ -54,25 +54,25 @@
   * You probably want to set the same width and height
   * that you have set to your <video> elements.
   */
-  .interactive .video_wrap {
+  .playlist .video_wrap {
     width:640px;
     height:360px;
     display:none;
   }
-  .interactive .video_wrap.active {
+  .playlist .video_wrap.active {
     display:block;
   }
 
   /* This will make distinguishable the currently selected thumbnail */
-  .interactive li.active {
+  .playlist li.active {
     background:#000;
   }
 
   /* This will create a simple hover effect */
-  .interactive li img {
+  .playlist li img {
     opacity:.7;
   }
-  .interactive li a:hover img, .interactive li.active img {
+  .playlist li a:hover img, .playlist li.active img {
     opacity:1;
   }
 
