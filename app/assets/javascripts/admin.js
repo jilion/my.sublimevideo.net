@@ -9,8 +9,6 @@
 //= require highcharts/highcharts
 //= require effects
 
-var MySublimeVideo = MySublimeVideo || {};
-
 document.observe("dom:loaded", function() {
 
   // ====================
@@ -39,7 +37,7 @@ document.observe("dom:loaded", function() {
   if (history && history.pushState) {
     Event.observe(window, 'popstate', function(event) {
       if (event.state.isHistory) {
-        MySublimeVideo.showTableSpinner();
+        SublimeVideo.UI.Table.showSpinner();
         new Ajax.Request(location.href, {
           method: 'get'
         });
@@ -47,13 +45,13 @@ document.observe("dom:loaded", function() {
     });
   }
 
-  MySublimeVideo.remoteSortLink = function(element) {
-    MySublimeVideo.makeRemoteLinkSticky(element);
-    MySublimeVideo.showTableSpinner();
-    if (history && history.pushState) {
-      history.pushState({isHistory:true}, document.title, element.href);
-    };
-  };
+  // MySublimeVideo.remoteSortLink = function(element) {
+  //   MySublimeVideo.makeRemoteLinkSticky(element);
+  //   SublimeVideo.UI.Table.showSpinner();
+  //   if (history && history.pushState) {
+  //     history.pushState({isHistory:true}, document.title, element.href);
+  //   };
+  // };
 
 });
 

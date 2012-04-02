@@ -29,7 +29,7 @@
               - else
                 - if video.get('p')?
                   %script{ type: "text/javascript" }
-                    new SublimeVideo.ImagePreloader("#{video.sslPosterframe()}", SublimeVideo.cropPosterframe, { "imgId": "#{video.id}" });
+                    new SublimeVideo.Media.ImagePreloader("#{video.sslPosterframe()}", SublimeVideo.cropPosterframe, { "imgId": "#{video.id}" });
               .right
                 %h4{ title: video.name() }= video.name(22)
                 - if video.get('uo') == 's' || video.get('no') == 's'

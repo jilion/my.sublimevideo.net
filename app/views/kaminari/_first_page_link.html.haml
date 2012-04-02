@@ -6,4 +6,4 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 %span.page.first
-  = link_to_unless current_page.first?, current_page, params.merge(:page => current_page, :format => nil), :remote => true, :onclick => "MySublimeVideo.showTableSpinner()"
+  = link_to_unless current_page.first?, current_page, params.merge(:page => current_page, :format => nil), :remote => true, :onclick => "SublimeVideo.UI.Table.showSpinner()"
