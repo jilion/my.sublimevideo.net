@@ -1,0 +1,1 @@
+* <span class="label fixed">fixed</span> Issue preventing some initial @<video>@ element's style properties from being restored upon "(c)@sublimevideo.unprepare@":http://docs.sublimevideo.net/javascript-api/methods#unprepare.
