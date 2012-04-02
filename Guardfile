@@ -5,7 +5,6 @@ group :frontend do
   guard :pow do
     watch('.rvmrc')
     watch(%r{^\.pow(rc|env)$})
-    # watch('Gemfile.lock')
     watch('config/boot.rb')
     watch('config/application.rb')
     watch('config/environment.rb')
@@ -33,8 +32,6 @@ end
 group :backend do
 
   guard :spork, wait: 70 do
-    watch('Gemfile')
-    # watch('Gemfile.lock')
     watch('config/boot.rb')
     watch('config/application.rb')
     watch('config/environment.rb')
@@ -44,7 +41,6 @@ group :backend do
   end
 
   guard :rspec, version: 2, bundler: false, cli: "--color -f progress --drb", all_after_pass: false, all_on_start: false, keep_failed: false do
-    # watch('spec/spec_helper.rb')                                               { "spec" }
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }
     watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/#{m[1]}" }
