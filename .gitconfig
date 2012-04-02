@@ -14,11 +14,11 @@
   fetch = +refs/heads/*:refs/remotes/origin/*
 
 [remote "staging"]
-  url   = git@heroku.com:sublimevideo-my-staging.git
+  url   = git@heroku.com:sv-my-staging.git
   fetch = +refs/heads/master:refs/remotes/staging/master
 
 [remote "production"]
-  url   = git@heroku.com:sublimevideo-my.git
+  url   = git@heroku.com:sv-my.git
   fetch = +refs/heads/master:refs/remotes/production/master
   push  = master:master
 
