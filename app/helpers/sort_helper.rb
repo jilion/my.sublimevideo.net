@@ -21,7 +21,7 @@ module SortHelper
     url_params = params.reject { |k, v| k =~ /by_.*/ }
     link_to(url_for(url_params.merge("by_#{field}" => way)),
               :class => ['sort sticky', field, class_active, class_up].join(" "),
-              :remote => options[:remote] do
+              :remote => options[:remote]) do
       content_tag(:span, options[:label], :class => 'arrow', :title => options[:title])
     end
   end
