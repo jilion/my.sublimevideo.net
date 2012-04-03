@@ -1,10 +1,7 @@
 - dont_show_invoices_tab = @site.in_free_plan? && @site.invoices.not_canceled.empty?
-- sites_item = [:edit_site, { link_text: "Settings", class: 'first', urls: %W[sites/#{@site.token}/edit$ sites/#{@site.token}$] }]
-- plans_item = [:edit_site_plan, { link_text: "Plan", class: (dont_show_invoices_tab ? 'last' : ''), urls: %W[sites/#{@site.token}/plan/edit$ sites/#{@site.token}/plan$] }]
-- invoices_item = [:site_invoices, { link_text: "Invoices", class: "last", urls: %W[sites/#{@site.token}/invoices$] }]
 
-%ul.segmented_menu
-  - [sites_item, plans_item].each do |i|
-    = activable_menu_restful_item(:li, i[0], i[1].merge(url_options: @site, onclick: "SublimeVideo.makeSticky(this, '.segmented_menu')"))
+%ul.segmented_menu.sticky
+  = li_menu_link('Settings', page: edit_site_path(@site), class: 'first' + (%r{sites/#{@site.token}$} =~ request.url ? ' active' : ''))
+  = li_menu_link('Plan', page: edit_site_plan_path(@site), class: (dont_show_invoices_tab ? 'last' : '') + (%r{sites/#{@site.token}/plan$} =~ request.url ? ' active' : ''))
   - unless dont_show_invoices_tab
-    = activable_menu_restful_item(:li, invoices_item[0], invoices_item[1].merge(url_options: @site, onclick: "SublimeVideo.makeSticky(this, '.segmented_menu')"))
+    = li_menu_link('Invoices', page: site_invoices_path(@site), class: 'last')
