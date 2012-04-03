@@ -1,11 +1,11 @@
 - if user_signed_in? && !demo_stats_page?
   = content_for :header_menu do
     %nav#menu
-      %ul
-        = activable_menu_restful_item(:li, :sites, { url_options: { subdomain: 'my' }, link_options: { onclick: "SublimeVideo.makeSticky(this, '#menu')" }, link_text: "My Sites" })
-        = activable_menu_restful_item(:li, :root, { url_options: { subdomain: 'docs', protocol: 'http' }, link_options: { onclick: "SublimeVideo.makeSticky(this, '#menu')" }, link_text: "Documentation" })
-        = activable_menu_restful_item(:li, :page, { url_options: { page: 'help', subdomain: 'my' }, link_options: { onclick: "SublimeVideo.makeSticky(this, '#menu')" }, link_text: "Help" })
-        %li= link_to "Logout", destroy_user_session_url(subdomain: 'my')
+      %ul.sticky
+        = li_menu_link('my sites', page: 'sites')
+        = li_menu_link('documentation', protocol: 'http', subdomain: 'docs', page: '')
+        = li_menu_link('help')
+        %li.no_sticky= link_to "Logout", destroy_user_session_url(subdomain: 'my')
         %li{ class: controller.request.url =~ /account/ ? 'active' : nil }
-          = link_to(edit_user_url(subdomain: 'my'), class: "user", onclick: "SublimeVideo.makeSticky(this, '#menu')") do
+          = link_to(edit_user_url(subdomain: 'my'), class: 'user') do
             %span.icon= truncate(current_user.name_or_email, length: 35)

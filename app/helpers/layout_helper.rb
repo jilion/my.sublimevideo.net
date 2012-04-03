@@ -1,4 +1,5 @@
 module LayoutHelper
+  include ::SublimeVideoLayoutHelper
 
   def title_and_content_header(text, options = {})
     title(text)
@@ -13,6 +14,10 @@ module LayoutHelper
     options.reverse_merge!(header_size: 2)
 
     content_tag(:"h#{options.delete(:header_size)}", text.html_safe, options)
+  end
+
+  def li_menu_link(name, options = {})
+    super(name, options.reverse_merge(protocol: 'https', subdomain: 'my'))
   end
 
   def activable_content_tag(tag, options = {})
