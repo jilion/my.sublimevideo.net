@@ -2,7 +2,7 @@
 # and/or attach to it several different behaviors.
 #
 class MySublimeVideo.UI.Notice
-  # Construct a new flash notice
+  # Construct a new Notice object.
   #
   # @param [Object] options the options that defines the flash message
   # @option options [jQuery Element] element the element that is a flash div (only hiding options are useful in that case)

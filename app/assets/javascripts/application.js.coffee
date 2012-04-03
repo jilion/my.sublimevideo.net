@@ -11,7 +11,7 @@
 
 jQuery(document).ready ->
   if sitesSelectTitle = jQuery('#sites_select_title')
-    sitesSelectTitle.on 'change', (event) ->
+    sitesSelectTitle.on 'change', ->
       window.location.href = window.location.href.replace "/#{sitesSelectTitle.attr('data-token')}/", "/#{sitesSelectTitle.val()}/"
 
   ## Flash notices
@@ -19,8 +19,10 @@ jQuery(document).ready ->
     new MySublimeVideo.UI.Notice(element: jQuery(this)).setupDelayedHiding()
 
   jQuery('.hidable_notice').each ->
-    console.log jQuery(this)
     new MySublimeVideo.UI.Notice(element: jQuery(this)).setupCloseButton()
+
+  jQuery('a.embed_code').each ->
+    new MySublimeVideo.UI.EmbedCode(link: jQuery(this))
 
   # 
   # ## Sites poller
@@ -33,41 +35,11 @@ jQuery(document).ready ->
   #   MySublimeVideo.sitesPoller = new SitesPoller();
   # }
 
-  # MySublimeVideo.showSiteEmbedCode = function(siteToken) {
-  #   popup = new SublimeVideo.UI.Popup("embed_code_site_#{siteToken}", anchor: "embed_code_site_content_#{siteToken}")
-  #   popup.setContent(jQuery("embed_code_site_content_#{siteToken}").html())
-  #   popup.open()
-  # 
-  #   return false;
-
 # ====================
 # = Onclick handlers =
 # ====================
 
-# MySublimeVideo.showSiteEmbedCodeWithSSL = function(element, siteToken) {
-#   var textarea = element.up().previous('textarea');
-#   if (element.checked) {
-#     textarea.value = textarea.value.gsub('http://cdn.sublimevideo.net', 'https://4076.voxcdn.com');
-#   } else {
-#     textarea.value = textarea.value.gsub('https://4076.voxcdn.com', 'http://cdn.sublimevideo.net');
-#   }
-#   return false;
-#     
-#   # var text = '';
-#   # switch (element.value) {
-#   # case 'no':
-#   #   text += ' src="http://cdn.sublimevideo.net/js/' + siteToken + '.js">';
-#   #   break;
-#   # case 'yes':
-#   #   text += ' src="https://4076.voxcdn.com/js/' + siteToken + '.js">';
-#   #   break;
-#   # case 'mixed':
-#   #   text += '>document.write(unescape("%3Cscript src=\'" + ((\'https:\' == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/' + siteToken + '.js\' type=\'text/javascript\'%3E%3C/script%3E"));';
-#   #   break;
-#   # }
-#   # element.up().previous('textarea').value = '<script type="text/javascript"' + text + '</script>';
-#   # return false;
-# };
+
 
 # ===========
 # = Classes =

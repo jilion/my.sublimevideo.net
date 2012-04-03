@@ -44,13 +44,13 @@
       - else
         = "—"
 
-  %td.code{ id: "code_#{site.token}" }
+  %td.code
     .wrap
       - if site.plan_id?
-        = link_to "Embed code", "", class: "embed_code", onclick: "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
+        = link_to "Embed code", "", class: "embed_code", data: { token: site.token }
       - else
         = "—"
-      %div{ id: "embed_code_site_content_#{site.token}", style: 'display:none' }= render 'code', site: site
+      %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'code', site: site
 
   %td.status
     .wrap
