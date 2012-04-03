@@ -140,7 +140,7 @@ MySublimeVideo::Application.routes.draw do
 
       get  '/account/more-info'  => "users#more_info", as: 'more_user_info'
 
-      put  '/hide_notice/:id' => 'users#hide_notice'
+      delete '/notice/:id' => 'users#hide_notice'
 
       post '/password/validate' => "users/passwords#validate"
     end

@@ -10,6 +10,8 @@ class UsersController < Devise::RegistrationsController
   prepend_before_filter :authenticate_scope!, only: [:edit, :update, :destroy, :more_info, :hide_notice]
   before_filter :redirect_suspended_user
 
+  skip_before_filter :verify_authenticity_token, only: [:hide_notice]
+
   # POST /signup
   def create
     build_resource
@@ -71,7 +73,7 @@ class UsersController < Devise::RegistrationsController
     render :more_info
   end
 
-  # PUT /hide_notice/:id
+  # DELETE /notice/:id
   def hide_notice
     @user = User.find(current_user.id)
     unless @user.hidden_notice_ids.include?(params[:id].to_i)

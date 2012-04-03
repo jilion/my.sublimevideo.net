@@ -106,7 +106,6 @@ class NewSitePlanUpdateManager extends PlanUpdateManager
       else
         @processDetailsDiv.hide()
 
-
 # Plan update manager for sites that are persisted (they can be in trial or not) [/sites/:token/plan/edit]
 class PersistedSitePlanUpdateManager extends PlanUpdateManager
   constructor: ->
