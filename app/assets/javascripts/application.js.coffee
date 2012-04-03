@@ -10,6 +10,7 @@
 #= require_tree ./ui
 
 jQuery(document).ready ->
+  ## Sites select
   if sitesSelectTitle = jQuery('#sites_select_title')
     sitesSelectTitle.on 'change', ->
       window.location.href = window.location.href.replace "/#{sitesSelectTitle.attr('data-token')}/", "/#{sitesSelectTitle.val()}/"
@@ -18,35 +19,17 @@ jQuery(document).ready ->
   jQuery('#flash .notice').each ->
     new MySublimeVideo.UI.Notice(element: jQuery(this)).setupDelayedHiding()
 
+  ## Hidable notices
   jQuery('.hidable_notice').each ->
     new MySublimeVideo.UI.Notice(element: jQuery(this)).setupCloseButton()
 
+  ## Embed code popups
   jQuery('a.embed_code').each ->
     new MySublimeVideo.UI.EmbedCode(link: jQuery(this))
 
-  # 
-  # ## Sites poller
-  # SublimeVideo.sitesPoller = new SitesPoller() if jQuery('#sites_table_wrap')
-  # 
-  # # =====================================
-  # # = Add site hanlder and Sites poller =
-  # # =====================================
-  # if ($("sites_table_wrap")) {
-  #   MySublimeVideo.sitesPoller = new SitesPoller();
-  # }
+  ## Sites CDN status check
+  new MySublimeVideo.UI.SitesStatus() if jQuery('#sites_table_wrap')
 
-# ====================
-# = Onclick handlers =
-# ====================
-
-
-
-# ===========
-# = Classes =
-# ===========
-
-
-#
 # SitesPoller make poll requests for the retrieving the up-to-dateness state of the assets of sites that don't have their assets up-to-date n the CDN
 #
 # var SitesPoller = Class.create({
