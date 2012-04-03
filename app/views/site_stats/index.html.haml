@@ -2,6 +2,7 @@
 = content_for :head, javascript_include_tag('https://d3dy5gmtp8yhk7.cloudfront.net/1.11/pusher.min.js')
 
 - if demo_stats_page?
+  - @body_class = 'stats_demo'
   = content_for :header do
     %h2= "Universal Real-Time Statistics Demo"
     %p.sub= "Get the complete picture, in real-time."
@@ -15,7 +16,7 @@
     %p= raw "This demo page displays the actual video statistics for our own sublimevideo.net domain. Watch any video on #{link_to "sublimevideo.net", "http://sublimevideo.net"} from any device and see your activity logged in real-time on this page. Enjoy!"
 
 .stats
-  - title("Stats")
+  = title_and_content_header("Stats")
   %span.beta_badge
   :coffeescript
     $ ->
