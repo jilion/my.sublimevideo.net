@@ -1,16 +1,23 @@
-#= require application_jquery
-#= require jquery.ui.1.8.17.custom.min
-
-#= require backbone
+#= require underscore
 #= require underscore.date
+#= require backbone
 #= require hamlcoffee
 #= require spin/jquery.spin
 #= require jquery.ui.datepicker.min
 #= require highstock/highstock
 
+#= require global
+
 #= require_self
 #= require_tree ../templates
 #= require_tree ./stats
+
+window.AdminSublimeVideo =
+  Models: {}
+  Collections: {}
+  Helpers: {}
+  Routers: {}
+  Views: {}
 
 window.spinOptions =
   color:  '#d5e5ff'

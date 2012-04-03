@@ -1,12 +1,13 @@
-#= require application_jquery
-
-#= require backbone
+#= require underscore
 #= require underscore.date
+#= require backbone
 #= require hamlcoffee
 #= require spin/jquery.spin
 #= require jquery.sparkline
 #= require jquery.ui.datepicker.min
 #= require highcharts/highcharts
+
+#= require global
 
 #= require_self
 #= require_tree ./models
