@@ -5,6 +5,7 @@ source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com acc
 gem 'rails',                 '3.2.3'
 
 gem 'sublimevideo_layout'
+# gem 'sublimevideo_layout', path: '~/Jilion/Products/SublimeVideo/sublimevideo_layout'
 
 # Javascript Assets
 gem 'prototype-rails',       '~> 3.2.1'
