@@ -8,7 +8,6 @@ gem 'sublimevideo_layout'
 
 # Javascript Assets
 gem 'prototype-rails',       '~> 3.2.1'
-# gem 'jquery-rails',          '~> 1.0.19'
 gem 'rails-backbone',        '~> 0.6.0'
 
 # Databases
