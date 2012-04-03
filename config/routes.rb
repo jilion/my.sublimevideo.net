@@ -166,8 +166,6 @@ MySublimeVideo::Application.routes.draw do
     end
 
     resources :sites, except: [:show] do
-      get :state, on: :member
-
       resource :plan, only: [:edit, :update, :destroy]
 
       resources :invoices, only: [:index] do

@@ -17,6 +17,6 @@ describe UsersController do
   it { get(with_subdomain('my', 'confirmation/new')).should route_to('users/confirmations#new') }
   it { post(with_subdomain('my', 'confirmation')).should    route_to('users/confirmations#create') }
 
-  it { put(with_subdomain('my', 'hide_notice/1')).should route_to('users#hide_notice', id: '1') }
+  it { delete(with_subdomain('my', 'notice/1')).should route_to('users#hide_notice', id: '1') }
 
 end

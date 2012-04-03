@@ -1,10 +1,11 @@
 - @ie_min = 8
+- @page_title_prefix = "MySublimeVideo"
 
 = content_for :javascript do
   - if %w[site_stats].include?(controller_name)
     = javascript_include_tag 'stats'
   - else
-    = javascript_include_tag(request.subdomain.presence || 'www')
+    = javascript_include_tag(request.subdomain == 'my' ? 'application' : request.subdomain)
 
 = content_for :middle do
   = render "layouts/flash", flash: flash if flash.present?

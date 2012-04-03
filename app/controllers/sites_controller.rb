@@ -1,7 +1,7 @@
 class SitesController < ApplicationController
   respond_to :html
-  respond_to :js, only: [:index, :code]
-  respond_to :json, only: :index
+  respond_to :js, only: [:index]
+  respond_to :json, only: [:index]
 
   before_filter :redirect_suspended_user
   before_filter :activate_deal_from_cookie, only: [:index, :new]
@@ -67,16 +67,6 @@ class SitesController < ApplicationController
       else
         format.html { render :edit }
       end
-    end
-  end
-
-  # GET /sites/:id/state
-  def state
-    @site = current_user.sites.not_archived.find(params[:id])
-
-    respond_with(@site) do |format|
-      format.html { redirect_to :sites }
-      format.js
     end
   end
 
