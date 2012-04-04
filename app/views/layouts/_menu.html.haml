@@ -2,8 +2,8 @@
   = content_for :header_menu do
     %nav#menu
       %ul.sticky
-        = li_menu_link('my sites', page: 'sites')
-        = li_menu_link('documentation', protocol: 'http', subdomain: 'docs', page: '')
+        = li_menu_link('my sites', path: 'sites')
+        = li_menu_link('documentation', protocol: 'http', subdomain: 'docs', path: '')
         = li_menu_link('help')
         %li{ class: controller.request.url =~ /account/ ? 'active' : nil }
           = link_to(edit_user_url(subdomain: 'my'), class: 'user') do
