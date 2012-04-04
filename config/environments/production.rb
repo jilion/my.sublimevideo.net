@@ -1,6 +1,7 @@
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
   config.middleware.use Rack::GoogleAnalytics, tracker: 'UA-10280941-8'
+  config.middleware.insert_before Rack::Lock, Rack::SslEnforcer, force_secure_cookies: false
   # require 'rack/throttle/custom_hourly'
   # config.middleware.use(Rack::Throttle::Hourly, :max => 3600, :cache => Rails.cache, :key_prefix => :throttle)
 
@@ -41,7 +42,7 @@ MySublimeVideo::Application.configure do
   config.action_dispatch.x_sendfile_header = nil
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  # config.force_ssl = true
 
   # See everything in the log (default is :info)
   # config.log_level = :debug

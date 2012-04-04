@@ -95,6 +95,7 @@ group :production do
 end
 
 group :staging, :production do
+  gem 'rack-ssl-enforcer'
   gem 'thin'
   gem 'dalli', '~> 2.0.0'
   gem 'rpm_contrib'
