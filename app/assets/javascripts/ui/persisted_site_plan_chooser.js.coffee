@@ -28,7 +28,7 @@ class MySublimeVideo.UI.PersistedSitePlanChooser extends MySublimeVideo.UI.PlanC
       planChangeType = @checkedPlan.attr 'data-plan_change_type'
       planChangeType = 'in_trial_instant_upgrade' if planChangeType is 'in_trial_update' and this.skippingTrial()
       planChangeType = '' if planChangeType is 'skipping_trial' and !this.skippingTrial()
-      _.each @processDetailsMessages, messageDiv, type) =>
+      _.each @processDetailsMessages, (messageDiv, type) =>
         this.updateProcessDetailsMessages(messageDiv) if planChangeType is type
 
   updateProcessDetailsMessages: (messagesDiv) ->
