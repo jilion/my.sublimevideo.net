@@ -5,7 +5,7 @@
   - if %w[site_stats].include?(controller_name)
     = javascript_include_tag 'stats'
   - else
-    = javascript_include_tag(request.subdomain == 'my' ? 'application' : request.subdomain)
+    = javascript_include_tag 'application'
 
 = content_for :middle do
   = render "layouts/flash", flash: flash if flash.present?

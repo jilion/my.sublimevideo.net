@@ -1,21 +1,14 @@
-#= require underscore
+#= require ../admin
+#
 #= require underscore.date
 #= require backbone
 #= require hamlcoffee
 #= require spin/jquery.spin
 #= require jquery.ui.datepicker.min
 #= require highstock/highstock
-
-#= require_self
+#
 #= require_tree ../templates
 #= require_tree ./stats
-
-window.AdminSublimeVideo =
-  Models: {}
-  Collections: {}
-  Helpers: {}
-  Routers: {}
-  Views: {}
 
 window.spinOptions =
   color:  '#d5e5ff'

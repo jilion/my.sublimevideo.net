@@ -20,12 +20,13 @@ class Admin::UsersController < Admin::AdminController
   # GET /users
   def index
     params[:with_state] = 'active' unless params.keys.any? { |k| %w[free with_state search with_balance by_sites_last_30_days_billable_video_views].include?(k) }
+    params[:by_date] = 'desc' unless params[:by_date]
     # @users = if params.key?(:by_sites_last_30_days_billable_video_views)
     #   User
     # else
     @users = User.includes(:sites, :invoices).select("users.*")
     # end
-    @users = apply_scopes(@users).by_date
+    @users = apply_scopes(@users)
 
     respond_with(@users, per_page: 50)
   end

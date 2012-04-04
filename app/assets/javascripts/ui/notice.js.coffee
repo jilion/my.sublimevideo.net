@@ -38,7 +38,6 @@ class MySublimeVideo.UI.Notice
   #
   setupCloseButton: (options = { duration: 1.5 }) ->
     noticeId = @element.attr 'data-notice-id'
-    console.log noticeId
     @element.find('.close').on 'click', =>
       jQuery.ajax "/notice/#{noticeId}",
         type: 'post'

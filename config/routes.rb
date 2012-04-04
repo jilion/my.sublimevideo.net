@@ -78,8 +78,8 @@ MySublimeVideo::Application.routes.draw do
           get :become
         end
       end
-      resources :enthusiasts, only: [:index, :show, :update]
-      resources :enthusiast_sites, only: [:update]
+      resources :enthusiasts, only: [:index, :show]
+      resources :enthusiast_sites, only: []
       resources :admins, only: [:index, :edit, :update, :destroy]
 
       resources :invoices,  only: [:index, :show, :edit] do

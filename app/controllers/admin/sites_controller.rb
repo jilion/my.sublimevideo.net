@@ -16,7 +16,8 @@ class Admin::SitesController < Admin::AdminController
   def index
     @sites = Site.includes(:user, :plan)
     @sites = @sites.active if params[:with_state].nil?
-    @sites = apply_scopes(@sites).send(params[:in_trial] ? :by_trial_started_at : :by_date)
+    params[:by_date] = 'desc' unless params[:by_date]
+    @sites = apply_scopes(@sites)
     respond_with(@sites, per_page: 50)
   end
 
