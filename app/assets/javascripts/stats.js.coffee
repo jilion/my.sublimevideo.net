@@ -4,9 +4,8 @@
 #= require spin/jquery.spin
 #= require jquery.sparkline
 #= require jquery.ui.datepicker.min
-#= require highcharts/highcharts
 
-#= require global
+#= require application
 
 #= require_self
 #= require_tree ./models

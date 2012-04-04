@@ -6,11 +6,18 @@
 #
 #= require underscore
 #= require highcharts/highcharts
-#= require global
 #
 #= require_self
 #= require ./ui/plan_chooser
 #= require_tree ./ui
+
+window.MySublimeVideo =
+  UI: {}
+  Models: {}
+  Collections: {}
+  Helpers: {}
+  Routers: {}
+  Views: {}
 
 jQuery(document).ready ->
   ## Sites select

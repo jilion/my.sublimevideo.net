@@ -6,8 +6,6 @@
 #= require jquery.ui.datepicker.min
 #= require highstock/highstock
 
-#= require global
-
 #= require_self
 #= require_tree ../templates
 #= require_tree ./stats
