@@ -56,14 +56,7 @@ MySublimeVideo::Application.configure do
   config.cache_store = :dalli_store
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  # http://stackoverflow.com/questions/7324292/rails-3-1-cant-compile-assets-on-prod-due-to-asset-host-config
-  config.action_controller.asset_host = ->(source, request = nil, *_) {
-    if request && !request.ssl?
-      "http://d1p69vb2iuddhr.cloudfront.net"
-    else
-      "https://d1p69vb2iuddhr.cloudfront.net"
-    end
-  }
+  config.action_controller.asset_host = "https://d1p69vb2iuddhr.cloudfront.net"
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
