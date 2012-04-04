@@ -33,7 +33,7 @@ class MSVStats.Views.TopVideosView extends Backbone.View
   renderSparklines: (models) ->
     for video in models
       if video.isShowable()
-        MSVStats.chartsHelper.sparkline $("#sparkline_#{video.id}"), video.vvArray(),
+        MSVStats.chartsHelper.sparkline $("#sparkline_#{video.cid}"), video.vvArray(),
           width:  '100%'
           height: '100%'
           lineColor: '#1ce937'
