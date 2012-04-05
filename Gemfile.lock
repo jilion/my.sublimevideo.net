@@ -227,7 +227,7 @@ GEM
       guard (>= 0.3.0)
     guard-rspec (0.7.0)
       guard (>= 0.10.0)
-    guard-spork (0.5.2)
+    guard-spork (0.6.0)
       guard (>= 0.10.0)
       spork (>= 0.8.4)
     haml (3.1.4)
@@ -408,7 +408,7 @@ GEM
     stat_request_parser (1.1.0)
       activesupport (>= 3.0.0)
     state_machine (1.1.2)
-    sublimevideo_layout (0.5.8)
+    sublimevideo_layout (0.5.10)
       coffee-rails (~> 3.2.0)
       haml
       jquery-rails (~> 2.0.2)
