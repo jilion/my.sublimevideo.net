@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
-private
+  private
 
   def user_for_paper_trail
     params[:user][:email].downcase! if params[:user] && params[:user][:email]
@@ -63,7 +63,7 @@ private
 end
 
 module DeviseInvitable::Controllers::Helpers
-protected
+  protected
   def authenticate_inviter!
     authenticate_admin!
   end
