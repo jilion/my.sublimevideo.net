@@ -5,6 +5,8 @@
 #= require ./ui/plan_chooser
 #= require_tree ./ui
 
+jQuery.fn.exists = -> @length > 0
+
 window.MySublimeVideo =
   UI: {}
   Models: {}
@@ -15,7 +17,7 @@ window.MySublimeVideo =
 
 jQuery(document).ready ->
   ## Sites select
-  if (sitesSelectTitle = jQuery('#sites_select_title')).length > 0
+  if (sitesSelectTitle = jQuery('#sites_select_title')).exists()
     sitesSelectTitle.on 'change', ->
       window.location.href = window.location.href.replace "/#{sitesSelectTitle.attr('data-token')}/", "/#{sitesSelectTitle.val()}/"
 
@@ -32,11 +34,12 @@ jQuery(document).ready ->
     new MySublimeVideo.UI.EmbedCode(link: jQuery(this))
 
   ## Sites CDN status check
-  new MySublimeVideo.UI.SitesStatus() if jQuery('#sites_table_wrap')
+  if (table = jQuery('#sites_table_wrap')).exists()
+    new MySublimeVideo.UI.SitesStatus(table)
 
   ## Plans chooser
-  if jQuery('#plans').length > 0
-    if jQuery('#new_site').length > 0
+  if jQuery('#plans').exists()
+    if jQuery('#new_site').exists()
       new MySublimeVideo.UI.NewSitePlanChooser()
     else
       new MySublimeVideo.UI.PersistedSitePlanChooser()

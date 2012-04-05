@@ -15,7 +15,7 @@ group :frontend do
   guard :livereload, host: 'my.sublimevideo.dev' do
     watch(%r{app/views/.+\.(erb|haml)})
     watch(%r{app/helpers/.+\.rb})
-    watch(%r{public/.+\.(css|js|html)})
+    # watch(%r{public/.+\.(css|js|html)})
     watch(%r{(app|vendor)/assets/\w+/(.+\.(css|js|html)).*})  { |m| "/assets/#{m[2]}" }
     watch(%r{app/assets/\w+/(.+)\.hamlc.*})                   { |m| "/assets/#{m[1]}.js" }
     watch(%r{config/locales/.+\.yml})

@@ -1,4 +1,4 @@
-%tr{ id: dom_id(site), class: cycle("", "alt") }
+%tr{ id: dom_id(site), data: { "site-token" => site.token }, class: cycle("", "alt") }
   %td.site{ class: site.hostname.present? ? "has_domain" : "empty"}
     .wrap
       - if site.hostname.present?
