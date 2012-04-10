@@ -11,7 +11,7 @@ window.AdminSublimeVideo =
 jQuery(document).ready ->
 
   ## Live Search form
-  if (searchInput = jQuery('#search_input')).length > 0
+  if (searchInput = jQuery('#search_input')).exists()
     form = searchInput.parent('form')
     url  = form.attr('action')
 

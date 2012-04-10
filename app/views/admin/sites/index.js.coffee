@@ -4,4 +4,5 @@ jQuery('#sites_title').html "<%= admin_sites_page_title(@sites) %>"
 <% end %>
 jQuery('#table_spinner').hide()
 jQuery(document.body).animate({ scrollTop: 0 })
-jQuery('a.sort.sticky').each -> new SublimeVideo.UI.SortLink(jQuery(this))
+
+SublimeVideo.UI.prepareSortAndStickyLinks()

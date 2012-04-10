@@ -33,6 +33,6 @@ class MySublimeVideo.UI.EmbedCode
     jQuery("#embed_code_ssl_#{@token}").on 'click', (event) =>
       textarea = jQuery("#embed_code_#{@token}")
       if jQuery(event.delegateTarget).attr 'checked'
-        textarea.val textarea.val().gsub('http://cdn.sublimevideo.net', 'https://4076.voxcdn.com')
+        textarea.val textarea.val().replace('http://cdn.sublimevideo.net', 'https://4076.voxcdn.com')
       else
-        textarea.val textarea.val().gsub('https://4076.voxcdn.com', 'http://cdn.sublimevideo.net')
+        textarea.val textarea.val().replace('https://4076.voxcdn.com', 'http://cdn.sublimevideo.net')
