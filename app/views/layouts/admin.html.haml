@@ -1,22 +1,25 @@
+- @page_title_prefix = "AdminSublimeVideo"
+
 !!! 5
 %html{ "xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en" }
   %head
-    - title = yield(:title)
-    %title= title_env_prefix + title_subdomain_prefix(request) + (title.present? ? " - #{title}" : '')
+    %title= page_title
     %meta{ "http-equiv" => "X-UA-Compatible", content: "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", content: "text/html;charset=UTF-8" }
+    = csrf_meta_tag
+
     = stylesheet_link_tag 'admin'
     %link{ rel: "shortcut icon", href: "/favicon.ico", type: "image/x-icon" }
 
+    = javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'
+    = javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'
+    = javascript_include_tag 'sublimevideo'
     - if %w[stats].include?(controller_name)
       = javascript_include_tag 'admin/stats'
     - else
       = javascript_include_tag 'admin'
 
-    = csrf_meta_tag
-    = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
-    :javascript
-      try { Typekit.load(); } catch(e) { }
+    = render 'layouts/typekit'
 
   %body
     #global

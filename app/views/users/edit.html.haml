@@ -1,0 +1,46 @@
+= title_and_content_header("My Account")
+
+.content_left
+  = form_for @user, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_credentials", "data-password-protected" => true, "data-password-state" => 'current' } do |f|
+    - if params[:action] == 'update' && @user.errors[:current_password].present?
+      = password_box resource: @user, f: f, cancel_url: [:edit, :user], password_state: "current"
+
+    = render 'users/credentials_form_fields', f: f
+
+    .entry.update
+      = f.submit "Update", class: "submit blue_button", id: "user_credentials_submit"
+
+    .break
+
+  %h3.section_title More information about you
+  = form_for @user, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_more_info" } do |f|
+    = render 'users/more_info_form_fields', f: f
+
+    .entry.update
+      = f.submit "Update", id: 'user_submit', class: "submit blue_button"
+  .spacer
+
+  -# - if current_user.email =~ /@jilion.com$/
+  -#   %h3.section_title= link_to "API authorizations and applications (alpha)", [:client_applications]
+  .spacer
+
+.content_right
+  = render 'users/balance_info'
+  = render 'users/billing_info'
+
+  - if current_user.archivable?
+    #delete_account
+      %h3.section_title= "Delete account"
+      = form_for @user, url: [:destroy, :user], html: { method: :delete, "data-password-protected" => true } do |f|
+        - if params[:action] == 'destroy' && @user.errors[:current_password].present?
+          = password_box resource: @user, f: f, cancel_url: [:edit, :user]
+        %p= "Please understand that:"
+        %ul
+          %li= raw "All your #{link_to "sites", sites_path, class: "hl"} will be deleted."
+          %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
+          %li= "We do not offer refunds."
+        .entry
+          = f.submit "Delete account", class: "submit link_looks delete"
+
+  .spacer
+.spacer

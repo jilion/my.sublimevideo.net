@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Issue with the "(c)@sublimevideo.onEnd@":http://docs.sublimevideo.net/javascript-api/listeners#onEnd event not being fired in Flash mode.

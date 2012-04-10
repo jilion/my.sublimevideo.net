@@ -5,19 +5,19 @@ describe Stats::SitesStat do
   context "with a bunch of different sites" do
 
     before(:each) do
-      user = Factory.create(:user)
-      @yearly_plan = Factory.create(:plan, name: @paid_plan.name, cycle: 'year')
-      Factory.create(:site, user: user, state: 'active', plan_id: @free_plan.id)
-      site = Factory.create(:site, user: user, state: 'active', plan_id: @free_plan.id)
+      user = create(:user)
+      @yearly_plan = create(:plan, name: @paid_plan.name, cycle: 'year')
+      create(:site, user: user, state: 'active', plan_id: @free_plan.id)
+      site = create(:site, user: user, state: 'active', plan_id: @free_plan.id)
       site.sponsor!
-      Factory.create(:site, user: user, state: 'active', plan_id: @paid_plan.id) # in trial
-      Factory.create(:site, user: user, state: 'active', plan_id: @custom_plan.token) # in trial
-      Factory.create(:site, user: user, state: 'active', plan_id: @custom_plan.token) # in trial
-      Factory.create(:site_not_in_trial, user: user, state: 'active', plan_id: @paid_plan.id) # not in trial
-      Factory.create(:site_not_in_trial, user: user, state: 'active', plan_id: @yearly_plan.id) # not in trial
-      Factory.create(:site_not_in_trial, user: user, state: 'active', plan_id: @custom_plan.token) # not in trial
-      Factory.create(:site, user: user, state: 'suspended', plan_id: @custom_plan.token)
-      Factory.create(:site, user: user, state: 'archived', plan_id: @paid_plan.id)
+      create(:site, user: user, state: 'active', plan_id: @paid_plan.id) # in trial
+      create(:site, user: user, state: 'active', plan_id: @custom_plan.token) # in trial
+      create(:site, user: user, state: 'active', plan_id: @custom_plan.token) # in trial
+      create(:site_not_in_trial, user: user, state: 'active', plan_id: @paid_plan.id) # not in trial
+      create(:site_not_in_trial, user: user, state: 'active', plan_id: @yearly_plan.id) # not in trial
+      create(:site_not_in_trial, user: user, state: 'active', plan_id: @custom_plan.token) # not in trial
+      create(:site, user: user, state: 'suspended', plan_id: @custom_plan.token)
+      create(:site, user: user, state: 'archived', plan_id: @paid_plan.id)
     end
 
     describe ".create_stats" do

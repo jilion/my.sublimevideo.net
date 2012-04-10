@@ -2,10 +2,10 @@
 require 'spec_helper'
 
 describe Plan do
-  subject { Factory.create(:plan) }
+  subject { create(:plan) }
 
   context "Factory" do
-    before(:all) { @plan = Factory.create(:plan) }
+    before(:all) { @plan = create(:plan) }
     after(:all) { @plan.delete }
     subject { @plan }
 
@@ -42,16 +42,16 @@ describe Plan do
     it { should validate_presence_of(:support_level) }
 
     it "price can't be blank" do
-      Factory.build(:plan, price: nil).should have(1).error_on(:price)
+      build(:plan, price: nil).should have(1).error_on(:price)
     end
 
     describe "uniqueness of name scoped by cycle" do
       before(:each) do
-        Factory.create(:plan, :name => "foo", :cycle => "month")
+        create(:plan, :name => "foo", :cycle => "month")
       end
 
-      it { Factory.build(:plan, :name => "foo", :cycle => "month").should_not be_valid }
-      it { Factory.build(:plan, :name => "foo", :cycle => "year").should be_valid }
+      it { build(:plan, :name => "foo", :cycle => "month").should_not be_valid }
+      it { build(:plan, :name => "foo", :cycle => "year").should be_valid }
     end
 
     it { should validate_numericality_of(:video_views) }
@@ -74,90 +74,90 @@ describe Plan do
   describe "Instance Methods" do
     describe "#next_plan" do
       it "should return the next plan with a bigger price" do
-        plan2 = Factory.create(:plan, price: subject.price + 100)
-        plan3 = Factory.create(:plan, price: subject.price + 2000)
+        plan2 = create(:plan, price: subject.price + 100)
+        plan3 = create(:plan, price: subject.price + 2000)
         @paid_plan.next_plan.should eq plan2
       end
 
       it "should be_nil if none bigger plan exist" do
-        plan2 = Factory.create(:plan, price: 10**9)
+        plan2 = create(:plan, price: 10**9)
         plan2.next_plan.should be_nil
       end
     end
 
     describe "#month_price" do
       context "with month plan" do
-        subject { Factory.build(:plan, :cycle => "month", :price => 1000) }
+        subject { build(:plan, :cycle => "month", :price => 1000) }
 
         its(:month_price) { should eq 1000 }
       end
 
       context "with year plan" do
-        subject { Factory.build(:plan, :cycle => "year", :price => 10000) }
+        subject { build(:plan, :cycle => "year", :price => 10000) }
 
         its(:month_price) { should eq 10000 / 12 }
       end
     end
 
     describe "#free_plan?" do
-      it { Factory.build(:plan, :name => "free").should be_free_plan }
-      it { Factory.build(:plan, :name => "pro").should_not be_free_plan }
+      it { build(:plan, :name => "free").should be_free_plan }
+      it { build(:plan, :name => "pro").should_not be_free_plan }
     end
 
     describe "#sponsored_plan?" do
-      it { Factory.build(:plan, :name => "free").should_not be_sponsored_plan }
-      it { Factory.build(:plan, :name => "pro").should_not be_sponsored_plan }
-      it { Factory.build(:plan, :name => "sponsored").should be_sponsored_plan }
+      it { build(:plan, :name => "free").should_not be_sponsored_plan }
+      it { build(:plan, :name => "pro").should_not be_sponsored_plan }
+      it { build(:plan, :name => "sponsored").should be_sponsored_plan }
     end
 
     describe "#standard_plan?" do
-      it { Factory.build(:plan, :name => "free").should_not be_standard_plan }
-      it { Factory.build(:plan, :name => "sponsored").should_not be_standard_plan }
+      it { build(:plan, :name => "free").should_not be_standard_plan }
+      it { build(:plan, :name => "sponsored").should_not be_standard_plan }
 
       Plan::STANDARD_NAMES.each do |name|
-        it { Factory.build(:plan, :name => name).should be_standard_plan }
+        it { build(:plan, :name => name).should be_standard_plan }
       end
     end
 
     describe "#custom_plan?" do
-      it { Factory.build(:plan, :name => "free").should_not be_custom_plan }
-      it { Factory.build(:plan, :name => "sponsored").should_not be_custom_plan }
-      it { Factory.build(:plan, :name => "comet").should_not be_custom_plan }
-      it { Factory.build(:plan, :name => "custom").should be_custom_plan }
-      it { Factory.build(:plan, :name => "custom1").should be_custom_plan }
-      it { Factory.build(:plan, :name => "custom2").should be_custom_plan }
+      it { build(:plan, :name => "free").should_not be_custom_plan }
+      it { build(:plan, :name => "sponsored").should_not be_custom_plan }
+      it { build(:plan, :name => "comet").should_not be_custom_plan }
+      it { build(:plan, :name => "custom").should be_custom_plan }
+      it { build(:plan, :name => "custom1").should be_custom_plan }
+      it { build(:plan, :name => "custom2").should be_custom_plan }
     end
 
     describe "#unpaid_plan?" do
-      it { Factory.build(:plan, :name => "free").should be_unpaid_plan }
-      it { Factory.build(:plan, :name => "sponsored").should be_unpaid_plan }
-      it { Factory.build(:plan, :name => "comet").should_not be_unpaid_plan }
-      it { Factory.build(:plan, :name => "custom").should_not be_unpaid_plan }
-      it { Factory.build(:plan, :name => "custom1").should_not be_unpaid_plan }
-      it { Factory.build(:plan, :name => "custom2").should_not be_unpaid_plan }
+      it { build(:plan, :name => "free").should be_unpaid_plan }
+      it { build(:plan, :name => "sponsored").should be_unpaid_plan }
+      it { build(:plan, :name => "comet").should_not be_unpaid_plan }
+      it { build(:plan, :name => "custom").should_not be_unpaid_plan }
+      it { build(:plan, :name => "custom1").should_not be_unpaid_plan }
+      it { build(:plan, :name => "custom2").should_not be_unpaid_plan }
     end
 
     describe "#paid_plan?" do
-      it { Factory.build(:plan, :name => "free").should_not be_paid_plan }
-      it { Factory.build(:plan, :name => "sponsored").should_not be_paid_plan }
-      it { Factory.build(:plan, :name => "comet").should be_paid_plan }
-      it { Factory.build(:plan, :name => "custom").should be_paid_plan }
-      it { Factory.build(:plan, :name => "custom1").should be_paid_plan }
-      it { Factory.build(:plan, :name => "custom2").should be_paid_plan }
+      it { build(:plan, :name => "free").should_not be_paid_plan }
+      it { build(:plan, :name => "sponsored").should_not be_paid_plan }
+      it { build(:plan, :name => "comet").should be_paid_plan }
+      it { build(:plan, :name => "custom").should be_paid_plan }
+      it { build(:plan, :name => "custom1").should be_paid_plan }
+      it { build(:plan, :name => "custom2").should be_paid_plan }
     end
 
     describe "#monthly?, #yearly? and #nonely?" do
-      it { Factory.build(:plan, cycle: "month").should be_monthly }
-      it { Factory.build(:plan, cycle: "year").should be_yearly }
-      it { Factory.build(:plan, cycle: "none").should be_nonely }
+      it { build(:plan, cycle: "month").should be_monthly }
+      it { build(:plan, cycle: "year").should be_yearly }
+      it { build(:plan, cycle: "none").should be_nonely }
     end
 
     describe "#upgrade?" do
       before(:all) do
-        @paid_plan         = Factory.build(:plan, cycle: "month", price: 1000)
-        @paid_plan2        = Factory.build(:plan, cycle: "month", price: 5000)
-        @paid_plan_yearly  = Factory.build(:plan, cycle: "year",  price: 10000)
-        @paid_plan_yearly2 = Factory.build(:plan, cycle: "year",  price: 50000)
+        @paid_plan         = build(:plan, cycle: "month", price: 1000)
+        @paid_plan2        = build(:plan, cycle: "month", price: 5000)
+        @paid_plan_yearly  = build(:plan, cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = build(:plan, cycle: "year",  price: 50000)
       end
 
       it { @free_plan.upgrade?(nil).should be_false }
@@ -203,17 +203,17 @@ describe Plan do
       specify { @sponsored_plan.title(always_with_cycle: true).should eq "Sponsored" }
       specify { @custom_plan.title.should eq "Custom" }
       specify { @custom_plan.title(always_with_cycle: true).should eq "Custom (monthly)" }
-      specify { Factory.build(:plan, cycle: "month", name: "comet").title.should eq "Comet" }
-      specify { Factory.build(:plan, cycle: "year", name: "comet").title.should eq "Comet (yearly)" }
-      specify { Factory.build(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should eq "Comet (monthly)" }
-      specify { Factory.build(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should eq "Comet (yearly)" }
+      specify { build(:plan, cycle: "month", name: "comet").title.should eq "Comet" }
+      specify { build(:plan, cycle: "year", name: "comet").title.should eq "Comet (yearly)" }
+      specify { build(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should eq "Comet (monthly)" }
+      specify { build(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should eq "Comet (yearly)" }
     end
 
     describe "#daily_video_views" do
       before(:all) do
-        @plan1 = Factory.build(:plan, cycle: "month", video_views: 1000)
-        @plan2 = Factory.build(:plan, cycle: "year", video_views: 2000)
-        @plan3 = Factory.build(:plan, cycle: "none", video_views: 3000)
+        @plan1 = build(:plan, cycle: "month", video_views: 1000)
+        @plan2 = build(:plan, cycle: "year", video_views: 2000)
+        @plan3 = build(:plan, cycle: "none", video_views: 3000)
       end
 
       it { @plan1.daily_video_views.should eq 33 }
@@ -222,19 +222,19 @@ describe Plan do
     end
 
     describe "#support" do
-      it { Factory.build(:plan, name: "free", support_level: 0).support.should eq "forum" }
-      it { Factory.build(:plan, name: "plus", support_level: 1).support.should eq "email" }
-      it { Factory.build(:plan, name: "premium", support_level: 2).support.should eq "vip_email" }
+      it { build(:plan, name: "free", support_level: 0).support.should eq "forum" }
+      it { build(:plan, name: "plus", support_level: 1).support.should eq "email" }
+      it { build(:plan, name: "premium", support_level: 2).support.should eq "vip_email" }
     end
 
     describe "#discounted?" do
-      let(:user)  { Factory(:user) }
-      let(:site1) { Factory(:site) }
-      let(:site2) { Factory(:site, user: user) }
-      let(:deal1) { Factory(:deal, kind: 'plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-      let(:deal2) { Factory(:deal, kind: 'yearly_plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-      let(:plan1) { Factory(:plan, name: 'foo', cycle: 'month') }
-      let(:plan2) { Factory(:plan, name: 'bar', cycle: 'year') }
+      let(:user)  { create(:user) }
+      let(:site1) { create(:site) }
+      let(:site2) { create(:site, user: user) }
+      let(:deal1) { create(:deal, kind: 'plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+      let(:deal2) { create(:deal, kind: 'yearly_plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+      let(:plan1) { create(:plan, name: 'foo', cycle: 'month') }
+      let(:plan2) { create(:plan, name: 'bar', cycle: 'year') }
 
       context "site's user doesn't have access to a discounted price" do
         it "return false" do
@@ -244,28 +244,28 @@ describe Plan do
 
       context "site's user has access to a discounted price" do
         it "price isn't discounted for this plan" do
-          Factory(:deal_activation, deal: deal2, user: user)
+          create(:deal_activation, deal: deal2, user: user)
           plan1.discounted?(site2).should be_nil
         end
 
         it "price is discounted for this plan" do
-          Factory(:deal_activation, deal: deal2, user: user)
+          create(:deal_activation, deal: deal2, user: user)
           plan2.discounted?(site2).should eq deal2
         end
 
         it "price is discounted for this plan" do
-          Factory(:deal_activation, deal: deal1, user: user)
+          create(:deal_activation, deal: deal1, user: user)
           plan1.discounted?(site2).should eq deal1
         end
 
         it "price is discounted for this plan" do
-          Factory(:deal_activation, deal: deal1, user: user)
+          create(:deal_activation, deal: deal1, user: user)
           plan2.discounted?(site2).should eq deal1
         end
 
         context "site trial started during deal" do
           it "price is discounted for this plan" do
-            Factory(:deal_activation, deal: deal2, user: user)
+            create(:deal_activation, deal: deal2, user: user)
             site2.trial_started_at.should eq Time.now.utc.midnight
 
             Timecop.travel(3.days.from_now) do
@@ -277,7 +277,7 @@ describe Plan do
 
         context "site trial started after the deal end" do
           it "price isn't discounted for this plan" do
-            Factory(:deal_activation, deal: deal2, user: user)
+            create(:deal_activation, deal: deal2, user: user)
 
             Timecop.travel(3.days.from_now) do
               site2.trial_started_at.should eq Time.now.utc.midnight
@@ -290,9 +290,9 @@ describe Plan do
     end
 
     describe "#discounted_percentage" do
-      let(:site) { Factory(:site) }
-      let(:deal) { Factory(:deal, value: 0.3) }
-      subject { Factory.create(:plan) }
+      let(:site) { create(:site) }
+      let(:deal) { create(:deal, value: 0.3) }
+      subject { create(:plan) }
 
       context "site doesn't have access to a discounted price" do
         before(:each) do
@@ -316,8 +316,8 @@ describe Plan do
     end
 
     describe "#price" do
-      let(:site) { Factory(:site) }
-      subject { Factory.create(:plan) }
+      let(:site) { create(:site) }
+      subject { create(:plan) }
 
       context "site doesn't have access to a discounted price" do
         before(:each) do

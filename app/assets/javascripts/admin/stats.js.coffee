@@ -1,14 +1,12 @@
-#= require application_jquery
-#= require jquery.ui.1.8.17.custom.min
-
-#= require backbone
+#= require ../admin
+#
 #= require underscore.date
+#= require backbone
 #= require hamlcoffee
 #= require spin/jquery.spin
 #= require jquery.ui.datepicker.min
 #= require highstock/highstock
-
-#= require_self
+#
 #= require_tree ../templates
 #= require_tree ./stats
 

@@ -6,9 +6,9 @@ describe MailLetter do
 
     describe "#deliver_and_log" do
       before(:each) do
-        @user          = Factory.create(:user, created_at: Time.utc(2011,1,1))
-        @admin         = Factory.create(:admin)
-        @mail_template = Factory.create(:mail_template)
+        @user          = create(:user, created_at: Time.utc(2011,1,1))
+        @admin         = create(:admin)
+        @mail_template = create(:mail_template)
         @attributes    = { admin_id: @admin.id, template_id: @mail_template.id.to_s, criteria: "all" }
         @mail_letter   = MailLetter.new(@attributes)
       end
@@ -65,9 +65,9 @@ describe MailLetter do
 
         describe "the 'paying' and 'free' filters" do
           before(:each) do
-            @archived_user = Factory.create(:user, state: 'archived')
-            @paying_user = Factory.create(:user)
-            Factory.create(:site_not_in_trial, user: @paying_user)
+            @archived_user = create(:user, state: 'archived')
+            @paying_user = create(:user)
+            create(:site_not_in_trial, user: @paying_user)
           end
 
           context "with the 'paying' filter" do

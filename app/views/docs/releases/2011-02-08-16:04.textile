@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> More compatibility with existing CSS (negative z-index).
-* <span class="label fixed">fixed</span> Issue when closing the lightbox by pressing the Esc key (Flash mode).

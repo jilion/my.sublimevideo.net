@@ -39,7 +39,6 @@ class MSVVideoCodeGenerator.Models.Thumbnail extends MSVVideoCodeGenerator.Model
     initialLink: 'image'
     thumbWidth: null
     thumbHeight: null
-    magnifyingGlass: false
     found: true
     ratio: 1
 

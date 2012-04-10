@@ -11,5 +11,5 @@
     = page
 - else
   %span.page
-    = link_to_unless page.current?, page, params.merge(:page => page, :format => nil), :remote => true, :onclick => "MySublimeVideo.showTableSpinner()"
+    = link_to_unless page.current?, page, params.merge(:page => page, :format => nil), :remote => true, :onclick => "SublimeVideo.UI.Table.showSpinner()"
 

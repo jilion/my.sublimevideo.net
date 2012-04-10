@@ -1,4 +1,4 @@
-class Admin::PlansController < AdminController
+class Admin::PlansController < Admin::AdminController
   before_filter { |controller| require_role?('god') }
 
   # GET /plans

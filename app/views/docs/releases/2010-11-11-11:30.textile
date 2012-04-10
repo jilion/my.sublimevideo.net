@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> Optimized support for iPad iOS 4.2
-* <span class="label fixed">fixed</span> Issue when pausing a video during buffering phase (playback was resumed after a few seconds).

@@ -2,10 +2,20 @@ module SiteModules::Invoice
   extend ActiveSupport::Concern
 
   module ClassMethods
+    def send_yearly_plan_will_be_renewed
+      Site.not_in_trial.in_plan_id(Plan.yearly_plans.map(&:id)).
+      plan_will_be_renewed_on(5.days.from_now).
+      find_each(batch_size: 100) do |site|
+        BillingMailer.yearly_plan_will_be_renewed(site).deliver!
+      end
+    end
+
     def send_trial_will_expire
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
-        Site.in_trial.paid_plan.where(first_paid_plan_started_at: nil).trial_expires_on(days_before_trial_end.days.from_now).find_each(batch_size: 100) do |site|
-          My::BillingMailer.trial_will_expire(site).deliver! unless site.user.credit_card?
+        Site.in_trial.paid_plan.where(first_paid_plan_started_at: nil).
+        trial_expires_on(days_before_trial_end.days.from_now).
+        find_each(batch_size: 100) do |site|
+          BillingMailer.trial_will_expire(site).deliver! unless site.user.credit_card?
         end
       end
     end
@@ -18,7 +28,7 @@ module SiteModules::Invoice
         else
           trial_plan   = site.plan
           site.plan_id = Plan.free_plan.id
-          My::BillingMailer.trial_has_expired(site, trial_plan).deliver!
+          BillingMailer.trial_has_expired(site, trial_plan).deliver!
         end
         site.save_skip_pwd
       end
@@ -306,7 +316,7 @@ private
 
   # after_save
   def send_trial_started_email
-    My::BillingMailer.trial_has_started(self).deliver!
+    BillingMailer.trial_has_started(self).deliver!
   end
 
   # ========================

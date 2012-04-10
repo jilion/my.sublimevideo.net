@@ -28,7 +28,7 @@ feature "Mails index" do
   describe "With logs and templates" do
     background do
       sign_in_as :admin, roles: ['god']
-      @mail_log      = Factory.create(:mail_log, admin_id: @current_admin.id)
+      @mail_log      = create(:mail_log, admin_id: @current_admin.id)
       @mail_template = @mail_log.template
     end
 
@@ -61,9 +61,9 @@ end
 feature "Mails sending" do
 
   background do
-    @user = Factory.create(:user)
+    @user = create(:user)
     sign_in_as :admin, roles: ['god']
-    @mail_template = Factory.create(:mail_template)
+    @mail_template = create(:mail_template)
   end
 
   context "choosing 'all' criteria" do

@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Issue with lightboxed videos on iPad (original videos were not properly hidden if user forgot to set display:none on the @<video>@ elements).

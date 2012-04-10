@@ -31,9 +31,6 @@
   != this.embedTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video)
   .spacer
 
-  - if @builder.get('builderClass') is 'lightbox' and @video.get('thumbnail').get('magnifyingGlass')
-    != @cssTemplate(video: @video)
-
 - else
   .notices
     %ul

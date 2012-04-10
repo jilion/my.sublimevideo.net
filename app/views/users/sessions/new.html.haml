@@ -1,0 +1,24 @@
+%h2.title= "Log in to SublimeVideo"
+
+- action = action_name == 'new_gs' ? gs_login_url(subdomain: 'my', protocol: https_if_prod_or_staging) : login_user_url(subdomain: 'my', protocol: https_if_prod_or_staging)
+= form_for User.new, as: :user, url: action, html: { method: :post, id: 'user_login', class: "main_form" } do |f|
+  = hidden_field_tag :user_return_to, params[:user_return_to]
+  .entry.email
+    = f.label :email, "", class: "icon"
+    = f.email_field :email, class: "text", placeholder: "Email", required: true, value: params[:user].try(:[], :email)
+
+  .entry.password
+    = f.label :password, "", class: "icon"
+    = f.password_field :password, class: "text", placeholder: "Password", required: true
+
+    .checkbox_wrap
+      = f.check_box :remember_me
+      = f.label :remember_me
+
+  .entry.submit.login
+    = f.submit "Log In", class: "blue_button"
+    %ul.form_list
+      %li.signup= link_to "Don't have an account yet?", request.subdomain == 'my' ? signup_user_url : root_url(host: request.domain, p: 'signup')
+      %li= link_to "Forgot your password?", new_user_password_url(subdomain: 'my')
+      %li= link_to "Didn't receive confirmation instructions?", new_user_confirmation_url(subdomain: 'my')
+  .spacer

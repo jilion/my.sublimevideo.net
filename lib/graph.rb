@@ -16,11 +16,11 @@ class Graph
     @raw_options << string
   end
 
-  def draw(options = { observe: "dom:loaded" })
+  def draw(options = { on_dom_ready: true })
     result = "var chart = new Highcharts.Chart(#{draw_options});"
-    result = "document.observe('#{options[:observe]}', function() {" + result + "});" if options[:observe]
+    result = "jQuery(document).ready(function() {" + result + "});" if options[:on_dom_ready]
 
-    '<script type="text/javascript" charset="utf-8">' + result + "</script>"
+    '<script type="text/javascript">' + result + "</script>"
   end
 
 private

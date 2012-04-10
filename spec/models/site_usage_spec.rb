@@ -6,18 +6,18 @@ describe SiteUsage do
     before(:each) do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz'))
       VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(log_file)
-      @log = Factory.create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1286528280-1286528340.gz')
+      @log = create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1286528280-1286528340.gz')
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
 
       with_versioning do
         Timecop.travel(@log.started_at - 1.minute) do
-          @site1 = Factory.create(:site, :hostname => 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.save }
+          @site1 = create(:site, :hostname => 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.save }
         end
         VoxcastCDN.stub(:purge)
         @site1.update_attributes(:hostname => 'bob.com')
       end
 
-      @site2 = Factory.create(:site, :user => @site1.user, :hostname => 'sonymusic.se').tap { |s| s.token = 'mhud9lff'; s.save }
+      @site2 = create(:site, :user => @site1.user, :hostname => 'sonymusic.se').tap { |s| s.token = 'mhud9lff'; s.save }
     end
 
     it "should clean trackers" do
@@ -88,11 +88,11 @@ describe SiteUsage do
     before(:each) do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1308045840-1308045900.gz'))
       VoxcastCDN.stub(:download_log).with('4076.voxcdn.com.log.1308045840-1308045900.gz').and_return(log_file)
-      @log = Factory.create(:log_voxcast, :name => '4076.voxcdn.com.log.1308045840-1308045900.gz')
+      @log = create(:log_voxcast, :name => '4076.voxcdn.com.log.1308045840-1308045900.gz')
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
 
-      @site1 = Factory.create(:site, :hostname => 'customerhub.net', wildcard: true).tap { |s| s.token = '9pfe3uop'; s.save }
-      @site2 = Factory.create(:site, :user => @site1.user, :hostname => 'farmerswifeplay.com').tap { |s| s.token = '87r9xy5e'; s.save }
+      @site1 = create(:site, :hostname => 'customerhub.net', wildcard: true).tap { |s| s.token = '9pfe3uop'; s.save }
+      @site2 = create(:site, :user => @site1.user, :hostname => 'farmerswifeplay.com').tap { |s| s.token = '87r9xy5e'; s.save }
     end
 
     it "should clean trackers" do
@@ -146,10 +146,10 @@ describe SiteUsage do
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz'))
       )
 
-      @site1 = Factory.create(:site, :hostname => 'zeno.name').tap { |s| s.token = 'g3325oz4'; s.save }
-      @site2 = Factory.create(:site, :user => @site1.user, :hostname => 'octavez.com').tap { |s| s.token = 'g8thugh6'; s.save }
+      @site1 = create(:site, :hostname => 'zeno.name').tap { |s| s.token = 'g3325oz4'; s.save }
+      @site2 = create(:site, :user => @site1.user, :hostname => 'octavez.com').tap { |s| s.token = 'g8thugh6'; s.save }
 
-      @log = Factory.create(:log_voxcast)
+      @log = create(:log_voxcast)
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
       Notify.should_receive(:send).any_number_of_times
     end
@@ -199,10 +199,10 @@ describe SiteUsage do
 
   describe "Trackers parsing with s3 loaders" do
     before(:each) do
-      @site1 = Factory.create(:site).tap { |s| s.token = 'gperx9p4'; s.save }
-      @site2 = Factory.create(:site, :user => @site1.user, :hostname => 'google.com').tap { |s| s.token = 'pbgopxwy'; s.save }
+      @site1 = create(:site).tap { |s| s.token = 'gperx9p4'; s.save }
+      @site2 = create(:site, :user => @site1.user, :hostname => 'google.com').tap { |s| s.token = 'pbgopxwy'; s.save }
 
-      @log = Factory.create(:log_s3_loaders)
+      @log = create(:log_s3_loaders)
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::S3Loaders')
     end
 

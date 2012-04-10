@@ -19,8 +19,6 @@ module MySublimeVideo
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    config.middleware.insert_before Rack::Lock, Rack::NoWWW
-
     require 'oauth/rack/oauth_filter'
     config.middleware.use OAuth::Rack::OAuthFilter
 

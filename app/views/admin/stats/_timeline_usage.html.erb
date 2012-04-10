@@ -36,4 +36,4 @@ graph = Graph.new do |g|
 end
 %>
 <br />
-<div id="timeline_usage" style="width: 100%; height: 400px;"><%= raw graph.draw(observe: request.xhr? ? false : "dom:loaded") %></div>
+<div id="timeline_usage" style="width: 100%; height: 400px;"><%= raw graph.draw(on_dom_ready: !request.xhr?) %></div>

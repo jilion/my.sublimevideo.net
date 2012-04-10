@@ -1,1 +1,0 @@
-* <span class="label improved">improved</span> More compatibility with existing CSS causing issues with elapsed time label.

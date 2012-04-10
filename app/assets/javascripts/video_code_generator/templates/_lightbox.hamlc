@@ -34,9 +34,5 @@
     %p
       %a.hl.reset{ href: "" } Reset to original size
 .spacer
--#.extra.checkbox_wrap
--#  - check = @thumbnail.get('magnifyingGlass')
--#  %input#thumb_magnifying_glass(checked=check){ type: "checkbox", name: "thumb_magnifying_glass" }
--#  %label{ for: "thumb_magnifying_glass" } Add a magnifying glass
 
 .big_break

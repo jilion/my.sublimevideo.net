@@ -4,7 +4,7 @@ describe Log::Voxcast do
 
   context "Factory build" do
     use_vcr_cassette "ogone/one_log"
-    subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
+    subject { build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
 
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
     its(:started_at) { should == Time.zone.at(1274773200).utc }
@@ -23,8 +23,8 @@ describe Log::Voxcast do
       use_vcr_cassette "ogone/one_saved_log"
 
       it "should validate uniqueness of name" do
-        Factory.create(:log_voxcast)
-        log = Factory.build(:log_voxcast)
+        create(:log_voxcast)
+        log = build(:log_voxcast)
         log.should_not be_valid
         log.should have(1).error_on(:name)
       end
@@ -33,7 +33,7 @@ describe Log::Voxcast do
 
   context "Factory create" do
     use_vcr_cassette "ogone/one_saved_log"
-    subject { Factory.create(:log_voxcast) }
+    subject { create(:log_voxcast) }
 
     its(:created_at) { should be_present }
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
@@ -75,7 +75,7 @@ describe Log::Voxcast do
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz'))
       }
     end
-    subject { Factory.create(:log_voxcast, :name => '4076.voxcdn.com.log.1279103340-1279103400.gz') }
+    subject { create(:log_voxcast, :name => '4076.voxcdn.com.log.1279103340-1279103400.gz') }
 
     its(:created_at) { should be_present }
     its(:hostname)   { should == '4076.voxcdn.com' }
@@ -247,8 +247,8 @@ describe Log::Voxcast do
       context "with already a log saved" do
         use_vcr_cassette "voxcast/next_log_ended_at"
         before(:each) do
-          Factory.create(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,29).to_i}-#{Time.utc(2011,7,7,9,30).to_i}.gz")
-          Factory.create(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,37).to_i}-#{Time.utc(2011,7,7,9,38).to_i}.gz")
+          create(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,29).to_i}-#{Time.utc(2011,7,7,9,30).to_i}.gz")
+          create(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,37).to_i}-#{Time.utc(2011,7,7,9,38).to_i}.gz")
         end
 
         it "should check the last log created if no last_log_ended_at is given" do
@@ -272,7 +272,7 @@ describe Log::Voxcast do
       before(:each) do
         log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
         VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
-        @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
+        @log = create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       end
 
       it "call parse_and_create_stats! and set stats_parsed_at" do
@@ -295,7 +295,7 @@ describe Log::Voxcast do
     before(:each) do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
       VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
-      @log = Factory.create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
+      @log = create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
     end
 
     describe "#parse_and_create_stats!" do
@@ -332,7 +332,7 @@ describe Log::Voxcast do
     end
 
     describe "minute / hour / day / month" do
-      subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz') }
+      subject { build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz') }
 
       its(:minute) { should eql Time.utc(2010, 9, 15, 11, 25) }
       its(:hour)   { should eql Time.utc(2010, 9, 15, 11) }

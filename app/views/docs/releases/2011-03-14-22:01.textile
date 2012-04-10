@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> Poster frame is not stretched anymore if its proportions don't match the video.
-* <span class="label fixed">fixed</span> Issue with zoomable videos when the poster frame path is missing or wrong.

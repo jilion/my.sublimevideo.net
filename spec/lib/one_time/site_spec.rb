@@ -5,9 +5,9 @@ describe OneTime::Site do
 
   describe ".regenerate_all_loaders_and_licenses" do
     before do
-      Factory.create(:site)
-      Factory.create(:site)
-      Factory.create(:site, state: 'archived')
+      create(:site)
+      create(:site)
+      create(:site, state: 'archived')
     end
 
     it "regenerates loader and license of all sites" do

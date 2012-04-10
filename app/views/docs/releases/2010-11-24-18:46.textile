@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Issue causing an initial flickering of the controls when autoplaying the video with our JavaScript API.

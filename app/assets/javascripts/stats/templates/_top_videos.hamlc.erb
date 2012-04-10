@@ -19,17 +19,17 @@
           %td.video
             .wrap
               - playClass = if MSVStats.period.isSeconds() then 'disabled' else 'active'
-              %a{ href: "#", onclick: "return false", class: "play #{playClass}", data-video-uid: video.id}
-                .crop{ id: "#{video.id}-crop", style: "width:96px; height:54px;" }
+              %a{ href: "#", onclick: "return false", class: "play #{playClass}", data-video-uid: video.cid}
+                .crop{ id: "#{video.cid}-crop", style: "width:96px; height:54px;" }
                   - unless MSVStats.period.isSeconds()
                     %span.overlay
-              - if $("##{video.id}-cache").size() > 0
+              - if $("##{video.cid}-cache").size() > 0
                 %script{ type: "text/javascript" }
-                  $("##{video.id}-crop").prepend($("##{video.id}-cache").clone());
+                  $("##{video.cid}-crop").prepend($("##{video.cid}-cache").clone());
               - else
                 - if video.get('p')?
                   %script{ type: "text/javascript" }
-                    new SublimeVideo.ImagePreloader("#{video.sslPosterframe()}", SublimeVideo.cropPosterframe, { "imgId": "#{video.id}" });
+                    new SublimeVideo.Media.ImagePreloader("#{video.sslPosterframe()}", SublimeVideo.cropPosterframe, { "imgId": "#{video.cid}" });
               .right
                 %h4{ title: video.name() }= video.name(22)
                 - if video.get('uo') == 's' || video.get('no') == 's'
@@ -53,7 +53,7 @@
           %td.loads= Highcharts.numberFormat(video.vlTotal(), 0)
           %td.plays= Highcharts.numberFormat(video.vvTotal(), 0)
           %td.period
-            .sparkline{ id: "sparkline_#{video.id}", style: "width:162px;height:44px" }
+            .sparkline{ id: "sparkline_#{video.cid}", style: "width:162px;height:44px" }
   - if @videos.limit == 5 && @videos.total > 5
     .expander
       %a.down#show_more{ href: "#", onclick: "return false" }

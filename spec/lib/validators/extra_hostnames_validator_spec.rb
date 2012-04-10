@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe ExtraHostnamesValidator do
-  subject { Factory.build(:new_site) }
+  subject { build(:new_site) }
 
   describe "valid extra hostnames" do
     it "should not add an error" do

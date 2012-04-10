@@ -1,2 +1,0 @@
-* <span class="label fixed">fixed</span> Issue with the latest release of Chrome 10 preventing the progress indicator from moving forward (HTML5 mode).
-* <span class="label fixed">fixed</span> Z-index issue when exiting full-window (Flash mode).

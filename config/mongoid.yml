@@ -9,7 +9,7 @@ test:
   preload_models: true
 
 staging:
-  database: sublimevideo-stats
+  database: 'sublimevideo-stats'
   username: backups
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
   host: sublimevideo.member0.mongolayer.com
@@ -17,6 +17,9 @@ staging:
   preload_models: true
   skip_version_check: true
   logger: false
+  op_timeout: 30
+  connect_timeout: 30
+  pool_size: 10
 
 production:
 <% if ARGV.join.include? 'assets:precompile' %>
@@ -30,7 +33,6 @@ production:
   password: <%= ENV['MONGOHQ_PASSWORD'] %>
   host: sublimevideo.member0.mongolayer.com
   port: 27017
-  # read: :secondary
   preload_models: true
   skip_version_check: true
   logger: false

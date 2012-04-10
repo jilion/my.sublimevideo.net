@@ -5,7 +5,7 @@ describe SiteModules::Api do
   describe "#to_api" do
     context "normal site" do
       before(:all) do
-        @site     = Factory.create(:site_not_in_trial, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', wildcard: true, path: 'test')
+        @site     = create(:site_not_in_trial, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', wildcard: true, path: 'test')
         @response = @site.as_api_response(:v1_private_self)
       end
       subject { @site }
@@ -30,7 +30,7 @@ describe SiteModules::Api do
 
     context "site without optional fields" do
       before(:all) do
-        @site     = Factory.create(:new_site, hostname: 'rymai.me', extra_hostnames: nil, wildcard: false, path: nil, plan_started_at: nil, plan_cycle_started_at: nil, plan_cycle_ended_at: nil)
+        @site     = create(:new_site, hostname: 'rymai.me', extra_hostnames: nil, wildcard: false, path: nil, plan_started_at: nil, plan_cycle_started_at: nil, plan_cycle_ended_at: nil)
         @site.update_attribute(:dev_hostnames, nil)
         @response = @site.as_api_response(:v1_private_self)
       end
@@ -58,10 +58,10 @@ describe SiteModules::Api do
   describe "#usage_to_api" do
     context "with no usage" do
       before(:each) do
-        @site        = Factory.create(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', wildcard: true, path: 'test')
-        @site_usage1 = Factory.create(:site_usage, site_id: @site.id, day: 61.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
-        @site_usage2 = Factory.create(:site_usage, site_id: @site.id, day: 59.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
-        @site_usage3 = Factory.create(:site_usage, site_id: @site.id, day: Time.now.utc.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
+        @site        = create(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', wildcard: true, path: 'test')
+        @site_usage1 = create(:site_usage, site_id: @site.id, day: 61.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
+        @site_usage2 = create(:site_usage, site_id: @site.id, day: 59.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
+        @site_usage3 = create(:site_usage, site_id: @site.id, day: Time.now.utc.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
         @response    = @site.as_api_response(:v1_private_usage)
       end
       subject { @site }

@@ -1,1 +1,0 @@
-* <span class="label new">new</span> Added _sv_force_fullscreen_ option (use it as a class in your @<video>@ element) to favor full-screen behavior over full-window whenever possible (works in both HTML5 and Flash modes).

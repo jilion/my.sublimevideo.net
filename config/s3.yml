@@ -1,16 +1,12 @@
 development:
   access_key_id:     AKIAJ2FJVCFJW3RZRUUQ
   secret_access_key: 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
-  cnamed:            false
 test:
   access_key_id:     AKIAJ2FJVCFJW3RZRUUQ
   secret_access_key: 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
-  cnamed:            false
 staging:
   access_key_id:     AKIAJ2FJVCFJW3RZRUUQ
   secret_access_key: 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
-  cnamed:            false
 production:
   access_key_id:     heroku_env
   secret_access_key: heroku_env
-  cnamed:            false

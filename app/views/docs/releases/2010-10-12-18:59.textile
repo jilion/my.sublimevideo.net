@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Issue on IE6 and IE7 when SublimeVideo is used along with Prototype JS.

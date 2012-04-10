@@ -118,11 +118,11 @@ private
 
   # after_create
   def delay_parse
-    self.class.delay(priority: 0).parse_log_for_stats(id)
-    self.class.delay(priority: 1, run_at: 5.seconds.from_now).parse_log_for_video_tags(id)
-    self.class.delay(priority: 2, run_at: 10.seconds.from_now).parse_log(id)
-    self.class.delay(priority: 3, run_at: 10.seconds.from_now).parse_log_for_user_agents(id)
-    self.class.delay(priority: 4, run_at: 10.seconds.from_now).parse_log_for_referrers(id)
+    self.class.delay(priority: 1).parse_log_for_stats(id)
+    self.class.delay(priority: 2, run_at: 5.seconds.from_now).parse_log_for_video_tags(id)
+    self.class.delay(priority: 3, run_at: 10.seconds.from_now).parse_log(id)
+    self.class.delay(priority: 4, run_at: 10.seconds.from_now).parse_log_for_user_agents(id)
+    self.class.delay(priority: 5, run_at: 10.seconds.from_now).parse_log_for_referrers(id)
   end
 
   # before_validation

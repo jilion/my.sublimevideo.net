@@ -1,0 +1,29 @@
+# The SitesStatus handle the polling of the first not up-to-date site.
+#
+class MySublimeVideo.UI.SitesStatus
+
+  constructor: (table) ->
+    @table    = table
+    @pusher   = new Pusher('<%= PusherConfig.key %>', encrypted: true)
+    @tokens   = []
+    @channels = {}
+    this.setInProgessTokens()
+    this.subscribeToPusherChannels()
+
+  setInProgessTokens: ->
+    @table.find("tr[id*='site']").each (i, element) =>
+      el = jQuery(element)
+      if el.find("td.status .in_progress").exists()
+        @tokens.push jQuery(element).data('site-token')
+
+  subscribeToPusherChannels: ->
+    _.each @tokens, (token) =>
+      @channels[token] = @pusher.subscribe("private-#{token}")
+      @channels[token].bind 'cdn_status', (data) =>
+        callback = => this.updateStatus(token, data)
+        setTimeout(callback, 5000)
+
+  updateStatus: (token, data) ->
+    tr = @table.find("tr[data-site-token*='#{token}']")
+    tr.find("td.status .in_progress").hide()
+    tr.find("td.status .completed").show()

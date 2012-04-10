@@ -5,7 +5,6 @@ group :frontend do
   guard :pow do
     watch('.rvmrc')
     watch(%r{^\.pow(rc|env)$})
-    # watch('Gemfile.lock')
     watch('config/boot.rb')
     watch('config/application.rb')
     watch('config/environment.rb')
@@ -16,13 +15,13 @@ group :frontend do
   guard :livereload, host: 'my.sublimevideo.dev' do
     watch(%r{app/views/.+\.(erb|haml)})
     watch(%r{app/helpers/.+\.rb})
-    watch(%r{public/.+\.(css|js|html)})
+    # watch(%r{public/.+\.(css|js|html)})
     watch(%r{(app|vendor)/assets/\w+/(.+\.(css|js|html)).*})  { |m| "/assets/#{m[2]}" }
     watch(%r{app/assets/\w+/(.+)\.hamlc.*})                   { |m| "/assets/#{m[1]}.js" }
     watch(%r{config/locales/.+\.yml})
   end
 
-  guard :jasmine, server: :none, jasmine_url: 'http://sublimevideo.dev/jasmine', all_on_start: false do
+  guard :jasmine, server: :none, jasmine_url: 'http://my.sublimevideo.dev/jasmine', all_on_start: false do
     watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
@@ -33,8 +32,6 @@ end
 group :backend do
 
   guard :spork, wait: 70 do
-    watch('Gemfile')
-    # watch('Gemfile.lock')
     watch('config/boot.rb')
     watch('config/application.rb')
     watch('config/environment.rb')
@@ -44,7 +41,6 @@ group :backend do
   end
 
   guard :rspec, version: 2, bundler: false, cli: "--color -f progress --drb", all_after_pass: false, all_on_start: false, keep_failed: false do
-    # watch('spec/spec_helper.rb')                                               { "spec" }
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }
     watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/#{m[1]}" }
@@ -57,8 +53,3 @@ group :backend do
   end
 
 end
-
-# guard :yard do
-#   watch(%r{^app/.+\.rb$})
-#   watch(%r{^lib/.+\.rb$})
-# end

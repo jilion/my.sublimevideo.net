@@ -1,1 +1,0 @@
-* <span class="label improved">improved</span> More compatibility with existing CSS (max-width and max-height properties).

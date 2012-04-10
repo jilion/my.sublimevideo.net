@@ -7,16 +7,16 @@ describe SiteModules::Invoice do
     describe ".send_trial_will_expire" do
       before(:all) do
         Site.delete_all
-        @user_without_cc    = Factory.create(:user_no_cc)
-        @user_with_cc       = Factory.create(:user)
-        @sites_not_in_trial = [Factory.create(:site, trial_started_at: BusinessModel.days_for_trial.days.ago)]
+        @user_without_cc    = create(:user_no_cc)
+        @user_with_cc       = create(:user)
+        @sites_not_in_trial = [create(:site, trial_started_at: BusinessModel.days_for_trial.days.ago)]
         @sites_in_trial     = []
 
         BusinessModel.days_before_trial_end.each do |days_before_trial_end|
-          @sites_not_in_trial << Factory.create(:site, user: @user_without_cc, state: 'archived', trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
-          @sites_not_in_trial << Factory.create(:site, user: @user_without_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago, first_paid_plan_started_at: 2.months.ago)
-          @sites_not_in_trial << Factory.create(:site, user: @user_with_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
-          @sites_in_trial << Factory.create(:site, user: @user_without_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
+          @sites_not_in_trial << create(:site, user: @user_without_cc, state: 'archived', trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
+          @sites_not_in_trial << create(:site, user: @user_without_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago, first_paid_plan_started_at: 2.months.ago)
+          @sites_not_in_trial << create(:site, user: @user_with_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
+          @sites_in_trial << create(:site, user: @user_without_cc, trial_started_at: (BusinessModel.days_for_trial - days_before_trial_end).days.ago)
         end
       end
 
@@ -41,10 +41,10 @@ describe SiteModules::Invoice do
     describe ".activate_or_downgrade_sites_leaving_trial" do
       before(:all) do
         Site.delete_all
-        @site_in_trial                = Factory.create(:site, trial_started_at: Time.now.tomorrow)
-        @site_not_in_trial_without_cc = Factory.create(:site, user: Factory.create(:user_no_cc))
-        @site_not_in_trial_with_cc_1  = Factory.create(:site)
-        @site_not_in_trial_with_cc_2  = Factory.create(:site)
+        @site_in_trial                = create(:site, trial_started_at: Time.now.tomorrow)
+        @site_not_in_trial_without_cc = create(:site, user: create(:user_no_cc))
+        @site_not_in_trial_with_cc_1  = create(:site)
+        @site_not_in_trial_with_cc_2  = create(:site)
         @site_not_in_trial_with_cc_2.update_attribute(:plan_id, @free_plan.id)
         @site_not_in_trial_with_cc_2.should be_in_free_plan
 
@@ -139,13 +139,13 @@ describe SiteModules::Invoice do
       before(:all) do
         Site.delete_all
         Timecop.travel(2.months.ago) do
-          @site_renewable = Factory.create(:site_with_invoice)
-          @site_renewable_with_downgrade_to_free_plan = Factory.create(:site_with_invoice)
+          @site_renewable = create(:site_with_invoice)
+          @site_renewable_with_downgrade_to_free_plan = create(:site_with_invoice)
           @site_renewable_with_downgrade_to_free_plan.update_attribute(:next_cycle_plan_id, @free_plan.id)
-          @site_renewable_with_downgrade_to_paid_plan = Factory.create(:site_with_invoice, plan_id: @custom_plan.token)
+          @site_renewable_with_downgrade_to_paid_plan = create(:site_with_invoice, plan_id: @custom_plan.token)
           @site_renewable_with_downgrade_to_paid_plan.update_attribute(:next_cycle_plan_id, @paid_plan.id)
         end
-        @site_not_renewable = Factory.create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+        @site_not_renewable = create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
 
         @site_renewable.invoices.paid.should have(1).item
         @site_renewable_with_downgrade_to_free_plan.invoices.paid.should have(1).item
@@ -209,7 +209,7 @@ describe SiteModules::Invoice do
 
     %w[trial_started_at first_paid_plan_started_at pending_plan_started_at pending_plan_cycle_started_at].each do |attr|
       describe "##{attr}=" do
-        subject { Factory.build(:new_site) }
+        subject { build(:new_site) }
 
         it "accepts nil" do
           subject.send("#{attr}=", nil)
@@ -226,7 +226,7 @@ describe SiteModules::Invoice do
     end
 
     describe "#pending_plan_cycle_ended_at=" do
-      subject { Factory.build(:new_site) }
+      subject { build(:new_site) }
 
       it "accepts nil" do
         subject.pending_plan_cycle_ended_at = nil
@@ -243,8 +243,8 @@ describe SiteModules::Invoice do
 
     describe "#invoices_failed?" do
       subject do
-        site = Factory.create(:site)
-        Factory.create(:invoice, site: site , state: 'failed')
+        site = create(:site)
+        create(:invoice, site: site , state: 'failed')
         site
       end
 
@@ -253,8 +253,8 @@ describe SiteModules::Invoice do
 
     describe "#invoices_waiting?" do
       subject do
-        site = Factory.create(:site)
-        Factory.create(:invoice, site: site , state: 'waiting')
+        site = create(:site)
+        create(:invoice, site: site , state: 'waiting')
         site
       end
 
@@ -263,20 +263,20 @@ describe SiteModules::Invoice do
 
     describe "#invoices_open?" do
       before(:all) do
-        @site = Factory.create(:site)
+        @site = create(:site)
       end
       before(:each) { Invoice.delete_all }
       subject { @site }
 
       context "with no options" do
         it "should be true if invoice have the renew flag == false" do
-          invoice = Factory.create(:invoice, state: 'open', site: @site, renew: false)
+          invoice = create(:invoice, state: 'open', site: @site, renew: false)
           invoice.renew.should be_false
           subject.invoices_open?.should be_true
         end
 
         it "should be true if invoice have the renew flag == true" do
-          invoice = Factory.create(:invoice, state: 'open', site: @site, renew: true)
+          invoice = create(:invoice, state: 'open', site: @site, renew: true)
           invoice.renew.should be_true
           subject.invoices_open?.should be_true
         end
@@ -284,32 +284,32 @@ describe SiteModules::Invoice do
     end
 
     describe "#in_free_plan?" do
-      subject { Factory.create(:site, plan_id: @free_plan.id) }
+      subject { create(:site, plan_id: @free_plan.id) }
 
       it { should be_in_free_plan }
     end # #in_free_plan?
 
     describe "#in_sponsored_plan?" do
-      subject { site = Factory.create(:site); site.sponsor!; site.reload }
+      subject { site = create(:site); site.sponsor!; site.reload }
 
       it { should be_in_sponsored_plan }
     end # #in_sponsored_plan?
 
     describe "#in_paid_plan?" do
       context "standard plan" do
-        subject { Factory.create(:site, plan_id: @paid_plan.id) }
+        subject { create(:site, plan_id: @paid_plan.id) }
         it { should be_in_paid_plan }
       end
 
       context "custom plan" do
-        subject { Factory.create(:site, plan_id: @custom_plan.token) }
+        subject { create(:site, plan_id: @custom_plan.token) }
         it { should be_in_paid_plan }
       end
     end # #in_paid_plan?
 
     describe "#prepare_activation" do
       context "site in trial" do
-        subject { Factory.build(:site) }
+        subject { build(:site) }
 
         it "sets first_paid_plan_started_at" do
           subject.first_paid_plan_started_at.should be_nil
@@ -321,7 +321,7 @@ describe SiteModules::Invoice do
       end
 
       context "site not in trial anymore" do
-        subject { Factory.create(:site_with_invoice) }
+        subject { create(:site_with_invoice) }
 
         it "doesn't reset first_paid_plan_started_at" do
           subject.first_paid_plan_started_at.should be_present
@@ -336,7 +336,7 @@ describe SiteModules::Invoice do
 
     describe "#prepare_trial_skipping" do
       context "site in trial" do
-        subject { Factory.build(:new_site) }
+        subject { build(:new_site) }
 
         it "sets trial_started_at at a date that kills it immediately" do
           subject.trial_started_at.should be_nil
@@ -357,7 +357,7 @@ describe SiteModules::Invoice do
       end
 
       context "site not in trial anymore" do
-        subject { Factory.create(:site_with_invoice, trial_started_at: 30.days.ago) }
+        subject { create(:site_with_invoice, trial_started_at: 30.days.ago) }
 
         it "resets trial_started_at" do
           subject.trial_started_at.should be_present
@@ -380,7 +380,7 @@ describe SiteModules::Invoice do
     end
 
     describe "#instant_charging?" do
-      subject { Factory.create(:site) }
+      subject { create(:site) }
 
       specify do
         subject.instance_variable_set("@instant_charging", false)
@@ -396,26 +396,26 @@ describe SiteModules::Invoice do
     describe "#will_be_in_free_plan?" do
 
       context "site in free plan" do
-        subject { Factory.create(:site, plan_id: @free_plan.id) }
+        subject { create(:site, plan_id: @free_plan.id) }
 
         it { should_not be_will_be_in_free_plan }
       end
 
       context "site in paid plan" do
-        subject { Factory.create(:site, plan_id: @paid_plan.id) }
+        subject { create(:site, plan_id: @paid_plan.id) }
 
         it { should_not be_will_be_in_free_plan }
       end
 
       context "site in build free plan" do
-        subject { Factory.build(:new_site, plan_id: @free_plan.id) }
+        subject { build(:new_site, plan_id: @free_plan.id) }
 
         it { should be_will_be_in_free_plan }
       end
 
       context "site is paid and updated to free" do
         before(:each) do
-          @site = Factory.create(:site, plan_id: @paid_plan.id)
+          @site = create(:site, plan_id: @paid_plan.id)
           @site.plan_id = @free_plan.id
         end
         subject { @site }
@@ -426,14 +426,14 @@ describe SiteModules::Invoice do
 
     describe "#will_be_in_paid_plan?" do
       context "site in paid plan" do
-        subject { Factory.create(:site, plan_id: @paid_plan.id) }
+        subject { create(:site, plan_id: @paid_plan.id) }
 
         it { should_not be_will_be_in_paid_plan }
       end
 
       context "site is free and updated to paid" do
         before(:each) do
-          @site = Factory.create(:site, plan_id: @free_plan.id)
+          @site = create(:site, plan_id: @free_plan.id)
           @site.plan_id = @paid_plan.id
         end
         subject { @site }
@@ -443,8 +443,8 @@ describe SiteModules::Invoice do
 
       context "site is paid and updated to paid" do
         before(:each) do
-          @site = Factory.create(:site, plan_id: @paid_plan.id)
-          @new_plan = Factory.create(:plan, price: @paid_plan.price + 1000)
+          @site = create(:site, plan_id: @paid_plan.id)
+          @new_plan = create(:plan, price: @paid_plan.price + 1000)
           @site.plan_id = @new_plan.id
         end
         subject { @site }
@@ -455,7 +455,7 @@ describe SiteModules::Invoice do
 
       context "site is paid and updated to free" do
         before(:each) do
-          @site = Factory.create(:site, plan_id: @paid_plan.id)
+          @site = create(:site, plan_id: @paid_plan.id)
           @site.plan_id = @free_plan.id
         end
         subject { @site }
@@ -466,14 +466,14 @@ describe SiteModules::Invoice do
 
     describe "#in_or_will_be_in_paid_plan?" do
       context "site in paid plan" do
-        subject { Factory.create(:site, plan_id: @paid_plan.id) }
+        subject { create(:site, plan_id: @paid_plan.id) }
 
         it { should be_in_or_will_be_in_paid_plan }
       end
 
       context "site is free and updated to paid" do
         before(:each) do
-          @site = Factory.create(:site, plan_id: @free_plan.id)
+          @site = create(:site, plan_id: @free_plan.id)
           @site.plan_id = @paid_plan.id
         end
         subject { @site }
@@ -483,7 +483,7 @@ describe SiteModules::Invoice do
 
       context "site is paid is now paid" do
         before(:each) do
-          @site = Factory.create(:site, plan_id: @paid_plan.id)
+          @site = create(:site, plan_id: @paid_plan.id)
           @site.plan_id = @free_plan.id
         end
         subject { @site }
@@ -495,11 +495,11 @@ describe SiteModules::Invoice do
     describe "#in_trial?" do
       before(:all) do
         Site.delete_all
-        @site_in_trial1 = Factory.build(:site)
-        @site_in_trial2 = Factory.create(:site)
-        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = Factory.create(:site) }
-        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial1 = Factory.create(:site, plan_id: @free_plan.id) }
-        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial2 = Factory.create(:site) }
+        @site_in_trial1 = build(:site)
+        @site_in_trial2 = create(:site)
+        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = create(:site) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial1 = create(:site, plan_id: @free_plan.id) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial2 = create(:site) }
       end
 
       specify { @site_in_trial1.should be_in_trial }
@@ -512,11 +512,11 @@ describe SiteModules::Invoice do
     describe "#trial_ended?" do
       before(:all) do
         Site.delete_all
-        @site_in_trial1 = Factory.build(:site)
-        @site_in_trial2 = Factory.create(:site)
-        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = Factory.create(:site) }
-        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_in_trial4 = Factory.create(:site, plan_id: @free_plan.id) }
-        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial = Factory.create(:site) }
+        @site_in_trial1 = build(:site)
+        @site_in_trial2 = create(:site)
+        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = create(:site) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_in_trial4 = create(:site, plan_id: @free_plan.id) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial = create(:site) }
       end
 
       specify { @site_in_trial1.should_not be_trial_ended }
@@ -529,11 +529,11 @@ describe SiteModules::Invoice do
     describe "#trial_not_started_or_in_trial?" do
       before(:all) do
         Site.delete_all
-        @site_in_trial1 = Factory.build(:site)
-        @site_in_trial2 = Factory.create(:site)
-        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = Factory.create(:site) }
-        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_in_trial4 = Factory.create(:site, plan_id: @free_plan.id) }
-        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial = Factory.create(:site) }
+        @site_in_trial1 = build(:site)
+        @site_in_trial2 = create(:site)
+        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = create(:site) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_in_trial4 = create(:site, plan_id: @free_plan.id) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial = create(:site) }
       end
 
       specify { @site_in_trial1.should be_trial_not_started_or_in_trial }
@@ -546,9 +546,9 @@ describe SiteModules::Invoice do
     describe "#refunded?" do
       before(:all) do
         Site.delete_all
-        @site_refunded1     = Factory.create(:site, state: 'archived', refunded_at: Time.now.utc)
-        @site_not_refunded1 = Factory.create(:site, state: 'active', refunded_at: Time.now.utc)
-        @site_not_refunded2 = Factory.create(:site, state: 'archived', refunded_at: nil)
+        @site_refunded1     = create(:site, state: 'archived', refunded_at: Time.now.utc)
+        @site_not_refunded1 = create(:site, state: 'active', refunded_at: Time.now.utc)
+        @site_not_refunded2 = create(:site, state: 'archived', refunded_at: nil)
       end
 
       specify { @site_refunded1.should be_refunded }
@@ -558,7 +558,7 @@ describe SiteModules::Invoice do
 
     describe "#last_paid_invoice" do
       context "with the last paid invoice not refunded" do
-        subject { Factory.create(:site_with_invoice, plan_id: @paid_plan.id) }
+        subject { create(:site_with_invoice, plan_id: @paid_plan.id) }
 
         it "should return the last paid invoice" do
           subject.last_paid_invoice.should == subject.invoices.paid.last
@@ -567,7 +567,7 @@ describe SiteModules::Invoice do
 
       context "with the last paid invoice refunded" do
         before(:all) do
-          @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id)
+          @site = create(:site_with_invoice, plan_id: @paid_plan.id)
           @site.update_attribute(:refunded_at, Time.now.utc)
         end
         subject { @site.reload }
@@ -581,16 +581,16 @@ describe SiteModules::Invoice do
 
     describe "#last_paid_plan" do
       context "site with no invoice" do
-        subject { Factory.create(:site, plan_id: @free_plan.id) }
+        subject { create(:site, plan_id: @free_plan.id) }
 
         its(:last_paid_plan) { should be_nil }
       end
 
       context "site with at least one paid invoice" do
         before(:all) do
-          @plan1 = Factory.create(:plan, price: 10_000)
-          @plan2 = Factory.create(:plan, price: 5_000)
-          @site  = Factory.create(:site_with_invoice, plan_id: @plan1.id)
+          @plan1 = create(:plan, price: 10_000)
+          @plan2 = create(:plan, price: 5_000)
+          @site  = create(:site_with_invoice, plan_id: @plan1.id)
           @site.plan_id = @plan2.id
         end
         subject { @site }
@@ -603,16 +603,16 @@ describe SiteModules::Invoice do
 
     describe "#last_paid_plan_price" do
       context "site with no invoice" do
-        subject { Factory.create(:site, plan_id: @free_plan.id) }
+        subject { create(:site, plan_id: @free_plan.id) }
 
         its(:last_paid_plan_price) { should eq 0 }
       end
 
       context "site with at least one paid invoice" do
         before(:all) do
-          @plan1 = Factory.create(:plan, price: 10_000)
-          @plan2 = Factory.create(:plan, price: 5_000)
-          @site  = Factory.create(:site_with_invoice, plan_id: @plan1.id)
+          @plan1 = create(:plan, price: 10_000)
+          @plan2 = create(:plan, price: 5_000)
+          @site  = create(:site_with_invoice, plan_id: @plan1.id)
           @site.plan_id = @plan2.id
         end
         subject { @site }
@@ -629,7 +629,7 @@ describe SiteModules::Invoice do
       end
 
       context "with free plan" do
-        before(:all) { @site = Factory.create(:site, plan_id: @free_plan.id) }
+        before(:all) { @site = create(:site, plan_id: @free_plan.id) }
         subject { @site }
 
         its(:plan_month_cycle_started_at) { should eq (1.month - 1.day).ago.midnight }
@@ -637,7 +637,7 @@ describe SiteModules::Invoice do
       end
 
       context "with monthly plan in trial" do
-        before(:all) { @site = Factory.create(:site) }
+        before(:all) { @site = create(:site) }
         subject { @site }
 
         its(:plan_month_cycle_started_at) { should eq (1.month - 1.day).ago.midnight }
@@ -645,7 +645,7 @@ describe SiteModules::Invoice do
       end
 
       context "with monthly plan" do
-        before(:all) { @site = Factory.create(:site_not_in_trial) }
+        before(:all) { @site = create(:site_not_in_trial) }
         subject { @site }
 
         its(:plan_month_cycle_started_at)     { should eq Time.now.utc.midnight }
@@ -653,10 +653,10 @@ describe SiteModules::Invoice do
       end
 
       context "with yearly plan" do
-        before(:all) { @yearly_plan = Factory.create(:plan, cycle: 'year') }
+        before(:all) { @yearly_plan = create(:plan, cycle: 'year') }
 
         describe "before the first month" do
-          before(:all) { @site = Factory.create(:site_not_in_trial, plan_id: @yearly_plan.id) }
+          before(:all) { @site = create(:site_not_in_trial, plan_id: @yearly_plan.id) }
           subject { @site }
 
           its(:plan_month_cycle_started_at) { should eq Time.now.utc.midnight }
@@ -665,7 +665,7 @@ describe SiteModules::Invoice do
 
         describe "after the first month" do
           before(:all) do
-            Timecop.travel(35.days.ago) { @site = Factory.create(:site_not_in_trial, plan_id: @yearly_plan.id) }
+            Timecop.travel(35.days.ago) { @site = create(:site_not_in_trial, plan_id: @yearly_plan.id) }
           end
           subject { @site }
 
@@ -678,8 +678,8 @@ describe SiteModules::Invoice do
     describe "#trial_end" do
       before(:all) do
         Site.delete_all
-        @site_not_in_trial = Factory.create(:site, plan_id: @free_plan.id)
-        @site_in_trial = Factory.create(:site)
+        @site_not_in_trial = create(:site, plan_id: @free_plan.id)
+        @site_in_trial = create(:site)
       end
 
       specify { @site_not_in_trial.trial_end.should be_nil }
@@ -689,8 +689,8 @@ describe SiteModules::Invoice do
     describe "#trial_expires_on & #trial_expires_in_less_than_or_equal_to" do
       before(:all) do
         Site.delete_all
-        @site_not_in_trial = Factory.create(:site, plan_id: @free_plan.id)
-        @site_in_trial = Factory.create(:site)
+        @site_not_in_trial = create(:site, plan_id: @free_plan.id)
+        @site_in_trial = create(:site)
       end
 
       specify { @site_in_trial.trial_expires_on(BusinessModel.days_for_trial.days.from_now).should be_true }
@@ -701,16 +701,16 @@ describe SiteModules::Invoice do
 
     describe "#prepare_pending_attributes" do
       before(:all) do
-        @paid_plan         = Factory.create(:plan, cycle: "month", price: 1000)
-        @paid_plan2        = Factory.create(:plan, cycle: "month", price: 5000)
-        @paid_plan_yearly  = Factory.create(:plan, cycle: "year",  price: 10000)
-        @paid_plan_yearly2 = Factory.create(:plan, cycle: "year",  price: 50000)
+        @paid_plan         = create(:plan, cycle: "month", price: 1000)
+        @paid_plan2        = create(:plan, cycle: "month", price: 5000)
+        @paid_plan_yearly  = create(:plan, cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = create(:plan, cycle: "year",  price: 50000)
       end
 
       describe "new site" do
         context "with free plan" do
           before(:all) do
-            @site = Factory.build(:new_site, plan_id: @free_plan.id)
+            @site = build(:new_site, plan_id: @free_plan.id)
             @site.prepare_pending_attributes
           end
           subject { @site }
@@ -727,7 +727,7 @@ describe SiteModules::Invoice do
         context "with monthly paid plan" do
           context "in trial" do
             before(:all) do
-              @site = Factory.build(:new_site, plan_id: @paid_plan.id)
+              @site = build(:new_site, plan_id: @paid_plan.id)
               @site.prepare_pending_attributes
             end
             subject { @site }
@@ -744,7 +744,7 @@ describe SiteModules::Invoice do
 
           context "in trial with skip_trial == '0'" do
             before(:all) do
-              @site = Factory.build(:new_site, plan_id: @paid_plan.id, skip_trial: '0')
+              @site = build(:new_site, plan_id: @paid_plan.id, skip_trial: '0')
               @site.prepare_pending_attributes
             end
             subject { @site }
@@ -761,7 +761,7 @@ describe SiteModules::Invoice do
 
           context "in trial with skip_trial == '1'" do
             before(:all) do
-              @site = Factory.build(:new_site, plan_id: @paid_plan.id, skip_trial: '1')
+              @site = build(:new_site, plan_id: @paid_plan.id, skip_trial: '1')
               @site.prepare_pending_attributes
             end
             subject { @site }
@@ -781,7 +781,7 @@ describe SiteModules::Invoice do
 
           context "in trial with skip_trial == 1" do
             before(:all) do
-              @site = Factory.build(:new_site, plan_id: @paid_plan.id, skip_trial: 1)
+              @site = build(:new_site, plan_id: @paid_plan.id, skip_trial: 1)
               @site.prepare_pending_attributes
             end
             subject { @site }
@@ -801,7 +801,7 @@ describe SiteModules::Invoice do
           context "not in trial" do
             before(:all) do
               Timecop.travel(Time.utc(2011,1,30)) do
-                @site = Factory.build(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+                @site = build(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
                 @site.first_paid_plan_started_at = Time.now.utc
                 @site.prepare_pending_attributes
               end
@@ -821,7 +821,7 @@ describe SiteModules::Invoice do
         context "with yearly paid plan" do
           context "in trial" do
             before(:all) do
-              @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id)
+              @site = build(:new_site, plan_id: @paid_plan_yearly.id)
               @site.prepare_pending_attributes
             end
             subject { @site }
@@ -838,7 +838,7 @@ describe SiteModules::Invoice do
           context "not in trial" do
             before(:all) do
               Timecop.travel(Time.utc(2011,1,30)) do
-                @site = Factory.create(:new_site, plan_id: @paid_plan_yearly.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+                @site = create(:new_site, plan_id: @paid_plan_yearly.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
                 @site.first_paid_plan_started_at = Time.now.utc
                 @site.prepare_pending_attributes
               end
@@ -860,7 +860,7 @@ describe SiteModules::Invoice do
         context "from free plan to paid plan" do
           context "in trial" do
             before(:all) do
-              @site = Factory.create(:site, plan_id: @free_plan.id)
+              @site = create(:site, plan_id: @free_plan.id)
               @site.apply_pending_attributes
               @site.reload.plan_id = @paid_plan.id # upgrade
               Timecop.travel((BusinessModel.days_for_trial-1).days.from_now) { @site.prepare_pending_attributes }
@@ -879,7 +879,7 @@ describe SiteModules::Invoice do
 
           context "in trial with skip_trial == '1'" do
             before(:all) do
-              @site = Factory.create(:site, plan_id: @free_plan.id)
+              @site = create(:site, plan_id: @free_plan.id)
               @site.apply_pending_attributes
               @site.reload.plan_id = @paid_plan.id # upgrade
               @site.skip_trial = '1'
@@ -899,7 +899,7 @@ describe SiteModules::Invoice do
 
           context "not in trial" do
             before(:all) do
-              @site = Factory.create(:site_not_in_trial, plan_id: @free_plan.id, first_paid_plan_started_at: Time.now.utc)
+              @site = create(:site_not_in_trial, plan_id: @free_plan.id, first_paid_plan_started_at: Time.now.utc)
 
               Timecop.travel(2.months.from_now) do
                 @site.prepare_pending_attributes
@@ -925,7 +925,7 @@ describe SiteModules::Invoice do
         context "from paid plan to paid plan" do
           context "in trial" do
             before(:all) do
-              @site = Factory.create(:site, plan_id: @paid_plan.id)
+              @site = create(:site, plan_id: @paid_plan.id)
               @site.reload.plan_id = @paid_plan2.id # upgrade
               Timecop.travel((BusinessModel.days_for_trial-1).days.from_now) { @site.prepare_pending_attributes }
             end
@@ -943,7 +943,7 @@ describe SiteModules::Invoice do
 
           context "not in trial" do
             before(:all) do
-              @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id)
+              @site = create(:site_with_invoice, plan_id: @paid_plan.id)
               Timecop.travel(2.months.from_now) do
                 @site.prepare_pending_attributes
                 @site.apply_pending_attributes
@@ -969,7 +969,7 @@ describe SiteModules::Invoice do
       describe "renew site" do
         context "without downgrade" do
           before(:all) do
-            @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id)
+            @site = create(:site_with_invoice, plan_id: @paid_plan.id)
 
             Timecop.travel(2.months.from_now) do
               @site.prepare_pending_attributes
@@ -990,7 +990,7 @@ describe SiteModules::Invoice do
         context "with downgrade" do
           context "from paid plan to free plan but during the pending cycle" do
             before(:all) do
-              @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id)
+              @site = create(:site_with_invoice, plan_id: @paid_plan.id)
 
               Timecop.travel(2.months.from_now) do
                 @site.prepare_pending_attributes
@@ -1014,7 +1014,7 @@ describe SiteModules::Invoice do
 
           context "from paid plan to free plan" do
             before(:all) do
-              @site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id)
+              @site = create(:site_with_invoice, plan_id: @paid_plan.id)
 
               Timecop.travel(2.months.from_now) do
                 @site.plan_id = @free_plan.id
@@ -1035,7 +1035,7 @@ describe SiteModules::Invoice do
 
           context "from paid plan to free plan but during the pending cycle" do
             before(:all) do
-              @site = Factory.create(:site_with_invoice, plan_id: @paid_plan2.id)
+              @site = create(:site_with_invoice, plan_id: @paid_plan2.id)
 
               Timecop.travel(2.months.from_now) do
                 @site.prepare_pending_attributes
@@ -1059,7 +1059,7 @@ describe SiteModules::Invoice do
 
           context "from paid plan to paid plan" do
             before(:all) do
-              @site = Factory.create(:site_with_invoice, plan_id: @paid_plan2.id)
+              @site = create(:site_with_invoice, plan_id: @paid_plan2.id)
 
               Timecop.travel(2.months.from_now) do
                 @site.plan_id = @paid_plan.id
@@ -1083,7 +1083,7 @@ describe SiteModules::Invoice do
 
     describe "#apply_pending_attributes" do
       before(:all) do
-        @site = Factory.create(:site, plan_id: @free_plan.id)
+        @site = create(:site, plan_id: @free_plan.id)
         @site = Site.find(@site) # hard reset to plan association cache
         @site.pending_plan_id                           = @paid_plan.id
         @site.pending_plan_started_at                   = Time.utc(2012,12,21)
@@ -1114,13 +1114,13 @@ describe SiteModules::Invoice do
 
     describe "#advance_for_next_cycle_end" do
       before(:all) do
-        @site = Factory.build(:new_site, plan_id: @paid_plan.id)
+        @site = build(:new_site, plan_id: @paid_plan.id)
         @site.prepare_pending_attributes
         @site.apply_pending_attributes
       end
 
       context "with a monthly plan" do
-        before(:all) { @plan = Factory.create(:plan, cycle: "month") }
+        before(:all) { @plan = create(:plan, cycle: "month") }
 
         context "when now is less than 1 month after site.plan_started_at" do
           it "should return 0 year + 1 month in advance - 1 day" do
@@ -1150,7 +1150,7 @@ describe SiteModules::Invoice do
       end
 
       context "with a yearly plan" do
-        before(:all) { @plan = Factory.create(:plan, cycle: "year") }
+        before(:all) { @plan = create(:plan, cycle: "year") }
 
         context "when now is less than 1 yearly after site.plan_started_at" do
           it "should return 12 months in advance - 1 day" do
@@ -1173,17 +1173,17 @@ describe SiteModules::Invoice do
     end # #advance_for_next_cycle_end
 
     describe "#activated?" do
-      it { Factory.build(:site_not_in_trial, plan_id: @free_plan.id).should_not be_activated }
-      it { Factory.build(:site_not_in_trial, plan_id: @paid_plan.id).should_not be_activated }
+      it { build(:site_not_in_trial, plan_id: @free_plan.id).should_not be_activated }
+      it { build(:site_not_in_trial, plan_id: @paid_plan.id).should_not be_activated }
       it do
-        site = Factory.build(:site_not_in_trial)
+        site = build(:site_not_in_trial)
         site.sponsor!
         site.should_not be_activated
       end
 
       describe "activation" do
         subject do
-          site = Factory.build(:site_not_in_trial)
+          site = build(:site_not_in_trial)
           site.first_paid_plan_started_at = Time.now.utc
           site
         end
@@ -1193,17 +1193,17 @@ describe SiteModules::Invoice do
     end
 
     describe "#upgraded?" do
-      it { Factory.build(:site_not_in_trial, plan_id: @free_plan.id).should_not be_upgraded }
-      it { Factory.build(:site_not_in_trial, plan_id: @paid_plan.id).should_not be_upgraded }
+      it { build(:site_not_in_trial, plan_id: @free_plan.id).should_not be_upgraded }
+      it { build(:site_not_in_trial, plan_id: @paid_plan.id).should_not be_upgraded }
       it do
-        site = Factory.build(:site_not_in_trial)
+        site = build(:site_not_in_trial)
         site.sponsor!
         site.should_not be_upgraded
       end
 
       describe "activation" do
         subject do
-          site = Factory.build(:site_not_in_trial)
+          site = build(:site_not_in_trial)
           site.first_paid_plan_started_at = Time.now.utc
           site
         end
@@ -1213,7 +1213,7 @@ describe SiteModules::Invoice do
 
       describe "normal renew" do
         subject do
-          site = Factory.build(:site_not_in_trial)
+          site = build(:site_not_in_trial)
           site.pending_plan_cycle_started_at = Time.now.utc
           site
         end
@@ -1223,7 +1223,7 @@ describe SiteModules::Invoice do
 
       describe "downgrade" do
         subject do
-          site = Factory.build(:site_not_in_trial, plan_id: @custom_plan.token)
+          site = build(:site_not_in_trial, plan_id: @custom_plan.token)
           site.plan_id = @paid_plan.id
           site.pending_plan_cycle_started_at = Time.now.utc
           site
@@ -1234,7 +1234,7 @@ describe SiteModules::Invoice do
 
       describe "upgrade" do
         subject do
-          site = Factory.build(:site_not_in_trial, plan_id: @paid_plan.id)
+          site = build(:site_not_in_trial, plan_id: @paid_plan.id)
           site.plan_id = @custom_plan.token
           site
         end
@@ -1244,17 +1244,17 @@ describe SiteModules::Invoice do
     end
 
     describe "#renewed?" do
-      it { Factory.build(:site_not_in_trial, plan_id: @free_plan.id).should_not be_renewed }
-      it { Factory.build(:site_not_in_trial, plan_id: @paid_plan.id).should_not be_renewed }
+      it { build(:site_not_in_trial, plan_id: @free_plan.id).should_not be_renewed }
+      it { build(:site_not_in_trial, plan_id: @paid_plan.id).should_not be_renewed }
       it do
-        site = Factory.build(:site_not_in_trial)
+        site = build(:site_not_in_trial)
         site.sponsor!
         site.should_not be_renewed
       end
 
       describe "activation" do
         subject do
-          site = Factory.build(:site_not_in_trial)
+          site = build(:site_not_in_trial)
           site.first_paid_plan_started_at    = Time.now.utc
           site.pending_plan_cycle_started_at = Time.now.utc
           site
@@ -1265,7 +1265,7 @@ describe SiteModules::Invoice do
 
       describe "no plan change but pending_plan_cycle_started_at is set to nil" do
         subject do
-          site = Factory.create(:site_not_in_trial, plan_id: @custom_plan.token)
+          site = create(:site_not_in_trial, plan_id: @custom_plan.token)
           site.update_attribute(:pending_plan_cycle_started_at, Time.now.utc)
           site.pending_plan_cycle_started_at = nil
           site
@@ -1276,7 +1276,7 @@ describe SiteModules::Invoice do
 
       describe "normal renew" do
         subject do
-          site = Factory.build(:site_not_in_trial, plan_id: @custom_plan.token)
+          site = build(:site_not_in_trial, plan_id: @custom_plan.token)
           site.pending_plan_cycle_started_at = Time.now.utc
           site
         end
@@ -1286,7 +1286,7 @@ describe SiteModules::Invoice do
 
       describe "downgrade" do
         subject do
-          site = Factory.build(:site_not_in_trial, plan_id: @custom_plan.token)
+          site = build(:site_not_in_trial, plan_id: @custom_plan.token)
           site.plan_id = @paid_plan.id
           site.pending_plan_cycle_started_at = Time.now.utc
           site
@@ -1297,7 +1297,7 @@ describe SiteModules::Invoice do
 
       describe "upgrade" do
         subject do
-          site = Factory.build(:site_not_in_trial, plan_id: @paid_plan.id)
+          site = build(:site_not_in_trial, plan_id: @paid_plan.id)
           site.plan_id = @custom_plan.token
           site.pending_plan_cycle_started_at = Time.now.utc
           site
@@ -1309,15 +1309,15 @@ describe SiteModules::Invoice do
 
     describe "#create_and_charge_invoice" do
       before(:all) do
-        @paid_plan         = Factory.create(:plan, cycle: "month", price: 1000)
-        @paid_plan2        = Factory.create(:plan, cycle: "month", price: 5000)
-        @paid_plan_yearly  = Factory.create(:plan, cycle: "year",  price: 10000)
-        @paid_plan_yearly2 = Factory.create(:plan, cycle: "year",  price: 50000)
+        @paid_plan         = create(:plan, cycle: "month", price: 1000)
+        @paid_plan2        = create(:plan, cycle: "month", price: 5000)
+        @paid_plan_yearly  = create(:plan, cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = create(:plan, cycle: "year",  price: 50000)
       end
 
       context "site in free plan" do
         context "on creation" do
-          before(:each) { @site = Factory.build(:new_site, plan_id: @free_plan.id) }
+          before(:each) { @site = build(:new_site, plan_id: @free_plan.id) }
           subject { @site }
 
           it "doesn't create an invoice" do
@@ -1327,7 +1327,7 @@ describe SiteModules::Invoice do
         end
 
         context "on a saved record" do
-          before(:all) { @site = Factory.create(:site, plan_id: @free_plan.id) }
+          before(:all) { @site = create(:site, plan_id: @free_plan.id) }
 
           describe "save with no changes" do
             subject { @site.reload }
@@ -1371,7 +1371,7 @@ describe SiteModules::Invoice do
 
       context "site in paid plan" do
         context "on creation" do
-          before(:each) { @site = Factory.build(:site, plan_id: @paid_plan2.id) }
+          before(:each) { @site = build(:site, plan_id: @paid_plan2.id) }
           subject { @site }
 
           it "doesn't create an invoice" do
@@ -1388,7 +1388,7 @@ describe SiteModules::Invoice do
 
           context "in trial" do
             before(:all) do
-              @site = Factory.create(:site, plan_id: @paid_plan2.id)
+              @site = create(:site, plan_id: @paid_plan2.id)
             end
             before(:each) { subject.should be_trial_not_started_or_in_trial }
 
@@ -1417,7 +1417,7 @@ describe SiteModules::Invoice do
 
           context "not in trial, during first cycle" do
             before(:all) do
-              @site = Factory.create(:site_with_invoice, plan_id: @paid_plan2.id)
+              @site = create(:site_with_invoice, plan_id: @paid_plan2.id)
             end
 
             describe "save with no changes" do
@@ -1438,7 +1438,7 @@ describe SiteModules::Invoice do
 
           context "not in trial, during second cycle" do
             before(:all) do
-              @site = Factory.create(:site_with_invoice, plan_id: @paid_plan2.id, first_paid_plan_started_at: Time.now.utc)
+              @site = create(:site_with_invoice, plan_id: @paid_plan2.id, first_paid_plan_started_at: Time.now.utc)
             end
             before(:each) do
               Timecop.travel(45.days.from_now)
@@ -1454,7 +1454,7 @@ describe SiteModules::Invoice do
 
             describe "upgrade" do
               before(:all) do
-                @site = Factory.create(:site_with_invoice, plan_id: @paid_plan2.id)
+                @site = create(:site_with_invoice, plan_id: @paid_plan2.id)
               end
               subject do
                 @site.reload
@@ -1504,7 +1504,7 @@ describe SiteModules::Invoice do
     end # #create_and_charge_invoice
 
     describe "#months_since" do
-      before(:all) { @site = Factory.create(:site) }
+      before(:all) { @site = create(:site) }
 
       context "with plan_started_at 2011,1,1" do
         before(:all) { @site.plan_started_at = Time.utc(2011,1,1) }
@@ -1547,7 +1547,7 @@ describe SiteModules::Invoice do
     end
 
     describe "#days_since" do
-      before(:all) { @site = Factory.create(:site) }
+      before(:all) { @site = create(:site) }
 
       context "with first_paid_plan_started_at 2011,1,1" do
         before(:all) { @site.first_paid_plan_started_at = Time.utc(2011,1,1) }
@@ -1566,17 +1566,17 @@ describe SiteModules::Invoice do
 
     describe "#set_trial_started_at" do
       it "set if site created with free plan" do
-        site = Factory.create(:site, plan_id: @free_plan.id)
+        site = create(:site, plan_id: @free_plan.id)
         site.trial_started_at.should be_nil
       end
 
       it "set if site created with paid plan" do
-        site = Factory.create(:site, plan_id: @paid_plan.id)
+        site = create(:site, plan_id: @paid_plan.id)
         site.trial_started_at.should be_present
       end
 
       it "not reset on downgrade" do
-        site = Factory.create(:site, plan_id: @paid_plan.id)
+        site = create(:site, plan_id: @paid_plan.id)
         site.trial_started_at.should be_present
 
         first_trial_started_at = site.trial_started_at
@@ -1585,8 +1585,8 @@ describe SiteModules::Invoice do
       end
 
       it "not reset on upgrade" do
-        @foo_plan = Factory.create(:plan, name: "premium", video_views: 1_000_000)
-        site = Factory.create(:site_with_invoice, plan_id: @paid_plan.id)
+        @foo_plan = create(:plan, name: "premium", video_views: 1_000_000)
+        site = create(:site_with_invoice, plan_id: @paid_plan.id)
         site.trial_started_at.should be_present
 
         first_trial_started_at = site.trial_started_at
@@ -1595,7 +1595,7 @@ describe SiteModules::Invoice do
       end
 
       it "not reset if site created with paid plan and downgraded to free plan and reupgraded to paid plan" do
-        site = Factory.create(:site, plan_id: @paid_plan.id)
+        site = create(:site, plan_id: @paid_plan.id)
         site.trial_started_at.should be_present
 
         first_trial_started_at = site.trial_started_at
@@ -1610,17 +1610,17 @@ describe SiteModules::Invoice do
     describe "#set_first_paid_plan_started_at" do
       context "site in trial" do
         it "set if site created with free plan" do
-          site = Factory.create(:site, plan_id: @free_plan.id)
+          site = create(:site, plan_id: @free_plan.id)
           site.first_paid_plan_started_at.should be_nil
         end
 
         it "set if site created with paid plan" do
-          site = Factory.create(:site, plan_id: @paid_plan.id)
+          site = create(:site, plan_id: @paid_plan.id)
           site.first_paid_plan_started_at.should be_nil
         end
 
         it "not set on downgrade" do
-          site = Factory.create(:site, plan_id: @paid_plan.id)
+          site = create(:site, plan_id: @paid_plan.id)
           site.first_paid_plan_started_at.should be_nil
 
           site.update_attribute(:plan_id, @free_plan.id)
@@ -1628,8 +1628,8 @@ describe SiteModules::Invoice do
         end
 
         it "not set on upgrade" do
-          @foo_plan = Factory.create(:plan, name: "premium", video_views: 1_000_000)
-          site = Factory.create(:site, plan_id: @paid_plan.id)
+          @foo_plan = create(:plan, name: "premium", video_views: 1_000_000)
+          site = create(:site, plan_id: @paid_plan.id)
           site.first_paid_plan_started_at.should be_nil
 
           site.update_attribute(:plan_id, @foo_plan.id)
@@ -1637,7 +1637,7 @@ describe SiteModules::Invoice do
         end
 
         it "not reset if site created with paid plan and downgraded to free plan and reupgraded to paid plan" do
-          site = Factory.create(:site, plan_id: @paid_plan.id)
+          site = create(:site, plan_id: @paid_plan.id)
           site.first_paid_plan_started_at.should be_nil
 
           site.update_attribute(:plan_id, @free_plan.id)
@@ -1650,17 +1650,17 @@ describe SiteModules::Invoice do
 
       context "site not in trial" do
         it "set if site created with free plan" do
-          site = Factory.create(:new_site, plan_id: @free_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+          site = create(:new_site, plan_id: @free_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
           site.first_paid_plan_started_at.should be_nil
         end
 
         it "set if site created with paid plan" do
-          site = Factory.create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+          site = create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
           site.first_paid_plan_started_at.should be_present
         end
 
         it "not reset on downgrade" do
-          site = Factory.create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+          site = create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
           site.first_paid_plan_started_at.should be_present
 
           first_first_paid_plan_started_at = site.first_paid_plan_started_at
@@ -1669,8 +1669,8 @@ describe SiteModules::Invoice do
         end
 
         it "not set on upgrade" do
-          @foo_plan = Factory.create(:plan, name: "premium", video_views: 1_000_000)
-          site = Factory.create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+          @foo_plan = create(:plan, name: "premium", video_views: 1_000_000)
+          site = create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
           site.first_paid_plan_started_at.should be_present
 
           first_first_paid_plan_started_at = site.first_paid_plan_started_at
@@ -1679,7 +1679,7 @@ describe SiteModules::Invoice do
         end
 
         it "not reset if site created with paid plan and downgraded to free plan and reupgraded to paid plan" do
-          site = Factory.create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+          site = create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
           site.first_paid_plan_started_at.should be_present
 
           first_first_paid_plan_started_at = site.first_paid_plan_started_at

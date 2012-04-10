@@ -1,5 +1,0 @@
-<% if params[:mail_logs] %>
-  $('mail_logs_table_wrap').update("<%= escape_javascript(render 'mail_logs') %>");
-<% elsif params[:mail_templates] %>
-  $('mail_templates_table_wrap').update("<%= escape_javascript(render 'mail_templates') %>");
-<% end %>

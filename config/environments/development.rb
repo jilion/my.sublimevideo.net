@@ -40,16 +40,6 @@ MySublimeVideo::Application.configure do
 
   config.log_tags = [:uuid, :remote_ip]
 
-  # https://github.com/wavii/rails-dev-tweaks
-  config.dev_tweaks.autoload_rules do
-    keep :all
-
-    skip '/favicon.ico'
-    skip :assets
-    skip :xhr
-    keep :forced
-  end
-
 end
 
 # unless $rails_rake_task

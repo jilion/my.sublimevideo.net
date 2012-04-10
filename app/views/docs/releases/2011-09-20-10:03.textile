@@ -1,1 +1,0 @@
-* <span class="label improved">improved</span> Support the upcoming Adobe Flash Player 11.

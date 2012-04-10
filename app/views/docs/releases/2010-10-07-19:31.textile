@@ -1,1 +1,0 @@
-* <span class="label new">new</span> Loading indicator appears when playback position reaches end of buffer bar because of slow buffering (Flash mode).

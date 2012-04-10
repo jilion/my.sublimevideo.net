@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> More compatibility with existing CSS (float property).
-* <span class="label fixed">fixed</span> Rendering bug in WebKit preventing the progress bar from being properly updated when the video is wrapped in an element with the overflow property set to hidden (HTML5 mode).

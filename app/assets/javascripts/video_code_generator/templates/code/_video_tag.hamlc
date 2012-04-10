@@ -8,13 +8,10 @@
 - if @builder.get('builderClass') is 'lightbox'
   - mp4Mobile = @video.get('sources').mp4Mobile()
 
-  - code += "<a href=\"#{mp4Mobile.get('src')}\" class=\"sublime#{if @video.get('thumbnail').get('magnifyingGlass') then " zoomable" else ""}\">\n  "
+  - code += "<a href=\"#{mp4Mobile.get('src')}\" class=\"sublime\">\n  "
 
   - if @video.get('thumbnail').get('initialLink') is 'image'
     - code += "<img src=\"#{@video.get('thumbnail').get('src')}\" width=\"#{@video.get('thumbnail').get('thumbWidth')}\" height=\"#{@video.get('thumbnail').get('thumbHeight')}\" />"
-
-    - if @video.get('thumbnail').get('magnifyingGlass')
-      - code += "\n  <span class=\"zoom_icon\"></span>"
 
   - else
     - code += "#{@video.get('thumbnail').get('src')}"

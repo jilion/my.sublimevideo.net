@@ -1,26 +1,6 @@
-class WwwOrNoSubdomain
-  def self.matches?(request)
-    request.subdomain.blank? || request.subdomain == 'www'
-  end
-end
-
-class WwwPages
-  def self.matches?(request)
-    pages = Dir.glob('app/views/www/pages/*.html.haml').map { |p| p.match(%r(app/views/www/pages/(.*)\.html\.haml))[1] }
-    pages.include?(request.params["page"])
-  end
-end
-
 class MyPages
   def self.matches?(request)
-    pages = Dir.glob('app/views/my/pages/*.html.haml').map { |p| p.match(%r(app/views/my/pages/(.*)\.html\.haml))[1] }
-    pages.include?(request.params["page"])
-  end
-end
-
-class DocsPages
-  def self.matches?(request)
-    pages = Dir.glob('app/views/docs/pages/**/*.html.haml').map { |p| p.match(%r(app/views/docs/pages/(.*)\.html\.haml))[1] }
+    pages = Dir.glob('app/views/pages/*.html.haml').map { |p| p.match(%r(app/views/pages/(.*)\.html\.haml))[1] }
     pages.include?(request.params["page"])
   end
 end
@@ -38,93 +18,6 @@ MySublimeVideo::Application.routes.draw do
   # Redirect to subdomains
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
   match '/admin(/*rest)' => redirect { |params, req| "#{https_if_prod_or_staging}://admin.#{req.domain}/#{params[:rest]}" }
-
-  scope module: 'my' do
-    constraints subdomain: 'my' do
-      devise_for :users, module: 'my/users', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:invitations, :registrations]
-      devise_scope :user do
-        resource :user, only: [], path: '' do
-          get    :new,     path: '/signup', as: 'new'
-          post   :create,  path: '/signup'
-
-          get    :edit,    path: '/account', as: 'edit'
-          put    :update,  path: '/account', as: 'update'
-          delete :destroy, path: '/account', as: 'destroy'
-        end
-        get  '/gs-login' => 'users/sessions#new_gs'
-        post '/gs-login' => 'users/sessions#create_gs', as: 'gs_login'
-
-        get  '/account/more-info'  => "users#more_info", as: 'more_user_info'
-
-        put  '/hide_notice/:id' => 'users#hide_notice'
-
-        post '/password/validate' => "users/passwords#validate"
-      end
-      get '/account/edit' => redirect('/account')
-
-      %w[sign_up register].each         { |action| get action => redirect('/signup') }
-      %w[log_in sign_in signin].each    { |action| get action => redirect('/login') }
-      %w[log_out sign_out signout].each { |action| get action => redirect('/logout') }
-
-      scope 'account' do
-        resource :billing, only: [:edit, :update]
-        resources :applications, controller: 'client_applications', as: :client_applications # don't change this, used by oauth-plugin
-      end
-      get '/card(/*anything)' => redirect('/account/billing/edit')
-
-      scope 'oauth' do
-        # OAuth 1 & 2
-        match '/authorize' => 'oauth#authorize', as: :oauth_authorize, via: [:get, :post]
-        delete '/revoke' => 'oauth#revoke', as: :oauth_revoke
-
-        # OAuth 2
-        post '/access_token' => 'oauth#token', as: :oauth_token
-      end
-
-      resources :sites, except: [:show] do
-        get :state, on: :member
-
-        resource :plan, only: [:edit, :update, :destroy]
-
-        resources :invoices, only: [:index] do
-          put :retry, on: :collection
-        end
-
-        resources :stats, only: [:index], controller: 'site_stats' do
-          get :videos, on: :collection
-        end
-
-        resources :video_tags, only: [:show]
-      end
-      # for backbone
-      get '/sites/stats(/:token)' => 'site_stats#index', as: 'site_stats', format: false
-
-      resources :invoices, only: [:show] do
-        put :retry_all, on: :collection
-      end
-
-      post '/transaction/callback' => 'transactions#callback'
-
-      resources :deals, only: [:show], path: 'd'
-
-      resource :ticket, only: [:create], path: 'help'
-      %w[support feedback].each { |action| get action, to: redirect('/help') }
-
-      resource :video_code, only: [], path: 'video-code-generator' do
-        collection do
-          get :new, path: '/'
-          get :iframe_embed, path: 'iframe-embed'
-          post :mime_type_check, path: 'mime-type-check'
-        end
-      end
-
-      post '/pusher/auth' => 'pusher#auth'
-
-      get '/:page' => 'pages#show', as: :page, constraints: MyPages, format: false
-
-      root to: redirect('/sites')
-    end
-  end # my.
 
   namespace 'api' do
     # Legacy routes
@@ -185,8 +78,8 @@ MySublimeVideo::Application.routes.draw do
           get :become
         end
       end
-      resources :enthusiasts, only: [:index, :show, :update]
-      resources :enthusiast_sites, only: [:update]
+      resources :enthusiasts, only: [:index, :show]
+      resources :enthusiast_sites, only: []
       resources :admins, only: [:index, :edit, :update, :destroy]
 
       resources :invoices,  only: [:index, :show, :edit] do
@@ -229,52 +122,92 @@ MySublimeVideo::Application.routes.draw do
     end
   end # admin.
 
-  scope module: 'docs', as: 'docs' do
-    constraints subdomain: 'docs' do
-      # Deprecated routes
-      %w[javascript-api js-api].each { |r| match r => redirect('/javascript-api/usage') }
+  constraints subdomain: 'my' do
+    devise_for :users, module: 'users', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
+    devise_scope :user do
+      resource :user, only: [], path: '' do
+        get    :new,     path: '/signup', as: 'signup'
+        post   :create,  path: '/signup'
 
-      resources :releases, only: :index
+        get    :edit,    path: '/account', as: 'edit'
+        put    :update,  path: '/account', as: 'update'
+        delete :destroy, path: '/account', as: 'destroy'
+      end
+      get  '/login'    => 'users/sessions#new', as: 'login_user'
 
-      get '/*page' => 'pages#show', as: :page, constraints: DocsPages, format: false
+      get  '/gs-login' => 'users/sessions#new_gs'
+      post '/gs-login' => 'users/sessions#create_gs', as: 'gs_login'
 
-      root to: redirect('/quickstart-guide')
+      get  '/account/more-info'  => "users#more_info", as: 'more_user_info'
+
+      delete '/notice/:id' => 'users#hide_notice'
+
+      post '/password/validate' => "users/passwords#validate"
     end
+    get '/account/edit' => redirect('/account')
+
+    %w[sign_up register].each         { |action| get action => redirect('/signup') }
+    %w[log_in sign_in signin].each    { |action| get action => redirect('/login') }
+    %w[log_out sign_out signout].each { |action| get action => redirect('/logout') }
+
+    scope 'account' do
+      resource :billing, only: [:edit, :update]
+      resources :applications, controller: 'client_applications', as: :client_applications # don't change this, used by oauth-plugin
+    end
+    get '/card(/*anything)' => redirect('/account/billing/edit')
+
+    scope 'oauth' do
+      # OAuth 1 & 2
+      match '/authorize' => 'oauth#authorize', as: :oauth_authorize, via: [:get, :post]
+      delete '/revoke' => 'oauth#revoke', as: :oauth_revoke
+
+      # OAuth 2
+      post '/access_token' => 'oauth#token', as: :oauth_token
+    end
+
+    resources :sites, except: [:show] do
+      resource :plan, only: [:edit, :update, :destroy]
+
+      resources :invoices, only: [:index] do
+        put :retry, on: :collection
+      end
+
+      resources :stats, only: [:index], controller: 'site_stats' do
+        get :videos, on: :collection
+      end
+
+      resources :video_tags, only: [:show]
+    end
+    # for backbone
+    get '/sites/stats(/:token)' => 'site_stats#index', as: 'site_stats', format: false
+
+    resources :invoices, only: [:show] do
+      put :retry_all, on: :collection
+    end
+
+    post '/transaction/callback' => 'transactions#callback'
+
+    resources :deals, only: [:show], path: 'd'
+
+    resource :ticket, only: [:create], path: 'help'
+    %w[support feedback].each { |action| get action, to: redirect('/help') }
+
+    resource :video_code, only: [], path: 'video-code-generator' do
+      collection do
+        get :new, path: '/'
+        get :iframe_embed, path: 'iframe-embed'
+        post :mime_type_check, path: 'mime-type-check'
+      end
+    end
+
+    post '/pusher/auth' => 'pusher#auth'
+
+    get '/:page' => 'pages#show', as: :page, constraints: MyPages, format: false
+
+    root to: redirect('/sites')
   end
 
-  scope module: 'www' do
-    constraints(WwwOrNoSubdomain) do
-      # Redirects
-      %w[signup sign_up register].each { |action| get action => redirect('/?p=signup') }
-      %w[login log_in sign_in signin].each { |action| get action => redirect('/?p=login') }
-
-      # Docs routes
-      %w[javascript-api releases].each do |path|
-        get path => redirect { |params, req| "http://docs.#{req.domain}/#{path}" }
-      end
-
-      # My routes
-      %w[privacy terms sites account].each do |path|
-        match path => redirect { |params, req| "#{https_if_prod_or_staging}://my.#{req.domain}/#{path}" }
-      end
-      authenticated :user do
-        %w[help].each do |path|
-          get path => redirect { |params, req| "#{https_if_prod_or_staging}://my.#{req.domain}/#{path}" }
-        end
-      end
-
-      match '/notify(/:anything)' => redirect('/')
-      match '/enthusiasts(/:anything)' => redirect('/')
-
-      get '/pr/:page' => 'press_releases#show', as: :pr, format: false
-      get '/press-kit' => redirect('http://cl.ly/433P3t1P2a1m202w2Y3D/content'), as: :press_kit
-
-      get '/:page' => 'pages#show', as: :page, constraints: WwwPages, format: false
-
-      get '/r/:type/:token' => 'referrers#redirect', type: /b|c/, token: /[a-z0-9]{8}/
-
-      root to: 'pages#show', page: 'home', format: :html
-    end
-  end
+  # Default url for specs, not reachable by the app because of the my subdomain
+  get '/' => "sites#index"
 
 end

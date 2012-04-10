@@ -1,4 +1,4 @@
-class Admin::TweetsController < AdminController
+class Admin::TweetsController < Admin::AdminController
   respond_to :js, :html
 
   has_scope :keywords
@@ -8,7 +8,7 @@ class Admin::TweetsController < AdminController
   # GET /tweets
   def index
     params[:keywords] = 'sublimevideo' if !params[:keywords] && !params[:favorites]
-    @tweets = apply_scopes(Tweet).by_date
+    @tweets = apply_scopes(Tweet)
     respond_with(@tweets, per_page: 50)
   end
 

@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Issue on older Android devices (v1.6).

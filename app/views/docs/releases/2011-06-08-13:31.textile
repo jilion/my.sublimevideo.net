@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Rendering bug in the newly released Chrome 12 causing a black rectangle to appear when exiting full-window (HTML5 mode).

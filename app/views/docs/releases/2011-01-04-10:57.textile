@@ -1,3 +1,0 @@
-* <span class="label improved">improved</span> More compatibility with existing CSS (position property).
-* <span class="label fixed">fixed</span> Issue with the pre-buffering loading indicator not being showed unless mouse hovering over the video.
-* <span class="label fixed">fixed</span> Elapsed time label vertical alignment issue on Firefox (Windows).

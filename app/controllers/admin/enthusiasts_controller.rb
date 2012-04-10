@@ -1,4 +1,4 @@
-class Admin::EnthusiastsController < AdminController
+class Admin::EnthusiastsController < Admin::AdminController
   respond_to :js, :html
 
   has_scope :by_date
@@ -18,20 +18,13 @@ class Admin::EnthusiastsController < AdminController
 
   # GET /enthusiasts
   def index
-    @enthusiasts = apply_scopes(Enthusiast.by_date('asc').confirmed(true).interested_in_beta(true))
+    @enthusiasts = apply_scopes(Enthusiast.includes(:sites, :user))
     respond_with(@enthusiasts)
   end
 
   # GET /enthusiasts/1
   def show
     @enthusiast = Enthusiast.includes(:sites).find(params[:id])
-    respond_with(@enthusiast)
-  end
-
-  # PUT /enthusiasts/1
-  def update
-    @enthusiast = Enthusiast.find(params[:id])
-    @enthusiast.update_attributes(params[:enthusiast])
     respond_with(@enthusiast)
   end
 

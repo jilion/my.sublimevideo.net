@@ -1,4 +1,4 @@
-class Admin::ReleasesController < AdminController
+class Admin::ReleasesController < Admin::AdminController
   respond_to :html
   respond_to :js, only: :index
 

@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Bug in Opera causing the elapsed time bar from being properly rendered in some cases.

@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   include UserModules::Pusher
   include UserModules::Scope
 
-  devise :database_authenticatable, :invitable, :registerable, :confirmable,
+  devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :lockable
 
   def self.cookie_domain
@@ -128,7 +128,7 @@ class User < ActiveRecord::Base
 
   def self.set_newsletter(user_id)
     user = User.find(user_id)
-
+    
     CampaignMonitor.lists.each do |name, list|
       return user.update_column(:newsletter, true) if CampaignMonitor.subscriber(user.email, list["list_id"])
     end
@@ -283,7 +283,7 @@ private
 
   # after_transition on: :suspend
   def send_account_suspended_email
-    My::UserMailer.account_suspended(self).deliver!
+    UserMailer.account_suspended(self).deliver!
   end
 
   # before_transition on: :unsuspend
@@ -293,7 +293,7 @@ private
 
   # after_transition on: :unsuspend
   def send_account_unsuspended_email
-    My::UserMailer.account_unsuspended(self).deliver!
+    UserMailer.account_unsuspended(self).deliver!
   end
 
   # before_transition on: :archive
@@ -318,7 +318,7 @@ private
 
   # after_transition on: :archive
   def send_account_archived_email
-    My::UserMailer.account_archived(self).deliver!
+    UserMailer.account_archived(self).deliver!
   end
 
   # before_save

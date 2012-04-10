@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> More compatibility with existing CSS (rare scrollbars visibility issues when exiting full-window, improvements to avoid other CSS inheritance issues).
-* <span class="label fixed">fixed</span> Issue with the "(c)@sublimevideo.onStart@":http://docs.sublimevideo.net/javascript-api/listeners#onStart event being fired twice in Flash mode.

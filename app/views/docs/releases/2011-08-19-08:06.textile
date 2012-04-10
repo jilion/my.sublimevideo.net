@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Issue with the "(c)@sublimevideo.prepare@":http://docs.sublimevideo.net/javascript-api/methods#prepare API method on iOS devices when the @<video>@ element is initially hidden.

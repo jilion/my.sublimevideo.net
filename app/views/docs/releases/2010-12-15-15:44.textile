@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Rare issue with Firefox 3.6 preventing some Ogg Theora encoded files from starting playing (_canplay_ event not fired).

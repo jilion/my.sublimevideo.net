@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> Optimized CSS injection to reduce initial UI flicker (when showing initial play button).
-* <span class="label improved">improved</span> More compatibility with existing CSS (avoid conflicts with East Asian text format, time label alignment and lightbox close button not centered)

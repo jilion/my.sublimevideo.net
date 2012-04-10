@@ -1,4 +1,4 @@
-class Admin::ReferrersController < AdminController
+class Admin::ReferrersController < Admin::AdminController
   respond_to :js, :html
 
   has_scope :by_hits

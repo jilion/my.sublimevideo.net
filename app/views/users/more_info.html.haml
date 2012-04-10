@@ -1,0 +1,28 @@
+- title("More information about you")
+%h2= "Thank you!"
+
+%p.bigger= "Please let us serve you better by telling us more about yourself."
+
+.content_left.more_info
+  = form_for @current_user, url: [:update, :user], html: { method: :put, class: "main_form section", id: "edit_more_info" } do |f|
+    -# %h3.section_title More information about you
+    = render 'users/more_info_form_fields', f: f
+
+    .break
+    .entry.terms
+      .checkbox_wrap
+        = f.check_box :newsletter, checked: true
+        = f.label :newsletter, "Subscribe for news & exclusive promotions."
+
+    .break
+    .entry
+      .comment
+        = f.text_area :confirmation_comment, placeholder: "Please leave any comments here.", class: "text"
+      .spacer
+
+    %p.label= raw "Don't worry, we won't share any of your information.<br />You can read our Privacy Policy #{link_to "here", page_path('privacy'), onclick: "window.open(this); return false;", class: "hl"}."
+
+    .entry.continue
+      = hidden_field_tag :more_info_form, true
+      = f.submit "Continue", id: 'user_submit', class: "submit blue_button"
+  .spacer

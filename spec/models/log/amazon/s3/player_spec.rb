@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Log::Amazon::S3::Player do
   use_vcr_cassette "s3/player/logs_list"
-  let(:log_s3_player) { Factory.create(:log_s3_player) }
+  let(:log_s3_player) { create(:log_s3_player) }
 
   context "Factory" do
     subject { log_s3_player }

@@ -1,0 +1,24 @@
+%h3.title
+  - if site.hostname?
+    Embed code for
+    %strong= truncate_middle(site.hostname, length: 40)
+  - else
+    Embed code
+%p.desc= "Copy the code below and paste it into the pages on #{truncate_middle(site.hostname)} where the SublimeVideo player will be used. We highly recommend you put it into the <code>&lt;head&gt;</code> tag.".html_safe
+%form
+  .embed_code.entry
+    = text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, id: "embed_code_#{site.token}"
+    - if site.in_free_plan?
+      = "SSL delivery for secure pages is "
+      %strong= raw "included #{link_to("in all paid plans", [:edit, site, :plan], class: "hl")}"
+      = "."
+    - else
+      .checkbox_wrap
+        = check_box_tag "embed_code_ssl_#{site.token}", '1', false, id: "embed_code_ssl_#{site.token}"
+        = label_tag "embed_code_ssl_#{site.token}", 'Deliver with SSL for secure pages.'
+      %p.learn_more= link_to "Learn more about SSL serving.", page_url('ssl', subdomain: 'docs'), class: "hl"
+
+.dark_box
+  -#= raw "Need help building your first #{content_tag(:code, '<video>')} elements? Read our #{link_to "documentation", page_url('write-proper-video-elements', subdomain: 'docs')}."
+  -# %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
+  %p= raw "If you're asked for your site's token, use this: #{content_tag(:code, site.token)}"

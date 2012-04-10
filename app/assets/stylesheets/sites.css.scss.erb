@@ -16,7 +16,7 @@ a.add_site {
 
 a.add_site span {
   padding-left:25px;
-  background:url(<%= asset_data_uri "my/sites/add_site_cross.png" %>) no-repeat 0 4px;
+  background:url(<%= asset_data_uri "sites/add_site_cross.png" %>) no-repeat 0 4px;
 }
 
 #sites a.generate_code {
@@ -29,7 +29,7 @@ a.add_site span {
 #help_list, .help_list {
   margin-top:16px;
   text-shadow:#fff 0 1px 0;
-  background:url(<%= asset_path "my/sites/help_list_back.png" %>);
+  background:url(<%= asset_path "sites/help_list_back.png" %>);
   padding:13px 15px 8px;
   @include border-radius(4px);
   @include box-shadow((inset #fff 0 1px 0, rgba(19,57,125,0.72) 0 1px 3px));
@@ -68,7 +68,7 @@ a.add_site span {
 #help_list li.complete .wrap {
   color:#7690b3;
   padding-right:15px;
-  background:url(<%= asset_data_uri "my/sites/check_icon_small.png" %>) no-repeat right center;
+  background:url(<%= asset_data_uri "sites/check_icon_small.png" %>) no-repeat right center;
 }
 
 #help_list li a {
@@ -200,10 +200,10 @@ a.add_site span {
 
 #sites table.main th .sorting a .arrow {
   padding:0 14px 0 0;
-  background:url(<%= asset_data_uri "my/sites/sort_arrow_down.png" %>) no-repeat 100% 4px;
+  background:url(<%= asset_data_uri "sites/sort_arrow_down.png" %>) no-repeat 100% 4px;
 }
 
-#sites table.main th .sorting a.up .arrow {background-image:url(<%= asset_data_uri "my/sites/sort_arrow_up.png" %>)}
+#sites table.main th .sorting a.up .arrow {background-image:url(<%= asset_data_uri "sites/sort_arrow_up.png" %>)}
 
 #sites table.main th.site .sorting a {
   margin-left:8px;
@@ -281,7 +281,7 @@ a.add_site span {
 
 #sites table.main td.site a.domain .settings_icon {
   display:none;
-  background:url(<%= asset_data_uri "my/sites/settings_icon.png" %>) no-repeat;
+  background:url(<%= asset_data_uri "sites/settings_icon.png" %>) no-repeat;
   width:24px;
   height:24px;
   position:absolute;
@@ -332,7 +332,7 @@ a.add_site span {
   position:absolute;
   bottom:7px;
   right:7px;
-  background:url(<%= asset_data_uri "my/sites/time_icon.png" %>) no-repeat;
+  background:url(<%= asset_data_uri "sites/time_icon.png" %>) no-repeat;
   padding:0 0 0 15px;
   font-size:11px;
   color:#4a648e;
@@ -418,28 +418,28 @@ a.add_site span {
 #sites table.main td.status .tooltip.payment_issue .icon {
   width:18px;
   height:17px;
-  background:url(<%= asset_data_uri "my/alert_icon.png" %>) no-repeat;
+  background:url(<%= asset_data_uri "alert_icon.png" %>) no-repeat;
 }
 
 #sites table.main td.status .tooltip.payment_waiting {width:18px}
 #sites table.main td.status .tooltip.payment_waiting .icon {
   width:18px;
   height:17px;
-  background:url(<%= asset_data_uri "my/warning_triangle_icon.png" %>) no-repeat;
+  background:url(<%= asset_data_uri "warning_triangle_icon.png" %>) no-repeat;
 }
 
 #sites table.main td.status .tooltip.ok {width:23px}
 #sites table.main td.status .tooltip.ok .icon {
   width:23px;
   height:18px;
-  background:url(<%= asset_data_uri "my/sites/check_icon.png" %>) no-repeat;
+  background:url(<%= asset_data_uri "sites/check_icon.png" %>) no-repeat;
 }
 
 #sites table.main td.status .tooltip.in_progress {width:15px}
 #sites table.main td.status .tooltip.in_progress .icon {
   width:15px;
   height:15px;
-  background:url(<%= asset_data_uri "my/sites/dot_loading.gif" %>) no-repeat center;
+  background:url(<%= asset_data_uri "sites/dot_loading.gif" %>) no-repeat center;
 }
 
 #sites .pagination_wrap {

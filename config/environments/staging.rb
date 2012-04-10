@@ -3,7 +3,7 @@ MySublimeVideo::Application.configure do
   config.middleware.insert_after Rack::Lock, "::Rack::Auth::Basic", "Staging" do |u, p|
     [u, p] == ['jilion', ENV['PRIVATE_CODE']]
   end
-  config.middleware.insert_before Rack::NoWWW, Rack::SslEnforcer, only_hosts: /[my|api|admin]\.sublimevideo-staging\.net$/, strict: true
+  config.middleware.insert_before Rack::Lock, Rack::SslEnforcer, force_secure_cookies: false
 
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
@@ -46,14 +46,7 @@ MySublimeVideo::Application.configure do
   config.cache_store = :dalli_store
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  # http://stackoverflow.com/questions/7324292/rails-3-1-cant-compile-assets-on-prod-due-to-asset-host-config
-  config.action_controller.asset_host = ->(source, request = nil, *_) {
-    if request && !request.ssl?
-      "http://d1p69vb2iuddhr.cloudfront.net"
-    else
-      "https://d1p69vb2iuddhr.cloudfront.net"
-    end
-  }
+  config.action_controller.asset_host = "https://d1p69vb2iuddhr.cloudfront.net"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   # config.assets.precompile += %w( search.js )

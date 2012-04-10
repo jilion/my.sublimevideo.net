@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> More compatibility with existing CSS (text color of inline alert messages could be overridden in some cases).
-* <span class="label fixed">fixed</span> Issue when calling "(c)@sublimevideo.unprepare@":http://docs.sublimevideo.net/javascript-api/methods#unprepare on mobile devices.

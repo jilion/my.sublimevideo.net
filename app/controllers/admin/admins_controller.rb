@@ -1,4 +1,4 @@
-class Admin::AdminsController < AdminController
+class Admin::AdminsController < Admin::AdminController
   respond_to :js, :html
 
   before_filter { |controller| require_role?('god') }

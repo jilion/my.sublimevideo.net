@@ -3,7 +3,7 @@ require 'spec_helper'
 describe OauthToken do
 
   context "Factory" do
-    before(:all) { @token = Factory.create(:oauth_token) }
+    before(:all) { @token = create(:oauth_token) }
     subject { @token }
 
     its(:user)               { should be_present }
@@ -18,7 +18,7 @@ describe OauthToken do
   end
 
   describe "Associations" do
-    before(:all) { @token = Factory.create(:oauth_token) }
+    before(:all) { @token = create(:oauth_token) }
     subject { @token }
 
     it { should belong_to :user }
@@ -26,7 +26,7 @@ describe OauthToken do
   end
 
   describe "Validations" do
-    before(:all) { @token = Factory.create(:oauth_token) }
+    before(:all) { @token = create(:oauth_token) }
     subject { @token.reload }
 
     [].each do |attr|
@@ -40,10 +40,10 @@ describe OauthToken do
   describe "Scopes" do
     before(:all) do
       User.delete_all
-      @user = Factory.create(:user)
-      @new_token         = Factory.create(:oauth_token, user: @user, authorized_at: nil, invalidated_at: nil)
-      @authorized_token  = Factory.create(:oauth_token, user: @user, authorized_at: Time.now.utc, invalidated_at: nil)
-      @invalidated_token = Factory.create(:oauth_token, user: @user, authorized_at: Time.now.utc, invalidated_at: Time.now.utc)
+      @user = create(:user)
+      @new_token         = create(:oauth_token, user: @user, authorized_at: nil, invalidated_at: nil)
+      @authorized_token  = create(:oauth_token, user: @user, authorized_at: Time.now.utc, invalidated_at: nil)
+      @invalidated_token = create(:oauth_token, user: @user, authorized_at: Time.now.utc, invalidated_at: Time.now.utc)
     end
 
     describe ".valid" do

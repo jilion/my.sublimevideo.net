@@ -1,3 +1,0 @@
-* <span class="label new">new</span> Added support for webOS (Palm Pre devices) and BlackBerry 6.
-* <span class="label fixed">fixed</span> Issue in Flash mode with sublimevideo.play() and pause() API methods.
-* <span class="label improved">improved</span> More compatibility with existing CSS (line-height issues in Firefox).

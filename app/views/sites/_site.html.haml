@@ -1,0 +1,74 @@
+%tr{ id: dom_id(site), data: { "site-token" => site.token }, class: cycle("", "alt") }
+  %td.site{ class: site.hostname.present? ? "has_domain" : "empty"}
+    .wrap
+      - if site.hostname.present?
+        = link_to [:edit, site], class: "domain", title: "Edit #{hostname_with_path(site)}" do
+          %span.settings_icon
+          = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=https://my.sublimevideo.net/assets/sites/default_favicon.png", alt: "Favicon", size: "16x16", id: "site_favicon_#{site.id}"
+          = truncate_middle(site.hostname, length: 35)
+        - if site.in_paid_plan? && (site.need_path? || site.need_subdomain?)
+          -# .warning.box_hovering_zone
+          -#   = link_to [:edit, site], class: "icon" do
+          -#     %span= "warning"
+          - if site.need_path?
+            = tooltip_box href: edit_site_path(site), class: "warning" do
+              %span.p= raw t 'site.status.need_path', hostname: site.hostname_with_path_needed
+          - if site.need_subdomain?
+            = tooltip_box href: edit_site_path(site), class: "warning" do
+              %span.p= raw t 'site.status.need_subdomain', hostname: site.hostname_with_subdomain_needed
+      - else
+        = link_to [:edit, site], class: "domain" do
+          %span.settings_icon
+          = "add a hostname"
+      .plan
+        - if site.plan_id?
+          = link_to [:edit, site, :plan] do
+            = "#{site.plan.title} plan"
+            - if site.next_cycle_plan_id?
+              %span.disabled= " => #{site.next_cycle_plan.title} plan"
+      .cycle
+        - if site.in_paid_plan?
+          - if site.trial_ended?
+            - if site.plan_cycle_started_at? && site.plan_cycle_ended_at?
+              = l(site.plan_cycle_started_at, format: :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, format: :d_b_Y)
+            - else
+              = l(site.trial_started_at, format: :d_b_Y) + ' - ' + l(site.trial_end, format: :d_b_Y) + ' (trial ended)'
+          - else
+            = l(site.trial_started_at, format: :d_b_Y) + ' - ' + l(site.trial_end, format: :d_b_Y) + ' (trial)'
+      .spacer
+
+  %td.usage{ class: td_usage_class(site) }
+    .wrap
+      - if site.plan_id?
+        = render 'td_usage', site: site
+      - else
+        = "—"
+
+  %td.code
+    .wrap
+      - if site.plan_id?
+        = link_to "Embed code", "", class: "embed_code", data: { token: site.token }
+      - else
+        = "—"
+      %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'code', site: site
+
+  %td.status
+    .wrap
+      - if site.invoices_failed?
+        = tooltip_box href: site_invoices_path(site), class: "payment_issue" do
+          %span.p= t 'site.status.payment_issue'
+      - elsif site.invoices_open?
+        = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
+          %span.p= t 'site.status.payment_open'
+      - elsif site.invoices_waiting?
+        = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
+          %span.p= t 'site.status.payment_waiting'
+      - elsif site.cdn_up_to_date?
+        = tooltip_box class: "ok" do
+          %span.p= t 'site.status.ok'
+      - else
+        = tooltip_box class: "in_progress" do
+          %span.p= t 'site.status.in_progress'
+        .completed{ style: "display:none;" }
+          = tooltip_box class: "ok" do
+            %span.p= t 'site.status.ok'

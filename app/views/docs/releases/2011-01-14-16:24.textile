@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Issue with IE and a particular version of Flash (10.0.45.2) on Windows XP preventing the video to be displayed (Flash mode).

@@ -1,0 +1,25 @@
+%h3#email_support.title= "Dedicated Email Support"
+.help_box
+  - if current_user.email_support?
+    %p
+      = "As a paid customer, you can use the form below to submit your question and we'll personally get back to you as quickly as we can."
+      = raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
+
+      = form_for @ticket, url: [:ticket] do |f|
+        .entry.select.site_token
+          = f.label :site_token, "", class: "icon"
+          = f.select :site_token, ticket_site_token_options
+          %small= "(if applicable)"
+
+        .entry.ticket_subject
+          = f.label :subject, "", class: "icon"
+          = f.text_field :subject, class: "text", placeholder: "Subject", required: true
+        .entry.message
+          = f.label :message, "", class: "icon"
+          = f.text_area :message, class: "text", placeholder: "Message", required: true
+        .entry.update
+          = f.submit 'Send', class: "submit blue_button"
+
+  - else
+    %p
+      = raw "We offer email support to customers of our #{link_to "paid plans", page_path('plans'), class: "hl"} - just use the #{link_to "support form", page_url('help', subdomain: 'my')} to email us directly and we'll send you a personal response as soon as we can. Customers of our Premium plan benefit from VIP priority email support."

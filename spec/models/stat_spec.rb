@@ -6,7 +6,7 @@ describe Stat do
     before(:each) do
       @log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1313499060-1313499120.gz'))
       log_time  = 5.days.ago.change(hour: 0).to_i
-      @log      = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
+      @log      = build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
     end
 
     describe ".create_stats_from_trackers!" do
@@ -14,9 +14,9 @@ describe Stat do
 
       context "mixed view event & load event" do
         before(:each) do
-          site = Factory.create(:site)
+          site = create(:site)
           site.update_attribute(:token, 'ovjigy83')
-          site = Factory.create(:site)
+          site = create(:site)
           site.update_attribute(:token, 'site1234')
           described_class.stub(:incs_from_trackers).and_return({
             "ovjigy83"=> {
@@ -109,7 +109,7 @@ describe Stat do
           Stat::Site::Hour.count.should eql(2)
           Stat::Site::Day.count.should eql(2)
           log_time = 5.days.ago.change(hour: 0).to_i + 1.minute
-          log  = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
+          log  = build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
           Stat.create_stats_from_trackers!(log, nil)
           Stat::Site::Minute.count.should eql(4)
           Stat::Site::Hour.count.should eql(2)

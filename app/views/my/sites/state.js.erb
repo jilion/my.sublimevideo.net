@@ -1,6 +1,0 @@
-// This is returned to the client if a site state has changed from pending to active
-<% if @site.cdn_up_to_date? %>
-  MySublimeVideo.sitesPoller.updateSite(<%= @site.id %>);
-<% else %>
-  MySublimeVideo.sitesPoller.startPolling();
-<% end %>

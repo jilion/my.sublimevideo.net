@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> Slight UI improvements and better rendering of the progress bars rounded corners.
-* <span class="label improved">improved</span> Smoother transitions in lightbox effect.

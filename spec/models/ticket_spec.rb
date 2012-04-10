@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Ticket do
   before(:each) do
-    @user = Factory.create(:user, name: "Remy")
-    @site = Factory.create(:site, user: @user, plan_id: @paid_plan.id)
-    @loser = Factory.create(:user)
-    Factory.create(:site, user: @loser, plan_id: @free_plan.id)
-    @vip = Factory.create(:user)
-    Factory.create(:site, user: @vip, plan_id: @custom_plan.token)
+    @user = create(:user, name: "Remy")
+    @site = create(:site, user: @user, plan_id: @paid_plan.id)
+    @loser = create(:user)
+    create(:site, user: @loser, plan_id: @free_plan.id)
+    @vip = create(:user)
+    create(:site, user: @vip, plan_id: @custom_plan.token)
   end
 
   describe "Factory" do
@@ -70,7 +70,7 @@ describe Ticket do
 
     describe ".post_ticket" do
       describe "common behavior" do
-         let(:params) { { user_id: @user.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" } }
+        let(:params) { { user_id: @user.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" } }
         use_vcr_cassette "ticket/post_ticket"
 
         it "creates the ticket on Zendesk" do

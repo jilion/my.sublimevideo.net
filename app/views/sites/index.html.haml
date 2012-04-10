@@ -1,0 +1,31 @@
+= render 'layouts/sticky_notices'
+= render 'layouts/hidable_notices'
+
+= content_for :javascript do
+  = javascript_include_tag 'https://d3dy5gmtp8yhk7.cloudfront.net/1.11/pusher.min.js'
+
+#sites
+  = title_and_content_header("My sites")
+
+  = render 'deals/deal_available'
+
+  = link_to new_site_path, class: "add_site green_button" do
+    %span= "Add a site"
+  = link_to "Generate video code", video_code_path, class: "generate_code hl"
+
+  - if @billable_views.zero?
+    #help_list
+      %h4
+        Almost done!
+        %em There's only a few things left to do:
+      %ol
+        %li.complete
+          .wrap 1. Choose a plan for your site.
+        %li{ class: ('complete' if @loader_hits > 0) }
+          .wrap= "2. Add your embed code to your pages. Click on #{@sites.one? ? 'the' : 'the appropriate'} \"Embed Code\" button below."
+        %li{ class: ('complete' if @dev_views > 0) }
+          .wrap= raw "3. Add #{content_tag(:code, '<video>')} elements to your pages. Try our #{link_to "video code generator", video_code_path}!"
+        %li
+          .wrap 4. Deploy your SublimeVideo players on your website in production.
+
+  #sites_table_wrap= render 'sites'

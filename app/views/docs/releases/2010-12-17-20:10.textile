@@ -1,1 +1,0 @@
-* <span class="label fixed">fixed</span> Issue preventing the elapsed time progress bar to be properly updated when the video was started using the "(c)@sublimevideo.prepareAndPlay@":http://docs.sublimevideo.net/javascript-api/methods#prepareAndPlay API method.

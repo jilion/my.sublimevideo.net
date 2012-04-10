@@ -1,1 +1,0 @@
-* <span class="label new">new</span> Support for all new advanced "domain settings":http://docs.sublimevideo.net/site-settings of the public release.

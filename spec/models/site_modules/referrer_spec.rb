@@ -7,7 +7,7 @@ describe SiteModules::Referrer do
       before(:all) do
         @site = with_versioning do
           Timecop.travel(1.day.ago) do
-            @site2 = Factory.create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "localhost, 127.0.0.1")
+            @site2 = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "localhost, 127.0.0.1")
           end
           @site2.user.current_password = '123456'
           @site2.update_attributes(hostname: "jilion.net", extra_hostnames: 'jilion.org, jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
@@ -31,7 +31,7 @@ describe SiteModules::Referrer do
 
     context "without wildcard or path" do
       before(:all) do
-        @site = Factory.create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
+        @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
       end
       subject { @site }
 
@@ -62,7 +62,7 @@ describe SiteModules::Referrer do
 
     context "with hostname with subdomain" do
       before(:all) do
-        @site = Factory.create(:site, hostname: "blog.jilion.com", extra_hostnames: nil, dev_hostnames: nil)
+        @site = create(:site, hostname: "blog.jilion.com", extra_hostnames: nil, dev_hostnames: nil)
       end
       subject { @site }
 
@@ -81,7 +81,7 @@ describe SiteModules::Referrer do
 
     context "with wildcard" do
       before(:all) do
-        @site = Factory.create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", wildcard: true)
+        @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", wildcard: true)
       end
       subject { @site }
 
@@ -118,7 +118,7 @@ describe SiteModules::Referrer do
 
     context "with path" do
       before(:all) do
-        @site = Factory.create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo/boo")
+        @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo/boo")
       end
       subject { @site }
 
@@ -171,7 +171,7 @@ describe SiteModules::Referrer do
 
     context "with wildcard and path" do
       before(:all) do
-        @site = Factory.create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo", wildcard: true)
+        @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo", wildcard: true)
       end
       subject { @site }
 
@@ -226,7 +226,7 @@ describe SiteModules::Referrer do
     end
 
     context "custom" do
-      before(:all) { @site = Factory.create(:site, hostname: "capped.tv", path: "lft-turbulence|mq") }
+      before(:all) { @site = create(:site, hostname: "capped.tv", path: "lft-turbulence|mq") }
       before(:each) { Notify.should_not_receive(:send) }
       subject { @site }
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120308114325) do
+ActiveRecord::Schema.define(:version => 20120410150900) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -333,7 +333,7 @@ ActiveRecord::Schema.define(:version => 20120308114325) do
     t.datetime "cc_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "invitation_token",                :limit => 20
+    t.string   "invitation_token",                :limit => 60
     t.datetime "invitation_sent_at"
     t.integer  "zendesk_id"
     t.integer  "enthusiast_id"
@@ -373,6 +373,10 @@ ActiveRecord::Schema.define(:version => 20120308114325) do
     t.datetime "reset_password_sent_at"
     t.text     "confirmation_comment"
     t.string   "unconfirmed_email"
+    t.datetime "invitation_accepted_at"
+    t.integer  "invitation_limit"
+    t.integer  "invited_by_id"
+    t.string   "invited_by_type"
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true

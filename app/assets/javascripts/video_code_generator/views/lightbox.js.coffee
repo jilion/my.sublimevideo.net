@@ -5,7 +5,6 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
     'click input[name=initial_link]': 'updateInitialLink'
     'change #thumb_src':              'updateSrc'
     'change #thumb_width':            'updateThumbWidth'
-    'click #thumb_magnifying_glass':  'updateMagnifyingGlass'
     'click .reset':                   'resetThumbDimensions'
 
   initialize: ->
@@ -33,9 +32,6 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
 
   updateInitialLink: (event) ->
     @thumbnail.set(initialLink: event.target.value)
-
-  updateMagnifyingGlass: (event) ->
-    @thumbnail.set(magnifyingGlass: event.target.checked)
 
   resetThumbDimensions: (event) ->
     @thumbnail.setThumbWidth(@thumbnail.get('width'))

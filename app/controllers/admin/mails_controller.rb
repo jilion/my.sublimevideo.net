@@ -1,4 +1,4 @@
-class Admin::MailsController < AdminController
+class Admin::MailsController < Admin::AdminController
   respond_to :js, :html
 
   before_filter { |controller| require_role?('god') }
@@ -13,11 +13,13 @@ class Admin::MailsController < AdminController
 
   # GET /mails
   def index
-    if params[:mail_logs] || !(params[:mail_logs] || params[:mail_templates])
-      @mail_logs = apply_scopes(MailLog.scoped).by_date.page(params[:page])
+    params[:by_date] = 'desc' unless params[:by_date]
+    templates_and_logs = !(params[:mail_logs] || params[:mail_templates])
+    if params[:mail_logs] || templates_and_logs
+      @mail_logs = apply_scopes(MailLog.scoped).page(params[:page])
     end
-    if params[:mail_templates] || !(params[:mail_logs] || params[:mail_templates])
-      @mail_templates = apply_scopes(MailTemplate.scoped).by_date.page(params[:page])
+    if params[:mail_templates] || templates_and_logs
+      @mail_templates = apply_scopes(MailTemplate.scoped).page(params[:page])
     end
   end
 

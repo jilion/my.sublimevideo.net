@@ -3,7 +3,6 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
   videoTagTemplate: JST['video_code_generator/templates/code/_video_tag']
   iframeTagTemplate: JST['video_code_generator/templates/code/_iframe_tag']
   iframeContentTemplate: JST['video_code_generator/templates/code/_iframe_content']
-  cssTemplate: JST['video_code_generator/templates/code/_css']
 
   events:
     'click #get_the_code': 'render'
@@ -16,13 +15,26 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
     @thumbnail = @options.thumbnail
     @iframe    = @options.iframe
 
-    @popup = new MSV.SimplePopupHandler("popup_code")
+    @popup = SublimeVideo.UI.Utils.openPopup
+      class: 'popup'
+      anchor: @popupContent
+    # new .SimplePopupHandler("popup_code")
 
   #
   # BINDINGS
   #
   render: ->
-    $("#code_content").html this.template
+    # $("#code_content").html this.template
+    #   builder: @builder
+    #   loader: @loader
+    #   iframe: @iframe
+    #   video: MSVVideoCodeGenerator.video
+    #   embedTemplate: this.embedTemplate()
+    #   iframeTagTemplate: this.iframeTagTemplate
+    #   videoTagTemplate: this.videoTagTemplate
+    #   iframeContentTemplate: this.iframeContentTemplate
+
+    @popup.setContent(this.template
       builder: @builder
       loader: @loader
       iframe: @iframe
@@ -30,10 +42,7 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
       embedTemplate: this.embedTemplate()
       iframeTagTemplate: this.iframeTagTemplate
       videoTagTemplate: this.videoTagTemplate
-      iframeContentTemplate: this.iframeContentTemplate
-      cssTemplate: this.cssTemplate
-
-    @popup.open()
+      iframeContentTemplate: this.iframeContentTemplate)
 
     false
 

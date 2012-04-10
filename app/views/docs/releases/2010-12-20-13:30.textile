@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> More compatibility with existing CSS (more solid z-index support when entering full-window in Flash mode).
-* <span class="label fixed">fixed</span> Rare bug with IE occurring when the @<video>@ element is wrapped inside a @<p>@ element (Flash Mode).

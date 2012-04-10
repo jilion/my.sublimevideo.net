@@ -1,11 +1,11 @@
-#= require application_jquery
-
+#= require application
+#
 #= require backbone
 #= require hamlcoffee
 #= require video-size-checker/sublimevideo-size-checker.min
 #= require crc32
 #= require inflection
-
+#
 #= require_self
 #= require_tree ./models
 #= require_tree ./templates

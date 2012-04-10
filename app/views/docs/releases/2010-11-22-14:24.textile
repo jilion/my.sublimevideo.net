@@ -1,2 +1,0 @@
-* <span class="label new">new</span> An alert message is displayed in case the player is not properly registered on "my.sublimevideo.net":https://my.sublimevideo.net.
-* <span class="label improved">improved</span> More compatibility with existing CSS on iPad iOS prior to v4.2.

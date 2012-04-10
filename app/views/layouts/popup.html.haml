@@ -1,35 +1,38 @@
+- @ie_min = 8
+- @page_title_prefix = "SublimeVideo"
+
 !!! 5
 %html{ "xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en" }
   %head
-    - title = yield(:title)
-    %title= title_env_prefix + title_subdomain_prefix(request) + (title.present? ? " - #{title}" : '')
-    %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
-    %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-    = stylesheet_link_tag('my')
-    -# = airbrake_javascript_notifier
+    %title= page_title
+    %meta{ "http-equiv" => "Content-Type", content: "text/html;charset=UTF-8" }
+
+    %meta{ content: 'SublimeVideo - HTML5 Video Player', property: 'og:title' }
+    %meta{ content: 'product', property: 'og:type' }
+    %meta{ content: 'http://sublimevideo.net', property: 'og:url' }
+    %meta{ content: 'http://media.jilion.s3.amazonaws.com/facebook/sublimevideo_facebook.png', property: 'og:image' }
+    %meta{ content: "SublimeVideo is the world's first cloud-based HTML5 video player; a universal and pain-free solution that allows video to play flawlessly on any device or browser.", property: 'og:description'}
     = csrf_meta_tag
-    %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
 
-    /[if lte IE 6]
-      %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
-      %style{ :type => "text/css", :media => "screen" }
-        == body {background:#fff;display:none;}
-    /[if lte IE 9]
-      = javascript_include_tag("#{request.protocol}html5shiv.googlecode.com/svn/trunk/html5.js")
+    = stylesheet_link_tag 'sublimevideo', 'application'
+    %link{ rel: "shortcut icon", href: "http://sublimevideo.net/favicon.ico", type: "image/x-icon" }
 
-    = javascript_include_tag('my')
+    = render 'layouts/ie'
 
-    = yield :head
+    = javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'
+    = javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'
 
-    = javascript_include_tag "#{request.protocol}use.typekit.com/vcc7hji.js"
-    :javascript
-      try { Typekit.load(); } catch(e) { }
+    = javascript_include_tag 'sublimevideo'
+    = yield :javascript
 
-  %body{ class: params[:page] ? h(params[:page]) : nil }
+    = render 'layouts/typekit'
+
+  %body
     #popup_layout
       %h1
         %span= "SublimeVideo"
       = yield
-    = yield :bottom
 
-    = render 'layouts/gosquared' if Rails.env.production?
+    = yield :javascript_bottom
+    - if Rails.env.production?
+      = render 'layouts/gosquared'

@@ -1,1 +1,0 @@
-* <span class="label improved">improved</span> Major refactoring of the player's DOM architecture: @<video>@ elements are kept in their original DOM position and can now be safely moved, animated or placed in all kind of existing slideshows, sliders and carousels.

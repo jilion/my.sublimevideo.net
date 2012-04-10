@@ -1,2 +1,0 @@
-* <span class="label improved">improved</span> IE9 support.
-* <span class="label fixed">fixed</span> Selection issues when double-clicking to enter full-window.

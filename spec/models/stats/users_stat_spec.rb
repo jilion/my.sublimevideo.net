@@ -4,15 +4,15 @@ describe Stats::UsersStat do
 
   describe ".create_stats" do
     before(:each) do
-      Factory.create(:user) # free (no sites)
-      Factory.create(:site, plan_id: @free_plan.id) # free (only free sites)
-      Factory.create(:site, plan_id: @paid_plan.id) # free (site is in trial)
+      create(:user) # free (no sites)
+      create(:site, plan_id: @free_plan.id) # free (only free sites)
+      create(:site, plan_id: @paid_plan.id) # free (site is in trial)
 
-      Factory.create(:site_not_in_trial, plan_id: @paid_plan.id) # paying
-      Factory.create(:site_not_in_trial, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id) # paying with next cycle plan
+      create(:site_not_in_trial, plan_id: @paid_plan.id) # paying
+      create(:site_not_in_trial, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id) # paying with next cycle plan
 
-      Factory.create(:user, state: 'suspended') # suspended
-      Factory.create(:user, state: 'archived') # archived
+      create(:user, state: 'suspended') # suspended
+      create(:user, state: 'archived') # archived
     end
 
     it "should create users stats for states" do
@@ -29,7 +29,7 @@ describe Stats::UsersStat do
 
   describe ".json" do
     before(:each) do
-      Factory.create(:users_stat, d: Time.now.utc.midnight)
+      create(:users_stat, d: Time.now.utc.midnight)
     end
 
     describe "set the id as the 'd' field as an integer" do

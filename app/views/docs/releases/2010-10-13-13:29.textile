@@ -1,1 +1,0 @@
-* <span class="label improved">improved</span> Android support (v2.1, 2.2 but also 1.6).

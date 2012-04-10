@@ -1,1 +1,0 @@
-* <span class="label new">new</span> "@sublimevideo.onStart":http://docs.sublimevideo.net/javascript-api/listeners#onStart and "(c)@sublimevideo.onEnd@":http://docs.sublimevideo.net/javascript-api/listeners#onEnd listeners API (in both HTML5 and Flash modes).

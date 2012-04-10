@@ -1,5 +1,0 @@
-* <span class="label new">new</span> Support for the new "Real-Time Stats":http://sublimevideo.net/features#real_time_stats.
-* <span class="label new">new</span> Integrated "HD Switch":http://sublimevideo.net/features#hd_switching allowing you to toggle SD-HD video sources with a single click.
-* <span class="label new">new</span> Support for the new "SublimeVideo Embeds":http://sublimevideo.net/features#embeds allowing your audience to easily embed your videos into their own sites or around the web.
-* <span class="label new">new</span> SublimeVideo badge for the new "Free & Unlimited plan":http://sublimevideo.net/plans (and optionally for the new "Paid plans":http://sublimevideo.net/plans).
-* <span class="label new">new</span> SublimeVideo initial play button on iOS 5 devices.

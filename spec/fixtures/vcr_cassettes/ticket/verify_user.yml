@@ -2,8 +2,8 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/users/161723906.xml
-    body: <user><password>e9860df1ceadf3ee7f62ed4618</password><is-verified>true</is-verified></user>
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/users/190347677.xml
+    body: <user><password>d95239de2c7257bf5a5a0baaa3</password><is-verified>true</is-verified></user>
     headers:
       content-type:
       - application/xml
@@ -15,7 +15,7 @@
       server:
       - nginx/0.8.53
       date:
-      - Fri, 10 Feb 2012 09:22:36 GMT
+      - Thu, 29 Mar 2012 13:33:39 GMT
       content-type:
       - application/xml; charset=utf-8
       connection:
@@ -23,25 +23,31 @@
       status:
       - 200 OK
       x-runtime:
-      - '118'
+      - '610'
       content-length:
       - '1'
       x-api-deprecated:
-      - Please use /api/v1/users/161723906.xml
+      - Please use /api/v1/users/190347677.xml
       set-cookie:
-      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6D3Nlc3Npb25faWQiJWJkMmZkZGM2ZjFhY2FhNGU4YzYzMjg4ZjM0Yzk3MTU1Og1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneSITd2FyZGVuLm1lc3NhZ2V7ADoHaWQiFWJpdWx6OGN2MS1mM3NsZXI6FWF1dGhlbnRpY2F0ZWRfYXRsKwfc4TRP--876aebcf03da081ab52fc2fff134faf68b9aac40;
+      - _zendesk_apps_session=eyJ1c2VyX3JvbGUiOjIsImFjY291bnRfaWQiOjQzMzE5LCJ1c2VyX2lkIjox%0ANTMwODI2NywidXNlcl9sb2NhbGUiOiJlbi1VUy14LTEiLCJ1c2VyX25hbWUi%0AOiJTdWJsaW1lVmlkZW8ifQ%3D%3D%0A;
+        path=/; HttpOnly
+      - _zendesk_session=BAh7CiIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRjajNtMjNkc3VxNWgwYmg6D3Nlc3Npb25faWQiJWYxMDcyNWYyNDRkMTAxY2M1ZDQ3ZDY2NDk0Y2JkMzIw--97ada27f4a8798a7b2bd47299fcf82420ee6213c;
+        path=/; HttpOnly
+      - _zendesk_shared_session=eyJ3YXJkZW4udXNlci5kZWZhdWx0LmtleSI6MTUzMDgyNjcsImF1dGhlbnRp%0AY2F0ZWRfYXQiOjEzMzMwMjgwMTgsImFjY291bnQiOjQzMzE5LCJhdXRoX3Zp%0AYSI6IkJhc2ljU3RyYXRlZ3kifQ%3D%3D%0A--2a0609e5bde9c04b881e63e88dc9edc5eb2a698d;
         path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       x-zendesk-api-version:
       - v1
       cache-control:
       - no-cache
+      x-zendesk-appnode:
+      - app42
     body: ! ' '
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/users/161723906.json
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/users/190347677.json
     body: 
     headers: 
   response: !ruby/struct:VCR::Response
@@ -52,7 +58,7 @@
       server:
       - nginx/0.8.53
       date:
-      - Fri, 10 Feb 2012 09:22:36 GMT
+      - Thu, 29 Mar 2012 13:33:40 GMT
       content-type:
       - application/json; charset=utf-8
       connection:
@@ -60,22 +66,28 @@
       status:
       - 200 OK
       etag:
-      - ! '"58a9873bd01a5228979c73d0a69ab8bd"'
+      - ! '"564960463a3c80c5cda52079d1145512"'
       x-runtime:
       - '42'
       content-length:
-      - '510'
+      - '509'
       x-api-deprecated:
-      - Please use /api/v1/users/161723906.json
+      - Please use /api/v1/users/190347677.json
       set-cookie:
-      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6D3Nlc3Npb25faWQiJTA0YmY0MDcxZDViM2ZjNjYyMjJlNjY2MDNkZGQ2M2M2Og1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneSITd2FyZGVuLm1lc3NhZ2V7ADoHaWQiFGJpdWx6ZWIyM2s0cmVsdDoVYXV0aGVudGljYXRlZF9hdGwrB9zhNE8%3D--a4887a8f2ab9473ab7cbd66bf54a6f9e58e20758;
+      - _zendesk_apps_session=eyJ1c2VyX3JvbGUiOjIsImFjY291bnRfaWQiOjQzMzE5LCJ1c2VyX2lkIjox%0ANTMwODI2NywidXNlcl9sb2NhbGUiOiJlbi1VUy14LTEiLCJ1c2VyX25hbWUi%0AOiJTdWJsaW1lVmlkZW8ifQ%3D%3D%0A;
+        path=/; HttpOnly
+      - _zendesk_session=BAh7CiIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRhbHZtMXF4ZDEzM3JidXY6D3Nlc3Npb25faWQiJTFjZDY5MzI0YzIwZDJjMWU3YWI5ZDFlMmEwMGVkMGZj--b09fce375ecb5d3662cb040282b8d7da02c35db2;
+        path=/; HttpOnly
+      - _zendesk_shared_session=eyJ3YXJkZW4udXNlci5kZWZhdWx0LmtleSI6MTUzMDgyNjcsImF1dGhlbnRp%0AY2F0ZWRfYXQiOjEzMzMwMjgwMjAsImFjY291bnQiOjQzMzE5LCJhdXRoX3Zp%0AYSI6IkJhc2ljU3RyYXRlZ3kifQ%3D%3D%0A--a75574380072e35ea88897533fe1703a6bc5f9aa;
         path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control:
       - private, max-age=0, must-revalidate
       x-zendesk-api-version:
       - v1
-    body: ! '{"name":"Remy","locale_id":null,"uses_12_hour_clock":false,"openid_url":null,"created_at":"2012/02/10
-      10:22:29 +0100","last_login":null,"details":null,"custom_role_id":null,"updated_at":"2012/02/10
-      10:22:36 +0100","notes":null,"external_id":null,"restriction_id":4,"id":161723906,"is_verified":true,"phone":null,"is_active":true,"time_zone":"Bern","current_tags":"","roles":0,"organization_id":null,"groups":[],"photo_url":"https://sublimevideo.zendesk.com/images/types/user_sm.png","email":"email19@user.com"}'
+      x-zendesk-appnode:
+      - app18
+    body: ! '{"name":"Remy","locale_id":null,"openid_url":null,"created_at":"2012/03/29
+      14:44:41 +0200","last_login":null,"details":null,"updated_at":"2012/03/29 15:33:39
+      +0200","notes":null,"is_verified":true,"external_id":null,"custom_role_id":null,"current_tags":"","restriction_id":4,"id":190347677,"phone":null,"is_active":true,"photo_url":"https://sublimevideo.zendesk.com/images/types/user_sm.png","time_zone":"Bern","roles":0,"organization_id":null,"uses_12_hour_clock":false,"groups":[],"email":"email1@user.com"}'
     http_version: '1.1'

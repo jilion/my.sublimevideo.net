@@ -1,4 +1,4 @@
-class Admin::StatsController < AdminController
+class Admin::StatsController < Admin::AdminController
   respond_to :html, :json
 
   def index

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MailLog do
 
   context "Factory" do
-    before(:all) { @mail_log = Factory.create(:mail_log) }
+    before(:all) { @mail_log = create(:mail_log) }
     subject { @mail_log }
 
     its(:template) { should be_present }
@@ -15,7 +15,7 @@ describe MailLog do
   end
 
   describe "Associations" do
-    before(:all) { @mail_log = Factory.create(:mail_log) }
+    before(:all) { @mail_log = create(:mail_log) }
     subject { @mail_log }
 
     it { should belong_to :template }

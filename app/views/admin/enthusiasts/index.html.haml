@@ -1,4 +1,4 @@
-= title("Enthusiasts")
+- title("Enthusiasts")
 = content_header(admin_enthusiasts_page_title(@enthusiasts))
 
 -#%p= render 'filter_links'
@@ -7,7 +7,7 @@
 
 .search
   %h3= "Looking for more?"
-  = form_tag(admin_enthusiasts_path, { method: :get, id: 'search_form', remote: true, onsubmit: "new SpinnerForElement('search_form');" }) do
+  = form_tag(admin_enthusiasts_path, { method: :get, id: 'search_form', remote: true }) do
     = text_field_tag :search, '', class: "text", placeholder: "Keyword", required: true
     = submit_tag "search", name: ''
     = image_tag('admin/spinner.gif', id: 'search_form_spinner', style: "display:none;")

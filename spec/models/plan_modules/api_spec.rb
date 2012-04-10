@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe PlanModules::Api do
   before(:all) do
-    @plan     = Factory.create(:plan, name: 'huge_plan', cycle: 'month', video_views: 1_000_000)
+    @plan     = create(:plan, name: 'huge_plan', cycle: 'month', video_views: 1_000_000)
     @response = @plan.as_api_response(:v1_private_self)
   end
 

@@ -1,3 +1,0 @@
-* <span class="label improved">improved</span> Seeking behavior in Safari: when seeking to a new playback position by dragging the playhead, video frames are updated realtime (HTML5 mode).
-* <span class="label fixed">fixed</span> Volume controls not re-appearing when pausing video during fast-forward (HTML5 mode, Chrome and Safari). 
-* <span class="label fixed">fixed</span> Volume controls not re-appearing if exiting full-window during fast-forward (HTML5 mode, Chrome and Safari).

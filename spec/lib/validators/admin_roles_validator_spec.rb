@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe AdminRolesValidator do
-  subject { Factory.build(:admin) }
+  subject { build(:admin) }
 
   describe "valid admin roles" do
     it "should not add an error" do
