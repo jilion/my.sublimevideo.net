@@ -1,6 +1,6 @@
-describe 'MSV.Models.Site', ->
+describe 'MySublimeVideo.Models.Site', ->
   beforeEach ->
-    @site = new MSV.Models.Site
+    @site = new MySublimeVideo.Models.Site
 
   describe 'title()', ->
     it 'returns hostname if present', ->

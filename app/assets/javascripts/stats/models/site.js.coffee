@@ -1,6 +1,6 @@
 #= require ../../models/site
 
-class MSVStats.Models.Site extends MSV.Models.Site
+class MSVStats.Models.Site extends MySublimeVideo.Models.Site
 
   planMonthCycleVideoViews: ->
     _.reduce(MSVStats.statsDays.models, (memo, stat) ->
@@ -10,5 +10,5 @@ class MSVStats.Models.Site extends MSV.Models.Site
         memo
     0, this)
 
-class MSVStats.Collections.Sites extends MSV.Collections.Sites
+class MSVStats.Collections.Sites extends MySublimeVideo.Collections.Sites
   model: MSVStats.Models.Site
