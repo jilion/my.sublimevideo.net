@@ -13,7 +13,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       $('body').addClass('mysv_public')
 
   initModels: ->
-    MSVVideoCodeGenerator.sites = new MSV.Collections.Sites(@sites)
+    MSVVideoCodeGenerator.sites = new MySublimeVideo.Collections.Sites(@sites)
 
     MSVVideoCodeGenerator.builder = new MSVVideoCodeGenerator.Models.Builder
 
