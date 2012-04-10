@@ -7,4 +7,4 @@
 
 %p.info
   Need help creating poster frames for your videos? Read our
-  <a class='hl' href='http://docs.#{SublimeVideo.topDomainHost()}/create-poster-frame' onclick='window.open(this); return false'>documentation</a>.
+  <a class='hl' href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/create-poster-frame' onclick='window.open(this); return false'>documentation</a>.

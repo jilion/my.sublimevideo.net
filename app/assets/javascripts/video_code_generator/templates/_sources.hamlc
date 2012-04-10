@@ -6,7 +6,7 @@
   %ul
     %li.notice.mime_type_invalid{ style: 'display: none' }><
       != "Please find more information on how to fix MIME Type misconfiguration in our&nbsp;"
-      %a{ href: "http://docs.#{SublimeVideo.topDomainHost()}/troubleshooting#videos-dont-start-playing", onclick: "window.open(this); return false" }><
+      %a{ href: "http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/troubleshooting#videos-dont-start-playing", onclick: "window.open(this); return false" }><
         documentation
       = "."
 
@@ -36,6 +36,6 @@
 
 %p.info><
   != "Need help encoding your video sources? Read our&nbsp;"
-  %a.hl{ href: "http://docs.#{SublimeVideo.topDomainHost()}/encode-videos-for-the-web", onclick: "window.open(this); return false" }><
+  %a.hl{ href: "http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/encode-videos-for-the-web", onclick: "window.open(this); return false" }><
     documentation
   = "."

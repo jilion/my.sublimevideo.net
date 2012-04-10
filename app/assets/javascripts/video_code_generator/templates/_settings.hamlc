@@ -30,7 +30,7 @@
 
   %p.info
     Fill in these attributes to optimize your videos for SublimeVideo's
-    <a class='hl' href='http://docs.#{SublimeVideo.topDomainHost()}/real-time-stats' onclick='window.open(this); return false'>Universal Real-Time Statistics platform</a>.
+    <a class='hl' href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/real-time-stats' onclick='window.open(this); return false'>Universal Real-Time Statistics platform</a>.
 
   %h5
     %label{ for: "data_uid" } UID

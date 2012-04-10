@@ -1,8 +1,8 @@
 - if !MSVVideoCodeGenerator.builderRouter.loggedIn
   .help_list
     %p
-      Please <a class='hl' href='http://#{SublimeVideo.topDomainHost()}/?p=login&user_return_to=%2Fvideo-code-generator'>Log In</a>
-      or <a class='hl' href='http://#{SublimeVideo.topDomainHost()}/?p=signup&user_return_to=%2Fvideo-code-generator'>Sign Up</a>.
+      Please <a class='hl' href='http://#{SublimeVideo.Misc.Utils.topDomainHost()}/?p=login&user_return_to=%2Fvideo-code-generator'>Log In</a>
+      or <a class='hl' href='http://#{SublimeVideo.Misc.Utils.topDomainHost()}/?p=signup&user_return_to=%2Fvideo-code-generator'>Sign Up</a>.
 
     %p To create an iframe embed code the generator must have access to the iframe source's site-specific token.
 - else
@@ -14,7 +14,7 @@
     %p
       In order for this to work, you need to create a simple HTML page for every video
       you’d like to be able to embed, and host this page on one of your registered domains on
-      <a class='hl' href='https://my.#{SublimeVideo.topDomainHost()}' onclick='window.open(this); return false'>MySublimeVideo</a>.
+      <a class='hl' href='https://my.#{SublimeVideo.Misc.Utils.topDomainHost()}' onclick='window.open(this); return false'>MySublimeVideo</a>.
 
     %p
       The final snippet of code available to your audience to share is an
@@ -33,7 +33,7 @@
   %p.info
     The iframe source must be the URL of the actual page containing the <code>&lt;video&gt;</code>
     element – the page must be hosted on #{@loader.get('site').get('hostname')} (or any of its Alias or staging domains).
-    If you need help, make sure to read our <a class='hl' href='http://docs.#{SublimeVideo.topDomainHost()}/embeds' onclick='window.open(this); return false'>documentation</a>.
+    If you need help, make sure to read our <a class='hl' href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/embeds' onclick='window.open(this); return false'>documentation</a>.
   .entry
 
     %label.icon{ for: "iframe_src" } Iframe source url
