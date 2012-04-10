@@ -1,5 +1,5 @@
-= content_for :head_before, sublimevideo_include_tag(request.ssl?, SiteToken.my)
-= content_for :head, javascript_include_tag('video_code_generator')
+= content_for :javascript do
+  = javascript_include_tag "https://4076.voxcdn.com/js/#{SiteToken.my}.js", 'video_code_generator'
 
 = title "Video Code Generator"
 

@@ -1,4 +1,4 @@
-class My::VideoCodesController < MyController
+class VideoCodesController < ApplicationController
   skip_before_filter :authenticate_user!
 
   # GET /video-code-generator
