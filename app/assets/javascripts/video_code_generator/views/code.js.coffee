@@ -15,9 +15,6 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
     @thumbnail = @options.thumbnail
     @iframe    = @options.iframe
 
-    @popup = SublimeVideo.UI.Utils.openPopup
-      class: 'popup'
-      anchor: @popupContent
     # new .SimplePopupHandler("popup_code")
 
   #
@@ -33,16 +30,17 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
     #   iframeTagTemplate: this.iframeTagTemplate
     #   videoTagTemplate: this.videoTagTemplate
     #   iframeContentTemplate: this.iframeContentTemplate
-
-    @popup.setContent(this.template
-      builder: @builder
-      loader: @loader
-      iframe: @iframe
-      video: MSVVideoCodeGenerator.video
-      embedTemplate: this.embedTemplate()
-      iframeTagTemplate: this.iframeTagTemplate
-      videoTagTemplate: this.videoTagTemplate
-      iframeContentTemplate: this.iframeContentTemplate)
+    @popup = SublimeVideo.UI.Utils.openPopup
+      class: 'popup'
+      content: this.template
+        builder: @builder
+        loader: @loader
+        iframe: @iframe
+        video: MSVVideoCodeGenerator.video
+        embedTemplate: this.embedTemplate()
+        iframeTagTemplate: this.iframeTagTemplate
+        videoTagTemplate: this.videoTagTemplate
+        iframeContentTemplate: this.iframeContentTemplate
 
     false
 
@@ -56,4 +54,4 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
       this.videoTagTemplate
 
   hide: ->
-    @popup.close()
+    @popup.close() if @popup
