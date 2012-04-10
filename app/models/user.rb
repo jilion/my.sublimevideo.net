@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   include UserModules::Pusher
   include UserModules::Scope
 
-  devise :database_authenticatable, :invitable, :registerable, :confirmable,
+  devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :lockable
 
   def self.cookie_domain
