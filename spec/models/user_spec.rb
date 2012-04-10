@@ -197,11 +197,6 @@ describe User do
   context "invited" do
     subject { create(:user).tap { |u| u.assign_attributes({ invitation_token: '123', invitation_sent_at: Time.now, email: "bob@bob.com", enthusiast_id: 12 }, without_protection: true); u.save(validate: false) } }
 
-    it "should set enthusiast_id" do
-      subject.should be_invited
-      subject.enthusiast_id.should == 12
-    end
-
     it "should not be able to update enthusiast_id" do
       lambda { subject.update_attributes(enthusiast_id: 13) }.should raise_error
     end
