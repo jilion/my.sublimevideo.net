@@ -18,12 +18,6 @@ window.SV =
   Routers: {}
   Views: {}
 
-window.MSV =
-  Models: {}
-  Collections: {}
-  Routers: {}
-  Views: {}
-
 window.MSVStats =
   Models: {}
   Collections: {}
