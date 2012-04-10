@@ -311,13 +311,26 @@ feature "Users" do
 end
 
 feature "session" do
+  let(:user) { create(:user) }
+
+  scenario "login" do
+    go 'my', '/gs-login'
+
+    fill_in "Email",    with: user.email
+    fill_in "Password", with: "123456"
+
+    click_button "Log In"
+
+    current_url.should eq "http://my.sublimevideo.dev/sites"
+  end
+
   scenario "logout" do
     sign_in_as :user, { name: "John Doe" }
     page.should have_content "John Doe"
     click_link "Logout"
 
     # External url
-    # current_url.should eq "http://sublimevideo.dev/"
+    current_url.should eq "http://sublimevideo.dev/"
     page.should_not have_content "John Doe"
   end
 end

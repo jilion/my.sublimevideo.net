@@ -3,7 +3,7 @@
 
 %h2.title= "Create your account"
 
-= form_for @user || User.new, as: :user, url: signup_user_url(subdomain: 'my', protocol: https_if_prod_or_staging), html: { id: 'user_signup', class: "main_form" } do |f|
+= form_for @user || User.new, as: :user, url: my_url('signup'), html: { id: 'user_signup', class: "main_form" } do |f|
   .entry.email
     = f.label :email, "Email", class: "icon"
     = f.text_field :email, class: "text", placeholder: "Email", required: true, value: params[:user].try(:[], :email)
