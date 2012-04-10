@@ -7,13 +7,14 @@
   - else
     = javascript_include_tag 'application'
 
-= content_for :middle do
-  = render "layouts/flash", flash: flash if flash.present?
+- if flash.present?
+  = content_for :middle do
+    = render "layouts/flash", flash: flash
+
+- if Rails.env.production? && user_signed_in?
+  = content_for :javascript_bottom do
+    = render 'layouts/fastpass'
 
 = render 'layouts/menu'
-= render template: 'layouts/sublimevideo'
 
-= content_for :javascript_bottom do
-  - if Rails.env.production?
-    = render 'layouts/fastpass' if request.subdomain == 'my' && user_signed_in?
-    = render 'layouts/gosquared'
+= render template: 'layouts/sublimevideo'
