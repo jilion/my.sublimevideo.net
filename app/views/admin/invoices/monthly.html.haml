@@ -11,6 +11,6 @@
     %tr{ style: from.end_of_month > 30.days.ago ? "font-style:italic;" : "" }
       %td= l from.end_of_month, format: :month_fullyear
       %td= display_amount invoices.where { customer_country == 'CH' }.sum(:amount)
-      %td= display_amount invoices.where { customer_country != 'CH' }.sum(:amount)
+      %td= display_amount invoices.where { (customer_country == nil) | (customer_country != 'CH') }.sum(:amount)
       %td= display_amount invoices.sum(:amount)
     - from = from + 1.month
