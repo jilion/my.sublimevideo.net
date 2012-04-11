@@ -1,6 +1,6 @@
 #header
   %h1
-    = link_to "SublimeVideo", root_url(host: request.domain, protocol: 'http'), onclick: "window.open(this); return false"
+    = link_to "SublimeVideo", www_page_url(''), onclick: "window.open(this); return false"
     %em= "Admin"
   - if admin_signed_in?
     .popup_menu
