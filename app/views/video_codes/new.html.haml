@@ -1,7 +1,7 @@
 = content_for :javascript do
   = javascript_include_tag "https://4076.voxcdn.com/js/#{SiteToken.my}.js", 'video_code_generator'
 
-= title "Video Code Generator"
+- @page_title = "Video Code Generator"
 
 :coffeescript
   $ ->
@@ -16,9 +16,12 @@
       %p= "Simply select the type of player implementation you require and enter the URLs of your video assets in the fields below to see a live preview of your SublimeVideo player at the bottom of the page. Once you’re happy with the settings all you need to do is copy the code and paste it into the appropriate page(s) on your site."
     .big_break
   - else
+    - @body_class = 'vcg'
     = content_for :header do
       %h2 Video Code Generator
       %p.sub= "Creating your <video> code has never been easier."
+
+    %span.video_code_generator_icon
 
     %p= raw "SublimeVideo's Video Code Generator helps you easily generate properly configured <code>&lt;video&gt;</code> elements for use with SublimeVideo. It's also the easiest way to quickly test SublimeVideo player with your own video sources."
 
