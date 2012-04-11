@@ -70,7 +70,7 @@ describe Log::Voxcast do
   end
 
   context "Factory from 4076.voxcdn.com" do
-    before(:each) do
+    before do
       VoxcastCDN.stub(:download_log).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz'))
       }
@@ -213,7 +213,7 @@ describe Log::Voxcast do
 
       # context "with a log that is not uploaded to S3" do
       #   use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 0 logs"
-      #   before(:each) do
+      #   before do
       #     Log::Voxcast.stub(:create!) { raise Aws::AwsError }
       #   end
       #
@@ -246,7 +246,7 @@ describe Log::Voxcast do
 
       context "with already a log saved" do
         use_vcr_cassette "voxcast/next_log_ended_at"
-        before(:each) do
+        before do
           create(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,29).to_i}-#{Time.utc(2011,7,7,9,30).to_i}.gz")
           create(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,37).to_i}-#{Time.utc(2011,7,7,9,38).to_i}.gz")
         end
@@ -269,7 +269,7 @@ describe Log::Voxcast do
     end
 
     describe ".parse_log_for_stats" do
-      before(:each) do
+      before do
         log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
         VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
         @log = create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
@@ -292,7 +292,7 @@ describe Log::Voxcast do
   end
 
   describe "Instance Methods" do
-    before(:each) do
+    before do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
       VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
       @log = create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')

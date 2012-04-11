@@ -4,7 +4,7 @@ describe Stats::TweetsStat do
 
   context "with a bunch of different tweets" do
 
-    before(:each) do
+    before do
       create(:tweet, tweeted_at: 5.days.ago.midnight, keywords: %w[sublimevideo])
       create(:tweet, tweeted_at: 1.day.ago.midnight, keywords: %w[jilion videojs sublimevideo])
       create(:tweet, tweeted_at: 1.day.ago.midnight, keywords: ["jw player", "videojs"])

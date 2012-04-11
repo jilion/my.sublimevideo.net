@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Notify do
 
   describe "send method" do
-    before(:each) do
+    before do
       Airbrake.stub(:notify)
       Notify.stub(:prowl)
     end

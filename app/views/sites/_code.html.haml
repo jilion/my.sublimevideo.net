@@ -16,10 +16,10 @@
       .checkbox_wrap
         = check_box_tag "embed_code_ssl_#{site.token}", '1', false, id: "embed_code_ssl_#{site.token}"
         = label_tag "embed_code_ssl_#{site.token}", 'Deliver with SSL for secure pages.'
-      %p.learn_more= link_to "Learn more about SSL serving.", page_url('ssl', subdomain: 'docs'), class: "hl"
+      %p.learn_more= link_to "Learn more about SSL serving.", docs_page_url('ssl'), class: "hl"
 
 .dark_box
-  -# %p= raw "Need help building your first #{content_tag(:code, '<video>')} elements? Read our #{link_to "documentation", page_url('write-proper-video-elements', subdomain: 'docs')}."
+  -# %p= raw "Need help building your first #{content_tag(:code, '<video>')} elements? Read our #{link_to "documentation", docs_page_url('write-proper-video-elements')}."
   -# = "Discover our #{link_to "video tag builder", video_tag_builder_path(site_id: site.token)}!"
   -# %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
   -#%p= raw "If a plugin or service asks for your site's token, it is: #{content_tag(:code, site.token)}"

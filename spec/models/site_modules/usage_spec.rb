@@ -41,7 +41,7 @@ describe SiteModules::Usage do
 
   describe "#billable_usages" do
     before(:all) { Timecop.travel(15.days.ago) { @site = create(:site_not_in_trial) } }
-    before(:each) do
+    before do
       @site.unmemoize_all
       create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 4 })
       create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 3 })
@@ -63,7 +63,7 @@ describe SiteModules::Usage do
 
   describe "#current_monthly_billable_usages.sum & #current_percentage_of_plan_used" do
     before(:all) { @site = create(:site) }
-    before(:each) do
+    before do
       @site.reload
       @site.unmemoize_all
       create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,30).midnight, vv: { m: 3, e: 7, d: 10, i: 0, em: 0 })
@@ -164,7 +164,7 @@ describe SiteModules::Usage do
       end
 
       describe "with 1 historic day and 1 over limit" do
-        before(:each) do
+        before do
           create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,1).midnight, vv: { m: 200, e: 200, d: 200, i: 0, em: 0 })
           Timecop.travel(Time.utc(2011,1,2))
         end
@@ -175,7 +175,7 @@ describe SiteModules::Usage do
       end
 
       describe "with 2 historic days and 1 over limit" do
-        before(:each) do
+        before do
           create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,1).midnight, vv: { m: 400 })
           create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,2).midnight, vv: { m: 300 })
           Timecop.travel(Time.utc(2011,1,3))
@@ -187,7 +187,7 @@ describe SiteModules::Usage do
       end
 
       describe "with 5 historic days and 2 over limit" do
-        before(:each) do
+        before do
           create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,1).midnight, vv: { m: 400 })
           create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,2).midnight, vv: { m: 300 })
           create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,3).midnight, vv: { m: 500 })
@@ -200,7 +200,7 @@ describe SiteModules::Usage do
       end
 
       describe "with >60 historic days and 2 over limit" do
-        before(:each) do
+        before do
           create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,1).midnight, vv: { m: 400 })
           create(:site_day_stat, t: @site.token, d: Time.utc(2011,2,1).midnight, vv: { m: 500 })
           create(:site_day_stat, t: @site.token, d: Time.utc(2011,3,1).midnight, vv: { m: 500 })

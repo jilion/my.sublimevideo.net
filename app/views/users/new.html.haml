@@ -16,7 +16,7 @@
   .entry.terms
     .checkbox_wrap
       = f.check_box :terms_and_conditions
-      = f.label :terms_and_conditions, "I agree to the #{link_to("Terms & Conditions", page_url('terms', subdomain: 'my'), onclick: "window.open(this); return false")}.".html_safe
+      = f.label :terms_and_conditions, "I agree to the #{link_to("Terms & Conditions", page_url('terms'), onclick: "window.open(this); return false")}.".html_safe
 
   .entry.submit.sign_up
     = f.submit "Sign Up"

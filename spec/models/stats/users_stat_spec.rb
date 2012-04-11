@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Stats::UsersStat do
 
   describe ".create_stats" do
-    before(:each) do
+    before do
       create(:user) # free (no sites)
       create(:site, plan_id: @free_plan.id) # free (only free sites)
       create(:site, plan_id: @paid_plan.id) # free (site is in trial)
@@ -28,7 +28,7 @@ describe Stats::UsersStat do
   end
 
   describe ".json" do
-    before(:each) do
+    before do
       create(:users_stat, d: Time.now.utc.midnight)
     end
 

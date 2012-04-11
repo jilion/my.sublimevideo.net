@@ -43,7 +43,7 @@
   -#- if site.in_free_plan?
   -#  .more_settings_desc><
   -#    = raw "More settings like alias and staging domains, custom path and wildcard option, are available on paid plans. #{link_to "Read more", "http://docs.sublimevideo.net/site-settings", class: "hl"}."
-  = link_to page_url('site-settings', subdomain: 'docs'), class: "help", onclick: "window.open(this); return false" do
+  = link_to docs_page_url('site-settings'), class: "help", onclick: "window.open(this); return false" do
     %span= "Read more"
 
   - if @site.in_free_plan?

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Admin::MailLogsController do
 
   context "with logged in admin with the god role" do
-    before(:each) { sign_in :admin, authenticated_admin(roles: ['god']) }
+    before { sign_in :admin, authenticated_admin(roles: ['god']) }
 
     it "responds with success to GET :show" do
       MailLog.stub(:find).with("1") { mock_mail_log }

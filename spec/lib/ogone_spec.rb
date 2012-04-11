@@ -76,7 +76,7 @@ describe Ogone do
 
     describe ".refund" do
       describe "refund of $10 via a transaction's pay_id that succeeds" do
-        before(:each) do
+        before do
           VCR.use_cassette "ogone/visa_payment_generic" do
             @purchase = Ogone.purchase(1000, @cc, currency: 'USD')
           end
@@ -87,7 +87,7 @@ describe Ogone do
       end
 
       describe "refund of $10 via a transaction's pay_id that fails" do
-        before(:each) do
+        before do
           VCR.use_cassette "ogone/visa_payment_generic" do
             @purchase = Ogone.purchase(1000, @cc, currency: 'USD')
           end

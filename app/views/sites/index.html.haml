@@ -23,7 +23,7 @@
         %li{ class: ('complete' if @loader_hits > 0) }
           .wrap= "2. Add your embed code to your pages. Click on #{@sites.one? ? 'the' : 'the appropriate'} \"Embed Code\" button below."
         %li{ class: ('complete' if @dev_views > 0) }
-          .wrap= raw "3. Add #{content_tag(:code, '<video>')} elements to your pages. #{link_to "Need help?", page_url('write-proper-video-elements', subdomain: 'docs'), onclick: "window.open(this); return false"}"
+          .wrap= raw "3. Add #{content_tag(:code, '<video>')} elements to your pages. #{link_to "Need help?", docs_page_url('write-proper-video-elements'), onclick: "window.open(this); return false"}"
           -#= raw "Learn more about our #{link_to "video tag builder", video_tag_builder_path}!"
         %li
           .wrap 4. Deploy your SublimeVideo players on your website in production.

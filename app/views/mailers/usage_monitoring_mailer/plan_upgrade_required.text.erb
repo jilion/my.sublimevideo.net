@@ -2,6 +2,6 @@ You have reached your peak insurance with your plan <%= @site.plan.name.humanize
 
 TODO
 
-<%= edit_site_plan_url(@site.to_param, protocol: 'https', subdomain: 'my') %>
+<%= edit_site_plan_url(@site.to_param) %>
 
 If you have any questions, please email <%= I18n.t("mailer.billing.email") %>.

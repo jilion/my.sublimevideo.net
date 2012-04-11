@@ -4,7 +4,7 @@ describe Stats::SiteUsagesStat do
 
   context "with a bunch of different site_usage" do
 
-    before(:each) do
+    before do
       site = create(:site)
       create(:site_usage, site_id: site.id, day: 5.days.ago.midnight, loader_hits: 2)
       create(:site_usage, site_id: site.id, day: 1.day.ago.midnight,  loader_hits: 8, ssl_loader_hits: 3, main_player_hits: 1, main_player_hits_cached: 1, extra_player_hits: 1, extra_player_hits_cached: 1, dev_player_hits: 1, dev_player_hits_cached: 1, invalid_player_hits: 1, invalid_player_hits_cached: 1)

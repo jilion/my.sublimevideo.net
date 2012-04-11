@@ -4,7 +4,7 @@ describe Stats::SalesStat do
 
   context "with a bunch of different invoices" do
 
-    before(:each) do
+    before do
       site = create(:site)
       @plus_monthly_plan    = @paid_plan
       @premium_monthly_plan = create(:plan, name: 'premium', cycle: 'month')

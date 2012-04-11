@@ -320,7 +320,7 @@ describe UserModules::CreditCard do
       end
 
       context "when attributes are not present" do
-        before(:each) { subject.attributes = nil_cc_attributes }
+        before { subject.attributes = nil_cc_attributes }
 
         it "should return a ActiveMerchant::Billing::CreditCard instance" do
           subject.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
@@ -452,7 +452,7 @@ describe UserModules::CreditCard do
 
     describe "#apply_pending_credit_card_info" do
       use_vcr_cassette "ogone/void_authorization"
-      before(:each) do
+      before do
         @user = build(:user_no_cc, valid_cc_attributes)
         @user.prepare_pending_credit_card
         @user.cc_register = false
@@ -546,7 +546,7 @@ describe UserModules::CreditCard do
       end
 
       context "user has no registered credit card" do
-        before(:each) do
+        before do
           @user = create(:user_no_cc)
 
           @user.attributes = valid_cc_attributes
@@ -702,7 +702,7 @@ describe UserModules::CreditCard do
       end
 
       context "user has already a registered credit card" do
-        before(:each) do
+        before do
           @user = create(:user, cc_updated_at: 5.seconds.ago)
 
           @user.attributes = valid_cc_attributes_master

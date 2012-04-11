@@ -46,7 +46,7 @@ describe Plan do
     end
 
     describe "uniqueness of name scoped by cycle" do
-      before(:each) do
+      before do
         create(:plan, :name => "foo", :cycle => "month")
       end
 
@@ -295,7 +295,7 @@ describe Plan do
       subject { create(:plan) }
 
       context "site doesn't have access to a discounted price" do
-        before(:each) do
+        before do
           subject.should_receive(:discounted?).with(site) { false }
         end
 
@@ -305,7 +305,7 @@ describe Plan do
       end
 
       context "site has access to a discounted price" do
-        before(:each) do
+        before do
           subject.should_receive(:discounted?).with(site) { deal }
         end
 
@@ -320,7 +320,7 @@ describe Plan do
       subject { create(:plan) }
 
       context "site doesn't have access to a discounted price" do
-        before(:each) do
+        before do
           subject.should_receive(:discounted_percentage).with(site) { 0 }
         end
 
@@ -330,7 +330,7 @@ describe Plan do
       end
 
       context "site has access to a discounted price" do
-        before(:each) do
+        before do
           subject.should_receive(:discounted_percentage).with(site) { 0.3 }
         end
 

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Admin::TweetsController do
 
   context "with logged in admin" do
-    before(:each) { sign_in :admin, authenticated_admin }
+    before { sign_in :admin, authenticated_admin }
 
     it "responds with success to GET :index" do
       get :index

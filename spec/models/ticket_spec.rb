@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ticket do
-  before(:each) do
+  before do
     @user = create(:user, name: "Remy")
     @site = create(:site, user: @user, plan_id: @paid_plan.id)
     @loser = create(:user)

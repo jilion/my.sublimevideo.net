@@ -1,6 +1,6 @@
 %h2.title= "Log in to SublimeVideo"
 
-- action = action_name == 'new_gs' ? gs_login_url(subdomain: 'my', protocol: https_if_prod_or_staging) : login_user_url(subdomain: 'my', protocol: https_if_prod_or_staging)
+- action = action_name == 'new_gs' ? gs_login_url : login_user_url
 = form_for User.new, as: :user, url: action, html: { method: :post, id: 'user_login', class: "main_form" } do |f|
   .entry.email
     = f.label :email, "", class: "icon"
@@ -17,7 +17,7 @@
   .entry.submit.login
     = f.submit "Log In", class: "blue_button"
     %ul.form_list
-      %li.signup= link_to "Don't have an account yet?", request.subdomain == 'my' ? signup_user_url : root_url(host: request.domain, p: 'signup')
-      %li= link_to "Forgot your password?", new_user_password_url(subdomain: 'my')
-      %li= link_to "Didn't receive confirmation instructions?", new_user_confirmation_url(subdomain: 'my')
+      %li.signup= link_to "Don't have an account yet?",  signup_user_url
+      %li= link_to "Forgot your password?", new_user_password_url
+      %li= link_to "Didn't receive confirmation instructions?", new_user_confirmation_url
   .spacer

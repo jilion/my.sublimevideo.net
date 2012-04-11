@@ -3,7 +3,7 @@ class Admin::AdminController < ApplicationController
   before_filter :authenticate_admin!
 
   def require_role?(role)
-    redirect_to admin_sites_url(subdomain: 'admin') unless has_role?(role)
+    redirect_to admin_sites_url unless has_role?(role)
   end
 
   layout 'admin'

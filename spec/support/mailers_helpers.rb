@@ -9,7 +9,7 @@ module Spec
 
         methods.each do |method|
           describe "common checks for #{mailer_class}.#{method}" do
-            before(:each) do
+            before do
               @params = Array.wrap(options[:params].respond_to?(:call) ? options[:params].call : options[:params])
               ActionMailer::Base.deliveries.clear
               described_class.send(method, *@params).deliver

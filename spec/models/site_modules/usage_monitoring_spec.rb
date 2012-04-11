@@ -17,7 +17,7 @@ describe SiteModules::UsageMonitoring do
     end
 
     pending "with required upgrade site" do
-      before(:each) do
+      before do
         Timecop.travel(Time.utc(2011,1,1)) { @site = create(:site, plan_id: @plan.id) }
         (1..20).each do |day|
           create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,day), vv: { m: 200 })
@@ -42,7 +42,7 @@ describe SiteModules::UsageMonitoring do
     end
 
     context "with reached player hits site" do
-      before(:each) do
+      before do
         Timecop.travel(Time.utc(2011,1,1)) { @site = create(:site_not_in_trial, plan_id: @plan.id) }
         create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,1), vv: { m: 3001 })
       end

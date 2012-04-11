@@ -44,7 +44,7 @@ class UsersController < Devise::RegistrationsController
     respond_with(@user) do |format|
       if @user.update_attributes(params[:user])
         set_flash_message :notice, :updated if is_navigational_format?
-        format.html { redirect_to params[:more_info_form] ? sites_url(subdomain: 'my') : [:edit, :user] }
+        format.html { redirect_to params[:more_info_form] ? sites_url : [:edit, :user] }
       else
         format.html { render :edit }
       end

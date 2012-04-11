@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Admin::ReleasesController do
 
   context "with logged in admin with the player role" do
-    before(:each) { sign_in :admin, authenticated_admin(roles: ['player']) }
+    before { sign_in :admin, authenticated_admin(roles: ['player']) }
 
     it "responds with success to GET :index" do
       get :index
@@ -12,7 +12,7 @@ describe Admin::ReleasesController do
     end
 
     describe "POST :create" do
-      before(:each) { Release.stub(:new).and_return(mock_release) }
+      before { Release.stub(:new).and_return(mock_release) }
 
       it "responds with redirect when save succeed" do
         mock_release.stub(:save) { true }
@@ -31,7 +31,7 @@ describe Admin::ReleasesController do
     end
 
     describe "PUT :update" do
-      before(:each) { Release.stub(:find).and_return(mock_release) }
+      before { Release.stub(:find).and_return(mock_release) }
 
       it "responds with redirect when update_attributes succeed" do
         mock_release.stub(:flag).and_return(true)

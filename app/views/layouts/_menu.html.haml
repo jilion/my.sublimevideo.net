@@ -6,8 +6,8 @@
         = li_menu_link('documentation', protocol: 'http', subdomain: 'docs', path: '')
         = li_menu_link('help')
         %li{ class: controller.request.url =~ /account/ ? 'active' : nil }
-          = link_to(edit_user_url(subdomain: 'my'), class: 'user') do
+          = link_to(edit_user_url, class: 'user') do
             %span.icon= truncate(current_user.name_or_email, length: 35)
         %li.no_sticky.logout
-          = link_to destroy_user_session_url(subdomain: 'my'), title: "logout"  do
+          = link_to destroy_user_session_url, title: "logout"  do
             %span= "logout"

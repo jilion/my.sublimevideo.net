@@ -40,7 +40,7 @@ class Admin::UsersController < Admin::AdminController
   # GET /users/:id/become
   def become
     sign_in(User.find(params[:id]), bypass: true)
-    redirect_to root_url(subdomain: 'my')
+    redirect_to root_url
   end
 
 end

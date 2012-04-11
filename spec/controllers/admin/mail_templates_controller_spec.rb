@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Admin::MailTemplatesController do
 
   context "with logged in admin with the god role" do
-    before(:each) do
+    before do
       sign_in :admin, authenticated_admin(roles: ['god'])
       MailTemplate.stub(:find).with('1') { mock_mail_template }
     end
@@ -15,7 +15,7 @@ describe Admin::MailTemplatesController do
     end
 
     describe "POST :create" do
-      before(:each) { MailTemplate.stub(:new).and_return(mock_mail_template) }
+      before { MailTemplate.stub(:new).and_return(mock_mail_template) }
 
       it "responds with redirect when save succeed" do
         mock_mail_template.stub(:save) { true }

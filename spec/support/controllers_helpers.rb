@@ -14,9 +14,13 @@ module Spec
 
               actions = Array.wrap(actions)
               actions.each do |action|
-                before(:each) do
+                before do
                   case role_name.to_sym
-                  when :user, :admin
+                  when :user
+                    @request.host = "my.test.host"
+                    sign_in(role_name.to_sym, send("authenticated_#{role_name}", role_stubs))
+                  when :admin
+                    @request.host = "admin.test.host"
                     sign_in(role_name.to_sym, send("authenticated_#{role_name}", role_stubs))
                   end
                 end

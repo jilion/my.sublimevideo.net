@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SitesHelper do
 
   describe "#full_days_until_trial_end" do
-    before(:each) { BusinessModel.stub(:days_for_trial) { 3 } }
+    before { BusinessModel.stub(:days_for_trial) { 3 } }
 
     it { helper.full_days_until_trial_end(build(:new_site, trial_started_at: Time.now.utc.midnight + 3.hours)).should eq 3 }
     it { helper.full_days_until_trial_end(build(:new_site, trial_started_at: 1.day.ago.midnight + 3.hours)).should eq 2 }

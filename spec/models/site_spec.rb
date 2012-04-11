@@ -357,7 +357,7 @@ describe Site do
     end
 
     describe "plan_id=" do
-      before(:each) do
+      before do
         @paid_plan2        = create(:plan, name: "premium",   cycle: "month", price: 5000)
         @paid_plan_yearly  = create(:plan, name: "plus", cycle: "year",  price: 10000)
         @paid_plan_yearly2 = create(:plan, name: "premium",   cycle: "year",  price: 50000)
@@ -371,7 +371,7 @@ describe Site do
         its(:next_cycle_plan_id) { should be_nil }
 
         describe "should prevent new plan_id update while pending_plan_id is present" do
-          before(:each) { subject.plan_id = @paid_plan.id }
+          before { subject.plan_id = @paid_plan.id }
 
           its(:plan_id)            { should be_nil }
           its(:pending_plan_id)    { should eql @free_plan.id }
@@ -397,12 +397,12 @@ describe Site do
 
       describe "upgrade" do
         describe "free =>" do
-          before(:each) do
+          before do
             @site = create(:new_site, plan: @free_plan)
           end
 
           describe "monthly" do
-            before(:each) { @site.reload.plan_id = @paid_plan.id }
+            before { @site.reload.plan_id = @paid_plan.id }
             subject { @site }
 
             its(:plan_id)            { should eql @free_plan.id }
@@ -411,7 +411,7 @@ describe Site do
           end
 
           describe "yearly" do
-            before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
+            before { @site.reload.plan_id = @paid_plan_yearly.id }
             subject { @site }
 
             its(:plan_id)            { should eql @free_plan.id }
@@ -420,7 +420,7 @@ describe Site do
           end
 
           describe "sponsored" do
-            before(:each) { @site.reload.plan_id = @sponsored_plan.id }
+            before { @site.reload.plan_id = @sponsored_plan.id }
             subject { @site }
 
             its(:plan_id)            { should eql @free_plan.id }
@@ -430,12 +430,12 @@ describe Site do
         end
 
         describe "monthly =>" do
-          before(:each) do
+          before do
             @site = create(:new_site, plan: @paid_plan)
           end
 
           describe "monthly" do
-            before(:each) { @site.reload.plan_id = @paid_plan2.id }
+            before { @site.reload.plan_id = @paid_plan2.id }
             subject { @site }
 
             its(:plan_id)            { should eql @paid_plan.id }
@@ -444,7 +444,7 @@ describe Site do
           end
 
           describe "monthly (with a next_cycle_plan)" do
-            before(:each) { @site.reload.next_cycle_plan_id = @paid_plan_yearly.id; @site.plan_id = @paid_plan2.id }
+            before { @site.reload.next_cycle_plan_id = @paid_plan_yearly.id; @site.plan_id = @paid_plan2.id }
             subject { @site }
 
             its(:plan_id)            { should eql @paid_plan.id }
@@ -453,7 +453,7 @@ describe Site do
           end
 
           context "with an open invoice" do
-            before(:each) do
+            before do
               create(:invoice, site: @site, state: 'open')
               @site.reload.plan_id = @paid_plan2.id
             end
@@ -465,7 +465,7 @@ describe Site do
           end
 
           context "with an waiting invoice" do
-            before(:each) do
+            before do
               create(:invoice, site: @site, state: 'waiting')
               @site.reload.plan_id = @paid_plan2.id
             end
@@ -477,7 +477,7 @@ describe Site do
           end
 
           context "with a failed invoice" do
-            before(:each) do
+            before do
               create(:invoice, site: @site, state: 'failed')
               @site.reload.plan_id = @paid_plan2.id
             end
@@ -489,7 +489,7 @@ describe Site do
           end
 
           describe "same monthly plan" do
-            before(:each) { @site.reload.plan_id = @paid_plan.id }
+            before { @site.reload.plan_id = @paid_plan.id }
             subject { @site }
 
             its(:plan_id)            { should eql @paid_plan.id }
@@ -498,7 +498,7 @@ describe Site do
           end
 
           describe "yearly" do
-            before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
+            before { @site.reload.plan_id = @paid_plan_yearly.id }
             subject { @site }
 
             its(:plan_id)            { should eql @paid_plan.id }
@@ -507,7 +507,7 @@ describe Site do
           end
 
           describe "custom plan (token)" do
-            before(:each) { @site.reload.plan_id = @custom_plan.token }
+            before { @site.reload.plan_id = @custom_plan.token }
             subject { @site }
 
             its(:plan_id)            { should eql @paid_plan.id }
@@ -516,7 +516,7 @@ describe Site do
           end
 
           describe "custom plan (id)" do
-            before(:each) { @site.reload.plan_id = @custom_plan.id }
+            before { @site.reload.plan_id = @custom_plan.id }
             subject { @site }
 
             its(:plan_id)            { should eql @paid_plan.id }
@@ -525,7 +525,7 @@ describe Site do
           end
 
           describe "sponsored" do
-            before(:each) { @site.reload.plan_id = @sponsored_plan.id }
+            before { @site.reload.plan_id = @sponsored_plan.id }
             subject { @site }
 
             its(:plan_id)            { should eql @paid_plan.id }
@@ -536,7 +536,7 @@ describe Site do
       end
 
       describe "upgrade yearly => yearly" do
-        before(:each) do
+        before do
           @site = build(:new_site, plan: @paid_plan_yearly)
           @site.plan_id = @paid_plan_yearly2.id
         end
@@ -550,14 +550,14 @@ describe Site do
       describe "downgrade" do
         context "during trial" do
           describe "monthly =>" do
-            before(:each) do
+            before do
               @site = create(:new_site, plan: @paid_plan2)
               @site.should be_trial_not_started_or_in_trial
             end
 
             { free: :free_plan, monthly: :paid_plan, yearly: :paid_plan_yearly }.each do |plan_name, plan|
               describe plan_name do
-                before(:each) { @site.reload.plan_id = instance_variable_get("@#{plan}").id }
+                before { @site.reload.plan_id = instance_variable_get("@#{plan}").id }
                 subject { @site }
 
                 its(:plan_id)            { should eql @paid_plan2.id }
@@ -570,7 +570,7 @@ describe Site do
 
         context "after trial" do
           context "first_paid_plan_started_at is nil" do
-            before(:each) do
+            before do
               @site = create(:site_not_in_trial, plan: @paid_plan2, first_paid_plan_started_at: nil)
               @site.first_paid_plan_started_at.should be_nil
               @site.should_not be_trial_not_started_or_in_trial
@@ -578,7 +578,7 @@ describe Site do
 
             { free: :free_plan, monthly: :paid_plan, yearly: :paid_plan_yearly }.each do |plan_name, plan|
               describe plan_name do
-                before(:each) { @site.reload.plan_id = instance_variable_get("@#{plan}").id }
+                before { @site.reload.plan_id = instance_variable_get("@#{plan}").id }
                 subject { @site }
 
                 its(:plan_id)            { should eql @paid_plan2.id }
@@ -589,7 +589,7 @@ describe Site do
           end
 
           context "first_paid_plan_started_at is not nil" do
-            before(:each) do
+            before do
               @site = create(:site_with_invoice, plan_id: @paid_plan2.id, first_paid_plan_started_at: Time.now.utc)
               @site.first_paid_plan_started_at.should be_present
               @site.should_not be_trial_not_started_or_in_trial
@@ -597,7 +597,7 @@ describe Site do
 
             { free: :free_plan, monthly: :paid_plan, yearly: :paid_plan_yearly }.each do |plan_name, plan|
               describe plan_name do
-                before(:each) { @site.reload.plan_id = instance_variable_get("@#{plan}").id }
+                before { @site.reload.plan_id = instance_variable_get("@#{plan}").id }
                 subject { @site }
 
                 its(:plan_id)            { should eql @paid_plan2.id }
@@ -613,7 +613,7 @@ describe Site do
   end
 
   describe "State Machine" do
-    before(:each) { VoxcastCDN.stub(:purge) }
+    before { VoxcastCDN.stub(:purge) }
 
     describe "#suspend" do
       subject do
@@ -1041,7 +1041,7 @@ describe Site do
     end
 
     describe "#recommended_plan" do
-      before(:each) do
+      before do
         Plan.delete_all
         @plus_plan = create(:plan, name: "plus", video_views: 200_000)
         @premium_plan = create(:plan, name: "premium", video_views: 1_000_000)
@@ -1054,7 +1054,7 @@ describe Site do
       end
 
       context "with less than 5 days of usage" do
-        before(:each) do
+        before do
           @site.unmemoize_all
           create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 1000 })
           create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 1000 })
@@ -1068,7 +1068,7 @@ describe Site do
       end
 
       context "with less than 5 days of usage (but with 0 between)" do
-        before(:each) do
+        before do
           @site.unmemoize_all
           create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 30_000 })
           create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 30_000 })
@@ -1082,7 +1082,7 @@ describe Site do
       end
 
       context "with regular usage and video_views smaller than plus" do
-        before(:each) do
+        before do
           @site.unmemoize_all
           create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 50 })
           create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 50 })
@@ -1096,7 +1096,7 @@ describe Site do
       end
 
       context "with regular usage and video_views between plus and premium" do
-        before(:each) do
+        before do
           @site.unmemoize_all
           create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 10_000 })
           create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 10_000 })
@@ -1110,7 +1110,7 @@ describe Site do
       end
 
       context "with non regular usage and lower than video_views but greather than average video_views" do
-        before(:each) do
+        before do
           @site.unmemoize_all
           create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 12_000 })
           create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 12_000 })
@@ -1124,7 +1124,7 @@ describe Site do
       end
 
       context "with too much video_views" do
-        before(:each) do
+        before do
           @site.unmemoize_all
           create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 500_000 })
           create(:site_day_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 500_000 })
@@ -1137,7 +1137,7 @@ describe Site do
       end
 
       context "with recommended plan lower than current plan" do
-        before(:each) do
+        before do
           @site.unmemoize_all
           @site.plan = @premium_plan
           create(:site_day_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 500 })
@@ -1155,14 +1155,14 @@ describe Site do
       subject { @site.reload }
 
       context "first invoice" do
-        before(:each) do
+        before do
           Invoice.delete_all
           @site = create(:new_site, first_paid_plan_started_at: nil)
           @site.first_paid_plan_started_at.should be_nil
         end
 
         context "with an open invoice" do
-          before(:each) do
+          before do
             @open_invoice = create(:invoice, site: @site, state: 'open')
           end
 
@@ -1170,7 +1170,7 @@ describe Site do
         end
 
         context "with a failed invoice" do
-          before(:each) do
+          before do
             @failed_invoice = create(:invoice, site: @site, state: 'failed')
           end
 
@@ -1178,7 +1178,7 @@ describe Site do
         end
 
         context "with a waiting invoice" do
-          before(:each) do
+          before do
             @waiting_invoice = create(:invoice, site: @site, state: 'waiting')
           end
 
@@ -1187,14 +1187,14 @@ describe Site do
       end
 
       context "not first invoice" do
-        before(:each) do
+        before do
           Invoice.delete_all
           @site = create(:new_site, first_paid_plan_started_at: Time.now.utc)
           @site.first_paid_plan_started_at.should be_present
         end
 
         context "with an open invoice" do
-          before(:each) do
+          before do
             @open_invoice = create(:invoice, site: @site, state: 'open')
           end
 
@@ -1202,7 +1202,7 @@ describe Site do
         end
 
         context "with a failed invoice" do
-          before(:each) do
+          before do
             @failed_invoice = create(:invoice, site: @site, state: 'failed')
           end
 
@@ -1210,7 +1210,7 @@ describe Site do
         end
 
         context "with a waiting invoice" do
-          before(:each) do
+          before do
             @waiting_invoice = create(:invoice, site: @site, state: 'waiting')
           end
 

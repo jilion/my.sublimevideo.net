@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe VideoTag do
-  before(:each) { Pusher.stub(:[]) { mock('channel', trigger: nil, stats: { occupied: true }) } }
+  before { Pusher.stub(:[]) { mock('channel', trigger: nil, stats: { occupied: true }) } }
 
   let(:video_tag) { VideoTag.create(
     'st' => 'site1234',
@@ -78,7 +78,7 @@ describe VideoTag do
   describe ".create_or_update_from_trackers!" do
 
     context "with a new video (load)" do
-      before(:each) do
+      before do
         described_class.stub(:video_tags_from_trackers).and_return({
           ['site1234', 'video123'] => { 'z' => '300x400' }
         })
@@ -98,7 +98,7 @@ describe VideoTag do
     end
 
     context "with a new video (view)" do
-      before(:each) do
+      before do
         described_class.stub(:video_tags_from_trackers).and_return({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
             'p'  => 'http://posters.sublimevideo.net/video123.png',
@@ -134,7 +134,7 @@ describe VideoTag do
       end
 
       describe "existing video_tag (different)" do
-        before(:each) do
+        before do
           Timecop.travel 1.hour.ago do
             @video_tag = video_tag
           end
@@ -161,7 +161,7 @@ describe VideoTag do
       end
 
       describe "existing video_tag (no change)" do
-        before(:each) do
+        before do
           Timecop.travel 1.hour.ago do
             described_class.create_or_update_from_trackers!(nil)
             @video_tag = VideoTag.first
@@ -208,7 +208,7 @@ describe VideoTag do
     context "load event" do
 
       context "with 1 video" do
-        before(:each) do
+        before do
           described_class.stub(:only_video_tags_trackers).and_return({
             "?t=site1234&e=l&d=d&h=m&vu[]=video123&pz[]=300x400" => 1,
             "?t=site1234&e=l&d=d&h=m&vu[]=video123&pz[]=300x400" => 1
@@ -221,7 +221,7 @@ describe VideoTag do
       end
 
       context "with 2 videos" do
-        before(:each) do
+        before do
           described_class.stub(:only_video_tags_trackers).and_return({
             "?t=site1234&e=l&d=d&h=m&vu[]=video123&vu[]=video345&pz[]=300x400&pz[]=480x360" => 1,
             "?t=site1234&e=l&d=d&h=m&vu[]=video123&pz[]=300x400" => 1
@@ -239,7 +239,7 @@ describe VideoTag do
     context "view event" do
 
       context "with 1 video" do
-        before(:each) do
+        before do
           described_class.stub(:only_video_tags_trackers).and_return({
             "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720" => 1,
             "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source34.webm&vc=source34&vcs[]=source12&vcs[]=source34&vsq=base&vsf=webm&vsr=460x340" => 1
@@ -259,7 +259,7 @@ describe VideoTag do
       end
 
       context "with 1 video and changes" do
-        before(:each) do
+        before do
           described_class.stub(:only_video_tags_trackers).and_return({
             "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
             "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source34.webm&vc=source34&vcs[]=source12&vcs[]=source34&vsq=base&vsf=webm&vsr=460x340&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
@@ -281,7 +281,7 @@ describe VideoTag do
       end
 
       context "with 2 video and changes" do
-        before(:each) do
+        before do
           described_class.stub(:only_video_tags_trackers).and_return({
             "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1,
             "?t=site5678&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source45.webm&vc=source45&vcs[]=source44&vcs[]=source45&vsq=hd&vsf=webm&vsr=1280x720&vp=http%3A//posters.sublimevideo.net/video123.png" => 1
