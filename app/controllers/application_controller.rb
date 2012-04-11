@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   include MyRedirectionFilters
 
+  helper :all
+
   respond_to :html
   responders Responders::HttpCacheResponder, Responders::PaginatedResponder, Responders::FlashResponder
 
@@ -36,12 +38,16 @@ class ApplicationController < ActionController::Base
   end
 
   def set_logged_in_cookie
-    cookies[:l] = {
-      value: '1',
-      expires: 2.weeks.from_now,
-      domain: :all,
-      secure: false
-    }
+    if user_signed_in?
+      cookies[:l] = {
+        value: '1',
+        expires: 2.weeks.from_now,
+        domain: :all,
+        secure: false
+      }
+    else
+      cookies.delete :l, domain: :all
+    end
   end
 
   def d3d_html_inject(text)

@@ -1,5 +1,4 @@
 class Admin::AdminController < ApplicationController
-  skip_before_filter :set_logged_in_cookie
   skip_before_filter :authenticate_user!
   before_filter :authenticate_admin!
 
