@@ -61,7 +61,7 @@ class UsersController < Devise::RegistrationsController
         format.html do
           sign_out(@user)
           set_flash_message :notice, :destroyed if is_navigational_format?
-          redirect_to www_page_url('')
+          redirect_to root_url(host: request.domain, protocol: 'http')
         end
       else
         format.html { render :edit }
