@@ -1,6 +1,8 @@
 class Users::SessionsController < Devise::SessionsController
   include CustomDevisePaths
 
+  helper :all
+
   prepend_before_filter :require_no_authentication, only: [:new, :create, :new_gs, :create_gs]
   prepend_before_filter :allow_params_authentication!, only: [:create, :create_gs]
   before_filter :delete_logged_in_cookie

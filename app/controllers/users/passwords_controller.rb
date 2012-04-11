@@ -1,5 +1,8 @@
 class Users::PasswordsController < Devise::PasswordsController
   include CustomDevisePaths
+
+  helper :all
+
   prepend_before_filter :authenticate_scope!, only: [:validate]
 
   # POST /password

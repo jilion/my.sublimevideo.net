@@ -52,7 +52,7 @@
   .right
     %ul.extra_links
       - if admin_signed_in?
-        %li= link_to "Logout", destroy_admin_session_path
+        %li= link_to "logout", destroy_admin_session_path
         %li= link_to current_admin.email, edit_admin_registration_path
       - else
         = link_to "Login", new_admin_session_path, class: "user"

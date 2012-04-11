@@ -34,7 +34,7 @@ feature "Help page" do
 
       scenario "can access the page via a link in the menu" do
         within '#menu' do
-          click_link "Help"
+          click_link "help"
         end
         current_url.should eq "http://my.sublimevideo.dev/help"
       end

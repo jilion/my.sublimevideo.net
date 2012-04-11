@@ -114,3 +114,72 @@
       ODk0MjYiLz4KPFJBTksgREVMVEE9Ii05NzAyIi8+CjwvU0Q+CjwvQUxFWEE+
     http_version: !binary |-
       MS4x
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-kp8h4u5b/events?auth_key=c76b85222fbec28c8508&auth_signature=2c7bc20fe431434afbff45517f289b124f35d53b3ff66f99c106db98eb009c80&auth_timestamp=1334139635&auth_version=1.0&body_md5=706cdb8c14acb757f0ee53f0b1849210&name=cdn_status
+    body: ! '{"up_to_date":true}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.3.1 codename Triple Espresso
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-wkxm59wm/events?auth_key=c76b85222fbec28c8508&auth_signature=ad96042b5c6ea4732410a04ff5dea30491e0fd63cdcbac9d6f25fdc6f63538bc&auth_timestamp=1334139636&auth_version=1.0&body_md5=706cdb8c14acb757f0ee53f0b1849210&name=cdn_status
+    body: ! '{"up_to_date":true}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.3.1 codename Triple Espresso
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-wkxm59wm/events?auth_key=c76b85222fbec28c8508&auth_signature=79abdf89242a0d0464473931e46266dd0914e329c64ae67e490d2b2d067429ab&auth_timestamp=1334139637&auth_version=1.0&body_md5=706cdb8c14acb757f0ee53f0b1849210&name=cdn_status
+    body: ! '{"up_to_date":true}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.3.1 codename Triple Espresso
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'

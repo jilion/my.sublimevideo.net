@@ -111,6 +111,7 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
+  gem 'debugger'
 
   # Javascript test
   gem 'jasminerice'

@@ -9,5 +9,5 @@
           = link_to(edit_user_url(subdomain: 'my'), class: 'user') do
             %span.icon= truncate(current_user.name_or_email, length: 35)
         %li.no_sticky.logout
-          = link_to destroy_user_session_url(subdomain: 'my'), title: "Logout"  do
-            %span= "Logout"
+          = link_to destroy_user_session_url(subdomain: 'my'), title: "logout"  do
+            %span= "logout"
