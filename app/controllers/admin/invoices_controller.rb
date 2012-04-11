@@ -37,7 +37,7 @@ class Admin::InvoicesController < Admin::AdminController
     @invoice = Invoice.includes(:user).find_by_reference(params[:id])
     respond_with(@invoice) do |format|
       if @invoice
-        format.html { render template: '/my/invoices/show', layout: 'invoices' }
+        format.html { render template: '/invoices/show', layout: 'invoices' }
       else
         format.html { redirect_to [:admin, :invoices], notice: "Invoice with reference ##{params[:id]} not found." }
       end
