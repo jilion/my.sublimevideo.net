@@ -15,7 +15,7 @@ class MySublimeVideo.UI.NewSitePlanChooser extends MySublimeVideo.UI.PlanChooser
     this.handleSubmitButtonDisplay(this.checkedPlanPriceIsZero() or !this.skippingTrial() or @billingInfoState is 'present')
 
   handleProcessDetails: ->
-    if @processDetailsDiv?
+    if @processDetailsDiv.exists()
       if !this.checkedPlanPriceIsZero() and this.skippingTrial() and @billingInfoState is 'present'
         @processDetailsDiv.find('.plan_price').html this.priceWithVATText('plan_price')
         @processDetailsDiv.show()

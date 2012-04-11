@@ -8,12 +8,12 @@ class MySublimeVideo.UI.PersistedSitePlanChooser extends MySublimeVideo.UI.PlanC
     this.setupProcessDetailsMessages()
 
   setupProcessDetailsMessages: =>
-    ['in_trial_downgrade_to_free', 'in_trial_update', 'in_trial_instant_upgrade', 'skipping_trial', 'upgrade', 'upgrade_from_free', 'delayed_upgrade', 'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'].each (name) =>
+    _.each ['in_trial_downgrade_to_free', 'in_trial_update', 'in_trial_instant_upgrade', 'skipping_trial', 'upgrade', 'upgrade_from_free', 'delayed_upgrade', 'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'], (name) =>
       @processDetailsMessages[name] = jQuery("#plan_#{name}_info")
 
   handleBillingInfo: (show) ->
     super
-    this.handleSubmitButtonDisplay(this.checkedPlanPriceIsZero() or this.siteIsUpdatable())
+    this.handleSubmitButtonDisplay(!this.checkedPlanIsCurrentPlan() and (this.checkedPlanPriceIsZero() or this.siteIsUpdatable()))
 
   # Site is updatable if:
   #  - it's in trial and don't skip trial, or skip trial and billing infos present
@@ -32,10 +32,10 @@ class MySublimeVideo.UI.PersistedSitePlanChooser extends MySublimeVideo.UI.PlanC
         this.updateProcessDetailsMessages(messageDiv) if planChangeType is type
 
   updateProcessDetailsMessages: (messagesDiv) ->
-    ['plan_title', 'plan_update_date'].each (className) =>
+    _.each ['plan_title', 'plan_update_date'], (className) =>
       messagesDiv.find(".#{className}").html @checkedPlan.attr("data-#{className}")
 
-    ['plan_price', 'plan_update_price'].each (className) =>
+    _.each ['plan_price', 'plan_update_price'], (className) =>
       text = if @checkedPlan.attr('data-vat')?
         "<strong>#{@checkedPlan.attr("data-#{className}_vat")}</strong> (including #{@checkedPlan.attr("data-vat")} VAT)"
       else
