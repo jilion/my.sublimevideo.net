@@ -426,6 +426,10 @@ describe User do
 
           describe ":newsletter_unsubscribe" do
             subject { create(:user, newsletter: "1", email: "john@doe.com") }
+            before do
+              VoxcastCDN.stub(:purge)
+              Pusher.stub(:[])
+            end
 
             it "subscribes new email and unsubscribe old email on user destroy" do
               VCR.use_cassette('user/newsletter_unsubscribe') do

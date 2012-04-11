@@ -856,8 +856,12 @@ describe Site do
     end
 
     describe "after_create" do
-      before { CampaignMonitor.stub(:subscriber) }
-      
+      before do
+        CampaignMonitor.stub(:subscriber)
+        VoxcastCDN.stub(:purge)
+        Pusher.stub(:[])
+      end
+
       it "delays update_ranks" do
         expect { create(:site) }.to change(Delayed::Job.where { handler =~ "%update_ranks%" }, :count).by(1)
       end
