@@ -8,10 +8,11 @@ namespace :export do
     task videos: :environment do
       timed do
         counter = 0
-        site_token = '2xrynuh2' # schooltube.com
+        # site_token = '2xrynuh2' # schooltube.com (uo: 'a')
+        site_token = 'srkkdods' # twit.tv (n: { '$ne' => nil })
         CSV.open("#{ENV['HOME']}/Desktop/video_stats-#{site_token}.csv", "wb") do |csv|
           csv << ['uid', 'name', 'loads_count', 'views_count', 'embed_loads_count', 'embed_views_count']
-          VideoTag.where(st: site_token, uo: 'a').each do |video_tag|
+          VideoTag.where(st: site_token, n: { '$ne' => nil }).each do |video_tag|
             stats = Stat::Video::Day.where(st: site_token, u: video_tag.u).entries
             vl = hashes_values_sum(stats, :vl)
             vv = hashes_values_sum(stats, :vv)
@@ -22,13 +23,12 @@ namespace :export do
         end
       end
     end
-    
+
     def hashes_values_sum(stats, attribute)
       stats.map(&attribute).inject({}) do |memo, el|
         memo.merge(el) { |k, old_v, new_v| old_v + new_v }
       end
     end
-
 
   end
 end
