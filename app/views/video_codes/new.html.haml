@@ -1,5 +1,6 @@
 = content_for :javascript do
-  = javascript_include_tag "https://4076.voxcdn.com/js/#{SiteToken.my}.js", 'video_code_generator'
+  = sublimevideo_include_tag(request.ssl?, SiteToken.my)
+  = javascript_include_tag 'video_code_generator'
 
 - @page_title = "Video Code Generator"
 
@@ -70,11 +71,4 @@
 
       #code
         %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code
-
-    #popup_code.popup{ style: "display:none" }
-      .popup_wrap
-        .lights
-          .content#code_content
-          = link_to "/", class: 'close', onclick: "MSVVideoCodeGenerator.codeView.popup.close(); return false" do
-            %span Close
   .spacer

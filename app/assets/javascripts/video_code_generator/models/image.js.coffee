@@ -15,7 +15,7 @@ class MSVVideoCodeGenerator.Models.Image extends MSVVideoCodeGenerator.Models.As
         this.set(found: false)
 
   preloadSrc: ->
-    new SublimeVideo.ImagePreloader(this.get('src'), this.setDimensions)
+    new SublimeVideo.Media.ImagePreloader(this.get('src'), this.setDimensions)
 
   setDimensions: (problem, imageSrc, dimensions) =>
     this.set(src: imageSrc) if imageSrc isnt this.get('src')

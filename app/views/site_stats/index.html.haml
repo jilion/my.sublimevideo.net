@@ -1,5 +1,6 @@
 = content_for :javascript do
-  = javascript_include_tag "https://4076.voxcdn.com/js/#{SiteToken.my}.js", 'https://d3dy5gmtp8yhk7.cloudfront.net/1.11/pusher.min.js', 'stats'
+  = sublimevideo_include_tag(request.ssl?, SiteToken.my)
+  = javascript_include_tag 'https://d3dy5gmtp8yhk7.cloudfront.net/1.11/pusher.min.js', 'stats'
 
 - if demo_stats_page?
   - @body_class = 'stats_demo'

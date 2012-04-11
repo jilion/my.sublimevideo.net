@@ -41,7 +41,7 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
       this.set(dataName: name.titleize())
 
   preloadSrc: ->
-    new SublimeVideo.VideoPreloader(this.get('src'), this.setDimensions)
+    new SublimeVideo.Media.VideoPreloader(this.get('src'), this.setDimensions)
 
   checkMimeType: ->
     $.ajax

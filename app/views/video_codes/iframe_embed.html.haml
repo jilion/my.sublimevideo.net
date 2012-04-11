@@ -1,7 +1,7 @@
 !!! 5
 %html
   %head
-    = javascript_include_tag((request.ssl? ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{SiteToken.my}.js")
+    = sublimevideo_include_tag(request.ssl?, SiteToken.my)
   %body
     %video.sublime.sv_iframe_embed{ poster: params[:poster], preload: 'none', style: 'display:none' }
       - params.select { |k, v| k =~ /^src\d+$/ }.each do |k, v|

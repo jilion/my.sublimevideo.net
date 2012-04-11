@@ -9,45 +9,38 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
     @thumbnail = @options.thumbnail
     @iframe    = @options.iframe
 
-    _.bindAll this, 'render'
-    @builder.bind   'change:builderClass', this.render
-    @builder.bind   'change:startWithHd',  this.render
-    @poster.bind    'change:src',          this.render
-    @sources.bind   'change',              this.render
-    @thumbnail.bind 'change',              this.render
+    _.bindAll this, 'delayedRender'
+    @builder.bind   'change:builderClass', this.delayedRender
+    @builder.bind   'change:startWithHd',  this.delayedRender
+    @poster.bind    'change:src',          this.delayedRender
+    @sources.bind   'change',              this.delayedRender
+    @thumbnail.bind 'change',              this.delayedRender
 
+  # Ensure multiple sequential render are not possible
   #
-  # BINDINGS
-  #
-  render: ->
-    MSVVideoCodeGenerator.codeView.hide()
+  delayedRender: ->
     if MSVVideoCodeGenerator.video.viewable() and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.thumbnail.viewable())
-      currentScroll = $(window).scrollTop()
-      $(@el).hide()
-
-      sublimevideo.unprepare($('video').get(0)) if $('video').length
-
-      $(@el).html this.template
-        builder: @builder
-        posterSrc: MSVVideoCodeGenerator.video.get('poster').get('src')
-        video: MSVVideoCodeGenerator.video
-
-      sublimevideo.prepare($('video').get(0)) if $('video').length
-
-      $(@el).show()
-      $(window).scrollTop(currentScroll)
+      @currentScroll = $(window).scrollTop()
+      sublimevideo.unprepare(jQuery('video').get(0)) if $('video').exists()
+      $(@el).html ''#'<h4>Preview</h4>'
+      $(@el).spin(spinOptions)
+      clearTimeout(@renderTimer) if @renderTimer
+      @renderTimer = setTimeout((=> this.render()), 200)
     else
       this.hide()
+
+  render: ->
+    $(@el).html this.template
+      builder: @builder
+      posterSrc: MSVVideoCodeGenerator.video.get('poster').get('src')
+      video: MSVVideoCodeGenerator.video
+
+    sublimevideo.prepare(jQuery('video').get(0)) if $('video').exists()
+
+    $(@el).show()
+    $(window).scrollTop(@currentScroll)
 
     this
 
   hide: ->
     $(@el).hide()
-
-  videoPreviewable: ->
-    result = false
-    @sources.each (source) ->
-      if source.srcIsUsable()
-        result = true
-        return
-    result

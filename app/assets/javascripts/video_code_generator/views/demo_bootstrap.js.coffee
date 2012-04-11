@@ -12,7 +12,7 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
   # EVENTS
   #
   updateUseDemoAssets: (event) ->
-    resetFields = if !@model.get('demoAssetsUsed') and this.anyAssetNotEmpty() then confirm('All fields will be overwritten, continue?') else true
+    resetFields = if !@model.get('demoAssetsUsed') and this.anyAssetNotEmpty() then confirm('All fields will be overwritten, continue?') else !@model.get('demoAssetsUsed')
 
     if resetFields
       this.resetAll()
