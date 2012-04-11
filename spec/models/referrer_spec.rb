@@ -23,7 +23,7 @@ describe Referrer do
         create(:site).update_attribute(:token, token)
       end
     end
-    before(:each) { Referrer.create_or_update_from_trackers!(@trackers) }
+    before { Referrer.create_or_update_from_trackers!(@trackers) }
 
     let(:site) { Site.find_by_token('ibvjcopp') }
 

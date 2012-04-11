@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Stat::Video do
-  before(:each) { Pusher.stub(:[]) { mock('channel', trigger: nil, stats: { occupied: true }) } }
+  before { Pusher.stub(:[]) { mock('channel', trigger: nil, stats: { occupied: true }) } }
 
   describe ".top_videos" do
 
@@ -10,7 +10,7 @@ describe Stat::Video do
         @from = 24.hour.ago.utc.change(min: 0).to_i.to_s
         @to   = 1.hour.ago.utc.change(min: 0).to_i.to_s
       end
-      before(:each) do
+      before do
         6.times do |video_i|
           create(:video_tag, st: 'site1234', u: "video#{video_i}", n: "Video #{video_i}", no: 'a')
           24.times do |hour_i|
@@ -49,7 +49,7 @@ describe Stat::Video do
         @to   = 2.seconds.ago.utc.change(usec: 0).to_i.to_s
       end
       after(:all) { Timecop.return }
-      before(:each) do
+      before do
         6.times do |video_i|
           create(:video_tag, st: 'site1234', u: "video#{video_i}", n: "Video #{video_i}", no: 'a')
           62.times do |second_i|

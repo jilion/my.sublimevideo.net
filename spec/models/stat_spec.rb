@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Stat do
 
   context "with cdn.sublimevideo.net.log.1310993640-1310993700.gz logs file" do
-    before(:each) do
+    before do
       @log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1313499060-1313499120.gz'))
       log_time  = 5.days.ago.change(hour: 0).to_i
       @log      = build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
@@ -13,7 +13,7 @@ describe Stat do
       use_vcr_cassette "stat/pusher", erb: true
 
       context "mixed view event & load event" do
-        before(:each) do
+        before do
           site = create(:site)
           site.update_attribute(:token, 'ovjigy83')
           site = create(:site)
@@ -135,7 +135,7 @@ describe Stat do
     let(:user_agent) { "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_1) AppleWebKit/534.48.3 (KHTML, like Gecko) Version/5.1 Safari/534.48.3" }
 
     context "load event with 1 video loaded" do
-      before(:each) do
+      before do
         described_class.stub(:only_stats_trackers).and_return({
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=h", user_agent] => 2,
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=f", user_agent] => 1,
@@ -155,7 +155,7 @@ describe Stat do
     end
 
     context "load event with 2 videos loaded" do
-      before(:each) do
+      before do
         described_class.stub(:only_stats_trackers).and_return({
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&vu[]=efgh5678&pm[]=h&pm[]=h", user_agent] => 2,
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=f", user_agent] => 1,
@@ -183,7 +183,7 @@ describe Stat do
     end
 
     context "view event" do
-      before(:each) do
+      before do
         described_class.stub(:only_stats_trackers).and_return({
           ["?t=ovjigy83&e=s&d=d&h=m&vu=abcd1234&vn=My%20Video&vc=source12&vcs[]=source12&vcs[]=source34", user_agent] => 1,
           ["?t=site1234&e=s&d=d&h=i&vu=abcd1234&vn=My%20Video&vc=source12&vcs[]=source12&vcs[]=source34", user_agent] => 1
@@ -207,7 +207,7 @@ describe Stat do
     end
 
     context "mixed view event & load event" do
-      before(:each) do
+      before do
         described_class.stub(:only_stats_trackers).and_return({
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&vu[]=efgh5678&pm[]=h&pm[]=h", user_agent] => 2,
           ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=f", user_agent] => 1,

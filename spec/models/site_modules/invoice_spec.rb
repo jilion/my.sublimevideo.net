@@ -50,7 +50,7 @@ describe SiteModules::Invoice do
 
         [@site_in_trial, @site_not_in_trial_without_cc, @site_not_in_trial_with_cc_1, @site_not_in_trial_with_cc_2].each { |site| site.invoices.should be_empty }
       end
-      before(:each) do
+      before do
         [@site_in_trial, @site_not_in_trial_without_cc, @site_not_in_trial_with_cc_1, @site_not_in_trial_with_cc_2].each { |site| site.reload }
 
         %w[pending_plan_cycle_started_at pending_plan_cycle_ended_at first_paid_plan_started_at].each do |attr|
@@ -84,7 +84,7 @@ describe SiteModules::Invoice do
       end
 
       describe "non-activatable sites (2)" do
-        before(:each) do
+        before do
           Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial }
         end
         subject { @site_not_in_trial_with_cc_2.reload }
@@ -97,7 +97,7 @@ describe SiteModules::Invoice do
       end
 
       describe "activatable sites belonging to a user without credit card" do
-        before(:each) do
+        before do
           Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial }
         end
         subject { @site_not_in_trial_without_cc.reload }
@@ -114,7 +114,7 @@ describe SiteModules::Invoice do
       end
 
       describe "activatable sites belonging to a user with credit card" do
-        before(:each) do
+        before do
           Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial }
         end
         subject { @site_not_in_trial_with_cc_1.reload }
@@ -152,7 +152,7 @@ describe SiteModules::Invoice do
         @site_renewable_with_downgrade_to_paid_plan.invoices.paid.should have(1).item
         @site_not_renewable.invoices.paid.should have(1).item
       end
-      before(:each) do
+      before do
         @site_renewable.reload
         @site_renewable_with_downgrade_to_free_plan.reload
         @site_renewable_with_downgrade_to_paid_plan.reload
@@ -265,7 +265,7 @@ describe SiteModules::Invoice do
       before(:all) do
         @site = create(:site)
       end
-      before(:each) { Invoice.delete_all }
+      before { Invoice.delete_all }
       subject { @site }
 
       context "with no options" do
@@ -414,7 +414,7 @@ describe SiteModules::Invoice do
       end
 
       context "site is paid and updated to free" do
-        before(:each) do
+        before do
           @site = create(:site, plan_id: @paid_plan.id)
           @site.plan_id = @free_plan.id
         end
@@ -432,7 +432,7 @@ describe SiteModules::Invoice do
       end
 
       context "site is free and updated to paid" do
-        before(:each) do
+        before do
           @site = create(:site, plan_id: @free_plan.id)
           @site.plan_id = @paid_plan.id
         end
@@ -442,7 +442,7 @@ describe SiteModules::Invoice do
       end
 
       context "site is paid and updated to paid" do
-        before(:each) do
+        before do
           @site = create(:site, plan_id: @paid_plan.id)
           @new_plan = create(:plan, price: @paid_plan.price + 1000)
           @site.plan_id = @new_plan.id
@@ -454,7 +454,7 @@ describe SiteModules::Invoice do
       end
 
       context "site is paid and updated to free" do
-        before(:each) do
+        before do
           @site = create(:site, plan_id: @paid_plan.id)
           @site.plan_id = @free_plan.id
         end
@@ -472,7 +472,7 @@ describe SiteModules::Invoice do
       end
 
       context "site is free and updated to paid" do
-        before(:each) do
+        before do
           @site = create(:site, plan_id: @free_plan.id)
           @site.plan_id = @paid_plan.id
         end
@@ -482,7 +482,7 @@ describe SiteModules::Invoice do
       end
 
       context "site is paid is now paid" do
-        before(:each) do
+        before do
           @site = create(:site, plan_id: @paid_plan.id)
           @site.plan_id = @free_plan.id
         end
@@ -1317,7 +1317,7 @@ describe SiteModules::Invoice do
 
       context "site in free plan" do
         context "on creation" do
-          before(:each) { @site = build(:new_site, plan_id: @free_plan.id) }
+          before { @site = build(:new_site, plan_id: @free_plan.id) }
           subject { @site }
 
           it "doesn't create an invoice" do
@@ -1371,7 +1371,7 @@ describe SiteModules::Invoice do
 
       context "site in paid plan" do
         context "on creation" do
-          before(:each) { @site = build(:site, plan_id: @paid_plan2.id) }
+          before { @site = build(:site, plan_id: @paid_plan2.id) }
           subject { @site }
 
           it "doesn't create an invoice" do
@@ -1390,7 +1390,7 @@ describe SiteModules::Invoice do
             before(:all) do
               @site = create(:site, plan_id: @paid_plan2.id)
             end
-            before(:each) { subject.should be_trial_not_started_or_in_trial }
+            before { subject.should be_trial_not_started_or_in_trial }
 
             describe "upgrade" do
               it "doesn't create an invoice" do
@@ -1440,7 +1440,7 @@ describe SiteModules::Invoice do
             before(:all) do
               @site = create(:site_with_invoice, plan_id: @paid_plan2.id, first_paid_plan_started_at: Time.now.utc)
             end
-            before(:each) do
+            before do
               Timecop.travel(45.days.from_now)
             end
             after(:each) { Timecop.return }

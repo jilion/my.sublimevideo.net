@@ -43,6 +43,7 @@ MySublimeVideo::Application.configure do
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
+  config.action_dispatch.default_url_options = { protocol: 'https' }
 
   # See everything in the log (default is :info)
   # config.log_level = :debug
@@ -61,7 +62,7 @@ MySublimeVideo::Application.configure do
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { host: 'sublimevideo.net' }
+  config.action_mailer.default_url_options = { host: 'my.sublimevideo.net', protocol: 'https' }
 
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp

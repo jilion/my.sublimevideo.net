@@ -3,7 +3,7 @@ require 'spec_helper'
 describe PagesController do
 
   context "with logged in unsuspended user" do
-    before(:each) { sign_in :user, authenticated_user }
+    before { sign_in :user, authenticated_user }
 
     %w[terms privacy help].each do |page|
       it "responds with success to GET :show, on #{page} page" do
@@ -19,7 +19,7 @@ describe PagesController do
   end
 
   context "with logged in suspended user" do
-    before(:each) { sign_in :user, authenticated_user(state: 'suspended') }
+    before { sign_in :user, authenticated_user(state: 'suspended') }
 
     %w[terms privacy help].each do |page|
       it "responds with success to GET :show, on #{page} page" do

@@ -17,7 +17,7 @@ MySublimeVideo::Application.configure do
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.delivery_method       = :letter_opener
-  config.action_mailer.default_url_options   = { host: 'sublimevideo.dev' }
+  config.action_mailer.default_url_options   = { host: 'my.sublimevideo.dev' }
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
@@ -41,13 +41,3 @@ MySublimeVideo::Application.configure do
   config.log_tags = [:uuid, :remote_ip]
 
 end
-
-# unless $rails_rake_task
-#   require 'ruby-debug'
-#
-#   Debugger.settings[:autoeval] = true
-#   Debugger.settings[:autolist] = 1
-#   Debugger.settings[:reload_source_on_change] = true
-#   Debugger.start_remote
-# end
-

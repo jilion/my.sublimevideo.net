@@ -6,5 +6,5 @@
       %strong= display_amount(current_user.balance)
     %p.desc
       %em
-        = raw "You have a balance due to the recent #{link_to 'SublimeVideo pricing changes', page_url('plan-migration', subdomain: 'docs'), class: "hl"}."
+        = raw "You have a balance due to the recent #{link_to 'SublimeVideo pricing changes', docs_page_url('plan-migration'), class: "hl"}."
         This balance will be automatically used for all your further invoices until it's empty.

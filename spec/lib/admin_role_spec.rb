@@ -23,7 +23,7 @@ describe AdminRoleMethods do
   end
 
   describe ".has_role?" do
-    before(:each) do
+    before do
       @admin_marcom   = StubAdmin.new(roles: ['marcom'])
       @admin_invoices = StubAdmin.new(roles: ['invoices'])
       @admin_god      = StubAdmin.new(roles: ['god'])

@@ -10,9 +10,9 @@ module CustomDevisePaths
     else
       case Devise::Mapping.find_scope!(resource_or_scope)
       when :user
-        sites_url(subdomain: 'my')
+        sites_url
       when :admin
-        admin_sites_url(subdomain: 'admin')
+        admin_sites_url
       end
     end
   end
@@ -20,9 +20,9 @@ module CustomDevisePaths
   def after_sign_up_path_for(resource_or_scope)
     case Devise::Mapping.find_scope!(resource_or_scope)
     when :user
-      new_site_url(subdomain: 'my')
+      new_site_url
     when :admin
-      admin_sites_url(subdomain: 'admin')
+      admin_sites_url
     end
   end
 
@@ -31,12 +31,12 @@ module CustomDevisePaths
     case Devise::Mapping.find_scope!(resource)
     when :user
       if (resource.confirmation_sent_at.to_i - resource.created_at.to_i) <= 30
-        more_user_info_url(subdomain: 'my')
+        more_user_info_url
       else
-        sites_url(subdomain: 'my')
+        sites_url
       end
     when :admin
-      admin_sites_url(subdomain: 'admin')
+      admin_sites_url
     end
   end
 
@@ -45,7 +45,7 @@ module CustomDevisePaths
   end
 
   def after_sending_reset_password_instructions_path_for(resource_or_scope)
-    login_user_url(subdomain: 'my')
+    login_user_url
   end
 
   def after_update_path_for(resource_or_scope)
@@ -57,7 +57,7 @@ module CustomDevisePaths
     when :user
       "http://#{request.domain}"
     when :admin
-      send "new_#{Devise::Mapping.find_scope!(resource_or_scope)}_session", subdomain: 'admin'
+      new_admin_session
     end
   end
 

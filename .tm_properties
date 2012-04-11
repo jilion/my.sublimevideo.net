@@ -7,5 +7,5 @@ exclude          = "{$exclude,db/backups,public/uploads,run,script,config.sqlite
 
 # I recommend you put the following settings into your ~/.tm_properties
 # include     = "{$include,.tm_properties,.htaccess,.gitignore,.gitconfig,.git/config,.travis.yml}"
-# exclude     = "{$exclude,log,vendor/ruby,tmp,tags,tmtags}"
+# exclude     = "{$exclude,bundle,log,vendor/ruby,tmp,tags,tmtags}"
 # windowTitle = "${TM_DIRECTORY/\A(?:\/Users\/remy\w+\/?(.*)|(.+))\z/${2:?${2/\A\/Users\/remy/~/}:${1/\A(?=.)/ – /}}/}/$TM_DISPLAYNAME – $TM_SCM_BRANCH"

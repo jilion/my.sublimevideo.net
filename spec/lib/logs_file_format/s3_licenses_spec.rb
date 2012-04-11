@@ -3,7 +3,7 @@ require 'spec_helper'
 describe LogsFileFormat::S3Licenses do
   
   describe "with 2010-07-14-09-27-04-BAAC596FFB88F1D6 logs file" do
-    before(:each) do
+    before do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/s3_licenses/2010-07-14-09-27-04-BAAC596FFB88F1D6'))
       @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::S3Licenses')
     end

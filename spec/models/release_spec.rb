@@ -6,7 +6,7 @@ describe Release do
   let(:beta_release)     { create(:release).tap { |r| r.flag } }
   let(:stable_release)   { create(:release).tap { |r| 2.times { r.flag } } }
 
-  before(:each) { VoxcastCDN.stub(:purge_dir) }
+  before { VoxcastCDN.stub(:purge_dir) }
 
   context "Factory" do
     use_vcr_cassette "release/dev"
@@ -46,7 +46,7 @@ describe Release do
     end
 
     describe "when flagged"do
-      before(:each) do
+      before do
         S3.player_bucket.put("dev/foo.txt", "bar")
         subject.flag
       end
@@ -106,7 +106,7 @@ describe Release do
 
     describe "when flagged" do
       use_vcr_cassette "release/dev_read"
-      before(:each) do
+      before do
         S3.player_bucket.put("beta/foo.txt", "bar")
         subject.flag
       end
@@ -141,7 +141,7 @@ describe Release do
     end
 
     describe "when archived" do
-      before(:each) { subject.archive }
+      before { subject.archive }
 
       it { should be_archived }
     end
@@ -167,7 +167,7 @@ describe Release do
     end
 
     describe "when flagged" do
-      before(:each) do
+      before do
         @stable_release = stable_release
         subject.flag
       end
@@ -193,7 +193,7 @@ describe Release do
       end
     end
     describe "when archived" do
-      before(:each) { subject.archive }
+      before { subject.archive }
 
       it { should be_archived }
     end
@@ -219,7 +219,7 @@ describe Release do
     end
 
     describe "when archived" do
-      before(:each) { subject.archive }
+      before { subject.archive }
 
       it { should be_archived }
     end

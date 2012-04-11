@@ -7,7 +7,7 @@ describe Stat::Site do
       @site = create(:site)
     end
 
-    before(:each) do
+    before do
       @second = Time.now.utc.change(usec: 0)
       create(:site_second_stat, t: @site.token, d: (@second - 62.seconds), vv: { e: 1 })
       create(:site_second_stat, t: @site.token, d: (@second - 61.seconds), vv: { e: 2 })
@@ -37,7 +37,7 @@ describe Stat::Site do
 
     describe "with seconds period (missing value not filled)" do
       subject { JSON.parse(Stat::Site.json(@site.token, 'seconds')) }
-      before(:each) { Timecop.travel(@second) }
+      before { Timecop.travel(@second) }
 
       its(:size) { should eql(3) }
       it { subject[0]['vv'].should eql(2) }
@@ -90,7 +90,7 @@ describe Stat::Site do
     end
 
     describe "with days period (less than 365 days stats)" do
-      before(:each) { @day400.delete }
+      before { @day400.delete }
       subject { JSON.parse(Stat::Site.json(@site.token, 'days')) }
 
       its(:size) { should eql(365) }
@@ -102,7 +102,7 @@ describe Stat::Site do
     end
 
     context "with plan_stats_retention_days at 365" do
-      before(:each) do
+      before do
         @mock_site.stub(:plan_stats_retention_days).and_return(365)
       end
 
@@ -119,7 +119,7 @@ describe Stat::Site do
       end
 
       describe "with days period (less than 365 days stats)" do
-        before(:each) { @day400.delete }
+        before { @day400.delete }
         subject { JSON.parse(Stat::Site.json(@site.token, 'days')) }
 
         its(:size) { should eql(365) }
@@ -127,7 +127,7 @@ describe Stat::Site do
     end
 
     context "with plan_stats_retention_days at 0" do
-      before(:each) do
+      before do
         @mock_site.stub(:plan_stats_retention_days).and_return(0)
       end
 
@@ -144,7 +144,7 @@ describe Stat::Site do
       end
 
       describe "with days period (less than 365 days stats)" do
-        before(:each) { @day400.delete }
+        before { @day400.delete }
         subject { JSON.parse(Stat::Site.json(@site.token, 'days')) }
 
         its(:size) { should eql(0) }
@@ -160,7 +160,7 @@ describe Stat::Site::Day do
       @site1 = create(:site)
       @site2 = create(:site)
     end
-    before(:each) do
+    before do
       create(:site_day_stat, t: @site1.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
       create(:site_day_stat, t: @site1.token, d: Time.now.utc.midnight, pv: { e: 3 }, vv: { m: 4 })
       create(:site_day_stat, t: @site2.token, d: 30.days.ago.midnight, pv: { e: 5 }, vv: { m: 6 })
@@ -209,7 +209,7 @@ describe Stat::Site::Day do
       @site1 = create(:site)
       @site2 = create(:site)
     end
-    before(:each) do
+    before do
       create(:site_day_stat, t: @site1.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
       create(:site_day_stat, t: @site1.token, d: Time.now.utc.midnight, pv: { e: 3 }, vv: { m: 4 })
       create(:site_day_stat, t: @site2.token, d: 30.days.ago.midnight, pv: { e: 5 }, vv: { m: 6 })

@@ -144,7 +144,7 @@ module Spec
       end
 
       def sign_out(kill_user = false)
-        click_link "Logout"
+        click_link "logout"
         @current_user = nil #if kill_user
       end
 

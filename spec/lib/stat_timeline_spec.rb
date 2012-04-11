@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe StatTimeline::SiteUsage do
-  before(:each) do
+  before do
     @site1 = create(:site)
     @site2 = create(:site)
     @day1  = Time.utc(2010, 1, 1)

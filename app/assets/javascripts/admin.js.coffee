@@ -1,6 +1,8 @@
 #= require underscore
 #= require highcharts/highcharts
 
+jQuery.fn.exists = -> @length > 0
+
 window.AdminSublimeVideo =
   Models: {}
   Collections: {}

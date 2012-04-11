@@ -12,10 +12,10 @@
 
 <p>Please make sure to <strong>provide a valid credit card</strong> to continue enjoying all of your current plan's features such as Real-Time Stats, Unbranded Player, Email Support and SSL. You can do so via the following link:</p>
 
-<p><%= link_to(edit_billing_url(protocol: 'https', subdomain: 'my'), edit_billing_url(protocol: 'https', subdomain: 'my')) %></p>
+<p><%= link_to(edit_billing_url, edit_billing_url) %></p>
 
-<p>If you do not provide a valid credit card your plan will be <strong>downgraded</strong> to our Free plan. Read more on our <%= link_to("plans and pricing", page_url('plans')) %> page.</p>
+<p>If you do not provide a valid credit card your plan will be <strong>downgraded</strong> to our Free plan. Read more on our <%= link_to("plans and pricing", www_page_url('plans')) %> page.</p>
 
-<p>If you run into any issues or need additional help you can check out our <%= link_to("help", page_url('help')) %> page.</p>
+<p>If you run into any issues or need additional help you can check out our <%= link_to("help", www_page_url('help')) %> page.</p>
 
 <p>Thanks again for continuing to evaluate SublimeVideo.</p>

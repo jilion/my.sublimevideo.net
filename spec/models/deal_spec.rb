@@ -55,10 +55,10 @@ describe Deal do
 
   describe "Scopes" do
     describe ".active" do
-      before(:each) { @deal = create(:deal, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+      before { @deal = create(:deal, started_at: 2.days.ago, ended_at: 2.days.from_now) }
 
       context "now is before the deal has started" do
-        before(:each) { Timecop.travel(3.days.ago) }
+        before { Timecop.travel(3.days.ago) }
         after(:each) { Timecop.return }
 
         it "returns an empty array" do
@@ -67,7 +67,7 @@ describe Deal do
       end
 
       context "now is after the deal has started" do
-        before(:each) { Timecop.travel(3.days.from_now) }
+        before { Timecop.travel(3.days.from_now) }
         after(:each) { Timecop.return }
 
         it "returns an empty array" do
@@ -85,18 +85,18 @@ describe Deal do
 
   describe "Instance methods" do
     describe "#active?" do
-      before(:each) { @deal = create(:deal, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+      before { @deal = create(:deal, started_at: 2.days.ago, ended_at: 2.days.from_now) }
       subject { @deal }
 
       context "now is before the deal has started" do
-        before(:each) { Timecop.travel(3.days.ago) }
+        before { Timecop.travel(3.days.ago) }
         after(:each) { Timecop.return }
 
         it { should_not be_active }
       end
 
       context "now is after the deal has started" do
-        before(:each) { Timecop.travel(3.days.from_now) }
+        before { Timecop.travel(3.days.from_now) }
         after(:each) { Timecop.return }
 
         it { should_not be_active }

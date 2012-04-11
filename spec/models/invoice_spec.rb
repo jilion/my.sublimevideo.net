@@ -140,7 +140,7 @@ describe Invoice do
         context "with a non-suspended user" do
           %w[open failed].each do |state|
             context "from #{state}" do
-              before(:each) do
+              before do
                 subject.reload.update_attributes(state: state, amount: 0)
                 subject.user.should be_active
               end
@@ -157,7 +157,7 @@ describe Invoice do
         context "with a suspended user" do
           %w[open failed].each do |state|
             context "from #{state}" do
-              before(:each) do
+              before do
                 subject.reload.update_attributes(state: state, amount: 0)
                 subject.user.update_attribute(:state, 'suspended')
                 subject.user.should be_suspended
@@ -172,7 +172,7 @@ describe Invoice do
               end
 
               context "with more failed invoice" do
-                before(:each) do
+                before do
                   create(:invoice, site: create(:site, user: subject.user), state: 'failed')
                 end
 
@@ -226,7 +226,7 @@ describe Invoice do
       context "balance > invoice amount" do
 
         describe "succeed invoice with amount == 0" do
-          before(:each) do
+          before do
             @user = create(:user, billing_country: 'FR', balance: 2000)
             @site = build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -241,7 +241,7 @@ describe Invoice do
         end
 
         describe "#decrement_user_balance" do
-          before(:each) do
+          before do
             @user = create(:user, billing_country: 'FR', balance: 2000)
             @site = build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -259,7 +259,7 @@ describe Invoice do
   end
 
   describe "Scopes" do
-    before(:each) do
+    before do
       @site             = create(:new_site, plan_id: @paid_plan.id, refunded_at: nil)
       @site2            = create(:new_site)
 
@@ -321,7 +321,7 @@ describe Invoice do
   describe "Class Methods" do
 
     describe ".update_pending_dates_for_first_not_paid_invoices" do
-      before(:each) do
+      before do
         Timecop.travel(Time.utc(2011, 4, 4, 6)) do
           @user = create(:user)
 
@@ -353,7 +353,7 @@ describe Invoice do
           @invoice1.should eql @site1.invoices.by_date('asc').first
         end
       end
-      before(:each) do
+      before do
         Delayed::Job.delete_all
       end
 
@@ -388,7 +388,7 @@ describe Invoice do
       before { @paid_plan = create(:plan, cycle: "month", price: 1000) }
 
       describe "standard invoice" do
-        before(:each) do
+        before do
           @user = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
           Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
             @site    = create(:site, user: @user, plan_id: @paid_plan.id)
@@ -413,7 +413,7 @@ describe Invoice do
 
       describe "with a site upgraded" do
         context "from a paid plan" do
-          before(:each) do
+          before do
             @user = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site       = create(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
@@ -445,7 +445,7 @@ describe Invoice do
         end
 
         context "from a free plan" do
-          before(:each) do
+          before do
             @user = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site      = create(:site, user: @user, plan_id: @free_plan.id)
@@ -475,7 +475,7 @@ describe Invoice do
 
       describe "with a site downgraded" do
         context "from a paid plan" do
-          before(:each) do
+          before do
             @user = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(Time.utc(2011,5,1)) do
               @site       = create(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
@@ -510,7 +510,7 @@ describe Invoice do
       end
 
       describe "with a site created" do
-        before(:each) do
+        before do
           @user    = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
           Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
             @site = build(:new_site, user: @user, plan_id: @paid_plan.id)
@@ -526,7 +526,7 @@ describe Invoice do
       end
 
       describe "with a Swiss user" do
-        before(:each) do
+        before do
           @user    = create(:user, billing_country: 'CH')
           @site = build(:new_site, user: @user, plan_id: @paid_plan.id)
           @invoice = Invoice.construct(site: @site)
@@ -541,7 +541,7 @@ describe Invoice do
 
       describe "with a user that has a balance" do
         context "balance < invoice amount" do
-          before(:each) do
+          before do
             @user    = create(:user, billing_country: 'FR', balance: 100)
             @site    = build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -554,7 +554,7 @@ describe Invoice do
         end
 
         context "balance == invoice amount" do
-          before(:each) do
+          before do
             @user    = create(:user, billing_country: 'FR', balance: 1000)
             @site    = build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -567,7 +567,7 @@ describe Invoice do
         end
 
         context "balance > invoice amount" do
-          before(:each) do
+          before do
             @user    = create(:user, billing_country: 'FR', balance: 2000)
             @site    = build(:new_site, user: @user, plan_id: @paid_plan.id)
             @invoice = Invoice.construct(site: @site)
@@ -615,7 +615,7 @@ describe Invoice do
       it { subject.should be_first_site_invoice }
 
       context "first invoice was canceled" do
-        before(:each) do
+        before do
           @canceled_invoice   = create(:invoice, site: @site, state: 'canceled')
           @first_site_invoice = create(:invoice, site: @site)
         end
@@ -625,7 +625,7 @@ describe Invoice do
       end
 
       context "already one non-canceled invoice" do
-        before(:each) do
+        before do
           @first_site_invoice  = create(:invoice, site: @site)
           @second_site_invoice = create(:invoice, site: @site)
         end

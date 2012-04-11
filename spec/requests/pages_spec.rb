@@ -34,7 +34,7 @@ feature "Help page" do
 
       scenario "can access the page via a link in the menu" do
         within '#menu' do
-          click_link "Help"
+          click_link "help"
         end
         current_url.should eq "http://my.sublimevideo.dev/help"
       end
@@ -85,6 +85,8 @@ feature "Help page" do
         page.should have_content I18n.t('flash.tickets.create.notice')
 
         CampaignMonitor.stub(:subscriber)
+        VoxcastCDN.stub(:purge)
+        Pusher.stub(:[])
         VCR.use_cassette("ticket/post_ticket") do
           expect { @worker.work_off }.to change(Delayed::Job.where { handler =~ "%post_ticket%" }, :count).by(-1)
         end

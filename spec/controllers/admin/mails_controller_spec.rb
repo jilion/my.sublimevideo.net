@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Admin::MailsController do
 
   context "with logged in admin with the god role" do
-    before(:each) do
+    before do
       @admin = authenticated_admin(roles: ['god'])
       sign_in :admin, @admin
     end

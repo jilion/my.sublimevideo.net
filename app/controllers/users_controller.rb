@@ -2,6 +2,8 @@ class UsersController < Devise::RegistrationsController
   include MyRedirectionFilters
   include CustomDevisePaths
 
+  helper :all
+
   responders Responders::FlashResponder
 
   respond_to :html
@@ -11,6 +13,7 @@ class UsersController < Devise::RegistrationsController
   before_filter :redirect_suspended_user
 
   skip_before_filter :verify_authenticity_token, only: [:hide_notice]
+  skip_around_filter :destroy_if_previously_invited # Avoid DeviseInvitable shit
 
   # POST /signup
   def create
@@ -41,7 +44,7 @@ class UsersController < Devise::RegistrationsController
     respond_with(@user) do |format|
       if @user.update_attributes(params[:user])
         set_flash_message :notice, :updated if is_navigational_format?
-        format.html { redirect_to params[:more_info_form] ? sites_url(subdomain: 'my') : [:edit, :user] }
+        format.html { redirect_to params[:more_info_form] ? sites_url : [:edit, :user] }
       else
         format.html { render :edit }
       end
@@ -58,7 +61,7 @@ class UsersController < Devise::RegistrationsController
         format.html do
           sign_out(@user)
           set_flash_message :notice, :destroyed if is_navigational_format?
-          redirect_to root_url(host: request.domain)
+          redirect_to root_url(host: request.domain, protocol: 'http')
         end
       else
         format.html { render :edit }

@@ -9,7 +9,7 @@ You can review the invoices associated with this transaction via the following l
 <% end %>
 
 <% @transaction.invoices.each do |invoice| %>
-<%= invoice_url(invoice.to_param, protocol: 'https', subdomain: 'my') %>
+<%= invoice_url(invoice.to_param) %>
 <% end %>
 
 If you have any questions, please email <%= I18n.t("mailer.billing.email") %>.

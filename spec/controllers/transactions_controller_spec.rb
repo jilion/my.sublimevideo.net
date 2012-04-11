@@ -7,7 +7,7 @@ describe TransactionsController do
     context "with a non-tempered request" do
       describe "credit card authorization response" do
         context "that succeeds" do
-          before(:each) do
+          before do
             @sha_params = { "PAYID" => "1234", "STATUS" => "5" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
@@ -28,7 +28,7 @@ describe TransactionsController do
         end
 
         context "that's waiting" do
-          before(:each) do
+          before do
             @sha_params = { "PAYID" => "1234", "STATUS" => "51" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
@@ -49,7 +49,7 @@ describe TransactionsController do
         end
 
         context "that fails (invalid)" do
-          before(:each) do
+          before do
             @sha_params = { "PAYID" => "1234", "STATUS" => "0" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
@@ -70,7 +70,7 @@ describe TransactionsController do
         end
 
         context "that fails (refused)" do
-          before(:each) do
+          before do
             @sha_params = { "PAYID" => "1234", "STATUS" => "2" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
@@ -91,7 +91,7 @@ describe TransactionsController do
         end
 
         context "that's unknown (status 52)" do
-          before(:each) do
+          before do
             @sha_params = { "PAYID" => "1234", "STATUS" => "52" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
@@ -112,7 +112,7 @@ describe TransactionsController do
         end
 
         context "that's unknown (other status)" do
-          before(:each) do
+          before do
             @sha_params = { "PAYID" => "1234", "STATUS" => "187" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
@@ -134,7 +134,7 @@ describe TransactionsController do
       end
 
       describe "payment response" do
-        before(:each) do
+        before do
           @sha_params = { "PAYID" => "1234", "STATUS" => "9", "orderID" => "dwqdqw756w6q4d654qwd64qw" }
           @params = {
             "PAYMENT" => "TRUE",
@@ -157,7 +157,7 @@ describe TransactionsController do
 
         context "transaction not already paid" do
           context "that succeeds" do
-            before(:each) do
+            before do
               @sha_params = { "PAYID" => "1234", "STATUS" => "9", "orderID" => "dwqdqw756w6q4d654qwd64qw" }
               @params = {
                 "PAYMENT" => "TRUE",
@@ -177,7 +177,7 @@ describe TransactionsController do
           end
 
           context "that fails" do
-            before(:each) do
+            before do
               @sha_params = { "PAYID" => "1234", "STATUS" => "2", "orderID" => "dwqdqw756w6q4d654qwd64qw" }
               @params = {
                 "PAYMENT" => "TRUE",

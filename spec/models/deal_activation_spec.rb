@@ -67,7 +67,7 @@ describe DealActivation do
       let(:deal) { create(:deal, availability_scope: 'use_clients') }
 
       context "user isn't included in the available_to scope of the deal record" do
-        before(:each) { deal.should_receive(:available_to?) { false } }
+        before { deal.should_receive(:available_to?) { false } }
 
         it "doesn't create a DealActivation record" do
           deal_activation = build(:deal_activation, deal: deal)
@@ -77,7 +77,7 @@ describe DealActivation do
       end
 
       context "user is included in the available_to scope of the deal record" do
-        before(:each) { deal.should_receive(:available_to?) { true } }
+        before { deal.should_receive(:available_to?) { true } }
 
         it "creates a DealActivation record" do
           expect { create(:deal_activation, deal: deal) }.to change(DealActivation, :count).by(1)

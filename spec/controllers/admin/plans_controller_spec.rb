@@ -1,9 +1,8 @@
 require 'spec_helper'
 
 describe Admin::PlansController do
-
   context "with logged in admin with the god role" do
-    before(:each) { sign_in :admin, authenticated_admin(roles: ['god']) }
+    before { sign_in :admin, authenticated_admin(roles: ['god']) }
 
     describe "GET :index" do
       it "should render :index" do
@@ -24,7 +23,7 @@ describe Admin::PlansController do
     end
 
     describe "POST :create" do
-      before(:each) { Plan.should_receive(:create_custom).with({}).and_return(mock_plan) }
+      before { Plan.should_receive(:create_custom).with({}).and_return(mock_plan) }
 
       it "should redirect to /admin/plans when create succeeds" do
         post :create, plan: {}

@@ -227,7 +227,7 @@ describe SiteModules::Referrer do
 
     context "custom" do
       before(:all) { @site = create(:site, hostname: "capped.tv", path: "lft-turbulence|mq") }
-      before(:each) { Notify.should_not_receive(:send) }
+      before { Notify.should_not_receive(:send) }
       subject { @site }
 
       it { subject.referrer_type("-").should == "invalid" }

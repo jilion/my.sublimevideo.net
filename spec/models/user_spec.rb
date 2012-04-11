@@ -251,7 +251,7 @@ describe User do
     end
 
     describe "#unsuspend" do
-      before(:each) { @user.reload.update_attribute(:state, 'suspended') }
+      before { @user.reload.update_attribute(:state, 'suspended') }
       subject { @user }
 
       context "from suspended state" do
@@ -284,7 +284,7 @@ describe User do
 
     describe "#archive" do
       context "from active state" do
-        before(:each) do
+        before do
           @user.reload.update_attribute(:state, 'active')
           # it's impossible to archive a user that has open/waiting/failed invoices
           Invoice.delete_all
@@ -307,7 +307,7 @@ describe User do
       end
 
       context "from suspended state" do
-        before(:each) do
+        before do
           @user.reload.update_attribute(:state, 'suspended')
           # it's impossible to archive a user that has open/waiting/failed invoices
           Invoice.delete_all
@@ -388,7 +388,7 @@ describe User do
       end
 
       describe "Callbacks" do
-        before(:each) do
+        before do
           Invoice.delete_all
         end
         subject { @user.reload }
@@ -426,6 +426,10 @@ describe User do
 
           describe ":newsletter_unsubscribe" do
             subject { create(:user, newsletter: "1", email: "john@doe.com") }
+            before do
+              VoxcastCDN.stub(:purge)
+              Pusher.stub(:[])
+            end
 
             it "subscribes new email and unsubscribe old email on user destroy" do
               VCR.use_cassette('user/newsletter_unsubscribe') do
@@ -474,7 +478,7 @@ describe User do
 
       context "when user has cc info before" do
         subject { create(:user_real_cc) }
-        before(:each) do
+        before do
           subject.cc_type.should eq 'visa'
           subject.cc_last_digits.should eq '1111'
           subject.cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
@@ -577,7 +581,7 @@ describe User do
 
     describe "after_update :zendesk_update" do
       subject { create(:user) }
-      before(:each) do
+      before do
         CampaignMonitor.stub(:subscribe)
         CampaignMonitor.stub(:update)
       end
@@ -672,7 +676,7 @@ describe User do
     subject { create(:user) }
 
     describe "#notice_hidden?" do
-      before(:each) do
+      before do
         subject.hidden_notice_ids << 1
         subject.hidden_notice_ids.should eq [1]
       end
@@ -866,7 +870,7 @@ describe User do
       context "with deals activated" do
         let(:deal1) { create(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
         let(:deal2) { create(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
-        before(:each) do
+        before do
           @deal_activation1 = create(:deal_activation, deal: deal1, user: subject)
           @deal_activation2 = create(:deal_activation, deal: deal2, user: subject)
         end
@@ -885,7 +889,7 @@ describe User do
       context "with deals activated" do
         let(:deal1) { create(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
         let(:deal2) { create(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
-        before(:each) do
+        before do
           @deal_activation1 = create(:deal_activation, deal: deal1, user: subject)
           @deal_activation2 = create(:deal_activation, deal: deal2, user: subject)
         end
@@ -910,7 +914,7 @@ describe User do
       context "with deals activated" do
         let(:deal1) { create(:deal, value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
         let(:deal2) { create(:deal, value: 0.4, started_at: 1.days.ago, ended_at: 3.days.from_now) }
-        before(:each) do
+        before do
           @deal_activation1 = create(:deal_activation, deal: deal1, user: subject)
           @deal_activation2 = create(:deal_activation, deal: deal2, user: subject)
         end
@@ -1016,7 +1020,7 @@ describe User do
         end
 
         context "with an open invoice" do
-          before(:each) do
+          before do
             @open_invoice = create(:invoice, site: @site, state: 'open')
           end
 
@@ -1024,7 +1028,7 @@ describe User do
         end
 
         context "with a failed invoice" do
-          before(:each) do
+          before do
             @failed_invoice = create(:invoice, site: @site, state: 'failed')
           end
 
@@ -1032,7 +1036,7 @@ describe User do
         end
 
         context "with a waiting invoice" do
-          before(:each) do
+          before do
             @waiting_invoice = create(:invoice, site: @site, state: 'waiting')
           end
 
@@ -1048,7 +1052,7 @@ describe User do
         end
 
         context "with an open invoice" do
-          before(:each) do
+          before do
             @open_invoice = create(:invoice, site: @site, state: 'open')
           end
 
@@ -1056,7 +1060,7 @@ describe User do
         end
 
         context "with a failed invoice" do
-          before(:each) do
+          before do
             @failed_invoice = create(:invoice, site: @site, state: 'failed')
           end
 
@@ -1064,7 +1068,7 @@ describe User do
         end
 
         context "with a waiting invoice" do
-          before(:each) do
+          before do
             @waiting_invoice = create(:invoice, site: @site, state: 'waiting')
           end
 

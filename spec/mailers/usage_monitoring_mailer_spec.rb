@@ -11,7 +11,7 @@ describe UsageMonitoringMailer do
   it_should_behave_like "common mailer checks", %w[plan_overused], params: FactoryGirl.create(:site)
 
   describe "#plan_overused" do
-    before(:each) do
+    before do
       described_class.plan_overused(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
@@ -21,14 +21,14 @@ describe UsageMonitoringMailer do
     end
 
     it "should set a body that contain the link to peak insurance docs" do
-      @last_delivery.body.encoded.should include "http://docs.#{ActionMailer::Base.default_url_options[:host]}/peak-insurance"
+      @last_delivery.body.encoded.should include "http://docs.sublimevideo.dev/peak-insurance"
     end
   end
 
   it_should_behave_like "common mailer checks", %w[plan_upgrade_required], params: FactoryGirl.create(:site)
 
   describe "#plan_upgrade_required" do
-    before(:each) do
+    before do
       described_class.plan_upgrade_required(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
@@ -38,7 +38,7 @@ describe UsageMonitoringMailer do
     end
 
     it "should set a body that contain the link to edit the plan" do
-      @last_delivery.body.encoded.should include "https://my.#{ActionMailer::Base.default_url_options[:host]}/sites/#{subject.to_param}/plan/edit"
+      @last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites/#{subject.to_param}/plan/edit"
     end
   end
 

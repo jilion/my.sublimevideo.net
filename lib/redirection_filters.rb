@@ -1,7 +1,7 @@
 module MyRedirectionFilters
 
   def redirect_suspended_user
-    redirect_to page_url('suspended', subdomain: 'my') if current_user && current_user.suspended?
+    redirect_to page_url('suspended') if current_user && current_user.suspended?
   end
 
   def redirect_wrong_password_to(url)

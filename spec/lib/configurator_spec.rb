@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Configurator do
-  before(:each) do
+  before do
     @conf = { 'development' => { 'bar' => 'dev_bar', 'baz' => 'dev_baz', 'bla' => false }, 'production' => { 'bar' => 'heroku_env', 'baz' => 'heroku_env', 'bla' => false } }
     ENV['CONFIGURABLE_MODULE_BAR'] = 'prod_bar' # fake prod env config
     ENV['CONFIGURABLE_MODULE_BAZ'] = 'prod_baz' # fake prod env config
@@ -17,7 +17,7 @@ describe Configurator do
   subject { ConfigurableModule }
 
   describe "accessors" do
-    before(:each) do
+    before do
       YAML.stub(:load_file) { @conf }
       Rails.stub(:env) { 'development' }
     end
@@ -32,7 +32,7 @@ describe Configurator do
       before { YAML.should_receive(:load_file).with(ConfigurableModule.config_path) { @conf } }
 
       context "development env" do
-        before(:each) do
+        before do
           ConfigurableModule.reset_yml_options
           Rails.should_receive(:env) { 'development' }
         end
@@ -43,7 +43,7 @@ describe Configurator do
       end
 
       context "production env" do
-        before(:each) do
+        before do
           ConfigurableModule.reset_yml_options
           Rails.should_receive(:env) { 'production' }
         end

@@ -5,7 +5,7 @@ describe MailLetter do
   describe "Class Methods" do
 
     describe "#deliver_and_log" do
-      before(:each) do
+      before do
         @user          = create(:user, created_at: Time.utc(2011,1,1))
         @admin         = create(:admin)
         @mail_template = create(:mail_template)
@@ -34,7 +34,7 @@ describe MailLetter do
 
       context "with multiple users to send emails to" do
         describe "with the 'dev' filter" do
-          before(:each) do
+          before do
             @mail_letter = MailLetter.new(@attributes.merge(criteria: 'dev'))
             User.stub!(:where).with(email: ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"]).and_return([@user])
           end
@@ -64,7 +64,7 @@ describe MailLetter do
         end
 
         describe "the 'paying' and 'free' filters" do
-          before(:each) do
+          before do
             @archived_user = create(:user, state: 'archived')
             @paying_user = create(:user)
             create(:site_not_in_trial, user: @paying_user)

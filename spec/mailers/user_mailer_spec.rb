@@ -7,7 +7,7 @@ describe UserMailer do
 
   describe "#account_suspended" do
     context "when reason given is :invoice_problem" do
-      before(:each) do
+      before do
         described_class.account_suspended(subject).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
@@ -23,7 +23,7 @@ describe UserMailer do
   end
 
   describe "#account_unsuspended" do
-    before(:each) do
+    before do
       described_class.account_unsuspended(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
@@ -38,7 +38,7 @@ describe UserMailer do
   end
 
   describe "#account_archived" do
-    before(:each) do
+    before do
       described_class.account_archived(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end

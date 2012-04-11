@@ -13,7 +13,7 @@ describe UsrAgent do
   end
 
   describe ".create_or_update_from_trackers!" do
-    before(:each) do
+    before do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
       VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz').and_return(log_file)
       @log = create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')

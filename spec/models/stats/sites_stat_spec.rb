@@ -4,7 +4,7 @@ describe Stats::SitesStat do
 
   context "with a bunch of different sites" do
 
-    before(:each) do
+    before do
       user = create(:user)
       @yearly_plan = create(:plan, name: @paid_plan.name, cycle: 'year')
       create(:site, user: user, state: 'active', plan_id: @free_plan.id)

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Transaction do
-  before(:each) do
+  before do
     @user = create(:user)
     @user_with_no_cc = create(:user_no_cc)
   end
@@ -37,7 +37,7 @@ describe Transaction do
     end
 
     describe "#all_invoices_belong_to_same_user" do
-      before(:each) do
+      before do
         @site1 = create(:site)
         @site2 = create(:site)
       end
@@ -49,7 +49,7 @@ describe Transaction do
   end # Validations
 
   describe "Callbacks" do
-    before(:each) do
+    before do
       @site = create(:site)
       @invoice1 = create(:invoice, site: @site, amount: 200, state: 'open')
       @invoice2 = create(:invoice, site: @site, amount: 300, state: 'paid')
@@ -114,7 +114,7 @@ describe Transaction do
   end # Callbacks
 
   describe "State Machine" do
-    before(:each) do
+    before do
       @site        = create(:site)
       @invoice1    = create(:invoice, site: @site, state: 'open')
       @invoice2    = create(:invoice, site: @site, state: 'failed')
@@ -128,7 +128,7 @@ describe Transaction do
 
     describe "Events" do
       describe "#wait_d3d" do
-        before(:each) { subject.wait_d3d }
+        before { subject.wait_d3d }
 
         context "from unprocessed state" do
           subject { @transaction.reload.update_attribute(:state, 'unprocessed'); @transaction }
@@ -152,7 +152,7 @@ describe Transaction do
       end
 
       describe "#succeed" do
-        before(:each) { subject.succeed }
+        before { subject.succeed }
 
         context "from unprocessed state" do
           subject { @transaction.reload.update_attribute(:state, 'unprocessed'); @transaction }
@@ -176,7 +176,7 @@ describe Transaction do
       end
 
       describe "#fail" do
-        before(:each) { subject.fail }
+        before { subject.fail }
 
         context "from unprocessed state" do
           subject { @transaction.reload.update_attribute(:state, 'unprocessed'); @transaction }
@@ -214,7 +214,7 @@ describe Transaction do
         end
 
         describe "on :succeed" do
-          before(:each) { subject.reload.succeed }
+          before { subject.reload.succeed }
 
           specify do
             @invoice1.reload.should be_paid
@@ -227,7 +227,7 @@ describe Transaction do
         end
 
         describe "on :fail" do
-          before(:each) { subject.reload.fail }
+          before { subject.reload.fail }
 
           specify do
             @invoice1.reload.should be_failed
@@ -268,7 +268,7 @@ describe Transaction do
   end # State Machine
 
   describe "Scopes" do
-    before(:each) do
+    before do
       @site                    = create(:site)
       @invoice                 = create(:invoice, site: @site, state: 'open')
       @transaction_unprocessed = create(:transaction, invoices: [@invoice])
@@ -284,7 +284,7 @@ describe Transaction do
   describe "Class Methods" do
 
     describe ".charge_invoices" do
-      before(:each) do
+      before do
         Invoice.delete_all
         @user1    = create(:user)
         @user2    = create(:user, state: 'suspended')
@@ -296,7 +296,7 @@ describe Transaction do
         @invoice4 = create(:invoice, state: 'failed', site: @site2)
         @invoice5 = create(:invoice, state: 'paid', site: @site1)
       end
-      before(:each) { Delayed::Job.delete_all }
+      before { Delayed::Job.delete_all }
 
       it "should delay invoice charging for open invoices which have the renew flag == true by user" do
         Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%").should be_empty
@@ -309,7 +309,7 @@ describe Transaction do
 
     describe ".charge_invoices_by_user_id" do
       use_vcr_cassette "ogone/visa_payment_generic"
-      before(:each) do
+      before do
         Invoice.delete_all
         @user1    = create(:user)
         @user2    = create(:user)
@@ -322,7 +322,7 @@ describe Transaction do
         @invoice3 = create(:invoice, site: @site1, state: 'open', renew: true)
         @invoice4 = create(:invoice, site: @site2, state: 'failed', renew: false) # first invoice
       end
-      before(:each) do
+      before do
         @user1.reload
         @user2.reload
         Delayed::Job.delete_all
@@ -395,7 +395,7 @@ describe Transaction do
       context "with a credit card alias" do
         use_vcr_cassette "ogone/visa_payment_2000_alias"
 
-        before(:each) do
+        before do
           @user.reload
           @invoice1 = create(:invoice, site: create(:site, user: @user), state: 'open')
           @invoice2 = create(:invoice, site: create(:site, user: @user), state: 'failed')
@@ -428,7 +428,7 @@ describe Transaction do
       end
 
       context "with a succeeding purchase" do
-        before(:each) do
+        before do
           @user.reload
           @invoice1 = create(:invoice, site: create(:site, user: @user), state: 'open')
         end
@@ -456,7 +456,7 @@ describe Transaction do
         end
 
         context "with a purchase that need a 3d secure authentication" do
-          before(:each) do
+          before do
             Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "5", "STATUS" => "46", "NCERRORPLUS" => "!" }) }
           end
 
@@ -473,12 +473,12 @@ describe Transaction do
       end
 
       context "with a failing purchase" do
-        before(:each) do
+        before do
           @invoice1 = create(:invoice, site: create(:site, user: @user), state: 'open')
         end
 
         context "with a purchase that raise an error" do
-          before(:each) { Ogone.stub(:purchase).and_raise("Purchase error!") }
+          before { Ogone.stub(:purchase).and_raise("Purchase error!") }
           it "should set transaction and invoices to failed state" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
@@ -489,7 +489,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to an invalid credit card" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "5", "STATUS" => "0", "NCERRORPLUS" => "invalid" }) } }
+          before { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "5", "STATUS" => "0", "NCERRORPLUS" => "invalid" }) } }
           it "should set transaction and invoices to failed state" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
@@ -499,7 +499,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a refused purchase" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "3", "STATUS" => "93", "NCERRORPLUS" => "refused" }) } }
+          before { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "3", "STATUS" => "93", "NCERRORPLUS" => "refused" }) } }
           it "should set transaction and invoices to failed state" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
@@ -508,7 +508,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a waiting authorization" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "0", "STATUS" => "51", "NCERRORPLUS" => "waiting" }) } }
+          before { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "0", "STATUS" => "51", "NCERRORPLUS" => "waiting" }) } }
           it "should not succeed nor fail transaction nor invoices" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
@@ -518,7 +518,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a uncertain result" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "2", "STATUS" => "92", "NCERRORPLUS" => "unknown" }) } }
+          before { Ogone.stub(:purchase) { mock('response', params: { "NCSTATUS" => "2", "STATUS" => "92", "NCERRORPLUS" => "unknown" }) } }
           it "should not succeed nor fail transaction nor invoices, with status 2" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
@@ -536,7 +536,7 @@ describe Transaction do
   describe "Instance Methods" do
 
     describe "#process_payment_response" do
-      before(:each) do
+      before do
         @user.reload
         @site1    = create(:site, user: @user, plan_id: @free_plan.id)
         @site2    = create(:site, user: @user, plan_id: @paid_plan.id)
@@ -744,7 +744,7 @@ describe Transaction do
     end
 
     describe "#description" do
-      before(:each) do
+      before do
         @site1    = create(:site, user: @user, plan_id: @free_plan.id)
         @site2    = create(:site, user: @user, plan_id: @paid_plan.id)
         @invoice1 = create(:invoice, site: @site1, state: 'open')

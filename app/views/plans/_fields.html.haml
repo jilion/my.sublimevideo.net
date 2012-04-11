@@ -125,7 +125,7 @@
                     = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, current_plan, standard_yearly_plan, checked: current_plan && current_plan == standard_yearly_plan)
                     %span.bg
                   - if site.persisted? && plan == standard_yearly_plan
-                    %span.current_label= "Current"  
+                    %span.current_label= "Current"
                   - if deal
                     = render 'deals/deal_details', deal: deal, plan: standard_yearly_plan
                   - else

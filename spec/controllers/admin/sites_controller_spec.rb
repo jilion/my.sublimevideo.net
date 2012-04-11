@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Admin::SitesController do
 
   context "with logged in admin with the god role" do
-    before(:each) { sign_in :admin, authenticated_admin(roles: ['god']) }
+    before { sign_in :admin, authenticated_admin(roles: ['god']) }
 
     it "responds with success to GET :index" do
       get :index
@@ -25,7 +25,7 @@ describe Admin::SitesController do
     end
 
     describe "PUT :update" do
-      before(:each) do
+      before do
         Site.stub(:find_by_token).with('abc123') { mock_site }
       end
 

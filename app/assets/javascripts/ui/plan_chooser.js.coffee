@@ -16,27 +16,27 @@ class MySublimeVideo.UI.PlanChooser
 
   # This se
   setupPlansObservers: ->
-    jQuery('#plans input[type=radio]').each (index, el)=>
+    jQuery('#plans input[type=radio]').each (index, el) =>
       el = jQuery(el)
       el.on 'click', =>
         @checkedPlan = el
         this.selectCheckboxWrappingBox()
         this.handlePlanChange()
 
-    this.handlePlanChange() if @checkedPlan?
+    this.handlePlanChange() if @checkedPlan.exists()
 
   setupSkipTrialObserver: ->
     @skipTrialCheckbox.on 'click', =>
       this.handleBillingInfo(this.skippingTrial())
 
-    this.handleBillingInfo(this.skippingTrial()) if @checkedPlan?
+    this.handleBillingInfo(this.skippingTrial()) if @checkedPlan.exists()
 
   selectCheckboxWrappingBox: ->
     jQuery('#plans ul .select_box').removeClass 'active'
     @checkedPlan.parents('.select_box').addClass 'active'
 
   handlePlanChange: ->
-    if @badgedDiv?
+    if @badgedDiv.exists()
       if !this.checkedPlanPriceIsZero()
         @badgedDiv.show()
       else
@@ -61,11 +61,11 @@ class MySublimeVideo.UI.PlanChooser
     if show then jQuery('#site_submit').show() else jQuery('#site_submit').hide()
 
   checkedPlanIsCurrentPlan: -> @formType is 'update' and !@checkedPlan.attr('data-plan_change_type')?
-  checkedPlanIsAnUpgrade: -> @checkedPlan.attr('data-plan_change_type') is 'upgrade'
+  checkedPlanIsAnUpgrade: -> /upgrade/.test @checkedPlan.attr('data-plan_change_type')
   checkedPlanPriceIsZero: ->
     (@checkedPlan.attr('data-plan_update_price')? and @checkedPlan.attr('data-plan_update_price') is "$0") or @checkedPlan.attr('data-plan_price') is "$0"
 
-  siteIsInTrial: -> @skipTrialDiv?
+  siteIsInTrial: -> @skipTrialDiv.exists()
 
   skippingTrial: -> this.siteIsInTrial() and @skipTrialDiv.is(':visible') and @skipTrialCheckbox.attr('checked')?
 
