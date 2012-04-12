@@ -97,7 +97,6 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       builder: MSVVideoCodeGenerator.builder
       loader: MSVVideoCodeGenerator.loader
       poster: MSVVideoCodeGenerator.poster
-      sources: MSVVideoCodeGenerator.sources
       thumbnail: MSVVideoCodeGenerator.thumbnail
       iframe: MSVVideoCodeGenerator.iframe
       sources: MSVVideoCodeGenerator.sources
@@ -107,7 +106,6 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       builder: MSVVideoCodeGenerator.builder
       loader: MSVVideoCodeGenerator.loader
       poster: MSVVideoCodeGenerator.poster
-      sources: MSVVideoCodeGenerator.sources
       thumbnail: MSVVideoCodeGenerator.thumbnail
       iframe: MSVVideoCodeGenerator.iframe
       sources: MSVVideoCodeGenerator.sources
