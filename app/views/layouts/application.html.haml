@@ -2,9 +2,7 @@
 - @page_title_prefix = "MySublimeVideo"
 
 = content_for :javascript do
-  - if %w[site_stats].include?(controller_name)
-    = javascript_include_tag 'stats'
-  - else
+  - if %w[site_stats video_codes].exclude?(controller_name)
     = javascript_include_tag 'application'
 
 - if flash.present?

@@ -16,7 +16,7 @@ private
 
   def find_site_by_token!
     if demo_site?
-      @site  = Site.find_by_token(SiteToken.www)
+      @site  = Site.find_by_token(SiteToken[:www])
     elsif params[:site_id]
       @site = current_user.sites.not_archived.find_by_token!(params[:site_id])
     end

@@ -183,7 +183,7 @@ module Stat::Site
 
   def self.json(site_token, period = 'days')
     if site_token == 'demo'
-      site_token = SiteToken.www
+      site_token = SiteToken[:www]
       demo       = true
     end
     from, to = period_intervals(site_token, period)

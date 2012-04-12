@@ -49,7 +49,7 @@ module Stat::Video
   def self.top_videos(site_token, options = {})
     options[:from], options[:to] = options[:from].to_i, options[:to].to_i
     options    = options.symbolize_keys.reverse_merge(period: 'days', sort_by: 'vv', limit: 5)
-    site_token = SiteToken.www if site_token == 'demo'
+    site_token = SiteToken[:www] if site_token == 'demo'
     conditions = { st: site_token, d: { "$gte" => Time.at(options[:from]), "$lte" => Time.at(options[:to]) } }
 
     video_uids, total = top_video_uids(conditions, options)
@@ -74,7 +74,7 @@ private
 
   def self.top_video_uids(conditions, options)
     # Demo Page
-    if conditions[:st] == SiteToken.www
+    if conditions[:st] == SiteToken[:www]
       conditions[:u]  = { "$in" => %w[home features-lightbox features-playlist-1 features-playlist-2 features-playlist-3 features-playlist-4 demo-single demo-lightbox-1 demo-lightbox-2 demo-lightbox-3 demo-lightbox-4 demo-playlist-1 demo-playlist-2 demo-playlist-3 demo-playlist-4] }
     end
 
