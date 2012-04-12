@@ -5,7 +5,7 @@ module SiteModules::Templates
     TEMPLATES = [:loader, :license]
 
     # delayed method
-    def update_loader_and_license(site_id, templates={})
+    def update_loader_and_license(site_id, templates = {})
       site = Site.find(site_id)
       templates_to_purge = []
 
@@ -56,7 +56,7 @@ module SiteModules::Templates
     VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
   end
 
-  def set_template(name, options={})
+  def set_template(name, options = {})
     name = name.to_s
     return unless %w[loader license].include?(name)
 
