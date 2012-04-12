@@ -59,9 +59,4 @@ describe ApplicationHelper do
   #   it { helper.info_box { "<p>foo</p>" }.should eq '<div class="info_box"><p>foo</p><span class="arrow"></span></div>' }
   # end
 
-  describe "sublimevideo_include_tag" do
-    it { helper.sublimevideo_include_tag(true, 'abcd1234').should eq '<script src="https://4076.voxcdn.com/js/abcd1234.js" type="text/javascript"></script>' }
-    it { helper.sublimevideo_include_tag(false, 'abcd1234').should eq '<script src="http://cdn.sublimevideo.net/js/abcd1234.js" type="text/javascript"></script>' }
-  end
-
 end

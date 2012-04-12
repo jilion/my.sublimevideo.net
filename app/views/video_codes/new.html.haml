@@ -1,11 +1,11 @@
 = content_for :javascript do
-  = sublimevideo_include_tag(request.ssl?, SiteToken.my)
+  = sublimevideo_include_tag(request.ssl?, :my).html_safe
   = javascript_include_tag 'video_code_generator'
 
 - @page_title = "Video Code Generator"
 
 :coffeescript
-  $ ->
+  jQuery(document).ready ->
     SublimeVideoSizeChecker.setRoot('/video-size-checker/')
     window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(logged_in: #{user_signed_in?}, sites: #{@sites.try(:to_json) || []})
 

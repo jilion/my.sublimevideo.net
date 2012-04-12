@@ -1,7 +1,6 @@
 !!! 5
 %html
-  %head
-    = sublimevideo_include_tag(request.ssl?, SiteToken.my)
+  %head= sublimevideo_include_tag(request.ssl?, :my).html_safe
   %body
     %video.sublime.sv_iframe_embed{ poster: params[:poster], preload: 'none', style: 'display:none' }
       - params.select { |k, v| k =~ /^src\d+$/ }.each do |k, v|

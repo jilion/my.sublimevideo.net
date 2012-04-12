@@ -63,8 +63,4 @@ module ApplicationHelper
     request.subdomain == 'my' && request.path == '/sites/stats/demo'
   end
 
-  def sublimevideo_include_tag(ssl_request, token)
-    javascript_include_tag (ssl_request ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/#{token}.js"
-  end
-
 end
