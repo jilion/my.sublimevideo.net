@@ -21,7 +21,7 @@ class MSVVideoCodeGenerator.Models.Video extends Backbone.Model
 
 class MSVVideoCodeGenerator.Models.VideoLightbox extends MSVVideoCodeGenerator.Models.Video
   defaults:
-    classes: 'sublime zoom'
+    classes: 'sublime lightbox'
 
 class MSVVideoCodeGenerator.Models.VideoIframeEmbed extends MSVVideoCodeGenerator.Models.Video
   defaults:
