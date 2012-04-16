@@ -19,18 +19,13 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCodeGenerator.loader = new MSVVideoCodeGenerator.Models.Loader(site: MSVVideoCodeGenerator.sites.at(0))
 
-    MSVVideoCodeGenerator.demoPoster    = 'http://media.jilion.com/images/midnight_sun_800.jpg'
-    MSVVideoCodeGenerator.demoThumbnail = 'http://media.jilion.com/images/midnight_sun1_144.jpg'
+    MSVVideoCodeGenerator.demoPoster    = 'http://media.jilion.com/vcg/ms_800.jpg'
+    MSVVideoCodeGenerator.demoThumbnail = 'http://media.jilion.com/vcg/ms_192.jpg'
     MSVVideoCodeGenerator.demoSources   =
-      mp4_base: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4'
-      mp4_hd: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4'
-      webmogg_base: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm'
-      webmogg_hd: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm'
-      # invalid sources for testing
-      # mp4_base: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp'
-      # mp4_hd: 'ttp://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4'
-      # webmogg_base: 'http://sublimevideo.net/assets/www/demo/midnight_sun_800.jpg'
-      # webmogg_hd: 'http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm'
+      mp4_base: 'http://media.jilion.com/vcg/ms_360p.mp4'
+      mp4_hd: 'http://media.jilion.com/vcg/ms_720p.mp4'
+      webmogg_base: 'http://media.jilion.com/vcg/ms_360p.webm'
+      webmogg_hd: 'http://media.jilion.com/vcg/ms_720p.webm'
 
     MSVVideoCodeGenerator.poster  = new MSVVideoCodeGenerator.Models.Image
     MSVVideoCodeGenerator.sources = new MSVVideoCodeGenerator.Collections.Sources([

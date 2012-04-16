@@ -22,6 +22,7 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
         source = MSVVideoCodeGenerator.sources.byFormatAndQuality(key.split('_'))
         source.setAndPreloadSrc(src)
         source.set(isUsed: true)
+      MSVVideoCodeGenerator.video.get('sources').mp4Base().set(dataName: 'Midnight Sun')
       @model.set(demoAssetsUsed: true)
 
       this.renderViews()
