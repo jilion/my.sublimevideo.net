@@ -4,7 +4,7 @@ class MSVVideoCodeGenerator.Models.Builder extends Backbone.Model
     startWithHd: false
     demoAssetsUsed: false
 
-class MSVVideoCodeGenerator.Models.Iframe extends Backbone.Model
+class MSVVideoCodeGenerator.Models.Iframe extends MSVVideoCodeGenerator.Models.Asset
   defaults:
     src: ""
     width: null

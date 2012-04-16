@@ -26,7 +26,6 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
         this.set(found: false)
 
       this.setDefaultDataUID() unless this.get('dataUID')
-      this.setDefaultDataName() unless this.get('dataName')
 
   setKeepRatio: (keepRatio) ->
     this.set(keepRatio: keepRatio)
@@ -34,11 +33,6 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
 
   setDefaultDataUID: ->
     this.set(dataUID: crc32(this.get('src'))) unless this.srcIsEmpty()
-
-  setDefaultDataName: ->
-    unless this.srcIsEmpty()
-      name = this.get('src').slice(this.get('src').lastIndexOf('/') + 1, this.get('src').lastIndexOf('.'))
-      this.set(dataName: name.titleize())
 
   preloadSrc: ->
     new SublimeVideo.Media.VideoPreloader(this.get('src'), this.setDimensions)

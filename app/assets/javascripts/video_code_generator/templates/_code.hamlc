@@ -11,18 +11,25 @@
 
   - if errors['src_invalid'] > 0 or errors['not_found'] > 0
     .notices
-      %strong Errors:
       %ul
         - if errors['src_invalid'] > 0
-          %li.notice.error= "#{errors['src_invalid']} source#{if errors['src_invalid'] > 1 then 's are' else ' is'} invalid."
+          %li.notice.error= "There #{if errors['src_invalid'] > 1 then 'are' else 'is'} #{errors['src_invalid']} source#{if errors['not_found'] > 1 then 's' else ''} that #{if errors['src_invalid'] > 1 then "aren't valid URLs" else "isn't a valid URL"}."
         - if errors['not_found'] > 0
-          %li.notice.error= "#{errors['not_found']} source#{if errors['not_found'] > 1 then 's' else ''} can't be found."
+          %li.notice.error= "There #{if errors['src_invalid'] > 1 then 'are' else 'is'} #{errors['not_found']} source#{if errors['not_found'] > 1 then 's' else ''} that can't be found."
 
-  - if warnings['mime_type_invalid'] > 0
+  - if warnings['mime_type_invalid'] > 0 or !@video.get('sources').mp4Base().get('dataUID') or !@video.get('sources').mp4Base().get('dataName')
     .notices
-      %strong Warnings:
       %ul
-        %li.notice.warning= "#{warnings['mime_type_invalid']} source#{if warnings['mime_type_invalid'] > 1 then 's seem' else ' seems'} to have an invalid MIME Type."
+        - if warnings['mime_type_invalid'] > 0
+          %li.notice.warning= "#{warnings['mime_type_invalid']} source#{if warnings['mime_type_invalid'] > 1 then 's seem' else ' seems'} to have an invalid MIME Type."
+        - unless @video.get('sources').mp4Base().get('dataUID')
+          %li.notice.warning
+            = "Please indicate a proper UID for this video in the Stats / UID field, in order to uniquely identify it in your stats."
+            <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.
+        - unless @video.get('sources').mp4Base().get('dataName')
+          %li.notice.warning
+            = "Please indicate a proper name for this video in the Stats / Name field, in order to easily identify it in your stats."
+            <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.
 
   - if @builder.get('builderClass') is 'iframe_embed'
     != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, videoTagTemplate: @videoTagTemplate)
