@@ -1,3 +1,10 @@
+- unless @iframe.srcIsUrl()
+  .notices
+    %ul
+      %li.notice.error
+        = "Please provide a URL in the Iframe Source field to create a working iframe embed code."
+        <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/embeds' onclick='window.open(this); return false'>Read more</a>.
+
 This is the code your audience can use to embed your video on their sites and around the Web.
 
 %form

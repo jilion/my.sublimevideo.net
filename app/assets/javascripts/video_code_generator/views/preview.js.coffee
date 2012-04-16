@@ -19,24 +19,25 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
   # Ensure multiple sequential render are not possible
   #
   delayedRender: ->
-    if MSVVideoCodeGenerator.video.viewable() and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.thumbnail.viewable())
-      clearTimeout(@renderTimer) if @renderTimer
-      @renderTimer = setTimeout((=> this.render()), 200)
-    else
-      this.hide()
+    clearTimeout(@renderTimer) if @renderTimer
+    @renderTimer = setTimeout((=> this.render()), 200)
 
   render: ->
-    @currentScroll = $(window).scrollTop()
-    sublimevideo.unprepare(jQuery('video').get(0)) if $('video').exists()
-    $(@el).html this.template
-      builder: @builder
-      posterSrc: MSVVideoCodeGenerator.video.get('poster').get('src')
-      video: MSVVideoCodeGenerator.video
+    if MSVVideoCodeGenerator.video.viewable() and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.thumbnail.viewable())
+      @currentScroll = $(window).scrollTop()
+      sublimevideo.unprepare(jQuery('video').get(0)) if $('video').exists()
+      $(@el).html this.template
+        builder: @builder
+        posterSrc: MSVVideoCodeGenerator.video.get('poster').get('src')
+        video: MSVVideoCodeGenerator.video
 
-    sublimevideo.prepare(jQuery('video').get(0)) if $('video').exists()
+      sublimevideo.prepare(jQuery('video').get(0)) if $('video').exists()
 
-    $(@el).show()
-    $(window).scrollTop(@currentScroll)
+      $(@el).show()
+      $(window).scrollTop(@currentScroll)
+
+    else
+      this.hide()
 
     this
 

@@ -24,11 +24,11 @@
           %li.notice.warning= "#{warnings['mime_type_invalid']} source#{if warnings['mime_type_invalid'] > 1 then 's seem' else ' seems'} to have an invalid MIME Type."
         - unless @video.get('sources').mp4Base().get('dataUID')
           %li.notice.warning
-            = "Please indicate a proper UID for this video in the Stats / UID field, in order to uniquely identify it in your stats."
+            = "We recommend that you provide a UID for this video in the Stats / UID field to make it uniquely identifiable in your Real-Time Statistics dashboard."
             <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.
         - unless @video.get('sources').mp4Base().get('dataName')
           %li.notice.warning
-            = "Please indicate a proper name for this video in the Stats / Name field, in order to easily identify it in your stats."
+            = "We recommend that you provide a name for this video in the Stats / Name field to make it easily identifiable in your Real-Time Statistics dashboard."
             <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.
 
   - if @builder.get('builderClass') is 'iframe_embed'
