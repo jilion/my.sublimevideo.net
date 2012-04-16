@@ -6,7 +6,6 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
 
   initialize: ->
     _.bindAll this, 'toggleResetDemoAssetsLink'
-    @model.bind 'change:demoAssetsUsed', this.toggleResetDemoAssetsLink
 
   #
   # EVENTS
@@ -28,10 +27,12 @@ class MSVVideoCodeGenerator.Views.DemoBootstrap extends Backbone.View
       this.renderViews()
 
   resetDemoAssets: (event) ->
-    this.resetAll()
-    @model.set(demoAssetsUsed: false)
+    if this.anyAssetNotEmpty() and confirm('All fields will be cleared, continue?')
+      this.resetAll()
+      @model.set(demoAssetsUsed: false)
 
-    this.renderViews()
+      this.renderViews()
+
     false
 
   toggleResetDemoAssetsLink: ->
