@@ -55,14 +55,14 @@ class Release < ActiveRecord::Base
 
   def zipfile
     # Download file from S3 to read the zip content
-    # please don't forget to call delete_zipfile
-    unless @zipfile
+    @zipfile ||= begin
       @local_zip_file = File.new(Rails.root.join("tmp/#{read_attribute(:zip)}"), 'w', :encoding => 'ASCII-8BIT')
-      @local_zip_file.write(zip.read)
+      # There's an issue with CarrierWave's "zip.read" method, use AWS directly instead...
+      # Note: no problem when using :file as storage
+      @local_zip_file.write(Rails.env.test? ? zip.read : S3.player_bucket.get("#{zip.store_dir}/#{zip.filename}"))
       @local_zip_file.flush
-      @zipfile = Zip::ZipFile.open(@local_zip_file.path)
+      Zip::ZipFile.open(@local_zip_file.path)
     end
-    @zipfile
   end
 
   def files_in_zip
@@ -92,7 +92,7 @@ private
   def overwrite_dev_with_zip_content
     S3.player_bucket.delete_folder('dev')
     files_in_zip do |file|
-      S3.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, "public-read",
+      S3.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, 'public-read',
         'content-type' => FileHeader.content_type(file.to_s),
         'content-encoding' => FileHeader.content_encoding(file.to_s)
       )
@@ -101,8 +101,8 @@ private
 
   # after_transition to beta, stable
   def copy_content_to_next_state
-    old_keys_names = S3.keys_names(S3.player_bucket, 'prefix' => state, :remove_prefix => true)
-    new_keys_names = S3.keys_names(S3.player_bucket, 'prefix' => state_was, :remove_prefix => true)
+    old_keys_names = S3.keys_names(S3.player_bucket, 'prefix' => state, remove_prefix: true)
+    new_keys_names = S3.keys_names(S3.player_bucket, 'prefix' => state_was, remove_prefix: true)
     # copy new keys to next state level
     new_keys_names.each do |name|
       from = state_was + name
@@ -111,13 +111,13 @@ private
     end
     # Remove no more used keys
     (old_keys_names - new_keys_names).each do |name|
-      S3.client.interface.delete(S3.player_bucket.name, state + name)
+      S3.player_bucket.delete_key(state + name)
     end
   end
 
   # after_transition to dev, beta, stable
   def archive_old_release
-    old_release = Release.where(:state => state, :id.not_eq => self.id).first
+    old_release = Release.where(state: state, :id.not_eq => self.id).first
     # old_release can be nil if there was no old release with that state
     old_release.try(:archive)
   end

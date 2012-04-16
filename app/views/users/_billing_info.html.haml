@@ -12,7 +12,7 @@
   #billing_info.dark_box
     %h4 Billing Address
 
-    - if !current_user.billing_address_complete?
+    - unless current_user.billing_address_complete?
       %p.alert
         = t("user.billing_address.incomplete")
         %br
