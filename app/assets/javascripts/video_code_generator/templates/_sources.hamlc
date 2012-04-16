@@ -26,8 +26,8 @@
             = "Add HD version" if source.get('quality') is 'hd'
 
       .entry{ id: "#{source.formatQuality()}_box", style: "#{if check then '' else 'display:none' }" }
-        %label.icon{ for: "#{source.formatQuality()}_src" }= "#{source.qualityTitle()} url"
-        %input.text.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} version url", value: source.get('src') }
+        %label.icon{ for: "#{source.formatQuality()}_src" }= "#{source.qualityTitle()} URL"
+        %input.text.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} URL", value: source.get('src') }
         %span.inline_alert{ id: "#{source.formatQuality()}_src_invalid", style: "display:none" } Please provide a valid video URL
         %span.inline_alert{ id: "#{source.formatQuality()}_mime_type_invalid", style: "display:none" } Please check your MIME Type
         %span.inline_alert{ id: "#{source.formatQuality()}_not_found", style: "display:none" } This file doesn't seem to exist

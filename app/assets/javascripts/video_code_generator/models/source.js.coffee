@@ -119,8 +119,8 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
 
   qualityTitle: ->
     switch this.get('quality')
-      when 'base' then 'SD'
-      when 'hd' then 'HD'
+      when 'base' then 'Standard Definition'
+      when 'hd' then 'High Definition'
       else this.get('quality').charAt(0).toUpperCase() + this.get('quality').slice(1);
 
   formatQuality: ->

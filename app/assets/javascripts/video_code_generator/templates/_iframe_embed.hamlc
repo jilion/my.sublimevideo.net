@@ -36,7 +36,7 @@
     If you need help, make sure to read our <a class='hl' href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/embeds' onclick='window.open(this); return false'>documentation</a>.
   .entry
 
-    %label.icon{ for: "iframe_src" } Iframe source url
-    %input.text{ type: "text", name: "iframe_src", id: "iframe_src", size: "50", placeholder: "Iframe source url", value: "#{@iframe.get('src')}" }/
+    %label.icon{ for: "iframe_src" } Iframe source URL
+    %input.text{ type: "text", name: "iframe_src", id: "iframe_src", size: "50", placeholder: "Iframe source URL", value: "#{@iframe.get('src')}" }/
 
   .big_break
