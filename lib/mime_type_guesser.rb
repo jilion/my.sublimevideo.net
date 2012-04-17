@@ -14,7 +14,7 @@ private
     end
 
     case response
-    when Net::HTTPSuccess
+    when Net::HTTPSuccess, Net::HTTPRedirection
       response
     when Net::HTTPClientError
       { 'content-type' => "4" }
