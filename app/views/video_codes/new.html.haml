@@ -24,7 +24,9 @@
       %p.sub= "Creating your <video> code has never been easier."
       %span.video_code_generator_icon
 
-    %p= raw "SublimeVideo's Video Code Generator helps you easily generate properly configured <code>&lt;video&gt;</code> elements for use with SublimeVideo. It's also the easiest way to quickly test SublimeVideo player with your own video sources."
+    %p
+      = raw "SublimeVideo's Video Code Generator helps you easily generate properly configured <code>&lt;video&gt;</code> elements for use with SublimeVideo. It's also the easiest way to quickly test SublimeVideo player with your own video sources."
+      = raw "#{link_to 'Read more', 'http://blog.jilion.com/2012/04/17/introducing-the-sublimevideo-video-code-generator', onclick: 'window.open(this); return false'}."
 
 .video_code_generator
   #video_embed_type_selector
