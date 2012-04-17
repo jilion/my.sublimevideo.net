@@ -293,7 +293,7 @@ describe SiteModules::Templates do
         end
 
         it "sets loader file with stable player_mode" do
-          subject.loader.read.should include("/p/sublime.js?t=#{subject.token}")
+          subject.loader.read.should include("/p/sublime.js.jgz?t=#{subject.token}")
         end
       end
 
@@ -315,7 +315,7 @@ describe SiteModules::Templates do
           subject { build(:site).tap { |s| s.set_template("loader", prefix: 'bar') } }
 
           it "use standard loader" do
-            subject.loader.read.should include("/p/sublime.js?t=#{subject.token}")
+            subject.loader.read.should include("/p/sublime.js.jgz?t=#{subject.token}")
           end
         end
       end
