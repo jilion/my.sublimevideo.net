@@ -4,9 +4,18 @@ class MSVVideoCodeGenerator.Models.Builder extends Backbone.Model
     startWithHd: false
     demoAssetsUsed: false
 
+  sitesHostnamesMatchUrl: (site, url) ->
+    hostnameMatch = this.hostnameRegex(site.get('hostname'), site.get('wildcard'), site.get('path')).test(url)
+    extraHostnameMatch = site.get('extra_hostnames')? and _.find site.get('extra_hostnames').split(', '), (hostname) =>
+      this.hostnameRegex(hostname, site.get('wildcard'), site.get('path')).test(url)
+    hostnameMatch or extraHostnameMatch
+
+  hostnameRegex: (hostname, wildcard, path) ->
+    ///https?:\/\/(#{if wildcard? then '.*' else 'www'}\.)?#{hostname}#{if path? then "\/#{path}(\/.*|$)" else '(\/.*$|$)'}///
+
 class MSVVideoCodeGenerator.Models.Iframe extends MSVVideoCodeGenerator.Models.Asset
   defaults:
-    src: ""
+    src: ''
     width: null
     height: null
 

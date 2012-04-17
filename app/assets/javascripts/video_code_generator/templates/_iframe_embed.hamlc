@@ -32,7 +32,7 @@
 
   %p.info
     The iframe source must be the URL of the actual page containing the <code>&lt;video&gt;</code>
-    element – the page must be hosted on #{@loader.get('site').get('hostname')} (or any of its Alias or staging domains).
+    element – <strong>the page must be hosted on #{@loader.get('site').get('hostname')} (or any of its Alias or staging domains).</strong>
     If you need help, make sure to read our <a class='hl' href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/embeds' onclick='window.open(this); return false'>documentation</a>.
   .entry
 

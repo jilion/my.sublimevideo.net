@@ -1,4 +1,16 @@
-!= "This is the HTML for the simple page that will contain the video you wish to embed. Simply paste this code into a new page hosted at <code>#{@iframe.get('src')}</code>."
+- unless @builder.sitesHostnamesMatchUrl(MSVVideoCodeGenerator.loader.get('site'), @iframe.get('src'))
+  .notices
+    %ul
+      %li.notice.warning
+        This page must be hosted on #{@loader.get('site').get('hostname')} (or any of its Alias or staging domains).
+        <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/embeds' onclick='window.open(this); return false'>Read more</a>.
+
+This is the HTML for the simple page that will contain the video you wish to embed.
+
+- if @iframe.srcIsUrl()
+  Simply paste this code into a new page hosted at <code>#{@iframe.get('src')}</code>.
+- else
+  Simply paste this code into a new page hosted on #{@loader.get('site').get('hostname')} (or any of its Alias or staging domains).
 
 %form
   .embed_code.entry
@@ -7,7 +19,8 @@
         <!DOCTYPE html>
         <html>
           <head>
-            <script src="#{if @loader.get('ssl') then 'https://4076.voxcdn.com' else 'http://cdn.sublimevideo.net'}/js/#{@loader.get('site').get('token')}.js" type="text/javascript"></script>
+            <meta charset="utf-8">
+            <script src="http://cdn.sublimevideo.net/js/#{@loader.get('site').get('token')}.js" type="text/javascript"></script>
           </head>
           <body>
         #{@videoTagTemplate(codeOnly: true, builder: @builder, iframe: @iframe, video: @video)}
