@@ -3,10 +3,10 @@ module OneTime
 
     class << self
 
-      def regenerate_all_loaders_and_licenses
+      def regenerate_templates(options)
         total, delay = 0, 5
         ::Site.active.find_each(batch_size: 100) do |site|
-          ::Site.delay(priority: 200, run_at: delay.seconds.from_now).update_loader_and_license(site.id, { loader: true, license: true })
+          ::Site.delay(priority: 200, run_at: delay.seconds.from_now).update_loader_and_license(site.id, options)
           total += 1
 
           if (total % 100).zero?

@@ -19,7 +19,7 @@
           %td.video
             .wrap
               - playClass = if MSVStats.period.isSeconds() then 'disabled' else 'active'
-              %a{ href: "#", onclick: "return false", class: "play #{playClass}", data-video-uid: video.cid}
+              %a{ href: "#", onclick: "return false", class: "play #{playClass}", data-video-uid: video.cid }
                 .crop{ id: "#{video.cid}-crop", style: "width:96px; height:54px;" }
                   - unless MSVStats.period.isSeconds()
                     %span.overlay

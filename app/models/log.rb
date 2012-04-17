@@ -89,7 +89,7 @@ private
       log_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
       begin
         log_file.write(file.read)
-      rescue Excon::Errors::NotFound => ex
+      rescue NoMethodError, Excon::Errors::NotFound => ex
         if is_a?(Log::Voxcast)
           self.file = VoxcastCDN.download_log(name)
           self.save

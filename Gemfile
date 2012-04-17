@@ -49,7 +49,7 @@ gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
 gem 'fog',                   '~> 1.3.1'
-gem 'carrierwave',           '~> 0.6.0'
+gem 'carrierwave',           '~> 0.6.2'
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'voxel_hapi',            git: 'git://github.com/thibaudgg/voxel_hapi.git', branch: '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
@@ -59,7 +59,7 @@ gem 'public_suffix',         '~> 1.0.0'
 gem 'useragent',             git: 'git://github.com/jilion/useragent.git' # needed for stat_request_parser
 gem 'stat_request_parser',   '~> 1.1.0' # hosted on gemfury
 
-gem 'zip',                   '~> 2.0.2', require: 'zip/zip'
+gem 'rubyzip',               '~> 0.9.7', require: 'zip/zip'
 gem 'mime-types'
 gem 'countries',             '~> 0.8.2'
 gem 'snail',                 '~> 0.5.7'
@@ -107,6 +107,7 @@ group :development do
   gem 'silent-postgres'
   gem 'letter_opener', git: 'git://github.com/pcg79/letter_opener.git' # includes a fix not merged yet
   gem 'em-http-request' # async pusher in populate
+  gem 'quiet_assets'
 end
 
 group :development, :test do

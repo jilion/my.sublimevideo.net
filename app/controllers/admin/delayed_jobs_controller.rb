@@ -43,7 +43,7 @@ private
     if param = sort_params.first
       param[0].sub('by_', '').to_sym.send(param[1])
     else
-      :created_at.desc
+      :run_at.asc
     end
   end
 
