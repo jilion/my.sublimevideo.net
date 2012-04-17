@@ -22,7 +22,6 @@ private
       { 'content-type' => "" }
     end
   rescue => ex
-    Notify.send("MIME Type guessing failed for: #{uri_str}", exception: ex)
     { 'content-type' => "4" }
   end
 
