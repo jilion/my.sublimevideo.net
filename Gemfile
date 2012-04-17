@@ -107,6 +107,7 @@ group :development do
   gem 'silent-postgres'
   gem 'letter_opener', git: 'git://github.com/pcg79/letter_opener.git' # includes a fix not merged yet
   gem 'em-http-request' # async pusher in populate
+  gem 'quiet_assets'
 end
 
 group :development, :test do
