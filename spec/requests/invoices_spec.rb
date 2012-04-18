@@ -243,7 +243,7 @@ feature "Site invoice page" do
 
   context "user doesn't have VAT" do
     background do
-      sign_in_as :user
+      sign_in_as :user, billing_country: 'FR'
     end
 
     context "normal invoice" do
@@ -273,6 +273,10 @@ feature "Site invoice page" do
 
         page.should have_content "Period: #{I18n.l(@site.plan_cycle_started_at, format: :d_b_Y)} - #{I18n.l(@site.plan_cycle_ended_at, format: :d_b_Y)}"
         page.should have_content display_amount(@paid_plan.price)
+
+        page.should have_content "VAT 0%:"
+        page.should have_content display_amount(0)
+
         page.should have_content display_amount(@invoice.amount)
       end
     end
