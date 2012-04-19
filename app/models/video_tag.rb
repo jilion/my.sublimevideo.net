@@ -53,7 +53,9 @@ class VideoTag
     video_tags = video_tags_from_trackers(trackers)
     video_tags.each do |keys, attrs|
       attrs[:st], attrs[:u] = keys
-      attrs[:u] = attrs[:u].dup.force_encoding('UTF-8')
+      Rails.logger.info "site token: #{attrs[:st]} (encoding: #{attrs[:st].encoding})"
+      Rails.logger.info "video uid: #{attrs[:u]} (encoding: #{attrs[:u].encoding})"
+
       if video_tag = VideoTag.where(st: attrs[:st], u: attrs[:u]).first
         video_tag.update_with_latest_data(attrs)
       else
