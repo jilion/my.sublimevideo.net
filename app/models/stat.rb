@@ -34,12 +34,12 @@ module Stat
 
       values[:videos].each do |video_ui, video_inc|
         if video_inc.present?
-          Rails.logger.info "site token: #{site_token} (encoding: #{site_token.encoding})"
-          Rails.logger.info "video uid: #{video_ui} (encoding: #{video_ui.encoding})"
-
-          Stat::Video::Minute.collection.update({ st: site_token, u: video_ui, d: log.minute }, { "$inc" => video_inc }, upsert: true) unless site.in_free_plan?
-          Stat::Video::Hour.collection.update({ st: site_token, u: video_ui, d: log.hour },   { "$inc" => video_inc }, upsert: true)
-          Stat::Video::Day.collection.update({ st: site_token, u: video_ui, d: log.day },    { "$inc" => video_inc }, upsert: true)
+          begin
+            Stat::Video::Minute.collection.update({ st: site_token, u: video_ui, d: log.minute }, { "$inc" => video_inc }, upsert: true) unless site.in_free_plan?
+            Stat::Video::Hour.collection.update({ st: site_token, u: video_ui, d: log.hour },   { "$inc" => video_inc }, upsert: true)
+            Stat::Video::Day.collection.update({ st: site_token, u: video_ui, d: log.day },    { "$inc" => video_inc }, upsert: true)
+          rescue BSON::InvalidStringEncoding
+          end
         end
       end
     end
