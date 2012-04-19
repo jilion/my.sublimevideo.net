@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Stat::Site::Minute
   include Mongoid::Document
   include Stat::Site

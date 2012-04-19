@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module Stat::Site
   extend ActiveSupport::Concern
   include Stat

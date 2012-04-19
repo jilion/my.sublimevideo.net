@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Stat::Video::Hour
   include Mongoid::Document
   include Stat::Video

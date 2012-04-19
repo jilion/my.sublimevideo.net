@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Log::Voxcast < Log
   field :stats_parsed_at,       type: DateTime
   field :referrers_parsed_at,   type: DateTime
