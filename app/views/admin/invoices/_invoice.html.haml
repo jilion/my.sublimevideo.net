@@ -8,16 +8,12 @@
   %td.user
     %small
       = link_to invoice.user.name_or_email, [:admin, invoice.user], title: invoice.user.email
-      - if invoice.user.beta?
-        = "("
-        = "beta" if invoice.user.beta?
-        = "#{', ' if invoice.user.beta?}archived" if invoice.user.archived?
-        = ")"
+      = "[#{invoice.user.state}]" unless invoice.user.active?
 
   %td.site
     %small
       = links_to_hostnames(invoice.site)
-      = "(#{invoice.site.state})" unless invoice.site.active?
+      = "[#{invoice.site.state}]" unless invoice.site.active?
 
   %td.period
     %small
@@ -52,5 +48,6 @@
         %span{ style: "color:orange" }= invoice.state
       - when "failed"
         %strong{ style: "color:red" }= 'failed'
+        = " (#{invoice.transactions.failed.size}/15)"
       - when "paid"
         %span{ style: "color:green" }= invoice.refunded? ? 'refunded' : 'paid'

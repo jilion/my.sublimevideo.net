@@ -26,7 +26,7 @@ class Admin::InvoicesController < Admin::AdminController
 
   # GET /invoices
   def index
-    @invoices = apply_scopes(Invoice.includes(:site, :user)).by_id
+    @invoices = apply_scopes(Invoice.includes(:site, :user, :transactions)).by_id
     respond_with(@invoices, per_page: 50) do |format|
       format.json { render json: @invoices.to_json(include: [:site, :user]) }
     end
