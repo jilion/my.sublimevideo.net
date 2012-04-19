@@ -1,3 +1,5 @@
+# encoding: utf-8 
+
 module LogsFileFormat
   module Voxcast
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions

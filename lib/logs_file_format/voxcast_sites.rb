@@ -1,3 +1,5 @@
+# encoding: utf-8 
+
 module LogsFileFormat
   class VoxcastSites < RequestLogAnalyzer::FileFormat::Base
     extend LogsFileFormat::Voxcast

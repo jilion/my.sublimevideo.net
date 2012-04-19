@@ -1,3 +1,5 @@
+# encoding: utf-8 
+
 module LogsFileFormat
   class S3Player < RequestLogAnalyzer::FileFormat::Base
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions

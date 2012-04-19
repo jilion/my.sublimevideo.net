@@ -1,3 +1,5 @@
+# encoding: utf-8 
+
 # http://cdn.sublimevideo.net/_.gif?t=ibvjcopp&i=1310389131519&h=m&e=l&vn=1
 
 module LogsFileFormat

@@ -1,3 +1,5 @@
+# encoding: utf-8 
+
 module LogsFileFormat
   class S3Licenses < RequestLogAnalyzer::FileFormat::Base
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
