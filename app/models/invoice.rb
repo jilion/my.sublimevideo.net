@@ -82,11 +82,11 @@ class Invoice < ActiveRecord::Base
   scope :user_id,        lambda { |user_id| joins(:user).where { user.id == user_id } }
 
   # sort
-  scope :by_id,                  lambda { |way='desc'| order(:id.send(way)) }
-  scope :by_date,                lambda { |way='desc'| order(:created_at.send(way)) }
-  scope :by_amount,              lambda { |way='desc'| order(:amount.send(way)) }
-  scope :by_user,                lambda { |way='desc'| joins(:user).order(:name.send(way), :"users.email".send(way)) }
-  scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
+  scope :by_id,                  lambda { |way='desc'| order("invoices.id #{way}") }
+  scope :by_date,                lambda { |way='desc'| order("invoices.created_at #{way}") }
+  scope :by_amount,              lambda { |way='desc'| order("invoices.amount #{way}") }
+  scope :by_user,                lambda { |way='desc'| joins(:user).order("users.name #{way}, users.email #{way}") }
+  scope :by_invoice_items_count, lambda { |way='desc'| order("invoices.invoice_items_count #{way}") }
 
   # search
   def self.search(q)

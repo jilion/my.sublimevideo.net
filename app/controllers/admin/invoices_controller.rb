@@ -17,6 +17,7 @@ class Admin::InvoicesController < Admin::AdminController
   has_scope :user_id
   has_scope :site_id
   # sort
+  has_scope :by_id
   has_scope :by_date
   has_scope :by_amount
   has_scope :by_user
