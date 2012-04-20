@@ -69,7 +69,9 @@ class Transaction < ActiveRecord::Base
           invoices.delete(invoice)
 
           if invoice.site.first_paid_plan_started_at?
-            invoice.user.suspend! and return
+            # disable account suspension to ensure some of our beloved users won't be suspended...
+            # invoice.user.suspend! and return
+            return
           else
             invoice.cancel!
             BillingMailer.too_many_charging_attempts(invoice).deliver!

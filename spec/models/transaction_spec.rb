@@ -369,7 +369,8 @@ describe Transaction do
             Transaction.should_not_receive(:charge_by_invoice_ids)
             Transaction.charge_invoices_by_user_id(@user1.id)
             @invoice2.reload.should be_failed
-            @user1.reload.should be_suspended
+            # @user1.reload.should be_suspended
+            @user1.reload.should be_active
           end
         end
 
