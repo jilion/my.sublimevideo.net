@@ -3,7 +3,7 @@
 #site.new
   = render 'deals/deal_available'
 
-  = form_for @site, html: { class: "full", onsubmit: "$('site_submit').disable();" } do |f|
+  = form_for @site, html: { class: "full" } do |f|
 
     = render 'plans/fields', site: @site, f: f
 
