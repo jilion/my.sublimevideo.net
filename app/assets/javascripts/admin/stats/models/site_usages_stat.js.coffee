@@ -17,8 +17,8 @@ class AdminSublimeVideo.Collections.SiteUsagesStats extends AdminSublimeVideo.Co
   id: -> 'site_usages'
   yAxis: (selected) ->
     switch selected[0]
-      when 'lh', 'ph', 'fh', 'sr' then 2
-      when 'tr' then 4
+      when 'lh', 'ph', 'fh', 'sr' then 3
+      when 'tr' then 5
 
   title: (selected) ->
     top = switch selected[0]

@@ -8,7 +8,7 @@ class AdminSublimeVideo.Collections.TweetsStats extends AdminSublimeVideo.Collec
   model: AdminSublimeVideo.Models.TweetsStat
   url: -> '/stats/tweets.json'
   id: -> 'tweets'
-  yAxis: (selected) -> 1
+  yAxis: (selected) -> 2
 
   title: (selected) ->
     switch selected[0]

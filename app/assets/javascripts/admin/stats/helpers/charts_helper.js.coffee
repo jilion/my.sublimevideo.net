@@ -254,9 +254,28 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
         title:
-          text: "Users, sites & tweets evolution"
+          text: "Users & sites evolution"
 
     if _.include(@usedYAxis, 2)
+      yAxis.push
+        lineWidth: 2
+        lineColor: '#000'
+        min: 0
+        allowDecimals: false
+        startOnTick: true
+        showFirstLabel: true
+        showLastLabel: true
+        labels:
+          align: 'right'
+          x: -4
+          y: 4
+          style:
+            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
+            fontSize: "14px"
+        title:
+          text: "Tweets evolution"
+
+    if _.include(@usedYAxis, 3)
       yAxis.push
         lineWidth: 2
         lineColor: '#000'
@@ -276,7 +295,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         title:
           text: "Site Stats/Usages"
 
-    if _.include(@usedYAxis, 3)
+    if _.include(@usedYAxis, 4)
       yAxis.push
         lineWidth: 2
         lineColor: '#000'
@@ -297,7 +316,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         title:
           text: "Percentages"
 
-    if _.include(@usedYAxis, 4)
+    if _.include(@usedYAxis, 5)
       yAxis.push
         lineWidth: 2
         lineColor: '#000'

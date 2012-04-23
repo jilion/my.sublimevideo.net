@@ -30,8 +30,8 @@ class AdminSublimeVideo.Collections.SiteStatsStats extends AdminSublimeVideo.Col
   id: -> 'site_stats'
   yAxis: (selected) ->
     switch selected[0]
-      when 'pv', 'vv' then 2
-      when 'md' then 3
+      when 'pv', 'vv' then 3
+      when 'md' then 4
   chartType: (selected) ->
     switch selected[0]
       when 'pv', 'vv' then 'areaspline'
