@@ -41,7 +41,7 @@ Spork.prefork do
 
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true
-    config.filter_run_including :focus => true
+    config.filter_run_including focus: true
     # config.fail_fast = true
 
     config.mock_with :rspec

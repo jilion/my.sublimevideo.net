@@ -201,6 +201,7 @@ MySublimeVideo::Application.routes.draw do
     end
 
     post '/pusher/auth' => 'pusher#auth'
+    post '/pusher/webhook' => 'pusher#webhook'
 
     get '/:page' => 'pages#show', as: :page, constraints: MyPages, format: false
 

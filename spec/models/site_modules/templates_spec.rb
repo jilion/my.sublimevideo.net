@@ -39,10 +39,7 @@ describe SiteModules::Templates do
     end
 
     describe "on save" do
-      before do
-        VoxcastCDN.stub(:purge)
-        Pusher.stub(:[]) { mock('channel', trigger: nil, stats: { occupied: true }) }
-      end
+      before { VoxcastCDN.stub(:purge) }
 
       describe "plan_id has changed" do
         subject { create(:site, plan_id: @free_plan.id) }
@@ -129,10 +126,8 @@ describe SiteModules::Templates do
         end
 
         it "notifies that cdn is up to date via Pusher" do
-          mock_channel = mock('channel')
-          mock_channel.should_receive(:trigger).once.with('cdn_status', up_to_date: true)
-          Pusher.stub(:[]).with("private-#{subject.token}") { mock_channel }
           subject.update_attribute(:player_mode, 'beta')
+          PusherWrapper.should_receive(:trigger).once.with("private-#{subject.token}", 'cdn_status', up_to_date: true)
           @worker.work_off
         end
       end

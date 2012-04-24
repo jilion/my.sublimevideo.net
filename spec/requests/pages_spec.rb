@@ -86,7 +86,7 @@ feature "Help page" do
 
         CampaignMonitor.stub(:subscriber)
         VoxcastCDN.stub(:purge)
-        Pusher.stub(:[])
+        PusherWrapper.stub(:trigger)
         VCR.use_cassette("ticket/post_ticket") do
           expect { @worker.work_off }.to change(Delayed::Job.where { handler =~ "%post_ticket%" }, :count).by(-1)
         end
