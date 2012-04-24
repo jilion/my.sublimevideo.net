@@ -72,7 +72,7 @@ gem 'createsend',            '~> 1.0.0' # Campaign Monitor
 gem 'airbrake',              '~> 3.0.5'
 gem 'prowl',                 '~> 0.1.3'
 
-gem 'addressable',           '~> 2.2.6'
+gem 'addressable',           '~> 2.2.6', require: 'addressable/uri'
 
 # Stats
 gem 'crack',                 '~> 0.1.8'
