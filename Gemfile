@@ -76,7 +76,8 @@ gem 'addressable',           '~> 2.2.6'
 
 # Stats
 gem 'crack',                 '~> 0.1.8'
-gem 'pusher',                '~> 0.8.3'
+gem 'pusher',                '~> 0.9.2'
+gem 'redis',                 '~> 2.2.2'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -111,6 +112,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'rspec-core', github: 'rspec/rspec-core'
   gem 'rspec-rails'
   gem 'debugger'
 
@@ -148,6 +150,7 @@ group :tools do
   #   gem 'rb-readline'
   # end
 
+  gem 'guard', github: 'guard/guard', branch: 'listen'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-spork'

@@ -859,7 +859,7 @@ describe Site do
       before do
         CampaignMonitor.stub(:subscriber)
         VoxcastCDN.stub(:purge)
-        Pusher.stub(:[])
+        PusherWrapper.stub(:trigger)
       end
 
       it "delays update_ranks" do

@@ -428,7 +428,7 @@ describe User do
             subject { create(:user, newsletter: "1", email: "john@doe.com") }
             before do
               VoxcastCDN.stub(:purge)
-              Pusher.stub(:[])
+              PusherWrapper.stub(:trigger)
             end
 
             it "subscribes new email and unsubscribe old email on user destroy" do

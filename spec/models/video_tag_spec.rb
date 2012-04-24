@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe VideoTag do
-  before { Pusher.stub(:[]) { mock('channel', trigger: nil, stats: { occupied: true }) } }
+  before { PusherWrapper.stub(:trigger) }
 
   let(:video_tag) { VideoTag.create(
     'st' => 'site1234',
@@ -31,20 +31,20 @@ describe VideoTag do
   describe "#update_with_latest_data" do
 
     it "doesn't change when updating with same uo attribute" do
-      Pusher.should_receive(:[]).once
+      PusherWrapper.should_receive(:trigger).once
       video_tag.update_with_latest_data('uo' => 'a')
     end
     it "changes when updating uo attribute" do
-      Pusher.should_receive(:[]).twice
+      PusherWrapper.should_receive(:trigger).twice
       video_tag.update_with_latest_data('uo' => 's')
     end
 
     it "doesn't change when updating with same s attribute" do
-      Pusher.should_receive(:[]).once
+      PusherWrapper.should_receive(:trigger).once
       video_tag.update_with_latest_data('s' => { 'source11' => { 'u' => 'http://videos.sublimevideo.net/source11.mp4', 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' } })
     end
     it "changes when updating s attribute" do
-      Pusher.should_receive(:[]).twice
+      PusherWrapper.should_receive(:trigger).twice
       video_tag.update_with_latest_data('s' => { 'source12' => { 'u' => 'http://videos.sublimevideo.net/source12.mp4', 'q' => 'base', 'f' => 'mp4', 'r' => '460x340' } })
       video_tag.s.should eq({
         "source11" => {"u"=>"http://videos.sublimevideo.net/source11.mp4", "q"=>"base", "f"=>"mp4", "r"=>"460x340"},
@@ -55,21 +55,9 @@ describe VideoTag do
 
   describe "#push_new_meta_data" do
 
-    it "push after save if channel occupided" do
+    it "push after save" do
       video_tag = VideoTag.new(st: 'site1234', u: 'video123', n: 'Video 123')
-      mock_channel = mock('channel')
-      mock_channel.should_receive(:stats).once.and_return({occupied: true})
-      mock_channel.should_receive(:trigger).once.with('video_tag', u: 'video123', meta_data: video_tag.meta_data)
-      Pusher.stub(:[]).with("private-site1234") { mock_channel }
-      video_tag.save
-    end
-
-    it "doesn't push after save if channel isn't occupided" do
-      video_tag = VideoTag.new(st: 'site1234', u: 'video123', n: 'Video 123')
-      mock_channel = mock('channel')
-      mock_channel.should_receive(:stats).once.and_return({occupied: false})
-      mock_channel.should_not_receive(:trigger)
-      Pusher.stub(:[]).with("private-site1234") { mock_channel }
+      PusherWrapper.should_receive(:trigger).once.with("private-site1234", 'video_tag', u: 'video123', meta_data: video_tag.meta_data)
       video_tag.save
     end
 

@@ -69,13 +69,8 @@ private
   # after_save
   def push_new_meta_data
     if changed?
-      channel = Pusher["private-#{st}"]
-      if channel.stats[:occupied]
-        channel.trigger('video_tag', u: u, meta_data: meta_data)
-      end
+      PusherWrapper.trigger("private-#{st}", 'video_tag', u: u, meta_data: meta_data)
     end
-  rescue Pusher::HTTPError
-    # do nothing
   end
 
   # Merge each videos tag in one big hash
