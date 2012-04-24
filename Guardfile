@@ -40,16 +40,24 @@ group :backend do
     watch('spec/spec_helper.rb')
   end
 
-  guard :rspec, version: 2, bundler: false, cli: "--color -f progress --drb", all_after_pass: false, all_on_start: false, keep_failed: false do
+  guard :rspec, version: 2, cli: "--color -f documentation --drb", all_after_pass: false, all_on_start: false, keep_failed: false do
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }
     watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/#{m[1]}" }
-    watch(%r{^spec/.+_spec\.rb})
+    watch(%r{^spec/(controllers|helpers|lib|mailers|models|requests|routings|uploaders)/.+_spec\.rb})
 
     watch(%r{^app/controllers/(.+)_(controller)\.rb})                          { |m| ["spec/routings/#{m[1]}_routing_spec.rb", "spec/#{m[2]}s/#{m[1]}_#{m[2]}_spec.rb", "spec/requests/#{m[1]}_spec.rb"] }
 
     watch(%r{^app/(.+)\.rb})                                                   { |m| "spec/#{m[1]}_spec.rb" }
     watch(%r{^lib/(.+)\.rb})                                                   { |m| "spec/lib/#{m[1]}_spec.rb" }
+  end
+
+  guard :rspec, version: 2, bundler: false, cli: "--color -f documentation", all_after_pass: false, all_on_start: false do
+    watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/fast/#{m[1]}" }
+    watch(%r{^spec/fast/.+_spec\.rb})
+    watch(%r{^spec/fast_spec_helper.rb}) { 'spec/fast' }
+    watch(%r{^app/(.+)\.rb}) { |m| "spec/fast/#{m[1]}_spec.rb" }
+    watch(%r{^lib/(.+)\.rb}) { |m| "spec/fast/lib/#{m[1]}_spec.rb" }
   end
 
 end

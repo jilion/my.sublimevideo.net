@@ -44,14 +44,10 @@ module Stat
       end
     end
 
-    begin
-      json = { m: true }
-      json[:h] = true if log.hour == log.minute
-      json[:d] = true if log.day == log.hour
-      Pusher["stats"].trigger('tick', json)
-    rescue Pusher::Error => ex
-      Notify.send("Pusher trigger failed", exception: ex)
-    end
+    json = { m: true }
+    json[:h] = true if log.hour == log.minute
+    json[:d] = true if log.day == log.hour
+    PusherWrapper.trigger('stats', 'tick', json)
   end
 
 private
