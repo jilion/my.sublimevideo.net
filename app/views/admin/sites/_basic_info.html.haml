@@ -1,0 +1,17 @@
+%h3 Basic information
+
+%p
+  = "User: "
+  = viped(site.user) do
+    - link_to(site.user.name_or_email, [:admin, site.user])
+  = '(was a Beta user)' if site.user.beta?
+
+%p
+  = "State:"
+  %strong= site.state.humanize
+  - if site.archived?
+    = "since " + display_time(site.archived_at)
+  %strong= "|"
+  = "Created at: " + display_time(site.created_at)
+  %strong= "|"
+  = "Updated at: " + display_time(site.updated_at)

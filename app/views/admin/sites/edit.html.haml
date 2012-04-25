@@ -1,64 +1,30 @@
-= title_and_content_header("##{@site.id} | #{@site.token} - #{link_to(truncated_hostname(@site), "http://#{@site.hostname}")}")
+- title "Site: ##{@site.id} | #{@site.token} - #{link_to(truncated_hostname(@site), "http://#{@site.hostname}")}"
+= content_header("##{@site.id} | #{@site.token} - #{link_to(truncated_hostname(@site), "http://#{@site.hostname}")}")
 
-%h3 Basic information
-
-%p
-  = "User: "
-  = link_to(@site.user.name_or_email, [:admin, @site.user]).html_safe
-  = "(#{@site.user.state}#{', beta' if @site.user.beta?})"
-
-%p
-  = "State:"
-  %strong= @site.state.humanize
-  - if @site.archived?
-    = "since " + display_time(@site.archived_at)
-  %strong= "|"
-  = "Created at: " + l(@site.created_at, format: :seconds_timezone)
-  %strong= "|"
-  = "Updated at: " + l(@site.updated_at, format: :seconds_timezone)
+= render 'admin/shared/tags', object: @site
 %br
 
-%h3 Settings
+= render 'basic_info', site: @site
+%br
 
-%p
-  = "Main hostname:"
-  %strong= link_to(truncated_hostname(@site), "http://#{@site.hostname}")
-%p
-  = "Extra hostnames:"
-  - extra_hostnames = @site.extra_hostnames.to_s.split(", ").map { |h| link_to(h, "http://#{h}") }
-  %strong= extra_hostnames.present? ? raw(extra_hostnames.join(", ")) : "–"
-%p
-  = "Dev hostnames:"
-  = content_tag(:strong, @site.dev_hostnames)
-%p
-  = "Wildcard: " + display_bool(@site.wildcard)
-  %strong= "|"
-  = "Path: #{content_tag(:strong, @site.path? ? "/#{@site.path}" : '-')}".html_safe
-  %strong= "|"
-  = "Badge: #{content_tag(:strong, @site.badged? ? 'ON' : 'OFF')}".html_safe
-  %strong= "|"
-  = "Mode: #{content_tag(:strong, @site.player_mode)}".html_safe
-  %strong= "|"
-  = "CDN #{@site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
-  %strong= "|"
-  = link_to "See license content", "http://cdn.sublimevideo.net/l/#{@site.token}.js", onclick: "window.open(this); return false"
-
+= render 'settings', site: @site
 %br
 
 = render 'plan_and_cycle', site: @site
 %br
 
 = render 'video_views', site: @site
+%br
 
 - if @site.plan_id?
-  = render '/admin/shared/date_chooser'
+  = render 'admin/shared/date_chooser'
   %br.spacer
   = render 'timeline_usage', site: @site
-
 %br
 
 - if has_role?('invoices')
-  = render '/admin/shared/invoices_table', object: @site
+  %h3 Invoices
+  = render 'admin/shared/invoices', object: @site
 %br
 
 = render 'referrers_table', site: @site

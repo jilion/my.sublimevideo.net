@@ -37,3 +37,12 @@
   = link_to "#{content_tag(:strong, Site.active.with_path.count)} With path".html_safe, admin_sites_path(with_state: 'active', with_path: true)
   |
   = link_to "#{content_tag(:strong, Site.active.badged(false).count)} Without badge".html_safe, admin_sites_path(with_state: 'active', badged: false)
+
+= "-----------------------------------------------"
+
+%p
+  Tags:
+  - @tags.each do |tag|
+    = link_to tag.name, admin_sites_path(tagged_with: tag.name)
+    = "(#{tag.count})"
+    |

@@ -1,0 +1,1 @@
+jQuery('#autocomplete_tag_list').html "<%= j(render '/admin/shared/autocomplete_tag_list') %>"

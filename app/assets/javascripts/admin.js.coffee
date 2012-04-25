@@ -31,3 +31,21 @@ jQuery(document).ready ->
               history.replaceState null, document.title, "#{url}?#{params}"
 
       false
+
+  if (tagInput = jQuery('.tags')).exists()
+    form      = tagInput.parent('form')
+    urlPrefix = if /user/.test(form.attr('action')) then 'users' else 'sites'
+
+    tagInput.on 'keyup', (event) ->
+      unless _.include([17, 37, 38, 39, 40, 91], event.which)
+        word = jQuery.trim(_.last(form.find('input[type=text]').first().attr('value').split(',')))
+        if /\S{2,}/.test(word)
+          jQuery('#table_spinner').show()
+          jQuery.ajax "/#{urlPrefix}/autocomplete_tag_list",
+            type: 'get'
+            dataType: 'script'
+            data: "word=#{word}"
+            complete: (jqXHR, textStatus) ->
+              jQuery('#table_spinner').hide()
+
+      false

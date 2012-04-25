@@ -13,6 +13,8 @@ class User < ActiveRecord::Base
   # Mail template
   liquid_methods :email, :name, :plan_title
 
+  acts_as_taggable
+
   attr_accessor :terms_and_conditions, :use, :current_password, :remote_ip
   attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
                   :name, :postal_code, :country, :confirmation_comment,
@@ -172,6 +174,10 @@ class User < ActiveRecord::Base
 
   def beta?
     invitation_token.nil? && created_at < PublicLaunch.beta_transition_started_on.midnight
+  end
+
+  def vip?
+    tag_list.include?('vip')
   end
 
   def vat?

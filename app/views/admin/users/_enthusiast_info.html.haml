@@ -1,0 +1,26 @@
+%h3 Enthusiast information
+
+.email
+  %strong= "Enthusiast email: "
+  = mail_to user.enthusiast.email
+  ="("
+  - if user.enthusiast.interested_in_beta && user.enthusiast.confirmed? && user.enthusiast.invited_at?
+    = "invited on #{display_time(user.enthusiast.invited_at)}"
+  - else
+    = "not interested in beta or not confirmed"
+  = ")"
+
+.free_text
+  %strong= "Comment: "
+  %p
+    - if user.enthusiast.free_text.present?
+      = h user.enthusiast.free_text
+    - else
+      = "No comment."
+
+.sites
+  %strong= "Registered sites at the time: "
+  - if user.enthusiast.sites.present?
+    = render 'admin/enthusiast_sites/enthusiast_sites', sites: user.enthusiast.sites
+  - else
+    %p= "No sites."

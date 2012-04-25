@@ -222,6 +222,8 @@ ul.no_bullet {
   padding:0;
 }
 
+#main .left, #main .left td {text-align:left}
+
 #main table {
   width:100%;
   border-collapse:collapse;
@@ -240,8 +242,6 @@ ul.no_bullet {
   background:-moz-linear-gradient(top, #eee, #ccc);
 }
 
-#main table th.left {text-align:left}
-
 #main table td {
   padding:15px 5px;
   text-align:center;
@@ -251,8 +251,6 @@ ul.no_bullet {
   background:url(<%= asset_data_uri 'admin/recurring_icon.png' %>) no-repeat 8px 50%;
   padding-left:35px;
 }
-
-#main table td.left {text-align:left}
 
 #main table th a.sort:after {content:" ▾";}
 #main table th a.sort.up:after {content:" ▴";}

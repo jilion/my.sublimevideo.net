@@ -1,5 +1,3 @@
-%h3 Invoices
-
 %ul
   - object.invoices.order(:created_at.desc).each do |invoice|
     %li

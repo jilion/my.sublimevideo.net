@@ -25,6 +25,8 @@ module Admin::SitesHelper
       params[:in_trial] ? " trial" : " paying"
     elsif params[:in_plan]
       " in #{"trial of " if params[:in_trial]}the #{params[:in_plan].titleize} plan"
+    elsif params[:tagged_with]
+      " tagged with '#{params[:tagged_with]}'"
     elsif params[:with_state]
       " #{params[:with_state]}"
     else

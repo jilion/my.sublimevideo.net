@@ -726,6 +726,20 @@ describe User do
       end
     end
 
+    describe "#vip?" do
+      context "isn't a vip" do
+        subject { build(:user) }
+
+        its(:vip?) { should be_false }
+      end
+
+      context "is a vip" do
+        subject { build(:user, tag_list: ['vip']) }
+
+        its(:vip?) { should be_true }
+      end
+    end
+
     describe "#vat?" do
       context "with Swiss user" do
         subject { create(:user, billing_country: 'CH') }

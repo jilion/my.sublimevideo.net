@@ -1,0 +1,15 @@
+- unless @tags.empty?
+  %ul.remote_add_tag
+    - @tags.each do |tag|
+      %li= link_to tag.name, '', class: 'add_tag', onclick: 'return false'
+
+:coffeescript
+  jQuery('.remote_add_tag .add_tag').each ->
+    jQuery(this).on 'click', (event) ->
+      tags   = _.map(jQuery('.tags').attr('value').split(','), (tag) -> jQuery.trim(tag))
+      tags   = _.compact(_.without(tags, "#{@word}"))
+      newTag = jQuery(this).text()
+      tags.push(newTag) unless _.include(tags, newTag)
+
+      jQuery('.tags').attr('value', tags.join(', '))
+      jQuery('#autocomplete_tag_list').html ''

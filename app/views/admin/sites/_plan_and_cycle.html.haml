@@ -1,4 +1,4 @@
-%h3 Plan
+%h3 Plan & Cycle
 
 %p
   = "Trial:"
@@ -22,29 +22,29 @@
 
 %p
   = "First paid plan started at:"
-  = site.first_paid_plan_started_at? ? content_tag(:strong, l(site.first_paid_plan_started_at, format: :d_b_Y)) : "–"
+  = display_date(site.first_paid_plan_started_at)
 
 %p
   = "Plan started at:"
-  = site.plan_started_at? ? content_tag(:strong, l(site.plan_started_at, format: :d_b_Y)) : "–"
+  = display_date(site.plan_started_at)
   %strong= "|"
   = "Current cycle:"
-  = site.plan_cycle_started_at? ? content_tag(:strong, l(site.plan_cycle_started_at, format: :d_b_Y)) : "–"
+  = display_date(site.plan_cycle_started_at)
   = "–"
-  = site.plan_cycle_ended_at? ? content_tag(:strong, l(site.plan_cycle_ended_at, format: :d_b_Y)) : "–"
+  = display_date(site.plan_cycle_ended_at)
 
 %p
   = "Pending plan started at:"
-  = site.pending_plan_started_at? ? content_tag(:strong, l(site.pending_plan_started_at, format: :d_b_Y)) : "–"
+  = display_date(site.pending_plan_started_at)
   %strong= "|"
   = "Pending cycle:"
-  = site.pending_plan_cycle_started_at? ? content_tag(:strong, l(site.pending_plan_cycle_started_at, format: :d_b_Y)) : "–"
+  = display_date(site.pending_plan_cycle_started_at)
   = "–"
-  = site.pending_plan_cycle_ended_at? ? content_tag(:strong, l(site.pending_plan_cycle_ended_at, format: :d_b_Y)) : "–"
+  = display_date(site.pending_plan_cycle_ended_at)
 
 %p
   = "Overusage notification sent at:"
-  = site.overusage_notification_sent_at? ? content_tag(:strong, l(site.overusage_notification_sent_at, format: :d_b_Y)) : "–"
+  = display_date(site.overusage_notification_sent_at)
   %strong= "|"
   = "First paid plan upgrade required alert sent at:"
-  = site.first_plan_upgrade_required_alert_sent_at? ? content_tag(:strong, l(site.first_plan_upgrade_required_alert_sent_at, format: :d_b_Y)) : "–"
+  = display_date(site.first_plan_upgrade_required_alert_sent_at)

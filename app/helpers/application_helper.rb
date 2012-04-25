@@ -5,11 +5,19 @@ module ApplicationHelper
     boolean == 0 || boolean.blank? || !boolean ? "-" : "✓"
   end
 
-  def display_time(date, options = { format: :minutes_y })
-    date ? l(date, format: options[:format]) : "-"
+  def display_date(date, options = { format: :d_b_Y })
+    content_tag(:strong, display_time(date, options))
   end
 
-  def display_percentage(fraction, options={})
+  def display_time(date, options = { format: :minutes_y })
+    date ? l(date, format: options[:format]) : "–"
+  end
+
+  def display_integer(number, options = { significant: false, precision: 2, delimiter: "'" })
+    number_with_delimiter(number, options)
+  end
+
+  def display_percentage(fraction, options = {})
     number_to_percentage(fraction * 100.0, precision: options[:precision] || 2, strip_insignificant_zeros: true)
   end
 

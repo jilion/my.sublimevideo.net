@@ -1,0 +1,24 @@
+%h3 Settings
+
+%p
+  = "Main hostname:"
+  %strong= link_to(truncated_hostname(site), "http://#{site.hostname}")
+  %strong= "|"
+  = "Extra hostnames:"
+  - extra_hostnames = site.extra_hostnames.to_s.split(", ").map { |h| link_to(h, "http://#{h}") }
+  %strong= extra_hostnames.present? ? raw(extra_hostnames.join(", ")) : "–"
+  %strong= "|"
+  = "Dev hostnames:"
+  = content_tag(:strong, site.dev_hostnames)
+%p
+  = "Wildcard: #{content_tag(:strong, site.wildcard? ? 'ON' : 'OFF')}".html_safe
+  %strong= "|"
+  = "Path: #{content_tag(:strong, site.path? ? "/#{site.path}" : '-')}".html_safe
+  %strong= "|"
+  = "Badge: #{content_tag(:strong, site.badged? ? 'ON' : 'OFF')}".html_safe
+  %strong= "|"
+  = "Mode: #{content_tag(:strong, site.player_mode)}".html_safe
+  %strong= "|"
+  = "CDN #{site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
+  %strong= "|"
+  = link_to "See license content", "http://cdn.sublimevideo.net/l/#{site.token}.js", onclick: "window.open(this); return false"

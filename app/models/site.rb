@@ -11,12 +11,20 @@ class Site < ActiveRecord::Base
   PLAYER_MODES = %w[dev beta stable]
 
   # Versioning
-  has_paper_trail ignore: [:cdn_up_to_date, :license, :loader, :last_30_days_main_video_views, :last_30_days_extra_video_views, :last_30_days_dev_video_views, :last_30_days_invalid_video_views, :last_30_days_embed_video_views, :last_30_days_billable_video_views_array]
+  has_paper_trail ignore: [
+    :cdn_up_to_date, :license, :loader, :last_30_days_main_video_views,
+    :last_30_days_extra_video_views, :last_30_days_dev_video_views,
+    :last_30_days_invalid_video_views, :last_30_days_embed_video_views,
+    :last_30_days_billable_video_views_array
+  ]
+
+  acts_as_taggable
 
   attr_accessor :loader_needs_update, :license_needs_update
   attr_accessor :user_attributes, :last_transaction, :remote_ip, :skip_trial
 
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :plan_id, :skip_trial, :user_attributes, :remote_ip
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard,
+                  :badged, :plan_id, :skip_trial, :user_attributes, :remote_ip
 
   serialize :last_30_days_billable_video_views_array, Array
 

@@ -35,14 +35,15 @@ gem 'acts_as_api',           '~> 0.3.10'
 # gem 'rack-throttle',         git: 'git://github.com/rymai/rack-throttle.git', require: 'rack/throttle'
 
 # Internals
-gem 'delayed_job',           git: 'git://github.com/collectiveidea/delayed_job.git', branch: 'v2.1'
-gem 'rescue_me',             '~> 0.1.1', git: 'git://github.com/rymai/rescue_me.git' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
+gem 'delayed_job',           github: 'collectiveidea/delayed_job', branch: 'v2.1'
+gem 'rescue_me',             github: 'rymai/rescue_me' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'
 
 gem 'state_machine',         '~> 1.1.2'
 gem 'paper_trail',           '~> 2.6.0'
 gem 'uniquify',              '~> 0.1.0'
+gem 'acts-as-taggable-on',   '~> 2.2.2'
 
 gem 'responders',            '~> 0.7.0'
 gem 'has_scope',             '~> 0.5.1'
@@ -51,12 +52,12 @@ gem 'aws',                   '~> 2.5.6'
 gem 'fog',                   '~> 1.3.1'
 gem 'carrierwave',           '~> 0.6.2'
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
-gem 'voxel_hapi',            git: 'git://github.com/thibaudgg/voxel_hapi.git', branch: '1.9.2' # VoxCast CDN
+gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
 
-gem 'activemerchant',        git: 'git://github.com/rymai/active_merchant.git', branch: '3ds_from_ZenCocoon'
+gem 'activemerchant',        github: 'rymai/active_merchant', branch: '3ds_from_ZenCocoon'
 gem 'public_suffix',         '~> 1.0.0'
-gem 'useragent',             git: 'git://github.com/jilion/useragent.git' # needed for stat_request_parser
+gem 'useragent',             github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser',   '~> 1.1.0' # hosted on gemfury
 
 gem 'rubyzip',               '~> 0.9.7', require: 'zip/zip'
@@ -106,7 +107,7 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  gem 'letter_opener', git: 'git://github.com/pcg79/letter_opener.git' # includes a fix not merged yet
+  gem 'letter_opener', github: 'pcg79/letter_opener' # includes a fix not merged yet
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
 end
@@ -137,7 +138,7 @@ group :test do
 end
 
 group :tools do
-  gem 'annotate', git: 'git://github.com/ctran/annotate_models.git'
+  gem 'annotate', github: 'ctran/annotate_models'
   gem 'wirble'
   gem 'heroku'
   gem 'foreman'

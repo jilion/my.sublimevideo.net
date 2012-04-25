@@ -10,3 +10,12 @@
 = "-----------------------"
 
 %p= link_to "#{content_tag(:strong, User.with_balance.count)} With a balance".html_safe, admin_users_path(with_balance: true)
+
+= "-----------------------------------------------"
+
+%p
+  Tags:
+  - @tags.each do |tag|
+    = link_to tag.name, admin_users_path(tagged_with: tag.name)
+    = "(#{tag.count})"
+    |
