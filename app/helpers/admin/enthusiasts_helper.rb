@@ -1,18 +1,14 @@
 module Admin::EnthusiastsHelper
 
   def admin_enthusiasts_page_title(enthusiasts)
-    state = if params[:confirmed] == false
-      "unconfirmed"
-    # elsif params[:confirmed] == true
-    #   "confirmed"
-    # elsif params[:interested_in_beta].present?
-    #   "interested in beta"
-    elsif params[:starred].present?
-      "starred"
+    pluralized_enthusiasts = pluralize(enthusiasts.total_count, 'beta requester')
+    state = if params[:search].present?
+      " matching '#{params[:search]}'"
     else
-      "confirmed & interested in beta"
+      ""
     end
-    "#{enthusiasts.total_count} #{state} enthusiasts".titleize
+
+    "#{pluralized_enthusiasts.titleize}#{state}"
   end
 
 end
