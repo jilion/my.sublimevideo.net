@@ -127,37 +127,38 @@
 %hr
 %br
 
-%h3 Invoicing
+- if has_role?('invoices')
+  %h3 Invoicing
 
-%p= "Last invoiced amount: #{display_amount(@user.last_invoiced_amount)}"
-%p= "Total invoiced amount: #{display_amount(@user.total_invoiced_amount)}"
+  %p= "Last invoiced amount: #{display_amount(@user.last_invoiced_amount)}"
+  %p= "Total invoiced amount: #{display_amount(@user.total_invoiced_amount)}"
 
-- paid_invoices = @user.invoices.paid
-- if paid_invoices.present?
-  - total_invoiced = paid_invoices.sum(:amount)
-  %p
-    = "Total paid: "
-    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
-    = "in #{content_tag(:strong, pluralize(paid_invoices.size, 'invoice'))}".html_safe
-    = "(average #{content_tag(:strong, display_amount(total_invoiced / paid_invoices.size.to_f))} / invoice)".html_safe
+  - paid_invoices = @user.invoices.paid
+  - if paid_invoices.present?
+    - total_invoiced = paid_invoices.sum(:amount)
+    %p
+      = "Total paid: "
+      = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
+      = "in #{content_tag(:strong, pluralize(paid_invoices.size, 'invoice'))}".html_safe
+      = "(average #{content_tag(:strong, display_amount(total_invoiced / paid_invoices.size.to_f))} / invoice)".html_safe
 
-- refunded_invoices = @user.invoices.refunded
-- if refunded_invoices.present?
-  - total_invoiced = refunded_invoices.sum(:amount)
-  %p
-    = "Total refunded: "
-    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
-    = "in #{content_tag(:strong, pluralize(refunded_invoices.size, 'invoice'))}".html_safe
-    = "(average #{content_tag(:strong, display_amount(total_invoiced / refunded_invoices.size.to_f))} / invoice)".html_safe
+  - refunded_invoices = @user.invoices.refunded
+  - if refunded_invoices.present?
+    - total_invoiced = refunded_invoices.sum(:amount)
+    %p
+      = "Total refunded: "
+      = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
+      = "in #{content_tag(:strong, pluralize(refunded_invoices.size, 'invoice'))}".html_safe
+      = "(average #{content_tag(:strong, display_amount(total_invoiced / refunded_invoices.size.to_f))} / invoice)".html_safe
 
-- unpaid_invoices = @user.invoices.where(invoices: { state: %w[open waiting failed] })
-- if unpaid_invoices.present?
-  - total_invoiced = unpaid_invoices.sum(:amount)
-  %p
-    = "Total still to be paid: "
-    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
-    = "in #{content_tag(:strong, pluralize(unpaid_invoices.size, 'invoice'))}".html_safe
-    = "(average #{content_tag(:strong, display_amount(total_invoiced / unpaid_invoices.size.to_f))} / invoice)".html_safe
+  - unpaid_invoices = @user.invoices.where(invoices: { state: %w[open waiting failed] })
+  - if unpaid_invoices.present?
+    - total_invoiced = unpaid_invoices.sum(:amount)
+    %p
+      = "Total still to be paid: "
+      = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
+      = "in #{content_tag(:strong, pluralize(unpaid_invoices.size, 'invoice'))}".html_safe
+      = "(average #{content_tag(:strong, display_amount(total_invoiced / unpaid_invoices.size.to_f))} / invoice)".html_safe
 
 %br
 %hr
@@ -183,8 +184,8 @@
             = link_to "details", [:edit, :admin, site]
             )
 
--# = render partial: '/admin/shared/usage_table', user: @user, from: range_start_date, to: range_end_date
-= render partial: '/admin/shared/invoices_table', locals: { object: @user }
+- if has_role?('invoices')
+  = render partial: '/admin/shared/invoices_table', locals: { object: @user }
 
 %br
 %hr

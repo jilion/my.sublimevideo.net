@@ -1,0 +1,26 @@
+Each role give access to differents pages/actions.
+
+Everyone (no need of a specific role):
++ DealActivations
++ Deals
++ EnthusiastSites
++ Enthusiasts
++ Referrers
++ Sites [index, show]
++ Stats
++ Tweets [index]
+
+GOD:
++ Everything
+
+MARCOM:
++ Sites [edit tags]
+
+PLAYER:
++ Releases
+
+TWITTER:
++ Tweets [favorite]
+
+INVOICES:
++ Invoices

@@ -1,6 +1,8 @@
 class Admin::TweetsController < Admin::AdminController
   respond_to :js, :html
 
+  before_filter { |controller| require_role?('twitter') if %w[favorite].include?(action_name) }
+
   has_scope :keywords
   has_scope :favorites
   has_scope :by_date
@@ -8,6 +10,7 @@ class Admin::TweetsController < Admin::AdminController
   # GET /tweets
   def index
     params[:keywords] = 'sublimevideo' if !params[:keywords] && !params[:favorites]
+    params[:by_date]  = 'desc' unless params[:by_date]
     @tweets = apply_scopes(Tweet)
     respond_with(@tweets, per_page: 50)
   end
