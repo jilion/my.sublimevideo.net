@@ -1,22 +1,23 @@
-- title("Invoices")
-= content_header(admin_invoices_page_title(@invoices), :id => 'invoices_title')
+= title_and_content_header(admin_invoices_page_title(@invoices))
 
-%h2.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
-%h3.revenue= "Date range revenue: #{display_amount(Invoice.between(range_start_date, range_end_date).total_revenue)}"
+%h3.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
+%h4.revenue= "Date range revenue: #{display_amount(Invoice.between(range_start_date, range_end_date).total_revenue)}"
 
 = render '/admin/shared/date_chooser'
 
 #timeline
-  - cache "invoices_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}_#{moving_average_length.to_i}", :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
+  - cache "invoices_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}_#{moving_average_length.to_i}", expires_in: (Time.now.utc.end_of_day - Time.now.utc) do
     = render 'timeline'
 
 .search_form
-  = form_tag [:admin, :invoices], :method => :get, :id => 'search_form' do
-    = text_field_tag :search, '', :value => params[:search], :id => 'search_input', :placeholder => "Search", :type => "search", :autofocus => true, :autosave => "admin_search", :results => "5"
+  = form_tag [:admin, :invoices], method: :get, id: 'search_form' do
+    = text_field_tag :search, '', value: params[:search], id: 'search_input', placeholder: "Search", type: "search", autofocus: true, autocomplete: false, autosave: "admin_search", results: "5"
 
 .spacer
 
-- cache 'invoices_filter_links', :expires_in => 15.minutes do
+- cache 'invoices_filter_links', expires_in: 15.minutes do
   = render 'filter_links'
+
+%br
 
 #invoices_table_wrap= render 'invoices'

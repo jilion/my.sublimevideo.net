@@ -1,3 +1,7 @@
+.pagination_wrap
+  = page_entries_info @delayed_jobs
+  = paginate @delayed_jobs, theme: 'admin'
+
 %table.main#delayed_jobs
   %tr
     %th.name= "Name"

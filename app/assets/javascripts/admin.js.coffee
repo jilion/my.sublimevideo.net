@@ -32,6 +32,7 @@ jQuery(document).ready ->
 
       false
 
+  ## Tags autocomplete
   if (tagInput = jQuery('.tags')).exists()
     form      = tagInput.parent('form')
     urlPrefix = if /user/.test(form.attr('action')) then 'users' else 'sites'
@@ -49,3 +50,10 @@ jQuery(document).ready ->
               jQuery('#table_spinner').hide()
 
       false
+
+  ## Filters
+  if (filters = jQuery('.filters')).exists()
+    filters.find('a.remote').each (index, link) ->
+      jQuery(this).click (e) ->
+        filters.find('a.remote.active').removeClass 'active'
+        jQuery(link).addClass 'active'

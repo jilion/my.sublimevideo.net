@@ -794,6 +794,16 @@ table#countries_table td {
   @include box-shadow(none);
 }
 
+.filters a.active {
+  padding:2px;
+  color:#fff;
+  text-shadow:#000 0 -1px 0;
+  background:#444;
+  background:-webkit-gradient(linear,left top,left bottom,from(#555),to(#333));
+  background:-moz-linear-gradient(top, #555, #333);
+  border-radius:5px;
+}
+
 .ui-icon { width: 16px; height: 16px; background-image: url(<%= asset_data_uri "admin/ui-icons_222222_256x240.png" %>); }
 /* states and images */
 .ui-icon { width: 16px; height: 16px; background-image: url(<%= asset_data_uri "admin/ui-icons_222222_256x240.png" %>); }
