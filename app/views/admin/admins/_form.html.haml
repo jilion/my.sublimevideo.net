@@ -3,7 +3,7 @@
   = f.label :email, "", class: "icon"
   = f.email_field :email, class: "text", placeholder: "Email", required: true
 
-- if !has_role?('god') && f.object == current_admin
+- if f.object == current_admin
   %p.note= "Leave blank if you don't want to change it"
   .entry.password
     = f.label :password, "", class: "icon"

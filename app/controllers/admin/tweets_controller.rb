@@ -1,6 +1,8 @@
 class Admin::TweetsController < Admin::AdminController
   respond_to :js, :html
 
+  before_filter { |controller| require_role?('twitter') if %w[favorite].include?(action_name) }
+
   has_scope :keywords
   has_scope :favorites
   has_scope :by_date
