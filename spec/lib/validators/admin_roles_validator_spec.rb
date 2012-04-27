@@ -4,6 +4,20 @@ require 'spec_helper'
 describe AdminRolesValidator do
   subject { build(:admin) }
 
+  describe "empty roles 1" do
+    it "should not add an error" do
+      validate_admin_roles(subject, :roles, [])
+      subject.errors[:roles].should be_empty
+    end
+  end
+
+  describe "empty roles 2" do
+    it "should not add an error" do
+      validate_admin_roles(subject, :roles, [''])
+      subject.errors[:roles].should be_empty
+    end
+  end
+
   describe "valid admin roles" do
     it "should not add an error" do
       validate_admin_roles(subject, :roles, AdminRole.roles)
