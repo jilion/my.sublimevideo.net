@@ -106,4 +106,21 @@ describe UserModules::Scope do
     specify { User.search("jacques").all.should eq [@user1] }
   end
 
+  describe ".sites_tagged_with" do
+    before do
+      @user = create(:user).tap { |u| u.tag_list = ['foo']; u.save }
+      @site = create(:site, user: @user).tap { |s| s.tag_list = ['bar']; s.save }
+    end
+
+    it "returns the user that is tagged with the given word", :focus do
+      Site.tagged_with('foo').should eq []
+      User.sites_tagged_with('foo').should eq [@user]
+    end
+
+    it "returns the user that has a site with the given word", :focus do
+      Site.tagged_with('bar').should eq [@site]
+      User.sites_tagged_with('bar').should eq [@user]
+    end
+  end
+
 end

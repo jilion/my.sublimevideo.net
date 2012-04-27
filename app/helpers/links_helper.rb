@@ -1,9 +1,25 @@
-module SortHelper
+module LinksHelper
+
+  def link_to_filter(filter, *args)
+    options = args.extract_options!
+    options.reverse_merge!(label: field.to_s.humanize, default_way: 'asc', reverse: false, default: false)
+    active = currently_sorted_by?(field) || (!currently_sorted? && options[:default])
+
+    # The 'active' class is applied when params include a sort for the given field,
+    # or if no sort is present in params but the sort has the :default options
+    class_active = 'active' if active
+
+    url_params = params.reject { |k, v| k =~ /by_.*/ }
+    link_to(url_for(url_params.merge(filter)),
+              class: ['filter remote', field, class_active].join(" "),
+              remote: true) do
+      content_tag(:span, options[:label], title: options[:title])
+    end
+  end
 
   def link_to_sort(field, *args)
     options = args.extract_options!
-    options.reverse_merge!(:label => field.to_s.humanize, :remote => true, :default_way => 'asc', :reverse => false, :default => false)
-
+    options.reverse_merge!(label: field.to_s.humanize, default_way: 'asc', reverse: false, default: false)
     active = currently_sorted_by?(field) || (!currently_sorted? && options[:default])
 
     # If there is a current sort on the given field, the way of the sort (send to the scope in the controller) is reversed,
@@ -20,16 +36,16 @@ module SortHelper
 
     url_params = params.reject { |k, v| k =~ /by_.*/ }
     link_to(url_for(url_params.merge("by_#{field}" => way)),
-              :class => ['sort sticky', field, class_active, class_up].join(" "),
-              :remote => options[:remote]) do
-      content_tag(:span, options[:label], :class => 'arrow', :title => options[:title])
+              class: ['sort remote', field, class_active, class_up].join(" "),
+              remote: true) do
+      content_tag(:span, options[:label], class: 'arrow', title: options[:title])
     end
   end
 
 private
 
   def currently_sorted?
-    params.keys.any?{ |k| k =~ /^by_\w+$/ }
+    params.keys.any? { |k| k =~ /^by_\w+$/ }
   end
 
   def current_way_for(field)

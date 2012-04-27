@@ -1,27 +1,23 @@
 class Admin::UsersController < Admin::AdminController
   respond_to :html, :js
 
+  before_filter :set_default_scopes, only: [:index]
+
   # filter
-  has_scope :tagged_with
+  has_scope :tagged_with, :sites_tagged_with, :with_state
   has_scope :free, :paying, :with_balance, type: :boolean
-  has_scope(:with_state) { |controller, scope, value| scope.with_state(value.to_sym) }
+
   # sort
-  has_scope :by_name_or_email, :by_sites_last_30_days_billable_video_views,
-            :by_last_invoiced_amount, :by_total_invoiced_amount, :by_date
+  has_scope :by_name_or_email, :by_last_invoiced_amount, :by_total_invoiced_amount, :by_date
+
   # search
   has_scope :search
 
   # GET /users
   def index
-    params[:with_state] = 'active' unless params.keys.any? { |k| %w[free with_state search with_balance by_sites_last_30_days_billable_video_views].include?(k) }
-    params[:by_date] = 'desc' unless params[:by_date]
-    # @users = if params.key?(:by_sites_last_30_days_billable_video_views)
-    #   User
-    # else
-    @users = User.includes(:sites, :invoices).select("users.*")
-    # end
-    @users = apply_scopes(@users)
-    @tags  = User.tag_counts
+    @users = apply_scopes(User.includes(:sites, :invoices))
+    @user_tags = User.tag_counts
+    @site_tags = Site.tag_counts
 
     respond_with(@users, per_page: 50)
   end
@@ -60,6 +56,13 @@ class Admin::UsersController < Admin::AdminController
     @tags = User.tag_counts_on(:tags).where { lower(:name) =~ lower(match) }.order(:name).limit(10)
 
     render '/admin/shared/autocomplete_tag_list'
+  end
+
+  private
+
+  def set_default_scopes
+    params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
+    params[:by_date]    = 'desc' unless params.keys.any? { |k| k =~ /^by_\w+$/ }
   end
 
 end

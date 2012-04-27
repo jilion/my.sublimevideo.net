@@ -1,6 +1,9 @@
 %h3 Tags
 
-= form_for [:admin, object] do |f|
+- if has_role?('marcom')
+  = form_for [:admin, object] do |f|
     = f.text_field :tag_list, class: 'tags'
     #autocomplete_tag_list
     = f.submit "Update"
+- else
+  = object.tag_list.join(', ')  

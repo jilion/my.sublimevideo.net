@@ -1,48 +1,45 @@
-%ul
+%ul.filters
   %li
-    = link_to "#{content_tag(:strong, Site.with_state(:active).count)} Active".html_safe, admin_sites_path(with_state: 'active')
+    = link_to "#{content_tag(:strong, display_integer(Site.with_state(:active).size))} Active".html_safe, admin_sites_path(with_state: 'active'), remote: true, class: 'remote'
     %ul{ style: 'padding:5px 0 5px 18px;' }
       %li
-        = link_to "#{content_tag(:strong, Site.active.in_plan('free').count)} Free".html_safe, admin_sites_path(in_plan: 'free')
+        = link_to "#{content_tag(:strong, display_integer(Site.active.in_plan('free').size))} Free".html_safe, admin_sites_path(in_plan: 'free'), remote: true, class: 'remote'
       %li
-        = link_to "#{content_tag(:strong, Site.active.in_trial.paid_plan.count)} Trial".html_safe, admin_sites_path(in_trial: true, paid_plan: true)
+        = link_to "#{content_tag(:strong, display_integer(Site.active.in_trial.paid_plan.size))} Trial".html_safe, admin_sites_path(in_trial: true, paid_plan: true), remote: true, class: 'remote'
         (
-        = link_to "#{content_tag(:strong, Site.active.in_trial.in_plan('plus').count)} Plus".html_safe, admin_sites_path(in_trial: true, in_plan: 'plus')
+        = link_to "#{content_tag(:strong, display_integer(Site.active.in_trial.in_plan('plus').size))} Plus".html_safe, admin_sites_path(in_trial: true, in_plan: 'plus'), remote: true, class: 'remote'
         |
-        = link_to "#{content_tag(:strong, Site.active.in_trial.in_plan('premium').count)} Premium".html_safe, admin_sites_path(in_trial: true, in_plan: 'premium')
+        = link_to "#{content_tag(:strong, display_integer(Site.active.in_trial.in_plan('premium').size))} Premium".html_safe, admin_sites_path(in_trial: true, in_plan: 'premium'), remote: true, class: 'remote'
         )
       %li
-        = link_to "#{content_tag(:strong, Site.active.not_in_trial.paid_plan.count)} Paying".html_safe, admin_sites_path(not_in_trial: true, paid_plan: true)
+        = link_to "#{content_tag(:strong, display_integer(Site.active.not_in_trial.paid_plan.size))} Paying".html_safe, admin_sites_path(not_in_trial: true, paid_plan: true), remote: true, class: 'remote'
         (
-        = link_to "#{content_tag(:strong, Site.active.not_in_trial.in_plan('plus').count)} Plus".html_safe, admin_sites_path(not_in_trial: true, in_plan: 'plus')
+        = link_to "#{content_tag(:strong, display_integer(Site.active.not_in_trial.in_plan('plus').size))} Plus".html_safe, admin_sites_path(not_in_trial: true, in_plan: 'plus'), remote: true, class: 'remote'
         |
-        = link_to "#{content_tag(:strong, Site.active.not_in_trial.in_plan('premium').count)} Premium".html_safe, admin_sites_path(not_in_trial: true, in_plan: 'premium')
+        = link_to "#{content_tag(:strong, display_integer(Site.active.not_in_trial.in_plan('premium').size))} Premium".html_safe, admin_sites_path(not_in_trial: true, in_plan: 'premium'), remote: true, class: 'remote'
         )
       %li
-        = link_to "#{content_tag(:strong, Site.active.in_plan('sponsored').count)} Sponsored".html_safe, admin_sites_path(in_plan: 'sponsored')
-  %li= link_to "#{content_tag(:strong, Site.with_state(:suspended).count)} Suspended".html_safe, admin_sites_path(with_state: 'suspended')
-  %li= link_to "#{content_tag(:strong, Site.with_state(:archived).count)} Archived".html_safe, admin_sites_path(with_state: 'archived')
+        = link_to "#{content_tag(:strong, display_integer(Site.active.in_plan('sponsored').size))} Sponsored".html_safe, admin_sites_path(in_plan: 'sponsored'), remote: true, class: 'remote'
+  %li= link_to "#{content_tag(:strong, display_integer(Site.with_state(:suspended).size))} Suspended".html_safe, admin_sites_path(with_state: 'suspended'), remote: true, class: 'remote'
+  %li= link_to "#{content_tag(:strong, display_integer(Site.with_state(:archived).size))} Archived".html_safe, admin_sites_path(with_state: 'archived'), remote: true, class: 'remote'
 
 = "-----------------------------------------------"
 
-%p
-  = link_to "#{content_tag(:strong, Site.active.overusage_notified.count)} With Peak Insurance".html_safe, admin_sites_path(with_state: 'active', overusage_notified: true)
+%p.filters
+  = link_to "#{content_tag(:strong, display_integer(Site.active.overusage_notified.size))} With Peak Insurance".html_safe, admin_sites_path(with_state: 'active', overusage_notified: true), remote: true, class: 'remote'
   |
-  = link_to "#{content_tag(:strong, Site.active.with_next_cycle_plan.count)} Will downgrade".html_safe, admin_sites_path(with_state: 'active', with_next_cycle_plan: true)
+  = link_to "#{content_tag(:strong, display_integer(Site.active.with_next_cycle_plan.size))} Will downgrade".html_safe, admin_sites_path(with_state: 'active', with_next_cycle_plan: true), remote: true, class: 'remote'
   |
-  = link_to "#{content_tag(:strong, Site.active.with_extra_hostnames.count)} With extra hostnames".html_safe, admin_sites_path(with_state: 'active', with_extra_hostnames: true)
+  = link_to "#{content_tag(:strong, display_integer(Site.active.with_extra_hostnames.size))} With extra hostnames".html_safe, admin_sites_path(with_state: 'active', with_extra_hostnames: true), remote: true, class: 'remote'
   |
-  = link_to "#{content_tag(:strong, Site.active.with_wildcard.count)} With wildcard".html_safe, admin_sites_path(with_state: 'active', with_wildcard: true)
+  = link_to "#{content_tag(:strong, display_integer(Site.active.with_wildcard.size))} With wildcard".html_safe, admin_sites_path(with_state: 'active', with_wildcard: true), remote: true, class: 'remote'
   |
-  = link_to "#{content_tag(:strong, Site.active.with_path.count)} With path".html_safe, admin_sites_path(with_state: 'active', with_path: true)
+  = link_to "#{content_tag(:strong, display_integer(Site.active.with_path.size))} With path".html_safe, admin_sites_path(with_state: 'active', with_path: true), remote: true, class: 'remote'
   |
-  = link_to "#{content_tag(:strong, Site.active.badged(false).count)} Without badge".html_safe, admin_sites_path(with_state: 'active', badged: false)
+  = link_to "#{content_tag(:strong, display_integer(Site.active.badged(false).size))} Without badge".html_safe, admin_sites_path(with_state: 'active', badged: false), remote: true, class: 'remote'
 
 = "-----------------------------------------------"
 
-%p
+%p.filters
   Tags:
-  - @tags.each do |tag|
-    = link_to tag.name, admin_sites_path(tagged_with: tag.name)
-    = "(#{tag.count})"
-    |
+  = display_tags_list(@tags)

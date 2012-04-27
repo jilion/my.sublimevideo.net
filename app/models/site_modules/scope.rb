@@ -72,7 +72,7 @@ module SiteModules::Scope
       THEN (sites.last_30_days_extra_video_views / CAST(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views AS DECIMAL))
       ELSE -1 END #{way}")
     }
-    scope :by_last_30_days_plan_usage_persentage, lambda { |way = 'desc'|
+    scope :by_last_30_days_plan_usage_percentage, lambda { |way = 'desc'|
       includes(:plan).
       order("CASE WHEN (sites.plan_id IS NOT NULL AND plans.video_views > 0)
       THEN ((sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views) / CAST(plans.video_views AS DECIMAL))
