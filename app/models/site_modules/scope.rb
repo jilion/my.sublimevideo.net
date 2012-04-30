@@ -67,6 +67,9 @@ module SiteModules::Scope
     scope :by_last_30_days_billable_video_views, lambda { |way = 'desc'|
       order("(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views + sites.last_30_days_embed_video_views) #{way}")
     }
+    scope :with_min_billable_video_views, lambda { |min|
+      where("(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views + sites.last_30_days_embed_video_views) >= #{min}")
+    }
     scope :by_last_30_days_extra_video_views_percentage, lambda { |way = 'desc'|
       order("CASE WHEN (sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views) > 0
       THEN (sites.last_30_days_extra_video_views / CAST(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views AS DECIMAL))
