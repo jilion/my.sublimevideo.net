@@ -1,6 +1,7 @@
 class AdminRolesValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, roles)
+    roles.reject!(&:blank?)
 
     if (roles - AdminRole.roles).present?
       record.errors.add(attribute, :invalid, default: options[:message])

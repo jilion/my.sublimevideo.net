@@ -43,3 +43,11 @@
 %p.filters
   Tags:
   = display_tags_list(@tags)
+
+= "-----------------------------------------------"
+
+%p.range_form
+  Minimum billable video views:
+  = form_tag [:admin, :sites], method: :get, id: 'range_form', style: 'display:inline' do
+    = range_field_tag :with_min_billable_video_views, params[:with_min_billable_video_views].to_i, in: 0..50_000, step: 500, id: 'range_input', style: 'display:inline'
+    = label_tag 'with_min_billable_video_views', number_with_delimiter(params[:with_min_billable_video_views] || 0, significant: false, precision: 2, delimiter: "'"), style: 'display:inline'

@@ -1,0 +1,29 @@
+%h3 Page visits
+
+%p
+  Last 30 days main traffic:
+  = "#{number_with_delimiter(Stat::Site::Day.last_30_days_page_visits(site.token, :main), significant: false, precision: 2, delimiter: "'")} page visits"
+%p
+  Last 30 days extra traffic:
+  = "#{number_with_delimiter(Stat::Site::Day.last_30_days_page_visits(site.token, :extra), significant: false, precision: 2, delimiter: "'")} page visits"
+%p
+  Last 30 days dev traffic:
+  = "#{number_with_delimiter(Stat::Site::Day.last_30_days_page_visits(site.token, :dev), significant: false, precision: 2, delimiter: "'")} page visits"
+%p
+  Last 30 days invalid traffic:
+  = "#{number_with_delimiter(Stat::Site::Day.last_30_days_page_visits(site.token, :invalid), significant: false, precision: 2, delimiter: "'")} page visits"
+%p
+  Last 30 days embed traffic:
+  = "#{number_with_delimiter(Stat::Site::Day.last_30_days_page_visits(site.token, :embed), significant: false, precision: 2, delimiter: "'")} page visits"
+
+- last_30_days_billable_page_visits = Stat::Site::Day.last_30_days_page_visits(site.token, :billable)
+%p
+  Last 30 days billable traffic:
+  = "#{number_with_delimiter(last_30_days_billable_page_visits, significant: false, precision: 2, delimiter: "'")} page visits"
+%p
+  Last 30 days billable traffic average per day:
+  = "#{number_with_delimiter(last_30_days_billable_page_visits / 30, significant: false, precision: 2, delimiter: "'")} page visits"
+
+%p
+  All time traffic:
+  = "#{number_with_delimiter(Stat::Site::Day.all_time_page_visits(site.token), significant: false, precision: 2, delimiter: "'")} page visits"

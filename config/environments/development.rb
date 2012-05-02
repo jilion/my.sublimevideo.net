@@ -28,6 +28,9 @@ MySublimeVideo::Application.configure do
   # Do not compress assets
   config.assets.compress = false
 
+  # Use a different cache store in production
+  config.cache_store = :dalli_store
+
   # Expands the lines which load the assets
   config.assets.debug = true
 

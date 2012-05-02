@@ -53,7 +53,43 @@ module Stat::Site
   # = Class Methods =
   # =================
   module ClassMethods
-
+    
+    def last_30_days_page_visits(token, type = :billable)      
+      last_30_days_stats(token).sum { |stat|
+        case type
+        when :main
+          stat.pv['m'].to_i
+        when :extra
+          stat.pv['e'].to_i
+        when :dev
+          stat.pv['d'].to_i
+        when :invalid
+          stat.pv['i'].to_i
+        when :embed
+          stat.pv['em'].to_i
+        when :billable
+          stat.pv['m'].to_i + stat.pv['e'].to_i + stat.pv['em'].to_i
+        end
+      }
+    end
+    
+    def all_time_page_visits(token)
+      Rails.cache.fetch "Stat::Site.all_time_page_visits##{token}", expires_in: 1.hour do
+        self.where(t: token).entries.sum { |stat|
+          stat.pv['m'].to_i + stat.pv['e'].to_i + stat.pv['d'].to_i + stat.pv['i'].to_i + stat.pv['em'].to_i
+        }
+      end
+    end
+    
+    def last_30_days_stats(token)
+      from = 30.days.ago.midnight
+      to   = 1.day.ago.midnight
+      
+      Rails.cache.fetch "Stat::Site.last_30_days_stats##{token}", expires_in: 1.hour do
+        self.between(from, to).entries
+      end
+    end
+    
     # Returns the sum of all the day usage for the given token(s) (optional) and between the given dates (optional).
     #
     # @option options [String] token a valid site token

@@ -15,7 +15,7 @@
       %h3= link_to "Users", [:admin, :users]
       %ul
         %li= link_to "All", [:admin, :users]
-        %li= link_to "Enthusiasts", [:admin, :enthusiasts]
+        %li= link_to "Beta requesters", [:admin, :enthusiasts]
         - if has_role?('god')
           %li= link_to "Admins", [:admin, :admins]
 
