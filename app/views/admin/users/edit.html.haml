@@ -19,48 +19,10 @@
 = render 'more_info', user: @user
 %br
 %hr
-%br
 
 = render '/admin/shared/date_chooser'
-%br.spacer
 = render partial: 'timeline_usage', locals: { user: @user }
-%br
 
-- if has_role?('invoices')
-  %h3 Invoicing
-
-  %p= "Last invoiced amount: #{display_amount(@user.last_invoiced_amount)}"
-  %p= "Total invoiced amount: #{display_amount(@user.total_invoiced_amount)}"
-
-  - paid_invoices = @user.invoices.paid
-  - if paid_invoices.present?
-    - total_invoiced = paid_invoices.sum(:amount)
-    %p
-      = "Total paid: "
-      = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
-      = "in #{content_tag(:strong, pluralize(paid_invoices.size, 'invoice'))}".html_safe
-      = "(average #{content_tag(:strong, display_amount(total_invoiced / paid_invoices.size.to_f))} / invoice)".html_safe
-
-  - refunded_invoices = @user.invoices.refunded
-  - if refunded_invoices.present?
-    - total_invoiced = refunded_invoices.sum(:amount)
-    %p
-      = "Total refunded: "
-      = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
-      = "in #{content_tag(:strong, pluralize(refunded_invoices.size, 'invoice'))}".html_safe
-      = "(average #{content_tag(:strong, display_amount(total_invoiced / refunded_invoices.size.to_f))} / invoice)".html_safe
-
-  - unpaid_invoices = @user.invoices.where(invoices: { state: %w[open waiting failed] })
-  - if unpaid_invoices.present?
-    - total_invoiced = unpaid_invoices.sum(:amount)
-    %p
-      = "Total still to be paid: "
-      = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(user_id: @user.id))
-      = "in #{content_tag(:strong, pluralize(unpaid_invoices.size, 'invoice'))}".html_safe
-      = "(average #{content_tag(:strong, display_amount(total_invoiced / unpaid_invoices.size.to_f))} / invoice)".html_safe
-
-%br
-%hr
 %br
 
 %table.left
@@ -73,16 +35,15 @@
   %tr
     %td
       %h4= "Active (#{@user.sites.active.size})"
-      %ul
-        = render(partial: 'li_site', collection: @user.sites.active, as: :site)
+      %ul= render(partial: 'li_site', collection: @user.sites.active, as: :site)
       %h4= "Suspended (#{@user.sites.suspended.size})"
-      %ul
-        = render(partial: 'li_site', collection: @user.sites.suspended, as: :site)
+      %ul= render(partial: 'li_site', collection: @user.sites.suspended, as: :site)
       %h4= "Archived (#{@user.sites.archived.size})"
-      %ul
-        = render(partial: 'li_site', collection: @user.sites.archived, as: :site)
+      %ul= render(partial: 'li_site', collection: @user.sites.archived, as: :site)
     - if has_role?('invoices')
       %td
+        = render 'invoicing', user: @user
+        %h4 All invoices
         = render 'admin/shared/invoices', object: @user
 
 %br

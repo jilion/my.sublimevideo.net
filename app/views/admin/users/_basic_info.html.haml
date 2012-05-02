@@ -4,13 +4,13 @@
   = "State:"
   %strong= user.state.humanize
   - if user.archived?
-    = "since " + display_time(user.archived_at)
+    = "since #{display_time(user.archived_at)}"
   - elsif user.confirmed?
-    = "since " + display_time(user.confirmed_at)
+    = "since #{display_time(user.confirmed_at)}"
   - unless user.confirmed?
-    = "| Confirmation sent at: " + display_time(user.confirmation_sent_at)
-  = "| Zendesk ID: #{user.zendesk_id? ? link_to(user.zendesk_id, Zendesk.base_url + "/users/#{user.zendesk_id}") : "-"}".html_safe
-  = "| Newsletter: " + display_bool(user.newsletter)
+    = "| Confirmation sent at: #{display_time(user.confirmation_sent_at)}"
+  = "| Zendesk ID: #{user.zendesk_id? ? link_to(user.zendesk_id, ZendeskConfig.base_url + "/users/#{user.zendesk_id}") : "-"}".html_safe
+  = "| Newsletter: #{display_bool(user.newsletter)}"
   = "| Hidden notices: #{user.hidden_notice_ids.inspect}"
 
 %p
@@ -20,7 +20,7 @@
   = "| Failed login attempts: #{user.failed_attempts}"
 
 %p
-  = "Current sign in at: " + display_time(user.current_sign_in_at)
-  = "| Last sign in at: " + display_time(user.last_sign_in_at)
+  = "Current sign in at: #{display_time(user.current_sign_in_at)}"
+  = "| Last sign in at: #{display_time(user.last_sign_in_at)}"
   = "| Current sign in ip: #{user.current_sign_in_ip}"
   = "| Last sign in ip: #{user.last_sign_in_ip}"
