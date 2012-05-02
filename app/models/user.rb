@@ -365,7 +365,7 @@ private
   def zendesk_update
     if zendesk_id? && (email_changed? || (name_changed? && name?))
       body = email_changed? ? "<email>#{email}</email>" : "<name>#{name}</name>"
-      Zendesk.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user>#{body}<is-verified>true</is-verified></user>")
+      ZendeskWrapper.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user>#{body}<is-verified>true</is-verified></user>")
     end
   end
 

@@ -80,6 +80,9 @@ gem 'crack',                 '~> 0.1.8'
 gem 'pusher',                '~> 0.9.2'
 gem 'redis',                 '~> 2.2.2'
 
+# Tickets
+gem 'zendesk_client',        github: 'jilion/zendesk_client'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

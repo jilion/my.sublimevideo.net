@@ -68,6 +68,7 @@ feature "Help page" do
     background do
       sign_in_as :user
       create(:site, user: @current_user, plan_id: @paid_plan.id)
+      Delayed::Job.delete_all
       go 'my', '/help'
     end
 
@@ -78,41 +79,39 @@ feature "Help page" do
       end
 
       scenario "submit a valid ticket" do
-        fill_in "Subject", with: "I have a request!"
-        fill_in "Message", with: "I have a request this is a long text!"
-        expect { click_button "Send" }.to change(Delayed::Job.where { handler =~ "%post_ticket%" }, :count).by(1)
+        fill_in "Subject", with: "SUBJECT"
+        fill_in "Message", with: "DESCRIPTION"
+        expect { click_button "Send" }.to change(Delayed::Job, :count).by(1)
 
         page.should have_content I18n.t('flash.tickets.create.notice')
 
         CampaignMonitor.stub(:subscriber)
         VoxcastCDN.stub(:purge)
         PusherWrapper.stub(:trigger)
-        VCR.use_cassette("ticket/post_ticket") do
-          expect { @worker.work_off }.to change(Delayed::Job.where { handler =~ "%post_ticket%" }, :count).by(-1)
+        VCR.use_cassette("zendesk_wrapper/create_ticket") do
+          expect { @worker.work_off }.to change(Delayed::Job, :count).by(-1)
         end
         @current_user.reload.zendesk_id.should be_present
       end
 
       scenario "submit a ticket with an invalid subject" do
         fill_in "Subject", with: ""
-        fill_in "Message", with: "I have a request this is a long text!"
-        click_button "Send"
+        fill_in "Message", with: "DESCRIPTION"
+        expect { click_button "Send" }.to_not change(Delayed::Job, :count)
 
         current_url.should eq "http://my.sublimevideo.dev/help"
         page.should have_content "Subject can't be blank"
         page.should have_no_content I18n.t('flash.tickets.create.notice')
-        Delayed::Job.last.should_not eq 'Class#post_ticket'
       end
 
       scenario "submit a ticket with an invalid message" do
-        fill_in "Subject", with: "I have a request!"
+        fill_in "Subject", with: "SUBJECT"
         fill_in "Message", with: ""
-        click_button "Send"
+        expect { click_button "Send" }.to_not change(Delayed::Job, :count)
 
         current_url.should eq "http://my.sublimevideo.dev/help"
         page.should have_content "Message can't be blank"
         page.should have_no_content I18n.t('flash.tickets.create.notice')
-        Delayed::Job.last.should_not eq 'Class#post_ticket'
       end
     end
   end

@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Admin::TweetsController do
 
-  context "with logged in admin" do
-    before { sign_in :admin, authenticated_admin }
+  context "with logged in admin with the twitter role" do
+    before { sign_in :admin, authenticated_admin(roles: ['twitter']) }
 
     it "responds with success to GET :index" do
       get :index

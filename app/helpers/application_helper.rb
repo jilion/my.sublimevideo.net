@@ -2,7 +2,7 @@
 module ApplicationHelper
 
   def display_bool(boolean)
-    boolean == 0 || boolean.blank? || !boolean ? "-" : "✓"
+    boolean == 0 || boolean.blank? || !boolean ? "–" : "✓"
   end
 
   def display_date(date, options = { format: :d_b_Y })
