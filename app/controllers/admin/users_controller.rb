@@ -50,6 +50,14 @@ class Admin::UsersController < Admin::AdminController
     redirect_to root_url(subdomain: 'my')
   end
 
+  # POST /users/:id/new_ticket
+  def new_ticket
+    @user = User.find(params[:id])
+    @user.create_zendesk_user
+
+    redirect_to ZendeskConfig.base_url + "/tickets/new?requester_id=#{@user.zendesk_id}"
+  end
+
   def autocomplete_tag_list
     @word = params[:word]
     match = "%#{@word}%"

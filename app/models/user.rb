@@ -184,6 +184,23 @@ class User < ActiveRecord::Base
     Vat.for_country?(billing_country)
   end
 
+  def billing_address_complete?
+    [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
+  end
+
+  def more_info_incomplete?
+    [billing_postal_code, billing_country, company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
+    [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
+  end
+
+  def email_support?
+    %w[email vip_email].include?(support)
+  end
+
+  def billable?
+    sites.active.paid_plan.any?
+  end
+
   def name_or_email
     name.presence || email
   end
@@ -200,13 +217,8 @@ class User < ActiveRecord::Base
     ).to_s
   end
 
-  def billing_address_complete?
-    [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
-  end
-
-  def more_info_incomplete?
-    [billing_postal_code, billing_country, company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
-    [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
+  def archivable?
+    sites.not_archived.all?(&:archivable?)
   end
 
   def support
@@ -231,16 +243,15 @@ class User < ActiveRecord::Base
     deal_activations.active.order(:activated_at.desc).first.try(:deal)
   end
 
-  def email_support?
-    %w[email vip_email].include?(support)
+  def tickets
+    @tickets ||= (zendesk_id? ? ZendeskWrapper.search(requester: zendesk_id) : [])
   end
 
-  def billable?
-    sites.active.paid_plan.any?
-  end
+  def create_zendesk_user
+    return if zendesk_id?
 
-  def archivable?
-    sites.not_archived.all?(&:archivable?)
+    zendesk_user = ZendeskWrapper.create_user(self)
+    self.update_attribute(:zendesk_id, zendesk_user.id)
   end
 
   def skip_pwd
@@ -364,8 +375,8 @@ private
   # after_update
   def zendesk_update
     if zendesk_id? && (email_changed? || (name_changed? && name?))
-      body = email_changed? ? "<email>#{email}</email>" : "<name>#{name}</name>"
-      ZendeskWrapper.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user>#{body}<is-verified>true</is-verified></user>")
+      updated_field = email_changed? ? { email: email } : { name: name }
+      ZendeskWrapper.delay(priority: 25).update_user(zendesk_id, updated_field)
     end
   end
 

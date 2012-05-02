@@ -82,6 +82,7 @@ MySublimeVideo::Application.routes.draw do
         end
         member do
           get :become
+          post :new_ticket
         end
       end
       resources :enthusiasts, only: [:index, :show]

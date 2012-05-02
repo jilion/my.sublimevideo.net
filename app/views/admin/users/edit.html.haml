@@ -23,6 +23,8 @@
 = render '/admin/shared/date_chooser'
 = render partial: 'timeline_usage', locals: { user: @user }
 
+- cache "user_tickets_#{@user.id}", expires_in: 15.minutes do
+  = render 'tickets', user: @user
 %br
 
 %table.left
