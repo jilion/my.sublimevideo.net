@@ -23,6 +23,7 @@ gem 'haml',                  '~> 3.1.3'
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
+gem 'rails_autolink',        '~> 1.0.7'
 
 # Auth / invitations
 gem 'devise',                '~> 2.0.1'
