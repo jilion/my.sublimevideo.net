@@ -10,9 +10,11 @@
     %small= link_to(enthusiast.email, admin_enthusiast_path(enthusiast))
   %td
     - if enthusiast.user
-      %small= link_to(enthusiast.user.name_or_email, admin_user_path(enthusiast.user))
+      %small
+        = viped(enthusiast.user) do
+          - link_to enthusiast.user.name_or_email, [:edit, :admin, enthusiast.user], title: enthusiast.user.email
     - else
-      = "-"
+      = "–"
   %td
     %small
       %ul.no_bullet

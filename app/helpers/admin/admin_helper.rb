@@ -6,4 +6,12 @@ module Admin::AdminHelper
     "Current UTC time: #{l(Time.now.utc, format: :seconds_timezone)}"
   end
 
+  def viped(user)
+    if user.vip?
+      raw "★#{yield}★"
+    else
+      yield
+    end
+  end
+
 end

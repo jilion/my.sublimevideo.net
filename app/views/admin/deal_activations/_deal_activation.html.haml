@@ -6,7 +6,10 @@
     %small= deal_activation.deal.token
 
   %td.user
-    %small= link_to deal_activation.user.name_or_email, [:admin, deal_activation.user], title: deal_activation.user.email
+    - if deal_activation.user
+      %small
+        = viped(deal_activation.user) do
+          - link_to deal_activation.user.name_or_email, [:edit, :admin, deal_activation.user], title: deal_activation.user.email
 
   %td.activated_at
     %small= display_time(deal_activation.activated_at)
