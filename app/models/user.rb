@@ -176,10 +176,6 @@ class User < ActiveRecord::Base
     invitation_token.nil? && created_at < PublicLaunch.beta_transition_started_on.midnight
   end
 
-  def vip?
-    tag_list.include?('vip')
-  end
-
   def vat?
     Vat.for_country?(billing_country)
   end

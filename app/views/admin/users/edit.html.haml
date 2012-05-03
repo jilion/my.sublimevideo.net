@@ -52,4 +52,14 @@
 %hr
 %br
 
+- if has_role?('marcom')
+  %h3 VIP User?
+
+  = form_for [:admin, @user] do |f|
+    = f.check_box :vip
+    = f.submit "Update"
+  %br
+  %hr
+  %br
+
 %p= link_to "Back to users", admin_users_path
