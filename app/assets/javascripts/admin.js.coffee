@@ -28,24 +28,24 @@ jQuery(document).ready ->
     form = searchInput.parent('form')
     url  = form.attr('action')
 
-    searchInput.on 'keyup', (event) ->
-      unless _.include([17, 37, 38, 39, 40, 91], event.which)
-        jQuery('#table_spinner').show()
-        params = form.serialize()
-        jQuery.ajax url,
-          type: form.attr('method') || 'post'
-          dataType: 'script'
-          data: params
-          complete: (jqXHR, textStatus) ->
-            jQuery('#table_spinner').hide()
-            if history && history.pushState?
-              history.replaceState null, document.title, "#{url}?#{params}"
+    form.on 'submit', (event) ->
+      event.preventDefault()
+      jQuery('#table_spinner').show()
+      params = form.serialize()
+      jQuery.ajax url,
+        type: form.attr('method') || 'post'
+        dataType: 'script'
+        data: params
+        complete: (jqXHR, textStatus) ->
+          jQuery('#table_spinner').hide()
+          if history && history.pushState?
+            history.replaceState null, document.title, "#{url}?#{params}"
 
       false
 
   ## Range form
   if (rangeInput = jQuery('#range_input')).exists()
-    form = rangeInput .parent('form')
+    form = rangeInput.parent('form')
     url  = form.attr('action')
 
     rangeInput.on 'change', (event) ->
