@@ -1,6 +1,8 @@
 class Admin::UsersController < Admin::AdminController
   respond_to :html, :js
 
+  before_filter { |controller| require_role?('marcom') if %w[update].include?(action_name) }
+
   # filter
   has_scope :free, type: :boolean
   has_scope :paying, type: :boolean
@@ -33,14 +35,30 @@ class Admin::UsersController < Admin::AdminController
 
   # GET /users/:id
   def show
+    redirect_to edit_admin_user_path(params[:id])
+  end
+
+  # GET /users/:id/edit
+  def edit
     @user = User.includes(:enthusiast).find(params[:id])
+
     respond_with(@user)
   end
 
   # GET /users/:id/become
   def become
     sign_in(User.find(params[:id]), bypass: true)
+
     redirect_to root_url(subdomain: 'my')
+  end
+
+  # PUT /users/:id
+  def update
+    @user = User.find(params[:id])
+    @user.vip = params[:user][:vip]
+    @user.save!
+
+    respond_with(@user, location: admin_user_path(@user))
   end
 
 end

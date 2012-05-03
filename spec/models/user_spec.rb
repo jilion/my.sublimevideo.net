@@ -4,11 +4,13 @@ require 'spec_helper'
 describe User do
 
   let(:full_billing_address) do
-    { billing_address_1: "EPFL Innovation Square", billing_address_2: "PSE-D", billing_postal_code: "1015", billing_city: "New York", billing_region: "NY", billing_country: "US" }
+    { billing_address_1: "EPFL Innovation Square", billing_address_2: "PSE-D",
+      billing_postal_code: "1015", billing_city: "New York", billing_region: "NY",
+      billing_country: "US" }
   end
 
   context "Factory" do
-    before(:all) { @user = create(:user) }
+    before(:all) { @user = build(:user) }
     subject { @user }
 
     its(:terms_and_conditions) { should be_true }
@@ -24,6 +26,7 @@ describe User do
     its(:newsletter)           { should be_false }
     its(:email)                { should match /email\d+@user.com/ }
     its(:hidden_notice_ids)    { should eq [] }
+    its(:vip)                  { should be_false }
 
     it { should be_valid }
   end

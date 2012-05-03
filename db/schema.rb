@@ -394,7 +394,7 @@ ActiveRecord::Schema.define(:version => 20120503133139) do
     t.integer  "invitation_limit"
     t.integer  "invited_by_id"
     t.string   "invited_by_type"
-    t.boolean  "vip"
+    t.boolean  "vip",                                            :default => false
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true

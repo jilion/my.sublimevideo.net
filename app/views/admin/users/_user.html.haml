@@ -2,7 +2,7 @@
 %tr[user]{ class: cycle("", "alt") }
 
   %td.name
-    %small= link_to user.name_or_email, [:admin, user], title: user.email
+    %small= link_to user.name_or_email, [:edit, :admin, user], title: user.email
 
   %td.state
     %small= user.state.titleize
