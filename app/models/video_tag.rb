@@ -48,12 +48,12 @@ class VideoTag
   # = Class Methods =
   # =================
 
-  def find_by_st_and_u(st, u)
+  def self.find_by_st_and_u(st, u)
     where(st: st, u: u).first
   end
 
   def self.all_time_count(site_token)
-    self.where(st: site_token).count
+    where(st: site_token).count
   end
 
   def self.last_30_days_updated_count(site_token)
