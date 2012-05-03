@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120410150900) do
+ActiveRecord::Schema.define(:version => 20120503133139) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -94,7 +94,6 @@ ActiveRecord::Schema.define(:version => 20120410150900) do
     t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "queue"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -292,6 +291,23 @@ ActiveRecord::Schema.define(:version => 20120410150900) do
   add_index "sites", ["plan_id"], :name => "index_sites_on_plan_id"
   add_index "sites", ["user_id"], :name => "index_sites_on_user_id"
 
+  create_table "taggings", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "taggable_id"
+    t.string   "taggable_type"
+    t.integer  "tagger_id"
+    t.string   "tagger_type"
+    t.string   "context",       :limit => 128
+    t.datetime "created_at"
+  end
+
+  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
+
+  create_table "tags", :force => true do |t|
+    t.string "name"
+  end
+
   create_table "transactions", :force => true do |t|
     t.integer  "user_id"
     t.string   "order_id"
@@ -378,6 +394,7 @@ ActiveRecord::Schema.define(:version => 20120410150900) do
     t.integer  "invitation_limit"
     t.integer  "invited_by_id"
     t.string   "invited_by_type"
+    t.boolean  "vip"
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true
