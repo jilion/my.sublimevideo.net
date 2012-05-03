@@ -9,7 +9,7 @@ class Admin::UsersController < Admin::AdminController
   has_scope :with_state do |controller, scope, value|
     scope.with_state(value.to_sym)
   end
-  has_scope :with_balance, type: :boolean
+  has_scope :with_balance, :vip, type: :boolean
   # sort
   has_scope :by_name_or_email
   # has_scope :by_sites_last_30_days_billable_video_views
