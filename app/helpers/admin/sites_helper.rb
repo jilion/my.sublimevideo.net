@@ -21,6 +21,8 @@ module Admin::SitesHelper
       " with#{'out' if params[:badged] == 'false'} badge"
     elsif params[:tagged_with]
       " tagged with '#{params[:tagged_with]}'"
+    elsif params[:with_min_billable_video_views]
+      " with more than #{display_integer(params[:with_min_billable_video_views])} video plays"
     elsif params[:search].present?
       " matching '#{params[:search]}'"
     elsif params[:user_id]
