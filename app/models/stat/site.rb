@@ -85,9 +85,9 @@ module Stat::Site
       from = 30.days.ago.midnight
       to   = 1.day.ago.midnight
 
-      # Rails.cache.fetch "Stat::Site.last_30_days_stats##{token}", expires_in: 1.hour do
-        self.between(from, to).entries
-      # end
+      Rails.cache.fetch "Stat::Site.last_30_days_stats##{token}", expires_in: 1.hour do
+        self.where(t: token).between(from, to).entries
+      end
     end
 
     # Returns the sum of all the day usage for the given token(s) (optional) and between the given dates (optional).
