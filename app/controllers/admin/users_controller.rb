@@ -2,6 +2,7 @@ class Admin::UsersController < Admin::AdminController
   respond_to :html, :js
 
   before_filter :set_default_scopes, only: [:index]
+  before_filter { |controller| require_role?('marcom') if %w[update].include?(action_name) }
 
   # filter
   has_scope :tagged_with, :sites_tagged_with, :with_state
@@ -38,6 +39,7 @@ class Admin::UsersController < Admin::AdminController
   def update
     @user = User.find(params[:id])
     @user.tag_list = params[:user][:tag_list] if params[:user][:tag_list]
+    @user.vip      = params[:user][:vip] if params[:user][:vip]
     @user.save!
 
     respond_with(@user, location: [:edit, :admin, @user], notice: 'User was successfully updated.')

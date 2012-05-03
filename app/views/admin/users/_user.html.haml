@@ -4,7 +4,7 @@
   %td.name
     %small
       = viped(user) do
-        - link_to user.name_or_email, [:admin, user], title: user.email
+        - link_to user.name_or_email, [:edit, :admin, user], title: user.email
 
   %td.state
     %small= user.state.titleize

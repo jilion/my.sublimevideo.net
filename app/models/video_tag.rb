@@ -6,7 +6,7 @@ class VideoTag
 
   field :st, type: String # Site token
   field :u,  type: String # Video uid
-
+  # meta data
   field :uo, type: String # Video uid origin
   field :n,  type: String # Video name
   field :no, type: String # Video name origin
@@ -16,31 +16,30 @@ class VideoTag
   field :s,  type: Hash,  default: {} # Video sources hash (s) { '5062d010' (video source crc32) => { u (source url) => 'http://.../dartmoor.mp4', q (quality) => 'hd', f (family) => 'mp4', r (resolution) => '320x240' }, ... }
 
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING]]
+  index [[:st, Mongo::ASCENDING], [:updated_at, Mongo::ASCENDING]]
 
   def site
     Site.find_by_token(st)
   end
 
-  # =============
-  # = Callbacks =
-  # =============
-
-  after_save :push_new_meta_data
-
   # ====================
   # = Instance Methods =
   # ====================
 
-  def update_with_latest_data(attributes)
+  def update_meta_data_and_always_updated_at(meta_data)
     %w[uo n no p cs z].each do |key|
-      self.send("#{key}=", attributes[key]) if attributes[key].present?
+      self.send("#{key}=", meta_data[key]) if meta_data[key].present?
     end
     # Properly update sources
-    self.s = read_attribute('s').merge(attributes['s']) if attributes['s'].present?
+    self.s = read_attribute('s').merge(meta_data['s']) if meta_data['s'].present?
 
-    save
+    changed = changed?
+    self.updated_at = Time.now.utc unless changed?
+    self.save
+    changed
   end
 
+  # meta_data is reserved in Mongoid
   def meta_data
     attributes.slice("uo", "n", "no", "p", "cs", "s", "z")
   end
@@ -49,19 +48,19 @@ class VideoTag
   # = Class Methods =
   # =================
 
-  def self.create_or_update_from_trackers!(trackers)
-    video_tags = video_tags_from_trackers(trackers)
-    video_tags.each do |keys, attrs|
-      attrs[:st], attrs[:u] = keys
-      begin
-        if video_tag = VideoTag.where(st: attrs[:st], u: attrs[:u]).first
-          video_tag.update_with_latest_data(attrs)
-        else
-          VideoTag.create(attrs)
-        end
-      rescue BSON::InvalidStringEncoding
-      end
-    end
+  def find_by_st_and_u(st, u)
+    where(st: st, u: u).first
+  end
+
+  def self.all_time_count(site_token)
+    self.where(st: site_token).count
+  end
+
+  def self.last_30_days_updated_count(site_token)
+    from = 30.days.ago.midnight.to_i
+    to   = 1.day.ago.midnight.to_i
+
+    where(st: site_token, updated_at: { "$gte" => from, "$lte" => to }).count
   end
 
 private
@@ -71,51 +70,6 @@ private
     if changed?
       PusherWrapper.trigger("private-#{st}", 'video_tag', u: u, meta_data: meta_data)
     end
-  end
-
-  # Merge each videos tag in one big hash
-  #
-  # { ['site_token','video_uid'] => { uo: ..., n: ..., cs: ['5062d010',...], s: { '5062d010' => { ...}, ... } } }
-  #
-  def self.video_tags_from_trackers(trackers)
-    trackers   = only_video_tags_trackers(trackers)
-    video_tags = Hash.new { |h,k| h[k] = Hash.new }
-    trackers.each do |request, hits|
-      begin
-        params = Addressable::URI.parse(request).query_values || {}
-        if %w[m e].include?(params['h'])
-          case params['e']
-          when 'l'
-            if all_needed_params_present?(params, %w[vu pz])
-              params['vu'].each_with_index do |vu, index|
-                video_tags[[params['t'],vu]]['z'] = params['pz'][index]
-              end
-            end
-          when 's'
-            if all_needed_params_present?(params, %w[t vu vuo vn vno vs vc vcs vsq vsf])
-              %w[uo n no p cs].each do |key|
-                video_tags[[params['t'],params['vu']]][key] = params["v#{key}"]
-              end
-              # Video sources
-              video_tags[[params['t'],params['vu']]]['s'] ||= {}
-              video_tags[[params['t'],params['vu']]]['s'][params['vc']] = { 'u' => params['vs'], 'q' => params['vsq'], 'f' => params['vsf'] }
-              video_tags[[params['t'],params['vu']]]['s'][params['vc']]['r'] = params['vsr'] if params['vsr'].present?
-            end
-          end
-        end
-      rescue => ex
-        Notify.send("VideoTag parsing failed (request: '#{request}'): #{ex.message}", exception: ex)
-      end
-    end
-    video_tags
-  end
-
-  def self.only_video_tags_trackers(trackers)
-    trackers.detect { |t| t.options[:title] == :video_tags }.categories
-  end
-
-  def self.all_needed_params_present?(params, keys)
-    (params.keys & keys).sort == keys.sort
   end
 
 end

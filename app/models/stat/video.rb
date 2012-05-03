@@ -46,7 +46,7 @@ module Stat::Video
   # @option options [Integer] limit, number of videos to return
   # @option options [String] sort_by, field to sort with
   #
-  # @return [Hash] with an array of video hash with video tag metadata and period 'vl' & 'vv' totals + vv period array, the total amount of videos viewed or loaded during the period and the start_time of the period
+  # @return [Hash] with an array of video hash with video tag meta_data and period 'vl' & 'vv' totals + vv period array, the total amount of videos viewed or loaded during the period and the start_time of the period
   #
   def self.top_videos(site_token, options = {})
     options[:from], options[:to] = options[:from].to_i, options[:to].to_i
@@ -55,7 +55,7 @@ module Stat::Video
     conditions = { st: site_token, d: { "$gte" => Time.at(options[:from]), "$lte" => Time.at(options[:to]) } }
 
     video_uids, total = top_video_uids(conditions, options)
-    videos            = videos_with_tags_metadata(site_token, video_uids)
+    videos            = videos_with_tags_meta_data(site_token, video_uids)
     add_video_stats_data!(videos, video_uids, conditions, options)
     # Resort with real sum data
     videos.sort_by! { |video| video["#{options[:sort_by]}_sum"] }.reverse!
@@ -106,7 +106,7 @@ private
     [videos.map { |v| v["u"] }, total]
   end
 
-  def self.videos_with_tags_metadata(site_token, video_uids)
+  def self.videos_with_tags_meta_data(site_token, video_uids)
     video_tags = VideoTag.where(st: site_token, u: { "$in" => video_uids }).entries
     video_uids.map do |video_uid|
       # replace u per id for Backbone

@@ -23,6 +23,15 @@ GIT
       thor (~> 0.14.6)
 
 GIT
+  remote: git://github.com/guard/listen.git
+  revision: 89b630fee441d858b552f4db03a17870d59badf8
+  specs:
+    listen (0.4.2)
+      rb-fchange (~> 0.0.5)
+      rb-fsevent (~> 0.9.1)
+      rb-inotify (~> 0.8.8)
+
+GIT
   remote: git://github.com/jilion/useragent.git
   revision: 923ab1e668bc60389ab1e7a983ca72c5b4a14a6f
   specs:
@@ -49,7 +58,7 @@ GIT
 
 GIT
   remote: git://github.com/rspec/rspec-core.git
-  revision: c98d538044fb37683761f00eb37667d46dbf2b2b
+  revision: 9d8a6cc7320f5e20f3b101a3cf5b5f845f60fb9f
   specs:
     rspec-core (2.9.0)
 
@@ -199,10 +208,10 @@ GEM
     daemons (1.1.8)
     dalli (2.0.3)
     database_cleaner (0.7.2)
-    debugger (1.1.2)
+    debugger (1.1.3)
       columnize (>= 0.3.1)
-      debugger-linecache (~> 1.1)
-      debugger-ruby_core_source (~> 1.1)
+      debugger-linecache (~> 1.1.1)
+      debugger-ruby_core_source (~> 1.1.2)
     debugger-linecache (1.1.1)
       debugger-ruby_core_source (>= 1.1.1)
     debugger-ruby_core_source (1.1.2)
@@ -259,7 +268,7 @@ GEM
       thor (>= 0.13.6)
     formatador (0.2.1)
     growl (1.0.3)
-    guard-jasmine (1.1.1)
+    guard-jasmine (1.1.2)
       childprocess
       guard (>= 0.8.3)
       multi_json
@@ -276,7 +285,7 @@ GEM
       guard (>= 0.10.0)
       spork (>= 0.8.4)
     haml (3.1.4)
-    haml_coffee_assets (0.8.5)
+    haml_coffee_assets (0.8.6)
       execjs (>= 1.2.9)
       sprockets (>= 2.0.3)
       tilt (>= 1.3.3)
@@ -313,10 +322,6 @@ GEM
       addressable
     libxml-ruby (2.2.2)
     liquid (2.2.2)
-    listen (0.4.1)
-      rb-fchange (~> 0.0.5)
-      rb-fsevent (~> 0.9.1)
-      rb-inotify (~> 0.8.8)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -564,6 +569,7 @@ DEPENDENCIES
   letter_opener!
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
+  listen!
   mime-types
   mongo (~> 1.6.0)
   mongoid (~> 2.4.7)

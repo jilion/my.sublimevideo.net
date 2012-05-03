@@ -324,9 +324,11 @@ describe Log::Voxcast do
     end
     describe "#parse_and_create_video_tags!" do
       it "analyzes logs" do
-        VoxcastCDN.should_not_receive(:download_log)
-        LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastVideoTags')
-        VideoTag.should_receive(:create_or_update_from_trackers!)
+        video_tags_trackers = stub
+        video_tags_meta_data = stub
+        @log.should_receive(:trackers).with('LogsFileFormat::VoxcastVideoTags', title: :video_tags) { video_tags_trackers }
+        VideoTagTrackersParser.should_receive(:extract_video_tags_meta_data).with(video_tags_trackers) { video_tags_meta_data }
+        VideoTagUpdater.should_receive(:update_video_tags).with(video_tags_meta_data)
         @log.parse_and_create_video_tags!
       end
     end

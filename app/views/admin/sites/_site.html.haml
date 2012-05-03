@@ -11,7 +11,7 @@
   %td.user
     %small
       = viped(site.user) do
-        - link_to site.user.name_or_email, [:admin, site.user], title: site.user.email
+        - link_to site.user.name_or_email, [:edit, :admin, site.user], title: site.user.email
 
   %td.state
     %small= site.state.humanize

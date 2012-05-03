@@ -155,6 +155,7 @@ group :tools do
   #   gem 'rb-readline'
   # end
 
+  gem 'listen', github: 'guard/listen'
   gem 'guard', github: 'guard/guard', branch: 'listen'
   gem 'guard-pow'
   gem 'guard-livereload'

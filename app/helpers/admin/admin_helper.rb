@@ -25,4 +25,12 @@ module Admin::AdminHelper
     pluralize(count, singular, plural).sub(/\d+/) { |number| display_integer(number) }
   end
 
+  def viped(user)
+    if user.vip?
+      raw "★#{yield}★"
+    else
+      yield
+    end
+  end
+
 end

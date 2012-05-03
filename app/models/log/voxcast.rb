@@ -104,8 +104,9 @@ class Log::Voxcast < Log
   end
 
   def parse_and_create_video_tags!
-    trackers = trackers('LogsFileFormat::VoxcastVideoTags')
-    VideoTag.create_or_update_from_trackers!(trackers)
+    video_tags_trackers  = trackers('LogsFileFormat::VoxcastVideoTags', title: :video_tags)
+    video_tags_meta_data = VideoTagTrackersParser.extract_video_tags_meta_data(video_tags_trackers)
+    VideoTagUpdater.update_video_tags(video_tags_meta_data)
   end
 
   def minute

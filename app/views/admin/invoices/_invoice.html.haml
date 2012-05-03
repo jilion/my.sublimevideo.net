@@ -7,7 +7,8 @@
 
   %td.user
     %small
-      = link_to invoice.user.name_or_email, [:admin, invoice.user], title: invoice.user.email
+      = viped(invoice.user) do
+        - link_to invoice.user.name_or_email, [:edit, :admin, invoice.user], title: invoice.user.email
       = "[#{invoice.user.state}]" unless invoice.user.active?
 
   %td.site
