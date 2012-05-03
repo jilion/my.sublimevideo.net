@@ -74,8 +74,12 @@ class Log
     @month ||= started_at.change(day: 1, hour: 0, min: 0, sec: 0, usec: 0).to_time
   end
 
-  def trackers(log_format)
-    with_log_file_in_tmp { |file| LogAnalyzer.parse(file, log_format) }
+  def trackers(log_format, options = {})
+    trackers = with_log_file_in_tmp { |file| LogAnalyzer.parse(file, log_format) }
+    if options[:title].present?
+      trackers = trackers.detect { |t| t.options[:title] == options[:title] }.categories
+    end
+    trackers
   end
 
 private
