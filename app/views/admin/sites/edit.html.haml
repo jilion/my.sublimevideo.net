@@ -51,6 +51,10 @@
 
 = render 'video_views', site: @site
 = render 'page_visits', site: @site
+%br
+
+= render 'video_tags', site: @site
+%br
 
 - if @site.plan_id?
   = render '/admin/shared/date_chooser'

@@ -63,13 +63,4 @@ class VideoTag
     where(st: site_token, updated_at: { "$gte" => from, "$lte" => to }).count
   end
 
-private
-
-  # after_save
-  def push_new_meta_data
-    if changed?
-      PusherWrapper.trigger("private-#{st}", 'video_tag', u: u, meta_data: meta_data)
-    end
-  end
-
 end

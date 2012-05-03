@@ -31,6 +31,9 @@
   %td.number
     %small= number_with_delimiter(site.last_30_days_billable_video_views)
 
+  %td.number
+    %small= number_with_delimiter(site.last_30_days_video_tags)
+
   %td.percentage
     %small
       - if site.plan && site.last_30_days_billable_video_views > 0

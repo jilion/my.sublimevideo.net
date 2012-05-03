@@ -10,7 +10,7 @@ class Admin::SitesController < Admin::AdminController
     scope.with_state(value.to_sym)
   end
   # sort
-  has_scope :by_hostname, :by_user, :by_state, :by_plan_price, :by_last_30_days_billable_video_views, :by_last_30_days_extra_video_views_percentage, :by_last_30_days_plan_usage_persentage, :by_date, :by_trial_started_at, :search, :with_min_billable_video_views
+  has_scope :by_hostname, :by_user, :by_state, :by_plan_price, :by_last_30_days_billable_video_views, :by_last_30_days_video_tags, :by_last_30_days_extra_video_views_percentage, :by_last_30_days_plan_usage_persentage, :by_date, :by_trial_started_at, :search, :with_min_billable_video_views
 
   # GET /sites
   def index

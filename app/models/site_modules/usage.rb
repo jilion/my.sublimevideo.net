@@ -4,12 +4,18 @@ module SiteModules::Usage
   module ClassMethods
     def update_last_30_days_counters_for_not_archived_sites
       not_archived.find_each(batch_size: 100) do |site|
-        site.update_last_30_days_counters
+        site.update_last_30_days_video_tags_counters
+        site.update_last_30_days_video_views_counters
       end
     end
   end
 
-  def update_last_30_days_counters
+  def update_last_30_days_video_tags_counters
+    self.last_30_days_video_tags = VideoTag.last_30_days_updated_count(token)
+    self.skip_pwd { self.save!(validate: false) }
+  end
+
+  def update_last_30_days_video_views_counters
     self.last_30_days_main_video_views    = 0
     self.last_30_days_extra_video_views   = 0
     self.last_30_days_dev_video_views     = 0
