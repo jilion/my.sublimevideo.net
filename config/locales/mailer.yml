@@ -5,20 +5,20 @@ en:
     signature:     "The SublimeVideo Team"
 
     billing_mailer:
-      trial_has_started: "Trial for %{hostname} has started"
+      trial_has_started: "Your trial for %{hostname} has started"
       trial_will_expire:
-        today: "Trial expires today (%{hostname})"
-        tomorrow: "Trial expires tomorrow (%{hostname})"
-        in_days: "Trial expires in %{days} days (%{hostname})"
-      trial_has_expired: "Trial for %{hostname} has expired"
-      yearly_plan_will_be_renewed: "Your yearly plan for %{hostname} will be renewed on %{date}"
+        today: "Your trial for %{hostname} expires today"
+        tomorrow: "Your trial for %{hostname} expires tomorrow"
+        in_days: "Your trial for %{hostname} expires in %{days} days"
+      trial_has_expired: "Your trial for %{hostname} has expired"
+      yearly_plan_will_be_renewed: "Your plan for %{hostname} will be renewed in 5 days"
       credit_card_will_expire: "Your credit card expires at the end of this month"
-      transaction_succeeded: "Payment approved"
-      transaction_failed: "Problem processing your payment"
-      too_many_charging_attempts: "Payment for %{hostname} has failed multiple times"
+      transaction_succeeded: "Your payment has been approved"
+      transaction_failed: "We encountered a problem processing your payment"
+      too_many_charging_attempts: "Your payment for %{hostname} has failed multiple times"
 
     usage_monitoring_mailer:
-      plan_overused: "Peak Insurance activated for %{hostname}"
+      plan_overused: "Peak Insurance has been activated for %{hostname}"
       plan_upgrade_required: "You need to upgrade your plan for %{hostname}"
 
     user_mailer:

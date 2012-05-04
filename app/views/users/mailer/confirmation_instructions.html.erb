@@ -1,5 +1,3 @@
-<p>Dear <%= @resource.email %>.</p>
-
 <p>Thanks for signing up for SublimeVideo!</p>
 
 <p>To confirm your account, simply visit the following page:</p>
@@ -7,8 +5,6 @@
 <p><%= link_to(confirmation_url(@resource, confirmation_token: @resource.confirmation_token), confirmation_url(@resource, confirmation_token: @resource.confirmation_token)) %></p>
 
 <p>If you need any help getting started then please read our <%= link_to('Quickstart Guide', page_url('quickstart-guide', subdomain: 'docs')) %>.<br />
-You can find additional help and support on our <%= link_to('Help page', page_url('help', subdomain: false)) %>.</p>
+You can find additional help and support on our <%= link_to('Help', page_url('help', subdomain: false)) %> page.</p>
 
 <p>Thanks again for choosing SublimeVideo, we hope you'll enjoy using our player and service!</p>
-
-<p><%= t("mailer.signature") %></p>
