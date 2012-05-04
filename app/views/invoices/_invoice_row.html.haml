@@ -1,4 +1,5 @@
-.right
-  = link_to("view details", invoice_path(invoice), :onclick => "window.open(this); return false", :class => "details")
-%p= raw "#{content_tag(:strong, display_amount(invoice.amount))} on #{invoice_dates(invoice)}."
-%p{ :class => "status " + (invoice.state) }= raw "Status: #{charging_status(invoice)}"
+%li
+  .right
+    = link_to("view details", invoice_path(invoice), :onclick => "window.open(this); return false", :class => "details")
+  %p= raw "#{content_tag(:strong, display_amount(invoice.amount))} on #{invoice_dates(invoice)}."
+  %p{ :class => "status " + (invoice.state) }= raw "Status: #{charging_status(invoice)}"
