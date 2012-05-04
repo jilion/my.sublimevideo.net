@@ -1,9 +1,9 @@
 class BillingMailer < Mailer
   default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.billing.email_full')
 
-  helper :application, 'invoices', 'sites'
+  helper :invoices, :sites
   include SitesHelper # the only way to include view helpers in here
-                          # I don't feel dirty doing this since the email's subject IS a view so...
+                      # I don't feel dirty doing this since the email's subject IS a view so...
 
   def trial_has_started(site)
     extract_site_and_user(site)
