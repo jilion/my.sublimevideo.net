@@ -51,7 +51,5 @@
             = " on #{l(@invoices.first.paid_plan_invoice_item.ended_at.tomorrow, format: :d_b_Y)}."
       .past_invoices.dark_box
         %h3.section_title= "Past invoices"
-        %ul
-          - @invoices.each do |invoice|
-            %li= render 'invoice_row', invoice: invoice
+        %ul= render partial: 'invoice_row', collection: @invoices, as: 'invoice'
   .spacer
