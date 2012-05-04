@@ -2,7 +2,7 @@
 
 - if has_role?('marcom')
   = form_for [:admin, object] do |f|
-    = f.text_field :tag_list, class: 'tags'
+    = f.text_field :tag_list, class: 'tags', autocomplete: 'off'
     #autocomplete_tag_list
     = f.submit "Update"
 - else
