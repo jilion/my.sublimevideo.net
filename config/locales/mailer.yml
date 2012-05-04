@@ -24,4 +24,4 @@ en:
     user_mailer:
       account_suspended: "Your account has been suspended"
       account_unsuspended: "Your account has been reactivated"
-      account_archived: "Your account has been deleted"
+      account_archived: "Your account has been cancelled"
