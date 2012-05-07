@@ -6,18 +6,19 @@
   %h3.section_title Suspension reason
   - if failed_invoices.any?
     %p= "You currently have #{t('invoice.failed_invoices', count: failed_invoices.count)}."
+    .content_left
+      #site.invoices
+        %h3.section_title Your failed invoices
+        #invoices_summary
+          #failed_invoices.past_invoices.dark_box
+            = t("user.have_to_pay_following_invoices", count: failed_invoices.size)
+            %ul= render partial: 'invoices/invoice_row', collection: failed_invoices, as: 'invoice'
+            - if !current_user.cc_expired?
+              = form_tag retry_all_invoices_path, method: 'put' do
+                .entry= submit_tag t('invoice.retry_invoices'), class: "blue_button"
 
-    = render 'users/billing_info'
+    .content_right= render 'users/billing_info'
 
-    %h3.section_title Your failed invoices
-    #failed_invoices
-      = t("user.have_to_pay_following_invoices", count: failed_invoices.size)
-      %ul
-        - failed_invoices.each do |invoice|
-          %li= render 'invoices/invoice_row', invoice: invoice
-      - if !current_user.cc_expired?
-        = form_tag retry_all_invoices_path, method: 'put' do
-          .entry= submit_tag t('invoice.retry_invoices'), class: "submit_dynamic_button"
   - else
     %p
       Unknown reason.

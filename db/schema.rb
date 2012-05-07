@@ -279,6 +279,7 @@ ActiveRecord::Schema.define(:version => 20120503133139) do
     t.integer  "last_30_days_invalid_video_views",          :default => 0
     t.integer  "last_30_days_embed_video_views",            :default => 0
     t.text     "last_30_days_billable_video_views_array"
+    t.integer  "last_30_days_video_tags",                   :default => 0
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"

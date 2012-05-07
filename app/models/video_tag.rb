@@ -48,12 +48,12 @@ class VideoTag
   # = Class Methods =
   # =================
 
-  def find_by_st_and_u(st, u)
+  def self.find_by_st_and_u(st, u)
     where(st: st, u: u).first
   end
 
   def self.all_time_count(site_token)
-    self.where(st: site_token).count
+    where(st: site_token).count
   end
 
   def self.last_30_days_updated_count(site_token)
@@ -61,15 +61,6 @@ class VideoTag
     to   = 1.day.ago.midnight.to_i
 
     where(st: site_token, updated_at: { "$gte" => from, "$lte" => to }).count
-  end
-
-private
-
-  # after_save
-  def push_new_meta_data
-    if changed?
-      PusherWrapper.trigger("private-#{st}", 'video_tag', u: u, meta_data: meta_data)
-    end
   end
 
 end

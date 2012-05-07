@@ -1,0 +1,9 @@
+%h3 VideoTags
+
+%p
+Last 30 days:
+= "#{number_with_delimiter(site.last_30_days_video_tags, significant: false, precision: 2, delimiter: "'")} video tags"
+
+%p
+  All time:
+  = "#{number_with_delimiter(VideoTag.all_time_count(site.token), significant: false, precision: 2, delimiter: "'")} video tags"

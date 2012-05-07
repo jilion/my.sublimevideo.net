@@ -6,7 +6,7 @@ class Admin::UsersController < Admin::AdminController
 
   # filter
   has_scope :tagged_with, :sites_tagged_with, :with_state
-  has_scope :free, :paying, :with_balance, type: :boolean
+  has_scope :free, :paying, :with_balance, :vip, type: :boolean
 
   # sort
   has_scope :by_name_or_email, :by_last_invoiced_amount, :by_total_invoiced_amount, :by_date

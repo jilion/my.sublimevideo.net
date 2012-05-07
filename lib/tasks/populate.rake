@@ -531,7 +531,7 @@ def create_site_stats(user_id = nil)
           upsert: true
         )
       end
-      site.update_last_30_days_counters
+      site.update_last_30_days_video_views_counters
     end
   end
   puts "Fake site(s) stats generated"
@@ -623,7 +623,7 @@ def create_stats(site_token = nil)
         )
       end
     end
-    site.update_last_30_days_counters
+    site.update_last_30_days_video_views_counters
   end
   puts "Fake site(s)/video(s) stats generated"
 end

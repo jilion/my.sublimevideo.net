@@ -64,6 +64,7 @@ module SiteModules::Scope
     scope :by_alexa_rank,       lambda { |way = 'desc'| where { alexa_rank >= 1 }.order(:alexa_rank.send(way)) }
     scope :by_date,             lambda { |way = 'desc'| order(:created_at.send(way)) }
     scope :by_trial_started_at, lambda { |way = 'desc'| order(:trial_started_at.send(way)) }
+    scope :by_last_30_days_video_tags, lambda { |way = 'desc'| order(:last_30_days_video_tags.send(way)) }
     scope :by_last_30_days_billable_video_views, lambda { |way = 'desc'|
       order("(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views + sites.last_30_days_embed_video_views) #{way}")
     }

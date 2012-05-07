@@ -32,6 +32,7 @@ module UserModules::Scope
     scope :created_between,   lambda { |start_date, end_date| where { (created_at >= start_date) & (created_at < end_date) } }
     scope :signed_in_between, lambda { |start_date, end_date| where { (current_sign_in_at >= start_date) & (current_sign_in_at < end_date) } }
     scope :newsletter,        lambda { |bool=true| where { newsletter == bool } }
+    scope :vip,               lambda { |bool=true| where { vip == bool } }
 
     scope :sites_tagged_with, lambda { |word| joins(:sites).merge(Site.tagged_with(word)) }
 

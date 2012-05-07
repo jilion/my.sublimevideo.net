@@ -363,14 +363,30 @@ describe Transaction do
         end
 
         context "invoice is not the first one" do
-          it "suspend the user" do
-            @invoice2.reload
-            15.times { create(:transaction, invoices: [@invoice2], state: 'failed') }
-            Transaction.should_not_receive(:charge_by_invoice_ids)
-            Transaction.charge_invoices_by_user_id(@user1.id)
-            @invoice2.reload.should be_failed
-            # @user1.reload.should be_suspended
-            @user1.reload.should be_active
+          context "user is not a vip" do
+            it "suspend the user" do
+              @invoice2.reload
+              15.times { create(:transaction, invoices: [@invoice2], state: 'failed') }
+              Transaction.should_not_receive(:charge_by_invoice_ids)
+              Transaction.charge_invoices_by_user_id(@user1.id)
+              @invoice2.reload.should be_failed
+              @user1.reload.should be_suspended
+            end
+          end
+
+          context "user is a vip" do
+            before do
+              @user1.update_attribute(:vip, true)
+            end
+
+            it "doesn't suspend the user" do
+              @invoice2.reload
+              15.times { create(:transaction, invoices: [@invoice2], state: 'failed') }
+              Transaction.should_not_receive(:charge_by_invoice_ids)
+              Transaction.charge_invoices_by_user_id(@user1.id)
+              @invoice2.reload.should be_failed
+              @user1.reload.should be_active
+            end
           end
         end
 

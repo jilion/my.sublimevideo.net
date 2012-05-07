@@ -5,13 +5,12 @@ class Admin::SitesController < Admin::AdminController
   before_filter :set_default_scopes, only: [:index]
 
   #filter
-  has_scope :in_plan, :badged, :tagged_with
+  has_scope :in_plan, :badged, :tagged_with, :with_state
   has_scope :in_trial, :not_in_trial, :paid_plan, :overusage_notified, :user_id,
             :with_wildcard, :with_path, :with_extra_hostnames, :with_next_cycle_plan, type: :boolean
-  has_scope(:with_state) { |controller, scope, value| scope.with_state(value.to_sym) }
   # sort
   has_scope :by_hostname, :by_user, :by_state, :by_plan_price,
-            :by_last_30_days_billable_video_views, :by_last_30_days_extra_video_views_percentage,
+            :by_last_30_days_billable_video_views, :by_last_30_days_video_tags, :by_last_30_days_extra_video_views_percentage,
             :by_last_30_days_plan_usage_percentage, :by_date, :by_trial_started_at, :with_min_billable_video_views
   # search
   has_scope :search

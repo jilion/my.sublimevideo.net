@@ -69,8 +69,7 @@ class Transaction < ActiveRecord::Base
           invoices.delete(invoice)
 
           if invoice.site.first_paid_plan_started_at?
-            # disable account suspension to ensure some of our beloved users won't be suspended...
-            # invoice.user.suspend! and return
+            invoice.user.suspend! unless invoice.user.vip?
             return
           else
             invoice.cancel!
