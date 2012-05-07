@@ -22,12 +22,10 @@ class AdminSublimeVideo.Form.Ajax
   # Define a onSubmit observer for the form.
   #
   setupObservers: ->
-    console.log @form
     @observable.on @event, (event) =>
       event.preventDefault() if @event is 'submit'
       # jQuery('#table_spinner').show()
       params = @form.serialize()
-      console.log params
       jQuery.ajax @action,
         type: @method
         dataType: 'script'
