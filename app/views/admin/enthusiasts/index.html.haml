@@ -2,7 +2,7 @@
 
 .search_form
   = form_tag [:admin, :enthusiasts], method: :get, id: 'search_form' do
-    = text_field_tag :search, '', value: params[:search], id: 'search_input', placeholder: "Search", type: "search", autofocus: true, autocomplete: false, autosave: "admin_search", results: "5"
+    = text_field_tag :search, '', value: params[:search], id: 'search_input', placeholder: "Search", type: "search", autofocus: true, autocomplete: 'off', autosave: "admin_search", results: "5"
 %br
 
 #enthusiasts_table_wrap= render 'enthusiasts'
