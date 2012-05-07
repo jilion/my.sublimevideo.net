@@ -51,7 +51,7 @@ jQuery(document).ready ->
     tagInput.on 'keyup', (event) ->
       unless _.include([17, 37, 38, 39, 40, 91], event.which)
         word = jQuery.trim(_.last(form.find('input[type=text]').first().attr('value').split(',')))
-        if /\S{2,}/.test(word)
+        if /\S+/.test(word)
           jQuery('#table_spinner').show()
           jQuery.ajax "/#{urlPrefix}/autocomplete_tag_list",
             type: 'get'
