@@ -1,4 +1,4 @@
-module SiteUsage::Api
+module SiteUsageModules::Api
   extend ActiveSupport::Concern
 
   included do

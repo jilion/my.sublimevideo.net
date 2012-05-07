@@ -1,6 +1,6 @@
 class SiteUsage
   include Mongoid::Document
-  include SiteUsage::Api
+  include SiteUsageModules::Api
 
   field :site_id,         :type => Integer
   field :day,             :type => DateTime
