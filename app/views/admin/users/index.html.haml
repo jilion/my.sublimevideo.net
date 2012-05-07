@@ -3,7 +3,7 @@
 
 .search_form
   = form_tag [:admin, :users], method: :get, id: 'search_form' do
-    = text_field_tag :search, '', value: params[:search], id: 'search_input', placeholder: "Search", type: "search", autofocus: true, autosave: "admin_search", results: "5"
+    = text_field_tag :search, '', value: params[:search], id: 'search_input', placeholder: "Search", type: "search", autofocus: true, autocomplete: 'off', autosave: "admin_search", results: "5"
 .spacer
 
 - cache 'users_filter_links', expires_in: 15.minutes do

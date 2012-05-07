@@ -1,9 +1,13 @@
 #= require underscore
 #= require highcharts/highcharts
+#
+#= require_self
+#= require_tree ./admin/form
 
 jQuery.fn.exists = -> @length > 0
 
 window.AdminSublimeVideo =
+  Form: {}
   Models: {}
   Collections: {}
   Helpers: {}
@@ -22,43 +26,15 @@ window.AdminSublimeVideo.Helpers.addCommasToInteger = (nStr) ->
   x1 + x2
 
 jQuery(document).ready ->
-
-  ## Live Search form
   if (searchInput = jQuery('#search_input')).exists()
-    form = searchInput.parent('form')
-    url  = form.attr('action')
-
-    form.on 'submit', (event) ->
-      event.preventDefault()
-      jQuery('#table_spinner').show()
-      params = form.serialize()
-      jQuery.ajax url,
-        type: form.attr('method') || 'post'
-        dataType: 'script'
-        data: params
-        complete: (jqXHR, textStatus) ->
-          jQuery('#table_spinner').hide()
-          if history && history.pushState?
-            history.replaceState null, document.title, "#{url}?#{params}"
-
-      false
+    new AdminSublimeVideo.Form.Ajax(form: searchInput.parent('form'))
 
   ## Range form
   if (rangeInput = jQuery('#range_input')).exists()
-    form = rangeInput.parent('form')
-    url  = form.attr('action')
+    new AdminSublimeVideo.Form.Ajax
+      form: rangeInput.parent('form')
+      observable: rangeInput
+      event: 'mouseup'
 
     rangeInput.on 'change', (event) ->
       jQuery('label[for=with_min_billable_video_views]').text(AdminSublimeVideo.Helpers.addCommasToInteger(rangeInput.val()))
-
-    rangeInput.on 'mouseup', (event) ->
-      jQuery('#table_spinner').show()
-      params = form.serialize()
-      jQuery.ajax url,
-        type: form.attr('method') || 'post'
-        dataType: 'script'
-        data: params
-        complete: (jqXHR, textStatus) ->
-          jQuery('#table_spinner').hide()
-          if history && history.pushState?
-            history.replaceState null, document.title, "#{url}?#{params}"
