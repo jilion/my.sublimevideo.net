@@ -9,6 +9,10 @@ module ApplicationHelper
     date ? l(date, format: options[:format]) : "-"
   end
 
+  def display_integer(number, options = { significant: false, precision: 2, delimiter: "'" })
+    number_with_delimiter(number, options)
+  end
+
   def display_percentage(fraction, options={})
     number_to_percentage(fraction * 100.0, precision: options[:precision] || 2, strip_insignificant_zeros: true)
   end
