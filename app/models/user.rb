@@ -40,6 +40,7 @@ class User < ActiveRecord::Base
 
   # Invoices
   has_many :invoices, through: :sites
+  has_one :goodbye_feedback
 
   def last_invoice
     @last_invoice ||= invoices.last
@@ -104,8 +105,8 @@ class User < ActiveRecord::Base
     before_transition on: :unsuspend, do: :unsuspend_sites
     after_transition  on: :unsuspend, do: :send_account_unsuspended_email
 
-    before_transition on: :archive, do: [:set_archived_at, :invalidate_tokens, :newsletter_unsubscribe]
-    after_transition  on: :archive, do: [:archive_sites, :send_account_archived_email]
+    before_transition on: :archive, do: [:set_archived_at, :invalidate_tokens, :archive_sites]
+    after_transition  on: :archive, do: [:newsletter_unsubscribe, :send_account_archived_email]
   end
 
   # =================

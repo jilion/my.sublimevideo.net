@@ -55,6 +55,11 @@ FactoryGirl.define do
     password         "123456"
   end
 
+  factory :goodbye_feedback do
+    user
+    reason 'support'
+  end
+
   # ===============
   # = Site models =
   # ===============

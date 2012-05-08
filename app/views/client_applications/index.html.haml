@@ -17,7 +17,7 @@
             = hidden_field_tag 'token', authorization.token
             = submit_tag "Revoke!"
 
-%h2 Your applications
+%h3 Your applications
 
 - if @applications.empty?
   %p

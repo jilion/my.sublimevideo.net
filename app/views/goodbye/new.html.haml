@@ -1,0 +1,42 @@
+= title_and_content_header("Cancel my account")
+
+%p.bigger= "Before you leave us, we'd like to gather some feedback from you in order to improve our service in future."
+
+.content_left.more_info
+  = form_for @goodbye_feedback, url: '/goodbye', html: { method: 'post', class: 'main_form section' } do |f|
+    .entry.select
+      = f.label :reason, "Please specify the reason why you're leaving:"
+      = f.select :reason, GoodbyeFeedback::REASONS.map { |r| [t("goodbye_feedback.reason.#{r}"), r]}, required: true, prompt: true
+
+    .entry
+      .comment
+        = f.label :comment, "Can you expand on your reason for cancelling?"
+        = f.text_area :comment, class: "text"
+      .spacer
+
+    .break
+    .entry
+      .name
+        = f.label :next_player, "If you're switching to another video player or solution, could you let us know which one?"
+        = f.text_field :next_player, class: "text"
+      .spacer
+
+    .break
+    %p Please enter your current password to confirm:
+    .entry.password
+      = label_tag 'user[current_password]', 'Please enter your current password to confirm', class: "icon"
+      = password_field_tag 'user[current_password]', '', placeholder: 'Current password', class: "text", required: true
+      - if @user.errors[:current_password].present?
+        .inline_errors
+          %span Please enter your current passowrd to confirm the cancellation
+
+    #delete_account
+      %p= "Please understand that:"
+      %ul
+        %li= raw "All your #{link_to "sites", sites_path, class: "hl"} will be cancelled."
+        %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
+        %li= "We do not offer refunds."
+
+    .entry.continue
+      = f.submit "Cancel my account", id: 'user_submit', class: "submit blue_button"
+  .spacer

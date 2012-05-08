@@ -1,0 +1,9 @@
+en:
+  goodbye_feedback:
+    reason:
+      feature: 'Lack of feature(s) (please specify which one below)'
+      config:  'Configuration problems'
+      integ:   'Integration problems'
+      price:   'Price'
+      support: 'Support could not resolve my problem'
+      other:   'Other (please specify below)'
