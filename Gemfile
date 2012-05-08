@@ -94,6 +94,7 @@ group :assets do
   gem 'uglifier'
   gem 'haml_coffee_assets', '~> 0.8.2'
   gem 'execjs'
+  gem 'chosen-rails', github: 'jilion/chosen-rails'
 end
 
 group :production do

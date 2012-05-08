@@ -1,3 +1,5 @@
+#= require ./plan_chooser
+#
 # Plan update manager for new sites [/sites/new]
 #
 class MySublimeVideo.UI.NewSitePlanChooser extends MySublimeVideo.UI.PlanChooser

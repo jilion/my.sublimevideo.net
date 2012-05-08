@@ -31,6 +31,7 @@ class Admin::SitesController < Admin::AdminController
   # GET /sites/:id/edit
   def edit
     @site = Site.includes(:user).find_by_token(params[:id])
+    @tags = Site.tag_counts
 
     respond_with(@site)
   end
@@ -38,11 +39,13 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id
   def update
     @site = Site.find_by_token(params[:id])
-    @site.player_mode = params[:site][:player_mode] if params[:site][:player_mode]
-    @site.tag_list    = params[:site][:tag_list] if params[:site][:tag_list]
-    @site.save!
+    @site.update_attributes!(params[:site], without_protection: true)
 
-    respond_with(@site)
+    respond_with(@site, notice: 'Site was successfully updated.') do |format|
+      format.js   { render 'admin/shared/flash_update' }
+      format.html { redirect_to [:edit, :admin, @site] }
+    end
+    
   end
 
   # PUT /sites/:id/sponsor

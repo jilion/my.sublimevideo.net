@@ -31,6 +31,7 @@ class Admin::UsersController < Admin::AdminController
   # GET /users/:id/edit
   def edit
     @user = User.includes(:enthusiast).find(params[:id])
+    @tags = User.tag_counts
 
     respond_with(@user)
   end
@@ -38,11 +39,12 @@ class Admin::UsersController < Admin::AdminController
   # PUT /users/:id
   def update
     @user = User.find(params[:id])
-    @user.tag_list = params[:user][:tag_list] if params[:user][:tag_list]
-    @user.vip      = params[:user][:vip] if params[:user][:vip]
-    @user.save!
+    @user.update_attributes!(params[:user], without_protection: true)
 
-    respond_with(@user, location: [:edit, :admin, @user], notice: 'User was successfully updated.')
+    respond_with(@user, notice: 'User was successfully updated.') do |format|
+      format.js   { render 'admin/shared/flash_update' }
+      format.html { redirect_to [:edit, :admin, @user] }
+    end
   end
 
   # GET /users/:id/become
