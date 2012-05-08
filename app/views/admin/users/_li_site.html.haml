@@ -1,4 +1,4 @@
 %li
   = site.hostname? ? link_to(site.hostname, "http://#{site.hostname}") : "##{site.token}"
-  = raw "[#{render 'admin/sites/plan', site: site}]"
+  = raw "[#{render('admin/sites/plan', site: site).strip}]"
   = raw "(#{link_to "details", [:edit, :admin, site]})"
