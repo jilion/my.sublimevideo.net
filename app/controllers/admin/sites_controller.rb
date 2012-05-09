@@ -39,7 +39,7 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id
   def update
     @site = Site.find_by_token(params[:id])
-    @site.update_attributes!(params[:site], without_protection: true)
+    @site.update_attributes(params[:site], without_protection: true)
 
     respond_with(@site, notice: 'Site was successfully updated.') do |format|
       format.js   { render 'admin/shared/flash_update' }

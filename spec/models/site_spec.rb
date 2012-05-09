@@ -1265,6 +1265,7 @@ end
 #  last_30_days_invalid_video_views          :integer         default(0)
 #  last_30_days_embed_video_views            :integer         default(0)
 #  last_30_days_billable_video_views_array   :text
+#  last_30_days_video_tags                   :integer         default(0)
 #
 # Indexes
 #
