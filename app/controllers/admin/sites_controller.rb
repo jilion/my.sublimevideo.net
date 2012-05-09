@@ -56,14 +56,6 @@ class Admin::SitesController < Admin::AdminController
     respond_with(@site)
   end
 
-  def autocomplete_tag_list
-    @word = params[:word]
-    match = "%#{@word}%"
-    @tags = Site.tag_counts_on(:tags).where { lower(:name) =~ lower(match) }.order(:name).limit(10)
-
-    render '/admin/shared/autocomplete_tag_list'
-  end
-
   private
 
   def set_default_scopes

@@ -66,9 +66,6 @@ MySublimeVideo::Application.routes.draw do
       end
 
       resources :sites, only: [:index, :show, :edit, :update] do
-        collection do
-          get :autocomplete_tag_list
-        end
         member do
           put :sponsor
         end
@@ -77,9 +74,6 @@ MySublimeVideo::Application.routes.draw do
       resources :referrers, only: [:index]
 
       resources :users, only: [:index, :show, :edit, :update] do
-        collection do
-          get :autocomplete_tag_list
-        end
         member do
           get :become
           get :new_support_request

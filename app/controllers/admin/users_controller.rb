@@ -62,14 +62,6 @@ class Admin::UsersController < Admin::AdminController
     redirect_to ZendeskConfig.base_url + "/tickets/new?requester_id=#{@user.zendesk_id}"
   end
 
-  def autocomplete_tag_list
-    @word = params[:word]
-    match = "%#{@word}%"
-    @tags = User.tag_counts_on(:tags).where { lower(:name) =~ lower(match) }.order(:name).limit(10)
-
-    render '/admin/shared/autocomplete_tag_list'
-  end
-
   private
 
   def set_default_scopes
