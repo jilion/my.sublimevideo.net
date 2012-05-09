@@ -239,8 +239,8 @@ class User < ActiveRecord::Base
     deal_activations.active.order(:activated_at.desc).first.try(:deal)
   end
 
-  def tickets
-    @tickets ||= (zendesk_id? ? ZendeskWrapper.search(requester: zendesk_id) : [])
+  def support_requests
+    @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(requester: zendesk_id) : [])
   end
 
   def create_zendesk_user

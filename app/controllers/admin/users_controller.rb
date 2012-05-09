@@ -54,8 +54,8 @@ class Admin::UsersController < Admin::AdminController
     redirect_to root_url(subdomain: 'my')
   end
 
-  # POST /users/:id/new_ticket
-  def new_ticket
+  # GET /users/:id/new_support_request
+  def new_support_request
     @user = User.find(params[:id])
     @user.create_zendesk_user
 

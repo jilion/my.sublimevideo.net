@@ -1,0 +1,12 @@
+%h3= "Tickets (#{user.support_requests.count})"
+
+%p= link_to('New ticket', new_support_request_admin_user_path(user), onclick: "window.open(this); return false")
+
+%ul
+  - user.support_requests.reverse_each do |support_request|
+    %li
+      = link_to("##{support_request.nice_id} #{support_request.subject.humanize}", ZendeskConfig.base_url + "/tickets/#{support_request.nice_id}", onclick: "window.open(this); return false")
+      - if support_request.solved_at
+      = "(solved in #{display_integer(support_request.resolution_time/24)} days)"
+      - else
+        = "(opened #{time_ago_in_words(support_request.created_at)} ago)"

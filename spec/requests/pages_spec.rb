@@ -75,15 +75,15 @@ feature "Help page" do
     describe "new" do
       scenario "has access to the form" do
         page.should have_content 'use the form below'
-        page.should have_selector 'form.new_ticket'
+        page.should have_selector 'form.new_support_request'
       end
 
-      scenario "submit a valid ticket" do
+      scenario "submit a valid support request" do
         fill_in "Subject", with: "SUBJECT"
         fill_in "Message", with: "DESCRIPTION"
         expect { click_button "Send" }.to change(Delayed::Job, :count).by(1)
 
-        page.should have_content I18n.t('flash.tickets.create.notice')
+        page.should have_content I18n.t('flash.support_requests.create.notice')
 
         CampaignMonitor.stub(:subscriber)
         VoxcastCDN.stub(:purge)
@@ -94,24 +94,24 @@ feature "Help page" do
         @current_user.reload.zendesk_id.should be_present
       end
 
-      scenario "submit a ticket with an invalid subject" do
+      scenario "submit a support request with an invalid subject" do
         fill_in "Subject", with: ""
         fill_in "Message", with: "DESCRIPTION"
         expect { click_button "Send" }.to_not change(Delayed::Job, :count)
 
         current_url.should eq "http://my.sublimevideo.dev/help"
         page.should have_content "Subject can't be blank"
-        page.should have_no_content I18n.t('flash.tickets.create.notice')
+        page.should have_no_content I18n.t('flash.support_requests.create.notice')
       end
 
-      scenario "submit a ticket with an invalid message" do
+      scenario "submit a support request with an invalid message" do
         fill_in "Subject", with: "SUBJECT"
         fill_in "Message", with: ""
         expect { click_button "Send" }.to_not change(Delayed::Job, :count)
 
         current_url.should eq "http://my.sublimevideo.dev/help"
         page.should have_content "Message can't be blank"
-        page.should have_no_content I18n.t('flash.tickets.create.notice')
+        page.should have_no_content I18n.t('flash.support_requests.create.notice')
       end
     end
   end

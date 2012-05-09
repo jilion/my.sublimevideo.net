@@ -82,7 +82,7 @@ MySublimeVideo::Application.routes.draw do
         end
         member do
           get :become
-          post :new_ticket
+          get :new_support_request
         end
       end
       resources :enthusiasts, only: [:index, :show]
@@ -196,7 +196,7 @@ MySublimeVideo::Application.routes.draw do
 
     resources :deals, only: [:show], path: 'd'
 
-    resource :ticket, only: [:create], path: 'help'
+    resource :support_request, only: [:create], path: 'help'
     %w[support feedback].each { |action| get action, to: redirect('/help') }
 
     resource :video_code, only: [], path: 'video-code-generator' do

@@ -5,10 +5,10 @@
       = "As a paid customer, you can use the form below to submit your question and we'll personally get back to you as quickly as we can."
       = raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
 
-      = form_for @ticket, url: [:ticket] do |f|
+      = form_for @support_request, url: [:support_request] do |f|
         .entry.select.site_token
           = f.label :site_token, "", class: "icon"
-          = f.select :site_token, ticket_site_token_options
+          = f.select :site_token, support_request_site_token_options
           %small= "(if applicable)"
 
         .entry.ticket_subject

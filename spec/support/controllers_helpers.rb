@@ -77,16 +77,8 @@ module Spec
         @mock_delayed_job ||= mock_model(Delayed::Job, stubs)
       end
 
-      def mock_ticket(stubs = {})
-        @mock_ticket ||= mock_model(Ticket, stubs).as_null_object
-      end
-
       def mock_plan(stubs = {})
         @mock_plan ||= mock_model(Plan, stubs)
-      end
-
-      def mock_invoice(stubs = {})
-        @mock_invoice ||= mock_model(Invoice, stubs)
       end
 
       def mock_transaction(stubs = {})
