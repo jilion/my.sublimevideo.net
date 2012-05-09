@@ -33,7 +33,7 @@ gem 'devise_invitable',      '~> 1.0.0'
 gem 'oauth',                 '~> 0.4.5'
 gem 'oauth-plugin',          '~> 0.4.0.pre7'
 gem 'acts_as_api',           '~> 0.3.10'
-# gem 'rack-throttle',         git: 'git://github.com/rymai/rack-throttle.git', require: 'rack/throttle'
+# gem 'rack-throttle',         github: 'rymai/rack-throttle', require: 'rack/throttle'
 
 # Internals
 gem 'delayed_job',           github: 'collectiveidea/delayed_job', branch: 'v2.1'
@@ -129,7 +129,8 @@ end
 group :test do
   gem 'timecop'
   gem 'ffaker'
-  gem 'spork', '~> 0.9.0'
+  # gem 'spork', '~> 0.9.0'
+  gem 'spork', github: 'sporkrb/spork'
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'show_me_the_cookies'
@@ -143,7 +144,7 @@ group :test do
 end
 
 group :tools do
-  gem 'annotate', github: 'ctran/annotate_models'
+  # gem 'annotate', github: 'ctran/annotate_models'
   gem 'wirble'
   gem 'heroku'
   gem 'foreman'
@@ -157,7 +158,7 @@ group :tools do
   # end
 
   gem 'listen', github: 'guard/listen'
-  gem 'guard', github: 'guard/guard', branch: 'listen'
+  # gem 'guard', github: 'guard/guard', branch: 'listen'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-spork'
