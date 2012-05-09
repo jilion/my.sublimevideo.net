@@ -1,5 +1,5 @@
 jQuery('#sites_table_wrap').html "<%= j(render 'sites') %>"
 
-SublimeVideo.UI.prepareSortAndStickyLinks()
+SublimeVideo.UI.prepareRemoteLinks()
 MySublimeVideo.UI.prepareEmbedCodePopups()
 MySublimeVideo.UI.prepareSitesStatus()
