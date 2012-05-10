@@ -49,6 +49,6 @@
 .range_form
   With more than
   %strong= label_tag 'with_min_billable_video_views', display_integer(params[:with_min_billable_video_views] || 0), style: 'display:inline'
-  video plays.
+  video plays in the last 30 days.
   = form_tag [:admin, :sites], method: :get, id: 'range_form' do
     = range_field_tag :with_min_billable_video_views, params[:with_min_billable_video_views].to_i, in: 0..500_000, step: 500, id: 'range_input', style: 'width:300px'
