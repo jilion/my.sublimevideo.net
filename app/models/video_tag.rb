@@ -58,7 +58,7 @@ class VideoTag
 
   def self.last_30_days_updated_count(site_token)
     from = 30.days.ago.midnight.to_i
-    to   = 1.day.ago.midnight.to_i
+    to   = 1.day.ago.end_of_day.to_i
 
     where(st: site_token, updated_at: { "$gte" => from, "$lte" => to }).count
   end
