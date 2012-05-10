@@ -1,18 +1,14 @@
 <p>Your <%= @site.plan.name.titleize %> plan's <strong><%= BusinessModel.days_for_trial %>-day free</strong> trial for <%= @site.hostname %> has started.</p>
 
 <% if @user.cc? %>
-
-<p>You'll see your first bill of <%= display_amount(@site.plan.price(@site)) %><%= " (excl. VAT)" if @user.vat? %> on <%= l(@site.trial_end.tomorrow, format: :named_date) %>, when the trial is over. You can <%= link_to("downgrade", edit_site_plan_url(@site)) %> to the Free plan at any time before the end of the trial and we won't charge you a thing.</p>
+<p>You'll see your first bill of <%= display_amount(@site.plan.price(@site)) %><%= " (excl. VAT)" if @user.vat? %> on <%= l(@site.trial_end.tomorrow, format: :named_date) %>, when the trial is over. You can <%= link_to("downgrade", edit_site_plan_url(@site)) %> to our Free plan at any time before the end of the trial and we won't charge you a thing.</p>
 
 <p>Thank you for choosing SublimeVideo!</p>
-
 <% else %>
-
 <p>In order to continue enjoying all of your <%= @site.plan.name.titleize %> plan's features without any interruptions after the trial period ends, you'll need to <%= link_to('provide valid credit card details', edit_billing_url) %> before <%= l(@site.trial_end.tomorrow, format: :named_date) %> via the <%= link_to('Update billing information', edit_billing_url) %> page.</p>
 
 <p>We'll send you another reminder about this when your <%= BusinessModel.days_for_trial %>-day free trial is almost over.<br />
 If you have any questions, please reply to this email.</p>
 
 <p>Thank you for evaluating SublimeVideo!</p>
-
 <% end %>
