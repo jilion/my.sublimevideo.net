@@ -26,7 +26,7 @@ class VideoTag
   # = Instance Methods =
   # ====================
 
-  def update_meta_data_and_always_updated_at(meta_data)
+  def update_meta_data(meta_data)
     %w[uo n no p cs z].each do |key|
       self.send("#{key}=", meta_data[key]) if meta_data[key].present?
     end
@@ -34,7 +34,7 @@ class VideoTag
     self.s = read_attribute('s').merge(meta_data['s']) if meta_data['s'].present?
 
     changed = changed?
-    self.updated_at = Time.now.utc unless changed?
+    self.updated_at = Time.now.utc # force updated_at update
     self.save
     changed
   end
