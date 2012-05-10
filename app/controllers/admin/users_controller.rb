@@ -1,34 +1,24 @@
 class Admin::UsersController < Admin::AdminController
   respond_to :html, :js
 
+  before_filter :set_default_scopes, only: [:index]
   before_filter { |controller| require_role?('marcom') if %w[update].include?(action_name) }
 
   # filter
-  has_scope :free, type: :boolean
-  has_scope :paying, type: :boolean
-  has_scope :with_state do |controller, scope, value|
-    scope.with_state(value.to_sym)
-  end
-  has_scope :with_balance, :vip, type: :boolean
+  has_scope :tagged_with, :sites_tagged_with, :with_state
+  has_scope :free, :paying, :with_balance, :vip, type: :boolean
+
   # sort
-  has_scope :by_name_or_email
-  # has_scope :by_sites_last_30_days_billable_video_views
-  has_scope :by_last_invoiced_amount
-  has_scope :by_total_invoiced_amount
-  has_scope :by_date
+  has_scope :by_name_or_email, :by_last_invoiced_amount, :by_total_invoiced_amount, :by_date
+
   # search
   has_scope :search
 
   # GET /users
   def index
-    params[:with_state] = 'active' unless params.keys.any? { |k| %w[free with_state search with_balance by_sites_last_30_days_billable_video_views].include?(k) }
-    params[:by_date] = 'desc' unless params[:by_date]
-    # @users = if params.key?(:by_sites_last_30_days_billable_video_views)
-    #   User
-    # else
-    @users = User.includes(:sites, :invoices).select("users.*")
-    # end
-    @users = apply_scopes(@users)
+    @users = apply_scopes(User.includes(:sites, :invoices))
+    @user_tags = User.tag_counts
+    @site_tags = Site.tag_counts
 
     respond_with(@users, per_page: 50)
   end
@@ -41,8 +31,20 @@ class Admin::UsersController < Admin::AdminController
   # GET /users/:id/edit
   def edit
     @user = User.includes(:enthusiast).find(params[:id])
+    @tags = User.tag_counts
 
     respond_with(@user)
+  end
+
+  # PUT /users/:id
+  def update
+    @user = User.find(params[:id])
+    @user.update_attributes(params[:user], without_protection: true)
+
+    respond_with(@user, notice: 'User was successfully updated.') do |format|
+      format.js   { render 'admin/shared/flash_update' }
+      format.html { redirect_to [:edit, :admin, @user] }
+    end
   end
 
   # GET /users/:id/become
@@ -52,13 +54,19 @@ class Admin::UsersController < Admin::AdminController
     redirect_to root_url(subdomain: 'my')
   end
 
-  # PUT /users/:id
-  def update
+  # GET /users/:id/new_support_request
+  def new_support_request
     @user = User.find(params[:id])
-    @user.vip = params[:user][:vip]
-    @user.save!
+    @user.create_zendesk_user
 
-    respond_with(@user, location: admin_user_path(@user))
+    redirect_to ZendeskConfig.base_url + "/tickets/new?requester_id=#{@user.zendesk_id}"
+  end
+
+  private
+
+  def set_default_scopes
+    params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
+    params[:by_date]    = 'desc' unless params.keys.any? { |k| k =~ /^by_\w+$/ }
   end
 
 end

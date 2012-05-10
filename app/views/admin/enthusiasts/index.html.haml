@@ -1,14 +1,8 @@
-- title("Beta requesters")
-= content_header(admin_enthusiasts_page_title(@enthusiasts), id: 'enthusiasts_title')
-
--#%p= render 'filter_links'
-
--#%br
+= title_and_content_header(admin_enthusiasts_page_title(@enthusiasts))
 
 .search_form
   = form_tag [:admin, :enthusiasts], method: :get, id: 'search_form' do
-    = text_field_tag :search, '', value: params[:search], id: 'search_input', placeholder: "Search", type: "search", autofocus: true, autosave: "admin_search", results: "5"
+    = text_field_tag :search, '', value: params[:search], id: 'search_input', placeholder: "Search", type: "search", autofocus: true, autocomplete: :off, autosave: "admin_search", results: "5"
 %br
 
-#enthusiasts_table_wrap
-  = render 'enthusiasts'
+#enthusiasts_table_wrap= render 'enthusiasts'

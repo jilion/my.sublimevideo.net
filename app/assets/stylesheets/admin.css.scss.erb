@@ -1,3 +1,6 @@
+/*
+ *= require chosen
+*/
 @import "css3";
 
 * {
@@ -222,6 +225,8 @@ ul.no_bullet {
   padding:0;
 }
 
+#main .left, #main .left td {text-align:left}
+
 #main table {
   width:100%;
   border-collapse:collapse;
@@ -240,8 +245,6 @@ ul.no_bullet {
   background:-moz-linear-gradient(top, #eee, #ccc);
 }
 
-#main table th.left {text-align:left}
-
 #main table td {
   padding:15px 5px;
   text-align:center;
@@ -251,8 +254,6 @@ ul.no_bullet {
   background:url(<%= asset_data_uri 'admin/recurring_icon.png' %>) no-repeat 8px 50%;
   padding-left:35px;
 }
-
-#main table td.left {text-align:left}
 
 #main table th a.sort:after {content:" ▾";}
 #main table th a.sort.up:after {content:" ▴";}
@@ -448,7 +449,6 @@ table#countries_table td {
   font-weight:400;
   text-transform:uppercase;
   color:#fff;
-/*  text-align:center;*/
   letter-spacing:1px;
   padding:10px 10px 8px;
   border-bottom:1px solid #222;
@@ -794,6 +794,16 @@ table#countries_table td {
 #invoice_popup li:last-child {
   border-bottom:none;
   @include box-shadow(none);
+}
+
+.filters a.active {
+  padding:2px;
+  color:#fff;
+  text-shadow:#000 0 -1px 0;
+  background:#444;
+  background:-webkit-gradient(linear,left top,left bottom,from(#555),to(#333));
+  background:-moz-linear-gradient(top, #555, #333);
+  border-radius:5px;
 }
 
 .ui-icon { width: 16px; height: 16px; background-image: url(<%= asset_data_uri "admin/ui-icons_222222_256x240.png" %>); }

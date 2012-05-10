@@ -1,0 +1,35 @@
+%h3 Video plays
+
+%p
+  Last 30 days main video plays:
+  = display_integer(site.last_30_days_main_video_views)
+
+%p
+  Last 30 days extra video plays:
+  = display_integer(site.last_30_days_extra_video_views)
+
+%p
+  Last 30 days dev video plays:
+  = display_integer(site.last_30_days_dev_video_views)
+
+%p
+  Last 30 days invalid video plays:
+  = display_integer(site.last_30_days_invalid_video_views)
+
+%p
+  Last 30 days embed video plays:
+  = display_integer(site.last_30_days_embed_video_views)
+
+= "---------------------------------------------------------"
+
+%p
+  Sum of last 30 days billable video plays:
+  = content_tag(:strong, display_integer(site.last_30_days_billable_video_views))
+
+%p
+  Average/day of last 30 days billable video plays:
+  = content_tag(:strong, display_integer(site.last_30_days_billable_video_views / 30))
+
+%p
+  All time video plays:
+  = content_tag(:strong, display_integer(Stat::Site::Day.views_sum(token: site.token)))

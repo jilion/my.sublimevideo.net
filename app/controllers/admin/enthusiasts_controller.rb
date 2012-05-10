@@ -1,19 +1,8 @@
 class Admin::EnthusiastsController < Admin::AdminController
   respond_to :js, :html
 
-  has_scope :by_date
-  has_scope :by_email
-  has_scope :by_starred
-  has_scope :by_confirmed
-  has_scope :by_interested_in_beta
-  has_scope :by_invited
-  has_scope :with_tag
-  has_scope :confirmed, type: :boolean
-  has_scope :not_confirmed, type: :boolean
-  has_scope :interested_in_beta, type: :boolean
-  has_scope :starred, type: :boolean
-  has_scope :invited, type: :boolean
-  has_scope :not_invited, type: :boolean
+  has_scope :by_date, :by_email, :by_starred, :by_confirmed, :by_interested_in_beta, :by_invited
+  has_scope :confirmed, :not_confirmed, :interested_in_beta, :starred, :invited, :not_invited, type: :boolean
   has_scope :search
 
   # GET /enthusiasts

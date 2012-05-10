@@ -7,7 +7,7 @@ stats_timeline_new = StatTimeline::SiteDayStat.new(token: user.sites.not_archive
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "Video views for #{user.name_or_email}" })
+  g.option(title: { text: "Video plays for #{user.name_or_email}" })
   g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
   g.option(legend: legend(width: 600))
   g.option(xAxis: x_axis(start_at: range_start_date, end_at: range_end_date))

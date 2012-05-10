@@ -1,0 +1,7 @@
+%h3 Tags
+
+- if has_role?('marcom')
+  = form_for [:admin, object] do |f|
+    = f.collection_select :tag_list, @tags, :name, :name, {}, class: 'tag_list', multiple: true, style: "width:600px;"
+- else
+  = object.tag_list.join(', ')  

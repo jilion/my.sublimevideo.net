@@ -13,6 +13,8 @@ class User < ActiveRecord::Base
   # Mail template
   liquid_methods :email, :name, :plan_title
 
+  acts_as_taggable
+
   attr_accessor :terms_and_conditions, :use, :current_password, :remote_ip
   attr_accessible :email, :remember_me, :password, :current_password, :hidden_notice_ids,
                   :name, :postal_code, :country, :confirmation_comment,
@@ -178,6 +180,23 @@ class User < ActiveRecord::Base
     Vat.for_country?(billing_country)
   end
 
+  def billing_address_complete?
+    [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
+  end
+
+  def more_info_incomplete?
+    [billing_postal_code, billing_country, company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
+    [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
+  end
+
+  def email_support?
+    %w[email vip_email].include?(support)
+  end
+
+  def billable?
+    sites.active.paid_plan.any?
+  end
+
   def name_or_email
     name.presence || email
   end
@@ -194,13 +213,8 @@ class User < ActiveRecord::Base
     ).to_s
   end
 
-  def billing_address_complete?
-    [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
-  end
-
-  def more_info_incomplete?
-    [billing_postal_code, billing_country, company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
-    [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
+  def archivable?
+    sites.not_archived.all?(&:archivable?)
   end
 
   def support
@@ -225,16 +239,15 @@ class User < ActiveRecord::Base
     deal_activations.active.order(:activated_at.desc).first.try(:deal)
   end
 
-  def email_support?
-    %w[email vip_email].include?(support)
+  def support_requests
+    @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(requester: zendesk_id) : [])
   end
 
-  def billable?
-    sites.active.paid_plan.any?
-  end
+  def create_zendesk_user
+    return if zendesk_id?
 
-  def archivable?
-    sites.not_archived.all?(&:archivable?)
+    zendesk_user = ZendeskWrapper.create_user(self)
+    self.update_attribute(:zendesk_id, zendesk_user.id)
   end
 
   def skip_pwd
@@ -358,8 +371,8 @@ private
   # after_update
   def zendesk_update
     if zendesk_id? && (email_changed? || (name_changed? && name?))
-      body = email_changed? ? "<email>#{email}</email>" : "<name>#{name}</name>"
-      Zendesk.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user>#{body}<is-verified>true</is-verified></user>")
+      updated_field = email_changed? ? { email: email } : { name: name }
+      ZendeskWrapper.delay(priority: 25).update_user(zendesk_id, updated_field)
     end
   end
 
@@ -403,7 +416,7 @@ end
 #  cc_updated_at                   :datetime
 #  created_at                      :datetime
 #  updated_at                      :datetime
-#  invitation_token                :string(20)
+#  invitation_token                :string(60)
 #  invitation_sent_at              :datetime
 #  zendesk_id                      :integer
 #  enthusiast_id                   :integer
@@ -443,6 +456,11 @@ end
 #  reset_password_sent_at          :datetime
 #  confirmation_comment            :text
 #  unconfirmed_email               :string(255)
+#  invitation_accepted_at          :datetime
+#  invitation_limit                :integer
+#  invited_by_id                   :integer
+#  invited_by_type                 :string(255)
+#  vip                             :boolean         default(FALSE)
 #
 # Indexes
 #
