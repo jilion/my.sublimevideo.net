@@ -291,6 +291,17 @@ form p.note {
   background:url(<%= asset_data_uri "note_icon.png" %>) no-repeat;
 }
 
+form label.text {
+  font-size:15px;
+  font-weight:600;
+  padding:10px 0 5px;
+  display:block;
+}
+
+form .entry.select select {
+  max-width:432px;
+}
+
 .dark_box {
   line-height:22px;
   margin:5px 0 12px;
@@ -463,10 +474,10 @@ form .entry.float select {
 }
 
 #delete_account ul {
-  padding:0 20px;
+  padding:0 20px 10px;
 }
 
-#delete_account input.delete, input.delete_site {
+#delete_account input.delete, input.delete_site, #delete_account a.delete {
   border:none;
   background:url(<%= asset_data_uri "delete_account_cross.png" %>) no-repeat;
   cursor:pointer;
