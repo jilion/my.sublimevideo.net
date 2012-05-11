@@ -27,10 +27,10 @@ class UserMailer < Mailer
       subject: I18n.t('mailer.user_mailer.account_archived')
     )
   end
-  
+
   def welcome(user)
     @user = user
-    
+
     mail(
       to: to(@user),
       subject: I18n.t('mailer.user_mailer.welcome')

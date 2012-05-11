@@ -503,12 +503,24 @@ describe User do
       end
     end
 
+    describe "after_create :delay_send_welcome_email" do
+      subject { create(:user) }
+
+      it "delays send_welcome_email" do
+        expect { subject }.to change(Delayed::Job.where { handler =~ "%Class%send_welcome_email%" }, :count).by(1)
+      end
+
+      it "send the welcome email" do
+        subject
+        expect { @worker.work_off }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+    end
+
     describe "after_create :delay_set_newsletter" do
-      subject { create(:user, email: "newsletter_sign_up@jilion.com") }
+      subject { create(:user) }
 
       it "delays set_newsletter" do
-        expect { subject }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.name.should eq "Class#set_newsletter"
+        expect { subject }.to change(Delayed::Job.where { handler =~ "%Class%set_newsletter%" }, :count).by(1)
       end
 
       context "user is subscribed in CM" do
@@ -542,8 +554,7 @@ describe User do
           subject { create(:user, newsletter: "1", email: "newsletter_sign_up@jilion.com") }
 
           it "registers user's email on Campaign Monitor" do
-            expect { subject }.to change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should eq "Class#subscribe"
+            expect { subject }.to change(Delayed::Job.where { handler =~ "%Class%subscribe%" }, :count).by(1)
           end
         end
 
@@ -551,8 +562,7 @@ describe User do
           subject { create(:user, newsletter: false, email: "no_newsletter_sign_up@jilion.com") }
 
           it "doesn't register user's email on Campaign Monitor" do
-            expect { subject }.to change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should_not eq "Class#subscribe"
+            expect { subject }.to_not change(Delayed::Job.where { handler =~ "%Class%subscribe%" }, :count)
           end
         end
       end
