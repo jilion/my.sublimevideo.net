@@ -5,5 +5,8 @@
 -#    num_pages:     total number of pages
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
+- link_options = params.merge(page: current_page, format: nil)
+- html_options = { remote: true, class: 'remote', onclick: 'jQuery(document.body).animate({ scrollTop: 0 })' }
+
 %span.page.last
-  = link_to_unless current_page.last?, current_page, params.merge(:page => current_page, :format => nil), :remote => true, :onclick => "SublimeVideo.UI.Table.showSpinner()"
+  = link_to_unless current_page.last?, current_page, link_options, html_options

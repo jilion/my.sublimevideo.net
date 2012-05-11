@@ -1,36 +1,36 @@
 module Admin::SitesHelper
 
   def admin_sites_page_title(sites)
-    pluralized_sites = pluralize(sites.total_count, 'site')
-    state = if params[:with_wildcard]
-      " with wildcard"
-    elsif params[:with_path]
-      " with path"
-    elsif params[:with_extra_hostnames]
-      " with extra hostnames"
-    elsif params[:with_ssl]
-      " with ssl"
+    state = if params[:in_plan]
+      " in #{"trial of " if params[:in_trial]}the #{params[:in_plan].titleize} plan"
+    elsif params[:paid_plan]
+      params[:in_trial] ? " in trial" : " paying"
+    elsif params[:with_state]
+      " #{params[:with_state]}"
     elsif params[:overusage_notified]
       " with peak insurance"
     elsif params[:with_next_cycle_plan]
       " will downgrade"
+    elsif params[:with_extra_hostnames]
+      " with extra hostnames"
+    elsif params[:with_wildcard]
+      " with wildcard"
+    elsif params[:with_path]
+      " with path"
     elsif params[:badged]
       " with#{'out' if params[:badged] == 'false'} badge"
+    elsif params[:tagged_with]
+      " tagged with '#{params[:tagged_with]}'"
+    elsif params[:with_min_billable_video_views]
+      " with more than #{display_integer(params[:with_min_billable_video_views])} video plays"
+    elsif params[:search].present?
+      " matching '#{params[:search]}'"
     elsif params[:user_id]
       user = User.find(params[:user_id])
       " for #{user.name_or_email}" if user
-    elsif params[:search].present?
-      " matching '#{params[:search]}'"
-    elsif params[:paid_plan]
-      params[:in_trial] ? " trial" : " paying"
-    elsif params[:in_plan]
-      " in #{"trial of " if params[:in_trial]}the #{params[:in_plan].titleize} plan"
-    elsif params[:with_state]
-      " #{params[:with_state]}"
-    else
-      " active"
     end
-    "#{pluralized_sites.titleize}#{state}"
+
+    "#{formatted_pluralize(sites.total_count, 'site').titleize}#{state}"
   end
 
   def links_to_hostnames(site)

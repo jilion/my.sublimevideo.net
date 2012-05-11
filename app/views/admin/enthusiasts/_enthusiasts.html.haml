@@ -1,8 +1,9 @@
+.pagination_wrap
+  = page_entries_info @enthusiasts
+  = paginate @enthusiasts, theme: 'admin'
+
 %table.main#enthusiasts
   %tr
-    -#%th= link_to_sort(:starred, reverse: true)
-    -#%th= link_to_sort(:confirmed, reverse: true)
-    -#%th= link_to_sort(:interested_in_beta, label: "Beta", reverse: true)
     %th= link_to_sort(:email)
     %th= "User"
     %th= "Sites"

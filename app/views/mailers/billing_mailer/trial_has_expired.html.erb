@@ -1,9 +1,9 @@
 <p>Your <%= @trial_plan.name.titleize %> plan's <%= BusinessModel.days_for_trial %>-day free trial for <%= @site.hostname %> <strong>has now expired</strong>.</p>
 
-<p>Because you didn't provide valid credit card details, your <%= @trial_plan.name.titleize %> plan has been <strong>downgraded</strong> to our Free plan. That means some features such as Real-Time Stats, Unbranded Player, Email Support and SSL are no longer active.</p>
+<p>Your <%= @trial_plan.name.titleize %> plan has been downgraded to our Free plan because you didn't provide valid credit card details. That means some features such as Real-Time Stats, an unbranded player, email support and SSL serving are no longer active.</p>
 
-<p>You can <strong>upgrade</strong> to our Plus or Premium plans at any time via the following link:</p>
+<p>You can <strong><%= link_to('upgrade', edit_site_plan_url(@site)) %></strong> to one of our Plus or Premium plans at any time via the <%= link_to('Update plan', edit_site_plan_url(@site)) %> page.</p>
 
-<p><%= link_to(edit_site_plan_url(@site), edit_site_plan_url(@site)) %></p>
+<p>If you have any questions, please reply to this email.</p>
 
-<p>Thanks,</p>
+<p>Thanks.</p>

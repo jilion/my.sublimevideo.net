@@ -293,7 +293,6 @@ describe Site do
           subject { build(:site, plan_id: @free_plan.id, badged: false) }
           its(:badged) { should be_true }
           it { should be_valid }
-          it { should be_valid }
         end
       end
       context "with a paid plan" do
@@ -316,7 +315,7 @@ describe Site do
     %w[hostname extra_hostnames dev_hostnames].each do |attr|
       describe "#{attr}=" do
         it "calls Hostname.clean" do
-          site = build(:new_site)
+          site = build_stubbed(:new_site)
           Hostname.should_receive(:clean).with("foo.com")
 
           site.send("#{attr}=", "foo.com")
@@ -326,31 +325,31 @@ describe Site do
 
     describe "#hostname_or_token" do
       context "site with a hostname" do
-        subject { create(:site, hostname: 'rymai.me') }
+        subject { build_stubbed(:site, hostname: 'rymai.me') }
 
-        specify { subject.hostname_or_token.should eql 'rymai.me' }
+        specify { subject.hostname_or_token.should eq 'rymai.me' }
       end
 
       context "site without a hostname" do
-        subject { create(:site, plan_id: @free_plan.id, hostname: '') }
+        subject { build_stubbed(:site, plan_id: @free_plan.id, hostname: '') }
 
-        specify { subject.hostname_or_token.should eql "##{subject.token}" }
+        specify { subject.hostname_or_token.should eq "##{subject.token}" }
       end
     end
 
     describe "path=" do
       describe "sets to '' if nil is given" do
-        subject { create(:site, path: nil) }
+        subject { build_stubbed(:site, path: nil) }
 
         its(:path) { should eq '' }
       end
       describe "removes first and last /" do
-        subject { create(:site, path: '/users/thibaud/') }
+        subject { build_stubbed(:site, path: '/users/thibaud/') }
 
         its(:path) { should eq 'users/thibaud' }
       end
       describe "downcases path" do
-        subject { create(:site, path: '/Users/thibaud') }
+        subject { build_stubbed(:site, path: '/Users/thibaud') }
 
         its(:path) { should eq 'users/thibaud' }
       end
@@ -1265,6 +1264,7 @@ end
 #  last_30_days_invalid_video_views          :integer         default(0)
 #  last_30_days_embed_video_views            :integer         default(0)
 #  last_30_days_billable_video_views_array   :text
+#  last_30_days_video_tags                   :integer         default(0)
 #
 # Indexes
 #

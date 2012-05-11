@@ -2,7 +2,6 @@
 #= require highcharts/highcharts
 #
 #= require_self
-#= require ./ui/plan_chooser
 #= require_tree ./ui
 
 jQuery.fn.exists = -> @length > 0

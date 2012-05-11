@@ -7,17 +7,17 @@ describe ApplicationHelper do
   describe "#display_bool" do
     it { helper.display_bool(true).should eq "✓" }
     it { helper.display_bool(1).should eq "✓" }
-    it { helper.display_bool(0).should eq "-" }
+    it { helper.display_bool(0).should eq "–" }
 
-    it { helper.display_bool(false).should eq "-" }
-    it { helper.display_bool(nil).should eq "-" }
-    it { helper.display_bool("").should eq "-" }
+    it { helper.display_bool(false).should eq "–" }
+    it { helper.display_bool(nil).should eq "–" }
+    it { helper.display_bool('').should eq "–" }
   end
 
   describe "#display_time" do
     let(:date) { Time.now.utc }
     it { helper.display_time(date).should eq I18n.l(date, format: :minutes_y) }
-    it { helper.display_time(nil).should eq "-" }
+    it { helper.display_time(nil).should eq "–" }
   end
 
   describe "#display_percentage" do

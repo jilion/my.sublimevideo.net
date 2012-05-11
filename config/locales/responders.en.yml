@@ -3,7 +3,7 @@ en:
     billings:
       update:
         notice: "Your billing information were successfully updated."
-    tickets:
+    support_requests:
       create:
         notice: "Thanks for your message, we will get back to you as quickly as we can."
     sites:

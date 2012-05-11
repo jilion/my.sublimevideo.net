@@ -30,21 +30,18 @@ describe Admin::SitesController do
       end
 
       it "responds with redirect to successful PUT :update" do
-        mock_site.stub(:player_mode=) { true }
-        mock_site.stub(:save) { true }
+        mock_site.stub(:update_attributes) { true }
 
         put :update, id: 'abc123', site: {}
-        response.should redirect_to(admin_sites_url)
+        response.should redirect_to(edit_admin_site_url(mock_site))
       end
 
       it "responds with success to failing PUT :update" do
-        mock_site.stub(:player_mode=) { true }
-        mock_site.stub(:save) { false }
-        mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
+        mock_site.stub(:update_attributes) { false }
 
         put :update, id: 'abc123', site: {}
-        response.should be_success
-        response.should render_template(:edit)
+        response.should_not be_success
+        response.should redirect_to(edit_admin_site_url(mock_site))
       end
     end
 

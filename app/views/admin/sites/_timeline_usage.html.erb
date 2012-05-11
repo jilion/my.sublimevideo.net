@@ -6,7 +6,7 @@ stats_timeline_new = StatTimeline::SiteDayStat.new(token: site.token, from: grap
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "Video views for #{truncated_hostname(site)}" })
+  g.option(title: { text: "Video plays for #{truncated_hostname(site)}" })
   g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
   g.option(legend: legend)
   g.option(xAxis: x_axis(start_at: range_start_date, end_at: range_end_date))

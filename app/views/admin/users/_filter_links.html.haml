@@ -1,15 +1,25 @@
-%ul
+%ul.filters
   %li
-    = link_to "#{content_tag(:strong, User.active.count)} Active".html_safe, admin_users_path(with_state: 'active')
+    = link_to "#{content_tag(:strong, display_integer(User.active.size))} Active".html_safe, admin_users_path(with_state: 'active'), remote: true, class: 'remote'
     %ul{ style: 'padding:5px 0 5px 18px;' }
-      %li= link_to "#{content_tag(:strong, User.free.count)} Free".html_safe, admin_users_path(free: true)
-      %li= link_to "#{content_tag(:strong, User.paying.count)} Paying".html_safe, admin_users_path(paying: true)
-  %li= link_to "#{content_tag(:strong, User.with_state(:suspended).count)} Suspended".html_safe, admin_users_path(with_state: 'suspended')
-  %li= link_to "#{content_tag(:strong, User.with_state(:archived).count)} Archived".html_safe, admin_users_path(with_state: 'archived')
+      %li= link_to "#{content_tag(:strong, display_integer(User.free.size))} Free".html_safe, admin_users_path(free: true), remote: true, class: 'remote'
+      %li= link_to "#{content_tag(:strong, display_integer(User.paying.size))} Paying".html_safe, admin_users_path(paying: true), remote: true, class: 'remote'
+  %li= link_to "#{content_tag(:strong, display_integer(User.with_state(:suspended).size))} Suspended".html_safe, admin_users_path(with_state: 'suspended'), remote: true, class: 'remote'
+  %li= link_to "#{content_tag(:strong, display_integer(User.with_state(:archived).size))} Archived".html_safe, admin_users_path(with_state: 'archived'), remote: true, class: 'remote'
 
 = "-----------------------"
 
-%p
+%p.filters
   = link_to "#{content_tag(:strong, User.vip.count)} VIP".html_safe, admin_users_path(vip: true)
   |
   = link_to "#{content_tag(:strong, User.with_balance.count)} With a balance".html_safe, admin_users_path(with_balance: true)
+
+= "-----------------------------------------------"
+
+%p.filters
+  Tagged with:
+  = display_tags_list(@user_tags)
+
+%p.filters
+  Having sites tagged with:
+  = display_tags_list(@site_tags, :sites_tagged_with)

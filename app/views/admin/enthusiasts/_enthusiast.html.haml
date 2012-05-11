@@ -1,11 +1,4 @@
 %tr{ class: cycle("", "alt") }
-  -#%td{ id: "star_enthusiast_#{enthusiast.id}"}= render "star_form", enthusiast: enthusiast
-  -#%td
-  -#  %small
-  -#    = display_bool(enthusiast.confirmed?)
-  -#    = raw "&sup2;" if !enthusiast.confirmed? && enthusiast.confirmation_resent?
-  -#%td
-  -#  %small= display_bool(enthusiast.interested_in_beta?)
   %td
     %small= link_to(enthusiast.email, admin_enthusiast_path(enthusiast))
   %td

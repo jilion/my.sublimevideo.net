@@ -19,18 +19,9 @@ Spork.prefork do
   require 'rspec/rails'
   require 'capybara/rspec'
   require 'capybara/rails'
-  require 'vcr'
-
-  VCR.config do |config|
-    config.stub_with :webmock, :typhoeus
-    config.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
-    config.ignore_localhost         = true
-    config.default_cassette_options = { :record => :new_episodes }
-  end
+  require_relative 'support/vcr'
 
   RSpec.configure do |config|
-    config.extend VCR::RSpec::Macros
-
     # config.include Shoulda::ActionController::Matchers
     config.include Devise::TestHelpers, type: :controller
 

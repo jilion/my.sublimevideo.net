@@ -1,0 +1,17 @@
+%h3 More information
+
+%p
+  = "Personal use: " + display_bool(user.use_personal)
+  = "| Use for clients: " + display_bool(user.use_clients)
+  = "| Use for company: " + display_bool(user.use_company)
+
+%strong= "Confirmation comment:"
+%p
+  - if user.confirmation_comment?
+    = h user.confirmation_comment
+  - else
+    = "No comment."
+
+- if user.use_company
+  %strong= "Company:"
+  %p= "#{user.company_job_title || "Unknown job"} at #{user.company_name || "Unknown company"} (#{link_to(user.company_url, url_with_protocol(user.company_url))}); #{pluralize(user.company_employees, 'employee')}; #{pluralize(number_with_delimiter(user.company_videos_served), 'video')} served".html_safe

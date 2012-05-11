@@ -39,7 +39,7 @@
       - else
         = '-'
 
-  - if params[:with_balance] == "true"
+  - if params[:with_balance]
     %td
       %small= display_amount(user.balance)
 

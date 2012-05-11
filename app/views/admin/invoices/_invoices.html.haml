@@ -1,3 +1,7 @@
+.pagination_wrap
+  = page_entries_info @invoices
+  = paginate @invoices, theme: 'admin'
+
 %table.main#invoices
   %tr
     %th= link_to_sort :id, label: "ID", default_way: 'desc', default: true

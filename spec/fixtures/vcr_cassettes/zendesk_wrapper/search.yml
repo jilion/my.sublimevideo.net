@@ -1,0 +1,107 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/api/v1/search?order_by=created_at&page=1&query=requester:17650353&sort=asc
+    body: 
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.0.15
+      date:
+      - Tue, 01 May 2012 18:00:06 GMT
+      content-type:
+      - application/json; charset=utf-8
+      connection:
+      - keep-alive
+      status:
+      - 200 OK
+      etag:
+      - ! '"aacba66986f57a2bd3b08826da8eb78b"'
+      x-runtime:
+      - '659'
+      content-length:
+      - '2204'
+      set-cookie:
+      - _zendesk_apps_session=eyJ1c2VyX3JvbGUiOjIsImFjY291bnRfaWQiOjQzMzE5LCJ1c2VyX2lkIjox%0ANTMwODI2NywidXNlcl9sb2NhbGUiOiJlbi1VUy14LTEiLCJ1c2VyX25hbWUi%0AOiJTdWJsaW1lVmlkZW8ifQ%3D%3D%0A;
+        path=/; HttpOnly
+      - _zendesk_session=BAh7CiIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6D3Nlc3Npb25faWQiJWQxN2RhZGNlNGUzMjdjYzNhOTM1ZWE5MDhiMTQ1MTYyIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIUaGZzbTNpMG1jNGM0ZGZx--5cc8f04bd2aa67b3ed5937ca2fa570f8e8cf9115;
+        path=/; HttpOnly
+      - _zendesk_shared_session=eyJ3YXJkZW4udXNlci5kZWZhdWx0LmtleSI6MTUzMDgyNjcsImF1dGhlbnRp%0AY2F0ZWRfYXQiOjEzMzU4OTUyMDYsImFjY291bnQiOjQzMzE5LCJhdXRoX3Zp%0AYSI6IkJhc2ljU3RyYXRlZ3kifQ%3D%3D%0A--44e7ecef248fa6a7b17296d960704199df20318e;
+        path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      cache-control:
+      - private, max-age=0, must-revalidate
+      x-zendesk-api-version:
+      - v1
+    body: ! '[{"nice_id":1237,"initially_assigned_at":"2011/05/25 16:20:15 +0200","comments":[{"attachments":[],"created_at":"2011/05/25
+      16:20:15 +0200","via_id":0,"value":"Dear Marcel,\r\n\r\nThere has been a problem
+      processing the payment of your last invoice for cervelat.tv. Your credit card
+      could not be charged.\r\n\r\nPlease use the following link to see the site with
+      payment errors and retry the payment manually:\r\nhttps://my.sublimevideo.net/sites\r\n\r\nIf
+      this situation is not resolved within the next 15 days, we will have to suspend
+      your account until your invoices are paid.\r\n\r\nIf you have any questions,
+      please don''t hesitate to let us know by replying directly to this email.\r\n\r\nThank
+      you and best regards,\r\n\r\nThe SublimeVideo Team\r\n","type":"Comment","is_public":true,"author_id":15308267}],"ticket_field_entries":[],"linkings":[],"permissions":{},"entry_id":null,"created_at":"2011/05/25
+      16:20:15 +0200","score":0,"resolution_time":721,"priority_id":3,"current_tags":"late-payment","assignee_id":15308267,"updated_at":"2011/07/01
+      16:59:20 +0200","channel":null,"ticket_type_id":0,"status_updated_at":"2011/07/01
+      16:59:20 +0200","solved_at":"2011/06/24 16:56:45 +0200","original_recipient_address":null,"external_id":null,"assigned_at":"2011/05/25
+      16:20:15 +0200","via_id":0,"subject":"Payment problem","recipient":null,"group_id":88332,"submitter_id":15308267,"base_score":0,"problem_id":null,"latest_recipients":null,"due_date":null,"current_collaborators":null,"status_id":4,"description":"Dear
+      Marcel,\r\n\r\nThere has been a problem processing the payment of your last
+      invoice for cervelat.tv. Your credit card could not be charged.\r\n\r\nPlease
+      use the following link to see the site with payment errors and retry the payment
+      manually:\r\nhttps://my.sublimevideo.net/sites\r\n\r\nIf this situation is not
+      resolved within the next 15 days, we will have to suspend your account until
+      your invoices are paid.\r\n\r\nIf you have any questions, please don''t hesitate
+      to let us know by replying directly to this email.\r\n\r\nThank you and best
+      regards,\r\n\r\nThe SublimeVideo Team\r\n","organization_id":null,"has_incidents":false,"updated_by_type_id":0,"requester_id":17650353}]'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/api/v1/search?order_by=created_at&page=2&query=requester:17650353&sort=asc
+    body: 
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.0.15
+      date:
+      - Tue, 01 May 2012 18:00:07 GMT
+      content-type:
+      - application/json; charset=utf-8
+      connection:
+      - keep-alive
+      status:
+      - 200 OK
+      etag:
+      - ! '"d751713988987e9331980363e24189ce"'
+      x-runtime:
+      - '50'
+      content-length:
+      - '2'
+      set-cookie:
+      - _zendesk_apps_session=eyJ1c2VyX3JvbGUiOjIsImFjY291bnRfaWQiOjQzMzE5LCJ1c2VyX2lkIjox%0ANTMwODI2NywidXNlcl9uYW1lIjoiU3VibGltZVZpZGVvIiwidXNlcl9sb2Nh%0AbGUiOiJlbi1VUy14LTEifQ%3D%3D%0A;
+        path=/; HttpOnly
+      - _zendesk_session=BAh7CiIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6D3Nlc3Npb25faWQiJTc2MjJkM2E4Y2YzMDBiMDk2NThkOGMxMzlkNmFjYTQwIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIUY25zbTNybzU3eGVhZzNx--b4ff592be2b6a70ba7a3485ab23d9ad4bf15d74e;
+        path=/; HttpOnly
+      - _zendesk_shared_session=eyJ3YXJkZW4udXNlci5kZWZhdWx0LmtleSI6MTUzMDgyNjcsImF1dGhlbnRp%0AY2F0ZWRfYXQiOjEzMzU4OTUyMDcsImFjY291bnQiOjQzMzE5LCJhdXRoX3Zp%0AYSI6IkJhc2ljU3RyYXRlZ3kifQ%3D%3D%0A--db6828c166364c08dd2304937ea3138a343dfea6;
+        path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      cache-control:
+      - private, max-age=0, must-revalidate
+      x-zendesk-api-version:
+      - v1
+    body: ! '[]'
+    http_version: '1.1'

@@ -45,11 +45,10 @@ class BillingMailer < Mailer
 
   def yearly_plan_will_be_renewed(site)
     extract_site_and_user(site)
-    @formatted_renewal_date = I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :named_date)
 
     mail(
       to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.yearly_plan_will_be_renewed", hostname: @site.hostname, date: @formatted_renewal_date)
+      subject: I18n.t("mailer.billing_mailer.yearly_plan_will_be_renewed", hostname: @site.hostname)
     )
   end
 

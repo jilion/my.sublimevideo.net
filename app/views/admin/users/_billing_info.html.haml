@@ -1,0 +1,35 @@
+%h3 Billing information
+
+%br
+%h4 Billing address
+
+%p= simple_format(user.billing_address)
+
+%br
+%h4= "Credit card ##{user.cc_alias}"
+%p
+  - if user.cc?
+    = "#{content_tag(:strong, user.cc_type.try(:titleize))} ending in #{content_tag(:strong, user.cc_last_digits)}, ".html_safe
+    = "expires on #{content_tag(:strong, display_time(user.cc_expire_on, format: :month_fullyear))}".html_safe
+    = "| Last updated at #{display_time(user.cc_updated_at)}"
+  - else
+    = "No credit card on file."
+
+- if user.pending_cc?
+  %h4= "Pending credit card ##{user.cc_alias}"
+  %p
+    = "#{content_tag(:strong, user.pending_cc_type.try(:titleize))} ending in #{content_tag(:strong, user.pending_cc_last_digits)}, ".html_safe
+    = "expires on #{content_tag(:strong, display_time(user.pending_cc_expire_on, format: :month_fullyear))}".html_safe
+  %p= "Last updated at #{display_time(user.pending_cc_updated_at)}"
+
+- if user.last_failed_cc_authorize_at?
+  %p= "Last failed authorize at #{display_time(user.last_failed_cc_authorize_at)}"
+  %p= "Last failed authorize status: #{user.last_failed_cc_authorize_status}"
+  %p= "Last failed authorize error: #{user.last_failed_cc_authorize_error}"
+
+- if user.balance > 0
+  %br
+  %h4= "Balance"
+  %p
+    Current balance:
+    %strong= display_amount(user.balance)

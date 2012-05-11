@@ -1,4 +1,5 @@
 class Mailer < ActionMailer::Base
+
   default from: I18n.t("mailer.info.email_full")
 
   helper :application

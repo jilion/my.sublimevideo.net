@@ -3,7 +3,7 @@ require 'spec_helper'
 describe UserMailer do
   subject { create(:user) }
 
-  it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: FactoryGirl.create(:user)
+  it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: FactoryGirl.create(:user), content_type: %r{text/html; charset=UTF-8}
 
   describe "#account_suspended" do
     context "when reason given is :invoice_problem" do
@@ -17,7 +17,7 @@ describe UserMailer do
       end
 
       it "should set a body that contain info" do
-        @last_delivery.body.encoded.should include "Your account has been suspended."
+        @last_delivery.body.encoded.should include "Your SublimeVideo account has been suspended due to non-payment."
       end
     end
   end
@@ -33,7 +33,7 @@ describe UserMailer do
     end
 
     it "should set a body that contain info" do
-      @last_delivery.body.encoded.should include "Your account has been reactivated."
+      @last_delivery.body.encoded.should include "Your SublimeVideo account has been reactivated."
     end
   end
 
@@ -48,7 +48,7 @@ describe UserMailer do
     end
 
     it "should set a body that contain info" do
-      @last_delivery.body.encoded.should include "Your account has been deleted."
+      @last_delivery.body.encoded.should include "This is to confirm that the cancellation of your SublimeVideo account"
     end
   end
 

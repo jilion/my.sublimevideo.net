@@ -9,7 +9,7 @@ feature "Enthusiasts actions:" do
   end
 
   scenario "list enthusiasts by clicking on the menu button" do
-    click_link 'Enthusiasts'
+    click_link 'Beta requesters'
     current_url.should eq "http://admin.sublimevideo.dev/enthusiasts"
   end
 

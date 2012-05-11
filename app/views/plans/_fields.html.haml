@@ -32,7 +32,7 @@
   -# - if site.recommended_plan_name
   -#   #recommended_plan_box
   -#     %p.note
-  -#       = raw "Your usage in the last 30 days: #{content_tag :strong, number_with_delimiter(site.last_30_days_billable_usages.sum)} video views =>"
+  -#       = raw "Your usage in the last 30 days: #{content_tag :strong, number_with_delimiter(site.last_30_days_billable_usages.sum)} video plays =>"
   -#       - if site.recommended_plan_name == 'custom'
   -#         = raw "Recommended plan: <strong>Custom</strong> (please #{mail_to t('mailer.sales.email'), "contact us"})"
   -#       - else

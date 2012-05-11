@@ -6,12 +6,12 @@ stats_timeline_new = StatTimeline::SiteDayStat.new(from: graph_start_date, to: g
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "Total video views" })
+  g.option(title: { text: "Total video plays" })
   g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
   g.option(legend: legend(width: 700))
   g.option(xAxis: x_axis(start_at: range_start_date, end_at: range_end_date))
 
-  g.raw_option(y_axis("Video views"))
+  g.raw_option(y_axis("Video plays"))
   g.raw_option(tooltip(formatter: %(
     var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
     var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";

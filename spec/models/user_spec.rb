@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'spec_helper'
+require 'ostruct'
 
 describe User do
 
@@ -590,13 +591,13 @@ describe User do
       end
 
       context "user has no zendesk_id" do
-        it "doesn't delay Module#put" do
+        it "doesn't delay ZendeskWrapper.update_user" do
           subject
           expect {
             subject.update_attribute(:email, "new@jilion.com")
             subject.confirm!
           }.to_not change(Delayed::Job, :count)
-          Delayed::Job.all.any? { |dj| dj.name == 'Module#put' }.should be_false
+          Delayed::Job.all.any? { |dj| dj.name == 'Module#update_user' }.should be_false
         end
       end
 
@@ -604,12 +605,11 @@ describe User do
         before { subject.update_attribute(:zendesk_id, 59438671) }
 
         context "user updated his email" do
-          it "delays Module#put if the user has a zendesk_id and his email has changed" do
+          it "delays ZendeskWrapper.update_user if the user has a zendesk_id and his email has changed" do
             expect {
               subject.update_attribute(:email, "new@jilion.com")
               subject.confirm!
-            }.to change(Delayed::Job, :count).by(1)
-            Delayed::Job.where { handler =~ '%Module%put%' }.should have(1).item
+            }.to change(Delayed::Job.where { handler =~ '%Module%update_user%' }, :count).by(1)
           end
 
           it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
@@ -618,34 +618,33 @@ describe User do
               subject.confirm!
             }.to change(Delayed::Job, :count).by(1)
 
-            VCR.use_cassette("zendesk/update_email") do
+            VCR.use_cassette("user/zendesk_update") do
               @worker.work_off
               Delayed::Job.last.should be_nil
-              Zendesk.get("/users/59438671/user_identities.json").body.select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@jilion.com")
+              ZendeskWrapper.send(:client).users(59438671).identities.first.value.should eq 'new@jilion.com'
             end
           end
         end
 
         context "user updated his name" do
-          it "delays Module#put" do
-            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(1)
-            Delayed::Job.where { handler =~ '%Module%put%' }.should have(1).item
+          it "delays ZendeskWrapper.update_user" do
+            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job.where { handler =~ '%Module%update_user%' }, :count).by(1)
           end
 
           it "updates user's name on Zendesk" do
             CampaignMonitor.stub(:subscriber)
             expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(1)
 
-            VCR.use_cassette("zendesk/update_name") do
+            VCR.use_cassette("user/zendesk_update") do
               @worker.work_off
               Delayed::Job.last.should be_nil
-              Zendesk.get("/users/59438671.json").body['name'].should eq "Remy"
+              ZendeskWrapper.user(59438671).name.should eq 'Remy'
             end
           end
 
           context "name has changed to ''" do
             it "doesn't update user's name on Zendesk" do
-              expect { subject.update_attribute(:name, "") }.to_not change(Delayed::Job, :count)
+              expect { subject.update_attribute(:name, '') }.to_not change(Delayed::Job, :count)
             end
           end
         end
@@ -1080,6 +1079,28 @@ describe User do
       end
     end
 
+    describe '#create_zendesk_user' do
+      context 'user has a zendesk id' do
+        subject { build(:user, zendesk_id: 42) }
+
+        it 'does nothing' do
+          ZendeskWrapper.should_not_receive(:create_user)
+          subject.should_not_receive(:update_attribute)
+          subject.create_zendesk_user
+        end
+      end
+
+      context 'user has no zendesk id' do
+        subject { build(:user) }
+
+        it 'create a user in Zendesk and set the zendesk_id from it' do
+          ZendeskWrapper.should_receive(:create_user).with(subject).and_return(OpenStruct.new(id: 42))
+          subject.should_receive(:update_attribute).with(:zendesk_id, 42)
+          subject.create_zendesk_user
+        end
+      end
+    end
+
   end
 
   def accept_invitation(attributes = {})
@@ -1126,7 +1147,7 @@ end
 #  cc_updated_at                   :datetime
 #  created_at                      :datetime
 #  updated_at                      :datetime
-#  invitation_token                :string(20)
+#  invitation_token                :string(60)
 #  invitation_sent_at              :datetime
 #  zendesk_id                      :integer
 #  enthusiast_id                   :integer
@@ -1166,6 +1187,11 @@ end
 #  reset_password_sent_at          :datetime
 #  confirmation_comment            :text
 #  unconfirmed_email               :string(255)
+#  invitation_accepted_at          :datetime
+#  invitation_limit                :integer
+#  invited_by_id                   :integer
+#  invited_by_type                 :string(255)
+#  vip                             :boolean         default(FALSE)
 #
 # Indexes
 #

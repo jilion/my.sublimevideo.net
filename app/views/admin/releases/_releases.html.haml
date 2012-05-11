@@ -1,9 +1,14 @@
+.pagination_wrap
+  = page_entries_info @releases
+  = paginate @releases, theme: 'admin'
+
 %table
   %tr
     %th= "Release Date"
     %th= "Download"
     %th= "Actions"
   = render @releases
+
 .pagination_wrap
   = paginate @releases, theme: 'admin'
   = page_entries_info @releases
