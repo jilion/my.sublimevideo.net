@@ -1,0 +1,6 @@
+%p
+  %strong= "Subject: "
+  = Liquid::Template.parse(template.subject).render("user" => User.first)
+%br
+
+= raw Liquid::Template.parse(template.body).render("user" => User.first)
