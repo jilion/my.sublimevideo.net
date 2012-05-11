@@ -145,6 +145,7 @@ end
 
 group :tools do
   # gem 'annotate', github: 'ctran/annotate_models'
+  gem 'bundler', '~> 1.2.0.pre'
   gem 'wirble'
   gem 'heroku'
   gem 'foreman'
