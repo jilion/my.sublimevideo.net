@@ -52,3 +52,5 @@
   video plays in the last 30 days.
   = form_tag [:admin, :sites], method: :get, id: 'range_form' do
     = range_field_tag :with_min_billable_video_views, params[:with_min_billable_video_views].to_i, in: 0..500_000, step: 500, id: 'range_input', style: 'width:300px'
+    = hidden_field_tag :with_state, 'active'
+    = hidden_field_tag :by_last_30_days_billable_video_views, 'desc'

@@ -5,8 +5,6 @@ module Admin::SitesHelper
       " in #{"trial of " if params[:in_trial]}the #{params[:in_plan].titleize} plan"
     elsif params[:paid_plan]
       params[:in_trial] ? " in trial" : " paying"
-    elsif params[:with_state]
-      " #{params[:with_state]}"
     elsif params[:overusage_notified]
       " with peak insurance"
     elsif params[:with_next_cycle_plan]
@@ -28,6 +26,8 @@ module Admin::SitesHelper
     elsif params[:user_id]
       user = User.find(params[:user_id])
       " for #{user.name_or_email}" if user
+    elsif params[:with_state]
+      " #{params[:with_state]}"
     end
 
     "#{formatted_pluralize(sites.total_count, 'site').titleize}#{state}"
