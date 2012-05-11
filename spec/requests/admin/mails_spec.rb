@@ -60,27 +60,23 @@ end
 
 feature "Mails sending" do
 
-  background do
-    @user = create(:user)
-    sign_in_as :admin, roles: ['god']
-    @mail_template = create(:mail_template)
-  end
-
-  context "choosing 'all' criteria" do
+  context "choosing the 'Not Archived' criteria" do
     background do
-      User.stub_chain(:with_activity).and_return { [@user] }
+      @user = create(:user)
+      sign_in_as :admin, roles: ['god']
+      @mail_template = create(:mail_template)
       ActionMailer::Base.deliveries.clear
     end
 
-    scenario "should be possible to send an email from a template to a selection of users" do
+    scenario "it's possible to send an email from a template to a selection of users" do
       go 'admin', 'mails/new'
 
-      page.should have_content "Send a mail"
+      page.should have_content "Send an email"
       ActionMailer::Base.deliveries.should be_empty
 
       select @mail_template.title, from: "Template"
-      select "all", from: "Criteria"
-      click_button "Send mail"
+      select "Not Archived (1)", from: "criteria"
+      click_button "Send email"
 
       current_url.should eq "http://admin.sublimevideo.dev/mails"
 
@@ -94,7 +90,7 @@ feature "Mails sending" do
       latest_log.template_id.should eq @mail_template.id
       latest_log.admin_id.should eq @current_admin.id
       latest_log.snapshot.should eq @mail_template.snapshotize
-      latest_log.criteria.should eq "all"
+      latest_log.criteria.should eq "not_archived"
     end
   end
 

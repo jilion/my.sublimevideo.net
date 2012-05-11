@@ -1,6 +1,6 @@
 class SiteUsage
   include Mongoid::Document
-  include SiteUsage::Api
+  include SiteUsageModules::Api
 
   field :site_id,         :type => Integer
   field :day,             :type => DateTime
@@ -37,8 +37,8 @@ class SiteUsage
   # ==========
 
   scope :after,   lambda { |date| where(:day => { "$gte" => date }) }
-  scope :before,  lambda { |date| where(:day => { "$lt" => date }) }
-  scope :between, lambda { |start_date, end_date| where(:day => { "$gte" => start_date, "$lt" => end_date }) }
+  scope :before,  lambda { |date| where(:day => { "$lte" => date }) }
+  scope :between, lambda { |start_date, end_date| where(:day => { "$gte" => start_date, "$lte" => end_date }) }
 
   # =================
   # = Class Methods =

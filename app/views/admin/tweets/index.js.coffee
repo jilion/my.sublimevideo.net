@@ -4,4 +4,4 @@ jQuery('#users_title').html "<%= pluralize(@tweets.count, 'Tweet') %>"
 jQuery(document.body).scrollTo()
 jQuery(document.body).animate({ scrollTop: 0 })
 
-SublimeVideo.UI.prepareSortAndStickyLinks()
+SublimeVideo.UI.prepareRemoteLinks()

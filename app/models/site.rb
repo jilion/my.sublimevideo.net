@@ -15,7 +15,7 @@ class Site < ActiveRecord::Base
     :cdn_up_to_date, :license, :loader, :last_30_days_main_video_views,
     :last_30_days_extra_video_views, :last_30_days_dev_video_views,
     :last_30_days_invalid_video_views, :last_30_days_embed_video_views,
-    :last_30_days_billable_video_views_array
+    :last_30_days_billable_video_views_array, :last_30_days_video_tags
   ]
 
   acts_as_taggable
@@ -383,6 +383,7 @@ end
 #  last_30_days_invalid_video_views          :integer         default(0)
 #  last_30_days_embed_video_views            :integer         default(0)
 #  last_30_days_billable_video_views_array   :text
+#  last_30_days_video_tags                   :integer         default(0)
 #
 # Indexes
 #

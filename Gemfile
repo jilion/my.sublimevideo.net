@@ -2,8 +2,10 @@
 source 'https://rubygems.org'
 source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com account
 
+ruby '1.9.3'
+
 gem 'rails',                 '3.2.3'
-gem 'sublimevideo_layout',   git: 'git@github.com:jilion/sublimevideo_layout.git', branch: 'crm_improvements'
+gem 'sublimevideo_layout' # hosted on gemfury
 
 # Javascript Assets
 gem 'prototype-rails',       '~> 3.2.1'
@@ -19,7 +21,7 @@ gem 'mongo',                 '~> 1.6.0'
 gem 'mongoid',               '~> 2.4.7'
 
 # Views
-gem 'haml',                  '~> 3.1.3'
+gem 'haml',                  '3.1.4' # issue in 3.1.5 https://github.com/haml/haml/issues/531
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
@@ -33,7 +35,7 @@ gem 'devise_invitable',      '~> 1.0.0'
 gem 'oauth',                 '~> 0.4.5'
 gem 'oauth-plugin',          '~> 0.4.0.pre7'
 gem 'acts_as_api',           '~> 0.3.10'
-# gem 'rack-throttle',         git: 'git://github.com/rymai/rack-throttle.git', require: 'rack/throttle'
+# gem 'rack-throttle',         github: 'rymai/rack-throttle', require: 'rack/throttle'
 
 # Internals
 gem 'delayed_job',           github: 'collectiveidea/delayed_job', branch: 'v2.1'
@@ -94,6 +96,7 @@ group :assets do
   gem 'uglifier'
   gem 'haml_coffee_assets', '~> 0.8.2'
   gem 'execjs'
+  gem 'chosen-rails', github: 'jilion/chosen-rails'
 end
 
 group :production do
@@ -128,7 +131,8 @@ end
 group :test do
   gem 'timecop'
   gem 'ffaker'
-  gem 'spork', '~> 0.9.0'
+  # gem 'spork', '~> 0.9.0'
+  gem 'spork', github: 'sporkrb/spork'
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'show_me_the_cookies'
@@ -142,7 +146,8 @@ group :test do
 end
 
 group :tools do
-  gem 'annotate', github: 'ctran/annotate_models'
+  # gem 'annotate', github: 'ctran/annotate_models'
+  gem 'bundler', '~> 1.2.0.pre'
   gem 'wirble'
   gem 'heroku'
   gem 'foreman'
@@ -156,7 +161,7 @@ group :tools do
   # end
 
   gem 'listen', github: 'guard/listen'
-  gem 'guard', github: 'guard/guard', branch: 'listen'
+  # gem 'guard', github: 'guard/guard', branch: 'listen'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-spork'

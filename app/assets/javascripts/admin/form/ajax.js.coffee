@@ -1,9 +1,11 @@
-# The EmbedCode handle the popup opening and SSL switch for the embed code popup.
+# AdminSublimeVideo.Form.Ajax handles the ajax submission of a form with the possibility
+# to select the element to which attach an event listener, and also to define which event
+# to listen to
 #
 class AdminSublimeVideo.Form.Ajax
-  # Construct a new Ajax object.
+  # Construct a new AdminSublimeVideo.Form.Ajax object.
   #
-  # @param [jQuery Element] form the form element to which apply the Ajax behavior
+  # @param [jQuery Element] form the form element to which apply the ajax behavior
   # @param [Object] options the options that defines the ajax object
   # @option options [jQuery Element] form the form element
   # @option options [jQuery Element] observable the element to observe (default to form)

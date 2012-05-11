@@ -1147,7 +1147,7 @@ end
 #  cc_updated_at                   :datetime
 #  created_at                      :datetime
 #  updated_at                      :datetime
-#  invitation_token                :string(20)
+#  invitation_token                :string(60)
 #  invitation_sent_at              :datetime
 #  zendesk_id                      :integer
 #  enthusiast_id                   :integer
@@ -1187,6 +1187,11 @@ end
 #  reset_password_sent_at          :datetime
 #  confirmation_comment            :text
 #  unconfirmed_email               :string(255)
+#  invitation_accepted_at          :datetime
+#  invitation_limit                :integer
+#  invited_by_id                   :integer
+#  invited_by_type                 :string(255)
+#  vip                             :boolean         default(FALSE)
 #
 # Indexes
 #

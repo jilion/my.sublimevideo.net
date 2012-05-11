@@ -31,7 +31,7 @@ end
 
 group :backend do
 
-  guard :spork, wait: 70 do
+  guard :spork, quiet: true, wait: 70 do
     watch('config/boot.rb')
     watch('config/application.rb')
     watch('config/environment.rb')

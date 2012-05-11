@@ -1,10 +1,15 @@
 #= require underscore
 #= require highcharts/highcharts
+#= require chosen-jquery
 #
 #= require_self
+#= require_tree ./ui
 #= require_tree ./admin/form
 
 jQuery.fn.exists = -> @length > 0
+
+window.MySublimeVideo =
+  UI: {}
 
 window.AdminSublimeVideo =
   Form: {}
@@ -30,23 +35,21 @@ jQuery(document).ready ->
     new AdminSublimeVideo.Form.Ajax(form: searchInput.parent('form'))
 
   ## Tags autocomplete
-  if (tagInput = jQuery('.tags')).exists()
-    form      = tagInput.parent('form')
-    urlPrefix = if /user/.test(form.attr('action')) then 'users' else 'sites'
-
-    tagInput.on 'keyup', (event) ->
-      unless _.include([17, 37, 38, 39, 40, 91], event.which)
-        word = jQuery.trim(_.last(form.find('input[type=text]').first().attr('value').split(',')))
-        if /\S+/.test(word)
-          jQuery('#table_spinner').show()
-          jQuery.ajax "/#{urlPrefix}/autocomplete_tag_list",
-            type: 'get'
-            dataType: 'script'
-            data: "word=#{word}"
-            complete: (jqXHR, textStatus) ->
-              jQuery('#table_spinner').hide()
-
-      false
+  if (tagList = jQuery('.tag_list')).exists()
+    form = tagList.parent('form')
+    ajaxFormUpdate = (term = null, chosen = null) ->
+      if term? and chosen?
+        chosen.append_option
+          value: term
+          text: term
+      jQuery.ajax form.attr('action'),
+        type: 'put'
+        dataType: 'script'
+        data: form.serialize()
+    tagList.chosen
+      create_option: ((term) -> ajaxFormUpdate(term, this))
+      no_results_text: "No tags matched"
+    .change (event) -> ajaxFormUpdate()
 
   ## Filters
   if (filters = jQuery('.filters')).exists()

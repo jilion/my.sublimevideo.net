@@ -66,9 +66,6 @@ MySublimeVideo::Application.routes.draw do
       end
 
       resources :sites, only: [:index, :show, :edit, :update] do
-        collection do
-          get :autocomplete_tag_list
-        end
         member do
           put :sponsor
         end
@@ -77,12 +74,9 @@ MySublimeVideo::Application.routes.draw do
       resources :referrers, only: [:index]
 
       resources :users, only: [:index, :show, :edit, :update] do
-        collection do
-          get :autocomplete_tag_list
-        end
         member do
           get :become
-          post :new_ticket
+          get :new_support_request
         end
       end
       resources :enthusiasts, only: [:index, :show]
@@ -119,7 +113,7 @@ MySublimeVideo::Application.routes.draw do
       resources :delayed_jobs, only: [:index, :show, :update, :destroy], path: 'djs'
       resources :deals, only: [:index]
       resources :deal_activations, only: [:index], path: 'deals/activations'
-      resources :mails,  only: [:index, :new, :create]
+      resources :mails, only: [:index, :new, :create]
       scope 'mails' do
         resources :mail_templates, only: [:new, :create, :edit, :update], path: 'templates'
         resources :mail_logs,      only: [:show],                         path: 'logs'
@@ -198,7 +192,7 @@ MySublimeVideo::Application.routes.draw do
 
     resources :deals, only: [:show], path: 'd'
 
-    resource :ticket, only: [:create], path: 'help'
+    resource :support_request, only: [:create], path: 'help'
     %w[support feedback].each { |action| get action, to: redirect('/help') }
 
     resource :video_code, only: [], path: 'video-code-generator' do

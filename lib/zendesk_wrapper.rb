@@ -16,7 +16,7 @@ module ZendeskWrapper
     end
 
     def ticket(id)
-      client.tickets(id).fetch
+      Ticket.new(client.tickets(id).fetch)
     end
 
     def create_ticket(params)

@@ -11,21 +11,18 @@ describe Admin::UsersController do
       end
 
       it "responds with redirect to successful PUT :update" do
-        mock_user.stub(:vip=) { true }
-        mock_user.stub(:save!) { true }
+        mock_site.stub(:update_attributes) { true }
 
         put :update, id: '1', user: {}
-        response.should redirect_to(admin_user_url(mock_user))
+        response.should redirect_to(edit_admin_user_url(mock_user))
       end
 
       it "responds with success to failing PUT :update" do
-        mock_user.stub(:vip=) { true }
-        mock_user.stub(:save!) { false }
-        mock_user.should_receive(:errors).any_number_of_times.and_return(["error"])
+        mock_site.stub(:update_attributes) { false }
 
         put :update, id: '1', user: {}
-        response.should be_success
-        response.should render_template(:edit)
+        response.should_not be_success
+        response.should redirect_to(edit_admin_user_url(mock_user))
       end
     end
   end

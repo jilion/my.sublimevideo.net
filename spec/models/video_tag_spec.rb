@@ -23,16 +23,16 @@ describe VideoTag do
     end
   end
 
-  describe "#update_meta_data_and_always_updated_at" do
+  describe "#update_meta_data" do
     context "with same existing meta_data" do
       it "touch updated_at" do
         expect {
-          video_tag.update_meta_data_and_always_updated_at(meta_data)
+          video_tag.update_meta_data(meta_data)
         }.to change { video_tag.updated_at }
       end
 
       it "return false because nothing change" do
-        video_tag.update_meta_data_and_always_updated_at(meta_data).should be_false
+        video_tag.update_meta_data(meta_data).should be_false
       end
     end
 
@@ -42,12 +42,12 @@ describe VideoTag do
 
         it "touch updated_at" do
           expect {
-            video_tag.update_meta_data_and_always_updated_at(new_meta_data)
+            video_tag.update_meta_data(new_meta_data)
           }.to change { video_tag.updated_at }
         end
 
         it "return true" do
-          video_tag.update_meta_data_and_always_updated_at(new_meta_data).should be_true
+          video_tag.update_meta_data(new_meta_data).should be_true
         end
       end
     end
@@ -57,12 +57,12 @@ describe VideoTag do
 
       it "touch updated_at" do
         expect {
-          video_tag.update_meta_data_and_always_updated_at(new_meta_data)
+          video_tag.update_meta_data(new_meta_data)
         }.to change { video_tag.updated_at }
       end
 
       it "return true" do
-        video_tag.update_meta_data_and_always_updated_at(new_meta_data).should be_true
+        video_tag.update_meta_data(new_meta_data).should be_true
       end
     end
 
@@ -73,12 +73,12 @@ describe VideoTag do
 
       it "touch updated_at" do
         expect {
-          video_tag.update_meta_data_and_always_updated_at(new_meta_data)
+          video_tag.update_meta_data(new_meta_data)
         }.to change { video_tag.updated_at }
       end
 
       it "return true" do
-        video_tag.update_meta_data_and_always_updated_at(new_meta_data).should be_true
+        video_tag.update_meta_data(new_meta_data).should be_true
       end
     end
 

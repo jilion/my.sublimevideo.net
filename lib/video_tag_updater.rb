@@ -4,7 +4,7 @@ class VideoTagUpdater
     video_tags_meta_data.each do |(st, u), attrs|
       begin
         if video_tag = VideoTag.find_by_st_and_u(st, u)
-          push_needed = video_tag.update_meta_data_and_always_updated_at(attrs)
+          push_needed = video_tag.update_meta_data(attrs)
         else
           VideoTag.create(attrs.merge(st: st, u: u))
           push_needed = true

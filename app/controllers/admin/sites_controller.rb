@@ -1,7 +1,7 @@
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
 
-  before_filter { |controller| require_role?('god') if %w[update sponsor].include?(action_name) }
+  before_filter { |controller| require_role?('god') if %w[sponsor].include?(action_name) }
   before_filter :set_default_scopes, only: [:index]
 
   #filter
@@ -31,6 +31,7 @@ class Admin::SitesController < Admin::AdminController
   # GET /sites/:id/edit
   def edit
     @site = Site.includes(:user).find_by_token(params[:id])
+    @tags = Site.tag_counts
 
     respond_with(@site)
   end
@@ -38,11 +39,13 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id
   def update
     @site = Site.find_by_token(params[:id])
-    @site.player_mode = params[:site][:player_mode] if params[:site][:player_mode]
-    @site.tag_list    = params[:site][:tag_list] if params[:site][:tag_list]
-    @site.save!
+    params[:site].delete(:mode) unless has_role?('god')
+    @site.update_attributes(params[:site], without_protection: true)
 
-    respond_with(@site)
+    respond_with(@site, notice: 'Site was successfully updated.') do |format|
+      format.js   { render 'admin/shared/flash_update' }
+      format.html { redirect_to [:edit, :admin, @site] }
+    end
   end
 
   # PUT /sites/:id/sponsor
@@ -51,14 +54,6 @@ class Admin::SitesController < Admin::AdminController
     @site.sponsor!
 
     respond_with(@site)
-  end
-
-  def autocomplete_tag_list
-    @word = params[:word]
-    match = "%#{@word}%"
-    @tags = Site.tag_counts_on(:tags).where { lower(:name) =~ lower(match) }.order(:name).limit(10)
-
-    render '/admin/shared/autocomplete_tag_list'
   end
 
   private

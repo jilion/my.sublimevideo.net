@@ -240,8 +240,8 @@ class User < ActiveRecord::Base
     deal_activations.active.order(:activated_at.desc).first.try(:deal)
   end
 
-  def tickets
-    @tickets ||= (zendesk_id? ? ZendeskWrapper.search(requester: zendesk_id) : [])
+  def support_requests
+    @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(requester: zendesk_id) : [])
   end
 
   def create_zendesk_user
@@ -417,7 +417,7 @@ end
 #  cc_updated_at                   :datetime
 #  created_at                      :datetime
 #  updated_at                      :datetime
-#  invitation_token                :string(20)
+#  invitation_token                :string(60)
 #  invitation_sent_at              :datetime
 #  zendesk_id                      :integer
 #  enthusiast_id                   :integer
@@ -457,6 +457,11 @@ end
 #  reset_password_sent_at          :datetime
 #  confirmation_comment            :text
 #  unconfirmed_email               :string(255)
+#  invitation_accepted_at          :datetime
+#  invitation_limit                :integer
+#  invited_by_id                   :integer
+#  invited_by_type                 :string(255)
+#  vip                             :boolean         default(FALSE)
 #
 # Indexes
 #

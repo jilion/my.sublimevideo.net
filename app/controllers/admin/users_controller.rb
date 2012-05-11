@@ -31,6 +31,7 @@ class Admin::UsersController < Admin::AdminController
   # GET /users/:id/edit
   def edit
     @user = User.includes(:enthusiast).find(params[:id])
+    @tags = User.tag_counts
 
     respond_with(@user)
   end
@@ -38,11 +39,12 @@ class Admin::UsersController < Admin::AdminController
   # PUT /users/:id
   def update
     @user = User.find(params[:id])
-    @user.tag_list = params[:user][:tag_list] if params[:user][:tag_list]
-    @user.vip      = params[:user][:vip] if params[:user][:vip]
-    @user.save!
+    @user.update_attributes(params[:user], without_protection: true)
 
-    respond_with(@user, location: [:edit, :admin, @user], notice: 'User was successfully updated.')
+    respond_with(@user, notice: 'User was successfully updated.') do |format|
+      format.js   { render 'admin/shared/flash_update' }
+      format.html { redirect_to [:edit, :admin, @user] }
+    end
   end
 
   # GET /users/:id/become
@@ -52,20 +54,12 @@ class Admin::UsersController < Admin::AdminController
     redirect_to root_url(subdomain: 'my')
   end
 
-  # POST /users/:id/new_ticket
-  def new_ticket
+  # GET /users/:id/new_support_request
+  def new_support_request
     @user = User.find(params[:id])
     @user.create_zendesk_user
 
     redirect_to ZendeskConfig.base_url + "/tickets/new?requester_id=#{@user.zendesk_id}"
-  end
-
-  def autocomplete_tag_list
-    @word = params[:word]
-    match = "%#{@word}%"
-    @tags = User.tag_counts_on(:tags).where { lower(:name) =~ lower(match) }.order(:name).limit(10)
-
-    render '/admin/shared/autocomplete_tag_list'
   end
 
   private
