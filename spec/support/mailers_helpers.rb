@@ -37,8 +37,12 @@ module Spec
               @last_delivery.content_type.should =~ options[:content_type]
             end
 
-            it "should include the default signature" do
-              @last_delivery.body.encoded.should include I18n.t("mailer.signature")
+            it "should #{'not' if options[:no_signature]} include the default signature" do
+              if options[:no_signature]
+                @last_delivery.body.encoded.should_not include I18n.t("mailer.signature")
+              else
+                @last_delivery.body.encoded.should include I18n.t("mailer.signature")
+              end
             end
           end
         end

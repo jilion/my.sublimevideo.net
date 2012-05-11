@@ -5,9 +5,9 @@ describe BillingMailer do
   it_should_behave_like "common mailer checks", %w[trial_has_started], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:site), content_type: %r{text/html; charset=UTF-8}
   it_should_behave_like "common mailer checks", %w[trial_will_expire], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:site), content_type: %r{text/html; charset=UTF-8}
   it_should_behave_like "common mailer checks", %w[trial_has_expired], from: [I18n.t('mailer.billing.email')], params: [FactoryGirl.create(:site), FactoryGirl.create(:plan)], content_type: %r{text/html; charset=UTF-8}
-  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:user, cc_expire_on: 1.day.from_now)
-  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)])
-  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:invoice) }
+  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:user, cc_expire_on: 1.day.from_now), content_type: %r{text/html; charset=UTF-8}
+  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)]), content_type: %r{text/html; charset=UTF-8}
+  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:invoice) }, content_type: %r{text/html; charset=UTF-8}
 
   describe "specific checks" do
     before do
@@ -56,7 +56,6 @@ describe BillingMailer do
       it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
       it { @last_delivery.body.encoded.should include I18n.l(@site.trial_end, format: :named_date) }
       it { @last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
-      it { @last_delivery.body.encoded.should include "http://sublimevideo.dev/help" }
     end
 
     describe "#trial_has_expired" do
@@ -81,7 +80,7 @@ describe BillingMailer do
       it { @last_delivery.subject.should eq  I18n.t('mailer.billing_mailer.credit_card_will_expire') }
       it { @last_delivery.body.encoded.should include "Dear #{@user.name}," }
       it { @last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
-      it { @last_delivery.body.encoded.should include "If you have any questions, please email #{I18n.t("mailer.billing.email")}." }
+      it { @last_delivery.body.encoded.should include "If you have any questions, please reply to this email." }
     end
 
     describe "#transaction_succeeded" do
@@ -94,7 +93,7 @@ describe BillingMailer do
       it { @last_delivery.body.encoded.should include @transaction.user.name }
       it { @last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved." }
       it { @last_delivery.body.encoded.should include "https://my.sublimevideo.dev/invoices/#{@invoice.to_param}" }
-      it { @last_delivery.body.encoded.should include "If you have any questions, please email #{I18n.t("mailer.billing.email")}." }
+      it { @last_delivery.body.encoded.should include "If you have any questions, please reply to this email." }
     end
 
     describe "#transaction_failed" do
@@ -105,9 +104,9 @@ describe BillingMailer do
 
       it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.transaction_failed') }
       it { @last_delivery.body.encoded.should include @transaction.user.name }
-      it { @last_delivery.body.encoded.should include "Your credit card could not be charged." }
+      it { @last_delivery.body.encoded.should include "There has been a problem processing your payment and your credit card could not be charged." }
       it { @last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites" }
-      it { @last_delivery.body.encoded.should include "If you have any questions, please email #{I18n.t("mailer.billing.email")}." }
+      it { @last_delivery.body.encoded.should include "If you have any questions, please reply to this email." }
     end
 
     describe "#too_many_charging_attempts" do
@@ -120,7 +119,7 @@ describe BillingMailer do
       it { @last_delivery.body.encoded.should include "The payment for #{@invoice.site.hostname} has failed multiple times" }
       it { @last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites/#{@invoice.site.to_param}/plan/edit" }
       it { @last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
-      it { @last_delivery.body.encoded.should include "If you have any questions, please email #{I18n.t("mailer.billing.email")}." }
+      it { @last_delivery.body.encoded.should include "If you have any questions, please reply to this email." }
     end
   end
 
