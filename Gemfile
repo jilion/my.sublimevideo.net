@@ -2,6 +2,8 @@
 source 'https://rubygems.org'
 source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com account
 
+ruby '1.9.3'
+
 gem 'rails',                 '3.2.3'
 gem 'sublimevideo_layout' # hosted on gemfury
 
