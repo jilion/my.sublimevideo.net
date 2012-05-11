@@ -1,0 +1,81 @@
+%table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0", align: "center" }
+  %tr
+    %td{ width: "100%" }
+      %h2{ color: "#4e5a6c", style: "font:bold 30px Helvetica-Neue,Helvetica,Arial,sans-serif!important;padding:20px 0 0!important;margin:0!important;"}= "Welcome to SublimeVideo!"
+      %p{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:19px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:27px;padding:0;margin:0" }= "Thank you for choosing SublimeVideo - the Web's most reliable HTML5 Video Player."
+      %h3{ color: "#4e5a6c", style: "font:bold 25px Helvetica-Neue,Helvetica,Arial,sans-serif!important;padding:20px 0 5px!important;margin:0!important;"}= "What’s next?"
+      %p{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:16px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:27px!important;padding:0!important;margin:0!important" }= raw "Simply head over to the #{link_to "My Sites","", style: "color:#2e8ce3!important"} page to add and configure your site(s). You'll also find some tips on the next steps to get up and running with SublimeVideo."
+  %tr
+    %td{ width: "100%"}
+      %table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0", style: "margin-top:30px!important" }
+        %tr
+          %td{ width: "156", align: "center" }
+            = image_tag asset_url('emails/timer_icon.png')
+          %td{ width: "364" }
+            %p{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:18px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:28px!important;padding:0!important;margin:0!important" }= raw "Get started with SublimeVideo in minutes! Read our #{link_to "Quickstart guide","", style: "color:#2e8ce3!important"} to learn more."
+        %tr
+          %td{ width: "156", height: "200" }
+            = image_tag asset_url('emails/video_generator_icon.png')
+          %td{ width: "364" }
+            %p{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:18px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:28px!important;padding:0!important;margin:0!important" }
+              = "To make things even easier, you can use our"
+              = link_to "Video Code Generator","", style: "color:#2e8ce3!important"
+              = "to <video> create <video> code for your site and optimized for SublimeVideo."
+        %tr
+          %td{ width: "156", align: "center" }
+            = image_tag asset_url('emails/stats_icon.png')
+          %td{ width: "364" }
+            %p{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:18px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:28px!important;padding:0!important;margin:0!important" }= raw "Once you've added SublimeVideo to your site you'll be able to see your video traffic in real-time! Check out a #{link_to "live demo","", style: "color:#2e8ce3!important"} of SublimeVideo's Universal Real-Time Statistics to see for yourself right now."
+  %tr
+    %td{width:"100%"}
+      %table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0", bgcolor:"#fff", style: "margin-top:30px!important;background:#fff!important;border-radius:8px" }
+        %tr
+          %td{width:"100%"}
+            %h3{ color: "#4e5a6c", style: "font:bold 25px Helvetica-Neue,Helvetica,Arial,sans-serif!important;padding:20px 20px 5px!important;margin:0!important;"}= "Follow SublimeVideo"
+            %p{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:16px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:24px!important;padding:0 20px!important;margin:0!important" }= "Here are a few ways you can stay up-to-date with the latest SublimeVideo news and developments:"
+            
+        %tr
+          %td{width:"100%"}
+            %table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0", style: "margin-top:30px!important;" }
+              %tr
+                %td{width:"33%", height:140, align:"center", valign:"top"}
+                  = link_to image_tag(asset_url("emails/twitter.png")), "http://twitter.com/Jilion"
+                  %p{ style: "line-height:20px!important;padding:10px 30px 0 !important"}
+                    = link_to "http://twitter.com/Jilion" do
+                      = "Follow @Jilion on Twitter"
+                %td{width:"33%", align:"center", valign:"top"}
+                  = link_to image_tag(asset_url("emails/rss.png")), "http://blog.jilion.com"
+                  %p{ style: "line-height:20px!important;padding:10px 40px 0 !important"}
+                    = link_to "http://blog.jilion.com" do
+                      = "Read the Jilion Blog"
+                %td{width:"33%", align:"center", valign:"top"}
+                  = link_to image_tag(asset_url("emails/newsletter.png")), ""
+                  %p{ style: "line-height:20px!important;padding:16px 30px 0 !important"}
+                    = link_to "" do
+                      = "Sign Up for the Newsletter"
+  %tr
+    %td{width:"100%"}
+      %table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0", style: "margin-top:30px!important" }
+        %tr
+          %td{ width: "126", align: "center" }
+            = image_tag asset_url('emails/help_icon.png')
+          %td{ width: "394" }
+            %h3{ color: "#4e5a6c", style: "font:bold 25px Helvetica-Neue,Helvetica,Arial,sans-serif!important;padding:5px 0 0!important;margin:0!important;"}= "Need help?"
+            %p{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:15px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:27px!important;padding:0!important;margin:0!important" }= "Don't worry if you're having trouble; we're here to help."
+  %tr
+    %td{width:"100%"}
+      %table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0", style: "margin-top:30px!important" }
+        %tr
+          %td{ width: "100%" }
+            %ul
+              %li{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:14px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:21px!important;padding:0 0 10px!important;margin:0!important" }= raw "Visit our #{link_to "FAQ","", style: "color:#2e8ce3!important"} & #{link_to "Troubleshooting","", style: "color:#2e8ce3!important"} pages to find answers to common questions."
+              %li{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:14px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:21px!important;padding:0 0 10px!important;margin:0!important" }= raw "Visit the #{link_to "Community forum","", style: "color:#2e8ce3!important"} to ask our support team about a specific issue."
+              %li{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:14px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:21px!important;padding:0 0 10px!important;margin:0!important" }= raw "Members of our Paid plans also benefit from #{link_to "direct email support","", style: "color:#2e8ce3!important"}."
+  %tr
+    %td{width:"100%"}
+      %table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0", style: "margin-top:30px!important" }
+        %tr
+          %td{ width: "100%", align: "center" }
+            %p{ color: "#7e8ea7", style: "color:#7e8ea7!important;font:11px Helvetica-Neue,Helvetica,Arial,sans-serif;line-height:27px!important;padding:0 0 20px!important;margin:0!important" }= "Copyright © 2012 Jilion® — SublimeVideo and Jilion are registered trademarks."
+  
+            

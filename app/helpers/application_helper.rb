@@ -60,7 +60,8 @@ module ApplicationHelper
   end
 
   def asset_url(asset)
-    "#{ActionController::Base.asset_host}#{asset_path(asset)}"
+    host = request ? '' : ActionController::Base.asset_host
+    "#{host}#{asset_path(asset)}"
   end
 
   def demo_stats_page?
