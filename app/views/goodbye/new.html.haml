@@ -28,7 +28,7 @@
       = password_field_tag 'user[current_password]', '', placeholder: 'Current password', class: "text", required: true
       - if @user.errors[:current_password].present?
         .inline_errors
-          %span Please enter your current passowrd to confirm the cancellation
+          %span Please enter your current password to confirm the cancellation
 
     #delete_account
       %p= "Please understand that:"
