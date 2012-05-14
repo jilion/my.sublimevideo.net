@@ -1,15 +1,14 @@
 class GoodbyeManager
 
-  def self.archive_user_and_save_feedback(user, password, goodbye_feedback)
-    user.current_password    = password
+  def self.archive_user_and_save_feedback(user, goodbye_feedback)
     goodbye_feedback.user_id = user.id
 
-    ActiveRecord::Base.transaction do
-      goodbye_feedback.save!
-      user.archive!
+    if goodbye_feedback.valid? && user.valid?
+      goodbye_feedback.save
+      user.archive
+    else
+      false
     end
-  rescue StateMachine::InvalidTransition, ActiveRecord::RecordInvalid => ex
-    false
   end
 
 end
