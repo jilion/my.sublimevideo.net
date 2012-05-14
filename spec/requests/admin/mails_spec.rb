@@ -75,7 +75,7 @@ feature "Mails sending" do
       ActionMailer::Base.deliveries.should be_empty
 
       select @mail_template.title, from: "Template"
-      select "Not Archived (1)", from: "criteria"
+      select "Not Archived (1)", from: "mail[criteria]"
       click_button "Send email"
 
       current_url.should eq "http://admin.sublimevideo.dev/mails"
