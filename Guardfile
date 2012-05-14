@@ -40,7 +40,7 @@ group :backend do
     watch('spec/spec_helper.rb')
   end
 
-  guard :rspec, version: 2, cli: "--color -f documentation --drb", all_after_pass: false, all_on_start: false, keep_failed: false do
+  guard :rspec, version: 2, cli: "--drb", all_after_pass: false, all_on_start: false, keep_failed: false do
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }
     watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/#{m[1]}" }
@@ -52,7 +52,7 @@ group :backend do
     watch(%r{^lib/(.+)\.rb})                                                   { |m| "spec/lib/#{m[1]}_spec.rb" }
   end
 
-  guard :rspec, version: 2, bundler: false, cli: "--color -f documentation", all_after_pass: false, all_on_start: false do
+  guard :rspec, version: 2, bundler: false, all_after_pass: false, all_on_start: false do
     watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/fast/#{m[1]}" }
     watch(%r{^spec/fast/.+_spec\.rb})
     watch(%r{^spec/fast_spec_helper.rb}) { 'spec/fast' }
