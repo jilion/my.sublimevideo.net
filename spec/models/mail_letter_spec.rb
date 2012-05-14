@@ -35,9 +35,9 @@ describe MailLetter do
 
       context "with multiple users to send emails to" do
         describe "with the 'dev' filter" do
-          let(:mail_letter)   { MailLetter.new(attributes.merge(criteria: 'dev')) }
+          let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'dev')) }
           before do
-            User.stub!(:where).with(email: ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"]).and_return([user])
+            @dev_user = create(:user, email: 'remy@jilion.com')
           end
 
           it "delays delivery of mails" do
@@ -54,7 +54,7 @@ describe MailLetter do
             subject
             @worker.work_off
 
-            ActionMailer::Base.deliveries.last.to.should eq [user.email]
+            ActionMailer::Base.deliveries.last.to.should eq [@dev_user.email]
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
           end
 

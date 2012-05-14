@@ -2,12 +2,12 @@
 
 = form_tag admin_mails_path do
   .entry.template
-    = label_tag :template_id, "Template"
-    = select_tag :template_id, options_from_collection_for_select(MailTemplate.all, :id, :title, @mail_template.id)
+    = label_tag 'mail_template_id', "Template"
+    = select_tag 'mail[template_id]', options_from_collection_for_select(MailTemplate.all, :id, :title, @mail_template.id)
 
   .entry.criteria
-    = label_tag :criteria, "Send this email to: "
-    = select_tag :criteria, mails_criteria
+    = label_tag 'mail_criteria', "Send this email to: "
+    = select_tag 'mail[criteria]', mails_criteria
 
   %br
 
