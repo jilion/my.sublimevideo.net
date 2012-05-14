@@ -1,8 +1,9 @@
 class GoodbyeController < ApplicationController
 
+  before_filter :find_user
+
   # GET /goodbye
   def new
-    @user             = User.find(current_user.id)
     @goodbye_feedback = GoodbyeFeedback.new
 
     respond_with(@goodbye_feedback)
@@ -10,7 +11,6 @@ class GoodbyeController < ApplicationController
 
   # POST /goodbye
   def create
-    @user             = User.find(current_user.id)
     @goodbye_feedback = GoodbyeFeedback.new(params[:goodbye_feedback])
 
     respond_to do |format|
@@ -23,6 +23,12 @@ class GoodbyeController < ApplicationController
         format.html { render :new }
       end
     end
+  end
+
+  private
+
+  def find_user
+    @user = User.find(current_user.id)
   end
 
 end
