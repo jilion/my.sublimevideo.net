@@ -10,9 +10,9 @@
 = "-----------------------"
 
 %p.filters
-  = link_to "#{content_tag(:strong, User.vip.count)} VIP".html_safe, admin_users_path(vip: true)
+  = link_to "#{content_tag(:strong, User.vip.count)} VIP".html_safe, admin_users_path(vip: true), remote: true, class: 'remote'
   |
-  = link_to "#{content_tag(:strong, User.with_balance.count)} With a balance".html_safe, admin_users_path(with_balance: true)
+  = link_to "#{content_tag(:strong, User.with_balance.count)} With a balance".html_safe, admin_users_path(with_balance: true), remote: true, class: 'remote'
 
 = "-----------------------------------------------"
 
