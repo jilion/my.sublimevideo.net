@@ -5,8 +5,8 @@ describe GoodbyeFeedback do
   describe 'Factory' do
     subject { build(:goodbye_feedback) }
 
-    its(:user_id)   { should be_present }
-    its(:reason) { should eq 'support' }
+    its(:user_id) { should be_present }
+    its(:reason)  { should eq 'support' }
   end
 
   describe 'Validations' do
