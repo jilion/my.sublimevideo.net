@@ -2,6 +2,8 @@
 source 'https://rubygems.org'
 source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com account
 
+ruby '1.9.3'
+
 gem 'rails',                 '3.2.3'
 gem 'sublimevideo_layout' # hosted on gemfury
 
@@ -19,7 +21,7 @@ gem 'mongo',                 '~> 1.6.0'
 gem 'mongoid',               '~> 2.4.7'
 
 # Views
-gem 'haml',                  '~> 3.1.3'
+gem 'haml',                  '3.1.6.rc.1' # issue in 3.1.5, wait until 3.1.6 https://github.com/haml/haml/issues/531
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
@@ -145,6 +147,7 @@ end
 
 group :tools do
   # gem 'annotate', github: 'ctran/annotate_models'
+  gem 'bundler', '~> 1.2.0.pre'
   gem 'wirble'
   gem 'heroku'
   gem 'foreman'
@@ -153,12 +156,12 @@ group :tools do
 
   # Guard
   gem 'growl'
-  # platforms :ruby do
-  #   gem 'rb-readline'
-  # end
+  platforms :ruby do
+    gem 'rb-readline'
+  end
 
-  gem 'listen', github: 'guard/listen'
-  # gem 'guard', github: 'guard/guard', branch: 'listen'
+  # gem 'listen', github: 'guard/listen'
+  gem 'guard', github: 'guard/guard', branch: 'listen'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-spork'

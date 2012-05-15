@@ -1,9 +1,10 @@
 class MailLetter
   extend ActiveModel::Naming
 
+  DEV_TEAM_EMAILS = ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"]
+
   def initialize(params)
-    @template = MailTemplate.find(params[:template_id])
-    @admin_id, @criteria = params[:admin_id], params[:criteria]
+    @template, @admin_id, @criteria = MailTemplate.find(params[:template_id]), params[:admin_id], params[:criteria]
   end
 
   # ====================
@@ -15,18 +16,12 @@ class MailLetter
 
     users = case @criteria
             when 'dev'
-              User.where(email: ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"])
-            when 'all'
-              User.all
-            when 'paying'
-              User.paying.all
-            when 'free'
-              User.free.all
+              User.where(email: DEV_TEAM_EMAILS)
             else
               User.send(@criteria)
             end
 
-    users.uniq.each { |u| self.class.delay.deliver(u, @template) }
+    users.all.uniq.each { |user| self.class.delay.deliver(user.id, @template) }
 
     unless @criteria == 'dev'
       @template.logs.create(admin_id: @admin_id, criteria: @criteria, user_ids: users.map(&:id))
@@ -35,7 +30,8 @@ class MailLetter
 
 private
 
-  def self.deliver(user, template)
+  def self.deliver(user_id, template)
+    user = User.find(user_id)
     MailMailer.send_mail_with_template(user, template).deliver
   end
 

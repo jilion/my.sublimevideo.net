@@ -32,7 +32,7 @@ describe Admin::MailsController do
       MailLetter.stub(:new).with({ "template_id" => '1', "criteria" => "foo", "admin_id" => @admin.id }) { mock_mail_letter }
       mock_mail_letter.stub_chain(:delay, :deliver_and_log) { mock_mail_log }
 
-      post :create, mail_log: { template_id: '1', criteria: "foo" }
+      post :create, mail: { template_id: '1', criteria: "foo" }
       response.should redirect_to(admin_mails_url)
     end
   end

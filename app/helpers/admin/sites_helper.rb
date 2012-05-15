@@ -5,8 +5,6 @@ module Admin::SitesHelper
       " in #{"trial of " if params[:in_trial]}the #{params[:in_plan].titleize} plan"
     elsif params[:paid_plan]
       params[:in_trial] ? " in trial" : " paying"
-    elsif params[:with_state]
-      " #{params[:with_state]}"
     elsif params[:overusage_notified]
       " with peak insurance"
     elsif params[:with_next_cycle_plan]
@@ -22,12 +20,14 @@ module Admin::SitesHelper
     elsif params[:tagged_with]
       " tagged with '#{params[:tagged_with]}'"
     elsif params[:with_min_billable_video_views]
-      " with more than #{display_integer(params[:with_min_billable_video_views])} video plays"
+      " with more than #{display_integer(params[:with_min_billable_video_views])} video plays in the last 30 days"
     elsif params[:search].present?
       " matching '#{params[:search]}'"
     elsif params[:user_id]
       user = User.find(params[:user_id])
       " for #{user.name_or_email}" if user
+    elsif params[:with_state]
+      " #{params[:with_state]}"
     end
 
     "#{formatted_pluralize(sites.total_count, 'site').titleize}#{state}"

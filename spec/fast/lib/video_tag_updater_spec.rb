@@ -40,18 +40,18 @@ describe VideoTagUpdater do
     end
 
     it "update meta data" do
-      video_tag.should_receive(:update_meta_data_and_always_updated_at).with(meta_data)
+      video_tag.should_receive(:update_meta_data).with(meta_data)
       described_class.update_video_tags(video_tags_meta_data)
     end
 
     it "trigger Pusher if changed" do
-      video_tag.stub(:update_meta_data_and_always_updated_at) { true }
+      video_tag.stub(:update_meta_data) { true }
       PusherWrapper.should_receive(:trigger).with('private-site_token_1', 'video_tag', u: 'video_uid_1', meta_data: { meta: 'data' })
       described_class.update_video_tags(video_tags_meta_data)
     end
 
     it "doesn't trigger Pusher if not changed" do
-      video_tag.stub(:update_meta_data_and_always_updated_at) { false }
+      video_tag.stub(:update_meta_data) { false }
       PusherWrapper.should_not_receive(:trigger).with('private-site_token_1', 'video_tag', u: 'video_uid_1', meta_data: { meta: 'data' })
       described_class.update_video_tags(video_tags_meta_data)
     end

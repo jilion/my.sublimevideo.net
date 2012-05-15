@@ -13,7 +13,7 @@ class Admin::MailsController < Admin::AdminController
 
   # GET /mails
   def index
-    params[:by_date] = 'desc' unless params[:by_date]
+    params[:by_date]   = 'desc' unless params[:by_date]
     templates_and_logs = !(params[:mail_logs] || params[:mail_templates])
     if params[:mail_logs] || templates_and_logs
       @mail_logs = apply_scopes(MailLog.scoped).page(params[:page])
@@ -25,13 +25,15 @@ class Admin::MailsController < Admin::AdminController
 
   # GET /mails/new
   def new
-    @mail_log = MailLog.new
+    @mail_log      = MailLog.new
+    @mail_template = MailTemplate.find_by_id(params[:template_id]) || MailTemplate.first
   end
 
   # POST /mails
   def create
-    @mail_letter = MailLetter.new(params[:mail_log].merge(admin_id: current_admin.id))
+    @mail_letter = MailLetter.new(params[:mail].merge(admin_id: current_admin.id))
     @mail_letter.delay.deliver_and_log
+
     redirect_to [:admin, :mails], notice: "Sending in progress..."
   end
 

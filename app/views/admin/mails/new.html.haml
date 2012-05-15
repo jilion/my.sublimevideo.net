@@ -1,17 +1,16 @@
-= title_and_content_header("Send a mail")
+= title_and_content_header("Send an email")
 
-= form_for [:admin, @mail_log], :url => admin_mails_path do |f|
+= form_tag admin_mails_path do
   .entry.template
-    = f.label :template_id, "Template"
-    = f.select :template_id, MailTemplate.all.map { |t| [t.title, t.id] }, :selected => params[:template_id]
+    = label_tag 'mail_template_id', "Template"
+    = select_tag 'mail[template_id]', options_from_collection_for_select(MailTemplate.all, :id, :title, @mail_template.id)
 
   .entry.criteria
-    = f.label :criteria
-    = "Users: "
-    = f.select :criteria, [["dev team only", "dev"], ["with activity", "with_activity"], ["paying", "paying"], ["free", "free"], ["all", "all"]]
+    = label_tag 'mail_criteria', "Send this email to: "
+    = select_tag 'mail[criteria]', mails_criteria
 
   %br
 
   .entry.submit.send
-    = f.submit "Send mail", :confirm => 'Are you sure?'
+    = submit_tag "Send email", confirm: 'Are you sure?'
     .spacer

@@ -1,12 +1,12 @@
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
 
-  before_filter { |controller| require_role?('god') if %w[update sponsor].include?(action_name) }
+  before_filter { |controller| require_role?('god') if %w[sponsor].include?(action_name) }
   before_filter :set_default_scopes, only: [:index]
 
   #filter
-  has_scope :in_plan, :badged, :tagged_with, :with_state
-  has_scope :in_trial, :not_in_trial, :paid_plan, :overusage_notified, :user_id,
+  has_scope :in_plan, :badged, :tagged_with, :with_state, :user_id
+  has_scope :in_trial, :not_in_trial, :paid_plan, :overusage_notified,
             :with_wildcard, :with_path, :with_extra_hostnames, :with_next_cycle_plan, type: :boolean
   # sort
   has_scope :by_hostname, :by_user, :by_state, :by_plan_price,
@@ -39,13 +39,13 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id
   def update
     @site = Site.find_by_token(params[:id])
+    params[:site].delete(:mode) unless has_role?('god')
     @site.update_attributes(params[:site], without_protection: true)
 
     respond_with(@site, notice: 'Site was successfully updated.') do |format|
       format.js   { render 'admin/shared/flash_update' }
       format.html { redirect_to [:edit, :admin, @site] }
     end
-    
   end
 
   # PUT /sites/:id/sponsor
