@@ -2,7 +2,7 @@
 
 <p>The total amount charged was <%= display_amount(@transaction.amount) %>.</p>
 
-<% if @transaction.invoices.count == 1 %>
+<% if @transaction.invoices.size == 1 %>
 <p>You can review the invoice via the following link:</p>
 <% else %>
 <p>You can review the invoices associated with this transaction via the following links:</p>
