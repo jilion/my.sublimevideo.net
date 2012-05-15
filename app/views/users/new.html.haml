@@ -1,7 +1,8 @@
 %h2.title= "Create your account"
 
 = form_for @user || User.new, as: :user, url: my_url('signup'), html: { id: 'user_signup', class: "main_form" } do |f|
-  = hidden_field_tag :user_return_to, params[:user_return_to]
+  - if params[:user_return_to]
+    = hidden_field_tag :user_return_to, params[:user_return_to]
 
   .entry.email
     = f.label :email, "Email", class: "icon"
