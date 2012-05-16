@@ -34,7 +34,7 @@ module UserModules::Scope
     scope :newsletter,        lambda { |bool=true| where { newsletter == bool } }
     scope :vip,               lambda { |bool=true| where { vip == bool } }
 
-    scope :sites_tagged_with, lambda { |word| joins(:sites).merge(Site.tagged_with(word)) }
+    scope :sites_tagged_with, lambda { |word| joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 
     # sort
     scope :by_name_or_email,         lambda { |way='asc'| order("users.name #{way.upcase}, users.email #{way.upcase}") }
