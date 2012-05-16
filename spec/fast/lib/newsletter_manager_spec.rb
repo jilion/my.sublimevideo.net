@@ -91,7 +91,7 @@ describe NewsletterManager do
     end
   end
 
-  describe '.update', :focus do
+  describe '.update' do
     context 'email of the user has not changed' do
       it 'delays CampaignMonitorWrapper.update' do
         CampaignMonitorWrapper.should_receive(:delay).and_return(@dj = mock('delay'))

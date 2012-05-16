@@ -863,7 +863,7 @@ describe Site do
   end # Callbacks
 
   describe 'Class methods' do
-    describe 'update_ranks', :focus do
+    describe 'update_ranks' do
       use_vcr_cassette 'sites/ranks'
 
       context "site has a hostname" do

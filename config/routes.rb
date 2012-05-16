@@ -139,7 +139,7 @@ MySublimeVideo::Application.routes.draw do
       get  '/gs-login' => 'users/sessions#new_gs'
       post '/gs-login' => 'users/sessions#create_gs', as: 'gs_login'
 
-      get  '/account/more-info'  => "users#more_info", as: 'more_user_info'
+      get '/account/more-info' => "users#more_info", as: 'more_user_info'
 
       delete '/notice/:id' => 'users#hide_notice'
 
@@ -156,6 +156,8 @@ MySublimeVideo::Application.routes.draw do
       resources :applications, controller: 'client_applications', as: :client_applications # don't change this, used by oauth-plugin
     end
     get '/card(/*anything)' => redirect('/account/billing/edit')
+
+    get '/newsletter/subscribe'  => "newsletter#subscribe"
 
     scope 'oauth' do
       # OAuth 1 & 2
