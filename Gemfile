@@ -165,7 +165,7 @@ group :tools do
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-spork'
-  gem 'guard-rspec'
+  gem 'guard-rspec', github: 'guard/guard-rspec', branch: 'guard_1_1'
   gem 'guard-jasmine'
   # gem 'guard-yard'
 end
