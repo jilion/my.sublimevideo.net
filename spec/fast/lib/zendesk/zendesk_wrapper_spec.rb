@@ -1,14 +1,14 @@
 require 'fast_spec_helper'
-require_relative '../../../lib/zendesk_wrapper'
-require 'ostruct'
+
+stub_module 'ZendeskConfig'
+
+require_relative '../../../../lib/zendesk/zendesk_wrapper'
 
 describe ZendeskWrapper do
   before do
-    class ZendeskConfig
-      def self.api_url; 'https://sublimevideo.zendesk.com/api/v1'; end
-      def self.username; 'zendesk@sublimevideo.net'; end
-      def self.api_token; 'oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy'; end
-    end
+    ZendeskConfig.stub(api_url: 'https://sublimevideo.zendesk.com/api/v1')
+    ZendeskConfig.stub(username: 'zendesk@sublimevideo.net')
+    ZendeskConfig.stub(api_token: 'oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy')
   end
 
   let(:params)        { { user_id: 42, type: 'other', subject: 'SUBJECT', message: 'DESCRIPTION' } }
@@ -50,25 +50,25 @@ describe ZendeskWrapper do
   describe '.create_user' do
     context 'user has a name' do
       use_vcr_cassette 'zendesk_wrapper/create_user1'
-      subject { OpenStruct.new(email: 'user7@example.org', name: 'User Example') }
+      let(:user) { stub(email: 'user7@example.org', name: 'User Example') }
 
       it 'creates the user and verifies him' do
-        user = described_class.create_user(subject)
-        user.email.should eq 'user7@example.org'
-        user.name.should eq 'User Example'
-        user.is_verified.should be_true
+        zd_user = described_class.create_user(user)
+        zd_user.email.should eq 'user7@example.org'
+        zd_user.name.should eq 'User Example'
+        zd_user.is_verified.should be_true
       end
     end
 
     context 'user has no name' do
       use_vcr_cassette 'zendesk_wrapper/create_user2'
-      subject { OpenStruct.new(email: 'user8@example.org', name: '') }
+      let(:user) { stub(email: 'user8@example.org', name: '') }
 
       it 'creates the user and verifies him' do
-        user = described_class.create_user(subject)
-        user.email.should eq 'user8@example.org'
-        user.name.should eq 'user8@example.org'
-        user.is_verified.should be_true
+        zd_user = described_class.create_user(user)
+        zd_user.email.should eq 'user8@example.org'
+        zd_user.name.should eq 'user8@example.org'
+        zd_user.is_verified.should be_true
       end
     end
   end
