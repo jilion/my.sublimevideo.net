@@ -1,0 +1,104 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244/import.json
+    body: ! '{"Subscribers":[{"EmailAddress":"user_import1@example.org","Name":"User
+      Import #1","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":13},{"Key":"beta","Value":true}]},{"EmailAddress":"user_import2@example.org","Name":"User
+      Import #2","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":14},{"Key":"beta","Value":false}]}],"Resubscribe":false,"QueueSubscriptionBasedAutoresponders":false}'
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.4
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 9ef49f8657f83d34e8e633bb4b803561
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 16 May 2012 18:23:03 GMT
+      content-length:
+      - '138'
+    body: ! '{"TotalUniqueEmailsSubmitted":2,"TotalExistingSubscribers":2,"TotalNewSubscribers":0,"DuplicateEmailsInSubmission":[],"FailureDetails":[]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=user_import1@example.org
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.4
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 2ec6ba42dc70527f06c79f059a4773e3
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 16 May 2012 18:22:53 GMT
+      content-length:
+      - '224'
+    body: ! '{"EmailAddress":"user_import1@example.org","Name":"User Import #1","Date":"2012-05-16
+      20:16:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"13"},{"Key":"beta","Value":"true"}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=user_import2@example.org
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.4
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - f5a423776d4e0709450a9813dd10d5c4
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 16 May 2012 18:23:16 GMT
+      content-length:
+      - '225'
+    body: ! '{"EmailAddress":"user_import2@example.org","Name":"User Import #2","Date":"2012-05-16
+      20:16:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"14"},{"Key":"beta","Value":"false"}]}'
+    http_version: '1.1'
