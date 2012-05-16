@@ -6,6 +6,9 @@ en:
     support_requests:
       create:
         notice: "Thanks for your message, we will get back to you as quickly as we can."
+    newsletter:
+      subscribe: "Thanks for subscribing to the newsletter."
+      unsubscribe: "You've been successfully unsubscribed from the newsletter."
     sites:
       update:
         notice: "Site settings were successfully updated."
