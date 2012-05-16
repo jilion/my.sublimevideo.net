@@ -855,51 +855,46 @@ describe Site do
     end
 
     describe "after_create" do
-      before do
-        CampaignMonitor.stub(:subscriber)
-        VoxcastCDN.stub(:purge)
-        PusherWrapper.stub(:trigger)
-      end
-
       it "delays update_ranks" do
         expect { create(:site) }.to change(Delayed::Job.where { handler =~ "%update_ranks%" }, :count).by(1)
       end
+    end
+
+  end # Callbacks
+
+  describe 'Class methods' do
+    describe 'update_ranks', :focus do
+      use_vcr_cassette 'sites/ranks'
 
       context "site has a hostname" do
         it "updates ranks" do
-          Timecop.travel(10.minutes.ago) { @site = create(:site, hostname: 'sublimevideo.net') }
-          VCR.use_cassette('sites/ranks') { @worker.work_off }
-          @site.reload
-          @site.google_rank.should eq 6
-          @site.alexa_rank.should eq 91386
+          site = create(:site, hostname: 'sublimevideo.net')
+          Delayed::Job.delete_all
+
+          described_class.send(:update_ranks, site.id)
+          site.reload
+
+          site.google_rank.should eq 6
+          site.alexa_rank.should eq 91386
         end
       end
 
       context "site has blank hostname" do
         it "updates ranks" do
-          Timecop.travel(10.minutes.ago) { @site = create(:site, hostname: '', plan_id: @free_plan.id) }
-          VCR.use_cassette('sites/ranks') { @worker.work_off }
-          @site.reload
-          @site.google_rank.should eq 0
-          @site.alexa_rank.should eq 0
+          site = create(:site, hostname: '', plan_id: @free_plan.id)
+          Delayed::Job.delete_all
+
+          described_class.send(:update_ranks, site.id)
+          site.reload
+
+          site.google_rank.should eq 0
+          site.alexa_rank.should eq 0
         end
       end
+    end
+  end
 
-      context "site has no hostname" do
-        it "updates ranks" do
-          Timecop.travel(10.minutes.ago) { @site = create(:site, hostname: nil, plan_id: @free_plan.id) }
-          VCR.use_cassette('sites/ranks') { @worker.work_off }
-          @site.reload
-          @site.google_rank.should eq 0
-          @site.alexa_rank.should eq 0
-        end
-      end
-
-    end # after_create
-
-  end # Callbacks
-
-  describe "Instance Methods" do
+  describe 'Instance Methods' do
 
     describe "#clear_alerts_sent_at" do
       subject { create(:site_with_invoice, plan_id: @paid_plan.id) }

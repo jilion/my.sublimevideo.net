@@ -1,4 +1,4 @@
-require 'zendesk_wrapper'
+require 'zendesk/zendesk_wrapper'
 
 class TicketManager
 
