@@ -92,7 +92,7 @@ feature "Users" do
 
       last_delivery = ActionMailer::Base.deliveries.last
       last_delivery.to.should eq [User.last.unconfirmed_email]
-      last_delivery.subject.should eq "Confirmation instructions"
+      last_delivery.subject.should eq "Account confirmation instructions"
 
       go 'my', "confirmation?confirmation_token=#{User.last.confirmation_token}"
 
@@ -131,7 +131,7 @@ feature "Users" do
 
     last_delivery = ActionMailer::Base.deliveries.last
     last_delivery.to.should eq [user.email]
-    last_delivery.subject.should eq "Reset password instructions"
+    last_delivery.subject.should eq "Password reset instructions"
 
     go 'my', "password/edit?reset_password_token=#{user.reset_password_token}"
 
@@ -199,7 +199,7 @@ feature "Users" do
 
         last_delivery = ActionMailer::Base.deliveries.last
         last_delivery.to.should eq ["zeno@jilion.com"]
-        last_delivery.subject.should eq "Confirmation instructions"
+        last_delivery.subject.should eq "Account confirmation instructions"
       end
 
       scenario "It's possible to update password" do
@@ -305,8 +305,8 @@ feature "Users" do
 
     last_delivery = ActionMailer::Base.deliveries.last
     last_delivery.to.should eq [@current_user.email]
-    last_delivery.subject.should eq "Your account has been deleted"
-    last_delivery.body.encoded.should include "Your account has been deleted."
+    last_delivery.subject.should eq I18n.t('mailer.user_mailer.account_archived')
+    last_delivery.body.encoded.should include "This is to confirm that the cancellation of your SublimeVideo account"
   end
 end
 
