@@ -153,11 +153,11 @@ MySublimeVideo::Application.routes.draw do
 
     scope 'account' do
       resource :billing, only: [:edit, :update]
-      resources :applications, controller: 'client_applications', as: :client_applications # don't change this, used by oauth-plugin
+      resources :applications, controller: 'client_applications', as: 'client_applications' # don't change this, used by oauth-plugin
     end
     get '/card(/*anything)' => redirect('/account/billing/edit')
 
-    get '/newsletter/subscribe'  => "newsletter#subscribe"
+    get '/newsletter/subscribe' => 'newsletter#subscribe', as: 'newsletter_subscribe'
 
     scope 'oauth' do
       # OAuth 1 & 2
