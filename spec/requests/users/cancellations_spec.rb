@@ -7,7 +7,7 @@ feature 'Account deletion', :focus do
     click_link 'John Doe'
     click_link 'Cancel account'
 
-    current_url.should eq 'http://my.sublimevideo.dev/goodbye'
+    current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
 
     select  'Price',                 from: 'goodbye_feedback_reason'
     fill_in 'user_current_password', with: '123456'
@@ -35,12 +35,12 @@ feature 'Account deletion', :focus do
     click_link 'John Doe'
     click_link 'Cancel account'
 
-    current_url.should eq 'http://my.sublimevideo.dev/goodbye'
+    current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
 
     fill_in 'user_current_password', with: '123456'
     click_button 'Cancel my account'
 
-    current_url.should eq 'http://my.sublimevideo.dev/goodbye'
+    current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
     page.should have_content 'Reason must be given'
   end
 
@@ -49,13 +49,13 @@ feature 'Account deletion', :focus do
     click_link 'John Doe'
     click_link 'Cancel account'
 
-    current_url.should eq 'http://my.sublimevideo.dev/goodbye'
+    current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
 
     select  'Price',                 from: 'goodbye_feedback_reason'
     fill_in 'user_current_password', with: '654321'
     click_button 'Cancel my account'
 
-    current_url.should eq 'http://my.sublimevideo.dev/goodbye'
-    page.should have_content 'Please enter your current passowrd to confirm the cancellation'
+    current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
+    page.should have_content 'Please enter your current password to confirm the cancellation'
   end
 end

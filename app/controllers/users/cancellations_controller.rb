@@ -1,15 +1,15 @@
-class GoodbyeController < ApplicationController
+class Users::CancellationsController < ApplicationController
 
   before_filter :find_user
 
-  # GET /goodbye
+  # GET /account/cancel
   def new
     @goodbye_feedback = GoodbyeFeedback.new
 
     respond_with(@goodbye_feedback)
   end
 
-  # POST /goodbye
+  # POST /account/cancel
   def create
     @goodbye_feedback = GoodbyeFeedback.new(params[:goodbye_feedback])
     @user.attributes = params[:user]

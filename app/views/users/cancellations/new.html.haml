@@ -1,17 +1,21 @@
 = title_and_content_header("Cancel my account")
 
-%p.bigger= "Before you leave us, we'd like to gather some feedback from you in order to improve our service in future."
+%p.bigger
+  Thank you for using SublimeVideo - we're sorry to see you go.
+
+%p.bigger
+  Before you leave it'd be great if you could take a moment to give us some feedback to help us improve our service in future.
 
 .content_left.more_info
-  = form_for @goodbye_feedback, url: '/goodbye', html: { method: 'post', class: 'main_form section' } do |f|
+  = form_for @goodbye_feedback, url: '/account/cancel', html: { method: 'post', class: 'main_form section' } do |f|
     .entry.select
-      = f.label :reason, "Please specify the reason why you're leaving:", class: "text"
+      = f.label :reason, "What is your reason for leaving?", class: "text"
       = f.select :reason, GoodbyeFeedback::REASONS.map { |r| [t("goodbye_feedback.reason.#{r}"), r]}, required: true, prompt: true
 
     .entry
       .comment
-        = f.label :comment, "Can you expand on your reason for cancelling?", class: "text"
-        = f.text_area :comment, class: "text"
+        = f.label :comment, "Additional comments:", class: "text"
+        = f.text_area :comment, placeholder: "Please leave any comments here.", class: "text"
       .spacer
 
     .break
