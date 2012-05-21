@@ -21,7 +21,7 @@ describe UsageMonitoringMailer do
     end
 
     it "should set a body that contain the link to peak insurance docs" do
-      @last_delivery.body.encoded.should include "http://docs.sublimevideo.dev/peak-insurance"
+      @last_delivery.body.encoded.should include "Peak Insurance"
     end
   end
 

@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe BillingMailer do
 
-  it_should_behave_like "common mailer checks", %w[trial_has_started], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:site), content_type: %r{text/html; charset=UTF-8}
-  it_should_behave_like "common mailer checks", %w[trial_will_expire], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:site), content_type: %r{text/html; charset=UTF-8}
-  it_should_behave_like "common mailer checks", %w[trial_has_expired], from: [I18n.t('mailer.billing.email')], params: [FactoryGirl.create(:site), FactoryGirl.create(:plan)], content_type: %r{text/html; charset=UTF-8}
-  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:user, cc_expire_on: 1.day.from_now), content_type: %r{text/html; charset=UTF-8}
-  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)]), content_type: %r{text/html; charset=UTF-8}
-  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:invoice) }, content_type: %r{text/html; charset=UTF-8}
+  it_should_behave_like "common mailer checks", %w[trial_has_started], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:site)
+  it_should_behave_like "common mailer checks", %w[trial_will_expire], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:site)
+  it_should_behave_like "common mailer checks", %w[trial_has_expired], from: [I18n.t('mailer.billing.email')], params: [FactoryGirl.create(:site), FactoryGirl.create(:plan)]
+  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:user, cc_expire_on: 1.day.from_now)
+  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: [I18n.t('mailer.billing.email')], params: FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)])
+  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:invoice) }
 
   describe "specific checks" do
     before do

@@ -9,7 +9,7 @@ describe MailMailer do
     ActionMailer::Base.deliveries.clear
   end
 
-  it_should_behave_like "common mailer checks", %w[send_mail_with_template], params: [FactoryGirl.create(:user), FactoryGirl.create(:mail_template)], content_type: %r{text/html; charset=UTF-8}
+  it_should_behave_like "common mailer checks", %w[send_mail_with_template], params: [FactoryGirl.create(:user), FactoryGirl.create(:mail_template)]
 
   describe "#send_mail_with_template" do
     before do
