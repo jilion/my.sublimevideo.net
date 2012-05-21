@@ -131,8 +131,8 @@ end
 group :test do
   gem 'timecop'
   gem 'ffaker'
-  # gem 'spork', '~> 0.9.0'
-  gem 'spork', github: 'sporkrb/spork'
+  gem 'spork', '~> 0.9.2'
+  # gem 'spork', github: 'sporkrb/spork'
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'show_me_the_cookies'
@@ -160,12 +160,12 @@ group :tools do
     gem 'rb-readline'
   end
 
-  # gem 'listen', github: 'guard/listen'
+  gem 'listen', github: 'guard/listen'
   gem 'guard', github: 'guard/guard', branch: 'listen'
-  gem 'guard-pow'
-  gem 'guard-livereload'
-  gem 'guard-spork'
-  gem 'guard-rspec'
-  gem 'guard-jasmine'
+  gem 'guard-pow', github: 'guard/guard-pow', branch: 'guard_1_1'
+  gem 'guard-livereload', github: 'guard/guard-livereload', branch: 'guard_1_1'
+  gem 'guard-spork', github: 'guard/guard-spork', branch: 'guard_1_1'
+  gem 'guard-rspec', github: 'guard/guard-rspec', branch: 'guard_1_1'
+  gem 'guard-jasmine', github: 'netzpirat/guard-jasmine', branch: 'guard_1_1'
   # gem 'guard-yard'
 end

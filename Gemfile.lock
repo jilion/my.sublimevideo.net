@@ -8,13 +8,57 @@ GIT
       daemons
 
 GIT
+  remote: git://github.com/guard/guard-livereload.git
+  revision: 94db216d2a4ed7c3548c9368de9f2e9c4f1e6b2c
+  branch: guard_1_1
+  specs:
+    guard-livereload (0.4.2)
+      em-websocket (>= 0.2.0)
+      guard (>= 0.10.0)
+      multi_json (~> 1.0)
+
+GIT
+  remote: git://github.com/guard/guard-pow.git
+  revision: 6b659d9e9909121e87f059126f78889cd3e924cc
+  branch: guard_1_1
+  specs:
+    guard-pow (0.2.1)
+      guard (>= 0.3.0)
+
+GIT
+  remote: git://github.com/guard/guard-rspec.git
+  revision: 1e60d32f966e60937a9893b69ba87dd1b0bb6a54
+  branch: guard_1_1
+  specs:
+    guard-rspec (0.7.2)
+      guard (>= 0.10.0)
+
+GIT
+  remote: git://github.com/guard/guard-spork.git
+  revision: 41397ac9bf43d25d3781bd37539076f7b490df52
+  branch: guard_1_1
+  specs:
+    guard-spork (0.8.0)
+      guard (>= 0.10.0)
+      spork (>= 0.8.4)
+
+GIT
   remote: git://github.com/guard/guard.git
-  revision: 6ae953c13e794bcf111e9192ff3575f7f59da61c
+  revision: 066c54ba0ecf22c5d29b44882b94cce9c2cd2ced
   branch: listen
   specs:
-    guard (1.1.0.alpha)
+    guard (1.1.0.beta)
       listen (>= 0.4.2)
       thor (>= 0.14.6)
+
+GIT
+  remote: git://github.com/guard/listen.git
+  revision: 3e71105ad6f9c23db1cfe7ae41142c32af753eae
+  specs:
+    listen (0.4.2)
+      rb-fchange (~> 0.0.5)
+      rb-fsevent (~> 0.9.1)
+      rb-inotify (~> 0.8.8)
 
 GIT
   remote: git://github.com/jilion/chosen-rails.git
@@ -43,6 +87,17 @@ GIT
       patron
 
 GIT
+  remote: git://github.com/netzpirat/guard-jasmine.git
+  revision: a0d3282305725985bf17b6d865a5df4d2e801bf8
+  branch: guard_1_1
+  specs:
+    guard-jasmine (1.1.3)
+      childprocess
+      guard (>= 0.8.3)
+      multi_json
+      thor
+
+GIT
   remote: git://github.com/pcg79/letter_opener.git
   revision: 770282bc220d5ed7427d5cc316711fe0423ab67b
   specs:
@@ -51,7 +106,7 @@ GIT
 
 GIT
   remote: git://github.com/rspec/rspec-core.git
-  revision: 1004353d32229ad43c95717450f057444f6e8f3c
+  revision: 3c1ed2467bbbb1a649c5ddb98e3d099e90c65f71
   specs:
     rspec-core (2.10.0)
 
@@ -73,12 +128,6 @@ GIT
   revision: df3c0b4ad1e7a3a925496fb9225d68a858566b66
   specs:
     rescue_me (0.1.1)
-
-GIT
-  remote: git://github.com/sporkrb/spork.git
-  revision: 055b32fb771d6135728c25113851edb9d00cf561
-  specs:
-    spork (1.0.0rc3)
 
 GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
@@ -181,7 +230,7 @@ GEM
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.3.1)
+    coffee-script-source (1.3.3)
     columnize (0.3.6)
     configuration (1.3.1)
     countries (0.8.2)
@@ -229,7 +278,7 @@ GEM
     escape_utils (0.2.4)
     eventmachine (0.12.10)
     excon (0.13.4)
-    execjs (1.3.2)
+    execjs (1.4.0)
       multi_json (~> 1.0)
     factory_girl (3.3.0)
       activesupport (>= 3.0.0)
@@ -254,24 +303,8 @@ GEM
       ruby-hmac
     foreman (0.46.0)
       thor (>= 0.13.6)
-    formatador (0.2.1)
+    formatador (0.2.3)
     growl (1.0.3)
-    guard-jasmine (1.1.3)
-      childprocess
-      guard (>= 0.8.3)
-      multi_json
-      thor
-    guard-livereload (0.4.2)
-      em-websocket (>= 0.2.0)
-      guard (>= 0.10.0)
-      multi_json (~> 1.0)
-    guard-pow (0.2.1)
-      guard (>= 0.3.0)
-    guard-rspec (0.7.2)
-      guard (>= 0.10.0)
-    guard-spork (0.8.0)
-      guard (>= 0.10.0)
-      spork (>= 0.8.4)
     haml (3.1.6.rc.1)
     haml_coffee_assets (0.8.6)
       execjs (>= 1.2.9)
@@ -297,6 +330,7 @@ GEM
     jquery-rails (2.0.2)
       railties (>= 3.2.0, < 5.0)
       thor (~> 0.14)
+    jruby-pageant (1.0.2)
     json (1.7.3)
     jsonpath (0.5.0)
       multi_json
@@ -310,10 +344,6 @@ GEM
       addressable
     libxml-ruby (2.2.2)
     liquid (2.2.2)
-    listen (0.4.2)
-      rb-fchange (~> 0.0.5)
-      rb-fsevent (~> 0.9.1)
-      rb-inotify (~> 0.8.8)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -334,7 +364,8 @@ GEM
     multipart-post (1.1.5)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
-    net-ssh (2.3.0)
+    net-ssh (2.4.0)
+      jruby-pageant (>= 1.0.2)
     netrc (0.7.1)
     newrelic_rpm (3.3.4.1)
     nokogiri (1.5.2)
@@ -420,7 +451,7 @@ GEM
       railties (~> 3.1)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    rpm_contrib (2.1.9)
+    rpm_contrib (2.1.10)
       newrelic_rpm (>= 3.1.1)
       newrelic_rpm (>= 3.1.1)
     rspec (2.10.0)
@@ -458,6 +489,7 @@ GEM
     simple_oauth (0.1.8)
     slop (2.4.4)
     snail (0.5.7)
+    spork (0.9.2)
     sprockets (2.1.3)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -551,11 +583,11 @@ DEPENDENCIES
   foreman
   growl
   guard!
-  guard-jasmine
-  guard-livereload
-  guard-pow
-  guard-rspec
-  guard-spork
+  guard-jasmine!
+  guard-livereload!
+  guard-pow!
+  guard-rspec!
+  guard-spork!
   haml (= 3.1.6.rc.1)
   haml_coffee_assets (~> 0.8.2)
   has_scope (~> 0.5.1)
@@ -565,6 +597,7 @@ DEPENDENCIES
   letter_opener!
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
+  listen!
   mime-types
   mongo (~> 1.6.0)
   mongoid (~> 2.4.7)
@@ -601,7 +634,7 @@ DEPENDENCIES
   show_me_the_cookies
   silent-postgres
   snail (~> 0.5.7)
-  spork!
+  spork (~> 0.9.2)
   squeel (~> 1.0.0)
   stat_request_parser (~> 1.1.0)
   state_machine (~> 1.1.2)
