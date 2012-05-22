@@ -106,7 +106,7 @@ namespace :db do
     desc "Create fake site stats"
     task site_stats: :environment do
       disable_perform_deliveries do
-        timed { empty_tables(Stat::Site) }
+        timed { empty_tables(Stat::Site::Day, Stat::Site::Hour, Stat::Site::Minute, Stat::Site::Second) }
         timed { create_site_stats(argv_user) }
       end
     end
@@ -122,7 +122,7 @@ namespace :db do
     desc "Create fake site stats"
     task recurring_site_stats: :environment do
       disable_perform_deliveries do
-        timed { empty_tables(Stat::Site) }
+        timed { empty_tables(Stat::Site::Day, Stat::Site::Hour, Stat::Site::Minute, Stat::Site::Second) }
         timed { create_site_stats(argv_user) }
         timed { recurring_site_stats_update(argv_user) }
       end
