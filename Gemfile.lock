@@ -499,6 +499,9 @@ GEM
       rubyzip
     settingslogic (2.0.6)
     sexp_processor (3.2.0)
+    sextant (0.1.0)
+      activesupport (>= 3.1)
+      rails (>= 3.1)
     shoulda-matchers (1.1.0)
       activesupport (>= 3.0.0)
     show_me_the_cookies (1.1.1)
@@ -651,6 +654,7 @@ DEPENDENCIES
   rubyzip (~> 0.9.7)
   sass-rails (~> 3.2.0)
   settingslogic (= 2.0.6)
+  sextant
   shoulda-matchers
   show_me_the_cookies
   silent-postgres

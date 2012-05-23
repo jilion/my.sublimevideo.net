@@ -126,6 +126,8 @@ group :development, :test do
 
   # Javascript test
   gem 'jasminerice'
+  # Rails routes view
+  gem 'sextant'
 end
 
 group :test do
