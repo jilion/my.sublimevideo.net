@@ -1,4 +1,4 @@
-= title_and_content_header("Cancel my account")
+= title_and_content_header 'Cancel my account'
 
 %p.bigger
   Thank you for using SublimeVideo - we're sorry to see you go.
@@ -9,27 +9,27 @@
 .content_left.more_info
   = form_for @goodbye_feedback, url: '/account/cancel', html: { method: 'post', class: 'main_form section' } do |f|
     .entry.select
-      = f.label :reason, "What is your reason for leaving?", class: "text"
+      = f.label :reason, 'What is your reason for leaving?', class: 'text'
       = f.select :reason, GoodbyeFeedback::REASONS.map { |r| [t("goodbye_feedback.reason.#{r}"), r]}, required: true, prompt: true
 
     .entry
       .comment
-        = f.label :comment, "Additional comments:", class: "text"
-        = f.text_area :comment, placeholder: "Please leave any comments here.", class: "text"
+        = f.label :comment, 'Additional comments:', class: 'text'
+        = f.text_area :comment, class: 'text'
       .spacer
 
     .break
     .entry
       .name
         = f.label :next_player, "If you're switching to another video player or solution, could you let us know which one?", class: "text"
-        = f.text_field :next_player, class: "text no_icon"
+        = f.text_field :next_player, class: 'text no_icon'
       .spacer
 
     .break
     %p.label Please enter your current password to confirm:
     .entry.password
-      = label_tag 'user[current_password]', 'Please enter your current password to confirm', class: "icon"
-      = password_field_tag 'user[current_password]', '', placeholder: 'Current password', class: "text", required: true
+      = label_tag 'user[current_password]', 'Please enter your current password to confirm', class: 'icon'
+      = password_field_tag 'user[current_password]', '', class: 'text', required: true
       - if @user.errors[:current_password].present?
         .inline_errors
           %span Please enter your current password to confirm the cancellation
@@ -38,9 +38,9 @@
       %p= "Please understand that:"
       %ul
         %li= raw "All your #{link_to "sites", sites_path, class: "hl"} will be cancelled."
-        %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
-        %li= "We do not offer refunds."
+        %li= 'All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available.'
+        %li= 'We do not offer refunds.'
 
     .entry.continue
-      = f.submit "Cancel my account", id: 'user_submit', class: "submit blue_button"
+      = f.submit 'Cancel my account', id: 'user_submit', class: 'submit blue_button'
   .spacer
