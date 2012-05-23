@@ -153,6 +153,7 @@ group :tools do
   gem 'foreman'
   gem 'powder'
   gem 'pry'
+  gem 'brakeman'
 
   # Guard
   gem 'growl'
