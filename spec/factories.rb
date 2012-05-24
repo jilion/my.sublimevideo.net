@@ -36,8 +36,8 @@ FactoryGirl.define do
     cc_expiration_year    { 1.year.from_now.year }
     cc_verification_value '111'
 
-    after_build  { VCR.insert_cassette('ogone/void_authorization') }
-    after_create do |user|
+    after(:build)  { VCR.insert_cassette('ogone/void_authorization') }
+    after(:create) do |user|
       VCR.eject_cassette
       user.reload
     end
@@ -67,7 +67,7 @@ FactoryGirl.define do
 
   # Site in trial
   factory :site, parent: :new_site do
-    after_build do |site|
+    after(:build) do |site|
       site.prepare_pending_attributes
       site.apply_pending_attributes
       # site.send(:puts, site.errors.inspect) unless site.valid?
@@ -83,8 +83,8 @@ FactoryGirl.define do
   factory :site_with_invoice, parent: :new_site do
     trial_started_at { BusinessModel.days_for_trial.days.ago }
     first_paid_plan_started_at { Time.now.utc }
-    after_build  { VCR.insert_cassette('ogone/visa_payment_generic') }
-    after_create do |site|
+    after(:build)  { VCR.insert_cassette('ogone/visa_payment_generic') }
+    after(:create) do |site|
       # this is needed since "instant charging" is now only done on upgrade (not on post-trial activation)
       Transaction.charge_invoices_by_user_id(site.user.id)
       VCR.eject_cassette
@@ -93,8 +93,8 @@ FactoryGirl.define do
   end
 
   factory :site_pending, parent: :new_site do
-    after_build  { VCR.insert_cassette('ogone/visa_payment_generic') }
-    after_create { VCR.eject_cassette }
+    after(:build)  { VCR.insert_cassette('ogone/visa_payment_generic') }
+    after(:create) { VCR.eject_cassette }
   end
 
   # ==============
