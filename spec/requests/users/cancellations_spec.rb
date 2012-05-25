@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-feature 'Account deletion', :focus do
+feature 'Account deletion' do
   scenario 'shows a feedback form before deleting the account and succeeds with a reason and a valid current password' do
     sign_in_as :user
     click_link 'John Doe'
@@ -26,8 +26,8 @@ feature 'Account deletion', :focus do
 
     last_delivery = ActionMailer::Base.deliveries.last
     last_delivery.to.should eq [@current_user.email]
-    last_delivery.subject.should eq 'Your account has been deleted'
-    last_delivery.body.encoded.should include 'Your account has been deleted.'
+    last_delivery.subject.should eq 'Your account has been cancelled'
+    last_delivery.body.encoded.should include 'This is to confirm that the cancellation of your SublimeVideo account has been processed'
   end
 
   scenario 'shows a feedback form before deleting the account but shows an error without a valid reason' do

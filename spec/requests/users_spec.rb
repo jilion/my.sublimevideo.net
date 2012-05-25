@@ -241,7 +241,7 @@ feature 'Password recovery' do
 
       last_delivery = ActionMailer::Base.deliveries.last
       last_delivery.to.should eq [user.email]
-      last_delivery.subject.should eq "Reset password instructions"
+      last_delivery.subject.should eq "Password reset instructions"
 
       go 'my', "password/edit?reset_password_token=#{user.reset_password_token}"
 
@@ -274,7 +274,7 @@ feature "Credentials update" do
 
     last_delivery = ActionMailer::Base.deliveries.last
     last_delivery.to.should eq ["zeno@jilion.com"]
-    last_delivery.subject.should eq "Confirmation instructions"
+    last_delivery.subject.should eq "Account confirmation instructions"
   end
 
   scenario "It's possible to update password" do
@@ -292,7 +292,7 @@ feature "Credentials update" do
     fill_in 'Password', with: '654321'
     click_button 'Log In'
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/new"
+    current_url.should eq "http://my.sublimevideo.dev/account"
   end
 end
 

@@ -200,11 +200,11 @@ feature "Suspended page" do
         first_delivery = ActionMailer::Base.deliveries.first
         first_delivery.to.should eq [@current_user.email]
         first_delivery.subject.should eq "Your account has been reactivated"
-        first_delivery.body.encoded.should include "Your account has been reactivated."
+        first_delivery.body.encoded.should include "Your SublimeVideo account has been reactivated."
 
         last_delivery = ActionMailer::Base.deliveries.last
         last_delivery.to.should eq [@current_user.email]
-        last_delivery.subject.should eq "Payment approved"
+        last_delivery.subject.should eq "Your payment has been approved"
         last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved."
 
         go 'my', 'suspended'

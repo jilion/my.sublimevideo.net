@@ -4,13 +4,15 @@ require_relative '../../../lib/goodbye_manager'
 describe GoodbyeManager do
 
   module StateMachine
-    class InvalidTransition < Exception; end
+    class Error < StandardError; end
+    class InvalidTransition < Error; end
   end
   module ActiveRecord
     class Base
-      def self.transaction(&block); yield; end
+      def self.transaction(options = {}, &block); yield; end
     end
-    class RecordInvalid < Exception; end
+    class ActiveRecordError < StandardError; end
+    class RecordInvalid < ActiveRecordError; end
   end
 
   describe '.archive_user_and_save_feedback' do

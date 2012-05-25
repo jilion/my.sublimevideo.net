@@ -38,6 +38,8 @@ describe MailLetter do
           let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'dev')) }
           before do
             @dev_user = create(:user, email: 'remy@jilion.com')
+            @worker.work_off
+            ActionMailer::Base.deliveries.clear
           end
 
           it "delays delivery of mails" do
@@ -50,7 +52,6 @@ describe MailLetter do
           end
 
           it "sends email to user with activity sites and should send appropriate template" do
-            ActionMailer::Base.deliveries.clear
             subject
             @worker.work_off
 
@@ -67,7 +68,9 @@ describe MailLetter do
           before do
             @archived_user = create(:user, state: 'archived')
             @paying_user   = create(:user)
+            @worker.work_off
             create(:site_not_in_trial, user: @paying_user)
+            ActionMailer::Base.deliveries.clear
           end
 
           context "with the 'paying' filter" do
@@ -83,7 +86,6 @@ describe MailLetter do
             end
 
             it "sends email to paying users and should send appropriate template" do
-              ActionMailer::Base.deliveries.clear
               subject
               @worker.work_off
 
