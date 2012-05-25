@@ -1,0 +1,26 @@
+%html
+  %body
+    %div
+      %table.wrapper{ cellspacing: 0, cellpadding: 0, width: '100%', border: 0, background: '#eaeef4' }
+        %tr{ width: '100%' }
+          %td.header{ width: '100%', height: 99, background: asset_url('emails/header-background.png') }
+            %table{ cellspacing: 0, cellpadding: 0, width: '100%', border: 0 }
+              %tr{ width: '100%' }
+                %td{ align: 'center', valign: 'center' }
+                  %h2.logo
+                    = link_to 'http://sublimevideo.net' do
+                      = image_tag asset_url('emails/sublimevideo-logo.png'), alt: "SublimeVideo", border: "0"
+      .content
+        %table{ cellspacing: 0, cellpadding: 0, border: 0, width: '100%' }
+          %tr
+            %td{ align: 'left', valign: 'top' }
+              - unless @no_intro
+                %p= t("mailer.intro_name", name: @user.name_or_email)
+
+              = yield
+
+              - unless @no_signature
+                %p= t("mailer.signature")
+
+              - unless @no_reply
+                %p.small= t("mailer.reply_to_this_email")

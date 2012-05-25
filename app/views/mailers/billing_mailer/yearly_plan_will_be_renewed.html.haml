@@ -1,0 +1,30 @@
+%p
+  = "Your #{@site.plan.name.titleize} plan for #{@site.hostname} "
+  = "will be renewed on #{l(@site.plan_cycle_ended_at.tomorrow, format: :named_date)}."
+
+%p
+  If you want to update your plan before this date, you can do so via the
+  = link_to('Update plan', edit_site_plan_url(@site))
+  page.
+
+- if @user.cc_expired?
+  %p
+    Also, we noticed that your credit card has expired. You can update your card information via the
+    = link_to('Update billing information', edit_billing_url)
+    page.
+
+- elsif @user.cc_expire_this_month?
+  %p
+    Also, we noticed that your credit card expires at the end of this month. You can update your card information via the
+    = link_to('Update billing information', edit_billing_url)
+    page.
+
+- elsif !@user.cc?
+  %p
+    In order to prevent any charging issues, you'll need to provide valid credit card details before
+    = l(@site.plan_cycle_ended_at.tomorrow, format: :named_date)
+    via the
+    = link_to('Update billing information', edit_billing_url)
+    page.
+
+%p Thank you for choosing SublimeVideo!

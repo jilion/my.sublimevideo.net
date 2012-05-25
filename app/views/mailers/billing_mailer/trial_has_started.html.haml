@@ -1,0 +1,37 @@
+%p
+  Your
+  = @site.plan.name.titleize
+  plan's
+  %strong= "#{BusinessModel.days_for_trial}-day free trial for"
+  = @site.hostname
+  has started.
+
+- if @user.cc?
+  %p
+    You'll see your first bill of
+    = display_amount(@site.plan.price(@site))
+    = " (excl. VAT)" if @user.vat?
+    on 
+    = l(@site.trial_end.tomorrow, format: :named_date)
+    , when the trial is over. You can
+    = link_to("downgrade", edit_site_plan_url(@site))
+    to our Free plan at any time before the end of the trial and we won't charge you a thing.
+
+    %p Thank you for choosing SublimeVideo!
+- else
+  %p
+    In order to continue enjoying all of your
+    = @site.plan.name.titleize
+    plan's features without any interruptions after the trial period ends, you'll need to
+    = link_to('provide valid credit card details', edit_billing_url)
+    before
+    = l(@site.trial_end.tomorrow, format: :named_date)
+    via the
+    = link_to('Update billing information', edit_billing_url)
+    page.
+
+  %p
+    We'll send you another reminder about this when your
+    = "#{BusinessModel.days_for_trial}-day free trial is almost over."
+
+  %p Thank you for evaluating SublimeVideo!
