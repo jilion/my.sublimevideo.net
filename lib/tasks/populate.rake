@@ -150,6 +150,11 @@ namespace :db do
       end
     end
 
+    desc "Send emails (via letter_opener)"
+    task emails: :environment do
+      timed { send_all_emails(argv_user) }
+    end
+
     desc "Import MongoDB production databases locally (not the other way around don't worry!)"
     task import_mongo_prod: :environment do
       mongo_db_pwd = argv('password')
@@ -817,6 +822,38 @@ def create_mail_templates(count = 5)
     )
   end
   puts "#{count} random mail templates created!"
+end
+
+def send_all_emails(user_id)
+  user        = User.find(user_id)
+  site        = Site.joins(:invoices).where(user_id: user_id).group { sites.id }.having { { invoices => (count(id) > 0) } }.last
+  invoice     = site.invoices.last
+  transaction = invoice.transactions.last || Transaction.create(invoices: [invoice])
+
+  DeviseMailer.confirmation_instructions(user).deliver!
+  DeviseMailer.reset_password_instructions(user).deliver!
+
+  BillingMailer.trial_has_started(site).deliver!
+  BillingMailer.trial_will_expire(site).deliver!
+  BillingMailer.trial_has_expired(site, Plan.paid_plans.first).deliver!
+  BillingMailer.yearly_plan_will_be_renewed(site).deliver!
+
+  BillingMailer.credit_card_will_expire(user).deliver!
+
+  BillingMailer.transaction_succeeded(transaction).deliver!
+  BillingMailer.transaction_failed(transaction).deliver!
+
+  BillingMailer.too_many_charging_attempts(invoice).deliver!
+
+  MailMailer.send_mail_with_template(user, MailTemplate.last).deliver!
+
+  UsageMonitoringMailer.plan_overused(site).deliver!
+  UsageMonitoringMailer.plan_upgrade_required(site).deliver!
+
+  UserMailer.welcome(user).deliver!
+  UserMailer.account_suspended(user).deliver!
+  UserMailer.account_unsuspended(user).deliver!
+  UserMailer.account_archived(user).deliver!
 end
 
 def argv(var_name)
