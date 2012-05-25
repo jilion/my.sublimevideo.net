@@ -2,7 +2,8 @@
 
 - action = action_name == 'new_gs' ? gs_login_url : login_user_url
 = form_for User.new, as: :user, url: action, html: { method: :post, id: 'user_login', class: "main_form" } do |f|
-  = hidden_field_tag :user_return_to, params[:user_return_to]
+  - if params[:user_return_to]
+    = hidden_field_tag :user_return_to, params[:user_return_to]
 
   .entry.email
     = f.label :email, "", class: "icon"

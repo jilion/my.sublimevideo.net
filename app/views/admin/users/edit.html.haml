@@ -57,7 +57,8 @@
 
   = form_for [:admin, @user] do |f|
     = f.check_box :vip
-    = f.submit "Update"
+    = f.label :vip, 'VIP users will never be suspended because of non-payment.', style: 'display:inline'
+    = f.submit 'Update'
   %br
   %hr
   %br

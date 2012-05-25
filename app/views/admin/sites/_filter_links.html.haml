@@ -47,7 +47,7 @@
 = "-----------------------------------------------"
 
 .range_form
-  With more than
+  With at least
   %strong= label_tag 'with_min_billable_video_views', display_integer(params[:with_min_billable_video_views] || 0), style: 'display:inline'
   video plays in the last 30 days.
   = form_tag [:admin, :sites], method: :get, id: 'range_form' do
