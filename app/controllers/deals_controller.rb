@@ -23,7 +23,7 @@ private
         value: params[:id],
         expires: 2.hours.from_now,
         domain: :all,
-        secure: true
+        secure: Rails.env.production?
       }
     end
   end

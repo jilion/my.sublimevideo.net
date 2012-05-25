@@ -71,4 +71,9 @@ en:
               invalid: "is invalid"
             cc_number:
               invalid: "is invalid"
+
+        goodbye_feedback:
+          attributes:
+            reason:
+              inclusion: "must be given"
               

@@ -1,5 +1,5 @@
 ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
-  
+
   error_class = "errors"
   if html_tag =~ /<(input|textarea|select)[^>]+class=/
     class_attribute = html_tag =~ /class=['"]/
@@ -8,7 +8,7 @@ ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
     first_whitespace = html_tag =~ /\s/
     html_tag[first_whitespace] = " class='#{error_class}' "
   end
-  
+
   if instance.object.present? && html_tag =~ /<(input|textarea|select)/
     if errors = instance.object.errors.messages.delete(instance.method_name.to_sym)
       if errors.length > 1
@@ -26,6 +26,6 @@ ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
       end
     end
   end
-  
+
   html_tag
 end

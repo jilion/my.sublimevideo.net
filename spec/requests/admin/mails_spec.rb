@@ -63,6 +63,7 @@ feature "Mails sending" do
   context "choosing the 'Not Archived' criteria" do
     background do
       @user = create(:user)
+      @worker.work_off
       sign_in_as :admin, roles: ['god']
       @mail_template = create(:mail_template)
       ActionMailer::Base.deliveries.clear

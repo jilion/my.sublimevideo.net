@@ -132,7 +132,6 @@ MySublimeVideo::Application.routes.draw do
 
         get    :edit,    path: '/account', as: 'edit'
         put    :update,  path: '/account', as: 'update'
-        delete :destroy, path: '/account', as: 'destroy'
       end
       get  '/login'    => 'users/sessions#new', as: 'login_user'
 
@@ -140,6 +139,9 @@ MySublimeVideo::Application.routes.draw do
       post '/gs-login' => 'users/sessions#create_gs', as: 'gs_login'
 
       get '/account/more-info' => "users#more_info", as: 'more_user_info'
+
+      get  '/account/cancel' => "users/cancellations#new", as: 'cancel_account'
+      post '/account/cancel' => "users/cancellations#create"
 
       delete '/notice/:id' => 'users#hide_notice'
 

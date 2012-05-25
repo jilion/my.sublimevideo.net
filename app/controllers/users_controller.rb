@@ -9,7 +9,7 @@ class UsersController < Devise::RegistrationsController
   respond_to :html
   respond_to :js, only: [:hide_notice]
 
-  prepend_before_filter :authenticate_scope!, only: [:edit, :update, :destroy, :more_info, :hide_notice]
+  prepend_before_filter :authenticate_scope!, only: [:edit, :update, :more_info, :hide_notice]
   before_filter :redirect_suspended_user
 
   skip_before_filter :verify_authenticity_token, only: [:hide_notice]
@@ -45,24 +45,6 @@ class UsersController < Devise::RegistrationsController
       if @user.update_attributes(params[:user])
         set_flash_message :notice, :updated if is_navigational_format?
         format.html { redirect_to params[:more_info_form] ? sites_url : [:edit, :user] }
-      else
-        format.html { render :edit }
-      end
-    end
-  end
-
-  # /account
-  def destroy
-    @user = User.find(current_user.id)
-    @user.attributes = params[:user] # set the current password
-
-    respond_with(@user) do |format|
-      if @user.archive
-        format.html do
-          sign_out(@user)
-          set_flash_message :notice, :destroyed if is_navigational_format?
-          redirect_to root_url(host: request.domain, protocol: 'http')
-        end
       else
         format.html { render :edit }
       end
