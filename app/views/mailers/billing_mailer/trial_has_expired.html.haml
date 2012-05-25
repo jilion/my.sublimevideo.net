@@ -1,19 +1,10 @@
 %p
-  Your
-  = @trial_plan.name.titleize
-  plan's
-  = "#{BusinessModel.days_for_trial}-day free trial for #{@site.hostname}"
+  = "Your #{@trial_plan.name.titleize} plan's #{BusinessModel.days_for_trial}-day free trial for #{@site.hostname}"
   %strong has now expired.
 
 %p
-  Your
-  = @trial_plan.name.titleize
-  plan has been downgraded to our Free plan because you didn't provide valid credit card details.
+  = "Your #{@trial_plan.name.titleize} plan has been downgraded to our Free plan because you didn't provide valid credit card details."
   That means some features such as Real-Time Stats, an unbranded player, email support and SSL serving are no longer active.
 
 %p
-  You can
-  %strong= link_to('upgrade', edit_site_plan_url(@site))
-  to one of our Plus or Premium plans at any time via the
-  = link_to('Update plan', edit_site_plan_url(@site))
-  page.
+  = raw "You can <strong>#{link_to('upgrade', edit_site_plan_url(@site))}</strong> to one of our Plus or Premium plans at any time via the #{link_to('Update plan', edit_site_plan_url(@site))} page."

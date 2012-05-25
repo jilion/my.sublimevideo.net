@@ -2,11 +2,7 @@
 
 %p
   - if @transaction.user.cc_expired?
-    Please update your credit card information via the
-    = link_to('Update billing information', edit_billing_url)
-    page.
+    = raw "Please update your credit card information via the #{link_to('Update billing information', edit_billing_url)} page."
 
   - else
-    Please visit the
-    = link_to('My Sites', sites_url)
-    page to find out which sites encountered payment errors and retry the payment.
+    = raw "Please visit the #{link_to('My Sites', sites_url)} page to find out which sites encountered payment errors and retry the payment."
