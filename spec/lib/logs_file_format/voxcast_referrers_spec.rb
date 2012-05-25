@@ -4,7 +4,7 @@ describe LogsFileFormat::VoxcastReferrers do
 
   describe "with cdn.sublimevideo.net.log.1284549900-1284549960.gz logs file" do
     before do
-      log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
+      log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastReferrers')
     end
 

@@ -4,7 +4,7 @@ describe Stat do
 
   context "with cdn.sublimevideo.net.log.1310993640-1310993700.gz logs file" do
     before do
-      @log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1313499060-1313499120.gz'))
+      @log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1313499060-1313499120.gz')
       log_time  = 5.days.ago.change(hour: 0).to_i
       @log      = build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
     end

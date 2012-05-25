@@ -1,20 +1,26 @@
 development:
-  licenses: dev.sublimevideo.licenses
-  loaders:  dev.sublimevideo.loaders
-  player:   dev.sublimevideo.player
-  logs:     dev.sublimevideo.logs
+  licenses:      dev.sublimevideo.licenses
+  loaders:       dev.sublimevideo.loaders
+  player:        dev.sublimevideo.player
+  logs:          dev.sublimevideo.logs
+  stats_exports: dev.sublimevideo.stats_exports
 test:
-  licenses: dev.sublimevideo.licenses
-  loaders:  dev.sublimevideo.loaders
-  player:   dev.sublimevideo.player
-  logs:     dev.sublimevideo.logs
+  licenses:      dev.sublimevideo.licenses
+  loaders:       dev.sublimevideo.loaders
+  player:        dev.sublimevideo.player
+  logs:          dev.sublimevideo.logs
+  stats_exports: dev.sublimevideo.stats_exports
+
 staging:
-  licenses: staging.sublimevideo.licenses
-  loaders:  staging.sublimevideo.loaders
-  player:   staging.sublimevideo.player
-  logs:     staging.sublimevideo.logs
+  licenses:      staging.sublimevideo.licenses
+  loaders:       staging.sublimevideo.loaders
+  player:        staging.sublimevideo.player
+  logs:          staging.sublimevideo.logs
+  stats_exports: staging.sublimevideo.stats_exports
+
 production:
-  licenses: sublimevideo.licenses
-  loaders:  sublimevideo.loaders
-  player:   sublimevideo.player
-  logs:     sublimevideo.logs
+  licenses:      sublimevideo.licenses
+  loaders:       sublimevideo.loaders
+  player:        sublimevideo.player
+  logs:          sublimevideo.logs
+  stats_exports: sublimevideo.stats_exports
