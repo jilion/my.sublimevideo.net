@@ -72,7 +72,7 @@ describe Log::Voxcast do
   context "Factory from 4076.voxcdn.com" do
     before do
       VoxcastCDN.stub(:download_log).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
-        File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz'))
+        fixture_file('logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz')
       }
     end
     subject { create(:log_voxcast, :name => '4076.voxcdn.com.log.1279103340-1279103400.gz') }
@@ -270,7 +270,7 @@ describe Log::Voxcast do
 
     describe ".parse_log_for_stats" do
       before do
-        log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
+        log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
         VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
         @log = create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       end
@@ -293,7 +293,7 @@ describe Log::Voxcast do
 
   describe "Instance Methods" do
     before do
-      log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
+      log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
       @log = create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
     end

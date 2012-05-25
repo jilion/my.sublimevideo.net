@@ -23,7 +23,7 @@ describe Release do
     it { should validate_presence_of(:zip) }
 
     it "only allows zip file" do
-      release = build(:release, :zip => File.new(Rails.root.join('spec/fixtures/railscast_intro.mov')))
+      release = build(:release, :zip => fixture_file('railscast_intro.mov'))
       release.should_not be_valid
       release.errors[:zip].should include("You are not allowed to upload \"mov\" files, allowed types: [\"zip\"]")
     end

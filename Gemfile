@@ -19,6 +19,7 @@ gem 'bson_ext',              '~> 1.6.0'
 gem 'bson',                  '~> 1.6.0'
 gem 'mongo',                 '~> 1.6.0'
 gem 'mongoid',               '~> 2.4.7'
+gem 'mongoid_uniquify'
 
 # Views
 gem 'haml',                  '3.1.6.rc.1' # issue in 3.1.5, wait until 3.1.6 https://github.com/haml/haml/issues/531
