@@ -1,8 +1,9 @@
 en:
   mailer:
-    intro_generic: "Dear SublimeVideo user,"
-    intro_name:    "Dear %{name},"
-    signature:     "The SublimeVideo Team"
+    intro_generic:       "Dear SublimeVideo user,"
+    intro_name:          "Dear %{name},"
+    signature:           "The SublimeVideo Team"
+    reply_to_this_email: "If you have any questions, please reply to this email."
 
     billing_mailer:
       trial_has_started: "Your trial for %{hostname} has started"
@@ -24,5 +25,5 @@ en:
     user_mailer:
       account_suspended: "Your account has been suspended"
       account_unsuspended: "Your account has been reactivated"
-      account_archived: "Your account has been deleted"
+      account_archived: "Your account has been cancelled"
       welcome: "Welcome in SublimeVideo!"
