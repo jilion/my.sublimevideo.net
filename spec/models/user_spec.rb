@@ -436,18 +436,10 @@ describe User do
             end
 
             it "subscribes new email and unsubscribe old email on user destroy" do
-              VCR.use_cassette('user/newsletter_unsubscribe') do
-                subject # explicitly create the subject
-                @worker.work_off
-                CampaignMonitor.subscriber(subject.email)["State"].should eq "Active"
-                subject.current_password = "123456"
-                expect { subject.archive }.to change(Delayed::Job, :count).by(1)
-                @worker.work_off
-              end
+              subject.current_password = "123456"
 
-              VCR.use_cassette('user/newsletter_unsubscribe_unsubscribed') do
-                CampaignMonitor.subscriber(subject.email)["State"].should eq "Unsubscribed"
-              end
+              NewsletterManager.should_receive(:unsubscribe).with(subject)
+              subject.archive!
             end
           end
         end
@@ -503,56 +495,45 @@ describe User do
       end
     end
 
-    describe "after_create :delay_set_newsletter" do
-      subject { create(:user, email: "newsletter_sign_up@jilion.com") }
+    describe "after_create :delay_send_welcome_email" do
+      subject { create(:user) }
 
-      it "delays set_newsletter" do
-        expect { subject }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.name.should eq "Class#set_newsletter"
+      it "delays send_welcome_email" do
+        expect { subject }.to change(Delayed::Job.where { handler =~ "%Class%send_welcome_email%" }, :count).by(1)
       end
 
-      context "user is subscribed in CM" do
-        before do
-          CampaignMonitor.should_receive(:subscriber) { true }
-        end
-
-        it "set newsletter" do
-          subject.newsletter.should be_false
-          @worker.work_off
-          subject.reload.newsletter.should be_true
-        end
+      it "send the welcome email" do
+        subject
+        expect { @worker.work_off }.to change(ActionMailer::Base.deliveries, :count).by(1)
       end
+    end
 
-      context "user isn't subscribed in CM" do
-        before do
-          CampaignMonitor.should_receive(:subscriber).twice { nil }
-        end
+    describe "after_create :sync_newsletter" do
+      subject { create(:user, newsletter: false) }
 
-        it "set newsletter" do
-          subject.newsletter.should be_false
-          @worker.work_off
-          subject.reload.newsletter.should be_false
-        end
+      it "calls NewsletterManager.sync_newsletter" do
+        NewsletterManager.should_receive(:sync_from_service)
+        subject
       end
     end
 
     describe "after_save :newsletter_update" do
       context "user sign-up" do
-        context "user subscribes on sign-up" do
-          subject { create(:user, newsletter: "1", email: "newsletter_sign_up@jilion.com") }
+        context "user subscribes to the newsletter" do
+          subject { create(:user, newsletter: true, email: "newsletter_sign_up@jilion.com") }
 
-          it "registers user's email on Campaign Monitor" do
-            expect { subject }.to change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should eq "Class#subscribe"
+          it 'calls NewsletterManager.subscribe' do
+            NewsletterManager.should_receive(:subscribe)
+            subject
           end
         end
 
-        context "user doesn't subscribe on sign-up" do
+        context "user doesn't subscribe to the newsletter" do
           subject { create(:user, newsletter: false, email: "no_newsletter_sign_up@jilion.com") }
 
-          it "doesn't register user's email on Campaign Monitor" do
-            expect { subject }.to change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should_not eq "Class#subscribe"
+          it "doesn't calls NewsletterManager.subscribe" do
+            NewsletterManager.should_not_receive(:subscribe)
+            subject
           end
         end
       end
@@ -585,19 +566,13 @@ describe User do
 
     describe "after_update :zendesk_update" do
       subject { create(:user) }
-      before do
-        CampaignMonitor.stub(:subscribe)
-        CampaignMonitor.stub(:update)
-      end
 
       context "user has no zendesk_id" do
         it "doesn't delay ZendeskWrapper.update_user" do
           subject
           expect {
             subject.update_attribute(:email, "new@jilion.com")
-            subject.confirm!
           }.to_not change(Delayed::Job, :count)
-          Delayed::Job.all.any? { |dj| dj.name == 'Module#update_user' }.should be_false
         end
       end
 
@@ -613,6 +588,7 @@ describe User do
           end
 
           it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
+            NewsletterManager.stub(:update)
             expect {
               subject.update_attribute(:email, "new@jilion.com")
               subject.confirm!
@@ -632,7 +608,6 @@ describe User do
           end
 
           it "updates user's name on Zendesk" do
-            CampaignMonitor.stub(:subscriber)
             expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(1)
 
             VCR.use_cassette("user/zendesk_update") do

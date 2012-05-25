@@ -31,7 +31,8 @@ end
 
 group :backend do
 
-  guard :spork, quiet: true, wait: 70 do
+  guard :spork, wait: 70 do
+  # guard :spork, quiet: true, wait: 70 do
     watch('config/boot.rb')
     watch('config/application.rb')
     watch('config/environment.rb')
@@ -52,7 +53,7 @@ group :backend do
     watch(%r{^lib/(.+)\.rb})                                                   { |m| "spec/lib/#{m[1]}_spec.rb" }
   end
 
-  guard :rspec, version: 2, bundler: false, all_after_pass: false, all_on_start: false do
+  guard :rspec, version: 2, bundler: false, all_after_pass: false, all_on_start: false, keep_failed: false do
     watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/fast/#{m[1]}" }
     watch(%r{^spec/fast/.+_spec\.rb})
     watch(%r{^spec/fast_spec_helper.rb}) { 'spec/fast' }

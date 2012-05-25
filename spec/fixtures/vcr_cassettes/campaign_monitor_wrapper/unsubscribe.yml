@@ -1,0 +1,99 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
+    body: ! '{"EmailAddress":"user_unsubscribe@example.org","Name":"User Unsubscribe","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":13}],"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.4
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - f5a423776d4e0709450a9813dd10d5c4
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 16 May 2012 18:15:43 GMT
+      content-length:
+      - '30'
+    body: ! '"user_unsubscribe@example.org"'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244/unsubscribe.json
+    body: ! '{"EmailAddress":"user_unsubscribe@example.org"}'
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.4
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - f5a423776d4e0709450a9813dd10d5c4
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 16 May 2012 18:15:44 GMT
+      content-length:
+      - '0'
+    body: 
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=user_unsubscribe@example.org
+    body: 
+    headers:
+      user-agent:
+      - createsend-ruby-1.0.4
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - csw
+      cache-control:
+      - private, s-maxage=0
+      x-cs-node:
+      - 303d5e73b046241aeedb3b04f9903092
+      content-type:
+      - application/json; charset=utf-8
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 16 May 2012 18:15:23 GMT
+      content-length:
+      - '206'
+    body: ! '{"EmailAddress":"user_unsubscribe@example.org","Name":"User Unsubscribe","Date":"2012-05-16
+      20:16:00","State":"Unsubscribed","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"13"}]}'
+    http_version: '1.1'

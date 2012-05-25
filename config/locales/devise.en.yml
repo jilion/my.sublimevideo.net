@@ -59,11 +59,11 @@ en:
         inactive: 'Your account was not activated yet.'
     mailer:
       confirmation_instructions:
-        subject: 'Confirmation instructions'
+        subject: 'Account confirmation instructions'
       invitation_instructions:
         admin_subject: 'Invitation instructions'
         user_subject: 'Your SublimeVideo Beta Invitation'
       reset_password_instructions:
-        subject: 'Reset password instructions'
+        subject: 'Password reset instructions'
       unlock_instructions:
         subject: 'Unlock Instructions'

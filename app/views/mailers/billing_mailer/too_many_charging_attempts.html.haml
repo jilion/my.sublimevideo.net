@@ -1,0 +1,5 @@
+%p= raw "The payment for #{@invoice.site.hostname} has failed multiple times and no further attempts will be made to charge this account."
+
+%p= raw "You can purchase a plan for #{@invoice.site.hostname} via the #{link_to('Update plan', edit_site_plan_url(@invoice.site))} page."
+
+%p= raw "Please note that if payment failed due to a problem with your credit card, you can update your card information via the #{link_to('Update billing information', edit_billing_url)} page."

@@ -79,7 +79,8 @@ class User < ActiveRecord::Base
 
   before_save :prepare_pending_credit_card, if: proc { |u| u.credit_card(true).valid? } # in user/credit_card
 
-  after_create :delay_set_newsletter, unless: :newsletter?
+  after_create :delay_send_welcome_email
+  after_create :sync_newsletter, unless: :newsletter?
 
   after_save :register_credit_card_on_file, if: proc { |u| u.cc_register } # in user/credit_card
   after_save :newsletter_update
@@ -129,12 +130,10 @@ class User < ActiveRecord::Base
     user.unsuspend
   end
 
-  def self.set_newsletter(user_id)
+  def self.send_welcome_email(user_id)
     user = User.find(user_id)
 
-    CampaignMonitor.lists.each do |name, list|
-      return user.update_column(:newsletter, true) if CampaignMonitor.subscriber(user.email, list["list_id"])
-    end
+    UserMailer.welcome(user).deliver!
   end
 
   # ====================
@@ -331,7 +330,7 @@ private
 
   # after_transition on: :archive
   def newsletter_unsubscribe
-    CampaignMonitor.delay.unsubscribe(self.email)
+    NewsletterManager.unsubscribe(self)
   end
 
   # after_transition on: :archive
@@ -348,23 +347,28 @@ private
   end
 
   # after_create
-  def delay_set_newsletter
-    User.delay.set_newsletter(id)
+  def delay_send_welcome_email
+    self.class.delay.send_welcome_email(id)
+  end
+
+  # after_create
+  def sync_newsletter
+    NewsletterManager.sync_from_service(self)
   end
 
   # after_save
   def newsletter_update
     if newsletter_changed?
       if newsletter?
-        CampaignMonitor.delay.subscribe(self)
+        NewsletterManager.subscribe(self)
       else
-        CampaignMonitor.delay.unsubscribe(email)
+        newsletter_unsubscribe
       end
     end
 
     if newsletter?
       if (email_changed? && email_was.present?) || (name_changed? && name_was.present? && name?)
-        CampaignMonitor.delay(run_at: 30.seconds.from_now).update(self)
+        NewsletterManager.update(self)
       end
     end
   end

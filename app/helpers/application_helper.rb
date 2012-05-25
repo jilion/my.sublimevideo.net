@@ -67,6 +67,11 @@ module ApplicationHelper
     Rails.env.production? || Rails.env.staging? ? 'https' : 'http'
   end
 
+  def asset_url(asset)
+    host = request ? '' : ActionController::Base.asset_host
+    "#{host}#{asset_path(asset)}"
+  end
+
   def demo_stats_page?
     request.subdomain == 'my' && request.path == '/sites/stats/demo'
   end

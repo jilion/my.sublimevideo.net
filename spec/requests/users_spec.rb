@@ -151,7 +151,7 @@ feature 'Email update' do
 
       last_delivery = ActionMailer::Base.deliveries.last
       last_delivery.to.should eq [User.last.unconfirmed_email]
-      last_delivery.subject.should eq "Confirmation instructions"
+      last_delivery.subject.should eq "Account confirmation instructions"
 
       go 'my', "confirmation?confirmation_token=#{User.last.confirmation_token}"
 
@@ -238,7 +238,6 @@ feature 'Password recovery' do
       click_button "Send"
 
       user.reload.reset_password_token.should be_present
-
 
       last_delivery = ActionMailer::Base.deliveries.last
       last_delivery.to.should eq [user.email]

@@ -1,4 +1,4 @@
-- sites = user.sites.not_archived.all
+- sites = user.sites.select { |s| s.state != 'archived' }
 %tr[user]{ class: cycle("", "alt") }
 
   %td.name

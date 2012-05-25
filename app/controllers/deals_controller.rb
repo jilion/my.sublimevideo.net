@@ -22,7 +22,8 @@ private
       cookies[:d] = {
         value: params[:id],
         expires: 2.hours.from_now,
-        domain: :all
+        domain: :all,
+        secure: true
       }
     end
   end

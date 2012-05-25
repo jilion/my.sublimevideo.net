@@ -1,9 +1,9 @@
 class BillingMailer < Mailer
   default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.billing.email_full')
 
-  helper :application, 'invoices', 'sites'
+  helper :invoices, :sites
   include SitesHelper # the only way to include view helpers in here
-                          # I don't feel dirty doing this since the email's subject IS a view so...
+                      # I don't feel dirty doing this since the email's subject IS a view so...
 
   def trial_has_started(site)
     extract_site_and_user(site)
@@ -45,11 +45,10 @@ class BillingMailer < Mailer
 
   def yearly_plan_will_be_renewed(site)
     extract_site_and_user(site)
-    @formatted_renewal_date = I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :named_date)
 
     mail(
       to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.yearly_plan_will_be_renewed", hostname: @site.hostname, date: @formatted_renewal_date)
+      subject: I18n.t("mailer.billing_mailer.yearly_plan_will_be_renewed", hostname: @site.hostname)
     )
   end
 
