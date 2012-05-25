@@ -26,6 +26,8 @@ gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
 gem 'rails_autolink',        '~> 1.0.7'
+gem 'hpricot',               '~> 0.8.6'
+gem 'premailer-rails3',      '~> 1.1.0'
 
 # Auth / invitations
 gem 'devise',                '~> 2.0.1'
