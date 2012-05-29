@@ -12,7 +12,7 @@ namespace :export do
         site_token = 'srkkdods' # twit.tv (n: { '$ne' => nil })
         CSV.open("#{ENV['HOME']}/Desktop/video_stats-#{site_token}.csv", "wb") do |csv|
           csv << ['uid', 'name', 'loads_count', 'views_count', 'embed_loads_count', 'embed_views_count']
-          VideoTag.where(st: site_token, n: { '$ne' => nil }).each do |video_tag|
+          VideoTag.where(st: site_token).active.each do |video_tag|
             stats = Stat::Video::Day.where(st: site_token, u: video_tag.u).entries
             vl = hashes_values_sum(stats, :vl)
             vv = hashes_values_sum(stats, :vv)
