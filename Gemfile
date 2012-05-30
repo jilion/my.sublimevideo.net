@@ -120,6 +120,7 @@ group :development do
   gem 'letter_opener', github: 'pcg79/letter_opener' # includes a fix not merged yet
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
+  gem 'pry-rails'
 end
 
 group :development, :test do
@@ -157,7 +158,6 @@ group :tools do
   gem 'heroku'
   gem 'foreman'
   gem 'powder'
-  gem 'pry'
   gem 'brakeman'
 
   # Guard
