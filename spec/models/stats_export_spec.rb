@@ -29,6 +29,12 @@ describe StatsExport do
       zip = Zip::ZipFile.open(stats_export.file.path)
       zip.read(zip.first).should eq csv.read
     end
+
+    it "has a secure_url" do
+      with_carrierwave_fog_configuration do
+        stats_export.file.secure_url.should include 'https://s3.amazonaws.com/dev.sublimevideo.stats.exports/'
+      end
+    end
   end
 
 end

@@ -255,7 +255,6 @@ FactoryGirl.define do
   # ===================
   # = My stats models =
   # ===================
-
   factory :site_second_stat, class: Stat::Site::Second do
   end
   factory :site_minute_stat, class: Stat::Site::Minute do
@@ -274,6 +273,13 @@ FactoryGirl.define do
   end
 
   factory :video_tag do
+  end
+
+  factory :stats_export do
+    st   { FactoryGirl.create(:site).token }
+    from { 30.days.ago.midnight.to_i }
+    to   { 1.days.ago.midnight.to_i }
+    file { File.new(Rails.root.join('spec/fixtures/release.zip')) }
   end
 
   # ================

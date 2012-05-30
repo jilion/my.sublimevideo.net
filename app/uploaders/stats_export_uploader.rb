@@ -8,6 +8,16 @@ class StatsExportUploader < CarrierWave::Uploader::Base
     S3Bucket.stats_exports
   end
 
+  def secure_url(*args)
+    url = file.authenticated_url(*args)
+    url.gsub!(/#{fog_directory}.s3.amazonaws.com/, "s3.amazonaws.com/#{fog_directory}")
+    url
+  end
+
+  def fog_public
+    false
+  end
+
   # Override the directory where uploaded files will be stored
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
@@ -34,7 +44,7 @@ class StatsExportUploader < CarrierWave::Uploader::Base
 
   # Override the filename of the uploaded files
   def filename
-    filename = "stats_export.#{model.st}.#{model.from.to_i}-#{model.to.to_i}.csv"
+    filename = "stats_export.#{model.id}.#{model.st}.#{model.from.to_i}-#{model.to.to_i}.csv"
     filename += '.zip' if file.content_type == 'application/zip'
     filename
   end

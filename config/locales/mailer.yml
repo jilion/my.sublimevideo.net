@@ -5,6 +5,10 @@ en:
     signature:           "The SublimeVideo Team"
     reply_to_this_email: "If you have any questions, please reply to this email."
 
+    stats:
+      email:      "stats@sublimevideo.net"
+      email_full: "SublimeVideo Stats <stats@sublimevideo.net>"
+
     billing_mailer:
       trial_has_started: "Your trial for %{hostname} has started"
       trial_will_expire:
