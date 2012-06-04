@@ -39,7 +39,7 @@ class CampaignMonitorWrapper
 
     def update(params = {})
       request do
-        if subscriber = CreateSend::Subscriber.new(params[:list_id], params[:email]) # user.email_was.nil? ? user.email : user.email_was)
+        if subscriber = CreateSend::Subscriber.new(params[:list_id], params[:email])
           subscriber.update(params[:user][:email], params[:user][:name], [], params[:user][:newsletter])
         end
       end

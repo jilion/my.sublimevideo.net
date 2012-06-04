@@ -41,6 +41,7 @@ class NewsletterManager
 
     def update(user)
       CampaignMonitorWrapper.delay.update(
+        list_id: list['list_id'],
         email: user.email_was || user.email,
         user: { email: user.email, name: user.name, newsletter: user.newsletter? }
       )

@@ -96,6 +96,7 @@ describe NewsletterManager do
       it 'delays CampaignMonitorWrapper.update' do
         CampaignMonitorWrapper.should_receive(:delay).and_return(@dj = mock('delay'))
         @dj.should_receive(:update).with(
+          list_id: 'abc42',
           email: user1.email,
           user: { email: user1.email, name: user1.name, newsletter: user1.newsletter? }
         )
@@ -108,6 +109,7 @@ describe NewsletterManager do
       it 'delays CampaignMonitorWrapper.update' do
         CampaignMonitorWrapper.should_receive(:delay).and_return(@dj = mock('delay'))
         @dj.should_receive(:update).with(
+          list_id: 'abc42',
           email: user2.email_was,
           user: { email: user2.email, name: user2.name, newsletter: user2.newsletter? }
         )
