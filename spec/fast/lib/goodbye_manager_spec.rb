@@ -3,16 +3,21 @@ require_relative '../../../lib/goodbye_manager'
 
 describe GoodbyeManager do
 
-  module StateMachine
-    class Error < StandardError; end
-    class InvalidTransition < Error; end
-  end
-  module ActiveRecord
-    class Base
-      def self.transaction(options = {}, &block); yield; end
+  unless defined?(StateMachine)
+    module StateMachine
+      class Error < StandardError; end
+      class InvalidTransition < Error; def initialize(*args); end; end
     end
-    class ActiveRecordError < StandardError; end
-    class RecordInvalid < ActiveRecordError; end
+  end
+
+  unless defined?(ActiveRecord)
+    module ActiveRecord
+      class Base
+        def self.transaction(options = {}, &block); yield; end
+      end
+      class ActiveRecordError < StandardError; end
+      class RecordInvalid < ActiveRecordError; def initialize(*args); end; end
+    end
   end
 
   describe '.archive_user_and_save_feedback' do
@@ -42,7 +47,7 @@ describe GoodbyeManager do
 
         it 'dont archive the user and returns false' do
           valid_feedback.should_receive(:save!).and_return(true)
-          non_archivable_user.should_receive(:archive!) { raise StateMachine::InvalidTransition }
+          non_archivable_user.should_receive(:archive!) { raise StateMachine::InvalidTransition.new(mock, mock, :foo) }
 
           described_class.archive_user_and_save_feedback(non_archivable_user, valid_feedback).should be_false
         end
@@ -52,7 +57,7 @@ describe GoodbyeManager do
     context 'feedback is invalid' do
       before do
         invalid_feedback.should_receive(:'user_id=').with(12)
-        invalid_feedback.should_receive(:save!) { raise ActiveRecord::RecordInvalid }
+        invalid_feedback.should_receive(:save!) { raise ActiveRecord::RecordInvalid.new(mock) }
       end
 
       it 'dont archives the user' do

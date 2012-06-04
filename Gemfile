@@ -60,7 +60,7 @@ gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
 
-gem 'activemerchant',        github: 'rymai/active_merchant', branch: '3ds_from_ZenCocoon'
+gem 'activemerchant',        '1.23.0'
 gem 'public_suffix',         '~> 1.0.0'
 gem 'useragent',             github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser',   '~> 1.1.0' # hosted on gemfury
@@ -116,7 +116,7 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  gem 'letter_opener', github: 'pcg79/letter_opener' # includes a fix not merged yet
+  gem 'letter_opener', github: 'ryanb/letter_opener' # includes a fix not merged yet
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
 end
@@ -166,7 +166,7 @@ group :tools do
   end
 
   gem 'listen', github: 'guard/listen'
-  gem 'guard', github: 'guard/guard', branch: 'listen'
+  gem 'guard', github: 'guard/guard'
   gem 'guard-pow', github: 'guard/guard-pow', branch: 'guard_1_1'
   gem 'guard-livereload', github: 'guard/guard-livereload', branch: 'guard_1_1'
   gem 'guard-spork', github: 'guard/guard-spork', branch: 'guard_1_1'

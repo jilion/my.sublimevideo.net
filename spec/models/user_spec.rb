@@ -473,7 +473,7 @@ describe User do
       end
 
       context "when user has cc info before" do
-        subject { create(:user_real_cc) }
+        subject { create(:user) }
         before do
           subject.cc_type.should eq 'visa'
           subject.cc_last_digits.should eq '1111'
@@ -566,6 +566,9 @@ describe User do
 
     describe "after_update :zendesk_update" do
       subject { create(:user) }
+      before do
+        NewsletterManager.stub(:sync_from_service)
+      end
 
       context "user has no zendesk_id" do
         it "doesn't delay ZendeskWrapper.update_user" do
@@ -588,11 +591,8 @@ describe User do
           end
 
           it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
-            NewsletterManager.stub(:update)
-            expect {
-              subject.update_attribute(:email, "new@jilion.com")
-              subject.confirm!
-            }.to change(Delayed::Job, :count).by(1)
+            subject.update_attribute(:email, "new@jilion.com")
+            subject.confirm!
 
             VCR.use_cassette("user/zendesk_update") do
               @worker.work_off
@@ -608,7 +608,7 @@ describe User do
           end
 
           it "updates user's name on Zendesk" do
-            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(1)
+            subject.update_attribute(:name, "Remy")
 
             VCR.use_cassette("user/zendesk_update") do
               @worker.work_off

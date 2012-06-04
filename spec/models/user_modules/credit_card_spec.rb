@@ -83,7 +83,7 @@ describe UserModules::CreditCard do
 
     describe "persisted record with saved cc" do
       before(:all) do
-        @user = create(:user_real_cc)
+        @user = create(:user)
       end
       subject { @user }
 
@@ -111,7 +111,7 @@ describe UserModules::CreditCard do
 
     describe "persisted record with saved cc and with a new pending cc" do
       before(:all) do
-        @user = create(:user_real_cc)
+        @user = create(:user)
         @user = User.find(@user.id)
         @user.assign_attributes(valid_cc_attributes_master)
         @user.prepare_pending_credit_card
@@ -220,7 +220,7 @@ describe UserModules::CreditCard do
     describe ".send_credit_card_expiration" do
       context "archived user" do
         it "doesn't send 'cc is expired' email when user's credit card will expire at the end of the current month" do
-          @user = create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year, state: 'archived'))
+          @user = create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date, state: 'archived')
           @site = create(:site, user: @user)
           @user.cc_expire_on.should eq Time.now.utc.end_of_month.to_date
           expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
@@ -229,7 +229,7 @@ describe UserModules::CreditCard do
 
       context "free user" do
         it "doesn't send 'cc is expired' email when user's credit card will expire at the end of the current month" do
-          @user = create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year))
+          @user = create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date)
           @site = create(:site, user: @user, plan_id: @free_plan.id)
           @user.cc_expire_on.should eq Time.now.utc.end_of_month.to_date
           expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
@@ -238,7 +238,7 @@ describe UserModules::CreditCard do
 
       context "paying user" do
         it "sends 'cc will expire' email when user's credit card will expire at the end of the current month" do
-          @user = create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year))
+          @user = create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date)
           @site = create(:site_not_in_trial, user: @user)
 
           @user.cc_expire_on.should eq Time.now.utc.end_of_month.to_date
@@ -246,7 +246,7 @@ describe UserModules::CreditCard do
         end
 
         it "doesn't send 'cc is expired' email when user's credit card is expired 1 month ago" do
-          Timecop.travel(1.month.ago) { @user = create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year)) }
+          @user = create(:user, cc_expire_on: 1.month.ago.end_of_month.to_date)
           @site = create(:site, user: @user)
 
           @user.cc_expire_on.should eq 1.month.ago.end_of_month.to_date
@@ -254,7 +254,7 @@ describe UserModules::CreditCard do
         end
 
         it "doesn't send 'cc is expired' email when user's credit card is expired 1 year ago" do
-          Timecop.travel(1.year.ago) { @user = create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year)) }
+          @user = create(:user, cc_expire_on: 1.year.ago.end_of_month.to_date)
           @site = create(:site, user: @user)
 
           @user.cc_expire_on.should eq 1.year.ago.end_of_month.to_date
@@ -262,7 +262,7 @@ describe UserModules::CreditCard do
         end
 
         it "doesn't send expiration email when user's credit card will not expire at the end of the current month" do
-          Timecop.travel(1.month.from_now) { @user = create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year)) }
+          @user = create(:user, cc_expire_on: 1.month.from_now.end_of_month.to_date)
           @site = create(:site, user: @user)
 
           @user.cc_expire_on.should eq 1.month.from_now.end_of_month.to_date
@@ -274,7 +274,6 @@ describe UserModules::CreditCard do
   end
 
   describe "Instance Methods" do
-
     describe "#credit_card" do
       subject { build(:user_no_cc, valid_cc_attributes) }
 
@@ -332,28 +331,22 @@ describe UserModules::CreditCard do
       describe "on-word full name" do
         subject { build(:user_no_cc, cc_full_name: "John") }
 
-        it { subject.instance_variable_get("@cc_first_name").should eq "John" }
-        it { subject.instance_variable_get("@cc_last_name").should eq "-" }
+        it { subject.credit_card.first_name.should eq "John" }
+        it { subject.credit_card.last_name.should eq "-" }
       end
 
       describe "two-word full name" do
         subject { build(:user_no_cc, cc_full_name: "John Doe") }
 
-        it { subject.instance_variable_get("@cc_first_name").should eq "John" }
-        it { subject.instance_variable_get("@cc_last_name").should eq "Doe" }
+        it { subject.credit_card.first_name.should eq "John" }
+        it { subject.credit_card.last_name.should eq "Doe" }
       end
 
       describe "more-than-two-word full name" do
         subject { build(:user_no_cc, cc_full_name: "John Doe Bar") }
 
-        it { subject.instance_variable_get("@cc_first_name").should eq "John" }
-        it { subject.instance_variable_get("@cc_last_name").should eq "Doe Bar" }
-      end
-    end
-
-    describe "#cc_type" do
-      it "should take cc_type from cc_number if nil" do
-        create(:user_real_cc, cc_type: nil).cc_type.should eq 'visa'
+        it { subject.credit_card.first_name.should eq "John" }
+        it { subject.credit_card.last_name.should eq "Doe Bar" }
       end
     end
 
@@ -384,7 +377,7 @@ describe UserModules::CreditCard do
       end
 
       context "with a credit card that will expire this month" do
-        subject { create(:user_real_cc).tap { |u| u.cc_expire_on = Time.now.utc.end_of_month.to_date } }
+        subject { create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date) }
 
         it { subject.should be_credit_card }
         it { subject.cc_expire_on.should eq Time.now.utc.end_of_month.to_date }
@@ -393,7 +386,7 @@ describe UserModules::CreditCard do
       end
 
       context "with a credit card not expired" do
-        subject { create(:user_real_cc).tap { |u| u.cc_expire_on = 1.month.from_now.end_of_month.to_date } }
+        subject { create(:user, cc_expire_on: 1.month.from_now.end_of_month.to_date) }
 
         it { subject.should be_credit_card }
         it { subject.cc_expire_on.should eq 1.month.from_now.end_of_month.to_date }
@@ -402,7 +395,7 @@ describe UserModules::CreditCard do
       end
 
       context "with a credit card expired" do
-        subject { create(:user_real_cc).tap { |u| u.cc_expire_on = 1.month.ago.end_of_month.to_date } }
+        subject { create(:user, cc_expire_on: 1.month.ago.end_of_month.to_date) }
 
         it { subject.should be_credit_card }
         it { subject.cc_expire_on.should eq 1.month.ago.end_of_month.to_date }
@@ -494,8 +487,8 @@ describe UserModules::CreditCard do
 
       it "should actually call Ogone" do
         subject.prepare_pending_credit_card
-        Ogone.should_receive(:authorize).with(100, subject.credit_card, {
-          store: subject.cc_alias,
+        Ogone.should_receive(:store).with(subject.credit_card, {
+          billing_id: subject.cc_alias,
           email: subject.email,
           billing_address: { address1: subject.billing_address_1, zip: subject.billing_postal_code, city: subject.billing_city, country: subject.billing_country },
           d3d: true,
@@ -590,7 +583,7 @@ describe UserModules::CreditCard do
 
         context "authorization is OK" do
           it "should not add an error on base to the user" do
-            subject.should_receive(:void_authorization).with("1234;RES")
+            Ogone.should_receive(:void).with("1234;RES")
 
             subject.process_credit_card_authorization_response(@authorized_params)
             subject.errors.should be_empty
@@ -750,7 +743,7 @@ describe UserModules::CreditCard do
 
         context "authorized" do
           it "should pend and apply pending cc info" do
-            subject.should_receive(:void_authorization).with("1234;RES")
+            Ogone.should_receive(:void).with("1234;RES")
             subject.process_credit_card_authorization_response(@authorized_params)
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should be_nil
@@ -856,24 +849,6 @@ describe UserModules::CreditCard do
         end
       end
 
-    end
-
-    # Private method
-    describe "#void_authorization" do
-      subject { create(:user_real_cc) }
-
-      it "voids authorization after verification" do
-        mock_response = mock('response', :success? => true)
-        Ogone.should_receive(:void).twice { mock_response }
-        subject.send(:void_authorization, "1234;RES")
-      end
-
-      it "notifies if void authorization after verification failed" do
-        mock_response = mock('response', :success? => false, message:'failed')
-        Ogone.stub(:void) { mock_response }
-        Notify.should_receive(:send).twice
-        subject.send(:void_authorization, "1234;RES")
-      end
     end
 
   end

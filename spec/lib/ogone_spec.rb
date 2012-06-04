@@ -16,19 +16,13 @@ describe Ogone do
       )
     end
 
-    describe ".authorize" do
-      describe "authorize of $1 with alias" do
+    describe ".store" do
+      describe "store of $0.01 with alias" do
         use_vcr_cassette "ogone/visa_authorize_1_alias"
-        subject { Ogone.authorize(100, @cc, currency: 'USD', store: 'sublime_33') }
+        subject { Ogone.store(@cc, currency: 'USD', billing_id: 'sublime_33') }
 
         it { should be_success }
         its(:message) { should eq "The transaction was successful" }
-
-        it "should be able to be deleted" do
-          response = Ogone.void(subject.authorization)
-          response.should be_success
-          response.message.should eq 'The transaction was successful'
-        end
       end
     end
 

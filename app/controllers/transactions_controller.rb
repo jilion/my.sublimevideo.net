@@ -27,8 +27,8 @@ private
 
   def tempered_request?
     @sha_params = params.select { |k, v| Ogone.sha_out_keys.include?(k.upcase) }
-    to_digest   = @sha_params.sort { |a, b| a[0].upcase <=> b[0].upcase }.map { |k, v| "#{k.upcase}=#{v}" unless v.blank? }.compact.join(Ogone.signature_out) + Ogone.signature_out
-
+    to_digest   = @sha_params.sort { |a, b| a[0].upcase <=> b[0].upcase }.map { |k, v| "#{k.upcase}=#{v}" unless v.blank? }.compact.join(Ogone.signature_out)
+    to_digest << Ogone.signature_out
     params["SHASIGN"] != Digest::SHA512.hexdigest(to_digest).upcase
   end
 
