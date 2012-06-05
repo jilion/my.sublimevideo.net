@@ -6,7 +6,7 @@ stub_module 'User' unless defined?(User)
 
 require_relative '../../../lib/newsletter_manager'
 
-describe NewsletterManager, :focus do
+describe NewsletterManager do
   before do
     CampaignMonitorConfig.stub(lists: {
       'sublimevideo' => { 'list_id' => 'abc42', 'segment' => 'test' },
