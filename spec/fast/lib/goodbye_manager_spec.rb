@@ -47,7 +47,7 @@ describe GoodbyeManager do
 
         it 'dont archive the user and returns false' do
           valid_feedback.should_receive(:save!).and_return(true)
-          non_archivable_user.should_receive(:archive!) { raise StateMachine::InvalidTransition.new(mock, mock, :foo) }
+          non_archivable_user.should_receive(:archive!) { raise StateMachine::InvalidTransition.new(mock.as_null_object, mock.as_null_object, :foo) }
 
           described_class.archive_user_and_save_feedback(non_archivable_user, valid_feedback).should be_false
         end
@@ -57,7 +57,7 @@ describe GoodbyeManager do
     context 'feedback is invalid' do
       before do
         invalid_feedback.should_receive(:'user_id=').with(12)
-        invalid_feedback.should_receive(:save!) { raise ActiveRecord::RecordInvalid.new(mock) }
+        invalid_feedback.should_receive(:save!) { raise ActiveRecord::RecordInvalid.new(mock.as_null_object) }
       end
 
       it 'dont archives the user' do
