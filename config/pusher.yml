@@ -12,4 +12,8 @@ staging:
   url: <%= ENV['PUSHER_URL'] %>
 
 production:
-  url: <%= ENV['PUSHER_URL'] %>
+<% if ARGV.join.include? 'assets:precompile' %>
+  <<: *defaults
+<% else %>
+  url: <%= ARGV.join.include?('assets:precompile') ? '' : ENV['PUSHER_URL'] %>
+<% end %>
