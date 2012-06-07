@@ -59,12 +59,11 @@ module Stats
       end
 
       def create_sales_stat(day)
-        invoices = Invoice.paid.paid_between(day.beginning_of_day, day.end_of_day)
-
-        self.create(sales_hash(day, invoices))
+        self.create(sales_hash(day))
       end
 
-      def sales_hash(day, invoices)
+      def sales_hash(day)
+        invoices = Invoice.paid.paid_between(day.beginning_of_day, day.end_of_day)
         hash = {
           d: day.to_time,
           ne: Hash.new { |h,k| h[k] = Hash.new(0) },

@@ -61,12 +61,12 @@ module Stats
       end
 
       def create_site_usages_stat(day)
-        site_usages = SiteUsage.where(day: day.to_time)
-
-        self.create(site_usages_hash(day, site_usages))
+        self.create(site_usages_hash(day))
       end
 
-      def site_usages_hash(day, site_usages)
+      def site_usages_hash(day)
+        site_usages = SiteUsage.where(day: day.to_time)
+
         {
           d:  day.to_time,
           lh: loader_hits_hash(site_usages),
@@ -76,6 +76,8 @@ module Stats
           tr: traffic_hash(site_usages)
         }
       end
+
+      private
 
       def loader_hits_hash(site_usages)
         all_loader_hits     = site_usages.sum(:loader_hits).to_i

@@ -60,12 +60,12 @@ module Stats
       end
 
       def create_site_stats_stat(day)
-        site_stats = Stat::Site::Day.where(d: day.to_time).all
-
-        self.create(site_stats_hash(day, site_stats))
+        self.create(site_stats_hash(day))
       end
 
-      def site_stats_hash(day, site_stats)
+      def site_stats_hash(day)
+        site_stats = Stat::Site::Day.where(d: day.to_time).all
+
         {
           d:  day.to_time,
           pv: hashes_values_sum(site_stats, :pv),
@@ -74,6 +74,8 @@ module Stats
           md: player_mode_hashes_values_sum(site_stats)
         }
       end
+
+      private
 
       def hashes_values_sum(site_stats, attribute)
         site_stats.only(attribute).map(&attribute).inject({}) do |memo, el|
