@@ -183,6 +183,12 @@ module UserModules::CreditCard
       when '2'
         @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.refused') }
 
+      # STATUS == 1, Authorization canceled by client:
+      #   The authorization has been canceled by the client (probably because the client failed to authenticate).
+      #   The customer can retry the authorization process.
+      when '1'
+        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.canceled') }
+
       # STATUS == 52, Authorization not known:
       #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
       #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.

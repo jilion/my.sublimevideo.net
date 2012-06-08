@@ -530,6 +530,12 @@ describe UserModules::CreditCard do
           "PAYID" => "1234",
           "NCERRORPLUS" => "Refused credit card number"
         }
+        @canceled_params = {
+          "NCSTATUS" => "40001134",
+          "STATUS" => "1",
+          "PAYID" => "1234",
+          "NCERRORPLUS" => "Authentication failed, please retry or cancel"
+        }
         @unknown_params = {
           "NCSTATUS" => "2",
           "STATUS" => "52",
@@ -560,7 +566,7 @@ describe UserModules::CreditCard do
         subject { @user }
 
         context "authorization waiting for 3-D Secure identification" do
-          it "returns true and set d3d_html" do
+          it "sets the d3d_html attribute" do
             subject.process_credit_card_authorization_response(@d3d_params)
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should eq "<html>No HTML.</html>"
@@ -582,7 +588,7 @@ describe UserModules::CreditCard do
         end
 
         context "authorization is OK" do
-          it "should not add an error on base to the user" do
+          it "adds an error on base to the user" do
             Ogone.should_receive(:void).with("1234;RES")
 
             subject.process_credit_card_authorization_response(@authorized_params)
@@ -607,7 +613,7 @@ describe UserModules::CreditCard do
         end
 
         context "authorization is waiting" do
-          it "should not add an error on base to the user" do
+          it "doesn't add an error on base to the user" do
             subject.process_credit_card_authorization_response(@waiting_params)
             subject.i18n_notice_and_alert.should == { notice: I18n.t("credit_card.errors.waiting") }
             subject.d3d_html.should be_nil
@@ -629,7 +635,7 @@ describe UserModules::CreditCard do
         end
 
         context "authorization is invalid or incomplete" do
-          it "returns a hash with info" do
+          it "adds an error on base to the user" do
             subject.process_credit_card_authorization_response(@invalid_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.invalid") }
             subject.d3d_html.should be_nil
@@ -650,10 +656,11 @@ describe UserModules::CreditCard do
         end
 
         context "authorization is refused" do
-          it "should add an error on base to the user" do
+          it "adds an error on base to the user" do
             subject.process_credit_card_authorization_response(@refused_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.refused") }
             subject.d3d_html.should be_nil
+
             subject.cc_type.should be_nil
             subject.cc_last_digits.should be_nil
             subject.cc_expire_on.should be_nil
@@ -670,8 +677,31 @@ describe UserModules::CreditCard do
           end
         end
 
+        context "authorization is canceled by client" do
+          it "adds an error on base to the user" do
+            subject.process_credit_card_authorization_response(@canceled_params)
+            subject.errors.should be_empty
+            subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.canceled") }
+            subject.d3d_html.should be_nil
+
+            subject.cc_type.should be_nil
+            subject.cc_last_digits.should be_nil
+            subject.cc_expire_on.should be_nil
+            subject.cc_updated_at.should be_nil
+
+            subject.pending_cc_type.should eq 'visa'
+            subject.pending_cc_last_digits.should eq '1111'
+            subject.pending_cc_expire_on.should eq 1.year.from_now.end_of_month.to_date
+            subject.pending_cc_updated_at.should be_present
+
+            subject.last_failed_cc_authorize_at.should be_present
+            subject.last_failed_cc_authorize_status.should eq 1
+            subject.last_failed_cc_authorize_error.should eq "Authentication failed, please retry or cancel"
+          end
+        end
+
         context "authorization is  unknown" do
-          it "should not add an error on base to the user" do
+          it "doesn't add an error on base to the user" do
             Notify.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
             subject.process_credit_card_authorization_response(@unknown_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.unknown") }
