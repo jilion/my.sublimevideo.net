@@ -63,5 +63,8 @@ module MySublimeVideo
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:protection_key, :password, :cc]
+
+    # Enable escaping HTML in JSON.
+    config.active_support.escape_html_entities_in_json = true
   end
 end
