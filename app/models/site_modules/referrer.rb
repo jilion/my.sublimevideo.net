@@ -1,3 +1,5 @@
+require_dependency 'notify'
+
 module SiteModules::Referrer
   extend ActiveSupport::Concern
 

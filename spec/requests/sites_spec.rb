@@ -2,7 +2,6 @@ require 'spec_helper'
 include ActionView::Helpers::SanitizeHelper
 
 feature "New site" do
-  before(:all) { create_plans }
 
   context "with a user with no credit card registered" do
     background do
@@ -18,7 +17,7 @@ feature "New site" do
         fill_in "Domain", with: ""
         click_button "Create site"
 
-        @worker.work_off
+        $worker.work_off
         site = @current_user.sites.last
         site.hostname.should eq ""
         site.loader.read.should include(site.token)
@@ -35,7 +34,7 @@ feature "New site" do
         fill_in "Domain", with: "rymai.com"
         click_button "Create site"
 
-        @worker.work_off
+        $worker.work_off
         site = @current_user.sites.last
         site.hostname.should eq "rymai.com"
         site.loader.read.should include(site.token)
@@ -67,7 +66,7 @@ feature "New site" do
           fill_in "Domain", with: "rymai.com"
           expect { click_button "Create" }.to_not change(@current_user.invoices, :count)
 
-          @worker.work_off
+          $worker.work_off
           site = @current_user.sites.last
           site.hostname.should eq "rymai.com"
           site.loader.read.should include(site.token)
@@ -98,7 +97,7 @@ feature "New site" do
             check "site_skip_trial"
             expect { click_button "Create" }.to change(@current_user.invoices, :count).by(1)
 
-            @worker.work_off
+            $worker.work_off
             site = @current_user.sites.last
             site.invoices.last.should be_failed
             site.hostname.should eq "rymai.com"
@@ -126,7 +125,7 @@ feature "New site" do
 
     describe "custom plan" do
       background do
-        go 'my', "/sites/new?custom_plan=#{Plan.find_by_name_and_cycle("custom - 1", "year").token}"
+        go 'my', "/sites/new?custom_plan=#{@custom_plan.token}"
       end
 
       context "with no hostname" do
@@ -148,12 +147,12 @@ feature "New site" do
           fill_in "Domain", with: "rymai.com"
           expect { click_button "Create" }.to_not change(@current_user.invoices, :count)
 
-          @worker.work_off
+          $worker.work_off
           site = @current_user.sites.last
           site.hostname.should eq "rymai.com"
           site.loader.read.should include(site.token)
           site.license.read.should include(site.license_js_hash)
-          site.plan_id.should eq Plan.find_by_name_and_cycle("custom - 1", "year").id
+          site.plan_id.should eq @custom_plan.id
           site.pending_plan_id.should be_nil
           site.trial_started_at.should be_present
           site.first_paid_plan_started_at.should be_nil
@@ -188,7 +187,7 @@ feature "New site" do
           fill_in "Domain", with: "rymai.com"
           expect { click_button "Create" }.to_not change(@current_user.invoices, :count)
 
-          @worker.work_off
+          $worker.work_off
           site = @current_user.sites.last
           site.hostname.should eq "rymai.com"
           site.loader.read.should include(site.token)
@@ -220,7 +219,7 @@ feature "New site" do
               expect { click_button "Create" }.to change(@current_user.invoices, :count)
             end
 
-            @worker.work_off
+            $worker.work_off
             site = @current_user.sites.last
             site.invoices.last.should be_paid
             site.hostname.should eq "rymai.com"

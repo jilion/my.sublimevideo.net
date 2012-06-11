@@ -1,4 +1,6 @@
-# encoding: utf-8 
+# encoding: utf-8
+require_dependency 'notify'
+require_dependency 'logs_file_format'
 
 module LogAnalyzer
   class << self

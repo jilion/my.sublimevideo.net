@@ -1,3 +1,5 @@
+require_dependency 'notify'
+
 class VideoTagTrackersParser
 
   # Merge each videos tag in one big hash

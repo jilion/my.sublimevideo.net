@@ -3,12 +3,12 @@ require 'spec_helper'
 describe InvoiceItem do
 
   context "Factory" do
-    before(:all) { @invoice_item = create(:plan_invoice_item) }
-    subject { @invoice_item }
+    let(:invoice_item) { create(:plan_invoice_item) }
+    subject { invoice_item }
 
     its(:invoice)   { should be_present }
-    its(:site)      { should eq @invoice_item.invoice.site }
-    its(:user)      { should eq @invoice_item.site.user }
+    its(:site)      { should eq invoice_item.invoice.site }
+    its(:user)      { should eq invoice_item.site.user }
     its(:type)      { should eq 'InvoiceItem::Plan' }
     its(:item_type) { should eq 'Plan' }
     its(:item_id)   { should be_present }
@@ -21,8 +21,7 @@ describe InvoiceItem do
   end # Factory
 
   describe "Associations" do
-    before(:all) { @invoice_item = create(:plan_invoice_item) }
-    subject { @invoice_item }
+    subject { create(:plan_invoice_item) }
 
     it { should belong_to :invoice }
     it { should have_one :site } # through :invoice

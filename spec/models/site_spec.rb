@@ -1,11 +1,10 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Site do
+describe Site, :plans do
 
   context "Factory" do
-    before(:all) { @site = create(:site) }
-    subject { @site.reload }
+    subject { create(:site).reload }
 
     its(:user)                                    { should be_present }
     its(:plan)                                    { should be_present }
@@ -40,8 +39,7 @@ describe Site do
   end
 
   describe "Associations" do
-    before(:all) { @site = create(:site) }
-    subject { @site }
+    subject { create(:site) }
 
     it { should belong_to :user }
     it { should belong_to :plan }
@@ -618,7 +616,7 @@ describe Site do
       subject do
         site = build(:new_site)
         site.apply_pending_attributes
-        @worker.work_off
+        $worker.work_off
         site
       end
 
@@ -626,7 +624,7 @@ describe Site do
         VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
         VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
         subject.suspend
-        @worker.work_off
+        $worker.work_off
         subject.reload.loader.should_not be_present
         subject.license.should_not be_present
       end
@@ -636,7 +634,7 @@ describe Site do
       subject do
         site = build(:new_site)
         site.apply_pending_attributes
-        @worker.work_off
+        $worker.work_off
         site
       end
 
@@ -644,12 +642,12 @@ describe Site do
         VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
         VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
         subject.suspend
-        @worker.work_off
+        $worker.work_off
         subject.reload.loader.should_not be_present
         subject.license.should_not be_present
 
         subject.unsuspend
-        @worker.work_off
+        $worker.work_off
         subject.reload.loader.should be_present
         subject.license.should be_present
       end
@@ -659,7 +657,7 @@ describe Site do
       context "from active state" do
         subject do
           site = create(:site)
-          @worker.work_off
+          $worker.work_off
           site
         end
 
@@ -669,7 +667,7 @@ describe Site do
           subject.user.current_password = '123456'
           lambda { subject.archive! }.should change(Delayed::Job, :count).by(1)
           subject.reload.should be_archived
-          lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
+          lambda { $worker.work_off }.should change(Delayed::Job, :count).by(-1)
           subject.reload.loader.should_not be_present
           subject.license.should_not be_present
           subject.archived_at.should be_present

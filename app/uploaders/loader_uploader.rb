@@ -1,3 +1,6 @@
+require_dependency 'custom/carrierwave/mime_types'
+require_dependency 's3_bucket'
+
 class LoaderUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
   include Custom::CarrierWave::MimeTypes

@@ -1,3 +1,6 @@
+require_dependency 'my_redirection_filters'
+require_dependency 'custom_devise_paths'
+
 class UsersController < Devise::RegistrationsController
   include MyRedirectionFilters
   include CustomDevisePaths

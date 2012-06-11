@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SupportRequest do
+describe SupportRequest, :plans do
   before do
     @user  = create(:user, name: 'Remy')
     @site  = create(:site, user: @user, plan_id: @paid_plan.id)

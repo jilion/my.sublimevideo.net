@@ -19,11 +19,13 @@ describe Referrer do
     before(:all) do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960')
       @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastReferrers')
+    end
+    before do
       %w[0w1o1q3c k8qaaj1l ibvjcopp hp1lepyq].each do |token|
         create(:site).update_attribute(:token, token)
       end
+      Referrer.create_or_update_from_trackers!(@trackers)
     end
-    before { Referrer.create_or_update_from_trackers!(@trackers) }
 
     let(:site) { Site.find_by_token('ibvjcopp') }
 

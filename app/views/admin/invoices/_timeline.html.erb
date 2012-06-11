@@ -1,4 +1,6 @@
 <%
+require_dependency 'stat_timeline'
+
 invoices = ::Invoice.between(graph_start_date, graph_end_date).order(:created_at.asc)
 
 paid_invoices         = StatTimeline::Invoice.timeline(invoices.paid, graph_start_date, graph_end_date)

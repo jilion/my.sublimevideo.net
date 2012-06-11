@@ -1,3 +1,6 @@
+require_dependency 'configurator'
+require_dependency 's3_bucket'
+
 module S3
   include Configurator
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Invoice do
+describe Invoice, :plans do
 
   describe "Factory" do
     subject { create(:invoice) }

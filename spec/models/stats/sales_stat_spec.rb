@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Stats::SalesStat do
+describe Stats::SalesStat, :plans do
 
   context "with a bunch of different invoices" do
 

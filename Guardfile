@@ -1,4 +1,5 @@
 # notification :gntp
+interactor :readline
 
 group :frontend do
 
@@ -21,7 +22,7 @@ group :frontend do
     watch(%r{config/locales/.+\.yml})
   end
 
-  guard :jasmine, server: :none, jasmine_url: 'http://my.sublimevideo.dev/jasmine', all_on_start: false do
+  guard :jasmine, server: :none, jasmine_url: 'http://my.sublimevideo.dev/jasmine', all_on_start: false, timeout: 20000 do
     watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
     watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
@@ -31,17 +32,19 @@ end
 
 group :backend do
 
-  guard :spork, wait: 70 do
-  # guard :spork, quiet: true, wait: 70 do
-    watch('config/boot.rb')
-    watch('config/application.rb')
-    watch('config/environment.rb')
-    watch(%r{^config/environments/.+\.rb})
-    watch(%r{^config/initializers/.+\.rb})
-    watch('spec/spec_helper.rb')
-  end
+  # guard :spork, wait: 70 do
+  # # guard :spork, quiet: true, wait: 70 do
+  #   watch('config/boot.rb')
+  #   watch('config/application.rb')
+  #   watch('config/environment.rb')
+  #   watch(%r{^config/environments/.+\.rb})
+  #   watch(%r{^config/initializers/.+\.rb})
+  #   watch('spec/spec_helper.rb')
+  #   watch(%r{^spec/config/.+\.rb})
+  # end
 
-  guard :rspec, version: 2, cli: "--drb", all_after_pass: false, all_on_start: false, keep_failed: false do
+  # drb is set in spec_helper
+  guard :rspec, bundler: false, version: 2, all_after_pass: false, all_on_start: false, keep_failed: false do
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }
     watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/#{m[1]}" }
@@ -51,14 +54,6 @@ group :backend do
 
     watch(%r{^app/(.+)\.rb})                                                   { |m| "spec/#{m[1]}_spec.rb" }
     watch(%r{^lib/(.+)\.rb})                                                   { |m| "spec/lib/#{m[1]}_spec.rb" }
-  end
-
-  guard :rspec, version: 2, bundler: false, all_after_pass: false, all_on_start: false, keep_failed: false do
-    watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/fast/#{m[1]}" }
-    watch(%r{^spec/fast/.+_spec\.rb})
-    watch(%r{^spec/fast_spec_helper.rb}) { 'spec/fast' }
-    watch(%r{^app/(.+)\.rb}) { |m| "spec/fast/#{m[1]}_spec.rb" }
-    watch(%r{^lib/(.+)\.rb}) { |m| "spec/fast/lib/#{m[1]}_spec.rb" }
   end
 
 end

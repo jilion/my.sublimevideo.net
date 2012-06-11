@@ -1,3 +1,5 @@
+require_dependency 'twitter_api'
+
 Twitter.configure do |config|
   config.consumer_key       = TwitterApi.consumer_key
   config.consumer_secret    = TwitterApi.consumer_secret

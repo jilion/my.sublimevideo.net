@@ -3,8 +3,7 @@ require 'spec_helper'
 describe OauthToken do
 
   context "Factory" do
-    before(:all) { @token = create(:oauth_token) }
-    subject { @token }
+    subject { create(:oauth_token) }
 
     its(:user)               { should be_present }
     its(:client_application) { should be_present }
@@ -18,16 +17,14 @@ describe OauthToken do
   end
 
   describe "Associations" do
-    before(:all) { @token = create(:oauth_token) }
-    subject { @token }
+    subject { create(:oauth_token) }
 
     it { should belong_to :user }
     it { should belong_to :client_application }
   end
 
   describe "Validations" do
-    before(:all) { @token = create(:oauth_token) }
-    subject { @token.reload }
+    subject { create(:oauth_token) }
 
     [].each do |attr|
       it { should allow_mass_assignment_of(attr) }
@@ -38,8 +35,7 @@ describe OauthToken do
   end
 
   describe "Scopes" do
-    before(:all) do
-      User.delete_all
+    before do
       @user = create(:user)
       @new_token         = create(:oauth_token, user: @user, authorized_at: nil, invalidated_at: nil)
       @authorized_token  = create(:oauth_token, user: @user, authorized_at: Time.now.utc, invalidated_at: nil)

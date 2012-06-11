@@ -1,3 +1,5 @@
+require_dependency 'public_launch'
+
 module UserModules::Scope
   extend ActiveSupport::Concern
 

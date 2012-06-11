@@ -1,13 +1,10 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Plan do
-  subject { create(:plan) }
+describe Plan, :plans do
 
   context "Factory" do
-    before(:all) { @plan = create(:plan) }
-    after(:all) { @plan.delete }
-    subject { @plan }
+    subject { create(:plan) }
 
     its(:name)                 { should =~ /plus\d+/ }
     its(:cycle)                { should eq "month" }
@@ -27,11 +24,15 @@ describe Plan do
   end
 
   describe "Associations" do
+    subject { create(:plan) }
+
     it { should have_many :sites }
     it { should have_many :invoice_items }
   end
 
   describe "Validations" do
+    subject { create(:plan) }
+
     [:name, :cycle, :video_views, :price, :support_level].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
@@ -46,9 +47,7 @@ describe Plan do
     end
 
     describe "uniqueness of name scoped by cycle" do
-      before do
-        create(:plan, :name => "foo", :cycle => "month")
-      end
+      before { create(:plan, :name => "foo", :cycle => "month") }
 
       it { build(:plan, :name => "foo", :cycle => "month").should_not be_valid }
       it { build(:plan, :name => "foo", :cycle => "year").should be_valid }
@@ -73,6 +72,8 @@ describe Plan do
 
   describe "Instance Methods" do
     describe "#next_plan" do
+      subject { create(:plan) }
+
       it "should return the next plan with a bigger price" do
         plan2 = create(:plan, price: subject.price + 100)
         plan3 = create(:plan, price: subject.price + 2000)
@@ -159,6 +160,7 @@ describe Plan do
         @paid_plan_yearly  = build(:plan, cycle: "year",  price: 10000)
         @paid_plan_yearly2 = build(:plan, cycle: "year",  price: 50000)
       end
+      # All plans deleted in spec/config/plans
 
       it { @free_plan.upgrade?(nil).should be_false }
       it { @free_plan.upgrade?(@free_plan).should be_nil }
@@ -215,6 +217,7 @@ describe Plan do
         @plan2 = build(:plan, cycle: "year", video_views: 2000)
         @plan3 = build(:plan, cycle: "none", video_views: 3000)
       end
+      # All plans deleted in spec/config/plans
 
       it { @plan1.daily_video_views.should eq 33 }
       it { @plan2.daily_video_views.should eq 66 }

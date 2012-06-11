@@ -1,3 +1,5 @@
+require_dependency 'mime_type_guesser'
+
 class VideoCodesController < ApplicationController
   skip_before_filter :authenticate_user!
 

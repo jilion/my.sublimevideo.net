@@ -55,6 +55,7 @@ describe InvoiceItem::Plan do
       @invoice5 = build(:invoice, site: @site5)
       @invoice6 = build(:invoice, site: @site6)
     end
+    after(:all) { DatabaseCleaner.clean_with(:truncation) }
 
     describe "creation or upgrade" do
       context "upgrade with a deal" do

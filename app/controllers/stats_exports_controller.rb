@@ -1,7 +1,9 @@
+require_dependency 'stats_exporter'
+
 class StatsExportsController < ApplicationController
   before_filter :redirect_suspended_user
 
-  # GET /stats/export/:id
+  # GET /stats/exports/:id
   def show
     stats_export = StatsExport.find(params[:id])
 
@@ -12,12 +14,12 @@ class StatsExportsController < ApplicationController
     end
   end
 
-  # POST /stats/export
+  # POST /stats/exports
   def create
     site_token, from, to = params[:stats_export].slice(:st, :from, :to).values
 
     if current_user.sites.where(token: site_token).exists?
-      stats_exporter = StatsExporter.new(site_token, from, to)
+      stats_exporter = StatsExporter.new(site_token, from.to_i, to.to_i)
       stats_exporter.delay(priority: 50).create_and_notify_export!
       render nothing: true
     else

@@ -1,3 +1,6 @@
+require_dependency 'pusher_wrapper'
+require_dependency 'voxcast_cdn'
+
 module SiteModules::Templates
   extend ActiveSupport::Concern
 

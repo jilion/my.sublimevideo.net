@@ -1,3 +1,5 @@
+require_dependency 'notify'
+
 module RecurringJob
 
   LOGS_TASKS = [

@@ -1,3 +1,5 @@
+require_dependency 'goodbye_manager'
+
 class Users::CancellationsController < ApplicationController
 
   before_filter :find_user

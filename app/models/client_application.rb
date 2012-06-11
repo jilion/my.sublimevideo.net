@@ -1,5 +1,3 @@
-require 'oauth'
-
 class ClientApplication < ActiveRecord::Base
 
   attr_accessor :token_callback_url

@@ -4,12 +4,10 @@ source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com acc
 
 ruby '1.9.3'
 
-gem 'rails',                 '3.2.3'
-gem 'sublimevideo_layout' # hosted on gemfury
+gem 'bundler', '~> 1.2.0.pre.1'
 
-# Javascript Assets
-gem 'prototype-rails',       '~> 3.2.1'
-gem 'rails-backbone',        '~> 0.6.0'
+gem 'rails', '3.2.3'
+gem 'sublimevideo_layout' # hosted on gemfury
 
 # Databases
 gem 'pg',                    '~> 0.13.0'
@@ -38,7 +36,6 @@ gem 'devise_invitable',      '~> 1.0.0'
 gem 'oauth',                 '~> 0.4.5'
 gem 'oauth-plugin',          '~> 0.4.0.pre7'
 gem 'acts_as_api',           '~> 0.3.10'
-# gem 'rack-throttle',         github: 'rymai/rack-throttle', require: 'rack/throttle'
 
 # Internals
 gem 'delayed_job',           github: 'collectiveidea/delayed_job', branch: 'v2.1'
@@ -56,7 +53,7 @@ gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
 gem 'fog',                   '~> 1.3.1'
-gem 'carrierwave',           '~> 0.6.2'
+gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
@@ -87,7 +84,7 @@ gem 'pusher',                '~> 0.9.2'
 gem 'redis',                 '~> 2.2.2'
 
 # Tickets
-gem 'zendesk_client',        github: 'jilion/zendesk_client'
+gem 'zendesk_client',        github: 'jilion/zendesk_client', require: 'zendesk'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -100,6 +97,9 @@ group :assets do
   gem 'haml_coffee_assets', '~> 0.8.2'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
+
+  gem 'prototype-rails',       '~> 3.2.1'
+  gem 'rails-backbone',        '~> 0.6.0'
 end
 
 group :production do
@@ -124,7 +124,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rspec-core', github: 'rspec/rspec-core'
+  gem 'rspec-core'
   gem 'rspec-rails'
   gem 'debugger'
 
@@ -137,10 +137,12 @@ end
 group :test do
   gem 'timecop'
   gem 'ffaker'
-  gem 'spork', '~> 0.9.2'
+  # gem 'spork', '~> 0.9.2'
   # gem 'spork', github: 'sporkrb/spork'
   gem 'shoulda-matchers'
   gem 'capybara'
+  gem 'capybara-email'
+  gem "capybara-webkit"
   gem 'show_me_the_cookies'
   gem 'webmock',  '~> 1.6.0'
   gem 'typhoeus', '~> 0.2.0'
@@ -148,12 +150,11 @@ group :test do
 
   gem 'database_cleaner'
   gem 'factory_girl'
-  gem 'factory_girl_rails', require: false # loaded in spec_helper Spork.each_run
+  gem 'factory_girl_rails' # loaded in spec_helper Spork.each_run
 end
 
 group :tools do
   # gem 'annotate', github: 'ctran/annotate_models'
-  gem 'bundler', '~> 1.2.0.pre'
   gem 'wirble'
   gem 'heroku'
   gem 'foreman'
@@ -162,16 +163,15 @@ group :tools do
 
   # Guard
   gem 'growl'
-  platforms :ruby do
-    gem 'rb-readline'
-  end
+  # platforms :ruby do
+  #   gem 'rb-readline'
+  # end
 
-  gem 'listen', github: 'guard/listen'
-  gem 'guard', github: 'guard/guard', branch: 'listen'
-  gem 'guard-pow', github: 'guard/guard-pow', branch: 'guard_1_1'
-  gem 'guard-livereload', github: 'guard/guard-livereload', branch: 'guard_1_1'
-  gem 'guard-spork', github: 'guard/guard-spork', branch: 'guard_1_1'
-  gem 'guard-rspec', github: 'guard/guard-rspec', branch: 'guard_1_1'
-  gem 'guard-jasmine', github: 'netzpirat/guard-jasmine', branch: 'guard_1_1'
+  gem 'guard'
+  gem 'guard-pow'
+  gem 'guard-livereload'
+  # gem 'guard-spork'
+  gem 'guard-rspec'
+  gem 'guard-jasmine'
   # gem 'guard-yard'
 end

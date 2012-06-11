@@ -1,3 +1,10 @@
+require_dependency 'validators/email_uniqueness_validator'
+require_dependency 'validators/hostname_validator'
+require_dependency 'zendesk/zendesk_wrapper'
+require_dependency 'newsletter_manager'
+require_dependency 'public_launch'
+require_dependency 'vat'
+
 class User < ActiveRecord::Base
   include UserModules::CreditCard
   include UserModules::Pusher

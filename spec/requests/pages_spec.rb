@@ -88,7 +88,7 @@ feature "Help page" do
         VoxcastCDN.stub(:purge)
         PusherWrapper.stub(:trigger)
         VCR.use_cassette("zendesk_wrapper/create_ticket") do
-          expect { @worker.work_off }.to change(Delayed::Job, :count).by(-1)
+          expect { $worker.work_off }.to change(Delayed::Job, :count).by(-1)
         end
         @current_user.reload.zendesk_id.should be_present
       end
@@ -121,13 +121,11 @@ feature "Suspended page" do
 
   context "logged-in user" do
     background do
-      create_plans
       sign_in_as :user
     end
 
     context "with a non-suspended user" do
       scenario "/suspended" do
-        create_plans
         go 'my', 'suspended'
 
         current_url.should eq "http://my.sublimevideo.dev/sites/new"

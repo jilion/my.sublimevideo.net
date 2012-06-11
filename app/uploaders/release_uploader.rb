@@ -1,3 +1,5 @@
+require_dependency 's3_bucket'
+
 class ReleaseUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 

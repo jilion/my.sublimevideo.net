@@ -1,3 +1,7 @@
+require_dependency 'voxcast_cdn'
+require_dependency 'file_header'
+require_dependency 's3'
+
 class Release < ActiveRecord::Base
 
   attr_accessible :zip

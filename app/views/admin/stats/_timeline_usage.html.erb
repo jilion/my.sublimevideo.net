@@ -1,4 +1,6 @@
 <%
+require_dependency 'stat_timeline'
+
 usages = StatTimeline::SiteUsage.timeline(graph_start_date, graph_end_date, { labels: [:main_usage, :extra_usage], merge_cached: true })
 billable_usage_old = usages["main_usage"].zip(usages["extra_usage"]).map { |item| item.reduce(:+) }
 

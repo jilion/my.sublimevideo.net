@@ -1,3 +1,5 @@
+require_dependency 'configurator'
+
 module Ogone
   include Configurator
 

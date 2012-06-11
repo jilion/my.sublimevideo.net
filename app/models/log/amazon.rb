@@ -1,6 +1,7 @@
 # encoding: utf-8
+require_dependency 's3'
 
-class Log::Amazon < Log
+class Log::Amazon < ::Log
 
   # ===============
   # = Validations =

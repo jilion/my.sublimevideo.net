@@ -1,3 +1,5 @@
+require_dependency 'ogone'
+
 class TransactionsController < ApplicationController
   respond_to :html
 

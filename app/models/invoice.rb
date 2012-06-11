@@ -1,3 +1,5 @@
+require_dependency 'vat'
+
 StateMachine::Machine.ignore_method_conflicts = true
 
 class Invoice < ActiveRecord::Base

@@ -1,3 +1,5 @@
+require_dependency 'api'
+
 class Api::ApisController < ActionController::Base
   # include AbstractController::Callbacks
   # include ActionController::Head

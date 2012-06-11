@@ -4,8 +4,7 @@ require 'spec_helper'
 describe EnthusiastSite do
 
   context "with valid attributes" do
-    before(:all) { @site = create(:enthusiast_site) }
-    subject { @site.reload }
+    subject { create(:enthusiast_site) }
 
     its(:hostname)   { should eq "youtube.com" }
     its(:enthusiast) { should be_present }

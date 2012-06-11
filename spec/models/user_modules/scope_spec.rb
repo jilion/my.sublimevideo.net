@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserModules::Scope do
+describe UserModules::Scope, :plans do
 
   describe "state" do
     before do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LogsFileFormat::S3Licenses do
+describe "LogsFileFormat::S3Licenses" do
 
   describe "with 2010-07-14-09-27-04-BAAC596FFB88F1D6 logs file" do
     before do

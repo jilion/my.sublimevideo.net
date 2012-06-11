@@ -1,3 +1,5 @@
+require_dependency 'configurator'
+
 module Notify
   include Configurator
 

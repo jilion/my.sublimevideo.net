@@ -1,3 +1,5 @@
+require_dependency 'business_model'
+
 module SiteModules::Invoice
   extend ActiveSupport::Concern
 

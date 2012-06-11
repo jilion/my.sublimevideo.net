@@ -1,4 +1,5 @@
-require 'campaign_monitor/campaign_monitor_wrapper'
+require_dependency 'campaign_monitor/campaign_monitor_config'
+require_dependency 'campaign_monitor/campaign_monitor_wrapper'
 
 class NewsletterManager
 
@@ -50,7 +51,7 @@ class NewsletterManager
       self.delay._sync_from_service(user.id)
     end
 
-    private
+  private
 
     def _sync_from_service(user_id)
       user = User.find(user_id)

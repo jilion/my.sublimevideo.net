@@ -1,3 +1,5 @@
+require_dependency 'configurator'
+
 class ZendeskConfig
   include Configurator
 

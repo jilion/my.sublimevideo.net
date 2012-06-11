@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'timecop'
 
 describe UsrAgent do
 

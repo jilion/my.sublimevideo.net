@@ -1,9 +1,6 @@
 require 'spec_helper'
-require 'carrierwave/test/matchers'
 
 describe LoaderUploader do
-  include CarrierWave::Test::Matchers
-
   before do
     described_class.enable_processing = true
     @uploader = described_class.new(create(:site), :file)

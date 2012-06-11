@@ -1,7 +1,6 @@
 require 'spec_helper'
-require 'base64'
 
-describe UserModules::CreditCard do
+describe UserModules::CreditCard, :plans do
 
   describe "Factory" do
     describe "new record" do
@@ -25,11 +24,12 @@ describe UserModules::CreditCard do
     end
 
     describe "persisted record with pending cc" do
-      before(:all) do
-        @user = build(:user_no_cc, valid_cc_attributes)
-        @user.prepare_pending_credit_card
-      end
-      subject { @user }
+      let(:user) {
+        user = build(:user_no_cc, valid_cc_attributes)
+        user.prepare_pending_credit_card
+        user
+      }
+      subject { user }
 
       its(:cc_type)        { should be_nil }
       its(:cc_last_digits) { should be_nil }
@@ -54,10 +54,7 @@ describe UserModules::CreditCard do
     end
 
     describe "persisted record with cc_number == ''" do
-      before(:all) do
-        @user = build(:user_no_cc, valid_cc_attributes.merge(cc_number: ''))
-      end
-      subject { @user }
+      subject { build(:user_no_cc, valid_cc_attributes.merge(cc_number: '')) }
 
       its(:cc_type)        { should be_nil }
       its(:cc_last_digits) { should be_nil }
@@ -82,10 +79,7 @@ describe UserModules::CreditCard do
     end
 
     describe "persisted record with saved cc" do
-      before(:all) do
-        @user = create(:user_real_cc)
-      end
-      subject { @user }
+      subject { create(:user_real_cc) }
 
       its(:cc_type)        { should eq 'visa' }
       its(:cc_last_digits) { should eq '1111' }
@@ -110,13 +104,14 @@ describe UserModules::CreditCard do
     end
 
     describe "persisted record with saved cc and with a new pending cc" do
-      before(:all) do
-        @user = create(:user_real_cc)
-        @user = User.find(@user.id)
-        @user.assign_attributes(valid_cc_attributes_master)
-        @user.prepare_pending_credit_card
-      end
-      subject { @user }
+      let(:user) {
+        user = create(:user_real_cc)
+        user = User.find(user.id)
+        user.assign_attributes(valid_cc_attributes_master)
+        user.prepare_pending_credit_card
+        user
+      }
+      subject { user }
 
       its(:cc_type)        { should eq 'visa' }
       its(:cc_last_digits) { should eq '1111' }
@@ -506,44 +501,42 @@ describe UserModules::CreditCard do
     end
 
     describe "#process_credit_card_authorization_response" do
-      before(:all) do
-        @d3d_params = {
-          "NCSTATUS" => "?",
-          "STATUS" => "46",
-          "PAYID" => "1234",
-          "NCERRORPLUS" => "3D authentication needed",
-          "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>")
-        }
-        @authorized_params = {
-          "NCSTATUS" => "0",
-          "STATUS" => "5",
-          "PAYID" => "1234"
-        }
-        @waiting_params = {
-          "NCSTATUS" => "0",
-          "STATUS" => "51",
-          "PAYID" => "1234",
-          "NCERRORPLUS" => "Waiting"
-        }
-        @invalid_params = {
-          "NCSTATUS" => "5",
-          "STATUS" => "0",
-          "PAYID" => "1234",
-          "NCERRORPLUS" => "Invalid credit card number"
-        }
-        @refused_params = {
-          "NCSTATUS" => "3",
-          "STATUS" => "2",
-          "PAYID" => "1234",
-          "NCERRORPLUS" => "Refused credit card number"
-        }
-        @unknown_params = {
-          "NCSTATUS" => "2",
-          "STATUS" => "52",
-          "PAYID" => "1234",
-          "NCERRORPLUS" => "Unknown error"
-        }
-      end
+      let(:d3d_params) { {
+        "NCSTATUS" => "?",
+        "STATUS" => "46",
+        "PAYID" => "1234",
+        "NCERRORPLUS" => "3D authentication needed",
+        "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>")
+      } }
+      let(:authorized_params) { {
+        "NCSTATUS" => "0",
+        "STATUS" => "5",
+        "PAYID" => "1234"
+      } }
+      let(:waiting_params) { {
+        "NCSTATUS" => "0",
+        "STATUS" => "51",
+        "PAYID" => "1234",
+        "NCERRORPLUS" => "Waiting"
+      } }
+      let(:invalid_params) { {
+        "NCSTATUS" => "5",
+        "STATUS" => "0",
+        "PAYID" => "1234",
+        "NCERRORPLUS" => "Invalid credit card number"
+      } }
+      let(:refused_params) { {
+        "NCSTATUS" => "3",
+        "STATUS" => "2",
+        "PAYID" => "1234",
+        "NCERRORPLUS" => "Refused credit card number"
+      } }
+      let(:unknown_params) { {
+        "NCSTATUS" => "2",
+        "STATUS" => "52",
+        "PAYID" => "1234",
+        "NCERRORPLUS" => "Unknown error"
+      } }
 
       context "user has no registered credit card" do
         before do
@@ -568,7 +561,7 @@ describe UserModules::CreditCard do
 
         context "authorization waiting for 3-D Secure identification" do
           it "returns true and set d3d_html" do
-            subject.process_credit_card_authorization_response(@d3d_params)
+            subject.process_credit_card_authorization_response(d3d_params)
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should eq "<html>No HTML.</html>"
 
@@ -592,7 +585,7 @@ describe UserModules::CreditCard do
           it "should not add an error on base to the user" do
             subject.should_receive(:void_authorization).with("1234;RES")
 
-            subject.process_credit_card_authorization_response(@authorized_params)
+            subject.process_credit_card_authorization_response(authorized_params)
             subject.errors.should be_empty
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should be_nil
@@ -615,7 +608,7 @@ describe UserModules::CreditCard do
 
         context "authorization is waiting" do
           it "should not add an error on base to the user" do
-            subject.process_credit_card_authorization_response(@waiting_params)
+            subject.process_credit_card_authorization_response(waiting_params)
             subject.i18n_notice_and_alert.should == { notice: I18n.t("credit_card.errors.waiting") }
             subject.d3d_html.should be_nil
 
@@ -637,7 +630,7 @@ describe UserModules::CreditCard do
 
         context "authorization is invalid or incomplete" do
           it "returns a hash with info" do
-            subject.process_credit_card_authorization_response(@invalid_params)
+            subject.process_credit_card_authorization_response(invalid_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.invalid") }
             subject.d3d_html.should be_nil
 
@@ -658,7 +651,7 @@ describe UserModules::CreditCard do
 
         context "authorization is refused" do
           it "should add an error on base to the user" do
-            subject.process_credit_card_authorization_response(@refused_params)
+            subject.process_credit_card_authorization_response(refused_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.refused") }
             subject.d3d_html.should be_nil
             subject.cc_type.should be_nil
@@ -680,7 +673,7 @@ describe UserModules::CreditCard do
         context "authorization is  unknown" do
           it "should not add an error on base to the user" do
             Notify.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
-            subject.process_credit_card_authorization_response(@unknown_params)
+            subject.process_credit_card_authorization_response(unknown_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.unknown") }
             subject.d3d_html.should be_nil
 
@@ -726,7 +719,7 @@ describe UserModules::CreditCard do
 
         context "waiting for 3-D Secure identification" do
           it "should set d3d_html and save the user" do
-            response = subject.process_credit_card_authorization_response(@d3d_params)
+            response = subject.process_credit_card_authorization_response(d3d_params)
             response.should be_true
             subject.errors.should be_empty
             subject.i18n_notice_and_alert.should be_nil
@@ -751,7 +744,7 @@ describe UserModules::CreditCard do
         context "authorized" do
           it "should pend and apply pending cc info" do
             subject.should_receive(:void_authorization).with("1234;RES")
-            subject.process_credit_card_authorization_response(@authorized_params)
+            subject.process_credit_card_authorization_response(authorized_params)
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should be_nil
 
@@ -772,7 +765,7 @@ describe UserModules::CreditCard do
 
         context "waiting" do
           it "should set a notice/alert, not reset pending cc info and save the user" do
-            subject.process_credit_card_authorization_response(@waiting_params)
+            subject.process_credit_card_authorization_response(waiting_params)
             subject.i18n_notice_and_alert.should == { notice: I18n.t("credit_card.errors.waiting") }
             subject.d3d_html.should be_nil
 
@@ -793,7 +786,7 @@ describe UserModules::CreditCard do
 
         context "invalid or incomplete" do
           it "should set a notice/alert, reset pending cc info and save the user" do
-            subject.process_credit_card_authorization_response(@invalid_params)
+            subject.process_credit_card_authorization_response(invalid_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.invalid") }
             subject.d3d_html.should be_nil
 
@@ -814,7 +807,7 @@ describe UserModules::CreditCard do
 
         context "refused" do
           it "should set a notice/alert, reset pending cc info and save the user" do
-            subject.process_credit_card_authorization_response(@refused_params)
+            subject.process_credit_card_authorization_response(refused_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.refused") }
             subject.d3d_html.should be_nil
 
@@ -836,7 +829,7 @@ describe UserModules::CreditCard do
         context "unknown" do
           it "should set a notice/alert, not reset pending cc info, send a notification and save the user" do
             Notify.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
-            subject.process_credit_card_authorization_response(@unknown_params)
+            subject.process_credit_card_authorization_response(unknown_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.unknown") }
             subject.d3d_html.should be_nil
 

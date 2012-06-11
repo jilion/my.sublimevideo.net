@@ -37,7 +37,7 @@ describe StatsExportsController do
     before { sign_in user }
 
     it "delay stats export and notification" do
-      StatsExporter.should_receive(:new).with(site.token, '1', '2') { stats_exporter }
+      StatsExporter.should_receive(:new).with(site.token, 1, 2) { stats_exporter }
       stats_exporter.should_receive(:delay).with(priority: 50) { delay_stub }
       delay_stub.should_receive(:create_and_notify_export!)
       post :create, stats_export: { st: site.token, from: 1, to: 2 }

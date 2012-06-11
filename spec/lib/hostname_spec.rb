@@ -1,6 +1,7 @@
 # coding: utf-8
-
-require 'spec_helper'
+require 'fast_spec_helper'
+require File.expand_path('lib/hostname')
+require 'active_support/core_ext'
 
 describe Hostname do
   subject { Hostname }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Transaction do
+describe Transaction, :plans do
   before do
     @user = create(:user)
     @user_with_no_cc = create(:user_no_cc)

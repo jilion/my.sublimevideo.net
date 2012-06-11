@@ -1,3 +1,6 @@
+require_dependency 'twitter_api'
+# require_dependency 'notify'
+
 # coding: utf-8
 class Tweet
   include Mongoid::Document

@@ -1,3 +1,6 @@
+require_dependency 'my_redirection_filters'
+require_dependency 'responders/paginated_responder'
+
 class ApplicationController < ActionController::Base
   include MyRedirectionFilters
 

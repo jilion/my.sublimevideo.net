@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Stats::SitesStat do
+describe Stats::SitesStat, :plans do
 
   context "with a bunch of different sites" do
 

@@ -5,10 +5,9 @@ describe Stat::Video do
   describe ".top_videos" do
 
     context "last 24 hours" do
-      before(:all) do
-        @from = 24.hour.ago.utc.change(min: 0).to_i.to_s
-        @to   = 1.hour.ago.utc.change(min: 0).to_i.to_s
-      end
+      let(:from) { 24.hour.ago.utc.change(min: 0).to_i.to_s }
+      let(:to) { 1.hour.ago.utc.change(min: 0).to_i.to_s }
+
       before do
         6.times do |video_i|
           create(:video_tag, st: 'site1234', u: "video#{video_i}", n: "Video #{video_i}", no: 'a')
@@ -22,18 +21,18 @@ describe Stat::Video do
         end
       end
 
-      specify { Stat::Video.top_videos('site1234', period: 'hours', from: @from, to: @to, count: 5)[:videos].should have(5).items }
-      specify { Stat::Video.top_videos('site1234', period: 'hours', from: @from, to: @to, count: 5)[:total].should eq 6 }
-      specify { Stat::Video.top_videos('site1234', period: 'hours', from: @from, to: @to, count: 5)[:from].should eq @from.to_i }
+      specify { Stat::Video.top_videos('site1234', period: 'hours', from: from, to: to, count: 5)[:videos].should have(5).items }
+      specify { Stat::Video.top_videos('site1234', period: 'hours', from: from, to: to, count: 5)[:total].should eq 6 }
+      specify { Stat::Video.top_videos('site1234', period: 'hours', from: from, to: to, count: 5)[:from].should eq from.to_i }
 
       it "adds video_tag meta data" do
-        video = Stat::Video.top_videos('site1234', period: 'hours', from: @from, to: @to, count: 5)[:videos].first
+        video = Stat::Video.top_videos('site1234', period: 'hours', from: from, to: to, count: 5)[:videos].first
         video["n"].should eql "Video 5"
         video["no"].should eql "a"
       end
 
       it "replaces vv_hash by vv_array" do
-        video = Stat::Video.top_videos('site1234', period: 'hours', from: @from, to: @to, count: 5)[:videos].first
+        video = Stat::Video.top_videos('site1234', period: 'hours', from: from, to: to, count: 5)[:videos].first
         video["vv_array"].should eql([56, 0, 52, 0, 48, 0, 44, 0, 40, 0, 36, 0, 32, 0, 28, 0, 24, 0, 20, 0, 16, 0, 12, 0])
         video["vv_array"].should have(24).items
         video["vv_hash"].should be_nil
@@ -41,13 +40,13 @@ describe Stat::Video do
     end
 
     context "last 61 seconds" do
-      before(:all) do
-        @second = Time.utc(2011,11,21,12)
-        Timecop.freeze @second
-        @from = 61.seconds.ago.utc.change(usec: 0).to_i.to_s
-        @to   = 2.seconds.ago.utc.change(usec: 0).to_i.to_s
-      end
-      after(:all) { Timecop.return }
+      let(:second) { Time.utc(2011,11,21,12) }
+      let(:from) { 61.seconds.ago.utc.change(usec: 0).to_i.to_s }
+      let(:to) { 2.seconds.ago.utc.change(usec: 0).to_i.to_s }
+
+      before { Timecop.freeze second }
+      after { Timecop.return }
+
       before do
         6.times do |video_i|
           create(:video_tag, st: 'site1234', u: "video#{video_i}", n: "Video #{video_i}", no: 'a')
@@ -61,12 +60,12 @@ describe Stat::Video do
         end
       end
 
-      specify { Stat::Video.top_videos('site1234', period: 'seconds', from: @from, to: @to, count: 1)[:videos].should have(6).items }
-      specify { Stat::Video.top_videos('site1234', period: 'seconds', from: @from, to: @to, count: 5)[:total].should eq 6 }
-      specify { Stat::Video.top_videos('site1234', period: 'seconds', from: @from, to: @to, count: 5)[:from].should eq @from.to_i }
+      specify { Stat::Video.top_videos('site1234', period: 'seconds', from: from, to: to, count: 1)[:videos].should have(6).items }
+      specify { Stat::Video.top_videos('site1234', period: 'seconds', from: from, to: to, count: 5)[:total].should eq 6 }
+      specify { Stat::Video.top_videos('site1234', period: 'seconds', from: from, to: to, count: 5)[:from].should eq from.to_i }
 
       it "replaces vv_hash by vv_array and vl_hash by vl_hash" do
-        videos = Stat::Video.top_videos('site1234', period: 'seconds', from: @from, to: @to, count: 5)[:videos].sort_by! { |video| video["n"] }.reverse
+        videos = Stat::Video.top_videos('site1234', period: 'seconds', from: from, to: to, count: 5)[:videos].sort_by! { |video| video["n"] }.reverse
         video  = videos.first
         video["vv_sum"].should eq(2220)
         video["vv_array"].should be_nil

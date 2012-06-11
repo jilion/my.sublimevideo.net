@@ -1,10 +1,9 @@
-require 'zendesk'
 require 'net/http'
 require 'securerandom'
 require 'delegate'
-require 'rescue_me'
 require 'json'
 require 'hashie/mash'
+require_dependency 'zendesk/zendesk_config'
 
 module ZendeskWrapper
 

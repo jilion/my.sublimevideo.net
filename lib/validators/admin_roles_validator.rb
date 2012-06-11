@@ -1,3 +1,5 @@
+require_dependency 'admin_role'
+
 class AdminRolesValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, roles)

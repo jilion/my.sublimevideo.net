@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature "Mail logs show:" do
-
   background do
     sign_in_as :admin, roles: ['god']
     @mail_log = create(:mail_log)

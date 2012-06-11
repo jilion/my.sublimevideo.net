@@ -1,4 +1,6 @@
-require 'base64'
+require_dependency 'notify'
+require_dependency 'ogone'
+
 StateMachine::Machine.ignore_method_conflicts = true
 
 class Transaction < ActiveRecord::Base

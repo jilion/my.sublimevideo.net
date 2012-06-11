@@ -1,3 +1,5 @@
+require_dependency 'pusher_wrapper'
+
 class VideoTagUpdater
 
   def self.update_video_tags(video_tags_meta_data)

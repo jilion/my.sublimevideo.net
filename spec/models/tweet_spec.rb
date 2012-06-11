@@ -3,8 +3,7 @@ require 'spec_helper'
 describe Tweet do
 
   context "Factory" do
-    before(:all) { @tweet = build(:tweet) }
-    subject { @tweet }
+    subject { build(:tweet) }
 
     its(:tweet_id)          { should be_present }
     its(:keywords)          { should eq %w[sublimevideo jilion] }
@@ -22,8 +21,6 @@ describe Tweet do
   end
 
   describe "Associations" do
-    subject { create(:user)  }
-
     it "should belongs to retweeted_tweet" do
       tweet1 = create(:tweet, tweet_id: 1)
       tweet2 = create(:tweet, tweet_id: 2)

@@ -59,7 +59,7 @@ describe Deal do
 
       context "now is before the deal has started" do
         before { Timecop.travel(3.days.ago) }
-        after(:each) { Timecop.return }
+        after { Timecop.return }
 
         it "returns an empty array" do
           described_class.active.should be_empty
@@ -68,7 +68,7 @@ describe Deal do
 
       context "now is after the deal has started" do
         before { Timecop.travel(3.days.from_now) }
-        after(:each) { Timecop.return }
+        after { Timecop.return }
 
         it "returns an empty array" do
           described_class.active.should be_empty
@@ -90,14 +90,14 @@ describe Deal do
 
       context "now is before the deal has started" do
         before { Timecop.travel(3.days.ago) }
-        after(:each) { Timecop.return }
+        after { Timecop.return }
 
         it { should_not be_active }
       end
 
       context "now is after the deal has started" do
         before { Timecop.travel(3.days.from_now) }
-        after(:each) { Timecop.return }
+        after { Timecop.return }
 
         it { should_not be_active }
       end

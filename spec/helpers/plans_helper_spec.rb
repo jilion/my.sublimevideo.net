@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe PlansHelper do
 
-  describe ".plan_change_type" do
+  describe ".plan_change_type", :plans do
     before(:all) do
       @site_in_trial      = create(:site)
       @site_not_in_trial  = create(:site_not_in_trial)
@@ -11,6 +11,7 @@ describe PlansHelper do
       @paid_plan_yearly   = create(:plan, cycle: "year", price: 10000)
       @paid_plan_yearly2  = create(:plan, cycle: "year", price: 20000)
     end
+    after(:all) { DatabaseCleaner.clean_with(:truncation) }
 
     it { helper.plan_change_type(@site_in_trial, @paid_plan_monthly, @paid_plan_monthly).should     eq "skipping_trial" }
     it { helper.plan_change_type(@site_not_in_trial, @paid_plan_monthly, @paid_plan_monthly).should be_nil }

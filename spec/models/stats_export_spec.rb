@@ -33,6 +33,7 @@ describe StatsExport do
     it "has a secure_url" do
       with_carrierwave_fog_configuration do
         stats_export.file.secure_url.should include 'https://s3.amazonaws.com/dev.sublimevideo.stats.exports/'
+        stats_export.file.secure_url.should include stats_export.st
       end
     end
   end

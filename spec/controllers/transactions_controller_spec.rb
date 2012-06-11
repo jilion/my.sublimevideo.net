@@ -200,7 +200,7 @@ describe TransactionsController do
     end
 
     context "with a tempered request" do
-      before(:all) do
+      before do
         @sha_params = { "PAYID" => "1234", "STATUS" => "5" }
         @params = {
           "CHECK_CC_USER_ID" => "1",

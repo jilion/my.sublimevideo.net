@@ -10,9 +10,7 @@ describe MailLetter do
       let(:mail_template) { create(:mail_template) }
       let(:attributes)    { { admin_id: admin.id, template_id: mail_template.id.to_s, criteria: "not_archived" } }
       let(:mail_letter)   { MailLetter.new(attributes) }
-      before do
-        user
-      end
+      before { user }
       subject { mail_letter.deliver_and_log }
 
       it "should save all the data" do
@@ -38,7 +36,7 @@ describe MailLetter do
           let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'dev')) }
           before do
             @dev_user = create(:user, email: 'remy@jilion.com')
-            @worker.work_off
+            $worker.work_off
             ActionMailer::Base.deliveries.clear
           end
 
@@ -48,12 +46,12 @@ describe MailLetter do
 
           it "actually sends email when workers do their jobs" do
             subject
-            lambda { @worker.work_off }.should change(ActionMailer::Base.deliveries, :size).by(1)
+            lambda { $worker.work_off }.should change(ActionMailer::Base.deliveries, :size).by(1)
           end
 
           it "sends email to user with activity sites and should send appropriate template" do
             subject
-            @worker.work_off
+            $worker.work_off
 
             ActionMailer::Base.deliveries.last.to.should eq [@dev_user.email]
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
@@ -68,7 +66,7 @@ describe MailLetter do
           before do
             @archived_user = create(:user, state: 'archived')
             @paying_user   = create(:user)
-            @worker.work_off
+            $worker.work_off
             create(:site_not_in_trial, user: @paying_user)
             ActionMailer::Base.deliveries.clear
           end
@@ -82,12 +80,12 @@ describe MailLetter do
 
             it "actually sends email when workers do their jobs" do
               subject
-              expect { @worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
+              expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
             end
 
             it "sends email to paying users and should send appropriate template" do
               subject
-              @worker.work_off
+              $worker.work_off
 
               ActionMailer::Base.deliveries.last.to.should eq [@paying_user.email]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
@@ -107,13 +105,13 @@ describe MailLetter do
 
             it "actually sends email when workers do their jobs" do
               subject
-              expect { @worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
+              expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
             end
 
             it "sends email to free users and should send appropriate template" do
               ActionMailer::Base.deliveries.clear
               subject
-              @worker.work_off
+              $worker.work_off
 
               ActionMailer::Base.deliveries.last.to.should eq [user.email]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/

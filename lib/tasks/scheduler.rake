@@ -1,3 +1,5 @@
+require_dependency 'recurring_job'
+
 namespace :scheduler do
 
   desc "Supervise if all recurring jobs are scheduled"

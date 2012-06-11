@@ -1,4 +1,6 @@
 # coding: utf-8
+require_dependency 'configurator'
+
 module VoxcastCDN
   include Configurator
 

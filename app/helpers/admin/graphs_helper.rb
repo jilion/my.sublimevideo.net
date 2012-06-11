@@ -1,4 +1,6 @@
 # coding: utf-8
+require_dependency 'graph'
+
 module Admin::GraphsHelper
 
   def graph_start_date

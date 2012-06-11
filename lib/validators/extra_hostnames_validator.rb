@@ -1,3 +1,5 @@
+require_dependency 'hostname'
+
 class ExtraHostnamesValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, hostnames)

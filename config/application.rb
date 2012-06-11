@@ -1,41 +1,35 @@
-# encoding: utf-8
-
 require File.expand_path('../boot', __FILE__)
 
-# Pick the frameworks you want:
 require "active_record/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
-# require "active_resource/railtie"
 require "sprockets/railtie"
-# require "rails/test_unit/railtie"
 
-# If you have a Gemfile, require the default gems, the ones in the
-# current environment and also include :assets gems if in development
-# or test environments.
-Bundler.require *Rails.groups(:assets) if defined?(Bundler)
+if defined?(Bundler)
+  # If you precompile assets before deploying to production, use this line
+  Bundler.require *Rails.groups(:assets => %w(development test))
+  # If you want your assets lazily compiled in production, use this line
+  # Bundler.setup(:default, :assets, Rails.env)
+end
 
 module MySublimeVideo
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-
+    
     require 'oauth/rack/oauth_filter'
     config.middleware.use OAuth::Rack::OAuthFilter
 
-    # Add additional load paths for your own custom dirs
-    config.autoload_paths += %W[#{config.root}/lib]
-    Dir["#{config.root}/lib/{campaign_monitor,custom,log_file_format,responders,validators,zendesk}/**/*.rb"].each do |f|
-      dir = File.expand_path(File.dirname(f))
-      config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
-    end
+    # http://ileitch.github.com/2012/03/24/rails-32-code-reloading-from-lib.html
+    config.watchable_dirs['lib'] = [:rb]
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w[player.js stats.js video_code_generator.js admin/stats.js ie.css invoices.css invoices_print.css]
-    %w[global www my admin docs].each do |subdomain|
-      config.assets.precompile += %W[#{subdomain}.js #{subdomain}.css]
-    end
+    config.assets.precompile += %w[stats.js video_code_generator.js admin/stats.js invoices.css invoices_print.css]
+    config.assets.precompile += %w[admin.js admin/stats.js admin.css]
+    config.assets.precompile += %w[invoices.css invoices_print.css]
+
+    config.assets.enabled = true
 
     # Activate observers that should always be running
     # config.active_record.observers = :site_observer
@@ -53,10 +47,7 @@ module MySublimeVideo
       g.template_engine     :haml
       g.integration_tool    :rspec
       g.test_framework      :rspec, fixture: false, views: false
-      # g.fixture_replacement :factory_girl, :dir => "spec/factories"
     end
-
-    config.assets.enabled = true
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"

@@ -1,3 +1,5 @@
+require_dependency 's3_bucket'
+
 class StatsExportUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 
@@ -44,7 +46,7 @@ class StatsExportUploader < CarrierWave::Uploader::Base
 
   # Override the filename of the uploaded files
   def filename
-    filename = "stats_export.#{model.id}.#{model.st}.#{model.from.to_i}-#{model.to.to_i}.csv"
+    filename = "stats_export.#{model.st}.#{model.from.to_i}-#{model.to.to_i}.csv"
     filename += '.zip' if file.content_type == 'application/zip'
     filename
   end

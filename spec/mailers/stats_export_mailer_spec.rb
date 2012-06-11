@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 describe StatsExportMailer do
-
   let(:stats_export) { create(:stats_export) }
 
   describe "#export_ready" do
-    before(:each) do
+    before do
       described_class.export_ready(stats_export).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end

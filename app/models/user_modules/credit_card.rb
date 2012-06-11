@@ -1,4 +1,6 @@
 require 'base64'
+require_dependency 'ogone'
+require_dependency 'notify'
 
 module UserModules::CreditCard
   extend ActiveSupport::Concern

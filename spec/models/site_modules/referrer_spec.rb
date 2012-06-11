@@ -14,6 +14,8 @@ describe SiteModules::Referrer do
           @site2
         end
       end
+      after(:all) { DatabaseCleaner.clean_with(:truncation) }
+
       subject { @site }
 
       it { subject.referrer_type("http://jilion.net").should == "main" }
@@ -33,6 +35,8 @@ describe SiteModules::Referrer do
       before(:all) do
         @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
       end
+      after(:all) { DatabaseCleaner.clean_with(:truncation) }
+
       subject { @site }
 
       it { subject.referrer_type("http://Jilion.com").should == "main" }
@@ -64,6 +68,8 @@ describe SiteModules::Referrer do
       before(:all) do
         @site = create(:site, hostname: "blog.jilion.com", extra_hostnames: nil, dev_hostnames: nil)
       end
+      after(:all) { DatabaseCleaner.clean_with(:truncation) }
+
       subject { @site }
 
       it { subject.referrer_type("http://blog.jilion.com").should == "main" }
@@ -83,6 +89,8 @@ describe SiteModules::Referrer do
       before(:all) do
         @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", wildcard: true)
       end
+      after(:all) { DatabaseCleaner.clean_with(:truncation) }
+
       subject { @site }
 
       it { subject.referrer_type("http://blog.jilion.com").should == "main" }
@@ -120,6 +128,8 @@ describe SiteModules::Referrer do
       before(:all) do
         @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo/boo")
       end
+      after(:all) { DatabaseCleaner.clean_with(:truncation) }
+
       subject { @site }
 
       it { subject.referrer_type("http://jilion.com/Demo/boo").should == "main" }
@@ -173,6 +183,8 @@ describe SiteModules::Referrer do
       before(:all) do
         @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo", wildcard: true)
       end
+      after(:all) { DatabaseCleaner.clean_with(:truncation) }
+
       subject { @site }
 
       it { subject.referrer_type("http://jilion.com/demo").should == "main" }
@@ -226,16 +238,15 @@ describe SiteModules::Referrer do
     end
 
     context "custom" do
-      before(:all) { @site = create(:site, hostname: "capped.tv", path: "lft-turbulence|mq") }
+      let(:site) { create(:site, hostname: "capped.tv", path: "lft-turbulence|mq") }
       before { Notify.should_not_receive(:send) }
-      subject { @site }
 
-      it { subject.referrer_type("-").should == "invalid" }
-      it { subject.referrer_type("123456789").should == "invalid" }
-      it { subject.referrer_type("http://capped.tv/lft-turbulence|mq").should == "main" }
-      it { subject.referrer_type("http://www.optik-muncke.de/l%xc3%xb6sungen-sehen.html").should == "invalid" }
-      it { subject.referrer_type("http://www.joyce.com/40th/opening.swf/[[DYNAMIC]]/3").should == "invalid" }
-      it { subject.referrer_type("http://panda_account.dev/").should == "invalid" }
+      it { site.referrer_type("-").should == "invalid" }
+      it { site.referrer_type("123456789").should == "invalid" }
+      it { site.referrer_type("http://capped.tv/lft-turbulence|mq").should == "main" }
+      it { site.referrer_type("http://www.optik-muncke.de/l%xc3%xb6sungen-sehen.html").should == "invalid" }
+      it { site.referrer_type("http://www.joyce.com/40th/opening.swf/[[DYNAMIC]]/3").should == "invalid" }
+      it { site.referrer_type("http://panda_account.dev/").should == "invalid" }
     end
   end
 

@@ -1,10 +1,9 @@
 require 'spec_helper'
 
 describe Oauth2Token do
-  
+
   context "Factory" do
-    before(:all) { @token = create(:oauth2_token) }
-    subject { @token }
+    subject { create(:oauth2_token) }
 
     its(:user)               { should be_present }
     its(:client_application) { should be_present }
@@ -15,7 +14,7 @@ describe Oauth2Token do
     it { should be_authorized }
     it { should_not be_invalidated }
   end
-  
+
 end
 
 

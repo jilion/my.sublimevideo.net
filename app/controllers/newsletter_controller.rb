@@ -1,3 +1,5 @@
+require_dependency 'newsletter_manager'
+
 class NewsletterController < ApplicationController
 
   # GET /newsletter/subscribe

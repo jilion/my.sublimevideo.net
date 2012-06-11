@@ -1,4 +1,4 @@
-require 'createsend'
+require_dependency 'campaign_monitor/campaign_monitor_config'
 
 class CampaignMonitorWrapper
 

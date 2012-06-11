@@ -1,6 +1,6 @@
 # coding: utf-8
-require 'state_machine'
 require 'ffaker' if Rails.env.development?
+require_dependency 'time_util'
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
 COUNTRIES = %w[US FR CH ES DE BE GB CN SE NO FI BR CA]

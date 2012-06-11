@@ -1,5 +1,8 @@
-# encoding: utf-8
+require_dependency 'voxcast_cdn'
+require_dependency 'log_analyzer'
+require_dependency 'notify'
 
+# encoding: utf-8
 class Log
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -12,10 +15,6 @@ class Log
 
   index :name, unique: true
   index [[:created_at, Mongo::ASCENDING], [:_type, Mongo::ASCENDING]], background: true # Log::Amazon#fetch_new_logs_names & Log::Voxcast#next_log_ended_at
-
-  # ensure there is no confusion about S3 Class
-  autoload :Amazon, 'log/amazon'
-  # autoload :S3,     'log/amazon/s3'
 
   attr_accessible :name
 

@@ -1,5 +1,6 @@
 # coding: utf-8
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'one_time/plan'
 
 describe OneTime::Plan do
 end

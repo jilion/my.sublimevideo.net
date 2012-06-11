@@ -90,6 +90,12 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
 
+    new MSVStats.Views.ExportView
+      el: '#csv_export_wrap'
+      period: MSVStats.period
+      sites:  MSVStats.sites
+
+      
     new MSVStats.Views.PlanUsageView
       el: '#plan_usage'
       statsDays: MSVStats.statsDays

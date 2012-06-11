@@ -1,3 +1,6 @@
+require_dependency 'hostname'
+require_dependency 'validators/hostname_validator'
+
 class EnthusiastSite < ActiveRecord::Base
 
   attr_accessible :hostname

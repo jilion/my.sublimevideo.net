@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SiteModules::Scope do
+describe SiteModules::Scope, :plans do
   before { @user = create(:user) }
 
   describe "state" do

@@ -1,6 +1,10 @@
 # encoding: utf-8
+require_dependency 'voxcast_cdn'
+require_dependency 'recurring_job'
+require_dependency 'video_tag_trackers_parser'
+require_dependency 'video_tag_updater'
 
-class Log::Voxcast < Log
+class Log::Voxcast < ::Log
   field :stats_parsed_at,       type: DateTime
   field :referrers_parsed_at,   type: DateTime
   field :user_agents_parsed_at, type: DateTime

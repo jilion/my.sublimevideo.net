@@ -1,3 +1,5 @@
+require_dependency 'notify'
+
 class UsrAgent # fucking name conflict with UserAgent gem
   include Mongoid::Document
 

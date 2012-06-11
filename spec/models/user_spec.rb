@@ -2,7 +2,7 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe User do
+describe User, :plans do
 
   let(:full_billing_address) do
     { billing_address_1: "EPFL Innovation Square", billing_address_2: "PSE-D",
@@ -11,8 +11,7 @@ describe User do
   end
 
   context "Factory" do
-    before(:all) { @user = build(:user) }
-    subject { @user }
+    subject { build(:user) }
 
     its(:terms_and_conditions) { should be_true }
     its(:name)                 { should eq "John Doe" }
@@ -33,8 +32,7 @@ describe User do
   end
 
   describe "Associations" do
-    before(:all) { @user = create(:user) }
-    subject { @user }
+    subject { create(:user) }
 
     it { should have_many :sites }
     it { should have_many(:invoices).through(:sites) }
@@ -336,7 +334,7 @@ describe User do
       context "first invoice" do
         subject { @site.reload; @site.user.current_password = '123456'; @site.user }
 
-        before(:all) do
+        before do
           @site = create(:new_site, first_paid_plan_started_at: nil)
           Invoice.delete_all
           @site.first_paid_plan_started_at.should be_nil
@@ -504,7 +502,7 @@ describe User do
 
       it "send the welcome email" do
         subject
-        expect { @worker.work_off }.to change(ActionMailer::Base.deliveries, :count).by(1)
+        expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :count).by(1)
       end
     end
 
@@ -595,7 +593,7 @@ describe User do
             }.to change(Delayed::Job, :count).by(1)
 
             VCR.use_cassette("user/zendesk_update") do
-              @worker.work_off
+              $worker.work_off
               Delayed::Job.last.should be_nil
               ZendeskWrapper.send(:client).users(59438671).identities.first.value.should eq 'new@jilion.com'
             end
@@ -611,7 +609,7 @@ describe User do
             expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job, :count).by(1)
 
             VCR.use_cassette("user/zendesk_update") do
-              @worker.work_off
+              $worker.work_off
               Delayed::Job.last.should be_nil
               ZendeskWrapper.user(59438671).name.should eq 'Remy'
             end
@@ -906,27 +904,25 @@ describe User do
 
     describe "#support & #email_support?" do
       context "user has no site" do
-        before(:all) do
-          @user = create(:user)
-        end
-        subject { @user.reload }
+        subject { create(:user) }
 
         it { subject.support.should eq "forum" }
       end
 
       context "user has only sites with forum support" do
-        before(:all) do
+        before do
           @user = create(:user)
           create(:site, user: @user, plan_id: @free_plan.id,)
         end
         subject { @user.reload }
+        
         it { @free_plan.support.should eq "forum" }
         its(:support) { should eq "forum" }
         its(:email_support?) { should be_false }
       end
 
       context "user has at least one site with email support" do
-        before(:all) do
+        before do
           @user = create(:user)
           create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
           create(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
@@ -940,7 +936,7 @@ describe User do
       end
 
       context "user has at least one site with vip email support" do
-        before(:all) do
+        before do
           @user = create(:user)
           create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
           create(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
@@ -957,7 +953,7 @@ describe User do
     end
 
     describe "#billable?" do
-      before(:all) do
+      before do
         Site.delete_all
         @billable_user_1 = create(:user)
         @billable_user_2 = create(:user)
@@ -990,7 +986,7 @@ describe User do
       subject { @site.reload; @site.user }
 
       context "first invoice" do
-        before(:all) do
+        before do
           Invoice.delete_all
           @site = create(:new_site, first_paid_plan_started_at: nil)
           @site.first_paid_plan_started_at.should be_nil
@@ -1022,7 +1018,7 @@ describe User do
       end
 
       context "not first invoice" do
-        before(:all) do
+        before do
           Invoice.delete_all
           @site = create(:new_site, first_paid_plan_started_at: Time.now.utc)
           @site.first_paid_plan_started_at.should be_present

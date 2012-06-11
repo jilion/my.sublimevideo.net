@@ -1,9 +1,3 @@
-require 'rubygems'
-require 'active_support'
-require 'oauth'
-require 'oauth/client/net_http'
-require 'erb'
-
 #
 # Helper module for integrating Get Satisfaction's FastPass single-sign-on service into a Ruby web 
 # app. Use #url to create a signed FastPass URL, and #script to generate the JS-based integration.

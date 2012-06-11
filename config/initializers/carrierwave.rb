@@ -1,4 +1,4 @@
-require 'carrierwave/processing/mime_types'
+require_dependency 's3'
 
 module CarrierWave
 

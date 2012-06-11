@@ -1,3 +1,5 @@
+require_dependency 's3_bucket'
+
 class LogUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 

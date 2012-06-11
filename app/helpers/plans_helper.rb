@@ -1,3 +1,5 @@
+require_dependency 'business_model'
+
 module PlansHelper
 
   def plan_label_content(plan, site=nil, options={})

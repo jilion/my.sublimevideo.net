@@ -1,3 +1,5 @@
+require_dependency 'zendesk/zendesk_config'
+
 class Admin::UsersController < Admin::AdminController
   respond_to :html, :js
 

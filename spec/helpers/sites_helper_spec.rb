@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SitesHelper do
+describe SitesHelper, :plans do
 
   describe "#full_days_until_trial_end" do
     before { BusinessModel.stub(:days_for_trial) { 3 } }

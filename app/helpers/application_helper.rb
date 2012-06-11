@@ -1,4 +1,6 @@
 # coding: utf-8
+require_dependency 'vat'
+
 module ApplicationHelper
 
   def display_bool(boolean)

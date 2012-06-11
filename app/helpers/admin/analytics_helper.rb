@@ -1,9 +1,7 @@
 module Admin::AnalyticsHelper
 
-  def include_appropriate_js(js_engine = "grafico")
+  def include_appropriate_js(js_engine)
     js_files = case js_engine
-    when "grafico"
-      ["raphael-min.js", "grafico.min.js"]
     when "graphael"
       ["raphael-min.js", "graphael/g.raphael-min.js", "graphael/g.pie-min.js"]
     when "flotr"

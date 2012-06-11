@@ -6,21 +6,7 @@ module Spec
         request.env['warden']
       end
 
-      def create_plans
-        plans_attributes = [
-          { name: "free",       cycle: "none",  video_views: 0,          price: 0, support_level: 0 },
-          { name: "sponsored",  cycle: "none",  video_views: 0,          price: 0, support_level: 0 },
-          { name: "plus",       cycle: "month", video_views: 200_000,    price: 990, support_level: 1 },
-          { name: "premium",    cycle: "month", video_views: 1_000_000,  price: 4990, support_level: 2 },
-          { name: "plus",       cycle: "year",  video_views: 200_000,    price: 9900, support_level: 1 },
-          { name: "premium",    cycle: "year",  video_views: 1_000_000,  price: 49900, support_level: 2 },
-          { name: "custom - 1", cycle: "year",  video_views: 10_000_000, price: 99900, support_level: 2 }
-        ]
-        plans_attributes.each { |attributes| Plan.create(attributes) }
-      end
-
       def create_user(options={})
-        User.delete_all
         options[:user] = {} unless options[:user]
 
         options[:confirm]    = options[:user].delete(:confirm) || options[:confirm]
@@ -99,7 +85,11 @@ module Spec
       # http://stackoverflow.com/questions/4484435/rails3-how-do-i-visit-a-subdomain-in-a-steakrspec-spec-using-capybara
       def switch_to_subdomain(subdomain = nil)
         subdomain += '.' if subdomain.present?
-        Capybara.app_host = "http://#{subdomain}sublimevideo.dev"
+        if Capybara.current_driver == :rack_test
+          Capybara.app_host = "http://#{subdomain}sublimevideo.dev"
+        else
+          Capybara.app_host = "http://#{subdomain}sublimevideo.dev:#{Capybara.server_port}"
+        end
       end
 
       def go(*subdomain_and_route)

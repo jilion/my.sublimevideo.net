@@ -1,3 +1,5 @@
+require_dependency 'pusher_wrapper'
+
 class PusherController < ApplicationController
   skip_before_filter :authenticate_user!
   protect_from_forgery except: [:auth, :webhook]

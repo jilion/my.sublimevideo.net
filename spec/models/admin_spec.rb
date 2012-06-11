@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe Admin do
   context "Factory" do
-    before(:all) { @admin = create(:admin) }
-    subject { @admin }
+    subject { create(:admin) }
 
     its(:email) { should match /email\d+@admin.com/ }
     its(:roles) { should eq [] }
@@ -18,15 +17,13 @@ describe Admin do
   end
 
   describe "Associations" do
-    before(:all) { @admin = create(:admin) }
-    subject { @admin }
+    subject { create(:admin) }
 
     it { should have_many :mail_logs }
   end # Associations
 
   describe "Validations" do
-    before(:all) { @admin = create(:admin) }
-    subject { @admin }
+    subject { create(:admin) }
 
     [:email, :password, :password_confirmation, :remember_me, :roles].each do |attr|
       it { should allow_mass_assignment_of(attr) }

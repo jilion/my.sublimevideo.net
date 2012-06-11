@@ -1,4 +1,6 @@
 # coding: utf-8
+require_dependency 'ticket_manager'
+
 class SupportRequest
   include ActiveModel::Validations
 

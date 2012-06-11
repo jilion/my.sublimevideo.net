@@ -1,3 +1,9 @@
+require_dependency 'hostname'
+require_dependency 'validators/hostname_validator'
+require_dependency 'validators/hostname_uniqueness_validator'
+require_dependency 'validators/dev_hostnames_validator'
+require_dependency 'validators/extra_hostnames_validator'
+
 class Site < ActiveRecord::Base
   include SiteModules::Api
   include SiteModules::Invoice

@@ -1,4 +1,5 @@
-require 'admin_role'
+require_dependency 'admin_role_methods'
+require_dependency 'validators/admin_roles_validator'
 
 class Admin < ActiveRecord::Base
   include AdminRoleMethods
