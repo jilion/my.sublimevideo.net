@@ -1,5 +1,11 @@
+class MySubdomain
+  def matches?(request)
+    request.subdomains.first == 'my'
+  end
+end
+
 class MyPages
-  def self.matches?(request)
+  def matches?(request)
     pages = Dir.glob('app/views/pages/*.html.haml').map { |p| p.match(%r(app/views/pages/(.*)\.html\.haml))[1] }
     pages.include?(request.params["page"])
   end
@@ -123,7 +129,7 @@ MySublimeVideo::Application.routes.draw do
     end
   end # admin.
 
-  constraints subdomain: 'my' do
+  constraints MySubdomain.new do
     devise_for :users, module: 'users', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
     devise_scope :user do
       resource :user, only: [], path: '' do
@@ -208,7 +214,7 @@ MySublimeVideo::Application.routes.draw do
     post '/pusher/auth' => 'pusher#auth'
     post '/pusher/webhook' => 'pusher#webhook'
 
-    get '/:page' => 'pages#show', as: :page, constraints: MyPages, format: false
+    get '/:page' => 'pages#show', as: :page, constraints: MyPages.new, format: false
 
     root to: redirect('/sites')
   end
