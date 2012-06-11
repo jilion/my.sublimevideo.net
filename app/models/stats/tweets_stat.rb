@@ -58,12 +58,11 @@ module Stats
       end
 
       def create_tweets_stat(day)
-        tweets = Tweet.between(day.beginning_of_day, day.end_of_day).all
-
-        self.create(tweets_hash(day, tweets))
+        self.create(tweets_hash(day))
       end
 
-      def tweets_hash(day, tweets)
+      def tweets_hash(day)
+        tweets = Tweet.between(day.beginning_of_day, day.end_of_day).all
         hash = {
           d: day.to_time,
           k: Hash.new(0)

@@ -30,21 +30,6 @@ FactoryGirl.define do
     terms_and_conditions "1"
   end
 
-  factory :user_real_cc, parent: :user_no_cc do
-    cc_brand              'visa'
-    cc_full_name          'John Doe Huber'
-    cc_number             '4111111111111111'
-    cc_expiration_month   { 1.year.from_now.month }
-    cc_expiration_year    { 1.year.from_now.year }
-    cc_verification_value '111'
-
-    after(:build) { VCR.insert_cassette('ogone/void_authorization') }
-    after(:create) do |user|
-      VCR.eject_cassette
-      user.reload
-    end
-  end
-
   factory :user, parent: :user_no_cc do
     cc_type        'visa'
     cc_last_digits '1111'

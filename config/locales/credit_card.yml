@@ -1,0 +1,8 @@
+en:
+  credit_card:
+    errors:
+      invalid:  "The credit card information are invalid or incomplete, please retry."
+      refused:  "The credit card has been refused, please retry."
+      waiting:  "The credit card authorization will be processed soon."
+      canceled: "The credit card authorization has been canceled, please retry."
+      unknown:  "The credit card authorization is uncertain, we will get back to you shortly."

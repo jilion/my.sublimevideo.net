@@ -33,5 +33,5 @@ staging:
 production:
   adapter: postgresql
   encoding: utf8
-  database: msv_production
-  host: localhost999
+  database: msv_development_<%= suffix %>
+  host: localhost

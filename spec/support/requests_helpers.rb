@@ -21,14 +21,10 @@ module Spec
           create(:user_no_cc, options[:user] || {})
         else
           attrs = FactoryGirl.attributes_for(:user)
-          user = create(:user_real_cc, (options[:user] || {}).merge({
-            cc_register:           '1',
-            cc_brand:              options[:cc_type],
-            cc_full_name:          attrs[:billing_name],
-            cc_number:             options[:cc_number],
-            cc_verification_value: "111",
-            cc_expiration_month:   12,
-            cc_expiration_year:    2.years.from_now.year
+          user = create(:user, (options[:user] || {}).merge({
+            cc_type:        options[:cc_type],
+            cc_full_name:   attrs[:billing_name],
+            cc_last_digits: options[:cc_number][-4,4]
           }))
           if cc_expire_on <= Time.now.utc.end_of_month.to_date
             user.cc_expire_on = cc_expire_on.end_of_month.to_date

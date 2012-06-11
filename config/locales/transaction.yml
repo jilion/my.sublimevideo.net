@@ -1,0 +1,5 @@
+en:
+  transaction:
+    errors:
+      waiting: "The payment will be processed soon."
+      failed:  "Transaction error, please review your invoices and retry the payment."

@@ -9,8 +9,8 @@ module Ogone
 
   class << self
 
-    def authorize(*args)
-      gateway.authorize(*args)
+    def store(*args)
+      gateway.store(*args)
     end
 
     def void(*args)

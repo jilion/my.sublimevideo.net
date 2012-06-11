@@ -3,7 +3,6 @@ coverage
 rdoc
 *.dat
 public/assets
-!config/database.yml
 tmp/restart.txt
 backup.db
 public/uploads
@@ -11,16 +10,8 @@ logfile
 db/*.sqlite3
 db/backups/*
 doc/js/
-log/
-tmp/
 .sass-cache/
 vendor/ruby
 vendor/bundler
-!Guardfile
-!Gemfile
-!Gemfile.lock
 !.bundle
-!.bundle/*
-!public/assets/*.gz
 .env
-.rvmrc

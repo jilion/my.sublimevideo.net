@@ -134,24 +134,17 @@ module UserModules::CreditCard
       @i18n_notice_and_alert = nil
 
       options = options.merge({
-        store: cc_alias,
+        billing_id: cc_alias,
         email: email,
         billing_address: { address1: billing_address_1, zip: billing_postal_code, city: billing_city, country: billing_country },
         d3d: true,
         paramplus: "CHECK_CC_USER_ID=#{self.id}"
       })
 
-      authorization = begin
-        Ogone.authorize(100, credit_card, options)
-      rescue => ex
-        Notify.send("Authorization failed: #{ex.message}", exception: ex)
-        puts;puts ex.inspect;puts ex.backtrace;puts
-        @i18n_notice_and_alert = { alert: "Credit card could not be verified, we have been notified." }
-        nil
-      end
+      authorization = Ogone.store(credit_card, options)
 
       self.cc_register = false
-      process_credit_card_authorization_response(authorization.params) if authorization
+      process_credit_card_authorization_response(authorization.params)
     end
 
     # Called from UserModules::CreditCard#register_credit_card_on_file and from TransactionsController#callback
@@ -159,74 +152,69 @@ module UserModules::CreditCard
       @d3d_html = nil
       reset_credit_card
 
-      case authorization_params["STATUS"]
+      case authorization_params['STATUS']
       # Waiting for identification (3-D Secure)
       # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
-      when "46"
-        @d3d_html = Base64.decode64(authorization_params["HTML_ANSWER"])
+      when '46'
+        @d3d_html = Base64.decode64(authorization_params['HTML_ANSWER'])
 
       # STATUS == 5, Authorized:
       #   The authorization has been accepted.
       #   An authorization code is available in the field "ACCEPTANCE".
-      when "5"
-        void_authorization([authorization_params["PAYID"], 'RES'].join(';'))
+      when '5'
+        Ogone.void([authorization_params['PAYID'], 'RES'].join(';'))
         apply_pending_credit_card_info
 
       # STATUS == 51, Authorization waiting:
       #   The authorization will be processed offline.
       #   This is the standard response if the merchant has chosen offline processing in his account configuration
-      when "51"
-        @i18n_notice_and_alert = { notice: I18n.t("credit_card.errors.waiting") }
+      when '51'
+        @i18n_notice_and_alert = { notice: I18n.t('credit_card.errors.waiting') }
 
       # STATUS == 0, Invalid or incomplete:
       #   At least one of the payment data fields is invalid or missing.
       #   The NC ERROR  and NC ERRORPLUS  fields contains an explanation of the error
       #   (list available at https://secure.ogone.com/ncol/paymentinfos1.asp).
       #   After correcting the error, the customer can retry the authorization process.
-      when "0"
-        @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.invalid") }
+      when '0'
+        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.invalid') }
 
       # STATUS == 2, Authorization refused:
       #   The authorization has been declined by the financial institution.
       #   The customer can retry the authorization process after selecting a different payment method (or card brand).
-      when "2"
-        @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.refused") }
+      when '2'
+        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.refused') }
+
+      # STATUS == 1, Authorization canceled by client:
+      #   The authorization has been canceled by the client (probably because the client failed to authenticate).
+      #   The customer can retry the authorization process.
+      when '1'
+        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.canceled') }
 
       # STATUS == 52, Authorization not known:
       #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
       #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
       #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
-      when "52"
-        @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.unknown") }
+      when '52'
+        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.unknown') }
         Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorization_params["PAYID"]}) has an uncertain state, please investigate quickly!")
 
       else
-        @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.unknown") }
+        @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.unknown') }
         Notify.send("Credit card authorization unknown status: #{authorization_params["STATUS"]}")
       end
 
-      unless authorization_params["STATUS"] == "5"
+      unless authorization_params['STATUS'] == '5'
         set_last_failed_cc_authorize_fields_from_params(authorization_params)
       end
     end
 
     def set_last_failed_cc_authorize_fields_from_params(authorization_params)
       self.last_failed_cc_authorize_at     = Time.now.utc
-      self.last_failed_cc_authorize_status = authorization_params["STATUS"].to_i
-      self.last_failed_cc_authorize_error  = authorization_params["NCERRORPLUS"]
+      self.last_failed_cc_authorize_status = authorization_params['STATUS'].to_i
+      self.last_failed_cc_authorize_error  = authorization_params['NCERRORPLUS']
 
       self.save_skip_pwd
-    end
-
-  private
-
-    # Called from UserModules::CreditCard#process_credit_card_authorization_response and TransactionsController#callback
-    def void_authorization(authorization)
-      void = Ogone.void(authorization)
-
-      unless void.success?
-        Notify.send("SUPER WARNING! Credit card authorization void for user #{self.id} failed: #{void.message}")
-      end
     end
 
   end
