@@ -397,12 +397,20 @@ describe User do
         end
         subject { @user.reload }
 
-        describe "before_transition on: :archive, do: [:set_archived_at, :archive_sites]" do
+        describe "before_transition on: :archive, do: [:set_archived_at, :invalidate_tokens, :archive_sites]" do
           it "sets archived_at" do
             subject.archived_at.should be_nil
             subject.current_password = "123456"
             subject.archive
             subject.archived_at.should be_present
+          end
+
+          it "invalidates all user's tokens" do
+            create(:oauth2_token, user: subject)
+            subject.reload.tokens.first.should_not be_invalidated_at
+            subject.current_password = "123456"
+            subject.archive
+            subject.reload.tokens.all? { |token| token.invalidated_at? }.should be_true
           end
 
           it "archives each user' site" do
@@ -413,15 +421,7 @@ describe User do
           end
         end
 
-        describe "after_transition on: :archive, do: [:invalidate_tokens, :newsletter_unsubscribe, :send_account_archived_email]" do
-          it "invalidates all user's tokens" do
-            create(:oauth2_token, user: subject)
-            subject.reload.tokens.first.should_not be_invalidated_at
-            subject.current_password = "123456"
-            subject.archive
-            subject.reload.tokens.all? { |token| token.invalidated_at? }.should be_true
-          end
-
+        describe "after_transition on: :archive, do: [:newsletter_unsubscribe, :send_account_archived_email]" do
           it "sends an email to user" do
             subject.current_password = "123456"
             expect { subject.archive }.to change(ActionMailer::Base.deliveries, :count).by(1)
