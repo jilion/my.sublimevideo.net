@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120508104334) do
+ActiveRecord::Schema.define(:version => 20120611162802) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -94,7 +94,6 @@ ActiveRecord::Schema.define(:version => 20120508104334) do
     t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "queue"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -292,6 +291,7 @@ ActiveRecord::Schema.define(:version => 20120508104334) do
     t.integer  "last_30_days_embed_video_views",            :default => 0
     t.text     "last_30_days_billable_video_views_array"
     t.integer  "last_30_days_video_tags",                   :default => 0
+    t.datetime "first_billable_plays_at"
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
