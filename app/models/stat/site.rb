@@ -273,7 +273,7 @@ private
         to   = nil
         from = nil
       when nil
-        from = [(stats.first.d || Time.now.utc), to - 364.days].min
+        from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
       else
         from = to - (site.plan_stats_retention_days - 1).days
       end
