@@ -15,7 +15,7 @@ end
 
 unless defined?(Rails)
   module Rails
-    def self.root; Pathname.new('path'); end
-    def self.env; ''; end
+    def self.root; Pathname.new(File.expand_path('')); end
+    def self.env; 'test'; end
   end
 end

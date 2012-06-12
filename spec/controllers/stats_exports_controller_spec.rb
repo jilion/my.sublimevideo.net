@@ -4,9 +4,9 @@ describe StatsExportsController do
 
   verb_and_actions = { get: [:show], post: :create }
   it_should_behave_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended']], verb_and_actions#, id: '1'
-  it_should_behave_like "redirect when connected as", 'http://my.test.host/login', [:guest], verb_and_actions#, id: '1'
+  it_should_behave_like "redirect when connected as", 'http://my.test.host/login', [:guest], verb_and_actions
 
-  describe "GET #show" do
+  describe "GET #show", :fog_mock do
     let(:user) { create(:user) }
     let(:site) { create(:site, user: user ) }
     let(:stats_export) { create(:stats_export, st: site.token) }
@@ -14,11 +14,9 @@ describe StatsExportsController do
     before { sign_in user }
 
     it "redirects to S3 authenticated url" do
-      with_carrierwave_fog_configuration do
-        get :show, id: stats_export.id
-        response.body.should include CGI::escapeHTML(stats_export.file.secure_url)
-        response.status.should eq 302
-      end
+      get :show, id: stats_export.id
+      response.body.should include CGI::escapeHTML(stats_export.file.secure_url)
+      response.status.should eq 302
     end
 
     it "verify that current_user own the stats export" do

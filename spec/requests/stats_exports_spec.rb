@@ -16,29 +16,31 @@ feature 'StatsExport' do
     Delayed::Job.delete_all
   end
 
-  scenario "request and download stats exports", :js do
+  scenario "request and download stats exports", :js, :fog_mock do
     go 'my', "/sites/stats/#{@site.token}"
 
     click_button('CSV Export')
 
-    with_carrierwave_fog_configuration do
-      sleep 0.01 until Delayed::Job.count == 1
-      $worker.work_off
+    sleep 0.01 until Delayed::Job.count == 1
+    $worker.work_off
 
-      open_email(@current_user.email)
-      current_email.find('a', text: /stats\/exports/i).click
+    open_email(@current_user.email)
+    current_email.find('a', text: /stats\/exports/i).click
 
-      # Verify zip content
-      page.response_headers["Content-Type"].should eq('application/zip')
-      tempzip = Tempfile.open(['temp', '.zip'])
-      File.open(tempzip, 'w') { |f| f.write(page.source) }
-      zip = Zip::ZipFile.open(tempzip.path)
-      zip.read(zip.first).should eq <<-EOF
+    # File can't be downloaded directly from S3 because of Fog.mock!
+    current_url.should match(
+      %r{https://s3.amazonaws.com/#{S3Bucket.stats_exports}/uploads/stats_exports/stats_export.#{@site.token}.\d+-\d+.csv.zip\?AWSAccessKeyId=#{S3.access_key_id}&Signature=foo&Expires=\d+}
+    )
+
+    # Verify zip content
+    tempzip = Tempfile.open(['temp', '.zip'])
+    File.open(tempzip, 'w') { |f| f.write(StatsExport.last.file.file.read) }
+    zip = Zip::ZipFile.open(tempzip.path)
+    zip.read(zip.first).should eq <<-EOF
 uid,name,loads_count,views_count,embed_loads_count,embed_views_count
 video_uid,My Video,24,24,202,202
-      EOF
-
-    end
+    EOF
+    tempzip.close
   end
 
 end

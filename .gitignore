@@ -15,3 +15,4 @@ vendor/ruby
 vendor/bundler
 !.bundle
 .env
+uploads
