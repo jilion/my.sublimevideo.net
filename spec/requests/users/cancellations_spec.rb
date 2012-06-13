@@ -13,7 +13,7 @@ feature 'Account deletion' do
     fill_in 'user_current_password', with: '123456'
     click_button 'Cancel my account'
 
-    current_url.should eq 'http://my.sublimevideo.dev/login'
+    current_url.should eq 'http://sublimevideo.dev/'
     get_me_the_cookies.map { |c| c['name'] }.should_not include('l')
 
     go 'my', 'sites'
