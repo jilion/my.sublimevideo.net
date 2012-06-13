@@ -120,7 +120,6 @@ group :development do
   gem 'letter_opener', github: 'ryanb/letter_opener' # includes a fix not merged yet
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
-  gem 'pry-rails'
 end
 
 group :development, :test do
