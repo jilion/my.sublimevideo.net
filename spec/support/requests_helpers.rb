@@ -82,9 +82,9 @@ module Spec
       def switch_to_subdomain(subdomain = nil)
         subdomain += '.' if subdomain.present?
         if Capybara.current_driver == :rack_test
-          Capybara.app_host = "http://#{subdomain}sublimevideo.dev"
+          Capybara.app_host = "http://#{subdomain}#{$capybara_domain}"
         else
-          Capybara.app_host = "http://#{subdomain}sublimevideo.dev:#{Capybara.server_port}"
+          Capybara.app_host = "http://#{subdomain}#{$capybara_domain}:#{Capybara.server_port}"
         end
       end
 
