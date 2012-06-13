@@ -16,3 +16,4 @@ vendor/bundler
 !.bundle
 .env
 uploads
+.tddium*
