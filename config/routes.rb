@@ -229,6 +229,6 @@ MySublimeVideo::Application.routes.draw do
   end
 
   # Default url for specs, not reachable by the app because of the my subdomain
-  get '/' => "sites#index"
+  get '/' => "pages#show", page: 'terms' if Rails.env.test?
 
 end
