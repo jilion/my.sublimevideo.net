@@ -26,5 +26,9 @@ class StatsExport
 	def site
 		Site.find_by_token(st)
 	end
+	
+	def site_hostname
+	  site.hostname
+	end
 
 end

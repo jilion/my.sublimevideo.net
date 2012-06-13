@@ -46,7 +46,7 @@ class StatsExportUploader < CarrierWave::Uploader::Base
 
   # Override the filename of the uploaded files
   def filename
-    filename = "stats_export.#{model.st}.#{model.from.to_i}-#{model.to.to_i}.csv"
+    filename = "stats_export.#{model.site_hostname}.#{model.from.strftime('%Y%m%e')}-#{model.to.strftime('%Y%m%e')}.csv"
     filename += '.zip' if file.content_type == 'application/zip'
     filename
   end

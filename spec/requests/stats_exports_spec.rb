@@ -19,7 +19,7 @@ feature 'StatsExport' do
   scenario "request and download stats exports", :js, :fog_mock do
     go 'my', "/sites/stats/#{@site.token}"
 
-    click_button('CSV Export')
+    click_button('Export Data')
 
     sleep 0.01 until Delayed::Job.count == 1
     $worker.work_off
@@ -29,7 +29,7 @@ feature 'StatsExport' do
 
     # File can't be downloaded directly from S3 because of Fog.mock!
     current_url.should match(
-      %r{https://s3.amazonaws.com/#{S3Bucket.stats_exports}/uploads/stats_exports/stats_export.#{@site.token}.\d+-\d+.csv.zip\?AWSAccessKeyId=#{S3.access_key_id}&Signature=foo&Expires=\d+}
+      %r{https://s3.amazonaws.com/#{S3Bucket.stats_exports}/uploads/stats_exports/stats_export.#{@site.hostname}.\d+-\d+.csv.zip\?AWSAccessKeyId=#{S3.access_key_id}&Signature=foo&Expires=\d+}
     )
 
     # Verify zip content

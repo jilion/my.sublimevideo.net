@@ -2,7 +2,7 @@ class MSVStats.Views.ExportView extends Backbone.View
   template: JST['stats/templates/_export']
 
   events:
-    'click button':'export'
+    'click button:enabled':'export'
 
   initialize: ->
     @options.sites.bind 'change', this.render
@@ -17,7 +17,7 @@ class MSVStats.Views.ExportView extends Backbone.View
 
 
   export: ->
-    if confirm("We will processing your CSV export, once done you will receive an email with a link to download it. Let's go?")
+    if confirm("Once the CSV export is ready, you'll receive an email with a link to download it.")
       site = MSVStats.sites.selectedSite
       $.post '/stats/exports',
         stats_export:

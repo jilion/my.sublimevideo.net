@@ -11,7 +11,11 @@ require File.expand_path('spec/support/fixtures_helpers')
 require File.expand_path('app/uploaders/stats_export_uploader')
 
 describe StatsExportUploader do
-  let(:stat_export) { stub(st: 'site-token', from: 1, to: 2)}
+  let(:stat_export) { stub(
+    site_hostname: 'example.com',
+    from: Time.utc(2012,1,20),
+    to: Time.utc(2012,4,20)
+  )}
   let(:csv) { fixture_file('stats_export.csv') }
   let(:uploader) { StatsExportUploader.new(stat_export, :file) }
 
@@ -35,7 +39,11 @@ describe StatsExportUploader do
   end
 
   it "has zip extension" do
-    uploader.file.path.to_s.should =~ /\.csv\.zip$/
+    uploader.file.path.should match /\.csv\.zip$/
+  end
+
+  it "has good filename" do
+    uploader.filename.should eq "stats_export.example.com.20120120-20120420.csv.zip"
   end
 
   it "zipped properly" do

@@ -396,12 +396,12 @@ span.beta_badge {
   @include gradient(#4a5e7e,#8b9cb8,#637898);
 }
 
-.stats #csv_export {
+.stats #export {
   float:left;
-  margin:10px 0 10px 15px;
+  margin:10px 20px 10px 15px;
 }
 
-.stats #csv_export button {
+.stats #export button {
   border: 1px solid #5e75a2;
   font-family:inherit;
   font-size:14px;
@@ -415,33 +415,33 @@ span.beta_badge {
   @include box-shadow((inset rgba(255,255,255,0.6) 0 1px 0, rgba(255,255,255,0.2) 0 1px 0))
 }
 
-.stats #csv_export button:active {
+.stats #export button:active {
   @include gradient(rgba(255,255,255,0), rgba(255,255,255,0.25), transparent);
 }
 
-.stats #csv_export button:disabled {
+.stats #export button:disabled {
   cursor:default;
   opacity:0.5;
 }
 
-.stats #csv_export button span.icon {
+.stats #export button span.icon {
   padding:2px 0 2px 18px;
   background:url(<%= asset_data_uri "stats/export_icon.png" %>) no-repeat 0 50%;
 }
 
-#content #csv_export.tooltip .content.hidden {display:none}
+#content #export.tooltip .content.hidden {display:none}
 
-#content #csv_export.tooltip .content {
+#content #export.tooltip .content {
   bottom:38px;
   left:-13px
 }
 
-#content #csv_export_wrap p.desc {
-  font-size:15px;
+#content #export_wrap p.desc {
+  font-size:14px;
   color:#465B7D;
-  line-height:22px;
-  float:left;
-  margin:14px 0 0 15px;
+  line-height:20px;
+  margin:4px 0 0 15px;
+  padding-right:100px;
 }
 
 .stats #vv_chart_legend {

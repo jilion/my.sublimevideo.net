@@ -91,7 +91,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       period:       MSVStats.period
 
     new MSVStats.Views.ExportView
-      el: '#csv_export_wrap'
+      el: '#export_wrap'
       period: MSVStats.period
       sites:  MSVStats.sites
 
