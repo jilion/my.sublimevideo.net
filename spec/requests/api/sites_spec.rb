@@ -28,15 +28,15 @@ feature "Sites API" do
 
       parsed_body.should be_kind_of(Hash)
       parsed_body['site'].should be_kind_of(Hash)
-      parsed_body['site']['token'].should eql @site.token
+      parsed_body['site']['token'].should eq @site.token
     end
 
     scenario "non-existing site token" do
       go 'api', "sites/abc123?oauth_token=#{@token.token}"
 
-      page.driver.status_code.should eql 404
-      page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"
-      parsed_body['error'].should eql "Site with token 'abc123' could not be found."
+      page.driver.status_code.should eq 404
+      page.driver.response_headers['Content-Type'].should eq "application/json; charset=utf-8"
+      parsed_body['error'].should eq "Site with token 'abc123' could not be found."
     end
   end
 
@@ -52,12 +52,12 @@ feature "Sites API" do
 
       parsed_body.should be_kind_of(Hash)
       parsed_body["site"].should be_kind_of(Hash)
-      parsed_body["site"]["token"].should eql @site.token
+      parsed_body["site"]["token"].should eq @site.token
       parsed_body["site"]["usage"].should be_kind_of(Array)
-      parsed_body["site"]["usage"][0]["day"].should eql @site_usage2.day.strftime("%Y-%m-%d")
-      parsed_body["site"]["usage"][0]["video_views"].should eql @site_usage2.billable_player_hits
-      parsed_body["site"]["usage"][1]["day"].should eql @site_usage3.day.strftime("%Y-%m-%d")
-      parsed_body["site"]["usage"][1]["video_views"].should eql @site_usage3.billable_player_hits
+      parsed_body["site"]["usage"][0]["day"].should eq @site_usage2.day.strftime("%Y-%m-%d")
+      parsed_body["site"]["usage"][0]["video_views"].should eq @site_usage2.billable_player_hits
+      parsed_body["site"]["usage"][1]["day"].should eq @site_usage3.day.strftime("%Y-%m-%d")
+      parsed_body["site"]["usage"][1]["video_views"].should eq @site_usage3.billable_player_hits
     end
   end
 

@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe PagesController do
+  before do
+    @request.host = 'my.test.host'
+  end
 
   context "with logged in unsuspended user" do
     before { sign_in :user, authenticated_user }
