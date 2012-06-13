@@ -15,3 +15,5 @@ vendor/ruby
 vendor/bundler
 !.bundle
 .env
+.tddium
+uploads
