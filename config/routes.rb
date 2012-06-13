@@ -1,5 +1,5 @@
 class SubdomainConstraint
-  def initialize(subdomain, options ={})
+  def initialize(subdomain, options = {})
     @subdomain = subdomain
     @options   = options
   end
@@ -34,7 +34,7 @@ MySublimeVideo::Application.routes.draw do
 
   namespace 'api' do
     # Legacy routes
-    constraints SubdomainConstraint.new('my', format: /json|xml/) do
+    constraints SubdomainConstraint.new('my') do
 
       get 'test_request' => 'apis#test_request'
       resources :sites, only: [:index, :show] do
@@ -47,7 +47,7 @@ MySublimeVideo::Application.routes.draw do
   end
 
   scope module: 'api', as: 'api' do
-    constraints SubdomainConstraint.new('api', format: /json|xml/) do
+    constraints SubdomainConstraint.new('api') do
 
       match 'test_request' => 'apis#test_request'
       resources :sites, only: [:index, :show] do
