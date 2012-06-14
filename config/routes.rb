@@ -10,11 +10,6 @@ def https_if_prod_or_staging
 end
 
 MySublimeVideo::Application.routes.draw do
-
-  if %w[development test].include? Rails.env
-    mount Jasminerice::Engine => "/jasmine"
-  end
-
   # Redirect to subdomains
   match '/docs(/*rest)' => redirect { |params, req| "http://docs.#{req.domain}/#{params[:rest]}" }
   match '/admin(/*rest)' => redirect { |params, req| "#{https_if_prod_or_staging}://admin.#{req.domain}/#{params[:rest]}" }
