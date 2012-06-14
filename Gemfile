@@ -164,11 +164,11 @@ group :tools do
 
   # Guard
   gem 'growl'
-  # platforms :ruby do
-  #   gem 'rb-readline'
-  # end
+  platforms :ruby do
+    gem 'coolline'
+  end
 
-  gem 'guard'
+  gem 'guard', github: 'guard/guard', branch: 'coolline'
   gem 'guard-pow'
   gem 'guard-livereload'
   # gem 'guard-spork'
