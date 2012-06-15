@@ -1,5 +1,18 @@
-class MyPages
-  def self.matches?(request)
+class SubdomainConstraint
+  def initialize(subdomain, options = {})
+    @subdomain = subdomain
+    @options   = options
+  end
+
+  def matches?(request)
+    success = (request.subdomains.first == @subdomain)
+    success &= (@options[:format] =~ request.format) if @options[:format]
+    success
+  end
+end
+
+class PageExistsConstraint
+  def matches?(request)
     pages = Dir.glob('app/views/pages/*.html.haml').map { |p| p.match(%r(app/views/pages/(.*)\.html\.haml))[1] }
     pages.include?(request.params["page"])
   end
@@ -16,7 +29,7 @@ MySublimeVideo::Application.routes.draw do
 
   namespace 'api' do
     # Legacy routes
-    constraints subdomain: 'my', format: /json|xml/ do
+    constraints SubdomainConstraint.new('my') do
 
       get 'test_request' => 'apis#test_request'
       resources :sites, only: [:index, :show] do
@@ -29,7 +42,7 @@ MySublimeVideo::Application.routes.draw do
   end
 
   scope module: 'api', as: 'api' do
-    constraints subdomain: 'api', format: /json|xml/ do
+    constraints SubdomainConstraint.new('api') do
 
       match 'test_request' => 'apis#test_request'
       resources :sites, only: [:index, :show] do
@@ -41,14 +54,16 @@ MySublimeVideo::Application.routes.draw do
     end
   end # api.
 
-  # We put this block out of the following scope to avoid double admin_admin in url helpers...
-  devise_for :admins, constraints: { subdomain: 'admin' }, module: 'admin/admins', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
-  devise_scope :admin do
-    resource :admin_registration, only: [:edit, :update, :destroy], controller: 'admin/admins/registrations', constraints: { subdomain: 'admin' }, path: 'account'
+  constraints SubdomainConstraint.new('admin') do
+    # We put this block out of the following scope to avoid double admin_admin in url helpers...
+    devise_for :admins, module: 'admin/admins', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
+    devise_scope :admin do
+      resource :admin_registration, only: [:edit, :update, :destroy], controller: 'admin/admins/registrations', path: 'account'
+    end
   end
 
   scope module: 'admin', as: 'admin' do
-    constraints subdomain: 'admin' do
+    constraints SubdomainConstraint.new('admin') do
       %w[log_in sign_in signin].each         { |action| get action => redirect('/login') }
       %w[log_out sign_out signout exit].each { |action| get action => redirect('/logout') }
 
@@ -118,7 +133,7 @@ MySublimeVideo::Application.routes.draw do
     end
   end # admin.
 
-  constraints subdomain: 'my' do
+  constraints SubdomainConstraint.new('my') do
     devise_for :users, module: 'users', path: '', path_names: { sign_in: 'login', sign_out: 'logout' }, skip: [:registrations]
     devise_scope :user do
       resource :user, only: [], path: '' do
@@ -205,12 +220,12 @@ MySublimeVideo::Application.routes.draw do
     post '/pusher/auth' => 'pusher#auth'
     post '/pusher/webhook' => 'pusher#webhook'
 
-    get '/:page' => 'pages#show', as: :page, constraints: MyPages, format: false
+    get '/:page' => 'pages#show', as: :page, constraints: PageExistsConstraint.new, format: false
 
     root to: redirect('/sites')
   end
 
   # Default url for specs, not reachable by the app because of the my subdomain
-  get '/' => "sites#index"
+  get '/' => "pages#show", page: 'terms' if Rails.env.test?
 
 end
