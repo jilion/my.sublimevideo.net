@@ -16,4 +16,5 @@ vendor/bundler
 !.bundle
 .env
 .tddium
+.tddium-deploy-key
 uploads
