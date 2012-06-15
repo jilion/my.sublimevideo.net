@@ -11,11 +11,11 @@ gem 'sublimevideo_layout' # hosted on gemfury
 
 # Databases
 gem 'pg',                    '~> 0.13.0'
-gem 'squeel',                '~> 1.0.0'
+gem 'squeel',                '1.0.2'
 
-gem 'bson_ext',              '~> 1.6.0'
-gem 'bson',                  '~> 1.6.0'
-gem 'mongo',                 '~> 1.6.0'
+gem 'bson_ext',              '1.6.2'
+gem 'bson',                  '1.6.2'
+gem 'mongo',                 '1.6.2'
 gem 'mongoid',               '~> 2.4.7'
 gem 'mongoid_uniquify'
 

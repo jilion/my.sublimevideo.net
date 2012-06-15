@@ -145,9 +145,9 @@ GEM
       ruby_parser (= 2.3.1)
       sass (~> 3.0)
       terminal-table (~> 1.4)
-    bson (1.6.4)
-    bson_ext (1.6.4)
-      bson (~> 1.6.4)
+    bson (1.6.2)
+    bson_ext (1.6.2)
+      bson (~> 1.6.2)
     builder (3.0.0)
     capybara (1.1.2)
       mime-types (>= 1.16)
@@ -327,11 +327,11 @@ GEM
     money (5.0.0)
       i18n (~> 0.4)
       json
-    mongo (1.6.4)
-      bson (~> 1.6.4)
-    mongoid (2.4.10)
+    mongo (1.6.2)
+      bson (~> 1.6.2)
+    mongoid (2.4.11)
       activemodel (~> 3.1)
-      mongo (~> 1.3)
+      mongo (<= 1.6.2)
       tzinfo (~> 0.3.22)
     mongoid_uniquify (0.1.1)
     multi_json (1.3.6)
@@ -477,7 +477,7 @@ GEM
       hike (~> 1.2)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    squeel (1.0.5)
+    squeel (1.0.2)
       activerecord (~> 3.0)
       activesupport (~> 3.0)
       polyamorous (~> 0.5.0)
@@ -548,8 +548,8 @@ DEPENDENCIES
   asset_sync
   aws (~> 2.5.6)
   brakeman
-  bson (~> 1.6.0)
-  bson_ext (~> 1.6.0)
+  bson (= 1.6.2)
+  bson_ext (= 1.6.2)
   bundler (~> 1.2.0.pre.1)
   capybara
   capybara-email
@@ -595,7 +595,7 @@ DEPENDENCIES
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
   mime-types
-  mongo (~> 1.6.0)
+  mongo (= 1.6.2)
   mongoid (~> 2.4.7)
   mongoid_uniquify
   newrelic_rpm
@@ -631,7 +631,7 @@ DEPENDENCIES
   show_me_the_cookies
   silent-postgres
   snail (~> 0.5.7)
-  squeel (~> 1.0.0)
+  squeel (= 1.0.2)
   stat_request_parser (~> 1.1.0)
   state_machine (~> 1.1.2)
   sublimevideo_layout
