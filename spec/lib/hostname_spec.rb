@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'fast_spec_helper'
+require 'public_suffix'
 require File.expand_path('lib/hostname')
 require 'active_support/core_ext'
 
