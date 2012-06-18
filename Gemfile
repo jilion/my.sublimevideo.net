@@ -6,8 +6,8 @@ ruby '1.9.3'
 
 gem 'bundler', '~> 1.2.0.pre.1'
 
-gem 'rails',                 '3.2.6'
-gem 'sublimevideo_layout' # hosted on gemfury
+gem 'rails',               '3.2.6'
+gem 'sublimevideo_layout', '0.6.11' # hosted on gemfury
 
 # Databases
 gem 'pg',                    '~> 0.13.0'
