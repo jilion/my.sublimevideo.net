@@ -86,10 +86,11 @@ gem 'redis',                 '~> 2.2.2'
 # Tickets
 gem 'zendesk_client',        github: 'jilion/zendesk_client', require: 'zendesk'
 
+gem 'asset_sync'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'asset_sync'
   gem 'sass-rails',   '~> 3.2.0'
   gem 'coffee-rails', '~> 3.2.0'
   gem 'eco'
