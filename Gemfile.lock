@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: fa4f2bd4f7abbeaca9feac794bceb39f29c67184
+  revision: 56ef54eff4173b12a911115e5240ffb98905791c
   branch: coolline
   specs:
     guard (1.1.1)
@@ -268,7 +268,7 @@ GEM
       multi_json (~> 1.0)
     guard-pow (1.0.0)
       guard (>= 1.1)
-    guard-rspec (1.0.1)
+    guard-rspec (1.1.0)
       guard (>= 1.1)
     haml (3.1.6.rc.1)
     haml_coffee_assets (0.8.6)
@@ -285,7 +285,7 @@ GEM
       rubyzip
     heroku-api (0.2.1)
       excon (~> 0.13.3)
-    highline (1.6.12)
+    highline (1.6.13)
     hike (1.2.1)
     hpricot (0.8.6)
     htmlentities (4.3.1)
@@ -448,7 +448,7 @@ GEM
       sexp_processor (~> 3.0)
     ruby_parser (2.3.1)
       sexp_processor (~> 3.0)
-    rubyzip (0.9.8)
+    rubyzip (0.9.9)
     sass (3.1.19)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
