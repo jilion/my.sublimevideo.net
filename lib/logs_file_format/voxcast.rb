@@ -4,7 +4,7 @@ module LogsFileFormat
   module Voxcast
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
 
-    LINE_DEFINITIONS ||= [
+    LINE_DEFINITIONS = [
       { regexp: '(\d+|\-)',                   captures: [{ name: :cache_miss_reason, type: :integer }] },
       { regexp: '(\d+|\-)',                   captures: [{ name: :cache_status,      type: :integer }] },
       { regexp: "(#{ip_address})",            captures: [{ name: :client_ip,         type: :string }] },
