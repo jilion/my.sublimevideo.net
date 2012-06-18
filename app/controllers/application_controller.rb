@@ -3,6 +3,7 @@ require_dependency 'responders/paginated_responder'
 
 class ApplicationController < ActionController::Base
   include MyRedirectionFilters
+  include SublimeVideoLayoutHelper
 
   helper :all
 
