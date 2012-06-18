@@ -11,7 +11,7 @@ gem 'sublimevideo_layout' # hosted on gemfury
 
 # Databases
 gem 'pg',                    '~> 0.13.0'
-gem 'squeel',                '~> 1.0.6'
+gem 'squeel',                '1.0.2'
 
 gem 'bson_ext',              '1.6.2'
 gem 'bson',                  '1.6.2'
