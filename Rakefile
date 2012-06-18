@@ -14,10 +14,12 @@ Dir[Rails.root.join('lib/zendesk/*.rb')].each { |f| require f }
 require 'rake'
 require 'delayed/tasks'
 
-# Jasmine
-require 'guard/jasmine/task'
-Guard::JasmineTask.new do |task|
-  task.options = '-t 20000 -e development'
+if %w[development test].include?(Rails.env)
+  # Jasmine
+  require 'guard/jasmine/task'
+  Guard::JasmineTask.new do |task|
+    task.options = '-t 20000 -e development'
+  end
 end
 
 # Annotate settings
