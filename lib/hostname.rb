@@ -4,7 +4,7 @@ module Hostname
   class << self
 
     # http://en.wikipedia.org/wiki/Pseudo-top-level_domain
-    PSEUDO_TLD = %w[bitnet csnet exit i2p local onion oz freenet uucp root]
+    PSEUDO_TLD ||= %w[bitnet csnet exit i2p local onion oz freenet uucp root]
 
     # one hostname or list of hostnames separated by comma
     def clean(hostnames)
