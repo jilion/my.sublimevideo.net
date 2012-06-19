@@ -1,7 +1,6 @@
 class SitesController < ApplicationController
   respond_to :html
-  respond_to :js, only: [:index]
-  respond_to :json, only: [:index]
+  respond_to :js, :json, only: [:index]
 
   before_filter :redirect_suspended_user
   before_filter :activate_deal_from_cookie, only: [:index, :new]

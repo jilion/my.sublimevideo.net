@@ -21,6 +21,7 @@ gem 'mongoid_uniquify'
 
 # Views
 gem 'haml',                  '3.1.6.rc.1' # issue in 3.1.5, wait until 3.1.6 https://github.com/haml/haml/issues/531
+gem 'coffee-rails',          '~> 3.2.2'
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
@@ -86,16 +87,14 @@ gem 'redis',                 '~> 2.2.2'
 # Tickets
 gem 'zendesk_client',        github: 'jilion/zendesk_client', require: 'zendesk'
 
-
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
   gem 'asset_sync'
-  gem 'sass-rails',   '~> 3.2.0'
-  gem 'coffee-rails', '~> 3.2.0'
+  gem 'sass-rails',           '~> 3.2.5'
   gem 'eco'
   gem 'uglifier'
-  gem 'haml_coffee_assets', '~> 0.8.2'
+  gem 'haml_coffee_assets',   '~> 0.8.2'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
 
