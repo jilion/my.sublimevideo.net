@@ -12,7 +12,7 @@ class MSVStats.Views.ExportView extends Backbone.View
   render: =>
     if MSVStats.period.get('type')?
       @site = MSVStats.sites.selectedSite
-      $(@el).html(this.template(site: @site, period: @options.period))
+      $(@el).html(this.template(site: @site, period: @options.period, statsRouter: MSVStats.statsRouter))
     this
 
 
