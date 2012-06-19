@@ -62,12 +62,12 @@ describe SiteModules::Scope, :plans do
 
     describe ".in_plan" do
       specify { Site.in_plan('free').all.should eq [@site_free] }
-      specify { Site.in_plan(['sponsored', 'plus']).order(:id).all.should eq [@site_sponsored, @site_paid] }
+      specify { Site.in_plan(['sponsored', 'plus']).order(:id).all.should =~ [@site_sponsored, @site_paid] }
     end
 
     describe ".in_plan_id" do
       specify { Site.in_plan_id(@free_plan.id).all.should eq [@site_free] }
-      specify { Site.in_plan_id([@free_plan.id, @sponsored_plan.id]).all.should eq [@site_free, @site_sponsored] }
+      specify { Site.in_plan_id([@free_plan.id, @sponsored_plan.id]).all.should =~ [@site_free, @site_sponsored] }
     end
 
   end
