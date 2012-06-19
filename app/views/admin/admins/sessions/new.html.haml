@@ -1,13 +1,13 @@
 = title_and_content_header("Admin login")
 .spacer
-= form_for resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "main_form" } do |f|
+= form_for resource, as: resource_name, url: session_path(resource_name), html: { class: "main_form" } do |f|
   .entry.email
-    = f.label :email, "", :class => "icon"
-    = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
+    = f.label :email, "", class: "icon"
+    = f.email_field :email, class: "text", placeholder: "Email", required: true
     
   .entry.password
-    = f.label :password, "", :class => "icon"
-    = f.password_field :password, :class => "text", :placeholder => "Password", :required => true
+    = f.label :password, "", class: "icon"
+    = f.password_field :password, class: "text", placeholder: "Password", required: true
     
     - if devise_mapping.rememberable?
       .checkbox_wrap

@@ -8,7 +8,7 @@ class ClientApplication < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :tokens, class_name: "OauthToken", :dependent => :delete_all
+  has_many :tokens, class_name: "OauthToken", dependent: :delete_all
   has_many :oauth2_verifiers, dependent: :delete_all
 
   # ===============
@@ -26,7 +26,7 @@ class ClientApplication < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_validation :generate_keys, :on => :create
+  before_validation :generate_keys, on: :create
 
   # =================
   # = Class Methods =

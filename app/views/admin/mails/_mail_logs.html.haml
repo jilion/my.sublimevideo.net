@@ -4,10 +4,10 @@
   - params[:mail_logs] = true
   %table.main#mail_logs
     %tr
-      %th= link_to_sort :admin_email, :label => "Sent by", :reverse => true
-      %th= link_to_sort :template_title, :label => "Template", :reverse => true
+      %th= link_to_sort :admin_email, label: "Sent by", reverse: true
+      %th= link_to_sort :template_title, label: "Template", reverse: true
       %th= "# of receivers"
-      %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Created at"
+      %th= link_to_sort :date, default_way: 'desc', default: true, label: "Created at"
     = render partial: 'admin/mail_logs/mail_log', collection: @mail_logs
 
   .pagination_wrap

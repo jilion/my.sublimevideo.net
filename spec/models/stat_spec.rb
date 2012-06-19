@@ -20,15 +20,15 @@ describe Stat do
           site.update_attribute(:token, 'site1234')
           described_class.stub(:incs_from_trackers).and_return({
             "ovjigy83"=> {
-              :inc => { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
-              :videos   => {
+              inc: { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
+              videos: {
                 "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
                 "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
               }
             },
             "site1234"=> {
-              :inc => {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
-              :videos   => {
+              inc: {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
+              videos: {
                 "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
                 "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
               }
@@ -143,8 +143,8 @@ describe Stat do
 
       specify { described_class.incs_from_trackers(nil).should eql({
         "ovjigy83"=> {
-          :inc => { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 2, "md.f.d" => 2 },
-          :videos   => {
+          inc: { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 2, "md.f.d" => 2 },
+          videos: {
             "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
             "efgh5678" => { "vl.e" => 1, "vlc" => 1, "bp.saf-osx" => 1, "md.f.d" => 1 }
           }
@@ -164,15 +164,15 @@ describe Stat do
 
       specify { described_class.incs_from_trackers(nil).should eql({
         "ovjigy83"=> {
-          :inc => { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
-          :videos   => {
+          inc: { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
+          videos: {
             "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
             "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
           }
         },
         "site1234"=> {
-          :inc => { "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
-          :videos   => {
+          inc: { "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
+          videos: {
             "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
             "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
           }
@@ -190,14 +190,14 @@ describe Stat do
 
       specify { described_class.incs_from_trackers(nil).should eql({
         "ovjigy83"=> {
-          :inc => { "vv.m" => 1 },
-          :videos   => {
+          inc: { "vv.m" => 1 },
+          videos: {
             "abcd1234" => { "vv.m" => 1, "vs.source12" => 1, "vvc" => 1 }
           }
         },
         "site1234"=> {
-          :inc => { "vv.i" => 1 },
-          :videos   => {
+          inc: { "vv.i" => 1 },
+          videos: {
             "abcd1234" => { "vv.i" => 1 }
           }
         }
@@ -218,15 +218,15 @@ describe Stat do
 
       specify { described_class.incs_from_trackers(nil).should eql({
         "ovjigy83"=> {
-          :inc => { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
-          :videos   => {
+          inc: { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
+          videos: {
             "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
             "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
           }
         },
         "site1234"=> {
-          :inc => {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
-          :videos   => {
+          inc: {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
+          videos: {
             "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
             "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
           }

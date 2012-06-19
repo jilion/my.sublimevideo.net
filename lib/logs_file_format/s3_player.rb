@@ -21,22 +21,22 @@ module LogsFileFormat
       line.capture(:requests_uri)
       line.capture(:http_status).as(:integer)
       line.capture(:error_code).as(:nillable_string)
-      line.capture(:bytes_sent).as(:traffic, :unit => :byte)
-      line.capture(:object_size).as(:traffic, :unit => :byte)
-      line.capture(:total_time).as(:duration, :unit => :msec)
-      line.capture(:turnaround_time).as(:duration, :unit => :msec)
+      line.capture(:bytes_sent).as(:traffic, unit: :byte)
+      line.capture(:object_size).as(:traffic, unit: :byte)
+      line.capture(:total_time).as(:duration, unit: :msec)
+      line.capture(:turnaround_time).as(:duration, unit: :msec)
       line.capture(:referrer).as(:referrer)
       line.capture(:useragent).as(:useragent)
     end
 
     report do |analyze|
-      analyze.traffic(:bytes_sent, :title => :traffic_s3,
-        :category => lambda { |r| player_token_from(r[:requests_uri]) },
-        :if       => lambda { |r| player_token?(r[:requests_uri]) && s3_get_request?(r[:operation]) }
+      analyze.traffic(:bytes_sent, title: :traffic_s3,
+        category: lambda { |r| player_token_from(r[:requests_uri]) },
+        if: lambda { |r| player_token?(r[:requests_uri]) && s3_get_request?(r[:operation]) }
       )
-      analyze.frequency(:key, :title => :requests_s3,
-        :category => lambda { |r| player_token_from(r[:requests_uri]) },
-        :if       => lambda { |r| player_token?(r[:requests_uri]) && s3_get_request?(r[:operation]) }
+      analyze.frequency(:key, title: :requests_s3,
+        category: lambda { |r| player_token_from(r[:requests_uri]) },
+        if: lambda { |r| player_token?(r[:requests_uri]) && s3_get_request?(r[:operation]) }
       )
     end
 

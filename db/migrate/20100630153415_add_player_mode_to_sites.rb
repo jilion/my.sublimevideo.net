@@ -1,6 +1,6 @@
 class AddPlayerModeToSites < ActiveRecord::Migration
   def self.up
-    add_column :sites, :player_mode, :string, :default => "stable"
+    add_column :sites, :player_mode, :string, default: "stable"
   end
   
   def self.down

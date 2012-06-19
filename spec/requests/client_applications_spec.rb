@@ -55,8 +55,8 @@ feature "OAuth applications" do
         click_link "Register a new application"
         current_url.should == "http://my.sublimevideo.dev/account/applications/new"
 
-        fill_in "Name", :with => "WordPress"
-        fill_in "Url", :with => "http://wordpress.com"
+        fill_in "Name", with: "WordPress"
+        fill_in "Url", with: "http://wordpress.com"
         click_button "Register"
 
         current_url.should == "http://my.sublimevideo.dev/account/applications/#{ClientApplication.last.id}"
@@ -73,8 +73,8 @@ feature "OAuth applications" do
         current_url.should == "http://my.sublimevideo.dev/account/applications/#{@application.id}/edit"
         page.should have_content("Edit the application 'Agree2'")
 
-        fill_in "Name", :with => "Agree3"
-        fill_in "Callback url", :with => "http://test.fr"
+        fill_in "Name", with: "Agree3"
+        fill_in "Callback url", with: "http://test.fr"
         click_button "Update"
 
         page.should have_content('Agree3')
@@ -83,7 +83,7 @@ feature "OAuth applications" do
       end
     end
 
-    # Failure/Error: fill_in "Password", :with => "123456"
+    # Failure/Error: fill_in "Password", with: "123456"
     # cannot fill in, no text field, text area or password field with id, name, or label 'Password' found
     pending "delete an OAuth applications" do
       scenario "shows a list of applications" do
@@ -92,7 +92,7 @@ feature "OAuth applications" do
 
         click_button "Delete"
 
-        fill_in "Password", :with => "123456"
+        fill_in "Password", with: "123456"
         click_button "Done"
 
         current_url.should =~ %r(^http://[^/]+/account/applications$)

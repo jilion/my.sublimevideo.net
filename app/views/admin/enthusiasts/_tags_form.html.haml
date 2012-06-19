@@ -1,4 +1,4 @@
-= form_for [:admin, @enthusiast], :remote => true do |f|
-  = f.label :tags_list, :id => "tags_list_enthusiast_label_#{@enthusiast.id}"
+= form_for [:admin, @enthusiast], remote: true do |f|
+  = f.label :tags_list, id: "tags_list_enthusiast_label_#{@enthusiast.id}"
   = f.text_field :tags_list
   = f.submit "Update tags"

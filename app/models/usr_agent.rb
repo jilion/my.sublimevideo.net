@@ -4,10 +4,10 @@ class UsrAgent # fucking name conflict with UserAgent gem
   include Mongoid::Document
 
   field :token
-  field :month,     :type => DateTime
+  field :month,     type: DateTime
 
-  field :platforms, :type => Hash # { "iPad" => { "iOS 3.2" => 32, "iOS 4.2" => 31, "Unknown" => 12 }, "Unknown" => 123 }
-  field :browsers,  :type => Hash # { "Safari" => { "versions" => { "4.0.4" => 123, "5.0" => 12, "Unknown" => 123 }, "platforms" => { "iPad" => 12, "Windows" => 12, "Unknown" => 123 } }, "Unknown" => 123 }
+  field :platforms, type: Hash # { "iPad" => { "iOS 3.2" => 32, "iOS 4.2" => 31, "Unknown" => 12 }, "Unknown" => 123 }
+  field :browsers,  type: Hash # { "Safari" => { "versions" => { "4.0.4" => 123, "5.0" => 12, "Unknown" => 123 }, "platforms" => { "iPad" => 12, "Windows" => 12, "Unknown" => 123 } }, "Unknown" => 123 }
 
   index [[:month, Mongo::ASCENDING], [:token, Mongo::ASCENDING]] # UsrAgent#create_or_update_from_trackers
 
@@ -25,8 +25,8 @@ class UsrAgent # fucking name conflict with UserAgent gem
   # = Validations =
   # ===============
 
-  validates :token, :presence => true
-  validates :month, :presence => true
+  validates :token, presence: true
+  validates :month, presence: true
 
   # =================
   # = Class Methods =

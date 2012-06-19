@@ -8,7 +8,7 @@ class CreateVideoProfiles < ActiveRecord::Migration
       t.boolean :thumbnailable     # profile used to set the video thumbnail
       t.integer :min_width         # minimum required width to fire this profile when encoding a video
       t.integer :min_height        # minimum required height to fire this profile when encoding a video
-      t.integer :versions_count, :default => 0
+      t.integer :versions_count, default: 0
       
       t.timestamps
     end

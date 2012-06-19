@@ -7,7 +7,7 @@
 
     %p.desc><
       = "This application"
-      %strong{ :style => "color:#166c00" }= "will be able to"
+      %strong{ style: "color:#166c00" }= "will be able to"
       = ":"
     %ul.desc
       -# Always accessible by default
@@ -19,7 +19,7 @@
 
     %p.desc><
       = "This application"
-      %strong{ :style => "color:#891619" }= "will not be able to"
+      %strong{ style: "color:#891619" }= "will not be able to"
       = ":"
     %ul.desc
       - if scopes.exclude?('site')
@@ -36,5 +36,5 @@
     = hidden_field_tag "authorize", "1"
 
     .entry.update
-      = submit_tag "Authorize", :class => "blue_button"
-      = link_to "Cancel", params[:redirect_uri], :class => "submit_dynamic_button float hl"
+      = submit_tag "Authorize", class: "blue_button"
+      = link_to "Cancel", params[:redirect_uri], class: "submit_dynamic_button float hl"

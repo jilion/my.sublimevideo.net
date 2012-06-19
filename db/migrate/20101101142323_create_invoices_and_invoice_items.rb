@@ -20,15 +20,15 @@ class CreateInvoicesAndInvoiceItems < ActiveRecord::Migration
       t.integer :vat_amount
       t.integer :invoice_items_amount
 
-      t.integer :invoice_items_count, :default => 0
-      t.integer :transactions_count, :default => 0
+      t.integer :invoice_items_count, default: 0
+      t.integer :transactions_count, default: 0
 
       t.timestamps
       t.datetime :paid_at
       t.datetime :last_failed_at
     end
     add_index :invoices, :site_id
-    add_index :invoices, :reference, :unique => true
+    add_index :invoices, :reference, unique: true
 
     create_table :invoice_items do |t|
       t.string   :type       # STI

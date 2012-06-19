@@ -1,6 +1,6 @@
 class CreateEnthusiastsAndEnthusiastSites < ActiveRecord::Migration
   def up
-    create_table "enthusiasts", :force => true do |t|
+    create_table "enthusiasts", force: true do |t|
       t.string   "email"
       t.text     "free_text"
       t.boolean  "interested_in_beta"
@@ -15,15 +15,15 @@ class CreateEnthusiastsAndEnthusiastSites < ActiveRecord::Migration
       t.boolean  "starred"
       t.datetime "confirmation_resent_at"
     end
-    add_index "enthusiasts", ["email"], :name => "index_enthusiasts_on_email", :unique => true
+    add_index "enthusiasts", ["email"], name: "index_enthusiasts_on_email", unique: true
 
-    create_table "enthusiast_sites", :force => true do |t|
+    create_table "enthusiast_sites", force: true do |t|
       t.integer  "enthusiast_id"
       t.string   "hostname"
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    add_index "enthusiast_sites", ["enthusiast_id"], :name => "index_enthusiast_sites_on_enthusiast_id"
+    add_index "enthusiast_sites", ["enthusiast_id"], name: "index_enthusiast_sites_on_enthusiast_id"
   end
 
   def down

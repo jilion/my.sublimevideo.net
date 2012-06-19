@@ -42,7 +42,7 @@ module Admin::SitesHelper
     else
       html += "(dev) #{joined_links(site.dev_hostnames)}"
     end
-    html += " (#{link_to("details", [:edit, :admin, site], :title => "EXTRA: #{site.extra_hostnames}; DEV: #{site.dev_hostnames}")})"
+    html += " (#{link_to("details", [:edit, :admin, site], title: "EXTRA: #{site.extra_hostnames}; DEV: #{site.dev_hostnames}")})"
     raw html
   end
 

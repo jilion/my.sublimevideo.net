@@ -6,13 +6,13 @@ class Release < ActiveRecord::Base
 
   attr_accessible :zip
   mount_uploader :zip, ReleaseUploader
-  uniquify :token, :length => 10, :chars => Array('A'..'Z') + Array('0'..'9')
+  uniquify :token, length: 10, chars: Array('A'..'Z') + Array('0'..'9')
 
   # ===============
   # = Validations =
   # ===============
 
-  validates :zip, :presence => true
+  validates :zip, presence: true
 
   # =============
   # = Callbacks =
@@ -25,14 +25,14 @@ class Release < ActiveRecord::Base
   # = State Machine =
   # =================
 
-  state_machine :initial => :archived do
-    event(:flag)    { transition :archived => :dev, :dev => :beta, :beta => :stable }
+  state_machine initial: :archived do
+    event(:flag)    { transition archived: :dev, dev: :beta, beta: :stable }
     event(:archive) { transition [:dev, :beta, :stable] => :archived }
 
-    after_transition :to => :dev, :do => :overwrite_dev_with_zip_content
-    after_transition :to => [:beta, :stable], :do => :copy_content_to_next_state
-    after_transition :to => [:dev, :beta, :stable], :do => :archive_old_release
-    after_transition :on => :flag, :do => :purge_old_release_dir
+    after_transition to: :dev, do: :overwrite_dev_with_zip_content
+    after_transition to: [:beta, :stable], do: :copy_content_to_next_state
+    after_transition to: [:dev, :beta, :stable], do: :archive_old_release
+    after_transition on: :flag, do: :purge_old_release_dir
   end
 
   # =================
@@ -40,7 +40,7 @@ class Release < ActiveRecord::Base
   # =================
 
   def self.stable_release
-    where(:state => "stable").first
+    where(state: "stable").first
   end
 
   def self.beta_release
@@ -60,7 +60,7 @@ class Release < ActiveRecord::Base
   def zipfile
     # Download file from S3 to read the zip content
     @zipfile ||= begin
-      @local_zip_file = File.new(Rails.root.join("tmp/#{read_attribute(:zip)}"), 'w', :encoding => 'ASCII-8BIT')
+      @local_zip_file = File.new(Rails.root.join("tmp/#{read_attribute(:zip)}"), 'w', encoding: 'ASCII-8BIT')
       # There's an issue with CarrierWave's "zip.read" method, use AWS directly instead...
       # Note: no problem when using :file as storage
       @local_zip_file.write(Rails.env.test? ? zip.read : S3.player_bucket.get("#{zip.store_dir}/#{zip.filename}"))

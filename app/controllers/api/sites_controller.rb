@@ -1,22 +1,22 @@
 class Api::SitesController < Api::ApisController
   # self.responder.send(:include, Responders::HttpCacheResponder)
 
-  before_filter :find_by_token!, :only => [:show, :usage]
+  before_filter :find_by_token!, only: [:show, :usage]
 
   # GET /sites
   def index
     @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
-    respond_with(@sites, :api_template => api_template, :root => :sites)
+    respond_with(@sites, api_template: api_template, root: :sites)
   end
 
   # GET /sites/:id
   def show
-    respond_with(@site, :api_template => api_template)
+    respond_with(@site, api_template: api_template)
   end
 
   # GET /sites/:id/usage
   def usage
-    respond_with(@site, :api_template => api_template(:private, :usage))
+    respond_with(@site, api_template: api_template(:private, :usage))
   end
 
   private

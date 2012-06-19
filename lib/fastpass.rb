@@ -21,14 +21,14 @@ module FastPass
   def self.url(key, secret, email, name, uid, secure=false, additional_fields={})
     consumer = OAuth::Consumer.new(key, secret)
     uri = URI.parse(secure ? "https://#{domain}/fastpass" : "http://#{domain}/fastpass")
-    params = additional_fields.merge(:email => email, :name => name, :uid => uid)
+    params = additional_fields.merge(email: email, name: name, uid: uid)
     
     uri.query = params.to_query
     
     http      = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
     request   = Net::HTTP::Get.new(uri.request_uri)
-    request.oauth!(http, consumer, nil, :scheme => 'query_string')
+    request.oauth!(http, consumer, nil, scheme: 'query_string')
     
     signature = request.oauth_helper.signature
     #re-apply params with signature to the uri

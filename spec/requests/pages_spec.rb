@@ -172,8 +172,8 @@ feature "Suspended page" do
         page.should have_content "Visa ending in 1111"
         page.should have_content "Update credit card"
         page.should have_content "Please pay the following invoice in order to reactivate your account:"
-        page.should have_content "$19.90 on #{I18n.l(@invoice.created_at, :format => :d_b_Y)}."
-        page.should have_content "Payment failed on #{I18n.l(@invoice.last_failed_at, :format => :minutes_timezone)} with the following error:"
+        page.should have_content "$19.90 on #{I18n.l(@invoice.created_at, format: :d_b_Y)}."
+        page.should have_content "Payment failed on #{I18n.l(@invoice.last_failed_at, format: :minutes_timezone)} with the following error:"
         page.should have_content "\"#{@invoice.last_transaction.error}\""
 
         click_link "Update credit card"
