@@ -1,4 +1,4 @@
-%p= raw "The payment for #{@invoice.site.hostname} has failed multiple times and no further attempts will be made to charge this account."
+%p= raw "The payment for #{link_to @invoice.site.hostname, url_with_protocol(@invoice.site.hostname)} has failed multiple times and no further attempts will be made to charge this account."
 
 %p= raw "You can purchase a plan for #{@invoice.site.hostname} via the #{link_to('Update plan', edit_site_plan_url(@invoice.site))} page."
 

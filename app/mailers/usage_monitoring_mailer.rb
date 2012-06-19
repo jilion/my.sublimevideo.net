@@ -1,6 +1,8 @@
 class UsageMonitoringMailer < Mailer
   default template_path: "mailers/#{self.mailer_name}"
 
+  helper :sites
+
   def plan_overused(site)
     @site = site
     @user = @site.user

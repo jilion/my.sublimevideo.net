@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe StatsExport do
-  let(:csv) { fixture_file('stats_export.csv') }
+  let(:csv)  { fixture_file('stats_export.csv') }
   let(:site) { create(:site) }
   let(:attributes) { {
     st: site.token,
