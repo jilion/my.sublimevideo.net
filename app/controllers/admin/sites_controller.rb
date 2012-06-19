@@ -18,7 +18,7 @@ class Admin::SitesController < Admin::AdminController
   # GET /sites
   def index
     @sites = apply_scopes(Site.includes(:user, :plan))
-    @tags  = Site.tag_counts
+    @tags  = Site.tag_counts.order { tags.name }
 
     respond_with(@sites, per_page: 50)
   end
@@ -31,7 +31,7 @@ class Admin::SitesController < Admin::AdminController
   # GET /sites/:id/edit
   def edit
     @site = Site.includes(:user).find_by_token(params[:id])
-    @tags = Site.tag_counts
+    @tags = Site.tag_counts.order { tags.name }
 
     respond_with(@site)
   end
