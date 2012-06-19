@@ -23,7 +23,8 @@ module SiteModules::Templates
 
       templates_to_purge.each { |template| site.purge_template(template) }
 
-      PusherWrapper.trigger("private-#{site.token}", 'cdn_status', up_to_date: true)
+      PusherWrapper.delay(run_at: 5.seconds.from_now)
+        .trigger("private-#{site.token}", 'cdn_status', up_to_date: true)
     end
 
     # delayed method

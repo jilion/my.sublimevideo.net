@@ -20,8 +20,7 @@ class MySublimeVideo.UI.SitesStatus
     _.each @tokens, (token) =>
       @channels[token] = @pusher.subscribe("private-#{token}")
       @channels[token].bind 'cdn_status', (data) =>
-        callback = => this.updateStatus(token, data)
-        setTimeout(callback, 5000)
+        this.updateStatus(token, data)
 
   updateStatus: (token, data) ->
     tr = @table.find("tr[data-site-token*='#{token}']")
