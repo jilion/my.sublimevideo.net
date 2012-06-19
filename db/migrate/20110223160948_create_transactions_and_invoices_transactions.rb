@@ -17,9 +17,9 @@ class CreateTransactionsAndInvoicesTransactions < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :transactions, :order_id, :unique => true
+    add_index :transactions, :order_id, unique: true
 
-    create_table :invoices_transactions, :id => false do |t|
+    create_table :invoices_transactions, id: false do |t|
       t.integer :invoice_id
       t.integer :transaction_id
     end

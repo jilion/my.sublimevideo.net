@@ -56,7 +56,7 @@ describe Invoice, :plans do
     end
 
     describe "Transitions" do
-      describe "before_transition :on => :succeed, :do => :set_paid_at" do
+      describe "before_transition on: :succeed, do: :set_paid_at" do
         before { subject.reload }
 
         it "should set paid_at" do
@@ -66,7 +66,7 @@ describe Invoice, :plans do
         end
       end
 
-      describe "before_transition :on => :fail, :do => :set_last_failed_at" do
+      describe "before_transition on: :fail, do: :set_last_failed_at" do
         before { subject.reload }
 
         it "should set last_failed_at" do
@@ -76,7 +76,7 @@ describe Invoice, :plans do
         end
       end
 
-      describe "after_transition :on => :succeed, :do => :apply_site_pending_attributes" do
+      describe "after_transition on: :succeed, do: :apply_site_pending_attributes" do
         context "with a site with no more non-paid invoices" do
           it "should call #apply_pending_attributes on the site" do
             site = create(:site)
@@ -111,7 +111,7 @@ describe Invoice, :plans do
         end
       end
 
-      describe "after_transition :on => :succeed, :do => :update_user_invoiced_amount" do
+      describe "after_transition on: :succeed, do: :update_user_invoiced_amount" do
         before  { subject.reload }
 
         it "should update user.last_invoiced_amount" do
@@ -134,7 +134,7 @@ describe Invoice, :plans do
         end
       end
 
-      describe "after_transition :on => :succeed, :do => :unsuspend_user" do
+      describe "after_transition on: :succeed, do: :unsuspend_user" do
         before  { subject.reload }
 
         context "with a non-suspended user" do
@@ -187,7 +187,7 @@ describe Invoice, :plans do
         end
       end
 
-      describe "after_transition :on => :cancel, :do => :increment_user_balance" do
+      describe "after_transition on: :cancel, do: :increment_user_balance" do
         before  { subject.reload }
 
         it "increments user balance" do

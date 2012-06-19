@@ -10,7 +10,7 @@
   %tr
     - %w[range last_30_days total].each do |key|
       - usage = usages[key.to_sym]
-      %td{ :style => "text-align:left;" }
+      %td{ style: "text-align:left;" }
         %table
           %tr
             %td= "Player hits: "

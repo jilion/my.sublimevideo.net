@@ -13,9 +13,9 @@ RSpec.configure do |config|
       region:                'us-east-1'
     }
     unless $fog_connection
-      $fog_connection = Fog::Storage.new(:provider => 'AWS')
+      $fog_connection = Fog::Storage.new(provider: 'AWS')
       %w[licenses loaders player logs stats_exports].each do |bucket|
-        $fog_connection.directories.create(:key => S3Bucket.send(bucket) )
+        $fog_connection.directories.create(key: S3Bucket.send(bucket) )
       end
     end
   end

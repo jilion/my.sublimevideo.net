@@ -56,13 +56,13 @@ describe S3 do
       end
 
       it "should not remove prefix from key name when remove_prefix is set to false" do
-        S3.keys_names(S3.player_bucket, 'prefix' => 'dev', :remove_prefix => false).each do |key|
+        S3.keys_names(S3.player_bucket, 'prefix' => 'dev', remove_prefix: false).each do |key|
           key.should =~ /^dev/
         end
       end
 
       it "should remove prefix from key name when remove_prefix is set to true" do
-        S3.keys_names(S3.player_bucket, 'prefix' => 'dev', :remove_prefix => true).each do |key|
+        S3.keys_names(S3.player_bucket, 'prefix' => 'dev', remove_prefix: true).each do |key|
           key.should_not =~ /^dev/
         end
       end

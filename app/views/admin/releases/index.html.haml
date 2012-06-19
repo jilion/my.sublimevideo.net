@@ -6,7 +6,7 @@
       = f.label :zip, "Zip file"
       = f.file_field :zip
       .actions
-        = f.submit 'Upload new dev release', :class => "add"
+        = f.submit 'Upload new dev release', class: "add"
 
   %h3= "Current Releases"
   %table
@@ -22,7 +22,7 @@
         %td= link_to "zip archive", stable_release.zip.url
         %td
       - else
-        %td{ :colspan => 3 }
+        %td{ colspan: 3 }
           = "none"
     %tr.alt
       %td= "Beta"
@@ -31,7 +31,7 @@
         %td= link_to "zip archive", beta_release.zip.url
         %td= button_to "flag as stable", [:admin, beta_release], data: { confirm: 'Are you REALLY sure?' }, method: :put
       - else
-        %td{ :colspan => 3 }= "none"
+        %td{ colspan: 3 }= "none"
     %tr
       %td= "Dev"
       - if dev_release = Release.dev_release
@@ -39,7 +39,7 @@
         %td= link_to "zip archive", dev_release.zip.url
         %td= button_to "flag as beta", [:admin, dev_release], data: { confirm: 'Are you sure?' }, method: :put
       - else
-        %td{ :colspan => 3 }= "none"
+        %td{ colspan: 3 }= "none"
 
   %h3= "All releases"
   #releases_table_wrap= render 'releases'

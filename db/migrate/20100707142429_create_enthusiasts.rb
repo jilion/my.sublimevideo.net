@@ -8,7 +8,7 @@ class CreateEnthusiasts < ActiveRecord::Migration
       t.timestamps
     end
     
-    add_index :enthusiasts, :email, :unique => true
+    add_index :enthusiasts, :email, unique: true
   end
   
   def self.down

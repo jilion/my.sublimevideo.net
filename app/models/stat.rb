@@ -56,7 +56,7 @@ private
 
   # Merge each trackers params on one big hash
   #
-  # { 'site_token' => { :inc => {...}, :videos => { 'video_uid' => { inc }, ... } } }
+  # { 'site_token' => { inc: {...}, videos: { 'video_uid' => { inc }, ... } } }
   #
   def self.incs_from_trackers(trackers)
     trackers = only_stats_trackers(trackers)
@@ -85,7 +85,7 @@ private
         end
       rescue StatRequestParser::BadParamsError
       rescue TypeError => ex
-        Notify.send("Request parsing problem: #{request}", :exception => ex)
+        Notify.send("Request parsing problem: #{request}", exception: ex)
       end
     end
 

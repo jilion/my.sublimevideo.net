@@ -31,13 +31,13 @@
     - @applications.each do |application|
       = div_for application do
         %li
-          = link_to application.name, :action => :show, :id => application.id
+          = link_to application.name, action: :show, id: application.id
           = "("
           = link_to 'Edit', edit_client_application_path(application)
           = " | "
-          = form_for application, :html => { :method => :delete, "data-password-protected" => true } do |f|
+          = form_for application, html: { method: :delete, "data-password-protected" => true } do |f|
             .entry.delete
-              = f.submit "Delete", :class => "submit link_looks delete"
+              = f.submit "Delete", class: "submit link_looks delete"
           = ")"
 %br
 %h3

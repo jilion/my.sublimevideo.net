@@ -107,7 +107,7 @@ private
     @loader_needs_update = @license_needs_update = false
   end
 
-  # after_transition :to => [:suspended, :archived]
+  # after_transition to: [:suspended, :archived]
   def delay_remove_loader_and_license
     Site.delay.remove_loader_and_license(self.id)
   end

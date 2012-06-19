@@ -17,7 +17,7 @@ describe Notify do
     it "should notify via airbrake with exception" do
       message = 'Yo!'
       Airbrake.should_receive(:notify).with(Exception.new("Yo! // exception: exception"))
-      Notify.send(message, :exception => "exception")
+      Notify.send(message, exception: "exception")
     end
 
     it "should notify via prowl in prod env" do

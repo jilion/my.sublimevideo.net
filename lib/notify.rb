@@ -24,13 +24,13 @@ module Notify
 
     def prowl(message)
       @prowl ||= Prowl.new(
-        :apikey => yml_options[:api_keys].join(","),
-        :application => "MySublime"
+        apikey: yml_options[:api_keys].join(","),
+        application: "MySublime"
       )
       @prowl.add(
-        :event => "Alert",
-        :priority => 2,
-        :description => message
+        event: "Alert",
+        priority: 2,
+        description: message
       )
     end
 

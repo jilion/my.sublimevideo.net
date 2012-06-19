@@ -16,7 +16,7 @@ module Admin::AnalyticsHelper
     options = (1..6).inject([]) do |memo, month_i|
       memo << [month_i, month_i.month.ago.beginning_of_day]
     end
-    [options, { :selected => params[:opts] && params[:opts][:start_time] ? params[:opts][:start_time] : selected_date }]
+    [options, { selected: params[:opts] && params[:opts][:start_time] ? params[:opts][:start_time] : selected_date }]
   end
 
 end

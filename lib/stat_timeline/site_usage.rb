@@ -29,15 +29,15 @@ module StatTimeline
     # Return a hash of site usages. Default keys of the hash are the default labels (see the 'labels' options):
     def timeline
       usages = ::SiteUsage.collection.group(
-        :key => [:day],
-        :cond => @base_conditions.merge({
-          :day => {
+        key: [:day],
+        cond: @base_conditions.merge({
+          day: {
             "$gte" => @start_time.midnight,
             "$lte" => @end_time.end_of_day
           }
         }),
-        :initial => @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
-        :reduce => reduce
+        initial: @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
+        reduce: reduce
       )
 
       # total = @options[:dont_add_total_usages_before_start_time] ? [] : total_usages_before_start_time
@@ -60,10 +60,10 @@ module StatTimeline
 
     def total_usages_before_start_time
       ::SiteUsage.collection.group(
-        :key => nil,
-        :cond => @base_conditions.merge({ :day => { "$lt" => @start_time.to_date.to_time.midnight } }),
-        :initial => @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
-        :reduce => reduce
+        key: nil,
+        cond: @base_conditions.merge({ day: { "$lt" => @start_time.to_date.to_time.midnight } }),
+        initial: @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
+        reduce: reduce
       )
     end
 
@@ -149,7 +149,7 @@ module StatTimeline
   class UsersStat
     attr_accessor :collection
 
-    delegate :empty?, :to => :collection
+    delegate :empty?, to: :collection
 
     def initialize(start_time, end_time, options = {})
       @start_time, @end_time = start_time, end_time

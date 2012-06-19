@@ -1,4 +1,4 @@
-= title_and_content_header("Mail sent on #{l(@mail_log.created_at, :format => :short)} to #{pluralize(@mail_log.user_ids.size, 'users')} by #{@mail_log.admin.email}")
+= title_and_content_header("Mail sent on #{l(@mail_log.created_at, format: :short)} to #{pluralize(@mail_log.user_ids.size, 'users')} by #{@mail_log.admin.email}")
 
 %p
   %strong= "Template used: "

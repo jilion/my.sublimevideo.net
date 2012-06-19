@@ -4,7 +4,7 @@ class ModifySites < ActiveRecord::Migration
     add_column :sites, :plan_id, :integer
     add_column :sites, :pending_plan_id, :integer
     add_column :sites, :next_cycle_plan_id, :integer
-    add_column :sites, :cdn_up_to_date, :boolean, :default => false
+    add_column :sites, :cdn_up_to_date, :boolean, default: false
     add_column :sites, :first_paid_plan_started_at, :datetime
     add_column :sites, :plan_started_at, :datetime
     add_column :sites, :plan_cycle_started_at, :datetime
@@ -16,9 +16,9 @@ class ModifySites < ActiveRecord::Migration
     add_column :sites, :first_plan_upgrade_required_alert_sent_at, :datetime
     add_column :sites, :refunded_at, :datetime
 
-    add_column :sites, :last_30_days_main_player_hits_total_count, :integer, :default => 0
-    add_column :sites, :last_30_days_extra_player_hits_total_count, :integer, :default => 0
-    add_column :sites, :last_30_days_dev_player_hits_total_count, :integer, :default => 0
+    add_column :sites, :last_30_days_main_player_hits_total_count, :integer, default: 0
+    add_column :sites, :last_30_days_extra_player_hits_total_count, :integer, default: 0
+    add_column :sites, :last_30_days_dev_player_hits_total_count, :integer, default: 0
 
     add_index :sites, :last_30_days_main_player_hits_total_count
     add_index :sites, :last_30_days_extra_player_hits_total_count

@@ -6,7 +6,7 @@ describe HostnameUniquenessValidator do
 
   context "on create" do
     it "should scope by user" do
-      site2 = build(:new_site, :user => site.user)
+      site2 = build(:new_site, user: site.user)
       validate_hostname_uniqueness(site2, :hostname, site.hostname)
       site2.errors[:hostname].should have(1).item
     end
@@ -18,7 +18,7 @@ describe HostnameUniquenessValidator do
     end
 
     it "should allow 2 users to register the same hostname" do
-      site2 = build(:new_site, :user => create(:user))
+      site2 = build(:new_site, user: create(:user))
       validate_hostname_uniqueness(site2, :hostname, site.hostname)
       site2.errors[:hostname].should be_empty
     end
@@ -28,14 +28,14 @@ describe HostnameUniquenessValidator do
       site.user.current_password = '123456'
       site.archive
       site.should be_archived
-      site2 = build(:new_site, :user => site.user)
+      site2 = build(:new_site, user: site.user)
       validate_hostname_uniqueness(site2, :hostname, site.hostname)
       site2.errors[:hostname].should be_empty
     end
   end
 
   context "on update" do
-    subject { create(:site, :user => site.user).tap { |s| s.update_attribute(:cdn_up_to_date, true) } }
+    subject { create(:site, user: site.user).tap { |s| s.update_attribute(:cdn_up_to_date, true) } }
 
     it "should scope by user" do
       validate_hostname_uniqueness(subject, :hostname, site.hostname)
@@ -48,7 +48,7 @@ describe HostnameUniquenessValidator do
     end
 
     it "should allow 2 users to register the same hostname" do
-      site2 = create(:site, :user => create(:user))
+      site2 = create(:site, user: create(:user))
       validate_hostname_uniqueness(site2, :hostname, site.hostname)
       site2.errors[:hostname].should be_empty
     end
@@ -65,5 +65,5 @@ describe HostnameUniquenessValidator do
 end
 
 def validate_hostname_uniqueness(record, attribute, value)
-  HostnameUniquenessValidator.new(:attributes => attribute).validate_each(record, attribute, value)
+  HostnameUniquenessValidator.new(attributes: attribute).validate_each(record, attribute, value)
 end

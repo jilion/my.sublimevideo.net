@@ -5,27 +5,27 @@ class SiteUsage
   include Mongoid::Document
   include SiteUsageModules::Api
 
-  field :site_id,         :type => Integer
-  field :day,             :type => DateTime
+  field :site_id,         type: Integer
+  field :day,             type: DateTime
 
-  field :loader_hits,                :type => Integer, :default => 0 # ssl included
-  field :ssl_loader_hits,            :type => Integer, :default => 0
-  field :player_hits,                :type => Integer, :default => 0
-  field :main_player_hits,           :type => Integer, :default => 0 # non-cached
-  field :main_player_hits_cached,    :type => Integer, :default => 0
-  field :extra_player_hits,          :type => Integer, :default => 0 # non-cached
-  field :extra_player_hits_cached,   :type => Integer, :default => 0
-  field :dev_player_hits,            :type => Integer, :default => 0 # non-cached
-  field :dev_player_hits_cached,     :type => Integer, :default => 0
-  field :invalid_player_hits,        :type => Integer, :default => 0 # non-cached
-  field :invalid_player_hits_cached, :type => Integer, :default => 0
-  field :flash_hits,                 :type => Integer, :default => 0
-  field :requests_s3,                :type => Integer, :default => 0
-  field :traffic_s3,                 :type => Integer, :default => 0
-  field :traffic_voxcast,            :type => Integer, :default => 0
+  field :loader_hits,                type: Integer, default: 0 # ssl included
+  field :ssl_loader_hits,            type: Integer, default: 0
+  field :player_hits,                type: Integer, default: 0
+  field :main_player_hits,           type: Integer, default: 0 # non-cached
+  field :main_player_hits_cached,    type: Integer, default: 0
+  field :extra_player_hits,          type: Integer, default: 0 # non-cached
+  field :extra_player_hits_cached,   type: Integer, default: 0
+  field :dev_player_hits,            type: Integer, default: 0 # non-cached
+  field :dev_player_hits_cached,     type: Integer, default: 0
+  field :invalid_player_hits,        type: Integer, default: 0 # non-cached
+  field :invalid_player_hits_cached, type: Integer, default: 0
+  field :flash_hits,                 type: Integer, default: 0
+  field :requests_s3,                type: Integer, default: 0
+  field :traffic_s3,                 type: Integer, default: 0
+  field :traffic_voxcast,            type: Integer, default: 0
 
   index :site_id
-  index [[:site_id, Mongo::ASCENDING], [:day, Mongo::ASCENDING]]#, :unique => true
+  index [[:site_id, Mongo::ASCENDING], [:day, Mongo::ASCENDING]]#, unique: true
 
   # ================
   # = Associations =
@@ -39,9 +39,9 @@ class SiteUsage
   # = Scopes =
   # ==========
 
-  scope :after,   lambda { |date| where(:day => { "$gte" => date }) }
-  scope :before,  lambda { |date| where(:day => { "$lte" => date }) }
-  scope :between, lambda { |start_date, end_date| where(:day => { "$gte" => start_date, "$lte" => end_date }) }
+  scope :after,   lambda { |date| where(day: { "$gte" => date }) }
+  scope :before,  lambda { |date| where(day: { "$lte" => date }) }
+  scope :between, lambda { |start_date, end_date| where(day: { "$gte" => start_date, "$lte" => end_date }) }
 
   # =================
   # = Class Methods =
@@ -51,16 +51,16 @@ class SiteUsage
     hbrs   = hits_traffic_and_requests_from(log, trackers)
     tokens = tokens_from(hbrs)
     while tokens.present?
-      Site.where(:token => tokens.pop(100)).each do |site|
+      Site.where(token: tokens.pop(100)).each do |site|
         begin
           hbr_token = hits_traffic_and_requests_for_token(hbrs, site.token)
           self.collection.update(
-            { :site_id => site.id, :day => log.day },
+            { site_id: site.id, day: log.day },
             { "$inc" => hbr_token },
-            :upsert => true
+            upsert: true
           )
         rescue => ex
-          Notify.send("Error on site_usage (#{site.id}, #{log.day}) update (from log #{log.hostname}, #{log.name}. Data: #{hbr_token}", :exception => ex)
+          Notify.send("Error on site_usage (#{site.id}, #{log.day}) update (from log #{log.hostname}, #{log.name}. Data: #{hbr_token}", exception: ex)
         end
       end
     end

@@ -15,7 +15,7 @@ describe UsrAgent do
     before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz').and_return(log_file)
-      @log = create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
+      @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastUserAgents')
       %w[0w1o1q3c k8qaaj1l ibvjcopp hp1lepyq].each do |token|
         create(:site).update_attribute(:token, token)
@@ -28,7 +28,7 @@ describe UsrAgent do
     it { UsrAgent.count.should == 6 }
 
     describe "first usr_agent" do
-      subject { UsrAgent.where(:token => site.token).first }
+      subject { UsrAgent.where(token: site.token).first }
 
       it "should have valid attributes" do
         subject.token.should == site.token

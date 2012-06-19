@@ -1,6 +1,6 @@
-%tr[referrer]{ :class => cycle("", "alt") }
+%tr[referrer]{ class: cycle("", "alt") }
   %td.url
-    = link_to truncate(referrer.url, :length => 60), referrer.url
+    = link_to truncate(referrer.url, length: 60), referrer.url
     = "(#{link_to("site details", edit_admin_site_path(referrer.site.token))})".html_safe
   %td.hits= referrer.hits || 0
   %td.hits= referrer.badge_hits || 0

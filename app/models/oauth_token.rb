@@ -18,7 +18,7 @@ class OauthToken < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_validation :generate_keys, :on => :create
+  before_validation :generate_keys, on: :create
 
   # ==========
   # = Scopes =
