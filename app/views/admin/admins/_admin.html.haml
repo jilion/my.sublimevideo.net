@@ -3,4 +3,4 @@
     = link_to admin.email, edit_admin_admin_path(admin)
   %td.confirmed
     = display_bool(!admin.invited?)
-  %td.delete= button_to('Delete', url_for(controller: 'admin/admins', action: 'destroy', id: admin.id), confirm: 'Are you sure?', method: :delete)
+  %td.delete= button_to('Delete', url_for(controller: 'admin/admins', action: 'destroy', id: admin.id), data: { confirm: 'Are you sure?' }, method: :delete)

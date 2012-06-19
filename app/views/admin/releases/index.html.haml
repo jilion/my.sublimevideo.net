@@ -2,7 +2,7 @@
 
 #player_releases
   .new_form
-    = form_for [:admin, Release.new], :html => { :multipart => true } do |f|
+    = form_for [:admin, Release.new], html: { multipart: true } do |f|
       = f.label :zip, "Zip file"
       = f.file_field :zip
       .actions
@@ -29,7 +29,7 @@
       - if beta_release = Release.beta_release
         %td= beta_release.date
         %td= link_to "zip archive", beta_release.zip.url
-        %td= button_to "flag as stable", [:admin, beta_release], :confirm => 'Are you REALLY sure?', :method => :put
+        %td= button_to "flag as stable", [:admin, beta_release], data: { confirm: 'Are you REALLY sure?' }, method: :put
       - else
         %td{ :colspan => 3 }= "none"
     %tr
@@ -37,7 +37,7 @@
       - if dev_release = Release.dev_release
         %td= dev_release.date
         %td= link_to "zip archive", dev_release.zip.url
-        %td= button_to "flag as beta", [:admin, dev_release], :confirm => 'Are you sure?', :method => :put
+        %td= button_to "flag as beta", [:admin, dev_release], data: { confirm: 'Are you sure?' }, method: :put
       - else
         %td{ :colspan => 3 }= "none"
 

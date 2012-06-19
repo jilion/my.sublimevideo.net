@@ -18,4 +18,4 @@
   %td.unlock
     = delayed_job.locked_at.blank? ? "-" : button_to('Unlock', admin_delayed_job_path(delayed_job, sort_params), method: :put)
   %td.delete
-    = button_to('Delete', admin_delayed_job_path(delayed_job, sort_params), confirm: 'Are you sure?', method: :delete)
+    = button_to('Delete', admin_delayed_job_path(delayed_job, sort_params), data: { confirm: 'Are you sure?' }, method: :delete)

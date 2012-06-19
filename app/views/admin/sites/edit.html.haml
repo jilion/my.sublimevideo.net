@@ -42,13 +42,13 @@
 
   = form_for [:admin, @site] do |f|
     = f.select :player_mode, Site::PLAYER_MODES
-    = f.submit "Update player mode", confirm: "Are you sure?"
+    = f.submit "Update player mode", data: { confirm: "Are you sure?" }
   %br
 
   - unless @site.in_sponsored_plan?
     %h3 Sponsoring
     = form_for [:sponsor, :admin, @site] do |f|
-      = f.submit "Change current plan to sponsored plan", confirm: "Are you sure?"
+      = f.submit "Change current plan to sponsored plan", data: { confirm: "Are you sure?" }
   %br
   %hr
   %br
