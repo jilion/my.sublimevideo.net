@@ -4,18 +4,32 @@ module OneTime
     class << self
 
       def regenerate_templates(options)
-        total, delay = 0, 5
+        scheduled, delay = 0, 5
         ::Site.active.find_each(batch_size: 100) do |site|
           ::Site.delay(priority: 200, run_at: delay.seconds.from_now).update_loader_and_license(site.id, options)
-          total += 1
+          scheduled += 1
 
-          if (total % 100).zero?
-            puts "#{total} sites scheduled..."
+          if (scheduled % 100).zero?
+            puts "#{scheduled} sites scheduled..."
             delay += 5
           end
         end
 
-        "Finished: in total, #{total} sites will have their loader and license re-generated"
+        "Finished: in total, #{scheduled} sites will have their loader and license re-generated"
+      end
+
+      def set_first_billable_plays_at
+        processed, updated = 0, 0
+        ::Site.where(first_billable_plays_at: nil).find_each(batch_size: 500) do |site|
+          if stat = Stat::Site::Day.last_stats(token: site.token, fill_missing_days: false).detect { |s| s.billable_vv >= 10 }
+            site.update_column(:first_billable_plays_at, stat.d)
+            updated += 1
+          end
+          processed += 1
+
+          puts "#{processed} sites processed..." if (processed % 100).zero?
+          puts "#{updated} sites updated..." if (updated % 100).zero?
+        end
       end
 
       def without_versioning
