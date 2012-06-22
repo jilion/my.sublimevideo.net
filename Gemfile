@@ -168,7 +168,7 @@ group :tools do
     gem 'coolline'
   end
 
-  gem 'guard', github: 'guard/guard', branch: 'coolline'
+  gem 'guard'
   gem 'guard-pow'
   gem 'guard-livereload'
   # gem 'guard-spork'
