@@ -10,7 +10,7 @@ gem 'rails',               '3.2.6'
 gem 'sublimevideo_layout', '1.1.1' # hosted on gemfury
 
 # Databases
-gem 'pg',                    '~> 0.13.0'
+gem 'pg',                    '~> 0.14.0'
 gem 'squeel',                '1.0.2'
 
 gem 'bson_ext',              '1.6.2'
@@ -53,7 +53,7 @@ gem 'responders',            '~> 0.7.0'
 gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
-gem 'fog',                   '~> 1.3.1'
+gem 'fog',                   '~> 1.4.0'
 gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
@@ -109,7 +109,7 @@ end
 group :staging, :production do
   gem 'rack-ssl-enforcer'
   gem 'thin'
-  gem 'dalli', '~> 2.0.0'
+  gem 'dalli', '~> 2.1.0'
   gem 'rpm_contrib'
   gem 'newrelic_rpm'
 end
