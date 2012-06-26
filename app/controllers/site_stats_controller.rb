@@ -34,7 +34,7 @@ private
   end
 
   def demo_site?
-    (params[:token] || params[:site_id] || params[:id]) == 'demo'
+    (params[:site_id] || params[:id]) == 'demo'
   end
 
 end

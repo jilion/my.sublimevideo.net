@@ -194,7 +194,7 @@ MySublimeVideo::Application.routes.draw do
       resources :video_tags, only: [:show]
     end
     # for backbone
-    get '/sites/stats(/:token)' => 'site_stats#index', as: 'site_stats', format: false
+    get '/sites/stats(/:site_id)' => 'site_stats#index', as: 'site_stats', format: false
 
     resources :stats_exports, only: [:create, :show], path: 'stats/exports'
 
