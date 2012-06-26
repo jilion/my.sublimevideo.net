@@ -17,7 +17,9 @@
     %p= raw "This demo page displays the actual video statistics for our own sublimevideo.net domain. Watch any video on #{link_to "sublimevideo.net", "http://sublimevideo.net"} from any device and see your activity logged in real-time on this page. Enjoy!"
 
 .stats
-  %span.beta_badge
+  - unless demo_stats_page?
+    -# %span.beta_badge
+    = render 'layouts/segmented_menu'
   :coffeescript
     jQuery(document).ready ->
       # Enable pusher logging - don't include this in production
