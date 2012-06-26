@@ -1,7 +1,12 @@
 - dont_show_invoices_tab = @site.in_free_plan? && @site.invoices.not_canceled.empty?
 
 %ul.segmented_menu.sticky
-  = li_menu_link('Settings', path: edit_site_path(@site), class: 'first' + (%r{sites/#{@site.token}$} =~ request.url ? ' active' : ''))
-  = li_menu_link('Plan', path: edit_site_plan_path(@site), class: (dont_show_invoices_tab ? 'last' : '') + (%r{sites/#{@site.token}/plan$} =~ request.url ? ' active' : ''))
+  = li_menu_link('Videos', path: '', class: 'first' )
+  = li_menu_link('Stats', path: site_stats_path(@site), class: (%r{sites/stats/#{@site.token}$} =~ request.url ? ' active' : '') )
+  = li_menu_link('Code Generator', path: '', class: 'last' )
+%ul.second_menu
+  = li_menu_link('Settings', path: edit_site_path(@site), class: %r{sites/#{@site.token}$} =~ request.url ? ' active' : '')
+  = li_menu_link('Usage', path: '')
+  = li_menu_link('Plan', path: edit_site_plan_path(@site), class: %r{sites/#{@site.token}/plan$} =~ request.url ? ' active' : '')
   - unless dont_show_invoices_tab
-    = li_menu_link('Invoices', path: site_invoices_path(@site), class: 'last')
+    = li_menu_link('Invoices', path: site_invoices_path(@site))

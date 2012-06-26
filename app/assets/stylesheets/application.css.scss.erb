@@ -509,6 +509,10 @@ form .entry.float select {
 /* = Edit Site = */
 /* ============= */
 
+#sites_select_title {
+  padding-bottom:25px;
+}
+
 ul.segmented_menu {
   list-style-type:none;
   position:absolute;
@@ -553,6 +557,36 @@ ul.segmented_menu li.active a {
   @include gradient(#114492, #207ec3, #1a65ae);
   @include box-shadow((inset rgba(0,0,0,0.9) 0 1px 13px, rgba(255,255,255,0.3) 0 1px 0));
   -webkit-font-smoothing:antialiased;
+}
+
+ul.second_menu {
+  list-style-type:none;
+  position:absolute;
+  top:105px;
+  right:45px;
+}
+
+ul.second_menu li {
+  float:left;
+  padding:0 10px;
+  border-left:1px solid #899db8;
+  line-height:12px;
+}
+
+ul.second_menu li:first-child {
+  border-left:none;
+}
+
+ul.second_menu li a {
+  color:#1E3966;
+  font-size:12px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+ul.second_menu li.active a {
+  color:rgba(58,90,140,0.7);
 }
 
 #site_settings_box {

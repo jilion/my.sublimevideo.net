@@ -1,7 +1,7 @@
 - if @statsRouter? && @statsRouter.isDemo()
   %h2 Stats for sublimevideo.net
 - else
-  %h2 Stats for
+  %h2
     %select
       - for site in @sites.models
         - if @sites.selectedSite == site
