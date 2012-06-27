@@ -36,13 +36,13 @@ module Admin::SitesHelper
   def links_to_hostnames(site)
     html = ""
     if site.hostname?
-      html += link_to truncated_hostname(site), "http://#{site.hostname}"
+      html += link_to truncated_hostname(site), url_with_protocol(site.hostname)
     elsif site.extra_hostnames?
       html += "(ext) #{joined_links(site.extra_hostnames)}"
     else
       html += "(dev) #{joined_links(site.dev_hostnames)}"
     end
-    html += " (#{link_to("details", [:edit, :admin, site], :title => "EXTRA: #{site.extra_hostnames}; DEV: #{site.dev_hostnames}")})"
+    html += " (#{link_to("details", [:edit, :admin, site], title: "EXTRA: #{site.extra_hostnames}; DEV: #{site.dev_hostnames}")})"
     raw html
   end
 

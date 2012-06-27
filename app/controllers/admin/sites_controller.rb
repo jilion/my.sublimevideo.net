@@ -18,7 +18,7 @@ class Admin::SitesController < Admin::AdminController
   # GET /sites
   def index
     @sites = apply_scopes(Site.includes(:user, :plan))
-    @tags  = Site.tag_counts
+    @tags  = Site.tag_counts.order { tags.name }
 
     respond_with(@sites, per_page: 50)
   end
@@ -30,15 +30,15 @@ class Admin::SitesController < Admin::AdminController
 
   # GET /sites/:id/edit
   def edit
-    @site = Site.includes(:user).find_by_token(params[:id])
-    @tags = Site.tag_counts
+    @site = Site.includes(:user).find_by_token!(params[:id])
+    @tags = Site.tag_counts.order { tags.name }
 
     respond_with(@site)
   end
 
   # PUT /sites/:id
   def update
-    @site = Site.find_by_token(params[:id])
+    @site = Site.find_by_token!(params[:id])
     params[:site].delete(:mode) unless has_role?('god')
     @site.update_attributes(params[:site], without_protection: true)
 
@@ -50,7 +50,7 @@ class Admin::SitesController < Admin::AdminController
 
   # PUT /sites/:id/sponsor
   def sponsor
-    @site = Site.find_by_token(params[:id])
+    @site = Site.find_by_token!(params[:id])
     @site.sponsor!
 
     respond_with(@site)

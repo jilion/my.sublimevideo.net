@@ -91,7 +91,7 @@ private
   def with_log_file_in_tmp(&block)
     Notify.send("Log File ##{id} not present at copy") unless file.present?
     log_file = rescue_and_retry(7, Excon::Errors::SocketError) do
-      log_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
+      log_file = File.new(Rails.root.join("tmp/#{name}"), 'w', encoding: 'ASCII-8BIT')
       begin
         log_file.write(file.read)
       rescue NoMethodError, Excon::Errors::NotFound => ex

@@ -132,7 +132,7 @@ describe SiteModules::Templates, :plans do
         it "notifies that cdn is up to date via Pusher" do
           site.update_attribute(:player_mode, 'beta')
           PusherWrapper.should_receive(:trigger).once.with("private-#{site.token}", 'cdn_status', up_to_date: true)
-          $worker.work_off
+          Timecop.travel(6.seconds.from_now) { $worker.work_off }
         end
       end
 

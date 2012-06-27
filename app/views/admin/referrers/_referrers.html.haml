@@ -1,11 +1,11 @@
 %table.main#sites
   %tr
     %th= 'url'
-    %th= link_to_sort :hits, :default_way => 'desc'
-    %th= link_to_sort :badge_hits, :default_way => 'desc'
-    %th= link_to_sort :contextual_hits, :default_way => 'desc'
-    %th= link_to_sort :created_at, :default_way => 'desc', :default => true
-    %th= link_to_sort :updated_at, :default_way => 'desc'
+    %th= link_to_sort :hits, default_way: 'desc'
+    %th= link_to_sort :badge_hits, default_way: 'desc'
+    %th= link_to_sort :contextual_hits, default_way: 'desc'
+    %th= link_to_sort :created_at, default_way: 'desc', default: true
+    %th= link_to_sort :updated_at, default_way: 'desc'
   = render @referrers
 
 .pagination_wrap

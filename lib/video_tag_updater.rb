@@ -8,8 +8,12 @@ class VideoTagUpdater
         if video_tag = VideoTag.find_by_st_and_u(st, u)
           push_needed = video_tag.update_meta_data(attrs)
         else
-          VideoTag.create(attrs.merge(st: st, u: u))
-          push_needed = true
+          begin
+            VideoTag.create(attrs.merge(st: st, u: u))
+            push_needed = true
+          rescue BSON::InvalidKeyName => ex
+            Notify.send("BSON::InvalidKeyName with attrs: #{attrs}", exception: ex)
+          end
         end
         if push_needed
           PusherWrapper.trigger("private-#{st}", 'video_tag', u: u, meta_data: attrs)

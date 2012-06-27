@@ -201,7 +201,7 @@ module SiteModules::Invoice
     plan_month_cycle_ended_at.to_i
   end
 
-  # before_save :if => :pending_plan_id_changed? / also called from SiteModules::Invoice.renew_active_sites
+  # before_save if: :pending_plan_id_changed? / also called from SiteModules::Invoice.renew_active_sites
   def prepare_pending_attributes
     @instant_charging = false
 

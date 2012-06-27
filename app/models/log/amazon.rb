@@ -37,7 +37,7 @@ private
   def self.fetch_new_logs_names
     options = {
       'prefix' => config[:store_dir],
-      :remove_prefix => true
+      remove_prefix: true
     }
     if last_log = self.where(created_at: { "$gt" => 7.day.ago }).desc(:name).first
       options['marker'] = config[:store_dir] + marker(last_log)

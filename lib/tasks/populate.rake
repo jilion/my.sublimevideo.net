@@ -825,10 +825,11 @@ def create_mail_templates(count = 5)
 end
 
 def send_all_emails(user_id)
-  user        = User.find(user_id)
-  site        = Site.joins(:invoices).where(user_id: user_id).group { sites.id }.having { { invoices => (count(id) > 0) } }.last
-  invoice     = site.invoices.last
-  transaction = invoice.transactions.last || Transaction.create(invoices: [invoice])
+  user         = User.find(user_id)
+  site         = Site.joins(:invoices).where(user_id: user_id).group { sites.id }.having { { invoices => (count(id) > 0) } }.last
+  invoice      = site.invoices.last
+  transaction  = invoice.transactions.last || Transaction.create(invoices: [invoice])
+  stats_export = StatsExport.last || StatsExport.create(st: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
 
   DeviseMailer.confirmation_instructions(user).deliver!
   DeviseMailer.reset_password_instructions(user).deliver!
@@ -844,6 +845,8 @@ def send_all_emails(user_id)
   BillingMailer.transaction_failed(transaction).deliver!
 
   BillingMailer.too_many_charging_attempts(invoice).deliver!
+
+  StatsExportMailer.export_ready(stats_export).deliver!
 
   MailMailer.send_mail_with_template(user, MailTemplate.last).deliver!
 

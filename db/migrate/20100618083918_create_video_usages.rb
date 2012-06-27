@@ -7,21 +7,21 @@ class CreateVideoUsages < ActiveRecord::Migration
       t.datetime  :started_at
       t.datetime  :ended_at
       
-      t.integer   :hits,      :default => 0
+      t.integer   :hits,      default: 0
       
-      t.integer   :bandwidth_s3, :default => 0 # S3
-      t.integer   :bandwidth_us, :default => 0 # United States
-      t.integer   :bandwidth_eu, :default => 0 # European
-      t.integer   :bandwidth_as, :default => 0 # Asia (Hong Kong & Singapore)
-      t.integer   :bandwidth_jp, :default => 0 # Japan (Tokyo)
-      t.integer   :bandwidth_unknown, :default => 0 # Cloudfront unknown location
+      t.integer   :bandwidth_s3, default: 0 # S3
+      t.integer   :bandwidth_us, default: 0 # United States
+      t.integer   :bandwidth_eu, default: 0 # European
+      t.integer   :bandwidth_as, default: 0 # Asia (Hong Kong & Singapore)
+      t.integer   :bandwidth_jp, default: 0 # Japan (Tokyo)
+      t.integer   :bandwidth_unknown, default: 0 # Cloudfront unknown location
       
-      t.integer   :requests_s3, :default => 0 # S3
-      t.integer   :requests_us, :default => 0 # United States
-      t.integer   :requests_eu, :default => 0 # European
-      t.integer   :requests_as, :default => 0 # Asia (Hong Kong & Singapore)
-      t.integer   :requests_jp, :default => 0 # Japan (Tokyo)
-      t.integer   :requests_unknown, :default => 0 # Cloudfront unknown location
+      t.integer   :requests_s3, default: 0 # S3
+      t.integer   :requests_us, default: 0 # United States
+      t.integer   :requests_eu, default: 0 # European
+      t.integer   :requests_as, default: 0 # Asia (Hong Kong & Singapore)
+      t.integer   :requests_jp, default: 0 # Japan (Tokyo)
+      t.integer   :requests_unknown, default: 0 # Cloudfront unknown location
       
       t.timestamps
     end

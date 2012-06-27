@@ -12,7 +12,7 @@ class RemoveEnthusiastsAndEnthusiastSites < ActiveRecord::Migration
       t.confirmable
       t.timestamps
     end
-    add_index :enthusiasts, :email, :unique => true
+    add_index :enthusiasts, :email, unique: true
     
     create_table :enthusiast_sites do |t|
       t.references :enthusiast

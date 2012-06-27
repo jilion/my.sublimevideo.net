@@ -116,7 +116,8 @@ describe BillingMailer do
       end
 
       it { @last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.too_many_charging_attempts', hostname: @invoice.site.hostname) }
-      it { @last_delivery.body.encoded.should include "The payment for #{@invoice.site.hostname} has failed multiple times" }
+      it { @last_delivery.body.encoded.should include "The payment for" }
+      it { @last_delivery.body.encoded.should include "has failed multiple times" }
       it { @last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites/#{@invoice.site.to_param}/plan/edit" }
       it { @last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
       it { @last_delivery.body.encoded.should include "If you have any questions, please reply to this email." }

@@ -23,7 +23,8 @@ module SiteModules::Templates
 
       templates_to_purge.each { |template| site.purge_template(template) }
 
-      PusherWrapper.trigger("private-#{site.token}", 'cdn_status', up_to_date: true)
+      PusherWrapper.delay(run_at: 5.seconds.from_now)
+        .trigger("private-#{site.token}", 'cdn_status', up_to_date: true)
     end
 
     # delayed method
@@ -107,7 +108,7 @@ private
     @loader_needs_update = @license_needs_update = false
   end
 
-  # after_transition :to => [:suspended, :archived]
+  # after_transition to: [:suspended, :archived]
   def delay_remove_loader_and_license
     Site.delay.remove_loader_and_license(self.id)
   end

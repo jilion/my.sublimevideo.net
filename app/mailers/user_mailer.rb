@@ -3,6 +3,7 @@ class UserMailer < Mailer
 
   def welcome(user)
     @user = user
+    @no_intro, @no_signature, @no_reply = true, true, true
 
     mail(
       to: to(@user),

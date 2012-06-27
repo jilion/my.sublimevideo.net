@@ -47,10 +47,10 @@ describe Plan, :plans do
     end
 
     describe "uniqueness of name scoped by cycle" do
-      before { create(:plan, :name => "foo", :cycle => "month") }
+      before { create(:plan, name: "foo", cycle: "month") }
 
-      it { build(:plan, :name => "foo", :cycle => "month").should_not be_valid }
-      it { build(:plan, :name => "foo", :cycle => "year").should be_valid }
+      it { build(:plan, name: "foo", cycle: "month").should_not be_valid }
+      it { build(:plan, name: "foo", cycle: "year").should be_valid }
     end
 
     it { should validate_numericality_of(:video_views) }
@@ -88,63 +88,63 @@ describe Plan, :plans do
 
     describe "#month_price" do
       context "with month plan" do
-        subject { build(:plan, :cycle => "month", :price => 1000) }
+        subject { build(:plan, cycle: "month", price: 1000) }
 
         its(:month_price) { should eq 1000 }
       end
 
       context "with year plan" do
-        subject { build(:plan, :cycle => "year", :price => 10000) }
+        subject { build(:plan, cycle: "year", price: 10000) }
 
         its(:month_price) { should eq 10000 / 12 }
       end
     end
 
     describe "#free_plan?" do
-      it { build(:plan, :name => "free").should be_free_plan }
-      it { build(:plan, :name => "pro").should_not be_free_plan }
+      it { build(:plan, name: "free").should be_free_plan }
+      it { build(:plan, name: "pro").should_not be_free_plan }
     end
 
     describe "#sponsored_plan?" do
-      it { build(:plan, :name => "free").should_not be_sponsored_plan }
-      it { build(:plan, :name => "pro").should_not be_sponsored_plan }
-      it { build(:plan, :name => "sponsored").should be_sponsored_plan }
+      it { build(:plan, name: "free").should_not be_sponsored_plan }
+      it { build(:plan, name: "pro").should_not be_sponsored_plan }
+      it { build(:plan, name: "sponsored").should be_sponsored_plan }
     end
 
     describe "#standard_plan?" do
-      it { build(:plan, :name => "free").should_not be_standard_plan }
-      it { build(:plan, :name => "sponsored").should_not be_standard_plan }
+      it { build(:plan, name: "free").should_not be_standard_plan }
+      it { build(:plan, name: "sponsored").should_not be_standard_plan }
 
       Plan::STANDARD_NAMES.each do |name|
-        it { build(:plan, :name => name).should be_standard_plan }
+        it { build(:plan, name: name).should be_standard_plan }
       end
     end
 
     describe "#custom_plan?" do
-      it { build(:plan, :name => "free").should_not be_custom_plan }
-      it { build(:plan, :name => "sponsored").should_not be_custom_plan }
-      it { build(:plan, :name => "comet").should_not be_custom_plan }
-      it { build(:plan, :name => "custom").should be_custom_plan }
-      it { build(:plan, :name => "custom1").should be_custom_plan }
-      it { build(:plan, :name => "custom2").should be_custom_plan }
+      it { build(:plan, name: "free").should_not be_custom_plan }
+      it { build(:plan, name: "sponsored").should_not be_custom_plan }
+      it { build(:plan, name: "comet").should_not be_custom_plan }
+      it { build(:plan, name: "custom").should be_custom_plan }
+      it { build(:plan, name: "custom1").should be_custom_plan }
+      it { build(:plan, name: "custom2").should be_custom_plan }
     end
 
     describe "#unpaid_plan?" do
-      it { build(:plan, :name => "free").should be_unpaid_plan }
-      it { build(:plan, :name => "sponsored").should be_unpaid_plan }
-      it { build(:plan, :name => "comet").should_not be_unpaid_plan }
-      it { build(:plan, :name => "custom").should_not be_unpaid_plan }
-      it { build(:plan, :name => "custom1").should_not be_unpaid_plan }
-      it { build(:plan, :name => "custom2").should_not be_unpaid_plan }
+      it { build(:plan, name: "free").should be_unpaid_plan }
+      it { build(:plan, name: "sponsored").should be_unpaid_plan }
+      it { build(:plan, name: "comet").should_not be_unpaid_plan }
+      it { build(:plan, name: "custom").should_not be_unpaid_plan }
+      it { build(:plan, name: "custom1").should_not be_unpaid_plan }
+      it { build(:plan, name: "custom2").should_not be_unpaid_plan }
     end
 
     describe "#paid_plan?" do
-      it { build(:plan, :name => "free").should_not be_paid_plan }
-      it { build(:plan, :name => "sponsored").should_not be_paid_plan }
-      it { build(:plan, :name => "comet").should be_paid_plan }
-      it { build(:plan, :name => "custom").should be_paid_plan }
-      it { build(:plan, :name => "custom1").should be_paid_plan }
-      it { build(:plan, :name => "custom2").should be_paid_plan }
+      it { build(:plan, name: "free").should_not be_paid_plan }
+      it { build(:plan, name: "sponsored").should_not be_paid_plan }
+      it { build(:plan, name: "comet").should be_paid_plan }
+      it { build(:plan, name: "custom").should be_paid_plan }
+      it { build(:plan, name: "custom1").should be_paid_plan }
+      it { build(:plan, name: "custom2").should be_paid_plan }
     end
 
     describe "#monthly?, #yearly? and #nonely?" do

@@ -8,15 +8,6 @@ GIT
       daemons
 
 GIT
-  remote: git://github.com/guard/guard.git
-  revision: ef14e664f9eb1fa57520fc156e3d34902d7b9c40
-  branch: coolline
-  specs:
-    guard (1.1.1)
-      listen (>= 0.4.2)
-      thor (>= 0.14.6)
-
-GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: be8240784141056b66e0720fbfccb1f8856edaa6
   specs:
@@ -180,7 +171,6 @@ GEM
     coffee-script-source (1.3.3)
     columnize (0.3.6)
     configuration (1.3.1)
-    cookiejar (0.3.0)
     coolline (0.2.0)
     countries (0.8.2)
       currencies (= 0.4.0)
@@ -195,7 +185,7 @@ GEM
       rdoc
     currencies (0.4.0)
     daemons (1.1.8)
-    dalli (2.0.5)
+    dalli (2.1.0)
     database_cleaner (0.8.0)
     debugger (1.1.4)
       columnize (>= 0.3.1)
@@ -219,37 +209,34 @@ GEM
       execjs
     eco-source (1.1.0.rc.1)
     ejs (1.0.0)
-    em-http-request (1.0.2)
-      addressable (>= 2.2.3)
-      cookiejar
-      em-socksify
-      eventmachine (>= 1.0.0.beta.4)
-      http_parser.rb (>= 0.5.3)
-    em-socksify (0.2.0)
-      eventmachine (>= 1.0.0.beta.4)
+    em-http-request (0.3.0)
+      addressable (>= 2.0.0)
+      escape_utils
+      eventmachine (>= 0.12.9)
     em-websocket (0.3.6)
       addressable (>= 2.1.1)
       eventmachine (>= 0.12.9)
     erubis (2.7.0)
-    eventmachine (1.0.0.rc.1)
-    excon (0.13.4)
+    escape_utils (0.2.4)
+    eventmachine (0.12.10)
+    excon (0.14.1)
     execjs (1.4.0)
       multi_json (~> 1.0)
-    factory_girl (3.4.1)
+    factory_girl (3.5.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (3.4.0)
-      factory_girl (~> 3.4.0)
+    factory_girl_rails (3.5.0)
+      factory_girl (~> 3.5.0)
       railties (>= 3.0.0)
     faraday (0.8.1)
       multipart-post (~> 1.1)
-    faraday_middleware (0.8.7)
+    faraday_middleware (0.8.8)
       faraday (>= 0.7.4, < 0.9)
     fastercsv (1.5.5)
     ffaker (1.14.0)
     ffi (1.0.11)
-    fog (1.3.1)
+    fog (1.4.0)
       builder
-      excon (~> 0.13.0)
+      excon (~> 0.14.0)
       formatador (~> 0.2.0)
       mime-types
       multi_json (~> 1.0)
@@ -261,6 +248,9 @@ GEM
       thor (>= 0.13.6)
     formatador (0.2.3)
     growl (1.0.3)
+    guard (1.2.1)
+      listen (>= 0.4.2)
+      thor (>= 0.14.6)
     guard-jasmine (1.5.0)
       childprocess
       guard (>= 1.1.0)
@@ -274,27 +264,26 @@ GEM
       guard (>= 1.1)
     guard-rspec (1.1.0)
       guard (>= 1.1)
-    haml (3.1.6.rc.1)
+    haml (3.1.6)
     haml_coffee_assets (0.8.6)
       execjs (>= 1.2.9)
       sprockets (>= 2.0.3)
       tilt (>= 1.3.3)
     has_scope (0.5.1)
     hashie (1.2.0)
-    heroku (2.26.3)
-      heroku-api (~> 0.2.1)
+    heroku (2.28.2)
+      heroku-api (~> 0.2.6)
       launchy (>= 0.3.2)
-      netrc (~> 0.7.2)
+      netrc (~> 0.7.4)
       rest-client (~> 1.6.1)
       rubyzip
-    heroku-api (0.2.1)
-      excon (~> 0.13.3)
+    heroku-api (0.2.6)
+      excon (~> 0.14.0)
     highline (1.6.13)
     hike (1.2.1)
     hpricot (0.8.6)
     htmlentities (4.3.1)
     http_connection (1.4.1)
-    http_parser.rb (0.5.3)
     httparty (0.8.3)
       multi_json (~> 1.0)
       multi_xml
@@ -321,7 +310,7 @@ GEM
       addressable
     libxml-ruby (2.2.2)
     liquid (2.2.2)
-    listen (0.4.5)
+    listen (0.4.6)
       rb-fchange (~> 0.0.5)
       rb-fsevent (~> 0.9.1)
       rb-inotify (~> 0.8.8)
@@ -329,7 +318,7 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mime-types (1.18)
+    mime-types (1.19)
     money (5.0.0)
       i18n (~> 0.4)
       json
@@ -348,7 +337,7 @@ GEM
     net-ssh (2.5.2)
     netrc (0.7.4)
     newrelic_rpm (3.4.0)
-    nokogiri (1.5.4)
+    nokogiri (1.5.5)
     oauth (0.4.6)
     oauth-plugin (0.4.0)
       multi_json
@@ -365,7 +354,7 @@ GEM
       activerecord (~> 3.0)
       railties (~> 3.0)
     patron (0.4.18)
-    pg (0.13.2)
+    pg (0.14.0)
     polyamorous (0.5.0)
       activerecord (~> 3.0)
     polyglot (0.3.3)
@@ -460,9 +449,8 @@ GEM
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
-    selenium-webdriver (2.22.2)
+    selenium-webdriver (2.24.0)
       childprocess (>= 0.2.5)
-      ffi (~> 1.0)
       libwebsocket (~> 0.1.3)
       multi_json (~> 1.0)
       rubyzip
@@ -490,12 +478,12 @@ GEM
     stat_request_parser (1.1.0)
       activesupport (>= 3.0.0)
     state_machine (1.1.2)
-    sublimevideo_layout (0.6.11)
+    sublimevideo_layout (1.1.1)
       coffee-rails (~> 3.2.0)
       haml
       jquery-rails (~> 2.0.2)
       rails (~> 3.2.0)
-    tddium (1.4.9)
+    tddium (1.5.0)
       highline
       json
       launchy
@@ -524,9 +512,9 @@ GEM
       mime-types
       mime-types
     tzinfo (0.3.33)
-    uglifier (1.2.4)
+    uglifier (1.2.5)
       execjs (>= 0.3.0)
-      multi_json (>= 1.0.2)
+      multi_json (~> 1.3)
     uniquify (0.1.0)
     uuidtools (2.1.2)
     vcr (1.10.3)
@@ -564,13 +552,13 @@ DEPENDENCIES
   carrierwave-mongoid (~> 0.1.1)
   chosen-rails!
   coffee-filter (~> 0.1.1)
-  coffee-rails (~> 3.2.0)
+  coffee-rails (~> 3.2.2)
   configuration (~> 1.3.1)
   coolline
   countries (~> 0.8.2)
   crack (~> 0.1.8)
   createsend (~> 1.0.0)
-  dalli (~> 2.0.0)
+  dalli (~> 2.1.0)
   database_cleaner
   debugger
   delayed_job!
@@ -582,15 +570,15 @@ DEPENDENCIES
   factory_girl
   factory_girl_rails
   ffaker
-  fog (~> 1.3.1)
+  fog (~> 1.4.0)
   foreman
   growl
-  guard!
+  guard
   guard-jasmine
   guard-livereload
   guard-pow
   guard-rspec
-  haml (= 3.1.6.rc.1)
+  haml (~> 3.1.6)
   haml_coffee_assets (~> 0.8.2)
   has_scope (~> 0.5.1)
   heroku
@@ -608,7 +596,7 @@ DEPENDENCIES
   oauth (~> 0.4.5)
   oauth-plugin (~> 0.4.0.pre7)
   paper_trail (~> 2.6.0)
-  pg (~> 0.13.0)
+  pg (~> 0.14.0)
   powder
   premailer-rails3 (~> 1.1.0)
   prototype-rails (~> 3.2.1)
@@ -630,7 +618,7 @@ DEPENDENCIES
   rspec-core
   rspec-rails
   rubyzip (~> 0.9.7)
-  sass-rails (~> 3.2.0)
+  sass-rails (~> 3.2.5)
   settingslogic (= 2.0.6)
   sextant
   shoulda-matchers
@@ -640,7 +628,7 @@ DEPENDENCIES
   squeel (= 1.0.2)
   stat_request_parser (~> 1.1.0)
   state_machine (~> 1.1.2)
-  sublimevideo_layout (= 0.6.11)
+  sublimevideo_layout (= 1.1.1)
   tddium
   thin
   timecop

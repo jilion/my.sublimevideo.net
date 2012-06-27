@@ -3,7 +3,7 @@ module StatTimeline
   class UsersStat
     attr_accessor :collection
 
-    delegate :empty?, :to => :collection
+    delegate :empty?, to: :collection
 
     def initialize(start_time, end_time, options = {})
       @start_time, @end_time = start_time, end_time

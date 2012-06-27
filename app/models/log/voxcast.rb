@@ -16,13 +16,13 @@ class Log::Voxcast < ::Log
   # = Associations =
   # ================
 
-  references_many :usages, :class_name => "SiteUsage", :foreign_key => :log_id
+  references_many :usages, class_name: "SiteUsage", foreign_key: :log_id
 
   # ===============
   # = Validations =
   # ===============
 
-  validates :file, :presence => true
+  validates :file, presence: true
 
   # =============
   # = Callbacks =

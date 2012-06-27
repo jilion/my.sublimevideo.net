@@ -1,5 +1,5 @@
 %p
-  = "Your #{@trial_plan.name.titleize} plan's #{BusinessModel.days_for_trial}-day free trial for #{@site.hostname}"
+  = raw "Your #{@trial_plan.name.titleize} plan's #{BusinessModel.days_for_trial}-day free trial for #{link_to @site.hostname, url_with_protocol(@site.hostname)}"
   %strong has now expired.
 
 %p

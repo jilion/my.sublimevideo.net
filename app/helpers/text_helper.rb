@@ -4,7 +4,7 @@ module TextHelper
   # and the last characters will be replaced with the +options[:omission]+ (defaults to "...").
   def truncate_middle_reusing_rails_truncate(text, *args)
     options = args.extract_options!
-    options.reverse_merge!(:length => 30, :omission => "...")
+    options.reverse_merge!(length: 30, omission: "...")
 
     if text
       if text.mb_chars.length <= options[:length]
@@ -21,7 +21,7 @@ module TextHelper
   # and the last characters will be replaced with the +options[:omission]+ (defaults to "...").
   def truncate_middle(text, *args)
     options = args.extract_options!
-    options.reverse_merge!(:length => 30, :omission => "...")
+    options.reverse_merge!(length: 30, omission: "...")
 
     if text
       if text.mb_chars.length <= options[:length]

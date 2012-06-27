@@ -16,8 +16,8 @@ class RenamePlayerHitToVideoViews < ActiveRecord::Migration
     add_index :sites, :last_30_days_extra_video_views
     add_index :sites, :last_30_days_dev_video_views
 
-    add_column :sites, :last_30_days_invalid_video_views, :integer, :default => 0
-    add_column :sites, :last_30_days_embed_video_views, :integer, :default => 0
+    add_column :sites, :last_30_days_invalid_video_views, :integer, default: 0
+    add_column :sites, :last_30_days_embed_video_views, :integer, default: 0
 
     add_index :sites, :last_30_days_invalid_video_views
     add_index :sites, :last_30_days_embed_video_views

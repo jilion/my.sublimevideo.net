@@ -117,22 +117,22 @@ describe Tweet do
 
     describe ".enough_remaining_twitter_calls?" do
       it "should return true if remaining calls are >= KEYWORDS.size * 3" do
-        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', :remaining_hits => Tweet::KEYWORDS.size*3))
+        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', remaining_hits: Tweet::KEYWORDS.size*3))
         described_class.enough_remaining_twitter_calls?.should be_true
       end
 
       it "should return false if remaining calls are < KEYWORDS.size * 3" do
-        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', :remaining_hits => Tweet::KEYWORDS.size*3 - 1))
+        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', remaining_hits: Tweet::KEYWORDS.size*3 - 1))
         described_class.enough_remaining_twitter_calls?.should be_false
       end
 
       it "should return true if remaining calls are >= given count" do
-        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', :remaining_hits => 100))
+        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', remaining_hits: 100))
         described_class.enough_remaining_twitter_calls?(100).should be_true
       end
 
       it "should return false if remaining calls are < given count" do
-        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', :remaining_hits => 99))
+        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', remaining_hits: 99))
         described_class.enough_remaining_twitter_calls?(100).should be_false
       end
     end

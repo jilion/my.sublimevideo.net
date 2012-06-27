@@ -8,10 +8,10 @@ module LogAnalyzer
     # Return just RequestLogAnalyzer trackers
     def parse(log_file, file_format_class_name)
       @controller = RequestLogAnalyzer::Controller.build(
-        :format => file_format_class_name.constantize,
-        :boring => true,
-        :silent => true,
-        :source_files => log_file.path
+        format: file_format_class_name.constantize,
+        boring: true,
+        silent: true,
+        source_files: log_file.path
       )
       run!
       @controller.aggregators.first.trackers

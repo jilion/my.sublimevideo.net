@@ -54,9 +54,9 @@ describe Log::Amazon::S3::Player do
     describe ".config" do
       it "should have config values" do
         described_class.config.should == {
-          :hostname => "sublimevideo.player",
-          :file_format_class_name => "LogsFileFormat::S3Player",
-          :store_dir => "s3/sublimevideo.player/"
+          hostname: "sublimevideo.player",
+          file_format_class_name: "LogsFileFormat::S3Player",
+          store_dir: "s3/sublimevideo.player/"
         }
       end
     end

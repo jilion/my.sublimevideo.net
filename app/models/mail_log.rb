@@ -10,17 +10,17 @@ class MailLog < ActiveRecord::Base
   # = Associations =
   # ================
 
-  belongs_to :template, :class_name => "MailTemplate", :foreign_key => "template_id"
+  belongs_to :template, class_name: "MailTemplate", foreign_key: "template_id"
   belongs_to :admin
 
   # ===============
   # = Validations =
   # ===============
   
-  validates :template_id, :presence => true
-  validates :admin_id,    :presence => true
-  validates :criteria,    :presence => true
-  validates :user_ids,    :presence => true
+  validates :template_id, presence: true
+  validates :admin_id,    presence: true
+  validates :criteria,    presence: true
+  validates :user_ids,    presence: true
 
   # =============
   # = Callbacks =
@@ -33,8 +33,8 @@ class MailLog < ActiveRecord::Base
   # ==========
   
   # sort
-  scope :by_template_title, lambda { |way = 'asc'| includes(:template).order(:template => :title.send(way)) }
-  scope :by_admin_email,    lambda { |way = 'asc'| includes(:admin).order(:admin => :email.send(way)) }
+  scope :by_template_title, lambda { |way = 'asc'| includes(:template).order(template: :title.send(way)) }
+  scope :by_admin_email,    lambda { |way = 'asc'| includes(:admin).order(admin: :email.send(way)) }
   scope :by_date,           lambda { |way = 'desc'| order(:created_at.send(way)) }
 
   # ====================

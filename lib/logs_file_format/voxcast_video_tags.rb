@@ -21,9 +21,9 @@ module LogsFileFormat
 
     def self.report_trackers
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
-      analyze.frequency(:video_tags, :title => :video_tags,
-        :category => lambda { |r| remove_timestamp(r) },
-        :if       => lambda { |r| gif_request?(r) && countable_hit?(r) && good_token?(r) }
+      analyze.frequency(:video_tags, title: :video_tags,
+        category: lambda { |r| remove_timestamp(r) },
+        if: lambda { |r| gif_request?(r) && countable_hit?(r) && good_token?(r) }
       )
       analyze.trackers
     end

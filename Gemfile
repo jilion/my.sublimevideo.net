@@ -7,10 +7,10 @@ ruby '1.9.3'
 gem 'bundler', '~> 1.2.0.pre.1'
 
 gem 'rails',               '3.2.6'
-gem 'sublimevideo_layout', '0.6.11' # hosted on gemfury
+gem 'sublimevideo_layout', '1.1.1' # hosted on gemfury
 
 # Databases
-gem 'pg',                    '~> 0.13.0'
+gem 'pg',                    '~> 0.14.0'
 gem 'squeel',                '1.0.2'
 
 gem 'bson_ext',              '1.6.2'
@@ -20,7 +20,8 @@ gem 'mongoid',               '~> 2.4.7'
 gem 'mongoid_uniquify'
 
 # Views
-gem 'haml',                  '3.1.6.rc.1' # issue in 3.1.5, wait until 3.1.6 https://github.com/haml/haml/issues/531
+gem 'haml',                  '~> 3.1.6'
+gem 'coffee-rails',          '~> 3.2.2'
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
@@ -52,7 +53,7 @@ gem 'responders',            '~> 0.7.0'
 gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
-gem 'fog',                   '~> 1.3.1'
+gem 'fog',                   '~> 1.4.0'
 gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
@@ -86,16 +87,14 @@ gem 'redis',                 '~> 2.2.2'
 # Tickets
 gem 'zendesk_client',        github: 'jilion/zendesk_client', require: 'zendesk'
 
-
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
   gem 'asset_sync'
-  gem 'sass-rails',   '~> 3.2.0'
-  gem 'coffee-rails', '~> 3.2.0'
+  gem 'sass-rails',           '~> 3.2.5'
   gem 'eco'
   gem 'uglifier'
-  gem 'haml_coffee_assets', '~> 0.8.2'
+  gem 'haml_coffee_assets',   '~> 0.8.2'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
 
@@ -110,7 +109,7 @@ end
 group :staging, :production do
   gem 'rack-ssl-enforcer'
   gem 'thin'
-  gem 'dalli', '~> 2.0.0'
+  gem 'dalli', '~> 2.1.0'
   gem 'rpm_contrib'
   gem 'newrelic_rpm'
 end
@@ -169,7 +168,7 @@ group :tools do
     gem 'coolline'
   end
 
-  gem 'guard', github: 'guard/guard', branch: 'coolline'
+  gem 'guard'
   gem 'guard-pow'
   gem 'guard-livereload'
   # gem 'guard-spork'

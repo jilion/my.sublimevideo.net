@@ -1,7 +1,7 @@
 = title_and_content_header("New OAuth Application")
 
 = form_for @application do |f|
-  = render 'form', :f => f
+  = render 'form', f: f
   = submit_tag "Register"
   = " | "
   = link_to 'Back', [:client_applications]

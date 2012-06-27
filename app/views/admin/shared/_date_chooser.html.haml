@@ -1,15 +1,15 @@
 - skip_moving_avg ||= false
 
 #date_chooser
-  = form_tag('', :class => "date_chooser", :method => :get) do
-    %p= label(:date_range, :from, "From: #{select_date(range_start_date, :prefix => 'date_range_from', :use_short_month => true, :start_year => 2010, :end_year => Time.now.year)}".html_safe)
+  = form_tag('', class: "date_chooser", method: :get) do
+    %p= label(:date_range, :from, "From: #{select_date(range_start_date, prefix: 'date_range_from', use_short_month: true, start_year: 2010, end_year: Time.now.year)}".html_safe)
 
-    %p= label(:date_range, :to, "To&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: #{select_date(range_end_date, :prefix => 'date_range_to', :use_short_month => true, :start_year => 2010, :end_year => Time.now.year)}".html_safe)
+    %p= label(:date_range, :to, "To&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: #{select_date(range_end_date, prefix: 'date_range_to', use_short_month: true, start_year: 2010, end_year: Time.now.year)}".html_safe)
     
     - unless skip_moving_avg
       %p= label_tag(:moving_avg, "Moving average: #{select_tag(:moving_avg, options_for_select([5, 10, 30, 60], moving_average_length))} days".html_safe)
 
-    %div{ :style => "float:right;" }
+    %div{ style: "float:right;" }
       = submit_tag "Select"
       or
       = link_to 'reset', request.path
