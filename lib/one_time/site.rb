@@ -9,7 +9,7 @@ module OneTime
           ::Site.delay(priority: 200, run_at: delay.seconds.from_now).update_loader_and_license(site.id, options)
           scheduled += 1
 
-          if (scheduled % 100).zero?
+          if (scheduled % 500).zero?
             puts "#{scheduled} sites scheduled..."
             delay += 5
           end
@@ -20,16 +20,19 @@ module OneTime
 
       def set_first_billable_plays_at
         processed, updated = 0, 0
-        ::Site.where(first_billable_plays_at: nil).find_each(batch_size: 500) do |site|
+        ::Site.not_archived.where(first_billable_plays_at: nil).find_each(batch_size: 500) do |site|
           if stat = Stat::Site::Day.last_stats(token: site.token, fill_missing_days: false).detect { |s| s.billable_vv >= 10 }
             site.update_column(:first_billable_plays_at, stat.d)
             updated += 1
           end
           processed += 1
+          print "."
 
-          puts "#{processed} sites processed..." if (processed % 100).zero?
-          puts "#{updated} sites updated..." if (updated % 100).zero?
+          puts "\n#{processed} sites processed..." if (processed % 5000).zero?
+          puts "\n#{updated} sites updated..." if updated > 0 && (updated % 100).zero?
         end
+
+        "Finished: #{processed} sites processed and #{updated} sites updated..."
       end
 
       def without_versioning
