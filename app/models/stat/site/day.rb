@@ -5,4 +5,3 @@ class Stat::Site::Day
   include Stat::Site
   store_in :site_day_stats
 end
-

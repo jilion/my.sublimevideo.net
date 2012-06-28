@@ -115,6 +115,11 @@ namespace :one_time do
     task update_last_30_days_counters_for_not_archived_sites: :environment do
       timed { Site.update_last_30_days_counters_for_not_archived_sites }
     end
+
+    desc "Set first_billable_plays_at for all sites that already had more than 10 views / day"
+    task set_first_billable_plays_at: :environment do
+      timed { puts OneTime::Site.set_first_billable_plays_at }
+    end
   end
 
   namespace :stats do
