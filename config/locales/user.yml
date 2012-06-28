@@ -2,6 +2,9 @@ en:
   user:
     billing_address:
       incomplete: "Your billing address is incomplete."
+      incomplete_with_missing_fields:
+        one: "Your billing address is incomplete (%{fields} is missing)."
+        other: "Your billing address is incomplete (%{fields} are missing)."
       complete_it: "complete your billing address"
     credit_card:
       type:

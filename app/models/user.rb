@@ -191,6 +191,12 @@ class User < ActiveRecord::Base
     [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
   end
 
+  def billing_address_missing_fields
+    %w[billing_address_1 billing_postal_code billing_city billing_country].reject do |field|
+      self.send(field).present?
+    end
+  end
+
   def more_info_incomplete?
     [billing_postal_code, billing_country, company_name, company_url, company_job_title, company_employees].any?(&:blank?) ||
     [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
