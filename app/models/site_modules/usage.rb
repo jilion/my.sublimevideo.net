@@ -8,11 +8,16 @@ module SiteModules::Usage
         site.update_last_30_days_video_views_counters
       end
     end
+
+    def set_first_billable_plays_at_for_not_archived_sites
+      not_archived.where(first_billable_plays_at: nil).find_each(batch_size: 100) do |site|
+        site.set_first_billable_plays_at
+      end
+    end
   end
 
   def update_last_30_days_video_tags_counters
-    self.last_30_days_video_tags = VideoTag.last_30_days_updated_count(token)
-    self.skip_pwd { self.save!(validate: false) }
+    self.update_column(:last_30_days_video_tags, VideoTag.last_30_days_updated_count(token))
   end
 
   def update_last_30_days_video_views_counters
@@ -42,6 +47,12 @@ module SiteModules::Usage
       from += 1.day
     end
     self.skip_pwd { self.save!(validate: false) }
+  end
+
+  def set_first_billable_plays_at
+    if stat = day_stats.order_by([:d, :asc]).detect { |s| s.billable_vv >= 10 }
+      self.update_column(:first_billable_plays_at, stat.d)
+    end
   end
 
   def billable_usages(options = {})

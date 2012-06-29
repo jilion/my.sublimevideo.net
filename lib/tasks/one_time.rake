@@ -117,91 +117,12 @@ namespace :one_time do
     end
 
     desc "Set first_billable_plays_at for all sites that already had more than 10 views / day"
-    task set_first_billable_plays_at: :environment do
-      timed { puts OneTime::Site.set_first_billable_plays_at }
+    task set_first_billable_plays_at_for_not_archived_sites: :environment do
+      timed { Site.set_first_billable_plays_at_for_not_archived_sites }
     end
   end
 
   namespace :stats do
-
-    task fix_beta_sites: :environment do
-      day = Time.utc(2010,9,14)
-      beta_sum, archived_sum = 0, 0
-      while day < Time.utc(2011,4,17) do
-        beta_new_count = Site.where { (created_at < PublicLaunch.beta_transition_started_on.midnight) & (date_trunc('day', created_at) == day.midnight) & ((archived_at == nil) | (archived_at > day.midnight)) }.count
-        archived_count = Site.where { (created_at < PublicLaunch.beta_transition_started_on.midnight) & (date_trunc('day', archived_at) == day.midnight) }.count
-        beta_sum += beta_new_count - archived_count
-        archived_sum += archived_count
-
-        stat = Stats::SitesStat.where(d: day).first
-        old_stat_fr_beta = stat.fr['beta']
-        stat.fr['beta'] = beta_sum
-        stat.save!
-        puts "On #{day}, there was #{old_stat_fr_beta} beta sites, there are now #{stat.fr['beta']} (#{archived_count} sites less)."
-        day += 1.day
-      end
-    end
-
-    desc "Migrate old to new Stats::UsersStats & Stats::SitesStats"
-    task migrate_old_stats: :environment do
-      timed do
-        Stats::UsersStat.where(d: nil).each do |stat|
-          stat.update_attributes(
-            d:  stat.created_at.midnight,
-            fr: stat.states_count['active_and_not_billable_count'],
-            pa: stat.states_count['active_and_billable_count'],
-            su: stat.states_count['suspended_count'],
-            ar: stat.states_count['archived_count']
-          )
-        end
-
-        beta_plan_id      = Plan.where { name == 'beta' }.first.id
-        dev_plan_id       = Plan.where { name == 'dev' }.first.id
-        free_plan_id      = Plan.free_plan.id
-        sponsored_plan_id = Plan.sponsored_plan.id
-        comet_m_id        = Plan.where { (name == 'comet') & (cycle == 'month') }.first.id
-        comet_y_id        = Plan.where { (name == 'comet') & (cycle == 'year') }.first.id
-        planet_m_id       = Plan.where { (name == 'planet') & (cycle == 'month') }.first.id
-        planet_y_id       = Plan.where { (name == 'planet') & (cycle == 'year') }.first.id
-        star_m_id         = Plan.where { (name == 'star') & (cycle == 'month') }.first.id
-        star_y_id         = Plan.where { (name == 'star') & (cycle == 'year') }.first.id
-        galaxy_m_id       = Plan.where { (name == 'galaxy') & (cycle == 'month') }.first.id
-        galaxy_y_id       = Plan.where { (name == 'galaxy') & (cycle == 'year') }.first.id
-
-        plus_m_id    = Plan.where { (name == 'plus') & (cycle == 'month') }.first.id
-        plus_y_id    = Plan.where { (name == 'plus') & (cycle == 'year') }.first.id
-        premium_m_id = Plan.where { (name == 'premium') & (cycle == 'month') }.first.id
-        premium_y_id = Plan.where { (name == 'premium') & (cycle == 'year') }.first.id
-
-        Stats::SitesStat.where(d: nil).each do |stat|
-          stat.update_attributes(
-            d:  stat.created_at.midnight,
-            fr: {
-              beta: stat.plans_count[beta_plan_id.to_s].to_i,
-              dev: stat.plans_count[dev_plan_id.to_s].to_i,
-              free: stat.plans_count[free_plan_id.to_s].to_i
-            },
-            sp: stat.plans_count[sponsored_plan_id.to_s].to_i,
-            tr: {
-              plus: { m: 0, y: 0 },
-              premium: { m: 0, y: 0 }
-            },
-            pa: {
-              plus: {
-                m: 0, # stat.plans_count[comet_m_id.to_s].to_i + stat.plans_count[planet_m_id.to_s].to_i + stat.plans_count[plus_m_id.to_s].to_i,
-                y: 0 # stat.plans_count[comet_y_id.to_s].to_i + stat.plans_count[planet_y_id.to_s].to_i + stat.plans_count[plus_y_id.to_s].to_i
-              },
-              premium: {
-                m: 0, # stat.plans_count[star_m_id.to_s].to_i + stat.plans_count[galaxy_m_id.to_s].to_i + stat.plans_count[premium_m_id.to_s].to_i,
-                y: 0 # stat.plans_count[star_y_id.to_s].to_i + stat.plans_count[galaxy_y_id.to_s].to_i + stat.plans_count[premium_y_id.to_s].to_i
-              }
-            },
-            su: stat.states_count['suspended'].to_i,
-            ar: stat.states_count['archived'].to_i
-          )
-        end
-      end
-    end
 
     # desc "Split site_stats collection to separate minute/hour/day collection"
     # task split_site_stats_collection: :environment do
