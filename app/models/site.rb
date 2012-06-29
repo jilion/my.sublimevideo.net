@@ -255,12 +255,12 @@ class Site < ActiveRecord::Base
     result
   end
 
-  def save_skip_pwd
-    skip_pwd { self.save }
+  def save_skip_pwd(*args)
+    skip_pwd { self.save(*args) }
   end
 
-  def save_skip_pwd!
-    skip_pwd { self.save! }
+  def save_skip_pwd!(*args)
+    skip_pwd { self.save!(*args) }
   end
 
   def trial_start_time

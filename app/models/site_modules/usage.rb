@@ -46,13 +46,14 @@ module SiteModules::Usage
       end
       from += 1.day
     end
-    self.skip_pwd { self.save!(validate: false) }
+    self.save_skip_pwd!(validate: false)
   end
 
   def set_first_billable_plays_at
-    if stat = day_stats.order_by([:d, :asc]).detect { |s| s.billable_vv >= 10 }
-      self.update_column(:first_billable_plays_at, stat.d)
-    end
+    stat = day_stats.order_by([:d, :asc]).detect { |s| s.billable_vv >= 10 } ||
+           usages.order_by([:day, :asc]).detect { |s| s.billable_player_hits >= 10 }
+
+    self.update_column(:first_billable_plays_at, stat.d || stat.day) if stat
   end
 
   def billable_usages(options = {})
