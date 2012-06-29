@@ -102,7 +102,7 @@ a.add_site span {
   background:rgb(0,52,110);
 }
 
-#sites table.main col.status {
+#sites table.main col.odd {
   background:rgba(0,52,110,0.4);
 }
 
@@ -136,16 +136,20 @@ a.add_site span {
 }
 
 #sites table.main th.site {
-  width:420px;
+  width:370px;
   text-align:left;
 }
 
+#sites table.main th.videos {
+  width:100px;
+}
+
 #sites table.main th.code {
-  width:158px;
+  width:138px;
 }
 
 #sites table.main th.status {
-  width:94px;
+  width:64px;
 }
 
 #sites table.main th strong {
@@ -330,7 +334,7 @@ a.add_site span {
 
 #sites table.main td.site .cycle {
   position:absolute;
-  bottom:7px;
+  bottom:5px;
   right:7px;
   background:url(<%= asset_data_uri "sites/time_icon.png" %>) no-repeat;
   padding:0 0 0 15px;
@@ -385,6 +389,43 @@ a.add_site span {
 
 #sites table.main td.usage a.view_stats:active {
   @include gradient(#2c4a76,#5f7da6,#46658f);
+}
+
+#sites table.main td.videos {
+  text-align:center;
+}
+
+#sites table.main td.videos a.add_video {
+  display:block;
+  padding:50px 0 0;
+  background:url(<%= asset_data_uri "sites/default_videos_icon.png" %>) no-repeat center 16px;
+}
+
+#sites table.main td.videos a.add_video span {
+  color:#2e4b68;
+  font-weight:600;
+  font-size:13px;
+  border-bottom:1px solid #8095ad;
+}
+
+#sites table.main td.videos a.video_number {
+  display:block;
+  padding:28px 0 0;
+}
+
+#sites table.main td.videos a.video_number strong {
+  font-size:21px;
+  font-weight:600;
+  color:#2e4b68;
+  display:block;
+  line-height:11px;
+}
+
+#sites table.main td.videos a.video_number em {
+  font-size:12px;
+  font-weight:600;
+  font-style:normal;
+  color:#4a648e;
 }
 
 #sites table.main td.code {

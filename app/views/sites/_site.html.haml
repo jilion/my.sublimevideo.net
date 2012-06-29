@@ -43,11 +43,19 @@
         = render 'td_usage', site: site
       - else
         = "—"
-
+  %td.videos
+    .wrap
+      - if rand(0..1) < 1
+        = link_to "", class: "video_number" do
+          %strong= number_with_delimiter(rand(4..199))
+          %em= "videos"
+      - else
+        = link_to "", class: "add_video" do
+          %span= "Add a video"
   %td.code
     .wrap
       - if site.plan_id?
-        = link_to "Embed code", "", class: "embed_code", data: { token: site.token }
+        = link_to "Player code", "", class: "embed_code", data: { token: site.token }
       - else
         = "—"
       %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'code', site: site
