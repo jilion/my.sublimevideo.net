@@ -101,7 +101,7 @@ describe SiteModules::Usage do
       create(:site_usage, day: 600.days.ago.midnight, site_id: site8.id, main_player_hits: 9, dev_player_hits: 12)
     end
 
-    it 'set first_billable_plays_at to the first day with at least 10 billable views', :focus do
+    it 'set first_billable_plays_at to the first day with at least 10 billable views' do
       [site1, site2, site3, site4, site5, site6, site7, site8].each { |s| s.set_first_billable_plays_at }
 
       site1.reload.first_billable_plays_at.should eq 400.days.ago.midnight

@@ -53,7 +53,7 @@ module SiteModules::Usage
     stat = day_stats.order_by([:d, :asc]).detect { |s| s.billable_vv >= 10 } ||
            usages.order_by([:day, :asc]).detect { |s| s.billable_player_hits >= 10 }
 
-    self.update_column(:first_billable_plays_at, stat.d || stat.day) if stat
+    self.update_column(:first_billable_plays_at, stat.respond_to?(:d) ? stat.d : stat.day) if stat
   end
 
   def billable_usages(options = {})
