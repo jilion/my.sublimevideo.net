@@ -61,9 +61,12 @@ class Release < ActiveRecord::Base
     # Download file from S3 to read the zip content
     @zipfile ||= begin
       @local_zip_file = File.new(Rails.root.join("tmp/#{read_attribute(:zip)}"), 'w', encoding: 'ASCII-8BIT')
-      # There's an issue with CarrierWave's "zip.read" method, use AWS directly instead...
+
+      # Issue 1: We're using read_attribute(:zip) here because zip.filename return the actual filename only on creation
+      # On update, zip.filename is blank!? In this case read_attribute(:zip) is always right...
+      # Issue 2: There's an issue with CarrierWave's "zip.read" method, use AWS directly instead...
       # Note: no problem when using :file as storage
-      @local_zip_file.write(Rails.env.test? ? zip.read : S3.player_bucket.get("#{zip.store_dir}/#{zip.filename}"))
+      @local_zip_file.write(Rails.env.test? ? zip.read : S3.player_bucket.get("#{zip.store_dir}/#{read_attribute(:zip)}"))
       @local_zip_file.flush
       Zip::ZipFile.open(@local_zip_file.path)
     end

@@ -13,24 +13,18 @@ class Admin::ReleasesController < Admin::AdminController
   # POST /releases
   def create
     @release = Release.new(params[:release])
+    @release.save!
     respond_with(@release) do |format|
-      if @release.save
-        format.html { redirect_to [:admin, :releases] }
-      else
-        format.html { render :index }
-      end
+      format.html { redirect_to [:admin, :releases] }
     end
   end
 
   # PUT /releases/:id
   def update
     @release = Release.find(params[:id])
+    @release.flag!
     respond_with(@release) do |format|
-      if @release.flag
-        format.html { redirect_to [:admin, :releases] }
-      else
-        format.html { render :index }
-      end
+      format.html { redirect_to [:admin, :releases] }
     end
   end
 
