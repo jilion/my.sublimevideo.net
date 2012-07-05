@@ -15,18 +15,18 @@ describe Admin::ReleasesController do
       before { Release.stub(:new).and_return(mock_release) }
 
       it "responds with redirect when save succeed" do
-        mock_release.stub(:save) { true }
+        mock_release.stub(:save!) { true }
 
         post :create, release: {}
         response.should redirect_to(admin_releases_path)
       end
 
       it "responds with success when save fails" do
-        mock_release.stub(:save) { false }
+        mock_release.stub(:save!) { false }
 
         post :create, release: {}
-        response.should be_success
-        response.should render_template(:index)
+        response.should_not be_success
+        response.should redirect_to(admin_releases_path)
       end
     end
 
@@ -34,18 +34,18 @@ describe Admin::ReleasesController do
       before { Release.stub(:find).and_return(mock_release) }
 
       it "responds with redirect when update_attributes succeed" do
-        mock_release.stub(:flag).and_return(true)
+        mock_release.stub(:flag!).and_return(true)
 
         put :update, id: '1', release: {}
         response.should redirect_to(admin_releases_path)
       end
 
       it "responds with success when update_attributes fails" do
-        mock_release.stub(:flag).and_return(false)
+        mock_release.stub(:flag!).and_return(false)
 
         put :update, id: '1', release: {}
-        response.should be_success
-        response.should render_template(:index)
+        response.should_not be_success
+        response.should redirect_to(admin_releases_path)
       end
     end
   end
