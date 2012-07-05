@@ -250,7 +250,7 @@ def create_admins
   disable_perform_deliveries do
     puts "Creating admins..."
     BASE_USERS.each do |admin_info|
-      Admin.create(full_name: admin_info[0], email: admin_info[1], password: "123456")
+      Admin.create(email: admin_info[1], password: "123456")
       puts "Admin #{admin_info[1]}:123456"
     end
   end
@@ -272,7 +272,6 @@ def create_users(user_id = nil)
   disable_perform_deliveries do
     (user_id ? [user_id] : 0.upto(BASE_USERS.count - 1)).each do |i|
       user = User.new(
-        enthusiast_id: rand(1000000),
         email: BASE_USERS[i][1],
         password: "123456",
         name: BASE_USERS[i][0],
@@ -336,9 +335,8 @@ def create_sites
         plan_id: plan_id,
         hostname: hostname
       )
-      Timecop.travel(created_at_array.sample) do
-        site.save_skip_pwd
-      end
+      site.save_skip_pwd
+      site.update_column(:created_at, created_at_array.sample)
 
       if rand > 0.3
         site.cdn_up_to_date = true

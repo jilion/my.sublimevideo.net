@@ -126,6 +126,7 @@ group :development, :test do
   gem 'rspec-core'
   gem 'rspec-rails'
   gem 'debugger'
+  gem 'timecop'
 
   # Javascript test
   gem 'jasminerice'
@@ -136,7 +137,6 @@ group :development, :test do
 end
 
 group :test do
-  gem 'timecop'
   gem 'ffaker'
   # gem 'spork', '~> 0.9.2'
   # gem 'spork', github: 'sporkrb/spork'
