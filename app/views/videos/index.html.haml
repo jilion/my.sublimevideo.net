@@ -1,0 +1,38 @@
+- title(@site.hostname? ? "Videos for #{hostname_or_token(@site)}" : "Site videos")
+= render '/layouts/sites_select_title'
+
+#site.videos
+  = render '/layouts/segmented_menu'
+
+  #video_upload
+    %h3 Upload a video
+    #container
+      #filelist No runtime found.
+      %br
+      %a#pickfiles{ href: '#' } [Select files]
+      %a#uploadfiles{ href: '#' } [Upload files]
+
+    -#%form#file_upload{ action: s3_bucket_url, method: 'post', enctype: 'multipart/form-data' }
+    -#  -#%form#file_upload{ action: '', method: 'post', enctype: 'multipart/form-data', :'data-remote' => 'true' }
+    -#  - upload_params_for(@site).each do |key, value|
+    -#    = hidden_field_tag key, value
+    -#  = file_field_tag :file, multiple: ''
+    -#  = submit_tag 'Upload!'
+
+    :coffeescript
+      MySublimeVideo.uploader = new MySublimeVideo.Helpers.Uploader
+        url: '#{s3_bucket_url}'
+        multipart_params: #{upload_params_for(@site).to_json}
+
+      # form = $('#file_upload')
+      # form.on 'submit', (e) ->
+      #   e.preventDefault()
+      #   $.ajax
+      #     url: form.attr('action')
+      #     type: 'post'
+      #     data: form.serialize()
+      #     success: (data, textStatus, jqXHR) ->
+      #       console.log data
+      #       console.log textStatus
+
+  #videos_table_wrap= ''#render 'videos'

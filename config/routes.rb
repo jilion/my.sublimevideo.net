@@ -187,6 +187,8 @@ MySublimeVideo::Application.routes.draw do
         put :retry, on: :collection
       end
 
+      resources :videos, only: [:index]
+
       resources :stats, only: [:index], controller: 'site_stats' do
         get :videos, on: :collection
       end

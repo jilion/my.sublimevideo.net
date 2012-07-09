@@ -46,11 +46,11 @@
   %td.videos
     .wrap
       - if rand(0..1) < 1
-        = link_to "", class: "video_number" do
+        = link_to site_videos_path(site), class: "video_number" do
           %strong= number_with_delimiter(rand(4..199))
           %em= "videos"
       - else
-        = link_to "", class: "add_video" do
+        = link_to site_videos_path(site), class: "add_video" do
           %span= "Add a video"
   %td.code
     .wrap
