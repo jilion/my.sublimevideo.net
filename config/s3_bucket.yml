@@ -4,6 +4,7 @@ development:
   player:        dev.sublimevideo.player
   logs:          dev.sublimevideo.logs
   stats_exports: dev.sublimevideo.stats.exports
+  videos_upload: dev.sublimevideo.videos.uploads
 test:
   licenses:      dev.sublimevideo.licenses
   loaders:       dev.sublimevideo.loaders
