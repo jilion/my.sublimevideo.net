@@ -915,7 +915,7 @@ describe User, :plans do
           create(:site, user: @user, plan_id: @free_plan.id,)
         end
         subject { @user.reload }
-        
+
         it { @free_plan.support.should eq "forum" }
         its(:support) { should eq "forum" }
         its(:email_support?) { should be_false }
