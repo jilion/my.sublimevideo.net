@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe InvoiceItem do
+describe InvoiceItem, :plans do
 
   context "Factory" do
     let(:invoice_item) { create(:plan_invoice_item) }

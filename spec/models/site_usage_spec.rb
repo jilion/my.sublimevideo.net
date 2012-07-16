@@ -53,33 +53,33 @@ describe SiteUsage do
       usages.map(&:site).should include(@site1)
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
-      usage.site.should                       == @site1
-      usage.day.should                        == Time.utc(2010,10,8)
-      usage.loader_hits.should                == 7
-      usage.player_hits.should                == 6
-      usage.main_player_hits.should           == 5
-      usage.main_player_hits_cached.should    == 1
-      usage.extra_player_hits.should          == 0
-      usage.extra_player_hits_cached.should   == 0
-      usage.dev_player_hits.should            == 0
-      usage.dev_player_hits_cached.should     == 0
-      usage.invalid_player_hits.should        == 0
-      usage.invalid_player_hits_cached.should == 0
-      usage.flash_hits.should                 == 0
-      usage.requests_s3.should                == 0
-      usage.traffic_s3.should                 == 0
-      usage.traffic_voxcast.should            == 443482
+      usage.site.should                       eq @site1
+      usage.day.should                        eq Time.utc(2010,10,8)
+      usage.loader_hits.should                eq 7
+      usage.player_hits.should                eq 6
+      usage.main_player_hits.should           eq 5
+      usage.main_player_hits_cached.should    eq 1
+      usage.extra_player_hits.should          eq 0
+      usage.extra_player_hits_cached.should   eq 0
+      usage.dev_player_hits.should            eq 0
+      usage.dev_player_hits_cached.should     eq 0
+      usage.invalid_player_hits.should        eq 0
+      usage.invalid_player_hits_cached.should eq 0
+      usage.flash_hits.should                 eq 0
+      usage.requests_s3.should                eq 0
+      usage.traffic_s3.should                 eq 0
+      usage.traffic_voxcast.should            eq 443482
     end
 
     it "should increment existing entries" do
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
       usage = SiteUsage.where(site_id: @site1.id).first
-      usage.main_player_hits.should == 5
-      usage.traffic_voxcast.should == 443482
+      usage.main_player_hits.should eq 5
+      usage.traffic_voxcast.should eq 443482
 
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
-      usage.reload.main_player_hits.should == 5*2
-      usage.traffic_voxcast.should == 443482*2
+      usage.reload.main_player_hits.should eq 5*2
+      usage.traffic_voxcast.should eq 443482*2
     end
 
   end
@@ -119,23 +119,23 @@ describe SiteUsage do
       usages.map(&:site).should include(@site1)
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
-      usage.site.should                       == @site1
-      usage.day.should                        == Time.utc(2011,6,14)
-      usage.loader_hits.should                == 2
-      usage.ssl_loader_hits.should            == 2
-      usage.player_hits.should                == 3
-      usage.main_player_hits.should           == 1
-      usage.main_player_hits_cached.should    == 2
-      usage.extra_player_hits.should          == 0
-      usage.extra_player_hits_cached.should   == 0
-      usage.dev_player_hits.should            == 0
-      usage.dev_player_hits_cached.should     == 0
-      usage.invalid_player_hits.should        == 0
-      usage.invalid_player_hits_cached.should == 0
-      usage.flash_hits.should                 == 0
-      usage.requests_s3.should                == 0
-      usage.traffic_s3.should                 == 0
-      usage.traffic_voxcast.should            == 143474
+      usage.site.should                       eq @site1
+      usage.day.should                        eq Time.utc(2011,6,14)
+      usage.loader_hits.should                eq 2
+      usage.ssl_loader_hits.should            eq 2
+      usage.player_hits.should                eq 3
+      usage.main_player_hits.should           eq 1
+      usage.main_player_hits_cached.should    eq 2
+      usage.extra_player_hits.should          eq 0
+      usage.extra_player_hits_cached.should   eq 0
+      usage.dev_player_hits.should            eq 0
+      usage.dev_player_hits_cached.should     eq 0
+      usage.invalid_player_hits.should        eq 0
+      usage.invalid_player_hits_cached.should eq 0
+      usage.flash_hits.should                 eq 0
+      usage.requests_s3.should                eq 0
+      usage.traffic_s3.should                 eq 0
+      usage.traffic_voxcast.should            eq 143474
     end
 
   end
@@ -169,7 +169,7 @@ describe SiteUsage do
 
     it "should get tokens from trackers" do
       hbrs = SiteUsage.hits_traffic_and_requests_from(@log, @trackers)
-      SiteUsage.tokens_from(hbrs).should == ["g8thugh6", "g3325oz4"]
+      SiteUsage.tokens_from(hbrs).should eq ["g8thugh6", "g3325oz4"]
     end
 
     it "should create usages from trackers" do
@@ -178,22 +178,22 @@ describe SiteUsage do
       usages.map(&:site).should include(@site1)
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
-      usage.site.should                       == @site1
-      usage.day.should                        == Time.utc(2010,5,27)
-      usage.loader_hits.should                == 3
-      usage.player_hits.should                == 3
-      usage.main_player_hits.should           == 1
-      usage.main_player_hits_cached.should    == 2
-      usage.extra_player_hits.should          == 0
-      usage.extra_player_hits_cached.should   == 0
-      usage.dev_player_hits.should            == 0
-      usage.dev_player_hits_cached.should     == 0
-      usage.invalid_player_hits.should        == 0
-      usage.invalid_player_hits_cached.should == 0
-      usage.flash_hits.should                 == 0
-      usage.requests_s3.should                == 0
-      usage.traffic_s3.should                 == 0
-      usage.traffic_voxcast.should            == 70696
+      usage.site.should                       eq @site1
+      usage.day.should                        eq Time.utc(2010,5,27)
+      usage.loader_hits.should                eq 3
+      usage.player_hits.should                eq 3
+      usage.main_player_hits.should           eq 1
+      usage.main_player_hits_cached.should    eq 2
+      usage.extra_player_hits.should          eq 0
+      usage.extra_player_hits_cached.should   eq 0
+      usage.dev_player_hits.should            eq 0
+      usage.dev_player_hits_cached.should     eq 0
+      usage.invalid_player_hits.should        eq 0
+      usage.invalid_player_hits_cached.should eq 0
+      usage.flash_hits.should                 eq 0
+      usage.requests_s3.should                eq 0
+      usage.traffic_s3.should                 eq 0
+      usage.traffic_voxcast.should            eq 70696
     end
   end
 
@@ -208,8 +208,8 @@ describe SiteUsage do
 
     it "should clean trackers" do
       SiteUsage.hits_traffic_and_requests_from(@log, @trackers).should == {
-        requests_s3:{"fnhbfvkb"=>1, "7jbwuuni"=>1, "gperx9p4"=>1, "pbgopxwy"=>1, "6vibplhv"=>1, "ub4rrhk4"=>1},
-        traffic_s3:{"fnhbfvkb"=>734, "gperx9p4"=>727, "7jbwuuni"=>734, "pbgopxwy"=>734, "6vibplhv"=>734, "ub4rrhk4"=>734}
+        requests_s3: { "fnhbfvkb" => 1, "7jbwuuni" => 1, "gperx9p4" => 1, "pbgopxwy" => 1, "6vibplhv" => 1, "ub4rrhk4" => 1 },
+        traffic_s3: { "fnhbfvkb" => 734, "gperx9p4" => 727, "7jbwuuni" => 734, "pbgopxwy" => 734, "6vibplhv" => 734, "ub4rrhk4" => 734 }
       }
     end
 
@@ -229,13 +229,13 @@ describe SiteUsage do
       usages.map(&:site).should include(@site1)
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
-      usage.site.should            == @site1
-      usage.loader_hits.should     == 0
-      usage.player_hits.should     == 0
-      usage.flash_hits.should      == 0
-      usage.requests_s3.should     == 1
-      usage.traffic_s3.should      == 727
-      usage.traffic_voxcast.should == 0
+      usage.site.should            eq @site1
+      usage.loader_hits.should     eq 0
+      usage.player_hits.should     eq 0
+      usage.flash_hits.should      eq 0
+      usage.requests_s3.should     eq 1
+      usage.traffic_s3.should      eq 727
+      usage.traffic_voxcast.should eq 0
     end
   end
 end

@@ -7,7 +7,7 @@ describe Log::Amazon::S3::Licenses do
   context "Factory" do
     subject { log_s3_licenses }
 
-    its("file.url") { should == "/uploads/s3/sublimevideo.licenses/2010-07-14-11-29-03-BDECA2599C0ADB7D" }
+    its("file.url") { should eq "/uploads/s3/sublimevideo.licenses/2010-07-14-11-29-03-BDECA2599C0ADB7D" }
 
     it "should have good log content" do
       log = described_class.find(subject.id) # to be sure that log is well saved with CarrierWave
@@ -22,15 +22,15 @@ describe Log::Amazon::S3::Licenses do
     it "should delay parse_log after create" do
       subject # trigger log creation
       job = Delayed::Job.last
-      job.name.should == 'Class#parse_log'
-      job.priority.should == 20
+      job.name.should eq 'Class#parse_log'
+      job.priority.should eq 20
     end
   end
 
   describe "Class Methods" do
     describe ".fetch_and_create_new_logs" do
       it "should launch delayed fetch_and_create_new_logs" do
-        lambda { described_class.fetch_and_create_new_logs }.should change(Delayed::Job.where(:handler.matches => "%fetch_and_create_new_logs%"), :count).by(1)
+        lambda { described_class.fetch_and_create_new_logs }.should change(Delayed::Job.where { handler =~ "%fetch_and_create_new_logs%" }, :count).by(1)
       end
 
       it "should not launch delayed fetch_and_create_new_logs if one pending already present" do

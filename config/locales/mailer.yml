@@ -10,7 +10,8 @@ en:
       email_full: "SublimeVideo Stats <stats@sublimevideo.net>"
 
     billing_mailer:
-      trial_has_started: "Your trial for %{hostname} has started"
+      trial_has_started_hostname: "Your trial for %{hostname} has started"
+      trial_has_started_no_hostname: "Your trial has started"
       trial_will_expire:
         today: "Your trial for %{hostname} expires today"
         tomorrow: "Your trial for %{hostname} expires tomorrow"

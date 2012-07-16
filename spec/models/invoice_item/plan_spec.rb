@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe InvoiceItem::Plan do
+describe InvoiceItem::Plan, :plans do
 
   describe ".construct" do
     before(:all) do
@@ -22,7 +22,6 @@ describe InvoiceItem::Plan do
 
       @site6 = create(:site_with_invoice, user: @user3, plan_id: @plan1.id)
       Timecop.travel(BusinessModel.days_for_trial.days.from_now) do
-        @site6.prepare_activation
         @site6.prepare_pending_attributes
         @site6.save_skip_pwd
       end
@@ -46,7 +45,6 @@ describe InvoiceItem::Plan do
         # normal renew
         @site3.prepare_pending_attributes
       end
-      @site5.skip_trial = true
 
       @invoice1 = build(:invoice, site: @site1)
       @invoice2 = build(:invoice, site: @site2, renew: true)
@@ -140,8 +138,8 @@ describe InvoiceItem::Plan do
         its(:discounted_percentage) { should eq 0 }
         its(:price)                 { should eq @plan1.price }
         its(:amount)                { should eq @plan1.price }
-        its(:started_at)            { should eq @site2.pending_plan_cycle_started_at }
-        its(:ended_at)              { should eq @site2.pending_plan_cycle_ended_at }
+        its(:started_at)            { should eq @site2.plan_cycle_started_at }
+        its(:ended_at)              { should eq @site2.plan_cycle_ended_at }
       end
     end
 

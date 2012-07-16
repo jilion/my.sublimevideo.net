@@ -15,8 +15,9 @@ RSpec.configure do |config|
 end
 
 def create_default_plans
-  @free_plan      = create(:free_plan, support_level: 0)
-  @paid_plan      = create(:plan, name: "plus", video_views: 3_000, support_level: 1)
-  @sponsored_plan = create(:sponsored_plan, support_level: 2)
-  @custom_plan    = create(:custom_plan, support_level: 2)
+  @trial_plan     = create(:trial_plan)
+  @free_plan      = create(:free_plan)
+  @paid_plan      = create(:plan, name: "plus", video_views: 3_000)
+  @sponsored_plan = create(:sponsored_plan)
+  @custom_plan    = create(:custom_plan)
 end

@@ -19,7 +19,7 @@ module OneTime
       end
       
       def update_sites_in_trial_to_new_trial_plan
-        trial_plan_id, modified = Plan.trial_plan.id, 0
+        trial_plan_id, modified = ::Plan.trial_plan.id, 0
         ::Site.not_archived.where { (trial_started_at != nil) & (trial_started_at > 14.days.ago) }.each do |site|
           site.plan_started_at = site.trial_started_at
           site.send(:write_attribute, :plan_id, trial_plan_id)

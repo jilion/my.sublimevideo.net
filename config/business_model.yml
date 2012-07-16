@@ -1,5 +1,6 @@
-days_for_trial: 14 # for 14 days
+days_for_trial: 30
 days_before_trial_end:
+  - 15
   - 5
   - 2
   - 1

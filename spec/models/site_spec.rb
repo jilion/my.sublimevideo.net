@@ -667,7 +667,7 @@ describe Site, :plans do
 
       context "site has a hostname" do
         it "updates ranks" do
-          site = create(:site, hostname: 'sublimevideo.net')
+          site = create(:fake_site, hostname: 'sublimevideo.net')
           Delayed::Job.delete_all
 
           described_class.send(:update_ranks, site.id)
@@ -680,7 +680,7 @@ describe Site, :plans do
 
       context "site has blank hostname" do
         it "updates ranks" do
-          site = create(:site, hostname: '', plan_id: @free_plan.id)
+          site = create(:fake_site, hostname: '', plan_id: @free_plan.id)
           Delayed::Job.delete_all
 
           described_class.send(:update_ranks, site.id)

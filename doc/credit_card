@@ -1,7 +1,7 @@
 Nouvelle approche:
 
 - Manual payments (update credit card & create/update site's plan) are done in the controllers
-- Automatic recurrent payments are done in SiteModules::Invoice
+- Automatic recurrent payments are done in SiteModules::Billing
 
 Credit Card manual authorization/payment:
 - With 3-D Secure
