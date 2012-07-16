@@ -1,7 +1,8 @@
 class MailMailer < Mailer
 
-  def send_mail_with_template(user, template)
-    @user = user
+  def send_mail_with_template(user_id, template_id)
+    @user    = User.find(user_id)
+    template = MailTemplate.find(template_id)
 
     mail(
       to: to(@user),
