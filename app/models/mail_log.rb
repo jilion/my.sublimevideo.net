@@ -58,11 +58,10 @@ end
 #  criteria    :text
 #  user_ids    :text
 #  snapshot    :text
-#  created_at  :datetime
-#  updated_at  :datetime
+#  created_at  :datetime        not null
+#  updated_at  :datetime        not null
 #
 # Indexes
 #
 #  index_mail_logs_on_template_id  (template_id)
 #
-

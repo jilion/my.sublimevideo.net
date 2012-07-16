@@ -33,6 +33,7 @@ describe MailTemplate do
 
 end
 
+
 # == Schema Information
 #
 # Table name: mail_templates
@@ -41,7 +42,7 @@ end
 #  title      :string(255)
 #  subject    :string(255)
 #  body       :text
-#  created_at :datetime
-#  updated_at :datetime
+#  created_at :datetime        not null
+#  updated_at :datetime        not null
 #
 

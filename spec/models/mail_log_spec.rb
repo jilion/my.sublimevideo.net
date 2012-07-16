@@ -30,6 +30,7 @@ describe MailLog do
 end
 
 
+
 # == Schema Information
 #
 # Table name: mail_logs
@@ -40,8 +41,8 @@ end
 #  criteria    :text
 #  user_ids    :text
 #  snapshot    :text
-#  created_at  :datetime
-#  updated_at  :datetime
+#  created_at  :datetime        not null
+#  updated_at  :datetime        not null
 #
 # Indexes
 #
