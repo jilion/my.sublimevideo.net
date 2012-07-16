@@ -20,10 +20,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       el: '#sites_select_title'
       sites: MSVStats.sites
 
-    new MSVStats.Views.TrialView
-      el: '#trial'
-      sites: MSVStats.sites
-
     new MSVStats.Views.PeriodSelectorSecondsView
       el: '#period_selectors .seconds'
       statsSeconds: MSVStats.statsSeconds
