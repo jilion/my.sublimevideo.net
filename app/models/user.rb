@@ -103,10 +103,6 @@ class User < ActiveRecord::Base
     event(:unsuspend) { transition suspended: :active }
     event(:archive)   { transition [:active, :suspended] => :archived }
 
-    state :archived do
-      validate :prevent_archive_with_non_paid_invoices
-    end
-
     before_transition on: :suspend, do: :suspend_sites
     after_transition  on: :suspend, do: :send_account_suspended_email
 
@@ -226,10 +222,6 @@ class User < ActiveRecord::Base
     ).to_s
   end
 
-  def archivable?
-    sites.not_archived.all?(&:archivable?)
-  end
-
   def support
     support_level = sites.active.max { |a, b| a.plan.support_level <=> b.plan.support_level }.try(:plan).try(:support_level) || 0
 
@@ -296,13 +288,6 @@ private
       elsif !valid_password?(current_password)
         self.errors.add(:current_password, :invalid)
       end
-    end
-  end
-
-  # validate (archived state)
-  def prevent_archive_with_non_paid_invoices
-    unless archivable?
-      self.errors.add(:base, :not_paid_invoices_prevent_archive, count: invoices.not_paid.count)
     end
   end
 

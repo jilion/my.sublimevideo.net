@@ -24,9 +24,11 @@ class Transaction < ActiveRecord::Base
   # = Callbacks =
   # =============
 
+  before_validation :reject_paid_invoices
+
   before_save :set_fields_from_ogone_response
 
-  before_create :reject_paid_invoices, :set_user_and_set_cc_info, :set_amount
+  before_create :set_user_and_credit_card_info, :set_amount
 
   # =================
   # = State Machine =
@@ -57,7 +59,7 @@ class Transaction < ActiveRecord::Base
   # =================
 
   def self.charge_invoices
-    User.active.includes(:invoices).where(invoices: { state: %w[open failed] }).each do |user|
+    User.active.includes(:invoices).merge(Invoice.open_or_failed).each do |user|
       delay(priority: 2).charge_invoices_by_user_id(user.id)
     end
   end
@@ -75,7 +77,7 @@ class Transaction < ActiveRecord::Base
             return
           else
             invoice.cancel!
-            BillingMailer.too_many_charging_attempts(invoice).deliver!
+            BillingMailer.delay.too_many_charging_attempts(invoice.id)
           end
         end
       end
@@ -85,8 +87,7 @@ class Transaction < ActiveRecord::Base
   end
 
   def self.charge_by_invoice_ids(invoice_ids, options = {})
-    invoices = Invoice.where(id: invoice_ids)
-    transaction = new(invoices: invoices)
+    transaction = new(invoices: Invoice.where(id: invoice_ids))
     transaction.save!
 
     options = options.merge({
@@ -207,7 +208,7 @@ private
   end
 
   # before_create
-  def set_user_and_set_cc_info
+  def set_user_and_credit_card_info
     self.user           = invoices.first.user unless user_id?
     self.cc_type        = self.user.cc_type
     self.cc_last_digits = self.user.cc_last_digits
@@ -237,12 +238,12 @@ private
 
   # after_transition on: :succeed
   def send_charging_succeeded_email
-    BillingMailer.transaction_succeeded(self).deliver!
+    BillingMailer.delay.transaction_succeeded(id)
   end
 
   # after_transition on: :fail
   def send_charging_failed_email
-    BillingMailer.transaction_failed(self).deliver!
+    BillingMailer.delay.transaction_failed(id)
   end
 
 end
