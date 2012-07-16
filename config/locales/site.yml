@@ -1,10 +1,9 @@
 en:
   site:
     trial:
-      provide_cc_before_trial_end: "Please provide a %{billing_link} to continue enjoying all of your current plan's features."
       will_end:
-        one: "Trial for %{hostname} <strong>expires today</strong>."
-        other: "Trial for %{hostname} <strong>expires in %{count} days</strong>."
+        one: "Trial for %{hostname} <strong>expires today</strong>. Don't forget to choose a plan that will suit your needs before."
+        other: "Trial for %{hostname} <strong>expires in %{count} days</strong>. Don't forget to choose a plan that will suit your needs before."
     settings:
       badge_disabling_note: "The SublimeVideo badge can be disabled by upgrading your site to a %{link}."
       ssl_serving_note: "SSL Serving is available with all %{link}."

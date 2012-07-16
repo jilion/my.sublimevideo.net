@@ -7,15 +7,18 @@ module SitesHelper
   end
 
   def full_days_until_trial_end(site)
-    if site.trial_not_started_or_in_trial?
-      ((site.trial_started_at.midnight + BusinessModel.days_for_trial.days - Time.now.utc.midnight) / (3600 * 24)).to_i
+    if site.in_trial_plan?
+      ((site.plan_started_at + BusinessModel.days_for_trial.days - Time.now.utc.midnight) / (3600 * 24)).to_i
     else
       0
     end
   end
 
-  def trial_will_expire_sentence(site)
-    I18n.t('site.trial.will_end', hostname: site.hostname, count: full_days_until_trial_end(site))
+  def sites_with_trial_expires_in_less_than_5_days(sites)
+    sites.inject([]) do |memo, site|
+      memo << { site: site } if site.in_trial_plan? && site.trial_expires_in_less_than_or_equal_to(5.days.from_now)
+      memo
+    end
   end
 
   def sublimevideo_script_tag_for(site)
@@ -67,7 +70,7 @@ module SitesHelper
   end
 
   def td_usage_class(site)
-    if site.in_paid_plan? && site.trial_ended?
+    if site.in_paid_plan?
       if site.first_plan_upgrade_required_alert_sent_at?
         "required_upgrade"
       elsif site.current_monthly_billable_usages.sum > site.plan.video_views
