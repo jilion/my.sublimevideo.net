@@ -1,6 +1,26 @@
 require 'spec_helper'
 
-describe SitesHelper, :plans do
+describe LayoutHelper, :plans do
+
+  describe '#sticky_notices' do
+    let(:user)                   { stub }
+    let(:sites)                  { stub }
+    let(:site_will_leave_trial)  { stub }
+    let(:sites_will_leave_trial) { [{ site: site_will_leave_trial }] }
+    before do
+      helper.should_receive(:credit_card_warning).with(user).and_return(true)
+      helper.should_receive(:billing_address_incomplete).with(user).and_return(true)
+      helper.should_receive(:sites_with_trial_expires_in_less_than_5_days).with(sites).and_return(sites_will_leave_trial)
+    end
+
+    it {
+      helper.sticky_notices(user, sites).should == {
+        credit_card_warning: true,
+        billing_address_incomplete: true,
+        sites_with_trial_expires_in_less_than_5_days: [{ site: site_will_leave_trial }]
+      }
+    }
+  end
 
   describe "#full_days_until_trial_end" do
     before { BusinessModel.stub(:days_for_trial) { 3 } }
@@ -10,16 +30,6 @@ describe SitesHelper, :plans do
     it { helper.full_days_until_trial_end(build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 2.days.ago)).should eq 1 }
     it { helper.full_days_until_trial_end(build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 3.days.ago)).should eq 0 }
     it { helper.full_days_until_trial_end(build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 4.days.ago)).should eq 0 }
-  end
-
-  describe '#sites_with_trial_expires_in_less_than_5_days' do
-    let(:site1) { stub(in_trial_plan?: true, trial_expires_in_less_than_or_equal_to: true) }
-    let(:site2) { stub(in_trial_plan?: true, trial_expires_in_less_than_or_equal_to: false) }
-    let(:site3) { stub(in_trial_plan?: false, trial_expires_in_less_than_or_equal_to: true) }
-    let(:site4) { stub(in_trial_plan?: false, trial_expires_in_less_than_or_equal_to: false) }
-    let(:sites) { [site1, site2, site3, site4] }
-
-    it { helper.sites_with_trial_expires_in_less_than_5_days(sites).should eq [{ site: site1 }] }
   end
 
   describe "#sublimevideo_script_tag_for" do

@@ -11,23 +11,23 @@ describe SiteModules::Scope, :plans do
       @site_suspended = create(:site, user: @user, state: "suspended")
     end
 
-    describe "#active" do
+    describe ".active" do
       specify { Site.active.all.should =~ [@site_active] }
     end
 
-    describe "#inactive" do
+    describe ".inactive" do
       specify { Site.inactive.all.should =~ [@site_archived, @site_suspended] }
     end
 
-    describe "#suspended" do
+    describe ".suspended" do
       specify { Site.suspended.all.should =~ [@site_suspended] }
     end
 
-    describe "#archived" do
+    describe ".archived" do
       specify { Site.archived.all.should =~ [@site_archived] }
     end
 
-    describe "#not_archived" do
+    describe ".not_archived" do
       specify { Site.not_archived.all.should =~ [@site_active, @site_suspended] }
     end
   end
@@ -102,9 +102,9 @@ describe SiteModules::Scope, :plans do
   describe "invoices" do
     before do
       Site.delete_all
-      @site_with_no_invoice = create(:site, user: @user)
-      @site_with_paid_invoice = create(:site_with_invoice, user: @user)
-      @site_with_canceled_invoice = create(:site_with_invoice, user: @user)
+      @site_with_no_invoice       = create(:fake_site, user: @user)
+      @site_with_paid_invoice     = create(:site, user: @user)
+      @site_with_canceled_invoice = create(:site, user: @user)
       @site_with_canceled_invoice.invoices.last.update_attribute(:state, 'canceled')
     end
 
@@ -116,31 +116,32 @@ describe SiteModules::Scope, :plans do
   describe "trial" do
     before do
       Site.delete_all
-      @site_not_in_trial = create(:site, user: @user, trial_started_at: BusinessModel.days_for_trial.days.ago.midnight)
-      @site_trial_ends_in_1_day = create(:site, user: @user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago.midnight)
+      @site_in_trial            = create(:fake_site, user: @user, plan_id: @trial_plan.id)
+      @site_in_trial_ended      = create(:fake_site, user: @user, plan_id: @trial_plan.id, plan_started_at: BusinessModel.days_for_trial.days.ago)
+      @site_trial_ends_in_1_day = create(:fake_site, user: @user, plan_id: @trial_plan.id, plan_started_at: (BusinessModel.days_for_trial - 1).days.ago.midnight)
     end
 
-    describe "#in_trial" do
-      specify { Site.in_trial.all.should =~ [@site_trial_ends_in_1_day] }
+    describe ".in_trial" do
+      specify { Site.in_trial.all.should =~ [@site_in_trial, @site_in_trial_ended, @site_trial_ends_in_1_day] }
     end
 
-    describe "#not_in_trial" do
-      specify { Site.not_in_trial.all.should =~ [@site_not_in_trial] }
+    describe ".trial_ended" do
+      specify { Site.trial_ended.all.should =~ [@site_in_trial_ended] }
     end
 
-    describe "#trial_expires_on" do
+    describe ".trial_expires_on" do
       specify { Site.trial_expires_on(2.days.from_now).all.should be_empty }
       specify { Site.trial_expires_on(1.day.from_now).all.should =~ [@site_trial_ends_in_1_day] }
     end
   end
 
-  describe "#renewable" do
+  describe ".renewable" do
     before do
       Site.delete_all
       Timecop.travel(2.months.ago) do
-        @site_renewable      = create(:site_not_in_trial, user: @user, first_paid_plan_started_at: Time.now.utc)
-        @site_suspended      = create(:site_not_in_trial, user: @user, state: 'suspended', first_paid_plan_started_at: Time.now.utc)
-        @site_archived       = create(:site_with_invoice, user: @user, first_paid_plan_started_at: Time.now.utc)
+        @site_renewable      = create(:site, user: @user, first_paid_plan_started_at: Time.now.utc)
+        @site_suspended      = create(:site, user: @user, state: 'suspended', first_paid_plan_started_at: Time.now.utc)
+        @site_archived       = create(:site, user: @user, first_paid_plan_started_at: Time.now.utc)
         @site_archived.user.current_password = '123456'
         @site_archived.archive!
         @site_archived.should be_archived
@@ -153,7 +154,7 @@ describe SiteModules::Scope, :plans do
     specify { Site.renewable.all.should =~ [@site_renewable] }
   end
 
-  describe "#refunded" do
+  describe ".refunded" do
     before do
       Site.delete_all
       @site_refunded_1     = create(:site, user: @user, state: 'archived', refunded_at: Time.now.utc)

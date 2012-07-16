@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe SiteModules::Templates, :plans do
+describe SiteModules::Template, :plans do
 
   describe "Callbacks" do
 
     context "on create" do
-      let(:site) { build(:new_site) }
+      let(:site) { build(:new_site, plan_id: @trial_plan.id) }
 
       it "delays .update_loader_and_license once" do
         expect { site.save! }.to change(Delayed::Job.where(:handler.matches => "%update_loader_and_license%"), :count).by(1)
@@ -49,13 +49,13 @@ describe SiteModules::Templates, :plans do
         end
 
         it "delays .update_loader_and_license once" do
-          expect { site.save! }.to change(Delayed::Job.where { handler =~ "%update_loader_and_license%" }, :count).by(1)
+          expect { site.apply_pending_attributes }.to change(Delayed::Job.where { handler =~ "%update_loader_and_license%" }, :count).by(1)
         end
 
         it "purges loader & license on CDN" do
           VoxcastCDN.should_receive(:purge).twice
 
-          site.save!
+          site.apply_pending_attributes
           $worker.work_off
         end
       end
@@ -143,7 +143,7 @@ describe SiteModules::Templates, :plans do
   describe "Instance Methods" do
 
     describe "#settings_changed?" do
-      let(:site) { build(:site) }
+      let(:site) { create(:site) }
 
       it "should return false if no attribute has changed" do
         site.should_not be_settings_changed
@@ -159,7 +159,7 @@ describe SiteModules::Templates, :plans do
 
     describe "#license_hash" do
       describe "common settings" do
-        let(:site) { build(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: true) }
+        let(:site) { create(:site, plan_id: @trial_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: true) }
 
         it "includes everything" do
           site.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: true, s: true, r: true }
@@ -239,7 +239,7 @@ describe SiteModules::Templates, :plans do
     end
 
     describe "#license_js_hash" do
-      subject { build(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
+      subject { create(:site, plan_id: @trial_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
       its(:license_js_hash) { should eq "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true}" }
     end
@@ -260,7 +260,7 @@ describe SiteModules::Templates, :plans do
 
       context "license" do
         let(:site) {
-          site = build(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+          site = create(:site, plan_id: @trial_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
           site.set_template("license")
           site
         }
@@ -285,7 +285,7 @@ describe SiteModules::Templates, :plans do
         end
 
         context "file doesn't exist" do
-          let(:site) { build(:site, hostname: "jilion.com").tap { |s| s.set_template("license", prefix: 'bar') } }
+          let(:site) { create(:site, hostname: "jilion.com").tap { |s| s.set_template("license", prefix: 'bar') } }
 
           it "use standard license" do
             site.license.read.should eq "jilion.sublime.video.sites({h:[\"jilion.com\"],d:[\"127.0.0.1\",\"localhost\"],b:false,s:true,r:true});"
@@ -294,7 +294,7 @@ describe SiteModules::Templates, :plans do
       end
 
       context "loader" do
-        let(:site) { build(:site).tap { |s| s.set_template("loader") } }
+        let(:site) { create(:site).tap { |s| s.set_template("loader") } }
 
         it "sets loader file with token" do
           site.loader.read.should include(site.token)

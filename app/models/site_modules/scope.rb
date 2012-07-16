@@ -33,16 +33,14 @@ module SiteModules::Scope
     scope :paid_next_plan_or_no_next_plan, lambda { active.where { next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) } }
     scope :in_plan,        lambda { |plan_names| active.in_plan_id(Plan.where { name >> Array.wrap(plan_names) }.map(&:id)) }
     scope :in_plan_id,     lambda { |plan_ids| active.where { plan_id >> Array.wrap(plan_ids) } }
+    scope :in_trial,       lambda { active.in_plan('trial') }
 
     # billing
-    scope :in_trial, lambda {
-      active.where { trial_started_at > BusinessModel.days_for_trial.days.ago }
-    }
-    scope :not_in_trial, lambda {
-      active.where { (trial_started_at || BusinessModel.days_for_trial.days.ago) <= BusinessModel.days_for_trial.days.ago }
+    scope :trial_ended, lambda {
+      active.in_trial.where { (plan_started_at || BusinessModel.days_for_trial.days.ago) <= BusinessModel.days_for_trial.days.ago }
     }
     scope :trial_expires_on, lambda { |timestamp|
-      active.where { date_trunc('day', trial_started_at) == (timestamp - BusinessModel.days_for_trial.days).midnight }
+      active.where { date_trunc('day', plan_started_at) == (timestamp - BusinessModel.days_for_trial.days).midnight }
     }
 
     # plan cycles

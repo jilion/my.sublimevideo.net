@@ -1,7 +1,7 @@
 require_dependency 'pusher_wrapper'
 require_dependency 'voxcast_cdn'
 
-module SiteModules::Templates
+module SiteModules::Template
   extend ActiveSupport::Concern
 
   module ClassMethods

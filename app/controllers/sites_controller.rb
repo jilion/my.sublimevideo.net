@@ -36,11 +36,13 @@ class SitesController < ApplicationController
 
   # POST /sites
   def create
-    @site = current_user.sites.build((params[:site] || {}).merge(remote_ip: request.try(:remote_ip)))
+    params[:site][:remote_ip] = request.remote_ip
+    params[:site][:plan_id]   = Plan.trial_plan.id if !params[:site_skip_trial] || !params[:site][:plan_id]
+    @site = current_user.sites.build(params[:site])
 
     respond_with(@site) do |format|
       if @site.save # will create site (& create invoice and charge it if skip_trial is true)
-        notice_and_alert = params[:site][:skip_trial] ? notice_and_alert_from_transaction(@site.last_transaction) : { notice: nil, alert: nil }
+        notice_and_alert = notice_and_alert_from_transaction(@site.last_transaction)
         format.html { redirect_to :sites, notice_and_alert }
       else
         flash[:notice] = flash[:alert] = ""

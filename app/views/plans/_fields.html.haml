@@ -1,139 +1,139 @@
-- site = f.object
-- plan = site.plan
-- pending_plan = site.pending_plan
-- next_cycle_plan = site.next_cycle_plan
-- current_plan = pending_plan || next_cycle_plan || plan # current plan for the view (could be in case of rendering view with errors)
+#plan_fields{ style: display_plan_fields(site) }
+  - plan = site.plan
+  - pending_plan = site.pending_plan
+  - next_cycle_plan = site.next_cycle_plan
+  - current_plan = pending_plan || next_cycle_plan || plan # current plan for the view (could be in case of rendering view with errors)
 
-- if site.errors.include?(:plan)
-  .inline_errors.plan
-    %span= site.errors[:plan].first
+  - if site.errors.include?(:plan)
+    .inline_errors.plan
+      %span= site.errors[:plan].first
 
-- custom_plan = current_plan if current_plan && current_plan.custom_plan?
-- custom_plan = Plan.custom_plans.find_by_token(params[:custom_plan]) if params[:custom_plan]
-- if custom_plan
-  #custom_plan
-    .header
-      .break_line
-      %h3.title= content_tag(:strong, "Custom Plan")
-      .break_line
-    .content
-      %h4.number= number_with_delimiter(custom_plan.video_views)
-      %h5.label= "Video views per month"
-    .entry
-      .radio_wrap
-        = f.radio_button :plan_id, custom_plan.token, radio_button_options(site, current_plan, custom_plan, id: "plan_custom", checked: current_plan && current_plan == custom_plan)
-        = f.label :plan_id, raw("#{display_amount_with_sup(custom_plan.price)} (per #{custom_plan.cycle})"), for: "plan_custom"
-    .spacer
-  - if params[:custom_plan]
-    %p
-      %small= link_to "(See standard plans)", { custom_plan: nil }, class: "hl"
+  - custom_plan = current_plan if current_plan && current_plan.custom_plan?
+  - custom_plan = Plan.custom_plans.find_by_token(params[:custom_plan]) if params[:custom_plan]
+  - if custom_plan
+    #custom_plan
+      .header
+        .break_line
+        %h3.title= content_tag(:strong, "Custom Plan")
+        .break_line
+      .content
+        %h4.number= number_with_delimiter(custom_plan.video_views)
+        %h5.label= "Video views per month"
+      .entry
+        .radio_wrap
+          = f.radio_button :plan_id, custom_plan.token, radio_button_options(site, current_plan, custom_plan, id: "plan_custom", checked: current_plan && current_plan == custom_plan)
+          = f.label :plan_id, raw("#{display_amount_with_sup(custom_plan.price)} (per #{custom_plan.cycle})"), for: "plan_custom"
+      .spacer
+    - if params[:custom_plan]
+      %p
+        %small= link_to "(See standard plans)", { custom_plan: nil }, class: "hl"
 
-- else
-  -# - if site.recommended_plan_name
-  -#   #recommended_plan_box
-  -#     %p.note
-  -#       = raw "Your usage in the last 30 days: #{content_tag :strong, number_with_delimiter(site.last_30_days_billable_usages.sum)} video plays =>"
-  -#       - if site.recommended_plan_name == 'custom'
-  -#         = raw "Recommended plan: <strong>Custom</strong> (please #{mail_to t('mailer.sales.email'), "contact us"})"
-  -#       - else
-  -#         = raw "Recommended plan: <strong>#{site.recommended_plan_name.titleize}</strong>"
+  - else
+    -# - if site.recommended_plan_name
+    -#   #recommended_plan_box
+    -#     %p.note
+    -#       = raw "Your usage in the last 30 days: #{content_tag :strong, number_with_delimiter(site.last_30_days_billable_usages.sum)} video plays =>"
+    -#       - if site.recommended_plan_name == 'custom'
+    -#         = raw "Recommended plan: <strong>Custom</strong> (please #{mail_to t('mailer.sales.email'), "contact us"})"
+    -#       - else
+    -#         = raw "Recommended plan: <strong>#{site.recommended_plan_name.titleize}</strong>"
 
-  #plans
-    - free_plan = Plan.free_plan
-    - standard_plans = Plan.standard_plans.order(:video_views.asc, :price.asc)
-    %ul
-      %li{ class: "#{free_plan.name} box_0" }
-        .wrapper
-          .header
-            %h3.title= free_plan.name.titleize
-            %ul.features
-              %li.plays
-                %span.icon
-                .right
-                  %h4= plan_plays(free_plan)
-                  %p.small_desc= "With SublimeVideo badge"
-                .spacer
-              %li.stats
-                %span.icon
-                .right
-                  %h4= "Standard Stats"
-                  %p.value= plan_stats_retention_days(free_plan)
-                .spacer
-              %li.support
-                %span.icon
-                .right
-                  %h4= plan_support(free_plan)
-                .spacer
-          .select_box_wrap
-            .select_box{ class: current_plan && current_plan == free_plan ? 'active' : '' }
-              = f.label :plan_id, (content_tag :span, "Free", class: "title"), for: "plan_#{free_plan.name}"
-              .radio_wrap
-                = f.radio_button :plan_id, free_plan.id, radio_button_options(site, current_plan, free_plan, checked: current_plan && current_plan == free_plan)
-                %span.bg
-              - if site.persisted? && plan && plan == free_plan
-                %span.current_label= "Current"
-            .spacer
-
-      - i = 1
-      - standard_plans.each do |standard_plan|
-        - next if standard_plan.yearly?
-        - standard_yearly_plan = standard_plans.find { |p| p.name == standard_plan.name && p.yearly? }
-        - deal = standard_plan.discounted?(site)
-        - i += 1
-        %li{ class: "#{standard_plan.name} box_#{i}" + (standard_plan.name == site.recommended_plan_name ? ' recommended' : '') }
+    #plans
+      - free_plan = Plan.free_plan
+      - standard_plans = Plan.standard_plans.order(:video_views.asc, :price.asc)
+      %ul
+        %li{ class: "#{free_plan.name} box_0" }
           .wrapper
             .header
-              %h3.title= standard_plan.name.titleize
+              %h3.title= free_plan.name.titleize
               %ul.features
                 %li.plays
                   %span.icon
                   .right
-                    %h4= plan_plays(standard_plan)
-                    %p.small_desc= "Per month"
+                    %h4= plan_plays(free_plan)
+                    %p.small_desc= "With SublimeVideo badge"
                   .spacer
                 %li.stats
                   %span.icon
                   .right
-                    %h4= "Real-Time Stats"
-                    %p.value= plan_stats_retention_days(standard_plan)
+                    %h4= "Standard Stats"
+                    %p.value= plan_stats_retention_days(free_plan)
                   .spacer
                 %li.support
                   %span.icon
                   .right
-                    %h4= plan_support(standard_plan)
+                    %h4= plan_support(free_plan)
                   .spacer
-                %li.ssl
-                  %span.icon
-                  .right
-                    %h4= "SSL Serving"
-                  .spacer
-              -# %span.recommended_label= "Recommended"
             .select_box_wrap
-              .monthly.select_box{ class: current_plan && current_plan == standard_plan ? 'active' : '' + (deal ? ' discount' : '') }
-                = f.label :plan_id, raw(plan_label_content(standard_plan, site)), for: "plan_#{standard_plan.name}_#{standard_plan.cycle}"
+              .select_box{ class: current_plan && current_plan == free_plan ? 'active' : '' }
+                = f.label :plan_id, (content_tag :span, "Free", class: "title"), for: "plan_#{free_plan.name}"
                 .radio_wrap
-                  = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, current_plan, standard_plan, checked: current_plan && current_plan == standard_plan)
+                  = f.radio_button :plan_id, free_plan.id, radio_button_options(site, current_plan, free_plan, checked: current_plan && current_plan == free_plan)
                   %span.bg
-                - if site.persisted? && plan == standard_plan
+                - if site.persisted? && plan && plan == free_plan
                   %span.current_label= "Current"
-
-              - if standard_yearly_plan
-                - deal = standard_yearly_plan.discounted?(site)
-                .yearly.select_box{ class: current_plan && current_plan == standard_yearly_plan ? 'active' : '' + (deal ? ' discount' : '') }
-                  = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), for: "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
-                  .radio_wrap
-                    = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, current_plan, standard_yearly_plan, checked: current_plan && current_plan == standard_yearly_plan)
-                    %span.bg
-                  - if site.persisted? && plan == standard_yearly_plan
-                    %span.current_label= "Current"
-                  - if deal
-                    = render 'deals/deal_details', deal: deal, plan: standard_yearly_plan
-                  - else
-                    %span.save_label
-                      = "save 2 months"
-
               .spacer
-    .spacer
 
-    #need_more{ class: (site.recommended_plan_name == 'custom' ? 'recommended' : '') }
-      %p= raw "Need a custom integration with your site or have other enterprise-class requirements? Please #{mail_to t('mailer.sales.email_full'), "contact us"}."
+        - i = 1
+        - standard_plans.each do |standard_plan|
+          - next if standard_plan.yearly?
+          - standard_yearly_plan = standard_plans.find { |p| p.name == standard_plan.name && p.yearly? }
+          - deal = standard_plan.discounted?(site)
+          - i += 1
+          %li{ class: "#{standard_plan.name} box_#{i}" + (standard_plan.name == site.recommended_plan_name ? ' recommended' : '') }
+            .wrapper
+              .header
+                %h3.title= standard_plan.name.titleize
+                %ul.features
+                  %li.plays
+                    %span.icon
+                    .right
+                      %h4= plan_plays(standard_plan)
+                      %p.small_desc= "Per month"
+                    .spacer
+                  %li.stats
+                    %span.icon
+                    .right
+                      %h4= "Real-Time Stats"
+                      %p.value= plan_stats_retention_days(standard_plan)
+                    .spacer
+                  %li.support
+                    %span.icon
+                    .right
+                      %h4= plan_support(standard_plan)
+                    .spacer
+                  %li.ssl
+                    %span.icon
+                    .right
+                      %h4= "SSL Serving"
+                    .spacer
+                -# %span.recommended_label= "Recommended"
+              .select_box_wrap
+                .monthly.select_box{ class: current_plan && current_plan == standard_plan ? 'active' : '' + (deal ? ' discount' : '') }
+                  = f.label :plan_id, raw(plan_label_content(standard_plan, site)), for: "plan_#{standard_plan.name}_#{standard_plan.cycle}"
+                  .radio_wrap
+                    = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, current_plan, standard_plan, checked: current_plan && current_plan == standard_plan)
+                    %span.bg
+                  - if site.persisted? && plan == standard_plan
+                    %span.current_label= "Current"
+
+                - if standard_yearly_plan
+                  - deal = standard_yearly_plan.discounted?(site)
+                  .yearly.select_box{ class: current_plan && current_plan == standard_yearly_plan ? 'active' : '' + (deal ? ' discount' : '') }
+                    = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), for: "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
+                    .radio_wrap
+                      = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, current_plan, standard_yearly_plan, checked: current_plan && current_plan == standard_yearly_plan)
+                      %span.bg
+                    - if site.persisted? && plan == standard_yearly_plan
+                      %span.current_label= "Current"
+                    - if deal
+                      = render 'deals/deal_details', deal: deal, plan: standard_yearly_plan
+                    - else
+                      %span.save_label
+                        = "save 2 months"
+
+                .spacer
+      .spacer
+
+      #need_more{ class: (site.recommended_plan_name == 'custom' ? 'recommended' : '') }
+        %p= raw "Need a custom integration with your site or have other enterprise-class requirements? Please #{mail_to t('mailer.sales.email_full'), "contact us"}."

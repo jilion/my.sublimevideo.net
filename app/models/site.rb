@@ -6,10 +6,11 @@ require_dependency 'validators/extra_hostnames_validator'
 
 class Site < ActiveRecord::Base
   include SiteModules::Api
-  include SiteModules::Invoice
+  include SiteModules::Cycle
+  include SiteModules::Billing
   include SiteModules::Referrer
   include SiteModules::Scope
-  include SiteModules::Templates
+  include SiteModules::Template
   include SiteModules::Usage
   include SiteModules::UsageMonitoring
 
@@ -28,10 +29,10 @@ class Site < ActiveRecord::Base
   acts_as_taggable
 
   attr_accessor :loader_needs_update, :license_needs_update
-  attr_accessor :user_attributes, :last_transaction, :remote_ip, :skip_trial
+  attr_accessor :user_attributes, :last_transaction, :remote_ip
 
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard,
-                  :badged, :plan_id, :skip_trial, :user_attributes, :remote_ip
+                  :badged, :plan_id, :user_attributes, :remote_ip
 
   serialize :last_30_days_billable_video_views_array, Array
 
@@ -81,7 +82,6 @@ class Site < ActiveRecord::Base
   validates :hostname,        presence: { if: proc { |s| s.in_or_will_be_in_paid_plan? } }, hostname: true, hostname_uniqueness: true
   validates :dev_hostnames,   dev_hostnames: true, length: { maximum: 255 }
   validates :extra_hostnames, extra_hostnames: true, length: { maximum: 255 }
-  validates :badged,          inclusion: [true], if: :in_free_plan?
 
   validate  :validates_current_password
 
@@ -91,17 +91,17 @@ class Site < ActiveRecord::Base
 
   before_validation :set_user_attributes
   before_validation :set_default_dev_hostnames, unless: :dev_hostnames?
-  before_validation :set_default_badged, if: proc { |s| s.badged.nil? || s.in_free_plan? }
 
+  before_save :set_default_badged
   before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
-  before_save :prepare_pending_attributes, if: proc { |s| s.pending_plan_id_changed? || s.skip_trial? } # in site_modules/invoice
-  before_save :set_trial_started_at, :set_first_paid_plan_started_at # in site_modules/invoice
+  before_save :prepare_pending_attributes, if: proc { |s| s.pending_plan_id_changed? && s.pending_plan_id? } # in site_modules/cycle
+  before_save :set_first_paid_plan_started_at # in site_modules/billing
 
   after_create :delay_ranks_update, :update_last_30_days_video_views_counters # in site_modules/usage
 
-  after_save :create_and_charge_invoice # in site_modules/invoice
-  after_save :send_trial_started_email, if: proc { |s| s.trial_started_at_changed? && s.trial_started_at_was.nil? && trial_not_started_or_in_trial? } # in site_modules/invoice
+  after_save :create_and_charge_invoice # in site_modules/billing
+  after_save :send_trial_started_email, if: proc { |s| s.plan_id_changed? && s.in_trial_plan? } # in site_modules/billing
   after_save :execute_cdn_update # in site_modules/templates
 
   # =================
@@ -113,12 +113,8 @@ class Site < ActiveRecord::Base
     event(:suspend)   { transition active: :suspended }
     event(:unsuspend) { transition suspended: :active }
 
-    state :archived do
-      validate :prevent_archive_with_non_paid_invoices
-    end
-
     before_transition on: :archive, do: [:set_archived_at]
-    after_transition  on: :archive, do: [:cancel_open_or_failed_invoices]
+    after_transition  on: :archive, do: [:cancel_not_paid_invoices]
 
     after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
   end
@@ -159,7 +155,7 @@ class Site < ActiveRecord::Base
 
     if attribute.to_s == attribute.to_i.to_s # id passed
       new_plan = Plan.find_by_id(attribute.to_i)
-      return unless new_plan.standard_plan? || new_plan.free_plan?
+      return unless new_plan.trial_plan? || new_plan.standard_plan? || new_plan.free_plan?
     else # token passed
       new_plan = Plan.find_by_token(attribute)
     end
@@ -171,10 +167,10 @@ class Site < ActiveRecord::Base
           write_attribute(:pending_plan_id, new_plan.id)
           write_attribute(:next_cycle_plan_id, nil)
         when false # Downgrade
-          if trial_not_started_or_in_trial? || !first_paid_plan_started_at?
-            write_attribute(:pending_plan_id, new_plan.id)
-          else
+          if first_paid_plan_started_at?
             write_attribute(:next_cycle_plan_id, new_plan.id)
+          else
+            write_attribute(:pending_plan_id, new_plan.id)
           end
         when nil # Same plan, reset next_cycle_plan
           write_attribute(:next_cycle_plan_id, nil)
@@ -224,8 +220,9 @@ class Site < ActiveRecord::Base
     hostname_with_subdomain_needed.present?
   end
 
-  def archivable?
-    invoices.waiting.empty? && (!first_paid_plan_started_at? || invoices.open_or_failed.empty?)
+  def trial_started_during_deal?(deal)
+    in_trial_plan? &&
+    plan_started_at >= deal.started_at && plan_started_at <= deal.ended_at
   end
 
   def recommended_plan_name
@@ -303,7 +300,7 @@ private
 
   # before_validation
   def set_default_badged
-    self.badged = in_free_plan?
+    self.badged = in_free_plan? if badged.nil? || in_free_plan?
     true # don't halt the callback chain
   end
 
@@ -311,18 +308,11 @@ private
   def validates_current_password
     return true if @skip_password_validation
 
-    if persisted? && in_paid_plan? && trial_ended? && errors.empty? &&
+    if persisted? && in_paid_plan? && errors.empty? &&
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         self.errors.add(:base, :current_password_needed)
       end
-    end
-  end
-
-  # validate (archived state)
-  def prevent_archive_with_non_paid_invoices
-    unless archivable?
-      self.errors.add(:base, :not_paid_invoices_prevent_archive, count: invoices.not_paid.count)
     end
   end
 
@@ -342,8 +332,8 @@ private
   end
 
   # before_transition on: :archive
-  def cancel_open_or_failed_invoices
-    invoices.open_or_failed.map(&:cancel)
+  def cancel_not_paid_invoices
+    invoices.not_paid.map(&:cancel)
   end
 
 end
@@ -360,8 +350,8 @@ end
 #  loader                                    :string(255)
 #  state                                     :string(255)
 #  archived_at                               :datetime
-#  created_at                                :datetime
-#  updated_at                                :datetime
+#  created_at                                :datetime        not null
+#  updated_at                                :datetime        not null
 #  player_mode                               :string(255)     default("stable")
 #  google_rank                               :integer
 #  alexa_rank                                :integer
@@ -391,6 +381,7 @@ end
 #  last_30_days_embed_video_views            :integer         default(0)
 #  last_30_days_billable_video_views_array   :text
 #  last_30_days_video_tags                   :integer         default(0)
+#  first_billable_plays_at                   :datetime
 #
 # Indexes
 #
@@ -404,4 +395,3 @@ end
 #  index_sites_on_plan_id                           (plan_id)
 #  index_sites_on_user_id                           (user_id)
 #
-

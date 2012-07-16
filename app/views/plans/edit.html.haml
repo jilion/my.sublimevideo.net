@@ -20,24 +20,25 @@
     .notice
       %p= raw "Your plan is currently sponsored, if you have any questions, please email #{mail_to t('mailer.sales.email_full').html_safe, t('mailer.sales.email')}."
   - else
+    - if @site.in_trial_plan?
+      .notice
+        %p= raw "Your site is currently in trial, you still have #{full_days_until_trial_end(@site)} days to choose a plan."
+    
     - if @site.errors.empty? && @site.next_cycle_plan_id?
       #next_cycle_plan_box.notice
         %p= raw t('site.plan.next_cycle_will_start_on', plan_title: @site.next_cycle_plan.title(always_with_cycle: true), date: l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date))
         = button_to "Cancel", [@site, :plan], method: 'delete', class: "cancel_button submit_dynamic_button"
 
     #change_plan_box.section_box
-      = form_for @site, url: site_plan_path(@site), html: { id: "edit_site_plan", "data-password-protected" => @site.in_paid_plan? && !@site.trial_not_started_or_in_trial? } do |f|
+      = form_for @site, url: site_plan_path(@site), html: { id: "edit_site_plan", "data-password-protected" => @site.in_paid_plan? } do |f|
 
         = password_box(resource: @site, f: f, cancel_url: edit_site_plan_path(@site)) if current_password_needed_error?(@site)
 
-        = render 'fields', f: f
-
-        - if @site.trial_not_started_or_in_trial?
-          = render 'sites/skip_trial_box', f: f
-
-        = render 'sites/billing_info_box'
+        = render 'fields', site: @site, f: f
 
         = render 'plan_change_messages'
+
+        = render 'sites/billing_info_box', site: @site
         .spacer
 
         .actions.center= f.submit("Update plan", class: "submit green_button", id: 'site_submit', style: 'display:none') unless @site.in_custom_plan?

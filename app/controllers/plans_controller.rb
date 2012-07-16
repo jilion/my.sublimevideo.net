@@ -15,7 +15,7 @@ class PlansController < ApplicationController
 
     respond_with(@site) do |format|
       if @site.save # will update site (& create invoice and charge it if skip_trial is true) # will create invoice and charge...
-        notice_and_alert = params[:site][:skip_trial] ? notice_and_alert_from_transaction(@site.last_transaction) : { notice: nil, alert: nil }
+        notice_and_alert = notice_and_alert_from_transaction(@site.last_transaction)
         format.html { redirect_to :sites, notice_and_alert }
       else
         flash[:notice] = flash[:alert] = ""

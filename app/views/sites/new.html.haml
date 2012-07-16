@@ -1,28 +1,34 @@
-= title_and_content_header("Choose a plan for your site")
+-#= title_and_content_header("Choose a plan for your site")
+-#= title("Choose a plan for your site")
 
 #site.new
   = render 'deals/deal_available'
 
   = form_for @site, html: { class: "full" } do |f|
 
-    = render 'plans/fields', site: @site, f: f
-
     .tagline
-      %h3= "All paid plans are free for the first 14 days"
-      %h4= "No credit card required"
+      -# %h3= "Test all features with a 30-day free trial"
+      -#%h4= "No credit card required"
+      %h3= "#{BusinessModel.days_for_trial}-day Free & Unlimited Trial."
+      %h4= "No commitment, no credit card required."
+
+    %p= "After the first #{BusinessModel.days_for_trial} days, your trial will automatically revert to the Free plan if you didn't choose a paid plan."
 
     .big_break
     = render 'fields', site: @site, f: f
 
-    .checkbox_wrap#badged{ style: 'display:none' }
+    .checkbox_wrap#badged
       = f.check_box :badged, checked: true
       = f.label :badged, "Enable SublimeVideo badge."
       %p.label= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
 
-    - if @site.trial_not_started_or_in_trial?
-      = render 'skip_trial_box', f: f
+    = render 'skip_trial_box', f: f
 
-    = render 'billing_info_box'
+    = render 'plans/fields', site: @site, f: f
+
+    = render 'plans/plan_change_messages'
+
+    = render 'billing_info_box', site: @site
 
     - if current_user.vat?
       #plan_create_info.update_plan_message_box.notice{ style: "display:none;" }
