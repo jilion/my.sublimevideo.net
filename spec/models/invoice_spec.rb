@@ -224,99 +224,27 @@ describe Invoice, :plans do
 
     describe "#after_create" do
       context "balance > invoice amount" do
-
-        describe "succeed invoice with amount == 0" do
+        describe "succeed invoice with amount == 0 & #decrement_user_balance" do
           before do
-            @user = create(:user, billing_country: 'FR', balance: 2000)
-            @site = build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
-            @invoice = Invoice.construct(site: @site)
+            user     = create(:user, billing_country: 'FR', balance: 3000)
+            site     = create(:site, user: user, plan_id: @paid_plan.id)
+            site.invoices.should have(1).item
+            user.reload.balance.should eq 2000
+            @invoice = described_class.construct(site: site)
             @invoice.save!
+            site.reload.invoices.should have(2).items
           end
           subject { @invoice }
 
-          its(:invoice_items_amount)     { should eql 1000 }
-          its(:balance_deduction_amount) { should eql 1000 }
-          its(:amount)                   { should eql 0 }
+          its(:invoice_items_amount)     { should eq 1000 }
+          its(:balance_deduction_amount) { should eq 1000 }
+          its(:amount)                   { should eq 0 }
+          its("user.balance")            { should eq 1000 }
           it { should be_paid }
         end
-
-        describe "#decrement_user_balance" do
-          before do
-            @user = create(:user, billing_country: 'FR', balance: 2000)
-            @site = build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
-            @invoice = Invoice.construct(site: @site)
-            @invoice.save!
-          end
-          subject { @invoice }
-
-          its(:balance_deduction_amount) { should eql 1000 }
-          its(:amount)                   { should eql 0 }
-          its("user.balance")            { should eql 1000 }
-        end
-
       end
     end
   end
-
-  describe "Scopes" do
-    before do
-      @site             = create(:new_site, plan_id: @paid_plan.id, refunded_at: nil)
-      @site2            = create(:new_site)
-
-      Invoice.delete_all
-      @refunded_site    = create(:site, plan_id: @paid_plan.id, refunded_at: Time.now.utc)
-      @open_invoice     = create(:invoice, site: @site, state: 'open', created_at: 48.hours.ago)
-      @failed_invoice   = create(:invoice, site: @site, state: 'failed', created_at: 25.hours.ago)
-      @waiting_invoice  = create(:invoice, site: @site, state: 'waiting', created_at: 18.hours.ago)
-      @paid_invoice     = create(:invoice, site: @site, state: 'paid', created_at: 16.hours.ago)
-      @canceled_invoice = create(:invoice, site: @site2, state: 'canceled', created_at: 14.hours.ago)
-      @refunded_invoice = create(:invoice, site: @refunded_site, state: 'paid', created_at: 14.hours.ago)
-
-      @open_invoice.should be_open
-      @failed_invoice.should be_failed
-      @waiting_invoice.should be_waiting
-      @paid_invoice.should be_paid
-      @canceled_invoice.should be_canceled
-      @refunded_invoice.should be_refunded
-    end
-
-    describe "#between" do
-      specify { Invoice.between(24.hours.ago, 15.hours.ago).order(:id).should eq [@waiting_invoice, @paid_invoice] }
-    end
-
-    describe "#open" do
-      specify { Invoice.open.order(:id).should eq [@open_invoice] }
-    end
-
-    describe "#paid" do
-      specify { Invoice.paid.order(:id).should eq [@paid_invoice] }
-    end
-
-    describe "#refunded" do
-      specify { Invoice.refunded.order(:id).should eq [@refunded_invoice] }
-    end
-
-    describe "#failed" do
-      specify { Invoice.failed.order(:id).should eq [@failed_invoice] }
-    end
-
-    describe "#waiting" do
-      specify { Invoice.waiting.order(:id).should eq [@waiting_invoice] }
-    end
-
-    describe "#open_or_failed" do
-      specify { Invoice.open_or_failed.order(:id).should eq [@open_invoice, @failed_invoice] }
-    end
-
-    describe "#not_canceled" do
-      specify { Invoice.not_canceled.order(:id).should eq [@open_invoice, @failed_invoice, @waiting_invoice, @paid_invoice, @refunded_invoice] }
-    end
-
-    describe "#not_paid" do
-      specify { Invoice.not_paid.order(:id).should eq [@open_invoice, @failed_invoice, @waiting_invoice] }
-    end
-
-  end # Scopes
 
   describe "Class Methods" do
 
@@ -585,7 +513,7 @@ describe Invoice, :plans do
 
   describe "Instance Methods" do
     before do
-      @invoice = build(:invoice)
+      @invoice = build(:invoice, site: create(:fake_site))
       @paid_plan_invoice_item = create(:plan_invoice_item, invoice: @invoice, item: @paid_plan, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
       @invoice.invoice_items << @paid_plan_invoice_item
       @invoice.save!
@@ -609,15 +537,14 @@ describe Invoice, :plans do
     end
 
     describe "#first_site_invoice?" do
-      before { @site = create(:site) }
+      let(:site) { create(:fake_site) }
 
-      it { build(:invoice).should be_first_site_invoice }
       it { subject.should be_first_site_invoice }
 
       context "first invoice was canceled" do
         before do
-          @canceled_invoice   = create(:invoice, site: @site, state: 'canceled')
-          @first_site_invoice = create(:invoice, site: @site)
+          @canceled_invoice   = create(:invoice, site: site, state: 'canceled')
+          @first_site_invoice = create(:invoice, site: site)
         end
 
         it { @canceled_invoice.should_not be_first_site_invoice }
@@ -626,8 +553,8 @@ describe Invoice, :plans do
 
       context "already one non-canceled invoice" do
         before do
-          @first_site_invoice  = create(:invoice, site: @site)
-          @second_site_invoice = create(:invoice, site: @site)
+          @first_site_invoice  = create(:invoice, site: site)
+          @second_site_invoice = create(:invoice, site: site)
         end
 
         it { @first_site_invoice.should be_first_site_invoice }
@@ -659,12 +586,30 @@ end
 #  invoice_items_count      :integer         default(0)
 #  transactions_count       :integer         default(0)
 #  created_at               :datetime        not null
+#  updated_at               :datetime        not null
 #  paid_at                  :datetime
+#  last_failed_at           :datetime
+#  renew                    :boolean         default(FALSE)
 #  balance_deduction_amount :integer         default(0)
+#  customer_billing_address :text
+#
+# Indexes
+#
+#  index_invoices_on_reference  (reference) UNIQUE
 #  index_invoices_on_site_id    (site_id)
+#
+
+
+# == Schema Information
+#
 # Table name: invoices
+#
 #  id                       :integer         not null, primary key
+#  site_id                  :integer
+#  reference                :string(255)
 #  state                    :string(255)
+#  customer_full_name       :string(255)
+#  customer_email           :string(255)
 #  customer_country         :string(255)
 #  customer_company_name    :string(255)
 #  site_hostname            :string(255)
