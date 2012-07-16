@@ -218,7 +218,7 @@ describe UserModules::CreditCard, :plans do
           @user = create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date, state: 'archived')
           @site = create(:site, user: @user)
           @user.cc_expire_on.should eq Time.now.utc.end_of_month.to_date
-          expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
+          expect { User.send_credit_card_expiration }.to_not change(Delayed::Job.where { handler =~ '%Class%credit_card_will_expire%' }, :count)
         end
       end
 
@@ -227,7 +227,7 @@ describe UserModules::CreditCard, :plans do
           @user = create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date)
           @site = create(:site, user: @user, plan_id: @free_plan.id)
           @user.cc_expire_on.should eq Time.now.utc.end_of_month.to_date
-          expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
+          expect { User.send_credit_card_expiration }.to_not change(Delayed::Job.where { handler =~ '%Class%credit_card_will_expire%' }, :count)
         end
       end
 
@@ -237,7 +237,7 @@ describe UserModules::CreditCard, :plans do
           @site = create(:site_not_in_trial, user: @user)
 
           @user.cc_expire_on.should eq Time.now.utc.end_of_month.to_date
-          expect { User.send_credit_card_expiration }.to change(ActionMailer::Base.deliveries, :size).by(1)
+          expect { User.send_credit_card_expiration }.to change(Delayed::Job.where { handler =~ '%Class%credit_card_will_expire%' }, :count).by(1)
         end
 
         it "doesn't send 'cc is expired' email when user's credit card is expired 1 month ago" do
@@ -245,7 +245,7 @@ describe UserModules::CreditCard, :plans do
           @site = create(:site, user: @user)
 
           @user.cc_expire_on.should eq 1.month.ago.end_of_month.to_date
-          expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
+          expect { User.send_credit_card_expiration }.to_not change(Delayed::Job.where { handler =~ '%Class%credit_card_will_expire%' }, :count)
         end
 
         it "doesn't send 'cc is expired' email when user's credit card is expired 1 year ago" do
@@ -253,7 +253,7 @@ describe UserModules::CreditCard, :plans do
           @site = create(:site, user: @user)
 
           @user.cc_expire_on.should eq 1.year.ago.end_of_month.to_date
-          expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
+          expect { User.send_credit_card_expiration }.to_not change(Delayed::Job.where { handler =~ '%Class%credit_card_will_expire%' }, :count)
         end
 
         it "doesn't send expiration email when user's credit card will not expire at the end of the current month" do
@@ -261,7 +261,7 @@ describe UserModules::CreditCard, :plans do
           @site = create(:site, user: @user)
 
           @user.cc_expire_on.should eq 1.month.from_now.end_of_month.to_date
-          expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
+          expect { User.send_credit_card_expiration }.to_not change(Delayed::Job.where { handler =~ '%Class%credit_card_will_expire%' }, :count)
         end
       end
     end
