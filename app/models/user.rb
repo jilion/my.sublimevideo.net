@@ -432,8 +432,8 @@ end
 #  cc_last_digits                  :string(255)
 #  cc_expire_on                    :date
 #  cc_updated_at                   :datetime
-#  created_at                      :datetime
-#  updated_at                      :datetime
+#  created_at                      :datetime        not null
+#  updated_at                      :datetime        not null
 #  invitation_token                :string(60)
 #  invitation_sent_at              :datetime
 #  zendesk_id                      :integer
@@ -492,4 +492,3 @@ end
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
 #  index_users_on_total_invoiced_amount  (total_invoiced_amount)
 #
-

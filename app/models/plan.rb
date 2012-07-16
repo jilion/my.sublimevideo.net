@@ -182,8 +182,8 @@ end
 #  cycle                :string(255)
 #  video_views          :integer
 #  price                :integer
-#  created_at           :datetime
-#  updated_at           :datetime
+#  created_at           :datetime        not null
+#  updated_at           :datetime        not null
 #  support_level        :integer         default(0)
 #  stats_retention_days :integer
 #
@@ -192,4 +192,3 @@ end
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #  index_plans_on_token           (token) UNIQUE
 #
-

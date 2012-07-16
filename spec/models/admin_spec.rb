@@ -42,7 +42,6 @@ describe Admin do
 
 end
 
-
 # == Schema Information
 #
 # Table name: admins
@@ -63,8 +62,8 @@ end
 #  locked_at              :datetime
 #  invitation_token       :string(60)
 #  invitation_sent_at     :datetime
-#  created_at             :datetime
-#  updated_at             :datetime
+#  created_at             :datetime        not null
+#  updated_at             :datetime        not null
 #  reset_password_sent_at :datetime
 #  invitation_accepted_at :datetime
 #  invitation_limit       :integer
@@ -79,4 +78,3 @@ end
 #  index_admins_on_invitation_token      (invitation_token)
 #  index_admins_on_reset_password_token  (reset_password_token) UNIQUE
 #
-

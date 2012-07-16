@@ -278,6 +278,7 @@ describe Release do
   end
 
 end
+
 # == Schema Information
 #
 # Table name: releases
@@ -287,8 +288,8 @@ end
 #  date       :string(255)
 #  zip        :string(255)
 #  state      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
+#  created_at :datetime        not null
+#  updated_at :datetime        not null
 #
 # Indexes
 #

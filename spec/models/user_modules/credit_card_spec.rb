@@ -878,8 +878,6 @@ describe UserModules::CreditCard, :plans do
 
 end
 
-
-
 # == Schema Information
 #
 # Table name: users

@@ -94,6 +94,7 @@ describe DealActivation do
     end
   end
 end
+
 # == Schema Information
 #
 # Table name: deal_activations
@@ -102,8 +103,8 @@ end
 #  deal_id      :integer
 #  user_id      :integer
 #  activated_at :datetime
-#  created_at   :datetime
-#  updated_at   :datetime
+#  created_at   :datetime        not null
+#  updated_at   :datetime        not null
 #
 # Indexes
 #

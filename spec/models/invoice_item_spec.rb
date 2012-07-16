@@ -50,6 +50,7 @@ describe InvoiceItem do
   end # Validations
 
 end
+
 # == Schema Information
 #
 # Table name: invoice_items
@@ -64,8 +65,8 @@ end
 #  discounted_percentage :float
 #  price                 :integer
 #  amount                :integer
-#  created_at            :datetime
-#  updated_at            :datetime
+#  created_at            :datetime        not null
+#  updated_at            :datetime        not null
 #  deal_id               :integer
 #
 # Indexes

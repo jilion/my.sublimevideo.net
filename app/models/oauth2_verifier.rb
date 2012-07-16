@@ -51,11 +51,10 @@ end
 #  authorized_at         :datetime
 #  invalidated_at        :datetime
 #  valid_to              :datetime
-#  created_at            :datetime
-#  updated_at            :datetime
+#  created_at            :datetime        not null
+#  updated_at            :datetime        not null
 #
 # Indexes
 #
 #  index_oauth_tokens_on_token  (token) UNIQUE
 #
-

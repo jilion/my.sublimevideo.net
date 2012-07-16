@@ -1090,6 +1090,7 @@ describe User, :plans do
   end
 
 end
+
 # == Schema Information
 #
 # Table name: users
@@ -1116,8 +1117,8 @@ end
 #  cc_last_digits                  :string(255)
 #  cc_expire_on                    :date
 #  cc_updated_at                   :datetime
-#  created_at                      :datetime
-#  updated_at                      :datetime
+#  created_at                      :datetime        not null
+#  updated_at                      :datetime        not null
 #  invitation_token                :string(60)
 #  invitation_sent_at              :datetime
 #  zendesk_id                      :integer

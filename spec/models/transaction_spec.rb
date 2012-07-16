@@ -778,9 +778,6 @@ describe Transaction, :plans do
 
 end
 
-
-
-
 # == Schema Information
 #
 # Table name: transactions
@@ -797,11 +794,10 @@ end
 #  pay_id         :string(255)
 #  nc_status      :integer
 #  status         :integer
-#  created_at     :datetime
-#  updated_at     :datetime
+#  created_at     :datetime        not null
+#  updated_at     :datetime        not null
 #
 # Indexes
 #
 #  index_transactions_on_order_id  (order_id) UNIQUE
 #
-

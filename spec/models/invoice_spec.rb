@@ -658,8 +658,24 @@ end
 #  invoice_items_amount     :integer
 #  invoice_items_count      :integer         default(0)
 #  transactions_count       :integer         default(0)
-#  created_at               :datetime
-#  updated_at               :datetime
+#  created_at               :datetime        not null
+#  paid_at                  :datetime
+#  balance_deduction_amount :integer         default(0)
+#  index_invoices_on_site_id    (site_id)
+# Table name: invoices
+#  id                       :integer         not null, primary key
+#  state                    :string(255)
+#  customer_country         :string(255)
+#  customer_company_name    :string(255)
+#  site_hostname            :string(255)
+#  amount                   :integer
+#  vat_rate                 :float
+#  vat_amount               :integer
+#  invoice_items_amount     :integer
+#  invoice_items_count      :integer         default(0)
+#  transactions_count       :integer         default(0)
+#  created_at               :datetime        not null
+#  updated_at               :datetime        not null
 #  paid_at                  :datetime
 #  last_failed_at           :datetime
 #  renew                    :boolean         default(FALSE)

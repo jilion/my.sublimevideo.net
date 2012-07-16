@@ -127,6 +127,7 @@ describe Deal do
   end
 
 end
+
 # == Schema Information
 #
 # Table name: deals
@@ -140,8 +141,8 @@ end
 #  availability_scope :string(255)
 #  started_at         :datetime
 #  ended_at           :datetime
-#  created_at         :datetime
-#  updated_at         :datetime
+#  created_at         :datetime        not null
+#  updated_at         :datetime        not null
 #
 # Indexes
 #

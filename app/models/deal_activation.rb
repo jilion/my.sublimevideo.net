@@ -60,11 +60,10 @@ end
 #  deal_id      :integer
 #  user_id      :integer
 #  activated_at :datetime
-#  created_at   :datetime
-#  updated_at   :datetime
+#  created_at   :datetime        not null
+#  updated_at   :datetime        not null
 #
 # Indexes
 #
 #  index_deal_activations_on_deal_id_and_user_id  (deal_id,user_id) UNIQUE
 #
-

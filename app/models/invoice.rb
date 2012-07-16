@@ -267,8 +267,8 @@ end
 #  invoice_items_amount     :integer
 #  invoice_items_count      :integer         default(0)
 #  transactions_count       :integer         default(0)
-#  created_at               :datetime
-#  updated_at               :datetime
+#  created_at               :datetime        not null
+#  updated_at               :datetime        not null
 #  paid_at                  :datetime
 #  last_failed_at           :datetime
 #  renew                    :boolean         default(FALSE)
@@ -280,4 +280,3 @@ end
 #  index_invoices_on_reference  (reference) UNIQUE
 #  index_invoices_on_site_id    (site_id)
 #
-
