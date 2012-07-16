@@ -35,8 +35,9 @@ describe SiteModules::Scope, :plans do
   describe "plan" do
     before do
       Site.delete_all
-      @site_free      = create(:site, user: @user, plan_id: @free_plan.id)
-      @site_free.update_attribute(:next_cycle_plan_id, @paid_plan.id)
+      @site_free1      = create(:site, user: @user, plan_id: @free_plan.id)
+      @site_free1.update_attribute(:next_cycle_plan_id, @paid_plan.id)
+      @site_free2      = create(:site, user: @user, state: 'archived', plan_id: @free_plan.id)
       @site_sponsored = create(:site, user: @user, plan_id: @paid_plan.id)
       @site_sponsored.sponsor!
       @site_custom    = create(:site, user: @user, plan_id: @custom_plan.token)
@@ -53,21 +54,21 @@ describe SiteModules::Scope, :plans do
     end
 
     describe ".paid_next_plan_or_no_next_plan" do
-      specify { Site.paid_next_plan_or_no_next_plan.all.should =~ [@site_free, @site_sponsored, @site_custom] }
+      specify { Site.paid_next_plan_or_no_next_plan.all.should =~ [@site_free1, @site_sponsored, @site_custom] }
     end
 
     describe ".unpaid_plan" do
-      specify { Site.unpaid_plan.all.should =~ [@site_free, @site_sponsored] }
+      specify { Site.unpaid_plan.all.should =~ [@site_free1, @site_sponsored] }
     end
 
     describe ".in_plan" do
-      specify { Site.in_plan('free').all.should eq [@site_free] }
+      specify { Site.in_plan('free').all.should eq [@site_free1] }
       specify { Site.in_plan(['sponsored', 'plus']).order(:id).all.should =~ [@site_sponsored, @site_paid] }
     end
 
     describe ".in_plan_id" do
-      specify { Site.in_plan_id(@free_plan.id).all.should eq [@site_free] }
-      specify { Site.in_plan_id([@free_plan.id, @sponsored_plan.id]).all.should =~ [@site_free, @site_sponsored] }
+      specify { Site.in_plan_id(@free_plan.id).all.should eq [@site_free1] }
+      specify { Site.in_plan_id([@free_plan.id, @sponsored_plan.id]).all.should =~ [@site_free1, @site_sponsored] }
     end
 
   end
