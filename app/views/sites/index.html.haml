@@ -19,13 +19,11 @@
         Almost done!
         %em There's only a few things left to do:
       %ol
-        %li.complete
-          .wrap 1. Choose a plan for your site.
         %li{ class: ('complete' if @loader_hits > 0) }
-          .wrap= "2. Add your embed code to your pages. Click on #{@sites.one? ? 'the' : 'the appropriate'} \"Embed Code\" button below."
+          .wrap= "1. Add your embed code to your pages. Click on #{@sites.one? ? 'the' : 'the appropriate'} \"Embed Code\" button below."
         %li{ class: ('complete' if @dev_views > 0) }
-          .wrap= raw "3. Add #{content_tag(:code, '<video>')} elements to your pages. Try our #{link_to "video code generator", video_code_path}!"
+          .wrap= raw "2. Add #{content_tag(:code, '<video>')} elements to your pages. Try our #{link_to "video code generator", video_code_path}!"
         %li
-          .wrap 4. Deploy your SublimeVideo players on your website in production.
+          .wrap 3. Deploy your SublimeVideo players on your website in production.
 
   #sites_table_wrap= render 'sites'

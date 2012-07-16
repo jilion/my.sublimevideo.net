@@ -1,10 +1,17 @@
 %p Thank you for taking the time to evaluate SublimeVideo! We hope you're enjoying your trial.
 
-%p= raw "We'd like to remind you that your #{@site.plan.name.titleize} plan's #{BusinessModel.days_for_trial}-day free trial for #{link_to @site.hostname, url_with_protocol(@site.hostname)} <strong>will expire on #{l(@site.trial_end, format: :named_date)}</strong>."
+%p
+  = raw "We'd like to remind you that your #{BusinessModel.days_for_trial}-day free trial"
+  - if @site.hostname?
+    = raw "for #{link_to @site.hostname, url_with_protocol(@site.hostname)}"
+  = raw "<strong>will expire on #{l(@site.trial_end, format: :named_date)}</strong>."
 
-%p= raw "Please make sure to <strong>#{link_to('provide valid credit card details', edit_billing_url)}</strong> to continue enjoying all of your current plan's features such as Real-Time Statistics, an unbranded player, email support and SSL serving. You can add or update your credit card details on the #{link_to('Update billing information', edit_billing_url)} page."
+- if @user.cc?
+  %p= raw "In order to continue enjoying all of SublimeVideo features without any interruptions after your trial ends, you'll need to #{link_to("choose a plan", edit_site_plan_url(@site))} for your site before #{l(@site.trial_end.tomorrow, format: :named_date)}."
+- else
+  %p= raw "Please make sure to #{link_to('provide valid credit card details', edit_billing_url)} and #{link_to("choose a plan", edit_site_plan_url(@site))} to continue enjoying advanced features such as Real-Time Statistics, an unbranded player, email support and SSL serving."
 
-%p= raw "If you do not provide valid credit card details before #{l(@site.trial_end, format: :named_date)} your plan will be <strong>downgraded</strong> to our Free plan."
+%p= raw "If you do not choose a plan before #{l(@site.trial_end, format: :named_date)} your plan will be <strong>downgraded</strong> to our Free plan."
 
 %p= raw "If you run into any issues or need additional help please visit our #{link_to('Help', page_url('help', subdomain: false))} page."
 
