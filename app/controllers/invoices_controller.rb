@@ -1,6 +1,6 @@
 class InvoicesController < ApplicationController
   before_filter :redirect_suspended_user, only: [:index]
-  before_filter :find_sites_or_redirect_to_new_site, only: [:index]
+  before_filter :find_sites_or_redirect, only: [:index]
 
   layout 'application' # needed because otherwise the 'invoices' layout is automatically used
 
@@ -62,11 +62,11 @@ class InvoicesController < ApplicationController
 
   private
 
-  def find_sites_or_redirect_to_new_site
+  def find_sites_or_redirect
     # for sites_select_title
-    @sites = current_user.sites.paid_plan | current_user.sites.not_archived.with_not_canceled_invoices
+    @sites = current_user.sites.in_paid_plan | current_user.sites.not_archived.with_not_canceled_invoices
 
-    redirect_to [:new, :site] if @sites.empty?
+    redirect_to [:sites] if @sites.empty?
   end
 
 end

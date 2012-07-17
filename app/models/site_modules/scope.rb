@@ -18,22 +18,20 @@ module SiteModules::Scope
     scope :refunded,  where { (state == 'archived') & (refunded_at != nil) }
 
     # attributes queries
-    scope :with_wildcard,        where { wildcard == true }
-    scope :with_path,            where { (path != nil) & (path != '') & (path != ' ') }
-    scope :badged,               lambda { |bool| where { badged == bool } }
-    scope :with_extra_hostnames, where { (extra_hostnames != nil) & (extra_hostnames != '') }
-    scope :with_plan,            where { plan_id != nil }
-    scope :with_next_cycle_plan, where { next_cycle_plan_id != nil }
+    scope :with_wildcard,              where { wildcard == true }
+    scope :with_path,                  where { (path != nil) & (path != '') & (path != ' ') }
+    scope :badged,                     lambda { |bool| where { badged == bool } }
+    scope :with_extra_hostnames,       where { (extra_hostnames != nil) & (extra_hostnames != '') }
+    scope :with_plan,                  where { plan_id != nil }
+    scope :with_next_cycle_plan,       where { next_cycle_plan_id != nil }
     scope :with_not_canceled_invoices, lambda { joins(:invoices).merge(::Invoice.not_canceled) }
 
     # plans
-    scope :custom_plan,    lambda { active.in_plan_id(Plan.custom_plans.map(&:id)) }
-    scope :paid_plan,      lambda { active.in_plan_id(Plan.paid_plans.map(&:id)) }
-    scope :unpaid_plan,    lambda { active.in_plan_id(Plan.unpaid_plans.map(&:id)) }
-    scope :paid_next_plan_or_no_next_plan, lambda { active.where { next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) } }
-    scope :in_plan,        lambda { |plan_names| active.in_plan_id(Plan.where { name >> Array.wrap(plan_names) }.map(&:id)) }
     scope :in_plan_id,     lambda { |plan_ids| active.where { plan_id >> Array.wrap(plan_ids) } }
-    scope :in_trial,       lambda { active.in_plan('trial') }
+    scope :in_plan,        lambda { |plan_names| in_plan_id(Plan.where { name >> Array.wrap(plan_names) }.map(&:id)) }
+    scope :in_custom_plan, lambda { in_plan_id(Plan.custom_plans.map(&:id)) }
+    scope :in_paid_plan,   lambda { in_plan_id(Plan.paid_plans.map(&:id)) }
+    scope :in_trial,       lambda { in_plan('trial') }
 
     # billing
     scope :trial_ended, lambda {

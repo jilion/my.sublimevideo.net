@@ -45,20 +45,12 @@ describe SiteModules::Scope, :plans do
       @site_paid.update_attribute(:next_cycle_plan_id, @free_plan.id)
     end
 
-    describe ".custom_plan" do
-      specify { Site.custom_plan.all.should =~ [@site_custom] }
+    describe ".in_custom_plan" do
+      specify { Site.in_custom_plan.all.should =~ [@site_custom] }
     end
 
-    describe ".paid_plan" do
-      specify { Site.paid_plan.all.should =~ [@site_custom, @site_paid] }
-    end
-
-    describe ".paid_next_plan_or_no_next_plan" do
-      specify { Site.paid_next_plan_or_no_next_plan.all.should =~ [@site_free1, @site_sponsored, @site_custom] }
-    end
-
-    describe ".unpaid_plan" do
-      specify { Site.unpaid_plan.all.should =~ [@site_free1, @site_sponsored] }
+    describe ".in_paid_plan" do
+      specify { Site.in_paid_plan.all.should =~ [@site_custom, @site_paid] }
     end
 
     describe ".in_plan" do

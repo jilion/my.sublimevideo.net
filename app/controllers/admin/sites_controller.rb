@@ -6,7 +6,7 @@ class Admin::SitesController < Admin::AdminController
 
   #filter
   has_scope :in_plan, :badged, :tagged_with, :with_state, :user_id
-  has_scope :in_trial, :not_in_trial, :paid_plan, :overusage_notified,
+  has_scope :in_trial, :not_in_trial, :in_paid_plan, :overusage_notified,
             :with_wildcard, :with_path, :with_extra_hostnames, :with_next_cycle_plan, type: :boolean
   # sort
   has_scope :by_hostname, :by_user, :by_state, :by_plan_price,

@@ -4,7 +4,7 @@ module SiteModules::UsageMonitoring
   module ClassMethods
 
     def monitor_sites_usages
-      Site.paid_plan.where(first_plan_upgrade_required_alert_sent_at: nil).each do |site|
+      Site.in_paid_plan.where(first_plan_upgrade_required_alert_sent_at: nil).each do |site|
         if site.current_monthly_billable_usages.sum > site.plan.video_views
           if site.days_since(site.first_paid_plan_started_at) >= 20 && site.percentage_of_days_over_daily_limit(60) > 0.5
             # site.touch(:first_plan_upgrade_required_alert_sent_at)
@@ -17,7 +17,7 @@ module SiteModules::UsageMonitoring
       end
 
       # Sent daily "plan upgrade required" alert
-      # Site.paid_plan.where { first_plan_upgrade_required_alert_sent_at != nil }.each do |site|
+      # Site.in_paid_plan.where { first_plan_upgrade_required_alert_sent_at != nil }.each do |site|
       #   UsageMonitoringMailer.plan_upgrade_required(site).deliver!
       # end
     end

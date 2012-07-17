@@ -1,10 +1,10 @@
 class Plan < ActiveRecord::Base
   include PlanModules::Api
 
-  CYCLES                = %w[month year none]
-  UNPAID_NAMES          = %w[trial free sponsored]
-  STANDARD_NAMES        = %w[plus premium]
-  SUPPORT_LEVELS        = %w[forum email vip_email]
+  CYCLES         = %w[month year none]
+  UNPAID_NAMES   = %w[trial free sponsored]
+  STANDARD_NAMES = %w[plus premium]
+  SUPPORT_LEVELS = %w[forum email vip_email]
 
   attr_accessible :name, :cycle, :video_views, :price, :support_level, :stats_retention_days
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9'), length: 12
@@ -34,8 +34,8 @@ class Plan < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :unpaid_plans,   where { price >> UNPAID_NAMES }
-  scope :paid_plans,     where { price << UNPAID_NAMES }
+  scope :unpaid_plans,   where { name >> UNPAID_NAMES }
+  scope :paid_plans,     where { name << UNPAID_NAMES }
   scope :standard_plans, where { name >> STANDARD_NAMES }
   scope :custom_plans,   where { name =~ 'custom%' }
   scope :yearly_plans,   where { cycle == 'year' }
