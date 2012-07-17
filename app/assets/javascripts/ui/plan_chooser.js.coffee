@@ -21,7 +21,7 @@ class MySublimeVideo.UI.PlanChooser
 
   # This se
   setupPlansObservers: ->
-    jQuery('#plans input[type=radio]').each (index, el) =>
+    jQuery('#plan_fields input[type=radio]').each (index, el) =>
       el = jQuery(el)
       el.on 'click', =>
         @checkedPlan = el

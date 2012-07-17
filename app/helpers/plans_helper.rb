@@ -84,7 +84,7 @@ module PlansHelper
     "#{content_tag :span, text} Data Retention".html_safe
   end
 
-  def radio_button_options(site, current_plan, new_plan, options = {})
+  def radio_button_options(site, new_plan, options = {})
     options = options
     options[:id]    ||= new_plan.free_plan? ? "plan_free" : "plan_#{new_plan.name}_#{new_plan.cycle}"
     options[:class] ||= "plan_radio"
@@ -97,8 +97,8 @@ module PlansHelper
     end
 
     if site.persisted?
-      options["data-plan_change_type"] = plan_change_type(site, current_plan, new_plan)
-      update_price = current_plan.upgrade?(new_plan) ? new_plan.price(site) - site.last_paid_plan_price : new_plan.price(site)
+      options["data-plan_change_type"] = plan_change_type(site, @current_plan, new_plan)
+      update_price = @current_plan.upgrade?(new_plan) ? new_plan.price(site) - site.last_paid_plan_price : new_plan.price(site)
 
       options["data-plan_update_price"] = display_amount(update_price)
 
@@ -106,7 +106,7 @@ module PlansHelper
 
       plan_update_date = if site.in_trial_plan?
         (site.trial_end || BusinessModel.days_for_trial.days.from_now).tomorrow
-      elsif current_plan.upgrade?(new_plan)
+      elsif @current_plan.upgrade?(new_plan)
         site.plan_cycle_started_at || Time.now.utc.midnight
       else
         (site.plan_cycle_ended_at && site.plan_cycle_ended_at.tomorrow.midnight) || Time.now.utc.midnight
@@ -115,6 +115,18 @@ module PlansHelper
     end
 
     options
+  end
+
+  def current_plan_label(site, plan)
+    content_tag(:span, 'Current', class: 'current_label') if site.plan == plan
+  end
+
+  def check_plan(plan)
+    params[:site] && params[:site][:plan_id] ? params[:site][:plan_id].to_i == plan.id : (@current_plan && @current_plan == plan)
+  end
+
+  def activate_plan(plan)
+    check_plan(plan) ? 'active' : ''
   end
 
   def vat_price_info(klass)

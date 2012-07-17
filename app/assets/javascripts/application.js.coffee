@@ -36,7 +36,7 @@ MySublimeVideo.UI.prepareSitesStatus = ->
     new MySublimeVideo.UI.SitesStatus(table)
 
 MySublimeVideo.UI.preparePlansChooser = ->
-  if jQuery('#plans').exists()
+  if jQuery('#plan_fields').exists()
     if jQuery('#new_site').exists()
       new MySublimeVideo.UI.NewSitePlanChooser()
     else

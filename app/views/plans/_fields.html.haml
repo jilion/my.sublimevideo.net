@@ -1,30 +1,24 @@
-#plan_fields{ style: display_plan_fields(site) }
-  - plan = site.plan
-  - pending_plan = site.pending_plan
-  - next_cycle_plan = site.next_cycle_plan
-  - current_plan = pending_plan || next_cycle_plan || plan # current plan for the view (could be in case of rendering view with errors)
-
+#plan_fields
   - if site.errors.include?(:plan)
     .inline_errors.plan
       %span= site.errors[:plan].first
 
-  - custom_plan = current_plan if current_plan && current_plan.custom_plan?
-  - custom_plan = Plan.custom_plans.find_by_token(params[:custom_plan]) if params[:custom_plan]
-  - if custom_plan
+  - if @custom_plan
     #custom_plan
       .header
         .break_line
         %h3.title= content_tag(:strong, "Custom Plan")
         .break_line
       .content
-        %h4.number= number_with_delimiter(custom_plan.video_views)
+        %h4.number= number_with_delimiter(@custom_plan.video_views)
         %h5.label= "Video views per month"
       .entry
         .radio_wrap
-          = f.radio_button :plan_id, custom_plan.token, radio_button_options(site, current_plan, custom_plan, id: "plan_custom", checked: current_plan && current_plan == custom_plan)
-          = f.label :plan_id, raw("#{display_amount_with_sup(custom_plan.price)} (per #{custom_plan.cycle})"), for: "plan_custom"
+          = f.radio_button :plan_id, @custom_plan.token, radio_button_options(site, @custom_plan, id: "plan_custom", checked: !@current_plan || @current_plan == @custom_plan)
+          = f.label :plan_id, raw("#{display_amount_with_sup(@custom_plan.price)} (per #{@custom_plan.cycle})"), for: "plan_custom"
       .spacer
     - if params[:custom_plan]
+      = hidden_field_tag :custom_plan, params[:custom_plan]
       %p
         %small= link_to "(See standard plans)", { custom_plan: nil }, class: "hl"
 
@@ -38,11 +32,11 @@
     -#       - else
     -#         = raw "Recommended plan: <strong>#{site.recommended_plan_name.titleize}</strong>"
 
-    #plans
+    #plans{ style: display_plan_fields(site) }
       - free_plan = Plan.free_plan
       - standard_plans = Plan.standard_plans.order(:video_views.asc, :price.asc)
       %ul
-        %li{ class: "#{free_plan.name} box_0" }
+        %li{ class: free_plan.name }
           .wrapper
             .header
               %h3.title= free_plan.name.titleize
@@ -65,22 +59,19 @@
                     %h4= plan_support(free_plan)
                   .spacer
             .select_box_wrap
-              .select_box{ class: current_plan && current_plan == free_plan ? 'active' : '' }
+              .select_box{ class: activate_plan(free_plan) }
                 = f.label :plan_id, (content_tag :span, "Free", class: "title"), for: "plan_#{free_plan.name}"
                 .radio_wrap
-                  = f.radio_button :plan_id, free_plan.id, radio_button_options(site, current_plan, free_plan, checked: current_plan && current_plan == free_plan)
+                  = f.radio_button :plan_id, free_plan.id, radio_button_options(site, free_plan, checked: check_plan(free_plan))
                   %span.bg
-                - if site.persisted? && plan && plan == free_plan
-                  %span.current_label= "Current"
+                = current_plan_label(site, free_plan)
               .spacer
 
-        - i = 1
         - standard_plans.each do |standard_plan|
           - next if standard_plan.yearly?
           - standard_yearly_plan = standard_plans.find { |p| p.name == standard_plan.name && p.yearly? }
           - deal = standard_plan.discounted?(site)
-          - i += 1
-          %li{ class: "#{standard_plan.name} box_#{i}" + (standard_plan.name == site.recommended_plan_name ? ' recommended' : '') }
+          %li{ class: standard_plan.name + (standard_plan.name == site.recommended_plan_name ? ' recommended' : '') }
             .wrapper
               .header
                 %h3.title= standard_plan.name.titleize
@@ -109,23 +100,21 @@
                     .spacer
                 -# %span.recommended_label= "Recommended"
               .select_box_wrap
-                .monthly.select_box{ class: current_plan && current_plan == standard_plan ? 'active' : '' + (deal ? ' discount' : '') }
+                .monthly.select_box{ class: activate_plan(standard_plan) + (deal ? ' discount' : '') }
                   = f.label :plan_id, raw(plan_label_content(standard_plan, site)), for: "plan_#{standard_plan.name}_#{standard_plan.cycle}"
                   .radio_wrap
-                    = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, current_plan, standard_plan, checked: current_plan && current_plan == standard_plan)
+                    = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, standard_plan, checked: check_plan(standard_plan))
                     %span.bg
-                  - if site.persisted? && plan == standard_plan
-                    %span.current_label= "Current"
+                  = current_plan_label(site, standard_plan)
 
                 - if standard_yearly_plan
                   - deal = standard_yearly_plan.discounted?(site)
-                  .yearly.select_box{ class: current_plan && current_plan == standard_yearly_plan ? 'active' : '' + (deal ? ' discount' : '') }
+                  .yearly.select_box{ class: activate_plan(standard_yearly_plan) + (deal ? ' discount' : '') }
                     = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), for: "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
                     .radio_wrap
-                      = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, current_plan, standard_yearly_plan, checked: current_plan && current_plan == standard_yearly_plan)
+                      = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, standard_yearly_plan, checked: check_plan(standard_yearly_plan))
                       %span.bg
-                    - if site.persisted? && plan == standard_yearly_plan
-                      %span.current_label= "Current"
+                    = current_plan_label(site, standard_yearly_plan)
                     - if deal
                       = render 'deals/deal_details', deal: deal, plan: standard_yearly_plan
                     - else

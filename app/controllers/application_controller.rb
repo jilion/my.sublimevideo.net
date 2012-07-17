@@ -41,6 +41,18 @@ class ApplicationController < ActionController::Base
     redirect_to [:new, :site] if @sites.empty?
   end
 
+  def set_current_plan
+    @current_plan = (@site.pending_plan || @site.next_cycle_plan || @site.plan) if @site
+  end
+
+  def set_custom_plan
+    @custom_plan = if params[:custom_plan]
+      Plan.custom_plans.find_by_token(params[:custom_plan])
+    elsif @current_plan && @current_plan.custom_plan?
+      @current_plan
+    end
+  end
+
   def set_logged_in_cookie
     if user_signed_in?
       cookies[:l] = {

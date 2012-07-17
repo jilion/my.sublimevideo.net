@@ -2,6 +2,7 @@ class PlansController < ApplicationController
   before_filter :redirect_suspended_user
   before_filter :find_sites_or_redirect_to_new_site, only: [:edit, :update]
   before_filter :find_site_by_token!
+  before_filter :set_current_plan, :set_custom_plan, only: [:edit, :update]
 
   # GET /sites/:site_id/plan/edit
   def edit

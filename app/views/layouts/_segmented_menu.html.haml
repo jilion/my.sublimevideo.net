@@ -2,6 +2,6 @@
 
 %ul.segmented_menu.sticky
   = li_menu_link('Settings', path: edit_site_path(@site), class: 'first' + (%r{sites/#{@site.token}$} =~ request.url ? ' active' : ''))
-  = li_menu_link('Plan', path: edit_site_plan_path(@site), class: (dont_show_invoices_tab ? 'last' : '') + (%r{sites/#{@site.token}/plan$} =~ request.url ? ' active' : ''))
+  = li_menu_link('Plan', path: edit_site_plan_path(@site), class: (dont_show_invoices_tab ? 'last' : '') + (%r{sites/#{@site.token}/plan} =~ request.url ? ' active' : ''))
   - unless dont_show_invoices_tab
     = li_menu_link('Invoices', path: site_invoices_path(@site), class: 'last')
