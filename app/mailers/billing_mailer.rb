@@ -95,7 +95,7 @@ class BillingMailer < Mailer
     )
   end
 
-private
+  private
 
   def extract_site_and_user_from_site_id(site_id)
     @site = Site.find(site_id)

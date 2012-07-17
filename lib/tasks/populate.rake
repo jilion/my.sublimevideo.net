@@ -852,10 +852,10 @@ def send_all_emails(user_id)
   UsageMonitoringMailer.plan_overused(site).deliver!
   UsageMonitoringMailer.plan_upgrade_required(site).deliver!
 
-  UserMailer.welcome(user).deliver!
-  UserMailer.account_suspended(user).deliver!
-  UserMailer.account_unsuspended(user).deliver!
-  UserMailer.account_archived(user).deliver!
+  UserMailer.welcome(user.id).deliver!
+  UserMailer.account_suspended(user.id).deliver!
+  UserMailer.account_unsuspended(user.id).deliver!
+  UserMailer.account_archived(user.id).deliver!
 end
 
 def argv(var_name)

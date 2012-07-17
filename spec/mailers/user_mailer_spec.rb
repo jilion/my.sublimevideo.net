@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe UserMailer do
-  subject { create(:user) }
+  let(:user) { create(:user) }
 
-  it_should_behave_like "common mailer checks", %w[welcome], params: FactoryGirl.create(:user), no_signature: true
-  it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: FactoryGirl.create(:user)
+  it_should_behave_like "common mailer checks", %w[welcome], params: lambda { FactoryGirl.create(:user) }, no_signature: true
+  it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: lambda { FactoryGirl.create(:user).id }
 
   describe "#welcome" do
     before do
-      described_class.welcome(subject).deliver
+      described_class.welcome(user.id).deliver
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
@@ -23,7 +23,7 @@ describe UserMailer do
 
   describe "#account_suspended" do
     before do
-      described_class.account_suspended(subject).deliver
+      described_class.account_suspended(user.id).deliver
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
@@ -38,7 +38,7 @@ describe UserMailer do
 
   describe "#account_unsuspended" do
     before do
-      described_class.account_unsuspended(subject).deliver
+      described_class.account_unsuspended(user.id).deliver
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
@@ -53,7 +53,7 @@ describe UserMailer do
 
   describe "#account_archived" do
     before do
-      described_class.account_archived(subject).deliver
+      described_class.account_archived(user.id).deliver
       last_delivery = ActionMailer::Base.deliveries.last
     end
 

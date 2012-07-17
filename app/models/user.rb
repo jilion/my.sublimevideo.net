@@ -86,7 +86,7 @@ class User < ActiveRecord::Base
 
   before_save :prepare_pending_credit_card, if: proc { |u| u.credit_card(true).valid? } # in user/credit_card
 
-  after_create :delay_send_welcome_email
+  after_create :send_welcome_email
   after_create :sync_newsletter, unless: :newsletter?
 
   after_save :register_credit_card_on_file, if: proc { |u| u.cc_register } # in user/credit_card
@@ -131,12 +131,6 @@ class User < ActiveRecord::Base
   def self.unsuspend(user_id)
     user = find(user_id)
     user.unsuspend
-  end
-
-  def self.send_welcome_email(user_id)
-    user = User.find(user_id)
-
-    UserMailer.welcome(user).deliver!
   end
 
   # ====================
@@ -203,7 +197,7 @@ class User < ActiveRecord::Base
   end
 
   def billable?
-    sites.active.paid_plan.any?
+    sites.in_paid_plan.count > 0
   end
 
   def name_or_email
@@ -298,7 +292,7 @@ private
 
   # after_transition on: :suspend
   def send_account_suspended_email
-    UserMailer.account_suspended(self).deliver!
+    UserMailer.delay.account_suspended(self.id)
   end
 
   # before_transition on: :unsuspend
@@ -308,7 +302,7 @@ private
 
   # after_transition on: :unsuspend
   def send_account_unsuspended_email
-    UserMailer.account_unsuspended(self).deliver!
+    UserMailer.delay.account_unsuspended(self.id)
   end
 
   # before_transition on: :archive
@@ -333,7 +327,7 @@ private
 
   # after_transition on: :archive
   def send_account_archived_email
-    UserMailer.account_archived(self).deliver!
+    UserMailer.delay.account_archived(self.id)
   end
 
   # before_save
@@ -345,8 +339,8 @@ private
   end
 
   # after_create
-  def delay_send_welcome_email
-    self.class.delay.send_welcome_email(id)
+  def send_welcome_email
+    UserMailer.delay.welcome(self.id)
   end
 
   # after_create

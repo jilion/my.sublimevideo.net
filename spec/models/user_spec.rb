@@ -195,8 +195,7 @@ describe User, :plans do
         describe "after_transition  on: :suspend, do: :send_account_suspended_email" do
           it "should send an email to the user" do
             user # eager loading!
-            lambda { user.suspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should eq [user.email]
+            lambda { user.suspend }.should change(Delayed::Job.where { handler =~ '%Class%account_suspended%' }, :count).by(1)
           end
         end
       end
@@ -230,8 +229,7 @@ describe User, :plans do
 
         describe "after_transition  on: :unsuspend, do: :send_account_unsuspended_email" do
           it "should send an email to the user" do
-            lambda { user.unsuspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should eq [user.email]
+            lambda { user.unsuspend }.should change(Delayed::Job.where { handler =~ '%Class%account_unsuspended%' }, :count).by(1)
           end
         end
       end
@@ -297,8 +295,7 @@ describe User, :plans do
 
         describe "after_transition on: :archive, do: [:newsletter_unsubscribe, :send_account_archived_email]" do
           it "sends an email to user" do
-            expect { user.archive }.to change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should eq [user.email]
+            lambda { user.archive }.should change(Delayed::Job.where { handler =~ '%Class%account_archived%' }, :count).by(1)
           end
 
           describe ":newsletter_unsubscribe" do
@@ -366,16 +363,11 @@ describe User, :plans do
       end
     end
 
-    describe "after_create :delay_send_welcome_email" do
+    describe "after_create :send_welcome_email" do
       subject { create(:user) }
 
-      it "delays send_welcome_email" do
-        expect { subject }.to change(Delayed::Job.where { handler =~ "%Class%send_welcome_email%" }, :count).by(1)
-      end
-
-      it "send the welcome email" do
-        subject
-        expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      it "delays UserMailer.welcome" do
+        expect { subject }.to change(Delayed::Job.where { handler =~ "%Class%welcome%" }, :count).by(1)
       end
     end
 
