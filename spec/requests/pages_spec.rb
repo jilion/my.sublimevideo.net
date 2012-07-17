@@ -183,27 +183,23 @@ feature "Suspended page" do
 
       scenario "and a valid credit card with 1 or more failed invoices" do
         ActionMailer::Base.deliveries.clear
+        Delayed::Job.delete_all
         go 'my', 'suspended'
 
         current_url.should eq "http://my.sublimevideo.dev/suspended"
 
-        VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('invoice.retry_invoices') }
+        VCR.use_cassette('ogone/visa_payment_acceptance') do
+          expect { click_button I18n.t('invoice.retry_invoices') }.to change(Delayed::Job, :count).by(3)
+        end
+        Delayed::Job.where { handler =~ '%Class%transaction_succeeded%' }.should have(1).item
+        Delayed::Job.where { handler =~ '%Class%account_unsuspended%' }.should have(1).item
+        Delayed::Job.where { handler =~ '%Class%update_loader_and_license%' }.should have(1).item
 
         current_url.should eq "http://my.sublimevideo.dev/sites"
 
         @site.invoices.failed.should be_empty
         @site.reload.should be_active
         @current_user.reload.should be_active
-
-        first_delivery = ActionMailer::Base.deliveries.first
-        first_delivery.to.should eq [@current_user.email]
-        first_delivery.subject.should eq "Your account has been reactivated"
-        first_delivery.body.encoded.should include "Your SublimeVideo account has been reactivated."
-
-        last_delivery = ActionMailer::Base.deliveries.last
-        last_delivery.to.should eq [@current_user.email]
-        last_delivery.subject.should eq "Your payment has been approved"
-        last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved."
 
         go 'my', 'suspended'
         current_url.should eq "http://my.sublimevideo.dev/sites"
