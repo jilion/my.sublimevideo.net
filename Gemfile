@@ -131,8 +131,6 @@ group :development, :test do
   gem 'jasminerice'
   # Rails routes view
   gem 'sextant'
-  # CI
-  gem 'tddium'
 end
 
 group :test do

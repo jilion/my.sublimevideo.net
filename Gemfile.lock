@@ -491,15 +491,6 @@ GEM
       haml
       jquery-rails (~> 2.0.2)
       rails (~> 3.2.0)
-    tddium (1.5.1)
-      highline
-      json
-      launchy
-      tddium_client (~> 0.2.0)
-      thor
-    tddium_client (0.2.0)
-      httparty (>= 0.8.1)
-      json
     terminal-table (1.4.5)
     thin (1.4.1)
       daemons (>= 1.0.9)
@@ -636,7 +627,6 @@ DEPENDENCIES
   stat_request_parser (~> 1.1.0)
   state_machine (~> 1.1.2)
   sublimevideo_layout (= 1.1.1)
-  tddium
   thin
   timecop
   twitter (~> 2.1.0)
