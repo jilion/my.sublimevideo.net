@@ -54,3 +54,7 @@ jQuery(document).ready ->
   MySublimeVideo.UI.prepareSitesStatus()
 
   MySublimeVideo.UI.preparePlansChooser()
+
+  if (moreInfoForm = jQuery('#edit_more_info')).exists()
+    moreInfoForm.on 'submit', ->
+      _gaq.push(['_trackEvent', 'SignUp', 'Completed', undefined, 1, true]) if _gaq?
