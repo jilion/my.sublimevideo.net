@@ -13,6 +13,9 @@
 
   #plan_skipping_trial_free_info.update_plan_message_box.notice{ style: "display:none;" }
     %p= raw "Your #{content_tag(:strong, "?", class: "plan_title")} plan will start immediately. We won't charge you anything."
+    %br
+    %p
+      %strong Please note that you won't have access to Real-Time Statistics, Email support and SSL serving.
 
   #plan_upgrade_info.update_plan_message_box.notice{ style: "display:none;" }
     %p= raw "Your plan will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We'll only charge you the difference of #{content_tag(:span, "?", class: "plan_update_price")} for the upgrade, instead of the full price of #{content_tag(:span, "?", class: "plan_price")}."

@@ -19,7 +19,6 @@ class MySublimeVideo.UI.PlanChooser
     _.each ['in_trial_downgrade_to_free', 'in_trial_upgrade', 'skipping_trial_free', 'skipping_trial_paid', 'upgrade', 'upgrade_from_free', 'delayed_upgrade', 'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'], (name) =>
       @processDetailsMessages[name] = jQuery("#plan_#{name}_info")
 
-  # This se
   setupPlansObservers: ->
     jQuery('#plan_fields input[type=radio]').each (index, el) =>
       el = jQuery(el)
@@ -35,6 +34,8 @@ class MySublimeVideo.UI.PlanChooser
     @checkedPlan.parents('.select_box').addClass 'active'
 
   handlePlanChange: ->
+    if @badgedDiv.exists()
+      if this.checkedPlanPriceIsZero() then @badgedDiv.hide() else @badgedDiv.show()
     planChangeAndIsNotFree = !(this.checkedPlanIsCurrentPlan() or this.checkedPlanPriceIsZero())
     this.handleBillingInfo(planChangeAndIsNotFree)
 
@@ -45,8 +46,10 @@ class MySublimeVideo.UI.PlanChooser
   handleSubmitButtonDisplay: (show) ->
     if show then jQuery('#site_submit').show() else jQuery('#site_submit').hide()
 
-  checkedPlanIsCurrentPlan: -> @formType is 'update' and !@checkedPlan.attr('data-plan_change_type')?
-  checkedPlanIsAnUpgrade: -> /upgrade/.test @checkedPlan.attr('data-plan_change_type')
+  checkedPlanIsCurrentPlan: ->
+    @formType is 'update' and !@checkedPlan.attr('data-plan_change_type')?
+  checkedPlanIsAnUpgrade: ->
+    !this.checkedPlanPriceIsZero() and (!@checkedPlan.attr('data-plan_change_type')? or /upgrade/.test(@checkedPlan.attr('data-plan_change_type')))
   checkedPlanPriceIsZero: ->
     (@checkedPlan.attr('data-plan_update_price')? and @checkedPlan.attr('data-plan_update_price') is "$0") or @checkedPlan.attr('data-plan_price') is "$0"
 
@@ -70,7 +73,7 @@ class MySublimeVideo.UI.PlanChooser
     if this.siteIsUpdatable()
       planChangeType = if this.skippingTrial()
         if this.checkedPlanPriceIsZero()
-          'skipping_trial_free' 
+          'skipping_trial_free'
         else
           'skipping_trial_paid'
       else

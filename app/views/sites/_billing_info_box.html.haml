@@ -1,4 +1,4 @@
-#billing_info.dark_box{ 'data-state' => credit_card_state(current_user), style: display_plan_fields(site) }
+#billing_info.dark_box{ 'data-state' => credit_card_state(current_user), style: 'display:none' }
   - if !current_user.cc? || !current_user.billing_address_complete?
     = raw t('site.plan.upgrade_need_billing_info_first', link: link_to("fill in your billing information", [:edit, :billing], class: "hl"))
   - elsif current_user.cc_expired?

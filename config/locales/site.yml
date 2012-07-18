@@ -2,8 +2,8 @@ en:
   site:
     trial:
       will_end:
-        one: "Trial for %{hostname} <strong>expires today</strong>. Don't forget to choose a plan that will suit your needs before."
-        other: "Trial for %{hostname} <strong>expires in %{count} days</strong>. Don't forget to choose a plan that will suit your needs before."
+        one: "Trial for %{hostname} <strong>expires today</strong>. If you enjoy it, please don't forget to %{link} before."
+        other: "Trial for %{hostname} <strong>expires in %{count} days</strong>. If you enjoy it, please don't forget to %{link} before."
     settings:
       badge_disabling_note: "The SublimeVideo badge can be disabled by upgrading your site to a %{link}."
       ssl_serving_note: "SSL Serving is available with all %{link}."

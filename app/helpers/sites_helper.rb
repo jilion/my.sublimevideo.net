@@ -16,7 +16,7 @@ module SitesHelper
 
   def sites_with_trial_expires_in_less_than_5_days(sites)
     sites.inject([]) do |memo, site|
-      memo << { site: site } if site.in_trial_plan? && site.trial_expires_in_less_than_or_equal_to(5.days.from_now)
+      memo << { site: site } if site.in_trial_plan? && site.trial_expires_in_less_than_or_equal_to(5.days.from_now) && full_days_until_trial_end(site) > 0
       memo
     end
   end

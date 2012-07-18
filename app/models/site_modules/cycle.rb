@@ -49,11 +49,6 @@ module SiteModules::Cycle
     write_attribute(:pending_plan_cycle_ended_at, attribute.try(:to_datetime).try(:end_of_day))
   end
 
-  # Tells if trial **actually** started and **now** ended
-  def trial_ended?
-    in_trial_plan? && plan_started_at < (BusinessModel.days_for_trial - 1).days.ago.midnight
-  end
-
   def trial_expires_on(timestamp)
     in_trial_plan? && plan_started_at == (timestamp - BusinessModel.days_for_trial.days).midnight
   end
@@ -64,6 +59,11 @@ module SiteModules::Cycle
 
   def trial_end
     in_trial_plan? ? (plan_started_at + BusinessModel.days_for_trial.days).yesterday.end_of_day : nil
+  end
+
+  # Tells if trial **actually** started and **now** ended
+  def trial_ended?
+    in_trial_plan? && plan_started_at < (BusinessModel.days_for_trial - 1).days.ago.midnight
   end
 
   def plan_cycle_ended?

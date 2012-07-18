@@ -6,7 +6,7 @@ class MySublimeVideo.UI.NewSitePlanChooser extends MySublimeVideo.UI.PlanChooser
   constructor: ->
     @formType    = 'create'
     @hostnameDiv = jQuery('#site_hostname')
-    @plans       = jQuery('#plan_fields')
+    @plans       = jQuery('#plans')
     super
 
     this.setupSkipTrialObserver() if this.trialSkippable()
@@ -14,6 +14,7 @@ class MySublimeVideo.UI.NewSitePlanChooser extends MySublimeVideo.UI.PlanChooser
   setupSkipTrialObserver: ->
     @skipTrialCheckbox.on 'click', =>
       this.handlePlansDisplay(this.skippingTrial())
+      this.handlePlanChange() if @checkedPlan.exists()
 
     this.handlePlansDisplay(this.skippingTrial())
 
@@ -24,6 +25,7 @@ class MySublimeVideo.UI.NewSitePlanChooser extends MySublimeVideo.UI.PlanChooser
     @hostnameDiv.attr 'required', !this.checkedPlanPriceIsZero()
     @badgedCheckbox.attr 'checked', 'checked' if @checkedPlan.attr('id') is 'plan_free'
     super
+    this.handleBillingInfo(false) unless this.skippingTrial()
 
   handleBillingInfo: (show) ->
     super
