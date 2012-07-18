@@ -1,4 +1,7 @@
-class Version < ActiveRecord::Base
+class SiteVersion < Version
+  self.table_name    = :versions
+  self.sequence_name = :version_id_seq
+
   attr_accessible :admin_id, :ip # for paper_trail, overwritten
 end
 # == Schema Information

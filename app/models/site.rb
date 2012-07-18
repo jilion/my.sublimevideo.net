@@ -22,7 +22,8 @@ class Site < ActiveRecord::Base
     :last_30_days_extra_video_views, :last_30_days_dev_video_views,
     :last_30_days_invalid_video_views, :last_30_days_embed_video_views,
     :last_30_days_billable_video_views_array, :last_30_days_video_tags
-  ]
+  ],
+  class_name: 'SiteVersion'
 
   acts_as_taggable
 
