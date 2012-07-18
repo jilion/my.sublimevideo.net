@@ -125,7 +125,6 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             click: (event) ->
               if /sales/i.test(event.point.series.name)
                 $('#invoice_popup').remove()
-                position = "#{event.pageX}, #{event.pageY}"
                 startedAt = new Date event.point.x
                 year  = startedAt.getFullYear()
                 month = startedAt.getMonth()
@@ -155,8 +154,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
                     popUp = $('<div>').attr('id', 'invoice_popup').css
                       position: 'absolute'
-                      top: event.pageY - 60
-                      left: event.pageX
+                      top: event.point.pageY - 60
+                      left: event.point.pageX
                       'z-index': '1000000'
                       width: '350px'
                       padding: '10px 20px'
@@ -169,7 +168,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                     $("#content}").append popUp
 
                     # Move the popup left if too close to the right window's border
-                    if event.pageX + popUp.outerWidth() + 30 > $(window).width()
+                    if event.point.pageX + popUp.outerWidth() + 30 > $(window).width()
                       popUp.css('left', $(window).width() - popUp.outerWidth() - 30)
                     popUp.show()
 
