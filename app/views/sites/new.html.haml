@@ -1,20 +1,20 @@
--#= title_and_content_header("Choose a plan for your site")
+= title_and_content_header("Create a site")
 -#= title("Choose a plan for your site")
 
 #site.new
   = render 'deals/deal_available'
 
   = form_for @site, html: { class: "full" } do |f|
-
+    .big_break
     .tagline
       -# %h3= "Test all features with a 30-day free trial"
       -#%h4= "No credit card required"
       %h3= "#{BusinessModel.days_for_trial}-day Free & Unlimited Trial."
       %h4= "No commitment, no credit card required."
 
-    %p= "After the first #{BusinessModel.days_for_trial} days, your trial will automatically revert to the Free plan if you didn't choose a paid plan."
-
     .big_break
+    %p.note= "After the first #{BusinessModel.days_for_trial} days, your trial will automatically revert to the Free plan if you didn't choose a paid plan."
+
     = render 'fields', site: @site, f: f
 
     .checkbox_wrap#badged
