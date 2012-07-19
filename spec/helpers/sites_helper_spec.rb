@@ -13,10 +13,12 @@ describe SitesHelper, :plans do
   end
 
   describe '#sites_with_trial_expires_in_less_than_5_days' do
-    let(:site1) { stub(in_trial_plan?: true, trial_expires_in_less_than_or_equal_to: true) }
-    let(:site2) { stub(in_trial_plan?: true, trial_expires_in_less_than_or_equal_to: false) }
-    let(:site3) { stub(in_trial_plan?: false, trial_expires_in_less_than_or_equal_to: true) }
-    let(:site4) { stub(in_trial_plan?: false, trial_expires_in_less_than_or_equal_to: false) }
+    before { BusinessModel.stub(:days_for_trial) { 10 } }
+
+    let(:site1) { build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 6.days.ago) }
+    let(:site2) { build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 5.days.ago) }
+    let(:site3) { build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 4.days.ago) }
+    let(:site4) { build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 11.days.ago) }
     let(:sites) { [site1, site2, site3, site4] }
 
     it { helper.sites_with_trial_expires_in_less_than_5_days(sites).should eq [{ site: site1 }] }
