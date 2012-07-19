@@ -1,4 +1,4 @@
-class AdminSublimeVideo.Views.PeriodSelector extends Backbone.View
+class AdminSublimeVideo.Views.PeriodSelectorView extends Backbone.View
   events:
     'click a': 'applyPreset'
 
@@ -12,15 +12,16 @@ class AdminSublimeVideo.Views.PeriodSelector extends Backbone.View
     newEnd = new Date()
 
     if preset[0] is 'all'
-      AdminSublimeVideo.period.start = new Date(newStart)
-      AdminSublimeVideo.period.end   = newEnd
+      @options.period.set(start: new Date(newStart), end: newEnd)
     else
       newStartScale = switch preset[0]
         when 'years' then this.year()
         when 'months' then this.month()
         when 'days' then this.day()
-      newStart = _.max([newStart, AdminSublimeVideo.period.endTime() - (newStartScale * preset[1])])
-      AdminSublimeVideo.period.start = new Date newStart
+      newStart = _.max([newStart, @options.period.endTime() - (newStartScale * preset[1])])
+      console.log @options.period
+      @options.period.set(start: new Date(newStart))
+      console.log @options.period
 
     AdminSublimeVideo.statsRouter.updateUrl('p', "#{newStart}-#{newEnd.getTime()}")
     AdminSublimeVideo.graphView.render()

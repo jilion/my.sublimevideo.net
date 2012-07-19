@@ -11,13 +11,7 @@ class AdminSublimeVideo.Views.TimeRangeTitleView extends Backbone.View
   render: =>
     $('#time_range_title').removeClass('editable')
     $(@el).html(this.template(period: @options.period))
-    if @options.period.get('type')?
-      $(@el).find('.content').show()
-      # $(@el).data().spinner.stop()
-    else
-      $(@el).find('.content').hide()
-      $(@el).spin(spinOptions)
-      $('#time_range_title').addClass('editable')
+    $(@el).find('.content').show()
 
     this
 
