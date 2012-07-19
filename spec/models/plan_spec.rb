@@ -346,6 +346,7 @@ describe Plan, :plans do
   end
 
 end
+
 # == Schema Information
 #
 # Table name: plans
@@ -356,8 +357,8 @@ end
 #  cycle                :string(255)
 #  video_views          :integer
 #  price                :integer
-#  created_at           :datetime
-#  updated_at           :datetime
+#  created_at           :datetime        not null
+#  updated_at           :datetime        not null
 #  support_level        :integer         default(0)
 #  stats_retention_days :integer
 #

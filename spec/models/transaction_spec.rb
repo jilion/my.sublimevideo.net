@@ -778,27 +778,24 @@ describe Transaction, :plans do
 
 end
 
-
-
-
 # == Schema Information
 #
 # Table name: transactions
 #
-#  id             :integer         not null, primary key
-#  user_id        :integer
-#  order_id       :string(255)
-#  state          :string(255)
 #  amount         :integer
-#  error          :text
-#  cc_type        :string(255)
-#  cc_last_digits :string(255)
 #  cc_expire_on   :date
-#  pay_id         :string(255)
+#  cc_last_digits :string(255)
+#  cc_type        :string(255)
+#  created_at     :datetime         not null
+#  error          :text
+#  id             :integer          not null, primary key
 #  nc_status      :integer
+#  order_id       :string(255)
+#  pay_id         :string(255)
+#  state          :string(255)
 #  status         :integer
-#  created_at     :datetime
-#  updated_at     :datetime
+#  updated_at     :datetime         not null
+#  user_id        :integer
 #
 # Indexes
 #

@@ -33,15 +33,16 @@ class MailTemplate < ActiveRecord::Base
   end
 
 end
+
 # == Schema Information
 #
 # Table name: mail_templates
 #
-#  id         :integer         not null, primary key
-#  title      :string(255)
-#  subject    :string(255)
 #  body       :text
-#  created_at :datetime
-#  updated_at :datetime
+#  created_at :datetime         not null
+#  id         :integer          not null, primary key
+#  subject    :string(255)
+#  title      :string(255)
+#  updated_at :datetime         not null
 #
 

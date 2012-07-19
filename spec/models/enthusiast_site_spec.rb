@@ -25,14 +25,15 @@ describe EnthusiastSite do
   end
 
 end
+
 # == Schema Information
 #
 # Table name: enthusiast_sites
 #
-#  id            :integer         not null, primary key
+#  created_at    :datetime
 #  enthusiast_id :integer
 #  hostname      :string(255)
-#  created_at    :datetime
+#  id            :integer          not null, primary key
 #  updated_at    :datetime
 #
 # Indexes

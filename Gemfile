@@ -153,6 +153,7 @@ end
 
 group :tools do
   # gem 'annotate', github: 'ctran/annotate_models'
+  gem 'annotate', github: 'MrJoy/annotate_models'
   gem 'wirble'
   gem 'heroku'
   gem 'foreman'

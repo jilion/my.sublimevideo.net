@@ -24,22 +24,20 @@ describe ClientApplication do
 
 end
 
-
-
 # == Schema Information
 #
 # Table name: client_applications
 #
-#  id           :integer         not null, primary key
-#  user_id      :integer
-#  name         :string(255)
-#  url          :string(255)
-#  support_url  :string(255)
 #  callback_url :string(255)
+#  created_at   :datetime         not null
+#  id           :integer          not null, primary key
 #  key          :string(40)
+#  name         :string(255)
 #  secret       :string(40)
-#  created_at   :datetime
-#  updated_at   :datetime
+#  support_url  :string(255)
+#  updated_at   :datetime         not null
+#  url          :string(255)
+#  user_id      :integer
 #
 # Indexes
 #

@@ -141,17 +141,18 @@ private
   end
 
 end
+
 # == Schema Information
 #
 # Table name: releases
 #
-#  id         :integer         not null, primary key
-#  token      :string(255)
+#  created_at :datetime         not null
 #  date       :string(255)
-#  zip        :string(255)
+#  id         :integer          not null, primary key
 #  state      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
+#  token      :string(255)
+#  updated_at :datetime         not null
+#  zip        :string(255)
 #
 # Indexes
 #
