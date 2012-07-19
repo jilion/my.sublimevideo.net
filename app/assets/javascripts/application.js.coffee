@@ -58,3 +58,9 @@ jQuery(document).ready ->
   if (moreInfoForm = jQuery('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->
       _gaq.push(['_trackEvent', 'SignUp', 'Completed', undefined, 1, true]) if _gaq?
+
+
+  _.each ['new_site', 'edit_site_plan'], (formId) ->
+    if (form = jQuery("##{formId}")).exists()
+      form.on 'submit', (e) ->
+        jQuery('#site_submit').attr('disabled', 'disabled')
