@@ -1,7 +1,6 @@
-require_dependency 'twitter_api'
-# require_dependency 'notify'
-
 # coding: utf-8
+require_dependency 'twitter_api'
+
 class Tweet
   include Mongoid::Document
 
@@ -32,7 +31,7 @@ class Tweet
   attr_accessible :tweet_id, :keywords, :from_user_id, :from_user, :to_user_id, :to_user, :iso_language_code, :profile_image_url, :source, :content, :tweeted_at, :retweets_count
 
   scope :keywords,          lambda { |keywords| where(keywords: keywords) }
-  scope :favorites,         lambda { |favorite=true| where(favorited: true) }
+  scope :favorites,         where(favorited: true)
   scope :between,           lambda { |start_date, end_date| where(tweeted_at: { "$gte" => start_date, "$lt" => end_date }) }
   scope :by_date,           lambda { |way='desc'| order_by([:tweeted_at, way]) }
   scope :by_retweets_count, lambda { |way='desc'| order_by([:retweets_count, way]) }
@@ -69,12 +68,12 @@ class Tweet
       self.sync_favorite_tweets
     end
 
-    def remote_search(keyword, options={})
+    def remote_search(keyword, options = {})
       TwitterApi.search("\"#{keyword}\"", result_type: 'recent', rpp: 100, page: options[:page])
     end
 
-    def remote_favorites(user, options={})
-      TwitterApi.favorites(user, page: options[:page], include_entities: options[:include_entities])
+    def remote_favorites(options = {})
+      TwitterApi.favorites('sublimevideo', page: options[:page], include_entities: options[:include_entities])
     end
 
     def create_from_twitter_tweet!(tweet)
@@ -134,7 +133,6 @@ class Tweet
       options = args.extract_options!
       options.assert_valid_keys([:user_doublon, :count, :random, :since_date, :include_entities])
       options = options.reverse_merge({
-        user: 'sublimevideo',
         user_doublon: true,
         count: 0,
         random: false,
@@ -145,7 +143,7 @@ class Tweet
       page = 1
       tweets = []
 
-      while favorites = remote_favorites(options[:user], page: page, include_entities: options[:include_entities])
+      while favorites = remote_favorites(page: page, include_entities: options[:include_entities])
         break if favorites.blank?
         favorites.each do |tweet|
           break if options[:since_date] && tweet.created_at < options[:since_date]

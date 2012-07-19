@@ -3,9 +3,8 @@ class Admin::TweetsController < Admin::AdminController
 
   before_filter { |controller| require_role?('twitter') if %w[favorite].include?(action_name) }
 
-  has_scope :keywords
-  has_scope :favorites
-  has_scope :by_date
+  has_scope :keywords, :by_date
+  has_scope :favorites, type: :boolean
 
   # GET /tweets
   def index
