@@ -57,12 +57,12 @@ end
 #
 # Table name: deal_activations
 #
-#  id           :integer          not null, primary key
-#  deal_id      :integer
-#  user_id      :integer
 #  activated_at :datetime
 #  created_at   :datetime         not null
+#  deal_id      :integer
+#  id           :integer          not null, primary key
 #  updated_at   :datetime         not null
+#  user_id      :integer
 #
 # Indexes
 #

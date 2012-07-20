@@ -569,28 +569,28 @@ end
 #
 # Table name: invoices
 #
-#  id                       :integer          not null, primary key
-#  site_id                  :integer
-#  reference                :string(255)
-#  state                    :string(255)
-#  customer_full_name       :string(255)
-#  customer_email           :string(255)
-#  customer_country         :string(255)
-#  customer_company_name    :string(255)
-#  site_hostname            :string(255)
 #  amount                   :integer
-#  vat_rate                 :float
-#  vat_amount               :integer
+#  balance_deduction_amount :integer          default(0)
+#  created_at               :datetime         not null
+#  customer_billing_address :text
+#  customer_company_name    :string(255)
+#  customer_country         :string(255)
+#  customer_email           :string(255)
+#  customer_full_name       :string(255)
+#  id                       :integer          not null, primary key
 #  invoice_items_amount     :integer
 #  invoice_items_count      :integer          default(0)
-#  transactions_count       :integer          default(0)
-#  created_at               :datetime         not null
-#  updated_at               :datetime         not null
-#  paid_at                  :datetime
 #  last_failed_at           :datetime
+#  paid_at                  :datetime
+#  reference                :string(255)
 #  renew                    :boolean          default(FALSE)
-#  balance_deduction_amount :integer          default(0)
-#  customer_billing_address :text
+#  site_hostname            :string(255)
+#  site_id                  :integer
+#  state                    :string(255)
+#  transactions_count       :integer          default(0)
+#  updated_at               :datetime         not null
+#  vat_amount               :integer
+#  vat_rate                 :float
 #
 # Indexes
 #

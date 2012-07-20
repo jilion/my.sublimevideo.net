@@ -46,31 +46,31 @@ end
 #
 # Table name: admins
 #
-#  id                     :integer          not null, primary key
+#  created_at             :datetime         not null
+#  current_sign_in_at     :datetime
+#  current_sign_in_ip     :string(255)
 #  email                  :string(255)      default(""), not null
 #  encrypted_password     :string(128)      default(""), not null
-#  password_salt          :string(255)      default(""), not null
-#  reset_password_token   :string(255)
-#  remember_token         :string(255)
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default(0)
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :string(255)
-#  last_sign_in_ip        :string(255)
 #  failed_attempts        :integer          default(0)
-#  locked_at              :datetime
-#  invitation_token       :string(60)
-#  invitation_sent_at     :datetime
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  reset_password_sent_at :datetime
+#  id                     :integer          not null, primary key
 #  invitation_accepted_at :datetime
 #  invitation_limit       :integer
+#  invitation_sent_at     :datetime
+#  invitation_token       :string(60)
 #  invited_by_id          :integer
 #  invited_by_type        :string(255)
+#  last_sign_in_at        :datetime
+#  last_sign_in_ip        :string(255)
+#  locked_at              :datetime
+#  password_salt          :string(255)      default(""), not null
+#  remember_created_at    :datetime
+#  remember_token         :string(255)
+#  reset_password_sent_at :datetime
+#  reset_password_token   :string(255)
 #  roles                  :text
+#  sign_in_count          :integer          default(0)
 #  unconfirmed_email      :string(255)
+#  updated_at             :datetime         not null
 #
 # Indexes
 #

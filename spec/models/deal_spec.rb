@@ -132,17 +132,17 @@ end
 #
 # Table name: deals
 #
-#  id                 :integer          not null, primary key
-#  token              :string(255)
-#  name               :string(255)
-#  description        :text
-#  kind               :string(255)
-#  value              :float
 #  availability_scope :string(255)
-#  started_at         :datetime
-#  ended_at           :datetime
 #  created_at         :datetime         not null
+#  description        :text
+#  ended_at           :datetime
+#  id                 :integer          not null, primary key
+#  kind               :string(255)
+#  name               :string(255)
+#  started_at         :datetime
+#  token              :string(255)
 #  updated_at         :datetime         not null
+#  value              :float
 #
 # Indexes
 #

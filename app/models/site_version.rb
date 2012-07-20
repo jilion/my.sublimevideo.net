@@ -9,16 +9,16 @@ end
 #
 # Table name: versions
 #
-#  id         :integer          not null, primary key
-#  item_type  :string(255)      not null
-#  item_id    :integer          not null
-#  event      :string(255)      not null
-#  whodunnit  :string(255)
-#  object     :text
-#  created_at :datetime
 #  admin_id   :string(255)
+#  created_at :datetime
+#  event      :string(255)      not null
+#  id         :integer          not null, primary key
 #  ip         :string(255)
+#  item_id    :integer          not null
+#  item_type  :string(255)      not null
+#  object     :text
 #  user_agent :string(255)
+#  whodunnit  :string(255)
 #
 # Indexes
 #
