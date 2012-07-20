@@ -565,12 +565,11 @@ describe Invoice, :plans do
 
 end
 
-
 # == Schema Information
 #
 # Table name: invoices
 #
-#  id                       :integer         not null, primary key
+#  id                       :integer          not null, primary key
 #  site_id                  :integer
 #  reference                :string(255)
 #  state                    :string(255)
@@ -583,48 +582,14 @@ end
 #  vat_rate                 :float
 #  vat_amount               :integer
 #  invoice_items_amount     :integer
-#  invoice_items_count      :integer         default(0)
-#  transactions_count       :integer         default(0)
-#  created_at               :datetime        not null
-#  updated_at               :datetime        not null
+#  invoice_items_count      :integer          default(0)
+#  transactions_count       :integer          default(0)
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
 #  paid_at                  :datetime
 #  last_failed_at           :datetime
-#  renew                    :boolean         default(FALSE)
-#  balance_deduction_amount :integer         default(0)
-#  customer_billing_address :text
-#
-# Indexes
-#
-#  index_invoices_on_reference  (reference) UNIQUE
-#  index_invoices_on_site_id    (site_id)
-#
-
-
-# == Schema Information
-#
-# Table name: invoices
-#
-#  id                       :integer         not null, primary key
-#  site_id                  :integer
-#  reference                :string(255)
-#  state                    :string(255)
-#  customer_full_name       :string(255)
-#  customer_email           :string(255)
-#  customer_country         :string(255)
-#  customer_company_name    :string(255)
-#  site_hostname            :string(255)
-#  amount                   :integer
-#  vat_rate                 :float
-#  vat_amount               :integer
-#  invoice_items_amount     :integer
-#  invoice_items_count      :integer         default(0)
-#  transactions_count       :integer         default(0)
-#  created_at               :datetime        not null
-#  updated_at               :datetime        not null
-#  paid_at                  :datetime
-#  last_failed_at           :datetime
-#  renew                    :boolean         default(FALSE)
-#  balance_deduction_amount :integer         default(0)
+#  renew                    :boolean          default(FALSE)
+#  balance_deduction_amount :integer          default(0)
 #  customer_billing_address :text
 #
 # Indexes

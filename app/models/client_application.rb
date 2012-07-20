@@ -61,11 +61,12 @@ protected
   end
 
 end
+
 # == Schema Information
 #
 # Table name: client_applications
 #
-#  id           :integer         not null, primary key
+#  id           :integer          not null, primary key
 #  user_id      :integer
 #  name         :string(255)
 #  url          :string(255)
@@ -73,10 +74,11 @@ end
 #  callback_url :string(255)
 #  key          :string(40)
 #  secret       :string(40)
-#  created_at   :datetime        not null
-#  updated_at   :datetime        not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
 #
 # Indexes
 #
 #  index_client_applications_on_key  (key) UNIQUE
 #
+

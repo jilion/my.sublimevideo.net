@@ -149,26 +149,22 @@ end
 
 # == Schema Information
 #
-# Table name: invoice_items
+# Table name: plans
 #
-#  id                    :integer         not null, primary key
-#  type                  :string(255)
-#  invoice_id            :integer
-#  item_type             :string(255)
-#  item_id               :integer
-#  started_at            :datetime
-#  ended_at              :datetime
-#  discounted_percentage :float
-#  price                 :integer
-#  amount                :integer
-#  created_at            :datetime        not null
-#  updated_at            :datetime        not null
-#  deal_id               :integer
+#  id                   :integer          not null, primary key
+#  name                 :string(255)
+#  token                :string(255)
+#  cycle                :string(255)
+#  video_views          :integer
+#  price                :integer
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  support_level        :integer          default(0)
+#  stats_retention_days :integer
 #
 # Indexes
 #
-#  index_invoice_items_on_deal_id                (deal_id)
-#  index_invoice_items_on_invoice_id             (invoice_id)
-#  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
+#  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
+#  index_plans_on_token           (token) UNIQUE
 #
 

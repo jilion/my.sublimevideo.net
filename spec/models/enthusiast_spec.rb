@@ -9,11 +9,12 @@ describe Enthusiast do
   end
 
 end
+
 # == Schema Information
 #
 # Table name: enthusiasts
 #
-#  id                     :integer         not null, primary key
+#  id                     :integer          not null, primary key
 #  email                  :string(255)
 #  free_text              :text
 #  interested_in_beta     :boolean

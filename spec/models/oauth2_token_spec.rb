@@ -21,7 +21,7 @@ end
 #
 # Table name: oauth_tokens
 #
-#  id                    :integer         not null, primary key
+#  id                    :integer          not null, primary key
 #  type                  :string(20)
 #  user_id               :integer
 #  client_application_id :integer
@@ -33,10 +33,11 @@ end
 #  authorized_at         :datetime
 #  invalidated_at        :datetime
 #  valid_to              :datetime
-#  created_at            :datetime        not null
-#  updated_at            :datetime        not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
 #
 # Indexes
 #
 #  index_oauth_tokens_on_token  (token) UNIQUE
 #
+

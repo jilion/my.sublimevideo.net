@@ -32,11 +32,12 @@ class InvoiceItem < ActiveRecord::Base
   validates :amount,     presence: true, numericality: true
 
 end
+
 # == Schema Information
 #
 # Table name: invoice_items
 #
-#  id                    :integer         not null, primary key
+#  id                    :integer          not null, primary key
 #  type                  :string(255)
 #  invoice_id            :integer
 #  item_type             :string(255)
@@ -46,8 +47,8 @@ end
 #  discounted_percentage :float
 #  price                 :integer
 #  amount                :integer
-#  created_at            :datetime        not null
-#  updated_at            :datetime        not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
 #  deal_id               :integer
 #
 # Indexes
@@ -56,3 +57,4 @@ end
 #  index_invoice_items_on_invoice_id             (invoice_id)
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
 #
+

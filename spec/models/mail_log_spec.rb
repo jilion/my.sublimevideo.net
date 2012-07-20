@@ -29,20 +29,18 @@ describe MailLog do
 
 end
 
-
-
 # == Schema Information
 #
 # Table name: mail_logs
 #
-#  id          :integer         not null, primary key
+#  id          :integer          not null, primary key
 #  template_id :integer
 #  admin_id    :integer
 #  criteria    :text
 #  user_ids    :text
 #  snapshot    :text
-#  created_at  :datetime        not null
-#  updated_at  :datetime        not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
 # Indexes
 #

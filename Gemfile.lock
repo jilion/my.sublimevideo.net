@@ -8,6 +8,13 @@ GIT
       daemons
 
 GIT
+  remote: git://github.com/ctran/annotate_models.git
+  revision: 3e8944856fb9e044a1b9e8eaa86cf294ec0f0c04
+  specs:
+    annotate (2.5.0.pre2)
+      rake
+
+GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: be8240784141056b66e0720fbfccb1f8856edaa6
   specs:
@@ -537,6 +544,7 @@ DEPENDENCIES
   acts_as_api (~> 0.3.10)
   addressable (~> 2.2.6)
   airbrake (~> 3.0.5)
+  annotate!
   array_stats (~> 0.6.0)
   asset_sync
   aws (~> 2.5.6)

@@ -26,11 +26,12 @@ class EnthusiastSite < ActiveRecord::Base
   end
 
 end
+
 # == Schema Information
 #
 # Table name: enthusiast_sites
 #
-#  id            :integer         not null, primary key
+#  id            :integer          not null, primary key
 #  enthusiast_id :integer
 #  hostname      :string(255)
 #  created_at    :datetime

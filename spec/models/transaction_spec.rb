@@ -400,7 +400,7 @@ describe Transaction, :plans do
           it "sends an email to the user" do
             @invoice4.reload
             15.times { create(:transaction, invoices: [@invoice4], state: 'failed') }
-            
+
             expect { Transaction.charge_invoices_by_user_id(@user2.id) }.to change(Delayed::Job.where { handler =~ '%Class%too_many_charging_attempts%' }, :count).by(1)
           end
         end
@@ -781,7 +781,7 @@ end
 #
 # Table name: transactions
 #
-#  id             :integer         not null, primary key
+#  id             :integer          not null, primary key
 #  user_id        :integer
 #  order_id       :string(255)
 #  state          :string(255)
@@ -793,10 +793,11 @@ end
 #  pay_id         :string(255)
 #  nc_status      :integer
 #  status         :integer
-#  created_at     :datetime        not null
-#  updated_at     :datetime        not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
 #
 # Indexes
 #
 #  index_transactions_on_order_id  (order_id) UNIQUE
 #
+

@@ -11,7 +11,7 @@ class MailTemplate < ActiveRecord::Base
   # ===============
   # = Validations =
   # ===============
-  
+
   validates :title,   presence: true, uniqueness: true
   validates :subject, presence: true
   validates :body,    presence: true
@@ -19,7 +19,7 @@ class MailTemplate < ActiveRecord::Base
   # ==========
   # = Scopes =
   # ==========
-  
+
   # sort
   scope :by_title, lambda { |way='asc'| order(:title.send(way)) }
   scope :by_date,  lambda { |way='desc'| order(:created_at.send(way)) }
@@ -33,14 +33,16 @@ class MailTemplate < ActiveRecord::Base
   end
 
 end
+
 # == Schema Information
 #
 # Table name: mail_templates
 #
-#  id         :integer         not null, primary key
+#  id         :integer          not null, primary key
 #  title      :string(255)
 #  subject    :string(255)
 #  body       :text
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
+

@@ -55,7 +55,7 @@ end
 #
 # Table name: invoice_items
 #
-#  id                    :integer         not null, primary key
+#  id                    :integer          not null, primary key
 #  type                  :string(255)
 #  invoice_id            :integer
 #  item_type             :string(255)
@@ -65,8 +65,8 @@ end
 #  discounted_percentage :float
 #  price                 :integer
 #  amount                :integer
-#  created_at            :datetime        not null
-#  updated_at            :datetime        not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
 #  deal_id               :integer
 #
 # Indexes

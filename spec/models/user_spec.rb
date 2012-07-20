@@ -892,30 +892,30 @@ end
 #
 # Table name: users
 #
-#  id                              :integer         not null, primary key
+#  id                              :integer          not null, primary key
 #  state                           :string(255)
-#  email                           :string(255)     default(""), not null
-#  encrypted_password              :string(128)     default(""), not null
-#  password_salt                   :string(255)     default(""), not null
+#  email                           :string(255)      default(""), not null
+#  encrypted_password              :string(128)      default(""), not null
+#  password_salt                   :string(255)      default(""), not null
 #  confirmation_token              :string(255)
 #  confirmed_at                    :datetime
 #  confirmation_sent_at            :datetime
 #  reset_password_token            :string(255)
 #  remember_token                  :string(255)
 #  remember_created_at             :datetime
-#  sign_in_count                   :integer         default(0)
+#  sign_in_count                   :integer          default(0)
 #  current_sign_in_at              :datetime
 #  last_sign_in_at                 :datetime
 #  current_sign_in_ip              :string(255)
 #  last_sign_in_ip                 :string(255)
-#  failed_attempts                 :integer         default(0)
+#  failed_attempts                 :integer          default(0)
 #  locked_at                       :datetime
 #  cc_type                         :string(255)
 #  cc_last_digits                  :string(255)
 #  cc_expire_on                    :date
 #  cc_updated_at                   :datetime
-#  created_at                      :datetime        not null
-#  updated_at                      :datetime        not null
+#  created_at                      :datetime         not null
+#  updated_at                      :datetime         not null
 #  invitation_token                :string(60)
 #  invitation_sent_at              :datetime
 #  zendesk_id                      :integer
@@ -936,10 +936,10 @@ end
 #  pending_cc_expire_on            :date
 #  pending_cc_updated_at           :datetime
 #  archived_at                     :datetime
-#  newsletter                      :boolean         default(FALSE)
-#  last_invoiced_amount            :integer         default(0)
-#  total_invoiced_amount           :integer         default(0)
-#  balance                         :integer         default(0)
+#  newsletter                      :boolean          default(FALSE)
+#  last_invoiced_amount            :integer          default(0)
+#  total_invoiced_amount           :integer          default(0)
+#  balance                         :integer          default(0)
 #  hidden_notice_ids               :text
 #  name                            :string(255)
 #  billing_name                    :string(255)
@@ -960,7 +960,7 @@ end
 #  invitation_limit                :integer
 #  invited_by_id                   :integer
 #  invited_by_type                 :string(255)
-#  vip                             :boolean         default(FALSE)
+#  vip                             :boolean          default(FALSE)
 #
 # Indexes
 #

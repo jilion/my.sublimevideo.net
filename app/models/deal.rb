@@ -61,11 +61,12 @@ private
   end
 
 end
+
 # == Schema Information
 #
 # Table name: deals
 #
-#  id                 :integer         not null, primary key
+#  id                 :integer          not null, primary key
 #  token              :string(255)
 #  name               :string(255)
 #  description        :text
@@ -74,10 +75,11 @@ end
 #  availability_scope :string(255)
 #  started_at         :datetime
 #  ended_at           :datetime
-#  created_at         :datetime        not null
-#  updated_at         :datetime        not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
 #
 # Indexes
 #
 #  index_deals_on_token  (token) UNIQUE
 #
+

@@ -953,7 +953,7 @@ end
 #
 # Table name: sites
 #
-#  id                                        :integer         not null, primary key
+#  id                                        :integer          not null, primary key
 #  user_id                                   :integer
 #  hostname                                  :string(255)
 #  dev_hostnames                             :string(255)
@@ -962,9 +962,9 @@ end
 #  loader                                    :string(255)
 #  state                                     :string(255)
 #  archived_at                               :datetime
-#  created_at                                :datetime        not null
-#  updated_at                                :datetime        not null
-#  player_mode                               :string(255)     default("stable")
+#  created_at                                :datetime         not null
+#  updated_at                                :datetime         not null
+#  player_mode                               :string(255)      default("stable")
 #  google_rank                               :integer
 #  alexa_rank                                :integer
 #  path                                      :string(255)
@@ -973,7 +973,7 @@ end
 #  plan_id                                   :integer
 #  pending_plan_id                           :integer
 #  next_cycle_plan_id                        :integer
-#  cdn_up_to_date                            :boolean         default(FALSE)
+#  cdn_up_to_date                            :boolean          default(FALSE)
 #  first_paid_plan_started_at                :datetime
 #  plan_started_at                           :datetime
 #  plan_cycle_started_at                     :datetime
@@ -984,15 +984,15 @@ end
 #  overusage_notification_sent_at            :datetime
 #  first_plan_upgrade_required_alert_sent_at :datetime
 #  refunded_at                               :datetime
-#  last_30_days_main_video_views             :integer         default(0)
-#  last_30_days_extra_video_views            :integer         default(0)
-#  last_30_days_dev_video_views              :integer         default(0)
+#  last_30_days_main_video_views             :integer          default(0)
+#  last_30_days_extra_video_views            :integer          default(0)
+#  last_30_days_dev_video_views              :integer          default(0)
 #  trial_started_at                          :datetime
 #  badged                                    :boolean
-#  last_30_days_invalid_video_views          :integer         default(0)
-#  last_30_days_embed_video_views            :integer         default(0)
+#  last_30_days_invalid_video_views          :integer          default(0)
+#  last_30_days_embed_video_views            :integer          default(0)
 #  last_30_days_billable_video_views_array   :text
-#  last_30_days_video_tags                   :integer         default(0)
+#  last_30_days_video_tags                   :integer          default(0)
 #  first_billable_plays_at                   :datetime
 #
 # Indexes

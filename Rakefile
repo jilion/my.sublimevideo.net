@@ -22,8 +22,4 @@ if %w[development test].include?(Rails.env)
   end
 end
 
-# Annotate settings
-ENV['position_in_class'] = "before"
-ENV['show_indexes']      = "true"
-
 MySublimeVideo::Application.load_tasks

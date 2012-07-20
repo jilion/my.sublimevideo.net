@@ -33,16 +33,15 @@ describe MailTemplate do
 
 end
 
-
 # == Schema Information
 #
 # Table name: mail_templates
 #
-#  id         :integer         not null, primary key
+#  id         :integer          not null, primary key
 #  title      :string(255)
 #  subject    :string(255)
 #  body       :text
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 

@@ -247,11 +247,12 @@ private
   end
 
 end
+
 # == Schema Information
 #
 # Table name: transactions
 #
-#  id             :integer         not null, primary key
+#  id             :integer          not null, primary key
 #  user_id        :integer
 #  order_id       :string(255)
 #  state          :string(255)
@@ -263,10 +264,11 @@ end
 #  pay_id         :string(255)
 #  nc_status      :integer
 #  status         :integer
-#  created_at     :datetime        not null
-#  updated_at     :datetime        not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
 #
 # Indexes
 #
 #  index_transactions_on_order_id  (order_id) UNIQUE
 #
+
