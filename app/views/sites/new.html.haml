@@ -1,5 +1,4 @@
 = title_and_content_header("Create a site")
--#= title("Choose a plan for your site")
 
 #site.new
   = render 'deals/deal_available'
@@ -13,7 +12,6 @@
       %h4= "No commitment, no credit card required."
 
     .big_break
-    %p.note= "After the first #{BusinessModel.days_for_trial} days, your trial will automatically revert to the Free plan if you didn't choose a paid plan."
 
     = render 'fields', site: @site, f: f
 
@@ -33,6 +31,8 @@
     - if current_user.vat?
       #plan_create_info.update_plan_message_box.notice{ style: "display:none;" }
         %p= vat_price_info("plan_price")
+
+    %p#trial_note.note= "After the first #{BusinessModel.days_for_trial} days, your trial will automatically revert to the Free plan if you didn't choose a paid plan."
 
     .actions.center
       = f.submit "#{@site.persisted? ? 'Update' : 'Create'} site", class: "submit green_button", id: 'site_submit'

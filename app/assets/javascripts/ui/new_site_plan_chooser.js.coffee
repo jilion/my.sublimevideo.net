@@ -7,6 +7,7 @@ class MySublimeVideo.UI.NewSitePlanChooser extends MySublimeVideo.UI.PlanChooser
     @formType    = 'create'
     @hostnameDiv = jQuery('#site_hostname')
     @plans       = jQuery('#plans')
+    @trialNote   = jQuery('#trial_note')
     super
 
     this.setupSkipTrialObserver() if this.trialSkippable()
@@ -19,7 +20,12 @@ class MySublimeVideo.UI.NewSitePlanChooser extends MySublimeVideo.UI.PlanChooser
     this.handlePlansDisplay(this.skippingTrial())
 
   handlePlansDisplay: (show) ->
-    if show then @plans.show() else @plans.hide()
+    if show
+      @plans.show()
+      @trialNote.hide()
+    else
+      @plans.hide()
+      @trialNote.show()
 
   handlePlanChange: ->
     @hostnameDiv.attr 'required', !this.checkedPlanPriceIsZero()
