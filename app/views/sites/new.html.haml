@@ -6,28 +6,21 @@
   = form_for @site, html: { class: "full" } do |f|
     .big_break
     .tagline
-      -# %h3= "Test all features with a 30-day free trial"
-      -#%h4= "No credit card required"
-      %h3= "#{BusinessModel.days_for_trial}-day Free & Unlimited Trial."
-      %h4= "No commitment, no credit card required."
+      %h3= "#{BusinessModel.days_for_trial}-day Unlimited Free Trial."
+      %h4= "Get all features. No credit card required."
 
     .big_break
 
     = render 'fields', site: @site, f: f
 
-    .checkbox_wrap#badged
-      = f.check_box :badged, checked: true
-      = f.label :badged, "Enable SublimeVideo badge."
-      %p.label= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
-
+    -#.checkbox_wrap#badged
+    -#  = f.check_box :badged, checked: true
+    -#  = f.label :badged, "Enable SublimeVideo badge."
+    -#  %p.label= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
     = render 'skip_trial_box', f: f
-
     = render 'plans/fields', site: @site, f: f
-
     = render 'plans/plan_change_messages'
-
     = render 'billing_info_box', site: @site
-
     - if current_user.vat?
       #plan_create_info.update_plan_message_box.notice{ style: "display:none;" }
         %p= vat_price_info("plan_price")
