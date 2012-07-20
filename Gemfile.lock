@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/MrJoy/annotate_models.git
-  revision: f4dfac75f6714ad1ec74b03770337908d2cf34f1
-  specs:
-    annotate (2.5.0.beta1)
-      rake
-
-GIT
   remote: git://github.com/collectiveidea/delayed_job.git
   revision: a7e72bcca12ac96684638c71046c060000003d0c
   branch: v2.1
