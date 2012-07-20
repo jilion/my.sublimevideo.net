@@ -908,6 +908,17 @@ end
 #  cc_updated_at                   :datetime
 #  company_employees               :string(255)
 #  company_job_title               :string(255)
+#  created_at                      :datetime        not null
+#  updated_at                      :datetime        not null
+#  invitation_token                :string(60)
+#  invitation_sent_at              :datetime
+#  zendesk_id                      :integer
+#  enthusiast_id                   :integer
+#  postal_code                     :string(255)
+#  country                         :string(255)
+#  use_personal                    :boolean
+#  use_company                     :boolean
+#  use_clients                     :boolean
 #  company_name                    :string(255)
 #  company_url                     :string(255)
 #  company_videos_served           :string(255)

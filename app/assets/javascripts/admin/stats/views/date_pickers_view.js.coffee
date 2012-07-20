@@ -32,8 +32,7 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
   apply: ->
     newStart = this.convertDateToUTC('#start_time_picker')
     newEnd   = this.convertDateToUTC('#end_time_picker')
-    AdminSublimeVideo.period.start = new Date newStart
-    AdminSublimeVideo.period.end   = new Date newEnd
+    @options.period.set(start: new Date(newStart), end: new Date(newEnd))
     AdminSublimeVideo.statsRouter.updateUrl('p', "#{newStart}-#{newEnd}")
     this.close()
     AdminSublimeVideo.graphView.render()
@@ -59,8 +58,8 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
           option    = "maxDate"
           endTime   = datePickersView.convertPickerDate(selectedDate)
         dates.not(this).datepicker('option', option, selectedDate)
-    $('#start_time_picker').datepicker('setDate', AdminSublimeVideo.period.start)
-    $('#end_time_picker').datepicker('setDate', AdminSublimeVideo.period.end)
+    $('#start_time_picker').datepicker 'setDate', @options.period.get('start')
+    $('#end_time_picker').datepicker 'setDate', @options.period.get('end')
 
   destroyDatePickers: ->
     $('#start_time_picker, #end_time_picker').datepicker('destroy')
