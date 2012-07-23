@@ -7,9 +7,7 @@ class SitesController < ApplicationController
   before_filter :find_sites_or_redirect_to_new_site, only: [:index, :edit, :update, :destroy]
   before_filter :find_by_token!, only: [:edit, :update, :destroy]
 
-  has_scope :by_hostname
-  has_scope :by_date
-  has_scope :by_last_30_days_billable_video_views
+  has_scope :by_hostname, :by_date, :by_last_30_days_billable_video_views
 
   # GET /sites
   def index

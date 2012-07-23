@@ -1,7 +1,7 @@
 class Admin::ReferrersController < Admin::AdminController
   respond_to :js, :html
 
-  before_filter :load_referrers
+  before_filter :set_default_scope, :load_referrers
 
   has_scope :by_hits, :by_badge_hits, :by_contextual_hits, :by_updated_at, :by_created_at
 
@@ -16,6 +16,10 @@ class Admin::ReferrersController < Admin::AdminController
   end
 
   private
+
+  def set_default_scope
+    params[:by_updated_at] = 'desc' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
+  end
 
   def load_referrers
     @referrers = apply_scopes(Referrer.criteria)
