@@ -13,14 +13,14 @@ feature 'New site' do
     describe 'trial plan' do
       scenario 'with no hostname' do
         fill_in 'Domain', with: ''
-        click_button 'Create site'
+        click_button 'Add site'
 
         last_site_should_be_created_with_no_invoice('', @trial_plan)
       end
 
       scenario 'with a hostname' do
         fill_in 'Domain', with: hostname
-        click_button 'Create site'
+        click_button 'Add site'
 
         last_site_should_be_created_with_no_invoice(hostname, @trial_plan)
       end
@@ -32,7 +32,7 @@ feature 'New site' do
         choose 'plan_free'
 
         fill_in 'Domain', with: ''
-        click_button 'Create site'
+        click_button 'Add site'
 
         last_site_should_be_created_with_no_invoice('', @free_plan)
       end
@@ -41,7 +41,7 @@ feature 'New site' do
         check 'site_skip_trial'
         choose 'plan_free'
         fill_in 'Domain', with: hostname
-        click_button 'Create site'
+        click_button 'Add site'
 
         last_site_should_be_created_with_no_invoice(hostname, @free_plan)
       end
@@ -55,7 +55,7 @@ feature 'New site' do
           choose 'plan_plus_month'
           has_checked_field?('plan_plus_month').should be_true
           fill_in 'Domain', with: ''
-          expect { click_button 'Create site' }.to_not change(@current_user.invoices, :count).by(1)
+          expect { click_button 'Add site' }.to_not change(@current_user.invoices, :count).by(1)
 
           current_url.should eq 'http://my.sublimevideo.dev/sites'
           page.should have_content 'Domain can\'t be blank'
@@ -69,7 +69,7 @@ feature 'New site' do
           choose 'plan_plus_month'
           has_checked_field?('plan_plus_month').should be_true
           fill_in 'Domain', with: hostname
-          expect { click_button 'Create site' }.to change(@current_user.invoices, :count).by(1)
+          expect { click_button 'Add site' }.to change(@current_user.invoices, :count).by(1)
 
           last_site_should_be_created_and_invoice_failed(hostname, Plan.find_by_name_and_cycle('plus', 'month'))
         end
@@ -113,14 +113,14 @@ feature 'New site' do
     describe 'trial plan' do
       scenario 'with no hostname' do
         fill_in 'Domain', with: ''
-        click_button 'Create site'
+        click_button 'Add site'
 
         last_site_should_be_created_with_no_invoice('', @trial_plan)
       end
 
       scenario 'with a hostname' do
         fill_in 'Domain', with: hostname
-        click_button 'Create site'
+        click_button 'Add site'
 
         last_site_should_be_created_with_no_invoice(hostname, @trial_plan)
       end
@@ -135,13 +135,13 @@ feature 'New site' do
         fill_in 'Domain', with: hostname
         check 'site_skip_trial'
         VCR.use_cassette('ogone/visa_payment_generic') do
-          expect { click_button 'Create site' }.to change(@current_user.invoices, :count)
+          expect { click_button 'Add site' }.to change(@current_user.invoices, :count)
         end
 
         last_site_should_be_created_and_invoice_paid(hostname, Plan.find_by_name_and_cycle('plus', 'month'))
       end
     end # paid plan
-    
+
     describe 'custom plan' do
       let(:plan) { @custom_plan }
       background do
@@ -152,13 +152,13 @@ feature 'New site' do
         has_checked_field?('plan_custom').should be_true
         fill_in 'Domain', with: hostname
         VCR.use_cassette('ogone/visa_payment_generic') do
-          expect { click_button 'Create site' }.to change(@current_user.invoices, :count)
+          expect { click_button 'Add site' }.to change(@current_user.invoices, :count)
         end
 
         last_site_should_be_created_and_invoice_paid(hostname, plan)
       end
     end # custom plan
-    
+
   end
 
 end
@@ -416,7 +416,7 @@ def last_site_should_be_created_with_no_invoice(hostname, plan)
   current_url.should eq 'http://my.sublimevideo.dev/sites'
   page.should have_content (hostname.present? ? hostname : 'add a hostname')
   page.should have_content 'Site was successfully created.'
-  page.should have_content "#{plan.title} plan"
+  page.should have_content (site.in_trial_plan? ? 'Trial' : "#{plan.title} plan")
 end
 
 def last_site_should_be_created_and_invoice_paid(hostname, plan)
@@ -440,7 +440,7 @@ def last_site_should_be_created_and_invoice_paid(hostname, plan)
   current_url.should eq 'http://my.sublimevideo.dev/sites'
   page.should have_content hostname
   page.should have_content 'Site was successfully created.'
-  page.should have_content "#{plan.title} plan"
+  page.should have_content (site.in_trial_plan? ? 'Trial' : "#{plan.title} plan")
 end
 
 def last_site_should_be_created_and_invoice_failed(hostname, plan)
@@ -463,5 +463,5 @@ def last_site_should_be_created_and_invoice_failed(hostname, plan)
 
   current_url.should eq 'http://my.sublimevideo.dev/sites'
   page.should have_content hostname
-  page.should have_no_content "#{plan.title} plan"
+  page.should have_content (site.in_trial_plan? ? 'Trial' : "#{plan.title} plan")
 end

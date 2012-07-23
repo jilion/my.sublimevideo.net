@@ -1,5 +1,6 @@
 - if site.plan_id?
   = link_to [:edit, site, :plan] do
-    = "#{site.plan.title} plan"
+    = site.plan.title
+    = "plan" unless site.in_trial_plan?
     - if site.next_cycle_plan_id?
       %span.disabled= " => #{site.next_cycle_plan.title} plan"

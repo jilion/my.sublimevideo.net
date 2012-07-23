@@ -1,4 +1,4 @@
-= title_and_content_header("Create a site")
+= title_and_content_header("Add a site")
 
 #site.new
   = render 'deals/deal_available'
@@ -7,7 +7,7 @@
     .big_break
     .tagline
       %h3= "#{BusinessModel.days_for_trial}-day Unlimited Free Trial."
-      %h4= "Get all features. No credit card required."
+      %h4= "Get all the features. No credit card required."
 
     .big_break
 
@@ -25,7 +25,7 @@
       #plan_create_info.update_plan_message_box.notice{ style: "display:none;" }
         %p= vat_price_info("plan_price")
 
-    %p#trial_note.note= "After the first #{BusinessModel.days_for_trial} days, your trial will automatically revert to the Free plan if you didn't choose a paid plan."
+    %p#trial_note.note= "After the first #{BusinessModel.days_for_trial} days, your trial will automatically revert to the Free plan if you don't choose a paid plan."
 
     .actions.center
-      = f.submit "#{@site.persisted? ? 'Update' : 'Create'} site", class: "submit green_button", id: 'site_submit'
+      = f.submit "#{@site.persisted? ? 'Update' : 'Add'} site", class: "submit green_button", id: 'site_submit'
