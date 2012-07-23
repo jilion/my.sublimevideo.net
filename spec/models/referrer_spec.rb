@@ -32,28 +32,28 @@ describe Referrer do
     it { Referrer.count.should eq 2 }
 
     describe "second referrer" do
-      subject { Referrer.all.first }
+      let(:referrer) { Referrer.all.first }
 
       it "should have valid attributes" do
-        subject.url.should eq "http://www.sublimevideo.net/demo"
-        subject.token.should eq site.token
-        subject.hits.should eq 1
-        subject.created_at.should be_present
-        subject.updated_at.should be_present
+        referrer.url.should eq "http://www.sublimevideo.net/demo"
+        referrer.token.should eq site.token
+        referrer.hits.should eq 1
+        referrer.created_at.should be_present
+        referrer.updated_at.should be_present
       end
 
       it "should update hits if same referrer reparsed" do
         Referrer.create_or_update_from_trackers!(@trackers)
 
-        subject.reload.hits.should eq 2
+        referrer.reload.hits.should eq 2
         Referrer.count.should eq 2
       end
 
       it "should update updated_at on hits incrementation" do
-        old_update_at = subject.updated_at
+        old_update_at = referrer.updated_at
         Timecop.travel(Time.now + 1.minute) do
           Referrer.create_or_update_from_trackers!(@trackers)
-          subject.reload.updated_at.should_not <= old_update_at
+          referrer.reload.updated_at.should_not <= old_update_at
         end
       end
     end

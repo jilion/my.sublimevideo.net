@@ -52,7 +52,7 @@ class Referrer
     ref_hash.each do |url_and_token, hits|
       url, token = url_and_token[0],  url_and_token[1]
       if referrer = Referrer.where(url: url, token: token).first
-        referrer.hits = referrer.hits.to_i + hits
+        referrer.hits += hits
         referrer.save
       else
         create(url: url, token: token, hits: hits)
@@ -60,13 +60,13 @@ class Referrer
     end
   end
 
-  def self.create_or_update_from_type(token, url, type='c')
+  def self.create_or_update_from_type(token, url, type = 'c')
     if referrer = Referrer.where(url: url, token: token).first
       case type
       when 'b'
-        referrer.badge_hits = referrer.badge_hits.to_i + 1
+        referrer.badge_hits += 1
       when 'c'
-        referrer.contextual_hits = referrer.contextual_hits.to_i + 1
+        referrer.contextual_hits += 1
       end
       referrer.save
     else
