@@ -52,7 +52,7 @@ module Responders
     end
 
     def per_page(qlass = klass)
-      PaginatedResponder.per_page || @options[:per_page] || klass.try(:per_page) || 25
+      (PaginatedResponder.per_page || @options[:per_page] || klass.per_page) rescue 25
     end
 
     def set_instance_variable(qlass = klass)
