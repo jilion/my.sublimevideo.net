@@ -97,11 +97,6 @@ class BillingMailer < Mailer
 
   private
 
-  def extract_site_and_user_from_site_id(site_id)
-    @site = Site.find(site_id)
-    @user = @site.user
-  end
-
   def extract_transaction_and_user_from_transaction_id(transaction_id)
     @transaction = Transaction.find(transaction_id)
     @user        = @transaction.user

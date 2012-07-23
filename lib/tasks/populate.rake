@@ -825,17 +825,18 @@ end
 
 def send_all_emails(user_id)
   user         = User.find(user_id)
-  site         = Site.joins(:invoices).where(user_id: user_id).group { sites.id }.having { { invoices => (count(id) > 0) } }.last
-  invoice      = site.invoices.last
+  trial_site   = user.sites.in_trial.last
+  site         = user.sites.joins(:invoices).in_paid_plan.group { sites.id }.having { { invoices => (count(id) > 0) } }.last || user.sites.last
+  invoice      = site.invoices.last || Invoice.construct(site: site)
   transaction  = invoice.transactions.last || Transaction.create(invoices: [invoice])
   stats_export = StatsExport.last || StatsExport.create(st: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
 
   DeviseMailer.confirmation_instructions(user).deliver!
   DeviseMailer.reset_password_instructions(user).deliver!
 
-  BillingMailer.trial_has_started(site.id).deliver!
-  BillingMailer.trial_will_expire(site.id).deliver!
-  BillingMailer.trial_has_expired(site.id).deliver!
+  BillingMailer.trial_has_started(trial_site.id).deliver!
+  BillingMailer.trial_will_expire(trial_site.id).deliver!
+  BillingMailer.trial_has_expired(trial_site.id).deliver!
   BillingMailer.yearly_plan_will_be_renewed(site.id).deliver!
 
   BillingMailer.credit_card_will_expire(user.id).deliver!
@@ -849,8 +850,8 @@ def send_all_emails(user_id)
 
   MailMailer.send_mail_with_template(user.id, MailTemplate.last.id).deliver!
 
-  UsageMonitoringMailer.plan_overused(site).deliver!
-  UsageMonitoringMailer.plan_upgrade_required(site).deliver!
+  UsageMonitoringMailer.plan_overused(site.id).deliver!
+  UsageMonitoringMailer.plan_upgrade_required(site.id).deliver!
 
   UserMailer.welcome(user.id).deliver!
   UserMailer.account_suspended(user.id).deliver!

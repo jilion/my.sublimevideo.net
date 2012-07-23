@@ -19,8 +19,8 @@
 
               = yield
 
+              - unless @no_reply
+                %p= t("mailer.reply_to_this_email")
+
               - unless @no_signature
                 %p= t("mailer.signature")
-
-              - unless @no_reply
-                %p.small= t("mailer.reply_to_this_email")

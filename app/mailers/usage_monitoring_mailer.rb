@@ -3,9 +3,8 @@ class UsageMonitoringMailer < Mailer
 
   helper :sites
 
-  def plan_overused(site)
-    @site = site
-    @user = @site.user
+  def plan_overused(site_id)
+    extract_site_and_user_from_site_id(site_id)
 
     mail(
       to: to(@user),
@@ -13,9 +12,8 @@ class UsageMonitoringMailer < Mailer
     )
   end
 
-  def plan_upgrade_required(site)
-    @site = site
-    @user = @site.user
+  def plan_upgrade_required(site_id)
+    extract_site_and_user_from_site_id(site_id)
 
     mail(
       to: to(@user),

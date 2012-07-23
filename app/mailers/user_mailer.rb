@@ -3,7 +3,6 @@ class UserMailer < Mailer
 
   def welcome(user_id)
     extract_user_from_user_id(user_id)
-    @no_intro, @no_signature, @no_reply = true, true, true
 
     mail(
       to: to(@user),

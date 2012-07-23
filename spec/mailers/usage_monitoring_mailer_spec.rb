@@ -7,11 +7,11 @@ describe UsageMonitoringMailer do
     site
   }
 
-  it_should_behave_like "common mailer checks", %w[plan_overused], params: FactoryGirl.create(:site)
+  it_should_behave_like "common mailer checks", %w[plan_overused], params: FactoryGirl.create(:site).id
 
   describe "#plan_overused" do
     before do
-      described_class.plan_overused(site).deliver
+      described_class.plan_overused(site.id).deliver
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
@@ -24,11 +24,11 @@ describe UsageMonitoringMailer do
     end
   end
 
-  it_should_behave_like "common mailer checks", %w[plan_upgrade_required], params: FactoryGirl.create(:site)
+  it_should_behave_like "common mailer checks", %w[plan_upgrade_required], params: FactoryGirl.create(:site).id
 
   describe "#plan_upgrade_required" do
     before do
-      described_class.plan_upgrade_required(site).deliver
+      described_class.plan_upgrade_required(site.id).deliver
       last_delivery = ActionMailer::Base.deliveries.last
     end
 
