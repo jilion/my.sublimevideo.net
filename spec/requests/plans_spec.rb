@@ -237,7 +237,7 @@ feature "Site in custom plan" do
     VCR.use_cassette('ogone/visa_payment_generic') do
       choose "plan_custom"
       fill_in "Domain", with: "google.com"
-      click_button "Create"
+      click_button "Add site"
     end
 
     current_url.should == "http://my.sublimevideo.dev/sites"
