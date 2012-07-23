@@ -1,9 +1,9 @@
 module Responders
   module PaginatedResponder
 
-    def initialize(controller, resources, options={})
+    def initialize(controller, resources, options = {})
       super
-      @per_page = options.delete(:per_page)
+      @options = options
     end
 
     def to_html
@@ -24,16 +24,26 @@ module Responders
   private
 
     def add_pagination_scope!
-      if get? && (resource.is_a?(ActiveRecord::Relation) || resource.is_a?(Mongoid::Criteria)) && controller.action_name == 'index'
-        begin
-          if controller.controller_name == 'delayed_jobs'
-            set_instance_variable(Delayed::Job)
-          else
-            set_instance_variable(controller.controller_name.classify.constantize)
-          end
-        rescue
-          set_instance_variable(resource[0].class) if resource.present?
-        end
+      return unless activate_paginate?
+
+      if controller.controller_name == 'delayed_jobs'
+        set_instance_variable(Delayed::Job)
+      else
+        set_instance_variable
+      end
+    end
+
+    def activate_paginate?
+      get? &&
+      (resource.is_a?(ActiveRecord::Relation) || resource.is_a?(Mongoid::Criteria)) &&
+      (controller.action_name == 'index' || @options[:paginate])
+    end
+
+    def klass
+      @klass ||= begin
+        controller.controller_name.classify.constantize
+      rescue
+        resource.present? ? resource[0].class : nil
       end
     end
 
@@ -41,12 +51,12 @@ module Responders
       controller.request.params[:page]
     end
 
-    def per_page(klass)
-      PaginatedResponder.per_page || @per_page || (klass.respond_to?(:per_page) ? klass.per_page : 25)
+    def per_page(qlass = klass)
+      PaginatedResponder.per_page || @options[:per_page] || klass.try(:per_page) || 25
     end
 
-    def set_instance_variable(klass)
-      controller.instance_variable_set("@#{controller.controller_name}", resource.page(page_params).per(per_page(klass)))
+    def set_instance_variable(qlass = klass)
+      controller.instance_variable_set("@#{controller.controller_name}", resource.page(page_params).per(per_page(qlass)))
     end
 
   end
