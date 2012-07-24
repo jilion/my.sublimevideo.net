@@ -4,12 +4,12 @@
 require File.expand_path('../config/application', __FILE__)
 
 Dir[Rails.root.join('lib/*.rb')].each { |f| require f }
-Dir[Rails.root.join('lib/campaign_monitor/*.rb')].each { |f| require f }
+Dir[Rails.root.join('lib/campaign_monitor/**/*.rb')].each { |f| require f }
 Dir[Rails.root.join('lib/custom/**/*.rb')].each { |f| require f }
-Dir[Rails.root.join('lib/one_time/*.rb')].each { |f| require f }
-Dir[Rails.root.join('lib/responders/*.rb')].each { |f| require f }
-Dir[Rails.root.join('lib/validators/*.rb')].each { |f| require f }
-Dir[Rails.root.join('lib/zendesk/*.rb')].each { |f| require f }
+Dir[Rails.root.join('lib/one_time/**/*.rb')].each { |f| require f }
+Dir[Rails.root.join('lib/responders/**/*.rb')].each { |f| require f }
+Dir[Rails.root.join('lib/validators/**/*.rb')].each { |f| require f }
+Dir[Rails.root.join('lib/zendesk/**/*.rb')].each { |f| require f }
 
 require 'rake'
 require 'delayed/tasks'

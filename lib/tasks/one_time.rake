@@ -132,7 +132,7 @@ namespace :one_time do
     desc "Reduce stats trial hash into a fixnum"
     task reduce_trial_hash: :environment do
       timed do
-        p OneTime::Stats::SitesStat.reduce_trial_hash
+        puts ::OneTime::Stats::SitesStat.reduce_trial_hash
       end
     end
 
