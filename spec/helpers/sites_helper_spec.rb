@@ -12,7 +12,7 @@ describe SitesHelper, :plans do
     it { helper.full_days_until_trial_end(build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 4.days.ago)).should eq 0 }
   end
 
-  describe '#display_plan', :focus do
+  describe '#display_plan' do
     let(:trial_site)           { build(:fake_site, plan_id: @trial_plan.id) }
     let(:free_site)            { build(:fake_site, plan_id: @free_plan.id) }
     let(:paid_site)            { build(:fake_site, plan_id: @paid_plan.id) }
