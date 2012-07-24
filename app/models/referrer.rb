@@ -17,6 +17,9 @@ class Referrer
 
   attr_accessible :token, :url, :hits, :contextual_hits, :badge_hits
 
+  cattr_accessor :per_page
+  self.per_page = 100
+
   # ================
   # = Associations =
   # ================

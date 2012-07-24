@@ -81,7 +81,11 @@ MySublimeVideo::Application.routes.draw do
         end
       end
       resources :plans,  only: [:index, :new, :create]
-      resources :referrers, only: [:index]
+      resources :referrers, only: [:index] do
+        collection do
+          get :pages
+        end
+      end
 
       resources :users, only: [:index, :show, :edit, :update] do
         member do
