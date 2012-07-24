@@ -92,7 +92,7 @@ class Site < ActiveRecord::Base
   before_validation :set_user_attributes
   before_validation :set_default_dev_hostnames, unless: :dev_hostnames?
 
-  before_save :set_default_badged
+  before_save :set_default_badged, if: proc { |s| s.badged.nil? || s.in_free_plan? }
   before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
   before_save :prepare_pending_attributes, if: proc { |s| s.pending_plan_id_changed? && s.pending_plan_id? } # in site_modules/cycle
@@ -300,8 +300,7 @@ private
 
   # before_validation
   def set_default_badged
-    self.badged = in_free_plan? if badged.nil? || in_free_plan?
-    true # don't halt the callback chain
+    self.badged = true
   end
 
   # validate

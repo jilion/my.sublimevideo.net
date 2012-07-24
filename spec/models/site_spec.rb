@@ -14,7 +14,7 @@ describe Site, :plans do
     its(:extra_hostnames)                         { should be_nil }
     its(:path)                                    { should be_nil }
     its(:wildcard)                                { should be_false }
-    its(:badged)                                  { should be_false }
+    its(:badged)                                  { should be_true }
     its(:token)                                   { should =~ /^[a-z0-9]{8}$/ }
     its(:license)                                 { should_not be_present }
     its(:loader)                                  { should_not be_present }
@@ -46,10 +46,10 @@ describe Site, :plans do
     it { should have_many :invoices }
 
     describe "last_invoice" do
-      subject { create(:site_with_invoice, plan_id: @paid_plan.id) }
+      let(:site) { create(:site_with_invoice, plan_id: @paid_plan.id) }
 
       it "should return the last paid invoice" do
-        subject.last_invoice.should eq subject.invoices.last
+        site.last_invoice.should eq site.invoices.last
       end
     end
   end
@@ -204,6 +204,11 @@ describe Site, :plans do
 
     describe "set_default_badged" do
       context "with the free plan" do
+        describe "default" do
+          subject { create(:site, plan_id: @free_plan.id, badged: nil) }
+          its(:badged) { should be_true }
+          it { should be_valid }
+        end
         describe "badge on" do
           subject { create(:site, plan_id: @free_plan.id, badged: true) }
           its(:badged) { should be_true }
@@ -218,6 +223,11 @@ describe Site, :plans do
       end
 
       context "with a paid plan" do
+        describe "default" do
+          subject { create(:site, plan_id: @paid_plan.id, badged: nil) }
+          its(:badged) { should be_true }
+          it { should be_valid }
+        end
         describe "badge on" do
           subject { create(:site, plan_id: @paid_plan.id, badged: true) }
           its(:badged) { should be_true }
