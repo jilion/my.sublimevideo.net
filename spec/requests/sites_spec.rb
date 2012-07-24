@@ -174,8 +174,8 @@ feature 'Edit site' do
     @paid_site     = create(:site, user: @current_user, hostname: hostname3)
 
     @free_site.should be_badged
-    @site_in_trial.should_not be_badged
-    @paid_site.should_not be_badged
+    @site_in_trial.should be_badged
+    @paid_site.should be_badged
     go 'my', '/sites'
   end
 
@@ -208,7 +208,7 @@ feature 'Edit site' do
     page.should have_selector 'input#site_path'
     page.should have_selector 'input#site_wildcard'
     page.should have_selector 'input#site_badged'
-    has_checked_field?('site_badged').should be_false
+    has_checked_field?('site_badged').should be_true
 
     fill_in 'site_extra_hostnames', with: hostname1
     fill_in 'site_dev_hostnames', with: dev_hostname
@@ -231,7 +231,7 @@ feature 'Edit site' do
     page.should have_selector 'input#site_path'
     page.should have_selector 'input#site_wildcard'
     page.should have_selector 'input#site_badged'
-    has_checked_field?('site_badged').should be_false
+    has_checked_field?('site_badged').should be_true
 
     fill_in 'site_extra_hostnames', with: hostname2
     fill_in 'site_dev_hostnames', with: dev_hostname
