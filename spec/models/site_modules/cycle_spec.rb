@@ -288,6 +288,7 @@ describe SiteModules::Cycle do
         @site_in_trial     = create(:site, plan_id: @trial_plan.id)
       end
 
+      specify { @site_not_in_trial.trial_expires_on(BusinessModel.days_for_trial.days.from_now).should be_false }
       specify { @site_in_trial.trial_expires_on(BusinessModel.days_for_trial.days.from_now).should be_true }
       specify { @site_in_trial.trial_expires_in_less_than_or_equal_to(BusinessModel.days_for_trial.days.from_now - 1.day).should be_false }
       specify { @site_in_trial.trial_expires_in_less_than_or_equal_to(BusinessModel.days_for_trial.days.from_now).should be_true }
@@ -370,7 +371,7 @@ describe SiteModules::Cycle do
             its(:pending_plan_id)    { should be_nil }
             its(:next_cycle_plan_id) { should be_nil }
           end
-          
+
           context 'with downgrade' do
             before do
               site.next_cycle_plan_id = @free_plan.id
@@ -401,65 +402,65 @@ describe SiteModules::Cycle do
         before do
           site.set_pending_plan_started_at
         end
-      
+
         its(:pending_plan_started_at) { should eq Time.now.utc.midnight }
       end
-      
+
       context 'persisted site' do
         let(:site) { create(:site, plan_id: @paid_plan.id) }
         subject { site }
-      
+
         context 'normal state' do
           before do
             Timecop.travel(2.days.from_now) { site.set_pending_plan_started_at }
           end
-      
+
           its(:pending_plan_started_at) { should be_nil }
         end
-      
+
         context 'upgrade' do
           before do
             site.pending_plan_id = @custom_plan.id
             Timecop.travel(2.days.from_now) { site.set_pending_plan_started_at }
           end
-      
+
           its(:pending_plan_started_at) { should eq Time.now.utc.midnight }
         end
-      
+
         context 'will downgrade to paid' do
           let(:site) { create(:site, plan_id: @custom_plan.token) }
           before do
             site.next_cycle_plan_id = @paid_plan.id
             Timecop.travel(2.days.from_now) { site.set_pending_plan_started_at }
           end
-      
+
           its(:pending_plan_started_at) { should be_nil }
         end
-      
+
         context 'will downgrade to free' do
           before do
             site.next_cycle_plan_id = @free_plan.id
             Timecop.travel(2.days.from_now) { site.set_pending_plan_started_at }
           end
-      
+
           its(:pending_plan_started_at) { should be_nil }
         end
-      
+
         context 'renew' do
           context 'normal state' do
             before do
               Timecop.travel(1.month.from_now) { site.set_pending_plan_started_at }
             end
-      
+
             its(:pending_plan_started_at) { should be_nil }
           end
-          
+
           context 'with downgrade' do
             before do
               site.pending_plan_id = @free_plan.id
               Timecop.travel(1.month.from_now) { site.set_pending_plan_started_at }
             end
-      
+
             its(:pending_plan_started_at) { should eq site.plan_cycle_ended_at.tomorrow.midnight }
           end
         end
@@ -485,84 +486,84 @@ describe SiteModules::Cycle do
           site.set_pending_plan_started_at
           site.set_pending_plan_cycle_dates
         end
-      
+
         its(:pending_plan_cycle_started_at)     { should eq Time.now.utc.midnight }
         its('pending_plan_cycle_ended_at.to_i') { should eq 1.month.from_now.yesterday.end_of_day.to_i }
       end
-      
+
       context 'persisted site' do
         let(:site) { create(:site, plan_id: @paid_plan.id) }
         subject { site }
-      
+
         context 'normal state' do
           before do
             site # eager loading!
             Timecop.travel(2.days.from_now) { site.set_pending_plan_cycle_dates }
           end
-      
+
           its(:pending_plan_cycle_started_at) { should be_nil }
           its(:pending_plan_cycle_ended_at)   { should be_nil }
         end
-      
+
         context 'upgrade' do
           before do
             site.pending_plan_id = @custom_plan.id
             Timecop.travel(2.days.from_now) { site.set_pending_plan_started_at; site.set_pending_plan_cycle_dates }
           end
-      
+
           its(:pending_plan_cycle_started_at)     { should eq Time.now.utc.midnight }
           its('pending_plan_cycle_ended_at.to_i') { should eq 1.month.from_now.yesterday.end_of_day.to_i }
         end
-      
+
         context 'will downgrade to paid' do
           let(:site) { create(:site, plan_id: @custom_plan.token) }
           before do
             site.next_cycle_plan_id = @paid_plan.id
             Timecop.travel(2.days.from_now) { site.set_pending_plan_cycle_dates }
           end
-      
+
           its(:pending_plan_cycle_started_at) { should be_nil }
           its(:pending_plan_cycle_ended_at)   { should be_nil }
         end
-      
+
         context 'will downgrade to free' do
           before do
             site.next_cycle_plan_id = @free_plan.id
             Timecop.travel(2.days.from_now) { site.set_pending_plan_cycle_dates }
           end
-      
+
           its(:pending_plan_cycle_started_at) { should be_nil }
           its(:pending_plan_cycle_ended_at)   { should be_nil }
         end
-      
+
         context 'renew' do
           context 'normal state' do
             before do
               site # eager loading!
               Timecop.travel(1.month.from_now) { site.set_pending_plan_cycle_dates }
             end
-      
+
             its(:pending_plan_cycle_started_at)     { should eq 1.month.from_now.midnight }
             its('pending_plan_cycle_ended_at.to_i') { should eq 2.months.from_now.yesterday.end_of_day.to_i }
           end
-          
+
           context 'with downgrade to free' do
             before do
               site.pending_plan_id = @free_plan.id
               Timecop.travel(1.month.from_now) { site.set_pending_plan_started_at; site.set_pending_plan_cycle_dates }
             end
-      
+
             its(:pending_plan_cycle_started_at) { should be_nil }
             its(:pending_plan_cycle_ended_at)   { should be_nil }
           end
-          
+
           context 'with downgrade to paid' do
             let(:site) { create(:site, plan_id: @custom_plan.token) }
             before do
               site.pending_plan_id = @paid_plan.id
               Timecop.travel(1.month.from_now) { site.set_pending_plan_started_at; site.set_pending_plan_cycle_dates }
             end
-      
+
             its(:pending_plan_cycle_started_at)     { should eq 1.month.from_now.midnight }
             its('pending_plan_cycle_ended_at.to_i') { should eq 2.months.from_now.yesterday.end_of_day.to_i }
           end

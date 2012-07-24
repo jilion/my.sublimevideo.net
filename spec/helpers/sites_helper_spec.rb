@@ -12,6 +12,18 @@ describe SitesHelper, :plans do
     it { helper.full_days_until_trial_end(build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 4.days.ago)).should eq 0 }
   end
 
+  describe '#display_plan', :focus do
+    let(:trial_site)           { build(:fake_site, plan_id: @trial_plan.id) }
+    let(:free_site)            { build(:fake_site, plan_id: @free_plan.id) }
+    let(:paid_site)            { build(:fake_site, plan_id: @paid_plan.id) }
+    let(:paid_site_with_next)  { build(:fake_site, plan_id: @paid_plan.id, next_cycle_plan_id: @free_plan.id) }
+
+    it { helper.display_plan(trial_site).should eq 'Trial' }
+    it { helper.display_plan(free_site).should eq 'Free plan' }
+    it { helper.display_plan(paid_site).should eq "#{@paid_plan.title} plan"}
+    it { helper.display_plan(paid_site_with_next).should eq "#{@paid_plan.title} plan<span class=\"disabled\"> =&gt; Free plan</span>" }
+  end
+
   describe '#sites_with_trial_expires_in_less_than_5_days' do
     before { BusinessModel.stub(:days_for_trial) { 10 } }
 

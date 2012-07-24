@@ -35,18 +35,18 @@ module SiteModules::Scope
 
     # billing
     scope :trial_ended, lambda {
-      active.in_trial.where { (plan_started_at || BusinessModel.days_for_trial.days.ago) <= BusinessModel.days_for_trial.days.ago }
+      in_trial.where { (plan_started_at || BusinessModel.days_for_trial.days.ago) <= BusinessModel.days_for_trial.days.ago }
     }
     scope :trial_expires_on, lambda { |timestamp|
-      active.where { date_trunc('day', plan_started_at) == (timestamp - BusinessModel.days_for_trial.days).midnight }
+      in_trial.where { date_trunc('day', plan_started_at) == (timestamp - BusinessModel.days_for_trial.days).midnight }
     }
 
     # plan cycles
     scope :renewable, lambda {
-      active.where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
+      in_paid_plan.where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
     }
     scope :plan_will_be_renewed_on, lambda { |timestamp|
-      active.where { date_trunc('day', plan_cycle_ended_at) == (timestamp - 1.day).midnight }
+      in_paid_plan.where { date_trunc('day', plan_cycle_ended_at) == (timestamp - 1.day).midnight }
     }
 
     # admin

@@ -109,6 +109,7 @@ describe SiteModules::Scope, :plans do
   describe "trial" do
     before do
       Site.delete_all
+      @site_in_paid             = create(:fake_site, user: @user, plan_id: @paid_plan.id)
       @site_in_trial            = create(:fake_site, user: @user, plan_id: @trial_plan.id)
       @site_in_trial_ended      = create(:fake_site, user: @user, plan_id: @trial_plan.id, plan_started_at: BusinessModel.days_for_trial.days.ago)
       @site_trial_ends_in_1_day = create(:fake_site, user: @user, plan_id: @trial_plan.id, plan_started_at: (BusinessModel.days_for_trial - 1).days.ago.midnight)

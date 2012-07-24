@@ -13,10 +13,6 @@
 
     = render 'fields', site: @site, f: f
 
-    -#.checkbox_wrap#badged
-    -#  = f.check_box :badged, checked: true
-    -#  = f.label :badged, "Enable SublimeVideo badge."
-    -#  %p.label= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
     = render 'skip_trial_box', f: f
     = render 'plans/fields', site: @site, f: f
     = render 'plans/plan_change_messages'

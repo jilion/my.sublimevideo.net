@@ -15,7 +15,7 @@ module SiteModules::Cycle
 
     def send_trial_will_expire_email
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
-        Site.in_trial.trial_expires_on(days_before_trial_end.days.from_now).
+        Site.trial_expires_on(days_before_trial_end.days.from_now).
         find_each(batch_size: 100) do |site|
           BillingMailer.delay.trial_will_expire(site.id)
         end
@@ -23,7 +23,7 @@ module SiteModules::Cycle
     end
 
     def downgrade_sites_leaving_trial
-      Site.in_trial.trial_ended.find_each(batch_size: 100) do |site|
+      Site.trial_ended.find_each(batch_size: 100) do |site|
         site.plan_id = Plan.free_plan.id
         site.save_skip_pwd!
         BillingMailer.delay.trial_has_expired(site.id)
@@ -94,8 +94,6 @@ module SiteModules::Cycle
   end
 
   def plan_month_cycle_started_at
-    # cycle = plan_cycle_started_at? ? plan.read_attribute(:cycle) : 'none' # strange error in specs when using .cycle
-
     case plan.cycle
     when 'month'
       plan_cycle_started_at
@@ -107,8 +105,6 @@ module SiteModules::Cycle
   end
 
   def plan_month_cycle_ended_at
-    # cycle = plan_cycle_ended_at? ? plan.read_attribute(:cycle) : 'none' # strange error in specs when using .cycle
-
     case plan.cycle
     when 'month'
       plan_cycle_ended_at
@@ -129,7 +125,6 @@ module SiteModules::Cycle
 
   # before_save if: :pending_plan_id_changed? / also called from SiteModules::Billing.renew_active_sites
   def prepare_pending_attributes(instant_charging = true)
-    # puts "pending_plan_id_change : #{pending_plan_id_change}"
     @instant_charging = instant_charging
 
     set_pending_plan_from_next_plan # Delayed downgrade
@@ -137,7 +132,6 @@ module SiteModules::Cycle
     set_pending_plan_started_at # New plan
 
     set_pending_plan_cycle_dates
-    # true # don't block the callbacks chain
   end
 
   def set_pending_plan_from_next_plan
@@ -203,7 +197,7 @@ module SiteModules::Cycle
     end
     self.pending_plan_id_will_change!
 
-    save_skip_pwd!
+    self.save_skip_pwd!
   end
 
   def reset_first_plan_upgrade_required_alert_sent_at

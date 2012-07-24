@@ -6,6 +6,14 @@ module SitesHelper
     site.errors[:base] && site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
   end
 
+  def display_plan(site)
+    text  = site.plan.title
+    text += ' plan' unless site.in_trial_plan?
+    text += content_tag(:span, " => #{site.next_cycle_plan.title} plan", class: 'disabled') if site.next_cycle_plan_id?
+
+    text.html_safe
+  end
+
   def full_days_until_trial_end(site)
     if site.in_trial_plan?
       ((site.plan_started_at + BusinessModel.days_for_trial.days - Time.now.utc.midnight) / (3600 * 24)).to_i

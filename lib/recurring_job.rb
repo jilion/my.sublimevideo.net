@@ -36,37 +36,37 @@ module RecurringJob
       Log::Amazon::S3::Licenses.delay_fetch_and_create_new_logs
     end
 
-    def delay_invoices_processing(priority=PRIORITIES[:invoices])
+    def delay_invoices_processing(priority = PRIORITIES[:invoices])
       unless Delayed::Job.already_delayed?('%RecurringJob%invoices_processing%')
         delay(priority: priority, run_at: Time.now.utc.tomorrow.midnight).invoices_processing(priority)
       end
     end
 
-    def delay_sites_processing(priority=PRIORITIES[:sites])
+    def delay_sites_processing(priority = PRIORITIES[:sites])
       unless Delayed::Job.already_delayed?('%RecurringJob%sites_processing%')
         delay(priority: priority, run_at: Time.now.utc.tomorrow.midnight).sites_processing(priority)
       end
     end
 
-    def delay_users_processing(priority=PRIORITIES[:users])
+    def delay_users_processing(priority = PRIORITIES[:users])
       unless Delayed::Job.already_delayed?('%RecurringJob%users_processing%')
         delay(priority: priority, run_at: 1.week.from_now).users_processing(priority)
       end
     end
 
-    def delay_tweets_processing(priority=PRIORITIES[:tweets])
+    def delay_tweets_processing(priority = PRIORITIES[:tweets])
       unless Delayed::Job.already_delayed?('%RecurringJob%tweets_processing%')
         delay(priority: priority, run_at: 45.minutes.from_now).tweets_processing(priority)
       end
     end
 
-    def delay_stats_processing(priority=PRIORITIES[:stats])
+    def delay_stats_processing(priority = PRIORITIES[:stats])
       unless Delayed::Job.already_delayed?('%RecurringJob%stats_processing%')
         delay(priority: priority, run_at: Time.now.utc.tomorrow.midnight + 5.minutes).stats_processing(priority)
       end
     end
 
-    def invoices_processing(priority=PRIORITIES[:invoices])
+    def invoices_processing(priority = PRIORITIES[:invoices])
       Invoice.delay(priority: priority).update_pending_dates_for_first_not_paid_invoices
       Site.delay(priority: priority).downgrade_sites_leaving_trial
       Site.delay(priority: priority).renew_active_sites
@@ -75,7 +75,7 @@ module RecurringJob
       delay_invoices_processing
     end
 
-    def sites_processing(priority=PRIORITIES[:sites])
+    def sites_processing(priority = PRIORITIES[:sites])
       Site.delay(priority: priority).send_trial_will_expire_email
       Site.delay(priority: priority).send_yearly_plan_will_be_renewed_email
       Site.delay(priority: priority).monitor_sites_usages
@@ -85,19 +85,19 @@ module RecurringJob
       delay_sites_processing
     end
 
-    def users_processing(priority=PRIORITIES[:users])
+    def users_processing(priority = PRIORITIES[:users])
       User.delay(priority: priority).send_credit_card_expiration
 
       delay_users_processing
     end
 
-    def tweets_processing(priority=PRIORITIES[:tweets])
+    def tweets_processing(priority = PRIORITIES[:tweets])
       Tweet.delay(priority: priority).save_new_tweets_and_sync_favorite_tweets
 
       delay_tweets_processing
     end
 
-    def stats_processing(priority=PRIORITIES[:stats])
+    def stats_processing(priority = PRIORITIES[:stats])
       %w[Users Sites Sales SiteStats SiteUsages Tweets].each do |stats_klass|
         "Stats::#{stats_klass}Stat".constantize.delay(priority: priority).create_stats
       end
@@ -119,15 +119,11 @@ module RecurringJob
       RecurringJob.delay_stats_processing
     end
 
-    def supervise(max_jobs_allowed=100, too_much_jobs_times=5)#, any_job_not_delayed=20)
+    def supervise(max_jobs_allowed = 100, too_much_jobs_times = 5)
       # check if there is no too much delayed jobs
       if too_much_jobs?(max_jobs_allowed, too_much_jobs_times)
         Notify.send("WARNING!!! There is more than #{max_jobs_allowed} delayed jobs, please investigate quickly!")
       end
-      # # check if recurring jobs are all delayed
-      # if any_job_not_delayed?(NAMES, any_job_not_delayed)
-      #   Notify.send("WARNING!!! The following jobs are not delayed: #{not_delayed.join(", ")}; please investigate quickly!")
-      # end
     end
 
     def test_exception

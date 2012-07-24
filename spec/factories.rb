@@ -57,7 +57,6 @@ FactoryGirl.define do
     user
   end
 
-  # Site in trial
   factory :fake_site, parent: :new_site do
     after(:build) do |site|
       site.apply_pending_attributes
@@ -65,11 +64,6 @@ FactoryGirl.define do
   end
 
   factory :site, parent: :new_site do
-    # after(:build) do |site|
-    #   site.prepare_pending_attributes
-    #   site.apply_pending_attributes
-    #   # site.send(:puts, site.errors.inspect) unless site.valid?
-    # end
     after(:create) do |site|
       if site.will_be_in_paid_plan?
         site.apply_pending_attributes
@@ -78,14 +72,7 @@ FactoryGirl.define do
     end
   end
 
-  # Site in trial
-  factory :site_not_in_trial, parent: :site do
-    trial_started_at { BusinessModel.days_for_trial.days.ago }
-  end
-
-  # Site not anymore in trial
   factory :site_with_invoice, parent: :new_site do
-    # trial_started_at { BusinessModel.days_for_trial.days.ago }
     first_paid_plan_started_at { Time.now.utc }
     after(:build)  { VCR.insert_cassette('ogone/visa_payment_generic') }
     after(:create) do |site|

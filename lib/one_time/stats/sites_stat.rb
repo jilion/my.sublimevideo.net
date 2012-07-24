@@ -9,7 +9,7 @@ module OneTime
           ::Stats::SitesStat.all.each do |stats|
             if stats[:tr].respond_to?(:inject)
               reduced_value = reduce_hash(stats[:tr])
-              summary += "#{stats[:tr].inspect} reduced into #{reduced_value}"
+              summary += "#{stats[:tr].inspect} reduced into #{reduced_value}\n"
               stats.update_attribute(:tr, reduced_value)
             end
           end
