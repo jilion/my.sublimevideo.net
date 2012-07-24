@@ -149,7 +149,7 @@ describe SiteModules::Template, :plans do
         site.should_not be_settings_changed
       end
 
-      { hostname: "jilion.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true, badged: true }.each do |attribute, value|
+      { hostname: "jilion.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true, badged: false }.each do |attribute, value|
         it "should return true if #{attribute} has changed" do
           site.send("#{attribute}=", value)
           site.should be_settings_changed
@@ -241,7 +241,7 @@ describe SiteModules::Template, :plans do
     describe "#license_js_hash" do
       subject { create(:site, plan_id: @trial_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
-      its(:license_js_hash) { should eq "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true}" }
+      its(:license_js_hash) { should eq "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:true,s:true,r:true}" }
     end
 
     describe "#set_template" do
@@ -266,7 +266,7 @@ describe SiteModules::Template, :plans do
         }
 
         it "sets license file with license_hash" do
-          site.license.read.should eq "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true});"
+          site.license.read.should eq "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:true,s:true,r:true});"
         end
       end
 
@@ -288,7 +288,7 @@ describe SiteModules::Template, :plans do
           let(:site) { create(:site, hostname: "jilion.com").tap { |s| s.set_template("license", prefix: 'bar') } }
 
           it "use standard license" do
-            site.license.read.should eq "jilion.sublime.video.sites({h:[\"jilion.com\"],d:[\"127.0.0.1\",\"localhost\"],b:false,s:true,r:true});"
+            site.license.read.should eq "jilion.sublime.video.sites({h:[\"jilion.com\"],d:[\"127.0.0.1\",\"localhost\"],b:true,s:true,r:true});"
           end
         end
       end
