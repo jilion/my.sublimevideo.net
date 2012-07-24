@@ -137,7 +137,7 @@ describe Site, :plans do
       end
 
       context "on a paid plan" do
-        subject { create(:site_not_in_trial, plan_id: @paid_plan.id) }
+        subject { create(:site, plan_id: @paid_plan.id) }
 
         describe "when updating a site in paid plan" do
           it "needs current_password" do
@@ -710,7 +710,7 @@ describe Site, :plans do
     end
 
     describe "#skip_pwd" do
-      subject { create(:site_not_in_trial, hostname: "rymai.com") }
+      subject { create(:site, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
         subject.hostname.should eq "rymai.com"
@@ -734,7 +734,7 @@ describe Site, :plans do
     end
 
     describe "#save_skip_pwd" do
-      subject { create(:site_not_in_trial, hostname: "rymai.com") }
+      subject { create(:site, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
         subject.hostname.should eq "rymai.com"
@@ -760,7 +760,7 @@ describe Site, :plans do
     describe "#sponsor!" do
       describe "sponsor a site with a next plan" do
         subject do
-          site = create(:site_not_in_trial)
+          site = create(:site)
           site.next_cycle_plan_id = @free_plan.id
           site
         end

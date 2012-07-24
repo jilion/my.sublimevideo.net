@@ -253,7 +253,7 @@ describe Invoice, :plans do
         Timecop.travel(Time.utc(2011, 4, 4, 6)) do
           @user = create(:user)
 
-          @site1 = build(:site_not_in_trial, plan_id: @paid_plan.id, user: @user, first_paid_plan_started_at: Time.now.utc)
+          @site1 = build(:site, plan_id: @paid_plan.id, user: @user, first_paid_plan_started_at: Time.now.utc)
           @site1.prepare_pending_attributes
           @site1.save!
 

@@ -12,9 +12,9 @@ describe Stats::SitesStat, :plans do
       site.sponsor!
       create(:site, user: user, state: 'active', plan_id: @trial_plan.id) # in trial
       create(:site, user: user, state: 'archived', plan_id: @trial_plan.id) # in trial & archived
-      create(:site_not_in_trial, user: user, state: 'active', plan_id: @paid_plan.id) # not in trial
-      create(:site_not_in_trial, user: user, state: 'active', plan_id: @yearly_plan.id) # not in trial
-      create(:site_not_in_trial, user: user, state: 'active', plan_id: @custom_plan.token) # not in trial
+      create(:site, user: user, state: 'active', plan_id: @paid_plan.id) # not in trial
+      create(:site, user: user, state: 'active', plan_id: @yearly_plan.id) # not in trial
+      create(:site, user: user, state: 'active', plan_id: @custom_plan.token) # not in trial
       create(:site, user: user, state: 'suspended', plan_id: @custom_plan.token)
       create(:site, user: user, state: 'archived', plan_id: @paid_plan.id)
     end

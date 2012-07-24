@@ -234,7 +234,7 @@ describe UserModules::CreditCard, :plans do
       context "paying user" do
         it "sends 'cc will expire' email when user's credit card will expire at the end of the current month" do
           @user = create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date)
-          @site = create(:site_not_in_trial, user: @user)
+          @site = create(:site, user: @user)
 
           @user.cc_expire_on.should eq Time.now.utc.end_of_month.to_date
           expect { User.send_credit_card_expiration }.to change(Delayed::Job.where { handler =~ '%Class%credit_card_will_expire%' }, :count).by(1)

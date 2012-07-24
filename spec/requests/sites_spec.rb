@@ -260,10 +260,10 @@ feature 'Site archive' do
     sign_in_as :user
     @site_in_trial = create(:site, user: @current_user, plan_id: @trial_plan.id, hostname: hostname1)
 
-    @paid_site_with_paid_invoices = create(:site_not_in_trial, user: @current_user, hostname: hostname2)
+    @paid_site_with_paid_invoices = create(:site, user: @current_user, hostname: hostname2)
     create(:invoice, site: @paid_site_with_paid_invoices, state: 'paid')
 
-    @paid_site_with_open_invoices = create(:site_not_in_trial, user: @current_user, hostname: hostname3)
+    @paid_site_with_open_invoices = create(:site, user: @current_user, hostname: hostname3)
     create(:invoice, site: @paid_site_with_open_invoices, state: 'open')
 
     go 'my', '/sites'

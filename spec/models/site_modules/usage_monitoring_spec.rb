@@ -40,7 +40,7 @@ describe SiteModules::UsageMonitoring do
 
     context "with reached player hits site" do
       before do
-        Timecop.travel(Time.utc(2011,1,1)) { @site = create(:site_not_in_trial, plan_id: plan.id) }
+        Timecop.travel(Time.utc(2011,1,1)) { @site = create(:site, plan_id: plan.id) }
         create(:site_day_stat, t: @site.token, d: Time.utc(2011,1,1), vv: { m: 3001 })
       end
 

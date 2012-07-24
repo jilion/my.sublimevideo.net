@@ -8,8 +8,8 @@ describe Stats::UsersStat, :plans do
       create(:site, plan_id: @free_plan.id) # free (only free sites)
       create(:site, plan_id: @trial_plan.id) # free (site is in trial)
 
-      create(:site_not_in_trial, plan_id: @paid_plan.id) # paying
-      create(:site_not_in_trial, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id) # paying with next cycle plan
+      create(:site, plan_id: @paid_plan.id) # paying
+      create(:site, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id) # paying with next cycle plan
 
       create(:user, state: 'suspended') # suspended
       create(:user, state: 'archived') # archived

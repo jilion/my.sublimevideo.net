@@ -15,7 +15,7 @@ describe InvoiceItem::Plan, :plans do
       @plan2 = create(:plan, price: 2000)
 
       @site1 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
-      @site2 = create(:site_not_in_trial, user: @user1, plan_id: @plan2.id)
+      @site2 = create(:site, user: @user1, plan_id: @plan2.id)
       @site3 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
       @site4 = create(:site_with_invoice, user: @user2, plan_id: @plan1.id)
       @site5 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
