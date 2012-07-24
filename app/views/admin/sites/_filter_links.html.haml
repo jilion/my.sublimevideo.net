@@ -7,7 +7,7 @@
       %li
         = link_to "#{content_tag(:strong, display_integer(Site.in_trial.size))} Trial".html_safe, admin_sites_path(in_trial: true), remote: true, class: 'remote'
       %li
-        = link_to "#{content_tag(:strong, display_integer(Site.in_paid_plan.size))} Paying".html_safe, admin_sites_path(paid_plan: true), remote: true, class: 'remote'
+        = link_to "#{content_tag(:strong, display_integer(Site.in_paid_plan.size))} Paying".html_safe, admin_sites_path(in_paid_plan: true), remote: true, class: 'remote'
         (
         = link_to "#{content_tag(:strong, display_integer(Site.in_plan('plus').size))} Plus".html_safe, admin_sites_path(in_plan: 'plus'), remote: true, class: 'remote'
         |
