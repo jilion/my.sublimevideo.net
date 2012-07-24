@@ -25,7 +25,7 @@
       #plan_create_info.update_plan_message_box.notice{ style: "display:none;" }
         %p= vat_price_info("plan_price")
 
-    %p#trial_note.note= "After the first #{BusinessModel.days_for_trial} days, your trial will automatically revert to the Free plan if you don't choose a paid plan."
+    %p#trial_note.note.info= "After the first #{BusinessModel.days_for_trial} days, your trial will automatically revert to the Free plan if you don't choose a paid plan."
 
     .actions.center
       = f.submit "#{@site.persisted? ? 'Update' : 'Add'} site", class: "submit green_button", id: 'site_submit'
