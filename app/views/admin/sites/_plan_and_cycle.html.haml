@@ -1,13 +1,6 @@
 %h3 Plan & Cycle
 
 %p
-  = "Trial:"
-  - if site.trial_started_at?
-    %strong= site.trial_ended? ? "ended" : "in trial"
-    = ": #{l(site.trial_started_at, format: :d_b_Y)} - #{l(site.trial_end, format: :d_b_Y)}"
-  - else
-    = "not started"
-%p
   = "Plan:"
   %strong= site.plan ? site.plan.title : "–"
   %strong= "|"
