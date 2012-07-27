@@ -246,8 +246,7 @@ describe Transaction, :plans do
 
           it "should send an email to invoice.user" do
             subject
-            expect { subject.succeed }.to change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should eq [subject.user.email]
+            expect { subject.succeed }.to change(Delayed::Job.where { handler =~ '%Class%transaction_succeeded%' }, :count).by(1)
           end
         end
       end
@@ -258,7 +257,7 @@ describe Transaction, :plans do
 
           it "should send an email to invoice.user" do
             subject
-            expect { subject.fail }.to change(ActionMailer::Base.deliveries, :count).by(1)
+            expect { subject.fail }.to change(Delayed::Job.where { handler =~ '%Class%transaction_failed%' }, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should eq [subject.user.email]
           end
         end
@@ -269,15 +268,15 @@ describe Transaction, :plans do
 
   describe "Scopes" do
     before do
-      @site                    = create(:site)
+      @site                    = create(:fake_site)
       @invoice                 = create(:invoice, site: @site, state: 'open')
-      @transaction_unprocessed = create(:transaction, invoices: [@invoice])
-      @transaction_failed      = create(:transaction, invoices: [@invoice], state: 'failed')
-      @transaction_paid        = create(:transaction, invoices: [@invoice], state: 'paid')
+      @unprocessed_transaction = create(:transaction, invoices: [@invoice])
+      @failed_transaction      = create(:transaction, invoices: [@invoice], state: 'failed')
+      @paid_transaction        = create(:transaction, invoices: [@invoice], state: 'paid')
     end
 
     describe "#failed" do
-      specify { Transaction.failed.all.should =~ [@transaction_failed] }
+      specify { Transaction.failed.all.should =~ [@failed_transaction] }
     end
   end # Scopes
 
@@ -314,7 +313,7 @@ describe Transaction, :plans do
         @user1    = create(:user)
         @user2    = create(:user)
         @site1    = create(:site, user: @user1, first_paid_plan_started_at: Time.now.utc)
-        @site2    = create(:site, user: @user2)
+        @site2    = create(:site, user: @user2).tap { |s| s.update_column(:first_paid_plan_started_at, nil) }
         @site1.invoices.delete_all
         @site2.invoices.delete_all
         @invoice1 = create(:invoice, site: @site1, state: 'paid', renew: false) # first invoice
@@ -401,8 +400,8 @@ describe Transaction, :plans do
           it "sends an email to the user" do
             @invoice4.reload
             15.times { create(:transaction, invoices: [@invoice4], state: 'failed') }
-            expect { Transaction.charge_invoices_by_user_id(@user2.id) }.to change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should eq [@user2.email]
+
+            expect { Transaction.charge_invoices_by_user_id(@user2.id) }.to change(Delayed::Job.where { handler =~ '%Class%too_many_charging_attempts%' }, :count).by(1)
           end
         end
       end
@@ -778,27 +777,24 @@ describe Transaction, :plans do
 
 end
 
-
-
-
 # == Schema Information
 #
 # Table name: transactions
 #
-#  id             :integer         not null, primary key
-#  user_id        :integer
-#  order_id       :string(255)
-#  state          :string(255)
 #  amount         :integer
-#  error          :text
-#  cc_type        :string(255)
-#  cc_last_digits :string(255)
 #  cc_expire_on   :date
-#  pay_id         :string(255)
+#  cc_last_digits :string(255)
+#  cc_type        :string(255)
+#  created_at     :datetime         not null
+#  error          :text
+#  id             :integer          not null, primary key
 #  nc_status      :integer
+#  order_id       :string(255)
+#  pay_id         :string(255)
+#  state          :string(255)
 #  status         :integer
-#  created_at     :datetime
-#  updated_at     :datetime
+#  updated_at     :datetime         not null
+#  user_id        :integer
 #
 # Indexes
 #

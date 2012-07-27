@@ -2,7 +2,11 @@ require_dependency 'business_model'
 
 module PlansHelper
 
-  def plan_label_content(plan, site=nil, options={})
+  def display_plan_fields(site)
+    "display:#{site.persisted? ? 'block' : 'none'}"
+  end
+
+  def plan_label_content(plan, site = nil, options = {})
     content_tag(:span, class: "pricing") do
       price_box = content_tag(:strong, class: "price") do
         display_amount_with_sup(plan.price(site))
@@ -23,9 +27,9 @@ module PlansHelper
 
   def plan_change_type(site, old_plan, new_plan)
     if old_plan == new_plan
-      site.in_trial? ? "skipping_trial" : nil
-    elsif site.trial_not_started_or_in_trial?
-      new_plan.free_plan? ? "in_trial_downgrade_to_free" : "in_trial_update"
+      nil
+    elsif site.in_trial_plan?
+      new_plan.free_plan? ? "in_trial_downgrade_to_free" : "in_trial_upgrade"
     elsif new_plan.free_plan?
       "delayed_downgrade_to_free"
     elsif old_plan.free_plan?
@@ -80,35 +84,49 @@ module PlansHelper
     "#{content_tag :span, text} Data Retention".html_safe
   end
 
-  def radio_button_options(site, current_plan, new_plan, options={})
+  def radio_button_options(site, new_plan, options = {})
     options = options
     options[:id]    ||= new_plan.free_plan? ? "plan_free" : "plan_#{new_plan.name}_#{new_plan.cycle}"
     options[:class] ||= "plan_radio"
     options["data-plan_title"] = new_plan.title(always_with_cycle: true)
     options["data-plan_price"] = display_amount(new_plan.price(site))
+    options["data-plan_cycle"] = new_plan.cycle
     if current_user.vat?
       options["data-vat"] = display_vat_percentage
       options["data-plan_price_vat"] = display_amount(new_plan.price(site), vat: true)
     end
 
     if site.persisted?
-      options["data-plan_change_type"] = plan_change_type(site, current_plan, new_plan)
-      update_price = current_plan.upgrade?(new_plan) ? new_plan.price(site) - site.last_paid_plan_price : new_plan.price(site)
+      options["data-plan_change_type"] = plan_change_type(site, @current_plan, new_plan)
+      update_price = @current_plan.upgrade?(new_plan) ? new_plan.price(site) - site.last_paid_plan_price : new_plan.price(site)
 
       options["data-plan_update_price"] = display_amount(update_price)
 
       options["data-plan_update_price_vat"] = display_amount(update_price, vat: true) if current_user.vat?
 
-      options["data-plan_update_date"] = l(if site.trial_not_started_or_in_trial?
+      plan_update_date = if site.in_trial_plan?
         (site.trial_end || BusinessModel.days_for_trial.days.from_now).tomorrow
-      elsif current_plan.upgrade?(new_plan)
+      elsif @current_plan.upgrade?(new_plan)
         site.plan_cycle_started_at || Time.now.utc.midnight
       else
         (site.plan_cycle_ended_at && site.plan_cycle_ended_at.tomorrow.midnight) || Time.now.utc.midnight
-      end, format: :named_date)
+      end
+      options["data-plan_update_date"] = l(plan_update_date, format: :named_date)
     end
 
     options
+  end
+
+  def current_plan_label(site, plan)
+    content_tag(:span, 'Current', class: 'current_label') if site.plan == plan
+  end
+
+  def check_plan(plan)
+    params[:site] && params[:site][:plan_id] ? params[:site][:plan_id].to_i == plan.id : (@current_plan && @current_plan == plan)
+  end
+
+  def activate_plan(plan)
+    check_plan(plan) ? 'active' : ''
   end
 
   def vat_price_info(klass)

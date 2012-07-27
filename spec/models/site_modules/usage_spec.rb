@@ -116,7 +116,7 @@ describe SiteModules::Usage do
   end
 
   describe '#billable_usages' do
-    before { Timecop.travel(15.days.ago) { @site = create(:site_not_in_trial) } }
+    before { Timecop.travel(15.days.ago) { @site = create(:site) } }
 
     before do
       @site.unmemoize_all

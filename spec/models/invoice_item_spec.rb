@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe InvoiceItem do
+describe InvoiceItem, :plans do
 
   context "Factory" do
     let(:invoice_item) { create(:plan_invoice_item) }
@@ -50,23 +50,24 @@ describe InvoiceItem do
   end # Validations
 
 end
+
 # == Schema Information
 #
 # Table name: invoice_items
 #
-#  id                    :integer         not null, primary key
-#  type                  :string(255)
-#  invoice_id            :integer
-#  item_type             :string(255)
-#  item_id               :integer
-#  started_at            :datetime
-#  ended_at              :datetime
-#  discounted_percentage :float
-#  price                 :integer
 #  amount                :integer
-#  created_at            :datetime
-#  updated_at            :datetime
+#  created_at            :datetime         not null
 #  deal_id               :integer
+#  discounted_percentage :float
+#  ended_at              :datetime
+#  id                    :integer          not null, primary key
+#  invoice_id            :integer
+#  item_id               :integer
+#  item_type             :string(255)
+#  price                 :integer
+#  started_at            :datetime
+#  type                  :string(255)
+#  updated_at            :datetime         not null
 #
 # Indexes
 #

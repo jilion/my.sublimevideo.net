@@ -11,7 +11,9 @@ feature 'Account deletion' do
 
     select  'Price',                 from: 'goodbye_feedback_reason'
     fill_in 'user_current_password', with: '123456'
-    click_button 'Cancel my account'
+    expect { click_button 'Cancel my account' }.to change(Delayed::Job, :count).by(2)
+    Delayed::Job.where { handler =~ '%Class%account_archived%' }.should have(1).item
+    Delayed::Job.where { handler =~ '%Class%unsubscribe%' }.should have(1).item
 
     current_url.should eq 'http://sublimevideo.dev/'
     get_me_the_cookies.map { |c| c['name'] }.should_not include('l')
@@ -23,11 +25,6 @@ feature 'Account deletion' do
     goodbye_feedback = GoodbyeFeedback.last
     goodbye_feedback.reason.should eq 'price'
     goodbye_feedback.user.should eq @current_user
-
-    last_delivery = ActionMailer::Base.deliveries.last
-    last_delivery.to.should eq [@current_user.email]
-    last_delivery.subject.should eq 'Your account has been cancelled'
-    last_delivery.body.encoded.should include 'This is to confirm that the cancellation of your SublimeVideo account has been processed'
   end
 
   scenario 'shows a feedback form before deleting the account but shows an error without a valid reason' do

@@ -111,10 +111,6 @@ describe Tweet do
       end
     end
 
-    describe ".sync_favorite_tweets" do
-      use_vcr_cassette "twitter/sync_favorite_tweets"
-    end
-
     describe ".enough_remaining_twitter_calls?" do
       it "should return true if remaining calls are >= KEYWORDS.size * 3" do
         TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', remaining_hits: Tweet::KEYWORDS.size*3))

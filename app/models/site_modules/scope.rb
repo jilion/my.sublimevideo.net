@@ -18,39 +18,35 @@ module SiteModules::Scope
     scope :refunded,  where { (state == 'archived') & (refunded_at != nil) }
 
     # attributes queries
-    scope :with_wildcard,        where { wildcard == true }
-    scope :with_path,            where { (path != nil) & (path != '') & (path != ' ') }
-    scope :badged,               lambda { |bool| where { badged == bool } }
-    scope :with_extra_hostnames, where { (extra_hostnames != nil) & (extra_hostnames != '') }
-    scope :with_plan,            where { plan_id != nil }
-    scope :with_next_cycle_plan, where { next_cycle_plan_id != nil }
+    scope :with_wildcard,              where { wildcard == true }
+    scope :with_path,                  where { (path != nil) & (path != '') & (path != ' ') }
+    scope :badged,                     lambda { |bool| where { badged == bool } }
+    scope :with_extra_hostnames,       where { (extra_hostnames != nil) & (extra_hostnames != '') }
+    scope :with_plan,                  where { plan_id != nil }
+    scope :with_next_cycle_plan,       where { next_cycle_plan_id != nil }
     scope :with_not_canceled_invoices, lambda { joins(:invoices).merge(::Invoice.not_canceled) }
 
     # plans
-    scope :custom_plan,    lambda { active.in_plan_id(Plan.custom_plans.map(&:id)) }
-    scope :paid_plan,      lambda { active.in_plan_id(Plan.paid_plans.map(&:id)) }
-    scope :unpaid_plan,    lambda { active.in_plan_id(Plan.unpaid_plans.map(&:id)) }
-    scope :paid_next_plan_or_no_next_plan, lambda { active.where { next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) } }
-    scope :in_plan,        lambda { |plan_names| active.in_plan_id(Plan.where { name >> Array.wrap(plan_names) }.map(&:id)) }
     scope :in_plan_id,     lambda { |plan_ids| active.where { plan_id >> Array.wrap(plan_ids) } }
+    scope :in_plan,        lambda { |plan_names| in_plan_id(Plan.where { name >> Array.wrap(plan_names) }.map(&:id)) }
+    scope :in_custom_plan, lambda { in_plan_id(Plan.custom_plans.map(&:id)) }
+    scope :in_paid_plan,   lambda { in_plan_id(Plan.paid_plans.map(&:id)) }
+    scope :in_trial,       lambda { in_plan('trial') }
 
     # billing
-    scope :in_trial, lambda {
-      active.where { trial_started_at > BusinessModel.days_for_trial.days.ago }
-    }
-    scope :not_in_trial, lambda {
-      active.where { (trial_started_at || BusinessModel.days_for_trial.days.ago) <= BusinessModel.days_for_trial.days.ago }
+    scope :trial_ended, lambda {
+      in_trial.where { (plan_started_at || BusinessModel.days_for_trial.days.ago) <= BusinessModel.days_for_trial.days.ago }
     }
     scope :trial_expires_on, lambda { |timestamp|
-      active.where { date_trunc('day', trial_started_at) == (timestamp - BusinessModel.days_for_trial.days).midnight }
+      in_trial.where { date_trunc('day', plan_started_at) == (timestamp - BusinessModel.days_for_trial.days).midnight }
     }
 
     # plan cycles
     scope :renewable, lambda {
-      active.where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
+      in_paid_plan.where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
     }
     scope :plan_will_be_renewed_on, lambda { |timestamp|
-      active.where { date_trunc('day', plan_cycle_ended_at) == (timestamp - 1.day).midnight }
+      in_paid_plan.where { date_trunc('day', plan_cycle_ended_at) == (timestamp - 1.day).midnight }
     }
 
     # admin

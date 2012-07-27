@@ -1,0 +1,39 @@
+# Monthly business reporting
+
+## Data structure
+
+1. Sales
+
+One D-day.
+
+In all invoices paid in the previous 12 months, grouped by site and ordered by paid_at DESC take only the first one:
+  - Invoice has 1 item
+    => add its amount to the previous month / plan amount
+  - Invoice has 2 items:
+    - Item 1 is monthly plan and item 2 is monthly or yearly plan
+      => add item 2 amount to the previous month
+    - Item 1 is yearly plan and item 2 is yearly plan
+      => add [ item 2 - ((item 1/12)* # of months paid in item 1) / (12 - # of months paid in item 1) ] to the previous month
+
+
+1/1/2012:  i1 => $9.90         => will be $49.9 for 1/2012
+15/1/2012: i2 => $49.9 - $9.90 => will be $49.9 for 1/2012
+In this case, take the latest invoice of this month
+                               => will be $49.9 for 2/2012
+                               => will be $49.9 for 3/2012
+1/4/2012: i3 => $99            => will be $99/12 for 4/2012
+                               => will be $99/12 for 5/2012
+In this case, take the latest invoice of this month
+
+15/6/2012: i4 => $499 - $99    => will be ($499 - ($99/12)*2) / (12 - 2) for 6/2012
+                               => will be ($499 - ($99/12)*2) / (12 - 2) for 7/2012
+                               => will be ($499 - ($99/12)*2) / (12 - 2) for 8/2012
+                               => will be ($499 - ($99/12)*2) / (12 - 2) for 9/2012
+                               => will be ($499 - ($99/12)*2) / (12 - 2) for 10/2012
+                               => will be ($499 - ($99/12)*2) / (12 - 2) for 11/2012
+                               => will be ($499 - ($99/12)*2) / (12 - 2) for 12/2012
+                               => will be ($499 - ($99/12)*2) / (12 - 2) for 1/2013
+                               => will be ($499 - ($99/12)*2) / (12 - 2) for 2/2013
+                               => will be ($499 - ($99/12)*2) / (12 - 2) for 3/2013
+
+=> take in account only

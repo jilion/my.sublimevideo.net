@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe InvoiceItem::Plan do
+describe InvoiceItem::Plan, :plans do
 
   describe ".construct" do
     before(:all) do
@@ -15,14 +15,13 @@ describe InvoiceItem::Plan do
       @plan2 = create(:plan, price: 2000)
 
       @site1 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
-      @site2 = create(:site_not_in_trial, user: @user1, plan_id: @plan2.id)
+      @site2 = create(:site, user: @user1, plan_id: @plan2.id)
       @site3 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
       @site4 = create(:site_with_invoice, user: @user2, plan_id: @plan1.id)
       @site5 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
 
       @site6 = create(:site_with_invoice, user: @user3, plan_id: @plan1.id)
       Timecop.travel(BusinessModel.days_for_trial.days.from_now) do
-        @site6.prepare_activation
         @site6.prepare_pending_attributes
         @site6.save_skip_pwd
       end
@@ -46,7 +45,6 @@ describe InvoiceItem::Plan do
         # normal renew
         @site3.prepare_pending_attributes
       end
-      @site5.skip_trial = true
 
       @invoice1 = build(:invoice, site: @site1)
       @invoice2 = build(:invoice, site: @site2, renew: true)
@@ -140,36 +138,33 @@ describe InvoiceItem::Plan do
         its(:discounted_percentage) { should eq 0 }
         its(:price)                 { should eq @plan1.price }
         its(:amount)                { should eq @plan1.price }
-        its(:started_at)            { should eq @site2.pending_plan_cycle_started_at }
-        its(:ended_at)              { should eq @site2.pending_plan_cycle_ended_at }
+        its(:started_at)            { should eq @site2.plan_cycle_started_at }
+        its(:ended_at)              { should eq @site2.plan_cycle_ended_at }
       end
     end
 
   end
 
 end
+
 # == Schema Information
 #
-# Table name: invoice_items
+# Table name: plans
 #
-#  id                    :integer         not null, primary key
-#  type                  :string(255)
-#  invoice_id            :integer
-#  item_type             :string(255)
-#  item_id               :integer
-#  started_at            :datetime
-#  ended_at              :datetime
-#  discounted_percentage :float
-#  price                 :integer
-#  amount                :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  deal_id               :integer
+#  created_at           :datetime         not null
+#  cycle                :string(255)
+#  id                   :integer          not null, primary key
+#  name                 :string(255)
+#  price                :integer
+#  stats_retention_days :integer
+#  support_level        :integer          default(0)
+#  token                :string(255)
+#  updated_at           :datetime         not null
+#  video_views          :integer
 #
 # Indexes
 #
-#  index_invoice_items_on_deal_id                (deal_id)
-#  index_invoice_items_on_invoice_id             (invoice_id)
-#  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
+#  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
+#  index_plans_on_token           (token) UNIQUE
 #
 

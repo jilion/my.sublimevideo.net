@@ -285,3 +285,62 @@ private
 
 end
 
+# == Schema Information
+#
+# Table name: sites
+#
+#  alexa_rank                                :integer
+#  archived_at                               :datetime
+#  badged                                    :boolean
+#  cdn_up_to_date                            :boolean          default(FALSE)
+#  created_at                                :datetime         not null
+#  dev_hostnames                             :string(255)
+#  extra_hostnames                           :string(255)
+#  first_billable_plays_at                   :datetime
+#  first_paid_plan_started_at                :datetime
+#  first_plan_upgrade_required_alert_sent_at :datetime
+#  google_rank                               :integer
+#  hostname                                  :string(255)
+#  id                                        :integer          not null, primary key
+#  last_30_days_billable_video_views_array   :text
+#  last_30_days_dev_video_views              :integer          default(0)
+#  last_30_days_embed_video_views            :integer          default(0)
+#  last_30_days_extra_video_views            :integer          default(0)
+#  last_30_days_invalid_video_views          :integer          default(0)
+#  last_30_days_main_video_views             :integer          default(0)
+#  last_30_days_video_tags                   :integer          default(0)
+#  license                                   :string(255)
+#  loader                                    :string(255)
+#  next_cycle_plan_id                        :integer
+#  overusage_notification_sent_at            :datetime
+#  path                                      :string(255)
+#  pending_plan_cycle_ended_at               :datetime
+#  pending_plan_cycle_started_at             :datetime
+#  pending_plan_id                           :integer
+#  pending_plan_started_at                   :datetime
+#  plan_cycle_ended_at                       :datetime
+#  plan_cycle_started_at                     :datetime
+#  plan_id                                   :integer
+#  plan_started_at                           :datetime
+#  player_mode                               :string(255)      default("stable")
+#  refunded_at                               :datetime
+#  state                                     :string(255)
+#  token                                     :string(255)
+#  trial_started_at                          :datetime
+#  updated_at                                :datetime         not null
+#  user_id                                   :integer
+#  wildcard                                  :boolean
+#
+# Indexes
+#
+#  index_sites_on_created_at                        (created_at)
+#  index_sites_on_hostname                          (hostname)
+#  index_sites_on_last_30_days_dev_video_views      (last_30_days_dev_video_views)
+#  index_sites_on_last_30_days_embed_video_views    (last_30_days_embed_video_views)
+#  index_sites_on_last_30_days_extra_video_views    (last_30_days_extra_video_views)
+#  index_sites_on_last_30_days_invalid_video_views  (last_30_days_invalid_video_views)
+#  index_sites_on_last_30_days_main_video_views     (last_30_days_main_video_views)
+#  index_sites_on_plan_id                           (plan_id)
+#  index_sites_on_user_id                           (user_id)
+#
+

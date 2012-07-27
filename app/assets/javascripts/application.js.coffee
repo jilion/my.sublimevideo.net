@@ -37,7 +37,7 @@ MySublimeVideo.UI.prepareSitesStatus = ->
     new MySublimeVideo.UI.SitesStatus(table)
 
 MySublimeVideo.UI.preparePlansChooser = ->
-  if jQuery('#plans').exists()
+  if jQuery('#plan_fields').exists()
     if jQuery('#new_site').exists()
       new MySublimeVideo.UI.NewSitePlanChooser()
     else
@@ -55,3 +55,13 @@ jQuery(document).ready ->
   MySublimeVideo.UI.prepareSitesStatus()
 
   MySublimeVideo.UI.preparePlansChooser()
+
+  if (moreInfoForm = jQuery('#edit_more_info')).exists()
+    moreInfoForm.on 'submit', ->
+      _gaq.push(['_trackEvent', 'SignUp', 'Completed', undefined, 1, true]) if _gaq?
+
+
+  _.each ['new_site', 'edit_site_plan'], (formId) ->
+    if (form = jQuery("##{formId}")).exists()
+      form.on 'submit', (e) ->
+        jQuery('#site_submit').attr('disabled', 'disabled')

@@ -12,7 +12,7 @@ module Stats
     field :d,  type: DateTime # Day
     field :fr, type: Hash     # free { "beta" => 2, "dev" => 3, "free" => 4 }
     field :sp, type: Integer  # sponsored
-    field :tr, type: Hash     # trial: { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
+    field :tr, type: Integer  # trial
     field :pa, type: Hash     # paying: { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
     field :su, type: Integer  # suspended
     field :ar, type: Integer  # archived
@@ -49,7 +49,7 @@ module Stats
           scoped
         end
 
-        json_stats.order_by([:d, :asc]).to_json(only: [:fr, :sp, :tr, :pa, :tr_details, :pa_details, :su, :ar])
+        json_stats.order_by([:d, :asc]).to_json(only: [:fr, :sp, :tr, :pa, :su, :ar])
       end
 
       def create_stats
@@ -59,21 +59,16 @@ module Stats
       def sites_hash(day)
         hash = {
           d: day.to_time,
-          fr: { free: Site.active.in_plan('free').count },
-          sp: Site.active.in_plan('sponsored').count,
-          tr: Hash.new { |h,k| h[k] = Hash.new(0) },
+          fr: { free: Site.in_plan('free').count },
+          sp: Site.in_plan('sponsored').count,
+          tr: Site.in_trial.count,
           pa: Hash.new { |h,k| h[k] = Hash.new(0) },
           su: Site.suspended.count,
           ar: Site.archived.count
         }
 
         Plan.paid_plans.each do |plan|
-          scope = Site.active.in_plan_id(plan.id)
-          sites_in_trial_count = scope.in_trial.count
-          hash[:tr][plan.name][plan.cycle[0]] = scope.in_trial.count
-
-          sites_paying_count = scope.not_in_trial.count
-          hash[:pa][plan.name][plan.cycle[0]] = scope.not_in_trial.count
+          hash[:pa][plan.name][plan.cycle[0]] = Site.active.in_plan_id(plan.id).count
         end
 
         hash

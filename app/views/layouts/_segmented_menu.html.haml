@@ -1,4 +1,4 @@
-- dont_show_invoices_tab = @site.in_free_plan? && @site.invoices.not_canceled.empty?
+- dont_show_invoices_tab = @site.in_unpaid_plan? && @site.invoices.not_canceled.empty?
 
 %ul.segmented_menu.sticky
   = li_menu_link('Videos', path: '', class: 'first' )

@@ -7,252 +7,202 @@ feature "Plan edit" do
     @premium_year = Plan.create(name: "premium", cycle: "year", video_views: 200_000, price: 49900)
   end
 
-  context "site in trial" do
-    scenario "view with a free plan without hostname" do
-      site = create(:site, user: @current_user, plan_id: @free_plan.id, hostname: nil)
+  scenario "view with a free plan without hostname" do
+    site = create(:site, user: @current_user, plan_id: @free_plan.id, hostname: nil)
 
-      go 'my', "/sites/#{site.to_param}/plan/edit"
+    go 'my', "/sites/#{site.to_param}/plan/edit"
 
-      current_url.should == "http://my.sublimevideo.dev/sites/#{site.to_param}/plan/edit"
-      page.should have_content "add a hostname"
-    end
-
-    scenario "update paid plan to free plan" do
-      site = create(:site, user: @current_user, plan_id: @paid_plan.id)
-
-      go 'my', "/sites/#{site.to_param}/plan/edit"
-
-      choose "plan_free"
-      has_checked_field?("plan_free").should be_true
-      has_unchecked_field?("plan_plus_month").should be_true
-      click_button "Update plan"
-
-      site.reload
-      site.plan.should eql @free_plan
-
-      current_url.should == "http://my.sublimevideo.dev/sites"
-      page.should have_content(site.plan.title)
-    end
-
-    scenario "update free plan to paid plan" do
-      site = create(:site, user: @current_user, plan_id: @free_plan.id)
-
-      go 'my', "/sites/#{site.to_param}/plan/edit"
-
-      choose "plan_plus_month"
-      click_button "Update plan"
-
-      site.reload
-      site.plan.should eq @paid_plan
-
-      current_url.should eq "http://my.sublimevideo.dev/sites"
-      page.should have_content(site.plan.title)
-    end
-
-    scenario "update free plan to paid plan and skip trial" do
-      site = create(:site, user: @current_user, plan_id: @free_plan.id)
-
-      go 'my', "/sites/#{site.to_param}/plan/edit"
-
-      choose "plan_plus_month"
-      check "site_skip_trial"
-      VCR.use_cassette('ogone/visa_payment_generic') do
-        expect { click_button "Update plan" }.to change(@current_user.invoices, :count)
-      end
-
-      site.reload
-      site.plan.should eq @paid_plan
-      site.invoices.last.should be_paid
-      site.plan_id.should eq Plan.find_by_name_and_cycle("plus", "month").id
-      site.pending_plan_id.should be_nil
-      site.trial_started_at.should be_present
-      site.first_paid_plan_started_at.should be_present
-      site.plan_started_at.should be_present
-      site.plan_cycle_started_at.should be_present
-      site.plan_cycle_ended_at.should be_present
-      site.pending_plan_started_at.should be_nil
-      site.pending_plan_cycle_started_at.should be_nil
-      site.pending_plan_cycle_ended_at.should be_nil
-
-      current_url.should eq "http://my.sublimevideo.dev/sites"
-      page.should have_content(site.plan.title)
-    end
+    current_url.should == "http://my.sublimevideo.dev/sites/#{site.to_param}/plan/edit"
+    page.should have_content "add a hostname"
   end
 
-  context "site not in trial" do
-    scenario "view with a free plan without hostname" do
-      site = create(:site_not_in_trial, user: @current_user, plan_id: @free_plan.id, hostname: nil)
+  scenario "update trial plan to paid plan" do
+    site = create(:site, user: @current_user, plan_id: @trial_plan.id)
 
-      go 'my', "/sites/#{site.to_param}/plan/edit"
+    go 'my', "/sites/#{site.to_param}/plan/edit"
 
-      current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
-      page.should have_content("add a hostname")
+    choose "plan_plus_month"
+    VCR.use_cassette('ogone/visa_payment_generic') do
+      expect { click_button "Update plan" }.to change(@current_user.invoices, :count)
     end
 
-    scenario "update paid plan to free plan" do
-      site = create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
+    site.reload
+    site.plan.should eq @paid_plan
+    site.invoices.last.should be_paid
+    site.plan_id.should eq Plan.find_by_name_and_cycle("plus", "month").id
+    site.pending_plan_id.should be_nil
+    site.first_paid_plan_started_at.should be_present
+    site.plan_started_at.should be_present
+    site.plan_cycle_started_at.should be_present
+    site.plan_cycle_ended_at.should be_present
+    site.pending_plan_started_at.should be_nil
+    site.pending_plan_cycle_started_at.should be_nil
+    site.pending_plan_cycle_ended_at.should be_nil
 
-      go 'my', "/sites/#{site.to_param}/plan/edit"
+    current_url.should eq "http://my.sublimevideo.dev/sites"
+    page.should have_content(site.plan.title)
+  end
 
-      choose "plan_free"
+  scenario "update free plan to paid plan" do
+    site = create(:site, user: @current_user, plan_id: @free_plan.id)
+
+    go 'my', "/sites/#{site.to_param}/plan/edit"
+
+    choose "plan_plus_month"
+    VCR.use_cassette('ogone/visa_payment_generic') do
+      expect { click_button "Update plan" }.to change(@current_user.invoices, :count)
+    end
+
+    site.reload
+    site.plan.should eq @paid_plan
+    site.invoices.last.should be_paid
+    site.plan_id.should eq Plan.find_by_name_and_cycle("plus", "month").id
+    site.pending_plan_id.should be_nil
+    site.first_paid_plan_started_at.should be_present
+    site.plan_started_at.should be_present
+    site.plan_cycle_started_at.should be_present
+    site.plan_cycle_ended_at.should be_present
+    site.pending_plan_started_at.should be_nil
+    site.pending_plan_cycle_started_at.should be_nil
+    site.pending_plan_cycle_ended_at.should be_nil
+
+    current_url.should eq "http://my.sublimevideo.dev/sites"
+    page.should have_content(site.plan.title)
+  end
+
+  scenario "view with a free plan without hostname" do
+    site = create(:site, user: @current_user, plan_id: @free_plan.id, hostname: nil)
+
+    go 'my', "/sites/#{site.to_param}/plan/edit"
+
+    current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
+    page.should have_content("add a hostname")
+  end
+
+  scenario "update paid plan to free plan" do
+    site = create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
+
+    go 'my', "/sites/#{site.to_param}/plan/edit"
+
+    choose "plan_free"
+    click_button "Update plan"
+
+    has_checked_field?("plan_free").should be_true
+    has_unchecked_field?("plan_plus_month").should be_true
+
+    fill_in "Password", with: "123456"
+    click_button "Done"
+
+    site.reload
+
+    current_url.should == "http://my.sublimevideo.dev/sites"
+    page.should have_content("#{site.plan.title} plan => #{site.next_cycle_plan.title} plan")
+
+    click_link "#{site.plan.title} plan => #{site.next_cycle_plan.title} plan"
+
+    page.should have_content("Your new #{site.next_cycle_plan.title} plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
+  end
+
+  scenario "update free plan to paid plan" do
+    site = create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
+    site.plan_id = @free_plan.id
+    site.save_skip_pwd
+    Timecop.travel(2.months.from_now) { site.prepare_pending_attributes; site.apply_pending_attributes }
+    site.reload.plan.should eql @free_plan
+
+    go 'my', "/sites/#{site.to_param}/plan/edit"
+
+    VCR.use_cassette('ogone/visa_payment_generic') do
+      choose "plan_plus_month"
       click_button "Update plan"
+    end
 
-      has_checked_field?("plan_free").should be_true
-      has_unchecked_field?("plan_plus_month").should be_true
+    site.reload.plan.should eql @paid_plan
 
+    current_url.should == "http://my.sublimevideo.dev/sites"
+    page.should have_content(site.plan.title)
+
+    click_link site.plan.title
+  end
+
+  scenario "update paid plan to paid plan and using registered credit card" do
+    site = create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
+    site.plan.should eql @premium_month
+    site.first_paid_plan_started_at.should be_present
+    site.plan_started_at.should be_present
+    site.plan_cycle_started_at.should be_present
+    site.plan_cycle_ended_at.should be_present
+
+    go 'my', "/sites/#{site.to_param}/plan/edit"
+
+    page.should have_no_selector "#credit_card"
+    page.should have_selector "#credit_card_summary"
+
+    choose "plan_premium_year"
+
+    has_checked_field?("plan_premium_year").should be_true
+    click_button "Update plan"
+
+    VCR.use_cassette('ogone/visa_payment_generic') do
       fill_in "Password", with: "123456"
       click_button "Done"
-
-      site.reload
-
-      current_url.should == "http://my.sublimevideo.dev/sites"
-      page.should have_content("#{site.plan.title} plan => #{site.next_cycle_plan.title} plan")
-
-      click_link "#{site.plan.title} plan => #{site.next_cycle_plan.title} plan"
-
-      page.should have_content("Your new #{site.next_cycle_plan.title} plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
     end
 
-    scenario "update free plan to paid plan" do
-      site = create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
-      site.plan_id = @free_plan.id
-      site.save_skip_pwd
-      Timecop.travel(2.months.from_now) { site.prepare_pending_attributes; site.apply_pending_attributes }
-      site.reload.plan.should eql @free_plan
+    site.reload.plan.should eql @premium_year
 
-      go 'my', "/sites/#{site.to_param}/plan/edit"
+    current_url.should == "http://my.sublimevideo.dev/sites"
+    page.should have_content "#{site.plan.title}"
 
-      VCR.use_cassette('ogone/visa_payment_generic') do
-        choose "plan_plus_month"
-        click_button "Update plan"
-      end
+    click_link site.plan.title
+    has_checked_field?("plan_premium_year").should be_true
+  end
 
-      site.reload.plan.should eql @paid_plan
+  scenario "failed update" do
+    site = create(:site_with_invoice, user: @current_user, plan_id: @free_plan.id)
 
-      current_url.should == "http://my.sublimevideo.dev/sites"
-      page.should have_content(site.plan.title)
+    go 'my', "/sites/#{site.to_param}/plan/edit"
 
-      click_link site.plan.title
-    end
-
-    scenario "update paid plan to paid plan and using registered credit card" do
-      site = create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
-      site.plan.should eql @premium_month
-      site.first_paid_plan_started_at.should be_present
-      site.plan_started_at.should be_present
-      site.plan_cycle_started_at.should be_present
-      site.plan_cycle_ended_at.should be_present
-
-      go 'my', "/sites/#{site.to_param}/plan/edit"
-
-      page.should have_no_selector "#credit_card"
-      page.should have_selector "#credit_card_summary"
-
-      choose "plan_premium_year"
-
-      has_checked_field?("plan_premium_year").should be_true
+    VCR.use_cassette('ogone/visa_payment_generic_failed') do
+      choose "plan_plus_month"
       click_button "Update plan"
-
-      VCR.use_cassette('ogone/visa_payment_generic') do
-        fill_in "Password", with: "123456"
-        click_button "Done"
-      end
-
-      site.reload.plan.should eql @premium_year
-
-      current_url.should == "http://my.sublimevideo.dev/sites"
-      page.should have_content "#{site.plan.title}"
-
-      click_link site.plan.title
-      has_checked_field?("plan_premium_year").should be_true
     end
 
-    context "When user has no credit card" do
-      background do
-        sign_in_as :user, without_cc: true, kill_user: true
-        @current_user.should_not be_cc
-        @site = create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
-        @site.plan.should eql @premium_month
-        @site.first_paid_plan_started_at.should be_present
-        @site.plan_started_at.should be_present
-        @site.plan_cycle_started_at.should be_present
-        @site.plan_cycle_ended_at.should be_present
-      end
+    site.reload
 
-      pending "update paid plan to paid plan and using new credit card" do
-        go 'my', "/sites/#{@site.to_param}/plan/edit"
+    current_url.should == "http://my.sublimevideo.dev/sites"
 
-        page.should have_selector "#billing_info"
-        # page.should have_no_selector("#credit_card_summary")
+    page.should have_content("Embed Code")
+    page.should have_content(site.plan.title)
+    page.should have_content(I18n.t('site.status.payment_issue'))
 
-        choose "plan_premium_year"
-        # set_credit_card(type: 'master')
-        has_checked_field?("plan_premium_year").should be_true
+    go 'my', "/sites/#{site.to_param}/plan/edit"
 
-        click_button "Update plan"
+    page.should_not have_content(site.plan.title)
+    page.should have_content("There has been a transaction error. Please review")
+  end
 
-        VCR.use_cassette('ogone/visa_payment_generic') do
-          fill_in "Password", with: "123456"
-          click_button "Done"
-        end
+  scenario "cancel next plan automatic update" do
+    site = create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
 
-        @site.reload.plan.should eql @premium_year
+    site.update_attribute(:next_cycle_plan_id, @free_plan.id)
 
-        current_url.should == "http://my.sublimevideo.dev/sites"
-        page.should have_content(@site.plan.title)
+    go 'my', "/sites"
 
-        click_link @site.plan.title
-        has_checked_field?("plan_premium_year").should be_true
-      end
-    end
+    page.should have_content("#{site.plan.title} plan => #{site.next_cycle_plan.title} plan")
 
-    scenario "failed update" do
-      site = create(:site_with_invoice, user: @current_user, plan_id: @free_plan.id)
+    click_link "#{site.plan.title} plan => #{site.next_cycle_plan.title} plan"
 
-      go 'my', "/sites/#{site.to_param}/plan/edit"
+    current_url.should == "http://my.sublimevideo.dev/sites/#{site.token}/plan/edit"
 
-      VCR.use_cassette('ogone/visa_payment_generic_failed') do
-        choose "plan_plus_month"
-        click_button "Update plan"
-      end
+    page.should have_content("Your new #{site.next_cycle_plan.title} plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
 
-      site.reload
+    click_button "Cancel"
 
-      current_url.should == "http://my.sublimevideo.dev/sites"
+    current_url.should == "http://my.sublimevideo.dev/sites"
+    page.should_not have_content("#{site.plan.title} => ")
+    page.should have_content(site.plan.title)
 
-      page.should have_content("Embed Code")
-      page.should have_content(site.plan.title)
-      page.should have_content(I18n.t('site.status.payment_issue'))
-
-      go 'my', "/sites/#{site.to_param}/plan/edit"
-
-      page.should_not have_content(site.plan.title)
-      page.should have_content("There has been a transaction error. Please review")
-    end
-
-    scenario "cancel next plan automatic update" do
-      site = create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
-
-      site.update_attribute(:next_cycle_plan_id, @free_plan.id)
-
-      go 'my', "/sites"
-
-      page.should have_content("#{site.plan.title} plan => #{site.next_cycle_plan.title} plan")
-
-      click_link "#{site.plan.title} plan => #{site.next_cycle_plan.title} plan"
-
-      current_url.should == "http://my.sublimevideo.dev/sites/#{site.token}/plan/edit"
-
-      page.should have_content("Your new #{site.next_cycle_plan.title} plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
-
-      click_button "Cancel"
-
-      current_url.should == "http://my.sublimevideo.dev/sites"
-      page.should_not have_content("#{site.plan.title} => ")
-      page.should have_content(site.plan.title)
-
-      click_link site.plan.title
-    end
+    click_link site.plan.title
   end
 end
 
@@ -287,7 +237,7 @@ feature "Site in custom plan" do
     VCR.use_cassette('ogone/visa_payment_generic') do
       choose "plan_custom"
       fill_in "Domain", with: "google.com"
-      click_button "Create"
+      click_button "Add site"
     end
 
     current_url.should == "http://my.sublimevideo.dev/sites"

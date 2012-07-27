@@ -5,17 +5,24 @@ class BillingMailer < Mailer
   include SitesHelper # the only way to include view helpers in here
                       # I don't feel dirty doing this since the email's subject IS a view so...
 
-  def trial_has_started(site)
-    extract_site_and_user(site)
+  def trial_has_started(site_id)
+    extract_site_and_user_from_site_id(site_id)
+
+    subject = if @site.hostname?
+      I18n.t("mailer.billing_mailer.trial_has_started_hostname", hostname: @site.hostname)
+    else
+      I18n.t("mailer.billing_mailer.trial_has_started_no_hostname")
+    end
 
     mail(
       to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.trial_has_started", hostname: @site.hostname, days: @days_until_end)
+      subject: subject
     )
   end
 
-  def trial_will_expire(site)
-    extract_site_and_user(site)
+  def trial_will_expire(site_id)
+    extract_site_and_user_from_site_id(site_id)
+
     @days_until_end = full_days_until_trial_end(@site)
 
     key = case @days_until_end
@@ -33,9 +40,8 @@ class BillingMailer < Mailer
     )
   end
 
-  def trial_has_expired(site, trial_plan)
-    extract_site_and_user(site)
-    @trial_plan = trial_plan
+  def trial_has_expired(site_id)
+    extract_site_and_user_from_site_id(site_id)
 
     mail(
       to: to(@user),
@@ -43,8 +49,8 @@ class BillingMailer < Mailer
     )
   end
 
-  def yearly_plan_will_be_renewed(site)
-    extract_site_and_user(site)
+  def yearly_plan_will_be_renewed(site_id)
+    extract_site_and_user_from_site_id(site_id)
 
     mail(
       to: to(@user),
@@ -52,8 +58,8 @@ class BillingMailer < Mailer
     )
   end
 
-  def credit_card_will_expire(user)
-    @user = user
+  def credit_card_will_expire(user_id)
+    @user = User.find(user_id)
 
     mail(
       to: to(@user),
@@ -61,9 +67,8 @@ class BillingMailer < Mailer
     )
   end
 
-  def transaction_succeeded(transaction)
-    @transaction = transaction
-    @user        = transaction.user
+  def transaction_succeeded(transaction_id)
+    extract_transaction_and_user_from_transaction_id(transaction_id)
 
     mail(
       to: to(@user),
@@ -71,9 +76,8 @@ class BillingMailer < Mailer
     )
   end
 
-  def transaction_failed(transaction)
-    @transaction = transaction
-    @user        = transaction.user
+  def transaction_failed(transaction_id)
+    extract_transaction_and_user_from_transaction_id(transaction_id)
 
     mail(
       to: to(@user),
@@ -81,9 +85,9 @@ class BillingMailer < Mailer
     )
   end
 
-  def too_many_charging_attempts(invoice)
-    @invoice = invoice
-    @user    = invoice.user
+  def too_many_charging_attempts(invoice_id)
+    @invoice = Invoice.find(invoice_id)
+    @user    = @invoice.user
 
     mail(
       to: to(@user),
@@ -91,11 +95,11 @@ class BillingMailer < Mailer
     )
   end
 
-private
+  private
 
-  def extract_site_and_user(site)
-    @site = site
-    @user = site.user
+  def extract_transaction_and_user_from_transaction_id(transaction_id)
+    @transaction = Transaction.find(transaction_id)
+    @user        = @transaction.user
   end
 
 end

@@ -15,11 +15,13 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
       el: '#time_range_title'
       period: AdminSublimeVideo.period
 
-    new AdminSublimeVideo.Views.PeriodSelector
+    new AdminSublimeVideo.Views.PeriodSelectorView
       el: '#period_selectors'
+      period: AdminSublimeVideo.period
 
     AdminSublimeVideo.datePickersView = new AdminSublimeVideo.Views.DatePickersView
       el: '#date_pickers'
+      period: AdminSublimeVideo.period
 
     AdminSublimeVideo.graphView = new AdminSublimeVideo.Views.GraphView
       el: '#chart'
@@ -30,10 +32,9 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
       el: '#series_selectors'
 
   initModels: ->
-    AdminSublimeVideo.period = new AdminSublimeVideo.Models.Period(type: 'days')
+    AdminSublimeVideo.period = new AdminSublimeVideo.Models.Period
     unless _.isEmpty @selectedPeriod
-      AdminSublimeVideo.period.start = new Date parseInt(@selectedPeriod[0])
-      AdminSublimeVideo.period.end   = new Date parseInt(@selectedPeriod[1])
+      AdminSublimeVideo.period.set(start: new Date(parseInt(@selectedPeriod[0])), end: new Date(parseInt(@selectedPeriod[1])))
 
     AdminSublimeVideo.stats["sales"]       = new AdminSublimeVideo.Collections.SalesStats(this.selectedSeriesFor('sales'))
     AdminSublimeVideo.stats["users"]       = new AdminSublimeVideo.Collections.UsersStats(this.selectedSeriesFor('users'))
@@ -60,14 +61,15 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
         AdminSublimeVideo.period.change() # redraw the chart
 
   fetchStats: ->
+    @fetchedStatsCount = 0
     _.each AdminSublimeVideo.stats, (stat) ->
       stat.fetch
         silent: true
         success: -> AdminSublimeVideo.statsRouter.syncFetchSuccess()
 
   syncFetchSuccess: ->
-    if _.all(AdminSublimeVideo.stats, (e) -> e.length > 0)
-      AdminSublimeVideo.graphView.render()
+    @fetchedStatsCount += 1
+    AdminSublimeVideo.graphView.render() if @fetchedStatsCount is _.size(AdminSublimeVideo.stats)
 
   selectedSeriesFor: (statName) ->
     _.map(_.select(@selectedSeries, (selectedSerie) -> selectedSerie[0] is statName), (selectedSerie) -> _.rest(selectedSerie))

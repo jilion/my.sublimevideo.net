@@ -23,3 +23,21 @@ describe GoodbyeFeedback do
   end # Validations
 
 end
+
+# == Schema Information
+#
+# Table name: goodbye_feedbacks
+#
+#  comment     :text
+#  created_at  :datetime         not null
+#  id          :integer          not null, primary key
+#  next_player :string(255)
+#  reason      :string(255)      not null
+#  updated_at  :datetime         not null
+#  user_id     :integer          not null
+#
+# Indexes
+#
+#  index_goodbye_feedbacks_on_user_id  (user_id) UNIQUE
+#
+

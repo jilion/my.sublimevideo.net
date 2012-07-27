@@ -1,0 +1,5 @@
+trial_started_at est utilisée seulement pour:
+- afficher le nombre de jours restant dans le trial
+- envoyer les mails avant la fin du trial
+
+Pour savoir si un site est en trial, simplement regarder le plan.

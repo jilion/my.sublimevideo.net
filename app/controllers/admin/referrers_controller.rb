@@ -1,20 +1,28 @@
 class Admin::ReferrersController < Admin::AdminController
   respond_to :js, :html
 
-  has_scope :by_hits
-  has_scope :by_badge_hits
-  has_scope :by_contextual_hits
-  has_scope :by_updated_at
-  has_scope :by_created_at
+  before_filter :set_default_scope, :load_referrers
+
+  has_scope :by_hits, :by_badge_hits, :by_contextual_hits, :by_updated_at, :by_created_at
 
   # GET /referrers
   def index
-    @referrers = Referrer.criteria
-    %w[by_hits by_updated_at by_created_at by_contextual_hits by_badge_hits].each do |by|
-      @referrers = @referrers.send(by.to_sym, params[by.to_sym]) if params[by.to_sym]
-    end
-    @referrers.by_created_at if @referrers.criteria.options[:sort].nil?
-    respond_with(@referrers, per_page: 100)
+    respond_with(@referrers)
+  end
+
+  # GET /referrers/pages
+  def pages
+    respond_with(@referrers, paginate: true)
+  end
+
+  private
+
+  def set_default_scope
+    params[:by_updated_at] = 'desc' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
+  end
+
+  def load_referrers
+    @referrers = apply_scopes(Referrer.criteria)
   end
 
 end

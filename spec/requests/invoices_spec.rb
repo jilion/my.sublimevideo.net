@@ -21,7 +21,7 @@ feature "Site invoices page" do
 
         go 'my', "/sites/#{@site.to_param}/invoices"
 
-        current_url.should == "http://my.sublimevideo.dev/sites/new"
+        current_url.should == "http://my.sublimevideo.dev/sites"
       end
     end
 
@@ -41,18 +41,18 @@ feature "Site invoices page" do
       end
     end
 
-    context "site in paid plan with 0 invoices (possible during trial)" do
+    context "site in trial plan" do
       background do
-        @site = create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = create(:site, plan_id: @trial_plan.id, user: @current_user, hostname: 'rymai.com')
         go 'my', "/sites/#{@site.to_param}/edit"
       end
 
-      scenario "'Invoice' tab is visible and reachable" do
-        click_link "Invoices"
+      scenario "'Invoice' tab is invisible and not reachable through URL" do
+        page.should have_no_content 'Invoices'
 
-        current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
-        page.should have_content 'rymai.com'
-        page.should have_content 'No invoices'
+        go 'my', "/sites/#{@site.to_param}/invoices"
+
+        current_url.should == "http://my.sublimevideo.dev/sites"
       end
     end
 
@@ -188,7 +188,6 @@ feature "Site invoices page" do
         end
       end
     end
-
   end
 
   context "user has no credit card" do

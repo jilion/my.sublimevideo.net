@@ -17,7 +17,7 @@ describe Plan, :plans do
   end
 
   describe "Scopes" do
-    specify { Plan.unpaid_plans.all.should =~ [@free_plan, @sponsored_plan] }
+    specify { Plan.unpaid_plans.all.should =~ [@trial_plan, @free_plan, @sponsored_plan] }
     specify { Plan.paid_plans.all.should =~ [@paid_plan, @custom_plan] }
     specify { Plan.standard_plans.all.should =~ [@paid_plan] }
     specify { Plan.custom_plans.all.should =~ [@custom_plan] }
@@ -101,19 +101,26 @@ describe Plan, :plans do
     end
 
     describe "#free_plan?" do
-      it { build(:plan, name: "free").should be_free_plan }
+      it { build(:plan, name: "free", price: 0).should be_free_plan }
       it { build(:plan, name: "pro").should_not be_free_plan }
     end
 
     describe "#sponsored_plan?" do
-      it { build(:plan, name: "free").should_not be_sponsored_plan }
+      it { build(:plan, name: "free", price: 0).should_not be_sponsored_plan }
       it { build(:plan, name: "pro").should_not be_sponsored_plan }
-      it { build(:plan, name: "sponsored").should be_sponsored_plan }
+      it { build(:plan, name: "sponsored", price: 0).should be_sponsored_plan }
+    end
+
+    describe "#trial_plan?" do
+      it { build(:plan, name: "free", price: 0).should_not be_trial_plan }
+      it { build(:plan, name: "pro").should_not be_trial_plan }
+      it { build(:plan, name: "trial", price: 0).should be_trial_plan }
     end
 
     describe "#standard_plan?" do
-      it { build(:plan, name: "free").should_not be_standard_plan }
-      it { build(:plan, name: "sponsored").should_not be_standard_plan }
+      it { build(:plan, name: "free", price: 0).should_not be_standard_plan }
+      it { build(:plan, name: "sponsored", price: 0).should_not be_standard_plan }
+      it { build(:plan, name: "trial", price: 0).should_not be_standard_plan }
 
       Plan::STANDARD_NAMES.each do |name|
         it { build(:plan, name: name).should be_standard_plan }
@@ -121,30 +128,30 @@ describe Plan, :plans do
     end
 
     describe "#custom_plan?" do
-      it { build(:plan, name: "free").should_not be_custom_plan }
-      it { build(:plan, name: "sponsored").should_not be_custom_plan }
+      it { build(:plan, name: "free", price: 0).should_not be_custom_plan }
+      it { build(:plan, name: "sponsored", price: 0).should_not be_custom_plan }
+      it { build(:plan, name: "trial", price: 0).should_not be_custom_plan }
       it { build(:plan, name: "comet").should_not be_custom_plan }
       it { build(:plan, name: "custom").should be_custom_plan }
-      it { build(:plan, name: "custom1").should be_custom_plan }
-      it { build(:plan, name: "custom2").should be_custom_plan }
+      it { build(:plan, name: "custom1", price: 0).should be_custom_plan }
     end
 
     describe "#unpaid_plan?" do
-      it { build(:plan, name: "free").should be_unpaid_plan }
-      it { build(:plan, name: "sponsored").should be_unpaid_plan }
+      it { build(:plan, name: "free", price: 0).should be_unpaid_plan }
+      it { build(:plan, name: "sponsored", price: 0).should be_unpaid_plan }
+      it { build(:plan, name: "trial", price: 0).should be_unpaid_plan }
       it { build(:plan, name: "comet").should_not be_unpaid_plan }
       it { build(:plan, name: "custom").should_not be_unpaid_plan }
-      it { build(:plan, name: "custom1").should_not be_unpaid_plan }
-      it { build(:plan, name: "custom2").should_not be_unpaid_plan }
+      it { build(:plan, name: "custom1", price: 0).should be_unpaid_plan }
     end
 
     describe "#paid_plan?" do
-      it { build(:plan, name: "free").should_not be_paid_plan }
-      it { build(:plan, name: "sponsored").should_not be_paid_plan }
+      it { build(:plan, name: "free", price: 0).should_not be_paid_plan }
+      it { build(:plan, name: "sponsored", price: 0).should_not be_paid_plan }
+      it { build(:plan, name: "trial", price: 0).should_not be_paid_plan }
       it { build(:plan, name: "comet").should be_paid_plan }
       it { build(:plan, name: "custom").should be_paid_plan }
-      it { build(:plan, name: "custom1").should be_paid_plan }
-      it { build(:plan, name: "custom2").should be_paid_plan }
+      it { build(:plan, name: "custom1", price: 0).should_not be_paid_plan }
     end
 
     describe "#monthly?, #yearly? and #nonely?" do
@@ -199,6 +206,8 @@ describe Plan, :plans do
     end
 
     describe "#title" do
+      specify { @trial_plan.title.should eq "Trial" }
+      specify { @trial_plan.title(always_with_cycle: true).should eq "Trial" }
       specify { @free_plan.title.should eq "Free" }
       specify { @free_plan.title(always_with_cycle: true).should eq "Free" }
       specify { @sponsored_plan.title.should eq "Sponsored" }
@@ -230,62 +239,62 @@ describe Plan, :plans do
       it { build(:plan, name: "premium", support_level: 2).support.should eq "vip_email" }
     end
 
-    describe "#discounted?" do
-      let(:user)  { create(:user) }
-      let(:site1) { create(:site) }
-      let(:site2) { create(:site, user: user) }
-      let(:deal1) { create(:deal, kind: 'plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-      let(:deal2) { create(:deal, kind: 'yearly_plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-      let(:plan1) { create(:plan, name: 'foo', cycle: 'month') }
-      let(:plan2) { create(:plan, name: 'bar', cycle: 'year') }
+    describe "#discounted?", :plans do
+      let(:user)              { create(:user) }
+      let(:site1)             { create(:site) }
+      let(:site2)             { create(:site, user: user, plan_id: @trial_plan.id) }
+      let(:plans_deal)        { create(:deal, kind: 'plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+      let(:yearly_plans_deal) { create(:deal, kind: 'yearly_plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
+      let(:monthly_plan)      { create(:plan, name: 'foo', cycle: 'month') }
+      let(:yearly_plan)       { create(:plan, name: 'bar', cycle: 'year') }
 
       context "site's user doesn't have access to a discounted price" do
         it "return false" do
-          subject.discounted?(site1).should be_nil
+          monthly_plan.discounted?(site1).should be_nil
         end
       end
 
       context "site's user has access to a discounted price" do
         it "price isn't discounted for this plan" do
-          create(:deal_activation, deal: deal2, user: user)
-          plan1.discounted?(site2).should be_nil
+          create(:deal_activation, deal: yearly_plans_deal, user: user)
+          monthly_plan.discounted?(site2).should be_nil
         end
 
         it "price is discounted for this plan" do
-          create(:deal_activation, deal: deal2, user: user)
-          plan2.discounted?(site2).should eq deal2
+          create(:deal_activation, deal: yearly_plans_deal, user: user)
+          yearly_plan.discounted?(site2).should eq yearly_plans_deal
         end
 
         it "price is discounted for this plan" do
-          create(:deal_activation, deal: deal1, user: user)
-          plan1.discounted?(site2).should eq deal1
+          create(:deal_activation, deal: plans_deal, user: user)
+          monthly_plan.discounted?(site2).should eq plans_deal
         end
 
         it "price is discounted for this plan" do
-          create(:deal_activation, deal: deal1, user: user)
-          plan2.discounted?(site2).should eq deal1
+          create(:deal_activation, deal: plans_deal, user: user)
+          yearly_plan.discounted?(site2).should eq plans_deal
         end
 
         context "site trial started during deal" do
           it "price is discounted for this plan" do
-            create(:deal_activation, deal: deal2, user: user)
-            site2.trial_started_at.should eq Time.now.utc.midnight
+            create(:deal_activation, deal: yearly_plans_deal, user: user)
+            site2.plan_started_at.should eq Time.now.utc.midnight
 
-            Timecop.travel(3.days.from_now) do
-              deal2.should_not be_active
-              plan2.discounted?(site2).should eq deal2
+            Timecop.travel(15.days.from_now) do
+              yearly_plans_deal.should_not be_active
+              yearly_plan.discounted?(site2).should eq yearly_plans_deal
             end
           end
         end
 
         context "site trial started after the deal end" do
           it "price isn't discounted for this plan" do
-            create(:deal_activation, deal: deal2, user: user)
+            create(:deal_activation, deal: yearly_plans_deal, user: user)
 
             Timecop.travel(3.days.from_now) do
-              site2.trial_started_at.should eq Time.now.utc.midnight
-              deal2.should_not be_active
-              plan2.discounted?(site2).should be_nil
+              site2.plan_started_at.should eq Time.now.utc.midnight
+              yearly_plans_deal.should_not be_active
+              yearly_plan.discounted?(site2).should be_nil
             end
           end
         end
@@ -346,6 +355,7 @@ describe Plan, :plans do
   end
 
 end
+
 # == Schema Information
 #
 # Table name: plans
@@ -356,8 +366,8 @@ end
 #  cycle                :string(255)
 #  video_views          :integer
 #  price                :integer
-#  created_at           :datetime
-#  updated_at           :datetime
+#  created_at           :datetime        not null
+#  updated_at           :datetime        not null
 #  support_level        :integer         default(0)
 #  stats_retention_days :integer
 #
@@ -366,4 +376,3 @@ end
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #  index_plans_on_token           (token) UNIQUE
 #
-

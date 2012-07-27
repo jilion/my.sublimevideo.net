@@ -1,3 +1,6 @@
-.checkbox_wrap#skip_trial{ style: "display:#{f.object.in_trial? || f.object.skip_trial? ? 'block' : 'none'}" }
-  = f.check_box :skip_trial
-  = f.label :skip_trial, "Skip the #{BusinessModel.days_for_trial}-day trial."
+- if @custom_plan
+  = hidden_field_tag :site_skip_trial, '1'
+- else
+  .checkbox_wrap#skip_trial
+    = check_box_tag :site_skip_trial, '1', params[:site_skip_trial] == '1'
+    = label_tag :site_skip_trial, "Skip the #{BusinessModel.days_for_trial}-day trial and choose your plan right away."

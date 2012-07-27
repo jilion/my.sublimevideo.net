@@ -219,7 +219,7 @@ header, header .shadow, header .lights {
 }
 
 #content .tagline {
-  padding:0 0 25px;
+  padding:25px 0;
   text-align:center;
 }
 
@@ -245,7 +245,6 @@ header, header .shadow, header .lights {
   float:left;
 /*  position:relative;*/
 }
-
 
 .big_break {
   width:868px;
@@ -289,6 +288,13 @@ form p.note {
   font-weight:600;
   padding:2px 0 2px 22px;
   background:url(<%= asset_data_uri "note_icon.png" %>) no-repeat;
+}
+
+form p.note.info {
+  margin-top:30px;
+  font-weight:normal;
+  padding:2px 0 2px 25px;
+  background:url(<%= asset_data_uri "note_info_icon.png" %>) no-repeat;
 }
 
 form label.text {
@@ -593,48 +599,48 @@ ul.second_menu li.active a {
   padding:20px 0 0;
 }
 
-#site_setup_settings .left, #site_setup_settings .right {
+#site_settings .left, #site_settings .right {
   float:left;
 }
 
-#site_setup_settings .left {
+#site_settings .left {
   width:440px;
   padding-right:40px;
 }
 
-#site_setup_settings .right {
+#site_settings .right {
   width:400px;
 }
 
-#site_setup_settings .entry {
+#site_settings .entry {
   margin:10px 0;
 }
 
-#site_setup_settings .right input.text {
+#site_settings .right input.text {
   width:340px;
   padding-left:30px;
 }
 
-#site_setup_settings h4.title {
+#site_settings h4.title {
   font-size:20px;
   font-weight:600;
   padding:15px 0 10px;
 }
 
-#site_setup_settings p.info, .video_code_generator p.info {
+#site_settings p.info, .video_code_generator p.info {
   font-size:14px;
   color:#3a5a8c;
 }
 
-#site_setup_settings p.info strong, .video_code_generator p.info strong {
+#site_settings p.info strong, .video_code_generator p.info strong {
   color:#1e3966;
 }
 
-#site_setup_settings .wildcard p.info, #site_setup_settings .badged p.info {
+#site_settings .wildcard p.info, #site_settings .badged p.info {
   padding-left:34px;
 }
 
-#site_setup_settings a.help {
+#site_settings a.help {
   margin:0 0 5px auto;
   display:block;
   width:32px;
@@ -642,7 +648,7 @@ ul.second_menu li.active a {
   background:url(<%= asset_data_uri "help_icon.png" %>) no-repeat;
 }
 
-#site_setup_settings a.help span {display:none}
+#site_settings a.help span {display:none}
 
 .entry.delete .delete_site {
   float:left;

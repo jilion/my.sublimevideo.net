@@ -1,10 +1,15 @@
 class MailLetter
   extend ActiveModel::Naming
+  include ActiveModel::Validations
 
-  DEV_TEAM_EMAILS = ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"]
+  validates :template, :admin_id, :criteria, presence: true
+
+  DEV_TEAM_EMAILS = %w[thibaud@jilion.com remy@jilion.com zeno@jilion.com octave@jilion.com]
 
   def initialize(params)
-    @template, @admin_id, @criteria = MailTemplate.find(params[:template_id]), params[:admin_id], params[:criteria]
+    @template = MailTemplate.find(params[:template_id])
+    @admin    = Admin.find(params[:admin_id])
+    @criteria = params[:criteria]
   end
 
   # ====================
@@ -12,27 +17,28 @@ class MailLetter
   # ====================
 
   def deliver_and_log
-    return nil if @template.blank? || @admin_id.blank? || @criteria.blank?
-
     users = case @criteria
             when 'dev'
               User.where(email: DEV_TEAM_EMAILS)
+            when 'trial'
+              User.includes(:sites).merge(Site.in_trial).where { sites.trial_started_at == nil }
+            when 'old_trial'
+              User.includes(:sites).merge(Site.in_trial).where { sites.trial_started_at != nil }
             else
               User.send(@criteria)
             end
 
-    users.all.uniq.each { |user| self.class.delay.deliver(user.id, @template) }
+    users.not_archived.all.uniq.each { |user| self.class.delay.deliver(user.id, @template.id) }
 
     unless @criteria == 'dev'
-      @template.logs.create(admin_id: @admin_id, criteria: @criteria, user_ids: users.map(&:id))
+      @template.logs.create(admin_id: @admin.id, criteria: @criteria, user_ids: users.map(&:id))
     end
   end
 
 private
 
-  def self.deliver(user_id, template)
-    user = User.find(user_id)
-    MailMailer.send_mail_with_template(user, template).deliver
+  def self.deliver(user_id, template_id)
+    MailMailer.delay.send_mail_with_template(user_id, template_id)
   end
 
 end

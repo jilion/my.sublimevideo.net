@@ -7,10 +7,10 @@ module UserModules::Scope
 
     # billing
     scope :free, lambda {
-      active.includes(:sites).where("(#{Site.active.paid_plan.not_in_trial.select("COUNT(sites.id)").where("sites.user_id = users.id").to_sql}) = 0")
+      active.includes(:sites).where("(#{Site.in_paid_plan.select("COUNT(sites.id)").where("sites.user_id = users.id").to_sql}) = 0")
     }
     scope :paying, lambda {
-      active.includes(:sites).merge(Site.active.paid_plan.not_in_trial)
+      active.includes(:sites).merge(Site.in_paid_plan)
     }
 
     # credit card

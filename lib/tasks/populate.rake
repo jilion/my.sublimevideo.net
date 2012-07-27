@@ -15,7 +15,7 @@ namespace :db do
   namespace :populate do
     desc "Empty all the tables"
     task empty_all_tables: :environment do
-      timed { empty_tables("delayed_jobs", "invoices_transactions", InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
+      timed { empty_tables("delayed_jobs", "invoices_transactions", DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
     desc "Load all development fixtures."
@@ -346,7 +346,7 @@ def create_sites
     end
   end
 
-  Site.activate_or_downgrade_sites_leaving_trial
+  Site.downgrade_sites_leaving_trial
   Invoice.open.all.each { |invoice| invoice.succeed! }
 
   puts "#{BASE_SITES.size} beautiful sites created for each user!"
@@ -791,6 +791,7 @@ def create_plans
   plans_attributes = [
     { name: "free",       cycle: "none",  video_views: 0,          stats_retention_days: 0,   price: 0,     support_level: 0 },
     { name: "sponsored",  cycle: "none",  video_views: 0,          stats_retention_days: nil, price: 0,     support_level: 0 },
+    { name: "trial",      cycle: "none",  video_views: 0,          stats_retention_days: nil, price: 0,     support_level: 2 },
     { name: "plus",       cycle: "month", video_views: 200_000,    stats_retention_days: 365, price: 990,   support_level: 1 },
     { name: "premium",    cycle: "month", video_views: 1_000_000,  stats_retention_days: nil, price: 4990,  support_level: 2 },
     { name: "plus",       cycle: "year",  video_views: 200_000,    stats_retention_days: 365, price: 9900,  support_level: 1 },
@@ -824,37 +825,38 @@ end
 
 def send_all_emails(user_id)
   user         = User.find(user_id)
-  site         = Site.joins(:invoices).where(user_id: user_id).group { sites.id }.having { { invoices => (count(id) > 0) } }.last
-  invoice      = site.invoices.last
+  trial_site   = user.sites.in_trial.last
+  site         = user.sites.joins(:invoices).in_paid_plan.group { sites.id }.having { { invoices => (count(id) > 0) } }.last || user.sites.last
+  invoice      = site.invoices.last || Invoice.construct(site: site)
   transaction  = invoice.transactions.last || Transaction.create(invoices: [invoice])
   stats_export = StatsExport.last || StatsExport.create(st: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
 
   DeviseMailer.confirmation_instructions(user).deliver!
   DeviseMailer.reset_password_instructions(user).deliver!
 
-  BillingMailer.trial_has_started(site).deliver!
-  BillingMailer.trial_will_expire(site).deliver!
-  BillingMailer.trial_has_expired(site, Plan.paid_plans.first).deliver!
-  BillingMailer.yearly_plan_will_be_renewed(site).deliver!
+  BillingMailer.trial_has_started(trial_site.id).deliver!
+  BillingMailer.trial_will_expire(trial_site.id).deliver!
+  BillingMailer.trial_has_expired(trial_site.id).deliver!
+  BillingMailer.yearly_plan_will_be_renewed(site.id).deliver!
 
-  BillingMailer.credit_card_will_expire(user).deliver!
+  BillingMailer.credit_card_will_expire(user.id).deliver!
 
-  BillingMailer.transaction_succeeded(transaction).deliver!
-  BillingMailer.transaction_failed(transaction).deliver!
+  BillingMailer.transaction_succeeded(transaction.id).deliver!
+  BillingMailer.transaction_failed(transaction.id).deliver!
 
-  BillingMailer.too_many_charging_attempts(invoice).deliver!
+  BillingMailer.too_many_charging_attempts(invoice.id).deliver!
 
   StatsExportMailer.export_ready(stats_export).deliver!
 
-  MailMailer.send_mail_with_template(user, MailTemplate.last).deliver!
+  MailMailer.send_mail_with_template(user.id, MailTemplate.last.id).deliver!
 
-  UsageMonitoringMailer.plan_overused(site).deliver!
-  UsageMonitoringMailer.plan_upgrade_required(site).deliver!
+  UsageMonitoringMailer.plan_overused(site.id).deliver!
+  UsageMonitoringMailer.plan_upgrade_required(site.id).deliver!
 
-  UserMailer.welcome(user).deliver!
-  UserMailer.account_suspended(user).deliver!
-  UserMailer.account_unsuspended(user).deliver!
-  UserMailer.account_archived(user).deliver!
+  UserMailer.welcome(user.id).deliver!
+  UserMailer.account_suspended(user.id).deliver!
+  UserMailer.account_unsuspended(user.id).deliver!
+  UserMailer.account_archived(user.id).deliver!
 end
 
 def argv(var_name)

@@ -141,58 +141,6 @@ describe User, :plans do
         user.errors[:current_password].should eq ["is invalid"]
       end
 
-      describe "prevent_archive_with_non_paid_invoices" do
-        subject { @site.user }
-        before { Invoice.delete_all }
-
-        context "first invoice" do
-          before do
-            @site = create(:new_site, first_paid_plan_started_at: nil)
-            @site.first_paid_plan_started_at.should be_nil
-            @site.user.current_password = '123456'
-          end
-
-          %w[open failed].each do |invoice_state|
-            context "with an #{invoice_state} invoice" do
-              before { create(:invoice, site: @site, state: invoice_state) }
-
-              it "archives the user" do
-                subject.archive.should be_true
-                subject.errors[:base].should be_empty
-              end
-            end
-          end
-
-          context "with a waiting invoice" do
-            before { create(:invoice, site: @site, state: 'waiting') }
-
-            it "archives the user" do
-              subject.archive.should be_false
-              subject.errors[:base].should include I18n.t('activerecord.errors.models.user.attributes.base.not_paid_invoices_prevent_archive', count: 1)
-            end
-          end
-        end
-
-        context "not first invoice" do
-          before do
-            @site = create(:new_site, first_paid_plan_started_at: Time.now.utc)
-            @site.first_paid_plan_started_at.should be_present
-            @site.user.current_password = '123456'
-          end
-
-          %w[open waiting failed].each do |invoice_state|
-            context "with an #{invoice_state} invoice" do
-              before { create(:invoice, site: @site, state: invoice_state) }
-
-              it "doesn't archive the user" do
-                subject.archive.should be_false
-                subject.errors[:base].should include I18n.t('activerecord.errors.models.user.attributes.base.not_paid_invoices_prevent_archive', count: 1)
-              end
-            end
-          end
-        end
-      end
-
     end
   end
 
@@ -205,186 +153,109 @@ describe User, :plans do
   end
 
   describe "State Machine" do
-    before do
-      @user           = create(:user)
-      @free_site      = create(:site, user: @user, plan_id: @free_plan.id, hostname: "octavez.com")
-      @paid_site      = create(:site, user: @user, hostname: "rymai.com")
-      @suspended_site = create(:site, user: @user, hostname: "rymai.me", state: 'suspended')
-      create(:invoice, site: @paid_site, state: 'failed')
-    end
+    let(:user)           { create(:user) }
+    let(:free_site)      { create(:site, user: user, plan_id: @free_plan.id, hostname: "octavez.com") }
+    let(:paid_site)      { create(:site, user: user, hostname: "rymai.com") }
+    let(:suspended_site) { create(:site, user: user, hostname: "rymai.me", state: 'suspended') }
+    let(:archived_site)  { create(:site, user: user, hostname: "rymai.tv", state: 'archived') }
+    subject { user }
 
     describe "Initial State" do
-      subject { @user }
       it { should be_active }
     end
 
     describe "#suspend" do
-      subject { @user }
-
       context "from active state" do
-        it "should set user to suspended" do
-          subject.reload.should be_active
-          subject.suspend
-          subject.should be_suspended
+        before do
+          user.suspend
         end
+
+        it { should be_suspended }
       end
 
       describe "Callbacks" do
         describe "before_transition on: :suspend, do: :suspend_sites" do
+          before do
+            create(:invoice, site: paid_site, state: 'failed')
+          end
+
           it "should suspend all user' active sites that have failed invoices" do
-            @archived_site  = create(:site, user: @user, hostname: "rymai.tv", state: 'archived')
-            @paid_site.reload.should be_active
-            @free_site.reload.should be_active
-            @archived_site.reload.should be_archived
-            subject.reload.suspend
-            @paid_site.reload.should be_suspended
-            @free_site.reload.should be_active
-            @archived_site.reload.should be_archived
+            paid_site.should be_active
+            free_site.should be_active
+            archived_site.should be_archived
+
+            user.suspend
+
+            paid_site.reload.should be_suspended
+            free_site.reload.should be_active
+            archived_site.reload.should be_archived
           end
         end
 
         describe "after_transition  on: :suspend, do: :send_account_suspended_email" do
           it "should send an email to the user" do
-            lambda { subject.reload.suspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should == [subject.email]
+            user # eager loading!
+            lambda { user.suspend }.should change(Delayed::Job.where { handler =~ '%Class%account_suspended%' }, :count).by(1)
           end
         end
       end
     end
 
     describe "#unsuspend" do
-      before { @user.reload.update_attribute(:state, 'suspended') }
-      subject { @user }
+      before { user.update_attribute(:state, 'suspended') }
 
       context "from suspended state" do
         it "should set the user to active" do
-          subject.reload.should be_suspended
-          subject.unsuspend
-          subject.should be_active
+          user.reload.should be_suspended
+
+          user.unsuspend
+
+          user.should be_active
         end
       end
 
       describe "Callbacks" do
         describe "before_transition on: :unsuspend, do: :unsuspend_sites" do
           it "should suspend all user' sites that are suspended" do
-            @suspended_site.reload.should be_suspended
-            @free_site.reload.should be_active
-            subject.reload.unsuspend
-            @suspended_site.reload.should be_active
-            @free_site.reload.should be_active
+            suspended_site.should be_suspended
+            free_site.should be_active
+
+            user.unsuspend
+
+            suspended_site.reload.should be_active
+            free_site.reload.should be_active
           end
         end
 
         describe "after_transition  on: :unsuspend, do: :send_account_unsuspended_email" do
           it "should send an email to the user" do
-            lambda { subject.unsuspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should == [subject.email]
+            lambda { user.unsuspend }.should change(Delayed::Job.where { handler =~ '%Class%account_unsuspended%' }, :count).by(1)
           end
         end
       end
     end
 
     describe "#archive" do
-      context "from active state" do
-        before do
-          @user.reload.update_attribute(:state, 'active')
-          # it's impossible to archive a user that has open/waiting/failed invoices
-          Invoice.delete_all
-        end
-        subject { @user }
-
-        it "should require current_password" do
-          subject.should be_active
-          subject.current_password = nil
-          subject.archive
-          subject.should_not be_archived
-        end
-
-        it "should set the user to archived" do
-          subject.should be_active
-          subject.current_password = "123456"
-          subject.archive!
-          subject.should be_archived
-        end
-      end
-
-      context "from suspended state" do
-        before do
-          @user.reload.update_attribute(:state, 'suspended')
-          # it's impossible to archive a user that has open/waiting/failed invoices
-          Invoice.delete_all
-        end
-        subject { @user }
-
-        it "should require current_password" do
-          subject.should be_suspended
-          subject.current_password = nil
-          subject.archive
-          subject.should_not be_archived
-        end
-
-        it "should set the user to archived" do
-          subject.should be_suspended
-          subject.current_password = "123456"
-          subject.archive!
-          subject.should be_archived
-        end
-      end
-
-      context "first invoice" do
-        subject { @site.reload; @site.user.current_password = '123456'; @site.user }
-
-        before do
-          @site = create(:new_site, first_paid_plan_started_at: nil)
-          Invoice.delete_all
-          @site.first_paid_plan_started_at.should be_nil
-        end
-
-        context "with an open invoice" do
-          it "archives the user" do
-            @open_invoice = create(:invoice, site: @site, state: 'open')
-            subject.archive!.should be_true
-            subject.should be_archived
-            @open_invoice.reload.should be_canceled
+      [:active, :suspended].each do |state|
+        context "from #{state} state" do
+          before do
+            user.update_attribute(:state, state)
           end
-        end
 
-        context "with a failed invoice" do
-          it "archives the user" do
-            @failed_invoice = create(:invoice, site: @site, state: 'failed')
-            subject.archive!.should be_true
-            subject.should be_archived
-            @failed_invoice.reload.should be_canceled
+          it "requires current_password" do
+            user.state.should eq state
+            user.current_password = nil
+
+            expect { user.archive! }.to raise_error(StateMachine::InvalidTransition)
           end
-        end
 
-        context "with a waiting invoice" do
-          it "archives the user" do
-            @waiting_invoice = create(:invoice, site: @site, state: 'waiting')
-            subject.archive.should be_false
-            subject.should_not be_archived
-            @waiting_invoice.reload.should be_waiting
-          end
-        end
-      end
+          it "sets the user to archived" do
+            user.state.should eq state
+            user.current_password = "123456"
 
-      context "not first invoice" do
-        subject { @site.user }
-        before do
-          @site = create(:new_site, first_paid_plan_started_at: Time.now.utc)
-          @site.user.current_password = '123456'
-          @site.first_paid_plan_started_at.should be_present
-          Invoice.delete_all
-        end
+            user.archive!
 
-        %w[open waiting failed].each do |invoice_state|
-          context "with an #{invoice_state} invoice" do
-            before { create(:invoice, site: @site, state: invoice_state) }
-
-            it "doesn't archive the user" do
-              subject.archive.should be_false
-              subject.errors[:base].should include I18n.t('activerecord.errors.models.user.attributes.base.not_paid_invoices_prevent_archive', count: 1)
-            end
+            user.should be_archived
           end
         end
       end
@@ -392,59 +263,58 @@ describe User, :plans do
       describe "Callbacks" do
         before do
           Invoice.delete_all
+          user.current_password = "123456"
         end
-        subject { @user.reload }
 
         describe "before_transition on: :archive, do: [:set_archived_at, :invalidate_tokens, :archive_sites]" do
           it "sets archived_at" do
-            subject.archived_at.should be_nil
-            subject.current_password = "123456"
-            subject.archive
-            subject.archived_at.should be_present
+            user.archived_at.should be_nil
+
+            user.archive!
+
+            user.archived_at.should be_present
           end
 
           it "invalidates all user's tokens" do
-            create(:oauth2_token, user: subject)
-            subject.reload.tokens.first.should_not be_invalidated_at
-            subject.current_password = "123456"
-            subject.archive
-            subject.reload.tokens.all? { |token| token.invalidated_at? }.should be_true
+            create(:oauth2_token, user: user)
+            user.reload.tokens.first.should_not be_invalidated_at
+
+            user.archive!
+
+            user.reload.tokens.all? { |token| token.invalidated_at? }.should be_true
           end
 
           it "archives each user' site" do
-            subject.sites.all? { |site| site.should_not be_archived }
-            subject.current_password = "123456"
-            subject.archive
-            subject.sites.all? { |site| site.reload.should be_archived }
+            user.sites.all? { |site| site.should_not be_archived }
+
+            user.archive!
+
+            user.sites.all? { |site| site.reload.should be_archived }
           end
         end
 
         describe "after_transition on: :archive, do: [:newsletter_unsubscribe, :send_account_archived_email]" do
           it "sends an email to user" do
-            subject.current_password = "123456"
-            expect { subject.archive }.to change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should eq [subject.email]
+            lambda { user.archive }.should change(Delayed::Job.where { handler =~ '%Class%account_archived%' }, :count).by(1)
           end
 
           describe ":newsletter_unsubscribe" do
-            subject { create(:user, newsletter: "1", email: "john@doe.com") }
+            let(:user) { create(:user, newsletter: "1", email: "john@doe.com") }
             before do
               VoxcastCDN.stub(:purge)
               PusherWrapper.stub(:trigger)
             end
 
             it "subscribes new email and unsubscribe old email on user destroy" do
-              subject.current_password = "123456"
+              NewsletterManager.should_receive(:unsubscribe).with(user)
 
-              NewsletterManager.should_receive(:unsubscribe).with(subject)
-              subject.archive!
+              user.archive!
             end
           end
         end
 
       end
     end
-
   end
 
   describe "Callbacks" do
@@ -493,16 +363,11 @@ describe User, :plans do
       end
     end
 
-    describe "after_create :delay_send_welcome_email" do
+    describe "after_create :send_welcome_email" do
       subject { create(:user) }
 
-      it "delays send_welcome_email" do
-        expect { subject }.to change(Delayed::Job.where { handler =~ "%Class%send_welcome_email%" }, :count).by(1)
-      end
-
-      it "send the welcome email" do
-        subject
-        expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      it "delays UserMailer.welcome" do
+        expect { subject }.to change(Delayed::Job.where { handler =~ "%Class%welcome%" }, :count).by(1)
       end
     end
 
@@ -915,7 +780,7 @@ describe User, :plans do
           create(:site, user: @user, plan_id: @free_plan.id,)
         end
         subject { @user.reload }
-        
+
         it { @free_plan.support.should eq "forum" }
         its(:support) { should eq "forum" }
         its(:email_support?) { should be_false }
@@ -982,74 +847,6 @@ describe User, :plans do
       it { @non_billable_user_3.should_not be_billable }
     end
 
-    describe "#archivable?" do
-      subject { @site.reload; @site.user }
-
-      context "first invoice" do
-        before do
-          Invoice.delete_all
-          @site = create(:new_site, first_paid_plan_started_at: nil)
-          @site.first_paid_plan_started_at.should be_nil
-        end
-
-        context "with an open invoice" do
-          before do
-            @open_invoice = create(:invoice, site: @site, state: 'open')
-          end
-
-          it { should be_archivable }
-        end
-
-        context "with a failed invoice" do
-          before do
-            @failed_invoice = create(:invoice, site: @site, state: 'failed')
-          end
-
-          it { should be_archivable }
-        end
-
-        context "with a waiting invoice" do
-          before do
-            @waiting_invoice = create(:invoice, site: @site, state: 'waiting')
-          end
-
-          it { should_not be_archivable }
-        end
-      end
-
-      context "not first invoice" do
-        before do
-          Invoice.delete_all
-          @site = create(:new_site, first_paid_plan_started_at: Time.now.utc)
-          @site.first_paid_plan_started_at.should be_present
-        end
-
-        context "with an open invoice" do
-          before do
-            @open_invoice = create(:invoice, site: @site, state: 'open')
-          end
-
-          it { should_not be_archivable }
-        end
-
-        context "with a failed invoice" do
-          before do
-            @failed_invoice = create(:invoice, site: @site, state: 'failed')
-          end
-
-          it { should_not be_archivable }
-        end
-
-        context "with a waiting invoice" do
-          before do
-            @waiting_invoice = create(:invoice, site: @site, state: 'waiting')
-          end
-
-          it { should_not be_archivable }
-        end
-      end
-    end
-
     describe '#create_zendesk_user' do
       context 'user has a zendesk id' do
         subject { build(:user, zendesk_id: 42) }
@@ -1090,34 +887,29 @@ describe User, :plans do
   end
 
 end
+
 # == Schema Information
 #
 # Table name: users
 #
-#  id                              :integer         not null, primary key
-#  state                           :string(255)
-#  email                           :string(255)     default(""), not null
-#  encrypted_password              :string(128)     default(""), not null
-#  password_salt                   :string(255)     default(""), not null
-#  confirmation_token              :string(255)
-#  confirmed_at                    :datetime
-#  confirmation_sent_at            :datetime
-#  reset_password_token            :string(255)
-#  remember_token                  :string(255)
-#  remember_created_at             :datetime
-#  sign_in_count                   :integer         default(0)
-#  current_sign_in_at              :datetime
-#  last_sign_in_at                 :datetime
-#  current_sign_in_ip              :string(255)
-#  last_sign_in_ip                 :string(255)
-#  failed_attempts                 :integer         default(0)
-#  locked_at                       :datetime
-#  cc_type                         :string(255)
-#  cc_last_digits                  :string(255)
+#  archived_at                     :datetime
+#  balance                         :integer          default(0)
+#  billing_address_1               :string(255)
+#  billing_address_2               :string(255)
+#  billing_city                    :string(255)
+#  billing_country                 :string(255)
+#  billing_name                    :string(255)
+#  billing_postal_code             :string(255)
+#  billing_region                  :string(255)
+#  cc_alias                        :string(255)
 #  cc_expire_on                    :date
+#  cc_last_digits                  :string(255)
+#  cc_type                         :string(255)
 #  cc_updated_at                   :datetime
-#  created_at                      :datetime
-#  updated_at                      :datetime
+#  company_employees               :string(255)
+#  company_job_title               :string(255)
+#  created_at                      :datetime        not null
+#  updated_at                      :datetime        not null
 #  invitation_token                :string(60)
 #  invitation_sent_at              :datetime
 #  zendesk_id                      :integer
@@ -1129,40 +921,57 @@ end
 #  use_clients                     :boolean
 #  company_name                    :string(255)
 #  company_url                     :string(255)
-#  company_job_title               :string(255)
-#  company_employees               :string(255)
 #  company_videos_served           :string(255)
-#  cc_alias                        :string(255)
-#  pending_cc_type                 :string(255)
-#  pending_cc_last_digits          :string(255)
-#  pending_cc_expire_on            :date
-#  pending_cc_updated_at           :datetime
-#  archived_at                     :datetime
-#  newsletter                      :boolean         default(FALSE)
-#  last_invoiced_amount            :integer         default(0)
-#  total_invoiced_amount           :integer         default(0)
-#  balance                         :integer         default(0)
-#  hidden_notice_ids               :text
-#  name                            :string(255)
-#  billing_name                    :string(255)
-#  billing_address_1               :string(255)
-#  billing_address_2               :string(255)
-#  billing_postal_code             :string(255)
-#  billing_city                    :string(255)
-#  billing_region                  :string(255)
-#  billing_country                 :string(255)
-#  last_failed_cc_authorize_at     :datetime
-#  last_failed_cc_authorize_status :integer
-#  last_failed_cc_authorize_error  :string(255)
-#  referrer_site_token             :string(255)
-#  reset_password_sent_at          :datetime
 #  confirmation_comment            :text
-#  unconfirmed_email               :string(255)
+#  confirmation_sent_at            :datetime
+#  confirmation_token              :string(255)
+#  confirmed_at                    :datetime
+#  country                         :string(255)
+#  created_at                      :datetime         not null
+#  current_sign_in_at              :datetime
+#  current_sign_in_ip              :string(255)
+#  email                           :string(255)      default(""), not null
+#  encrypted_password              :string(128)      default(""), not null
+#  enthusiast_id                   :integer
+#  failed_attempts                 :integer          default(0)
+#  hidden_notice_ids               :text
+#  id                              :integer          not null, primary key
 #  invitation_accepted_at          :datetime
 #  invitation_limit                :integer
+#  invitation_sent_at              :datetime
+#  invitation_token                :string(60)
 #  invited_by_id                   :integer
 #  invited_by_type                 :string(255)
-#  vip                             :boolean         default(FALSE)
+#  last_failed_cc_authorize_at     :datetime
+#  last_failed_cc_authorize_error  :string(255)
+#  last_failed_cc_authorize_status :integer
+#  last_invoiced_amount            :integer          default(0)
+#  last_sign_in_at                 :datetime
+#  last_sign_in_ip                 :string(255)
+#  locked_at                       :datetime
+#  name                            :string(255)
+#  newsletter                      :boolean          default(FALSE)
+#  password_salt                   :string(255)      default(""), not null
+#  pending_cc_expire_on            :date
+#  pending_cc_last_digits          :string(255)
+#  pending_cc_type                 :string(255)
+#  pending_cc_updated_at           :datetime
+#  postal_code                     :string(255)
+#  referrer_site_token             :string(255)
+#  remember_created_at             :datetime
+#  remember_token                  :string(255)
+#  reset_password_sent_at          :datetime
+#  reset_password_token            :string(255)
+#  sign_in_count                   :integer          default(0)
+#  state                           :string(255)
+#  total_invoiced_amount           :integer          default(0)
+#  unconfirmed_email               :string(255)
+#  updated_at                      :datetime         not null
+#  use_clients                     :boolean
+#  use_company                     :boolean
+#  use_personal                    :boolean
+#  vip                             :boolean          default(FALSE)
+#  zendesk_id                      :integer
 #
 # Indexes
 #

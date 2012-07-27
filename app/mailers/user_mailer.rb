@@ -1,9 +1,8 @@
 class UserMailer < Mailer
   default template_path: "mailers/#{self.mailer_name}"
 
-  def welcome(user)
-    @user = user
-    @no_intro, @no_signature, @no_reply = true, true, true
+  def welcome(user_id)
+    extract_user_from_user_id(user_id)
 
     mail(
       to: to(@user),
@@ -11,8 +10,8 @@ class UserMailer < Mailer
     )
   end
 
-  def account_suspended(user)
-    @user = user
+  def account_suspended(user_id)
+    extract_user_from_user_id(user_id)
 
     mail(
       to: to(@user),
@@ -20,8 +19,8 @@ class UserMailer < Mailer
     )
   end
 
-  def account_unsuspended(user)
-    @user = user
+  def account_unsuspended(user_id)
+    extract_user_from_user_id(user_id)
 
     mail(
       to: to(@user),
@@ -29,13 +28,19 @@ class UserMailer < Mailer
     )
   end
 
-  def account_archived(user)
-    @user = user
+  def account_archived(user_id)
+    extract_user_from_user_id(user_id)
 
     mail(
       to: to(@user),
       subject: I18n.t('mailer.user_mailer.account_archived')
     )
+  end
+
+  private
+
+  def extract_user_from_user_id(user_id)
+    @user = User.find(user_id)
   end
 
 end

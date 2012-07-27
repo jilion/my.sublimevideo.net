@@ -3,8 +3,10 @@ module Admin::SitesHelper
   def admin_sites_page_title(sites)
     state = if params[:in_plan]
       " in #{"trial of " if params[:in_trial]}the #{params[:in_plan].titleize} plan"
-    elsif params[:paid_plan]
-      params[:in_trial] ? " in trial" : " paying"
+    elsif params[:in_trial]
+      " in trial"
+    elsif params[:in_paid_plan]
+      " paying"
     elsif params[:overusage_notified]
       " with peak insurance"
     elsif params[:with_next_cycle_plan]

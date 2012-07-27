@@ -1,0 +1,55 @@
+#site_settings.settings
+  .left
+    %h4.title Staging and alias domains
+    %p.info= raw "Add extra domains separated by commas. Extra domains are meant to be used #{content_tag(:strong, "exclusively")} for staging domains and alias domains (multiple domain names that point to the #{content_tag(:strong, "same content")})."
+    .entry.site#site_setup_extra_hostnames
+      = f.label :extra_hostnames, "", class: "icon"
+      = f.text_field :extra_hostnames, class: "text", placeholder: "staging-yourdomain.com", autocomplete: :off
+
+    %h4.title Development domains
+    %p.info= "Add (local only) development domains separated by commas."
+    .entry.site#site_setup_dev_hostnames
+      = f.label :dev_hostnames, "", class: "icon"
+      = f.text_field :dev_hostnames, class: "text", placeholder: "127.0.0.1, localhost", autocomplete: :off
+
+  .right
+    %h4.title= "Advanced settings"
+    %p.info= "Restrict your player to a specific path. The path will also be added to extra domains (but not to development domains)."
+    .entry.path
+      %p
+        = f.label :path, "", class: "icon"
+        = f.text_field :path, class: "text small_icon", placeholder: "path", autocomplete: :off
+    .entry.wildcard
+      .checkbox_wrap
+        = f.check_box :wildcard
+        = f.label :wildcard, "Wildcard (*.yourdomain.com)"
+      %p.info= "It will also be enabled for extra and development domains."
+    - unless site.in_free_plan?
+      .entry.badged
+        .checkbox_wrap
+          = f.check_box :badged, disabled: site.in_free_plan?
+          = f.label :badged, "Enable SublimeVideo badge."
+        %p.info= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
+    -#.entry.ssl
+    -#  .checkbox_wrap
+    -#    = check_box_tag :ssl, 1, checked: !site.in_free_plan?, disabled: true
+    -#    = label_tag :ssl, "SSL Serving#{' available' unless site.in_free_plan?}"
+    -#    - if site.in_free_plan?
+    -#      = raw t("site.settings.ssl_serving_note", link: link_to("paid plan", [:edit, site, :plan]))
+    -#  = link_to "http://docs.sublimevideo.net/site-settings", class: "hl", onclick: "window.open(this); return false" do
+    -#    %span= "Read more"
+  .spacer
+
+  -#- if site.in_free_plan?
+  -#  .more_settings_desc><
+  -#    = raw "More settings like alias and staging domains, custom path and wildcard option, are available on paid plans. #{link_to "Read more", "http://docs.sublimevideo.net/site-settings", class: "hl"}."
+  = link_to docs_page_url('site-settings'), class: "help", onclick: "window.open(this); return false" do
+    %span= "Read more"
+
+  - if @site.in_free_plan?
+    %p
+      Want to remove the SublimeVideo badge or need SSL Serving?
+      = link_to "Upgrade now!", [:edit, @site, :plan], class: 'hl'
+    %br
+
+  .big_break

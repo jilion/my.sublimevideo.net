@@ -1,6 +1,6 @@
 #billing_address
   %h3.section_title Billing Address
-  - unless user.billing_address_complete?
+  - if !user.billing_address_complete? && user.cc?
     - fields = billing_address_missing_fields(user)
     %p.alert= t("user.billing_address.incomplete_with_missing_fields", fields: fields.to_sentence, count: fields.size)
 

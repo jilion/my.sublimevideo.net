@@ -17,3 +17,5 @@ vendor/bundler
 .env
 uploads
 .tddium*
+
+public/test.html

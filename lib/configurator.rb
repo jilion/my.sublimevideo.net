@@ -21,7 +21,7 @@ module Configurator
     def method_missing(*args)
       method_name = args.shift.to_sym
 
-      if @heroku_config_attributes.include?(method_name)
+      if @heroku_config_attributes && @heroku_config_attributes.include?(method_name)
         yml_options[method_name] == 'heroku_env' ? ENV["#{@prefix.to_s.upcase}_#{method_name.to_s.upcase}"] : yml_options[method_name]
       else
         yml_options[method_name].nil? ? super(method_name, *args) : yml_options[method_name]

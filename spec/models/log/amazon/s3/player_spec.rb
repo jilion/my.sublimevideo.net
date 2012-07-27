@@ -7,9 +7,9 @@ describe Log::Amazon::S3::Player do
   context "Factory" do
     subject { log_s3_player }
 
-    its(:hostname)   { should == 'sublimevideo.player' }
-    its(:started_at) { should == Time.zone.parse('2010-07-16-05-22-13').utc }
-    its(:ended_at)   { should == (Time.zone.parse('2010-07-16-05-22-13') + 1.day).utc }
+    its(:hostname)   { should eq 'sublimevideo.player' }
+    its(:started_at) { should eq Time.zone.parse('2010-07-16-05-22-13').utc }
+    its(:ended_at)   { should eq (Time.zone.parse('2010-07-16-05-22-13') + 1.day).utc }
     its(:parsed_at)  { should be_nil}
 
     it { should_not be_parsed_at }
@@ -19,7 +19,7 @@ describe Log::Amazon::S3::Player do
   context "created with valid attributes" do
     subject { log_s3_player }
 
-    its("file.url") { should == "/uploads/s3/sublimevideo.player/2010-07-16-05-22-13-8C4ECFE09170CCD5" }
+    its("file.url") { should eq "/uploads/s3/sublimevideo.player/2010-07-16-05-22-13-8C4ECFE09170CCD5" }
 
     it "should have good log content" do
       log = described_class.find(subject.id) # to be sure that log is well saved with CarrierWave
@@ -34,15 +34,15 @@ describe Log::Amazon::S3::Player do
     it "should delay parse_log after create" do
       subject # trigger log creation
       job = Delayed::Job.last
-      job.name.should == 'Class#parse_log'
-      job.priority.should == 20
+      job.name.should eq 'Class#parse_log'
+      job.priority.should eq 20
     end
   end
 
   describe "Class Methods" do
     describe ".fetch_and_create_new_logs" do
       it "should launch delayed fetch_and_create_new_logs" do
-        lambda { described_class.fetch_and_create_new_logs }.should change(Delayed::Job.where(:handler.matches => "%fetch_and_create_new_logs%"), :count).by(1)
+        lambda { described_class.fetch_and_create_new_logs }.should change(Delayed::Job.where { handler =~ "%fetch_and_create_new_logs%" }, :count).by(1)
       end
 
       it "should not launch delayed fetch_and_create_new_logs if one pending already present" do

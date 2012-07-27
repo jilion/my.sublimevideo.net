@@ -123,8 +123,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rspec-core'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '~> 2.10.0'
   gem 'debugger'
   gem 'timecop'
 
@@ -132,8 +131,6 @@ group :development, :test do
   gem 'jasminerice'
   # Rails routes view
   gem 'sextant'
-  # CI
-  gem 'tddium'
 end
 
 group :test do
@@ -155,7 +152,7 @@ group :test do
 end
 
 group :tools do
-  # gem 'annotate', github: 'ctran/annotate_models'
+  gem 'annotate', github: 'ctran/annotate_models'
   gem 'wirble'
   gem 'heroku'
   gem 'foreman'

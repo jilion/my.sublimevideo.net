@@ -66,24 +66,25 @@ protected
   end
 
 end
+
 # == Schema Information
 #
 # Table name: enthusiasts
 #
-#  id                     :integer         not null, primary key
-#  email                  :string(255)
-#  free_text              :text
-#  interested_in_beta     :boolean
-#  remote_ip              :string(255)
+#  confirmation_resent_at :datetime
+#  confirmation_sent_at   :datetime
 #  confirmation_token     :string(255)
 #  confirmed_at           :datetime
-#  confirmation_sent_at   :datetime
-#  trashed_at             :datetime
 #  created_at             :datetime
-#  updated_at             :datetime
+#  email                  :string(255)
+#  free_text              :text
+#  id                     :integer          not null, primary key
+#  interested_in_beta     :boolean
 #  invited_at             :datetime
+#  remote_ip              :string(255)
 #  starred                :boolean
-#  confirmation_resent_at :datetime
+#  trashed_at             :datetime
+#  updated_at             :datetime
 #
 # Indexes
 #

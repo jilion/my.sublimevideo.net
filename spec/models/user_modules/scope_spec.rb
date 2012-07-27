@@ -41,31 +41,31 @@ describe UserModules::Scope, :plans do
     before do
       # Paying because of 1 paid plan not in trial
       @user1 = create(:user)
-      create(:site_not_in_trial, user: @user1, plan_id: @paid_plan.id)
+      create(:fake_site, user: @user1, plan_id: @paid_plan.id)
 
       # Paying because of 1 paid plan not in trial (+ next plan is paid)
       @user2 = create(:user)
-      create(:site_not_in_trial, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
+      create(:fake_site, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
 
       # Paying because of 1 paid plan not in trial (+ next plan is free)
       @user3 = create(:user)
-      create(:site_not_in_trial, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
+      create(:fake_site, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
 
       # Free because no paying (and active) sites
       @user4 = create(:user)
-      create(:site_not_in_trial, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
+      create(:fake_site, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
 
       # Free because of no paid plan
       @user5 = create(:user)
-      create(:site, user: @user5, plan_id: @free_plan.id)
+      create(:fake_site, user: @user5, plan_id: @free_plan.id)
 
       # Free because of 1 paid plan in trial
       @user6 = create(:user)
-      create(:site, user: @user6, plan_id: @paid_plan.id)
+      create(:fake_site, user: @user6, plan_id: @trial_plan.id)
 
       # Archived and that's it
       @user7 = create(:user, state: 'archived')
-      create(:site, user: @user7, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
+      create(:fake_site, user: @user7, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
       @user8 = create(:user, state: 'archived')
     end
 

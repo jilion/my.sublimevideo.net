@@ -6,10 +6,9 @@ class SitesController < ApplicationController
   before_filter :activate_deal_from_cookie, only: [:index, :new]
   before_filter :find_sites_or_redirect_to_new_site, only: [:index, :edit, :update, :destroy]
   before_filter :find_by_token!, only: [:edit, :update, :destroy]
+  before_filter :set_current_plan, :set_custom_plan, only: [:new, :create]
 
-  has_scope :by_hostname
-  has_scope :by_date
-  has_scope :by_last_30_days_billable_video_views
+  has_scope :by_hostname, :by_date, :by_last_30_days_billable_video_views
 
   # GET /sites
   def index
@@ -36,11 +35,13 @@ class SitesController < ApplicationController
 
   # POST /sites
   def create
-    @site = current_user.sites.build((params[:site] || {}).merge(remote_ip: request.try(:remote_ip)))
+    params[:site][:remote_ip] = request.remote_ip
+    params[:site][:plan_id]   = Plan.trial_plan.id if !params[:site_skip_trial] || !params[:site][:plan_id]
+    @site = current_user.sites.build(params[:site])
 
     respond_with(@site) do |format|
       if @site.save # will create site (& create invoice and charge it if skip_trial is true)
-        notice_and_alert = params[:site][:skip_trial] ? notice_and_alert_from_transaction(@site.last_transaction) : { notice: nil, alert: nil }
+        notice_and_alert = notice_and_alert_from_transaction(@site.last_transaction)
         format.html { redirect_to :sites, notice_and_alert }
       else
         flash[:notice] = flash[:alert] = ""

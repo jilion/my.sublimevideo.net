@@ -1,32 +1,38 @@
 #plan_update_info
   #plan_in_trial_downgrade_to_free_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "The plan change will take effect immediately. We won't charge you anything."
+    %p The plan change will take effect immediately. We won't charge you anything.
+    %br
+    %p
+      %strong Please note that you'll immediately loose access to Real-Time Statistics, Email support and SSL serving.
 
-  #plan_in_trial_update_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "The plan change will take effect immediately but we will only charge you #{content_tag(:span, "?", class: "plan_price")} at the end of your #{BusinessModel.days_for_trial}-day trial, on #{content_tag(:strong, "?", class: "plan_update_date")}."
+  #plan_in_trial_upgrade_info.update_plan_message_box.notice{ style: "display:none;" }
+    %p= raw "The plan change will take effect immediately. We'll charge you #{content_tag(:span, "?", class: "plan_price")} every #{content_tag(:span, "?", class: "plan_cycle")} starting today."
 
-  #plan_skipping_trial_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "The trial for your #{content_tag(:strong, "?", class: "plan_title")} plan will stop immediately and we will charge you #{content_tag(:span, "?", class: "plan_update_price")}."
+  #plan_skipping_trial_paid_info.update_plan_message_box.notice{ style: "display:none;" }
+    %p= raw "Your #{content_tag(:strong, "?", class: "plan_title")} plan will start immediately. We'll charge you #{content_tag(:span, "?", class: "plan_price")} every #{content_tag(:span, "?", class: "plan_cycle")} starting today."
 
-  #plan_in_trial_instant_upgrade_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "You will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan and we will charge you #{content_tag(:span, "?", class: "plan_update_price")}."
+  #plan_skipping_trial_free_info.update_plan_message_box.notice{ style: "display:none;" }
+    %p= raw "Your #{content_tag(:strong, "?", class: "plan_title")} plan will start immediately. We won't charge you anything."
+    %br
+    %p
+      %strong Please note that you won't have access to Real-Time Statistics, Email support and SSL serving.
 
   #plan_upgrade_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "You will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We will only charge you the difference of #{content_tag(:span, "?", class: "plan_update_price")} for the upgrade, instead of the full price of #{content_tag(:span, "?", class: "plan_price")}."
+    %p= raw "Your plan will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We'll only charge you the difference of #{content_tag(:span, "?", class: "plan_update_price")} for the upgrade, instead of the full price of #{content_tag(:span, "?", class: "plan_price")}."
 
   #plan_upgrade_from_free_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "You will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We will charge you #{content_tag(:span, "?", class: "plan_update_price")}."
+    %p= raw "You will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We'll charge you #{content_tag(:span, "?", class: "plan_update_price")}."
 
   #plan_delayed_downgrade_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "You will be downgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan on #{content_tag(:strong, "?", class: "plan_update_date")}. On the same day, we will charge you #{content_tag(:span, "?", class: "plan_update_price")}."
+    %p= raw "Your plan will be downgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan on #{content_tag(:strong, "?", class: "plan_update_date")}. On the same day, we'll charge you #{content_tag(:span, "?", class: "plan_update_price")}."
 
   #plan_delayed_upgrade_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "You will be upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan on #{content_tag(:strong, "?", class: "plan_update_date")}. On the same day, we will charge you #{content_tag(:span, "?", class: "plan_update_price")}."
+    %p= raw "Your plan will be upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan on #{content_tag(:strong, "?", class: "plan_update_date")}. On the same day, we'll charge you #{content_tag(:span, "?", class: "plan_update_price")}."
 
   #plan_delayed_change_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "Your plan cycle will be changed to monthly on #{content_tag(:strong, "?", class: "plan_update_date")}. On the same day, we will charge you #{content_tag(:span, "?", class: "plan_update_price")}."
+    %p= raw "Your plan cycle will be changed to monthly on #{content_tag(:strong, "?", class: "plan_update_date")}. On the same day, we'll charge you #{content_tag(:span, "?", class: "plan_update_price")}."
 
   #plan_delayed_downgrade_to_free_info.update_plan_message_box.notice{ style: "display:none;" }
-    %p= raw "You will be downgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan on #{content_tag(:strong, "?", class: "plan_update_date")}."
+    %p= raw "Your plan will be downgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan on #{content_tag(:strong, "?", class: "plan_update_date")}."
 
 .spacer

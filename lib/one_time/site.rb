@@ -17,6 +17,18 @@ module OneTime
 
         "Finished: in total, #{scheduled} sites will have their loader and license re-generated"
       end
+      
+      def update_sites_in_trial_to_new_trial_plan
+        trial_plan_id, modified = ::Plan.trial_plan.id, 0
+        ::Site.not_archived.where { (trial_started_at != nil) & (trial_started_at > 14.days.ago) }.each do |site|
+          site.plan_started_at = site.trial_started_at
+          site.send(:write_attribute, :plan_id, trial_plan_id)
+          site.save!
+          modified += 1
+        end
+
+        "Finished: in total, #{modified} sites are now in the new trial."
+      end
 
       def without_versioning
         was_enabled = PaperTrail.enabled?

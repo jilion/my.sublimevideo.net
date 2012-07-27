@@ -14,10 +14,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
           redraw: (event) ->
             newStart = parseInt @xAxis[0].getExtremes()['min']
             newEnd   = parseInt @xAxis[0].getExtremes()['max']
-            AdminSublimeVideo.period.start = new Date newStart
-            AdminSublimeVideo.period.end   = new Date newEnd
             AdminSublimeVideo.statsRouter.updateUrl('p', "#{newStart}-#{newEnd}")
-            AdminSublimeVideo.timeRangeTitleView.render()
+            AdminSublimeVideo.period.set(start: new Date(newStart), end: new Date(newEnd))
 
       navigator:
         series:
@@ -125,7 +123,6 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             click: (event) ->
               if /sales/i.test(event.point.series.name)
                 $('#invoice_popup').remove()
-                position = "#{event.pageX}, #{event.pageY}"
                 startedAt = new Date event.point.x
                 year  = startedAt.getFullYear()
                 month = startedAt.getMonth()
@@ -155,8 +152,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
 
                     popUp = $('<div>').attr('id', 'invoice_popup').css
                       position: 'absolute'
-                      top: event.pageY - 60
-                      left: event.pageX
+                      top: event.point.pageY - 60
+                      left: event.point.pageX
                       'z-index': '1000000'
                       width: '350px'
                       padding: '10px 20px'
@@ -169,7 +166,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                     $("#content}").append popUp
 
                     # Move the popup left if too close to the right window's border
-                    if event.pageX + popUp.outerWidth() + 30 > $(window).width()
+                    if event.point.pageX + popUp.outerWidth() + 30 > $(window).width()
                       popUp.css('left', $(window).width() - popUp.outerWidth() - 30)
                     popUp.show()
 

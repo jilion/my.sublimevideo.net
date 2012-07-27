@@ -16,7 +16,7 @@ class MailLog < ActiveRecord::Base
   # ===============
   # = Validations =
   # ===============
-  
+
   validates :template_id, presence: true
   validates :admin_id,    presence: true
   validates :criteria,    presence: true
@@ -25,13 +25,13 @@ class MailLog < ActiveRecord::Base
   # =============
   # = Callbacks =
   # =============
-  
+
   before_create :snapshotize_template
 
   # ==========
   # = Scopes =
   # ==========
-  
+
   # sort
   scope :by_template_title, lambda { |way = 'asc'| includes(:template).order(template: :title.send(way)) }
   scope :by_admin_email,    lambda { |way = 'asc'| includes(:admin).order(admin: :email.send(way)) }
@@ -48,18 +48,19 @@ private
   end
 
 end
+
 # == Schema Information
 #
 # Table name: mail_logs
 #
-#  id          :integer         not null, primary key
-#  template_id :integer
 #  admin_id    :integer
+#  created_at  :datetime         not null
 #  criteria    :text
-#  user_ids    :text
+#  id          :integer          not null, primary key
 #  snapshot    :text
-#  created_at  :datetime
-#  updated_at  :datetime
+#  template_id :integer
+#  updated_at  :datetime         not null
+#  user_ids    :text
 #
 # Indexes
 #

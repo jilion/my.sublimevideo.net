@@ -163,9 +163,11 @@ class MSVStats.Helpers.ChartsHelper
           color: '#5d7493'
         }]
         formatter: ->
-          title = ["#{Highcharts.dateFormat('%e %b %Y, %H:%M:%S', @x)}<br/>"]
+          format = if MSVStats.period.get('type') is 'days' then '%e %b %Y' else '%e %b %Y, %H:%M'
+          title = ["#{Highcharts.dateFormat(format, @x)}<br/>"]
+
           title += _.map(@points, (point) ->
-            "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span>#{Highcharts.numberFormat(point.y, 0)} hits"
+            "<span style=\"color:#a2b1c9;font-weight:normal\">#{point.series.name}</span> #{Highcharts.numberFormat(point.y, 0)} hits"
           ).join("<br/>")
       navigator:
         enabled: false
@@ -223,6 +225,9 @@ class MSVStats.Helpers.ChartsHelper
         pointInterval: MSVStats.period.pointInterval()
         pointStart: MSVStats.period.startTime()
         shadow: true
+        shadowColor: 'rgb(116, 255, 131)'
+        shadowOpacityFactor: 0.08
+        shadowWidthParams: [16, 4]
         fillColor: 'rgba(9,250,33,0.15)'
         color: '#00ff18'
         lineColor: '#00ff18'

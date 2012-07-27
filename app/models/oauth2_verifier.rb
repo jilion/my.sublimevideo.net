@@ -35,24 +35,25 @@ class Oauth2Verifier < OauthToken
   end
 
 end
+
 # == Schema Information
 #
 # Table name: oauth_tokens
 #
-#  id                    :integer         not null, primary key
-#  type                  :string(20)
-#  user_id               :integer
-#  client_application_id :integer
-#  token                 :string(40)
-#  secret                :string(40)
-#  callback_url          :string(255)
-#  verifier              :string(20)
-#  scope                 :string(255)
 #  authorized_at         :datetime
+#  callback_url          :string(255)
+#  client_application_id :integer
+#  created_at            :datetime         not null
+#  id                    :integer          not null, primary key
 #  invalidated_at        :datetime
+#  scope                 :string(255)
+#  secret                :string(40)
+#  token                 :string(40)
+#  type                  :string(20)
+#  updated_at            :datetime         not null
+#  user_id               :integer
 #  valid_to              :datetime
-#  created_at            :datetime
-#  updated_at            :datetime
+#  verifier              :string(20)
 #
 # Indexes
 #

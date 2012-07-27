@@ -1,8 +1,4 @@
 - if site.plan
-  = site.plan.name.humanize
-  - if site.plan.standard_plan?
-    = " (" + site.plan.read_attribute(:cycle) + ")" # conflict with cycle method?
-    = " => #{site.next_cycle_plan.name.humanize}" if site.next_cycle_plan
-    = " [trial]" unless site.trial_ended?
+  = display_plan(site).gsub(' plan', '').html_safe
 - else
   = '-'
