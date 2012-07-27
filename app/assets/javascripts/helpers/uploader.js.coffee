@@ -12,9 +12,7 @@ class MySublimeVideo.Helpers.Uploader
       flash_swf_url: '/assets/plupload/js/plupload.flash.swf'
       silverlight_xap_url: '/assets/plupload/js/plupload.silverlight.xap'
       filters: [
-        { title: "Image files", extensions: "jpg,gif,png" },
-        { title: "Video files", extensions: "mov,mp4,m4v" },
-        { title: "Zip files", extensions: "zip" }
+        { title: "Video files", extensions: "mov,mp4,m4v" }
       ]
       # resize : { width: 320, height: 240, quality: 90 }
       multipart: true
@@ -41,8 +39,8 @@ class MySublimeVideo.Helpers.Uploader
       jQuery('#filelist').append "<div>Error: #{err.code}, Message: #{err.message}#{if err.file then ", File: #{err.file.name}" else ""}</div>"
       up.refresh() # Reposition Flash/Silverlight
 
-    @uploader.bind 'FileUploaded', (up, file) ->
+    @uploader.bind 'FileUploaded', (up, file) =>
       jQuery("##{file.id} b").html("100%")
-      alert 'uploaded!'
+      console.log "Let's encode #{@options['url'] + @options['multipart_params']['key'].replace('${filename}', file.name)}!"
 
   getOptions: -> @options

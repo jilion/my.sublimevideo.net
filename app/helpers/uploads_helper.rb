@@ -24,11 +24,11 @@ module UploadsHelper
     "https://s3.amazonaws.com/#{S3Bucket.videos_upload}/"
   end
 
-  def s3_key path
+  def s3_key(path)
     "#{path}/${filename}"
   end
 
-  def s3_policy options = {}
+  def s3_policy(options = {})
     options[:content_type]  ||= ''
     options[:acl]           ||= 'private'
     options[:max_file_size] ||= 500.megabyte
@@ -49,7 +49,7 @@ module UploadsHelper
     }").gsub(/\n|\r/, '')
   end
 
-  def s3_signature options = {}
+  def s3_signature(options = {})
     Base64.encode64(
       OpenSSL::HMAC.digest(
       OpenSSL::Digest::Digest.new('sha1'),
