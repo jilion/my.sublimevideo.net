@@ -10,7 +10,7 @@ describe Site, :plans do
     its(:plan)                                    { should be_present }
     its(:pending_plan)                            { should be_nil }
     its(:hostname)                                { should =~ /jilion[0-9]+\.com/ }
-    its(:dev_hostnames)                           { should eq "127.0.0.1, localhost" }
+    its(:dev_hostnames)                           { should eq "127.0.0.1,localhost" }
     its(:extra_hostnames)                         { should be_nil }
     its(:path)                                    { should be_nil }
     its(:wildcard)                                { should be_false }

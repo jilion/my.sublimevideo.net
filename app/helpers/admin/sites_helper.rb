@@ -51,7 +51,7 @@ module Admin::SitesHelper
   def joined_links(hostnames)
     return if hostnames.empty?
 
-    hostnames = hostnames.split(',')
+    hostnames = hostnames.split(/,\s*/)
     first_hostname = hostnames.shift
     html = link_to first_hostname, "http://#{first_hostname}"
     html += ", #{hostnames.size} more" unless hostnames.empty?

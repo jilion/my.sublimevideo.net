@@ -9,10 +9,10 @@ module Hostname
     # one hostname or list of hostnames separated by comma
     def clean(hostnames)
       if hostnames.present?
-        hostnames.split(',').select { |h| h.present? }.map do |hostname|
+        hostnames.split(/,\s*/).select { |h| h.present? }.map do |hostname|
           hostname.strip!
           clean_one(hostname)
-        end.sort.join(', ')
+        end.sort.join(',')
       else
         hostnames
       end
@@ -21,14 +21,14 @@ module Hostname
     # one site or list of sites separated by comma
     def valid?(hostnames)
       if hostnames.present?
-        clean(hostnames).split(', ').all? { |h| valid_one?(h) }
+        clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) }
       end
     end
 
     # one site or list of sites separated by comma
     def extra_valid?(hostnames)
       if hostnames.present?
-        clean(hostnames).split(', ').all? { |h| valid_one?(h) }
+        clean(hostnames).split(/,\s*/).all? { |h| valid_one?(h) }
       else
         true
       end
@@ -37,7 +37,7 @@ module Hostname
     # one site or list of sites separated by comma
     def dev_valid?(hostnames)
       if hostnames.present?
-        clean(hostnames).split(', ').all? { |h| dev_valid_one?(h) }
+        clean(hostnames).split(/,\s*/).all? { |h| dev_valid_one?(h) }
       else
         true
       end
@@ -46,14 +46,14 @@ module Hostname
     # one site or list of sites separated by comma
     def wildcard?(hostnames)
       if hostnames.present?
-        clean(hostnames).split(', ').any? { |h| h =~ /\*/ }
+        clean(hostnames).split(/,\s*/).any? { |h| h =~ /\*/ }
       end
     end
 
     # one site or list of sites separated by comma
     def duplicate?(hostnames)
       if hostnames.present?
-        hostnames = clean(hostnames).split(', ')
+        hostnames = clean(hostnames).split(/,\s*/)
         hostnames.count > hostnames.uniq.count
       end
     end
@@ -61,7 +61,7 @@ module Hostname
     # one site or list of sites separated by comma
     def include?(hostnames, hostname)
       if hostnames.present?
-        clean(hostnames).split(', ').any? { |h| h == hostname }
+        clean(hostnames).split(/,\s*/).any? { |h| h == hostname }
       end
     end
 
@@ -87,6 +87,7 @@ module Hostname
     end
 
     def valid_one?(hostname)
+      hostname.strip!
       return true if ["blogspot.com", "appspot.com", "operaunite.com"].include?(hostname)
       ssp = PublicSuffix.parse(hostname)
       ssp.sld.present? && !PSEUDO_TLD.include?(ssp.tld)
