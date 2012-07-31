@@ -4,13 +4,13 @@
     %p.info= raw "Add extra domains separated by commas. Extra domains are meant to be used #{content_tag(:strong, "exclusively")} for staging domains and alias domains (multiple domain names that point to the #{content_tag(:strong, "same content")})."
     .entry.site#site_setup_extra_hostnames
       = f.label :extra_hostnames, "", class: "icon"
-      = f.text_field :extra_hostnames, class: "text", placeholder: "staging-yourdomain.com", autocomplete: :off
+      = f.text_field :extra_hostnames, class: "text", placeholder: "staging-yourdomain.com", autocomplete: :off, maxlength: 256
 
     %h4.title Development domains
     %p.info= "Add (local only) development domains separated by commas."
     .entry.site#site_setup_dev_hostnames
       = f.label :dev_hostnames, "", class: "icon"
-      = f.text_field :dev_hostnames, class: "text", placeholder: "127.0.0.1, localhost", autocomplete: :off
+      = f.text_field :dev_hostnames, class: "text", placeholder: "127.0.0.1, localhost", autocomplete: :off, maxlength: 256
 
   .right
     %h4.title= "Advanced settings"
@@ -18,7 +18,7 @@
     .entry.path
       %p
         = f.label :path, "", class: "icon"
-        = f.text_field :path, class: "text small_icon", placeholder: "path", autocomplete: :off
+        = f.text_field :path, class: "text small_icon", placeholder: "path", autocomplete: :off, maxlength: 256
     .entry.wildcard
       .checkbox_wrap
         = f.check_box :wildcard
