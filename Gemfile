@@ -4,9 +4,9 @@ source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com acc
 
 ruby '1.9.3'
 
-gem 'bundler', '~> 1.2.0.pre.1'
+gem 'bundler', '~> 1.2.0.rc'
 
-gem 'rails',               '3.2.6'
+gem 'rails',               '3.2.8.rc2 '
 gem 'sublimevideo_layout', '1.1.1' # hosted on gemfury
 
 # Databases
@@ -152,7 +152,7 @@ group :test do
 end
 
 group :tools do
-  gem 'annotate', github: 'ctran/annotate_models'
+  gem 'annotate'
   gem 'wirble'
   gem 'heroku'
   gem 'foreman'
