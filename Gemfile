@@ -135,8 +135,6 @@ end
 
 group :test do
   gem 'ffaker'
-  # gem 'spork', '~> 0.9.2'
-  # gem 'spork', github: 'sporkrb/spork'
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'capybara-email'
@@ -168,7 +166,6 @@ group :tools do
   gem 'guard'
   gem 'guard-pow'
   gem 'guard-livereload'
-  # gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-jasmine'
   # gem 'guard-yard'
