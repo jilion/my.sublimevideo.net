@@ -542,7 +542,7 @@ DEPENDENCIES
   brakeman
   bson (= 1.6.2)
   bson_ext (= 1.6.2)
-  bundler (~> 1.2.0.rc)
+  bundler (~> 1.2.0.rc.2)
   capybara
   capybara-email
   capybara-webkit
