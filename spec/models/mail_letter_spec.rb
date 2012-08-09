@@ -46,7 +46,7 @@ describe MailLetter do
 
           it "actually sends email when workers do their jobs" do
             subject
-            lambda { $worker.work_off }.should change(ActionMailer::Base.deliveries, :size).by(1)
+            expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
           end
 
           it "sends email to user with activity sites and should send appropriate template" do

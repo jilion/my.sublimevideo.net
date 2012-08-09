@@ -148,7 +148,7 @@ describe User, :plans do
     subject { create(:user).tap { |u| u.assign_attributes({ invitation_token: '123', invitation_sent_at: Time.now, email: "bob@bob.com", enthusiast_id: 12 }, without_protection: true); u.save(validate: false) } }
 
     it "should not be able to update enthusiast_id" do
-      lambda { subject.update_attributes(enthusiast_id: 13) }.should raise_error
+      expect { subject.update_attributes(enthusiast_id: 13) }.to raise_error
     end
   end
 
@@ -195,7 +195,7 @@ describe User, :plans do
         describe "after_transition  on: :suspend, do: :send_account_suspended_email" do
           it "should send an email to the user" do
             user # eager loading!
-            lambda { user.suspend }.should change(Delayed::Job.where { handler =~ '%Class%account_suspended%' }, :count).by(1)
+            expect { user.suspend }.to change(Delayed::Job.where { handler =~ '%Class%account_suspended%' }, :count).by(1)
           end
         end
       end
@@ -229,7 +229,7 @@ describe User, :plans do
 
         describe "after_transition  on: :unsuspend, do: :send_account_unsuspended_email" do
           it "should send an email to the user" do
-            lambda { user.unsuspend }.should change(Delayed::Job.where { handler =~ '%Class%account_unsuspended%' }, :count).by(1)
+            expect { user.unsuspend }.to change(Delayed::Job.where { handler =~ '%Class%account_unsuspended%' }, :count).by(1)
           end
         end
       end
@@ -295,7 +295,7 @@ describe User, :plans do
 
         describe "after_transition on: :archive, do: [:newsletter_unsubscribe, :send_account_archived_email]" do
           it "sends an email to user" do
-            lambda { user.archive }.should change(Delayed::Job.where { handler =~ '%Class%account_archived%' }, :count).by(1)
+            expect { user.archive }.to change(Delayed::Job.where { handler =~ '%Class%account_archived%' }, :count).by(1)
           end
 
           describe ":newsletter_unsubscribe" do
