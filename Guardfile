@@ -32,18 +32,6 @@ end
 
 group :backend do
 
-  # guard :spork, wait: 70 do
-  # # guard :spork, quiet: true, wait: 70 do
-  #   watch('config/boot.rb')
-  #   watch('config/application.rb')
-  #   watch('config/environment.rb')
-  #   watch(%r{^config/environments/.+\.rb})
-  #   watch(%r{^config/initializers/.+\.rb})
-  #   watch('spec/spec_helper.rb')
-  #   watch(%r{^spec/config/.+\.rb})
-  # end
-
-  # drb is set in spec_helper
   guard :rspec, bundler: false, version: 2, all_after_pass: false, all_on_start: false, keep_failed: false do
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }
