@@ -2,5 +2,5 @@
   %td.title
     = link_to admin.email, edit_admin_admin_path(admin)
   %td.confirmed
-    = display_bool(!admin.invited?)
+    = display_bool(!admin.invited_to_sign_up?)
   %td.delete= button_to('Delete', url_for(controller: 'admin/admins', action: 'destroy', id: admin.id), data: { confirm: 'Are you sure?' }, method: :delete)

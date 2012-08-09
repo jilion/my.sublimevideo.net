@@ -13,7 +13,7 @@ class Admin::Admins::InvitationsController < Devise::InvitationsController
   def create
     self.resource = resource_class.invite!(params[resource_name])
 
-    if resource.invited?
+    if resource.invited_to_sign_up?
       set_flash_message(:notice, :send_instructions, email: params[resource_name][:email])
       redirect_to [:admin, :admins]
     else
