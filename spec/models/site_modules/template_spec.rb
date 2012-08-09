@@ -112,7 +112,7 @@ describe SiteModules::Template, :plans do
         end
 
         it "should delay update_loader_and_license once" do
-          lambda { site.update_attribute(:player_mode, 'beta') }.should change(Delayed::Job, :count).by(1)
+          expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job, :count).by(1)
           Delayed::Job.where(:handler.matches => "%update_loader_and_license%").should have(1).item
         end
 

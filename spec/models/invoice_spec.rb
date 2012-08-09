@@ -116,12 +116,12 @@ describe Invoice, :plans do
 
         it "should update user.last_invoiced_amount" do
           subject.user.update_attribute(:last_invoiced_amount, 500)
-          expect { subject.succeed! }.should change(subject.user.reload, :last_invoiced_amount).from(500).to(10000)
+          expect { subject.succeed! }.to change(subject.user.reload, :last_invoiced_amount).from(500).to(10000)
         end
 
         it "should increment user.total_invoiced_amount" do
           subject.user.update_attribute(:total_invoiced_amount, 500)
-          expect { subject.succeed! }.should change(subject.user.reload, :total_invoiced_amount).from(500).to(10500)
+          expect { subject.succeed! }.to change(subject.user.reload, :total_invoiced_amount).from(500).to(10500)
         end
 
         it "should save user" do
@@ -195,7 +195,7 @@ describe Invoice, :plans do
           subject.user.update_attribute(:balance, 1000)
 
           subject.should be_open
-          expect { subject.cancel! }.should change(subject.user.reload, :balance).from(1000).to(3000)
+          expect { subject.cancel! }.to change(subject.user.reload, :balance).from(1000).to(3000)
           subject.should be_canceled
         end
       end
