@@ -1,4 +1,4 @@
-# encoding: utf-8 
+# encoding: utf-8
 
 # var gif = new Image();
 #
@@ -23,7 +23,7 @@ module LogsFileFormat
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
       analyze.frequency(:stats, title: :stats,
         category: lambda { |r| [remove_timestamp(r), r[:useragent]] },
-        if: lambda { |r| gif_request?(r) && countable_hit?(r) && good_token?(r) }
+        if: lambda { |r| countable_hit?(r) && gif_request?(r) && good_token?(r) }
       )
       analyze.trackers
     end
