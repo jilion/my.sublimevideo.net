@@ -1,4 +1,7 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'request_log_analyzer'
+require File.expand_path('lib/logs_file_format/voxcast')
+require File.expand_path('lib/logs_file_format/voxcast_sites')
 
 describe LogsFileFormat::Voxcast do
 
@@ -108,24 +111,16 @@ describe LogsFileFormat::Voxcast do
       end
     end
 
-    describe "event_is?" do
-      ["?t=ibvjcopp&i=1310389131519&h=i&e=l&vn=1", "?e=l&t=ibvjcopp&i=1310389131519&h=i&vn=1"].each do |path_query|
-        it "#{path_query} represent a 'l' event" do
-          subject.event_is?({ path_query: path_query }).should be_true
+    describe "page_load_event?" do
+      ["?t=ibvjcopp&i=1310389131519&h=i&e=l&vn=1", "?e=l&t=ibvjcopp&i=1310389131519&h=i&&vn=1"].each do |path_query|
+        it "returns true when path_query (#{path_query}) include load event and are not a video prepare only request" do
+          subject.page_load_event?({ path_query: path_query }).should be_true
         end
       end
 
-      ["?t=ibvjcopp&i=1310389131519&h=i&e=l&vn=1", "?e=l&t=ibvjcopp&i=1310389131519&h=i&vn=1"].each do |path_query|
-        it "#{path_query} represent a 'l' event, not a 's' event" do
-          subject.event_is?({ path_query: path_query }, 'l').should be_true
-          subject.event_is?({ path_query: path_query }, 's').should be_false
-        end
-      end
-
-      ["?t=ibvjcopp&i=1310389131519&h=i&e=s&vn=1", "?e=s&t=ibvjcopp&i=1310389131519&h=i&vn=1"].each do |path_query|
-        it "#{path_query} represent a 's' event, not a 'l' event" do
-          subject.event_is?({ path_query: path_query }, 's').should be_true
-          subject.event_is?({ path_query: path_query }, 'l').should be_false
+      ["?t=ibvjcopp&i=1310389131519&h=i&e=l&vn=1&po=1", "?e=l&t=ibvjcopp&i=1310389131519&h=i&po=1&vn=1"].each do |path_query|
+        it "returns false when path_query (#{path_query}) include load event but are a video prepare only request" do
+          subject.page_load_event?({ path_query: path_query }).should be_false
         end
       end
     end

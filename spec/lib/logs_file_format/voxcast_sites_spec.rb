@@ -1,4 +1,10 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'request_log_analyzer'
+require 'active_support/concern'
+require 'active_support/core_ext'
+require 'support/fixtures_helpers'
+require File.expand_path('lib/log_analyzer')
+require File.expand_path('lib/logs_file_format/voxcast_sites')
 
 describe LogsFileFormat::VoxcastSites do
 
