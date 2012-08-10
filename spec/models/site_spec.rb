@@ -478,7 +478,7 @@ describe Site, :plans do
   end
 
   describe "State Machine" do
-    before { VoxcastCDN.stub(:purge) }
+    before { CDN.stub(:purge) }
 
     describe "#suspend" do
       subject do
@@ -489,8 +489,8 @@ describe Site, :plans do
       end
 
       it "should clear & purge license & loader" do
-        VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-        VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+        CDN.should_receive(:purge).with("/js/#{subject.token}.js")
+        CDN.should_receive(:purge).with("/l/#{subject.token}.js")
         subject.suspend
         $worker.work_off
         subject.reload.loader.should_not be_present
@@ -507,8 +507,8 @@ describe Site, :plans do
       end
 
       it "should reset license & loader" do
-        VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-        VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+        CDN.should_receive(:purge).with("/js/#{subject.token}.js")
+        CDN.should_receive(:purge).with("/l/#{subject.token}.js")
         subject.suspend
         $worker.work_off
         subject.reload.loader.should_not be_present
@@ -530,8 +530,8 @@ describe Site, :plans do
         end
 
         it "should clear & purge license & loader and set archived_at" do
-          VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-          VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+          CDN.should_receive(:purge).with("/js/#{subject.token}.js")
+          CDN.should_receive(:purge).with("/l/#{subject.token}.js")
           subject.user.current_password = '123456'
           expect { subject.archive! }.to change(Delayed::Job, :count).by(1)
           subject.reload.should be_archived

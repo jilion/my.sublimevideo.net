@@ -1,4 +1,3 @@
-require_dependency 'voxcast_cdn'
 require_dependency 'log_analyzer'
 require_dependency 'notify'
 
@@ -96,7 +95,7 @@ private
         log_file.write(file.read)
       rescue NoMethodError, Excon::Errors::NotFound => ex
         if is_a?(Log::Voxcast)
-          self.file = VoxcastCDN.download_log(name)
+          self.file = CDN::VoxcastWrapper.download_log(name)
           self.save
           log_file.write(file.read)
         else

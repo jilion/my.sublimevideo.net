@@ -71,7 +71,7 @@ describe Log::Voxcast do
 
   context "Factory from 4076.voxcdn.com" do
     before do
-      VoxcastCDN.stub(:download_log).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
+      CDN::VoxcastWrapper.stub(:download_log).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
         fixture_file('logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz')
       }
     end
@@ -271,7 +271,7 @@ describe Log::Voxcast do
     describe ".parse_log_for_stats" do
       before do
         log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
-        VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
+        CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
         @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       end
 
@@ -294,13 +294,13 @@ describe Log::Voxcast do
   describe "Instance Methods" do
     before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
-      VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
+      CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
       @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
     end
 
     describe "#parse_and_create_stats!" do
       it "analyzes logs" do
-        VoxcastCDN.should_not_receive(:download_log)
+        CDN::VoxcastWrapper.should_not_receive(:download_log)
         LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastStats')
         Stat.should_receive(:create_stats_from_trackers!)
         @log.parse_and_create_stats!
@@ -308,7 +308,7 @@ describe Log::Voxcast do
     end
     describe "#parse_and_create_referrers!" do
       it "analyzes logs" do
-        VoxcastCDN.should_not_receive(:download_log)
+        CDN::VoxcastWrapper.should_not_receive(:download_log)
         LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastReferrers')
         Referrer.should_receive(:create_or_update_from_trackers!)
         @log.parse_and_create_referrers!
@@ -316,7 +316,7 @@ describe Log::Voxcast do
     end
     describe "#parse_and_create_user_agents!" do
       it "analyzes logs" do
-        VoxcastCDN.should_not_receive(:download_log)
+        CDN::VoxcastWrapper.should_not_receive(:download_log)
         LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastUserAgents')
         UsrAgent.should_receive(:create_or_update_from_trackers!)
         @log.parse_and_create_user_agents!

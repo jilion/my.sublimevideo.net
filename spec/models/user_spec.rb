@@ -301,7 +301,7 @@ describe User, :plans do
           describe ":newsletter_unsubscribe" do
             let(:user) { create(:user, newsletter: "1", email: "john@doe.com") }
             before do
-              VoxcastCDN.stub(:purge)
+              CDN.stub(:purge)
               PusherWrapper.stub(:trigger)
             end
 

@@ -1,4 +1,3 @@
-require_dependency 'voxcast_cdn'
 require_dependency 'file_header'
 require_dependency 's3'
 
@@ -134,9 +133,9 @@ private
     return unless Rails.env.production? || Rails.env.test?
     case state
     when 'dev', 'beta'
-      VoxcastCDN.purge_dir "/p/#{state}"
+      CDN.purge "/p/#{state}"
     when 'stable'
-      VoxcastCDN.purge_dir "/p"
+      CDN.purge "/p"
     end
   end
 
