@@ -5,7 +5,7 @@ describe SiteUsage do
   describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz')
-      VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(log_file)
+      CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(log_file)
       @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1286528280-1286528340.gz')
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
 
@@ -13,7 +13,7 @@ describe SiteUsage do
         Timecop.travel(@log.started_at - 1.minute) do
           @site1 = create(:site, hostname: 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.save }
         end
-        VoxcastCDN.stub(:purge)
+        CDN.stub(:purge)
         @site1.update_attributes(hostname: 'bob.com')
       end
 
@@ -87,7 +87,7 @@ describe SiteUsage do
   describe "with 4076.voxcdn.com.log.1308045840-1308045900.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/4076.voxcdn.com.log.1308045840-1308045900.gz')
-      VoxcastCDN.stub(:download_log).with('4076.voxcdn.com.log.1308045840-1308045900.gz').and_return(log_file)
+      CDN::VoxcastWrapper.stub(:download_log).with('4076.voxcdn.com.log.1308045840-1308045900.gz').and_return(log_file)
       @log = create(:log_voxcast, name: '4076.voxcdn.com.log.1308045840-1308045900.gz')
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
 
@@ -142,7 +142,7 @@ describe SiteUsage do
 
   describe "Trackers parsing with voxcast cdn.sublimevideo.net.log.1275002700-1275002760.gz logs file" do
     before do
-      VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1275002700-1275002760.gz').and_return(
+      CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1275002700-1275002760.gz').and_return(
         fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz')
       )
 

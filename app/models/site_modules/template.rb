@@ -1,5 +1,4 @@
 require_dependency 'pusher_wrapper'
-require_dependency 'voxcast_cdn'
 
 module SiteModules::Template
   extend ActiveSupport::Concern
@@ -57,7 +56,7 @@ module SiteModules::Template
 
   def purge_template(name)
     mapping = { loader: 'js', license: 'l' }
-    VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
+    CDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
   end
 
   def set_template(name, options = {})

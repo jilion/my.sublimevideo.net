@@ -24,7 +24,7 @@ describe HostnameUniquenessValidator do
     end
 
     it "should ignore archived sites" do
-      VoxcastCDN.stub(:purge)
+      CDN.stub(:purge)
       site.user.current_password = '123456'
       site.archive
       site.should be_archived
@@ -54,7 +54,7 @@ describe HostnameUniquenessValidator do
     end
 
     it "should ignore archived sites" do
-      VoxcastCDN.stub(:purge)
+      CDN.stub(:purge)
       site.user.current_password = '123456'
       site.archive
       site.should be_archived

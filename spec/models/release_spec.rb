@@ -6,7 +6,7 @@ describe Release do
   let(:beta_release)     { create(:release).tap { |r| r.flag } }
   let(:stable_release)   { create(:release).tap { |r| 2.times { r.flag } } }
 
-  before { VoxcastCDN.stub(:purge_dir) }
+  before { CDN.stub(:purge) }
 
   context "Factory" do
     use_vcr_cassette "release/dev"
@@ -41,7 +41,7 @@ describe Release do
       File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_false
     end
     it "purges /p/dev when flagged (becoming the dev release)" do
-      VoxcastCDN.should_receive(:purge_dir).with('/p/dev')
+      CDN.should_receive(:purge).with('/p/dev')
       subject.flag
     end
 
@@ -91,7 +91,7 @@ describe Release do
     end
 
     it "purges /p/beta when flagged (becoming the stable release)" do
-      VoxcastCDN.should_receive(:purge_dir).with('/p/beta')
+      CDN.should_receive(:purge).with('/p/beta')
       subject.flag
     end
 
@@ -161,7 +161,7 @@ describe Release do
     end
 
     it "purges /p when flagged (becoming the stable release)" do
-      VoxcastCDN.should_receive(:purge_dir).with('/p')
+      CDN.should_receive(:purge).with('/p')
       subject.flag
     end
 
