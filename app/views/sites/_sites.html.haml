@@ -24,7 +24,10 @@
               .sorting= link_to_sort :last_30_days_billable_video_views, default_way: 'desc', label: "Plays (Last 30 Days)"
         %th.videos
           .wrap
-            .sorting= link_to_sort "", default_way: 'desc', label: "Videos"
+            - if @sites.one?
+              Videos
+            - else
+              .sorting= link_to_sort "", default_way: 'desc', label: "Videos"
         %th.code
           .wrap= "Embed code"
         %th.status
