@@ -14,9 +14,9 @@
         = "—"
   %td.videos
     .wrap
-      - if rand(0..1) < 1
+      - if site.last_30_days_video_tags > 0
         = link_to site_videos_path(site), class: "video_number" do
-          %strong= number_with_delimiter(rand(4..199))
+          %strong= number_with_delimiter(site.last_30_days_video_tags)
           %em= "videos"
       - else
         = link_to site_videos_path(site), class: "add_video" do

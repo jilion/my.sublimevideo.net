@@ -27,7 +27,7 @@
             - if @sites.one?
               Videos
             - else
-              .sorting= link_to_sort "", default_way: 'desc', label: "Videos"
+              .sorting= link_to_sort :last_30_days_video_tags, default_way: 'desc', label: "Videos"
         %th.code
           .wrap= "Embed code"
         %th.status
