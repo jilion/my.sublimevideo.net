@@ -14,7 +14,7 @@ class Site < ActiveRecord::Base
   include SiteModules::Usage
   include SiteModules::UsageMonitoring
 
-  DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
+  DEFAULT_DEV_DOMAINS = '127.0.0.1,localhost'
   PLAYER_MODES = %w[dev beta stable]
 
   # Versioning
@@ -196,18 +196,18 @@ class Site < ActiveRecord::Base
   def hostname_with_path_needed
     unless path?
       list = %w[web.me.com web.mac.com homepage.mac.com cargocollective.com]
-      list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
+      list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(/,\s*/).include?(h)) }
     end
   end
 
   def hostname_with_subdomain_needed
     if wildcard?
       list = %w[tumblr.com squarespace.com posterous.com blogspot.com typepad.com]
-      list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
+      list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(/,\s*/).include?(h)) }
     end
   end
 
-  def hostname_or_token(prefix='#')
+  def hostname_or_token(prefix = '#')
     hostname.presence || "#{prefix}#{token}"
   end
 

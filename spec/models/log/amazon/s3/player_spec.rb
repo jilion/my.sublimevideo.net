@@ -42,12 +42,12 @@ describe Log::Amazon::S3::Player do
   describe "Class Methods" do
     describe ".fetch_and_create_new_logs" do
       it "should launch delayed fetch_and_create_new_logs" do
-        lambda { described_class.fetch_and_create_new_logs }.should change(Delayed::Job.where { handler =~ "%fetch_and_create_new_logs%" }, :count).by(1)
+        expect { described_class.fetch_and_create_new_logs }.to change(Delayed::Job.where { handler =~ "%fetch_and_create_new_logs%" }, :count).by(1)
       end
 
       it "should not launch delayed fetch_and_create_new_logs if one pending already present" do
         described_class.fetch_and_create_new_logs
-        lambda { described_class.fetch_and_create_new_logs }.should_not change(Delayed::Job, :count)
+        expect { described_class.fetch_and_create_new_logs }.to_not change(Delayed::Job, :count)
       end
     end
 

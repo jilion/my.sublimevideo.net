@@ -100,8 +100,9 @@ module LogsFileFormat
       request[:path_stem] == "/_.gif"
     end
 
-    def event_is?(request, event_code='l')
-      request[:path_query] =~ /[\?&]?e=#{event_code}&?/
+    def page_load_event?(request)
+      request[:path_query] =~ /[\?&]?e=l&?/ &&
+        !(request[:path_query] =~ /&po=1&?/)
     end
 
     def good_token?(request)

@@ -4,9 +4,9 @@ source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com acc
 
 ruby '1.9.3'
 
-gem 'bundler', '~> 1.2.0.pre.1'
+gem 'bundler', '~> 1.2.0.rc.2'
 
-gem 'rails',               '3.2.6'
+gem 'rails',               '3.2.8'
 gem 'sublimevideo_layout', '1.1.1' # hosted on gemfury
 
 # Databases
@@ -123,7 +123,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rspec-rails', '~> 2.10.0'
+  gem 'rspec-rails', '~> 2.11.0'
   gem 'debugger'
   gem 'timecop'
 
@@ -135,8 +135,6 @@ end
 
 group :test do
   gem 'ffaker'
-  # gem 'spork', '~> 0.9.2'
-  # gem 'spork', github: 'sporkrb/spork'
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'capybara-email'
@@ -152,7 +150,7 @@ group :test do
 end
 
 group :tools do
-  gem 'annotate', github: 'ctran/annotate_models'
+  gem 'annotate'
   gem 'wirble'
   gem 'heroku'
   gem 'foreman'
@@ -168,7 +166,6 @@ group :tools do
   gem 'guard'
   gem 'guard-pow'
   gem 'guard-livereload'
-  # gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-jasmine'
   # gem 'guard-yard'

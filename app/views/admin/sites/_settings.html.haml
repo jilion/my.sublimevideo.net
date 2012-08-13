@@ -5,7 +5,7 @@
   %strong= link_to(truncated_hostname(site), "http://#{site.hostname}")
   %strong= "|"
   = "Extra hostnames:"
-  - extra_hostnames = site.extra_hostnames.to_s.split(", ").map { |h| link_to(h, "http://#{h}") }
+  - extra_hostnames = site.extra_hostnames.to_s.split(/,\s*/).map { |h| link_to(h, "http://#{h}") }
   %strong= extra_hostnames.present? ? raw(extra_hostnames.join(", ")) : "–"
   %strong= "|"
   = "Dev hostnames:"

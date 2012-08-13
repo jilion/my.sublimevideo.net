@@ -41,13 +41,13 @@ module SiteModules::Template
 
   def license_hash
     hash = { h: [hostname] }
-    hash[:h] += extra_hostnames.split(', ') if extra_hostnames?
-    hash[:d] = dev_hostnames.split(', ') if dev_hostnames?
-    hash[:w] = wildcard if wildcard?
-    hash[:p] = path if path?
-    hash[:b] = badged
-    hash[:s] = true unless in_free_plan? # SSL
-    hash[:r] = true if plan_id? && plan_stats_retention_days != 0 # Realtime Stats
+    hash[:h] += extra_hostnames.split(/,\s*/) if extra_hostnames?
+    hash[:d]  = dev_hostnames.split(/,\s*/) if dev_hostnames?
+    hash[:w]  = wildcard if wildcard?
+    hash[:p]  = path if path?
+    hash[:b]  = badged
+    hash[:s]  = true unless in_free_plan? # SSL
+    hash[:r]  = true if plan_id? && plan_stats_retention_days != 0 # Realtime Stats
     hash
   end
 

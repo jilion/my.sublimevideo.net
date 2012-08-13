@@ -4,9 +4,9 @@ module SiteModules::Referrer
   extend ActiveSupport::Concern
 
   module ClassMethods
-    def referrer_match_hostname?(referrer, hostname, path='', wildcard=false)
+    def referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
       uri      = Addressable::URI.parse(referrer)
-      hostname = hostname.gsub('.', '\.')
+      hostname = hostname.strip.gsub('.', '\.')
       if path || wildcard
         path     = Addressable::URI.encode(path)
         uri_path = Addressable::URI.encode(uri.path)
@@ -17,7 +17,7 @@ module SiteModules::Referrer
     end
   end
 
-  def referrer_type(referrer, timestamp=Time.now.utc)
+  def referrer_type(referrer, timestamp = Time.now.utc)
     return "invalid" if referrer.nil? || referrer.length < 10
     if past_site = version_at(timestamp)
       referrer.gsub!(/\[|\]/, '')
@@ -41,11 +41,11 @@ module SiteModules::Referrer
   end
 
   def extra_referrer?(referrer)
-    extra_hostnames.present? && extra_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, path, wildcard) }
+    extra_hostnames.present? && extra_hostnames.split(/,\s*/).any? { |h| self.class.referrer_match_hostname?(referrer, h, path, wildcard) }
   end
 
   def dev_referrer?(referrer)
-    dev_hostnames.present? && dev_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, '', wildcard) }
+    dev_hostnames.present? && dev_hostnames.split(/,\s*/).any? { |h| self.class.referrer_match_hostname?(referrer, h, '', wildcard) }
   end
 
 end
