@@ -13,11 +13,6 @@ describe SiteStatsController do
       response.should_not be_redirect
     end
 
-    it "responds with success to GET :index (token)" do
-      get :index, token: 'demo'
-      response.should_not be_redirect
-    end
-
     it "responds with success to GET :videos" do
       get :videos, site_id: 'demo'
       response.should_not be_redirect
