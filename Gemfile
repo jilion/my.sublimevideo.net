@@ -158,7 +158,7 @@ group :tools do
   gem 'brakeman'
 
   # Guard
-  gem 'growl'
+  gem 'terminal-notifier-guard'
   platforms :ruby do
     gem 'coolline'
   end

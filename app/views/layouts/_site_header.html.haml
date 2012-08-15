@@ -1,0 +1,13 @@
+%h2
+  %select#sites_select_title{ 'data-token' => @site.token }
+    - @sites.sort_by { |s| s.hostname_or_token('zzz') }.each do |site|
+      %option{ value: site.token, selected: ('selected' if site == @site) }= hostname_or_token(site, length: 20)
+
+- dont_show_invoices_tab = @site.in_unpaid_plan? && @site.invoices.not_canceled.empty?
+%ul.segmented_menu.sticky
+  -#= li_menu_link('Videos', path: '', class: 'first' )
+  = li_menu_link('Stats', path: site_stats_path(@site), class: (%r{sites/stats/#{@site.token}$} =~ request.url ? 'first active' : 'first') )
+  = li_menu_link('Settings', path: edit_site_path(@site), class: (%r{sites/#{@site.token}$} =~ request.url ? 'active' : ''))
+  = li_menu_link('Plan', path: edit_site_plan_path(@site), class: (dont_show_invoices_tab ? 'last' : '') + (%r{sites/#{@site.token}/plan} =~ request.url ? ' active' : ''))
+  - unless dont_show_invoices_tab
+    = li_menu_link('Invoices', path: site_invoices_path(@site), class: 'last')
