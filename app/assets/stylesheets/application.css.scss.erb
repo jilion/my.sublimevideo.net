@@ -134,6 +134,7 @@ header, header .shadow, header .lights {
   font-size:48px;
   font-weight:100;
   border: 1px solid #5e75a2;
+  max-width:465px;
   text-shadow:rgba(255,255,255,0.25) 0 1px 0;
   @include box-shadow(rgba(255,255,255,0.2) 0 1px 0);
   @include border-radius(5px);
@@ -518,8 +519,8 @@ form .entry.float select {
 ul.segmented_menu {
   list-style-type:none;
   position:absolute;
-  top:46px;
-  right:40px;
+  top:40px;
+  right:44px;
 }
 
 ul.segmented_menu li {
@@ -529,7 +530,9 @@ ul.segmented_menu li {
 
 ul.segmented_menu li a {
   display:block;
-  padding:10px 16px;
+  height:58px;
+  line-height:58px;
+  padding:0 20px;
   color:#1e3966;
   font-size:20px;
   font-weight:600;
