@@ -17,9 +17,6 @@
     %p= raw "This demo page displays the actual video statistics for our own sublimevideo.net domain. Watch any video on #{link_to "sublimevideo.net", "http://sublimevideo.net"} from any device and see your activity logged in real-time on this page. Enjoy!"
 
 .stats
-  - unless demo_stats_page?
-    -# %span.beta_badge
-    = render 'layouts/segmented_menu'
   :coffeescript
     jQuery(document).ready ->
       # Enable pusher logging - don't include this in production
@@ -41,7 +38,11 @@
 
   #trial
 
-  #sites_select_title
+  - if demo_stats_page?
+    #sites_select_title
+      %h2 Stats for sublimevideo.net
+  - else
+    = render '/layouts/site_header'
 
   #notices
 
@@ -86,7 +87,7 @@
 
   .spacer
   #export_wrap
-  
+
   .spacer
   #plan_usage
 

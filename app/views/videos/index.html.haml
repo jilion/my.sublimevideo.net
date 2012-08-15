@@ -1,9 +1,7 @@
 - title(@site.hostname? ? "Videos for #{hostname_or_token(@site)}" : "Site videos")
-= render '/layouts/sites_select_title'
+= render '/layouts/site_header'
 
 #site.videos
-  = render '/layouts/segmented_menu'
-
   #video_upload
     %h3 Upload a video
     #container

@@ -16,10 +16,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       el: 'h2'
       sites: MSVStats.sites
 
-    new MSVStats.Views.SitesSelectTitleView
-      el: '#sites_select_title'
-      sites: MSVStats.sites
-
     new MSVStats.Views.PeriodSelectorSecondsView
       el: '#period_selectors .seconds'
       statsSeconds: MSVStats.statsSeconds
@@ -91,7 +87,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       period: MSVStats.period
       sites:  MSVStats.sites
 
-      
+
     new MSVStats.Views.PlanUsageView
       el: '#plan_usage'
       statsDays: MSVStats.statsDays

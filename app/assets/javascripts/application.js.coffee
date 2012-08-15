@@ -18,7 +18,7 @@ window.MySublimeVideo =
 MySublimeVideo.UI.prepareSiteSelector = ->
   if (sitesSelectTitle = jQuery('#sites_select_title')).exists()
     sitesSelectTitle.on 'change', ->
-      window.location.href = window.location.href.replace "/#{sitesSelectTitle.attr('data-token')}/", "/#{sitesSelectTitle.val()}/"
+      window.location.href = window.location.href.replace "/#{sitesSelectTitle.attr('data-token')}", "/#{sitesSelectTitle.val()}"
 
 MySublimeVideo.UI.prepareEmbedCodePopups = ->
   jQuery('a.embed_code').each ->

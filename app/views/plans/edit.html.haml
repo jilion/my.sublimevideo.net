@@ -1,9 +1,7 @@
 - title("Plan for #{hostname_or_token(@site)}")
-= render 'layouts/sites_select_title'
+= render '/layouts/site_header'
 
 #site.edit
-  = render 'layouts/segmented_menu'
-
   = render 'deals/deal_available'
 
   - if @site.hostname.blank?
@@ -23,7 +21,7 @@
     - if @site.in_trial_plan?
       .notice
         %p= raw "Your site is currently in trial, you still have #{full_days_until_trial_end(@site)} days to choose a plan."
-    
+
     - if @site.errors.empty? && @site.next_cycle_plan_id?
       #next_cycle_plan_box.notice
         %p= raw t('site.plan.next_cycle_will_start_on', plan_title: @site.next_cycle_plan.title(always_with_cycle: true), date: l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date))

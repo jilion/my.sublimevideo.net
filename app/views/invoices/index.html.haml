@@ -1,9 +1,7 @@
 - title(@site.hostname? ? "Invoices for #{hostname_or_token(@site)}" : "Site invoices")
-= render '/layouts/sites_select_title'
+= render '/layouts/site_header'
 
 #site.invoices
-  = render '/layouts/segmented_menu'
-
   - if @invoices.empty?
     #no_invoices
       %p= "No invoices"
