@@ -62,8 +62,6 @@ describe Site, :plans do
     end
 
     it { should validate_presence_of(:user) }
-    it { should ensure_length_of(:extra_hostnames).is_at_most(255) }
-    it { should ensure_length_of(:dev_hostnames).is_at_most(255) }
 
     it { should allow_value('dev').for(:player_mode) }
     it { should allow_value('beta').for(:player_mode) }
