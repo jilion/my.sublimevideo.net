@@ -91,7 +91,6 @@ gem 'zendesk_client',        github: 'jilion/zendesk_client', require: 'zendesk'
 # in production environments by default.
 group :assets do
   gem 'asset_sync'
-  gem 'sass',                 '3.2.0.alpha.278'
   gem 'sass-rails',           '~> 3.2.5'
   gem 'eco'
   gem 'uglifier'
