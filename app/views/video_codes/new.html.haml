@@ -18,7 +18,7 @@
         = raw "#{link_to 'Read more', docs_url('video-code-generator'), class: 'hl', onclick: 'window.open(this); return false'}."
     .big_break
   - else
-    - @body_class += ' vcg'
+    - @body_class = @body_class.to_s + ' vcg'
     = content_for :header do
       %h2 Video Code Generator
       %p.sub= "Creating your <video> code has never been easier."
