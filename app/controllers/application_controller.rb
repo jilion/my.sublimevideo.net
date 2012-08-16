@@ -1,9 +1,11 @@
 require_dependency 'my_redirection_filters'
+require_dependency 'early_access'
 require_dependency 'responders/paginated_responder'
 
 class ApplicationController < ActionController::Base
   include MyRedirectionFilters
   include SublimeVideoLayoutHelper
+  include EarlyAccess
 
   helper :all
 

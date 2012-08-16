@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120611162802) do
+ActiveRecord::Schema.define(:version => 20120815145448) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -408,6 +408,7 @@ ActiveRecord::Schema.define(:version => 20120611162802) do
     t.integer  "invited_by_id"
     t.string   "invited_by_type"
     t.boolean  "vip",                                            :default => false
+    t.string   "early_access",                                   :default => ""
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true
