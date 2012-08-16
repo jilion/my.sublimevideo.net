@@ -16,14 +16,6 @@ GIT
       thor (~> 0.14)
 
 GIT
-  remote: git://github.com/jilion/edge_cast.git
-  revision: 9f84c26c942490aada626b798886f321017e08be
-  specs:
-    edge_cast (0.0.1)
-      faraday (~> 0.8)
-      faraday_middleware (~> 0.8)
-
-GIT
   remote: git://github.com/jilion/useragent.git
   revision: 3aac770c4a4243542c2f202abf7a9af035379c3a
   specs:
@@ -219,6 +211,9 @@ GEM
       eco-source
       execjs
     eco-source (1.1.0.rc.1)
+    edge_cast (0.0.1)
+      faraday (~> 0.8)
+      faraday_middleware (~> 0.8)
     ejs (1.0.0)
     em-http-request (0.3.0)
       addressable (>= 2.0.0)
@@ -571,7 +566,7 @@ DEPENDENCIES
   devise (~> 2.0.1)
   devise_invitable (~> 1.0.0)
   eco
-  edge_cast!
+  edge_cast (~> 0.0.1)
   em-http-request
   execjs
   factory_girl
