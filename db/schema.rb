@@ -254,7 +254,7 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
   create_table "sites", :force => true do |t|
     t.integer  "user_id"
     t.string   "hostname"
-    t.string   "dev_hostnames"
+    t.text     "dev_hostnames"
     t.string   "token"
     t.string   "license"
     t.string   "loader"
@@ -267,7 +267,7 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.integer  "alexa_rank"
     t.string   "path"
     t.boolean  "wildcard"
-    t.string   "extra_hostnames"
+    t.text     "extra_hostnames"
     t.integer  "plan_id"
     t.integer  "pending_plan_id"
     t.integer  "next_cycle_plan_id"
