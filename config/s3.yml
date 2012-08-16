@@ -8,5 +8,5 @@ staging:
   access_key_id:     AKIAJ2FJVCFJW3RZRUUQ
   secret_access_key: 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
 production:
-  access_key_id:     heroku_env
-  secret_access_key: heroku_env
+  access_key_id:     env_var
+  secret_access_key: env_var

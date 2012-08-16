@@ -1,8 +1,10 @@
-require 'spec_helper'
+require "fast_spec_helper"
+require 'active_support/core_ext'
+require File.expand_path('lib/configurator')
 
 describe Configurator do
   before do
-    @conf = { 'development' => { 'bar' => 'dev_bar', 'baz' => 'dev_baz', 'bla' => false }, 'production' => { 'bar' => 'heroku_env', 'baz' => 'heroku_env', 'bla' => false } }
+    @conf = { 'development' => { 'bar' => 'dev_bar', 'baz' => 'dev_baz', 'bla' => false }, 'production' => { 'bar' => 'env_var', 'baz' => 'env_var', 'bla' => false } }
     ENV['CONFIGURABLE_MODULE_BAR'] = 'prod_bar' # fake prod env config
     ENV['CONFIGURABLE_MODULE_BAZ'] = 'prod_baz' # fake prod env config
   end
@@ -10,8 +12,8 @@ describe Configurator do
   module ConfigurableModule
     include Configurator
 
-    heroku_config_file 'configurable_module.yml'
-    heroku_config_accessor 'CONFIGURABLE_MODULE', :bar, :baz
+    config_file 'configurable_module.yml'
+    config_accessor :bar, :baz
   end
 
   subject { ConfigurableModule }
@@ -27,7 +29,7 @@ describe Configurator do
     its(:yml_options) { should eq @conf['development'].symbolize_keys }
   end
 
-  describe "heroku_config_accessor" do
+  describe "config_accessor" do
     context "config file exists" do
       before { YAML.should_receive(:load_file).with(ConfigurableModule.config_path) { @conf } }
 

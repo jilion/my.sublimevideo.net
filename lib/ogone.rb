@@ -3,9 +3,8 @@ require_dependency 'configurator'
 module Ogone
   include Configurator
 
-  heroku_config_file 'ogone.yml'
-
-  heroku_config_accessor 'OGONE', :login, :user, :password, :signature, :signature_out
+  config_file 'ogone.yml'
+  config_accessor :login, :user, :password, :signature, :signature_out
 
   class << self
 

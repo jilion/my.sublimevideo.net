@@ -3,7 +3,7 @@ require_dependency 'configurator'
 module Notify
   include Configurator
 
-  heroku_config_file 'prowl.yml'
+  config_file 'prowl.yml'
 
   class << self
 

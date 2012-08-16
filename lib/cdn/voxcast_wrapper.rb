@@ -6,8 +6,8 @@ module CDN
   module VoxcastWrapper
     include Configurator
 
-    heroku_config_file 'voxcast.yml'
-    heroku_config_accessor '', :key, :secret, :device_id, :non_ssl_hostname, :ssl_hostname
+    config_file 'voxcast.yml'
+    config_accessor :key, :secret, :device_id, :non_ssl_hostname, :ssl_hostname
 
     class << self
 

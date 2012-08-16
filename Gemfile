@@ -60,7 +60,7 @@ gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
 
 # CDN
 gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
-# gem 'edge_cast',             github: 'jilion/edge_cast'
+gem 'edge_cast',             github: 'jilion/edge_cast'
 
 gem 'activemerchant',        '1.23.0'
 gem 'public_suffix',         '~> 1.0.0'

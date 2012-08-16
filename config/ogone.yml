@@ -29,8 +29,8 @@ staging:
 
 production:
   <<: *defaults
-  login:         heroku_env
-  user:          heroku_env
-  password:      heroku_env
-  signature:     heroku_env
-  signature_out: heroku_env
+  login:         env_var
+  user:          env_var
+  password:      env_var
+  signature:     env_var
+  signature_out: env_var
