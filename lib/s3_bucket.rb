@@ -1,4 +1,7 @@
-class S3Bucket < Settingslogic
-  source "#{Rails.root}/config/s3_bucket.yml"
-  namespace Rails.env
+require_dependency 'configurator'
+
+module S3Bucket
+  include Configurator
+
+  config_file 's3_bucket.yml'
 end
