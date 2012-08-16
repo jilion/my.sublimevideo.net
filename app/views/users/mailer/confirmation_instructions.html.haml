@@ -1,5 +1,3 @@
-%p To confirm your SublimeVideo account, simply click the following link:
+%p To confirm your SublimeVideo account, simply click the following button:
 
-%p= link_to(confirmation_url(@resource, confirmation_token: @resource.confirmation_token), confirmation_url(@resource, confirmation_token: @resource.confirmation_token))
-
-%p Thanks,
+%p= link_to "Confirm Your Account", confirmation_url(@resource, confirmation_token: @resource.confirmation_token), class: "complete_account"

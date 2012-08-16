@@ -829,23 +829,23 @@ def send_all_emails(user_id)
   site         = user.sites.joins(:invoices).in_paid_plan.group { sites.id }.having { { invoices => (count(id) > 0) } }.last || user.sites.last
   invoice      = site.invoices.last || Invoice.construct(site: site)
   transaction  = invoice.transactions.last || Transaction.create(invoices: [invoice])
-  stats_export = StatsExport.last || StatsExport.create(st: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
+  stats_export = StatsExport.create(st: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
 
   DeviseMailer.confirmation_instructions(user).deliver!
   DeviseMailer.reset_password_instructions(user).deliver!
-
+  
   BillingMailer.trial_has_started(trial_site.id).deliver!
   BillingMailer.trial_will_expire(trial_site.id).deliver!
   BillingMailer.trial_has_expired(trial_site.id).deliver!
   BillingMailer.yearly_plan_will_be_renewed(site.id).deliver!
-
+  
   BillingMailer.credit_card_will_expire(user.id).deliver!
-
+  
   BillingMailer.transaction_succeeded(transaction.id).deliver!
   BillingMailer.transaction_failed(transaction.id).deliver!
-
+  
   BillingMailer.too_many_charging_attempts(invoice.id).deliver!
-
+  
   StatsExportMailer.export_ready(stats_export).deliver!
 
   MailMailer.send_mail_with_template(user.id, MailTemplate.last.id).deliver!

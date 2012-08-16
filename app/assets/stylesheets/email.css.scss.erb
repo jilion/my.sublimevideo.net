@@ -13,10 +13,10 @@ a {
 }
 
 td p {
-  line-height:27px;
+  line-height:26px;
   padding:8px 0;
   margin:0;
-  color:#7e8ea7;
+  color:#6b7a8e;
   font-size:16px;
 }
 
@@ -35,16 +35,60 @@ h2.logo {
 }
 
 table.wrapper {
-  background:#eaeef4;
+  background:#d3dbe6;
+}
+
+table.content {
+  background:#fff;
 }
 
 td.header {
-  height:99px;
-  background:url(<%= asset_path('emails/header-background.png') %>) repeat-x center top;
+  height:100px;
 }
 
-.content {
-  margin:20px 30px;
+td.main {
+  padding:20px 25px;
+}
+
+td.footer {
+  background:#a9b8cf;
+}
+
+td.footer a {
+  float:left;
+}
+
+td.bottom p.footer_thank_you {
+  text-align:center;
+  font-size:14px;
+  color:#4e5a6c;
+  padding:20px 0 10px;
+}
+
+td.bottom p.copyright {
+  text-align:center;
+  color:#8195b3;
+  font-size:11px;
+  padding:0px 0 50px;
+}
+
+/* Confirmation Instructions */
+
+td p a.complete_account {
+  display:block;
+  background:#32a149;
+  color:#fff;
+  text-decoration:none;
+  font-size:20px;
+  font-weight:bold;
+  text-align:center;
+  text-shadow:none;
+  width:250px;
+  padding:15px 10px;
+  margin:10px auto;
+  border-radius:8px;
+  -webkit-border-radius:8px;
+  -moz-border-radius:8px;
 }
 
 /* Welcome email */
@@ -119,9 +163,4 @@ td ul.small li {
   line-height:21px;
   padding:0 0 10px;
   color:#7e8ea7;
-}
-
-td p.footer {
-  font-size:11px;
-  padding:0 0 20px;
 }
