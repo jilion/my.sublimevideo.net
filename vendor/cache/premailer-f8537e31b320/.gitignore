@@ -1,0 +1,9 @@
+.DS_Store
+*.gem
+Gemfile.lock
+bin/*.html
+html/
+vendor/
+doc/
+.yardoc/
+*.sw?

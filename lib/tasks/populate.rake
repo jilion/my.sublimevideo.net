@@ -833,30 +833,30 @@ def send_all_emails(user_id)
 
   DeviseMailer.confirmation_instructions(user).deliver!
   DeviseMailer.reset_password_instructions(user).deliver!
-  
+
+  UserMailer.welcome(user.id).deliver!
+  UserMailer.account_suspended(user.id).deliver!
+  UserMailer.account_unsuspended(user.id).deliver!
+  UserMailer.account_archived(user.id).deliver!
+
   BillingMailer.trial_has_started(trial_site.id).deliver!
   BillingMailer.trial_will_expire(trial_site.id).deliver!
   BillingMailer.trial_has_expired(trial_site.id).deliver!
   BillingMailer.yearly_plan_will_be_renewed(site.id).deliver!
-  
+
   BillingMailer.credit_card_will_expire(user.id).deliver!
-  
+
   BillingMailer.transaction_succeeded(transaction.id).deliver!
   BillingMailer.transaction_failed(transaction.id).deliver!
-  
+
   BillingMailer.too_many_charging_attempts(invoice.id).deliver!
-  
+
   StatsExportMailer.export_ready(stats_export).deliver!
 
   MailMailer.send_mail_with_template(user.id, MailTemplate.last.id).deliver!
 
   UsageMonitoringMailer.plan_overused(site.id).deliver!
   UsageMonitoringMailer.plan_upgrade_required(site.id).deliver!
-
-  UserMailer.welcome(user.id).deliver!
-  UserMailer.account_suspended(user.id).deliver!
-  UserMailer.account_unsuspended(user.id).deliver!
-  UserMailer.account_archived(user.id).deliver!
 end
 
 def argv(var_name)
