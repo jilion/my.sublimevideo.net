@@ -6,13 +6,13 @@ class MSVStats.Views.PlanUsageView extends Backbone.View
     @options.statsDays.bind 'reset', this.render
 
   render: =>
-    @site = MSVStats.sites.selectedSite
+    @site = MSVStats.site
     @plan =
       name:                 @site.get('plan_name')
       videoViews:           @site.get('plan_video_views')
       monthCycleVideoViews: @site.planMonthCycleVideoViews()
       monthCycleStartTime:  @site.planMonthCycleStartTime()
       monthCycleEndTime:    @site.planMonthCycleEndTime()
-    $(@el).html(this.template(site: @site, plan: @plan, stats: @options.statsDays, statsRouter: MSVStats.statsRouter))
+    $(@el).html(this.template(site: @site, plan: @plan, stats: @options.statsDays))
     return this
 

@@ -1,21 +1,34 @@
 class MSVStats.Routers.StatsRouter extends Backbone.Router
-  initialize: (options) ->
-
+  initialize: ->
     this.initHighcharts()
     this.initSparkline()
     this.initModels()
     this.initHelpers()
     this.initPusherStatsChannel()
+    this.initViews()
+
+    this.unsubscribePusherPrivateSiteChannel()
+    MSVStats.period.clear()
+    this.resetAndFetchStats()
+    this.initPusherPrivateSiteChannel()
+
     sublimevideo.load()
 
-    new MSVStats.Views.DemoNoticeView
-      el: '#notices'
-      sites: MSVStats.sites
+  initModels: ->
+    MSVStats.period = new MSVStats.Models.Period()
+    MSVStats.period.bind 'change', ->
+      if MSVStats.period.get('type')?
+        MSVStats.Routers.StatsRouter.setHighchartsUTC()
+        MSVStats.videos.customFetch()
 
-    new MSVStats.Views.PageTitleView
-      el: 'h2'
-      sites: MSVStats.sites
+    MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
+    MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
+    MSVStats.statsHours   = new MSVStats.Collections.StatsHours()
+    MSVStats.statsDays    = new MSVStats.Collections.StatsDays()
 
+    MSVStats.videos = new MSVStats.Collections.Videos()
+
+  initViews: ->
     new MSVStats.Views.PeriodSelectorSecondsView
       el: '#period_selectors .seconds'
       statsSeconds: MSVStats.statsSeconds
@@ -45,7 +58,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
-      sites:        MSVStats.sites
 
     MSVStats.datePickersView = new MSVStats.Views.DatePickersView
       el: '#date_pickers'
@@ -85,37 +97,10 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     new MSVStats.Views.ExportView
       el: '#export_wrap'
       period: MSVStats.period
-      sites:  MSVStats.sites
-
 
     new MSVStats.Views.PlanUsageView
       el: '#plan_usage'
       statsDays: MSVStats.statsDays
-
-  routes:
-    ':token': 'home'
-
-  home: (token) ->
-    this.unsubscribePusherPrivateSiteChannel()
-    MSVStats.period.clear()
-    MSVStats.sites.select(token)
-    this.handleStatsDivClasses()
-    this.resetAndFetchStats()
-    this.initPusherPrivateSiteChannel()
-
-  initModels: ->
-    MSVStats.period = new MSVStats.Models.Period()
-    MSVStats.period.bind 'change', ->
-      if MSVStats.period.get('type')?
-        MSVStats.Routers.StatsRouter.setHighchartsUTC()
-        MSVStats.videos.customFetch()
-
-    MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
-    MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
-    MSVStats.statsHours   = new MSVStats.Collections.StatsHours()
-    MSVStats.statsDays    = new MSVStats.Collections.StatsDays()
-
-    MSVStats.videos = new MSVStats.Collections.Videos()
 
   initHelpers: ->
     MSVStats.chartsHelper = new MSVStats.Helpers.ChartsHelper()
@@ -128,7 +113,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.statsDays.fetch()    if data.d
       if (data.m && MSVStats.period.isMinutes()) || (data.h && MSVStats.period.isHours()) || (data.d && MSVStats.period.isDays())
         MSVStats.videos.fetch()
-      unless MSVStats.sites.selectedSiteIsInFreePlan()
+      unless MSVStats.site.isInFreePlan()
         if data.s
           secondTime = data.s * 1000
           MSVStats.period.set({
@@ -139,8 +124,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
           MSVStats.videos.updateSeconds(secondTime) if MSVStats.period.isSeconds()
 
   initPusherPrivateSiteChannel: ->
-    if (selectedSite = MSVStats.sites.selectedSite)? && !selectedSite.isInFreePlan()
-      MSVStats.privateChannel = MSVStats.pusher.subscribe("private-#{selectedSite.get('token')}")
+    unless MSVStats.site.isInFreePlan()
+      MSVStats.privateChannel = MSVStats.pusher.subscribe("private-#{MSVStats.site.get('token')}")
 
       MSVStats.privateChannel.bind 'pusher:subscription_succeeded', ->
         setTimeout MSVStats.statsSeconds.fetchOldSeconds, 2000
@@ -154,24 +139,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
           video.set(data.meta_data)
 
   unsubscribePusherPrivateSiteChannel: ->
-    if (selectedSite = MSVStats.sites.selectedSite)?
-      MSVStats.pusher.unsubscribe("private-#{selectedSite.get('token')}")
-
-  handleStatsDivClasses: ->
-    this.handleFreePlanClass()
-    this.handleDemoClass()
-
-  handleFreePlanClass: ->
-    if MSVStats.sites.selectedSiteIsInFreePlan()
-      $('div.stats').addClass('free')
-    else
-      $('div.stats').removeClass('free')
-
-  handleDemoClass: ->
-    if this.isDemo()
-      $('body').addClass('stats_demo')
-    else
-      $('body').removeClass('stats_demo')
+    MSVStats.pusher.unsubscribe("private-#{MSVStats.site.get('token')}")
 
   resetAndFetchStats: ->
     MSVStats.statsSeconds._isShowable = false
@@ -183,7 +151,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.statsHours.fetch
       silent: true
       success: -> MSVStats.statsRouter.syncFetchSuccess()
-    unless MSVStats.sites.selectedSiteIsInFreePlan()
+    unless MSVStats.site.isInFreePlan()
       MSVStats.statsMinutes.fetch
         silent: true
         success: -> MSVStats.statsRouter.syncFetchSuccess()
@@ -217,6 +185,3 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     $.fn.sparkline.defaults.line.chartRangeClip  = true
     $.fn.sparkline.defaults.line.chartRangeMin   = 0
     # $.fn.sparkline.defaults.line.chartRangeMax   = 0
-
-  isDemo: ->
-    /(\/|#)demo/.test(window.location.href)

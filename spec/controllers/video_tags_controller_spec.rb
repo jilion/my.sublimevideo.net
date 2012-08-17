@@ -9,7 +9,7 @@ describe VideoTagsController do
   context "with demo site" do
 
     it "responds with success to GET :show" do
-      Site.stub(:find_by_token) { mock_model(Site, token: SiteToken[:www])}
+      Site.stub(:find_by_token!) { mock_model(Site, token: SiteToken[:www])}
       get :show, site_id: 'demo', id: '2'
       response.should_not be_redirect
     end

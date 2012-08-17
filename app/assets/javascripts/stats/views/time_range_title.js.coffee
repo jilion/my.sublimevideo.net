@@ -6,7 +6,6 @@ class MSVStats.Views.TimeRangeTitleView extends Backbone.View
 
   initialize: ->
     @options.period.bind       'change', this.render
-    @options.sites.bind        'change', this.render
     @options.statsSeconds.bind 'change', this.renderIfSelected
     @options.statsSeconds.bind 'reset',  this.renderIfSelected
     @options.statsMinutes.bind 'reset',  this.renderIfSelected
@@ -23,7 +22,7 @@ class MSVStats.Views.TimeRangeTitleView extends Backbone.View
     else
       $(@el).find('.content').hide()
       $(@el).spin(spinOptions)
-    unless MSVStats.sites.selectedSiteIsInFreePlan()
+    unless MSVStats.site.isInFreePlan()
       $('#time_range_title').addClass('editable')
     return this
 
@@ -31,6 +30,6 @@ class MSVStats.Views.TimeRangeTitleView extends Backbone.View
     this.render() if MSVStats.period.get('type') == stats.periodType()
 
   toggleDatePicker: (event) ->
-    unless MSVStats.sites.selectedSiteIsInFreePlan()
+    unless MSVStats.site.isInFreePlan()
       event.stopPropagation()
       MSVStats.datePickersView.render()

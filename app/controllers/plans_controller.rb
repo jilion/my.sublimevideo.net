@@ -32,10 +32,4 @@ class PlansController < ApplicationController
     respond_with(@site, location: :sites)
   end
 
-private
-
-  def find_site_by_token!
-    @site = current_user.sites.not_archived.find_by_token!(params[:site_id])
-  end
-
 end

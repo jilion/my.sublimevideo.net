@@ -5,7 +5,8 @@ module LayoutHelper
     content_header(text, options)
   end
 
-  def title(text)
+  def title(text, options = {})
+    @page_title_prefix = options[:prefix] if options[:prefix]
     @page_title = strip_tags(text)
   end
 

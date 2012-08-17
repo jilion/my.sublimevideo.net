@@ -51,9 +51,7 @@ module Stat::Video
   def self.top_videos(site_token, options = {})
     options[:from], options[:to] = options[:from].to_i, options[:to].to_i
     options    = options.symbolize_keys.reverse_merge(period: 'days', sort_by: 'vv', limit: 5)
-    site_token = SiteToken[:www] if site_token == 'demo'
     conditions = { st: site_token, d: { "$gte" => Time.at(options[:from]), "$lte" => Time.at(options[:to]) } }
-
     video_uids, total = top_video_uids(conditions, options)
     videos            = videos_with_tags_meta_data(site_token, video_uids)
     add_video_stats_data!(videos, video_uids, conditions, options)

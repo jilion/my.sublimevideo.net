@@ -10,19 +10,18 @@ class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
     this.render()
 
   render: =>
-    if (selectedSite = MSVStats.sites.selectedSite)?
-      $(@el).html(this.template(pusherState: @options.pusher.connection.state, site: selectedSite, period: 'last_60_seconds'))
-      unless selectedSite.isInFreePlan()
-        if @options.statsSeconds.isShowable()
-          $(@el).find('.content').show()
-          $(@el).find('.spin').remove()
-        else if @options.pusher.connection.state != 'failed'
-          $(@el).find('.content').hide()
-          $(@el).find('.spin').spin(spinOptions)
-        if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
-        vvTotal = @options.statsSeconds.vvTotal(0, 59)
-        $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))
-        this.renderSparkline()
+    $(@el).html(this.template(pusherState: @options.pusher.connection.state, site: MSVStats.site, period: 'last_60_seconds'))
+    unless MSVStats.site.isInFreePlan()
+      if @options.statsSeconds.isShowable()
+        $(@el).find('.content').show()
+        $(@el).find('.spin').remove()
+      else if @options.pusher.connection.state != 'failed'
+        $(@el).find('.content').hide()
+        $(@el).find('.spin').spin(spinOptions)
+      if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
+      vvTotal = @options.statsSeconds.vvTotal(0, 59)
+      $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))
+      this.renderSparkline()
     $(@el).find('span.title').html('last 60 seconds')
     return this
 
@@ -34,7 +33,7 @@ class MSVStats.Views.PeriodSelectorSecondsView extends Backbone.View
       selected: this.isSelected()
 
   select: =>
-    if MSVStats.sites.selectedSite.isInFreePlan()
+    if MSVStats.site.isInFreePlan()
       window.location.href = $(@el).find('a')[0].href
     if MSVStats.statsSeconds.isShowable()
       MSVStats.period.setPeriod type: 'seconds', startIndex: 0, endIndex: 59

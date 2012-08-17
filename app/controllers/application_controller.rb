@@ -1,3 +1,4 @@
+require_dependency 'demo_site_helper'
 require_dependency 'my_redirection_filters'
 require_dependency 'early_access'
 require_dependency 'responders/paginated_responder'
@@ -6,6 +7,7 @@ class ApplicationController < ActionController::Base
   include MyRedirectionFilters
   include SublimeVideoLayoutHelper
   include EarlyAccess
+  include DemoSiteHelper
 
   helper :all
 

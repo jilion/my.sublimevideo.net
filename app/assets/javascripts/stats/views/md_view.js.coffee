@@ -10,20 +10,20 @@ class MSVStats.Views.MDView extends Backbone.View
     @options.statsDays.bind    'reset', this.renderIfSelected
     this.render()
 
-  render: =>    
+  render: =>
     if MSVStats.period.get('type')?
       $(@el).data().spinner.stop()
-      
+
       @mdData = MSVStats.period.stats().mdData()
-      @site   = MSVStats.sites.selectedSite
+      @site   = MSVStats.site
       $(@el).html(this.template(mdData: @mdData, site: @site))
-      
+
       return this
     else
       $(@el).empty()
       $(@el).spin(spinOptions)
       return this
-      
+
   renderIfSelected: (stats) =>
     this.render() if MSVStats.period.get('type') == stats.periodType()
 
