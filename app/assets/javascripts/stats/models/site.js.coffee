@@ -10,5 +10,5 @@ class MSVStats.Models.Site extends MySublimeVideo.Models.Site
         memo
     0, this)
 
-class MSVStats.Collections.Sites extends MySublimeVideo.Collections.Sites
-  model: MSVStats.Models.Site
+  isDemo: ->
+    this.get('token') is 'demo'

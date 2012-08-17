@@ -124,15 +124,19 @@ class Site < ActiveRecord::Base
   # =================
 
   def self.to_backbone_json
-    scoped.to_json(
-      only: [:token, :hostname],
-      methods: [:trial_start_time, :plan_name, :plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :plan_stats_retention_days]
-    )
+    all.map(&:to_backbone_json)
   end
 
   # ====================
   # = Instance Methods =
   # ====================
+
+  def to_backbone_json(options={})
+    to_json(
+      only: [:token, :hostname],
+      methods: [:trial_start_time, :plan_name, :plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :plan_stats_retention_days]
+    )
+  end
 
   def hostname=(attribute)
     write_attribute(:hostname, Hostname.clean(attribute))

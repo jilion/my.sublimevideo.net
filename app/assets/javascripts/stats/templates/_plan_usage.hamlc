@@ -1,4 +1,4 @@
-- if @plan.videoViews > 0 && !@stats.isEmpty() && (@statsRouter? && !@statsRouter.isDemo())
+- if @plan.videoViews > 0 && !@stats.isEmpty() && !@site.isDemo()
   .big_break
   .wrap
     %h3.title Current Plan Info

@@ -123,7 +123,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     if index < 0 then this.length + index else index
 
   @allPresent: ->
-    if MSVStats.sites.selectedSiteIsInFreePlan()
+    if MSVStats.site.isInFreePlan()
       !MSVStats.statsHours.isEmpty()
     else
       !MSVStats.statsMinutes.isEmpty() && !MSVStats.statsHours.isEmpty() && !MSVStats.statsDays.isEmpty()
@@ -135,7 +135,7 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
 
   isShowable: -> @_isShowable
 
-  url: -> "/sites/#{MSVStats.sites.selectedSite.token()}/stats.json?period=seconds"
+  url: -> "/sites/#{MSVStats.site.get('token')}/stats.json?period=seconds"
 
   chartType: -> 'areaspline'
   periodType: -> 'seconds'
@@ -181,17 +181,17 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
     if first? then first.time() else null
 
 class MSVStats.Collections.StatsMinutes extends MSVStats.Collections.Stats
-  url: -> "/sites/#{MSVStats.sites.selectedSite.token()}/stats.json"
+  url: -> "/sites/#{MSVStats.site.get('token')}/stats.json"
 
   periodType: -> 'minutes'
 
 class MSVStats.Collections.StatsHours extends MSVStats.Collections.Stats
-  url: -> "/sites/#{MSVStats.sites.selectedSite.token()}/stats.json?period=hours"
+  url: -> "/sites/#{MSVStats.site.get('token')}/stats.json?period=hours"
 
   periodType: -> 'hours'
 
 class MSVStats.Collections.StatsDays extends MSVStats.Collections.Stats
-  url: -> "/sites/#{MSVStats.sites.selectedSite.token()}/stats.json?period=days"
+  url: -> "/sites/#{MSVStats.site.get('token')}/stats.json?period=days"
 
   periodType: -> 'days'
 

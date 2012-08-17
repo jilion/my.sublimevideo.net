@@ -34,7 +34,7 @@ describe Stat::Site do
     end
 
     describe "with seconds period (missing value not filled)" do
-      subject { JSON.parse(Stat::Site.json(site.token, 'seconds')) }
+      subject { JSON.parse(Stat::Site.json(site.token, period: 'seconds')) }
       before { Timecop.travel(@second) }
       after { Timecop.return }
 
@@ -48,7 +48,7 @@ describe Stat::Site do
     end
 
     describe "with minutes period" do
-      subject { JSON.parse(Stat::Site.json(site.token, 'minutes')) }
+      subject { JSON.parse(Stat::Site.json(site.token, period: 'minutes')) }
 
       its(:size) { should eql(60) }
       it { subject[0]['vv'].should eql(3) }
@@ -62,7 +62,7 @@ describe Stat::Site do
     end
 
     describe "with hours period" do
-      subject { JSON.parse(Stat::Site.json(site.token, 'hours')) }
+      subject { JSON.parse(Stat::Site.json(site.token, period: 'hours')) }
 
       its(:size) { should eql(24) }
       it { subject[0]['vv'].should eql(47) }
@@ -76,7 +76,7 @@ describe Stat::Site do
     end
 
     describe "with days period" do
-      subject { JSON.parse(Stat::Site.json(site.token, 'days')) }
+      subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
 
       its(:size) { should eql(400) }
       it { subject[0]['vv'].should eql(100) }
@@ -90,7 +90,7 @@ describe Stat::Site do
 
     describe "with days period (less than 365 days stats)" do
       before { @day400.delete }
-      subject { JSON.parse(Stat::Site.json(site.token, 'days')) }
+      subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
 
       its(:size) { should eql(365) }
       it { subject[0]['vv'].should eql(nil) }
@@ -106,20 +106,20 @@ describe Stat::Site do
       end
 
       describe "with minutes period" do
-        subject { JSON.parse(Stat::Site.json(site.token, 'minutes')) }
+        subject { JSON.parse(Stat::Site.json(site.token, period: 'minutes')) }
 
         its(:size) { should eql(60) }
       end
 
       describe "with days period" do
-        subject { JSON.parse(Stat::Site.json(site.token, 'days')) }
+        subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
 
         its(:size) { should eql(365) }
       end
 
       describe "with days period (less than 365 days stats)" do
         before { @day400.delete }
-        subject { JSON.parse(Stat::Site.json(site.token, 'days')) }
+        subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
 
         its(:size) { should eql(365) }
       end
@@ -131,20 +131,20 @@ describe Stat::Site do
       end
 
       describe "with minutes period" do
-        subject { JSON.parse(Stat::Site.json(site.token, 'minutes')) }
+        subject { JSON.parse(Stat::Site.json(site.token, period: 'minutes')) }
 
         its(:size) { should eql(0) }
       end
 
       describe "with days period" do
-        subject { JSON.parse(Stat::Site.json(site.token, 'days')) }
+        subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
 
         its(:size) { should eql(0) }
       end
 
       describe "with days period (less than 365 days stats)" do
         before { @day400.delete }
-        subject { JSON.parse(Stat::Site.json(site.token, 'days')) }
+        subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
 
         its(:size) { should eql(0) }
       end

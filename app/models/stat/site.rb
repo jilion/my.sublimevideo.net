@@ -219,23 +219,20 @@ module Stat::Site
 
   end
 
-  def self.json(site_token, period = 'days')
-    if site_token == 'demo'
-      site_token = SiteToken[:www]
-      demo       = true
-    end
-    from, to = period_intervals(site_token, period)
+  def self.json(site_token, options = {})
+    options[:from], options[:to] = period_intervals(site_token, options[:period])
+    options[:token] = site_token
 
-    json_stats = if from.present? && to.present?
-      case period
+    json_stats = if options[:from].present? && options[:to].present?
+      case options[:period]
       when 'seconds'
-        Stat::Site::Second.last_stats(token: site_token, period: period, from: from, to: to, fill_missing_days: false, demo: demo)
+        Stat::Site::Second.last_stats(options.merge(fill_missing_days: false))
       when 'minutes'
-        Stat::Site::Minute.last_stats(token: site_token, period: period, from: from, to: to, fill_missing_days: true, demo: demo)
+        Stat::Site::Minute.last_stats(options.merge(fill_missing_days: true))
       when 'hours'
-        Stat::Site::Hour.last_stats(token: site_token, period: period, from: from, to: to, fill_missing_days: true, demo: demo)
+        Stat::Site::Hour.last_stats(options.merge(fill_missing_days: true))
       when 'days'
-        Stat::Site::Day.last_stats(token: site_token, period: period, from: from, to: to, fill_missing_days: true, demo: demo)
+        Stat::Site::Day.last_stats(options.merge(fill_missing_days: true))
       end
     else
       []

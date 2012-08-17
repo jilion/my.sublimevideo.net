@@ -27,22 +27,11 @@ class MySublimeVideo.Models.Site extends Backbone.Model
   trialIsActivable: ->
     this.isInFreePlan() && this.trialStartTime() is 0
 
-  token: ->
-    if MSVStats.statsRouter? && MSVStats.statsRouter.isDemo()
-      'demo'
-    else
-      this.get('token')
-
 class MySublimeVideo.Collections.Sites extends Backbone.Collection
   model: MySublimeVideo.Models.Site
   url: '/sites'
 
   select: (token) ->
-    token = '<%= SiteToken[:www] %>' if token is 'demo'
     @selectedSite = _.find this.models, (site) =>
       site.get('token') is token
     this.trigger('change')
-
-  selectedSiteIsInFreePlan: ->
-    if @selectedSite?
-      @selectedSite.isInFreePlan()
