@@ -104,7 +104,7 @@ group :assets do
 end
 
 group :production do
-  gem 'rack-google-analytics', '~> 0.9.2', require: 'rack/google-analytics'
+  gem 'rack-google-analytics', '~> 0.11'
 end
 
 group :staging, :production do
