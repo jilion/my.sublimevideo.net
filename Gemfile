@@ -1,13 +1,13 @@
 # http://ablogaboutcode.com/2012/01/12/a-simple-rails-boot-time-improvement/
 source 'https://rubygems.org'
-source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg/' # thibaud@jilion.com account
+source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg' # thibaud@jilion.com account
 
 ruby '1.9.3'
 
 gem 'bundler', '~> 1.2.0.rc.2'
 
 gem 'rails',               '3.2.8'
-gem 'sublimevideo_layout', '1.1.1' # hosted on gemfury
+gem 'sublimevideo_layout', '1.2.0' # hosted on gemfury
 
 # Databases
 gem 'pg',                    '~> 0.14.0'
@@ -27,6 +27,7 @@ gem 'kaminari',              '~> 0.13.0'
 gem 'liquid',                '~> 2.2.2'
 gem 'rails_autolink',        '~> 1.0.7'
 gem 'hpricot',               '~> 0.8.6'
+gem 'premailer',             github: 'jilion/premailer'
 gem 'premailer-rails3',      '~> 1.1.0'
 
 # Auth / invitations
@@ -117,7 +118,8 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  gem 'letter_opener', github: 'ryanb/letter_opener' # includes a fix not merged yet
+  gem 'email_preview'
+  gem 'letter_opener', github: 'ryanb/letter_opener' # includes a fix not released yet
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
 end
