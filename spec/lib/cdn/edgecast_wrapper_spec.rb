@@ -8,6 +8,7 @@ describe CDN::EdgeCastWrapper do
 
   describe "client" do
     it "inits EdgeCast client" do
+      described_class.instance_variable_set(:@client, nil) # avoid memoization
       EdgeCast.should_receive(:new).with(
         account_number: described_class.account_number,
         api_token: described_class.api_token

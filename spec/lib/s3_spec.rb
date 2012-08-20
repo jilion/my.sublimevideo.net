@@ -3,7 +3,6 @@ require 'spec_helper'
 describe S3 do
 
   describe "logs list" do
-    before(:all) { S3.reset_yml_options }
     use_vcr_cassette "s3/logs_bucket_all_keys"
 
     it "should return max 100 keys" do
