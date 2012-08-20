@@ -62,7 +62,7 @@ class NewsletterManager
     end
 
     def list
-      @list ||= CampaignMonitorWrapper.lists[:sublimevideo]
+      CampaignMonitorWrapper.lists[:sublimevideo]
     end
 
   end
