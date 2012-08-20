@@ -30,6 +30,7 @@ describe Notify do
       Rails.stub_chain(:env, :production?) { true }
       ProwlWrapper.should_receive(:notify).with(message)
       Notify.send(message)
+      Rails.stub_chain(:env, :production?) { false }
     end
 
     it "should not notify via prowl in test env" do

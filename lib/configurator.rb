@@ -35,19 +35,21 @@ module Configurator
       (@config_attributes || []).include?(method_name) || yml_options[method_name] || super(method_name, args)
     end
 
-    def reset_yml_options
-      @yml_options = nil
+    def yml_options
+      if Rails.env == 'test'
+        calculate_yml_options
+      else
+        @yml_options ||= calculate_yml_options
+      end
     end
 
-    def yml_options
-      @yml_options ||= begin
-        if @config_file_options[:rails_env]
-          YAML.load_file(@config_path)[Rails.env]
-        else
-          YAML.load_file(@config_path)
-        end
+    def calculate_yml_options
+      yml_hash = if @config_file_options[:rails_env]
+        YAML.load_file(@config_path)[Rails.env]
+      else
+        YAML.load_file(@config_path)
       end
-      @yml_options.symbolize_keys
+      yml_hash.symbolize_keys
     end
 
   end

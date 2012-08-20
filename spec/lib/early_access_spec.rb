@@ -14,6 +14,7 @@ describe EarlyAccess do
 
     context "in dev mode" do
       before { Rails.stub_chain(:env, :development?) { true } }
+      after { Rails.stub_chain(:env, :development?) { false } }
 
       it "overwrites current_user_early_access with params[:early_access]" do
         current_user.stub(:early_access) { 'video' }
