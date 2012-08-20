@@ -9,8 +9,8 @@ class NewsletterManager
     # user must respond to id, email, name and beta? (only the id is actually required)
     def subscribe(user)
       CampaignMonitorWrapper.delay.subscribe(
-        list_id: list['list_id'],
-        segment: list['segment'],
+        list_id: list[:list_id],
+        segment: list[:segment],
         user: { id: user.id, email: user.email, name: user.name, beta: user.beta?.to_s }
       )
     end
@@ -20,7 +20,7 @@ class NewsletterManager
     # user must respond to email
     def unsubscribe(user)
       CampaignMonitorWrapper.delay.unsubscribe(
-        list_id: list['list_id'],
+        list_id: list[:list_id],
         email: user.email
       )
     end
@@ -33,15 +33,15 @@ class NewsletterManager
         memo << { id: user.id, email: user.email, name: user.name, beta: user.beta?.to_s }
       end
       CampaignMonitorWrapper.delay.import(
-        list_id: list['list_id'],
-        segment: list['segment'],
+        list_id: list[:list_id],
+        segment: list[:segment],
         users: users_to_import
       )
     end
 
     def update(user)
       CampaignMonitorWrapper.delay.update(
-        list_id: list['list_id'],
+        list_id: list[:list_id],
         email: user.email_was || user.email,
         user: { email: user.email, name: user.name, newsletter: user.newsletter? }
       )
@@ -57,12 +57,12 @@ class NewsletterManager
       user = User.find(user_id)
 
       CampaignMonitorWrapper.lists.each do |name, list|
-        return user.update_column(:newsletter, true) if CampaignMonitorWrapper.subscriber(user.email, list['list_id'])
+        return user.update_column(:newsletter, true) if CampaignMonitorWrapper.subscriber(user.email, list[:list_id])
       end
     end
 
     def list
-      @list ||= CampaignMonitorWrapper.lists['sublimevideo']
+      @list ||= CampaignMonitorWrapper.lists[:sublimevideo]
     end
 
   end
