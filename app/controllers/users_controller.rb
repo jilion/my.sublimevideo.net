@@ -42,15 +42,20 @@ class UsersController < Devise::RegistrationsController
 
   # PUT /account
   def update
-    @user = User.find(current_user.id)
+    @user = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
 
-    respond_with(@user) do |format|
-      if @user.update_attributes(params[:user])
-        set_flash_message :notice, :updated if is_navigational_format?
-        format.html { redirect_to params[:more_info_form] ? sites_url : [:edit, :user] }
-      else
-        format.html { render :edit }
+    if @user.update_attributes(params[resource_name])
+      if is_navigational_format?
+        if @user.respond_to?(:pending_reconfirmation?) && @user.pending_reconfirmation?
+          flash_key = :update_needs_confirmation
+        end
+        set_flash_message :notice, flash_key || :updated
       end
+      sign_in resource_name, @user, :bypass => true
+      redirect_to params[:more_info_form] ? sites_url : after_update_path_for(@user)
+    else
+      clean_up_passwords @user
+      respond_with @user
     end
   end
 

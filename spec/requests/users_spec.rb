@@ -151,7 +151,7 @@ feature 'Email update' do
 
       last_delivery = ActionMailer::Base.deliveries.last
       last_delivery.to.should eq [User.last.unconfirmed_email]
-      last_delivery.subject.should eq "Account confirmation instructions"
+      last_delivery.subject.should eq "Confirm your email address"
 
       go 'my', "confirmation?confirmation_token=#{User.last.confirmation_token}"
 
@@ -272,9 +272,11 @@ feature "Credentials update" do
 
     User.find(@current_user.id).unconfirmed_email.should eq "zeno@jilion.com"
 
+    page.should have_content 'You updated your account successfully, but we need to verify your new email address.'
+
     last_delivery = ActionMailer::Base.deliveries.last
     last_delivery.to.should eq ["zeno@jilion.com"]
-    last_delivery.subject.should eq "Account confirmation instructions"
+    last_delivery.subject.should eq "Confirm your email address"
   end
 
   scenario "It's possible to update password" do
@@ -286,12 +288,6 @@ feature "Credentials update" do
 
     fill_in "Current password", with: '123456'
     click_button "Done"
-    current_url.should eq "http://my.sublimevideo.dev/login"
-
-    fill_in 'Email',    with: email
-    fill_in 'Password', with: '654321'
-    click_button 'Log In'
-
     current_url.should eq "http://my.sublimevideo.dev/account"
   end
 end
