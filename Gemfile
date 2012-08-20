@@ -35,8 +35,8 @@ gem 'devise',                '~> 2.0.1'
 gem 'devise_invitable',      '~> 1.0.0'
 
 # API
-gem 'oauth',                 '~> 0.4.5'
-gem 'oauth-plugin',          '~> 0.4.0.pre7'
+gem 'oauth',                 '~> 0.4.6'
+gem 'oauth-plugin',          '~> 0.4.1'
 gem 'acts_as_api',           '~> 0.3.10'
 
 # Internals

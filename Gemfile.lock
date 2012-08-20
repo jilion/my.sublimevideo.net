@@ -601,8 +601,8 @@ DEPENDENCIES
   mongoid (~> 2.4.7)
   mongoid_uniquify
   newrelic_rpm
-  oauth (~> 0.4.5)
-  oauth-plugin (~> 0.4.0.pre7)
+  oauth (~> 0.4.6)
+  oauth-plugin (~> 0.4.1)
   paper_trail (~> 2.6.0)
   pg (~> 0.14.0)
   powder
