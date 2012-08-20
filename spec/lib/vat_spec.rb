@@ -1,4 +1,6 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'active_support/core_ext'
+require File.expand_path('lib/vat')
 
 describe Vat do
 

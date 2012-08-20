@@ -1,5 +1,9 @@
-class PublicLaunch < Settingslogic
-  source "#{Rails.root}/config/public_launch.yml"
+require_dependency 'configurator'
+
+class PublicLaunch
+  include Configurator
+
+  config_file 'public_launch.yml', rails_env: false
 
   def self.beta_transition_ended_on
     Time.utc(2011, 04, 16, 12)

@@ -9,8 +9,9 @@ module Configurator
 
   module ClassMethods
 
-    def config_file(filename)
+    def config_file(filename, options = {})
       @config_path = Rails.root.join('config', filename)
+      @config_file_options = { rails_env: true }.merge(options)
       @prefix = File.basename(filename, '.yml').upcase
     end
 
@@ -39,7 +40,13 @@ module Configurator
     end
 
     def yml_options
-      @yml_options ||= YAML.load_file(@config_path)[Rails.env]
+      @yml_options ||= begin
+        if @config_file_options[:rails_env]
+          YAML.load_file(@config_path)[Rails.env]
+        else
+          YAML.load_file(@config_path)
+        end
+      end
       @yml_options.symbolize_keys
     end
 

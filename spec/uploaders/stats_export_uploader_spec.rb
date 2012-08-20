@@ -1,5 +1,4 @@
 require 'fast_spec_helper'
-require 'settingslogic'
 require 'zip/zip'
 require 'rails/railtie'
 require 'fog'

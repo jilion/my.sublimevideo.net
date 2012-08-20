@@ -1,5 +1,9 @@
-class Vat < Settingslogic
-  source "#{Rails.root}/config/vat.yml"
+require_dependency 'configurator'
+
+class Vat
+  include Configurator
+
+  config_file 'vat.yml', rails_env: false
 
   def self.for_country(country)
     case country

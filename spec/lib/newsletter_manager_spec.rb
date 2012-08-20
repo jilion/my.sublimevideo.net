@@ -1,6 +1,6 @@
 require 'fast_spec_helper'
+require 'active_support/core_ext'
 require 'ostruct'
-require 'settingslogic'
 
 User = Class.new unless defined?(User)
 
@@ -8,11 +8,11 @@ require File.expand_path('lib/newsletter_manager')
 
 describe NewsletterManager do
   before do
-    CampaignMonitorConfig.stub(lists: {
+    CampaignMonitorWrapper.stub(lists: {
       'sublimevideo' => { 'list_id' => 'abc42', 'segment' => 'test' },
       'sublimevideo_newsletter' => { 'list_id' => 'bcd43' }
     })
-    NewsletterManager.stub(:list) { CampaignMonitorConfig.lists['sublimevideo'] }
+    NewsletterManager.stub(:list) { CampaignMonitorWrapper.lists['sublimevideo'] }
   end
   let(:user1) { OpenStruct.new(id: 12, beta?: true, newsletter?: true, email_was: nil, email: 'user@example.org', name: 'User Example') }
   let(:user2) { OpenStruct.new(id: 13, beta?: false, newsletter?: true, email_was: 'old_user2@example.org', email: 'user2@example.org', name: 'User2 Example') }
@@ -21,7 +21,7 @@ describe NewsletterManager do
     it 'delays CampaignMonitorWrapper.subscribe' do
       CampaignMonitorWrapper.should_receive(:delay).and_return(@dj = mock('delay'))
       @dj.should_receive(:subscribe).with(
-        list_id: CampaignMonitorConfig.lists['sublimevideo']['list_id'], segment: CampaignMonitorConfig.lists['sublimevideo']['segment'],
+        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'], segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
         user: { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s }
       )
 
@@ -33,7 +33,7 @@ describe NewsletterManager do
     it 'delays CampaignMonitorWrapper.unsubscribe' do
       CampaignMonitorWrapper.should_receive(:delay).and_return(@dj = mock('delay'))
       @dj.should_receive(:unsubscribe).with(
-        list_id: CampaignMonitorConfig.lists['sublimevideo']['list_id'], email: user1.email
+        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'], email: user1.email
       )
 
       described_class.unsubscribe(user1)
@@ -44,7 +44,7 @@ describe NewsletterManager do
     it 'delays CampaignMonitorWrapper.import' do
       CampaignMonitorWrapper.should_receive(:delay).and_return(@dj = mock('delay'))
       @dj.should_receive(:import).with(
-        list_id: CampaignMonitorConfig.lists['sublimevideo']['list_id'], segment: CampaignMonitorConfig.lists['sublimevideo']['segment'],
+        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'], segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
         users: [
           { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s },
           { id: user2.id, email: user2.email, name: user2.name, beta: user2.beta?.to_s }
@@ -97,7 +97,7 @@ describe NewsletterManager do
       it 'delays CampaignMonitorWrapper.update' do
         CampaignMonitorWrapper.should_receive(:delay).and_return(@dj = mock('delay'))
         @dj.should_receive(:update).with(
-          list_id: CampaignMonitorConfig.lists['sublimevideo']['list_id'],
+          list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
           email: user1.email,
           user: { email: user1.email, name: user1.name, newsletter: user1.newsletter? }
         )
@@ -110,7 +110,7 @@ describe NewsletterManager do
       it 'delays CampaignMonitorWrapper.update' do
         CampaignMonitorWrapper.should_receive(:delay).and_return(@dj = mock('delay'))
         @dj.should_receive(:update).with(
-          list_id: CampaignMonitorConfig.lists['sublimevideo']['list_id'],
+          list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
           email: user2.email_was,
           user: { email: user2.email, name: user2.name, newsletter: user2.newsletter? }
         )

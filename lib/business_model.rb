@@ -1,3 +1,7 @@
-class BusinessModel < Settingslogic
-  source "#{Rails.root}/config/business_model.yml"
+require_dependency 'configurator'
+
+class BusinessModel
+  include Configurator
+
+  config_file 'business_model.yml', rails_env: false
 end

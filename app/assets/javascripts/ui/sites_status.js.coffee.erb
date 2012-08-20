@@ -4,7 +4,7 @@ class MySublimeVideo.UI.SitesStatus
 
   constructor: (table) ->
     @table    = table
-    @pusher   = new Pusher('<%= PusherConfig.key %>', encrypted: true)
+    @pusher   = new Pusher('<%= PusherWrapper.key %>', encrypted: true)
     @tokens   = []
     @channels = {}
     this.setInProgessTokens()

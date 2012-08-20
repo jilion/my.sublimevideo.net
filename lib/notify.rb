@@ -1,15 +1,12 @@
-require_dependency 'configurator'
+require_dependency 'prowl_wrapper'
 
 module Notify
-  include Configurator
-
-  config_file 'prowl.yml'
 
   class << self
 
     def send(message, options = {})
       airbrake(message, options)
-      prowl(message) if Rails.env.production? || Rails.env.staging?
+      ProwlWrapper.notify(message) if Rails.env.production? || Rails.env.staging?
     end
 
   private
@@ -20,18 +17,6 @@ module Notify
       else
         Airbrake.notify(Exception.new(message))
       end
-    end
-
-    def prowl(message)
-      @prowl ||= Prowl.new(
-        apikey: yml_options[:api_keys].join(","),
-        application: "MySublime"
-      )
-      @prowl.add(
-        event: "Alert",
-        priority: 2,
-        description: message
-      )
     end
 
   end

@@ -1,5 +1,4 @@
-require_dependency 'campaign_monitor/campaign_monitor_config'
-require_dependency 'campaign_monitor/campaign_monitor_wrapper'
+require_dependency 'campaign_monitor_wrapper'
 
 class NewsletterManager
 
@@ -57,13 +56,13 @@ class NewsletterManager
     def _sync_from_service(user_id)
       user = User.find(user_id)
 
-      CampaignMonitorConfig.lists.each do |name, list|
+      CampaignMonitorWrapper.lists.each do |name, list|
         return user.update_column(:newsletter, true) if CampaignMonitorWrapper.subscriber(user.email, list['list_id'])
       end
     end
 
     def list
-      @list ||= CampaignMonitorConfig.lists['sublimevideo']
+      @list ||= CampaignMonitorWrapper.lists['sublimevideo']
     end
 
   end
