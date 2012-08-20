@@ -199,8 +199,11 @@ MySublimeVideo::Application.routes.draw do
 
       resources :video_tags, only: [:show]
     end
-    # for backbone
-    get '/sites/stats(/:site_id)' => 'site_stats#index', as: 'site_stats', format: false
+    get '/stats-demo' => 'site_stats#index', site_id: 'demo'
+    # old backbone route
+    get '/sites/stats/demo' => redirect('/stats-demo')
+    get '/sites/stats/:site_id' => redirect { |params, req| "/sites/#{params[:site_id]}/stats" }
+    get '/sites/stats' => redirect('/sites')
 
     resources :stats_exports, only: [:create, :show], path: 'stats/exports'
 

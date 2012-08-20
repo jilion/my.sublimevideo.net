@@ -9,11 +9,13 @@ describe SiteStatsController do
   context "with demo site" do
 
     it "responds with success to GET :index" do
+      Site.stub(:find_by_token!) { mock_model(Site, token: SiteToken[:www])}
       get :index, site_id: 'demo'
       response.should_not be_redirect
     end
 
     it "responds with success to GET :videos" do
+      Site.stub(:find_by_token!) { mock_model(Site, token: SiteToken[:www])}
       get :videos, site_id: 'demo'
       response.should_not be_redirect
     end

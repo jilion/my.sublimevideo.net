@@ -74,8 +74,4 @@ module ApplicationHelper
     "#{host}#{asset_path(asset)}"
   end
 
-  def demo_stats_page?
-    request.subdomain == 'my' && request.path == '/sites/stats/demo'
-  end
-
 end

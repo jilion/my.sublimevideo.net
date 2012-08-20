@@ -2,8 +2,10 @@
   = sublimevideo_include_tag(request.ssl?, :my).html_safe
   = javascript_include_tag 'https://d3dy5gmtp8yhk7.cloudfront.net/1.11/pusher.min.js', 'stats'
 
-- if demo_stats_page?
+- if demo_site?
+  - @site.token = 'demo'
   - @body_class = @body_class.to_s + ' stats_demo'
+  - title('Universal Real-Time Statistics Demo', prefix: 'SublimeVideo')
   = content_for :header do
     %h2= "Universal Real-Time Statistics Demo"
     %p.sub= "Get the complete picture, in real-time."
@@ -15,8 +17,11 @@
       = "SublimeVideo's new statistics platform is the first to offer a truly comprehensive, real-time picture of your site’s video traffic from any device, whether generated from mobile or desktop, HTML5 or Flash."
       = raw "#{link_to "Read more", "http://blog.jilion.com/2012/02/15/a-closer-look-at-sublimevideo-s-universal-real-time-statistics", onclick: 'window.open(this); return false'}."
     %p= raw "This demo page displays the actual video statistics for our own sublimevideo.net domain. Watch any video on #{link_to "sublimevideo.net", "http://sublimevideo.net"} from any device and see your activity logged in real-time on this page. Enjoy!"
+- else
+  - title("Stats for #{hostname_or_token(@site)}")
 
-.stats
+
+.stats{ class: @site.in_free_plan? ? 'free' : ''}
   :coffeescript
     jQuery(document).ready ->
       # Enable pusher logging - don't include this in production
@@ -32,13 +37,12 @@
       # MSVStats.pusher.connection.bind 'failed', ->
       #   console.log 'Pusher connection failed'
 
-      window.MSVStats.sites = new MSVStats.Collections.Sites(#{@sites.to_backbone_json})
+      window.MSVStats.site = new MSVStats.Models.Site(#{@site.to_backbone_json})
       window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
-      Backbone.history.start(pushState: true, root: "/sites/stats/")
 
   #trial
 
-  - if demo_stats_page?
+  - if demo_site?
     #sites_select_title
       %h2 Stats for sublimevideo.net
   - else

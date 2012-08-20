@@ -7,8 +7,8 @@ describe 'Videos', ->
       endSecondsTime: 1059 * 1000
 
   beforeEach ->
-    MSVStats.sites = new MSVStats.Collections.Sites({token: 'site1234'})
-    MSVStats.sites.select('site1234')
+    # MSVStats.sites = new MSVStats.Collections.Sites({token: 'site1234'})
+    # MSVStats.sites.select('site1234')
 
   describe 'MSVStats.Models.Video', ->
 

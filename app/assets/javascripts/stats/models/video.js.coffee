@@ -26,7 +26,7 @@ class MSVStats.Models.Video extends Backbone.Model
       this.set(data, silent: true) if data?
 
   metaDataUrl: =>
-    "/sites/#{MSVStats.sites.selectedSite.token()}/video_tags/#{this.id}.json"
+    "/sites/#{MSVStats.site.get('token')}/video_tags/#{this.id}.json"
 
   currentSources: ->
     sources = []
@@ -112,7 +112,7 @@ class MSVStats.Collections.Videos extends Backbone.Collection
     @sortBy = 'vv'
 
   url: ->
-    "/sites/#{MSVStats.sites.selectedSite.token()}/stats/videos.json?#{this.urlParams()}"
+    "/sites/#{MSVStats.site.get('token')}/stats/videos.json?#{this.urlParams()}"
 
   urlParams: ->
     params = [

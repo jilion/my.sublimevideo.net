@@ -24,7 +24,7 @@ class MSVStats.Views.BPView extends Backbone.View
       @total  = bps.length
       @limit  = 7
       @bps    = if @showAll then bps else _.first(bps, @limit)
-      @site   = MSVStats.sites.selectedSite
+      @site   = MSVStats.site
       $(@el).html(this.template(bpData: @bpData, bps: @bps, total: @total, showAll: @showAll, limit: @limit, site: @site))
 
       return this

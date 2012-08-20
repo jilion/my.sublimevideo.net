@@ -1,4 +1,4 @@
-- if !@site.isInFreePlan() && (@statsRouter? && !@statsRouter.isDemo())
+- if !@site.isInFreePlan() && !@site.isDemo()
   .big_break
   - if @period.isDays()
     #export

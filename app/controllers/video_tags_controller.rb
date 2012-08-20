@@ -1,11 +1,7 @@
-require_dependency 'stats_demo_helper'
-
 class VideoTagsController < ApplicationController
-  include StatsDemoHelper
-
+  skip_before_filter :authenticate_user!, if: :demo_site?
   before_filter :redirect_suspended_user
   before_filter :find_site_by_token!
-  skip_before_filter :authenticate_user!, if: :demo_site?
 
   # GET /sites/:site_id/video_tags/:id
   def show
