@@ -3,7 +3,8 @@
   - if current_user.email_support?
     %p
       = "As a paid customer, you can use the form below to submit your question and we'll personally get back to you as quickly as we can."
-      = raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
+    %p
+      = raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"} (currently we are #{support_presence})."
 
       = form_for @support_request, url: [:support_request] do |f|
         .entry.select.site_token
