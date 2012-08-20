@@ -17,7 +17,7 @@ GIT
 
 GIT
   remote: git://github.com/jilion/premailer.git
-  revision: f8537e31b32057ba0eea791a97eb6a82f3379a0b
+  revision: 00d6b351f4ca1cdb5f9d5f3806575f87f29a4882
   specs:
     premailer (1.7.3)
       css_parser (>= 1.1.9)

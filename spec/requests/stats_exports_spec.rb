@@ -14,6 +14,7 @@ feature 'StatsExport' do
     create(:video_day_stat, st: @site.token, u: @video_tag.u, d: 5.days.ago.midnight.to_i,
       vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
     Delayed::Job.delete_all
+    clear_emails
   end
 
   scenario "request and download stats exports", :js, :fog_mock do
@@ -25,7 +26,7 @@ feature 'StatsExport' do
     $worker.work_off
 
     open_email(@current_user.email)
-    current_email.find('a', text: /stats\/exports/i).click
+    current_email.find('a', text: %r{stats/exports}).click
 
     # File can't be downloaded directly from S3 because of Fog.mock!
     current_url.should match(
