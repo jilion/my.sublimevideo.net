@@ -29,8 +29,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.datetime "locked_at"
     t.string   "invitation_token",       :limit => 60
     t.datetime "invitation_sent_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
     t.datetime "reset_password_sent_at"
     t.datetime "invitation_accepted_at"
     t.integer  "invitation_limit"
@@ -52,8 +52,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.string   "callback_url"
     t.string   "key",          :limit => 40
     t.string   "secret",       :limit => 40
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
   end
 
   add_index "client_applications", ["key"], :name => "index_client_applications_on_key", :unique => true
@@ -62,8 +62,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.integer  "deal_id"
     t.integer  "user_id"
     t.datetime "activated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   add_index "deal_activations", ["deal_id", "user_id"], :name => "index_deal_activations_on_deal_id_and_user_id", :unique => true
@@ -77,8 +77,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.string   "availability_scope"
     t.datetime "started_at"
     t.datetime "ended_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   add_index "deals", ["token"], :name => "index_deals_on_token", :unique => true
@@ -92,8 +92,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.datetime "locked_at"
     t.datetime "failed_at"
     t.string   "locked_by"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -146,8 +146,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.float    "discounted_percentage"
     t.integer  "price"
     t.integer  "amount"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
     t.integer  "deal_id"
   end
 
@@ -170,8 +170,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.integer  "invoice_items_amount"
     t.integer  "invoice_items_count",      :default => 0
     t.integer  "transactions_count",       :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                  :null => false
+    t.datetime "updated_at",                                  :null => false
     t.datetime "paid_at"
     t.datetime "last_failed_at"
     t.boolean  "renew",                    :default => false
@@ -193,8 +193,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.text     "criteria"
     t.text     "user_ids"
     t.text     "snapshot"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   add_index "mail_logs", ["template_id"], :name => "index_mail_logs_on_template_id"
@@ -203,8 +203,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.string   "title"
     t.string   "subject"
     t.text     "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "oauth_tokens", :force => true do |t|
@@ -219,8 +219,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.datetime "authorized_at"
     t.datetime "invalidated_at"
     t.datetime "valid_to"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
   end
 
   add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true
@@ -231,8 +231,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.string   "cycle"
     t.integer  "video_views"
     t.integer  "price"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.integer  "support_level",        :default => 0
     t.integer  "stats_retention_days"
   end
@@ -245,8 +245,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.string   "date"
     t.string   "zip"
     t.string   "state"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "releases", ["state"], :name => "index_releases_on_state"
@@ -260,8 +260,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.string   "loader"
     t.string   "state"
     t.datetime "archived_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                                      :null => false
+    t.datetime "updated_at",                                                      :null => false
     t.string   "player_mode",                               :default => "stable"
     t.integer  "google_rank"
     t.integer  "alexa_rank"
@@ -333,8 +333,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.string   "pay_id"
     t.integer  "nc_status"
     t.integer  "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id", :unique => true
@@ -361,8 +361,8 @@ ActiveRecord::Schema.define(:version => 20120815145448) do
     t.string   "cc_last_digits"
     t.date     "cc_expire_on"
     t.datetime "cc_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                                        :null => false
+    t.datetime "updated_at",                                                        :null => false
     t.string   "invitation_token",                :limit => 60
     t.datetime "invitation_sent_at"
     t.integer  "zendesk_id"

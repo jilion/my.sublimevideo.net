@@ -15,7 +15,7 @@ feature "Mail templates index:" do
 
     page.should have_content(mail_template.title)
     page.should have_content "John Doe (#{User.first.email}), help us shaping the right pricing"
-    page.should have_content "Hi John Doe (#{User.first.email}), please respond to the survey, by clicking on the following url: http://survey.com"
+    page.should have_content "Please respond to the survey, by clicking on the following url: http://survey.com"
 
     fill_in "Title",   with: "This is a title"
     fill_in "Subject", with: "This is a subject"

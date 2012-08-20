@@ -20,7 +20,7 @@ class Users::CancellationsController < ApplicationController
       if GoodbyeManager.archive_user_and_save_feedback(@user, @goodbye_feedback)
         format.html do
           sign_out(@user)
-          redirect_to root_url(host: request.domain, protocol: 'http')
+          redirect_to layout_url('')
         end
       else
         format.html { render :new }

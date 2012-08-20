@@ -127,7 +127,7 @@ FactoryGirl.define do
   factory :mail_template, class: MailTemplate do
     sequence(:title) { |n| "Pricing survey #{n}" }
     subject          "{{user.name}} ({{user.email}}), help us shaping the right pricing - The SublimeVideo Team"
-    body             "Hi {{user.name}} ({{user.email}}), please respond to the survey, by clicking on the following url: http://survey.com - The SublimeVideo Team"
+    body             "Please respond to the survey, by clicking on the following url: http://survey.com"
   end
 
   factory :mail_log, class: MailLog do

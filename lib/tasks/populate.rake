@@ -829,10 +829,15 @@ def send_all_emails(user_id)
   site         = user.sites.joins(:invoices).in_paid_plan.group { sites.id }.having { { invoices => (count(id) > 0) } }.last || user.sites.last
   invoice      = site.invoices.last || Invoice.construct(site: site)
   transaction  = invoice.transactions.last || Transaction.create(invoices: [invoice])
-  stats_export = StatsExport.last || StatsExport.create(st: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
+  stats_export = StatsExport.create(st: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
 
   DeviseMailer.confirmation_instructions(user).deliver!
   DeviseMailer.reset_password_instructions(user).deliver!
+
+  UserMailer.welcome(user.id).deliver!
+  UserMailer.account_suspended(user.id).deliver!
+  UserMailer.account_unsuspended(user.id).deliver!
+  UserMailer.account_archived(user.id).deliver!
 
   BillingMailer.trial_has_started(trial_site.id).deliver!
   BillingMailer.trial_will_expire(trial_site.id).deliver!
@@ -852,11 +857,6 @@ def send_all_emails(user_id)
 
   UsageMonitoringMailer.plan_overused(site.id).deliver!
   UsageMonitoringMailer.plan_upgrade_required(site.id).deliver!
-
-  UserMailer.welcome(user.id).deliver!
-  UserMailer.account_suspended(user.id).deliver!
-  UserMailer.account_unsuspended(user.id).deliver!
-  UserMailer.account_archived(user.id).deliver!
 end
 
 def argv(var_name)

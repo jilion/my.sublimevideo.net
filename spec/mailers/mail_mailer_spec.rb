@@ -14,7 +14,6 @@ describe MailMailer do
   describe "#send_mail_with_template" do
     before do
       described_class.send_mail_with_template(subject.id, @template.id).deliver
-      last_delivery = ActionMailer::Base.deliveries.last
     end
 
     it "should set subject to Liquidified template.subject" do
@@ -22,7 +21,7 @@ describe MailMailer do
     end
 
     it "should set the body to Liquidified-simple_formated-auto_linked template.body" do
-      last_delivery.body.encoded.should include Liquid::Template.parse(@template.body).render("user" => subject)
+      last_delivery.body.encoded.gsub(/\r\n/, ' ').should include Liquid::Template.parse(@template.body).render("user" => subject)
     end
   end
 

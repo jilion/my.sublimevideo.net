@@ -1,5 +1,16 @@
-%p To confirm your SublimeVideo account, simply click the following link:
+- @no_intro = true
 
-%p= link_to(confirmation_url(@resource, confirmation_token: @resource.confirmation_token), confirmation_url(@resource, confirmation_token: @resource.confirmation_token))
+- unless @resource.respond_to?(:pending_reconfirmation?) && @resource.pending_reconfirmation?
+  %p Welcome to SublimeVideo and thanks for signing up!
 
-%p Thanks,
+- if @resource.respond_to?(:pending_reconfirmation?) && @resource.pending_reconfirmation?
+  %p= raw "Please take a second to confirm #{@resource.unconfirmed_email} as your new email address by clicking the following button:"
+- else
+  %p= raw "Please take a second to confirm #{@resource.email} as your email address and activate your account by clicking the following button:"
+
+%p= link_to "Confirm my email address", confirmation_url(@resource, confirmation_token: @resource.confirmation_token), class: "complete_account"
+
+- unless @resource.respond_to?(:pending_reconfirmation?) && @resource.pending_reconfirmation?
+  %p= raw "Within minutes you will receive a welcome email with more information about how to set up your SublimeVideo player for your site. If you can't wait, feel free to start reading our #{link_to "Quickstart guide", docs_url('quickstart-guide')} to learn more."
+
+%p Thank you for choosing to use SublimeVideo.

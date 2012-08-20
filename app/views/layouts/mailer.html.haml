@@ -1,26 +1,54 @@
 %html
   %body
     %div
-      %table.wrapper{ cellspacing: 0, cellpadding: 0, width: '100%', border: 0, background: '#eaeef4' }
-        %tr{ width: '100%' }
-          %td.header{ width: '100%', height: 99, background: asset_url('emails/header-background.png') }
-            %table{ cellspacing: 0, cellpadding: 0, width: '100%', border: 0 }
+      %table.wrapper{ cellspacing: 0, cellpadding: 0, width: '100%', border: 0, background: '#d3dbe6' }
+        %tr
+          %td
+            %p{ style: "padding:20px 0"}
+        %tr
+          %td{ align: 'center' }
+            %table.content{ cellspacing: 0, cellpadding: 0, border: 0, width: 600, background: '#ffffff' }
               %tr{ width: '100%' }
-                %td{ align: 'center', valign: 'center' }
-                  %h2.logo
-                    = link_to 'http://sublimevideo.net' do
-                      = image_tag asset_url('emails/sublimevideo-logo.png'), alt: "SublimeVideo", border: "0"
-      .content
-        %table{ cellspacing: 0, cellpadding: 0, border: 0, width: '100%' }
-          %tr
-            %td{ align: 'left', valign: 'top' }
-              - unless @no_intro
-                %p= t("mailer.intro_name", name: @user.name_or_email)
+                %td.header{ width: '100%', height: 100 }
+                  %table{ cellspacing: 0, cellpadding: 0, width: '100%', border: 0 }
+                    %tr{ width: '100%' }
+                      %td{ align: 'center', valign: 'center' }
+                        %h2.logo
+                          = link_to 'http://sublimevideo.net' do
+                            = image_tag asset_url('emails/sublimevideo.jpg'), alt: "SublimeVideo", border: "0"
+              %tr
+                %td.main{ align: 'left', valign: 'top' }
+                  - unless @no_intro
+                    %p= t("mailer.intro_name", name: @user.name_or_email)
 
-              = yield
+                  = yield
 
-              - unless @no_reply
-                %p= t("mailer.reply_to_this_email")
+                  - unless @no_signature
+                    %p= t("mailer.signature")
+              %tr
+                %td.footer{ height: 134, background: "#a9b8cf" }
+                  = link_to new_user_session_url, title: "Log in to SublimeVideo" do
+                    = image_tag asset_url('emails/footer/login.gif'), alt: "Log in to SublimeVideo", border: "0", width: 124, height: 134
 
-              - unless @no_signature
-                %p= t("mailer.signature")
+                  = link_to docs_url(''), title: "Online documentation" do
+                    = image_tag asset_url('emails/footer/docs.gif'), alt: "Online documentation", border: "0", width: 117, height: 134
+
+                  = link_to layout_url('help'), title: "Need help?" do
+                    = image_tag asset_url('emails/footer/help.gif'), alt: "Need help?", border: "0", width: 117, height: 134
+
+                  = link_to "mailto:feedback@sublimevideo.net", title: "Give us your feedback" do
+                    = image_tag asset_url('emails/footer/feedback.gif'), alt: "Give us your feedback", border: "0", width: 117, height: 134
+
+                  = link_to "http://twitter.com/Jilion", title: "Follow @Jilion on Twitter" do
+                    = image_tag asset_url('emails/footer/twitter.gif'), alt: "Follow @Jilion on Twitter", border: "0", width: 125, height: 134
+            %table{ cellspacing: 0, cellpadding: 0, border: 0, width: 600 }
+              %tr{ width: '100%' }
+                %td.bottom
+                  %p.footer_thank_you
+                    = "Thank you for using SublimeVideo."
+                    - unless @no_reply
+                      %br
+                      = t("mailer.reply_to_this_email")
+
+                  %p.copyright= "Copyright © 2012 Jilion® — SublimeVideo and Jilion are registered trademarks."
+

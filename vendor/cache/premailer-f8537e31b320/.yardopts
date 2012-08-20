@@ -1,0 +1,9 @@
+--markup markdown
+--markup-provider redcarpet
+--charset utf-8
+--no-private
+--readme README.md
+--title "Premailer Documentation"
+-
+README.md
+LICENSE.md

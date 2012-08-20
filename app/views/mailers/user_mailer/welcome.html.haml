@@ -30,32 +30,6 @@
             %p.bigger{ color: "#7e8ea7" }= raw "Once you've added SublimeVideo to your site you'll be able to see stats about your video traffic! Check out a #{link_to "live demo", site_stats_url('demo')} of SublimeVideo's Universal Real-Time Statistics to see for yourself right now."
   %tr
     %td{width:"100%"}
-      %table.inner_table.follow{ cellspacing: "0", cellpadding: "0", width: "520", border: "0", bgcolor:"#fff" }
-        %tr
-          %td{width:"100%"}
-            %h3.follow{ color: "#4e5a6c"}= "Follow SublimeVideo"
-            %p.follow{ color: "#7e8ea7" }= "Here are a few ways you can stay up-to-date with the latest SublimeVideo news and developments:"
-        %tr
-          %td{width:"100%"}
-            %table.inner_table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0" }
-              %tr
-                %td{width:"33%", height:140, align:"center", valign:"top"}
-                  = link_to image_tag(asset_url("emails/twitter.png")), "http://twitter.com/Jilion"
-                  %p.follow_twitter
-                    = link_to "http://twitter.com/Jilion" do
-                      = "Follow @Jilion on Twitter"
-                %td{width:"33%", align:"center", valign:"top"}
-                  = link_to image_tag(asset_url("emails/rss.png")), "http://blog.jilion.com"
-                  %p.follow_blog
-                    = link_to "http://blog.jilion.com" do
-                      = "Read the Jilion Blog"
-                %td{width:"33%", align:"center", valign:"top"}
-                  = link_to image_tag(asset_url("emails/newsletter.png")), newsletter_subscribe_url
-                  %p.follow_newsletter
-                    = link_to newsletter_subscribe_url do
-                      = "Sign Up for the Newsletter"
-  %tr
-    %td{width:"100%"}
       %table.inner_table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0" }
         %tr
           %td{ width: "126", align: "center" }
@@ -72,9 +46,5 @@
               %li{ color: "#7e8ea7" }= raw "Visit our #{link_to "FAQ", page_url('faq', subdomain: 'docs')} & #{link_to "Troubleshooting", page_url('troubleshooting', subdomain: 'docs')} pages to find answers to common questions."
               %li{ color: "#7e8ea7" }= raw "Visit the #{link_to "Community forum", 'https://getsatisfaction.com/sublimevideo'} to ask our support team about a specific issue."
               %li{ color: "#7e8ea7" }= raw "Members of our Paid plans also benefit from #{link_to "direct email support", page_url('help', subdomain: false)}."
-  %tr
-    %td{width:"100%"}
-      %table.inner_table{ cellspacing: "0", cellpadding: "0", width: "520", border: "0" }
-        %tr
-          %td{ width: "100%", align: "center" }
-            %p.footer{ color: "#7e8ea7" }= "Copyright © 2012 Jilion® — SublimeVideo and Jilion are registered trademarks."
+              %li{ color: "#7e8ea7" }= raw "Subscribe to #{link_to "our blog", "http://blog.jilion.com"} to stay tuned about SublimeVideo news."
+
