@@ -31,7 +31,7 @@ describe SiteModules::Template, :plans do
       end
 
       it "doesn't purge loader nor license file" do
-        VoxcastCDN.should_not_receive(:purge)
+        CDN.should_not_receive(:purge)
 
         site.apply_pending_attributes
         $worker.work_off
@@ -39,7 +39,7 @@ describe SiteModules::Template, :plans do
     end
 
     describe "on save" do
-      before { VoxcastCDN.stub(:purge) }
+      before { CDN.stub(:purge) }
 
       describe "plan_id has changed" do
         let(:site) { create(:site, plan_id: @free_plan.id) }
@@ -53,7 +53,7 @@ describe SiteModules::Template, :plans do
         end
 
         it "purges loader & license on CDN" do
-          VoxcastCDN.should_receive(:purge).twice
+          CDN.should_receive(:purge).twice
 
           site.apply_pending_attributes
           $worker.work_off
@@ -93,7 +93,7 @@ describe SiteModules::Template, :plans do
           end
 
           it "purges license on CDN" do
-            VoxcastCDN.should_receive(:purge).with("/l/#{site.token}.js")
+            CDN.should_receive(:purge).with("/l/#{site.token}.js")
 
             site.send("#{attr}=", value)
             site.user.current_password = '123456'
@@ -124,7 +124,7 @@ describe SiteModules::Template, :plans do
         end
 
         it "should purge loader on CDN" do
-          VoxcastCDN.should_receive(:purge).with("/js/#{site.token}.js")
+          CDN.should_receive(:purge).with("/js/#{site.token}.js")
           site.update_attribute(:player_mode, 'beta')
           $worker.work_off
         end

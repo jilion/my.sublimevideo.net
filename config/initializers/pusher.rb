@@ -1,3 +1,3 @@
-require_dependency 'pusher_config'
+require_dependency 'pusher_wrapper'
 
-Pusher.url = PusherConfig.url if PusherConfig.url.present?
+Pusher.url = PusherWrapper.url

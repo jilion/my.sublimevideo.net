@@ -9,20 +9,21 @@ module Configurator
 
   module ClassMethods
 
-    def heroku_config_file(filename)
+    def config_file(filename, options = {})
       @config_path = Rails.root.join('config', filename)
+      @config_file_options = { rails_env: true }.merge(options)
+      @prefix = File.basename(filename, '.yml').upcase
     end
 
-    def heroku_config_accessor(prefix, *attributes)
-      @prefix = prefix
-      @heroku_config_attributes = attributes
+    def config_accessor(*attributes)
+      @config_attributes = attributes
     end
 
     def method_missing(*args)
       method_name = args.shift.to_sym
 
-      if @heroku_config_attributes && @heroku_config_attributes.include?(method_name)
-        yml_options[method_name] == 'heroku_env' ? ENV["#{@prefix.to_s.upcase}_#{method_name.to_s.upcase}"] : yml_options[method_name]
+      if @config_attributes && @config_attributes.include?(method_name)
+        yml_options[method_name] == 'env_var' ? ENV["#{@prefix}_#{method_name.to_s.upcase}"] : yml_options[method_name]
       else
         yml_options[method_name].nil? ? super(method_name, *args) : yml_options[method_name]
       end
@@ -31,7 +32,7 @@ module Configurator
     def respond_to?(*args)
       method_name = args.shift.to_sym
 
-      (@heroku_config_attributes || []).include?(method_name) || yml_options[method_name] || super(method_name, args)
+      (@config_attributes || []).include?(method_name) || yml_options[method_name] || super(method_name, args)
     end
 
     def reset_yml_options
@@ -39,7 +40,13 @@ module Configurator
     end
 
     def yml_options
-      @yml_options ||= YAML.load_file(@config_path)[Rails.env]
+      @yml_options ||= begin
+        if @config_file_options[:rails_env]
+          YAML.load_file(@config_path)[Rails.env]
+        else
+          YAML.load_file(@config_path)
+        end
+      end
       @yml_options.symbolize_keys
     end
 

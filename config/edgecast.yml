@@ -1,0 +1,19 @@
+defaults_dev_test: &defaults_dev_test
+  account_number: 841C
+  api_token:      d31309a4-677c-4a9f-9a4f-e76997233b2f
+
+defaults_stage_prod: &defaults_stage_prod
+  account_number: env_var
+  api_token:      env_var
+
+development:
+  <<: *defaults_dev_test
+
+test:
+  <<: *defaults_dev_test
+
+staging:
+  <<: *defaults_stage_prod
+
+production:
+  <<: *defaults_stage_prod

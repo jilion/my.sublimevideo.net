@@ -1,6 +1,7 @@
 require 'fast_spec_helper'
-require 'pusher_wrapper'
+require 'active_support/core_ext'
 require 'pusher'
+require File.expand_path('lib/pusher_wrapper')
 
 require File.expand_path('spec/config/redis')
 RedisConnection = Redis.new unless defined?(RedisConnection)
@@ -13,6 +14,12 @@ describe PusherWrapper do
       PusherWrapper.authenticated_response('channel_name', 'socket_id').should eq(
         auth: "c76b85222fbec28c8508:2d6bed1ddb62cbefcd919bec6894905e5e9a053d1871f29956cb05f788dbe353"
       )
+    end
+  end
+
+  describe ".key" do
+    it "extracts key from url" do
+      PusherWrapper.key.should eq('c76b85222fbec28c8508')
     end
   end
 

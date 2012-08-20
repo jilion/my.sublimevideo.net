@@ -7,10 +7,10 @@ defaults_dev_test: &defaults_dev_test
 
 # sublimevideo's credentials
 defaults_stage_prod: &defaults_stage_prod
-  consumer_key:       heroku_env
-  consumer_secret:    heroku_env
-  oauth_token:        heroku_env
-  oauth_token_secret: heroku_env
+  consumer_key:       env_var
+  consumer_secret:    env_var
+  oauth_token:        env_var
+  oauth_token_secret: env_var
 
 development:
   <<: *defaults_dev_test

@@ -1,8 +1,13 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'timecop'
+require 'active_support/core_ext'
+require File.expand_path('lib/public_launch')
 
 describe PublicLaunch do
 
-  its(:beta_transition_started_on) { should == Date.new(2011, 3, 29) }
+  it "returns beta_transition_started_on from yaml file" do
+    PublicLaunch.beta_transition_started_on.should == Date.new(2011, 3, 29)
+  end
 
   it "should return the beta_transition_ended_on" do
     PublicLaunch.beta_transition_ended_on.should == Time.utc(2011, 4, 16, 12)

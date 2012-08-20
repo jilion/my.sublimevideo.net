@@ -57,8 +57,11 @@ gem 'aws',                   '~> 2.5.6'
 gem 'fog',                   '~> 1.5.0'
 gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/processing/mime_types']
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
-gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
+
+# CDN
+gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
+gem 'edge_cast',             '~> 0.0.1' # hosted on gemfury
 
 gem 'activemerchant',        '1.23.0'
 gem 'public_suffix',         '~> 1.0.0'
@@ -71,7 +74,6 @@ gem 'countries',             '~> 0.8.2'
 gem 'snail',                 '~> 0.5.7'
 gem 'PageRankr',             '~> 3.1.0', require: 'page_rankr'
 gem 'twitter',               '~> 2.1.0'
-gem 'settingslogic',         '2.0.6' # 2.0.7 has ruby-debug19 & jeweler as dependencies => UNACCEPTABLE
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 1.0.0' # Campaign Monitor
 

@@ -9,7 +9,7 @@ test:
   <<: *defaults
 
 staging:
-  url: <%= ENV['PUSHER_URL'] %>
+  url: env_var
 
 production:
-  url: <%= ENV['PUSHER_URL'] %>
+  url: env_var

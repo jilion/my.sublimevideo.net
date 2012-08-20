@@ -1,4 +1,14 @@
+require_dependency 'configurator'
+
 class PusherWrapper
+  include Configurator
+
+  config_file     'pusher.yml'
+  config_accessor :url
+
+  def self.key
+    url.match(/^http:\/\/(\w*):.*$/)[1]
+  end
 
   def self.authenticated_response(channel_name, custom_data)
     Pusher[channel_name].authenticate(custom_data)

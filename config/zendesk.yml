@@ -6,10 +6,10 @@ defaults: &defaults_dev_test
 
 # sublimevideo's credentials
 defaults_stage_prod: &defaults_stage_prod
-  base_url:  heroku_env
-  api_url:   heroku_env
-  username:  heroku_env
-  api_token: heroku_env
+  base_url:  env_var
+  api_url:   env_var
+  username:  env_var
+  api_token: env_var
 
 development:
   <<: *defaults_dev_test

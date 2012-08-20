@@ -1,5 +1,4 @@
 # encoding: utf-8
-require_dependency 'voxcast_cdn'
 require_dependency 'recurring_job'
 require_dependency 'video_tag_trackers_parser'
 require_dependency 'video_tag_updater'
@@ -41,17 +40,17 @@ class Log::Voxcast < ::Log
   end
 
   def self.download_and_create_new_non_ssl_logs
-    download_and_create_new_logs_and_redelay(VoxcastCDN.non_ssl_hostname, __method__)
+    download_and_create_new_logs_and_redelay(CDN::VoxcastWrapper.non_ssl_hostname, __method__)
   end
   def self.download_and_create_new_ssl_logs
-    download_and_create_new_logs_and_redelay(VoxcastCDN.ssl_hostname, __method__)
+    download_and_create_new_logs_and_redelay(CDN::VoxcastWrapper.ssl_hostname, __method__)
   end
 
   def self.download_and_create_new_logs_and_redelay(hostname, method)
     new_log_ended_at = nil
     while (new_log_ended_at = next_log_ended_at(hostname, new_log_ended_at)) < Time.now.utc do
       new_log_name = log_name(hostname, new_log_ended_at)
-      new_log_file = VoxcastCDN.download_log(new_log_name)
+      new_log_file = CDN::VoxcastWrapper.download_log(new_log_name)
       safely.create(name: new_log_name, file: new_log_file) if new_log_file
     end
     unless Delayed::Job.already_delayed?("%Log::Voxcast%#{method}%")
@@ -134,7 +133,7 @@ private
 
   # before_validation
   def download_and_set_log_file
-    self.file = VoxcastCDN.download_log(name) unless file.present?
+    self.file = CDN::VoxcastWrapper.download_log(name) unless file.present?
   end
 
   # call from name= in Log

@@ -1,6 +1,9 @@
-require_dependency 'campaign_monitor/campaign_monitor_config'
+require_dependency 'configurator'
 
 class CampaignMonitorWrapper
+  include Configurator
+
+  config_file 'campaign_monitor.yml'
 
   class << self
 
@@ -45,7 +48,7 @@ class CampaignMonitorWrapper
       end
     end
 
-    def subscriber(email, list_id = CampaignMonitorConfig.lists.sublimevideo.list_id)
+    def subscriber(email, list_id = CampaignMonitorWrapper.lists.sublimevideo.list_id)
       request do
         CreateSend::Subscriber.get(list_id, email)
       end
@@ -54,7 +57,7 @@ class CampaignMonitorWrapper
   private
 
     def set_api_key
-      CreateSend.api_key(CampaignMonitorConfig.api_key)
+      CreateSend.api_key(CampaignMonitorWrapper.api_key)
     end
 
     def request

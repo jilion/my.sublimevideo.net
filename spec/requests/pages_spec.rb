@@ -85,7 +85,7 @@ feature "Help page" do
 
         page.should have_content I18n.t('flash.support_requests.create.notice')
 
-        VoxcastCDN.stub(:purge)
+        CDN.stub(:purge)
         PusherWrapper.stub(:trigger)
         VCR.use_cassette("zendesk_wrapper/create_ticket") do
           expect { $worker.work_off }.to change(Delayed::Job, :count).by(-1)

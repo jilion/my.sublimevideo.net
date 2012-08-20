@@ -4,9 +4,8 @@ require_dependency 's3_bucket'
 module S3
   include Configurator
 
-  heroku_config_file 's3.yml'
-
-  heroku_config_accessor 'S3', :access_key_id, :secret_access_key
+  config_file 's3.yml'
+  config_accessor :access_key_id, :secret_access_key
 
   class << self
 

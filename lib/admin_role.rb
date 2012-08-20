@@ -1,3 +1,7 @@
-class AdminRole < Settingslogic
-  source "#{Rails.root}/config/admin_role.yml"
+require_dependency 'configurator'
+
+class AdminRole
+  include Configurator
+
+  config_file 'admin_role.yml', rails_env: false
 end

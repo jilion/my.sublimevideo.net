@@ -30,8 +30,8 @@
       # Flash fallback logging - don't include this in production
       # WEB_SOCKET_DEBUG = true
 
-      window.MSVStats.pusher = new Pusher("#{PusherConfig.key}", encrypted: true)
-      # window.MSVStats.pusherKey = "#{PusherConfig.key}"
+      window.MSVStats.pusher = new Pusher("#{PusherWrapper.key}", encrypted: true)
+      # window.MSVStats.pusherKey = "#{PusherWrapper.key}"
       # MSVStats.pusher.connection.bind 'connected', ->
       #   console.log 'Pusher connection connected'
       # MSVStats.pusher.connection.bind 'failed', ->
