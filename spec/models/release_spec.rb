@@ -273,6 +273,7 @@ describe Release do
     end
 
     after(:all) do
+      CDN.stub(:purge)
       subject.delete_zipfile if File.file?(Rails.root.join("tmp/#{subject.zip.filename}"))
     end
   end
