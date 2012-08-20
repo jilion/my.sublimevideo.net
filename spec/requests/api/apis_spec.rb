@@ -93,7 +93,7 @@ feature "API" do
     describe "Wrong format" do
       describe "with extension" do
         scenario do
-          expect { go 'api', 'test_request.foo' }.to raise_error
+          expect { go 'api', 'test_request.foo' }.to raise_error(NoMethodError)
         end
       end
 
