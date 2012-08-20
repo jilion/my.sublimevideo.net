@@ -10,14 +10,15 @@ describe SiteUsage do
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
 
       with_versioning do
-        Timecop.travel(@log.started_at - 1.minute) do
-          @site1 = create(:site, hostname: 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.save }
+        Timecop.travel(@log.started_at - 1.hour) do
+          @site1 = create(:site, hostname: 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.save_skip_pwd }
         end
         CDN.stub(:purge)
-        @site1.update_attributes(hostname: 'bob.com')
+        @site1.hostname = 'bob.com'
+        @site1.save_skip_pwd
       end
 
-      @site2 = create(:site, user: @site1.user, hostname: 'sonymusic.se').tap { |s| s.token = 'mhud9lff'; s.save }
+      @site2 = create(:site, user: @site1.user, hostname: 'sonymusic.se').tap { |s| s.token = 'mhud9lff'; s.save_skip_pwd }
     end
 
     it "should clean trackers" do
