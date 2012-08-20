@@ -52,7 +52,7 @@ feature "Mails index" do
 
       page.should have_content @mail_template.title
       page.should have_content @mail_template.subject
-      page.should have_content "Hi {{user.name}}"
+      page.should have_content "Please respond to the survey"
     end
   end
 
