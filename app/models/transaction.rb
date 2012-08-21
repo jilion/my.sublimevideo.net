@@ -256,7 +256,7 @@ end
 #  cc_expire_on   :date
 #  cc_last_digits :string(255)
 #  cc_type        :string(255)
-#  created_at     :datetime         not null
+#  created_at     :datetime
 #  error          :text
 #  id             :integer          not null, primary key
 #  nc_status      :integer
@@ -264,7 +264,7 @@ end
 #  pay_id         :string(255)
 #  state          :string(255)
 #  status         :integer
-#  updated_at     :datetime         not null
+#  updated_at     :datetime
 #  user_id        :integer
 #
 # Indexes
