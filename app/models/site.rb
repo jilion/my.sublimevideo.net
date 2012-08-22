@@ -82,6 +82,7 @@ class Site < ActiveRecord::Base
   validates :hostname,        presence: { if: proc { |s| s.in_or_will_be_in_paid_plan? } }, hostname: true, hostname_uniqueness: true
   validates :dev_hostnames,   dev_hostnames: true
   validates :extra_hostnames, extra_hostnames: true
+  validates :path, length: { maximum: 255 }
 
   validate  :validates_current_password
 
