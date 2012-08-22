@@ -12,6 +12,7 @@ gem 'sublimevideo_layout', '1.2.3' # hosted on gemfury
 # Databases
 gem 'pg',                    '~> 0.14.0'
 gem 'squeel',                '1.0.2'
+gem 'activerecord-postgres-hstore'
 
 gem 'bson_ext',              '1.6.2'
 gem 'bson',                  '1.6.2'
