@@ -1,6 +1,6 @@
 require_dependency 'validators/email_uniqueness_validator'
 require_dependency 'validators/hostname_validator'
-require_dependency 'zendesk/zendesk_wrapper'
+require_dependency 'zendesk_wrapper'
 require_dependency 'newsletter_manager'
 require_dependency 'public_launch'
 require_dependency 'vat'
@@ -239,7 +239,7 @@ class User < ActiveRecord::Base
   end
 
   def support_requests
-    @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(requester: zendesk_id) : [])
+    @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(query: "requester_id:#{zendesk_id}") : [])
   end
 
   def create_zendesk_user

@@ -1,3 +1,6 @@
+require 'active_support/core_ext'
+require 'active_support/concern'
+
 module Configurator
   extend ActiveSupport::Concern
 

@@ -1,4 +1,4 @@
-require_dependency 'zendesk/zendesk_wrapper'
+require_dependency 'zendesk_wrapper'
 
 class TicketManager
 
@@ -11,7 +11,7 @@ class TicketManager
 
     def set_user_zendesk_id(ticket, user)
       user.update_attribute(:zendesk_id, ticket.requester_id)
-      ticket.verify_user
+      ZendeskWrapper.verify_user(ticket.requester_id)
     end
 
   end

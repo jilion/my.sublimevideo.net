@@ -2,15 +2,15 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/api/v1/users/17650353
-    body: 
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/api/v2/users/17650353
+    body:
     headers:
       accept:
       - application/json
-      user-agent:
-      - Zendesk Ruby Client 0.1.0
       accept-encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      user-agent:
+      - ZendeskAPI API 0.0.9
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
@@ -22,7 +22,7 @@
         bmdpbngvMS4wLjE1
       !binary "ZGF0ZQ==":
       - !binary |-
-        V2VkLCAwMiBNYXkgMjAxMiAwOTowNzo1NSBHTVQ=
+        VHVlLCAyMSBBdWcgMjAxMiAxNDozODowMiBHTVQ=
       !binary "Y29udGVudC10eXBl":
       - !binary |-
         YXBwbGljYXRpb24vanNvbjsgY2hhcnNldD11dGYtOA==
@@ -32,52 +32,32 @@
       !binary "c3RhdHVz":
       - !binary |-
         MjAwIE9L
-      !binary "ZXRhZw==":
+      !binary "eC16ZW5kZXNrLWFwaS12ZXJzaW9u":
       - !binary |-
-        ImYwNWJmN2NjNDAzZDhjYTVmZWM5ZGY1NjVmYTFlMTM3Ig==
+        djI=
       !binary "eC1ydW50aW1l":
       - !binary |-
-        NjU=
-      !binary "c2V0LWNvb2tpZQ==":
+        NTY=
+      !binary "ZXRhZw==":
       - !binary |-
-        X3plbmRlc2tfYXBwc19zZXNzaW9uPWV5SjFjMlZ5WDNKdmJHVWlPaklzSW1G
-        alkyOTFiblJmYVdRaU9qUXpNekU1TENKMWMyVnlYMmxrSWpveCUwQU5UTXdP
-        REkyTnl3aWRYTmxjbDlzYjJOaGJHVWlPaUpsYmkxVlV5MTRMVEVpTENKMWMy
-        VnlYMjVoYldVaSUwQU9pSlRkV0pzYVcxbFZtbGtaVzhpZlElM0QlM0QlMEE7
-        IHBhdGg9LzsgSHR0cE9ubHk=
-      - !binary |-
-        X3plbmRlc2tfc2Vzc2lvbj1CQWg3Q2lJY2QyRnlaR1Z1TG5WelpYSXVaR1Zt
-        WVhWc2RDNXJaWGxwQSUyQnVWNlRvTVlXTmpiM1Z1ZEdrQ042azZEM05sYzNO
-        cGIyNWZhV1FpSlRnd05ETTNPV1poWTJJMk0yTTRNMkpsT0RjNFpXSmhORFps
-        T0RWaFlUTXlJaE4zWVhKa1pXNHViV1Z6YzJGblpYc0FPZ2RwWkNJVU4yaHhi
-        VE5wYm1NNWFUVXdkMlUwLS0wYjkyMWJhNWIwYTgzODAxYmMyNTkyMTFiODVj
-        OWNhNzRkMWUyNWUwOyBwYXRoPS87IEh0dHBPbmx5
-      - !binary |-
-        X3plbmRlc2tfc2hhcmVkX3Nlc3Npb249ZXlKM1lYSmtaVzR1ZFhObGNpNWta
-        V1poZFd4MExtdGxlU0k2TVRVek1EZ3lOamNzSW1GMWRHaGxiblJwJTBBWTJG
-        MFpXUmZZWFFpT2pFek16VTVORGsyTnpVc0ltRmpZMjkxYm5RaU9qUXpNekU1
-        TENKaGRYUm9YM1pwJTBBWVNJNklrSmhjMmxqVTNSeVlYUmxaM2tpZlElM0Ql
-        M0QlMEEtLThkOWNhNWE0NTg0ODhlMzA0MmZlOTA5NzUyYTQ0YTI5NTYxYjAx
-        NjY7IHBhdGg9LzsgSHR0cE9ubHk=
-      - !binary |-
-        b2lkX3VzZXI9OyBwYXRoPS87IGV4cGlyZXM9VGh1LCAwMS1KYW4tMTk3MCAw
-        MDowMDowMCBHTVQ=
+        IjQ0MDdlODM2NDY5MDUwZTczZDcyNTA0OTM3NTYzOWNjIg==
       !binary "Y2FjaGUtY29udHJvbA==":
       - !binary |-
         cHJpdmF0ZSwgbWF4LWFnZT0wLCBtdXN0LXJldmFsaWRhdGU=
-      !binary "eC16ZW5kZXNrLWFwaS12ZXJzaW9u":
+      !binary "eC1jb250ZW50LXR5cGUtb3B0aW9ucw==":
       - !binary |-
-        djE=
+        bm9zbmlmZg==
       !binary "Y29udGVudC1lbmNvZGluZw==":
       - !binary |-
         Z3ppcA==
     body: !binary |-
-      H4sIAAAAAAAAA1WRS07DMBCGrxJ5S9TYbgvUKwQ3YIuQ5SbT1NSPyB5XtIgD
-      cQ4uxiRRK7qxpXl8//wzXywYD0yx198ff6peYkGzdcBq5mJrHGjbMRWKczWL
-      AwTb6ZLcJdImMAidNkgAyQVv+KaRy0qslXxUQlZ3XHJOrLakBAE1mj5T6Ug3
-      GbWLvQ0XWAdorKP0rNaWjNHrFG9mKEN3oygaIRopKrFRkqvVhhTFpBgiwpUF
-      nwgpGPfPTIKMybZoY5iiq5qNn3i4X/PlelmzYR8xzmbZHnHIqmly2Trr4Wg7
-      iIszhA7yYdFG31hvesgNngZ6S4aks18MoadBbNZHSHZngfCYCkzoQCuffVLe
-      0BhHCsxZas9aSL2PJemWrnBgamdcpkYkcX2emtkzOSL8uB/yyek8qTfBns3V
-      0szvUywDVby91ww8bZh6E/jT04d1ZH4cn33/AZ2QvG4GAgAA
+      H4sIAAAAAAAAA1VSW1LjMBC8CqVvO36kHMBfFHsDlv3hUa7BHpIBPbzSyEVC
+      cSDOwcUYxSSb/ZxWt9Tdo3cVA3rVvqvotWrVhnkMbVGE+KTJ4EQDusUO7YDh
+      ddE7U8BIxVQXSRWK6nzVlMtmuXgJzqpM0aDaA5YpfGP0FnSXYBu1zpQFg/LK
+      zden2Z49qJutAXpQZ79cZHjSKFeAJggHeu8RGIcOWER1WZV5eZnXy9tq2dYX
+      bVXfiSCOw3+cOi9XedXcVqu2qdrmPHGgZ5rkYfYRMzWhp2dCMTXPYQM+Tc+g
+      gxxr14PGE9MzIA7Q5n9+y3UszXQ7Z1OUa4kokIbAnXZrsnuzc1qUdKlUj2Z7
+      9UKanE0dCn3c7NUzLdDaAkd/BAZkER5bsI7xODi/Bks7YLnsxKN30l5yOOT7
+      hWaqj4Gd6dLBCc+4AT2wk5X/xGXqX5E7j4E9SU+yyOT4bxRAWsmUs3rbjZ4m
+      qbkT+wYti52DHNYy3D9mKsQwpo/yr0lJyW5O+fHxDSJ/UdFqAgAA
     http_version: '1.1'

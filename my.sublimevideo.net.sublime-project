@@ -3,6 +3,7 @@
 	[
 		{
 			"path": "~/Jilion/Products/SublimeVideo/my.sublimevideo.net",
+      "name": "MySublimeVideo",
       "folder_exclude_patterns": ["vendor/cache", "vendor/ruby"]
     }
 	]

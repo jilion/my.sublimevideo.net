@@ -437,7 +437,7 @@ describe User, :plans do
         it "doesn't delay ZendeskWrapper.update_user" do
           subject
           expect {
-            subject.update_attribute(:email, "new@jilion.com")
+            subject.update_attribute(:email, "9876@example.org")
           }.to_not change(Delayed::Job, :count)
         end
       end
@@ -448,19 +448,19 @@ describe User, :plans do
         context "user updated his email" do
           it "delays ZendeskWrapper.update_user if the user has a zendesk_id and his email has changed" do
             expect {
-              subject.update_attribute(:email, "new@jilion.com")
+              subject.update_attribute(:email, "9876@example.org")
               subject.confirm!
             }.to change(Delayed::Job.where { handler =~ '%Module%update_user%' }, :count).by(1)
           end
 
           it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
-            subject.update_attribute(:email, "new@jilion.com")
+            subject.update_attribute(:email, "9876@example.org")
             subject.confirm!
 
             VCR.use_cassette("user/zendesk_update") do
               $worker.work_off
               Delayed::Job.last.should be_nil
-              ZendeskWrapper.send(:client).users(59438671).identities.first.value.should eq 'new@jilion.com'
+              ZendeskWrapper.user(59438671).identities.first.value.should eq '9876@example.org'
             end
           end
         end

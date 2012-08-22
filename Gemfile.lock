@@ -30,18 +30,6 @@ GIT
     useragent (0.2.3)
 
 GIT
-  remote: git://github.com/jilion/zendesk_client.git
-  revision: fe6c3a9d01e939ee797282363642cc949455deb2
-  specs:
-    zendesk_client (0.1.0)
-      faraday (~> 0.8.0)
-      faraday_middleware (~> 0.8.7)
-      hashie (~> 1.2.0)
-      multi_json (~> 1.3.4)
-      multi_xml (~> 0.4.4)
-      patron
-
-GIT
   remote: git://github.com/ryanb/letter_opener.git
   revision: a289028bdfa6003c03d232887a3666b3200cefa5
   specs:
@@ -63,6 +51,19 @@ GIT
       libxml-ruby (~> 2.2.0)
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
+
+GIT
+  remote: git://github.com/zendesk/zendesk_api_client_rb.git
+  revision: 4e3cd163fbd938ec1aee24d3c88771029ed8d13c
+  specs:
+    zendesk_api (0.1.0)
+      faraday (>= 0.8.0)
+      faraday_middleware (>= 0.8.7)
+      hashie
+      inflection
+      json
+      mime-types
+      multipart-post
 
 GEM
   remote: https://rubygems.org/
@@ -304,6 +305,7 @@ GEM
       multi_xml
     httpauth (0.1)
     i18n (0.6.0)
+    inflection (1.0.0)
     jasminerice (0.0.9)
       coffee-rails
       haml
@@ -371,7 +373,6 @@ GEM
     paper_trail (2.6.3)
       activerecord (~> 3.0)
       railties (~> 3.0)
-    patron (0.4.18)
     pg (0.14.0)
     polyamorous (0.5.0)
       activerecord (~> 3.0)
@@ -648,4 +649,4 @@ DEPENDENCIES
   voxel_hapi!
   webmock (~> 1.6.0)
   wirble
-  zendesk_client!
+  zendesk_api!
