@@ -43,6 +43,10 @@ MySublimeVideo.UI.preparePlansChooser = ->
     else
       new MySublimeVideo.UI.PersistedSitePlanChooser()
 
+
+MySublimeVideo.UI.prepareSupportRequest = ->
+  new MySublimeVideo.Helpers.SupportRequest() if jQuery('#new_support_request').exists()
+
 jQuery(document).ready ->
   MySublimeVideo.UI.prepareSiteSelector()
 
@@ -55,6 +59,8 @@ jQuery(document).ready ->
   MySublimeVideo.UI.prepareSitesStatus()
 
   MySublimeVideo.UI.preparePlansChooser()
+
+  MySublimeVideo.UI.prepareSupportRequest()
 
   if (moreInfoForm = jQuery('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->

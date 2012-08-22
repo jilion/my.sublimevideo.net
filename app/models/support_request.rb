@@ -4,7 +4,7 @@ require_dependency 'ticket_manager'
 class SupportRequest
   include ActiveModel::Validations
 
-  attr_accessor :site_token, :subject, :message
+  attr_accessor :site_token, :subject, :message, :test_page, :env, :uploads
 
   validates :user, :subject, :message, presence: true
 
@@ -41,7 +41,11 @@ class SupportRequest
   end
 
   def message
-    @message ||= message_with_site(@params[:message])
+    @message ||= @params[:message].try(:to_s)
+  end
+
+  def comment
+    @comment ||= comment_with_additional_info(message)
   end
 
   def to_key
@@ -49,13 +53,12 @@ class SupportRequest
   end
 
   def to_params
-    params = { subject: subject, description: message }
-    params[:set_tags] = ["#{user.support}-support"] if user.email_support?
+    params = { subject: subject, comment: { value: comment }, uploads: @params[:uploads], external_id: user.id }
+    params[:tags] = ["#{user.support}-support"] if user.email_support?
     if user.zendesk_id?
       params[:requester_id] = user.zendesk_id
     else
-      params[:requester_name]  = user.name
-      params[:requester_email] = user.email
+      params[:requester] = { name: user.name, email: user.email }
     end
 
     params
@@ -69,9 +72,12 @@ class SupportRequest
     end
   end
 
-  def message_with_site(message)
-    full_message  = site ? "Request for site: (#{site.token}) #{site.hostname}\n\n" : ''
-    full_message += message.to_s
+  def comment_with_additional_info(message)
+    full_message = ''
+    full_message += "Request for site: (#{site.token}) #{site.hostname} (in #{site.plan.title} plan)\n" if site
+    full_message += "The issue occurs on this page: #{@params[:test_page]}\n" if @params[:test_page]
+    full_message += "The issue occurs under this environment: #{@params[:env]}\n" if @params[:env]
+    full_message += "\n#{message.to_s}"
   end
 
 end

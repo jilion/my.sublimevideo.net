@@ -2,9 +2,9 @@ module SupportRequestsHelper
 
   def support_presence
     if (9...18).include?(Time.now.utc.in_time_zone('Bern').hour)
-      content_tag(:strong, 'present', style: 'color:green')
+      "we are #{content_tag(:strong, 'currently present', style: 'color:green')}"
     else
-      content_tag(:span, 'not present', style: 'color:red')
+      "we are #{content_tag(:strong, 'not currently present', style: 'color:red')}"
     end
   end
 

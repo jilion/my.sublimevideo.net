@@ -1,4 +1,4 @@
-require_dependency 'zendesk/zendesk_config'
+require_dependency 'zendesk_wrapper'
 
 class Admin::UsersController < Admin::AdminController
   respond_to :html, :js
@@ -61,7 +61,7 @@ class Admin::UsersController < Admin::AdminController
     @user = User.find(params[:id])
     @user.create_zendesk_user
 
-    redirect_to ZendeskConfig.base_url + "/tickets/new?requester_id=#{@user.zendesk_id}"
+    redirect_to ZendeskWrapper.base_url + "/tickets/new?requester_id=#{@user.zendesk_id}"
   end
 
   private
