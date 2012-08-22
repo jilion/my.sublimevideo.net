@@ -6,7 +6,7 @@ ruby '1.9.3'
 
 gem 'bundler', '~> 1.2.0.rc.2'
 
-gem 'rails',               '3.2.8'
+gem 'rails', github: 'rails/rails', branch: '3-2-stable'
 gem 'sublimevideo_layout', '1.2.3' # hosted on gemfury
 
 # Databases
