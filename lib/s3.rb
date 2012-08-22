@@ -24,11 +24,11 @@ module S3
     end
 
     def player_bucket
-      @player_bucket ||= client.bucket(buckets[:player])
+      @player_bucket ||= client.bucket(buckets['player'])
     end
 
     def logs_bucket
-      @logs_bucket ||= client.bucket(buckets[:logs])
+      @logs_bucket ||= client.bucket(buckets['logs'])
     end
 
     def client

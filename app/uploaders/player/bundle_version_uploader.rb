@@ -38,7 +38,7 @@ class Player::BundleVersionUploader < CarrierWave::Uploader::Base
     #     p zipfile.size
     #     # zipfile.get_input_stream do |io|
     #       # puts io.size
-    #       # fog_connection.put_object(S3.buckets[:sublimevideo], object_path.to_s, io.read)
+    #       # fog_connection.put_object(S3.buckets['sublimevideo'], object_path.to_s, io.read)
     #     # end
     #   end
     # end
