@@ -1,6 +1,5 @@
 require 'fast_spec_helper'
 require 'timecop'
-require 'active_support/core_ext'
 require File.expand_path('lib/public_launch')
 
 describe PublicLaunch do

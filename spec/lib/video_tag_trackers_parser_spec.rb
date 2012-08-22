@@ -1,5 +1,4 @@
 require 'fast_spec_helper'
-require 'active_support/core_ext'
 require 'addressable/uri'
 require File.expand_path('lib/video_tag_trackers_parser')
 

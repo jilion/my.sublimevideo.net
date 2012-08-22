@@ -1,5 +1,4 @@
 require "fast_spec_helper"
-require 'active_support/core_ext'
 require File.expand_path('lib/configurator')
 
 describe Configurator do

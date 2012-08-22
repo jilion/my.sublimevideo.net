@@ -1,5 +1,4 @@
 require "fast_spec_helper"
-require 'active_support/core_ext'
 require 'edge_cast'
 require File.expand_path('lib/cdn/edgecast_wrapper')
 

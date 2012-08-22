@@ -1,6 +1,5 @@
 require "fast_spec_helper"
 require File.expand_path('lib/early_access')
-require 'active_support/core_ext'
 
 describe EarlyAccess do
 

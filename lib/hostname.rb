@@ -1,4 +1,5 @@
 require 'ipaddr'
+require 'active_support/core_ext'
 
 module Hostname
   class << self

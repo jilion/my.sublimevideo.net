@@ -1,6 +1,5 @@
 require 'fast_spec_helper'
 require 'airbrake'
-require 'active_support/core_ext'
 require File.expand_path('lib/notify')
 
 describe Notify do

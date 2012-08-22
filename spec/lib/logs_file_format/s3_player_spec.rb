@@ -1,7 +1,5 @@
 require 'fast_spec_helper'
 require 'request_log_analyzer'
-require 'active_support/concern'
-require 'active_support/core_ext'
 require 'support/fixtures_helpers'
 require File.expand_path('lib/log_analyzer')
 require File.expand_path('lib/logs_file_format/s3_player')

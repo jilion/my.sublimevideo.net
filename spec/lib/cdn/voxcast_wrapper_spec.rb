@@ -1,5 +1,4 @@
 require "fast_spec_helper"
-require 'active_support/core_ext'
 require 'voxel_hapi'
 require 'rescue_me'
 require File.expand_path('spec/config/vcr')
