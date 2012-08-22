@@ -1,4 +1,7 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'aws'
+require File.expand_path('spec/config/vcr')
+require File.expand_path('lib/s3')
 
 describe S3 do
 
@@ -14,7 +17,7 @@ describe S3 do
     use_vcr_cassette "s3/keys_names"
 
     it "should return the names of all keys" do
-      S3.keys_names(S3.player_bucket).should == ["beta/black_pixel.gif",
+      S3.keys_names(S3.buckets['player']).should == ["beta/black_pixel.gif",
            "beta/close_button.png",
            "beta/ie/transparent_pixel.gif",
            "beta/play_button.png",
@@ -49,22 +52,28 @@ describe S3 do
 
     describe ":remove_prefix option" do
       it "should not remove prefix from key name when remove_prefix is not set" do
-        S3.keys_names(S3.player_bucket, 'prefix' => 'dev').each do |key|
+        S3.keys_names(S3.buckets['player'], 'prefix' => 'dev').each do |key|
           key.should =~ /^dev/
         end
       end
 
       it "should not remove prefix from key name when remove_prefix is set to false" do
-        S3.keys_names(S3.player_bucket, 'prefix' => 'dev', remove_prefix: false).each do |key|
+        S3.keys_names(S3.buckets['player'], 'prefix' => 'dev', remove_prefix: false).each do |key|
           key.should =~ /^dev/
         end
       end
 
       it "should remove prefix from key name when remove_prefix is set to true" do
-        S3.keys_names(S3.player_bucket, 'prefix' => 'dev', remove_prefix: true).each do |key|
+        S3.keys_names(S3.buckets['player'], 'prefix' => 'dev', remove_prefix: true).each do |key|
           key.should_not =~ /^dev/
         end
       end
+    end
+  end
+
+  describe ".buckets" do
+    it "returns bucket name" do
+      S3.buckets['sublimevideo'].should eq 'dev.sublimevideo'
     end
   end
 

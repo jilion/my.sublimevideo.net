@@ -3,7 +3,6 @@ require 'zip/zip'
 require 'rails/railtie'
 require 'fog'
 require 'carrierwave'
-require 's3'
 require File.expand_path('spec/config/carrierwave')
 require File.expand_path('spec/support/fixtures_helpers')
 
@@ -21,7 +20,7 @@ describe StatsExportUploader do
   before { uploader.store!(csv) }
 
   it "has stats_exports S3.bucket" do
-    uploader.fog_directory.should eq S3Bucket.stats_exports
+    uploader.fog_directory.should eq S3.buckets['stats_exports']
   end
 
   it "is private" do
