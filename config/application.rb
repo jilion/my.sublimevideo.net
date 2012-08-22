@@ -55,5 +55,8 @@ module MySublimeVideo
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
+
+    # Use sql format for db schema
+    config.active_record.schema_format = :sql
   end
 end
