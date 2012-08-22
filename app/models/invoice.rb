@@ -7,6 +7,8 @@ class Invoice < ActiveRecord::Base
 
   uniquify :reference, chars: Array('a'..'z') - ['o'] + Array('1'..'9')
 
+  attr_accessible :site_id, :renew
+
   # ================
   # = Associations =
   # ================

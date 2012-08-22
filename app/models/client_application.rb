@@ -1,6 +1,7 @@
 class ClientApplication < ActiveRecord::Base
 
   attr_accessor :token_callback_url
+  attr_accessible :name, :url, :callback_url, :support_url
 
   # ================
   # = Associations =

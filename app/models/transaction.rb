@@ -7,6 +7,8 @@ class Transaction < ActiveRecord::Base
 
   uniquify :order_id, chars: Array('a'..'z') + Array('0'..'9'), length: 30
 
+  attr_accessible # none!
+
   # ================
   # = Associations =
   # ================
