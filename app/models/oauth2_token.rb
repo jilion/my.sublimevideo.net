@@ -16,14 +16,26 @@ class Oauth2Token < OauthToken
   # = Instance Methods =
   # ====================
 
+  attr_accessor :state
+
   # Implement this to return a hash or array of the capabilities the access token has
   # This is particularly useful if you have implemented user defined permissions.
   # def capabilities
   #   {invalidate:"/oauth/invalidate",capabilities:"/oauth/capabilities"}
   # end
 
-  def as_json(options={})
-    { access_token: token }
+  def as_json(options = {})
+    d = { access_token: token, token_type: 'bearer' }
+    d[:expires_in] = expires_in if expires_at
+    d
+  end
+
+  def to_query
+    q = "access_token=#{token}&token_type=bearer"
+    q << "&state=#{URI.escape(state)}" if @state
+    q << "&expires_in=#{expires_in}" if expires_at
+    q << "&scope=#{URI.escape(scope)}" if scope
+    q
   end
 
   protected

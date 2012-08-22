@@ -7,7 +7,7 @@ describe MailTemplate do
 
     its(:title)   { should =~ /Pricing survey \d+/ }
     its(:subject) { should include "{{user.name}} ({{user.email}}), help us shaping the right pricing" }
-    its(:body)    { should include "Hi {{user.name}} ({{user.email}}), please respond to the survey, by clicking on the following url: http://survey.com" }
+    its(:body)    { should include "Please respond to the survey, by clicking on the following url: http://survey.com" }
 
     it { should be_valid }
   end

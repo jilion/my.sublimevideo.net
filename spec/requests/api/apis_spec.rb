@@ -93,7 +93,9 @@ feature "API" do
     describe "Wrong format" do
       describe "with extension" do
         scenario do
-          expect { go 'api', 'test_request.foo' }.to raise_error
+          go 'api', 'test_request.foo'
+
+          page.driver.status_code.should eq 406
         end
       end
 
@@ -272,7 +274,9 @@ feature "legacy routes API" do
     describe "Wrong format" do
       describe "with extension" do
         scenario do
-          expect { go 'my', 'api/test_request.foo' }.to raise_error
+          go 'my', 'api/test_request.foo'
+
+          page.driver.status_code.should eq 406
         end
       end
 

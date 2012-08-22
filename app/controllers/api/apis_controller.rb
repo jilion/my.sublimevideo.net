@@ -1,4 +1,4 @@
-require_dependency 'api'
+require_dependency 'sublime_video_api'
 
 class Api::ApisController < ActionController::Base
   # include AbstractController::Callbacks
@@ -20,7 +20,7 @@ class Api::ApisController < ActionController::Base
   oauthenticate
 
   def test_request
-    body = { status: 200, current_api_version: Api.current_version, api_version_used: @version, token: current_token.try(:token), authorized_at: current_token.try(:authorized_at) }
+    body = { status: 200, current_api_version: SublimeVideoApi.current_version, api_version_used: @version, token: current_token.try(:token), authorized_at: current_token.try(:authorized_at) }
     render(request.format.ref => body, status: 200)
   end
 
@@ -37,13 +37,13 @@ class Api::ApisController < ActionController::Base
   def set_version_and_content_type
     version_and_format = request.format.ref.to_s.match(%r{^application/vnd\.sublimevideo(-v(\d+))?\+(\w+)$})
 
-    @version = version_and_format.try(:[], 2) || Api.current_version
+    @version = version_and_format.try(:[], 2) || SublimeVideoApi.current_version
     request.format = params[:format] || version_and_format.try(:[], 3)
     # unknown format could lead to request.format == nil
-    request.format = Api.default_content_type if request.format.nil?
+    request.format = SublimeVideoApi.default_content_type if request.format.nil?
   end
 
-  def api_template(access=:private, template=:self)
+  def api_template(access = :private, template = :self)
     "v#{@version}_#{access}_#{template}".to_sym
   end
 

@@ -1,7 +1,7 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/api')
+require File.expand_path('lib/sublime_video_api')
 
-describe Api do
+describe SublimeVideoApi do
 
   describe ".current_version" do
     it { described_class.current_version.should eq(1) }

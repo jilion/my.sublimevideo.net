@@ -17,7 +17,7 @@ GIT
 
 GIT
   remote: git://github.com/jilion/premailer.git
-  revision: f8537e31b32057ba0eea791a97eb6a82f3379a0b
+  revision: 00d6b351f4ca1cdb5f9d5f3806575f87f29a4882
   specs:
     premailer (1.7.3)
       css_parser (>= 1.1.9)
@@ -612,8 +612,8 @@ DEPENDENCIES
   mongoid (~> 2.4.7)
   mongoid_uniquify
   newrelic_rpm
-  oauth (~> 0.4.5)
-  oauth-plugin (~> 0.4.0.pre7)
+  oauth (~> 0.4.6)
+  oauth-plugin (~> 0.4.1)
   paper_trail (~> 2.6.0)
   pg (~> 0.14.0)
   powder

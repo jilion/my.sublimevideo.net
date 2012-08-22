@@ -10,9 +10,11 @@ class Oauth2Verifier < OauthToken
   # = Instance Methods =
   # ====================
 
-  def exchange!(params={})
+  attr_accessor :state
+
+  def exchange!(params = {})
     OauthToken.transaction do
-      token = Oauth2Token.create!(user: user, client_application: client_application)
+      token = Oauth2Token.create!(user: user, client_application: client_application, scope: scope)
       invalidate!
       token
     end
@@ -24,6 +26,12 @@ class Oauth2Verifier < OauthToken
 
   def redirect_url
     callback_url
+  end
+
+  def to_query
+    q = "code=#{token}"
+    q << "&state=#{URI.escape(state)}" if @state
+    q
   end
 
   protected
