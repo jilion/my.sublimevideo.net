@@ -2,12 +2,6 @@
 
 #help
   = render 'pages/help/documentation'
-
-  - if current_user.email_support?
-    = render 'pages/help/email_support'
-    = render 'pages/help/community_forum'
-  - else
-    = render 'pages/help/community_forum'
-    = render 'pages/help/email_support'
-
+  = render 'pages/help/community_forum'
+  = render 'pages/help/email_support'
   = render 'pages/help/billing_questions'
