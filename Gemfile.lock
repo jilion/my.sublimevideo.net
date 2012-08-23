@@ -8,6 +8,15 @@ GIT
       daemons
 
 GIT
+  remote: git://github.com/hoverbird/paper_trail.git
+  revision: c757f9119f15670dda438dd8afac1cce62887d52
+  branch: version_needs_namespacing
+  specs:
+    paper_trail (2.6.3)
+      activerecord (~> 3.0)
+      railties (~> 3.0)
+
+GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: be8240784141056b66e0720fbfccb1f8856edaa6
   specs:
@@ -393,9 +402,6 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.2)
     orm_adapter (0.0.7)
-    paper_trail (2.6.3)
-      activerecord (~> 3.0)
-      railties (~> 3.0)
     patron (0.4.18)
     pg (0.14.0)
     polyamorous (0.5.0)
@@ -614,7 +620,7 @@ DEPENDENCIES
   newrelic_rpm
   oauth (~> 0.4.6)
   oauth-plugin (~> 0.4.1)
-  paper_trail (~> 2.6.0)
+  paper_trail!
   pg (~> 0.14.0)
   powder
   premailer!
