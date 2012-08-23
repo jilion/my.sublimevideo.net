@@ -47,8 +47,7 @@ gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'
 
 gem 'state_machine',         '~> 1.1.2'
-# gem 'paper_trail',           '~> 2.6.0'
-gem 'paper_trail',           github: 'hoverbird/paper_trail', branch: 'version_needs_namespacing'
+gem 'paper_trail',           '~> 2.6.0'
 gem 'uniquify',              '~> 0.1.0'
 gem 'acts-as-taggable-on',   '~> 2.2.2'
 
