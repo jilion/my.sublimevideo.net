@@ -44,6 +44,13 @@ describe Player::Bundle do
     bundle.to_param.should eq bundle.token
   end
 
+  it "should have many versions" do
+    zip = fixture_file('player/bA.zip')
+    bundle_version1 = Player::BundleVersion.create(token: bundle.token, version: '1.0.0', zip: zip)
+    bundle_version2 = Player::BundleVersion.create(token: bundle.token, version: '2.0.0', zip: zip)
+    bundle.versions.should eq [bundle_version1, bundle_version2]
+  end
+
 end
 
 # == Schema Information
