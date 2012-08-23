@@ -5,8 +5,8 @@ describe Configurator do
 
   context "with Rails Env" do
     let(:conf_with_rails_env) { {
-      'development' => { 'bar' => 'dev_bar', 'baz' => 'dev_baz', 'bla' => false },
-      'production'  => { 'bar' => 'env_var', 'baz' => 'env_var', 'bla' => false }
+      'development' => { 'bar' => 'dev_bar', 'baz' => { 'baz2' => 'dev_baz' }, 'bla' => false },
+      'production'  => { 'bar' => 'env_var', 'baz' => { 'baz2' => 'env_var' }, 'bla' => false }
     } }
     before do
       ENV['CONFIGURABLE_MODULE_BAR'] = 'prod_bar' # fake prod env config
@@ -31,7 +31,7 @@ describe Configurator do
 
       its(:config_path) { should eq Rails.root.join('config', 'configurable_module.yml') }
       its(:prefix)      { should eq 'CONFIGURABLE_MODULE' }
-      its(:yml_options) { should eq conf_with_rails_env['development'].symbolize_keys }
+      its(:yml_options) { should eq conf_with_rails_env['development'] }
     end
 
     describe "config_accessor" do
@@ -46,16 +46,28 @@ describe Configurator do
           before { Rails.stub(:env) { 'development' } }
 
           its(:bar) { should eq 'dev_bar' }
-          its(:baz) { should eq 'dev_baz' }
+          its(:baz) { should eq('baz2' => 'dev_baz') }
           its(:bla) { should eq false }
+
+          describe "hash access" do
+            it "is available via sym or string" do
+              subject.baz[:baz2].should eq subject.baz['baz2']
+            end
+          end
         end
 
         context "production env" do
           before { Rails.stub(:env) { 'production' } }
 
           its(:bar) { should eq 'prod_bar' }
-          its(:baz) { should eq 'prod_baz' }
+          its(:baz) { should eq('baz2' => 'env_var') }
           its(:bla) { should eq false }
+
+          describe "hash access" do
+            it "is available via sym or string" do
+              subject.baz[:baz2].should eq subject.baz['baz2']
+            end
+          end
         end
       end
 

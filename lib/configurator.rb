@@ -51,7 +51,7 @@ module Configurator
       else
         YAML.load_file(@config_path)
       end
-      yml_hash.symbolize_keys
+      HashWithIndifferentAccess.new(yml_hash)
     end
 
   end
