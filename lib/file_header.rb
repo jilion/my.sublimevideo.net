@@ -1,3 +1,5 @@
+require 'mime/types'
+
 module FileHeader
 
   def self.content_type(filename)

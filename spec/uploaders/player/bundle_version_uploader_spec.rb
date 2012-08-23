@@ -9,6 +9,7 @@ require File.expand_path('spec/support/fixtures_helpers')
 require File.expand_path('config/initializers/carrierwave')
 require File.expand_path('app/models/player')
 require File.expand_path('app/uploaders/player/bundle_version_uploader')
+require File.expand_path('app/uploaders/player/bundle_version_zip_content_uploader')
 
 describe Player::BundleVersionUploader, :fog_mock do
   let(:bundle_version) { stub(
@@ -19,7 +20,7 @@ describe Player::BundleVersionUploader, :fog_mock do
   let(:zip) { fixture_file('player/bA.zip') }
   let(:uploader) { Player::BundleVersionUploader.new(bundle_version, :zip) }
 
-  # before { Player::ZipUploader.stub(:upload_zip_content) }
+  before { Player::BundleVersionZipContentUploader.stub(:upload_zip_content) }
 
   context "on store!" do
     before { uploader.store!(zip) }
@@ -43,11 +44,11 @@ describe Player::BundleVersionUploader, :fog_mock do
 
   describe "process" do
     it "uploads zip content on sublimevideo S3 bucket" do
-      # Player::ZipUploader.should_receive(:upload_zip_content).with(
-      #   kind_of(CarrierWave::SanitizedFile),
-      #   Pathname.new('f/bA/2.0.0')
-      # )
-      # uploader.store!(zip)
+      Player::BundleVersionZipContentUploader.should_receive(:upload_zip_content).with(
+        kind_of(String),
+        Pathname.new('b/bA/2.0.0')
+      )
+      uploader.store!(zip)
     end
   end
 

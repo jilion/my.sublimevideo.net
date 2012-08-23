@@ -26,32 +26,9 @@ class Player::BundleVersionUploader < CarrierWave::Uploader::Base
   end
 
   def upload_zip_content
-    dir_path = Pathname.new("b/#{model.token}/#{model.version}")
-    # Player::BundleZipCUploader.upload_zip_content(file, dir_path)
+    upload_path = Pathname.new("b/#{model.token}/#{model.version}")
+    Player::BundleVersionZipContentUploader.upload_zip_content(file.path, upload_path)
   end
-
-    # def self.upload_zip_content(zip, path)
-    #   Zip::ZipFile.foreach(zip) do |zipfile|
-    #     next if zipfile.name =~ /__MACOSX|.DS_Store/
-    #     object_path = path.join(zipfile.name)
-    #     p zipfile.class
-    #     p zipfile.size
-    #     # zipfile.get_input_stream do |io|
-    #       # puts io.size
-    #       # fog_connection.put_object(S3.buckets['sublimevideo'], object_path.to_s, io.read)
-    #     # end
-    #   end
-    # end
-
-    # def self.fog_connection
-    #   Fog::Storage.new(
-    #     provider:              'AWS',
-    #     aws_access_key_id:     S3.access_key_id,
-    #     aws_secret_access_key: S3.secret_access_key,
-    #     region:                'us-east-1'
-    #   )
-    # end
-
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
