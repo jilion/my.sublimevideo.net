@@ -1,4 +1,4 @@
-class SiteVersion < Version
+class SiteVersion < PaperTrail::Version
   self.table_name    = :versions
   self.sequence_name = :version_id_seq
 
