@@ -16,6 +16,8 @@ describe Player::Bundle do
   it { should allow_mass_assignment_of(:name) }
   it { should allow_mass_assignment_of(:token) }
 
+  it { should have_many(:versions).dependent(:destroy) }
+
   describe "Validations" do
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:token) }

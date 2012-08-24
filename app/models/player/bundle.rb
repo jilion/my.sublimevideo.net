@@ -3,7 +3,10 @@ class Player::Bundle < ActiveRecord::Base
 
   serialize :version_tags, ActiveRecord::Coders::Hstore
 
-  has_many :versions, class_name: 'Player::BundleVersion', foreign_key: 'player_bundle_id'
+  has_many :versions,
+    class_name: 'Player::BundleVersion',
+    foreign_key: 'player_bundle_id',
+    dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
   validates :token, presence: true, uniqueness: true

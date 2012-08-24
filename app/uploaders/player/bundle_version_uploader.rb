@@ -3,8 +3,10 @@ require_dependency 's3'
 class Player::BundleVersionUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 
+  after :store, :store_zip_content
+  after :remove, :remove_zip_content
+
   process :set_content_type
-  process :upload_zip_content
 
   def fog_directory
     S3.buckets['player']
@@ -25,11 +27,6 @@ class Player::BundleVersionUploader < CarrierWave::Uploader::Base
     end
   end
 
-  def upload_zip_content
-    upload_path = Pathname.new("b/#{model.token}/#{model.version}")
-    Player::BundleVersionZipContentUploader.upload_zip_content(file.path, upload_path)
-  end
-
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def extension_white_list
@@ -40,6 +37,18 @@ class Player::BundleVersionUploader < CarrierWave::Uploader::Base
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
     "#{model.name}-#{model.version}.zip" if original_filename
+  end
+
+  def store_zip_content(file)
+    Player::BundleVersionZipContentUploader.store_zip_content(file.path, zip_content_upload_path)
+  end
+
+  def remove_zip_content
+    Player::BundleVersionZipContentUploader.remove_zip_content(zip_content_upload_path)
+  end
+
+  def zip_content_upload_path
+    Pathname.new("b/#{model.token}/#{model.version}")
   end
 
 end

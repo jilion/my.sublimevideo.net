@@ -3,7 +3,7 @@ require_dependency 'file_header'
 
 class Player::BundleVersionZipContentUploader
 
-  def self.upload_zip_content(zip_path, upload_path)
+  def self.store_zip_content(zip_path, upload_path)
     Zip::ZipFile.foreach(zip_path) do |zipfile|
       next if zipfile.name =~ /__MACOSX|.DS_Store/ || zipfile.directory?
       object_name  = upload_path.join(zipfile.name).to_s
@@ -18,6 +18,13 @@ class Player::BundleVersionZipContentUploader
     end
   end
 
+  def self.remove_zip_content(upload_path)
+    fog_connection.directories.get(
+      S3.buckets['sublimevideo'],
+      prefix: upload_path.to_s
+    ).files.each { |file| file.destroy }
+  end
+
 private
 
   def self.put_object(object_name, data, options = {})
@@ -26,6 +33,13 @@ private
       object_name,
       data,
       options
+    )
+  end
+
+  def self.delete_object(object_name)
+    fog_connection.put_object(
+      S3.buckets['sublimevideo'],
+      object_name
     )
   end
 

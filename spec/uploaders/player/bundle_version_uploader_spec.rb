@@ -20,7 +20,7 @@ describe Player::BundleVersionUploader, :fog_mock do
   let(:zip) { fixture_file('player/bA.zip') }
   let(:uploader) { Player::BundleVersionUploader.new(bundle_version, :zip) }
 
-  before { Player::BundleVersionZipContentUploader.stub(:upload_zip_content) }
+  before { Player::BundleVersionZipContentUploader.stub(:store_zip_content) }
 
   context "on store!" do
     before { uploader.store!(zip) }
@@ -44,11 +44,22 @@ describe Player::BundleVersionUploader, :fog_mock do
 
   describe "process" do
     it "uploads zip content on sublimevideo S3 bucket" do
-      Player::BundleVersionZipContentUploader.should_receive(:upload_zip_content).with(
+      Player::BundleVersionZipContentUploader.should_receive(:store_zip_content).with(
         kind_of(String),
         Pathname.new('b/bA/2.0.0')
       )
       uploader.store!(zip)
+    end
+  end
+
+  describe "on remove" do
+    before { uploader.store!(zip) }
+
+    it "remove zip content on sublimevideo S3 bucket" do
+      Player::BundleVersionZipContentUploader.should_receive(:remove_zip_content).with(
+        Pathname.new('b/bA/2.0.0')
+      )
+      uploader.remove!
     end
   end
 
