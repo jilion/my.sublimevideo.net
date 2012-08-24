@@ -7,7 +7,7 @@ class Transaction < ActiveRecord::Base
 
   uniquify :order_id, chars: Array('a'..'z') + Array('0'..'9'), length: 30
 
-  attr_accessible # none!
+  attr_accessible :invoice_ids # none!
 
   # ================
   # = Associations =
@@ -89,7 +89,7 @@ class Transaction < ActiveRecord::Base
   end
 
   def self.charge_by_invoice_ids(invoice_ids, options = {})
-    transaction = new(invoices: Invoice.where(id: invoice_ids))
+    transaction = new(invoice_ids: Invoice.where(id: invoice_ids).pluck(:id))
     transaction.save!
 
     options = options.merge({
