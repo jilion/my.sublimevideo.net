@@ -3,10 +3,10 @@ require_dependency 's3'
 class Player::BundleVersionUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 
-  after :store, :store_zip_content
-  after :remove, :remove_zip_content
-
   process :set_content_type
+  process :store_zip_content
+
+  after :remove, :remove_zip_content
 
   def fog_directory
     S3.buckets['player']
@@ -39,7 +39,7 @@ class Player::BundleVersionUploader < CarrierWave::Uploader::Base
     "#{model.name}-#{model.version}.zip" if original_filename
   end
 
-  def store_zip_content(file)
+  def store_zip_content
     Player::BundleVersionZipContentUploader.store_zip_content(file.path, zip_content_upload_path)
   end
 

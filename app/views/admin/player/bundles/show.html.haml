@@ -1,0 +1,50 @@
+%h2
+  %select#bundles_select_name{ 'data-token' => @bundle.token }
+    - @bundles.each do |bundle|
+      %option{ value: bundle.token, selected: ('selected' if bundle == @bundle) }
+        = "#{bundle.name} (#{bundle.token})"
+
+
+%h3 Version Tags
+
+- if @bundle.version_tags?
+  %table
+    %tr
+      %th= "Tag"
+      %th= "Version"
+      %th= "Action"
+    - @bundle.version_tags.sort.each do |tag_name, version|
+      %tr{ class: cycle('', 'alt') }
+        %td= tag_name.capitalize
+        %td
+          = version
+          = " (#{link_to 'download zip', admin_player_bundle_version_path(@bundle.token, version, format: :zip)})".html_safe
+        %td
+          = form_for [:admin, @bundle] do |f|
+            = select_tag "bundle[version_tags[#{tag_name}]]", options_for_select(@bundle.versions.map(&:version))
+            = f.submit "Change version", confirm: "Are you REALLY sure?"
+- else
+  %p No version tags yet, please create at least one via the API.
+
+%h3 Last Versions
+
+- if @bundle.versions.present?
+  %table
+    %tr
+      %th= "Version"
+      %th= "Released at"
+      %th= "Action"
+    - @bundle.versions.limit(20).each do |version|
+      %tr{ class: cycle('', 'alt') }
+        %td
+          = version.version
+          = " (#{link_to 'download zip', admin_player_bundle_version_path(version.token, version.version, format: :zip)})".html_safe
+        %td= version.created_at
+        %td
+          - if !version.tagged?
+            = button_to "delete version", admin_player_bundle_version_path(version.token, version.version), data: { confirm: 'Are you REALLY sure?' }, method: :delete
+          - else
+            tagged
+
+- else
+  %p No versions yet.

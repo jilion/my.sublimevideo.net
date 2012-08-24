@@ -15,7 +15,7 @@ require File.expand_path('app/uploaders/player/bundle_version_zip_content_upload
 
 describe Player::BundleVersionZipContentUploader, :fog_mock do
 
-  let(:zip) { fixture_file('player/bA.zip') }
+  let(:zip) { fixture_file('player/e.zip') }
   ### Zip content
   # bA.js
   # flash/flash11canvas.swf
@@ -23,7 +23,7 @@ describe Player::BundleVersionZipContentUploader, :fog_mock do
   # images/logo.png
   # images/play_button.png
   # images/sub/sub_play_button.png
-  let(:upload_path) { Pathname.new('b/bA/2.0.0') }
+  let(:upload_path) { Pathname.new('b/e/2.0.0') }
   let(:bucket) { S3.buckets['sublimevideo'] }
   let(:js_object_path) { upload_path.join('bA.js').to_s }
 

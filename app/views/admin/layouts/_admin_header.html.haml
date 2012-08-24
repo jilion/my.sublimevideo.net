@@ -48,6 +48,9 @@
       %ul.favorite_links
         %li= link_to "Player", [:admin, :releases]
 
+      %ul.favorite_links
+        %li= link_to "New Player", admin_player_path
+
   .right
     %ul.extra_links
       - if admin_signed_in?

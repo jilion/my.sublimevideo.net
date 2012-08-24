@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe Player::BundleVersion do
-  let(:zip) { fixture_file('player/bA.zip') }
+describe Player::BundleVersion, :fog_mock do
+  let(:zip) { fixture_file('player/e.zip') }
   let(:bundle) { Player::Bundle.create(
     name: 'app',
-    token: 'bA'
+    token: 'e'
   )}
   let(:attributes) { {
     token: bundle.token,
-    version: 'bA',
+    version: 'e',
     settings: "",
     zip: zip
   } }
@@ -37,6 +37,21 @@ describe Player::BundleVersion do
 
   it "delegates name to bundle" do
     bundle_version.name.should eq bundle.name
+  end
+
+  describe "tagged?" do
+    it "returns true when tagged in bundle" do
+      bundle.update_attributes(version_tags: { stabe: bundle_version.version })
+      bundle_version.reload
+      bundle_version.should be_tagged
+    end
+    it "returns false when not tagged in bundle" do
+      bundle_version.should_not be_tagged
+    end
+  end
+
+  it "overwrites to_param" do
+    bundle_version.to_param.should eq bundle_version.version
   end
 
 end

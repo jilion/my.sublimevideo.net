@@ -14,10 +14,10 @@ require File.expand_path('app/uploaders/player/bundle_version_zip_content_upload
 describe Player::BundleVersionUploader, :fog_mock do
   let(:bundle_version) { stub(
     name: 'app',
-    token: 'bA',
+    token: 'e',
     version: '2.0.0'
   )}
-  let(:zip) { fixture_file('player/bA.zip') }
+  let(:zip) { fixture_file('player/e.zip') }
   let(:uploader) { Player::BundleVersionUploader.new(bundle_version, :zip) }
 
   before { Player::BundleVersionZipContentUploader.stub(:store_zip_content) }
@@ -46,7 +46,7 @@ describe Player::BundleVersionUploader, :fog_mock do
     it "uploads zip content on sublimevideo S3 bucket" do
       Player::BundleVersionZipContentUploader.should_receive(:store_zip_content).with(
         kind_of(String),
-        Pathname.new('b/bA/2.0.0')
+        Pathname.new('b/e/2.0.0')
       )
       uploader.store!(zip)
     end
@@ -57,7 +57,7 @@ describe Player::BundleVersionUploader, :fog_mock do
 
     it "remove zip content on sublimevideo S3 bucket" do
       Player::BundleVersionZipContentUploader.should_receive(:remove_zip_content).with(
-        Pathname.new('b/bA/2.0.0')
+        Pathname.new('b/e/2.0.0')
       )
       uploader.remove!
     end

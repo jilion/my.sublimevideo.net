@@ -14,6 +14,14 @@ class Player::BundleVersion < ActiveRecord::Base
   def token=(token)
     self.bundle = Player::Bundle.find_by_token!(token)
   end
+
+  def tagged?
+    bundle.version_tags.values.include?(version)
+  end
+
+  def to_param
+    version
+  end
 end
 
 # == Schema Information

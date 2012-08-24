@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Player::Bundle do
+describe Player::Bundle, :fog_mock do
   let(:attributes) { {
     name: 'app',
-    token: 'bA',
+    token: 'e',
     version_tags: {
       # hstore keys are strings
       'alpha'  => '2.0.0-alpha.5',
@@ -35,6 +35,10 @@ describe Player::Bundle do
       bundle.version_tags.should eq attributes[:version_tags]
     end
 
+    it "return empty hash when not set" do
+      Player::Bundle.new().version_tags.should eq({})
+    end
+
     it "merge new hash with existing version_tags hash" do
       new_version_tags = { 'alpha' => '3.0.0' }
       bundle.update_attributes(version_tags: new_version_tags)
@@ -47,10 +51,10 @@ describe Player::Bundle do
   end
 
   it "should have many versions" do
-    zip = fixture_file('player/bA.zip')
+    zip = fixture_file('player/e.zip')
     bundle_version1 = Player::BundleVersion.create(token: bundle.token, version: '1.0.0', zip: zip)
     bundle_version2 = Player::BundleVersion.create(token: bundle.token, version: '2.0.0', zip: zip)
-    bundle.versions.should eq [bundle_version1, bundle_version2]
+    bundle.versions.should eq [bundle_version2, bundle_version1]
   end
 
 end

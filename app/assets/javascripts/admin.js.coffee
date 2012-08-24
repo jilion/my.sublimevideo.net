@@ -5,6 +5,7 @@
 #= require_self
 #= require_tree ./ui
 #= require_tree ./admin/form
+#= require_tree ./admin/player
 
 jQuery.fn.exists = -> @length > 0
 
@@ -12,6 +13,7 @@ window.MySublimeVideo =
   UI: {}
 
 window.AdminSublimeVideo =
+  UI: {}
   Form: {}
   Models: {}
   Collections: {}

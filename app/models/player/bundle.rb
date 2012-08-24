@@ -6,7 +6,8 @@ class Player::Bundle < ActiveRecord::Base
   has_many :versions,
     class_name: 'Player::BundleVersion',
     foreign_key: 'player_bundle_id',
-    dependent: :destroy
+    dependent: :destroy,
+    order: 'version desc'
 
   validates :name, presence: true, uniqueness: true
   validates :token, presence: true, uniqueness: true
@@ -14,6 +15,10 @@ class Player::Bundle < ActiveRecord::Base
   # Avoiding whole hash overwrite
   def version_tags=(hash)
     write_attribute :version_tags, (version_tags || {}).merge(hash)
+  end
+
+  def version_tags
+    read_attribute(:version_tags) || {}
   end
 
   def to_param
