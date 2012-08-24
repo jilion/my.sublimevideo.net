@@ -25,21 +25,26 @@ class MySublimeVideo.Helpers.SupportRequest
     this.setupFileUploadElementsAndObservers()
 
   setupCurrentEnvAndObserver: ->
-    this.setupCurrentEnv()
+    # this.setupCurrentEnv()
 
     @currentEnvCheckbox.on 'click', =>
       this.setupCurrentEnv()
 
   setupCurrentEnv: ->
     if @currentEnvCheckbox.attr('checked')?
-      this.setCurrentEnv()
+      if (!jQuery.trim(@envTextArea.val()))
+        this.setCurrentEnv()
+      else if confirm 'This will reset what you already added in the textarea and replace it with your current environment information.'
+        this.setCurrentEnv()
+      else
+        @currentEnvCheckbox.prop("checked", false)
     else
       this.removeCurrentEnv()
 
-  setCurrentEnv: ->
-    @envTextArea.text(navigator.userAgent)
+  setCurrentEnv: -> 
+    @envTextArea.val(navigator.userAgent)
     @envTextArea.attr('readonly', 'readonly')
 
   removeCurrentEnv: ->
-    @envTextArea.text('')
+    @envTextArea.val('')
     @envTextArea.removeAttr('readonly')

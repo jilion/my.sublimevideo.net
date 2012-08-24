@@ -1,11 +1,19 @@
 module SupportRequestsHelper
 
-  def support_presence
-    if (9...18).include?(Time.now.utc.in_time_zone('Bern').hour)
-      "we are #{content_tag(:strong, 'currently present', style: 'color:green')}"
+  def support_available?
+    (9...18).include?(Time.now.utc.in_time_zone('Bern').hour)
+  end
+  
+  def support_availability_sentence
+    if support_available?
+      "The support team is #{content_tag(:strong, 'currently available')}."
     else
-      "we are #{content_tag(:strong, 'not currently present', style: 'color:red')}"
+      "The support team is #{content_tag(:strong, 'not currently available')}."
     end
+  end
+  
+  def support_availability_class
+    support_available? ? "available" : "not_available"
   end
 
   def support_request_site_token_options
