@@ -4,10 +4,10 @@
     %p
       Use the form below to submit your issue or question and we'll personally get back to you as quickly as we can.
       = raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", class: "hl"}."
-    
+
     .support_team_status{ class: support_availability_class }= raw support_availability_sentence
 
-    = form_for @support_request, url: [:support_request] do |f|
+    = form_for @support_request, url: [:support_request], html: { multipart: true } do |f|
       .entry.select.site_token
         = f.label :site_token, "", class: "icon"
         = f.select :site_token, support_request_site_token_options
@@ -41,7 +41,7 @@
         = file_field_tag 'support_request[uploads][]', id: 'support_request_uploads_0', onchange: "this.form.fakeuploadtxt.value = this.value.replace(/C:.fakepath./,'')", class: "realupload"
         %a{ href: '', id: 'cancel_upload', class: 'submit_dynamic_button ', style: 'display:none' }
           %span Clear the chosen file
-      
+
       .entry.update
         = f.submit 'Send', class: "submit blue_button"
 

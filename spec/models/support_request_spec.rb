@@ -118,7 +118,7 @@ describe SupportRequest, :plans do
         vip_support_request.user.support.should eq 'vip_email'
         vip_support_request.to_params.should == {
           subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }, tags: ['vip_email-support'],
-          requester: { name: @vip.name, email: @vip.email }, uploads: ['foo.jpg', 'bar.html'], external_id: @user.id
+          requester: { name: @vip.name, email: @vip.email }, uploads: ['foo.jpg', 'bar.html'], external_id: @vip.id
         }
       end
     end
@@ -127,7 +127,7 @@ describe SupportRequest, :plans do
       it 'generates a hash of the params' do
         support_request_with_zendesk_id.to_params.should == {
           subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }, tags: ['email-support'],
-          requester_id: @user2.zendesk_id, uploads: ['foo.jpg', 'bar.html'], external_id: @user.id
+          requester_id: @user2.zendesk_id, uploads: ['foo.jpg', 'bar.html'], external_id: @user2.id
         }
       end
     end

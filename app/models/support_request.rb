@@ -28,6 +28,20 @@ class SupportRequest
     valid? && SupportRequest.delay(priority: 25).post(@params)
   end
 
+  def uploads=(paths)
+    @params[:uploads] = []
+
+    paths.each do |path|
+      file = Tempfile.new(path.original_filename) { |f| f.write(path.read) }
+      begin
+        @params[:uploads] << file.path
+      ensure
+        file.close
+        file.unlink
+      end
+    end
+  end
+
   def user
     @user ||= User.find_by_id(@params[:user_id])
   end
