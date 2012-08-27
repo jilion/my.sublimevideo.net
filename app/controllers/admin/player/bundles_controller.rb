@@ -25,7 +25,6 @@ class Admin::Player::BundlesController < Admin::PlayerController
   # PUT /player/bundles/:id (token)
   def update
     @bundle = Player::Bundle.find_by_token!(params[:id])
-    puts params[:bundle]
     @bundle.update_attributes(params[:bundle])
     respond_with(@bundle) do |format|
       format.html { redirect_to [:admin, @bundle] }
@@ -38,6 +37,5 @@ class Admin::Player::BundlesController < Admin::PlayerController
     @bundle.destroy
     respond_with(@bundle)
   end
-
 
 end
