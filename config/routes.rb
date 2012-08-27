@@ -136,7 +136,7 @@ MySublimeVideo::Application.routes.draw do
       resources :releases, only: [:index, :create, :update]
 
       get '/player' => redirect('/player/bundles/e'), as: 'player'
-      scope 'player', module: 'player', as: 'player' do
+      namespace :player do
         resources :bundles, only: [:index, :create, :show, :update, :destroy] do
           resources :versions, only: [:index, :create, :show, :destroy]
         end
