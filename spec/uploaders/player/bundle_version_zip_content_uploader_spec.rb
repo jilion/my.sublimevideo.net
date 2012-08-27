@@ -37,17 +37,17 @@ describe Player::BundleVersionZipContentUploader, :fog_mock do
       before { described_class.store_zip_content(zip.path, upload_path) }
 
       it "is public" do
-        object_acl = described_class.fog_connection.get_object_acl(bucket, js_object_path).body
+        object_acl = S3.fog_connection.get_object_acl(bucket, js_object_path).body
         object_acl['AccessControlList'].should include(
           {"Permission"=>"READ", "Grantee"=>{"URI"=>"http://acs.amazonaws.com/groups/global/AllUsers"}}
         )
       end
       it "have good content_type public" do
-        object_headers = described_class.fog_connection.get_object(bucket, js_object_path).headers
+        object_headers = S3.fog_connection.get_object(bucket, js_object_path).headers
         object_headers['Content-Type'].should eq 'text/javascript'
       end
       it "have long max-age cache control" do
-        object_headers = described_class.fog_connection.get_object(bucket, js_object_path).headers
+        object_headers = S3.fog_connection.get_object(bucket, js_object_path).headers
         object_headers['Cache-Control'].should eq 'max-age=29030400, public'
       end
     end
@@ -58,7 +58,7 @@ describe Player::BundleVersionZipContentUploader, :fog_mock do
 
     it "removes all files in sublimevideo S3 bucket" do
       described_class.remove_zip_content(upload_path)
-      described_class.fog_connection.directories.get(
+      S3.fog_connection.directories.get(
         S3.buckets['sublimevideo'],
         prefix: upload_path.to_s
       ).files.should have(0).files

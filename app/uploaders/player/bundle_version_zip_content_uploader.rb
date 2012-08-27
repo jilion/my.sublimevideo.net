@@ -19,7 +19,7 @@ class Player::BundleVersionZipContentUploader
   end
 
   def self.remove_zip_content(upload_path)
-    fog_connection.directories.get(
+    S3.fog_connection.directories.get(
       S3.buckets['sublimevideo'],
       prefix: upload_path.to_s
     ).files.each { |file| file.destroy }
@@ -28,27 +28,11 @@ class Player::BundleVersionZipContentUploader
 private
 
   def self.put_object(object_name, data, options = {})
-    fog_connection.put_object(
+    S3.fog_connection.put_object(
       S3.buckets['sublimevideo'],
       object_name,
       data,
       options
-    )
-  end
-
-  def self.delete_object(object_name)
-    fog_connection.put_object(
-      S3.buckets['sublimevideo'],
-      object_name
-    )
-  end
-
-  def self.fog_connection
-    @fog_connection ||= Fog::Storage.new(
-      provider:              'AWS',
-      aws_access_key_id:     S3.access_key_id,
-      aws_secret_access_key: S3.secret_access_key,
-      region:                'us-east-1'
     )
   end
 
