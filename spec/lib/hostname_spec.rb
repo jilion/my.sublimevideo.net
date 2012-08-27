@@ -56,6 +56,7 @@ describe Hostname do
     it { subject.valid?("appspot.com").should be_true }
     it { subject.valid?("operaunite.com").should be_true }
     it { subject.valid?("еаои.рф").should be_true }
+    it { subject.valid?("pepe.pm").should be_true }
 
     it { subject.valid?("3ffe:505:2::1").should be_false } # ipv6
     it { subject.valid?("127.0.0.1").should be_false }
