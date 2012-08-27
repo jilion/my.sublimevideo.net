@@ -47,7 +47,7 @@ module Configurator
 
     def calculate_yml_options
       yml_hash = if @config_file_options[:rails_env]
-        YAML.load_file(@config_path)[Rails.env]
+        YAML.load_file(@config_path)[Rails.env.to_s]
       else
         YAML.load_file(@config_path)
       end

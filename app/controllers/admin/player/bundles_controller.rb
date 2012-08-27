@@ -36,7 +36,6 @@ class Admin::Player::BundlesController < Admin::PlayerController
   def destroy
     @bundle = Player::Bundle.find_by_token!(params[:id])
     @bundle.destroy
-
     respond_with(@bundle)
   end
 

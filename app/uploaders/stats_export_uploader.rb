@@ -23,12 +23,7 @@ class StatsExportUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    case Rails.env
-    when 'production', 'staging'
-      "stats_exports"
-    else
-      "uploads/stats_exports"
-    end
+    Rails.env.test? ? "uploads/stats_exports" : "stats_exports"
   end
 
   def compress

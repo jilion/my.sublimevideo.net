@@ -15,11 +15,13 @@ describe Player::BundleVersionUploader, :fog_mock do
   let(:bundle_version) { stub(
     name: 'app',
     token: 'e',
-    version: '2.0.0'
+    version: '2.0.0',
+    version_for_url: '2_0_0'
   )}
   let(:zip) { fixture_file('player/e.zip') }
   let(:uploader) { Player::BundleVersionUploader.new(bundle_version, :zip) }
 
+  before { Rails.stub(:env) { mock('test', to_s: 'test', test?: true) } }
   before { Player::BundleVersionZipContentUploader.stub(:store_zip_content) }
 
   context "on store!" do
@@ -38,11 +40,11 @@ describe Player::BundleVersionUploader, :fog_mock do
     end
 
     it "has good filename" do
-      uploader.filename.should eq "app-2.0.0.zip"
+      uploader.filename.should eq "app-2_0_0.zip"
     end
   end
 
-  describe "process" do
+  describe "after store callback" do
     it "uploads zip content on sublimevideo S3 bucket" do
       Player::BundleVersionZipContentUploader.should_receive(:store_zip_content).with(
         kind_of(String),
@@ -52,7 +54,7 @@ describe Player::BundleVersionUploader, :fog_mock do
     end
   end
 
-  describe "on remove" do
+  describe "after remove callback" do
     before { uploader.store!(zip) }
 
     it "remove zip content on sublimevideo S3 bucket" do

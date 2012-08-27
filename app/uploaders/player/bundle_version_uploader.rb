@@ -4,8 +4,9 @@ class Player::BundleVersionUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 
   process :set_content_type
-  process :store_zip_content
+  # process :store_zip_content
 
+  before :store, :store_zip_content
   after :remove, :remove_zip_content
 
   def fog_directory
@@ -19,12 +20,7 @@ class Player::BundleVersionUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored
   # # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    case Rails.env
-    when 'production', 'staging'
-      "b"
-    else
-      "uploads/player/b"
-    end
+    Rails.env.test? ? "uploads/player/b" : "b"
   end
 
   # Add a white list of extensions which are allowed to be uploaded.
@@ -36,10 +32,11 @@ class Player::BundleVersionUploader < CarrierWave::Uploader::Base
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
-    "#{model.name}-#{model.version}.zip" if original_filename
+    "#{model.name}-#{model.version_for_url}.zip" if original_filename
   end
 
-  def store_zip_content
+  def store_zip_content(new_file)
+    # new_file not used because nil
     Player::BundleVersionZipContentUploader.store_zip_content(file.path, zip_content_upload_path)
   end
 

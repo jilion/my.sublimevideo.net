@@ -8,7 +8,7 @@ describe Player::BundleVersion, :fog_mock do
   )}
   let(:attributes) { {
     token: bundle.token,
-    version: 'e',
+    version: '2.0.0',
     settings: "",
     zip: zip
   } }
@@ -51,7 +51,7 @@ describe Player::BundleVersion, :fog_mock do
   end
 
   it "overwrites to_param" do
-    bundle_version.to_param.should eq bundle_version.version
+    bundle_version.to_param.should eq '2_0_0'
   end
 
 end

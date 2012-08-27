@@ -17,6 +17,7 @@ describe StatsExportUploader do
   let(:csv) { fixture_file('stats_export.csv') }
   let(:uploader) { StatsExportUploader.new(stat_export, :file) }
 
+  before { Rails.stub(:env) { mock('test', to_s: 'test', test?: true) } }
   before { uploader.store!(csv) }
 
   it "has stats_exports S3.bucket" do

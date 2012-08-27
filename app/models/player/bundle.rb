@@ -21,6 +21,14 @@ class Player::Bundle < ActiveRecord::Base
     read_attribute(:version_tags) || {}
   end
 
+  def tagged_versions
+    {}.tap do |hash|
+      version_tags.sort.each do |tag_name, version|
+        hash[tag_name] = versions.find_by_version(version)
+      end
+    end
+  end
+
   def to_param
     token
   end

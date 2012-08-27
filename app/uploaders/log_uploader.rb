@@ -12,11 +12,10 @@ class LogUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    case Rails.env
-    when 'production', 'staging'
-      model.class.config[:store_dir]
-    else
+    if Rails.env.test?
       "uploads/#{model.class.config[:store_dir]}"
+    else
+      model.class.config[:store_dir]
     end
   end
 

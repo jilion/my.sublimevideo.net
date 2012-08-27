@@ -20,8 +20,18 @@ class Player::BundleVersion < ActiveRecord::Base
   end
 
   def to_param
-    version
+    version_for_url
   end
+
+  def version_for_url
+    version.gsub /\./, '_'
+  end
+
+  def self.find_by_version!(version_for_url)
+    version_string = version_for_url.gsub /_/, '.'
+    where(version: version_string).first!
+  end
+
 end
 
 # == Schema Information

@@ -13,12 +13,12 @@
       %th= "Tag"
       %th= "Version"
       %th= "Action"
-    - @bundle.version_tags.sort.each do |tag_name, version|
+    - @bundle.tagged_versions.each do |tag_name, version|
       %tr{ class: cycle('', 'alt') }
         %td= tag_name.capitalize
         %td
-          = version
-          = " (#{link_to 'download zip', admin_player_bundle_version_path(@bundle.token, version, format: :zip)})".html_safe
+          = version.version
+          = " (#{link_to 'download zip', admin_player_bundle_version_path(@bundle, version, format: :zip)})".html_safe
         %td
           = form_for [:admin, @bundle] do |f|
             = select_tag "bundle[version_tags[#{tag_name}]]", options_for_select(@bundle.versions.map(&:version))
@@ -38,11 +38,11 @@
       %tr{ class: cycle('', 'alt') }
         %td
           = version.version
-          = " (#{link_to 'download zip', admin_player_bundle_version_path(version.token, version.version, format: :zip)})".html_safe
+          = " (#{link_to 'download zip', admin_player_bundle_version_path(@bundle, version, format: :zip)})".html_safe
         %td= version.created_at
         %td
           - if !version.tagged?
-            = button_to "delete version", admin_player_bundle_version_path(version.token, version.version), data: { confirm: 'Are you REALLY sure?' }, method: :delete
+            = button_to "delete version", admin_player_bundle_version_path(version.token, version), data: { confirm: 'Are you REALLY sure?' }, method: :delete
           - else
             tagged
 

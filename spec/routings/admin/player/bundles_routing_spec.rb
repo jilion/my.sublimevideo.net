@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-describe Admin::Player::BundlesController do
+describe Admin::Player::BundleVersionsController do
 
-  it { get(with_subdomain('admin', 'player/bundles')).should   route_to('admin/player/bundles#index') }
-  it { post(with_subdomain('admin', 'player/bundles')).should  route_to('admin/player/bundles#create') }
-  it { get(with_subdomain('admin', 'player/bundles/1')).should route_to('admin/player/bundles#show',   id: '1') }
-  it { put(with_subdomain('admin', 'player/bundles/1')).should route_to('admin/player/bundles#update', id: '1') }
-  it { delete(with_subdomain('admin', 'player/bundles/1')).should route_to('admin/player/bundles#destroy', id: '1') }
+  it { get(with_subdomain('admin', 'player/bundles/e/versions')).should route_to('admin/player/bundle_versions#index', bundle_id: 'e') }
+  it { get(with_subdomain('admin', 'player/bundles/e/versions/1')).should route_to('admin/player/bundle_versions#show', bundle_id: 'e',  id: '1') }
+  it { post(with_subdomain('admin', 'player/bundles/e/versions')).should route_to('admin/player/bundle_versions#create', bundle_id: 'e') }
+  it { delete(with_subdomain('admin', 'player/bundles/e/versions/1')).should route_to('admin/player/bundle_versions#destroy', bundle_id: 'e', id: '1') }
 
 end
