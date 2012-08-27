@@ -3,3 +3,8 @@
 = form_for @admin, url: "/admins/#{@admin.id}" do |f|
   = render 'admin/admins/form', f: f
 .spacer
+
+%h3 Authentication token (?auth_token=...)
+%p= @admin.authentication_token || "None, please reset it if you need one."
+
+= button_to "reset auth_token!", reset_auth_token_admin_admin_path(@admin), method: :put, data: { confirm: "Are you sure? The current will be overwritten."}

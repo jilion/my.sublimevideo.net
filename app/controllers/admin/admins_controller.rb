@@ -2,7 +2,7 @@ class Admin::AdminsController < Admin::AdminController
   respond_to :js, :html
 
   before_filter { |controller| require_role?('god') }
-  before_filter :find_by_id, only: [:edit, :update, :destroy]
+  before_filter :find_by_id, only: [:edit, :update, :reset_auth_token, :destroy]
 
   has_scope :by_date
 
@@ -23,12 +23,18 @@ class Admin::AdminsController < Admin::AdminController
     respond_with(@admin, location: [:admin, :admins])
   end
 
+  # PUT /admins/:id/reset_auth_token
+  def reset_auth_token
+    @admin.reset_authentication_token!
+    respond_with(@admin, location: [:edit, :admin, @admin])
+  end
+
   def destroy
     @admin.destroy
     respond_with(@admin, location: [:admin, :admins])
   end
 
-  private
+private
 
   def find_by_id
     @admin = Admin.find(params[:id])

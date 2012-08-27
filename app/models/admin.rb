@@ -4,8 +4,8 @@ require_dependency 'validators/admin_roles_validator'
 class Admin < ActiveRecord::Base
   include AdminRoleMethods
 
-  devise :database_authenticatable, :invitable, :registerable, :recoverable,
-         :rememberable, :trackable, :validatable, :lockable
+  devise :database_authenticatable, :token_authenticatable, :invitable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable, :lockable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :roles
 
@@ -35,6 +35,7 @@ end
 #
 # Table name: admins
 #
+#  authentication_token   :string(255)
 #  created_at             :datetime
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string(255)

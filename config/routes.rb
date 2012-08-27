@@ -96,7 +96,11 @@ MySublimeVideo::Application.routes.draw do
       end
       resources :enthusiasts, only: [:index, :show]
       resources :enthusiast_sites, only: []
-      resources :admins, only: [:index, :edit, :update, :destroy]
+      resources :admins, only: [:index, :edit, :update, :destroy] do
+        member do
+          put :reset_auth_token
+        end
+      end
 
       resources :invoices,  only: [:index, :show, :edit] do
         collection do

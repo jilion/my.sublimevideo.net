@@ -46,6 +46,7 @@ end
 #
 # Table name: admins
 #
+#  authentication_token   :string(255)
 #  created_at             :datetime
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string(255)

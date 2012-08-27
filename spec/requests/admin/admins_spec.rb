@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature "Admin session:" do
-
   scenario "login" do
     create_admin admin: { email: "john@doe.com", password: "123456" }
 
@@ -23,7 +22,25 @@ feature "Admin session:" do
     current_url.should eq "http://admin.sublimevideo.dev/login"
     page.should_not have_content 'john@doe.com'
   end
+end
 
+feature "Token authentication:", :focus do
+  scenario "works" do
+    create_admin admin: {
+      email: "john@doe.com",
+      password: "123456"
+    }
+    admin = Admin.last
+    admin.reset_authentication_token!
+    go 'admin', "player/bundles.json?auth_token=#{admin.authentication_token}"
+    page.driver.status_code.should eq 200
+  end
+
+  scenario "fails" do
+    go 'admin', 'player/bundles.json?auth_token=FAIL'
+    page.driver.status_code.should eq 401
+    page.body.should include('Invalid authentication token.')
+  end
 end
 
 feature "Admins actions:" do

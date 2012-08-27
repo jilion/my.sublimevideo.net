@@ -71,7 +71,8 @@ CREATE TABLE admins (
     invited_by_id integer,
     invited_by_type character varying(255),
     roles text,
-    unconfirmed_email character varying(255)
+    unconfirmed_email character varying(255),
+    authentication_token character varying(255)
 );
 
 
@@ -1819,3 +1820,5 @@ INSERT INTO schema_migrations (version) VALUES ('20120822113838');
 INSERT INTO schema_migrations (version) VALUES ('20120822114051');
 
 INSERT INTO schema_migrations (version) VALUES ('20120822121335');
+
+INSERT INTO schema_migrations (version) VALUES ('20120827130456');
