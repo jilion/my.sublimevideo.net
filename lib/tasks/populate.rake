@@ -33,6 +33,7 @@ namespace :db do
         timed { create_site_stats }
         timed { create_deals }
         timed { create_mail_templates }
+        timed { create_player_bundles }
       end
     end
 
@@ -147,6 +148,14 @@ namespace :db do
       disable_perform_deliveries do
         timed { empty_tables(Plan) }
         timed { create_plans }
+      end
+    end
+
+    desc "Create fake plans"
+    task player_bundles: :environment do
+      disable_perform_deliveries do
+        timed { empty_tables(Player::Bundle, Player::BundleVersion) }
+        timed { create_player_bundles }
       end
     end
 
@@ -800,6 +809,32 @@ def create_plans
   ]
   plans_attributes.each { |attributes| Plan.create!(attributes) }
   puts "#{plans_attributes.size} plans created!"
+end
+
+def create_player_bundles
+  names_token = {
+    'app' => 'e',
+    'subtitles' => 'bA'
+  }
+  versions = %w[2.0.0-alpha 2.0.0 1.1.0 1.0.0]
+  version_zip = File.new(Rails.root.join('spec/fixtures/player/e.zip'))
+  names_token.each do |name, token|
+    bundle = Player::Bundle.create(
+      name: name,
+      token: token,
+      version_tags: {
+        alpha: versions[0],
+        beta: versions[1],
+        stable: versions[2]
+      }
+    )
+    versions.each do |version|
+      bundle.versions.create(
+        version: version,
+        zip: version_zip
+      )
+    end
+  end
 end
 
 def create_deals
