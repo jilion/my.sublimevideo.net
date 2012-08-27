@@ -1,3 +1,4 @@
+require_dependency 'cdn'
 require_dependency 'pusher_wrapper'
 
 module SiteModules::Template
