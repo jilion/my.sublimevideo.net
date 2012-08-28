@@ -661,6 +661,39 @@ ALTER SEQUENCE player_bundles_id_seq OWNED BY player_bundles.id;
 
 
 --
+-- Name: player_bundleships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE player_bundleships (
+    id integer NOT NULL,
+    site_id integer,
+    player_bundle_id integer,
+    version_tag character varying(255),
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: player_bundleships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE player_bundleships_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: player_bundleships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE player_bundleships_id_seq OWNED BY player_bundleships.id;
+
+
+--
 -- Name: releases; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1127,6 +1160,13 @@ ALTER TABLE player_bundles ALTER COLUMN id SET DEFAULT nextval('player_bundles_i
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE player_bundleships ALTER COLUMN id SET DEFAULT nextval('player_bundleships_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
 
 
@@ -1298,6 +1338,14 @@ ALTER TABLE ONLY player_bundle_versions
 
 ALTER TABLE ONLY player_bundles
     ADD CONSTRAINT player_bundles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: player_bundleships_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY player_bundleships
+    ADD CONSTRAINT player_bundleships_pkey PRIMARY KEY (id);
 
 
 --
@@ -1508,6 +1556,20 @@ CREATE UNIQUE INDEX index_player_bundles_on_name ON player_bundles USING btree (
 --
 
 CREATE UNIQUE INDEX index_player_bundles_on_token ON player_bundles USING btree (token);
+
+
+--
+-- Name: index_player_bundleships_on_player_bundle_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_player_bundleships_on_player_bundle_id ON player_bundleships USING btree (player_bundle_id);
+
+
+--
+-- Name: index_player_bundleships_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_player_bundleships_on_site_id ON player_bundleships USING btree (site_id);
 
 
 --
@@ -1825,3 +1887,5 @@ INSERT INTO schema_migrations (version) VALUES ('20120822121335');
 INSERT INTO schema_migrations (version) VALUES ('20120827130456');
 
 INSERT INTO schema_migrations (version) VALUES ('20120828124519');
+
+INSERT INTO schema_migrations (version) VALUES ('20120828143641');

@@ -60,6 +60,12 @@ class Site < ActiveRecord::Base
   has_many :invoices, class_name: "::Invoice"
   has_one  :last_invoice, class_name: "::Invoice", order: :created_at.desc
 
+  # Bundles
+  has_many :bundleships,
+    class_name: 'Player::Bundleship',
+    dependent: :destroy
+  has_many :bundles, through: :bundleships
+
   # Mongoid associations
   def usages
     SiteUsage.where(site_id: id)

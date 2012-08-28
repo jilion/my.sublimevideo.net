@@ -17,6 +17,8 @@ describe Player::Bundle, :fog_mock do
   it { should allow_mass_assignment_of(:token) }
 
   it { should have_many(:versions).dependent(:destroy) }
+  it { should have_many(:bundleships) }
+  it { should have_many(:sites).through(:bundleships) }
 
   describe "Validations" do
     it { should validate_presence_of(:name) }

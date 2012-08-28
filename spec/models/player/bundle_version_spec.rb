@@ -14,6 +14,8 @@ describe Player::BundleVersion, :fog_mock do
   } }
   let(:bundle_version) { Player::BundleVersion.create(attributes) }
 
+  it { should belong_to(:bundle) }
+
   it { should allow_mass_assignment_of(:token) }
   it { should allow_mass_assignment_of(:version) }
   it { should allow_mass_assignment_of(:zip) }

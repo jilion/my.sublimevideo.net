@@ -8,6 +8,11 @@ class Player::Bundle < ActiveRecord::Base
     foreign_key: 'player_bundle_id',
     dependent: :destroy,
     order: 'version desc'
+  has_many :bundleships,
+    class_name: 'Player::Bundleship',
+    foreign_key: 'player_bundle_id',
+    dependent: :destroy
+  has_many :sites, through: :bundleships
 
   validates :name, presence: true, uniqueness: true
   validates :token, presence: true, uniqueness: true

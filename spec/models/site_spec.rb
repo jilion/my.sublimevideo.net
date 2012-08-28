@@ -45,6 +45,9 @@ describe Site, :plans do
     it { should belong_to :plan }
     it { should have_many :invoices }
 
+    it { should have_many :bundleships }
+    it { should have_many(:bundles).through(:bundleships) }
+
     describe "last_invoice" do
       let(:site) { create(:site_with_invoice, plan_id: @paid_plan.id) }
 
