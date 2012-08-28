@@ -21,7 +21,8 @@ describe Player::Settings, :fog_mock do
     path: '/path', path?: true,
     badged: false,
     in_free_plan?: true,
-    plan_stats_retention_days: 365
+    plan_stats_retention_days: 365,
+    touch: true
   )}
   let(:settings) { Player::Settings.new(site) }
   let(:bucket) { S3.buckets['sublimevideo'] }
@@ -89,22 +90,32 @@ describe Player::Settings, :fog_mock do
       CDN.should_receive(:purge).with(settings.filepath)
       settings.upload!
     end
+
+    it "touch site settings_updated_at" do
+      settings.site.should_receive(:touch).with(:settings_updated_at)
+      settings.upload!
+    end
   end
 
-  describe "#remove!" do
+  describe "#delete!" do
     before do
       CDN.stub(:purge)
       settings.upload!
     end
 
-    it "remove settings file" do
-      settings.remove!
+    it "deletes settings file" do
+      settings.delete!
       expect { S3.fog_connection.get_object(bucket, settings.filepath) }.to raise_error(Excon::Errors::NotFound)
     end
 
     it "purges loader file from CDN" do
       CDN.should_receive(:purge).with(settings.filepath)
-      settings.remove!
+      settings.delete!
+    end
+
+    it "touch site settings_updated_at" do
+      settings.site.should_receive(:touch).with(:settings_updated_at)
+      settings.upload!
     end
   end
 

@@ -23,7 +23,7 @@ module SiteModules::Template
 
       templates_to_purge.each { |template| site.purge_template(template) }
 
-      PusherWrapper.delay(run_at: 5.seconds.from_now)
+      PusherWrapper.delay(run_at: 2.minutes.from_now)
         .trigger("private-#{site.token}", 'cdn_status', up_to_date: true)
     end
 
@@ -89,11 +89,14 @@ private
   # before_save
   def prepare_cdn_update
     @loader_needs_update = @license_needs_update = false
+    @settings_needs_update = false
     if state_change == ['suspended', 'active']
       @loader_needs_update = @license_needs_update = true
+      @settings_needs_update = true
     else
-      @loader_needs_update  = plan_id? && (plan_id_changed? || player_mode_changed?)
-      @license_needs_update = plan_id? && (plan_id_changed? || settings_changed?)
+      @loader_needs_update  = plan_id_changed? || player_mode_changed?
+      @license_needs_update = plan_id_changed? || settings_changed?
+      @settings_needs_update = plan_id_changed? || player_mode_changed? || settings_changed?
     end
     self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update)
 
@@ -106,6 +109,10 @@ private
       Site.delay.update_loader_and_license(self.id, loader: @loader_needs_update, license: @license_needs_update)
     end
     @loader_needs_update = @license_needs_update = false
+    if @settings_needs_update
+      Player::Settings.delay.update!(self.id)
+    end
+    @settings_needs_update = false
   end
 
   # after_transition to: [:suspended, :archived]

@@ -5,9 +5,16 @@ class Player::Settings < Struct.new(:site, :file)
 
   TEMPLATE_PATH = Rails.root.join("app/templates/player/settings.js.erb")
 
-  def self.update!(site)
+  def self.update!(site_id)
+    site = Site.find(site_id)
     settings = new(site)
     settings.upload!
+  end
+
+  def self.delete!(site_id)
+    site = Site.find(site_id)
+    settings = new(site)
+    settings.delete!
   end
 
   def initialize(*args)
@@ -29,14 +36,16 @@ class Player::Settings < Struct.new(:site, :file)
       )
     end
     CDN.purge(filepath)
+    site.touch(:settings_updated_at)
   end
 
-  def remove!
+  def delete!
     S3.fog_connection.delete_object(
       S3.buckets['sublimevideo'],
       filepath
     )
     CDN.purge(filepath)
+    site.touch(:settings_updated_at)
   end
 
   def filepath
@@ -44,6 +53,8 @@ class Player::Settings < Struct.new(:site, :file)
   end
 
   def hash
+    # TODO: Don't forget to add player_mode (beta, alpha) here
+
     hash = { h: [site.hostname] }
     hash[:h] += site.extra_hostnames.split(/,\s*/) if site.extra_hostnames?
     hash[:d]  = site.dev_hostnames.split(/,\s*/) if site.dev_hostnames?

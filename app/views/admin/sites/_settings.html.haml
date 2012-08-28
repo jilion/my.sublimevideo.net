@@ -22,3 +22,6 @@
   = "CDN #{site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
   %strong= "|"
   = link_to "See license content", "http://cdn.sublimevideo.net/l/#{site.token}.js", onclick: "window.open(this); return false"
+%p
+  = "Settings.js updated at: #{site.settings_updated_at}"
+  = link_to "See settings content", "http://cdn.sublimevideo.net/s/#{site.token}.js", onclick: "window.open(this); return false"

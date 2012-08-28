@@ -748,7 +748,8 @@ CREATE TABLE sites (
     last_30_days_embed_video_views integer DEFAULT 0,
     last_30_days_billable_video_views_array text,
     last_30_days_video_tags integer DEFAULT 0,
-    first_billable_plays_at timestamp without time zone
+    first_billable_plays_at timestamp without time zone,
+    settings_updated_at timestamp without time zone
 );
 
 
@@ -1822,3 +1823,5 @@ INSERT INTO schema_migrations (version) VALUES ('20120822114051');
 INSERT INTO schema_migrations (version) VALUES ('20120822121335');
 
 INSERT INTO schema_migrations (version) VALUES ('20120827130456');
+
+INSERT INTO schema_migrations (version) VALUES ('20120828124519');

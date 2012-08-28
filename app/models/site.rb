@@ -118,6 +118,9 @@ class Site < ActiveRecord::Base
     after_transition  on: :archive, do: [:cancel_not_paid_invoices]
 
     after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
+    after_transition  to: [:suspended, :archived] do |site|
+      Player::Settings.delay.delete!(site.id)
+    end
   end
 
   # =================
@@ -381,6 +384,7 @@ end
 #  plan_started_at                           :datetime
 #  player_mode                               :string(255)      default("stable")
 #  refunded_at                               :datetime
+#  settings_updated_at                       :datetime
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime

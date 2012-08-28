@@ -41,7 +41,7 @@
       - elsif site.invoices_waiting?
         = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
           %span.p= t 'site.status.payment_waiting'
-      - elsif site.cdn_up_to_date?
+      - elsif site.cdn_up_to_date? && site.settings_updated_at.to_i < 2.minutes.ago.to_i
         = tooltip_box class: "ok" do
           %span.p= t 'site.status.ok'
       - else

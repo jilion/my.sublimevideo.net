@@ -495,6 +495,10 @@ describe Site, :plans do
         subject.reload.loader.should_not be_present
         subject.license.should_not be_present
       end
+
+      it "delays Player::Settings.delete!" do
+        expect { subject.suspend }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"), :count).by(1)
+      end
     end
 
     describe "#unsuspend" do
@@ -538,6 +542,14 @@ describe Site, :plans do
           subject.reload.loader.should_not be_present
           subject.license.should_not be_present
           subject.archived_at.should be_present
+        end
+
+        it "delays Player::Settings.delete!" do
+          subject.user.current_password = '123456'
+          expect { subject.archive }.to change(
+            Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"),
+            :count
+          ).by(1)
         end
       end
     end
@@ -997,6 +1009,7 @@ end
 #  plan_started_at                           :datetime
 #  player_mode                               :string(255)      default("stable")
 #  refunded_at                               :datetime
+#  settings_updated_at                       :datetime
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime

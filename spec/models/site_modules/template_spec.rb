@@ -36,6 +36,10 @@ describe SiteModules::Template, :plans do
         site.apply_pending_attributes
         $worker.work_off
       end
+
+      it "delays Player::Settings.update!" do
+        expect { site.save! }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%update!%"), :count).by(1)
+      end
     end
 
     describe "on save" do
@@ -44,6 +48,7 @@ describe SiteModules::Template, :plans do
       describe "plan_id has changed" do
         let(:site) { create(:site, plan_id: @free_plan.id) }
         before do
+          # site
           Delayed::Job.delete_all
           site.plan_id = @paid_plan.id
         end
@@ -52,8 +57,12 @@ describe SiteModules::Template, :plans do
           expect { site.apply_pending_attributes }.to change(Delayed::Job.where { handler =~ "%update_loader_and_license%" }, :count).by(1)
         end
 
-        it "purges loader & license on CDN" do
-          CDN.should_receive(:purge).twice
+        it "delays Player::Settings.update!" do
+          expect { site.apply_pending_attributes }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%update!%"), :count).by(1)
+        end
+
+        it "purges loader & license & settings on CDN" do
+          CDN.should_receive(:purge).exactly(4).times # 2x each
 
           site.apply_pending_attributes
           $worker.work_off
@@ -79,6 +88,12 @@ describe SiteModules::Template, :plans do
             site.send("#{attr}=", value)
             site.user.current_password = '123456'
             expect { site.save }.to change(Delayed::Job.where(:handler.matches => "%update_loader_and_license%"), :count).by(1)
+          end
+
+          it "delays Player::Settings.update!" do
+            site.send("#{attr}=", value)
+            site.user.current_password = '123456'
+            expect { site.save }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%update!%"), :count).by(1)
           end
 
           it "updates license content with #{attr}" do
@@ -112,8 +127,17 @@ describe SiteModules::Template, :plans do
         end
 
         it "should delay update_loader_and_license once" do
-          expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job, :count).by(1)
-          Delayed::Job.where(:handler.matches => "%update_loader_and_license%").should have(1).item
+          expect { site.update_attribute(:player_mode, 'beta') }.to change(
+            Delayed::Job.where(:handler.matches => "%update_loader_and_license%"),
+            :count
+          ).by(1)
+        end
+
+        it "delays Player::Settings.update!" do
+          expect { site.update_attribute(:player_mode, 'beta') }.to change(
+            Delayed::Job.where(:handler.matches => "%Player::Settings%update!%"),
+            :count
+          ).by(1)
         end
 
         it "should update loader content" do
@@ -132,7 +156,7 @@ describe SiteModules::Template, :plans do
         it "notifies that cdn is up to date via Pusher" do
           site.update_attribute(:player_mode, 'beta')
           PusherWrapper.should_receive(:trigger).once.with("private-#{site.token}", 'cdn_status', up_to_date: true)
-          Timecop.travel(6.seconds.from_now) { $worker.work_off }
+          Timecop.travel(3.minutes.from_now) { $worker.work_off }
         end
       end
 
