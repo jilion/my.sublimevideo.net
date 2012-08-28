@@ -81,22 +81,20 @@ feature "Help page" do
       scenario "submit a valid support request" do
         fill_in "Subject", with: "SUBJECT"
         fill_in "Description of your issue or question", with: "DESCRIPTION"
-        expect { click_button "Send" }.to change(Delayed::Job, :count).by(1)
-
-        page.should have_content I18n.t('flash.support_requests.create.notice')
 
         CDN.stub(:purge)
         PusherWrapper.stub(:trigger)
         VCR.use_cassette("zendesk_wrapper/create_ticket") do
-          expect { $worker.work_off }.to change(Delayed::Job, :count).by(-1)
+          click_button "Send"
         end
+        page.should have_content I18n.t('flash.support_requests.create.notice')
         @current_user.reload.zendesk_id.should be_present
       end
 
       scenario "submit a support request with an invalid subject" do
         fill_in "Subject", with: ""
         fill_in "Description of your issue or question", with: "DESCRIPTION"
-        expect { click_button "Send" }.to_not change(Delayed::Job, :count)
+        click_button "Send"
 
         current_url.should eq "http://my.sublimevideo.dev/help"
         page.should have_content "Subject can't be blank"
@@ -106,7 +104,7 @@ feature "Help page" do
       scenario "submit a support request with an invalid message" do
         fill_in "Subject", with: "SUBJECT"
         fill_in "Description of your issue or question", with: ""
-        expect { click_button "Send" }.to_not change(Delayed::Job, :count)
+        click_button "Send"
 
         current_url.should eq "http://my.sublimevideo.dev/help"
         page.should have_content "Message can't be blank"
