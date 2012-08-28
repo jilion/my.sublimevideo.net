@@ -68,7 +68,7 @@ private
   # after_save (BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self)
   def create_and_charge_invoice
     if updated_to_paid_plan? || renewed?
-      invoice = ::Invoice.construct(site_id: self.id, renew: renewed?)
+      invoice = ::Invoice.construct(site: self, renew: renewed?)
       invoice.save!
 
       if !invoice.paid? && (created? || upgraded?)

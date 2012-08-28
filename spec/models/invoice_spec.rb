@@ -141,7 +141,7 @@ describe Invoice, :plans do
           %w[open failed].each do |state|
             context "from #{state}" do
               before do
-                subject.reload.update_attributes(state: state, amount: 0)
+                subject.reload.update_attributes({ state: state, amount: 0 }, without_protection: true)
                 subject.user.should be_active
               end
 
@@ -158,7 +158,7 @@ describe Invoice, :plans do
           %w[open failed].each do |state|
             context "from #{state}" do
               before do
-                subject.reload.update_attributes(state: state, amount: 0)
+                subject.reload.update_attributes({ state: state, amount: 0 }, without_protection: true)
                 subject.user.update_attribute(:state, 'suspended')
                 subject.user.should be_suspended
               end
