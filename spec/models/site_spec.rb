@@ -539,9 +539,15 @@ describe Site, :plans do
           CDN.should_receive(:purge).with("/js/#{subject.token}.js")
           CDN.should_receive(:purge).with("/l/#{subject.token}.js")
           subject.user.current_password = '123456'
-          expect { subject.archive! }.to change(Delayed::Job, :count).by(1)
+          expect { subject.archive! }.to change(
+            Delayed::Job.where(:handler.matches => "%remove_loader_and_license%"),
+            :count
+          ).by(1)
           subject.reload.should be_archived
-          expect { $worker.work_off }.to change(Delayed::Job, :count).by(-1)
+          expect { $worker.work_off }.to change(
+            Delayed::Job.where(:handler.matches => "%remove_loader_and_license%"),
+            :count
+          ).by(-1)
           subject.reload.loader.should_not be_present
           subject.license.should_not be_present
           subject.archived_at.should be_present
