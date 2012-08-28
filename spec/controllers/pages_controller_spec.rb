@@ -45,14 +45,14 @@ describe PagesController do
       end
     end
 
-    it "should redirect to /sites with GET :show, on suspended page" do
+    it "should redirect to the login with GET :show, on suspended page" do
       get :show, page: 'suspended'
       response.should redirect_to('http://my.test.host/login')
     end
 
-    it "should redirect to http://sublimevideo.net/help with GET :help" do
+    it "should redirect to the login page with GET :help" do
       get :show, page: 'help'
-      response.should redirect_to('http://test.host/help')
+      response.should redirect_to('http://my.test.host/login')
     end
   end
 
