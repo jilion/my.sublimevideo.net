@@ -54,7 +54,7 @@ describe ZendeskWrapper do
       end
 
       it 'returns the created ticket' do
-        @zd_ticket = described_class.create_ticket(ticket_params.merge(uploads: [Pathname.new(fixture_file('foo.jpg').path), Pathname.new(fixture_file('bar.jpg').path)]))
+        @zd_ticket = described_class.create_ticket(ticket_params.merge(uploads: [fixture_file('foo.jpg'), fixture_file('bar.jpg')]))
         @zd_ticket.comment[:uploads].map(&:class).should eq [String, String] # upload was sent as tokens
       end
     end

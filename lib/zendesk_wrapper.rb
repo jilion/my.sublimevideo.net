@@ -80,15 +80,10 @@ module ZendeskWrapper
 
     def save_ticket_with_uploads!(ticket, uploads)
       uploads.each do |upload|
-        ticket.comment.uploads << upload.to_path if upload.file?
+        ticket.comment.uploads << upload.path
       end
 
       ticket.save!
-
-      uploads.each do |upload|
-        upload.unlink if upload.file?
-      end
-
       ticket
     end
 

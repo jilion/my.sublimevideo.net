@@ -10,33 +10,13 @@ class SupportRequest
 
   validate :user_can_send_ticket
 
-  # This method simply instantiate a new SupportRequest object from the given params
-  # and post it to the ticketing service
-  def self.post(params)
-    support_request = SupportRequest.new(params)
-    TicketManager.create(support_request)
-
-    support_request
-  end
-
   # Takes params
   def initialize(params = {})
     @params = params
   end
 
-  def delay_post
-    valid? && SupportRequest.delay(priority: 25).post(@params)
-  end
-
-  def uploads=(paths)
-    @params[:uploads] = []
-    return unless paths.respond_to?(:each)
-
-    paths.each do |path|
-      filename = Rails.root.join('tmp', "#{Time.now.to_i}-#{path.original_filename}")
-      file = File.open(filename, 'wb') { |f| f.write(path.read) }
-      @params[:uploads] << filename
-    end
+  def post
+    valid? && TicketManager.create(self)
   end
 
   def user

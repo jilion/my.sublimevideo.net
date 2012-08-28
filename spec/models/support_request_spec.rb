@@ -78,27 +78,11 @@ describe SupportRequest, :plans do
     end
   end
 
-  describe '.post' do
+  describe '#post' do
     it "calls TicketManager.create" do
-      support_request # eager load the support request
-      described_class.should_receive(:new).with(params).and_return(support_request)
-      TicketManager.should_receive(:create).with(support_request)
+      TicketManager.should_receive(:create).with(support_request).and_return(true)
 
-      described_class.post(params).should eq support_request
-    end
-  end
-
-  describe '#delay_post' do
-    it 'delays .post' do
-      expect { support_request.delay_post }.to change(Delayed::Job, :count).by(1)
-    end
-
-    it 'returns true if all is good' do
-      support_request.delay_post.should be_true
-    end
-
-    it 'returns false if not all is good' do
-      invalid_support_request.delay_post.should be_false
+      support_request.post.should be_true
     end
   end
 

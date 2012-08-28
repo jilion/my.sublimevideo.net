@@ -7,6 +7,8 @@ class TicketManager
     def create(support_request)
       ticket = ZendeskWrapper.create_ticket(support_request.to_params)
       set_user_zendesk_id(ticket, support_request.user) unless support_request.user.zendesk_id?
+
+      true
     end
 
     def set_user_zendesk_id(ticket, user)
