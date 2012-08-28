@@ -32,13 +32,9 @@ class SupportRequest
     @params[:uploads] = []
 
     paths.each do |path|
-      file = Tempfile.new(path.original_filename) { |f| f.write(path.read) }
-      begin
-        @params[:uploads] << file.path
-      ensure
-        file.close
-        file.unlink
-      end
+      filename = Rails.root.join('tmp', "#{Time.now.to_i}-#{path.original_filename}")
+      file = File.open(filename, 'wb') { |f| f.write(path.read) }
+      @params[:uploads] << filename
     end
   end
 

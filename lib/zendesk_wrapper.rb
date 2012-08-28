@@ -22,13 +22,7 @@ module ZendeskWrapper
 
       ticket = ZendeskAPI::Ticket.new(client, params)
 
-      uploads.each do |upload|
-        ticket.comment.uploads << upload if File.exists?(upload)
-      end
-
-      ticket.save!
-
-      ticket
+      save_ticket_with_uploads!(ticket, uploads)
     end
 
     def user(id)
@@ -82,6 +76,20 @@ module ZendeskWrapper
         # require 'logger'
         # config.logger = Logger.new(STDOUT)
       end
+    end
+
+    def save_ticket_with_uploads!(ticket, uploads)
+      uploads.each do |upload|
+        ticket.comment.uploads << upload.to_path if upload.file?
+      end
+
+      ticket.save!
+
+      uploads.each do |upload|
+        upload.unlink if upload.file?
+      end
+
+      ticket
     end
 
     def extract_ticket_id_from_location(location)

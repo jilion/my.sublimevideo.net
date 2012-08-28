@@ -89,7 +89,7 @@ gem 'redis',                 '~> 2.2.2'
 
 # Tickets
 # gem 'zendesk_api',           '~> 0.0.9'
-gem 'zendesk_api',           github: 'zendesk/zendesk_api_client_rb'
+gem 'zendesk_api',           github: 'jilion/zendesk_api_client_rb', branch: 'fix_file_in_rake_task'
 
 # Gems used only for assets and not required
 # in production environments by default.

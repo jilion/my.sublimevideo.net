@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.name        = "zendesk_api"
   s.version     = ZendeskAPI::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Steven Davidovitz"]
-  s.email       = ["sdavidovitz@zendesk.com"]
+  s.authors     = ["Steven Davidovitz", "Michael Grosser"]
+  s.email       = ["support@zendesk.com"]
   s.homepage    = "http://developer.zendesk.com"
   s.summary     = %q{Zendesk REST API Client}
   s.description = %q{Ruby wrapper for the REST API at http://www.zendesk.com. Documentation at http://developer.zendesk.com.}
@@ -23,6 +23,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency "webmock"
   s.add_development_dependency "rake"
   s.add_development_dependency "yard"
+
+# Optional. Only used for uploads testing.
+#  s.add_development_dependency "actionpack"
 
   s.add_runtime_dependency "faraday", ">= 0.8.0"
   s.add_runtime_dependency "faraday_middleware", ">= 0.8.7"

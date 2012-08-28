@@ -30,6 +30,20 @@ GIT
     useragent (0.2.3)
 
 GIT
+  remote: git://github.com/jilion/zendesk_api_client_rb.git
+  revision: 3550839faa54f125529319bfd10798025fe09833
+  branch: fix_file_in_rake_task
+  specs:
+    zendesk_api (0.1.2)
+      faraday (>= 0.8.0)
+      faraday_middleware (>= 0.8.7)
+      hashie
+      inflection
+      json
+      mime-types
+      multipart-post
+
+GIT
   remote: git://github.com/ryanb/letter_opener.git
   revision: a289028bdfa6003c03d232887a3666b3200cefa5
   specs:
@@ -51,19 +65,6 @@ GIT
       libxml-ruby (~> 2.2.0)
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
-
-GIT
-  remote: git://github.com/zendesk/zendesk_api_client_rb.git
-  revision: 4e3cd163fbd938ec1aee24d3c88771029ed8d13c
-  specs:
-    zendesk_api (0.1.0)
-      faraday (>= 0.8.0)
-      faraday_middleware (>= 0.8.7)
-      hashie
-      inflection
-      json
-      mime-types
-      multipart-post
 
 GEM
   remote: https://rubygems.org/
