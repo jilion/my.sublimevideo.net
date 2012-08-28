@@ -103,7 +103,7 @@ feature "Site invoices page" do
       background do
         @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
-        @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
+        @invoice.update_attributes({ state: 'failed', last_failed_at: Time.now.utc }, without_protection: true)
         @invoice.last_transaction.update_attribute(:error, "Credit card refused")
         go 'my', "/sites/#{@site.to_param}/invoices"
       end
@@ -142,7 +142,7 @@ feature "Site invoices page" do
       background do
         @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         @invoice = @site.last_invoice
-        @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
+        @invoice.update_attributes({ state: 'failed', last_failed_at: Time.now.utc }, without_protection: true)
         @invoice.last_transaction.update_attribute(:error, "<html>secure.ogone...</html>")
         go 'my', "/sites/#{@site.to_param}/invoices"
       end
@@ -165,10 +165,10 @@ feature "Site invoices page" do
         @site2 = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user)
         @invoice1 = @site1.last_invoice
         @invoice2 = @site2.last_invoice
-        @invoice1.update_attributes(state: 'failed', last_failed_at: 2.days.ago)
+        @invoice1.update_attributes({ state: 'failed', last_failed_at: 2.days.ago }, without_protection: true)
         @invoice1.last_transaction.update_attribute(:error, "Credit card refused")
 
-        @invoice2.update_attributes(site_id: @site1.id, state: 'failed', last_failed_at: Time.now.utc)
+        @invoice2.update_attributes({ site_id: @site1.id, state: 'failed', last_failed_at: Time.now.utc }, without_protection: true)
         @invoice2.last_transaction.update_attribute(:error, "Authorization refused")
         go 'my', "/sites/#{@site1.to_param}/invoices"
       end
@@ -195,7 +195,7 @@ feature "Site invoices page" do
       sign_in_as :user, without_cc: true, kill_user: true
       @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = @site.last_invoice
-      @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
+      @invoice.update_attributes({ state: 'failed', last_failed_at: Time.now.utc }, without_protection: true)
       @invoice.last_transaction.update_attribute(:error, "Credit card refused")
       go 'my', "/sites/#{@site.to_param}/invoices"
     end
@@ -218,7 +218,7 @@ feature "Site invoices page" do
       @current_user.should be_cc_expired
       @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       @invoice = @site.last_invoice
-      @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
+      @invoice.update_attributes({ state: 'failed', last_failed_at: Time.now.utc }, without_protection: true)
       @invoice.last_transaction.update_attribute(:error, "Credit card refused")
       go 'my', "/sites/#{@site.to_param}/invoices"
     end
@@ -287,7 +287,7 @@ feature "Site invoice page" do
           @current_user.update_attribute(:billing_country, 'US')
           @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
           VCR.use_cassette('ogone/visa_payment_generic') do
-            @site.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
+            @site.update_attributes({ plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' } }, without_protection: true)
           end
           @site.apply_pending_attributes
         end
