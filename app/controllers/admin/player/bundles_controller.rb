@@ -1,3 +1,5 @@
+require_dependency 'player/bundle_updater'
+
 class Admin::Player::BundlesController < Admin::PlayerController
   respond_to :html, only: [:show, :update]
   respond_to :json
@@ -25,7 +27,7 @@ class Admin::Player::BundlesController < Admin::PlayerController
   # PUT /player/bundles/:id (token)
   def update
     @bundle = Player::Bundle.find_by_token!(params[:id])
-    @bundle.update_attributes(params[:bundle])
+    Player::BundleUpdater.update(@bundle, params[:bundle])
     respond_with(@bundle) do |format|
       format.html { redirect_to [:admin, @bundle] }
     end

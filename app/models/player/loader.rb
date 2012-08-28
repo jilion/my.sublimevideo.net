@@ -5,6 +5,11 @@ class Player::Loader < Struct.new(:tag, :version, :file)
 
   TEMPLATE_PATH = Rails.root.join("app/templates/player/loader.js.erb")
 
+  def self.update!(tag, version)
+    loader = new(tag, version)
+    loader.upload!
+  end
+
   def initialize(*args)
     super
     generate_file
