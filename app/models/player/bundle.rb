@@ -22,7 +22,11 @@ class Player::Bundle < ActiveRecord::Base
   end
 
   def tagged_versions
-    {}.tap do |hash|
+    {
+      'alpha' => nil,
+      'beta' => nil,
+      'stable' => nil
+    }.tap do |hash|
       version_tags.sort.each do |tag_name, version|
         hash[tag_name] = versions.find_by_version(version)
       end

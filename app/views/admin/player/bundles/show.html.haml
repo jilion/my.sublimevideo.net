@@ -6,28 +6,26 @@
 
 
 %h3 Version Tags
-
-- if @bundle.version_tags?
-  %table
-    %tr
-      %th= "Tag"
-      %th= "Version"
-      %th= "Action"
-    - @bundle.tagged_versions.each do |tag_name, version|
-      %tr{ class: cycle('', 'alt') }
-        %td= tag_name.capitalize
-        %td
+%table
+  %tr
+    %th= "Tag"
+    %th= "Version"
+    %th= "Action"
+  - @bundle.tagged_versions.each do |tag_name, version|
+    %tr{ class: cycle('', 'alt') }
+      %td= tag_name.capitalize
+      %td
+        - if version
           = version.version
           = " (#{link_to 'download zip', admin_player_bundle_version_path(@bundle, version, format: :zip)})".html_safe
-        %td
-          = form_for [:admin, @bundle] do |f|
-            = select_tag "bundle[version_tags[#{tag_name}]]", options_for_select(@bundle.versions.map(&:version))
-            = f.submit "Change version", confirm: "Are you REALLY sure?"
-- else
-  %p No version tags yet, please create at least one via the API.
+        - else
+          Please choose a version for this tag.
+      %td
+        = form_for [:admin, @bundle] do |f|
+          = select_tag "bundle[version_tags[#{tag_name}]]", options_for_select(@bundle.versions.map(&:version))
+          = f.submit "Change version", confirm: "Are you REALLY sure?"
 
 %h3 Last Versions
-
 - if @bundle.versions.present?
   %table
     %tr
