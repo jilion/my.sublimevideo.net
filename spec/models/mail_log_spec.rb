@@ -34,12 +34,12 @@ end
 # Table name: mail_logs
 #
 #  admin_id    :integer
-#  created_at  :datetime
+#  created_at  :datetime         not null
 #  criteria    :text
 #  id          :integer          not null, primary key
 #  snapshot    :text
 #  template_id :integer
-#  updated_at  :datetime
+#  updated_at  :datetime         not null
 #  user_ids    :text
 #
 # Indexes
