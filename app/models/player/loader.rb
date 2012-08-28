@@ -43,7 +43,7 @@ private
 
   def generate_file
     template = ERB.new(File.new(TEMPLATE_PATH).read)
-    self.file = Tempfile.new([filename, '.js'], "#{Rails.root}/tmp")
+    self.file = Tempfile.new(filename, "#{Rails.root}/tmp")
     self.file.print template.result(binding)
     self.file.flush
   end

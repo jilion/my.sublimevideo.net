@@ -49,7 +49,7 @@ describe Player::Loader, :fog_mock do
         object_headers = S3.fog_connection.get_object(bucket, loader.filename).headers
         object_headers['Content-Type'].should eq 'text/javascript'
       end
-      it "have long max-age cache control" do
+      it "have 5 min max-age cache control" do
         object_headers = S3.fog_connection.get_object(bucket, loader.filename).headers
         object_headers['Cache-Control'].should eq 'max-age=300, public'
       end
