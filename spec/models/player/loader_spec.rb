@@ -1,4 +1,4 @@
-require "fast_spec_helper"
+require 'fast_spec_helper'
 require 'rails/railtie'
 require 'fog'
 

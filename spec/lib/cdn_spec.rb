@@ -1,4 +1,4 @@
-require "fast_spec_helper"
+require 'fast_spec_helper'
 require File.expand_path('lib/cdn')
 
 describe CDN do
