@@ -74,13 +74,13 @@ feature "Help page" do
 
     describe "new" do
       scenario "has access to the form" do
-        page.should have_content 'use the form below'
+        page.should have_content 'Use the form below'
         page.should have_selector 'form.new_support_request'
       end
 
       scenario "submit a valid support request" do
         fill_in "Subject", with: "SUBJECT"
-        fill_in "Message", with: "DESCRIPTION"
+        fill_in "Description of your issue or question", with: "DESCRIPTION"
         expect { click_button "Send" }.to change(Delayed::Job, :count).by(1)
 
         page.should have_content I18n.t('flash.support_requests.create.notice')
@@ -95,7 +95,7 @@ feature "Help page" do
 
       scenario "submit a support request with an invalid subject" do
         fill_in "Subject", with: ""
-        fill_in "Message", with: "DESCRIPTION"
+        fill_in "Description of your issue or question", with: "DESCRIPTION"
         expect { click_button "Send" }.to_not change(Delayed::Job, :count)
 
         current_url.should eq "http://my.sublimevideo.dev/help"
@@ -105,7 +105,7 @@ feature "Help page" do
 
       scenario "submit a support request with an invalid message" do
         fill_in "Subject", with: "SUBJECT"
-        fill_in "Message", with: ""
+        fill_in "Description of your issue or question", with: ""
         expect { click_button "Send" }.to_not change(Delayed::Job, :count)
 
         current_url.should eq "http://my.sublimevideo.dev/help"

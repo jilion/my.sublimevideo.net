@@ -30,6 +30,7 @@ class SupportRequest
 
   def uploads=(paths)
     @params[:uploads] = []
+    return unless paths.respond_to?(:each)
 
     paths.each do |path|
       filename = Rails.root.join('tmp', "#{Time.now.to_i}-#{path.original_filename}")
