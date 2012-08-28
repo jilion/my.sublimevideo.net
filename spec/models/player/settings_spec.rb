@@ -59,7 +59,7 @@ describe Player::Settings, :fog_mock do
     end
   end
 
-  describe "upload!" do
+  describe "#upload!" do
     before { CDN.stub(:purge) }
 
     describe "uploaded loader file" do
@@ -88,6 +88,23 @@ describe Player::Settings, :fog_mock do
     it "purges loader file from CDN" do
       CDN.should_receive(:purge).with(settings.filepath)
       settings.upload!
+    end
+  end
+
+  describe "#remove!" do
+    before do
+      CDN.stub(:purge)
+      settings.upload!
+    end
+
+    it "remove settings file" do
+      settings.remove!
+      expect { S3.fog_connection.get_object(bucket, settings.filepath) }.to raise_error(Excon::Errors::NotFound)
+    end
+
+    it "purges loader file from CDN" do
+      CDN.should_receive(:purge).with(settings.filepath)
+      settings.remove!
     end
   end
 

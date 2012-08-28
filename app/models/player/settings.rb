@@ -31,6 +31,14 @@ class Player::Settings < Struct.new(:site, :file)
     CDN.purge(filepath)
   end
 
+  def remove!
+    S3.fog_connection.delete_object(
+      S3.buckets['sublimevideo'],
+      filepath
+    )
+    CDN.purge(filepath)
+  end
+
   def filepath
     "s/#{site.token}.js"
   end
