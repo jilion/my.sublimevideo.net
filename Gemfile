@@ -6,12 +6,13 @@ ruby '1.9.3'
 
 gem 'bundler', '~> 1.2.0.rc.2'
 
-gem 'rails',               '3.2.8'
+gem 'rails', github: 'rails/rails', branch: '3-2-stable'
 gem 'sublimevideo_layout', '1.2.5' # hosted on gemfury
 
 # Databases
 gem 'pg',                    '~> 0.14.0'
 gem 'squeel',                '1.0.2'
+gem 'activerecord-postgres-hstore'
 
 gem 'bson_ext',              '1.6.2'
 gem 'bson',                  '1.6.2'
@@ -64,7 +65,7 @@ gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # V
 gem 'edge_cast',             '~> 0.0.1' # hosted on gemfury
 
 gem 'activemerchant',        '1.23.0'
-gem 'public_suffix',         '~> 1.0.0'
+gem 'public_suffix',         github: 'weppos/public_suffix_service'
 gem 'useragent',             github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser',   '~> 1.1.0' # hosted on gemfury
 

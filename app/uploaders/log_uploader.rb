@@ -1,4 +1,4 @@
-require_dependency 's3_bucket'
+require_dependency 's3'
 
 class LogUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
@@ -6,7 +6,7 @@ class LogUploader < CarrierWave::Uploader::Base
   process :set_content_type
 
   def fog_directory
-    S3Bucket.logs
+    S3.buckets['logs']
   end
 
   # Override the directory where uploaded files will be stored

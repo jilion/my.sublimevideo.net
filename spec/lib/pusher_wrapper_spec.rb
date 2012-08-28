@@ -1,5 +1,4 @@
 require 'fast_spec_helper'
-require 'active_support/core_ext'
 require 'pusher'
 require File.expand_path('lib/pusher_wrapper')
 

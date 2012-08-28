@@ -3,6 +3,5 @@ require_dependency 'cdn/voxcast_wrapper'
 require_dependency 'cdn/edgecast_wrapper'
 
 CDN.wrappers = [
-  CDN::VoxcastWrapper,
-  CDN::EdgeCastWrapper
+  CDN::VoxcastWrapper
 ]

@@ -1,4 +1,7 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'aws'
+require File.expand_path('spec/config/vcr')
+require File.expand_path('lib/s3')
 
 describe S3 do
 
@@ -65,6 +68,12 @@ describe S3 do
           key.should_not =~ /^dev/
         end
       end
+    end
+  end
+
+  describe ".buckets" do
+    it "returns bucket name" do
+      S3.buckets['sublimevideo'].should eq 'dev.sublimevideo'
     end
   end
 

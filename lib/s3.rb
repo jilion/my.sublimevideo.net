@@ -1,5 +1,4 @@
 require_dependency 'configurator'
-require_dependency 's3_bucket'
 
 module S3
   include Configurator
@@ -25,11 +24,11 @@ module S3
     end
 
     def player_bucket
-      @player_bucket ||= client.bucket(S3Bucket.player)
+      @player_bucket ||= client.bucket(buckets['player'])
     end
 
     def logs_bucket
-      @logs_bucket ||= client.bucket(S3Bucket.logs)
+      @logs_bucket ||= client.bucket(buckets['logs'])
     end
 
     def client

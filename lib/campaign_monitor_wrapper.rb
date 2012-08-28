@@ -48,7 +48,7 @@ class CampaignMonitorWrapper
       end
     end
 
-    def subscriber(email, list_id = CampaignMonitorWrapper.lists.sublimevideo.list_id)
+    def subscriber(email, list_id = CampaignMonitorWrapper.lists['sublimevideo']['list_id'])
       request do
         CreateSend::Subscriber.get(list_id, email)
       end

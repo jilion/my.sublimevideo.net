@@ -14,8 +14,8 @@ RSpec.configure do |config|
     }
     unless $fog_connection
       $fog_connection = Fog::Storage.new(provider: 'AWS')
-      %w[licenses loaders player logs stats_exports].each do |bucket|
-        $fog_connection.directories.create(key: S3Bucket.send(bucket) )
+      S3.buckets.each do |bucket_name, bucket|
+        $fog_connection.directories.create(key: bucket)
       end
     end
   end

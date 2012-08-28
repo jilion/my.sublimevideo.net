@@ -1,5 +1,4 @@
 require 'active_support/core_ext'
-require 'active_support/concern'
 
 module Configurator
   extend ActiveSupport::Concern
@@ -52,9 +51,8 @@ module Configurator
       else
         YAML.load_file(@config_path)
       end
-      yml_hash.symbolize_keys
+      HashWithIndifferentAccess.new(yml_hash)
     end
 
   end
-
 end

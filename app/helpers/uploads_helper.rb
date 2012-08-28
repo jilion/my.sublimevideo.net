@@ -13,7 +13,7 @@ module UploadsHelper
   #                     _signature: s3_signature(path: options[:uploaded_files_path]) }.to_query
 
   #   content_tag :iframe, '',
-  #               src: "https://s3.amazonaws.com/#{S3Bucket.videos_upload}/#{options[:uploader_path]}?#{upload_params}",
+  #               src: "https://s3.amazonaws.com/#{S3.buckets['videos_upload']}/#{options[:uploader_path]}?#{upload_params}",
   #               frameborder: 0,
   #               height: options[:iframe_height] || 60,
   #               width: options[:iframe_width] || 500,
@@ -21,7 +21,7 @@ module UploadsHelper
   # end
 
   def s3_bucket_url
-    "https://s3.amazonaws.com/#{S3Bucket.videos_upload}/"
+    "https://s3.amazonaws.com/#{S3.buckets['videos_upload']}/"
   end
 
   def s3_key(path)
@@ -37,7 +37,7 @@ module UploadsHelper
     Base64.encode64(
       "{'expiration': '#{10.hours.from_now.utc.strftime('%Y-%m-%dT%H:%M:%S.000Z')}',
         'conditions': [
-          {'bucket': '#{S3Bucket.videos_upload}'},
+          {'bucket': '#{S3.buckets['videos_upload']}'},
           ['starts-with', '$key', ''],
           ['starts-with', '$name', ''],
           ['starts-with', '$Filename', ''],

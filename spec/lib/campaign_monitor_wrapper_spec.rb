@@ -8,21 +8,12 @@ require File.expand_path('lib/campaign_monitor_wrapper')
 describe CampaignMonitorWrapper do
 
   specify { CampaignMonitorWrapper.api_key.should eq "8844ec1803ffbe6501c3d7e9cfa23bf3" }
-  specify { CampaignMonitorWrapper.lists.sublimevideo.list_id.should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
-  specify { CampaignMonitorWrapper.lists.sublimevideo.segment.should eq "test" }
-  specify { CampaignMonitorWrapper.lists.sublimevideo_newsletter.list_id.should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
+  specify { CampaignMonitorWrapper.lists['sublimevideo']['list_id'].should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
+  specify { CampaignMonitorWrapper.lists['sublimevideo']['segment'].should eq "test" }
+  specify { CampaignMonitorWrapper.lists['sublimevideo_newsletter']['list_id'].should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
 
   before do
     described_class.stub(log_bad_request: true)
-    CampaignMonitorWrapper.stub(api_key: '8844ec1803ffbe6501c3d7e9cfa23bf3')
-    CampaignMonitorWrapper.stub(lists: stub(sublimevideo: stub(
-          list_id: 'a064dfc4b8ccd774252a2e9c9deb9244',
-          segment: 'test'
-          ),
-        sublimevideo_newsletter: stub(
-          list_id: 'a064dfc4b8ccd774252a2e9c9deb9244'
-        )
-      ))
   end
 
   let(:subscribe_user) { OpenStruct.new(id: 12, beta: true, newsletter?: true, email: 'user_subscribe3@example.org', name: 'User Subscribe') }
@@ -32,8 +23,8 @@ describe CampaignMonitorWrapper do
     it 'subscribes a user' do
       subscriber = VCR.use_cassette 'campaign_monitor_wrapper/subscribe' do
         described_class.subscribe(
-          list_id: CampaignMonitorWrapper.lists.sublimevideo.list_id,
-          segment: CampaignMonitorWrapper.lists.sublimevideo.segment,
+          list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
+          segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
           user: { id: subscribe_user.id, email: subscribe_user.email, name: subscribe_user.name, beta: subscribe_user.beta }
         ).should be_true
       end
@@ -48,8 +39,8 @@ describe CampaignMonitorWrapper do
 
     it 'subscribes a list of user' do
       described_class.import(
-        list_id: CampaignMonitorWrapper.lists.sublimevideo.list_id,
-        segment: CampaignMonitorWrapper.lists.sublimevideo.segment,
+        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
+        segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
         users: [
           { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta },
           { id: user2.id, email: user2.email, name: user2.name, beta: user2.beta }
@@ -57,19 +48,19 @@ describe CampaignMonitorWrapper do
       ).should be_true
 
       # user 1
-      subscriber = CreateSend::Subscriber.get(CampaignMonitorWrapper.lists.sublimevideo.list_id, user1.email)
+      subscriber = CreateSend::Subscriber.get(CampaignMonitorWrapper.lists['sublimevideo']['list_id'], user1.email)
       subscriber['EmailAddress'].should eq user1.email
       subscriber['Name'].should         eq user1.name
       subscriber['State'].should        eq 'Active'
-      subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists.sublimevideo.segment
+      subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
       subscriber['CustomFields'].detect { |h| h.values.include?('user_id') }['Value'].should eq '13'
       subscriber['CustomFields'].detect { |h| h.values.include?('beta') }['Value'].should eq 'true'
       # user 2
-      subscriber = CreateSend::Subscriber.get(CampaignMonitorWrapper.lists.sublimevideo.list_id, user2.email)
+      subscriber = CreateSend::Subscriber.get(CampaignMonitorWrapper.lists['sublimevideo']['list_id'], user2.email)
       subscriber['EmailAddress'].should eq user2.email
       subscriber['Name'].should         eq user2.name
       subscriber['State'].should        eq 'Active'
-      subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists.sublimevideo.segment
+      subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
       subscriber['CustomFields'].detect { |h| h.values.include?('user_id') }['Value'].should eq '14'
       subscriber['CustomFields'].detect { |h| h.values.include?('beta') }['Value'].should eq 'false'
     end
@@ -82,15 +73,15 @@ describe CampaignMonitorWrapper do
 
     before do
       described_class.subscribe(
-        list_id: CampaignMonitorWrapper.lists.sublimevideo.list_id,
-        segment: CampaignMonitorWrapper.lists.sublimevideo.segment,
+        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
+        segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
         user: { id: user.id, email: user.email, name: user.name }
       ).should be_true
     end
 
     it 'should unsubscribe an existing subscribed user' do
       described_class.unsubscribe(
-        list_id: CampaignMonitorWrapper.lists.sublimevideo.list_id,
+        list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
         email: user.email
       ).should be_true
 
@@ -104,12 +95,12 @@ describe CampaignMonitorWrapper do
     before do
       VCR.use_cassette 'campaign_monitor_wrapper/update_1' do
         described_class.subscribe(
-          list_id: CampaignMonitorWrapper.lists.sublimevideo.list_id,
-          segment: CampaignMonitorWrapper.lists.sublimevideo.segment,
+          list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
+          segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
           user: { id: user.id, email: user.email, name: user.name }
         ).should be_true
         described_class.unsubscribe(
-          list_id: CampaignMonitorWrapper.lists.sublimevideo.list_id,
+          list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
           email: user.email
         ).should be_true
         subscriber = described_class.subscriber(user.email)
@@ -120,7 +111,7 @@ describe CampaignMonitorWrapper do
     it 'works' do
       VCR.use_cassette 'campaign_monitor_wrapper/update_2' do
         described_class.update(
-          list_id: CampaignMonitorWrapper.lists.sublimevideo.list_id,
+          list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
           email: user.email,
           user: { email: 'user_update6@example.org', name: 'John Doe', newsletter: true }
         ).should be_true
@@ -142,7 +133,7 @@ describe CampaignMonitorWrapper do
         subscriber['EmailAddress'].should eq subscribe_user.email
         subscriber['Name'].should         eq subscribe_user.name
         subscriber['State'].should        eq 'Active'
-        subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists.sublimevideo.segment
+        subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
         subscriber['CustomFields'].detect { |h| h.values.include?('user_id') }['Value'].should eq subscribe_user.id.to_s
         subscriber['CustomFields'].detect { |h| h.values.include?('beta') }['Value'].should eq subscribe_user.beta.to_s
       end

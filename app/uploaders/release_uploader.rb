@@ -1,4 +1,4 @@
-require_dependency 's3_bucket'
+require_dependency 's3'
 
 class ReleaseUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
@@ -6,7 +6,7 @@ class ReleaseUploader < CarrierWave::Uploader::Base
   process :set_content_type
 
   def fog_directory
-    S3Bucket.player
+    S3.buckets['player']
   end
 
   # Override the directory where uploaded files will be stored

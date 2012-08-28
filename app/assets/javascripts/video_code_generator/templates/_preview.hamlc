@@ -8,7 +8,7 @@
     - text_class = if thumbnail.get('initialLink') is 'text' then 'hl' else ''
     %a.sublime{ href: "#{@video.get('sources').mp4Mobile().get('src')}", class: text_class }
       - if thumbnail.get('initialLink') is 'image'
-        %img{ src: "#{thumbnail.get('src')}", width: "#{thumbnail.get('thumbWidth')}", height: "#{thumbnail.get('thumbHeight')}" }/
+        %img{ src: "#{thumbnail.get('src')}", width: "#{thumbnail.get('thumbWidth')}", height: "#{thumbnail.get('thumbHeight')}", alt: "Thumbnail" }/
 
       - else
         = thumbnail.get('src')
