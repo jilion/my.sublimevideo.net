@@ -24,7 +24,7 @@ feature "Admin session:" do
   end
 end
 
-feature "Token authentication:", :focus do
+feature "Token authentication:" do
   scenario "works" do
     create_admin admin: {
       email: "john@doe.com",
