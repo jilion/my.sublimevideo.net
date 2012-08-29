@@ -94,9 +94,9 @@ private
       @loader_needs_update = @license_needs_update = true
       @settings_needs_update = true
     else
-      @loader_needs_update  = plan_id_changed? || player_mode_changed?
-      @license_needs_update = plan_id_changed? || settings_changed?
-      @settings_needs_update = plan_id_changed? || player_mode_changed? || settings_changed?
+      @loader_needs_update  = plan_id? && (plan_id_changed? || player_mode_changed?)
+      @license_needs_update = plan_id? && (plan_id_changed? || settings_changed?)
+      @settings_needs_update = plan_id? && (plan_id_changed? || player_mode_changed? || settings_changed?)
     end
     self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update)
 
