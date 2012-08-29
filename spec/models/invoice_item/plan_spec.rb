@@ -23,7 +23,7 @@ describe InvoiceItem::Plan, :plans do
       @site6 = create(:site_with_invoice, user: @user3, plan_id: @plan1.id)
       Timecop.travel(BusinessModel.days_for_trial.days.from_now) do
         @site6.prepare_pending_attributes
-        @site6.save_skip_pwd
+        @site6.skip_password(:save!)
       end
 
       Timecop.travel(45.days.from_now) do
@@ -40,7 +40,7 @@ describe InvoiceItem::Plan, :plans do
         # simulate downgrade now
         @site2.plan_id = @plan1.id
         @site2.prepare_pending_attributes
-        @site2.save_skip_pwd
+        @site2.skip_password(:save!)
 
         # normal renew
         @site3.prepare_pending_attributes

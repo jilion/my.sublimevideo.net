@@ -344,12 +344,12 @@ def create_sites
         plan_id: plan_id,
         hostname: hostname
       )
-      site.save_skip_pwd
+      site.skip_password(:save!)
       site.update_column(:created_at, created_at_array.sample)
 
       if rand > 0.3
         site.cdn_up_to_date = true
-        site.save_skip_pwd
+        site.skip_password(:save!)
       end
       site.sponsor! if rand > 0.85
     end

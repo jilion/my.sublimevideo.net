@@ -200,7 +200,7 @@ class Site < ActiveRecord::Base
   def sponsor!
     write_attribute(:pending_plan_id, Plan.sponsored_plan.id)
     write_attribute(:next_cycle_plan_id, nil)
-    save_skip_pwd!
+    skip_password(:save!)
   end
 
   def to_param
@@ -260,19 +260,12 @@ class Site < ActiveRecord::Base
     @recommended_plan_name ||= name
   end
 
-  def skip_pwd
+  def skip_password(*args)
+    action = args.shift
     @skip_password_validation = true
-    result = yield
+    result = self.send(action, *args)
     @skip_password_validation = false
     result
-  end
-
-  def save_skip_pwd(*args)
-    skip_pwd { self.save(*args) }
-  end
-
-  def save_skip_pwd!(*args)
-    skip_pwd { self.save!(*args) }
   end
 
   def trial_start_time

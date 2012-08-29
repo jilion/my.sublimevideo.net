@@ -28,7 +28,7 @@ module Spec
           }))
           if cc_expire_on <= Time.now.utc.end_of_month.to_date
             user.cc_expire_on = cc_expire_on.end_of_month.to_date
-            user.save_skip_pwd
+            user.skip_password(:save!)
           end
           user
         end

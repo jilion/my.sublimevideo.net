@@ -414,7 +414,7 @@ describe Invoice, :plans do
 
             Timecop.travel(Time.utc(2011,6,1)) do
               @site.prepare_pending_attributes
-              @site.save_skip_pwd
+              @site.skip_password(:save!)
               @invoice = Invoice.construct(site: @site)
             end
           end

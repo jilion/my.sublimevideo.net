@@ -9,7 +9,7 @@ describe SiteModules::Cycle do
         @sites_wont_receive_email = [create(:site)]
         @sites_will_receive_email = []
 
-        @sites_wont_receive_email << create(:site, user: @user, plan_id: @paid_plan.id).tap { |s| s.skip_pwd { s.archive! } }
+        @sites_wont_receive_email << create(:site, user: @user, plan_id: @paid_plan.id).tap { |s| s.skip_password(:archive!) }
 
         BusinessModel.days_before_trial_end.each do |days_before_trial_end|
           Timecop.travel((BusinessModel.days_for_trial - days_before_trial_end).days.ago) do

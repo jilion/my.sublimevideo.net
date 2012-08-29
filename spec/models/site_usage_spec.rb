@@ -11,14 +11,14 @@ describe SiteUsage do
 
       with_versioning do
         Timecop.travel(@log.started_at - 1.hour) do
-          @site1 = create(:site, hostname: 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.save_skip_pwd }
+          @site1 = create(:site, hostname: 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.skip_password(:save!) }
         end
         CDN.stub(:purge)
         @site1.hostname = 'bob.com'
-        @site1.save_skip_pwd
+        @site1.skip_password(:save!)
       end
 
-      @site2 = create(:site, user: @site1.user, hostname: 'sonymusic.se').tap { |s| s.token = 'mhud9lff'; s.save_skip_pwd }
+      @site2 = create(:site, user: @site1.user, hostname: 'sonymusic.se').tap { |s| s.token = 'mhud9lff'; s.skip_password(:save!) }
     end
 
     it "should clean trackers" do
