@@ -49,12 +49,14 @@ describe ZendeskWrapper do
       use_vcr_cassette 'zendesk_wrapper/create_ticket_with_uploaded_files'
 
       before do
-        fixture_file('foo.jpg', 'wb') { |f| f.write 'foo' }
-        fixture_file('bar.jpg', 'wb') { |f| f.write 'bar' }
+        @foo = fixture_file('foo.jpg', 'wb') { |f| f.write 'foo' }
+        @foo.stub(:original_filename, 'foo.jpg')
+        @bar = fixture_file('bar.jpg', 'wb') { |f| f.write 'bar' }
+        @bar.stub(:original_filename, 'bar.jpg')
       end
 
       it 'returns the created ticket' do
-        @zd_ticket = described_class.create_ticket(ticket_params.merge(uploads: [fixture_file('foo.jpg'), fixture_file('bar.jpg')]))
+        @zd_ticket = described_class.create_ticket(ticket_params.merge(uploads: [@foo, @bar]))
         @zd_ticket.comment[:uploads].map(&:class).should eq [String, String] # upload was sent as tokens
       end
     end

@@ -1,4 +1,5 @@
 require 'zendesk_api'
+require 'tempfile' # won't be needed after 0.1.2 of zendesk_api
 require_dependency 'configurator'
 
 module ZendeskWrapper
