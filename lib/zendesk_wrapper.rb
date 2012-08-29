@@ -80,7 +80,7 @@ module ZendeskWrapper
 
     def save_ticket_with_uploads!(ticket, uploads)
       uploads.each do |upload|
-        ticket.comment.uploads << upload.path
+        ticket.comment.uploads << { file: upload.path, filename: upload.original_filename }
       end
 
       ticket.save!

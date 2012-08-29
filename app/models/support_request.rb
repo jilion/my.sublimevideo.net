@@ -28,15 +28,23 @@ class SupportRequest
   end
 
   def subject
-    @subject ||= @params[:subject].try(:to_s)
+    @subject ||= @params[:subject].to_s.strip
   end
 
   def message
-    @message ||= @params[:message].try(:to_s)
+    @message ||= @params[:message].to_s.strip
   end
 
   def comment
     @comment ||= comment_with_additional_info(message)
+  end
+
+  def test_page
+    @test_page ||= @params[:test_page].to_s.strip
+  end
+
+  def env
+    @env ||= @params[:env].to_s.strip
   end
 
   def to_key
@@ -66,8 +74,8 @@ class SupportRequest
   def comment_with_additional_info(message)
     full_message = ''
     full_message += "Request for site: (#{site.token}) #{site.hostname} (in #{site.plan.title} plan)\n" if site
-    full_message += "The issue occurs on this page: #{@params[:test_page]}\n" if @params[:test_page]
-    full_message += "The issue occurs under this environment: #{@params[:env]}\n" if @params[:env]
+    full_message += "The issue occurs on this page: #{test_page}\n" unless test_page.empty?
+    full_message += "The issue occurs under this environment: #{env}\n" unless env.empty?
     full_message += "\n#{message.to_s}"
   end
 

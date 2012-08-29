@@ -89,8 +89,7 @@ gem 'pusher',                '~> 0.9.2'
 gem 'redis',                 '~> 2.2.2'
 
 # Tickets
-# gem 'zendesk_api',           '~> 0.0.9'
-gem 'zendesk_api',           github: 'jilion/zendesk_api_client_rb', branch: 'fix_file_in_rake_task'
+gem 'zendesk_api',           '~> 0.1.2'
 
 # Gems used only for assets and not required
 # in production environments by default.
