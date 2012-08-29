@@ -28,9 +28,7 @@ class Admin::Player::BundlesController < Admin::PlayerController
   def update
     @bundle = Player::Bundle.find_by_token!(params[:id])
     Player::BundleUpdater.update(@bundle, params[:bundle])
-    respond_with(@bundle) do |format|
-      format.html { redirect_to [:admin, @bundle] }
-    end
+    respond_with(@bundle, location: [:admin, @bundle])
   end
 
   # DELETE /player/bundles/:id (token)
