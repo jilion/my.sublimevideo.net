@@ -3,7 +3,7 @@ en:
     intro_generic:       "Dear SublimeVideo user,"
     intro_name:          "Dear %{name},"
     signature:           "The SublimeVideo Team"
-    reply_to_this_email: "If you have any questions, please reply to this email."
+    reply_to_this_email: "Simply respond to this email if you have any questions or feedback."
 
     stats:
       email:      "stats@sublimevideo.net"
@@ -29,6 +29,7 @@ en:
 
     user_mailer:
       welcome: "Welcome to SublimeVideo!"
+      inactive_account: "How are things going with SublimeVideo?"
       account_suspended: "Your account has been suspended"
       account_unsuspended: "Your account has been reactivated"
       account_archived: "Your account has been cancelled"

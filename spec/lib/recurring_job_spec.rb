@@ -76,6 +76,7 @@ describe RecurringJob do
       described_class.users_processing
 
       Delayed::Job.where { handler =~ '%User%send_credit_card_expiration%' }.should have(1).item
+      Delayed::Job.where { handler =~ '%User%send_inactive_account_email%' }.should have(1).item
     end
 
     it "calls delay_users_processing" do

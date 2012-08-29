@@ -87,6 +87,7 @@ module RecurringJob
 
     def users_processing(priority = PRIORITIES[:users])
       User.delay(priority: priority).send_credit_card_expiration
+      User.delay(priority: priority).send_inactive_account_email
 
       delay_users_processing
     end

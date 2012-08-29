@@ -10,6 +10,15 @@ class UserMailer < Mailer
     )
   end
 
+  def inactive_account(user_id)
+    extract_user_from_user_id(user_id)
+
+    mail(
+      to: to(@user),
+      subject: I18n.t('mailer.user_mailer.inactive_account')
+    )
+  end
+
   def account_suspended(user_id)
     extract_user_from_user_id(user_id)
 
