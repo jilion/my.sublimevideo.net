@@ -148,6 +148,18 @@ describe SiteModules::Scope, :plans do
     specify { Site.renewable.all.should =~ [@site_renewable] }
   end
 
+  describe ".created_between" do
+    before do
+      @site1 = create(:site, created_at: 3.days.ago)
+      @site2 = create(:site, created_at: 2.days.ago)
+      @site3 = create(:site, created_at: 1.days.ago)
+    end
+
+    specify { Site.created_between(3.days.ago.midnight, 2.days.ago.end_of_day).all.should eq [@site1, @site2] }
+    specify { Site.created_between(2.days.ago.end_of_day, 1.day.ago.end_of_day).all.should eq [@site3] }
+  end
+
+
   describe ".refunded" do
     before do
       Site.delete_all

@@ -6,6 +6,7 @@ require_dependency 'public_launch'
 require_dependency 'vat'
 
 class User < ActiveRecord::Base
+  include UserModules::Activity
   include UserModules::CreditCard
   include UserModules::Pusher
   include UserModules::Scope
