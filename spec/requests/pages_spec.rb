@@ -44,7 +44,7 @@ feature "Help page" do
         current_url.should eq "http://my.sublimevideo.dev/help"
 
         go 'my', '/feedback'
-        current_url.should eq "http://my.sublimevideo.dev/help"
+        current_url.should eq "http://my.sublimevideo.dev/feedback"
       end
     end
   end
