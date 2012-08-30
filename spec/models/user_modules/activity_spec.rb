@@ -27,8 +27,8 @@ describe UserModules::Activity do
       end
 
       it "sends email to users without page visits" do
-        @user1.page_visits.should eq 2
-        @user2.page_visits.should eq 0
+        @user1.reload.page_visits.should eq 2
+        @user2.reload.page_visits.should eq 0
         expect { User.send_inactive_account_email }.to change(Delayed::Job.where { handler =~ '%Class%inactive_account%' }, :count).by(1)
 
         $worker.work_off
