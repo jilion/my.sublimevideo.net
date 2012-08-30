@@ -1,3 +1,6 @@
+# TODO
+# remove version_tag
+
 class Player::Bundleship < ActiveRecord::Base
   belongs_to :site
   belongs_to :bundle, class_name: 'Player::Bundle', foreign_key: 'player_bundle_id'

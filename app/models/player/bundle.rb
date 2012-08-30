@@ -1,3 +1,6 @@
+# TODO
+# Remove version_tags
+
 class Player::Bundle < ActiveRecord::Base
   attr_accessible :name, :token, :version_tags
 

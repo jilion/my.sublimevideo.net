@@ -1,3 +1,7 @@
+# TODO
+# - add player_mode (beta, alpha) to hash
+# - add bundle list permission (and version check on player_mode)
+
 require 'tempfile'
 require_dependency 'cdn'
 
@@ -53,8 +57,6 @@ class Player::Settings < Struct.new(:site, :file)
   end
 
   def hash
-    # TODO: Don't forget to add player_mode (beta, alpha) here
-
     hash = { h: [site.hostname] }
     hash[:h] += site.extra_hostnames.split(/,\s*/) if site.extra_hostnames?
     hash[:d]  = site.dev_hostnames.split(/,\s*/) if site.dev_hostnames?

@@ -1,3 +1,8 @@
+# TODO
+# - settings really needed?
+# - no version tag needed, use version 'tag' ex: '2.0.0-beta.1'
+# app_dependency "~> 3.0.0-alpha"
+
 class Player::BundleVersion < ActiveRecord::Base
   belongs_to :bundle, class_name: 'Player::Bundle', foreign_key: 'player_bundle_id'
 
