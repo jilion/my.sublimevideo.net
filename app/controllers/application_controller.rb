@@ -70,6 +70,11 @@ private
     end
   end
 
+  def sign_out_and_delete_cookie
+    sign_out(current_user)
+    cookies.delete :l, domain: :all
+  end
+
   def d3d_html_inject(text)
     "<!DOCTYPE html><html><head><title>3DS Redirection</title></head><body>#{text}</body></html>"
   end

@@ -1,5 +1,8 @@
 en:
   flash:
+    feedbacks:
+      create:
+        notice: "Thanks for giving us your feedback about your trial."
     billings:
       update:
         notice: "Your billing information were successfully updated."

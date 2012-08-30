@@ -227,8 +227,11 @@ MySublimeVideo::Application.routes.draw do
 
     resources :deals, only: [:show], path: 'd'
 
+    get  '/feedback' => "feedbacks#new", as: 'feedback'
+    post '/feedback' => "feedbacks#create"
+
     resource :support_request, only: [:create], path: 'help'
-    %w[support feedback].each { |action| get action, to: redirect('/help') }
+    %w[support].each { |action| get action, to: redirect('/help') }
 
     resource :video_code, only: [], path: 'video-code-generator' do
       collection do

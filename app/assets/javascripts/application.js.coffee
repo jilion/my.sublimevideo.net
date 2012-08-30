@@ -43,9 +43,11 @@ MySublimeVideo.UI.preparePlansChooser = ->
     else
       new MySublimeVideo.UI.PersistedSitePlanChooser()
 
-
 MySublimeVideo.UI.prepareSupportRequest = ->
   new MySublimeVideo.Helpers.SupportRequest() if jQuery('#new_support_request').exists()
+
+MySublimeVideo.UI.prepareFeedbackForm = ->
+  new MySublimeVideo.Helpers.FeedbackForm() if jQuery('#new_feedback').exists()
 
 jQuery(document).ready ->
   MySublimeVideo.UI.prepareSiteSelector()
@@ -62,10 +64,11 @@ jQuery(document).ready ->
 
   MySublimeVideo.UI.prepareSupportRequest()
 
+  MySublimeVideo.UI.prepareFeedbackForm()
+
   if (moreInfoForm = jQuery('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->
       _gaq.push(['_trackEvent', 'SignUp', 'Completed', undefined, 1, true]) if _gaq?
-
 
   _.each ['new_site', 'edit_site_plan'], (formId) ->
     if (form = jQuery("##{formId}")).exists()
