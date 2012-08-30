@@ -101,6 +101,7 @@ MySublimeVideo::Application.routes.draw do
           put :reset_auth_token
         end
       end
+      resources :feedbacks, only: [:index]
 
       resources :invoices,  only: [:index, :show, :edit] do
         collection do

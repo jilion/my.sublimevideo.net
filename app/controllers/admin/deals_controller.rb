@@ -2,9 +2,7 @@ class Admin::DealsController < Admin::AdminController
   respond_to :html, :js
 
   # sort
-  has_scope :by_id
-  has_scope :by_started_at
-  has_scope :by_ended_at
+  has_scope :by_id, :by_started_at, :by_ended_at
 
   def index
     @deals = apply_scopes(Deal.scoped)

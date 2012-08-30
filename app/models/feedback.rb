@@ -6,6 +6,15 @@ class Feedback < ActiveRecord::Base
 
   REASONS = %w[feature configuration integration price support other]
 
+  # ==========
+  # = Scopes =
+  # ==========
+
+  # sort
+  scope :by_created_at, lambda { |way='desc'| order(:created_at.send(way)) }
+  scope :by_reason,     lambda { |way='desc'| order(:reason.send(way)) }
+  scope :by_kind,       lambda { |way='desc'| order(:kind.send(way)) }
+
   validates :reason, inclusion: REASONS
 
   def self.new_trial_feedback(*args)

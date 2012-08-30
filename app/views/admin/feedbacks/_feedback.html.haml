@@ -1,0 +1,17 @@
+%tr[feedback]{ class: cycle("", "alt") }
+  %td.id= feedback.id
+
+  %td.user
+    %small
+      = viped(feedback.user) do
+        - link_to feedback.user.name_or_email, [:edit, :admin, feedback.user], title: feedback.user.email
+
+  %td.kind= feedback.kind
+
+  %td.reason= t("feedback.reason.options.#{feedback.reason}")
+
+  %td.comment= feedback.comment
+
+  %td.next_player= feedback.next_player
+
+  %td.created_at= display_time(feedback.created_at)

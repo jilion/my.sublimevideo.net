@@ -4,12 +4,7 @@ class Admin::MailsController < Admin::AdminController
   before_filter { |controller| require_role?('god') }
 
   # For MailLog
-  has_scope :by_admin_email
-  has_scope :by_template_title
-  # For MailTemplate
-  has_scope :by_title
-  # For both
-  has_scope :by_date
+  has_scope :by_admin_email, :by_template_title, :by_title, :by_date
 
   # GET /mails
   def index
