@@ -23,4 +23,12 @@ module UserModules::Activity
     @billable_views ||= Stat::Site::Day.views_sum(token: sites.not_archived.map(&:token), billable_only: true)
   end
 
+  private
+
+  def unmemoize_all_activity
+    @page_visits    = nil
+    @dev_views      = nil
+    @billable_views = nil
+  end
+
 end

@@ -79,8 +79,8 @@ module SiteModules::Usage
 
   def unmemoize_all_usages
     @last_30_days_billable_video_views = nil
-    @last_30_days_billable_usages = nil
-    @current_monthly_billable_usages = nil
+    @last_30_days_billable_usages      = nil
+    @current_monthly_billable_usages   = nil
   end
 
   def current_percentage_of_plan_used

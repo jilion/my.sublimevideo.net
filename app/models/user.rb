@@ -258,6 +258,10 @@ class User < ActiveRecord::Base
     result
   end
 
+  def unmemoize_all
+    unmemoize_all_activity
+  end
+
 private
 
   # validate

@@ -21,6 +21,9 @@ describe UserModules::Activity do
 
         @user2 = create(:user, created_at: 7.days.ago)
         create(:site, user: @user2)
+
+        @user1.unmemoize_all
+        @user2.unmemoize_all
       end
 
       it "sends email to users without page visits" do
