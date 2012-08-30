@@ -1160,7 +1160,6 @@ ALTER TABLE ONLY player_bundles ALTER COLUMN id SET DEFAULT nextval('player_bund
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-<<<<<<< HEAD
 ALTER TABLE player_bundleships ALTER COLUMN id SET DEFAULT nextval('player_bundleships_id_seq'::regclass);
 
 
@@ -1169,9 +1168,7 @@ ALTER TABLE player_bundleships ALTER COLUMN id SET DEFAULT nextval('player_bundl
 --
 
 ALTER TABLE releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
-=======
 ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
->>>>>>> master
 
 
 --
