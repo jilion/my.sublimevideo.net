@@ -149,7 +149,11 @@ module PublicSuffix
     # {PublicSuffix::Rule::Base#labels} element.
     #
     # For instance if @rules[5] and @rules[4] are the only elements of the list
+<<<<<<< HEAD
     # where Rule#labels.first is 'us' @indexes['us'] #=> [5,4], that way in
+=======
+    # where Rule#labels.first is 'us' @indexes['us'] #=> [5,4], that way in 
+>>>>>>> master
     # select we can avoid mapping every single rule against the candidate domain.
     def create_index!
       @rules.map { |l| l.labels.first }.each_with_index do |elm, inx|

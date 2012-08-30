@@ -1,6 +1,6 @@
 require_dependency 'validators/email_uniqueness_validator'
 require_dependency 'validators/hostname_validator'
-require_dependency 'zendesk/zendesk_wrapper'
+require_dependency 'zendesk_wrapper'
 require_dependency 'newsletter_manager'
 require_dependency 'public_launch'
 require_dependency 'vat'
@@ -239,7 +239,7 @@ class User < ActiveRecord::Base
   end
 
   def support_requests
-    @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(requester: zendesk_id) : [])
+    @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(query: "requester_id:#{zendesk_id}") : [])
   end
 
   def create_zendesk_user
@@ -414,7 +414,7 @@ end
 #  confirmation_token              :string(255)
 #  confirmed_at                    :datetime
 #  country                         :string(255)
-#  created_at                      :datetime
+#  created_at                      :datetime         not null
 #  current_sign_in_at              :datetime
 #  current_sign_in_ip              :string(255)
 #  early_access                    :string(255)      default("")
@@ -454,7 +454,7 @@ end
 #  state                           :string(255)
 #  total_invoiced_amount           :integer          default(0)
 #  unconfirmed_email               :string(255)
-#  updated_at                      :datetime
+#  updated_at                      :datetime         not null
 #  use_clients                     :boolean
 #  use_company                     :boolean
 #  use_personal                    :boolean

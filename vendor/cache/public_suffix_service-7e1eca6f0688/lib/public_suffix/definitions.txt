@@ -350,7 +350,11 @@ z.bg
 6.bg
 7.bg
 8.bg
+<<<<<<< HEAD
 9.bg
+=======
+9.bg	 	 	
+>>>>>>> master
 
 // bh : http://en.wikipedia.org/wiki/.bh
 bh
@@ -779,7 +783,11 @@ org.ee
 fie.ee
 
 // eg : http://en.wikipedia.org/wiki/.eg
+<<<<<<< HEAD
 eg
+=======
+eg  
+>>>>>>> master
 com.eg
 edu.eg
 eun.eg
@@ -989,7 +997,11 @@ org.hk
 网絡.hk
 组织.hk
 組織.hk
+<<<<<<< HEAD
 組织.hk
+=======
+組织.hk 
+>>>>>>> master
 
 // hm : http://en.wikipedia.org/wiki/.hm
 hm
@@ -1165,9 +1177,15 @@ int.is
 it
 gov.it
 edu.it
+<<<<<<< HEAD
 // list of reserved geo-names :
 // http://www.nic.it/documenti/regolamenti-e-linee-guida/regolamento-assegnazione-versione-6.0.pdf
 // (There is also a list of reserved geo-names corresponding to Italian
+=======
+// list of reserved geo-names : 
+// http://www.nic.it/documenti/regolamenti-e-linee-guida/regolamento-assegnazione-versione-6.0.pdf
+// (There is also a list of reserved geo-names corresponding to Italian 
+>>>>>>> master
 // municipalities : http://www.nic.it/documenti/appendice-c.pdf , but it is
 // not included here.)
 agrigento.it
@@ -4236,7 +4254,11 @@ bv.nl
 // no : http://www.norid.no/regelverk/index.en.html
 // The Norwegian registry has declined to notify us of updates. The web pages
 // referenced below are the official source of the data. There is also an
+<<<<<<< HEAD
 // announce mailing list:
+=======
+// announce mailing list: 
+>>>>>>> master
 // https://postlister.uninett.no/sympa/info/norid-diskusjon
 no
 // Norid generic domains : http://www.norid.no/regelverk/vedlegg-c.en.html
@@ -6223,9 +6245,15 @@ lib.wi.us
 lib.wv.us
 lib.wy.us
 
+<<<<<<< HEAD
 // k12.ma.us contains school districts in Massachusetts. The 4LDs are
 //  managed indepedently except for private (PVT), charter (CHTR) and
 //  parochial (PAROCH) schools.  Those are delegated dorectly to the
+=======
+// k12.ma.us contains school districts in Massachusetts. The 4LDs are 
+//  managed indepedently except for private (PVT), charter (CHTR) and
+//  parochial (PAROCH) schools.  Those are delegated dorectly to the 
+>>>>>>> master
 //  5LD operators.   <k12-ma-hostmaster _ at _ rsuc.gweep.net>
 pvt.k12.ma.us
 chtr.k12.ma.us
@@ -6316,10 +6344,17 @@ yt
 // http://nic.ae/english/arabicdomain/rules.jsp
 امارات
 
+<<<<<<< HEAD
 // xn--54b7fta0cc ("Bangla" Bangla) : BD
 বাংলা
 
 // xn--fiqs8s ("China" Chinese-Han-Simplified <.Zhonggou>) : CN
+=======
+// xn--54b7fta0cc ("Bangla" Bangla) : BD  
+বাংলা
+
+// xn--fiqs8s ("China" Chinese-Han-Simplified <.Zhonggou>) : CN 
+>>>>>>> master
 // CNNIC
 // http://cnnic.cn/html/Dir/2005/10/11/3218.htm
 中国
@@ -6329,20 +6364,29 @@ yt
 // http://cnnic.cn/html/Dir/2005/10/11/3218.htm
 中國
 
+<<<<<<< HEAD
 // xn--lgbbat1ad8j ("Algeria / Al Jazair" Arabic) : DZ
+=======
+// xn--lgbbat1ad8j ("Algeria / Al Jazair" Arabic) : DZ  
+>>>>>>> master
 الجزائر
 
 // xn--wgbh1c ("Egypt" Arabic .masr) : EG
 // http://www.dotmasr.eg/
 مصر
 
+<<<<<<< HEAD
 // xn--node ("ge" Georgian (Mkhedruli)) : GE
+=======
+// xn--node ("ge" Georgian (Mkhedruli)) : GE  
+>>>>>>> master
 გე
 
 // xn--j6w193g ("Hong Kong" Chinese-Han) : HK
 // https://www2.hkirc.hk/register/rules.jsp
 香港
 
+<<<<<<< HEAD
 // xn--h2brj9c ("Bharat" Devanagari) : IN
 // India
 भारत
@@ -6383,6 +6427,48 @@ yt
 الاردن
 
 // xn--3e0b707e ("Republic of Korea" Hangul) : KR
+=======
+// xn--h2brj9c ("Bharat" Devanagari) : IN  
+// India
+भारत
+
+// xn--mgbbh1a71e ("Bharat" Arabic) : IN  
+// India
+بھارت
+
+// xn--fpcrj9c3d ("Bharat" Telugu) : IN  
+// India
+భారత్
+
+// xn--gecrj9c ("Bharat" Gujarati) : IN  
+// India
+ભારત
+
+// xn--s9brj9c ("Bharat" Gurmukhi) : IN  
+// India
+ਭਾਰਤ
+
+// xn--45brj9c ("Bharat" Bengali) : IN  
+// India
+ভারত
+
+// xn--xkc2dl3a5ee0h ("India" Tamil) : IN  
+// India
+இந்தியா
+
+// xn--mgba3a4f16a ("Iran" Persian) : IR  
+ایران
+
+// xn--mgba3a4fra ("Iran" Arabic) : IR  
+ايران
+
+// xn--mgbayh7gpa ("al-Ordon" Arabic) : JO
+// National Information Technology Center (NITC) 
+// Royal Scientific Society, Al-Jubeiha
+الاردن
+
+// xn--3e0b707e ("Republic of Korea" Hangul) : KR  
+>>>>>>> master
 한국
 
 // xn--fzc2c9e2c ("Lanka" Sinhalese-Sinhala) : LK
@@ -6393,10 +6479,17 @@ yt
 // http://nic.lk
 இலங்கை
 
+<<<<<<< HEAD
 // xn--mgbc0a9azcg ("Morocco / al-Maghrib" Arabic) : MA
 المغرب
 
 // xn--mgb9awbf ("Oman" Arabic) : OM
+=======
+// xn--mgbc0a9azcg ("Morocco / al-Maghrib" Arabic) : MA  
+المغرب
+
+// xn--mgb9awbf ("Oman" Arabic) : OM  
+>>>>>>> master
 عمان
 
 // xn--ygbi2ammx ("Falasteen" Arabic) : PS
@@ -6404,7 +6497,11 @@ yt
 // http://www.pnina.ps
 فلسطين
 
+<<<<<<< HEAD
 // xn--90a3ac ("srb" Cyrillic) : RS
+=======
+// xn--90a3ac ("srb" Cyrillic) : RS  
+>>>>>>> master
 срб
 
 // xn--p1ai ("rf" Russian-Cyrillic) : RU
@@ -6419,6 +6516,7 @@ yt
 // http://www.nic.net.sa/
 السعودية
 
+<<<<<<< HEAD
 // xn--mgberp4a5d4a87g ("AlSaudiah" Arabic) variant : SA
 السعودیة
 
@@ -6432,6 +6530,21 @@ yt
 سورية
 
 // xn--mgbtf8fl ("Syria" Arabic) variant : SY
+=======
+// xn--mgberp4a5d4a87g ("AlSaudiah" Arabic) variant : SA  
+السعودیة
+
+// xn--mgbqly7c0a67fbc ("AlSaudiah" Arabic) variant : SA  
+السعودیۃ
+
+// xn--mgbqly7cvafr ("AlSaudiah" Arabic) variant : SA  
+السعوديه
+
+// xn--ogbpf8fl ("Syria" Arabic) : SY  
+سورية
+
+// xn--mgbtf8fl ("Syria" Arabic) variant : SY  
+>>>>>>> master
 سوريا
 
 // xn--yfro4i67o Singapore ("Singapore" Chinese-Han) : SG
@@ -6456,6 +6569,7 @@ yt
 // http://www.twnic.net/english/dn/dn_07a.htm
 台湾
 
+<<<<<<< HEAD
 // xn--nnx388a ("Taiwan") variant : TW
 臺灣
 
@@ -6463,6 +6577,15 @@ yt
 укр
 
 // xn--mgb2ddes ("AlYemen" Arabic) : YE
+=======
+// xn--nnx388a ("Taiwan") variant : TW  
+臺灣
+
+// xn--j1amh ("ukr" Cyrillic) : UA  
+укр
+
+// xn--mgb2ddes ("AlYemen" Arabic) : YE  
+>>>>>>> master
 اليمن
 
 // xxx : http://icmregistry.com

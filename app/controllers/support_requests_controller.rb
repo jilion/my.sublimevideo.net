@@ -6,7 +6,7 @@ class SupportRequestsController < ApplicationController
     @support_request = SupportRequest.new(params[:support_request].merge({ user_id: current_user.id }))
 
     respond_with(@support_request) do |format|
-      if @support_request.delay_post
+      if @support_request.post
         format.html { redirect_to page_path('help'), notice: I18n.t('flash.support_requests.create.notice') }
       else
         format.html { render 'pages/help' }

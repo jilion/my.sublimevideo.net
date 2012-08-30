@@ -1,3 +1,11 @@
 %h3#documentation.title= "Documentation"
 .help_box
   %p= raw "We recommend that you start by reading our documentation to understand how to implement and make full use of SublimeVideo Player. To start, check out our #{link_to "Quickstart Guide", docs_url(''), class: "hl"} and #{link_to "FAQ", docs_url('faq'), class: "hl"} page, then use our #{link_to "Video Code Generator", my_url('video-code-generator'), class: "hl"} to easily create properly configured &lt;video&gt; elements for your site that are automatically optimized for SublimeVideo. If you encounter any problems please take a look at our #{link_to "Troubleshooting", docs_url('troubleshooting'), class: "hl"} page."
+
+  %br
+  %p.search_box
+    You can also directly search in the documentation:
+    %form{ action: docs_url('search'), method: 'get', class: 'getsatisfaction' }
+      .entry
+        = text_field_tag :q, nil, placeholder: 'Type here', class: 'text no_icon'
+        = submit_tag 'Search', class: 'submit blue_button floating_right'

@@ -7,7 +7,7 @@ ruby '1.9.3'
 gem 'bundler', '~> 1.2.0.rc.2'
 
 gem 'rails', github: 'rails/rails', branch: '3-2-stable'
-gem 'sublimevideo_layout', '1.2.3' # hosted on gemfury
+gem 'sublimevideo_layout', '1.2.5' # hosted on gemfury
 
 # Databases
 gem 'pg',                    '~> 0.14.0'
@@ -89,7 +89,7 @@ gem 'pusher',                '~> 0.9.2'
 gem 'redis',                 '~> 2.2.2'
 
 # Tickets
-gem 'zendesk_client',        github: 'jilion/zendesk_client', require: 'zendesk'
+gem 'zendesk_api',           '~> 0.1.2'
 
 # Gems used only for assets and not required
 # in production environments by default.

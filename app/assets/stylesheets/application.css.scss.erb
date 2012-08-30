@@ -287,6 +287,7 @@ form p.note {
   margin:20px 0 -4px;
   font-size:13px;
   font-weight:600;
+  line-height:16px;
   padding:2px 0 2px 22px;
   background:url(<%= asset_data_uri "note_icon.png" %>) no-repeat;
 }
@@ -724,7 +725,7 @@ ul.segmented_menu li.active a {
 
 #help .getsatisfaction label {display:none;}
 
-#help .getsatisfaction input.blue_button {
+#help input.blue_button.floating_right {
   padding:7px 15px;
   margin-left:10px;
 }
@@ -745,8 +746,81 @@ ul.segmented_menu li.active a {
 #help #gsfn_search_results input {
   font-size:20px;
   margin-right:5px;
-
 }
+
+#help .support_team_status {
+  padding:21px 0 20px 35px;
+  background:url(<%= asset_data_uri "help/support_not_available_icon.png" %>) no-repeat 0 50%;
+}
+
+#help .support_team_status.available {
+  background-image:url(<%= asset_data_uri "help/support_available_icon.png" %>);
+}
+
+#help .browse {
+  margin-bottom:40px;
+  width:430px;
+}
+
+#help .browse label {
+  display:block;
+  font-size:14px;
+  font-weight:600;
+  margin-bottom:2px;
+}
+
+#help .browse .fakeupload {
+  position:relative;
+  z-index:1;
+}
+
+#help .browse button.blue_button {
+  font-size:13px;
+  padding:3px 7px;
+  text-align: center;
+}
+
+#help .browse .fakeupload input.txt {
+  background:none;
+  border:none;
+  font-size:13px;
+  font-family:inherit;
+  font-style:italic;
+  color:inherit;
+  width:320px;
+  margin-left:4px;
+  text-shadow:rgba(255,255,255,0.25) 0 1px 0;
+}
+
+#help .browse .fakeupload input.txt:focus {
+  outline:0;
+}
+
+#help .browse .realupload {
+  position:absolute;
+  bottom:-1px;
+  left:0;
+  width:200px;
+  height:29px;
+  z-index:2;
+  cursor:pointer;
+  opacity:0;
+  -moz-opacity:0;
+  filter:alpha(opacity=0);
+}
+
+#help #cancel_upload {
+  display:block;
+  width:12px;
+  height:13px;
+  position:absolute;
+  bottom:4px;
+  right:0;
+  background:url(<%= asset_data_uri "help/clear_arrow.png" %>) no-repeat;
+  z-index:3;
+}
+
+#help #cancel_upload span {display:none}
 
 /* ================ */
 /* = Generic Text = */

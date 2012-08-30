@@ -1,6 +1,7 @@
 <!DOCTYPE HTML SYSTEM>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Brakeman Report</title>
   <script>
     function toggle(context) {
@@ -19,6 +20,10 @@
 
 body {
   font-family: sans-serif;
+  color: #161616;
+}
+
+a {
   color: #161616;
 }
 
@@ -143,10 +148,10 @@ p {
     <th>Checks Performed</th>
   </tr>
   <tr>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net</td>
-    <td>3.2.3</td>
-    <td>2012-05-23 09:10:48 +0200</td>
-    <td>BasicAuth, CrossSiteScripting, DefaultRoutes, EscapeFunction, Evaluation, Execute, FileAccess, FilterSkipping, ForgerySetting, LinkTo, LinkToHref, MailTo, MassAssignment, ModelAttributes, NestedAttributes, QuoteTableName, Redirect, Render, ResponseSplitting, SQL, SafeBufferManipulation, SelectVulnerability, Send, SendFile, SessionSettings, SkipBeforeFilter, StripTags, TranslateBug, ValidationRegex, WithoutProtection</td>
+    <td>/Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net</td>
+    <td>3.2.8</td>
+    <td>2012-08-22 18:56:47 +0200</td>
+    <td>BasicAuth, CrossSiteScripting, DefaultRoutes, DigestDoS, EscapeFunction, Evaluation, Execute, FileAccess, FilterSkipping, ForgerySetting, LinkTo, LinkToHref, MailTo, MassAssignment, ModelAttributes, NestedAttributes, QuoteTableName, Redirect, Render, ResponseSplitting, SQL, SafeBufferManipulation, SelectTag, SelectVulnerability, Send, SendFile, SessionSettings, SingleQuotes, SkipBeforeFilter, StripTags, TranslateBug, ValidationRegex, WithoutProtection</td>
   </tr>
 </table>
 <br>
@@ -158,23 +163,23 @@ p {
   </tr>
   <tr>
     <td>Controllers</td>
-    <td>45</td>
+    <td>47</td>
   </tr>
   <tr>
     <td>Models</td>
-    <td>41</td>
+    <td>44</td>
   </tr>
   <tr>
     <td>Templates</td>
-    <td>202</td>
+    <td>222</td>
   </tr>
   <tr>
     <td>Errors</td>
-    <td>43</td>
+    <td>15</td>
   </tr>
   <tr>
     <td>Security Warnings</td>
-    <td>22 <span class='high-confidence'>(4)</span></td>
+    <td>21 <span class='high-confidence'>(5)</span></td>
   </tr>
 </table>
 <br>
@@ -191,7 +196,7 @@ p {
   
   <tr>
     <td>Cross Site Scripting</td>
-    <td>10</td>
+    <td>8</td>
   </tr>
   
   <tr>
@@ -202,6 +207,11 @@ p {
   <tr>
     <td>Redirect</td>
     <td>9</td>
+  </tr>
+  
+  <tr>
+    <td>SQL Injection</td>
+    <td>1</td>
   </tr>
   
 </table>
@@ -215,217 +225,77 @@ p {
 
   <tr>
     <td>Filter &quot;coffeescript&quot; is not defined.</td>
-    <td>While compiling HAML in /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/views/admin/stats/index.html.haml</td>
+    <td>While compiling HAML in /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/views/admin/stats/index.html.haml</td>
   </tr>
 
   <tr>
     <td>Filter &quot;coffeescript&quot; is not defined.</td>
-    <td>While compiling HAML in /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/views/site_stats/index.html.haml</td>
+    <td>While compiling HAML in /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/views/site_stats/index.html.haml</td>
   </tr>
 
   <tr>
     <td>Filter &quot;coffeescript&quot; is not defined.</td>
-    <td>While compiling HAML in /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/views/video_codes/new.html.haml</td>
+    <td>While compiling HAML in /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/views/video_codes/new.html.haml</td>
   </tr>
 
   <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
+    <td>Filter &quot;coffeescript&quot; is not defined.</td>
+    <td>While compiling HAML in /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/views/videos/index.html.haml</td>
   </tr>
 
   <tr>
     <td> parse error on value &quot;=&quot; (tEQL)</td>
-    <td>could not parse /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/admin.rb</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/admin.rb</td>
   </tr>
 
   <tr>
     <td> parse error on value &quot;=&quot; (tEQL)</td>
-    <td>could not parse /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/deal.rb</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/deal.rb</td>
   </tr>
 
   <tr>
     <td> parse error on value &quot;=&quot; (tEQL)</td>
-    <td>could not parse /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/enthusiast.rb</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/enthusiast.rb</td>
   </tr>
 
   <tr>
     <td> parse error on value &quot;=&quot; (tEQL)</td>
-    <td>could not parse /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/invoice.rb</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/invoice_modules/scope.rb</td>
   </tr>
 
   <tr>
     <td> parse error on value &quot;=&quot; (tEQL)</td>
-    <td>could not parse /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/mail_log.rb</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/mail_log.rb</td>
   </tr>
 
   <tr>
     <td> parse error on value &quot;=&quot; (tEQL)</td>
-    <td>could not parse /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/mail_template.rb</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/mail_template.rb</td>
   </tr>
 
   <tr>
     <td> parse error on value &quot;=&quot; (tEQL)</td>
-    <td>could not parse /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/referrer.rb</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/referrer.rb</td>
   </tr>
 
   <tr>
     <td> parse error on value &quot;=&quot; (tEQL)</td>
-    <td>could not parse /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/site_modules/scope.rb</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/site_modules/scope.rb</td>
+  </tr>
+
+  <tr>
+    <td> parse error on value &quot;.&quot; (tDOT)</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/site_modules/template.rb</td>
   </tr>
 
   <tr>
     <td> parse error on value &quot;=&quot; (tEQL)</td>
-    <td>could not parse /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/tweet.rb</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/tweet.rb</td>
   </tr>
 
   <tr>
     <td> parse error on value &quot;=&quot; (tEQL)</td>
-    <td>could not parse /Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/user_modules/scope.rb</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
-  </tr>
-
-  <tr>
-    <td>wrong number of arguments (0 for 1)</td>
-    <td>/Users/Thibaud/Codes/Jilion/Products/SublimeVideo/my.sublimevideo.net/vendor/ruby/1.9.1/gems/brakeman-1.6.0/lib/brakeman/processors/template_alias_processor.rb:29:in `template_name'</td>
+    <td>could not parse /Users/remy/Jilion/Products/SublimeVideo/my.sublimevideo.net/app/models/user_modules/scope.rb</td>
   </tr>
 
 </table>
@@ -445,16 +315,24 @@ p {
     <td><span class='high-confidence'>High</span></td>
     <td>Admin::StatsController</td>
     <td>show</td>
-    <td>Dynamic Render Path</td>
-    <td><div class='warning_message' onClick="toggle('context10');toggle('message10');toggle('full_message10')" >Render path contains parameter value near line 11: render(action =&gt; <span class="user_input">params[:page]</span>, {  })<table id='context10' class='context' style='display:none'><caption>/app/controllers/admin/stats_controller.rb</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/dynamic_render_path/">Dynamic Render Path</a></td>
+    <td><div class='warning_message' onClick="toggle('context10');toggle('message10');toggle('full_message10')" >Render path contains parameter value near line 10: render(action =&gt; <span class="user_input">params[:page]</span>, {  })<table id='context10' class='context' style='display:none'><caption>/app/controllers/admin/stats_controller.rb</caption>        <tr class='context first'>
           <td class='context_line'>
-            <pre class='context'>6</pre>
+            <pre class='context'>5</pre>
           </td>
           <td class='context'>
-            <pre class='context'>    @selected_period = (params[:p] || &quot;&quot;).split('-')</pre>
+            <pre class='context'>    @selected_series = params.select { |p| %w[controller action].exclude? p }.keys.map { |p| p.split('.') }</pre>
           </td>
         </tr>
           <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>6</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    @selected_period = (params[:p] || &quot;&quot;).split('-')</pre>
+            </td>
+          </tr>
+          <tr class='context'>
             <td class='context_line'>
               <pre class='context'>7</pre>
             </td>
@@ -462,7 +340,7 @@ p {
               <pre class='context'>  end</pre>
             </td>
           </tr>
-          <tr class='context'>
+          <tr class='context alt near_error'>
             <td class='context_line'>
               <pre class='context'>9</pre>
             </td>
@@ -470,7 +348,7 @@ p {
               <pre class='context'>  def show</pre>
             </td>
           </tr>
-          <tr class='context alt near_error'>
+          <tr class='context error'>
             <td class='context_line'>
               <pre class='context'>10</pre>
             </td>
@@ -478,7 +356,7 @@ p {
               <pre class='context'>    render params[:page]</pre>
             </td>
           </tr>
-          <tr class='context error'>
+          <tr class='context alt near_error'>
             <td class='context_line'>
               <pre class='context'>11</pre>
             </td>
@@ -486,7 +364,7 @@ p {
               <pre class='context'>  end</pre>
             </td>
           </tr>
-          <tr class='context alt'>
+          <tr class='context'>
             <td class='context_line'>
               <pre class='context'>13</pre>
             </td>
@@ -494,7 +372,7 @@ p {
               <pre class='context'>  def sales</pre>
             </td>
           </tr>
-          <tr class='context'>
+          <tr class='context alt'>
             <td class='context_line'>
               <pre class='context'>14</pre>
             </td>
@@ -502,20 +380,12 @@ p {
               <pre class='context'>    respond_to do |format|</pre>
             </td>
           </tr>
-          <tr class='context alt'>
+          <tr class='context'>
             <td class='context_line'>
               <pre class='context'>15</pre>
             </td>
             <td class='context'>
               <pre class='context'>      format.json { render json: Stats::SalesStat.json }</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>16</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    end</pre>
             </td>
           </tr>
 </table></div></td>
@@ -525,29 +395,45 @@ p {
     <td><span class='high-confidence'>High</span></td>
     <td>PagesController</td>
     <td>show</td>
-    <td>Dynamic Render Path</td>
-    <td><div class='warning_message' onClick="toggle('context11');toggle('message11');toggle('full_message11')" >Render path contains parameter value near line 9: render(action =&gt; <span class="user_input">params[:page]</span>, {  })<table id='context11' class='context' style='display:none'><caption>/app/controllers/pages_controller.rb</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/dynamic_render_path/">Dynamic Render Path</a></td>
+    <td><div class='warning_message' onClick="toggle('context11');toggle('message11');toggle('full_message11')" >Render path contains parameter value near line 7: render(action =&gt; <span class="user_input">params[:page]</span>, {  })<table id='context11' class='context' style='display:none'><caption>/app/controllers/pages_controller.rb</caption>        <tr class='context first'>
           <td class='context_line'>
-            <pre class='context'>4</pre>
+            <pre class='context'>2</pre>
           </td>
           <td class='context'>
-            <pre class='context'>  before_filter :prepare_support_request, if: proc { |c| params[:page] == 'help' &amp;&amp; user_signed_in? &amp;&amp; current_user.email_support? }</pre>
+            <pre class='context'>  skip_before_filter :authenticate_user!, if: proc { |c| %w[terms privacy].include?(params[:page]) }</pre>
           </td>
         </tr>
           <tr class='context alt'>
             <td class='context_line'>
-              <pre class='context'>5</pre>
+              <pre class='context'>3</pre>
             </td>
             <td class='context'>
-              <pre class='context'>  before_filter :redirect_to_public_help, if: proc { |c| params[:page] == 'help' &amp;&amp; !user_signed_in? }</pre>
+              <pre class='context'>  before_filter :redirect_non_suspended_user!, if: proc { |c| params[:page] == 'suspended' &amp;&amp; user_signed_in? &amp;&amp; !current_user.suspended? }</pre>
             </td>
           </tr>
           <tr class='context'>
             <td class='context_line'>
-              <pre class='context'>7</pre>
+              <pre class='context'>4</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  before_filter :prepare_support_request, if: proc { |c| params[:page] == 'help' &amp;&amp; user_signed_in? &amp;&amp; current_user.email_support? }</pre>
+            </td>
+          </tr>
+          <tr class='context alt near_error'>
+            <td class='context_line'>
+              <pre class='context'>6</pre>
             </td>
             <td class='context'>
               <pre class='context'>  def show</pre>
+            </td>
+          </tr>
+          <tr class='context error'>
+            <td class='context_line'>
+              <pre class='context'>7</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    render params[:page]</pre>
             </td>
           </tr>
           <tr class='context alt near_error'>
@@ -555,23 +441,79 @@ p {
               <pre class='context'>8</pre>
             </td>
             <td class='context'>
-              <pre class='context'>    render params[:page]</pre>
+              <pre class='context'>  end</pre>
             </td>
           </tr>
-          <tr class='context error'>
+          <tr class='context'>
             <td class='context_line'>
-              <pre class='context'>9</pre>
+              <pre class='context'>10</pre>
             </td>
             <td class='context'>
-              <pre class='context'>  end</pre>
+              <pre class='context'>private</pre>
             </td>
           </tr>
           <tr class='context alt'>
             <td class='context_line'>
+              <pre class='context'>12</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  def redirect_non_suspended_user!</pre>
+            </td>
+          </tr>
+</table></div></td>
+  </tr>
+  
+  <tr>
+    <td><span class='high-confidence'>High</span></td>
+    <td>StatsExportsController</td>
+    <td>show</td>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/redirect/">Redirect</a></td>
+    <td><div class='warning_message' onClick="toggle('context8');toggle('message8');toggle('full_message8')" ><span id='message8' style='display:block' >Possible unprotected redirect near line 11: redirect_to(<span class="user_input">StatsExport.find(params[:id])</span>.file.secure_url...</span><span id='full_message8' style='display:none'>Possible unprotected redirect near line 11: redirect_to(<span class="user_input">StatsExport.find(params[:id])</span>.file.secure_url)</span><table id='context8' class='context' style='display:none'><caption>/app/controllers/stats_exports_controller.rb</caption>        <tr class='context first'>
+          <td class='context_line'>
+            <pre class='context'>6</pre>
+          </td>
+          <td class='context'>
+            <pre class='context'>  # GET /stats/exports/:id</pre>
+          </td>
+        </tr>
+          <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>7</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  def show</pre>
+            </td>
+          </tr>
+          <tr class='context'>
+            <td class='context_line'>
+              <pre class='context'>8</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    stats_export = StatsExport.find(params[:id])</pre>
+            </td>
+          </tr>
+          <tr class='context alt near_error'>
+            <td class='context_line'>
+              <pre class='context'>10</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    if stats_export.site.user == current_user</pre>
+            </td>
+          </tr>
+          <tr class='context error'>
+            <td class='context_line'>
               <pre class='context'>11</pre>
             </td>
             <td class='context'>
-              <pre class='context'>private</pre>
+              <pre class='context'>      redirect_to stats_export.file.secure_url</pre>
+            </td>
+          </tr>
+          <tr class='context alt near_error'>
+            <td class='context_line'>
+              <pre class='context'>12</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    else</pre>
             </td>
           </tr>
           <tr class='context'>
@@ -579,7 +521,7 @@ p {
               <pre class='context'>13</pre>
             </td>
             <td class='context'>
-              <pre class='context'>  def redirect_non_suspended_user!</pre>
+              <pre class='context'>      render nothing: true, status: :unauthorized</pre>
             </td>
           </tr>
           <tr class='context alt'>
@@ -587,7 +529,15 @@ p {
               <pre class='context'>14</pre>
             </td>
             <td class='context'>
-              <pre class='context'>    redirect_to root_path</pre>
+              <pre class='context'>    end</pre>
+            </td>
+          </tr>
+          <tr class='context'>
+            <td class='context_line'>
+              <pre class='context'>15</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  end</pre>
             </td>
           </tr>
 </table></div></td>
@@ -597,7 +547,7 @@ p {
     <td><span class='weak-confidence'>Weak</span></td>
     <td>Admin::InvoicesController</td>
     <td>show</td>
-    <td>Redirect</td>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/redirect/">Redirect</a></td>
     <td><div class='warning_message' onClick="toggle('context1');toggle('message1');toggle('full_message1')" ><span id='message1' style='display:block' >Possible unprotected redirect near line 43: redirect_to([:admin, :invoices], :notice =&gt; (&quot;Invoice wit...</span><span id='full_message1' style='display:none'>Possible unprotected redirect near line 43: redirect_to([:admin, :invoices], :notice =&gt; (&quot;Invoice with reference ##{<span class="user_input">params[:id]</span>} not found.&quot;))</span><table id='context1' class='context' style='display:none'><caption>/app/controllers/admin/invoices_controller.rb</caption>        <tr class='context first'>
           <td class='context_line'>
             <pre class='context'>38</pre>
@@ -685,8 +635,8 @@ p {
     <td><span class='weak-confidence'>Weak</span></td>
     <td>Admin::SitesController</td>
     <td>update</td>
-    <td>Redirect</td>
-    <td><div class='warning_message' onClick="toggle('context2');toggle('message2');toggle('full_message2')" ><span id='message2' style='display:block' >Possible unprotected redirect near line 47: redirect_to([:edit, :admin, Site.find_by_token(params[:id...</span><span id='full_message2' style='display:none'>Possible unprotected redirect near line 47: redirect_to([:edit, :admin, <span class="user_input">Site.find_by_token(params[:id])</span>])</span><table id='context2' class='context' style='display:none'><caption>/app/controllers/admin/sites_controller.rb</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/redirect/">Redirect</a></td>
+    <td><div class='warning_message' onClick="toggle('context2');toggle('message2');toggle('full_message2')" ><span id='message2' style='display:block' >Possible unprotected redirect near line 47: redirect_to([:edit, :admin, Site.find_by_token!(params[:i...</span><span id='full_message2' style='display:none'>Possible unprotected redirect near line 47: redirect_to([:edit, :admin, <span class="user_input">Site.find_by_token!(params[:id])</span>])</span><table id='context2' class='context' style='display:none'><caption>/app/controllers/admin/sites_controller.rb</caption>        <tr class='context first'>
           <td class='context_line'>
             <pre class='context'>42</pre>
           </td>
@@ -765,10 +715,10 @@ p {
     <td><span class='weak-confidence'>Weak</span></td>
     <td>Admin::UsersController</td>
     <td>update</td>
-    <td>Redirect</td>
-    <td><div class='warning_message' onClick="toggle('context3');toggle('message3');toggle('full_message3')" >Possible unprotected redirect near line 46: redirect_to([:edit, :admin, <span class="user_input">User.find(params[:id])</span>])<table id='context3' class='context' style='display:none'><caption>/app/controllers/admin/users_controller.rb</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/redirect/">Redirect</a></td>
+    <td><div class='warning_message' onClick="toggle('context3');toggle('message3');toggle('full_message3')" >Possible unprotected redirect near line 48: redirect_to([:edit, :admin, <span class="user_input">User.find(params[:id])</span>])<table id='context3' class='context' style='display:none'><caption>/app/controllers/admin/users_controller.rb</caption>        <tr class='context first'>
           <td class='context_line'>
-            <pre class='context'>41</pre>
+            <pre class='context'>43</pre>
           </td>
           <td class='context'>
             <pre class='context'>    @user = User.find(params[:id])</pre>
@@ -776,7 +726,7 @@ p {
         </tr>
           <tr class='context alt'>
             <td class='context_line'>
-              <pre class='context'>42</pre>
+              <pre class='context'>44</pre>
             </td>
             <td class='context'>
               <pre class='context'>    @user.update_attributes(params[:user], without_protection: true)</pre>
@@ -784,7 +734,7 @@ p {
           </tr>
           <tr class='context'>
             <td class='context_line'>
-              <pre class='context'>44</pre>
+              <pre class='context'>46</pre>
             </td>
             <td class='context'>
               <pre class='context'>    respond_with(@user, notice: 'User was successfully updated.') do |format|</pre>
@@ -792,7 +742,7 @@ p {
           </tr>
           <tr class='context alt near_error'>
             <td class='context_line'>
-              <pre class='context'>45</pre>
+              <pre class='context'>47</pre>
             </td>
             <td class='context'>
               <pre class='context'>      format.js   { render 'admin/shared/flash_update' }</pre>
@@ -800,7 +750,7 @@ p {
           </tr>
           <tr class='context error'>
             <td class='context_line'>
-              <pre class='context'>46</pre>
+              <pre class='context'>48</pre>
             </td>
             <td class='context'>
               <pre class='context'>      format.html { redirect_to [:edit, :admin, @user] }</pre>
@@ -808,7 +758,7 @@ p {
           </tr>
           <tr class='context alt near_error'>
             <td class='context_line'>
-              <pre class='context'>47</pre>
+              <pre class='context'>49</pre>
             </td>
             <td class='context'>
               <pre class='context'>    end</pre>
@@ -816,7 +766,7 @@ p {
           </tr>
           <tr class='context'>
             <td class='context_line'>
-              <pre class='context'>48</pre>
+              <pre class='context'>50</pre>
             </td>
             <td class='context'>
               <pre class='context'>  end</pre>
@@ -824,7 +774,7 @@ p {
           </tr>
           <tr class='context alt'>
             <td class='context_line'>
-              <pre class='context'>50</pre>
+              <pre class='context'>52</pre>
             </td>
             <td class='context'>
               <pre class='context'>  # GET /users/:id/become</pre>
@@ -832,7 +782,7 @@ p {
           </tr>
           <tr class='context'>
             <td class='context_line'>
-              <pre class='context'>51</pre>
+              <pre class='context'>53</pre>
             </td>
             <td class='context'>
               <pre class='context'>  def become</pre>
@@ -845,53 +795,53 @@ p {
     <td><span class='weak-confidence'>Weak</span></td>
     <td>Admin::UsersController</td>
     <td>new_support_request</td>
-    <td>Redirect</td>
-    <td><div class='warning_message' onClick="toggle('context4');toggle('message4');toggle('full_message4')" ><span id='message4' style='display:block' >Possible unprotected redirect near line 63: redirect_to((ZendeskConfig.base_url + &quot;/tickets/new?reque...</span><span id='full_message4' style='display:none'>Possible unprotected redirect near line 63: redirect_to((ZendeskConfig.base_url + &quot;/tickets/new?requester_id=#{<span class="user_input">User.find(params[:id]).zendesk_id</span>}&quot;))</span><table id='context4' class='context' style='display:none'><caption>/app/controllers/admin/users_controller.rb</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/redirect/">Redirect</a></td>
+    <td><div class='warning_message' onClick="toggle('context4');toggle('message4');toggle('full_message4')" ><span id='message4' style='display:block' >Possible unprotected redirect near line 64: redirect_to((ZendeskWrapper.base_url + &quot;/tickets/new?requ...</span><span id='full_message4' style='display:none'>Possible unprotected redirect near line 64: redirect_to((ZendeskWrapper.base_url + &quot;/tickets/new?requester_id=#{<span class="user_input">User.find(params[:id]).zendesk_id</span>}&quot;))</span><table id='context4' class='context' style='display:none'><caption>/app/controllers/admin/users_controller.rb</caption>        <tr class='context first'>
           <td class='context_line'>
-            <pre class='context'>58</pre>
+            <pre class='context'>59</pre>
           </td>
           <td class='context'>
-            <pre class='context'>  def new_support_request</pre>
+            <pre class='context'>  # GET /users/:id/new_support_request</pre>
           </td>
         </tr>
           <tr class='context alt'>
             <td class='context_line'>
-              <pre class='context'>59</pre>
+              <pre class='context'>60</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  def new_support_request</pre>
+            </td>
+          </tr>
+          <tr class='context'>
+            <td class='context_line'>
+              <pre class='context'>61</pre>
             </td>
             <td class='context'>
               <pre class='context'>    @user = User.find(params[:id])</pre>
             </td>
           </tr>
-          <tr class='context'>
+          <tr class='context alt'>
             <td class='context_line'>
-              <pre class='context'>60</pre>
+              <pre class='context'>62</pre>
             </td>
             <td class='context'>
               <pre class='context'>    @user.create_zendesk_user</pre>
             </td>
           </tr>
-          <tr class='context alt near_error'>
-            <td class='context_line'>
-              <pre class='context'>62</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    redirect_to ZendeskConfig.base_url + &quot;/tickets/new?requester_id=#{@user.zendesk_id}&quot;</pre>
-            </td>
-          </tr>
           <tr class='context error'>
             <td class='context_line'>
-              <pre class='context'>63</pre>
+              <pre class='context'>64</pre>
             </td>
             <td class='context'>
-              <pre class='context'>  end</pre>
+              <pre class='context'>    redirect_to ZendeskWrapper.base_url + &quot;/tickets/new?requester_id=#{@user.zendesk_id}&quot;</pre>
             </td>
           </tr>
-          <tr class='context alt'>
+          <tr class='context alt near_error'>
             <td class='context_line'>
               <pre class='context'>65</pre>
             </td>
             <td class='context'>
-              <pre class='context'>  private</pre>
+              <pre class='context'>  end</pre>
             </td>
           </tr>
           <tr class='context'>
@@ -899,15 +849,15 @@ p {
               <pre class='context'>67</pre>
             </td>
             <td class='context'>
-              <pre class='context'>  def set_default_scopes</pre>
+              <pre class='context'>  private</pre>
             </td>
           </tr>
           <tr class='context alt'>
             <td class='context_line'>
-              <pre class='context'>68</pre>
+              <pre class='context'>69</pre>
             </td>
             <td class='context'>
-              <pre class='context'>    params[:with_state] = 'active' if (scopes_configuration.keys &amp; params.keys.map(&amp;:to_sym)).empty?</pre>
+              <pre class='context'>  def set_default_scopes</pre>
             </td>
           </tr>
 </table></div></td>
@@ -917,7 +867,7 @@ p {
     <td><span class='weak-confidence'>Weak</span></td>
     <td>BillingsController</td>
     <td>update</td>
-    <td>Redirect</td>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/redirect/">Redirect</a></td>
     <td><div class='warning_message' onClick="toggle('context5');toggle('message5');toggle('full_message5')" ><span id='message5' style='display:block' >Possible unprotected redirect near line 18: redirect_to([:edit, :billing], notice_and_alert_from_user...</span><span id='full_message5' style='display:none'>Possible unprotected redirect near line 18: redirect_to([:edit, :billing], notice_and_alert_from_user(<span class="user_input">User.find(current_user.id)</span>))</span><table id='context5' class='context' style='display:none'><caption>/app/controllers/billings_controller.rb</caption>        <tr class='context first'>
           <td class='context_line'>
             <pre class='context'>13</pre>
@@ -1013,7 +963,7 @@ p {
     <td><span class='weak-confidence'>Weak</span></td>
     <td>OauthController</td>
     <td>revoke</td>
-    <td>Redirect</td>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/redirect/">Redirect</a></td>
     <td><div class='warning_message' onClick="toggle('context6');toggle('message6');toggle('full_message6')" ><span id='message6' style='display:block' >Possible unprotected redirect near line 21: redirect_to([:client_applications], :notice =&gt; (&quot;You've r...</span><span id='full_message6' style='display:none'>Possible unprotected redirect near line 21: redirect_to([:client_applications], :notice =&gt; (&quot;You've revoked the authorization for the application '#{current_user.tokens.find_by_token!(<span class="user_input">params[:token]</span>).client_application.name}'.&quot;))</span><table id='context6' class='context' style='display:none'><caption>/app/controllers/oauth_controller.rb</caption>        <tr class='context first'>
           <td class='context_line'>
             <pre class='context'>16</pre>
@@ -1083,103 +1033,15 @@ p {
   
   <tr>
     <td><span class='weak-confidence'>Weak</span></td>
-    <td>PlansController</td>
-    <td>update</td>
-    <td>Redirect</td>
-    <td><div class='warning_message' onClick="toggle('context7');toggle('message7');toggle('full_message7')" ><span id='message7' style='display:block' >Possible unprotected redirect near line 19: redirect_to(:sites, (if params[:site][:skip_trial] then  ...</span><span id='full_message7' style='display:none'>Possible unprotected redirect near line 19: redirect_to(:sites, (if params[:site][:skip_trial] then   notice_and_alert_from_transaction(current_user.sites.not_archived.find_by_token!(<span class="user_input">params[:site_id]</span>).last_transaction) else   { :notice =&gt; (nil), :alert =&gt; (nil) } end))</span><table id='context7' class='context' style='display:none'><caption>/app/controllers/plans_controller.rb</caption>        <tr class='context first'>
-          <td class='context_line'>
-            <pre class='context'>14</pre>
-          </td>
-          <td class='context'>
-            <pre class='context'>    @site.assign_attributes(params[:site].merge(remote_ip: request.try(:remote_ip)))</pre>
-          </td>
-        </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>16</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    respond_with(@site) do |format|</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>17</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>      if @site.save # will update site (&amp; create invoice and charge it if skip_trial is true) # will create invoice and charge...</pre>
-            </td>
-          </tr>
-          <tr class='context alt near_error'>
-            <td class='context_line'>
-              <pre class='context'>18</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>        notice_and_alert = params[:site][:skip_trial] ? notice_and_alert_from_transaction(@site.last_transaction) : { notice: nil, alert: nil }</pre>
-            </td>
-          </tr>
-          <tr class='context error'>
-            <td class='context_line'>
-              <pre class='context'>19</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>        format.html { redirect_to :sites, notice_and_alert }</pre>
-            </td>
-          </tr>
-          <tr class='context alt near_error'>
-            <td class='context_line'>
-              <pre class='context'>20</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>      else</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>21</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>        flash[:notice] = flash[:alert] = &quot;&quot;</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>22</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>        format.html { render :edit }</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>23</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>      end</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>24</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    end</pre>
-            </td>
-          </tr>
-</table></div></td>
-  </tr>
-  
-  <tr>
-    <td><span class='weak-confidence'>Weak</span></td>
     <td>SitesController</td>
     <td>create</td>
-    <td>Redirect</td>
-    <td><div class='warning_message' onClick="toggle('context8');toggle('message8');toggle('full_message8')" ><span id='message8' style='display:block' >Possible unprotected redirect near line 45: redirect_to(:sites, (if <span class="user_input">params[:site]</span>[:skip_trial] then  ...</span><span id='full_message8' style='display:none'>Possible unprotected redirect near line 45: redirect_to(:sites, (if <span class="user_input">params[:site]</span>[:skip_trial] then   notice_and_alert_from_transaction(current_user.sites.build((<span class="user_input">params[:site]</span> or {  }).merge(:remote_ip =&gt; (request.try(:remote_ip)))).last_transaction) else   { :notice =&gt; (nil), :alert =&gt; (nil) } end))</span><table id='context8' class='context' style='display:none'><caption>/app/controllers/sites_controller.rb</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/redirect/">Redirect</a></td>
+    <td><div class='warning_message' onClick="toggle('context7');toggle('message7');toggle('full_message7')" ><span id='message7' style='display:block' >Possible unprotected redirect near line 45: redirect_to(:sites, notice_and_alert_from_transaction(cur...</span><span id='full_message7' style='display:none'>Possible unprotected redirect near line 45: redirect_to(:sites, notice_and_alert_from_transaction(current_user.sites.build(<span class="user_input">params[:site]</span>).last_transaction))</span><table id='context7' class='context' style='display:none'><caption>/app/controllers/sites_controller.rb</caption>        <tr class='context first'>
           <td class='context_line'>
             <pre class='context'>40</pre>
           </td>
           <td class='context'>
-            <pre class='context'>    @site = current_user.sites.build((params[:site] || {}).merge(remote_ip: request.try(:remote_ip)))</pre>
+            <pre class='context'>    @site = current_user.sites.build(params[:site])</pre>
           </td>
         </tr>
           <tr class='context alt'>
@@ -1203,7 +1065,7 @@ p {
               <pre class='context'>44</pre>
             </td>
             <td class='context'>
-              <pre class='context'>        notice_and_alert = params[:site][:skip_trial] ? notice_and_alert_from_transaction(@site.last_transaction) : { notice: nil, alert: nil }</pre>
+              <pre class='context'>        notice_and_alert = notice_and_alert_from_transaction(@site.last_transaction)</pre>
             </td>
           </tr>
           <tr class='context error'>
@@ -1261,21 +1123,21 @@ p {
     <td><span class='weak-confidence'>Weak</span></td>
     <td>TransactionsController</td>
     <td>process_payment</td>
-    <td>Redirect</td>
-    <td><div class='warning_message' onClick="toggle('context9');toggle('message9');toggle('full_message9')" ><span id='message9' style='display:block' >Possible unprotected redirect near line 57: redirect_to([:sites], notice_and_alert_from_transaction(T...</span><span id='full_message9' style='display:none'>Possible unprotected redirect near line 57: redirect_to([:sites], notice_and_alert_from_transaction(Transaction.find_by_order_id(params[&quot;orderID&quot;])))</span><table id='context9' class='context' style='display:none'><caption>/app/controllers/transactions_controller.rb</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/redirect/">Redirect</a></td>
+    <td><div class='warning_message' onClick="toggle('context9');toggle('message9');toggle('full_message9')" ><span id='message9' style='display:block' >Possible unprotected redirect near line 58: redirect_to([:sites], notice_and_alert_from_transaction(T...</span><span id='full_message9' style='display:none'>Possible unprotected redirect near line 58: redirect_to([:sites], notice_and_alert_from_transaction(<span class="user_input">Transaction.find_by_order_id(params[&quot;orderID&quot;])</span>))</span><table id='context9' class='context' style='display:none'><caption>/app/controllers/transactions_controller.rb</caption>        <tr class='context first'>
           <td class='context_line'>
-            <pre class='context'>52</pre>
+            <pre class='context'>53</pre>
           </td>
           <td class='context'>
-            <pre class='context'>    transaction = Transaction.find_by_order_id(params[&quot;orderID&quot;])</pre>
+            <pre class='context'>  def process_payment</pre>
           </td>
         </tr>
           <tr class='context alt'>
             <td class='context_line'>
-              <pre class='context'>53</pre>
+              <pre class='context'>54</pre>
             </td>
             <td class='context'>
-              <pre class='context'>    render(nothing: true, status: 204) and return if transaction.paid? # already paid</pre>
+              <pre class='context'>    transaction = Transaction.find_by_order_id(params[&quot;orderID&quot;])</pre>
             </td>
           </tr>
           <tr class='context'>
@@ -1283,28 +1145,36 @@ p {
               <pre class='context'>55</pre>
             </td>
             <td class='context'>
-              <pre class='context'>    transaction.process_payment_response(@sha_params)</pre>
+              <pre class='context'>    render(nothing: true, status: 204) and return if transaction.paid? # already paid</pre>
             </td>
           </tr>
           <tr class='context alt near_error'>
             <td class='context_line'>
-              <pre class='context'>56</pre>
+              <pre class='context'>57</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    transaction.process_payment_response(@sha_params)</pre>
+            </td>
+          </tr>
+          <tr class='context error'>
+            <td class='context_line'>
+              <pre class='context'>58</pre>
             </td>
             <td class='context'>
               <pre class='context'>    redirect_to [:sites], notice_and_alert_from_transaction(transaction)</pre>
             </td>
           </tr>
-          <tr class='context error'>
+          <tr class='context alt near_error'>
             <td class='context_line'>
-              <pre class='context'>57</pre>
+              <pre class='context'>59</pre>
             </td>
             <td class='context'>
               <pre class='context'>  end</pre>
             </td>
           </tr>
-          <tr class='context alt'>
+          <tr class='context'>
             <td class='context_line'>
-              <pre class='context'>59</pre>
+              <pre class='context'>61</pre>
             </td>
             <td class='context'>
               <pre class='context'>end</pre>
@@ -1325,8 +1195,8 @@ p {
 
   <tr>
     <td><span class='high-confidence'>High</span></td>
-    <td>ClientApplication, Oauth2Token, Oauth2Verifier, OauthToken, Transaction</td>
-    <td>Attribute Restriction</td>
+    <td>Oauth2Token, Oauth2Verifier, OauthToken</td>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/attribute_restriction/">Attribute Restriction</a></td>
     <td>Mass assignment is not restricted using attr_accessible</td>
   </tr>
 
@@ -1342,16 +1212,24 @@ p {
   <tr>
     <td><span class='high-confidence'>High</span></td>
     <td>oauth/oauth2_authorize</td>
-    <td>Cross Site Scripting</td>
-    <td><div class='warning_message' onClick="toggle('context21');toggle('message21');toggle('full_message21')" ><span id='message21' style='display:block' >Unsafe parameter value in link_to href near line 41: link_to(&quot;Cancel&quot;, <span class="user_input">params[:redirect_uri]</span>, :class ...</span><span id='full_message21' style='display:none'>Unsafe parameter value in link_to href near line 41: link_to(&quot;Cancel&quot;, <span class="user_input">params[:redirect_uri]</span>, :class =&gt; &quot;submit_dynamic_button float hl&quot;)</span><table id='context21' class='context' style='display:none'><caption>/app/views/oauth/oauth2_authorize.html.haml</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/link_to_href">Cross Site Scripting</a></td>
+    <td><div class='warning_message' onClick="toggle('context19');toggle('message19');toggle('full_message19')" ><span id='message19' style='display:block' >Unsafe parameter value in link_to href near line 40: link_to(&quot;Cancel&quot;, <span class="user_input">params[:redirect_uri]</span>, :class ...</span><span id='full_message19' style='display:none'>Unsafe parameter value in link_to href near line 40: link_to(&quot;Cancel&quot;, <span class="user_input">params[:redirect_uri]</span>, :class =&gt; &quot;submit_dynamic_button float hl&quot;)</span><table id='context19' class='context' style='display:none'><caption>/app/views/oauth/oauth2_authorize.html.haml</caption>        <tr class='context first'>
           <td class='context_line'>
-            <pre class='context'>36</pre>
+            <pre class='context'>35</pre>
           </td>
           <td class='context'>
-            <pre class='context'>    = hidden_field_tag &quot;authorize&quot;, &quot;1&quot;</pre>
+            <pre class='context'>    = hidden_field_tag &quot;scope&quot;,         params[:scope]</pre>
           </td>
         </tr>
           <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>36</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    = hidden_field_tag &quot;authorize&quot;, &quot;1&quot;</pre>
+            </td>
+          </tr>
+          <tr class='context'>
             <td class='context_line'>
               <pre class='context'>38</pre>
             </td>
@@ -1359,20 +1237,20 @@ p {
               <pre class='context'>    .entry.update</pre>
             </td>
           </tr>
-          <tr class='context'>
+          <tr class='context alt near_error'>
             <td class='context_line'>
               <pre class='context'>39</pre>
             </td>
             <td class='context'>
-              <pre class='context'>      = submit_tag &quot;Authorize&quot;, :class =&gt; &quot;blue_button&quot;</pre>
+              <pre class='context'>      = submit_tag &quot;Authorize&quot;, class: &quot;blue_button&quot;</pre>
             </td>
           </tr>
-          <tr class='context alt near_error'>
+          <tr class='context error'>
             <td class='context_line'>
               <pre class='context'>40</pre>
             </td>
             <td class='context'>
-              <pre class='context'>      = link_to &quot;Cancel&quot;, params[:redirect_uri], :class =&gt; &quot;submit_dynamic_button float hl&quot;</pre>
+              <pre class='context'>      = link_to &quot;Cancel&quot;, params[:redirect_uri], class: &quot;submit_dynamic_button float hl&quot;</pre>
             </td>
           </tr>
 </table></div></td>
@@ -1381,8 +1259,79 @@ p {
   <tr>
     <td><span class='med-confidence'>Medium</span></td>
     <td>admin/mail_templates/_mail_template (Template:admin/mails/_mail_templates)</td>
-    <td>Cross Site Scripting</td>
-    <td><div class='warning_message' onClick="toggle('context13');toggle('message13');toggle('full_message13')" ><span id='message13' style='display:block' >Unsafe model attribute in link_to href near line 4: link_to(<span class="user_input">(Unresolved Model).new</span>.title, [:edit, :ad...</span><span id='full_message13' style='display:none'>Unsafe model attribute in link_to href near line 4: link_to(<span class="user_input">(Unresolved Model).new</span>.title, [:edit, :admin, <span class="user_input">(Unresolved Model).new</span>])</span><table id='context13' class='context' style='display:none'><caption>/app/views/admin/mail_templates/_mail_template.html.haml</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/link_to_href">Cross Site Scripting</a></td>
+    <td><div class='warning_message' onClick="toggle('context14');toggle('message14');toggle('full_message14')" ><span id='message14' style='display:block' >Unsafe model attribute in link_to href near line 3: link_to(<span class="user_input">(Unresolved Model).new</span>.title, [:edit, :ad...</span><span id='full_message14' style='display:none'>Unsafe model attribute in link_to href near line 3: link_to(<span class="user_input">(Unresolved Model).new</span>.title, [:edit, :admin, <span class="user_input">(Unresolved Model).new</span>])</span><table id='context14' class='context' style='display:none'><caption>/app/views/admin/mail_templates/_mail_template.html.haml</caption>        <tr class='context first'>
+          <td class='context_line'>
+            <pre class='context'>1</pre>
+          </td>
+          <td class='context'>
+            <pre class='context'>%tr[mail_template]{ class: cycle(&quot;&quot;, &quot;alt&quot;) }</pre>
+          </td>
+        </tr>
+          <tr class='context alt near_error'>
+            <td class='context_line'>
+              <pre class='context'>2</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  %td.title</pre>
+            </td>
+          </tr>
+          <tr class='context error'>
+            <td class='context_line'>
+              <pre class='context'>3</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    = link_to mail_template.title, [:edit, :admin, mail_template]</pre>
+            </td>
+          </tr>
+          <tr class='context alt near_error'>
+            <td class='context_line'>
+              <pre class='context'>4</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  %td.subject</pre>
+            </td>
+          </tr>
+          <tr class='context'>
+            <td class='context_line'>
+              <pre class='context'>5</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    %small</pre>
+            </td>
+          </tr>
+          <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>6</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>      = link_to mail_template.subject, [:edit, :admin, mail_template], title: mail_template.subject</pre>
+            </td>
+          </tr>
+          <tr class='context'>
+            <td class='context_line'>
+              <pre class='context'>7</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  %td.body</pre>
+            </td>
+          </tr>
+          <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>8</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    %small= link_to truncate(mail_template.body), [:edit, :admin, mail_template], title: mail_template.body</pre>
+            </td>
+          </tr>
+</table></div></td>
+  </tr>
+
+  <tr>
+    <td><span class='med-confidence'>Medium</span></td>
+    <td>admin/mail_templates/_mail_template (Template:admin/mails/_mail_templates)</td>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/link_to_href">Cross Site Scripting</a></td>
+    <td><div class='warning_message' onClick="toggle('context15');toggle('message15');toggle('full_message15')" ><span id='message15' style='display:block' >Unsafe model attribute in link_to href near line 6: link_to(<span class="user_input">(Unresolved Model).new</span>.subject, [:edit, :...</span><span id='full_message15' style='display:none'>Unsafe model attribute in link_to href near line 6: link_to(<span class="user_input">(Unresolved Model).new</span>.subject, [:edit, :admin, <span class="user_input">(Unresolved Model).new</span>], :title =&gt; (<span class="user_input">(Unresolved Model).new</span>.subject))</span><table id='context15' class='context' style='display:none'><caption>/app/views/admin/mail_templates/_mail_template.html.haml</caption>        <tr class='context first'>
           <td class='context_line'>
             <pre class='context'>1</pre>
           </td>
@@ -1398,7 +1347,7 @@ p {
               <pre class='context'>  %td.title</pre>
             </td>
           </tr>
-          <tr class='context near_error'>
+          <tr class='context'>
             <td class='context_line'>
               <pre class='context'>3</pre>
             </td>
@@ -1406,7 +1355,7 @@ p {
               <pre class='context'>    = link_to mail_template.title, [:edit, :admin, mail_template]</pre>
             </td>
           </tr>
-          <tr class='context alt error'>
+          <tr class='context alt'>
             <td class='context_line'>
               <pre class='context'>4</pre>
             </td>
@@ -1422,7 +1371,7 @@ p {
               <pre class='context'>    %small</pre>
             </td>
           </tr>
-          <tr class='context alt'>
+          <tr class='context alt error'>
             <td class='context_line'>
               <pre class='context'>6</pre>
             </td>
@@ -1430,7 +1379,7 @@ p {
               <pre class='context'>      = link_to mail_template.subject, [:edit, :admin, mail_template], title: mail_template.subject</pre>
             </td>
           </tr>
-          <tr class='context'>
+          <tr class='context near_error'>
             <td class='context_line'>
               <pre class='context'>7</pre>
             </td>
@@ -1454,78 +1403,7 @@ p {
               <pre class='context'>  %td</pre>
             </td>
           </tr>
-</table></div></td>
-  </tr>
-
-  <tr>
-    <td><span class='med-confidence'>Medium</span></td>
-    <td>admin/mail_templates/_mail_template (Template:admin/mails/_mail_templates)</td>
-    <td>Cross Site Scripting</td>
-    <td><div class='warning_message' onClick="toggle('context14');toggle('message14');toggle('full_message14')" ><span id='message14' style='display:block' >Unsafe model attribute in link_to href near line 7: link_to(<span class="user_input">(Unresolved Model).new</span>.subject, [:edit, :...</span><span id='full_message14' style='display:none'>Unsafe model attribute in link_to href near line 7: link_to(<span class="user_input">(Unresolved Model).new</span>.subject, [:edit, :admin, <span class="user_input">(Unresolved Model).new</span>], :title =&gt; (<span class="user_input">(Unresolved Model).new</span>.subject))</span><table id='context14' class='context' style='display:none'><caption>/app/views/admin/mail_templates/_mail_template.html.haml</caption>        <tr class='context first'>
-          <td class='context_line'>
-            <pre class='context'>2</pre>
-          </td>
-          <td class='context'>
-            <pre class='context'>  %td.title</pre>
-          </td>
-        </tr>
           <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>3</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    = link_to mail_template.title, [:edit, :admin, mail_template]</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>4</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  %td.subject</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>5</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    %small</pre>
-            </td>
-          </tr>
-          <tr class='context near_error'>
-            <td class='context_line'>
-              <pre class='context'>6</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>      = link_to mail_template.subject, [:edit, :admin, mail_template], title: mail_template.subject</pre>
-            </td>
-          </tr>
-          <tr class='context alt error'>
-            <td class='context_line'>
-              <pre class='context'>7</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  %td.body</pre>
-            </td>
-          </tr>
-          <tr class='context near_error'>
-            <td class='context_line'>
-              <pre class='context'>8</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    %small= link_to truncate(mail_template.body), [:edit, :admin, mail_template], title: mail_template.body</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>9</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  %td</pre>
-            </td>
-          </tr>
-          <tr class='context'>
             <td class='context_line'>
               <pre class='context'>10</pre>
             </td>
@@ -1539,16 +1417,24 @@ p {
   <tr>
     <td><span class='med-confidence'>Medium</span></td>
     <td>admin/mail_templates/_mail_template (Template:admin/mails/_mail_templates)</td>
-    <td>Cross Site Scripting</td>
-    <td><div class='warning_message' onClick="toggle('context15');toggle('message15');toggle('full_message15')" ><span id='message15' style='display:block' >Unsafe model attribute in link_to href near line 9: link_to(truncate(<span class="user_input">(Unresolved Model).new</span>.body), [:...</span><span id='full_message15' style='display:none'>Unsafe model attribute in link_to href near line 9: link_to(truncate(<span class="user_input">(Unresolved Model).new</span>.body), [:edit, :admin, <span class="user_input">(Unresolved Model).new</span>], :title =&gt; (<span class="user_input">(Unresolved Model).new</span>.body))</span><table id='context15' class='context' style='display:none'><caption>/app/views/admin/mail_templates/_mail_template.html.haml</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/link_to_href">Cross Site Scripting</a></td>
+    <td><div class='warning_message' onClick="toggle('context16');toggle('message16');toggle('full_message16')" ><span id='message16' style='display:block' >Unsafe model attribute in link_to href near line 8: link_to(truncate(<span class="user_input">(Unresolved Model).new</span>.body), [:...</span><span id='full_message16' style='display:none'>Unsafe model attribute in link_to href near line 8: link_to(truncate(<span class="user_input">(Unresolved Model).new</span>.body), [:edit, :admin, <span class="user_input">(Unresolved Model).new</span>], :title =&gt; (<span class="user_input">(Unresolved Model).new</span>.body))</span><table id='context16' class='context' style='display:none'><caption>/app/views/admin/mail_templates/_mail_template.html.haml</caption>        <tr class='context first'>
           <td class='context_line'>
-            <pre class='context'>4</pre>
+            <pre class='context'>3</pre>
           </td>
           <td class='context'>
-            <pre class='context'>  %td.subject</pre>
+            <pre class='context'>    = link_to mail_template.title, [:edit, :admin, mail_template]</pre>
           </td>
         </tr>
           <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>4</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  %td.subject</pre>
+            </td>
+          </tr>
+          <tr class='context'>
             <td class='context_line'>
               <pre class='context'>5</pre>
             </td>
@@ -1556,7 +1442,7 @@ p {
               <pre class='context'>    %small</pre>
             </td>
           </tr>
-          <tr class='context'>
+          <tr class='context alt'>
             <td class='context_line'>
               <pre class='context'>6</pre>
             </td>
@@ -1564,7 +1450,7 @@ p {
               <pre class='context'>      = link_to mail_template.subject, [:edit, :admin, mail_template], title: mail_template.subject</pre>
             </td>
           </tr>
-          <tr class='context alt'>
+          <tr class='context near_error'>
             <td class='context_line'>
               <pre class='context'>7</pre>
             </td>
@@ -1572,7 +1458,7 @@ p {
               <pre class='context'>  %td.body</pre>
             </td>
           </tr>
-          <tr class='context near_error'>
+          <tr class='context alt error'>
             <td class='context_line'>
               <pre class='context'>8</pre>
             </td>
@@ -1580,7 +1466,7 @@ p {
               <pre class='context'>    %small= link_to truncate(mail_template.body), [:edit, :admin, mail_template], title: mail_template.body</pre>
             </td>
           </tr>
-          <tr class='context alt error'>
+          <tr class='context near_error'>
             <td class='context_line'>
               <pre class='context'>9</pre>
             </td>
@@ -1588,7 +1474,7 @@ p {
               <pre class='context'>  %td</pre>
             </td>
           </tr>
-          <tr class='context near_error'>
+          <tr class='context alt'>
             <td class='context_line'>
               <pre class='context'>10</pre>
             </td>
@@ -1602,8 +1488,8 @@ p {
   <tr>
     <td><span class='med-confidence'>Medium</span></td>
     <td>admin/users/_li_site (Template:admin/users/edit)</td>
-    <td>Cross Site Scripting</td>
-    <td><div class='warning_message' onClick="toggle('context16');toggle('message16');toggle('full_message16')" ><span id='message16' style='display:block' >Unsafe model attribute in link_to href near line 4: link_to(&quot;details&quot;, [:edit, :admin, (Unresolved Mo...</span><span id='full_message16' style='display:none'>Unsafe model attribute in link_to href near line 4: link_to(&quot;details&quot;, [:edit, :admin, <span class="user_input">(Unresolved Model).new</span>])</span><table id='context16' class='context' style='display:none'><caption>/app/views/admin/users/_li_site.html.haml</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/link_to_href">Cross Site Scripting</a></td>
+    <td><div class='warning_message' onClick="toggle('context17');toggle('message17');toggle('full_message17')" ><span id='message17' style='display:block' >Unsafe model attribute in link_to href near line 4: link_to(&quot;details&quot;, [:edit, :admin, (Unresolved Mo...</span><span id='full_message17' style='display:none'>Unsafe model attribute in link_to href near line 4: link_to(&quot;details&quot;, [:edit, :admin, <span class="user_input">(Unresolved Model).new</span>])</span><table id='context17' class='context' style='display:none'><caption>/app/views/admin/users/_li_site.html.haml</caption>        <tr class='context first'>
           <td class='context_line'>
             <pre class='context'>1</pre>
           </td>
@@ -1640,278 +1526,25 @@ p {
 
   <tr>
     <td><span class='med-confidence'>Medium</span></td>
-    <td>plans/edit (PlansController#edit)</td>
-    <td>Cross Site Scripting</td>
-    <td><div class='warning_message' onClick="toggle('context17');toggle('message17');toggle('full_message17')" ><span id='message17' style='display:block' >Unsafe parameter value in link_to href near line 10: link_to(&quot;add a hostname&quot;, [:edit, current_user.s...</span><span id='full_message17' style='display:none'>Unsafe parameter value in link_to href near line 10: link_to(&quot;add a hostname&quot;, [:edit, current_user.sites.not_archived.find_by_token!(<span class="user_input">params</span>[:site_id])])</span><table id='context17' class='context' style='display:none'><caption>/app/views/plans/edit.html.haml</caption>        <tr class='context first'>
-          <td class='context_line'>
-            <pre class='context'>5</pre>
-          </td>
-          <td class='context'>
-            <pre class='context'>  = render 'layouts/segmented_menu'</pre>
-          </td>
-        </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>7</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  = render 'deals/deal_available'</pre>
-            </td>
-          </tr>
-          <tr class='context near_error'>
-            <td class='context_line'>
-              <pre class='context'>9</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - if @site.hostname.blank?</pre>
-            </td>
-          </tr>
-          <tr class='context alt error'>
-            <td class='context_line'>
-              <pre class='context'>10</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= raw t('site.plan.hostname_needed_for_paid_plan', link: link_to(&quot;add a hostname&quot;, [:edit, @site]))</pre>
-            </td>
-          </tr>
-          <tr class='context near_error'>
-            <td class='context_line'>
-              <pre class='context'>11</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.invoices_failed?</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>12</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= raw t('site.plan.upgrade_in_progress_failed_link', link: link_to(&quot;your invoice&quot;, [@site, :invoices]))</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>13</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.invoices_open?</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>14</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= raw t('site.plan.upgrade_in_progress_open_link', link: link_to(&quot;here&quot;, [@site, :invoices]))</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>15</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.invoices_waiting?</pre>
-            </td>
-          </tr>
-</table></div></td>
-  </tr>
-
-  <tr>
-    <td><span class='med-confidence'>Medium</span></td>
-    <td>plans/edit (PlansController#edit)</td>
-    <td>Cross Site Scripting</td>
-    <td><div class='warning_message' onClick="toggle('context18');toggle('message18');toggle('full_message18')" ><span id='message18' style='display:block' >Unsafe parameter value in link_to href near line 12: link_to(&quot;your invoice&quot;, [current_user.sites.not_...</span><span id='full_message18' style='display:none'>Unsafe parameter value in link_to href near line 12: link_to(&quot;your invoice&quot;, [current_user.sites.not_archived.find_by_token!(<span class="user_input">params</span>[:site_id]), :invoices])</span><table id='context18' class='context' style='display:none'><caption>/app/views/plans/edit.html.haml</caption>        <tr class='context first'>
-          <td class='context_line'>
-            <pre class='context'>7</pre>
-          </td>
-          <td class='context'>
-            <pre class='context'>  = render 'deals/deal_available'</pre>
-          </td>
-        </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>9</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - if @site.hostname.blank?</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>10</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= raw t('site.plan.hostname_needed_for_paid_plan', link: link_to(&quot;add a hostname&quot;, [:edit, @site]))</pre>
-            </td>
-          </tr>
-          <tr class='context alt near_error'>
-            <td class='context_line'>
-              <pre class='context'>11</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.invoices_failed?</pre>
-            </td>
-          </tr>
-          <tr class='context error'>
-            <td class='context_line'>
-              <pre class='context'>12</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= raw t('site.plan.upgrade_in_progress_failed_link', link: link_to(&quot;your invoice&quot;, [@site, :invoices]))</pre>
-            </td>
-          </tr>
-          <tr class='context alt near_error'>
-            <td class='context_line'>
-              <pre class='context'>13</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.invoices_open?</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>14</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= raw t('site.plan.upgrade_in_progress_open_link', link: link_to(&quot;here&quot;, [@site, :invoices]))</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>15</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.invoices_waiting?</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>16</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= t 'site.plan.upgrade_in_progress_waiting_link'</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>17</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.pending_plan_id? &amp;&amp; !@site.pending_plan_id_changed?</pre>
-            </td>
-          </tr>
-</table></div></td>
-  </tr>
-
-  <tr>
-    <td><span class='med-confidence'>Medium</span></td>
-    <td>plans/edit (PlansController#edit)</td>
-    <td>Cross Site Scripting</td>
-    <td><div class='warning_message' onClick="toggle('context19');toggle('message19');toggle('full_message19')" ><span id='message19' style='display:block' >Unsafe parameter value in link_to href near line 14: link_to(&quot;here&quot;, [current_user.sites.not_archived...</span><span id='full_message19' style='display:none'>Unsafe parameter value in link_to href near line 14: link_to(&quot;here&quot;, [current_user.sites.not_archived.find_by_token!(<span class="user_input">params</span>[:site_id]), :invoices])</span><table id='context19' class='context' style='display:none'><caption>/app/views/plans/edit.html.haml</caption>        <tr class='context first'>
-          <td class='context_line'>
-            <pre class='context'>9</pre>
-          </td>
-          <td class='context'>
-            <pre class='context'>  - if @site.hostname.blank?</pre>
-          </td>
-        </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>10</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= raw t('site.plan.hostname_needed_for_paid_plan', link: link_to(&quot;add a hostname&quot;, [:edit, @site]))</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>11</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.invoices_failed?</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>12</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= raw t('site.plan.upgrade_in_progress_failed_link', link: link_to(&quot;your invoice&quot;, [@site, :invoices]))</pre>
-            </td>
-          </tr>
-          <tr class='context near_error'>
-            <td class='context_line'>
-              <pre class='context'>13</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.invoices_open?</pre>
-            </td>
-          </tr>
-          <tr class='context alt error'>
-            <td class='context_line'>
-              <pre class='context'>14</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= raw t('site.plan.upgrade_in_progress_open_link', link: link_to(&quot;here&quot;, [@site, :invoices]))</pre>
-            </td>
-          </tr>
-          <tr class='context near_error'>
-            <td class='context_line'>
-              <pre class='context'>15</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.invoices_waiting?</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>16</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= t 'site.plan.upgrade_in_progress_waiting_link'</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>17</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.pending_plan_id? &amp;&amp; !@site.pending_plan_id_changed?</pre>
-            </td>
-          </tr>
-          <tr class='context alt'>
-            <td class='context_line'>
-              <pre class='context'>18</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>    .notice= t 'site.plan.upgrade_in_progress'</pre>
-            </td>
-          </tr>
-          <tr class='context'>
-            <td class='context_line'>
-              <pre class='context'>19</pre>
-            </td>
-            <td class='context'>
-              <pre class='context'>  - elsif @site.in_sponsored_plan?</pre>
-            </td>
-          </tr>
-</table></div></td>
-  </tr>
-
-  <tr>
-    <td><span class='med-confidence'>Medium</span></td>
     <td>sites/_site_settings (Template:sites/_fields)</td>
-    <td>Cross Site Scripting</td>
-    <td><div class='warning_message' onClick="toggle('context20');toggle('message20');toggle('full_message20')" ><span id='message20' style='display:block' >Unsafe parameter value in link_to href near line 53: link_to(&quot;Upgrade now!&quot;, [:edit, current_user.sit...</span><span id='full_message20' style='display:none'>Unsafe parameter value in link_to href near line 53: link_to(&quot;Upgrade now!&quot;, [:edit, current_user.sites.build((<span class="user_input">params</span>[:site] or {  }).merge(:remote_ip =&gt; (request.try(:remote_ip)))), :plan], :class =&gt; &quot;hl&quot;)</span><table id='context20' class='context' style='display:none'><caption>/app/views/sites/_site_settings.html.haml</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/link_to_href">Cross Site Scripting</a></td>
+    <td><div class='warning_message' onClick="toggle('context18');toggle('message18');toggle('full_message18')" ><span id='message18' style='display:block' >Unsafe parameter value in link_to href near line 52: link_to(&quot;Upgrade now!&quot;, [:edit, current_user.sit...</span><span id='full_message18' style='display:none'>Unsafe parameter value in link_to href near line 52: link_to(&quot;Upgrade now!&quot;, [:edit, current_user.sites.build(<span class="user_input">params</span>[:site]), :plan], :class =&gt; &quot;hl&quot;)</span><table id='context18' class='context' style='display:none'><caption>/app/views/sites/_site_settings.html.haml</caption>        <tr class='context first'>
           <td class='context_line'>
-            <pre class='context'>49</pre>
+            <pre class='context'>47</pre>
           </td>
           <td class='context'>
-            <pre class='context'>  - if @site.in_free_plan?</pre>
+            <pre class='context'>    %span= &quot;Read more&quot;</pre>
           </td>
         </tr>
           <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>49</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  - if @site.in_free_plan?</pre>
+            </td>
+          </tr>
+          <tr class='context'>
             <td class='context_line'>
               <pre class='context'>50</pre>
             </td>
@@ -1919,7 +1552,7 @@ p {
               <pre class='context'>    %p</pre>
             </td>
           </tr>
-          <tr class='context'>
+          <tr class='context alt near_error'>
             <td class='context_line'>
               <pre class='context'>51</pre>
             </td>
@@ -1927,7 +1560,7 @@ p {
               <pre class='context'>      Want to remove the SublimeVideo badge or need SSL Serving?</pre>
             </td>
           </tr>
-          <tr class='context alt near_error'>
+          <tr class='context error'>
             <td class='context_line'>
               <pre class='context'>52</pre>
             </td>
@@ -1935,7 +1568,7 @@ p {
               <pre class='context'>      = link_to &quot;Upgrade now!&quot;, [:edit, @site, :plan], class: 'hl'</pre>
             </td>
           </tr>
-          <tr class='context error'>
+          <tr class='context alt near_error'>
             <td class='context_line'>
               <pre class='context'>53</pre>
             </td>
@@ -1943,7 +1576,7 @@ p {
               <pre class='context'>    %br</pre>
             </td>
           </tr>
-          <tr class='context alt'>
+          <tr class='context'>
             <td class='context_line'>
               <pre class='context'>55</pre>
             </td>
@@ -1955,10 +1588,152 @@ p {
   </tr>
 
   <tr>
+    <td><span class='med-confidence'>Medium</span></td>
+    <td>admin/stats/countries</td>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/sql_injection/">SQL Injection</a></td>
+    <td><div class='warning_message' onClick="toggle('context20');toggle('message20');toggle('full_message20')" >Possible SQL injection near line 6: User.active.select(&quot;#{<span class="user_input">(local c)</span>}, COUNT(*) as total&quot;)<table id='context20' class='context' style='display:none'><caption>/app/views/admin/stats/countries.html.erb</caption>        <tr class='context first'>
+          <td class='context_line'>
+            <pre class='context'>1</pre>
+          </td>
+          <td class='context'>
+            <pre class='context'>&lt;%= title_and_content_header(&quot;Repartition of Users by Country&quot;) %&gt;</pre>
+          </td>
+        </tr>
+          <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>2</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>&lt;%</pre>
+            </td>
+          </tr>
+          <tr class='context'>
+            <td class='context_line'>
+              <pre class='context'>3</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  minimum_users = 100</pre>
+            </td>
+          </tr>
+          <tr class='context alt near_error'>
+            <td class='context_line'>
+              <pre class='context'>5</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  %w[country].each do |c|</pre>
+            </td>
+          </tr>
+          <tr class='context error'>
+            <td class='context_line'>
+              <pre class='context'>6</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    countries = User.active.select(&quot;#{c}, COUNT(*) as total&quot;).group(c).order(&quot;total DESC&quot;).map! { |u| [u.send(c) || &quot;Unknown&quot;, u.total.to_i] }</pre>
+            </td>
+          </tr>
+          <tr class='context alt near_error'>
+            <td class='context_line'>
+              <pre class='context'>7</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    other_countries = [&quot;Other (less than #{minimum_users} users)&quot;, 0]</pre>
+            </td>
+          </tr>
+          <tr class='context'>
+            <td class='context_line'>
+              <pre class='context'>8</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>    countries_with_others = countries.inject([]) do |memo, country|</pre>
+            </td>
+          </tr>
+          <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>9</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>      if country[1] &lt; minimum_users</pre>
+            </td>
+          </tr>
+          <tr class='context'>
+            <td class='context_line'>
+              <pre class='context'>10</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>        other_countries[1] += country[1]</pre>
+            </td>
+          </tr>
+          <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>11</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>      else</pre>
+            </td>
+          </tr>
+</table></div></td>
+  </tr>
+
+  <tr>
+    <td><span class='weak-confidence'>Weak</span></td>
+    <td>admin/invoices/_timeline (Template:admin/invoices/index)</td>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/cross_site_scripting/">Cross Site Scripting</a></td>
+    <td><div class='warning_message' onClick="toggle('context12');toggle('message12');toggle('full_message12')" >Unescaped model attribute near line 63: Graph.new do  g =   end.draw<table id='context12' class='context' style='display:none'><caption>/app/views/admin/invoices/_timeline.html.erb</caption>        <tr class='context first'>
+          <td class='context_line'>
+            <pre class='context'>58</pre>
+          </td>
+          <td class='context'>
+            <pre class='context'>  # g.option(plotOptions: plot_options(range_start_date.end_of_month, 1.month, marker: true, linear: true))</pre>
+          </td>
+        </tr>
+          <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>59</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  g.option(plotOptions: plot_options(range_start_date))</pre>
+            </td>
+          </tr>
+          <tr class='context'>
+            <td class='context_line'>
+              <pre class='context'>60</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>  g.option(credits: credits)</pre>
+            </td>
+          </tr>
+          <tr class='context alt'>
+            <td class='context_line'>
+              <pre class='context'>61</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>end</pre>
+            </td>
+          </tr>
+          <tr class='context near_error'>
+            <td class='context_line'>
+              <pre class='context'>62</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>%&gt;</pre>
+            </td>
+          </tr>
+          <tr class='context alt error'>
+            <td class='context_line'>
+              <pre class='context'>63</pre>
+            </td>
+            <td class='context'>
+              <pre class='context'>&lt;div id=&quot;timeline_invoices&quot; style=&quot;width: 100%; height: 400px;&quot;&gt;&lt;%= raw graph.draw %&gt;&lt;/div&gt;</pre>
+            </td>
+          </tr>
+</table></div></td>
+  </tr>
+
+  <tr>
     <td><span class='weak-confidence'>Weak</span></td>
     <td>admin/plans/_plans_distribution (Template:admin/plans/index)</td>
-    <td>Cross Site Scripting</td>
-    <td><div class='warning_message' onClick="toggle('context12');toggle('message12');toggle('full_message12')" >Unescaped model attribute near line 33: Graph.new do  g =   end.draw<table id='context12' class='context' style='display:none'><caption>/app/views/admin/plans/_plans_distribution.html.erb</caption>        <tr class='context first'>
+    <td><a href="http://brakemanscanner.org/docs/warning_types/cross_site_scripting/">Cross Site Scripting</a></td>
+    <td><div class='warning_message' onClick="toggle('context13');toggle('message13');toggle('full_message13')" >Unescaped model attribute near line 33: Graph.new do  g =   end.draw<table id='context13' class='context' style='display:none'><caption>/app/views/admin/plans/_plans_distribution.html.erb</caption>        <tr class='context first'>
           <td class='context_line'>
             <pre class='context'>28</pre>
           </td>

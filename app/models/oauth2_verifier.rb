@@ -51,14 +51,14 @@ end
 #  authorized_at         :datetime
 #  callback_url          :string(255)
 #  client_application_id :integer
-#  created_at            :datetime
+#  created_at            :datetime         not null
 #  id                    :integer          not null, primary key
 #  invalidated_at        :datetime
 #  scope                 :string(255)
 #  secret                :string(40)
 #  token                 :string(40)
 #  type                  :string(20)
-#  updated_at            :datetime
+#  updated_at            :datetime         not null
 #  user_id               :integer
 #  valid_to              :datetime
 #  verifier              :string(20)
