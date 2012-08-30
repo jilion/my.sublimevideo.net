@@ -11,9 +11,9 @@ class Feedback < ActiveRecord::Base
   # ==========
 
   # sort
-  scope :by_created_at, lambda { |way='desc'| order(:created_at.send(way)) }
-  scope :by_reason,     lambda { |way='desc'| order(:reason.send(way)) }
-  scope :by_kind,       lambda { |way='desc'| order(:kind.send(way)) }
+  scope :by_date,   lambda { |way='desc'| order(:created_at.send(way)) }
+  scope :by_reason, lambda { |way='desc'| order(:reason.send(way)) }
+  scope :by_kind,   lambda { |way='desc'| order(:kind.send(way)) }
 
   validates :reason, inclusion: REASONS
 

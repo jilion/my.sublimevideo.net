@@ -6,7 +6,7 @@
     %th= link_to_sort :reason
     %th Comment
     %th Next player
-    %th= link_to_sort :created_at, default_way: 'asc', default: true
+    %th= link_to_sort :date, default_way: 'desc', default: true
   = render @feedbacks
 
 .pagination_wrap
