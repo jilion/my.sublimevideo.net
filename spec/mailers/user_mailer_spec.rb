@@ -32,7 +32,7 @@ describe UserMailer do
     end
 
     it "should set a body that contain info" do
-      last_delivery.body.encoded.should include "It's been a week since you signed up to SublimeVideo"
+      last_delivery.body.encoded.should include "It's been a week since you've signed up to SublimeVideo"
     end
   end
 
