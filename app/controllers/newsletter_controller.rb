@@ -7,7 +7,7 @@ class NewsletterController < ApplicationController
     NewsletterManager.subscribe(current_user)
 
     respond_to do |format|
-      format.html { redirect_to sites_path, notice: I18n.t('flash.newsletter.subscribe') }
+      format.html { redirect_to sites_path, notice: t('flash.newsletter.subscribe') }
     end
   end
 

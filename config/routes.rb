@@ -166,7 +166,7 @@ MySublimeVideo::Application.routes.draw do
 
       get '/account/more-info' => "users#more_info", as: 'more_user_info'
 
-      get  '/account/cancel' => "users/cancellations#new", as: 'cancel_account'
+      get  '/account/cancel' => "users/cancellations#new", as: 'account_cancellation'
       post '/account/cancel' => "users/cancellations#create"
 
       delete '/notice/:id' => 'users#hide_notice'

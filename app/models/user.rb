@@ -48,7 +48,7 @@ class User < ActiveRecord::Base
 
   # Invoices
   has_many :invoices, through: :sites
-  has_one :goodbye_feedback
+  has_many :feedbacks
 
   def last_invoice
     @last_invoice ||= invoices.last
