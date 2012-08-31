@@ -9,7 +9,7 @@ module SiteModules::Cycle
       Site.in_plan_id(Plan.yearly_plans.map(&:id)).
       plan_will_be_renewed_on(5.days.from_now).
       find_each(batch_size: 100) do |site|
-        BillingMailer.yearly_plan_will_be_renewed(site).deliver!
+        BillingMailer.delay.yearly_plan_will_be_renewed(site.id)
       end
     end
 
