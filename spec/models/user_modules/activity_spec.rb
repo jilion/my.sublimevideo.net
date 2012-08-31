@@ -14,10 +14,11 @@ describe UserModules::Activity do
       end
     end
 
-    context "user created 1 week ago" do
+    context "user created 1 week ago", :focus do
       before do
         @user1 = create(:user, created_at: 7.days.ago)
-        create(:site_day_stat, t: create(:site, user: @user1).token, d: Time.now, pv: { m: 2 })
+        site = create(:site, user: @user1)
+        create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, pv: { m: 2 })
 
         @user2 = create(:user, created_at: 7.days.ago)
         create(:site, user: @user2)
