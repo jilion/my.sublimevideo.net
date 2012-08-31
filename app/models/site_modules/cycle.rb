@@ -46,7 +46,7 @@ module SiteModules::Cycle
   end
 
   def pending_plan_cycle_ended_at=(attribute)
-    write_attribute(:pending_plan_cycle_ended_at, attribute.try(:to_datetime).try(:end_of_day))
+    write_attribute(:pending_plan_cycle_ended_at, attribute.try(:end_of_day))
   end
 
   def trial_expires_on(timestamp)

@@ -91,7 +91,7 @@ class Invoice < ActiveRecord::Base
       if invoice.first_site_invoice? # update only the first invoice (first paid plan)
         plan_invoice_item = invoice.invoice_items.first
         new_started_at    = Time.now.utc.midnight
-        new_ended_at      = (new_started_at + invoice.site.advance_for_next_cycle_end(plan_invoice_item.item, new_started_at)).to_datetime.end_of_day
+        new_ended_at      = (new_started_at + invoice.site.advance_for_next_cycle_end(plan_invoice_item.item, new_started_at)).end_of_day
 
         plan_invoice_item.started_at = new_started_at
         plan_invoice_item.ended_at   = new_ended_at

@@ -288,7 +288,7 @@ describe Invoice, :plans do
       it "should update pending dates in the site and the plan invoice item of the invoices where renew flag == false by user" do
         @site1.pending_plan_started_at.should eq Time.utc(2011, 4, 4)
         @site1.pending_plan_cycle_started_at.should eq Time.utc(2011, 4, 4)
-        @site1.pending_plan_cycle_ended_at.to_i.should eq Time.utc(2011, 5, 3).to_datetime.end_of_day.to_i
+        @site1.pending_plan_cycle_ended_at.to_i.should eq Time.utc(2011, 5, 3).end_of_day.to_i
 
         Timecop.travel(Time.utc(2011, 4, 8)) do
           Invoice.update_pending_dates_for_first_not_paid_invoices
@@ -308,7 +308,7 @@ describe Invoice, :plans do
         @site1.reload.first_paid_plan_started_at.should eq Time.utc(2011, 4, 8)
         @site1.pending_plan_started_at.should eq Time.utc(2011, 4, 8)
         @site1.pending_plan_cycle_started_at.should eq Time.utc(2011, 4, 8)
-        @site1.pending_plan_cycle_ended_at.to_i.should eq Time.utc(2011, 5, 7).to_datetime.end_of_day.to_i
+        @site1.pending_plan_cycle_ended_at.to_i.should eq Time.utc(2011, 5, 7).end_of_day.to_i
       end
     end
 
