@@ -13,16 +13,12 @@
 
     = javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'
     = javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'
-    = javascript_include_tag 'sublimevideo'
-    - if %w[stats].include?(controller_name)
-      = javascript_include_tag 'admin/stats'
-    - else
-      = javascript_include_tag 'admin'
+    = javascript_include_tag 'sublimevideo', 'admin'
 
     = render 'layouts/typekit'
 
   %body
-    #global
+    #global{ "data-pjax-container" => true }
       = render 'admin/layouts/admin_header'
       #main
         #content

@@ -1,9 +1,13 @@
+#= require jquery.pjax
 #= require underscore
 #= require highcharts/highcharts
 #
 #= require_self
 #= require_tree ./helpers
 #= require_tree ./ui
+#
+#= require stats
+#= require video_code_generator
 
 jQuery.fn.exists = -> @length > 0
 
@@ -17,8 +21,11 @@ window.MySublimeVideo =
 
 MySublimeVideo.UI.prepareSiteSelector = ->
   if (sitesSelectTitle = jQuery('#sites_select_title')).exists()
-    sitesSelectTitle.on 'change', ->
-      window.location.href = window.location.href.replace "/#{sitesSelectTitle.attr('data-token')}", "/#{sitesSelectTitle.val()}"
+    jQuery('#sites_select_title').on 'change', ->
+      path = location.pathname.replace("/#{jQuery('#sites_select_title').attr('data-token')}", "/#{sitesSelectTitle.val()}")
+      jQuery.pjax
+        url: path
+        container: '[data-pjax-container]'
 
 MySublimeVideo.UI.prepareEmbedCodePopups = ->
   jQuery('a.embed_code').each ->
@@ -43,11 +50,10 @@ MySublimeVideo.UI.preparePlansChooser = ->
     else
       new MySublimeVideo.UI.PersistedSitePlanChooser()
 
-
 MySublimeVideo.UI.prepareSupportRequest = ->
   new MySublimeVideo.Helpers.SupportRequest() if jQuery('#new_support_request').exists()
 
-jQuery(document).ready ->
+MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareSiteSelector()
 
   MySublimeVideo.UI.prepareFlashNotices()
@@ -66,8 +72,21 @@ jQuery(document).ready ->
     moreInfoForm.on 'submit', ->
       _gaq.push(['_trackEvent', 'SignUp', 'Completed', undefined, 1, true]) if _gaq?
 
-
   _.each ['new_site', 'edit_site_plan'], (formId) ->
     if (form = jQuery("##{formId}")).exists()
       form.on 'submit', (e) ->
         jQuery('#site_submit').attr('disabled', 'disabled')
+
+jQuery(document).ready ->
+  MySublimeVideo.documentReady()
+
+  jQuery('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])').pjax('[data-pjax-container]')
+  jQuery('[data-pjax-container]')
+    .on 'pjax:end', ->
+      # Ensure that body class is always up-to-date
+      bodyClass = jQuery('div[data-body-class]').data('body-class')
+      jQuery('body').attr("class", bodyClass)
+
+      SublimeVideo.documentReady()
+      MySublimeVideo.documentReady()
+

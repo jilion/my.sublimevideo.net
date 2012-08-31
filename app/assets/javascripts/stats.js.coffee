@@ -1,5 +1,3 @@
-#= require application
-#
 #= require underscore.date
 #= require backbone
 #= require hamlcoffee

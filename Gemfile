@@ -4,10 +4,13 @@ source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg' # thibaud@jilion.com acco
 
 ruby '1.9.3'
 
-gem 'bundler', '~> 1.2.0.rc.2'
+gem 'bundler', '~> 1.2.0'
 
 gem 'rails', github: 'rails/rails', branch: '3-2-stable'
-gem 'sublimevideo_layout', '1.2.5' # hosted on gemfury
+
+# gem 'sublimevideo_layout', github: 'jilion/sublimevideo_layout', branch: 'master'
+# gem 'sublimevideo_layout', '1.2.5' # hosted on gemfury
+gem 'sublimevideo_layout', '1.3.0.rc' # hosted on gemfury
 
 # Databases
 gem 'pg',                    '~> 0.14.0'
@@ -60,6 +63,8 @@ gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/p
 gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
 
+gem 'rack-pjax'
+
 # CDN
 gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'edge_cast',             '~> 0.0.1' # hosted on gemfury
@@ -98,11 +103,11 @@ group :assets do
   gem 'sass-rails',           '~> 3.2.5'
   gem 'eco'
   gem 'uglifier'
-  gem 'haml_coffee_assets',   '~> 0.8.2'
+  gem 'haml_coffee_assets',   '~> 1.4.6'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
 
-  gem 'prototype-rails',       '~> 3.2.1'
+  # gem 'prototype-rails',       '~> 3.2.1'
   gem 'rails-backbone',        '~> 0.6.0'
 end
 

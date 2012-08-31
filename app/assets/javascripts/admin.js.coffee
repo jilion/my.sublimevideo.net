@@ -1,3 +1,4 @@
+#= require jquery.pjax
 #= require underscore
 #= require highcharts/highcharts
 #= require chosen-jquery
@@ -6,6 +7,7 @@
 #= require_tree ./ui
 #= require_tree ./admin/form
 #= require_tree ./admin/player
+#= require admin/stats
 
 jQuery.fn.exists = -> @length > 0
 
@@ -32,7 +34,7 @@ window.AdminSublimeVideo.Helpers.addCommasToInteger = (nStr) ->
 
   x1 + x2
 
-jQuery(document).ready ->
+AdminSublimeVideo.documentReady = ->
   if (searchInput = jQuery('#search_input')).exists()
     new AdminSublimeVideo.Form.Ajax(form: searchInput.parent('form'))
 
@@ -69,3 +71,14 @@ jQuery(document).ready ->
 
     rangeInput.on 'change', (event) ->
       jQuery('label[for=with_min_billable_video_views]').text(AdminSublimeVideo.Helpers.addCommasToInteger(rangeInput.val()))
+
+jQuery(document).ready ->
+  AdminSublimeVideo.documentReady()
+
+  jQuery('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax]):not(.selector)').pjax '[data-pjax-container]',
+    timeout: 2000
+  jQuery('[data-pjax-container]')
+    .on 'pjax:end', ->
+      SublimeVideo.documentReady()
+      AdminSublimeVideo.documentReady()
+

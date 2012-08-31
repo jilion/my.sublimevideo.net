@@ -1,5 +1,3 @@
-#= require application
-#
 #= require backbone
 #= require hamlcoffee
 #= require spin/jquery.spin
