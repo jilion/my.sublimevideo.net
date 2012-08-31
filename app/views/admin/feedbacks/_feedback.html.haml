@@ -10,7 +10,7 @@
     %small= display_kind(feedback)
 
   %td.reason
-    %small= t("feedback.reason.options.#{feedback.reason}")
+    %small= t("feedback.reason.options_short.#{feedback.reason}")
 
   %td.comment
     %small= simple_format(feedback.comment || 'N/A')

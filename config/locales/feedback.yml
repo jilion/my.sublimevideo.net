@@ -14,6 +14,13 @@ en:
         price:         'Price'
         support:       'Support could not resolve my issue'
         other:         'Other (please specify below)'
+      options_short:
+        feature:       'Features'
+        configuration: 'Config.'
+        integration:   'Integr.'
+        price:         'Price'
+        support:       'Support'
+        other:         'Other'
     comment:
       label: 'Is there anything we could do to improve our solution?'
     next_player:

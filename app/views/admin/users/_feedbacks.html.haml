@@ -5,7 +5,7 @@
       - if feedback.reason?
         %p
           %strong Reason:
-          = t("feedback.reason.options.#{feedback.kind || 'account_cancellation'}.#{feedback.reason}")
+          = t("feedback.reason.options_short.#{feedback.reason}")
       - if feedback.next_player?
         %p
           %strong Next player:
