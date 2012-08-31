@@ -4,7 +4,7 @@ class Admin::FeedbacksController < Admin::AdminController
   before_filter :set_default_scopes, only: [:index]
 
   # sort
-  has_scope :by_date, :by_reason, :by_kind
+  has_scope :by_user, :by_kind, :by_reason, :by_date
 
   def index
     @feedbacks = apply_scopes(Feedback.scoped)

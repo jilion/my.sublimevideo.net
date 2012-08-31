@@ -1,5 +1,8 @@
 en:
   feedback:
+    kind:
+      trial: 'Trial'
+      account_cancellation: 'Cancellation'
     reason:
       label:
         feedback: 'What is your reason for not test driving our player?'

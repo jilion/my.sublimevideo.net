@@ -24,16 +24,3 @@
   = "| Last sign in at: #{display_time(user.last_sign_in_at)}"
   = "| Current sign in ip: #{user.current_sign_in_ip}"
   = "| Last sign in ip: #{user.last_sign_in_ip}"
-
-- user.feedbacks.each do |feedback|
-  %br
-  %strong= "#{feedback.kind.titleize} feedback"
-  %p
-    %strong Left for this player / solution:
-    = feedback.next_player || 'N/A'
-  %p
-    %strong= "Reason for #{feedback.kind == 'feedback' ? 'not using' : 'leaving'} SublimeVideo:"
-    = t("feedback.reason.options.#{feedback.kind}.#{feedback.reason}")
-  %p
-    %strong Additional comment:
-    = simple_format(feedback.comment || 'N/A')
