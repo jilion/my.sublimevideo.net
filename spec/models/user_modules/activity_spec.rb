@@ -21,14 +21,9 @@ describe UserModules::Activity do
 
         @user2 = create(:user, created_at: 7.days.ago)
         create(:site, user: @user2)
-
-        @user1.unmemoize_all
-        @user2.unmemoize_all
       end
 
       it "sends email to users without page visits" do
-        @user1.reload.page_visits.should eq 2
-        @user2.reload.page_visits.should eq 0
         expect { User.send_inactive_account_email }.to change(Delayed::Job.where { handler =~ '%Class%inactive_account%' }, :count).by(1)
 
         $worker.work_off
