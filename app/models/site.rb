@@ -234,9 +234,8 @@ class Site < ActiveRecord::Base
     hostname_with_subdomain_needed.present?
   end
 
-  def trial_started_during_deal?(deal)
-    in_trial_plan? &&
-    plan_started_at >= deal.started_at && plan_started_at <= deal.ended_at
+  def created_during_deal?(deal)
+    created_at >= deal.started_at && created_at <= deal.ended_at
   end
 
   def recommended_plan_name

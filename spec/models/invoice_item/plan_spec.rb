@@ -21,10 +21,6 @@ describe InvoiceItem::Plan, :plans do
       @site5 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
 
       @site6 = create(:site_with_invoice, user: @user3, plan_id: @plan1.id)
-      Timecop.travel(BusinessModel.days_for_trial.days.from_now) do
-        @site6.prepare_pending_attributes
-        @site6.skip_password(:save!)
-      end
 
       Timecop.travel(45.days.from_now) do
         # simulate renew of June 1st
@@ -64,8 +60,8 @@ describe InvoiceItem::Plan, :plans do
         its(:discounted_percentage) { should eq @deal.value }
         its(:price)                 { should eq @plan2.price * (1-@deal.value) }
         its(:amount)                { should eq @plan2.price * (1-@deal.value) }
-        its(:started_at)            { should eq 1.month.from_now.midnight }
-        its(:ended_at)              { should eq (2.months.from_now - 1.day).to_datetime.end_of_day }
+        its(:started_at)            { should eq @site1.pending_plan_cycle_started_at }
+        its(:ended_at)              { should eq @site1.pending_plan_cycle_ended_at }
       end
 
       context "upgrade with deduct params (deducted plan)" do
@@ -76,23 +72,26 @@ describe InvoiceItem::Plan, :plans do
         its(:discounted_percentage) { should eq 0 }
         its(:price)                 { should eq @plan1.price * (1-@deal.value) }
         its(:amount)                { should eq -@plan1.price * (1-@deal.value) }
-        its(:started_at)            { should eq 1.month.from_now.midnight }
-        its(:ended_at)              { should eq (2.month.from_now - 1.day).to_datetime.end_of_day }
+        its(:started_at)            { should eq @site1.plan_cycle_started_at }
+        its(:ended_at)              { should eq @site1.plan_cycle_ended_at }
       end
 
       context "with trial ended and started during the deal" do
-        subject { InvoiceItem::Plan.construct(invoice: @invoice6, item: @plan1) }
+        subject do
+          Timecop.travel(3.days.from_now) { @ii = InvoiceItem::Plan.construct(invoice: @invoice6, item: @plan1) }
+          @ii
+        end
 
         its(:item)                  { should eq @plan1 }
         its(:deal)                  { should eq @deal }
         its(:discounted_percentage) { should eq @deal.value }
         its(:price)                 { should eq @plan1.price * (1-@deal.value) }
         its(:amount)                { should eq @plan1.price * (1-@deal.value) }
-        its(:started_at)            { should eq Time.now.utc.midnight }
-        its(:ended_at)              { should eq (1.month.from_now - 1.day).to_datetime.end_of_day }
+        its(:started_at)            { should eq @site6.plan_cycle_started_at }
+        its(:ended_at)              { should eq @site6.plan_cycle_ended_at }
       end
 
-      context "with trial skipped and started during the deal" do
+      context "in paid plan during the deal" do
         subject { InvoiceItem::Plan.construct(invoice: @invoice5, item: @plan2) }
 
         its(:item)                  { should eq @plan2 }
@@ -100,8 +99,8 @@ describe InvoiceItem::Plan, :plans do
         its(:discounted_percentage) { should eq @deal.value }
         its(:price)                 { should eq @plan2.price * (1-@deal.value) }
         its(:amount)                { should eq @plan2.price * (1-@deal.value) }
-        its(:started_at)            { should eq Time.now.utc.midnight }
-        its(:ended_at)              { should eq (1.month.from_now - 1.day).to_datetime.end_of_day }
+        its(:started_at)            { should eq @site5.plan_cycle_started_at }
+        its(:ended_at)              { should eq @site5.plan_cycle_ended_at }
       end
 
       context "with standard params and no deal" do
@@ -112,8 +111,8 @@ describe InvoiceItem::Plan, :plans do
         its(:discounted_percentage) { should eq 0 }
         its(:price)                 { should eq @plan2.price }
         its(:amount)                { should eq @plan2.price }
-        its(:started_at)            { should eq Time.now.utc.midnight }
-        its(:ended_at)              { should eq (1.month.from_now - 1.day).to_datetime.end_of_day }
+        its(:started_at)            { should eq @site4.plan_cycle_started_at }
+        its(:ended_at)              { should eq @site4.plan_cycle_ended_at }
       end
     end
 
@@ -126,8 +125,8 @@ describe InvoiceItem::Plan, :plans do
         its(:discounted_percentage) { should eq 0 }
         its(:price)                 { should eq @plan1.price }
         its(:amount)                { should eq @plan1.price }
-        its(:started_at)            { should eq 1.month.from_now.midnight }
-        its(:ended_at)              { should eq (2.months.from_now - 1.day).to_datetime.end_of_day }
+        its(:started_at)            { should eq @site3.pending_plan_cycle_started_at }
+        its(:ended_at)              { should eq @site3.pending_plan_cycle_ended_at }
       end
 
       context "with downgrade" do
