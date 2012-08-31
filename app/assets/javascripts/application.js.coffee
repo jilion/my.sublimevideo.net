@@ -22,7 +22,7 @@ window.MySublimeVideo =
 MySublimeVideo.UI.prepareSiteSelector = ->
   if (sitesSelectTitle = jQuery('#sites_select_title')).exists()
     jQuery('#sites_select_title').on 'change', ->
-      path = location.pathname.replace("/#{jQuery('#sites_select_title').attr('data-token')}", "/#{sitesSelectTitle.val()}")
+      path = location.pathname.replace("/#{sitesSelectTitle.attr('data-token')}", "/#{sitesSelectTitle.val()}")
       jQuery.pjax
         url: path
         container: '[data-pjax-container]'
