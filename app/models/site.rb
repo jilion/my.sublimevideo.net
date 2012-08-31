@@ -124,9 +124,9 @@ class Site < ActiveRecord::Base
     after_transition  on: :archive, do: [:cancel_not_paid_invoices]
 
     after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
-    after_transition  to: [:suspended, :archived] do |site|
-      Player::Settings.delay.delete!(site.id)
-    end
+    # after_transition  to: [:suspended, :archived] do |site|
+    #   Player::Settings.delay.delete!(site.id)
+    # end
   end
 
   # =================

@@ -499,9 +499,9 @@ describe Site, :plans do
         subject.license.should_not be_present
       end
 
-      it "delays Player::Settings.delete!" do
-        expect { subject.suspend }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"), :count).by(1)
-      end
+      # it "delays Player::Settings.delete!" do
+      #   expect { subject.suspend }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"), :count).by(1)
+      # end
     end
 
     describe "#unsuspend" do
@@ -553,13 +553,13 @@ describe Site, :plans do
           subject.archived_at.should be_present
         end
 
-        it "delays Player::Settings.delete!" do
-          subject.user.current_password = '123456'
-          expect { subject.archive }.to change(
-            Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"),
-            :count
-          ).by(1)
-        end
+        # it "delays Player::Settings.delete!" do
+        #   subject.user.current_password = '123456'
+        #   expect { subject.archive }.to change(
+        #     Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"),
+        #     :count
+        #   ).by(1)
+        # end
       end
     end
 
