@@ -1161,14 +1161,14 @@ ALTER TABLE ONLY player_bundles ALTER COLUMN id SET DEFAULT nextval('player_bund
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE player_bundleships ALTER COLUMN id SET DEFAULT nextval('player_bundleships_id_seq'::regclass);
+ALTER TABLE ONLY player_bundleships ALTER COLUMN id SET DEFAULT nextval('player_bundleships_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
+ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
 
 
 --
@@ -1877,6 +1877,12 @@ INSERT INTO schema_migrations (version) VALUES ('20120822113838');
 INSERT INTO schema_migrations (version) VALUES ('20120822114051');
 
 INSERT INTO schema_migrations (version) VALUES ('20120822121335');
+
+INSERT INTO schema_migrations (version) VALUES ('20120830134535');
+
+INSERT INTO schema_migrations (version) VALUES ('20120830142633');
+
+INSERT INTO schema_migrations (version) VALUES ('20120828143641');
 
 INSERT INTO schema_migrations (version) VALUES ('20120830134535');
 
