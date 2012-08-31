@@ -14,7 +14,7 @@ describe UserModules::Activity do
       end
     end
 
-    context "user created 1 week ago", :focus do
+    context "user created 1 week ago" do
       before do
         @user1 = create(:user, created_at: 7.days.ago)
         site = create(:site, user: @user1)
