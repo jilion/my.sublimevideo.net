@@ -9,7 +9,7 @@ gem 'bundler', '~> 1.2.0'
 gem 'rails', github: 'rails/rails', branch: '3-2-stable'
 
 # gem 'sublimevideo_layout', github: 'jilion/sublimevideo_layout', branch: 'master'
-# gem 'sublimevideo_layout', '1.2.5' # hosted on gemfury
+# gem 'sublimevideo_layout', '1.2.6' # hosted on gemfury
 gem 'sublimevideo_layout', '1.3.0.rc' # hosted on gemfury
 
 # Databases

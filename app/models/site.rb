@@ -124,9 +124,9 @@ class Site < ActiveRecord::Base
     after_transition  on: :archive, do: [:cancel_not_paid_invoices]
 
     after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
-    after_transition  to: [:suspended, :archived] do |site|
-      Player::Settings.delay.delete!(site.id)
-    end
+    # after_transition  to: [:suspended, :archived] do |site|
+    #   Player::Settings.delay.delete!(site.id)
+    # end
   end
 
   # =================
@@ -200,7 +200,7 @@ class Site < ActiveRecord::Base
   def sponsor!
     write_attribute(:pending_plan_id, Plan.sponsored_plan.id)
     write_attribute(:next_cycle_plan_id, nil)
-    save_skip_pwd!
+    skip_password(:save!)
   end
 
   def to_param
@@ -234,9 +234,8 @@ class Site < ActiveRecord::Base
     hostname_with_subdomain_needed.present?
   end
 
-  def trial_started_during_deal?(deal)
-    in_trial_plan? &&
-    plan_started_at >= deal.started_at && plan_started_at <= deal.ended_at
+  def created_during_deal?(deal)
+    created_at >= deal.started_at && created_at <= deal.ended_at
   end
 
   def recommended_plan_name
@@ -260,19 +259,12 @@ class Site < ActiveRecord::Base
     @recommended_plan_name ||= name
   end
 
-  def skip_pwd
+  def skip_password(*args)
+    action = args.shift
     @skip_password_validation = true
-    result = yield
+    result = self.send(action, *args)
     @skip_password_validation = false
     result
-  end
-
-  def save_skip_pwd(*args)
-    skip_pwd { self.save(*args) }
-  end
-
-  def save_skip_pwd!(*args)
-    skip_pwd { self.save!(*args) }
   end
 
   def trial_start_time

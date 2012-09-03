@@ -106,7 +106,7 @@ feature "Plan edit" do
   scenario "update free plan to paid plan" do
     site = create(:site_with_invoice, user: @current_user, plan_id: @premium_month.id)
     site.plan_id = @free_plan.id
-    site.save_skip_pwd
+    site.skip_password(:save!)
     Timecop.travel(2.months.from_now) { site.prepare_pending_attributes; site.apply_pending_attributes }
     site.reload.plan.should eql @free_plan
 

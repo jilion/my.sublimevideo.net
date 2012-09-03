@@ -1,0 +1,45 @@
+.content_left.more_info
+  = form_for @feedback, url: send("#{kind}_url"), html: { method: 'post', class: 'main_form section' } do |f|
+    .entry.select
+      = f.label :reason, t("feedback.reason.label.#{kind}"), class: 'text'
+      = f.select :reason, Feedback::REASONS.map { |r| [t("feedback.reason.options.#{r}"), r]}, required: true, prompt: true
+
+    .entry
+      .comment
+        = f.label :comment, t("feedback.comment.label"), class: 'text'
+        = f.text_area :comment, class: 'text'
+      .spacer
+
+    .break
+    .entry
+      .name
+        = f.label :next_player, t("feedback.next_player.label"), class: "text"
+        = f.text_field :next_player, class: 'text no_icon'
+      .spacer
+
+    - if kind == 'feedback'
+      .entry
+        .checkbox_wrap
+          = check_box_tag :cancel_account
+          = label_tag :cancel_account, 'Please cancel my account.'
+
+    #cancel_account_confirm_password{ style: "display:#{kind == 'feedback' ? 'none' : 'block'}" }
+      .break
+      %p.label Please enter your current password to confirm:
+      .entry.password
+        = label_tag 'user[current_password]', 'Please enter your current password to confirm', class: 'icon'
+        = password_field_tag 'user[current_password]', '', class: 'text', required: kind == 'account_cancellation'
+        - if @user.errors[:current_password].present?
+          .inline_errors
+            %span Please enter your current password to confirm the cancellation
+
+      #delete_account
+        %p= "Please understand that:"
+        %ul
+          %li= raw "All your #{link_to "sites", sites_path, class: "hl"} will be cancelled."
+          %li= 'All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available.'
+          %li= 'We do not offer refunds.'
+
+    .entry.continue
+      = f.submit t("feedback.submit.#{kind}"), id: 'feedback_submit', class: 'submit blue_button'
+  .spacer

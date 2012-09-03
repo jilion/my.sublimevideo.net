@@ -18,7 +18,7 @@ en:
         cc_verification_value: "CSC"
         company_employees: "Company size"
         company_videos_served: "Nr. of videos served"
-    
+
     errors:
       models:
         site:
@@ -72,8 +72,8 @@ en:
             cc_number:
               invalid: "is invalid"
 
-        goodbye_feedback:
+        feedback:
           attributes:
             reason:
               inclusion: "must be given"
-              
+

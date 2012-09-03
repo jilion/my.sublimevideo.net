@@ -9,7 +9,7 @@ module SiteModules::Cycle
       Site.in_plan_id(Plan.yearly_plans.map(&:id)).
       plan_will_be_renewed_on(5.days.from_now).
       find_each(batch_size: 100) do |site|
-        BillingMailer.yearly_plan_will_be_renewed(site).deliver!
+        BillingMailer.delay.yearly_plan_will_be_renewed(site.id)
       end
     end
 
@@ -25,7 +25,7 @@ module SiteModules::Cycle
     def downgrade_sites_leaving_trial
       Site.trial_ended.find_each(batch_size: 100) do |site|
         site.plan_id = Plan.free_plan.id
-        site.save_skip_pwd!
+        site.skip_password(:save!)
         BillingMailer.delay.trial_has_expired(site.id)
       end
     end
@@ -33,7 +33,7 @@ module SiteModules::Cycle
     def renew_active_sites
       Site.renewable.each do |site|
         site.prepare_pending_attributes(false)
-        site.save_skip_pwd!
+        site.skip_password(:save!)
       end
     end
 
@@ -46,7 +46,7 @@ module SiteModules::Cycle
   end
 
   def pending_plan_cycle_ended_at=(attribute)
-    write_attribute(:pending_plan_cycle_ended_at, attribute.try(:to_datetime).try(:end_of_day))
+    write_attribute(:pending_plan_cycle_ended_at, attribute.try(:end_of_day))
   end
 
   def trial_expires_on(timestamp)
@@ -197,7 +197,7 @@ module SiteModules::Cycle
     end
     self.pending_plan_id_will_change!
 
-    self.save_skip_pwd!
+    self.skip_password(:save!)
   end
 
   def reset_first_plan_upgrade_required_alert_sent_at

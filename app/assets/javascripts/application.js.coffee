@@ -53,6 +53,9 @@ MySublimeVideo.UI.preparePlansChooser = ->
 MySublimeVideo.UI.prepareSupportRequest = ->
   new MySublimeVideo.Helpers.SupportRequest() if jQuery('#new_support_request').exists()
 
+MySublimeVideo.UI.prepareFeedbackForm = ->
+  new MySublimeVideo.Helpers.FeedbackForm() if jQuery('#new_feedback').exists()
+
 MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareSiteSelector()
 
@@ -67,6 +70,8 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.preparePlansChooser()
 
   MySublimeVideo.UI.prepareSupportRequest()
+
+  MySublimeVideo.UI.prepareFeedbackForm()
 
   if (moreInfoForm = jQuery('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->

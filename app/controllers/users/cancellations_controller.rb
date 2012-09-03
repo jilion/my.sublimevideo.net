@@ -1,4 +1,4 @@
-require_dependency 'goodbye_manager'
+require_dependency 'account_cancellation_manager'
 
 class Users::CancellationsController < ApplicationController
 
@@ -6,20 +6,20 @@ class Users::CancellationsController < ApplicationController
 
   # GET /account/cancel
   def new
-    @goodbye_feedback = GoodbyeFeedback.new
+    @feedback = Feedback.new_account_cancellation_feedback
 
-    respond_with(@goodbye_feedback)
+    respond_with(@feedback)
   end
 
   # POST /account/cancel
   def create
-    @goodbye_feedback = GoodbyeFeedback.new(params[:goodbye_feedback])
+    @feedback = Feedback.new_account_cancellation_feedback(params[:feedback])
     @user.attributes = params[:user]
 
     respond_to do |format|
-      if GoodbyeManager.archive_user_and_save_feedback(@user, @goodbye_feedback)
+      if AccountCancellationManager.archive_user_and_save_feedback(@user, @feedback)
         format.html do
-          sign_out(@user)
+          sign_out_and_delete_cookie
           redirect_to layout_url('')
         end
       else

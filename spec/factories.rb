@@ -42,7 +42,7 @@ FactoryGirl.define do
     password         "123456"
   end
 
-  factory :goodbye_feedback do
+  factory :feedback do
     user
     reason 'support'
   end

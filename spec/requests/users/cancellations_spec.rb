@@ -9,7 +9,7 @@ feature 'Account deletion' do
 
     current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
 
-    select  'Price',                 from: 'goodbye_feedback_reason'
+    select  'Price',                 from: 'feedback_reason'
     fill_in 'user_current_password', with: '123456'
     expect { click_button 'Cancel my account' }.to change(Delayed::Job, :count).by(2)
     Delayed::Job.where { handler =~ '%Class%account_archived%' }.should have(1).item
@@ -22,9 +22,9 @@ feature 'Account deletion' do
     current_url.should eq 'http://my.sublimevideo.dev/login'
 
     @current_user.reload.should be_archived
-    goodbye_feedback = GoodbyeFeedback.last
-    goodbye_feedback.reason.should eq 'price'
-    goodbye_feedback.user.should eq @current_user
+    feedback = Feedback.last
+    feedback.reason.should eq 'price'
+    feedback.user.should eq @current_user
   end
 
   scenario 'shows a feedback form before deleting the account but shows an error without a valid reason' do
@@ -48,7 +48,7 @@ feature 'Account deletion' do
 
     current_url.should eq 'http://my.sublimevideo.dev/account/cancel'
 
-    select  'Price',                 from: 'goodbye_feedback_reason'
+    select  'Price',                 from: 'feedback_reason'
     fill_in 'user_current_password', with: '654321'
     click_button 'Cancel my account'
 

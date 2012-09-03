@@ -113,7 +113,7 @@ module UserModules::CreditCard
       end
       reset_credit_card
 
-      self.save_skip_pwd
+      skip_password(:save!)
     end
 
     # We need the '_will_change!' calls since this methods is called in an after_save callback...
@@ -126,7 +126,7 @@ module UserModules::CreditCard
       end
       reset_last_failed_cc_authorize_fields
 
-      self.save_skip_pwd
+      skip_password(:save!)
     end
 
     # Called from User#after_save if cc_register
@@ -214,7 +214,7 @@ module UserModules::CreditCard
       self.last_failed_cc_authorize_status = authorization_params['STATUS'].to_i
       self.last_failed_cc_authorize_error  = authorization_params['NCERRORPLUS']
 
-      self.save_skip_pwd
+      skip_password(:save!)
     end
 
   end
@@ -222,7 +222,7 @@ module UserModules::CreditCard
   module ClassMethods
 
     def send_credit_card_expiration
-      User.paying.where(cc_expire_on: Time.now.utc.end_of_month.to_date).each do |user|
+      User.paying.where(cc_expire_on: Time.now.utc.end_of_month.to_date).find_each(batch_size: 100) do |user|
         BillingMailer.delay.credit_card_will_expire(user.id)
       end
     end

@@ -499,9 +499,9 @@ describe Site, :plans do
         subject.license.should_not be_present
       end
 
-      it "delays Player::Settings.delete!" do
-        expect { subject.suspend }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"), :count).by(1)
-      end
+      # it "delays Player::Settings.delete!" do
+      #   expect { subject.suspend }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"), :count).by(1)
+      # end
     end
 
     describe "#unsuspend" do
@@ -553,13 +553,13 @@ describe Site, :plans do
           subject.archived_at.should be_present
         end
 
-        it "delays Player::Settings.delete!" do
-          subject.user.current_password = '123456'
-          expect { subject.archive }.to change(
-            Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"),
-            :count
-          ).by(1)
-        end
+        # it "delays Player::Settings.delete!" do
+        #   subject.user.current_password = '123456'
+        #   expect { subject.archive }.to change(
+        #     Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"),
+        #     :count
+        #   ).by(1)
+        # end
       end
     end
 
@@ -630,7 +630,7 @@ describe Site, :plans do
           it "calls #prepare_pending_attributes" do
             subject.reload
             subject.plan_id = @paid_plan.id
-            VCR.use_cassette('ogone/visa_payment_generic') { subject.save_skip_pwd }
+            VCR.use_cassette('ogone/visa_payment_generic') { subject.skip_password(:save!) }
             subject.pending_plan_id.should eq @paid_plan.id
             subject.reload # apply_pending_attributes called
             subject.plan_id.should eq @paid_plan.id
@@ -641,7 +641,7 @@ describe Site, :plans do
         context "when pending_plan_id doesn't change" do
           it "doesn't call #prepare_pending_attributes" do
             subject.hostname = 'test.com'
-            subject.save_skip_pwd
+            subject.skip_password(:save!)
             subject.pending_plan_id.should be_nil
           end
         end
@@ -739,7 +739,7 @@ describe Site, :plans do
       end
     end
 
-    describe "#skip_pwd" do
+    describe "#skip_passwordd" do
       subject { create(:site, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
@@ -753,37 +753,13 @@ describe Site, :plans do
       it "should not ask password when calling this method" do
         subject.hostname.should eq "rymai.com"
         subject.hostname = "remy.com"
-        subject.skip_pwd { subject.save }
+        subject.skip_password(:save!)
         subject.should have(0).error_on(:base)
         subject.reload.hostname.should eq "remy.com"
       end
 
-      it "should return the result of the given block" do
-        subject.skip_pwd { "foo" }.should eq "foo"
-      end
-    end
-
-    describe "#save_skip_pwd" do
-      subject { create(:site, hostname: "rymai.com") }
-
-      it "should ask password when not calling this method" do
-        subject.hostname.should eq "rymai.com"
-        subject.hostname = "remy.com"
-        subject.save
-        subject.should_not be_valid
-        subject.should have(1).error_on(:base)
-      end
-
-      it "should not ask password when calling this method" do
-        subject.hostname.should eq "rymai.com"
-        subject.hostname = "remy.com"
-        subject.save_skip_pwd
-        subject.should have(0).error_on(:base)
-        subject.reload.hostname.should eq "remy.com"
-      end
-
-      it "should return the result of the given block" do
-        subject.skip_pwd { "foo" }.should eq "foo"
+      it "should return the result of the given method" do
+        subject.skip_password(:hostname).should eq "rymai.com"
       end
     end
 

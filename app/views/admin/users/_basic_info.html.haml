@@ -24,16 +24,3 @@
   = "| Last sign in at: #{display_time(user.last_sign_in_at)}"
   = "| Current sign in ip: #{user.current_sign_in_ip}"
   = "| Last sign in ip: #{user.last_sign_in_ip}"
-
-- if user.goodbye_feedback.present?
-  %br
-  %h3 'Goodbye' feedback
-  %p
-    %strong Left for this player / solution:
-    = user.goodbye_feedback.next_player || 'N/A'
-  %p
-    %strong Reason for leaving SublimeVideo:
-    = t("goodbye_feedback.reason.#{user.goodbye_feedback.reason}")
-  %p
-    %strong Additional comment:
-    = simple_format(user.goodbye_feedback.comment || 'N/A')

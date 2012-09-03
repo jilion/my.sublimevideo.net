@@ -1,7 +1,7 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/goodbye_manager')
+require File.expand_path('lib/account_cancellation_manager')
 
-describe GoodbyeManager do
+describe AccountCancellationManager do
 
   unless defined?(StateMachine)
     module StateMachine

@@ -75,7 +75,7 @@ module Stat::Site
 
     def all_time_page_visits(token)
       Rails.cache.fetch "Stat::Site.all_time_page_visits##{token}", expires_in: 1.hour do
-        self.where(t: token).entries.sum { |stat|
+        self.where(t: { "$in" => Array.wrap(token) }).entries.sum { |stat|
           stat.pv['m'].to_i + stat.pv['e'].to_i + stat.pv['d'].to_i + stat.pv['i'].to_i + stat.pv['em'].to_i
         }
       end
@@ -86,7 +86,7 @@ module Stat::Site
       to   = 1.day.ago.end_of_day
 
       Rails.cache.fetch "Stat::Site.last_30_days_stats##{token}", expires_in: 1.hour do
-        self.where(t: token).between(from, to).entries
+        self.where(t: { "$in" => Array.wrap(token) }).between(from, to).entries
       end
     end
 

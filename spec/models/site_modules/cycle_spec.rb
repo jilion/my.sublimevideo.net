@@ -9,7 +9,7 @@ describe SiteModules::Cycle do
         @sites_wont_receive_email = [create(:site)]
         @sites_will_receive_email = []
 
-        @sites_wont_receive_email << create(:site, user: @user, plan_id: @paid_plan.id).tap { |s| s.skip_pwd { s.archive! } }
+        @sites_wont_receive_email << create(:site, user: @user, plan_id: @paid_plan.id).tap { |s| s.skip_password(:archive!) }
 
         BusinessModel.days_before_trial_end.each do |days_before_trial_end|
           Timecop.travel((BusinessModel.days_for_trial - days_before_trial_end).days.ago) do
@@ -144,7 +144,7 @@ describe SiteModules::Cycle do
         it "sets given date to midnight" do
           subject.send("#{attr}=", Time.now.utc)
 
-          subject.send(attr).should eql Time.now.utc.midnight
+          subject.send(attr).should eq Time.now.utc.midnight
         end
       end
     end
@@ -161,7 +161,7 @@ describe SiteModules::Cycle do
       it "sets given date to midnight" do
         subject.pending_plan_cycle_ended_at = Time.now.utc
 
-        subject.pending_plan_cycle_ended_at.should eql Time.now.utc.to_datetime.end_of_day
+        subject.pending_plan_cycle_ended_at.should eq Time.now.utc.end_of_day
       end
     end # #pending_plan_cycle_ended_at=
 
@@ -564,8 +564,8 @@ describe SiteModules::Cycle do
               Timecop.travel(1.month.from_now) { site.set_pending_plan_started_at; site.set_pending_plan_cycle_dates }
             end
 
-            its(:pending_plan_cycle_started_at)     { should eq 1.month.from_now.midnight }
-            its('pending_plan_cycle_ended_at.to_i') { should eq 2.months.from_now.yesterday.end_of_day.to_i }
+            its(:pending_plan_cycle_started_at) { should eq 1.month.from_now.midnight }
+            its(:pending_plan_cycle_ended_at)   { should eq (1.month + 1.month).from_now.yesterday.end_of_day }
           end
         end
       end
@@ -589,7 +589,7 @@ describe SiteModules::Cycle do
       its(:plan_id)               { should eq @paid_plan.id }
       its(:plan_started_at)       { should eq Time.utc(2012,12,21) }
       its(:plan_cycle_started_at) { should eq Time.utc(2012,12,21) }
-      its(:plan_cycle_ended_at)   { should eq Time.utc(2013,12,20).to_datetime.end_of_day }
+      its(:plan_cycle_ended_at)   { should eq Time.utc(2013,12,20).end_of_day }
 
       its(:pending_plan_id)               { should be_nil }
       its(:pending_plan_started_at)       { should be_nil }

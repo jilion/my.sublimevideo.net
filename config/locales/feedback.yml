@@ -1,0 +1,30 @@
+en:
+  feedback:
+    kind:
+      trial: 'Trial'
+      account_cancellation: 'Cancellation'
+    reason:
+      label:
+        feedback: 'What is your reason for not test driving our player?'
+        account_cancellation: 'What is your reason for leaving?'
+      options:
+        feature:       'Lack of feature(s) (please specify below)'
+        configuration: 'Configuration issues'
+        integration:   'Integration issues'
+        price:         'Price'
+        support:       'Support could not resolve my issue'
+        other:         'Other (please specify below)'
+      options_short:
+        feature:       'Features'
+        configuration: 'Config.'
+        integration:   'Integr.'
+        price:         'Price'
+        support:       'Support'
+        other:         'Other'
+    comment:
+      label: 'Is there anything we could do to improve our solution?'
+    next_player:
+      label: "If you've switched or plan to switch to another video player or solution, could you let us know which one?"
+    submit:
+      feedback: 'Submit my feedback'
+      account_cancellation: 'Cancel my account'

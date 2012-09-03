@@ -6,6 +6,7 @@ require_dependency 'public_launch'
 require_dependency 'vat'
 
 class User < ActiveRecord::Base
+  include UserModules::Activity
   include UserModules::CreditCard
   include UserModules::Pusher
   include UserModules::Scope
@@ -47,7 +48,7 @@ class User < ActiveRecord::Base
 
   # Invoices
   has_many :invoices, through: :sites
-  has_one :goodbye_feedback
+  has_many :feedbacks
 
   def last_invoice
     @last_invoice ||= invoices.last
@@ -249,19 +250,16 @@ class User < ActiveRecord::Base
     self.update_attribute(:zendesk_id, zendesk_user.id)
   end
 
-  def skip_pwd
+  def skip_password(*args)
+    action = args.shift
     @skip_password_validation = true
-    result = yield
+    result = self.send(action, *args)
     @skip_password_validation = false
     result
   end
 
-  def save_skip_pwd
-    skip_pwd { self.save }
-  end
-
-  def save_skip_pwd!
-    skip_pwd { self.save! }
+  def unmemoize_all
+    unmemoize_all_activity
   end
 
 private
@@ -311,7 +309,7 @@ private
   end
   def archive_sites
     sites.each do |site|
-      site.skip_pwd { site.archive }
+      site.skip_password(:archive)
     end
   end
 

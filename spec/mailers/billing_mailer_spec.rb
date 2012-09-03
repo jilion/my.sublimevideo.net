@@ -52,7 +52,7 @@ describe BillingMailer do
         it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', hostname: site.hostname, days: 1) }
         it { last_delivery.body.encoded.should include "Dear #{user.name}," }
         it { last_delivery.body.encoded.should include I18n.l(site.trial_end, format: :named_date) }
-        it { last_delivery.body.encoded.should_not include "https://my.sublimevideo.dev/account/billing/edit" }        
+        it { last_delivery.body.encoded.should_not include "https://my.sublimevideo.dev/account/billing/edit" }
       end
 
       context 'user has no credit card' do
@@ -67,7 +67,7 @@ describe BillingMailer do
         it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', hostname: site.hostname, days: 1) }
         it { last_delivery.body.encoded.should include "Dear #{user.name}," }
         it { last_delivery.body.encoded.should include I18n.l(site.trial_end, format: :named_date) }
-        it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }        
+        it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
       end
     end
 
@@ -92,7 +92,7 @@ describe BillingMailer do
       it { last_delivery.subject.should eq  I18n.t('mailer.billing_mailer.credit_card_will_expire') }
       it { last_delivery.body.encoded.should include "Dear #{user.name}," }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
-      it { last_delivery.body.encoded.should include "If you have any questions, please reply to this email." }
+      it { last_delivery.body.encoded.should include I18n.t("mailer.reply_to_this_email") }
     end
 
     describe "#transaction_succeeded" do
@@ -105,7 +105,7 @@ describe BillingMailer do
       it { last_delivery.body.encoded.should include transaction.user.name }
       it { last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved." }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/invoices/#{invoice.to_param}" }
-      it { last_delivery.body.encoded.should include "If you have any questions, please reply to this email." }
+      it { last_delivery.body.encoded.should include I18n.t("mailer.reply_to_this_email") }
     end
 
     describe "#transaction_failed" do
@@ -118,7 +118,7 @@ describe BillingMailer do
       it { last_delivery.body.encoded.should include transaction.user.name }
       it { last_delivery.body.encoded.should include "There has been a problem processing your payment and your credit card could not be charged." }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites" }
-      it { last_delivery.body.encoded.should include "If you have any questions, please reply to this email." }
+      it { last_delivery.body.encoded.should include I18n.t("mailer.reply_to_this_email") }
     end
 
     describe "#too_many_charging_attempts" do
@@ -132,7 +132,7 @@ describe BillingMailer do
       it { last_delivery.body.encoded.should include "has failed multiple times" }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites/#{invoice.site.to_param}/plan/edit" }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
-      it { last_delivery.body.encoded.should include "If you have any questions, please reply to this email." }
+      it { last_delivery.body.encoded.should include I18n.t("mailer.reply_to_this_email") }
     end
   end
 

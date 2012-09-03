@@ -1,0 +1,14 @@
+%table.main#feedbacks
+  %tr
+    %th ID
+    %th= link_to_sort :user
+    %th= link_to_sort :kind
+    %th= link_to_sort :reason
+    %th Comment
+    %th Next player
+    %th= link_to_sort :date, default_way: 'desc', default: true
+  = render @feedbacks
+
+.pagination_wrap
+  = paginate @feedbacks, theme: 'admin'
+  = page_entries_info @feedbacks

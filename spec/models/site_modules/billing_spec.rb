@@ -194,9 +194,9 @@ describe SiteModules::Billing do
 
     describe '#refunded?' do
       before do
-        @site_refunded1     = create(:site, refunded_at: Time.now.utc).tap { |s| s.skip_pwd { s.archive! } }
+        @site_refunded1     = create(:site, refunded_at: Time.now.utc).tap { |s| s.skip_password(:archive!) }
         @site_not_refunded1 = create(:site, refunded_at: Time.now.utc)
-        @site_not_refunded2 = create(:site, refunded_at: nil).tap { |s| s.skip_pwd { s.archive! } }
+        @site_not_refunded2 = create(:site, refunded_at: nil).tap { |s| s.skip_password(:archive!) }
       end
 
       specify { @site_refunded1.should be_refunded }
@@ -444,32 +444,32 @@ describe SiteModules::Billing do
           context 'trial plan' do
             it 'creates an invoice' do
               trial_site.plan_id = @paid_plan.id
-              expect { trial_site.save_skip_pwd! }.to change(trial_site.invoices, :count).by(1)
-              expect { trial_site.save_skip_pwd! }.to_not change(trial_site.invoices, :count)
+              expect { trial_site.skip_password(:save!) }.to change(trial_site.invoices, :count).by(1)
+              expect { trial_site.skip_password(:save!) }.to_not change(trial_site.invoices, :count)
             end
           end
 
           context 'free plan' do
             it 'creates an invoice' do
               free_site.plan_id = @paid_plan.id
-              expect { free_site.save_skip_pwd! }.to change(free_site.invoices, :count).by(1)
-              expect { free_site.save_skip_pwd! }.to_not change(free_site.invoices, :count)
+              expect { free_site.skip_password(:save!) }.to change(free_site.invoices, :count).by(1)
+              expect { free_site.skip_password(:save!) }.to_not change(free_site.invoices, :count)
             end
           end
 
           context 'paid plan' do
             it 'creates an invoice' do
               paid_site.plan_id = @custom_plan.token
-              expect { paid_site.save_skip_pwd! }.to change(paid_site.invoices, :count).by(1)
-              expect { paid_site.save_skip_pwd! }.to_not change(paid_site.invoices, :count)
+              expect { paid_site.skip_password(:save!) }.to change(paid_site.invoices, :count).by(1)
+              expect { paid_site.skip_password(:save!) }.to_not change(paid_site.invoices, :count)
             end
           end
 
           context 'sponsored plan' do
             it 'creates an invoice' do
               sponsored_site.plan_id = @paid_plan.id
-              expect { sponsored_site.save_skip_pwd! }.to change(sponsored_site.invoices, :count).by(1)
-              expect { sponsored_site.save_skip_pwd! }.to_not change(sponsored_site.invoices, :count)
+              expect { sponsored_site.skip_password(:save!) }.to change(sponsored_site.invoices, :count).by(1)
+              expect { sponsored_site.skip_password(:save!) }.to_not change(sponsored_site.invoices, :count)
             end
           end
         end
@@ -478,11 +478,11 @@ describe SiteModules::Billing do
           context 'paid plan to free plan' do
             it 'dont create an invoice' do
               paid_site.plan_id = @free_plan.id
-              expect { paid_site.save_skip_pwd! }.to_not change(paid_site.invoices, :count)
+              expect { paid_site.skip_password(:save!) }.to_not change(paid_site.invoices, :count)
               Timecop.travel(45.days.from_now)
               paid_site.prepare_pending_attributes # simulate renew
 
-              expect { paid_site.save_skip_pwd! }.to_not change(paid_site.invoices, :count)
+              expect { paid_site.skip_password(:save!) }.to_not change(paid_site.invoices, :count)
               Timecop.return
             end
           end
@@ -490,13 +490,13 @@ describe SiteModules::Billing do
           context 'paid plan to paid plan' do
             it 'dont create an invoice, but does on renew' do
               custom_site.plan_id = @paid_plan.id
-              expect { custom_site.save_skip_pwd! }.to_not change(custom_site.invoices, :count)
+              expect { custom_site.skip_password(:save!) }.to_not change(custom_site.invoices, :count)
 
               Timecop.travel(45.days.from_now)
               custom_site.prepare_pending_attributes # simulate renew
 
-              expect { custom_site.save_skip_pwd! }.to change(custom_site.invoices, :count).by(1)
-              expect { custom_site.save_skip_pwd! }.to_not change(custom_site.invoices, :count)
+              expect { custom_site.skip_password(:save!) }.to change(custom_site.invoices, :count).by(1)
+              expect { custom_site.skip_password(:save!) }.to_not change(custom_site.invoices, :count)
               Timecop.return
             end
           end
@@ -504,7 +504,7 @@ describe SiteModules::Billing do
           context 'sponsored plan' do
             it 'creates an invoice' do
               sponsored_site.plan_id = @free_plan.id
-              expect { sponsored_site.save_skip_pwd! }.to_not change(sponsored_site.invoices, :count)
+              expect { sponsored_site.skip_password(:save!) }.to_not change(sponsored_site.invoices, :count)
             end
           end
         end

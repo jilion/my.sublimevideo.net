@@ -31,8 +31,7 @@ module UserModules::Scope
     scope :use_personal,      lambda { |bool=true| where { use_personal == bool } }
     scope :use_company,       lambda { |bool=true| where { use_company == bool } }
     scope :use_clients,       lambda { |bool=true| where { use_clients == bool } }
-    scope :created_between,   lambda { |start_date, end_date| where { (created_at >= start_date) & (created_at < end_date) } }
-    scope :signed_in_between, lambda { |start_date, end_date| where { (current_sign_in_at >= start_date) & (current_sign_in_at < end_date) } }
+    scope :created_on,        lambda { |date| where { created_at >> date.all_day } }
     scope :newsletter,        lambda { |bool=true| where { newsletter == bool } }
     scope :vip,               lambda { |bool=true| where { vip == bool } }
 

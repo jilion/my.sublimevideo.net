@@ -14,8 +14,8 @@
 - custom_sites       = Site.in_custom_plan.count
 
 - total_users       = User.active.count
-- today_signups     = User.active.where { (created_at >= Time.now.utc.midnight) & (created_at < Time.now.utc.tomorrow.midnight) }
-- yesterday_signups = User.active.where { (created_at >= Time.now.utc.yesterday.midnight) & (created_at < Time.now.utc.midnight) }
+- today_signups     = User.active.created_on(Time.now.utc)
+- yesterday_signups = User.active.created_on(Time.now.utc.yesterday)
 - paying_users      = User.paying.count
 - free_users        = User.free.count
 

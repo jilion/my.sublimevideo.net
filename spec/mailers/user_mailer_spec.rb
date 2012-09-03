@@ -3,7 +3,7 @@ require 'spec_helper'
 describe UserMailer do
   let(:user) { create(:user) }
 
-  it_should_behave_like "common mailer checks", %w[welcome], params: lambda { FactoryGirl.create(:user) }, no_signature: true
+  it_should_behave_like "common mailer checks", %w[welcome inactive_account], params: lambda { FactoryGirl.create(:user) }, no_signature: true
   it_should_behave_like "common mailer checks", %w[account_suspended account_unsuspended account_archived], params: lambda { FactoryGirl.create(:user).id }
 
   describe "#welcome" do
@@ -18,6 +18,21 @@ describe UserMailer do
 
     it "should set a body that contain info" do
       last_delivery.body.encoded.should include "Welcome to SublimeVideo!"
+    end
+  end
+
+  describe "#inactive_account" do
+    before do
+      described_class.inactive_account(user.id).deliver
+      last_delivery = ActionMailer::Base.deliveries.last
+    end
+
+    it "should set proper subject" do
+      last_delivery.subject.should eql I18n.t('mailer.user_mailer.inactive_account')
+    end
+
+    it "should set a body that contain info" do
+      last_delivery.body.encoded.should include "It's been a week since you've signed up to SublimeVideo"
     end
   end
 

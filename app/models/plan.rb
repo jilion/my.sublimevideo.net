@@ -149,7 +149,7 @@ class Plan < ActiveRecord::Base
 
   def discounted?(site)
     if site && deal = site.user.latest_activated_deal
-      if site.trial_started_during_deal?(deal) || deal.active?
+      if site.created_during_deal?(deal) || deal.active?
         return deal if %W[plans_discount #{cycle}ly_plans_discount #{name}_plan_discount].include?(deal.kind)
       end
     end

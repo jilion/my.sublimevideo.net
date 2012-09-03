@@ -89,6 +89,16 @@ describe UserModules::Scope, :plans do
     specify { User.newsletter(false).all.should eq [@user2] }
   end
 
+  describe ".created_on" do
+    before do
+      @user1 = create(:user, created_at: 3.days.ago)
+      @user2 = create(:user, created_at: 2.days.ago)
+    end
+
+    specify { User.created_on(3.days.ago).all.should eq [@user1] }
+    specify { User.created_on(2.days.ago).all.should eq [@user2] }
+  end
+
   describe ".search" do
     before do
       @user1 = create(:user, email: "remy@jilion.com", name: "Marcel Jacques")
