@@ -60,7 +60,7 @@ end
 #  roles                  :text
 #  sign_in_count          :integer          default(0)
 #  unconfirmed_email      :string(255)
-#  updated_at             :datetime         not null
+#  updated_at             :datetime
 #
 # Indexes
 #

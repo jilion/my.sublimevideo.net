@@ -571,7 +571,7 @@ end
 #
 #  amount                   :integer
 #  balance_deduction_amount :integer          default(0)
-#  created_at               :datetime         not null
+#  created_at               :datetime
 #  customer_billing_address :text
 #  customer_company_name    :string(255)
 #  customer_country         :string(255)
@@ -588,7 +588,7 @@ end
 #  site_id                  :integer
 #  state                    :string(255)
 #  transactions_count       :integer          default(0)
-#  updated_at               :datetime         not null
+#  updated_at               :datetime
 #  vat_amount               :integer
 #  vat_rate                 :float
 #
