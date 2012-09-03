@@ -5,8 +5,12 @@ class VideoCodesController < ApplicationController
   before_filter :redirect_suspended_user, :find_site_by_token!, only: [:new]
 
   # GET /sites/:site_id/video-codes/new
+  # GET /sites/:site_id/video-codes/:vid
   def new
-    find_sites_or_redirect_to_new_site unless public_page?
+    unless public_page?
+      find_sites_or_redirect_to_new_site
+      @video_tag = VideoTag.where(st: @site.token, u: params[:id]).first if params[:id]
+    end
   end
 
   # GET /video-code-generator/mime-type-check

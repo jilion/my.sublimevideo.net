@@ -29,7 +29,7 @@
             - if @video_tags.one?
               Embed code
             - else
-              .sorting= link_to_sort :embed_code, label: "Embed code"
+              .sorting= link_to_sort :embed_code
         %th.status
           .wrap= "Status"
       = render @video_tags

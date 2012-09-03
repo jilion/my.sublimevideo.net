@@ -207,7 +207,7 @@ MySublimeVideo::Application.routes.draw do
       resources :video_tags, only: [:index], path: 'videos'
       resources :video_tags, only: [:show]
 
-      resources :video_codes, only: [:new], path: 'video-codes'
+      resources :video_codes, only: [:new, :show], path: 'video-codes'
 
       resources :stats, only: [:index], controller: 'site_stats' do
         get :videos, on: :collection
