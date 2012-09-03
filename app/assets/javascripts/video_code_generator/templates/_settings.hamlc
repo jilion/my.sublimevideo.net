@@ -11,8 +11,7 @@
     %input#embed_height.text.no_icon{ type: "text", value: @source.get('embedHeight'), size: 4, maxlength: 4 }
 
   .checkbox_wrap{ style: "float:left;margin:14px 0 0 12px" }
-    - @checked = @source.get('keepRatio')
-    %input#keep_ratio(checked=@checked){ type: "checkbox" }
+    %input#keep_ratio{ type: "checkbox", checked: @source.get('keepRatio') }
     %label{ for: "keep_ratio" } Keep original ratio
 
   .spacer
@@ -21,8 +20,7 @@
   .spacer
 
   #start_with_hd_box.checkbox_wrap{ style: "display:#{if @sources.hdPresent() then 'block' else 'none'}" }
-    - check = @builder.get('startWithHd')
-    %input#start_with_hd(checked=check){ type: "checkbox" }
+    %input#start_with_hd{ type: "checkbox", checked: @builder.get('startWithHd') }
     %label{ for: "start_with_hd" } Start with HD version
 
 .content_right

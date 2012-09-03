@@ -11,12 +11,12 @@
   #initial_link
     .radio_wrap
       - check = @thumbnail.get('initialLink') is 'image'
-      %input#initial_link_image(checked=check){ type: "radio", name: "initial_link", value: "image" }
+      %input#initial_link_image{ type: "radio", name: "initial_link", value: "image", checked: check }
       %label{ for: "initial_link_image" } Image
 
     .radio_wrap
       - check = @thumbnail.get('initialLink') is 'text'
-      %input#initial_link_text(checked=check){ type: "radio", name: "initial_link", value: "text" }
+      %input#initial_link_text{ type: "radio", name: "initial_link", value: "text", checked: check }
       %label{ for: "initial_link_text" } Text
   .spacer
   .entry#thumb_box

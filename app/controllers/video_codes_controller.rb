@@ -1,12 +1,13 @@
 require_dependency 'mime_type_guesser'
 
 class VideoCodesController < ApplicationController
-  skip_before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, if: :public_page?
+  before_filter :redirect_suspended_user, :find_site_by_token!, only: [:new]
 
-  # GET /video-code-generator
+  # GET /sites/:site_id/video-codes/new
   def new
-    if user_signed_in?
-      @sites = current_user.sites.not_archived.order(:hostname).select([:token, :hostname, :extra_hostnames, :wildcard, :path])
+    unless public_page?
+      find_sites_or_redirect_to_new_site
     end
   end
 

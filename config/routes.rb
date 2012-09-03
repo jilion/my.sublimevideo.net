@@ -206,12 +206,18 @@ MySublimeVideo::Application.routes.draw do
 
       resources :videos, only: [:index]
 
+      resources :video_codes, only: [:new], path: 'video-codes'
+
+      resources :video_tags, only: [:show]
+
       resources :stats, only: [:index], controller: 'site_stats' do
         get :videos, on: :collection
       end
-
-      resources :video_tags, only: [:show]
     end
+    get  '/video-code-generator' => 'video_codes#new', site_id: 'public'
+    get  '/video-code-generator/iframe-embed' => 'video_codes#iframe_embed'
+    post '/video-code-generator/mime-type-check' => 'video_codes#mime_type_check'
+
     get '/stats-demo' => 'site_stats#index', site_id: 'demo'
     # old backbone route
     get '/sites/stats/demo' => redirect('/stats-demo')
@@ -233,14 +239,6 @@ MySublimeVideo::Application.routes.draw do
 
     resource :support_request, only: [:create], path: 'help'
     %w[support].each { |action| get action, to: redirect('/help') }
-
-    resource :video_code, only: [], path: 'video-code-generator' do
-      collection do
-        get :new, path: '/'
-        get :iframe_embed, path: 'iframe-embed'
-        post :mime_type_check, path: 'mime-type-check'
-      end
-    end
 
     post '/pusher/auth' => 'pusher#auth'
     post '/pusher/webhook' => 'pusher#webhook'

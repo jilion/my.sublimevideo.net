@@ -16,7 +16,6 @@
 - else
   - title("Stats for #{hostname_or_token(@site)}")
 
-
 .stats{ class: @site.in_free_plan? ? 'free' : ''}
   :coffeescript
     jQuery(document).ready ->
