@@ -6,9 +6,7 @@ class VideoCodesController < ApplicationController
 
   # GET /sites/:site_id/video-codes/new
   def new
-    unless public_page?
-      find_sites_or_redirect_to_new_site
-    end
+    find_sites_or_redirect_to_new_site unless public_page?
   end
 
   # GET /video-code-generator/mime-type-check

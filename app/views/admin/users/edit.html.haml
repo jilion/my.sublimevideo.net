@@ -65,15 +65,15 @@
   %hr
   %br
 
-%h3 Early Access
+  %h3 Early Access
 
-= form_for [:admin, @user] do |f|
-  = f.label :early_access, 'List of early access feature available to this user:'
-  = f.select :early_access, EarlyAccess::LIST, {}, multiple: true
-  = f.submit 'Update'
-%br
-%hr
-%br
+  = form_for [:admin, @user] do |f|
+    = f.label :early_access, 'List of early access feature available to this user:'
+    = f.select :early_access, EarlyAccess::LIST, {}, multiple: true
+    = f.submit 'Update'
+  %br
+  %hr
+  %br
 
 
 %p= link_to "Back to users", admin_users_path
