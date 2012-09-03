@@ -41,7 +41,7 @@ describe Site, :plans do
   describe "Associations" do
     subject { create(:site) }
 
-    it { should belong_to :user }
+    it { should belong_to(:user).validate(true) }
     it { should belong_to :plan }
     it { should have_many :invoices }
 
