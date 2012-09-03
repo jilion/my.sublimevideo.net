@@ -7,112 +7,6 @@ class MSVStats.Helpers.ChartsHelper
       lineColor: options.lineColor ? (if options.selected then '#00ff18' else 'rgba(97,255,114,0.7)')
       fillColor: options.fillColor ? (if options.selected then 'rgba(116,255,131,0.46)' else 'rgba(116,255,131,0.24)')
 
-    # Highchart sparkline, too heavy
-    # new Highcharts.Chart
-    #   chart:
-    #     renderTo: el.attr('id'),
-    #     backgroundColor: 'transparent'
-    #     plotBackgroundColor: null
-    #     animation: false
-    #     plotShadow: false
-    #     margin: [0,0,0,0]
-    #     borderWidth: 0
-    #     borderRadius: 0
-    #     events:
-    #       click: (e) -> options.click()
-    #   credits:
-    #     enabled: false
-    #   title:
-    #     text: null
-    #   legend:
-    #     enabled: false
-    #   tooltip:
-    #     enabled: false
-    #   navigator:
-    #     enabled: false
-    #   scrollbar:
-    #     enabled: false
-    #   plotOptions:
-    #     areaspline:
-    #       events:
-    #         click: (e) -> options.click()
-    #       showInLegend: false
-    #       animation: false
-    #       states:
-    #         hover:
-    #           lineWidth: 1
-    #       lineWidth: 1
-    #       marker:
-    #         enabled: false
-    #       borderWidth: 0
-    #       pointPadding: 0
-    #       pointWidth: 4
-    #       shadow: false
-    #   xAxis:
-    #     title: null
-    #     labels:
-    #       enabled: false
-    #   yAxis:
-    #     title: null
-    #     endOnTick: false
-    #     labels:
-    #       enabled: false
-    #   series: [{
-    #     type: 'areaspline'
-    #     name: null
-    #     data: serie
-    #     shadow: false
-    #     fillColor: if options.selected then 'rgba(116,255,131,0.46)' else 'rgba(116,255,131,0.24)' # 'rgba(9,250,33,0.15)'
-    #     lineColor: if options.selected then '#00ff18' else 'rgba(97,255,114,0.7)' # '#00ff18'
-    #   }]
-
-    # new Highcharts.Chart
-    #   chart:
-    #     animation: false
-    #     renderTo: el[0]
-    #     margin: [0,0,0,0]
-    #     borderWidth: 0
-    #     borderRadius: 0
-    #     backgroundColor: 'transparent'
-    #     # height: options.height
-    #     # width:  options.width
-    #     events:
-    #       click: options.click
-    #   series: [
-    #     type: 'areaspline'
-    #     data: serie
-    #     color: if options.selected then '#0046ff' else '#00b1ff'
-    #   ]
-    #   credits:
-    #     enabled: false
-    #   title:
-    #     text: null
-    #   legend:
-    #     enabled: false
-    #   tooltip:
-    #     enabled: false
-    #   xAxis:
-    #     title: ""
-    #     labels:
-    #       enabled: false
-    #   yAxis:
-    #     title: ""
-    #     endOnTick: false
-    #     labels:
-    #       enabled: false
-    #   plotOptions:
-    #     areaspline:
-    #       animation: false
-    #       stickyTracking: false
-    #       enableMouseTracking: false
-    #       borderWidth: 0
-    #       pointPadding: 0
-    #       pointWidth: 4
-    #       shadow: true
-    #       marker:
-    #         enabled: false
-
-
   vvChart: (stats) ->
     MSVStats.vvChart = new Highcharts.Chart
       chart:
@@ -173,39 +67,23 @@ class MSVStats.Helpers.ChartsHelper
         enabled: false
       scrollbar:
         enabled: false
-      # rangeSelector:
-      #   buttons: []
-      #   enabled: MSVStats.period.isDays()
       plotOptions:
         areaspline:
           showInLegend: false
           animation: false
-          states:
-            hover:
-              lineWidth: 2
-        column:
-          borderWidth: 0
-          pointPadding: 0
-          # pointWidth: stats.pointWidth(788)
-          showInLegend: false
-          animation: false
-        series:[{
+        series:
           shadow: false
           borderWidth: 0
           allowPointSelect: false
           stickyTracking: false
           lineWidth: 2
           marker:
-            enabled: true
-            radius: 1
-            lineWidth: 2
             states:
               hover:
                 enabled: false
           states:
             hover:
               lineWidth: 2
-        }]
       series: [{
         type: stats.chartType()
         name: 'Page visits'
@@ -224,10 +102,12 @@ class MSVStats.Helpers.ChartsHelper
         data: stats.customPluck('vv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
         pointInterval: MSVStats.period.pointInterval()
         pointStart: MSVStats.period.startTime()
-        shadow: true
-        shadowColor: 'rgb(116, 255, 131)'
-        shadowOpacityFactor: 0.08
-        shadowWidthParams: [16, 4]
+        shadow:
+          color: 'rgb(116, 255, 131)'
+          offsetX: 1e-100
+          offsetY: 1e-100
+          opacity: 0.22
+          width: 6
         fillColor: 'rgba(9,250,33,0.15)'
         color: '#00ff18'
         lineColor: '#00ff18'

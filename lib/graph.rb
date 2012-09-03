@@ -17,7 +17,7 @@ class Graph
   end
 
   def draw(options = { on_dom_ready: true })
-    result = "var chart = new Highcharts.Chart(#{draw_options});"
+    result = "new Highcharts.Chart(#{draw_options});"
     result = "jQuery(document).ready(function() {" + result + "});" if options[:on_dom_ready]
 
     '<script type="text/javascript">' + result + "</script>"
