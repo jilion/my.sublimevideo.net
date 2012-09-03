@@ -216,7 +216,7 @@ MySublimeVideo::Application.routes.draw do
         get :videos, on: :collection
       end
     end
-    get  '/video-code-generator' => 'video_codes#new', site_id: 'public'
+    get  '/video-code-generator' => 'video_codes#new', site_id: 'public', as: 'video_code_generator'
     get  '/video-code-generator/iframe-embed' => 'video_codes#iframe_embed'
     post '/video-code-generator/mime-type-check' => 'video_codes#mime_type_check'
 
