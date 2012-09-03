@@ -1,0 +1,28 @@
+%tr{ id: dom_id(video_tag), data: { "video-tag-uid" => video_tag.u }, class: cycle("", "alt") }
+  %td.video_tag
+    .wrap
+      .duration= duration_string(video_tag.d)
+      .name= video_tag.n
+      -#= render 'hostname', site: site
+      -#.plan= render 'plan', site: site
+      -#.cycle= render 'cycle', site: site
+      -#.spacer
+
+  %td.usage
+    .wrap
+      -#- if site.plan_id?
+      -#  = render 'td_usage', site: site
+      -#- else
+      -#  = "—"
+  %td.code
+    .wrap
+      = link_to "Video code", 'site_video_code_path(@video_tag)', class: "embed_code"
+      %div{ id: "embed_code_popup_content_#{video_tag.u}", style: 'display:none' }= render 'code', video_tag: video_tag
+
+  %td.status
+    .wrap
+      = tooltip_box class: "in_progress" do
+        %span.p= t 'video_tag.status.in_progress'
+      .completed{ style: "display:none;" }
+        = tooltip_box class: "ok" do
+          %span.p= t 'video_tag.status.ok'

@@ -15,6 +15,9 @@ class VideoTag
   field :cs, type: Array, default: [] # Video current sources array (cs) ['5062d010' (video source crc32), 'abcd1234', ... ] # sources actually used in the video tag
   field :s,  type: Hash,  default: {} # Video sources hash (s) { '5062d010' (video source crc32) => { u (source url) => 'http://.../dartmoor.mp4', q (quality) => 'hd', f (family) => 'mp4', r (resolution) => '320x240' }, ... }
 
+  # NEW FIELDS
+  field :d, type: Integer # Video duration (ms)
+
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:updated_at, Mongo::ASCENDING]]
 
@@ -22,6 +25,10 @@ class VideoTag
 
   def site
     Site.find_by_token(st)
+  end
+
+  def to_param
+    u
   end
 
   # ====================

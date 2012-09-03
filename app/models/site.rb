@@ -76,6 +76,9 @@ class Site < ActiveRecord::Base
   def day_stats
     Stat::Site::Day.where(t: token)
   end
+  def video_tags
+    VideoTag.where(st: token)
+  end
 
   # ===============
   # = Validations =

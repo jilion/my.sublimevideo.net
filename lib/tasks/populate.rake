@@ -151,11 +151,19 @@ namespace :db do
       end
     end
 
-    desc "Create fake plans"
+    desc "Create fake player bundles"
     task player_bundles: :environment do
       disable_perform_deliveries do
         timed { empty_tables(Player::Bundle, Player::BundleVersion) }
         timed { create_player_bundles }
+      end
+    end
+
+    desc "Create fake video_tags"
+    task video_tags: :environment do
+      disable_perform_deliveries do
+        timed { empty_tables(VideoTag) }
+        timed { create_video_tags(argv('site')) }
       end
     end
 
@@ -836,6 +844,39 @@ def create_player_bundles
     end
   end
 end
+
+def create_video_tags(site_token)
+  site = Site.find_by_token!(site_token)
+  (100 + rand(200)).times do
+    time = rand(3000).hours.ago
+    VideoTag.create(
+      st: site.token,
+      u: generate_unique_token,
+      uo: %w[a s][rand(2)],
+      n: Faker::Product.product,
+      no: %w[a s][rand(2)],
+      p: 'http://media.jilion.com/vcg/ms_800.jpg',
+      z: '400x320',
+      cs: %w[5ABAC533 2ABFEFDA 97230509 4E855AFF],
+      s: {
+        '5ABAC533' => { u: 'http://media.jilion.com/vcg/ms_360p.mp4', q: 'base', f: 'mp4' },
+        '5ABAC533' => { u: 'http://media.jilion.com/vcg/ms_720p.mp4', q: 'hd', f: 'mp4' },
+        '5ABAC533' => { u: 'http://media.jilion.com/vcg/ms_360p.webm', q: 'base', f: 'webm' },
+        '5ABAC533' => { u: 'http://media.jilion.com/vcg/ms_720p.webm', q: 'hd', f: 'webm' }
+      },
+      d: (15 * 1000) + rand(2 * 60 * 60 * 1000),
+      created_at: time,
+      updated_at: time
+    )
+  end
+  site.update_last_30_days_video_tags_counters
+end
+
+def generate_unique_token
+  options = { length: 8, chars: ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a }
+  Array.new(options[:length]) { options[:chars].to_a[rand(options[:chars].to_a.size)] }.join
+end
+
 
 def create_deals
   deals_attributes = [

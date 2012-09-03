@@ -1,0 +1,42 @@
+- if @video_tags.present?
+  .main_table_wrap
+    %table.main
+      %col
+      %col.usage
+      %col
+      %col.odd
+      %tr
+        %th.video
+          .wrap
+            %strong
+              = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
+              Video
+            - unless @video_tags.one?
+              .sorting
+                = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
+                = link_to_sort :name
+                = link_to_sort :state
+        %th.usage
+          .wrap
+            - if @video_tags.one?
+              Plays
+              -# TODO Octave (Last 30 Days icon)
+              %span i
+            - else
+              .sorting= link_to_sort :last_30_days_billable_views, default_way: 'desc', label: "Plays (!)"
+        %th.code
+          .wrap
+            - if @video_tags.one?
+              Embed code
+            - else
+              .sorting= link_to_sort :embed_code, label: "Embed code"
+        %th.status
+          .wrap= "Status"
+      = render @video_tags
+
+  .pagination_wrap
+    = paginate @video_tags
+    = page_entries_info @video_tags
+
+- else
+  %p No videos, please add one
