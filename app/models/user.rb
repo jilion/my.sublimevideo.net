@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
                   :billing_name, :billing_address_1, :billing_address_2, :billing_postal_code, :billing_city, :billing_region, :billing_country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
-                  :newsletter, :terms_and_conditions, :early_access
+                  :newsletter, :terms_and_conditions
   # Credit card
   # cc_register is a flag to indicate if the CC should be recorded or not
   attr_accessible :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value, :remote_ip
@@ -214,7 +214,7 @@ class User < ActiveRecord::Base
       postal_code: billing_postal_code,
       city:        billing_city,
       region:      billing_region,
-      country:     billing_country? ? Country[billing_country.to_s].name : ''
+      country:     billing_country.to_s
     ).to_s
   end
 
