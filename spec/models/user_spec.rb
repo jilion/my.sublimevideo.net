@@ -919,7 +919,7 @@ end
 #  created_at                      :datetime
 #  current_sign_in_at              :datetime
 #  current_sign_in_ip              :string(255)
-#  early_access                    :string(255)      default("")
+#  early_access                    :text
 #  email                           :string(255)      default(""), not null
 #  encrypted_password              :string(128)      default(""), not null
 #  enthusiast_id                   :integer
