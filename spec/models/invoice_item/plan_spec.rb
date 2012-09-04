@@ -150,7 +150,7 @@ end
 #
 # Table name: plans
 #
-#  created_at           :datetime
+#  created_at           :datetime         not null
 #  cycle                :string(255)
 #  id                   :integer          not null, primary key
 #  name                 :string(255)
@@ -158,7 +158,7 @@ end
 #  stats_retention_days :integer
 #  support_level        :integer          default(0)
 #  token                :string(255)
-#  updated_at           :datetime
+#  updated_at           :datetime         not null
 #  video_views          :integer
 #
 # Indexes

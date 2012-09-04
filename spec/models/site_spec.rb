@@ -963,7 +963,7 @@ end
 #  archived_at                               :datetime
 #  badged                                    :boolean
 #  cdn_up_to_date                            :boolean          default(FALSE)
-#  created_at                                :datetime
+#  created_at                                :datetime         not null
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
 #  first_billable_plays_at                   :datetime
@@ -998,7 +998,7 @@ end
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime
-#  updated_at                                :datetime
+#  updated_at                                :datetime         not null
 #  user_id                                   :integer
 #  wildcard                                  :boolean
 #
