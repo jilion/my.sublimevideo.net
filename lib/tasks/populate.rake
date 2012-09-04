@@ -852,9 +852,9 @@ def create_video_tags(site_token)
     VideoTag.create(
       st: site.token,
       u: generate_unique_token,
-      uo: %w[a s][rand(2)],
+      uo: %w[a s].sample,
       n: Faker::Product.product,
-      no: %w[a s][rand(2)],
+      no: %w[a s].sample,
       p: 'http://media.jilion.com/vcg/ms_800.jpg',
       z: '400x320',
       cs: %w[5ABAC533 2ABFEFDA 97230509 4E855AFF],
