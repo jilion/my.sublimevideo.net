@@ -37,7 +37,8 @@ module VideoTagsHelper
       poster: video_tag.poster(:large),
       width: 640, height: 360,
       data: { name: video_tag.n, uid: video_tag.u },
-      prelaod: 'none'
+      preload: 'none',
+      style: 'display:none'
     ) do
       sources = video_tag.sources.map do |source|
         options = { src: source['u'] }

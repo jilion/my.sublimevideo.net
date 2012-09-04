@@ -48,10 +48,10 @@ describe VideoTagsHelper do
     end
   end
 
-  describe "#playable_lightbox" , :focus do
+  describe "#playable_lightbox" do
     it "returns complete" do
       Helper.playable_lightbox(video_tag, size: '96x54').should eq(
-        "<a href=\"http://media.jilion.com/vcg/ms_360p.mp4\" class=\"sublime\"><img alt=\"Ms_800\" height=\"54\" src=\"http://media.jilion.com/vcg/ms_800.jpg\" width=\"96\" /></a><video class=\"sublime lightbox\" data-name=\"My Video\" data-uid=\"uid-token\" height=\"360\" poster=\"http://media.jilion.com/vcg/ms_800.jpg\" prelaod=\"none\" width=\"640\"><source src=\"http://media.jilion.com/vcg/ms_360p.mp4\" /><source data-quality=\"hd\" src=\"http://media.jilion.com/vcg/ms_720p.mp4\" /><source src=\"http://media.jilion.com/vcg/ms_360p.webm\" /><source data-quality=\"hd\" src=\"http://media.jilion.com/vcg/ms_720p.webm\" /></video>"
+        "<a href=\"http://media.jilion.com/vcg/ms_360p.mp4\" class=\"sublime\"><img alt=\"Ms_800\" height=\"54\" src=\"http://media.jilion.com/vcg/ms_800.jpg\" width=\"96\" /></a><video class=\"sublime lightbox\" data-name=\"My Video\" data-uid=\"uid-token\" height=\"360\" poster=\"http://media.jilion.com/vcg/ms_800.jpg\" preload=\"none\" style=\"display:none\" width=\"640\"><source src=\"http://media.jilion.com/vcg/ms_360p.mp4\" /><source data-quality=\"hd\" src=\"http://media.jilion.com/vcg/ms_720p.mp4\" /><source src=\"http://media.jilion.com/vcg/ms_360p.webm\" /><source data-quality=\"hd\" src=\"http://media.jilion.com/vcg/ms_720p.webm\" /></video>"
       )
     end
   end

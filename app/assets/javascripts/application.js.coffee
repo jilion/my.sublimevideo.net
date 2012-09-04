@@ -38,7 +38,7 @@ MySublimeVideo.UI.prepareSiteSelector = ->
         container: '[data-pjax-container]'
 
 MySublimeVideo.UI.prepareEmbedCodePopups = ->
-  $('a.embed_code').each ->
+  $('a.player_code').each ->
     new MySublimeVideo.UI.EmbedCode(link: $(this))
 
 MySublimeVideo.UI.prepareFlashNotices = ->
@@ -103,6 +103,12 @@ $(document).ready ->
       $('body').attr("class", bodyClass)
 
       SublimeVideo.documentReady()
-      sublimevideo.prepare()
-      MySublimeVideo.documentReady()
 
+      if sublimevideo.prepare?
+        sublimevideo.prepare()
+      else
+        sublimevideo.load()
+        sublimevideo.ready ->
+          sublimevideo.prepare()
+
+      MySublimeVideo.documentReady()
