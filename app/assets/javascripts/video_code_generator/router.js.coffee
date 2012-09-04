@@ -1,7 +1,7 @@
 class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
   initialize: (options) ->
-    @publicPage = options['public_page']
-    @sites      = options['sites']
+    @userSignedIn = options['user_signed_in']
+    @sites        = options['sites']
 
     this.handlePublicClass()
     this.initModels()
@@ -9,7 +9,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     sublimevideo.load()
 
   handlePublicClass: ->
-    $('body').addClass('mysv_public') if @publicPage
+    $('body').addClass('mysv_public') unless @userSignedIn
 
   initModels: ->
     MSVVideoCodeGenerator.sites = new MySublimeVideo.Collections.Sites(@sites)

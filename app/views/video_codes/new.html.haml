@@ -1,4 +1,4 @@
-- if public_page?
+- if !user_signed_in?
   - @body_class = @body_class.to_s + ' vcg'
   - title('Video Code Generator', prefix: 'SublimeVideo')
   = content_for :header do
@@ -10,14 +10,24 @@
     %p
       = raw "SublimeVideo's Video Code Generator helps you easily generate properly configured <code>&lt;video&gt;</code> elements for use with SublimeVideo. It's also the easiest way to quickly test SublimeVideo player with your own video sources."
       = raw "#{link_to 'Read more', 'http://blog.jilion.com/2012/04/17/introducing-the-sublimevideo-video-code-generator', onclick: 'window.open(this); return false'}."
+
 - else
-  - title("Generate Video Code for #{hostname_or_token(@site)}")
-  = render '/layouts/site_header'
+  - if early_access?('video')
+    - title("Generate Video Code for #{hostname_or_token(@site)}")
+    = render '/layouts/site_header'
+  - else
+    = title_and_content_header('Video Code Generator')
+    .com_text
+      .help_box
+        %p
+          = raw "SublimeVideo's Video Code Generator helps you easily generate properly configured <code>&lt;video&gt;</code> elements, avoiding common mistakes and ensuring the optimal viewing experience for your viewers."
+          = raw "#{link_to 'Read more', docs_url('video-code-generator'), class: 'hl', onclick: 'window.open(this); return false'}."
+      .big_break
 
 :coffeescript
   jQuery(document).ready ->
     SublimeVideoSizeChecker.setRoot('/video-size-checker/')
-    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(public_page: #{public_page?}, sites: #{@sites.try(:to_json) || []})
+    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(user_signed_in: #{user_signed_in?}, sites: #{@sites.try(:to_json) || []})
 
 .video_code_generator
   #video_embed_type_selector
