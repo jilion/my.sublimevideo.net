@@ -28,20 +28,20 @@ gem 'haml',                  '~> 3.1.6'
 gem 'coffee-rails',          '~> 3.2.2'
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              '~> 0.14.0'
-gem 'liquid',                '~> 2.2.2'
+gem 'liquid',                '~> 2.4.1'
 gem 'rails_autolink',        '~> 1.0.7'
 gem 'hpricot',               '~> 0.8.6'
 gem 'premailer',             github: 'jilion/premailer'
-gem 'premailer-rails3',      '~> 1.1.0'
+gem 'premailer-rails3',      '~> 1.3.1'
 
 # Auth / invitations
-gem 'devise',                '~> 2.0.1'
-gem 'devise_invitable',      '~> 1.0.0'
+gem 'devise',                '~> 2.1.2'
+gem 'devise_invitable',      '~> 1.1.0'
 
 # API
-gem 'oauth',                 '~> 0.4.6'
+gem 'oauth',                 '~> 0.4.7'
 gem 'oauth-plugin',          '~> 0.4.1'
-gem 'acts_as_api',           '~> 0.3.10'
+gem 'acts_as_api',           '~> 0.4.1'
 
 # Internals
 gem 'delayed_job',           github: 'collectiveidea/delayed_job', branch: 'v2.1'
@@ -52,15 +52,15 @@ gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'
 gem 'state_machine',         '~> 1.1.2'
 gem 'paper_trail',           '~> 2.6.0'
 gem 'uniquify',              '~> 0.1.0'
-gem 'acts-as-taggable-on',   '~> 2.2.2'
+gem 'acts-as-taggable-on',   '~> 2.3.3'
 
-gem 'responders',            '~> 0.7.0'
+gem 'responders',            '~> 0.9.2'
 gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
 gem 'fog',                   '~> 1.5.0'
 gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/processing/mime_types']
-gem 'carrierwave-mongoid',   '~> 0.1.1', require: 'carrierwave/mongoid'
+gem 'carrierwave-mongoid',   '~> 0.2.1', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
 
 gem 'rack-pjax'
@@ -69,7 +69,7 @@ gem 'rack-pjax'
 gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
 gem 'edge_cast',             '~> 0.0.1' # hosted on gemfury
 
-gem 'activemerchant',        '1.23.0'
+gem 'activemerchant',        '1.28.0'
 gem 'public_suffix',         '~> 1.1.2'
 gem 'useragent',             github: 'jilion/useragent' # needed for stat_request_parser
 gem 'stat_request_parser',   '~> 1.1.0' # hosted on gemfury
@@ -77,21 +77,21 @@ gem 'stat_request_parser',   '~> 1.1.0' # hosted on gemfury
 gem 'rubyzip',               '~> 0.9.7', require: 'zip/zip'
 gem 'mime-types'
 gem 'countries',             '~> 0.8.2'
-gem 'snail',                 '~> 0.5.7'
-gem 'PageRankr',             '~> 3.1.0', require: 'page_rankr'
-gem 'twitter',               '~> 2.1.0'
+gem 'snail',                 '~> 0.6.1'
+gem 'PageRankr',             '~> 3.2.1', require: 'page_rankr'
+gem 'twitter',               '~> 3.7.0'
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 1.0.0' # Campaign Monitor
 
-gem 'airbrake',              '~> 3.0.5'
+gem 'airbrake',              '~> 3.1.2'
 gem 'prowl',                 '~> 0.1.3'
 
-gem 'addressable',           '~> 2.2.6', require: 'addressable/uri'
+gem 'addressable',           '~> 2.3.2', require: 'addressable/uri'
 
 # Stats
 gem 'crack',                 '~> 0.1.8'
 gem 'pusher',                '~> 0.9.2'
-gem 'redis',                 '~> 2.2.2'
+gem 'redis',                 '~> 3.0.1'
 
 # Tickets
 gem 'zendesk_api',           '~> 0.1.2'
@@ -118,7 +118,7 @@ end
 group :staging, :production do
   gem 'rack-ssl-enforcer'
   gem 'thin'
-  gem 'dalli', '~> 2.1.0'
+  gem 'dalli', '~> 2.2.0'
   gem 'rpm_contrib'
   gem 'newrelic_rpm'
 end
