@@ -16,8 +16,7 @@
       -#  = "—"
   %td.code
     .wrap
-      = link_to "Video code", site_video_code_path(@site, video_tag), class: "embed_code", data: { token: video_tag.u }
-      %div{ id: "embed_code_popup_content_#{video_tag.u}", style: 'display:none' }= render 'code', video_tag: video_tag
+      = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'
 
   %td.status
     .wrap
