@@ -2,12 +2,8 @@
   %td.video_tag
     .wrap
       .duration= duration_string(video_tag.d)
+      .thumbnail= playable_lightbox(video_tag, size: '96x54')
       .name= video_tag.n
-      -#= render 'hostname', site: site
-      -#.plan= render 'plan', site: site
-      -#.cycle= render 'cycle', site: site
-      -#.spacer
-
   %td.usage
     .wrap
       -#- if site.plan_id?
@@ -17,7 +13,6 @@
   %td.code
     .wrap
       = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'
-
   %td.status
     .wrap
       = tooltip_box class: "in_progress" do

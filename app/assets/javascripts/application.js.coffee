@@ -103,5 +103,6 @@ jQuery(document).ready ->
       jQuery('body').attr("class", bodyClass)
 
       SublimeVideo.documentReady()
+      sublimevideo.prepare()
       MySublimeVideo.documentReady()
 

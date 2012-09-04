@@ -4,6 +4,8 @@ class VideoTag
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  include VideoTagModules::Presenter
+
   field :st, type: String # Site token
   field :u,  type: String # Video uid
   # meta data

@@ -11,7 +11,7 @@ class VideoTagsController < ApplicationController
   def index
     @video_tags = @site.video_tags
 
-    respond_with(@video_tags)
+    respond_with(@video_tags, per_page: 10)
   end
 
   # GET /sites/:site_id/video_tags/:id
