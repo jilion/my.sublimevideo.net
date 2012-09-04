@@ -860,9 +860,9 @@ def create_video_tags(site_token)
       cs: %w[5ABAC533 2ABFEFDA 97230509 4E855AFF],
       s: {
         '5ABAC533' => { u: 'http://media.jilion.com/vcg/ms_360p.mp4', q: 'base', f: 'mp4' },
-        '5ABAC533' => { u: 'http://media.jilion.com/vcg/ms_720p.mp4', q: 'hd', f: 'mp4' },
-        '5ABAC533' => { u: 'http://media.jilion.com/vcg/ms_360p.webm', q: 'base', f: 'webm' },
-        '5ABAC533' => { u: 'http://media.jilion.com/vcg/ms_720p.webm', q: 'hd', f: 'webm' }
+        '2ABFEFDA' => { u: 'http://media.jilion.com/vcg/ms_720p.mp4', q: 'hd', f: 'mp4' },
+        '97230509' => { u: 'http://media.jilion.com/vcg/ms_360p.webm', q: 'base', f: 'webm' },
+        '4E855AFF' => { u: 'http://media.jilion.com/vcg/ms_720p.webm', q: 'hd', f: 'webm' }
       },
       d: (15 * 1000) + rand(2 * 60 * 60 * 1000),
       created_at: time,
