@@ -35,6 +35,7 @@ class User < ActiveRecord::Base
   attr_accessible :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value, :remote_ip
 
   serialize :hidden_notice_ids, Array
+  serialize :early_access, Array
 
   uniquify :cc_alias, chars: Array('A'..'Z') + Array('0'..'9')
 

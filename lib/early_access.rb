@@ -7,9 +7,9 @@ module EarlyAccess
   end
 
   def early_access_body_class
-    current_user_early_access.split(' ').map do |feature|
-      "early_access_#{feature}"
-    end.join(' ')
+    current_user_early_access.map do |feature|
+      feature.empty? ? nil : "early_access_#{feature}"
+    end.compact.join(' ')
   end
 
   def self.included(base)
@@ -21,9 +21,9 @@ module EarlyAccess
 
   def current_user_early_access
     if Rails.env.development? && params[:early_access]
-      params[:early_access]
+      [params[:early_access]]
     else
-      current_user.try(:early_access).to_s
+      current_user.try(:early_access) || []
     end
   # Manage DB migration on first deploy
   rescue NoMethodError

@@ -9,7 +9,7 @@
 #= require_tree ./admin/player
 #= require admin/stats
 
-jQuery.fn.exists = -> @length > 0
+$.fn.exists = -> @length > 0
 
 window.MySublimeVideo =
   UI: {}
@@ -35,18 +35,18 @@ window.AdminSublimeVideo.Helpers.addCommasToInteger = (nStr) ->
   x1 + x2
 
 AdminSublimeVideo.documentReady = ->
-  if (searchInput = jQuery('#search_input')).exists()
+  if (searchInput = $('#search_input')).exists()
     new AdminSublimeVideo.Form.Ajax(form: searchInput.parent('form'))
 
   ## Tags autocomplete
-  if (tagList = jQuery('.tag_list')).exists()
+  if (tagList = $('.tag_list')).exists()
     form = tagList.parent('form')
     ajaxFormUpdate = (term = null, chosen = null) ->
       if term? and chosen?
         chosen.append_option
           value: term
           text: term
-      jQuery.ajax form.attr('action'),
+      $.ajax form.attr('action'),
         type: 'put'
         dataType: 'script'
         data: form.serialize()
@@ -55,31 +55,33 @@ AdminSublimeVideo.documentReady = ->
       no_results_text: "No tags matched"
     .change (event) -> ajaxFormUpdate()
 
+  ## Early access select
+  if (earlyAccessList = $('#user_early_access')).exists()
+    earlyAccessList.chosen()
+
   ## Filters
-  if (filters = jQuery('.filters')).exists()
+  if (filters = $('.filters')).exists()
     filters.find('a.remote').each (index, link) ->
-      jQuery(this).click (e) ->
+      $(this).click (e) ->
         filters.find('a.remote.active').removeClass 'active'
-        jQuery(link).addClass 'active'
+        $(link).addClass 'active'
 
   ## Range form
-  if (rangeInput = jQuery('#range_input')).exists()
+  if (rangeInput = $('#range_input')).exists()
     new AdminSublimeVideo.Form.Ajax
       form: rangeInput.parent('form')
       observable: rangeInput
       event: 'mouseup'
 
     rangeInput.on 'change', (event) ->
-      jQuery('label[for=with_min_billable_video_views]').text(AdminSublimeVideo.Helpers.addCommasToInteger(rangeInput.val()))
+      $('label[for=with_min_billable_video_views]').text(AdminSublimeVideo.Helpers.addCommasToInteger(rangeInput.val()))
 
-jQuery(document).ready ->
+$(document).ready ->
   AdminSublimeVideo.documentReady()
 
-  $('#user_early_access').chosen()
-
-  jQuery('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax]):not(.selector)').pjax '[data-pjax-container]',
+  $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax]):not(.selector)').pjax '[data-pjax-container]',
     timeout: 2000
-  jQuery('[data-pjax-container]')
+  $('[data-pjax-container]')
     .on 'pjax:end', ->
       SublimeVideo.documentReady()
       AdminSublimeVideo.documentReady()
