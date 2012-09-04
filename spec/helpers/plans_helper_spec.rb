@@ -3,7 +3,7 @@ require 'spec_helper'
 describe PlansHelper do
 
   describe ".plan_change_type", :plans do
-    before(:all) do
+    before do
       @site_in_trial      = create(:site, plan_id: @trial_plan.id)
       @site_not_in_trial  = create(:site)
       @paid_plan_monthly  = create(:plan, cycle: "month", price: 1000)

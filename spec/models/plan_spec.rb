@@ -161,7 +161,7 @@ describe Plan, :plans do
     end
 
     describe "#upgrade?" do
-      before(:all) do
+      before do
         @paid_plan         = build(:plan, cycle: "month", price: 1000)
         @paid_plan2        = build(:plan, cycle: "month", price: 5000)
         @paid_plan_yearly  = build(:plan, cycle: "year",  price: 10000)
@@ -221,7 +221,7 @@ describe Plan, :plans do
     end
 
     describe "#daily_video_views" do
-      before(:all) do
+      before do
         @plan1 = build(:plan, cycle: "month", video_views: 1000)
         @plan2 = build(:plan, cycle: "year", video_views: 2000)
         @plan3 = build(:plan, cycle: "none", video_views: 3000)

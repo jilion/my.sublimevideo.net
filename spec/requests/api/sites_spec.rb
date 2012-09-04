@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 feature "Sites API" do
-  before(:all) do
+  before do
     @user        = create(:user)
     @site        = create(:site, user: @user)
     @application = create(:client_application, user: @user)

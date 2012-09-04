@@ -16,7 +16,7 @@ describe Referrer do
   end
 
   describe ".create_or_update_from_trackers!" do
-    before(:all) do
+    before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960')
       @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastReferrers')
     end
