@@ -19,28 +19,28 @@ class MySublimeVideo.Helpers.Uploader
       multipart_params: @options['multipart_params']
 
     @uploader.bind 'Init', (up, params) ->
-      jQuery('#filelist').html "<div>Current runtime: #{params.runtime}</div>"
+      $('#filelist').html "<div>Current runtime: #{params.runtime}</div>"
 
-    jQuery('#uploadfiles').click (e) =>
+    $('#uploadfiles').click (e) =>
       @uploader.start()
       e.preventDefault()
 
     @uploader.init()
 
     @uploader.bind 'FilesAdded', (up, files) ->
-      jQuery.each files, (i, file) ->
-        jQuery('#filelist').append "<div id='#{file.id}'>#{file.name} (#{plupload.formatSize(file.size)}) <b></b></div>"
+      $.each files, (i, file) ->
+        $('#filelist').append "<div id='#{file.id}'>#{file.name} (#{plupload.formatSize(file.size)}) <b></b></div>"
       up.refresh() # Reposition Flash/Silverlight
 
     @uploader.bind 'UploadProgress', (up, file) ->
-      jQuery("##{file.id} b").html "#{file.percent}%"
+      $("##{file.id} b").html "#{file.percent}%"
 
     @uploader.bind 'Error', (up, err) ->
-      jQuery('#filelist').append "<div>Error: #{err.code}, Message: #{err.message}#{if err.file then ", File: #{err.file.name}" else ""}</div>"
+      $('#filelist').append "<div>Error: #{err.code}, Message: #{err.message}#{if err.file then ", File: #{err.file.name}" else ""}</div>"
       up.refresh() # Reposition Flash/Silverlight
 
     @uploader.bind 'FileUploaded', (up, file) =>
-      jQuery("##{file.id} b").html("100%")
+      $("##{file.id} b").html("100%")
       console.log "Let's encode #{@options['url'] + @options['multipart_params']['key'].replace('${filename}', file.name)}!"
 
   getOptions: -> @options

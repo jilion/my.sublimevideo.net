@@ -26,14 +26,14 @@ class AdminSublimeVideo.Form.Ajax
   setupObservers: ->
     @observable.on @event, (event) =>
       event.preventDefault() if @event is 'submit'
-      # jQuery('#table_spinner').show()
+      # $('#table_spinner').show()
       params = @form.serialize()
-      jQuery.ajax @action,
+      $.ajax @action,
         type: @method
         dataType: 'script'
         data: params
         complete: (jqXHR, textStatus) =>
-          # jQuery('#table_spinner').hide()
+          # $('#table_spinner').hide()
           if history && history.pushState?
             history.replaceState null, document.title, "#{@action}?#{params}"
 

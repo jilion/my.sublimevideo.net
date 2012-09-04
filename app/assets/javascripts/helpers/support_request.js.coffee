@@ -1,15 +1,15 @@
 class MySublimeVideo.Helpers.SupportRequest
   constructor: ->
-    @currentEnvCheckbox    = jQuery('#current_env')
-    @envTextArea           = jQuery('#support_request_env')
+    @currentEnvCheckbox    = $('#current_env')
+    @envTextArea           = $('#support_request_env')
 
     this.setupFileUploadElementsAndObservers()
     this.setupCurrentEnvAndObserver()
 
   setupFileUploadElementsAndObservers: ->
-    @fileUploadBox         = jQuery('#ticket_upload')
-    @fileUploadField       = jQuery('#support_request_uploads_0')
-    @fileUploadClearButton = jQuery('#cancel_upload')
+    @fileUploadBox         = $('#ticket_upload')
+    @fileUploadField       = $('#support_request_uploads_0')
+    @fileUploadClearButton = $('#cancel_upload')
 
     @fileUploadClearButton.hide()
 
@@ -32,7 +32,7 @@ class MySublimeVideo.Helpers.SupportRequest
 
   setupCurrentEnv: ->
     if @currentEnvCheckbox.attr('checked')?
-      if (!jQuery.trim(@envTextArea.val()))
+      if (!$.trim(@envTextArea.val()))
         this.setCurrentEnv()
       else if confirm 'This will reset what you already added in the textarea and replace it with your current environment information.'
         this.setCurrentEnv()
@@ -41,7 +41,7 @@ class MySublimeVideo.Helpers.SupportRequest
     else
       this.removeCurrentEnv()
 
-  setCurrentEnv: -> 
+  setCurrentEnv: ->
     @envTextArea.val(navigator.userAgent)
     @envTextArea.attr('readonly', 'readonly')
 

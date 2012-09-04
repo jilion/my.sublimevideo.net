@@ -9,7 +9,7 @@
 #= require stats
 #= require video_code_generator
 
-jQuery.fn.exists = -> @length > 0
+$.fn.exists = -> @length > 0
 
 window.MySublimeVideo =
   UI: {}
@@ -30,41 +30,41 @@ window.spinOptions =
   shadow: false
 
 MySublimeVideo.UI.prepareSiteSelector = ->
-  if (sitesSelectTitle = jQuery('#sites_select_title')).exists()
-    jQuery('#sites_select_title').on 'change', ->
+  if (sitesSelectTitle = $('#sites_select_title')).exists()
+    $('#sites_select_title').on 'change', ->
       path = location.pathname.replace("/#{sitesSelectTitle.attr('data-token')}", "/#{sitesSelectTitle.val()}")
-      jQuery.pjax
+      $.pjax
         url: path
         container: '[data-pjax-container]'
 
 MySublimeVideo.UI.prepareEmbedCodePopups = ->
-  jQuery('a.embed_code').each ->
-    new MySublimeVideo.UI.EmbedCode(link: jQuery(this))
+  $('a.embed_code').each ->
+    new MySublimeVideo.UI.EmbedCode(link: $(this))
 
 MySublimeVideo.UI.prepareFlashNotices = ->
-  jQuery('#flash .notice').each ->
-    new MySublimeVideo.UI.Notice(element: jQuery(this)).setupDelayedHiding()
+  $('#flash .notice').each ->
+    new MySublimeVideo.UI.Notice(element: $(this)).setupDelayedHiding()
 
 MySublimeVideo.UI.prepareHidableNotices = ->
-  jQuery('.hidable_notice').each ->
-    new MySublimeVideo.UI.Notice(element: jQuery(this)).setupCloseButton()
+  $('.hidable_notice').each ->
+    new MySublimeVideo.UI.Notice(element: $(this)).setupCloseButton()
 
 MySublimeVideo.UI.prepareSitesStatus = ->
-  if (table = jQuery('#sites_table_wrap')).exists()
+  if (table = $('#sites_table_wrap')).exists()
     new MySublimeVideo.UI.SitesStatus(table)
 
 MySublimeVideo.UI.preparePlansChooser = ->
-  if jQuery('#plan_fields').exists()
-    if jQuery('#new_site').exists()
+  if $('#plan_fields').exists()
+    if $('#new_site').exists()
       new MySublimeVideo.UI.NewSitePlanChooser()
     else
       new MySublimeVideo.UI.PersistedSitePlanChooser()
 
 MySublimeVideo.UI.prepareSupportRequest = ->
-  new MySublimeVideo.Helpers.SupportRequest() if jQuery('#new_support_request').exists()
+  new MySublimeVideo.Helpers.SupportRequest() if $('#new_support_request').exists()
 
 MySublimeVideo.UI.prepareFeedbackForm = ->
-  new MySublimeVideo.Helpers.FeedbackForm() if jQuery('#new_feedback').exists()
+  new MySublimeVideo.Helpers.FeedbackForm() if $('#new_feedback').exists()
 
 MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareSiteSelector()
@@ -83,24 +83,24 @@ MySublimeVideo.documentReady = ->
 
   MySublimeVideo.UI.prepareFeedbackForm()
 
-  if (moreInfoForm = jQuery('#edit_more_info')).exists()
+  if (moreInfoForm = $('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->
       _gaq.push(['_trackEvent', 'SignUp', 'Completed', undefined, 1, true]) if _gaq?
 
   _.each ['new_site', 'edit_site_plan'], (formId) ->
-    if (form = jQuery("##{formId}")).exists()
+    if (form = $("##{formId}")).exists()
       form.on 'submit', (e) ->
-        jQuery('#site_submit').attr('disabled', 'disabled')
+        $('#site_submit').attr('disabled', 'disabled')
 
-jQuery(document).ready ->
+$(document).ready ->
   MySublimeVideo.documentReady()
 
-  jQuery('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])').pjax('[data-pjax-container]')
-  jQuery('[data-pjax-container]')
+  $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])').pjax('[data-pjax-container]')
+  $('[data-pjax-container]')
     .on 'pjax:end', ->
       # Ensure that body class is always up-to-date
-      bodyClass = jQuery('div[data-body-class]').data('body-class')
-      jQuery('body').attr("class", bodyClass)
+      bodyClass = $('div[data-body-class]').data('body-class')
+      $('body').attr("class", bodyClass)
 
       SublimeVideo.documentReady()
       sublimevideo.prepare()

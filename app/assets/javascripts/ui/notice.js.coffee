@@ -10,14 +10,14 @@ class MySublimeVideo.UI.Notice
   # @option options [String] message the actual message to display (HTML accepted)
   #
   constructor: (options) ->
-    @element = options.element or jQuery('<div>', id: 'flash').html(jQuery('<div>', class: options.type).html(options.message))
+    @element = options.element or $('<div>', id: 'flash').html($('<div>', class: options.type).html(options.message))
 
   # This shows the flash notice (and remove any flash notice present before).
   #
   show: ->
-    flashDiv.remove() if flashDiv = jQuery('#flash')
+    flashDiv.remove() if flashDiv = $('#flash')
 
-    jQuery('#content').prepend @element
+    $('#content').prepend @element
 
     this.setupDelayedHiding()
 
@@ -39,7 +39,7 @@ class MySublimeVideo.UI.Notice
   setupCloseButton: (options = { duration: 1.5 }) ->
     noticeId = @element.attr 'data-notice-id'
     @element.find('.close').on 'click', =>
-      jQuery.ajax "/notice/#{noticeId}",
+      $.ajax "/notice/#{noticeId}",
         type: 'post'
         dataType: 'script'
         data: { _method: 'delete' }
