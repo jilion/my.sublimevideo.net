@@ -1,0 +1,51 @@
+:coffeescript
+  $(document).ready ->
+    SublimeVideoSizeChecker.setRoot('/video-size-checker/')
+    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(user_signed_in: #{user_signed_in?}, sites: #{@sites.try(:to_json) || []})
+
+.video_code_generator
+  #video_embed_type_selector
+    .radio_wrap
+      = radio_button_tag "type", "standard", checked: true
+      = label_tag "type_standard", "Standard"
+    .radio_wrap
+      = radio_button_tag "type", "lightbox"
+      = label_tag "type_lightbox", "Lightbox"
+    .radio_wrap
+      = radio_button_tag "type", "iframe_embed"
+      = label_tag "type_iframe_embed", "Iframe Embed"
+
+  #demo_bootstrap
+    = tooltip_box class: "info" do
+      %span.p Use our demo assets if you don't have your video assets yet, or just want to test-drive SublimeVideo.
+
+    %button.green_button#use_demo_assets Use demo assets
+    %a.reset.hl{ href: '' } Reset all fields
+
+  .spacer
+  .big_break
+
+  %form#video_code_form
+    #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+
+    #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+
+    #login_needed
+      #poster
+      .spacer
+      .big_break
+
+      #sources
+      .spacer
+      .big_break
+
+      #settings
+      .spacer
+      .big_break
+
+      #preview
+      .spacer
+
+      #code
+        %button.blue_button#get_the_code{ style: "margin:auto" } Get the Code
+  .spacer

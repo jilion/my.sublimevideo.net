@@ -1,0 +1,7 @@
+- title("Generate Video Code for #{@video_tag.n}")
+= render '/layouts/site_header'
+
+%h3= @video_tag.n
+%p= hostname_or_token(@site)
+
+= render 'form'

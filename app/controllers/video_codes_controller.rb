@@ -2,7 +2,10 @@ require_dependency 'mime_type_guesser'
 
 class VideoCodesController < ApplicationController
   skip_before_filter :authenticate_user!, if: :public_page?
-  before_filter :redirect_routes, :redirect_suspended_user, :find_site_by_token!, only: [:new]
+  before_filter :redirect_routes, :redirect_suspended_user, only: [:new]
+  before_filter :find_sites_or_redirect_to_new_site, unless: :public_page?, only: [:new, :show]
+  before_filter :find_site_by_token!, only: [:new, :show]
+  before_filter :require_video_early_access, only: [:show]
 
   ## Private page for users with early access to video:
   # GET /sites/:site_id/video-codes/new
@@ -11,10 +14,10 @@ class VideoCodesController < ApplicationController
   ## Public page and private page for users without early access to video:
   # GET /video-code-generator
   def new
-    unless public_page?
-      find_sites_or_redirect_to_new_site
-      @video_tag = VideoTag.where(st: @site.token, u: params[:id]).first if params[:id]
-    end
+  end
+
+  def show
+    @video_tag = VideoTag.where(st: @site.token, u: params[:id]).first
   end
 
   # GET /video-code-generator/mime-type-check

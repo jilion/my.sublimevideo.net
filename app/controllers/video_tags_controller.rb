@@ -23,10 +23,4 @@ class VideoTagsController < ApplicationController
     end
   end
 
-private
-
-  def require_video_early_access
-    redirect_to root_url unless early_access?('video')
-  end
-
 end
