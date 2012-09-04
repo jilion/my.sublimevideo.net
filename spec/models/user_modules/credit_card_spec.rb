@@ -279,7 +279,7 @@ describe UserModules::CreditCard, :plans do
           subject.credit_card.should eq first_credit_card
 
           subject.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
-          subject.credit_card.type.should eq valid_cc_attributes[:cc_brand]
+          subject.credit_card.brand.should eq valid_cc_attributes[:cc_brand]
           subject.credit_card.number.should eq valid_cc_attributes[:cc_number]
           subject.credit_card.month.should eq valid_cc_attributes[:cc_expiration_month]
           subject.credit_card.year.should eq valid_cc_attributes[:cc_expiration_year]
@@ -302,7 +302,7 @@ describe UserModules::CreditCard, :plans do
 
             subject.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
             subject.credit_card.should_not eq first_credit_card
-            subject.credit_card.type.should eq valid_cc_attributes_master[:cc_brand]
+            subject.credit_card.brand.should eq valid_cc_attributes_master[:cc_brand]
             subject.credit_card.number.should eq valid_cc_attributes_master[:cc_number]
             subject.credit_card.month.should eq valid_cc_attributes_master[:cc_expiration_month]
             subject.credit_card.year.should eq valid_cc_attributes_master[:cc_expiration_year]

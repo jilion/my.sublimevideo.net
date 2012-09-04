@@ -24,7 +24,7 @@ module UserModules::CreditCard
           # do nothing
         when 'year'
           self.errors.add(:cc_expiration_year, credit_card.errors.on(:year))
-        when 'type'
+        when 'brand'
           self.errors.add(:cc_brand, :invalid)
         when 'number'
           self.errors.add(:cc_number, :invalid)
@@ -40,7 +40,7 @@ module UserModules::CreditCard
       reset_credit_card if force_refresh
 
       @credit_card ||= ActiveMerchant::Billing::CreditCard.new(
-                        type:               cc_brand,
+                        brand:              cc_brand,
                         number:             cc_number,
                         month:              cc_expiration_month,
                         year:               cc_expiration_year,
@@ -85,7 +85,7 @@ module UserModules::CreditCard
     # before_save if credit_card(true).valid?
     def prepare_pending_credit_card
       self.cc_register = true
-      self.pending_cc_type        = credit_card.type
+      self.pending_cc_type        = credit_card.brand
       self.pending_cc_last_digits = credit_card.last_digits
       self.pending_cc_expire_on   = Time.utc(credit_card.year, credit_card.month).end_of_month.to_date
       self.pending_cc_updated_at  = Time.now.utc
