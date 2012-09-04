@@ -51,7 +51,7 @@ describe BillingMailer do
 
         it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', hostname: site.hostname, days: 1) }
         it { last_delivery.body.encoded.should include "Dear #{user.name}," }
-        it { last_delivery.body.encoded.should include I18n.l(site.trial_end, format: :named_date) }
+        it { last_delivery.body.encoded.should include I18n.l(site.trial_end.tomorrow, format: :named_date) }
         it { last_delivery.body.encoded.should_not include "https://my.sublimevideo.dev/account/billing/edit" }
       end
 
@@ -66,7 +66,7 @@ describe BillingMailer do
 
         it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', hostname: site.hostname, days: 1) }
         it { last_delivery.body.encoded.should include "Dear #{user.name}," }
-        it { last_delivery.body.encoded.should include I18n.l(site.trial_end, format: :named_date) }
+        it { last_delivery.body.encoded.should include I18n.l(site.trial_end.tomorrow, format: :named_date) }
         it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
       end
     end
