@@ -172,6 +172,7 @@ group :tools do
   platforms :ruby do
     gem 'coolline'
   end
+  gem 'rb-fsevent'
 
   gem 'guard'
   gem 'guard-pow'
