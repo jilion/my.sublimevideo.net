@@ -1,12 +1,12 @@
 class MySublimeVideo.Helpers.FeedbackForm
   constructor: ->
-    if (@cancelAccountCheckbox = jQuery('#cancel_account')).exists()
-      @feedbackForm         = jQuery('#new_feedback')
-      @feedbackSubmit       = jQuery('#feedback_submit')
+    if (@cancelAccountCheckbox = $('#cancel_account')).exists()
+      @feedbackForm         = $('#new_feedback')
+      @feedbackSubmit       = $('#feedback_submit')
       @initialFormAction    = @feedbackForm.attr('action')
       @initialSubmitText    = @feedbackSubmit.val()
-      @confirmPasswordBox   = jQuery('#cancel_account_confirm_password')
-      @currentPasswordField = jQuery('#user_current_password')
+      @confirmPasswordBox   = $('#cancel_account_confirm_password')
+      @currentPasswordField = $('#user_current_password')
 
       this.setupObserver()
 

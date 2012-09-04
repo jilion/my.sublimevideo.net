@@ -25,13 +25,13 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
   render: ->
     if MSVVideoCodeGenerator.video.viewable() and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.thumbnail.viewable())
       @currentScroll = $(window).scrollTop()
-      sublimevideo.unprepare(jQuery('video').get(0)) if $('video').exists()
+      sublimevideo.unprepare($('video').get(0)) if $('video').exists()
       $(@el).html this.template
         builder: @builder
         posterSrc: MSVVideoCodeGenerator.video.get('poster').get('src')
         video: MSVVideoCodeGenerator.video
 
-      sublimevideo.prepare(jQuery('video').get(0)) if $('video').exists()
+      sublimevideo.prepare($('video').get(0)) if $('video').exists()
 
       $(@el).show()
       $(window).scrollTop(@currentScroll)

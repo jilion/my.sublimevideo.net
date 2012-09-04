@@ -1,6 +1,6 @@
 - title("Statistics")
 :coffeescript
-  jQuery(document).ready ->
+  $(document).ready ->
     selectedPeriod = #{@selected_period.to_json}
     selectedSeries = #{@selected_series.to_json}
     selectedSeriesString = _.map(selectedSeries, (selectedSerie) -> selectedSerie.join('.'))

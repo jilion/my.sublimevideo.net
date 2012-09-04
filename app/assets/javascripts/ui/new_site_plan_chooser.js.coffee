@@ -5,9 +5,9 @@
 class MySublimeVideo.UI.NewSitePlanChooser extends MySublimeVideo.UI.PlanChooser
   constructor: ->
     @formType    = 'create'
-    @hostnameDiv = jQuery('#site_hostname')
-    @plans       = jQuery('#plans')
-    @trialNote   = jQuery('#trial_note')
+    @hostnameDiv = $('#site_hostname')
+    @plans       = $('#plans')
+    @trialNote   = $('#trial_note')
     super
 
     this.setupSkipTrialObserver() if this.trialSkippable()

@@ -2,7 +2,7 @@
 
 jQuery.fn.spin = function(opts) {
   this.each(function() {
-    var $this = jQuery(this),
+    var $this = $(this),
         data = $this.data();
 
     if (data.spinner) {

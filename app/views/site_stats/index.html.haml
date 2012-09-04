@@ -18,7 +18,7 @@
 
 .stats{ class: @site.in_free_plan? ? 'free' : ''}
   :coffeescript
-    jQuery(document).ready ->
+    $(document).ready ->
       # Enable pusher logging - don't include this in production
       # Pusher.log = (message) ->
       #  window.console.log(message) if (window.console && window.console.log)

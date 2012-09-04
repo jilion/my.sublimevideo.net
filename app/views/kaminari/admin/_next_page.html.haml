@@ -6,7 +6,7 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 - link_options = params.merge(page: current_page + 1, format: nil)
-- html_options = { remote: true, class: 'next remote', rel: 'next', onclick: 'jQuery(document.body).animate({ scrollTop: 0 })' }
+- html_options = { remote: true, class: 'next remote', rel: 'next', onclick: '$(document.body).animate({ scrollTop: 0 })' }
 
 %span.next{ class: current_page.last? ? 'disabled' : nil }
   = link_to_unless current_page.last?, raw(t 'views.pagination.next'), link_options, html_options

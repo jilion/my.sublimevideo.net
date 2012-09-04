@@ -2,13 +2,13 @@
 #
 class MySublimeVideo.UI.PlanChooser
   constructor: ->
-    @processDetailsDiv      = jQuery("#plan_#{@formType}_info")
-    @badgedDiv              = jQuery('#badged')
-    @badgedCheckbox         = jQuery('#site_badged')
-    @skipTrialDiv           = jQuery('#skip_trial')
-    @skipTrialCheckbox      = jQuery('#site_skip_trial')
-    @billingInfoDiv         = jQuery('#billing_info')
-    @checkedPlan            = jQuery('#plans input[type=radio][checked]')
+    @processDetailsDiv      = $("#plan_#{@formType}_info")
+    @badgedDiv              = $('#badged')
+    @badgedCheckbox         = $('#site_badged')
+    @skipTrialDiv           = $('#skip_trial')
+    @skipTrialCheckbox      = $('#site_skip_trial')
+    @billingInfoDiv         = $('#billing_info')
+    @checkedPlan            = $('#plans input[type=radio][checked]')
     @billingInfoState       = @billingInfoDiv.attr 'data-state'
     @processDetailsMessages = {}
 
@@ -17,11 +17,11 @@ class MySublimeVideo.UI.PlanChooser
 
   setupProcessDetailsMessages: =>
     _.each ['in_trial_downgrade_to_free', 'in_trial_upgrade', 'skipping_trial_free', 'skipping_trial_paid', 'upgrade', 'upgrade_from_free', 'delayed_upgrade', 'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'], (name) =>
-      @processDetailsMessages[name] = jQuery("#plan_#{name}_info")
+      @processDetailsMessages[name] = $("#plan_#{name}_info")
 
   setupPlansObservers: ->
-    jQuery('#plan_fields input[type=radio]').each (index, el) =>
-      el = jQuery(el)
+    $('#plan_fields input[type=radio]').each (index, el) =>
+      el = $(el)
       el.on 'click', =>
         @checkedPlan = el
         this.selectCheckboxWrappingBox()
@@ -30,7 +30,7 @@ class MySublimeVideo.UI.PlanChooser
     this.handlePlanChange() if @checkedPlan.exists()
 
   selectCheckboxWrappingBox: ->
-    jQuery('#plans ul .select_box').removeClass 'active'
+    $('#plans ul .select_box').removeClass 'active'
     @checkedPlan.parents('.select_box').addClass 'active'
 
   handlePlanChange: ->
@@ -44,7 +44,7 @@ class MySublimeVideo.UI.PlanChooser
     this.handleProcessDetails()
 
   handleSubmitButtonDisplay: (show) ->
-    if show then jQuery('#site_submit').show() else jQuery('#site_submit').hide()
+    if show then $('#site_submit').show() else $('#site_submit').hide()
 
   checkedPlanIsCurrentPlan: ->
     @formType is 'update' and !@checkedPlan.attr('data-plan_change_type')?

@@ -12,9 +12,9 @@ class MySublimeVideo.UI.SitesStatus
 
   setInProgessTokens: ->
     @table.find("tr[id*='site']").each (i, element) =>
-      el = jQuery(element)
+      el = $(element)
       if el.find("td.status .in_progress").exists()
-        @tokens.push jQuery(element).data('site-token')
+        @tokens.push $(element).data('site-token')
 
   subscribeToPusherChannels: ->
     _.each @tokens, (token) =>

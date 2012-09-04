@@ -3,9 +3,9 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 AdminSublimeVideo.UI.prepareBundleSelector = ->
-  if (bundlesSelectName = jQuery('#bundles_select_name')).exists()
+  if (bundlesSelectName = $('#bundles_select_name')).exists()
     bundlesSelectName.on 'change', ->
       window.location.href = window.location.href.replace "/#{bundlesSelectName.attr('data-token')}", "/#{bundlesSelectName.val()}"
 
-jQuery(document).ready ->
+$(document).ready ->
   AdminSublimeVideo.UI.prepareBundleSelector()
