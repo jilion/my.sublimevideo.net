@@ -2,13 +2,12 @@
 require 'spec_helper'
 
 feature "Sites API" do
-  before(:all) do
+  before do
     @user        = create(:user)
     @site        = create(:site, user: @user)
     @application = create(:client_application, user: @user)
     @token       = create(:oauth2_token, user: @user, client_application: @application)
   end
-  after(:all) { DatabaseCleaner.clean_with(:truncation) }
 
   before do
     @parsed_body = nil

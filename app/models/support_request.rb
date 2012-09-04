@@ -57,7 +57,7 @@ class SupportRequest
     if user.zendesk_id?
       params[:requester_id] = user.zendesk_id
     else
-      params[:requester] = { name: user.name, email: user.email }
+      params[:requester] = { name: user.name || user.email, email: user.email }
     end
 
     params
