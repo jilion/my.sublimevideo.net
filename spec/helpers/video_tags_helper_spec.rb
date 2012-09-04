@@ -9,13 +9,13 @@ describe VideoTagsHelper do
 
   describe "duration_string" do
     it "renders one second when less than a seconds only properly" do
-      Helper.duration_string(499).should eq "00:00"
+      Helper.duration_string(499).should eq "00:01"
     end
     it "renders seconds only properly" do
       Helper.duration_string(59*1000).should eq "00:59"
     end
     it "renders minutes only properly" do
-      Helper.duration_string(60*1000).should eq "01:00"
+      Helper.duration_string(59*60*1000).should eq "59:00"
     end
     it "renders hours only properly" do
       Helper.duration_string(60*60*1000).should eq "1:00:00"
