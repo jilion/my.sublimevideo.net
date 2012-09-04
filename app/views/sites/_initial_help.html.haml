@@ -7,6 +7,6 @@
       %li{ class: ('complete' if current_user.page_visits > 0) }
         .wrap= "1. Add your embed code to your pages. Click on #{@sites.one? ? 'the' : 'the appropriate'} \"Embed Code\" button below."
       %li{ class: ('complete' if current_user.dev_views > 0) }
-        .wrap= raw "2. Add #{content_tag(:code, '<video>')} elements to your pages. Try our #{link_to "video code generator", video_code_path}!"
+        .wrap= raw "2. Add #{content_tag(:code, '<video>')} elements to your pages. Try our #{link_to "video code generator", video_code_generator_path}!"
       %li
         .wrap 3. Deploy your SublimeVideo players on your website in production.
