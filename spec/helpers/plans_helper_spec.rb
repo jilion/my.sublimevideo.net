@@ -11,7 +11,6 @@ describe PlansHelper do
       @paid_plan_yearly   = create(:plan, cycle: "year", price: 10000)
       @paid_plan_yearly2  = create(:plan, cycle: "year", price: 20000)
     end
-    after(:all) { DatabaseCleaner.clean_with(:truncation) }
 
     it { helper.plan_change_type(@site_in_trial, @trial_plan, @paid_plan_yearly).should   eq "in_trial_upgrade" }
     it { helper.plan_change_type(@site_in_trial, @trial_plan, @paid_plan_yearly2).should  eq "in_trial_upgrade" }

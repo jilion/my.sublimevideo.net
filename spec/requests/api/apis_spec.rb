@@ -8,7 +8,6 @@ feature "API" do
     @application = create(:client_application, user: @user)
     @token       = create(:oauth2_token, user: @user, client_application: @application)
   end
-  after(:all) { DatabaseCleaner.clean_with(:truncation) }
 
   before do
     @parsed_body = nil
@@ -189,7 +188,6 @@ feature "legacy routes API" do
     @application = create(:client_application, user: @user)
     @token       = create(:oauth2_token, user: @user, client_application: @application)
   end
-  after(:all) { DatabaseCleaner.clean_with(:truncation) }
 
   before do
     @parsed_body = nil

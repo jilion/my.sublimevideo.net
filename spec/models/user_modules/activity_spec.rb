@@ -28,7 +28,6 @@ describe UserModules::Activity do
         end
 
         it "sends email to users without page visits" do
-          puts User.all.inspect
           User.count.should eq 2
           @user1.page_visits.should eq 2
           @user2.page_visits.should eq 0
