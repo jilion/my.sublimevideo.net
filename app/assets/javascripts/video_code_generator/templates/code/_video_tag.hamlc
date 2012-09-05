@@ -1,6 +1,6 @@
 - poster          = if @video.get('poster').get('src') then "poster=\"#{@video.get('poster').get('src')}\" " else ''
 - sizes           = if @builder.get('builderClass') isnt 'iframe_embed' then "width=\"#{@video.width()}\" height=\"#{@video.height()}\" " else ''
-- style           = if @builder.get('builderClass') is 'iframe_embed' then "style=\"display:none\" " else ''
+- style           = if @builder.get('builderClass') is 'lightbox' then "style=\"display:none\" " else ''
 - dataName        = if @video.get('sources').mp4Base().get('dataName') then "data-name=\"#{@video.get('sources').mp4Base().get('dataName')}\" " else ''
 - dataUID         = if @video.get('sources').mp4Base().get('dataUID') then "data-uid=\"#{@video.get('sources').mp4Base().get('dataUID')}\" " else ''
 - code = ""
