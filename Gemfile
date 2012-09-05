@@ -86,7 +86,9 @@ gem 'createsend',            '~> 1.0.0' # Campaign Monitor
 gem 'airbrake',              '~> 3.1.2'
 gem 'prowl',                 '~> 0.1.3'
 
-gem 'addressable',           '~> 2.3.2', require: 'addressable/uri'
+# Highest version change the query_values method behavior
+# https://github.com/sporkmonger/addressable/issues/77
+gem 'addressable',           '2.2.8', require: 'addressable/uri'
 
 # Stats
 gem 'crack',                 '~> 0.1.8'
