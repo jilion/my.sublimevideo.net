@@ -14,7 +14,6 @@ module VideoTagModules::Scope
     scope :by_name,  lambda { |way='desc'| order_by([:n, way.to_sym]) }
     scope :by_date,  lambda { |way='desc'| order_by([:created_at, way.to_sym]) }
     scope :by_state, lambda { |way='desc'| order_by([:state, way.to_sym]) }
-
   end
 
 end
