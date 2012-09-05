@@ -1,22 +1,5 @@
 module LinksHelper
 
-  def link_to_filter(filter, *args)
-    options = args.extract_options!
-    options.reverse_merge!(label: field.to_s.humanize, default_way: 'asc', reverse: false, default: false)
-    active = currently_sorted_by?(field) || (!currently_sorted? && options[:default])
-
-    # The 'active' class is applied when params include a sort for the given field,
-    # or if no sort is present in params but the sort has the :default options
-    class_active = 'active' if active
-
-    url_params = params.reject { |k, v| k =~ /by_.*/ }
-    link_to(url_for(url_params.merge(filter)),
-              class: ['filter remote', field, class_active].join(" "),
-              remote: true) do
-      content_tag(:span, options[:label], title: options[:title])
-    end
-  end
-
   def link_to_sort(field, *args)
     options = args.extract_options!
     options.reverse_merge!(label: field.to_s.humanize, default_way: 'asc', reverse: false, default: false)
