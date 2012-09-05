@@ -102,13 +102,6 @@ $(document).ready ->
       bodyClass = $('div[data-body-class]').data('body-class')
       $('body').attr("class", bodyClass)
 
+      sublimevideo.prepare()
       SublimeVideo.documentReady()
-
-      if sublimevideo.prepare?
-        sublimevideo.prepare()
-      else
-        sublimevideo.load()
-        sublimevideo.ready ->
-          sublimevideo.prepare()
-
       MySublimeVideo.documentReady()
