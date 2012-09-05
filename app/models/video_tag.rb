@@ -5,6 +5,7 @@ class VideoTag
   include Mongoid::Timestamps
 
   include VideoTagModules::Presenter
+  include VideoTagModules::Scope
 
   field :st, type: String # Site token
   field :u,  type: String # Video uid
@@ -19,6 +20,7 @@ class VideoTag
 
   # NEW FIELDS
   field :d, type: Integer # Video duration (ms)
+  field :state, type: String # State
 
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:updated_at, Mongo::ASCENDING]]

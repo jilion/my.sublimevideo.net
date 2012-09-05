@@ -68,20 +68,14 @@ MySublimeVideo.UI.prepareFeedbackForm = ->
 
 MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareSiteSelector()
-
   MySublimeVideo.UI.prepareFlashNotices()
-
   MySublimeVideo.UI.prepareHidableNotices()
-
   MySublimeVideo.UI.prepareEmbedCodePopups()
-
   MySublimeVideo.UI.prepareSitesStatus()
-
   MySublimeVideo.UI.preparePlansChooser()
-
   MySublimeVideo.UI.prepareSupportRequest()
-
   MySublimeVideo.UI.prepareFeedbackForm()
+  MySublimeVideo.UI.prepareVideoTagsFilter()
 
   if (moreInfoForm = $('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->

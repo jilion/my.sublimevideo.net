@@ -1,14 +1,9 @@
 - title("Videos for #{hostname_or_token(@site)}")
 = render '/layouts/site_header'
 
+
+
 #site.video_tags
-
-  -# TODO Octave Search form
-  = form_tag site_video_tags_path, method: :get do
-    = text_field_tag :search, params[:q], size: 20, placeholder: "Search", type: 'search'
-
-    = select_tag :filter, videos_table_filter_options_for_select
-
   = link_to '#', class: "add_video green_button" do
     %span= "Add a video"
 
