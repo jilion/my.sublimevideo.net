@@ -1,4 +1,10 @@
-= title_and_content_header "Change your password"
+- title "Change your password"
+
+- if resource.errors[:reset_password_token].present?
+  .notice
+    %span= raw "Your &ldquo;reset password token&rdquo; has now expired, please #{link_to 'request a new one', new_password_path(resource_name)}."
+
+= content_header "Change your password"
 
 = form_for resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "main_form" } do |f|
   = f.hidden_field :reset_password_token
