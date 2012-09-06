@@ -54,8 +54,8 @@ class Tweet
 
       KEYWORDS.each do |keyword|
         page = 1
-        while page < 6 && search = remote_search(keyword, page: page)
-          search.each do |tweet|
+        while page < 6 && results = remote_search(keyword, page: page)
+          results.each do |tweet|
             if t = self.where(tweet_id: tweet.id).first
               t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
             else
@@ -69,7 +69,7 @@ class Tweet
     end
 
     def remote_search(keyword, options = {})
-      TwitterApi.search("\"#{keyword}\"", result_type: 'recent', rpp: 100, page: options[:page])
+      TwitterApi.search("\"#{keyword}\"", result_type: 'recent', rpp: 100, page: options[:page]).results
     end
 
     def remote_favorites(options = {})
