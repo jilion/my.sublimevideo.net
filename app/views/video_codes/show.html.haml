@@ -6,7 +6,7 @@
     %small= duration_string(@video_tag.d)
   .thumbnail= playable_lightbox(@video_tag, size: '96x54')
   %h3.name= @video_tag.n
-  %p= hostname_or_token(@site)
+  %p= link_to hostname_or_token(@site), site_video_tags_path(@site)
 
 .spacer
 .big_break
