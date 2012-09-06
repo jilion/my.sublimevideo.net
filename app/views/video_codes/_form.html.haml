@@ -15,12 +15,13 @@
       = radio_button_tag "type", "iframe_embed"
       = label_tag "type_iframe_embed", "Iframe Embed"
 
-  #demo_bootstrap
-    = tooltip_box class: "info" do
-      %span.p Use our demo assets if you don't have your video assets yet, or just want to test-drive SublimeVideo.
+  - unless @video_tag
+    #demo_bootstrap
+      = tooltip_box class: "info" do
+        %span.p Use our demo assets if you don't have your video assets yet, or just want to test-drive SublimeVideo.
 
-    %button.green_button#use_demo_assets Use demo assets
-    %a.reset.hl{ href: '' } Reset all fields
+      %button.green_button#use_demo_assets Use demo assets
+      %a.reset.hl{ href: '' } Reset all fields
 
   .spacer
   .big_break

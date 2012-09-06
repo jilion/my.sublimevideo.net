@@ -1,7 +1,14 @@
 - title("Generate Video Code for #{@video_tag.n}")
-= render '/layouts/site_header'
+= render '/layouts/site_header', hide_sites_select_title: true
 
-%h3= @video_tag.n
-%p= hostname_or_token(@site)
+.wrap
+  .duration
+    %small= duration_string(@video_tag.d)
+  .thumbnail= playable_lightbox(@video_tag, size: '96x54')
+  %h3.name= @video_tag.n
+  %p= hostname_or_token(@site)
+
+.spacer
+.big_break
 
 = render 'form'
