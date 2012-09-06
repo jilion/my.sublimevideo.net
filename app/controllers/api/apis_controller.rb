@@ -43,8 +43,12 @@ class Api::ApisController < ActionController::Base
     request.format = SublimeVideoApi.default_content_type if request.format.nil?
   end
 
-  def api_template(access = :private, template = :self)
-    "v#{@version}_#{access}_#{template}".to_sym
+  def api_template(postfix = :private, template = :self)
+    {
+      prefix: "v#{@version}",
+      template: template,
+      postfix: postfix
+    }
   end
 
   def access_denied

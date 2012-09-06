@@ -7,9 +7,6 @@ feature "Sites API" do
     @site        = create(:site, user: @user)
     @application = create(:client_application, user: @user)
     @token       = create(:oauth2_token, user: @user, client_application: @application)
-  end
-
-  before do
     @parsed_body = nil
   end
 
