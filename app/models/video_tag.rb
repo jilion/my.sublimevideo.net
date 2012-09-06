@@ -24,8 +24,7 @@ class VideoTag
 
   index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING]]
   index [[:st, Mongo::ASCENDING], [:updated_at, Mongo::ASCENDING]]
-
-  scope :active, where(uo: { :$ne => nil }, no: { :$ne => nil })
+  # TODO Thibaud add indexes
 
   def site
     Site.find_by_token(st)

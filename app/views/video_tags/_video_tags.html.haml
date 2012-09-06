@@ -1,53 +1,42 @@
-#video_tags_filter
-  -# TODO Octave Search / Filter form design
-  = form_tag site_video_tags_path, method: :get, id: 'js-video_tags_filter_form', remote: true do
-    - (params.keys & VideoTagsController::SORT_PARAMS).each do |sort_param|
-      = hidden_field_tag sort_param, params[sort_param]
-    - (params.keys & VideoTagsController::FILTER_PARAMS).each do |filter_param|
-      = hidden_field_tag filter_param, params[filter_param]
-    = text_field_tag :search, params[:q], size: 20, placeholder: "Search", type: 'search'
-    = select_tag :filter, videos_table_filter_options_for_select, id: 'js-video_tags_filter_select'
-
-- if @video_tags.present?
-  .main_table_wrap
-    %table.main
-      %col
-      %col.usage
-      %col
-      %col.odd
-      %tr
-        %th.video
-          .wrap
-            %strong
-              = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
-              Video
-            - unless @video_tags.one?
-              .sorting
-                = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
-                = link_to_sort :name
-                = link_to_sort :state, label: "! state"
-        %th.usage
-          .wrap
-            - if @video_tags.one?
-              -# TODO Octave (Last 30 Days icon)
-              Plays (!)
-            - else
-              -# TODO Thibaud sort with aggregation framework?
-              .sorting= link_to_sort :last_30_days_billable_views, default_way: 'desc', label: "! Plays (!)"
-        %th.code
-          .wrap
-            - if @video_tags.one?
-              Embed code
-            - else
-              -# TODO Thibaud enable sort
-              .sorting= link_to_sort :embed_code, label: "! embed code"
-        %th.status
-          .wrap= "Status"
+.main_table_wrap
+  %table.main
+    %col
+    %col.usage
+    %col
+    %col.odd
+    %tr
+      %th.video
+        .wrap
+          %strong
+            = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
+            Video
+          - unless @video_tags.one?
+            .sorting
+              = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
+              = link_to_sort :name
+              = link_to_sort :state, label: "! state"
+      %th.usage
+        .wrap
+          - if @video_tags.one?
+            -# TODO Octave (Last 30 Days icon)
+            Plays (!)
+          - else
+            -# TODO Thibaud sort with aggregation framework?
+            .sorting= link_to_sort :last_30_days_billable_views, default_way: 'desc', label: "! Plays (!)"
+      %th.code
+        .wrap
+          - if @video_tags.one?
+            Embed code
+          - else
+            -# TODO Thibaud enable sort
+            .sorting= link_to_sort :embed_code, label: "! embed code"
+      %th.status
+        .wrap= "Status"
+    - if @video_tags.present?
       = render @video_tags
+    - else
+      %p no videos
 
-  .pagination_wrap
-    = paginate @video_tags
-    = page_entries_info @video_tags
-
-- else
-  %p No videos, please add one
+.pagination_wrap
+  = paginate @video_tags
+  = page_entries_info @video_tags

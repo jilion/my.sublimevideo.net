@@ -23,10 +23,12 @@ class VideoTagsController < ApplicationController
     by_state
   ]
   SORT_PARAMS.each { |p| has_scope p }
+  # Search
+  has_scope :custom_search, as: :search
 
   # GET /sites/:site_id/videos
   def index
-    @video_tags = @site.video_tags
+    @video_tags = @site.video_tags.active
     @video_tags = apply_filter(@video_tags)
     @video_tags = apply_scopes(@video_tags)
       .by_date(params[:by_date] || 'desc')

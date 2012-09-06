@@ -30,12 +30,8 @@ window.spinOptions =
   shadow: false
 
 MySublimeVideo.UI.prepareSiteSelector = ->
-  if (sitesSelectTitle = $('#sites_select_title')).exists()
-    $('#sites_select_title').on 'change', ->
-      path = location.pathname.replace("/#{sitesSelectTitle.attr('data-token')}", "/#{sitesSelectTitle.val()}")
-      $.pjax
-        url: path
-        container: '[data-pjax-container]'
+  $('#sites_select_title').each ->
+    new MySublimeVideo.UI.SiteSelector(select: $(this))
 
 MySublimeVideo.UI.prepareEmbedCodePopups = ->
   $('a.player_code').each ->
@@ -66,6 +62,13 @@ MySublimeVideo.UI.prepareSupportRequest = ->
 MySublimeVideo.UI.prepareFeedbackForm = ->
   new MySublimeVideo.Helpers.FeedbackForm() if $('#new_feedback').exists()
 
+MySublimeVideo.UI.prepareVideoTagsTable = ->
+  if (form = $('#js-video_tags_filter_form')).exists()
+    MySublimeVideo.UI.videoTagsTable = new MySublimeVideo.UI.VideoTagsTable
+      form: form
+      input: $('#js-video_tags_filter_search')
+      select: $('#js-video_tags_filter_select')
+
 MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareSiteSelector()
   MySublimeVideo.UI.prepareFlashNotices()
@@ -75,7 +78,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.preparePlansChooser()
   MySublimeVideo.UI.prepareSupportRequest()
   MySublimeVideo.UI.prepareFeedbackForm()
-  MySublimeVideo.UI.prepareVideoTagsFilter()
+  MySublimeVideo.UI.prepareVideoTagsTable()
 
   if (moreInfoForm = $('#edit_more_info')).exists()
     moreInfoForm.on 'submit', ->
@@ -89,7 +92,8 @@ MySublimeVideo.documentReady = ->
 $(document).ready ->
   MySublimeVideo.documentReady()
 
-  $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])').pjax('[data-pjax-container]')
+  $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])').pjax '[data-pjax-container]'
+    timeout: 1000
   $('[data-pjax-container]')
     .on 'pjax:end', ->
       # Ensure that body class is always up-to-date
