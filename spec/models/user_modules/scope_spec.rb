@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe UserModules::Scope, :plans do
@@ -118,8 +119,8 @@ describe UserModules::Scope, :plans do
 
   describe ".sites_tagged_with" do
     before do
-      @user = create(:user).tap { |u| u.tag_list = ['foo']; u.save }
-      @site = create(:site, user: @user).tap { |s| s.tag_list = ['bar']; s.save }
+      @user = create(:user).tap { |u| u.tag_list = ['foo']; u.save! }
+      @site = create(:site, user: @user).tap { |s| s.tag_list = ['bar']; s.save! }
     end
 
     it "returns the user that has a site with the given word" do

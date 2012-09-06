@@ -155,8 +155,8 @@ describe SiteModules::Scope, :plans do
       @site3 = create(:site, created_at: 1.days.ago)
     end
 
-    specify { Site.created_between(3.days.ago.midnight, 2.days.ago.end_of_day).all.should eq [@site1, @site2] }
-    specify { Site.created_between(2.days.ago.end_of_day, 1.day.ago.end_of_day).all.should eq [@site3] }
+    specify { Site.created_between(3.days.ago.midnight, 2.days.ago.end_of_day).all.should =~ [@site1, @site2] }
+    specify { Site.created_between(2.days.ago.end_of_day, 1.day.ago.end_of_day).all.should =~ [@site3] }
   end
 
 

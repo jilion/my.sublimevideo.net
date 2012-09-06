@@ -1,3 +1,4 @@
+# coding: utf-8
 require_dependency 'public_launch'
 
 module UserModules::Scope
@@ -19,8 +20,8 @@ module UserModules::Scope
     scope :with_balance, where { balance > 0 }
 
     # state
-    scope :invited, where { invitation_token != nil }
-    scope :beta,    where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } # some beta users don't come from svs but were directly invited from msv!!
+    scope :invited,      where { invitation_token != nil }
+    scope :beta,         where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } # some beta users don't come from svs but were directly invited from msv!!
     scope :active,       where { state == 'active' }
     scope :inactive,     where { state != 'active' }
     scope :suspended,    where { state == 'suspended' }

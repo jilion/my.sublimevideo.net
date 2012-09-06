@@ -1,7 +1,7 @@
 ## PROJECT::GENERAL
 coverage
 rdoc
-*.dat
+# *.dat
 public/assets
 tmp/restart.txt
 backup.db
