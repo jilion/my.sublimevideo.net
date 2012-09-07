@@ -1,4 +1,4 @@
-- unless defined?(hide_sites_select_title) && hide_sites_select_title
+- if sites_select
   %h2
     %select#sites_select_title{ 'data-token' => @site.token }
       - @sites.sort_by { |s| s.hostname_or_token('zzz') }.each do |site|

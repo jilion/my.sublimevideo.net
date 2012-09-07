@@ -1,4 +1,4 @@
-= render 'layouts/sites_select_title'
+= render 'layouts/sites_select_title', sites_select: !defined?(sites_select) || sites_select
 
 - dont_show_invoices_tab = @site.in_unpaid_plan? && @site.invoices.not_canceled.empty?
 
