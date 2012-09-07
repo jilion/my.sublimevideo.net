@@ -18,21 +18,21 @@ describe UserModules::Activity do
 
       context "user created 1 week ago" do
         before do
-          User.delete_all
           @user1 = create(:user, created_at: 7.days.ago)
           site = create(:site, user: @user1)
           create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, pv: { m: 2 })
 
           @user2 = create(:user, created_at: 7.days.ago)
 
-          @user1.unmemoize_all
-          @user2.unmemoize_all
+          # Hard reload
+          @user1 = User.find(@user1)
+          @user2 = User.find(@user2)
         end
 
         it "sends email to users without page visits" do
           User.count.should eq 2
-          @user1.reload.page_visits.should eq 2
-          @user2.reload.page_visits.should eq 0
+          @user1.page_visits.should eq 2
+          @user2.page_visits.should eq 0
           expect { User.send_inactive_account_email }.to change(Delayed::Job.where { handler =~ '%Class%inactive_account%' }, :count).by(1)
 
           $worker.work_off
