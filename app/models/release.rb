@@ -123,7 +123,6 @@ private
 
   # after_transition to dev, beta, stable
   def archive_old_release
-    # old_release = Release.where(state: state, :id.not_eq => self.id).first
     old_release = Release.where{ |q| (q.state == state) & (q.id != id) }.first
 
     # old_release can be nil if there was no old release with that state
