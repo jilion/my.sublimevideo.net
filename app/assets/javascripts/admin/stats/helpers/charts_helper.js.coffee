@@ -93,7 +93,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             _.each yAxis, (yAx) =>
               points = _.filter(@points, (point) -> point.series.yAxis is yAx)
               title += _.map(_.sortBy(points, (p) -> 1/p.y), (point) ->
-                t = "<span style=\"color:#{point.series.color};font-weight:bold\">#{point.series.name}</span>"
+                t = "<span style=\"color:#{point.series.color};font-weight:bold\">#{point.series.name}</span> "
                 t += if point.series.yAxis.axisTitle.textStr.match /sales/i
                   "$ #{Highcharts.numberFormat(point.y, 2)}"
                 else if point.series.yAxis.axisTitle.textStr.match /traffic/i
@@ -104,7 +104,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                   "#{Highcharts.numberFormat(point.y, 0)}"
                 t
               ).join("<br/>")
-              title += "<br/><br/>" unless _.indexOf(yAxis, yAx) is yAxis.length - 1
+              title += "<br/>" unless _.indexOf(yAxis, yAx) is yAxis.length - 1
 
           title
 
