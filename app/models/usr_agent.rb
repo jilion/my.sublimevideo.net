@@ -9,7 +9,7 @@ class UsrAgent # fucking name conflict with UserAgent gem
   field :platforms, type: Hash # { "iPad" => { "iOS 3.2" => 32, "iOS 4.2" => 31, "Unknown" => 12 }, "Unknown" => 123 }
   field :browsers,  type: Hash # { "Safari" => { "versions" => { "4.0.4" => 123, "5.0" => 12, "Unknown" => 123 }, "platforms" => { "iPad" => 12, "Windows" => 12, "Unknown" => 123 } }, "Unknown" => 123 }
 
-  index [[:month, Mongo::ASCENDING], [:token, Mongo::ASCENDING]] # UsrAgent#create_or_update_from_trackers
+  index month: 1, token: 1 # UsrAgent#create_or_update_from_trackers
 
   attr_accessible :token, :platforms, :browsers, :month
 
@@ -35,7 +35,9 @@ class UsrAgent # fucking name conflict with UserAgent gem
   def self.create_or_update_from_trackers!(log, trackers)
     incs = incs_from_trackers(trackers)
     incs.each do |token, inc|
-      self.collection.update({ token: token, month: log.month }, { "$inc" => inc }, upsert: true)
+      self.collection
+        .find(token: token, month: log.month)
+        .update({ :$inc => inc }, upsert: true)
     end
   end
 

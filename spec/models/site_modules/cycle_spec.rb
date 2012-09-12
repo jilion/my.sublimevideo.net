@@ -20,14 +20,14 @@ describe SiteModules::Cycle do
 
       it "sends 'trial will end' email" do
         ActionMailer::Base.deliveries.clear
-        expect { Site.send_trial_will_expire_email }.to change(Delayed::Job.where { handler =~ '%Class%trial_will_expire%' }, :count).by(@sites_will_receive_email.size)
+        expect { Site.send_trial_will_expire_email }.to change(Delayed::Job.where{ handler =~ '%Class%trial_will_expire%' }, :count).by(@sites_will_receive_email.size)
       end
 
       context "when we move 2 days in the future" do
         it "doesn't send 'trial will end' email" do
           ActionMailer::Base.deliveries.clear
           Timecop.travel(2.days.from_now) do
-            expect { Site.send_trial_will_expire_email }.to_not change(Delayed::Job.where { handler =~ '%Class%trial_will_expire%' }, :count)
+            expect { Site.send_trial_will_expire_email }.to_not change(Delayed::Job.where{ handler =~ '%Class%trial_will_expire%' }, :count)
           end
         end
       end

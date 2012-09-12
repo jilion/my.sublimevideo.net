@@ -11,13 +11,13 @@ module VideoTagModules::Scope
     }
 
     # filter
-    scope :last_30_days_active, where(updated_at: { "$gte" => 30.days.ago.midnight })
-    scope :last_90_days_active, where(updated_at: { "$gte" => 90.days.ago.midnight })
-    scope :hosted_on_sublimevideo, where() # TODO Thibaud
-    scope :not_hosted_on_sublimevideo, where() # TODO Thibaud
+    scope :last_30_days_active, where(updated_at: { :$gte => 30.days.ago.midnight })
+    scope :last_90_days_active, where(updated_at: { :$gte => 90.days.ago.midnight })
+    scope :hosted_on_sublimevideo, where({}) # TODO Thibaud
+    scope :not_hosted_on_sublimevideo, where({}) # TODO Thibaud
     scope :inactive, where(state: 'inactive')
     scope :active, where(uo: { :$ne => nil }, no: { :$ne => nil })
-    scope :all, where()
+    scope :all, where({}) # TODO Thibaud
 
     # sort
     scope :by_name,  lambda { |way='desc'| order_by([:n, way.to_sym]) }

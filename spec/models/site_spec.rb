@@ -500,7 +500,7 @@ describe Site, :plans do
       end
 
       # it "delays Player::Settings.delete!" do
-      #   expect { subject.suspend }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"), :count).by(1)
+      #   expect { subject.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%delete!%" }, :count).by(1)
       # end
     end
 
@@ -540,12 +540,12 @@ describe Site, :plans do
           CDN.should_receive(:purge).with("/l/#{subject.token}.js")
           subject.user.current_password = '123456'
           expect { subject.archive! }.to change(
-            Delayed::Job.where(:handler.matches => "%remove_loader_and_license%"),
+            Delayed::Job.where{ handler =~ "%remove_loader_and_license%" },
             :count
           ).by(1)
           subject.reload.should be_archived
           expect { $worker.work_off }.to change(
-            Delayed::Job.where(:handler.matches => "%remove_loader_and_license%"),
+            Delayed::Job.where{ handler =~ "%remove_loader_and_license%" },
             :count
           ).by(-1)
           subject.reload.loader.should_not be_present
@@ -556,7 +556,7 @@ describe Site, :plans do
         # it "delays Player::Settings.delete!" do
         #   subject.user.current_password = '123456'
         #   expect { subject.archive }.to change(
-        #     Delayed::Job.where(:handler.matches => "%Player::Settings%delete!%"),
+        #     Delayed::Job.where{ handler =~ "%Player::Settings%delete!%" },
         #     :count
         #   ).by(1)
         # end
@@ -662,7 +662,7 @@ describe Site, :plans do
         let(:site) { create(:site, plan_id: @trial_plan.id) }
 
         it "delays send_trial_started_email" do
-          expect { site }.to change(Delayed::Job.where { handler =~ "%Class%trial_has_started%" }, :count).by(1)
+          expect { site }.to change(Delayed::Job.where{ handler =~ "%Class%trial_has_started%" }, :count).by(1)
         end
       end
 
@@ -670,7 +670,7 @@ describe Site, :plans do
         let(:site) { create(:site, plan_id: @free_plan.id) }
 
         it "don't delay send_trial_started_email" do
-          expect { site }.to_not change(Delayed::Job.where { handler =~ "%Class%trial_has_started%" }, :count)
+          expect { site }.to_not change(Delayed::Job.where{ handler =~ "%Class%trial_has_started%" }, :count)
         end
       end
 
@@ -678,14 +678,14 @@ describe Site, :plans do
         let(:site) { create(:site, plan_id: @paid_plan.id) }
 
         it "don't delay send_trial_started_email" do
-          expect { site }.to_not change(Delayed::Job.where { handler =~ "%Class%trial_has_started%" }, :count)
+          expect { site }.to_not change(Delayed::Job.where{ handler =~ "%Class%trial_has_started%" }, :count)
         end
       end
     end
 
     describe "after_create :delay_update_ranks" do
       it "delays update_ranks" do
-        expect { create(:site) }.to change(Delayed::Job.where { handler =~ "%update_ranks%" }, :count).by(1)
+        expect { create(:site) }.to change(Delayed::Job.where{ handler =~ "%update_ranks%" }, :count).by(1)
       end
     end
 

@@ -9,7 +9,7 @@ module Stat::Site
 
     field :pv, type: Hash, default: {} # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 2 }
 
-    index [[:t, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]
+    index t: 1, d: 1
   end
 
   # ====================
@@ -75,7 +75,7 @@ module Stat::Site
 
     def all_time_page_visits(token)
       Rails.cache.fetch "Stat::Site.all_time_page_visits##{token}", expires_in: 1.hour do
-        self.where(t: { "$in" => Array.wrap(token) }).entries.sum { |stat|
+        self.where(t: { :$in => Array.wrap(token) }).entries.sum { |stat|
           stat.pv['m'].to_i + stat.pv['e'].to_i + stat.pv['d'].to_i + stat.pv['i'].to_i + stat.pv['em'].to_i
         }
       end
@@ -86,7 +86,7 @@ module Stat::Site
       to   = 1.day.ago.end_of_day
 
       Rails.cache.fetch "Stat::Site.last_30_days_stats##{token}", expires_in: 1.hour do
-        self.where(t: { "$in" => Array.wrap(token) }).between(from, to).entries
+        self.where(t: { :$in => Array.wrap(token) }).between(d: from..to).entries
       end
     end
 
@@ -105,18 +105,30 @@ module Stat::Site
       options = options.symbolize_keys.reverse_merge(view_type: 'vv', billable_only: false)
 
       conditions = {}
-      conditions[:t] = { "$in" => Array.wrap(options[:token]) }        if options[:token]
-      conditions.deep_merge!(d: { "$gte" => options[:from].midnight }) if options[:from]
-      conditions.deep_merge!(d: { "$lte" => options[:to].end_of_day }) if options[:to]
+      conditions[:t] = { :$in => Array.wrap(options[:token]) }        if options[:token]
+      conditions.deep_merge!(d: { :$gte => options[:from].midnight }) if options[:from]
+      conditions.deep_merge!(d: { :$lte => options[:to].end_of_day }) if options[:to]
 
-      stats = collection.group(
-        key: nil,
-        cond: conditions,
-        initial: { sum: 0 },
-        reduce: js_reduce_for_sum(options)
-      )
+      sub_fields = %w[m e em] # billable fields: main, extra and embed
+      sub_fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
 
-      stats.any? ? stats.first['sum'].to_i : 0
+      fields_to_add = []
+      sub_fields.each do |sub_field|
+        fields_to_add << "$#{options[:view_type]}.#{sub_field}"
+      end
+
+      stats = collection.aggregate([
+        { :$match => conditions },
+        { :$project => {
+            _id: 0,
+            t: 1,
+            viewTot: { :$add => fields_to_add } } },
+        { :$group => {
+          _id: '$t',
+          viewTotSum: { :$sum => '$viewTot' }, } }
+      ])
+
+      stats.sum { |stat| stat['viewTotSum'] }
     end
 
     # Returns an array of Stat::Site objects.
@@ -137,25 +149,34 @@ module Stat::Site
       options = options.symbolize_keys.reverse_merge(view_type: 'vv', period: 'days', fill_missing_days: true)
 
       conditions = {}
-      conditions[:t] = { "$in" => Array.wrap(options[:token]) } if options[:token]
-      conditions.deep_merge!(d: { "$gte" => options[:from] }) if options[:from]
-      conditions.deep_merge!(d: { "$lte" => options[:to] }) if options[:to]
+      conditions[:t] = { :$in => Array.wrap(options[:token]) } if options[:token]
+      conditions.deep_merge!(d: { :$gte => options[:from] }) if options[:from]
+      conditions.deep_merge!(d: { :$lte => options[:to] }) if options[:to]
       if options[:demo] && options[:period] == 'days'
-        conditions.deep_merge!(d: { "$gte" => Time.utc(2011,11,29) }) if options[:from]
+        conditions.deep_merge!(d: { :$gte => Time.utc(2011,11,29) }) if options[:from]
       end
 
-      stats = if (!options[:token] && !options[:stats]) || (options[:token] && options[:token].is_a?(Array))
-        collection.group(
-          key: [:d],
-          cond: conditions,
-          initial: { pv: { 'm' => 0, 'e' => 0, 'd' => 0, 'i' => 0, 'em' => 0 }, vv: { 'm' => 0, 'e' => 0, 'd' => 0, 'i' => 0, 'em' => 0 } },
-          reduce: js_reduce_for_array(options)
-        ).sort_by { |s| s[:d] }
-      else
-        conditions[:d]["$gte"] = conditions[:d]["$gte"].to_i if options[:from]
-        conditions[:d]["$lte"] = conditions[:d]["$lte"].to_i if options[:to]
+      sub_fields = %w[m e em] # billable fields: main, extra and embed
+      sub_fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
 
-        (options[:stats] || scoped).where(conditions).order_by([:d, :asc]).entries
+      stats = if (!options[:token] && !options[:stats]) || (options[:token] && options[:token].is_a?(Array))
+        collection.aggregate([
+          { :$match => conditions },
+          { :$group => sub_fields.inject({}) { |hash, field|
+              hash["#{field}Sum"] = { :$sum => "$#{options[:view_type]}.#{field}" }
+              hash
+            }.merge(_id: '$d') },
+          { :$project => {
+              _id: 0,
+              d: '$_id',
+              options[:view_type] => sub_fields.inject({}) { |hash, field|
+                hash[field] = "$#{field}Sum"
+                hash
+              } } },
+          { :$sort => { d: 1 } },
+        ])
+      else
+        (options[:stats] || scoped).where(conditions).order_by(d: 1).entries
       end
 
       if !!options[:fill_missing_days]
@@ -167,34 +188,6 @@ module Stat::Site
     end
 
   private
-
-    def js_reduce_for_sum(options = {})
-      options = options.symbolize_keys.reverse_merge(billable_only: false)
-
-      fields = %w[m e em] # billable fields: main, extra and embed
-      fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
-      reduce_function = ["function(doc, prev) {"]
-      fields.inject(reduce_function) do |js, field_to_merge|
-        js << "prev.sum += doc.#{options[:view_type]} ? (isNaN(doc.#{options[:view_type]}.#{field_to_merge}) ? 0 : doc.#{options[:view_type]}.#{field_to_merge}) : 0;"
-        js
-      end
-
-      (reduce_function << "}").join(' ')
-    end
-
-    def js_reduce_for_array(options = {})
-      options = options.symbolize_keys.reverse_merge(billable_only: false)
-
-      fields = %w[m e em] # billable fields: main, extra and embed
-      fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
-      reduce_function = ["function(doc, prev) {"]
-      fields.inject(reduce_function) do |js, field_to_merge|
-        js << "prev.#{options[:view_type]}.#{field_to_merge} += doc.#{options[:view_type]} ? (isNaN(doc.#{options[:view_type]}.#{field_to_merge}) ? 0 : doc.#{options[:view_type]}.#{field_to_merge}) : 0;"
-        js
-      end
-
-      (reduce_function << "}").join(' ')
-    end
 
     def fill_missing_values_for_last_stats(stats, options = {})
       options = options.symbolize_keys.reverse_merge(field_to_fill: 'm', missing_days_value: 0)
@@ -254,7 +247,7 @@ private
         to   = nil
         from = nil
       else
-        last_minute_stat = Stat::Site::Minute.order_by([:d, :asc]).last
+        last_minute_stat = Stat::Site::Minute.order_by(d: 1).last
         to   = last_minute_stat.try(:d) || 1.minute.ago.change(sec: 0)
         from = to - 59.minutes
       end
@@ -263,7 +256,7 @@ private
       from = to - 23.hours
     when 'days'
       site  = ::Site.find_by_token(site_token)
-      stats = Stat::Site::Day.where(t: site_token).order_by([:d, :asc])
+      stats = Stat::Site::Day.where(t: site_token).order_by(d: 1)
       to    = 1.day.ago.midnight
       case site.plan_stats_retention_days
       when 0

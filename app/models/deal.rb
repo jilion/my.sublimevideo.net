@@ -23,13 +23,13 @@ class Deal < ActiveRecord::Base
   scope :active, lambda {
     now = Time.now.utc.to_s(:db)
 
-    where { (started_at <= now) & (ended_at >= now) }
+    where{ (started_at <= now) & (ended_at >= now) }
   }
 
   # sort
-  scope :by_id,         lambda { |way='desc'| order(:id.send(way)) }
-  scope :by_started_at, lambda { |way='desc'| order(:started_at.send(way)) }
-  scope :by_ended_at,   lambda { |way='desc'| order(:ended_at.send(way)) }
+  scope :by_id,         lambda { |way='desc'| order{ id.send(way) } }
+  scope :by_started_at, lambda { |way='desc'| order{ started_at.send(way) } }
+  scope :by_ended_at,   lambda { |way='desc'| order{ ended_at.send(way) } }
 
   # =============
   # = Callbacks =

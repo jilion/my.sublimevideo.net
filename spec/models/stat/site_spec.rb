@@ -177,6 +177,12 @@ describe Stat::Site::Day do
 
           it { should eql 20 }
         end
+
+        describe "with an unexisting token" do
+          subject { described_class.views_sum(token: 'other-token') }
+
+          it { should eql 0 }
+        end
       end
 
       describe ":view_type" do
@@ -218,10 +224,10 @@ describe Stat::Site::Day do
           subject { described_class.last_stats(token: site1.token, fill_missing_days: false) }
 
           its(:size) { should eql(2) }
-          it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
-          it { subject.first.chart_vv.should eql(2) }
-          it { subject.second.d.to_time.should eql Time.now.utc.midnight.to_time }
-          it { subject.second.chart_vv.should eql(4) }
+          it { subject.first['d'].to_time.should eql 30.days.ago.midnight.to_time }
+          it { subject.first['vv']['m'].should eql(2) }
+          it { subject.second['d'].to_time.should eql Time.now.utc.midnight.to_time }
+          it { subject.second['vv']['m'].should eql(4) }
         end
 
         describe "with no token and no stats" do
@@ -274,10 +280,10 @@ describe Stat::Site::Day do
           subject { described_class.last_stats(stats: described_class.where(t: site1.token), fill_missing_days: false) }
 
           its(:size) { should eql(2) }
-          it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
-          it { subject.first.chart_vv.should eql(2) }
-          it { subject.second.d.to_time.should eql Time.now.utc.midnight.to_time }
-          it { subject.second.chart_vv.should eql(4) }
+          it { subject.first['d'].to_time.should eql 30.days.ago.midnight.to_time }
+          it { subject.first['vv']['m'].should eql(2) }
+          it { subject.second['d'].to_time.should eql Time.now.utc.midnight.to_time }
+          it { subject.second['vv']['m'].should eql(4) }
         end
       end
 
@@ -286,16 +292,16 @@ describe Stat::Site::Day do
           subject { described_class.last_stats(token: site1.token, fill_missing_days: false) }
 
           its(:size) { should eql(2) }
-          it { subject.first.chart_vv.should eql(2) }
-          it { subject.second.chart_vv.should eql(4) }
+          it { subject.first['vv']['m'].should eql(2) }
+          it { subject.second['vv']['m'].should eql(4) }
         end
 
         describe "accepts 'pv'" do
           subject { described_class.last_stats(token: site1.token, view_type: 'pv', fill_missing_days: false) }
 
           its(:size) { should eql(2) }
-          it { subject.first.chart_pv.should eql(1) }
-          it { subject.second.chart_pv.should eql(3) }
+          it { subject.first['pv']['e'].should eql(1) }
+          it { subject.second['pv']['e'].should eql(3) }
         end
       end
 
@@ -303,8 +309,8 @@ describe Stat::Site::Day do
         subject { described_class.last_stats(token: site1.token, from: 2.days.ago.midnight, to: Time.now.utc.midnight, fill_missing_days: false) }
 
         its(:size) { should eql(1) }
-        it { subject.first.d.to_time.should eql Time.now.utc.midnight.to_time }
-        it { subject.first.chart_vv.should eql(4) }
+        it { subject.first['d'].to_time.should eql Time.now.utc.midnight.to_time }
+        it { subject.first['vv']['m'].should eql(4) }
       end
 
       describe ":fill_missing_days" do
@@ -312,28 +318,28 @@ describe Stat::Site::Day do
           subject { described_class.last_stats(token: site1.token, from: 30.days.ago.midnight, to: 1.day.ago.midnight) }
 
           its(:size) { should eql(30) }
-          it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
-          it { subject.first.chart_vv.should eql(2) }
-          it { subject[29].d.to_time.should eql 1.day.ago.midnight.to_time }
-          it { subject[29].chart_vv.should eql(0) }
+          it { subject.first['d'].to_time.should eql 30.days.ago.midnight.to_time }
+          it { subject.first['vv']['m'].should eql(2) }
+          it { subject[29]['d'].to_time.should eql 1.day.ago.midnight.to_time }
+          it { subject[29]['vv']['m'].should eql(0) }
         end
 
         describe "accepts a boolean" do
           subject { described_class.last_stats(token: site1.token, fill_missing_days: false, from: 30.days.ago.midnight, to: 1.day.ago.midnight) }
 
           its(:size) { should eql(1) }
-          it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
-          it { subject.first.chart_vv.should eql(2) }
+          it { subject.first['d'].to_time.should eql 30.days.ago.midnight.to_time }
+          it { subject.first['vv']['m'].should eql(2) }
         end
 
         describe "accepts an integer" do
           subject { described_class.last_stats(token: site1.token, fill_missing_days: 3, from: 30.days.ago.midnight, to: 1.day.ago.midnight) }
 
           its(:size) { should eql(30) }
-          it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
-          it { subject.first.chart_vv.should eql(2) }
-          it { subject.last.d.to_time.should eql 1.day.ago.midnight.to_time }
-          it { subject.last.chart_vv.should eql(3) }
+          it { subject.first['d'].to_time.should eql 30.days.ago.midnight.to_time }
+          it { subject.first['vv']['m'].should eql(2) }
+          it { subject.last['d'].to_time.should eql 1.day.ago.midnight.to_time }
+          it { subject.last['vv']['m'].should eql(3) }
         end
       end
     end

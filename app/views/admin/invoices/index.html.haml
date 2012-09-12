@@ -1,7 +1,7 @@
 = title_and_content_header(admin_invoices_page_title(@invoices))
 
 %h3.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
-%h4.revenue= "Date range revenue: #{display_amount(Invoice.between(range_start_date, range_end_date).total_revenue)}"
+%h4.revenue= "Date range revenue: #{display_amount(Invoice.between(created_at: range_start_date..range_end_date).total_revenue)}"
 
 = render '/admin/shared/date_chooser'
 

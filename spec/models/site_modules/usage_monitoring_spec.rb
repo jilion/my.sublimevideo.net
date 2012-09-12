@@ -24,7 +24,7 @@ describe SiteModules::UsageMonitoring do
 
       it "should required upgrade and send alert" do
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil
-        expect { Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages } }.to change(Delayed::Job.where { handler =~ "%Class%plan_overused%" }, :count).by(1)
+        expect { Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages } }.to change(Delayed::Job.where{ handler =~ "%Class%plan_overused%" }, :count).by(1)
         @site.reload.first_plan_upgrade_required_alert_sent_at.should be_present
       end
 
@@ -46,14 +46,14 @@ describe SiteModules::UsageMonitoring do
 
       it "should send player hits reached notification" do
         @site.overusage_notification_sent_at.should be_nil
-        expect { Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages } }.to change(Delayed::Job.where { handler =~ "%Class%plan_overused%" }, :count).by(1)
+        expect { Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages } }.to change(Delayed::Job.where{ handler =~ "%Class%plan_overused%" }, :count).by(1)
         @site.reload.overusage_notification_sent_at.should be_present
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil
       end
 
       it "should send player hits reached notification if not sent during the site cycle" do
         Timecop.travel(Time.utc(2010,12,20)) { @site.touch(:overusage_notification_sent_at) }
-        expect { Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages } }.to change(Delayed::Job.where { handler =~ "%Class%plan_overused%" }, :count).by(1)
+        expect { Timecop.travel(Time.utc(2011,1,22)) { Site.monitor_sites_usages } }.to change(Delayed::Job.where{ handler =~ "%Class%plan_overused%" }, :count).by(1)
         @site.reload
         @site.overusage_notification_sent_at.should > Time.utc(2011,1,22)
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil

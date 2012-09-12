@@ -12,14 +12,10 @@ gem 'sublimevideo_layout', '1.3.0' # hosted on gemfury
 
 # Databases
 gem 'pg',                    '~> 0.14.0'
-gem 'squeel',                '1.0.2'
+gem 'squeel',                '~> 1.0.11'
 gem 'activerecord-postgres-hstore'
-
-gem 'bson_ext',              '1.6.2'
-gem 'bson',                  '1.6.2'
-gem 'mongo',                 '1.6.2'
-gem 'mongoid',               '~> 2.4.7'
-gem 'mongoid_uniquify'
+gem 'moped',                 github: 'mongoid/moped'
+gem 'mongoid',               '~> 3.0.5'
 
 # Views
 gem 'haml',                  '~> 3.1.6'
@@ -58,7 +54,8 @@ gem 'has_scope',             '~> 0.5.1'
 gem 'aws',                   '~> 2.5.6'
 gem 'fog',                   '~> 1.5.0'
 gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/processing/mime_types']
-gem 'carrierwave-mongoid',   '~> 0.2.1', require: 'carrierwave/mongoid'
+# gem 'carrierwave-mongoid',   '~> 0.2.1', require: 'carrierwave/mongoid'
+gem 'carrierwave-mongoid',   github: 'jnicklas/carrierwave-mongoid', branch: 'mongoid-3.0', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
 
 gem 'rack-pjax'
@@ -174,6 +171,7 @@ group :tools do
   end
   gem 'rb-fsevent'
 
+  gem 'listen', github: 'guard/listen'
   gem 'guard'
   gem 'guard-pow'
   gem 'guard-livereload'

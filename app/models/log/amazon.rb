@@ -39,7 +39,7 @@ private
       'prefix' => config[:store_dir],
       remove_prefix: true
     }
-    if last_log = self.where(created_at: { "$gt" => 7.day.ago }).desc(:name).first
+    if last_log = self.where(created_at: { :$gt => 7.day.ago }).order_by(name: -1).first
       options['marker'] = config[:store_dir] + marker(last_log)
     end
     rescue_and_retry(7, Aws::AwsError) { ::S3.logs_name_list(options) }

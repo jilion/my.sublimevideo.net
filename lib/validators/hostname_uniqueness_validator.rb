@@ -7,7 +7,7 @@ class HostnameUniquenessValidator < ActiveModel::EachValidator
   end
 
   def active_site_with_same_user_and_hostname_exists?(record, new_hostname)
-    record.user.sites.not_archived.where { (hostname == new_hostname) & (id != record.id) }.exists?
+    record.user.sites.not_archived.where{ (hostname == new_hostname) & (id != record.id) }.exists?
   end
 
 end

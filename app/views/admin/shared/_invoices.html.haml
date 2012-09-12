@@ -1,5 +1,5 @@
 %ul
-  - object.invoices.order(:created_at.desc).each do |invoice|
+  - object.invoices.order{ created_at.desc }.each do |invoice|
     %li
       = link_to(invoice_dates(invoice), [:admin, invoice])
       = " / "

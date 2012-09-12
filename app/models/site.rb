@@ -58,7 +58,7 @@ class Site < ActiveRecord::Base
 
   # Invoices
   has_many :invoices, class_name: "::Invoice"
-  has_one  :last_invoice, class_name: "::Invoice", order: :created_at.desc
+  has_one  :last_invoice, class_name: "::Invoice", order: 'created_at DESC'
 
   # Bundles
   has_many :bundleships,
@@ -246,14 +246,14 @@ class Site < ActiveRecord::Base
       usages = last_30_days_billable_usages
       name = nil
       if usages.size >= 5
-        Plan.standard_plans.order(:video_views.desc).each do |tested_plan|
+        Plan.standard_plans.order{ video_views.desc }.each do |tested_plan|
           if usages.sum < tested_plan.video_views && usages.mean < tested_plan.daily_video_views
             name = plan.video_views < tested_plan.video_views ? tested_plan.name : nil
           end
         end
 
         if name.nil? && !in_custom_plan?
-          biggest_standard_plan = Plan.standard_plans.order(:video_views.desc).first
+          biggest_standard_plan = Plan.standard_plans.order{ video_views.desc }.first
           name = "custom" if usages.sum >= biggest_standard_plan.video_views || usages.mean >= biggest_standard_plan.daily_video_views
         end
       end

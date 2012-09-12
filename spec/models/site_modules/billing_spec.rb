@@ -319,7 +319,7 @@ describe SiteModules::Billing do
 
       it 'send the trial started email' do
         site # eager-load site
-        expect { site.send :send_trial_started_email }.to change(Delayed::Job.where { handler =~ '%Class%trial_has_started%' }, :count).by(1)
+        expect { site.send :send_trial_started_email }.to change(Delayed::Job.where{ handler =~ '%Class%trial_has_started%' }, :count).by(1)
       end
     end
 

@@ -10,10 +10,10 @@ Delayed::Worker.destroy_failed_jobs = false
 
 module JobExtension
   def already_delayed?(name, num = 1)
-    Delayed::Job.where(
-    :handler.matches => name,
-    :run_at.gt => Time.now.utc
-    ).count >= num
+    Delayed::Job.where{
+      (handler =~ name) &
+      (run_at >= Time.now.utc)
+    }.count >= num
   end
 end
 

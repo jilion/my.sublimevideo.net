@@ -16,25 +16,25 @@ module UserModules::Scope
 
     # credit card
     scope :without_cc,   where(cc_type: nil, cc_last_digits: nil)
-    scope :with_cc,      where { (cc_type != nil) & (cc_last_digits != nil) }
-    scope :with_balance, where { balance > 0 }
+    scope :with_cc,      where{ (cc_type != nil) & (cc_last_digits != nil) }
+    scope :with_balance, where{ balance > 0 }
 
     # state
-    scope :invited,      where { invitation_token != nil }
-    scope :beta,         where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } # some beta users don't come from svs but were directly invited from msv!!
-    scope :active,       where { state == 'active' }
-    scope :inactive,     where { state != 'active' }
-    scope :suspended,    where { state == 'suspended' }
-    scope :archived,     where { state == 'archived' }
-    scope :not_archived, where { state != 'archived' }
+    scope :invited,      where{ invitation_token != nil }
+    scope :beta,         where{ (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } # some beta users don't come from svs but were directly invited from msv!!
+    scope :active,       where{ state == 'active' }
+    scope :inactive,     where{ state != 'active' }
+    scope :suspended,    where{ state == 'suspended' }
+    scope :archived,     where{ state == 'archived' }
+    scope :not_archived, where{ state != 'archived' }
 
     # attributes queries
-    scope :use_personal,      lambda { |bool=true| where { use_personal == bool } }
-    scope :use_company,       lambda { |bool=true| where { use_company == bool } }
-    scope :use_clients,       lambda { |bool=true| where { use_clients == bool } }
-    scope :created_on,        lambda { |date| where { created_at >> date.all_day } }
-    scope :newsletter,        lambda { |bool=true| where { newsletter == bool } }
-    scope :vip,               lambda { |bool=true| where { vip == bool } }
+    scope :use_personal,      lambda { |bool=true| where{ use_personal == bool } }
+    scope :use_company,       lambda { |bool=true| where{ use_company == bool } }
+    scope :use_clients,       lambda { |bool=true| where{ use_clients == bool } }
+    scope :created_on,        lambda { |date| where{ created_at >> date.all_day } }
+    scope :newsletter,        lambda { |bool=true| where{ newsletter == bool } }
+    scope :vip,               lambda { |bool=true| where{ vip == bool } }
 
     scope :sites_tagged_with, lambda { |word| joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 
@@ -50,7 +50,7 @@ module UserModules::Scope
   module ClassMethods
 
     def search(q)
-      includes(:sites).where {
+      includes(:sites).where{
         (lower(:email) =~ lower("%#{q}%")) | (lower(:name) =~ lower("%#{q}%")) |
         (lower(sites.hostname) =~ lower("%#{q}%")) | (lower(sites.dev_hostnames) =~ lower("%#{q}%"))
       }

@@ -3,8 +3,9 @@
 class Stat::Video::Hour
   include Mongoid::Document
   include Stat::Video
-  store_in :video_hour_stats
-  
-  # Custom index for big top_videos query 
-  index [[:st, Mongo::ASCENDING], [:d, Mongo::ASCENDING], [:vlc, Mongo::ASCENDING]]
+
+  store_in collection: 'video_hour_stats'
+
+  # Custom index for big top_videos query
+  index st: 1, d: 1, vlc: 1
 end

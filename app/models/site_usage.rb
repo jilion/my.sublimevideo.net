@@ -24,8 +24,8 @@ class SiteUsage
   field :traffic_s3,                 type: Integer, default: 0
   field :traffic_voxcast,            type: Integer, default: 0
 
-  index :site_id
-  index [[:site_id, Mongo::ASCENDING], [:day, Mongo::ASCENDING]]#, unique: true
+  index site_id: 1
+  index site_id: 1, day: 1 #, unique: true
 
   # ================
   # = Associations =
@@ -34,14 +34,6 @@ class SiteUsage
   def site
     Site.find_by_id(site_id)
   end
-
-  # ==========
-  # = Scopes =
-  # ==========
-
-  scope :after,   lambda { |date| where(day: { "$gte" => date }) }
-  scope :before,  lambda { |date| where(day: { "$lte" => date }) }
-  scope :between, lambda { |start_date, end_date| where(day: { "$gte" => start_date, "$lte" => end_date }) }
 
   # =================
   # = Class Methods =
@@ -54,11 +46,9 @@ class SiteUsage
       Site.where(token: tokens.pop(100)).each do |site|
         begin
           hbr_token = hits_traffic_and_requests_for_token(hbrs, site.token)
-          self.collection.update(
-            { site_id: site.id, day: log.day },
-            { "$inc" => hbr_token },
-            upsert: true
-          )
+          self.collection
+            .find(site_id: site.id, day: log.day)
+            .update({ :$inc => hbr_token }, upsert: true)
         rescue => ex
           Notify.send("Error on site_usage (#{site.id}, #{log.day}) update (from log #{log.hostname}, #{log.name}. Data: #{hbr_token}", exception: ex)
         end

@@ -8,7 +8,7 @@ describe SiteModules::Template, :plans do
       let(:site) { build(:new_site, plan_id: @trial_plan.id) }
 
       it "delays .update_loader_and_license once" do
-        expect { site.save! }.to change(Delayed::Job.where(:handler.matches => "%update_loader_and_license%"), :count).by(1)
+        expect { site.save! }.to change(Delayed::Job.where{ handler =~ "%update_loader_and_license%" }, :count).by(1)
       end
 
       it "updates loader and license content" do
@@ -38,7 +38,7 @@ describe SiteModules::Template, :plans do
       end
 
       # it "delays Player::Settings.update!" do
-      #   expect { site.save! }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%update!%"), :count).by(1)
+      #   expect { site.save! }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update!%" }, :count).by(1)
       # end
     end
 
@@ -54,11 +54,11 @@ describe SiteModules::Template, :plans do
         end
 
         it "delays .update_loader_and_license once" do
-          expect { site.apply_pending_attributes }.to change(Delayed::Job.where { handler =~ "%update_loader_and_license%" }, :count).by(1)
+          expect { site.apply_pending_attributes }.to change(Delayed::Job.where{ handler =~ "%update_loader_and_license%" }, :count).by(1)
         end
 
         # it "delays Player::Settings.update!" do
-        #   expect { site.apply_pending_attributes }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%update!%"), :count).by(1)
+        #   expect { site.apply_pending_attributes }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update!%" }, :count).by(1)
         # end
 
         it "purges loader & license & settings on CDN" do
@@ -87,13 +87,13 @@ describe SiteModules::Template, :plans do
           it "delays .update_loader_and_license once" do
             site.send("#{attr}=", value)
             site.user.current_password = '123456'
-            expect { site.save }.to change(Delayed::Job.where(:handler.matches => "%update_loader_and_license%"), :count).by(1)
+            expect { site.save }.to change(Delayed::Job.where{ handler =~ "%update_loader_and_license%" }, :count).by(1)
           end
 
           # it "delays Player::Settings.update!" do
           #   site.send("#{attr}=", value)
           #   site.user.current_password = '123456'
-          #   expect { site.save }.to change(Delayed::Job.where(:handler.matches => "%Player::Settings%update!%"), :count).by(1)
+          #   expect { site.save }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update!%" }, :count).by(1)
           # end
 
           it "updates license content with #{attr}" do
@@ -128,14 +128,14 @@ describe SiteModules::Template, :plans do
 
         it "should delay update_loader_and_license once" do
           expect { site.update_attribute(:player_mode, 'beta') }.to change(
-            Delayed::Job.where(:handler.matches => "%update_loader_and_license%"),
+            Delayed::Job.where{ handler =~ "%update_loader_and_license%" },
             :count
           ).by(1)
         end
 
         # it "delays Player::Settings.update!" do
         #   expect { site.update_attribute(:player_mode, 'beta') }.to change(
-        #     Delayed::Job.where(:handler.matches => "%Player::Settings%update!%"),
+        #     Delayed::Job.where{ handler =~ "%Player::Settings%update!%" },
         #     :count
         #   ).by(1)
         # end

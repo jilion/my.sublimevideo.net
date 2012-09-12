@@ -24,7 +24,7 @@ describe StatsExport do
   describe "#site" do
     specify { stats_export.site.should eq site }
   end
-  
+
   describe "#site_hostname" do
     specify { stats_export.site_hostname.should eq site.hostname }
   end

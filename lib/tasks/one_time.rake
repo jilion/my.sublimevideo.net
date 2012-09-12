@@ -8,9 +8,9 @@ namespace :one_time do
     task reparse: :environment do
       timed do
         beginning_of_month = Time.now.utc.beginning_of_month
-        SiteUsage.where(day: { "$gte" => beginning_of_month }).delete_all
+        SiteUsage.where(day: { :$gte => beginning_of_month }).delete_all
 
-        months_logs = Log.where(started_at: { "$gte" => beginning_of_month })
+        months_logs = Log.where(started_at: { :$gte => beginning_of_month })
         months_logs_ids = months_logs.map(&:id)
         puts OneTime::Log.delay(priority: 299).parse_logs(months_logs_ids)
         puts "Delayed logs parsing from #{beginning_of_month}"
@@ -21,9 +21,9 @@ namespace :one_time do
     task reparse_user_agent: :environment do
       timed do
         beginning_of_month = Time.now.utc.beginning_of_month
-        UsrAgent.where(month: { "$gte" => beginning_of_month }).delete_all
+        UsrAgent.where(month: { :$gte => beginning_of_month }).delete_all
 
-        months_logs = Log::Voxcast.where(started_at: { "$gte" => beginning_of_month })
+        months_logs = Log::Voxcast.where(started_at: { :$gte => beginning_of_month })
         months_logs_ids = months_logs.map(&:id)
         puts OneTime::Log.delay(priority: 299).parse_logs_for_user_agents(months_logs_ids)
         puts "Delayed Voxcast logs parsing for user agent from #{beginning_of_month}"
@@ -39,38 +39,6 @@ namespace :one_time do
         skip += 1000
       end
     end
-
-    # task reparse_logs_custom: :environment do
-    #   from = Time.utc(2012, 2, 28)
-    #   to   = Time.now.utc.change(sec: 0)
-    #   LegacyStat::Site.d_after(from).delete_all
-    #   LegacyStat::Video.d_after(from).delete_all
-    #   SiteUsage.after(from).delete_all
-    #   Log::Voxcast.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
-    #     log.parsed_at            = nil
-    #     log.stats_parsed_at      = nil
-    #     log.video_tags_parsed_at = nil
-    #     log.safely.save
-    #     Log::Voxcast.delay(priority: 30).parse_log_for_stats(log.id)
-    #     Log::Voxcast.delay(priority: 30).parse_log(log.id)
-    #     Log::Voxcast.delay(priority: 30).parse_log_for_video_tags(log.id)
-    #   end
-    #   Log::Amazon::S3::Licenses.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
-    #     log.parsed_at = nil
-    #     log.safely.save
-    #     Log::Amazon::S3::Licenses.delay(priority: 30).parse_log(log.id)
-    #   end
-    #   Log::Amazon::S3::Loaders.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
-    #     log.parsed_at = nil
-    #     log.safely.save
-    #     Log::Amazon::S3::Loaders.delay(priority: 30).parse_log(log.id)
-    #   end
-    #   Log::Amazon::S3::Player.where(started_at: { "$gte" => from, "$lte" => to }).entries.each do |log|
-    #     log.parsed_at = nil
-    #     log.safely.save
-    #     Log::Amazon::S3::Player.delay(priority: 30).parse_log(log.id)
-    #   end
-    # end
   end
 
   namespace :users do
@@ -139,21 +107,21 @@ namespace :one_time do
     # desc "Split site_stats collection to separate minute/hour/day collection"
     # task split_site_stats_collection: :environment do
     #   timed do
-    #     LegacyStat::Site.where(m: { '$ne' => nil }).all.each do |stat|
+    #     LegacyStat::Site.where(m: { :$ne => nil }).all.each do |stat|
     #       attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
     #       Stat::Site::Minute.create(attributes.merge(d: stat.m))
     #     end
     #     p "Split site minute stats"
     #   end
     #   timed do
-    #     LegacyStat::Site.where(h: { '$ne' => nil }).all.each do |stat|
+    #     LegacyStat::Site.where(h: { :$ne => nil }).all.each do |stat|
     #       attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
     #       Stat::Site::Hour.create(attributes.merge(d: stat.h))
     #     end
     #     p "Split site hour stats"
     #   end
     #   timed do
-    #     LegacyStat::Site.where(d: { '$ne' => nil }).all.each do |stat|
+    #     LegacyStat::Site.where(d: { :$ne => nil }).all.each do |stat|
     #       attributes = stat.attributes.slice('t', 'pv', 'vv', 'md', 'bp')
     #       Stat::Site::Day.create(attributes.merge(d: stat.d))
     #     end
@@ -164,7 +132,7 @@ namespace :one_time do
     # desc "Split video_stats collection to separate minute/hour/day collection"
     # task split_video_stats_collection: :environment do
     #   timed do
-    #     LegacyStat::Video.where(m: { '$ne' => nil }).all.each do |stat|
+    #     LegacyStat::Video.where(m: { :$ne => nil }).all.each do |stat|
     #       attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.m)
     #       attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
     #       attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
@@ -173,7 +141,7 @@ namespace :one_time do
     #     p "Split video minute stats"
     #   end
     #   timed do
-    #     LegacyStat::Video.where(h: { '$ne' => nil }).all.each do |stat|
+    #     LegacyStat::Video.where(h: { :$ne => nil }).all.each do |stat|
     #       attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.h)
     #       attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
     #       attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
@@ -182,7 +150,7 @@ namespace :one_time do
     #     p "Split video hour stats"
     #   end
     #   timed do
-    #     LegacyStat::Video.where(d: { '$ne' => nil }).all.each do |stat|
+    #     LegacyStat::Video.where(d: { :$ne => nil }).all.each do |stat|
     #       attributes = stat.attributes.slice('st', 'u', 'vl', 'vv', 'md', 'bp', 'vs').merge('d' => stat.d)
     #       attributes['vlc'] = attributes['vl']['m'].to_i + attributes['vl']['e'].to_i
     #       attributes['vvc'] = attributes['vv']['m'].to_i + attributes['vv']['e'].to_i
@@ -211,7 +179,7 @@ namespace :one_time do
     #       'mb27lban', '8vnlactg', 'rm8w0f9k', 'qdvuigm7', 'vwftwdte', 'estq9huv', 'ihuf4f5u', 'kq8zmtdf', 'uazs3te5', 'ql0355zz', 'y5uk4rpd',
     #       '6pdo240s', 'qeiwa7fu', 'qsr700iv'
     #     ]
-    #     criteria = VideoTag.where(st: { '$in' => site_tokens }, uo: { '$ne' => 'a' }, created_at: { "$lte" => Time.utc(2012, 1, 19) })
+    #     criteria = VideoTag.where(st: { '$in' => site_tokens }, uo: { :$ne => 'a' }, created_at: { :$lte => Time.utc(2012, 1, 19) })
     #     criteria.each do |video_tag|
     #       case video_tag.uo
     #       when 's'
@@ -269,7 +237,7 @@ namespace :one_time do
   #   bad_video_stat.vl.each { |k, v| inc["vl.#{k}"] = v }
   #   bad_video_stat.vv.each { |k, v| inc["vv.#{k}"] = v }
   #   inc["vs.#{good_video_stat.u}"] = bad_video_stat.vs[bad_video_stat.u]
-  #   LegacyStat::Video.collection.update({ st: good_video_stat.st, u: good_video_stat.u, d: good_video_stat.d.to_time }, { "$inc" => inc }, upsert: true)
+  #   LegacyStat::Video.collection.find(st: good_video_stat.st, u: good_video_stat.u, d: good_video_stat.d.to_time).update({ :$inc => inc }, upsert: true)
   # end
   #
   # def update_bad_video_stat(bad_video_stat, good_video_crc)

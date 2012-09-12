@@ -115,7 +115,7 @@ class Invoice < ActiveRecord::Base
   end
 
   def last_transaction
-    transactions.order(:created_at.asc).last
+    transactions.order{ created_at.asc }.last
   end
 
   def refunded?

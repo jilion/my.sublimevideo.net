@@ -3,7 +3,8 @@
 class Stat::Video::Second
   include Mongoid::Document
   include Stat::Video
-  store_in :video_second_stats
-  
-  index [[:st, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]
+
+  store_in collection: 'video_second_stats'
+
+  index st: 1, d: 1
 end

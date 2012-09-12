@@ -195,7 +195,7 @@ describe User, :plans do
         describe "after_transition  on: :suspend, do: :send_account_suspended_email" do
           it "should send an email to the user" do
             user # eager loading!
-            expect { user.suspend }.to change(Delayed::Job.where { handler =~ '%Class%account_suspended%' }, :count).by(1)
+            expect { user.suspend }.to change(Delayed::Job.where{ handler =~ '%Class%account_suspended%' }, :count).by(1)
           end
         end
       end
@@ -229,7 +229,7 @@ describe User, :plans do
 
         describe "after_transition  on: :unsuspend, do: :send_account_unsuspended_email" do
           it "should send an email to the user" do
-            expect { user.unsuspend }.to change(Delayed::Job.where { handler =~ '%Class%account_unsuspended%' }, :count).by(1)
+            expect { user.unsuspend }.to change(Delayed::Job.where{ handler =~ '%Class%account_unsuspended%' }, :count).by(1)
           end
         end
       end
@@ -295,7 +295,7 @@ describe User, :plans do
 
         describe "after_transition on: :archive, do: [:newsletter_unsubscribe, :send_account_archived_email]" do
           it "sends an email to user" do
-            expect { user.archive }.to change(Delayed::Job.where { handler =~ '%Class%account_archived%' }, :count).by(1)
+            expect { user.archive }.to change(Delayed::Job.where{ handler =~ '%Class%account_archived%' }, :count).by(1)
           end
 
           describe ":newsletter_unsubscribe" do
@@ -367,7 +367,7 @@ describe User, :plans do
       subject { create(:user) }
 
       it "delays UserMailer.welcome" do
-        expect { subject }.to change(Delayed::Job.where { handler =~ "%Class%welcome%" }, :count).by(1)
+        expect { subject }.to change(Delayed::Job.where{ handler =~ "%Class%welcome%" }, :count).by(1)
       end
     end
 
@@ -450,7 +450,7 @@ describe User, :plans do
             expect {
               subject.update_attribute(:email, "9876@example.org")
               subject.confirm!
-            }.to change(Delayed::Job.where { handler =~ '%Module%update_user%' }, :count).by(1)
+            }.to change(Delayed::Job.where{ handler =~ '%Module%update_user%' }, :count).by(1)
           end
 
           it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
@@ -467,7 +467,7 @@ describe User, :plans do
 
         context "user updated his name" do
           it "delays ZendeskWrapper.update_user" do
-            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job.where { handler =~ '%Module%update_user%' }, :count).by(1)
+            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job.where{ handler =~ '%Module%update_user%' }, :count).by(1)
           end
 
           it "updates user's name on Zendesk" do

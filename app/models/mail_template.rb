@@ -21,8 +21,8 @@ class MailTemplate < ActiveRecord::Base
   # ==========
 
   # sort
-  scope :by_title, lambda { |way='asc'| order(:title.send(way)) }
-  scope :by_date,  lambda { |way='desc'| order(:created_at.send(way)) }
+  scope :by_title, lambda { |way='asc'| order{ title.send(way) } }
+  scope :by_date,  lambda { |way='desc'| order{ created_at.send(way) } }
 
   # ====================
   # = Instance Methods =

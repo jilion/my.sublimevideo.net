@@ -28,7 +28,7 @@ describe RecurringJob do
 
   describe ".delay_invoices_processing" do
     it "delays invoices_processing if not already delayed" do
-      expect { described_class.delay_invoices_processing }.to change(Delayed::Job.where { handler =~ '%RecurringJob%invoices_processing%' }, :count).by(1)
+      expect { described_class.delay_invoices_processing }.to change(Delayed::Job.where{ handler =~ '%RecurringJob%invoices_processing%' }, :count).by(1)
     end
 
     it "doesn't delay invoices_processing if already delayed" do
@@ -41,10 +41,10 @@ describe RecurringJob do
     it "delays 4 methods" do
       described_class.invoices_processing
 
-      Delayed::Job.where { handler =~ '%Invoice%update_pending_dates_for_first_not_paid_invoices%' }.should have(1).item
-      Delayed::Job.where { handler =~ '%Site%downgrade_sites_leaving_trial%' }.should have(1).item
-      Delayed::Job.where { handler =~ '%Site%renew_active_sites%' }.should have(1).item
-      Delayed::Job.where { handler =~ '%Transaction%charge_invoices%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%Invoice%update_pending_dates_for_first_not_paid_invoices%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%Site%downgrade_sites_leaving_trial%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%Site%renew_active_sites%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%Transaction%charge_invoices%' }.should have(1).item
     end
 
     it "calls delay_invoices_processing" do
@@ -58,10 +58,10 @@ describe RecurringJob do
     it "calls 3 methods" do
       described_class.sites_processing
 
-      Delayed::Job.where { handler =~ '%Site%send_trial_will_expire_email%' }.should have(1).item
-      Delayed::Job.where { handler =~ '%Site%send_yearly_plan_will_be_renewed_email%' }.should have(1).item
-      Delayed::Job.where { handler =~ '%Site%monitor_sites_usages%' }.should have(1).item
-      Delayed::Job.where { handler =~ '%Site%update_last_30_days_counters_for_not_archived_sites%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%Site%send_trial_will_expire_email%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%Site%send_yearly_plan_will_be_renewed_email%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%Site%monitor_sites_usages%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%Site%update_last_30_days_counters_for_not_archived_sites%' }.should have(1).item
     end
 
     it "calls delay_sites_processing" do
@@ -75,8 +75,8 @@ describe RecurringJob do
     it "calls 1 method" do
       described_class.users_processing
 
-      Delayed::Job.where { handler =~ '%User%send_credit_card_expiration%' }.should have(1).item
-      Delayed::Job.where { handler =~ '%User%send_inactive_account_email%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%User%send_credit_card_expiration%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%User%send_inactive_account_email%' }.should have(1).item
     end
 
     it "calls delay_users_processing" do
@@ -90,7 +90,7 @@ describe RecurringJob do
     it "calls 1 method" do
       described_class.tweets_processing
 
-      Delayed::Job.where { handler =~ '%Tweet%save_new_tweets_and_sync_favorite_tweets%' }.should have(1).item
+      Delayed::Job.where{ handler =~ '%Tweet%save_new_tweets_and_sync_favorite_tweets%' }.should have(1).item
     end
 
     it "calls delay_tweets_processing" do
@@ -105,7 +105,7 @@ describe RecurringJob do
       described_class.stats_processing
 
       %w[Users Sites Sales SiteStats SiteUsages Tweets].each do |stats_klass|
-        Delayed::Job.where { handler =~ "%Stats::#{stats_klass}Stat%create_stats%" }.should have(1).item
+        Delayed::Job.where{ handler =~ "%Stats::#{stats_klass}Stat%create_stats%" }.should have(1).item
       end
     end
 

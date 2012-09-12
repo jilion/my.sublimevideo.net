@@ -18,10 +18,10 @@ class Tweet
   field :retweets_count,    type: Integer, default: 0 # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
   field :favorited,         type: Boolean, default: false # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
 
-  index :tweet_id
-  index :favorited
-  index :tweeted_at
-  index :keywords
+  index tweet_id: 1
+  index favorited: 1
+  index tweeted_at: 1
+  index keywords: 1
 
   belongs_to :retweeted_tweet, class_name: "Tweet", inverse_of: :retweets
   has_many   :retweets, class_name: "Tweet", inverse_of: :retweeted_tweet
@@ -32,7 +32,6 @@ class Tweet
 
   scope :keywords,          lambda { |keywords| where(keywords: keywords) }
   scope :favorites,         where(favorited: true)
-  scope :between,           lambda { |start_date, end_date| where(tweeted_at: { "$gte" => start_date, "$lt" => end_date }) }
   scope :by_date,           lambda { |way='desc'| order_by([:tweeted_at, way]) }
   scope :by_retweets_count, lambda { |way='desc'| order_by([:retweets_count, way]) }
 

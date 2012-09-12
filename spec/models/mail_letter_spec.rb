@@ -41,7 +41,7 @@ describe MailLetter do
           end
 
           it "delays delivery of mails" do
-            expect { subject }.to change(Delayed::Job.where { handler =~ "%deliver%" }, :count).by(1)
+            expect { subject }.to change(Delayed::Job.where{ handler =~ "%deliver%" }, :count).by(1)
           end
 
           it "actually sends email when workers do their jobs" do
@@ -80,7 +80,7 @@ describe MailLetter do
             subject { MailLetter.new(attributes.merge(criteria: 'paying')).deliver_and_log }
 
             it "delays delivery of mails, actually sends email when workers do their jobs" do
-              expect { subject }.to change(Delayed::Job.where { handler =~ "%deliver%" }, :count).by(1)
+              expect { subject }.to change(Delayed::Job.where{ handler =~ "%deliver%" }, :count).by(1)
               expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
               ActionMailer::Base.deliveries.map(&:to).should =~ [[@paying_user.email]]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
@@ -95,7 +95,7 @@ describe MailLetter do
             subject { MailLetter.new(attributes.merge(criteria: 'free')).deliver_and_log }
 
             it "delays delivery of mails, actually sends email when workers do their jobs" do
-              expect { subject }.to change(Delayed::Job.where { handler =~ "%deliver%" }, :count).by(3)
+              expect { subject }.to change(Delayed::Job.where{ handler =~ "%deliver%" }, :count).by(3)
               expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(3)
               ActionMailer::Base.deliveries.map(&:to).should =~ [[@old_trial_user.email], [@new_trial_user.email], [user.email]]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
@@ -110,7 +110,7 @@ describe MailLetter do
             subject { MailLetter.new(attributes.merge(criteria: 'trial')).deliver_and_log }
 
             it "delays delivery of mails, actually sends email when workers do their jobs" do
-              expect { subject }.to change(Delayed::Job.where { handler =~ "%deliver%" }, :count).by(1)
+              expect { subject }.to change(Delayed::Job.where{ handler =~ "%deliver%" }, :count).by(1)
               expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
               ActionMailer::Base.deliveries.map(&:to).should =~ [[@new_trial_user.email]]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
@@ -125,7 +125,7 @@ describe MailLetter do
             subject { MailLetter.new(attributes.merge(criteria: 'old_trial')).deliver_and_log }
 
             it "delays delivery of mails, actually sends email when workers do their jobs" do
-              expect { subject }.to change(Delayed::Job.where { handler =~ "%deliver%" }, :count).by(1)
+              expect { subject }.to change(Delayed::Job.where{ handler =~ "%deliver%" }, :count).by(1)
               expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
               ActionMailer::Base.deliveries.map(&:to).should =~ [[@old_trial_user.email]]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/

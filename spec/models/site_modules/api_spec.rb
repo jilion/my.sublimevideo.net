@@ -66,7 +66,7 @@ describe SiteModules::Api do
       it "selects a subset of fields, as a hash" do
         response.should be_a(Hash)
         response[:token].should eq site.token
-        response[:usage].should eq site.usages.between(60.days.ago.midnight, Time.now.utc.end_of_day).as_api_response(:v1_self_private)
+        response[:usage].should eq site.usages.between(day: 60.days.ago.midnight..Time.now.utc.end_of_day).as_api_response(:v1_self_private)
       end
     end
   end

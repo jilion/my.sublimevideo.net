@@ -3,19 +3,13 @@ module Stats
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    store_in :tweets_stats
+    store_in collection: 'tweets_stats'
 
     field :d, type: DateTime # Day
     field :k, type: Hash     # keywords { "sublimevideo" => 2, "jw player" => 3 }
 
-    index :d
-    index :created_at
-
-    # ==========
-    # = Scopes =
-    # ==========
-
-    scope :between, lambda { |start_date, end_date| where(d: { "$gte" => start_date, "$lt" => end_date }) }
+    index d: 1
+    index created_at: 1
 
     # send time as id for backbonejs model
     def as_json(options = nil)
@@ -32,12 +26,12 @@ module Stats
 
       def json(from = nil, to = nil)
         json_stats = if from.present?
-          between(from, to || Time.now.utc.midnight)
+          between(d: from..(to || Time.now.utc.midnight))
         else
           scoped
         end
 
-        json_stats.order_by([:d, :asc]).to_json(only: [:k])
+        json_stats.order_by(d: 1).to_json(only: [:k])
       end
 
       def create_stats
@@ -51,9 +45,9 @@ module Stats
 
       def determine_last_stat_day
         if TweetsStat.present?
-          TweetsStat.order_by([:d, :asc]).last.try(:d)
+          TweetsStat.order_by(d: 1).last.try(:d)
         else
-          (Tweet.order_by([:tweeted_at, :asc]).first.tweeted_at).midnight - 1.day
+          (Tweet.by_date('asc').first.tweeted_at).midnight - 1.day
         end
       end
 
@@ -62,7 +56,7 @@ module Stats
       end
 
       def tweets_hash(day)
-        tweets = Tweet.between(day.beginning_of_day, day.end_of_day).all
+        tweets = Tweet.between(tweeted_at: day.beginning_of_day..day.end_of_day).all
         hash = {
           d: day.to_time,
           k: Hash.new(0)

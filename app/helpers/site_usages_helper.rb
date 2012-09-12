@@ -12,11 +12,11 @@ module SiteUsagesHelper
       end
 
       if options[:last_30_days]
-        usages_hash[:last_30_days][usage_name] = SiteUsage.between(Time.now.utc.midnight - 30.days, Time.now.utc.midnight).any_in(site_id: site_id).sum(usage_name).to_i
+        usages_hash[:last_30_days][usage_name] = SiteUsage.between(day: (Time.now.utc.midnight - 30.days)..Time.now.utc.midnight).any_in(site_id: site_id).sum(usage_name).to_i
       end
 
       if options[:from] && options[:to]
-        usages_hash[:range][usage_name] = SiteUsage.between(options[:from], options[:to]).any_in(site_id: site_id).sum(usage_name).to_i
+        usages_hash[:range][usage_name] = SiteUsage.between(day: options[:from]..options[:to]).any_in(site_id: site_id).sum(usage_name).to_i
       end
     end
     usages_hash

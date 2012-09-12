@@ -12,8 +12,8 @@ class Log
   field :ended_at,   type: DateTime
   field :parsed_at,  type: DateTime
 
-  index :name, unique: true
-  index [[:created_at, Mongo::ASCENDING], [:_type, Mongo::ASCENDING]], background: true # Log::Amazon#fetch_new_logs_names & Log::Voxcast#next_log_ended_at
+  index({ name: 1 }, unique: true)
+  index({ created_at: 1, _type: 1 }, background: true) # Log::Amazon#fetch_new_logs_names & Log::Voxcast#next_log_ended_at
 
   attr_accessible :name
 
@@ -44,7 +44,7 @@ class Log
   def self.create_new_logs(new_logs_names)
     existings_logs_names = only(:name).any_in(name: new_logs_names).map(&:name)
     (new_logs_names - existings_logs_names).each do |name|
-      safely.create(name: name)
+      with(safe: true).create(name: name)
     end
   end
 
@@ -52,7 +52,7 @@ class Log
     log = find(id)
     unless log.parsed_at?
       log.parse_and_create_usages!
-      log.safely.update_attribute(:parsed_at, Time.now.utc)
+      log.with(safe: true).update_attribute(:parsed_at, Time.now.utc)
     end
   end
 

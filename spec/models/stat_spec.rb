@@ -114,7 +114,7 @@ describe Stat do
           Stat::Site::Minute.count.should eql(4)
           Stat::Site::Hour.count.should eql(2)
           Stat::Site::Day.count.should eql(2)
-          Stat::Site::Minute.where(t: 'ovjigy83').before(Time.now).count.should eql(2)
+          Stat::Site::Minute.where(t: 'ovjigy83').lte(d: Time.now).count.should eql(2)
           Stat::Site::Minute.where(t: 'ovjigy83', d: log.minute).first.bp.should eql({ "saf-osx" => 4 })
           Stat::Site::Day.where(t: 'ovjigy83', d: log.day).first.bp.should eql({ "saf-osx" => 8 })
         end

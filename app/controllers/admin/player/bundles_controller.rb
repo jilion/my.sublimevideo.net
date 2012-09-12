@@ -6,7 +6,7 @@ class Admin::Player::BundlesController < Admin::PlayerController
 
   # GET /player/bundles
   def index
-    @bundles = Player::Bundle.order(:created_at.desc)
+    @bundles = Player::Bundle.order{ created_at.desc }
     respond_with(@bundles)
   end
 

@@ -22,8 +22,8 @@ class VideoTag
   field :d, type: Integer # Video duration (ms)
   field :state, type: String # State
 
-  index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING]]
-  index [[:st, Mongo::ASCENDING], [:updated_at, Mongo::ASCENDING]]
+  index st: 1, u: 1
+  index st: 1, updated_at: 1
   # TODO Thibaud add indexes
 
   def site
@@ -70,7 +70,7 @@ class VideoTag
 
   def self.last_30_days_updated_count(site_token)
     from = 30.days.ago.midnight.to_i
-    where(st: site_token, updated_at: { "$gte" => from }).count
+    where(st: site_token, updated_at: { :$gte => from }).count
   end
 
 end

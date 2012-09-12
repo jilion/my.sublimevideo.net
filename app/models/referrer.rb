@@ -8,12 +8,12 @@ class Referrer
   field :badge_hits,      type: Integer, default: 0
   field :contextual_hits, type: Integer, default: 0
 
-  index [[:token, Mongo::ASCENDING], [:url, Mongo::ASCENDING]]
-  index :hits
-  index :badge_hits
-  index :contextual_hits
-  index :created_at
-  index :updated_at
+  index token: 1, url: 1
+  index hits: 1
+  index badge_hits: 1
+  index contextual_hits: 1
+  index created_at: 1
+  index updated_at: 1
 
   attr_accessible :token, :url, :hits, :contextual_hits, :badge_hits
 

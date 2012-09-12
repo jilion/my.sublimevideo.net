@@ -3,7 +3,7 @@ module Stats
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    store_in :site_usages_stats
+    store_in collection: 'site_usages_stats'
 
     field :d,  type: DateTime # Day
     field :lh, type: Hash,    default: {} # Loader hits: { ns (non-ssl) => 2, s (ssl) => 1 }
@@ -12,13 +12,11 @@ module Stats
     field :sr, type: Integer, default: 0  # S3 Requests
     field :tr, type: Hash,    default: {} # Traffic (bytes): { s (s3) => 2123, v (voxcast) => 1231 }
 
-    index :d
+    index d: 1
 
     # ==========
     # = Scopes =
     # ==========
-
-    scope :between, lambda { |start_date, end_date| where(d: { "$gte" => start_date, "$lt" => end_date }) }
 
     # send time as id for backbonejs model
     def as_json(options = nil)
@@ -35,12 +33,12 @@ module Stats
 
       def json(from = nil, to = nil)
         json_stats = if from.present?
-          between(from, to || Time.now.utc.midnight)
+          between(d: from..(to || Time.now.utc.midnight))
         else
           scoped
         end
 
-        json_stats.order_by([:d, :asc]).to_json(only: [:lh, :ph, :fh, :sr, :tr])
+        json_stats.order_by(d: 1).to_json(only: [:lh, :ph, :fh, :sr, :tr])
       end
 
       def create_stats
@@ -54,7 +52,7 @@ module Stats
 
       def determine_last_stat_day
         if SiteUsagesStat.present?
-          SiteUsagesStat.order_by([:d, :asc]).last.try(:d)
+          SiteUsagesStat.order_by(d: 1).last.try(:d)
         else
           SiteUsage.order_by([:day, :asc]).first.day - 1.day
         end

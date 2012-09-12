@@ -33,9 +33,9 @@ class MailLog < ActiveRecord::Base
   # ==========
 
   # sort
-  scope :by_template_title, lambda { |way = 'asc'| includes(:template).order(template: :title.send(way)) }
-  scope :by_admin_email,    lambda { |way = 'asc'| includes(:admin).order(admin: :email.send(way)) }
-  scope :by_date,           lambda { |way = 'desc'| order(:created_at.send(way)) }
+  scope :by_template_title, lambda { |way = 'asc'| includes(:template).order{ template.title.send(way) } }
+  scope :by_admin_email,    lambda { |way = 'asc'| includes(:admin).order{ admin.email.send(way) } }
+  scope :by_date,           lambda { |way = 'desc'| order{ created_at.send(way) } }
 
   # ====================
   # = Instance Methods =

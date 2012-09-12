@@ -6,7 +6,7 @@ class Admin::ReleasesController < Admin::AdminController
 
   # GET /releases
   def index
-    @releases = Release.order(:date.desc)
+    @releases = Release.order{ date.desc }
     respond_with(@releases)
   end
 

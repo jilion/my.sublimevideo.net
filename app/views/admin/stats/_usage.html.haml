@@ -1,6 +1,6 @@
-- loader_hits = SiteUsage.between(range_start_date, range_end_date).sum(:loader_hits).to_i
-- player_hits = SiteUsage.between(range_start_date, range_end_date).sum(:player_hits).to_i
-- traffic     = SiteUsage.between(range_start_date, range_end_date).sum(:traffic_s3).to_i + SiteUsage.between(range_start_date, range_end_date).sum(:traffic_voxcast).to_i
+- loader_hits = SiteUsage.between(day: range_start_date..range_end_date).sum(:loader_hits).to_i
+- player_hits = SiteUsage.between(day: range_start_date..range_end_date).sum(:player_hits).to_i
+- traffic     = SiteUsage.between(day: range_start_date..range_end_date).sum(:traffic_s3).to_i + SiteUsage.between(day: range_start_date..range_end_date).sum(:traffic_voxcast).to_i
 
 %h4 Loader hits
 %p.summary= number_to_human(loader_hits, significant: false, precision: 3, delimiter: "'")
@@ -11,7 +11,7 @@
 %h4 Traffic
 %p.summary= number_to_human_size(traffic, significant: false, precision: 2)
 
-- if player_hits > 0 && flash_hits = SiteUsage.between(range_start_date, range_end_date).sum(:flash_hits).to_i
+- if player_hits > 0 && flash_hits = SiteUsage.between(day: range_start_date..range_end_date).sum(:flash_hits).to_i
   %h4 Flash
   %p.summary= display_percentage(flash_hits / player_hits.to_f)
 

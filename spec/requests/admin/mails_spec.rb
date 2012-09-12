@@ -83,7 +83,7 @@ feature "Mails sending" do
 
       page.should have_content "Sending in progress..."
 
-      Delayed::Job.where { handler =~ "%deliver_and_log%" }.should have(1).item
+      Delayed::Job.where{ handler =~ "%deliver_and_log%" }.should have(1).item
       $worker.work_off
       ActionMailer::Base.deliveries.should have(1).item
 

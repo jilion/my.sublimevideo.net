@@ -30,7 +30,7 @@ module SiteModules::Usage
 
     from = 30.days.ago.midnight
     to   = 1.day.ago.end_of_day
-    last_30_days_stats = day_stats.between(from, to).entries
+    last_30_days_stats = day_stats.between(d: from..to).entries
 
     while from <= to
       if last_30_days_stats.first.try(:[], 'd') == from
@@ -50,14 +50,14 @@ module SiteModules::Usage
   end
 
   def set_first_billable_plays_at
-    stat = day_stats.order_by([:d, :asc]).detect { |s| s.billable_vv >= 10 } ||
+    stat = day_stats.order_by(d: 1).detect { |s| s.billable_vv >= 10 } ||
            usages.order_by([:day, :asc]).detect { |s| s.billable_player_hits >= 10 }
 
     self.update_column(:first_billable_plays_at, stat.respond_to?(:d) ? stat.d : stat.day) if stat
   end
 
   def billable_usages(options = {})
-    monthly_usages = day_stats.between(options[:from], options[:to]).map(&:billable_vv)
+    monthly_usages = day_stats.between(d: options[:from]..options[:to]).map(&:billable_vv)
     if options[:drop_first_zeros]
       monthly_usages.drop_while { |usage| usage == 0 }
     else
@@ -95,7 +95,7 @@ module SiteModules::Usage
   def percentage_of_days_over_daily_limit(max_days = 60)
     if in_paid_plan?
       last_days       = [days_since(first_paid_plan_started_at), max_days].min
-      over_limit_days = day_stats.between(last_days.days.ago.utc.midnight, 1.day.ago.end_of_day).to_a.count { |su| su.billable_vv > (plan.video_views / 30.0) }
+      over_limit_days = day_stats.between(d: last_days.days.ago.utc.midnight..1.day.ago.end_of_day).to_a.count { |su| su.billable_vv > (plan.video_views / 30.0) }
 
       [(over_limit_days / last_days.to_f).round(2), 1].min
     else

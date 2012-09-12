@@ -1,7 +1,7 @@
 <%
 require_dependency 'stat_timeline'
 
-invoices = ::Invoice.between(graph_start_date, graph_end_date).order(:created_at.asc)
+invoices = ::Invoice.between(created_at: graph_start_date..graph_end_date).order{ created_at.asc }
 
 paid_invoices         = StatTimeline::Invoice.timeline(invoices.paid, graph_start_date, graph_end_date)
 monthly_paid_invoices = StatTimeline::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.monthly? }, graph_start_date, graph_end_date)
@@ -43,7 +43,7 @@ graph = Graph.new do |g|
       return "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>" + this.series.name + ": <strong>$" + Highcharts.numberFormat(this.y / 100, 2) + " of $" + Highcharts.numberFormat(this.total / 100, 2) + " (" + Highcharts.numberFormat(this.percentage, 1) + "%)</strong>";
     }
   }))
-  
+
   g.option(series: [
     serie(paid_invoices[moving_average_length-1..-1], 'Paid', type: 'line', color: '#600fff', visible: false, stack: 0),
     serie(moving_average(paid_invoices, moving_average_length), 'AVG Paid', type: 'line', stack: 1),

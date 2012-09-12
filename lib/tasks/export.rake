@@ -9,7 +9,7 @@ namespace :export do
       timed do
         counter = 0
         # site_token = '2xrynuh2' # schooltube.com (uo: 'a')
-        site_token = 'srkkdods' # twit.tv (n: { '$ne' => nil })
+        site_token = 'srkkdods' # twit.tv (n: { :$ne => nil })
         CSV.open("#{ENV['HOME']}/Desktop/video_stats-#{site_token}.csv", "wb") do |csv|
           csv << ['uid', 'name', 'loads_count', 'views_count', 'embed_loads_count', 'embed_views_count']
           VideoTag.where(st: site_token).active.each do |video_tag|

@@ -47,3 +47,6 @@ MySublimeVideo::Application.configure do
   # config.log_tags = [:uuid, :remote_ip]
 
 end
+
+Mongoid.logger.level = Logger::DEBUG
+Moped.logger.level = Logger::DEBUG

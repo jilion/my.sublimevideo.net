@@ -41,9 +41,9 @@ private
 
   def sort_from_params
     if param = sort_params.first
-      param[0].sub('by_', '').to_sym.send(param[1])
+      "#{param[0].sub('by_', '')} #{param[1]}"
     else
-      :run_at.asc
+      'run_at asc'
     end
   end
 

@@ -246,7 +246,7 @@ describe Transaction, :plans do
 
           it "should send an email to invoice.user" do
             subject
-            expect { subject.succeed }.to change(Delayed::Job.where { handler =~ '%Class%transaction_succeeded%' }, :count).by(1)
+            expect { subject.succeed }.to change(Delayed::Job.where{ handler =~ '%Class%transaction_succeeded%' }, :count).by(1)
           end
         end
       end
@@ -257,7 +257,7 @@ describe Transaction, :plans do
 
           it "should send an email to invoice.user" do
             subject
-            expect { subject.fail }.to change(Delayed::Job.where { handler =~ '%Class%transaction_failed%' }, :count).by(1)
+            expect { subject.fail }.to change(Delayed::Job.where{ handler =~ '%Class%transaction_failed%' }, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should eq [subject.user.email]
           end
         end
@@ -298,9 +298,9 @@ describe Transaction, :plans do
       before { Delayed::Job.delete_all }
 
       it "should delay invoice charging for open invoices which have the renew flag == true by user" do
-        Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%").should be_empty
-        expect { Transaction.charge_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%"), :count).by(1)
-        djs = Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%")
+        Delayed::Job.where{ handler =~ "%charge_invoices_by_user_id%" }.should be_empty
+        expect { Transaction.charge_invoices }.to change(Delayed::Job.where{ handler =~ "%charge_invoices_by_user_id%" }, :count).by(1)
+        djs = Delayed::Job.where{ handler =~ "%charge_invoices_by_user_id%" }
         djs.should have(1).item
         djs.map { |dj| YAML.load(dj.handler).args[0] }.should =~ [@invoice1.reload.site.user.id]
       end
@@ -401,7 +401,7 @@ describe Transaction, :plans do
             @invoice4.reload
             15.times { create(:transaction, invoices: [@invoice4], state: 'failed') }
 
-            expect { Transaction.charge_invoices_by_user_id(@user2.id) }.to change(Delayed::Job.where { handler =~ '%Class%too_many_charging_attempts%' }, :count).by(1)
+            expect { Transaction.charge_invoices_by_user_id(@user2.id) }.to change(Delayed::Job.where{ handler =~ '%Class%too_many_charging_attempts%' }, :count).by(1)
           end
         end
       end

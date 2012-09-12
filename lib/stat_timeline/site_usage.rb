@@ -7,7 +7,7 @@ module StatTimeline
       @end_time         = end_time
       @options          = options
       @labels_to_fields = options[:labels] ? labels_to_fields.select { |k, v| @options[:labels].include?(k) } : labels_to_fields
-      @base_conditions  = @options[:site_ids] ? { site_id: { "$in" => [@options[:site_ids]].flatten } } : {}
+      @base_conditions  = @options[:site_ids] ? { site_id: { :$in => [@options[:site_ids]].flatten } } : {}
     end
 
     def self.timeline(start_time, end_time, options = {})
@@ -28,19 +28,26 @@ module StatTimeline
     #
     # Return a hash of site usages. Default keys of the hash are the default labels (see the 'labels' options):
     def timeline
-      usages = ::SiteUsage.collection.group(
-        key: [:day],
-        cond: @base_conditions.merge({
+      usages = ::SiteUsage.collection.aggregate([
+        { :$match => @base_conditions.merge({
           day: {
-            "$gte" => @start_time.midnight,
-            "$lte" => @end_time.end_of_day
-          }
-        }),
-        initial: @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
-        reduce: reduce
-      )
+            :$gte => @start_time.midnight,
+            :$lte => @end_time.end_of_day
+          } }) },
+        { :$group =>
+          @labels_to_fields.keys.inject({}) { |hash, label|
+            hash[label] = { :$sum => "$#{@labels_to_fields[label]}" }
+            hash
+          }.merge(_id: '$day') },
+        { :$project =>
+          @labels_to_fields.keys.inject({}) { |hash, label|
+            hash[label] = 1
+            hash
+          }.merge(
+            _id: 0,
+            day: '$_id') }
+      ])
 
-      # total = @options[:dont_add_total_usages_before_start_time] ? [] : total_usages_before_start_time
       total = [] # legacy
 
       # insert empty hash for days without usage
@@ -57,25 +64,6 @@ module StatTimeline
     end
 
     private
-
-    def total_usages_before_start_time
-      ::SiteUsage.collection.group(
-        key: nil,
-        cond: @base_conditions.merge({ day: { "$lt" => @start_time.to_date.to_time.midnight } }),
-        initial: @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
-        reduce: reduce
-      )
-    end
-
-    def reduce
-      @labels_to_fields.keys.inject("function(doc, prev) {\n") do |js, label|
-        js += "\tprev.#{label} += (isNaN(doc.#{@labels_to_fields[label]}) ? 0 : doc.#{@labels_to_fields[label]})"
-        if @options[:merge_cached] && [:loader_usage, :all_usage].exclude?(label)
-          js += " + (isNaN(doc.#{@labels_to_fields[label]}_cached) ? 0 : doc.#{@labels_to_fields[label]}_cached)"
-        end
-        js += ";\n"
-      end + "}\n"
-    end
 
     def labels_to_fields
       cached_fields = if @options[:merge_cached]
@@ -153,7 +141,7 @@ module StatTimeline
 
     def initialize(start_time, end_time, options = {})
       @start_time, @end_time = start_time, end_time
-      @collection = ::Stats::UsersStat.between(@start_time.midnight, @end_time.end_of_day)
+      @collection = ::Stats::UsersStat.between(d: @start_time.midnight..@end_time.end_of_day)
     end
 
     def timeline(attribute)

@@ -3,7 +3,7 @@ module Stats
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    store_in :users_stats
+    store_in collection: 'users_stats'
 
     # Legacy
     field :states_count, type: Hash
@@ -15,13 +15,7 @@ module Stats
     field :su, type: Integer # suspended
     field :ar, type: Integer # archived
 
-    index :d
-
-    # ==========
-    # = Scopes =
-    # ==========
-
-    scope :between, lambda { |start_date, end_date| where(d: { "$gte" => start_date, "$lt" => end_date }) }
+    index d: 1
 
     # send time as id for backbonejs model
     def as_json(options = nil)
@@ -38,12 +32,12 @@ module Stats
 
       def json(from = nil, to = nil)
         json_stats = if from.present?
-          between(from, to || Time.now.utc.midnight)
+          between(d: from..(to || Time.now.utc.midnight))
         else
           scoped
         end
 
-        json_stats.order_by([:d, :asc]).to_json(only: [:be, :fr, :pa, :su, :ar])
+        json_stats.order_by(d: 1).to_json(only: [:be, :fr, :pa, :su, :ar])
       end
 
       def create_stats

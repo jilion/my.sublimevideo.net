@@ -3,20 +3,18 @@ module Stats
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    store_in :sales_stats
+    store_in collection: 'sales_stats'
 
     field :d, type: DateTime # Day
     field :ne, type: Hash    # new sales { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
     field :re, type: Hash    # renew sales { "plus" => { "m" => 3, "y" => 4 }, "premium" => { "m" => 3, "y" => 4 } }
 
-    index :d
-    index :created_at
+    index d: 1
+    index created_at: 1
 
     # ==========
     # = Scopes =
     # ==========
-
-    scope :between, lambda { |start_date, end_date| where(d: { "$gte" => start_date, "$lt" => end_date }) }
 
     # send time as id for backbonejs model
     def as_json(options = nil)
@@ -33,12 +31,12 @@ module Stats
 
       def json(from = nil, to = nil)
         json_stats = if from.present?
-          between(from, to || Time.now.utc.midnight)
+          between(d: from..(to || Time.now.utc.midnight))
         else
           scoped
         end
 
-        json_stats.order_by([:d, :asc]).to_json(only: [:ne, :re])
+        json_stats.order_by(d: 1).to_json(only: [:ne, :re])
       end
 
       def create_stats
@@ -52,9 +50,9 @@ module Stats
 
       def determine_last_stat_day
         if SalesStat.present?
-          SalesStat.order_by([:d, :asc]).last.try(:d)
+          SalesStat.order_by(d: 1).last.try(:d)
         else
-          (Invoice.paid.order(:paid_at.asc).first.paid_at).midnight - 1.day
+          (Invoice.paid.order{ paid_at.asc }.first.paid_at).midnight - 1.day
         end
       end
 
@@ -63,7 +61,7 @@ module Stats
       end
 
       def sales_hash(day)
-        invoices = Invoice.paid.paid_between(day.beginning_of_day, day.end_of_day)
+        invoices = Invoice.paid.between(paid_at: day.beginning_of_day..day.end_of_day)
         hash = {
           d: day.to_time,
           ne: Hash.new { |h,k| h[k] = Hash.new(0) },

@@ -23,7 +23,7 @@ module SiteModules::Api
 
     api_accessible :v1_usage_private do |template|
       template.add :token
-      template.add lambda { |site| site.usages.between(60.days.ago.midnight, Time.now.utc.end_of_day) }, as: :usage, template: :v1_self_private
+      template.add lambda { |site| site.usages.between(day: 60.days.ago.midnight..Time.now.utc.end_of_day) }, as: :usage, template: :v1_self_private
     end
 
   end

@@ -5,3 +5,6 @@ mongodump -h sublimevideo.member0.mongolayer.com:27017 -d sublimevideo-stats -u 
 mongorestore -h localhost -d sublimevideo_dev --collection site_day_stats --drop -v db/backups/sublimevideo-stats/site_day_stats.bson
 mongorestore -h localhost -d sublimevideo_dev --collection site_stats --drop -v db/backups/sublimevideo_production/site_stats.bson
 mongorestore -h localhost -d sublimevideo_dev --collection video_stats --drop -v db/backups/sublimevideo_production/video_stats.bson
+
+
+mongorestore -h localhost -d sublimevideo_dev --collection video_tags --drop -v /Users/Thibaud/Desktop/sublimevideo_stats_mongohq/MongoDB/sublimevideo-stats/video_tags.bson

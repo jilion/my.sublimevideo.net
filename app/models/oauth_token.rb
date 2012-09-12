@@ -24,7 +24,7 @@ class OauthToken < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :valid, where { (invalidated_at == nil) & (authorized_at != nil) }
+  scope :valid, where{ (invalidated_at == nil) & (authorized_at != nil) }
 
   # ====================
   # = Instance Methods =

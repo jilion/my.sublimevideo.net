@@ -60,7 +60,7 @@ class User < ActiveRecord::Base
 
   # API
   has_many :client_applications
-  has_many :tokens, class_name: "OauthToken", order: :authorized_at.desc, include: [:client_application]
+  has_many :tokens, class_name: "OauthToken", order: 'authorized_at DESC', include: [:client_application]
 
   # ===============
   # = Validations =
@@ -122,7 +122,7 @@ class User < ActiveRecord::Base
   # Devise overriding
   # avoid the "not active yet" flash message to be displayed for archived users!
   def self.find_for_authentication(conditions = {})
-    where(conditions).where { state != 'archived' }.first
+    where(conditions).where{ state != 'archived' }.first
   end
 
   def self.suspend(user_id)
@@ -229,15 +229,15 @@ class User < ActiveRecord::Base
   end
 
   def activated_deals
-    deal_activations.active.order(:activated_at.desc).map(&:deal)
+    deal_activations.active.order{ activated_at.desc }.map(&:deal)
   end
 
   def latest_activated_deal
-    deal_activations.order(:activated_at.desc).first.try(:deal)
+    deal_activations.order{ activated_at.desc }.first.try(:deal)
   end
 
   def latest_activated_deal_still_active
-    deal_activations.active.order(:activated_at.desc).first.try(:deal)
+    deal_activations.active.order{ activated_at.desc }.first.try(:deal)
   end
 
   def support_requests

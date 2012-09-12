@@ -34,7 +34,7 @@
 
     #plans{ style: display_plan_fields(site) }
       - free_plan = Plan.free_plan
-      - standard_plans = Plan.standard_plans.order(:video_views.asc, :price.asc)
+      - standard_plans = Plan.standard_plans.order{ video_views.asc }.order{ price.asc }
       %ul
         %li{ class: free_plan.name }
           .wrapper

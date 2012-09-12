@@ -15,7 +15,7 @@ module Stat::Video
     field :vlc, type: Integer, default: 0 # Video Loads Chart (main + extra)
     field :vvc, type: Integer, default: 0 # Video Views Chart (main + extra)
 
-    index [[:st, Mongo::ASCENDING], [:u, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]
+    index st: 1, u: 1, d: 1
   end
 
   # ====================
@@ -51,7 +51,7 @@ module Stat::Video
   def self.top_videos(site_token, options = {})
     options[:from], options[:to] = options[:from].to_i, options[:to].to_i
     options    = options.symbolize_keys.reverse_merge(period: 'days', sort_by: 'vv', limit: 5)
-    conditions = { st: site_token, d: { "$gte" => Time.at(options[:from]), "$lte" => Time.at(options[:to]) } }
+    conditions = { st: site_token, d: { :$gte => Time.at(options[:from]), :$lte => Time.at(options[:to]) } }
     video_uids, total = top_video_uids(conditions, options)
     videos            = videos_with_tags_meta_data(site_token, video_uids)
     add_video_stats_data!(videos, video_uids, conditions, options)
@@ -75,7 +75,7 @@ private
   def self.top_video_uids(conditions, options)
     # Demo Page
     if conditions[:st] == SiteToken[:www]
-      conditions[:u]  = { "$in" => %w[home features-lightbox features-playlist-1 features-playlist-2 features-playlist-3 features-playlist-4 demo-single demo-lightbox-1 demo-lightbox-2 demo-lightbox-3 demo-lightbox-4 demo-playlist-1 demo-playlist-2 demo-playlist-3 demo-playlist-4] }
+      conditions[:u]  = { :$in => %w[home features-lightbox features-playlist-1 features-playlist-2 features-playlist-3 features-playlist-4 demo-single demo-lightbox-1 demo-lightbox-2 demo-lightbox-3 demo-lightbox-4 demo-playlist-1 demo-playlist-2 demo-playlist-3 demo-playlist-4] }
     end
 
     # Reduce number of stats to group if too many.
@@ -83,17 +83,25 @@ private
       stats_count = video_class(options[:period]).where(conditions).count
 
       if stats_count >= 20_000
-        conditions['vlc'] = { "$gte" => 10 + stats_count / 20_000 }
+        conditions['vlc'] = { :$gte => 10 + stats_count / 20_000 }
       end
     end
 
-    videos = video_class(options[:period]).collection.group(
-      key: :u,
-      cond: conditions,
-      initial: { "#{options[:sort_by]}_sum" => 0 },
-      reduce: "function(doc, prev) { if(!isNaN(doc.#{options[:sort_by]}c)) prev.#{options[:sort_by]}_sum += doc.#{options[:sort_by]}c }"
-    )
-    videos.sort_by! { |video| video["#{options[:sort_by]}_sum"] }.reverse!
+    videos = video_class(options[:period]).collection.aggregate([
+      { :$match => conditions },
+      { :$project => {
+          _id: 0,
+          u: 1,
+          options[:sort_by] => 1 } },
+      { :$group => {
+          _id: '$u',
+          "#{options[:sort_by]}Sum" => { :$sum => "$#{options[:sort_by]}" } } },
+      { :$project => {
+          _id: 0,
+          u: '$_id',
+          options[:sort_by] => 1 } },
+      { :$sort => { options[:sort_by] => -1 } }
+    ])
 
     total = videos.size
 
@@ -105,7 +113,7 @@ private
   end
 
   def self.videos_with_tags_meta_data(site_token, video_uids)
-    video_tags = VideoTag.where(st: site_token, u: { "$in" => video_uids }).entries
+    video_tags = VideoTag.where(st: site_token, u: { :$in => video_uids }).entries
     video_uids.map do |video_uid|
       # replace u per id for Backbone
       if video_tag = video_tags.detect { |v| v.u == video_uid }
@@ -119,7 +127,7 @@ private
   def self.add_video_stats_data!(videos, video_uids, conditions, options)
     # Research all stats for all videos
     videos_stats = Hash.new { |h,k| h[k] = Hash.new }
-    conditions[:u] = { "$in" => video_uids }
+    conditions[:u] = { :$in => video_uids }
     conditions.delete('vlc') # remove group limit hack
     video_class(options[:period]).where(conditions).only(:u, :d, :vlc, :vvc).entries.each do |stat|
       videos_stats[stat.u][stat.d.to_i] = { vlc: stat.vlc, vvc: stat.vvc }
