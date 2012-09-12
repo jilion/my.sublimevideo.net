@@ -8,7 +8,7 @@ describe EarlyAccess do
   end
 
   describe "current_user_early_access" do
-    let(:current_user) { mock('user') }
+    let(:current_user) { mock('user', early_access: ['video']) }
     before { Controller.stub(:current_user) { current_user } }
 
     context "in dev mode" do
@@ -25,6 +25,18 @@ describe EarlyAccess do
         current_user.should_receive(:try).with(:early_access) { ['video'] }
         Controller.stub(:params) { {} }
         Controller.current_user_early_access.should eq ['video']
+      end
+
+      it "returns [] if user.early_access is nil" do
+        current_user.should_receive(:try).with(:early_access) { nil }
+        Controller.stub(:params) { {} }
+        Controller.current_user_early_access.should eq []
+      end
+
+      it "returns [] if user.early_access is blank" do
+        current_user.should_receive(:try).with(:early_access) { '' }
+        Controller.stub(:params) { {} }
+        Controller.current_user_early_access.should eq []
       end
     end
 
