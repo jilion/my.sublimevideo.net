@@ -26,18 +26,6 @@ describe EarlyAccess do
         Controller.stub(:params) { {} }
         Controller.current_user_early_access.should eq ['video']
       end
-
-      it "returns [] if user.early_access is nil" do
-        current_user.should_receive(:try).with(:early_access) { nil }
-        Controller.stub(:params) { {} }
-        Controller.current_user_early_access.should eq []
-      end
-
-      it "returns [] if user.early_access is blank" do
-        current_user.should_receive(:try).with(:early_access) { '' }
-        Controller.stub(:params) { {} }
-        Controller.current_user_early_access.should eq []
-      end
     end
 
     context "not in dev mode" do

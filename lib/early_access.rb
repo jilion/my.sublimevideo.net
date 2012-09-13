@@ -23,15 +23,8 @@ module EarlyAccess
     if Rails.env.development? && params[:early_access]
       [params[:early_access]]
     else
-      if current_user.try(:early_access).is_a?(Array)
-        current_user.early_access
-      else
-        []
-      end
+      current_user.try(:early_access) || []
     end
-  # Manage DB migration on first deploy
-  rescue NoMethodError
-    []
   end
 
   def require_video_early_access
