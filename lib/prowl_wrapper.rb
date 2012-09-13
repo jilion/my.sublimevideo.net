@@ -10,7 +10,7 @@ class ProwlWrapper
       prowl_client.add(
         event: "Alert",
         priority: 2,
-        description: message
+        description: message.to_s
       )
     end
 
