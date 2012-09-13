@@ -3,7 +3,6 @@
 class MySublimeVideo.UI.EmbedCode
   # Construct a new EmbedCode object.
   #
-  # @param [Object] options the options that defines the flash message
   # @option options [jQuery Element] link an a element that will trigger the embed code popup opening
   #
   constructor: (@options = {}) ->

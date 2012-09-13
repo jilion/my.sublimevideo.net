@@ -37,6 +37,10 @@ MySublimeVideo.UI.prepareEmbedCodePopups = ->
   $('a.player_code').each ->
     new MySublimeVideo.UI.EmbedCode(link: $(this))
 
+MySublimeVideo.UI.prepareAddASitePopup = ->
+  if (link = $('a#js-add_a_video')).exists()
+    new MySublimeVideo.UI.AddAVideo(link: link)
+
 MySublimeVideo.UI.prepareFlashNotices = ->
   $('#flash .notice').each ->
     new MySublimeVideo.UI.Notice(element: $(this)).setupDelayedHiding()
@@ -74,6 +78,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareFlashNotices()
   MySublimeVideo.UI.prepareHidableNotices()
   MySublimeVideo.UI.prepareEmbedCodePopups()
+  MySublimeVideo.UI.prepareAddASitePopup()
   MySublimeVideo.UI.prepareSitesStatus()
   MySublimeVideo.UI.preparePlansChooser()
   MySublimeVideo.UI.prepareSupportRequest()
