@@ -13,6 +13,8 @@ module VideoTagsHelper
   end
 
   def duration_string(duration)
+    return '?:??:??' if duration.blank?
+
     seconds_tot = (duration / 1000.0).ceil
     seconds = seconds_tot % 60
     minutes_tot = seconds_tot / 60

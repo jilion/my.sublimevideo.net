@@ -46,6 +46,9 @@ describe VideoTagsHelper do
     it "renders complete duration properly" do
       Helper.duration_string(1*60*60*1000 + 34*60*1000 + 23*1000).should eq "1:34:23"
     end
+    it "renders ?:??:?? if duration is nil" do
+      Helper.duration_string(nil).should eq "?:??:??"
+    end
   end
 
   describe "#playable_lightbox" do
