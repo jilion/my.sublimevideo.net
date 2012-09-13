@@ -9,7 +9,7 @@ class BillingMailer < Mailer
     extract_site_and_user_from_site_id(site_id)
 
     subject = if @site.hostname?
-      I18n.t("mailer.billing_mailer.trial_has_started_hostname", hostname: @site.hostname)
+      I18n.t("mailer.billing_mailer.trial_has_started_hostname", hostname: @site.hostname_or_token)
     else
       I18n.t("mailer.billing_mailer.trial_has_started_no_hostname")
     end
@@ -36,7 +36,7 @@ class BillingMailer < Mailer
 
     mail(
       to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.trial_will_expire.#{key}", hostname: @site.hostname, days: @days_until_end)
+      subject: I18n.t("mailer.billing_mailer.trial_will_expire.#{key}", hostname: @site.hostname_or_token, days: @days_until_end)
     )
   end
 
@@ -45,7 +45,7 @@ class BillingMailer < Mailer
 
     mail(
       to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.trial_has_expired", hostname: @site.hostname)
+      subject: I18n.t("mailer.billing_mailer.trial_has_expired", hostname: @site.hostname_or_token)
     )
   end
 
@@ -54,7 +54,7 @@ class BillingMailer < Mailer
 
     mail(
       to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.yearly_plan_will_be_renewed", hostname: @site.hostname)
+      subject: I18n.t("mailer.billing_mailer.yearly_plan_will_be_renewed", hostname: @site.hostname_or_token)
     )
   end
 
@@ -91,7 +91,7 @@ class BillingMailer < Mailer
 
     mail(
       to: to(@user),
-      subject: I18n.t('mailer.billing_mailer.too_many_charging_attempts', hostname: @invoice.site.hostname)
+      subject: I18n.t('mailer.billing_mailer.too_many_charging_attempts', hostname: @invoice.site.hostname_or_token)
     )
   end
 
