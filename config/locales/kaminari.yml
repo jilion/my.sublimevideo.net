@@ -1,5 +1,18 @@
 en:
   views:
     pagination:
+      first: "&laquo; First"
+      last: "Last &raquo;"
       previous: "&lsaquo; previous"
       next: "next &rsaquo;"
+      truncate: "&hellip;"
+  helpers:
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "<div class='page_info'></div>"
+          one: "<div class='page_info'></div>"
+          other: "<div class='page_info'></div>"
+      more_pages:
+        display_entries: "<div class='page_info'><strong>%{first}&nbsp;-&nbsp;%{last}</strong> of <strong>%{total}</strong></div>"
+
