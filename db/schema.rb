@@ -430,7 +430,7 @@ ActiveRecord::Schema.define(:version => 20120822121335) do
     t.integer  "invited_by_id"
     t.string   "invited_by_type"
     t.boolean  "vip",                                            :default => false
-    t.string   "early_access",                                   :default => ""
+    t.string   "early_access"
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true
