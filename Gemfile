@@ -115,9 +115,10 @@ end
 group :staging, :production do
   gem 'rack-ssl-enforcer'
   gem 'thin'
-  gem 'dalli', '~> 2.2.0'
-  gem 'rpm_contrib'
+  gem 'dalli'
   gem 'newrelic_rpm'
+  gem 'newrelic-redis'
+  gem 'newrelic_moped'
 end
 
 group :development do
