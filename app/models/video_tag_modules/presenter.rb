@@ -8,7 +8,7 @@ module VideoTagModules
 
     # HD in seconds
     def sources
-      cs.map { |crc32| s[crc32] }
+      cs.map { |crc32| s[crc32] }.compact
     end
 
   end
