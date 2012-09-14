@@ -17,5 +17,6 @@ vendor/bundler
 .env
 uploads
 .tddium*
-
+*.sublime-project
+!.sublime-project
 public/test.html
