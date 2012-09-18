@@ -15,7 +15,7 @@ gem 'pg',                    '~> 0.14.0'
 gem 'squeel',                '~> 1.0.11'
 gem 'activerecord-postgres-hstore'
 gem 'moped',                 github: 'mongoid/moped'
-gem 'mongoid',               '~> 3.0.5'
+gem 'mongoid',               '~> 3.0.6'
 
 # Views
 gem 'haml',                  '~> 3.1.6'

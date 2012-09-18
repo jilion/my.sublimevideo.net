@@ -636,7 +636,7 @@ DEPENDENCIES
   liquid (~> 2.4.1)
   listen!
   mime-types
-  mongoid (~> 3.0.5)
+  mongoid (~> 3.0.6)
   moped!
   newrelic-redis
   newrelic_moped
