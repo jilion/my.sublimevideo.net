@@ -13,7 +13,7 @@ describe Tweet do
     its(:to_user)           { should eq 'tata' }
     its(:iso_language_code) { should eq 'en' }
     its(:profile_image_url) { should eq 'http://yourimage.com/img.jpg' }
-    its(:content)           { should eq "This is my first tweet!" }
+    its(:content)           { should eq 'This is my first tweet!' }
     its(:tweeted_at)        { should be_present }
     its(:favorited)         { should be_false }
 

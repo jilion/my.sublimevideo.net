@@ -68,7 +68,11 @@ class Tweet
     end
 
     def remote_search(keyword, options = {})
-      TwitterApi.search("\"#{keyword}\"", result_type: 'recent', rpp: 100, page: options[:page]).results
+      if search = TwitterApi.search("\"#{keyword}\"", result_type: 'recent', rpp: 100, page: options[:page])
+        search.results
+      else
+        []
+      end
     end
 
     def remote_favorites(options = {})
