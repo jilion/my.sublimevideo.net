@@ -36,12 +36,10 @@ describe VideoTagModules::Presenter do
       end
 
       it "doesn't return not present source yet" do
-        video_tag.stub(:cs) { %w[5ABAC533 2ABFEFDA 97230509 new_crc32] }
+        video_tag.stub(:cs) { %w[2ABFEFDA new_crc32] }
 
         video_tag.sources.should eq([
-          { u: 'http://media.jilion.com/vcg/ms_360p.mp4', q: 'base', f: 'mp4' },
-          { u: 'http://media.jilion.com/vcg/ms_720p.mp4', q: 'hd', f: 'mp4' },
-          { u: 'http://media.jilion.com/vcg/ms_360p.webm', q: 'base', f: 'webm' },
+          { u: 'http://media.jilion.com/vcg/ms_720p.mp4', q: 'hd', f: 'mp4' }
         ])
       end
 
