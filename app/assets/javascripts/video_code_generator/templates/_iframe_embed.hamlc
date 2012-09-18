@@ -1,4 +1,4 @@
-- if !MSVVideoCodeGenerator.builderRouter.loggedIn
+- if !MSVVideoCodeGenerator.builderRouter.userSignedIn
   .help_list
     %p
       Please <a class='hl' href='http://#{SublimeVideo.Misc.Utils.topDomainHost()}/?p=login&user_return_to=%2Fvideo-code-generator'>Log In</a>
@@ -26,7 +26,7 @@
     %select#site_select
       - for site in @sites.models
         - select = @sites.selectedSite is site
-        %option(selected=select){ value: site.get('token') }= site.title()
+        %option{ selected: select, value: site.get('token') }= site.title()
 
   %h4 Iframe source
 
