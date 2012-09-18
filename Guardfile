@@ -1,5 +1,5 @@
 # notification :gntp
-interactor :coolline
+# interactor :coolline
 
 group :frontend do
 
