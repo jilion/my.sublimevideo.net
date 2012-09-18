@@ -20,3 +20,5 @@ uploads
 *.sublime-project
 !.sublime-project
 public/test.html
+
+.rbenv-version

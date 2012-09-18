@@ -11,8 +11,9 @@
       = text_field_tag :search, params[:search], size: 20, placeholder: "Search", autocomplete: 'off', id: 'js-video_tags_filter_search'
       = select_tag :filter, videos_table_filter_options_for_select, id: 'js-video_tags_filter_select'
 
-  = link_to '#', class: "add_video green_button" do
+  = link_to '#', class: "add_a_video green_button", id: 'js-add_a_video' do
     %span= "Add a video"
+  %div{ id: "js-add_a_video_popup_content", style: 'display:none' }= render 'add_a_video', site: @site
 
   .spacer
 

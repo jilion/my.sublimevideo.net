@@ -52,7 +52,7 @@ gem 'responders',            '~> 0.9.2'
 gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
-gem 'fog',                   '~> 1.5.0'
+gem 'fog',                   '~> 1.6.0'
 gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/processing/mime_types']
 # gem 'carrierwave-mongoid',   '~> 0.2.1', require: 'carrierwave/mongoid'
 gem 'carrierwave-mongoid',   github: 'jnicklas/carrierwave-mongoid', branch: 'mongoid-3.0', require: 'carrierwave/mongoid'
@@ -173,7 +173,7 @@ group :tools do
   gem 'rb-fsevent'
 
   gem 'listen', github: 'guard/listen'
-  gem 'guard'
+  gem 'guard', github: 'guard/guard', branch: 'interactor/pry'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-rspec'
