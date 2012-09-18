@@ -19,13 +19,10 @@ describe UserModules::Activity do
       context "user created 1 week ago" do
         before do
           @user1 = create(:user, created_at: 7.days.ago)
-          puts Stat::Site::Day.all_time_page_visits(@user1.sites.not_archived.map(&:token))
           site = create(:site, user: @user1)
           create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, pv: { m: 2 })
-          puts Stat::Site::Day.all_time_page_visits(@user1.sites.not_archived.map(&:token))
 
           @user2 = create(:user, created_at: 7.days.ago)
-          puts Stat::Site::Day.all_time_page_visits(@user2.sites.not_archived.map(&:token))
 
           # Hard reload
           @user1 = User.find(@user1)
@@ -33,18 +30,6 @@ describe UserModules::Activity do
         end
 
         it "sends email to users without page visits" do
-          puts Stat::Site::Day.all_time_page_visits(@user1.sites.not_archived.map(&:token))
-          puts Stat::Site::Day.all_time_page_visits(@user2.sites.not_archived.map(&:token))
-
-          puts @user1.instance_variable_get(:@page_visits)
-          puts @user2.instance_variable_get(:@page_visits)
-
-          puts @user1.page_visits
-          puts @user2.page_visits
-
-          puts @user1.instance_variable_get(:@page_visits)
-          puts @user2.instance_variable_get(:@page_visits)
-
           User.count.should eq 2
           @user1.page_visits.should eq 2
           @user2.page_visits.should eq 0
