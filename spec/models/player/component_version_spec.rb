@@ -9,7 +9,6 @@ describe Player::ComponentVersion, :fog_mock do
   let(:attributes) { {
     token: component.token,
     version: '2.0.0',
-    settings: "",
     zip: zip
   } }
   let(:component_version) { Player::ComponentVersion.create(attributes) }
