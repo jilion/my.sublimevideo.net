@@ -1,6 +1,6 @@
 require_dependency 's3'
 
-class Player::BundleVersionUploader < CarrierWave::Uploader::Base
+class Player::ComponentVersionUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 
   process :set_content_type
@@ -37,11 +37,11 @@ class Player::BundleVersionUploader < CarrierWave::Uploader::Base
 
   def store_zip_content(new_file)
     # new_file not used because nil
-    Player::BundleVersionZipContentUploader.store_zip_content(file.path, zip_content_upload_path)
+    Player::ComponentVersionZipContentUploader.store_zip_content(file.path, zip_content_upload_path)
   end
 
   def remove_zip_content
-    Player::BundleVersionZipContentUploader.remove_zip_content(zip_content_upload_path)
+    Player::ComponentVersionZipContentUploader.remove_zip_content(zip_content_upload_path)
   end
 
   def zip_content_upload_path

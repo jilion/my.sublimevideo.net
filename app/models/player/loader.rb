@@ -1,6 +1,6 @@
 # TODO
 # - per site
-# - include bundles relation with good version depending on the site.player_mode (stabe, beta, alpha) & app bundle
+# - include component relation with good version depending on the site.player_mode (stabe, beta, alpha) & app component
 
 require 'tempfile'
 require_dependency 'cdn'

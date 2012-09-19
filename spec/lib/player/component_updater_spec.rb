@@ -1,13 +1,13 @@
 require 'spec_helper'
-require File.expand_path('lib/player/bundle_updater')
+require File.expand_path('lib/player/component_updater')
 
-describe Player::BundleUpdater do
+describe Player::ComponentUpdater do
   let(:delayed_job) { mock('delayed_job') }
   before { Player::Loader.stub(:delay) { delayed_job } }
 
   describe ".update" do
-    context "with the 'app' bundle" do
-      let(:bundle) { Player::Bundle.create(
+    context "with the 'app' component" do
+      let(:component) { Player::Component.create(
         name: 'app',
         token: 'e',
         version_tags: {
@@ -19,8 +19,8 @@ describe Player::BundleUpdater do
 
       it "updates 1 loader if one version tag change" do
         delayed_job.should_receive(:update!).with('alpha', '2.0.0')
-        bundle.should_receive(:save)
-        Player::BundleUpdater.update(bundle, 'version_tags' => {
+        component.should_receive(:save)
+        Player::ComponentUpdater.update(component, 'version_tags' => {
           'alpha' => '2.0.0'
         })
       end
@@ -28,16 +28,16 @@ describe Player::BundleUpdater do
       it "updates 2 loaders if two version tags change" do
         delayed_job.should_receive(:update!).with('alpha', '2.0.0')
         delayed_job.should_receive(:update!).with('beta', '2.0.0')
-        bundle.should_receive(:save)
-        Player::BundleUpdater.update(bundle, 'version_tags' => {
+        component.should_receive(:save)
+        Player::ComponentUpdater.update(component, 'version_tags' => {
           'alpha' => '2.0.0',
           'beta'  => '2.0.0'
         })
       end
     end
 
-    context "with another bundle" do
-      let(:bundle) { Player::Bundle.create(
+    context "with another component" do
+      let(:component) { Player::Component.create(
         name: 'subtitle',
         token: 'bA',
         version_tags: {
@@ -47,11 +47,11 @@ describe Player::BundleUpdater do
         }
       )}
 
-      it "updates the bundle normally" do
+      it "updates the component normally" do
         new_version_tags = { 'version_tags' => { 'alpha' => '2.0.0' } }
         delayed_job.should_not_receive(:update!)
-        bundle.should_receive(:update_attributes).with(new_version_tags)
-        Player::BundleUpdater.update(bundle, new_version_tags)
+        component.should_receive(:update_attributes).with(new_version_tags)
+        Player::ComponentUpdater.update(component, new_version_tags)
       end
     end
   end

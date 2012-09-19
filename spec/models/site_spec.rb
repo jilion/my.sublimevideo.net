@@ -45,9 +45,6 @@ describe Site, :plans do
     it { should belong_to :plan }
     it { should have_many :invoices }
 
-    it { should have_many :bundleships }
-    it { should have_many(:bundles).through(:bundleships) }
-
     describe "last_invoice" do
       let(:site) { create(:site_with_invoice, plan_id: @paid_plan.id) }
 
@@ -963,7 +960,7 @@ end
 #  archived_at                               :datetime
 #  badged                                    :boolean
 #  cdn_up_to_date                            :boolean          default(FALSE)
-#  created_at                                :datetime         not null
+#  created_at                                :datetime
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
 #  first_billable_plays_at                   :datetime
@@ -998,7 +995,7 @@ end
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime
-#  updated_at                                :datetime         not null
+#  updated_at                                :datetime
 #  user_id                                   :integer
 #  wildcard                                  :boolean
 #

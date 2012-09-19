@@ -36,7 +36,7 @@ end
 # Table name: admins
 #
 #  authentication_token   :string(255)
-#  created_at             :datetime         not null
+#  created_at             :datetime
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string(255)
 #  email                  :string(255)      default(""), not null
@@ -60,7 +60,7 @@ end
 #  roles                  :text
 #  sign_in_count          :integer          default(0)
 #  unconfirmed_email      :string(255)
-#  updated_at             :datetime         not null
+#  updated_at             :datetime
 #
 # Indexes
 #

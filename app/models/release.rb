@@ -146,12 +146,12 @@ end
 #
 # Table name: releases
 #
-#  created_at :datetime         not null
+#  created_at :datetime
 #  date       :string(255)
 #  id         :integer          not null, primary key
 #  state      :string(255)
 #  token      :string(255)
-#  updated_at :datetime         not null
+#  updated_at :datetime
 #  zip        :string(255)
 #
 # Indexes

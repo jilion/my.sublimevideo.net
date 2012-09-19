@@ -60,12 +60,6 @@ class Site < ActiveRecord::Base
   has_many :invoices, class_name: "::Invoice"
   has_one  :last_invoice, class_name: "::Invoice", order: 'created_at DESC'
 
-  # Bundles
-  has_many :bundleships,
-    class_name: 'Player::Bundleship',
-    dependent: :destroy
-  has_many :bundles, through: :bundleships
-
   # Mongoid associations
   def usages
     SiteUsage.where(site_id: id)
@@ -354,7 +348,7 @@ end
 #  archived_at                               :datetime
 #  badged                                    :boolean
 #  cdn_up_to_date                            :boolean          default(FALSE)
-#  created_at                                :datetime         not null
+#  created_at                                :datetime
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
 #  first_billable_plays_at                   :datetime
@@ -389,7 +383,7 @@ end
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime
-#  updated_at                                :datetime         not null
+#  updated_at                                :datetime
 #  user_id                                   :integer
 #  wildcard                                  :boolean
 #

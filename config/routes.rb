@@ -141,10 +141,10 @@ MySublimeVideo::Application.routes.draw do
 
       resources :releases, only: [:index, :create, :update]
 
-      get '/player' => redirect('/player/bundles/e'), as: 'player'
+      get '/player' => redirect('/player/components/e'), as: 'player'
       namespace :player do
-        resources :bundles, only: [:index, :create, :show, :update, :destroy] do
-          resources :versions, only: [:index, :create, :show, :destroy], controller: 'bundle_versions'
+        resources :components, only: [:index, :create, :show, :update, :destroy] do
+          resources :versions, only: [:index, :create, :show, :destroy], controller: 'component_versions'
         end
       end
     end

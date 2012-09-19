@@ -1,6 +1,6 @@
 # TODO
 # - add player_mode (beta, alpha) to hash
-# - add bundle list permission (and version check on player_mode)
+# - add component list permission (and version check on player_mode)
 
 require 'tempfile'
 require_dependency 'cdn'
