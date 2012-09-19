@@ -50,4 +50,3 @@ end
 #  index_player_components_on_name   (name) UNIQUE
 #  index_player_components_on_token  (token) UNIQUE
 #
-
