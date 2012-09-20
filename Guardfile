@@ -1,5 +1,4 @@
-# notification :gntp
-# interactor :coolline
+notification :gntp
 
 group :frontend do
 

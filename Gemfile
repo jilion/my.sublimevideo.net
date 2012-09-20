@@ -166,13 +166,10 @@ group :tools do
   gem 'brakeman'
 
   # Guard
-  gem 'terminal-notifier-guard'
-  platforms :ruby do
-    gem 'coolline'
-  end
+  gem 'ruby_gntp'
   gem 'rb-fsevent'
 
-  gem 'listen', github: 'guard/listen'
+  gem 'listen'
   gem 'guard', github: 'guard/guard', branch: 'interactor/pry'
   gem 'guard-pow'
   gem 'guard-livereload'
