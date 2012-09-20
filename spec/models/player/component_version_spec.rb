@@ -17,6 +17,7 @@ describe Player::ComponentVersion, :fog_mock do
 
   it { should allow_mass_assignment_of(:token) }
   it { should allow_mass_assignment_of(:version) }
+  it { should allow_mass_assignment_of(:dependencies) }
   it { should allow_mass_assignment_of(:zip) }
 
   describe "Validations" do

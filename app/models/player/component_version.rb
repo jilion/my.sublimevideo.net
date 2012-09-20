@@ -1,7 +1,7 @@
 class Player::ComponentVersion < ActiveRecord::Base
   belongs_to :component, class_name: 'Player::Component', foreign_key: 'player_component_id'
 
-  attr_accessible :token, :settings, :version, :zip
+  attr_accessible :token, :dependencies, :version, :zip
 
   delegate :token, :name, to: :component
 
@@ -27,7 +27,6 @@ class Player::ComponentVersion < ActiveRecord::Base
     version_string = version_for_url.gsub /_/, '.'
     where(version: version_string).first!
   end
-
 end
 
 # == Schema Information
