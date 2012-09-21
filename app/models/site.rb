@@ -238,7 +238,7 @@ class Site < ActiveRecord::Base
   end
 
   def created_during_deal?(deal)
-    created_at >= deal.started_at && created_at <= deal.ended_at
+    created_at? && (created_at >= deal.started_at && created_at <= deal.ended_at)
   end
 
   def recommended_plan_name
