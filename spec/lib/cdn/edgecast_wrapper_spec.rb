@@ -21,7 +21,7 @@ describe CDN::EdgeCastWrapper do
 
     describe "purge" do
       it "calls purge on http_small_object" do
-        edgecast.should_receive(:purge).with(:http_small_object, "/filepath.js")
+        edgecast.should_receive(:purge).with(:http_small_object, "http://#{described_class.cname}/filepath.js")
         described_class.purge("/filepath.js")
       end
     end
