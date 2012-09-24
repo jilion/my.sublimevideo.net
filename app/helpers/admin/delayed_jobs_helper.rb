@@ -45,7 +45,6 @@ module Admin::DelayedJobsHelper
       Class#fetch_and_create_new_logs
       Class#send
       Class#send_credit_card_expiration
-      Module#monitor_sites_usages
       Module#invoices_processing
       Module#sites_processing
       Module#users_processing

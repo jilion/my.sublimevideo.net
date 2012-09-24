@@ -74,33 +74,13 @@ module SiteModules::Usage
   end
 
   def current_monthly_billable_usages
-    @current_monthly_billable_usages ||= billable_usages(from: plan_month_cycle_started_at, to: plan_month_cycle_ended_at)
+    @current_monthly_billable_usages ||= billable_usages(from: Time.now.utc.beginning_of_month, to: Time.now.utc.end_of_month)
   end
 
   def unmemoize_all_usages
     @last_30_days_billable_video_views = nil
     @last_30_days_billable_usages      = nil
     @current_monthly_billable_usages   = nil
-  end
-
-  def current_percentage_of_plan_used
-    if in_paid_plan?
-      percentage = [(current_monthly_billable_usages.sum / plan.video_views.to_f).round(2), 1].min
-      percentage == 0.0 && current_monthly_billable_usages.sum > 0 ? 0.01 : percentage
-    else
-      0
-    end
-  end
-
-  def percentage_of_days_over_daily_limit(max_days = 60)
-    if in_paid_plan?
-      last_days       = [days_since(first_paid_plan_started_at), max_days].min
-      over_limit_days = day_stats.between(d: last_days.days.ago.utc.midnight..1.day.ago.end_of_day).to_a.count { |su| su.billable_vv > (plan.video_views / 30.0) }
-
-      [(over_limit_days / last_days.to_f).round(2), 1].min
-    else
-      0
-    end
   end
 
 end

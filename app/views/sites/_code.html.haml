@@ -8,15 +8,9 @@
 %form
   .embed_code.entry
     = text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, id: "embed_code_#{site.token}"
-    - if site.in_free_plan?
-      = "SSL delivery for secure pages is "
-      %strong= raw "included #{link_to("in all paid plans", [:edit, site, :plan], class: 'hl')}"
-      = "."
-    - else
-      .checkbox_wrap
-        = check_box_tag "embed_code_ssl_#{site.token}", '1', false, id: "embed_code_ssl_#{site.token}"
-        = label_tag "embed_code_ssl_#{site.token}", 'Deliver with SSL for secure pages.'
-      %p.learn_more= link_to "Learn more about SSL serving.", docs_page_url('ssl'), class: 'hl'
 
 .dark_box
-  %p= raw "If you're asked for your site's token, use this: #{content_tag(:code, site.token)}"
+  %p
+    = "If you're asked for your site's token, use this:"
+    %strong
+      %code= site.token

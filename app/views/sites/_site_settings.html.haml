@@ -24,32 +24,9 @@
         = f.check_box :wildcard
         = f.label :wildcard, "Wildcard (*.yourdomain.com)"
       %p.info= "It will also be enabled for extra and development domains."
-    - unless site.in_free_plan?
-      .entry.badged
-        .checkbox_wrap
-          = f.check_box :badged, disabled: site.in_free_plan?
-          = f.label :badged, "Enable SublimeVideo badge."
-        %p.info= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
-    -#.entry.ssl
-    -#  .checkbox_wrap
-    -#    = check_box_tag :ssl, 1, checked: !site.in_free_plan?, disabled: true
-    -#    = label_tag :ssl, "SSL Serving#{' available' unless site.in_free_plan?}"
-    -#    - if site.in_free_plan?
-    -#      = raw t("site.settings.ssl_serving_note", link: link_to("paid plan", [:edit, site, :plan]))
-    -#  = link_to "http://docs.sublimevideo.net/site-settings", class: "hl", onclick: "window.open(this); return false" do
-    -#    %span= "Read more"
   .spacer
 
-  -#- if site.in_free_plan?
-  -#  .more_settings_desc><
-  -#    = raw "More settings like alias and staging domains, custom path and wildcard option, are available on paid plans. #{link_to "Read more", "http://docs.sublimevideo.net/site-settings", class: "hl"}."
   = link_to docs_page_url('site-settings'), class: "help", onclick: "window.open(this); return false" do
     %span= "Read more"
-
-  - if @site.in_free_plan?
-    %p
-      Want to remove the SublimeVideo badge or need SSL Serving?
-      = link_to "Upgrade now!", [:edit, @site, :plan], class: 'hl'
-    %br
 
   .big_break

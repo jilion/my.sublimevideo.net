@@ -37,7 +37,6 @@ class SitesController < ApplicationController
   # POST /sites
   def create
     params[:site][:remote_ip] = request.remote_ip
-    params[:site][:plan_id]   = Plan.trial_plan.id if !params[:site_skip_trial] || !params[:site][:plan_id]
     @site = current_user.sites.build(params[:site])
 
     respond_with(@site) do |format|

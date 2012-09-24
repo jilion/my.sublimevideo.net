@@ -199,6 +199,9 @@ MySublimeVideo::Application.routes.draw do
 
     resources :sites, except: [:show] do
       resource :plan, only: [:edit, :update, :destroy]
+      resources :addons, only: [:index] do
+        put :update_all, on: :collection
+      end
 
       resources :invoices, only: [:index] do
         put :retry, on: :collection
@@ -209,9 +212,6 @@ MySublimeVideo::Application.routes.draw do
 
       resources :video_codes, only: [:new, :show], path: 'video-codes'
 
-      resources :stats, only: [:index], controller: 'site_stats' do
-        get :videos, on: :collection
-      end
       resources :stats, only: [:index], controller: 'site_stats' do
         get :videos, on: :collection
       end

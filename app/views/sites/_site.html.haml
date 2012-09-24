@@ -2,16 +2,10 @@
   %td.site{ class: site.hostname.present? ? "has_domain" : "empty"}
     .wrap
       = render 'hostname', site: site
-      .plan= render 'plan', site: site
-      .cycle= render 'cycle', site: site
       .spacer
 
-  %td.usage{ class: td_usage_class(site) }
-    .wrap
-      - if site.plan_id?
-        = render 'td_usage', site: site
-      - else
-        = "—"
+  %td.usage
+    .wrap= render 'td_usage', site: site
   - if early_access?('video')
     %td.videos
       .wrap
@@ -24,10 +18,7 @@
             %span= "Add a video"
   %td.code
     .wrap
-      - if site.plan_id?
-        = link_to "Player code", "", class: "player_code embed_code", data: { token: site.token }
-      - else
-        = "—"
+      = link_to "Player code", "", class: "player_code embed_code", data: { token: site.token }
       %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'code', site: site
 
   %td.status

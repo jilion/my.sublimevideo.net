@@ -5,6 +5,7 @@ require_dependency 'validators/dev_hostnames_validator'
 require_dependency 'validators/extra_hostnames_validator'
 
 class Site < ActiveRecord::Base
+  include SiteModules::Addon
   include SiteModules::Api
   include SiteModules::Cycle
   include SiteModules::Billing
@@ -12,7 +13,6 @@ class Site < ActiveRecord::Base
   include SiteModules::Scope
   include SiteModules::Template
   include SiteModules::Usage
-  include SiteModules::UsageMonitoring
 
   DEFAULT_DEV_DOMAINS = '127.0.0.1,localhost'
   PLAYER_MODES = %w[dev beta stable]
@@ -23,8 +23,7 @@ class Site < ActiveRecord::Base
     :last_30_days_extra_video_views, :last_30_days_dev_video_views,
     :last_30_days_invalid_video_views, :last_30_days_embed_video_views,
     :last_30_days_billable_video_views_array, :last_30_days_video_tags
-  ],
-  class_name: 'SiteVersion'
+  ]
 
   acts_as_taggable
 
@@ -49,7 +48,7 @@ class Site < ActiveRecord::Base
   # = Associations =
   # ================
 
-  belongs_to :user, validate: true, autosave: true
+  belongs_to :user, autosave: true
 
   # Plans
   belongs_to :plan
@@ -59,6 +58,15 @@ class Site < ActiveRecord::Base
   # Invoices
   has_many :invoices, class_name: "::Invoice"
   has_one  :last_invoice, class_name: "::Invoice", order: 'created_at DESC'
+
+  # Addons
+  has_many :addonships, class_name: 'Addons::Addonship', autosave: true, dependent: :destroy
+  has_many :addons, through: :addonships, class_name: 'Addons::Addon' do
+    def active
+      where { addonships.state >> %w[beta trial sponsored paying] }
+    end
+  end
+  has_many :addon_activities, through: :addonships, class_name: 'Addons::AddonActivity'
 
   # Bundles
   has_many :bundleships,
@@ -85,33 +93,30 @@ class Site < ActiveRecord::Base
   # ===============
 
   validates :user,        presence: true
-  validates :plan,        presence: { message: "Please choose a plan" }, unless: :pending_plan_id?
   validates :player_mode, inclusion: PLAYER_MODES
 
-  validates :hostname,        presence: { if: proc { |s| s.in_or_will_be_in_paid_plan? } }, hostname: true, hostname_uniqueness: true
+  # FIXME
+  validates :hostname, hostname: true, hostname_uniqueness: true
   validates :dev_hostnames,   dev_hostnames: true
   validates :extra_hostnames, extra_hostnames: true
   validates :path, length: { maximum: 255 }
 
-  validate  :validates_current_password
+  # validate  :validates_current_password
 
   # =============
   # = Callbacks =
   # =============
 
-  before_validation :set_user_attributes
+  # before_validation :set_user_attributes
   before_validation :set_default_dev_hostnames, unless: :dev_hostnames?
 
-  before_save :set_default_badged, if: proc { |s| s.badged.nil? || s.in_free_plan? }
   before_save :prepare_cdn_update # in site_modules/templates
-  before_save :clear_alerts_sent_at
   before_save :prepare_pending_attributes, if: proc { |s| s.pending_plan_id_changed? && s.pending_plan_id? } # in site_modules/cycle
-  before_save :set_first_paid_plan_started_at # in site_modules/billing
 
+  after_create :set_default_addons
   after_create :delay_ranks_update, :update_last_30_days_video_views_counters # in site_modules/usage
 
-  after_save :create_and_charge_invoice # in site_modules/billing
-  after_save :send_trial_started_email, if: proc { |s| s.plan_id_changed? && s.in_trial_plan? } # in site_modules/billing
+  # after_save :create_and_charge_invoice # in site_modules/billing
   after_save :execute_cdn_update # in site_modules/templates
 
   # =================
@@ -167,45 +172,6 @@ class Site < ActiveRecord::Base
     write_attribute :path, attribute.respond_to?(:to_s) ? attribute.to_s.downcase.gsub(/^\/|\/$/, '') : ''
   end
 
-  def plan_id=(attribute)
-    return if pending_plan_id? || invoices.not_paid.any?
-
-    if attribute.to_s == attribute.to_i.to_s # id passed
-      new_plan = Plan.find_by_id(attribute.to_i)
-      return unless new_plan.trial_plan? || new_plan.standard_plan? || new_plan.free_plan?
-    else # token passed
-      new_plan = Plan.find_by_token(attribute)
-    end
-
-    if new_plan.present?
-      if plan_id?
-        case plan.upgrade?(new_plan)
-        when true # Upgrade
-          write_attribute(:pending_plan_id, new_plan.id)
-          write_attribute(:next_cycle_plan_id, nil)
-        when false # Downgrade
-          if first_paid_plan_started_at?
-            write_attribute(:next_cycle_plan_id, new_plan.id)
-          else
-            write_attribute(:pending_plan_id, new_plan.id)
-          end
-        when nil # Same plan, reset next_cycle_plan
-          write_attribute(:next_cycle_plan_id, nil)
-        end
-      else
-        # Creation
-        write_attribute(:pending_plan_id, new_plan.id)
-      end
-    end
-  end
-
-  # Instantly change plan to sponsored_plan (no refund!)
-  def sponsor!
-    write_attribute(:pending_plan_id, Plan.sponsored_plan.id)
-    write_attribute(:next_cycle_plan_id, nil)
-    skip_password(:save!)
-  end
-
   def to_param
     token
   end
@@ -239,27 +205,6 @@ class Site < ActiveRecord::Base
 
   def created_during_deal?(deal)
     created_at >= deal.started_at && created_at <= deal.ended_at
-  end
-
-  def recommended_plan_name
-    if in_paid_plan?
-      usages = last_30_days_billable_usages
-      name = nil
-      if usages.size >= 5
-        Plan.standard_plans.order{ video_views.desc }.each do |tested_plan|
-          if usages.sum < tested_plan.video_views && usages.mean < tested_plan.daily_video_views
-            name = plan.video_views < tested_plan.video_views ? tested_plan.name : nil
-          end
-        end
-
-        if name.nil? && !in_custom_plan?
-          biggest_standard_plan = Plan.standard_plans.order{ video_views.desc }.first
-          name = "custom" if usages.sum >= biggest_standard_plan.video_views || usages.mean >= biggest_standard_plan.daily_video_views
-        end
-      end
-      name
-    end
-    @recommended_plan_name ||= name
   end
 
   def skip_password(*args)
@@ -307,27 +252,22 @@ private
     self.dev_hostnames = DEFAULT_DEV_DOMAINS
   end
 
-  # before_validation
-  def set_default_badged
-    self.badged = true
+  # after_create
+  def set_default_addons
+    Addons::AddonshipManager.new(self).update_addonships!(logo: 'sublime', support: 'standard')
   end
 
   # validate
-  def validates_current_password
-    return true if @skip_password_validation
+  # def validates_current_password
+  #   return true if @skip_password_validation
 
-    if persisted? && in_paid_plan? && errors.empty? &&
-      ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
-      if user.current_password.blank? || !user.valid_password?(user.current_password)
-        self.errors.add(:base, :current_password_needed)
-      end
-    end
-  end
-
-  # before_save
-  def clear_alerts_sent_at
-    self.overusage_notification_sent_at = nil if plan_id_changed?
-  end
+  #   if persisted? && in_paid_plan? && errors.empty? &&
+  #     ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
+  #     if user.current_password.blank? || !user.valid_password?(user.current_password)
+  #       self.errors.add(:base, :current_password_needed)
+  #     end
+  #   end
+  # end
 
   # after_create
   def delay_ranks_update
@@ -350,6 +290,7 @@ end
 #
 # Table name: sites
 #
+#  addons_settings                           :hstore
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean

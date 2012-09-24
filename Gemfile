@@ -173,7 +173,7 @@ group :tools do
   gem 'rb-fsevent'
 
   gem 'listen', github: 'guard/listen'
-  gem 'guard', github: 'guard/guard', branch: 'interactor/pry'
+  gem 'guard', github: 'guard/guard'#, branch: 'interactor/pry'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-rspec'

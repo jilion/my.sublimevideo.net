@@ -67,18 +67,12 @@ module RecurringJob
     end
 
     def invoices_processing(priority = PRIORITIES[:invoices])
-      Invoice.delay(priority: priority).update_pending_dates_for_first_not_paid_invoices
-      Site.delay(priority: priority).downgrade_sites_leaving_trial
-      Site.delay(priority: priority).renew_active_sites
       Transaction.delay(priority: priority + 1, run_at: 5.minutes.from_now).charge_invoices
 
       delay_invoices_processing
     end
 
     def sites_processing(priority = PRIORITIES[:sites])
-      Site.delay(priority: priority).send_trial_will_expire_email
-      Site.delay(priority: priority).send_yearly_plan_will_be_renewed_email
-      Site.delay(priority: priority).monitor_sites_usages
       Site.delay(priority: priority).update_last_30_days_counters_for_not_archived_sites
       Site.delay(priority: priority).set_first_billable_plays_at_for_not_archived_sites
 

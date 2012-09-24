@@ -7,25 +7,15 @@ describe Site, :plans do
     subject { create(:site).reload }
 
     its(:user)                                    { should be_present }
-    its(:plan)                                    { should be_present }
-    its(:pending_plan)                            { should be_nil }
     its(:hostname)                                { should =~ /jilion[0-9]+\.com/ }
     its(:dev_hostnames)                           { should eq "127.0.0.1,localhost" }
     its(:extra_hostnames)                         { should be_nil }
     its(:path)                                    { should be_nil }
     its(:wildcard)                                { should be_false }
-    its(:badged)                                  { should be_true }
     its(:token)                                   { should =~ /^[a-z0-9]{8}$/ }
     its(:license)                                 { should_not be_present }
     its(:loader)                                  { should_not be_present }
     its(:player_mode)                             { should eq "stable" }
-    its(:plan_started_at)                         { should eq Time.now.utc.midnight }
-    its(:plan_cycle_started_at)                   { should eq Time.now.utc.midnight }
-    its('plan_cycle_ended_at.to_i')               { should eq 1.month.from_now.yesterday.end_of_day.to_i }
-    its(:pending_plan_started_at)                 { should be_nil }
-    its(:pending_plan_cycle_started_at)           { should be_nil }
-    its(:pending_plan_cycle_ended_at)             { should be_nil }
-    its(:next_cycle_plan_id)                      { should be_nil }
     its(:last_30_days_main_video_views)           { should eq 0 }
     its(:last_30_days_extra_video_views)          { should eq 0 }
     its(:last_30_days_dev_video_views)            { should eq 0 }
@@ -34,19 +24,37 @@ describe Site, :plans do
     its(:last_30_days_billable_video_views_array) { should have(30).items }
 
     it { should be_active } # initial state
-    it { should_not be_in_free_plan }
     it { should be_valid }
   end
 
   describe "Associations" do
-    subject { create(:site) }
+    let(:site) { create(:site) }
+    let(:addon1) { create(:addon, category: 'logo', name: 'no-logo') }
+    let(:addon2) { create(:addon, category: 'logo', name: 'custom-logo') }
+    let(:addon3) { create(:addon, category: 'support', name: 'vip') }
+    subject { site }
 
     it { should belong_to(:user).validate(true) }
     it { should belong_to :plan }
     it { should have_many :invoices }
 
+    it { should have_many :addonships }
+
     it { should have_many :bundleships }
     it { should have_many(:bundles).through(:bundleships) }
+    it { should have_many(:addons).through(:addonships) }
+
+    describe 'addons scopes' do
+      before do
+        @addonship1 = create(:addonship, site: site, addon: addon1, state: 'active')
+        @addonship2 = create(:addonship, site: site, addon: addon2, state: 'inactive')
+        @addonship3 = create(:addonship, site: site, addon: addon3, state: 'active')
+      end
+
+      describe 'active addons' do
+        it { site.addons.active.should =~ [addon1, addon3] }
+      end
+    end
 
     describe "last_invoice" do
       let(:site) { create(:site_with_invoice, plan_id: @paid_plan.id) }
@@ -72,59 +80,17 @@ describe Site, :plans do
     it { should allow_value('stable').for(:player_mode) }
     it { should_not allow_value('fake').for(:player_mode) }
 
-    specify { Site.validators_on(:hostname).map(&:class).should eq [ActiveModel::Validations::PresenceValidator, HostnameValidator, HostnameUniquenessValidator] }
+    specify { Site.validators_on(:hostname).map(&:class).should eq [HostnameValidator, HostnameUniquenessValidator] }
     specify { Site.validators_on(:extra_hostnames).map(&:class).should include ExtraHostnamesValidator }
     specify { Site.validators_on(:dev_hostnames).map(&:class).should include DevHostnamesValidator }
 
-    describe "hostname" do
-      context "with the free plan" do
-        subject { site = create(:site, plan_id: @free_plan.id); site.hostname = ''; site }
-        it { should be_valid }
-      end
-      context "with a paid plan" do
-        subject { site = create(:site, plan_id: @paid_plan.id); site.hostname = ''; site }
-        it { should_not be_valid }
-        it { should have(1).error_on(:hostname) }
-      end
-      context "with a pending paid plan" do
-        subject { site = create(:site_pending, plan_id: @paid_plan.id); site.hostname = ''; site }
-        it { should_not be_valid }
-        it { should have(1).error_on(:hostname) }
-      end
-    end
-
-    describe "credit card" do
-      context "without credit card" do
-        subject do
-          site = build(:new_site, user: create(:user_no_cc), plan_id: @paid_plan.id)
-          site.save
-          site
-        end
-        it { should be_valid }
-      end
-
-      context "with credit card attributes given" do
-        subject { build(:site, user_attributes: valid_cc_attributes, plan_id: @paid_plan.id) }
-        it { should be_valid }
-      end
-    end
-
     describe "no hostnames at all" do
-      context "hostnames are blank & plan is free plan" do
-        subject { build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @free_plan) }
-        it { should be_valid } # dev hostnames are set before validation
-        it { should have(0).error_on(:base) }
-      end
-
-      context "hostnames are blank & plan is not free plan" do
-        subject { build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @paid_plan) }
-        it { should_not be_valid }
-        it { should have(1).error_on(:hostname) }
-        it { should have(0).error_on(:base) }
-      end
+      subject { build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil) }
+      it { should be_valid } # dev hostnames are set before validation
+      it { should have(0).error_on(:base) }
     end
 
-    describe "validates_current_password" do
+    pending "validates_current_password" do
       context "on a free plan" do
         subject { create(:site, plan_id: @free_plan.id) }
 
@@ -204,44 +170,11 @@ describe Site, :plans do
       end
     end # validates_current_password
 
-    describe "set_default_badged" do
-      context "with the free plan" do
-        describe "default" do
-          subject { create(:site, plan_id: @free_plan.id, badged: nil) }
-          its(:badged) { should be_true }
-          it { should be_valid }
-        end
-        describe "badge on" do
-          subject { create(:site, plan_id: @free_plan.id, badged: true) }
-          its(:badged) { should be_true }
-          it { should be_valid }
-        end
-        describe "badge off" do
-          subject { create(:site, plan_id: @free_plan.id, badged: false) }
-          its(:plan_id) { should eq @free_plan.id }
-          its(:badged) { should be_true }
-          it { should be_valid }
-        end
-      end
+    describe "set_default_addons", :addons do
+      subject { create(:site, plan_id: @free_plan.id, badged: nil) }
 
-      context "with a paid plan" do
-        describe "default" do
-          subject { create(:site, plan_id: @paid_plan.id, badged: nil) }
-          its(:badged) { should be_true }
-          it { should be_valid }
-        end
-        describe "badge on" do
-          subject { create(:site, plan_id: @paid_plan.id, badged: true) }
-          its(:badged) { should be_true }
-          it { should be_valid }
-        end
-        describe "badge off" do
-          subject { create(:site, plan_id: @paid_plan.id, badged: false) }
-          its(:badged) { should be_false }
-          it { should be_valid }
-        end
-      end
-    end # set_default_badged
+      its('addons.active') { should =~ [@logo_sublime_addon, @support_standard_addon] }
+    end # set_default_addons
 
   end # Validations
 
@@ -288,201 +221,12 @@ describe Site, :plans do
         its(:path) { should eq 'users/thibaud' }
       end
     end
-
-    describe "plan_id=" do
-      before do
-        @paid_plan2        = create(:plan, name: "premium", cycle: "month", price: 5000)
-        @paid_plan_yearly  = create(:plan, name: "plus", cycle: "year", price: 10000)
-        @paid_plan_yearly2 = create(:plan, name: "premium", cycle: "year", price: 50000)
-      end
-
-      describe "when creating with a trial plan" do
-        subject { build(:new_site, plan_id: @trial_plan.id) }
-
-        its(:plan_id)            { should be_nil }
-        its(:pending_plan_id)    { should eql @trial_plan.id }
-        its(:next_cycle_plan_id) { should be_nil }
-
-        describe "should prevent new plan_id update while pending_plan_id is present" do
-          before { subject.plan_id = @paid_plan.id }
-
-          its(:plan_id)            { should be_nil }
-          its(:pending_plan_id)    { should eql @trial_plan.id }
-          its(:next_cycle_plan_id) { should be_nil }
-        end
-      end
-
-      describe "when creating with a free plan" do
-        subject { build(:new_site, plan_id: @free_plan.id) }
-
-        its(:plan_id)            { should be_nil }
-        its(:pending_plan_id)    { should eql @free_plan.id }
-        its(:next_cycle_plan_id) { should be_nil }
-
-        describe "should prevent new plan_id update while pending_plan_id is present" do
-          before { subject.plan_id = @paid_plan.id }
-
-          its(:plan_id)            { should be_nil }
-          its(:pending_plan_id)    { should eql @free_plan.id }
-          its(:next_cycle_plan_id) { should be_nil }
-        end
-      end
-
-      describe "when creating with a custom plan token" do
-        subject { build(:new_site, plan_id: @custom_plan.token) }
-
-        its(:plan_id)            { should be_nil }
-        its(:pending_plan_id)    { should eq @custom_plan.id }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "when creating with a custom plan id" do
-        subject { build(:new_site, plan_id: @custom_plan.id) }
-
-        its(:plan_id)            { should be_nil }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "upgrade" do
-        describe "free =>" do
-          let(:site) { create(:new_site, plan: @free_plan) }
-
-          describe "paid" do
-            before { site.reload.plan_id = @paid_plan.id }
-            subject { site }
-
-            its(:plan_id)            { should eq @free_plan.id }
-            its(:pending_plan_id)    { should eq @paid_plan.id }
-            its(:next_cycle_plan_id) { should be_nil }
-          end
-
-          describe "sponsored" do
-            before { site.plan_id = @sponsored_plan.id }
-            subject { site }
-
-            its(:plan_id)            { should eq @free_plan.id }
-            its(:pending_plan_id)    { should be_nil }
-            its(:next_cycle_plan_id) { should be_nil }
-          end
-        end
-
-        describe "monthly =>" do
-          let(:site) { create(:new_site, plan: @paid_plan) }
-
-          describe "monthly" do
-            before { site.plan_id = @paid_plan2.id }
-            subject { site }
-
-            its(:plan_id)            { should eq @paid_plan.id }
-            its(:pending_plan_id)    { should eq @paid_plan2.id }
-            its(:next_cycle_plan_id) { should be_nil }
-          end
-
-          describe "monthly (with a next_cycle_plan)" do
-            before { site.next_cycle_plan_id = @paid_plan_yearly.id; site.plan_id = @paid_plan2.id }
-            subject { site }
-
-            its(:plan_id)            { should eq @paid_plan.id }
-            its(:pending_plan_id)    { should eq @paid_plan2.id }
-            its(:next_cycle_plan_id) { should be_nil }
-          end
-
-          context "with an open invoice" do
-            before do
-              create(:invoice, site: site, state: 'open')
-              site.plan_id = @paid_plan2.id
-            end
-            subject { site }
-
-            its(:plan_id)            { should eq @paid_plan.id }
-            its(:pending_plan_id)    { should be_nil }
-            its(:next_cycle_plan_id) { should be_nil }
-          end
-
-          describe "same monthly plan" do
-            before { site.plan_id = @paid_plan.id }
-            subject { site }
-
-            its(:plan_id)            { should eq @paid_plan.id }
-            its(:pending_plan_id)    { should be_nil }
-            its(:next_cycle_plan_id) { should be_nil }
-          end
-
-          describe "yearly" do
-            before { site.plan_id = @paid_plan_yearly.id }
-            subject { site }
-
-            its(:plan_id)            { should eq @paid_plan.id }
-            its(:pending_plan_id)    { should eq @paid_plan_yearly.id }
-            its(:next_cycle_plan_id) { should be_nil }
-          end
-
-          describe "custom plan token" do
-            before { site.plan_id = @custom_plan.token }
-            subject { site }
-
-            its(:plan_id)            { should eq @paid_plan.id }
-            its(:pending_plan_id)    { should eq @custom_plan.id }
-            its(:next_cycle_plan_id) { should be_nil }
-          end
-
-          describe "custom plan id" do
-            before { site.plan_id = @custom_plan.id }
-            subject { site }
-
-            its(:plan_id)            { should eq @paid_plan.id }
-            its(:pending_plan_id)    { should be_nil }
-            its(:next_cycle_plan_id) { should be_nil }
-          end
-
-          describe "sponsored" do
-            before { site.plan_id = @sponsored_plan.id }
-            subject { site }
-
-            its(:plan_id)            { should eq @paid_plan.id }
-            its(:pending_plan_id)    { should be_nil }
-            its(:next_cycle_plan_id) { should be_nil }
-          end
-        end
-      end
-
-      describe "upgrade yearly => yearly" do
-        let(:site) { build(:new_site, plan: @paid_plan_yearly) }
-        before do
-          site.plan_id = @paid_plan_yearly2.id
-        end
-        subject { site }
-
-        its(:plan_id)            { should eq @paid_plan_yearly.id }
-        its(:pending_plan_id)    { should eq @paid_plan_yearly2.id }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "downgrade =>" do
-        let(:site) { create(:site, plan: @paid_plan2)}
-        before do
-          site.first_paid_plan_started_at.should be_present
-        end
-
-        { free: :free_plan, monthly: :paid_plan, yearly: :paid_plan_yearly }.each do |plan_name, plan|
-          describe plan_name do
-            before { site.reload.plan_id = instance_variable_get("@#{plan}").id }
-            subject { site }
-
-            its(:plan_id)            { should eq @paid_plan2.id }
-            its(:pending_plan_id)    { should be_nil }
-            its(:next_cycle_plan_id) { should eq instance_variable_get("@#{plan}").id }
-          end
-        end
-      end
-    end
   end
 
   describe "State Machine" do
     before { CDN.stub(:purge) }
 
-    describe "#suspend" do
+    pending "#suspend" do
       subject do
         site = build(:new_site)
         site.apply_pending_attributes
@@ -504,7 +248,7 @@ describe Site, :plans do
       # end
     end
 
-    describe "#unsuspend" do
+    pending "#unsuspend" do
       subject do
         site = build(:new_site)
         site.apply_pending_attributes
@@ -527,7 +271,7 @@ describe Site, :plans do
       end
     end
 
-    describe "#archive" do
+    pending "#archive" do
       context "from active state" do
         subject do
           site = create(:site)
@@ -562,7 +306,6 @@ describe Site, :plans do
         # end
       end
     end
-
   end
 
   describe "Versioning" do
@@ -618,14 +361,7 @@ describe Site, :plans do
     describe "before_save" do
       subject { create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc) }
 
-      describe "#clear_alerts_sent_at" do
-        specify do
-          subject.should_receive(:clear_alerts_sent_at)
-          subject.save
-        end
-      end
-
-      describe "#prepare_pending_attributes" do
+      pending "#prepare_pending_attributes" do
         context "when pending_plan_id has changed" do
           it "calls #prepare_pending_attributes" do
             subject.reload
@@ -647,41 +383,6 @@ describe Site, :plans do
         end
       end
     end # before_save
-
-    describe "after_save :create_and_charge_invoice" do
-      let(:site) { create(:site) }
-
-      it "calls #create_and_charge_invoice" do
-        site.should_receive(:create_and_charge_invoice)
-        site.save!
-      end
-    end
-
-    describe "after_save :send_trial_started_email" do
-      context 'site in trial plan' do
-        let(:site) { create(:site, plan_id: @trial_plan.id) }
-
-        it "delays send_trial_started_email" do
-          expect { site }.to change(Delayed::Job.where{ handler =~ "%Class%trial_has_started%" }, :count).by(1)
-        end
-      end
-
-      context 'site in free plan' do
-        let(:site) { create(:site, plan_id: @free_plan.id) }
-
-        it "don't delay send_trial_started_email" do
-          expect { site }.to_not change(Delayed::Job.where{ handler =~ "%Class%trial_has_started%" }, :count)
-        end
-      end
-
-      context 'site in paid plan' do
-        let(:site) { create(:site, plan_id: @paid_plan.id) }
-
-        it "don't delay send_trial_started_email" do
-          expect { site }.to_not change(Delayed::Job.where{ handler =~ "%Class%trial_has_started%" }, :count)
-        end
-      end
-    end
 
     describe "after_create :delay_update_ranks" do
       it "delays update_ranks" do
@@ -725,21 +426,7 @@ describe Site, :plans do
 
   describe 'Instance Methods' do
 
-    describe "#clear_alerts_sent_at" do
-      subject { create(:site_with_invoice, plan_id: @paid_plan.id) }
-
-      it "should clear *_alert_sent_at dates" do
-        subject.touch(:overusage_notification_sent_at)
-        subject.overusage_notification_sent_at.should be_present
-        VCR.use_cassette('ogone/visa_payment_generic') do
-          subject.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
-        end
-        subject.apply_pending_attributes
-        subject.overusage_notification_sent_at.should be_nil
-      end
-    end
-
-    describe "#skip_passwordd" do
+    pending "#skip_password" do
       subject { create(:site, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
@@ -760,36 +447,6 @@ describe Site, :plans do
 
       it "should return the result of the given method" do
         subject.skip_password(:hostname).should eq "rymai.com"
-      end
-    end
-
-    describe "#sponsor!" do
-      describe "sponsor a site with a next plan" do
-        subject do
-          site = create(:site)
-          site.next_cycle_plan_id = @free_plan.id
-          site
-        end
-
-        it "changes the plan to sponsored plan" do
-          subject.next_cycle_plan_id.should be_present
-          subject.pending_plan_id.should be_nil
-          subject.plan_started_at.should be_present
-          initial_plan_started_at = subject.plan_started_at
-          subject.plan_cycle_started_at.should be_present
-          subject.plan_cycle_ended_at.should be_present
-
-          subject.sponsor!
-          subject.reload
-
-          subject.should be_in_sponsored_plan
-          subject.next_cycle_plan_id.should be_nil
-          subject.pending_plan_id.should be_nil
-          subject.plan_started_at.should be_present
-          subject.plan_started_at.should eq initial_plan_started_at # same as an upgrade
-          subject.plan_cycle_started_at.should be_nil
-          subject.plan_cycle_ended_at.should be_nil
-        end
       end
     end
 
@@ -839,118 +496,6 @@ describe Site, :plans do
       end
     end
 
-    describe "#recommended_plan" do
-      let(:site) { create(:site, plan_id: @plus_plan.id) }
-      before do
-        Plan.delete_all
-        create(:plan, name: "trial", price: 0)
-        @plus_plan = create(:plan, name: "plus", video_views: 200_000)
-        @premium_plan = create(:plan, name: "premium", video_views: 1_000_000)
-      end
-      subject { site }
-
-      context "with no usage" do
-        its(:recommended_plan_name) { should be_nil }
-      end
-
-      context "with less than 5 days of usage" do
-        before do
-          site.unmemoize_all
-          create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, vv: { m: 1000 })
-          create(:site_day_stat, t: site.token, d: 2.day.ago.midnight, vv: { m: 1000 })
-          create(:site_day_stat, t: site.token, d: 3.day.ago.midnight, vv: { m: 1000 })
-          create(:site_day_stat, t: site.token, d: 4.day.ago.midnight, vv: { m: 1000 })
-          create(:site_day_stat, t: site.token, d: 5.day.ago.midnight, vv: { m: 0 })
-          create(:site_day_stat, t: site.token, d: 6.day.ago.midnight, vv: { m: 0 })
-        end
-
-        its(:recommended_plan_name) { should be_nil }
-      end
-
-      context "with less than 5 days of usage (but with 0 between)" do
-        before do
-          site.unmemoize_all
-          create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, vv: { m: 30_000 })
-          create(:site_day_stat, t: site.token, d: 2.day.ago.midnight, vv: { m: 30_000 })
-          create(:site_day_stat, t: site.token, d: 3.day.ago.midnight, vv: { m: 0 })
-          create(:site_day_stat, t: site.token, d: 4.day.ago.midnight, vv: { m: 30_000 })
-          create(:site_day_stat, t: site.token, d: 5.day.ago.midnight, vv: { m: 30_000 })
-          create(:site_day_stat, t: site.token, d: 6.day.ago.midnight, vv: { m: 0 })
-        end
-
-        its(:recommended_plan_name) { should eq "premium" }
-      end
-
-      context "with regular usage and video_views smaller than plus" do
-        before do
-          site.unmemoize_all
-          create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, vv: { m: 50 })
-          create(:site_day_stat, t: site.token, d: 2.day.ago.midnight, vv: { m: 50 })
-          create(:site_day_stat, t: site.token, d: 3.day.ago.midnight, vv: { m: 50 })
-          create(:site_day_stat, t: site.token, d: 4.day.ago.midnight, vv: { m: 50 })
-          create(:site_day_stat, t: site.token, d: 5.day.ago.midnight, vv: { m: 50 })
-          create(:site_day_stat, t: site.token, d: 6.day.ago.midnight, vv: { m: 50 })
-        end
-
-        its(:recommended_plan_name) { should be_nil }
-      end
-
-      context "with regular usage and video_views between plus and premium" do
-        before do
-          site.unmemoize_all
-          create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, vv: { m: 10_000 })
-          create(:site_day_stat, t: site.token, d: 2.day.ago.midnight, vv: { m: 10_000 })
-          create(:site_day_stat, t: site.token, d: 3.day.ago.midnight, vv: { m: 10_000 })
-          create(:site_day_stat, t: site.token, d: 4.day.ago.midnight, vv: { m: 10_000 })
-          create(:site_day_stat, t: site.token, d: 5.day.ago.midnight, vv: { m: 10_000 })
-          create(:site_day_stat, t: site.token, d: 6.day.ago.midnight, vv: { m: 10_000 })
-        end
-
-        its(:recommended_plan_name) { should eq "premium" }
-      end
-
-      context "with non regular usage and lower than video_views but greather than average video_views" do
-        before do
-          site.unmemoize_all
-          create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, vv: { m: 12_000 })
-          create(:site_day_stat, t: site.token, d: 2.day.ago.midnight, vv: { m: 12_000 })
-          create(:site_day_stat, t: site.token, d: 3.day.ago.midnight, vv: { m: 12_000 })
-          create(:site_day_stat, t: site.token, d: 4.day.ago.midnight, vv: { m: 12_000 })
-          create(:site_day_stat, t: site.token, d: 5.day.ago.midnight, vv: { m: 12_000 })
-          create(:site_day_stat, t: site.token, d: 6.day.ago.midnight, vv: { m: 1_000 })
-        end
-
-        its(:recommended_plan_name) { should eq "premium" }
-      end
-
-      context "with too much video_views" do
-        before do
-          site.unmemoize_all
-          create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, vv: { m: 500_000 })
-          create(:site_day_stat, t: site.token, d: 2.day.ago.midnight, vv: { m: 500_000 })
-          create(:site_day_stat, t: site.token, d: 3.day.ago.midnight, vv: { m: 500_000 })
-          create(:site_day_stat, t: site.token, d: 4.day.ago.midnight, vv: { m: 500_000 })
-          create(:site_day_stat, t: site.token, d: 5.day.ago.midnight, vv: { m: 500_000 })
-        end
-
-        its(:recommended_plan_name) { should eq "custom" }
-      end
-
-      context "with recommended plan lower than current plan" do
-        before do
-          site.unmemoize_all
-          site.plan = @premium_plan
-          create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, vv: { m: 500 })
-          create(:site_day_stat, t: site.token, d: 2.day.ago.midnight, vv: { m: 500 })
-          create(:site_day_stat, t: site.token, d: 3.day.ago.midnight, vv: { m: 500 })
-          create(:site_day_stat, t: site.token, d: 4.day.ago.midnight, vv: { m: 500 })
-          create(:site_day_stat, t: site.token, d: 5.day.ago.midnight, vv: { m: 500 })
-        end
-
-        its(:recommended_plan_name) { should be_nil }
-      end
-    end
-
   end # Instance Methods
 
 end
@@ -959,6 +504,7 @@ end
 #
 # Table name: sites
 #
+#  addons_settings                           :hstore
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean

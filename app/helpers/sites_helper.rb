@@ -30,7 +30,7 @@ module SitesHelper
   end
 
   def sublimevideo_script_tag_for(site)
-    %{<script type="text/javascript" src="http://cdn.sublimevideo.net/js/%s.js"></script>} % [site.token]
+    %{<script type="text/javascript" src="//cdn.sublimevideo.net/js/%s.js"></script>} % [site.token]
   end
 
   def url_with_protocol(url)
@@ -75,16 +75,6 @@ module SitesHelper
 
   def conditions_for_show_dev_hostnames_div(site)
     site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS
-  end
-
-  def td_usage_class(site)
-    if site.in_paid_plan?
-      if site.first_plan_upgrade_required_alert_sent_at?
-        "required_upgrade"
-      elsif site.current_monthly_billable_usages.sum > site.plan.video_views
-        "peak_insurance"
-      end
-    end
   end
 
 end

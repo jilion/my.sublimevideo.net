@@ -1,4 +1,5 @@
-- notices = sticky_notices(current_user, @sites.sort_by(&:plan_started_at))
+-# FIXME!
+- notices = sticky_notices(current_user, @sites.sort_by(&:created_at))
 
 - if notices.present?
   #sticky_notice.notices

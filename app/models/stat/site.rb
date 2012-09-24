@@ -279,6 +279,7 @@ end
 #
 # Table name: sites
 #
+#  addons_settings                           :hstore
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean

@@ -41,9 +41,6 @@ describe RecurringJob do
     it "delays 4 methods" do
       described_class.invoices_processing
 
-      Delayed::Job.where{ handler =~ '%Invoice%update_pending_dates_for_first_not_paid_invoices%' }.should have(1).item
-      Delayed::Job.where{ handler =~ '%Site%downgrade_sites_leaving_trial%' }.should have(1).item
-      Delayed::Job.where{ handler =~ '%Site%renew_active_sites%' }.should have(1).item
       Delayed::Job.where{ handler =~ '%Transaction%charge_invoices%' }.should have(1).item
     end
 
@@ -58,9 +55,6 @@ describe RecurringJob do
     it "calls 3 methods" do
       described_class.sites_processing
 
-      Delayed::Job.where{ handler =~ '%Site%send_trial_will_expire_email%' }.should have(1).item
-      Delayed::Job.where{ handler =~ '%Site%send_yearly_plan_will_be_renewed_email%' }.should have(1).item
-      Delayed::Job.where{ handler =~ '%Site%monitor_sites_usages%' }.should have(1).item
       Delayed::Job.where{ handler =~ '%Site%update_last_30_days_counters_for_not_archived_sites%' }.should have(1).item
     end
 
