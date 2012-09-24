@@ -97,7 +97,6 @@ class Site < ActiveRecord::Base
   before_validation :set_default_dev_hostnames, unless: :dev_hostnames?
 
   before_save :set_default_badged, if: proc { |s| s.badged.nil? || s.in_free_plan? }
-  before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
   before_save :prepare_pending_attributes, if: proc { |s| s.pending_plan_id_changed? && s.pending_plan_id? } # in site_modules/cycle
   before_save :set_first_paid_plan_started_at # in site_modules/billing
@@ -106,7 +105,9 @@ class Site < ActiveRecord::Base
 
   after_save :create_and_charge_invoice # in site_modules/billing
   after_save :send_trial_started_email, if: proc { |s| s.plan_id_changed? && s.in_trial_plan? } # in site_modules/billing
-  after_save :execute_cdn_update # in site_modules/templates
+
+  # before_save :prepare_cdn_update # in site_modules/templates
+  # after_save :execute_cdn_update # in site_modules/templates
 
   # =================
   # = State Machine =
@@ -120,7 +121,7 @@ class Site < ActiveRecord::Base
     before_transition on: :archive, do: [:set_archived_at]
     after_transition  on: :archive, do: [:cancel_not_paid_invoices]
 
-    after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
+    # after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
     # after_transition  to: [:suspended, :archived] do |site|
     #   Player::Settings.delay.delete!(site.id)
     # end
