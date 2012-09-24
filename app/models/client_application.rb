@@ -68,13 +68,13 @@ end
 # Table name: client_applications
 #
 #  callback_url :string(255)
-#  created_at   :datetime
+#  created_at   :datetime         not null
 #  id           :integer          not null, primary key
 #  key          :string(40)
 #  name         :string(255)
 #  secret       :string(40)
 #  support_url  :string(255)
-#  updated_at   :datetime
+#  updated_at   :datetime         not null
 #  url          :string(255)
 #  user_id      :integer
 #

@@ -39,10 +39,10 @@ end
 # Table name: mail_templates
 #
 #  body       :text
-#  created_at :datetime
+#  created_at :datetime         not null
 #  id         :integer          not null, primary key
 #  subject    :string(255)
 #  title      :string(255)
-#  updated_at :datetime
+#  updated_at :datetime         not null
 #
 
