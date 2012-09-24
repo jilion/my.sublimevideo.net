@@ -64,12 +64,12 @@ FactoryGirl.define do
   end
 
   factory :site, parent: :new_site do
-    after(:create) do |site|
-      if site.will_be_in_paid_plan?
-        site.apply_pending_attributes
-        site.invoices.update_all(state: 'paid')
-      end
-    end
+    # after(:create) do |site|
+    #   if site.will_be_in_paid_plan?
+    #     site.apply_pending_attributes
+    #     site.invoices.update_all(state: 'paid')
+    #   end
+    # end
   end
 
   factory :site_with_invoice, parent: :new_site do
@@ -188,6 +188,28 @@ FactoryGirl.define do
     stats_retention_days nil
     price                20_000
     support_level        2
+  end
+
+
+  # ==========
+  # = Addons =
+  # ==========
+  factory :addon, class: Addons::Addon do
+    sequence(:category) { |n| "category#{n}" }
+    sequence(:name)     { |n| "name#{n}" }
+    sequence(:title)     { |n| "Name #{n}" }
+    price               999
+    availability        'public'
+  end
+
+  factory :addonship, class: Addons::Addonship do
+    site
+    addon
+  end
+
+  factory :addon_activity, class: Addons::AddonActivity do
+    addonship
+    state 'active'
   end
 
   # ================================

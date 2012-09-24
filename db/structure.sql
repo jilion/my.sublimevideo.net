@@ -43,6 +43,108 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: addon_activities; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE addon_activities (
+    id integer NOT NULL,
+    addonship_id integer NOT NULL,
+    state character varying(255) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: addon_activities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE addon_activities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: addon_activities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE addon_activities_id_seq OWNED BY addon_activities.id;
+
+
+--
+-- Name: addons; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE addons (
+    id integer NOT NULL,
+    category character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    title character varying(255) NOT NULL,
+    settings hstore,
+    price integer NOT NULL,
+    availability character varying(255) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: addons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE addons_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: addons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE addons_id_seq OWNED BY addons.id;
+
+
+--
+-- Name: addonships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE addonships (
+    id integer NOT NULL,
+    site_id integer NOT NULL,
+    addon_id integer NOT NULL,
+    state character varying(255) NOT NULL,
+    trial_started_on timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: addonships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE addonships_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: addonships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE addonships_id_seq OWNED BY addonships.id;
+
+
+--
 -- Name: admins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -63,8 +165,8 @@ CREATE TABLE admins (
     locked_at timestamp without time zone,
     invitation_token character varying(60),
     invitation_sent_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     reset_password_sent_at timestamp without time zone,
     invitation_accepted_at timestamp without time zone,
     invitation_limit integer,
@@ -108,8 +210,8 @@ CREATE TABLE client_applications (
     callback_url character varying(255),
     key character varying(40),
     secret character varying(40),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -141,8 +243,8 @@ CREATE TABLE deal_activations (
     deal_id integer,
     user_id integer,
     activated_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -179,8 +281,8 @@ CREATE TABLE deals (
     availability_scope character varying(255),
     started_at timestamp without time zone,
     ended_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -217,8 +319,8 @@ CREATE TABLE delayed_jobs (
     locked_at timestamp without time zone,
     failed_at timestamp without time zone,
     locked_by character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -364,8 +466,8 @@ CREATE TABLE invoice_items (
     discounted_percentage double precision,
     price integer,
     amount integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     deal_id integer
 );
 
@@ -409,8 +511,8 @@ CREATE TABLE invoices (
     invoice_items_amount integer,
     invoice_items_count integer DEFAULT 0,
     transactions_count integer DEFAULT 0,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     paid_at timestamp without time zone,
     last_failed_at timestamp without time zone,
     renew boolean DEFAULT false,
@@ -459,8 +561,8 @@ CREATE TABLE mail_logs (
     criteria text,
     user_ids text,
     snapshot text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -492,8 +594,8 @@ CREATE TABLE mail_templates (
     title character varying(255),
     subject character varying(255),
     body text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -533,8 +635,8 @@ CREATE TABLE oauth_tokens (
     authorized_at timestamp without time zone,
     invalidated_at timestamp without time zone,
     valid_to timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -568,8 +670,8 @@ CREATE TABLE plans (
     cycle character varying(255),
     video_views integer,
     price integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     support_level integer DEFAULT 0,
     stats_retention_days integer
 );
@@ -704,8 +806,8 @@ CREATE TABLE releases (
     date character varying(255),
     zip character varying(255),
     state character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -751,8 +853,8 @@ CREATE TABLE sites (
     loader character varying(255),
     state character varying(255),
     archived_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     player_mode character varying(255) DEFAULT 'stable'::character varying,
     google_rank integer,
     alexa_rank integer,
@@ -783,7 +885,8 @@ CREATE TABLE sites (
     last_30_days_billable_video_views_array text,
     last_30_days_video_tags integer DEFAULT 0,
     first_billable_plays_at timestamp without time zone,
-    settings_updated_at timestamp without time zone
+    settings_updated_at timestamp without time zone,
+    addons_settings hstore
 );
 
 
@@ -887,8 +990,8 @@ CREATE TABLE transactions (
     pay_id character varying(255),
     nc_status integer,
     status integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -938,8 +1041,8 @@ CREATE TABLE users (
     cc_last_digits character varying(255),
     cc_expire_on date,
     cc_updated_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     invitation_token character varying(60),
     invitation_sent_at timestamp without time zone,
     zendesk_id integer,
@@ -1049,168 +1152,213 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE admins ALTER COLUMN id SET DEFAULT nextval('admins_id_seq'::regclass);
+ALTER TABLE ONLY addon_activities ALTER COLUMN id SET DEFAULT nextval('addon_activities_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE client_applications ALTER COLUMN id SET DEFAULT nextval('client_applications_id_seq'::regclass);
+ALTER TABLE ONLY addons ALTER COLUMN id SET DEFAULT nextval('addons_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE deal_activations ALTER COLUMN id SET DEFAULT nextval('deal_activations_id_seq'::regclass);
+ALTER TABLE ONLY addonships ALTER COLUMN id SET DEFAULT nextval('addonships_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE deals ALTER COLUMN id SET DEFAULT nextval('deals_id_seq'::regclass);
+ALTER TABLE ONLY admins ALTER COLUMN id SET DEFAULT nextval('admins_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
+ALTER TABLE ONLY client_applications ALTER COLUMN id SET DEFAULT nextval('client_applications_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE enthusiast_sites ALTER COLUMN id SET DEFAULT nextval('enthusiast_sites_id_seq'::regclass);
+ALTER TABLE ONLY deal_activations ALTER COLUMN id SET DEFAULT nextval('deal_activations_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE enthusiasts ALTER COLUMN id SET DEFAULT nextval('enthusiasts_id_seq'::regclass);
+ALTER TABLE ONLY deals ALTER COLUMN id SET DEFAULT nextval('deals_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE feedbacks ALTER COLUMN id SET DEFAULT nextval('feedbacks_id_seq'::regclass);
+ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE invoice_items ALTER COLUMN id SET DEFAULT nextval('invoice_items_id_seq'::regclass);
+ALTER TABLE ONLY enthusiast_sites ALTER COLUMN id SET DEFAULT nextval('enthusiast_sites_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq'::regclass);
+ALTER TABLE ONLY enthusiasts ALTER COLUMN id SET DEFAULT nextval('enthusiasts_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE mail_logs ALTER COLUMN id SET DEFAULT nextval('mail_logs_id_seq'::regclass);
+ALTER TABLE ONLY feedbacks ALTER COLUMN id SET DEFAULT nextval('feedbacks_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE mail_templates ALTER COLUMN id SET DEFAULT nextval('mail_templates_id_seq'::regclass);
+ALTER TABLE ONLY invoice_items ALTER COLUMN id SET DEFAULT nextval('invoice_items_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE oauth_tokens ALTER COLUMN id SET DEFAULT nextval('oauth_tokens_id_seq'::regclass);
+ALTER TABLE ONLY invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regclass);
+ALTER TABLE ONLY mail_logs ALTER COLUMN id SET DEFAULT nextval('mail_logs_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE player_bundle_versions ALTER COLUMN id SET DEFAULT nextval('player_bundle_versions_id_seq'::regclass);
+ALTER TABLE ONLY mail_templates ALTER COLUMN id SET DEFAULT nextval('mail_templates_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE player_bundles ALTER COLUMN id SET DEFAULT nextval('player_bundles_id_seq'::regclass);
+ALTER TABLE ONLY oauth_tokens ALTER COLUMN id SET DEFAULT nextval('oauth_tokens_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE player_bundleships ALTER COLUMN id SET DEFAULT nextval('player_bundleships_id_seq'::regclass);
+ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
+ALTER TABLE ONLY player_bundle_versions ALTER COLUMN id SET DEFAULT nextval('player_bundle_versions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE sites ALTER COLUMN id SET DEFAULT nextval('sites_id_seq'::regclass);
+ALTER TABLE ONLY player_bundles ALTER COLUMN id SET DEFAULT nextval('player_bundles_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE taggings ALTER COLUMN id SET DEFAULT nextval('taggings_id_seq'::regclass);
+ALTER TABLE ONLY player_bundleships ALTER COLUMN id SET DEFAULT nextval('player_bundleships_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
+ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE transactions ALTER COLUMN id SET DEFAULT nextval('transactions_id_seq'::regclass);
+ALTER TABLE ONLY sites ALTER COLUMN id SET DEFAULT nextval('sites_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+ALTER TABLE ONLY taggings ALTER COLUMN id SET DEFAULT nextval('taggings_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
+ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY transactions ALTER COLUMN id SET DEFAULT nextval('transactions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
+
+
+--
+-- Name: addon_activities_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY addon_activities
+    ADD CONSTRAINT addon_activities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: addons_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY addons
+    ADD CONSTRAINT addons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: addonships_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY addonships
+    ADD CONSTRAINT addonships_pkey PRIMARY KEY (id);
 
 
 --
@@ -1410,6 +1558,41 @@ ALTER TABLE ONLY versions
 --
 
 CREATE INDEX delayed_jobs_priority ON delayed_jobs USING btree (priority, run_at);
+
+
+--
+-- Name: index_addon_activities_on_addonship_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_addon_activities_on_addonship_id ON addon_activities USING btree (addonship_id);
+
+
+--
+-- Name: index_addonships_on_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_addonships_on_addon_id ON addonships USING btree (addon_id);
+
+
+--
+-- Name: index_addonships_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_addonships_on_site_id ON addonships USING btree (site_id);
+
+
+--
+-- Name: index_addonships_on_site_id_and_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_addonships_on_site_id_and_addon_id ON addonships USING btree (site_id, addon_id);
+
+
+--
+-- Name: index_addonships_on_state; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_addonships_on_state ON addonships USING btree (state);
 
 
 --
@@ -1772,17 +1955,11 @@ INSERT INTO schema_migrations (version) VALUES ('20100701091254');
 
 INSERT INTO schema_migrations (version) VALUES ('20100706142731');
 
-INSERT INTO schema_migrations (version) VALUES ('20100707142429');
-
-INSERT INTO schema_migrations (version) VALUES ('20100707142455');
-
 INSERT INTO schema_migrations (version) VALUES ('20100720092023');
 
 INSERT INTO schema_migrations (version) VALUES ('20100720101348');
 
 INSERT INTO schema_migrations (version) VALUES ('20100722100536');
-
-INSERT INTO schema_migrations (version) VALUES ('20100722155430');
 
 INSERT INTO schema_migrations (version) VALUES ('20100723135123');
 
@@ -1891,3 +2068,11 @@ INSERT INTO schema_migrations (version) VALUES ('20120830142633');
 INSERT INTO schema_migrations (version) VALUES ('20120830144913');
 
 INSERT INTO schema_migrations (version) VALUES ('20120904100844');
+
+INSERT INTO schema_migrations (version) VALUES ('20120921094648');
+
+INSERT INTO schema_migrations (version) VALUES ('20120921094844');
+
+INSERT INTO schema_migrations (version) VALUES ('20120921094951');
+
+INSERT INTO schema_migrations (version) VALUES ('20120921095439');
