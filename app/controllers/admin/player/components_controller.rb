@@ -1,5 +1,3 @@
-require_dependency 'player/component_updater'
-
 class Admin::Player::ComponentsController < Admin::PlayerController
   respond_to :html, only: [:show, :update]
   respond_to :json
@@ -27,7 +25,7 @@ class Admin::Player::ComponentsController < Admin::PlayerController
   # PUT /player/components/:id (token)
   def update
     @component = Player::Component.find_by_token!(params[:id])
-    Player::ComponentUpdater.update(@component, params[:component])
+    Player::Component.update_attributes(params[:component])
     respond_with(@component, location: [:admin, @component])
   end
 

@@ -63,8 +63,8 @@ CREATE TABLE admins (
     locked_at timestamp without time zone,
     invitation_token character varying(60),
     invitation_sent_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     reset_password_sent_at timestamp without time zone,
     invitation_accepted_at timestamp without time zone,
     invitation_limit integer,
@@ -108,8 +108,8 @@ CREATE TABLE client_applications (
     callback_url character varying(255),
     key character varying(40),
     secret character varying(40),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -141,8 +141,8 @@ CREATE TABLE deal_activations (
     deal_id integer,
     user_id integer,
     activated_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -179,8 +179,8 @@ CREATE TABLE deals (
     availability_scope character varying(255),
     started_at timestamp without time zone,
     ended_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -217,8 +217,8 @@ CREATE TABLE delayed_jobs (
     locked_at timestamp without time zone,
     failed_at timestamp without time zone,
     locked_by character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -364,8 +364,8 @@ CREATE TABLE invoice_items (
     discounted_percentage double precision,
     price integer,
     amount integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     deal_id integer
 );
 
@@ -409,8 +409,8 @@ CREATE TABLE invoices (
     invoice_items_amount integer,
     invoice_items_count integer DEFAULT 0,
     transactions_count integer DEFAULT 0,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     paid_at timestamp without time zone,
     last_failed_at timestamp without time zone,
     renew boolean DEFAULT false,
@@ -459,8 +459,8 @@ CREATE TABLE mail_logs (
     criteria text,
     user_ids text,
     snapshot text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -492,8 +492,8 @@ CREATE TABLE mail_templates (
     title character varying(255),
     subject character varying(255),
     body text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -533,8 +533,8 @@ CREATE TABLE oauth_tokens (
     authorized_at timestamp without time zone,
     invalidated_at timestamp without time zone,
     valid_to timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -568,8 +568,8 @@ CREATE TABLE plans (
     cycle character varying(255),
     video_views integer,
     price integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     support_level integer DEFAULT 0,
     stats_retention_days integer
 );
@@ -702,8 +702,8 @@ CREATE TABLE releases (
     date character varying(255),
     zip character varying(255),
     state character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -745,12 +745,10 @@ CREATE TABLE sites (
     hostname character varying(255),
     dev_hostnames text,
     token character varying(255),
-    license character varying(255),
-    loader character varying(255),
     state character varying(255),
     archived_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     player_mode character varying(255) DEFAULT 'stable'::character varying,
     google_rank integer,
     alexa_rank integer,
@@ -760,7 +758,6 @@ CREATE TABLE sites (
     plan_id integer,
     pending_plan_id integer,
     next_cycle_plan_id integer,
-    cdn_up_to_date boolean DEFAULT false,
     first_paid_plan_started_at timestamp without time zone,
     plan_started_at timestamp without time zone,
     plan_cycle_started_at timestamp without time zone,
@@ -781,7 +778,8 @@ CREATE TABLE sites (
     last_30_days_billable_video_views_array text,
     last_30_days_video_tags integer DEFAULT 0,
     first_billable_plays_at timestamp without time zone,
-    settings_updated_at timestamp without time zone
+    settings_updated_at timestamp without time zone,
+    loaders_updated_at timestamp without time zone
 );
 
 
@@ -885,8 +883,8 @@ CREATE TABLE transactions (
     pay_id character varying(255),
     nc_status integer,
     status integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -936,8 +934,8 @@ CREATE TABLE users (
     cc_last_digits character varying(255),
     cc_expire_on date,
     cc_updated_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     invitation_token character varying(60),
     invitation_sent_at timestamp without time zone,
     zendesk_id integer,
@@ -1770,17 +1768,11 @@ INSERT INTO schema_migrations (version) VALUES ('20100701091254');
 
 INSERT INTO schema_migrations (version) VALUES ('20100706142731');
 
-INSERT INTO schema_migrations (version) VALUES ('20100707142429');
-
-INSERT INTO schema_migrations (version) VALUES ('20100707142455');
-
 INSERT INTO schema_migrations (version) VALUES ('20100720092023');
 
 INSERT INTO schema_migrations (version) VALUES ('20100720101348');
 
 INSERT INTO schema_migrations (version) VALUES ('20100722100536');
-
-INSERT INTO schema_migrations (version) VALUES ('20100722155430');
 
 INSERT INTO schema_migrations (version) VALUES ('20100723135123');
 
@@ -1893,3 +1885,7 @@ INSERT INTO schema_migrations (version) VALUES ('20120904100844');
 INSERT INTO schema_migrations (version) VALUES ('20120919094721');
 
 INSERT INTO schema_migrations (version) VALUES ('20120919140602');
+
+INSERT INTO schema_migrations (version) VALUES ('20120924140456');
+
+INSERT INTO schema_migrations (version) VALUES ('20120924141140');

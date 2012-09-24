@@ -282,8 +282,7 @@ end
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean
-#  cdn_up_to_date                            :boolean          default(FALSE)
-#  created_at                                :datetime
+#  created_at                                :datetime         not null
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
 #  first_billable_plays_at                   :datetime
@@ -299,8 +298,7 @@ end
 #  last_30_days_invalid_video_views          :integer          default(0)
 #  last_30_days_main_video_views             :integer          default(0)
 #  last_30_days_video_tags                   :integer          default(0)
-#  license                                   :string(255)
-#  loader                                    :string(255)
+#  loaders_updated_at                        :datetime
 #  next_cycle_plan_id                        :integer
 #  overusage_notification_sent_at            :datetime
 #  path                                      :string(255)
@@ -318,7 +316,7 @@ end
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime
-#  updated_at                                :datetime
+#  updated_at                                :datetime         not null
 #  user_id                                   :integer
 #  wildcard                                  :boolean
 #

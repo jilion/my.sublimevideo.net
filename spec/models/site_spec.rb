@@ -486,17 +486,6 @@ describe Site, :plans do
         subject.versions.last.reify.hostname.should eq old_hostname
       end
     end
-
-    [:cdn_up_to_date, :license, :loader].each do |attr|
-      it "doesn't version when :#{attr} changes" do
-        with_versioning do
-          expect do
-            subject.send("#{attr}=", "bob.com")
-            subject.save
-          end.to_not change(subject.versions, :count)
-        end
-      end
-    end
   end # Versioning
 
   describe "Callbacks" do
@@ -527,36 +516,56 @@ describe Site, :plans do
     end
 
     describe "before_save" do
-      subject { create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc) }
+      let(:site) { create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc) }
 
       describe "#clear_alerts_sent_at" do
         specify do
-          subject.should_receive(:clear_alerts_sent_at)
-          subject.save
+          site.should_receive(:clear_alerts_sent_at)
+          site.save
         end
       end
 
       describe "#prepare_pending_attributes" do
         context "when pending_plan_id has changed" do
           it "calls #prepare_pending_attributes" do
-            subject.reload
-            subject.plan_id = @paid_plan.id
-            VCR.use_cassette('ogone/visa_payment_generic') { subject.skip_password(:save!) }
-            subject.pending_plan_id.should eq @paid_plan.id
-            subject.reload # apply_pending_attributes called
-            subject.plan_id.should eq @paid_plan.id
-            subject.pending_plan_id.should be_nil
+            site.reload
+            site.plan_id = @paid_plan.id
+            VCR.use_cassette('ogone/visa_payment_generic') { site.skip_password(:save!) }
+            site.pending_plan_id.should eq @paid_plan.id
+            site.reload # apply_pending_attributes called
+            site.plan_id.should eq @paid_plan.id
+            site.pending_plan_id.should be_nil
           end
         end
 
         context "when pending_plan_id doesn't change" do
           it "doesn't call #prepare_pending_attributes" do
-            subject.hostname = 'test.com'
-            subject.skip_password(:save!)
-            subject.pending_plan_id.should be_nil
+            site.hostname = 'test.com'
+            site.skip_password(:save!)
+            site.pending_plan_id.should be_nil
           end
         end
       end
+
+      describe "Player::Loader update" do
+        context "on site creation" do
+          let(:site) { create(:site) }
+
+          it "is delayed" do
+            expect { site }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+          end
+        end
+
+        context "on site player_mode update" do
+          let(:site) { create(:site) }
+
+          it "is delayed" do
+            site
+            expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+          end
+        end
+      end
+
     end # before_save
 
     describe "after_save :create_and_charge_invoice" do
@@ -601,6 +610,17 @@ describe Site, :plans do
     end
 
   end # Callbacks
+
+  describe "State Machine" do
+    describe "after transition" do
+      let(:site) { create(:site) }
+
+      it "delays Player::Loader update" do
+        site
+        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+      end
+    end
+  end # State Machine
 
   describe 'Class methods' do
     describe 'update_ranks' do
@@ -873,8 +893,7 @@ end
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean
-#  cdn_up_to_date                            :boolean          default(FALSE)
-#  created_at                                :datetime
+#  created_at                                :datetime         not null
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
 #  first_billable_plays_at                   :datetime
@@ -890,8 +909,7 @@ end
 #  last_30_days_invalid_video_views          :integer          default(0)
 #  last_30_days_main_video_views             :integer          default(0)
 #  last_30_days_video_tags                   :integer          default(0)
-#  license                                   :string(255)
-#  loader                                    :string(255)
+#  loaders_updated_at                        :datetime
 #  next_cycle_plan_id                        :integer
 #  overusage_notification_sent_at            :datetime
 #  path                                      :string(255)
@@ -909,7 +927,7 @@ end
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime
-#  updated_at                                :datetime
+#  updated_at                                :datetime         not null
 #  user_id                                   :integer
 #  wildcard                                  :boolean
 #

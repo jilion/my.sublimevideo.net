@@ -35,7 +35,7 @@ describe HostnameUniquenessValidator do
   end
 
   context "on update" do
-    subject { create(:site, user: site.user).tap { |s| s.update_attribute(:cdn_up_to_date, true) } }
+    subject { create(:site, user: site.user) }
 
     it "should scope by user" do
       validate_hostname_uniqueness(subject, :hostname, site.hostname)

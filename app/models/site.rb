@@ -10,7 +10,6 @@ class Site < ActiveRecord::Base
   include SiteModules::Billing
   include SiteModules::Referrer
   include SiteModules::Scope
-  include SiteModules::Template
   include SiteModules::Usage
   include SiteModules::UsageMonitoring
 
@@ -19,7 +18,7 @@ class Site < ActiveRecord::Base
 
   # Versioning
   has_paper_trail ignore: [
-    :cdn_up_to_date, :license, :loader, :last_30_days_main_video_views,
+    :last_30_days_main_video_views,
     :last_30_days_extra_video_views, :last_30_days_dev_video_views,
     :last_30_days_invalid_video_views, :last_30_days_embed_video_views,
     :last_30_days_billable_video_views_array, :last_30_days_video_tags
@@ -28,7 +27,6 @@ class Site < ActiveRecord::Base
 
   acts_as_taggable
 
-  attr_accessor :loader_needs_update, :license_needs_update
   attr_accessor :user_attributes, :last_transaction, :remote_ip
 
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard,
@@ -37,9 +35,6 @@ class Site < ActiveRecord::Base
   serialize :last_30_days_billable_video_views_array, Array
 
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9')
-
-  mount_uploader :license, LicenseUploader
-  mount_uploader :loader, LoaderUploader
 
   delegate :name, to: :plan, prefix: true
   delegate :stats_retention_days, to: :plan, prefix: true
@@ -106,8 +101,9 @@ class Site < ActiveRecord::Base
   after_save :create_and_charge_invoice # in site_modules/billing
   after_save :send_trial_started_email, if: proc { |s| s.plan_id_changed? && s.in_trial_plan? } # in site_modules/billing
 
-  # before_save :prepare_cdn_update # in site_modules/templates
-  # after_save :execute_cdn_update # in site_modules/templates
+  # Player::Loader
+  after_create ->(site) { Player::Loader.delay.update_all_modes!(site.id) }
+  after_save ->(site) { Player::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
 
   # =================
   # = State Machine =
@@ -121,10 +117,8 @@ class Site < ActiveRecord::Base
     before_transition on: :archive, do: [:set_archived_at]
     after_transition  on: :archive, do: [:cancel_not_paid_invoices]
 
-    # after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
-    # after_transition  to: [:suspended, :archived] do |site|
-    #   Player::Settings.delay.delete!(site.id)
-    # end
+    # Player::Loader
+    after_transition ->(site) { Player::Loader.delay.update_all_modes!(site.id) }
   end
 
   # =================
@@ -348,8 +342,7 @@ end
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean
-#  cdn_up_to_date                            :boolean          default(FALSE)
-#  created_at                                :datetime
+#  created_at                                :datetime         not null
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
 #  first_billable_plays_at                   :datetime
@@ -365,8 +358,7 @@ end
 #  last_30_days_invalid_video_views          :integer          default(0)
 #  last_30_days_main_video_views             :integer          default(0)
 #  last_30_days_video_tags                   :integer          default(0)
-#  license                                   :string(255)
-#  loader                                    :string(255)
+#  loaders_updated_at                        :datetime
 #  next_cycle_plan_id                        :integer
 #  overusage_notification_sent_at            :datetime
 #  path                                      :string(255)
@@ -384,7 +376,7 @@ end
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime
-#  updated_at                                :datetime
+#  updated_at                                :datetime         not null
 #  user_id                                   :integer
 #  wildcard                                  :boolean
 #
