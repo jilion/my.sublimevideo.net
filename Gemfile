@@ -168,9 +168,9 @@ group :tools do
   # Guard
   gem 'ruby_gntp'
   gem 'rb-fsevent'
+  gem 'coolline'
 
-  gem 'listen'
-  gem 'guard', github: 'guard/guard', branch: 'interactor/pry'
+  gem 'guard'#, github: 'guard/guard', branch: 'interactor/pry'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-rspec'
