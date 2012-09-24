@@ -18,15 +18,15 @@ class PusherWrapper
     webhook.events.each do |event|
       case event["name"]
       when 'channel_occupied'
-        RedisConnection.sadd("pusher:channels", event["channel"])
+        $redis.sadd("pusher:channels", event["channel"])
       when 'channel_vacated'
-        RedisConnection.srem("pusher:channels", event["channel"])
+        $redis.srem("pusher:channels", event["channel"])
       end
     end
   end
 
   def self.trigger(channel_name, event_name, data)
-    if RedisConnection.sismember("pusher:channels", channel_name)
+    if $redis.sismember("pusher:channels", channel_name)
       Pusher[channel_name].trigger!(event_name, data)
       true
     else

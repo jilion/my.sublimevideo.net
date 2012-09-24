@@ -1,7 +1,7 @@
 require 'redis'
 
 RSpec.configure do |config|
-  config.before do
-    RedisConnection.flushall if defined?(RedisConnection)
+  config.before :each, redis: true do
+    $redis.flushall if defined?($redis)
   end
 end

@@ -3,9 +3,9 @@ require 'pusher'
 require File.expand_path('lib/pusher_wrapper')
 
 require File.expand_path('spec/config/redis')
-RedisConnection = Redis.new unless defined?(RedisConnection)
+$redis = Redis.new unless defined?($redis)
 
-describe PusherWrapper do
+describe PusherWrapper, :redis do
   before { Pusher.url = 'http://c76b85222fbec28c8508:7ab0d643924b2bcc23d2@api.pusherapp.com/apps/8211' }
 
   describe ".authenticated_response" do
@@ -35,7 +35,7 @@ describe PusherWrapper do
 
       it "adds channel_name to Redis Set" do
         PusherWrapper.handle_webhook(webhook)
-        RedisConnection.sismember("pusher:channels", channel_name).should be_true
+        $redis.sismember("pusher:channels", channel_name).should be_true
       end
     end
 
@@ -46,9 +46,9 @@ describe PusherWrapper do
       } }
 
       it "removes existing channel_name from Redis Set" do
-        RedisConnection.sadd("pusher:channels", channel_name)
+        $redis.sadd("pusher:channels", channel_name)
         PusherWrapper.handle_webhook(webhook)
-        RedisConnection.sismember("pusher:channels", channel_name).should be_false
+        $redis.sismember("pusher:channels", channel_name).should be_false
       end
     end
   end
@@ -59,7 +59,7 @@ describe PusherWrapper do
     let(:data) { { some: 'data' } }
 
     context "with channel occupied" do
-      before { RedisConnection.sadd("pusher:channels", channel_name) }
+      before { $redis.sadd("pusher:channels", channel_name) }
 
       it "triggers Pusher channel_name" do
         Pusher[channel_name].should_receive(:trigger!).with(event_name, data)
