@@ -6,7 +6,7 @@ ruby '1.9.3'
 
 gem 'bundler', '~> 1.2.0'
 
-gem 'rails', github: 'rails/rails', branch: '3-2-stable', ref: 'dbfdd00e38019f9e52df1f74d49a460d8cc1bba5'
+gem 'rails', github: 'rails/rails', branch: '3-2-stable'#, ref: 'dbfdd00e38019f9e52df1f74d49a460d8cc1bba5'
 
 gem 'sublimevideo_layout', '1.3.1' # hosted on gemfury
 
