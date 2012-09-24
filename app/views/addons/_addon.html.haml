@@ -1,0 +1,4 @@
+%tr
+  %td= addon_choice_tag(site, addon, addons_count)
+  %td= label_tag "site_addons[#{addon.category}]", addon.title
+  %td= addon_price(addon)

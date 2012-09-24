@@ -1,0 +1,18 @@
+- title("Add-ons for #{hostname_or_token(@site)}")
+= render '/layouts/site_header'
+
+#site.addons
+  - if @addons.empty?
+    #no_addons
+      %p= "No add-ons"
+
+  - else
+    #addons
+      = form_tag update_all_site_addons_path, method: 'put' do
+        - @addons.each do |category, addons|
+          = render 'addons', category: category, addons: addons, site: @site
+        %hr
+        %h3= raw "Est. monthly cost: #{display_amount_with_sup(@site.addons.active.sum(:price))}"
+
+        .actions.center= submit_tag 'Apply changes', class: 'submit green_button'
+  .spacer

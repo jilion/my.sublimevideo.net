@@ -1,0 +1,2 @@
+%h3= t("addons.categories.#{category}")
+%table= render partial: 'addon', collection: addons.sort_by(&:price), locals: { site: site, addons_count: addons.size }
