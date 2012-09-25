@@ -99,8 +99,8 @@ private
       { :$project => {
           _id: 0,
           u: '$_id',
-          options[:sort_by] => 1 } },
-      { :$sort => { options[:sort_by] => -1 } }
+          "#{options[:sort_by]}Sum" => 1 } },
+      { :$sort => { "#{options[:sort_by]}Sum" => -1 } }
     ])
 
     total = videos.size
