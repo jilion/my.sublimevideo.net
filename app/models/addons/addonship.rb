@@ -43,11 +43,6 @@ class Addons::Addonship < ActiveRecord::Base
   scope :in_category,     ->(cat) { includes(:addon).where { addon.category == cat } }
   scope :except_addon_id, ->(excepted_addon_id) { where{ addon_id != excepted_addon_id } }
 
-
-  def out_of_trial?
-    trial_started_on? && trial_started_on < BusinessModel.days_for_trial.days.ago
-  end
-
   private
 
   def set_trial_started_on

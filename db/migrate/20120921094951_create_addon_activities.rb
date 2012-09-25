@@ -7,5 +7,6 @@ class CreateAddonActivities < ActiveRecord::Migration
       t.timestamps
     end
     add_index :addon_activities, :addonship_id
+    add_index :addon_activities, :created_at
   end
 end

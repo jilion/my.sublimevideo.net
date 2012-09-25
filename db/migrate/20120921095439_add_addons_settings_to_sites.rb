@@ -1,5 +1,5 @@
 class AddAddonsSettingsToSites < ActiveRecord::Migration
   def change
-    add_column :sites, :addons_settings, :hstore
+    add_column :sites, :settings, :hstore
   end
 end

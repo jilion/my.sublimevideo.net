@@ -10,5 +10,6 @@ class CreateAddons < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :addons, [:category, :name], unique: true
   end
 end

@@ -8,9 +8,9 @@ class CreateAddonships < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :addonships, :site_id
+    add_index :addonships, [:site_id, :addon_id], unique: true
     add_index :addonships, :addon_id
     add_index :addonships, :state
-    add_index :addonships, [:site_id, :addon_id], unique: true
+    add_index :addonships, :trial_started_on
   end
 end

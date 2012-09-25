@@ -14,10 +14,9 @@ class Addons::Addon < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :name, uniqueness: { scope: :category }
   validates :category, :name, :title, :price, :availability, presence: true
+  validates :name, uniqueness: { scope: :category }
   validates :availability, inclusion: AVAILABILITIES
-
 
   def beta?
     availability == 'beta'
