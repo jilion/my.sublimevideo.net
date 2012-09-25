@@ -77,7 +77,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareEmbedCodePopups()
   MySublimeVideo.UI.prepareAddASitePopup()
   MySublimeVideo.UI.prepareSitesStatus()
-  MySublimeVideo.UI.preparePlansChooser()
+  MySublimeVideo.UI.prepareAddonsChooser()
   MySublimeVideo.UI.prepareSupportRequest()
   MySublimeVideo.UI.prepareFeedbackForm()
   MySublimeVideo.UI.prepareVideoTagsTable()

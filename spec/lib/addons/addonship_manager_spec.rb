@@ -1,5 +1,4 @@
 require 'fast_spec_helper'
-require 'support/stubs'
 require File.expand_path('lib/addons/addonship_manager')
 
 Addons::Addon = Class.new unless defined?(Addons::Addon)

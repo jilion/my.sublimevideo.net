@@ -215,6 +215,8 @@ def last_site_should_be_created(hostname)
   $worker.work_off
   site.reload
   site.hostname.should eq hostname
+  site.addons.active.should =~ [@logo_sublime_addon, @support_standard_addon]
+
   # FIXME
   # site.loader.read.should include(site.token)
   # site.license.read.should include(site.license_js_hash)

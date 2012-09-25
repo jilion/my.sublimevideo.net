@@ -1,3 +1,5 @@
+require_dependency 'sites/site_manager'
+
 class SitesController < ApplicationController
   respond_to :html
   respond_to :js, :json, only: [:index]
@@ -36,14 +38,12 @@ class SitesController < ApplicationController
   # POST /sites
   def create
     params[:site][:remote_ip] = request.remote_ip
-    @site = current_user.sites.build(params[:site])
+    @site = Site.new(params[:site])
 
     respond_with(@site) do |format|
-      if @site.save # will create site (& create invoice and charge it if skip_trial is true)
-        notice_and_alert = notice_and_alert_from_transaction(@site.last_transaction)
-        format.html { redirect_to :sites, notice_and_alert }
+      if Sites::SiteManager.new(current_user).create(@site)
+        format.html { redirect_to :sites }
       else
-        flash[:notice] = flash[:alert] = ""
         format.html { render :new }
       end
     end

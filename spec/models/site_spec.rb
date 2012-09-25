@@ -170,12 +170,6 @@ describe Site, :addons do
       end
     end # validates_current_password
 
-    describe "set_default_addons", :addons do
-      subject { create(:site, badged: nil) }
-
-      its('addons.active') { should =~ [@logo_sublime_addon, @support_standard_addon] }
-    end # set_default_addons
-
   end # Validations
 
   describe "Attributes Accessors" do
@@ -384,45 +378,7 @@ describe Site, :addons do
       end
     end # before_save
 
-    describe "after_create :delay_update_ranks" do
-      it "delays update_ranks" do
-        expect { create(:site) }.to change(Delayed::Job.where{ handler =~ "%update_ranks%" }, :count).by(1)
-      end
-    end
-
   end # Callbacks
-
-  describe 'Class methods' do
-    describe 'update_ranks' do
-      use_vcr_cassette 'sites/ranks'
-
-      context "site has a hostname" do
-        it "updates ranks" do
-          site = create(:fake_site, hostname: 'sublimevideo.net')
-          Delayed::Job.delete_all
-
-          described_class.send(:update_ranks, site.id)
-          site.reload
-
-          site.google_rank.should eq 6
-          site.alexa_rank.should eq 91386
-        end
-      end
-
-      context "site has blank hostname" do
-        it "updates ranks" do
-          site = create(:fake_site, hostname: '', plan_id: @free_plan.id)
-          Delayed::Job.delete_all
-
-          described_class.send(:update_ranks, site.id)
-          site.reload
-
-          site.google_rank.should eq 0
-          site.alexa_rank.should eq 0
-        end
-      end
-    end
-  end
 
   describe 'Instance Methods' do
 

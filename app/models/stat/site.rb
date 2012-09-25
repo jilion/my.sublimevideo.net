@@ -244,14 +244,14 @@ private
     when 'minutes'
       site  = ::Site.find_by_token(site_token)
       # FIXME: Replace with add-on logic
-      if site.plan_stats_retention_days == 0
-        to   = nil
-        from = nil
-      else
-        last_minute_stat = Stat::Site::Minute.order_by(d: 1).last
-        to   = last_minute_stat.try(:d) || 1.minute.ago.change(sec: 0)
-        from = to - 59.minutes
-      end
+      # if site.plan_stats_retention_days == 0
+      #   to   = nil
+      #   from = nil
+      # else
+      last_minute_stat = Stat::Site::Minute.order_by(d: 1).last
+      to   = last_minute_stat.try(:d) || 1.minute.ago.change(sec: 0)
+      from = to - 59.minutes
+      # end
     when 'hours'
       to   = 1.hour.ago.change(min: 0, sec: 0).utc
       from = to - 23.hours
@@ -260,15 +260,15 @@ private
       stats = Stat::Site::Day.where(t: site_token).order_by(d: 1)
       to    = 1.day.ago.midnight
       # FIXME: Replace with add-on logic
-      case site.plan_stats_retention_days
-      when 0
-        to   = nil
-        from = nil
-      when nil
-        from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
-      else
-        from = to - (site.plan_stats_retention_days - 1).days
-      end
+      # case site.plan_stats_retention_days
+      # when 0
+      #   to   = nil
+      #   from = nil
+      # when nil
+      from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
+      # else
+      #   from = to - (site.plan_stats_retention_days - 1).days
+      # end
     end
 
     [from, to]

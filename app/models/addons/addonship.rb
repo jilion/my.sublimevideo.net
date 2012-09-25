@@ -59,7 +59,7 @@ end
 #  id               :integer          not null, primary key
 #  site_id          :integer          not null
 #  state            :string(255)      not null
-#  trial_started_at :datetime
+#  trial_started_on :datetime
 #  updated_at       :datetime         not null
 #
 # Indexes

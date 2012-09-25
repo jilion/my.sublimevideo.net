@@ -161,36 +161,20 @@ module Populate
     end
 
     def sites
-      empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site)
+      empty_tables(Site)
       delete_all_files_in_public('uploads/licenses')
       delete_all_files_in_public('uploads/loaders')
       Populate.users if User.all.empty?
       Populate.plans if Plan.all.empty?
 
-      free_plan      = Plan.free_plan
-      standard_plans = Plan.standard_plans.all
-      custom_plans   = Plan.custom_plans.all
-
       subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
       created_at_array = (2.months.ago.to_date..Date.today).to_a
 
-      require 'invoice_item/plan'
-
       User.all.each do |user|
         BASE_SITES.each do |hostname|
-          plan_id = rand > 0.4 ? (rand > 0.8 ? custom_plans.sample.token : standard_plans.sample.id) : free_plan.id
-          site = user.sites.build(
-            plan_id: plan_id,
-            hostname: hostname
-          )
-          site.skip_password(:save!)
+          site = Site.new(hostname: hostname)
+          SiteManager.new(user).create(site)
           site.update_column(:created_at, created_at_array.sample)
-
-          if rand > 0.3
-            site.cdn_up_to_date = true
-            site.skip_password(:save!)
-          end
-          # site.sponsor! if rand > 0.85
         end
       end
 

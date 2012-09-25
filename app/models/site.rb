@@ -107,12 +107,7 @@ class Site < ActiveRecord::Base
   # before_validation :set_user_attributes
   before_validation :set_default_dev_hostnames, unless: :dev_hostnames?
 
-  before_save :prepare_cdn_update # in site_modules/templates
-
-  after_create :set_default_addons, :delay_ranks_update
   after_create :update_last_30_days_video_views_counters # in site_modules/usage
-
-  after_save :execute_cdn_update # in site_modules/templates
 
   # =================
   # = State Machine =
@@ -210,29 +205,11 @@ class Site < ActiveRecord::Base
     result
   end
 
-  def trial_start_time
-    trial_started_at.to_i
-  end
-
   def unmemoize_all
     unmemoize_all_usages
   end
 
 private
-
-  # after_create
-  def self.update_ranks(site_id)
-    site = Site.find(site_id)
-    begin
-      ranks = PageRankr.ranks("http://#{site.hostname}", :alexa_global, :google)
-      site.google_rank = ranks[:google] || 0
-      site.alexa_rank  = ranks[:alexa_global]
-    rescue
-      site.google_rank = 0
-      site.alexa_rank  = 0
-    end
-    site.save
-  end
 
   # before_validation
   def set_user_attributes
@@ -246,11 +223,6 @@ private
     self.dev_hostnames = DEFAULT_DEV_DOMAINS
   end
 
-  # after_create
-  def set_default_addons
-    Addons::AddonshipManager.update_addonships_for_site!(self, logo: 'sublime', support: 'standard')
-  end
-
   # validate
   # def validates_current_password
   #   return true if @skip_password_validation
@@ -262,11 +234,6 @@ private
   #     end
   #   end
   # end
-
-  # after_create
-  def delay_ranks_update
-    Site.delay(priority: 100, run_at: 30.seconds.from_now).update_ranks(id)
-  end
 
   # before_transition on: :archive
   def set_archived_at
