@@ -18,22 +18,4 @@ describe OneTime::Site do
     end
   end
 
-  describe '.update_sites_in_trial_to_new_trial_plan', :plans do
-    before do
-      @site1 = create(:fake_site, plan_id: @paid_plan.id, trial_started_at: Time.now.midnight)
-      @site2 = create(:fake_site, plan_id: @paid_plan.id, trial_started_at: 13.days.ago)
-      @site3 = create(:fake_site, plan_id: @paid_plan.id, trial_started_at: Time.now.midnight, state: 'archived')
-    end
-
-    it 'updates plan to trial plan for non-archived sites' do
-      described_class.update_sites_in_trial_to_new_trial_plan
-
-      @site1.reload.plan.should eq @trial_plan
-      @site1.plan_started_at.should eq Time.now.midnight
-      @site2.reload.plan.should eq @trial_plan
-      @site2.plan_started_at.should eq 13.days.ago.midnight
-      @site3.reload.plan.should eq @paid_plan
-    end
-  end
-
 end

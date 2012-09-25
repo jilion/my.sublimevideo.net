@@ -81,7 +81,7 @@ MySublimeVideo::Application.routes.draw do
           put :sponsor
         end
       end
-      resources :plans,  only: [:index, :new, :create]
+      resources :plans, only: [:index]
       resources :referrers, only: [:index] do
         collection do
           get :pages
@@ -198,7 +198,6 @@ MySublimeVideo::Application.routes.draw do
     end
 
     resources :sites, except: [:show] do
-      resource :plan, only: [:edit, :update, :destroy]
       resources :addons, only: [:index] do
         put :update_all, on: :collection
       end

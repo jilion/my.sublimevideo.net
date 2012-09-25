@@ -88,11 +88,6 @@ namespace :one_time do
     task set_first_billable_plays_at_for_not_archived_sites: :environment do
       timed { Site.set_first_billable_plays_at_for_not_archived_sites }
     end
-
-    desc "Update sites currently in trial to the new 'real' trial plan"
-    task update_sites_in_trial_to_new_trial_plan: :environment do
-      timed { puts OneTime::Site.update_sites_in_trial_to_new_trial_plan }
-    end
   end
 
   namespace :stats do

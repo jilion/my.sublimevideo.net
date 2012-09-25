@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Site, :plans do
+describe Site, :addons do
 
   context "Factory" do
     subject { create(:site).reload }
@@ -171,7 +171,7 @@ describe Site, :plans do
     end # validates_current_password
 
     describe "set_default_addons", :addons do
-      subject { create(:site, plan_id: @free_plan.id, badged: nil) }
+      subject { create(:site, badged: nil) }
 
       its('addons.active') { should =~ [@logo_sublime_addon, @support_standard_addon] }
     end # set_default_addons
@@ -198,7 +198,7 @@ describe Site, :plans do
       end
 
       context "site without a hostname" do
-        subject { build_stubbed(:site, plan_id: @free_plan.id, hostname: '') }
+        subject { build_stubbed(:site, hostname: '') }
 
         specify { subject.hostname_or_token.should eq "##{subject.token}" }
       end
@@ -336,12 +336,12 @@ describe Site, :plans do
     describe "before_validation" do
       subject { build(:new_site, dev_hostnames: nil) }
 
-      describe "#set_user_attributes"  do
+      pending "#set_user_attributes"  do
         subject { create(:user, name: "Bob") }
 
         it "sets only current_password" do
           subject.name.should eql "Bob"
-          site = create(:site, user: subject, plan_id: @paid_plan.id)
+          site = create(:site, user: subject)
           site.update_attributes(user_attributes: { name: "John", 'current_password' => '123456' })
           site.user.name.should eql "Bob"
           site.user.current_password.should eq "123456"

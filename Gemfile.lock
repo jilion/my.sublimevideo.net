@@ -274,8 +274,6 @@ GEM
     em-websocket (0.3.8)
       addressable (>= 2.1.1)
       eventmachine (>= 0.12.9)
-    email_preview (1.5.1)
-      rails (>= 3.0)
     erubis (2.7.0)
     eventmachine (1.0.0)
     excon (0.16.2)
@@ -604,7 +602,6 @@ DEPENDENCIES
   eco
   edge_cast (~> 0.0.1)
   em-http-request
-  email_preview
   execjs
   factory_girl
   factory_girl_rails

@@ -5,9 +5,6 @@ module SiteModules::Scope
 
   included do
 
-    # usage_monitoring scopes
-    scope :overusage_notified, where{ overusage_notification_sent_at != nil }
-
     # state
     scope :active,       where{ state == 'active' }
     scope :inactive,     where{ state != 'active' }
@@ -22,8 +19,6 @@ module SiteModules::Scope
     scope :with_path,                  where{ (path != nil) & (path != '') & (path != ' ') }
     scope :badged,                     lambda { |bool| where{ badged == bool } }
     scope :with_extra_hostnames,       where{ (extra_hostnames != nil) & (extra_hostnames != '') }
-    scope :with_plan,                  where{ plan_id != nil }
-    scope :with_next_cycle_plan,       where{ next_cycle_plan_id != nil }
     scope :with_not_canceled_invoices, lambda { joins(:invoices).merge(::Invoice.not_canceled) }
 
     # plans
@@ -32,14 +27,6 @@ module SiteModules::Scope
     scope :in_custom_plan, lambda { in_plan_id(Plan.custom_plans.map(&:id)) }
     scope :in_paid_plan,   lambda { in_plan_id(Plan.paid_plans.map(&:id)) }
     scope :in_trial,       lambda { in_plan('trial') }
-
-    # billing
-    scope :trial_ended, lambda {
-      in_trial.where{ (plan_started_at || BusinessModel.days_for_trial.days.ago) <= BusinessModel.days_for_trial.days.ago }
-    }
-    scope :trial_expires_on, lambda { |timestamp|
-      in_trial.where{ date_trunc('day', plan_started_at) == (timestamp - BusinessModel.days_for_trial.days).midnight }
-    }
 
     # plan cycles
     scope :renewable, lambda {
@@ -71,12 +58,6 @@ module SiteModules::Scope
     scope :by_last_30_days_extra_video_views_percentage, lambda { |way = 'desc'|
       order("CASE WHEN (sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views) > 0
       THEN (sites.last_30_days_extra_video_views / CAST(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views AS DECIMAL))
-      ELSE -1 END #{way}")
-    }
-    scope :by_last_30_days_plan_usage_percentage, lambda { |way = 'desc'|
-      includes(:plan).
-      order("CASE WHEN (sites.plan_id IS NOT NULL AND plans.video_views > 0)
-      THEN ((sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views) / CAST(plans.video_views AS DECIMAL))
       ELSE -1 END #{way}")
     }
 

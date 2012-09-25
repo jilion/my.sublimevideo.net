@@ -4,12 +4,10 @@ describe SupportRequest, :plans do
   before do
     @user  = create(:user, name: 'Remy')
     @user2 = create(:user, name: 'Remy', zendesk_id: 1234)
-    @site  = create(:site, user: @user, plan_id: @paid_plan.id)
-    create(:site, user: @user2, plan_id: @paid_plan.id)
-    @loser = create(:user)
-    create(:site, user: @loser, plan_id: @free_plan.id)
+    @site  = create(:site, user: @user)
     @vip = create(:user)
-    create(:site, user: @vip, plan_id: @custom_plan.token)
+    # FIXME: Replace with vip support add-on
+    # create(:site, user: @vip, plan_id: @custom_plan.token)
   end
 
   let(:params) {
@@ -61,20 +59,6 @@ describe SupportRequest, :plans do
       support_request = described_class.new(params.merge(message: nil))
       support_request.should_not be_valid
       support_request.should have(1).error_on(:message)
-    end
-
-    it 'validates user can submit support request (user without the right)' do
-      support_request = described_class.new(params.merge(user_id: @loser.id))
-      support_request.should_not be_valid
-      support_request.should have(1).error_on(:base)
-    end
-
-    it 'validates user can submit support request (user with the right #1)' do
-      support_request.should be_valid
-    end
-
-    it 'validates user can submit support request (user with the right #2)' do
-      vip_support_request.should be_valid
     end
   end
 

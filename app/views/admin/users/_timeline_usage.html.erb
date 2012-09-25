@@ -2,7 +2,6 @@
 require_dependency 'stat_timeline'
 
 usage_old = StatTimeline::SiteUsage.timeline(graph_start_date, graph_end_date, { site_ids: user.sites.not_archived.map(&:id), labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true })
-plans  = Plan.all
 billable_usage_old = usage_old["main_usage"].zip(usage_old["extra_usage"]).map { |item| item.reduce(:+) }
 
 stats_timeline_new = StatTimeline::SiteDayStat.new(token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
@@ -31,7 +30,7 @@ graph = Graph.new do |g|
     serie(usage_old["extra_usage"][moving_average_length-1..-1], 'Extra (old)', type: 'column', visible: false, stack: 1),
     serie(usage_old["main_usage"][moving_average_length-1..-1], 'Main (old)', type: 'column', visible: false, stack: 1),
     serie(moving_average(billable_usage_old, moving_average_length), 'AVG Billable (old)', type: 'line', stack: 2),
-    
+
     serie(stats_timeline_new.d_vv[moving_average_length-1..-1], 'Dev (new)', type: 'column', visible: false, stack: 3),
     serie(stats_timeline_new.e_vv[moving_average_length-1..-1], 'Extra (new)', type: 'column', stack: 3),
     serie(stats_timeline_new.m_vv[moving_average_length-1..-1], 'Main (new)', type: 'column', stack: 3),

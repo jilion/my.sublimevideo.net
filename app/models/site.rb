@@ -31,7 +31,7 @@ class Site < ActiveRecord::Base
   attr_accessor :user_attributes, :last_transaction, :remote_ip
 
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard,
-                  :badged, :plan_id, :user_attributes, :remote_ip
+                  :badged, :user_attributes, :remote_ip
 
   serialize :last_30_days_billable_video_views_array, Array
 
@@ -40,9 +40,8 @@ class Site < ActiveRecord::Base
   mount_uploader :license, LicenseUploader
   mount_uploader :loader, LoaderUploader
 
-  delegate :name, to: :plan, prefix: true
-  delegate :stats_retention_days, to: :plan, prefix: true
-  delegate :video_views, to: :plan, prefix: true
+  # FIXME: delegate to addon
+  # delegate :stats_retention_days, to: :plan, prefix: true
 
   # ================
   # = Associations =
@@ -52,8 +51,6 @@ class Site < ActiveRecord::Base
 
   # Plans
   belongs_to :plan
-  belongs_to :next_cycle_plan, class_name: "Plan"
-  belongs_to :pending_plan,    class_name: "Plan"
 
   # Invoices
   has_many :invoices, class_name: "::Invoice"
@@ -111,12 +108,10 @@ class Site < ActiveRecord::Base
   before_validation :set_default_dev_hostnames, unless: :dev_hostnames?
 
   before_save :prepare_cdn_update # in site_modules/templates
-  before_save :prepare_pending_attributes, if: proc { |s| s.pending_plan_id_changed? && s.pending_plan_id? } # in site_modules/cycle
 
-  after_create :set_default_addons
-  after_create :delay_ranks_update, :update_last_30_days_video_views_counters # in site_modules/usage
+  after_create :set_default_addons, :delay_ranks_update
+  after_create :update_last_30_days_video_views_counters # in site_modules/usage
 
-  # after_save :create_and_charge_invoice # in site_modules/billing
   after_save :execute_cdn_update # in site_modules/templates
 
   # =================
@@ -149,10 +144,10 @@ class Site < ActiveRecord::Base
   # = Instance Methods =
   # ====================
 
-  def to_backbone_json(options={})
+  def to_backbone_json(options = {})
     to_json(
       only: [:token, :hostname],
-      methods: [:trial_start_time, :plan_name, :plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :plan_stats_retention_days]
+      methods: [:plan_stats_retention_days]
     )
   end
 
@@ -220,7 +215,6 @@ class Site < ActiveRecord::Base
   end
 
   def unmemoize_all
-    @recommended_plan_name = nil
     unmemoize_all_usages
   end
 
@@ -254,7 +248,7 @@ private
 
   # after_create
   def set_default_addons
-    Addons::AddonshipManager.new(self).update_addonships!(logo: 'sublime', support: 'standard')
+    Addons::AddonshipManager.update_addonships_for_site!(self, logo: 'sublime', support: 'standard')
   end
 
   # validate

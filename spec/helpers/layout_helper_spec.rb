@@ -10,33 +10,14 @@ describe LayoutHelper, :plans do
     before do
       helper.should_receive(:credit_card_warning).with(user).and_return(true)
       helper.should_receive(:billing_address_incomplete).with(user).and_return(true)
-      helper.should_receive(:sites_with_trial_expires_in_less_than_5_days).with(sites).and_return(sites_will_leave_trial)
     end
 
     it {
       helper.sticky_notices(user, sites).should == {
         credit_card_warning: true,
-        billing_address_incomplete: true,
-        sites_with_trial_expires_in_less_than_5_days: [{ site: site_will_leave_trial }]
+        billing_address_incomplete: true
       }
     }
-  end
-
-  describe "#full_days_until_trial_end" do
-    before { BusinessModel.stub(:days_for_trial) { 3 } }
-
-    it { helper.full_days_until_trial_end(build(:fake_site, plan_id: @trial_plan.id, plan_started_at: Time.now.utc)).should eq 3 }
-    it { helper.full_days_until_trial_end(build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 1.day.ago)).should eq 2 }
-    it { helper.full_days_until_trial_end(build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 2.days.ago)).should eq 1 }
-    it { helper.full_days_until_trial_end(build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 3.days.ago)).should eq 0 }
-    it { helper.full_days_until_trial_end(build(:fake_site, plan_id: @trial_plan.id, plan_started_at: 4.days.ago)).should eq 0 }
-  end
-
-  describe "#sublimevideo_script_tag_for" do
-    it "is should generate sublimevideo script_tag" do
-      site = build(:fake_site)
-      helper.sublimevideo_script_tag_for(site).should eq "<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/js/#{site.token}.js\"></script>"
-    end
   end
 
   describe "#style_for_usage_bar_from_usage_percentage" do

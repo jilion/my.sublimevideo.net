@@ -1,5 +1,4 @@
 class Plan < ActiveRecord::Base
-  include PlanModules::Api
 
   CYCLES         = %w[month year none]
   UNPAID_NAMES   = %w[trial free sponsored]

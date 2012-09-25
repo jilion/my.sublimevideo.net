@@ -5,7 +5,7 @@ class Api::SitesController < Api::ApisController
 
   # GET /sites
   def index
-    @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
+    @sites = current_user.sites.not_archived
 
     respond_with(@sites, api_template: api_template, root: :sites)
   end

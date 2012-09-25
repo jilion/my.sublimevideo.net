@@ -1,8 +1,6 @@
 = title_and_content_header("Add a site")
 
 #site.new
-  -#= render 'deals/deal_available'
-
   = form_for @site, html: { class: "full" } do |f|
     .big_break
     .tagline
@@ -12,16 +10,6 @@
     .big_break
 
     = render 'fields', site: @site, f: f
-
-    -#= render 'skip_trial_box', f: f
-    -#= render 'plans/fields', site: @site, f: f
-    -#= render 'plans/plan_change_messages'
-    -#= render 'billing_info_box', site: @site
-    -#- if current_user.vat?
-    -#  #plan_create_info.update_plan_message_box.notice{ style: "display:none;" }
-    -#    %p= vat_price_info("plan_price")
-
-    -#%p#trial_note.note.info= "After the first #{BusinessModel.days_for_trial} days, your trial will automatically revert to the Free -#plan if you don't choose a paid plan."
 
     .actions.center
       = f.submit "Add site", class: "submit green_button", id: 'site_submit'

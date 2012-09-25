@@ -1,6 +1,3 @@
-- if @custom_plan
-  = hidden_field_tag :site_skip_trial, '1'
-- else
-  .checkbox_wrap#skip_trial
-    = check_box_tag :site_skip_trial, '1', params[:site_skip_trial] == '1'
-    = label_tag :site_skip_trial, "Skip the #{BusinessModel.days_for_trial}-day trial and choose your plan right away."
+.checkbox_wrap#skip_trial
+  = check_box_tag :site_skip_trial, '1', params[:site_skip_trial] == '1'
+  = label_tag :site_skip_trial, "Skip the #{BusinessModel.days_for_trial}-day trial and choose your plan right away."

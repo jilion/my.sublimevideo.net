@@ -1,17 +1,8 @@
-%h3 Plan & Cycle
+%h3 Plan & Cycle (LEGACY)
 
 %p
   = "Plan:"
   %strong= site.plan ? site.plan.title : "–"
-  %strong= "|"
-  = "Pending plan:"
-  = site.pending_plan ? site.pending_plan.title : "–"
-  %strong= "|"
-  = "Recommended plan:"
-  = site.recommended_plan_name ? site.recommended_plan_name.titleize : "–"
-  %strong= "|"
-  = "Next plan:"
-  = site.next_cycle_plan ? site.next_cycle_plan.title : "–"
 
 %p
   = "First paid plan started at:"
@@ -25,19 +16,3 @@
   = display_date(site.plan_cycle_started_at)
   = "–"
   = display_date(site.plan_cycle_ended_at)
-
-%p
-  = "Pending plan started at:"
-  = display_date(site.pending_plan_started_at)
-  %strong= "|"
-  = "Pending cycle:"
-  = display_date(site.pending_plan_cycle_started_at)
-  = "–"
-  = display_date(site.pending_plan_cycle_ended_at)
-
-%p
-  = "Overusage notification sent at:"
-  = display_date(site.overusage_notification_sent_at)
-  %strong= "|"
-  = "First paid plan upgrade required alert sent at:"
-  = display_date(site.first_plan_upgrade_required_alert_sent_at)

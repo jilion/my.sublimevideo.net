@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
   end
 
   # Mail template
-  liquid_methods :email, :name, :plan_title
+  liquid_methods :email, :name
 
   acts_as_taggable
 
@@ -198,6 +198,7 @@ class User < ActiveRecord::Base
     %w[email vip_email].include?(support)
   end
 
+  # FIXME: Replace with add-on logic
   def billable?
     sites.in_paid_plan.count > 0
   end
@@ -218,14 +219,11 @@ class User < ActiveRecord::Base
     ).to_s
   end
 
+  # FIXME: Replace with add-on logic
   def support
-    support_level = sites.active.max { |a, b| a.plan.support_level <=> b.plan.support_level }.try(:plan).try(:support_level) || 0
+    # support_level = sites.active.max { |a, b| a.plan.support_level <=> b.plan.support_level }.try(:plan).try(:support_level) || 0
 
-    Plan::SUPPORT_LEVELS[support_level]
-  end
-
-  def plan_title
-    plan.try(:title)
+    # Plan::SUPPORT_LEVELS[support_level]
   end
 
   def activated_deals

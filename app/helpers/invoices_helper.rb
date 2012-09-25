@@ -1,11 +1,7 @@
 module InvoicesHelper
 
   def invoice_dates(invoice)
-    if invoice.persisted?
-      l(invoice.created_at, format: :d_b_Y)
-    else
-      l(invoice.site.plan_cycle_ended_at.tomorrow, format: :d_b_Y)
-    end
+    l(invoice.created_at, format: :d_b_Y)
   end
 
   def invoice_item_dates(invoice_item)

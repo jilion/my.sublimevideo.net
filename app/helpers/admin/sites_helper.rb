@@ -1,17 +1,7 @@
 module Admin::SitesHelper
 
   def admin_sites_page_title(sites)
-    state = if params[:in_plan]
-      " in #{"trial of " if params[:in_trial]}the #{params[:in_plan].titleize} plan"
-    elsif params[:in_trial]
-      " in trial"
-    elsif params[:in_paid_plan]
-      " paying"
-    elsif params[:overusage_notified]
-      " with peak insurance"
-    elsif params[:with_next_cycle_plan]
-      " will downgrade"
-    elsif params[:with_extra_hostnames]
+    state = if params[:with_extra_hostnames]
       " with extra hostnames"
     elsif params[:with_wildcard]
       " with wildcard"

@@ -15,19 +15,13 @@ describe SiteModules::Api do
         response[:extra_domains].should eq ['rymai.com']
         response[:wildcard].should eq true
         response[:path].should eq 'test'
-        response[:plan].should eq site.plan.as_api_response(:v1_self_private)
-        response[:next_cycle_plan].should eq nil
         response[:started_at].to_i.should eq Time.now.utc.midnight.to_i
-        response[:cycle_started_at].to_i.should eq Time.now.utc.midnight.to_i
-        response[:cycle_ended_at].to_i.should eq (1.month.from_now.end_of_day - 1.day).to_i
-        response[:peak_insurance_activated].should eq false
-        response[:upgrade_required].should eq false
       end
     end
 
     context "site without optional fields" do
       let(:site) {
-        site = create(:site, plan_id: create(:plan, name: 'free', price: 0).id, hostname: 'rymai.me', extra_hostnames: nil, wildcard: false, path: nil)
+        site = create(:site, hostname: 'rymai.me', extra_hostnames: nil, wildcard: false, path: nil)
         site.update_attribute(:dev_hostnames, nil)
         site
       }
@@ -41,13 +35,7 @@ describe SiteModules::Api do
         response[:extra_domains].should eq []
         response[:wildcard].should eq false
         response[:path].should eq ''
-        response[:plan].should eq site.plan.as_api_response(:v1_self_private)
-        response[:next_cycle_plan].should eq nil
         response[:started_at].to_i.should eq Time.now.utc.midnight.to_i
-        response[:cycle_started_at].should eq nil
-        response[:cycle_ended_at].should eq nil
-        response[:peak_insurance_activated].should eq false
-        response[:upgrade_required].should eq false
       end
     end
   end

@@ -80,7 +80,7 @@ feature "Hidable notices" do
         context "and user is not billable" do
           background do
             @site.delete
-            @site = create(:site, user: @current_user, plan_id: @free_plan.id)
+            @site = create(:site, user: @current_user)
             @current_user.should_not be_billable
             go 'my', '/sites'
           end

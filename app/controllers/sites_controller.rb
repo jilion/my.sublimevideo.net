@@ -6,13 +6,12 @@ class SitesController < ApplicationController
   before_filter :activate_deal_from_cookie, only: [:index, :new]
   before_filter :find_sites_or_redirect_to_new_site, only: [:index, :edit, :update, :destroy]
   before_filter :find_site_by_token!, only: [:edit, :update, :destroy]
-  # before_filter :set_current_plan, :set_custom_plan, only: [:new, :create]
 
   has_scope :by_hostname, :by_date, :by_last_30_days_billable_video_views, :by_last_30_days_video_tags
 
   # GET /sites
   def index
-    @sites = @sites.includes(:plan, :next_cycle_plan, :invoices)
+    @sites = @sites.includes(:invoices)
     @sites = apply_scopes(@sites).by_date
 
     respond_with(@sites, per_page: 10) do |format|

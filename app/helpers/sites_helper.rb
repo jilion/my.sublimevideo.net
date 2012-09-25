@@ -6,29 +6,6 @@ module SitesHelper
     site.errors[:base] && site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
   end
 
-  def display_plan(site)
-    text  = site.plan.title
-    text += ' plan' unless site.in_trial_plan?
-    text += content_tag(:span, " => #{site.next_cycle_plan.title} plan", class: 'disabled') if site.next_cycle_plan_id?
-
-    text.html_safe
-  end
-
-  def full_days_until_trial_end(site)
-    if site.in_trial_plan?
-      ((site.plan_started_at + BusinessModel.days_for_trial.days - Time.now.utc.midnight) / (3600 * 24)).to_i
-    else
-      0
-    end
-  end
-
-  def sites_with_trial_expires_in_less_than_5_days(sites)
-    sites.inject([]) do |memo, site|
-      memo << { site: site } if site.in_trial_plan? && site.trial_expires_in_less_than_or_equal_to(5.days.from_now) && full_days_until_trial_end(site) > 0
-      memo
-    end
-  end
-
   def sublimevideo_script_tag_for(site)
     %{<script type="text/javascript" src="//cdn.sublimevideo.net/js/%s.js"></script>} % [site.token]
   end

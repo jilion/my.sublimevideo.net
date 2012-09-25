@@ -74,13 +74,9 @@ class Transaction < ActiveRecord::Base
         if invoice.transactions.failed.count >= 15
           invoices.delete(invoice)
 
-          if invoice.site.first_paid_plan_started_at?
-            invoice.user.suspend! unless invoice.user.vip?
-            return
-          else
-            invoice.cancel!
-            BillingMailer.delay.too_many_charging_attempts(invoice.id)
-          end
+          invoice.user.suspend! unless invoice.user.vip?
+
+          return
         end
       end
 

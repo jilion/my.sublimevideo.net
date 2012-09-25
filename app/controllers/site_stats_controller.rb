@@ -6,7 +6,7 @@ class SiteStatsController < ApplicationController
   # GET /sites/:site_id/stats
   def index
     unless demo_site?
-      @sites = current_user.sites.not_archived.with_plan.order(:hostname, :token)
+      @sites = current_user.sites.not_archived.order(:hostname, :token)
     end
 
     respond_to do |format|

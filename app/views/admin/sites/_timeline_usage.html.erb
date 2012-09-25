@@ -24,10 +24,6 @@ graph = Graph.new do |g|
   )))
 
   usage_old_main_size = usage_old["main_usage"][moving_average_length-1..-1].size
-  plan_limits = site.plan.video_views > 0 ? [
-    serie(Array.new(usage_old_main_size, site.plan.daily_video_views), "AVG #{site.plan.title}", type: 'line', stack: 0, visible: false),
-    serie(Array.new(usage_old_main_size, site.plan.video_views), "LIM #{site.plan.title}", type: 'line', visible: false, stack: 1)
-  ] : []
   g.option(series: [
     serie(usage_old["dev_usage"][moving_average_length-1..-1], 'Dev (old)', type: 'column', visible: false, stack: 1),
     serie(usage_old["extra_usage"][moving_average_length-1..-1], 'Extra (old)', type: 'column', visible: false, stack: 1),
@@ -38,7 +34,7 @@ graph = Graph.new do |g|
     serie(stats_timeline_new.e_vv[moving_average_length-1..-1], 'Extra (new)', type: 'column', stack: 3),
     serie(stats_timeline_new.m_vv[moving_average_length-1..-1], 'Main (new)', type: 'column', stack: 3),
     serie(moving_average(stats_timeline_new.billable_vv, moving_average_length), 'AVG Billable (new)', type: 'line', stack: 4)
-    ] + plan_limits)
+    ])
   g.option(plotOptions: plot_options(range_start_date))
   g.option(credits: credits)
 end

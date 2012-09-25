@@ -7,9 +7,11 @@ module UserModules::Scope
   included do
 
     # billing
+    # FIXME: Replace with add-on logic
     scope :free, lambda {
       active.includes(:sites).where("(#{Site.in_paid_plan.select("COUNT(sites.id)").where("sites.user_id = users.id").to_sql}) = 0")
     }
+    # FIXME: Replace with add-on logic
     scope :paying, lambda {
       active.includes(:sites).merge(Site.in_paid_plan)
     }

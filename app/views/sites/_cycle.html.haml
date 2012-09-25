@@ -1,7 +1,0 @@
-- if site.in_paid_plan?
-  - if site.plan_cycle_started_at? && site.plan_cycle_ended_at?
-    = l(site.plan_cycle_started_at, format: :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, format: :d_b_Y)
-- elsif site.in_trial_plan?
-  = full_days_until_trial_end(site)
-  days remaining
-  -#= l(site.trial_started_at, format: :d_b_Y) + ' - ' + l(site.trial_end, format: :d_b_Y)

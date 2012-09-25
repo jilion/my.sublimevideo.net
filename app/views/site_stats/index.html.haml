@@ -16,7 +16,7 @@
 - else
   - title("Stats for #{hostname_or_token(@site)}")
 
-.stats{ class: @site.in_free_plan? ? 'free' : ''}
+.stats
   :coffeescript
     $(document).ready ->
       # Enable pusher logging - don't include this in production
@@ -86,7 +86,3 @@
 
   .spacer
   #export_wrap
-
-  .spacer
-  #plan_usage
-

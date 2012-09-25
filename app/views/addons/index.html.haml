@@ -8,11 +8,11 @@
 
   - else
     #addons
-      = form_tag update_all_site_addons_path, method: 'put' do
+      = form_tag update_all_site_addons_path, method: 'put', id: 'edit_addons' do
         - @addons.each do |category, addons|
           = render 'addons', category: category, addons: addons, site: @site
         %hr
         %h3= raw "Est. monthly cost: #{display_amount_with_sup(@site.addons.active.sum(:price))}"
 
-        .actions.center= submit_tag 'Apply changes', class: 'submit green_button'
+        .actions.center= submit_tag 'Apply changes', class: 'submit green_button', id: 'site_submit'
   .spacer

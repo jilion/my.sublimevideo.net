@@ -16,9 +16,6 @@
   %td.state
     %small= site.state.humanize
 
-  %td.plan
-    %small= render 'plan', site: site
-
   %td.number
     %small= number_with_delimiter(site.last_30_days_billable_video_views)
 
@@ -27,21 +24,10 @@
 
   %td.percentage
     %small
-      - if site.plan && site.last_30_days_billable_video_views > 0
+      - if site.last_30_days_billable_video_views > 0
         = display_percentage(site.last_30_days_extra_video_views / site.last_30_days_billable_video_views.to_f)
-      - else
-        = '-'
-
-  %td.percentage
-    %small
-      - if site.plan && site.plan.video_views > 0
-        = display_percentage(site.last_30_days_billable_video_views / site.plan.video_views.to_f)
       - else
         = '-'
 
   %td
     %small= display_time(site.created_at)
-
-  - if params[:in_trial]
-    %td
-      %small= display_time(site.trial_end)

@@ -14,7 +14,7 @@ class AddonsController < ApplicationController
 
   # PUT /sites/:site_id/addons/update_all
   def update_all
-    Addons::AddonshipManager.new(@site).update_addonships!(params[:site_addons])
+    Addons::AddonshipManager.update_addonships_for_site!(@site, params[:site_addons])
 
     redirect_to site_addons_path(@site), notice: 'Add-ons successfully updated.'
   end

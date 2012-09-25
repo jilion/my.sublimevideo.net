@@ -57,12 +57,6 @@ describe Addons::Addonship do
     end
   end
 
-  describe '#out_of_trial?' do
-    it { build(:addonship).should_not be_out_of_trial }
-    it { build(:addonship, trial_started_on: 2.days.ago.midnight).should_not be_out_of_trial }
-    it { build(:addonship, trial_started_on: BusinessModel.days_for_trial.days.ago.midnight).should be_out_of_trial }
-  end
-
 end
 
 # == Schema Information

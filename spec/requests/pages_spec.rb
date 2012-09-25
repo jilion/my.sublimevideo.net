@@ -49,25 +49,10 @@ feature "Help page" do
     end
   end
 
-  context "user has the 'forum' support level" do
-    background do
-      sign_in_as :user
-      create(:site, user: @current_user, plan_id: @free_plan.id)
-      go 'my', '/help'
-    end
-
-    describe "new" do
-      scenario "doesn't have access to the form" do
-        page.should have_no_content 'use the form below'
-        page.should have_no_selector 'form.new_ticket'
-      end
-    end
-  end
-
   context "user has the 'email' support level" do
     background do
       sign_in_as :user
-      create(:site, user: @current_user, plan_id: @paid_plan.id)
+      create(:site, user: @current_user)
       Delayed::Job.delete_all
       go 'my', '/help'
     end

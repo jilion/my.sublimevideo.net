@@ -243,6 +243,7 @@ private
       from  = to - 59.seconds
     when 'minutes'
       site  = ::Site.find_by_token(site_token)
+      # FIXME: Replace with add-on logic
       if site.plan_stats_retention_days == 0
         to   = nil
         from = nil
@@ -258,6 +259,7 @@ private
       site  = ::Site.find_by_token(site_token)
       stats = Stat::Site::Day.where(t: site_token).order_by(d: 1)
       to    = 1.day.ago.midnight
+      # FIXME: Replace with add-on logic
       case site.plan_stats_retention_days
       when 0
         to   = nil

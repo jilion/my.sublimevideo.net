@@ -53,7 +53,7 @@ FactoryGirl.define do
   factory :new_site, class: Site do
     sequence(:hostname) { |n| "jilion#{n}.com" }
     dev_hostnames       '127.0.0.1, localhost'
-    plan_id             { FactoryGirl.create(:plan).id }
+    # plan_id             { FactoryGirl.create(:plan).id }
     user
   end
 
@@ -73,7 +73,7 @@ FactoryGirl.define do
   end
 
   factory :site_with_invoice, parent: :new_site do
-    first_paid_plan_started_at { Time.now.utc }
+    # first_paid_plan_started_at { Time.now.utc }
     after(:build)  { VCR.insert_cassette('ogone/visa_payment_generic') }
     after(:create) do |site|
       # this is needed since "instant charging" is now only done on upgrade (not on post-trial activation)
@@ -154,42 +154,41 @@ FactoryGirl.define do
     support_level        1
   end
 
-  factory :trial_plan, class: Plan  do
-    name                 "trial"
-    cycle                "none"
-    video_views          0
-    stats_retention_days nil
-    price                0
-    support_level        2
-  end
+  # factory :trial_plan, class: Plan  do
+  #   name                 "trial"
+  #   cycle                "none"
+  #   video_views          0
+  #   stats_retention_days nil
+  #   price                0
+  #   support_level        2
+  # end
 
-  factory :free_plan, class: Plan  do
-    name                 "free"
-    cycle                "none"
-    video_views          0
-    stats_retention_days 0
-    price                0
-    support_level        0
-  end
+  # factory :free_plan, class: Plan  do
+  #   name                 "free"
+  #   cycle                "none"
+  #   video_views          0
+  #   stats_retention_days 0
+  #   price                0
+  #   support_level        0
+  # end
 
-  factory :sponsored_plan, class: Plan  do
-    name                 "sponsored"
-    cycle                "none"
-    video_views          0
-    stats_retention_days nil
-    price                0
-    support_level        2
-  end
+  # factory :sponsored_plan, class: Plan  do
+  #   name                 "sponsored"
+  #   cycle                "none"
+  #   video_views          0
+  #   stats_retention_days nil
+  #   price                0
+  #   support_level        2
+  # end
 
-  factory :custom_plan, class: Plan do
-    sequence(:name)      { |n| "custom#{n}" }
-    cycle                "month"
-    video_views          10_000_000
-    stats_retention_days nil
-    price                20_000
-    support_level        2
-  end
-
+  # factory :custom_plan, class: Plan do
+  #   sequence(:name)      { |n| "custom#{n}" }
+  #   cycle                "month"
+  #   video_views          10_000_000
+  #   stats_retention_days nil
+  #   price                20_000
+  #   support_level        2
+  # end
 
   # ==========
   # = Addons =

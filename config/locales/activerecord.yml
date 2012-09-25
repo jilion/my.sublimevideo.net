@@ -24,7 +24,6 @@ en:
         site:
           attributes:
             base:
-              credit_card_needed:  "You need a valid credit card to choose this plan"
               current_password_needed:  "You need to enter your current password to perform this action"
               not_paid_invoices_prevent_archive:
                 one: "You have 1 invoice not paid preventing you from deleting this site"

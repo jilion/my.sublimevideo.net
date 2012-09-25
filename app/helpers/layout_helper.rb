@@ -18,8 +18,7 @@ module LayoutHelper
 
   def sticky_notices(user, sites)
     { credit_card_warning: user,
-      billing_address_incomplete: user,
-      sites_with_trial_expires_in_less_than_5_days: sites
+      billing_address_incomplete: user
     }.inject({}) do |memo, (method, arg)|
       result = send(method, arg)
       memo[method] = result if result

@@ -10,22 +10,13 @@ en:
       email_full: "SublimeVideo Stats <stats@sublimevideo.net>"
 
     billing_mailer:
-      trial_has_started_hostname: "Your trial for %{hostname} has started"
-      trial_has_started_no_hostname: "Your trial has started"
       trial_will_expire:
         today: "Your trial for %{hostname} expires today"
         tomorrow: "Your trial for %{hostname} expires tomorrow"
         in_days: "Your trial for %{hostname} expires in %{days} days"
-      trial_has_expired: "Your trial for %{hostname} has expired"
-      yearly_plan_will_be_renewed: "Your plan for %{hostname} will be renewed in 5 days"
       credit_card_will_expire: "Your credit card expires at the end of this month"
       transaction_succeeded: "Your payment has been approved"
       transaction_failed: "We encountered a problem processing your payment"
-      too_many_charging_attempts: "Your payment for %{hostname} has failed multiple times"
-
-    usage_monitoring_mailer:
-      plan_overused: "Peak Insurance has been activated for %{hostname}"
-      plan_upgrade_required: "You need to upgrade your plan for %{hostname}"
 
     user_mailer:
       welcome: "Welcome to SublimeVideo!"

@@ -106,29 +106,6 @@ describe SiteModules::Scope, :plans do
     end
   end
 
-  describe "trial" do
-    before do
-      Site.delete_all
-      @site_in_paid             = create(:fake_site, user: @user, plan_id: @paid_plan.id)
-      @site_in_trial            = create(:fake_site, user: @user, plan_id: @trial_plan.id)
-      @site_in_trial_ended      = create(:fake_site, user: @user, plan_id: @trial_plan.id, plan_started_at: BusinessModel.days_for_trial.days.ago)
-      @site_trial_ends_in_1_day = create(:fake_site, user: @user, plan_id: @trial_plan.id, plan_started_at: (BusinessModel.days_for_trial - 1).days.ago.midnight)
-    end
-
-    describe ".in_trial" do
-      specify { Site.in_trial.all.should =~ [@site_in_trial, @site_in_trial_ended, @site_trial_ends_in_1_day] }
-    end
-
-    describe ".trial_ended" do
-      specify { Site.trial_ended.all.should =~ [@site_in_trial_ended] }
-    end
-
-    describe ".trial_expires_on" do
-      specify { Site.trial_expires_on(2.days.from_now).all.should be_empty }
-      specify { Site.trial_expires_on(1.day.from_now).all.should =~ [@site_trial_ends_in_1_day] }
-    end
-  end
-
   describe ".renewable" do
     before do
       Site.delete_all

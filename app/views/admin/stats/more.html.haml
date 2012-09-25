@@ -9,9 +9,6 @@
 - not_archived_sites = Site.not_archived.count
 - free_sites         = Site.in_plan('free').count
 - sponsored_sites    = Site.in_plan('sponsored').count
-- plus_sites         = Site.in_plan('plus').count
-- premium_sites      = Site.in_plan('premium').count
-- custom_sites       = Site.in_custom_plan.count
 
 - total_users       = User.active.count
 - today_signups     = User.active.created_on(Time.now.utc)
@@ -36,18 +33,6 @@
           %td Sponsored
           %td= sponsored_sites
           %td= display_percentage(sponsored_sites.to_f / not_archived_sites)
-        %tr{ style: 'border:solid 1px' }
-          %td Plus
-          %td= plus_sites
-          %td= display_percentage(plus_sites.to_f / not_archived_sites)
-        %tr{ style: 'border:solid 1px' }
-          %td Premium
-          %td= premium_sites
-          %td= display_percentage(premium_sites.to_f / not_archived_sites)
-        %tr{ style: 'border:solid 1px' }
-          %td Custom
-          %td= custom_sites
-          %td= display_percentage(custom_sites.to_f / not_archived_sites)
 
       %table{ style: "float:left; border:solid 1px" }
         %tr

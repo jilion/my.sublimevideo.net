@@ -8,8 +8,6 @@ class SupportRequest
 
   validates :user, :subject, :message, presence: true
 
-  validate :user_can_send_ticket
-
   # Takes params
   def initialize(params = {})
     @params = params
@@ -65,15 +63,9 @@ class SupportRequest
 
   private
 
-  def user_can_send_ticket
-    if user && !user.email_support?
-      self.errors.add(:base, "You don't have access to email support, please upgrade one of your sites's plan.")
-    end
-  end
-
   def comment_with_additional_info(message)
     full_message = ''
-    full_message += "Request for site: (#{site.token}) #{site.hostname} (in #{site.plan.title} plan)\n" if site
+    full_message += "Request for site: (#{site.token}) #{site.hostname}\n" if site
     full_message += "The issue occurs on this page: #{test_page}\n" unless test_page.empty?
     full_message += "The issue occurs under this environment: #{env}\n" unless env.empty?
     full_message += "\n#{message.to_s}"

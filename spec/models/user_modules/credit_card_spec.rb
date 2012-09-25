@@ -222,7 +222,7 @@ describe UserModules::CreditCard, :plans do
         end
       end
 
-      context "free user" do
+      pending "free user" do
         it "doesn't send 'cc is expired' email when user's credit card will expire at the end of the current month" do
           @user = create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date)
           @site = create(:site, user: @user, plan_id: @free_plan.id)

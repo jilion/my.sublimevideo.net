@@ -83,7 +83,7 @@ class MSVStats.Models.Period extends Backbone.Model
 
     if MSVStats.statsMinutes.vvTotal() > 0
       this.setPeriod type: 'minutes'
-    else if MSVStats.statsHours.vvTotal() > 0 || MSVStats.site.isInFreePlan()
+    else if MSVStats.statsHours.vvTotal() > 0
       this.setPeriod type: 'hours'
     else if MSVStats.statsDays.length <= 30 || MSVStats.statsDays.vvTotal(-30, -1) > 0
       this.setPeriod type: 'days', startIndex: -30, endIndex: -1

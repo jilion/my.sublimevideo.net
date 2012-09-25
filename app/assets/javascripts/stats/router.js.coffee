@@ -98,10 +98,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       el: '#export_wrap'
       period: MSVStats.period
 
-    new MSVStats.Views.PlanUsageView
-      el: '#plan_usage'
-      statsDays: MSVStats.statsDays
-
   initHelpers: ->
     MSVStats.chartsHelper = new MSVStats.Helpers.ChartsHelper()
 
@@ -113,30 +109,28 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.statsDays.fetch()    if data.d
       if (data.m && MSVStats.period.isMinutes()) || (data.h && MSVStats.period.isHours()) || (data.d && MSVStats.period.isDays())
         MSVStats.videos.fetch()
-      unless MSVStats.site.isInFreePlan()
-        if data.s
-          secondTime = data.s * 1000
-          MSVStats.period.set({
-            startSecondsTime: secondTime - (2 + 59) * 1000
-            endSecondsTime:   secondTime - 2 * 1000
-          }, silent: true)
-          MSVStats.statsSeconds.updateSeconds()
-          MSVStats.videos.updateSeconds(secondTime) if MSVStats.period.isSeconds()
+      if data.s
+        secondTime = data.s * 1000
+        MSVStats.period.set({
+          startSecondsTime: secondTime - (2 + 59) * 1000
+          endSecondsTime:   secondTime - 2 * 1000
+        }, silent: true)
+        MSVStats.statsSeconds.updateSeconds()
+        MSVStats.videos.updateSeconds(secondTime) if MSVStats.period.isSeconds()
 
   initPusherPrivateSiteChannel: ->
-    unless MSVStats.site.isInFreePlan()
-      MSVStats.privateChannel = MSVStats.pusher.subscribe("private-#{MSVStats.site.get('token')}")
+    MSVStats.privateChannel = MSVStats.pusher.subscribe("private-#{MSVStats.site.get('token')}")
 
-      MSVStats.privateChannel.bind 'pusher:subscription_succeeded', ->
-        setTimeout MSVStats.statsSeconds.fetchOldSeconds, 2000
+    MSVStats.privateChannel.bind 'pusher:subscription_succeeded', ->
+      setTimeout MSVStats.statsSeconds.fetchOldSeconds, 2000
 
-      MSVStats.privateChannel.bind 'stats', (data) ->
-        MSVStats.statsSeconds.merge(data.site, silent: true)
-        MSVStats.videos.merge(data.videos, silent: true) if MSVStats.period.isSeconds()
+    MSVStats.privateChannel.bind 'stats', (data) ->
+      MSVStats.statsSeconds.merge(data.site, silent: true)
+      MSVStats.videos.merge(data.videos, silent: true) if MSVStats.period.isSeconds()
 
-      MSVStats.privateChannel.bind 'video_tag', (data) ->
-        if (video = MSVStats.videos.get(data.u))?
-          video.set(data.meta_data)
+    MSVStats.privateChannel.bind 'video_tag', (data) ->
+      if (video = MSVStats.videos.get(data.u))?
+        video.set(data.meta_data)
 
   unsubscribePusherPrivateSiteChannel: ->
     MSVStats.pusher.unsubscribe("private-#{MSVStats.site.get('token')}")
@@ -151,13 +145,12 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.statsHours.fetch
       silent: true
       success: -> MSVStats.statsRouter.syncFetchSuccess()
-    unless MSVStats.site.isInFreePlan()
-      MSVStats.statsMinutes.fetch
-        silent: true
-        success: -> MSVStats.statsRouter.syncFetchSuccess()
-      MSVStats.statsDays.fetch
-        silent: true
-        success: -> MSVStats.statsRouter.syncFetchSuccess()
+    MSVStats.statsMinutes.fetch
+      silent: true
+      success: -> MSVStats.statsRouter.syncFetchSuccess()
+    MSVStats.statsDays.fetch
+      silent: true
+      success: -> MSVStats.statsRouter.syncFetchSuccess()
 
   syncFetchSuccess: ->
     if MSVStats.Collections.Stats.allPresent()

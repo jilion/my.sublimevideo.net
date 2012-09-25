@@ -1,11 +1,5 @@
 %span.title
-- if @site? && @site.isInFreePlan()
-  .content
-    .message.pro_only
-      %a{ href: "/sites/#{@site.get('token')}/plan/edit", title: "Upgrade your plan"}
-        %strong= "Paid Plan Only"
-        %em= "Upgrade now"
-- else if @pusherState? && @pusherState == 'failed'
+- if @pusherState? && @pusherState == 'failed'
   .content
     .message.flash_required
       %a{ href: "http://get.adobe.com/flashplayer", title: "Install or upgrade flash."}

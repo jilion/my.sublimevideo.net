@@ -4,9 +4,6 @@ en:
       will_end:
         one: "Trial for %{hostname} <strong>expires today</strong>. If you enjoy it, please don't forget to %{link} before it ends."
         other: "Trial for %{hostname} <strong>expires in %{count} days</strong>. If you enjoy it, please don't forget to %{link} before it ends."
-    settings:
-      badge_disabling_note: "The SublimeVideo badge can be disabled by upgrading your site to a %{link}."
-      ssl_serving_note: "SSL Serving is available with all %{link}."
     status:
       payment_issue: "Transaction error, click to review your invoice and retry the payment."
       payment_waiting: "Transaction in progress, please be patient. Click to review your invoice."
@@ -21,7 +18,6 @@ en:
       upgrade_in_progress_failed_link: "There has been a transaction error. Please review %{link} and retry the payment."
       upgrade_in_progress_open_link: "An invoice will be charged soon, you can't change plan until it's paid. You can review your invoices %{link}."
       upgrade_in_progress_waiting_link: "There is a transaction in progress, please be patient."
-      next_cycle_will_start_on: "Your new <strong>%{plan_title}</strong> plan will automatically start on <strong>%{date}</strong>."
       upgrade_need_billing_info_first: "In order to pay immediately, please %{link} first and return to this page to buy your plan."
       upgrade_need_credit_card_up_to_date_first: "Your credit card is expired, please %{link} first and come back here to buy your plan."
     edit:

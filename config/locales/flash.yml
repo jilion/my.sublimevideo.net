@@ -15,11 +15,6 @@ en:
     sites:
       update:
         notice: "Site settings were successfully updated."
-    plans:
-      update:
-        notice: "Site plan was successfully updated."
-      destroy:
-        notice: "Your plan change for next cycle was successfully cancelled."
     users:
       update:
         notice: "Account was successfully updated."

@@ -1,5 +1,5 @@
 #site_setup
-  - if site.errors[:base].present? && site.errors[:base].exclude?(t('activerecord.errors.models.site.attributes.base.current_password_needed')) && site.errors[:base].exclude?(t('activerecord.errors.models.site.attributes.base.credit_card_needed'))
+  - if site.errors[:base].present? && site.errors[:base].exclude?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
     .inline_errors
       %span= site.errors[:base].first
 

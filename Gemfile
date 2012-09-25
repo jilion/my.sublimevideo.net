@@ -124,7 +124,6 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  gem 'email_preview'
   gem 'letter_opener', github: 'ryanb/letter_opener' # includes a fix not released yet
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'

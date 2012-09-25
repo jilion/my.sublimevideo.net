@@ -6,10 +6,7 @@
       .name= video_tag.n
   %td.usage
     .wrap
-      -#- if site.plan_id?
-      -#  = render 'td_usage', site: site
-      -#- else
-      -#  = "—"
+      -#= render 'td_usage', site: site
   %td.code
     .wrap
       = link_to "Video code", site_video_code_path(@site, video_tag), class: 'embed_code'

@@ -53,12 +53,9 @@ MySublimeVideo.UI.prepareSitesStatus = ->
   if (table = $('#sites_table_wrap')).exists()
     new MySublimeVideo.UI.SitesStatus(table)
 
-MySublimeVideo.UI.preparePlansChooser = ->
-  if $('#plan_fields').exists()
-    if $('#new_site').exists()
-      new MySublimeVideo.UI.NewSitePlanChooser()
-    else
-      new MySublimeVideo.UI.PersistedSitePlanChooser()
+MySublimeVideo.UI.prepareAddonsChooser = ->
+  if $('#addons').exists()
+    new MySublimeVideo.UI.AddonsChooser()
 
 MySublimeVideo.UI.prepareSupportRequest = ->
   new MySublimeVideo.Helpers.SupportRequest() if $('#new_support_request').exists()
@@ -89,7 +86,7 @@ MySublimeVideo.documentReady = ->
     moreInfoForm.on 'submit', ->
       _gaq.push(['_trackEvent', 'SignUp', 'Completed', undefined, 1, true]) if _gaq?
 
-  _.each ['new_site', 'edit_site_plan'], (formId) ->
+  _.each ['new_site', 'edit_addons'], (formId) ->
     if (form = $("##{formId}")).exists()
       form.on 'submit', (e) ->
         $('#site_submit').attr('disabled', 'disabled')

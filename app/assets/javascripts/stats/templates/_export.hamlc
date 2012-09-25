@@ -1,4 +1,4 @@
-- if !@site.isInFreePlan() && !@site.isDemo()
+- if !@site.isDemo()
   .big_break
   - if @period.isDays()
     #export
