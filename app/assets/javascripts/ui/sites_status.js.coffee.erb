@@ -3,26 +3,26 @@
 class MySublimeVideo.UI.SitesStatus
 
   constructor: (table) ->
-    @table    = table
-    @pusher   = new Pusher('<%= PusherWrapper.key %>', encrypted: true)
-    @tokens   = []
-    @channels = {}
-    this.setInProgessTokens()
-    this.subscribeToPusherChannels()
+    @table      = table
+    @inProgress = {}
+    this.setInProgess()
+    this.delaySetCompletedStatus()
 
-  setInProgessTokens: ->
+  setInProgess: ->
     @table.find("tr[id*='site']").each (i, element) =>
       el = $(element)
       if el.find("td.status .in_progress").exists()
-        @tokens.push $(element).data('site-token')
+        token = el.data('site-token')
+        cdnUpdatedAt = parseInt(el.find("td.status").data('cdn-updated-at')) * 1000
+        @inProgress[token] = cdnUpdatedAt
 
-  subscribeToPusherChannels: ->
-    _.each @tokens, (token) =>
-      @channels[token] = @pusher.subscribe("private-#{token}")
-      @channels[token].bind 'cdn_status', (data) =>
-        this.updateStatus(token, data)
+  delaySetCompletedStatus: ->
+    _.each @inProgress, (cdnUpdatedAt, token) =>
+      now = new Date().getTime()
+      upToDateIn = (120 * 1000) - (now - cdnUpdatedAt)
+      _.delay(this.setCompletedStatus, upToDateIn, token)
 
-  updateStatus: (token, data) ->
+  setCompletedStatus: (token) =>
     tr = @table.find("tr[data-site-token*='#{token}']")
     tr.find("td.status .in_progress").hide()
     tr.find("td.status .completed").show()

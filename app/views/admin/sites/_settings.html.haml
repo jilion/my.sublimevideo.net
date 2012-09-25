@@ -19,9 +19,8 @@
   %strong= "|"
   = "Mode: #{content_tag(:strong, site.player_mode)}".html_safe
   %strong= "|"
-  = "CDN #{site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
-  %strong= "|"
-  = link_to "See license content", "http://cdn.sublimevideo.net/l/#{site.token}.js", onclick: "window.open(this); return false"
+  = "Loaders updated_at: #{site.loaders_updated_at}".html_safe
 %p
   = "Settings.js updated at: #{site.settings_updated_at}"
+  = link_to "See license content", "http://cdn.sublimevideo.net/l/#{site.token}.js", onclick: "window.open(this); return false"
   = link_to "See settings content", "http://cdn.sublimevideo.net/s/#{site.token}.js", onclick: "window.open(this); return false"
