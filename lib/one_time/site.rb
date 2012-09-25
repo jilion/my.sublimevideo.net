@@ -3,10 +3,11 @@ module OneTime
 
     class << self
 
-      def regenerate_templates(options)
+      def regenerate_templates
         scheduled, delay = 0, 5
         ::Site.active.find_each(batch_size: 100) do |site|
-          ::Site.delay(priority: 200, run_at: delay.seconds.from_now).update_loader_and_license(site.id, options)
+          Player::Loader.delay(priority: 200, run_at: delay.seconds.from_now).update_all_modes!(site.id)
+
           scheduled += 1
 
           if (scheduled % 500).zero?

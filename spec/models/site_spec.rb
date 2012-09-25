@@ -16,8 +16,6 @@ describe Site, :plans do
     its(:wildcard)                                { should be_false }
     its(:badged)                                  { should be_true }
     its(:token)                                   { should =~ /^[a-z0-9]{8}$/ }
-    its(:license)                                 { should_not be_present }
-    its(:loader)                                  { should_not be_present }
     its(:player_mode)                             { should eq "stable" }
     its(:plan_started_at)                         { should eq Time.now.utc.midnight }
     its(:plan_cycle_started_at)                   { should eq Time.now.utc.midnight }

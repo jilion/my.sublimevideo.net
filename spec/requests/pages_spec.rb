@@ -191,7 +191,7 @@ feature "Suspended page" do
         end
         Delayed::Job.where{ handler =~ '%Class%transaction_succeeded%' }.should have(1).item
         Delayed::Job.where{ handler =~ '%Class%account_unsuspended%' }.should have(1).item
-        Delayed::Job.where{ handler =~ '%Class%update_loader_and_license%' }.should have(1).item
+        Delayed::Job.where{ handler =~ '%Player::Loader%update_all_modes%' }.should have(1).item
         # Delayed::Job.where{ handler =~ '%Player::Settings%update!%' }.should have(1).item
 
         current_url.should eq "http://my.sublimevideo.dev/sites"
