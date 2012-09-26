@@ -154,7 +154,6 @@ describe User, :plans do
 
   describe "State Machine" do
     let(:user)           { create(:user) }
-    let(:free_site)      { create(:site, user: user, plan_id: @free_plan.id, hostname: "octavez.com") }
     let(:paid_site)      { create(:site, user: user, hostname: "rymai.com") }
     let(:suspended_site) { create(:site, user: user, hostname: "rymai.me", state: 'suspended') }
     let(:archived_site)  { create(:site, user: user, hostname: "rymai.tv", state: 'archived') }
@@ -181,21 +180,18 @@ describe User, :plans do
 
           it "should suspend all user' active sites that have failed invoices" do
             paid_site.should be_active
-            free_site.should be_active
             archived_site.should be_archived
 
             user.suspend
 
             paid_site.reload.should be_suspended
-            free_site.reload.should be_active
             archived_site.reload.should be_archived
           end
         end
 
         describe "after_transition  on: :suspend, do: :send_account_suspended_email" do
           it "should send an email to the user" do
-            user # eager loading!
-            expect { user.suspend }.to change(Delayed::Job.where{ handler =~ '%Class%account_suspended%' }, :count).by(1)
+            -> { user.suspend }.should delay('%Class%account_suspended%')
           end
         end
       end
@@ -218,18 +214,16 @@ describe User, :plans do
         describe "before_transition on: :unsuspend, do: :unsuspend_sites" do
           it "should suspend all user' sites that are suspended" do
             suspended_site.should be_suspended
-            free_site.should be_active
 
             user.unsuspend
 
             suspended_site.reload.should be_active
-            free_site.reload.should be_active
           end
         end
 
         describe "after_transition  on: :unsuspend, do: :send_account_unsuspended_email" do
           it "should send an email to the user" do
-            expect { user.unsuspend }.to change(Delayed::Job.where{ handler =~ '%Class%account_unsuspended%' }, :count).by(1)
+            -> { user.unsuspend }.should delay('%Class%account_unsuspended%')
           end
         end
       end
@@ -295,7 +289,7 @@ describe User, :plans do
 
         describe "after_transition on: :archive, do: [:newsletter_unsubscribe, :send_account_archived_email]" do
           it "sends an email to user" do
-            expect { user.archive }.to change(Delayed::Job.where{ handler =~ '%Class%account_archived%' }, :count).by(1)
+            -> { user.archive }.should delay('%Class%account_archived%')
           end
 
           describe ":newsletter_unsubscribe" do
@@ -364,98 +358,89 @@ describe User, :plans do
     end
 
     describe "after_create :send_welcome_email" do
-      subject { create(:user) }
+      let(:user) { create(:user) }
 
       it "delays UserMailer.welcome" do
-        expect { subject }.to change(Delayed::Job.where{ handler =~ "%Class%welcome%" }, :count).by(1)
+        -> { user }.should delay('%Class%welcome%')
       end
     end
 
     describe "after_create :sync_newsletter" do
-      subject { create(:user, newsletter: false) }
+      let(:user) { create(:user, newsletter: false) }
 
       it "calls NewsletterManager.sync_newsletter" do
         NewsletterManager.should_receive(:sync_from_service)
-        subject
+        user
       end
     end
 
     describe "after_save :newsletter_update" do
       context "user sign-up" do
         context "user subscribes to the newsletter" do
-          subject { create(:user, newsletter: true, email: "newsletter_sign_up@jilion.com") }
+          let(:user) { create(:user, newsletter: true, email: "newsletter_sign_up@jilion.com") }
 
           it 'calls NewsletterManager.subscribe' do
             NewsletterManager.should_receive(:subscribe)
-            subject
+            user
           end
         end
 
         context "user doesn't subscribe to the newsletter" do
-          subject { create(:user, newsletter: false, email: "no_newsletter_sign_up@jilion.com") }
+          let(:user) { create(:user, newsletter: false, email: "no_newsletter_sign_up@jilion.com") }
 
           it "doesn't calls NewsletterManager.subscribe" do
             NewsletterManager.should_not_receive(:subscribe)
-            subject
+            user
           end
         end
       end
 
       context "user update" do
-        subject { create(:user, newsletter: true, email: "newsletter_update@jilion.com") }
+        let(:user) { create(:user, newsletter: true, email: "newsletter_update@jilion.com") }
 
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
-          subject
-          expect {
-            subject.update_attribute(:email, "newsletter_update2@jilion.com")
-            subject.confirm!
-          }.to change(Delayed::Job, :count).by(1)
-          Delayed::Job.last.name.should eq "Class#update"
+          user
+          -> { user.update_attribute(:email, "newsletter_update2@jilion.com")
+               user.confirm! }.should delay('%CampaignMonitorWrapper%update%')
         end
 
         it "updates info in Campaign Monitor if user change his name" do
-          subject
-          expect { subject.update_attribute(:name, "bob") }.to change(Delayed::Job, :count).by(1)
-          Delayed::Job.last.name.should eq "Class#update"
+          user
+          -> { user.update_attribute(:name, 'bob') }.should delay('%CampaignMonitorWrapper%update%')
         end
 
         it "updates subscribing state in Campaign Monitor if user change his newsletter state" do
-          subject
-          expect { subject.update_attribute(:newsletter, false) }.to change(Delayed::Job, :count).by(1)
-          djs = Delayed::Job.last.name.should eq "Class#unsubscribe"
+          user
+          -> { user.update_attribute(:newsletter, false) }.should delay('%CampaignMonitorWrapper%unsubscribe%')
         end
       end
     end
 
     describe "after_update :zendesk_update" do
-      subject { create(:user) }
+      let(:user) { create(:user) }
       before do
         NewsletterManager.stub(:sync_from_service)
       end
 
       context "user has no zendesk_id" do
         it "doesn't delay ZendeskWrapper.update_user" do
-          subject
-          expect {
-            subject.update_attribute(:email, "9876@example.org")
-          }.to_not change(Delayed::Job, :count)
+          user
+          -> { user.update_attribute(:email, '9876@example.org') }.should_not delay('%Module%update_user%')
         end
       end
 
       context "user has a zendesk_id" do
-        before { subject.update_attribute(:zendesk_id, 59438671) }
+        before { user.update_attribute(:zendesk_id, 59438671) }
 
         context "user updated his email" do
           it "delays ZendeskWrapper.update_user if the user has a zendesk_id and his email has changed" do
-            expect {
-              subject.update_attribute(:email, "9876@example.org")
-              subject.confirm!
-            }.to change(Delayed::Job.where{ handler =~ '%Module%update_user%' }, :count).by(1)
+            -> { user.update_attribute(:email, "9876@example.org")
+                 user.confirm! }.should delay('%Module%update_user%')
           end
 
           it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
-            subject.update_attribute(:email, "9876@example.org")
-            subject.confirm!
+            user.update_attribute(:email, "9876@example.org")
+            user.confirm!
 
             VCR.use_cassette("user/zendesk_update") do
               $worker.work_off
@@ -467,11 +452,11 @@ describe User, :plans do
 
         context "user updated his name" do
           it "delays ZendeskWrapper.update_user" do
-            expect { subject.update_attribute(:name, "Remy") }.to change(Delayed::Job.where{ handler =~ '%Module%update_user%' }, :count).by(1)
+            -> { user.update_attribute(:name, 'Remy') }.should delay('%Module%update_user%')
           end
 
           it "updates user's name on Zendesk" do
-            subject.update_attribute(:name, "Remy")
+            user.update_attribute(:name, 'Remy')
 
             VCR.use_cassette("user/zendesk_update") do
               $worker.work_off
@@ -482,7 +467,7 @@ describe User, :plans do
 
           context "name has changed to ''" do
             it "doesn't update user's name on Zendesk" do
-              expect { subject.update_attribute(:name, '') }.to_not change(Delayed::Job, :count)
+              -> { user.update_attribute(:name, '') }.should_not delay('%Module%update_user%')
             end
           end
         end
@@ -492,22 +477,22 @@ describe User, :plans do
   end
 
   describe "attributes accessor" do
-    subject { create(:user, email: "BoB@CooL.com") }
+    let(:user) { create(:user, email: "BoB@CooL.com") }
 
     describe "email=" do
       it "downcases email" do
-        subject.email.should eq "bob@cool.com"
+        user.email.should eq "bob@cool.com"
       end
     end
 
     describe "hidden_notice_ids" do
       it "initialize as an array if nil" do
-        subject.hidden_notice_ids.should eq []
+        user.hidden_notice_ids.should eq []
       end
 
       it "doesn't cast given value" do
-        subject.hidden_notice_ids << 1 << "foo"
-        subject.hidden_notice_ids.should eq [1, "foo"]
+        user.hidden_notice_ids << 1 << "foo"
+        user.hidden_notice_ids.should eq [1, "foo"]
       end
     end
   end
@@ -767,7 +752,7 @@ describe User, :plans do
       end
     end
 
-    describe "#support & #email_support?" do
+    pending "#support & #email_support?" do
       context "user has no site" do
         subject { create(:user) }
 
@@ -817,7 +802,7 @@ describe User, :plans do
       end
     end
 
-    describe "#billable?" do
+    pending "#billable?" do
       before do
         Site.delete_all
         @billable_user_1 = create(:user)

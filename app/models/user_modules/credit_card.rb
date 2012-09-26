@@ -222,7 +222,7 @@ module UserModules::CreditCard
   module ClassMethods
 
     def send_credit_card_expiration
-      User.paying.where(cc_expire_on: Time.now.utc.end_of_month.to_date).find_each(batch_size: 100) do |user|
+      User.paying.cc_expire_this_month.find_each(batch_size: 100) do |user|
         BillingMailer.delay.credit_card_will_expire(user.id)
       end
     end

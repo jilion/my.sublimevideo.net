@@ -77,13 +77,13 @@ feature "Mails sending" do
 
       select @mail_template.title, from: "Template"
       select "Not Archived (1)", from: "mail[criteria]"
-      click_button "Send email"
+      -> { click_button 'Send email' }.should delay('%deliver_and_log%')
+
 
       current_url.should eq "http://admin.sublimevideo.dev/mails"
 
       page.should have_content "Sending in progress..."
 
-      Delayed::Job.where{ handler =~ "%deliver_and_log%" }.should have(1).item
       $worker.work_off
       ActionMailer::Base.deliveries.should have(1).item
 

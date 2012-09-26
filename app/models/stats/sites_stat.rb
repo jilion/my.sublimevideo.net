@@ -30,10 +30,6 @@ module Stats
       json
     end
 
-    # def active
-    #   fr.to_i + sp.to_i + tr.inject(0) { |sum, s| sum + s.value.inject(0) { |sum2, s2| sum2 += s2.value } }
-    # end
-
     # =================
     # = Class Methods =
     # =================

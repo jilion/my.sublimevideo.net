@@ -29,13 +29,8 @@ describe Log::Amazon::S3::Loaders do
 
   describe "Class Methods" do
     describe ".fetch_and_create_new_logs" do
-      it "should launch delayed fetch_and_create_new_logs" do
-        expect { described_class.fetch_and_create_new_logs }.to change(Delayed::Job.where{ handler =~ "%fetch_and_create_new_logs%" }, :count).by(1)
-      end
-
-      it "should not launch delayed fetch_and_create_new_logs if one pending already present" do
-        described_class.fetch_and_create_new_logs
-        expect { described_class.fetch_and_create_new_logs }.to_not change(Delayed::Job, :count)
+      it "delays fetch_and_create_new_logs only once" do
+        -> { 2.times { described_class.fetch_and_create_new_logs } }.should delay('%fetch_and_create_new_logs%')
       end
     end
 

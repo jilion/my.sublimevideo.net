@@ -13,7 +13,7 @@ feature "Newsletter subscription" do
       fill_in 'Email',    with: user.email
       fill_in 'Password', with: '123456'
 
-      expect { click_button 'Log In' }.to change(Delayed::Job.where{ handler =~ '%NewsletterManager%subscribe%' }, :count).by(1)
+      -> { click_button 'Log In' }.should delay('%NewsletterManager%subscribe%')
 
       current_url.should eq 'http://my.sublimevideo.dev/sites/new'
 
@@ -25,11 +25,11 @@ feature "Newsletter subscription" do
   context 'user is logged-in' do
     background do
       sign_in_as :user
-      create(:site, user: @current_user, plan_id: @paid_plan.id)
+      create(:site, user: @current_user)
     end
 
     scenario 'subscribed to the newsletter after log-in' do
-      expect { go 'my', '/newsletter/subscribe' }.to change(Delayed::Job.where{ handler =~ '%CampaignMonitorWrapper%subscribe%' }, :count).by(1)
+      -> { go 'my', '/newsletter/subscribe' }.should delay('%CampaignMonitorWrapper%subscribe%')
 
       current_url.should eq 'http://my.sublimevideo.dev/sites'
 

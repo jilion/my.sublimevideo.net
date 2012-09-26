@@ -235,7 +235,7 @@ describe Transaction do
         context "from open" do
           it "should send an email to invoice.user" do
             transaction
-            expect { transaction.succeed }.to change(Delayed::Job.where{ handler =~ '%Class%transaction_succeeded%' }, :count).by(1)
+            -> { transaction.succeed }.should delay('%Class%transaction_succeeded%')
           end
         end
       end
@@ -244,7 +244,7 @@ describe Transaction do
         context "from open" do
           it "should send an email to invoice.user" do
             transaction
-            expect { transaction.fail }.to change(Delayed::Job.where{ handler =~ '%Class%transaction_failed%' }, :count).by(1)
+            -> { transaction.fail }.should delay('%Class%transaction_failed%')
             ActionMailer::Base.deliveries.last.to.should eq [user.email]
             ActionMailer::Base.deliveries.last.to.should eq [transaction.user.email]
           end
@@ -281,8 +281,7 @@ describe Transaction do
       # before { Delayed::Job.delete_all }
 
       it "should delay invoice charging for open invoices which have the renew flag == true by user" do
-        Delayed::Job.where{ handler =~ "%charge_invoices_by_user_id%" }.should be_empty
-        expect { Transaction.charge_invoices }.to change(Delayed::Job.where{ handler =~ "%charge_invoices_by_user_id%" }, :count).by(1)
+        -> { Transaction.charge_invoices }.should delay('%charge_invoices_by_user_id%')
         djs = Delayed::Job.where{ handler =~ "%charge_invoices_by_user_id%" }
         djs.should have(1).item
         djs.map { |dj| YAML.load(dj.handler).args[0] }.should =~ [@invoice1.reload.site.user.id]

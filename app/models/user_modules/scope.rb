@@ -17,9 +17,10 @@ module UserModules::Scope
     }
 
     # credit card
-    scope :without_cc,   where(cc_type: nil, cc_last_digits: nil)
-    scope :with_cc,      where{ (cc_type != nil) & (cc_last_digits != nil) }
-    scope :with_balance, where{ balance > 0 }
+    scope :without_cc,           -> { where(cc_type: nil, cc_last_digits: nil) }
+    scope :with_cc,              -> { where{ (cc_type != nil) & (cc_last_digits != nil) } }
+    scope :cc_expire_this_month, -> { where(cc_expire_on: Time.now.utc.end_of_month.to_date) }
+    scope :with_balance,         -> { where{ balance > 0 } }
 
     # state
     scope :invited,      where{ invitation_token != nil }

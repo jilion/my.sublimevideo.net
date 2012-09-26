@@ -15,7 +15,6 @@ describe SiteModules::Api do
         response[:extra_domains].should eq ['rymai.com']
         response[:wildcard].should eq true
         response[:path].should eq 'test'
-        response[:started_at].to_i.should eq Time.now.utc.midnight.to_i
       end
     end
 
@@ -35,7 +34,6 @@ describe SiteModules::Api do
         response[:extra_domains].should eq []
         response[:wildcard].should eq false
         response[:path].should eq ''
-        response[:started_at].to_i.should eq Time.now.utc.midnight.to_i
       end
     end
   end

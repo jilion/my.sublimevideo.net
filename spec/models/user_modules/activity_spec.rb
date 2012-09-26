@@ -12,7 +12,7 @@ describe UserModules::Activity do
         end
 
         it "doesn't send email" do
-          expect { User.send_inactive_account_email }.to_not change(Delayed::Job.where{ handler =~ '%Class%inactive_account%' }, :count)
+          -> { User.send_inactive_account_email }.should_not delay('%Class%inactive_account%')
         end
       end
 
@@ -33,7 +33,7 @@ describe UserModules::Activity do
           User.count.should eq 2
           @user1.page_visits.should eq 2
           @user2.page_visits.should eq 0
-          expect { User.send_inactive_account_email }.to change(Delayed::Job.where{ handler =~ '%Class%inactive_account%' }, :count).by(1)
+          -> { User.send_inactive_account_email }.should delay('%Class%inactive_account%')
 
           $worker.work_off
 

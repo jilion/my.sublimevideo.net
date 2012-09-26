@@ -100,7 +100,7 @@ describe Stat::Site do
       it { subject[364]['id'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
     end
 
-    context "with plan_stats_retention_days at 365" do
+    pending "with plan_stats_retention_days at 365" do
       before do
         @mock_site.stub(:plan_stats_retention_days).and_return(365)
       end
@@ -125,7 +125,7 @@ describe Stat::Site do
       end
     end
 
-    context "with plan_stats_retention_days at 0" do
+    pending "with plan_stats_retention_days at 0" do
       before do
         @mock_site.stub(:plan_stats_retention_days).and_return(0)
       end

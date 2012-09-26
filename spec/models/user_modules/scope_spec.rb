@@ -25,8 +25,9 @@ describe UserModules::Scope do
 
   describe "credit card" do
     before do
-      @user_no_cc = create(:user, cc_type: nil, cc_last_digits: nil)
-      @user_cc    = create(:user, cc_type: 'visa', cc_last_digits: '1234')
+      @user_no_cc        = create(:user, cc_type: nil, cc_last_digits: nil)
+      @user_cc           = create(:user, cc_type: 'visa', cc_last_digits: '1234')
+      @user_cc_expire_on = create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date)
     end
 
     describe ".without_cc" do
@@ -34,7 +35,11 @@ describe UserModules::Scope do
     end
 
     describe ".with_cc" do
-      specify { User.with_cc.all.should =~ [@user_cc] }
+      specify { User.with_cc.all.should =~ [@user_cc, @user_cc_expire_on] }
+    end
+
+    describe ".cc_expire_this_month" do
+      specify { User.cc_expire_this_month.all.should =~ [@user_cc_expire_on] }
     end
   end
 

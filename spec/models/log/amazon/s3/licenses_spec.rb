@@ -30,12 +30,11 @@ describe Log::Amazon::S3::Licenses do
   describe "Class Methods" do
     describe ".fetch_and_create_new_logs" do
       it "should launch delayed fetch_and_create_new_logs" do
-        expect { described_class.fetch_and_create_new_logs }.to change(Delayed::Job.where{ handler =~ "%fetch_and_create_new_logs%" }, :count).by(1)
+        -> { described_class.fetch_and_create_new_logs }.should delay('%fetch_and_create_new_logs%')
       end
 
       it "should not launch delayed fetch_and_create_new_logs if one pending already present" do
-        described_class.fetch_and_create_new_logs
-        expect { described_class.fetch_and_create_new_logs }.to_not change(Delayed::Job, :count)
+        -> { described_class.fetch_and_create_new_logs }.should_not delay('%Module%update_user%')
       end
     end
 

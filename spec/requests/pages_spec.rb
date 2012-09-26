@@ -172,12 +172,9 @@ feature "Suspended page" do
         current_url.should eq "http://my.sublimevideo.dev/suspended"
 
         VCR.use_cassette('ogone/visa_payment_acceptance') do
-          expect { click_button I18n.t('invoice.retry_invoices') }.to change(Delayed::Job, :count).by(3)
+        -> { click_button I18n.t('invoice.retry_invoices') }.should delay(
+          %w[%Class%transaction_succeeded% %Class%account_unsuspended% %Class%update_loader_and_license%])
         end
-        Delayed::Job.where{ handler =~ '%Class%transaction_succeeded%' }.should have(1).item
-        Delayed::Job.where{ handler =~ '%Class%account_unsuspended%' }.should have(1).item
-        Delayed::Job.where{ handler =~ '%Class%update_loader_and_license%' }.should have(1).item
-        # Delayed::Job.where{ handler =~ '%Player::Settings%update!%' }.should have(1).item
 
         current_url.should eq "http://my.sublimevideo.dev/sites"
 

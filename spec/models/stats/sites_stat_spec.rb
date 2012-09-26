@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Stats::SitesStat, :plans do
 
-  context "with a bunch of different sites" do
+  pending "with a bunch of different sites" do
 
     before do
       user = create(:user)

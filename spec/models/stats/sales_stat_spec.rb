@@ -6,7 +6,7 @@ describe Stats::SalesStat, :plans do
 
     before do
       site = create(:site)
-      @plus_monthly_plan    = @paid_plan
+      @plus_monthly_plan    = create(:plan, name: 'plus', cycle: 'month')
       @premium_monthly_plan = create(:plan, name: 'premium', cycle: 'month')
       @plus_yearly_plan     = create(:plan, name: 'plus', cycle: 'year')
       @premium_yearly_plan  = create(:plan, name: 'premium', cycle: 'year')

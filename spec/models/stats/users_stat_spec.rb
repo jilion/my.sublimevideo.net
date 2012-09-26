@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Stats::UsersStat, :plans do
 
-  describe ".create_stats" do
+  pending ".create_stats" do
     before do
       create(:user) # free (no sites)
       create(:site, plan_id: @free_plan.id) # free (only free sites)
