@@ -51,9 +51,14 @@ describe Player::Settings, :fog_mock do
         Player::Settings.new(site, 'settings').should_not be_present
       end
 
-      it "touch update_all_types" do
+      it "touches settings_updated_at" do
         site.should_receive(:touch).with(:settings_updated_at)
         Player::Settings.update_all_types!(site.id)
+      end
+
+      it "doesn't touches settings_updated_at when touch option is false" do
+        site.should_not_receive(:touch).with(:settings_updated_at)
+        Player::Settings.update_all_types!(site.id, touch: false)
       end
 
       context "when suspended" do

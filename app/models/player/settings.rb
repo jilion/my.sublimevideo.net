@@ -9,7 +9,7 @@ class Player::Settings < Struct.new(:site, :type, :file, :cdn_file)
   SITE_FIELDS = %w[plan_id player_mode hostname extra_hostnames dev_hostnames path wildcard badged]
   delegate :upload!, :delete!, :present?, to: :cdn_file
 
-  def self.update_all_types!(site_id)
+  def self.update_all_types!(site_id, options = {})
     site = Site.find(site_id)
     changed = []
     if site.state == 'active'
@@ -20,7 +20,7 @@ class Player::Settings < Struct.new(:site, :type, :file, :cdn_file)
     else
       TYPES.each { |type| new(site, type).delete! }
     end
-    site.touch(:settings_updated_at) if changed.any?
+    site.touch(:settings_updated_at) if changed.any? && options[:touch] != false
   end
 
   def initialize(*args)

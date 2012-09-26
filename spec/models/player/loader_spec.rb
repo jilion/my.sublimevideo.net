@@ -37,9 +37,14 @@ describe Player::Loader, :fog_mock do
         Player::Loader.new(site, 'alpha').should_not be_present
       end
 
-      it "touch loaders_updated_at" do
+      it "touches loaders_updated_at" do
         site.should_receive(:touch).with(:loaders_updated_at)
         Player::Loader.update_all_modes!(site.id)
+      end
+
+      it "doesn't touches loaders_updated_at when touch option is false" do
+        site.should_not_receive(:touch).with(:loaders_updated_at)
+        Player::Loader.update_all_modes!(site.id, touch: false)
       end
     end
 

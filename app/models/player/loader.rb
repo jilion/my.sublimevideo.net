@@ -9,7 +9,7 @@ class Player::Loader < Struct.new(:site, :mode, :file, :cdn_file)
   delegate :token, :player_mode, to: :site
   delegate :upload!, :delete!, :present?, to: :cdn_file
 
-  def self.update_all_modes!(site_id)
+  def self.update_all_modes!(site_id, options = {})
     site = Site.find(site_id)
     modes_needed = site_loader_modes(site)
     changed = []
@@ -20,7 +20,7 @@ class Player::Loader < Struct.new(:site, :mode, :file, :cdn_file)
         new(site, mode).delete!
       end
     end
-    site.touch(:loaders_updated_at) if changed.any?
+    site.touch(:loaders_updated_at) if changed.any? && options[:touch] != false
   end
 
   def initialize(*args)
