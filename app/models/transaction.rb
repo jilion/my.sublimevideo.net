@@ -13,7 +13,7 @@ class Transaction < ActiveRecord::Base
   # = Associations =
   # ================
 
-  belongs_to :user, autosave: false
+  belongs_to :user
   has_and_belongs_to_many :invoices
 
   # ===============

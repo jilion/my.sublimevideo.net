@@ -1,18 +1,16 @@
 require 'spec_helper'
 
-describe InvoiceModules::Scope, :plans do
+describe InvoiceModules::Scope do
+  let(:site) { create(:new_site) }
+  let(:refunded_site) { create(:new_site, refunded_at: Time.now.utc) }
   before do
-    @site             = create(:new_site, plan_id: @paid_plan.id, refunded_at: nil)
-    @site2            = create(:new_site)
 
-    Invoice.delete_all
-    @refunded_site    = create(:fake_site, plan_id: @paid_plan.id, refunded_at: Time.now.utc)
-    @open_invoice     = create(:invoice, site: @site, state: 'open', created_at: 48.hours.ago)
-    @failed_invoice   = create(:invoice, site: @site, state: 'failed', created_at: 25.hours.ago)
-    @waiting_invoice  = create(:invoice, site: @site, state: 'waiting', created_at: 18.hours.ago)
-    @paid_invoice     = create(:invoice, site: @site, state: 'paid', created_at: 16.hours.ago)
-    @canceled_invoice = create(:invoice, site: @site2, state: 'canceled', created_at: 14.hours.ago)
-    @refunded_invoice = create(:invoice, site: @refunded_site, state: 'paid', created_at: 14.hours.ago)
+    @open_invoice     = create(:invoice, site: site, state: 'open', created_at: 48.hours.ago)
+    @failed_invoice   = create(:invoice, site: site, state: 'failed', created_at: 25.hours.ago)
+    @waiting_invoice  = create(:invoice, site: site, state: 'waiting', created_at: 18.hours.ago)
+    @paid_invoice     = create(:invoice, site: site, state: 'paid', created_at: 16.hours.ago)
+    @canceled_invoice = create(:invoice, site: site, state: 'canceled', created_at: 14.hours.ago)
+    @refunded_invoice = create(:invoice, site: refunded_site, state: 'paid', created_at: 14.hours.ago)
 
     @open_invoice.should be_open
     @failed_invoice.should be_failed

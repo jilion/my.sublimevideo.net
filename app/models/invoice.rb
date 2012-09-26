@@ -31,9 +31,7 @@ class Invoice < ActiveRecord::Base
   before_create :set_customer_info, :set_site_info
 
   after_create :decrement_user_balance
-  after_create do |record|
-    record.succeed! if record.amount.zero?
-  end
+  after_create ->(record) { record.succeed! if record.amount.zero? }
 
   # ===============
   # = Validations =
@@ -57,7 +55,6 @@ class Invoice < ActiveRecord::Base
     event(:cancel)  { transition [:open, :failed] => :canceled }
 
     before_transition on: :succeed, do: :set_paid_at
-    after_transition  on: :succeed, do: :apply_site_pending_attributes, if: proc { |invoice| invoice.site.invoices.not_paid.empty? }
     after_transition  on: :succeed, do: :update_user_invoiced_amount
     after_transition  on: :succeed, do: :unsuspend_user, if: proc { |invoice| invoice.user.suspended? && invoice.user.invoices.not_paid.empty? }
 
@@ -169,11 +166,6 @@ private
   # before_transition on: :succeed
   def set_paid_at
     self.paid_at = Time.now.utc
-  end
-
-  # after_transition on: :succeed, if: proc { |invoice| invoice.site.invoices.not_paid.empty? }
-  def apply_site_pending_attributes
-    self.site.apply_pending_attributes
   end
 
   # after_transition on: :succeed

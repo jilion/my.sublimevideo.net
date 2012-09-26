@@ -450,7 +450,7 @@ describe Invoice, :addons do
 
     describe "Instance Methods" do
       before do
-        @invoice = build(:invoice, site: create(:fake_site))
+        @invoice = build(:invoice, site: create(:new_site))
         @paid_plan_invoice_item = create(:plan_invoice_item, invoice: @invoice, item: @paid_plan, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
         @invoice.invoice_items << @paid_plan_invoice_item
         @invoice.save!
@@ -474,7 +474,7 @@ describe Invoice, :addons do
       end
 
       describe "#first_site_invoice?" do
-        let(:site) { create(:fake_site) }
+        let(:site) { create(:new_site) }
 
         it { subject.should be_first_site_invoice }
 

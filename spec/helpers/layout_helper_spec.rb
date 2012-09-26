@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LayoutHelper, :plans do
+describe LayoutHelper do
 
   describe '#sticky_notices' do
     let(:user)                   { stub }
@@ -32,13 +32,13 @@ describe LayoutHelper, :plans do
 
   describe "#hostname_or_token" do
     context "site with a hostname" do
-      let(:site) { build(:fake_site, hostname: 'rymai.me') }
+      let(:site) { build(:new_site, hostname: 'rymai.me') }
 
       specify { helper.hostname_or_token(site).should eq 'rymai.me' }
     end
 
     context "site without a hostname" do
-      let(:site) { build(:fake_site, plan_id: @free_plan.id, hostname: '') }
+      let(:site) { build(:new_site, hostname: '') }
 
       specify { helper.hostname_or_token(site).should eq "##{site.token}" }
     end

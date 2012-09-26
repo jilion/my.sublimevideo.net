@@ -57,12 +57,6 @@ FactoryGirl.define do
     user
   end
 
-  factory :fake_site, parent: :new_site do
-    after(:build) do |site|
-      site.apply_pending_attributes
-    end
-  end
-
   factory :site, parent: :new_site do
     # after(:create) do |site|
     #   if site.will_be_in_paid_plan?

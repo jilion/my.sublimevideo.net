@@ -4,8 +4,8 @@ describe SitesHelper, :plans do
 
   describe "#sublimevideo_script_tag_for" do
     it "is should generate sublimevideo script_tag" do
-      site = build(:fake_site)
-      helper.sublimevideo_script_tag_for(site).should eq "<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/js/#{site.token}.js\"></script>"
+      site = build(:new_site)
+      helper.sublimevideo_script_tag_for(site).should eq "<script type=\"text/javascript\" src=\"//cdn.sublimevideo.net/js/#{site.token}.js\"></script>"
     end
   end
 
@@ -21,13 +21,13 @@ describe SitesHelper, :plans do
 
   describe "#hostname_or_token" do
     context "site with a hostname" do
-      let(:site) { build(:fake_site, hostname: 'rymai.me') }
+      let(:site) { build(:new_site, hostname: 'rymai.me') }
 
       specify { helper.hostname_or_token(site).should eq 'rymai.me' }
     end
 
     context "site without a hostname" do
-      let(:site) { build(:fake_site, plan_id: @free_plan.id, hostname: '') }
+      let(:site) { build(:new_site, hostname: '') }
 
       specify { helper.hostname_or_token(site).should eq "##{site.token}" }
     end

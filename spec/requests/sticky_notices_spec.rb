@@ -85,7 +85,7 @@ feature "Sticky notices" do
       context "user has a credit card" do
         background do
           sign_in_as :user, billing_address_1: ''
-          create(:fake_site, user: @current_user)
+          create(:new_site, user: @current_user)
           @current_user.should be_billable
           @current_user.should be_cc
           @current_user.should_not be_billing_address_complete
@@ -100,7 +100,7 @@ feature "Sticky notices" do
       context "user has no credit card" do
         background do
           sign_in_as :user, without_cc: true, billing_address_1: ''
-          create(:fake_site, user: @current_user)
+          create(:new_site, user: @current_user)
           @current_user.should be_billable
           @current_user.should_not be_cc
           @current_user.should_not be_billing_address_complete
@@ -121,7 +121,7 @@ feature "Sticky notices" do
     end
     context "trial expires today" do
       background do
-        @site = create(:fake_site, user: @current_user, plan_id: @trial_plan.id, plan_started_at: (BusinessModel.days_for_trial - 1).days.ago)
+        @site = create(:new_site, user: @current_user, plan_id: @trial_plan.id, plan_started_at: (BusinessModel.days_for_trial - 1).days.ago)
         go 'my', '/sites'
       end
 
@@ -132,7 +132,7 @@ feature "Sticky notices" do
 
     context "trial expires tomorrow" do
       background do
-        @site = create(:fake_site, user: @current_user, plan_id: @trial_plan.id, plan_started_at: (BusinessModel.days_for_trial - 2).days.ago)
+        @site = create(:new_site, user: @current_user, plan_id: @trial_plan.id, plan_started_at: (BusinessModel.days_for_trial - 2).days.ago)
         go 'my', '/sites'
       end
 
@@ -143,7 +143,7 @@ feature "Sticky notices" do
 
     context "trial expires today" do
       background do
-        @site = create(:fake_site, user: @current_user, plan_id: @trial_plan.id, plan_started_at: (BusinessModel.days_for_trial - 3).days.ago)
+        @site = create(:new_site, user: @current_user, plan_id: @trial_plan.id, plan_started_at: (BusinessModel.days_for_trial - 3).days.ago)
         go 'my', '/sites'
       end
 

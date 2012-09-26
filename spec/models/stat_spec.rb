@@ -14,9 +14,9 @@ describe Stat do
 
       context "mixed view event & load event" do
         before do
-          site = create(:fake_site)
+          site = create(:new_site)
           site.update_attribute(:token, 'ovjigy83')
-          site = create(:fake_site)
+          site = create(:new_site)
           site.update_attribute(:token, 'site1234')
           described_class.stub(:incs_from_trackers).and_return({
             "ovjigy83"=> {
