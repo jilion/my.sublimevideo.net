@@ -27,7 +27,8 @@ describe Player::Settings, :fog_mock do
     badged: true,
     in_free_plan?: false,
     plan_stats_retention_days: 365,
-    touch: true
+    touch: true,
+    player_mode: 'stable'
   )}
   let(:settings) { Player::Settings.new(site, 'settings') }
 
@@ -66,7 +67,7 @@ describe Player::Settings, :fog_mock do
 
       it "have good content" do
         File.open(file) do |f|
-          f.read.should eq "jilion.sublime.video.sites({\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":true,\"s\":true,\"r\":true});\n"
+          f.read.should eq "jilion.sublime.video.sites({\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":true,\"s\":true,\"r\":true,\"m\":\"stable\"});\n"
         end
       end
     end
@@ -76,7 +77,7 @@ describe Player::Settings, :fog_mock do
 
       it "have good content" do
         File.open(file) do |f|
-          f.read.should eq "sublime_.module(\"license\", [], function() {\n  var license;\n  license =  {\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":true,\"s\":true,\"r\":true}\n  return [license];\n});\n"
+          f.read.should eq "sublime_.module(\"license\", [], function() {\n  var license;\n  license =  {\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":true,\"s\":true,\"r\":true,\"m\":\"stable\"}\n  return [license];\n});\n"
         end
       end
     end
@@ -86,14 +87,14 @@ describe Player::Settings, :fog_mock do
     describe "common settings" do
 
       it "includes everything" do
-        settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, s: true, r: true }
+        settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, s: true, r: true, m: 'stable' }
       end
 
       context "without extra_hostnames" do
         before { site.stub(extra_hostnames?: false) }
 
         it "removes extra_hostnames from h: []" do
-          settings.hash.should == { h: ['test.com'], d: ['test.dev'], w: true, p: "path", b: true, s: true, r: true }
+          settings.hash.should == { h: ['test.com'], d: ['test.dev'], w: true, p: "path", b: true, s: true, r: true, m: 'stable' }
         end
       end
 
@@ -101,7 +102,7 @@ describe Player::Settings, :fog_mock do
         before { site.stub(path?: false) }
 
         it "doesn't include path key/value" do
-          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, b: true, s: true, r: true }
+          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, b: true, s: true, r: true, m: 'stable' }
         end
       end
 
@@ -109,7 +110,7 @@ describe Player::Settings, :fog_mock do
         before { site.stub(wildcard?: false) }
 
         it "doesn't include wildcard key/value" do
-          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], p: "path", b: true, s: true, r: true }
+          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], p: "path", b: true, s: true, r: true, m: 'stable' }
         end
       end
 
@@ -117,7 +118,7 @@ describe Player::Settings, :fog_mock do
         before { site.stub(badged: false) }
 
         it "includes b: false" do
-          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: false, s: true, r: true }
+          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: false, s: true, r: true, m: 'stable' }
         end
       end
 
@@ -125,7 +126,7 @@ describe Player::Settings, :fog_mock do
         before { site.stub(in_free_plan?: true) }
 
         it "doesn't include ssl key/value" do
-          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, r: true }
+          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, r: true, m: 'stable' }
         end
       end
 
@@ -133,7 +134,7 @@ describe Player::Settings, :fog_mock do
         before { site.stub(plan_stats_retention_days: 0) }
 
         it "doesn't includes r key/value" do
-          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, s: true }
+          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, s: true, m: 'stable' }
         end
       end
     end

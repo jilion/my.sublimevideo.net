@@ -1,5 +1,4 @@
 # TODO
-# - add player_mode (beta, alpha) to hash
 # - add component list permission (and version check on player_mode)
 
 require 'tempfile'
@@ -7,6 +6,7 @@ require_dependency 'cdn/file'
 
 class Player::Settings < Struct.new(:site, :type, :file, :cdn_file)
   TYPES = %w[license settings]
+  SITE_FIELDS = %w[plan_id player_mode hostname extra_hostnames dev_hostnames path wildcard badged]
   delegate :upload!, :delete!, :present?, to: :cdn_file
 
   def self.update_all_types!(site_id)
@@ -41,6 +41,7 @@ class Player::Settings < Struct.new(:site, :type, :file, :cdn_file)
     hash[:b]  = site.badged
     hash[:s]  = true unless site.in_free_plan? # SSL
     hash[:r]  = true if site.plan_stats_retention_days != 0 # Realtime Stats
+    hash[:m]  = site.player_mode
     hash
   end
 

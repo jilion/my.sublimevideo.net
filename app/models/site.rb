@@ -104,6 +104,12 @@ class Site < ActiveRecord::Base
   # Player::Loader
   after_create ->(site) { Player::Loader.delay.update_all_modes!(site.id) }
   after_save ->(site) { Player::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
+  # Player::Settings
+  after_save ->(site) {
+    if plan_id? && (site.changed & Player::Settings::SITE_FIELDS).present?
+      Player::Settings.delay.update_all_types!(site.id)
+    end
+  }
 
   # =================
   # = State Machine =
@@ -119,6 +125,8 @@ class Site < ActiveRecord::Base
 
     # Player::Loader
     after_transition ->(site) { Player::Loader.delay.update_all_modes!(site.id) }
+    # Player::Settings
+    after_transition ->(site) { Player::Settings.delay.update_all_types!(site.id) }
   end
 
   # =================
@@ -266,6 +274,10 @@ class Site < ActiveRecord::Base
   def unmemoize_all
     @recommended_plan_name = nil
     unmemoize_all_usages
+  end
+
+  def settings_changed?
+    (changed & %w[plan_id player_mode hostname extra_hostnames dev_hostnames path wildcard badged]).present?
   end
 
 private

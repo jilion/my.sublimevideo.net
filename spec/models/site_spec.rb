@@ -545,26 +545,28 @@ describe Site, :plans do
         end
       end
 
-      describe "Player::Loader update" do
-        context "on site creation" do
-          let(:site) { create(:site) }
-
-          it "is delayed" do
-            expect { site }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
-          end
-        end
-
-        context "on site player_mode update" do
-          let(:site) { create(:site) }
-
-          it "is delayed" do
-            site
-            expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
-          end
-        end
+      it "delays Player::Loader update on site player_mode update" do
+        site = create(:site)
+        expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
       end
 
+      it "delays Player::Settings update on site player_mode update" do
+        site = create(:site)
+        expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
+      end
     end # before_save
+
+    describe "after_create" do
+      let(:site) { create(:site) }
+
+      it "delays Player::Loader update" do
+        expect { site }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+      end
+
+      it "delays Player::Settings update" do
+        expect { site }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
+      end
+    end
 
     describe "after_save :create_and_charge_invoice" do
       let(:site) { create(:site) }
@@ -616,6 +618,11 @@ describe Site, :plans do
       it "delays Player::Loader update" do
         site
         expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+      end
+
+      it "delays Player::Settings update" do
+        site
+        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
       end
     end
   end # State Machine
