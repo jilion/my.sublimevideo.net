@@ -12,12 +12,13 @@ class Player::Settings < Struct.new(:site, :type, :file, :cdn_file)
   def self.update_all_types!(site_id)
     site = Site.find(site_id)
     changed = []
-    TYPES.each do |type|
-      if site.state == 'active'
-        changed << new(site, type).upload!
-      else
-        new(site, type).delete!
+    if site.state == 'active'
+      changed << new(site, 'license').upload!
+      unless site.player_mode == 'stable'
+        changed << new(site, 'settings').upload!
       end
+    else
+      TYPES.each { |type| new(site, type).delete! }
     end
     site.touch(:settings_updated_at) if changed.any?
   end

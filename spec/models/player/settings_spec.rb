@@ -38,10 +38,17 @@ describe Player::Settings, :fog_mock do
     context "site active" do
       before { site.stub(:state) { 'active' } }
 
-      it "uploads all settings types" do
+      it "uploads all settings types when player_mode is 'beta'" do
+        site.stub(:player_mode) { 'beta' }
         Player::Settings.update_all_types!(site.id)
         Player::Settings.new(site, 'license').should be_present
         Player::Settings.new(site, 'settings').should be_present
+      end
+
+      it "uploads only license when player_mode is 'stable'" do
+        Player::Settings.update_all_types!(site.id)
+        Player::Settings.new(site, 'license').should be_present
+        Player::Settings.new(site, 'settings').should_not be_present
       end
 
       it "touch update_all_types" do
