@@ -11,111 +11,131 @@ require File.expand_path('lib/s3')
 require File.expand_path('app/models/player')
 require File.expand_path('app/models/player/settings')
 
+Site = Class.new unless defined?(Site)
+
 describe Player::Settings, :fog_mock do
+  before { CDN.stub(:purge) }
+
   let(:site) { mock("Site",
+    id: 1,
     token: 'abcd1234',
     hostname: 'test.com',
     extra_hostnames: 'test.net', extra_hostnames?: true,
     dev_hostnames: 'test.dev', dev_hostnames?: true,
     wildcard: true, wildcard?: true,
-    path: '/path', path?: true,
-    badged: false,
-    in_free_plan?: true,
+    path: 'path', path?: true,
+    badged: true,
+    in_free_plan?: false,
     plan_stats_retention_days: 365,
     touch: true
   )}
-  let(:settings) { Player::Settings.new(site) }
-  let(:bucket) { S3.buckets['sublimevideo'] }
+  let(:settings) { Player::Settings.new(site, 'settings') }
 
-  describe "#filepath" do
-    it "includes the site token" do
-      settings.filepath.should eq 's/abcd1234.js'
+  describe ".update_all_types!" do
+    before { Site.stub(:find) { site } }
+
+    context "site active" do
+      before { site.stub(:state) { 'active' } }
+
+      it "uploads all settings types" do
+        Player::Settings.update_all_types!(site.id)
+        Player::Settings.new(site, 'license').should be_present
+        Player::Settings.new(site, 'settings').should be_present
+      end
+
+      it "touch update_all_types" do
+        site.should_receive(:touch).with(:settings_updated_at)
+        Player::Settings.update_all_types!(site.id)
+      end
+
+      context "when suspended" do
+        before { site.stub(:state) { 'suspended' } }
+
+        it "removes all settings types" do
+          Player::Settings.update_all_types!(site.id)
+          Player::Settings.new(site, 'license').should_not be_present
+          Player::Settings.new(site, 'settings').should_not be_present
+        end
+      end
     end
   end
 
-  describe "initialize" do
-    it "generates properly the loader file from templates" do
-      settings.file.should be_present
+  describe "file" do
+    context "with license type" do
+      let(:file) { Player::Settings.new(site, 'license').file }
+
+      it "have good content" do
+        File.open(file) do |f|
+          f.read.should eq "jilion.sublime.video.sites({\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":true,\"s\":true,\"r\":true});\n"
+        end
+      end
+    end
+
+    context "with settings type" do
+      let(:file) { Player::Settings.new(site, 'settings').file }
+
+      it "have good content" do
+        File.open(file) do |f|
+          f.read.should eq "sublime_.module(\"license\", [], function() {\n  var license;\n  license =  {\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":true,\"s\":true,\"r\":true}\n  return [license];\n});\n"
+        end
+      end
     end
   end
 
   describe "#hash" do
-    it "includes all site settings" do
-      settings.hash.should eq({
-       h: ["test.com", "test.net"],
-       d: ["test.dev"],
-       w: true,
-       p: "/path",
-       b: false,
-       r: true
-      })
-    end
-  end
+    describe "common settings" do
 
-  describe "#json" do
-    it "transtorms hash to json" do
-      settings.json.should eq(
-        "{h:[\"test.com\",\"test.net\"],d:[\"test.dev\"],w:true,p:\"/path\",b:false,r:true}"
-      )
-    end
-  end
-
-  describe "#upload!" do
-    before { CDN.stub(:purge) }
-
-    describe "uploaded loader file" do
-      before { settings.upload! }
-
-      it "is public" do
-        object_acl = S3.fog_connection.get_object_acl(bucket, settings.filepath).body
-        object_acl['AccessControlList'].should include(
-          {"Permission"=>"READ", "Grantee"=>{"URI"=>"http://acs.amazonaws.com/groups/global/AllUsers"}}
-        )
+      it "includes everything" do
+        settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, s: true, r: true }
       end
-      it "have good content_type public" do
-        object_headers = S3.fog_connection.get_object(bucket, settings.filepath).headers
-        object_headers['Content-Type'].should eq 'text/javascript'
+
+      context "without extra_hostnames" do
+        before { site.stub(extra_hostnames?: false) }
+
+        it "removes extra_hostnames from h: []" do
+          settings.hash.should == { h: ['test.com'], d: ['test.dev'], w: true, p: "path", b: true, s: true, r: true }
+        end
       end
-      it "have 2 min max-age cache control" do
-        object_headers = S3.fog_connection.get_object(bucket, settings.filepath).headers
-        object_headers['Cache-Control'].should eq 'max-age=120, public'
+
+      context "without path" do
+        before { site.stub(path?: false) }
+
+        it "doesn't include path key/value" do
+          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, b: true, s: true, r: true }
+        end
       end
-      it "includes settings json version" do
-        object = S3.fog_connection.get_object(bucket, settings.filepath)
-        object.body.should include settings.json
+
+      context "without wildcard" do
+        before { site.stub(wildcard?: false) }
+
+        it "doesn't include wildcard key/value" do
+          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], p: "path", b: true, s: true, r: true }
+        end
       end
-    end
 
-    it "purges loader file from CDN" do
-      CDN.should_receive(:purge).with(settings.filepath)
-      settings.upload!
-    end
+      context "without badged" do
+        before { site.stub(badged: false) }
 
-    it "touch site settings_updated_at" do
-      settings.site.should_receive(:touch).with(:settings_updated_at)
-      settings.upload!
-    end
-  end
+        it "includes b: false" do
+          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: false, s: true, r: true }
+        end
+      end
 
-  describe "#delete!" do
-    before do
-      CDN.stub(:purge)
-      settings.upload!
-    end
+      context "without ssl (free plan)" do
+        before { site.stub(in_free_plan?: true) }
 
-    it "deletes settings file" do
-      settings.delete!
-      expect { S3.fog_connection.get_object(bucket, settings.filepath) }.to raise_error(Excon::Errors::NotFound)
-    end
+        it "doesn't include ssl key/value" do
+          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, r: true }
+        end
+      end
 
-    it "purges loader file from CDN" do
-      CDN.should_receive(:purge).with(settings.filepath)
-      settings.delete!
-    end
+      context "without realtime data (free plan)" do
+        before { site.stub(plan_stats_retention_days: 0) }
 
-    it "touch site settings_updated_at" do
-      settings.site.should_receive(:touch).with(:settings_updated_at)
-      settings.upload!
+        it "doesn't includes r key/value" do
+          settings.hash.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, s: true }
+        end
+      end
     end
   end
 

@@ -2,12 +2,12 @@
 # - include component relation with good version depending on the site.player_mode (stabe, beta, alpha) & app component
 
 require 'tempfile'
-require 'digest/md5'
-require_dependency 'cdn'
+require_dependency 'cdn/file'
 
-class Player::Loader < Struct.new(:site, :mode, :file)
+class Player::Loader < Struct.new(:site, :mode, :file, :cdn_file)
   MODES = %w[stable beta alpha]
   delegate :token, :player_mode, to: :site
+  delegate :upload!, :delete!, :present?, to: :cdn_file
 
   def self.update_all_modes!(site_id)
     site = Site.find(site_id)
@@ -25,56 +25,16 @@ class Player::Loader < Struct.new(:site, :mode, :file)
 
   def initialize(*args)
     super
-    generate_file
-  end
-
-  def upload!
-    if changed?
-      File.open(file) do |f|
-        data = f.read
-        mode_config[:destinations].each do |destination|
-          s3_put_object(
-            destination[:bucket],
-            destination[:path],
-            data
-          )
-        end
-      end
-      purge_cdn
-      true
-    end
-  end
-
-  def delete!
-    if present?
-      mode_config[:destinations].each do |destination|
-        S3.fog_connection.delete_object(
-          destination[:bucket],
-          destination[:path]
-        )
-      end
-      purge_cdn
-      true
-    end
+    self.file = generate_file
+    self.cdn_file = CDN::File.new(
+      file,
+      destinations,
+      s3_options
+    )
   end
 
   def components_path
     [] # TODO Thibaud
-  end
-
-  # loader already present on S3?
-  def present?
-    mode_config[:destinations].all? do |destination|
-      s3_headers(
-        destination[:bucket],
-        destination[:path]
-      ).present?
-    end
-  end
-
-  # loader different that the one already present on S3?
-  def changed?
-    md5 != uploaded_md5
   end
 
 private
@@ -92,78 +52,45 @@ private
   end
 
   def generate_file
-    template_path = Rails.root.join("app/templates/player/#{mode_config[:template]}")
+    template_path = Rails.root.join("app/templates/player/#{template_file}")
     template = ERB.new(File.new(template_path).read)
-    self.file = Tempfile.new("l-#{site.token}.js", "#{Rails.root}/tmp")
-    self.file.print template.result(binding)
-    self.file.flush
+    file = Tempfile.new("l-#{site.token}.js", "#{Rails.root}/tmp")
+    file.print template.result(binding)
+    file.flush
+    file
   end
 
-  def md5
-    File.open(file) { |f| Digest::MD5.base64digest(f.read) }
-  end
-
-  def uploaded_md5
-    destination = mode_config[:destinations].first
-    s3_headers(
-      destination[:bucket],
-      destination[:path]
-    )['Content-MD5']
-  end
-
-  def s3_put_object(bucket, path, data)
-    S3.fog_connection.put_object(
-      bucket,
-      path,
-      data,
-      {
-        'Cache-Control' => 'max-age=120, public', # 2 minutes
-        'Content-Type'  => 'text/javascript',
-        'Content-MD5'   => md5,
-        'x-amz-acl'     => 'public-read'
-      }
-    )
-  end
-
-  def s3_headers(bucket, path)
-    S3.fog_connection.head_object(
-      bucket,
-      path
-    ).headers
-  rescue Excon::Errors::NotFound
-    {}
-  end
-
-  def purge_cdn
-    CDN.purge("/#{first_destination_path}")
-  end
-
-  def first_destination_path
-    mode_config[:destinations].first[:path]
-  end
-
-  def mode_config
-    # Handle old loader
+  def template_file
     if mode == 'stable'
-      {
-        template: "loader-old.js.erb",
-        destinations: [{
-          bucket: S3.buckets['sublimevideo'],
-          path: "js/#{site.token}.js"
-        },{
-          bucket: S3.buckets['loaders'],
-          path: "loaders/#{site.token}.js"
-        }]
-      }
+      "loader-old.js.erb"
     else
-      {
-        template: "loader.js.erb",
-        destinations: [{
-          bucket: S3.buckets['sublimevideo'],
-          path: "js/#{site.token}-#{mode}.js"
-        }]
-      }
+      "loader.js.erb"
     end
+  end
+
+  def destinations
+    if mode == 'stable'
+      [{
+        bucket: S3.buckets['sublimevideo'],
+        path: "js/#{site.token}.js"
+      },{
+        bucket: S3.buckets['loaders'],
+        path: "loaders/#{site.token}.js"
+      }]
+    else
+      [{
+        bucket: S3.buckets['sublimevideo'],
+        path: "js/#{site.token}-#{mode}.js"
+      }]
+    end
+  end
+
+  def s3_options
+    {
+      'Cache-Control' => 'max-age=120, public', # 2 minutes
+      'Content-Type'  => 'text/javascript',
+      'x-amz-acl'     => 'public-read'
+    }
   end
 
 end

@@ -1,5 +1,5 @@
 sublime_.module("license", [], function() {
   var license;
-  license =  <%= json %>
+  license =  <%= hash.to_json %>
   return [license];
 });

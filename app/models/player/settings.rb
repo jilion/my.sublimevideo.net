@@ -3,57 +3,33 @@
 # - add component list permission (and version check on player_mode)
 
 require 'tempfile'
-require_dependency 'cdn'
+require_dependency 'cdn/file'
 
-class Player::Settings < Struct.new(:site, :file)
+class Player::Settings < Struct.new(:site, :type, :file, :cdn_file)
+  TYPES = %w[license settings]
+  delegate :upload!, :delete!, :present?, to: :cdn_file
 
-  TEMPLATE_PATH = Rails.root.join("app/templates/player/settings.js.erb")
-
-  def self.update!(site_id)
+  def self.update_all_types!(site_id)
     site = Site.find(site_id)
-    settings = new(site)
-    settings.upload!
-  end
-
-  def self.delete!(site_id)
-    site = Site.find(site_id)
-    settings = new(site)
-    settings.delete!
+    changed = []
+    TYPES.each do |type|
+      if site.state == 'active'
+        changed << new(site, type).upload!
+      else
+        new(site, type).delete!
+      end
+    end
+    site.touch(:settings_updated_at) if changed.any?
   end
 
   def initialize(*args)
     super
-    generate_file
-  end
-
-  def upload!
-    File.open(file) do |f|
-      S3.fog_connection.put_object(
-        S3.buckets['sublimevideo'],
-        filepath,
-        f.read,
-        {
-          'Cache-Control' => 'max-age=120, public', # 2 minutes
-          'Content-Type'  => 'text/javascript',
-          'x-amz-acl'     => 'public-read'
-        }
-      )
-    end
-    CDN.purge(filepath)
-    site.touch(:settings_updated_at)
-  end
-
-  def delete!
-    S3.fog_connection.delete_object(
-      S3.buckets['sublimevideo'],
-      filepath
+    self.file = generate_file
+    self.cdn_file = CDN::File.new(
+      file,
+      destinations,
+      s3_options
     )
-    CDN.purge(filepath)
-    site.touch(:settings_updated_at)
-  end
-
-  def filepath
-    "s/#{site.token}.js"
   end
 
   def hash
@@ -68,17 +44,48 @@ class Player::Settings < Struct.new(:site, :file)
     hash
   end
 
-  def json
-    hash.to_s.gsub(/:|\s/, '').gsub(/\=\>/, ':')
-  end
-
 private
 
   def generate_file
-    template = ERB.new(File.new(TEMPLATE_PATH).read)
-    self.file = Tempfile.new("s-#{site.token}.js", "#{Rails.root}/tmp")
-    self.file.print template.result(binding)
-    self.file.flush
+    template_path = Rails.root.join("app/templates/player/#{template_file}")
+    template = ERB.new(File.new(template_path).read)
+    file = Tempfile.new("s-#{site.token}.js", "#{Rails.root}/tmp")
+    file.print template.result(binding)
+    file.flush
+    file
+  end
+
+  def template_file
+    case type
+    when 'license'; 'settings-old.js.erb'
+    when 'settings'; 'settings.js.erb'
+    end
+  end
+
+  def destinations
+    case type
+    when 'license'
+      [{
+        bucket: S3.buckets['sublimevideo'],
+        path: "l/#{site.token}.js"
+      },{
+        bucket: S3.buckets['licenses'],
+        path: "licenses/#{site.token}.js"
+      }]
+    when 'settings'
+      [{
+        bucket: S3.buckets['sublimevideo'],
+        path: "s/#{site.token}.js"
+      }]
+    end
+  end
+
+  def s3_options
+    {
+      'Cache-Control' => 'max-age=120, public', # 2 minutes
+      'Content-Type'  => 'text/javascript',
+      'x-amz-acl'     => 'public-read'
+    }
   end
 
 end

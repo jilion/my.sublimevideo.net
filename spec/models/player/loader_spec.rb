@@ -25,14 +25,10 @@ describe Player::Loader, :fog_mock do
   let(:loader) { Player::Loader.new(site, 'stable') }
 
   describe ".update_all_modes!" do
-    before do
-      Site.stub(:find) { site }
-    end
+    before { Site.stub(:find) { site } }
 
     context "site created with player_mode stable" do
-      before do
-        site.stub(:player_mode) { 'stable' }
-      end
+      before { site.stub(:player_mode) { 'stable' } }
 
       it "uploads only stable loader" do
         Player::Loader.update_all_modes!(site.id)
@@ -161,182 +157,12 @@ describe Player::Loader, :fog_mock do
         object_headers = S3.fog_connection.head_object(bucket, path).headers
         object_headers['Cache-Control'].should eq 'max-age=120, public'
       end
-      it "have Content-MD5" do
-        object_headers = S3.fog_connection.head_object(bucket, path).headers
-        File.open(loader.file) do |f|
-          object_headers['Content-MD5'].should eq Digest::MD5.base64digest(f.read)
-        end
-      end
       it "includes good loader version" do
         object = S3.fog_connection.get_object(bucket, path)
         object.body.should include '/p/beta/sublime.js'
       end
     end
 
-    context "with loader not present" do
-      it "upload S3 object" do
-        loader.upload!
-        loader.should be_present
-      end
-
-      it "purge CDN" do
-        CDN.should_receive(:purge).with("/js/#{site.token}.js")
-        loader.upload!
-      end
-    end
-
-    context "with same loader already present" do
-      before { loader.upload! }
-
-      it "doesn't purge CDN" do
-        CDN.should_not_receive(:purge).with("/js/#{site.token}.js")
-        loader.upload!
-      end
-    end
-
-    context "with other loader present" do
-      before {
-        data = 'foo'
-        loader.send(:mode_config)[:destinations].each do |destination|
-          S3.fog_connection.put_object(
-            destination[:bucket],
-            destination[:path],
-            data,
-            { 'Content-MD5' => Digest::MD5.base64digest(data) }
-          )
-        end
-      }
-
-      it "upload new S3 object" do
-        loader.upload!
-        loader.send(:mode_config)[:destinations].each do |destination|
-          object_headers = S3.fog_connection.head_object(destination[:bucket], destination[:path]).headers
-          File.open(loader.file) do |f|
-            object_headers['Content-MD5'].should eq Digest::MD5.base64digest(f.read)
-          end
-        end
-      end
-
-      it "purge CDN" do
-        CDN.should_receive(:purge).with("/js/#{site.token}.js")
-        loader.upload!
-      end
-    end
-
   end
-
-  describe "#delete!" do
-
-    context "with loader present" do
-      before { loader.upload! }
-
-      it "delete S3 object" do
-        loader.delete!
-        loader.should_not be_present
-      end
-
-      it "purge CDN" do
-        CDN.should_receive(:purge).with("/js/#{site.token}.js")
-        loader.delete!
-      end
-    end
-
-    context "with loader not present" do
-      it "doesn't purge CDN" do
-        CDN.should_not_receive(:purge)
-        loader.delete!
-      end
-    end
-
-  end
-
-  context "on stable mode" do
-    describe "initialize" do
-      it "generates properly the loader file from templates" do
-        loader.file.should be_present
-      end
-    end
-
-    describe "upload!" do
-      describe "uploaded loader file on each destination" do
-        before { loader.upload! }
-
-        context "on sublimevideo bucket" do
-          let(:bucket) { S3.buckets['sublimevideo'] }
-          let(:path)   { "js/#{site.token}.js" }
-
-          it "is present" do
-            S3.fog_connection.head_object(bucket, path).should be_true
-          end
-        end
-
-        context "on loaders bucket" do
-          let(:bucket) { S3.buckets['loaders'] }
-          let(:path)   { "loaders/#{site.token}.js" }
-
-          it "is present" do
-            S3.fog_connection.head_object(bucket, path).should be_true
-          end
-        end
-      end
-    end
-
-    describe "#delete!" do
-      before { loader.upload! }
-
-      context "on sublimevideo bucket" do
-        let(:bucket) { S3.buckets['sublimevideo'] }
-        let(:path)   { "js/#{site.token}.js" }
-
-        it "deletes settings file" do
-          loader.delete!
-          expect { S3.fog_connection.get_object(bucket, path) }.to raise_error(Excon::Errors::NotFound)
-        end
-      end
-
-      context "on loaders bucket" do
-        let(:bucket) { S3.buckets['loaders'] }
-        let(:path)   { "loaders/#{site.token}.js" }
-
-        it "deletes settings file" do
-          loader.delete!
-          expect { S3.fog_connection.get_object(bucket, path) }.to raise_error(Excon::Errors::NotFound)
-        end
-      end
-    end
-
-  end
-
-  context "on beta (& alpha) mode" do
-    let(:loader) { Player::Loader.new(site, 'beta') }
-    let(:bucket) { S3.buckets['sublimevideo'] }
-    let(:path)   { "js/#{site.token}-beta.js" }
-
-    describe "initialize" do
-      it "generates properly the loader file from templates" do
-        loader.file.should be_present
-      end
-    end
-
-    describe "upload!" do
-      describe "uploaded loader file on each destination" do
-        before { loader.upload! }
-
-        it "is present" do
-          S3.fog_connection.head_object(bucket, path).should be_true
-        end
-      end
-    end
-
-    describe "#delete!" do
-      before { loader.upload! }
-
-      it "deletes settings file" do
-        loader.delete!
-        expect { S3.fog_connection.get_object(bucket, path) }.to raise_error(Excon::Errors::NotFound)
-      end
-    end
-  end
-
 end
 
