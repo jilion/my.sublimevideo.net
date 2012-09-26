@@ -23,6 +23,10 @@ module S3
       names
     end
 
+    def sublimevideo_bucket
+      @sublimevideo_bucket ||= client.bucket(buckets['sublimevideo'])
+    end
+
     def player_bucket
       @player_bucket ||= client.bucket(buckets['player'])
     end
