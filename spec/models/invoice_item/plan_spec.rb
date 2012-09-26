@@ -2,6 +2,24 @@ require 'spec_helper'
 
 describe InvoiceItem::Plan, :plans do
 
+  context "Factory" do
+    let(:invoice_item) { create(:plan_invoice_item) }
+    subject { invoice_item }
+
+    its(:invoice)   { should be_present }
+    its(:site)      { should eq invoice_item.invoice.site }
+    its(:user)      { should eq invoice_item.site.user }
+    its(:type)      { should eq 'InvoiceItem::Plan' }
+    its(:item_type) { should eq 'Plan' }
+    its(:item_id)   { should be_present }
+    specify         { subject.started_at.to_i.should eq Time.now.utc.beginning_of_month.to_i }
+    specify         { subject.ended_at.to_i.should eq Time.now.utc.end_of_month.to_i }
+    its(:price)     { should eq 1000 }
+    its(:amount)    { should eq 1000 }
+
+    it { should be_valid }
+  end # Factory
+
   describe ".construct" do
     before(:all) do
       @deal = create(:deal, value: 0.2, kind: 'plans_discount', started_at: 2.days.ago, ended_at: 2.days.from_now)

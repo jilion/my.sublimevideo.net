@@ -34,7 +34,7 @@ describe Site, :addons do
     let(:addon3) { create(:addon, category: 'support', name: 'vip') }
     subject { site }
 
-    it { should belong_to(:user).validate(true) }
+    it { should belong_to(:user) }
     it { should belong_to :plan }
     it { should have_many :invoices }
 
@@ -46,21 +46,22 @@ describe Site, :addons do
 
     describe 'addons scopes' do
       before do
-        @addonship1 = create(:addonship, site: site, addon: addon1, state: 'active')
-        @addonship2 = create(:addonship, site: site, addon: addon2, state: 'inactive')
-        @addonship3 = create(:addonship, site: site, addon: addon3, state: 'active')
+        @addonship1 = create(:addonship, site: site, addon: @logo_no_logo_addon, state: 'trial')
+        @addonship2 = create(:addonship, site: site, addon: @stats_standard_addon, state: 'canceled')
+        @addonship3 = create(:addonship, site: site, addon: @support_vip_addon, state: 'paying')
       end
 
       describe 'active addons' do
-        it { site.addons.active.should =~ [addon1, addon3] }
+        it { site.addons.active.should =~ [@logo_no_logo_addon, @support_vip_addon] }
       end
     end
 
     describe "last_invoice" do
-      let(:site) { create(:site_with_invoice, plan_id: @paid_plan.id) }
-
       it "should return the last paid invoice" do
+        invoice = create(:invoice, site: site)
+
         site.last_invoice.should eq site.invoices.last
+        site.last_invoice.should eq invoice
       end
     end
   end
@@ -68,7 +69,7 @@ describe Site, :addons do
   describe "Validations" do
     subject { create(:site) }
 
-    [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :plan_id, :user_attributes].each do |attribute|
+    [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :user_attributes].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
     end
 
