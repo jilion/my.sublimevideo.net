@@ -4,7 +4,7 @@
 require 'tempfile'
 require_dependency 'cdn/file'
 
-class Player::Settings < Struct.new(:site, :type, :file, :cdn_file)
+class Player::Settings < Struct.new(:site, :type, :options, :file, :cdn_file)
   TYPES = %w[license settings]
   SITE_FIELDS = %w[plan_id player_mode hostname extra_hostnames dev_hostnames path wildcard badged]
   delegate :upload!, :delete!, :present?, to: :cdn_file
@@ -13,12 +13,12 @@ class Player::Settings < Struct.new(:site, :type, :file, :cdn_file)
     site = Site.find(site_id)
     changed = []
     if site.state == 'active'
-      changed << new(site, 'license').upload!
+      changed << new(site, 'license', options).upload!
       unless site.player_mode == 'stable'
-        changed << new(site, 'settings').upload!
+        changed << new(site, 'settings', options).upload!
       end
     else
-      TYPES.each { |type| new(site, type).delete! }
+      TYPES.each { |type| new(site, type, options).delete! }
     end
     site.touch(:settings_updated_at) if changed.any? && options[:touch] != false
   end
@@ -29,7 +29,8 @@ class Player::Settings < Struct.new(:site, :type, :file, :cdn_file)
     self.cdn_file = CDN::File.new(
       file,
       destinations,
-      s3_options
+      s3_options,
+      options
     )
   end
 

@@ -11,7 +11,8 @@ require File.expand_path('spec/config/carrierwave')
 require File.expand_path('lib/cdn/file')
 
 describe CDN::File, :fog_mock do
-  before { CDN.stub(:purge) }
+  let(:delayed_cdn) { mock(purge: true)  }
+  before { CDN.stub(:delay) { delayed_cdn } }
 
   let(:file) { fixture_file('cdn/file.js', 'r') }
   let(:file2) { fixture_file('cdn/file2.js', 'r') }
@@ -70,20 +71,26 @@ describe CDN::File, :fog_mock do
 
     describe "cdn purge" do
       it "is called with new file" do
-        CDN.should_receive(:purge).with("/js/token.js")
+        delayed_cdn.should_receive(:purge).with("/js/token.js")
+        cdn_file.upload!
+      end
+
+      it "is not called with new file when purge option is false" do
+        cdn_file = CDN::File.new(file, destinations, s3_options, purge: false)
+        delayed_cdn.should_not_receive(:purge).with("/js/token.js")
         cdn_file.upload!
       end
 
       it "is called with modified file" do
         cdn_file.upload!
-        CDN.should_receive(:purge).with("/js/token.js")
+        delayed_cdn.should_receive(:purge).with("/js/token.js")
         cdn_file.file = file2
         cdn_file.upload!
       end
 
       it "isn't called when same file was already uploaded" do
         cdn_file.upload!
-        CDN.should_not_receive(:purge).with("/js/token.js")
+        delayed_cdn.should_not_receive(:purge).with("/js/token.js")
         cdn_file.upload!
       end
     end
@@ -120,7 +127,7 @@ describe CDN::File, :fog_mock do
       end
 
       it "purge CDN" do
-        CDN.should_receive(:purge).with("/js/token.js")
+        delayed_cdn.should_receive(:purge).with("/js/token.js")
         cdn_file.delete!
       end
     end
@@ -131,7 +138,7 @@ describe CDN::File, :fog_mock do
       end
 
       it "doesn't purge CDN" do
-        CDN.should_not_receive(:purge)
+        delayed_cdn.should_not_receive(:purge)
         cdn_file.delete!
       end
     end

@@ -108,6 +108,7 @@ class Site < ActiveRecord::Base
   after_save ->(site) {
     if plan_id? && (site.changed & Player::Settings::SITE_FIELDS).present?
       Player::Settings.delay.update_all_types!(site.id)
+      site.touch(:settings_updated_at)
     end
   }
 

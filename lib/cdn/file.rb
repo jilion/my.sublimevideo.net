@@ -2,7 +2,7 @@ require 'digest/md5'
 require_dependency 'cdn'
 
 module CDN
-  class File < Struct.new(:file, :destinations, :s3_options)
+  class File < Struct.new(:file, :destinations, :s3_options, :options)
 
     def initialize(*args)
       super
@@ -78,7 +78,9 @@ module CDN
     end
 
     def purge_cdn
-      CDN.purge("/#{destinations.first[:path]}")
+      unless options && options[:purge] == false
+        CDN.delay.purge("/#{destinations.first[:path]}")
+      end
     end
 
   end
