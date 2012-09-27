@@ -14,7 +14,7 @@ require File.expand_path('app/models/player/loader')
 Site = Class.new unless defined?(Site)
 
 describe Player::Loader, :fog_mock do
-  before { CDN.stub(:purge) }
+  before { CDN.stub(:delay) { mock(purge: true) } }
   let(:site) { mock("Site",
     id: 1,
     token: 'abcd1234',
@@ -64,6 +64,19 @@ describe Player::Loader, :fog_mock do
     context "site created with player_mode alpha" do
       before do
         site.stub(:player_mode) { 'alpha' }
+        Player::Loader.update_all_modes!(site.id)
+      end
+
+      it "uploads all loaders" do
+        Player::Loader.new(site, 'stable').should be_present
+        Player::Loader.new(site, 'beta').should be_present
+        Player::Loader.new(site, 'alpha').should be_present
+      end
+    end
+
+    context "site created with player_mode dev" do
+      before do
+        site.stub(:player_mode) { 'dev' }
         Player::Loader.update_all_modes!(site.id)
       end
 

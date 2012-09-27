@@ -45,7 +45,7 @@ private
       case site.player_mode
       when 'stable'; %w[stable]
       when 'beta'; %w[stable beta]
-      when 'alpha'; %w[stable beta alpha]
+      when 'alpha', 'dev'; %w[stable beta alpha]
       end
     else
       []

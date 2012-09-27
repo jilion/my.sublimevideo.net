@@ -14,7 +14,7 @@ require File.expand_path('app/models/player/settings')
 Site = Class.new unless defined?(Site)
 
 describe Player::Settings, :fog_mock do
-  before { CDN.stub(:purge) }
+  before { CDN.stub(:delay) { mock(purge: true) } }
 
   let(:site) { mock("Site",
     id: 1,
