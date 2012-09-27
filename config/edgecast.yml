@@ -15,7 +15,7 @@ test:
 
 staging:
   <<: *defaults_stage_prod
-  cname: cdn2.sublimevideo.net
+  cname: cdn.sublimevideo.net
 
 production:
   <<: *defaults_stage_prod
