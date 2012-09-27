@@ -74,6 +74,12 @@ describe CDN::File, :fog_mock do
         cdn_file.upload!
       end
 
+      it "is not called with new file when purge option is false" do
+        cdn_file = CDN::File.new(file, destinations, s3_options, purge: false)
+        CDN.should_not_receive(:purge).with("/js/token.js")
+        cdn_file.upload!
+      end
+
       it "is called with modified file" do
         cdn_file.upload!
         CDN.should_receive(:purge).with("/js/token.js")

@@ -4,7 +4,7 @@
 require 'tempfile'
 require_dependency 'cdn/file'
 
-class Player::Loader < Struct.new(:site, :mode, :file, :cdn_file)
+class Player::Loader < Struct.new(:site, :mode, :options, :file, :cdn_file)
   MODES = %w[stable beta alpha]
   delegate :token, :player_mode, to: :site
   delegate :upload!, :delete!, :present?, to: :cdn_file
@@ -15,9 +15,9 @@ class Player::Loader < Struct.new(:site, :mode, :file, :cdn_file)
     changed = []
     MODES.each do |mode|
       if modes_needed.include?(mode)
-        changed << new(site, mode).upload!
+        changed << new(site, mode, options).upload!
       else
-        new(site, mode).delete!
+        new(site, mode, options).delete!
       end
     end
     site.touch(:loaders_updated_at) if changed.any? && options[:touch] != false
@@ -29,7 +29,8 @@ class Player::Loader < Struct.new(:site, :mode, :file, :cdn_file)
     self.cdn_file = CDN::File.new(
       file,
       destinations,
-      s3_options
+      s3_options,
+      options
     )
   end
 
