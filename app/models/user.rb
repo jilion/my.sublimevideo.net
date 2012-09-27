@@ -200,7 +200,7 @@ class User < ActiveRecord::Base
 
   # FIXME: Replace with add-on logic
   def billable?
-    sites.in_paid_plan.count > 0
+    true # sites.in_paid_plan.count > 0
   end
 
   def name_or_email
