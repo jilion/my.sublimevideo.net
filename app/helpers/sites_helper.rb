@@ -54,4 +54,12 @@ module SitesHelper
     site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS
   end
 
+  def cdn_up_to_date?(site)
+    cdn_updated_at(site) > 0 && cdn_updated_at(site) < 2.minutes.ago.to_i
+  end
+
+  def cdn_updated_at(site)
+    [site.loaders_updated_at.to_i, site.settings_updated_at.to_i].max
+  end
+
 end

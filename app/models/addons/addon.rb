@@ -38,4 +38,8 @@ end
 #  title        :string(255)      not null
 #  updated_at   :datetime         not null
 #
+# Indexes
+#
+#  index_addons_on_category_and_name  (category,name) UNIQUE
+#
 

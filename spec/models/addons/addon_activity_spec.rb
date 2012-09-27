@@ -37,5 +37,6 @@ end
 # Indexes
 #
 #  index_addon_activities_on_addonship_id  (addonship_id)
+#  index_addon_activities_on_created_at    (created_at)
 #
 

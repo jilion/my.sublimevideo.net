@@ -62,8 +62,8 @@ module Populate
       puts "#{count} random mail templates created!"
     end
 
-    def player_bundles
-      empty_tables(Player::Bundle, Player::BundleVersion)
+    def player_components
+      empty_tables(Player::Component, Player::ComponentVersion)
       names_token = {
         'app' => 'e',
         'subtitles' => 'bA'
@@ -71,17 +71,12 @@ module Populate
       versions = %w[2.0.0-alpha 2.0.0 1.1.0 1.0.0]
       version_zip = File.new(Rails.root.join('spec/fixtures/player/e.zip'))
       names_token.each do |name, token|
-        bundle = Player::Bundle.create!(
+        component = Player::Component.create(
           name: name,
-          token: token,
-          version_tags: {
-            alpha: versions[0],
-            beta: versions[1],
-            stable: versions[2]
-          }
+          token: token
         )
         versions.each do |version|
-          bundle.versions.create!(
+          component.versions.create(
             version: version,
             zip: version_zip
           )
@@ -173,7 +168,7 @@ module Populate
       User.all.each do |user|
         BASE_SITES.each do |hostname|
           site = Site.new(hostname: hostname)
-          SiteManager.new(user).create(site)
+          Sites::SiteManager.new(user).create(site)
           site.update_column(:created_at, created_at_array.sample)
         end
       end

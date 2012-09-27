@@ -64,19 +64,19 @@ namespace :one_time do
       end
     end
 
-    desc "Re-generate loader templates for all sites"
+    desc "Re-generate loaders templates for all sites"
     task regenerate_loaders: :environment do
-      timed { puts OneTime::Site.regenerate_templates(loader: true, license: false) }
+      timed { puts OneTime::Site.regenerate_templates(loaders: true, settings: false) }
     end
 
-    desc "Re-generate license templates for all sites"
-    task regenerate_licenses: :environment do
-      timed { puts OneTime::Site.regenerate_templates(loader: false, license: true) }
+    desc "Re-generate settings templates for all sites"
+    task regenerate_settings: :environment do
+      timed { puts OneTime::Site.regenerate_templates(loaders: false, settings: true) }
     end
 
-    desc "Re-generate loader and license templates for all sites"
-    task regenerate_loaders_and_licenses: :environment do
-      timed { puts OneTime::Site.regenerate_templates(loader: true, license: true) }
+    desc "Re-generate loaders and settings templates for all sites"
+    task regenerate_loaders_and_settings: :environment do
+      timed { puts OneTime::Site.regenerate_templates(loaders: true, settings: true) }
     end
 
     desc "Update last 30 days counters of all not archived sites"

@@ -11,7 +11,8 @@ describe OneTime::Site do
     end
 
     it 'regenerates loader and license of all sites' do
-      -> { described_class.regenerate_templates(loader: true, license: true) }.should delay('%update_loader_and_license%')
+      -> { described_class.regenerate_templates(loaders: true) }.should delay('%Player::Loader%update_all_modes%')
+      -> { described_class.regenerate_templates(settings: true) }.should delay('%Player::Settings%update_all_types%')
     end
   end
 

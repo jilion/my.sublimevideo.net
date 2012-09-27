@@ -141,10 +141,10 @@ MySublimeVideo::Application.routes.draw do
 
       resources :releases, only: [:index, :create, :update]
 
-      get '/player' => redirect('/player/bundles/e'), as: 'player'
+      get '/player' => redirect('/player/components/e'), as: 'player'
       namespace :player do
-        resources :bundles, only: [:index, :create, :show, :update, :destroy] do
-          resources :versions, only: [:index, :create, :show, :destroy], controller: 'bundle_versions'
+        resources :components, only: [:index, :create, :show, :update, :destroy] do
+          resources :versions, only: [:index, :create, :show, :destroy], controller: 'component_versions'
         end
       end
     end
@@ -220,6 +220,7 @@ MySublimeVideo::Application.routes.draw do
     post '/video-code-generator/mime-type-check' => 'video_codes#mime_type_check'
 
     get '/stats-demo' => 'site_stats#index', site_id: 'demo'
+    get '/stats' => redirect('/stats-demo')
     # old backbone route
     get '/sites/stats/demo' => redirect('/stats-demo')
     get '/sites/stats/:site_id' => redirect { |params, req| "/sites/#{params[:site_id]}/stats" }

@@ -97,8 +97,13 @@ private
   # after_transition to dev
   def overwrite_dev_with_zip_content
     S3.player_bucket.delete_folder('dev')
+    S3.sublimevideo_bucket.delete_folder('dev')
     files_in_zip do |file|
       S3.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, 'public-read',
+        'content-type' => FileHeader.content_type(file.to_s),
+        'content-encoding' => FileHeader.content_encoding(file.to_s)
+      )
+      S3.sublimevideo_bucket.put("dev/#{file.name}", zipfile.read(file), {}, 'public-read',
         'content-type' => FileHeader.content_type(file.to_s),
         'content-encoding' => FileHeader.content_encoding(file.to_s)
       )
@@ -114,10 +119,12 @@ private
       from = state_was + name
       to   = state + name
       S3.client.interface.copy(S3.player_bucket.name, from, S3.player_bucket.name, to, :copy, 'x-amz-acl' => 'public-read')
+      S3.client.interface.copy(S3.sublimevideo_bucket.name, from, S3.sublimevideo_bucket.name, to, :copy, 'x-amz-acl' => 'public-read')
     end
     # Remove no more used keys
     (old_keys_names - new_keys_names).each do |name|
       S3.player_bucket.delete_key(state + name)
+      S3.sublimevideo_bucket.delete_key(state + name)
     end
   end
 

@@ -697,25 +697,25 @@ ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
 
 --
--- Name: player_bundle_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: player_component_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE player_bundle_versions (
+CREATE TABLE player_component_versions (
     id integer NOT NULL,
-    player_bundle_id integer,
+    player_component_id integer,
     version character varying(255),
-    settings text,
     zip character varying(255),
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    dependencies hstore
 );
 
 
 --
--- Name: player_bundle_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: player_component_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE player_bundle_versions_id_seq
+CREATE SEQUENCE player_component_versions_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -724,31 +724,30 @@ CREATE SEQUENCE player_bundle_versions_id_seq
 
 
 --
--- Name: player_bundle_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: player_component_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE player_bundle_versions_id_seq OWNED BY player_bundle_versions.id;
+ALTER SEQUENCE player_component_versions_id_seq OWNED BY player_component_versions.id;
 
 
 --
--- Name: player_bundles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: player_components; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE player_bundles (
+CREATE TABLE player_components (
     id integer NOT NULL,
     token character varying(255),
     name character varying(255),
-    version_tags hstore,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
 
 
 --
--- Name: player_bundles_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: player_components_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE player_bundles_id_seq
+CREATE SEQUENCE player_components_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -757,31 +756,30 @@ CREATE SEQUENCE player_bundles_id_seq
 
 
 --
--- Name: player_bundles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: player_components_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE player_bundles_id_seq OWNED BY player_bundles.id;
+ALTER SEQUENCE player_components_id_seq OWNED BY player_components.id;
 
 
 --
--- Name: player_bundleships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: player_componentships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE player_bundleships (
+CREATE TABLE player_componentships (
     id integer NOT NULL,
-    site_id integer,
-    player_bundle_id integer,
-    version_tag character varying(255),
+    player_component_id integer,
+    addon_id integer,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
 
 
 --
--- Name: player_bundleships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: player_componentships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE player_bundleships_id_seq
+CREATE SEQUENCE player_componentships_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -790,10 +788,10 @@ CREATE SEQUENCE player_bundleships_id_seq
 
 
 --
--- Name: player_bundleships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: player_componentships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE player_bundleships_id_seq OWNED BY player_bundleships.id;
+ALTER SEQUENCE player_componentships_id_seq OWNED BY player_componentships.id;
 
 
 --
@@ -849,8 +847,6 @@ CREATE TABLE sites (
     hostname character varying(255),
     dev_hostnames text,
     token character varying(255),
-    license character varying(255),
-    loader character varying(255),
     state character varying(255),
     archived_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
@@ -864,7 +860,6 @@ CREATE TABLE sites (
     plan_id integer,
     pending_plan_id integer,
     next_cycle_plan_id integer,
-    cdn_up_to_date boolean DEFAULT false,
     first_paid_plan_started_at timestamp without time zone,
     plan_started_at timestamp without time zone,
     plan_cycle_started_at timestamp without time zone,
@@ -886,7 +881,8 @@ CREATE TABLE sites (
     last_30_days_video_tags integer DEFAULT 0,
     first_billable_plays_at timestamp without time zone,
     settings_updated_at timestamp without time zone,
-    addons_settings hstore
+    settings hstore,
+    loaders_updated_at timestamp without time zone
 );
 
 
@@ -1271,21 +1267,21 @@ ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY player_bundle_versions ALTER COLUMN id SET DEFAULT nextval('player_bundle_versions_id_seq'::regclass);
+ALTER TABLE ONLY player_component_versions ALTER COLUMN id SET DEFAULT nextval('player_component_versions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY player_bundles ALTER COLUMN id SET DEFAULT nextval('player_bundles_id_seq'::regclass);
+ALTER TABLE ONLY player_components ALTER COLUMN id SET DEFAULT nextval('player_components_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY player_bundleships ALTER COLUMN id SET DEFAULT nextval('player_bundleships_id_seq'::regclass);
+ALTER TABLE ONLY player_componentships ALTER COLUMN id SET DEFAULT nextval('player_componentships_id_seq'::regclass);
 
 
 --
@@ -1477,7 +1473,7 @@ ALTER TABLE ONLY plans
 -- Name: player_bundle_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY player_bundle_versions
+ALTER TABLE ONLY player_component_versions
     ADD CONSTRAINT player_bundle_versions_pkey PRIMARY KEY (id);
 
 
@@ -1485,16 +1481,16 @@ ALTER TABLE ONLY player_bundle_versions
 -- Name: player_bundles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY player_bundles
+ALTER TABLE ONLY player_components
     ADD CONSTRAINT player_bundles_pkey PRIMARY KEY (id);
 
 
 --
--- Name: player_bundleships_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: player_componentships_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY player_bundleships
-    ADD CONSTRAINT player_bundleships_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY player_componentships
+    ADD CONSTRAINT player_componentships_pkey PRIMARY KEY (id);
 
 
 --
@@ -1568,17 +1564,24 @@ CREATE INDEX index_addon_activities_on_addonship_id ON addon_activities USING bt
 
 
 --
+-- Name: index_addon_activities_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_addon_activities_on_created_at ON addon_activities USING btree (created_at);
+
+
+--
+-- Name: index_addons_on_category_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_addons_on_category_and_name ON addons USING btree (category, name);
+
+
+--
 -- Name: index_addonships_on_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX index_addonships_on_addon_id ON addonships USING btree (addon_id);
-
-
---
--- Name: index_addonships_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_addonships_on_site_id ON addonships USING btree (site_id);
 
 
 --
@@ -1593,6 +1596,13 @@ CREATE UNIQUE INDEX index_addonships_on_site_id_and_addon_id ON addonships USING
 --
 
 CREATE INDEX index_addonships_on_state ON addonships USING btree (state);
+
+
+--
+-- Name: index_addonships_on_trial_started_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_addonships_on_trial_started_on ON addonships USING btree (trial_started_on);
 
 
 --
@@ -1621,6 +1631,13 @@ CREATE UNIQUE INDEX index_admins_on_reset_password_token ON admins USING btree (
 --
 
 CREATE UNIQUE INDEX index_client_applications_on_key ON client_applications USING btree (key);
+
+
+--
+-- Name: index_component_versions_on_component_id_and_version; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_component_versions_on_component_id_and_version ON player_component_versions USING btree (player_component_id, version);
 
 
 --
@@ -1715,38 +1732,31 @@ CREATE UNIQUE INDEX index_plans_on_token ON plans USING btree (token);
 
 
 --
--- Name: index_player_bundle_versions_on_player_bundle_id_and_version; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_player_components_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_player_bundle_versions_on_player_bundle_id_and_version ON player_bundle_versions USING btree (player_bundle_id, version);
-
-
---
--- Name: index_player_bundles_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_player_bundles_on_name ON player_bundles USING btree (name);
+CREATE UNIQUE INDEX index_player_components_on_name ON player_components USING btree (name);
 
 
 --
--- Name: index_player_bundles_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_player_components_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_player_bundles_on_token ON player_bundles USING btree (token);
-
-
---
--- Name: index_player_bundleships_on_player_bundle_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_player_bundleships_on_player_bundle_id ON player_bundleships USING btree (player_bundle_id);
+CREATE UNIQUE INDEX index_player_components_on_token ON player_components USING btree (token);
 
 
 --
--- Name: index_player_bundleships_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_player_componentships_on_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_player_bundleships_on_site_id ON player_bundleships USING btree (site_id);
+CREATE INDEX index_player_componentships_on_addon_id ON player_componentships USING btree (addon_id);
+
+
+--
+-- Name: index_player_componentships_on_player_component_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_player_componentships_on_player_component_id ON player_componentships USING btree (player_component_id);
 
 
 --
@@ -2069,6 +2079,10 @@ INSERT INTO schema_migrations (version) VALUES ('20120830144913');
 
 INSERT INTO schema_migrations (version) VALUES ('20120904100844');
 
+INSERT INTO schema_migrations (version) VALUES ('20120919094721');
+
+INSERT INTO schema_migrations (version) VALUES ('20120919140602');
+
 INSERT INTO schema_migrations (version) VALUES ('20120921094648');
 
 INSERT INTO schema_migrations (version) VALUES ('20120921094844');
@@ -2076,3 +2090,7 @@ INSERT INTO schema_migrations (version) VALUES ('20120921094844');
 INSERT INTO schema_migrations (version) VALUES ('20120921094951');
 
 INSERT INTO schema_migrations (version) VALUES ('20120921095439');
+
+INSERT INTO schema_migrations (version) VALUES ('20120924140456');
+
+INSERT INTO schema_migrations (version) VALUES ('20120924141140');

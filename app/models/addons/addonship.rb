@@ -85,8 +85,8 @@ end
 # Indexes
 #
 #  index_addonships_on_addon_id              (addon_id)
-#  index_addonships_on_site_id               (site_id)
 #  index_addonships_on_site_id_and_addon_id  (site_id,addon_id) UNIQUE
 #  index_addonships_on_state                 (state)
+#  index_addonships_on_trial_started_on      (trial_started_on)
 #
 

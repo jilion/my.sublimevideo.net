@@ -92,15 +92,15 @@ private
       { :$project => {
           _id: 0,
           u: 1,
-          options[:sort_by] => 1 } },
+          "#{options[:sort_by]}c" => 1 } },
       { :$group => {
           _id: '$u',
-          "#{options[:sort_by]}Sum" => { :$sum => "$#{options[:sort_by]}" } } },
+          "#{options[:sort_by]}Sum" => { :$sum => "$#{options[:sort_by]}c" } } },
       { :$project => {
           _id: 0,
           u: '$_id',
-          options[:sort_by] => 1 } },
-      { :$sort => { options[:sort_by] => -1 } }
+          "#{options[:sort_by]}Sum" => 1 } },
+      { :$sort => { "#{options[:sort_by]}Sum" => -1 } }
     ])
 
     total = videos.size

@@ -21,7 +21,7 @@
       = link_to "Player code", "", class: "player_code embed_code", data: { token: site.token }
       %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'code', site: site
 
-  %td.status
+  %td.status{ data: { 'cdn-updated-at' => cdn_updated_at(site) } }
     .wrap
       - if site.invoices_failed?
         = tooltip_box href: site_invoices_path(site), class: "payment_issue" do
@@ -32,7 +32,7 @@
       - elsif site.invoices_waiting?
         = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
           %span.p= t 'site.status.payment_waiting'
-      - elsif site.cdn_up_to_date? && site.settings_updated_at.to_i < 2.minutes.ago.to_i
+      - elsif cdn_up_to_date?(site)
         = tooltip_box class: "ok" do
           %span.p= t 'site.status.ok'
       - else

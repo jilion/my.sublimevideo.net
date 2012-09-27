@@ -11,7 +11,6 @@ class Site < ActiveRecord::Base
   include SiteModules::Billing
   include SiteModules::Referrer
   include SiteModules::Scope
-  include SiteModules::Template
   include SiteModules::Usage
 
   DEFAULT_DEV_DOMAINS = '127.0.0.1,localhost'
@@ -19,7 +18,7 @@ class Site < ActiveRecord::Base
 
   # Versioning
   has_paper_trail ignore: [
-    :cdn_up_to_date, :license, :loader, :last_30_days_main_video_views,
+    :last_30_days_main_video_views,
     :last_30_days_extra_video_views, :last_30_days_dev_video_views,
     :last_30_days_invalid_video_views, :last_30_days_embed_video_views,
     :last_30_days_billable_video_views_array, :last_30_days_video_tags
@@ -27,7 +26,6 @@ class Site < ActiveRecord::Base
 
   acts_as_taggable
 
-  attr_accessor :loader_needs_update, :license_needs_update
   attr_accessor :user_attributes, :last_transaction, :remote_ip
 
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard,
@@ -37,8 +35,6 @@ class Site < ActiveRecord::Base
 
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9')
 
-  mount_uploader :license, LicenseUploader
-  mount_uploader :loader, LoaderUploader
 
   # FIXME: delegate to addon
   # delegate :stats_retention_days, to: :plan, prefix: true
@@ -64,12 +60,6 @@ class Site < ActiveRecord::Base
     end
   end
   has_many :addon_activities, through: :addonships, class_name: 'Addons::AddonActivity'
-
-  # Bundles
-  has_many :bundleships,
-    class_name: 'Player::Bundleship',
-    dependent: :destroy
-  has_many :bundles, through: :bundleships
 
   # Mongoid associations
   def usages
@@ -109,6 +99,17 @@ class Site < ActiveRecord::Base
 
   after_create :update_last_30_days_video_views_counters # in site_modules/usage
 
+  # Player::Loader
+  after_create ->(site) { Player::Loader.delay.update_all_modes!(site.id) }
+  after_save ->(site) { Player::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
+  # Player::Settings
+  after_save ->(site) {
+    if plan_id? && (site.changed & Player::Settings::SITE_FIELDS).present?
+      Player::Settings.delay.update_all_types!(site.id)
+      site.touch(:settings_updated_at)
+    end
+  }
+
   # =================
   # = State Machine =
   # =================
@@ -121,10 +122,10 @@ class Site < ActiveRecord::Base
     before_transition on: :archive, do: [:set_archived_at]
     after_transition  on: :archive, do: [:cancel_not_paid_invoices]
 
-    after_transition  to: [:suspended, :archived], do: :delay_remove_loader_and_license # in site/templates
-    # after_transition  to: [:suspended, :archived] do |site|
-    #   Player::Settings.delay.delete!(site.id)
-    # end
+    # Player::Loader
+    after_transition ->(site) { Player::Loader.delay.update_all_modes!(site.id) }
+    # Player::Settings
+    after_transition ->(site) { Player::Settings.delay.update_all_types!(site.id) }
   end
 
   # =================
@@ -194,7 +195,7 @@ class Site < ActiveRecord::Base
   end
 
   def created_during_deal?(deal)
-    created_at >= deal.started_at && created_at <= deal.ended_at
+    created_at? && (created_at >= deal.started_at && created_at <= deal.ended_at)
   end
 
   def skip_password(*args)
@@ -207,6 +208,10 @@ class Site < ActiveRecord::Base
 
   def unmemoize_all
     unmemoize_all_usages
+  end
+
+  def settings_changed?
+    (changed & %w[plan_id player_mode hostname extra_hostnames dev_hostnames path wildcard badged]).present?
   end
 
 private
@@ -251,11 +256,9 @@ end
 #
 # Table name: sites
 #
-#  addons_settings                           :hstore
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean
-#  cdn_up_to_date                            :boolean          default(FALSE)
 #  created_at                                :datetime         not null
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
@@ -272,8 +275,7 @@ end
 #  last_30_days_invalid_video_views          :integer          default(0)
 #  last_30_days_main_video_views             :integer          default(0)
 #  last_30_days_video_tags                   :integer          default(0)
-#  license                                   :string(255)
-#  loader                                    :string(255)
+#  loaders_updated_at                        :datetime
 #  next_cycle_plan_id                        :integer
 #  overusage_notification_sent_at            :datetime
 #  path                                      :string(255)
@@ -287,6 +289,7 @@ end
 #  plan_started_at                           :datetime
 #  player_mode                               :string(255)      default("stable")
 #  refunded_at                               :datetime
+#  settings                                  :hstore
 #  settings_updated_at                       :datetime
 #  state                                     :string(255)
 #  token                                     :string(255)

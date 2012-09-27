@@ -11,7 +11,7 @@ module CDN
     class << self
 
       def purge(path)
-        client.purge(:http_small_object, path)
+        client.purge(:http_small_object, "http://#{cname}#{path}")
       end
 
     private

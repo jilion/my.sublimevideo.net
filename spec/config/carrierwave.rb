@@ -5,6 +5,7 @@ RSpec.configure do |config|
 
   config.before :each, fog_mock: true do
     CarrierWave.fog_configuration
+    Fog::Mock.reset
     Fog.mock!
     Fog.credentials = {
       provider:              'AWS',
@@ -12,11 +13,9 @@ RSpec.configure do |config|
       aws_secret_access_key: S3.secret_access_key,
       region:                'us-east-1'
     }
-    unless $fog_connection
-      $fog_connection = Fog::Storage.new(provider: 'AWS')
-      S3.buckets.each do |bucket_name, bucket|
-        $fog_connection.directories.create(key: bucket)
-      end
+    $fog_connection = Fog::Storage.new(provider: 'AWS')
+    S3.buckets.each do |bucket_name, bucket|
+      $fog_connection.directories.create(key: bucket)
     end
   end
 

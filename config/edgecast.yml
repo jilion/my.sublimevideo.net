@@ -1,9 +1,10 @@
 defaults_dev_test: &defaults_dev_test
   account_number: 841C
   api_token:      d31309a4-677c-4a9f-9a4f-e76997233b2f
+  cname:          cdn2.sublimevideo.net
 
 defaults_stage_prod: &defaults_stage_prod
-  account_number: env_var
+  account_number: 841C
   api_token:      env_var
 
 development:
@@ -14,6 +15,8 @@ test:
 
 staging:
   <<: *defaults_stage_prod
+  cname: cdn.sublimevideo.net
 
 production:
   <<: *defaults_stage_prod
+  cname: cdn.sublimevideo.net
