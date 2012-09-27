@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>422</title>
-  <style type="text/css">
-    body { background-color: #fff; color: #666; text-align: center; font-family: arial, sans-serif; }
-    div.dialog {
-      width: 25em;
-      padding: 0 4em;
-      margin: 4em auto 0 auto;
-      border: 1px solid #ccc;
-      border-right-color: #999;
-      border-bottom-color: #999;
-    }
-    h1 { font-size: 100%; color: #f00; line-height: 1.5em; }
-  </style>
-</head>
+  <head>
+    <title>The change you wanted was rejected (422)</title>
+    <link href="errors.css" media="screen" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="//use.typekit.com/vcc7hji.js"></script>
+    <script type="text/javascript">try { Typekit.load(); } catch(e) {}</script>
+  </head>
 
-<body>
-  <div class="dialog">
-    <h1>422</h1>
-  </div>
-</body>
+  <body>
+    <div id="global">
+      <img src="error.png" alt="SublimeVideo error" />
+      <div class="dialog">
+        <div id="content" class="error">
+          <p>The change you wanted was rejected.</p>
+          <p>Maybe you tried to change something you didn't have access to.</p>
+          <p>Go back to <a id="subdomain_link" href="http://sublimevideo.net">sublimevideo.net</a> or <a href="http://sublimevideo.net/contact">contact us</a> about a problem.</p>
+          <a href="http://sublimevideo.net" class="sublimevideo"><span>SublimeVideo</span></a>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var subdomainLink = document.getElementById('subdomain_link');
+      var host = document.location.host;
+      subdomainLink.href = subdomainLink.href.replace(/sublimevideo\.net/, document.location.host);
+      subdomainLink.innerText = host;
+    </script>
+  </body>
 </html>

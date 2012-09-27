@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>404</title>
-  <style type="text/css">
-    body { background-color: #fff; color: #666; text-align: center; font-family: arial, sans-serif; }
-    div.dialog {
-      width: 25em;
-      padding: 0 4em;
-      margin: 4em auto 0 auto;
-      border: 1px solid #ccc;
-      border-right-color: #999;
-      border-bottom-color: #999;
-    }
-    h1 { font-size: 100%; color: #f00; line-height: 1.5em; }
-  </style>
-</head>
+  <head>
+    <title>The page you were looking for doesn't exist. (404)</title>
+    <link href="errors.css" media="screen" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="//use.typekit.com/vcc7hji.js"></script>
+    <script type="text/javascript">try { Typekit.load(); } catch(e) {}</script>
+  </head>
 
-<body>
-  <div class="dialog">
-    <h1>404</h1>
-  </div>
-</body>
+  <body>
+    <div id="global">
+      <img src="404.png" alt="SublimeVideo 404" />
+      <div class="dialog">
+        <div id="content">
+          <p>Sorry, the page you were looking for doesn't exist.</p>
+          <p>Go back to <a id="subdomain_link" href="http://sublimevideo.net">sublimevideo.net</a> or <a href="http://sublimevideo.net/contact">contact us</a> about a problem.</p>
+          <a href="http://sublimevideo.net" class="sublimevideo"><span>SublimeVideo</span></a>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var subdomainLink = document.getElementById('subdomain_link');
+      var host = document.location.host;
+      subdomainLink.href = subdomainLink.href.replace(/sublimevideo\.net/, document.location.host);
+      subdomainLink.innerText = host;
+    </script>
+  </body>
 </html>
