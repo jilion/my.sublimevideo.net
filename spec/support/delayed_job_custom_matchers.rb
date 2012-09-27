@@ -9,17 +9,33 @@ RSpec::Matchers.define :delay do |*args|
   end
   failure_message_for_should do |x|
     @delayed_job_handlers_and_expected_new_jobs.inject('') do |text, (delayed_job_handler, expected_new_delayed_jobs_count)|
-      text += "expected '#{delayed_job_handler}' to be delayed #{expected_new_delayed_jobs_count} " +
-      "time#{'s' if expected_new_delayed_jobs_count > 1} but was delayed " +
-      "#{actual_new_delayed_jobs_count(delayed_job_handler)} time#{'s' if actual_new_delayed_jobs_count(delayed_job_handler) > 1}!" +
-      "\n\n#{Delayed::Job.pluck(:handler).inspect}"
-    end
+      if actual_new_delayed_jobs_count(delayed_job_handler) != expected_new_delayed_jobs_count
+        text += if delayed_job_handler == :all
+          "expected #{expected_new_delayed_jobs_count} new delayed jobs, but got " +
+          "#{actual_new_delayed_jobs_count(delayed_job_handler)} new delayed jobs!"
+        else
+          "expected '#{delayed_job_handler}' to be delayed #{expected_new_delayed_jobs_count} " +
+          "time#{'s' if expected_new_delayed_jobs_count > 1} but was delayed " +
+          "#{actual_new_delayed_jobs_count(delayed_job_handler)} time#{'s' if actual_new_delayed_jobs_count(delayed_job_handler) > 1}!"
+        end
+      else
+        text
+      end
+    end + "\n\nAll currently delayed jobs:\n#{Delayed::Job.pluck(:handler).inspect}"
   end
   failure_message_for_should_not do |x|
     @delayed_job_handlers_and_expected_new_jobs.inject('') do |text, (delayed_job_handler, expected_new_delayed_jobs_count)|
-      text += "expected '#{delayed_job_handler}' not to be delayed but was delayed " +
-      "#{actual_new_delayed_jobs_count(delayed_job_handler)} time#{'s' if actual_new_delayed_jobs_count(delayed_job_handler) > 1}!" +
-      "\n\n#{Delayed::Job.pluck(:handler).inspect}"
+      if actual_new_delayed_jobs_count(delayed_job_handler) != expected_new_delayed_jobs_count
+        text += if delayed_job_handler == :all
+          "expected no new delayed jobs, but got " +
+          "#{actual_new_delayed_jobs_count(delayed_job_handler)} new delayed jobs!"
+        else
+          "expected '#{delayed_job_handler}' not to be delayed but was delayed " +
+          "#{actual_new_delayed_jobs_count(delayed_job_handler)} time#{'s' if actual_new_delayed_jobs_count(delayed_job_handler) > 1}!"
+        end
+      else
+        text
+      end + "\n\nAll currently delayed jobs:\n#{Delayed::Job.pluck(:handler).inspect}"
     end
   end
 
@@ -51,18 +67,25 @@ RSpec::Matchers.define :delay do |*args|
   end
 
   def delayed_jobs(delayed_job_handler)
-    Delayed::Job.where{ handler =~ delayed_job_handler }
+    if delayed_job_handler == :all
+      Delayed::Job
+    else
+      Delayed::Job.where{ handler =~ delayed_job_handler }
+    end
   end
 
   def delayed_job_handlers_and_expected_new_jobs(*args)
     @delayed_job_handlers_and_expected_new_jobs = []
     default_expectation = args.pop
+
     @delayed_job_handlers_and_expected_new_jobs[default_expectation] ||= case args[0]
     when Array
       args.shift
       Hash.new(1)
     when Hash
       args.shift
+    when nil
+      { all: default_expectation }
     else
       hash = {}
       while arg = args.shift and

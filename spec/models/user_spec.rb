@@ -425,7 +425,7 @@ describe User, :plans do
       context "user has no zendesk_id" do
         it "doesn't delay ZendeskWrapper.update_user" do
           user
-          -> { user.update_attribute(:email, '9876@example.org') }.should_not delay('%Module%update_user%')
+          -> { user.update_attribute(:email, '9876@example.org') }.should_not delay
         end
       end
 
@@ -467,7 +467,7 @@ describe User, :plans do
 
           context "name has changed to ''" do
             it "doesn't update user's name on Zendesk" do
-              -> { user.update_attribute(:name, '') }.should_not delay('%Module%update_user%')
+              -> { user.update_attribute(:name, '') }.should_not delay
             end
           end
         end

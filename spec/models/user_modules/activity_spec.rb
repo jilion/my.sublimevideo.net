@@ -12,7 +12,7 @@ describe UserModules::Activity do
         end
 
         it "doesn't send email" do
-          -> { User.send_inactive_account_email }.should_not delay('%Class%inactive_account%')
+          -> { User.send_inactive_account_email }.should_not delay
         end
       end
 
