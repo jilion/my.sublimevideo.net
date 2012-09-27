@@ -554,6 +554,11 @@ describe Site, :plans do
         site = create(:site)
         expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
       end
+
+      it "touch settings_updated_at on site player_mode update" do
+        site = create(:site)
+        expect { site.update_attribute(:player_mode, 'beta') }.to change(site, :settings_updated_at)
+      end
     end # before_save
 
     describe "after_create" do
