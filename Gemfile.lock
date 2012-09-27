@@ -659,7 +659,6 @@ DEPENDENCIES
   stat_request_parser (~> 1.1.0)
   state_machine (~> 1.1.2)
   sublimevideo_layout (= 1.3.3)
-  terminal-notifier-guard
   thin
   timecop
   twitter (~> 3.7.0)
