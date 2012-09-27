@@ -88,7 +88,7 @@ module SitesHelper
   end
 
   def cdn_up_to_date?(site)
-    cdn_updated_at(site) < 2.minutes.ago.to_i
+    cdn_updated_at(site) > 0 && cdn_updated_at(site) < 2.minutes.ago.to_i
   end
 
   def cdn_updated_at(site)
