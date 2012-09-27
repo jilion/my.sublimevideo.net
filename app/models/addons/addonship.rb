@@ -1,6 +1,8 @@
 class Addons::Addonship < ActiveRecord::Base
 
-  STATES = %w[beta trial sponsored active inactive suspended]
+  INACTIVE_STATES = %w[inactive suspended]
+  ACTIVE_STATES   = %w[beta trial subscribed sponsored]
+  STATES          = INACTIVE_STATES + ACTIVE_STATES
 
   has_paper_trail
 
@@ -19,21 +21,39 @@ class Addons::Addonship < ActiveRecord::Base
 
   validates :site_id, :addon_id, presence: true
   validates :addon_id, uniqueness: { scope: :site_id }
+  validates :state, inclusion: STATES
 
   # =============
   # = Callbacks =
   # =============
 
-  before_save :set_trial_started_on
-
   # =================
   # = State Machine =
   # =================
 
-  state_machine initial: :trial do
-    event(:buy)     { transition [:beta, :trial, :canceled, :suspended] => :paying }
-    event(:cancel)  { transition [:beta, :trial, :sponsored, :paying, :suspended] => :canceled }
-    event(:suspend) { transition [:paying] => :suspended }
+  state_machine initial: :inactive do
+    event(:start_beta)  { transition :inactive => :beta }
+    event(:start_trial) { transition [:inactive, :beta] => :trial }
+    event(:subscribe)   { transition all - [:subscribed] => :subscribed }
+    event(:cancel)      { transition all - [:inactive] => :inactive }
+    event(:suspend)     { transition :subscribed => :suspended }
+    event(:sponsor)     { transition all - [:sponsored] => :sponsored }
+
+    state :subscribed do
+      def price
+        addon.price
+      end
+    end
+
+    state :inactive, :beta, :trial, :suspended, :sponsored do
+      def price
+        0
+      end
+    end
+
+    before_transition any => :trial do |addonship, transition|
+      addonship.trial_started_on = Time.now.utc.midnight unless addonship.trial_started_on?
+    end
   end
 
   # ==========
@@ -42,11 +62,14 @@ class Addons::Addonship < ActiveRecord::Base
 
   scope :in_category,     ->(cat) { includes(:addon).where { addon.category == cat } }
   scope :except_addon_id, ->(excepted_addon_id) { where{ addon_id != excepted_addon_id } }
+  scope :out_of_trial,    -> {
+    where{ addonships.state == 'trial' }. \
+    where{ addonships.trial_started_on != nil }. \
+    where{ addonships.trial_started_on < BusinessModel.days_for_trial.days.ago }
+ }
 
-  private
-
-  def set_trial_started_on
-    self.trial_started_on = Time.now.utc.midnight if state == 'trial' && !trial_started_on?
+  def active?
+    %w[beta trial subscribed sponsored].include?(state)
   end
 
 end

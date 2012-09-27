@@ -27,9 +27,6 @@ describe Site, :addons do
 
   describe "Associations" do
     let(:site) { create(:site) }
-    let(:addon1) { create(:addon, category: 'logo', name: 'no-logo') }
-    let(:addon2) { create(:addon, category: 'logo', name: 'custom-logo') }
-    let(:addon3) { create(:addon, category: 'support', name: 'vip') }
     subject { site }
 
     it { should belong_to(:user) }
@@ -42,13 +39,19 @@ describe Site, :addons do
 
     describe 'addons scopes' do
       before do
-        @addonship1 = create(:addonship, site: site, addon: @logo_no_logo_addon, state: 'trial')
-        @addonship2 = create(:addonship, site: site, addon: @stats_standard_addon, state: 'canceled')
-        @addonship3 = create(:addonship, site: site, addon: @support_vip_addon, state: 'paying')
+        create(:addonship, site: site, addon: @logo_sublime_addon, state: 'trial', trial_started_on: (30.days - 1.second).ago)
+        create(:addonship, site: site, addon: @logo_no_logo_addon, state: 'trial', trial_started_on: (30.days + 1.second).ago)
+        create(:addonship, site: site, addon: @stats_standard_addon, state: 'trial')
+        create(:addonship, site: site, addon: @support_vip_addon, state: 'subscribed', trial_started_on: (30.days + 1.second).ago)
+        create(:addonship, site: site, state: 'inactive')
       end
 
       describe 'active addons' do
-        it { site.addons.active.should =~ [@logo_no_logo_addon, @support_vip_addon] }
+        it { site.addons.active.should =~ [@logo_sublime_addon, @logo_no_logo_addon, @stats_standard_addon, @support_vip_addon] }
+      end
+
+      describe 'out_of_trial addons' do
+        it { site.addons.out_of_trial.should =~ [@logo_no_logo_addon] }
       end
     end
 
@@ -280,12 +283,12 @@ describe Site, :addons do
 
       it "delays Player::Loader update on site player_mode update" do
         site = create(:site)
-        expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Player::Loader%update_all_modes%')
       end
 
       it "delays Player::Settings update on site player_mode update" do
         site = create(:site)
-        expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Player::Settings%update_all_types%')
       end
 
       it "touch settings_updated_at on site player_mode update" do
@@ -298,55 +301,13 @@ describe Site, :addons do
       let(:site) { create(:site) }
 
       it "delays Player::Loader update" do
-        expect { site }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+        -> { site }.should delay('%Player::Loader%update_all_modes%')
       end
 
       it "delays Player::Settings update" do
-        expect { site }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
+        -> { site }.should delay('%Player::Settings%update_all_types%')
       end
     end
-
-    describe "after_save :create_and_charge_invoice" do
-      let(:site) { create(:site) }
-
-      it "calls #create_and_charge_invoice" do
-        site.should_receive(:create_and_charge_invoice)
-        site.save!
-      end
-    end
-
-    describe "after_save :send_trial_started_email" do
-      context 'site in trial plan' do
-        let(:site) { create(:site, plan_id: @trial_plan.id) }
-
-        it "delays send_trial_started_email" do
-          expect { site }.to change(Delayed::Job.where{ handler =~ "%Class%trial_has_started%" }, :count).by(1)
-        end
-      end
-
-      context 'site in free plan' do
-        let(:site) { create(:site, plan_id: @free_plan.id) }
-
-        it "don't delay send_trial_started_email" do
-          expect { site }.to_not change(Delayed::Job.where{ handler =~ "%Class%trial_has_started%" }, :count)
-        end
-      end
-
-      context 'site in paid plan' do
-        let(:site) { create(:site, plan_id: @paid_plan.id) }
-
-        it "don't delay send_trial_started_email" do
-          expect { site }.to_not change(Delayed::Job.where{ handler =~ "%Class%trial_has_started%" }, :count)
-        end
-      end
-    end
-
-    describe "after_create :delay_update_ranks" do
-      it "delays update_ranks" do
-        expect { create(:site) }.to change(Delayed::Job.where{ handler =~ "%update_ranks%" }, :count).by(1)
-      end
-    end
-
   end # Callbacks
 
   describe "State Machine" do
@@ -355,47 +316,17 @@ describe Site, :addons do
 
       it "delays Player::Loader update" do
         site
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Player::Loader%update_all_modes%')
         expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
       end
 
       it "delays Player::Settings update" do
         site
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Player::Loader%update_all_modes%')
         expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
       end
     end
   end # State Machine
-
-  describe 'Class methods' do
-    describe 'update_ranks' do
-      use_vcr_cassette 'sites/ranks'
-
-      context "site has a hostname" do
-        it "updates ranks" do
-          site = create(:fake_site, hostname: 'sublimevideo.net')
-          Delayed::Job.delete_all
-
-          described_class.send(:update_ranks, site.id)
-          site.reload
-
-          site.google_rank.should eq 6
-          site.alexa_rank.should eq 91386
-        end
-      end
-
-      context "site has blank hostname" do
-        it "updates ranks" do
-          site = create(:fake_site, hostname: '', plan_id: @free_plan.id)
-          Delayed::Job.delete_all
-
-          described_class.send(:update_ranks, site.id)
-          site.reload
-
-          site.google_rank.should eq 0
-          site.alexa_rank.should eq 0
-        end
-      end
-    end
-  end
 
   describe 'Instance Methods' do
 

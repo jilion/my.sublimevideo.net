@@ -56,7 +56,11 @@ class Site < ActiveRecord::Base
   has_many :addonships, class_name: 'Addons::Addonship', autosave: true, dependent: :destroy
   has_many :addons, through: :addonships, class_name: 'Addons::Addon' do
     def active
-      where { addonships.state >> %w[beta trial sponsored paying] }
+      where { addonships.state >> Addons::Addonship::ACTIVE_STATES }
+    end
+
+    def out_of_trial
+      merge(Addons::Addonship.out_of_trial)
     end
   end
   has_many :addon_activities, through: :addonships, class_name: 'Addons::AddonActivity'
@@ -104,7 +108,7 @@ class Site < ActiveRecord::Base
   after_save ->(site) { Player::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
   # Player::Settings
   after_save ->(site) {
-    if plan_id? && (site.changed & Player::Settings::SITE_FIELDS).present?
+    if (site.changed & Player::Settings::SITE_FIELDS).present?
       Player::Settings.delay.update_all_types!(site.id)
       site.touch(:settings_updated_at)
     end
@@ -211,7 +215,7 @@ class Site < ActiveRecord::Base
   end
 
   def settings_changed?
-    (changed & %w[plan_id player_mode hostname extra_hostnames dev_hostnames path wildcard badged]).present?
+    (changed & %w[player_mode hostname extra_hostnames dev_hostnames path wildcard badged]).present?
   end
 
 private

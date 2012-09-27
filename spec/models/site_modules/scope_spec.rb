@@ -52,6 +52,48 @@ describe SiteModules::Scope, :plans do
     end
   end
 
+  describe "addons", :addons do
+    let(:site1) { create(:site, user: user) }
+    let(:site2) { create(:site, user: user) }
+
+    # describe ".with_addon_active" do
+    #   Addons::Addonship::ACTIVE_STATES.each do |state|
+    #     context "addonship is in #{state}" do
+    #       before do
+    #         create(:addonship, site: site1, addon: addon, state: state)
+    #         create(:addonship, site: site2, addon: addon, state: 'inactive')
+    #       end
+
+    #       it { Site.with_addon_active('foo', 'bar').all.should =~ [site1] }
+    #     end
+    #   end
+
+    #   Addons::Addonship::INACTIVE_STATES.each do |state|
+    #     context "addonship is in #{state}" do
+    #       before do
+    #         create(:addonship, site: site1, addon: addon, state: state)
+    #       end
+
+    #       it { Site.with_addon_active('foo', 'bar').all.should be_empty }
+    #     end
+    #   end
+    # end
+
+    describe ".with_out_of_trial_addons" do
+      before do
+        @addonship1 = create(:addonship, site: site1, addon: @logo_sublime_addon, state: 'trial', trial_started_on: (30.days - 1.second).ago)
+        @addonship2 = create(:addonship, site: site2, addon: @logo_no_logo_addon, state: 'trial', trial_started_on: (30.days + 1.second).ago)
+        @addonship3 = create(:addonship, site: site1, addon: @stats_standard_addon, state: 'trial')
+        @addonship4 = create(:addonship, site: site2, addon: @support_standard_addon, state: 'subscribed', trial_started_on: (30.days + 1.second).ago)
+        @addonship5 = create(:addonship, site: site1, addon: @support_vip_addon, state: 'subscribed')
+        @addonship6 = create(:addonship, site: site2, state: 'inactive')
+      end
+
+      it { Site.with_out_of_trial_addons.all.should =~ [site2] }
+    end
+
+  end
+
   describe "invoices" do
     before do
       @site_with_no_invoice       = create(:new_site, user: user)

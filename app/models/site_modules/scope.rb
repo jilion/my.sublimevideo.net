@@ -17,30 +17,37 @@ module SiteModules::Scope
     # attributes queries
     scope :with_wildcard,              where{ wildcard == true }
     scope :with_path,                  where{ (path != nil) & (path != '') & (path != ' ') }
-    scope :badged,                     lambda { |bool| where{ badged == bool } }
+    scope :badged,                     ->(bool) { where{ badged == bool } }
     scope :with_extra_hostnames,       where{ (extra_hostnames != nil) & (extra_hostnames != '') }
-    scope :with_not_canceled_invoices, lambda { joins(:invoices).merge(::Invoice.not_canceled) }
+    scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
+
+    # addons
+    # scope :with_addon_active, ->(category, name) {
+    #   includes(:addons).where{ addonships.state >> Addons::Addonship::ACTIVE_STATES } \
+    #   .where{ (addons.category == category) & (addons.name == name) }
+    # }
+    scope :with_out_of_trial_addons, -> { includes(:addons).merge(Addons::Addonship.out_of_trial) }
 
     # admin
-    scope :user_id, lambda { |user_id| where(user_id: user_id) }
+    scope :user_id, ->(user_id) { where(user_id: user_id) }
 
     # sort
-    scope :by_hostname,         lambda { |way = 'asc'| order{ hostname.send(way) }.order{ token.send(way) } }
-    scope :by_user,             lambda { |way = 'desc'| includes(:user).order{ user.name.send(way) }.order{ user.email.send(way) } }
-    scope :by_state,            lambda { |way = 'desc'| order{ state.send(way) } }
-    scope :by_plan_price,       lambda { |way = 'desc'| includes(:plan).order{ plan.price.send(way) } }
-    scope :by_google_rank,      lambda { |way = 'desc'| where{ google_rank >= 0 }.order{ google_rank.send(way) } }
-    scope :by_alexa_rank,       lambda { |way = 'desc'| where{ alexa_rank >= 1 }.order{ alexa_rank.send(way) } }
-    scope :by_date,             lambda { |way = 'desc'| order{ created_at.send(way) } }
-    scope :by_trial_started_at, lambda { |way = 'desc'| order{ trial_started_at.send(way) } }
-    scope :by_last_30_days_video_tags, lambda { |way = 'desc'| order{ last_30_days_video_tags.send(way) } }
-    scope :by_last_30_days_billable_video_views, lambda { |way = 'desc'|
+    scope :by_hostname,         ->(way = 'asc') { order{ hostname.send(way) }.order{ token.send(way) } }
+    scope :by_user,             ->(way = 'desc') { includes(:user).order{ user.name.send(way) }.order{ user.email.send(way) } }
+    scope :by_state,            ->(way = 'desc') { order{ state.send(way) } }
+    scope :by_plan_price,       ->(way = 'desc') { includes(:plan).order{ plan.price.send(way) } }
+    scope :by_google_rank,      ->(way = 'desc') { where{ google_rank >= 0 }.order{ google_rank.send(way) } }
+    scope :by_alexa_rank,       ->(way = 'desc') { where{ alexa_rank >= 1 }.order{ alexa_rank.send(way) } }
+    scope :by_date,             ->(way = 'desc') { order{ created_at.send(way) } }
+    scope :by_trial_started_at, ->(way = 'desc') { order{ trial_started_at.send(way) } }
+    scope :by_last_30_days_video_tags, ->(way = 'desc') { order{ last_30_days_video_tags.send(way) } }
+    scope :by_last_30_days_billable_video_views, ->(way = 'desc') {
       order("(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views + sites.last_30_days_embed_video_views) #{way}")
     }
-    scope :with_min_billable_video_views, lambda { |min|
+    scope :with_min_billable_video_views, ->(min) {
       where("(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views + sites.last_30_days_embed_video_views) >= #{min}")
     }
-    scope :by_last_30_days_extra_video_views_percentage, lambda { |way = 'desc'|
+    scope :by_last_30_days_extra_video_views_percentage, ->(way = 'desc') {
       order("CASE WHEN (sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views) > 0
       THEN (sites.last_30_days_extra_video_views / CAST(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views AS DECIMAL))
       ELSE -1 END #{way}")

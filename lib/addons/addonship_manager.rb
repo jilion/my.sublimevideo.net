@@ -1,29 +1,16 @@
 module Addons
   class AddonshipManager < Struct.new(:site, :addon)
 
-    def self.update_addonships_for_site!(site, new_addonships)
-      Addons::Addon.transaction do
-        new_addonships.each do |category, addon_name|
-          if addon_name == '0'
-            new(site).deactivate_addonships_in_category!(category)
-          else
-            manager = new(site, Addons::Addon.find_by_category_and_name(category.to_s, addon_name.to_s))
-            manager.activate!
-          end
-        end
-      end
-    end
-
     def initialize(*args)
       super
       @addonships_in_category = {}
     end
 
     def activate!
-      return if site.addon_is_active?(addon)
+      return if active?
 
       deactivate_addonships_in_category!(addon.category, except_addon_id: addon.id)
-      activate_addonship
+      activate_addonship!
     end
 
     def deactivate_addonships_in_category!(category, options = {})
@@ -32,23 +19,26 @@ module Addons
       end
     end
 
-    def out_of_trial?(oldest_trial_start_date = BusinessModel.days_for_trial.days.ago)
-      !addonship.trial_started_on.nil? && addonship.trial_started_on < oldest_trial_start_date
+    def active?
+      site.addon_is_active?(addon)
     end
 
-    def free_addon?
+    def out_of_trial?(trial_start_date = BusinessModel.days_for_trial.days.ago)
+      !addonship.trial_started_on.nil? && addonship.trial_started_on < trial_start_date
+    end
+
+    def free?
       addon.price.zero?
     end
 
     private
 
-    def activate_addonship
-      addonship.state = if addon.beta?
-        'beta'
+    def activate_addonship!
+      if addon.beta?
+        addonship.start_beta!
       else
-        out_of_trial? || free_addon? ? 'paying' : 'trial'
+        out_of_trial? || free? ? addonship.subscribe! : addonship.start_trial!
       end
-      addonship.save!
     end
 
     def addonships_in_category(category, except_addon_id = nil)

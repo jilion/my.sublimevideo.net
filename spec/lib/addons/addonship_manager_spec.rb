@@ -9,28 +9,6 @@ describe Addons::AddonshipManager do
   let(:addonship) { Struct.new(:state).new }
   let(:manager)   { described_class.new(site, addon) }
 
-  describe '.update_addonships_for_site!' do
-    let(:manager) { stub(:manager) }
-    before do
-      Addons::Addon.should_receive(:transaction).and_yield
-    end
-
-    it 'activate addons with new status == 1' do
-      Addons::Addon.should_receive(:find_by_category_and_name) { addon }
-      described_class.should_receive(:new).with(site, addon) { manager }
-      manager.should_receive(:activate!)
-
-      described_class.update_addonships_for_site!(site, logo: 'no-logo')
-    end
-
-    it 'deactivate addons with new status == 0' do
-      described_class.should_receive(:new).with(site) { manager }
-      manager.should_receive(:deactivate_addonships_in_category!).with(:stats)
-
-      described_class.update_addonships_for_site!(site, stats: '0')
-    end
-  end
-
   describe '#activate!' do
     before do
       manager.stub(:addonship) { addonship }
@@ -38,7 +16,7 @@ describe Addons::AddonshipManager do
 
     context 'addon is already activated' do
       it 'does nothing' do
-        site.should_receive(:addon_is_active?).with(addon) { true }
+        manager.should_receive(:active?) { true }
 
         manager.activate!
       end
@@ -46,12 +24,12 @@ describe Addons::AddonshipManager do
 
     context 'addon is not already activated' do
       before do
-        site.should_receive(:addon_is_active?).with(addon) { false }
+        manager.should_receive(:active?) { false }
       end
 
       it 'deactivate all addonships in the category and activate the given addon' do
         manager.should_receive(:deactivate_addonships_in_category!).with('logo', except_addon_id: 1234)
-        manager.should_receive(:activate_addonship)
+        manager.should_receive(:activate_addonship!)
 
         manager.activate!
       end
@@ -69,7 +47,7 @@ describe Addons::AddonshipManager do
     end
   end
 
-  describe '#activate_addonship' do
+  describe '#activate_addonship!' do
     before do
       manager.stub(:addonship) { addonship }
     end
@@ -83,11 +61,9 @@ describe Addons::AddonshipManager do
         let(:addon) { stub(:addon, beta?: true) }
 
         it 'deactivate all addons in the category and activate the given addon' do
-          addonship.should_receive(:save!)
+          addonship.should_receive(:start_beta!)
 
-          manager.send(:activate_addonship)
-
-          addonship.state.should == 'beta'
+          manager.send(:activate_addonship!)
         end
       end
 
@@ -95,10 +71,9 @@ describe Addons::AddonshipManager do
         let(:addon) { stub(:addon, beta?: false, price: 0) }
 
         it 'deactivate all addons in the category and activate the given addon' do
-          addonship.should_receive(:save!)
+          addonship.should_receive(:subscribe!)
 
-          manager.send(:activate_addonship)
-          addonship.state.should == 'paying'
+          manager.send(:activate_addonship!)
         end
       end
 
@@ -106,10 +81,9 @@ describe Addons::AddonshipManager do
         let(:addon) { stub(:addon, beta?: false, price: 999) }
 
         it 'deactivate all addons in the category and activate the given addon' do
-          addonship.should_receive(:save!)
+          addonship.should_receive(:start_trial!)
 
-          manager.send(:activate_addonship)
-          addonship.state.should == 'trial'
+          manager.send(:activate_addonship!)
         end
       end
     end
@@ -123,10 +97,9 @@ describe Addons::AddonshipManager do
         let(:addon) { stub(:addon, beta?: true) }
 
         it 'deactivate all addons in the category and activate the given addon' do
-          addonship.should_receive(:save!)
+          addonship.should_receive(:start_beta!)
 
-          manager.send(:activate_addonship)
-          addonship.state.should == 'beta'
+          manager.send(:activate_addonship!)
         end
       end
 
@@ -134,13 +107,34 @@ describe Addons::AddonshipManager do
         let(:addon) { stub(:addon, beta?: false) }
 
         it 'deactivate all addons in the category and activate the given addon' do
-          addonship.should_receive(:save!)
+          addonship.should_receive(:subscribe!)
 
-          manager.send(:activate_addonship)
-          addonship.state.should == 'paying'
+          manager.send(:activate_addonship!)
         end
       end
 
+    end
+  end
+
+  describe '#active?' do
+    context 'addon is not active' do
+      before do
+        site.should_receive(:addon_is_active?).with(addon) { false }
+      end
+
+      it 'asks the site if the addon is active' do
+        manager.should_not be_active
+      end
+    end
+
+    context 'addon is active' do
+      before do
+        site.should_receive(:addon_is_active?).with(addon) { true }
+      end
+
+      it 'asks the site if the addon is active' do
+        manager.should be_active
+      end
     end
   end
 
@@ -162,13 +156,13 @@ describe Addons::AddonshipManager do
     end
   end
 
-  describe '#free_addon?' do
+  describe '#free?' do
     context 'addon has a price == 0' do
-      it { described_class.new(site, stub(price: 0)).should be_free_addon }
+      it { described_class.new(site, stub(price: 0)).should be_free }
     end
 
     context 'addon has a price != 0' do
-      it { described_class.new(site, stub(price: 1)).should_not be_free_addon }
+      it { described_class.new(site, stub(price: 1)).should_not be_free }
     end
   end
 

@@ -190,7 +190,7 @@ FactoryGirl.define do
   factory :addon, class: Addons::Addon do
     sequence(:category) { |n| "category#{n}" }
     sequence(:name)     { |n| "name#{n}" }
-    sequence(:title)     { |n| "Name #{n}" }
+    sequence(:title)    { |n| "Name #{n}" }
     price               999
     availability        'public'
   end
