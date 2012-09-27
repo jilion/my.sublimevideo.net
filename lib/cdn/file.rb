@@ -79,7 +79,7 @@ module CDN
 
     def purge_cdn
       unless options && options[:purge] == false
-        CDN.purge("/#{destinations.first[:path]}")
+        CDN.delay.purge("/#{destinations.first[:path]}")
       end
     end
 
