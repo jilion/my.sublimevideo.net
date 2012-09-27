@@ -14,7 +14,8 @@ class MySublimeVideo.UI.SitesStatus
       if el.find("td.status .in_progress").exists()
         token = el.data('site-token')
         cdnUpdatedAt = parseInt(el.find("td.status").data('cdn-updated-at')) * 1000
-        @inProgress[token] = cdnUpdatedAt
+        unless cdnUpdatedAt == 0
+          @inProgress[token] = cdnUpdatedAt
 
   delaySetCompletedStatus: ->
     _.each @inProgress, (cdnUpdatedAt, token) =>
