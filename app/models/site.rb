@@ -101,8 +101,6 @@ class Site < ActiveRecord::Base
   # before_validation :set_user_attributes
   before_validation :set_default_dev_hostnames, unless: :dev_hostnames?
 
-  after_create :update_last_30_days_video_views_counters # in site_modules/usage
-
   # Player::Loader
   after_create ->(site) { Player::Loader.delay.update_all_modes!(site.id) }
   after_save ->(site) { Player::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }

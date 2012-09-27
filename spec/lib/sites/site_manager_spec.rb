@@ -9,7 +9,8 @@ Sites::RankManager = Class.new unless defined?(Sites::RankManager)
 describe Sites::SiteManager do
   let(:user)           { stub(sites: []) }
   let(:site)           { Struct.new(:user, :id).new(nil, 1234) }
-  let(:manager)        { described_class.new(user) }
+  let(:manager)        { described_class.new(site) }
+  let(:usage_manager)  { stub }
   let(:delayed_method) { stub }
 
   describe '.create' do
@@ -17,6 +18,8 @@ describe Sites::SiteManager do
       Site.should_receive(:transaction).and_yield
       Addons::AddonshipManager.stub(:update_addonships_for_site!)
       Sites::RankManager.stub(:delay) { delayed_method }
+      Sites::UsageManager.stub(:new) { usage_manager }
+      usage_manager.stub(:update_last_30_days_video_views_counters)
       delayed_method.stub(:set_ranks)
     end
 
@@ -28,7 +31,7 @@ describe Sites::SiteManager do
       it 'set the site user and save it to the database' do
         site.user.should be_nil
 
-        manager.create(site).should be_true
+        manager.create(user).should be_true
 
         site.user.should eq user
       end
@@ -36,14 +39,20 @@ describe Sites::SiteManager do
       it 'adds default add-ons to site after creation' do
         Addons::AddonshipManager.should_receive(:update_addonships_for_site!).with(site, logo: 'sublime', support: 'standard')
 
-        manager.create(site)
+        manager.create(user)
       end
 
       it 'delays the calculation of google and alexa ranks' do
-        Sites::RankManager.should_receive(:delay) { delayed_method }
         delayed_method.should_receive(:set_ranks).with(site.id)
 
-        manager.create(site)
+        manager.create(user)
+      end
+
+      it 'updates the last 30 days views counter' do
+        Sites::UsageManager.should_receive(:new).with(site) { usage_manager }
+        usage_manager.should_receive(:update_last_30_days_video_views_counters)
+
+        manager.create(user)
       end
     end
 
