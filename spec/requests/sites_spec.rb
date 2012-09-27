@@ -408,8 +408,6 @@ def last_site_should_be_created_with_no_invoice(hostname, plan)
   $worker.work_off
   site.reload
   site.hostname.should eq hostname
-  site.loader.read.should include(site.token)
-  site.license.read.should include(site.license_js_hash)
 
   current_url.should eq 'http://my.sublimevideo.dev/sites'
   page.should have_content (hostname.present? ? hostname : 'add a hostname')
@@ -423,8 +421,6 @@ def last_site_should_be_created_and_invoice_paid(hostname, plan)
   site.reload
   site.invoices.last.should be_paid
   site.hostname.should eq hostname
-  site.loader.read.should include(site.token)
-  site.license.read.should include(site.license_js_hash)
   site.plan_id.should eq plan.id
   site.pending_plan_id.should be_nil
   site.first_paid_plan_started_at.should be_present
@@ -447,8 +443,6 @@ def last_site_should_be_created_and_invoice_failed(hostname, plan)
   site.reload
   site.invoices.last.should be_failed
   site.hostname.should eq hostname
-  site.loader.read.should be_nil
-  site.license.read.should be_nil
   site.plan_id.should be_nil
   site.pending_plan_id.should eq plan.id
   site.first_paid_plan_started_at.should be_present

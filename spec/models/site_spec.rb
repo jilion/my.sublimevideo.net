@@ -16,8 +16,6 @@ describe Site, :plans do
     its(:wildcard)                                { should be_false }
     its(:badged)                                  { should be_true }
     its(:token)                                   { should =~ /^[a-z0-9]{8}$/ }
-    its(:license)                                 { should_not be_present }
-    its(:loader)                                  { should_not be_present }
     its(:player_mode)                             { should eq "stable" }
     its(:plan_started_at)                         { should eq Time.now.utc.midnight }
     its(:plan_cycle_started_at)                   { should eq Time.now.utc.midnight }
@@ -44,9 +42,6 @@ describe Site, :plans do
     it { should belong_to(:user).validate(true) }
     it { should belong_to :plan }
     it { should have_many :invoices }
-
-    it { should have_many :bundleships }
-    it { should have_many(:bundles).through(:bundleships) }
 
     describe "last_invoice" do
       let(:site) { create(:site_with_invoice, plan_id: @paid_plan.id) }
@@ -479,92 +474,6 @@ describe Site, :plans do
     end
   end
 
-  describe "State Machine" do
-    before { CDN.stub(:purge) }
-
-    describe "#suspend" do
-      subject do
-        site = build(:new_site)
-        site.apply_pending_attributes
-        $worker.work_off
-        site
-      end
-
-      it "should clear & purge license & loader" do
-        CDN.should_receive(:purge).with("/js/#{subject.token}.js")
-        CDN.should_receive(:purge).with("/l/#{subject.token}.js")
-        subject.suspend
-        $worker.work_off
-        subject.reload.loader.should_not be_present
-        subject.license.should_not be_present
-      end
-
-      # it "delays Player::Settings.delete!" do
-      #   expect { subject.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%delete!%" }, :count).by(1)
-      # end
-    end
-
-    describe "#unsuspend" do
-      subject do
-        site = build(:new_site)
-        site.apply_pending_attributes
-        $worker.work_off
-        site
-      end
-
-      it "should reset license & loader" do
-        CDN.should_receive(:purge).with("/js/#{subject.token}.js")
-        CDN.should_receive(:purge).with("/l/#{subject.token}.js")
-        subject.suspend
-        $worker.work_off
-        subject.reload.loader.should_not be_present
-        subject.license.should_not be_present
-
-        subject.unsuspend
-        $worker.work_off
-        subject.reload.loader.should be_present
-        subject.license.should be_present
-      end
-    end
-
-    describe "#archive" do
-      context "from active state" do
-        subject do
-          site = create(:site)
-          $worker.work_off
-          site
-        end
-
-        it "should clear & purge license & loader and set archived_at" do
-          CDN.should_receive(:purge).with("/js/#{subject.token}.js")
-          CDN.should_receive(:purge).with("/l/#{subject.token}.js")
-          subject.user.current_password = '123456'
-          expect { subject.archive! }.to change(
-            Delayed::Job.where{ handler =~ "%remove_loader_and_license%" },
-            :count
-          ).by(1)
-          subject.reload.should be_archived
-          expect { $worker.work_off }.to change(
-            Delayed::Job.where{ handler =~ "%remove_loader_and_license%" },
-            :count
-          ).by(-1)
-          subject.reload.loader.should_not be_present
-          subject.license.should_not be_present
-          subject.archived_at.should be_present
-        end
-
-        # it "delays Player::Settings.delete!" do
-        #   subject.user.current_password = '123456'
-        #   expect { subject.archive }.to change(
-        #     Delayed::Job.where{ handler =~ "%Player::Settings%delete!%" },
-        #     :count
-        #   ).by(1)
-        # end
-      end
-    end
-
-  end
-
   describe "Versioning" do
     subject { with_versioning { create(:site) } }
 
@@ -573,17 +482,6 @@ describe Site, :plans do
         old_hostname = subject.hostname
         subject.update_attributes(hostname: "bob.com", user_attributes: { 'current_password' => '123456' })
         subject.versions.last.reify.hostname.should eq old_hostname
-      end
-    end
-
-    [:cdn_up_to_date, :license, :loader].each do |attr|
-      it "doesn't version when :#{attr} changes" do
-        with_versioning do
-          expect do
-            subject.send("#{attr}=", "bob.com")
-            subject.save
-          end.to_not change(subject.versions, :count)
-        end
       end
     end
   end # Versioning
@@ -616,37 +514,59 @@ describe Site, :plans do
     end
 
     describe "before_save" do
-      subject { create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc) }
+      let(:site) { create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc) }
 
       describe "#clear_alerts_sent_at" do
         specify do
-          subject.should_receive(:clear_alerts_sent_at)
-          subject.save
+          site.should_receive(:clear_alerts_sent_at)
+          site.save
         end
       end
 
       describe "#prepare_pending_attributes" do
         context "when pending_plan_id has changed" do
           it "calls #prepare_pending_attributes" do
-            subject.reload
-            subject.plan_id = @paid_plan.id
-            VCR.use_cassette('ogone/visa_payment_generic') { subject.skip_password(:save!) }
-            subject.pending_plan_id.should eq @paid_plan.id
-            subject.reload # apply_pending_attributes called
-            subject.plan_id.should eq @paid_plan.id
-            subject.pending_plan_id.should be_nil
+            site.reload
+            site.plan_id = @paid_plan.id
+            VCR.use_cassette('ogone/visa_payment_generic') { site.skip_password(:save!) }
+            site.pending_plan_id.should eq @paid_plan.id
+            site.reload # apply_pending_attributes called
+            site.plan_id.should eq @paid_plan.id
+            site.pending_plan_id.should be_nil
           end
         end
 
         context "when pending_plan_id doesn't change" do
           it "doesn't call #prepare_pending_attributes" do
-            subject.hostname = 'test.com'
-            subject.skip_password(:save!)
-            subject.pending_plan_id.should be_nil
+            site.hostname = 'test.com'
+            site.skip_password(:save!)
+            site.pending_plan_id.should be_nil
           end
         end
       end
+
+      it "delays Player::Loader update on site player_mode update" do
+        site = create(:site)
+        expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+      end
+
+      it "delays Player::Settings update on site player_mode update" do
+        site = create(:site)
+        expect { site.update_attribute(:player_mode, 'beta') }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
+      end
     end # before_save
+
+    describe "after_create" do
+      let(:site) { create(:site) }
+
+      it "delays Player::Loader update" do
+        expect { site }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+      end
+
+      it "delays Player::Settings update" do
+        expect { site }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
+      end
+    end
 
     describe "after_save :create_and_charge_invoice" do
       let(:site) { create(:site) }
@@ -690,6 +610,22 @@ describe Site, :plans do
     end
 
   end # Callbacks
+
+  describe "State Machine" do
+    describe "after transition" do
+      let(:site) { create(:site) }
+
+      it "delays Player::Loader update" do
+        site
+        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+      end
+
+      it "delays Player::Settings update" do
+        site
+        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
+      end
+    end
+  end # State Machine
 
   describe 'Class methods' do
     describe 'update_ranks' do
@@ -962,7 +898,6 @@ end
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean
-#  cdn_up_to_date                            :boolean          default(FALSE)
 #  created_at                                :datetime         not null
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
@@ -979,8 +914,7 @@ end
 #  last_30_days_invalid_video_views          :integer          default(0)
 #  last_30_days_main_video_views             :integer          default(0)
 #  last_30_days_video_tags                   :integer          default(0)
-#  license                                   :string(255)
-#  loader                                    :string(255)
+#  loaders_updated_at                        :datetime
 #  next_cycle_plan_id                        :integer
 #  overusage_notification_sent_at            :datetime
 #  path                                      :string(255)

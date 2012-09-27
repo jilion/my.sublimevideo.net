@@ -32,12 +32,12 @@ feature "Token authentication:" do
     }
     admin = Admin.last
     admin.reset_authentication_token!
-    go 'admin', "player/bundles.json?auth_token=#{admin.authentication_token}"
+    go 'admin', "player/components.json?auth_token=#{admin.authentication_token}"
     page.driver.status_code.should eq 200
   end
 
   scenario "fails" do
-    go 'admin', 'player/bundles.json?auth_token=FAIL'
+    go 'admin', 'player/components.json?auth_token=FAIL'
     page.driver.status_code.should eq 401
     page.body.should include('Invalid authentication token.')
   end

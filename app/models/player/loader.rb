@@ -1,55 +1,96 @@
 # TODO
-# - per site
-# - include bundles relation with good version depending on the site.player_mode (stabe, beta, alpha) & app bundle
+# - include component relation with good version depending on the site.player_mode (stabe, beta, alpha) & app component
 
 require 'tempfile'
-require_dependency 'cdn'
+require_dependency 'cdn/file'
 
-class Player::Loader < Struct.new(:tag, :version, :file)
+class Player::Loader < Struct.new(:site, :mode, :file, :cdn_file)
+  MODES = %w[stable beta alpha]
+  delegate :token, :player_mode, to: :site
+  delegate :upload!, :delete!, :present?, to: :cdn_file
 
-  TEMPLATE_PATH = Rails.root.join("app/templates/player/loader.js.erb")
-
-  def self.update!(tag, version)
-    loader = new(tag, version)
-    loader.upload!
+  def self.update_all_modes!(site_id, options = {})
+    site = Site.find(site_id)
+    modes_needed = site_loader_modes(site)
+    changed = []
+    MODES.each do |mode|
+      if modes_needed.include?(mode)
+        changed << new(site, mode).upload!
+      else
+        new(site, mode).delete!
+      end
+    end
+    site.touch(:loaders_updated_at) if changed.any? && options[:touch] != false
   end
 
   def initialize(*args)
     super
-    generate_file
+    self.file = generate_file
+    self.cdn_file = CDN::File.new(
+      file,
+      destinations,
+      s3_options
+    )
   end
 
-  def upload!
-    File.open(file) do |f|
-      S3.fog_connection.put_object(
-        S3.buckets['sublimevideo'],
-        filename,
-        f.read,
-        {
-          'Cache-Control' => 'max-age=300, public', # 5 minutes
-          'Content-Type'  => 'text/javascript',
-          'x-amz-acl'     => 'public-read'
-        }
-      )
-    end
-    CDN.purge(filename)
-  end
-
-  def filename
-    if tag == 'stable'
-      'loader.js'
-    else
-      "loader-#{tag}.js"
-    end
+  def components_path
+    [] # TODO Thibaud
   end
 
 private
 
+  def self.site_loader_modes(site)
+    if site.state == 'active'
+      case site.player_mode
+      when 'stable'; %w[stable]
+      when 'beta'; %w[stable beta]
+      when 'alpha'; %w[stable beta alpha]
+      end
+    else
+      []
+    end
+  end
+
   def generate_file
-    template = ERB.new(File.new(TEMPLATE_PATH).read)
-    self.file = Tempfile.new(filename, "#{Rails.root}/tmp")
-    self.file.print template.result(binding)
-    self.file.flush
+    template_path = Rails.root.join("app/templates/player/#{template_file}")
+    template = ERB.new(File.new(template_path).read)
+    file = Tempfile.new("l-#{site.token}.js", "#{Rails.root}/tmp")
+    file.print template.result(binding)
+    file.flush
+    file
+  end
+
+  def template_file
+    if mode == 'stable'
+      "loader-old.js.erb"
+    else
+      "loader.js.erb"
+    end
+  end
+
+  def destinations
+    if mode == 'stable'
+      [{
+        bucket: S3.buckets['sublimevideo'],
+        path: "js/#{site.token}.js"
+      },{
+        bucket: S3.buckets['loaders'],
+        path: "loaders/#{site.token}.js"
+      }]
+    else
+      [{
+        bucket: S3.buckets['sublimevideo'],
+        path: "js/#{site.token}-#{mode}.js"
+      }]
+    end
+  end
+
+  def s3_options
+    {
+      'Cache-Control' => 'max-age=120, public', # 2 minutes
+      'Content-Type'  => 'text/javascript',
+      'x-amz-acl'     => 'public-read'
+    }
   end
 
 end

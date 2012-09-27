@@ -3,10 +3,16 @@ module OneTime
 
     class << self
 
-      def regenerate_templates(options)
+      def regenerate_templates(options = {})
         scheduled, delay = 0, 5
         ::Site.active.find_each(batch_size: 100) do |site|
-          ::Site.delay(priority: 200, run_at: delay.seconds.from_now).update_loader_and_license(site.id, options)
+          if options[:loaders]
+            Player::Loader.delay(priority: 200, run_at: delay.seconds.from_now).update_all_modes!(site.id, touch: false)
+          end
+          if options[:settings]
+            Player::Settings.delay(priority: 200, run_at: delay.seconds.from_now).update_all_types!(site.id, touch: false)
+          end
+
           scheduled += 1
 
           if (scheduled % 500).zero?

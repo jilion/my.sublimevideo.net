@@ -675,3 +675,198 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Grantee><Permission>FULL_CONTROL</Permission></Grant><Grant><Grantee
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant></AccessControlList></AccessControlPolicy>'
     http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://dev.sublimevideo.s3.amazonaws.com:443/?prefix=dev
+    body: 
+    headers:
+      user-agent:
+      - ''
+      content-type:
+      - ''
+      date:
+      - Wed, 26 Sep 2012 12:47:04 GMT
+      authorization:
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:1XPRU5KLNQP7tmnD7Ggqr4fa8JE=
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      x-amz-id-2:
+      - z8PrpNFq3VemZOl5RlIj1HJR3O/CEqtQOdF5pRDJkHCAjeLFqvgVRNIfvzrJCyvl
+      x-amz-request-id:
+      - 59D7065FD143F57E
+      date:
+      - Wed, 26 Sep 2012 12:47:06 GMT
+      content-type:
+      - application/xml
+      transfer-encoding:
+      - chunked
+      server:
+      - AmazonS3
+    body: ! '<?xml version="1.0" encoding="UTF-8"?>
+
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo</Name><Prefix>dev</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: https://dev.sublimevideo.s3.amazonaws.com:443/dev%2Fsublime.js.jgz
+    body: player
+    headers:
+      user-agent:
+      - ''
+      content-type:
+      - text/javascript
+      content-encoding:
+      - gzip
+      x-amz-acl:
+      - public-read
+      content-length:
+      - '6'
+      date:
+      - Wed, 26 Sep 2012 12:47:05 GMT
+      authorization:
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:r4z/zmlyuJaHbKoifsEGmGH3hRY=
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      x-amz-id-2:
+      - M+DZh/ngNnmwuX9d1UN9JyINOoWTOSQIVTc6xrmm18igNw8DDC71Z4l6OQGGs3QP
+      x-amz-request-id:
+      - 1DBEE853E77D826E
+      date:
+      - Wed, 26 Sep 2012 12:47:06 GMT
+      etag:
+      - ! '"912af0dff974604f1321254ca8ff38b6"'
+      content-length:
+      - '0'
+      server:
+      - AmazonS3
+    body: 
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: https://dev.sublimevideo.s3.amazonaws.com:443/dev%2Fsublime_css.js.jgz
+    body: css
+    headers:
+      user-agent:
+      - ''
+      content-type:
+      - text/javascript
+      content-encoding:
+      - gzip
+      x-amz-acl:
+      - public-read
+      content-length:
+      - '3'
+      date:
+      - Wed, 26 Sep 2012 12:47:06 GMT
+      authorization:
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:WIsEQYnXiGhXwfkwiaW99Ac8HmY=
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      x-amz-id-2:
+      - UzG0L0XzPDbXe5LymFW+0d/iFw0uF5TxJ/5W9h35piPtB+up5CUsvhzYP0o+tVJF
+      x-amz-request-id:
+      - F04453A58B03F87C
+      date:
+      - Wed, 26 Sep 2012 12:47:07 GMT
+      etag:
+      - ! '"c7a628cba22e28eb17b5f5c6ae2a266a"'
+      content-length:
+      - '0'
+      server:
+      - AmazonS3
+    body: 
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: https://dev.sublimevideo.s3.amazonaws.com:443/beta%2Fsublime.js.jgz
+    body: 
+    headers:
+      user-agent:
+      - ''
+      x-amz-acl:
+      - public-read
+      x-amz-metadata-directive:
+      - COPY
+      x-amz-copy-source:
+      - dev.sublimevideo/dev%2Fsublime.js.jgz
+      content-type:
+      - ''
+      date:
+      - Wed, 26 Sep 2012 12:47:30 GMT
+      authorization:
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:zMUTF4Ph7rmW3uE3R804fPLoz4k=
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      x-amz-id-2:
+      - MtNAzpRtxHQT8bim6uQ3GsWsaU3rF/EO2uiaGD53rV2PGWY6csxDQZHQD3/pI0lU
+      x-amz-request-id:
+      - C69DF221DD9056A5
+      date:
+      - Wed, 26 Sep 2012 12:47:31 GMT
+      content-type:
+      - application/xml
+      content-length:
+      - '234'
+      server:
+      - AmazonS3
+    body: ! '<?xml version="1.0" encoding="UTF-8"?>
+
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2012-09-26T12:47:31.000Z</LastModified><ETag>&quot;912af0dff974604f1321254ca8ff38b6&quot;</ETag></CopyObjectResult>'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: https://dev.sublimevideo.s3.amazonaws.com:443/beta%2Fsublime_css.js.jgz
+    body: 
+    headers:
+      user-agent:
+      - ''
+      x-amz-acl:
+      - public-read
+      x-amz-metadata-directive:
+      - COPY
+      x-amz-copy-source:
+      - dev.sublimevideo/dev%2Fsublime_css.js.jgz
+      content-type:
+      - ''
+      date:
+      - Wed, 26 Sep 2012 12:47:30 GMT
+      authorization:
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:8MPzhv+0+4hXBfNJvXvuv6GZ1DU=
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      x-amz-id-2:
+      - vBzLUHWqfzT8apjopdbkIaKnzjZwfjkpXRnjDDlYpsV1zRmS/hhyXLj2mg9ecNjV
+      x-amz-request-id:
+      - 39CE7FF76576F80F
+      date:
+      - Wed, 26 Sep 2012 12:47:32 GMT
+      content-type:
+      - application/xml
+      content-length:
+      - '234'
+      server:
+      - AmazonS3
+    body: ! '<?xml version="1.0" encoding="UTF-8"?>
+
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2012-09-26T12:47:32.000Z</LastModified><ETag>&quot;c7a628cba22e28eb17b5f5c6ae2a266a&quot;</ETag></CopyObjectResult>'
+    http_version: '1.1'

@@ -33,7 +33,7 @@ namespace :db do
         timed { create_site_stats }
         timed { create_deals }
         timed { create_mail_templates }
-        timed { create_player_bundles }
+        timed { create_player_components }
       end
     end
 
@@ -151,11 +151,11 @@ namespace :db do
       end
     end
 
-    desc "Create fake player bundles"
-    task player_bundles: :environment do
+    desc "Create fake player components"
+    task player_components: :environment do
       disable_perform_deliveries do
-        timed { empty_tables(Player::Bundle, Player::BundleVersion) }
-        timed { create_player_bundles }
+        timed { empty_tables(Player::Component, Player::ComponentVersion) }
+        timed { create_player_components }
       end
     end
 
@@ -355,10 +355,6 @@ def create_sites
       site.skip_password(:save!)
       site.update_column(:created_at, created_at_array.sample)
 
-      if rand > 0.3
-        site.cdn_up_to_date = true
-        site.skip_password(:save!)
-      end
       site.sponsor! if rand > 0.85
     end
   end
@@ -822,7 +818,7 @@ def create_plans
   puts "#{plans_attributes.size} plans created!"
 end
 
-def create_player_bundles
+def create_player_components
   names_token = {
     'app' => 'e',
     'subtitles' => 'bA'
@@ -830,17 +826,12 @@ def create_player_bundles
   versions = %w[2.0.0-alpha 2.0.0 1.1.0 1.0.0]
   version_zip = File.new(Rails.root.join('spec/fixtures/player/e.zip'))
   names_token.each do |name, token|
-    bundle = Player::Bundle.create(
+    component = Player::Component.create(
       name: name,
-      token: token,
-      version_tags: {
-        alpha: versions[0],
-        beta: versions[1],
-        stable: versions[2]
-      }
+      token: token
     )
     versions.each do |version|
-      bundle.versions.create(
+      component.versions.create(
         version: version,
         zip: version_zip
       )

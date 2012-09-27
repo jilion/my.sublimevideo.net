@@ -63,8 +63,8 @@ CREATE TABLE admins (
     locked_at timestamp without time zone,
     invitation_token character varying(60),
     invitation_sent_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     reset_password_sent_at timestamp without time zone,
     invitation_accepted_at timestamp without time zone,
     invitation_limit integer,
@@ -108,8 +108,8 @@ CREATE TABLE client_applications (
     callback_url character varying(255),
     key character varying(40),
     secret character varying(40),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -141,8 +141,8 @@ CREATE TABLE deal_activations (
     deal_id integer,
     user_id integer,
     activated_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -179,8 +179,8 @@ CREATE TABLE deals (
     availability_scope character varying(255),
     started_at timestamp without time zone,
     ended_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -217,8 +217,8 @@ CREATE TABLE delayed_jobs (
     locked_at timestamp without time zone,
     failed_at timestamp without time zone,
     locked_by character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -364,8 +364,8 @@ CREATE TABLE invoice_items (
     discounted_percentage double precision,
     price integer,
     amount integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     deal_id integer
 );
 
@@ -409,8 +409,8 @@ CREATE TABLE invoices (
     invoice_items_amount integer,
     invoice_items_count integer DEFAULT 0,
     transactions_count integer DEFAULT 0,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     paid_at timestamp without time zone,
     last_failed_at timestamp without time zone,
     renew boolean DEFAULT false,
@@ -459,8 +459,8 @@ CREATE TABLE mail_logs (
     criteria text,
     user_ids text,
     snapshot text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -492,8 +492,8 @@ CREATE TABLE mail_templates (
     title character varying(255),
     subject character varying(255),
     body text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -533,8 +533,8 @@ CREATE TABLE oauth_tokens (
     authorized_at timestamp without time zone,
     invalidated_at timestamp without time zone,
     valid_to timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -568,8 +568,8 @@ CREATE TABLE plans (
     cycle character varying(255),
     video_views integer,
     price integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     support_level integer DEFAULT 0,
     stats_retention_days integer
 );
@@ -595,25 +595,25 @@ ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
 
 --
--- Name: player_bundle_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: player_component_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE player_bundle_versions (
+CREATE TABLE player_component_versions (
     id integer NOT NULL,
-    player_bundle_id integer,
+    player_component_id integer,
     version character varying(255),
-    settings text,
     zip character varying(255),
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    dependencies hstore
 );
 
 
 --
--- Name: player_bundle_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: player_component_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE player_bundle_versions_id_seq
+CREATE SEQUENCE player_component_versions_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -622,31 +622,30 @@ CREATE SEQUENCE player_bundle_versions_id_seq
 
 
 --
--- Name: player_bundle_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: player_component_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE player_bundle_versions_id_seq OWNED BY player_bundle_versions.id;
+ALTER SEQUENCE player_component_versions_id_seq OWNED BY player_component_versions.id;
 
 
 --
--- Name: player_bundles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: player_components; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE player_bundles (
+CREATE TABLE player_components (
     id integer NOT NULL,
     token character varying(255),
     name character varying(255),
-    version_tags hstore,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
 
 
 --
--- Name: player_bundles_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: player_components_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE player_bundles_id_seq
+CREATE SEQUENCE player_components_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -655,31 +654,30 @@ CREATE SEQUENCE player_bundles_id_seq
 
 
 --
--- Name: player_bundles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: player_components_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE player_bundles_id_seq OWNED BY player_bundles.id;
+ALTER SEQUENCE player_components_id_seq OWNED BY player_components.id;
 
 
 --
--- Name: player_bundleships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: player_componentships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE player_bundleships (
+CREATE TABLE player_componentships (
     id integer NOT NULL,
-    site_id integer,
-    player_bundle_id integer,
-    version_tag character varying(255),
+    player_component_id integer,
+    addon_id integer,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
 
 
 --
--- Name: player_bundleships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: player_componentships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE player_bundleships_id_seq
+CREATE SEQUENCE player_componentships_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -688,10 +686,10 @@ CREATE SEQUENCE player_bundleships_id_seq
 
 
 --
--- Name: player_bundleships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: player_componentships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE player_bundleships_id_seq OWNED BY player_bundleships.id;
+ALTER SEQUENCE player_componentships_id_seq OWNED BY player_componentships.id;
 
 
 --
@@ -704,8 +702,8 @@ CREATE TABLE releases (
     date character varying(255),
     zip character varying(255),
     state character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -747,12 +745,10 @@ CREATE TABLE sites (
     hostname character varying(255),
     dev_hostnames text,
     token character varying(255),
-    license character varying(255),
-    loader character varying(255),
     state character varying(255),
     archived_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     player_mode character varying(255) DEFAULT 'stable'::character varying,
     google_rank integer,
     alexa_rank integer,
@@ -762,7 +758,6 @@ CREATE TABLE sites (
     plan_id integer,
     pending_plan_id integer,
     next_cycle_plan_id integer,
-    cdn_up_to_date boolean DEFAULT false,
     first_paid_plan_started_at timestamp without time zone,
     plan_started_at timestamp without time zone,
     plan_cycle_started_at timestamp without time zone,
@@ -783,7 +778,8 @@ CREATE TABLE sites (
     last_30_days_billable_video_views_array text,
     last_30_days_video_tags integer DEFAULT 0,
     first_billable_plays_at timestamp without time zone,
-    settings_updated_at timestamp without time zone
+    settings_updated_at timestamp without time zone,
+    loaders_updated_at timestamp without time zone
 );
 
 
@@ -887,8 +883,8 @@ CREATE TABLE transactions (
     pay_id character varying(255),
     nc_status integer,
     status integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -938,8 +934,8 @@ CREATE TABLE users (
     cc_last_digits character varying(255),
     cc_expire_on date,
     cc_updated_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     invitation_token character varying(60),
     invitation_sent_at timestamp without time zone,
     zendesk_id integer,
@@ -1147,21 +1143,21 @@ ALTER TABLE plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regclass);
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE player_bundle_versions ALTER COLUMN id SET DEFAULT nextval('player_bundle_versions_id_seq'::regclass);
+ALTER TABLE player_component_versions ALTER COLUMN id SET DEFAULT nextval('player_component_versions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE player_bundles ALTER COLUMN id SET DEFAULT nextval('player_bundles_id_seq'::regclass);
+ALTER TABLE player_components ALTER COLUMN id SET DEFAULT nextval('player_components_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE player_bundleships ALTER COLUMN id SET DEFAULT nextval('player_bundleships_id_seq'::regclass);
+ALTER TABLE player_componentships ALTER COLUMN id SET DEFAULT nextval('player_componentships_id_seq'::regclass);
 
 
 --
@@ -1329,7 +1325,7 @@ ALTER TABLE ONLY plans
 -- Name: player_bundle_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY player_bundle_versions
+ALTER TABLE ONLY player_component_versions
     ADD CONSTRAINT player_bundle_versions_pkey PRIMARY KEY (id);
 
 
@@ -1337,16 +1333,16 @@ ALTER TABLE ONLY player_bundle_versions
 -- Name: player_bundles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY player_bundles
+ALTER TABLE ONLY player_components
     ADD CONSTRAINT player_bundles_pkey PRIMARY KEY (id);
 
 
 --
--- Name: player_bundleships_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: player_componentships_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY player_bundleships
-    ADD CONSTRAINT player_bundleships_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY player_componentships
+    ADD CONSTRAINT player_componentships_pkey PRIMARY KEY (id);
 
 
 --
@@ -1441,6 +1437,13 @@ CREATE UNIQUE INDEX index_client_applications_on_key ON client_applications USIN
 
 
 --
+-- Name: index_component_versions_on_component_id_and_version; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_component_versions_on_component_id_and_version ON player_component_versions USING btree (player_component_id, version);
+
+
+--
 -- Name: index_deal_activations_on_deal_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1532,38 +1535,31 @@ CREATE UNIQUE INDEX index_plans_on_token ON plans USING btree (token);
 
 
 --
--- Name: index_player_bundle_versions_on_player_bundle_id_and_version; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_player_components_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_player_bundle_versions_on_player_bundle_id_and_version ON player_bundle_versions USING btree (player_bundle_id, version);
-
-
---
--- Name: index_player_bundles_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_player_bundles_on_name ON player_bundles USING btree (name);
+CREATE UNIQUE INDEX index_player_components_on_name ON player_components USING btree (name);
 
 
 --
--- Name: index_player_bundles_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_player_components_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_player_bundles_on_token ON player_bundles USING btree (token);
-
-
---
--- Name: index_player_bundleships_on_player_bundle_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_player_bundleships_on_player_bundle_id ON player_bundleships USING btree (player_bundle_id);
+CREATE UNIQUE INDEX index_player_components_on_token ON player_components USING btree (token);
 
 
 --
--- Name: index_player_bundleships_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_player_componentships_on_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_player_bundleships_on_site_id ON player_bundleships USING btree (site_id);
+CREATE INDEX index_player_componentships_on_addon_id ON player_componentships USING btree (addon_id);
+
+
+--
+-- Name: index_player_componentships_on_player_component_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_player_componentships_on_player_component_id ON player_componentships USING btree (player_component_id);
 
 
 --
@@ -1772,17 +1768,11 @@ INSERT INTO schema_migrations (version) VALUES ('20100701091254');
 
 INSERT INTO schema_migrations (version) VALUES ('20100706142731');
 
-INSERT INTO schema_migrations (version) VALUES ('20100707142429');
-
-INSERT INTO schema_migrations (version) VALUES ('20100707142455');
-
 INSERT INTO schema_migrations (version) VALUES ('20100720092023');
 
 INSERT INTO schema_migrations (version) VALUES ('20100720101348');
 
 INSERT INTO schema_migrations (version) VALUES ('20100722100536');
-
-INSERT INTO schema_migrations (version) VALUES ('20100722155430');
 
 INSERT INTO schema_migrations (version) VALUES ('20100723135123');
 
@@ -1891,3 +1881,11 @@ INSERT INTO schema_migrations (version) VALUES ('20120830142633');
 INSERT INTO schema_migrations (version) VALUES ('20120830144913');
 
 INSERT INTO schema_migrations (version) VALUES ('20120904100844');
+
+INSERT INTO schema_migrations (version) VALUES ('20120919094721');
+
+INSERT INTO schema_migrations (version) VALUES ('20120919140602');
+
+INSERT INTO schema_migrations (version) VALUES ('20120924140456');
+
+INSERT INTO schema_migrations (version) VALUES ('20120924141140');

@@ -12,8 +12,11 @@ describe OneTime::Site do
     end
 
     it 'regenerates loader and license of all sites' do
-      expect { described_class.regenerate_templates(loader: true, license: true) }.to change(
-        Delayed::Job.where{ handler =~ '%update_loader_and_license%' }, :count
+      expect { described_class.regenerate_templates(loaders: true) }.to change(
+        Delayed::Job.where{ handler =~ '%Player::Loader%update_all_modes%' }, :count
+      ).by(1)
+      expect { described_class.regenerate_templates(settings: true) }.to change(
+        Delayed::Job.where{ handler =~ '%Player::Settings%update_all_types%' }, :count
       ).by(1)
     end
   end
