@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Something Went Wrong (500)</title>
+    <link href="errors.css" media="screen" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="//use.typekit.com/vcc7hji.js"></script>
+    <script type="text/javascript">try { Typekit.load(); } catch(e) {}</script>
+  </head>
+
+  <body>
+    <div id="global">
+      <img src="500.png" alt="SublimeVideo 500" />
+      <div class="dialog">
+        <div id="content">
+          <p>Sorry, an issue has just occured, we've been informed and will have a look into it.</p>
+          <p>Go back to <a id="subdomain_link" href="http://sublimevideo.net">sublimevideo.net</a> or <a href="http://sublimevideo.net/contact">contact us</a> about a problem.</p>
+          <a href="http://sublimevideo.net" class="sublimevideo"><span>SublimeVideo</span></a>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var subdomainLink = document.getElementById('subdomain_link');
+      var host = document.location.host;
+      subdomainLink.href = subdomainLink.href.replace(/sublimevideo\.net/, document.location.host);
+      subdomainLink.innerText = host;
+    </script>
+  </body>
+</html>
