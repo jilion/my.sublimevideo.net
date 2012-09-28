@@ -13,6 +13,7 @@ class Site < ActiveRecord::Base
   include SiteModules::Scope
   include SiteModules::Usage
 
+  DEFAULT_DOMAIN = 'please-edit.me'
   DEFAULT_DEV_DOMAINS = '127.0.0.1,localhost'
   PLAYER_MODES = %w[dev beta stable]
 
@@ -43,7 +44,7 @@ class Site < ActiveRecord::Base
   # = Associations =
   # ================
 
-  belongs_to :user, autosave: true
+  belongs_to :user
 
   # Plans
   belongs_to :plan
@@ -53,7 +54,7 @@ class Site < ActiveRecord::Base
   has_one  :last_invoice, class_name: "::Invoice", order: 'created_at DESC'
 
   # Addons
-  has_many :addonships, class_name: 'Addons::Addonship', autosave: true, dependent: :destroy
+  has_many :addonships, class_name: 'Addons::Addonship', dependent: :destroy
   has_many :addons, through: :addonships, class_name: 'Addons::Addon' do
     def active
       where { addonships.state >> Addons::Addonship::ACTIVE_STATES }
@@ -92,14 +93,12 @@ class Site < ActiveRecord::Base
   validates :extra_hostnames, extra_hostnames: true
   validates :path, length: { maximum: 255 }
 
-  # validate  :validates_current_password
-
   # =============
   # = Callbacks =
   # =============
 
-  # before_validation :set_user_attributes
-  before_validation :set_default_dev_hostnames, unless: :dev_hostnames?
+  before_validation ->(site) { site.hostname = DEFAULT_DOMAIN }, unless: :hostname?
+  before_validation ->(site) { site.dev_hostnames = DEFAULT_DEV_DOMAINS }, unless: :dev_hostnames?
 
   # Player::Loader
   after_create ->(site) { Player::Loader.delay.update_all_modes!(site.id) }
@@ -121,26 +120,23 @@ class Site < ActiveRecord::Base
     event(:suspend)   { transition active: :suspended }
     event(:unsuspend) { transition suspended: :active }
 
-    before_transition on: :archive, do: [:set_archived_at]
-    after_transition  on: :archive, do: [:cancel_not_paid_invoices]
+    after_transition ->(site) do
+      Player::Loader.delay.update_all_modes!(site.id)
+      Player::Settings.delay.update_all_types!(site.id)
+    end
 
-    # Player::Loader
-    after_transition ->(site) { Player::Loader.delay.update_all_modes!(site.id) }
-    # Player::Settings
-    after_transition ->(site) { Player::Settings.delay.update_all_types!(site.id) }
+    before_transition on: :archive do |site, transition|
+      site.archived_at = Time.now.utc
+    end
+
+    after_transition on: :archive do |site, transition|
+      site.invoices.not_paid.map(&:cancel)
+    end
   end
-
-  # =================
-  # = Class Methods =
-  # =================
 
   def self.to_backbone_json
     all.map(&:to_backbone_json)
   end
-
-  # ====================
-  # = Instance Methods =
-  # ====================
 
   def to_backbone_json(options = {})
     to_json(
@@ -149,16 +145,10 @@ class Site < ActiveRecord::Base
     )
   end
 
-  def hostname=(attribute)
-    write_attribute(:hostname, Hostname.clean(attribute))
-  end
-
-  def extra_hostnames=(attribute)
-    write_attribute(:extra_hostnames, Hostname.clean(attribute))
-  end
-
-  def dev_hostnames=(attribute)
-    write_attribute(:dev_hostnames, Hostname.clean(attribute))
+  %w[hostname extra_hostnames dev_hostnames].each do |method_name|
+    define_method "#{method_name}=" do |attribute|
+      write_attribute(method_name, Hostname.clean(attribute))
+    end
   end
 
   def path=(attribute)
@@ -169,43 +159,8 @@ class Site < ActiveRecord::Base
     token
   end
 
-  def hostname_with_path_needed
-    unless path?
-      list = %w[web.me.com web.mac.com homepage.mac.com cargocollective.com]
-      list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(/,\s*/).include?(h)) }
-    end
-  end
-
-  def hostname_with_subdomain_needed
-    if wildcard?
-      list = %w[tumblr.com squarespace.com posterous.com blogspot.com typepad.com]
-      list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(/,\s*/).include?(h)) }
-    end
-  end
-
-  def hostname_or_token(prefix = '#')
-    hostname.presence || "#{prefix}#{token}"
-  end
-
-  # Boolean helpers
-  def need_path?
-    hostname_with_path_needed.present?
-  end
-
-  def need_subdomain?
-    hostname_with_subdomain_needed.present?
-  end
-
   def created_during_deal?(deal)
     created_at? && (created_at >= deal.started_at && created_at <= deal.ended_at)
-  end
-
-  def skip_password(*args)
-    action = args.shift
-    @skip_password_validation = true
-    result = self.send(action, *args)
-    @skip_password_validation = false
-    result
   end
 
   def unmemoize_all
@@ -214,42 +169,6 @@ class Site < ActiveRecord::Base
 
   def settings_changed?
     (changed & %w[player_mode hostname extra_hostnames dev_hostnames path wildcard badged]).present?
-  end
-
-private
-
-  # before_validation
-  def set_user_attributes
-    if user && user_attributes.present? && user_attributes.has_key?("current_password")
-      self.user.assign_attributes(user_attributes.select { |k,v| k == "current_password" })
-    end
-  end
-
-  # before_validation
-  def set_default_dev_hostnames
-    self.dev_hostnames = DEFAULT_DEV_DOMAINS
-  end
-
-  # validate
-  # def validates_current_password
-  #   return true if @skip_password_validation
-
-  #   if persisted? && in_paid_plan? && errors.empty? &&
-  #     ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
-  #     if user.current_password.blank? || !user.valid_password?(user.current_password)
-  #       self.errors.add(:base, :current_password_needed)
-  #     end
-  #   end
-  # end
-
-  # before_transition on: :archive
-  def set_archived_at
-    self.archived_at = Time.now.utc
-  end
-
-  # before_transition on: :archive
-  def cancel_not_paid_invoices
-    invoices.not_paid.map(&:cancel)
   end
 
 end

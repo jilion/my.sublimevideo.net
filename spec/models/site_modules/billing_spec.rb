@@ -44,9 +44,9 @@ describe SiteModules::Billing do
 
     describe '#refunded?' do
       before do
-        @site_refunded1     = create(:site, refunded_at: Time.now.utc).tap { |s| s.skip_password(:archive!) }
+        @site_refunded1     = create(:site, refunded_at: Time.now.utc).tap { |s| s.archive! }
         @site_not_refunded1 = create(:site, refunded_at: Time.now.utc)
-        @site_not_refunded2 = create(:site, refunded_at: nil).tap { |s| s.skip_password(:archive!) }
+        @site_not_refunded2 = create(:site, refunded_at: nil).tap { |s| s.archive! }
       end
 
       specify { @site_refunded1.should be_refunded }

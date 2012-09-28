@@ -17,7 +17,7 @@ module SiteModules::Cycle
     # def downgrade_sites_leaving_trial
     #   Site.trial_ended.find_each(batch_size: 100) do |site|
     #     site.plan_id = Plan.free_plan.id
-    #     site.skip_password(:save!)
+    #     site.save!
     #     BillingMailer.delay.trial_has_expired(site.id)
     #   end
     # end
@@ -25,7 +25,7 @@ module SiteModules::Cycle
     # def renew_active_sites
     #   Site.renewable.each do |site|
     #     site.prepare_pending_attributes(false)
-    #     site.skip_password(:save!)
+    #     site.save!
     #   end
     # end
 

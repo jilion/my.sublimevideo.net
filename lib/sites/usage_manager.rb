@@ -2,10 +2,9 @@ module Sites
   class UsageManager < Struct.new(:site)
 
     def set_first_billable_plays_at
-      stat = site.day_stats.order_by(d: 1).detect { |s| s.billable_vv >= 10 } ||
-             site.usages.order_by([:day, :asc]).detect { |s| s.billable_player_hits >= 10 }
-
-      site.update_column(:first_billable_plays_at, stat.respond_to?(:d) ? stat.d : stat.day) if stat
+      if stat = site.day_stats.order_by(d: 1).detect { |s| s.billable_vv >= 10 }
+        site.update_column(:first_billable_plays_at, stat.respond_to?(:d) ? stat.d : stat.day)
+      end
     end
 
     def update_last_30_days_video_tags_counters

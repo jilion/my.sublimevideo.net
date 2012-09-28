@@ -351,7 +351,7 @@ describe Invoice, :addons do
 
               Timecop.travel(Time.utc(2011,6,1)) do
                 @site.prepare_pending_attributes
-                @site.skip_password(:save!)
+                @site.save!
                 @invoice = Invoice.construct(site: @site)
               end
             end

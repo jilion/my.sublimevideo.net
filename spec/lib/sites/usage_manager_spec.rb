@@ -11,8 +11,6 @@ describe Sites::UsageManager do
     let(:site4) { create(:site) }
     let(:site5) { create(:site) }
     let(:site6) { create(:site) }
-    let(:site7) { create(:site) }
-    let(:site8) { create(:site) }
     before do
       create(:site_day_stat, t: site1.token, d: 300.days.ago.midnight, vv: { m: 11 }) # > 10 main views
       create(:site_day_stat, t: site1.token, d: 400.days.ago.midnight, vv: { m: 12 }) # > 10 main views
@@ -21,12 +19,10 @@ describe Sites::UsageManager do
       create(:site_day_stat, t: site4.token, d: 50.days.ago.midnight, vv: { m: 5, e: 3, em: 2 }) # > 10 views
       create(:site_day_stat, t: site5.token, d: 25.day.ago.midnight, vv: { m: 9 }) # less than 10 views
       create(:site_day_stat, t: site6.token, d: 12.day.ago.midnight, vv: { d: 11 }) # > 10 views but dev views
-      create(:site_usage, day: 500.days.ago.midnight, site_id: site7.id, main_player_hits: 4, extra_player_hits: 2, main_player_hits_cached: 2, extra_player_hits_cached: 2)
-      create(:site_usage, day: 600.days.ago.midnight, site_id: site8.id, main_player_hits: 9, dev_player_hits: 12)
     end
 
     it 'set first_billable_plays_at to the first day with at least 10 billable views' do
-      [site1, site2, site3, site4, site5, site6, site7, site8].each { |s| described_class.new(s).set_first_billable_plays_at }
+      [site1, site2, site3, site4, site5, site6].each { |s| described_class.new(s).set_first_billable_plays_at }
 
       site1.reload.first_billable_plays_at.should eq 400.days.ago.midnight
       site2.reload.first_billable_plays_at.should eq 200.days.ago.midnight
@@ -34,8 +30,6 @@ describe Sites::UsageManager do
       site4.reload.first_billable_plays_at.should eq 50.days.ago.midnight
       site5.reload.first_billable_plays_at.should be_nil
       site6.reload.first_billable_plays_at.should be_nil
-      site7.reload.first_billable_plays_at.should eq 500.days.ago.midnight
-      site8.reload.first_billable_plays_at.should be_nil
     end
   end
 

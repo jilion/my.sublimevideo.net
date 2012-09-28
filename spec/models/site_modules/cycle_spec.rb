@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SiteModules::Cycle do
   describe 'Class Methods' do
 
-    pending '.downgrade_sites_leaving_trial', :plans do
+    pending '.downgrade_sites_leaving_trial' do
       let(:site) { create(:site, plan_id: @trial_plan.id) }
 
       context 'site with trial ended' do
@@ -29,7 +29,7 @@ describe SiteModules::Cycle do
 
   end # Class Methods
 
-  describe "Instance Methods", :plans do
+  describe "Instance Methods" do
 
     pending "#trial_end" do
       before do
@@ -41,7 +41,7 @@ describe SiteModules::Cycle do
       specify { @site_in_trial.trial_end.should eq BusinessModel.days_for_trial.days.from_now.yesterday.end_of_day }
     end # #trial_end
 
-    pending "#trial_expires_on & #trial_expires_in_less_than_or_equal_to", :plans do
+    pending "#trial_expires_on & #trial_expires_in_less_than_or_equal_to" do
       before do
         @site_not_in_trial = create(:site, plan_id: @free_plan.id)
         @site_in_trial     = create(:site, plan_id: @trial_plan.id)

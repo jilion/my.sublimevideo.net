@@ -21,8 +21,30 @@ module SitesHelper
 
   def hostname_or_token(site, options = {})
     options.reverse_merge!(length: 22, prefix: '#')
-    name = site.hostname_or_token(options[:prefix])
-    truncate_middle name, length: options[:length]
+
+    truncate_middle (site.hostname.presence || "#{options[:prefix]}#{site.token}"), length: options[:length]
+  end
+
+  def hostname_with_path_needed(site)
+    unless site.path?
+      list = %w[web.me.com web.mac.com homepage.mac.com cargocollective.com]
+      list.detect { |h| h == site.hostname || site.extra_hostnames.to_s.split(/,\s*/).include?(h) }
+    end
+  end
+
+  def hostname_with_subdomain_needed(site)
+    if site.wildcard?
+      list = %w[tumblr.com squarespace.com posterous.com blogspot.com typepad.com]
+      list.detect { |h| h == site.hostname || site.extra_hostnames.to_s.split(/,\s*/).include?(h) }
+    end
+  end
+
+  def need_path?(site)
+    hostname_with_path_needed(site).present?
+  end
+
+  def need_subdomain?(site)
+    hostname_with_subdomain_needed(site).present?
   end
 
   def display_none_if(condition, value=nil)
