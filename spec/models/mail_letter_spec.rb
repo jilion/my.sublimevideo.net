@@ -61,7 +61,7 @@ describe MailLetter do
           end
         end
 
-        describe "the 'paying', 'free', 'trial' and 'old_trial' filters", :plans do
+        pending "the 'paying', 'free', 'trial' and 'old_trial' filters" do
           before do
             @archived_user  = create(:user, state: 'archived')
             @paying_user    = create(:user)

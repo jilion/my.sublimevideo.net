@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Stats::UsersStat, :plans do
+describe Stats::UsersStat do
 
   pending ".create_stats" do
     before do

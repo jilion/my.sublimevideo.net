@@ -132,9 +132,9 @@ class Plan < ActiveRecord::Base
     if trial_plan? || free_plan? || sponsored_plan?
       name.titleize
     elsif options[:always_with_cycle]
-      name.gsub(/\d/, '').titleize + (cycle == 'year' ? ' (yearly)' : ' (monthly)')
+      name.gsub(/\d/, '').titleize.strip + (cycle == 'year' ? ' (yearly)' : ' (monthly)')
     else
-      name.gsub(/\d/, '').titleize + (cycle == 'year' ? ' (yearly)' : '')
+      name.gsub(/\d/, '').titleize.strip + (cycle == 'year' ? ' (yearly)' : '')
     end
   end
 

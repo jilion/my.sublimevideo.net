@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserModules::CreditCard, :plans do
+describe UserModules::CreditCard do
 
   describe "Factory" do
     describe "new record" do

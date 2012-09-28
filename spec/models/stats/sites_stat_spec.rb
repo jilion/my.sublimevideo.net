@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Stats::SitesStat, :plans do
+describe Stats::SitesStat do
 
   pending "with a bunch of different sites" do
 

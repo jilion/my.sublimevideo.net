@@ -2,7 +2,7 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe User, :plans do
+describe User do
 
   let(:full_billing_address) do
     { billing_address_1: "EPFL Innovation Square", billing_address_2: "PSE-D",

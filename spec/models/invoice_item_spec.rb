@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe InvoiceItem, :plans do
+describe InvoiceItem do
 
   describe "Associations" do
     it { should belong_to :invoice }

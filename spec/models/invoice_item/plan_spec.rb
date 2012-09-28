@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe InvoiceItem::Plan, :plans do
+describe InvoiceItem::Plan do
 
   context "Factory" do
     let(:invoice_item) { create(:plan_invoice_item) }
@@ -20,7 +20,7 @@ describe InvoiceItem::Plan, :plans do
     it { should be_valid }
   end # Factory
 
-  describe ".construct" do
+  pending ".construct" do
     before(:all) do
       @deal = create(:deal, value: 0.2, kind: 'plans_discount', started_at: 2.days.ago, ended_at: 2.days.from_now)
       @user1 = create(:user)
@@ -54,7 +54,7 @@ describe InvoiceItem::Plan, :plans do
         # simulate downgrade now
         @site2.plan_id = @plan1.id
         @site2.prepare_pending_attributes
-        @site2.skip_password(:save!)
+        @site2.save!
 
         # normal renew
         @site3.prepare_pending_attributes

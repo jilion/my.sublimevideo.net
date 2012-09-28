@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe BillingMailer do
 
-  it_should_behave_like "common mailer checks", %w[trial_will_expire], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:site, plan_id: FactoryGirl.create(:trial_plan).id).id }
   it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:user, cc_expire_on: 1.day.from_now).id }
   it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: [I18n.t('mailer.billing.email')], params: lambda { FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)]).id }
 
@@ -11,37 +10,6 @@ describe BillingMailer do
     let(:site)        { create(:site, user: user, trial_started_at: 8.days.ago) }
     let(:invoice)     { create(:invoice) }
     let(:transaction) { create(:transaction, invoices: [invoice]) }
-
-    describe "#trial_will_expire" do
-      context 'user has a credit card' do
-        before do
-          site.update_attribute(:plan_started_at, (BusinessModel.days_for_trial-1).days.ago)
-          described_class.trial_will_expire(site.id).deliver
-          last_delivery = ActionMailer::Base.deliveries.last
-          Capybara.app_host = "http://my.sublimevideo.dev"
-        end
-
-        it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', hostname: site.hostname, days: 1) }
-        it { last_delivery.body.encoded.should include "Dear #{user.name}," }
-        it { last_delivery.body.encoded.should include I18n.l(site.trial_end.tomorrow, format: :named_date) }
-        it { last_delivery.body.encoded.should_not include "https://my.sublimevideo.dev/account/billing/edit" }
-      end
-
-      context 'user has no credit card' do
-        let(:user) { create(:user_no_cc) }
-        before do
-          site.update_attribute(:plan_started_at, (BusinessModel.days_for_trial-1).days.ago)
-          described_class.trial_will_expire(site.reload.id).deliver
-          last_delivery = ActionMailer::Base.deliveries.last
-          Capybara.app_host = "http://my.sublimevideo.dev"
-        end
-
-        it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', hostname: site.hostname, days: 1) }
-        it { last_delivery.body.encoded.should include "Dear #{user.name}," }
-        it { last_delivery.body.encoded.should include I18n.l(site.trial_end.tomorrow, format: :named_date) }
-        it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
-      end
-    end
 
     describe "#credit_card_will_expire" do
       before do
