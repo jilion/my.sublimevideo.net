@@ -54,13 +54,9 @@ module Spec
         choose  "user_cc_brand_#{options[:type] == 'master' ? 'master' : 'visa'}"
         fill_in "Name on card", with: 'Jilion Team'
         fill_in "Card number", with: card_number(options[:type])
-        select  "#{options[:expire_on_month] || "6"}", from: "#{options[:expire_on_prefix] || 'user'}_cc_expiration_month"
-        select  "#{options[:expire_on_year] || Time.now.year + 1}", from: "#{options[:expire_on_prefix] || "user"}_cc_expiration_year"
+        select  "#{options[:expire_on_month] || "6"}", from: "user_cc_expiration_month"
+        select  "#{options[:expire_on_year] || Time.now.year + 1}", from: "user_cc_expiration_year"
         fill_in "Security Code", with: '111'
-      end
-
-      def set_credit_card_in_site_form(options = {})
-        set_credit_card(options.merge(expire_on_prefix: "site_user_attributes"))
       end
 
       def card_number(type = 'visa')

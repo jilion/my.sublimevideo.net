@@ -5,9 +5,6 @@
     value: '<%= params[:password] %>'
     style: 'display:none'
 
-  if /\/sites/.test SublimeVideo.Form.passwordChecker.originForm.attr('action')
-    passwordInput.attr 'name', 'site[user_attributes][current_password]'
-
   SublimeVideo.Form.passwordChecker.originForm.prepend(passwordInput)
   SublimeVideo.UI.Utils.closePopup()
   SublimeVideo.Form.passwordChecker.originForm.removeAttr('data-password-protected')

@@ -32,13 +32,13 @@ describe InvoiceItem::Plan do
       @plan1 = create(:plan, price: 1000)
       @plan2 = create(:plan, price: 2000)
 
-      @site1 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
+      @site1 = create(:site, user: @user1, plan_id: @plan1.id)
       @site2 = create(:site, user: @user1, plan_id: @plan2.id)
-      @site3 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
-      @site4 = create(:site_with_invoice, user: @user2, plan_id: @plan1.id)
-      @site5 = create(:site_with_invoice, user: @user1, plan_id: @plan1.id)
+      @site3 = create(:site, user: @user1, plan_id: @plan1.id)
+      @site4 = create(:site, user: @user2, plan_id: @plan1.id)
+      @site5 = create(:site, user: @user1, plan_id: @plan1.id)
 
-      @site6 = create(:site_with_invoice, user: @user3, plan_id: @plan1.id)
+      @site6 = create(:site, user: @user3, plan_id: @plan1.id)
 
       Timecop.travel(45.days.from_now) do
         # simulate renew of June 1st

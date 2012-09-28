@@ -2,9 +2,6 @@ require 'fast_spec_helper'
 require File.expand_path('lib/sites/site_manager')
 
 Site = Class.new unless defined?(Site)
-Addons = Module.new unless defined?(Addons)
-Addons::AddonshipManager = Class.new unless defined?(Addons::AddonshipManager)
-Sites::RankManager = Class.new unless defined?(Sites::RankManager)
 
 describe Sites::SiteManager do
   let(:user)           { stub(sites: []) }
@@ -16,7 +13,7 @@ describe Sites::SiteManager do
   describe '.create' do
     before do
       Site.should_receive(:transaction).and_yield
-      Addons::AddonshipManager.stub(:update_addonships_for_site!)
+      Addons::AddonshipsManager.stub(:update_addonships_for_site!)
       Sites::RankManager.stub(:delay) { delayed_method }
       Sites::UsageManager.stub(:new) { usage_manager }
       usage_manager.stub(:update_last_30_days_video_views_counters)
@@ -37,7 +34,7 @@ describe Sites::SiteManager do
       end
 
       it 'adds default add-ons to site after creation' do
-        Addons::AddonshipManager.should_receive(:update_addonships_for_site!).with(site, logo: 'sublime', support: 'standard')
+        Addons::AddonshipsManager.should_receive(:update_addonships_for_site!).with(site, logo: 'sublime', support: 'standard')
 
         manager.create(user)
       end
@@ -66,7 +63,7 @@ describe Sites::SiteManager do
       end
 
       it 'doesnt add default add-ons to site after creation' do
-        Addons::AddonshipManager.should_not_receive(:update_addonships_for_site!)
+        Addons::AddonshipsManager.should_not_receive(:update_addonships_for_site!)
 
         manager.create(site)
       end

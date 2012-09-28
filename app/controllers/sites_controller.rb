@@ -41,7 +41,7 @@ class SitesController < ApplicationController
     @site = Site.new(params[:site])
 
     respond_with(@site) do |format|
-      if Sites::SiteManager.new(current_user).create(@site)
+      if Sites::SiteManager.new(@site).create(current_user)
         format.html { redirect_to :sites }
       else
         format.html { render :new }
@@ -58,8 +58,6 @@ class SitesController < ApplicationController
 
   # DELETE /sites/:id
   def destroy
-    @site.user_attributes = params[:site] && params[:site][:user_attributes]
-
     respond_with(@site) do |format|
       if @site.archive
         format.html { redirect_to :sites }

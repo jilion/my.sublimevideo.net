@@ -77,41 +77,6 @@ describe Invoice, :addons do
           end
         end
 
-        describe "after_transition on: :succeed, do: :apply_site_pending_attributes" do
-          context "with a site with no more non-paid invoices" do
-            it "should call #apply_pending_attributes on the site" do
-              site = create(:site)
-
-              invoice = create(:invoice, site: site)
-              invoice.site.should_receive(:apply_pending_attributes)
-              invoice.succeed!
-              invoice.reload.should be_paid
-            end
-          end
-
-          %w[open waiting failed].each do |state|
-            context "with a site with an #{state} invoice present" do
-              let(:site) { create(:site) }
-              let(:non_paid_invoice) { create(:invoice, state: state, site: site) }
-
-              it "should not call #apply_pending_attributes on the site only if there are still non-paid invoices" do
-                non_paid_invoice.state.should eq state
-
-                non_paid_invoice.site.should_not_receive(:apply_pending_attributes)
-                create(:invoice, site: site).succeed!
-              end
-
-              it "should call #apply_pending_attributes on the site if there are no more non-paid invoices" do
-                non_paid_invoice.state.should eq state
-
-                non_paid_invoice.site.should_receive(:apply_pending_attributes).once
-                create(:invoice, site: site).succeed!
-                non_paid_invoice.succeed!
-              end
-            end
-          end
-        end
-
         describe "after_transition on: :succeed, do: :update_user_invoiced_amount" do
           before  { subject.reload }
 
@@ -280,8 +245,9 @@ describe Invoice, :addons do
           context "from a paid plan" do
             before do
               @user = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
+              @paid_plan = create(:plan, cycle: "month", price: 1000)
               Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
-                @site       = create(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
+                @site       = create(:site, user: @user, plan_id: @paid_plan.id)
                 @paid_plan2 = create(:plan, cycle: "month", price: 3000)
                 # Simulate upgrade
                 @site.plan_id = @paid_plan2.id
@@ -342,8 +308,9 @@ describe Invoice, :addons do
           context "from a paid plan" do
             before do
               @user = create(:user, billing_country: 'FR', created_at: Time.utc(2011,3,30))
+              @paid_plan = create(:plan, cycle: "month", price: 1000)
               Timecop.travel(Time.utc(2011,5,1)) do
-                @site       = create(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
+                @site       = create(:site, user: @user, plan_id: @paid_plan.id)
                 @paid_plan2 = create(:plan, cycle: "month", price: 500)
                 # Simulate downgrade
                 @site.plan_id = @paid_plan2.id

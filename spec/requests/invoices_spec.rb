@@ -9,25 +9,9 @@ feature "Site invoices page" do
       sign_in_as :user
     end
 
-    context "site in free plan with 0 invoices" do
+    describe "navigation and content presence verification" do
       background do
-        @site = create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
-        go 'my', '/sites'
-        click_link "Edit rymai.com"
-      end
-
-      scenario "'Invoice' tab is invisible and not reachable through URL" do
-        page.should have_no_content 'Invoices'
-
-        go 'my', "/sites/#{@site.to_param}/invoices"
-
-        current_url.should == "http://my.sublimevideo.dev/sites"
-      end
-    end
-
-    context "site in free plan with invoices" do
-      background do
-        @site = create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = create(:site, user: @current_user, hostname: 'rymai.com')
         create(:invoice, site: @site)
         go 'my', "/sites/#{@site.to_param}/edit"
       end
@@ -41,37 +25,25 @@ feature "Site invoices page" do
       end
     end
 
-    context "site in trial plan" do
+    context "site with invoices" do
       background do
-        @site = create(:site, plan_id: @trial_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site    = create(:site, user: @current_user, hostname: 'rymai.com')
+        @invoice = create(:invoice, site: @site, state: 'paid')
+        @invoice.should be_valid
+        puts @invoice.errors.inspect
         go 'my', "/sites/#{@site.to_param}/edit"
       end
 
-      scenario "'Invoice' tab is invisible and not reachable through URL" do
-        page.should have_no_content 'Invoices'
-
-        go 'my', "/sites/#{@site.to_param}/invoices"
-
-        current_url.should == "http://my.sublimevideo.dev/sites"
-      end
-    end
-
-    context "site in paid plan with invoices" do
-      background do
-        @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-        @invoice = @site.last_invoice
-        go 'my', "/sites/#{@site.to_param}/edit"
-      end
-
-      scenario "'Invoice' tab is visible and reachable" do
+      scenario "'Invoice' tab is visible and reachable", :focus do
         click_link "Invoices"
 
         current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
+        save_and_open_page
         page.should have_content 'rymai.com'
         page.should have_no_content 'No invoices'
       end
 
-      scenario "'Next invoice' is visible, including '(excl. VAT)' for CH customer" do
+      pending "'Next invoice' is visible, including '(excl. VAT)' for CH customer" do
         @current_user.should be_vat
         go 'my', "/sites/#{@site.to_param}/invoices"
 
@@ -79,7 +51,7 @@ feature "Site invoices page" do
         page.should have_content "#{display_amount(@site.plan.price)} (excl. VAT) on #{I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :d_b_Y)}"
       end
 
-      scenario "'Next invoice' is visible, without '(excl. VAT)' for not-CH customer" do
+      pending "'Next invoice' is visible, without '(excl. VAT)' for not-CH customer" do
         @current_user.update_attribute(:billing_country, 'FR')
         @current_user.should_not be_vat
         go 'my', "/sites/#{@site.to_param}/invoices"
@@ -101,10 +73,9 @@ feature "Site invoices page" do
 
     context "site in paid plan with 1 failed invoice" do
       background do
-        @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-        @invoice = @site.last_invoice
-        @invoice.update_attributes({ state: 'failed', last_failed_at: Time.now.utc }, without_protection: true)
-        @invoice.last_transaction.update_attribute(:error, "Credit card refused")
+        @site    = create(:site, user: @current_user, hostname: 'rymai.com')
+        @invoice = create(:invoice, site: @site, state: 'failed', last_failed_at: Time.now.utc)
+        @transaction = create(:transaction, invoices: [@invoice], error: 'Credit card refused')
         go 'my', "/sites/#{@site.to_param}/invoices"
       end
 
@@ -140,9 +111,8 @@ feature "Site invoices page" do
 
     context "site in paid plan with 1 failed invoice having the 3d secure html as the error" do
       background do
-        @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-        @invoice = @site.last_invoice
-        @invoice.update_attributes({ state: 'failed', last_failed_at: Time.now.utc }, without_protection: true)
+        @site    = create(:site, user: @current_user, hostname: 'rymai.com')
+        @invoice = create(:invoice, site: @site, state: 'failed', last_failed_at: Time.now.utc)
         @invoice.last_transaction.update_attribute(:error, "<html>secure.ogone...</html>")
         go 'my', "/sites/#{@site.to_param}/invoices"
       end
@@ -161,16 +131,12 @@ feature "Site invoices page" do
 
     context "site in paid plan with 1 failed invoice and 1 failed invoice for another site" do
       background do
-        @site1 = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-        @site2 = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user)
-        @invoice1 = @site1.last_invoice
-        @invoice2 = @site2.last_invoice
-        @invoice1.update_attributes({ state: 'failed', last_failed_at: 2.days.ago }, without_protection: true)
+        @site = create(:site, user: @current_user, hostname: 'rymai.com')
+        @invoice1 = create(:invoice, site: @site, state: 'failed', last_failed_at: 2.days.ago)
         @invoice1.last_transaction.update_attribute(:error, "Credit card refused")
-
-        @invoice2.update_attributes({ site_id: @site1.id, state: 'failed', last_failed_at: Time.now.utc }, without_protection: true)
+        @invoice2 = create(:invoice, site: @site, state: 'failed', last_failed_at: Time.now.utc)
         @invoice2.last_transaction.update_attribute(:error, "Authorization refused")
-        go 'my', "/sites/#{@site1.to_param}/invoices"
+        go 'my', "/sites/#{@site.to_param}/invoices"
       end
 
       scenario "displays a notice" do
@@ -193,9 +159,8 @@ feature "Site invoices page" do
   context "user has no credit card" do
     background do
       sign_in_as :user, without_cc: true, kill_user: true
-      @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-      @invoice = @site.last_invoice
-      @invoice.update_attributes({ state: 'failed', last_failed_at: Time.now.utc }, without_protection: true)
+      @site    = create(:site, user: @current_user, hostname: 'rymai.com')
+      @invoice = create(:invoice, site: @site, state: 'failed', last_failed_at: Time.now.utc)
       @invoice.last_transaction.update_attribute(:error, "Credit card refused")
       go 'my', "/sites/#{@site.to_param}/invoices"
     end
@@ -216,9 +181,8 @@ feature "Site invoices page" do
     background do
       sign_in_as :user, cc_expire_on: 2.years.ago, kill_user: true
       @current_user.should be_cc_expired
-      @site    = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-      @invoice = @site.last_invoice
-      @invoice.update_attributes({ state: 'failed', last_failed_at: Time.now.utc }, without_protection: true)
+      @site    = create(:site, user: @current_user, hostname: 'rymai.com')
+      @invoice = create(:invoice, site: @site, state: 'failed', last_failed_at: Time.now.utc)
       @invoice.last_transaction.update_attribute(:error, "Credit card refused")
       go 'my', "/sites/#{@site.to_param}/invoices"
     end
@@ -247,8 +211,8 @@ feature "Site invoice page" do
 
     context "normal invoice" do
       background do
-        @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-        @invoice = @site.last_invoice
+        @site = create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @invoice = create(:invoice, site: @site)
 
         go 'my', "/invoices/#{@invoice.reference}"
       end
@@ -285,11 +249,11 @@ feature "Site invoice page" do
         Timecop.travel(Time.utc(2010,10,10)) do
           @current_user.update_attribute(:created_at, Time.now.utc)
           @current_user.update_attribute(:billing_country, 'US')
-          @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+          @site = create(:site, user: @current_user, hostname: 'rymai.com')
+          @invoice = create(:invoice, site: @site, invoice_items: [create(:invoice_item), create(:invoice_item)])
           VCR.use_cassette('ogone/visa_payment_generic') do
-            @site.update_attributes({ plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' } }, without_protection: true)
+            @site.update_attributes({ plan_id: @custom_plan.token }, without_protection: true)
           end
-          @site.apply_pending_attributes
         end
         @invoice = @site.last_invoice
 
@@ -304,9 +268,8 @@ feature "Site invoice page" do
 
     context "invoice has balance deduction" do
       background do
-        @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-        @invoice = @site.last_invoice
-        @invoice.update_attribute(:balance_deduction_amount, 20000) # $20
+        @site = create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @invoice = create(:invoice, site: @site, balance_deduction_amount: 20000)
 
         go 'my', "/invoices/#{@invoice.reference}"
 
@@ -321,9 +284,9 @@ feature "Site invoice page" do
 
     context "invoice has a deal discount" do
       background do
-        @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @invoice = create(:invoice, site: @site)
         @deal = create(:deal, value: 0.3, name: 'Foo bar Deal')
-        @invoice = @site.last_invoice
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:discounted_percentage, 0.3)
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:deal_id, @deal.id)
 
@@ -337,9 +300,9 @@ feature "Site invoice page" do
 
     context "invoice has beta discount" do
       background do
-        @site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @site = create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+        @invoice = create(:invoice, site: @site)
 
-        @invoice = @site.last_invoice
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:discounted_percentage, 0.2)
 
         go 'my', "/invoices/#{@invoice.reference}"
@@ -354,8 +317,8 @@ feature "Site invoice page" do
   context "user has VAT" do
     background do
       sign_in_as :user, billing_country: 'CH'
-      site = create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-      @invoice = site.last_invoice
+      @site = create(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      @invoice = create(:invoice, site: @site)
 
       go 'my', "/invoices/#{@invoice.reference}"
     end

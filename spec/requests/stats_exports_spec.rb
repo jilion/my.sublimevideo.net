@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'StatsExport' do
   background do
     sign_in_as :user
-    @site = create(:site, user: @current_user, plan_id: @paid_plan.id)
+    @site = create(:site, user: @current_user)
     @video_tag = create(:video_tag, st: @site.token, u: 'video_uid', uo: 'a', n: 'My Video', no: 'a')
     create(:site_day_stat, t: @site.token, d: 3.days.ago.midnight.to_i,
       pv: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })

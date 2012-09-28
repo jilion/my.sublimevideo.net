@@ -88,7 +88,7 @@ describe SiteModules::Billing do
         before do
           @plan1 = create(:plan, price: 10_000)
           @plan2 = create(:plan, price: 5_000)
-          @site  = create(:site_with_invoice, plan_id: @plan1.id)
+          @site  = create(:site, plan_id: @plan1.id)
           @site.plan_id = @plan2.id
         end
 
@@ -109,7 +109,7 @@ describe SiteModules::Billing do
         before do
           @plan1 = create(:plan, price: 10_000)
           @plan2 = create(:plan, price: 5_000)
-          @site  = create(:site_with_invoice, plan_id: @plan1.id)
+          @site  = create(:site, plan_id: @plan1.id)
           @site.plan_id = @plan2.id
         end
 

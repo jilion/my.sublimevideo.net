@@ -67,7 +67,7 @@ describe Site, :addons do
   describe "Validations" do
     subject { create(:site) }
 
-    [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :user_attributes].each do |attribute|
+    [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
     end
 
@@ -128,7 +128,7 @@ describe Site, :addons do
     it "works!" do
       with_versioning do
         old_hostname = site.hostname
-        site.update_attributes(hostname: "bob.com", user_attributes: { 'current_password' => '123456' })
+        site.update_attributes(hostname: "bob.com")
         site.versions.last.reify.hostname.should eq old_hostname
       end
     end
@@ -157,7 +157,7 @@ describe Site, :addons do
     end
 
     describe "before_save" do
-      let(:site) { create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc) }
+      let(:site) { create(:site, first_paid_plan_started_at: Time.now.utc) }
 
       it "delays Player::Loader update on site player_mode update" do
         site = create(:site)

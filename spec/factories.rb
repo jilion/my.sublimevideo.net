@@ -58,28 +58,6 @@ FactoryGirl.define do
   end
 
   factory :site, parent: :new_site do
-    # after(:create) do |site|
-    #   if site.will_be_in_paid_plan?
-    #     site.apply_pending_attributes
-    #     site.invoices.update_all(state: 'paid')
-    #   end
-    # end
-  end
-
-  factory :site_with_invoice, parent: :new_site do
-    # first_paid_plan_started_at { Time.now.utc }
-    after(:build)  { VCR.insert_cassette('ogone/visa_payment_generic') }
-    after(:create) do |site|
-      # this is needed since "instant charging" is now only done on upgrade (not on post-trial activation)
-      Transaction.charge_invoices_by_user_id(site.user.id)
-      VCR.eject_cassette
-      site.reload
-    end
-  end
-
-  factory :site_pending, parent: :new_site do
-    after(:build)  { VCR.insert_cassette('ogone/visa_payment_generic') }
-    after(:create) { VCR.eject_cassette }
   end
 
   # ==============
@@ -214,18 +192,18 @@ FactoryGirl.define do
     amount               10000
     vat_rate             0.08
     vat_amount           800
+    after(:build) { |invoice| invoice.invoice_items = [FactoryGirl.build(:plan_invoice_item, invoice: invoice)]}
   end
 
   factory :invoice_item do
-    invoice
     started_at { Time.now.utc.beginning_of_month }
     ended_at   { Time.now.utc.end_of_month }
+    price  1000
+    amount 1000
   end
 
   factory :plan_invoice_item, parent: :invoice_item, class: InvoiceItem::Plan do
     item   { FactoryGirl.create(:plan) }
-    price  1000
-    amount 1000
   end
 
   factory :transaction do

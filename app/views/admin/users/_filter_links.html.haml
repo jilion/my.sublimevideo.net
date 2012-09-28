@@ -1,9 +1,9 @@
 %ul.filters
   %li
     = link_to "#{content_tag(:strong, display_integer(User.active.size))} Active".html_safe, admin_users_path(with_state: 'active'), remote: true, class: 'remote'
-    %ul{ style: 'padding:5px 0 5px 18px;' }
-      %li= link_to "#{content_tag(:strong, display_integer(User.free.size))} Free".html_safe, admin_users_path(free: true), remote: true, class: 'remote'
-      %li= link_to "#{content_tag(:strong, display_integer(User.paying.size))} Paying".html_safe, admin_users_path(paying: true), remote: true, class: 'remote'
+    -#%ul{ style: 'padding:5px 0 5px 18px;' }
+    -#  %li= link_to "#{content_tag(:strong, display_integer(User.free.size))} Free".html_safe, admin_users_path(free: true), remote: true, class: 'remote'
+    -#  %li= link_to "#{content_tag(:strong, display_integer(User.paying.size))} Paying".html_safe, admin_users_path(paying: true), remote: true, class: 'remote'
   %li= link_to "#{content_tag(:strong, display_integer(User.with_state(:suspended).size))} Suspended".html_safe, admin_users_path(with_state: 'suspended'), remote: true, class: 'remote'
   %li= link_to "#{content_tag(:strong, display_integer(User.with_state(:archived).size))} Archived".html_safe, admin_users_path(with_state: 'archived'), remote: true, class: 'remote'
 

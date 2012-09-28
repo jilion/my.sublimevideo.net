@@ -4,13 +4,8 @@
       .content.password_checker
         %p.desc= password_description
         .entry.password
-          - if f.object.is_a?(User)
-            = f.label :current_password, password_label, class: "icon"
-            = f.password_field :current_password, placeholder: password_placeholder, class: "text", required: true
-          - else
-            = f.fields_for :user_attributes, f.object.user do |ff|
-              = ff.label :current_password, password_label, class: "icon"
-              = ff.password_field :current_password, placeholder: password_placeholder, class: "text", required: true
+          = f.label :current_password, password_label, class: "icon"
+          = f.password_field :current_password, placeholder: password_placeholder, class: "text", required: true
 
           .actions= f.submit "Done", class: "blue_button"
           .spacer

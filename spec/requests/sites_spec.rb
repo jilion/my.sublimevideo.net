@@ -13,7 +13,7 @@ feature 'New site' do
     fill_in 'Domain', with: ''
     click_button 'Add site'
 
-    last_site_should_be_created('')
+    last_site_should_be_created('please-edit.me')
   end
 
   scenario 'with a hostname' do

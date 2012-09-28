@@ -27,10 +27,9 @@ class Site < ActiveRecord::Base
 
   acts_as_taggable
 
-  attr_accessor :user_attributes, :last_transaction, :remote_ip
+  attr_accessor :last_transaction, :remote_ip
 
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard,
-                  :badged, :user_attributes, :remote_ip
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :remote_ip
 
   serialize :last_30_days_billable_video_views_array, Array
 

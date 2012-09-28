@@ -1,4 +1,4 @@
-require_dependency 'addons/addonship_manager'
+require_dependency 'addons/addonships_manager'
 require_dependency 'sites/rank_manager'
 require_dependency 'sites/usage_manager'
 
@@ -24,7 +24,7 @@ module Sites
     private
 
     def set_default_addons(site)
-      Addons::AddonshipManager.update_addonships_for_site!(site, logo: 'sublime', support: 'standard')
+      Addons::AddonshipsManager.update_addonships_for_site!(site, logo: 'sublime', support: 'standard')
     end
 
     def delay_set_ranks(site)
