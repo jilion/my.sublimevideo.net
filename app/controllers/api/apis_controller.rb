@@ -21,7 +21,9 @@ class Api::ApisController < ActionController::Base
 
   def test_request
     body = { status: 200, current_api_version: SublimeVideoApi.current_version, api_version_used: @version, token: current_token.try(:token), authorized_at: current_token.try(:authorized_at) }
-    render(request.format.ref => body, status: 200)
+    respond_to do |format|
+      format.any { render(request.format.ref => body, status: 200) }
+    end
   end
 
   protected
@@ -35,12 +37,14 @@ class Api::ApisController < ActionController::Base
   end
 
   def set_version_and_content_type
-    version_and_format = request.format.ref.to_s.match(%r{^application/vnd\.sublimevideo(-v(\d+))?\+(\w+)$})
+    if request.format.present?
+      version_and_format = request.format.ref.to_s.match(%r{^application/vnd\.sublimevideo(-v(\d+))?\+(\w+)$})
 
-    @version = version_and_format.try(:[], 2) || SublimeVideoApi.current_version
-    request.format = params[:format] || version_and_format.try(:[], 3)
-    # unknown format could lead to request.format == nil
-    request.format = SublimeVideoApi.default_content_type if request.format.nil?
+      @version = version_and_format.try(:[], 2) || SublimeVideoApi.current_version
+      request.format = params[:format] || version_and_format.try(:[], 3)
+      # unknown format could lead to request.format == nil
+      request.format = SublimeVideoApi.default_content_type if request.format.nil?
+    end
   end
 
   def api_template(postfix = :private, template = :self)
