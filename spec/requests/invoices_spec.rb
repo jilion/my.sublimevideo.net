@@ -41,23 +41,6 @@ feature "Site invoices page" do
         page.should have_no_content 'No invoices'
       end
 
-      pending "'Next invoice' is visible, including '(excl. VAT)' for CH customer" do
-        @current_user.should be_vat
-        go 'my', "/sites/#{@site.to_param}/invoices"
-
-        page.should have_content 'Next invoice'
-        page.should have_content "#{display_amount(@site.plan.price)} (excl. VAT) on #{I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :d_b_Y)}"
-      end
-
-      pending "'Next invoice' is visible, without '(excl. VAT)' for not-CH customer" do
-        @current_user.update_attribute(:billing_country, 'FR')
-        @current_user.should_not be_vat
-        go 'my', "/sites/#{@site.to_param}/invoices"
-
-        page.should have_content 'Next invoice'
-        page.should have_content "#{display_amount(@site.plan.price)} on #{I18n.l(@site.plan_cycle_ended_at.tomorrow, format: :d_b_Y)}"
-      end
-
       scenario "'Past invoices' are visible" do
         go 'my', "/sites/#{@site.to_param}/invoices"
 
@@ -246,27 +229,19 @@ feature "Site invoice page" do
 
     context "upgrade invoice" do
       background do
-        # Timecop.travel(Time.utc(2010,10,10)) do
-          # @current_user.update_attribute(:created_at, Time.now.utc)
-          # @current_user.update_attribute(:billing_country, 'US')
-          @site = create(:site, user: @current_user, hostname: 'rymai.com')
-          @invoice = build(:invoice, site: @site)
-          @plan_invoice_item1 = create(:plan_invoice_item, invoice: @invoice, deduct: true, amount: -999)
-          @plan_invoice_item2 = create(:plan_invoice_item, invoice: @invoice)
-          @invoice.invoice_items = [@plan_invoice_item1, @plan_invoice_item2]
-          @invoice.save!
-        #   VCR.use_cassette('ogone/visa_payment_generic') do
-        #     @site.update_attributes({ plan_id: @custom_plan.token }, without_protection: true)
-        #   end
-        # end
-        # @invoice = @site.last_invoice
+        @site = create(:site, user: @current_user, hostname: 'rymai.com')
+        @invoice = build(:invoice, site: @site)
+        @plan_invoice_item1 = create(:plan_invoice_item, invoice: @invoice, deduct: true)
+        @plan_invoice_item2 = create(:plan_invoice_item, invoice: @invoice)
+        @invoice.invoice_items = [@plan_invoice_item1, @plan_invoice_item2]
+        @invoice.save!
 
         go 'my', "/invoices/#{@invoice.reference}"
       end
 
       scenario "includes a line for the deducted plan" do
         page.should have_content("Period: #{I18n.l(@plan_invoice_item2.started_at, format: :d_b_Y)} - #{I18n.l(@plan_invoice_item2.ended_at, format: :d_b_Y)}")
-        page.should have_content("-$9.99")
+        page.should have_content("-$10.00")
       end
     end
 

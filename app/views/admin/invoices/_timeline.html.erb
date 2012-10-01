@@ -4,8 +4,9 @@ require_dependency 'stat_timeline'
 invoices = ::Invoice.between(created_at: graph_start_date..graph_end_date).order{ created_at.asc }
 
 paid_invoices         = StatTimeline::Invoice.timeline(invoices.paid, graph_start_date, graph_end_date)
-monthly_paid_invoices = StatTimeline::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.monthly? }, graph_start_date, graph_end_date)
-yearly_paid_invoices  = StatTimeline::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.yearly? }, graph_start_date, graph_end_date)
+# FIXME Remy
+# monthly_paid_invoices = StatTimeline::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.first_paid_item.monthly? }, graph_start_date, graph_end_date)
+# yearly_paid_invoices  = StatTimeline::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.first_paid_item.yearly? }, graph_start_date, graph_end_date)
 open_invoices         = StatTimeline::Invoice.timeline(invoices.open, graph_start_date, graph_end_date)
 failed_invoices       = StatTimeline::Invoice.timeline(invoices.failed, graph_start_date, graph_end_date)
 canceled_invoices     = StatTimeline::Invoice.timeline(invoices.canceled, graph_start_date, graph_end_date)
@@ -47,8 +48,8 @@ graph = Graph.new do |g|
   g.option(series: [
     serie(paid_invoices[moving_average_length-1..-1], 'Paid', type: 'line', color: '#600fff', visible: false, stack: 0),
     serie(moving_average(paid_invoices, moving_average_length), 'AVG Paid', type: 'line', stack: 1),
-    serie(yearly_paid_invoices[moving_average_length-1..-1], 'Paid (yearly)', type: 'column', color: '#5e33c8', stack: 2),
-    serie(monthly_paid_invoices[moving_average_length-1..-1], 'Paid (monthly)', type: 'column', color: '#7941ff', stack: 2),
+    # serie(yearly_paid_invoices[moving_average_length-1..-1], 'Paid (yearly)', type: 'column', color: '#5e33c8', stack: 2),
+    # serie(monthly_paid_invoices[moving_average_length-1..-1], 'Paid (monthly)', type: 'column', color: '#7941ff', stack: 2),
     serie(failed_invoices[moving_average_length-1..-1], 'Failed', type: 'column', color: '#fe2617', visible: false, stack: 2),
     serie(open_invoices[moving_average_length-1..-1], 'Open', type: 'column', color: '#EEE', visible: false, stack: 2),
     serie(waiting_invoices[moving_average_length-1..-1], 'Waiting', type: 'column', color: '#AAA', visible: false, stack: 2),

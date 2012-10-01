@@ -5,7 +5,7 @@ feature "Newsletter subscription" do
   let(:user) { create(:user) }
 
   context 'user is not logged-in' do
-    pending 'subscribed to the newsletter after log-in' do
+    scenario 'subscribed to the newsletter after log-in' do
       go 'my', '/newsletter/subscribe'
 
       current_url.should eq 'http://my.sublimevideo.dev/login'
@@ -13,12 +13,11 @@ feature "Newsletter subscription" do
       fill_in 'Email',    with: user.email
       fill_in 'Password', with: '123456'
 
-      -> { click_button 'Log In' }.should delay('%NewsletterManager%subscribe%')
+      -> { click_button 'Log In' }.should delay('%CampaignMonitorWrapper%subscribe%')
 
       current_url.should eq 'http://my.sublimevideo.dev/sites/new'
 
       page.should have_content I18n.t('flash.newsletter.subscribe')
-      page.should have_selector 'form.new_support_request'
     end
   end
 

@@ -35,9 +35,8 @@
           = "("
           = link_to 'Edit', edit_client_application_path(application)
           = " | "
-          = form_for application, html: { method: :delete, "data-password-protected" => true } do |f|
-            .entry.delete
-              = f.submit "Delete", class: "submit link_looks delete"
+          = form_for application, html: { method: :delete, data: { confirm: 'Are you sure?' } } do |f|
+            .entry.delete= f.submit "Delete", class: "submit link_looks delete"
           = ")"
 %br
 %h3

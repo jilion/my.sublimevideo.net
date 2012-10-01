@@ -17,8 +17,8 @@ class Invoice < ActiveRecord::Base
   has_one :user, through: :site
 
   # Invoice items
-  has_many :invoice_items
-  has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, class_name: "InvoiceItem"
+  has_many :invoice_items, class_name: "InvoiceItems::InvoiceItem"
+  has_many :plan_invoice_items, conditions: { type: "InvoiceItems::Plan" }, class_name: "InvoiceItems::InvoiceItem"
 
   has_and_belongs_to_many :transactions
 
@@ -28,10 +28,19 @@ class Invoice < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_create :set_customer_info, :set_site_info
+  before_create ->(invoice) do
+    invoice.customer_full_name       = invoice.user.billing_name
+    invoice.customer_email           = invoice.user.email
+    invoice.customer_country         = invoice.user.billing_country
+    invoice.customer_company_name    = invoice.user.company_name
+    invoice.customer_billing_address = invoice.user.billing_address
+    invoice.site_hostname            = invoice.site.hostname
+  end
 
-  after_create :decrement_user_balance
-  after_create ->(record) { record.succeed! if record.amount.zero? }
+  after_create ->(invoice) do
+    invoice.user.decrement!(:balance, invoice.balance_deduction_amount) unless invoice.balance_deduction_amount.zero?
+  end
+  after_create ->(invoice) { invoice.succeed! if invoice.amount.zero? }
 
   # ===============
   # = Validations =
@@ -54,38 +63,31 @@ class Invoice < ActiveRecord::Base
     event(:wait)    { transition [:open, :failed, :waiting] => :waiting }
     event(:cancel)  { transition [:open, :failed] => :canceled }
 
-    before_transition on: :succeed, do: [:set_paid_at, :clear_last_failed_at]
-    after_transition  on: :succeed, do: :update_user_invoiced_amount
-    after_transition  on: :succeed, do: :unsuspend_user, if: proc { |invoice| invoice.user.suspended? && invoice.user.invoices.not_paid.empty? }
+    before_transition on: :succeed do |invoice, transition|
+      invoice.paid_at        = Time.now.utc
+      invoice.last_failed_at = nil
+    end
+    after_transition on: :succeed do |invoice, transition|
+      invoice.user.last_invoiced_amount   = invoice.amount
+      invoice.user.total_invoiced_amount += invoice.amount
+      invoice.user.save
+    end
+    after_transition on: :succeed do |invoice, transition|
+      invoice.user.unsuspend if invoice.user.suspended? && invoice.user.invoices.not_paid.empty?
+    end
 
-    after_transition  on: :cancel, do: :increment_user_balance
+    after_transition  on: :cancel do |invoice, transition|
+      invoice.user.increment!(:balance, invoice.balance_deduction_amount) unless invoice.balance_deduction_amount.zero?
+    end
 
-    before_transition on: :fail, do: :set_last_failed_at
-  end
-
-  # =================
-  # = Class Methods =
-  # =================
-
-  def self.construct(attributes = {})
-    instance = new(attributes)
-
-    instance.construct_invoice_items
-    instance.set_invoice_items_amount
-    instance.set_vat_rate_and_amount
-    instance.set_balance_deduction_amount
-    instance.set_amount
-
-    instance
+    before_transition on: :fail do |invoice, transition|
+      invoice.last_failed_at = Time.now.utc
+    end
   end
 
   def self.total_revenue
     self.paid.sum(:amount)
   end
-
-  # ====================
-  # = Instance Methods =
-  # ====================
 
   def to_param
     reference
@@ -99,95 +101,8 @@ class Invoice < ActiveRecord::Base
     site.refunded_at?
   end
 
-  def paid_plan_invoice_item
-    plan_invoice_items.find { |pii| pii.amount > 0 }
-  end
-
-  # used in admin/invoices/timeline
-  def paid_plan
-    paid_plan_invoice_item.try(:item)
-  end
-
-  def first_site_invoice?
-    first_site_invoice = site.invoices.not_canceled.by_date('asc').first
-    first_site_invoice.nil? || self == first_site_invoice
-  end
-
-  def construct_invoice_items
-    if site.pending_plan_id? && site.in_paid_plan? && site.plan.upgrade?(site.pending_plan)
-      invoice_items << InvoiceItem::Plan.construct(invoice: self, item: Plan.find(site.plan_id), deduct: true)
-    end
-    invoice_items << InvoiceItem::Plan.construct(invoice: self, item: site.pending_plan || site.plan)
-  end
-
-  def set_invoice_items_amount
-    self.invoice_items_amount = invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
-  end
-
-  def set_vat_rate_and_amount
-    self.vat_rate   = Vat.for_country(user.billing_country)
-    self.vat_amount = (invoice_items_amount * vat_rate).round
-  end
-
-  def set_balance_deduction_amount
-    self.balance_deduction_amount = user.balance > 0 ? [user.balance, invoice_items_amount].min : 0
-  end
-
-  def set_amount
-    self.amount = invoice_items_amount + vat_amount - balance_deduction_amount
-  end
-
-private
-
-  # before_create
-  def set_customer_info
-    self.customer_full_name       = user.billing_name
-    self.customer_email           = user.email
-    self.customer_country         = user.billing_country
-    self.customer_company_name    = user.company_name
-    self.customer_billing_address = user.billing_address
-  end
-
-  # before_create
-  def set_site_info
-    self.site_hostname = site.hostname
-  end
-
-  # after_create
-  def decrement_user_balance
-    self.user.decrement!(:balance, balance_deduction_amount) unless self.reload.balance_deduction_amount.zero?
-  end
-
-  # before_transition on: :fail
-  def set_last_failed_at
-    self.last_failed_at = Time.now.utc
-  end
-
-  # before_transition on: :succeed
-  def set_paid_at
-    self.paid_at = Time.now.utc
-  end
-
-  # before_transition on: :succeed
-  def clear_last_failed_at
-    self.last_failed_at = nil
-  end
-
-  # after_transition on: :succeed
-  def update_user_invoiced_amount
-    self.user.last_invoiced_amount   = amount
-    self.user.total_invoiced_amount += amount
-    self.user.save
-  end
-
-  # after_transition on: :succeed
-  def unsuspend_user
-    self.user.unsuspend
-  end
-
-  # after_transition on: :cancel
-  def increment_user_balance
-    self.user.increment!(:balance, balance_deduction_amount) unless balance_deduction_amount.zero?
+  def first_paid_item
+    invoice_items.find { |pii| pii.amount > 0 }.try(:item)
   end
 
 end

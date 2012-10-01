@@ -76,7 +76,7 @@ RSpec::Matchers.define :delay do |*args|
 
   def delayed_job_handlers_and_expected_new_jobs(*args)
     @delayed_job_handlers_and_expected_new_jobs = []
-    default_expectation = args.pop
+    default_expectation, last_handler = args.pop, nil
 
     @delayed_job_handlers_and_expected_new_jobs[default_expectation] ||= case args[0]
     when Array
@@ -88,7 +88,7 @@ RSpec::Matchers.define :delay do |*args|
       { all: default_expectation }
     else
       hash = {}
-      while arg = args.shift and
+      while arg = args.shift
         if arg.is_a?(String)
           hash[arg] = default_expectation
         else

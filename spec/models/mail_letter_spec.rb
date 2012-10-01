@@ -61,77 +61,44 @@ describe MailLetter do
           end
         end
 
-        pending "the 'paying', 'free', 'trial' and 'old_trial' filters" do
+        describe "the 'paying', 'free' filters" do
           before do
             @archived_user  = create(:user, state: 'archived')
             @paying_user    = create(:user)
-            @old_trial_user = create(:user)
-            @new_trial_user = create(:user)
-            create(:site, user: @paying_user)
-            create(:site, user: @old_trial_user, plan_id: @trial_plan.id, trial_started_at: Time.now)
-            create(:site, user: @new_trial_user, plan_id: @trial_plan.id)
-            create(:site, user: @archived_user, plan_id: @trial_plan.id)
+            @free_user      = create(:user)
+            site = create(:site, user: @paying_user)
+            create(:subscribed_addonship, site: site)
             $worker.work_off
             ActionMailer::Base.deliveries.clear
           end
 
           context "with the 'paying' filter" do
-            subject { MailLetter.new(attributes.merge(criteria: 'paying')).deliver_and_log }
+            let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'paying')).deliver_and_log }
 
             it "delays delivery of mails, actually sends email when workers do their jobs" do
-              -> { subject }.should delay('%deliver%')
+              -> { mail_letter }.should delay('%MailLetter%deliver%')
               expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
               ActionMailer::Base.deliveries.map(&:to).should =~ [[@paying_user.email]]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
             end
 
             it "creates a new MailLog record" do
-              expect { subject }.to change(MailLog, :count).by(1)
+              expect { mail_letter }.to change(MailLog, :count).by(1)
             end
           end
 
           context "with the 'free' filter" do
-            subject { MailLetter.new(attributes.merge(criteria: 'free')).deliver_and_log }
+            let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'free')).deliver_and_log }
 
             it "delays delivery of mails, actually sends email when workers do their jobs" do
-              -> { subject }.should delay('%deliver%')
-              expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(3)
-              ActionMailer::Base.deliveries.map(&:to).should =~ [[@old_trial_user.email], [@new_trial_user.email], [user.email]]
+              -> { mail_letter }.should delay('%MailLetter%deliver%', 2)
+              expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(2)
+              ActionMailer::Base.deliveries.map(&:to).should =~ [[@free_user.email], [user.email]]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
             end
 
             it "creates a new MailLog record" do
-              expect { subject }.to change(MailLog, :count).by(1)
-            end
-          end
-
-          context "with the 'trial' filter" do
-            subject { MailLetter.new(attributes.merge(criteria: 'trial')).deliver_and_log }
-
-            it "delays delivery of mails, actually sends email when workers do their jobs" do
-              -> { subject }.should delay('%deliver%')
-              expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
-              ActionMailer::Base.deliveries.map(&:to).should =~ [[@new_trial_user.email]]
-              ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
-            end
-
-            it "creates a new MailLog record" do
-              expect { subject }.to change(MailLog, :count).by(1)
-            end
-          end
-
-          context "with the 'old_trial' filter" do
-            subject { MailLetter.new(attributes.merge(criteria: 'old_trial')).deliver_and_log }
-
-            it "delays delivery of mails, actually sends email when workers do their jobs" do
-              -> { subject }.should delay('%deliver%')
-              expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
-              ActionMailer::Base.deliveries.map(&:to).should =~ [[@old_trial_user.email]]
-              ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
-            end
-
-            it "creates a new MailLog record" do
-              expect { subject }.to change(MailLog, :count).by(1)
+              expect { mail_letter }.to change(MailLog, :count).by(1)
             end
           end
         end

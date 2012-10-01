@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'ffaker' if Rails.env.development?
+require_dependency 'invoices/builder'
 
 module Populate
 
@@ -180,24 +181,20 @@ module Populate
       puts "#{BASE_SITES.size} beautiful sites created for each user!"
     end
 
+    # FIXME Remy: After the new add-on invoicing logic is coded
     def invoices(user_id = nil)
       empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction)
       users = user_id ? [User.find(user_id)] : User.all
       plans = Plan.standard_plans.all
       users.each do |user|
         user.sites.active.each do |site|
-          if site.in_paid_plan?
-            site.first_paid_plan_started_at = 2.months.ago
-            site.trial_started_at = 3.months.ago
-            site.save(validate: false)
-            (5 + rand(15)).times do |n|
-              Timecop.travel(n.months.from_now) do
-                site.prepare_pending_attributes
-                invoice = ::Invoice.construct(site: site, renew: rand > 0.5)
-                puts invoice.errors.inspect unless invoice.valid?
-                invoice.save!
-                puts "Invoice created: $#{invoice.amount / 100.0}"
-              end
+          (5 + rand(15)).times do |n|
+            Timecop.travel(n.months.from_now) do
+              # site.prepare_pending_attributes
+              builder = Invoices::Builder.new(site: site)
+              invoice = builder.invoice
+              builder.save
+              puts "Invoice created: $#{invoice.amount / 100.0}"
             end
           end
         end
@@ -585,7 +582,7 @@ module Populate
         user         = User.find(user_id)
         trial_site   = user.sites.in_trial.last
         site         = user.sites.joins(:invoices).in_paid_plan.group { sites.id }.having { { invoices => (count(id) > 0) } }.last || user.sites.last
-        invoice      = site.invoices.last || Invoice.construct(site: site)
+        invoice      = site.invoices.last || Invoices::Builder.new(site: site).invoice
         transaction  = invoice.transactions.last || Transaction.create(invoices: [invoice])
         stats_export = StatsExport.create(st: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
 

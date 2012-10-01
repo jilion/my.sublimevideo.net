@@ -8,7 +8,7 @@ describe Site, :addons do
 
     its(:user)                             { should be_present }
     its(:hostname)                         { should =~ /jilion[0-9]+\.com/ }
-    its(:dev_hostnames)                    { should eq "127.0.0.1,localhost" }
+    its(:dev_hostnames)                    { should eq '127.0.0.1,localhost' }
     its(:extra_hostnames)                  { should be_nil }
     its(:path)                             { should be_nil }
     its(:wildcard)                         { should be_false }
@@ -87,7 +87,7 @@ describe Site, :addons do
     specify { Site.validators_on(:dev_hostnames).map(&:class).should include DevHostnamesValidator }
 
     describe "no hostnames at all" do
-      subject { build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil) }
+      subject { build(:site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil) }
       it { should be_valid } # dev hostnames are set before validation
       it { should have(0).error_on(:base) }
     end
@@ -98,7 +98,7 @@ describe Site, :addons do
     %w[hostname extra_hostnames dev_hostnames].each do |attr|
       describe "#{attr}=" do
         it "calls Hostname.clean" do
-          site = build_stubbed(:new_site)
+          site = build_stubbed(:site)
           Hostname.should_receive(:clean).with("foo.com")
 
           site.send("#{attr}=", "foo.com")
@@ -140,7 +140,7 @@ describe Site, :addons do
   describe "Callbacks" do
 
     describe "before_validation" do
-      let(:site) { build_stubbed(:new_site, hostname: nil, dev_hostnames: nil) }
+      let(:site) { build_stubbed(:site, hostname: nil, dev_hostnames: nil) }
 
       describe "set default hostname" do
         specify do

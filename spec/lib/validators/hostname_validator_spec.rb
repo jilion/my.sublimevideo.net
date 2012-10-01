@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe HostnameValidator do
-  subject { build(:new_site) }
+  subject { build(:site) }
 
   describe "valid hostname" do
     it "should not add an error" do

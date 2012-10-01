@@ -1,4 +1,5 @@
 # coding: utf-8
+require_dependency 'active_model'
 require_dependency 'users/support_manager'
 
 class SupportRequest < Struct.new(:params)

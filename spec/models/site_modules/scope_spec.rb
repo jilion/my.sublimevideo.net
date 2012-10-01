@@ -108,7 +108,7 @@ describe SiteModules::Scope do
 
   describe "invoices" do
     before do
-      @site_with_no_invoice       = create(:new_site, user: user)
+      @site_with_no_invoice       = create(:site, user: user)
       @site_with_paid_invoice     = create(:site, user: user)
       @site_with_canceled_invoice = create(:site, user: user)
 

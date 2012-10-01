@@ -60,6 +60,7 @@ module Stats
         self.create(sales_hash(day))
       end
 
+      # FIXME Remy: Replace ne/re by ad: { 'category-name' => amount } (total invoiced by add-on each day)
       def sales_hash(day)
         invoices = Invoice.paid.between(paid_at: day.beginning_of_day..day.end_of_day)
         hash = {
@@ -68,13 +69,13 @@ module Stats
           re: Hash.new { |h,k| h[k] = Hash.new(0) }
         }
 
-        invoices.each do |invoice|
-          if invoice.renew?
-            hash[:re][invoice.paid_plan.name][invoice.paid_plan.cycle[0]] += invoice.amount
-          else
-            hash[:ne][invoice.paid_plan.name][invoice.paid_plan.cycle[0]] += invoice.amount
-          end
-        end
+        # invoices.each do |invoice|
+        #   if invoice.renew?
+        #     hash[:re][invoice.paid_plan.name][invoice.paid_plan.cycle[0]] += invoice.amount
+        #   else
+        #     hash[:ne][invoice.paid_plan.name][invoice.paid_plan.cycle[0]] += invoice.amount
+        #   end
+        # end
 
         hash
       end

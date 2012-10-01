@@ -19,7 +19,7 @@ module ControllerHelpers
     def find_sites_or_redirect_to_new_site
       @sites = current_user.sites.not_archived
 
-      redirect_to [:new, :site] if @sites.empty?
+      redirect_to [:new, :site], flash: flash if @sites.empty?
     end
 
     def find_site_by_token!

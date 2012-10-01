@@ -7,7 +7,6 @@ require_dependency 'validators/extra_hostnames_validator'
 class Site < ActiveRecord::Base
   include SiteModules::Addon
   include SiteModules::Api
-  include SiteModules::Cycle
   include SiteModules::Billing
   include SiteModules::Referrer
   include SiteModules::Scope

@@ -100,8 +100,8 @@ describe UserModules::Scope do
       @user1 = create(:user, email: "remy@jilion.com", name: "Marcel Jacques")
       create(:site, user: @user1, hostname: "bob.com")
       # THIS IS HUGELY SLOW DUE TO IPAddr.new('*.dev')!!!!!!!
-      create(:new_site, user: @user1, dev_hostnames: "foo.dev, bar.dev")
-      create(:new_site, user: @user1, dev_hostnames: "192.168.0.0, 192.168.0.30")
+      create(:site, user: @user1, dev_hostnames: "foo.dev, bar.dev")
+      create(:site, user: @user1, dev_hostnames: "192.168.0.0, 192.168.0.30")
     end
 
     specify { User.search("remy").all.should eq [@user1] }

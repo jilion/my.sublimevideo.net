@@ -36,8 +36,8 @@
         - elsif invoice.renew
           = "Renew"
         - else
-          = "New"
-      = "/ #{invoice.paid_plan.cycle}"
+          = "–"
+      = "/ #{invoice.first_paid_item.cycle}" if invoice.first_paid_item.respond_to?(:cycle)
 
   %td.amount
     %small= display_amount(invoice.amount)

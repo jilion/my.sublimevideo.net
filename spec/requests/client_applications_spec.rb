@@ -85,15 +85,12 @@ feature "OAuth applications" do
 
     # Failure/Error: fill_in "Password", with: "123456"
     # cannot fill in, no text field, text area or password field with id, name, or label 'Password' found
-    pending "delete an OAuth applications" do
+    describe "delete an OAuth applications" do
       scenario "shows a list of applications" do
         go 'my', '/account/applications'
         page.should have_content('Agree2')
 
         click_button "Delete"
-
-        fill_in "Password", with: "123456"
-        click_button "Done"
 
         current_url.should =~ %r(^http://[^/]+/account/applications$)
         page.should have_no_content('Agree2')

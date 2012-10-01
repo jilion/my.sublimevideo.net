@@ -15,7 +15,7 @@ feature "Sticky notices" do
     end
   end
 
-  pending "credit card will expire this month" do
+  context "credit card will expire this month" do
     background do
       sign_in_as :user, cc_expire_on: Time.utc(Time.now.utc.year, Time.now.utc.month).end_of_month.to_date, kill_user: true
       @current_user.should be_cc_expire_this_month
@@ -24,7 +24,7 @@ feature "Sticky notices" do
 
     context "user is billable" do
       background do
-        create(:site, user: @current_user)
+        create(:subscribed_addonship, site: create(:site, user: @current_user))
         @current_user.should be_billable
         go 'my', '/sites'
       end
@@ -36,7 +36,7 @@ feature "Sticky notices" do
     end
   end
 
-  pending "credit card is expired" do
+  context "credit card is expired" do
     background do
       sign_in_as :user, cc_expire_on: 2.years.ago, kill_user: true
       go 'my', '/sites'
@@ -51,7 +51,7 @@ feature "Sticky notices" do
 
     context "user is billable" do
       background do
-        create(:site, user: @current_user)
+        create(:subscribed_addonship, site: create(:site, user: @current_user))
         @current_user.should be_billable
         go 'my', '/sites'
       end
@@ -63,7 +63,7 @@ feature "Sticky notices" do
     end
   end
 
-  pending "billing address is incomplete" do
+  context "billing address is incomplete" do
     context "user is not billable" do
       background do
         sign_in_as :user, kill_user: true, billing_address_1: ''
@@ -85,7 +85,7 @@ feature "Sticky notices" do
       context "user has a credit card" do
         background do
           sign_in_as :user, billing_address_1: ''
-          create(:new_site, user: @current_user)
+          create(:subscribed_addonship, site: create(:site, user: @current_user))
           @current_user.should be_billable
           @current_user.should be_cc
           @current_user.should_not be_billing_address_complete
@@ -100,16 +100,15 @@ feature "Sticky notices" do
       context "user has no credit card" do
         background do
           sign_in_as :user, without_cc: true, billing_address_1: ''
-          create(:new_site, user: @current_user)
+          create(:subscribed_addonship, site: create(:site, user: @current_user))
           @current_user.should be_billable
           @current_user.should_not be_cc
           @current_user.should_not be_billing_address_complete
           go 'my', '/sites'
         end
 
-        scenario "doesn't show a notice" do
-          page.should have_no_content I18n.t("user.billing_address.complete_it")
-          page.should have_no_content I18n.t("app.update_it")
+        scenario "shows a notice" do
+          page.should have_content I18n.t("user.billing_address.complete_it")
         end
       end
     end

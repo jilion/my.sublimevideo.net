@@ -51,14 +51,9 @@ FactoryGirl.define do
   # ===============
   # = Site models =
   # ===============
-  factory :new_site, class: Site do
+  factory :site, class: Site do
     sequence(:hostname) { |n| "jilion#{n}.com" }
-    dev_hostnames       '127.0.0.1, localhost'
-    # plan_id             { FactoryGirl.create(:plan).id }
     user
-
-    factory :site do
-    end
   end
 
 
@@ -208,14 +203,16 @@ FactoryGirl.define do
     end
   end
 
-  factory :invoice_item do
+  factory :invoice_item, class: InvoiceItems::InvoiceItem do
     started_at { Time.now.utc.beginning_of_month }
     ended_at   { Time.now.utc.end_of_month }
-    price  9999
-    amount 9999
 
-    factory :plan_invoice_item, class: InvoiceItem::Plan do
-      item   { FactoryGirl.create(:plan) }
+    factory :plan_invoice_item, class: InvoiceItems::Plan do
+      item { FactoryGirl.create(:plan) }
+    end
+
+    factory :addon_invoice_item, class: InvoiceItems::Addon do
+      item { FactoryGirl.create(:addon) }
     end
   end
 
@@ -229,7 +226,6 @@ FactoryGirl.define do
       error 'Credit card refused'
     end
   end
-
 
   # ===============
   # = Deal models =

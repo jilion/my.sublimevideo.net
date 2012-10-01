@@ -1,25 +1,30 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require File.expand_path('app/models/support_request')
 
 describe SupportRequest do
-  before do
-    @user  = create(:user, name: 'Remy')
-    @user2 = create(:user, name: 'Remy', zendesk_id: 1234)
-    @site  = create(:site, user: @user)
-    @vip = create(:user)
-    # FIXME: Replace with vip support add-on
-    # create(:site, user: @vip, plan_id: @custom_plan.token)
-  end
+  User = Class.new unless defined? User
+  Site = Class.new unless defined? Site
 
+  let(:user_without_zendesk_id) { stub(:user, id: 1, name: 'Remy', email: 'remy@rymai.me', zendesk_id?: false) }
+  let(:user_with_zendesk_id)    { stub(:user, id: 2, name: 'Remy', email: 'remy@rymai.me', zendesk_id?: true, zendesk_id: 1234) }
+  let(:site)                    { stub(:site, token: 'abcd1234', hostname: 'rymai.me', user: user_without_zendesk_id) }
   let(:params) {
     {
-      user_id: @user.id, type: 'other', subject: 'SUBJECT', message: 'DESCRIPTION',
+      user_id: user_without_zendesk_id.id, type: 'other', subject: 'SUBJECT', message: 'DESCRIPTION',
       env: 'Windows', test_page: 'http://example.org', uploads: ['foo.jpg', 'bar.html']
     }
   }
   let(:support_request)                 { described_class.new(params) }
-  let(:support_request_with_zendesk_id) { described_class.new(params.merge(user_id: @user2.id)) }
+  let(:support_request_with_zendesk_id) { described_class.new(params.merge(user_id: user_with_zendesk_id.id)) }
   let(:invalid_support_request)         { described_class.new(params.merge(user_id: nil)) }
-  let(:vip_support_request)             { described_class.new(params.merge(user_id: @vip.id)) }
+  let(:vip_support_request)             { described_class.new(params.merge(user_id: user_without_zendesk_id.id)) }
+  before do
+    User.stub(:find_by_id).with(1) { user_without_zendesk_id }
+    User.stub(:find_by_id).with(2) { user_with_zendesk_id }
+    User.stub(:find_by_id).with(nil) { nil }
+    Site.stub(:find_by_token).with('abcd1234') { site }
+    Site.stub(:find_by_token).with(nil) { nil }
+  end
 
   describe 'Factory' do
     context 'without site' do
@@ -32,11 +37,11 @@ describe SupportRequest do
     end
 
     context 'with site' do
-      subject { described_class.new(params.merge(site_token: @site.token)) }
+      subject { described_class.new(params.merge(site_token: site.token)) }
 
       its(:subject) { should eq 'SUBJECT' }
       its(:message) { should eq "DESCRIPTION" }
-      its(:comment) { should eq "Request for site: (#{@site.token}) #{@site.hostname}\nThe issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }
+      its(:comment) { should eq "Request for site: (#{site.token}) #{site.hostname}\nThe issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }
 
       it { should be_valid }
     end
@@ -64,31 +69,41 @@ describe SupportRequest do
 
   describe '#to_params' do
     context 'user has email support' do
+      before do
+        Users::SupportManager.should_receive(:new) { stub(level: 'email') }
+      end
+
       it 'generates a hash of the params' do
         support_request.to_params.should == {
           subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" },
-          tags: ['email-support'], requester: { name: @user.name, email: @user.email }, uploads: ['foo.jpg', 'bar.html'], external_id: @user.id
+          tags: ['email-support'], requester: { name: user_without_zendesk_id.name, email: user_without_zendesk_id.email }, uploads: ['foo.jpg', 'bar.html'], external_id: user_without_zendesk_id.id
         }
       end
     end
 
     context 'user has vip support' do
-      it 'generates a hash of the params' do
-        Users::SupportManager.any_instance.stub(:level) { 'vip_email' }
+      before do
+        Users::SupportManager.should_receive(:new) { stub(level: 'vip_email') }
+      end
 
+      it 'generates a hash of the params' do
         vip_support_request.to_params.should == {
           subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" },
-          tags: ['vip_email-support'], requester: { name: @vip.name, email: @vip.email },
-          uploads: ['foo.jpg', 'bar.html'], external_id: @vip.id
+          tags: ['vip_email-support'], requester: { name: user_without_zendesk_id.name, email: user_without_zendesk_id.email },
+          uploads: ['foo.jpg', 'bar.html'], external_id: user_without_zendesk_id.id
         }
       end
     end
 
     context 'user has a zendesk id' do
+      before do
+        Users::SupportManager.should_receive(:new) { stub(level: 'email') }
+      end
+
       it 'generates a hash of the params' do
         support_request_with_zendesk_id.to_params.should == {
           subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }, tags: ['email-support'],
-          tags: ['email-support'], requester_id: @user2.zendesk_id, uploads: ['foo.jpg', 'bar.html'], external_id: @user2.id
+          tags: ['email-support'], requester_id: user_with_zendesk_id.zendesk_id, uploads: ['foo.jpg', 'bar.html'], external_id: user_with_zendesk_id.id
         }
       end
     end

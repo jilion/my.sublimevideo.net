@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe InvoiceModules::Scope do
-  let(:site) { create(:new_site) }
-  let(:refunded_site) { create(:new_site, refunded_at: Time.now.utc) }
+  let(:site) { create(:site) }
+  let(:refunded_site) { create(:site, refunded_at: Time.now.utc) }
   before do
 
     @open_invoice     = create(:invoice, site: site, created_at: 48.hours.ago)

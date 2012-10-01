@@ -50,7 +50,7 @@ describe Stats::SalesStat do
       i.save
     end
 
-    describe ".create_stats" do
+    pending ".create_stats" do
       it "creates sales_stats stats for the last 5 days" do
         described_class.create_stats
         described_class.count.should eq 5

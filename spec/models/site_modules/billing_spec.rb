@@ -77,48 +77,6 @@ describe SiteModules::Billing do
       end
     end # #last_paid_invoice
 
-    pending '#last_paid_plan' do
-      context "site with no invoice" do
-        subject { create(:site, plan_id: @free_plan.id) }
-
-        its(:last_paid_plan) { should be_nil }
-      end
-
-      context "site with at least one paid invoice" do
-        before do
-          @plan1 = create(:plan, price: 10_000)
-          @plan2 = create(:plan, price: 5_000)
-          @site  = create(:site, plan_id: @plan1.id)
-          @site.plan_id = @plan2.id
-        end
-
-        it "should return the plan of the last InvoiceItem::Plan with an price > 0" do
-          @site.last_paid_plan.should eq @plan1
-        end
-      end
-    end # #last_paid_plan
-
-    pending '#last_paid_plan_price' do
-      context "site with no invoice" do
-        subject { create(:site, plan_id: @free_plan.id) }
-
-        its(:last_paid_plan_price) { should eq 0 }
-      end
-
-      context "site with at least one paid invoice" do
-        before do
-          @plan1 = create(:plan, price: 10_000)
-          @plan2 = create(:plan, price: 5_000)
-          @site  = create(:site, plan_id: @plan1.id)
-          @site.plan_id = @plan2.id
-        end
-
-        it "should return the price of the last InvoiceItem::Plan with an price > 0" do
-          @site.last_paid_plan_price.should eq @plan1.price
-        end
-      end
-    end # #last_paid_plan_price
-
   end # Instance Methods
 
 end
