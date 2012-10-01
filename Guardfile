@@ -31,7 +31,7 @@ end
 
 group :backend do
 
-  guard :rspec, bundler: false, version: 2, all_after_pass: false, all_on_start: false, keep_failed: false do
+  guard :rspec, bundler: false, all_after_pass: false, all_on_start: false, keep_failed: false do
     watch('app/controllers/application_controller.rb')                         { "spec/controllers" }
     watch('config/routes.rb')                                                  { "spec/routings" }
     watch(%r{^spec/support/(controllers|mailers|models|requests|routings)_helpers\.rb}) { |m| "spec/#{m[1]}" }
