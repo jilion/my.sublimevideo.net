@@ -90,7 +90,6 @@ class Site < ActiveRecord::Base
   validates :user,        presence: true
   validates :player_mode, inclusion: PLAYER_MODES
 
-  # FIXME
   validates :hostname, hostname: true, hostname_uniqueness: true
   validates :dev_hostnames,   dev_hostnames: true
   validates :extra_hostnames, extra_hostnames: true

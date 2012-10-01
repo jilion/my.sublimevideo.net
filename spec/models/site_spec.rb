@@ -220,17 +220,17 @@ describe Site, :addons do
     describe "after transition on archive" do
       let(:site) { create(:site) }
       before do
-        @invoice1 = create(:invoice, site: site, state: 'open')
-        @invoice2 = create(:invoice, site: site, state: 'failed')
-        @invoice3 = create(:invoice, site: site, state: 'paid')
+        @open_invoice   = create(:invoice, site: site)
+        @failed_invoice = create(:failed_invoice, site: site)
+        @paid_invoice   = create(:paid_invoice, site: site)
       end
 
       it "cancels all not paid invoices" do
         site.archive!
 
-        @invoice1.reload.should be_canceled
-        @invoice2.reload.should be_canceled
-        @invoice3.reload.should be_paid
+        @open_invoice.reload.should be_canceled
+        @failed_invoice.reload.should be_canceled
+        @paid_invoice.reload.should be_paid
       end
     end
   end # State Machine

@@ -5,12 +5,12 @@ describe InvoiceModules::Scope do
   let(:refunded_site) { create(:new_site, refunded_at: Time.now.utc) }
   before do
 
-    @open_invoice     = create(:invoice, site: site, state: 'open', created_at: 48.hours.ago)
-    @failed_invoice   = create(:invoice, site: site, state: 'failed', created_at: 25.hours.ago)
-    @waiting_invoice  = create(:invoice, site: site, state: 'waiting', created_at: 18.hours.ago)
-    @paid_invoice     = create(:invoice, site: site, state: 'paid', created_at: 16.hours.ago)
-    @canceled_invoice = create(:invoice, site: site, state: 'canceled', created_at: 14.hours.ago)
-    @refunded_invoice = create(:invoice, site: refunded_site, state: 'paid', created_at: 14.hours.ago)
+    @open_invoice     = create(:invoice, site: site, created_at: 48.hours.ago)
+    @failed_invoice   = create(:failed_invoice, site: site, created_at: 25.hours.ago)
+    @waiting_invoice  = create(:waiting_invoice, site: site, created_at: 18.hours.ago)
+    @paid_invoice     = create(:paid_invoice, site: site, created_at: 16.hours.ago)
+    @canceled_invoice = create(:canceled_invoice, site: site, created_at: 14.hours.ago)
+    @refunded_invoice = create(:paid_invoice, site: refunded_site, created_at: 14.hours.ago)
 
     @open_invoice.should be_open
     @failed_invoice.should be_failed

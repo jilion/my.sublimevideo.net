@@ -9,13 +9,13 @@ describe SiteModules::Billing do
 
       context "with no options" do
         it "should be true if invoice have the renew flag == false" do
-          invoice = create(:invoice, state: 'open', site: site, renew: false)
+          invoice = create(:invoice, site: site, renew: false)
           invoice.renew.should be_false
           site.invoices_open?.should be_true
         end
 
         it "should be true if invoice have the renew flag == true" do
-          invoice = create(:invoice, state: 'open', site: site, renew: true)
+          invoice = create(:invoice, site: site, renew: true)
           invoice.renew.should be_true
           site.invoices_open?.should be_true
         end
@@ -25,7 +25,7 @@ describe SiteModules::Billing do
     describe '#invoices_failed?' do
       subject do
         site = create(:site)
-        create(:invoice, site: site , state: 'failed')
+        create(:failed_invoice, site: site)
         site
       end
 
@@ -35,7 +35,7 @@ describe SiteModules::Billing do
     describe '#invoices_waiting?' do
       subject do
         site = create(:site)
-        create(:invoice, site: site , state: 'waiting')
+        create(:waiting_invoice, site: site)
         site
       end
 
@@ -55,7 +55,7 @@ describe SiteModules::Billing do
     end # #refunded?
 
     describe '#last_paid_invoice' do
-      let(:invoice) { create(:invoice, state: 'paid') }
+      let(:invoice) { create(:paid_invoice) }
       context "with the last paid invoice not refunded" do
 
         it "should return the last paid invoice" do

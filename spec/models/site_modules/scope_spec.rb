@@ -81,12 +81,12 @@ describe SiteModules::Scope do
 
     describe ".with_out_of_trial_addons" do
       before do
-        @addonship1 = create(:addonship, site: site1, addon: @logo_sublime_addon, state: 'trial', trial_started_on: (30.days - 1.second).ago)
-        @addonship2 = create(:addonship, site: site2, addon: @logo_no_logo_addon, state: 'trial', trial_started_on: (30.days + 1.second).ago)
-        @addonship3 = create(:addonship, site: site1, addon: @stats_standard_addon, state: 'trial')
-        @addonship4 = create(:addonship, site: site2, addon: @support_standard_addon, state: 'subscribed', trial_started_on: (30.days + 1.second).ago)
-        @addonship5 = create(:addonship, site: site1, addon: @support_vip_addon, state: 'subscribed')
-        @addonship6 = create(:addonship, site: site2, state: 'inactive')
+        @addonship1 = create(:trial_addonship, site: site1, addon: @logo_sublime_addon, trial_started_on: (30.days - 1.second).ago)
+        @addonship2 = create(:trial_addonship, site: site2, addon: @logo_no_logo_addon, trial_started_on: (30.days + 1.second).ago)
+        @addonship3 = create(:trial_addonship, site: site1, addon: @stats_standard_addon)
+        @addonship4 = create(:subscribed_addonship, site: site2, addon: @support_standard_addon, trial_started_on: (30.days + 1.second).ago)
+        @addonship5 = create(:subscribed_addonship, site: site1, addon: @support_vip_addon)
+        @addonship6 = create(:inactive_addonship, site: site2)
       end
 
       it { Site.with_out_of_trial_addons.all.should =~ [site2] }
@@ -94,11 +94,11 @@ describe SiteModules::Scope do
 
     describe ".paying" do
       before do
-        @addonship1 = create(:addonship, site: site1, addon: @logo_sublime_addon, state: 'trial', trial_started_on: (30.days - 1.second).ago)
-        @addonship2 = create(:addonship, site: site2, addon: @logo_no_logo_addon, state: 'trial', trial_started_on: (30.days + 1.second).ago)
-        @addonship3 = create(:addonship, site: site1, addon: @stats_standard_addon, state: 'trial')
-        @addonship5 = create(:addonship, site: site1, addon: @support_vip_addon, state: 'subscribed')
-        @addonship6 = create(:addonship, site: site2, state: 'inactive')
+        @addonship1 = create(:trial_addonship, site: site1, addon: @logo_sublime_addon, trial_started_on: (30.days - 1.second).ago)
+        @addonship2 = create(:trial_addonship, site: site2, addon: @logo_no_logo_addon, trial_started_on: (30.days + 1.second).ago)
+        @addonship3 = create(:trial_addonship, site: site1, addon: @stats_standard_addon)
+        @addonship5 = create(:subscribed_addonship, site: site1, addon: @support_vip_addon)
+        @addonship6 = create(:inactive_addonship, site: site2)
       end
 
       it { Site.paying.all.should =~ [site1] }
@@ -113,7 +113,7 @@ describe SiteModules::Scope do
       @site_with_canceled_invoice = create(:site, user: user)
 
       create(:invoice, site: @site_with_paid_invoice)
-      create(:invoice, site: @site_with_canceled_invoice, state: 'canceled')
+      create(:canceled_invoice, site: @site_with_canceled_invoice)
     end
 
     describe ".with_not_canceled_invoices" do
@@ -136,7 +136,7 @@ describe SiteModules::Scope do
   describe ".refunded" do
     before do
       @site_refunded_1     = create(:site, user: user, state: 'archived', refunded_at: Time.now.utc)
-      @site_not_refunded_1 = create(:site, user: user, state: 'active', refunded_at: Time.now.utc)
+      @site_not_refunded_1 = create(:site, user: user, refunded_at: Time.now.utc)
       @site_not_refunded_2 = create(:site, user: user, state: 'archived', refunded_at: nil)
     end
 

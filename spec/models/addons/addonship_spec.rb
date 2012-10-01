@@ -91,12 +91,12 @@ describe Addons::Addonship do
   describe "Scopes", :addons do
     let(:site) { create(:site) }
     before do
-      @addonship1 = create(:addonship, site: site, addon: @logo_sublime_addon, state: 'trial', trial_started_on: (30.days - 1.second).ago)
-      @addonship2 = create(:addonship, site: site, addon: @logo_no_logo_addon, state: 'trial', trial_started_on: (30.days + 1.second).ago)
-      @addonship3 = create(:addonship, site: site, addon: @stats_standard_addon, state: 'trial')
-      @addonship4 = create(:addonship, site: site, addon: @support_standard_addon, state: 'subscribed', trial_started_on: (30.days + 1.second).ago)
-      @addonship5 = create(:addonship, site: site, addon: @support_vip_addon, state: 'subscribed')
-      @addonship6 = create(:addonship, site: site, addon: create(:addon, availability: 'beta'), state: 'inactive')
+      @addonship1 = create(:trial_addonship, site: site, addon: @logo_sublime_addon, trial_started_on: (30.days - 1.second).ago)
+      @addonship2 = create(:trial_addonship, site: site, addon: @logo_no_logo_addon, trial_started_on: (30.days + 1.second).ago)
+      @addonship3 = create(:trial_addonship, site: site, addon: @stats_standard_addon)
+      @addonship4 = create(:subscribed_addonship, site: site, addon: @support_standard_addon, trial_started_on: (30.days + 1.second).ago)
+      @addonship5 = create(:subscribed_addonship, site: site, addon: @support_vip_addon)
+      @addonship6 = create(:inactive_addonship, site: site, addon: create(:beta_addon))
     end
 
     describe '.in_category' do

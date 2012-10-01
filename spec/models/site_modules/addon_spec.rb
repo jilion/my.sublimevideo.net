@@ -7,13 +7,13 @@ describe SiteModules::Addon, :addons do
   let(:addon3) { create(:addon, category: 'baz') }
   let(:addon4) { create(:addon, category: 'fooz') }
   before do
-    create(:addonship, site: site, addon: addon1, state: 'beta')
-    create(:addonship, site: site, addon: @logo_no_logo_addon, state: 'trial')
-    create(:addonship, site: site, addon: @stats_standard_addon, state: 'sponsored')
-    create(:addonship, site: site, addon: addon2, state: 'subscribed')
+    create(:beta_addonship, site: site, addon: addon1)
+    create(:trial_addonship, site: site, addon: @logo_no_logo_addon)
+    create(:sponsored_addonship, site: site, addon: @stats_standard_addon)
+    create(:subscribed_addonship, site: site, addon: addon2)
 
-    create(:addonship, site: site, addon: addon3, state: 'inactive')
-    create(:addonship, site: site, addon: addon4, state: 'suspended')
+    create(:inactive_addonship, site: site, addon: addon3)
+    create(:suspended_addonship, site: site, addon: addon4)
   end
 
   describe '#addon_is_active?' do

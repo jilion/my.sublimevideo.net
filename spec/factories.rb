@@ -137,6 +137,10 @@ FactoryGirl.define do
     sequence(:title)    { |n| "Name #{n}" }
     price               999
     availability        'public'
+
+    factory :beta_addon do
+      availability 'beta'
+    end
   end
 
   factory :addonship, class: Addons::Addonship do
@@ -197,6 +201,10 @@ FactoryGirl.define do
 
     factory :canceled_invoice do
       state 'canceled'
+    end
+
+    factory :waiting_invoice do
+      state 'waiting'
     end
   end
 

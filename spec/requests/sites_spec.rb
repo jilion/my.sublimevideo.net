@@ -68,10 +68,10 @@ feature 'Site archive' do
     @site = create(:site, user: @current_user, hostname: hostname1)
 
     @paid_site_with_paid_invoices = create(:site, user: @current_user, hostname: hostname2)
-    create(:invoice, site: @paid_site_with_paid_invoices, state: 'paid')
+    create(:paid_invoice, site: @paid_site_with_paid_invoices)
 
     @paid_site_with_open_invoices = create(:site, user: @current_user, hostname: hostname3)
-    create(:invoice, site: @paid_site_with_open_invoices, state: 'open')
+    create(:invoice, site: @paid_site_with_open_invoices)
 
     go 'my', '/sites'
   end
@@ -106,7 +106,7 @@ feature 'Site archive' do
 
   scenario 'a paid site with a failed invoice' do
     site = create(:site, user: @current_user, hostname: 'test.com')
-    create(:invoice, site: site, state: 'failed')
+    create(:failed_invoice, site: site)
 
     go 'my', '/sites'
     click_link 'Edit test.com'
@@ -120,7 +120,7 @@ feature 'Site archive' do
 
   scenario 'a paid site with a waiting invoice' do
     site = create(:site, user: @current_user, hostname: 'example.org')
-    create(:invoice, site: site, state: 'waiting')
+    create(:waiting_invoice, site: site)
 
     go 'my', '/sites'
     click_link 'Edit example.org'

@@ -11,41 +11,41 @@ describe Stats::SalesStat do
       @plus_yearly_plan     = create(:plan, name: 'plus', cycle: 'year')
       @premium_yearly_plan  = create(:plan, name: 'premium', cycle: 'year')
 
-      i = build(:invoice, state: 'paid', paid_at: 5.days.ago, site: site, renew: false, amount: 1)
+      i = build(:paid_invoice, paid_at: 5.days.ago, site: site, renew: false, amount: 1)
       create(:plan_invoice_item, item: @plus_monthly_plan, invoice: i)
       i.save
 
-      i = build(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: false, amount: 2)
+      i = build(:paid_invoice, paid_at: 1.day.ago.midnight, site: site, renew: false, amount: 2)
       create(:plan_invoice_item, item: @plus_monthly_plan, invoice: i)
       i.save
-      i = build(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: false, amount: 3)
+      i = build(:paid_invoice, paid_at: 1.day.ago.midnight, site: site, renew: false, amount: 3)
       create(:plan_invoice_item, item: @plus_yearly_plan, invoice: i)
       i.save
 
-      i = build(:invoice, state: 'paid', paid_at: Time.now.utc.midnight, site: site, renew: false, amount: 4)
+      i = build(:paid_invoice, paid_at: Time.now.utc.midnight, site: site, renew: false, amount: 4)
       create(:plan_invoice_item, item: @premium_monthly_plan, invoice: i)
       i.save
 
-      i = build(:invoice, state: 'failed', site: site, renew: false, amount: 5)
+      i = build(:failed_invoice, site: site, renew: false, amount: 5)
       create(:plan_invoice_item, item: @plus_yearly_plan, invoice: i)
       i.save
 
-      i = build(:invoice, state: 'paid', paid_at: 5.days.ago, site: site, renew: true, amount: 6)
+      i = build(:paid_invoice, paid_at: 5.days.ago, site: site, renew: true, amount: 6)
       create(:plan_invoice_item, item: @plus_monthly_plan, invoice: i)
       i.save
 
-      i = build(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, amount: 7)
+      i = build(:paid_invoice, paid_at: 1.day.ago.midnight, site: site, renew: true, amount: 7)
       create(:plan_invoice_item, item: @premium_monthly_plan, invoice: i)
       i.save
-      i = build(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, amount: 8)
+      i = build(:paid_invoice, paid_at: 1.day.ago.midnight, site: site, renew: true, amount: 8)
       create(:plan_invoice_item, item: @premium_yearly_plan, invoice: i)
       i.save
 
-      i = build(:invoice, state: 'paid', paid_at: Time.now.utc.midnight, site: site, renew: true, amount: 9)
+      i = build(:paid_invoice, paid_at: Time.now.utc.midnight, site: site, renew: true, amount: 9)
       create(:plan_invoice_item, item: @premium_monthly_plan, invoice: i)
       i.save
 
-      i = build(:invoice, state: 'canceled', site: site, renew: true, amount: 5)
+      i = build(:canceled_invoice, site: site, renew: true, amount: 5)
       create(:plan_invoice_item, item: @plus_yearly_plan, invoice: i)
       i.save
     end
