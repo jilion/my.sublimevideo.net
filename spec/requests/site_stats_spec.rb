@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Stats page' do
   background do
     sign_in_as :user
-     @site = create(:site, user: @current_user)
+    @site = create(:site, user: @current_user)
   end
 
   scenario 'user dont see the Stats tab' do
