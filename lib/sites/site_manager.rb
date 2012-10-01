@@ -30,11 +30,11 @@ module Sites
     end
 
     def delay_set_ranks(site)
-      RankManager.delay(priority: 100, run_at: Time.now.utc + 30).set_ranks(site.id)
+      Sites::RankManager.delay(priority: 100, run_at: Time.now.utc + 30).set_ranks(site.id)
     end
 
     def update_last_30_days_video_views_counters(site)
-      UsageManager.new(site).update_last_30_days_video_views_counters
+      Sites::UsageManager.new(site).update_last_30_days_video_views_counters
     end
 
   end

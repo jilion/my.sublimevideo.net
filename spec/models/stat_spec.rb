@@ -81,18 +81,18 @@ describe Stat do
           Stat::Video::Hour.where(st: 'site1234', u: 'efgh5678', d: @log.hour).should_not be_present
         end
 
-        it "create 2 day site stats" do
+        it "create 1 day site stats for the site with stats addon active" do
           Stat.create_stats_from_trackers!(@log, nil)
 
-          Stat::Site::Day.count.should eq 2
+          Stat::Site::Day.count.should eq 1
           Stat::Site::Day.where(t: 'ovjigy83', d: @log.day).should be_present
-          Stat::Site::Day.where(t: 'site1234', d: @log.day).should be_present
+          Stat::Site::Day.where(t: 'site1234', d: @log.day).should_not be_present
         end
 
-        it "create 4 day video stats" do
+        it "create 2 day video stats for the site with stats addon active" do
           Stat.create_stats_from_trackers!(@log, nil)
 
-          Stat::Video::Day.count.should eq 4
+          Stat::Video::Day.count.should eq 2
           Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).should be_present
           Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vlc.should eq 3
           Stat::Video::Day.where(st: 'ovjigy83', u: 'abcd1234', d: @log.day).first.vvc.should eq 1
@@ -100,12 +100,8 @@ describe Stat do
           Stat::Video::Day.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vlc.should eq 3
           Stat::Video::Day.where(st: 'ovjigy83', u: 'efgh5678', d: @log.day).first.vvc.should eq 0
 
-          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).should be_present
-          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vlc.should eq 3
-          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).first.vvc.should eq 0
-          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).should be_present
-          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vlc.should eq 3
-          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).first.vvc.should eq 0
+          Stat::Video::Day.where(st: 'site1234', u: 'abcd1234', d: @log.day).should_not be_present
+          Stat::Video::Day.where(st: 'site1234', u: 'efgh5678', d: @log.day).should_not be_present
         end
 
         it "update existing h/d stat" do
@@ -113,7 +109,7 @@ describe Stat do
 
           Stat::Site::Minute.count.should eq 1
           Stat::Site::Hour.count.should eq 1
-          Stat::Site::Day.count.should eq 2
+          Stat::Site::Day.count.should eq 1
           log_time = 5.days.ago.change(hour: 0).to_i + 1.minute
           log  = build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{log_time}-#{log_time + 60}.gz", file: @log_file)
 
@@ -121,7 +117,7 @@ describe Stat do
 
           Stat::Site::Minute.count.should eq 2
           Stat::Site::Hour.count.should eq 1
-          Stat::Site::Day.count.should eq 2
+          Stat::Site::Day.count.should eq 1
           Stat::Site::Minute.where(t: 'ovjigy83').lte(d: Time.now).count.should eq 2
           Stat::Site::Minute.where(t: 'ovjigy83', d: log.minute).first.bp.should == { "saf-osx" => 4 }
           Stat::Site::Day.where(t: 'ovjigy83', d: log.day).first.bp.should == { "saf-osx" => 8 }
