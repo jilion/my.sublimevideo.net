@@ -6,16 +6,6 @@ module UserModules::Scope
 
   included do
 
-    # billing
-    scope :paying, -> { active.includes(:sites, :addonships).merge(::Addons::Addonship.subscribed).where{ addonships.addon_id >> Addons::Addon.paid.pluck(:id) } }
-    scope :free,   -> { active.where("(#{User.paying.select("COUNT(sites.id)").where{ sites.user_id == id }.to_sql}) = 0") }
-
-    # credit card
-    scope :without_cc,           -> { where(cc_type: nil, cc_last_digits: nil) }
-    scope :with_cc,              -> { where{ (cc_type != nil) & (cc_last_digits != nil) } }
-    scope :cc_expire_this_month, -> { where(cc_expire_on: Time.now.utc.end_of_month.to_date) }
-    scope :with_balance,         -> { where{ balance > 0 } }
-
     # state
     scope :invited,      where{ invitation_token != nil }
     scope :beta,         where{ (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } # some beta users don't come from svs but were directly invited from msv!!
@@ -24,6 +14,20 @@ module UserModules::Scope
     scope :suspended,    where{ state == 'suspended' }
     scope :archived,     where{ state == 'archived' }
     scope :not_archived, where{ state != 'archived' }
+
+    # billing
+    scope :paying, -> do
+      active.includes(:sites, :addonships).merge(::Addons::Addonship.subscribed).where{ addonships.addon_id >> Addons::Addon.paid.pluck(:id) }
+    end
+    scope :free, -> do
+      active.where{ id << User.select('paying_users.id').from("(#{User.joins(:sites, :addonships).paying.to_sql}) AS paying_users") }
+    end
+
+    # credit card
+    scope :without_cc,           -> { where(cc_type: nil, cc_last_digits: nil) }
+    scope :with_cc,              -> { where{ (cc_type != nil) & (cc_last_digits != nil) } }
+    scope :cc_expire_this_month, -> { where(cc_expire_on: Time.now.utc.end_of_month.to_date) }
+    scope :with_balance,         -> { where{ balance > 0 } }
 
     # attributes queries
     scope :created_on,   ->(date) { where { created_at >> date.all_day } }

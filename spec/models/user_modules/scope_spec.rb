@@ -47,8 +47,8 @@ describe UserModules::Scope do
     let(:site1) { create(:site) }
     let(:site2) { create(:site) }
     let(:site3) { create(:site) }
-    let(:site4) { create(:site) }
-    let(:site5) { create(:site) }
+    let(:site4) { create(:site, user: create(:user, state: 'suspended')) }
+    let(:site5) { create(:site, user: create(:user, state: 'archived')) }
     let(:site6) { create(:site) }
     before do
       create(:beta_addonship, site: site1, addon: @stats_standard_addon) # paid addon in beta
@@ -65,39 +65,8 @@ describe UserModules::Scope do
       create(:sponsored_addonship, site: site6)
     end
 
-    # before do
-    #   # Paying because of 1 paid plan not in trial
-    #   @user1 = create(:user)
-    #   create(:new_site, user: @user1, plan_id: @paid_plan.id)
-
-    #   # Paying because of 1 paid plan not in trial (+ next plan is paid)
-    #   @user2 = create(:user)
-    #   create(:new_site, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
-
-    #   # Paying because of 1 paid plan not in trial (+ next plan is free)
-    #   @user3 = create(:user)
-    #   create(:new_site, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
-
-    #   # Free because no paying (and active) sites
-    #   @user4 = create(:user)
-    #   create(:new_site, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
-
-    #   # Free because of no paid plan
-    #   @user5 = create(:user)
-    #   create(:new_site, user: @user5, plan_id: @free_plan.id)
-
-    #   # Free because of 1 paid plan in trial
-    #   @user6 = create(:user)
-    #   create(:new_site, user: @user6, plan_id: @trial_plan.id)
-
-    #   # Archived and that's it
-    #   @user7 = create(:user, state: 'archived')
-    #   create(:new_site, user: @user7, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
-    #   @user8 = create(:user, state: 'archived')
-    # end
-
     describe ".free" do
-      specify { User.free.all.should =~ [site1.user, site2.user, site4.user, site5.user, site6.user] }
+      specify { User.free.all.should =~ [site1.user, site2.user, site6.user] }
     end
 
     describe ".paying" do

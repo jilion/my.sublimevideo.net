@@ -47,7 +47,6 @@ class User < ActiveRecord::Base
 
   has_many :sites
   has_many :addonships, through: :sites
-  has_many :addons, through: :addonships
 
   # Invoices
   has_many :invoices, through: :sites
