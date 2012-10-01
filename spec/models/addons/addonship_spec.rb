@@ -15,8 +15,9 @@ describe Addons::Addonship do
   end
 
   describe "Associations" do
-    it { should belong_to :site }
-    it { should belong_to :addon }
+    it { should belong_to(:site) }
+    it { should belong_to(:addon) }
+    it { should have_many(:components).through(:addon) }
   end
 
   describe "Validations" do

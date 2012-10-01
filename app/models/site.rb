@@ -69,6 +69,9 @@ class Site < ActiveRecord::Base
   end
   has_many :addon_activities, through: :addonships, class_name: 'Addons::AddonActivity'
 
+  # Player::Components
+  has_many :components, through: :addonships
+
   # Mongoid associations
   def usages
     SiteUsage.where(site_id: id)

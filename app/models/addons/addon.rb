@@ -9,6 +9,9 @@ class Addons::Addon < ActiveRecord::Base
   # ================
 
   has_many :addonships, class_name: "Addons::Addonship"
+  has_many :sites, through: :addonships
+  has_many :componentships, class_name: "Player::Componentship"
+  has_many :components, through: :componentships
 
   # ===============
   # = Validations =

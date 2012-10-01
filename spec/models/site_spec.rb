@@ -4,7 +4,7 @@ require 'spec_helper'
 describe Site, :addons do
 
   context "Factory" do
-    subject { create(:site).reload }
+    subject { create(:site) }
 
     its(:user)                             { should be_present }
     its(:hostname)                         { should =~ /jilion[0-9]+\.com/ }
@@ -26,13 +26,12 @@ describe Site, :addons do
 
   describe "Associations" do
     let(:site) { create(:site) }
-    subject { site }
 
     it { should belong_to(:user) }
-    it { should belong_to :plan }
-    it { should have_many :invoices }
+    it { should belong_to(:plan) }
+    it { should have_many(:invoices) }
 
-    it { should have_many :addonships }
+    it { should have_many(:addonships) }
 
     it { should have_many(:addons).through(:addonships) }
 
@@ -58,6 +57,8 @@ describe Site, :addons do
       end
     end
 
+    it { should have_many(:components).through(:addonships) }
+
     describe "last_invoice" do
       it "should return the last paid invoice" do
         invoice = create(:invoice, site: site)
@@ -69,8 +70,6 @@ describe Site, :addons do
   end
 
   describe "Validations" do
-    subject { create(:site) }
-
     [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
     end

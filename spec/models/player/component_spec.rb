@@ -10,9 +10,11 @@ describe Player::Component, :fog_mock do
   it { should allow_mass_assignment_of(:name) }
   it { should allow_mass_assignment_of(:token) }
 
-  it { should have_many(:versions).dependent(:destroy) }
-  it { should have_many(:componentships) }
-  it { should have_many(:sites).through(:componentships) }
+  describe "Associations" do
+    it { should have_many(:versions).dependent(:destroy) }
+    it { should have_many(:componentships) }
+    it { should have_many(:sites).through(:componentships) }
+  end
 
   describe "Validations" do
     it { should validate_presence_of(:name) }

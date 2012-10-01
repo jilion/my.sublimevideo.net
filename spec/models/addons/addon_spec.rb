@@ -15,14 +15,13 @@ describe Addons::Addon do
   end
 
   describe "Associations" do
-    subject { create(:addon) }
-
-    it { should have_many :addonships }
+    it { should have_many(:addonships) }
+    it { should have_many(:sites).through(:addonships) }
+    it { should have_many(:componentships) }
+    it { should have_many(:components).through(:componentships) }
   end
 
   describe "Validations" do
-    subject { create(:addon) }
-
     it { should validate_presence_of(:category) }
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:title) }

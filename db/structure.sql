@@ -1746,10 +1746,10 @@ CREATE UNIQUE INDEX index_player_components_on_token ON player_components USING 
 
 
 --
--- Name: index_player_componentships_on_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_player_componentships_on_addon_id_and_player_component_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX index_player_componentships_on_addon_id ON player_componentships USING btree (addon_id);
+CREATE UNIQUE INDEX index_player_componentships_on_addon_id_and_player_component_id ON player_componentships USING btree (addon_id, player_component_id);
 
 
 --
@@ -2094,3 +2094,5 @@ INSERT INTO schema_migrations (version) VALUES ('20120921095439');
 INSERT INTO schema_migrations (version) VALUES ('20120924140456');
 
 INSERT INTO schema_migrations (version) VALUES ('20120924141140');
+
+INSERT INTO schema_migrations (version) VALUES ('20121001125756');
