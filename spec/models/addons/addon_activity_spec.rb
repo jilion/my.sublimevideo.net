@@ -4,7 +4,7 @@ describe Addons::AddonActivity do
   context "Factory" do
     subject { create(:addon_activity) }
 
-    its(:state)     { should eq 'active' }
+    its(:state)     { should eq 'subscribed' }
     its(:addonship) { should be_present }
 
     it { should be_valid }

@@ -18,6 +18,13 @@ class Addons::Addon < ActiveRecord::Base
   validates :name, uniqueness: { scope: :category }
   validates :availability, inclusion: AVAILABILITIES
 
+  scope :not_beta, -> { where{ availability != 'beta' } }
+  scope :paid,     -> { not_beta.where{ price > 0 } }
+
+  def self.get(category, name)
+    where(category: category, name: name).first
+  end
+
   def beta?
     availability == 'beta'
   end

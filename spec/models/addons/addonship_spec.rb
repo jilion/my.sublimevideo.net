@@ -96,7 +96,7 @@ describe Addons::Addonship do
       @addonship3 = create(:addonship, site: site, addon: @stats_standard_addon, state: 'trial')
       @addonship4 = create(:addonship, site: site, addon: @support_standard_addon, state: 'subscribed', trial_started_on: (30.days + 1.second).ago)
       @addonship5 = create(:addonship, site: site, addon: @support_vip_addon, state: 'subscribed')
-      @addonship6 = create(:addonship, site: site, state: 'inactive')
+      @addonship6 = create(:addonship, site: site, addon: create(:addon, availability: 'beta'), state: 'inactive')
     end
 
     describe '.in_category' do
@@ -110,6 +110,22 @@ describe Addons::Addonship do
 
     describe '.out_of_trial addons' do
       it { described_class.out_of_trial.should =~ [@addonship2] }
+    end
+
+    describe '.active addons' do
+      it { described_class.active.should =~ [@addonship1, @addonship2, @addonship3, @addonship4, @addonship5] }
+    end
+
+    describe '.subscribed addons' do
+      it { described_class.subscribed.should =~ [@addonship4, @addonship5] }
+    end
+
+    # describe '.paid addons' do
+    #   it { described_class.paid.should =~ [@addonship5] }
+    # end
+
+    describe '.addon_not_beta addons' do
+      it { described_class.addon_not_beta.should =~ [@addonship1, @addonship2, @addonship3, @addonship4, @addonship5] }
     end
   end
 

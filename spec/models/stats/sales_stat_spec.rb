@@ -11,18 +11,43 @@ describe Stats::SalesStat do
       @plus_yearly_plan     = create(:plan, name: 'plus', cycle: 'year')
       @premium_yearly_plan  = create(:plan, name: 'premium', cycle: 'year')
 
-      create(:invoice, state: 'paid', paid_at: 5.days.ago, site: site, renew: false, invoice_items: [create(:plan_invoice_item, item: @plus_monthly_plan)], amount: 1)
-      create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: false, invoice_items: [create(:plan_invoice_item, item: @plus_monthly_plan)], amount: 2)
-      create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: false, invoice_items: [create(:plan_invoice_item, item: @plus_yearly_plan)], amount: 3)
-      create(:invoice, state: 'paid', paid_at: Time.now.utc.midnight, site: site, renew: false, invoice_items: [create(:plan_invoice_item, item: @premium_monthly_plan)], amount: 4)
-      create(:invoice, state: 'failed', site: site, renew: false, invoice_items: [create(:plan_invoice_item, item: @plus_yearly_plan)], amount: 5)
+      i = build(:invoice, state: 'paid', paid_at: 5.days.ago, site: site, renew: false, amount: 1)
+      create(:plan_invoice_item, item: @plus_monthly_plan, invoice: i)
+      i.save
 
-      create(:invoice, state: 'paid', paid_at: 5.days.ago, site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @plus_monthly_plan)], amount: 6)
-      create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @premium_monthly_plan)], amount: 7)
-      create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @premium_monthly_plan)], amount: 8)
-      create(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @premium_yearly_plan)], amount: 9)
-      create(:invoice, state: 'paid', paid_at: Time.now.utc.midnight, site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @premium_yearly_plan)], amount: 10)
-      create(:invoice, state: 'canceled', site: site, renew: true, invoice_items: [create(:plan_invoice_item, item: @premium_yearly_plan)], amount: 11)
+      i = build(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: false, amount: 2)
+      create(:plan_invoice_item, item: @plus_monthly_plan, invoice: i)
+      i.save
+      i = build(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: false, amount: 3)
+      create(:plan_invoice_item, item: @plus_yearly_plan, invoice: i)
+      i.save
+
+      i = build(:invoice, state: 'paid', paid_at: Time.now.utc.midnight, site: site, renew: false, amount: 4)
+      create(:plan_invoice_item, item: @premium_monthly_plan, invoice: i)
+      i.save
+
+      i = build(:invoice, state: 'failed', site: site, renew: false, amount: 5)
+      create(:plan_invoice_item, item: @plus_yearly_plan, invoice: i)
+      i.save
+
+      i = build(:invoice, state: 'paid', paid_at: 5.days.ago, site: site, renew: true, amount: 6)
+      create(:plan_invoice_item, item: @plus_monthly_plan, invoice: i)
+      i.save
+
+      i = build(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, amount: 7)
+      create(:plan_invoice_item, item: @premium_monthly_plan, invoice: i)
+      i.save
+      i = build(:invoice, state: 'paid', paid_at: 1.day.ago.midnight, site: site, renew: true, amount: 8)
+      create(:plan_invoice_item, item: @premium_yearly_plan, invoice: i)
+      i.save
+
+      i = build(:invoice, state: 'paid', paid_at: Time.now.utc.midnight, site: site, renew: true, amount: 9)
+      create(:plan_invoice_item, item: @premium_monthly_plan, invoice: i)
+      i.save
+
+      i = build(:invoice, state: 'canceled', site: site, renew: true, amount: 5)
+      create(:plan_invoice_item, item: @plus_yearly_plan, invoice: i)
+      i.save
     end
 
     describe ".create_stats" do
@@ -39,7 +64,7 @@ describe Stats::SalesStat do
           'plus' => { "m" => 2, "y" => 3 }
         }
         sales_stat["re"].should == {
-          'premium' => { "m" => 7+8, "y" => 9 }
+          'premium' => { "m" => 7, "y" => 8 }
         }
       end
     end

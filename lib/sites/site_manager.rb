@@ -5,9 +5,11 @@ require_dependency 'sites/usage_manager'
 module Sites
   class SiteManager < Struct.new(:site)
 
-    def create(user)
-      site.user = user
+    def self.build_site(params)
+      new params.delete(:user).sites.new(params)
+    end
 
+    def save
       Site.transaction do
         if site.save
           set_default_addons(site)
@@ -28,11 +30,11 @@ module Sites
     end
 
     def delay_set_ranks(site)
-      Sites::RankManager.delay(priority: 100, run_at: Time.now.utc + 30).set_ranks(site.id)
+      RankManager.delay(priority: 100, run_at: Time.now.utc + 30).set_ranks(site.id)
     end
 
     def update_last_30_days_video_views_counters(site)
-      Sites::UsageManager.new(site).update_last_30_days_video_views_counters
+      UsageManager.new(site).update_last_30_days_video_views_counters
     end
 
   end

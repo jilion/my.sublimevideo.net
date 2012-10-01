@@ -25,7 +25,7 @@ class SitesController < ApplicationController
 
   # GET /sites/new
   def new
-    @site = current_user.sites.build((params[:site] || {}).reverse_merge(dev_hostnames: Site::DEFAULT_DEV_DOMAINS))
+    @site = Sites::SiteManager.build_site(user: current_user).site
 
     respond_with(@site)
   end
@@ -37,11 +37,11 @@ class SitesController < ApplicationController
 
   # POST /sites
   def create
-    params[:site][:remote_ip] = request.remote_ip
-    @site = Site.new(params[:site])
+    manager = Sites::SiteManager.build_site(params[:site].merge(user: current_user, remote_ip: request.remote_ip))
+    @site   = manager.site
 
     respond_with(@site) do |format|
-      if Sites::SiteManager.new(@site).create(current_user)
+      if manager.save
         format.html { redirect_to :sites }
       else
         format.html { render :new }

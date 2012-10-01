@@ -23,9 +23,9 @@ RSpec.configure do |config|
 end
 
 def create_default_addons
-  @logo_sublime_addon     = create(:addon, category: 'logo', name: 'sublime')
-  @logo_no_logo_addon     = create(:addon, category: 'logo', name: 'no-logo')
-  @stats_standard_addon   = create(:addon, category: 'stats', name: 'standard')
-  @support_standard_addon = create(:addon, category: 'support', name: 'standard')
-  @support_vip_addon      = create(:addon, category: 'support', name: 'vip')
+  @logo_sublime_addon     = create(:addon, category: 'logo', name: 'sublime', price: 0)
+  @logo_no_logo_addon     = create(:addon, category: 'logo', name: 'no-logo', price: 999)
+  @stats_standard_addon   = create(:addon, category: 'stats', name: 'standard', price: 999)
+  @support_standard_addon = create(:addon, category: 'support', name: 'standard', price: 0)
+  @support_vip_addon      = create(:addon, category: 'support', name: 'vip', price: 999)
 end

@@ -62,31 +62,24 @@ describe SupportRequest do
     end
   end
 
-  describe '#post' do
-    it "calls TicketManager.create" do
-      TicketManager.should_receive(:create).with(support_request).and_return(true)
-
-      support_request.post.should be_true
-    end
-  end
-
-  pending '#to_params' do
+  describe '#to_params' do
     context 'user has email support' do
       it 'generates a hash of the params' do
-        support_request.user.support.should eq 'email'
         support_request.to_params.should == {
-          subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }, tags: ['email-support'],
-          requester: { name: @user.name, email: @user.email }, uploads: ['foo.jpg', 'bar.html'], external_id: @user.id
+          subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" },
+          tags: ['email-support'], requester: { name: @user.name, email: @user.email }, uploads: ['foo.jpg', 'bar.html'], external_id: @user.id
         }
       end
     end
 
     context 'user has vip support' do
       it 'generates a hash of the params' do
-        vip_support_request.user.support.should eq 'vip_email'
+        Users::SupportManager.any_instance.stub(:level) { 'vip_email' }
+
         vip_support_request.to_params.should == {
-          subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }, tags: ['vip_email-support'],
-          requester: { name: @vip.name, email: @vip.email }, uploads: ['foo.jpg', 'bar.html'], external_id: @vip.id
+          subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" },
+          tags: ['vip_email-support'], requester: { name: @vip.name, email: @vip.email },
+          uploads: ['foo.jpg', 'bar.html'], external_id: @vip.id
         }
       end
     end
@@ -95,7 +88,7 @@ describe SupportRequest do
       it 'generates a hash of the params' do
         support_request_with_zendesk_id.to_params.should == {
           subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }, tags: ['email-support'],
-          requester_id: @user2.zendesk_id, uploads: ['foo.jpg', 'bar.html'], external_id: @user2.id
+          tags: ['email-support'], requester_id: @user2.zendesk_id, uploads: ['foo.jpg', 'bar.html'], external_id: @user2.id
         }
       end
     end

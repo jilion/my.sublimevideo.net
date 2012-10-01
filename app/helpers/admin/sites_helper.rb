@@ -49,7 +49,7 @@ module Admin::SitesHelper
   end
 
   # always with span here
-  def truncated_hostname(site, options={})
+  def truncated_hostname(site, options = {})
     site_hostname = site.hostname || "no hostname"
     length = options[:truncate] || 1000
     h_trunc_length = length * 2/3

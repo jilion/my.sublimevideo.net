@@ -46,17 +46,18 @@ class User < ActiveRecord::Base
   belongs_to :enthusiast
 
   has_many :sites
+  has_many :addonships, through: :sites
+  has_many :addons, through: :addonships
 
   # Invoices
   has_many :invoices, through: :sites
-  has_many :feedbacks
 
   def last_invoice
     @last_invoice ||= invoices.last
   end
 
-  # Deals
   has_many :deal_activations
+  has_many :feedbacks
 
   # API
   has_many :client_applications
@@ -194,22 +195,17 @@ class User < ActiveRecord::Base
     [use_personal, use_company, use_clients].all?(&:blank?) # one of these fields is enough
   end
 
-  def email_support?
-    %w[email vip_email].include?(support)
-  end
-
-  # FIXME: Replace with add-on logic
   def billable?
-    true # sites.in_paid_plan.count > 0
+    addonships.subscribed.addon_not_beta.count > 0
   end
 
   def name_or_email
     name.presence || email
   end
 
-  def billing_address
+  def billing_address(fallback_to_name = true)
     Snail.new(
-      name:        billing_name.presence || name,
+      name:        billing_name.presence || (fallback_to_name ? name : nil),
       line_1:      billing_address_1,
       line_2:      billing_address_2,
       postal_code: billing_postal_code,
@@ -217,13 +213,6 @@ class User < ActiveRecord::Base
       region:      billing_region,
       country:     billing_country.to_s
     ).to_s
-  end
-
-  # FIXME: Replace with add-on logic
-  def support
-    # support_level = sites.active.max { |a, b| a.plan.support_level <=> b.plan.support_level }.try(:plan).try(:support_level) || 0
-
-    # Plan::SUPPORT_LEVELS[support_level]
   end
 
   def activated_deals
@@ -240,13 +229,6 @@ class User < ActiveRecord::Base
 
   def support_requests
     @support_requests ||= (zendesk_id? ? ZendeskWrapper.search(query: "requester_id:#{zendesk_id}") : [])
-  end
-
-  def create_zendesk_user
-    return if zendesk_id?
-
-    zendesk_user = ZendeskWrapper.create_user(self)
-    self.update_attribute(:zendesk_id, zendesk_user.id)
   end
 
   def skip_password(*args)

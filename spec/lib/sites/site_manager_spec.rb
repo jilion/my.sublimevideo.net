@@ -1,7 +1,7 @@
 require 'fast_spec_helper'
 require File.expand_path('lib/sites/site_manager')
 
-Site = Class.new unless defined?(Site)
+Site = Struct.new(:params) unless defined?(Site)
 
 describe Sites::SiteManager do
   let(:user)           { stub(sites: []) }
@@ -10,7 +10,15 @@ describe Sites::SiteManager do
   let(:usage_manager)  { stub }
   let(:delayed_method) { stub }
 
-  describe '.create' do
+  describe '.build_site' do
+    it 'instantiate a new Sites::SiteManager and returns it' do
+      user.sites.should_receive(:new)
+
+      described_class.build_site(user: user).should be_a(described_class)
+    end
+  end
+
+  describe '#save' do
     before do
       Site.should_receive(:transaction).and_yield
       Addons::AddonshipsManager.stub(:update_addonships_for_site!)
@@ -25,31 +33,23 @@ describe Sites::SiteManager do
         site.should_receive(:save) { true }
       end
 
-      it 'set the site user and save it to the database' do
-        site.user.should be_nil
-
-        manager.create(user).should be_true
-
-        site.user.should eq user
-      end
-
       it 'adds default add-ons to site after creation' do
         Addons::AddonshipsManager.should_receive(:update_addonships_for_site!).with(site, logo: 'sublime', support: 'standard')
 
-        manager.create(user)
+        manager.save
       end
 
       it 'delays the calculation of google and alexa ranks' do
         delayed_method.should_receive(:set_ranks).with(site.id)
 
-        manager.create(user)
+        manager.save
       end
 
       it 'updates the last 30 days views counter' do
         Sites::UsageManager.should_receive(:new).with(site) { usage_manager }
         usage_manager.should_receive(:update_last_30_days_video_views_counters)
 
-        manager.create(user)
+        manager.save
       end
     end
 
@@ -59,13 +59,13 @@ describe Sites::SiteManager do
       end
 
       it 'create a new site and save it to the database' do
-        manager.create(site).should be_false
+        manager.save.should be_false
       end
 
       it 'doesnt add default add-ons to site after creation' do
         Addons::AddonshipsManager.should_not_receive(:update_addonships_for_site!)
 
-        manager.create(site)
+        manager.save
       end
     end
 

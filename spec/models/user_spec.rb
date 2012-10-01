@@ -752,123 +752,23 @@ describe User do
       end
     end
 
-    pending "#support & #email_support?" do
-      context "user has no site" do
-        subject { create(:user) }
-
-        it { subject.support.should eq "forum" }
-      end
-
-      context "user has only sites with forum support" do
-        before do
-          @user = create(:user)
-          create(:site, user: @user, plan_id: @free_plan.id,)
-        end
-        subject { @user.reload }
-
-        it { @free_plan.support.should eq "forum" }
-        its(:support) { should eq "forum" }
-        its(:email_support?) { should be_false }
-      end
-
-      context "user has at least one site with email support" do
-        before do
-          @user = create(:user)
-          create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
-          create(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
-        end
-        subject { @user.reload }
-
-        it { @free_plan.support.should eq "forum" }
-        it { @paid_plan.support.should eq "email" }
-        its(:support) { should eq "email" }
-        its(:email_support?) { should be_true }
-      end
-
-      context "user has at least one site with vip email support" do
-        before do
-          @user = create(:user)
-          create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
-          create(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
-          create(:site, user: @user, plan_id: @custom_plan.token, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
-        end
-        subject { @user.reload }
-
-        it { @free_plan.support.should eq "forum" }
-        it { @paid_plan.support.should eq "email" }
-        it { @custom_plan.support.should eq "vip_email" }
-        its(:support) { should eq "vip_email" }
-        its(:email_support?) { should be_true }
-      end
-    end
-
-    pending "#billable?" do
+    describe "#billable?" do
       before do
-        Site.delete_all
-        @billable_user_1 = create(:user)
-        @billable_user_2 = create(:user)
-        @billable_user_3 = create(:user)
-        @non_billable_user_1 = create(:user)
-        @non_billable_user_2 = create(:user)
-        @non_billable_user_3 = create(:user)
+        @billable_user = create(:user).tap { |user| @billable_site = create(:site, user: user) }
+        @non_billable_user = create(:user).tap { |user| @non_billable_site = create(:site, user: user) }
 
-        # billable
-        create(:site, user: @billable_user_1, plan_id: @paid_plan.id)
-        site_will_be_paid = create(:site, user: @billable_user_2, plan_id: @paid_plan.id)
-        site_will_be_paid.update_attribute(:next_cycle_plan_id, create(:plan).id)
-        site_will_be_free = create(:site, user: @billable_user_3, plan_id: @paid_plan.id)
-        site_will_be_free.update_attribute(:next_cycle_plan_id, @free_plan.id)
-
-        # not billable
-        create(:site, user: @non_billable_user_1, plan_id: @free_plan.id)
-        site_archived = create(:site, user: @non_billable_user_2, state: "archived", archived_at: Time.utc(2010,2,28))
-        create(:site, user: @non_billable_user_3, state: "suspended")
+        create(:addonship, site: @billable_site, state: 'subscribed')
+        create(:addonship, site: @non_billable_site, state: 'inactive')
+        create(:addonship, site: @non_billable_site, state: 'beta')
+        create(:addonship, site: @non_billable_site, state: 'trial')
+        create(:addonship, site: @non_billable_site, state: 'suspended')
+        create(:addonship, site: @non_billable_site, state: 'sponsored')
       end
 
-      it { @billable_user_1.should be_billable }
-      it { @billable_user_2.should be_billable }
-      it { @non_billable_user_1.should_not be_billable }
-      it { @non_billable_user_2.should_not be_billable }
-      it { @non_billable_user_3.should_not be_billable }
+      it { @billable_user.should be_billable }
+      it { @non_billable_user.should_not be_billable }
     end
 
-    describe '#create_zendesk_user' do
-      context 'user has a zendesk id' do
-        subject { build(:user, zendesk_id: 42) }
-
-        it 'does nothing' do
-          ZendeskWrapper.should_not_receive(:create_user)
-          subject.should_not_receive(:update_attribute)
-          subject.create_zendesk_user
-        end
-      end
-
-      context 'user has no zendesk id' do
-        subject { build(:user) }
-
-        it 'create a user in Zendesk and set the zendesk_id from it' do
-          ZendeskWrapper.should_receive(:create_user).with(subject).and_return(OpenStruct.new(id: 42))
-          subject.should_receive(:update_attribute).with(:zendesk_id, 42)
-          subject.create_zendesk_user
-        end
-      end
-    end
-
-  end
-
-  def accept_invitation(attributes = {})
-    default = {
-      password: "123456",
-      name: "John Doe",
-      billing_country: "CH",
-      billing_postal_code: "2000",
-      use_company: true,
-      company_name: "bob",
-      company_url: "bob.com",
-      terms_and_conditions: "1",
-      invitation_token: @user.invitation_token
-    }
-    User.accept_invitation(default.merge(attributes))
   end
 
 end

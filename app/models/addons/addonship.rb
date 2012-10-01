@@ -66,7 +66,11 @@ class Addons::Addonship < ActiveRecord::Base
     where{ addonships.state == 'trial' }. \
     where{ addonships.trial_started_on != nil }. \
     where{ addonships.trial_started_on < BusinessModel.days_for_trial.days.ago }
- }
+  }
+  scope :active,         -> { where { state >> ACTIVE_STATES } }
+  scope :subscribed,     -> { where { state == 'subscribed' } }
+  # scope :paid,           -> { subscribed.includes(:addon).merge(Addons::Addon.paid) }
+  scope :addon_not_beta, -> { includes(:addon).merge(Addons::Addon.not_beta) }
 
   def active?
     %w[beta trial subscribed sponsored].include?(state)

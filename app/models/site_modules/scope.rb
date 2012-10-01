@@ -27,12 +27,13 @@ module SiteModules::Scope
     #   .where{ (addons.category == category) & (addons.name == name) }
     # }
     scope :with_out_of_trial_addons, -> { includes(:addons).merge(Addons::Addonship.out_of_trial) }
+    scope :paying,                   -> { includes(:addons).merge(Addons::Addonship.subscribed).merge(Addons::Addon.paid) }
 
     # admin
     scope :user_id, ->(user_id) { where(user_id: user_id) }
 
     # sort
-    scope :by_hostname,         ->(way = 'asc') { order{ hostname.send(way) }.order{ token.send(way) } }
+    scope :by_hostname,         ->(way = 'asc')  { order{ hostname.send(way) }.order{ token.send(way) } }
     scope :by_user,             ->(way = 'desc') { includes(:user).order{ user.name.send(way) }.order{ user.email.send(way) } }
     scope :by_state,            ->(way = 'desc') { order{ state.send(way) } }
     scope :by_plan_price,       ->(way = 'desc') { includes(:plan).order{ plan.price.send(way) } }

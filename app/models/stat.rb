@@ -26,9 +26,11 @@ module Stat
     tracker_incs.each do |site_token, values|
       site = ::Site.where(token: site_token).first
 
+      next unless site.addon_is_active?(Addons::Addon.get('stats', 'standard'))
+
       if (site_inc = values[:inc]).present?
         # FIXME: Replace 'unless site.in_free_plan?' with 'if stats add-on is active'
-        Stat::Site::Minute.collection.find(t: site_token, d: log.minute).update({ :$inc => site_inc }, upsert: true) unless site.in_free_plan?
+        Stat::Site::Minute.collection.find(t: site_token, d: log.minute).update({ :$inc => site_inc }, upsert: true)
         Stat::Site::Hour.collection.find(t: site_token, d: log.hour).update({ :$inc => site_inc }, upsert: true)
         Stat::Site::Day.collection.find(t: site_token, d: log.day).update({ :$inc => site_inc }, upsert: true)
       end
@@ -37,7 +39,7 @@ module Stat
         if video_inc.present?
           begin
             # FIXME: Replace 'unless site.in_free_plan?' with 'if stats add-on is active'
-            Stat::Video::Minute.collection.find(st: site_token, u: video_ui, d: log.minute).update({ :$inc => video_inc }, upsert: true) unless site.in_free_plan?
+            Stat::Video::Minute.collection.find(st: site_token, u: video_ui, d: log.minute).update({ :$inc => video_inc }, upsert: true)
             Stat::Video::Hour.collection.find(st: site_token, u: video_ui, d: log.hour).update({ :$inc => video_inc }, upsert: true)
             Stat::Video::Day.collection.find(st: site_token, u: video_ui, d: log.day).update({ :$inc => video_inc }, upsert: true)
           rescue BSON::InvalidStringEncoding

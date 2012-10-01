@@ -13,7 +13,7 @@ feature 'Choose add-ons' do
     choose 'site_addons_logo_no-logo'
     click_button 'Apply changes'
 
-    @site.reload.addons.active.should =~ [@logo_no_logo_addon]
+    @site.reload.addons.active.should =~ [@logo_no_logo_addon, @support_standard_addon]
   end
 
   scenario 'select checkbox add-on' do
@@ -22,6 +22,6 @@ feature 'Choose add-ons' do
     check 'site_addons_stats'
     click_button 'Apply changes'
 
-    @site.reload.addons.active.should =~ [@stats_standard_addon]
+    @site.reload.addons.active.should =~ [@logo_sublime_addon, @support_standard_addon, @stats_standard_addon]
   end
 end

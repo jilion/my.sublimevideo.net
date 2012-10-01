@@ -176,11 +176,36 @@ FactoryGirl.define do
   factory :addonship, class: Addons::Addonship do
     site
     addon
+
+    factory :beta_addonship do
+      state 'beta'
+    end
+
+    factory :trial_addonship do
+      state 'trial'
+      trial_started_on { Time.now.utc.midnight }
+    end
+
+    factory :subscribed_addonship do
+      state 'subscribed'
+    end
+
+    factory :suspended_addonship do
+      state 'suspended'
+    end
+
+    factory :sponsored_addonship do
+      state 'sponsored'
+    end
+
+    factory :inactive_addonship do
+      state 'inactive'
+    end
   end
 
   factory :addon_activity, class: Addons::AddonActivity do
     addonship
-    state 'active'
+    state 'subscribed'
   end
 
   # ================================
@@ -188,18 +213,28 @@ FactoryGirl.define do
   # ================================
   factory :invoice do
     site
-    invoice_items_amount 10000
-    amount               10000
+    invoice_items_amount 9999
+    amount               9999
     vat_rate             0.08
-    vat_amount           800
+    vat_amount           798
     after(:build) { |invoice| invoice.invoice_items = [FactoryGirl.build(:plan_invoice_item, invoice: invoice)]}
+  end
+
+  factory :paid_invoice, parent: :invoice do
+    state   'paid'
+    paid_at { Time.now.utc }
+  end
+
+  factory :failed_invoice, parent: :invoice do
+    state          'failed'
+    last_failed_at { Time.now.utc }
   end
 
   factory :invoice_item do
     started_at { Time.now.utc.beginning_of_month }
     ended_at   { Time.now.utc.end_of_month }
-    price  1000
-    amount 1000
+    price  9999
+    amount 9999
   end
 
   factory :plan_invoice_item, parent: :invoice_item, class: InvoiceItem::Plan do

@@ -1,6 +1,6 @@
 module SiteUsagesHelper
 
-  def get_usages_hash(site_or_user, options={})
+  def get_usages_hash(site_or_user, options = {})
     usages_hash = Hash.new { |h,k| h[k] = {} }
     site_id = site_or_user.respond_to?(:site_ids) ? site_or_user.site_ids : [site_or_user.id]
     %w[loader_hits player_hits main_player_hits main_player_hits_cached extra_player_hits extra_player_hits_cached dev_player_hits dev_player_hits_cached invalid_player_hits invalid_player_hits_cached flash_hits requests_s3 traffic_s3 traffic_voxcast].map(&:to_sym).each do |usage_name|

@@ -56,11 +56,15 @@ class Site < ActiveRecord::Base
   has_many :addonships, class_name: 'Addons::Addonship', dependent: :destroy
   has_many :addons, through: :addonships, class_name: 'Addons::Addon' do
     def active
-      where { addonships.state >> Addons::Addonship::ACTIVE_STATES }
+      merge(Addons::Addonship.active).scoped
+    end
+
+    def subscribed
+      merge(Addons::Addonship.subscribed).scoped
     end
 
     def out_of_trial
-      merge(Addons::Addonship.out_of_trial)
+      merge(Addons::Addonship.out_of_trial).scoped
     end
   end
   has_many :addon_activities, through: :addonships, class_name: 'Addons::AddonActivity'

@@ -49,6 +49,10 @@ describe Site, :addons do
         it { site.addons.active.should =~ [@logo_sublime_addon, @logo_no_logo_addon, @stats_standard_addon, @support_vip_addon] }
       end
 
+      describe 'subscribed addons' do
+        it { site.addons.subscribed.should =~ [@support_vip_addon] }
+      end
+
       describe 'out_of_trial addons' do
         it { site.addons.out_of_trial.should =~ [@logo_no_logo_addon] }
       end

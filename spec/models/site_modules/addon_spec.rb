@@ -10,9 +10,9 @@ describe SiteModules::Addon, :addons do
     create(:addonship, site: site, addon: addon1, state: 'beta')
     create(:addonship, site: site, addon: @logo_no_logo_addon, state: 'trial')
     create(:addonship, site: site, addon: @stats_standard_addon, state: 'sponsored')
-    create(:addonship, site: site, addon: addon2, state: 'paying')
+    create(:addonship, site: site, addon: addon2, state: 'subscribed')
 
-    create(:addonship, site: site, addon: addon3, state: 'canceled')
+    create(:addonship, site: site, addon: addon3, state: 'inactive')
     create(:addonship, site: site, addon: addon4, state: 'suspended')
   end
 
@@ -28,12 +28,11 @@ describe SiteModules::Addon, :addons do
   end
 
   describe '#active_addon_in_category?' do
-    it 'returns true when the addon is beta, trial, sponsored or paying, false otherwise' do
-      site.active_addon_in_category?('logo').should be_true # default addon
+    it 'returns true when the addon is beta, trial, sponsored or subscribed, false otherwise' do
+      site.active_addon_in_category?('logo').should be_true
       site.active_addon_in_category?('foo').should be_true
       site.active_addon_in_category?('stats').should be_true
       site.active_addon_in_category?('bar').should be_true
-      site.active_addon_in_category?('support').should be_true # default addon
 
       site.active_addon_in_category?('baz').should be_false
       site.active_addon_in_category?('fooz').should be_false

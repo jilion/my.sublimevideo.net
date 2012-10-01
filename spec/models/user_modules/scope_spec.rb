@@ -43,44 +43,65 @@ describe UserModules::Scope do
     end
   end
 
-  pending "billing" do
+  describe "billing", :addons do
+    let(:site1) { create(:site) }
+    let(:site2) { create(:site) }
+    let(:site3) { create(:site) }
+    let(:site4) { create(:site) }
+    let(:site5) { create(:site) }
+    let(:site6) { create(:site) }
     before do
-      # Paying because of 1 paid plan not in trial
-      @user1 = create(:user)
-      create(:new_site, user: @user1, plan_id: @paid_plan.id)
+      create(:beta_addonship, site: site1, addon: @stats_standard_addon) # paid addon in beta
+      create(:subscribed_addonship, site: site1, addon: @logo_sublime_addon) # free addon
 
-      # Paying because of 1 paid plan not in trial (+ next plan is paid)
-      @user2 = create(:user)
-      create(:new_site, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
+      create(:trial_addonship, site: site2, addon: @logo_no_logo_addon) # paid addon
 
-      # Paying because of 1 paid plan not in trial (+ next plan is free)
-      @user3 = create(:user)
-      create(:new_site, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
+      create(:subscribed_addonship, site: site3, addon: @stats_standard_addon) # free addon
 
-      # Free because no paying (and active) sites
-      @user4 = create(:user)
-      create(:new_site, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
+      create(:suspended_addonship, site: site4, addon: @support_vip_addon) # paid addon
 
-      # Free because of no paid plan
-      @user5 = create(:user)
-      create(:new_site, user: @user5, plan_id: @free_plan.id)
+      create(:inactive_addonship, site: site5)
 
-      # Free because of 1 paid plan in trial
-      @user6 = create(:user)
-      create(:new_site, user: @user6, plan_id: @trial_plan.id)
-
-      # Archived and that's it
-      @user7 = create(:user, state: 'archived')
-      create(:new_site, user: @user7, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
-      @user8 = create(:user, state: 'archived')
+      create(:sponsored_addonship, site: site6)
     end
 
+    # before do
+    #   # Paying because of 1 paid plan not in trial
+    #   @user1 = create(:user)
+    #   create(:new_site, user: @user1, plan_id: @paid_plan.id)
+
+    #   # Paying because of 1 paid plan not in trial (+ next plan is paid)
+    #   @user2 = create(:user)
+    #   create(:new_site, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
+
+    #   # Paying because of 1 paid plan not in trial (+ next plan is free)
+    #   @user3 = create(:user)
+    #   create(:new_site, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
+
+    #   # Free because no paying (and active) sites
+    #   @user4 = create(:user)
+    #   create(:new_site, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
+
+    #   # Free because of no paid plan
+    #   @user5 = create(:user)
+    #   create(:new_site, user: @user5, plan_id: @free_plan.id)
+
+    #   # Free because of 1 paid plan in trial
+    #   @user6 = create(:user)
+    #   create(:new_site, user: @user6, plan_id: @trial_plan.id)
+
+    #   # Archived and that's it
+    #   @user7 = create(:user, state: 'archived')
+    #   create(:new_site, user: @user7, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, create(:plan).id)
+    #   @user8 = create(:user, state: 'archived')
+    # end
+
     describe ".free" do
-      specify { User.free.all.should =~ [@user4, @user5, @user6] }
+      specify { User.free.all.should =~ [site1.user, site2.user, site4.user, site5.user, site6.user] }
     end
 
     describe ".paying" do
-      specify { User.paying.all.should =~ [@user1, @user2, @user3] }
+      specify { User.paying.all.should =~ [site3.user] }
     end
   end
 

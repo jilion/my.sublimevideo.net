@@ -6,7 +6,7 @@ module Spec
         request.env['warden']
       end
 
-      def create_user(options={})
+      def create_user(options = {})
         options[:user] = {} unless options[:user]
 
         options[:confirm]    = options[:user].delete(:confirm) || options[:confirm]

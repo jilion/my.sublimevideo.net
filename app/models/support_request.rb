@@ -1,36 +1,27 @@
 # coding: utf-8
-require_dependency 'ticket_manager'
+require_dependency 'users/support_manager'
 
-class SupportRequest
+class SupportRequest < Struct.new(:params)
   include ActiveModel::Validations
 
   attr_accessor :site_token, :subject, :message, :test_page, :env, :uploads
 
   validates :user, :subject, :message, presence: true
 
-  # Takes params
-  def initialize(params = {})
-    @params = params
-  end
-
-  def post
-    valid? && TicketManager.create(self)
-  end
-
   def user
-    @user ||= User.find_by_id(@params[:user_id])
+    @user ||= User.find_by_id(params[:user_id])
   end
 
   def site
-    @site ||= Site.find_by_token(@params[:site_token])
+    @site ||= Site.find_by_token(params[:site_token])
   end
 
   def subject
-    @subject ||= @params[:subject].to_s.strip
+    @subject ||= params[:subject].to_s.strip
   end
 
   def message
-    @message ||= @params[:message].to_s.strip
+    @message ||= params[:message].to_s.strip
   end
 
   def comment
@@ -38,11 +29,11 @@ class SupportRequest
   end
 
   def test_page
-    @test_page ||= @params[:test_page].to_s.strip
+    @test_page ||= params[:test_page].to_s.strip
   end
 
   def env
-    @env ||= @params[:env].to_s.strip
+    @env ||= params[:env].to_s.strip
   end
 
   def to_key
@@ -50,15 +41,15 @@ class SupportRequest
   end
 
   def to_params
-    params = { subject: subject, comment: { value: comment }, uploads: @params[:uploads], external_id: user.id }
-    params[:tags] = ["#{user.support}-support"] if user.email_support?
+    parameters = { subject: subject, comment: { value: comment }, uploads: params[:uploads], external_id: user.id }
+    parameters[:tags] = ["#{Users::SupportManager.new(user).level}-support"]
     if user.zendesk_id?
-      params[:requester_id] = user.zendesk_id
+      parameters[:requester_id] = user.zendesk_id
     else
-      params[:requester] = { name: user.name || user.email, email: user.email }
+      parameters[:requester] = { name: user.name || user.email, email: user.email }
     end
 
-    params
+    parameters
   end
 
   private

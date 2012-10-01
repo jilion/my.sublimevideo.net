@@ -3,7 +3,8 @@ require 'spec_helper'
 describe InvoiceItem::Plan do
 
   context "Factory" do
-    let(:invoice_item) { create(:plan_invoice_item) }
+    let(:invoice) { create(:invoice) }
+    let(:invoice_item) { create(:plan_invoice_item, invoice: invoice) }
     subject { invoice_item }
 
     its(:invoice)   { should be_present }
@@ -14,8 +15,8 @@ describe InvoiceItem::Plan do
     its(:item_id)   { should be_present }
     specify         { subject.started_at.to_i.should eq Time.now.utc.beginning_of_month.to_i }
     specify         { subject.ended_at.to_i.should eq Time.now.utc.end_of_month.to_i }
-    its(:price)     { should eq 1000 }
-    its(:amount)    { should eq 1000 }
+    its(:price)     { should be_present }
+    its(:amount)    { should be_present }
 
     it { should be_valid }
   end # Factory

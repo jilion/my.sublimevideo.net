@@ -92,6 +92,18 @@ describe SiteModules::Scope do
       it { Site.with_out_of_trial_addons.all.should =~ [site2] }
     end
 
+    describe ".paying" do
+      before do
+        @addonship1 = create(:addonship, site: site1, addon: @logo_sublime_addon, state: 'trial', trial_started_on: (30.days - 1.second).ago)
+        @addonship2 = create(:addonship, site: site2, addon: @logo_no_logo_addon, state: 'trial', trial_started_on: (30.days + 1.second).ago)
+        @addonship3 = create(:addonship, site: site1, addon: @stats_standard_addon, state: 'trial')
+        @addonship5 = create(:addonship, site: site1, addon: @support_vip_addon, state: 'subscribed')
+        @addonship6 = create(:addonship, site: site2, state: 'inactive')
+      end
+
+      it { Site.paying.all.should =~ [site1] }
+    end
+
   end
 
   describe "invoices" do

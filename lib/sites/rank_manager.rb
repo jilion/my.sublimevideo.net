@@ -15,7 +15,7 @@ module Sites
         site.alexa_rank  = 0
       end
 
-      site.save
+      site.save!
     end
 
   end

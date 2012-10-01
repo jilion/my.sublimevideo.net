@@ -7,14 +7,8 @@ module UserModules::Scope
   included do
 
     # billing
-    # FIXME: Replace with add-on logic
-    scope :free, lambda {
-      active.includes(:sites).where("(#{Site.in_paid_plan.select("COUNT(sites.id)").where("sites.user_id = users.id").to_sql}) = 0")
-    }
-    # FIXME: Replace with add-on logic
-    scope :paying, lambda {
-      active.includes(:sites).merge(Site.in_paid_plan)
-    }
+    scope :paying, -> { active.includes(:sites, :addonships).merge(::Addons::Addonship.subscribed).where{ addonships.addon_id >> Addons::Addon.paid.pluck(:id) } }
+    scope :free,   -> { active.where("(#{User.paying.select("COUNT(sites.id)").where{ sites.user_id == id }.to_sql}) = 0") }
 
     # credit card
     scope :without_cc,           -> { where(cc_type: nil, cc_last_digits: nil) }
@@ -32,12 +26,12 @@ module UserModules::Scope
     scope :not_archived, where{ state != 'archived' }
 
     # attributes queries
-    scope :use_personal,      lambda { |bool=true| where{ use_personal == bool } }
-    scope :use_company,       lambda { |bool=true| where{ use_company == bool } }
-    scope :use_clients,       lambda { |bool=true| where{ use_clients == bool } }
-    scope :created_on,        lambda { |date| where{ created_at >> date.all_day } }
-    scope :newsletter,        lambda { |bool=true| where{ newsletter == bool } }
-    scope :vip,               lambda { |bool=true| where{ vip == bool } }
+    scope :created_on,   ->(date) { where { created_at >> date.all_day } }
+    scope :use_personal, ->(bool = true) { where(use_personal: bool) }
+    scope :use_company,  ->(bool = true) { where(use_company: bool) }
+    scope :use_clients,  ->(bool = true) { where(use_clients: bool) }
+    scope :newsletter,   ->(bool = true) { where(newsletter: bool) }
+    scope :vip,          ->(bool = true) { where(vip: bool) }
 
     scope :sites_tagged_with, lambda { |word| joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 

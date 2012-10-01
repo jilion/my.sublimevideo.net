@@ -7,9 +7,6 @@ feature "Billing address update" do
       background do
         sign_in_as :user, billing_address_1: '', without_cc: true
         go 'my', 'account'
-        page.should have_no_content 'Batiment B'
-        page.should have_no_content '1004 Lausanne'
-        page.should have_no_content 'SWITZERLAND'
         go 'my', 'account/billing/edit'
         current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
       end
@@ -54,10 +51,6 @@ feature "Billing address update" do
       background do
         sign_in_as :user, billing_address_1: ''
         go 'my', 'account'
-        page.should have_no_content 'Avenue de France 71'
-        page.should have_no_content 'Batiment B'
-        page.should have_no_content '1004 Lausanne'
-        page.should have_no_content 'SWITZERLAND'
         go 'my', 'account/billing/edit'
         current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
       end

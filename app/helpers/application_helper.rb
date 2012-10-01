@@ -27,7 +27,7 @@ module ApplicationHelper
     number_to_percentage(Vat.for_country(current_user.billing_country) * 100, precision: 0, strip_insignificant_zeros: true)
   end
 
-  def display_amount(amount_in_cents, options={})
+  def display_amount(amount_in_cents, options = {})
     if options[:vat] && current_user.vat?
       vat_rate        = Vat.for_country(current_user.billing_country)
       amount_in_cents = (amount_in_cents * (1.0 + vat_rate)).round
