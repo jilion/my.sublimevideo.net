@@ -21,7 +21,7 @@ feature 'StatsExport' do
   scenario "request and download stats exports", :js, :fog_mock do
     go 'my', "/sites/#{@site.token}/stats"
 
-    current_url.should macth %r{sites/#{@site.token}/stats}
+    current_url.should match %r{sites/#{@site.token}/stats}
 
     click_button('Export Data')
 
