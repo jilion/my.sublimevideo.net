@@ -4,17 +4,19 @@ require File.expand_path('lib/invoices/builder')
 
 describe Invoices::Builder do
   unless defined? Invoice
-    class Invoice
-      attr_accessor :site, :invoice_items, :invoice_items_amount, :vat_rate, :vat_amount, :balance_deduction_amount, :amount
-      def initialize(attributes = {})
-        @attributes = attributes
-        @invoice_items = @attributes[:invoice_items] || []
-      end
-      def site
-        @attributes[:site]
+    before do
+      class Invoice
+        attr_accessor :site, :invoice_items, :invoice_items_amount, :vat_rate, :vat_amount, :balance_deduction_amount, :amount
+        def initialize(attributes = {})
+          @attributes = attributes
+          @invoice_items = @attributes[:invoice_items] || []
+        end
+        def site
+          @attributes[:site]
+        end
       end
     end
-    after(:all) { Object.send(:remove_const, :Invoice) }
+    after { Object.send(:remove_const, :Invoice) }
   end
 
   let(:invoice_item1) { stub(:invoice_item, amount: 1000) }

@@ -55,6 +55,10 @@ class Addons::Addonship < ActiveRecord::Base
     before_transition any => :trial do |addonship, transition|
       addonship.trial_started_on = Time.now.utc.midnight unless addonship.trial_started_on?
     end
+
+    after_transition do |addonship, transition|
+      Addons::AddonActivity.create(addonship: addonship, state: addonship.state)
+    end
   end
 
   # ==========

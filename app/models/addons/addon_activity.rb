@@ -1,6 +1,6 @@
 class Addons::AddonActivity < ActiveRecord::Base
 
-  attr_accessible nil
+  attr_accessible :addonship, :state
 
   # ================
   # = Associations =

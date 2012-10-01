@@ -7,7 +7,7 @@ class Deal < ActiveRecord::Base
   # ================
 
   has_many :deal_activations
-  has_many :invoice_items
+  has_many :invoice_items, class_name: 'InvoiceItems::InvoiceItem'
 
   # ===============
   # = Validations =

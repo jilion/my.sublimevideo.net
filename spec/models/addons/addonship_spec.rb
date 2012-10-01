@@ -33,19 +33,34 @@ describe Addons::Addonship do
   end
 
   describe 'State Machine' do
+
     describe '#start_beta' do
       %w[inactive].each do |initial_state|
+        let(:addonship) { build(:addonship, state: initial_state) }
+
         it "change the state from #{initial_state} to 'beta'" do
-          build(:addonship, state: initial_state).tap { |a| a.start_beta }.state.should eq 'beta'
+          addonship.start_beta
+          addonship.state.should eq 'beta'
+        end
+
+        it 'create a new Addons::AddonActivity', :focus do
+          -> { addonship.start_beta }.should create_an_addon_activity.in_state('beta')
         end
       end
     end
 
     describe '#start_trial' do
       %w[inactive beta].each do |initial_state|
+        let(:addonship) { build(:addonship, state: initial_state) }
+
         it "change the state from #{initial_state} to 'trial'" do
-          build(:addonship, state: initial_state).tap { |a| a.start_trial }.state.should eq 'trial'
+          addonship.start_trial
+          addonship.state.should eq 'trial'
         end
+      end
+
+      it 'create a new Addons::AddonActivity', :focus do
+        -> { addonship.start_trial }.should create_an_addon_activity.in_state('trial')
       end
 
       it 'sets trial_started_on if not set already' do
@@ -58,32 +73,60 @@ describe Addons::Addonship do
 
     describe '#subscribe' do
       %w[inactive beta trial suspended sponsored].each do |initial_state|
+        let(:addonship) { build(:addonship, state: initial_state) }
+
         it "change the state from #{initial_state} to 'subscribed'" do
-          build(:addonship, state: initial_state).tap { |a| a.subscribe }.state.should eq 'subscribed'
+          addonship.subscribe
+          addonship.state.should eq 'subscribed'
+        end
+
+        it 'create a new Addons::AddonActivity', :focus do
+          -> { addonship.subscribe }.should create_an_addon_activity.in_state('subscribed')
         end
       end
     end
 
     describe '#cancel' do
       %w[beta trial subscribed suspended sponsored].each do |initial_state|
+        let(:addonship) { build(:addonship, state: initial_state) }
+
         it "change the state from #{initial_state} to 'inactive'" do
-          build(:addonship, state: initial_state).tap { |a| a.cancel }.state.should eq 'inactive'
+          addonship.cancel
+          addonship.state.should eq 'inactive'
+        end
+
+        it 'create a new Addons::AddonActivity', :focus do
+          -> { addonship.cancel }.should create_an_addon_activity.in_state('inactive')
         end
       end
     end
 
     describe '#suspend' do
       %w[subscribed].each do |initial_state|
+        let(:addonship) { build(:addonship, state: initial_state) }
+
         it "change the state from #{initial_state} to 'suspended'" do
-          build(:addonship, state: initial_state).tap { |a| a.suspend }.state.should eq 'suspended'
+          addonship.suspend
+          addonship.state.should eq 'suspended'
+        end
+
+        it 'create a new Addons::AddonActivity', :focus do
+          -> { addonship.suspend }.should create_an_addon_activity.in_state('suspended')
         end
       end
     end
 
     describe '#sponsor' do
       %w[inactive beta trial subscribed suspended].each do |initial_state|
+        let(:addonship) { build(:addonship, state: initial_state) }
+
         it "change the state from #{initial_state} to 'sponsored'" do
-          build(:addonship, state: initial_state).tap { |a| a.sponsor }.state.should eq 'sponsored'
+          addonship.sponsor
+          addonship.state.should eq 'sponsored'
+        end
+
+        it 'create a new Addons::AddonActivity', :focus do
+          -> { addonship.sponsor }.should create_an_addon_activity.in_state('sponsored')
         end
       end
     end
