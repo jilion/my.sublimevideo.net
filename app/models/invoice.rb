@@ -54,7 +54,7 @@ class Invoice < ActiveRecord::Base
     event(:wait)    { transition [:open, :failed, :waiting] => :waiting }
     event(:cancel)  { transition [:open, :failed] => :canceled }
 
-    before_transition on: :succeed, do: :set_paid_at
+    before_transition on: :succeed, do: [:set_paid_at, :clear_last_failed_at]
     after_transition  on: :succeed, do: :update_user_invoiced_amount
     after_transition  on: :succeed, do: :unsuspend_user, if: proc { |invoice| invoice.user.suspended? && invoice.user.invoices.not_paid.empty? }
 
@@ -166,6 +166,11 @@ private
   # before_transition on: :succeed
   def set_paid_at
     self.paid_at = Time.now.utc
+  end
+
+  # before_transition on: :succeed
+  def clear_last_failed_at
+    self.last_failed_at = nil
   end
 
   # after_transition on: :succeed

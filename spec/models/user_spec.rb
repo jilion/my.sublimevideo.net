@@ -755,18 +755,21 @@ describe User do
     describe "#billable?" do
       before do
         @billable_user = create(:user).tap { |user| @billable_site = create(:site, user: user) }
-        @non_billable_user = create(:user).tap { |user| @non_billable_site = create(:site, user: user) }
+        @non_billable_user1 = create(:user).tap { |user| @non_billable_site1 = create(:site, user: user) }
+        @non_billable_user2 = create(:user).tap { |user| @non_billable_site2 = create(:site, user: user) }
 
-        create(:addonship, site: @billable_site, state: 'subscribed')
-        create(:addonship, site: @non_billable_site, state: 'inactive')
-        create(:addonship, site: @non_billable_site, state: 'beta')
-        create(:addonship, site: @non_billable_site, state: 'trial')
-        create(:addonship, site: @non_billable_site, state: 'suspended')
-        create(:addonship, site: @non_billable_site, state: 'sponsored')
+        create(:subscribed_addonship, site: @billable_site)
+        create(:inactive_addonship, site: @non_billable_site1)
+        create(:beta_addonship, site: @non_billable_site1)
+        create(:trial_addonship, site: @non_billable_site1)
+        create(:suspended_addonship, site: @non_billable_site1)
+        create(:sponsored_addonship, site: @non_billable_site1)
+        create(:subscribed_addonship, site: @non_billable_site2, addon: create(:addon, price: 0))
       end
 
       it { @billable_user.should be_billable }
-      it { @non_billable_user.should_not be_billable }
+      it { @non_billable_user1.should_not be_billable }
+      it { @non_billable_user2.should_not be_billable }
     end
 
   end

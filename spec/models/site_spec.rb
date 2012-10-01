@@ -38,11 +38,11 @@ describe Site, :addons do
 
     describe 'addons scopes' do
       before do
-        create(:addonship, site: site, addon: @logo_sublime_addon, state: 'trial', trial_started_on: (30.days - 1.second).ago)
-        create(:addonship, site: site, addon: @logo_no_logo_addon, state: 'trial', trial_started_on: (30.days + 1.second).ago)
-        create(:addonship, site: site, addon: @stats_standard_addon, state: 'trial')
-        create(:addonship, site: site, addon: @support_vip_addon, state: 'subscribed', trial_started_on: (30.days + 1.second).ago)
-        create(:addonship, site: site, state: 'inactive')
+        create(:trial_addonship, site: site, addon: @logo_sublime_addon, trial_started_on: (30.days - 1.second).ago)
+        create(:trial_addonship, site: site, addon: @logo_no_logo_addon, trial_started_on: (30.days + 1.second).ago)
+        create(:trial_addonship, site: site, addon: @stats_standard_addon)
+        create(:subscribed_addonship, site: site, addon: @support_vip_addon, trial_started_on: (30.days + 1.second).ago)
+        create(:inactive_addonship, site: site)
       end
 
       describe 'active addons' do

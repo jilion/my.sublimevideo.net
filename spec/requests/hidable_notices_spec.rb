@@ -66,6 +66,7 @@ feature "Hidable notices" do
       Timecop.travel(3.weeks.ago) do
         sign_in_as :user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo'
         @site = create(:site, user: @current_user)
+        create(:subscribed_addonship, site: @site)
       end
     end
 

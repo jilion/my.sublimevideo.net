@@ -28,14 +28,15 @@ FactoryGirl.define do
     sequence(:email)     { |n| "email#{n}@user.com" }
     password             "123456"
     terms_and_conditions "1"
+
+    factory :user do
+      cc_type        'visa'
+      cc_last_digits '1111'
+      cc_expire_on   { 1.year.from_now.end_of_month.to_date }
+      cc_updated_at  { Time.now.utc }
+    end
   end
 
-  factory :user, parent: :user_no_cc do
-    cc_type        'visa'
-    cc_last_digits '1111'
-    cc_expire_on   { 1.year.from_now.end_of_month.to_date }
-    cc_updated_at  { Time.now.utc }
-  end
 
   factory :admin do
     sequence(:email) { |n| "email#{n}@admin.com" }
@@ -55,10 +56,11 @@ FactoryGirl.define do
     dev_hostnames       '127.0.0.1, localhost'
     # plan_id             { FactoryGirl.create(:plan).id }
     user
+
+    factory :site do
+    end
   end
 
-  factory :site, parent: :new_site do
-  end
 
   # ==============
   # = Log models =
@@ -126,42 +128,6 @@ FactoryGirl.define do
     support_level        1
   end
 
-  # factory :trial_plan, class: Plan  do
-  #   name                 "trial"
-  #   cycle                "none"
-  #   video_views          0
-  #   stats_retention_days nil
-  #   price                0
-  #   support_level        2
-  # end
-
-  # factory :free_plan, class: Plan  do
-  #   name                 "free"
-  #   cycle                "none"
-  #   video_views          0
-  #   stats_retention_days 0
-  #   price                0
-  #   support_level        0
-  # end
-
-  # factory :sponsored_plan, class: Plan  do
-  #   name                 "sponsored"
-  #   cycle                "none"
-  #   video_views          0
-  #   stats_retention_days nil
-  #   price                0
-  #   support_level        2
-  # end
-
-  # factory :custom_plan, class: Plan do
-  #   sequence(:name)      { |n| "custom#{n}" }
-  #   cycle                "month"
-  #   video_views          10_000_000
-  #   stats_retention_days nil
-  #   price                20_000
-  #   support_level        2
-  # end
-
   # ==========
   # = Addons =
   # ==========
@@ -218,16 +184,20 @@ FactoryGirl.define do
     vat_rate             0.08
     vat_amount           798
     after(:build) { |invoice| invoice.invoice_items = [FactoryGirl.build(:plan_invoice_item, invoice: invoice)]}
-  end
 
-  factory :paid_invoice, parent: :invoice do
-    state   'paid'
-    paid_at { Time.now.utc }
-  end
+    factory :paid_invoice do
+      state   'paid'
+      paid_at { Time.now.utc }
+    end
 
-  factory :failed_invoice, parent: :invoice do
-    state          'failed'
-    last_failed_at { Time.now.utc }
+    factory :failed_invoice do
+      state          'failed'
+      last_failed_at { Time.now.utc }
+    end
+
+    factory :canceled_invoice do
+      state 'canceled'
+    end
   end
 
   factory :invoice_item do
@@ -235,14 +205,23 @@ FactoryGirl.define do
     ended_at   { Time.now.utc.end_of_month }
     price  9999
     amount 9999
-  end
 
-  factory :plan_invoice_item, parent: :invoice_item, class: InvoiceItem::Plan do
-    item   { FactoryGirl.create(:plan) }
+    factory :plan_invoice_item, class: InvoiceItem::Plan do
+      item   { FactoryGirl.create(:plan) }
+    end
   end
 
   factory :transaction do
+    factory :paid_transaction do
+      state 'paid'
+    end
+
+    factory :failed_transaction do
+      state 'failed'
+      error 'Credit card refused'
+    end
   end
+
 
   # ===============
   # = Deal models =

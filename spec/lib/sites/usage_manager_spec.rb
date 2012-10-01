@@ -2,7 +2,7 @@ require 'spec_helper'
 require File.expand_path('lib/sites/usage_manager')
 
 describe Sites::UsageManager do
-  let(:site) { create(:site, state: 'active') }
+  let(:site) { create(:site) }
 
   describe '#set_first_billable_plays_at' do
     let(:site1) { create(:site) }

@@ -120,9 +120,9 @@ describe Addons::Addonship do
       it { described_class.subscribed.should =~ [@addonship4, @addonship5] }
     end
 
-    # describe '.paid addons' do
-    #   it { described_class.paid.should =~ [@addonship5] }
-    # end
+    describe '.paid addons' do
+      it { described_class.paid.should =~ [@addonship5] }
+    end
 
     describe '.addon_not_beta addons' do
       it { described_class.addon_not_beta.should =~ [@addonship1, @addonship2, @addonship3, @addonship4, @addonship5] }

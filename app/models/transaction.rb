@@ -220,17 +220,17 @@ private
 
   # after_transition on: [:succeed, :fail, :wait, :wait_d3d]
   def update_invoices
-    Invoice.where(id: invoice_ids).each do |invoice|
-      case state
+    action = case state
       when "paid"
-        invoice.succeed
+        'succeed'
       when "failed"
-        invoice.fail
-      when "waiting_d3d"
-        # do nothing and let the invoice in the open state (allowing the user to retry the payment after entering a valid credit card)
+        'fail'
       when "waiting"
-        invoice.wait
+        'wait'
       end
+
+    if action
+      invoices.map(&:"#{action}!")
     end
   end
 

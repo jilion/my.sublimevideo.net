@@ -3,7 +3,11 @@ require 'spec_helper'
 describe SiteModules::Usage, :addons do
 
   describe '#billable_usages' do
-    before { Timecop.travel(15.days.ago) { @site = create(:site) } }
+    before do
+      Timecop.travel(2012, 5, 15)
+      @site = create(:site)
+    end
+    after { Timecop.return }
 
     before do
       @site.unmemoize_all

@@ -50,7 +50,8 @@ describe Invoice, :addons do
     end # Validations
 
     describe "State Machine" do
-      subject { create(:invoice) }
+      let(:invoice) { create(:invoice) }
+      subject { invoice }
 
       describe "Initial state" do
         it { should be_open }
@@ -58,63 +59,65 @@ describe Invoice, :addons do
 
       describe "Transitions" do
         describe "before_transition on: :succeed, do: :set_paid_at" do
-          before { subject.reload }
+          it "should set paid_at" do
+            invoice.paid_at.should be_nil
+            invoice.succeed!
+            invoice.paid_at.should be_present
+          end
+        end
+
+        describe "before_transition on: :succeed, do: :clear_last_failed_at" do
+          let(:failed_invoice) { create(:failed_invoice) }
 
           it "should set paid_at" do
-            subject.paid_at.should be_nil
-            subject.succeed!
-            subject.paid_at.should be_present
+            failed_invoice.last_failed_at.should be_present
+            failed_invoice.succeed!
+            failed_invoice.last_failed_at.should be_nil
           end
         end
 
         describe "before_transition on: :fail, do: :set_last_failed_at" do
-          before { subject.reload }
-
           it "should set last_failed_at" do
-            subject.last_failed_at.should be_nil
-            subject.fail!
-            subject.last_failed_at.should be_present
+            invoice.last_failed_at.should be_nil
+            invoice.fail!
+            invoice.last_failed_at.should be_present
           end
         end
 
         describe "after_transition on: :succeed, do: :update_user_invoiced_amount" do
-          before  { subject.reload }
-
           it "should update user.last_invoiced_amount" do
-            subject.user.update_attribute(:last_invoiced_amount, 500)
-            expect { subject.succeed! }.to change(subject.user.reload, :last_invoiced_amount).from(500).to(10000)
+            invoice.user.update_attribute(:last_invoiced_amount, 500)
+            expect { invoice.succeed! }.to change(invoice.user.reload, :last_invoiced_amount).from(500).to(10000)
           end
 
           it "should increment user.total_invoiced_amount" do
             subject.user.update_attribute(:total_invoiced_amount, 500)
-            expect { subject.succeed! }.to change(subject.user.reload, :total_invoiced_amount).from(500).to(10500)
+            expect { invoice.succeed! }.to change(invoice.user.reload, :total_invoiced_amount).from(500).to(10500)
           end
 
           it "should save user" do
-            old_user_last_invoiced_amount = subject.user.last_invoiced_amount
-            old_user_total_invoiced_amount = subject.user.total_invoiced_amount
-            subject.succeed!
-            subject.user.reload
-            subject.user.last_invoiced_amount.should_not eq old_user_last_invoiced_amount
-            subject.user.total_invoiced_amount.should_not eq old_user_total_invoiced_amount
+            old_user_last_invoiced_amount = invoice.user.last_invoiced_amount
+            old_user_total_invoiced_amount = invoice.user.total_invoiced_amount
+            invoice.succeed!
+            invoice.user.reload
+            invoice.user.last_invoiced_amount.should_not eq old_user_last_invoiced_amount
+            invoice.user.total_invoiced_amount.should_not eq old_user_total_invoiced_amount
           end
         end
 
         describe "after_transition on: :succeed, do: :unsuspend_user" do
-          before  { subject.reload }
-
           context "with a non-suspended user" do
             %w[open failed].each do |state|
               context "from #{state}" do
                 before do
-                  subject.reload.update_attributes({ state: state, amount: 0 }, without_protection: true)
-                  subject.user.should be_active
+                  invoice.reload.update_attributes({ state: state, amount: 0 }, without_protection: true)
+                  invoice.user.should be_active
                 end
 
                 it "should not un-suspend_user" do
-                  subject.succeed!
-                  subject.should be_paid
-                  subject.user.should be_active
+                  invoice.succeed!
+                  invoice.should be_paid
+                  invoice.user.should be_active
                 end
               end
             end
@@ -124,28 +127,28 @@ describe Invoice, :addons do
             %w[open failed].each do |state|
               context "from #{state}" do
                 before do
-                  subject.reload.update_attributes({ state: state, amount: 0 }, without_protection: true)
-                  subject.user.update_attribute(:state, 'suspended')
-                  subject.user.should be_suspended
+                  invoice.reload.update_attributes({ state: state, amount: 0 }, without_protection: true)
+                  invoice.user.update_attribute(:state, 'suspended')
+                  invoice.user.should be_suspended
                 end
 
                 context "with no more open invoice" do
                   it "should un-suspend_user" do
-                    subject.succeed!
-                    subject.should be_paid
-                    subject.user.should be_active
+                    invoice.succeed!
+                    invoice.should be_paid
+                    invoice.user.should be_active
                   end
                 end
 
                 context "with more failed invoice" do
                   before do
-                    create(:invoice, site: create(:site, user: subject.user), state: 'failed')
+                    create(:failed_invoice, site: create(:site, user: invoice.user))
                   end
 
                   it "should not delay un-suspend_user" do
-                    subject.succeed!
-                    subject.should be_paid
-                    subject.user.should be_suspended
+                    invoice.succeed!
+                    invoice.should be_paid
+                    invoice.user.should be_suspended
                   end
                 end
               end
@@ -154,15 +157,13 @@ describe Invoice, :addons do
         end
 
         describe "after_transition on: :cancel, do: :increment_user_balance" do
-          before  { subject.reload }
-
           it "increments user balance" do
-            subject.update_attribute(:balance_deduction_amount, 2000)
-            subject.user.update_attribute(:balance, 1000)
+            invoice.update_attribute(:balance_deduction_amount, 2000)
+            invoice.user.update_attribute(:balance, 1000)
 
-            subject.should be_open
-            expect { subject.cancel! }.to change(subject.user.reload, :balance).from(1000).to(3000)
-            subject.should be_canceled
+            invoice.should be_open
+            expect { invoice.cancel! }.to change(invoice.user.reload, :balance).from(1000).to(3000)
+            invoice.should be_canceled
           end
         end
 
@@ -422,9 +423,9 @@ describe Invoice, :addons do
         @invoice.invoice_items << @paid_plan_invoice_item
         @invoice.save!
 
-        create(:transaction, invoices: [@invoice], state: 'failed', created_at: 4.days.ago)
-        @failed_transaction2 = create(:transaction, invoices: [@invoice], state: 'failed', created_at: 3.days.ago)
-        @paid_transaction = create(:transaction, invoices: [@invoice], state: 'paid', created_at: 2.days.ago)
+        create(:failed_transaction, invoices: [@invoice], created_at: 4.days.ago)
+        @failed_transaction2 = create(:failed_transaction, invoices: [@invoice], created_at: 3.days.ago)
+        @paid_transaction = create(:paid_ransaction, invoices: [@invoice], created_at: 2.days.ago)
       end
       subject { @invoice }
 
@@ -447,7 +448,7 @@ describe Invoice, :addons do
 
         context "first invoice was canceled" do
           before do
-            @canceled_invoice   = create(:invoice, site: site, state: 'canceled')
+            @canceled_invoice   = create(:canceled_invoice, site: site)
             @first_site_invoice = create(:invoice, site: site)
           end
 

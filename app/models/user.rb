@@ -195,7 +195,7 @@ class User < ActiveRecord::Base
   end
 
   def billable?
-    addonships.subscribed.addon_not_beta.count > 0
+    addonships.subscribed.paid.count > 0
   end
 
   def name_or_email

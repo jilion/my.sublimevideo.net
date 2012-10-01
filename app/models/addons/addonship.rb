@@ -69,7 +69,7 @@ class Addons::Addonship < ActiveRecord::Base
   }
   scope :active,         -> { where { state >> ACTIVE_STATES } }
   scope :subscribed,     -> { where { state == 'subscribed' } }
-  # scope :paid,           -> { subscribed.includes(:addon).merge(Addons::Addon.paid) }
+  scope :paid,           -> { subscribed.includes(:addon).merge(Addons::Addon.paid) }
   scope :addon_not_beta, -> { includes(:addon).merge(Addons::Addon.not_beta) }
 
   def active?

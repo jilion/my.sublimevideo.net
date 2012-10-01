@@ -4,9 +4,9 @@ describe Transaction do
   let(:user)            { create(:user) }
   let(:site1)           { create(:site, user: user) }
   let(:site2)           { create(:site, user: user) }
-  let(:open_invoice)    { create(:invoice, site: site1, state: 'open') }
-  let(:failed_invoice)  { create(:invoice, site: site2, state: 'failed') }
-  let(:paid_invoice)    { create(:invoice, site: site2, state: 'paid') }
+  let(:open_invoice)    { create(:invoice, site: site1) }
+  let(:failed_invoice)  { create(:failed_invoice, site: site2) }
+  let(:paid_invoice)    { create(:paid_invoice, site: site2) }
   let(:new_transaction) { build(:transaction, invoices: [open_invoice, paid_invoice, failed_invoice]) }
   let(:transaction)     { create(:transaction, invoices: [open_invoice, paid_invoice, failed_invoice]) }
 
@@ -203,30 +203,20 @@ describe Transaction do
     describe "Transitions" do
       describe "after_transition on: [:succeed, :fail], do: :update_invoices" do
         describe "on :succeed" do
-          before { transaction.succeed }
+          it 'calls succeed on each of the transaction invoices' do
+            open_invoice.should_receive(:succeed!)
+            failed_invoice.should_receive(:succeed!)
 
-          specify do
-            open_invoice.reload.should be_paid
-            open_invoice.paid_at.to_i.should be_within(10).of(transaction.updated_at.to_i)
-            open_invoice.last_failed_at.should be_nil
-
-            failed_invoice.reload.should be_paid
-            failed_invoice.paid_at.to_i.should be_within(10).of(transaction.updated_at.to_i)
-            failed_invoice.last_failed_at.should be_nil
+            transaction.succeed
           end
         end
 
         describe "on :fail" do
-          before { transaction.fail }
+          it 'calls fail on each of the transaction invoices' do
+            open_invoice.should_receive(:fail!)
+            failed_invoice.should_receive(:fail!)
 
-          specify do
-            open_invoice.reload.should be_failed
-            open_invoice.paid_at.should be_nil
-            open_invoice.last_failed_at.to_i.should be_within(10).of(transaction.updated_at.to_i)
-
-            failed_invoice.reload.should be_failed
-            failed_invoice.paid_at.should be_nil
-            failed_invoice.last_failed_at.to_i.should be_within(10).of(transaction.updated_at.to_i)
+            transaction.fail
           end
         end
       end
@@ -257,8 +247,8 @@ describe Transaction do
   describe "Scopes" do
     before do
       create(:transaction, invoices: [open_invoice])
-      @failed_transaction = create(:transaction, invoices: [open_invoice], state: 'failed')
-      create(:transaction, invoices: [open_invoice], state: 'paid')
+      @failed_transaction = create(:failed_transaction, invoices: [open_invoice])
+      create(:paid_transaction, invoices: [open_invoice])
     end
 
     describe "#failed" do
@@ -274,9 +264,9 @@ describe Transaction do
         @site3    = create(:site, user: suspended_user)
         @invoice1 = create(:invoice, state: 'open', site: site1, renew: true)
         @invoice2 = create(:invoice, state: 'open', site: @site3, renew: false)
-        @invoice3 = create(:invoice, state: 'failed', site: site1)
-        @invoice4 = create(:invoice, state: 'failed', site: @site3)
-        @invoice5 = create(:invoice, state: 'paid', site: site1)
+        @invoice3 = create(:failed_invoice, site: site1)
+        @invoice4 = create(:failed_invoice, site: @site3)
+        @invoice5 = create(:paid_invoice, site: site1)
       end
       # before { Delayed::Job.delete_all }
 
