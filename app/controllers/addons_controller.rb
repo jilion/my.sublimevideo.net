@@ -1,4 +1,4 @@
-require_dependency 'addons/addonships_manager'
+require_dependency 'addons/addonship_manager'
 
 class AddonsController < ApplicationController
   before_filter :redirect_suspended_user, only: [:index]
@@ -14,7 +14,7 @@ class AddonsController < ApplicationController
 
   # PUT /sites/:site_id/addons/update_all
   def update_all
-    Addons::AddonshipsManager.update_addonships_for_site!(@site, params[:site_addons])
+    Addons::AddonshipManager.new(@site).update_addonships!(params[:site_addons])
 
     redirect_to site_addons_path(@site), notice: 'Add-ons successfully updated.'
   end

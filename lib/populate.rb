@@ -1,5 +1,7 @@
 # coding: utf-8
 require 'ffaker' if Rails.env.development?
+require_dependency 'sites/site_manager'
+require_dependency 'sites/usage_manager'
 require_dependency 'invoices/builder'
 
 module Populate
@@ -40,12 +42,14 @@ module Populate
     def addons
       empty_tables(Addons::Addon, Addons::Addonship, Addons::AddonActivity)
       addons_attributes = [
+        { category: 'design-1', name: 'western', title: 'Western', price: 495, availability: 'public' },
+        { category: 'design-2', name: 'star-wars', title: 'Star-Wars', price: 495, availability: 'public' },
         { category: 'logo', name: 'sublime', title: 'SublimeVideo logo', price: 0, availability: 'public' },
-        { category: 'logo', name: 'no-logo', title: 'No logo', price: 999, availability: 'public' },
-        # { category: 'logo', name: 'custom-logo', title: 'Custom logo', price: 1999, availability: 'public' },
-        { category: 'stats', name: 'standard', title: 'Real-time stats', price: 1999, availability: 'public' },
+        { category: 'logo', name: 'no-logo', title: 'No logo', price: 995, availability: 'public' },
+        { category: 'logo', name: 'custom-logo', title: 'Custom logo', price: 1995, availability: 'public' },
+        { category: 'stats', name: 'standard', title: 'Real-time stats', price: 995, availability: 'public' },
         { category: 'support', name: 'standard', title: 'Forum & email support', price: 0, availability: 'public' },
-        { category: 'support', name: 'vip', title: 'VIP email support', price: 9999, availability: 'public' }
+        { category: 'support', name: 'vip', title: 'VIP email support', price: 9995, availability: 'public' }
       ]
       addons_attributes.each { |attributes| Addons::Addon.create!(attributes, without_protection: true) }
       puts "#{addons_attributes.size} addons created!"
@@ -109,7 +113,7 @@ module Populate
     end
 
     def users(user_id = nil)
-      empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User)
+      empty_tables("invoices_transactions", InvoiceItems::InvoiceItem, Invoice, Transaction, Site, User)
       created_at_array = (Date.new(2011,1,1)..100.days.ago.to_date).to_a
       disable_perform_deliveries do
         (user_id ? [user_id.to_i] : 0.upto(BASE_USERS.count - 1)).each do |i|
@@ -168,14 +172,13 @@ module Populate
 
       User.all.each do |user|
         BASE_SITES.each do |hostname|
-          site = Site.new(hostname: hostname)
-          Sites::SiteManager.new(user).create(site)
-          site.update_column(:created_at, created_at_array.sample)
+          manager = Sites::SiteManager.build_site(user: user, hostname: hostname)
+          manager.save
+          manager.site.update_column(:created_at, created_at_array.sample)
         end
       end
 
-      Site.downgrade_sites_leaving_trial
-      Invoice.open.all.each { |invoice| invoice.succeed! }
+      # Invoice.open.all.each { |invoice| invoice.succeed! }
 
       empty_tables("delayed_jobs")
       puts "#{BASE_SITES.size} beautiful sites created for each user!"
@@ -183,7 +186,7 @@ module Populate
 
     # FIXME Remy: After the new add-on invoicing logic is coded
     def invoices(user_id = nil)
-      empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction)
+      empty_tables("invoices_transactions", InvoiceItems::InvoiceItem, Invoice, Transaction)
       users = user_id ? [User.find(user_id)] : User.all
       plans = Plan.standard_plans.all
       users.each do |user|
@@ -398,7 +401,7 @@ module Populate
               .find(t: site.token, d: i.seconds.ago.change(usec: 0).to_time)
               .update({ :$inc => random_site_stats_inc(1) }, upsert: true)
           end
-          site.update_last_30_days_video_views_counters
+          Sites::UsageManager.new(site).update_last_30_days_video_views_counters
         end
       end
       puts "Fake site(s) stats generated"

@@ -164,6 +164,10 @@ describe Addons::Addonship do
       it { described_class.subscribed.should =~ [@addonship4, @addonship5] }
     end
 
+    describe '.inactive addons' do
+      it { described_class.inactive.should =~ [@addonship6] }
+    end
+
     describe '.paid addons' do
       it { described_class.paid.should =~ [@addonship5] }
     end

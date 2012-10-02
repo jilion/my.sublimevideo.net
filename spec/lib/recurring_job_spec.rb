@@ -51,7 +51,7 @@ describe RecurringJob do
       -> { described_class.sites_processing }.should delay(%w[
         %Sites::UsagesManager%update_last_30_days_counters_for_not_archived_sites%
         %Sites::UsagesManager%set_first_billable_plays_at_for_not_archived_sites%
-        %Addons::AddonshipsManager%activate_addonships_out_of_trial!%])
+        %Addons::AddonshipManager%activate_addonships_out_of_trial!%])
     end
   end
 

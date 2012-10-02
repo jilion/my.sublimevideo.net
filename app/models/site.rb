@@ -62,6 +62,10 @@ class Site < ActiveRecord::Base
       merge(Addons::Addonship.subscribed).scoped
     end
 
+    def inactive
+      merge(Addons::Addonship.inactive).scoped
+    end
+
     def out_of_trial
       merge(Addons::Addonship.out_of_trial).scoped
     end

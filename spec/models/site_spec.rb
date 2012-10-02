@@ -41,7 +41,7 @@ describe Site, :addons do
         create(:trial_addonship, site: site, addon: @logo_no_logo_addon, trial_started_on: (30.days + 1.second).ago)
         create(:trial_addonship, site: site, addon: @stats_standard_addon)
         create(:subscribed_addonship, site: site, addon: @support_vip_addon, trial_started_on: (30.days + 1.second).ago)
-        create(:inactive_addonship, site: site)
+        create(:inactive_addonship, site: site, addon: @design1_western_addon)
       end
 
       describe 'active addons' do
@@ -50,6 +50,10 @@ describe Site, :addons do
 
       describe 'subscribed addons' do
         it { site.addons.subscribed.should =~ [@support_vip_addon] }
+      end
+
+      describe 'inactive addons' do
+        it { site.addons.inactive.should =~ [@design1_western_addon] }
       end
 
       describe 'out_of_trial addons' do

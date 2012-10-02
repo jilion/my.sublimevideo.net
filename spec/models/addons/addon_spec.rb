@@ -50,6 +50,15 @@ describe Addons::Addon do
       @custom_addon      = create(:addon, availability: 'custom', price: 999)
     end
 
+    describe '._category' do
+      it { described_class._category('logo', @free_public_addon.category).should =~ [@free_beta_addon, @beta_addon, @free_public_addon] }
+    end
+
+
+    describe '._name' do
+      it { described_class._name('no-logo', @public_addon.name).should =~ [@beta_addon, @public_addon] }
+    end
+
     describe '.not_beta' do
       it { described_class.not_beta.should =~ [@free_public_addon, @public_addon, @custom_addon] }
     end
@@ -59,8 +68,8 @@ describe Addons::Addon do
     end
   end
 
-  describe '.get', :addons do
-    it { described_class.get('logo', 'no-logo').should eq @logo_no_logo_addon }
+  describe '.get' do
+    it { described_class.get('logo', 'no-logo').should eq @beta_addon }
   end
 
   describe '#beta?' do

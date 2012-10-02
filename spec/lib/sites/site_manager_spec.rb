@@ -4,11 +4,12 @@ require File.expand_path('lib/sites/site_manager')
 Site = Struct.new(:params) unless defined?(Site)
 
 describe Sites::SiteManager do
-  let(:user)           { stub(sites: []) }
-  let(:site)           { Struct.new(:user, :id).new(nil, 1234) }
-  let(:manager)        { described_class.new(site) }
-  let(:usage_manager)  { stub }
-  let(:delayed_method) { stub }
+  let(:user)              { stub(sites: []) }
+  let(:site)              { Struct.new(:user, :id).new(nil, 1234) }
+  let(:manager)           { described_class.new(site) }
+  let(:addonship_manager) { stub.as_null_object }
+  let(:usage_manager)     { stub }
+  let(:delayed_method)    { stub }
 
   describe '.build_site' do
     it 'instantiate a new Sites::SiteManager and returns it' do
@@ -21,7 +22,7 @@ describe Sites::SiteManager do
   describe '#save' do
     before do
       Site.should_receive(:transaction).and_yield
-      Addons::AddonshipsManager.stub(:update_addonships_for_site!)
+      Addons::AddonshipManager.stub(:new) { addonship_manager }
       Sites::RankManager.stub(:delay) { delayed_method }
       Sites::UsageManager.stub(:new) { usage_manager }
       usage_manager.stub(:update_last_30_days_video_views_counters)
@@ -34,7 +35,8 @@ describe Sites::SiteManager do
       end
 
       it 'adds default add-ons to site after creation' do
-        Addons::AddonshipsManager.should_receive(:update_addonships_for_site!).with(site, logo: 'sublime', support: 'standard')
+        Addons::AddonshipManager.should_receive(:new) { addonship_manager }
+        addonship_manager.should_receive(:update_addonships!).with(logo: 'sublime', support: 'standard')
 
         manager.save
       end
@@ -63,7 +65,7 @@ describe Sites::SiteManager do
       end
 
       it 'doesnt add default add-ons to site after creation' do
-        Addons::AddonshipsManager.should_not_receive(:update_addonships_for_site!)
+        Addons::AddonshipManager.should_not_receive(:new)
 
         manager.save
       end

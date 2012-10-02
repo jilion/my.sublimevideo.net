@@ -1,5 +1,5 @@
 require_dependency 'notify'
-require_dependency 'addons/addonships_manager'
+require_dependency 'addons/addonship_manager'
 require_dependency 'sites/usages_manager'
 
 module RecurringJob
@@ -77,7 +77,7 @@ module RecurringJob
     def sites_processing(priority = PRIORITIES[:sites])
       Sites::UsagesManager.delay(priority: priority).update_last_30_days_counters_for_not_archived_sites
       Sites::UsagesManager.delay(priority: priority).set_first_billable_plays_at_for_not_archived_sites
-      Addons::AddonshipsManager.delay(priority: priority).activate_addonships_out_of_trial!
+      Addons::AddonshipManager.delay(priority: priority).activate_addonships_out_of_trial!
 
       delay_sites_processing
     end

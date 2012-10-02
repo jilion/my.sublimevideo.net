@@ -65,15 +65,16 @@ class Addons::Addonship < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :in_category,     ->(cat) { includes(:addon).where { addon.category == cat } }
-  scope :except_addon_id, ->(excepted_addon_id) { where{ addon_id != excepted_addon_id } }
-  scope :out_of_trial,    -> {
+  scope :in_category,      ->(cat) { includes(:addon).where { addon.category == cat } }
+  scope :except_addon_ids, ->(excepted_addon_ids) { where{ addon_id << excepted_addon_ids } }
+  scope :out_of_trial,     -> {
     where{ addonships.state == 'trial' }. \
     where{ addonships.trial_started_on != nil }. \
     where{ addonships.trial_started_on < BusinessModel.days_for_trial.days.ago }
   }
   scope :active,         -> { where { state >> ACTIVE_STATES } }
-  scope :subscribed,     -> { where { state == 'subscribed' } }
+  scope :subscribed,     -> { where(state: 'subscribed') }
+  scope :inactive,       -> { where(state: 'inactive') }
   scope :paid,           -> { subscribed.includes(:addon).merge(Addons::Addon.paid) }
   scope :addon_not_beta, -> { includes(:addon).merge(Addons::Addon.not_beta) }
 

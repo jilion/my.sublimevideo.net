@@ -11,7 +11,6 @@ describe SiteModules::Addon, :addons do
     create(:trial_addonship, site: site, addon: @logo_no_logo_addon)
     create(:sponsored_addonship, site: site, addon: @stats_standard_addon)
     create(:subscribed_addonship, site: site, addon: addon2)
-
     create(:inactive_addonship, site: site, addon: addon3)
     create(:suspended_addonship, site: site, addon: addon4)
   end
@@ -24,6 +23,17 @@ describe SiteModules::Addon, :addons do
       site.addon_is_active?(addon2).should be_true
       site.addon_is_active?(@support_vip_addon).should be_false
       site.addon_is_active?(addon3).should be_false
+    end
+  end
+
+  describe '#addon_is_inactive?' do
+    it 'returns true when the addon is inactive, false otherwise' do
+      site.addon_is_inactive?(addon1).should be_false
+      site.addon_is_inactive?(@logo_no_logo_addon).should be_false
+      site.addon_is_inactive?(@stats_standard_addon).should be_false
+      site.addon_is_inactive?(addon2).should be_false
+      site.addon_is_inactive?(@support_vip_addon).should be_false
+      site.addon_is_inactive?(addon3).should be_true
     end
   end
 

@@ -23,9 +23,11 @@ RSpec.configure do |config|
 end
 
 def create_default_addons
+  @design1_western_addon  = create(:addon, category: 'design-1', name: 'western', price: 495)
+  @design2_starwars_addon = create(:addon, category: 'design-2', name: 'star-wars', price: 495)
   @logo_sublime_addon     = create(:addon, category: 'logo', name: 'sublime', price: 0)
-  @logo_no_logo_addon     = create(:addon, category: 'logo', name: 'no-logo', price: 999)
-  @stats_standard_addon   = create(:addon, category: 'stats', name: 'standard', price: 999)
+  @logo_no_logo_addon     = create(:addon, category: 'logo', name: 'no-logo', price: 995)
+  @stats_standard_addon   = create(:addon, category: 'stats', name: 'standard', price: 995)
   @support_standard_addon = create(:addon, category: 'support', name: 'standard', price: 0)
-  @support_vip_addon      = create(:addon, category: 'support', name: 'vip', price: 999)
+  @support_vip_addon      = create(:addon, category: 'support', name: 'vip', price: 995)
 end
