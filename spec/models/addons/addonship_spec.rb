@@ -43,7 +43,7 @@ describe Addons::Addonship do
           addonship.state.should eq 'beta'
         end
 
-        it 'create a new Addons::AddonActivity', :focus do
+        it 'create a new Addons::AddonActivity' do
           -> { addonship.start_beta }.should create_an_addon_activity.in_state('beta')
         end
       end
@@ -59,7 +59,7 @@ describe Addons::Addonship do
         end
       end
 
-      it 'create a new Addons::AddonActivity', :focus do
+      it 'create a new Addons::AddonActivity' do
         -> { addonship.start_trial }.should create_an_addon_activity.in_state('trial')
       end
 
@@ -80,7 +80,7 @@ describe Addons::Addonship do
           addonship.state.should eq 'subscribed'
         end
 
-        it 'create a new Addons::AddonActivity', :focus do
+        it 'create a new Addons::AddonActivity' do
           -> { addonship.subscribe }.should create_an_addon_activity.in_state('subscribed')
         end
       end
@@ -95,7 +95,7 @@ describe Addons::Addonship do
           addonship.state.should eq 'inactive'
         end
 
-        it 'create a new Addons::AddonActivity', :focus do
+        it 'create a new Addons::AddonActivity' do
           -> { addonship.cancel }.should create_an_addon_activity.in_state('inactive')
         end
       end
@@ -110,7 +110,7 @@ describe Addons::Addonship do
           addonship.state.should eq 'suspended'
         end
 
-        it 'create a new Addons::AddonActivity', :focus do
+        it 'create a new Addons::AddonActivity' do
           -> { addonship.suspend }.should create_an_addon_activity.in_state('suspended')
         end
       end
@@ -125,7 +125,7 @@ describe Addons::Addonship do
           addonship.state.should eq 'sponsored'
         end
 
-        it 'create a new Addons::AddonActivity', :focus do
+        it 'create a new Addons::AddonActivity' do
           -> { addonship.sponsor }.should create_an_addon_activity.in_state('sponsored')
         end
       end
