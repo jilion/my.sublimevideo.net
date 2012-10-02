@@ -4,3 +4,9 @@ class MSVStats.Models.Site extends MySublimeVideo.Models.Site
 
   isDemo: ->
     this.get('token') is 'demo'
+
+  realToken: ->
+    if this.isDemo()
+      '<%= SiteToken[:www] %>'
+    else
+      this.get('token')
