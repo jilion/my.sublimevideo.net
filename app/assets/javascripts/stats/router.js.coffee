@@ -125,7 +125,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
 
   initPusherPrivateSiteChannel: ->
     unless MSVStats.site.isInFreePlan()
-      MSVStats.privateChannel = MSVStats.pusher.subscribe("private-#{MSVStats.site.get('token')}")
+      MSVStats.privateChannel = MSVStats.pusher.subscribe("private-#{MSVStats.site.realToken()}")
 
       MSVStats.privateChannel.bind 'pusher:subscription_succeeded', ->
         setTimeout MSVStats.statsSeconds.fetchOldSeconds, 2000
@@ -139,7 +139,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
           video.set(data.meta_data)
 
   unsubscribePusherPrivateSiteChannel: ->
-    MSVStats.pusher.unsubscribe("private-#{MSVStats.site.get('token')}")
+    MSVStats.pusher.unsubscribe("private-#{MSVStats.site.realToken()}")
 
   resetAndFetchStats: ->
     MSVStats.statsSeconds._isShowable = false
