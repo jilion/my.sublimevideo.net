@@ -46,8 +46,8 @@ module Populate
         { category: 'design-2', name: 'star-wars', title: 'Star-Wars', price: 495, availability: 'public' },
         { category: 'logo', name: 'sublime', title: 'SublimeVideo logo', price: 0, availability: 'public' },
         { category: 'logo', name: 'no-logo', title: 'No logo', price: 995, availability: 'public' },
-        { category: 'logo', name: 'custom-logo', title: 'Custom logo', price: 1995, availability: 'public' },
-        { category: 'stats', name: 'standard', title: 'Real-time stats', price: 995, availability: 'public' },
+        { category: 'logo', name: 'custom-logo', title: 'Your company logo', price: 1995, availability: 'beta' },
+        { category: 'stats', name: 'standard', title: 'Real-time statistics', price: 995, availability: 'public' },
         { category: 'support', name: 'standard', title: 'Forum & email support', price: 0, availability: 'public' },
         { category: 'support', name: 'vip', title: 'VIP email support', price: 9995, availability: 'public' }
       ]

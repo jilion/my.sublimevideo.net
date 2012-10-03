@@ -11,7 +11,7 @@ feature 'Choose add-ons' do
     @site.reload.addons.active.should be_empty
 
     choose 'site_addons_logo_no-logo'
-    click_button 'Apply changes'
+    click_button 'Confirm selection'
 
     @site.reload.addons.active.should =~ [@logo_no_logo_addon, @support_standard_addon]
   end
@@ -20,7 +20,7 @@ feature 'Choose add-ons' do
     @site.reload.addons.active.should be_empty
 
     check 'site_addons_stats'
-    click_button 'Apply changes'
+    click_button 'Confirm selection'
 
     @site.reload.addons.active.should =~ [@logo_sublime_addon, @support_standard_addon, @stats_standard_addon]
   end

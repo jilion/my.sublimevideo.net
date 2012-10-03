@@ -70,7 +70,7 @@ class Site < ActiveRecord::Base
       merge(Addons::Addonship.out_of_trial).scoped
     end
   end
-  has_many :addon_activities, through: :addonships, class_name: 'Addons::AddonActivity'
+  has_many :addon_activities, through: :addonships, source: :activities, class_name: 'Addons::AddonActivity'
 
   # Player::Components
   has_many :components, through: :addonships

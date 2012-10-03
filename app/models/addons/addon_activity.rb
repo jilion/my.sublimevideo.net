@@ -7,6 +7,7 @@ class Addons::AddonActivity < ActiveRecord::Base
   # ================
 
   belongs_to :addonship
+  has_one :addon, through: :addonship
 
   # ===============
   # = Validations =

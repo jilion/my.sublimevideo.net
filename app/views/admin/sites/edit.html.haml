@@ -26,6 +26,12 @@
   = render 'timeline_usage', site: @site
 %br
 
+%h3 Addons activities
+%table
+  - @site.addon_activities.includes(:addon).order{ created_at.desc }.each do |addon_activity|
+    %tr
+      %td= "[#{addon_activity.state}] #{addon_activity.addon.title} (#{display_time(addon_activity.created_at)})"
+
 - if has_role?('invoices')
   %h3 Invoices
   = render 'admin/shared/invoices', object: @site

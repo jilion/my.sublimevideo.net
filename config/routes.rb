@@ -199,7 +199,10 @@ MySublimeVideo::Application.routes.draw do
 
     resources :sites, except: [:show] do
       resources :addons, only: [:index] do
-        put :update_all, on: :collection
+        collection do
+          put :update_all
+          get :thanks
+        end
       end
 
       resources :invoices, only: [:index] do

@@ -14,6 +14,7 @@ class Addons::Addonship < ActiveRecord::Base
 
   belongs_to :site
   belongs_to :addon, class_name: "Addons::Addon"
+  has_many :activities, class_name: "Addons::AddonActivity"
   has_many :components, through: :addon
 
   # ===============
