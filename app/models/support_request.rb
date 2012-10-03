@@ -2,7 +2,7 @@
 require_dependency 'active_model'
 require_dependency 'users/support_manager'
 
-class SupportRequest < Struct.new(:params)
+SupportRequest = Struct.new(:params) do
   include ActiveModel::Validations
 
   attr_accessor :site_token, :subject, :message, :test_page, :env, :uploads

@@ -1,10 +1,14 @@
 require 'fast_spec_helper'
 require 'config/vcr'
-require File.expand_path('lib/sites/rank_manager')
+require File.expand_path('lib/services/sites/rank')
 
-Site = Class.new unless defined?(Site)
-
-describe Sites::RankManager do
+describe Services::Sites::Rank do
+  unless defined?(Site)
+    before do
+      Site = Class.new
+    end
+    after { Object.send(:remove_const, :Site) }
+  end
 
   describe '.set_ranks' do
     use_vcr_cassette 'sites/ranks'

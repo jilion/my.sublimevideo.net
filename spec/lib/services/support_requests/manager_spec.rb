@@ -1,9 +1,9 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/support_requests/manager')
+require File.expand_path('lib/services/support_requests/manager')
 
 SupportRequest = Struct.new(:params) unless defined?(SupportRequest)
 
-describe SupportRequests::Manager do
+describe Services::SupportRequests::Manager do
   let(:user_without_zendesk_id) { mock('user', zendesk_id?: false) }
   let(:user_with_zendesk_id)    { mock('user', zendesk_id?: true) }
   let(:support_request1)        { mock('support_request', to_params: {}, user: user_without_zendesk_id) }

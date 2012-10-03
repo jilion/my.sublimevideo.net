@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'ffaker' if Rails.env.development?
-require_dependency 'sites/site_manager'
-require_dependency 'sites/usage_manager'
+require_dependency 'services/sites/manager'
+require_dependency 'services/sites/usage'
 require_dependency 'invoices/builder'
 
 module Populate
@@ -172,7 +172,7 @@ module Populate
 
       User.all.each do |user|
         BASE_SITES.each do |hostname|
-          manager = Sites::SiteManager.build_site(user: user, hostname: hostname)
+          manager = Services::Sites::Manager.build_site(user: user, hostname: hostname)
           manager.save
           manager.site.update_column(:created_at, created_at_array.sample)
         end
@@ -401,7 +401,7 @@ module Populate
               .find(t: site.token, d: i.seconds.ago.change(usec: 0).to_time)
               .update({ :$inc => random_site_stats_inc(1) }, upsert: true)
           end
-          Sites::UsageManager.new(site).update_last_30_days_video_views_counters
+          Services::Sites::Usage.new(site).update_last_30_days_video_views_counters
         end
       end
       puts "Fake site(s) stats generated"

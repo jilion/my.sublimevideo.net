@@ -4,7 +4,7 @@
 require 'tempfile'
 require_dependency 'cdn/file'
 
-class Player::Settings < Struct.new(:site, :type, :options, :file, :cdn_file)
+Player::Settings = Struct.new(:site, :type, :options, :file, :cdn_file) do
   TYPES = %w[license settings]
   SITE_FIELDS = %w[plan_id player_mode hostname extra_hostnames dev_hostnames path wildcard badged]
   delegate :upload!, :delete!, :present?, to: :cdn_file

@@ -1,12 +1,18 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/addons/addonship_manager')
+require File.expand_path('lib/services/sites/addonship')
 
-describe Addons::AddonshipManager do
+describe Services::Sites::Addonship do
   unless defined?(Site)
     before do
       Site = Class.new
     end
     after { Object.send(:remove_const, :Site) }
+  end
+  unless defined?(Addons)
+    before do
+      Addons = Module.new
+    end
+    after { Object.send(:remove_const, :Addons) }
   end
   unless defined?(Addons::Addon)
     before do

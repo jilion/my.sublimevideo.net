@@ -1,9 +1,9 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/sites/site_manager')
+require File.expand_path('lib/services/sites/manager')
 
 Site = Struct.new(:params) unless defined?(Site)
 
-describe Sites::SiteManager do
+describe Services::Sites::Manager do
   let(:user)              { stub(sites: []) }
   let(:site)              { Struct.new(:user, :id).new(nil, 1234) }
   let(:manager)           { described_class.new(site) }
@@ -12,7 +12,7 @@ describe Sites::SiteManager do
   let(:delayed_method)    { stub }
 
   describe '.build_site' do
-    it 'instantiate a new Sites::SiteManager and returns it' do
+    it 'instantiate a new Services::Sites::Manager and returns it' do
       user.sites.should_receive(:new)
 
       described_class.build_site(user: user).should be_a(described_class)
@@ -22,9 +22,9 @@ describe Sites::SiteManager do
   describe '#save' do
     before do
       Site.should_receive(:transaction).and_yield
-      Addons::AddonshipManager.stub(:new) { addonship_manager }
-      Sites::RankManager.stub(:delay) { delayed_method }
-      Sites::UsageManager.stub(:new) { usage_manager }
+      Services::Sites::Addonship.stub(:new) { addonship_manager }
+      Services::Sites::Rank.stub(:delay) { delayed_method }
+      Services::Sites::Usage.stub(:new) { usage_manager }
       usage_manager.stub(:update_last_30_days_video_views_counters)
       delayed_method.stub(:set_ranks)
     end
@@ -35,24 +35,25 @@ describe Sites::SiteManager do
       end
 
       it 'adds default add-ons to site after creation' do
-        Addons::AddonshipManager.should_receive(:new) { addonship_manager }
+        Services::Sites::Addonship.should_receive(:new) { addonship_manager }
         addonship_manager.should_receive(:update_addonships!).with(logo: 'sublime', support: 'standard')
 
         manager.save
       end
 
       it 'delays the calculation of google and alexa ranks' do
+        Services::Sites::Rank.should_receive(:delay) { delayed_method }
         delayed_method.should_receive(:set_ranks).with(site.id)
 
         manager.save
       end
 
-      it 'updates the last 30 days views counter' do
-        Sites::UsageManager.should_receive(:new).with(site) { usage_manager }
-        usage_manager.should_receive(:update_last_30_days_video_views_counters)
+      # it 'updates the last 30 days views counter' do
+      #   Services::Sites::Usage.should_receive(:new).with(site) { usage_manager }
+      #   usage_manager.should_receive(:update_last_30_days_video_views_counters)
 
-        manager.save
-      end
+      #   manager.save
+      # end
     end
 
     context 'site is not valid' do
@@ -65,7 +66,7 @@ describe Sites::SiteManager do
       end
 
       it 'doesnt add default add-ons to site after creation' do
-        Addons::AddonshipManager.should_not_receive(:new)
+        Services::Sites::Addonship.should_not_receive(:new)
 
         manager.save
       end

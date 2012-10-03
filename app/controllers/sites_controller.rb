@@ -1,4 +1,4 @@
-require_dependency 'sites/site_manager'
+require_dependency 'services/sites/manager'
 
 class SitesController < ApplicationController
   respond_to :html
@@ -13,8 +13,7 @@ class SitesController < ApplicationController
 
   # GET /sites
   def index
-    @sites = @sites.includes(:invoices)
-    @sites = apply_scopes(@sites).by_date
+    @sites = apply_scopes(@sites.includes(:invoices)).by_date
 
     respond_with(@sites, per_page: 10) do |format|
       format.html
@@ -25,7 +24,7 @@ class SitesController < ApplicationController
 
   # GET /sites/new
   def new
-    @site = Sites::SiteManager.build_site(user: current_user).site
+    @site = Services::Sites::Manager.build_site(user: current_user).site
 
     respond_with(@site)
   end
@@ -37,7 +36,7 @@ class SitesController < ApplicationController
 
   # POST /sites
   def create
-    manager = Sites::SiteManager.build_site(params[:site].merge(user: current_user, remote_ip: request.remote_ip))
+    manager = Services::Sites::Manager.build_site(params[:site].merge(user: current_user, remote_ip: request.remote_ip))
     @site   = manager.site
 
     respond_with(@site) do |format|
