@@ -44,10 +44,11 @@ class AdminSublimeVideo.Collections.SiteUsagesStats extends AdminSublimeVideo.Co
 
     "#{type}#{top}"
 
-  customPluck: (selected) ->
+  customPluck: (selected, from = null, to = null) ->
     array = []
-    from  = this.at(0).id
-    to    = this.at(this.length - 1).id
+    from  ||= this.at(0).id
+    to    ||= this.at(this.length - 1).id
+
     while from <= to
       stat = this.get(from)
       value = if stat?

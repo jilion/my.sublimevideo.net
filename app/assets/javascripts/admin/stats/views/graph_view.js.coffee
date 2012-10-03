@@ -11,6 +11,7 @@ class AdminSublimeVideo.Views.GraphView extends Backbone.View
       currentScroll = $(window).scrollTop()
 
       AdminSublimeVideo.chartsHelper.chart(@collection)
+      AdminSublimeVideo.chartsHelper.updateTotals()
 
       $(@el).resizable
         minWidth: 500
