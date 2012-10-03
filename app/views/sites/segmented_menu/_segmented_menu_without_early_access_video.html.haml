@@ -1,0 +1,7 @@
+%ul.segmented_menu.sticky
+  = li_menu_link 'Add-ons', path: site_addons_path(site), class: 'first'
+  = li_menu_link 'Player', path: site_addons_path(site)
+  = li_menu_link 'Video Code', path: new_site_video_code_path(site)
+  = li_menu_link 'Stats', path: site_stats_path(site) if site.stats_addon_is_active?
+  = li_menu_link 'Settings', path: edit_site_path(site)
+  = li_menu_link 'Invoices', path: site_invoices_path(site), class: 'last'

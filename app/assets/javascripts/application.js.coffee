@@ -30,8 +30,17 @@ window.spinOptions =
   shadow: false
 
 MySublimeVideo.UI.prepareSiteSelector = ->
-  $('#sites_select_title').each ->
-    new MySublimeVideo.UI.SiteSelector(select: $(this))
+  if (select = $('#sites_select_title')).exists()
+    new MySublimeVideo.UI.SiteSelector(select: select)
+
+MySublimeVideo.UI.prepareSiteActionsSelector = ->
+  $('select.site_actions').each ->
+    select = $(this)
+    select.on 'change', (e) ->
+      optionValue = select.attr('value')
+      return if optionValue is ''
+
+      document.location = optionValue
 
 MySublimeVideo.UI.prepareEmbedCodePopups = ->
   $('a.player_code').each ->
@@ -72,6 +81,7 @@ MySublimeVideo.UI.prepareVideoTagsTable = ->
 
 MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareSiteSelector()
+  MySublimeVideo.UI.prepareSiteActionsSelector()
   MySublimeVideo.UI.prepareFlashNotices()
   MySublimeVideo.UI.prepareHidableNotices()
   MySublimeVideo.UI.prepareEmbedCodePopups()

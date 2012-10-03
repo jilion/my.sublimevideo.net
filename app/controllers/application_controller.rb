@@ -16,8 +16,10 @@ class ApplicationController < ActionController::Base
   include ControllerHelpers::Cookies
   include ControllerHelpers::Transaction
   include ControllerHelpers::Pjax
+  include DisplayCase::ExhibitsHelper
 
   helper :all
+  helper_method :exhibit
 
   respond_to :html
   responders Responders::HttpCacheResponder, Responders::PaginatedResponder, Responders::FlashResponder

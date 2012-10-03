@@ -1,0 +1,12 @@
+%ul.segmented_menu.sticky
+  = li_menu_link 'Add-ons', path: site_addons_path(site), class: 'first'
+  = li_menu_link 'Player', path: site_addons_path(site)
+  = li_menu_link 'Videos', path: site_video_tags_path(site)
+  = li_menu_link 'Stats', path: site_stats_path(site) if site.stats_addon_is_active?
+  = li_menu_link 'Settings', path: edit_site_path(site)
+  -# TODO Octave
+  = li_menu_link "&#x25BC;".html_safe, path: '#', class: 'last'
+  -#%ul.segmented_dropdown_menu
+  -#  = li_menu_link'Plan', path: site_addons_path(@site), class: (dont_show_invoices_tab ? 'last' : '')
+  -#  - unless dont_show_invoices_tab
+  -#    = li_menu_link'Invoices', path: site_invoices_path(@site), class: 'last'

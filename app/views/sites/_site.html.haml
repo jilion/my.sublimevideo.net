@@ -1,21 +1,12 @@
+- site = exhibit(site)
 %tr{ id: dom_id(site), data: { "site-token" => site.token }, class: cycle("", "alt") }
-  %td.site{ class: site.hostname.present? ? "has_domain" : "empty"}
-    .wrap
-      = render 'hostname', site: site
-      .spacer
+  = site.render_hostname_row(self)
 
   %td.usage
-    .wrap= render 'td_usage', site: site
-  - if early_access?('video')
-    %td.videos
-      .wrap
-        - if site.last_30_days_video_tags > 0
-          = link_to site_video_tags_path(site), class: "video_number" do
-            %strong= number_with_delimiter(site.last_30_days_video_tags)
-            %em= "videos"
-        - else
-          = link_to site_video_tags_path(site, anchor: 'add'), class: "add_a_video" do
-            %span= "Add a video"
+    .wrap= site.render_usage_row_content(self)
+
+  = site.render_videos_row(self)
+
   %td.code
     .wrap
       = link_to "Player code", "", class: "player_code embed_code", data: { token: site.token }

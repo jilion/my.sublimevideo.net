@@ -4,12 +4,10 @@
 #sites
   = title_and_content_header("My sites")
 
-  = render 'deals/deal_available'
-
   = link_to new_site_path, class: "add_site green_button" do
     %span= "Add a site"
-  - unless early_access?('video')
-    = link_to "Generate video code", video_code_generator_path, class: "generate_code hl"
+  -#- unless early_access?('video')
+  -#  = link_to "Generate video code", video_code_generator_path, class: "generate_code hl"
 
   = render 'initial_help'
 
