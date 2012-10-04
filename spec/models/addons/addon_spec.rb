@@ -17,8 +17,6 @@ describe Addons::Addon do
   describe "Associations" do
     it { should have_many(:addonships) }
     it { should have_many(:sites).through(:addonships) }
-    it { should have_many(:componentships) }
-    it { should have_many(:components).through(:componentships) }
   end
 
   describe "Validations" do

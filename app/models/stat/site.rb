@@ -314,7 +314,6 @@ end
 #  plan_started_at                           :datetime
 #  player_mode                               :string(255)      default("stable")
 #  refunded_at                               :datetime
-#  settings                                  :hstore
 #  settings_updated_at                       :datetime
 #  state                                     :string(255)
 #  token                                     :string(255)
