@@ -48,12 +48,13 @@ class Site < ActiveRecord::Base
   belongs_to :plan
 
   # Invoices
-  has_many :invoices, class_name: "::Invoice"
-  has_one  :last_invoice, class_name: "::Invoice", order: 'created_at DESC'
+  has_many :invoices, class_name: '::Invoice'
+  has_one  :last_invoice, class_name: '::Invoice', order: 'created_at DESC'
 
   # Addons
-  has_many :addonships, class_name: 'Addons::Addonship', dependent: :destroy
-  has_many :addons, through: :addonships, class_name: 'Addons::Addon' do
+  has_many :billable_items, class_name: 'Site::BillableItem', dependent: :destroy
+  has_many :addon_plans, through: :billable_items, class_name: 'Site::AddonPlan'
+  has_many :addons, through: :addon_plans, class_name: 'Site::Addon' do
     def active
       merge(Addons::Addonship.active).scoped
     end
@@ -70,10 +71,12 @@ class Site < ActiveRecord::Base
       merge(Addons::Addonship.out_of_trial).scoped
     end
   end
-  has_many :addon_activities, through: :addonships, source: :activities, class_name: 'Addons::AddonActivity'
+  has_many :billing_activities, class_name: 'Billing::Activity'
+
+  has_many :kits, class_name: 'Site::Kit'
 
   # Player::Components
-  has_many :components, through: :addonships
+  # has_many :components, through: :addonships
 
   # Mongoid associations
   def usages
@@ -108,13 +111,13 @@ class Site < ActiveRecord::Base
   before_validation ->(site) { site.hostname = DEFAULT_DOMAIN }, unless: :hostname?
   before_validation ->(site) { site.dev_hostnames = DEFAULT_DEV_DOMAINS }, unless: :dev_hostnames?
 
-  # Player::Loader
-  after_create ->(site) { Player::Loader.delay.update_all_modes!(site.id) }
-  after_save ->(site) { Player::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
-  # Player::Settings
+  # Site::Loader
+  after_create ->(site) { Site::Loader.delay.update_all_modes!(site.id) }
+  after_save ->(site) { Site::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
+  # Site::Settings
   after_save ->(site) {
-    if (site.changed & Player::Settings::SITE_FIELDS).present?
-      Player::Settings.delay.update_all_types!(site.id)
+    if (site.changed & Site::Settings::SITE_FIELDS).present?
+      Site::Settings.delay.update_all_types!(site.id)
       site.touch(:settings_updated_at)
     end
   }
@@ -129,8 +132,8 @@ class Site < ActiveRecord::Base
     event(:unsuspend) { transition suspended: :active }
 
     after_transition ->(site) do
-      Player::Loader.delay.update_all_modes!(site.id)
-      Player::Settings.delay.update_all_types!(site.id)
+      Site::Loader.delay.update_all_modes!(site.id)
+      Site::Settings.delay.update_all_types!(site.id)
     end
 
     before_transition on: :archive do |site, transition|

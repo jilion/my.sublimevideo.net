@@ -123,55 +123,97 @@ FactoryGirl.define do
     support_level        1
   end
 
+  # =============
+  # = Component =
+  # =============
+  factory :component, class: App::Component do
+    sequence(:token) { |n| "token#{n}" }
+    sequence(:name)  { |n| "Component #{n}" }
+  end
+
+  # ===========
+  # = Designs =
+  # ===========
+  factory :design, class: App::Design do
+    component
+    sequence(:name)       { |n| "design#{n}" }
+    sequence(:skin_token) { |n| "skin.token#{n}" }
+    price           495
+    availability    'public'
+
+    factory :beta_design do
+      availability 'beta'
+    end
+
+    factory :custom_design do
+      availability 'custom'
+    end
+  end
+
   # ==========
   # = Addons =
   # ==========
-  factory :addon, class: Addons::Addon do
-    sequence(:category) { |n| "category#{n}" }
-    sequence(:name)     { |n| "name#{n}" }
-    sequence(:title)    { |n| "Name #{n}" }
-    price               999
-    availability        'public'
+  factory :addon, class: Site::Addon do
+    sequence(:name) { |n| "addon#{n}" }
+    design_dependent true
 
-    factory :beta_addon do
-      availability 'beta'
+    factory :logo_addon do
+      name 'logo'
+    end
+    factory :stats_addon do
+      name 'stats'
+    end
+    factory :lightbox_addon do
+      name 'lightbox'
+    end
+    factory :api_addon do
+      name 'api'
+    end
+    factory :support_addon do
+      name 'support'
     end
   end
 
-  factory :addonship, class: Addons::Addonship do
-    site
-    addon
-
-    factory :beta_addonship do
-      state 'beta'
-    end
-
-    factory :trial_addonship do
-      state 'trial'
-      trial_started_on { Time.now.utc.midnight }
-    end
-
-    factory :subscribed_addonship do
-      state 'subscribed'
-    end
-
-    factory :suspended_addonship do
-      state 'suspended'
-    end
-
-    factory :sponsored_addonship do
-      state 'sponsored'
-    end
-
-    factory :inactive_addonship do
-      state 'inactive'
-    end
+  factory :addon_plan, class: Site::AddonPlan do
+    sequence(:name) { |n| "addon#{n}" }
+    price           995
+    availability    'public'
   end
 
-  factory :addon_activity, class: Addons::AddonActivity do
-    addonship
-    state 'subscribed'
-  end
+  # factory :addonship, class: Addons::Addonship do
+  #   site
+  #   addon
+
+  #   factory :beta_addonship do
+  #     state 'beta'
+  #   end
+
+  #   factory :trial_addonship do
+  #     state 'trial'
+  #     trial_started_on { Time.now.utc.midnight }
+  #   end
+
+  #   factory :subscribed_addonship do
+  #     state 'subscribed'
+  #   end
+
+  #   factory :suspended_addonship do
+  #     state 'suspended'
+  #   end
+
+  #   factory :sponsored_addonship do
+  #     state 'sponsored'
+  #   end
+
+  #   factory :inactive_addonship do
+  #     state 'inactive'
+  #   end
+  # end
+
+  # factory :addon_activity, class: Addons::AddonActivity do
+  #   addonship
+  #   state 'subscribed'
+  # end
 
   # ================================
   # = Invoice & transaction models =
@@ -203,15 +245,15 @@ FactoryGirl.define do
     end
   end
 
-  factory :invoice_item, class: InvoiceItems::InvoiceItem do
+  factory :invoice_item do
     started_at { Time.now.utc.beginning_of_month }
     ended_at   { Time.now.utc.end_of_month }
 
-    factory :plan_invoice_item, class: InvoiceItems::Plan do
+    factory :plan_invoice_item, class: InvoiceItem::Plan do
       item { FactoryGirl.create(:plan) }
     end
 
-    factory :addon_invoice_item, class: InvoiceItems::Addon do
+    factory :addon_invoice_item, class: InvoiceItem::Addon do
       item { FactoryGirl.create(:addon) }
     end
   end

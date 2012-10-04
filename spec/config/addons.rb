@@ -23,11 +23,28 @@ RSpec.configure do |config|
 end
 
 def create_default_addons
-  @design1_western_addon  = create(:addon, category: 'design-1', name: 'western', price: 495)
-  @design2_starwars_addon = create(:addon, category: 'design-2', name: 'star-wars', price: 495)
-  @logo_sublime_addon     = create(:addon, category: 'logo', name: 'sublime', price: 0)
-  @logo_no_logo_addon     = create(:addon, category: 'logo', name: 'no-logo', price: 995)
-  @stats_standard_addon   = create(:addon, category: 'stats', name: 'standard', price: 995)
-  @support_standard_addon = create(:addon, category: 'support', name: 'standard', price: 0)
-  @support_vip_addon      = create(:addon, category: 'support', name: 'vip', price: 995)
+  @logo_addon     = create(:logo_addon)
+  @stats_addon    = create(:stats_addon)
+  @lightbox_addon = create(:lightbox_addon)
+  @api_addon      = create(:api_addon)
+  @support_addon  = create(:support_addon)
+
+  @design_western_ap  = create(:beta_design, name: 'western', price: 495)
+  @design_starwars_ap = create(:beta_design, name: 'starwars', price: 495)
+  @design_twit_ap     = create(:custom_design, name: 'twit', price: 0)
+
+  @logo_sublime_ap  = create(:addon_plan, addon: @logo_addon, name: 'sublime', price: 0)
+  @logo_disabled_ap = create(:addon_plan, addon: @logo_addon, name: 'disabled', price: 995)
+  @logo_custom_ap   = create(:addon_plan, addon: @logo_addon, name: 'custom', price: 1995, availability: 'beta')
+
+  @stats_invisible_ap = create(:addon_plan, addon: @stats_addon, name: 'invisible', price: 0)
+  @stats_realtime_ap  = create(:addon_plan, addon: @stats_addon, name: 'realtime', price: 995)
+  @stats_disabled_ap  = create(:addon_plan, addon: @stats_addon, name: 'disabled', price: 1995)
+
+  @lightbox_standard_ap = create(:addon_plan, addon: @lightbox_addon, name: 'standard', price: 0, availability: 'hidden')
+
+  @api_standard_ap = create(:addon_plan, addon: @api_addon, name: 'standard', price: 0)
+
+  @support_standard_ap = create(:addon_plan, addon: @support_addon, name: 'standard', price: 0)
+  @support_vip_ap      = create(:addon_plan, addon: @support_addon, name: 'vip', price: 995)
 end

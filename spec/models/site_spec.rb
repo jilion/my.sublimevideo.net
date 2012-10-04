@@ -31,11 +31,14 @@ describe Site, :addons do
     it { should belong_to(:plan) }
     it { should have_many(:invoices) }
 
-    it { should have_many(:addonships) }
+    it { should have_many(:kits).class_name('Site::Kit') }
+    it { should have_many(:billable_items).class_name('Site::BillableItem') }
+    it { should have_many(:billing_activities).class_name('Billing::Activity') }
+    it { should have_many(:addon_plans).through(:billable_items).class_name('Site::AddonPlan') }
+    it { should have_many(:addons).through(:addon_plans).class_name('Site::Addon') }
+    # it { should have_many(:components).through(:addonships) }
 
-    it { should have_many(:addons).through(:addonships) }
-
-    describe 'addons scopes' do
+    pending 'addons scopes' do
       before do
         create(:trial_addonship, site: site, addon: @logo_sublime_addon, trial_started_on: (30.days - 1.second).ago)
         create(:trial_addonship, site: site, addon: @logo_no_logo_addon, trial_started_on: (30.days + 1.second).ago)
@@ -61,7 +64,6 @@ describe Site, :addons do
       end
     end
 
-    it { should have_many(:components).through(:addonships) }
 
     describe "last_invoice" do
       it "should return the last paid invoice" do
@@ -166,14 +168,14 @@ describe Site, :addons do
     describe "before_save" do
       let(:site) { create(:site, first_paid_plan_started_at: Time.now.utc) }
 
-      it "delays Player::Loader update on site player_mode update" do
+      it "delays Site::Loader update on site player_mode update" do
         site = create(:site)
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Player::Loader%update_all_modes%')
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Site::Loader%update_all_modes%')
       end
 
-      it "delays Player::Settings update on site player_mode update" do
+      it "delays Site::Settings update on site player_mode update" do
         site = create(:site)
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Player::Settings%update_all_types%')
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Site::Settings%update_all_types%')
       end
 
       it "touch settings_updated_at on site player_mode update" do
@@ -185,12 +187,12 @@ describe Site, :addons do
     describe "after_create" do
       let(:site) { create(:site) }
 
-      it "delays Player::Loader update" do
-        -> { site }.should delay('%Player::Loader%update_all_modes%')
+      it "delays Site::Loader update" do
+        -> { site }.should delay('%Site::Loader%update_all_modes%')
       end
 
-      it "delays Player::Settings update" do
-        -> { site }.should delay('%Player::Settings%update_all_types%')
+      it "delays Site::Settings update" do
+        -> { site }.should delay('%Site::Settings%update_all_types%')
       end
     end
   end # Callbacks
@@ -199,16 +201,16 @@ describe Site, :addons do
     describe "after transition" do
       let(:site) { create(:site) }
 
-      it "delays Player::Loader update" do
+      it "delays Site::Loader update" do
         site
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Player::Loader%update_all_modes%')
-        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Loader%update_all_modes%" }, :count).by(1)
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Site::Loader%update_all_modes%')
+        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Site::Loader%update_all_modes%" }, :count).by(1)
       end
 
-      it "delays Player::Settings update" do
+      it "delays Site::Settings update" do
         site
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Player::Loader%update_all_modes%')
-        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Player::Settings%update_all_types%" }, :count).by(1)
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Site::Loader%update_all_modes%')
+        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Site::Settings%update_all_types%" }, :count).by(1)
       end
     end
 
@@ -277,7 +279,6 @@ end
 #  plan_started_at                           :datetime
 #  player_mode                               :string(255)      default("stable")
 #  refunded_at                               :datetime
-#  settings                                  :hstore
 #  settings_updated_at                       :datetime
 #  state                                     :string(255)
 #  token                                     :string(255)
