@@ -43,108 +43,6 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: addon_activities; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE addon_activities (
-    id integer NOT NULL,
-    addonship_id integer NOT NULL,
-    state character varying(255) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: addon_activities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE addon_activities_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: addon_activities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE addon_activities_id_seq OWNED BY addon_activities.id;
-
-
---
--- Name: addons; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE addons (
-    id integer NOT NULL,
-    category character varying(255) NOT NULL,
-    name character varying(255) NOT NULL,
-    title character varying(255) NOT NULL,
-    settings hstore,
-    price integer NOT NULL,
-    availability character varying(255) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: addons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE addons_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: addons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE addons_id_seq OWNED BY addons.id;
-
-
---
--- Name: addonships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE addonships (
-    id integer NOT NULL,
-    site_id integer NOT NULL,
-    addon_id integer NOT NULL,
-    state character varying(255) NOT NULL,
-    trial_started_on timestamp without time zone,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: addonships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE addonships_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: addonships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE addonships_id_seq OWNED BY addonships.id;
-
-
---
 -- Name: admins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -195,6 +93,208 @@ CREATE SEQUENCE admins_id_seq
 --
 
 ALTER SEQUENCE admins_id_seq OWNED BY admins.id;
+
+
+--
+-- Name: app_component_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE app_component_versions (
+    id integer NOT NULL,
+    app_component_id integer,
+    version character varying(255),
+    zip character varying(255),
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    dependencies hstore
+);
+
+
+--
+-- Name: app_component_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE app_component_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: app_component_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE app_component_versions_id_seq OWNED BY app_component_versions.id;
+
+
+--
+-- Name: app_components; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE app_components (
+    id integer NOT NULL,
+    token character varying(255),
+    name character varying(255),
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: app_components_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE app_components_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: app_components_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE app_components_id_seq OWNED BY app_components.id;
+
+
+--
+-- Name: app_designs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE app_designs (
+    id integer NOT NULL,
+    app_component_id integer NOT NULL,
+    skin_token character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    price integer NOT NULL,
+    availability character varying(255) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: app_designs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE app_designs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: app_designs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE app_designs_id_seq OWNED BY app_designs.id;
+
+
+--
+-- Name: app_plugins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE app_plugins (
+    id integer NOT NULL,
+    site_addon_id integer NOT NULL,
+    app_design_id integer,
+    app_component_id integer NOT NULL,
+    token character varying(255) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: app_plugins_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE app_plugins_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: app_plugins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE app_plugins_id_seq OWNED BY app_plugins.id;
+
+
+--
+-- Name: app_settings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE app_settings (
+    id integer NOT NULL,
+    site_addon_plan_id integer NOT NULL,
+    app_plugin_id integer,
+    settings_template hstore,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: app_settings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE app_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: app_settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE app_settings_id_seq OWNED BY app_settings.id;
+
+
+--
+-- Name: billing_activities; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE billing_activities (
+    id integer NOT NULL,
+    item_type character varying(255) NOT NULL,
+    item_id integer NOT NULL,
+    site_id integer NOT NULL,
+    state character varying(255) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: billing_activities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE billing_activities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: billing_activities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE billing_activities_id_seq OWNED BY billing_activities.id;
 
 
 --
@@ -697,104 +797,6 @@ ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
 
 --
--- Name: player_component_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE player_component_versions (
-    id integer NOT NULL,
-    player_component_id integer,
-    version character varying(255),
-    zip character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    dependencies hstore
-);
-
-
---
--- Name: player_component_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE player_component_versions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: player_component_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE player_component_versions_id_seq OWNED BY player_component_versions.id;
-
-
---
--- Name: player_components; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE player_components (
-    id integer NOT NULL,
-    token character varying(255),
-    name character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: player_components_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE player_components_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: player_components_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE player_components_id_seq OWNED BY player_components.id;
-
-
---
--- Name: player_componentships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE player_componentships (
-    id integer NOT NULL,
-    player_component_id integer,
-    addon_id integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: player_componentships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE player_componentships_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: player_componentships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE player_componentships_id_seq OWNED BY player_componentships.id;
-
-
---
 -- Name: releases; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -835,6 +837,140 @@ ALTER SEQUENCE releases_id_seq OWNED BY releases.id;
 CREATE TABLE schema_migrations (
     version character varying(255) NOT NULL
 );
+
+
+--
+-- Name: site_addon_plans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE site_addon_plans (
+    id integer NOT NULL,
+    site_addon_id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    price integer NOT NULL,
+    availability character varying(255) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: site_addon_plans_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE site_addon_plans_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: site_addon_plans_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE site_addon_plans_id_seq OWNED BY site_addon_plans.id;
+
+
+--
+-- Name: site_addons; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE site_addons (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    design_dependent boolean NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: site_addons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE site_addons_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: site_addons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE site_addons_id_seq OWNED BY site_addons.id;
+
+
+--
+-- Name: site_billable_items; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE site_billable_items (
+    id integer NOT NULL,
+    item_type character varying(255) NOT NULL,
+    item_id integer NOT NULL,
+    site_id integer NOT NULL,
+    state character varying(255) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: site_billable_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE site_billable_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: site_billable_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE site_billable_items_id_seq OWNED BY site_billable_items.id;
+
+
+--
+-- Name: site_kits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE site_kits (
+    id integer NOT NULL,
+    site_id integer NOT NULL,
+    app_design_id integer NOT NULL,
+    name character varying(255) DEFAULT 'Default'::character varying NOT NULL,
+    settings hstore,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: site_kits_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE site_kits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: site_kits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE site_kits_id_seq OWNED BY site_kits.id;
 
 
 --
@@ -881,7 +1017,6 @@ CREATE TABLE sites (
     last_30_days_video_tags integer DEFAULT 0,
     first_billable_plays_at timestamp without time zone,
     settings_updated_at timestamp without time zone,
-    settings hstore,
     loaders_updated_at timestamp without time zone
 );
 
@@ -1148,28 +1283,49 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY addon_activities ALTER COLUMN id SET DEFAULT nextval('addon_activities_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY addons ALTER COLUMN id SET DEFAULT nextval('addons_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY addonships ALTER COLUMN id SET DEFAULT nextval('addonships_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY admins ALTER COLUMN id SET DEFAULT nextval('admins_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY app_component_versions ALTER COLUMN id SET DEFAULT nextval('app_component_versions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY app_components ALTER COLUMN id SET DEFAULT nextval('app_components_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY app_designs ALTER COLUMN id SET DEFAULT nextval('app_designs_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY app_plugins ALTER COLUMN id SET DEFAULT nextval('app_plugins_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY app_settings ALTER COLUMN id SET DEFAULT nextval('app_settings_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY billing_activities ALTER COLUMN id SET DEFAULT nextval('billing_activities_id_seq'::regclass);
 
 
 --
@@ -1267,28 +1423,35 @@ ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY player_component_versions ALTER COLUMN id SET DEFAULT nextval('player_component_versions_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY player_components ALTER COLUMN id SET DEFAULT nextval('player_components_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY player_componentships ALTER COLUMN id SET DEFAULT nextval('player_componentships_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY site_addon_plans ALTER COLUMN id SET DEFAULT nextval('site_addon_plans_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY site_addons ALTER COLUMN id SET DEFAULT nextval('site_addons_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY site_billable_items ALTER COLUMN id SET DEFAULT nextval('site_billable_items_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY site_kits ALTER COLUMN id SET DEFAULT nextval('site_kits_id_seq'::regclass);
 
 
 --
@@ -1334,35 +1497,43 @@ ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq':
 
 
 --
--- Name: addon_activities_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY addon_activities
-    ADD CONSTRAINT addon_activities_pkey PRIMARY KEY (id);
-
-
---
--- Name: addons_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY addons
-    ADD CONSTRAINT addons_pkey PRIMARY KEY (id);
-
-
---
--- Name: addonships_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY addonships
-    ADD CONSTRAINT addonships_pkey PRIMARY KEY (id);
-
-
---
 -- Name: admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY admins
     ADD CONSTRAINT admins_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: app_designs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY app_designs
+    ADD CONSTRAINT app_designs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: app_plugins_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY app_plugins
+    ADD CONSTRAINT app_plugins_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: app_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY app_settings
+    ADD CONSTRAINT app_settings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: billing_activities_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY billing_activities
+    ADD CONSTRAINT billing_activities_pkey PRIMARY KEY (id);
 
 
 --
@@ -1473,7 +1644,7 @@ ALTER TABLE ONLY plans
 -- Name: player_bundle_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY player_component_versions
+ALTER TABLE ONLY app_component_versions
     ADD CONSTRAINT player_bundle_versions_pkey PRIMARY KEY (id);
 
 
@@ -1481,16 +1652,8 @@ ALTER TABLE ONLY player_component_versions
 -- Name: player_bundles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY player_components
+ALTER TABLE ONLY app_components
     ADD CONSTRAINT player_bundles_pkey PRIMARY KEY (id);
-
-
---
--- Name: player_componentships_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY player_componentships
-    ADD CONSTRAINT player_componentships_pkey PRIMARY KEY (id);
 
 
 --
@@ -1499,6 +1662,38 @@ ALTER TABLE ONLY player_componentships
 
 ALTER TABLE ONLY releases
     ADD CONSTRAINT releases_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: site_addon_plans_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY site_addon_plans
+    ADD CONSTRAINT site_addon_plans_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: site_addons_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY site_addons
+    ADD CONSTRAINT site_addons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: site_billable_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY site_billable_items
+    ADD CONSTRAINT site_billable_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: site_kits_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY site_kits
+    ADD CONSTRAINT site_kits_pkey PRIMARY KEY (id);
 
 
 --
@@ -1557,55 +1752,6 @@ CREATE INDEX delayed_jobs_priority ON delayed_jobs USING btree (priority, run_at
 
 
 --
--- Name: index_addon_activities_on_addonship_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_addon_activities_on_addonship_id ON addon_activities USING btree (addonship_id);
-
-
---
--- Name: index_addon_activities_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_addon_activities_on_created_at ON addon_activities USING btree (created_at);
-
-
---
--- Name: index_addons_on_category_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_addons_on_category_and_name ON addons USING btree (category, name);
-
-
---
--- Name: index_addonships_on_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_addonships_on_addon_id ON addonships USING btree (addon_id);
-
-
---
--- Name: index_addonships_on_site_id_and_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_addonships_on_site_id_and_addon_id ON addonships USING btree (site_id, addon_id);
-
-
---
--- Name: index_addonships_on_state; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_addonships_on_state ON addonships USING btree (state);
-
-
---
--- Name: index_addonships_on_trial_started_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_addonships_on_trial_started_on ON addonships USING btree (trial_started_on);
-
-
---
 -- Name: index_admins_on_email; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1627,6 +1773,55 @@ CREATE UNIQUE INDEX index_admins_on_reset_password_token ON admins USING btree (
 
 
 --
+-- Name: index_app_designs_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_app_designs_on_name ON app_designs USING btree (name);
+
+
+--
+-- Name: index_app_designs_on_skin_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_app_designs_on_skin_token ON app_designs USING btree (skin_token);
+
+
+--
+-- Name: index_app_plugins_on_app_design_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_app_plugins_on_app_design_id ON app_plugins USING btree (app_design_id);
+
+
+--
+-- Name: index_app_plugins_on_app_design_id_and_site_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_app_plugins_on_app_design_id_and_site_addon_id ON app_plugins USING btree (app_design_id, site_addon_id);
+
+
+--
+-- Name: index_app_settings_on_site_addon_plan_id_and_app_plugin_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_app_settings_on_site_addon_plan_id_and_app_plugin_id ON app_settings USING btree (site_addon_plan_id, app_plugin_id);
+
+
+--
+-- Name: index_billing_activities_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_billing_activities_on_item_type_and_item_id ON billing_activities USING btree (item_type, item_id);
+
+
+--
+-- Name: index_billing_activities_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_billing_activities_on_site_id ON billing_activities USING btree (site_id);
+
+
+--
 -- Name: index_client_applications_on_key; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1637,7 +1832,7 @@ CREATE UNIQUE INDEX index_client_applications_on_key ON client_applications USIN
 -- Name: index_component_versions_on_component_id_and_version; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_component_versions_on_component_id_and_version ON player_component_versions USING btree (player_component_id, version);
+CREATE UNIQUE INDEX index_component_versions_on_component_id_and_version ON app_component_versions USING btree (app_component_id, version);
 
 
 --
@@ -1735,28 +1930,14 @@ CREATE UNIQUE INDEX index_plans_on_token ON plans USING btree (token);
 -- Name: index_player_components_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_player_components_on_name ON player_components USING btree (name);
+CREATE UNIQUE INDEX index_player_components_on_name ON app_components USING btree (name);
 
 
 --
 -- Name: index_player_components_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_player_components_on_token ON player_components USING btree (token);
-
-
---
--- Name: index_player_componentships_on_addon_id_and_player_component_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_player_componentships_on_addon_id_and_player_component_id ON player_componentships USING btree (addon_id, player_component_id);
-
-
---
--- Name: index_player_componentships_on_player_component_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_player_componentships_on_player_component_id ON player_componentships USING btree (player_component_id);
+CREATE UNIQUE INDEX index_player_components_on_token ON app_components USING btree (token);
 
 
 --
@@ -1764,6 +1945,62 @@ CREATE INDEX index_player_componentships_on_player_component_id ON player_compon
 --
 
 CREATE INDEX index_releases_on_state ON releases USING btree (state);
+
+
+--
+-- Name: index_site_addon_plans_on_site_addon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_site_addon_plans_on_site_addon_id ON site_addon_plans USING btree (site_addon_id);
+
+
+--
+-- Name: index_site_addon_plans_on_site_addon_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_site_addon_plans_on_site_addon_id_and_name ON site_addon_plans USING btree (site_addon_id, name);
+
+
+--
+-- Name: index_site_addons_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_site_addons_on_name ON site_addons USING btree (name);
+
+
+--
+-- Name: index_site_billable_items_on_item_type_and_item_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_site_billable_items_on_item_type_and_item_id ON site_billable_items USING btree (item_type, item_id);
+
+
+--
+-- Name: index_site_billable_items_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_site_billable_items_on_site_id ON site_billable_items USING btree (site_id);
+
+
+--
+-- Name: index_site_kits_on_app_design_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_site_kits_on_app_design_id ON site_kits USING btree (app_design_id);
+
+
+--
+-- Name: index_site_kits_on_site_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_site_kits_on_site_id ON site_kits USING btree (site_id);
+
+
+--
+-- Name: index_site_kits_on_site_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_site_kits_on_site_id_and_name ON site_kits USING btree (site_id, name);
 
 
 --
@@ -2083,16 +2320,10 @@ INSERT INTO schema_migrations (version) VALUES ('20120919094721');
 
 INSERT INTO schema_migrations (version) VALUES ('20120919140602');
 
-INSERT INTO schema_migrations (version) VALUES ('20120921094648');
-
-INSERT INTO schema_migrations (version) VALUES ('20120921094844');
-
-INSERT INTO schema_migrations (version) VALUES ('20120921094951');
-
-INSERT INTO schema_migrations (version) VALUES ('20120921095439');
-
 INSERT INTO schema_migrations (version) VALUES ('20120924140456');
 
 INSERT INTO schema_migrations (version) VALUES ('20120924141140');
 
 INSERT INTO schema_migrations (version) VALUES ('20121001125756');
+
+INSERT INTO schema_migrations (version) VALUES ('20121004141903');
