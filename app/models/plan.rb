@@ -13,7 +13,7 @@ class Plan < ActiveRecord::Base
   # ================
 
   has_many :sites
-  has_many :invoice_items, as: :item, class_name: "InvoiceItems::InvoiceItem"
+  has_many :invoice_items, as: :item
 
   # ===============
   # = Validations =

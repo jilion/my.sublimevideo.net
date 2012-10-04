@@ -1,6 +1,4 @@
-module InvoiceItems
-  class Addon < InvoiceItems::InvoiceItem
-  end
+class InvoiceItem::Addon < InvoiceItem
 end
 
 # == Schema Information

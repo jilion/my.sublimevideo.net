@@ -113,7 +113,7 @@ module Populate
     end
 
     def users(user_id = nil)
-      empty_tables("invoices_transactions", InvoiceItems::InvoiceItem, Invoice, Transaction, Site, User)
+      empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User)
       created_at_array = (Date.new(2011,1,1)..100.days.ago.to_date).to_a
       disable_perform_deliveries do
         (user_id ? [user_id.to_i] : 0.upto(BASE_USERS.count - 1)).each do |i|
@@ -186,7 +186,7 @@ module Populate
 
     # FIXME Remy: After the new add-on invoicing logic is coded
     def invoices(user_id = nil)
-      empty_tables("invoices_transactions", InvoiceItems::InvoiceItem, Invoice, Transaction)
+      empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction)
       users = user_id ? [User.find(user_id)] : User.all
       plans = Plan.standard_plans.all
       users.each do |user|

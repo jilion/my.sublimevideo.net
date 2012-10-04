@@ -1,6 +1,4 @@
-module InvoiceItems
-  class Plan < InvoiceItems::InvoiceItem
-  end
+class InvoiceItem::Plan < InvoiceItem
 end
 
 # == Schema Information
