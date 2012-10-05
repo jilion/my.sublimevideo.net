@@ -40,19 +40,89 @@ module Populate
     end
 
     def addons
-      empty_tables(Addons::Addon, Addons::Addonship, Addons::AddonActivity)
-      addons_attributes = [
-        { category: 'design-1', name: 'western', title: 'Western', price: 495, availability: 'public' },
-        { category: 'design-2', name: 'star-wars', title: 'Star-Wars', price: 495, availability: 'public' },
-        { category: 'logo', name: 'sublime', title: 'SublimeVideo logo', price: 0, availability: 'public' },
-        { category: 'logo', name: 'no-logo', title: 'No logo', price: 995, availability: 'public' },
-        { category: 'logo', name: 'custom-logo', title: 'Your company logo', price: 1995, availability: 'beta' },
-        { category: 'stats', name: 'standard', title: 'Real-time statistics', price: 995, availability: 'public' },
-        { category: 'support', name: 'standard', title: 'Forum & email support', price: 0, availability: 'public' },
-        { category: 'support', name: 'vip', title: 'VIP email support', price: 9995, availability: 'public' }
-      ]
-      addons_attributes.each { |attributes| Addons::Addon.create!(attributes, without_protection: true) }
-      puts "#{addons_attributes.size} addons created!"
+      empty_tables(App::Component, App::ComponentVersion, App::Plugin, App::SettingsTemplate, App::Design, Addon, AddonPlan, BillableItem, BillableItemActivity)
+
+      seeds = {
+        App::Component => [
+          { name: 'sublime', token: 'a' }
+        ],
+        App::ComponentVersion => [
+          { component: 'ref-App::Component-sublime', version: '1.0-beta', zip: File.new(Rails.root.join('spec/fixtures/release.zip')) }
+        ],
+        App::Design => [
+          { name: 'classic', skin_token: 'classic', price: 0, availability: 'public', component: 'ref-App::Component-sublime' },
+          { name: 'light',   skin_token: 'light',   price: 0, availability: 'public', component: 'ref-App::Component-sublime' },
+          { name: 'flat',    skin_token: 'flat',    price: 0, availability: 'public', component: 'ref-App::Component-sublime' },
+          { name: 'twit',    skin_token: 'twit',    price: 0, availability: 'custom', component: 'ref-App::Component-sublime' }
+        ],
+        Addon => [
+          { name: 'video_player', design_dependent: false, context: ['videoPlayer'] },
+          { name: 'logo',         design_dependent: false, context: ['videoPlayer', 'badge'] },
+          { name: 'stats',        design_dependent: false, context: ['videoPlayer', 'stats'] },
+          { name: 'lightbox',     design_dependent: true,  context: ['lightbox'] },
+          { name: 'api',          design_dependent: false },
+          { name: 'support',      design_dependent: false }
+        ],
+        AddonPlan => [
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden' },
+          { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
+          { name: 'disabled',  price: 995,  addon: 'ref-Addon-logo',         availability: 'public' },
+          { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'public' },
+          { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden' },
+          { name: 'realtime',  price: 995,  addon: 'ref-Addon-stats',        availability: 'public' },
+          { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'public' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public' },
+          { name: 'vip',      price: 9995,  addon: 'ref-Addon-support',      availability: 'public' }
+        ],
+        App::Plugin => [
+          { token: 'videoPlayer',      addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-sublime' },
+          { token: 'logo',             addon: 'ref-Addon-logo',         design: nil,                       component: 'ref-App::Component-sublime' },
+          { token: 'stats',            addon: 'ref-Addon-stats',        design: nil,                       component: 'ref-App::Component-sublime' },
+          { token: 'ligthbox.Classic', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-classic', component: 'ref-App::Component-sublime' },
+          { token: 'ligthbox.Light',   addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-sublime' },
+          { token: 'ligthbox.Flat',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-sublime' },
+          { token: 'ligthbox.Twit',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-sublime' },
+          { token: 'api',              addon: 'ref-Addon-api',          design: nil,                       component: 'ref-App::Component-sublime' },
+          { token: 'support',          addon: 'ref-Addon-support',      design: nil,                       component: 'ref-App::Component-sublime' }
+        ],
+        App::SettingsTemplate => [
+          { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-videoPlayer' },
+          { addon_plan: 'ref-AddonPlan-logo-sublime',          plugin: 'ref-App::Plugin-logo' },
+          { addon_plan: 'ref-AddonPlan-logo-disabled',         plugin: 'ref-App::Plugin-logo' },
+          { addon_plan: 'ref-AddonPlan-logo-custom',           plugin: 'ref-App::Plugin-logo' },
+          { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: 'ref-App::Plugin-stats' },
+          { addon_plan: 'ref-AddonPlan-stats-realtime',        plugin: 'ref-App::Plugin-stats' },
+          { addon_plan: 'ref-AddonPlan-stats-disabled',        plugin: 'ref-App::Plugin-stats' },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Classic' },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Light' },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Flat' },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Twit' },
+          { addon_plan: 'ref-AddonPlan-api-standard',          plugin: 'ref-App::Plugin-api' },
+          { addon_plan: 'ref-AddonPlan-support-standard',      plugin: 'ref-App::Plugin-support' },
+          { addon_plan: 'ref-AddonPlan-support-vip',           plugin: 'ref-App::Plugin-support' }
+        ]
+      }
+      references = {}
+
+      seeds.each do |klass, new_record|
+        new_record.each do |attributes|
+          reference_key = "#{klass.to_s}-"
+          reference_key += "#{attributes[:addon].sub(/\Aref-Addon-/, '')}-" if klass == AddonPlan
+          reference_key += "#{attributes[:name] || attributes[:token]}"
+          attributes = attributes.inject({}) { |h, (k, v)| h[k] = (v =~ /\Aref-/ ? references[v.sub(/\Aref-/, '')] : v); h }
+          references[reference_key] = klass.create!(attributes, as: :admin)
+        end
+      end
+      puts "Created:"
+      puts "\t- #{App::Component.count} App::Components;"
+      puts "\t- #{App::ComponentVersion.count} App::ComponentVersions;"
+      puts "\t- #{App::Design.count} App::Designs;"
+      puts "\t- #{Addon.count} Addons;"
+      puts "\t- #{AddonPlan.count} AddonPlans;"
+      puts "\t- #{App::Plugin.count} App::Plugins;"
+      puts "\t- #{App::SettingsTemplate.count} App::SettingsTemplates;"
     end
 
     def mail_templates(count = 5)

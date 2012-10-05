@@ -15,7 +15,7 @@ Services::Sites::Manager = Struct.new(:site) do
   def save
     Site.transaction do
       if site.save
-        set_default_addons(site)
+        # set_default_addons(site)
         delay_set_ranks(site)
         # update_last_30_days_video_views_counters(site)
 

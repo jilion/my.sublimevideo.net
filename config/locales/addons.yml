@@ -1,9 +1,8 @@
 en:
   addons:
-    categories:
-      design: "Designs"
-      logo: "Logo"
-      lightbox: "Lightbox"
-      api: "API"
-      stats: "Analytics"
-      support: "Support"
+    design: "Designs"
+    logo: "Logo"
+    lightbox: "Lightbox"
+    api: "API"
+    stats: "Analytics"
+    support: "Support"

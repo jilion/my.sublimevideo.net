@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::Kit do
+describe Kit do
   describe "Associations" do
     it { should belong_to :site }
     it { should belong_to(:design).class_name('App::Design') }
@@ -20,7 +20,7 @@ end
 
 # == Schema Information
 #
-# Table name: site_kits
+# Table name: kits
 #
 #  app_design_id :integer          not null
 #  created_at    :datetime         not null
@@ -32,8 +32,8 @@ end
 #
 # Indexes
 #
-#  index_site_kits_on_app_design_id     (app_design_id)
-#  index_site_kits_on_site_id           (site_id)
-#  index_site_kits_on_site_id_and_name  (site_id,name) UNIQUE
+#  index_kits_on_app_design_id     (app_design_id)
+#  index_kits_on_site_id           (site_id)
+#  index_kits_on_site_id_and_name  (site_id,name) UNIQUE
 #
 

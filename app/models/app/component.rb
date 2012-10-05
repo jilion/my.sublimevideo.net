@@ -1,5 +1,5 @@
 class App::Component < ActiveRecord::Base
-  attr_accessible :name, :token
+  attr_accessible :name, :token, as: :admin
 
   has_many :versions, class_name: 'App::ComponentVersion', foreign_key: 'app_component_id', dependent: :destroy, order: 'version desc'
   # has_many :sites, through: :componentships
@@ -26,3 +26,4 @@ end
 #  index_player_components_on_name   (name) UNIQUE
 #  index_player_components_on_token  (token) UNIQUE
 #
+

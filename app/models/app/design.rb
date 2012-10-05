@@ -1,5 +1,5 @@
 class App::Design < ActiveRecord::Base
-  AVAILABILITIES = %w[beta public custom]
+  AVAILABILITIES = %w[public custom]
 
   attr_accessible :component, :skin_token, :name, :price, :availability, as: :admin
 
@@ -8,6 +8,20 @@ class App::Design < ActiveRecord::Base
   validates :component, :skin_token, :name, :price, :availability, presence: true
   validates :price, numericality: true
   validates :availability, inclusion: AVAILABILITIES
+
+  def available?(site)
+    case availability
+    when 'public'
+      true
+    when 'custom'
+      site.app_designs.where(id: id).exists?
+    end
+  end
+
+  def beta?
+    (component.versions.first.version =~ /[a-z]/i).present?
+  end
+
 end
 
 # == Schema Information
@@ -28,3 +42,4 @@ end
 #  index_app_designs_on_name        (name) UNIQUE
 #  index_app_designs_on_skin_token  (skin_token) UNIQUE
 #
+

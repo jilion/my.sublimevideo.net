@@ -1,7 +1,7 @@
 class App::ComponentVersion < ActiveRecord::Base
-  belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
+  attr_accessible :component, :token, :dependencies, :version, :zip, as: :admin
 
-  attr_accessible :token, :dependencies, :version, :zip
+  belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
 
   delegate :token, :name, to: :component
 
@@ -44,3 +44,4 @@ end
 #
 #  index_component_versions_on_component_id_and_version  (app_component_id,version) UNIQUE
 #
+

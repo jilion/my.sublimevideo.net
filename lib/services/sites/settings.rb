@@ -3,8 +3,9 @@
 
 require 'tempfile'
 require_dependency 'cdn/file'
+require_dependency 'services/sites'
 
-Site::Settings = Struct.new(:site, :type, :options, :file, :cdn_file) do
+Services::Sites::Settings = Struct.new(:site, :type, :options, :file, :cdn_file) do
   self::TYPES = %w[license settings]
   self::SITE_FIELDS = %w[plan_id player_mode hostname extra_hostnames dev_hostnames path wildcard badged]
   delegate :upload!, :delete!, :present?, to: :cdn_file

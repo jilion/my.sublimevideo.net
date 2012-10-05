@@ -1,35 +1,56 @@
 %table{ border: 1, style: 'text-align:left' }
-  %tr
-    %th{ colspan: 4 }
-      %h3= t("addons.categories.design")
-  = render 'offered_addon', field_type: 'checkbox', addon_title: 'Classic player design'
-  = render 'offered_addon', field_type: 'checkbox', addon_title: 'Light player design', note: '(beta)'
-  = render 'offered_addon', field_type: 'checkbox', addon_title: 'Flat player design', note: '(beta)'
+  - @designs = App::Design.all
+  - @designs.each do |design|
+    - if design.available?(site)
+      %tr
+        %td
+          %h3= t("app_designs.#{design.name}")
+        %td
+          = "in beta" if design.beta?
+        %td= billable_item_price(design)
+  - Addon.all.each do |addon|
+    %tr
+      %th{ colspan: 3 }
+        %h3= t("addons.#{addon.name}")
+    - addon.plans.each do |addon_plan|
+      - if addon_plan.available?(site)
+        %tr
+          %td= addon_plan.name
+          %td= @designs.inject([]) { |arr, design| arr << "beta with design #{design.name}" if addon_plan.beta?(design); arr }.join(', ')
+          %td= billable_item_price(addon_plan)
 
-  %tr
-    %th{ colspan: 4 }
-      %h3= t("addons.categories.logo")
-  = render 'addon', addon: Addons::Addon.get('logo', 'sublime'), site: site, field_type: 'radio'
-  = render 'addon', addon: Addons::Addon.get('logo', 'no-logo'), site: site, field_type: 'radio'
-  = render 'addon', addon: Addons::Addon.get('logo', 'custom-logo'), site: site, field_type: 'radio', note: '(beta)'
-
-  %tr
-    %th{ colspan: 4 }
-      %h3= t("addons.categories.lightbox")
-  = render 'offered_addon', field_type: 'radio', addon_title: 'Lightbox'
-
-  %tr
-    %th{ colspan: 4 }
-      %h3= t("addons.categories.api")
-  = render 'offered_addon', field_type: 'radio', addon_title: 'SublimeVideo player basic JavaScript API'
-
-  %tr
-    %th{ colspan: 4 }
-      %h3= t("addons.categories.stats")
-  = render 'addon', addon: Addons::Addon.get('stats', 'standard'), site: site, field_type: 'checkbox'
-
-  %tr
-    %th{ colspan: 4 }
-      %h3= t("addons.categories.support")
-  = render 'addon', addon: Addons::Addon.get('support', 'standard'), site: site, field_type: 'radio'
-  = render 'addon', addon: Addons::Addon.get('support', 'vip'), site: site, field_type: 'radio'
+-#%table{ border: 1, style: 'text-align:left' }
+-#  %tr
+-#    %th{ colspan: 4 }
+-#      %h3= t("addons.categories.design")
+-#  = render 'offered_addon', field_type: 'checkbox', addon_title: 'Classic player design'
+-#  = render 'offered_addon', field_type: 'checkbox', addon_title: 'Light player design', note: '(beta)'
+-#  = render 'offered_addon', field_type: 'checkbox', addon_title: 'Flat player design', note: '(beta)'
+-#
+-#  %tr
+-#    %th{ colspan: 4 }
+-#      %h3= t("addons.categories.logo")
+-#  = render 'addon', addon: Addons::Addon.get('logo', 'sublime'), site: site, field_type: 'radio'
+-#  = render 'addon', addon: Addons::Addon.get('logo', 'no-logo'), site: site, field_type: 'radio'
+-#  = render 'addon', addon: Addons::Addon.get('logo', 'custom-logo'), site: site, field_type: 'radio', note: '(beta)'
+-#
+-#  %tr
+-#    %th{ colspan: 4 }
+-#      %h3= t("addons.categories.lightbox")
+-#  = render 'offered_addon', field_type: 'radio', addon_title: 'Lightbox'
+-#
+-#  %tr
+-#    %th{ colspan: 4 }
+-#      %h3= t("addons.categories.api")
+-#  = render 'offered_addon', field_type: 'radio', addon_title: 'SublimeVideo player basic JavaScript API'
+-#
+-#  %tr
+-#    %th{ colspan: 4 }
+-#      %h3= t("addons.categories.stats")
+-#  = render 'addon', addon: Addons::Addon.get('stats', 'standard'), site: site, field_type: 'checkbox'
+-#
+-#  %tr
+-#    %th{ colspan: 4 }
+-#      %h3= t("addons.categories.support")
+-#  = render 'addon', addon: Addons::Addon.get('support', 'standard'), site: site, field_type: 'radio'
+-#  = render 'addon', addon: Addons::Addon.get('support', 'vip'), site: site, field_type: 'radio'

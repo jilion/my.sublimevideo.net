@@ -1,16 +1,16 @@
-class Billing::Activity < ActiveRecord::Base
+class BillableItemActivity < ActiveRecord::Base
   attr_accessible :item, :site, :state, as: :admin
 
-  belongs_to :item, polymorphic: true
   belongs_to :site
+  belongs_to :item, polymorphic: true
 
   validates :item, :site, :state, presence: true
-  validates :state, inclusion: Site::BillableItem::STATES
+  validates :state, inclusion: BillableItem::STATES
 end
 
 # == Schema Information
 #
-# Table name: billing_activities
+# Table name: billable_item_activities
 #
 #  created_at :datetime         not null
 #  id         :integer          not null, primary key
@@ -22,7 +22,7 @@ end
 #
 # Indexes
 #
-#  index_billing_activities_on_item_type_and_item_id  (item_type,item_id)
-#  index_billing_activities_on_site_id                (site_id)
+#  index_billable_item_activities_on_item_type_and_item_id  (item_type,item_id)
+#  index_billable_item_activities_on_site_id                (site_id)
 #
 

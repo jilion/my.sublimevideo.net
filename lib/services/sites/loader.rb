@@ -3,8 +3,9 @@
 
 require 'tempfile'
 require_dependency 'cdn/file'
+require_dependency 'services/sites'
 
-Site::Loader = Struct.new(:site, :mode, :options, :file, :cdn_file) do
+Services::Sites::Loader = Struct.new(:site, :mode, :options, :file, :cdn_file) do
   self::MODES = %w[stable beta alpha]
   delegate :token, :player_mode, to: :site
   delegate :upload!, :delete!, :present?, to: :cdn_file

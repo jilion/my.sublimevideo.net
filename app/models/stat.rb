@@ -26,7 +26,7 @@ module Stat
     tracker_incs.each do |site_token, values|
       site = ::Site.where(token: site_token).first
 
-      next unless site.addon_is_active?(Addons::Addon.get('stats', 'standard'))
+      next unless site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
 
       if (site_inc = values[:inc]).present?
         Stat::Site::Minute.collection.find(t: site_token, d: log.minute).update({ :$inc => site_inc }, upsert: true)

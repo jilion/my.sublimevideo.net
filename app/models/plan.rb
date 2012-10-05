@@ -146,22 +146,8 @@ class Plan < ActiveRecord::Base
     SUPPORT_LEVELS[support_level]
   end
 
-  def discounted?(site)
-    if site && deal = site.user.latest_activated_deal
-      if site.created_during_deal?(deal) || deal.active?
-        return deal if %W[plans_discount #{cycle}ly_plans_discount #{name}_plan_discount].include?(deal.kind)
-      end
-    end
-
-    nil
-  end
-
   def discounted_percentage(site=nil)
-    if deal = discounted?(site)
-      deal.value
-    else
-      0
-    end
+    0
   end
 
   def price(site = nil)

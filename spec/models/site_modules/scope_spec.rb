@@ -104,6 +104,19 @@ describe SiteModules::Scope do
       it { Site.paying.all.should =~ [site1] }
     end
 
+    # describe "#addons" do
+    #   before do
+    #     @addon_1 = create(:addon)
+    #     @addon_2 = create(:addon)
+    #     @addon_plan_1 = create(:addon_plan, addon: @addon_1)
+    #     @addon_plan_2 = create(:addon_plan, addon: @addon_2)
+    #     @site = create(:site)
+    #     create(:addon_plan_billable_item, item: @addon_plan_1)
+    #   end
+
+    #   it { @site.addons.all.should =~ [@addon_1] }
+    # end
+
   end
 
   describe "invoices" do

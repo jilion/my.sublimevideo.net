@@ -22,12 +22,8 @@ class InvoiceItem < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :item_type,  presence: true
-  validates :item_id,    presence: true
-  validates :started_at, presence: true
-  validates :ended_at,   presence: true
-  validates :price,      presence: true, numericality: true
-  validates :amount,     presence: true, numericality: true
+  validates :item_type, :item_id, :started_at, :ended_at, :price, :amount, presence: true
+  validates :price, :amount, numericality: true
 
   before_validation ->(invoice_item) do
     if price = invoice_item.item.try(:price)

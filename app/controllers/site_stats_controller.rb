@@ -30,7 +30,7 @@ class SiteStatsController < ApplicationController
   private
 
   def redirect_user_without_stats_addon
-    redirect_to root_url unless @site.addon_is_active?(Addons::Addon.get('stats', 'standard'))
+    redirect_to root_url unless @site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
   end
 
 end

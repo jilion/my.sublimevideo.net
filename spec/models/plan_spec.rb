@@ -248,90 +248,20 @@ describe Plan do
       it { build(:plan, name: "premium", support_level: 2).support.should eq "vip_email" }
     end
 
-    pending "#discounted?" do
-      let(:user)              { create(:user) }
-      let(:site1)             { create(:site) }
-      let(:site2)             { create(:site, user: user, plan_id: trial_plan.id) }
-      let(:plans_deal)        { create(:deal, kind: 'plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-      let(:yearly_plans_deal) { create(:deal, kind: 'yearly_plans_discount', value: 0.3, started_at: 2.days.ago, ended_at: 2.days.from_now) }
-      let(:monthly_plan)      { create(:plan, name: 'foo', cycle: 'month') }
-      let(:yearly_plan)       { create(:plan, name: 'bar', cycle: 'year') }
-
-      context "site's user doesn't have access to a discounted price" do
-        it "return false" do
-          monthly_plan.discounted?(site1).should be_nil
-        end
-      end
-
-      context "site's user has access to a discounted price" do
-        it "price isn't discounted for this plan" do
-          create(:deal_activation, deal: yearly_plans_deal, user: user)
-          monthly_plan.discounted?(site2).should be_nil
-        end
-
-        it "price is discounted for this plan" do
-          create(:deal_activation, deal: yearly_plans_deal, user: user)
-          yearly_plan.discounted?(site2).should eq yearly_plans_deal
-        end
-
-        it "price is discounted for this plan" do
-          create(:deal_activation, deal: plans_deal, user: user)
-          monthly_plan.discounted?(site2).should eq plans_deal
-        end
-
-        it "price is discounted for this plan" do
-          create(:deal_activation, deal: plans_deal, user: user)
-          yearly_plan.discounted?(site2).should eq plans_deal
-        end
-
-        context "site trial started during deal" do
-          it "price is discounted for this plan" do
-            create(:deal_activation, deal: yearly_plans_deal, user: user)
-            site2.plan_started_at.should eq Time.now.utc.midnight
-
-            Timecop.travel(15.days.from_now) do
-              yearly_plans_deal.should_not be_active
-              yearly_plan.discounted?(site2).should eq yearly_plans_deal
-            end
-          end
-        end
-
-        context "site trial started after the deal end" do
-          it "price isn't discounted for this plan" do
-            create(:deal_activation, deal: yearly_plans_deal, user: user)
-
-            Timecop.travel(3.days.from_now) do
-              # site2.plan_started_at.should eq Time.now.utc.midnight
-              yearly_plans_deal.should_not be_active
-              yearly_plan.discounted?(site2).should be_nil
-            end
-          end
-        end
-      end
-    end
-
     describe "#discounted_percentage" do
       let(:site) { create(:site) }
       let(:deal) { create(:deal, value: 0.3) }
       subject { create(:plan) }
 
       context "site doesn't have access to a discounted price" do
-        before do
-          subject.should_receive(:discounted?).with(site) { false }
-        end
-
         it "return 0" do
           subject.discounted_percentage(site).should eq 0
         end
       end
 
       context "site has access to a discounted price" do
-        before do
-          subject.should_receive(:discounted?).with(site) { deal }
-        end
-
         it "return the deal's value" do
-          subject.discounted_percentage(site).should eq deal.value
+          subject.discounted_percentage(site).should eq 0
         end
       end
     end

@@ -3,6 +3,8 @@ require_dependency 'validators/hostname_validator'
 require_dependency 'validators/hostname_uniqueness_validator'
 require_dependency 'validators/dev_hostnames_validator'
 require_dependency 'validators/extra_hostnames_validator'
+require_dependency 'services/sites/loader'
+require_dependency 'services/sites/settings'
 
 class Site < ActiveRecord::Base
   include SiteModules::Addon
@@ -12,9 +14,9 @@ class Site < ActiveRecord::Base
   include SiteModules::Scope
   include SiteModules::Usage
 
-  DEFAULT_DOMAIN = 'please-edit.me'
-  DEFAULT_DEV_DOMAINS = '127.0.0.1,localhost'
-  PLAYER_MODES = %w[dev beta stable]
+  DEFAULT_DOMAIN = 'please-edit.me' unless defined?(DEFAULT_DOMAIN)
+  DEFAULT_DEV_DOMAINS = '127.0.0.1,localhost' unless defined?(DEFAULT_DEV_DOMAINS)
+  PLAYER_MODES = %w[dev beta stable] unless defined?(PLAYER_MODES)
 
   # Versioning
   has_paper_trail ignore: [
@@ -52,31 +54,29 @@ class Site < ActiveRecord::Base
   has_one  :last_invoice, class_name: '::Invoice', order: 'created_at DESC'
 
   # Addons
-  has_many :billable_items, class_name: 'Site::BillableItem', dependent: :destroy
-  has_many :addon_plans, through: :billable_items, class_name: 'Site::AddonPlan'
-  has_many :addons, through: :addon_plans, class_name: 'Site::Addon' do
+  has_many :billable_items, dependent: :destroy do
     def active
-      merge(Addons::Addonship.active).scoped
+      merge(BillableItem.active).scoped
     end
 
     def subscribed
-      merge(Addons::Addonship.subscribed).scoped
-    end
-
-    def inactive
-      merge(Addons::Addonship.inactive).scoped
+      merge(BillableItem.subscribed).scoped
     end
 
     def out_of_trial
-      merge(Addons::Addonship.out_of_trial).scoped
+      merge(BillableItem.out_of_trial).scoped
     end
   end
-  has_many :billing_activities, class_name: 'Billing::Activity'
+  has_many :app_designs, through: :billable_items, source: :item, source_type: 'App::Design'
+  has_many :addon_plans, through: :billable_items, source: :item, source_type: 'AddonPlan'
+  accepts_nested_attributes_for :billable_items, allow_destroy: true
 
-  has_many :kits, class_name: 'Site::Kit'
+  has_many :billable_item_activities
+
+  has_many :kits
 
   # Player::Components
-  # has_many :components, through: :addonships
+  has_many :components, through: :billable_items
 
   # Mongoid associations
   def usages
@@ -108,19 +108,21 @@ class Site < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_validation ->(site) { site.hostname = DEFAULT_DOMAIN }, unless: :hostname?
-  before_validation ->(site) { site.dev_hostnames = DEFAULT_DEV_DOMAINS }, unless: :dev_hostnames?
+  before_validation ->(site) do
+    site.hostname = DEFAULT_DOMAIN unless hostname?
+    site.dev_hostnames = DEFAULT_DEV_DOMAINS unless dev_hostnames?
+  end
 
   # Site::Loader
-  after_create ->(site) { Site::Loader.delay.update_all_modes!(site.id) }
-  after_save ->(site) { Site::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
+  after_create ->(site) { Services::Sites::Loader.delay.update_all_modes!(site.id) }
+  after_save ->(site) { Services::Sites::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
   # Site::Settings
-  after_save ->(site) {
-    if (site.changed & Site::Settings::SITE_FIELDS).present?
-      Site::Settings.delay.update_all_types!(site.id)
+  after_save ->(site) do
+    if (site.changed & Services::Sites::Settings::SITE_FIELDS).present?
+      Services::Sites::Settings.delay.update_all_types!(site.id)
       site.touch(:settings_updated_at)
     end
-  }
+  end
 
   # =================
   # = State Machine =
@@ -132,8 +134,8 @@ class Site < ActiveRecord::Base
     event(:unsuspend) { transition suspended: :active }
 
     after_transition ->(site) do
-      Site::Loader.delay.update_all_modes!(site.id)
-      Site::Settings.delay.update_all_types!(site.id)
+      Services::Sites::Loader.delay.update_all_modes!(site.id)
+      Services::Sites::Settings.delay.update_all_types!(site.id)
     end
 
     before_transition on: :archive do |site, transition|
@@ -168,10 +170,6 @@ class Site < ActiveRecord::Base
 
   def to_param
     token
-  end
-
-  def created_during_deal?(deal)
-    created_at? && (created_at >= deal.started_at && created_at <= deal.ended_at)
   end
 
   def unmemoize_all

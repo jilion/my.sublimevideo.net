@@ -8,7 +8,7 @@ class SiteExhibit < DisplayCase::Exhibit
   end
 
   def render_usage_row_content(template)
-    if stats_addon_is_active?
+    if realtime_stats_active?
       template.render('sites/td_usage/td_content_with_stats', site: self)
     else
       template.render('sites/td_usage/td_content_without_stats', site: self)
@@ -29,8 +29,8 @@ class SiteExhibit < DisplayCase::Exhibit
     end
   end
 
-  def stats_addon_is_active?
-    @stats_addon_is_active ||= self.addon_is_active?(Addons::Addon.get('stats', 'standard'))
+  def realtime_stats_active?
+    @realtime_stats_active ||= self.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
   end
 
   def eql?(other)

@@ -39,42 +39,6 @@ describe Addons::Addon do
     it { should_not allow_value('fake').for(:availability) }
   end
 
-  describe 'Scopes' do
-    before do
-      @free_beta_addon   = create(:addon, availability: 'beta', category: 'logo', name: 'sublime', price: 0)
-      @beta_addon        = create(:addon, availability: 'beta', category: 'logo', name: 'no-logo', price: 999)
-      @free_public_addon = create(:addon, availability: 'public', price: 0)
-      @public_addon      = create(:addon, availability: 'public', price: 999)
-      @custom_addon      = create(:addon, availability: 'custom', price: 999)
-    end
-
-    describe '._category' do
-      it { described_class._category('logo', @free_public_addon.category).should =~ [@free_beta_addon, @beta_addon, @free_public_addon] }
-    end
-
-
-    describe '._name' do
-      it { described_class._name('no-logo', @public_addon.name).should =~ [@beta_addon, @public_addon] }
-    end
-
-    describe '.not_beta' do
-      it { described_class.not_beta.should =~ [@free_public_addon, @public_addon, @custom_addon] }
-    end
-
-    describe '.paid' do
-      it { described_class.paid.should =~ [@public_addon, @custom_addon] }
-    end
-  end
-
-  describe '.get' do
-    it { described_class.get('logo', 'no-logo').should eq @beta_addon }
-  end
-
-  describe '#beta?' do
-    it { build(:addon, availability: 'beta').should be_beta }
-    it { build(:addon, availability: 'public').should_not be_beta }
-    it { build(:addon, availability: 'custom').should_not be_beta }
-  end
 end
 
 # == Schema Information

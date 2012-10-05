@@ -2,22 +2,19 @@ require 'spec_helper'
 
 describe App::ComponentVersion, :fog_mock do
   let(:zip) { fixture_file('player/e.zip') }
-  let(:component) { App::Component.create(
-    name: 'app',
-    token: 'e'
-  )}
+  let(:component) { App::Component.create({ name: 'app', token: 'e' }, as: :admin) }
   let(:attributes) { {
     token: component.token,
     version: '2.0.0',
     zip: zip
   } }
-  let(:component_version) { App::ComponentVersion.create(attributes) }
+  let(:component_version) { App::ComponentVersion.create(attributes, as: :admin) }
 
   it { should belong_to(:component) }
 
   describe "Validations" do
-    [:token, :version, :dependencies, :zip].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
+    [:component, :token, :version, :dependencies, :zip].each do |attr|
+      it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
     [:component, :version, :zip].each do |attr|

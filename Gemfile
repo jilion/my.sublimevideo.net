@@ -13,7 +13,7 @@ gem 'sublimevideo_layout', '1.3.5' # hosted on gemfury
 # Databases
 gem 'pg',                    '~> 0.14.0'
 gem 'squeel',                '~> 1.0.11'
-gem 'activerecord-postgres-hstore'
+gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
 gem 'moped',                 github: 'mongoid/moped'
 gem 'mongoid',               '~> 3.0.6'
 

@@ -1,22 +1,22 @@
 module AddonsHelper
 
-  def addon_choice_tag(site, addon, field_type)
-    checked = site.addon_is_active?(addon) || (addon.price.zero? && !site.active_addon_in_category?(addon.category))
+  def addon_plan_choice_tag(site, addon_plan, field_type)
+    checked = site.addon_plan_is_active?(addon_plan) || (addon_plan.price.zero? && !site.active_addon_in_category?(addon_plan.addon.name))
 
-    _addon_choice_tag(name: "site_addons[#{addon.category}]", value: addon.name, checked: checked, field_type: field_type)
+    _addon_choice_tag(name: "site_addons[#{addon_plan.addon.name}]", value: addon_plan.name, checked: checked, field_type: field_type)
   end
 
   def offered_addon_choice_tag(field_type)
     _addon_choice_tag(checked: true, disabled: true, field_type: field_type)
   end
 
-  def addon_price(addon)
-    if addon.price.zero?
+  def billable_item_price(billable_item)
+    if billable_item.price.zero?
       'Free'
-    elsif addon.beta?
+    elsif billable_item.beta?
       'Free (during beta)'
     else
-      display_amount_with_sup(addon.price)
+      display_amount_with_sup(billable_item.price)
     end
   end
 

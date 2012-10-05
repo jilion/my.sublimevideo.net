@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
   belongs_to :enthusiast
 
   has_many :sites
-  has_many :addonships, through: :sites
+  has_many :billable_items, through: :sites
 
   # Invoices
   has_many :invoices, through: :sites
@@ -195,7 +195,7 @@ class User < ActiveRecord::Base
   end
 
   def billable?
-    addonships.subscribed.paid.count > 0
+    billable_items.subscribed.paid.count > 0
   end
 
   def name_or_email

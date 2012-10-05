@@ -17,7 +17,7 @@
         %option{ value: site_addons_path(site) } Add-ons
         %option{ value: site_addons_path(site) } Player
         %option{ value: new_site_video_code_path(site) } Video Code
-        - if site.stats_addon_is_active?
+        - if site.realtime_stats_active?
           %option{ value: site_stats_path(site) } Stats
         %option{ value: edit_site_path(site) } Settings
         %option{ value: site_invoices_path(site) } Invoices

@@ -107,6 +107,15 @@ GIT
     rescue_me (0.1.1)
 
 GIT
+  remote: git://github.com/softa/activerecord-postgres-hstore.git
+  revision: 6f3084a0257e380d86466e71f07ebf81f2bab7c4
+  specs:
+    activerecord-postgres-hstore (0.4.1)
+      pg
+      rails
+      rake
+
+GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: 590c89b458e21be52825ea9f7532182c68310715
   branch: 1.9.2
@@ -137,10 +146,6 @@ GEM
       json (>= 1.5.1)
       money
       nokogiri
-    activerecord-postgres-hstore (0.4.1)
-      pg
-      rails
-      rake
     acts-as-taggable-on (2.3.3)
       rails (~> 3.0)
     acts_as_api (0.4.1)
@@ -562,7 +567,7 @@ PLATFORMS
 DEPENDENCIES
   PageRankr (~> 3.2.1)
   activemerchant (= 1.28.0)
-  activerecord-postgres-hstore
+  activerecord-postgres-hstore!
   acts-as-taggable-on (~> 2.3.3)
   acts_as_api (~> 0.4.1)
   addressable (= 2.2.8)

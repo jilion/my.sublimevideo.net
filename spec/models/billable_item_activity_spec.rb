@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Billing::Activity do
+describe BillableItemActivity do
   describe "Associations" do
     it { should belong_to :item }
     it { should belong_to :site }
@@ -21,7 +21,7 @@ end
 
 # == Schema Information
 #
-# Table name: billing_activities
+# Table name: billable_item_activities
 #
 #  created_at :datetime         not null
 #  id         :integer          not null, primary key
@@ -33,7 +33,7 @@ end
 #
 # Indexes
 #
-#  index_billing_activities_on_item_type_and_item_id  (item_type,item_id)
-#  index_billing_activities_on_site_id                (site_id)
+#  index_billable_item_activities_on_item_type_and_item_id  (item_type,item_id)
+#  index_billable_item_activities_on_site_id                (site_id)
 #
 

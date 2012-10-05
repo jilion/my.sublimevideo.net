@@ -28,6 +28,11 @@ module SiteModules::Scope
     # }
     scope :with_out_of_trial_addons, -> { includes(:addons).merge(Addons::Addonship.out_of_trial) }
     scope :paying,                   -> { includes(:addons).merge(Addons::Addonship.subscribed).merge(Addons::Addon.paid) }
+    # def addons
+    #   addon_ids = addon_plans.pluck(:addon_id)
+    #   puts addon_plan_ids.inspect
+    #   Addon.where{ id >> addon_ids }
+    # end
 
     # admin
     scope :user_id, ->(user_id) { where(user_id: user_id) }
