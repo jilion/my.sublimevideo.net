@@ -1,7 +1,7 @@
 require_dependency 's3'
 require_dependency 'file_header'
 
-class Player::ComponentVersionZipContentUploader
+class App::ComponentVersionZipContentUploader
 
   def self.store_zip_content(zip_path, upload_path)
     Zip::ZipFile.foreach(zip_path) do |zipfile|

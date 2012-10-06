@@ -6,7 +6,7 @@
 #= require_self
 #= require_tree ./ui
 #= require_tree ./admin/form
-#= require_tree ./admin/player
+#= require_tree ./admin/app
 #= require admin/stats
 
 $.fn.exists = -> @length > 0

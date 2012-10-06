@@ -7,22 +7,22 @@ require File.expand_path('spec/config/carrierwave')
 require File.expand_path('spec/support/fixtures_helpers')
 
 require File.expand_path('config/initializers/carrierwave')
-require File.expand_path('app/models/player')
-require File.expand_path('app/uploaders/player/component_version_uploader')
-require File.expand_path('app/uploaders/player/component_version_zip_content_uploader')
+require File.expand_path('app/models/app')
+require File.expand_path('app/uploaders/app/component_version_uploader')
+require File.expand_path('app/uploaders/app/component_version_zip_content_uploader')
 
-describe Player::ComponentVersionUploader, :fog_mock do
+describe App::ComponentVersionUploader, :fog_mock do
   let(:component_version) { stub(
     name: 'app',
     token: 'e',
     version: '2.0.0',
     version_for_url: '2_0_0'
   )}
-  let(:zip) { fixture_file('player/e.zip') }
-  let(:uploader) { Player::ComponentVersionUploader.new(component_version, :zip) }
+  let(:zip) { fixture_file('app/e.zip') }
+  let(:uploader) { App::ComponentVersionUploader.new(component_version, :zip) }
 
   before { Rails.stub(:env) { mock('test', to_s: 'test', test?: true) } }
-  before { Player::ComponentVersionZipContentUploader.stub(:store_zip_content) }
+  before { App::ComponentVersionZipContentUploader.stub(:store_zip_content) }
 
   context "on store!" do
     before { uploader.store!(zip) }
@@ -46,7 +46,7 @@ describe Player::ComponentVersionUploader, :fog_mock do
 
   describe "after store callback" do
     it "uploads zip content on sublimevideo S3 bucket" do
-      Player::ComponentVersionZipContentUploader.should_receive(:store_zip_content).with(
+      App::ComponentVersionZipContentUploader.should_receive(:store_zip_content).with(
         kind_of(String),
         Pathname.new('b/e/2.0.0')
       )
@@ -58,7 +58,7 @@ describe Player::ComponentVersionUploader, :fog_mock do
     before { uploader.store!(zip) }
 
     it "remove zip content on sublimevideo S3 bucket" do
-      Player::ComponentVersionZipContentUploader.should_receive(:remove_zip_content).with(
+      App::ComponentVersionZipContentUploader.should_receive(:remove_zip_content).with(
         Pathname.new('b/e/2.0.0')
       )
       uploader.remove!

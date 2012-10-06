@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe App::ComponentVersion, :fog_mock do
-  let(:zip) { fixture_file('player/e.zip') }
+  let(:zip) { fixture_file('app/e.zip') }
   let(:component) { App::Component.create({ name: 'app', token: 'e' }, as: :admin) }
   let(:attributes) { {
     token: component.token,

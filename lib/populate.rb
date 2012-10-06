@@ -138,15 +138,15 @@ module Populate
     end
 
     def player_components
-      empty_tables(Player::Component, Player::ComponentVersion)
+      empty_tables(App::Component, App::ComponentVersion)
       names_token = {
         'app' => 'e',
         'subtitles' => 'bA'
       }
       versions = %w[2.0.0-alpha 2.0.0 1.1.0 1.0.0]
-      version_zip = File.new(Rails.root.join('spec/fixtures/player/e.zip'))
+      version_zip = File.new(Rails.root.join('spec/fixtures/app/e.zip'))
       names_token.each do |name, token|
-        component = Player::Component.create(
+        component = App::Component.create(
           name: name,
           token: token
         )

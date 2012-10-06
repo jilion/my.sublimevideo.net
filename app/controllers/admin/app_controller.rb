@@ -1,3 +1,3 @@
-class Admin::PlayerController < Admin::AdminController
+class Admin::AppController < Admin::AdminController
   before_filter { |controller| require_role?('player') }
 end

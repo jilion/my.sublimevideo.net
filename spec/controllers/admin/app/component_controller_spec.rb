@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Admin::Player::ComponentsController do
+describe Admin::App::ComponentsController do
 
   it_should_behave_like "redirect when connected as",
     'http://admin.test.host/login',

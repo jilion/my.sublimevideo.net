@@ -10,12 +10,12 @@ require File.expand_path('spec/config/carrierwave')
 
 require File.expand_path('spec/support/fixtures_helpers')
 
-require File.expand_path('app/models/player')
-require File.expand_path('app/uploaders/player/component_version_zip_content_uploader')
+require File.expand_path('app/models/app')
+require File.expand_path('app/uploaders/app/component_version_zip_content_uploader')
 
-describe Player::ComponentVersionZipContentUploader, :fog_mock do
+describe App::ComponentVersionZipContentUploader, :fog_mock do
 
-  let(:zip) { fixture_file('player/e.zip') }
+  let(:zip) { fixture_file('app/e.zip') }
   ### Zip content
   # bA.js
   # flash/flash11canvas.swf

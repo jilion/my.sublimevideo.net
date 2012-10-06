@@ -1,17 +1,17 @@
-class Admin::Player::ComponentVersionsController < Admin::PlayerController
+class Admin::App::ComponentVersionsController < Admin::AppController
   respond_to :zip, only: [:show]
   respond_to :html, only: [:destroy]
   respond_to :json
 
   before_filter :find_component
 
-  # GET /player/components/:component_id/versions
+  # GET /app/components/:component_id/versions
   def index
     @versions = @component.versions
     respond_with(@versions)
   end
 
-  # GET /player/components/:component_id/versions/:id
+  # GET /app/components/:component_id/versions/:id
   def show
     @version = @component.versions.find_by_version!(params[:id])
     respond_with(@version) do |format|
@@ -19,14 +19,14 @@ class Admin::Player::ComponentVersionsController < Admin::PlayerController
     end
   end
 
-  # POST /player/components/:component_id/versions
+  # POST /app/components/:component_id/versions
   def create
     @version = @component.versions.build(params[:component])
     @version.save!
     respond_with(@version)
   end
 
-  # DELETE /player/components/:component_id/versions/:id
+  # DELETE /app/components/:component_id/versions/:id
   def destroy
     @version = @component.versions.find_by_version!(params[:id])
     @version.destroy
@@ -36,7 +36,7 @@ class Admin::Player::ComponentVersionsController < Admin::PlayerController
 private
 
   def find_component
-    @component = Player::Component.find_by_token!(params[:component_id])
+    @component = App::Component.find_by_token!(params[:component_id])
   end
 
 end

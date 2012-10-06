@@ -75,7 +75,7 @@ class Site < ActiveRecord::Base
 
   has_many :kits
 
-  # Player::Components
+  # App::Components
   has_many :components, through: :billable_items
 
   # Mongoid associations

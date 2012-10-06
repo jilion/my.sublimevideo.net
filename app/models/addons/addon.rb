@@ -20,3 +20,20 @@
 #   validates :availability, inclusion: AVAILABILITIES
 
 # end
+
+# == Schema Information
+#
+# Table name: addons
+#
+#  context          :text             not null
+#  created_at       :datetime         not null
+#  design_dependent :boolean          not null
+#  id               :integer          not null, primary key
+#  name             :string(255)      not null
+#  updated_at       :datetime         not null
+#
+# Indexes
+#
+#  index_addons_on_name  (name) UNIQUE
+#
+

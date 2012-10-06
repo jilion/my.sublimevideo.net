@@ -5,7 +5,7 @@ class App::ComponentVersion < ActiveRecord::Base
 
   delegate :token, :name, to: :component
 
-  mount_uploader :zip, Player::ComponentVersionUploader
+  mount_uploader :zip, App::ComponentVersionUploader
 
   validates :component, :version, :zip, presence: true
   validates :version, uniqueness: { scope: :app_component_id }

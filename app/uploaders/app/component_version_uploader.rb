@@ -1,6 +1,6 @@
 require_dependency 's3'
 
-class Player::ComponentVersionUploader < CarrierWave::Uploader::Base
+class App::ComponentVersionUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 
   process :set_content_type
@@ -20,7 +20,7 @@ class Player::ComponentVersionUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored
   # # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    Rails.env.test? ? "uploads/player/b" : "b"
+    Rails.env.test? ? "uploads/app/b" : "b"
   end
 
   # Add a white list of extensions which are allowed to be uploaded.
@@ -37,11 +37,11 @@ class Player::ComponentVersionUploader < CarrierWave::Uploader::Base
 
   def store_zip_content(new_file)
     # new_file not used because nil
-    Player::ComponentVersionZipContentUploader.store_zip_content(file.path, zip_content_upload_path)
+    App::ComponentVersionZipContentUploader.store_zip_content(file.path, zip_content_upload_path)
   end
 
   def remove_zip_content
-    Player::ComponentVersionZipContentUploader.remove_zip_content(zip_content_upload_path)
+    App::ComponentVersionZipContentUploader.remove_zip_content(zip_content_upload_path)
   end
 
   def zip_content_upload_path
