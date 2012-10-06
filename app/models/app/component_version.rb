@@ -1,4 +1,8 @@
+require_dependency 'semantic_versioning'
+
 class App::ComponentVersion < ActiveRecord::Base
+  include SemanticVersioning
+
   attr_accessible :component, :token, :dependencies, :version, :zip, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
@@ -7,7 +11,7 @@ class App::ComponentVersion < ActiveRecord::Base
 
   mount_uploader :zip, App::ComponentVersionUploader
 
-  validates :component, :version, :zip, presence: true
+  validates :component, :zip, presence: true
   validates :version, uniqueness: { scope: :app_component_id }
 
   def token=(token)

@@ -10,14 +10,28 @@ describe App::ComponentVersion, :fog_mock do
   } }
   let(:component_version) { App::ComponentVersion.create(attributes, as: :admin) }
 
-  it { should belong_to(:component) }
+  context "Object" do
+    subject { component_version }
+
+    its(:token)        { should eq component.token }
+    its(:name)         { should eq component.name }
+    its(:version)      { should eq '2.0.0' }
+    its(:zip)          { should be_present }
+    its(:dependencies) { should be_nil }
+
+    it { should be_valid }
+  end
+
+  describe "Associations" do
+    it { should belong_to(:component) }
+  end
 
   describe "Validations" do
     [:component, :token, :version, :dependencies, :zip].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
-    [:component, :version, :zip].each do |attr|
+    [:component, :zip].each do |attr|
       it { should validate_presence_of(attr) }
     end
 
@@ -38,6 +52,18 @@ describe App::ComponentVersion, :fog_mock do
 
   it "overwrites to_param" do
     component_version.to_param.should eq '2_0_0'
+  end
+
+  it "compares via SemanticVersioning" do
+    version100_aplha1 = App::ComponentVersion.new({ version: '1.0.0-alpha.1' }, as: :admin)
+    version100 = App::ComponentVersion.new({ version: '1.0.0' }, as: :admin)
+    version200 = App::ComponentVersion.new({ version: '2.0.0' }, as: :admin)
+    version124 = App::ComponentVersion.new({ version: '1.2.4' }, as: :admin)
+    version123 = App::ComponentVersion.new({ version: '1.2.3' }, as: :admin)
+
+    [version100, version100_aplha1, version200, version124, version123].sort.should eq([
+      version100_aplha1, version100, version123, version124, version200
+    ])
   end
 
 end
