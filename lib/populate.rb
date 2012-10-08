@@ -2,7 +2,7 @@
 require 'ffaker' if Rails.env.development?
 require_dependency 'service/site'
 require_dependency 'service/usage'
-require_dependency 'invoices/builder'
+require_dependency 'service/invoice'
 
 module Populate
 
@@ -266,9 +266,7 @@ module Populate
           (5 + rand(15)).times do |n|
             Timecop.travel(n.months.from_now) do
               # site.prepare_pending_attributes
-              builder = Invoices::Builder.new(site: site)
-              invoice = builder.invoice
-              builder.save
+              invoice = Service::Invoice.build(site: site).tap { |s| s.save }.invoice
               puts "Invoice created: $#{invoice.amount / 100.0}"
             end
           end
@@ -658,7 +656,7 @@ module Populate
         user         = User.find(user_id)
         trial_site   = user.sites.in_trial.last
         site         = user.sites.joins(:invoices).in_paid_plan.group { sites.id }.having { { invoices => (count(id) > 0) } }.last || user.sites.last
-        invoice      = site.invoices.last || Invoices::Builder.new(site: site).invoice
+        invoice      = site.invoices.last || Service::Invoice.build(site: site).invoice
         transaction  = invoice.transactions.last || Transaction.create(invoices: [invoice])
         stats_export = StatsExport.create(st: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
 

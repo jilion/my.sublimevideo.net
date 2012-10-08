@@ -28,7 +28,7 @@ class Invoice < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_create ->(invoice) do
+  before_validation ->(invoice) do
     invoice.customer_full_name       = invoice.user.billing_name
     invoice.customer_email           = invoice.user.email
     invoice.customer_country         = invoice.user.billing_country

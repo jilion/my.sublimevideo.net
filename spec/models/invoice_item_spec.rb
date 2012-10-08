@@ -13,8 +13,8 @@ describe InvoiceItem do
   end # Associations
 
   describe "Validations" do
-    [:invoice, :item].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
+    [:invoice, :item, :deduct, :started_at, :ended_at, :price, :amount].each do |attr|
+      it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
     # it { should validate_presence_of(:invoice) }
@@ -31,7 +31,7 @@ describe InvoiceItem do
 
   describe 'Callbacks' do
     it 'sets price and amount before validation' do
-      invoice_item = build(:invoice_item, item: create(:addon, price: 1000))
+      invoice_item = build(:invoice_item, item: create(:addon_plan, price: 1000))
 
       invoice_item.price.should be_nil
       invoice_item.amount.should be_nil

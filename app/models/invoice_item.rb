@@ -1,7 +1,7 @@
 class InvoiceItem < ActiveRecord::Base
 
   attr_accessor   :deduct
-  attr_accessible :invoice, :item, :deduct
+  attr_accessible :invoice, :item, :deduct, :started_at, :ended_at, :price, :amount, as: :admin
 
   # ================
   # = Associations =
@@ -27,8 +27,8 @@ class InvoiceItem < ActiveRecord::Base
 
   before_validation ->(invoice_item) do
     if price = invoice_item.item.try(:price)
-      invoice_item.price  = price
-      invoice_item.amount = (deduct ? -1 : 1) * price
+      invoice_item.price  ||= price
+      invoice_item.amount ||= (deduct ? -1 : 1) * price
     end
   end
 
