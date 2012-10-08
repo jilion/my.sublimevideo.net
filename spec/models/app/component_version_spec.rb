@@ -54,7 +54,7 @@ describe App::ComponentVersion, :fog_mock do
     component_version.to_param.should eq '2_0_0'
   end
 
-  it "compares via SemanticVersioning" do
+  it "compares via Service::SemanticVersioning" do
     version100_aplha1 = App::ComponentVersion.new({ version: '1.0.0-alpha.1' }, as: :admin)
     version100 = App::ComponentVersion.new({ version: '1.0.0' }, as: :admin)
     version200 = App::ComponentVersion.new({ version: '2.0.0' }, as: :admin)

@@ -1,7 +1,7 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
 
-require File.expand_path('lib/semantic_versioning')
+require File.expand_path('lib/service/semantic_versioning')
 require File.expand_path('app/models/app')
 require File.expand_path('lib/app/component_version_dependencies_manager')
 
@@ -9,7 +9,7 @@ unless defined?(ActiveRecord)
   class Site < Struct.new(:player_mode); end
   class App::Component < Struct.new(:name, :token); end
   class App::ComponentVersion < Struct.new(:version, :component, :dependencies)
-    include SemanticVersioning
+    include Service::SemanticVersioning
 
     def initialize(*args)
       super

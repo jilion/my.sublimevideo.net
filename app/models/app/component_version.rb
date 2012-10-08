@@ -1,7 +1,7 @@
-require_dependency 'semantic_versioning'
+require_dependency 'service/semantic_versioning'
 
 class App::ComponentVersion < ActiveRecord::Base
-  include SemanticVersioning
+  include Service::SemanticVersioning
 
   attr_accessible :component, :token, :dependencies, :version, :zip, as: :admin
 

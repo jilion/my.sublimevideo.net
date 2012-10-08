@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe InvoiceItem::Addon do
+describe InvoiceItem::AddonPlan do
 
   context "Factory" do
-    let(:invoice_item) { create(:addon_invoice_item) }
+    let(:invoice_item) { create(:addon_plan_invoice_item) }
     subject { invoice_item }
 
     its(:invoice)   { should be_nil }
-    its(:type)      { should eq 'InvoiceItem::Addon' }
-    its(:item_type) { should eq 'Addons::Addon' }
+    its(:type)      { should eq 'InvoiceItem::AddonPlan' }
+    its(:item_type) { should eq 'AddonPlan' }
     its(:item_id)   { should be_present }
     specify         { subject.started_at.to_i.should eq Time.now.utc.beginning_of_month.to_i }
     specify         { subject.ended_at.to_i.should eq Time.now.utc.end_of_month.to_i }
