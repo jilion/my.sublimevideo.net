@@ -2,13 +2,12 @@ require 'fast_spec_helper'
 require File.expand_path('lib/services/sites/manager')
 
 Site = Struct.new(:params) unless defined?(Site)
+AddonPlan = Class.new unless defined?(AddonPlan)
 
 describe Services::Sites::Manager do
   let(:user)              { stub(sites: []) }
   let(:site)              { Struct.new(:user, :id).new(nil, 1234) }
   let(:manager)           { described_class.new(site) }
-  let(:addonship_manager) { stub.as_null_object }
-  let(:usage_manager)     { stub }
   let(:delayed_method)    { stub }
 
   describe '.build_site' do
@@ -22,21 +21,25 @@ describe Services::Sites::Manager do
   describe '#save' do
     before do
       Site.should_receive(:transaction).and_yield
-      Services::Sites::Addonship.stub(:new) { addonship_manager }
       Services::Sites::Rank.stub(:delay) { delayed_method }
-      Services::Sites::Usage.stub(:new) { usage_manager }
-      usage_manager.stub(:update_last_30_days_video_views_counters)
-      delayed_method.stub(:set_ranks)
+      manager.stub(:set_default_app_designs) { true }
+      manager.stub(:set_default_addon_plans) { true }
+      delayed_method.stub(:set_ranks) { true }
     end
 
     context 'site is valid' do
       before do
-        site.should_receive(:save) { true }
+        site.should_receive(:save).twice { true }
+      end
+
+      it 'adds default app designs to site after creation' do
+        manager.should_receive(:set_default_app_designs)
+
+        manager.save
       end
 
       it 'adds default add-ons to site after creation' do
-        Services::Sites::Addonship.should_receive(:new) { addonship_manager }
-        addonship_manager.should_receive(:update_addonships!).with(logo: 'sublime', support: 'standard')
+        manager.should_receive(:set_default_addon_plans)
 
         manager.save
       end
@@ -47,13 +50,6 @@ describe Services::Sites::Manager do
 
         manager.save
       end
-
-      # it 'updates the last 30 days views counter' do
-      #   Services::Sites::Usage.should_receive(:new).with(site) { usage_manager }
-      #   usage_manager.should_receive(:update_last_30_days_video_views_counters)
-
-      #   manager.save
-      # end
     end
 
     context 'site is not valid' do

@@ -7,7 +7,7 @@ require_dependency 'services/sites/loader'
 require_dependency 'services/sites/settings'
 
 class Site < ActiveRecord::Base
-  include SiteModules::Addon
+  include SiteModules::BillableItem
   include SiteModules::Api
   include SiteModules::Billing
   include SiteModules::Referrer
@@ -71,7 +71,7 @@ class Site < ActiveRecord::Base
   has_many :addon_plans, through: :billable_items, source: :item, source_type: 'AddonPlan'
   accepts_nested_attributes_for :billable_items, allow_destroy: true
 
-  has_many :billable_item_activities
+  has_many :billable_item_activities, order: 'created_at ASC'
 
   has_many :kits
 
@@ -178,6 +178,14 @@ class Site < ActiveRecord::Base
 
   def settings_changed?
     (changed & %w[player_mode hostname extra_hostnames dev_hostnames path wildcard badged]).present?
+  end
+
+  def trial_days_remaining_for_billable_item(billable_item)
+    if trial_start = billable_item_activities.where(item_type: billable_item.class.to_s, item_id: billable_item.id, state: 'trial').first
+      [0, ((trial_start.created_at + BusinessModel.days_for_trial.days - Time.now.utc + 1.day) / 1.day).to_i].max
+    else
+      nil
+    end
   end
 
 end

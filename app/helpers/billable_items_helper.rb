@@ -1,4 +1,5 @@
-module AddonsHelper
+# coding: utf-8
+module BillableItemsHelper
 
   def addon_plan_choice_tag(site, addon_plan, field_type)
     checked = site.addon_plan_is_active?(addon_plan) || (addon_plan.price.zero? && !site.active_addon_in_category?(addon_plan.addon.name))
@@ -10,13 +11,27 @@ module AddonsHelper
     _addon_choice_tag(checked: true, disabled: true, field_type: field_type)
   end
 
-  def billable_item_price(billable_item)
+  def billable_item_price(billable_item, free_label = 'Free')
     if billable_item.price.zero?
-      'Free'
+      free_label
     elsif billable_item.beta?
-      'Free (during beta)'
+      "#{free_label} (during beta)"
     else
       display_amount_with_sup(billable_item.price)
+    end
+  end
+
+  def trial_days_remaining(site, billable_item)
+    trial_days_remaining_for_billable_item = site.trial_days_remaining_for_billable_item(billable_item)
+    case trial_days_remaining_for_billable_item
+    when 0
+      ''
+    when 1
+      'last days of trial'
+    when nil
+      'trial not started'
+    else
+      "free trial – #{pluralize(trial_days_remaining_for_billable_item, 'day')} remaining"
     end
   end
 

@@ -25,7 +25,7 @@ namespace :db do
       timed { Populate.site_stats }
       timed { Populate.deals }
       timed { Populate.mail_templates }
-      timed { Populate.player_components }
+      # timed { Populate.player_components }
     end
 
     desc "Load Admin development fixtures."
@@ -107,10 +107,10 @@ namespace :db do
       timed { Populate.addons }
     end
 
-    desc "Create fake player components"
-    task player_components: :environment do
-      timed { Populate.player_components }
-    end
+    # desc "Create fake player components"
+    # task player_components: :environment do
+    #   timed { Populate.player_components }
+    # end
 
     desc "Create fake video_tags"
     task video_tags: :environment do

@@ -31,13 +31,11 @@ describe Site, :addons do
     it { should belong_to(:plan) }
     it { should have_many(:invoices) }
 
-    it { should have_many(:kits) }
     it { should have_many(:billable_items) }
-    it { should have_many(:app_designs) }
-    it { should have_many(:addon_plans) }
-
+    it { should have_many(:app_designs).through(:billable_items) }
+    it { should have_many(:addon_plans).through(:billable_items) }
     it { should have_many(:billable_item_activities) }
-    it { should have_many(:addons).through(:addon_plans) }
+    it { should have_many(:kits) }
     it { should have_many(:components).through(:billable_items) }
 
     pending 'addons scopes' do
@@ -241,6 +239,28 @@ describe Site, :addons do
       end
     end
   end # State Machine
+
+  describe '#trial_days_remaining_for_billable_item' do
+    let(:addon_plan) { create(:addon_plan) }
+    before do
+      @billable_item_activity1 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 31.days.ago)
+      @billable_item_activity2 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 30.days.ago)
+      @billable_item_activity3 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 29.days.ago)
+      @billable_item_activity4 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 28.days.ago)
+      @billable_item_activity5 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 14.days.ago)
+      @billable_item_activity6 = create(:billable_item_activity, item: addon_plan, state: 'trial')
+    end
+
+    it 'works' do
+      @billable_item_activity1.site.trial_days_remaining_for_billable_item(addon_plan).should eq 0
+      @billable_item_activity2.site.trial_days_remaining_for_billable_item(addon_plan).should eq 0
+      @billable_item_activity3.site.trial_days_remaining_for_billable_item(addon_plan).should eq 1
+      @billable_item_activity4.site.trial_days_remaining_for_billable_item(addon_plan).should eq 2
+      @billable_item_activity5.site.trial_days_remaining_for_billable_item(addon_plan).should eq 16
+      @billable_item_activity6.site.trial_days_remaining_for_billable_item(addon_plan).should eq 30
+      create(:site).trial_days_remaining_for_billable_item(addon_plan).should be_nil
+    end
+  end
 
 end
 

@@ -1,37 +1,29 @@
 # TODO
 #
 class MySublimeVideo.UI.AddonsChooser
-  # constructor: ->
-  #   @processDetailsDiv      = $("#plan_#{@formType}_info")
-  #   @badgedDiv              = $('#badged')
-  #   @badgedCheckbox         = $('#site_badged')
-  #   @skipTrialDiv           = $('#skip_trial')
-  #   @skipTrialCheckbox      = $('#site_skip_trial')
-  #   @billingInfoDiv         = $('#billing_info')
-  #   @checkedPlan            = $('#plans input[type=radio][checked]')
-  #   @billingInfoState       = @billingInfoDiv.attr 'data-state'
-  #   @processDetailsMessages = {}
+  constructor: (@form) ->
+    @addonsTotalDiv = $("#addons_total")
+    @allInputs = @form.find('input[type=radio], input[type=checkbox]')
 
-  #   this.setupProcessDetailsMessages()
-  #   this.setupPlansObservers()
+    # this.setupProcessDetailsMessages()
+    this.setupInputsObservers()
 
   # setupProcessDetailsMessages: =>
   #   _.each ['in_trial_downgrade_to_free', 'in_trial_upgrade', 'skipping_trial_free', 'skipping_trial_paid', 'upgrade', 'upgrade_from_free', 'delayed_upgrade', 'delayed_downgrade', 'delayed_change', 'delayed_downgrade_to_free'], (name) =>
   #     @processDetailsMessages[name] = $("#plan_#{name}_info")
 
-  # setupPlansObservers: ->
-  #   $('#plan_fields input[type=radio]').each (index, el) =>
-  #     el = $(el)
-  #     el.on 'click', =>
-  #       @checkedPlan = el
-  #       this.selectCheckboxWrappingBox()
-  #       this.handlePlanChange()
+  setupInputsObservers: ->
+    @allInputs.each (index, el) =>
+      el = $(el)
+      el.on 'click', =>
+        this.updateTotal()
 
-  #   this.handlePlanChange() if @checkedPlan.exists()
-
-  # selectCheckboxWrappingBox: ->
-  #   $('#plans ul .select_box').removeClass 'active'
-  #   @checkedPlan.parents('.select_box').addClass 'active'
+  updateTotal: ->
+    totalInCents = _.inject @form.find('input[type=radio]:checked, input[type=checkbox]:checked'), ((sum, el) ->
+      sum + $(el).data('price')
+    ), 0
+    remainingCents = totalInCents % 100
+    @addonsTotalDiv.html "$#{Math.floor(totalInCents / 100)}<sup>.#{remainingCents}</sup>"
 
   # handlePlanChange: ->
   #   if @badgedDiv.exists()

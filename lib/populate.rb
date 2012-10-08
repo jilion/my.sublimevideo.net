@@ -44,16 +44,24 @@ module Populate
 
       seeds = {
         App::Component => [
-          { name: 'sublime', token: 'a' }
+          { name: 'app', token: 'e' },
+          { name: 'subtitles', token: 'bA' }
         ],
         App::ComponentVersion => [
-          { component: 'ref-App::Component-sublime', version: '1.0-beta', zip: File.new(Rails.root.join('spec/fixtures/release.zip')) }
+          { component: 'ref-App::Component-app', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-app', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-app', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-app', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-subtitles', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-subtitles', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-subtitles', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-subtitles', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
         ],
         App::Design => [
-          { name: 'classic', skin_token: 'classic', price: 0, availability: 'public', component: 'ref-App::Component-sublime' },
-          { name: 'light',   skin_token: 'light',   price: 0, availability: 'public', component: 'ref-App::Component-sublime' },
-          { name: 'flat',    skin_token: 'flat',    price: 0, availability: 'public', component: 'ref-App::Component-sublime' },
-          { name: 'twit',    skin_token: 'twit',    price: 0, availability: 'custom', component: 'ref-App::Component-sublime' }
+          { name: 'classic', skin_token: 'classic', price: 0, availability: 'public', component: 'ref-App::Component-app' },
+          { name: 'light',   skin_token: 'light',   price: 0, availability: 'public', component: 'ref-App::Component-app' },
+          { name: 'flat',    skin_token: 'flat',    price: 0, availability: 'public', component: 'ref-App::Component-app' },
+          { name: 'twit',    skin_token: 'twit',    price: 0, availability: 'custom', component: 'ref-App::Component-app' }
         ],
         Addon => [
           { name: 'video_player', design_dependent: false, context: ['videoPlayer'] },
@@ -77,15 +85,15 @@ module Populate
           { name: 'vip',      price: 9995,  addon: 'ref-Addon-support',      availability: 'public' }
         ],
         App::Plugin => [
-          { token: 'videoPlayer',      addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-sublime' },
-          { token: 'logo',             addon: 'ref-Addon-logo',         design: nil,                       component: 'ref-App::Component-sublime' },
-          { token: 'stats',            addon: 'ref-Addon-stats',        design: nil,                       component: 'ref-App::Component-sublime' },
-          { token: 'ligthbox.Classic', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-classic', component: 'ref-App::Component-sublime' },
-          { token: 'ligthbox.Light',   addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-sublime' },
-          { token: 'ligthbox.Flat',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-sublime' },
-          { token: 'ligthbox.Twit',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-sublime' },
-          { token: 'api',              addon: 'ref-Addon-api',          design: nil,                       component: 'ref-App::Component-sublime' },
-          { token: 'support',          addon: 'ref-Addon-support',      design: nil,                       component: 'ref-App::Component-sublime' }
+          { token: 'videoPlayer',      addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-app' },
+          { token: 'logo',             addon: 'ref-Addon-logo',         design: nil,                       component: 'ref-App::Component-app' },
+          { token: 'stats',            addon: 'ref-Addon-stats',        design: nil,                       component: 'ref-App::Component-app' },
+          { token: 'ligthbox.Classic', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
+          { token: 'ligthbox.Light',   addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
+          { token: 'ligthbox.Flat',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
+          { token: 'ligthbox.Twit',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
+          { token: 'api',              addon: 'ref-Addon-api',          design: nil,                       component: 'ref-App::Component-app' }
+          # { token: 'support',          addon: 'ref-Addon-support',      design: nil,                       component: 'ref-App::Component-app' }
         ],
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-videoPlayer' },
@@ -99,9 +107,9 @@ module Populate
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Light' },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Flat' },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Twit' },
-          { addon_plan: 'ref-AddonPlan-api-standard',          plugin: 'ref-App::Plugin-api' },
-          { addon_plan: 'ref-AddonPlan-support-standard',      plugin: 'ref-App::Plugin-support' },
-          { addon_plan: 'ref-AddonPlan-support-vip',           plugin: 'ref-App::Plugin-support' }
+          { addon_plan: 'ref-AddonPlan-api-standard',          plugin: 'ref-App::Plugin-api' }
+          # { addon_plan: 'ref-AddonPlan-support-standard',      plugin: 'ref-App::Plugin-support' },
+          # { addon_plan: 'ref-AddonPlan-support-vip',           plugin: 'ref-App::Plugin-support' }
         ]
       }
       references = {}
@@ -137,27 +145,21 @@ module Populate
       puts "#{count} random mail templates created!"
     end
 
-    def player_components
-      empty_tables(App::Component, App::ComponentVersion)
-      names_token = {
-        'app' => 'e',
-        'subtitles' => 'bA'
-      }
-      versions = %w[2.0.0-alpha 2.0.0 1.1.0 1.0.0]
-      version_zip = File.new(Rails.root.join('spec/fixtures/app/e.zip'))
-      names_token.each do |name, token|
-        component = App::Component.create(
-          name: name,
-          token: token
-        )
-        versions.each do |version|
-          component.versions.create(
-            version: version,
-            zip: version_zip
-          )
-        end
-      end
-    end
+    # def player_components
+    #   empty_tables(App::Component, App::ComponentVersion)
+    #   names_token = {
+    #     'app' => 'e',
+    #     'subtitles' => 'bA'
+    #   }
+    #   versions = %w[2.0.0-alpha 2.0.0 1.1.0 1.0.0]
+    #   version_zip = File.new(Rails.root.join('spec/fixtures/app/e.zip'))
+    #   names_token.each do |name, token|
+    #     component = App::Component.create({ name: name, token: token }, as: :admin)
+    #     versions.each do |version|
+    #       component.versions.create({ version: version, zip: version_zip }, as: :admin)
+    #     end
+    #   end
+    # end
 
     def admins
       empty_tables(Admin)
@@ -423,6 +425,7 @@ module Populate
       end
       puts "Fake site(s)/video(s) stats generated"
     end
+
     def site_stats(user_id = nil)
       empty_tables(Stat::Site::Day, Stat::Site::Hour, Stat::Site::Minute, Stat::Site::Second)
       users = user_id ? [User.find(user_id)] : User.all

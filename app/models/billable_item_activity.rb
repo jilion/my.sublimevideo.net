@@ -5,7 +5,10 @@ class BillableItemActivity < ActiveRecord::Base
   belongs_to :item, polymorphic: true
 
   validates :item, :site, :state, presence: true
-  validates :state, inclusion: BillableItem::STATES
+  validates :state, inclusion: BillableItem::STATES + ['canceled']
+
+  scope :app_designs, -> { where(item_type: 'App::Design') }
+  scope :addon_plans, -> { where(item_type: 'AddonPlan') }
 end
 
 # == Schema Information

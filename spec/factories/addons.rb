@@ -97,7 +97,7 @@ FactoryGirl.define do
     end
 
     factory :addon_plan_billable_item_activity do
-      item { FactoryGirl.create(:app_design) }
+      item { FactoryGirl.create(:addon_plan) }
     end
   end
 

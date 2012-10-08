@@ -1,8 +1,21 @@
 en:
   addons:
-    design: "Designs"
-    logo: "Logo"
-    lightbox: "Lightbox"
-    api: "API"
-    stats: "Analytics"
-    support: "Support"
+    logo: 'Logo'
+    lightbox: 'Lightbox'
+    api: 'API'
+    stats: 'Analytics'
+    support: 'Support'
+  addon_plans:
+    logo:
+      sublime: 'SublimeVideo logo'
+      disabled: 'No logo'
+      custom: 'Your company logo'
+    lightbox:
+      standard: 'Lightbox'
+    api:
+      standard: 'SublimeVideo player basic JavaScript API'
+    stats:
+      realtime: 'Real-time statistics'
+    support:
+      standard: 'Forum & email support'
+      vip: 'VIP email support'

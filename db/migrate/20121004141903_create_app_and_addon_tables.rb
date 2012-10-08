@@ -26,7 +26,8 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
 
     create_table :addons do |t|
       t.string  :name, null: false
-      t.boolean :design_dependent, null: false
+      t.boolean :design_dependent, null: false, default: true
+      t.string  :version, null: false, default: 'stable'
       t.text    :context, null: false
 
       t.timestamps
@@ -38,6 +39,7 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
       t.string     :name, null: false
       t.integer    :price, null: false
       t.string     :availability, null: false
+      t.boolean    :works_with_stable_app, null: false, default: true
 
       t.timestamps
     end
@@ -69,7 +71,7 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
 
     create_table :app_settings_templates do |t|
       t.references :addon_plan, null: false
-      t.references :app_plugin, null: false
+      t.references :app_plugin
       t.hstore     :template
 
       t.timestamps
@@ -89,7 +91,7 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
 
     rename_table :player_components, :app_components
     rename_table :player_component_versions, :app_component_versions
-    drop_table   :player_componentships, :app_componentships
+    drop_table   :player_componentships
 
     rename_column :app_component_versions, :player_component_id, :app_component_id
   end

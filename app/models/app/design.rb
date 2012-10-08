@@ -9,6 +9,10 @@ class App::Design < ActiveRecord::Base
   validates :price, numericality: true
   validates :availability, inclusion: AVAILABILITIES
 
+  def self.get(name)
+    where(name: name).first
+  end
+
   def available?(site)
     case availability
     when 'public'
@@ -20,6 +24,10 @@ class App::Design < ActiveRecord::Base
 
   def beta?
     (component.versions.first.version =~ /[a-z]/i).present?
+  end
+
+  def free?
+    price.zero?
   end
 
 end

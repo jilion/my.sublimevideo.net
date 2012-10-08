@@ -63,8 +63,8 @@ MySublimeVideo.UI.prepareSitesStatus = ->
     new MySublimeVideo.UI.SitesStatus(table)
 
 MySublimeVideo.UI.prepareAddonsChooser = ->
-  if $('#addons').exists()
-    new MySublimeVideo.UI.AddonsChooser()
+  if (form = $('#edit_addons')).exists()
+    new MySublimeVideo.UI.AddonsChooser(form)
 
 MySublimeVideo.UI.prepareSupportRequest = ->
   new MySublimeVideo.Helpers.SupportRequest() if $('#new_support_request').exists()

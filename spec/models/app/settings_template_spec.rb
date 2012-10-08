@@ -18,7 +18,7 @@ end
 # Table name: app_settings_templates
 #
 #  addon_plan_id :integer          not null
-#  app_plugin_id :integer          not null
+#  app_plugin_id :integer
 #  created_at    :datetime         not null
 #  id            :integer          not null, primary key
 #  template      :hstore

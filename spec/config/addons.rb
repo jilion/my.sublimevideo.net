@@ -45,13 +45,14 @@ end
 
 def create_components
   @app_comp = create(:app_component, name: 'sublime', token: 'a')
+  create(:app_component_version, component: @app_comp, version: '2.0.0-alpha')
 end
 
 def create_designs
-  @classic_design = create(:app_design, name: 'classic', price: 495)
-  @light_design   = create(:app_design, name: 'light', price: 495)
-  @flat_design    = create(:app_design, name: 'flat', price: 495)
-  @twit_design    = create(:app_design, name: 'twit', price: 0, availability: 'custom')
+  @classic_design = create(:app_design, name: 'classic', price: 495, component: @app_comp)
+  @light_design   = create(:app_design, name: 'light', price: 495, component: @app_comp)
+  @flat_design    = create(:app_design, name: 'flat', price: 495, component: @app_comp)
+  @twit_design    = create(:app_design, name: 'twit', price: 0, availability: 'custom', component: @app_comp)
 end
 
 def create_video_player_addon
@@ -74,7 +75,7 @@ def create_logo_addon
   @logo_addon_plan_2    = create(:addon_plan, name: 'disabled', price: 995, addon: @logo_addon)
   @logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @logo_addon_plan_2, plugin: @logo_addon_plugin)
 
-  @logo_addon_plan_3    = create(:addon_plan, name: 'custom', price: 1995, addon: @logo_addon)
+  @logo_addon_plan_3    = create(:addon_plan, name: 'custom', price: 1995, addon: @logo_addon, works_with_stable_app: false)
   @logo_addon_plan_3_st = create(:app_settings_template, addon_plan: @logo_addon_plan_3, plugin: @logo_addon_plugin)
 end
 
@@ -89,7 +90,7 @@ def create_stats_addon
   @stats_addon_plan_2    = create(:addon_plan, name: 'realtime', price: 995, addon: @stats_addon)
   @stats_addon_plan_2_st = create(:app_settings_template, addon_plan: @stats_addon_plan_2, plugin: @stats_addon_plugin)
 
-  @stats_addon_plan_3    = create(:addon_plan, name: 'disabled', price: 1995, addon: @stats_addon, availability: 'hidden')
+  @stats_addon_plan_3    = create(:addon_plan, name: 'disabled', price: 1995, addon: @stats_addon, availability: 'hidden', works_with_stable_app: false)
   @stats_addon_plan_3_st = create(:app_settings_template, addon_plan: @stats_addon_plan_3, plugin: @stats_addon_plugin)
 end
 

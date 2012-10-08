@@ -3,13 +3,13 @@
 
 #site.addons
   #addons_table_wrap
-    = form_for update_all_site_addons_path, method: 'put', id: 'edit_addons' do
-      = render 'addons', site: @site
+    = form_for @site, url: update_all_site_addons_path, method: 'put', html: { id: 'edit_addons' } do |f|
+      = render 'addons', site: @site, f: f
       %hr
       %small
         = "Est. monthly cost"
         = "(once all your #{BusinessModel.days_for_trial}-day free trial will be over)"
-      %h3= display_amount_with_sup(@site.addon_plans.sum(:price) + @site.app_designs.sum(:price))
+      %h3#addons_total= display_amount_with_sup(@site.addon_plans.sum(:price) + @site.app_designs.sum(:price))
 
       .actions.center= submit_tag 'Confirm selection', class: 'submit green_button', id: 'site_submit'
   .spacer

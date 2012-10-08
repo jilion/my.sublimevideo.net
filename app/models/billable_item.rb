@@ -1,6 +1,6 @@
 class BillableItem < ActiveRecord::Base
   INACTIVE_STATES = %w[suspended] unless defined? INACTIVE_STATES
-  ACTIVE_STATES   = %w[subscribed sponsored] unless defined? ACTIVE_STATES
+  ACTIVE_STATES   = %w[beta trial subscribed sponsored] unless defined? ACTIVE_STATES
   STATES          = INACTIVE_STATES + ACTIVE_STATES unless defined? STATES
 
   has_paper_trail
@@ -20,25 +20,29 @@ class BillableItem < ActiveRecord::Base
   # =================
 
   state_machine do
-    # event(:start_beta)  { transition :inactive => :beta }
-    # event(:start_trial) { transition [:inactive, :beta] => :trial }
+    event(:start_beta)  { transition :inactive => :beta }
+    event(:start_trial) { transition [:inactive, :beta] => :trial }
     event(:subscribe)   { transition all - [:subscribed] => :subscribed }
     event(:suspend)     { transition :subscribed => :suspended }
     event(:sponsor)     { transition all - [:sponsored] => :sponsored }
 
-    state :subscribed do
-      def price
-        addon.price
-      end
-    end
+    # state :subscribed do
+    #   def price
+    #     addon.price
+    #   end
+    # end
 
     # before_transition any => :trial do |billable_item, transition|
     #   billable_item.trial_started_on = Time.now.utc.midnight unless billable_item.trial_started_on?
     # end
+  end
 
-    after_transition do |billable_item, transition|
-      BillableItemActivity.create(item: billable_item.item, state: billable_item.state)
-    end
+  after_save ->(billable_item) do
+    billable_item.site.billable_item_activities.create({ item: billable_item.item, state: billable_item.state }, as: :admin) if billable_item.state_changed?
+  end
+
+  after_destroy ->(billable_item) do
+    billable_item.site.billable_item_activities.create({ item: billable_item.item, state: 'canceled' }, as: :admin)
   end
 
   # ==========
@@ -53,6 +57,8 @@ class BillableItem < ActiveRecord::Base
   }
   scope :active,     -> { where { state >> ACTIVE_STATES } }
   scope :subscribed, -> { where(state: 'subscribed') }
+  scope :app_designs, -> { where(item_type: 'App::Design') }
+  scope :addon_plans, -> { where(item_type: 'AddonPlan') }
   scope :paid,       -> do
     where{
       ((item_type == 'App::Design') & (item_id >> App::Design.where{ price > 0 }.pluck(:id))) |

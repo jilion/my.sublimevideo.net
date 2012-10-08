@@ -1,5 +1,5 @@
 class Addon < ActiveRecord::Base
-  attr_accessible :name, :design_dependent, :context, as: :admin
+  attr_accessible :name, :design_dependent, :version, :context, as: :admin
 
   serialize :context, Array
 
@@ -10,6 +10,7 @@ class Addon < ActiveRecord::Base
   validates :name, presence: true
   validates :name, uniqueness: true
   validates :design_dependent, inclusion: [true, false]
+  validates :version, inclusion: %w[stable beta]
 
   before_validation ->(addon) { addon.context = [] }, unless: :context?
 
@@ -20,7 +21,7 @@ class Addon < ActiveRecord::Base
   end
 
   def beta?
-    availability == 'beta'
+    version == 'beta'
   end
 end
 
@@ -30,10 +31,11 @@ end
 #
 #  context          :text             not null
 #  created_at       :datetime         not null
-#  design_dependent :boolean          not null
+#  design_dependent :boolean          default(TRUE), not null
 #  id               :integer          not null, primary key
 #  name             :string(255)      not null
 #  updated_at       :datetime         not null
+#  version          :string(255)      default("stable"), not null
 #
 # Indexes
 #
