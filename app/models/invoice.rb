@@ -39,19 +39,15 @@ class Invoice < ActiveRecord::Base
 
   after_create ->(invoice) do
     invoice.user.decrement!(:balance, invoice.balance_deduction_amount) unless invoice.balance_deduction_amount.zero?
+    invoice.succeed! if invoice.amount.zero?
   end
-  after_create ->(invoice) { invoice.succeed! if invoice.amount.zero? }
 
   # ===============
   # = Validations =
   # ===============
 
-  validates :site,                     presence: true
-  validates :invoice_items_amount,     presence: true, numericality: true
-  validates :vat_rate,                 presence: true, numericality: true
-  validates :vat_amount,               presence: true, numericality: true
-  validates :balance_deduction_amount, presence: true, numericality: true
-  validates :amount,                   presence: true, numericality: true
+  validates :site, presence: true
+  validates :invoice_items_amount, :vat_rate, :vat_amount, :balance_deduction_amount, :amount, presence: true, numericality: true
 
   # =================
   # = State Machine =
@@ -71,12 +67,10 @@ class Invoice < ActiveRecord::Base
       invoice.user.last_invoiced_amount   = invoice.amount
       invoice.user.total_invoiced_amount += invoice.amount
       invoice.user.save
-    end
-    after_transition on: :succeed do |invoice, transition|
       invoice.user.unsuspend if invoice.user.suspended? && invoice.user.invoices.not_paid.empty?
     end
 
-    after_transition  on: :cancel do |invoice, transition|
+    after_transition on: :cancel do |invoice, transition|
       invoice.user.increment!(:balance, invoice.balance_deduction_amount) unless invoice.balance_deduction_amount.zero?
     end
 

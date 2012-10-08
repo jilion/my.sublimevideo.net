@@ -9,9 +9,9 @@ require File.expand_path('spec/config/carrierwave')
 require File.expand_path('lib/s3')
 
 Site = Class.new unless defined?(Site)
-require File.expand_path('lib/services/sites/loader')
+require File.expand_path('lib/service/loader')
 
-describe Services::Sites::Loader, :fog_mock do
+describe Service::Loader, :fog_mock do
   before { CDN.stub(:delay) { mock(purge: true) } }
   let(:site) { mock("Site",
     id: 1,

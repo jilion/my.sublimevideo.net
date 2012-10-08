@@ -3,8 +3,8 @@ require_dependency 'validators/hostname_validator'
 require_dependency 'validators/hostname_uniqueness_validator'
 require_dependency 'validators/dev_hostnames_validator'
 require_dependency 'validators/extra_hostnames_validator'
-require_dependency 'services/sites/loader'
-require_dependency 'services/sites/settings'
+require_dependency 'service/loader'
+require_dependency 'service/settings'
 
 class Site < ActiveRecord::Base
   include SiteModules::BillableItem
@@ -114,12 +114,12 @@ class Site < ActiveRecord::Base
   end
 
   # Site::Loader
-  after_create ->(site) { Services::Sites::Loader.delay.update_all_modes!(site.id) }
-  after_save ->(site) { Services::Sites::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
+  after_create ->(site) { Service::Loader.delay.update_all_modes!(site.id) }
+  after_save ->(site) { Service::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
   # Site::Settings
   after_save ->(site) do
-    if (site.changed & Services::Sites::Settings::SITE_FIELDS).present?
-      Services::Sites::Settings.delay.update_all_types!(site.id)
+    if (site.changed & Service::Settings::SITE_FIELDS).present?
+      Service::Settings.delay.update_all_types!(site.id)
       site.touch(:settings_updated_at)
     end
   end
@@ -134,8 +134,8 @@ class Site < ActiveRecord::Base
     event(:unsuspend) { transition suspended: :active }
 
     after_transition ->(site) do
-      Services::Sites::Loader.delay.update_all_modes!(site.id)
-      Services::Sites::Settings.delay.update_all_types!(site.id)
+      Service::Loader.delay.update_all_modes!(site.id)
+      Service::Settings.delay.update_all_types!(site.id)
     end
 
     before_transition on: :archive do |site, transition|

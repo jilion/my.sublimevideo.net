@@ -1,4 +1,4 @@
-require_dependency 'services/sites/manager'
+require_dependency 'service/site'
 
 class SitesController < ApplicationController
   respond_to :html
@@ -24,7 +24,7 @@ class SitesController < ApplicationController
 
   # GET /sites/new
   def new
-    @site = Services::Sites::Manager.build_site(user: current_user).site
+    @site = Service::Site.build_site(user: current_user).site
 
     respond_with(@site)
   end
@@ -36,7 +36,7 @@ class SitesController < ApplicationController
 
   # POST /sites
   def create
-    manager = Services::Sites::Manager.build_site(params[:site].merge(user: current_user, remote_ip: request.remote_ip))
+    manager = Service::Site.build_site(params[:site].merge(user: current_user, remote_ip: request.remote_ip))
     @site   = manager.site
 
     respond_with(@site) do |format|

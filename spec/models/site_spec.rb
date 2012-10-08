@@ -168,14 +168,14 @@ describe Site, :addons do
     describe "before_save" do
       let(:site) { create(:site, first_paid_plan_started_at: Time.now.utc) }
 
-      it "delays Services::Sites::Loader update on site player_mode update" do
+      it "delays Service::Loader update on site player_mode update" do
         site = create(:site)
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Services::Sites::Loader%update_all_modes%')
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Service::Loader%update_all_modes%')
       end
 
-      it "delays Services::Sites::Settings update on site player_mode update" do
+      it "delays Service::Settings update on site player_mode update" do
         site = create(:site)
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Services::Sites::Settings%update_all_types%')
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Service::Settings%update_all_types%')
       end
 
       it "touch settings_updated_at on site player_mode update" do
@@ -187,12 +187,12 @@ describe Site, :addons do
     describe "after_create" do
       let(:site) { create(:site) }
 
-      it "delays Services::Sites::Loader update" do
-        -> { site }.should delay('%Services::Sites::Loader%update_all_modes%')
+      it "delays Service::Loader update" do
+        -> { site }.should delay('%Service::Loader%update_all_modes%')
       end
 
-      it "delays Site::Settings update" do
-        -> { site }.should delay('%Services::Sites::Settings%update_all_types%')
+      it "delays Service::Settings update" do
+        -> { site }.should delay('%Service::Settings%update_all_types%')
       end
     end
   end # Callbacks
@@ -201,16 +201,16 @@ describe Site, :addons do
     describe "after transition" do
       let(:site) { create(:site) }
 
-      it "delays Services::Sites::Loader update" do
+      it "delays Service::Loader update" do
         site
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Services::Sites::Loader%update_all_modes%')
-        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Services::Sites::Loader%update_all_modes%" }, :count).by(1)
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Service::Loader%update_all_modes%')
+        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Service::Loader%update_all_modes%" }, :count).by(1)
       end
 
-      it "delays Services::Sites::Settings update" do
+      it "delays Service::Settings update" do
         site
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Services::Sites::Loader%update_all_modes%')
-        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Services::Sites::Settings%update_all_types%" }, :count).by(1)
+        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Service::Loader%update_all_modes%')
+        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Service::Settings%update_all_types%" }, :count).by(1)
       end
     end
 

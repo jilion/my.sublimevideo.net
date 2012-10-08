@@ -1,4 +1,4 @@
-require_dependency 'services/sites/manager'
+require_dependency 'service/site'
 
 class AddonsController < ApplicationController
   before_filter :redirect_suspended_user, only: [:index]
@@ -14,7 +14,7 @@ class AddonsController < ApplicationController
 
   # PUT /sites/:site_id/addons/update_all
   def update_all
-    Services::Sites::Manager.new(@site).update_billable_items!(params[:app_designs], params[:addon_plans])
+    Service::Site.new(@site).update_billable_items!(params[:app_designs], params[:addon_plans])
 
     redirect_to thanks_site_addons_path, notice: 'Add-ons successfully updated.'
   end

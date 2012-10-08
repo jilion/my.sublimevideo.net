@@ -1,6 +1,6 @@
 require_dependency 'notify'
-require_dependency 'services/sites/addonship'
-require_dependency 'services/sites/usage'
+require_dependency 'service/site'
+require_dependency 'service/usage'
 
 module RecurringJob
 
@@ -75,9 +75,9 @@ module RecurringJob
     end
 
     def sites_processing(priority = PRIORITIES[:sites])
-      Services::Sites::Usage.delay(priority: priority).update_last_30_days_counters_for_not_archived_sites
-      Services::Sites::Usage.delay(priority: priority).set_first_billable_plays_at_for_not_archived_sites
-      Services::Sites::Addonship.delay(priority: priority).activate_addonships_out_of_trial!
+      Service::Usage.delay(priority: priority).update_last_30_days_counters_for_not_archived_sites
+      Service::Usage.delay(priority: priority).set_first_billable_plays_at_for_not_archived_sites
+      Service::Site.delay(priority: priority).activate_addonships_out_of_trial!
 
       delay_sites_processing
     end

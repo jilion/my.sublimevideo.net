@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Choose add-ons' do
   background do
     sign_in_as :user
-    manager = Services::Sites::Manager.build_site(attributes_for(:site).merge(user: @current_user))
+    manager = Service::Site.build_site(attributes_for(:site).merge(user: @current_user))
     manager.save
     @site = manager.site
     go 'my', "/sites/#{@site.to_param}/addons"
@@ -13,7 +13,6 @@ feature 'Choose add-ons' do
     @site.reload.app_designs.should =~ [@classic_design, @flat_design, @light_design]
     @site.addon_plans.should =~ [@logo_addon_plan_1, @stats_addon_plan_1, @lightbox_addon_plan_1, @api_addon_plan, @support_addon_plan_1]
     @site.billable_item_activities.should have(8).items
-    puts @site.billable_item_activities.inspect
 
     choose "addon_plans_logo_#{@logo_addon_plan_2.id}"
     expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(2)

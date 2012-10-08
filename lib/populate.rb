@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'ffaker' if Rails.env.development?
-require_dependency 'services/sites/manager'
-require_dependency 'services/sites/usage'
+require_dependency 'service/site'
+require_dependency 'service/usage'
 require_dependency 'invoices/builder'
 
 module Populate
@@ -75,10 +75,10 @@ module Populate
           { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden' },
           { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
           { name: 'disabled',  price: 995,  addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'public' },
+          { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'public', works_with_stable_app: false },
           { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden' },
           { name: 'realtime',  price: 995,  addon: 'ref-Addon-stats',        availability: 'public' },
-          { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden' },
+          { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden', works_with_stable_app: false },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'public' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public' },
@@ -244,7 +244,7 @@ module Populate
 
       User.all.each do |user|
         BASE_SITES.each do |hostname|
-          manager = Services::Sites::Manager.build_site(user: user, hostname: hostname)
+          manager = Service::Site.build_site(user: user, hostname: hostname)
           manager.save
           manager.site.update_column(:created_at, created_at_array.sample)
         end
@@ -474,7 +474,7 @@ module Populate
               .find(t: site.token, d: i.seconds.ago.change(usec: 0).to_time)
               .update({ :$inc => random_site_stats_inc(1) }, upsert: true)
           end
-          Services::Sites::Usage.new(site).update_last_30_days_video_views_counters
+          Service::Usage.new(site).update_last_30_days_video_views_counters
         end
       end
       puts "Fake site(s) stats generated"

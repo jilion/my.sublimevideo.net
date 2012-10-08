@@ -49,9 +49,9 @@ describe RecurringJob do
   describe ".sites_processing" do
     it "delays 3 methods" do
       -> { described_class.sites_processing }.should delay(%w[
-        %Services::Sites::Usage%update_last_30_days_counters_for_not_archived_sites%
-        %Services::Sites::Usage%set_first_billable_plays_at_for_not_archived_sites%
-        %Services::Sites::Addonship%activate_addonships_out_of_trial!%])
+        %Service::Usage%update_last_30_days_counters_for_not_archived_sites%
+        %Service::Usage%set_first_billable_plays_at_for_not_archived_sites%
+        %Service::Site%activate_addonships_out_of_trial!%])
     end
   end
 

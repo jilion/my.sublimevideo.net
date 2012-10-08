@@ -1,8 +1,8 @@
 require 'fast_spec_helper'
 require 'config/vcr'
-require File.expand_path('lib/services/sites/rank')
+require File.expand_path('lib/service/rank')
 
-describe Services::Sites::Rank do
+describe Service::Rank do
   unless defined?(Site)
     before do
       Site = Class.new
