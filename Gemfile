@@ -94,6 +94,9 @@ gem 'redis',                 '~> 3.0.1'
 # Tickets
 gem 'zendesk_api',           '~> 0.1.2'
 
+# App
+gem 'solve'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

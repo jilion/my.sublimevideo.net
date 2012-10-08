@@ -5,8 +5,9 @@ require File.expand_path('lib/semantic_versioning')
 class Version < Struct.new(:version)
   include SemanticVersioning
 
-  def initialize(version_string)
-    self.version = version_string
+  def initialize(*args)
+    super
+    self.version = self[:version]
   end
 end
 
