@@ -24,7 +24,7 @@ describe Site, :addons do
     it { should be_valid }
   end
 
-  describe "Associations" do
+  describe 'Associations' do
     let(:site) { create(:site) }
 
     it { should belong_to(:user) }
@@ -37,33 +37,6 @@ describe Site, :addons do
     it { should have_many(:billable_item_activities) }
     it { should have_many(:kits) }
     it { should have_many(:components).through(:billable_items) }
-
-    pending 'addons scopes' do
-      before do
-        create(:trial_addonship, site: site, addon: @logo_sublime_addon, trial_started_on: (30.days - 1.second).ago)
-        create(:trial_addonship, site: site, addon: @logo_no_logo_addon, trial_started_on: (30.days + 1.second).ago)
-        create(:trial_addonship, site: site, addon: @stats_standard_addon)
-        create(:subscribed_addonship, site: site, addon: @support_vip_addon, trial_started_on: (30.days + 1.second).ago)
-        create(:inactive_addonship, site: site, addon: @design1_western_addon)
-      end
-
-      describe 'active addons' do
-        it { site.addons.active.should =~ [@logo_sublime_addon, @logo_no_logo_addon, @stats_standard_addon, @support_vip_addon] }
-      end
-
-      describe 'subscribed addons' do
-        it { site.addons.subscribed.should =~ [@support_vip_addon] }
-      end
-
-      describe 'inactive addons' do
-        it { site.addons.inactive.should =~ [@design1_western_addon] }
-      end
-
-      describe 'out_of_trial addons' do
-        it { site.addons.out_of_trial.should =~ [@logo_no_logo_addon] }
-      end
-    end
-
 
     describe "last_invoice" do
       it "should return the last paid invoice" do

@@ -56,66 +56,16 @@ describe SiteModules::Scope do
     let(:site1) { create(:site, user: user) }
     let(:site2) { create(:site, user: user) }
 
-    # describe ".with_addon_active" do
-    #   Addons::Addonship::ACTIVE_STATES.each do |state|
-    #     context "addonship is in #{state}" do
-    #       before do
-    #         create(:addonship, site: site1, addon: addon, state: state)
-    #         create(:addonship, site: site2, addon: addon, state: 'inactive')
-    #       end
-
-    #       it { Site.with_addon_active('foo', 'bar').all.should =~ [site1] }
-    #     end
-    #   end
-
-    #   Addons::Addonship::INACTIVE_STATES.each do |state|
-    #     context "addonship is in #{state}" do
-    #       before do
-    #         create(:addonship, site: site1, addon: addon, state: state)
-    #       end
-
-    #       it { Site.with_addon_active('foo', 'bar').all.should be_empty }
-    #     end
-    #   end
-    # end
-
-    describe ".with_out_of_trial_addons" do
-      before do
-        @addonship1 = create(:trial_addonship, site: site1, addon: @logo_sublime_addon, trial_started_on: (30.days - 1.second).ago)
-        @addonship2 = create(:trial_addonship, site: site2, addon: @logo_no_logo_addon, trial_started_on: (30.days + 1.second).ago)
-        @addonship3 = create(:trial_addonship, site: site1, addon: @stats_standard_addon)
-        @addonship4 = create(:subscribed_addonship, site: site2, addon: @support_standard_addon, trial_started_on: (30.days + 1.second).ago)
-        @addonship5 = create(:subscribed_addonship, site: site1, addon: @support_vip_addon)
-        @addonship6 = create(:inactive_addonship, site: site2)
-      end
-
-      it { Site.with_out_of_trial_addons.all.should =~ [site2] }
-    end
-
     describe ".paying" do
       before do
-        @addonship1 = create(:trial_addonship, site: site1, addon: @logo_sublime_addon, trial_started_on: (30.days - 1.second).ago)
-        @addonship2 = create(:trial_addonship, site: site2, addon: @logo_no_logo_addon, trial_started_on: (30.days + 1.second).ago)
-        @addonship3 = create(:trial_addonship, site: site1, addon: @stats_standard_addon)
-        @addonship5 = create(:subscribed_addonship, site: site1, addon: @support_vip_addon)
-        @addonship6 = create(:inactive_addonship, site: site2)
+        Timecop.travel(30.days.ago) { create(:billable_item, site: site1, item: @logo_addon_plan_1, state: 'trial') }
+        Timecop.travel(31.days.ago) { create(:billable_item, site: site1, item: @logo_addon_plan_2, state: 'trial') }
+        create(:billable_item, site: site1, item: @stats_addon_plan_1, state: 'trial')
+        create(:billable_item, site: site1, item: @support_addon_plan_2, state: 'subscribed')
       end
 
       it { Site.paying.all.should =~ [site1] }
     end
-
-    # describe "#addons" do
-    #   before do
-    #     @addon_1 = create(:addon)
-    #     @addon_2 = create(:addon)
-    #     @addon_plan_1 = create(:addon_plan, addon: @addon_1)
-    #     @addon_plan_2 = create(:addon_plan, addon: @addon_2)
-    #     @site = create(:site)
-    #     create(:addon_plan_billable_item, item: @addon_plan_1)
-    #   end
-
-    #   it { @site.addons.all.should =~ [@addon_1] }
-    # end
 
   end
 

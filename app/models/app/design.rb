@@ -9,6 +9,8 @@ class App::Design < ActiveRecord::Base
   validates :price, numericality: true
   validates :availability, inclusion: AVAILABILITIES
 
+  scope :paid, -> { where { price > 0 } }
+
   def self.get(name)
     where(name: name).first
   end

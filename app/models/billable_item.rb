@@ -3,8 +3,6 @@ class BillableItem < ActiveRecord::Base
   ACTIVE_STATES   = %w[beta trial subscribed sponsored] unless defined? ACTIVE_STATES
   STATES          = INACTIVE_STATES + ACTIVE_STATES unless defined? STATES
 
-  has_paper_trail
-
   attr_accessible :item, :site, :state, as: :admin
 
   belongs_to :site
@@ -20,21 +18,11 @@ class BillableItem < ActiveRecord::Base
   # =================
 
   state_machine do
-    event(:start_beta)  { transition :inactive => :beta }
-    event(:start_trial) { transition [:inactive, :beta] => :trial }
-    event(:subscribe)   { transition all - [:subscribed] => :subscribed }
-    event(:suspend)     { transition :subscribed => :suspended }
-    event(:sponsor)     { transition all - [:sponsored] => :sponsored }
+    state *STATES.map(&:to_sym)
 
-    # state :subscribed do
-    #   def price
-    #     addon.price
-    #   end
-    # end
-
-    # before_transition any => :trial do |billable_item, transition|
-    #   billable_item.trial_started_on = Time.now.utc.midnight unless billable_item.trial_started_on?
-    # end
+    event(:subscribe) { transition all - [:subscribed] => :subscribed }
+    event(:suspend)   { transition :subscribed => :suspended }
+    event(:sponsor)   { transition all - [:sponsored] => :sponsored }
   end
 
   after_save ->(billable_item) do
@@ -49,20 +37,14 @@ class BillableItem < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :except_addon_ids, ->(excepted_addon_ids) { where{ addon_id << excepted_addon_ids } }
-  scope :out_of_trial,     -> {
-    where{ billable_items.state == 'trial' }#. \
-    # where{ billable_items.trial_started_on != nil }. \
-    # where{ billable_items.trial_started_on < BusinessModel.days_for_trial.days.ago }
-  }
-  scope :active,     -> { where { state >> ACTIVE_STATES } }
-  scope :subscribed, -> { where(state: 'subscribed') }
   scope :app_designs, -> { where(item_type: 'App::Design') }
   scope :addon_plans, -> { where(item_type: 'AddonPlan') }
-  scope :paid,       -> do
+  scope :active,      -> { where { state >> ACTIVE_STATES } }
+  scope :subscribed,  -> { where(state: 'subscribed') }
+  scope :paid,        -> do
     where{
-      ((item_type == 'App::Design') & (item_id >> App::Design.where{ price > 0 }.pluck(:id))) |
-      ((item_type == 'AddonPlan') & (item_id >> AddonPlan.where{ price > 0 }.pluck(:id)))
+      ((item_type == 'App::Design') & (item_id >> App::Design.paid.pluck(:id))) |
+      ((item_type == 'AddonPlan') & (item_id >> AddonPlan.joins(:addon).paid.pluck("addon_plans.id")))
     }
   end
 

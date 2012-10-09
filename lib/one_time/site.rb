@@ -7,10 +7,10 @@ module OneTime
         scheduled, delay = 0, 5
         ::Site.active.find_each(batch_size: 100) do |site|
           if options[:loaders]
-            ::Site::Loader.delay(priority: 200, run_at: delay.seconds.from_now).update_all_modes!(site.id, touch: false, purge: false)
+            ::Service::Loader.delay(priority: 200, run_at: delay.seconds.from_now).update_all_modes!(site.id, touch: false, purge: false)
           end
           if options[:settings]
-            ::Site::Settings.delay(priority: 200, run_at: delay.seconds.from_now).update_all_types!(site.id, touch: false, purge: false)
+            ::Service::Settings.delay(priority: 200, run_at: delay.seconds.from_now).update_all_types!(site.id, touch: false, purge: false)
           end
 
           scheduled += 1

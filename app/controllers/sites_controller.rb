@@ -36,11 +36,11 @@ class SitesController < ApplicationController
 
   # POST /sites
   def create
-    manager = Service::Site.build_site(params[:site].merge(user: current_user, remote_ip: request.remote_ip))
-    @site   = manager.site
+    service = Service::Site.build_site(params[:site].merge(user: current_user, remote_ip: request.remote_ip))
+    @site   = service.site
 
     respond_with(@site) do |format|
-      if manager.save
+      if service.save
         format.html { redirect_to :sites }
       else
         format.html { render :new }

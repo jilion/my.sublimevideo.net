@@ -22,17 +22,7 @@ module SiteModules::Scope
     scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
 
     # addons
-    # scope :with_addon_active, ->(category, name) {
-    #   includes(:addons).where{ addonships.state >> Addons::Addonship::ACTIVE_STATES } \
-    #   .where{ (addons.category == category) & (addons.name == name) }
-    # }
-    scope :with_out_of_trial_addons, -> { includes(:addons).merge(Addons::Addonship.out_of_trial) }
-    scope :paying,                   -> { includes(:addons).merge(Addons::Addonship.subscribed).merge(Addons::Addon.paid) }
-    # def addons
-    #   addon_ids = addon_plans.pluck(:addon_id)
-    #   puts addon_plan_ids.inspect
-    #   Addon.where{ id >> addon_ids }
-    # end
+    scope :paying, -> { includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
 
     # admin
     scope :user_id, ->(user_id) { where(user_id: user_id) }

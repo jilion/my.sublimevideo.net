@@ -195,7 +195,7 @@ class User < ActiveRecord::Base
   end
 
   def billable?
-    billable_items.subscribed.paid.count > 0
+    sites.not_archived.paying.count > 0
   end
 
   def name_or_email

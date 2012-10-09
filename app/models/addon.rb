@@ -14,10 +14,12 @@ class Addon < ActiveRecord::Base
 
   before_validation ->(addon) { addon.context = [] }, unless: :context?
 
-  scope :_name,     ->(*names) { where{ name >> names } }
-
   def self.get(name)
-    _name(name.to_s).first
+    where(name: name).first
+  end
+
+  def free_plan
+    plans.where(price: 0).first
   end
 
   def beta?

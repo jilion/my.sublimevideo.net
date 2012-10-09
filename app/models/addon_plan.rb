@@ -14,8 +14,7 @@ class AddonPlan < ActiveRecord::Base
   validates :works_with_stable_app, inclusion: [true, false]
   validates :price, numericality: true
 
-  scope :not_beta, -> { where{ availability != 'beta' } }
-  scope :paid,     -> { not_beta.where{ price > 0 } }
+  scope :paid, -> { includes(:addon).where{ (addon.version == 'stable') & (price > 0) } }
 
   def self.get(addon_name, addon_plan_name)
     includes(:addon).where { (addon.name == addon_name) & (name == addon_plan_name) }.first

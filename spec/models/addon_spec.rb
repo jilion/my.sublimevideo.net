@@ -11,7 +11,7 @@ describe Addon do
     [:name, :design_dependent, :version, :context].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
-    it { should ensure_inclusion_of(:design_dependent).in_array([true, false]) }
+    # it { should ensure_inclusion_of(:design_dependent).in_array([true, false]) }
     it { should ensure_inclusion_of(:version).in_array(%w[stable beta]) }
   end
 
@@ -24,19 +24,23 @@ describe Addon do
     it { should be_valid }
   end
 
-  describe 'Scopes' do
+  describe '.get' do
     before do
-      @logo_addon  = create(:addon, name: 'logo')
-      @stats_addon = create(:addon, name: 'stats')
+      @logo_addon = create(:addon, name: 'logo')
     end
 
-    describe '._name' do
-      it { described_class._name('logo').should =~ [@logo_addon] }
-    end
+    it { described_class.get('logo').should eq @logo_addon }
   end
 
-  describe '.get' do
-    it { described_class.get('logo').should eq @logo_addon }
+  describe '#free_plan' do
+    before do
+      @addon = create(:addon)
+      @free_plan  = create(:addon_plan, addon: @addon, price: 0)
+      @paid_plan1 = create(:addon_plan, addon: @addon, price: 995)
+      @free_plan2 = create(:addon_plan, addon: @addon, price: 1995)
+    end
+
+    it { @addon.free_plan.should eq @free_plan }
   end
 
   describe '#beta?' do

@@ -31,106 +31,6 @@ describe BillableItem do
     it { should be_valid }
   end
 
-  # describe 'State Machine' do
-
-  #   describe '#start_beta' do
-  #     %w[inactive].each do |initial_state|
-  #       let(:addonship) { build(:addonship, state: initial_state) }
-
-  #       it "change the state from #{initial_state} to 'beta'" do
-  #         addonship.start_beta
-  #         addonship.state.should eq 'beta'
-  #       end
-
-  #       it 'create a new Addons::AddonActivity' do
-  #         -> { addonship.start_beta }.should create_an_addon_activity.in_state('beta')
-  #       end
-  #     end
-  #   end
-
-  #   describe '#start_trial' do
-  #     %w[inactive beta].each do |initial_state|
-  #       let(:addonship) { build(:addonship, state: initial_state) }
-
-  #       it "change the state from #{initial_state} to 'trial'" do
-  #         addonship.start_trial
-  #         addonship.state.should eq 'trial'
-  #       end
-  #     end
-
-  #     it 'create a new Addons::AddonActivity' do
-  #       -> { addonship.start_trial }.should create_an_addon_activity.in_state('trial')
-  #     end
-
-  #     it 'sets trial_started_on if not set already' do
-  #       addonship = build(:addonship)
-  #       expect { addonship.start_trial }.to change(addonship, :trial_started_on)
-  #       expect { addonship.cancel }.to_not change(addonship, :trial_started_on)
-  #       expect { addonship.start_trial }.to_not change(addonship, :trial_started_on)
-  #     end
-  #   end
-
-  #   describe '#subscribe' do
-  #     %w[inactive beta trial suspended sponsored].each do |initial_state|
-  #       let(:addonship) { build(:addonship, state: initial_state) }
-
-  #       it "change the state from #{initial_state} to 'subscribed'" do
-  #         addonship.subscribe
-  #         addonship.state.should eq 'subscribed'
-  #       end
-
-  #       it 'create a new Addons::AddonActivity' do
-  #         -> { addonship.subscribe }.should create_an_addon_activity.in_state('subscribed')
-  #       end
-  #     end
-  #   end
-
-  #   describe '#cancel' do
-  #     %w[beta trial subscribed suspended sponsored].each do |initial_state|
-  #       let(:addonship) { build(:addonship, state: initial_state) }
-
-  #       it "change the state from #{initial_state} to 'inactive'" do
-  #         addonship.cancel
-  #         addonship.state.should eq 'inactive'
-  #       end
-
-  #       it 'create a new Addons::AddonActivity' do
-  #         -> { addonship.cancel }.should create_an_addon_activity.in_state('inactive')
-  #       end
-  #     end
-  #   end
-
-  #   describe '#suspend' do
-  #     %w[subscribed].each do |initial_state|
-  #       let(:addonship) { build(:addonship, state: initial_state) }
-
-  #       it "change the state from #{initial_state} to 'suspended'" do
-  #         addonship.suspend
-  #         addonship.state.should eq 'suspended'
-  #       end
-
-  #       it 'create a new Addons::AddonActivity' do
-  #         -> { addonship.suspend }.should create_an_addon_activity.in_state('suspended')
-  #       end
-  #     end
-  #   end
-
-  #   describe '#sponsor' do
-  #     %w[inactive beta trial subscribed suspended].each do |initial_state|
-  #       let(:addonship) { build(:addonship, state: initial_state) }
-
-  #       it "change the state from #{initial_state} to 'sponsored'" do
-  #         addonship.sponsor
-  #         addonship.state.should eq 'sponsored'
-  #       end
-
-  #       it 'create a new Addons::AddonActivity' do
-  #         -> { addonship.sponsor }.should create_an_addon_activity.in_state('sponsored')
-  #       end
-  #     end
-  #   end
-  # end
-
   describe 'Scopes', :addons do
     let(:site) { create(:site) }
     before do
@@ -138,43 +38,24 @@ describe BillableItem do
       @billable_item2 = create(:billable_item, site: site, item: @logo_addon_plan_2, state: 'subscribed')
       @billable_item3 = create(:billable_item, site: site, item: @stats_addon_plan_1, state: 'sponsored')
       @billable_item4 = create(:billable_item, site: site, item: @support_addon_plan_2, state: 'suspended')
-    end
+      @billable_item5 = create(:billable_item, site: site, item: @classic_design, state: 'subscribed')
 
-    pending '.except_addon_ids' do
-      it { described_class.except_addon_ids(nil).should =~ [@billable_item1, @billable_item2, @billable_item3, @billable_item4, @billable_item5, @billable_item6] }
-      it { described_class.except_addon_ids(@logo_addon_2.id).should =~ [@billable_item1, @billable_item3, @billable_item4, @billable_item5] }
-    end
-
-    pending '.out_of_trial addons' do
-      it { described_class.out_of_trial.should =~ [@billable_item2] }
+      addon_plan = create(:addon_plan, addon: create(:addon, version: 'beta'), price: 9999999)
+      @billable_item6 = create(:billable_item, site: site, item: addon_plan, state: 'subscribed')
     end
 
     describe '.active addons' do
-      it { described_class.active.should =~ [@billable_item1, @billable_item2, @billable_item3] }
+      it { described_class.active.should =~ [@billable_item1, @billable_item2, @billable_item3, @billable_item5, @billable_item6] }
     end
 
     describe '.subscribed addons' do
-      it { described_class.subscribed.should =~ [@billable_item1, @billable_item2] }
+      it { described_class.subscribed.should =~ [@billable_item1, @billable_item2, @billable_item5, @billable_item6] }
     end
 
     describe '.paid addons' do
-      it { described_class.paid.should =~ [@billable_item2, @billable_item4] }
+      it { described_class.paid.should =~ [@billable_item2, @billable_item4, @billable_item5] }
     end
   end
-
-  # describe '#price' do
-  #   %w[inactive beta trial suspended sponsored].each do |state|
-  #     it "sets the price to 0 when in the #{state} state" do
-  #       build(:addonship, state: state).price.should eq 0
-  #     end
-  #   end
-
-  #   %w[subscribed].each do |state|
-  #     it "gets the addon's price when in the #{state} state" do
-  #       build(:addonship, state: state).price.should eq 999
-  #     end
-  #   end
-  # end
 
   describe '#active?' do
     %w[suspended].each do |state|

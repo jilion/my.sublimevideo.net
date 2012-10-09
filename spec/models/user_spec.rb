@@ -752,24 +752,20 @@ describe User do
       end
     end
 
-    describe "#billable?" do
-      before do
-        @billable_user = create(:user).tap { |user| @billable_site = create(:site, user: user) }
-        @non_billable_user1 = create(:user).tap { |user| @non_billable_site1 = create(:site, user: user) }
-        @non_billable_user2 = create(:user).tap { |user| @non_billable_site2 = create(:site, user: user) }
+    describe '#billable?' do
+      let(:user) { create(:user) }
 
-        create(:subscribed_addonship, site: @billable_site)
-        create(:inactive_addonship, site: @non_billable_site1)
-        create(:beta_addonship, site: @non_billable_site1)
-        create(:trial_addonship, site: @non_billable_site1)
-        create(:suspended_addonship, site: @non_billable_site1)
-        create(:sponsored_addonship, site: @non_billable_site1)
-        create(:subscribed_addonship, site: @non_billable_site2, addon: create(:addon, price: 0))
+      it 'counts the # of not archived sites currently paying, returns true if > 0' do
+        user.stub_chain(:sites, :not_archived, :paying, :count) { 1 }
+
+        user.should be_billable
       end
 
-      it { @billable_user.should be_billable }
-      it { @non_billable_user1.should_not be_billable }
-      it { @non_billable_user2.should_not be_billable }
+      it 'counts the # of not archived sites currently paying, returns true if <= 0' do
+        user.stub_chain(:sites, :not_archived, :paying, :count) { 0 }
+
+        user.should_not be_billable
+      end
     end
 
   end

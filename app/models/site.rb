@@ -54,22 +54,9 @@ class Site < ActiveRecord::Base
   has_one  :last_invoice, class_name: '::Invoice', order: 'created_at DESC'
 
   # Addons
-  has_many :billable_items, dependent: :destroy do
-    def active
-      merge(BillableItem.active).scoped
-    end
-
-    def subscribed
-      merge(BillableItem.subscribed).scoped
-    end
-
-    def out_of_trial
-      merge(BillableItem.out_of_trial).scoped
-    end
-  end
+  has_many :billable_items
   has_many :app_designs, through: :billable_items, source: :item, source_type: 'App::Design'
   has_many :addon_plans, through: :billable_items, source: :item, source_type: 'AddonPlan'
-  accepts_nested_attributes_for :billable_items, allow_destroy: true
 
   has_many :billable_item_activities, order: 'created_at ASC'
 

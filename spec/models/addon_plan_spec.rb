@@ -11,8 +11,8 @@ describe AddonPlan do
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
+    # it { should ensure_inclusion_of(:works_with_stable_app).in_array([true, false]) }
     it { should ensure_inclusion_of(:availability).in_array(%w[hidden public custom]) }
-    it { should ensure_inclusion_of(:works_with_stable_app).in_array([true, false]) }
 
     it { should validate_numericality_of(:price) }
   end
@@ -32,13 +32,15 @@ describe AddonPlan do
     end
   end
 
-  pending 'Scopes' do
-    describe '.not_beta' do
-      it { described_class.not_beta.should =~ [@free_public_addon, @public_addon, @custom_addon] }
+  describe 'Scopes' do
+    before do
+      create(:addon_plan, addon: create(:addon, version: 'beta'), price: 999)
+      @addon_plan1 = create(:addon_plan, addon: create(:addon, version: 'stable'), price: 0)
+      @addon_plan2 = create(:addon_plan, addon: create(:addon, version: 'stable'), price: 999)
     end
 
     describe '.paid' do
-      it { described_class.paid.should =~ [@public_addon, @custom_addon] }
+      it { described_class.paid.should =~ [@addon_plan2] }
     end
   end
 
