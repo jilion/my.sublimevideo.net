@@ -16,11 +16,11 @@ class Player::ComponentVersion < ActiveRecord::Base
   end
 
   def to_param
-    version_for_url
+    version_for_url || id
   end
 
   def version_for_url
-    version.gsub /\./, '_'
+    version && version.gsub(/\./, '_')
   end
 
   def self.find_by_version!(version_for_url)
