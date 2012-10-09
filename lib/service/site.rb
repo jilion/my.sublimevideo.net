@@ -10,22 +10,6 @@ module Service
         new params.delete(:user).sites.new(params)
       end
 
-      def activate_addonships_out_of_trial!
-        ::Site.with_out_of_trial_addons.find_each(batch_size: 100) do |site|
-          delay.activate_addonships_out_of_trial_for_site!(site.id)
-        end
-      end
-
-      def activate_addonships_out_of_trial_for_site!(site_id)
-        site = Site.find(site_id)
-
-        ::Site.transaction do
-          site.addons.out_of_trial.each do |addon|
-            new(site).activate_addonship!(addon)
-          end
-        end
-      end
-
     end
 
     def save
@@ -54,10 +38,8 @@ module Service
           next if site.app_design_is_active?(new_app_design)
 
           if new_app_design_id == '0'
-            # puts "Deactivate #{new_app_design.inspect}"
             site.billable_items.where(item: new_app_design).destroy
           else
-            # puts "Activate #{new_app_design.inspect}"
             site.billable_items.build({ item: new_app_design, state: new_billable_item_state(new_app_design) }, as: :admin)
           end
         end
@@ -66,13 +48,30 @@ module Service
 
     def update_billable_addon_plans(new_addon_plans)
       new_addon_plans.each do |new_addon_name, new_addon_plan_id|
-        if new_addon_plan = AddonPlan.find(new_addon_plan_id)
+        if new_addon_plan = AddonPlan.find(new_addon_plan_id.to_i)
           next if site.addon_plan_is_active?(new_addon_plan)
 
           site.billable_items.addon_plans.where{ item_id >> new_addon_plan.addon.plans }.destroy_all
-          # puts "Activate #{new_addon_plan.inspect}"
           site.billable_items.build({ item: new_addon_plan, state: new_billable_item_state(new_addon_plan) }, as: :admin)
         end
+      end
+    end
+
+    def opt_out_from_grandfather_plan
+      ::Site.transaction do
+        set_default_app_designs
+        site.billable_items.build({ item: AddonPlan.get('logo', 'disabled'), state: 'trial' }, as: :admin)
+        site.billable_items.build({ item: AddonPlan.get('stats', 'realtime'), state: 'trial' }, as: :admin)
+        site.billable_items.build({ item: AddonPlan.get('lightbox', 'standard'), state: 'subscribed' }, as: :admin)
+        site.billable_items.build({ item: AddonPlan.get('api', 'standard'), state: 'subscribed' }, as: :admin)
+        if site.plan.name == 'premium'
+          site.billable_items.build({ item: AddonPlan.get('support', 'vip'), state: 'trial' }, as: :admin)
+        else
+          site.billable_items.build({ item: AddonPlan.get('support', 'standard'), state: 'subscribed' }, as: :admin)
+        end
+        site.plan_id = nil
+
+        site.save
       end
     end
 
@@ -87,9 +86,9 @@ module Service
     end
 
     def set_default_app_designs
-      site.billable_items.build({ item: App::Design.get('classic'), state: 'subscribed' }, as: :admin)
-      site.billable_items.build({ item: App::Design.get('light'), state: 'subscribed' }, as: :admin)
-      site.billable_items.build({ item: App::Design.get('flat'), state: 'subscribed' }, as: :admin)
+      site.billable_items.build({ item: App::Design.get('classic'), state: 'beta' }, as: :admin)
+      site.billable_items.build({ item: App::Design.get('light'), state: 'beta' }, as: :admin)
+      site.billable_items.build({ item: App::Design.get('flat'), state: 'beta' }, as: :admin)
     end
 
     def set_default_addon_plans

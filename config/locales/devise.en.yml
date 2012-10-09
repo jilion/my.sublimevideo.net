@@ -24,11 +24,11 @@ en:
       send_instructions: 'You will receive an email with instructions to reset your password in a few minutes.'
       updated: 'Your password was changed successfully. You are now signed in.'
       updated_not_active: 'Your password was changed successfully.'
-      send_paranoid_instructions: "If your e-mail exists on our database, you will receive a password recovery link on your e-mail"
+      send_paranoid_instructions: "If your email exists on our database, you will receive a password recovery link on your email"
     confirmations:
       user:
         send_instructions: 'You will receive an email with instructions to confirm your account in a few minutes.'
-        send_paranoid_instructions: 'If your e-mail exists on our database, you will receive an email with instructions about how to confirm your account in a few minutes.'
+        send_paranoid_instructions: 'If your email exists on our database, you will receive an email with instructions about how to confirm your account in a few minutes.'
         confirmed: 'Your account email was successfully confirmed.'
     registrations:
       signed_up: 'Welcome! You have signed up successfully.'

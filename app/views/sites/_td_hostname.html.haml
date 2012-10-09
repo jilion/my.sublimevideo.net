@@ -9,7 +9,8 @@
     - if need_subdomain?(site)
       = tooltip_box href: edit_site_path(site), class: "warning" do
         %span.p= raw t 'site.status.need_subdomain', hostname: site.hostname_with_subdomain_needed
-    .spacer
+    - if site.plan_id?
+      .plan= link_to "#{site.plan.title} plan", site_addons_path(site)
     .token= "##{site.token}"
     .actions
       %select.site_actions

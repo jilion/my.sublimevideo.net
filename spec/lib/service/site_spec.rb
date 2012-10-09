@@ -63,7 +63,6 @@ describe Service::Site do
         manager.save
       end
     end
-
   end
 
 end

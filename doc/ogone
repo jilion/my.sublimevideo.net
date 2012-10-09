@@ -68,14 +68,14 @@ Transaction feedback:
     Dynamic Parameters: All except AAVADDRESS and AAVZIP
 
 
-Transaction e-mails:
-  E-mails to the merchant:
-    E-mail address(es) for transaction-related e-mails: zeno@jilion.com ?
-    Receive transaction confirmation e-mails: No
-    Receive e-mails in case of offline transaction status changes: No
+Transaction emails:
+  Emails to the merchant:
+    Email address(es) for transaction-related emails: zeno@jilion.com ?
+    Receive transaction confirmation emails: No
+    Receive emails in case of offline transaction status changes: No
 
-  E-mails to the customer:
-    I want Ogone to send a transaction confirmation e-mail to the customer: FALSE
+  Emails to the customer:
+    I want Ogone to send a transaction confirmation email to the customer: FALSE
 
 
 Test Info:

@@ -198,6 +198,13 @@ MySublimeVideo::Application.routes.draw do
     end
 
     resources :sites, except: [:show] do
+      resource :plan, only: [] do
+        collection do
+          get :opt_out
+          post :confirm_opt_out
+        end
+      end
+
       resources :addons, only: [:index] do
         collection do
           put :update_all
