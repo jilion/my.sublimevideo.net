@@ -15,35 +15,10 @@ module Service
     end
 
     def for_month(date)
-      last_month_billable_item_activities = site.billable_item_activities.where{ created_at >> date.all_month }
+      handle_items_not_yet_canceled_and_created_before_month_of(date)
+      handle_items_subscribed_during_month_of(date)
 
-      last_month_billable_item_activities.where(state: 'canceled').each do |activity|
-        next if activity.item.free?
-
-        if start_activity = site.billable_item_activities.where(item_type: activity.item_type, item_id: activity.item_id).where{ created_at < activity.created_at }.where(state: 'subscribed').order('created_at DESC').first
-          add_invoice_item(build_invoice_item(activity.item, [start_activity.created_at, date.beginning_of_month].max, activity.created_at))
-        end
-      end
-
-      last_month_billable_item_activities.where(state: 'subscribed').each do |activity|
-        next if activity.item.free?
-
-        end_activity = site.billable_item_activities.where(item_type: activity.item_type, item_id: activity.item_id).where{ created_at >> (activity.created_at..date.end_of_month) }.where(state: 'canceled').order('created_at ASC').first
-        add_invoice_item(build_invoice_item(activity.item, activity.created_at, end_activity.try(:created_at) || date.end_of_month))
-      end
-
-      handle_items_created_before_this_month_and_not_yet_canceled(date)
-
-      # puts invoice.invoice_items.inspect
       self
-    end
-
-    def handle_items_created_before_this_month_and_not_yet_canceled(date)
-      site.billable_item_activities.where{ created_at < date.beginning_of_month }.where(state: 'subscribed').each do |activity|
-        unless site.billable_item_activities.where(item_type: activity.item_type, item_id: activity.item_id).where{ created_at > activity.created_at }.where(state: 'canceled').exists?
-          add_invoice_item(build_invoice_item(activity.item, date.beginning_of_month, date.end_of_month))
-        end
-      end
     end
 
     def add_invoice_item(invoice_item)
@@ -56,10 +31,40 @@ module Service
       set_balance_deduction_amount
       set_amount
 
-      invoice.save!
+      invoice.save
     end
 
     private
+
+    def find_start_activity_for_activity(activity)
+      item_for_activity(activity).where{ created_at < activity.created_at }.where(state: 'subscribed').order('created_at DESC').first
+    end
+
+    def find_end_activity_for_activity(activity, date)
+      item_for_activity(activity).where{ created_at >> (activity.created_at..date.end_of_month) }.where(state: %w[canceled suspended sponsored]).order('created_at ASC').first
+    end
+
+    def item_for_activity(activity)
+      site.billable_item_activities.where(item_type: activity.item_type, item_id: activity.item_id)
+    end
+
+    def handle_items_not_yet_canceled_and_created_before_month_of(date)
+      site.billable_item_activities.where{ created_at < date.beginning_of_month }.where(state: 'subscribed').order('created_at ASC, item_type ASC, item_id ASC').each do |activity|
+        end_activity = find_end_activity_for_activity(activity, date)
+
+        if !end_activity || date.all_month.cover?(end_activity.created_at)
+          add_invoice_item(build_invoice_item(activity.item, date.beginning_of_month, find_end_activity_for_activity(activity, date).try(:created_at) || date.end_of_month))
+        end
+      end
+    end
+
+    def handle_items_subscribed_during_month_of(date)
+      site.billable_item_activities.where{ created_at >> date.all_month }.where(state: 'subscribed').order('created_at ASC, item_type ASC, item_id ASC').each do |activity|
+        next if activity.item.free?
+
+        add_invoice_item(build_invoice_item(activity.item, activity.created_at, find_end_activity_for_activity(activity, date).try(:created_at) || date.end_of_month))
+      end
+    end
 
     def build_invoice_item(item, started_at, ended_at)
       InvoiceItem.const_get(item.class.to_s.sub(/::/, '')).new({

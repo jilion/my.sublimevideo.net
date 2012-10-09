@@ -112,12 +112,14 @@ describe Service::Invoice do
       end
     end
 
-    describe 'billable items with multiple periods [beta, trial, subscribed], started during the last month' do
+    describe 'billable item with multiple periods [beta, trial, subscribed], started during the last month' do
       before do
         create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'beta', created_at: 2.months.ago.beginning_of_month)
         create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'canceled', created_at: 2.months.ago.beginning_of_month + 5.days)
         create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'trial', created_at: 1.month.ago.beginning_of_month + 5.days)
-        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'canceled', created_at: 1.month.ago.beginning_of_month + 10.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'canceled', created_at: 1.month.ago.beginning_of_month + 7.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'trial', created_at: 1.month.ago.beginning_of_month + 9.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'canceled', created_at: 1.month.ago.beginning_of_month + 12.days)
         create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 1.month.ago.beginning_of_month + 15.days)
         create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'canceled', created_at: Time.now.utc)
       end
@@ -140,6 +142,162 @@ describe Service::Invoice do
           invoice.invoice_items[0].ended_at.should eq 1.month.ago.end_of_month
           invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
           invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * (days_in_month(1.month.ago) - 15)).round
+        end
+      end
+    end
+
+    describe 'billable item sponsored during the last month' do
+      before do
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 2.months.ago.beginning_of_month)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'sponsored', created_at: 1.month.ago.beginning_of_month + 15.days)
+      end
+
+      context 'for 1 month ago' do
+        it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
+          invoice = described_class.build_for_month(1.month.ago, site: site).invoice
+          invoice.invoice_items.should have(1).item
+
+          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+
+          invoice.invoice_items[0].started_at.should eq 1.month.ago.beginning_of_month
+          invoice.invoice_items[0].ended_at.should eq 1.month.ago.beginning_of_month + 15.days
+          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
+          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * 15).round
+        end
+      end
+    end
+
+    describe 'billable item suspended and then subscribed during the last month' do
+      before do
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 2.months.ago.beginning_of_month)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'suspended', created_at: 1.month.ago.beginning_of_month + 10.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 1.month.ago.beginning_of_month + 15.days)
+      end
+
+      context 'for 1 month ago' do
+        it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
+          invoice = described_class.build_for_month(1.month.ago, site: site).invoice
+          invoice.invoice_items.should have(2).item
+
+          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+          invoice.invoice_items[1].item.should eq public_addon_plan_paid
+
+          invoice.invoice_items[0].started_at.should eq 1.month.ago.beginning_of_month
+          invoice.invoice_items[0].ended_at.should eq 1.month.ago.beginning_of_month + 10.days
+          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
+          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * 10).round
+
+          invoice.invoice_items[1].started_at.should eq 1.month.ago.beginning_of_month + 15.days
+          invoice.invoice_items[1].ended_at.should eq 1.month.ago.end_of_month
+          invoice.invoice_items[1].price.should eq public_addon_plan_paid.price
+          invoice.invoice_items[1].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * (days_in_month(1.month.ago) - 15)).round
+        end
+      end
+    end
+
+    describe 'full example' do
+      before do
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'beta', created_at: 6.months.ago.beginning_of_month + 2.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'trial', created_at: 5.months.ago.beginning_of_month + 5.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 4.months.ago.beginning_of_month + 5.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'canceled', created_at: 4.month.ago.beginning_of_month + 10.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 3.months.ago.beginning_of_month + 2.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'suspended', created_at: 2.month.ago.beginning_of_month + 10.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'sponsored', created_at: 1.month.ago.beginning_of_month + 15.days)
+
+        create(:billable_item_activity, site: site, item: custom_addon_plan_paid, state: 'beta', created_at: 6.months.ago.beginning_of_month + 2.days)
+        create(:billable_item_activity, site: site, item: custom_addon_plan_paid, state: 'trial', created_at: 5.months.ago.beginning_of_month + 5.days)
+        create(:billable_item_activity, site: site, item: custom_addon_plan_paid, state: 'subscribed', created_at: 4.months.ago.beginning_of_month + 3.days)
+        create(:billable_item_activity, site: site, item: custom_addon_plan_paid, state: 'suspended', created_at: 3.month.ago.beginning_of_month + 10.days)
+        create(:billable_item_activity, site: site, item: custom_addon_plan_paid, state: 'subscribed', created_at: 3.months.ago.beginning_of_month + 20.days)
+        create(:billable_item_activity, site: site, item: custom_addon_plan_paid, state: 'canceled', created_at: 2.month.ago.beginning_of_month + 10.days)
+        create(:billable_item_activity, site: site, item: custom_addon_plan_paid, state: 'sponsored', created_at: 1.month.ago.beginning_of_month + 15.days)
+      end
+
+      context 'for 6 months ago' do
+        it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
+          invoice = described_class.build_for_month(6.month.ago, site: site).invoice
+          invoice.invoice_items.should be_empty
+        end
+      end
+
+      context 'for 5 months ago' do
+        it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
+          invoice = described_class.build_for_month(5.month.ago, site: site).invoice
+          invoice.invoice_items.should be_empty
+        end
+      end
+
+      context 'for 4 month ago' do
+        it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
+          invoice = described_class.build_for_month(4.month.ago, site: site).invoice
+          invoice.invoice_items.should have(2).item
+
+          invoice.invoice_items[0].item.should eq custom_addon_plan_paid
+          invoice.invoice_items[1].item.should eq public_addon_plan_paid
+
+          invoice.invoice_items[0].started_at.should eq 4.month.ago.beginning_of_month + 3.days
+          invoice.invoice_items[0].ended_at.should eq 4.month.ago.end_of_month
+          invoice.invoice_items[0].price.should eq custom_addon_plan_paid.price
+          invoice.invoice_items[0].amount.should eq ((custom_addon_plan_paid.price.to_f / days_in_month(4.month.ago)) * (days_in_month(4.month.ago) - 3)).round
+
+          invoice.invoice_items[1].started_at.should eq 4.month.ago.beginning_of_month + 5.days
+          invoice.invoice_items[1].ended_at.should eq 4.month.ago.beginning_of_month + 10.days
+          invoice.invoice_items[1].price.should eq public_addon_plan_paid.price
+          invoice.invoice_items[1].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(4.month.ago)) * 5).round
+        end
+      end
+
+      context 'for 3 month ago' do
+        it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
+          invoice = described_class.build_for_month(3.month.ago, site: site).invoice
+          invoice.invoice_items.should have(3).item
+
+          invoice.invoice_items[0].item.should eq custom_addon_plan_paid
+          invoice.invoice_items[1].item.should eq public_addon_plan_paid
+          invoice.invoice_items[2].item.should eq custom_addon_plan_paid
+
+          invoice.invoice_items[0].started_at.should eq 3.month.ago.beginning_of_month
+          invoice.invoice_items[0].ended_at.should eq 3.month.ago.beginning_of_month + 10.days
+          invoice.invoice_items[0].price.should eq custom_addon_plan_paid.price
+          invoice.invoice_items[0].amount.should eq ((custom_addon_plan_paid.price.to_f / days_in_month(3.month.ago)) * 10).round
+
+          invoice.invoice_items[1].started_at.should eq 3.month.ago.beginning_of_month + 2.days
+          invoice.invoice_items[1].ended_at.should eq 3.month.ago.end_of_month
+          invoice.invoice_items[1].price.should eq public_addon_plan_paid.price
+          invoice.invoice_items[1].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(3.month.ago)) * (days_in_month(3.month.ago) - 2)).round
+
+          invoice.invoice_items[2].started_at.should eq 3.month.ago.beginning_of_month + 20.days
+          invoice.invoice_items[2].ended_at.should eq 3.month.ago.end_of_month
+          invoice.invoice_items[2].price.should eq custom_addon_plan_paid.price
+          invoice.invoice_items[2].amount.should eq ((custom_addon_plan_paid.price.to_f / days_in_month(3.month.ago)) * (days_in_month(3.month.ago) - 20)).round
+        end
+      end
+
+      context 'for 2 month ago' do
+        it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
+          invoice = described_class.build_for_month(2.month.ago, site: site).invoice
+          invoice.invoice_items.should have(2).item
+
+          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+          invoice.invoice_items[1].item.should eq custom_addon_plan_paid
+
+          invoice.invoice_items[0].started_at.should eq 2.month.ago.beginning_of_month
+          invoice.invoice_items[0].ended_at.should eq 2.month.ago.beginning_of_month + 10.days
+          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
+          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(2.month.ago)) * 10).round
+
+          invoice.invoice_items[1].started_at.should eq 2.month.ago.beginning_of_month
+          invoice.invoice_items[1].ended_at.should eq 2.month.ago.beginning_of_month + 10.days
+          invoice.invoice_items[1].price.should eq custom_addon_plan_paid.price
+          invoice.invoice_items[1].amount.should eq ((custom_addon_plan_paid.price.to_f / days_in_month(2.month.ago)) * 10).round
+        end
+      end
+
+      context 'for 1 month ago' do
+        it 'creates 1 period, starting at the beginning of the month and ending on the 15th day' do
+          invoice = described_class.build_for_month(1.month.ago, site: site).invoice
+          invoice.invoice_items.should be_empty
         end
       end
     end
