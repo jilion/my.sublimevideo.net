@@ -42,6 +42,7 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
     AdminSublimeVideo.stats["site_stats"]  = new AdminSublimeVideo.Collections.SiteStatsStats(this.selectedSeriesFor('site_stats'))
     AdminSublimeVideo.stats["site_usages"] = new AdminSublimeVideo.Collections.SiteUsagesStats(this.selectedSeriesFor('site_usages'))
     AdminSublimeVideo.stats["tweets"]      = new AdminSublimeVideo.Collections.TweetsStats(this.selectedSeriesFor('tweets'))
+    AdminSublimeVideo.totals = {}
 
   initHelpers: ->
     AdminSublimeVideo.chartsHelper = new AdminSublimeVideo.Helpers.ChartsHelper()

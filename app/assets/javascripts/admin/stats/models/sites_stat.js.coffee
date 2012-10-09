@@ -33,10 +33,10 @@ class AdminSublimeVideo.Collections.SitesStats extends AdminSublimeVideo.Collect
         when 'passive' then 'Passive sites'
         when 'all' then 'Sites'
 
-  customPluck: (selected) ->
+  customPluck: (selected, from = null, to = null) ->
     array = []
-    from  = this.at(0).id
-    to    = this.at(this.length - 1).id
+    from  ||= this.at(0).id
+    to    ||= this.at(this.length - 1).id
 
     while from <= to
       stat = this.get(from)

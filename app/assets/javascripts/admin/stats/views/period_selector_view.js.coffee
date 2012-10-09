@@ -19,9 +19,7 @@ class AdminSublimeVideo.Views.PeriodSelectorView extends Backbone.View
         when 'months' then this.month()
         when 'days' then this.day()
       newStart = _.max([newStart, @options.period.endTime() - (newStartScale * preset[1])])
-      console.log @options.period
       @options.period.set(start: new Date(newStart))
-      console.log @options.period
 
     AdminSublimeVideo.statsRouter.updateUrl('p', "#{newStart}-#{newEnd.getTime()}")
     AdminSublimeVideo.graphView.render()
