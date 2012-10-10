@@ -4,10 +4,9 @@ class App::ComponentVersionUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 
   process :set_content_type
-  # process :store_zip_content
 
   before :store, :store_zip_content
-  after :remove, :remove_zip_content
+  before :remove, :remove_zip_content
 
   def fog_directory
     S3.buckets['player']
@@ -20,7 +19,7 @@ class App::ComponentVersionUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored
   # # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    Rails.env.test? ? "uploads/app/b" : "b"
+    Rails.env.test? ? "uploads/app/c" : "c"
   end
 
   # Add a white list of extensions which are allowed to be uploaded.
@@ -45,7 +44,7 @@ class App::ComponentVersionUploader < CarrierWave::Uploader::Base
   end
 
   def zip_content_upload_path
-    Pathname.new("b/#{model.token}/#{model.version}")
+    Pathname.new("c/#{model.token}/#{model.version}")
   end
 
 end

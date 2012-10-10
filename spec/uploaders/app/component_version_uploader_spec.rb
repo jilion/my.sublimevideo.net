@@ -48,7 +48,7 @@ describe App::ComponentVersionUploader, :fog_mock do
     it "uploads zip content on sublimevideo S3 bucket" do
       App::ComponentVersionZipContentUploader.should_receive(:store_zip_content).with(
         kind_of(String),
-        Pathname.new('b/e/2.0.0')
+        Pathname.new('c/e/2.0.0')
       )
       uploader.store!(zip)
     end
@@ -59,7 +59,7 @@ describe App::ComponentVersionUploader, :fog_mock do
 
     it "remove zip content on sublimevideo S3 bucket" do
       App::ComponentVersionZipContentUploader.should_receive(:remove_zip_content).with(
-        Pathname.new('b/e/2.0.0')
+        Pathname.new('c/e/2.0.0')
       )
       uploader.remove!
     end
