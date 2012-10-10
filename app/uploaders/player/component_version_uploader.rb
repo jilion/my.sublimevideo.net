@@ -7,7 +7,7 @@ class Player::ComponentVersionUploader < CarrierWave::Uploader::Base
   # process :store_zip_content
 
   before :store, :store_zip_content
-  after :remove, :remove_zip_content
+  before :remove, :remove_zip_content
 
   def fog_directory
     S3.buckets['player']

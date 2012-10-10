@@ -23,14 +23,14 @@ class Admin::Player::ComponentVersionsController < Admin::PlayerController
   def create
     @version = @component.versions.build(params[:version])
     @version.save
-    respond_with @version, location: admin_player_component_version_url(@component, @version)
+    respond_with @version, location: [:admin, @component]
   end
 
   # DELETE /app/components/:component_id/versions/:id
   def destroy
     @version = @component.versions.find_by_version!(params[:id])
     @version.destroy
-    respond_with @version, location: admin_player_component_versions_url(@component)
+    respond_with @version, location: [:admin, @component]
   end
 
 private
