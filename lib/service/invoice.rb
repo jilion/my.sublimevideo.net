@@ -9,8 +9,18 @@ module Service
         new attributes.delete(:site).invoices.new(attributes)
       end
 
-      def build_for_month(date, attributes)
-        build(attributes).for_month(date)
+      def build_for_month(date, site_id)
+        build(site: ::Site.find(site_id)).for_month(date)
+      end
+
+      def create_invoices_for_month(date)
+        ::Site.not_archived.find_each(batch_size: 100) do |site|
+          delay.create_for_month(date, site.id)
+        end
+      end
+
+      def create_for_month(date, site_id)
+        build_for_month(date, site_id).save
       end
     end
 
@@ -27,11 +37,13 @@ module Service
 
     def save
       set_invoice_items_amount
-      set_vat_rate_and_amount
-      set_balance_deduction_amount
-      set_amount
+      unless invoice.invoice_items_amount.zero?
+        set_vat_rate_and_amount
+        set_balance_deduction_amount
+        set_amount
 
-      invoice.save
+        invoice.save
+      end
     end
 
     private

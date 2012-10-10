@@ -1,6 +1,7 @@
 require_dependency 'notify'
 require_dependency 'service/site'
 require_dependency 'service/trial'
+require_dependency 'service/invoice'
 require_dependency 'service/usage'
 
 module RecurringJob
@@ -70,15 +71,16 @@ module RecurringJob
     end
 
     def invoices_processing(priority = PRIORITIES[:invoices])
-      Transaction.delay(priority: priority + 1, run_at: 5.minutes.from_now).charge_invoices
+      Service::Invoice.delay(priority: priority, run_at: Time.now.utc.next_month.beginning_of_month).create_invoices_for_month(1.month.ago)
+      Transaction.delay(priority: priority, run_at: Time.now.utc.next_month.beginning_of_month + 1.hour).charge_invoices
 
       delay_invoices_processing
     end
 
     def sites_processing(priority = PRIORITIES[:sites])
-      Service::Usage.delay(priority: priority).update_last_30_days_counters_for_not_archived_sites
-      Service::Usage.delay(priority: priority).set_first_billable_plays_at_for_not_archived_sites
       Service::Trial.delay(priority: priority).activate_billable_items_out_of_trial!
+      Service::Usage.delay(priority: priority).set_first_billable_plays_at_for_not_archived_sites
+      Service::Usage.delay(priority: priority).update_last_30_days_counters_for_not_archived_sites
 
       delay_sites_processing
     end

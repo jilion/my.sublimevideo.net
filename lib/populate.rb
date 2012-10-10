@@ -240,7 +240,6 @@ module Populate
       Populate.plans if Plan.all.empty?
 
       subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
-      # created_at_array = (2.months.ago.to_date..Date.today).to_a
 
       User.all.each do |user|
         BASE_SITES.each do |hostname|

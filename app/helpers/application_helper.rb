@@ -28,10 +28,6 @@ module ApplicationHelper
   end
 
   def display_amount(amount_in_cents, options = {})
-    if options[:vat] && current_user.vat?
-      vat_rate        = Vat.for_country(current_user.billing_country)
-      amount_in_cents = (amount_in_cents * (1.0 + vat_rate)).round
-    end
     number = amount_in_cents / 100.0
     number_to_currency(number, precision: (!options[:decimals] && number == number.to_i ? 0 : options[:decimals] || 2))
   end

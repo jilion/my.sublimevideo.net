@@ -551,20 +551,6 @@ describe User do
       end
     end
 
-    describe "#vat?" do
-      context "with Swiss user" do
-        subject { create(:user, billing_country: 'CH') }
-
-        its(:vat?) { should be_true }
-      end
-
-      context "with USA user" do
-        subject { create(:user, billing_country: 'US') }
-
-        its(:vat?) { should be_false }
-      end
-    end
-
     describe "#name_or_email" do
       context "user has no name" do
         subject { create(:user, name: nil, email: "john@doe.com") }

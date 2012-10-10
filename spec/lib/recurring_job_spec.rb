@@ -41,8 +41,10 @@ describe RecurringJob do
   end
 
   describe ".invoices_processing" do
-    it "delays 1 method" do
-      -> { described_class.invoices_processing }.should delay('%Transaction%charge_invoices%')
+    it "delays 2 methods" do
+      -> { described_class.invoices_processing }.should delay(%w[
+        %Service::Invoice%create_invoices_for_month%
+        %Transaction%charge_invoices%])
     end
   end
 
@@ -57,7 +59,9 @@ describe RecurringJob do
 
   describe ".users_processing" do
     it "calls 1 method" do
-      -> { described_class.users_processing }.should delay('%User%send_credit_card_expiration%', '%User%send_inactive_account_email%')
+      -> { described_class.users_processing }.should delay(%w[
+        %User%send_credit_card_expiration%
+        %User%send_inactive_account_email%])
     end
   end
 

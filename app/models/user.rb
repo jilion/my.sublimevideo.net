@@ -175,10 +175,6 @@ class User < ActiveRecord::Base
     invitation_token.nil? && created_at < PublicLaunch.beta_transition_started_on.midnight
   end
 
-  def vat?
-    Vat.for_country?(billing_country)
-  end
-
   def billing_address_complete?
     [billing_address_1, billing_postal_code, billing_city, billing_country].all?(&:present?)
   end

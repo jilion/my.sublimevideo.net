@@ -40,12 +40,6 @@ describe ApplicationHelper do
     it { helper.display_amount(1990, decimals: 1).should eq "$19.9" }
     it { helper.display_amount(1900).should eq "$19" }
     it { helper.display_amount(1900, decimals: 1).should eq "$19.0" }
-
-    context "with tva" do
-      before { sign_in create(:user, billing_country: "CH") }
-
-      it { helper.display_amount(10000, vat: true).should eq "$108" }
-    end
   end
 
   describe "#display_amount_with_sup" do
