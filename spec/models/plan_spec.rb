@@ -217,16 +217,11 @@ describe Plan do
     end
 
     describe "#title" do
-      specify { free_plan.title.should eq "Free" }
-      specify { free_plan.title(always_with_cycle: true).should eq "Free" }
-      specify { sponsored_plan.title.should eq "Sponsored" }
-      specify { sponsored_plan.title(always_with_cycle: true).should eq "Sponsored" }
-      specify { custom_plan.title.should eq "Custom" }
-      specify { custom_plan.title(always_with_cycle: true).should eq "Custom (monthly)" }
-      specify { build(:plan, cycle: "month", name: "comet").title.should eq "Comet" }
-      specify { build(:plan, cycle: "year", name: "comet").title.should eq "Comet (yearly)" }
-      specify { build(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should eq "Comet (monthly)" }
-      specify { build(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should eq "Comet (yearly)" }
+      specify { free_plan.title.should eq "Free Plan" }
+      specify { sponsored_plan.title.should eq "Sponsored Plan" }
+      specify { custom_plan.title.should eq "Custom Plan" }
+      specify { build(:plan, cycle: "month", name: "comet").title.should eq "Comet Plan" }
+      specify { build(:plan, cycle: "year", name: "comet").title.should eq "Comet Plan (yearly)" }
     end
 
     describe "#daily_video_views" do

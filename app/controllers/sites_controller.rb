@@ -40,7 +40,7 @@ class SitesController < ApplicationController
     @site   = service.site
 
     respond_with(@site) do |format|
-      if service.save
+      if service.initial_save
         format.html { redirect_to :sites }
       else
         format.html { render :new }

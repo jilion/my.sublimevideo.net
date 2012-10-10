@@ -1,7 +1,7 @@
 - title("Add-ons for #{hostname_or_token(@site)}")
 = render '/layouts/site_header'
 
-- if @site.plan_id?
+- if @site.new_plans.present?
   #grandfather_plan
     %p Dear Customer,
 

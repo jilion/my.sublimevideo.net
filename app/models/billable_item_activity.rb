@@ -7,6 +7,7 @@ class BillableItemActivity < ActiveRecord::Base
   validates :item, :site, :state, presence: true
   validates :state, inclusion: BillableItem::STATES + ['canceled']
 
+  scope :plans,       -> { where(item_type: 'Plan') }
   scope :app_designs, -> { where(item_type: 'App::Design') }
   scope :addon_plans, -> { where(item_type: 'AddonPlan') }
 end

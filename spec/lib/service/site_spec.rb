@@ -5,10 +5,10 @@ Site = Struct.new(:params) unless defined?(Site)
 AddonPlan = Class.new unless defined?(AddonPlan)
 
 describe Service::Site do
-  let(:user)              { stub(sites: []) }
-  let(:site)              { Struct.new(:user, :id).new(nil, 1234) }
-  let(:manager)           { described_class.new(site) }
-  let(:delayed_method)    { stub }
+  let(:user)           { stub(sites: []) }
+  let(:site)           { Struct.new(:user, :id).new(nil, 1234) }
+  let(:service)        { described_class.new(site) }
+  let(:delayed_method) { stub }
 
   describe '.build_site' do
     it 'instantiate a new Service::Site and returns it' do
@@ -18,12 +18,12 @@ describe Service::Site do
     end
   end
 
-  describe '#save' do
+  describe '#initial_save' do
     before do
       Site.should_receive(:transaction).and_yield
       Service::Rank.stub(:delay) { delayed_method }
-      manager.stub(:set_default_app_designs) { true }
-      manager.stub(:set_default_addon_plans) { true }
+      service.stub(:set_default_app_designs) { true }
+      service.stub(:set_default_addon_plans) { true }
       delayed_method.stub(:set_ranks) { true }
     end
 
@@ -33,17 +33,17 @@ describe Service::Site do
       end
 
       it 'adds default app designs and add-ons to site after creation' do
-        manager.should_receive(:set_default_app_designs)
-        manager.should_receive(:set_default_addon_plans)
+        service.should_receive(:set_default_app_designs)
+        service.should_receive(:set_default_addon_plans)
 
-        manager.save
+        service.initial_save
       end
 
       it 'delays the calculation of google and alexa ranks' do
         Service::Rank.should_receive(:delay) { delayed_method }
         delayed_method.should_receive(:set_ranks).with(site.id)
 
-        manager.save
+        service.initial_save
       end
     end
 
@@ -53,14 +53,14 @@ describe Service::Site do
       end
 
       it 'create a new site and save it to the database' do
-        manager.save.should be_false
+        service.initial_save.should be_false
       end
 
       it 'doesnt add default app designs and add-ons to site after creation' do
-        manager.should_not_receive(:set_default_app_designs)
-        manager.should_not_receive(:set_default_addon_plans)
+        service.should_not_receive(:set_default_app_designs)
+        service.should_not_receive(:set_default_addon_plans)
 
-        manager.save
+        service.initial_save
       end
     end
   end

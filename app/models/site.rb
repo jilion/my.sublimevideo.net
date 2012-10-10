@@ -55,6 +55,7 @@ class Site < ActiveRecord::Base
 
   # Addons
   has_many :billable_items
+  has_many :new_plans, through: :billable_items, source: :item, source_type: 'Plan'
   has_many :app_designs, through: :billable_items, source: :item, source_type: 'App::Design'
   has_many :addon_plans, through: :billable_items, source: :item, source_type: 'AddonPlan'
 

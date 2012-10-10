@@ -4,6 +4,7 @@ require File.expand_path('lib/service/invoice')
 describe Service::Invoice do
   let(:user) { create(:user, billing_country: 'FR', balance: 0) }
   let(:site) { create(:site, user: user) }
+  let(:plus_plan) { create(:plan, name: 'plus', price: 990) }
   let(:hidden_addon_plan_free) { create(:addon_plan, availability: 'hidden', price: 0) }
   let(:hidden_addon_plan_paid) { create(:addon_plan, availability: 'hidden', price: 995) }
   let(:public_addon_plan_free) { create(:addon_plan, availability: 'public', price: 0) }
@@ -169,9 +170,9 @@ describe Service::Invoice do
 
     describe 'billable item suspended and then subscribed during the last month' do
       before do
-        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 2.months.ago.beginning_of_month)
-        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'suspended', created_at: 1.month.ago.beginning_of_month + 10.days)
         create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 1.month.ago.beginning_of_month + 15.days)
+        create(:billable_item_activity, site: site, item: plus_plan, state: 'subscribed', created_at: 2.months.ago.beginning_of_month)
+        create(:billable_item_activity, site: site, item: plus_plan, state: 'suspended', created_at: 1.month.ago.beginning_of_month + 10.days)
       end
 
       context 'for 1 month ago' do
@@ -179,18 +180,17 @@ describe Service::Invoice do
           invoice = described_class.build_for_month(1.month.ago, site: site).invoice
           invoice.invoice_items.should have(2).item
 
-          invoice.invoice_items[0].item.should eq public_addon_plan_paid
-          invoice.invoice_items[1].item.should eq public_addon_plan_paid
+          invoice.invoice_items[0].item.should eq plus_plan
+          invoice.invoice_items[1].item.should eq plus_plan
 
           invoice.invoice_items[0].started_at.should eq 1.month.ago.beginning_of_month
           invoice.invoice_items[0].ended_at.should eq 1.month.ago.beginning_of_month + 10.days
-          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[0].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * 10).round
+          invoice.invoice_items[0].amount.should eq ((plus_plan.price.to_f / days_in_month(1.month.ago)) * 10).round
 
           invoice.invoice_items[1].started_at.should eq 1.month.ago.beginning_of_month + 15.days
           invoice.invoice_items[1].ended_at.should eq 1.month.ago.end_of_month
-          invoice.invoice_items[1].price.should eq public_addon_plan_paid.price
-          invoice.invoice_items[1].amount.should eq ((public_addon_plan_paid.price.to_f / days_in_month(1.month.ago)) * (days_in_month(1.month.ago) - 15)).round
+          invoice.invoice_items[1].price.should eq plus_plan.price
+          invoice.invoice_items[1].amount.should eq ((plus_plan.price.to_f / days_in_month(1.month.ago)) * (days_in_month(1.month.ago) - 15)).round
         end
       end
     end

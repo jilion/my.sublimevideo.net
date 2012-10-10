@@ -129,13 +129,7 @@ class Plan < ActiveRecord::Base
   end
 
   def title(options = {})
-    if trial_plan? || free_plan? || sponsored_plan?
-      name.titleize
-    elsif options[:always_with_cycle]
-      name.gsub(/\d/, '').titleize.strip + (cycle == 'year' ? ' (yearly)' : ' (monthly)')
-    else
-      name.gsub(/\d/, '').titleize.strip + (cycle == 'year' ? ' (yearly)' : '')
-    end
+    "#{name.gsub(/\d/, '').titleize.strip} Plan" + (cycle == 'year' ? ' (yearly)' : '')
   end
 
   def daily_video_views
@@ -152,6 +146,10 @@ class Plan < ActiveRecord::Base
 
   def price(site = nil)
     read_attribute(:price) * (1 - discounted_percentage(site))
+  end
+
+  def free?
+    price == 0
   end
 
 end

@@ -1,15 +1,15 @@
 %table#detail
   %tr
-    %th.left= "Plan"
-    %th.left= "Details"
+    %th.left= "Item"
+    %th.left= "Period"
     %th= "Amount (US $)"
   - invoice.invoice_items.each do |invoice_item|
     %tr
       %td.title
-        %h3= invoice_item.item.title(always_with_cycle: true)
+        %h3= invoice_item_title(invoice_item)
       %td
         %p.period
-          = "Period: #{invoice_item_dates(invoice_item)}"
+          = invoice_item_dates(invoice_item)
           - if invoice_item.discounted_percentage?
             - if invoice_item.deal
               = "(-#{number_to_percentage(invoice_item.discounted_percentage * 100.0, precision: 0)} promotional discount)"

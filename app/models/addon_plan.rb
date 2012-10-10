@@ -47,7 +47,6 @@ class AddonPlan < ActiveRecord::Base
   def free?
     price.zero?
   end
-
 end
 
 # == Schema Information

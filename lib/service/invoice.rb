@@ -22,7 +22,7 @@ module Service
     end
 
     def add_invoice_item(invoice_item)
-      invoice.invoice_items << invoice_item
+      invoice.invoice_items << invoice_item unless invoice_item.amount.zero?
     end
 
     def save

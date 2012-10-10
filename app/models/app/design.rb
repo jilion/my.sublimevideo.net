@@ -12,7 +12,7 @@ class App::Design < ActiveRecord::Base
   scope :paid, -> { where { price > 0 } }
 
   def self.get(name)
-    where(name: name).first
+    where(name: name.to_s).first
   end
 
   def available?(site)
@@ -25,13 +25,16 @@ class App::Design < ActiveRecord::Base
   end
 
   def beta?
-    (component.versions.first.version =~ /[a-z]/i).present?
+    if component_version = component.versions.first
+      (component_version.version =~ /[a-z]/i).present?
+    else
+      false
+    end
   end
 
   def free?
     price.zero?
   end
-
 end
 
 # == Schema Information

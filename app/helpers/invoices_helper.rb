@@ -4,6 +4,17 @@ module InvoicesHelper
     l(invoice.created_at, format: :d_b_Y)
   end
 
+  def invoice_item_title(invoice_item)
+    case invoice_item.class.to_s
+    when 'InvoiceItem::Plan'
+      invoice_item.item.title
+    when 'InvoiceItem::AppDesign'
+      'Design: ' + t("app_designs.#{invoice_item.item.name}")
+    when 'InvoiceItem::AddonPlan'
+      'Add-on: ' + t("addon_plans.#{invoice_item.item.addon.name}.#{invoice_item.item.name}")
+    end
+  end
+
   def invoice_item_dates(invoice_item)
     "#{l(invoice_item.started_at, format: :d_b_Y)} - #{l(invoice_item.ended_at, format: :d_b_Y)}"
   end

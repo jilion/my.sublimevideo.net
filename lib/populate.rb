@@ -240,26 +240,18 @@ module Populate
       Populate.plans if Plan.all.empty?
 
       subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
-      created_at_array = (2.months.ago.to_date..Date.today).to_a
+      # created_at_array = (2.months.ago.to_date..Date.today).to_a
 
       User.all.each do |user|
         BASE_SITES.each do |hostname|
           if rand >= 0.5
-            user.sites.build(hostname: hostname).tap do |s|
-              s.plan_id = Plan.where(name: %w[plus premium].sample, cycle: 'month').first.id
-              # s.plan_started_at = Time.now.utc.beginning_of_month
-              # s.plan_cycle_started_at = s.plan_started_at
-              # s.plan_cycle_ended_at = s.plan_cycle_started_at.end_of_month
-            end.save!
+            site = user.sites.create({ hostname: hostname, plan_id: Plan.where(name: %w[plus premium].sample, cycle: 'month').first.id }, without_protection: true)
+            Service::Site.new(site).migrate_plan_to_addons
           else
-            service = Service::Site.build_site(user: user, hostname: hostname)
-            service.save
-            service.site.update_column(:created_at, created_at_array.sample)
+            Service::Site.build_site(user: user, hostname: hostname).initial_save
           end
         end
       end
-
-      # Invoice.open.all.each { |invoice| invoice.succeed! }
 
       empty_tables("delayed_jobs")
       puts "#{BASE_SITES.size} beautiful sites created for each user!"
