@@ -24,7 +24,7 @@ feature "Sticky notices" do
 
     context "user is billable" do
       background do
-        create(:subscribed_addonship, site: create(:site, user: @current_user))
+        create(:billable_item, site: create(:site, user: @current_user), item: create(:addon_plan), state: 'subscribed')
         @current_user.should be_billable
         go 'my', '/sites'
       end
@@ -51,7 +51,7 @@ feature "Sticky notices" do
 
     context "user is billable" do
       background do
-        create(:subscribed_addonship, site: create(:site, user: @current_user))
+        create(:billable_item, site: create(:site, user: @current_user), item: create(:addon_plan), state: 'subscribed')
         @current_user.should be_billable
         go 'my', '/sites'
       end
@@ -85,7 +85,7 @@ feature "Sticky notices" do
       context "user has a credit card" do
         background do
           sign_in_as :user, billing_address_1: ''
-          create(:subscribed_addonship, site: create(:site, user: @current_user))
+        create(:billable_item, site: create(:site, user: @current_user), item: create(:addon_plan), state: 'subscribed')
           @current_user.should be_billable
           @current_user.should be_cc
           @current_user.should_not be_billing_address_complete
@@ -100,7 +100,7 @@ feature "Sticky notices" do
       context "user has no credit card" do
         background do
           sign_in_as :user, without_cc: true, billing_address_1: ''
-          create(:subscribed_addonship, site: create(:site, user: @current_user))
+        create(:billable_item, site: create(:site, user: @current_user), item: create(:addon_plan), state: 'subscribed')
           @current_user.should be_billable
           @current_user.should_not be_cc
           @current_user.should_not be_billing_address_complete

@@ -17,7 +17,7 @@ class Admin::App::ComponentsController < Admin::AppController
 
   # POST /app/components
   def create
-    @component = App::Component.new(params[:component])
+    @component = App::Component.new(params[:component], as: :admin)
     @component.save
     respond_with @component, location: [:admin, @component]
   end
@@ -25,7 +25,7 @@ class Admin::App::ComponentsController < Admin::AppController
   # PUT /app/components/:id (token)
   def update
     @component = App::Component.find_by_token!(params[:id])
-    App::Component.update_attributes(params[:component])
+    App::Component.update_attributes(params[:component], as: :admin)
     respond_with @component, location: [:admin, @component]
   end
 

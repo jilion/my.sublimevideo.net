@@ -1,7 +1,5 @@
 class Addon < ActiveRecord::Base
-  attr_accessible :name, :design_dependent, :version, :context, as: :admin
-
-  serialize :context, Array
+  attr_accessible :name, :design_dependent, :version, :parent_addon_id, :type, as: :admin
 
   has_many :plans, class_name: 'AddonPlan'
   has_many :plugins, class_name: 'App::Plugin'
@@ -11,8 +9,6 @@ class Addon < ActiveRecord::Base
   validates :name, uniqueness: true
   validates :design_dependent, inclusion: [true, false]
   validates :version, inclusion: %w[stable beta]
-
-  before_validation ->(addon) { addon.context = [] }, unless: :context?
 
   def self.get(name)
     where(name: name).first
@@ -31,11 +27,12 @@ end
 #
 # Table name: addons
 #
-#  context          :text             not null
 #  created_at       :datetime         not null
 #  design_dependent :boolean          default(TRUE), not null
 #  id               :integer          not null, primary key
 #  name             :string(255)      not null
+#  parent_addon_id  :integer
+#  type             :string(255)
 #  updated_at       :datetime         not null
 #  version          :string(255)      default("stable"), not null
 #

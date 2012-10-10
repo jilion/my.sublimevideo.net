@@ -29,7 +29,7 @@ module BillableItemsHelper
     when 1
       'last days of trial'
     when nil
-      'trial not started'
+      # 'trial not started'
     else
       "free trial – #{pluralize(trial_days_remaining_for_billable_item, 'day')} remaining"
     end

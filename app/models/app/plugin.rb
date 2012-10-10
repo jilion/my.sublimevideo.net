@@ -1,5 +1,5 @@
 class App::Plugin < ActiveRecord::Base
-  attr_accessible :addon, :design, :component, :token, as: :admin
+  attr_accessible :addon, :design, :component, :token, :name, as: :admin
 
   belongs_to :addon
   belongs_to :design, class_name: 'App::Design', foreign_key: 'app_design_id'
@@ -18,6 +18,7 @@ end
 #  app_design_id    :integer
 #  created_at       :datetime         not null
 #  id               :integer          not null, primary key
+#  name             :string(255)      not null
 #  token            :string(255)      not null
 #  updated_at       :datetime         not null
 #

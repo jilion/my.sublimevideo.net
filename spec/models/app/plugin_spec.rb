@@ -8,7 +8,7 @@ describe App::Plugin do
   end
 
   describe "Validations" do
-    [:addon, :design, :component, :token].each do |attr|
+    [:addon, :design, :component, :token, :name].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
   end
@@ -25,6 +25,7 @@ end
 #  app_design_id    :integer
 #  created_at       :datetime         not null
 #  id               :integer          not null, primary key
+#  name             :string(255)      not null
 #  token            :string(255)      not null
 #  updated_at       :datetime         not null
 #

@@ -6,7 +6,7 @@ module Service
     class << self
 
       def build_support_request(params)
-        new(SupportRequest.new(params))
+        new(::SupportRequest.new(params))
       end
 
       def create_zendesk_user(user)

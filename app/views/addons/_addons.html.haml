@@ -21,15 +21,17 @@
             - if visible_addon_plans.size > 1
               .radio_wrap
                 = radio_button_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), data: { price: addon_plan.price }
-                = label_tag "addon_plans[#{addon.name}]", t("addon_plans.#{addon.name}.#{addon_plan.name}")
-                = " (beta player only)" unless addon_plan.works_with_stable_app?
+                = label_tag "addon_plans[#{addon.name}]" do
+                  = t("addon_plans.#{addon.name}.#{addon_plan.name}")
+                  = raw " <small>(beta player only)</small>" unless addon_plan.works_with_stable_app?
             - else
               .checkbox_wrap
                 - free_addon_plan_id = addon.plans.where(price: 0).first.id
                 = hidden_field_tag "addon_plans[#{addon.name}]", free_addon_plan_id, id: "addon_plans_#{addon.name}_#{free_addon_plan_id}"
                 = check_box_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), disabled: addon_plan.free?, id: "addon_plans_#{addon.name}_#{addon_plan.id}", data: { price: addon_plan.price }
-                = label_tag "addon_plans[#{addon.name}]", t("addon_plans.#{addon.name}.#{addon_plan.name}")
-                = " (beta player only)" unless addon_plan.works_with_stable_app?
+                = label_tag "addon_plans[#{addon.name}]" do
+                  = t("addon_plans.#{addon.name}.#{addon_plan.name}")
+                  = raw " <small>(beta player only)</small>" unless addon_plan.works_with_stable_app?
           %td= trial_days_remaining(site, addon_plan)
           %td= billable_item_price(addon_plan, visible_addon_plans.size > 1 ? 'free' : 'offered')
 

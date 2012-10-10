@@ -56,7 +56,7 @@ def create_designs
 end
 
 def create_video_player_addon
-  @video_player_addon = create(:addon, name: 'video_player', design_dependent: false, context: ['videoPlayer'])
+  @video_player_addon = create(:addon, name: 'video_player', design_dependent: false)
 
   @video_player_addon_plugin = create(:app_plugin, addon: @video_player_addon, design: nil, component: @app_comp)
 
@@ -65,7 +65,7 @@ def create_video_player_addon
 end
 
 def create_logo_addon
-  @logo_addon = create(:addon, name: 'logo', design_dependent: false, context: ['videoPlayer', 'badge'])
+  @logo_addon = create(:addon, name: 'logo', design_dependent: false)
 
   @logo_addon_plugin = create(:app_plugin, addon: @logo_addon, design: nil, component: @app_comp)
 
@@ -80,7 +80,7 @@ def create_logo_addon
 end
 
 def create_stats_addon
-  @stats_addon = create(:addon, name: 'stats', design_dependent: false, context: ['videoPlayer', 'stats'])
+  @stats_addon = create(:addon, name: 'stats', design_dependent: false)
 
   @stats_addon_plugin = create(:app_plugin, addon: @stats_addon, design: nil, component: @app_comp)
 
@@ -95,7 +95,7 @@ def create_stats_addon
 end
 
 def create_lightbox_addon
-  @lightbox_addon = create(:addon, name: 'lightbox', design_dependent: true, context: ['lightbox'])
+  @lightbox_addon = create(:addon, name: 'lightbox', design_dependent: true)
 
   @lightbox_addon_plugin_1 = create(:app_plugin, addon: @lightbox_addon, design: @classic_design, component: @app_comp)
   @lightbox_addon_plugin_2 = create(:app_plugin, addon: @lightbox_addon, design: @light_design, component: @app_comp)

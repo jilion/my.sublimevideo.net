@@ -16,7 +16,7 @@ describe Stat do
         before do
           site1 = create(:site).tap { |s| s.update_attribute(:token, 'ovjigy83') }
           site2 = create(:site).tap { |s| s.update_attribute(:token, 'site1234') }
-          create(:subscribed_addonship, site: site1, addon: @stats_standard_addon)
+          create(:billable_item, site: site1, item: @stats_addon_plan_2)
           described_class.stub(:incs_from_trackers).and_return({
             "ovjigy83"=> {
               inc: { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },

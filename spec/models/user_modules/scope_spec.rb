@@ -51,26 +51,20 @@ describe UserModules::Scope do
     let(:site5) { create(:site, user: create(:user, state: 'archived')) }
     let(:site6) { create(:site) }
     before do
-      create(:beta_addonship, site: site1, addon: @stats_standard_addon) # paid addon in beta
-      create(:subscribed_addonship, site: site1, addon: @logo_sublime_addon) # free addon
-
-      create(:trial_addonship, site: site2, addon: @logo_no_logo_addon) # paid addon
-
-      create(:subscribed_addonship, site: site3, addon: @stats_standard_addon) # free addon
-
-      create(:suspended_addonship, site: site4, addon: @support_vip_addon) # paid addon
-
-      create(:inactive_addonship, site: site5)
-
-      create(:sponsored_addonship, site: site6)
+      create(:billable_item, site: site1, item: create(:addon_plan, price: 995), state: 'beta')
+      create(:billable_item, site: site2, item: create(:addon_plan, price: 995), state: 'trial')
+      create(:billable_item, site: site3, item: create(:addon_plan, price: 995), state: 'sponsored')
+      create(:billable_item, site: site4, item: create(:addon_plan, price: 995), state: 'suspended')
+      create(:billable_item, site: site5, item: create(:addon_plan, price: 995), state: 'subscribed')
+      create(:billable_item, site: site6, item: create(:addon_plan, price: 995), state: 'subscribed')
     end
 
     describe ".free" do
-      specify { User.free.all.should =~ [site1.user, site2.user, site6.user] }
+      specify { User.free.all.should =~ [site1.user, site2.user, site3.user] }
     end
 
     describe ".paying" do
-      specify { User.paying.all.should =~ [site3.user] }
+      specify { User.paying.all.should =~ [site6.user] }
     end
   end
 
@@ -100,13 +94,13 @@ describe UserModules::Scope do
       @user1 = create(:user, email: "remy@jilion.com", name: "Marcel Jacques")
       create(:site, user: @user1, hostname: "bob.com")
       # THIS IS HUGELY SLOW DUE TO IPAddr.new('*.dev')!!!!!!!
-      create(:site, user: @user1, dev_hostnames: "foo.dev, bar.dev")
+      # create(:site, user: @user1, dev_hostnames: "foo.dev, bar.dev")
       create(:site, user: @user1, dev_hostnames: "192.168.0.0, 192.168.0.30")
     end
 
     specify { User.search("remy").all.should eq [@user1] }
     specify { User.search("bob").all.should eq [@user1] }
-    specify { User.search(".dev").all.should eq [@user1] }
+    # specify { User.search(".dev").all.should eq [@user1] }
     specify { User.search("192.168").all.should eq [@user1] }
     specify { User.search("marcel").all.should eq [@user1] }
     specify { User.search("jacques").all.should eq [@user1] }

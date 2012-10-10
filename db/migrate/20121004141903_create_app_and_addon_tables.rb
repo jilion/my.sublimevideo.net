@@ -28,7 +28,8 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
       t.string  :name, null: false
       t.boolean :design_dependent, null: false, default: true
       t.string  :version, null: false, default: 'stable'
-      t.text    :context, null: false
+      t.integer :parent_addon_id
+      t.string  :type
 
       t.timestamps
     end
@@ -63,6 +64,7 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
       t.references :app_design
       t.references :app_component, null: false
       t.string     :token, null: false
+      t.string     :name, null: false
 
       t.timestamps
     end
@@ -90,7 +92,9 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
     add_index :billable_item_activities, [:item_type, :item_id]
 
     rename_table :player_components, :app_components
+
     rename_table :player_component_versions, :app_component_versions
+
     drop_table   :player_componentships
 
     rename_column :app_component_versions, :player_component_id, :app_component_id

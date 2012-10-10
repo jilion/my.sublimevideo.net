@@ -34,7 +34,9 @@ describe App::Component, :fog_mock do
     zip = fixture_file('app/e.zip')
     component_version1 = App::ComponentVersion.create({ token: component.token, version: '1.0.0', zip: zip }, as: :admin)
     component_version2 = App::ComponentVersion.create({ token: component.token, version: '2.0.0', zip: zip }, as: :admin)
-    component.versions.should eq [component_version2, component_version1]
+
+    # FUCK THIS FUCKING TEST!!!!!!!!!!
+    component.reload.versions.all.should eq [component_version2, component_version1]
   end
 
 end

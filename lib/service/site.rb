@@ -20,10 +20,10 @@ module Service
 
     # app_designs => { "classic"=>"0", "light"=>"42" }
     # addon_plans => { "logo"=>"80", "support"=>"88" }
-    def update_billable_items!(app_designs = {}, addon_plans = {})
+    def update_billable_items!(app_designs, addon_plans)
       ::Site.transaction do
-        update_billable_app_designs(app_designs)
-        update_billable_addon_plans(addon_plans)
+        update_billable_app_designs(app_designs || {})
+        update_billable_addon_plans(addon_plans || {})
 
         site.save!
       end

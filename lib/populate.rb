@@ -48,26 +48,26 @@ module Populate
           { name: 'subtitles', token: 'bA' }
         ],
         App::ComponentVersion => [
-          { component: 'ref-App::Component-app', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-app', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-app', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-app', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-subtitles', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-subtitles', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-subtitles', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-subtitles', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
+          { component: 'ref-App::Component-e', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-e', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-e', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-e', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-bA', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-bA', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-bA', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-bA', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
         ],
         App::Design => [
-          { name: 'classic', skin_token: 'classic', price: 0, availability: 'public', component: 'ref-App::Component-app' },
-          { name: 'light',   skin_token: 'light',   price: 0, availability: 'public', component: 'ref-App::Component-app' },
-          { name: 'flat',    skin_token: 'flat',    price: 0, availability: 'public', component: 'ref-App::Component-app' },
-          { name: 'twit',    skin_token: 'twit',    price: 0, availability: 'custom', component: 'ref-App::Component-app' }
+          { name: 'classic', skin_token: 'classic', price: 0, availability: 'public', component: 'ref-App::Component-e' },
+          { name: 'light',   skin_token: 'light',   price: 0, availability: 'public', component: 'ref-App::Component-e' },
+          { name: 'flat',    skin_token: 'flat',    price: 0, availability: 'public', component: 'ref-App::Component-e' },
+          { name: 'twit',    skin_token: 'twit',    price: 0, availability: 'custom', component: 'ref-App::Component-e' }
         ],
         Addon => [
-          { name: 'video_player', design_dependent: false, context: ['videoPlayer'] },
-          { name: 'logo',         design_dependent: false, context: ['videoPlayer', 'badge'] },
-          { name: 'stats',        design_dependent: false, context: ['videoPlayer', 'stats'] },
-          { name: 'lightbox',     design_dependent: true,  context: ['lightbox'] },
+          { name: 'video_player', design_dependent: false },
+          { name: 'logo',         design_dependent: false },
+          { name: 'stats',        design_dependent: false },
+          { name: 'lightbox',     design_dependent: true },
           { name: 'api',          design_dependent: false },
           { name: 'support',      design_dependent: false }
         ],
@@ -85,15 +85,15 @@ module Populate
           { name: 'vip',      price: 9995,  addon: 'ref-Addon-support',      availability: 'public' }
         ],
         App::Plugin => [
-          { token: 'videoPlayer',      addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-app' },
-          { token: 'logo',             addon: 'ref-Addon-logo',         design: nil,                       component: 'ref-App::Component-app' },
-          { token: 'stats',            addon: 'ref-Addon-stats',        design: nil,                       component: 'ref-App::Component-app' },
-          { token: 'ligthbox.Classic', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
-          { token: 'ligthbox.Light',   addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
-          { token: 'ligthbox.Flat',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
-          { token: 'ligthbox.Twit',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
-          { token: 'api',              addon: 'ref-Addon-api',          design: nil,                       component: 'ref-App::Component-app' }
-          # { token: 'support',          addon: 'ref-Addon-support',      design: nil,                       component: 'ref-App::Component-app' }
+          { token: 'videoPlayer',      name: 'videoPlayer',      addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-e' },
+          { token: 'logo',             name: 'logo',             addon: 'ref-Addon-logo',         design: nil,                       component: 'ref-App::Component-e' },
+          { token: 'stats',            name: 'stats',            addon: 'ref-Addon-stats',        design: nil,                       component: 'ref-App::Component-e' },
+          { token: 'ligthbox.Classic', name: 'ligthbox Classic', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-classic', component: 'ref-App::Component-e' },
+          { token: 'ligthbox.Light',   name: 'ligthbox Light',   addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-e' },
+          { token: 'ligthbox.Flat',    name: 'ligthbox Flat',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-e' },
+          { token: 'ligthbox.Twit',    name: 'ligthbox Twit',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-e' },
+          { token: 'api',              name: 'api',              addon: 'ref-Addon-api',          design: nil,                       component: 'ref-App::Component-e' }
+          # { token: 'support',          name: 'support', addon: 'ref-Addon-support',      design: nil,                       component: 'ref-App::Component-e' }
         ],
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-videoPlayer' },
@@ -118,19 +118,12 @@ module Populate
         new_record.each do |attributes|
           reference_key = "#{klass.to_s}-"
           reference_key += "#{attributes[:addon].sub(/\Aref-Addon-/, '')}-" if klass == AddonPlan
-          reference_key += "#{attributes[:name] || attributes[:token]}"
+          reference_key += "#{attributes[:token] || attributes[:name]}"
           attributes = attributes.inject({}) { |h, (k, v)| h[k] = (v =~ /\Aref-/ ? references[v.sub(/\Aref-/, '')] : v); h }
           references[reference_key] = klass.create!(attributes, as: :admin)
         end
+        puts "\t- #{klass.count} #{klass.to_s} created;"
       end
-      puts "Created:"
-      puts "\t- #{App::Component.count} App::Components;"
-      puts "\t- #{App::ComponentVersion.count} App::ComponentVersions;"
-      puts "\t- #{App::Design.count} App::Designs;"
-      puts "\t- #{Addon.count} Addons;"
-      puts "\t- #{AddonPlan.count} AddonPlans;"
-      puts "\t- #{App::Plugin.count} App::Plugins;"
-      puts "\t- #{App::SettingsTemplate.count} App::SettingsTemplates;"
     end
 
     def mail_templates(count = 5)

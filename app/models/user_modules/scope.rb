@@ -7,21 +7,21 @@ module UserModules::Scope
   included do
 
     # state
-    scope :invited,      where{ invitation_token != nil }
-    scope :beta,         where{ (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } # some beta users don't come from svs but were directly invited from msv!!
-    scope :active,       where{ state == 'active' }
-    scope :inactive,     where{ state != 'active' }
-    scope :suspended,    where{ state == 'suspended' }
-    scope :archived,     where{ state == 'archived' }
-    scope :not_archived, where{ state != 'archived' }
+    scope :invited,      -> { where{ invitation_token != nil } }
+    # some beta users don't come from svs but were directly invited from msv!!
+    scope :beta,         -> { where{ (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } }
+    scope :active,       -> { where{ state == 'active' } }
+    scope :inactive,     -> { where{ state != 'active' } }
+    scope :suspended,    -> { where{ state == 'suspended' } }
+    scope :archived,     -> { where{ state == 'archived' } }
+    scope :not_archived, -> { where{ state != 'archived' } }
 
     # billing
-    scope :paying, -> do
-      active.includes(:sites, :addonships).merge(::Addons::Addonship.subscribed).where{ addonships.addon_id >> Addons::Addon.paid.pluck(:id) }
-    end
-    scope :free, -> do
-      active.where{ id << User.select('paying_users.id').from("(#{User.joins(:sites, :addonships).paying.to_sql}) AS paying_users") }
-    end
+    scope :paying, -> { active.includes(:sites, :billable_items).merge(Site.paying) }
+    scope :free, -> {
+      # active.where{ id << User.select('paying_users.id').from("(#{User.joins(:sites, :addonships).paying.to_sql}) AS paying_users") }
+      active.includes(:billable_items).where{ id << User.paying }
+    }
 
     # credit card
     scope :without_cc,           -> { where(cc_type: nil, cc_last_digits: nil) }
@@ -37,26 +37,21 @@ module UserModules::Scope
     scope :newsletter,   ->(bool = true) { where(newsletter: bool) }
     scope :vip,          ->(bool = true) { where(vip: bool) }
 
-    scope :sites_tagged_with, lambda { |word| joins(:sites).merge(Site.not_archived.tagged_with(word)) }
+    scope :sites_tagged_with, ->(word) { joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 
     # sort
-    scope :by_name_or_email,         lambda { |way='asc'| order("users.name #{way.upcase}, users.email #{way.upcase}") }
-    scope :by_last_invoiced_amount,  lambda { |way='desc'| order("users.last_invoiced_amount #{way.upcase}") }
-    scope :by_total_invoiced_amount, lambda { |way='desc'| order("users.total_invoiced_amount #{way.upcase}") }
-    scope :by_beta,                  lambda { |way='desc'| order("users.invitation_token #{way.upcase}") }
-    scope :by_date,                  lambda { |way='desc'| order("users.created_at #{way.upcase}") }
+    scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way.upcase}, users.email #{way.upcase}") }
+    scope :by_last_invoiced_amount,  ->(way = 'desc') { order("users.last_invoiced_amount #{way.upcase}") }
+    scope :by_total_invoiced_amount, ->(way = 'desc') { order("users.total_invoiced_amount #{way.upcase}") }
+    scope :by_beta,                  ->(way = 'desc') { order("users.invitation_token #{way.upcase}") }
+    scope :by_date,                  ->(way = 'desc') { order("users.created_at #{way.upcase}") }
 
-  end
-
-  module ClassMethods
-
-    def search(q)
+    scope :search, ->(q) {
       includes(:sites).where{
         (lower(:email) =~ lower("%#{q}%")) | (lower(:name) =~ lower("%#{q}%")) |
         (lower(sites.hostname) =~ lower("%#{q}%")) | (lower(sites.dev_hostnames) =~ lower("%#{q}%"))
       }
-    end
-
+    }
   end
 
 end

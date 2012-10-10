@@ -67,7 +67,7 @@ describe MailLetter do
             @paying_user    = create(:user)
             @free_user      = create(:user)
             site = create(:site, user: @paying_user)
-            create(:subscribed_addonship, site: site)
+            create(:billable_item, site: site, item: create(:addon_plan, price: 495), state: 'subscribed')
             $worker.work_off
             ActionMailer::Base.deliveries.clear
           end

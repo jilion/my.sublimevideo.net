@@ -49,6 +49,7 @@ FactoryGirl.define do
     design    { FactoryGirl.create(:app_design) }
     component { FactoryGirl.create(:app_component) }
     sequence(:token) { |n| "token#{n}" }
+    sequence(:name) { |n| "name #{n}" }
   end
 
   factory :app_settings_template, class: App::SettingsTemplate do
