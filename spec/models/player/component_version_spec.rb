@@ -9,6 +9,7 @@ describe Player::ComponentVersion, :fog_mock do
   let(:attributes) { {
     token: component.token,
     version: '2.0.0',
+    dependencies: { "app" => "1.0.0" },
     zip: zip
   } }
   let(:component_version) { Player::ComponentVersion.create(attributes) }
@@ -42,6 +43,11 @@ describe Player::ComponentVersion, :fog_mock do
 
   it "overwrites to_param" do
     component_version.to_param.should eq '2_0_0'
+  end
+
+  it "supports json for dependencies" do
+    version = Player::ComponentVersion.create(attributes.merge(dependencies: {app: "1.0.0"}.to_json))
+    version.dependencies.should eq({"app" => "1.0.0"})
   end
 
 end

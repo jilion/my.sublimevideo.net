@@ -1,4 +1,6 @@
 class Player::ComponentVersion < ActiveRecord::Base
+  serialize :dependencies, ActiveRecord::Coders::Hstore
+
   belongs_to :component, class_name: 'Player::Component', foreign_key: 'player_component_id'
 
   attr_accessible :token, :dependencies, :version, :zip
@@ -13,6 +15,11 @@ class Player::ComponentVersion < ActiveRecord::Base
 
   def token=(token)
     self.component = Player::Component.find_by_token!(token)
+  end
+
+  def dependencies=(arg)
+    arg = JSON.parse(arg) if arg.is_a?(String)
+    write_attribute(:dependencies, arg)
   end
 
   def to_param

@@ -56,7 +56,8 @@ describe "Admin::Player::Components JSON actions", :fog_mock do
         post "app/components/#{component.token}/versions.json?auth_token=#{admin.authentication_token}", {
           version: {
             version: '1.0.0',
-            zip: zip
+            zip: zip,
+            dependencies: { app: "1.0.0" }.to_json
           } }, headers
         response.status.should eq 201
       end
