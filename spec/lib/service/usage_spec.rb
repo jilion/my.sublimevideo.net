@@ -12,8 +12,8 @@ describe Service::Usage do
       Site.stub_chain(:not_archived, :find_each).and_yield(site)
 
       Service::Usage.should_receive(:new).with(site) { usage_manager }
-      usage_manager.should_receive(:update_last_30_days_video_tags_counters)
-      usage_manager.should_receive(:update_last_30_days_video_views_counters)
+      usage_manager.should_receive(:update_last_30_days_video_tags_counters) { usage_manager }
+      usage_manager.should_receive(:update_last_30_days_video_views_counters) { usage_manager }
 
       described_class.update_last_30_days_counters_for_not_archived_sites
     end

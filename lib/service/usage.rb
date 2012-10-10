@@ -3,17 +3,15 @@ module Service
 
     class << self
 
-      def update_last_30_days_counters_for_not_archived_sites
-        ::Site.not_archived.find_each(batch_size: 100) do |site|
-          usage_manager = new(site)
-          usage_manager.update_last_30_days_video_tags_counters
-          usage_manager.update_last_30_days_video_views_counters
-        end
-      end
-
       def set_first_billable_plays_at_for_not_archived_sites
         ::Site.not_archived.where(first_billable_plays_at: nil).find_each(batch_size: 100) do |site|
           new(site).set_first_billable_plays_at
+        end
+      end
+
+      def update_last_30_days_counters_for_not_archived_sites
+        ::Site.not_archived.find_each(batch_size: 100) do |site|
+          new(site).update_last_30_days_video_tags_counters.update_last_30_days_video_views_counters
         end
       end
 
@@ -27,6 +25,8 @@ module Service
 
     def update_last_30_days_video_tags_counters
       site.update_column(:last_30_days_video_tags, VideoTag.last_30_days_updated_count(site.token))
+
+      self
     end
 
     def update_last_30_days_video_views_counters
@@ -56,6 +56,8 @@ module Service
         from += 1.day
       end
       site.save!
+
+      self
     end
 
   end
