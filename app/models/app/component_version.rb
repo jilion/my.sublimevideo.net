@@ -3,6 +3,8 @@ require_dependency 'service/semantic_versioning'
 class App::ComponentVersion < ActiveRecord::Base
   include Service::SemanticVersioning
 
+  serialize :dependencies, ActiveRecord::Coders::Hstore
+
   attr_accessible :component, :token, :dependencies, :version, :zip, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
@@ -16,6 +18,11 @@ class App::ComponentVersion < ActiveRecord::Base
 
   def token=(token)
     self.component = App::Component.find_by_token!(token)
+  end
+
+  def dependencies=(arg)
+    arg = JSON.parse(arg) if arg.is_a?(String)
+    write_attribute(:dependencies, arg)
   end
 
   def to_param
