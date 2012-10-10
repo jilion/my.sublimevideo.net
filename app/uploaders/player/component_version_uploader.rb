@@ -20,7 +20,7 @@ class Player::ComponentVersionUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored
   # # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    Rails.env.test? ? "uploads/player/b" : "b"
+    Rails.env.test? ? "uploads/player/c" : "c"
   end
 
   # Add a white list of extensions which are allowed to be uploaded.
@@ -45,7 +45,7 @@ class Player::ComponentVersionUploader < CarrierWave::Uploader::Base
   end
 
   def zip_content_upload_path
-    Pathname.new("b/#{model.token}/#{model.version}")
+    Pathname.new("c/#{model.token}/#{model.version}")
   end
 
 end
