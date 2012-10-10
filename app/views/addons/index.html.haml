@@ -13,8 +13,8 @@
         %li you can still remove SublimeVideo logo badge,
         %li
           you have access to our Real-Time Statistics tool, with unlimited data retention
-          = @site.plan.name =='premium' ? ',' : '.'
-        - if @site.plan.name =='premium'
+          = @site.plan.name == 'premium' ? ',' : '.'
+        - if @site.plan.name == 'premium'
           %li you have access to our VIP email support, which guarantees an answer within one business day.
 
     %p= raw "All at the same monthly price of #{display_amount_with_sup(@site.plan.price)}."

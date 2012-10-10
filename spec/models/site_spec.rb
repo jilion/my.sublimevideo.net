@@ -171,9 +171,11 @@ describe Site, :addons do
   end # Callbacks
 
   describe "State Machine" do
-    describe "after transition" do
-      let(:site) { create(:site) }
+    let(:site) { create(:site) }
+    let(:plus_plan) { create(:plan, name: 'plus') }
+    let(:premium_plan) { create(:plan, name: 'premium') }
 
+    describe "after transition" do
       it "delays Service::Loader update" do
         site
         -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Service::Loader%update_all_modes%')
@@ -187,20 +189,170 @@ describe Site, :addons do
       end
     end
 
-    describe "before transition on archive" do
-      let(:site) { create(:site) }
+    describe "before transition on suspend", :addons do
+      context 'with plus plan' do
+        let(:site) { create(:site, plan_id: plus_plan.id) }
+        before do
+          Service::Site.new(site).migrate_plan_to_addons
+          site.reload.billable_items.should have(9).items
+        end
 
-      it "set archived_at" do
-        expect { site.archive! }.to change(site, :archived_at)
+        it 'suspends all billable items' do
+          site.suspend!
+
+          site.reload.billable_items.should have(9).items
+          site.billable_items.plans.where(item_id: plus_plan).where(state: 'suspended').should have(1).item
+          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
+          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
+          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'suspended').should have(1).item
+        end
+      end
+
+      context 'with premium plan' do
+        let(:site) { create(:site, plan_id: premium_plan.id) }
+        before do
+          Service::Site.new(site).migrate_plan_to_addons
+          site.reload.billable_items.should have(9).items
+        end
+
+        it 'suspends all billable items' do
+          site.suspend!
+
+          site.reload.billable_items.should have(9).items
+          site.billable_items.plans.where(item_id: premium_plan).where(state: 'suspended').should have(1).item
+          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
+          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
+          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'suspended').should have(1).item
+        end
       end
     end
 
-    describe "after transition on archive" do
-      let(:site) { create(:site) }
+    describe "before transition on unsuspend", :addons do
+      context 'with plus plan' do
+        let(:site) { create(:site, plan_id: plus_plan.id) }
+        before do
+          Service::Site.new(site).migrate_plan_to_addons
+          site.reload.billable_items.should have(9).items
+        end
+
+        it 'suspends all billable items' do
+          site.suspend!
+
+          site.reload.billable_items.should have(9).items
+          site.unsuspend!
+
+          site.reload.billable_items.should have(9).items
+          site.billable_items.plans.where(item_id: plus_plan).where(state: 'subscribed').should have(1).item
+          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
+          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
+          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'sponsored').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
+        end
+      end
+
+      context 'with premium plan' do
+        let(:site) { create(:site, plan_id: premium_plan.id) }
+        before do
+          Service::Site.new(site).migrate_plan_to_addons
+          site.reload.billable_items.should have(9).items
+        end
+
+        it 'suspends all billable items' do
+          site.suspend!
+
+          site.reload.billable_items.should have(9).items
+          site.unsuspend!
+
+          site.reload.billable_items.should have(9).items
+          site.billable_items.plans.where(item_id: premium_plan).where(state: 'subscribed').should have(1).item
+          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
+          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
+          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'sponsored').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'sponsored').should have(1).item
+        end
+      end
+
+      context 'without plan' do
+        let(:site) do
+          service = Service::Site.build_site(attributes_for(:site).merge(user: create(:user)))
+          service.initial_save
+          service.site
+        end
+
+        it 'unsuspend all billable items' do
+          site.reload.billable_items.should have(8).items
+          site.suspend!
+
+          site.reload.billable_items.should have(8).items
+          site.unsuspend!
+
+          site.reload.billable_items.should have(8).items
+          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
+          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
+          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
+        end
+      end
+
+      context 'with a billable item in trial plan' do
+        let(:site) do
+          service = Service::Site.build_site(attributes_for(:site).merge(user: create(:user)))
+          service.initial_save
+          service.update_billable_items!({}, { logo: AddonPlan.get('logo', 'disabled').id })
+          service.site
+        end
+
+        it 'unsuspend all billable items' do
+          site.reload.billable_items.should have(8).items
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
+          site.suspend!
+
+          site.unsuspend!
+
+          site.reload.billable_items.should have(8).items
+          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
+          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
+          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
+        end
+      end
+    end
+
+    describe "before transition on archive" do
       before do
         @open_invoice   = create(:invoice, site: site)
         @failed_invoice = create(:failed_invoice, site: site)
         @paid_invoice   = create(:paid_invoice, site: site)
+      end
+
+      it "set archived_at" do
+        expect { site.archive! }.to change(site, :archived_at)
       end
 
       it "cancels all not paid invoices" do

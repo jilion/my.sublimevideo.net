@@ -29,6 +29,32 @@ module Service
       end
     end
 
+    def suspend_billable_items
+      ::Site.transaction do
+        site.billable_items.map(&:suspend)
+      end
+    end
+
+    def unsuspend_billable_items
+      ::Site.transaction do
+        set_default_app_designs
+        if site.new_plans.present?
+          site.billable_items.plans.where(item_id: site.plan.id).first.update_attribute(:state, 'subscribed')
+          update_billable_addon_plans({
+            logo: AddonPlan.get('logo', 'disabled').id,
+            stats: AddonPlan.get('stats', 'realtime').id,
+            lightbox: AddonPlan.get('lightbox', 'standard').id,
+            api: AddonPlan.get('api', 'standard').id,
+            support: (site.plan.name == 'premium' ? AddonPlan.get('support', 'vip') : AddonPlan.get('support', 'standard')).id
+          }, sponsor: true)
+        else
+          site.billable_items.where(state: 'suspended').each do |billable_item|
+            billable_item.update_attribute(:state, new_billable_item_state(billable_item.item))
+          end
+        end
+      end
+    end
+
     def update_billable_app_designs(new_app_designs)
       new_app_designs.each do |new_app_design_name, new_app_design_id|
         if new_app_design = App::Design.get(new_app_design_name)
@@ -47,15 +73,15 @@ module Service
       end
     end
 
-    def update_billable_addon_plans(new_addon_plans)
+    def update_billable_addon_plans(new_addon_plans, options = {})
       new_addon_plans.each do |new_addon_name, new_addon_plan_id|
         if new_addon_plan = AddonPlan.find(new_addon_plan_id.to_i)
 
           site.billable_items.addon_plans.where{ item_id >> (new_addon_plan.addon.plans.pluck(:id) - [new_addon_plan.id]) }.destroy_all
           if billable_item = site.billable_items.addon_plans.where(item_id: new_addon_plan.id).first
-            billable_item.update_attribute(:state, new_billable_item_state(new_addon_plan))
+            billable_item.update_attribute(:state, new_billable_item_state(new_addon_plan, options))
           else
-            site.billable_items.build({ item: new_addon_plan, state: new_billable_item_state(new_addon_plan) }, as: :admin)
+            site.billable_items.build({ item: new_addon_plan, state: new_billable_item_state(new_addon_plan, options) }, as: :admin)
           end
 
         end
@@ -66,15 +92,13 @@ module Service
       ::Site.transaction do
         site.billable_items.build({ item: site.plan, state: 'subscribed' }, as: :admin)
         set_default_app_designs
-        site.billable_items.build({ item: AddonPlan.get('logo', 'disabled'), state: 'sponsored' }, as: :admin)
-        site.billable_items.build({ item: AddonPlan.get('stats', 'realtime'), state: 'sponsored' }, as: :admin)
-        site.billable_items.build({ item: AddonPlan.get('lightbox', 'standard'), state: 'subscribed' }, as: :admin)
-        site.billable_items.build({ item: AddonPlan.get('api', 'standard'), state: 'subscribed' }, as: :admin)
-        if site.plan.name == 'premium'
-          site.billable_items.build({ item: AddonPlan.get('support', 'vip'), state: 'sponsored' }, as: :admin)
-        else
-          site.billable_items.build({ item: AddonPlan.get('support', 'standard'), state: 'subscribed' }, as: :admin)
-        end
+        update_billable_addon_plans({
+          logo: AddonPlan.get('logo', 'disabled').id,
+          stats: AddonPlan.get('stats', 'realtime').id,
+          lightbox: AddonPlan.get('lightbox', 'standard').id,
+          api: AddonPlan.get('api', 'standard').id,
+          support: (site.plan.name == 'premium' ? AddonPlan.get('support', 'vip') : AddonPlan.get('support', 'standard')).id
+        }, sponsor: true)
 
         site.save
       end
@@ -90,15 +114,17 @@ module Service
         )
         site.plan_id = nil
 
-        site.save!
+        site.save
       end
     end
 
     private
 
-    def new_billable_item_state(new_billable_item)
+    def new_billable_item_state(new_billable_item, options = {})
       if new_billable_item.beta?
         'beta'
+      elsif options[:sponsor]
+        new_billable_item.free? ? 'subscribed' : 'sponsored'
       else
         site.out_of_trial?(new_billable_item) || new_billable_item.free? ? 'subscribed' : 'trial'
       end

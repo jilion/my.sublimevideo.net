@@ -20,9 +20,7 @@ class BillableItem < ActiveRecord::Base
   state_machine do
     state *STATES.map(&:to_sym)
 
-    event(:subscribe) { transition all - [:subscribed] => :subscribed }
-    event(:suspend)   { transition :subscribed => :suspended }
-    event(:sponsor)   { transition all - [:sponsored] => :sponsored }
+    event(:suspend) { transition all - [:suspended] => :suspended }
   end
 
   after_save ->(billable_item) do

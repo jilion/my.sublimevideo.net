@@ -5,6 +5,7 @@ require_dependency 'validators/dev_hostnames_validator'
 require_dependency 'validators/extra_hostnames_validator'
 require_dependency 'service/loader'
 require_dependency 'service/settings'
+require_dependency 'service/site'
 
 class Site < ActiveRecord::Base
   include SiteModules::BillableItem
@@ -117,20 +118,25 @@ class Site < ActiveRecord::Base
   # =================
 
   state_machine initial: :active do
-    event(:archive)   { transition [:active, :suspended] => :archived }
-    event(:suspend)   { transition active: :suspended }
-    event(:unsuspend) { transition suspended: :active }
+    event(:archive)   { transition all - [:archived] => :archived }
+    event(:suspend)   { transition all - [:suspended] => :suspended }
+    event(:unsuspend) { transition :suspended => :active }
 
     after_transition ->(site) do
       Service::Loader.delay.update_all_modes!(site.id)
       Service::Settings.delay.update_all_types!(site.id)
     end
 
-    before_transition on: :archive do |site, transition|
-      site.archived_at = Time.now.utc
+    before_transition :on => :suspend do |site, transition|
+      Service::Site.new(site).suspend_billable_items
     end
 
-    after_transition on: :archive do |site, transition|
+    before_transition :on => :unsuspend do |site, transition|
+      Service::Site.new(site).unsuspend_billable_items
+    end
+
+    before_transition :on => :archive do |site, transition|
+      site.archived_at = Time.now.utc
       site.invoices.not_paid.map(&:cancel)
     end
   end

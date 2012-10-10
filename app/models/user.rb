@@ -101,18 +101,18 @@ class User < ActiveRecord::Base
   # =================
 
   state_machine initial: :active do
-    event(:suspend)   { transition active: :suspended }
-    event(:unsuspend) { transition suspended: :active }
-    event(:archive)   { transition [:active, :suspended] => :archived }
+    event(:suspend)   { transition :active => :suspended }
+    event(:unsuspend) { transition :suspended => :active }
+    event(:archive)   { transition all - [:archived] => :archived }
 
-    before_transition on: :suspend, do: :suspend_sites
-    after_transition  on: :suspend, do: :send_account_suspended_email
+    before_transition :on => :suspend, :do => :suspend_sites
+    after_transition  :on => :suspend, :do => :send_account_suspended_email
 
-    before_transition on: :unsuspend, do: :unsuspend_sites
-    after_transition  on: :unsuspend, do: :send_account_unsuspended_email
+    before_transition :on => :unsuspend, :do => :unsuspend_sites
+    after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
 
-    before_transition on: :archive, do: [:set_archived_at, :invalidate_tokens, :archive_sites]
-    after_transition  on: :archive, do: [:newsletter_unsubscribe, :send_account_archived_email]
+    before_transition :on => :archive, :do => [:set_archived_at, :invalidate_tokens, :archive_sites]
+    after_transition  :on => :archive, :do => [:newsletter_unsubscribe, :send_account_archived_email]
   end
 
   # =================
@@ -261,7 +261,7 @@ private
 
   # before_transition on: :suspend
   def suspend_sites
-    sites.active.includes(:invoices).where(invoices: { state: 'failed' }).map(&:suspend)
+    sites.active.map(&:suspend)
   end
 
   # after_transition on: :suspend
@@ -271,7 +271,7 @@ private
 
   # before_transition on: :unsuspend
   def unsuspend_sites
-    sites.where(state: 'suspended').map(&:unsuspend)
+    sites.suspended.map(&:unsuspend)
   end
 
   # after_transition on: :unsuspend

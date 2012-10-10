@@ -4,7 +4,7 @@ module Service
   class Rank
 
     def self.set_ranks(site_id)
-      site = Site.find(site_id)
+      site = ::Site.find(site_id)
 
       begin
         ranks = PageRankr.ranks("http://#{site.hostname}", :alexa_global, :google)
