@@ -87,7 +87,7 @@ CREATE TABLE addons (
     design_dependent boolean DEFAULT true NOT NULL,
     public_at timestamp without time zone,
     parent_addon_id integer,
-    type character varying(255),
+    kind character varying(255),
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );

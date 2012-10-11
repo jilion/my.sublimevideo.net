@@ -8,7 +8,7 @@ describe Addon do
   end
 
   describe 'Validations' do
-    [:name, :design_dependent, :public_at, :parent_addon_id, :type].each do |attr|
+    [:name, :design_dependent, :public_at, :parent_addon_id, :kind].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
     # it { should ensure_inclusion_of(:design_dependent).in_array([true, false]) }
@@ -17,7 +17,7 @@ describe Addon do
   context 'Factory' do
     subject { create(:addon) }
 
-    its(:name)    { should be_present }
+    its(:name) { should be_present }
 
     it { should be_valid }
   end
@@ -55,10 +55,10 @@ end
 #  created_at       :datetime         not null
 #  design_dependent :boolean          default(TRUE), not null
 #  id               :integer          not null, primary key
+#  kind             :string(255)
 #  name             :string(255)      not null
 #  parent_addon_id  :integer
 #  public_at        :datetime
-#  type             :string(255)
 #  updated_at       :datetime         not null
 #
 # Indexes

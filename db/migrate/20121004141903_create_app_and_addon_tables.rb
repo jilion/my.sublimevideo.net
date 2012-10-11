@@ -29,7 +29,7 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
       t.boolean  :design_dependent, null: false, default: true
       t.datetime :public_at
       t.integer  :parent_addon_id
-      t.string   :type
+      t.string   :kind
 
       t.timestamps
     end

@@ -1,5 +1,5 @@
 class Addon < ActiveRecord::Base
-  attr_accessible :name, :design_dependent, :public_at, :parent_addon_id, :type, as: :admin
+  attr_accessible :name, :design_dependent, :public_at, :parent_addon_id, :kind, as: :admin
 
   has_many :plans, class_name: 'AddonPlan'
   has_many :plugins, class_name: 'App::Plugin'
@@ -29,10 +29,10 @@ end
 #  created_at       :datetime         not null
 #  design_dependent :boolean          default(TRUE), not null
 #  id               :integer          not null, primary key
+#  kind             :string(255)
 #  name             :string(255)      not null
 #  parent_addon_id  :integer
 #  public_at        :datetime
-#  type             :string(255)
 #  updated_at       :datetime         not null
 #
 # Indexes
