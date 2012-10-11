@@ -4,13 +4,14 @@
     %strong= truncate_middle(site.hostname, length: 40)
   - else
     Embed code
-%p.desc= raw "Copy the code below and paste it into the pages on #{truncate_middle(site.hostname)} where the SublimeVideo player will be used. We #{link_to 'highly recommend', page_url('troubleshooting', subdomain: 'docs', anchor: 'old-browsers-compatibility'), class: 'hl'} you put it into the <code>&lt;head&gt;</code> tag."
-%form
-  .embed_code.entry
-    = text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, id: "embed_code_#{site.token}"
+%p.desc= raw "Copy the code below and paste it in the pages on #{truncate_middle(site.hostname)} where the SublimeVideo player will be used. We #{link_to 'highly recommend', page_url('troubleshooting', subdomain: 'docs', anchor: 'old-browsers-compatibility'), class: 'hl'} you insert it into the <code>&lt;head&gt;</code> tag."
 
-.dark_box
-  %p
-    = "If you're asked for your site's token, use this:"
-    %strong
-      %code= site.token
+%p.desc Player code for the classic SublimeVideo player:
+%form
+  .embed_code.entry= text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, id: "embed_code_#{site.token}"
+
+%p.desc= raw "If you would like to test the new SublimeVideo player (in beta), you may copy the code below and paste it in the pages on #{truncate_middle(site.hostname)} where the player will be used."
+
+%p.desc Player code for the new SublimeVideo player (beta version):
+%form
+  .embed_code.entry= text_area_tag '', sublimevideo_script_tag_for(site, 'beta'), readonly: true, id: "embed_code_#{site.token}-beta"

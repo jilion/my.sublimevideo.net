@@ -11,8 +11,9 @@
         %span.p= raw t 'site.status.need_subdomain', hostname: site.hostname_with_subdomain_needed
     - if site.plan_id?
       .plan= link_to "#{site.plan.title} plan", site_addons_path(site)
-    .token= "##{site.token}"
-    .actions
+    .spacer
+    .token{ style: 'display: inline' }= "##{site.token}"
+    .actions{ style: 'display: inline' }
       %select.site_actions{ id: ['site_actions', site.id] }
         %option{ value: '' } Actions
         %option{ value: site_addons_path(site) } Add-ons

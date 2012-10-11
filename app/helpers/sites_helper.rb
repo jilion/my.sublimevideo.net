@@ -6,8 +6,8 @@ module SitesHelper
     site.errors[:base] && site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
   end
 
-  def sublimevideo_script_tag_for(site)
-    %{<script type="text/javascript" src="//cdn.sublimevideo.net/js/%s.js"></script>} % [site.token]
+  def sublimevideo_script_tag_for(site, stage = nil)
+    %{<script type="text/javascript" src="//cdn.sublimevideo.net/js/%s#{'-' + stage if stage}.js"></script>} % [site.token]
   end
 
   def url_with_protocol(url)
