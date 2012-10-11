@@ -5,7 +5,7 @@
 AdminSublimeVideo.UI.prepareComponentSelector = ->
   if (componentsSelectName = $('#component_select_name')).exists()
     componentsSelectName.on 'change', ->
-      window.location.href = window.location.href.replace "/#{componentsSelectName.attr('data-token')}", "/#{componentsSelectName.val()}"
-
-$(document).ready ->
-  AdminSublimeVideo.UI.prepareComponentSelector()
+      href = location.href.replace("/#{componentsSelectName.attr('data-token')}", "/#{componentsSelectName.val()}")
+      $.pjax
+        url: href
+        container: '[data-pjax-container]'

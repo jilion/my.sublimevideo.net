@@ -78,6 +78,7 @@ AdminSublimeVideo.documentReady = ->
 
 $(document).ready ->
   AdminSublimeVideo.documentReady()
+  AdminSublimeVideo.UI.prepareComponentSelector()
 
   $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax]):not(.selector)').pjax '[data-pjax-container]',
     timeout: 2000
