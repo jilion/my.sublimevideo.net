@@ -59,19 +59,6 @@ describe App::ComponentVersion, :fog_mock do
     version = App::ComponentVersion.create(attributes.merge(dependencies: {app: "1.0.0"}.to_json), as: :admin)
     version.dependencies.should eq({"app" => "1.0.0"})
   end
-
-  it "compares via Service::SemanticVersioning" do
-    version100_aplha1 = App::ComponentVersion.new({ version: '1.0.0-alpha.1' }, as: :admin)
-    version100 = App::ComponentVersion.new({ version: '1.0.0' }, as: :admin)
-    version200 = App::ComponentVersion.new({ version: '2.0.0' }, as: :admin)
-    version124 = App::ComponentVersion.new({ version: '1.2.4' }, as: :admin)
-    version123 = App::ComponentVersion.new({ version: '1.2.3' }, as: :admin)
-
-    [version100, version100_aplha1, version200, version124, version123].sort.should eq([
-      version100_aplha1, version100, version123, version124, version200
-    ])
-  end
-
 end
 
 # == Schema Information

@@ -1,28 +1,16 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
 
-require File.expand_path('lib/service/semantic_versioning')
 require File.expand_path('app/models/app')
-require File.expand_path('lib/app/component_version_dependencies_manager')
+require File.expand_path('lib/app/component_version_dependencies_solver')
 
 unless defined?(ActiveRecord)
   class Site < Struct.new(:player_mode); end
   class App::Component < Struct.new(:name, :token); end
-  class App::ComponentVersion < Struct.new(:version, :component, :dependencies)
-    include Service::SemanticVersioning
-
-    def initialize(*args)
-      super
-      # ActiveRecord like
-      if args.first.is_a?(Hash)
-        self[:version] = self[:version][:version]
-      end
-      self.version = self[:version]
-    end
-  end
+  class App::ComponentVersion < Struct.new(:version, :component, :dependencies); end
 end
 
-describe App::ComponentVersionDependenciesManager do
+describe App::ComponentVersionDependenciesSolver do
   let(:site) { Site.new('stable') }
   let(:c_a) { App::Component.new('app', 'a') }
   let(:c_a_100) { App::ComponentVersion.new("1.0.0", c_a) }
@@ -89,6 +77,18 @@ describe App::ComponentVersionDependenciesManager do
 
           it "depends on the both bigger components versions" do
             described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "1.0.0", 'c1' => "1.1.0")
+          end
+        end
+
+        context "with app component dependency with an unexistent dependencies" do
+          before do
+            App::Component.should_receive(:find_by_name).any_number_of_times.with('app') { c_a }
+            c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
+            c_c1_110.stub(:dependencies) { { 'app' => '3.0.0' } } # unexistent
+          end
+
+          it "depends on the both bigger components versions valid" do
+            described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "1.0.0", 'c1' => "1.0.0")
           end
         end
 

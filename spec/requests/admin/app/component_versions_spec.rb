@@ -29,7 +29,7 @@ describe "Admin::App::Components JSON actions", :fog_mock do
 
     context "non-authorized token" do
       it "returns 200 response" do
-        get "app/components/#{component.token}/versions.jsonauth_token=argh", nil, headers
+        get "app/components/#{component.token}/versions.json?auth_token=argh", nil, headers
         response.status.should eq 401
       end
     end

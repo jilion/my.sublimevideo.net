@@ -24,6 +24,14 @@ GIT
       htmlentities (>= 4.0.0)
 
 GIT
+  remote: git://github.com/jilion/solve.git
+  revision: 0b1e4f0b401c709f726d84f64994357dec027d17
+  branch: semver
+  specs:
+    solve (0.3.1)
+      json
+
+GIT
   remote: git://github.com/jilion/useragent.git
   revision: 8998a459fbbb0ea74b3edbe85cc280c2256f93e9
   specs:
@@ -503,8 +511,6 @@ GEM
     silent-postgres (0.1.1)
     simple_oauth (0.1.9)
     snail (0.6.1)
-    solve (0.3.1)
-      json
     sprockets (2.6.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -664,7 +670,7 @@ DEPENDENCIES
   show_me_the_cookies
   silent-postgres
   snail (~> 0.6.1)
-  solve
+  solve!
   squeel (~> 1.0.11)
   stat_request_parser (~> 1.1.0)
   state_machine (~> 1.1.2)

@@ -1,6 +1,6 @@
 require 'solve'
 
-class App::ComponentVersionDependenciesManager < Struct.new(:site, :mode, :dependencies)
+class App::ComponentVersionDependenciesSolver < Struct.new(:site, :mode, :dependencies)
   delegate :components, :name, to: :site, prefix: true
 
   def self.components_dependencies(site, mode)

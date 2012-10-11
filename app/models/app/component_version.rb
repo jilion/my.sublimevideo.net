@@ -1,8 +1,4 @@
-require_dependency 'service/semantic_versioning'
-
 class App::ComponentVersion < ActiveRecord::Base
-  include Service::SemanticVersioning
-
   serialize :dependencies, ActiveRecord::Coders::Hstore
 
   attr_accessible :component, :token, :dependencies, :version, :zip, as: :admin
