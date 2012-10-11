@@ -11,8 +11,14 @@ module SiteModules::BillableItem
     addon_plans.where{ (billable_items.state >> BillableItem::ACTIVE_STATES) & (id == addon_plan.id) }.exists?
   end
 
-  def addon_is_active?(cat)
-    persisted? && addons.active.where{ category == cat }.exists?
+  def addon_plan_is_sponsored?(addon_plan)
+    addon_plan.present? &&
+    addon_plans.where{ (billable_items.state == 'sponsored') & (id == addon_plan.id) }.exists?
+  end
+
+  def addon_is_active?(addon)
+    addon.present? &&
+    addon_plans.where{ (billable_items.state >> BillableItem::ACTIVE_STATES) & (id == addon.plans.pluck(:id)) }.exists?
   end
 
   def out_of_trial?(billable_item)

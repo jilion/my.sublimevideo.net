@@ -25,7 +25,8 @@ class AddonPlan < ActiveRecord::Base
     when 'hidden'
       false
     when 'public'
-      true
+      addon_plan_ids_expect_myself = addon.plans.pluck(:id) - [id]
+      !site.billable_items.addon_plans.where{ item_id >> addon_plan_ids_expect_myself }.where(state: 'sponsored').exists?
     when 'custom'
       site.addon_plans.where(id: id).exists?
     end

@@ -11,11 +11,11 @@ module BillableItemsHelper
     _addon_choice_tag(checked: true, disabled: true, field_type: field_type)
   end
 
-  def billable_item_price(billable_item, free_label = 'Free')
+  def billable_item_price(billable_item)
     if billable_item.price.zero?
-      free_label
+      'free'
     elsif billable_item.beta?
-      "#{free_label} (during beta)"
+      'free (during beta)'
     else
       display_amount_with_sup(billable_item.price)
     end
