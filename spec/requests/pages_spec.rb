@@ -125,7 +125,7 @@ feature "Suspended page" do
         @site.save!(validate: false)
         @invoice = create(:failed_invoice, site: @site, last_failed_at: Time.utc(2010,2,10), amount: 1990)
         @transaction = create(:failed_transaction, invoices: [@invoice], error: "Credit Card expired")
-        @current_user.suspend
+        Service::User.new(@current_user).suspend
         @site.reload.should be_suspended
         @current_user.reload.should be_suspended
       end

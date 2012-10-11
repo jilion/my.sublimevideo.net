@@ -13,7 +13,7 @@
       .plan= link_to "#{site.plan.title} plan", site_addons_path(site)
     .token= "##{site.token}"
     .actions
-      %select.site_actions
+      %select.site_actions{ id: ['site_actions', site.id] }
         %option{ value: '' } Actions
         %option{ value: site_addons_path(site) } Add-ons
         %option{ value: site_addons_path(site) } Player

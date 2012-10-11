@@ -11,7 +11,7 @@ module Service
     delegate :upload!, :delete!, :present?, to: :cdn_file
 
     def self.update_all_modes!(site_id, options = {})
-      site = Site.find(site_id)
+      site = ::Site.find(site_id)
       modes_needed = site_loader_modes(site)
       changed = []
       self::MODES.each do |mode|

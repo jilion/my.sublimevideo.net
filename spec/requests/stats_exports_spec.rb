@@ -4,7 +4,7 @@ feature 'StatsExport' do
   background do
     sign_in_as :user
     @site = create(:site, user: @current_user)
-    create(:subscribed_addonship, site: @site, addon: @stats_standard_addon)
+    create(:billable_item, site: @site, item: @stats_addon_plan_2)
     @video_tag = create(:video_tag, st: @site.token, u: 'video_uid', uo: 'a', n: 'My Video', no: 'a')
     create(:site_day_stat, t: @site.token, d: 3.days.ago.midnight.to_i,
       pv: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })

@@ -5,15 +5,15 @@ module Service
     class << self
 
       def subscribe(user_id)
-        new(User.find(user_id)).subscribe
+        new(::User.find(user_id)).subscribe
       end
 
       def unsubscribe(user_id)
-        new(User.find(user_id)).unsubscribe
+        new(::User.find(user_id)).unsubscribe
       end
 
       def update(user_id, params = {})
-        new(User.find(user_id)).update(params)
+        new(::User.find(user_id)).update(params)
       end
 
       # Subscribes the given users to the newsletter
@@ -31,7 +31,7 @@ module Service
       end
 
       def sync_from_service(user_id)
-        user = User.find(user_id)
+        user = ::User.find(user_id)
         return if user.newsletter?
 
         CampaignMonitorWrapper.lists.each do |name, list|

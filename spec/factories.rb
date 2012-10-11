@@ -132,7 +132,7 @@ FactoryGirl.define do
     amount               9999
     vat_rate             0.08
     vat_amount           798
-    after(:build) { |invoice| invoice.invoice_items = [FactoryGirl.build(:plan_invoice_item, invoice: invoice)]}
+    after(:build) { |invoice| invoice.invoice_items = [FactoryGirl.build(:plan_invoice_item)]}
 
     factory :paid_invoice do
       state   'paid'
@@ -156,6 +156,8 @@ FactoryGirl.define do
   factory :invoice_item do
     started_at { Time.now.utc.beginning_of_month }
     ended_at   { Time.now.utc.end_of_month }
+    price      { item.price }
+    amount     { item.price }
 
     factory :plan_invoice_item, class: InvoiceItem::Plan do
       item { FactoryGirl.create(:plan) }

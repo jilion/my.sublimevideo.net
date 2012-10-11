@@ -37,8 +37,8 @@ feature 'Edit site' do
     go 'my', '/sites'
   end
 
-  scenario 'edit a site' do
-    click_link "Edit #{hostname1}"
+  scenario 'edit a site', :js do
+    select 'Settings', from: "site_actions_#{@site.id}"
 
     page.should have_selector 'input#site_extra_hostnames'
     page.should have_selector 'input#site_dev_hostnames'
@@ -49,7 +49,7 @@ feature 'Edit site' do
     fill_in 'site_dev_hostnames', with: dev_hostname
     click_button 'Save settings'
 
-    current_url.should eq 'http://my.sublimevideo.dev/sites'
+    current_url.should =~ %r(^http://[^/]+/sites$)
 
     @site.reload.hostname.should eq hostname1
     @site.extra_hostnames.should eq hostname2
@@ -58,7 +58,7 @@ feature 'Edit site' do
 
 end
 
-feature 'Site archive' do
+feature 'Archive site', :js do
   let(:hostname1) { 'rymai.com' }
   let(:hostname2) { 'rymai.eu' }
   let(:hostname3) { 'rymai.ch' }
@@ -77,7 +77,7 @@ feature 'Site archive' do
   end
 
   scenario 'a paid site in trial' do
-    click_link "Edit #{hostname1}"
+    select 'Settings', from: "site_actions_#{@site.id}"
     click_button 'Delete site'
 
     page.should have_no_content hostname1
@@ -85,20 +85,16 @@ feature 'Site archive' do
   end
 
   scenario 'a paid site with only paid invoices' do
-    click_link "Edit #{hostname2}"
+    select 'Settings', from: "site_actions_#{@paid_site_with_paid_invoices.id}"
     click_button 'Delete site'
-    # fill_in 'Password', with: '123456'
-    # click_button 'Done'
 
     page.should have_no_content hostname2
     @paid_site_with_paid_invoices.reload.should be_archived
   end
 
   scenario 'a paid site with an open invoice' do
-    click_link "Edit #{hostname3}"
+    select 'Settings', from: "site_actions_#{@paid_site_with_open_invoices.id}"
     click_button 'Delete site'
-    # fill_in 'Password', with: '123456'
-    # click_button 'Done'
 
     page.should have_no_content hostname3
     @paid_site_with_open_invoices.reload.should be_archived
@@ -109,10 +105,8 @@ feature 'Site archive' do
     create(:failed_invoice, site: site)
 
     go 'my', '/sites'
-    click_link 'Edit test.com'
+    select 'Settings', from: "site_actions_#{site.id}"
     click_button 'Delete site'
-    # fill_in 'Password', with: '123456'
-    # click_button 'Done'
 
     page.should have_no_content 'test.com'
     site.reload.should be_archived
@@ -123,10 +117,8 @@ feature 'Site archive' do
     create(:waiting_invoice, site: site)
 
     go 'my', '/sites'
-    click_link 'Edit example.org'
+    select 'Settings', from: "site_actions_#{site.id}"
     click_button 'Delete site'
-    # fill_in 'Password', with: '123456'
-    # click_button 'Done'
 
     page.should have_no_content 'example.org'
     site.reload.should be_archived

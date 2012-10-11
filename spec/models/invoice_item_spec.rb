@@ -4,8 +4,8 @@ describe InvoiceItem do
 
   describe "Associations" do
     it { should belong_to :invoice }
-    it { should have_one :site } # through :invoice
-    it { should have_one :user } # through :site
+    it { should have_one(:site).through(:invoice) }
+    it { should have_one(:user).through(:site) }
 
     it { should belong_to :deal }
 
@@ -17,7 +17,6 @@ describe InvoiceItem do
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
-    # it { should validate_presence_of(:invoice) }
     it { should validate_presence_of(:item_type) }
     it { should validate_presence_of(:item_id) }
     it { should validate_presence_of(:price) }
@@ -28,20 +27,6 @@ describe InvoiceItem do
     it { should validate_numericality_of(:price) }
     it { should validate_numericality_of(:amount) }
   end # Validations
-
-  describe 'Callbacks' do
-    it 'sets price and amount before validation' do
-      invoice_item = build(:invoice_item, item: create(:addon_plan, price: 1000))
-
-      invoice_item.price.should be_nil
-      invoice_item.amount.should be_nil
-
-      invoice_item.should be_valid
-
-      invoice_item.price.should eq 1000
-      invoice_item.amount.should eq 1000
-    end
-  end
 
 end
 

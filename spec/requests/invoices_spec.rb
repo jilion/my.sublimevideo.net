@@ -39,11 +39,6 @@ feature "Site invoices page" do
         current_url.should == "http://my.sublimevideo.dev/sites/#{@site.to_param}/invoices"
         page.should have_content 'rymai.com'
         page.should have_no_content 'No invoices'
-      end
-
-      scenario "'Past invoices' are visible" do
-        go 'my', "/sites/#{@site.to_param}/invoices"
-
         page.should have_content 'Past invoices'
         within '.past_invoices' do
           page.should have_content "#{display_amount(@invoice.amount)} on #{I18n.l(@invoice.created_at, format: :d_b_Y)}"
@@ -217,7 +212,7 @@ feature "Site invoice page" do
           page.should have_content(address_part)
         end
 
-        page.should have_content "Period: #{I18n.l(@invoice.invoice_items[0].started_at, format: :d_b_Y)} - #{I18n.l(@invoice.invoice_items[0].ended_at, format: :d_b_Y)}"
+        page.should have_content "#{I18n.l(@invoice.invoice_items[0].started_at, format: :d_b_Y)} - #{I18n.l(@invoice.invoice_items[0].ended_at, format: :d_b_Y)}"
         page.should have_content display_amount(@invoice.invoice_items[0].price)
 
         page.should have_content "VAT 0%:"
@@ -231,8 +226,8 @@ feature "Site invoice page" do
       background do
         @site = create(:site, user: @current_user, hostname: 'rymai.com')
         @invoice = build(:invoice, site: @site)
-        @plan_invoice_item1 = create(:plan_invoice_item, invoice: @invoice, deduct: true)
-        @plan_invoice_item2 = create(:plan_invoice_item, invoice: @invoice)
+        @plan_invoice_item1 = create(:plan_invoice_item, invoice: @invoice, amount: -1000)
+        @plan_invoice_item2 = create(:plan_invoice_item, invoice: @invoice, amount: 1000)
         @invoice.invoice_items = [@plan_invoice_item1, @plan_invoice_item2]
         @invoice.save!
 
@@ -240,7 +235,7 @@ feature "Site invoice page" do
       end
 
       scenario "includes a line for the deducted plan" do
-        page.should have_content("Period: #{I18n.l(@plan_invoice_item2.started_at, format: :d_b_Y)} - #{I18n.l(@plan_invoice_item2.ended_at, format: :d_b_Y)}")
+        page.should have_content("#{I18n.l(@plan_invoice_item2.started_at, format: :d_b_Y)} - #{I18n.l(@plan_invoice_item2.ended_at, format: :d_b_Y)}")
         page.should have_content("-$10.00")
       end
     end

@@ -24,14 +24,6 @@ class InvoiceItem < ActiveRecord::Base
 
   validates :item_type, :item_id, :started_at, :ended_at, :price, :amount, presence: true
   validates :price, :amount, numericality: true
-
-  before_validation ->(invoice_item) do
-    if price = invoice_item.item.try(:price)
-      invoice_item.price  ||= price
-      invoice_item.amount ||= (deduct ? -1 : 1) * price
-    end
-  end
-
 end
 
 # == Schema Information
