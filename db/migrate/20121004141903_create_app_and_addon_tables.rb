@@ -25,11 +25,11 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
     add_index :app_designs, :name, unique: true
 
     create_table :addons do |t|
-      t.string  :name, null: false
-      t.boolean :design_dependent, null: false, default: true
-      t.string  :version, null: false, default: 'stable'
-      t.integer :parent_addon_id
-      t.string  :type
+      t.string   :name, null: false
+      t.boolean  :design_dependent, null: false, default: true
+      t.datetime :public_at
+      t.integer  :parent_addon_id
+      t.string   :type
 
       t.timestamps
     end
@@ -40,7 +40,7 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
       t.string     :name, null: false
       t.integer    :price, null: false
       t.string     :availability, null: false
-      t.boolean    :works_with_stable_app, null: false, default: true
+      t.string     :required_stage, null: false, default: 'stable'
 
       t.timestamps
     end

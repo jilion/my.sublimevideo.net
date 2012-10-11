@@ -52,7 +52,7 @@ CREATE TABLE addon_plans (
     name character varying(255) NOT NULL,
     price integer NOT NULL,
     availability character varying(255) NOT NULL,
-    works_with_stable_app boolean DEFAULT true NOT NULL,
+    required_stage character varying(255) DEFAULT 'stable'::character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -85,7 +85,7 @@ CREATE TABLE addons (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
     design_dependent boolean DEFAULT true NOT NULL,
-    version character varying(255) DEFAULT 'stable'::character varying NOT NULL,
+    public_at timestamp without time zone,
     parent_addon_id integer,
     type character varying(255),
     created_at timestamp without time zone NOT NULL,

@@ -1,5 +1,5 @@
 class Addon < ActiveRecord::Base
-  attr_accessible :name, :design_dependent, :version, :parent_addon_id, :type, as: :admin
+  attr_accessible :name, :design_dependent, :public_at, :parent_addon_id, :type, as: :admin
 
   has_many :plans, class_name: 'AddonPlan'
   has_many :plugins, class_name: 'App::Plugin'
@@ -8,7 +8,6 @@ class Addon < ActiveRecord::Base
   validates :name, presence: true
   validates :name, uniqueness: true
   validates :design_dependent, inclusion: [true, false]
-  validates :version, inclusion: %w[stable beta]
 
   def self.get(name)
     where(name: name).first
@@ -19,7 +18,7 @@ class Addon < ActiveRecord::Base
   end
 
   def beta?
-    version == 'beta'
+    !public_at?
   end
 end
 
@@ -32,9 +31,9 @@ end
 #  id               :integer          not null, primary key
 #  name             :string(255)      not null
 #  parent_addon_id  :integer
+#  public_at        :datetime
 #  type             :string(255)
 #  updated_at       :datetime         not null
-#  version          :string(255)      default("stable"), not null
 #
 # Indexes
 #

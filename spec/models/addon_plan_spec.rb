@@ -7,11 +7,11 @@ describe AddonPlan do
   end
 
   describe 'Validations' do
-    [:addon, :name, :price, :availability, :works_with_stable_app].each do |attr|
+    [:addon, :name, :price, :availability, :required_stage].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
-    # it { should ensure_inclusion_of(:works_with_stable_app).in_array([true, false]) }
+    it { should ensure_inclusion_of(:required_stage).in_array(%w[alpha beta stable]) }
     it { should ensure_inclusion_of(:availability).in_array(%w[hidden public custom]) }
 
     it { should validate_numericality_of(:price) }
@@ -34,9 +34,9 @@ describe AddonPlan do
 
   describe 'Scopes' do
     before do
-      create(:addon_plan, addon: create(:addon, version: 'beta'), price: 999)
-      @addon_plan1 = create(:addon_plan, addon: create(:addon, version: 'stable'), price: 0)
-      @addon_plan2 = create(:addon_plan, addon: create(:addon, version: 'stable'), price: 999)
+      create(:addon_plan, addon: create(:addon, public_at: nil), price: 999)
+      @addon_plan1 = create(:addon_plan, addon: create(:addon, public_at: Time.now), price: 0)
+      @addon_plan2 = create(:addon_plan, addon: create(:addon, public_at: Time.now), price: 999)
     end
 
     describe '.paid' do
@@ -55,48 +55,20 @@ describe AddonPlan do
   describe '#beta?' do
     context 'addon is beta' do
       before do
-        # @beta_component = create(:app_component)
-        # create(:app_component_version, component: @beta_component, version: '1.2.3-beta')
-        @addon = create(:addon, design_dependent: false, version: 'beta')
+        @addon = create(:addon, design_dependent: false, public_at: nil)
         @addon_plan = create(:addon_plan, addon: @addon)
-        # create(:app_plugin, addon: @addon, component: @beta_component)
       end
 
       it { @addon_plan.should be_beta }
     end
     context 'addon is stable' do
       before do
-        # @beta_component = create(:app_component)
-        # create(:app_component_version, component: @beta_component, version: '1.2.3-beta')
-        @addon = create(:addon, design_dependent: false, version: 'stable')
+        @addon = create(:addon, design_dependent: false, public_at: Time.now)
         @addon_plan = create(:addon_plan, addon: @addon)
-        # create(:app_plugin, addon: @addon, component: @beta_component)
       end
 
       it { @addon_plan.should_not be_beta }
     end
-
-    # context 'addon is design_dependent' do
-    #   before do
-    #     @stable_component = create(:app_component)
-    #     create(:app_component_version, component: @stable_component, version: '1.1.1-beta')
-    #     create(:app_component_version, component: @stable_component, version: '1.1.2')
-    #     @beta_component = create(:app_component)
-    #     create(:app_component_version, component: @beta_component, version: '1.2.2')
-    #     create(:app_component_version, component: @beta_component, version: '1.2.3-beta')
-
-    #     @addon = create(:addon, design_dependent: true)
-    #     @addon_plan = create(:addon_plan, addon: @addon)
-    #     @app_design_1 = create(:app_design)
-    #     @app_design_2 = create(:app_design)
-
-    #     create(:app_plugin, addon: @addon, design: @app_design_1, component: @stable_component)
-    #     create(:app_plugin, addon: @addon, design: @app_design_2, component: @beta_component)
-    #   end
-
-    #   it { @addon_plan.beta?(@app_design_1).should be_false }
-    #   it { @addon_plan.beta?(@app_design_2).should be_true }
-    # end
   end
 end
 
@@ -104,14 +76,14 @@ end
 #
 # Table name: addon_plans
 #
-#  addon_id              :integer          not null
-#  availability          :string(255)      not null
-#  created_at            :datetime         not null
-#  id                    :integer          not null, primary key
-#  name                  :string(255)      not null
-#  price                 :integer          not null
-#  updated_at            :datetime         not null
-#  works_with_stable_app :boolean          default(TRUE), not null
+#  addon_id       :integer          not null
+#  availability   :string(255)      not null
+#  created_at     :datetime         not null
+#  id             :integer          not null, primary key
+#  name           :string(255)      not null
+#  price          :integer          not null
+#  required_stage :string(255)      default("stable"), not null
+#  updated_at     :datetime         not null
 #
 # Indexes
 #

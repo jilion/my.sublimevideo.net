@@ -2,27 +2,22 @@ RSpec.configure do |config|
   config.before :all, addons: true do
     create_default_addons
   end
-  config.before :all, plans: true do
-    # create_default_plans
-  end
   config.before :all, type: :request do
     create_default_addons
-    # create_default_plans
   end
 
   config.after :all, addons: true do
     App::Component.delete_all
+    App::ComponentVersion.delete_all
     App::Design.delete_all
     Addon.delete_all
     AddonPlan.delete_all
     App::Plugin.delete_all
     App::SettingsTemplate.delete_all
   end
-  # config.after :all, plans: true do
-  #   # Plan.delete_all
-  # end
   config.after :all, type: :request do
     App::Component.delete_all
+    App::ComponentVersion.delete_all
     App::Design.delete_all
     Addon.delete_all
     AddonPlan.delete_all
@@ -75,7 +70,7 @@ def create_logo_addon
   @logo_addon_plan_2    = create(:addon_plan, name: 'disabled', price: 995, addon: @logo_addon)
   @logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @logo_addon_plan_2, plugin: @logo_addon_plugin)
 
-  @logo_addon_plan_3    = create(:addon_plan, name: 'custom', price: 1995, addon: @logo_addon, works_with_stable_app: false)
+  @logo_addon_plan_3    = create(:addon_plan, name: 'custom', price: 1995, addon: @logo_addon, required_stage: 'beta')
   @logo_addon_plan_3_st = create(:app_settings_template, addon_plan: @logo_addon_plan_3, plugin: @logo_addon_plugin)
 end
 
@@ -90,7 +85,7 @@ def create_stats_addon
   @stats_addon_plan_2    = create(:addon_plan, name: 'realtime', price: 995, addon: @stats_addon)
   @stats_addon_plan_2_st = create(:app_settings_template, addon_plan: @stats_addon_plan_2, plugin: @stats_addon_plugin)
 
-  @stats_addon_plan_3    = create(:addon_plan, name: 'disabled', price: 1995, addon: @stats_addon, availability: 'hidden', works_with_stable_app: false)
+  @stats_addon_plan_3    = create(:addon_plan, name: 'disabled', price: 1995, addon: @stats_addon, availability: 'hidden', required_stage: 'beta')
   @stats_addon_plan_3_st = create(:app_settings_template, addon_plan: @stats_addon_plan_3, plugin: @stats_addon_plugin)
 end
 

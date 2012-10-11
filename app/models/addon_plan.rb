@@ -1,7 +1,7 @@
 class AddonPlan < ActiveRecord::Base
   AVAILABILITIES = %w[hidden public custom]
 
-  attr_accessible :addon, :name, :price, :availability, :works_with_stable_app, as: :admin
+  attr_accessible :addon, :name, :price, :availability, :required_stage, as: :admin
 
   belongs_to :addon
   has_many :components, through: :addon
@@ -11,10 +11,10 @@ class AddonPlan < ActiveRecord::Base
   validates :addon, :name, :price, presence: true
   validates :name, uniqueness: { scope: :addon_id }
   validates :availability, inclusion: AVAILABILITIES
-  validates :works_with_stable_app, inclusion: [true, false]
+  validates :required_stage, inclusion: %w[alpha beta stable]
   validates :price, numericality: true
 
-  scope :paid, -> { includes(:addon).where{ (addon.version == 'stable') & (price > 0) } }
+  scope :paid, -> { includes(:addon).where{ (addon.public_at != nil) & (price > 0) } }
 
   def self.get(addon_name, addon_plan_name)
     includes(:addon).where { (addon.name == addon_name) & (name == addon_plan_name) }.first
@@ -31,19 +31,6 @@ class AddonPlan < ActiveRecord::Base
     end
   end
 
-  # def beta?(app_design = nil)
-  #   return false if components.empty?
-
-  #   if addon.design_dependent?
-  #     # Rails.logger.info addon.inspect
-  #     # Rails.logger.info app_design.inspect
-  #     # components.includes(:plugins).where{ plugins.app_design_id == app_design.id }.first
-  #     components.any? { |component| (component.versions.first.version =~ /[a-z]/i).present? }
-  #   else
-  #     (components.first.versions.first.version =~ /[a-z]/i).present?
-  #   end
-  # end
-
   def free?
     price.zero?
   end
@@ -53,14 +40,14 @@ end
 #
 # Table name: addon_plans
 #
-#  addon_id              :integer          not null
-#  availability          :string(255)      not null
-#  created_at            :datetime         not null
-#  id                    :integer          not null, primary key
-#  name                  :string(255)      not null
-#  price                 :integer          not null
-#  updated_at            :datetime         not null
-#  works_with_stable_app :boolean          default(TRUE), not null
+#  addon_id       :integer          not null
+#  availability   :string(255)      not null
+#  created_at     :datetime         not null
+#  id             :integer          not null, primary key
+#  name           :string(255)      not null
+#  price          :integer          not null
+#  required_stage :string(255)      default("stable"), not null
+#  updated_at     :datetime         not null
 #
 # Indexes
 #

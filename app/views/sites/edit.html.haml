@@ -15,7 +15,7 @@
 
   .big_break
   .spacer
-    = form_for @site, html: { method: 'delete', "data-password-protected" => true } do |f|
+    = form_for @site, html: { method: 'delete', data: { confirm: true } } do |f|
       - if params[:action] == 'destroy' && current_password_needed_error?(@site)
         = password_box resource: @site, f: f, cancel_url: [:edit, @site]
       .entry.delete

@@ -8,11 +8,10 @@ describe Addon do
   end
 
   describe 'Validations' do
-    [:name, :design_dependent, :version, :parent_addon_id, :type].each do |attr|
+    [:name, :design_dependent, :public_at, :parent_addon_id, :type].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
     # it { should ensure_inclusion_of(:design_dependent).in_array([true, false]) }
-    it { should ensure_inclusion_of(:version).in_array(%w[stable beta]) }
   end
 
   context 'Factory' do
@@ -43,8 +42,8 @@ describe Addon do
   end
 
   describe '#beta?' do
-    it { build(:addon, version: 'stable').should_not be_beta }
-    it { build(:addon, version: 'beta').should be_beta }
+    it { build(:addon, public_at: nil).should be_beta }
+    it { build(:addon, public_at: Time.now).should_not be_beta }
   end
 
 end
@@ -58,9 +57,9 @@ end
 #  id               :integer          not null, primary key
 #  name             :string(255)      not null
 #  parent_addon_id  :integer
+#  public_at        :datetime
 #  type             :string(255)
 #  updated_at       :datetime         not null
-#  version          :string(255)      default("stable"), not null
 #
 # Indexes
 #

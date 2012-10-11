@@ -33,8 +33,9 @@ FactoryGirl.define do
   # = Addons =
   # ==========
   factory :addon do
-    sequence(:name) { |n| "addon#{n}" }
+    sequence(:name)  { |n| "addon#{n}" }
     design_dependent true
+    public_at        Time.now.utc
   end
 
   factory :addon_plan do

@@ -75,10 +75,10 @@ module Populate
           { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden' },
           { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
           { name: 'disabled',  price: 995,  addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'public', works_with_stable_app: false },
+          { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta' },
           { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden' },
           { name: 'realtime',  price: 995,  addon: 'ref-Addon-stats',        availability: 'public' },
-          { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden', works_with_stable_app: false },
+          { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'public' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public' },
@@ -240,7 +240,7 @@ module Populate
             site = user.sites.create({ hostname: hostname, plan_id: Plan.where(name: %w[plus premium].sample, cycle: 'month').first.id }, without_protection: true)
             Service::Site.new(site).migrate_plan_to_addons
           else
-            Service::Site.build_site(user: user, hostname: hostname).initial_save
+            Service::Site.build(user: user, hostname: hostname).initial_save
           end
         end
       end
