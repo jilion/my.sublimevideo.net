@@ -1,7 +1,7 @@
 require_dependency 'validators/email_uniqueness_validator'
 require_dependency 'validators/hostname_validator'
 require_dependency 'zendesk_wrapper'
-require_dependency 'newsletter_manager'
+require_dependency 'service/newsletter'
 require_dependency 'public_launch'
 require_dependency 'vat'
 
@@ -88,9 +88,6 @@ class User < ActiveRecord::Base
 
   before_save :prepare_pending_credit_card, if: proc { |u| u.credit_card(true).valid? } # in user/credit_card
 
-  after_create :send_welcome_email
-  after_create :sync_newsletter, unless: :newsletter?
-
   after_save :register_credit_card_on_file, if: proc { |u| u.cc_register } # in user/credit_card
   after_save :newsletter_update
 
@@ -105,14 +102,15 @@ class User < ActiveRecord::Base
     event(:unsuspend) { transition :suspended => :active }
     event(:archive)   { transition all - [:archived] => :archived }
 
-    before_transition :on => :suspend, :do => :suspend_sites
-    after_transition  :on => :suspend, :do => :send_account_suspended_email
+    before_transition :on => :archive do |user, transition|
+      user.archived_at = Time.now.utc
 
-    before_transition :on => :unsuspend, :do => :unsuspend_sites
-    after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
+      user.sites.map(&:archive)
 
-    before_transition :on => :archive, :do => [:set_archived_at, :invalidate_tokens, :archive_sites]
-    after_transition  :on => :archive, :do => [:newsletter_unsubscribe, :send_account_archived_email]
+      user.tokens.update_all(invalidated_at: Time.now.utc)
+
+      Service::Newsletter.delay.unsubscribe(user.id)
+    end
   end
 
   # =================
@@ -123,16 +121,6 @@ class User < ActiveRecord::Base
   # avoid the "not active yet" flash message to be displayed for archived users!
   def self.find_for_authentication(conditions = {})
     where(conditions).where{ state != 'archived' }.first
-  end
-
-  def self.suspend(user_id)
-    user = find(user_id)
-    user.suspend
-  end
-
-  def self.unsuspend(user_id)
-    user = find(user_id)
-    user.unsuspend
   end
 
   # ====================
@@ -259,51 +247,6 @@ private
     end
   end
 
-  # before_transition on: :suspend
-  def suspend_sites
-    sites.active.map(&:suspend)
-  end
-
-  # after_transition on: :suspend
-  def send_account_suspended_email
-    UserMailer.delay.account_suspended(id)
-  end
-
-  # before_transition on: :unsuspend
-  def unsuspend_sites
-    sites.suspended.map(&:unsuspend)
-  end
-
-  # after_transition on: :unsuspend
-  def send_account_unsuspended_email
-    UserMailer.delay.account_unsuspended(id)
-  end
-
-  # before_transition on: :archive
-  def set_archived_at
-    self.archived_at = Time.now.utc
-  end
-  def archive_sites
-    sites.each do |site|
-      site.skip_password(:archive)
-    end
-  end
-
-  # after_transition on: :archive
-  def invalidate_tokens
-    tokens.update_all(invalidated_at: Time.now.utc)
-  end
-
-  # after_transition on: :archive
-  def newsletter_unsubscribe
-    NewsletterManager.unsubscribe(self)
-  end
-
-  # after_transition on: :archive
-  def send_account_archived_email
-    UserMailer.delay.account_archived(id)
-  end
-
   # before_save
   def set_password
     if @password.present?
@@ -312,29 +255,19 @@ private
     end
   end
 
-  # after_create
-  def send_welcome_email
-    UserMailer.delay.welcome(id)
-  end
-
-  # after_create
-  def sync_newsletter
-    NewsletterManager.sync_from_service(self)
-  end
-
   # after_save
   def newsletter_update
     if newsletter_changed?
       if newsletter?
-        NewsletterManager.subscribe(self)
+        Service::Newsletter.delay.subscribe(self.id)
       else
-        newsletter_unsubscribe
+        Service::Newsletter.delay.unsubscribe(self.id)
       end
     end
 
     if newsletter?
       if (email_changed? && email_was.present?) || (name_changed? && name_was.present? && name?)
-        NewsletterManager.update(self)
+        Service::Newsletter.delay.update(self.id, { email: email_was || email, user: { email: email, name: name, newsletter: newsletter? } })
       end
     end
   end

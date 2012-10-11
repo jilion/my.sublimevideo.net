@@ -24,7 +24,7 @@ class SitesController < ApplicationController
 
   # GET /sites/new
   def new
-    @site = Service::Site.build_site(user: current_user).site
+    @site = Service::Site.build(user: current_user).site
 
     respond_with(@site)
   end
@@ -36,7 +36,7 @@ class SitesController < ApplicationController
 
   # POST /sites
   def create
-    service = Service::Site.build_site(params[:site].merge(user: current_user, remote_ip: request.remote_ip))
+    service = Service::Site.build(params[:site].merge(user: current_user, remote_ip: request.remote_ip))
     @site   = service.site
 
     respond_with(@site) do |format|

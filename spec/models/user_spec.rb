@@ -163,72 +163,6 @@ describe User do
       it { should be_active }
     end
 
-    describe "#suspend" do
-      context "from active state" do
-        before do
-          user.suspend
-        end
-
-        it { should be_suspended }
-      end
-
-      describe "Callbacks" do
-        describe "before_transition on: :suspend, do: :suspend_sites" do
-          before do
-            create(:invoice, site: paid_site, state: 'failed')
-          end
-
-          it "should suspend all user' active sites that have failed invoices" do
-            paid_site.should be_active
-            archived_site.should be_archived
-
-            user.suspend
-
-            paid_site.reload.should be_suspended
-            archived_site.reload.should be_archived
-          end
-        end
-
-        describe "after_transition  on: :suspend, do: :send_account_suspended_email" do
-          it "should send an email to the user" do
-            -> { user.suspend }.should delay('%Class%account_suspended%')
-          end
-        end
-      end
-    end
-
-    describe "#unsuspend" do
-      before { user.update_attribute(:state, 'suspended') }
-
-      context "from suspended state" do
-        it "should set the user to active" do
-          user.reload.should be_suspended
-
-          user.unsuspend
-
-          user.should be_active
-        end
-      end
-
-      describe "Callbacks" do
-        describe "before_transition on: :unsuspend, do: :unsuspend_sites" do
-          it "should suspend all user' sites that are suspended" do
-            suspended_site.should be_suspended
-
-            user.unsuspend
-
-            suspended_site.reload.should be_active
-          end
-        end
-
-        describe "after_transition  on: :unsuspend, do: :send_account_unsuspended_email" do
-          it "should send an email to the user" do
-            -> { user.unsuspend }.should delay('%Class%account_unsuspended%')
-          end
-        end
-      end
-    end
-
     describe "#archive" do
       [:active, :suspended].each do |state|
         context "from #{state} state" do
@@ -255,12 +189,13 @@ describe User do
       end
 
       describe "Callbacks" do
+        let(:user) { create(:user, newsletter: "1", email: "john@doe.com") }
         before do
-          Invoice.delete_all
           user.current_password = "123456"
+          Service::Newsletter.stub(:delay) { stub(unsubscribe: true) }
         end
 
-        describe "before_transition on: :archive, do: [:set_archived_at, :invalidate_tokens, :archive_sites]" do
+        describe "before_transition on: :archive" do
           it "sets archived_at" do
             user.archived_at.should be_nil
 
@@ -285,25 +220,12 @@ describe User do
 
             user.sites.all? { |site| site.reload.should be_archived }
           end
-        end
 
-        describe "after_transition on: :archive, do: [:newsletter_unsubscribe, :send_account_archived_email]" do
-          it "sends an email to user" do
-            -> { user.archive }.should delay('%Class%account_archived%')
-          end
+          it "unsubscribe user from newsletter" do
+            Service::Newsletter.should_receive(:delay).and_return(@dj = stub)
+            @dj.should_receive(:unsubscribe).with(user.id)
 
-          describe ":newsletter_unsubscribe" do
-            let(:user) { create(:user, newsletter: "1", email: "john@doe.com") }
-            before do
-              CDN.stub(:purge)
-              PusherWrapper.stub(:trigger)
-            end
-
-            it "subscribes new email and unsubscribe old email on user destroy" do
-              NewsletterManager.should_receive(:unsubscribe).with(user)
-
-              user.archive!
-            end
+            user.archive!
           end
         end
 
@@ -357,30 +279,14 @@ describe User do
       end
     end
 
-    describe "after_create :send_welcome_email" do
-      let(:user) { create(:user) }
-
-      it "delays UserMailer.welcome" do
-        -> { user }.should delay('%Class%welcome%')
-      end
-    end
-
-    describe "after_create :sync_newsletter" do
-      let(:user) { create(:user, newsletter: false) }
-
-      it "calls NewsletterManager.sync_newsletter" do
-        NewsletterManager.should_receive(:sync_from_service)
-        user
-      end
-    end
-
     describe "after_save :newsletter_update" do
       context "user sign-up" do
         context "user subscribes to the newsletter" do
           let(:user) { create(:user, newsletter: true, email: "newsletter_sign_up@jilion.com") }
 
-          it 'calls NewsletterManager.subscribe' do
-            NewsletterManager.should_receive(:subscribe)
+          it 'calls Service::Newsletter.subscribe' do
+            Service::Newsletter.should_receive(:delay).and_return(@dj = stub)
+            @dj.should_receive(:subscribe).with(user.id)
             user
           end
         end
@@ -388,8 +294,8 @@ describe User do
         context "user doesn't subscribe to the newsletter" do
           let(:user) { create(:user, newsletter: false, email: "no_newsletter_sign_up@jilion.com") }
 
-          it "doesn't calls NewsletterManager.subscribe" do
-            NewsletterManager.should_not_receive(:subscribe)
+          it "doesn't calls Service::Newsletter.subscribe" do
+            Service::Newsletter.should_not_receive(:delay)
             user
           end
         end
@@ -401,17 +307,17 @@ describe User do
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
           user
           -> { user.update_attribute(:email, "newsletter_update2@jilion.com")
-               user.confirm! }.should delay('%CampaignMonitorWrapper%update%')
+               user.confirm! }.should delay('%Service::Newsletter%update%')
         end
 
         it "updates info in Campaign Monitor if user change his name" do
           user
-          -> { user.update_attribute(:name, 'bob') }.should delay('%CampaignMonitorWrapper%update%')
+          -> { user.update_attribute(:name, 'bob') }.should delay('%Service::Newsletter%update%')
         end
 
         it "updates subscribing state in Campaign Monitor if user change his newsletter state" do
           user
-          -> { user.update_attribute(:newsletter, false) }.should delay('%CampaignMonitorWrapper%unsubscribe%')
+          -> { user.update_attribute(:newsletter, false) }.should delay('%Service::Newsletter%unsubscribe%')
         end
       end
     end
@@ -419,7 +325,7 @@ describe User do
     describe "after_update :zendesk_update" do
       let(:user) { create(:user) }
       before do
-        NewsletterManager.stub(:sync_from_service)
+        Service::Newsletter.stub(:sync_from_service)
       end
 
       context "user has no zendesk_id" do

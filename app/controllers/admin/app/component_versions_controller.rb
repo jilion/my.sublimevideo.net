@@ -21,7 +21,7 @@ class Admin::App::ComponentVersionsController < Admin::AppController
 
   # POST /app/components/:component_id/versions
   def create
-    @version = @component.versions.build(params[:version])
+    @version = @component.versions.build(params[:version], as: :admin)
     @version.save
     respond_with @version, location: [:admin, @component]
   end

@@ -6,7 +6,7 @@ module Service
 
     class << self
 
-      def build_site(params)
+      def build(params)
         new params.delete(:user).sites.new(params)
       end
 

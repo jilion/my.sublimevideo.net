@@ -10,11 +10,11 @@ describe Service::Site do
   let(:service)        { described_class.new(site) }
   let(:delayed_method) { stub }
 
-  describe '.build_site' do
+  describe '.build' do
     it 'instantiate a new Service::Site and returns it' do
       user.sites.should_receive(:new)
 
-      described_class.build_site(user: user).should be_a(described_class)
+      described_class.build(user: user).should be_a(described_class)
     end
   end
 
@@ -52,7 +52,7 @@ describe Service::Site do
         site.should_receive(:save) { false }
       end
 
-      it 'create a new site and save it to the database' do
+      it 'returns false' do
         service.initial_save.should be_false
       end
 

@@ -1,4 +1,5 @@
 require_dependency 'vat'
+require_dependency 'service/user'
 
 StateMachine::Machine.ignore_method_conflicts = true
 
@@ -28,7 +29,7 @@ class Invoice < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_validation ->(invoice) do
+  before_create ->(invoice) do
     invoice.customer_full_name       = invoice.user.billing_name
     invoice.customer_email           = invoice.user.email
     invoice.customer_country         = invoice.user.billing_country
@@ -67,7 +68,7 @@ class Invoice < ActiveRecord::Base
       invoice.user.last_invoiced_amount   = invoice.amount
       invoice.user.total_invoiced_amount += invoice.amount
       invoice.user.save
-      invoice.user.unsuspend if invoice.user.suspended? && invoice.user.invoices.not_paid.empty?
+      Service::User.new(invoice.user).unsuspend if invoice.user.suspended? && invoice.user.invoices.not_paid.empty?
     end
 
     after_transition on: :cancel do |invoice, transition|

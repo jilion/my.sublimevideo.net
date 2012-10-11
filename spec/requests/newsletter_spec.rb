@@ -13,7 +13,7 @@ feature "Newsletter subscription" do
       fill_in 'Email',    with: user.email
       fill_in 'Password', with: '123456'
 
-      -> { click_button 'Log In' }.should delay('%CampaignMonitorWrapper%subscribe%')
+      -> { click_button 'Log In' }.should delay('%Service::Newsletter%subscribe%')
 
       current_url.should eq 'http://my.sublimevideo.dev/sites/new'
 
@@ -28,7 +28,7 @@ feature "Newsletter subscription" do
     end
 
     scenario 'subscribed to the newsletter after log-in' do
-      -> { go 'my', '/newsletter/subscribe' }.should delay('%CampaignMonitorWrapper%subscribe%')
+      -> { go 'my', '/newsletter/subscribe' }.should delay('%Service::Newsletter%subscribe%')
 
       current_url.should eq 'http://my.sublimevideo.dev/sites'
 

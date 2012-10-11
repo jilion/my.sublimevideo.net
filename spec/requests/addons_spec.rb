@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Choose add-ons' do
   background do
     sign_in_as :user
-    service = Service::Site.build_site(attributes_for(:site).merge(user: @current_user))
+    service = Service::Site.build(attributes_for(:site).merge(user: @current_user))
     service.initial_save
     @site = service.site
 

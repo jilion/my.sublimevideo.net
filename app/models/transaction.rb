@@ -1,5 +1,6 @@
 require_dependency 'notify'
 require_dependency 'ogone'
+require_dependency 'service/user'
 
 StateMachine::Machine.ignore_method_conflicts = true
 
@@ -74,7 +75,7 @@ class Transaction < ActiveRecord::Base
         if invoice.transactions.failed.count >= 15
           invoices.delete(invoice)
 
-          invoice.user.suspend! unless invoice.user.vip?
+          Service::User.new(invoice.user).suspend unless invoice.user.vip?
 
           return
         end

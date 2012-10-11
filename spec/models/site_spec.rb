@@ -292,7 +292,7 @@ describe Site, :addons do
 
       context 'without plan' do
         let(:site) do
-          service = Service::Site.build_site(attributes_for(:site).merge(user: create(:user)))
+          service = Service::Site.build(attributes_for(:site).merge(user: create(:user)))
           service.initial_save
           service.site
         end
@@ -318,7 +318,7 @@ describe Site, :addons do
 
       context 'with a billable item in trial plan' do
         let(:site) do
-          service = Service::Site.build_site(attributes_for(:site).merge(user: create(:user)))
+          service = Service::Site.build(attributes_for(:site).merge(user: create(:user)))
           service.initial_save
           service.update_billable_items!({}, { logo: AddonPlan.get('logo', 'disabled').id })
           service.site
