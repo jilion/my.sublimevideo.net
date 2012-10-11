@@ -9,7 +9,7 @@ class PlansController < ApplicationController
 
   # POST /sites/:site_id/plan/confirm_opt_out
   def confirm_opt_out
-    Service::Site.new(@site).opt_out_from_grandfather_plan
+    Service::Site.new(@site).opt_out_from_grandfather_plan!
     redirect_to thanks_site_addons_path, notice: 'Add-ons successfully updated.'
   end
 

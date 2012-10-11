@@ -21,7 +21,55 @@ module OneTime
           end
         end
 
-        "Finished: in total, #{scheduled} sites will have their loader and license re-generated"
+        "Finished: #{scheduled} sites will have their loader and license re-generated"
+      end
+
+      def add_already_paid_amount_to_balance_for_monthly_plans
+        processed, total = 0, 0
+        ::Site.transaction do
+          ::Site.not_archived.where{ plan_id >> Plan.where(name: %w[plus premium], cycle: 'month').map(&:id) }.find_each(batch_size: 100) do |site|
+            price_per_day = (site.plan.price * 12) / 365
+            add_to_balance = [0, ((site.plan_cycle_ended_at + 1.second - Time.now.utc) / 1.day).floor * price_per_day].max
+            site.user.increment!(:balance, add_to_balance)
+
+            processed += 1
+            total += add_to_balance
+          end
+        end
+
+        "Finished: $#{total} was added to user balances (for #{processed} sites in monthly plans)."
+      end
+
+      def migrate_yearly_plans_to_monthly_plans
+        processed, total = 0, 0
+        ::Site.transaction do
+          ::Site.not_archived.where{ plan_id >> Plan.where(name: %w[plus premium], cycle: 'year').map(&:id) }.find_each(batch_size: 100) do |site|
+            new_plan = Plan.where(name: site.plan.name, cycle: 'month').first
+            site.update_column(:plan_id, new_plan.id)
+
+            price_per_day = (new_plan.price * 12) / 365
+            add_to_balance = [0, ((site.plan_cycle_ended_at + 1.second - Time.now.utc) / 1.day).floor * price_per_day].max
+            site.user.increment!(:balance, add_to_balance)
+
+            processed += 1
+            total += add_to_balance
+          end
+        end
+
+        "Finished: #{processed} sites were migrated to monthly plans and $#{total} was added to user balances."
+      end
+
+      def migrate_plans_to_addons
+        processed = 0
+        ::Site.transaction do
+          ::Site.not_archived.find_each(batch_size: 100) do |site|
+            Service::Site.new(site).migrate_plan_to_addons!
+
+            processed += 1
+          end
+        end
+
+        "Finished: #{processed} sites were migrated to the add-ons business model (there are now #{BillableItem.count} billable items in the DB)."
       end
 
       def without_versioning

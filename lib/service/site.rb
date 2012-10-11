@@ -55,7 +55,7 @@ module Service
       end
     end
 
-    def update_billable_app_designs(new_app_designs)
+    def update_billable_app_designs(new_app_designs, options = {})
       new_app_designs.each do |new_app_design_name, new_app_design_id|
         if new_app_design = App::Design.get(new_app_design_name)
 
@@ -63,9 +63,9 @@ module Service
             site.billable_items.app_designs.where(item_id: new_app_design.id).destroy_all
           else
             if billable_item = site.billable_items.app_designs.where(item_id: new_app_design.id).first
-              billable_item.update_attribute(:state, new_billable_item_state(new_app_design))
+              billable_item.update_attribute(:state, new_billable_item_state(new_app_design, options))
             else
-              site.billable_items.build({ item: new_app_design, state: new_billable_item_state(new_app_design) }, as: :admin)
+              site.billable_items.build({ item: new_app_design, state: new_billable_item_state(new_app_design, options) }, as: :admin)
             end
           end
 
@@ -88,23 +88,30 @@ module Service
       end
     end
 
-    def migrate_plan_to_addons
+    def migrate_plan_to_addons!
       ::Site.transaction do
-        site.billable_items.build({ item: site.plan, state: 'subscribed' }, as: :admin)
-        set_default_app_designs
+        site.billable_items.build({ item: site.plan, state: site.suspended? ? 'suspended' : 'subscribed' }, as: :admin) unless site.plan.free?
+
+        set_default_app_designs(suspended: site.suspended?)
+
+        advanced_plan = %w[plus premium sponsored].include?(site.plan.name)
+        logo_addon_plan_name = advanced_plan ? 'disabled' : 'sublime'
+        stats_addon_plan_name = advanced_plan ? 'realtime' : 'invisible'
+        support_addon_plan_name = %w[premium sponsored].include?(site.plan.name) ? 'vip' : 'standard'
+
         update_billable_addon_plans({
-          logo: AddonPlan.get('logo', 'disabled').id,
-          stats: AddonPlan.get('stats', 'realtime').id,
+          logo: AddonPlan.get('logo', logo_addon_plan_name).id,
+          stats: AddonPlan.get('stats', stats_addon_plan_name).id,
           lightbox: AddonPlan.get('lightbox', 'standard').id,
           api: AddonPlan.get('api', 'standard').id,
-          support: (site.plan.name == 'premium' ? AddonPlan.get('support', 'vip') : AddonPlan.get('support', 'standard')).id
-        }, sponsor: true)
+          support: AddonPlan.get('support', support_addon_plan_name).id
+        }, sponsor: advanced_plan, suspended: site.suspended?)
 
-        site.save
+        site.save!
       end
     end
 
-    def opt_out_from_grandfather_plan
+    def opt_out_from_grandfather_plan!
       ::Site.transaction do
         site.billable_items.plans.where(item_id: site.plan.id).first.destroy
         update_billable_addon_plans(
@@ -114,14 +121,16 @@ module Service
         )
         site.plan_id = nil
 
-        site.save
+        site.save!
       end
     end
 
     private
 
     def new_billable_item_state(new_billable_item, options = {})
-      if new_billable_item.beta?
+      if options[:suspended]
+        'suspended'
+      elsif new_billable_item.beta?
         'beta'
       elsif options[:sponsor]
         new_billable_item.free? ? 'subscribed' : 'sponsored'
@@ -130,12 +139,12 @@ module Service
       end
     end
 
-    def set_default_app_designs
-      update_billable_app_designs(
+    def set_default_app_designs(options = {})
+      update_billable_app_designs({
         classic: App::Design.get('classic').id,
         light: App::Design.get('light').id,
         flat: App::Design.get('flat').id
-      )
+      }, options)
     end
 
     def set_default_addon_plans

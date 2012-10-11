@@ -64,7 +64,7 @@ feature 'Opt-out from grandfather plan' do
     background do
       sign_in_as :user
       @site = @current_user.sites.create(attributes_for(:site).merge(plan_id: Plan.where(name: 'plus', cycle: 'month').first.id), without_protection: true)
-      Service::Site.new(@site).migrate_plan_to_addons
+      Service::Site.new(@site).migrate_plan_to_addons!
 
       @site.reload.billable_items.should have(9).items
       @site.billable_items.plans.where(item_id: @plus_plan).where(state: 'subscribed').should have(1).item
@@ -133,7 +133,7 @@ feature 'Opt-out from grandfather plan' do
     background do
       sign_in_as :user
       @site = @current_user.sites.create(attributes_for(:site).merge(plan_id: Plan.where(name: 'premium', cycle: 'month').first.id), without_protection: true)
-      Service::Site.new(@site).migrate_plan_to_addons
+      Service::Site.new(@site).migrate_plan_to_addons!
 
       @site.reload.billable_items.should have(9).items
       @site.billable_items.plans.where(item_id: @premium_plan).where(state: 'subscribed').should have(1).item

@@ -193,7 +193,7 @@ describe Site, :addons do
       context 'with plus plan' do
         let(:site) { create(:site, plan_id: plus_plan.id) }
         before do
-          Service::Site.new(site).migrate_plan_to_addons
+          Service::Site.new(site).migrate_plan_to_addons!
           site.reload.billable_items.should have(9).items
         end
 
@@ -216,7 +216,7 @@ describe Site, :addons do
       context 'with premium plan' do
         let(:site) { create(:site, plan_id: premium_plan.id) }
         before do
-          Service::Site.new(site).migrate_plan_to_addons
+          Service::Site.new(site).migrate_plan_to_addons!
           site.reload.billable_items.should have(9).items
         end
 
@@ -241,7 +241,7 @@ describe Site, :addons do
       context 'with plus plan' do
         let(:site) { create(:site, plan_id: plus_plan.id) }
         before do
-          Service::Site.new(site).migrate_plan_to_addons
+          Service::Site.new(site).migrate_plan_to_addons!
           site.reload.billable_items.should have(9).items
         end
 
@@ -267,7 +267,7 @@ describe Site, :addons do
       context 'with premium plan' do
         let(:site) { create(:site, plan_id: premium_plan.id) }
         before do
-          Service::Site.new(site).migrate_plan_to_addons
+          Service::Site.new(site).migrate_plan_to_addons!
           site.reload.billable_items.should have(9).items
         end
 

@@ -238,7 +238,7 @@ module Populate
         BASE_SITES.each do |hostname|
           if rand >= 0.5
             site = user.sites.create({ hostname: hostname, plan_id: Plan.where(name: %w[plus premium].sample, cycle: 'month').first.id }, without_protection: true)
-            Service::Site.new(site).migrate_plan_to_addons
+            Service::Site.new(site).migrate_plan_to_addons!
           else
             Service::Site.build(user: user, hostname: hostname).initial_save
           end

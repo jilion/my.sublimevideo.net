@@ -27,15 +27,13 @@ describe SiteModules::BillableItem, :addons do
     end
   end
 
-  pending '#addon_is_active?' do
+  describe '#addon_is_active?' do
     it 'returns true when the addon is beta, trial, sponsored or subscribed, false otherwise' do
-      site.addon_is_active?('logo').should be_true
-      site.addon_is_active?('foo').should be_true
-      site.addon_is_active?('stats').should be_true
-      site.addon_is_active?('bar').should be_true
+      site.addon_is_active?(@logo_addon).should be_true
+      site.addon_is_active?(@stats_addon).should be_true
 
       site.addon_is_active?('baz').should be_false
-      site.addon_is_active?('fooz').should be_false
+      site.addon_is_active?(@support_addon).should be_false
     end
   end
 

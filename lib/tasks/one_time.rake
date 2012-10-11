@@ -84,9 +84,19 @@ namespace :one_time do
       timed { Site.update_last_30_days_counters_for_not_archived_sites }
     end
 
-    desc "Set first_billable_plays_at for all sites that already had more than 10 views / day"
-    task set_first_billable_plays_at_for_not_archived_sites: :environment do
-      timed { Site.set_first_billable_plays_at_for_not_archived_sites }
+    desc "For all non-archived site with a monthly plan, add the plan's price prorated between [now] and the end of the site's cycle and add it to the user's balance"
+    task add_already_paid_amount_to_balance_for_monthly_plans: :environment do
+      timed { puts OneTime::Site.add_already_paid_amount_to_balance_for_monthly_plans }
+    end
+
+    desc "Change non-archived sites with yearly plan to the monthly cycle and add the plan's price prorated between [now] and the end of the site's cycle and add it to the user's balance"
+    task migrate_yearly_plans_to_monthly_plans: :environment do
+      timed { puts OneTime::Site.migrate_yearly_plans_to_monthly_plans }
+    end
+
+    desc "For all non-archived sites, migrate from the old plans to the new add-ons business model"
+    task migrate_plans_to_addons: :environment do
+      timed { puts OneTime::Site.migrate_plans_to_addons }
     end
   end
 

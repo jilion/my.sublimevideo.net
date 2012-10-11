@@ -19,10 +19,18 @@ describe AddonPlan do
 
   describe '#available?' do
     let(:site) { create(:site) }
+    let(:addon) { create(:addon) }
+    let(:addon_plan1) { create(:addon_plan, addon: addon, availability: 'public') }
+    let(:addon_plan2) { create(:addon_plan, addon: addon, availability: 'public') }
     let(:custom_addon_plan) { create(:addon_plan, availability: 'custom') }
+    before do
+      create(:billable_item, site: site, item: addon_plan1, state: 'sponsored')
+    end
 
     it { create(:addon_plan, availability: 'hidden').available?(site).should be_false }
     it { create(:addon_plan, availability: 'public').available?(site).should be_true }
+    it { addon_plan1.available?(site).should be_true }
+    it { addon_plan2.available?(site).should be_false }
     it { custom_addon_plan.available?(site).should be_false }
 
     context 'site has a billable item for this addon plan' do
