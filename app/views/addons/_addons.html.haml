@@ -32,7 +32,8 @@
                 = label_tag "addon_plans[#{addon.name}]" do
                   = t("addon_plans.#{addon.name}.#{addon_plan.name}")
                   = raw " <small>(beta player only)</small>" if addon_plan.required_stage == 'beta'
-          %td= trial_days_remaining(site, addon_plan)
+          %td
+            .trial_days_remaining{ style: "display:#{site.addon_plans.include?(addon_plan) ? 'block' : 'none'}" }= trial_days_remaining(site, addon_plan)
           %td= billable_item_price(addon_plan, visible_addon_plans.size > 1 ? 'free' : 'offered')
 
 -#%table{ border: 1, style: 'text-align:left' }

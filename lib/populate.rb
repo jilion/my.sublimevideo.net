@@ -64,12 +64,12 @@ module Populate
           { name: 'twit',    skin_token: 'twit',    price: 0, availability: 'custom', component: 'ref-App::Component-e' }
         ],
         Addon => [
-          { name: 'video_player', design_dependent: false },
-          { name: 'logo',         design_dependent: false },
-          { name: 'stats',        design_dependent: false },
-          { name: 'lightbox',     design_dependent: true },
-          { name: 'api',          design_dependent: false },
-          { name: 'support',      design_dependent: false }
+          { name: 'video_player', design_dependent: false, public_at: Time.now.utc },
+          { name: 'logo',         design_dependent: false, public_at: Time.now.utc },
+          { name: 'stats',        design_dependent: false, public_at: Time.now.utc },
+          { name: 'lightbox',     design_dependent: true, public_at: Time.now.utc },
+          { name: 'api',          design_dependent: false, public_at: Time.now.utc },
+          { name: 'support',      design_dependent: false, public_at: Time.now.utc }
         ],
         AddonPlan => [
           { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden' },

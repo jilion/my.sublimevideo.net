@@ -25,13 +25,10 @@ module BillableItemsHelper
     trial_days_remaining_for_billable_item = site.trial_days_remaining_for_billable_item(billable_item)
     case trial_days_remaining_for_billable_item
     when 0
-      ''
     when 1
       'last days of trial'
-    when nil
-      # 'trial not started'
     else
-      "free trial – #{pluralize(trial_days_remaining_for_billable_item, 'day')} remaining"
+      "free trial – #{pluralize(trial_days_remaining_for_billable_item || 30, 'day')} remaining"
     end
   end
 

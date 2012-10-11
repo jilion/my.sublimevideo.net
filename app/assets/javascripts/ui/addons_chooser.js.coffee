@@ -16,7 +16,16 @@ class MySublimeVideo.UI.AddonsChooser
     @allInputs.each (index, el) =>
       el = $(el)
       el.on 'click', =>
+        this.toggleTrialNotice(el)
         this.updateTotal()
+
+  toggleTrialNotice: (element) ->
+    $("[name='#{element.attr('name')}']").parents('tr').find('td .trial_days_remaining').hide()
+    trialDaysRemainingDiv = element.parents('tr').find('td .trial_days_remaining')
+    if element.attr('checked')?
+      trialDaysRemainingDiv.show()
+    else
+      trialDaysRemainingDiv.hide()
 
   updateTotal: ->
     totalInCents = _.inject @form.find('input[type=radio]:checked, input[type=checkbox]:checked'), ((sum, el) ->

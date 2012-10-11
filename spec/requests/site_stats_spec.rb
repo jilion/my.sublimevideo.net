@@ -22,9 +22,9 @@ feature 'Stats page' do
     end
   end
 
-  context 'user has the stats add-on inactive' do
+  context 'user doesnt have the invisible stats add-on plan' do
     background do
-      create(:inactive_addonship, site: @site, addon: @stats_standard_addon)
+      create(:billable_item, site: @site, item: @stats_addon_plan_1)
     end
 
     scenario 'redirect to /sites' do
@@ -36,7 +36,7 @@ feature 'Stats page' do
 
   context 'user has is subscribed in trial to the stats add-on' do
     background do
-      create(:trial_addonship, site: @site, addon: @stats_standard_addon)
+      create(:billable_item, site: @site, item: @stats_addon_plan_2, state: 'trial')
     end
 
     scenario 'display the stats page' do
@@ -49,7 +49,7 @@ feature 'Stats page' do
 
   context 'user has is subscribed to the stats add-on' do
     background do
-      create(:subscribed_addonship, site: @site, addon: @stats_standard_addon)
+      create(:billable_item, site: @site, item: @stats_addon_plan_2, state: 'subscribed')
     end
 
     scenario 'display the stats page' do
