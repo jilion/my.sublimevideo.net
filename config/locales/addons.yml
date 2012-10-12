@@ -1,21 +1,48 @@
 en:
   addons:
-    logo: 'Logo'
+    video_player: 'Video Player'
     lightbox: 'Lightbox'
-    api: 'API'
+    image_viewer: 'Image Viewer'
     stats: 'Analytics'
+    logo: 'Logo'
+    controls: 'Controls'
+    start_view: 'Start View'
+    sharing: 'Sharing'
+    api: 'API'
     support: 'Support'
+
   addon_plans:
-    logo:
-      sublime: 'SublimeVideo logo'
-      disabled: 'No logo'
-      custom: 'Your company logo'
+    video_player:
+      standard: 'Standard video player'
+
     lightbox:
-      standard: 'Lightbox'
+      standard: 'Standard lightbox'
+
+    image_viewer:
+      standard: 'Standard image viewer'
+
+    stats:
+      invisible: 'Invisible stats'
+      realtime:  'Real-time statistics'
+      disabled:  'Disabled'
+
+    logo:
+      sublime:  'SublimeVideo logo'
+      disabled: 'No logo'
+      custom:   'Your company logo'
+
+    controls:
+      standard: 'Standard controls'
+
+    start_view:
+      standard: 'Standard start view'
+
+    sharing:
+      standard: 'Standard sharing'
+
     api:
       standard: 'SublimeVideo player basic JavaScript API'
-    stats:
-      realtime: 'Real-time statistics'
+
     support:
       standard: 'Forum & email support'
-      vip: 'VIP email support'
+      vip:      'VIP email support'

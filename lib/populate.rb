@@ -44,72 +44,103 @@ module Populate
 
       seeds = {
         App::Component => [
-          { name: 'app', token: 'e' },
-          { name: 'subtitles', token: 'bA' }
+          { name: 'app', token: 'sa' },
+          { name: 'twit', token: 'sf' },
+          { name: 'html5', token: 'sg' }
         ],
         App::ComponentVersion => [
-          { component: 'ref-App::Component-e', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-e', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-e', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-e', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-bA', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-bA', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-bA', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-bA', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
+          # { component: 'ref-App::Component-app', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-app', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-app', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-app', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-twit', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-twit', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-twit', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-twit', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-html5', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-html5', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-html5', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-html5', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
         ],
         App::Design => [
-          { name: 'classic', skin_token: 'classic', price: 0, availability: 'public', component: 'ref-App::Component-e' },
-          { name: 'light',   skin_token: 'light',   price: 0, availability: 'public', component: 'ref-App::Component-e' },
-          { name: 'flat',    skin_token: 'flat',    price: 0, availability: 'public', component: 'ref-App::Component-e' },
-          { name: 'twit',    skin_token: 'twit',    price: 0, availability: 'custom', component: 'ref-App::Component-e' }
+          { name: 'classic', skin_token: 'sa.sb.sc', price: 0, availability: 'public', component: 'ref-App::Component-app' },
+          { name: 'flat',    skin_token: 'sa.sd.sd', price: 0, availability: 'public', component: 'ref-App::Component-app' },
+          { name: 'light',   skin_token: 'sa.se.se', price: 0, availability: 'public', component: 'ref-App::Component-app' },
+          { name: 'twit',    skin_token: 'sf.sf.sf', price: 0, availability: 'custom', component: 'ref-App::Component-twit' },
+          { name: 'html5',   skin_token: 'sg.sg.sg', price: 0, availability: 'custom', component: 'ref-App::Component-html5' }
         ],
         Addon => [
-          { name: 'video_player', design_dependent: false, public_at: Time.now.utc },
-          { name: 'logo',         design_dependent: false, public_at: Time.now.utc },
-          { name: 'stats',        design_dependent: false, public_at: Time.now.utc },
-          { name: 'lightbox',     design_dependent: true, public_at: Time.now.utc },
-          { name: 'api',          design_dependent: false, public_at: Time.now.utc },
-          { name: 'support',      design_dependent: false, public_at: Time.now.utc }
+          { name: 'video_player', kind: 'videoPlayer', design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
+          { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil, public_at: Time.now.utc },
+          { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
+          { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
+          { name: 'logo',         kind: 'badge',       design_dependent: true,  parent_addon: 'ref-video_player-video_player', public_at: Time.now.utc },
+          { name: 'controls',     kind: 'controls',    design_dependent: true,  parent_addon: 'ref-video_player-video_player', public_at: Time.now.utc },
+          { name: 'start_view',   kind: 'startView',   design_dependent: true,  parent_addon: 'ref-video_player-video_player', public_at: Time.now.utc },
+          { name: 'sharing',      kind: 'sharing',     design_dependent: true,  parent_addon: 'ref-video_player-video_player', public_at: Time.now.utc },
+          { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
+          { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil, public_at: Time.now.utc }
+        ],
+        App::Plugin => [
+          { name: 'video_layer',        token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-app' },
+          { name: 'ligthbox_classic',   token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
+          { name: 'ligthbox_flat',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
+          { name: 'ligthbox_light',     token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
+          { name: 'ligthbox_twit',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
+          { name: 'ligthbox_twit',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'image_viewer',       token: 'sa.sn.so', addon: 'ref-Addon-image_viewer', design: nil,                       component: 'ref-App::Component-app' },
+          { name: 'logo',               token: 'sa.sh.sp', addon: 'ref-Addon-logo',         design: nil,                       component: 'ref-App::Component-app' },
+          { name: 'controls_classic',   token: 'sa.sh.sq', addon: 'ref-Addon-controls',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
+          { name: 'controls_flat',      token: 'sd.sd.sr', addon: 'ref-Addon-controls',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
+          { name: 'controls_light',     token: 'se.se.ss', addon: 'ref-Addon-controls',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
+          { name: 'controls_twit',      token: 'sf.sf.st', addon: 'ref-Addon-controls',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-twit' },
+          { name: 'controls_html5',     token: 'sg.sg.su', addon: 'ref-Addon-controls',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-html5' },
+          { name: 'start_view_classic', token: 'sa.sh.sv', addon: 'ref-Addon-start_view',   design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
+          { name: 'start_view_flat',    token: 'sa.sh.sv', addon: 'ref-Addon-start_view',   design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
+          { name: 'start_view_light',   token: 'sa.sh.sv', addon: 'ref-Addon-start_view',   design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
+          { name: 'start_view_twit',    token: 'sa.sh.sv', addon: 'ref-Addon-start_view',   design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
+          { name: 'start_view_html5',   token: 'sa.sh.sv', addon: 'ref-Addon-start_view',   design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'sharing_twit',       token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
+          { name: 'sharing_html5',      token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' }
         ],
         AddonPlan => [
           { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden' },
-          { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'disabled',  price: 995,  addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer', availability: 'hidden' },
           { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden' },
           { name: 'realtime',  price: 995,  addon: 'ref-Addon-stats',        availability: 'public' },
           { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public' },
+          { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
+          { name: 'disabled',  price: 995,  addon: 'ref-Addon-logo',         availability: 'public' },
+          { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-start_view',   availability: 'hidden' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'public' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public' },
-          { name: 'vip',      price: 9995,  addon: 'ref-Addon-support',      availability: 'public' }
-        ],
-        App::Plugin => [
-          { token: 'videoPlayer',      name: 'videoPlayer',      addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-e' },
-          { token: 'logo',             name: 'logo',             addon: 'ref-Addon-logo',         design: nil,                       component: 'ref-App::Component-e' },
-          { token: 'stats',            name: 'stats',            addon: 'ref-Addon-stats',        design: nil,                       component: 'ref-App::Component-e' },
-          { token: 'ligthbox.Classic', name: 'ligthbox Classic', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-classic', component: 'ref-App::Component-e' },
-          { token: 'ligthbox.Light',   name: 'ligthbox Light',   addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-e' },
-          { token: 'ligthbox.Flat',    name: 'ligthbox Flat',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-e' },
-          { token: 'ligthbox.Twit',    name: 'ligthbox Twit',    addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-e' },
-          { token: 'api',              name: 'api',              addon: 'ref-Addon-api',          design: nil,                       component: 'ref-App::Component-e' }
-          # { token: 'support',          name: 'support', addon: 'ref-Addon-support',      design: nil,                       component: 'ref-App::Component-e' }
+          { name: 'vip',       price: 9995, addon: 'ref-Addon-support',      availability: 'public' }
         ],
         App::SettingsTemplate => [
-          { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-videoPlayer' },
+          { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player' },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic' },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat' },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light' },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit' },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5' },
+          { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
+          { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil },
+          { addon_plan: 'ref-AddonPlan-stats-realtime',        plugin: nil },
+          { addon_plan: 'ref-AddonPlan-stats-disabled',        plugin: nil },
           { addon_plan: 'ref-AddonPlan-logo-sublime',          plugin: 'ref-App::Plugin-logo' },
           { addon_plan: 'ref-AddonPlan-logo-disabled',         plugin: 'ref-App::Plugin-logo' },
           { addon_plan: 'ref-AddonPlan-logo-custom',           plugin: 'ref-App::Plugin-logo' },
-          { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: 'ref-App::Plugin-stats' },
-          { addon_plan: 'ref-AddonPlan-stats-realtime',        plugin: 'ref-App::Plugin-stats' },
-          { addon_plan: 'ref-AddonPlan-stats-disabled',        plugin: 'ref-App::Plugin-stats' },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Classic' },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Light' },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Flat' },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox.Twit' },
-          { addon_plan: 'ref-AddonPlan-api-standard',          plugin: 'ref-App::Plugin-api' }
-          # { addon_plan: 'ref-AddonPlan-support-standard',      plugin: 'ref-App::Plugin-support' },
-          # { addon_plan: 'ref-AddonPlan-support-vip',           plugin: 'ref-App::Plugin-support' }
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_classic' },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_flat' },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_light' },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_twit' },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_html5' },
+          { addon_plan: 'ref-AddonPlan-start_view-standard',   plugin: 'ref-App::Plugin-start_view' },
+          { addon_plan: 'ref-AddonPlan-sharing-standard',      plugin: 'ref-App::Plugin-sharing' }
         ]
       }
       references = {}
@@ -118,7 +149,7 @@ module Populate
         new_record.each do |attributes|
           reference_key = "#{klass.to_s}-"
           reference_key += "#{attributes[:addon].sub(/\Aref-Addon-/, '')}-" if klass == AddonPlan
-          reference_key += "#{attributes[:token] || attributes[:name]}"
+          reference_key += "#{attributes[:name] || attributes[:token]}"
           attributes = attributes.inject({}) { |h, (k, v)| h[k] = (v =~ /\Aref-/ ? references[v.sub(/\Aref-/, '')] : v); h }
           references[reference_key] = klass.create!(attributes, as: :admin)
         end
