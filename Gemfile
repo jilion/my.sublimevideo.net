@@ -178,5 +178,6 @@ group :tools do
   gem 'guard-livereload'
   gem 'guard-rspec'
   gem 'guard-jasmine'
+  gem 'guard-shell'
   # gem 'guard-yard'
 end

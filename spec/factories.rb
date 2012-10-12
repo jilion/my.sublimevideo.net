@@ -57,6 +57,12 @@ FactoryGirl.define do
   end
 
 
+  factory :kit do
+    sequence(:name) { |n| "kit #{n}" }
+    site
+  end
+
+
   # ==============
   # = Log models =
   # ==============

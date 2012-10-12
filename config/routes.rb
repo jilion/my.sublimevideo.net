@@ -212,6 +212,8 @@ MySublimeVideo::Application.routes.draw do
         end
       end
 
+      resources :kits, only: [:show, :edit, :update]
+
       resources :invoices, only: [:index] do
         put :retry, on: :collection
       end

@@ -16,6 +16,25 @@ describe Kit do
       it { should validate_presence_of(attr) }
     end
   end
+
+  describe "Callbacks" do
+
+    describe "before_validation" do
+      let(:kit) { build(:kit, design: nil) }
+      before do
+        @design = create(:app_design)
+      end
+
+      describe "set default hostname" do
+        specify do
+          kit.design.should be_nil
+          kit.should be_valid
+          kit.design.should eq @design
+        end
+      end
+    end
+  end
+
 end
 
 # == Schema Information

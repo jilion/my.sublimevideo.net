@@ -21,6 +21,10 @@ class Addon < ActiveRecord::Base
   def beta?
     !public_at?
   end
+
+  def title
+    I18n.t("addon_plans.#{addon.name}.#{name}")
+  end
 end
 
 # == Schema Information

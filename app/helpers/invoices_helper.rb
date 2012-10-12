@@ -9,9 +9,9 @@ module InvoicesHelper
     when 'InvoiceItem::Plan'
       invoice_item.item.title
     when 'InvoiceItem::AppDesign'
-      'Design: ' + t("app_designs.#{invoice_item.item.name}")
+      'Design: ' + invoice_item.item.title
     when 'InvoiceItem::AddonPlan'
-      'Add-on: ' + t("addon_plans.#{invoice_item.item.addon.name}.#{invoice_item.item.name}")
+      'Add-on: ' + invoice_item.item.title
     end
   end
 

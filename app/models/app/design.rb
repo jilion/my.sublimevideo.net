@@ -29,16 +29,12 @@ class App::Design < ActiveRecord::Base
     !public_at?
   end
 
-  def beta?
-    if component_version = component.versions.first
-      (component_version.version =~ /[a-z]/i).present?
-    else
-      false
-    end
-  end
-
   def free?
     price.zero?
+  end
+
+  def title
+    I18n.t("app_designs.#{name}")
   end
 end
 

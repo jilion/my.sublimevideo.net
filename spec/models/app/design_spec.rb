@@ -31,22 +31,9 @@ describe App::Design do
   end
 
   describe '#beta?' do
-    before do
-      @stable_component = create(:app_component)
-      create(:app_component_version, component: @stable_component, version: '1.1.1-beta')
-      create(:app_component_version, component: @stable_component, version: '1.1.2')
-      @beta_component = create(:app_component)
-      create(:app_component_version, component: @beta_component, version: '1.2.2')
-      create(:app_component_version, component: @beta_component, version: '1.2.3-beta')
-
-      @app_design_1 = create(:app_design, component: @stable_component)
-      @app_design_2 = create(:app_design, component: @beta_component)
-    end
-
-    it { @app_design_1.should_not be_beta }
-    it { @app_design_2.should be_beta }
+    it { build(:app_design, public_at: nil).should be_beta }
+    it { build(:app_design, public_at: Time.now).should_not be_beta }
   end
-
 end
 
 # == Schema Information

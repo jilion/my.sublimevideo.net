@@ -43,4 +43,18 @@ group :backend do
     watch(%r{^lib/(.+)\.rb})                                                   { |m| "spec/lib/#{m[1]}_spec.rb" }
   end
 
+  guard :shell do
+    watch 'config/routes.rb' do
+      $stderr << "Running `bundle exec rake routes`...\n"
+      routes = `bundle exec rake routes`
+      if $?.success?
+        File.open('routes.txt', 'w') do |f|
+          f << routes
+        end
+        n "Updated routes.txt", "Computed new routes", :success
+      else
+        n "'bundle exec rake routes failed'" ,"Error computing routes!", :failed
+      end
+    end
+  end
 end

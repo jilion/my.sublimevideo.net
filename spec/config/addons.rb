@@ -1,3 +1,5 @@
+require_dependency 'populate'
+
 RSpec.configure do |config|
   config.before :all, addons: true do
     create_default_addons
@@ -28,97 +30,68 @@ RSpec.configure do |config|
 end
 
 def create_default_addons
-  create_components
-  create_designs
-  create_video_player_addon
-  create_logo_addon
-  create_stats_addon
-  create_lightbox_addon
-  create_api_addon
-  create_support_addon
+  Populate.addons
+  instantiate_variables
 end
 
-def create_components
-  @app_comp = create(:app_component, name: 'sublime', token: 'a')
-  create(:app_component_version, component: @app_comp, version: '2.0.0-alpha')
-end
+def instantiate_variables
+  # @app_comp = App::Component.find_by_name('app')
+  @classic_design = App::Design.find_by_name('classic')
+  @flat_design    = App::Design.find_by_name('flat')
+  @light_design   = App::Design.find_by_name('light')
+  @twit_design    = App::Design.find_by_name('twit')
+  @html5_design   = App::Design.find_by_name('twit')
+  @video_player_addon = Addon.find_by_name('video_player')
 
-def create_designs
-  @classic_design = create(:app_design, name: 'classic', price: 495, component: @app_comp)
-  @light_design   = create(:app_design, name: 'light', price: 495, component: @app_comp)
-  @flat_design    = create(:app_design, name: 'flat', price: 495, component: @app_comp)
-  @twit_design    = create(:app_design, name: 'twit', price: 0, availability: 'custom', component: @app_comp)
-end
+  @video_player_addon_plan_1 = AddonPlan.get('video_player', 'standard')
+  # @video_player_addon_plan_st = create(:app_settings_template, addon_plan: @video_player_addon_plan, plugin: @video_player_addon_plugin)
 
-def create_video_player_addon
-  @video_player_addon = create(:addon, name: 'video_player', design_dependent: false)
+  @lightbox_addon = Addon.find_by_name('lightbox')
+  @lightbox_addon_plan_1 = AddonPlan.get('lightbox', 'standard')
 
-  @video_player_addon_plugin = create(:app_plugin, addon: @video_player_addon, design: nil, component: @app_comp)
+  # @lightbox_addon_plugin_1 = create(:app_plugin, addon: @lightbox_addon, design: @classic_design, component: @app_comp)
+  # @lightbox_addon_plugin_2 = create(:app_plugin, addon: @lightbox_addon, design: @light_design, component: @app_comp)
+  # @lightbox_addon_plugin_3 = create(:app_plugin, addon: @lightbox_addon, design: @flat_design, component: @app_comp)
 
-  @video_player_addon_plan    = create(:addon_plan, name: 'standard', price: 0, addon: @video_player_addon, availability: 'hidden')
-  @video_player_addon_plan_st = create(:app_settings_template, addon_plan: @video_player_addon_plan, plugin: @video_player_addon_plugin)
-end
+  # @lightbox_addon_plan_1_st_1 = create(:app_settings_template, addon_plan: @lightbox_addon_plan_1, plugin: @lightbox_addon_plugin_1)
+  # @lightbox_addon_plan_1_st_2 = create(:app_settings_template, addon_plan: @lightbox_addon_plan_1, plugin: @lightbox_addon_plugin_2)
+  # @lightbox_addon_plan_1_st_3 = create(:app_settings_template, addon_plan: @lightbox_addon_plan_1, plugin: @lightbox_addon_plugin_3)
 
-def create_logo_addon
-  @logo_addon = create(:addon, name: 'logo', design_dependent: false)
+  @image_viewer_addon = Addon.find_by_name('image_viewer')
+  @image_viewer_addon_plan_1 = AddonPlan.get('image_viewer', 'standard')
 
-  @logo_addon_plugin = create(:app_plugin, addon: @logo_addon, design: nil, component: @app_comp)
+  @stats_addon = Addon.find_by_name('stats')
+  @stats_addon_plan_1 = AddonPlan.get('stats', 'invisible')
+  @stats_addon_plan_2 = AddonPlan.get('stats', 'realtime')
+  @stats_addon_plan_3 = AddonPlan.get('stats', 'disabled')
 
-  @logo_addon_plan_1    = create(:addon_plan, name: 'sublime', price: 0, addon: @logo_addon)
-  @logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @logo_addon_plan_1, plugin: @logo_addon_plugin)
+  @logo_addon = Addon.find_by_name('logo')
+  @logo_addon_plan_1    = AddonPlan.get('logo', 'sublime')
+  @logo_addon_plan_2    = AddonPlan.get('logo', 'disabled')
+  @logo_addon_plan_3    = AddonPlan.get('logo', 'custom')
 
-  @logo_addon_plan_2    = create(:addon_plan, name: 'disabled', price: 995, addon: @logo_addon)
-  @logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @logo_addon_plan_2, plugin: @logo_addon_plugin)
+  # @logo_addon_plugin = App::Plugin.find_by_addon_id_and_component_id(@logo_addon.id, @app_comp.id)#create(:app_plugin, addon: @logo_addon, design: nil, component: @app_comp)
+  # @logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @logo_addon_plan_1, plugin: @logo_addon_plugin)
+  # @logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @logo_addon_plan_2, plugin: @logo_addon_plugin)
+  # @logo_addon_plan_3_st = create(:app_settings_template, addon_plan: @logo_addon_plan_3, plugin: @logo_addon_plugin)
 
-  @logo_addon_plan_3    = create(:addon_plan, name: 'custom', price: 1995, addon: @logo_addon, required_stage: 'beta')
-  @logo_addon_plan_3_st = create(:app_settings_template, addon_plan: @logo_addon_plan_3, plugin: @logo_addon_plugin)
-end
+  @controls_addon = Addon.find_by_name('controls')
+  @controls_addon_plan_1 = AddonPlan.get('controls', 'standard')
 
-def create_stats_addon
-  @stats_addon = create(:addon, name: 'stats', design_dependent: false)
+  @start_view_addon = Addon.find_by_name('start_view')
+  @start_view_addon_plan_1 = AddonPlan.get('start_view', 'standard')
 
-  @stats_addon_plugin = create(:app_plugin, addon: @stats_addon, design: nil, component: @app_comp)
+  @sharing_addon = Addon.find_by_name('sharing')
+  @sharing_addon_plan_1 = AddonPlan.get('sharing', 'standard')
 
-  @stats_addon_plan_1    = create(:addon_plan, name: 'invisible', price: 0, addon: @stats_addon, availability: 'hidden')
-  @stats_addon_plan_1_st = create(:app_settings_template, addon_plan: @stats_addon_plan_1, plugin: @stats_addon_plugin)
+  @api_addon = Addon.find_by_name('api')
+  @api_addon_plan_1 = AddonPlan.get('api', 'standard')
 
-  @stats_addon_plan_2    = create(:addon_plan, name: 'realtime', price: 995, addon: @stats_addon)
-  @stats_addon_plan_2_st = create(:app_settings_template, addon_plan: @stats_addon_plan_2, plugin: @stats_addon_plugin)
+  @support_addon = Addon.find_by_name('support')
+  @support_addon_plan_1 = AddonPlan.get('support', 'standard')
+  @support_addon_plan_2 = AddonPlan.get('support', 'vip')
 
-  @stats_addon_plan_3    = create(:addon_plan, name: 'disabled', price: 1995, addon: @stats_addon, availability: 'hidden', required_stage: 'beta')
-  @stats_addon_plan_3_st = create(:app_settings_template, addon_plan: @stats_addon_plan_3, plugin: @stats_addon_plugin)
-end
-
-def create_lightbox_addon
-  @lightbox_addon = create(:addon, name: 'lightbox', design_dependent: true)
-
-  @lightbox_addon_plugin_1 = create(:app_plugin, addon: @lightbox_addon, design: @classic_design, component: @app_comp)
-  @lightbox_addon_plugin_2 = create(:app_plugin, addon: @lightbox_addon, design: @light_design, component: @app_comp)
-  @lightbox_addon_plugin_3 = create(:app_plugin, addon: @lightbox_addon, design: @flat_design, component: @app_comp)
-
-  @lightbox_addon_plan_1      = create(:addon_plan, name: 'standard', price: 0, addon: @lightbox_addon)
-  @lightbox_addon_plan_1_st_1 = create(:app_settings_template, addon_plan: @lightbox_addon_plan_1, plugin: @lightbox_addon_plugin_1)
-  @lightbox_addon_plan_1_st_2 = create(:app_settings_template, addon_plan: @lightbox_addon_plan_1, plugin: @lightbox_addon_plugin_2)
-  @lightbox_addon_plan_1_st_3 = create(:app_settings_template, addon_plan: @lightbox_addon_plan_1, plugin: @lightbox_addon_plugin_3)
-end
-
-def create_api_addon
-  @api_addon = create(:addon, name: 'api', design_dependent: false)
-
-  @api_addon_plugin = create(:app_plugin, addon: @api_addon, design: nil, component: @app_comp)
-
-  @api_addon_plan    = create(:addon_plan, name: 'standard', price: 0, addon: @api_addon)
-  @api_addon_plan_st = create(:app_settings_template, addon_plan: @api_addon_plan, plugin: @api_addon_plugin)
-end
-
-def create_support_addon
-  @support_addon = create(:addon, name: 'support', design_dependent: false)
-
-  @support_addon_plugin = create(:app_plugin, addon: @support_addon, design: nil, component: @app_comp)
-
-  @support_addon_plan_1    = create(:addon_plan, name: 'standard', price: 0, addon: @support_addon)
-  @support_addon_plan_1_st = create(:app_settings_template, addon_plan: @support_addon_plan_1, plugin: @support_addon_plugin)
-
-  @support_addon_plan_2    = create(:addon_plan, name: 'vip', price: 9995, addon: @support_addon)
-  @support_addon_plan_1_st = create(:app_settings_template, addon_plan: @support_addon_plan_2, plugin: @support_addon_plugin)
+  # @support_addon_plugin = create(:app_plugin, addon: @support_addon, design: nil, component: @app_comp)
+  # @support_addon_plan_1_st = create(:app_settings_template, addon_plan: @support_addon_plan_1, plugin: @support_addon_plugin)
+  # @support_addon_plan_1_st = create(:app_settings_template, addon_plan: @support_addon_plan_2, plugin: @support_addon_plugin)
 end

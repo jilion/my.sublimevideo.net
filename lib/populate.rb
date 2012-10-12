@@ -42,26 +42,48 @@ module Populate
     def addons
       empty_tables(App::Component, App::ComponentVersion, App::Plugin, App::SettingsTemplate, App::Design, Addon, AddonPlan, BillableItem, BillableItemActivity)
 
+      lightbox_template = {
+        autoplay: {
+          values: [0, 1],
+          default: 1
+        },
+        overlayColor: {
+          values: 'string',
+          default: 'black'
+        },
+        overlayOpacity: {
+          values: 'float_0_1',
+          default: 0.7
+        },
+        closeButtonType: {
+          values: ['none', 'default'],
+          default: 'default'
+        },
+        closeButtonPosition: {
+          values: ['left', 'right'],
+          default: 'left'
+        }
+      }
       seeds = {
         App::Component => [
           { name: 'app', token: 'sa' },
           { name: 'twit', token: 'sf' },
           { name: 'html5', token: 'sg' }
         ],
-        App::ComponentVersion => [
-          # { component: 'ref-App::Component-app', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-app', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-app', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-app', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-twit', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-twit', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-twit', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-twit', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-html5', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-html5', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-html5', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-html5', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
-        ],
+        # App::ComponentVersion => [
+        #   # { component: 'ref-App::Component-app', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   # { component: 'ref-App::Component-app', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   # { component: 'ref-App::Component-app', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   { component: 'ref-App::Component-app', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   # { component: 'ref-App::Component-twit', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   # { component: 'ref-App::Component-twit', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   # { component: 'ref-App::Component-twit', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   { component: 'ref-App::Component-twit', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   # { component: 'ref-App::Component-html5', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   # { component: 'ref-App::Component-html5', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   # { component: 'ref-App::Component-html5', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+        #   { component: 'ref-App::Component-html5', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
+        # ],
         App::Design => [
           { name: 'classic', skin_token: 'sa.sb.sc', price: 0, availability: 'public', component: 'ref-App::Component-app' },
           { name: 'flat',    skin_token: 'sa.sd.sd', price: 0, availability: 'public', component: 'ref-App::Component-app' },
@@ -77,7 +99,7 @@ module Populate
           { name: 'logo',         kind: 'badge',       design_dependent: true,  parent_addon: 'ref-video_player-video_player', public_at: Time.now.utc },
           { name: 'controls',     kind: 'controls',    design_dependent: true,  parent_addon: 'ref-video_player-video_player', public_at: Time.now.utc },
           { name: 'start_view',   kind: 'startView',   design_dependent: true,  parent_addon: 'ref-video_player-video_player', public_at: Time.now.utc },
-          { name: 'sharing',      kind: 'sharing',     design_dependent: true,  parent_addon: 'ref-video_player-video_player', public_at: Time.now.utc },
+          { name: 'sharing',      kind: 'sharing',     design_dependent: true,  parent_addon: 'ref-video_player-video_player' },
           { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
           { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil, public_at: Time.now.utc }
         ],
@@ -115,34 +137,113 @@ module Populate
           { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-start_view',   availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'hidden' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'public' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public' },
           { name: 'vip',       price: 9995, addon: 'ref-Addon-support',      availability: 'public' }
         ],
         App::SettingsTemplate => [
-          { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player' },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic' },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat' },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light' },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit' },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5' },
+          { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
+            template: {
+              flashForced: {
+                values: [0, 1],
+                default: 1
+              },
+              fullwindowForced: {
+                values: [0, 1],
+                default: 0
+              },
+              stopOnEnd: {
+                values: [0, 1],
+                default: 0
+              },
+              fullmodeEnabled: {
+                values: [0, 1],
+                default: 1
+              },
+              volumeEnabled: {
+                values: [0, 1],
+                default: 1
+              }
+            }
+          },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5', template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
-          { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil },
-          { addon_plan: 'ref-AddonPlan-stats-realtime',        plugin: nil },
-          { addon_plan: 'ref-AddonPlan-stats-disabled',        plugin: nil },
-          { addon_plan: 'ref-AddonPlan-logo-sublime',          plugin: 'ref-App::Plugin-logo' },
-          { addon_plan: 'ref-AddonPlan-logo-disabled',         plugin: 'ref-App::Plugin-logo' },
-          { addon_plan: 'ref-AddonPlan-logo-custom',           plugin: 'ref-App::Plugin-logo' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_classic' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_flat' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_light' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_twit' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_html5' },
-          { addon_plan: 'ref-AddonPlan-start_view-standard',   plugin: 'ref-App::Plugin-start_view' },
-          { addon_plan: 'ref-AddonPlan-sharing-standard',      plugin: 'ref-App::Plugin-sharing' }
+          { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
+            template: {
+              enable: {
+                values: [1],
+                default: 1
+              },
+              realtime: {
+                values: [0],
+                default: 0
+              }
+            }
+          },
+          { addon_plan: 'ref-AddonPlan-stats-realtime', plugin: nil,
+            template: {
+              enable: {
+                values: [1],
+                default: 1
+              },
+              realtime: {
+                values: [0, 1],
+                default: 1
+              }
+            }
+          },
+          { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil,
+            template: {
+              enable: {
+                values: [0, 1],
+                default: 0
+              },
+              realtime: {
+                values: [0, 1],
+                default: 1
+              }
+            }
+          },
+          { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
+            template: {
+              enabled: {
+                values: [1],
+                default: 1
+              },
+              position: {
+                values: ['bottomRight', 'bottomLeft'],
+                default: 'bottomRight'
+              }
+            }
+          },
+          { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
+            template: {
+              enabled: {
+                values: [0, 1],
+                default: 1
+              },
+              position: {
+                values: ['bottomRight', 'bottomLeft'],
+                default: 'bottomRight'
+              }
+            }
+          },
+          { addon_plan: 'ref-AddonPlan-logo-custom',         plugin: 'ref-App::Plugin-logo' },
+          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_classic' },
+          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_flat' },
+          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_light' },
+          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_twit' },
+          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_html5' },
+          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view' },
+          { addon_plan: 'ref-AddonPlan-sharing-standard',    plugin: 'ref-App::Plugin-sharing' }
         ]
       }
+
       references = {}
 
       seeds.each do |klass, new_record|
@@ -151,9 +252,11 @@ module Populate
           reference_key += "#{attributes[:addon].sub(/\Aref-Addon-/, '')}-" if klass == AddonPlan
           reference_key += "#{attributes[:name] || attributes[:token]}"
           attributes = attributes.inject({}) { |h, (k, v)| h[k] = (v =~ /\Aref-/ ? references[v.sub(/\Aref-/, '')] : v); h }
+          puts attributes.inspect if Rails.env.development?
           references[reference_key] = klass.create!(attributes, as: :admin)
+          puts "#{klass} #{attributes[:name] || attributes[:token]} inserted" if Rails.env.development?
         end
-        puts "\t- #{klass.count} #{klass.to_s} created;"
+        puts "\t- #{klass.count} #{klass.to_s} created;" if Rails.env.development?
       end
     end
 
@@ -269,7 +372,9 @@ module Populate
         BASE_SITES.each do |hostname|
           if rand >= 0.5
             site = user.sites.create({ hostname: hostname, plan_id: Plan.where(name: %w[plus premium].sample, cycle: 'month').first.id }, without_protection: true)
-            Service::Site.new(site).migrate_plan_to_addons!
+            service = Service::Site.new(site)
+            service.migrate_plan_to_addons!
+            service.send :create_default_kit
           else
             Service::Site.build(user: user, hostname: hostname).initial_save
           end
@@ -716,7 +821,7 @@ module Populate
     def delete_all_files_in_public(*paths)
       paths.each do |path|
         if path.gsub('.', '') =~ /\w+/ # don't remove all files and directories in /public ! ;)
-          print "Deleting all files and directories in /public/#{path}\n"
+          print "Deleting all files and directories in /public/#{path}\n" if Rails.env.development?
           timed do
             Dir["#{Rails.public_path}/#{path}/**/*"].each do |filename|
               File.delete(filename) if File.file?(filename)
@@ -730,7 +835,7 @@ module Populate
     end
 
     def empty_tables(*tables)
-      print "Deleting the content of #{tables.join(', ')}.. => "
+      print "Deleting the content of #{tables.join(', ')}.. => " if Rails.env.development?
       tables.each do |table|
         if table.is_a?(Class)
           table.delete_all
@@ -738,7 +843,7 @@ module Populate
           Site.connection.delete("DELETE FROM #{table} WHERE 1=1")
         end
       end
-      puts "#{tables.join(', ')} empty!"
+      puts "#{tables.join(', ')} empty!" if Rails.env.development?
     end
 
     private

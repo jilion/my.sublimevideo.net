@@ -6,6 +6,7 @@ class AddonPlan < ActiveRecord::Base
   belongs_to :addon
   has_many :components, through: :addon
   has_many :billable_items, as: :item
+  has_many :settings_templates
 
   delegate :beta?, to: :addon
 
@@ -31,6 +32,10 @@ class AddonPlan < ActiveRecord::Base
     when 'custom'
       site.addon_plans.where(id: id).exists?
     end
+  end
+
+  def settings_template_for(design)
+    App::SettingsTemplate.where(app_plugin_id: App::Plugin.where(addon_id: addon.id, app_design_id: design.id).first.try(:id), addon_plan_id: id).first
   end
 
   def free?

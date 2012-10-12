@@ -14,7 +14,7 @@ module Service
 
     def initial_save
       ::Site.transaction do
-        site.save && set_default_app_designs && set_default_addon_plans && site.save && delay_set_ranks
+        site.save && create_default_kit && set_default_app_designs && set_default_addon_plans && site.save && delay_set_ranks
       end
     end
 
@@ -137,6 +137,10 @@ module Service
       end
     end
 
+    def create_default_kit
+      site.kits.create(name: 'Default')
+    end
+
     def set_default_app_designs(options = {})
       update_billable_app_designs({
         classic: App::Design.get('classic').id,
@@ -151,7 +155,9 @@ module Service
 
     def free_addon_plans
       Addon.all.inject({}) do |hash, addon|
-        hash[addon.name] = addon.free_plan.id
+        if free_addon_plan = addon.free_plan
+          hash[addon.name.to_sym] = addon.free_plan.id unless free_addon_plan.availability == 'custom'
+        end
         hash
       end
     end

@@ -1,4 +1,6 @@
 class App::SettingsTemplate < ActiveRecord::Base
+  serialize :template, ActiveRecord::Coders::Hstore
+
   attr_accessible :addon_plan, :plugin, :template, as: :admin
 
   belongs_to :addon_plan

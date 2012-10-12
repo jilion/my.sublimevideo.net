@@ -22,6 +22,7 @@ describe Service::Site do
     before do
       Site.should_receive(:transaction).and_yield
       Service::Rank.stub(:delay) { delayed_method }
+      service.stub(:create_default_kit) { true }
       service.stub(:set_default_app_designs) { true }
       service.stub(:set_default_addon_plans) { true }
       delayed_method.stub(:set_ranks) { true }
@@ -30,6 +31,12 @@ describe Service::Site do
     context 'site is valid' do
       before do
         site.should_receive(:save).twice { true }
+      end
+
+      it 'creates a default kit' do
+        service.should_receive(:create_default_kit)
+
+        service.initial_save
       end
 
       it 'adds default app designs and add-ons to site after creation' do
@@ -56,9 +63,21 @@ describe Service::Site do
         service.initial_save.should be_false
       end
 
+      it 'doesnt create default kit' do
+        service.should_not_receive(:create_default_kit)
+
+        service.initial_save
+      end
+
       it 'doesnt add default app designs and add-ons to site after creation' do
         service.should_not_receive(:set_default_app_designs)
         service.should_not_receive(:set_default_addon_plans)
+
+        service.initial_save
+      end
+
+      it 'doesnt delay the calculation of google and alexa ranks' do
+        Service::Rank.should_not_receive(:delay)
 
         service.initial_save
       end
