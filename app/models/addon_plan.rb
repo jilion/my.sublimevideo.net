@@ -5,6 +5,7 @@ class AddonPlan < ActiveRecord::Base
 
   belongs_to :addon
   has_many :components, through: :addon
+  has_many :billable_items, as: :item
 
   delegate :beta?, to: :addon
 

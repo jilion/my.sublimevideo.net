@@ -25,7 +25,7 @@ GIT
 
 GIT
   remote: git://github.com/jilion/solve.git
-  revision: 0b1e4f0b401c709f726d84f64994357dec027d17
+  revision: d4fad42186c5837e3f5121ed1d968715ab639f7c
   branch: semver
   specs:
     solve (0.3.1)

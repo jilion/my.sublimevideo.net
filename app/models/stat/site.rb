@@ -281,6 +281,7 @@ end
 #
 # Table name: sites
 #
+#  accessible_stage                          :string(255)      default("beta")
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean
@@ -312,7 +313,6 @@ end
 #  plan_cycle_started_at                     :datetime
 #  plan_id                                   :integer
 #  plan_started_at                           :datetime
-#  player_mode                               :string(255)      default("stable")
 #  refunded_at                               :datetime
 #  settings_updated_at                       :datetime
 #  state                                     :string(255)

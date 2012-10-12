@@ -1,10 +1,12 @@
 require 'solve'
 
-class App::ComponentVersionDependenciesSolver < Struct.new(:site, :mode, :dependencies)
+class App::ComponentVersionDependenciesSolver < Struct.new(:site, :stage, :dependencies)
   delegate :components, :name, to: :site, prefix: true
 
-  def self.components_dependencies(site, mode)
-    new(site, mode).solve
+  def self.components_dependencies(site, stage)
+    solver = new(site, stage)
+    solver.solve
+    solver.dependencies
   end
 
   def initialize(*args)
@@ -24,7 +26,7 @@ class App::ComponentVersionDependenciesSolver < Struct.new(:site, :mode, :depend
 private
 
   def add_component(component)
-    component.versions.each do |version|
+    component.versions.select { |v| v.version_stage >= stage }.each do |version|
       graph_component = @graph.artifacts(component.token, version.version)
       version.dependencies.each do |component_name, identifier|
         dep_component = App::Component.find_by_name(component_name)

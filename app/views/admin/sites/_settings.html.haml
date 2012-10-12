@@ -17,7 +17,7 @@
   %strong= "|"
   = "Badge: #{content_tag(:strong, site.badged? ? 'ON' : 'OFF')}".html_safe
   %strong= "|"
-  = "Mode: #{content_tag(:strong, site.player_mode)}".html_safe
+  = "Accessible Stage: #{content_tag(:strong, site.accessible_stage)}".html_safe
   %strong= "|"
   = "Loaders updated_at: #{site.loaders_updated_at}".html_safe
 %p

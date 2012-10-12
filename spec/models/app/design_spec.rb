@@ -3,6 +3,7 @@ require 'spec_helper'
 describe App::Design do
   describe 'Associations' do
     it { should belong_to(:component).class_name('App::Component') }
+    it { should have_many(:billable_items) }
   end
 
   describe 'Validations' do

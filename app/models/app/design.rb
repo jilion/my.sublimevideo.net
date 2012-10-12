@@ -4,6 +4,7 @@ class App::Design < ActiveRecord::Base
   attr_accessible :component, :skin_token, :name, :price, :availability, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
+  has_many :billable_items, as: :item
 
   validates :component, :skin_token, :name, :price, :availability, presence: true
   validates :price, numericality: true

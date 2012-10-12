@@ -2,9 +2,14 @@ class App::Component < ActiveRecord::Base
   attr_accessible :name, :token, as: :admin
 
   has_many :versions, class_name: 'App::ComponentVersion', foreign_key: 'app_component_id', dependent: :destroy, order: 'version desc'
-  # has_many :sites, through: :componentships
+
+  scope :app, ->{ where(token: 'e') }
 
   validates :token, :name, presence: true, uniqueness: true
+
+  def self.app_component
+    self.app.first
+  end
 
   def to_param
     token

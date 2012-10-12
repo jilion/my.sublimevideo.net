@@ -7,7 +7,6 @@ class BillableItem < ActiveRecord::Base
 
   belongs_to :site
   belongs_to :item, polymorphic: true
-  has_many :components, through: :item
 
   validates :item, :site, :state, presence: true
   validates :item_id, uniqueness: { scope: [:item_type, :site_id] }

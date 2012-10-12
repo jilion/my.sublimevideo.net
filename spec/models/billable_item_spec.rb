@@ -6,7 +6,6 @@ describe BillableItem do
   describe 'Associations' do
     it { should belong_to :item }
     it { should belong_to :site }
-    it { should have_many(:components).through(:item) }
   end
 
   describe 'Validations' do

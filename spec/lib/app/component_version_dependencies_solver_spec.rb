@@ -3,21 +3,30 @@ require 'rails/railtie'
 
 require File.expand_path('app/models/app')
 require File.expand_path('lib/app/component_version_dependencies_solver')
+require File.expand_path('lib/stage')
 
 unless defined?(ActiveRecord)
-  class Site < Struct.new(:player_mode); end
+  class Site; end
   class App::Component < Struct.new(:name, :token); end
-  class App::ComponentVersion < Struct.new(:version, :component, :dependencies); end
+  class App::ComponentVersion < Struct.new(:version, :component, :dependencies)
+    def version_stage
+      Stage.version_stage(version)
+    end
+  end
 end
 
 describe App::ComponentVersionDependenciesSolver do
-  let(:site) { Site.new('stable') }
+  let(:site) { Site.new }
   let(:c_a) { App::Component.new('app', 'a') }
   let(:c_a_100) { App::ComponentVersion.new("1.0.0", c_a) }
+  let(:c_a_200alpha1) { App::ComponentVersion.new("2.0.0-alpha.1", c_a) }
+  let(:c_a_200beta1) { App::ComponentVersion.new("2.0.0-beta.1", c_a) }
   let(:c_a_200) { App::ComponentVersion.new("2.0.0", c_a) }
   let(:c_c1) { App::Component.new('c1', 'c1') }
   let(:c_c1_100) { App::ComponentVersion.new("1.0.0", c_c1) }
   let(:c_c1_110) { App::ComponentVersion.new("1.1.0", c_c1) }
+  let(:c_c1_200alpha1) { App::ComponentVersion.new("2.0.0-alpha.1", c_c1) }
+  let(:c_c1_200beta1) { App::ComponentVersion.new("2.0.0-beta.1", c_c1) }
   let(:c_c2) { App::Component.new('c2', 'c2') }
   let(:c_c2_100) { App::ComponentVersion.new("1.0.0", c_c2) }
   let(:c_c2_200) { App::ComponentVersion.new("2.0.0", c_c2) }
@@ -28,12 +37,16 @@ describe App::ComponentVersionDependenciesSolver do
   describe ".components_dependencies" do
     before do
       App::Component.stub(:app_component) { c_a }
-      c_a.stub(:versions) { [c_a_200, c_a_100] }
+      c_a.stub(:versions) { [c_a_200, c_a_100, c_a_200alpha1, c_a_200beta1] }
       c_a_100.stub(:dependencies) { {} }
       c_a_200.stub(:dependencies) { {} }
-      c_c1.stub(:versions) { [c_c1_110, c_c1_100] }
+      c_a_200beta1.stub(:dependencies) { {} }
+      c_a_200alpha1.stub(:dependencies) { {} }
+      c_c1.stub(:versions) { [c_c1_110, c_c1_100, c_c1_200alpha1, c_c1_200beta1] }
       c_c1_100.stub(:dependencies) { {} }
       c_c1_110.stub(:dependencies) { {} }
+      c_c1_200alpha1.stub(:dependencies) { {} }
+      c_c1_200beta1.stub(:dependencies) { {} }
       c_c2.stub(:versions) { [c_c2_100, c_c2_200] }
       c_c2_100.stub(:dependencies) { {} }
       c_c2_200.stub(:dependencies) { {} }
@@ -42,12 +55,12 @@ describe App::ComponentVersionDependenciesSolver do
       c_c3_200.stub(:dependencies) { {} }
     end
 
-    context "player_mode is stable" do
+    context "with stage is stable" do
       context "with 0 site components dependencies" do
         before { site.stub(:components) { [] } }
 
         it "depends on the app bigger component version" do
-          described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "2.0.0")
+          described_class.components_dependencies(site, 'stable').should eq('a' => "2.0.0")
         end
       end
 
@@ -55,7 +68,7 @@ describe App::ComponentVersionDependenciesSolver do
         before { site.stub(:components) { [c_a] } }
 
         it "depends only once on app bigger component version" do
-          described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "2.0.0")
+          described_class.components_dependencies(site, 'stable').should eq('a' => "2.0.0")
         end
       end
 
@@ -64,7 +77,7 @@ describe App::ComponentVersionDependenciesSolver do
 
         context "with no dependencies" do
           it "depends on the both bigger components versions" do
-            described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "2.0.0", 'c1' => "1.1.0")
+            described_class.components_dependencies(site, 'stable').should eq('a' => "2.0.0", 'c1' => "1.1.0")
           end
         end
 
@@ -76,7 +89,7 @@ describe App::ComponentVersionDependenciesSolver do
           end
 
           it "depends on the both bigger components versions" do
-            described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "1.0.0", 'c1' => "1.1.0")
+            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.1.0")
           end
         end
 
@@ -88,7 +101,7 @@ describe App::ComponentVersionDependenciesSolver do
           end
 
           it "depends on the both bigger components versions valid" do
-            described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "1.0.0", 'c1' => "1.0.0")
+            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.0.0")
           end
         end
 
@@ -101,7 +114,7 @@ describe App::ComponentVersionDependenciesSolver do
           end
 
           it "depends on all dependencies" do
-            described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "1.0.0", 'c1' => "1.1.0", 'c2' => '2.0.0')
+            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.1.0", 'c2' => '2.0.0')
           end
         end
 
@@ -115,7 +128,7 @@ describe App::ComponentVersionDependenciesSolver do
           end
 
           it "doesn't dependence on the impossible dependency" do
-            described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "1.0.0", 'c1' => "1.1.0", 'c2' => '1.0.0')
+            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.1.0", 'c2' => '1.0.0')
           end
         end
 
@@ -130,7 +143,7 @@ describe App::ComponentVersionDependenciesSolver do
           end
 
           it "depends on all dependencies" do
-            described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "1.0.0", 'c1' => "1.1.0", 'c2' => '2.0.0', 'c3' => '1.0.0')
+            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.1.0", 'c2' => '2.0.0', 'c3' => '1.0.0')
           end
         end
 
@@ -145,7 +158,7 @@ describe App::ComponentVersionDependenciesSolver do
           end
 
           it "doesn't depends on the new version" do
-            described_class.components_dependencies(site, 'stable').dependencies.should eq('a' => "1.0.0", 'c1' => "1.0.0")
+            described_class.components_dependencies(site, 'stable').should eq('a' => "1.0.0", 'c1' => "1.0.0")
           end
         end
 
@@ -165,6 +178,25 @@ describe App::ComponentVersionDependenciesSolver do
         end
       end
     end
-  end
 
+    context "with stage is beta" do
+      context "with one other site components dependency" do
+        before { site.stub(:components) { [c_c1] } }
+
+        context "with app component dependency and another dependency" do
+          before do
+            App::Component.should_receive(:find_by_name).any_number_of_times.with('app') { c_a }
+            c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
+            c_c1_110.stub(:dependencies) { { 'app' => '1.0.0' } }
+            c_c1_200alpha1.stub(:dependencies) { { 'app' => '2.0.0-alpha.1' } }
+            c_c1_200beta1.stub(:dependencies) { { 'app' => '2.0.0-beta.1' } }
+          end
+
+          it "depends on all beta dependencies" do
+            described_class.components_dependencies(site, 'beta').should eq('a' => "2.0.0-beta.1", 'c1' => "2.0.0-beta.1")
+          end
+        end
+      end
+    end
+  end
 end

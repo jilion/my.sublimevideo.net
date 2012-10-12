@@ -59,6 +59,13 @@ describe App::ComponentVersion, :fog_mock do
     version = App::ComponentVersion.create(attributes.merge(dependencies: {app: "1.0.0"}.to_json), as: :admin)
     version.dependencies.should eq({"app" => "1.0.0"})
   end
+
+  describe "#stage" do
+    it "uses Stage.version_stage method" do
+      build(:app_component_version, version: '1.0.0').stage.should eq 'stable'
+    end
+  end
+
 end
 
 # == Schema Information

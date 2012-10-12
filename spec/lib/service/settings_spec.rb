@@ -26,7 +26,7 @@ describe Service::Settings, :fog_mock do
     in_free_plan?: false,
     plan_stats_retention_days: 365,
     touch: true,
-    player_mode: 'stable'
+    accessible_stage: 'stable', player_mode: 'stable'
   )}
   let(:settings) { described_class.new(site, 'settings') }
 
@@ -36,14 +36,15 @@ describe Service::Settings, :fog_mock do
     context "site active" do
       before { site.stub(:state) { 'active' } }
 
-      it "uploads all settings types when player_mode is 'beta'" do
+      it "uploads all settings types when accessible_stage is 'beta'" do
+        site.stub(:accessible_stage) { 'beta' }
         site.stub(:player_mode) { 'beta' }
         described_class.update_all_types!(site.id)
         described_class.new(site, 'license').should be_present
         described_class.new(site, 'settings').should be_present
       end
 
-      it "uploads only license when player_mode is 'stable'" do
+      it "uploads only license when accessible_stage is 'stable'" do
         described_class.update_all_types!(site.id)
         described_class.new(site, 'license').should be_present
         described_class.new(site, 'settings').should_not be_present

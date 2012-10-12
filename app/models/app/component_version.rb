@@ -1,11 +1,10 @@
 class App::ComponentVersion < ActiveRecord::Base
   serialize :dependencies, ActiveRecord::Coders::Hstore
+  delegate :token, :name, to: :component
 
   attr_accessible :component, :token, :dependencies, :version, :zip, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
-
-  delegate :token, :name, to: :component
 
   mount_uploader :zip, App::ComponentVersionUploader
 
@@ -27,6 +26,10 @@ class App::ComponentVersion < ActiveRecord::Base
 
   def version_for_url
     version && version.gsub(/\./, '_')
+  end
+
+  def stage
+    Stage.version_stage(version)
   end
 
   def self.find_by_version!(version_for_url)

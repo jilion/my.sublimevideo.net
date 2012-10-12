@@ -55,8 +55,8 @@
   %h3 Mode update
 
   = form_for [:admin, @site] do |f|
-    = f.select :player_mode, Site::PLAYER_MODES
-    = f.submit "Update player mode", data: { confirm: "Are you sure?" }
+    = f.select :accessible_stage, Stage::STAGES
+    = f.submit "Update accessible stage", data: { confirm: "Are you sure?" }
   %br
 
   - unless @site.in_sponsored_plan?

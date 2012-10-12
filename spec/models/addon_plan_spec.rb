@@ -4,6 +4,7 @@ describe AddonPlan do
   describe 'Associations' do
     it { should belong_to(:addon) }
     it { should have_many(:components).through(:addon) }
+    it { should have_many(:billable_items) }
   end
 
   describe 'Validations' do

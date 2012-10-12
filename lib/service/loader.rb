@@ -1,24 +1,19 @@
-# TODO
-# - include component relation with good version depending on the site.player_mode (stabe, beta, alpha) & app component
-
 require 'tempfile'
 require_dependency 'cdn/file'
 
 module Service
-  Loader = Struct.new(:site, :mode, :options, :file, :cdn_file) do
-    self::MODES = %w[stable beta alpha]
-    delegate :token, :player_mode, to: :site
+  Loader = Struct.new(:site, :stage, :options, :file, :cdn_file) do
+    delegate :token, :accessible_stage, :player_mode, to: :site
     delegate :upload!, :delete!, :present?, to: :cdn_file
 
-    def self.update_all_modes!(site_id, options = {})
+    def self.update_all_stages!(site_id, options = {})
       site = ::Site.find(site_id)
-      modes_needed = site_loader_modes(site)
       changed = []
-      self::MODES.each do |mode|
-        if modes_needed.include?(mode)
-          changed << new(site, mode, options).upload!
+      Stage::STAGES.each do |stage|
+        if site.active? && stage >= site.accessible_stage
+          changed << new(site, stage, options).upload!
         else
-          new(site, mode, options).delete!
+          changed << new(site, stage, options).delete!
         end
       end
       site.touch(:loaders_updated_at) if changed.any? && options[:touch] != false
@@ -35,23 +30,24 @@ module Service
       )
     end
 
-    def components_path
-      [] # TODO Thibaud
+    def host
+      "//cdn.sublimevideo.net"
+    end
+
+    def app_component_version
+      components_dependencies[App::Component.app_component.token]
+    end
+
+    def components_versions
+      components_dependencies.select { |token, version| token != App::Component.app_component.token }
+    end
+
+    def components_dependencies
+      @components_dependencies ||=
+        App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
     end
 
   private
-
-    def self.site_loader_modes(site)
-      if site.state == 'active'
-        case site.player_mode
-        when 'stable'; %w[stable]
-        when 'beta'; %w[stable beta]
-        when 'alpha', 'dev'; %w[stable beta alpha]
-        end
-      else
-        []
-      end
-    end
 
     def generate_file
       template_path = Rails.root.join("app/templates/app/#{template_file}")
@@ -63,7 +59,7 @@ module Service
     end
 
     def template_file
-      if mode == 'stable'
+      if stage == 'stable'
         "loader-old.js.erb"
       else
         "loader.js.erb"
@@ -71,7 +67,7 @@ module Service
     end
 
     def destinations
-      if mode == 'stable'
+      if stage == 'stable'
         [{
           bucket: S3.buckets['sublimevideo'],
           path: "js/#{site.token}.js"
@@ -82,7 +78,7 @@ module Service
       else
         [{
           bucket: S3.buckets['sublimevideo'],
-          path: "js/#{site.token}-#{mode}.js"
+          path: "js/#{site.token}-#{stage}.js"
         }]
       end
     end

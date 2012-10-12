@@ -1,4 +1,5 @@
 require_dependency 'hostname'
+require_dependency 'stage'
 require_dependency 'validators/hostname_validator'
 require_dependency 'validators/hostname_uniqueness_validator'
 require_dependency 'validators/dev_hostnames_validator'
@@ -17,7 +18,6 @@ class Site < ActiveRecord::Base
 
   DEFAULT_DOMAIN = 'please-edit.me' unless defined?(DEFAULT_DOMAIN)
   DEFAULT_DEV_DOMAINS = '127.0.0.1,localhost' unless defined?(DEFAULT_DEV_DOMAINS)
-  PLAYER_MODES = %w[dev beta stable] unless defined?(PLAYER_MODES)
 
   # Versioning
   has_paper_trail ignore: [
@@ -59,13 +59,19 @@ class Site < ActiveRecord::Base
   has_many :new_plans, through: :billable_items, source: :item, source_type: 'Plan'
   has_many :app_designs, through: :billable_items, source: :item, source_type: 'App::Design'
   has_many :addon_plans, through: :billable_items, source: :item, source_type: 'AddonPlan'
+  has_many :addons, through: :addon_plans
+  has_many :plugins, through: :addons
 
   has_many :billable_item_activities, order: 'created_at ASC'
 
   has_many :kits
 
   # App::Components
-  has_many :components, through: :billable_items
+  has_many :app_designs_components, through: :app_designs, source: :component
+  has_many :addon_plans_components, through: :addon_plans, source: :components
+  def components
+    app_designs_components + addon_plans_components
+  end
 
   # Mongoid associations
   def usages
@@ -86,7 +92,7 @@ class Site < ActiveRecord::Base
   # ===============
 
   validates :user,        presence: true
-  validates :player_mode, inclusion: PLAYER_MODES
+  validates :accessible_stage, inclusion: Stage::STAGES
 
   validates :hostname, hostname: true, hostname_uniqueness: true
   validates :dev_hostnames,   dev_hostnames: true
@@ -103,8 +109,8 @@ class Site < ActiveRecord::Base
   end
 
   # Site::Loader
-  after_create ->(site) { Service::Loader.delay.update_all_modes!(site.id) }
-  after_save ->(site) { Service::Loader.delay.update_all_modes!(site.id) if site.player_mode_changed? }
+  after_create ->(site) { Service::Loader.delay.update_all_stages!(site.id) }
+  after_save ->(site) { Service::Loader.delay.update_all_stages!(site.id) if site.accessible_stage_changed? }
   # Site::Settings
   after_save ->(site) do
     if (site.changed & Service::Settings::SITE_FIELDS).present?
@@ -123,7 +129,7 @@ class Site < ActiveRecord::Base
     event(:unsuspend) { transition :suspended => :active }
 
     after_transition ->(site) do
-      Service::Loader.delay.update_all_modes!(site.id)
+      Service::Loader.delay.update_all_stages!(site.id)
       Service::Settings.delay.update_all_types!(site.id)
     end
 
@@ -171,7 +177,7 @@ class Site < ActiveRecord::Base
   end
 
   def settings_changed?
-    (changed & %w[player_mode hostname extra_hostnames dev_hostnames path wildcard badged]).present?
+    (changed & %w[accessible_stage hostname extra_hostnames dev_hostnames path wildcard badged]).present?
   end
 
   def trial_days_remaining_for_billable_item(billable_item)
@@ -182,12 +188,18 @@ class Site < ActiveRecord::Base
     end
   end
 
+  # for old loader/license templates
+  def player_mode
+    accessible_stage == 'alpha' ? "dev" : accessible_stage
+  end
+
 end
 
 # == Schema Information
 #
 # Table name: sites
 #
+#  accessible_stage                          :string(255)      default("beta")
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean
@@ -219,7 +231,6 @@ end
 #  plan_cycle_started_at                     :datetime
 #  plan_id                                   :integer
 #  plan_started_at                           :datetime
-#  player_mode                               :string(255)      default("stable")
 #  refunded_at                               :datetime
 #  settings_updated_at                       :datetime
 #  state                                     :string(255)

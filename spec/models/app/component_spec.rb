@@ -9,7 +9,15 @@ describe App::Component, :fog_mock do
 
   describe "Associations" do
     it { should have_many(:versions).dependent(:destroy) }
-    # it { should have_many(:sites).through(:componentships) }
+  end
+
+  describe "Scopes" do
+    describe "app" do
+      it "returns app component" do
+        component
+        App::Component.app.first.should eq(component)
+      end
+    end
   end
 
   describe "Validations" do
@@ -27,6 +35,13 @@ describe App::Component, :fog_mock do
       [:name, :token].each do |attr|
         it { should validate_uniqueness_of(attr) }
       end
+    end
+  end
+
+  describe "#app_component" do
+    it "return the app component" do
+      component
+      App::Component.app_component.should eq(component)
     end
   end
 

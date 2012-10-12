@@ -7,7 +7,7 @@ require_dependency 'cdn/file'
 module Service
   Settings = Struct.new(:site, :type, :options, :file, :cdn_file) do
     self::TYPES = %w[license settings]
-    self::SITE_FIELDS = %w[plan_id player_mode hostname extra_hostnames dev_hostnames path wildcard badged]
+    self::SITE_FIELDS = %w[plan_id accessible_stage hostname extra_hostnames dev_hostnames path wildcard badged]
 
     delegate :upload!, :delete!, :present?, to: :cdn_file
 
@@ -16,7 +16,7 @@ module Service
       changed = []
       if site.state == 'active'
         changed << new(site, 'license', options).upload!
-        unless site.player_mode == 'stable'
+        unless site.accessible_stage == 'stable'
           changed << new(site, 'settings', options).upload!
         end
       else

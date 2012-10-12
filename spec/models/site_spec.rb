@@ -13,7 +13,7 @@ describe Site, :addons do
     its(:path)                             { should be_nil }
     its(:wildcard)                         { should be_false }
     its(:token)                            { should =~ /^[a-z0-9]{8}$/ }
-    its(:player_mode)                      { should eq "stable" }
+    its(:accessible_stage)                 { should eq "beta" }
     its(:last_30_days_main_video_views)    { should eq 0 }
     its(:last_30_days_extra_video_views)   { should eq 0 }
     its(:last_30_days_dev_video_views)     { should eq 0 }
@@ -34,9 +34,10 @@ describe Site, :addons do
     it { should have_many(:billable_items) }
     it { should have_many(:app_designs).through(:billable_items) }
     it { should have_many(:addon_plans).through(:billable_items) }
+    it { should have_many(:addons).through(:addon_plans) }
+    it { should have_many(:plugins).through(:addons) }
     it { should have_many(:billable_item_activities) }
     it { should have_many(:kits) }
-    it { should have_many(:components).through(:billable_items) }
 
     describe "last_invoice" do
       it "should return the last paid invoice" do
@@ -44,6 +45,25 @@ describe Site, :addons do
 
         site.last_invoice.should eq site.invoices.last
         site.last_invoice.should eq invoice
+      end
+    end
+
+    describe "components" do
+      it "returns components from AddonPlan && App::Design" do
+        site = create(:site)
+        app_component1 = create(:app_component)
+        app_design = create(:app_design, component: app_component1)
+        create(:billable_item, site: site, item: app_design)
+
+        app_component2 = create(:app_component)
+        app_component3 = create(:app_component)
+        addon = create(:addon)
+        addon_plan = create(:addon_plan, addon: addon)
+        create(:app_plugin, addon: addon, component: app_component2, design: app_design)
+        create(:app_plugin, addon: addon, component: app_component3, design: nil)
+        create(:billable_item, site: site, item: addon_plan)
+
+        site.components.should eq([app_component1, app_component2, app_component3])
       end
     end
   end
@@ -56,10 +76,11 @@ describe Site, :addons do
     it { should validate_presence_of(:user) }
     it { should ensure_length_of(:path).is_at_most(255) }
 
-    it { should allow_value('dev').for(:player_mode) }
-    it { should allow_value('beta').for(:player_mode) }
-    it { should allow_value('stable').for(:player_mode) }
-    it { should_not allow_value('fake').for(:player_mode) }
+    it { should allow_value('alpha').for(:accessible_stage) }
+    it { should allow_value('beta').for(:accessible_stage) }
+    it { should allow_value('stable').for(:accessible_stage) }
+    it { should_not allow_value('dev').for(:accessible_stage) }
+    it { should_not allow_value('fake').for(:accessible_stage) }
 
     specify { Site.validators_on(:hostname).map(&:class).should eq [HostnameValidator, HostnameUniquenessValidator] }
     specify { Site.validators_on(:extra_hostnames).map(&:class).should include ExtraHostnamesValidator }
@@ -141,19 +162,19 @@ describe Site, :addons do
     describe "before_save" do
       let(:site) { create(:site, first_paid_plan_started_at: Time.now.utc) }
 
-      it "delays Service::Loader update on site player_mode update" do
+      it "delays Service::Loader update on site accessible_stage update" do
         site = create(:site)
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Service::Loader%update_all_modes%')
+        -> { site.update_attribute(:accessible_stage, 'alpha') }.should delay('%Service::Loader%update_all_stages%')
       end
 
-      it "delays Service::Settings update on site player_mode update" do
+      it "delays Service::Settings update on site accessible_stage update" do
         site = create(:site)
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Service::Settings%update_all_types%')
+        -> { site.update_attribute(:accessible_stage, 'alpha') }.should delay('%Service::Settings%update_all_types%')
       end
 
-      it "touch settings_updated_at on site player_mode update" do
+      it "touch settings_updated_at on site accessible_stage update" do
         site = create(:site)
-        expect { site.update_attribute(:player_mode, 'beta') }.to change(site, :settings_updated_at)
+        expect { site.update_attribute(:accessible_stage, 'alpha') }.to change(site, :settings_updated_at)
       end
     end # before_save
 
@@ -161,7 +182,7 @@ describe Site, :addons do
       let(:site) { create(:site) }
 
       it "delays Service::Loader update" do
-        -> { site }.should delay('%Service::Loader%update_all_modes%')
+        -> { site }.should delay('%Service::Loader%update_all_stages%')
       end
 
       it "delays Service::Settings update" do
@@ -178,14 +199,12 @@ describe Site, :addons do
     describe "after transition" do
       it "delays Service::Loader update" do
         site
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Service::Loader%update_all_modes%')
-        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Service::Loader%update_all_modes%" }, :count).by(1)
+        -> { site.suspend }.should delay('%Service::Loader%update_all_stages%')
       end
 
       it "delays Service::Settings update" do
         site
-        -> { site.update_attribute(:player_mode, 'beta') }.should delay('%Service::Loader%update_all_modes%')
-        expect { site.suspend }.to change(Delayed::Job.where{ handler =~ "%Service::Settings%update_all_types%" }, :count).by(1)
+        -> { site.suspend }.should delay('%Service::Settings%update_all_types%')
       end
     end
 
@@ -393,6 +412,7 @@ end
 #
 # Table name: sites
 #
+#  accessible_stage                          :string(255)      default("beta")
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean
@@ -424,7 +444,6 @@ end
 #  plan_cycle_started_at                     :datetime
 #  plan_id                                   :integer
 #  plan_started_at                           :datetime
-#  player_mode                               :string(255)      default("stable")
 #  refunded_at                               :datetime
 #  settings_updated_at                       :datetime
 #  state                                     :string(255)
