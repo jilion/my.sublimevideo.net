@@ -1,4 +1,6 @@
 class Kit < ActiveRecord::Base
+  serialize :settings, ActiveRecord::Coders::Hstore
+
   attr_accessible :site, :design, as: :admin
   attr_accessible :name
 

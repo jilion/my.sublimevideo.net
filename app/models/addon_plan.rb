@@ -41,6 +41,10 @@ class AddonPlan < ActiveRecord::Base
   def free?
     price.zero?
   end
+
+  def title
+    I18n.t("addon_plans.#{addon.name}.#{name}")
+  end
 end
 
 # == Schema Information

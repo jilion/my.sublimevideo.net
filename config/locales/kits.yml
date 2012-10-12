@@ -1,0 +1,39 @@
+en:
+  kit:
+    video_player:
+      title: 'Player default settings'
+      settings:
+        fullmodeEnabled: 'Display full-screen button'
+        fullwindowForced: 'Use full-window instead of full-screen'
+        volumeEnabled: 'Display volume control'
+        stopOnEnd: 'Back to initial state upon video end'
+
+    lightbox:
+      title: 'Lightbox settings'
+
+    image_viewer:
+      standard: 'Standard image viewer'
+
+    stats:
+      title: 'Stats settings'
+
+    logo:
+      sublime:  'SublimeVideo logo'
+      disabled: 'No logo'
+      custom:   'Your company logo'
+
+    controls:
+      standard: 'Standard controls'
+
+    start_view:
+      standard: 'Standard start view'
+
+    sharing:
+      standard: 'Standard sharing'
+
+    api:
+      standard: 'SublimeVideo player basic JavaScript API'
+
+    support:
+      standard: 'Forum & email support'
+      vip:      'VIP email support'

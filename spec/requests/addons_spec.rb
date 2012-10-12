@@ -289,4 +289,19 @@ feature 'Opt-out from grandfather plan' do
       @site.plan.should be_nil
     end
   end
+
+  context 'User has no grandfather plan' do
+    background do
+      sign_in_as :user
+      service = Service::Site.build(attributes_for(:site).merge(user: @current_user))
+      service.initial_save
+      @site = service.site
+    end
+
+    scenario 'redirect to add-ons page' do
+      go 'my', "/sites/#{@site.to_param}/plan/opt_out"
+
+      current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+    end
+  end
 end

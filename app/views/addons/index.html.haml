@@ -2,16 +2,16 @@
 = render '/layouts/site_header'
 
 - if @site.new_plans.present?
-  #grandfather_plan
-    %p Dear Customer,
+  %section#grandfather_plan.text
+    %p= "Dear #{current_user.name || 'Customer'},"
 
-    %p= "So far you had a monthly #{@site.plan.title} Plan with this site. As we have now moved to an “à la carte” pricing model, we have migrated automatically your account so you get even more value from SublimeVideo:"
+    %p= "So far you had a monthly #{@site.plan.title} with this site. As we have now moved to an “à la carte” pricing model, we have migrated automatically your account so you get even more value from SublimeVideo:"
 
     %p
       %ul
         %li your account is now unlimited in terms of video plays,
-        %li you can still remove SublimeVideo logo badge,
-        %li
+        %li you can still remove SublimeVideo logo,
+        %li<
           you have access to our Real-Time Statistics tool, with unlimited data retention
           = @site.plan.name == 'premium' ? ',' : '.'
         - if @site.plan.name == 'premium'
@@ -23,7 +23,7 @@
 
     %p
       = "PS: In case you would prefer to switch to our new “à la carte” pricing, "
-      = link_to("you can opt-out from your old #{@site.plan.title} Plan", opt_out_site_plan_path(@site)) + '.'
+      = link_to("you can opt-out from your old #{@site.plan.title}", opt_out_site_plan_path(@site)) + '.'
 
 - else
   #site.addons

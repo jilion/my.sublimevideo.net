@@ -1,13 +1,14 @@
 = render '/layouts/site_header'
 = title_and_content_header("Opt-out from your #{@site.plan.title} Plan")
 
-%p= "Are your sure your would like to opt-out from your old #{@site.plan.title} Plan and switch to our new “à la carte” pricing?"
+%section.text
+  %p= "Are your sure your would like to opt-out from your old #{@site.plan.title} Plan and switch to our new “à la carte” pricing?"
 
-%p= "Switching means that you will start over a new “à la carte” plan, based on our standard price list. Your current plan's features will be migrated to their corresponding add-ons and you will benefit of our #{BusinessModel.days_for_trial}-day free trial period for each of these add-ons."
+  %p= raw "Switching means that you will start over a new “à la carte” plan, based on our #{link_to 'standard price list', layout_url('plans'), onclick: 'window.open(this); return false'}. Your current plan's features will be migrated to their corresponding add-ons and you will benefit of our #{BusinessModel.days_for_trial}-day free trial period for each of these add-ons."
 
-%p= "Please refer to our standard price list for the exhaustive add-ons prices list."
+  %p= "Please refer to our standard price list for the exhaustive add-ons prices list."
 
-= form_tag confirm_opt_out_site_plan_path(@site) do
-  .actions.center= submit_tag "Comfirm the opt-out from my old #{@site.plan.title} Plan", class: 'submit green_button', id: 'site_submit'
-  or
-  = link_to 'Cancel', sites_path
+  = form_tag confirm_opt_out_site_plan_path(@site) do
+    .actions.center= submit_tag "Comfirm the opt-out from my old #{@site.plan.title} Plan", class: 'submit blue_button', id: 'site_submit'
+    or
+    = link_to 'Cancel', sites_path

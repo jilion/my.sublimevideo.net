@@ -43,8 +43,9 @@ module Populate
       empty_tables(App::Component, App::ComponentVersion, App::Plugin, App::SettingsTemplate, App::Design, Addon, AddonPlan, BillableItem, BillableItemActivity)
 
       lightbox_template = {
+        editable: true,
         autoplay: {
-          values: [0, 1],
+          values: 'bool',
           default: 1
         },
         overlayColor: {
@@ -145,24 +146,21 @@ module Populate
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
             template: {
-              flashForced: {
-                values: [0, 1],
-                default: 1
-              },
+              editable: true,
               fullwindowForced: {
-                values: [0, 1],
+                values: 'bool',
                 default: 0
               },
               stopOnEnd: {
-                values: [0, 1],
+                values: 'bool',
                 default: 0
               },
               fullmodeEnabled: {
-                values: [0, 1],
+                values: 'bool',
                 default: 1
               },
               volumeEnabled: {
-                values: [0, 1],
+                values: 'bool',
                 default: 1
               }
             }
@@ -175,6 +173,7 @@ module Populate
           { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
           { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
             template: {
+              editable: false,
               enable: {
                 values: [1],
                 default: 1
@@ -187,30 +186,33 @@ module Populate
           },
           { addon_plan: 'ref-AddonPlan-stats-realtime', plugin: nil,
             template: {
+              editable: false,
               enable: {
                 values: [1],
                 default: 1
               },
               realtime: {
-                values: [0, 1],
+                values: 'bool',
                 default: 1
               }
             }
           },
           { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil,
             template: {
+              editable: false,
               enable: {
-                values: [0, 1],
+                values: 'bool',
                 default: 0
               },
               realtime: {
-                values: [0, 1],
+                values: 'bool',
                 default: 1
               }
             }
           },
           { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
             template: {
+              editable: false,
               enabled: {
                 values: [1],
                 default: 1
@@ -223,8 +225,9 @@ module Populate
           },
           { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
             template: {
+              editable: false,
               enabled: {
-                values: [0, 1],
+                values: 'bool',
                 default: 1
               },
               position: {
