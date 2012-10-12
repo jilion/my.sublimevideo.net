@@ -141,7 +141,7 @@ MySublimeVideo::Application.routes.draw do
 
       resources :releases, only: [:index, :create, :update]
 
-      get '/app' => redirect('/app/components/e'), as: 'app'
+      get '/app' => redirect('/app/components/sa'), as: 'app'
       namespace :player, path: 'app' do
         resources :components, only: [:index, :create, :show, :update, :destroy] do
           resources :versions, only: [:index, :create, :show, :destroy], controller: 'component_versions'
