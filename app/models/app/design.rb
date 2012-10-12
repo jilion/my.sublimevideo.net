@@ -1,7 +1,7 @@
 class App::Design < ActiveRecord::Base
   AVAILABILITIES = %w[public custom]
 
-  attr_accessible :component, :skin_token, :name, :price, :availability, as: :admin
+  attr_accessible :component, :skin_token, :name, :price, :availability, :public_at, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
   has_many :billable_items, as: :item
@@ -23,6 +23,10 @@ class App::Design < ActiveRecord::Base
     when 'custom'
       site.app_designs.where(id: id).exists?
     end
+  end
+
+  def beta?
+    !public_at?
   end
 
   def beta?
@@ -48,6 +52,7 @@ end
 #  id               :integer          not null, primary key
 #  name             :string(255)      not null
 #  price            :integer          not null
+#  public_at        :datetime
 #  skin_token       :string(255)      not null
 #  updated_at       :datetime         not null
 #

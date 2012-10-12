@@ -7,7 +7,7 @@ describe App::Design do
   end
 
   describe 'Validations' do
-    [:component, :skin_token, :name, :price, :availability].each do |attr|
+    [:component, :skin_token, :name, :price, :availability, :public_at].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
@@ -59,6 +59,7 @@ end
 #  id               :integer          not null, primary key
 #  name             :string(255)      not null
 #  price            :integer          not null
+#  public_at        :datetime
 #  skin_token       :string(255)      not null
 #  updated_at       :datetime         not null
 #

@@ -99,13 +99,11 @@ module Service
         stats_addon_plan_name = advanced_plan ? 'realtime' : 'invisible'
         support_addon_plan_name = %w[premium sponsored].include?(site.plan.name) ? 'vip' : 'standard'
 
-        update_billable_addon_plans({
+        update_billable_addon_plans(free_addon_plans.merge({
           logo: AddonPlan.get('logo', logo_addon_plan_name).id,
           stats: AddonPlan.get('stats', stats_addon_plan_name).id,
-          lightbox: AddonPlan.get('lightbox', 'standard').id,
-          api: AddonPlan.get('api', 'standard').id,
           support: AddonPlan.get('support', support_addon_plan_name).id
-        }, sponsor: advanced_plan, suspended: site.suspended?)
+        }), sponsor: advanced_plan, suspended: site.suspended?)
 
         site.save!
       end
@@ -148,13 +146,14 @@ module Service
     end
 
     def set_default_addon_plans
-      update_billable_addon_plans(
-        logo: AddonPlan.get('logo', 'sublime').id,
-        stats: AddonPlan.get('stats', 'invisible').id,
-        lightbox: AddonPlan.get('lightbox', 'standard').id,
-        api: AddonPlan.get('api', 'standard').id,
-        support: AddonPlan.get('support', 'standard').id
-      )
+      update_billable_addon_plans(free_addon_plans)
+    end
+
+    def free_addon_plans
+      Addon.all.inject({}) do |hash, addon|
+        hash[addon.name] = addon.free_plan.id
+        hash
+      end
     end
 
     def delay_set_ranks

@@ -1,6 +1,7 @@
 class Addon < ActiveRecord::Base
-  attr_accessible :name, :design_dependent, :public_at, :parent_addon_id, :kind, as: :admin
+  attr_accessible :name, :design_dependent, :public_at, :parent_addon, :kind, as: :admin
 
+  belongs_to :parent_addon, class_name: 'Addon'
   has_many :plans, class_name: 'AddonPlan'
   has_many :plugins, class_name: 'App::Plugin'
   has_many :components, through: :plugins

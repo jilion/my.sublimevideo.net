@@ -28,7 +28,7 @@ module BillableItemsHelper
     when 1
       'last days of trial'
     else
-      "free trial – #{pluralize(trial_days_remaining_for_billable_item || 30, 'day')} remaining"
+      "free trial – #{pluralize(trial_days_remaining_for_billable_item || 30, 'day')} remaining" unless billable_item.free?
     end
   end
 

@@ -28,17 +28,17 @@
 
 %h3 Billable items activities
 %table
-  - @site.billable_item_activities.order{ created_at.desc }.each do |activity|
+  - @site.billable_item_activities.reorder('created_at DESC').each do |activity|
     %tr
+      %td= display_time(activity.created_at)
       %td
-        = "[#{display_time(activity.created_at)}] "
         - if activity.item.is_a?(App::Design)
           = 'Design: ' + t("app_designs.#{activity.item.name}")
         - elsif activity.item.is_a?(AddonPlan)
           = 'Add-on: ' + t("addon_plans.#{activity.item.addon.name}.#{activity.item.name}")
         - else
           = "Plan: #{activity.item.title}"
-        = " => #{activity.state}"
+      %td= activity.state
 
 - if has_role?('invoices')
   %h3 Invoices

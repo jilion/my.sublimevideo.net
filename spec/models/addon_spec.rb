@@ -2,13 +2,14 @@ require 'spec_helper'
 
 describe Addon do
   describe 'Associations' do
+    it { should belong_to(:parent_addon).class_name('Addon') }
     it { should have_many(:plans).class_name('AddonPlan') }
     it { should have_many(:plugins).class_name('App::Plugin') }
     it { should have_many(:components).through(:plugins) }
   end
 
   describe 'Validations' do
-    [:name, :design_dependent, :public_at, :parent_addon_id, :kind].each do |attr|
+    [:name, :design_dependent, :public_at, :parent_addon, :kind].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
     # it { should ensure_inclusion_of(:design_dependent).in_array([true, false]) }
