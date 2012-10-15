@@ -1,0 +1,8 @@
+%h4= t("kit.#{addon.name}.settings.#{key}")
+.entry
+  - checked = settings[key] || default
+  - choices.each do |choice|
+    .radio_wrap
+      = radio_button_tag "kit[addons][#{addon.id}][#{key}]", choice, checked == choice
+      = label_tag "kit[addons][#{addon.id}][#{key}]", t("kit.#{addon.name}.values.#{key}.#{choice}")
+.spacer

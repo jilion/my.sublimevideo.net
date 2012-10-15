@@ -1,0 +1,7 @@
+.entry.range
+  %p
+    %strong= label_tag "kit[addons][#{addon.id}][#{key}]", t("kit.#{addon.name}.settings.#{key}")
+  %p
+    = range_field_tag "kit[addons][#{addon.id}][#{key}]", settings[key], in: in_range, step: step, style: 'display:inline'
+    %span{ id: "kit_addons_#{addon.id}_#{key}_value" }= settings[key]
+.spacer

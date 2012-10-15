@@ -1,3 +1,5 @@
+require_dependency 'service/kit'
+
 class KitsController < ApplicationController
   before_filter :redirect_suspended_user
   before_filter :find_sites_or_redirect_to_new_site, only: [:edit]
@@ -10,7 +12,8 @@ class KitsController < ApplicationController
 
   # GET /sites/:site_id/kits/:id/edit
   def edit
-    @kit = @site.kits.find(params[:id])
+    @kit = exhibit(@site.kits.find(params[:id]))
+
     respond_with(@kit)
   end
 
@@ -18,8 +21,9 @@ class KitsController < ApplicationController
   # PUT /sites/:site_id/kits/:id
   def update
     @kit = @site.kits.find(params[:id])
-    @kit = @kit.update_attributes(params[:kit])
-    respond_with(@kit)
+    Service::Kit.new(@kit).update_settings!(params[:kit])
+
+    redirect_to edit_site_kit_path(@site, @kit)
   end
 
 end

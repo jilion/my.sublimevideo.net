@@ -1,6 +1,6 @@
 %ul.segmented_menu.sticky
   = li_menu_link 'Add-ons', path: site_addons_path(site), class: 'first'
-  = li_menu_link 'Player', path: edit_site_kit_path(site, site.kits.first), regex: /kits/
+  = li_menu_link 'Player', path: edit_site_kit_path(site, site.kits.first)
   = li_menu_link 'Video Code', path: new_site_video_code_path(site)
   = li_menu_link 'Stats', path: site_stats_path(site) if site.realtime_stats_active?
   = li_menu_link 'Settings', path: edit_site_path(site)

@@ -1,0 +1,31 @@
+require 'fast_spec_helper'
+require File.expand_path('lib/service/kit')
+
+describe Service::Kit do
+  let(:kit)        { stub(design: stub) }
+  let(:addon_plan) { stub }
+  let(:service)    { described_class.new(kit) }
+
+  describe '.sanitize_new_addons_settings' do
+    before do
+      kit.stub_chain(:site, :addon_plan_for_addon_id) { addon_plan }
+      addon_plan.stub(:settings_template_for, :template) { stub(template: {
+          editable: true,
+          'fooBar' => {
+            values: 'float_0_1',
+            default: 0.1
+          }
+        })
+      }
+    end
+
+    it 'round floats to 2 decimals' do
+      service.sanitize_new_addons_settings({ '1' => { 'fooBar' => '0.330001' } }).should == { '1' => { 'fooBar' => 0.33 } }
+    end
+
+    it 'round floats to 2 decimals' do
+      service.sanitize_new_addons_settings({ '1' => { 'fooBar' => '0.330001' } }).should == { '1' => { 'fooBar' => 0.33 } }
+    end
+  end
+
+end

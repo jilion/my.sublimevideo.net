@@ -1,27 +1,25 @@
 - title('Configure your player')
 = render '/layouts/site_header'
 
+%h3 Stable version
+
+
+
+%h3 Beta version
 #kit.edit
   = form_for [@site, @kit] do |f|
     .entry.design.select
-      = f.label :design, 'Select your player design:'
-      = f.select :design, options_from_collection_for_select(@site.app_designs, :id, :title, @kit.app_design_id)
+      = f.label :app_design_id, 'Select your player design:'
+      = f.select :app_design_id, options_from_collection_for_select(@site.app_designs, :id, :title, @kit.app_design_id)
 
-    %ul
+    .left
       - @site.addon_plans.each do |addon_plan|
         - if settings_template = addon_plan.settings_template_for(@kit.design) and settings_template.template
           - if eval(settings_template.template.delete('editable'))
             %h4= t("kit.#{addon_plan.addon.name}.title")
-            - settings_template.template.each do |k, v|
-              - v = eval(v)
-              -#= v
-              - if v[:values] == 'bool'
-                .checkbox_wrap
-                  = hidden_field_tag "kit[#{addon_plan.id}]", 0, id: "kit_#{addon_plan.id}"
-                  = check_box_tag "kit[#{addon_plan.id}]", 1, id: "kit_#{addon_plan.id}"
-                  = label_tag "kit[#{addon_plan.id}]", t("kit.#{addon_plan.addon.name}.settings.#{k}")
+            - settings_template.template.each do |setting_key, setting_fields|
+              = @kit.render_input_field(addon_plan.addon, setting_key, setting_fields, self)
             .big_break.spacer
-          -#%p= settings_template.template.inspect
 
     .actions.center
       = f.submit "Save settings", class: "submit blue_button"
