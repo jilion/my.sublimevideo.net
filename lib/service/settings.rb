@@ -1,6 +1,3 @@
-# TODO
-# - add component list permission (and version check on player_mode)
-
 require 'tempfile'
 require_dependency 'cdn/file'
 
@@ -96,7 +93,7 @@ module Service
       )
     end
 
-    def hash
+    def old_license
       hash = { h: [site.hostname] }
       hash[:h] += site.extra_hostnames.split(/,\s*/) if site.extra_hostnames?
       hash[:d]  = site.dev_hostnames.split(/,\s*/) if site.dev_hostnames?
@@ -107,6 +104,28 @@ module Service
       hash[:r]  = true if site.plan_stats_retention_days != 0 # Realtime Stats
       hash[:m]  = site.player_mode
       hash
+    end
+
+    def license
+      hash = { hosts: [site.hostname] }
+      hash[:hosts]   += site.extra_hostnames.split(/,\s*/)
+      hash[:devHosts] = site.dev_hostnames.split(/,\s*/)
+      hash[:path]     = site.path
+      hash[:wildcard] = site.wildcard
+      hash[:stage]    = site.accessible_stage
+      hash
+    end
+
+    def app_settings
+      { }
+    end
+
+    def kits
+      { }
+    end
+
+    def default_kit
+      "default"
     end
 
   private

@@ -1,5 +1,6 @@
-sublime_.module("license", [], function() {
-  var license;
-  license =  <%= hash.to_json %>
-  return [license];
-});
+settings = {
+  license: { <%= license.to_json %> },
+  app: { <%= app_settings.to_json %> },
+  kits: { <%= kits.to_json %> },
+  defaultKit: '<%= default_kit %>'
+}
