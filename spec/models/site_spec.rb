@@ -406,6 +406,28 @@ describe Site, :addons do
     end
   end
 
+  describe '#badged=' do
+    let(:site) { create(:site) }
+
+    context 'stats /disabled addon plan is active' do
+      before do
+        create(:billable_item, site: site, item: @logo_addon_plan_2, state: 'subscribed')
+      end
+
+      it 'is possible to set badged to false' do
+        site.badged = false
+        site.badged.should be_false
+      end
+    end
+
+    context 'stats /disabled addon plan is not active' do
+      it 'is not possible to set badged to false' do
+        site.badged = false
+        site.badged.should be_true
+      end
+    end
+  end
+
 end
 
 # == Schema Information

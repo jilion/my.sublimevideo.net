@@ -1,6 +1,7 @@
 - value = settings[key] || default
-%h4= t("kit.#{addon.name}.settings.#{key}")
 .entry.card
+  %span{ style: 'font-weight:600' }= t("kit.#{addon.name}.settings.#{key}")
+  %br
   - choices.each do |choice|
     .radio_wrap
       = radio_button_tag "kit[addons][#{addon.id}][#{key}]", choice, value == choice

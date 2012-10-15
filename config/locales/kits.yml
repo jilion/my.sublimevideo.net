@@ -11,6 +11,7 @@ en:
     lightbox:
       title: 'Lightbox settings'
       settings:
+        autoplay: 'Autoplay'
         overlayOpacity: 'Overlay opacity'
         closeButtonType: 'Close button type'
         closeButtonPosition: 'Close button position'

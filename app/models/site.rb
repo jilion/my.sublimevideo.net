@@ -193,6 +193,10 @@ class Site < ActiveRecord::Base
     accessible_stage == 'alpha' ? "dev" : accessible_stage
   end
 
+  def badged=(attribute)
+    write_attribute(:badged, addon_plan_is_active?(AddonPlan.get('logo', 'disabled')) ? !!attribute : true)
+  end
+
 end
 
 # == Schema Information

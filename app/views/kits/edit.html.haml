@@ -2,6 +2,19 @@
 = render '/layouts/site_header'
 
 %h2 Stable version
+- if @site.addon_plan_is_active?(AddonPlan.get('logo', 'disabled'))
+  = form_for [@site] do |f|
+    = hidden_field_tag 'kit_edit', '1'
+    .entry.badged
+      .checkbox_wrap
+        = f.check_box :badged
+        = f.label :badged, "Enable SublimeVideo badge."
+      %p.info= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
+
+    .actions.center
+      = f.submit "Save settings", class: "submit blue_button"
+- else
+  There are currently no settings you can customize for the stable version of the SublimeVideo Player.
 
 %h2 Beta version
 #kit.edit
