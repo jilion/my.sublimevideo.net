@@ -3,7 +3,7 @@ require 'spec_helper'
 describe App::Component, :fog_mock do
   let(:attributes) { {
     name: 'app',
-    token: 'e'
+    token: App::Component::APP_TOKEN
   } }
   let(:component) { App::Component.create(attributes, as: :admin) }
 

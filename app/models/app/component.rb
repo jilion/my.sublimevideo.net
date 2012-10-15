@@ -1,9 +1,11 @@
 class App::Component < ActiveRecord::Base
+  APP_TOKEN = 'sa'
+
   attr_accessible :name, :token, as: :admin
 
   has_many :versions, class_name: 'App::ComponentVersion', foreign_key: 'app_component_id', dependent: :destroy, order: 'version desc'
 
-  scope :app, ->{ where(token: 'e') }
+  scope :app, ->{ where(token: APP_TOKEN) }
 
   validates :token, :name, presence: true, uniqueness: true
 
