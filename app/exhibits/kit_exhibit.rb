@@ -5,7 +5,7 @@ class KitExhibit < DisplayCase::Exhibit
 
   def render_settings_input_fields(addon_plan, template)
     if settings_template = addon_plan.settings_template_for(self.design) and settings_template.template
-      if eval(settings_template.template.delete('editable'))
+      if settings_template.editable?
         html = settings_template.template.inject('') do |html, (setting_key, setting_fields)|
           html += self.render_input_field(addon_plan.addon, setting_key, setting_fields, template)
           html
