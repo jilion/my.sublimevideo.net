@@ -7,7 +7,7 @@ describe App::SettingsTemplate do
   end
 
   describe "Validations" do
-    [:addon_plan, :plugin, :template].each do |attr|
+    [:addon_plan, :plugin, :editable, :template].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
   end

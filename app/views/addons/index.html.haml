@@ -5,7 +5,7 @@
   %section#grandfather_plan.text
     %p= "Dear #{current_user.name || 'Customer'},"
 
-    %p= "So far you had a monthly #{@site.plan.title} with this site. As we have now moved to an “à la carte” pricing model, we have migrated automatically your account so you get even more value from SublimeVideo:"
+    %p= "So far you had a monthly #{@site.plan.title} for your site. As we have now moved to an “à la carte” pricing model, we have automatically switched your account. Now you get even more value from SublimeVideo:"
 
     %p
       %ul
@@ -17,24 +17,22 @@
         - if @site.plan.name == 'premium'
           %li you have access to our VIP email support, which guarantees an answer within one business day.
 
-    %p= raw "All at the same monthly price of #{display_amount_with_sup(@site.plan.price)}."
+    %p= raw "All for the same monthly price of #{display_amount_with_sup(@site.plan.price)}."
 
-    %p You can also test the new SublimeVideo player, currently in beta. We look forward reading your feedback about its new designs and add-ons.
+    %p You can also test the new SublimeVideo player, currently in beta. We look forward to reading your feedback about the new new player designs and add-ons.
 
     %p
-      = "PS: In case you would prefer to switch to our new “à la carte” pricing, "
-      = link_to("you can opt-out from your old #{@site.plan.title}", opt_out_site_plan_path(@site)) + '.'
+      = "PS: In case you would prefer to switch to our new “à la carte” pricing, you can"
+      = link_to("opt-out from your old #{@site.plan.title}", opt_out_site_plan_path(@site)) + '.'
 
 - else
   #site.addons
     #addons_table_wrap
       = form_for @site, url: update_all_site_addons_path, method: 'put', html: { id: 'edit_addons' } do |f|
         = render 'addons', site: @site, f: f
-        %hr
-        %small
-          = "Est. monthly cost"
-          = "(once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
-        %h3#addons_total= display_amount_with_sup(@site.addon_plans.sum(:price) + @site.app_designs.sum(:price))
+        .big_break
+        %small= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
+        %strong#addons_total= display_amount_with_sup(@site.addon_plans.sum(:price) + @site.app_designs.sum(:price))
 
         .actions.center= submit_tag 'Confirm selection', class: 'submit green_button', id: 'site_submit'
     .spacer

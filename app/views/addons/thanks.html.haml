@@ -3,21 +3,23 @@
 
 %h2 Thank you for your trust
 
-%p Your order have been taken into account.
+%section.text
+  %p Your order have been taken into account.
 
-- if @site.billable_items.where(state: 'subscribed').any? { |billable_item| billable_item.item.price > 0 }
-  - if current_user.cc?
-    %p At the end of your free trial, we will charge the credit card we have on file for your account:
-    #billing_info.dark_box
-      #credit_card_summary
-        %h4 Credit card used
-        = render 'billings/cc_summary', user: current_user
-    = link_to('If needed, you may update it', [:edit, :billing], class: 'hl') + '.'
+  - if @site.billable_items.any? { |billable_item| !billable_item.item.free? }
+    - if current_user.cc?
+      %p At the end of your free trial, we will charge the credit card we have on file for your account:
+      #billing_info.dark_box
+        #credit_card_summary
+          %h4 Credit card used
+          = render 'billings/cc_summary', user: current_user
+      If you would like to change it,
+      = link_to('you may update it', [:edit, :billing], class: 'hl') + '.'
+    - else
+      %p= raw "You may enter your billing details at any time during your trial period, or you may also #{link_to('add your credit card right now', [:edit, :billing], class: 'hl')}. Otherwise we will send you a reminder email later."
   - else
-    %p= raw "Even if you may enter your billing details at any time during your trial period, you can also #{link_to('add your credit card right now', [:edit, :billing], class: 'hl')} so it's done. Otherwise we will send you a reminder email later."
-- else
-  %p You have selected only free products, enjoy SublimeVideo player for free! ;-)
+    %p You have selected only free products. Enjoy SublimeVideo player for free!
 
-%p
-  = "Now that you have purchased some add-ons, you may"
-  = link_to('configure your player', [:edit, @site, @site.kits.first], class: 'hl') + '.'
+  %p
+    = "Now that you have purchased some add-ons, you may"
+    = link_to('configure your player', [:edit, @site, @site.kits.first], class: 'hl') + '.'

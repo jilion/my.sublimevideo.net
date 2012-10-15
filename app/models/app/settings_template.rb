@@ -1,7 +1,7 @@
 class App::SettingsTemplate < ActiveRecord::Base
   serialize :template, ActiveRecord::Coders::Hstore
 
-  attr_accessible :addon_plan, :plugin, :template, as: :admin
+  attr_accessible :addon_plan, :plugin, :editable, :template, as: :admin
 
   belongs_to :addon_plan
   belongs_to :plugin, class_name: 'App::Plugin', foreign_key: 'app_plugin_id'

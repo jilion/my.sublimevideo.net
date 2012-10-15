@@ -3,7 +3,7 @@
   .left.entry.site#site_setup_extra_hostnames
     = f.label :extra_hostnames, "", class: "icon"
     = f.text_field :extra_hostnames, class: "text", placeholder: "staging-yourdomain.com", autocomplete: :off
-  %p.info= raw "Add extra domains separated by commas. Extra domains are meant to be used #{content_tag(:strong, "exclusively")} for staging domains and alias domains (multiple domain names that point to the #{content_tag(:strong, "same content")})."
+  %p.info= raw "Add extra domains separated by commas. Extra domains are meant to be used #{content_tag(:strong, "exclusively")} for staging domains and alias domains (multiple domain names leading to the #{content_tag(:strong, "same content")})."
   .spacer
 
   %h4.title Development domains

@@ -93,14 +93,14 @@ module Populate
         ],
         Addon => [
           { name: 'video_player', kind: 'videoPlayer', design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
-          { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil, public_at: Time.now.utc },
-          { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
-          { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
-          { name: 'logo',         kind: 'badge',       design_dependent: false,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'controls',     kind: 'controls',    design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'start_view',   kind: 'startView',   design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'sharing',      kind: 'sharing',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
+          { name: 'logo',         kind: 'badge',       design_dependent: false,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
+          { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil, public_at: Time.now.utc },
           { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
+          { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
           { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil, public_at: Time.now.utc }
         ],
         App::Plugin => [
@@ -134,7 +134,7 @@ module Populate
           { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta' },
           { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
           { name: 'disabled',  price: 995,  addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta' },
+          { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'hidden', required_stage: 'beta' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-start_view',   availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom' },
@@ -227,7 +227,7 @@ module Populate
             template: {
               enabled: {
                 values: [0, 1],
-                default: 1
+                default: 0
               },
               position: {
                 values: ['bottomLeft', 'bottomRight'],
