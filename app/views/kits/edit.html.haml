@@ -1,11 +1,9 @@
 - title('Configure your player')
 = render '/layouts/site_header'
 
-%h3 Stable version
+%h2 Stable version
 
-
-
-%h3 Beta version
+%h2 Beta version
 #kit.edit
   = form_for [@site, @kit] do |f|
     .entry.design.select
@@ -13,13 +11,8 @@
       = f.select :app_design_id, options_from_collection_for_select(@site.app_designs, :id, :title, @kit.app_design_id)
 
     .left
-      - @site.addon_plans.each do |addon_plan|
-        - if settings_template = addon_plan.settings_template_for(@kit.design) and settings_template.template
-          - if eval(settings_template.template.delete('editable'))
-            %h4= t("kit.#{addon_plan.addon.name}.title")
-            - settings_template.template.each do |setting_key, setting_fields|
-              = @kit.render_input_field(addon_plan.addon, setting_key, setting_fields, self)
-            .big_break.spacer
+      - @site.addon_plans.order(:id).each do |addon_plan|
+        = raw @kit.render_settings_input_fields(addon_plan, self)
 
     .actions.center
       = f.submit "Save settings", class: "submit blue_button"

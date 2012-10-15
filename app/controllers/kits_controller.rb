@@ -13,7 +13,9 @@ class KitsController < ApplicationController
   # GET /sites/:site_id/kits/:id/edit
   def edit
     @kit = exhibit(@site.kits.find(params[:id]))
-
+  rescue ActiveRecord::RecordNotFound
+    redirect_to edit_site_kit_path(@site, @site.kits.first.id)
+  else
     respond_with(@kit)
   end
 

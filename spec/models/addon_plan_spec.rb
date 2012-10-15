@@ -12,7 +12,7 @@ describe AddonPlan do
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
-    it { should ensure_inclusion_of(:required_stage).in_array(%w[alpha beta stable]) }
+    it { should ensure_inclusion_of(:required_stage).in_array(::Stage::STAGES) }
     it { should ensure_inclusion_of(:availability).in_array(%w[hidden public custom]) }
 
     it { should validate_numericality_of(:price) }

@@ -7,12 +7,13 @@ describe App::Design do
   end
 
   describe 'Validations' do
-    [:component, :skin_token, :name, :price, :availability, :public_at].each do |attr|
+    [:component, :skin_token, :name, :price, :availability, :required_stage, :public_at].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
     it { should validate_numericality_of(:price) }
 
+    it { should ensure_inclusion_of(:required_stage).in_array(::Stage::STAGES) }
     it { should ensure_inclusion_of(:availability).in_array(%w[public custom]) }
   end
 
@@ -47,6 +48,7 @@ end
 #  name             :string(255)      not null
 #  price            :integer          not null
 #  public_at        :datetime
+#  required_stage   :string(255)      default("stable"), not null
 #  skin_token       :string(255)      not null
 #  updated_at       :datetime         not null
 #

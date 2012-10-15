@@ -29,9 +29,13 @@ en:
       title: 'Stats settings'
 
     logo:
-      sublime:  'SublimeVideo logo'
-      disabled: 'No logo'
-      custom:   'Your company logo'
+      title: 'Logo settings'
+      settings:
+        position: 'Position'
+      values:
+        position:
+          bottomLeft: 'Bottom left'
+          bottomRight: 'Bottom right'
 
     controls:
       standard: 'Standard controls'

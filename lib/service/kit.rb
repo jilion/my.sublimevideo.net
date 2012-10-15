@@ -1,8 +1,7 @@
 module Service
   Kit = Struct.new(:kit) do
 
-    # app_designs => { "classic"=>"0", "light"=>"42" }
-    # addon_plans => { "logo"=>"80", "support"=>"88" }
+    # params => { "<addon_id>" => { "settingKey" => "<value>" }
     def update_settings!(params)
       ::Kit.transaction do
         kit.app_design_id = params.delete(:app_design_id) if params[:app_design_id]
@@ -24,15 +23,31 @@ module Service
 
         new_addon_settings.each do |new_addon_setting_key, new_addon_setting_value|
           setting_template = eval(settings_template[new_addon_setting_key])
-          Rails.logger.info setting_template.inspect
-          Rails.logger.info new_addon_setting_key
           case setting_template[:values]
+          when 'bool'
+            check_boolean(new_addon_setting_value)
           when 'float_0_1'
             new_addons_settings[addon_id][new_addon_setting_key] = new_addon_setting_value.to_f.round(2)
+          when Array
+            check_inclusion(new_addon_setting_value, setting_template[:values])
           end
         end
       end
     end
 
+    private
+
+    def check_boolean(value)
+      raise Service::Kit::AttributeAssignmentError.new 'Is not a boolean.' unless %w[0 1].include?(value.to_s)
+    end
+
+    def check_inclusion(value, allowed_values)
+      raise Service::Kit::AttributeAssignmentError.new 'Is not allowed.' unless allowed_values.map(&:to_s).include?(value.to_s)
+    end
+
+  end
+
+  class Kit
+    class AttributeAssignmentError < Exception; end;
   end
 end

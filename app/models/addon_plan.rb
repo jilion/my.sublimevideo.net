@@ -1,5 +1,7 @@
+require_dependency 'stage'
+
 class AddonPlan < ActiveRecord::Base
-  AVAILABILITIES = %w[hidden public custom]
+  AVAILABILITIES = %w[hidden public custom] unless defined? AVAILABILITIES
 
   attr_accessible :addon, :name, :price, :availability, :required_stage, as: :admin
 
@@ -13,7 +15,7 @@ class AddonPlan < ActiveRecord::Base
   validates :addon, :name, :price, presence: true
   validates :name, uniqueness: { scope: :addon_id }
   validates :availability, inclusion: AVAILABILITIES
-  validates :required_stage, inclusion: %w[alpha beta stable]
+  validates :required_stage, inclusion: Stage::STAGES
   validates :price, numericality: true
 
   scope :paid, -> { includes(:addon).where{ (addon.public_at != nil) & (price > 0) } }
@@ -35,7 +37,9 @@ class AddonPlan < ActiveRecord::Base
   end
 
   def settings_template_for(design)
-    App::SettingsTemplate.where(app_plugin_id: App::Plugin.where(addon_id: addon.id, app_design_id: design.id).first.try(:id), addon_plan_id: id).first
+    App::SettingsTemplate.where(
+      app_plugin_id: App::Plugin.where(addon_id: addon.id, app_design_id: addon.design_dependent? ? design.id : nil).first.try(:id),
+      addon_plan_id: id).first
   end
 
   def free?
