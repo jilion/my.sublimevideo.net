@@ -1,7 +1,7 @@
 en:
   kit:
     video_player:
-      title: 'Player default settings'
+      title: 'Player settings'
       settings:
         fullmodeEnabled: 'Display full-screen button'
         fullwindowForced: 'Use full-window instead of full-screen'
@@ -10,6 +10,17 @@ en:
 
     lightbox:
       title: 'Lightbox settings'
+      settings:
+        overlayOpacity: 'Overlay opacity'
+        closeButtonType: 'Close button type'
+        closeButtonPosition: 'Close button position'
+      values:
+        closeButtonType:
+          default: 'Default'
+          none: 'None'
+        closeButtonPosition:
+          left: 'Left'
+          right: 'Right'
 
     image_viewer:
       standard: 'Standard image viewer'
@@ -18,9 +29,13 @@ en:
       title: 'Stats settings'
 
     logo:
-      sublime:  'SublimeVideo logo'
-      disabled: 'No logo'
-      custom:   'Your company logo'
+      title: 'Logo settings'
+      settings:
+        position: 'Position'
+      values:
+        position:
+          bottomLeft: 'Bottom left'
+          bottomRight: 'Bottom right'
 
     controls:
       standard: 'Standard controls'

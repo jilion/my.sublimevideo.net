@@ -66,6 +66,10 @@ MySublimeVideo.UI.prepareAddonsChooser = ->
   if (form = $('#edit_addons')).exists()
     new MySublimeVideo.UI.AddonsChooser(form)
 
+MySublimeVideo.UI.prepareKitEditor = ->
+  $('.edit_kit').each ->
+    new MySublimeVideo.UI.KitEditor($(this))
+
 MySublimeVideo.UI.prepareSupportRequest = ->
   new MySublimeVideo.Helpers.SupportRequest() if $('#new_support_request').exists()
 
@@ -88,6 +92,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareAddASitePopup()
   MySublimeVideo.UI.prepareSitesStatus()
   MySublimeVideo.UI.prepareAddonsChooser()
+  MySublimeVideo.UI.prepareKitEditor()
   MySublimeVideo.UI.prepareSupportRequest()
   MySublimeVideo.UI.prepareFeedbackForm()
   MySublimeVideo.UI.prepareVideoTagsTable()

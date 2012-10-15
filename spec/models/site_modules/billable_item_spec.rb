@@ -31,9 +31,14 @@ describe SiteModules::BillableItem, :addons do
     it 'returns true when the addon is beta, trial, sponsored or subscribed, false otherwise' do
       site.addon_is_active?(@logo_addon).should be_true
       site.addon_is_active?(@stats_addon).should be_true
-
-      site.addon_is_active?('baz').should be_false
       site.addon_is_active?(@support_addon).should be_false
+    end
+  end
+
+  describe '#addon_plan_for_addon_id' do
+    it 'returns the addon plan currently used for the given addon id' do
+      site.addon_plan_for_addon_id(@logo_addon.id).should eq @logo_addon_plan_1
+      site.addon_plan_for_addon_id(@stats_addon.id).should eq @stats_addon_plan_1
     end
   end
 

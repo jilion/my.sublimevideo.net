@@ -18,6 +18,7 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
       t.string     :name, null: false
       t.integer    :price, null: false
       t.string     :availability, null: false
+      t.string     :required_stage, null: false, default: 'stable'
       t.datetime   :public_at
 
       t.timestamps

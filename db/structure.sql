@@ -242,6 +242,7 @@ CREATE TABLE app_designs (
     name character varying(255) NOT NULL,
     price integer NOT NULL,
     availability character varying(255) NOT NULL,
+    required_stage character varying(255) DEFAULT 'stable'::character varying NOT NULL,
     public_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL

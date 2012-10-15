@@ -96,7 +96,7 @@ module Populate
           { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil, public_at: Time.now.utc },
           { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
           { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
-          { name: 'logo',         kind: 'badge',       design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
+          { name: 'logo',         kind: 'badge',       design_dependent: false,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'controls',     kind: 'controls',    design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'start_view',   kind: 'startView',   design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'sharing',      kind: 'sharing',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
@@ -104,7 +104,7 @@ module Populate
           { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil, public_at: Time.now.utc }
         ],
         App::Plugin => [
-          { name: 'video_layer',        token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-app' },
+          { name: 'video_player',       token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-app' },
           { name: 'ligthbox_classic',   token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
           { name: 'ligthbox_flat',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
           { name: 'ligthbox_light',     token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
@@ -210,27 +210,27 @@ module Populate
             }
           },
           { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
-            editable: false,
+            editable: true,
             template: {
               enabled: {
                 values: [1],
                 default: 1
               },
               position: {
-                values: ['bottomRight', 'bottomLeft'],
+                values: ['bottomLeft', 'bottomRight'],
                 default: 'bottomRight'
               }
             }
           },
           { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
-            editable: false,
+            editable: true,
             template: {
               enabled: {
                 values: [0, 1],
                 default: 1
               },
               position: {
-                values: ['bottomRight', 'bottomLeft'],
+                values: ['bottomLeft', 'bottomRight'],
                 default: 'bottomRight'
               }
             }
@@ -254,9 +254,9 @@ module Populate
           reference_key += "#{attributes[:addon].sub(/\Aref-Addon-/, '')}-" if klass == AddonPlan
           reference_key += "#{attributes[:name] || attributes[:token]}"
           attributes = attributes.inject({}) { |h, (k, v)| h[k] = (v =~ /\Aref-/ ? references[v.sub(/\Aref-/, '')] : v); h }
-          puts attributes.inspect if Rails.env.development?
+          # puts attributes.inspect if Rails.env.development?
           references[reference_key] = klass.create!(attributes, as: :admin)
-          puts "#{klass} #{attributes[:name] || attributes[:token]} inserted" if Rails.env.development?
+          # puts "#{klass} #{attributes[:name] || attributes[:token]} inserted" if Rails.env.development?
         end
         puts "\t- #{klass.count} #{klass.to_s} created;" if Rails.env.development?
       end

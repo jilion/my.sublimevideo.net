@@ -1,5 +1,5 @@
 Stage = Struct.new(:stage) do
-  STAGES = %w[alpha beta stable] unless defined? STAGES
+  self::STAGES = %w[alpha beta stable]
 
   def self.version_stage(version)
     case version

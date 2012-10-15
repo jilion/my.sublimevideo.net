@@ -58,15 +58,18 @@ module Service
     end
 
     def app_settings
-      addon_plan_without_plugins = addon_plans.select { |ap| ap.settings_templates.none? { |st| st.plugin? } }
-      addon_plan_without_plugins.inject({}) do |hash, addon_plan|
-        hash[addon_plan.kind] = addon_plan.settings_templates.first.template
+      addon_plans_without_plugins.inject({}) do |hash, addon_plan|
+        hash[addon_plan.kind] = addon_plan_settings(addon_plan.settings_templates.first.template)
         hash
       end
     end
 
     def kits
-      { }
+      site.kits.includes(:design).inject(Hash.new({})) do |hash, kit|
+        hash[kit.name][:skin] = { id: kit.skin_token }
+        hash[kit.name][:plugins] = kits_plugins(kit.app_design_id, nil)
+        hash
+      end
     end
 
     def default_kit
@@ -77,12 +80,40 @@ module Service
       App::Mangler.mangle(hash)
     end
 
+  private
+
     def addon_plans
       @addon_plans ||= site.addon_plans.includes(:addon, settings_templates: :plugin)
     end
 
-  private
+    def addon_plans_without_plugins
+      @addon_plans_without_plugins ||= addon_plans.select { |ap|
+        ap.settings_templates.none? { |st| st.plugin? }
+      }
+    end
 
+    def addon_plans_with_plugins
+      @addon_plans_with_plugins ||= addon_plans.select { |ap|
+        ap.settings_templates.any? { |st| st.plugin? }
+      }
+    end
+
+    def kits_plugins(app_design_id, parent_addon_id)
+      addon_plans = addon_plans_with_plugins.select { |ap| ap.addon.parent_addon_id == parent_addon_id }
+      addon_plans.inject({}).each { |hash, addon_plan|
+        hash[:plugins] = kits_plugins(app_design_id, addon_plan.addon_id)
+        settings_template = addon_plan.settings_templates.detect { |st|
+          st.plugin.app_design_id.in?([nil, app_design_id])
+        }
+        # addon_plan_settings(template)
+        # id
+        # condition
+      }
+    end
+
+    def addon_plan_settings(template)
+      # TODO
+    end
 
     def generate_file
       template_path = Rails.root.join("app/templates/app/#{template_file}")

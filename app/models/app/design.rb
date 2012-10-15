@@ -1,14 +1,17 @@
-class App::Design < ActiveRecord::Base
-  AVAILABILITIES = %w[public custom]
+require_dependency 'stage'
 
-  attr_accessible :component, :skin_token, :name, :price, :availability, :public_at, as: :admin
+class App::Design < ActiveRecord::Base
+  AVAILABILITIES = %w[public custom] unless defined? AVAILABILITIES
+
+  attr_accessible :component, :skin_token, :name, :price, :availability, :required_stage, :public_at, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
   has_many :billable_items, as: :item
 
-  validates :component, :skin_token, :name, :price, :availability, presence: true
+  validates :component, :skin_token, :name, :price, :availability, :required_stage, presence: true
   validates :price, numericality: true
   validates :availability, inclusion: AVAILABILITIES
+  validates :required_stage, inclusion: Stage::STAGES
 
   scope :paid, -> { where { price > 0 } }
 
@@ -49,6 +52,7 @@ end
 #  name             :string(255)      not null
 #  price            :integer          not null
 #  public_at        :datetime
+#  required_stage   :string(255)      default("stable"), not null
 #  skin_token       :string(255)      not null
 #  updated_at       :datetime         not null
 #

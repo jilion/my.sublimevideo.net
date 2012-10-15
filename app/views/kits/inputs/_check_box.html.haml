@@ -1,0 +1,6 @@
+- value = (settings[key] || default).to_i
+.entry.checkbox_wrap
+  = hidden_field_tag "kit[addons][#{addon.id}][#{key}]", 0, id: "kit_addons_#{addon.id}_#{key}"
+  = check_box_tag "kit[addons][#{addon.id}][#{key}]", 1, value == 1, id: "kit_addons_#{addon.id}_#{key}"
+  = label_tag "kit[addons][#{addon.id}][#{key}]", t("kit.#{addon.name}.settings.#{key}")
+.spacer
