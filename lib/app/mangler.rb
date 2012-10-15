@@ -16,18 +16,22 @@ class App::Mangler
 
 private
 
-  def mangle_hash(hash)
+  def mangle_hash(hash, parent_key = nil)
     Hash[hash.map { |key, value|
       if value.is_a?(Hash)
-        [mangle_key(key), mangle_hash(value)]
+        [mangle_key(key, parent_key), mangle_hash(value, key)]
       else
-        [mangle_key(key), value]
+        [mangle_key(key, parent_key), value]
       end
     }]
   end
 
-  def mangle_key(key)
-    dictionary[key.to_s] || key.to_s
+  def mangle_key(key, parent_key)
+    if parent_key && parent_key == 'kits'
+      key.to_s
+    else
+      dictionary[key.to_s] || key.to_s
+    end
   end
 
   def dictionary

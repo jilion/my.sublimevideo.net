@@ -31,6 +31,12 @@ describe App::Mangler do
         "ta" => { "tm" => "foo" }
       })
     end
+
+    it "doesn't mangles if parent key is 'Kits'" do
+      App::Mangler.mangle('flashForced' => { "kits" => { enable: 'foo' } }).should eq({
+        "ta" => { "ks" => { "enable" => "foo" } }
+      })
+    end
   end
 
 end
