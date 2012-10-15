@@ -13,7 +13,7 @@ class App::ComponentVersionDependenciesSolver < Struct.new(:site, :stage, :depen
     super
     @graph = Solve::Graph.new
     @components = [App::Component.app_component]
-    @components += site.components
+    @components += site.components.includes(:versions)
     @components.each { |component| add_component(component) }
   end
 

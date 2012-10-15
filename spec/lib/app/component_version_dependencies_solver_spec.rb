@@ -57,7 +57,7 @@ describe App::ComponentVersionDependenciesSolver do
 
     context "with stage is stable" do
       context "with 0 site components dependencies" do
-        before { site.stub(:components) { [] } }
+        before { site.stub_chain(:components, :includes) { [] } }
 
         it "depends on the app bigger component version" do
           described_class.components_dependencies(site, 'stable').should eq('a' => "2.0.0")
@@ -65,7 +65,7 @@ describe App::ComponentVersionDependenciesSolver do
       end
 
       context "with same site components dependency with no dependencies" do
-        before { site.stub(:components) { [c_a] } }
+        before { site.stub_chain(:components, :includes) { [c_a] } }
 
         it "depends only once on app bigger component version" do
           described_class.components_dependencies(site, 'stable').should eq('a' => "2.0.0")
@@ -73,7 +73,7 @@ describe App::ComponentVersionDependenciesSolver do
       end
 
       context "with one other site components dependency" do
-        before { site.stub(:components) { [c_c1] } }
+        before { site.stub_chain(:components, :includes) { [c_c1] } }
 
         context "with no dependencies" do
           it "depends on the both bigger components versions" do
@@ -181,7 +181,7 @@ describe App::ComponentVersionDependenciesSolver do
 
     context "with stage is beta" do
       context "with one other site components dependency" do
-        before { site.stub(:components) { [c_c1] } }
+        before { site.stub_chain(:components, :includes) { [c_c1] } }
 
         context "with app component dependency and another dependency" do
           before do
