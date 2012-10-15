@@ -3,7 +3,7 @@ require_dependency 'mime_type_guesser'
 class VideoCodesController < ApplicationController
   skip_before_filter :authenticate_user!, if: :public_page?
   before_filter :redirect_routes, :redirect_suspended_user, only: [:new]
-  before_filter :find_sites_or_redirect_to_new_site, if: proc { |c| !c.public_page? || user_signed_in? }, only: [:new, :show]
+  before_filter :find_sites_or_redirect_to_new_site, unless: proc { |c| c.public_page? }, only: [:new, :show]
   before_filter :find_site_by_token!, only: [:new, :show]
   before_filter :require_video_early_access, only: [:show]
 
@@ -33,7 +33,7 @@ class VideoCodesController < ApplicationController
   private
 
   def redirect_routes
-    if early_access?('video')
+    if user_signed_in?
       redirect_to(new_site_video_code_path(current_user.sites.not_archived.by_date.first.token)) and return if public_page?
     else
       redirect_to(video_code_generator_path) and return unless public_page?

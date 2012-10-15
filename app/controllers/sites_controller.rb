@@ -52,7 +52,9 @@ class SitesController < ApplicationController
   def update
     @site.update_attributes(params[:site])
 
-    respond_with(@site, location: :sites)
+    respond_with(@site) do |format|
+      format.html { redirect_to params[:kit_edit] ? [:edit, @site, @site.kits.first] : [:edit, @site] }
+    end
   end
 
   # DELETE /sites/:id

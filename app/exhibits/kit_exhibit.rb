@@ -26,16 +26,12 @@ class KitExhibit < DisplayCase::Exhibit
     when 'bool'
       template.render('kits/inputs/check_box', kit: self, addon: addon, key: key, settings: settings, default: default)
     when 'float_0_1'
-      template.render('kits/inputs/range', kit: self, addon: addon, key: key, in_range: (0..1), step: 0.1, settings: settings, default: default)
+      template.render('kits/inputs/range', kit: self, addon: addon, key: key, in_range: (0..1), step: 0.05, settings: settings, default: default)
     when Array
       if (2..3).cover?(setting_fields[:values].size)
         template.render('kits/inputs/radio', kit: self, addon: addon, key: key, settings: settings, choices: setting_fields[:values], default: default)
-      else
-        ''
       end
-    else
-      ''
-    end
+    end || ''
   end
 
   def eql?(other)
