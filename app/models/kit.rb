@@ -7,6 +7,8 @@ class Kit < ActiveRecord::Base
   belongs_to :site
   belongs_to :design, class_name: 'App::Design', foreign_key: 'app_design_id'
 
+  delegate :skin_token, :kind, to: :design
+
   validates :site, :design, :name, presence: true
   validates :name, uniqueness: { scope: :site_id }
 

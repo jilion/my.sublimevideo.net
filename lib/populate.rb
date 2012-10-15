@@ -43,9 +43,8 @@ module Populate
       empty_tables(App::Component, App::ComponentVersion, App::Plugin, App::SettingsTemplate, App::Design, Addon, AddonPlan, BillableItem, BillableItemActivity)
 
       lightbox_template = {
-        editable: true,
         autoplay: {
-          values: 'bool',
+          values: [0, 1],
           default: 1
         },
         overlayColor: {
@@ -145,35 +144,35 @@ module Populate
         ],
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
+            editable: true,
             template: {
-              editable: true,
               fullwindowForced: {
-                values: 'bool',
+                values: [0, 1],
                 default: 0
               },
               stopOnEnd: {
-                values: 'bool',
+                values: [0, 1],
                 default: 0
               },
               fullmodeEnabled: {
-                values: 'bool',
+                values: [0, 1],
                 default: 1
               },
               volumeEnabled: {
-                values: 'bool',
+                values: [0, 1],
                 default: 1
               }
             }
           },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic', editable: true, template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat', editable: true, template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light', editable: true, template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit', editable: true, template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5', editable: true, template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
           { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
+            editable: false,
             template: {
-              editable: false,
               enable: {
                 values: [1],
                 default: 1
@@ -185,34 +184,34 @@ module Populate
             }
           },
           { addon_plan: 'ref-AddonPlan-stats-realtime', plugin: nil,
+            editable: false,
             template: {
-              editable: false,
               enable: {
                 values: [1],
                 default: 1
               },
               realtime: {
-                values: 'bool',
+                values: [0, 1],
                 default: 1
               }
             }
           },
           { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil,
+            editable: false,
             template: {
-              editable: false,
               enable: {
-                values: 'bool',
+                values: [0, 1],
                 default: 0
               },
               realtime: {
-                values: 'bool',
+                values: [0, 1],
                 default: 1
               }
             }
           },
           { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
+            editable: false,
             template: {
-              editable: false,
               enabled: {
                 values: [1],
                 default: 1
@@ -224,10 +223,10 @@ module Populate
             }
           },
           { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
+            editable: false,
             template: {
-              editable: false,
               enabled: {
-                values: 'bool',
+                values: [0, 1],
                 default: 1
               },
               position: {

@@ -16,6 +16,7 @@ end
 #  addon_plan_id :integer          not null
 #  app_plugin_id :integer
 #  created_at    :datetime         not null
+#  editable      :boolean          default(FALSE)
 #  id            :integer          not null, primary key
 #  template      :hstore
 #  updated_at    :datetime         not null

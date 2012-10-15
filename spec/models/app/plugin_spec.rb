@@ -23,6 +23,7 @@ end
 #  addon_id         :integer          not null
 #  app_component_id :integer          not null
 #  app_design_id    :integer
+#  condition        :hstore
 #  created_at       :datetime         not null
 #  id               :integer          not null, primary key
 #  name             :string(255)      not null

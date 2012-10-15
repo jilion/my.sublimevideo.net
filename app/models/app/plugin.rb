@@ -1,4 +1,6 @@
 class App::Plugin < ActiveRecord::Base
+  serialize :condition, ActiveRecord::Coders::Hstore
+
   attr_accessible :addon, :design, :component, :token, :name, as: :admin
 
   belongs_to :addon
@@ -16,6 +18,7 @@ end
 #  addon_id         :integer          not null
 #  app_component_id :integer          not null
 #  app_design_id    :integer
+#  condition        :hstore
 #  created_at       :datetime         not null
 #  id               :integer          not null, primary key
 #  name             :string(255)      not null
