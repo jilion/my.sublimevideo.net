@@ -4,6 +4,7 @@ require 'fog'
 
 # for fog_mock
 require 'carrierwave'
+require File.expand_path('app/models/app')
 require File.expand_path('config/initializers/carrierwave')
 require File.expand_path('spec/config/carrierwave')
 require File.expand_path('lib/s3')

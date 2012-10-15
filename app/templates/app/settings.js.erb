@@ -1,6 +1,6 @@
 settings = {
-  license: { <%= license.to_json %> },
-  app: { <%= app_settings.to_json %> },
-  kits: { <%= kits.to_json %> },
+  license: { <%= mangle(license).to_json %> },
+  app: { <%= mangle(app_settings).to_json %> },
+  kits: { <%= mangle(kits).to_json %> },
   defaultKit: '<%= default_kit %>'
 }
