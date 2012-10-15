@@ -58,7 +58,11 @@ module Service
     end
 
     def app_settings
-      { }
+      addon_plan_without_plugins = addon_plans.select { |ap| ap.settings_templates.none? { |st| st.plugin? } }
+      addon_plan_without_plugins.inject({}) do |hash, addon_plan|
+        hash[addon_plan.kind] = addon_plan.settings_templates.first.template
+        hash
+      end
     end
 
     def kits
@@ -73,7 +77,12 @@ module Service
       App::Mangler.mangle(hash)
     end
 
+    def addon_plans
+      @addon_plans ||= site.addon_plans.includes(:addon, settings_templates: :plugin)
+    end
+
   private
+
 
     def generate_file
       template_path = Rails.root.join("app/templates/app/#{template_file}")

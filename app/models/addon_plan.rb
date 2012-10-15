@@ -8,7 +8,7 @@ class AddonPlan < ActiveRecord::Base
   has_many :billable_items, as: :item
   has_many :settings_templates
 
-  delegate :beta?, to: :addon
+  delegate :beta?, :kind, to: :addon
 
   validates :addon, :name, :price, presence: true
   validates :name, uniqueness: { scope: :addon_id }

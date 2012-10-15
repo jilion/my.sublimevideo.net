@@ -9,11 +9,23 @@ require File.expand_path('config/initializers/carrierwave')
 require File.expand_path('spec/config/carrierwave')
 require File.expand_path('lib/s3')
 
-Site = Class.new unless defined?(Site)
 require File.expand_path('lib/service/settings')
 
+unless defined?(ActiveRecord)
+  Site = Class.new
+  Addon = Class.new
+  AddonPlan = Class.new
+  App::Component = Class.new
+  App::Plugin = Class.new
+  App::SettingsTemplate = Class.new
+end
+
+
 describe Service::Settings, :fog_mock do
-  before { CDN.stub(:delay) { mock(purge: true) } }
+  before {
+    CDN.stub(:delay) { mock(purge: true) }
+    site.stub_chain(:addon_plans, :includes) { [] }
+  }
 
   let(:site) { mock("Site",
     id: 1,
@@ -77,7 +89,7 @@ describe Service::Settings, :fog_mock do
     context "with license type" do
       let(:file) { described_class.new(site, 'license').file }
 
-      it "have good content" do
+      it "has good content" do
         File.open(file) do |f|
           f.read.should eq "jilion.sublime.video.sites({\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":true,\"s\":true,\"r\":true,\"m\":\"stable\"});\n"
         end
@@ -87,9 +99,9 @@ describe Service::Settings, :fog_mock do
     context "with settings type" do
       let(:file) { described_class.new(site, 'settings').file }
 
-      pending "have good content" do
+      it "has good content" do
         File.open(file) do |f|
-          f.read.should eq "sublime_.module(\"license\", [], function() {\n  var license;\n  license =  {\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":true,\"s\":true,\"r\":true,\"m\":\"stable\"}\n  return [license];\n});\n"
+          f.read.should eq "settings = {\n  license: { {\"ku\":[\"test.com\",\"test.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"} },\n  app: { {} },\n  kits: { {} },\n  defaultKit: 'default'\n}\n"
         end
       end
     end
@@ -148,6 +160,41 @@ describe Service::Settings, :fog_mock do
         it "doesn't includes r key/value" do
           settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, s: true, m: 'stable' }
         end
+      end
+    end
+  end
+
+  describe "#app_settings" do
+    context "with a addon_plan with a settings_template not linked to a plugin" do
+      let(:template) { {
+        editable: false,
+        enable: {
+          values: [1],
+          default: 1
+        },
+        realtime: {
+          values: [0],
+          default: 0
+        }
+      } }
+      let(:addon) { mock(Addon) }
+      let(:settings_template) { mock(App::SettingsTemplate, template: template) }
+      let(:addon_plan) { mock(AddonPlan, addon: addon, settings_templates: [settings_template]) }
+
+      before do
+        settings_template.stub(:plugin?) { false }
+        addon_plan.stub(:kind) { 'stats' }
+        site.stub_chain(:addon_plans, :includes) { [addon_plan] }
+      end
+
+      it "includes template of this addon_plan settings_template" do
+        settings.app_settings.should eq('stats' => template)
+      end
+    end
+
+    context "with no addon_plans" do
+      it "returns a empty hash" do
+        settings.app_settings.should eq({})
       end
     end
   end
