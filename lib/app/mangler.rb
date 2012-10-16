@@ -18,6 +18,7 @@ private
 
   def mangle_hash(hash, parent_key = nil)
     Hash[hash.map { |key, value|
+      key = key.to_s.camelize(:lower)
       if value.is_a?(Hash)
         [mangle_key(key, parent_key), mangle_hash(value, key)]
       else
@@ -28,9 +29,9 @@ private
 
   def mangle_key(key, parent_key)
     if parent_key && parent_key == 'kits'
-      key.to_s
+      key
     else
-      dictionary[key.to_s] || key.to_s
+      dictionary[key] || key
     end
   end
 

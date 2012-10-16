@@ -157,22 +157,22 @@ module Populate
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
             editable: true,
             template: {
-              fullwindowForced: {
+              fullwindow_forced: {
                 type: 'boolean',
                 values: [true, false],
                 default: false,
               },
-              stopOnEnd: {
+              stop_on_end: {
                 type: 'boolean',
                 values: [true, false],
                 default: false
               },
-              fullmodeEnabled: {
+              fullmode_enabled: {
                 type: 'boolean',
                 values: [true, false],
                 default: true
               },
-              volumeEnabled: {
+              volume_enabled: {
                 type: 'boolean',
                 values: [true, false],
                 default: true
@@ -263,12 +263,12 @@ module Populate
           { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_html5', editable: true, template: controls_template },
           { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view', editable: true,
             template: {
-              overlayEnabled: {
+              overlay_enabled: {
                 type: 'boolean',
                 values: [true, false],
                 default: true
               },
-              overlayColor: {
+              overlay_color: {
                 type: 'color',
                 default: '#000'
               },
@@ -276,19 +276,19 @@ module Populate
           },
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing', editable: false,
             template: {
-              twitterURL: {
+              twitter_url: {
                 type: 'url'
               },
-              facebookURL: {
+              facebook_url: {
                 type: 'url'
               },
-              embedURL: {
+              embed_url: {
                 type: 'url'
               },
-              embedWidth: {
+              embed_width: {
                 type: 'integer'
               },
-              embedHeight: {
+              embed_height: {
                 type: 'integer'
               }
             }

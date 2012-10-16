@@ -1,5 +1,5 @@
 require 'fast_spec_helper'
-# require 'rails/railtie'
+require 'active_support/core_ext/string'
 
 require File.expand_path('app/models/app')
 require File.expand_path('lib/app/mangler')
@@ -14,26 +14,32 @@ describe App::Mangler do
     end
 
     it "mangles hash string key" do
-      App::Mangler.mangle('flashForced' => 'foo').should eq({
+      App::Mangler.mangle('flash_forced' => 'foo').should eq({
         "ta" => "foo"
       })
     end
 
+    it "mangles hash string key and camelise them" do
+      App::Mangler.mangle('twitter_url' => 'foo').should eq({
+        "ts" => "foo"
+      })
+    end
+
     it "only mangles key present in the dictionary" do
-      App::Mangler.mangle('flashForced' => 'foo', bar: 'foo2').should eq({
+      App::Mangler.mangle('flash_forced' => 'foo', bar: 'foo2').should eq({
         "ta" => "foo",
         "bar" => "foo2"
       })
     end
 
     it "mangles recursively all keys" do
-      App::Mangler.mangle('flashForced' => { enable: 'foo' }).should eq({
+      App::Mangler.mangle('flash_forced' => { enable: 'foo' }).should eq({
         "ta" => { "tm" => "foo" }
       })
     end
 
     it "doesn't mangles if parent key is 'Kits'" do
-      App::Mangler.mangle('flashForced' => { "kits" => { enable: 'foo' } }).should eq({
+      App::Mangler.mangle('flash_forced' => { "kits" => { enable: 'foo' } }).should eq({
         "ta" => { "ks" => { "enable" => "foo" } }
       })
     end
