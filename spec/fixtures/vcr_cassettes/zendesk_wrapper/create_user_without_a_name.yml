@@ -1,0 +1,222 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/api/v2/users
+    body: ! '{"user":{"external_id":1234,"email":"user10@example.org","name":"user10@example.org","verified":true}}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      user-agent:
+      - ZendeskAPI API 0.1.4
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      server:
+      - nginx/1.0.15
+      date:
+      - Tue, 16 Oct 2012 15:35:18 GMT
+      content-type:
+      - application/json; charset=utf-8
+      status:
+      - 201 Created
+      cache-control:
+      - no-cache
+      x-zendesk-api-version:
+      - v2
+      location:
+      - https://sublimevideo.zendesk.com/api/v2/users/276826413.json
+      x-runtime:
+      - '94'
+      content-length:
+      - '617'
+      x-zendesk-origin-server:
+      - app19.sys.zendesk.com
+      x-zendesk-user-id:
+      - '15308267'
+    body: ! '{"user":{"url":"https://sublimevideo.zendesk.com/api/v2/users/276826413.json","id":276826413,"external_id":1234,"name":"user10@example.org","alias":null,"created_at":"2012-10-16T15:35:18Z","updated_at":"2012-10-16T15:35:18Z","active":true,"verified":true,"shared":false,"locale_id":null,"locale":"en-US","time_zone":"Bern","last_login_at":null,"email":"user10@example.org","phone":null,"signature":null,"details":null,"notes":null,"organization_id":null,"role":"end-user","custom_role_id":null,"moderator":false,"ticket_restriction":"requested","only_private_comments":false,"tags":[],"suspended":false,"photo":null}}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/api/v2/users/276826413
+    body: 
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      user-agent:
+      - ZendeskAPI API 0.1.4
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: !binary |-
+        T0s=
+    headers:
+      !binary "c2VydmVy":
+      - !binary |-
+        bmdpbngvMS4wLjE1
+      !binary "ZGF0ZQ==":
+      - !binary |-
+        VHVlLCAxNiBPY3QgMjAxMiAxNTozNToyMCBHTVQ=
+      !binary "Y29udGVudC10eXBl":
+      - !binary |-
+        YXBwbGljYXRpb24vanNvbjsgY2hhcnNldD11dGYtOA==
+      !binary "dHJhbnNmZXItZW5jb2Rpbmc=":
+      - !binary |-
+        Y2h1bmtlZA==
+      !binary "c3RhdHVz":
+      - !binary |-
+        MjAwIE9L
+      !binary "eC16ZW5kZXNrLWFwaS12ZXJzaW9u":
+      - !binary |-
+        djI=
+      !binary "eC1ydW50aW1l":
+      - !binary |-
+        NTE=
+      !binary "ZXRhZw==":
+      - !binary |-
+        ImE0MjE3Nzc2MDJjMTc0Mzc1MWIxODA2MWM5ZTY2Yzg0Ig==
+      !binary "Y2FjaGUtY29udHJvbA==":
+      - !binary |-
+        cHJpdmF0ZSwgbWF4LWFnZT0wLCBtdXN0LXJldmFsaWRhdGU=
+      !binary "eC16ZW5kZXNrLW9yaWdpbi1zZXJ2ZXI=":
+      - !binary |-
+        YXBwMjkuc3lzLnplbmRlc2suY29t
+      !binary "eC16ZW5kZXNrLXVzZXItaWQ=":
+      - !binary |-
+        MTUzMDgyNjc=
+      !binary "eC1jb250ZW50LXR5cGUtb3B0aW9ucw==":
+      - !binary |-
+        bm9zbmlmZg==
+      !binary "Y29udGVudC1lbmNvZGluZw==":
+      - !binary |-
+        Z3ppcA==
+    body: !binary |-
+      H4sIAAAAAAAAA4VSy07DMBD8F5/zaNIHlU+IXwAuIGQtybY1dexgr6PSqv/O
+      OoHAAYnjzs7aM7N7ETGgF/IiojdCigNRH2RZhvhqdIeDbtEVZ7QthmPRuK6E
+      XpdDXaapUNY3m229WVXL4i04KzKhWyFnMBN4IvQWjEq4qOrlijkWOuQqvVAt
+      bvEEXW+wcH7PPTAagpA2GpOJxiMQtgqI6fWiqvNqkVebh2otl2tZbZ94IPbt
+      vxxoSA/8JfmImRjQ651GFjTV4QA+VTswgdvGNWBwFDypmABWgDZ/vOcviXNR
+      Z2eTiTu2x5CBQMq4vbaj2GkQO9Ap0j+N9ofxgYkZ9N4CRT8DLRLPzkFYRzgX
+      HBRYfQbSzv6S6Z1JgnhT+bhRji8Gcp1KjV+8zrXogRzv/Msx6eaIpDwG8pqj
+      4kVK4fE9MsDBZMJZ86F6rwdOWvENdGiJ5XyPw56L55dMhBj6dCk/YbJLcpPL
+      6/UTPnbmrmsCAAA=
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/api/v2/users/276826413
+    body: 
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      user-agent:
+      - ZendeskAPI API 0.1.4
+      if-none-match:
+      - !binary |-
+        ImE0MjE3Nzc2MDJjMTc0Mzc1MWIxODA2MWM5ZTY2Yzg0Ig==
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 304
+      message: Not Modified
+    headers:
+      server:
+      - nginx/1.0.15
+      date:
+      - Tue, 16 Oct 2012 15:35:21 GMT
+      status:
+      - 304 Not Modified
+      x-zendesk-api-version:
+      - v2
+      x-runtime:
+      - '44'
+      etag:
+      - ! '"a421777602c1743751b18061c9e66c84"'
+      cache-control:
+      - private, max-age=0, must-revalidate
+      x-zendesk-origin-server:
+      - app16.sys.zendesk.com
+      x-zendesk-user-id:
+      - '15308267'
+      x-content-type-options:
+      - nosniff
+    body: 
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :delete
+    uri: https://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:443/api/v2/users/276826413.json
+    body: 
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      user-agent:
+      - ZendeskAPI API 0.1.4
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: !binary |-
+        T0s=
+    headers:
+      !binary "c2VydmVy":
+      - !binary |-
+        bmdpbngvMS4wLjE1
+      !binary "ZGF0ZQ==":
+      - !binary |-
+        VHVlLCAxNiBPY3QgMjAxMiAxNTozNToyMiBHTVQ=
+      !binary "Y29udGVudC10eXBl":
+      - !binary |-
+        YXBwbGljYXRpb24vanNvbjsgY2hhcnNldD11dGYtOA==
+      !binary "dHJhbnNmZXItZW5jb2Rpbmc=":
+      - !binary |-
+        Y2h1bmtlZA==
+      !binary "c3RhdHVz":
+      - !binary |-
+        MjAwIE9L
+      !binary "eC16ZW5kZXNrLWFwaS12ZXJzaW9u":
+      - !binary |-
+        djI=
+      !binary "eC1ydW50aW1l":
+      - !binary |-
+        MTE2
+      !binary "ZXRhZw==":
+      - !binary |-
+        IjA0NGViMTliMmQ3NzdlZGZiNmM0NzkyMDA2NGE5ZmI3Ig==
+      !binary "Y2FjaGUtY29udHJvbA==":
+      - !binary |-
+        cHJpdmF0ZSwgbWF4LWFnZT0wLCBtdXN0LXJldmFsaWRhdGU=
+      !binary "eC16ZW5kZXNrLW9yaWdpbi1zZXJ2ZXI=":
+      - !binary |-
+        YXBwMTguc3lzLnplbmRlc2suY29t
+      !binary "eC16ZW5kZXNrLXVzZXItaWQ=":
+      - !binary |-
+        MTUzMDgyNjc=
+      !binary "eC1jb250ZW50LXR5cGUtb3B0aW9ucw==":
+      - !binary |-
+        bm9zbmlmZg==
+      !binary "Y29udGVudC1lbmNvZGluZw==":
+      - !binary |-
+        Z3ppcA==
+    body: !binary |-
+      H4sIAAAAAAAAA31Sy07DMBD8F5/zaFJaqpwQvwBcQMhakqU19SPY66i06r+z
+      btqQE8cdz9gzsz6JGNCL5iSi16IRO6I+NGUZ4odWBgfVoSuOaDsM+6J1poRe
+      lUNdJlUo6/v1pl7fVcviKzgrMqE60UxgJvBA6C1omXAbtc6EBYP8TtJXiwc8
+      gOk1Fs5vWQ1aQbgRW49A2EkgpteLqs6rRV6tn6tVs1w11eaVBbHv/uHUdeJA
+      S2rgJz9BB8zEgF59KmQ/VyDswM9G7VrQODM8AuwBbf7yxBcS9yKPzqYYjxyP
+      IQ2BpHZbZS92x6RoQHGl49DvLoJxCGprgaKfgA6JuVN06wingasBq45AytmZ
+      Le90MsCbyS8bzEQbAzkj08GMZ1yHHsjxjq+BSbV7JOkxkFdcDi+uER6/IwNc
+      RCac1T+y92rgbiXv3KAltnOTw5aHt/dMhBj69DP+uuSU5MaU5/MvdmVq91sC
+      AAA=
+    http_version: '1.1'

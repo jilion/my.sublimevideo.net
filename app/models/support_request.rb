@@ -47,7 +47,7 @@ SupportRequest = Struct.new(:params) do
     if user.zendesk_id?
       parameters[:requester_id] = user.zendesk_id
     else
-      parameters[:requester] = { name: user.name || user.email, email: user.email }
+      parameters[:requester] = { name: user.name_or_email, email: user.email }
     end
 
     parameters
