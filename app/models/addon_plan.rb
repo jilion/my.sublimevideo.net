@@ -8,7 +8,7 @@ class AddonPlan < ActiveRecord::Base
   belongs_to :addon
   has_many :components, through: :addon
   has_many :billable_items, as: :item
-  has_many :settings_templates
+  has_many :settings_templates, class_name: 'App::SettingsTemplate'
 
   delegate :beta?, :kind, to: :addon
 
