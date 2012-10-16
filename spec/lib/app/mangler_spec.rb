@@ -1,5 +1,5 @@
 require 'fast_spec_helper'
-require 'active_support/core_ext/string'
+require 'active_support/core_ext'
 
 require File.expand_path('app/models/app')
 require File.expand_path('lib/app/mangler')
@@ -33,14 +33,14 @@ describe App::Mangler do
     end
 
     it "mangles recursively all keys" do
-      App::Mangler.mangle('flash_forced' => { enable: 'foo' }).should eq({
+      App::Mangler.mangle('flash_forced' => { enabled: 'foo' }).should eq({
         "ta" => { "tm" => "foo" }
       })
     end
 
     it "doesn't mangles if parent key is 'Kits'" do
-      App::Mangler.mangle('flash_forced' => { "kits" => { enable: 'foo' } }).should eq({
-        "ta" => { "ks" => { "enable" => "foo" } }
+      App::Mangler.mangle('flash_forced' => { "kits" => { enabled: 'foo' } }).should eq({
+        "ta" => { "ks" => { "enabled" => "foo" } }
       })
     end
   end
