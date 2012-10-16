@@ -3,23 +3,24 @@ en:
     video_player:
       title: 'Player settings'
       settings:
-        fullmodeEnabled: 'Display full-screen button'
-        fullwindowForced: 'Use full-window instead of full-screen'
-        volumeEnabled: 'Display volume control'
-        stopOnEnd: 'Back to initial state upon video end'
+        fullmode_enabled: 'Display full-screen button'
+        fullwindow_forced: 'Use full-window instead of full-screen'
+        volume_enabled: 'Display volume control'
+        stop_on_end: 'Back to initial state upon video end'
 
     lightbox:
       title: 'Lightbox settings'
       settings:
         autoplay: 'Autoplay'
-        overlayOpacity: 'Overlay opacity'
-        closeButtonType: 'Close button type'
-        closeButtonPosition: 'Close button position'
+        overlay_opacity: 'Overlay opacity'
+        close_button: 'Close button type'
+        close_button_position: 'Close button position'
       values:
-        closeButtonType:
-          default: 'Default'
+        close_button:
           none: 'None'
-        closeButtonPosition:
+          autohide: 'Auto-hide'
+          sticky: 'Sticky'
+        close_button_position:
           left: 'Left'
           right: 'Right'
 
@@ -27,22 +28,35 @@ en:
       standard: 'Standard image viewer'
 
     stats:
-      title: 'Stats settings'
+      title: 'Statistics settings'
+      settings:
+        enabled: 'Enable statistics'
+        realtime: 'Enable real-time statistics'
 
     logo:
       title: 'Logo settings'
       settings:
+        enabled: 'Display the SublimeVideo logo'
         position: 'Position'
       values:
         position:
-          bottomLeft: 'Bottom left'
-          bottomRight: 'Bottom right'
+          bottom_left: 'Bottom left'
+          bottom_right: 'Bottom right'
 
     controls:
-      standard: 'Standard controls'
+      title: 'Player controls settings'
+      settings:
+        controls: 'Display & behavior'
+      values:
+        controls:
+          none: 'None'
+          autohide: 'Auto-hide'
+          sticky: 'Sticky'
 
     start_view:
-      standard: 'Standard start view'
+      title: 'Start view settings'
+      settings:
+        overlay_enabled: 'Enable the initial overlay effect'
 
     sharing:
       standard: 'Standard sharing'

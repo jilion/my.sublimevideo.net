@@ -23,12 +23,12 @@ module Service
 
         new_addon_settings.each do |new_addon_setting_key, new_addon_setting_value|
           setting_template = eval(settings_template[new_addon_setting_key])
-          case setting_template[:values]
-          when [0, 1]
+          case setting_template[:type]
+          when 'boolean'
             check_boolean(new_addon_setting_value)
-          when 'float_0_1'
+          when 'float'
             new_addons_settings[addon_id][new_addon_setting_key] = new_addon_setting_value.to_f.round(2)
-          when Array
+          when 'string'
             check_inclusion(new_addon_setting_value, setting_template[:values])
           end
         end

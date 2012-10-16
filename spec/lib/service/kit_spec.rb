@@ -12,7 +12,9 @@ describe Service::Kit do
       addon_plan.stub(:settings_template_for, :template) { stub(template: {
           editable: true,
           'fooBar' => "{
-            values: 'float_0_1',
+            type: 'float',
+            range: [0, 1],
+            step: 0.05,
             default: 0.1
           }"
         })

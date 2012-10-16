@@ -64,6 +64,7 @@ module Populate
           default: 'autohide'
         },
         closeButtonPosition: {
+          type: 'string',
           values: ['left', 'right'],
           default: 'left'
         }
@@ -73,6 +74,34 @@ module Populate
           type: 'string',
           values: ['none', 'autohide', 'sticky'],
           default: 'autohide'
+        }
+      }
+      start_view_template = {
+        overlayEnabled: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
+        },
+        overlayColor: {
+          type: 'color',
+          default: '#000'
+        }
+      }
+      sharing_template = {
+        twitter_url: {
+          type: 'url'
+        },
+        facebook_url: {
+          type: 'url'
+        },
+        embed_url: {
+          type: 'url'
+        },
+        embed_width: {
+          type: 'integer'
+        },
+        embed_height: {
+          type: 'integer'
         }
       }
       seeds = {
@@ -120,7 +149,7 @@ module Populate
           { name: 'ligthbox_flat',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
           { name: 'ligthbox_light',     token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
           { name: 'ligthbox_twit',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
-          { name: 'ligthbox_twit',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'ligthbox_html5',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
           { name: 'image_viewer',       token: 'sa.sn.so', addon: 'ref-Addon-image_viewer', design: nil,                       component: 'ref-App::Component-app' },
           { name: 'logo',               token: 'sa.sh.sp', addon: 'ref-Addon-logo',         design: nil,                       component: 'ref-App::Component-app' },
           { name: 'controls_classic',   token: 'sa.sh.sq', addon: 'ref-Addon-controls',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
@@ -155,7 +184,6 @@ module Populate
         ],
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
-            editable: true,
             template: {
               fullwindow_forced: {
                 type: 'boolean',
@@ -179,13 +207,18 @@ module Populate
               }
             }
           },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic', editable: true, template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat', editable: true, template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light', editable: true, template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit', editable: true, template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5', editable: true, template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_classic', template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_flat', template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_light', template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_twit', template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_html5', template: controls_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5', template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
-          { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil, editable: false,
+          { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
             template: {
               enabled: {
                 type: 'boolean',
@@ -199,7 +232,7 @@ module Populate
               }
             }
           },
-          { addon_plan: 'ref-AddonPlan-stats-realtime', plugin: nil, editable: false,
+          { addon_plan: 'ref-AddonPlan-stats-realtime', plugin: nil,
             template: {
               enabled: {
                 type: 'boolean',
@@ -227,7 +260,7 @@ module Populate
           #     }
           #   }
           # },
-          { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo', editable: true,
+          { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
             template: {
               enabled: {
                 type: 'boolean',
@@ -241,7 +274,7 @@ module Populate
               }
             }
           },
-          { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo', editable: true,
+          { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
             template: {
               enabled: {
                 type: 'boolean',
@@ -256,43 +289,13 @@ module Populate
             }
           },
           # { addon_plan: 'ref-AddonPlan-logo-custom',         plugin: 'ref-App::Plugin-logo' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_classic', editable: true, template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_flat', editable: true, template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_light', editable: true, template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_twit', editable: true, template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_html5', editable: true, template: controls_template },
-          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view', editable: true,
-            template: {
-              overlay_enabled: {
-                type: 'boolean',
-                values: [true, false],
-                default: true
-              },
-              overlay_color: {
-                type: 'color',
-                default: '#000'
-              },
-            }
-          },
-          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing', editable: false,
-            template: {
-              twitter_url: {
-                type: 'url'
-              },
-              facebook_url: {
-                type: 'url'
-              },
-              embed_url: {
-                type: 'url'
-              },
-              embed_width: {
-                type: 'integer'
-              },
-              embed_height: {
-                type: 'integer'
-              }
-            }
-          }
+          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view_classic', template: start_view_template },
+          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view_flat', template: start_view_template },
+          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view_light', template: start_view_template },
+          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view_twit', template: start_view_template },
+          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view_html5', template: start_view_template },
+          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_twit', template: sharing_template },
+          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_html5', template: sharing_template }
         ]
       }
 
