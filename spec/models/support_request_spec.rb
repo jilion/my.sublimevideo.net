@@ -92,7 +92,7 @@ describe SupportRequest, :plans do
   describe '#to_params' do
     context 'user has no name' do
       it 'generates a hash of the params' do
-        support_request_without_name.user.name.should be_nil
+        support_request_without_name.user.name.should eq ''
         support_request_without_name.to_params.should == {
           subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }, tags: ['email-support'],
           requester: { name: @user3.email, email: @user3.email }, uploads: ['foo.jpg', 'bar.html'], external_id: @user3.id
