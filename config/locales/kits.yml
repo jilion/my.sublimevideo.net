@@ -11,9 +11,9 @@ en:
     lightbox:
       title: 'Lightbox settings'
       settings:
-        autoplay: 'Autoplay'
+        autoplay: 'Autoplay video once the lighbox opens-up'
         overlay_opacity: 'Overlay opacity'
-        close_button: 'Close button type'
+        close_button: 'Close button'
         close_button_position: 'Close button position'
       values:
         close_button:
@@ -37,16 +37,16 @@ en:
       title: 'Logo settings'
       settings:
         enabled: 'Display the SublimeVideo logo'
-        position: 'Position'
+        position: 'Logo position'
       values:
         position:
-          bottom_left: 'Bottom left'
-          bottom_right: 'Bottom right'
+          bottomLeft: 'Bottom left'
+          bottomRight: 'Bottom right'
 
     controls:
       title: 'Player controls settings'
       settings:
-        controls: 'Display & behavior'
+        controls: 'Controls'
       values:
         controls:
           none: 'None'

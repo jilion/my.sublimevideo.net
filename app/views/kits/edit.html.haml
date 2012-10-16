@@ -8,11 +8,11 @@
     .entry.badged
       .checkbox_wrap
         = f.check_box :badged
-        = f.label :badged, "Enable SublimeVideo badge."
+        = f.label :badged, "Enable the SublimeVideo badge."
       %p.info= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
 
     .actions.center
-      = f.submit "Save settings", class: "submit blue_button"
+      = f.submit "Save stable settings", class: "submit blue_button"
 - else
   There are currently no settings you can customize for the stable version of the SublimeVideo Player.
 
@@ -24,8 +24,10 @@
       = f.select :app_design_id, options_from_collection_for_select(@site.app_designs, :id, :title, @kit.app_design_id)
 
     .left
-      - @site.addon_plans.order(:id).each do |addon_plan|
+      - addon_plans = @site.addon_plans.includes(:addon).where{ addon.name >> %w[video_player controls start_view] }.order(:id)
+      = raw @kit.render_grouped_settings_input_fields(addon_plans, self)
+      - @site.addon_plans.includes(:addon).where{ addon.name << %w[video_player controls start_view] }.order(:id).each do |addon_plan|
         = raw @kit.render_settings_input_fields(addon_plan, self)
 
     .actions.center
-      = f.submit "Save settings", class: "submit blue_button"
+      = f.submit "Save beta settings", class: "submit blue_button"

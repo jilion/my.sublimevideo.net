@@ -40,14 +40,31 @@ describe Service::Kit do
   end
 
   describe '#check_inclusion' do
-    it { expect { service.send :check_inclusion,   0,   [0,1] }.to_not raise_error Service::Kit::AttributeAssignmentError }
-    it { expect { service.send :check_inclusion,   1,   [0,1] }.to_not raise_error Service::Kit::AttributeAssignmentError }
-    it { expect { service.send :check_inclusion,  '0',  [0,1] }.to_not raise_error Service::Kit::AttributeAssignmentError }
-    it { expect { service.send :check_inclusion,  '1',  [0,1] }.to_not raise_error Service::Kit::AttributeAssignmentError }
-    it { expect { service.send :check_inclusion, 'foo', ['foo', 'bar'] }.to_not raise_error Service::Kit::AttributeAssignmentError }
-    it { expect { service.send :check_inclusion,   2,   [0,1] }.to raise_error Service::Kit::AttributeAssignmentError }
-    it { expect { service.send :check_inclusion,  '2',  [0,1] }.to raise_error Service::Kit::AttributeAssignmentError }
-    it { expect { service.send :check_inclusion, 'foo', ['bar', 'baz'] }.to raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,   0,   [0,1] }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,   1,   [0,1] }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,   0,   (0..1) }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,   0.0007, (0..1) }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,   1, (0..1) }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,   '0', (0..1) }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,   '1', (0..1) }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,   1,   (0..1) }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,  '0',  (0..1) }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,  '1',  (0..1) }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion, 'foo', ['foo', 'bar'] }.to raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,   2,   (0..1) }.to raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion,  '2',  (0..1) }.to raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_number_inclusion, 'foo', ['bar', 'baz'] }.to raise_error Service::Kit::AttributeAssignmentError }
+  end
+
+  describe '#check_string_inclusion' do
+    it { expect { service.send :check_string_inclusion,   0,   [0,1] }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_string_inclusion,   1,   [0,1] }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_string_inclusion,  '0',  [0,1] }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_string_inclusion,  '1',  [0,1] }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_string_inclusion, 'foo', ['foo', 'bar'] }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_string_inclusion,   2,   [0,1] }.to raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_string_inclusion,  '2',  [0,1] }.to raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.send :check_string_inclusion, 'foo', ['bar', 'baz'] }.to raise_error Service::Kit::AttributeAssignmentError }
   end
 
 end

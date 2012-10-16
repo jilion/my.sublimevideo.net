@@ -48,22 +48,22 @@ module Populate
           values: [true, false],
           default: true
         },
-        overlayColor: {
+        overlay_color: {
           type: 'color',
           default: '#000'
         },
-        overlayOpacity: {
+        overlay_opacity: {
           type: 'float',
           range: [0,1],
           step: 0.05,
           default: 0.7
         },
-        closeButton: {
+        close_button: {
           type: 'string',
           values: ['none', 'autohide', 'sticky'],
           default: 'autohide'
         },
-        closeButtonPosition: {
+        close_button_position: {
           type: 'string',
           values: ['left', 'right'],
           default: 'left'
@@ -77,12 +77,12 @@ module Populate
         }
       }
       start_view_template = {
-        overlayEnabled: {
+        overlay_enabled: {
           type: 'boolean',
           values: [true, false],
           default: true
         },
-        overlayColor: {
+        overlay_color: {
           type: 'color',
           default: '#000'
         }

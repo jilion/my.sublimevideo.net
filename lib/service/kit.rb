@@ -26,10 +26,12 @@ module Service
           case setting_template[:type]
           when 'boolean'
             check_boolean(new_addon_setting_value)
+            cast_boolean(new_addon_setting_value)
           when 'float'
+            check_number_inclusion(new_addon_setting_value, (setting_template[:range][0]..setting_template[:range][1]))
             new_addons_settings[addon_id][new_addon_setting_key] = new_addon_setting_value.to_f.round(2)
           when 'string'
-            check_inclusion(new_addon_setting_value, setting_template[:values])
+            check_string_inclusion(new_addon_setting_value, setting_template[:values])
           end
         end
       end
@@ -38,11 +40,30 @@ module Service
     private
 
     def check_boolean(value)
-      raise Service::Kit::AttributeAssignmentError.new 'Is not a boolean.' unless %w[0 1].include?(value.to_s)
+      unless %w[0 1].include?(value.to_s)
+        raise Service::Kit::AttributeAssignmentError.new "#{value} is not a boolean."
+      end
     end
 
-    def check_inclusion(value, allowed_values)
-      raise Service::Kit::AttributeAssignmentError.new 'Is not allowed.' unless allowed_values.map(&:to_s).include?(value.to_s)
+    def cast_boolean(value)
+      case value
+      when '1'
+        true
+      when '0'
+        false
+      end
+    end
+
+    def check_number_inclusion(value, allowed_values)
+      unless allowed_values.include?(value.to_f)
+        raise Service::Kit::AttributeAssignmentError.new "#{value} is not included in #{allowed_values.inspect}."
+      end
+    end
+
+    def check_string_inclusion(value, allowed_values)
+      unless allowed_values.map(&:to_s).include?(value.to_s)
+        raise Service::Kit::AttributeAssignmentError.new "#{value} is not included in #{allowed_values.inspect}."
+      end
     end
 
   end

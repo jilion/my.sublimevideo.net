@@ -4,7 +4,7 @@
 %h2 Thank you for your trust
 
 %section.text
-  %p Your order have been taken into account.
+  %p Your order has been taken into account.
 
   - if @site.billable_items.any? { |billable_item| !billable_item.item.free? }
     - if current_user.cc?
