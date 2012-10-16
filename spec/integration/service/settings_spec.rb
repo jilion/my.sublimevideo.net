@@ -27,20 +27,6 @@ describe Service::Settings, :fog_mock, :addons do
             }
           }
         },
-        "startView" => {
-          settings: {
-            overlay_enabled: true,
-            overlay_color: "#000"
-          },
-          allowed_settings: {
-            overlay_enabled: {
-              values: [true, false]
-            },
-            overlay_color: {
-              values: ['#000']
-            }
-          }
-        }
       } )}
     end
   end
