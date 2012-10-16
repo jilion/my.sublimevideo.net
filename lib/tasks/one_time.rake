@@ -98,6 +98,11 @@ namespace :one_time do
     task migrate_plans_to_addons: :environment do
       timed { puts OneTime::Site.migrate_plans_to_addons }
     end
+
+    desc "For all non-archived sites, create a default kit"
+    task create_default_kit_for_all_non_archived_sites: :environment do
+      timed { puts OneTime::Site.create_default_kit_for_all_non_archived_sites }
+    end
   end
 
   namespace :stats do

@@ -40,7 +40,7 @@ class Admin::SitesController < Admin::AdminController
     params[:site].delete(:mode) unless has_role?('god')
     @site.update_attributes(params[:site], without_protection: true)
 
-    respond_with(@site, notice: 'Site was successfully updated.') do |format|
+    respond_with(@site, notice: 'Site has been successfully updated.') do |format|
       format.js   { render 'admin/shared/flash_update' }
       format.html { redirect_to [:edit, :admin, @site] }
     end

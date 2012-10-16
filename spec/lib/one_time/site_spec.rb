@@ -24,11 +24,11 @@ describe OneTime::Site do
       @premium_monthly = Plan.where(name: 'premium', cycle: 'month').first
       @premium_yearly  = Plan.where(name: 'premium', cycle: 'year').first
 
-      @site_plus_monthly            = create(:site, plan_id: @plus_monthly.id, hostname: 'plus-monthly.com', plan_cycle_ended_at: 15.days.from_now)
-      @site_plus_yearly             = create(:site, plan_id: @plus_yearly.id, hostname: 'plus-yearly.com', plan_cycle_ended_at: 20.days.from_now)
-      @site_premium_monthly         = create(:site, plan_id: @premium_monthly.id, hostname: 'premium-monthly.com', plan_cycle_ended_at: 25.days.from_now)
-      @site_premium_yearly          = create(:site, plan_id: @premium_yearly.id, hostname: 'premium-yearly.com', plan_cycle_ended_at: 30.days.from_now)
-      @site_plus_yearly_suspended   = create(:site, plan_id: @plus_monthly.id, state: 'suspended', hostname: 'plus-yearly.com', plan_cycle_ended_at: 90.days.ago)
+      @site_plus_monthly            = create(:site, plan_id: @plus_monthly.id, hostname: 'plus-monthly.com', plan_cycle_ended_at: 15.days.from_now.end_of_day)
+      @site_plus_yearly             = create(:site, plan_id: @plus_yearly.id, hostname: 'plus-yearly.com', plan_cycle_ended_at: 20.days.from_now.end_of_day)
+      @site_premium_monthly         = create(:site, plan_id: @premium_monthly.id, hostname: 'premium-monthly.com', plan_cycle_ended_at: 25.days.from_now.end_of_day)
+      @site_premium_yearly          = create(:site, plan_id: @premium_yearly.id, hostname: 'premium-yearly.com', plan_cycle_ended_at: 30.days.from_now.end_of_day)
+      @site_plus_yearly_suspended   = create(:site, plan_id: @plus_monthly.id, state: 'suspended', hostname: 'plus-yearly.com', plan_cycle_ended_at: 90.days.ago.end_of_day)
       @site_premium_yearly_archived = create(:site, plan_id: @plus_yearly.id, state: 'archived')
     end
 
@@ -54,10 +54,10 @@ describe OneTime::Site do
       @premium_yearly  = Plan.where(name: 'premium', cycle: 'year').first
 
       @site_plus_monthly            = create(:site, plan_id: @plus_monthly.id, hostname: 'plus-monthly.com')
-      @site_plus_yearly             = create(:site, plan_id: @plus_yearly.id, hostname: 'plus-yearly.com', plan_cycle_ended_at: 30.days.from_now)
+      @site_plus_yearly             = create(:site, plan_id: @plus_yearly.id, hostname: 'plus-yearly.com', plan_cycle_ended_at: 30.days.from_now.end_of_day)
       @site_premium_monthly         = create(:site, plan_id: @premium_monthly.id, hostname: 'premium-monthly.com')
-      @site_premium_yearly          = create(:site, plan_id: @premium_yearly.id, hostname: 'premium-yearly.com', plan_cycle_ended_at: 60.days.from_now)
-      @site_plus_yearly_suspended   = create(:site, plan_id: @plus_yearly.id, state: 'suspended', hostname: 'plus-yearly.com', plan_cycle_ended_at: 90.days.ago)
+      @site_premium_yearly          = create(:site, plan_id: @premium_yearly.id, hostname: 'premium-yearly.com', plan_cycle_ended_at: 60.days.from_now.end_of_day)
+      @site_plus_yearly_suspended   = create(:site, plan_id: @plus_yearly.id, state: 'suspended', hostname: 'plus-yearly.com', plan_cycle_ended_at: 90.days.ago.end_of_day)
       @site_premium_yearly_archived = create(:site, plan_id: @premium_yearly.id, state: 'archived')
     end
 
@@ -110,116 +110,173 @@ describe OneTime::Site do
       described_class.migrate_plans_to_addons
 
       # free check
-      @site_free.reload.billable_items.should have(8).items
+      @site_free.reload.billable_items.should have(12).items
       @site_free.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_free.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_free.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @start_view_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
-      @site_free.billable_item_activities.should have(8).items
+      @site_free.billable_item_activities.should have(12).items
       @site_free.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_free.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_free.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+      @site_free.billable_item_activities.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_free.billable_item_activities.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_free.billable_item_activities.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_free.billable_item_activities.addon_plans.where(item_id: @start_view_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_free.billable_item_activities.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+      @site_free.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
       # sponsored check
-      @site_sponsored.reload.billable_items.should have(8).items
+      @site_sponsored.reload.billable_items.should have(12).items
       @site_sponsored.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_sponsored.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_sponsored.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+      @site_sponsored.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_sponsored.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_sponsored.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_sponsored.billable_items.addon_plans.where(item_id: @start_view_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_sponsored.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_sponsored.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_sponsored.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_sponsored.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+      @site_sponsored.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_sponsored.billable_items.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'sponsored').should have(1).item
 
-      @site_sponsored.billable_item_activities.should have(8).items
+      @site_sponsored.billable_item_activities.should have(12).items
       @site_sponsored.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_sponsored.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_sponsored.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+      @site_sponsored.billable_item_activities.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_sponsored.billable_item_activities.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_sponsored.billable_item_activities.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_sponsored.billable_item_activities.addon_plans.where(item_id: @start_view_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_sponsored.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_sponsored.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_sponsored.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_sponsored.billable_item_activities.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+      @site_sponsored.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_sponsored.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'sponsored').should have(1).item
 
       # trial check
-      @site_trial.reload.billable_items.should have(8).items
+      @site_trial.reload.billable_items.should have(12).items
       @site_trial.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_trial.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_trial.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+      @site_trial.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_trial.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_trial.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_trial.billable_items.addon_plans.where(item_id: @start_view_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_trial.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+      @site_trial.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
-      @site_trial.billable_item_activities.should have(8).items
+      @site_trial.billable_item_activities.should have(12).items
       @site_trial.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_trial.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_trial.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+      @site_trial.billable_item_activities.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_trial.billable_item_activities.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_trial.billable_item_activities.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_trial.billable_item_activities.addon_plans.where(item_id: @start_view_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_trial.billable_item_activities.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+      @site_trial.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
       # plus check
-      @site_plus.reload.billable_items.should have(9).items
+      @site_plus.reload.billable_items.should have(13).items
       @site_plus.billable_items.plans.where(item_id: @plus).where(state: 'subscribed').should have(1).item
       @site_plus.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_plus.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_plus.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+      @site_plus.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_plus.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_plus.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_plus.billable_items.addon_plans.where(item_id: @start_view_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_plus.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_plus.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_plus.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_plus.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+      @site_plus.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_plus.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
-      @site_plus.billable_item_activities.should have(9).items
+      @site_plus.billable_item_activities.should have(13).items
       @site_plus.billable_item_activities.plans.where(item_id: @plus).where(state: 'subscribed').should have(1).item
       @site_plus.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_plus.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_plus.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
+      @site_plus.billable_item_activities.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_plus.billable_item_activities.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_plus.billable_item_activities.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_plus.billable_item_activities.addon_plans.where(item_id: @start_view_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_plus.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_plus.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_plus.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_plus.billable_item_activities.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
+      @site_plus.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_plus.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
       # premium check
-      @site_premium.reload.billable_items.should have(9).items
+      @site_premium.reload.billable_items.should have(13).items
       @site_premium.billable_items.plans.where(item_id: @premium).where(state: 'suspended').should have(1).item
       @site_premium.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
       @site_premium.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
       @site_premium.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
+      @site_premium.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'suspended').should have(1).item
+      @site_premium.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'suspended').should have(1).item
+      @site_premium.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'suspended').should have(1).item
+      @site_premium.billable_items.addon_plans.where(item_id: @start_view_addon_plan_1).where(state: 'suspended').should have(1).item
       @site_premium.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
       @site_premium.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
       @site_premium.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
-      @site_premium.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'suspended').should have(1).item
+      @site_premium.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
       @site_premium.billable_items.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'suspended').should have(1).item
 
-      @site_premium.billable_item_activities.should have(9).items
+      @site_premium.billable_item_activities.should have(13).items
       @site_premium.billable_item_activities.plans.where(item_id: @premium).where(state: 'suspended').should have(1).item
       @site_premium.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
       @site_premium.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
       @site_premium.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
+      @site_premium.billable_item_activities.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'suspended').should have(1).item
+      @site_premium.billable_item_activities.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'suspended').should have(1).item
+      @site_premium.billable_item_activities.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'suspended').should have(1).item
+      @site_premium.billable_item_activities.addon_plans.where(item_id: @start_view_addon_plan_1).where(state: 'suspended').should have(1).item
       @site_premium.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
       @site_premium.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
       @site_premium.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
-      @site_premium.billable_item_activities.addon_plans.where(item_id: @api_addon_plan).where(state: 'suspended').should have(1).item
+      @site_premium.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
       @site_premium.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'suspended').should have(1).item
 
       # archived check
       @site_archived.reload.billable_items.should be_empty
+    end
+  end
+
+  describe '.create_default_kit_for_all_non_archived_sites' do
+    before do
+      create(:app_design)
+      @site_active    = create(:site, state: 'active')
+      @site_suspended = create(:site, state: 'suspended')
+      @site_archived  = create(:site, state: 'archived')
+    end
+
+    it 'creates default kit for all non-archived sites' do
+      described_class.create_default_kit_for_all_non_archived_sites
+
+      @site_active.reload.kits.should have(1).item
+      @site_suspended.reload.kits.should have(1).item
+      @site_archived.reload.kits.should be_empty
     end
   end
 

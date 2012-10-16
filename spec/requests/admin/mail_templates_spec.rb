@@ -22,7 +22,7 @@ feature "Mail templates index:" do
     fill_in "Body",    with: "This is a body"
     click_button "Update mail template"
 
-    page.should have_content "Mail template was successfully updated."
+    page.should have_content "Mail template has been successfully updated."
     page.should have_content "This is a title"
     page.should have_content "This is a subject"
     page.should have_content "This is a body"

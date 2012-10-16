@@ -5,7 +5,8 @@ feature "Hidable notices" do
   describe "notice 1: 'Checkout the v2 new features'" do
     background do
       sign_in_as :user
-      @site = create(:site, user: @current_user)
+      @site = build(:site, user: @current_user)
+      Service::Site.new(@site).initial_save
     end
 
     context "user didn't hide the notice" do
@@ -65,8 +66,8 @@ feature "Hidable notices" do
     background do
       Timecop.travel(3.weeks.ago) do
         sign_in_as :user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo'
-        @site = create(:site, user: @current_user)
-        create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
+        @site = build(:site, user: @current_user)
+        Service::Site.new(@site).initial_save
       end
     end
 
@@ -80,8 +81,6 @@ feature "Hidable notices" do
 
         context "and user is not billable" do
           background do
-            @site.delete
-            @site = create(:site, user: @current_user)
             @current_user.should_not be_billable
             go 'my', '/sites'
           end
@@ -99,6 +98,7 @@ feature "Hidable notices" do
 
         context "and user is billable" do
           background do
+            create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
             @current_user.should be_billable
           end
 

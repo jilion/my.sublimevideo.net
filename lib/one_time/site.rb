@@ -72,6 +72,19 @@ module OneTime
         "Finished: #{processed} sites were migrated to the add-ons business model (there are now #{BillableItem.count} billable items in the DB)."
       end
 
+      def create_default_kit_for_all_non_archived_sites
+        processed = 0
+        ::Site.transaction do
+          ::Site.not_archived.find_each(batch_size: 100) do |site|
+            Service::Site.new(site).send :create_default_kit
+
+            processed += 1
+          end
+        end
+
+        "Finished: #{processed} sites had a default kit created."
+      end
+
       def without_versioning
         was_enabled = PaperTrail.enabled?
         PaperTrail.enabled = false

@@ -44,7 +44,7 @@ class Admin::UsersController < Admin::AdminController
     @user = User.find(params[:id])
     @user.update_attributes(params[:user], without_protection: true)
 
-    respond_with(@user, notice: 'User was successfully updated.') do |format|
+    respond_with(@user, notice: 'User has been successfully updated.') do |format|
       format.js   { render 'admin/shared/flash_update' }
       format.html { redirect_to [:edit, :admin, @user] }
     end

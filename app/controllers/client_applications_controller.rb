@@ -41,7 +41,7 @@ class ClientApplicationsController < ApplicationController
   # DELETE /account/applications/:id
   def destroy
     @application.destroy
-    respond_with(@application, notice: "The application was successfully destroyed.")
+    respond_with(@application, notice: "The application has been successfully destroyed.")
   end
 
   private

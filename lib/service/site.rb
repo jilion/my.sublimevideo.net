@@ -138,7 +138,7 @@ module Service
     end
 
     def create_default_kit
-      site.kits.create(name: 'Default')
+      site.kits.create(name: 'default')
     end
 
     def set_default_app_designs(options = {})

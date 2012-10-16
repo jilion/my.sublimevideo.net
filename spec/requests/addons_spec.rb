@@ -157,7 +157,7 @@ feature 'Opt-out from grandfather plan' do
     end
 
     scenario 'select radio button add-on' do
-      click_link "you can opt-out from your old Plus Plan"
+      click_link "opt-out from your old Plus Plan"
 
       current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/plan/opt_out"
 
@@ -244,7 +244,7 @@ feature 'Opt-out from grandfather plan' do
     end
 
     scenario 'select radio button add-on' do
-      click_link "you can opt-out from your old Premium Plan"
+      click_link "opt-out from your old Premium Plan"
 
       current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/plan/opt_out"
 

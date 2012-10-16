@@ -7,9 +7,9 @@ describe "Admin::App::Components JSON actions", :fog_mock do
     admin.reset_authentication_token!
     admin
   }
-  let(:zip) { fixture_file_upload(Rails.root.join('spec/fixtures', 'app/e.zip')) }
-  let(:component) { App::Component.create({ name: 'app', token: 'e' }, as: :admin) }
-  let(:component_version) { App::ComponentVersion.create({ token: component.token, version: '1.0.0', zip: fixture_file('app/e.zip') }, as: :admin) }
+  let(:zip) { fixture_file_upload(Rails.root.join('spec/fixtures', "app/e.zip")) }
+  let(:component) { App::Component.create({ name: 'app', token: App::Component::APP_TOKEN }, as: :admin) }
+  let(:component_version) { App::ComponentVersion.create({ token: component.token, version: '1.0.0', zip: fixture_file("app/e.zip") }, as: :admin) }
   let(:headers) { { 'HTTP_HOST' => 'admin.sublimevideo.dev' } }
 
   describe "Auhtentication" do

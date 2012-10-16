@@ -52,7 +52,7 @@ feature "Help page" do
   context "user has the 'email' support level" do
     background do
       sign_in_as :user
-      create(:site, user: @current_user)
+      Service::Site.new(build(:site, user: @current_user)).initial_save
       Delayed::Job.delete_all
       go 'my', '/help'
     end
@@ -118,7 +118,8 @@ feature "Suspended page" do
 
     context "with a suspended user" do
       background do
-        @site  = create(:site, user: @current_user)
+        @site = build(:site, user: @current_user)
+        Service::Site.new(@site).initial_save
         @site.pending_plan_started_at = Time.now.utc
         @site.pending_plan_cycle_started_at = Time.now.utc
         @site.pending_plan_cycle_ended_at = Time.now.utc

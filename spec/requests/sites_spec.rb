@@ -65,12 +65,15 @@ feature 'Archive site', :js do
 
   background do
     sign_in_as :user
-    @site = create(:site, user: @current_user, hostname: hostname1)
+    @site = build(:site, user: @current_user, hostname: hostname1)
+    Service::Site.new(@site).initial_save
 
-    @paid_site_with_paid_invoices = create(:site, user: @current_user, hostname: hostname2)
+    @paid_site_with_paid_invoices = build(:site, user: @current_user, hostname: hostname2)
+    Service::Site.new(@paid_site_with_paid_invoices).initial_save
     create(:paid_invoice, site: @paid_site_with_paid_invoices)
 
-    @paid_site_with_open_invoices = create(:site, user: @current_user, hostname: hostname3)
+    @paid_site_with_open_invoices = build(:site, user: @current_user, hostname: hostname3)
+    Service::Site.new(@paid_site_with_open_invoices).initial_save
     create(:invoice, site: @paid_site_with_open_invoices)
 
     go 'my', '/sites'
@@ -101,7 +104,8 @@ feature 'Archive site', :js do
   end
 
   scenario 'a paid site with a failed invoice' do
-    site = create(:site, user: @current_user, hostname: 'test.com')
+    site = build(:site, user: @current_user, hostname: 'test.com')
+    Service::Site.new(site).initial_save
     create(:failed_invoice, site: site)
 
     go 'my', '/sites'
@@ -113,7 +117,8 @@ feature 'Archive site', :js do
   end
 
   scenario 'a paid site with a waiting invoice' do
-    site = create(:site, user: @current_user, hostname: 'example.org')
+    site = build(:site, user: @current_user, hostname: 'example.org')
+    Service::Site.new(site).initial_save
     create(:waiting_invoice, site: site)
 
     go 'my', '/sites'
@@ -216,5 +221,5 @@ def last_site_should_be_created(hostname)
 
   current_url.should eq 'http://my.sublimevideo.dev/sites'
   page.should have_content (hostname.present? ? hostname : 'add a hostname')
-  page.should have_content 'Site was successfully created.'
+  page.should have_content 'Site has been successfully created.'
 end
