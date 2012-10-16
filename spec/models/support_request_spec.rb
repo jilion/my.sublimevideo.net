@@ -4,7 +4,7 @@ describe SupportRequest, :plans do
   before do
     @user  = create(:user, name: 'Remy')
     @user2 = create(:user, name: 'Remy', zendesk_id: 1234)
-    @user3 = create(:user, name: nil)
+    @user3 = create(:user, name: '')
     @site  = create(:site, user: @user, plan_id: @paid_plan.id)
     create(:site, user: @user2, plan_id: @paid_plan.id)
     create(:site, user: @user3, plan_id: @paid_plan.id)
@@ -23,7 +23,7 @@ describe SupportRequest, :plans do
   let(:support_request)                 { described_class.new(params) }
   let(:support_request_without_name)    { described_class.new(params.merge(user_id: @user3.id)) }
   let(:support_request_with_zendesk_id) { described_class.new(params.merge(user_id: @user2.id)) }
-  let(:invalid_support_request)         { described_class.new(params.merge(user_id: nil)) }
+  let(:invalid_support_request)         { described_class.new(params.merge(user_id: '')) }
   let(:vip_support_request)             { described_class.new(params.merge(user_id: @vip.id)) }
 
   describe 'Factory' do
