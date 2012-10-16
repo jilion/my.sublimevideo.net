@@ -50,6 +50,7 @@ module Populate
         },
         overlay_color: {
           type: 'color',
+          values: ['#000'],
           default: '#000'
         },
         overlay_opacity: {

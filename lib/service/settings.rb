@@ -49,25 +49,29 @@ module Service
 
     def license
       hash = { hosts: [site.hostname] }
-      hash[:hosts]   += site.extra_hostnames.split(/,\s*/)
-      hash[:devHosts] = site.dev_hostnames.split(/,\s*/)
-      hash[:path]     = site.path
-      hash[:wildcard] = site.wildcard
-      hash[:stage]    = site.accessible_stage
+      hash[:hosts]    += (site.extra_hostnames || '').split(/,\s*/)
+      hash[:dev_hosts] = (site.dev_hostnames || '').split(/,\s*/)
+      hash[:path]      = site.path
+      hash[:wildcard]  = site.wildcard
+      hash[:stage]     = site.accessible_stage
       hash
     end
 
     def app_settings
       addon_plans_without_plugins.inject({}) do |hash, addon_plan|
-        hash[addon_plan.kind] = addon_plan_settings(addon_plan.settings_templates.first.template)
+        template = addon_plan.settings_templates.first.template
+        hash[addon_plan.kind] = {}
+        hash[addon_plan.kind][:settings] = addon_plan_settings(template)
+        hash[addon_plan.kind][:allowed_settings] = addon_plan_allowed_settings(template)
         hash
       end
     end
 
     def kits
-      site.kits.includes(:design).inject(Hash.new({})) do |hash, kit|
+      site.kits.includes(:design).inject({}) do |hash, kit|
+        hash[kit.name] = {}
         hash[kit.name][:skin] = { id: kit.skin_token }
-        hash[kit.name][:plugins] = kits_plugins(kit.app_design_id, nil)
+        hash[kit.name][:plugins] = kits_plugins(kit, nil)
         hash
       end
     end
@@ -88,31 +92,47 @@ module Service
 
     def addon_plans_without_plugins
       @addon_plans_without_plugins ||= addon_plans.select { |ap|
-        ap.settings_templates.none? { |st| st.plugin? }
+        ap.settings_templates.present? && ap.settings_templates.none? { |st| st.plugin.present? }
       }
     end
 
     def addon_plans_with_plugins
       @addon_plans_with_plugins ||= addon_plans.select { |ap|
-        ap.settings_templates.any? { |st| st.plugin? }
+        ap.settings_templates.present? && ap.settings_templates.any? { |st| st.plugin.present? }
       }
     end
 
-    def kits_plugins(app_design_id, parent_addon_id)
+    def kits_plugins(kit, parent_addon_id)
       addon_plans = addon_plans_with_plugins.select { |ap| ap.addon.parent_addon_id == parent_addon_id }
-      addon_plans.inject({}).each { |hash, addon_plan|
-        hash[:plugins] = kits_plugins(app_design_id, addon_plan.addon_id)
-        settings_template = addon_plan.settings_templates.detect { |st|
-          st.plugin.app_design_id.in?([nil, app_design_id])
-        }
-        # addon_plan_settings(template)
-        # id
-        # condition
+      addon_plans.inject({}) { |hash, addon_plan|
+        hash[addon_plan.kind] = {}
+        unless (plugins = kits_plugins(kit, addon_plan.addon_id)).empty?
+          hash[addon_plan.kind][:plugins] = plugins
+        end
+        template = addon_plan.settings_templates.detect { |st| st.plugin.app_design_id.in?([nil, kit.app_design_id]) }
+        hash[addon_plan.kind][:settings] = addon_plan_settings(template.template, kit.settings[addon_plan.addon_id])
+        hash[addon_plan.kind][:allowed_settings] = addon_plan_allowed_settings(template.template)
+        hash[addon_plan.kind][:id] = template.plugin.token
+        unless (condition = template.plugin.condition).empty?
+          hash[addon_plan.kind][:condition] = condition
+        end
+        hash
       }
     end
 
-    def addon_plan_settings(template)
-      # TODO
+    def addon_plan_settings(template, kit_settings = nil)
+      template.inject({}) do |hash, (key, value)|
+        kit_value = kit_settings && kit_settings[key]
+        hash[key] = kit_value.nil? ? value[:default] : kit_value
+        hash
+      end
+    end
+
+    def addon_plan_allowed_settings(template)
+      template.inject({}) do |hash, (key, value)|
+        hash[key] = value.slice(:values, :range)
+        hash
+      end
     end
 
     def generate_file
