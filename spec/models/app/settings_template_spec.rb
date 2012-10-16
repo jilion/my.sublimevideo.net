@@ -22,7 +22,7 @@ end
 #  created_at    :datetime         not null
 #  editable      :boolean          default(FALSE)
 #  id            :integer          not null, primary key
-#  template      :hstore
+#  template      :text
 #  updated_at    :datetime         not null
 #
 # Indexes

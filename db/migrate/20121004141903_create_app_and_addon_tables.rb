@@ -4,7 +4,7 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
       t.references :site, null: false
       t.references :app_design, null: false
       t.string     :name, null: false, default: 'Default'
-      t.hstore     :settings
+      t.text       :settings
 
       t.timestamps
     end
@@ -67,7 +67,7 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
       t.references :app_component, null: false
       t.string     :token, null: false
       t.string     :name, null: false
-      t.hstore     :condition
+      t.text       :condition
 
       t.timestamps
     end
@@ -78,7 +78,7 @@ class CreateAppAndAddonTables < ActiveRecord::Migration
       t.references :addon_plan, null: false
       t.references :app_plugin
       t.boolean    :editable, default: false
-      t.hstore     :template
+      t.text       :template
 
       t.timestamps
     end

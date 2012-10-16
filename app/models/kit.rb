@@ -1,5 +1,5 @@
 class Kit < ActiveRecord::Base
-  serialize :settings, ActiveRecord::Coders::Hstore
+  serialize :settings, Hash
 
   attr_accessible :site, :design, as: :admin
   attr_accessible :name
@@ -25,7 +25,7 @@ end
 #  created_at    :datetime         not null
 #  id            :integer          not null, primary key
 #  name          :string(255)      default("Default"), not null
-#  settings      :hstore
+#  settings      :text
 #  site_id       :integer          not null
 #  updated_at    :datetime         not null
 #

@@ -45,7 +45,7 @@ end
 #  created_at    :datetime         not null
 #  id            :integer          not null, primary key
 #  name          :string(255)      default("Default"), not null
-#  settings      :hstore
+#  settings      :text
 #  site_id       :integer          not null
 #  updated_at    :datetime         not null
 #

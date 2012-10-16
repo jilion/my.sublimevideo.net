@@ -1,5 +1,5 @@
 class App::SettingsTemplate < ActiveRecord::Base
-  serialize :template, ActiveRecord::Coders::Hstore
+  serialize :template, Hash
 
   attr_accessible :addon_plan, :plugin, :editable, :template, as: :admin
 
@@ -18,7 +18,7 @@ end
 #  created_at    :datetime         not null
 #  editable      :boolean          default(FALSE)
 #  id            :integer          not null, primary key
-#  template      :hstore
+#  template      :text
 #  updated_at    :datetime         not null
 #
 # Indexes
