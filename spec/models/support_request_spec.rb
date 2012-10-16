@@ -4,8 +4,10 @@ describe SupportRequest, :plans do
   before do
     @user  = create(:user, name: 'Remy')
     @user2 = create(:user, name: 'Remy', zendesk_id: 1234)
+    @user3 = create(:user, name: nil)
     @site  = create(:site, user: @user, plan_id: @paid_plan.id)
     create(:site, user: @user2, plan_id: @paid_plan.id)
+    create(:site, user: @user3, plan_id: @paid_plan.id)
     @loser = create(:user)
     create(:site, user: @loser, plan_id: @free_plan.id)
     @vip = create(:user)
@@ -19,6 +21,7 @@ describe SupportRequest, :plans do
     }
   }
   let(:support_request)                 { described_class.new(params) }
+  let(:support_request_without_name)    { described_class.new(params.merge(user_id: @user3.id)) }
   let(:support_request_with_zendesk_id) { described_class.new(params.merge(user_id: @user2.id)) }
   let(:invalid_support_request)         { described_class.new(params.merge(user_id: nil)) }
   let(:vip_support_request)             { described_class.new(params.merge(user_id: @vip.id)) }
@@ -87,6 +90,16 @@ describe SupportRequest, :plans do
   end
 
   describe '#to_params' do
+    context 'user has no name' do
+      it 'generates a hash of the params' do
+        support_request_without_name.user.name.should be_nil
+        support_request_without_name.to_params.should == {
+          subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }, tags: ['email-support'],
+          requester: { name: @user3.email, email: @user3.email }, uploads: ['foo.jpg', 'bar.html'], external_id: @user3.id
+        }
+      end
+    end
+
     context 'user has email support' do
       it 'generates a hash of the params' do
         support_request.user.support.should eq 'email'

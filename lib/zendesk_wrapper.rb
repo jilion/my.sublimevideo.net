@@ -31,7 +31,7 @@ module ZendeskWrapper
     end
 
     def create_user(user)
-      params = { external_id: user.id, email: user.email, name: user.name || user.email, verified: true }
+      params = { external_id: user.id, email: user.email, name: user.name.presence || user.email, verified: true }
       client.users.create(params)
     end
 

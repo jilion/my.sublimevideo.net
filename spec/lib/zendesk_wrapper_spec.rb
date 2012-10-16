@@ -5,8 +5,10 @@ require File.expand_path('lib/zendesk_wrapper')
 
 describe ZendeskWrapper do
   let(:ticket_params) {
-    { subject: 'SUBJECT', comment: { value: 'DESCRIPTION' }, tags: ['email-support'], requester: { name: 'Remy', email: 'user@example.com' }
-    }
+    { subject: 'SUBJECT', comment: { value: 'DESCRIPTION' }, tags: ['email-support'], requester: { name: 'Remy', email: 'user@example.com' } }
+  }
+  let(:ticket_params_without_name) {
+    { subject: 'SUBJECT', comment: { value: 'DESCRIPTION' }, tags: ['email-support'], requester: { name: 'user1000@example.com', email: 'user1000@example.com' } }
   }
   let(:requester_id)        { 17650353 }
   let(:ticket_id)           { 2335 }
@@ -31,6 +33,20 @@ describe ZendeskWrapper do
   end
 
   describe '.create_ticket' do
+    context 'with a user without a name' do
+      use_vcr_cassette 'zendesk_wrapper/create_ticket_without_name'
+
+      it 'returns the created ticket' do
+        @zd_ticket = described_class.create_ticket(ticket_params_without_name)
+
+        @zd_ticket = described_class.ticket(@zd_ticket.id)
+        @zd_ticket.description.should eq 'DESCRIPTION'
+        @zd_ticket.tags.should eq ['email-support']
+        @zd_ticket.requester.name.should eq 'user1000@example.com'
+        @zd_ticket.requester.email.should eq 'user1000@example.com'
+      end
+    end
+
     context 'without uploaded files' do
       use_vcr_cassette 'zendesk_wrapper/create_ticket'
 
