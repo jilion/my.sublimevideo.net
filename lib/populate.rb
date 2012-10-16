@@ -44,24 +44,35 @@ module Populate
 
       lightbox_template = {
         autoplay: {
-          values: [0, 1],
-          default: 1
+          type: 'boolean',
+          values: [true, false],
+          default: true
         },
         overlayColor: {
-          values: 'string',
-          default: 'black'
+          type: 'color',
+          default: '#000'
         },
         overlayOpacity: {
-          values: 'float_0_1',
+          type: 'float',
+          range: [0,1],
+          step: 0.05,
           default: 0.7
         },
-        closeButtonType: {
-          values: ['none', 'default'],
-          default: 'default'
+        closeButton: {
+          type: 'string',
+          values: ['none', 'autohide', 'sticky'],
+          default: 'autohide'
         },
         closeButtonPosition: {
           values: ['left', 'right'],
           default: 'left'
+        }
+      }
+      controls_template = {
+        controls: {
+          type: 'string',
+          values: ['none', 'autohide', 'sticky'],
+          default: 'autohide'
         }
       }
       seeds = {
@@ -131,10 +142,10 @@ module Populate
           { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer', availability: 'hidden' },
           { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden' },
           { name: 'realtime',  price: 995,  addon: 'ref-Addon-stats',        availability: 'public' },
-          { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta' },
+          # { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta' },
           { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
           { name: 'disabled',  price: 995,  addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'hidden', required_stage: 'beta' },
+          # { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'hidden', required_stage: 'beta' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-start_view',   availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom' },
@@ -147,20 +158,24 @@ module Populate
             editable: true,
             template: {
               fullwindowForced: {
-                values: [0, 1],
-                default: 0
+                type: 'boolean',
+                values: [true, false],
+                default: false,
               },
               stopOnEnd: {
-                values: [0, 1],
-                default: 0
+                type: 'boolean',
+                values: [true, false],
+                default: false
               },
               fullmodeEnabled: {
-                values: [0, 1],
-                default: 1
+                type: 'boolean',
+                values: [true, false],
+                default: true
               },
               volumeEnabled: {
-                values: [0, 1],
-                default: 1
+                type: 'boolean',
+                values: [true, false],
+                default: true
               }
             }
           },
@@ -170,79 +185,114 @@ module Populate
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit', editable: true, template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5', editable: true, template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
-          { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
-            editable: false,
-            template: {
-              enable: {
-                values: [1],
-                default: 1
-              },
-              realtime: {
-                values: [0],
-                default: 0
-              }
-            }
-          },
-          { addon_plan: 'ref-AddonPlan-stats-realtime', plugin: nil,
-            editable: false,
-            template: {
-              enable: {
-                values: [1],
-                default: 1
-              },
-              realtime: {
-                values: [0, 1],
-                default: 1
-              }
-            }
-          },
-          { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil,
-            editable: false,
-            template: {
-              enable: {
-                values: [0, 1],
-                default: 0
-              },
-              realtime: {
-                values: [0, 1],
-                default: 1
-              }
-            }
-          },
-          { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
-            editable: true,
+          { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil, editable: false,
             template: {
               enabled: {
-                values: [1],
-                default: 1
+                type: 'boolean',
+                values: [true],
+                default: true
+              },
+              realtime: {
+                type: 'boolean',
+                values: [false],
+                default: false
+              }
+            }
+          },
+          { addon_plan: 'ref-AddonPlan-stats-realtime', plugin: nil, editable: false,
+            template: {
+              enabled: {
+                type: 'boolean',
+                values: [false],
+                default: false
+              },
+              realtime: {
+                type: 'boolean',
+                values: [true, false],
+                default: true
+              }
+            }
+          },
+          # { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil, editable: false,
+          #   template: {
+          #     enabled: {
+          #       type: 'boolean',
+          #       values: [true, false],
+          #       default: false
+          #     },
+          #     realtime: {
+          #       type: 'boolean',
+          #       values: [true, false],
+          #       default: true
+          #     }
+          #   }
+          # },
+          { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo', editable: true,
+            template: {
+              enabled: {
+                type: 'boolean',
+                values: [true],
+                default: true
               },
               position: {
+                type: 'string',
                 values: ['bottomLeft', 'bottomRight'],
                 default: 'bottomRight'
               }
             }
           },
-          { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
-            editable: true,
+          { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo', editable: true,
             template: {
               enabled: {
-                values: [0, 1],
-                default: 0
+                type: 'boolean',
+                values: [true, false],
+                default: false
               },
               position: {
+                type: 'string',
                 values: ['bottomLeft', 'bottomRight'],
                 default: 'bottomRight'
               }
             }
           },
-          { addon_plan: 'ref-AddonPlan-logo-custom',         plugin: 'ref-App::Plugin-logo' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_classic' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_flat' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_light' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_twit' },
-          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_html5' },
-          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view' },
-          { addon_plan: 'ref-AddonPlan-sharing-standard',    plugin: 'ref-App::Plugin-sharing' }
+          # { addon_plan: 'ref-AddonPlan-logo-custom',         plugin: 'ref-App::Plugin-logo' },
+          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_classic', editable: true, template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_flat', editable: true, template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_light', editable: true, template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_twit', editable: true, template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',   plugin: 'ref-App::Plugin-controls_html5', editable: true, template: controls_template },
+          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view', editable: true,
+            template: {
+              overlayEnabled: {
+                type: 'boolean',
+                values: [true, false],
+                default: true
+              },
+              overlayColor: {
+                type: 'color',
+                default: '#000'
+              },
+            }
+          },
+          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing', editable: false,
+            template: {
+              twitterURL: {
+                type: 'url'
+              },
+              facebookURL: {
+                type: 'url'
+              },
+              embedURL: {
+                type: 'url'
+              },
+              embedWidth: {
+                type: 'integer'
+              },
+              embedHeight: {
+                type: 'integer'
+              }
+            }
+          }
         ]
       }
 
