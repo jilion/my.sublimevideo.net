@@ -25,12 +25,12 @@
 
 #plans > ul > li.premium {
   background-position:300px;
-} 
+}
 
 #plans li h3.title {
   width:276px;
   height:74px;
-  background:url(<%= asset_data_uri "plans/plan_banner_1.png" %>) no-repeat;
+  background:url(<%= asset_path "plans/plan_banner_1.png" %>) no-repeat;
   position:relative;
   left:-8px;
   margin-top:10px;
@@ -43,7 +43,7 @@
 }
 
 #plans li.plus h3.title, #plans li.premium h3.title {
-  background:url(<%= asset_data_uri "plans/plan_banner_2.png" %>) no-repeat;
+  background:url(<%= asset_path "plans/plan_banner_2.png" %>) no-repeat;
 }
 
 #plans ul.features {
@@ -53,7 +53,7 @@
 
 #plans ul.features li {
   padding:13px 0;
-  background:url(<%= asset_data_uri "plans/features_break.png" %>) no-repeat center bottom;
+  background:url(<%= asset_path "plans/features_break.png" %>) no-repeat center bottom;
 }
 
 #plans ul.features li.ssl {background:none;}
@@ -68,10 +68,10 @@
   background-repeat:no-repeat;
 }
 
-#plans ul.features li.plays .icon {background-image:url(<%= asset_data_uri "plans/plays_icon.png" %>)}
-#plans ul.features li.stats .icon {background-image:url(<%= asset_data_uri "plans/stats_icon.png" %>)}
-#plans ul.features li.support .icon {background-image:url(<%= asset_data_uri "plans/support_icon.png" %>)}
-#plans ul.features li.ssl .icon {background-image:url(<%= asset_data_uri "plans/ssl_icon.png" %>)}
+#plans ul.features li.plays .icon {background-image:url(<%= asset_path "plans/plays_icon.png" %>)}
+#plans ul.features li.stats .icon {background-image:url(<%= asset_path "plans/stats_icon.png" %>)}
+#plans ul.features li.support .icon {background-image:url(<%= asset_path "plans/support_icon.png" %>)}
+#plans ul.features li.ssl .icon {background-image:url(<%= asset_path "plans/ssl_icon.png" %>)}
 
 #plans ul.features li .right {
   float:left;
@@ -144,7 +144,7 @@
   text-shadow:rgba(0,0,0,0.6) 0 -1px 0;
   @include gradient(#183460,#25416d,#1d3a65);
   @include box-shadow(inset #000 0 1px 21px);
-} 
+}
 
 #plans .select_box * {
   cursor:pointer;

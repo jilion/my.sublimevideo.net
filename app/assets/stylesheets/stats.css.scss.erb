@@ -4,7 +4,7 @@ span.beta_badge {
   display:block;
   width:60px;
   height:28px;
-  background:url(<%= asset_data_uri "stats/beta_badge.png" %>) no-repeat;
+  background:url(<%= asset_path "stats/beta_badge.png" %>) no-repeat;
   position:absolute;
   top:58px;
   right:44px;
@@ -197,7 +197,7 @@ span.beta_badge {
   display:block;
   width:9px;
   height:7px;
-  background:url(<%= asset_data_uri "select_arrow.png" %>) no-repeat;
+  background:url(<%= asset_path "select_arrow.png" %>) no-repeat;
   position:absolute;
   right:13px;
   top:48%;
@@ -227,7 +227,7 @@ span.beta_badge {
   color:#465b7d;
   font-weight:normal;
   padding:0 0 0 16px;
-  background:url(<%= asset_data_uri "stats/clock_icon.png" %>) no-repeat 0 4px;
+  background:url(<%= asset_path "stats/clock_icon.png" %>) no-repeat 0 4px;
 }
 
 .stats #date_pickers {
@@ -277,12 +277,12 @@ span.beta_badge {
   float:left;
   margin-top:2px;
   cursor:pointer;
-  background:url(<%= asset_data_uri "stats/date_picker_arrow_left.png" %>) no-repeat;
+  background:url(<%= asset_path "stats/date_picker_arrow_left.png" %>) no-repeat;
 }
 
 .stats #date_pickers .ui-datepicker-next {
   float:right;
-  background:url(<%= asset_data_uri "stats/date_picker_arrow_right.png" %>) no-repeat;
+  background:url(<%= asset_path "stats/date_picker_arrow_right.png" %>) no-repeat;
 }
 
 .stats #date_pickers .ui-datepicker-header .ui-state-disabled {
@@ -307,7 +307,7 @@ span.beta_badge {
   font-size:14px;
   color:#4a648e;
   text-shadow:#fff 0 1px 0;
-  background:url(<%= asset_data_uri "stats/date_picker_select_back.png" %>) no-repeat 100% 0;
+  background:url(<%= asset_path "stats/date_picker_select_back.png" %>) no-repeat 100% 0;
   @include border-radius(4px);
   @include box-shadow(rgba(255,255,255,0.4) 0 1px 0);
   -webkit-appearance:none;
@@ -427,7 +427,7 @@ span.beta_badge {
 
 .stats #export button span.icon {
   padding:2px 0 2px 18px;
-  background:url(<%= asset_data_uri "stats/export_icon.png" %>) no-repeat 0 50%;
+  background:url(<%= asset_path "stats/export_icon.png" %>) no-repeat 0 50%;
 }
 
 #content #export.tooltip .content.hidden {display:none}
@@ -461,11 +461,11 @@ span.beta_badge {
 }
 
 .stats #vv_chart_legend li.video_plays {
-  background:url(<%= asset_data_uri "stats/video_plays_label.png" %>) no-repeat;
+  background:url(<%= asset_path "stats/video_plays_label.png" %>) no-repeat;
 }
 
 .stats #vv_chart_legend li.page_visits {
-  background:url(<%= asset_data_uri "stats/page_visits_label.png" %>) no-repeat;
+  background:url(<%= asset_path "stats/page_visits_label.png" %>) no-repeat;
 }
 
 .stats #vv_chart_legend li span {
@@ -621,7 +621,7 @@ span.beta_badge {
 .stats #top_videos td.video a.play .overlay {
   display:block;
   width:96px;
-  background:url(<%= asset_data_uri "stats/video_thumb_overlay.png" %>) no-repeat center;
+  background:url(<%= asset_path "stats/video_thumb_overlay.png" %>) no-repeat center;
   position:absolute;
   top:0;
   left:0;
@@ -698,11 +698,11 @@ span.beta_badge {
   top:45%;
   width:10px;
   height:7px;
-  background:url(<%= asset_data_uri "stats/expand_videos_arrow_down.png" %>) no-repeat;
+  background:url(<%= asset_path "stats/expand_videos_arrow_down.png" %>) no-repeat;
 }
 
 .stats .expander a .arrow.up {
-  background:url(<%= asset_data_uri "stats/expand_videos_arrow_up.png" %>) no-repeat;
+  background:url(<%= asset_path "stats/expand_videos_arrow_up.png" %>) no-repeat;
 }
 
 .stats .graph_box {
@@ -784,7 +784,7 @@ span.beta_badge {
   height:58px;
   background:#83acae;
   background:rgba(116,255,131,0.18);
-  background-image:url(<%= asset_data_uri "stats/chart_highlight_bar.png" %>);
+  background-image:url(<%= asset_path "stats/chart_highlight_bar.png" %>);
   background-position:right top;
   background-repeat:repeat-y;
 }
@@ -818,7 +818,7 @@ span.beta_badge {
   width:40px;
   height:58px;
   float:left;
-  background-image:url(<%= asset_data_uri "stats/icons/default.png" %>);
+  background-image:url(<%= asset_path "stats/icons/default.png" %>);
   background-position:center;
   background-repeat:no-repeat;
 }
@@ -828,28 +828,28 @@ span.beta_badge {
 /*  width:20px;*/
 }
 
-.stats .graph_box li .browser {background-image:url(<%= asset_data_uri "stats/icons/browser_default.png" %>);}
-.stats .graph_box li.b_fir .browser {background-image:url(<%= asset_data_uri "stats/icons/firefox.png" %>);}
-.stats .graph_box li.b_iex .browser {background-image:url(<%= asset_data_uri "stats/icons/internet_explorer.png" %>);}
-.stats .graph_box li.b_chr .browser {background-image:url(<%= asset_data_uri "stats/icons/chrome.png" %>);}
-.stats .graph_box li.b_saf .browser {background-image:url(<%= asset_data_uri "stats/icons/safari.png" %>);}
-.stats .graph_box li.b_ope .browser {background-image:url(<%= asset_data_uri "stats/icons/opera.png" %>);}
-.stats .graph_box li.b_saf.p_iph .browser, .stats .graph_box li.b_saf.p_ipa .browser {background-image:url(<%= asset_data_uri "stats/icons/mobile_safari.png" %>);}
+.stats .graph_box li .browser {background-image:url(<%= asset_path "stats/icons/browser_default.png" %>);}
+.stats .graph_box li.b_fir .browser {background-image:url(<%= asset_path "stats/icons/firefox.png" %>);}
+.stats .graph_box li.b_iex .browser {background-image:url(<%= asset_path "stats/icons/internet_explorer.png" %>);}
+.stats .graph_box li.b_chr .browser {background-image:url(<%= asset_path "stats/icons/chrome.png" %>);}
+.stats .graph_box li.b_saf .browser {background-image:url(<%= asset_path "stats/icons/safari.png" %>);}
+.stats .graph_box li.b_ope .browser {background-image:url(<%= asset_path "stats/icons/opera.png" %>);}
+.stats .graph_box li.b_saf.p_iph .browser, .stats .graph_box li.b_saf.p_ipa .browser {background-image:url(<%= asset_path "stats/icons/mobile_safari.png" %>);}
 
-/*.stats .graph_box li .platform {background-image:url(<%= asset_data_uri "stats/icons/browser_default.png" %>);}*/
-.stats .graph_box li.p_osx .platform {background-image:url(<%= asset_data_uri "stats/icons/mac.png" %>);}
-.stats .graph_box li.p_win .platform {background-image:url(<%= asset_data_uri "stats/icons/windows.png" %>);}
-.stats .graph_box li.p_lin .platform {background-image:url(<%= asset_data_uri "stats/icons/linux.png" %>);}
-.stats .graph_box li.p_and .platform {background-image:url(<%= asset_data_uri "stats/icons/android.png" %>);}
-.stats .graph_box li.p_iph .platform {background-image:url(<%= asset_data_uri "stats/icons/iphone.png" %>);}
-.stats .graph_box li.p_ipa .platform {background-image:url(<%= asset_data_uri "stats/icons/ipad.png" %>);}
+/*.stats .graph_box li .platform {background-image:url(<%= asset_path "stats/icons/browser_default.png" %>);}*/
+.stats .graph_box li.p_osx .platform {background-image:url(<%= asset_path "stats/icons/mac.png" %>);}
+.stats .graph_box li.p_win .platform {background-image:url(<%= asset_path "stats/icons/windows.png" %>);}
+.stats .graph_box li.p_lin .platform {background-image:url(<%= asset_path "stats/icons/linux.png" %>);}
+.stats .graph_box li.p_and .platform {background-image:url(<%= asset_path "stats/icons/android.png" %>);}
+.stats .graph_box li.p_iph .platform {background-image:url(<%= asset_path "stats/icons/iphone.png" %>);}
+.stats .graph_box li.p_ipa .platform {background-image:url(<%= asset_path "stats/icons/ipad.png" %>);}
 
-.stats .graph_box li.html5 .icon {background-image:url(<%= asset_data_uri "stats/icons/html5.png" %>);}
-.stats .graph_box li.flash .icon {background-image:url(<%= asset_data_uri "stats/icons/flash.png" %>);}
+.stats .graph_box li.html5 .icon {background-image:url(<%= asset_path "stats/icons/html5.png" %>);}
+.stats .graph_box li.flash .icon {background-image:url(<%= asset_path "stats/icons/flash.png" %>);}
 
-.stats .graph_box li li.desktop .icon {background-image:url(<%= asset_data_uri "stats/icons/desktop.png" %>);}
-.stats .graph_box li li.mobile .icon {background-image:url(<%= asset_data_uri "stats/icons/smartphone.png" %>);}
-.stats .graph_box li li.tablet .icon {background-image:url(<%= asset_data_uri "stats/icons/tablet.png" %>);}
+.stats .graph_box li li.desktop .icon {background-image:url(<%= asset_path "stats/icons/desktop.png" %>);}
+.stats .graph_box li li.mobile .icon {background-image:url(<%= asset_path "stats/icons/smartphone.png" %>);}
+.stats .graph_box li li.tablet .icon {background-image:url(<%= asset_path "stats/icons/tablet.png" %>);}
 
 .stats .graph_box li .title {
   display:block;
@@ -901,7 +901,7 @@ span.beta_badge {
 }
 
 body.my.stats_demo {
-  background:#8ea6c2 url(<%= asset_data_uri "back_texture.png" %>);
+  background:#8ea6c2 url(<%= asset_path "back_texture.png" %>);
 }
 
 body.my.stats_demo header, body.my.stats_demo header .shadow, body.my.stats_demo header .lights {
@@ -935,7 +935,7 @@ body.my.stats_demo .content_wrapper {
 body.my.stats_demo span.stats_icon {
   width:215px;
   height:184px;
-  background:url(<%= asset_data_uri "stats/stats_icon.png" %>) no-repeat;
+  background:url(<%= asset_path "stats/stats_icon.png" %>) no-repeat;
   position:absolute;
   top:-151px;
   left:0;
@@ -962,7 +962,7 @@ body.my.stats_demo div.stats {
   width:880px;
   padding:20px 40px;
   position:relative;
-  background:#ecf2f8 url(<%= asset_data_uri "back_texture_my.png" %>);
+  background:#ecf2f8 url(<%= asset_path "back_texture_my.png" %>);
   color:#1e3966;
   text-shadow:rgba(255,255,255,0.25) 0 1px 0;
   border: 1px solid #728ab2;

@@ -9,7 +9,7 @@
 @import "css3";
 
 body {
-  background:#8ea6c2 url(<%= asset_data_uri "back_texture_my.png" %>);
+  background:#8ea6c2 url(<%= asset_path "back_texture_my.png" %>);
 }
 
 header, header .shadow, header .lights {
@@ -76,7 +76,7 @@ header, header .shadow, header .lights {
   height:14px;
   border:none;
   cursor:pointer;
-  background:url(<%= asset_data_uri "notice_hide_arrow.png" %>);
+  background:url(<%= asset_path "notice_hide_arrow.png" %>);
 }
 
 .notice button.close span {display:none}
@@ -129,7 +129,7 @@ header, header .shadow, header .lights {
 #content h2 select {
   height:60px;
   padding:0 30px 0 10px;
-  background:url(<%= asset_data_uri "big_select_back.png" %>) no-repeat right top;
+  background:url(<%= asset_path "big_select_back.png" %>) no-repeat right top;
   font-family:inherit;
   color:#1e3966;
   font-size:48px;
@@ -163,13 +163,13 @@ header, header .shadow, header .lights {
 #content .tooltip.warning .icon {
   width:22px;
   height:22px;
-  background:url(<%= asset_data_uri "warning_icon.png" %>) no-repeat;
+  background:url(<%= asset_path "warning_icon.png" %>) no-repeat;
 }
 
 #content .tooltip.info .icon {
   width:20px;
   height:21px;
-  background:url(<%= asset_data_uri "info_icon.png" %>) no-repeat;
+  background:url(<%= asset_path "info_icon.png" %>) no-repeat;
 }
 
 #content .tooltip .icon span {
@@ -207,7 +207,7 @@ header, header .shadow, header .lights {
   display:block;
   width:13px;
   height:8px;
-  background:url(<%= asset_data_uri "tooltip_bottom_arrow.png" %>) no-repeat;
+  background:url(<%= asset_path "tooltip_bottom_arrow.png" %>) no-repeat;
   position:absolute;
   bottom:-7px;
   left:0;
@@ -252,7 +252,7 @@ header, header .shadow, header .lights {
   width:868px;
   height:21px;
   margin:0 auto;
-  background:url(<%= asset_data_uri "big_break.png" %>);
+  background:url(<%= asset_path "big_break.png" %>);
 }
 
 /* ================== */
@@ -290,14 +290,14 @@ form p.note {
   font-weight:600;
   line-height:16px;
   padding:2px 0 2px 22px;
-  background:url(<%= asset_data_uri "note_icon.png" %>) no-repeat;
+  background:url(<%= asset_path "note_icon.png" %>) no-repeat;
 }
 
 form p.note.info {
   margin-top:30px;
   font-weight:normal;
   padding:2px 0 2px 25px;
-  background:url(<%= asset_data_uri "note_info_icon.png" %>) no-repeat;
+  background:url(<%= asset_path "note_info_icon.png" %>) no-repeat;
 }
 
 form label.text {
@@ -470,8 +470,8 @@ form .entry.float select {
   background-repeat:no-repeat;
 }
 
-#credit_card_summary p.visa, form .entry.card label.visa span {background-image:url(<%= asset_data_uri "credit_cards/visa.png" %>)}
-#credit_card_summary p.master, form .entry.card label.master span {background-image:url(<%= asset_data_uri "credit_cards/mastercard.png" %>)}
+#credit_card_summary p.visa, form .entry.card label.visa span {background-image:url(<%= asset_path "credit_cards/visa.png" %>)}
+#credit_card_summary p.master, form .entry.card label.master span {background-image:url(<%= asset_path "credit_cards/mastercard.png" %>)}
 
 #delete_account {
   font-size:13px;
@@ -488,7 +488,7 @@ form .entry.float select {
 
 #delete_account input.delete, input.delete_site, #delete_account a.delete {
   border:none;
-  background:url(<%= asset_data_uri "delete_account_cross.png" %>) no-repeat;
+  background:url(<%= asset_path "delete_account_cross.png" %>) no-repeat;
   cursor:pointer;
   font-family:inherit;
   text-shadow:rgba(255,255,255,0.3) 0 1px 0;
@@ -502,7 +502,7 @@ form .entry.float select {
   width:270px;
   padding-left:82px;
   font-size:14px;
-  background-image:url(<%= asset_data_uri "credit_cards/secure_icon.png" %>);
+  background-image:url(<%= asset_path "credit_cards/secure_icon.png" %>);
   background-repeat:no-repeat;
   background-position:20px 50%;
 }
@@ -617,7 +617,7 @@ ul.segmented_menu li.active a {
   display:block;
   width:32px;
   height:33px;
-  background:url(<%= asset_data_uri "help_icon.png" %>) no-repeat;
+  background:url(<%= asset_path "help_icon.png" %>) no-repeat;
 }
 
 #site_settings a.help span {display:none}
@@ -656,7 +656,7 @@ ul.segmented_menu li.active a {
 
 #site.invoices .failed_invoices p.top {
   padding-left:25px;
-  background:url(<%= asset_data_uri "alert_icon.png" %>) no-repeat 0 1px;
+  background:url(<%= asset_path "alert_icon.png" %>) no-repeat 0 1px;
 }
 
 #site.invoices h3.section_title  {
@@ -669,7 +669,7 @@ ul.segmented_menu li.active a {
 
 #site.invoices .past_invoices li {
   padding:10px 0 10px 36px;
-  background:url(<%= asset_data_uri "invoice_icon.png" %>) no-repeat 0 50%;
+  background:url(<%= asset_path "invoice_icon.png" %>) no-repeat 0 50%;
   border-bottom:1px solid #4a648e;
   border-top:1px solid rgba(255,255,255,0.2);
 }
@@ -752,11 +752,11 @@ ul.segmented_menu li.active a {
 
 #help .support_team_status {
   padding:21px 0 20px 35px;
-  background:url(<%= asset_data_uri "help/support_not_available_icon.png" %>) no-repeat 0 50%;
+  background:url(<%= asset_path "help/support_not_available_icon.png" %>) no-repeat 0 50%;
 }
 
 #help .support_team_status.available {
-  background-image:url(<%= asset_data_uri "help/support_available_icon.png" %>);
+  background-image:url(<%= asset_path "help/support_available_icon.png" %>);
 }
 
 #help .browse {
@@ -818,7 +818,7 @@ ul.segmented_menu li.active a {
   position:absolute;
   bottom:4px;
   right:0;
-  background:url(<%= asset_data_uri "help/clear_arrow.png" %>) no-repeat;
+  background:url(<%= asset_path "help/clear_arrow.png" %>) no-repeat;
   z-index:3;
 }
 
@@ -955,7 +955,7 @@ section.text ul {
   display:block;
   width:391px;
   height:53px;
-  background:url(<%= asset_data_uri "getsatisfaction/sublimevideo.png" %>) no-repeat;
+  background:url(<%= asset_path "getsatisfaction/sublimevideo.png" %>) no-repeat;
   margin-bottom:40px;
 }
 
@@ -984,7 +984,7 @@ section.oauth .entry.update .blue_button {
 /* ============== */
 
 body.my.mysv_public {
-  background:#8ea6c2 url(<%= asset_data_uri "back_texture.png" %>);
+  background:#8ea6c2 url(<%= asset_path "back_texture.png" %>);
 }
 
 body.my.mysv_public header, body.my.mysv_public header .shadow, body.my.mysv_public header .lights {
@@ -1035,7 +1035,7 @@ body.my.mysv_public div.video_code_generator {
   width:880px;
   padding:34px 40px 20px;
   position:relative;
-  background:#ecf2f8 url(<%= asset_data_uri "back_texture_my.png" %>);
+  background:#ecf2f8 url(<%= asset_path "back_texture_my.png" %>);
   color:#1e3966;
   text-shadow:rgba(255,255,255,0.25) 0 1px 0;
   border: 1px solid #728ab2;
