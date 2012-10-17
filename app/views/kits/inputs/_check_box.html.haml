@@ -1,6 +1,6 @@
 - checked = settings[key].presence || default
 .entry.checkbox_wrap
-  = hidden_field_tag "kit[addons][#{addon.id}][#{key}]", 0, id: "kit_addons_#{addon.id}_#{key}"
-  = check_box_tag "kit[addons][#{addon.id}][#{key}]", 1, checked, id: "kit_addons_#{addon.id}_#{key}"
-  = label_tag "kit[addons][#{addon.id}][#{key}]", t("kit.#{addon.name}.settings.#{key}")
+  = hidden_field_tag "kit[addons][#{addon.name}][#{key}]", 0, id: "kit_setting-#{addon.name}-#{key}", data: { addon: addon.name }
+  = check_box_tag "kit[addons][#{addon.name}][#{key}]", 1, checked, id: "kit_setting-#{addon.name}-#{key}", data: { addon: addon.name }
+  = label_tag "kit[addons][#{addon.name}][#{key}]", t("kit.#{addon.name}.settings.#{key}")
 .spacer

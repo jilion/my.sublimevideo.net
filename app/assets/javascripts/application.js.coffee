@@ -67,8 +67,8 @@ MySublimeVideo.UI.prepareAddonsChooser = ->
     new MySublimeVideo.UI.AddonsChooser(form)
 
 MySublimeVideo.UI.prepareKitEditor = ->
-  $('.edit_kit').each ->
-    new MySublimeVideo.UI.KitEditor($(this))
+  $('.edit_kit, .video_code_generator').each ->
+    new MySublimeVideo.UI.KitEditor
 
 MySublimeVideo.UI.prepareSupportRequest = ->
   new MySublimeVideo.Helpers.SupportRequest() if $('#new_support_request').exists()

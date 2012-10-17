@@ -1,7 +1,7 @@
 module Service
   Kit = Struct.new(:kit) do
 
-    # params => { "<addon_id>" => { "settingKey" => "<value>" }
+    # params => { "<addon_name>" => { "settingKey" => "<value>" }
     def update_settings!(params)
       ::Kit.transaction do
         kit.app_design_id = params.delete(:app_design_id) if params[:app_design_id]
@@ -17,21 +17,19 @@ module Service
     end
 
     def sanitize_new_addons_settings(new_addons_settings)
-      new_addons_settings.each do |addon_id, new_addon_settings|
-        addon_plan = kit.site.addon_plan_for_addon_id(addon_id)
+      new_addons_settings.each do |addon_name, new_addon_settings|
+        addon_plan = kit.site.addon_plan_for_addon_name(addon_name)
         settings_template = addon_plan.settings_template_for(kit.design).template
 
         new_addon_settings.each do |new_addon_setting_key, new_addon_setting_value|
           setting_template = settings_template[new_addon_setting_key.to_sym]
           case setting_template[:type]
-          when 'boolean'
-            check_boolean(new_addon_setting_value)
-            cast_boolean(new_addon_setting_value)
           when 'float'
             check_number_inclusion(new_addon_setting_value, (setting_template[:range][0]..setting_template[:range][1]))
-            new_addons_settings[addon_id][new_addon_setting_key] = new_addon_setting_value.to_f.round(2)
-          when 'string'
-            check_string_inclusion(new_addon_setting_value, setting_template[:values])
+            new_addons_settings[addon_name][new_addon_setting_key.to_sym] = new_addon_setting_value.to_f.round(2)
+          when 'boolean', 'string'
+            new_addons_settings[addon_name][new_addon_setting_key.to_sym] = cast_boolean(new_addon_setting_value) if setting_template[:type] == 'boolean'
+            check_string_inclusion(new_addons_settings[addon_name][new_addon_setting_key.to_sym], setting_template[:values])
           end
         end
       end

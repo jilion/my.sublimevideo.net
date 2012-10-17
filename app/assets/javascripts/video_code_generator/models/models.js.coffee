@@ -3,6 +3,8 @@ class MSVVideoCodeGenerator.Models.Builder extends Backbone.Model
     builderClass: 'standard'
     startWithHd: false
     demoAssetsUsed: false
+    site: null
+    kit: null
 
   sitesHostnamesMatchUrl: (site, url) ->
     hostnameMatch = this.hostnameRegex(site.get('hostname'), site.get('wildcard'), site.get('path')).test(url)

@@ -1,7 +1,7 @@
 :coffeescript
   $(document).ready ->
     SublimeVideoSizeChecker.setRoot('/video-size-checker/')
-    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(user_signed_in: #{user_signed_in?}, sites: #{@sites.try(:to_json) || []})
+    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(userSignedIn: #{user_signed_in?}, sites: #{@sites.try(:to_json) || []}, selectedSiteToken: '#{@site.token}', kit: #{@site.kits.first.to_json})
 
 .video_code_generator
   #video_embed_type_selector
@@ -43,6 +43,11 @@
       #settings
       .spacer
       .big_break
+
+      %h2 Override your default player settings
+      %p These settings will be taken in account only if you're using the beta player code.
+
+      #kit_settings_form
 
       #preview
       .spacer

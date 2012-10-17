@@ -21,8 +21,8 @@ module SiteModules::BillableItem
     addon_plans.where{ (billable_items.state >> BillableItem::ACTIVE_STATES) & (id >> addon.plans.pluck(:id)) }.exists?
   end
 
-  def addon_plan_for_addon_id(addon_id)
-    addon_plans.includes(:addon).where{ addons.id == addon_id.to_i }.first
+  def addon_plan_for_addon_name(addon_name)
+    addon_plans.includes(:addon).where{ addons.name == addon_name }.first
   end
 
   def out_of_trial?(billable_item)

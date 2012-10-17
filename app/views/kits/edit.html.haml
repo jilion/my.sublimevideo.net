@@ -16,18 +16,13 @@
 - else
   There are currently no settings you can customize for the stable version of the SublimeVideo Player.
 
-%h2 Beta player settings
+.spacer.big_break
+
+%h2 New player settings
+%p These settings will be taken in account only if you're using the beta player code.
 #kit.edit
   = form_for [@site, @kit] do |f|
-    .entry.design.select
-      = f.label :app_design_id, 'Select your player design:'
-      = f.select :app_design_id, options_from_collection_for_select(@site.app_designs, :id, :title, @kit.app_design_id)
-
-    .left
-      - addon_plans = @site.addon_plans.includes(:addon).where{ addon.name >> %w[video_player controls initial] }.order(:id)
-      = raw @kit.render_grouped_settings_input_fields(addon_plans, self)
-      - @site.addon_plans.includes(:addon).where{ addon.name << %w[video_player controls initial] }.order(:id).each do |addon_plan|
-        = raw @kit.render_settings_input_fields(addon_plan, self)
+    = render 'full_form', f: f, site: @site, kit: @kit
 
     .actions.center
       = f.submit "Save beta settings", class: "submit blue_button"

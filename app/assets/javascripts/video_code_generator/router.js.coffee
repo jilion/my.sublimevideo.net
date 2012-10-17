@@ -1,7 +1,9 @@
 class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
   initialize: (options) ->
-    @userSignedIn = options['user_signed_in']
-    @sites        = options['sites']
+    @userSignedIn      = options['userSignedIn']
+    @sites             = options['sites']
+    @selectedSiteToken = options['selectedSiteToken']
+    @kit               = options['kit']
 
     this.handlePublicClass()
     this.initModels()
@@ -13,10 +15,14 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
   initModels: ->
     MSVVideoCodeGenerator.sites = new MySublimeVideo.Collections.Sites(@sites)
-
-    MSVVideoCodeGenerator.builder = new MSVVideoCodeGenerator.Models.Builder
+    MSVVideoCodeGenerator.sites.select @selectedSiteToken
 
     MSVVideoCodeGenerator.loader = new MSVVideoCodeGenerator.Models.Loader(site: MSVVideoCodeGenerator.sites.at(0))
+    MSVVideoCodeGenerator.loader.set(site: MSVVideoCodeGenerator.sites.selectedSite)
+
+    MSVVideoCodeGenerator.builder = new MSVVideoCodeGenerator.Models.Builder
+      site: MSVVideoCodeGenerator.sites.selectedSite
+      kit: @kit
 
     MSVVideoCodeGenerator.demoPoster    = 'http://media.jilion.com/vcg/ms_800.jpg'
     MSVVideoCodeGenerator.demoThumbnail = 'http://media.jilion.com/vcg/ms_192.jpg'
@@ -79,6 +85,8 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       collection: MSVVideoCodeGenerator.sources
       model: MSVVideoCodeGenerator.sources.mp4Base()
       el: '#settings'
+
+    $.get "/sites/#{@selectedSiteToken}/players/#{@kit['id']}.js"
 
     MSVVideoCodeGenerator.sourcesView = new MSVVideoCodeGenerator.Views.Sources
       collection: MSVVideoCodeGenerator.sources

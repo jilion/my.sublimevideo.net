@@ -1,7 +1,7 @@
 - value = settings[key] || default
 .entry.range
-  %span{ style: 'font-weight:600' }= label_tag "kit[addons][#{addon.id}][#{key}]", t("kit.#{addon.name}.settings.#{key}")
+  %span{ style: 'font-weight:600' }= label_tag "kit[addons][#{addon.name}][#{key}]", t("kit.#{addon.name}.settings.#{key}")
   %br
-  = range_field_tag "kit[addons][#{addon.id}][#{key}]", value, in: in_range, step: step, style: 'display:inline'
-  %span{ id: "kit_addons_#{addon.id}_#{key}_value" }= value
+  = range_field_tag "kit[addons][#{addon.name}][#{key}]", value, in: in_range, step: step, style: 'display:inline', id: "kit_setting-#{addon.name}-#{key}", data: { addon: addon.name }
+  %span{ id: "kit_setting-#{addon.name}-#{key}_value" }= value
 .spacer

@@ -35,4 +35,6 @@
       %a.hl.reset{ href: "" } Reset to original size
 .spacer
 
+#kit_settings_form_lightbox
+
 .big_break

@@ -1,9 +1,9 @@
 class MySublimeVideo.UI.KitEditor
-  constructor: (@form) ->
+  constructor: ->
     this.setupInputsObservers()
 
   setupInputsObservers: ->
-    @form.find('input[type=range]').each (index, el) =>
+    $('input[type=range][data-addon]').each (index, el) =>
       $el = $(el)
       $el.on 'change', =>
         this.updateValueDisplayer($el)

@@ -55,7 +55,7 @@ module Populate
         },
         overlay_opacity: {
           type: 'float',
-          range: [0,1],
+          range: [0.05, 1],
           step: 0.05,
           default: 0.7
         },

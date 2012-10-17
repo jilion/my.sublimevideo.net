@@ -3,7 +3,6 @@ class MSVVideoCodeGenerator.Views.IframeEmbed extends Backbone.View
 
   events:
     'change #iframe_src': 'updateSrc'
-    'change #site_select': 'selectSite'
 
   initialize: ->
     @loader = @options.loader
@@ -17,10 +16,6 @@ class MSVVideoCodeGenerator.Views.IframeEmbed extends Backbone.View
   #
   updateSrc: (event) ->
     @model.set(src: event.target.value)
-
-  selectSite: (event) ->
-    @sites.select event.target.value
-    @loader.set(site: @sites.selectedSite)
 
   #
   # BINDINGS

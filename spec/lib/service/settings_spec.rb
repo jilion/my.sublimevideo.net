@@ -248,8 +248,8 @@ describe Service::Settings, :fog_mock do
       } }
       let(:kit1) { mock(Kit, name: 'kit1', app_design_id: 1, skin_token: 'skin_token1', settings: kit_settings1) }
       let(:kit2) { mock(Kit, name: 'kit2', app_design_id: 2, skin_token: 'skin_token2', settings: kit_settings2) }
-      let(:addon1) { mock(Addon, id: 'addon1', parent_addon_id: nil) }
-      let(:addon2) { mock(Addon, id: 'addon2', parent_addon_id: addon1.id) }
+      let(:addon1) { mock(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
+      let(:addon2) { mock(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
       let(:plugin1) { mock(App::Plugin, app_design_id: nil, token: 'plugin1', condition: {}) }
       let(:plugin2_1) { mock(App::Plugin, app_design_id: 1, token: 'plugin2_1', condition: {}) }
       let(:plugin2_2) { mock(App::Plugin, app_design_id: 2, token: 'plugin2_2', condition: {}) }

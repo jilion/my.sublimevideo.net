@@ -35,10 +35,10 @@ describe SiteModules::BillableItem, :addons do
     end
   end
 
-  describe '#addon_plan_for_addon_id' do
+  describe '#addon_plan_for_addon_name' do
     it 'returns the addon plan currently used for the given addon id' do
-      site.addon_plan_for_addon_id(@sv_logo_addon.id).should eq @sv_logo_addon_plan_1
-      site.addon_plan_for_addon_id(@stats_addon.id).should eq @stats_addon_plan_1
+      site.addon_plan_for_addon_name(@sv_logo_addon.name).should eq @sv_logo_addon_plan_1
+      site.addon_plan_for_addon_name(@stats_addon.name).should eq @stats_addon_plan_1
     end
   end
 

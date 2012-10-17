@@ -20,14 +20,6 @@
       The final snippet of code available to your audience to share is an
       <code>&lt;iframe&gt;&lt;/iframe&gt;</code> element pointing to that HTML page.
 
-  %h4
-    %label{ for: "site_select" } The embed will be hosted on
-  .entry.select
-    %select#site_select
-      - for site in @sites.models
-        - select = @sites.selectedSite is site
-        %option{ selected: select, value: site.get('token') }= site.title()
-
   %h4 Iframe source
 
   %p.info

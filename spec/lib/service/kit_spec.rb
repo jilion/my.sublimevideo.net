@@ -8,26 +8,42 @@ describe Service::Kit do
 
   describe '.sanitize_new_addons_settings' do
     before do
-      kit.stub_chain(:site, :addon_plan_for_addon_id) { addon_plan }
+      kit.stub_chain(:site, :addon_plan_for_addon_name) { addon_plan }
       addon_plan.stub(:settings_template_for, :template) { stub(template: {
-          editable: true,
-          fooBar: {
+          fooBar1: {
+            type: 'boolean',
+            values: [true],
+            default: true
+          },
+          fooBar2: {
             type: 'float',
-            range: [0, 1],
+            range: [0.05, 1],
             step: 0.05,
-            default: 0.1
+            default: 0.7
+          },
+          fooBar3: {
+            type: 'string',
+            values: ['foo', 'bar'],
+            default: 'foo'
           }
         })
       }
     end
 
-    it 'round floats to 2 decimals' do
-      service.sanitize_new_addons_settings({ '1' => { fooBar: '0.330001' } }).should == { '1' => { fooBar: 0.33 } }
+    it 'cast booleans to real booleans' do
+      service.sanitize_new_addons_settings({ 'addon' => { fooBar1: '1' } }).should == { 'addon' => { fooBar1: true } }
     end
+    it { expect { service.sanitize_new_addons_settings({ 'addon' => { fooBar1: '0' } }) }.to raise_error Service::Kit::AttributeAssignmentError }
 
     it 'round floats to 2 decimals' do
-      service.sanitize_new_addons_settings({ '1' => { fooBar: '0.330001' } }).should == { '1' => { fooBar: 0.33 } }
+      service.sanitize_new_addons_settings({ 'addon' => { fooBar2: '0.330001' } }).should == { 'addon' => { fooBar2: 0.33 } }
     end
+    it { expect { service.sanitize_new_addons_settings({ 'addon' => { fooBar2: 0 } }) }.to raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.sanitize_new_addons_settings({ 'addon' => { fooBar2: 1.1 } }) }.to raise_error Service::Kit::AttributeAssignmentError }
+
+    it { expect { service.sanitize_new_addons_settings({ 'addon' => { fooBar3: 'foo' } }) }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.sanitize_new_addons_settings({ 'addon' => { fooBar3: 'bar' } }) }.to_not raise_error Service::Kit::AttributeAssignmentError }
+    it { expect { service.sanitize_new_addons_settings({ 'addon' => { fooBar3: 'baz' } }) }.to raise_error Service::Kit::AttributeAssignmentError }
   end
 
   describe '#check_boolean' do
