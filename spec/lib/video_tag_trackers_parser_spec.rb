@@ -18,7 +18,6 @@ describe VideoTagTrackersParser do
   end
 
   context "load event" do
-
     context "with 1 video" do
       let(:video_tags_trackers) { {
         "?t=site1234&e=l&d=d&h=m&vu[]=video123&pz[]=300x400" => 1,
@@ -45,11 +44,9 @@ describe VideoTagTrackersParser do
         })
       end
     end
-
   end
 
   context "view event" do
-
     context "with 1 video" do
       let(:video_tags_trackers) { {
         "?t=site1234&e=s&d=d&h=m&vu=video123&vuo=a&vn=My%20Video&vno=s&vs=http%3A//videos.sublimevideo.net/source12.mp4&vc=source12&vcs[]=source12&vcs[]=source34&vsq=hd&vsf=mp4&vsr=1280x720" => 1,
@@ -59,12 +56,32 @@ describe VideoTagTrackersParser do
       it "extracts one video tag meta_data" do
         described_class.extract_video_tags_meta_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
+            'i' => nil, 'io' => nil,
+            'd' => nil,
             'p'  => nil,
             'cs' => ['source12', 'source34'],
             's'  => {
               'source12' => { 'u' => 'http://videos.sublimevideo.net/source12.mp4', 'q' => 'hd', 'f' => 'mp4', 'r' => '1280x720' },
               'source34' => { 'u' => 'http://videos.sublimevideo.net/source34.webm', 'q' => 'base', 'f' => 'webm', 'r' => '460x340' }
             }
+          }
+        })
+      end
+    end
+
+    context "with 1 youtube video" do
+      let(:video_tags_trackers) { {
+        "?t=site1234&e=s&d=d&h=m&vu=youtube123&vuo=y&vi=youtube123&vio=y&vd=1231" => 1,
+        "?t=site1234&e=s&d=d&h=m&vu=youtube123&vuo=y&vi=youtube123&vio=y&vd=1231" => 1
+      } }
+
+      it "extracts one video tag meta_data" do
+        described_class.extract_video_tags_meta_data(video_tags_trackers).should eq({
+          ['site1234', 'youtube123'] => { 'uo' => 'y', 'n' => nil, 'no' => nil,
+            'i' => 'youtube123', 'io' => 'y',
+            'd'  => 1231,
+            'p'  => nil,
+            'cs' => []
           }
         })
       end
@@ -80,6 +97,8 @@ describe VideoTagTrackersParser do
       it "extracts one video tag meta_data" do
         described_class.extract_video_tags_meta_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My New Video', 'no' => 's',
+            'i' => nil, 'io' => nil,
+            'd' => nil,
             'p'  => 'http://posters.sublimevideo.net/video1235.png',
             'cs' => ['source12', 'source35'],
             's'  => {
@@ -101,6 +120,8 @@ describe VideoTagTrackersParser do
       it "extracts two video tag meta_data" do
         described_class.extract_video_tags_meta_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
+            'i' => nil, 'io' => nil,
+            'd' => nil,
             'p'  => 'http://posters.sublimevideo.net/video123.png',
             'cs' => ['source12', 'source34'],
             's'  => {
@@ -108,6 +129,8 @@ describe VideoTagTrackersParser do
             }
           },
           ['site5678', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
+            'i' => nil, 'io' => nil,
+            'd' => nil,
             'p'  => 'http://posters.sublimevideo.net/video123.png',
             'cs' => ['source44', 'source45'],
             's'  => {
@@ -117,7 +140,6 @@ describe VideoTagTrackersParser do
         })
       end
     end
-
   end
 
 end

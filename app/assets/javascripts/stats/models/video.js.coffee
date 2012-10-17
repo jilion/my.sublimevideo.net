@@ -2,6 +2,8 @@ class MSVStats.Models.Video extends Backbone.Model
   # id = video uid
   defaults:
     uo: null
+    i: null
+    io: null
     n: null
     no: null
     p: null
@@ -61,6 +63,8 @@ class MSVStats.Models.Video extends Backbone.Model
         this.get('n').substring(0, length) + '...'
       else
         this.get('n')
+    else if this.get('io') == 'y'
+      "Youtube: ##{this.get('i').toUpperCase()}"
     else
       '–'
 

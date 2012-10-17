@@ -9,8 +9,11 @@ class VideoTag
 
   field :st, type: String # Site token
   field :u,  type: String # Video uid
+
   # meta data
-  field :uo, type: String # Video uid origin
+  field :uo, type: String # Video uid origin  (attribute (a) / source (s) /youtube (y))
+  field :i,  type: String # Video id (hosting or Youtube)
+  field :io, type: String # Video id origin (sublimevideo (s) / youtube (y))
   field :n,  type: String # Video name
   field :no, type: String # Video name origin
   field :p,  type: String # Video poster url
@@ -39,8 +42,8 @@ class VideoTag
   # ====================
 
   def update_meta_data(meta_data)
-    %w[uo n no p cs z].each do |key|
-      self.send("#{key}=", meta_data[key]) if meta_data[key].present?
+    %w[uo i io n no p cs z d].each do |key|
+      self.send("#{key}=", meta_data[key])
     end
     # Properly update sources
     self.s = read_attribute('s').merge(meta_data['s']) if meta_data['s'].present?
@@ -51,9 +54,9 @@ class VideoTag
     changed
   end
 
-  # meta_data is reserved in Mongoid
+  # meta_data is reserved in Mongoid and used by Backbone
   def meta_data
-    attributes.slice("uo", "n", "no", "p", "cs", "s", "z")
+    attributes.slice('uo', 'i', 'io', 'n', 'no', 'p', 'cs', 's', 'z')
   end
 
   # =================

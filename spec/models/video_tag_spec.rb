@@ -36,7 +36,7 @@ describe VideoTag do
       end
     end
 
-    %w[uo n no p z].each do |data|
+    %w[uo d i io n no p z].each do |data|
       context "with different '#{data}' meta_data" do
         let(:new_meta_data) { meta_data.merge(data => 'new_data') }
 

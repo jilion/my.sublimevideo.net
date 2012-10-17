@@ -11,7 +11,7 @@ class VideoTagTrackersParser
     video_tags_trackers.each do |request, hits|
       begin
         params = Addressable::URI.parse(request).query_values || {}
-        if %w[m e].include?(params['h'])
+        if params['h'].in? %w[m e]
           case params['e']
           when 'l'
             if all_needed_params_present?(params, %w[vu pz])
@@ -20,14 +20,20 @@ class VideoTagTrackersParser
               end
             end
           when 's'
-            if all_needed_params_present?(params, %w[t vu vuo vn vno vs vc vcs vsq vsf])
-              %w[uo n no p cs].each do |key|
+            if all_needed_params_present?(params, %w[t vu vuo])
+              %w[uo i io n no p].each do |key|
                 video_tags[[params['t'],params['vu']]][key] = params["v#{key}"]
               end
+              # Video duration
+              video_tags[[params['t'],params['vu']]]['d'] = params['vd'].try(:to_i)
+              # Video current sources
+              video_tags[[params['t'],params['vu']]]['cs'] = params['vcs'] || []
               # Video sources
-              video_tags[[params['t'],params['vu']]]['s'] ||= {}
-              video_tags[[params['t'],params['vu']]]['s'][params['vc']] = { 'u' => params['vs'], 'q' => params['vsq'], 'f' => params['vsf'] }
-              video_tags[[params['t'],params['vu']]]['s'][params['vc']]['r'] = params['vsr'] if params['vsr'].present?
+              if params.key?('vc')
+                video_tags[[params['t'],params['vu']]]['s'] ||= {}
+                video_tags[[params['t'],params['vu']]]['s'][params['vc']] = { 'u' => params['vs'], 'q' => params['vsq'], 'f' => params['vsf'] }
+                video_tags[[params['t'],params['vu']]]['s'][params['vc']]['r'] = params['vsr'] if params['vsr'].present?
+              end
             end
           end
         end
