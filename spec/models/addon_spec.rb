@@ -25,10 +25,10 @@ describe Addon do
 
   describe '.get' do
     before do
-      @logo_addon = create(:addon, name: 'logo')
+      @sv_logo_addon = create(:addon, name: 'logo')
     end
 
-    it { described_class.get('logo').should eq @logo_addon }
+    it { described_class.get('sv_logo').should eq @sv_logo_addon }
   end
 
   describe '#free_plan' do

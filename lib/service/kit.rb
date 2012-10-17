@@ -22,7 +22,7 @@ module Service
         settings_template = addon_plan.settings_template_for(kit.design).template
 
         new_addon_settings.each do |new_addon_setting_key, new_addon_setting_value|
-          setting_template = eval(settings_template[new_addon_setting_key])
+          setting_template = settings_template[new_addon_setting_key.to_sym]
           case setting_template[:type]
           when 'boolean'
             check_boolean(new_addon_setting_value)

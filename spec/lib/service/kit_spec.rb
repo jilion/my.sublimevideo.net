@@ -11,22 +11,22 @@ describe Service::Kit do
       kit.stub_chain(:site, :addon_plan_for_addon_id) { addon_plan }
       addon_plan.stub(:settings_template_for, :template) { stub(template: {
           editable: true,
-          'fooBar' => "{
+          fooBar: {
             type: 'float',
             range: [0, 1],
             step: 0.05,
             default: 0.1
-          }"
+          }
         })
       }
     end
 
     it 'round floats to 2 decimals' do
-      service.sanitize_new_addons_settings({ '1' => { 'fooBar' => '0.330001' } }).should == { '1' => { 'fooBar' => 0.33 } }
+      service.sanitize_new_addons_settings({ '1' => { fooBar: '0.330001' } }).should == { '1' => { fooBar: 0.33 } }
     end
 
     it 'round floats to 2 decimals' do
-      service.sanitize_new_addons_settings({ '1' => { 'fooBar' => '0.330001' } }).should == { '1' => { 'fooBar' => 0.33 } }
+      service.sanitize_new_addons_settings({ '1' => { fooBar: '0.330001' } }).should == { '1' => { fooBar: 0.33 } }
     end
   end
 

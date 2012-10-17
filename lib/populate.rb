@@ -59,7 +59,7 @@ module Populate
           step: 0.05,
           default: 0.7
         },
-        close_button: {
+        close_button_visibility: {
           type: 'string',
           values: ['none', 'autohide', 'sticky'],
           default: 'autohide'
@@ -71,17 +71,17 @@ module Populate
         }
       }
       controls_template = {
-        controls: {
+        visibility: {
           type: 'string',
           values: ['none', 'autohide', 'sticky'],
           default: 'autohide'
         }
       }
-      start_view_template = {
-        overlay_enabled: {
-          type: 'boolean',
-          values: [true, false],
-          default: true
+      initial_template = {
+        overlay_visibility: {
+          type: 'string',
+          values: ['none', 'autofade', 'sticky'],
+          default: 'autofade'
         },
         overlay_color: {
           type: 'color',
@@ -136,10 +136,10 @@ module Populate
         Addon => [
           { name: 'video_player', kind: 'videoPlayer', design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
           { name: 'controls',     kind: 'controls',    design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
-          { name: 'start_view',   kind: 'startView',   design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
+          { name: 'initial',      kind: 'initial',     design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'sharing',      kind: 'sharing',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
           { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
-          { name: 'logo',         kind: 'badge',       design_dependent: false,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
+          { name: 'sv_logo',      kind: 'svLogo',      design_dependent: false,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil, public_at: Time.now.utc },
           { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
           { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
@@ -151,19 +151,19 @@ module Populate
           { name: 'ligthbox_flat',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
           { name: 'ligthbox_light',     token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
           { name: 'ligthbox_twit',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
-          { name: 'ligthbox_html5',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'ligthbox_html5',     token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
           { name: 'image_viewer',       token: 'sa.sn.so', addon: 'ref-Addon-image_viewer', design: nil,                       component: 'ref-App::Component-app' },
-          { name: 'logo',               token: 'sa.sh.sp', addon: 'ref-Addon-logo',         design: nil,                       component: 'ref-App::Component-app' },
+          { name: 'sv_logo',            token: 'sa.sh.sp', addon: 'ref-Addon-sv_logo',      design: nil,                       component: 'ref-App::Component-app' },
           { name: 'controls_classic',   token: 'sa.sh.sq', addon: 'ref-Addon-controls',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
           { name: 'controls_flat',      token: 'sd.sd.sr', addon: 'ref-Addon-controls',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
           { name: 'controls_light',     token: 'se.se.ss', addon: 'ref-Addon-controls',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
           { name: 'controls_twit',      token: 'sf.sf.st', addon: 'ref-Addon-controls',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-twit' },
           { name: 'controls_html5',     token: 'sg.sg.su', addon: 'ref-Addon-controls',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-html5' },
-          { name: 'start_view_classic', token: 'sa.sh.sv', addon: 'ref-Addon-start_view',   design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
-          { name: 'start_view_flat',    token: 'sa.sh.sv', addon: 'ref-Addon-start_view',   design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
-          { name: 'start_view_light',   token: 'sa.sh.sv', addon: 'ref-Addon-start_view',   design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
-          { name: 'start_view_twit',    token: 'sa.sh.sv', addon: 'ref-Addon-start_view',   design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
-          { name: 'start_view_html5',   token: 'sa.sh.sv', addon: 'ref-Addon-start_view',   design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'initial_classic', token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
+          { name: 'initial_flat',    token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
+          { name: 'initial_light',   token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
+          { name: 'initial_twit',    token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
+          { name: 'initial_html5',   token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
           { name: 'sharing_twit',       token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
           { name: 'sharing_html5',      token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' }
         ],
@@ -174,11 +174,11 @@ module Populate
           { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden' },
           { name: 'realtime',  price: 995,  addon: 'ref-Addon-stats',        availability: 'public' },
           # { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta' },
-          { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'disabled',  price: 995,  addon: 'ref-Addon-logo',         availability: 'public' },
+          { name: 'enabled',   price: 0,    addon: 'ref-Addon-sv_logo',      availability: 'hidden' },
+          { name: 'disabled',  price: 995,  addon: 'ref-Addon-sv_logo',      availability: 'public' },
           # { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'hidden', required_stage: 'beta' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-start_view',   availability: 'hidden' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-initial',   availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'public' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public' },
@@ -187,7 +187,7 @@ module Populate
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
             template: {
-              fullwindow_forced: {
+              force_fullwindow: {
                 type: 'boolean',
                 values: [true, false],
                 default: false,
@@ -197,12 +197,12 @@ module Populate
                 values: [true, false],
                 default: false
               },
-              fullmode_enabled: {
+              enable_fullmode: {
                 type: 'boolean',
                 values: [true, false],
                 default: true
               },
-              volume_enabled: {
+              enable_volume: {
                 type: 'boolean',
                 values: [true, false],
                 default: true
@@ -262,12 +262,12 @@ module Populate
           #     }
           #   }
           # },
-          { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
+          { addon_plan: 'ref-AddonPlan-sv_logo-enabled', plugin: 'ref-App::Plugin-sv_logo',
             template: {
-              enabled: {
-                type: 'boolean',
-                values: [true],
-                default: true
+              visibility: {
+                type: 'string',
+                values: ['autohide'],
+                default: 'autohide'
               },
               position: {
                 type: 'string',
@@ -276,12 +276,12 @@ module Populate
               }
             }
           },
-          { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
+          { addon_plan: 'ref-AddonPlan-sv_logo-disabled', plugin: 'ref-App::Plugin-sv_logo',
             template: {
-              enabled: {
-                type: 'boolean',
-                values: [true, false],
-                default: false
+              visibility: {
+                type: 'string',
+                values: ['none', 'autohide'],
+                default: 'none'
               },
               position: {
                 type: 'string',
@@ -291,11 +291,11 @@ module Populate
             }
           },
           # { addon_plan: 'ref-AddonPlan-logo-custom',         plugin: 'ref-App::Plugin-logo' },
-          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view_classic', template: start_view_template },
-          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view_flat', template: start_view_template },
-          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view_light', template: start_view_template },
-          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view_twit', template: start_view_template },
-          { addon_plan: 'ref-AddonPlan-start_view-standard', plugin: 'ref-App::Plugin-start_view_html5', template: start_view_template },
+          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_classic', template: initial_template },
+          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_flat', template: initial_template },
+          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_light', template: initial_template },
+          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_twit', template: initial_template },
+          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_html5', template: initial_template },
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_twit', template: sharing_template },
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_html5', template: sharing_template }
         ]

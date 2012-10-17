@@ -41,7 +41,7 @@ module Service
         if site.new_plans.present?
           site.billable_items.plans.where(item_id: site.plan.id).first.update_attribute(:state, 'subscribed')
           update_billable_addon_plans({
-            logo: AddonPlan.get('logo', 'disabled').id,
+            sv_logo: AddonPlan.get('sv_logo', 'disabled').id,
             stats: AddonPlan.get('stats', 'realtime').id,
             lightbox: AddonPlan.get('lightbox', 'standard').id,
             api: AddonPlan.get('api', 'standard').id,
@@ -95,12 +95,12 @@ module Service
         set_default_app_designs(suspended: site.suspended?)
 
         advanced_plan = %w[plus premium sponsored].include?(site.plan.name)
-        logo_addon_plan_name = advanced_plan ? 'disabled' : 'sublime'
+        sv_logo_addon_plan_name = advanced_plan ? 'disabled' : 'enabled'
         stats_addon_plan_name = advanced_plan ? 'realtime' : 'invisible'
         support_addon_plan_name = %w[premium sponsored].include?(site.plan.name) ? 'vip' : 'standard'
 
         update_billable_addon_plans(free_addon_plans.merge({
-          logo: AddonPlan.get('logo', logo_addon_plan_name).id,
+          sv_logo: AddonPlan.get('sv_logo', sv_logo_addon_plan_name).id,
           stats: AddonPlan.get('stats', stats_addon_plan_name).id,
           support: AddonPlan.get('support', support_addon_plan_name).id
         }), sponsor: advanced_plan, suspended: site.suspended?)
@@ -113,7 +113,7 @@ module Service
       ::Site.transaction do
         site.billable_items.plans.where(item_id: site.plan.id).first.destroy
         update_billable_addon_plans(
-          logo: AddonPlan.get('logo', 'disabled').id,
+          sv_logo: AddonPlan.get('sv_logo', 'disabled').id,
           stats: AddonPlan.get('stats', 'realtime').id,
           support: (site.plan.name == 'premium' ? AddonPlan.get('support', 'vip') : AddonPlan.get('support', 'standard')).id
         )

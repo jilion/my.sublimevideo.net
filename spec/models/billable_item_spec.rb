@@ -33,8 +33,8 @@ describe BillableItem do
   describe 'Scopes', :addons do
     let(:site) { create(:site) }
     before do
-      @billable_item1 = create(:billable_item, site: site, item: @logo_addon_plan_1, state: 'subscribed')
-      @billable_item2 = create(:billable_item, site: site, item: @logo_addon_plan_2, state: 'subscribed')
+      @billable_item1 = create(:billable_item, site: site, item: @sv_logo_addon_plan_1, state: 'subscribed')
+      @billable_item2 = create(:billable_item, site: site, item: @sv_logo_addon_plan_2, state: 'subscribed')
       @billable_item3 = create(:billable_item, site: site, item: @stats_addon_plan_1, state: 'sponsored')
       @billable_item4 = create(:billable_item, site: site, item: @support_addon_plan_2, state: 'suspended')
       @billable_item5 = create(:billable_item, site: site, item: @classic_design, state: 'subscribed')

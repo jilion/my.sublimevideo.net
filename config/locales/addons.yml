@@ -4,9 +4,9 @@ en:
     lightbox: 'Lightbox'
     image_viewer: 'Image Viewer'
     stats: 'Analytics'
-    logo: 'Logo'
+    sv_logo: 'SublimeVideo Logo'
     controls: 'Controls'
-    start_view: 'Start View'
+    initial: 'Start View'
     sharing: 'Sharing'
     api: 'API'
     support: 'Support'
@@ -26,15 +26,17 @@ en:
       realtime:  'Real-time statistics'
       disabled:  'Disabled'
 
-    logo:
+    sv_logo:
       sublime:  'SublimeVideo logo'
-      disabled: 'No logo'
-      custom:   'Your company logo'
+      disabled: 'Disable the SublimeVideo logo'
+
+    logo:
+      # custom: 'Your company logo'
 
     controls:
       standard: 'Standard controls'
 
-    start_view:
+    initial:
       standard: 'Standard start view'
 
     sharing:

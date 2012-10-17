@@ -65,21 +65,21 @@ def instantiate_variables
   @stats_addon_plan_2 = AddonPlan.get('stats', 'realtime')
   # @stats_addon_plan_3 = AddonPlan.get('stats', 'disabled')
 
-  @logo_addon = Addon.find_by_name('logo')
-  @logo_addon_plan_1    = AddonPlan.get('logo', 'sublime')
-  @logo_addon_plan_2    = AddonPlan.get('logo', 'disabled')
-  # @logo_addon_plan_3    = AddonPlan.get('logo', 'custom')
+  @sv_logo_addon           = Addon.find_by_name('sv_logo')
+  @sv_logo_addon_plan_1    = AddonPlan.get('sv_logo', 'sublime')
+  @sv_logo_addon_plan_2    = AddonPlan.get('sv_logo', 'disabled')
+  # @sv_logo_addon_plan_3    = AddonPlan.get('sv_logo', 'custom')
 
-  # @logo_addon_plugin = App::Plugin.find_by_addon_id_and_component_id(@logo_addon.id, @app_comp.id)#create(:app_plugin, addon: @logo_addon, design: nil, component: @app_comp)
-  # @logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @logo_addon_plan_1, plugin: @logo_addon_plugin)
-  # @logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @logo_addon_plan_2, plugin: @logo_addon_plugin)
-  # @logo_addon_plan_3_st = create(:app_settings_template, addon_plan: @logo_addon_plan_3, plugin: @logo_addon_plugin)
+  # @sv_logo_addon_plugin = App::Plugin.find_by_addon_id_and_component_id(@sv_logo_addon.id, @app_comp.id)#create(:app_plugin, addon: @sv_logo_addon, design: nil, component: @app_comp)
+  # @sv_logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @sv_logo_addon_plan_1, plugin: @sv_logo_addon_plugin)
+  # @sv_logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @sv_logo_addon_plan_2, plugin: @sv_logo_addon_plugin)
+  # @sv_logo_addon_plan_3_st = create(:app_settings_template, addon_plan: @sv_logo_addon_plan_3, plugin: @sv_logo_addon_plugin)
 
   @controls_addon = Addon.find_by_name('controls')
   @controls_addon_plan_1 = AddonPlan.get('controls', 'standard')
 
-  @start_view_addon = Addon.find_by_name('start_view')
-  @start_view_addon_plan_1 = AddonPlan.get('start_view', 'standard')
+  @initial_addon = Addon.find_by_name('initial')
+  @initial_addon_plan_1 = AddonPlan.get('initial', 'standard')
 
   @sharing_addon = Addon.find_by_name('sharing')
   @sharing_addon_plan_1 = AddonPlan.get('sharing', 'standard')

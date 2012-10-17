@@ -224,7 +224,7 @@ describe Site, :addons do
           site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
           site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
           site.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'suspended').should have(1).item
@@ -247,7 +247,7 @@ describe Site, :addons do
           site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
           site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
           site.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'suspended').should have(1).item
@@ -275,7 +275,7 @@ describe Site, :addons do
           site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'sponsored').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'sponsored').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
@@ -301,7 +301,7 @@ describe Site, :addons do
           site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'sponsored').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'sponsored').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
@@ -327,7 +327,7 @@ describe Site, :addons do
           site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
@@ -339,13 +339,13 @@ describe Site, :addons do
         let(:site) do
           service = Service::Site.build(attributes_for(:site).merge(user: create(:user)))
           service.initial_save
-          service.update_billable_items!({}, { logo: AddonPlan.get('logo', 'disabled').id })
+          service.update_billable_items!({}, { sv_logo: AddonPlan.get('sv_logo', 'disabled').id })
           service.site
         end
 
         it 'unsuspend all billable items' do
           site.reload.billable_items.should have(8).items
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'trial').should have(1).item
           site.suspend!
 
           site.unsuspend!
@@ -354,7 +354,7 @@ describe Site, :addons do
           site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'trial').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan).where(state: 'subscribed').should have(1).item
@@ -411,7 +411,7 @@ describe Site, :addons do
 
     context 'stats /disabled addon plan is active' do
       before do
-        create(:billable_item, site: site, item: @logo_addon_plan_2, state: 'subscribed')
+        create(:billable_item, site: site, item: @sv_logo_addon_plan_2, state: 'subscribed')
       end
 
       it 'is possible to set badged to false' do

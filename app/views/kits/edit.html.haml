@@ -2,13 +2,13 @@
 = render '/layouts/site_header'
 
 %h2 Stable version
-- if @site.addon_plan_is_active?(AddonPlan.get('logo', 'disabled'))
+- if @site.addon_plan_is_active?(AddonPlan.get('sv_logo', 'disabled'))
   = form_for [@site] do |f|
     = hidden_field_tag 'kit_edit', '1'
     .entry.badged
       .checkbox_wrap
         = f.check_box :badged
-        = f.label :badged, "Enable the SublimeVideo badge."
+        = f.label :badged, "Display the SublimeVideo logo."
       %p.info= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
 
     .actions.center
@@ -24,9 +24,9 @@
       = f.select :app_design_id, options_from_collection_for_select(@site.app_designs, :id, :title, @kit.app_design_id)
 
     .left
-      - addon_plans = @site.addon_plans.includes(:addon).where{ addon.name >> %w[video_player controls start_view] }.order(:id)
+      - addon_plans = @site.addon_plans.includes(:addon).where{ addon.name >> %w[video_player controls initial] }.order(:id)
       = raw @kit.render_grouped_settings_input_fields(addon_plans, self)
-      - @site.addon_plans.includes(:addon).where{ addon.name << %w[video_player controls start_view] }.order(:id).each do |addon_plan|
+      - @site.addon_plans.includes(:addon).where{ addon.name << %w[video_player controls initial] }.order(:id).each do |addon_plan|
         = raw @kit.render_settings_input_fields(addon_plan, self)
 
     .actions.center

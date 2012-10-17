@@ -3,20 +3,41 @@ en:
     video_player:
       title: 'Player settings'
       settings:
-        fullmode_enabled: 'Display full-screen button'
+        enable_fullmode: 'Display full-screen button'
         fullwindow_forced: 'Use full-window instead of full-screen'
-        volume_enabled: 'Display volume control'
+        enable_volume: 'Display volume control'
         stop_on_end: 'Back to initial state upon video end'
+
+    controls:
+      # title: 'Player controls settings'
+      settings:
+        visibility: 'Controls visibility'
+      values:
+        visibility:
+          none: 'None'
+          autohide: 'Auto-hide'
+          sticky: 'Sticky'
+
+    initial:
+      # title: 'Start view settings'
+      settings:
+        overlay_visibility: 'Initial overlay visibility'
+        overlay_color: 'Initial overlay color'
+      values:
+        overlay_visibility:
+          none: 'None'
+          autofade: 'Auto-fade'
 
     lightbox:
       title: 'Lightbox settings'
       settings:
         autoplay: 'Autoplay video once the lighbox opens-up'
+        overlay_color: 'Overlay color'
         overlay_opacity: 'Overlay opacity'
-        close_button: 'Close button'
+        close_button_visibility: 'Close button visibility'
         close_button_position: 'Close button position'
       values:
-        close_button:
+        close_button_visibility:
           none: 'None'
           autohide: 'Auto-hide'
           sticky: 'Sticky'
@@ -24,39 +45,21 @@ en:
           left: 'Left'
           right: 'Right'
 
-    image_viewer:
-      standard: 'Standard image viewer'
-
     stats:
       title: 'Statistics settings'
       settings:
         enabled: 'Enable statistics'
         realtime: 'Enable real-time statistics'
 
-    logo:
-      title: 'Logo settings'
+    sv_logo:
+      title: 'SublimeVideo logo settings'
       settings:
-        enabled: 'Display the SublimeVideo logo'
-        position: 'Logo position'
+        visibility: 'Visibility'
+        position: 'Position'
       values:
         position:
           bottomLeft: 'Bottom left'
           bottomRight: 'Bottom right'
-
-    controls:
-      title: 'Player controls settings'
-      settings:
-        controls: 'Controls'
-      values:
-        controls:
-          none: 'None'
-          autohide: 'Auto-hide'
-          sticky: 'Sticky'
-
-    start_view:
-      title: 'Start view settings'
-      settings:
-        overlay_enabled: 'Enable the initial overlay effect'
 
     sharing:
       standard: 'Standard sharing'

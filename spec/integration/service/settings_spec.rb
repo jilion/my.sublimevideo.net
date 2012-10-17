@@ -69,7 +69,7 @@ describe Service::Settings, :fog_mock, :addons do
                   },
                   id: "sa.sh.sq"
                 },
-                "startView" => {
+                "initial" => {
                   settings: {
                     overlay_enabled: true,
                     overlay_color: "#000"

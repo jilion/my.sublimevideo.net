@@ -33,8 +33,7 @@ class KitExhibit < DisplayCase::Exhibit
   end
 
   def render_input_field(addon, key, setting_fields, template)
-    setting_fields = eval setting_fields
-    settings = eval(self.settings.try(:[], addon.id.to_s) || '{}')
+    settings = self.settings.try(:[], addon.id.to_s) || {}
     default = setting_fields[:default]
 
     case setting_fields[:type]
