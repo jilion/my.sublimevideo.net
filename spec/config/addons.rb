@@ -25,7 +25,6 @@ RSpec.configure do |config|
     AddonPlan.delete_all
     App::Plugin.delete_all
     App::SettingsTemplate.delete_all
-    # Plan.delete_all
   end
 end
 
@@ -44,18 +43,9 @@ def instantiate_variables
   @video_player_addon = Addon.find_by_name('video_player')
 
   @video_player_addon_plan_1 = AddonPlan.get('video_player', 'standard')
-  # @video_player_addon_plan_st = create(:app_settings_template, addon_plan: @video_player_addon_plan, plugin: @video_player_addon_plugin)
 
   @lightbox_addon = Addon.find_by_name('lightbox')
   @lightbox_addon_plan_1 = AddonPlan.get('lightbox', 'standard')
-
-  # @lightbox_addon_plugin_1 = create(:app_plugin, addon: @lightbox_addon, design: @classic_design, component: @app_comp)
-  # @lightbox_addon_plugin_2 = create(:app_plugin, addon: @lightbox_addon, design: @light_design, component: @app_comp)
-  # @lightbox_addon_plugin_3 = create(:app_plugin, addon: @lightbox_addon, design: @flat_design, component: @app_comp)
-
-  # @lightbox_addon_plan_1_st_1 = create(:app_settings_template, addon_plan: @lightbox_addon_plan_1, plugin: @lightbox_addon_plugin_1)
-  # @lightbox_addon_plan_1_st_2 = create(:app_settings_template, addon_plan: @lightbox_addon_plan_1, plugin: @lightbox_addon_plugin_2)
-  # @lightbox_addon_plan_1_st_3 = create(:app_settings_template, addon_plan: @lightbox_addon_plan_1, plugin: @lightbox_addon_plugin_3)
 
   @image_viewer_addon = Addon.find_by_name('image_viewer')
   @image_viewer_addon_plan_1 = AddonPlan.get('image_viewer', 'standard')
@@ -65,15 +55,9 @@ def instantiate_variables
   @stats_addon_plan_2 = AddonPlan.get('stats', 'realtime')
   # @stats_addon_plan_3 = AddonPlan.get('stats', 'disabled')
 
-  @sv_logo_addon           = Addon.find_by_name('sv_logo')
-  @sv_logo_addon_plan_1    = AddonPlan.get('sv_logo', 'sublime')
-  @sv_logo_addon_plan_2    = AddonPlan.get('sv_logo', 'disabled')
-  # @sv_logo_addon_plan_3    = AddonPlan.get('sv_logo', 'custom')
-
-  # @sv_logo_addon_plugin = App::Plugin.find_by_addon_id_and_component_id(@sv_logo_addon.id, @app_comp.id)#create(:app_plugin, addon: @sv_logo_addon, design: nil, component: @app_comp)
-  # @sv_logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @sv_logo_addon_plan_1, plugin: @sv_logo_addon_plugin)
-  # @sv_logo_addon_plan_1_st = create(:app_settings_template, addon_plan: @sv_logo_addon_plan_2, plugin: @sv_logo_addon_plugin)
-  # @sv_logo_addon_plan_3_st = create(:app_settings_template, addon_plan: @sv_logo_addon_plan_3, plugin: @sv_logo_addon_plugin)
+  @sv_logo_addon        = Addon.find_by_name('sv_logo')
+  @sv_logo_addon_plan_1 = AddonPlan.get('sv_logo', 'enabled')
+  @sv_logo_addon_plan_2 = AddonPlan.get('sv_logo', 'disabled')
 
   @controls_addon = Addon.find_by_name('controls')
   @controls_addon_plan_1 = AddonPlan.get('controls', 'standard')
@@ -90,8 +74,4 @@ def instantiate_variables
   @support_addon = Addon.find_by_name('support')
   @support_addon_plan_1 = AddonPlan.get('support', 'standard')
   @support_addon_plan_2 = AddonPlan.get('support', 'vip')
-
-  # @support_addon_plugin = create(:app_plugin, addon: @support_addon, design: nil, component: @app_comp)
-  # @support_addon_plan_1_st = create(:app_settings_template, addon_plan: @support_addon_plan_1, plugin: @support_addon_plugin)
-  # @support_addon_plan_1_st = create(:app_settings_template, addon_plan: @support_addon_plan_2, plugin: @support_addon_plugin)
 end
