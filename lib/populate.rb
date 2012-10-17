@@ -219,7 +219,7 @@ module Populate
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light', template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit', template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
+          # { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
           { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
             template: {
               enabled: {

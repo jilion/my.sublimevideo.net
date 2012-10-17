@@ -36,7 +36,7 @@
   "autoplay": "tf",
   "overlayColor": "tg",
   "overlayOpacity": "th",
-  "closeButtonType": "ti",
+  "closeButton": "ti",
   "closeButtonPosition": "tl",
   "enabled": "tm",
   "realtime": "tn",
