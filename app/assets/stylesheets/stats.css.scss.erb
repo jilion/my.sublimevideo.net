@@ -744,20 +744,6 @@ span.beta_badge {
   @include box-shadow((rgba(255,255,255,0.3) 0 1px 0, inset rgba(0,27,68,0.6) 0 1px 4px));
 }
 
-.stats .graph_box a.paid_plan_only {
-  display:block;
-  width:400px;
-  height:412px;
-  background:url(<%= asset_path "stats/browser_os_blur.png" %>) no-repeat;
-}
-
-.stats #md.graph_box a.paid_plan_only {
-  height:207px;
-  background:url(<%= asset_path "stats/html5_flash_blur.png" %>) no-repeat;
-}
-
-.stats .graph_box a.paid_plan_only span {display:none}
-
 .stats .graph_box p.empty {
   color:#465b7d;
   font-weight:600;
@@ -912,51 +898,6 @@ span.beta_badge {
 
 .stats .graph_box li li .value .percent {
   font-size:14px;
-}
-
-.stats #plan_usage {
-  padding-top:5px;
-}
-
-.stats #plan_usage .wrap {
-  width:545px;
-  /*padding-bottom:40px;*/
-}
-
-.stats #plan_usage h3 {
-  font-size:24px;
-  padding-top:30px;
-}
-
-.stats #plan_usage p {
-  font-size:15px;
-  color:#465b7d;
-  line-height:22px;
-}
-
-.stats #plan_usage strong {
-  color:#1e3966;
-}
-
-.stats #plan_usage .progress_bar {
-  width:360px;
-  height:24px;
-  margin:10px 0;
-  position:relative;
-  background:#909db7;
-  background:rgba(30,57,102,0.2);
-  @include border-radius(4px);
-  @include box-shadow((inset rgba(0,30,76,0.3) 0 1px 1px, rgba(255,255,255,0.2) 0 1px 0));
-}
-
-.stats #plan_usage .progress_bar .bar {
-  position:absolute;
-  top:0;
-  left:0;
-  height:24px;
-  max-width:100%;
-  @include gradient(#304972, #1c355e, #27406a);
-  @include border-radius(4px);
 }
 
 body.my.stats_demo {

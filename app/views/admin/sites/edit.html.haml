@@ -10,24 +10,41 @@
 = render 'settings', site: @site
 %br
 
-= render 'plan_and_cycle', site: @site
+%table
+  %tr
+    %td= render 'video_plays', site: @site
+    %td= render 'page_visits', site: @site
+    %td= render 'video_tags', site: @site
+
+= render 'admin/shared/date_chooser'
+%br.spacer
+= render 'timeline_usage', site: @site
 %br
 
-= render 'video_plays', site: @site
-%br
-= render 'page_visits', site: @site
-%br
-= render 'video_tags', site: @site
-%br
-
-- if @site.plan_id?
-  = render 'admin/shared/date_chooser'
-  %br.spacer
-  = render 'timeline_usage', site: @site
-%br
+%h3 Billable items
+%table
+  %tr
+    %th Since
+    %th Addon
+    %th State
+  - @site.billable_items.reorder('created_at DESC').each do |billable_item|
+    %tr
+      %td= display_time(billable_item.created_at)
+      %td
+        - if billable_item.item.is_a?(App::Design)
+          = 'Design: ' + t("app_designs.#{billable_item.item.name}")
+        - elsif billable_item.item.is_a?(AddonPlan)
+          = 'Add-on: ' + t("addon_plans.#{billable_item.item.addon.name}.#{billable_item.item.name}")
+        - else
+          = "Plan: #{billable_item.item.title}"
+      %td= billable_item.state
 
 %h3 Billable items activities
 %table
+  %tr
+    %th Date
+    %th Addon
+    %th State
   - @site.billable_item_activities.reorder('created_at DESC').each do |activity|
     %tr
       %td= display_time(activity.created_at)

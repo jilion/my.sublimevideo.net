@@ -9,8 +9,8 @@
     - if need_subdomain?(site)
       = tooltip_box href: edit_site_path(site), class: "warning" do
         %span.p= raw t 'site.status.need_subdomain', hostname: site.hostname_with_subdomain_needed
-    - if site.plan_id?
-      .plan= link_to "#{site.plan.title} plan", site_addons_path(site)
+    - if site.new_plans.present?
+      .plan= link_to site.new_plans.first.title, site_addons_path(site)
     .spacer
     .token{ style: 'display: inline' }= "##{site.token}"
     .actions{ style: 'display: inline' }

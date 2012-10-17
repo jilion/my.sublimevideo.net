@@ -80,7 +80,7 @@ module Populate
       initial_template = {
         overlay_visibility: {
           type: 'string',
-          values: ['none', 'autofade', 'sticky'],
+          values: ['none', 'autofade'],
           default: 'autofade'
         },
         overlay_color: {
@@ -146,26 +146,26 @@ module Populate
           { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil, public_at: Time.now.utc }
         ],
         App::Plugin => [
-          { name: 'video_player',       token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-app' },
-          { name: 'ligthbox_classic',   token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
-          { name: 'ligthbox_flat',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
-          { name: 'ligthbox_light',     token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
-          { name: 'ligthbox_twit',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
-          { name: 'ligthbox_html5',     token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
-          { name: 'image_viewer',       token: 'sa.sn.so', addon: 'ref-Addon-image_viewer', design: nil,                       component: 'ref-App::Component-app' },
-          { name: 'sv_logo',            token: 'sa.sh.sp', addon: 'ref-Addon-sv_logo',      design: nil,                       component: 'ref-App::Component-app' },
-          { name: 'controls_classic',   token: 'sa.sh.sq', addon: 'ref-Addon-controls',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
-          { name: 'controls_flat',      token: 'sd.sd.sr', addon: 'ref-Addon-controls',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
-          { name: 'controls_light',     token: 'se.se.ss', addon: 'ref-Addon-controls',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
-          { name: 'controls_twit',      token: 'sf.sf.st', addon: 'ref-Addon-controls',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-twit' },
-          { name: 'controls_html5',     token: 'sg.sg.su', addon: 'ref-Addon-controls',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-html5' },
-          { name: 'initial_classic', token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
-          { name: 'initial_flat',    token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
-          { name: 'initial_light',   token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
-          { name: 'initial_twit',    token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
-          { name: 'initial_html5',   token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
-          { name: 'sharing_twit',       token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
-          { name: 'sharing_html5',      token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' }
+          { name: 'video_player',     token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-app' },
+          { name: 'ligthbox_classic', token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
+          { name: 'ligthbox_flat',    token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
+          { name: 'ligthbox_light',   token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
+          { name: 'ligthbox_twit',    token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
+          { name: 'ligthbox_html5',   token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'image_viewer',     token: 'sa.sn.so', addon: 'ref-Addon-image_viewer', design: nil,                       component: 'ref-App::Component-app' },
+          { name: 'sv_logo',          token: 'sa.sh.sp', addon: 'ref-Addon-sv_logo',      design: nil,                       component: 'ref-App::Component-app' },
+          { name: 'controls_classic', token: 'sa.sh.sq', addon: 'ref-Addon-controls',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
+          { name: 'controls_flat',    token: 'sd.sd.sr', addon: 'ref-Addon-controls',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
+          { name: 'controls_light',   token: 'se.se.ss', addon: 'ref-Addon-controls',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
+          { name: 'controls_twit',    token: 'sf.sf.st', addon: 'ref-Addon-controls',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-twit' },
+          { name: 'controls_html5',   token: 'sg.sg.su', addon: 'ref-Addon-controls',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-html5' },
+          { name: 'initial_classic',  token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
+          { name: 'initial_flat',     token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
+          { name: 'initial_light',    token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
+          { name: 'initial_twit',     token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
+          { name: 'initial_html5',    token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'sharing_twit',     token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
+          { name: 'sharing_html5',    token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' }
         ],
         AddonPlan => [
           { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden' },

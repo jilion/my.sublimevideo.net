@@ -161,7 +161,7 @@ feature 'Opt-out from grandfather plan' do
 
       current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/plan/opt_out"
 
-      click_button "Comfirm the opt-out from my old Plus Plan"
+      click_button "Confirm the opt-out from my old Plus Plan"
 
       current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/thanks"
       page.should have_content 'Add-ons successfully updated.'
@@ -248,7 +248,7 @@ feature 'Opt-out from grandfather plan' do
 
       current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/plan/opt_out"
 
-      click_button "Comfirm the opt-out from my old Premium Plan"
+      click_button "Confirm the opt-out from my old Premium Plan"
 
       current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons/thanks"
       page.should have_content 'Add-ons successfully updated.'

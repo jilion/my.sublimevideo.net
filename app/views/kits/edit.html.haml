@@ -1,7 +1,7 @@
 - title('Configure your player')
 = render '/layouts/site_header'
 
-%h2 Stable version
+%h2 Stable player settings
 - if @site.addon_plan_is_active?(AddonPlan.get('sv_logo', 'disabled'))
   = form_for [@site] do |f|
     = hidden_field_tag 'kit_edit', '1'
@@ -16,7 +16,7 @@
 - else
   There are currently no settings you can customize for the stable version of the SublimeVideo Player.
 
-%h2 Beta version
+%h2 Beta player settings
 #kit.edit
   = form_for [@site, @kit] do |f|
     .entry.design.select

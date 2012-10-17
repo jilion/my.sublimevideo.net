@@ -27,7 +27,7 @@ en:
       disabled:  'Disabled'
 
     sv_logo:
-      sublime:  'SublimeVideo logo'
+      enabled:  'SublimeVideo logo'
       disabled: 'Disable the SublimeVideo logo'
 
     logo:

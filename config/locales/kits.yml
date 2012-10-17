@@ -4,7 +4,7 @@ en:
       title: 'Player settings'
       settings:
         enable_fullmode: 'Display full-screen button'
-        fullwindow_forced: 'Use full-window instead of full-screen'
+        force_fullwindow: 'Use full-window instead of full-screen'
         enable_volume: 'Display volume control'
         stop_on_end: 'Back to initial state upon video end'
 
@@ -31,7 +31,7 @@ en:
     lightbox:
       title: 'Lightbox settings'
       settings:
-        autoplay: 'Autoplay video once the lighbox opens-up'
+        autoplay: 'Autoplay video once the lightbox opens-up'
         overlay_color: 'Overlay color'
         overlay_opacity: 'Overlay opacity'
         close_button_visibility: 'Close button visibility'
@@ -57,6 +57,9 @@ en:
         visibility: 'Visibility'
         position: 'Position'
       values:
+        visibility:
+          none: 'None'
+          autohide: 'Auto-hide'
         position:
           bottomLeft: 'Bottom left'
           bottomRight: 'Bottom right'

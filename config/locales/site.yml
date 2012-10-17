@@ -12,14 +12,6 @@ en:
       in_progress: "Your player is being published (this can take up to 2 minutes)."
       need_path: "If you don't own %{hostname}, we highly recommend you set a <em>path</em> to restrict the player to your pages only."
       need_subdomain: "If you don't own %{hostname}, we highly recommend you add a <em>subdomain</em> to it (or disable the wildcard option) to restrict the player to your pages only."
-    plan:
-      hostname_needed_for_paid_plan: "Please %{link} before choosing a paid plan."
-      upgrade_in_progress: "Your payment is being processed."
-      upgrade_in_progress_failed_link: "There has been a transaction error. Please review %{link} and retry the payment."
-      upgrade_in_progress_open_link: "An invoice will be charged soon, you can't change plan until it's paid. You can review your invoices %{link}."
-      upgrade_in_progress_waiting_link: "There is a transaction in progress, please be patient."
-      upgrade_need_billing_info_first: "In order to pay immediately, please %{link} first and return to this page to buy your plan."
-      upgrade_need_credit_card_up_to_date_first: "Your credit card is expired, please %{link} first and come back here to buy your plan."
     edit:
       delete_site_info1: "Your SublimeVideo license for <em>%{domain}</em> will be instantly removed from our servers."
       delete_site_info2: "This operation cannot be undone."
