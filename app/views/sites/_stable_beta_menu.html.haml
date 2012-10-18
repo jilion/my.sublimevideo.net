@@ -1,0 +1,3 @@
+%ul.segmented_menu.sticky
+  = li_menu_link 'Stable player', path: url_for(params.merge(new_stage: 'stable')), class: ['first', (cookies["stage-#{site.token}"] == 'stable' ? 'active' : nil)]
+  = li_menu_link 'Beta player', path: url_for(params.merge(new_stage: 'beta')), class: ['last', (cookies["stage-#{site.token}"] == 'beta' ? 'active' : nil)]

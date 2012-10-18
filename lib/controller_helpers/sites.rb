@@ -31,6 +31,7 @@ module ControllerHelpers
         @site = current_user.sites.not_archived.find_by_token!(params[:site_id] || params[:id])
       end
       @site = exhibit(@site)
+      set_stage_cookie
     end
 
   end

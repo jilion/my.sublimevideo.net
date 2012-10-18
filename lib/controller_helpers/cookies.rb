@@ -3,6 +3,16 @@ module ControllerHelpers
 
     private
 
+    def set_stage_cookie
+      if user_signed_in? && @site
+        cookies["stage-#{@site.token}"] ||= 'stable'
+        if params[:new_stage]
+          cookies["stage-#{@site.token}"] = params[:new_stage]
+          redirect_to url_for and return
+        end
+      end
+    end
+
     def set_logged_in_cookie
       if user_signed_in?
         cookies[:l] = {

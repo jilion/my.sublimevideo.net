@@ -14,6 +14,9 @@
 - else
   - title("Generate Video Code for #{hostname_or_token(@site)}")
   = render '/layouts/site_header'
+  = render 'sites/stable_beta_menu', site: @site
+  .spacer
+
   -#- else
   -#  = title_and_content_header('Video Code Generator')
   -#  .com_text

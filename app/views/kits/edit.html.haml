@@ -1,28 +1,29 @@
 - title('Configure your player')
 = render '/layouts/site_header'
+= render 'sites/stable_beta_menu', site: @site
+.spacer
 
-%h2 Stable player settings
-- if @site.addon_plan_is_active?(AddonPlan.get('sv_logo', 'disabled'))
-  = form_for [@site] do |f|
-    = hidden_field_tag 'kit_edit', '1'
-    .entry.badged
-      .checkbox_wrap
-        = f.check_box :badged
-        = f.label :badged, "Display the SublimeVideo logo."
-      %p.info= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
+- if stage?('beta')
+  %p
+    %em These settings will be taken in account only if you're using the beta player code.
+  #kit.edit
+    = form_for [@site, @kit] do |f|
+      = render 'full_form', f: f, site: @site, kit: @kit
 
-    .actions.center
-      = f.submit "Save stable settings", class: "submit blue_button"
+      .actions.center
+        = f.submit "Save beta settings", class: "submit blue_button"
+
 - else
-  There are currently no settings you can customize for the stable version of the SublimeVideo Player.
+  - if @site.addon_plan_is_active?(AddonPlan.get('sv_logo', 'disabled'))
+    = form_for [@site] do |f|
+      = hidden_field_tag 'kit_edit', '1'
+      .entry.badged
+        .checkbox_wrap
+          = f.check_box :badged
+          = f.label :badged, "Display the SublimeVideo logo."
+        %p.info= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
 
-.spacer.big_break
-
-%h2 New player settings
-%p These settings will be taken in account only if you're using the beta player code.
-#kit.edit
-  = form_for [@site, @kit] do |f|
-    = render 'full_form', f: f, site: @site, kit: @kit
-
-    .actions.center
-      = f.submit "Save beta settings", class: "submit blue_button"
+      .actions.center
+        = f.submit "Save stable settings", class: "submit blue_button"
+  - else
+    There are currently no settings you can customize for the stable version of the SublimeVideo Player.
