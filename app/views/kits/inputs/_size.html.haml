@@ -4,9 +4,9 @@
 
 .entry.size{ style: "margin-top:14px" }
   %span{ style: 'font-weight:600' }= label_tag "kit[addons][#{addon.name}][#{key}]", t("kit.#{addon.name}.settings.#{key}")
-  = text_field_tag "kit[addons][#{addon.name}][#{key}]", width_value, size: 4, maxlength: 4, id: "kit_setting-#{addon.name}-#{key}", data: { addon: addon.name }, class: 'text no_icon'
+  = text_field_tag "kit[addons][#{addon.name}][#{key}]", width_value, size: 4, maxlength: 4, id: "kit_setting-#{addon.name}-#{key}", data: { addon: addon.name, default: width_value }, class: 'text no_icon'
   x
-  = text_field_tag "kit[addons][#{addon.name}][#{height_key}]", height_value, size: 4, maxlength: 4, id: "kit_setting-#{addon.name}-#{height_key}", data: { addon: addon.name }, class: 'text no_icon'
+  = text_field_tag "kit[addons][#{addon.name}][#{height_key}]", height_value, size: 4, maxlength: 4, id: "kit_setting-#{addon.name}-#{height_key}", data: { addon: addon.name, default: height_value }, class: 'text no_icon'
   -#%p
   -#  %a.hl.reset{ href: "" } Reset to original size
 .spacer

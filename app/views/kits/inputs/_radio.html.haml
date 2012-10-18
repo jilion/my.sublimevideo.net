@@ -4,6 +4,6 @@
   %br
   - choices.each do |choice|
     .radio_wrap
-      = radio_button_tag "kit[addons][#{addon.name}][#{key}]", choice, value == choice, id: "kit_setting-#{addon.name}-#{key}", data: { addon: addon.name }
+      = radio_button_tag "kit[addons][#{addon.name}][#{key}]", choice, value == choice, id: "kit_setting-#{addon.name}-#{key}", data: { addon: addon.name, default: value == choice }
       = label_tag "kit[addons][#{addon.name}][#{key}]", t("kit.#{addon.name}.values.#{key}.#{choice}")
 .spacer

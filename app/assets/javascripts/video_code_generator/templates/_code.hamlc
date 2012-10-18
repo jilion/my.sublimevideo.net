@@ -32,10 +32,10 @@
             <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.
 
   - if @builder.get('builderClass') is 'iframe_embed'
-    != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, videoTagTemplate: @videoTagTemplate)
+    != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, videoTagTemplate: @videoTagTemplate, attributesHelper: @attributesHelper)
     .spacer
 
-  != this.embedTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video)
+  != this.embedTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, attributesHelper: @attributesHelper)
   .spacer
 
 - else
