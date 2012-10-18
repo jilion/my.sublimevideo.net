@@ -61,7 +61,7 @@ module Populate
         },
         close_button_visibility: {
           type: 'string',
-          values: ['none', 'autohide', 'sticky'],
+          values: ['hidden', 'autohide', 'visible'],
           default: 'autohide'
         },
         close_button_position: {
@@ -73,14 +73,14 @@ module Populate
       controls_template = {
         visibility: {
           type: 'string',
-          values: ['none', 'autohide', 'sticky'],
+          values: ['hidden', 'autohide', 'visible'],
           default: 'autohide'
         }
       }
       initial_template = {
         overlay_visibility: {
           type: 'string',
-          values: ['none', 'autofade'],
+          values: ['hidden', 'autofade'],
           default: 'autofade'
         },
         overlay_color: {
@@ -281,7 +281,7 @@ module Populate
             template: {
               visibility: {
                 type: 'string',
-                values: ['none', 'autohide'],
+                values: ['hidden', 'autohide'],
                 default: 'none'
               },
               position: {

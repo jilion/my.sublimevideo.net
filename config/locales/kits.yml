@@ -19,9 +19,9 @@ en:
         visibility: 'Controls visibility'
       values:
         visibility:
-          none: 'None'
+          hidden: 'Hidden'
           autohide: 'Auto-hide'
-          sticky: 'Sticky'
+          visible: 'Visible'
 
     initial:
       # title: 'Start view settings'
@@ -30,7 +30,7 @@ en:
         overlay_color: 'Initial overlay color'
       values:
         overlay_visibility:
-          none: 'None'
+          hidden: 'Hidden'
           autofade: 'Auto-fade'
 
     lightbox:
@@ -46,9 +46,9 @@ en:
           nothing: 'Do nothing'
           play: 'Play the video'
         close_button_visibility:
-          none: 'None'
+          hidden: 'Hidden'
           autohide: 'Auto-hide'
-          sticky: 'Sticky'
+          visible: 'Visible'
         close_button_position:
           left: 'Left'
           right: 'Right'
@@ -66,7 +66,7 @@ en:
         position: 'Position'
       values:
         visibility:
-          none: 'None'
+          hidden: 'Hidden'
           autohide: 'Auto-hide'
         position:
           bottomLeft: 'Bottom left'
