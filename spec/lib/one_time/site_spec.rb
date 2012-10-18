@@ -280,7 +280,7 @@ describe OneTime::Site do
     end
   end
 
-  describe ".update_accessible_stage_to_beta", :focus do
+  describe ".update_accessible_stage_to_beta" do
     before do
       @site_active_stable    = create(:site, state: 'active', accessible_stage: 'stable')
       @site_active_alpha     = create(:site, state: 'active', accessible_stage: 'alpha')
