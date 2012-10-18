@@ -7,32 +7,49 @@ require File.expand_path('lib/stage')
 
 unless defined?(ActiveRecord)
   class Site; end
-  class App::Component < Struct.new(:name, :token); end
-  class App::ComponentVersion < Struct.new(:version, :component, :dependencies)
-    def version_stage
+  App::Component = Struct.new(:name, :token)
+  App::ComponentVersion = Struct.new(:version, :component, :dependencies) do
+    def stage
       Stage.version_stage(version)
     end
   end
 end
 
+def create_app_component(name, token)
+  if defined?(ActiveRecord)
+    App::Component.new({name: name, token: token}, as: :admin)
+  else
+    App::Component.new(name, token)
+  end
+end
+
+def create_app_component_version(version, component)
+  if defined?(ActiveRecord)
+    App::ComponentVersion.new({version: version, component: component}, as: :admin)
+  else
+    App::ComponentVersion.new(version, component)
+  end
+end
+
+
 describe App::ComponentVersionDependenciesSolver do
   let(:site) { Site.new }
-  let(:c_a) { App::Component.new('app', 'a') }
-  let(:c_a_100) { App::ComponentVersion.new("1.0.0", c_a) }
-  let(:c_a_200alpha1) { App::ComponentVersion.new("2.0.0-alpha.1", c_a) }
-  let(:c_a_200beta1) { App::ComponentVersion.new("2.0.0-beta.1", c_a) }
-  let(:c_a_200) { App::ComponentVersion.new("2.0.0", c_a) }
-  let(:c_c1) { App::Component.new('c1', 'c1') }
-  let(:c_c1_100) { App::ComponentVersion.new("1.0.0", c_c1) }
-  let(:c_c1_110) { App::ComponentVersion.new("1.1.0", c_c1) }
-  let(:c_c1_200alpha1) { App::ComponentVersion.new("2.0.0-alpha.1", c_c1) }
-  let(:c_c1_200beta1) { App::ComponentVersion.new("2.0.0-beta.1", c_c1) }
-  let(:c_c2) { App::Component.new('c2', 'c2') }
-  let(:c_c2_100) { App::ComponentVersion.new("1.0.0", c_c2) }
-  let(:c_c2_200) { App::ComponentVersion.new("2.0.0", c_c2) }
-  let(:c_c3) { App::Component.new('c3', 'c3') }
-  let(:c_c3_100) { App::ComponentVersion.new("1.0.0", c_c3) }
-  let(:c_c3_200) { App::ComponentVersion.new("2.0.0", c_c3) }
+  let(:c_a) { create_app_component('app', 'a') }
+  let(:c_a_100) { create_app_component_version("1.0.0", c_a) }
+  let(:c_a_200alpha1) { create_app_component_version("2.0.0-alpha.1", c_a) }
+  let(:c_a_200beta1) { create_app_component_version("2.0.0-beta.1", c_a) }
+  let(:c_a_200) { create_app_component_version("2.0.0", c_a) }
+  let(:c_c1) { create_app_component('c1', 'c1') }
+  let(:c_c1_100) { create_app_component_version("1.0.0", c_c1) }
+  let(:c_c1_110) { create_app_component_version("1.1.0", c_c1) }
+  let(:c_c1_200alpha1) { create_app_component_version("2.0.0-alpha.1", c_c1) }
+  let(:c_c1_200beta1) { create_app_component_version("2.0.0-beta.1", c_c1) }
+  let(:c_c2) { create_app_component('c2', 'c2') }
+  let(:c_c2_100) { create_app_component_version("1.0.0", c_c2) }
+  let(:c_c2_200) { create_app_component_version("2.0.0", c_c2) }
+  let(:c_c3) { create_app_component('c3', 'c3') }
+  let(:c_c3_100) { create_app_component_version("1.0.0", c_c3) }
+  let(:c_c3_200) { create_app_component_version("2.0.0", c_c3) }
 
   describe ".components_dependencies" do
     before do

@@ -26,7 +26,7 @@ class App::ComponentVersionDependenciesSolver < Struct.new(:site, :stage, :depen
 private
 
   def add_component(component)
-    component.versions.select { |v| v.version_stage >= stage }.each do |version|
+    component.versions.select { |v| v.stage >= stage }.each do |version|
       graph_component = @graph.artifacts(component.token, version.version)
       version.dependencies.each do |component_name, identifier|
         dep_component = App::Component.find_by_name(component_name)
