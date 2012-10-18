@@ -52,7 +52,7 @@ describe BillableItem do
     end
 
     describe '.paid addons' do
-      it { described_class.paid.should =~ [@billable_item2, @billable_item4, @billable_item5] }
+      it { described_class.paid.should =~ [@billable_item2, @billable_item4] }
     end
   end
 
