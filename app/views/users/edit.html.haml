@@ -28,14 +28,15 @@
   = render 'users/balance_info'
   = render 'users/billing_info'
 
-  #delete_account
-    %h3.section_title= "Cancel account"
-    %p= "Please understand that:"
-    %ul
-      %li= raw "All your #{link_to "sites", sites_path, class: "hl"} will be cancelled."
-      %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
-      %li= "We do not offer refunds."
-    %p= link_to 'Cancel account', account_cancellation_url, class: "submit link_looks cancel delete"
+  - unless current_user.invoices.not_paid.any?
+    #delete_account
+      %h3.section_title= "Cancel account"
+      %p= "Please understand that:"
+      %ul
+        %li= raw "All your #{link_to "sites", sites_path, class: "hl"} will be cancelled."
+        %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
+        %li= "We do not offer refunds."
+      %p= link_to 'Cancel account', account_cancellation_url, class: "submit link_looks cancel delete"
 
-  .spacer
+    .spacer
 .spacer

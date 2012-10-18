@@ -91,7 +91,7 @@ class Site < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :user,        presence: true
+  validates :user, presence: true
   validates :accessible_stage, inclusion: Stage::STAGES
 
   validates :hostname, hostname: true, hostname_uniqueness: true
@@ -142,8 +142,9 @@ class Site < ActiveRecord::Base
     end
 
     before_transition :on => :archive do |site, transition|
+      raise Exception.new('Cannot be canceled.') if site.invoices.not_paid.any?
+
       site.archived_at = Time.now.utc
-      site.invoices.not_paid.map(&:cancel)
     end
   end
 
