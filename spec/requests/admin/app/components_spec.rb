@@ -7,7 +7,7 @@ describe "Admin::App::Components JSON actions" do
     admin.reset_authentication_token!
     admin
   }
-  let(:component) { App::Component.create({ name: 'app', token: 'e' }, as: :admin) }
+  let(:component) { App::Component.create({ name: 'name', token: 'token' }, as: :admin) }
   let(:headers) { { 'HTTP_HOST' => 'admin.sublimevideo.dev' } }
 
   describe "Auhtentication" do
@@ -38,8 +38,8 @@ describe "Admin::App::Components JSON actions" do
       it "returns 201" do
         post "app/components.json?auth_token=#{admin.authentication_token}", {
           component: {
-            name: 'app',
-            token: 'e'
+            name: 'name',
+            token: 'token'
           } }, headers
         response.status.should eq 201
       end
@@ -60,7 +60,7 @@ describe "Admin::App::Components JSON actions" do
       it "returns 422" do
         post "app/components.json?auth_token=#{admin.authentication_token}", {
           component: {
-            name: 'e'
+            name: 'name'
           } }, headers
         response.status.should eq 422
       end
