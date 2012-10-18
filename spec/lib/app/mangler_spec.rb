@@ -14,7 +14,7 @@ describe App::Mangler do
     end
 
     it "mangles hash string key" do
-      App::Mangler.mangle('flash_forced' => 'foo').should eq({
+      App::Mangler.mangle('force_flash' => 'foo').should eq({
         "ta" => "foo"
       })
     end
@@ -26,20 +26,20 @@ describe App::Mangler do
     end
 
     it "only mangles key present in the dictionary" do
-      App::Mangler.mangle('flash_forced' => 'foo', bar: 'foo2').should eq({
+      App::Mangler.mangle('force_flash' => 'foo', bar: 'foo2').should eq({
         "ta" => "foo",
         "bar" => "foo2"
       })
     end
 
     it "mangles recursively all keys" do
-      App::Mangler.mangle('flash_forced' => { enabled: 'foo' }).should eq({
+      App::Mangler.mangle('force_flash' => { enabled: 'foo' }).should eq({
         "ta" => { "tm" => "foo" }
       })
     end
 
     it "doesn't mangles if parent key is 'Kits'" do
-      App::Mangler.mangle('flash_forced' => { "kits" => { enabled: 'foo' } }).should eq({
+      App::Mangler.mangle('force_flash' => { "kits" => { enabled: 'foo' } }).should eq({
         "ta" => { "ks" => { "enabled" => "foo" } }
       })
     end
