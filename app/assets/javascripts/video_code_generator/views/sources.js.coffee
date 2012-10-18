@@ -42,7 +42,10 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
   # BINDINGS
   #
   render: (init=false)->
-    $(@el).html this.template(sources: @collection)
+    $(@el).html this.template
+      builder: @builder
+      sources: @collection
+
     unless init
       _.each @collection.models, (source) => this.renderStatus(source)
 

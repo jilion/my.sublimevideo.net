@@ -6,5 +6,7 @@
   %span#poster_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
 
 %p.info
-  Need help creating poster frames for your videos? Read our
-  <a class='hl' href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/create-poster-frame' onclick='window.open(this); return false'>documentation</a>.
+  != "Need help creating poster frames for your videos? Read our&nbsp;"
+  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('create-poster-frame', @builder.get('currentStage')), onclick: "window.open(this); return false" }><
+    documentation
+  = "."

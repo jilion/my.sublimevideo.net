@@ -1,8 +1,9 @@
 - kit = @builder.get('kit')
 - console.log kit
 - dataSettings = []
-- for addon in ['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'sv_logo', 'lightbox', 'api', 'stats']
-  - $("input[type=checkbox][data-addon='#{addon}'], input[type=radio][data-addon='#{addon}']:checked, input[type=range][data-addon='#{addon}']").each ->
+- lightboxDataSettings = []
+- for addon in ['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'sv_logo', 'api', 'stats']
+  - $("input[type=checkbox][data-addon='#{addon}'], input[type=radio][data-addon='#{addon}']:checked, input[type=range][data-addon='#{addon}'], input[type=text][data-addon='#{addon}']").each ->
     - idParts = $(this).attr('id').split('-')
     - val = $(this).val()
     - if $(this).attr('type') is 'range'
@@ -10,27 +11,42 @@
       - if !kit.settings[addon]? or ( val isnt kit.settings[addon][idParts[2]] )
         - dataSettingName = if addon == 'video_player' then idParts[2] else "#{idParts[1]}-#{idParts[2]}"
         - dataSettings.push "#{dataSettingName.underscore().dasherize()}: #{val}"
-
     - else if $(this).attr('type') is 'checkbox'
-      - if kit.settings[addon]?
-        - console.log kit.settings[addon][idParts[2]]
-        - console.log !kit.settings[addon][idParts[2]]
       - if !kit.settings[addon]? or ( ($(this).attr('checked')? and !kit.settings[addon][idParts[2]]) or (!$(this).attr('checked')? and kit.settings[addon][idParts[2]]) )
         - dataSettingName = if addon == 'video_player' then idParts[2] else "#{idParts[1]}-#{idParts[2]}"
         - dataSettings.push "#{dataSettingName.underscore().dasherize()}: #{if val is '1' then 'true' else 'false' }"
-    - else if $(this).attr('type') is 'radio'
+    - else if _.contains ['radio', 'text'], $(this).attr('type')
       - if !kit.settings[addon]? or ( val isnt kit.settings[addon][idParts[2]] )
-        - console.log val
-        - if kit.settings[addon]?
-          - console.log kit.settings[addon][idParts[2]]
         - dataSettingName = if addon == 'video_player' then idParts[2] else "#{idParts[1]}-#{idParts[2]}"
         - dataSettings.push "#{dataSettingName.underscore().dasherize().replace(/-visibility/, '')}: #{val.underscore().dasherize()}"
 
+- $("input[type=checkbox][data-addon='lightbox'], input[type=radio][data-addon='lightbox']:checked, input[type=range][data-addon='lightbox']").each ->
+  - idParts = $(this).attr('id').split('-')
+  - val = $(this).val()
+  - if $(this).attr('type') is 'range'
+    - val = Math.round(val * 100) / 100
+    - if !kit.settings['lightbox']? or ( val isnt kit.settings['lightbox'][idParts[2]] )
+      - lightboxDataSettings.push "#{idParts[2].underscore().dasherize()}: #{val}"
+  - else if $(this).attr('type') is 'checkbox'
+    - if !kit.settings['lightbox']? or ( ($(this).attr('checked')? and !kit.settings['lightbox'][idParts[2]]) or (!$(this).attr('checked')? and kit.settings['lightbox'][idParts[2]]) )
+      - lightboxDataSettings.push "#{idParts[2].underscore().dasherize()}: #{if val is '1' then 'true' else 'false' }"
+  - else if $(this).attr('type') is 'radio'
+    - if kit.settings['lightbox']?
+      - console.log val
+      - console.log kit.settings['lightbox']
+    - if !kit.settings['lightbox']? or ( val isnt kit.settings['lightbox'][idParts[2]] )
+      - lightboxDataSettings.push "#{idParts[2].underscore().dasherize().replace(/-visibility/, '')}: #{val.underscore().dasherize()}"
+
 - console.log dataSettings
+- console.log lightboxDataSettings
 - if _.isEmpty dataSettings
   - dataSettings = ''
 - else
   - dataSettings = "data-settings=\"#{dataSettings.join('; ')}\" "
+- if _.isEmpty lightboxDataSettings
+  - lightboxDataSettings = ''
+- else
+  - lightboxDataSettings = "data-settings=\"#{lightboxDataSettings.join('; ')}\""
 
 - poster          = if @video.get('poster').get('src') then "poster=\"#{@video.get('poster').get('src')}\" " else ''
 - sizes           = if @builder.get('builderClass') isnt 'iframe_embed' then "width=\"#{@video.width()}\" height=\"#{@video.height()}\" " else ''
@@ -42,7 +58,7 @@
 - if @builder.get('builderClass') is 'lightbox'
   - mp4Mobile = @video.get('sources').mp4Mobile()
 
-  - code += "<a href=\"#{mp4Mobile.get('src')}\" class=\"sublime\">\n  "
+  - code += "<a href=\"#{mp4Mobile.get('src')}\" class=\"sublime\" #{lightboxDataSettings}>\n  "
 
   - if @video.get('thumbnail').get('initialLink') is 'image'
     - code += "<img src=\"#{@video.get('thumbnail').get('src')}\" width=\"#{@video.get('thumbnail').get('thumbWidth')}\" height=\"#{@video.get('thumbnail').get('thumbHeight')}\" />"

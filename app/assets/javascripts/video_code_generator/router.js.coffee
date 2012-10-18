@@ -4,6 +4,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     @sites             = options['sites']
     @selectedSiteToken = options['selectedSiteToken']
     @kit               = options['kit']
+    @currentStage      = options['currentStage']
 
     this.handlePublicClass()
     this.initModels()
@@ -23,6 +24,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCodeGenerator.builder = new MSVVideoCodeGenerator.Models.Builder
       site: MSVVideoCodeGenerator.sites.selectedSite
       kit: @kit
+      currentStage : @currentStage
 
     MSVVideoCodeGenerator.demoPoster    = 'http://media.jilion.com/vcg/ms_800.jpg'
     MSVVideoCodeGenerator.demoThumbnail = 'http://media.jilion.com/vcg/ms_192.jpg'
@@ -65,28 +67,30 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       el: '#video_embed_type_selector'
 
     MSVVideoCodeGenerator.lightboxView = new MSVVideoCodeGenerator.Views.Lightbox
-      builder: MSVVideoCodeGenerator.builder
+      builder:   MSVVideoCodeGenerator.builder
       thumbnail: MSVVideoCodeGenerator.thumbnail
       el: '#lightbox_attributes'
 
     MSVVideoCodeGenerator.iframeEmbedView = new MSVVideoCodeGenerator.Views.IframeEmbed
-      model: MSVVideoCodeGenerator.iframe
-      loader: MSVVideoCodeGenerator.loader
-      sites: MSVVideoCodeGenerator.sites
+      model:   MSVVideoCodeGenerator.iframe
+      builder: MSVVideoCodeGenerator.builder
+      loader:  MSVVideoCodeGenerator.loader
+      sites:   MSVVideoCodeGenerator.sites
       el: '#iframe_embed_attributes'
 
     MSVVideoCodeGenerator.posterView = new MSVVideoCodeGenerator.Views.Poster
-      model: MSVVideoCodeGenerator.poster
       builder: MSVVideoCodeGenerator.builder
+      model:   MSVVideoCodeGenerator.poster
       el: '#poster'
 
     MSVVideoCodeGenerator.settingsView = new MSVVideoCodeGenerator.Views.Settings
-      builder: MSVVideoCodeGenerator.builder
+      builder:    MSVVideoCodeGenerator.builder
       collection: MSVVideoCodeGenerator.sources
-      model: MSVVideoCodeGenerator.sources.mp4Base()
+      model:      MSVVideoCodeGenerator.sources.mp4Base()
       el: '#settings'
 
-    $.get "/sites/#{@selectedSiteToken}/players/#{@kit['id']}.js"
+    if $('#kit_settings_form').exists()
+      $.get "/sites/#{@selectedSiteToken}/players/#{@kit['id']}.js"
 
     MSVVideoCodeGenerator.sourcesView = new MSVVideoCodeGenerator.Views.Sources
       collection: MSVVideoCodeGenerator.sources

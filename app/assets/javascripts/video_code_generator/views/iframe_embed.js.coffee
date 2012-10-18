@@ -5,8 +5,9 @@ class MSVVideoCodeGenerator.Views.IframeEmbed extends Backbone.View
     'change #iframe_src': 'updateSrc'
 
   initialize: ->
-    @loader = @options.loader
-    @sites  = @options.sites
+    @builder = @options.builder
+    @loader  = @options.loader
+    @sites   = @options.sites
 
     _.bindAll this, 'render'
     @loader.bind 'change:site', this.render
@@ -21,7 +22,12 @@ class MSVVideoCodeGenerator.Views.IframeEmbed extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).html this.template(loader: @loader, iframe: @model, sites: @sites)
+    $(@el).html this.template
+      builder: @builder
+      loader: @loader
+      iframe: @model
+      sites: @sites
+
     $(@el).show()
 
     this

@@ -27,8 +27,11 @@
   %h4 Stats
 
   %p.info
-    Fill in these attributes to optimize your videos for SublimeVideo's
-    <a class='hl' href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/real-time-stats' onclick='window.open(this); return false'>Universal Real-Time Statistics platform</a>.
+    != "Fill in these attributes to optimize your videos for SublimeVideo's&nbsp;"
+    - path = if @builder.get('currentStage') is 'beta' then 'add-ons/real-time-stats/overview' else 'real-time-stats'
+    %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl(path, @builder.get('currentStage')), onclick: "window.open(this); return false" }><
+      Universal Real-Time Statistics platform
+    = "."
 
   %h5
     %label{ for: "data_uid" } UID

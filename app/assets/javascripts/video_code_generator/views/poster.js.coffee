@@ -24,7 +24,9 @@ class MSVVideoCodeGenerator.Views.Poster extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).html this.template(poster: @model)
+    $(@el).html this.template
+      builder: @builder
+      poster: @model
     this.renderStatus()
 
     this

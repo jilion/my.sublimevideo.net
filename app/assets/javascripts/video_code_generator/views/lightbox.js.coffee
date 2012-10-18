@@ -12,8 +12,9 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
     @thumbnail   = @options.thumbnail
     @initialLink = 'image'
     @uiHelper    = new MSVVideoCodeGenerator.Helpers.UIAssetHelper 'thumb'
-    $.get "/sites/#{@builder.get('site').get('token')}/players/#{@builder.get('kit').id}.js?addon=lightbox", (data) =>
-      @lightboxAddonSettingsFields = data
+    if @builder.get('currentStage') is 'beta'
+      $.get "/sites/#{@builder.get('site').get('token')}/players/#{@builder.get('kit').id}.js?addon=lightbox", (data) =>
+        @lightboxAddonSettingsFields = data
 
     _.bindAll this, 'render', 'renderExtraSettings', 'renderThumbWidth', 'renderThumbHeight', 'renderStatus'
     @thumbnail.bind 'change:initialLink', this.renderExtraSettings
@@ -44,9 +45,10 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).html this.template(thumbnail: @thumbnail, lightboxAddonSettingsFields: @lightboxAddonSettingsFields)
-    eval @lightboxAddonSettingsFields
-    new MySublimeVideo.UI.KitEditor
+    $(@el).html this.template(thumbnail: @thumbnail)
+    if @lightboxAddonSettingsFields?
+      eval @lightboxAddonSettingsFields
+      new MySublimeVideo.UI.KitEditor
     $(@el).show()
     this.renderStatus()
 
