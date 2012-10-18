@@ -40,8 +40,8 @@ def instantiate_variables
   @light_design   = App::Design.find_by_name('light')
   @twit_design    = App::Design.find_by_name('twit')
   @html5_design   = App::Design.find_by_name('twit')
-  @video_player_addon = Addon.find_by_name('video_player')
 
+  @video_player_addon = Addon.find_by_name('video_player')
   @video_player_addon_plan_1 = AddonPlan.get('video_player', 'standard')
 
   @lightbox_addon = Addon.find_by_name('lightbox')

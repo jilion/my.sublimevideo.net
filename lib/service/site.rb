@@ -40,13 +40,11 @@ module Service
         set_default_app_designs
         if site.new_plans.present?
           site.billable_items.plans.where(item_id: site.plan.id).first.update_attribute(:state, 'subscribed')
-          update_billable_addon_plans({
+          update_billable_addon_plans(free_addon_plans.merge({
             sv_logo: AddonPlan.get('sv_logo', 'disabled').id,
             stats: AddonPlan.get('stats', 'realtime').id,
-            lightbox: AddonPlan.get('lightbox', 'standard').id,
-            api: AddonPlan.get('api', 'standard').id,
             support: (site.plan.name == 'premium' ? AddonPlan.get('support', 'vip') : AddonPlan.get('support', 'standard')).id
-          }, sponsor: true)
+          }), sponsor: true)
         else
           site.billable_items.where(state: 'suspended').each do |billable_item|
             billable_item.update_attribute(:state, new_billable_item_state(billable_item.item))
