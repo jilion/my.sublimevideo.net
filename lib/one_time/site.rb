@@ -95,6 +95,12 @@ module OneTime
         end
       end
 
+      def update_accessible_stage_to_beta
+        processed = ::Site.not_archived.where(accessible_stage: 'stable').update_all(accessible_stage: 'beta')
+
+        "Finished: #{processed} sites were updated."
+      end
+
     end
 
   end

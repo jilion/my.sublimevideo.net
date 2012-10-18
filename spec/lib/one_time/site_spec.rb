@@ -280,6 +280,25 @@ describe OneTime::Site do
     end
   end
 
+  describe ".update_accessible_stage_to_beta", :focus do
+    before do
+      @site_active_stable    = create(:site, state: 'active', accessible_stage: 'stable')
+      @site_active_alpha     = create(:site, state: 'active', accessible_stage: 'alpha')
+      @site_suspended_stable = create(:site, state: 'suspended', accessible_stage: 'stable')
+      @site_suspended_alpha  = create(:site, state: 'suspended', accessible_stage: 'alpha')
+      @site_archived         = create(:site, state: 'archived', accessible_stage: 'stable')
+    end
+
+    it "updates only non-archived site with accessible_stage at 'stable'" do
+      described_class.update_accessible_stage_to_beta
+
+      @site_active_stable.reload.accessible_stage.should eq('beta')
+      @site_active_alpha.reload.accessible_stage.should eq('alpha')
+      @site_suspended_stable.reload.accessible_stage.should eq('beta')
+      @site_suspended_alpha.reload.accessible_stage.should eq('alpha')
+      @site_archived.reload.accessible_stage.should eq('stable')
+    end
+  end
 end
 
 def create_plans
