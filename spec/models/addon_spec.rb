@@ -25,7 +25,7 @@ describe Addon do
 
   describe '.get' do
     before do
-      @sv_logo_addon = create(:addon, name: 'logo')
+      @sv_logo_addon = create(:addon, name: 'sv_logo')
     end
 
     it { described_class.get('sv_logo').should eq @sv_logo_addon }
