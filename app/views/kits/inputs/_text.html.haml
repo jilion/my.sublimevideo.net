@@ -1,0 +1,5 @@
+- value = settings[key] || default
+.entry
+  %span{ style: 'font-weight:600' }= label_tag "kit[addons][#{addon.name}][#{key}]", t("kit.#{addon.name}.settings.#{key}")
+  = text_field_tag "kit[addons][#{addon.name}][#{key}]", value, id: "kit_setting-#{addon.name}-#{key}", data: { addon: addon.name }, class: 'text no_icon'
+.spacer

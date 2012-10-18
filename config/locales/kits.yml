@@ -6,7 +6,12 @@ en:
         enable_fullmode: 'Display full-screen button'
         force_fullwindow: 'Use full-window instead of full-screen'
         enable_volume: 'Display volume control'
-        stop_on_end: 'Back to initial state upon video end'
+        on_end: 'When a video playback ends'
+      values:
+        on_end:
+          nothing: 'Do nothing'
+          replay: 'Replay the video'
+          stop: 'Stop the video'
 
     controls:
       # title: 'Player controls settings'
@@ -31,12 +36,15 @@ en:
     lightbox:
       title: 'Lightbox settings'
       settings:
-        autoplay: 'Autoplay video once the lightbox opens-up'
+        on_open: 'When a lightbox opens-up'
         overlay_color: 'Overlay color'
         overlay_opacity: 'Overlay opacity'
         close_button_visibility: 'Close button visibility'
         close_button_position: 'Close button position'
       values:
+        on_open:
+          nothing: 'Do nothing'
+          play: 'Play the video'
         close_button_visibility:
           none: 'None'
           autohide: 'Auto-hide'
@@ -65,7 +73,13 @@ en:
           bottomRight: 'Bottom right'
 
     sharing:
-      standard: 'Standard sharing'
+      title: 'Sharing settings'
+      settings:
+        twitter_url: 'Twitter URL'
+        facebook_url: 'Facebook URL'
+        embed_url: 'Embed URL'
+        embed_width: 'Embed size'
+        embed_height: ''
 
     api:
       standard: 'SublimeVideo player basic JavaScript API'

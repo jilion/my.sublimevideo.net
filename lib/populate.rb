@@ -43,10 +43,10 @@ module Populate
       empty_tables(App::Component, App::ComponentVersion, App::Plugin, App::SettingsTemplate, App::Design, Addon, AddonPlan, BillableItem, BillableItemActivity)
 
       lightbox_template = {
-        autoplay: {
-          type: 'boolean',
-          values: [true, false],
-          default: true
+        on_open: {
+          type: 'string',
+          values: ['nothing', 'play'],
+          default: 'play'
         },
         overlay_color: {
           type: 'color',
@@ -100,10 +100,10 @@ module Populate
           type: 'url'
         },
         embed_width: {
-          type: 'integer'
+          type: 'size'
         },
         embed_height: {
-          type: 'integer'
+          type: 'size'
         }
       }
       seeds = {
@@ -134,16 +134,16 @@ module Populate
           { name: 'html5',   skin_token: 'sg.sg.sg', price: 0, availability: 'custom', component: 'ref-App::Component-html5' }
         ],
         Addon => [
-          { name: 'video_player', kind: 'videoPlayer', design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
+          { name: 'video_player', kind: 'videoPlayer', design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
           { name: 'controls',     kind: 'controls',    design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'initial',      kind: 'initial',     design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'sharing',      kind: 'sharing',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
-          { name: 'sv_logo',      kind: 'svLogo',      design_dependent: false,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
-          { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil, public_at: Time.now.utc },
-          { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
-          { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil, public_at: Time.now.utc },
-          { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil, public_at: Time.now.utc }
+          { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
+          { name: 'sv_logo',      kind: 'svLogo',      design_dependent: false, parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
+          { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil,                      public_at: Time.now.utc },
+          { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
+          { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
+          { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc }
         ],
         App::Plugin => [
           { name: 'video_player',     token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-app' },
@@ -159,11 +159,12 @@ module Populate
           { name: 'controls_light',   token: 'se.se.ss', addon: 'ref-Addon-controls',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
           { name: 'controls_twit',    token: 'sf.sf.st', addon: 'ref-Addon-controls',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-twit' },
           { name: 'controls_html5',   token: 'sg.sg.su', addon: 'ref-Addon-controls',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-html5' },
-          { name: 'initial_classic',  token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
-          { name: 'initial_flat',     token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
-          { name: 'initial_light',    token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
-          { name: 'initial_twit',     token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
-          { name: 'initial_html5',    token: 'sa.sh.sv', addon: 'ref-Addon-initial',   design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'initial_classic',  token: 'sa.sh.sv', addon: 'ref-Addon-initial',      design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
+          { name: 'initial_flat',     token: 'sa.sh.sv', addon: 'ref-Addon-initial',      design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
+          { name: 'initial_light',    token: 'sa.sh.sv', addon: 'ref-Addon-initial',      design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
+          { name: 'initial_twit',     token: 'sa.sh.sv', addon: 'ref-Addon-initial',      design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
+          { name: 'initial_html5',    token: 'sa.sh.sv', addon: 'ref-Addon-initial',      design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'sharing_classic',  token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
           { name: 'sharing_twit',     token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
           { name: 'sharing_html5',    token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' }
         ],
@@ -178,7 +179,7 @@ module Populate
           { name: 'disabled',  price: 995,  addon: 'ref-Addon-sv_logo',      availability: 'public' },
           # { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'hidden', required_stage: 'beta' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-initial',   availability: 'hidden' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-initial',      availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'public' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public' },
@@ -192,10 +193,10 @@ module Populate
                 values: [true, false],
                 default: false,
               },
-              stop_on_end: {
-                type: 'boolean',
-                values: [true, false],
-                default: false
+              on_end: {
+                type: 'string',
+                values: ['nothing', 'replay', 'stop'],
+                default: 'nothing'
               },
               enable_fullmode: {
                 type: 'boolean',
@@ -296,24 +297,32 @@ module Populate
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_light', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_twit', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_html5', template: initial_template },
+          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_classic', template: sharing_template },
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_twit', template: sharing_template },
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_html5', template: sharing_template }
         ]
       }
 
-      references = {}
-
       seeds.each do |klass, new_record|
         new_record.each do |attributes|
-          reference_key = "#{klass.to_s}-"
-          reference_key += "#{attributes[:addon].sub(/\Aref-Addon-/, '')}-" if klass == AddonPlan
-          reference_key += "#{attributes[:name] || attributes[:token]}"
-          attributes = attributes.inject({}) { |h, (k, v)| h[k] = (v =~ /\Aref-/ ? references[v.sub(/\Aref-/, '')] : v); h }
-          # puts attributes.inspect if Rails.env.development?
-          references[reference_key] = klass.create!(attributes, as: :admin)
-          # puts "#{klass} #{attributes[:name] || attributes[:token]} inserted" if Rails.env.development?
+          attributes = attributes.inject({}) do |h, (k, v)|
+            if v =~ /\Aref-/
+              parts = v.split('-')
+              parent_klass = parts[1].constantize
+              parent_record = if parent_klass == AddonPlan
+                parent_klass.get(parts[2], parts[3])
+              else
+                parent_klass.find_by_name(parts[2])
+              end
+              h[k] = parent_record
+            else
+              h[k] = v
+            end
+            h
+          end
+          klass.create(attributes, as: :admin)
         end
-        puts "\t- #{klass.count} #{klass.to_s} created;" if Rails.env.development?
+        puts "\t- #{klass.count} #{klass.to_s} created;" unless Rails.env.test?
       end
     end
 

@@ -47,6 +47,12 @@ class KitExhibit < DisplayCase::Exhibit
       if (2..3).cover?(setting_fields[:values].size)
         template.render('kits/inputs/radio', kit: self, addon: addon, key: key, settings: settings, choices: setting_fields[:values], default: default)
       end
+    when 'url'
+      template.render('kits/inputs/text', kit: self, addon: addon, key: key, settings: settings, default: default)
+    when 'size'
+      if key =~ /width\z/
+        template.render('kits/inputs/size', kit: self, addon: addon, key: key, settings: settings, default: default)
+      end
     end || ''
   end
 
