@@ -127,11 +127,11 @@ module Populate
         #   { component: 'ref-App::Component-html5', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
         # ],
         App::Design => [
-          { name: 'classic', skin_token: 'sa.sb.sc', price: 0, availability: 'public', component: 'ref-App::Component-app' },
-          { name: 'flat',    skin_token: 'sa.sd.sd', price: 0, availability: 'public', component: 'ref-App::Component-app' },
-          { name: 'light',   skin_token: 'sa.se.se', price: 0, availability: 'public', component: 'ref-App::Component-app' },
-          { name: 'twit',    skin_token: 'sf.sf.sf', price: 0, availability: 'custom', component: 'ref-App::Component-twit' },
-          { name: 'html5',   skin_token: 'sg.sg.sg', price: 0, availability: 'custom', component: 'ref-App::Component-html5' }
+          { name: 'classic', skin_token: 'sa.sb.sc', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
+          { name: 'flat',    skin_token: 'sa.sd.sd', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
+          { name: 'light',   skin_token: 'sa.se.se', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
+          { name: 'twit',    skin_token: 'sf.sf.sf', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-twit' },
+          { name: 'html5',   skin_token: 'sg.sg.sg', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-html5' }
         ],
         Addon => [
           { name: 'video_player', kind: 'videoPlayer', design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
@@ -139,7 +139,7 @@ module Populate
           { name: 'initial',      kind: 'initial',     design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'sharing',      kind: 'sharing',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
           { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'sv_logo',      kind: 'svLogo',      design_dependent: false, parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
+          { name: 'logo',         kind: 'logo',        design_dependent: false, parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
           { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil,                      public_at: Time.now.utc },
           { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
           { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
@@ -153,7 +153,7 @@ module Populate
           { name: 'ligthbox_twit',    token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
           { name: 'ligthbox_html5',   token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',     design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
           { name: 'image_viewer',     token: 'sa.sn.so', addon: 'ref-Addon-image_viewer', design: nil,                       component: 'ref-App::Component-app' },
-          { name: 'sv_logo',          token: 'sa.sh.sp', addon: 'ref-Addon-sv_logo',      design: nil,                       component: 'ref-App::Component-app' },
+          { name: 'logo',             token: 'sa.sh.sp', addon: 'ref-Addon-logo',         design: nil,                       component: 'ref-App::Component-app' },
           { name: 'controls_classic', token: 'sa.sh.sq', addon: 'ref-Addon-controls',     design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
           { name: 'controls_flat',    token: 'sd.sd.sr', addon: 'ref-Addon-controls',     design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
           { name: 'controls_light',   token: 'se.se.ss', addon: 'ref-Addon-controls',     design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
@@ -173,17 +173,17 @@ module Populate
           { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer', availability: 'hidden' },
           { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden' },
-          { name: 'realtime',  price: 995,  addon: 'ref-Addon-stats',        availability: 'public' },
-          # { name: 'disabled',  price: 1995, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta' },
-          { name: 'enabled',   price: 0,    addon: 'ref-Addon-sv_logo',      availability: 'hidden' },
-          { name: 'disabled',  price: 995,  addon: 'ref-Addon-sv_logo',      availability: 'public' },
-          # { name: 'custom',    price: 1995, addon: 'ref-Addon-logo',         availability: 'hidden', required_stage: 'beta' },
+          { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats',        availability: 'public' },
+          # { name: 'disabled',  price: 1990, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta' },
+          { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
+          { name: 'disabled',  price: 990,  addon: 'ref-Addon-logo',         availability: 'public' },
+          { name: 'custom',    price: 1990, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-initial',      availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'public' },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'hidden' },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public' },
-          { name: 'vip',       price: 9995, addon: 'ref-Addon-support',      availability: 'public' }
+          { name: 'vip',       price: 9990, addon: 'ref-Addon-support',      availability: 'public' }
         ],
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
@@ -244,7 +244,7 @@ module Populate
               },
               realtime: {
                 type: 'boolean',
-                values: [true, false],
+                values: [true],
                 default: true
               }
             }
@@ -259,11 +259,11 @@ module Populate
           #     realtime: {
           #       type: 'boolean',
           #       values: [true, false],
-          #       default: true
+          #       default: false
           #     }
           #   }
           # },
-          { addon_plan: 'ref-AddonPlan-sv_logo-enabled', plugin: 'ref-App::Plugin-sv_logo',
+          { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
             template: {
               visibility: {
                 type: 'string',
@@ -274,20 +274,56 @@ module Populate
                 type: 'string',
                 values: ['bottomLeft', 'bottomRight'],
                 default: 'bottomRight'
+              },
+              image_url: {
+                type: 'image',
+                values: [''],
+                default: ''
+              },
+              link_url: {
+                type: 'url'
               }
             }
           },
-          { addon_plan: 'ref-AddonPlan-sv_logo-disabled', plugin: 'ref-App::Plugin-sv_logo',
+          { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
             template: {
               visibility: {
                 type: 'string',
                 values: ['hidden', 'autohide'],
-                default: 'none'
+                default: 'hidden'
               },
               position: {
                 type: 'string',
                 values: ['bottomLeft', 'bottomRight'],
                 default: 'bottomRight'
+              },
+              image_url: {
+                type: 'image',
+                values: [''],
+                default: ''
+              },
+              link_url: {
+                type: 'url'
+              }
+            }
+          },
+          { addon_plan: 'ref-AddonPlan-logo-custom', plugin: 'ref-App::Plugin-logo',
+            template: {
+              visibility: {
+                type: 'string',
+                values: ['hidden', 'autohide'],
+                default: 'hidden'
+              },
+              position: {
+                type: 'string',
+                values: ['bottomLeft', 'bottomRight'],
+                default: 'bottomRight'
+              },
+              image_url: {
+                type: 'image'
+              },
+              link_url: {
+                type: 'url'
               }
             }
           },

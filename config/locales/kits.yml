@@ -59,16 +59,24 @@ en:
         enabled: 'Enable statistics'
         realtime: 'Enable real-time statistics'
 
-    sv_logo:
-      title: 'SublimeVideo logo settings'
+    logo:
+      title: 'Logo settings'
       settings:
-        visibility: 'Visibility'
-        position: 'Position'
+        sv_logo_visibility: 'SublimeVideo logo visibility'
+        sv_logo_position: 'SublimeVideo logo position'
+        custom_logo_visibility: 'Your logo visibility'
+        custom_logo_position: 'Your logo position'
       values:
-        visibility:
+        sv_logo_visibility:
           hidden: 'Hidden'
           autohide: 'Auto-hide'
-        position:
+        sv_logo_position:
+          bottomLeft: 'Bottom left'
+          bottomRight: 'Bottom right'
+        custom_logo_visibility:
+          hidden: 'Hidden'
+          autohide: 'Auto-hide'
+        custom_logo_position:
           bottomLeft: 'Bottom left'
           bottomRight: 'Bottom right'
 

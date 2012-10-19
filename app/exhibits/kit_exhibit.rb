@@ -34,7 +34,7 @@ class KitExhibit < DisplayCase::Exhibit
 
   def render_input_field(addon, key, setting_fields, template)
     settings = self.settings.try(:[], addon.name) || {}
-    default = setting_fields[:default]
+    default  = setting_fields[:default]
 
     case setting_fields[:type]
     when 'boolean'

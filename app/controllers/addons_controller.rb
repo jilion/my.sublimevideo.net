@@ -9,7 +9,6 @@ class AddonsController < ApplicationController
   def index
     @site = current_user.sites.not_archived.includes(:billable_items, :app_designs, :addon_plans).find_by_token!(params[:site_id] || params[:id])
     @site = exhibit(@site)
-    @app_designs = App::Design.all
   end
 
   # PUT /sites/:site_id/addons/update_all

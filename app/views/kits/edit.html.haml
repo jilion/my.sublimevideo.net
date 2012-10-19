@@ -11,10 +11,10 @@
       = render 'full_form', f: f, site: @site, kit: @kit
 
       .actions.center
-        = f.submit "Save beta settings", class: "submit blue_button"
+        = f.submit "Save settings", class: "submit blue_button"
 
 - else
-  - if @site.addon_plan_is_active?(AddonPlan.get('sv_logo', 'disabled'))
+  - if @site.addon_plan_is_active?(AddonPlan.get('logo', 'disabled'))
     = form_for [@site] do |f|
       = hidden_field_tag 'kit_edit', '1'
       .entry.badged
@@ -24,6 +24,6 @@
         %p.info= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
 
       .actions.center
-        = f.submit "Save stable settings", class: "submit blue_button"
+        = f.submit "Save settings", class: "submit blue_button"
   - else
     There are currently no settings you can customize for the stable version of the SublimeVideo Player.

@@ -11,7 +11,7 @@ class MSVVideoCodeGenerator.Helpers.AttributesHelper
     attributes.push "class=\"#{@video.get('classes')}\""
     attributes.push this.generatePosterAttribute()
     attributes.push this.generateWidthAndHeightAttributes(@video.width(), @video.height()) unless @builderClass is 'iframe_embed'
-    attributes.push this.generateDataSettings(['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'sv_logo', 'api', 'stats'])
+    attributes.push this.generateDataSettings(['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'])
     attributes.push this.generateDataName() + this.generateDataUID()
     attributes.push this.generateStyleAttribute()
     attributes.push "preload=\"none\""

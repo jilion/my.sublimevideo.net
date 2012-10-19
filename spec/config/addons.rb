@@ -55,9 +55,10 @@ def instantiate_variables
   @stats_addon_plan_2 = AddonPlan.get('stats', 'realtime')
   # @stats_addon_plan_3 = AddonPlan.get('stats', 'disabled')
 
-  @sv_logo_addon        = Addon.find_by_name('sv_logo')
-  @sv_logo_addon_plan_1 = AddonPlan.get('sv_logo', 'enabled')
-  @sv_logo_addon_plan_2 = AddonPlan.get('sv_logo', 'disabled')
+  @logo_addon        = Addon.find_by_name('logo')
+  @logo_addon_plan_1 = AddonPlan.get('logo', 'sublime')
+  @logo_addon_plan_2 = AddonPlan.get('logo', 'disabled')
+  @logo_addon_plan_3 = AddonPlan.get('logo', 'custom')
 
   @controls_addon = Addon.find_by_name('controls')
   @controls_addon_plan_1 = AddonPlan.get('controls', 'standard')

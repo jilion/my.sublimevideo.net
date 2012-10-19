@@ -104,7 +104,7 @@ class Site < ActiveRecord::Base
   # =============
 
   before_validation ->(site) do
-    site.hostname = DEFAULT_DOMAIN unless hostname?
+    site.hostname      = DEFAULT_DOMAIN unless hostname?
     site.dev_hostnames = DEFAULT_DEV_DOMAINS unless dev_hostnames?
   end
 
@@ -195,7 +195,7 @@ class Site < ActiveRecord::Base
   end
 
   def badged=(attribute)
-    write_attribute(:badged, addon_plan_is_active?(AddonPlan.get('sv_logo', 'disabled')) ? !!attribute : true)
+    write_attribute(:badged, addon_plan_is_active?(AddonPlan.get('logo', 'disabled')) ? !!attribute : true)
   end
 
 end

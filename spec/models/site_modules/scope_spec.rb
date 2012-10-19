@@ -58,8 +58,8 @@ describe SiteModules::Scope do
 
     describe ".paying" do
       before do
-        Timecop.travel(30.days.ago) { create(:billable_item, site: site1, item: @sv_logo_addon_plan_1, state: 'trial') }
-        Timecop.travel(31.days.ago) { create(:billable_item, site: site1, item: @sv_logo_addon_plan_2, state: 'trial') }
+        Timecop.travel(30.days.ago) { create(:billable_item, site: site1, item: @logo_addon_plan_1, state: 'trial') }
+        Timecop.travel(31.days.ago) { create(:billable_item, site: site1, item: @logo_addon_plan_2, state: 'trial') }
         create(:billable_item, site: site1, item: @stats_addon_plan_1, state: 'trial')
         create(:billable_item, site: site1, item: @support_addon_plan_2, state: 'subscribed')
       end
