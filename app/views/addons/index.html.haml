@@ -1,46 +1,24 @@
 - title("Add-ons for #{hostname_or_token(@site)}")
 = render '/layouts/site_header'
 
-- if @site.new_plans.present?
-  %section#grandfather_plan.text
-    %p= "Dear #{current_user.name || 'Customer'},"
+#site.addons
+  - if @site.plan_id?
+    #grandfather_plan{ style: 'display: none' }= render 'grandfather_plan_text'
 
-    %p= "So far you had a monthly #{@site.plan.title} for your site. As we have now moved to an “à la carte” pricing model, we have automatically switched your account. Now you get even more value from SublimeVideo:"
+  #addons_table_wrap
+    = form_for @site, url: update_all_site_addons_path, method: 'put', html: { id: 'edit_addons' } do |f|
+      = render 'designs_and_addons', site: @site, f: f
+      .big_break
+      %small= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
+      %strong#addons_total= display_amount_with_sup(@site.total_billable_items_price)
 
-    %p
-      %ul
-        %li your account is now unlimited in terms of video plays,
-        %li you can still remove SublimeVideo logo,
-        %li<
-          you have access to our Real-Time Statistics tool, with unlimited data retention
-          = @site.plan.name == 'premium' ? ',' : '.'
-        - if @site.plan.name == 'premium'
-          %li you have access to our VIP email support, which guarantees an answer within one business day.
-
-    %p= raw "All for the same monthly price of #{display_amount_with_sup(@site.plan.price)}."
-
-    %p You can also test the new SublimeVideo player, currently in beta. We look forward to reading your feedback about the new new player designs and add-ons.
-
-    %p
-      = "PS: In case you would prefer to switch to our new “à la carte” pricing, you can"
-      = link_to("opt-out from your old #{@site.plan.title}", opt_out_site_plan_path(@site)) + '.'
-
-- else
-  #site.addons
-    #addons_table_wrap
-      = form_for @site, url: update_all_site_addons_path, method: 'put', html: { id: 'edit_addons' } do |f|
-        = render 'addons', site: @site, f: f
-        .big_break
-        %small= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
-        %strong#addons_total= display_amount_with_sup(@site.addon_plans.sum(:price) + @site.app_designs.sum(:price))
-
-        .actions.center= submit_tag 'Confirm selection', class: 'submit green_button', id: 'site_submit'
-    .spacer
-
-  %small
-    Notes:
-    %ol
-      %li= "Beta add-ons are free of charge during the beta period. At the end of the beta period, you will be notified by email and will have #{BusinessModel.days_for_trial} days to cancel a given add-on in case you don't want to use it anymore."
-      %li Add-on prices are pro-rated per day.
-      %li Invoices are issued and charged at the beginning of each month for the previous month.
+      .actions.center= submit_tag 'Confirm selection', class: 'submit green_button', id: 'site_submit'
   .spacer
+
+%small
+  Notes:
+  %ol
+    %li= "Beta add-ons are free of charge during the beta period. At the end of the beta period, you will be notified by email and will have #{BusinessModel.days_for_trial} days to cancel a given add-on in case you don't want to use it anymore."
+    %li Add-on prices are pro-rated per day.
+    %li Invoices are issued and charged at the beginning of each month for the previous month.
+.spacer

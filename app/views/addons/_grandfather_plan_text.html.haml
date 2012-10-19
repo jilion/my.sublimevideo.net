@@ -1,0 +1,21 @@
+%section.text
+  %p= "Dear #{current_user.name || 'Customer'},"
+
+  %p= "So far you had a monthly #{@site.plan.title} for your site. As we have now moved to an “à la carte” pricing model, we have automatically switched your account. Now you get even more value from SublimeVideo:"
+
+  %ul
+    %li Your account is now unlimited in terms of video plays,
+    %li You can still remove the SublimeVideo logo,
+    %li<
+      You have access to our Real-Time Statistics tool, with unlimited data retention
+      = @site.plan.name == 'premium' ? ',' : '.'
+    - if @site.plan.name == 'premium'
+      %li You have access to our VIP email support, which guarantees an answer within one business day.
+
+  - price  = AddonPlan.get('logo', 'disabled').price
+  - price += AddonPlan.get('stats', 'realtime').price if @site.plan.name == 'premium'
+  %p= raw "All for #{@site.plan.name == 'premium' ? 'a much lower' : 'the same'} monthly price of #{display_amount_with_sup(price)}."
+
+  %p You can also test the new SublimeVideo player, currently in beta. We look forward to reading your feedback about the new player designs and add-ons.
+
+  %p.signature With love, the SublimeVideo Team. ♥

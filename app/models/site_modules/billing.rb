@@ -13,8 +13,4 @@ module SiteModules::Billing
     archived? && refunded_at?
   end
 
-  def last_paid_invoice
-    invoices.paid.order(:paid_at).try(:last)
-  end
-
 end

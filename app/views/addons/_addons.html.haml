@@ -1,44 +1,36 @@
-%table{ border: 0, style: 'text-align:left' }
-  %h3 Designs
-  - @app_designs.each do |app_design|
-    - if app_design.available?(site)
-      - disabled = app_design.free? || addon_plan_is_sponsored
+- Addon.all.each do |addon|
+  - visible_addon_plans = addon.plans.order(:price).select { |addon_plan| addon_plan.available?(site) }
+  - unless visible_addon_plans.empty?
+    %tr
+      %th{ colspan: 3 }
+        %h3= t("addons.#{addon.name}")
+    - visible_addon_plans.each do |addon_plan|
+      - addon_plan_is_sponsored = site.addon_plan_is_sponsored?(addon_plan)
+      - price = addon_plan_is_sponsored ? 0 : addon_plan.price
+      - disabled = addon_plan.free? || addon_plan_is_sponsored
       %tr
         %td
-          .checkbox_wrap{ class: "#{'disabled' if disabled}" }
-            = check_box_tag "app_designs[#{app_design.name}]", app_design.id, site.app_designs.include?(app_design), disabled: disabled, data: { price: app_design.price }
-            = label_tag "app_designs[#{app_design.name}]" do
-              = t("app_designs.#{app_design.name}")
-              = raw " <small>(beta player only)</small>" if app_design.required_stage == 'beta'
-        %td= "(in beta)" if app_design.beta?
-        %td= billable_item_price(app_design)
-
-  - Addon.all.each do |addon|
-    - visible_addon_plans = addon.plans.order(:price).select { |addon_plan| addon_plan.available?(site) }
-    - unless visible_addon_plans.empty?
-      %tr
-        %th{ colspan: 3 }
-          %h3= t("addons.#{addon.name}")
-      - visible_addon_plans.each do |addon_plan|
-        - addon_plan_is_sponsored = site.addon_plan_is_sponsored?(addon_plan)
-        - disabled = addon_plan.free? || addon_plan_is_sponsored
-        %tr
-          %td
-            - if visible_addon_plans.size > 1
-              .radio_wrap
-                = radio_button_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), data: { price: addon_plan.price }
-                = label_tag "addon_plans[#{addon.name}]" do
-                  = t("addon_plans.#{addon.name}.#{addon_plan.name}")
-                  = raw " <small>(beta player only)</small>" if addon_plan.required_stage == 'beta'
-            - else
-              .checkbox_wrap{ class: "#{'disabled' if disabled}" }
-                - free_addon_plan_id = addon.plans.where(price: 0).first.id
+          - if visible_addon_plans.size > 1
+            .radio_wrap
+              = radio_button_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), data: { price: price }
+              = label_tag "addon_plans[#{addon.name}]" do
+                = t("addon_plans.#{addon.name}.#{addon_plan.name}")
+                = raw " <small>(beta player only)</small>" if addon_plan.required_stage == 'beta'
+          - else
+            .checkbox_wrap{ class: "#{'disabled' if disabled}" }
+              - if free_addon_plan_id = addon.free_plan.try(:id)
                 = hidden_field_tag "addon_plans[#{addon.name}]", free_addon_plan_id, id: "addon_plans_#{addon.name}_#{free_addon_plan_id}"
-                = check_box_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), disabled: disabled, id: "addon_plans_#{addon.name}_#{addon_plan.id}", data: { price: addon_plan.price }
-                = label_tag "addon_plans[#{addon.name}]" do
-                  = t("addon_plans.#{addon.name}.#{addon_plan.name}")
-                  = raw " <small>(beta player only)</small>" if addon_plan.required_stage == 'beta'
-          %td
-            - unless addon_plan_is_sponsored
-              .trial_days_remaining{ style: "display:#{site.addon_plans.include?(addon_plan) ? 'block' : 'none'}" }= trial_days_remaining(site, addon_plan)
-          %td= addon_plan_is_sponsored ? 'sponsored' : billable_item_price(addon_plan)
+              = check_box_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), disabled: disabled, id: "addon_plans_#{addon.name}_#{addon_plan.id}", data: { price: price }
+              = label_tag "addon_plans[#{addon.name}]" do
+                = t("addon_plans.#{addon.name}.#{addon_plan.name}")
+                = raw " <small>(beta player only)</small>" if addon_plan.required_stage == 'beta'
+        %td
+          = "(in beta)" if addon_plan.beta?
+          - unless addon_plan_is_sponsored
+            .trial_days_remaining{ style: "display:#{site.addon_plans.include?(addon_plan) ? 'block' : 'none'}" }= trial_days_remaining(site, addon_plan)
+        %td
+          - if addon_plan_is_sponsored
+            = 'sponsored'
+            = raw "(#{link_to('why?', '#', class: 'grandfather_plan_link')})" if site.plan_id?
+          - else
+            = billable_item_price(addon_plan)

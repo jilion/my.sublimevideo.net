@@ -54,29 +54,6 @@ describe SiteModules::Billing do
       specify { @site_not_refunded2.should_not be_refunded }
     end # #refunded?
 
-    describe '#last_paid_invoice' do
-      let(:invoice) { create(:paid_invoice) }
-      context "with the last paid invoice not refunded" do
-
-        it "should return the last paid invoice" do
-          invoice.site.invoices.should have(1).item
-          invoice.site.last_paid_invoice.should eq invoice
-        end
-      end
-
-      context "with the last paid invoice refunded" do
-        before do
-          invoice.site.invoices.should have(1).item
-          invoice.site.update_attribute(:refunded_at, Time.now.utc)
-        end
-
-        it "returns nil" do
-          invoice.site.refunded_at.should be_present
-          invoice.site.last_paid_invoice.should be_nil
-        end
-      end
-    end # #last_paid_invoice
-
   end # Instance Methods
 
 end

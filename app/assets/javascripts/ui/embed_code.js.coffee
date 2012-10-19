@@ -17,12 +17,5 @@ class MySublimeVideo.UI.EmbedCode
       SublimeVideo.UI.Utils.openPopup
         class: 'popup'
         anchor: @popupContent
-      # this.setupTextareasSelectAll()
 
       false
-
-  # setupTextareasSelectAll: ->
-  #   $("#embed_code_#{@token}, #embed_code_#{@token}_beta").on 'click', (event) =>
-  #     textarea = $(event.delegateTarget)
-  #     textarea.focus()
-  #     textarea.select()

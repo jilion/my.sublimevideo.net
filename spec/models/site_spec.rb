@@ -213,14 +213,13 @@ describe Site, :addons do
         let(:site) { create(:site, plan_id: plus_plan.id) }
         before do
           Service::Site.new(site).migrate_plan_to_addons!
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(12).items
         end
 
         it 'suspends all billable items' do
           site.suspend!
 
-          site.reload.billable_items.should have(13).items
-          site.billable_items.plans.where(item_id: plus_plan).where(state: 'suspended').should have(1).item
+          site.reload.billable_items.should have(12).items
           site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
           site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
           site.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
@@ -228,7 +227,7 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
@@ -240,14 +239,13 @@ describe Site, :addons do
         let(:site) { create(:site, plan_id: premium_plan.id) }
         before do
           Service::Site.new(site).migrate_plan_to_addons!
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(12).items
         end
 
         it 'suspends all billable items' do
           site.suspend!
 
-          site.reload.billable_items.should have(13).items
-          site.billable_items.plans.where(item_id: premium_plan).where(state: 'suspended').should have(1).item
+          site.reload.billable_items.should have(12).items
           site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
           site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
           site.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
@@ -255,7 +253,7 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
@@ -269,17 +267,16 @@ describe Site, :addons do
         let(:site) { create(:site, plan_id: plus_plan.id) }
         before do
           Service::Site.new(site).migrate_plan_to_addons!
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(12).items
         end
 
         it 'suspends all billable items' do
           site.suspend!
 
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(12).items
           site.unsuspend!
 
-          site.reload.billable_items.should have(13).items
-          site.billable_items.plans.where(item_id: plus_plan).where(state: 'subscribed').should have(1).item
+          site.reload.billable_items.should have(12).items
           site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -287,7 +284,7 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'sponsored').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
@@ -299,25 +296,24 @@ describe Site, :addons do
         let(:site) { create(:site, plan_id: premium_plan.id) }
         before do
           Service::Site.new(site).migrate_plan_to_addons!
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(12).items
         end
 
         it 'suspends all billable items' do
           site.suspend!
 
-          site.reload.billable_items.should have(13).items
+          site.reload.billable_items.should have(12).items
           site.unsuspend!
 
-          site.reload.billable_items.should have(13).items
-          site.billable_items.plans.where(item_id: premium_plan).where(state: 'subscribed').should have(1).item
+          site.reload.billable_items.should have(12).items
           site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
           site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
           site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'sponsored').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
@@ -347,7 +343,7 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_1).where(state: 'subscribed').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
@@ -359,17 +355,17 @@ describe Site, :addons do
         let(:site) do
           service = Service::Site.build(attributes_for(:site).merge(user: create(:user)))
           service.initial_save
-          service.update_billable_items!({}, { sv_logo: AddonPlan.get('sv_logo', 'disabled').id })
+          service.update_billable_items!({}, { logo: AddonPlan.get('logo', 'disabled').id })
           service.site
         end
 
         it 'unsuspend all billable items' do
           site.reload.billable_items.should have(12).items
-          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'trial').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
 
           site.suspend!
 
-          site.reload.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.reload.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
 
           site.unsuspend!
 
@@ -381,7 +377,7 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sv_logo_addon_plan_2).where(state: 'trial').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
           site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
@@ -440,7 +436,7 @@ describe Site, :addons do
 
     context 'stats /disabled addon plan is active' do
       before do
-        create(:billable_item, site: site, item: @sv_logo_addon_plan_2, state: 'subscribed')
+        create(:billable_item, site: site, item: @logo_addon_plan_2, state: 'subscribed')
       end
 
       it 'is possible to set badged to false' do

@@ -30,14 +30,14 @@ window.spinOptions =
   shadow: false
 
 MySublimeVideo.UI.prepareSiteSelector = ->
-  if (select = $('#sites_select_title')).exists()
-    new MySublimeVideo.UI.SiteSelector(select: select)
+  if ($select = $('#sites_select_title')).exists()
+    new MySublimeVideo.UI.SiteSelector(select: $select)
 
 MySublimeVideo.UI.prepareSiteActionsSelector = ->
   $('select.site_actions').each ->
-    select = $(this)
-    select.on 'change', (e) ->
-      optionValue = select.attr('value')
+    $select = $(this)
+    $select.on 'change', (e) ->
+      optionValue = $select.attr('value')
       return if optionValue is ''
       $.pjax
         url: optionValue
@@ -48,8 +48,8 @@ MySublimeVideo.UI.prepareEmbedCodePopups = ->
     new MySublimeVideo.UI.EmbedCode(link: $(this))
 
 MySublimeVideo.UI.prepareAddASitePopup = ->
-  if (link = $('a#js-add_a_video')).exists()
-    new MySublimeVideo.UI.AddAVideo(link: link)
+  if ($link = $('a#js-add_a_video')).exists()
+    new MySublimeVideo.UI.AddAVideo(link: $link)
 
 MySublimeVideo.UI.prepareFlashNotices = ->
   $('#flash .notice').each ->
@@ -60,12 +60,16 @@ MySublimeVideo.UI.prepareHidableNotices = ->
     new MySublimeVideo.UI.Notice(element: $(this)).setupCloseButton()
 
 MySublimeVideo.UI.prepareSitesStatus = ->
-  if (table = $('#sites_table_wrap')).exists()
-    new MySublimeVideo.UI.SitesStatus(table)
+  if ($table = $('#sites_table_wrap')).exists()
+    new MySublimeVideo.UI.SitesStatus($table)
 
 MySublimeVideo.UI.prepareAddonsChooser = ->
-  if (form = $('#edit_addons')).exists()
-    new MySublimeVideo.UI.AddonsChooser(form)
+  if ($form = $('#edit_addons')).exists()
+    new MySublimeVideo.UI.AddonsChooser($form)
+
+MySublimeVideo.UI.prepareGrandFatherPlanPopUp = ->
+  if ($textDiv = $('#grandfather_plan')).exists()
+    new MySublimeVideo.UI.GrandFatherPlanPopUp($textDiv)
 
 MySublimeVideo.UI.prepareKitEditor = ->
   $('.edit_kit, .video_code_generator').each ->
@@ -78,9 +82,9 @@ MySublimeVideo.UI.prepareFeedbackForm = ->
   new MySublimeVideo.Helpers.FeedbackForm() if $('#new_feedback').exists()
 
 MySublimeVideo.UI.prepareVideoTagsTable = ->
-  if (form = $('#js-video_tags_filter_form')).exists()
+  if ($form = $('#js-video_tags_filter_form')).exists()
     MySublimeVideo.UI.videoTagsTable = new MySublimeVideo.UI.VideoTagsTable
-      form: form
+      form: $form
       input: $('#js-video_tags_filter_search')
       select: $('#js-video_tags_filter_select')
 
@@ -93,6 +97,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareAddASitePopup()
   MySublimeVideo.UI.prepareSitesStatus()
   MySublimeVideo.UI.prepareAddonsChooser()
+  MySublimeVideo.UI.prepareGrandFatherPlanPopUp()
   MySublimeVideo.UI.prepareKitEditor()
   MySublimeVideo.UI.prepareSupportRequest()
   MySublimeVideo.UI.prepareFeedbackForm()

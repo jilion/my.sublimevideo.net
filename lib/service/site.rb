@@ -38,13 +38,31 @@ module Service
     def unsuspend_billable_items
       ::Site.transaction do
         set_default_app_designs
-        if site.new_plans.present?
-          site.billable_items.plans.where(item_id: site.plan.id).first.update_attribute(:state, 'subscribed')
-          update_billable_addon_plans(free_addon_plans.merge({
-            sv_logo: AddonPlan.get('sv_logo', 'disabled').id,
-            stats: AddonPlan.get('stats', 'realtime').id,
-            support: (site.plan.name == 'premium' ? AddonPlan.get('support', 'vip') : AddonPlan.get('support', 'standard')).id
-          }), sponsor: true)
+        if site.plan_id?
+          free_addon_plans_filtered = free_addon_plans(reject: %w[logo stats support])
+          update_billable_addon_plans(free_addon_plans_filtered)
+
+          case site.plan.name
+          when 'plus'
+            # Sponsor real-time stats
+            update_billable_addon_plans({
+              stats: AddonPlan.get('stats', 'realtime').id,
+              support: AddonPlan.get('support', 'standard').id
+            }, force: 'sponsored')
+            update_billable_addon_plans({
+              logo: AddonPlan.get('logo', 'disabled').id
+            }, force: 'subscribed')
+
+          when 'premium'
+            # Sponsor VIP email support
+            update_billable_addon_plans({
+              support: AddonPlan.get('support', 'vip').id
+            }, force: 'sponsored')
+            update_billable_addon_plans({
+              logo: AddonPlan.get('logo', 'disabled').id,
+              stats: AddonPlan.get('stats', 'realtime').id
+            }, force: 'subscribed')
+          end
         else
           site.billable_items.where(state: 'suspended').each do |billable_item|
             billable_item.update_attribute(:state, new_billable_item_state(billable_item.item))
@@ -88,34 +106,50 @@ module Service
 
     def migrate_plan_to_addons!
       ::Site.transaction do
-        site.billable_items.build({ item: site.plan, state: site.suspended? ? 'suspended' : 'subscribed' }, as: :admin) unless site.plan.free?
 
         set_default_app_designs(suspended: site.suspended?)
+        case site.plan.name
+        when 'plus'
+          free_addon_plans_filtered = free_addon_plans(reject: %w[logo stats support])
 
-        advanced_plan = %w[plus premium sponsored].include?(site.plan.name)
-        sv_logo_addon_plan_name = advanced_plan ? 'disabled' : 'enabled'
-        stats_addon_plan_name = advanced_plan ? 'realtime' : 'invisible'
-        support_addon_plan_name = %w[premium sponsored].include?(site.plan.name) ? 'vip' : 'standard'
+          # Sponsor real-time stats
+          update_billable_addon_plans(free_addon_plans_filtered)
+          update_billable_addon_plans({
+            stats: AddonPlan.get('stats', 'realtime').id,
+            support: AddonPlan.get('support', 'standard').id
+          }, force: 'sponsored', suspended: site.suspended?)
+          update_billable_addon_plans({
+            logo: AddonPlan.get('logo', 'disabled').id
+          }, force: 'subscribed', suspended: site.suspended?)
 
-        update_billable_addon_plans(free_addon_plans.merge({
-          sv_logo: AddonPlan.get('sv_logo', sv_logo_addon_plan_name).id,
-          stats: AddonPlan.get('stats', stats_addon_plan_name).id,
-          support: AddonPlan.get('support', support_addon_plan_name).id
-        }), sponsor: advanced_plan, suspended: site.suspended?)
+        when 'premium'
+          free_addon_plans_filtered = free_addon_plans(reject: %w[logo stats support])
 
-        site.save!
-      end
-    end
+          # Sponsor VIP email support
+          update_billable_addon_plans(free_addon_plans_filtered, suspended: site.suspended?)
+          update_billable_addon_plans({
+            support: AddonPlan.get('support', 'vip').id
+          }, force: 'sponsored', suspended: site.suspended?)
+          update_billable_addon_plans({
+            logo: AddonPlan.get('logo', 'disabled').id,
+            stats: AddonPlan.get('stats', 'realtime').id
+          }, force: 'subscribed', suspended: site.suspended?)
 
-    def opt_out_from_grandfather_plan!
-      ::Site.transaction do
-        site.billable_items.plans.where(item_id: site.plan.id).first.destroy
-        update_billable_addon_plans(
-          sv_logo: AddonPlan.get('sv_logo', 'disabled').id,
-          stats: AddonPlan.get('stats', 'realtime').id,
-          support: (site.plan.name == 'premium' ? AddonPlan.get('support', 'vip') : AddonPlan.get('support', 'standard')).id
-        )
-        site.plan_id = nil
+        when 'sponsored'
+          # Sponsor VIP email support
+          update_billable_addon_plans(free_addon_plans.merge({
+            logo: AddonPlan.get('logo', 'disabled').id,
+            stats: AddonPlan.get('stats', 'realtime').id,
+            support: AddonPlan.get('support', 'vip').id
+          }), force: 'sponsored', suspended: site.suspended?)
+
+        else
+          update_billable_addon_plans(free_addon_plans.merge({
+            logo: AddonPlan.get('logo', 'sublime').id,
+            stats: AddonPlan.get('stats', 'invisible').id,
+            support: AddonPlan.get('support', 'standard').id
+          }), suspended: site.suspended?)
+        end
 
         site.save!
       end
@@ -128,8 +162,8 @@ module Service
         'suspended'
       elsif new_billable_item.beta?
         'beta'
-      elsif options[:sponsor]
-        new_billable_item.free? ? 'subscribed' : 'sponsored'
+      elsif options[:force]
+        new_billable_item.free? ? 'subscribed' : options[:force]
       else
         site.out_of_trial?(new_billable_item) || new_billable_item.free? ? 'subscribed' : 'trial'
       end
@@ -151,10 +185,14 @@ module Service
       update_billable_addon_plans(free_addon_plans)
     end
 
-    def free_addon_plans
+    def free_addon_plans(options = {})
+      options = { reject: [] }.merge(options)
+
       Addon.all.inject({}) do |hash, addon|
         if free_addon_plan = addon.free_plan
-          hash[addon.name.to_sym] = addon.free_plan.id unless free_addon_plan.availability == 'custom'
+          unless free_addon_plan.availability == 'custom' || options[:reject].include?(free_addon_plan.addon.name)
+            hash[addon.name.to_sym] = addon.free_plan.id
+          end
         end
         hash
       end
