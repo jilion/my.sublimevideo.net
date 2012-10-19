@@ -173,7 +173,8 @@ group :tools do
   gem 'rb-fsevent'
   gem 'coolline'
 
-  gem 'guard'#, github: 'guard/guard', branch: 'interactor/pry'
+  gem 'pry'
+  gem 'guard', github: 'guard/guard', branch: 'interactor/pry'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-rspec'
