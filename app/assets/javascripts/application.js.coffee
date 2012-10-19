@@ -39,8 +39,9 @@ MySublimeVideo.UI.prepareSiteActionsSelector = ->
     select.on 'change', (e) ->
       optionValue = select.attr('value')
       return if optionValue is ''
-
-      document.location = optionValue
+      $.pjax
+        url: optionValue
+        container: '[data-pjax-container]'
 
 MySublimeVideo.UI.prepareEmbedCodePopups = ->
   $('a.player_code').each ->
