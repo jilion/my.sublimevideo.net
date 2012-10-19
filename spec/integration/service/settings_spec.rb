@@ -64,7 +64,7 @@ describe Service::Settings, :fog_mock, :addons do
                   },
                   allowed_settings: {
                     visibility: {
-                      values: ["none", "autohide", "sticky"]
+                      values: ["hidden", "autohide", "visible"]
                     }
                   },
                   id: "sa.sh.sq"
@@ -76,7 +76,7 @@ describe Service::Settings, :fog_mock, :addons do
                   },
                   allowed_settings: {
                     overlay_visibility: {
-                      values: ['none', 'autofade']
+                      values: ['hidden', 'autofade']
                     },
                     overlay_color: {
                       values: ["#000"]
@@ -87,7 +87,7 @@ describe Service::Settings, :fog_mock, :addons do
               },
               settings: {
                 force_fullwindow: false,
-                stop_on_end: false,
+                on_end: "nothing",
                 enable_fullmode: true,
                 enable_volume: true
               },
@@ -95,8 +95,8 @@ describe Service::Settings, :fog_mock, :addons do
                 force_fullwindow: {
                   values: [true, false]
                 },
-                stop_on_end: {
-                  values: [true, false]
+                on_end: {
+                  values: ['nothing', 'replay', 'stop']
                 },
                 enable_fullmode: {
                   values: [true, false]
@@ -109,15 +109,15 @@ describe Service::Settings, :fog_mock, :addons do
             },
             "lightbox" => {
               settings: {
-                autoplay: true,
+                on_open: 'play',
                 overlay_color: "#000",
                 overlay_opacity: 0.7,
                 close_button_visibility: "autohide",
                 close_button_position: "left"
               },
               allowed_settings: {
-                autoplay: {
-                  values: [true, false]
+                on_open: {
+                  values: ['nothing', 'play']
                 },
                 overlay_color: {
                   values: ["#000"]
@@ -126,7 +126,7 @@ describe Service::Settings, :fog_mock, :addons do
                   range: [0.05, 1]
                 },
                 close_button_visibility: {
-                  values: ["none", "autohide", "sticky"]
+                  values: ["hidden", "autohide", "visible"]
                 },
                 close_button_position: {
                   values: ["left", "right"]
@@ -143,7 +143,7 @@ describe Service::Settings, :fog_mock, :addons do
       describe "file" do
         it "has good content" do
           File.open(subject.file) do |f|
-            f.read.should eq "settings = {\n  license: { {\"ku\":[\"test.com\"],\"kv\":[\"127.0.0.1\",\"localhost\"],\"kz\":null,\"ia\":null,\"ib\":\"beta\"} },\n  app: { {\"kf\":{\"ko\":{\"tm\":true,\"tn\":false},\"kp\":{\"tm\":{\"ih\":[true]},\"tn\":{\"ih\":[false]}}}} },\n  kits: { {\"default\":{\"kb\":{\"kn\":\"sa.sb.sc\"},\"ka\":{\"ke\":{\"ka\":{\"ki\":{\"ko\":{\"tq\":\"autohide\",\"to\":\"bottomRight\"},\"kp\":{\"tq\":{\"ih\":[\"autohide\"]},\"to\":{\"ih\":[\"bottomLeft\",\"bottomRight\"]}},\"kn\":\"sa.sh.sp\"},\"kg\":{\"ko\":{\"tq\":\"autohide\"},\"kp\":{\"tq\":{\"ih\":[\"none\",\"autohide\",\"sticky\"]}},\"kn\":\"sa.sh.sq\"},\"kh\":{\"ko\":{\"tr\":\"autofade\",\"tg\":\"#000\"},\"kp\":{\"tr\":{\"ih\":[\"none\",\"autofade\"]},\"tg\":{\"ih\":[\"#000\"]}},\"kn\":\"sa.sh.sv\"}},\"ko\":{\"tb\":false,\"tc\":false,\"td\":true,\"te\":true},\"kp\":{\"tb\":{\"ih\":[true,false]},\"tc\":{\"ih\":[true,false]},\"td\":{\"ih\":[true,false]},\"te\":{\"ih\":[true,false]}},\"kn\":\"sa.sh.si\"},\"kd\":{\"ko\":{\"tf\":true,\"tg\":\"#000\",\"th\":0.7,\"ti\":\"autohide\",\"tl\":\"left\"},\"kp\":{\"tf\":{\"ih\":[true,false]},\"tg\":{\"ih\":[\"#000\"]},\"th\":{\"ii\":[0.05,1]},\"ti\":{\"ih\":[\"none\",\"autohide\",\"sticky\"]},\"tl\":{\"ih\":[\"left\",\"right\"]}},\"kn\":\"sa.sl.sm\"}}}} },\n  defaultKit: 'default'\n}\n"
+            f.read.should eq "settings = {\n  license: { {\"ku\":[\"test.com\"],\"kv\":[\"127.0.0.1\",\"localhost\"],\"kz\":null,\"ia\":null,\"ib\":\"beta\"} },\n  app: { {\"kf\":{\"ko\":{\"tm\":true,\"tn\":false},\"kp\":{\"tm\":{\"ih\":[true]},\"tn\":{\"ih\":[false]}}}} },\n  kits: { {\"default\":{\"kb\":{\"kn\":\"sa.sb.sc\"},\"ka\":{\"ke\":{\"ka\":{\"ki\":{\"ko\":{\"tq\":\"autohide\",\"to\":\"bottomRight\"},\"kp\":{\"tq\":{\"ih\":[\"autohide\"]},\"to\":{\"ih\":[\"bottomLeft\",\"bottomRight\"]}},\"kn\":\"sa.sh.sp\"},\"kg\":{\"ko\":{\"tq\":\"autohide\"},\"kp\":{\"tq\":{\"ih\":[\"hidden\",\"autohide\",\"visible\"]}},\"kn\":\"sa.sh.sq\"},\"kh\":{\"ko\":{\"tr\":\"autofade\",\"tg\":\"#000\"},\"kp\":{\"tr\":{\"ih\":[\"hidden\",\"autofade\"]},\"tg\":{\"ih\":[\"#000\"]}},\"kn\":\"sa.sh.sv\"}},\"ko\":{\"tb\":false,\"onEnd\":\"nothing\",\"td\":true,\"te\":true},\"kp\":{\"tb\":{\"ih\":[true,false]},\"onEnd\":{\"ih\":[\"nothing\",\"replay\",\"stop\"]},\"td\":{\"ih\":[true,false]},\"te\":{\"ih\":[true,false]}},\"kn\":\"sa.sh.si\"},\"kd\":{\"ko\":{\"onOpen\":\"play\",\"tg\":\"#000\",\"th\":0.7,\"ti\":\"autohide\",\"tl\":\"left\"},\"kp\":{\"onOpen\":{\"ih\":[\"nothing\",\"play\"]},\"tg\":{\"ih\":[\"#000\"]},\"th\":{\"ii\":[0.05,1]},\"ti\":{\"ih\":[\"hidden\",\"autohide\",\"visible\"]},\"tl\":{\"ih\":[\"left\",\"right\"]}},\"kn\":\"sa.sl.sm\"}}}} },\n  defaultKit: 'default'\n}\n"
           end
         end
       end
