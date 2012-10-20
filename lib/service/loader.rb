@@ -85,7 +85,7 @@ module Service
 
     def s3_options
       {
-        'Cache-Control' => 'max-age=120, public', # 2 minutes
+        'Cache-Control' => 'max-age=60, public', # 1 minutes
         'Content-Type'  => 'text/javascript',
         'x-amz-acl'     => 'public-read'
       }

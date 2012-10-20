@@ -24,7 +24,7 @@ describe CDN::File, :fog_mock do
     path: "loaders/token.js"
   }] }
   let(:s3_options) { {
-    'Cache-Control' => 'max-age=120, public', # 2 minutes
+    'Cache-Control' => 'max-age=60, public', # 2 minutes
     'Content-Type'  => 'text/javascript',
     'x-amz-acl'     => 'public-read'
   } }
@@ -59,7 +59,7 @@ describe CDN::File, :fog_mock do
       end
       it "have 5 min max-age cache control" do
         object_headers = S3.fog_connection.head_object(bucket, path).headers
-        object_headers['Cache-Control'].should eq 'max-age=120, public'
+        object_headers['Cache-Control'].should eq 'max-age=60, public'
       end
       it "have Content-MD5" do
         object_headers = S3.fog_connection.head_object(bucket, path).headers
