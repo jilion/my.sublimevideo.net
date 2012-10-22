@@ -72,11 +72,11 @@ test:
 staging:
   sessions:
     default:
-      database: sublimevideo-stats
-      username: backups
+      database: sublimevideo-stats-staging
+      username: <%= ENV['MONGOHQ_USERNAME'] %>
       password: <%= ENV['MONGOHQ_PASSWORD'] %>
       hosts:
-        - sublimevideo.member0.mongolayer.com:27017
+        - alex.mongohq.com:10016
       options:
         consistency: :strong
         op_timeout: 30
