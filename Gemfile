@@ -174,7 +174,7 @@ group :tools do
   gem 'coolline'
 
   gem 'pry'
-  gem 'guard', github: 'guard/guard', branch: 'interactor/pry'
+  gem 'guard'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-rspec'
