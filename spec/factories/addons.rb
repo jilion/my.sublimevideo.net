@@ -23,6 +23,7 @@ FactoryGirl.define do
     sequence(:skin_token) { |n| "skin.token#{n}" }
     price                 495
     availability          'public'
+    public_at             { Time.now.utc }
 
     factory :custom_design do
       availability 'custom'

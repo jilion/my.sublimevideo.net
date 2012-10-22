@@ -7,24 +7,18 @@ RSpec.configure do |config|
   config.before :all, type: :request do
     create_default_addons
   end
+  config.before :each, type: :request, js: true do
+    create_default_addons
+  end
 
   config.after :all, addons: true do
-    App::Component.delete_all
-    App::ComponentVersion.delete_all
-    App::Design.delete_all
-    Addon.delete_all
-    AddonPlan.delete_all
-    App::Plugin.delete_all
-    App::SettingsTemplate.delete_all
+    clear_default_addons
   end
   config.after :all, type: :request do
-    App::Component.delete_all
-    App::ComponentVersion.delete_all
-    App::Design.delete_all
-    Addon.delete_all
-    AddonPlan.delete_all
-    App::Plugin.delete_all
-    App::SettingsTemplate.delete_all
+    clear_default_addons
+  end
+  config.after :each, type: :request, js: true do
+    clear_default_addons
   end
 end
 
@@ -33,46 +27,56 @@ def create_default_addons
   instantiate_variables
 end
 
+def clear_default_addons
+    App::Component.delete_all
+    App::ComponentVersion.delete_all
+    App::Design.delete_all
+    Addon.delete_all
+    AddonPlan.delete_all
+    App::Plugin.delete_all
+    App::SettingsTemplate.delete_all
+end
+
 def instantiate_variables
   # @app_comp = App::Component.find_by_name('app')
-  @classic_design = App::Design.find_by_name('classic')
-  @flat_design    = App::Design.find_by_name('flat')
-  @light_design   = App::Design.find_by_name('light')
-  @twit_design    = App::Design.find_by_name('twit')
-  @html5_design   = App::Design.find_by_name('twit')
+  @classic_design = App::Design.get('classic')
+  @flat_design    = App::Design.get('flat')
+  @light_design   = App::Design.get('light')
+  @twit_design    = App::Design.get('twit')
+  @html5_design   = App::Design.get('html5')
 
-  @video_player_addon = Addon.find_by_name('video_player')
+  @video_player_addon = Addon.get('video_player')
   @video_player_addon_plan_1 = AddonPlan.get('video_player', 'standard')
 
-  @lightbox_addon = Addon.find_by_name('lightbox')
+  @lightbox_addon = Addon.get('lightbox')
   @lightbox_addon_plan_1 = AddonPlan.get('lightbox', 'standard')
 
-  @image_viewer_addon = Addon.find_by_name('image_viewer')
+  @image_viewer_addon = Addon.get('image_viewer')
   @image_viewer_addon_plan_1 = AddonPlan.get('image_viewer', 'standard')
 
-  @stats_addon = Addon.find_by_name('stats')
+  @stats_addon = Addon.get('stats')
   @stats_addon_plan_1 = AddonPlan.get('stats', 'invisible')
   @stats_addon_plan_2 = AddonPlan.get('stats', 'realtime')
   # @stats_addon_plan_3 = AddonPlan.get('stats', 'disabled')
 
-  @logo_addon        = Addon.find_by_name('logo')
+  @logo_addon        = Addon.get('logo')
   @logo_addon_plan_1 = AddonPlan.get('logo', 'sublime')
   @logo_addon_plan_2 = AddonPlan.get('logo', 'disabled')
   @logo_addon_plan_3 = AddonPlan.get('logo', 'custom')
 
-  @controls_addon = Addon.find_by_name('controls')
+  @controls_addon = Addon.get('controls')
   @controls_addon_plan_1 = AddonPlan.get('controls', 'standard')
 
-  @initial_addon = Addon.find_by_name('initial')
+  @initial_addon = Addon.get('initial')
   @initial_addon_plan_1 = AddonPlan.get('initial', 'standard')
 
-  @sharing_addon = Addon.find_by_name('sharing')
+  @sharing_addon = Addon.get('sharing')
   @sharing_addon_plan_1 = AddonPlan.get('sharing', 'standard')
 
-  @api_addon = Addon.find_by_name('api')
+  @api_addon = Addon.get('api')
   @api_addon_plan_1 = AddonPlan.get('api', 'standard')
 
-  @support_addon = Addon.find_by_name('support')
+  @support_addon = Addon.get('support')
   @support_addon_plan_1 = AddonPlan.get('support', 'standard')
   @support_addon_plan_2 = AddonPlan.get('support', 'vip')
 end

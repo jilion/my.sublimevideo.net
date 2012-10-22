@@ -2,8 +2,6 @@ require 'spec_helper'
 include ActionView::Helpers::SanitizeHelper
 
 feature 'New site' do
-  let(:hostname) { 'rymai.com' }
-
   background do
     sign_in_as :user
     go 'my', '/sites/new'
@@ -17,22 +15,18 @@ feature 'New site' do
   end
 
   scenario 'with a hostname' do
-    fill_in 'Domain', with: hostname
+    fill_in 'Domain', with: hostname1
     click_button 'Add site'
 
-    last_site_should_be_created(hostname)
+    last_site_should_be_created(hostname1)
   end
 end
 
 feature 'Edit site' do
-  let(:hostname1)    { 'rymai.com' }
-  let(:hostname2)    { 'rymai.eu' }
-  let(:hostname3)    { 'rymai.ch' }
-  let(:dev_hostname) { 'rymai.local' }
-
   background do
     sign_in_as :user
-    @site = create(:site, user: @current_user, hostname: hostname1)
+    @site = build(:site, user: @current_user, hostname: hostname1)
+    Service::Site.new(@site).initial_save
 
     go 'my', '/sites'
   end
@@ -49,20 +43,15 @@ feature 'Edit site' do
     fill_in 'site_dev_hostnames', with: dev_hostname
     click_button 'Save settings'
 
-    current_url.should =~ %r(^http://[^/]+/sites$)
+    current_url.should =~ %r(^http://[^/]+/sites/#{@site.token}/edit$)
 
     @site.reload.hostname.should eq hostname1
     @site.extra_hostnames.should eq hostname2
     @site.dev_hostnames.should eq dev_hostname
   end
-
 end
 
 feature 'Archive site', :js do
-  let(:hostname1) { 'rymai.com' }
-  let(:hostname2) { 'rymai.eu' }
-  let(:hostname3) { 'rymai.ch' }
-
   background do
     sign_in_as :user
     @site = build(:site, user: @current_user, hostname: hostname1)
@@ -79,9 +68,9 @@ feature 'Archive site', :js do
     go 'my', '/sites'
   end
 
-  scenario 'a paid site in trial' do
+  scenario 'a paid site with no invoices' do
     select 'Settings', from: "site_actions_#{@site.id}"
-    click_button 'Delete site'
+    click_button 'Cancel site'
 
     page.should have_no_content hostname1
     @site.reload.should be_archived
@@ -89,7 +78,7 @@ feature 'Archive site', :js do
 
   scenario 'a paid site with only paid invoices' do
     select 'Settings', from: "site_actions_#{@paid_site_with_paid_invoices.id}"
-    click_button 'Delete site'
+    click_button 'Cancel site'
 
     page.should have_no_content hostname2
     @paid_site_with_paid_invoices.reload.should be_archived
@@ -97,10 +86,7 @@ feature 'Archive site', :js do
 
   scenario 'a paid site with an open invoice' do
     select 'Settings', from: "site_actions_#{@paid_site_with_open_invoices.id}"
-    click_button 'Delete site'
-
-    page.should have_no_content hostname3
-    @paid_site_with_open_invoices.reload.should be_archived
+    page.should have_no_content 'Cancel site'
   end
 
   scenario 'a paid site with a failed invoice' do
@@ -110,10 +96,7 @@ feature 'Archive site', :js do
 
     go 'my', '/sites'
     select 'Settings', from: "site_actions_#{site.id}"
-    click_button 'Delete site'
-
-    page.should have_no_content 'test.com'
-    site.reload.should be_archived
+    page.should have_no_content 'Cancel site'
   end
 
   scenario 'a paid site with a waiting invoice' do
@@ -123,17 +106,11 @@ feature 'Archive site', :js do
 
     go 'my', '/sites'
     select 'Settings', from: "site_actions_#{site.id}"
-    click_button 'Delete site'
-
-    page.should have_no_content 'example.org'
-    site.reload.should be_archived
+    page.should have_no_content 'Cancel site'
   end
 end
 
 feature 'Sites index' do
-  let(:hostname1) { 'rymai.com' }
-  let(:hostname2) { 'rymai.eu' }
-
   background do
     sign_in_as :user
   end
@@ -159,7 +136,8 @@ feature 'Sites index' do
 
     context 'with sites' do
       background do
-        @site = create(:site, user: @current_user, hostname: hostname1)
+        @site = build(:site, user: @current_user, hostname: hostname1)
+        Service::Site.new(@site).initial_save
       end
 
       scenario 'sort buttons displayed only if count of sites > 1' do
@@ -168,7 +146,7 @@ feature 'Sites index' do
         page.should have_no_css 'div.sorting'
         page.should have_no_css 'a.sort'
 
-        create(:site, user: @current_user, hostname: hostname2)
+        Service::Site.new(build(:site, user: @current_user, hostname: hostname2)).initial_save
         go 'my', '/sites'
 
         page.should have_content hostname1
@@ -185,7 +163,7 @@ feature 'Sites index' do
         page.should have_no_css 'nav.pagination'
         page.should have_no_selector 'a[rel=\'next\']'
 
-        create(:site, user: @current_user, hostname: 'google2.com')
+        Service::Site.new(build(:site, user: @current_user, hostname: hostname3)).initial_save
         go 'my', '/sites'
 
         page.should have_css 'nav.pagination'
@@ -204,7 +182,6 @@ feature 'Sites index' do
       end
     end
   end
-
 end
 
 def last_site_should_be_created(hostname)
@@ -213,13 +190,14 @@ def last_site_should_be_created(hostname)
   site.reload
   site.hostname.should eq hostname
   site.app_designs.should have(3).items
-  site.addon_plans.should have(5).items
-
-  # FIXME
-  # site.loader.read.should include(site.token)
-  # site.license.read.should include(site.license_js_hash)
+  site.addon_plans.should have(9).items
 
   current_url.should eq 'http://my.sublimevideo.dev/sites'
   page.should have_content (hostname.present? ? hostname : 'add a hostname')
   page.should have_content 'Site has been successfully created.'
 end
+
+def hostname1;    'rymai.com'; end
+def hostname2;    'rymai.eu'; end
+def hostname3;    'rymai.ch'; end
+def dev_hostname; 'rymai.local'; end

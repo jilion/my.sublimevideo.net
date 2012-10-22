@@ -20,7 +20,7 @@
         - if params[:action] == 'destroy' && current_password_needed_error?(@site)
           = password_box resource: @site, f: f, cancel_url: [:edit, @site]
         .entry.delete
-          = f.submit "Delete site", class: "delete_site", data: { confirm: "Are you really sure?" }
+          = f.submit "Cancel site", class: "delete_site", data: { confirm: "Are you really sure?" }
           %p.desc
             = raw t 'site.edit.delete_site_info1', domain: hostname_or_token(@site, length: 20)
             = raw t 'site.edit.delete_site_info2'

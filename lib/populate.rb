@@ -277,7 +277,6 @@ module Populate
               },
               image_url: {
                 type: 'image',
-                values: [''],
                 default: ''
               },
               link_url: {
