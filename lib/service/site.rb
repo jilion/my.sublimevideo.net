@@ -10,6 +10,10 @@ module Service
         new params.delete(:user).sites.new(params)
       end
 
+      def migrate_plan_to_addons!(site_id)
+        site = ::Site.find(site_id)
+        Service::Site.new(site).migrate_plan_to_addons!
+      end
     end
 
     def initial_save

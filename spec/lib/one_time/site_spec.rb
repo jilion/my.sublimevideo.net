@@ -110,6 +110,8 @@ describe OneTime::Site do
 
       described_class.migrate_plans_to_addons
 
+      $worker.work_off
+
       # free check
       @site_free.reload.billable_items.should have(12).items
       @site_free.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item

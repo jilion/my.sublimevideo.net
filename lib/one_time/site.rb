@@ -60,18 +60,18 @@ module OneTime
       end
 
       def migrate_plans_to_addons
-        processed = 0
+        scheduled = 0
         ::Site.not_archived.find_each(batch_size: 100) do |site|
-          Service::Site.new(site).migrate_plan_to_addons!
+          Service::Site.delay(priority: 200).migrate_plan_to_addons!(site.id)
 
-          processed += 1
+          scheduled += 1
 
-          if (processed % 500).zero?
-            puts "#{processed} sites processed..."
+          if (scheduled % 500).zero?
+            puts "#{scheduled} sites scheduled..."
           end
         end
 
-        "Finished: #{processed} sites were migrated to the add-ons business model (there are now #{BillableItem.count} billable items in the DB)."
+        "Finished: #{scheduled} sites were migrated to the add-ons business model (there are now #{BillableItem.count} billable items in the DB)."
       end
 
       def create_default_kit_for_all_non_archived_sites
