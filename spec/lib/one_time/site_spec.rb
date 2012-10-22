@@ -306,23 +306,31 @@ describe OneTime::Site do
     end
   end
 
-  describe ".update_accessible_stage_to_beta" do
+  describe ".update_accessible_stage" do
     before do
       @site_active_stable    = create(:site, state: 'active', accessible_stage: 'stable')
       @site_active_alpha     = create(:site, state: 'active', accessible_stage: 'alpha')
+      @site_active_dev       = build(:site, state: 'active', accessible_stage: 'dev')
+      @site_active_dev.save(validate: false)
       @site_suspended_stable = create(:site, state: 'suspended', accessible_stage: 'stable')
       @site_suspended_alpha  = create(:site, state: 'suspended', accessible_stage: 'alpha')
       @site_archived         = create(:site, state: 'archived', accessible_stage: 'stable')
     end
 
-    it "updates only non-archived site with accessible_stage at 'stable'" do
-      described_class.update_accessible_stage_to_beta
+    it "updates non-archived site with accessible_stage at 'stable' to 'beta'" do
+      described_class.update_accessible_stage
 
       @site_active_stable.reload.accessible_stage.should eq('beta')
       @site_active_alpha.reload.accessible_stage.should eq('alpha')
       @site_suspended_stable.reload.accessible_stage.should eq('beta')
       @site_suspended_alpha.reload.accessible_stage.should eq('alpha')
       @site_archived.reload.accessible_stage.should eq('stable')
+    end
+
+    it "updates non-archived site with accessible_stage at 'dev' to 'alpha'" do
+      described_class.update_accessible_stage
+
+      @site_active_dev.reload.accessible_stage.should eq('alpha')
     end
   end
 end

@@ -104,9 +104,9 @@ namespace :one_time do
       timed { puts OneTime::Site.create_default_kit_for_all_non_archived_sites }
     end
 
-    desc "For all non-archived sites, update accessible_stage from 'stable' to 'beta'"
-    task update_accessible_stage_to_beta: :environment do
-      timed { puts OneTime::Site.update_accessible_stage_to_beta }
+    desc "For all non-archived sites, update accessible_stage"
+    task update_accessible_stage: :environment do
+      timed { puts OneTime::Site.update_accessible_stage }
     end
   end
 
