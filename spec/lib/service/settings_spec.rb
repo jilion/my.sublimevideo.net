@@ -104,7 +104,7 @@ describe Service::Settings, :fog_mock do
 
       it "has good content" do
         File.open(file) do |f|
-          f.read.should eq "settings = {\n  license: { {\"ku\":[\"test.com\",\"test.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"} },\n  app: { {} },\n  kits: { {} },\n  defaultKit: 'default'\n}\n"
+          f.read.should eq "sublime_.jd(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:'default'},[a]})\n"
         end
       end
     end
