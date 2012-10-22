@@ -28,6 +28,7 @@ describe Service::Settings, :fog_mock do
     CDN.stub(:delay) { mock(purge: true) }
     site.stub_chain(:addon_plans, :includes) { [] }
     site.stub_chain(:kits, :includes) { [] }
+    AddonPlan.stub(:get)
   }
 
   let(:site) { mock("Site",
@@ -39,8 +40,7 @@ describe Service::Settings, :fog_mock do
     wildcard: true, wildcard?: true,
     path: 'path', path?: true,
     badged: true,
-    in_free_plan?: false,
-    plan_stats_retention_days: 365,
+    addon_plan_is_active?: true,
     touch: true,
     accessible_stage: 'stable', player_mode: 'stable'
   )}
@@ -149,16 +149,8 @@ describe Service::Settings, :fog_mock do
         end
       end
 
-      context "without ssl (free plan)" do
-        before { site.stub(in_free_plan?: true) }
-
-        it "doesn't include ssl key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, r: true, m: 'stable' }
-        end
-      end
-
-      context "without realtime data (free plan)" do
-        before { site.stub(plan_stats_retention_days: 0) }
+      context "without realtime addons" do
+        before { site.stub(addon_plan_is_active?: false) }
 
         it "doesn't includes r key/value" do
           settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, s: true, m: 'stable' }

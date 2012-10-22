@@ -2,7 +2,6 @@ class MySublimeVideo.Models.Site extends Backbone.Model
   defaults:
     token: null
     hostname: null
-    plan_stats_retention_days: null
 
   title: ->
     if this.get('hostname')? && this.get('hostname') isnt '' then this.get('hostname') else "##{this.get('token')}"

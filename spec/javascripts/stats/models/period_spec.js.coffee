@@ -41,12 +41,6 @@ describe 'MSVStats.Models.Period', ->
 
   describe '#autosetPeriod', ->
     beforeEach ->
-      # MSVStats.sites = new MSVStats.Collections.Sites [
-      #   { token: 'free', plan_stats_retention_days: 0 }
-      #   { token: 'paid', plan_stats_retention_days: null }
-      # ]
-      # MSVStats.sites.select('paid')
-
       MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds([{"vv":0}])
       MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes([{"vv":0}])
       MSVStats.statsHours   = new MSVStats.Collections.StatsHours([{"vv":0}])

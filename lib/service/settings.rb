@@ -41,8 +41,8 @@ module Service
       hash[:w]  = site.wildcard if site.wildcard?
       hash[:p]  = site.path if site.path?
       hash[:b]  = site.badged
-      hash[:s]  = true unless site.in_free_plan? # SSL
-      hash[:r]  = true if site.plan_stats_retention_days != 0 # Realtime Stats
+      hash[:s]  = true # SSL Always true now
+      hash[:r]  = true if site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
       hash[:m]  = site.player_mode
       hash
     end

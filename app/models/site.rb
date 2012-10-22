@@ -153,10 +153,7 @@ class Site < ActiveRecord::Base
   end
 
   def to_backbone_json(options = {})
-    to_json(
-      only: [:token, :hostname],
-      methods: [:plan_stats_retention_days]
-    )
+    to_json(only: [:token, :hostname])
   end
 
   %w[hostname extra_hostnames dev_hostnames].each do |method_name|

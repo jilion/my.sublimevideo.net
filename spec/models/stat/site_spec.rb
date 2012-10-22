@@ -29,7 +29,7 @@ describe Stat::Site do
       create(:site_day_stat, t: site.token, d: 1.day.ago.midnight, vv: { e: 102 })
       create(:site_day_stat, t: site.token, d: Time.now.utc.midnight, vv: { e: 103 })
 
-      @mock_site = mock_model(Site, plan_stats_retention_days: nil)
+      @mock_site = mock_model(Site)
       Site.stub(:find_by_token).and_return(@mock_site)
     end
 
@@ -98,56 +98,6 @@ describe Stat::Site do
       it { subject[364]['vv'].should eql(102) }
       it { subject[0]['id'].should eql(365.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
       it { subject[364]['id'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
-    end
-
-    pending "with plan_stats_retention_days at 365" do
-      before do
-        @mock_site.stub(:plan_stats_retention_days).and_return(365)
-      end
-
-      describe "with minutes period" do
-        subject { JSON.parse(Stat::Site.json(site.token, period: 'minutes')) }
-
-        its(:size) { should eql(60) }
-      end
-
-      describe "with days period" do
-        subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
-
-        its(:size) { should eql(365) }
-      end
-
-      describe "with days period (less than 365 days stats)" do
-        before { @day400.delete }
-        subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
-
-        its(:size) { should eql(365) }
-      end
-    end
-
-    pending "with plan_stats_retention_days at 0" do
-      before do
-        @mock_site.stub(:plan_stats_retention_days).and_return(0)
-      end
-
-      describe "with minutes period" do
-        subject { JSON.parse(Stat::Site.json(site.token, period: 'minutes')) }
-
-        its(:size) { should eql(0) }
-      end
-
-      describe "with days period" do
-        subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
-
-        its(:size) { should eql(0) }
-      end
-
-      describe "with days period (less than 365 days stats)" do
-        before { @day400.delete }
-        subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
-
-        its(:size) { should eql(0) }
-      end
     end
   end
 end
