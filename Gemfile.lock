@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: d87560f20f73601bde056e07f45cc11a82db87f7
+  revision: 4a9f16a4989c29184d9821e90814e8ecf15e83e3
   branch: interactor/pry
   specs:
     guard (1.4.0)
@@ -315,7 +315,7 @@ GEM
       guard (>= 1.1.0)
       multi_json
       thor
-    guard-livereload (1.0.1)
+    guard-livereload (1.0.2)
       em-websocket (>= 0.2.0)
       guard (>= 1.1.0)
       multi_json (~> 1.0)
