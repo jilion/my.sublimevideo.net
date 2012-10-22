@@ -61,15 +61,13 @@ module OneTime
 
       def migrate_plans_to_addons
         processed = 0
-        ::Site.transaction do
-          ::Site.not_archived.find_each(batch_size: 50) do |site|
-            Service::Site.new(site).migrate_plan_to_addons!
+        ::Site.not_archived.find_each(batch_size: 100) do |site|
+          Service::Site.new(site).migrate_plan_to_addons!
 
-            processed += 1
+          processed += 1
 
-            if (processed % 100).zero?
-              puts "#{processed} sites processed..."
-            end
+          if (processed % 500).zero?
+            puts "#{processed} sites processed..."
           end
         end
 
