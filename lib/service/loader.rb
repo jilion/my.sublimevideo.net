@@ -1,5 +1,6 @@
 require 'tempfile'
 require_dependency 'cdn/file'
+require_dependency 'app/component_version_dependencies_solver'
 
 module Service
   Loader = Struct.new(:site, :stage, :options, :file, :cdn_file) do

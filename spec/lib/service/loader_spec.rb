@@ -9,7 +9,6 @@ require File.expand_path('spec/config/carrierwave')
 require File.expand_path('lib/s3')
 require File.expand_path('lib/stage')
 require File.expand_path('app/models/app')
-require File.expand_path('lib/app/component_version_dependencies_solver')
 
 unless defined?(ActiveRecord)
   Site = Class.new
