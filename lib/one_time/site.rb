@@ -78,12 +78,10 @@ module OneTime
 
       def create_default_kit_for_all_non_archived_sites
         processed = 0
-        ::Site.transaction do
-          ::Site.not_archived.find_each(batch_size: 100) do |site|
-            Service::Site.new(site).send :create_default_kit
+        ::Site.not_archived.includes(:kits).where(kits: { id: nil }).find_each(batch_size: 100) do |site|
+          Service::Site.new(site).send :create_default_kit
 
-            processed += 1
-          end
+          processed += 1
         end
 
         "Finished: #{processed} sites had a default kit created."
