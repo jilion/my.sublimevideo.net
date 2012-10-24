@@ -50,7 +50,7 @@ module Spec
         }
       end
 
-      def valid_cc_d3d_attributes
+      def valid_cc_attributes_d3d
         {
           cc_brand:              'visa',
           cc_full_name:          'John Doe Huber',

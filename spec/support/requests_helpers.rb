@@ -52,9 +52,8 @@ module Spec
 
       def set_credit_card(options = {})
         options.reverse_merge!(type: 'visa', expire_on_month: 6, expire_on_year: Time.now.year + 1, expire_on_prefix: 'user')
-        options[:type] = 'visa' if options[:type] == 'd3d'
 
-        choose  "user_cc_brand_#{options[:type]}"
+        choose  "user_cc_brand_#{options[:type] == 'd3d' ? 'visa' : options[:type]}"
         fill_in "Name on card", with: 'Jilion Team'
         fill_in "Card number", with: card_number(options[:type])
         select  "#{options[:expire_on_month]}", from: "#{options[:expire_on_prefix]}_cc_expiration_month"
