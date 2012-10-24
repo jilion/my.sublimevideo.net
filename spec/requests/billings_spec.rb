@@ -287,7 +287,7 @@ feature "Credit cards update" do
 end
 
 def should_display_credit_card(type = 'visa')
-  page.should have_content(t("user.credit_card.type.#{type == 'd3d' ? 'visa' : type}"))
+  page.should have_content(I18n.t("user.credit_card.type.#{type == 'd3d' ? 'visa' : type}"))
   page.should have_content(last_digits(type))
 end
 
