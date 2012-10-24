@@ -10,9 +10,16 @@ module Service
         new params.delete(:user).sites.new(params)
       end
 
+      # TODO: Remove after launch
       def migrate_plan_to_addons!(site_id, free_addon_plans, free_addon_plans_filtered)
         site = ::Site.find(site_id)
         Service::Site.new(site).migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
+      end
+
+      # TODO: Remove after launch
+      def create_default_kit(site_id)
+        site = ::Site.find(site_id)
+        Service::Site.new(site).send(:create_default_kit)
       end
     end
 
@@ -107,6 +114,7 @@ module Service
       end
     end
 
+    # TODO: Remove after launch
     def migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
       ::Site.transaction do
 

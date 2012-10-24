@@ -302,6 +302,8 @@ describe OneTime::Site do
     it 'creates default kit for all non-archived sites' do
       described_class.create_default_kit_for_all_non_archived_sites
 
+      $worker.work_off
+
       @site_active.reload.kits.should have(1).item
       @site_suspended.reload.kits.should have(1).item
       @site_archived.reload.kits.should be_empty

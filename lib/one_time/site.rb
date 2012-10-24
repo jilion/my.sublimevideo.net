@@ -21,9 +21,10 @@ module OneTime
           end
         end
 
-        "Finished: #{scheduled} sites will have their loader and license re-generated"
+        "Schedule finished: #{scheduled} sites will have their loader and license re-generated"
       end
 
+      # TODO: Remove after launch
       def add_already_paid_amount_to_balance_for_monthly_plans
         processed, total = 0, 0
         ::Site.transaction do
@@ -40,6 +41,7 @@ module OneTime
         "Finished: $#{total} was added to user balances (for #{processed} sites in monthly plans)."
       end
 
+      # TODO: Remove after launch
       def migrate_yearly_plans_to_monthly_plans
         processed, total = 0, 0
         ::Site.transaction do
@@ -59,6 +61,7 @@ module OneTime
         "Finished: #{processed} sites were migrated to monthly plans and $#{total} was added to user balances."
       end
 
+      # TODO: Remove after launch
       def migrate_plans_to_addons
         scheduled = 0
         free_addon_plans          = AddonPlan.free_addon_plans
@@ -73,18 +76,23 @@ module OneTime
           end
         end
 
-        "Finished: #{scheduled} sites were migrated to the add-ons business model (there are now #{BillableItem.count} billable items in the DB)."
+        "Schedule finished: #{scheduled} sites were migrated to the add-ons business model (there are now #{BillableItem.count} billable items in the DB)."
       end
 
+      # TODO: Remove after launch
       def create_default_kit_for_all_non_archived_sites
-        processed = 0
+        scheduled = 0
         ::Site.not_archived.includes(:kits).where(kits: { id: nil }).find_each(batch_size: 100) do |site|
-          Service::Site.new(site).send :create_default_kit
+          Service::Site.delay(priority: 200).create_default_kit(site.id)
 
-          processed += 1
+          scheduled += 1
+
+          if (scheduled % 500).zero?
+            puts "#{scheduled} sites scheduled..."
+          end
         end
 
-        "Finished: #{processed} sites had a default kit created."
+        "Schedule finished: #{scheduled} sites had a default kit created."
       end
 
       def without_versioning
