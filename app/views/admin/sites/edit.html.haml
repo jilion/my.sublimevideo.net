@@ -76,10 +76,11 @@
     = f.submit "Update accessible stage", data: { confirm: "Are you sure?" }
   %br
 
-  - unless @site.in_sponsored_plan?
-    %h3 Sponsoring
-    = form_for [:sponsor, :admin, @site] do |f|
-      = f.submit "Change current plan to sponsored plan", data: { confirm: "Are you sure?" }
+  -# TODO: Replace with per-addon sponsoring
+  -#- unless @site.in_sponsored_plan?
+  -#  %h3 Sponsoring
+  -#  = form_for [:sponsor, :admin, @site] do |f|
+  -#    = f.submit "Change current plan to sponsored plan", data: { confirm: "Are you sure?" }
   %br
   %hr
   %br
