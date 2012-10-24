@@ -262,7 +262,7 @@ feature "Site invoice page" do
         page.should have_content @site.hostname
         page.should have_content @site.token
         page.should have_content "Payment info:"
-        page.should have_content "Card type: Visa"
+        page.should have_content "Card type: #{I18n.t('user.credit_card.type.visa')}"
         page.should have_content "Card no.: XXXXXXXXXXXX-1111"
 
         page.should have_content "Bill To"

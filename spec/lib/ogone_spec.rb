@@ -6,7 +6,7 @@ describe Ogone do
   context "with visa credit card" do
     let(:cc) {
       ActiveMerchant::Billing::CreditCard.new(
-        type:               'visa',
+        brand:              'visa',
         number:             '4111111111111111',
         month:              10,
         year:               Date.today.year + 1,
@@ -96,7 +96,7 @@ describe Ogone do
   context "with master credit card" do
     let(:cc) {
       ActiveMerchant::Billing::CreditCard.new(
-        type:               'master',
+        brand:              'master',
         number:             '5399999999999999',
         month:              10,
         year:               Date.today.year + 1,
@@ -109,6 +109,30 @@ describe Ogone do
     describe ".purchase" do
       describe "payment of $100" do
         use_vcr_cassette "ogone/master_100"
+        subject { Ogone.purchase(10000, cc, currency: 'USD') }
+
+        it { should be_success }
+        its(:message) { should eq "The transaction was successful" }
+      end
+    end
+  end
+
+  context "with american_express credit card" do
+    let(:cc) {
+      ActiveMerchant::Billing::CreditCard.new(
+        brand:              'american_express',
+        number:             '374111111111111',
+        month:              10,
+        year:               Date.today.year + 1,
+        first_name:         'John',
+        last_name:          'Doe',
+        verification_value: '111'
+      )
+    }
+
+    describe ".purchase" do
+      describe "payment of $100" do
+        use_vcr_cassette "ogone/american_express_100"
         subject { Ogone.purchase(10000, cc, currency: 'USD') }
 
         it { should be_success }

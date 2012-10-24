@@ -400,96 +400,102 @@ describe UserModules::CreditCard, :plans do
     end
 
     describe "#prepare_pending_credit_card" do
-      describe "when cc attributes present" do
-        subject { build(:user_no_cc, valid_cc_attributes) }
+      UserModules::CreditCard::BRANDS.each do |brand|
+        context brand do
+          let(:cc_attributes) { send "valid_cc_attributes_#{brand}" }
+          let(:user) { build(:user_no_cc, cc_attributes) }
 
-        it "saves all pending_cc_xxx fields" do
-          subject.pending_cc_type.should be_nil
-          subject.pending_cc_last_digits.should be_nil
-          subject.pending_cc_expire_on.should be_nil
-          subject.pending_cc_updated_at.should be_nil
+          it "saves all pending_cc_xxx fields" do
+            user.pending_cc_type.should be_nil
+            user.pending_cc_last_digits.should be_nil
+            user.pending_cc_expire_on.should be_nil
+            user.pending_cc_updated_at.should be_nil
 
-          subject.prepare_pending_credit_card
+            user.prepare_pending_credit_card
 
-          subject.pending_cc_type.should be_present
-          subject.pending_cc_last_digits.should be_present
-          subject.pending_cc_expire_on.should be_present
-          subject.pending_cc_updated_at.should be_present
+            user.pending_cc_type.should eq cc_attributes[:cc_brand]
+            user.pending_cc_last_digits.should eq cc_attributes[:cc_number][-4,4]
+            user.pending_cc_expire_on.should eq Time.utc(cc_attributes[:cc_expiration_year], cc_attributes[:cc_expiration_month]).end_of_month.to_date
+            user.pending_cc_updated_at.should be_present
+          end
         end
       end
     end
 
     describe "#reset_credit_card_info" do
-      subject { build(:user) }
+      let(:user) { build(:user) }
 
       it "resets all pending_cc_xxx fields" do
-        subject.cc_type.should be_present
-        subject.cc_last_digits.should be_present
-        subject.cc_expire_on.should be_present
-        subject.cc_updated_at.should be_present
+        user.cc_type.should be_present
+        user.cc_last_digits.should be_present
+        user.cc_expire_on.should be_present
+        user.cc_updated_at.should be_present
 
-        subject.reset_credit_card_info
+        user.reset_credit_card_info
 
-        subject.reload
-        subject.cc_type.should be_nil
-        subject.cc_last_digits.should be_nil
-        subject.cc_expire_on.should be_nil
-        subject.cc_updated_at.should be_nil
+        user.reload.cc_type.should be_nil
+        user.cc_last_digits.should be_nil
+        user.cc_expire_on.should be_nil
+        user.cc_updated_at.should be_nil
       end
     end
 
     describe "#apply_pending_credit_card_info" do
-      use_vcr_cassette "ogone/void_authorization"
-      before do
-        @user = build(:user_no_cc, valid_cc_attributes)
-        @user.prepare_pending_credit_card
-        @user.cc_register = false
-      end
-      subject { @user }
+      UserModules::CreditCard::BRANDS.each do |brand|
+        context brand do
+          let(:cc_attributes) { send "valid_cc_attributes_#{brand}" }
+          let(:user) { build(:user_no_cc, cc_attributes) }
+          before do
+            user.prepare_pending_credit_card
+            user.cc_register = false
+          end
 
-      it "sets cc_xxx fields and resets all pending_cc_xxx and last_failed_cc_authorize_xxx fields" do
-        subject.pending_cc_type.should be_present
-        subject.pending_cc_last_digits.should be_present
-        subject.pending_cc_expire_on.should be_present
-        subject.pending_cc_updated_at.should be_present
-        subject.cc_type.should be_nil
-        subject.cc_last_digits.should be_nil
-        subject.cc_expire_on.should be_nil
-        subject.cc_updated_at.should be_nil
+          it "sets cc_xxx fields and resets all pending_cc_xxx and last_failed_cc_authorize_xxx fields" do
+            user.pending_cc_type.should eq cc_attributes[:cc_brand]
+            user.pending_cc_last_digits.should eq cc_attributes[:cc_number][-4,4]
+            user.pending_cc_expire_on.should eq Time.utc(cc_attributes[:cc_expiration_year], cc_attributes[:cc_expiration_month]).end_of_month.to_date
+            user.pending_cc_updated_at.should be_present
+            user.cc_type.should be_nil
+            user.cc_last_digits.should be_nil
+            user.cc_expire_on.should be_nil
+            user.cc_updated_at.should be_nil
 
-        subject.apply_pending_credit_card_info
+            user.apply_pending_credit_card_info
 
-        subject.reload
-        subject.pending_cc_type.should be_nil
-        subject.pending_cc_last_digits.should be_nil
-        subject.pending_cc_expire_on.should be_nil
-        subject.pending_cc_updated_at.should be_nil
+            user.reload
+            user.pending_cc_type.should be_nil
+            user.pending_cc_last_digits.should be_nil
+            user.pending_cc_expire_on.should be_nil
+            user.pending_cc_updated_at.should be_nil
 
-        subject.cc_type.should be_present
-        subject.cc_last_digits.should be_present
-        subject.cc_expire_on.should be_present
-        subject.cc_updated_at.should be_present
+            user.cc_type.should eq cc_attributes[:cc_brand]
+            user.cc_last_digits.should eq cc_attributes[:cc_number][-4,4]
+            user.cc_expire_on.should eq Time.utc(cc_attributes[:cc_expiration_year], cc_attributes[:cc_expiration_month]).end_of_month.to_date
+            user.cc_updated_at.should be_present
 
-        subject.last_failed_cc_authorize_at.should be_nil
-        subject.last_failed_cc_authorize_status.should be_nil
-        subject.last_failed_cc_authorize_error.should be_nil
+            user.last_failed_cc_authorize_at.should be_nil
+            user.last_failed_cc_authorize_status.should be_nil
+            user.last_failed_cc_authorize_error.should be_nil
+          end
+        end
       end
     end
 
     describe "#register_credit_card_on_file" do
-      use_vcr_cassette "ogone/void_authorization"
-      subject { build(:user_no_cc, valid_cc_attributes) }
+      UserModules::CreditCard::BRANDS.each do |brand|
+        let(:user) { build(:user_no_cc, send("valid_cc_attributes_#{brand}")) }
 
-      it "should actually call Ogone" do
-        subject.prepare_pending_credit_card
-        Ogone.should_receive(:store).with(subject.credit_card, {
-          billing_id: subject.cc_alias,
-          email: subject.email,
-          billing_address: { address1: subject.billing_address_1, zip: subject.billing_postal_code, city: subject.billing_city, country: subject.billing_country },
-          d3d: true,
-          paramplus: "CHECK_CC_USER_ID=#{subject.id}"
-        }) { mock('authorize_response', params: {}) }
-        subject.register_credit_card_on_file
+        it "should actually call Ogone" do
+          user.prepare_pending_credit_card
+          Ogone.should_receive(:store).with(user.credit_card, {
+            billing_id: user.cc_alias,
+            email: user.email,
+            billing_address: { address1: user.billing_address_1, zip: user.billing_postal_code, city: user.billing_city, country: user.billing_country },
+            d3d: true,
+            paramplus: "CHECK_CC_USER_ID=#{user.id}"
+          }) { mock('authorize_response', params: {}) }
+          user.register_credit_card_on_file
+        end
       end
     end
 

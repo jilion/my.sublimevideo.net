@@ -51,11 +51,14 @@ module Spec
       end
 
       def set_credit_card(options = {})
-        choose  "user_cc_brand_#{options[:type] == 'master' ? 'master' : 'visa'}"
+        options.reverse_merge!(type: 'visa', expire_on_month: 6, expire_on_year: Time.now.year + 1, expire_on_prefix: 'user')
+        options[:type] = 'visa' if options[:type] == 'd3d'
+
+        choose  "user_cc_brand_#{options[:type]}"
         fill_in "Name on card", with: 'Jilion Team'
         fill_in "Card number", with: card_number(options[:type])
-        select  "#{options[:expire_on_month] || "6"}", from: "#{options[:expire_on_prefix] || 'user'}_cc_expiration_month"
-        select  "#{options[:expire_on_year] || Time.now.year + 1}", from: "#{options[:expire_on_prefix] || "user"}_cc_expiration_year"
+        select  "#{options[:expire_on_month]}", from: "#{options[:expire_on_prefix]}_cc_expiration_month"
+        select  "#{options[:expire_on_year]}", from: "#{options[:expire_on_prefix]}_cc_expiration_year"
         fill_in "Security Code", with: '111'
       end
 
@@ -64,17 +67,10 @@ module Spec
       end
 
       def card_number(type = 'visa')
-        case type
-        when 'visa'
-          '4111111111111111'
-        when 'master'
-          '5399999999999999'
-        when 'd3d'
-          '4000000000000002'
-        end
+        send("valid_cc_attributes_#{type}")[:cc_number]
       end
 
-      def last_digits(type = 'visa')
+      def last_digits(type)
         card_number(type)[-4,4]
       end
 

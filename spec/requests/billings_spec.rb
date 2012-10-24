@@ -62,39 +62,41 @@ feature "Billing address update" do
         current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
       end
 
-      scenario "Updates his billing address and credit card successfully" do
-        fill_in "Name",               with: "Bob Doe"
-        fill_in "Street 1",           with: "60 rue du hurepoix"
-        fill_in "Street 2",           with: ""
-        fill_in "Zip or Postal Code", with: "91470"
-        fill_in "City",               with: "Limours"
-        fill_in "Region",             with: ""
-        select  "France",             from: "Country"
-        set_credit_card type: 'master'
-        VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "billing_address_submit" }
-        go 'my', 'account'
+      UserModules::CreditCard::BRANDS.each do |brand|
+        scenario "Updates his billing address and credit card (#{brand}) successfully" do
+          fill_in "Name",               with: "Bob Doe"
+          fill_in "Street 1",           with: "60 rue du hurepoix"
+          fill_in "Street 2",           with: ""
+          fill_in "Zip or Postal Code", with: "91470"
+          fill_in "City",               with: "Limours"
+          fill_in "Region",             with: ""
+          select  "France",             from: "Country"
+          set_credit_card type: brand
+          VCR.use_cassette("ogone/credit_card_#{brand}_validation") { click_button "billing_address_submit" }
+          go 'my', 'account'
 
-        @current_user.reload.billing_name.should eq "Bob Doe"
-        @current_user.billing_address_1.should eq "60 rue du hurepoix"
-        @current_user.billing_postal_code.should eq "91470"
-        @current_user.billing_city.should eq "Limours"
-        @current_user.billing_country.should eq "FR"
-      end
+          @current_user.reload.billing_name.should eq "Bob Doe"
+          @current_user.billing_address_1.should eq "60 rue du hurepoix"
+          @current_user.billing_postal_code.should eq "91470"
+          @current_user.billing_city.should eq "Limours"
+          @current_user.billing_country.should eq "FR"
+        end
 
-      scenario "Update billing address and credit card unsuccessfully" do
-        fill_in "Name",               with: ""
-        fill_in "Street 1",           with: "60 rue du hurepoix"
-        fill_in "Street 2",           with: ""
-        fill_in "Zip or Postal Code", with: "1"*21
-        fill_in "City",               with: "Limours"
-        fill_in "Region",             with: ""
-        select  "France",             from: "Country"
-        set_credit_card type: 'master'
-        VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "billing_address_submit" }
+        scenario "Update billing address and credit card (#{brand}) unsuccessfully" do
+          fill_in "Name",               with: ""
+          fill_in "Street 1",           with: "60 rue du hurepoix"
+          fill_in "Street 2",           with: ""
+          fill_in "Zip or Postal Code", with: "1"*21
+          fill_in "City",               with: "Limours"
+          fill_in "Region",             with: ""
+          select  "France",             from: "Country"
+          set_credit_card type: brand
+          VCR.use_cassette("ogone/credit_card_#{brand}_validation") { click_button "billing_address_submit" }
 
-        page.should have_css '.inline_errors'
-        page.should have_content "Postal code is too long (maximum is 20 characters)"
-        @current_user.reload.billing_postal_code.should eq "1004"
+          page.should have_css '.inline_errors'
+          page.should have_content "Postal code is too long (maximum is 20 characters)"
+          @current_user.reload.billing_postal_code.should eq "1004"
+        end
       end
     end
   end
@@ -165,16 +167,18 @@ feature "Credit cards update" do
       go 'my', 'account'
     end
 
-    scenario "And update is successful" do
-      click_link "Register credit card"
-      current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
+    UserModules::CreditCard::BRANDS.each do |brand|
+      scenario "And update is successful (#{brand})" do
+        click_link "Register credit card"
+        current_url.should eq "http://my.sublimevideo.dev/account/billing/edit"
 
-      set_credit_card type: 'master'
-      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "credit_card_submit" }
+        set_credit_card type: brand
+        VCR.use_cassette("ogone/credit_card_#{brand}_validation") { click_button "credit_card_submit" }
 
-      @current_user.reload.cc_type.should eql 'master'
-      @current_user.cc_last_digits.should eql '9999'
-      should_save_billing_info_successfully 'master'
+        @current_user.reload.cc_type.should eql brand
+        @current_user.cc_last_digits.should eql send("valid_cc_attributes_#{brand}")[:cc_number][-4,4]
+        should_save_billing_info_successfully brand
+      end
     end
   end
 
@@ -283,13 +287,7 @@ feature "Credit cards update" do
 end
 
 def should_display_credit_card(type = 'visa')
-  card_name = case type
-  when 'visa', 'd3d'
-    'Visa'
-  when 'master'
-    'MasterCard'
-  end
-  page.should have_content(card_name)
+  page.should have_content(t("user.credit_card.type.#{type == 'd3d' ? 'visa' : type}"))
   page.should have_content(last_digits(type))
 end
 
