@@ -20,6 +20,29 @@ describe Service::Trial do
     @app_design_free = create(:addon_plan, addon: addon, price: 0)
   end
 
+  describe '.send_trial_will_expire_email' do
+    before do
+      @billable_items_wont_receive_email = [create(:billable_item, site: site0, item: create(:addon_plan), state: 'trial')]
+      @billable_items_will_receive_email = []
+
+      BusinessModel.days_before_trial_end.each do |days_before_trial_end|
+        Timecop.travel((BusinessModel.days_for_trial - days_before_trial_end).days.ago) do
+          @billable_items_wont_receive_email << create(:billable_item, site: site0, item: create(:addon_plan), state: 'subscribed')
+          @billable_items_will_receive_email << create(:billable_item, site: site0, item: create(:addon_plan), state: 'trial')
+        end
+      end
+    end
+
+    it 'delays .activate_billable_items_out_of_trial_for_site! for site with at least a billable item out of trial' do
+      BillingMailer.should_receive(:delay) { delayed }
+      @billable_items_will_receive_email.each do |billable_item|
+        delayed.should_receive(:trial_will_expire).with(billable_item.id)
+      end
+
+      described_class.send_trial_will_expire_email
+    end
+  end
+
   describe '.activate_billable_items_out_of_trial!' do
     before do
       Timecop.travel(15.days.ago) do
@@ -80,6 +103,10 @@ describe Service::Trial do
       let(:user) { create(:user_no_cc) }
 
       it 'delegates to Service::Site#update_billable_items! and cancel the app designs and addon plans IDs' do
+        BillingMailer.should_receive(:delay).twice { delayed }
+        delayed.should_receive(:trial_has_expired).with(site.id, 'App::Design', app_design_paid2.id)
+        delayed.should_receive(:trial_has_expired).with(site.id, 'AddonPlan', addon_plan_paid1.id)
+
         described_class.activate_billable_items_out_of_trial_for_site!(site1.id)
 
         site1.reload.billable_items.should have(2).item

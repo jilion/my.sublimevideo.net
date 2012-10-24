@@ -11,9 +11,10 @@ en:
 
     billing_mailer:
       trial_will_expire:
-        today: "Your trial for %{hostname} expires today"
-        tomorrow: "Your trial for %{hostname} expires tomorrow"
-        in_days: "Your trial for %{hostname} expires in %{days} days"
+        today: "Your trial for the %{addon} addon expires today"
+        tomorrow: "Your trial for the %{addon} addon expires tomorrow"
+        in_days: "Your trial for the %{addon} addon expires in %{days} days"
+      trial_has_expired: "Your trial for the %{addon} addon has expired"
       credit_card_will_expire: "Your credit card expires at the end of this month"
       transaction_succeeded: "Your payment has been approved"
       transaction_failed: "We encountered a problem processing your payment"

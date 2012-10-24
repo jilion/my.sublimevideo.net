@@ -1,0 +1,11 @@
+%p
+  = raw "Your #{BusinessModel.days_for_trial}-day free trial for the #{@design_or_addon_plan.title} add-on"
+  - if @site.hostname?
+    = raw "(for #{link_to @site.hostname, url_with_protocol(@site.hostname)})"
+  %strong has now expired.
+
+%p
+  The addon has been disabled.
+
+%p
+  = raw "You can <strong>#{link_to('activate it', site_addons_url(@site))}</strong> at any time via the #{link_to('Add-ons', site_addons_url(@site))} page."

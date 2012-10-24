@@ -78,6 +78,7 @@ module RecurringJob
     end
 
     def sites_processing(priority = PRIORITIES[:sites])
+      Service::Trial.delay(priority: priority).send_trial_will_expire_email
       Service::Trial.delay(priority: priority).activate_billable_items_out_of_trial!
       Service::Usage.delay(priority: priority).set_first_billable_plays_at_for_not_archived_sites
       Service::Usage.delay(priority: priority).update_last_30_days_counters_for_not_archived_sites
