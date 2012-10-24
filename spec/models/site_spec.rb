@@ -92,7 +92,7 @@ describe Site, :addons do
       it { should have(0).error_on(:base) }
     end
 
-    describe "blank hostnames", :focus do
+    describe "blank hostnames" do
       subject { build(:site, hostname: "", extra_hostnames: "", dev_hostnames: "") }
       it { should be_valid } # dev hostnames are set before validation
       it { should have(0).error_on(:base) }
