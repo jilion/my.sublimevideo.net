@@ -15,12 +15,8 @@ class App::Design < ActiveRecord::Base
 
   scope :paid, -> { where { price > 0 } }
 
-  def self.memorized_app_designs
-    @memorized_app_designs ||= {}
-  end
-
   def self.get(name)
-    memorized_app_designs[name] ||= where(name: name.to_s).first
+    Rails.cache.fetch("app_design_#{name}") { where(name: name.to_s).first }
   end
 
   def available?(site)

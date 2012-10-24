@@ -34,14 +34,12 @@ class BillableItem < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :plans,       -> { where(item_type: 'Plan') }
   scope :app_designs, -> { where(item_type: 'App::Design') }
   scope :addon_plans, -> { where(item_type: 'AddonPlan') }
   scope :active,      -> { where { state >> ACTIVE_STATES } }
   scope :subscribed,  -> { where(state: 'subscribed') }
   scope :paid,        -> do
     where{
-      ((item_type == 'Plan') & (item_id >> Plan.paid_plans.pluck(:id))) |
       ((item_type == 'App::Design') & (item_id >> App::Design.paid.pluck(:id))) |
       ((item_type == 'AddonPlan') & (item_id >> AddonPlan.joins(:addon).paid.pluck("addon_plans.id")))
     }
