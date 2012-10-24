@@ -82,12 +82,18 @@ describe Site, :addons do
     it { should_not allow_value('dev').for(:accessible_stage) }
     it { should_not allow_value('fake').for(:accessible_stage) }
 
-    specify { Site.validators_on(:hostname).map(&:class).should eq [HostnameValidator, HostnameUniquenessValidator] }
+    specify { Site.validators_on(:hostname).map(&:class).should eq [HostnameValidator] }
     specify { Site.validators_on(:extra_hostnames).map(&:class).should include ExtraHostnamesValidator }
     specify { Site.validators_on(:dev_hostnames).map(&:class).should include DevHostnamesValidator }
 
     describe "no hostnames at all" do
       subject { build(:site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil) }
+      it { should be_valid } # dev hostnames are set before validation
+      it { should have(0).error_on(:base) }
+    end
+
+    describe "blank hostnames", :focus do
+      subject { build(:site, hostname: "", extra_hostnames: "", dev_hostnames: "") }
       it { should be_valid } # dev hostnames are set before validation
       it { should have(0).error_on(:base) }
     end

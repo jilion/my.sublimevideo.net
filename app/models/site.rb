@@ -1,7 +1,6 @@
 require_dependency 'hostname'
 require_dependency 'stage'
 require_dependency 'validators/hostname_validator'
-require_dependency 'validators/hostname_uniqueness_validator'
 require_dependency 'validators/dev_hostnames_validator'
 require_dependency 'validators/extra_hostnames_validator'
 require_dependency 'service/loader'
@@ -36,10 +35,6 @@ class Site < ActiveRecord::Base
   serialize :last_30_days_billable_video_views_array, Array
 
   uniquify :token, chars: Array('a'..'z') + Array('0'..'9')
-
-
-  # FIXME: delegate to addon
-  # delegate :stats_retention_days, to: :plan, prefix: true
 
   # ================
   # = Associations =
@@ -94,7 +89,7 @@ class Site < ActiveRecord::Base
   validates :user, presence: true
   validates :accessible_stage, inclusion: Stage::STAGES
 
-  validates :hostname, hostname: true, hostname_uniqueness: true
+  validates :hostname, hostname: true
   validates :dev_hostnames,   dev_hostnames: true
   validates :extra_hostnames, extra_hostnames: true
   validates :path, length: { maximum: 255 }
@@ -104,8 +99,8 @@ class Site < ActiveRecord::Base
   # =============
 
   before_validation ->(site) do
-    site.hostname      = DEFAULT_DOMAIN unless hostname?
-    site.dev_hostnames = DEFAULT_DEV_DOMAINS unless dev_hostnames?
+    site.hostname      ||= DEFAULT_DOMAIN
+    site.dev_hostnames ||= DEFAULT_DEV_DOMAINS
   end
 
   # Site::Loader
