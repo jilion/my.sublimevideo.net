@@ -20,8 +20,25 @@ class AddonPlan < ActiveRecord::Base
 
   scope :paid, -> { includes(:addon).where{ (addon.public_at != nil) & (price > 0) } }
 
+  def self.memorized_addon_plans
+    @memorized_addon_plans ||= {}
+  end
+
+  def self.free_addon_plans(options = {})
+    options = { reject: [] }.merge(options)
+
+    Addon.all.inject({}) do |hash, addon|
+      if free_addon_plan = addon.free_plan
+        unless free_addon_plan.availability == 'custom' || options[:reject].include?(free_addon_plan.addon.name)
+          hash[addon.name.to_sym] = addon.free_plan.id
+        end
+      end
+      hash
+    end
+  end
+
   def self.get(addon_name, addon_plan_name)
-    includes(:addon).where { (addon.name == addon_name) & (name == addon_plan_name) }.first
+    memorized_addon_plans["#{addon_name}_#{addon_plan_name}"] ||= includes(:addon).where { (addon.name == addon_name) & (name == addon_plan_name) }.first
   end
 
   def available?(site)

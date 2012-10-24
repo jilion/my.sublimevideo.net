@@ -474,7 +474,7 @@ module Populate
           if rand >= 0.5
             site = user.sites.create({ hostname: hostname, plan_id: Plan.where(name: %w[plus premium].sample, cycle: 'month').first.id }, without_protection: true)
             service = Service::Site.new(site)
-            service.migrate_plan_to_addons!
+            service.migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
             service.send :create_default_kit
           else
             Service::Site.build(user: user, hostname: hostname).initial_save

@@ -10,9 +10,9 @@ module Service
         new params.delete(:user).sites.new(params)
       end
 
-      def migrate_plan_to_addons!(site_id)
+      def migrate_plan_to_addons!(site_id, free_addon_plans, free_addon_plans_filtered)
         site = ::Site.find(site_id)
-        Service::Site.new(site).migrate_plan_to_addons!
+        Service::Site.new(site).migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
       end
     end
 
@@ -43,8 +43,7 @@ module Service
       ::Site.transaction do
         set_default_app_designs
         if site.plan_id?
-          free_addon_plans_filtered = free_addon_plans(reject: %w[logo stats support])
-          update_billable_addon_plans(free_addon_plans_filtered)
+          update_billable_addon_plans(AddonPlan.free_addon_plans(reject: %w[logo stats support]))
 
           case site.plan.name
           when 'plus'
@@ -108,14 +107,12 @@ module Service
       end
     end
 
-    def migrate_plan_to_addons!
+    def migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
       ::Site.transaction do
 
         set_default_app_designs(suspended: site.suspended?)
-        case site.plan.name
+        case site.plan.try(:name)
         when 'plus'
-          free_addon_plans_filtered = free_addon_plans(reject: %w[logo stats support])
-
           # Sponsor real-time stats
           update_billable_addon_plans(free_addon_plans_filtered)
           update_billable_addon_plans({
@@ -127,8 +124,6 @@ module Service
           }, force: 'subscribed', suspended: site.suspended?)
 
         when 'premium'
-          free_addon_plans_filtered = free_addon_plans(reject: %w[logo stats support])
-
           # Sponsor VIP email support
           update_billable_addon_plans(free_addon_plans_filtered, suspended: site.suspended?)
           update_billable_addon_plans({
@@ -186,20 +181,7 @@ module Service
     end
 
     def set_default_addon_plans
-      update_billable_addon_plans(free_addon_plans)
-    end
-
-    def free_addon_plans(options = {})
-      options = { reject: [] }.merge(options)
-
-      Addon.all.inject({}) do |hash, addon|
-        if free_addon_plan = addon.free_plan
-          unless free_addon_plan.availability == 'custom' || options[:reject].include?(free_addon_plan.addon.name)
-            hash[addon.name.to_sym] = addon.free_plan.id
-          end
-        end
-        hash
-      end
+      update_billable_addon_plans(AddonPlan.free_addon_plans)
     end
 
     def delay_set_ranks

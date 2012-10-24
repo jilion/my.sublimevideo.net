@@ -218,7 +218,7 @@ describe Site, :addons do
       context 'with plus plan' do
         let(:site) { create(:site, plan_id: plus_plan.id) }
         before do
-          Service::Site.new(site).migrate_plan_to_addons!
+          Service::Site.new(site).migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
           site.reload.billable_items.should have(12).items
         end
 
@@ -244,7 +244,7 @@ describe Site, :addons do
       context 'with premium plan' do
         let(:site) { create(:site, plan_id: premium_plan.id) }
         before do
-          Service::Site.new(site).migrate_plan_to_addons!
+          Service::Site.new(site).migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
           site.reload.billable_items.should have(12).items
         end
 
@@ -272,7 +272,7 @@ describe Site, :addons do
       context 'with plus plan' do
         let(:site) { create(:site, plan_id: plus_plan.id) }
         before do
-          Service::Site.new(site).migrate_plan_to_addons!
+          Service::Site.new(site).migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
           site.reload.billable_items.should have(12).items
         end
 
@@ -301,7 +301,7 @@ describe Site, :addons do
       context 'with premium plan' do
         let(:site) { create(:site, plan_id: premium_plan.id) }
         before do
-          Service::Site.new(site).migrate_plan_to_addons!
+          Service::Site.new(site).migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
           site.reload.billable_items.should have(12).items
         end
 

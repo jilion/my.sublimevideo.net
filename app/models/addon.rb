@@ -10,8 +10,12 @@ class Addon < ActiveRecord::Base
   validates :name, uniqueness: true
   validates :design_dependent, inclusion: [true, false]
 
+  def self.memorized_addons
+    @memorized_addons ||= {}
+  end
+
   def self.get(name)
-    where(name: name).first
+    memorized_addons[name] ||= where(name: name).first
   end
 
   def free_plan

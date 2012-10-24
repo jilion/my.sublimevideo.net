@@ -47,7 +47,7 @@ module OneTime
             new_plan = Plan.where(name: site.plan.name, cycle: 'month').first
             site.update_column(:plan_id, new_plan.id)
 
-            price_per_day = (new_plan.price * 12) / 365
+            price_per_day  = (new_plan.price * 12) / 365
             add_to_balance = [0, ((site.plan_cycle_ended_at + 1.second - Time.now.utc) / 1.day).floor * price_per_day].max
             site.user.increment!(:balance, add_to_balance)
 
@@ -61,8 +61,10 @@ module OneTime
 
       def migrate_plans_to_addons
         scheduled = 0
+        free_addon_plans          = AddonPlan.free_addon_plans
+        free_addon_plans_filtered = AddonPlan.free_addon_plans(reject: %w[logo stats support])
         ::Site.not_archived.find_each(batch_size: 100) do |site|
-          Service::Site.delay(priority: 200).migrate_plan_to_addons!(site.id)
+          Service::Site.delay(priority: 200).migrate_plan_to_addons!(site.id, free_addon_plans, free_addon_plans_filtered)
 
           scheduled += 1
 
