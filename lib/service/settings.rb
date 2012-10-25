@@ -5,22 +5,18 @@ require_dependency 'app/mangler'
 module Service
   Settings = Struct.new(:site, :type, :options, :file, :cdn_file) do
     self::TYPES = %w[license settings]
-    self::SITE_FIELDS = %w[plan_id accessible_stage hostname extra_hostnames dev_hostnames path wildcard badged]
 
     delegate :upload!, :delete!, :present?, to: :cdn_file
 
     def self.update_all_types!(site_id, options = {})
       site = ::Site.find(site_id)
-      changed = []
-      if site.state == 'active'
-        changed << new(site, 'license', options).upload!
-        unless site.accessible_stage == 'stable'
-          changed << new(site, 'settings', options).upload!
+      self::TYPES.each do |type|
+        if site.state == 'active'
+          new(site, type, options).upload!
+        else
+          new(site, type, options).delete!
         end
-      else
-        self::TYPES.each { |type| new(site, type, options).delete! }
       end
-      site.touch(:settings_updated_at) if changed.any? && options[:touch] != false
     end
 
     def initialize(*args)

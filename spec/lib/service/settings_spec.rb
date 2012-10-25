@@ -41,7 +41,6 @@ describe Service::Settings, :fog_mock do
     path: 'path', path?: true,
     badged: true,
     addon_plan_is_active?: true,
-    touch: true,
     accessible_stage: 'stable', player_mode: 'stable'
   )}
   let(:settings) { described_class.new(site, 'settings') }
@@ -60,20 +59,10 @@ describe Service::Settings, :fog_mock do
         described_class.new(site, 'settings').should be_present
       end
 
-      it "uploads only license when accessible_stage is 'stable'" do
+      it "uploads all settings types when accessible_stage is 'stable'" do
         described_class.update_all_types!(site.id)
         described_class.new(site, 'license').should be_present
-        described_class.new(site, 'settings').should_not be_present
-      end
-
-      it "touches settings_updated_at" do
-        site.should_receive(:touch).with(:settings_updated_at)
-        described_class.update_all_types!(site.id)
-      end
-
-      it "doesn't touches settings_updated_at when touch option is false" do
-        site.should_not_receive(:touch).with(:settings_updated_at)
-        described_class.update_all_types!(site.id, touch: false)
+        described_class.new(site, 'settings').should be_present
       end
 
       context "when suspended" do

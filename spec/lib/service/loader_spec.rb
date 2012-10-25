@@ -22,8 +22,7 @@ describe Service::Loader, :fog_mock do
     id: 1,
     token: 'abcd1234',
     accessible_stage: 'beta', player_mode: 'beta',
-    active?: true,
-    touch: true
+    active?: true
   )}
   let(:app_component) { mock(App::Component, token: 'e') }
   let(:loader) { described_class.new(site, 'stable') }
@@ -48,16 +47,6 @@ describe Service::Loader, :fog_mock do
         described_class.new(site, 'stable').should be_present
         described_class.new(site, 'beta').should_not be_present
         described_class.new(site, 'alpha').should_not be_present
-      end
-
-      it "touches loaders_updated_at" do
-        site.should_receive(:touch).with(:loaders_updated_at)
-        described_class.update_all_stages!(site.id)
-      end
-
-      it "doesn't touches loaders_updated_at when touch option is false" do
-        site.should_not_receive(:touch).with(:loaders_updated_at)
-        described_class.update_all_stages!(site.id, touch: false)
       end
     end
 
@@ -100,11 +89,6 @@ describe Service::Loader, :fog_mock do
         described_class.new(site, 'beta').should_not be_present
         described_class.new(site, 'alpha').should_not be_present
       end
-
-      it "touch loaders_updated_at" do
-        site.should_receive(:touch).with(:loaders_updated_at)
-        described_class.update_all_stages!(site.id)
-      end
     end
 
     context "site.accessible_stage not changed" do
@@ -118,11 +102,6 @@ describe Service::Loader, :fog_mock do
         described_class.new(site, 'stable').should be_present
         described_class.new(site, 'beta').should be_present
         described_class.new(site, 'alpha').should be_present
-      end
-
-      it "doesn't touch loaders_updated_at" do
-        site.should_not_receive(:touch).with(:loaders_updated_at)
-        described_class.update_all_stages!(site.id)
       end
     end
 

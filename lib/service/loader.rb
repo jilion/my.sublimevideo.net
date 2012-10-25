@@ -9,15 +9,13 @@ module Service
 
     def self.update_all_stages!(site_id, options = {})
       site = ::Site.find(site_id)
-      changed = []
       Stage::STAGES.each do |stage|
         if site.active? && stage >= site.accessible_stage
-          changed << new(site, stage, options).upload!
+          new(site, stage, options).upload!
         else
-          changed << new(site, stage, options).delete!
+          new(site, stage, options).delete!
         end
       end
-      site.touch(:loaders_updated_at) if changed.any? && options[:touch] != false
     end
 
     def initialize(*args)
@@ -44,8 +42,7 @@ module Service
     end
 
     def components_dependencies
-      @components_dependencies ||=
-        App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
+      @components_dependencies ||= App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
     end
 
   private
