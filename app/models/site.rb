@@ -98,20 +98,12 @@ class Site < ActiveRecord::Base
   # =============
 
   before_validation ->(site) do
-    site.hostname      ||= DEFAULT_DOMAIN
-    site.dev_hostnames ||= DEFAULT_DEV_DOMAINS
+    site.hostname      = DEFAULT_DOMAIN if site.hostname.blank?
+    site.dev_hostnames = DEFAULT_DEV_DOMAINS if site.dev_hostnames.blank?
   end
 
-  # Site::Loader
-  after_create ->(site) { Service::Loader.delay.update_all_stages!(site.id) }
+  # Only when accessible_stage change in admin
   after_save ->(site) { Service::Loader.delay.update_all_stages!(site.id) if site.accessible_stage_changed? }
-  # Site::Settings
-  after_save ->(site) do
-    if (site.changed & Service::Settings::SITE_FIELDS).present?
-      Service::Settings.delay.update_all_types!(site.id)
-      site.touch(:settings_updated_at)
-    end
-  end
 
   # =================
   # = State Machine =

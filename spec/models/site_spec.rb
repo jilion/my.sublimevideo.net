@@ -86,18 +86,29 @@ describe Site, :addons do
     specify { Site.validators_on(:extra_hostnames).map(&:class).should include ExtraHostnamesValidator }
     specify { Site.validators_on(:dev_hostnames).map(&:class).should include DevHostnamesValidator }
 
-    describe "no hostnames at all" do
+    describe "with no hostnames at all" do
       subject { build(:site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil) }
       it { should be_valid } # dev hostnames are set before validation
       it { should have(0).error_on(:base) }
+
+      context "after validation" do
+        before { subject.valid? }
+        its(:hostname) { should == Site::DEFAULT_DOMAIN }
+        its(:dev_hostnames) { should == Site::DEFAULT_DEV_DOMAINS }
+      end
     end
 
-    describe "blank hostnames" do
+    describe "with blank hostnames" do
       subject { build(:site, hostname: "", extra_hostnames: "", dev_hostnames: "") }
       it { should be_valid } # dev hostnames are set before validation
       it { should have(0).error_on(:base) }
-    end
 
+      context "after validation" do
+        before { subject.valid? }
+        its(:hostname) { should == Site::DEFAULT_DOMAIN }
+        its(:dev_hostnames) { should == Site::DEFAULT_DEV_DOMAINS }
+      end
+    end
   end # Validations
 
   describe "Attributes Accessors" do
@@ -162,37 +173,6 @@ describe Site, :addons do
           site.should be_valid
           site.dev_hostnames.should eq Site::DEFAULT_DEV_DOMAINS
         end
-      end
-    end
-
-    describe "before_save" do
-      let(:site) { create(:site, first_paid_plan_started_at: Time.now.utc) }
-
-      it "delays Service::Loader update on site accessible_stage update" do
-        site = create(:site)
-        -> { site.update_attribute(:accessible_stage, 'alpha') }.should delay('%Service::Loader%update_all_stages%')
-      end
-
-      it "delays Service::Settings update on site accessible_stage update" do
-        site = create(:site)
-        -> { site.update_attribute(:accessible_stage, 'alpha') }.should delay('%Service::Settings%update_all_types%')
-      end
-
-      it "touch settings_updated_at on site accessible_stage update" do
-        site = create(:site)
-        expect { site.update_attribute(:accessible_stage, 'alpha') }.to change(site, :settings_updated_at)
-      end
-    end # before_save
-
-    describe "after_create" do
-      let(:site) { create(:site) }
-
-      it "delays Service::Loader update" do
-        -> { site }.should delay('%Service::Loader%update_all_stages%')
-      end
-
-      it "delays Service::Settings update" do
-        -> { site }.should delay('%Service::Settings%update_all_types%')
       end
     end
   end # Callbacks
@@ -329,9 +309,9 @@ describe Site, :addons do
 
       context 'without plan' do
         let(:site) do
-          service = Service::Site.build(attributes_for(:site).merge(user: create(:user)))
-          service.initial_save
-          service.site
+          site = build(:site)
+          Service::Site.new(site).create
+          site
         end
 
         it 'unsuspend all billable items' do
@@ -359,10 +339,12 @@ describe Site, :addons do
 
       context 'with a billable item in trial plan' do
         let(:site) do
-          service = Service::Site.build(attributes_for(:site).merge(user: create(:user)))
-          service.initial_save
-          service.update_billable_items!({}, { logo: AddonPlan.get('logo', 'disabled').id })
-          service.site
+          site = build(:site)
+          Service::Site.new(site).tap do |service|
+            service.create
+            service.update_billable_items({}, { logo: AddonPlan.get('logo', 'disabled').id })
+          end
+          site
         end
 
         it 'unsuspend all billable items' do

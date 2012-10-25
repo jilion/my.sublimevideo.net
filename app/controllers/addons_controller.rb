@@ -13,7 +13,7 @@ class AddonsController < ApplicationController
 
   # PUT /sites/:site_id/addons/update_all
   def update_all
-    Service::Site.new(@site).update_billable_items!(params[:app_designs], params[:addon_plans])
+    Service::Site.new(@site).update_billable_items(params[:app_designs], params[:addon_plans])
 
     redirect_to thanks_site_addons_path, notice: 'Add-ons successfully updated.'
   end

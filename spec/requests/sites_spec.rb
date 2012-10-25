@@ -26,7 +26,7 @@ feature 'Edit site' do
   background do
     sign_in_as :user
     @site = build(:site, user: @current_user, hostname: hostname1)
-    Service::Site.new(@site).initial_save
+    Service::Site.new(@site).create
 
     go 'my', '/sites'
   end
@@ -55,14 +55,14 @@ feature 'Archive site', :js do
   background do
     sign_in_as :user
     @site = build(:site, user: @current_user, hostname: hostname1)
-    Service::Site.new(@site).initial_save
+    Service::Site.new(@site).create
 
     @paid_site_with_paid_invoices = build(:site, user: @current_user, hostname: hostname2)
-    Service::Site.new(@paid_site_with_paid_invoices).initial_save
+    Service::Site.new(@paid_site_with_paid_invoices).create
     create(:paid_invoice, site: @paid_site_with_paid_invoices)
 
     @paid_site_with_open_invoices = build(:site, user: @current_user, hostname: hostname3)
-    Service::Site.new(@paid_site_with_open_invoices).initial_save
+    Service::Site.new(@paid_site_with_open_invoices).create
     create(:invoice, site: @paid_site_with_open_invoices)
 
     go 'my', '/sites'
@@ -91,7 +91,7 @@ feature 'Archive site', :js do
 
   scenario 'a paid site with a failed invoice' do
     site = build(:site, user: @current_user, hostname: 'test.com')
-    Service::Site.new(site).initial_save
+    Service::Site.new(site).create
     create(:failed_invoice, site: site)
 
     go 'my', '/sites'
@@ -101,7 +101,7 @@ feature 'Archive site', :js do
 
   scenario 'a paid site with a waiting invoice' do
     site = build(:site, user: @current_user, hostname: 'example.org')
-    Service::Site.new(site).initial_save
+    Service::Site.new(site).create
     create(:waiting_invoice, site: site)
 
     go 'my', '/sites'
@@ -137,7 +137,7 @@ feature 'Sites index' do
     context 'with sites' do
       background do
         @site = build(:site, user: @current_user, hostname: hostname1)
-        Service::Site.new(@site).initial_save
+        Service::Site.new(@site).create
       end
 
       scenario 'sort buttons displayed only if count of sites > 1' do
@@ -146,7 +146,7 @@ feature 'Sites index' do
         page.should have_no_css 'div.sorting'
         page.should have_no_css 'a.sort'
 
-        Service::Site.new(build(:site, user: @current_user, hostname: hostname2)).initial_save
+        Service::Site.new(build(:site, user: @current_user, hostname: hostname2)).create
         go 'my', '/sites'
 
         page.should have_content hostname1
@@ -163,7 +163,7 @@ feature 'Sites index' do
         page.should have_no_css 'nav.pagination'
         page.should have_no_selector 'a[rel=\'next\']'
 
-        Service::Site.new(build(:site, user: @current_user, hostname: hostname3)).initial_save
+        Service::Site.new(build(:site, user: @current_user, hostname: hostname3)).create
         go 'my', '/sites'
 
         page.should have_css 'nav.pagination'

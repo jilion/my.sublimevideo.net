@@ -6,7 +6,7 @@ feature "Hidable notices" do
     background do
       sign_in_as :user
       @site = build(:site, user: @current_user)
-      Service::Site.new(@site).initial_save
+      Service::Site.new(@site).create
     end
 
     context "user didn't hide the notice" do
@@ -67,7 +67,7 @@ feature "Hidable notices" do
       Timecop.travel(3.weeks.ago) do
         sign_in_as :user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo'
         @site = build(:site, user: @current_user)
-        Service::Site.new(@site).initial_save
+        Service::Site.new(@site).create
       end
     end
 

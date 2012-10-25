@@ -7,7 +7,7 @@ describe Service::Settings, :fog_mock do
     describe "default settings of a new site" do
       let(:site) {
         site = build(:site, hostname: 'test.com')
-        Service::Site.new(site).initial_save
+        Service::Site.new(site).create
         site
       }
       subject { described_class.new(site, 'settings') }

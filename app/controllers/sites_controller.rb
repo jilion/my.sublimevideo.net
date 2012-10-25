@@ -24,7 +24,7 @@ class SitesController < ApplicationController
 
   # GET /sites/new
   def new
-    @site = Service::Site.build(user: current_user).site
+    @site = current_user.sites.build
 
     respond_with(@site)
   end
@@ -36,21 +36,15 @@ class SitesController < ApplicationController
 
   # POST /sites
   def create
-    service = Service::Site.build(params[:site].merge(user: current_user, remote_ip: request.remote_ip))
-    @site   = service.site
+    @site = current_user.sites.build(params[:site])
+    Service::Site.new(@site).create
 
-    respond_with(@site) do |format|
-      if service.initial_save
-        format.html { redirect_to :sites }
-      else
-        format.html { render :new }
-      end
-    end
+    respond_with(@site, location: :sites)
   end
 
   # PUT /sites/:id
   def update
-    @site.update_attributes(params[:site])
+    Service::Site.new(@site).update(params[:site])
 
     respond_with(@site) do |format|
       format.html { redirect_to params[:kit_edit] ? [:edit, @site, @site.kits.first] : [:edit, @site] }

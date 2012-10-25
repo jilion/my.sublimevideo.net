@@ -1,7 +1,4 @@
 require 'spec_helper'
-require File.expand_path('lib/service/trial')
-
-Site = Struct.new(:params) unless defined?(Site)
 
 describe Service::Trial do
   let(:user) { create(:user) }
@@ -82,7 +79,7 @@ describe Service::Trial do
     end
 
     context 'user has a cc' do
-      it 'delegates to Service::Site#update_billable_items! with the app designs and addon plans IDs' do
+      it 'delegates to Service::Site#update_billable_items with the app designs and addon plans IDs' do
         described_class.activate_billable_items_out_of_trial_for_site!(site1.id)
 
         site1.reload.billable_items.should have(3).items
@@ -102,10 +99,10 @@ describe Service::Trial do
     context 'user has no cc' do
       let(:user) { create(:user_no_cc) }
 
-      it 'delegates to Service::Site#update_billable_items! and cancel the app designs and addon plans IDs' do
+      it 'delegates to Service::Site#update_billable_items and cancel the app designs and addon plans IDs' do
         BillingMailer.should_receive(:delay).twice { delayed }
-        delayed.should_receive(:trial_has_expired).with(site.id, 'App::Design', app_design_paid2.id)
-        delayed.should_receive(:trial_has_expired).with(site.id, 'AddonPlan', addon_plan_paid1.id)
+        delayed.should_receive(:trial_has_expired).with(site1.id, 'App::Design', app_design_paid2.id)
+        delayed.should_receive(:trial_has_expired).with(site1.id, 'AddonPlan', addon_plan_paid1.id)
 
         described_class.activate_billable_items_out_of_trial_for_site!(site1.id)
 

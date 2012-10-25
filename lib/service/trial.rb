@@ -52,7 +52,7 @@ module Service
           hash
         end
 
-        Service::Site.new(site).update_billable_items!(activated_app_designs, activated_addon_plans)
+        Service::Site.new(site).update_billable_items(activated_app_designs, activated_addon_plans)
       end
 
     end

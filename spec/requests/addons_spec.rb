@@ -3,9 +3,8 @@ require 'spec_helper'
 feature 'Choose add-ons' do
   background do
     sign_in_as :user
-    service = Service::Site.build(attributes_for(:site).merge(user: @current_user))
-    service.initial_save
-    @site = service.site
+    @site = build(:site, user: @current_user)
+    Service::Site.new(@site).create
 
     @site.reload.billable_items.should have(12).items
     @site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
