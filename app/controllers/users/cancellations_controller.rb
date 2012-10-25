@@ -1,4 +1,4 @@
-require_dependency 'account_cancellation_manager'
+require_dependency 'service/user'
 
 class Users::CancellationsController < ApplicationController
 
@@ -17,7 +17,7 @@ class Users::CancellationsController < ApplicationController
     @user.attributes = params[:user]
 
     respond_to do |format|
-      if AccountCancellationManager.archive_user_and_save_feedback(@user, @feedback)
+      if Service::User.new(@user).archive(@feedback)
         format.html do
           sign_out_and_delete_cookie
           redirect_to layout_url('')
