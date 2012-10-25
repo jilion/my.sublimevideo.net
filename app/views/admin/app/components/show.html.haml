@@ -16,11 +16,11 @@
       %tr{ class: cycle('', 'alt') }
         %td
           = version.version
-          = " (#{link_to 'download zip', admin_player_component_version_path(@component, version, format: :zip)})".html_safe
+          = " (#{link_to 'download zip', admin_app_component_version_path(@component, version, format: :zip)})".html_safe
         %td= version.created_at
         %td= version.dependencies
         %td
-          = button_to "delete version", admin_player_component_version_path(version.token, version), data: { confirm: 'Are you REALLY sure?' }, method: :delete
+          = button_to "delete version", admin_app_component_version_path(version.token, version), data: { confirm: 'Are you REALLY sure?' }, method: :delete
 
 - else
   %p No versions yet.
