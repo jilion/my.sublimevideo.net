@@ -4,7 +4,8 @@ feature "Sticky notices" do
   context "no notice" do
     background do
       sign_in_as :user, kill_user: true
-      create(:site, user: @current_user)
+      @site = build(:site, user: @current_user)
+      Service::Site.new(@site).create
       go 'my', '/sites'
     end
 
@@ -18,13 +19,15 @@ feature "Sticky notices" do
   context "credit card will expire this month" do
     background do
       sign_in_as :user, cc_expire_on: Time.utc(Time.now.utc.year, Time.now.utc.month).end_of_month.to_date, kill_user: true
+      @site = build(:site, user: @current_user)
+      Service::Site.new(@site).create
       @current_user.should be_cc_expire_this_month
       go 'my', '/sites'
     end
 
     context "user is billable" do
       background do
-        create(:billable_item, site: create(:site, user: @current_user), item: create(:addon_plan), state: 'subscribed')
+        create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
         @current_user.should be_billable
         go 'my', '/sites'
       end
@@ -51,7 +54,9 @@ feature "Sticky notices" do
 
     context "user is billable" do
       background do
-        create(:billable_item, site: create(:site, user: @current_user), item: create(:addon_plan), state: 'subscribed')
+        @site = build(:site, user: @current_user)
+        Service::Site.new(@site).create
+        create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
         @current_user.should be_billable
         go 'my', '/sites'
       end
@@ -85,7 +90,9 @@ feature "Sticky notices" do
       context "user has a credit card" do
         background do
           sign_in_as :user, billing_address_1: ''
-        create(:billable_item, site: create(:site, user: @current_user), item: create(:addon_plan), state: 'subscribed')
+          @site = build(:site, user: @current_user)
+          Service::Site.new(@site).create
+          create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
           @current_user.should be_billable
           @current_user.should be_cc
           @current_user.should_not be_billing_address_complete
@@ -100,7 +107,9 @@ feature "Sticky notices" do
       context "user has no credit card" do
         background do
           sign_in_as :user, without_cc: true, billing_address_1: ''
-        create(:billable_item, site: create(:site, user: @current_user), item: create(:addon_plan), state: 'subscribed')
+          @site = build(:site, user: @current_user)
+          Service::Site.new(@site).create
+          create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
           @current_user.should be_billable
           @current_user.should_not be_cc
           @current_user.should_not be_billing_address_complete
@@ -113,5 +122,4 @@ feature "Sticky notices" do
       end
     end
   end
-
 end

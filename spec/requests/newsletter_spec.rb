@@ -24,7 +24,7 @@ feature "Newsletter subscription" do
   context 'user is logged-in' do
     background do
       sign_in_as :user
-      create(:site, user: @current_user)
+      Service::Site.new(build(:site, user: @current_user)).create
     end
 
     scenario 'subscribed to the newsletter after log-in' do

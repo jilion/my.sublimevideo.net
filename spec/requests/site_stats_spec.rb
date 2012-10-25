@@ -3,7 +3,8 @@ require 'spec_helper'
 feature 'Stats page' do
   background do
     sign_in_as :user
-    @site = create(:site, user: @current_user)
+    @site = build(:site, user: @current_user)
+    Service::Site.new(@site).create
   end
 
   scenario 'user dont see the Stats tab' do
@@ -22,11 +23,7 @@ feature 'Stats page' do
     end
   end
 
-  context 'user doesnt have the invisible stats add-on plan' do
-    background do
-      create(:billable_item, site: @site, item: @stats_addon_plan_1)
-    end
-
+  context 'user have the invisible stats add-on plan (default)' do
     scenario 'redirect to /sites' do
       go 'my', "/sites/#{@site.token}/stats"
 

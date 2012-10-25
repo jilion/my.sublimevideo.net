@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 feature "OAuth applications" do
@@ -71,7 +72,7 @@ feature "OAuth applications" do
         click_link "Edit"
 
         current_url.should == "http://my.sublimevideo.dev/account/applications/#{@application.id}/edit"
-        page.should have_content("Edit the application 'Agree2'")
+        page.should have_content("Edit the application “Agree2”")
 
         fill_in "Name", with: "Agree3"
         fill_in "Callback url", with: "http://test.fr"

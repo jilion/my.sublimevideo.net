@@ -11,7 +11,8 @@ feature "Site invoices page" do
 
     describe "navigation and content presence verification" do
       background do
-        @site = create(:site, user: @current_user, hostname: 'rymai.com')
+        @site = build(:site, user: @current_user, hostname: 'rymai.com')
+        Service::Site.new(@site).create
         create(:invoice, site: @site)
         go 'my', "/sites/#{@site.to_param}/edit"
       end
@@ -27,7 +28,8 @@ feature "Site invoices page" do
 
     context "site with invoices" do
       background do
-        @site    = create(:site, user: @current_user, hostname: 'rymai.com')
+        @site = build(:site, user: @current_user, hostname: 'rymai.com')
+        Service::Site.new(@site).create
         @invoice = create(:paid_invoice, site: @site)
         @invoice.should be_valid
         go 'my', "/sites/#{@site.to_param}/edit"
@@ -49,7 +51,8 @@ feature "Site invoices page" do
 
     context "site in paid plan with 1 failed invoice" do
       background do
-        @site    = create(:site, user: @current_user, hostname: 'rymai.com')
+        @site = build(:site, user: @current_user, hostname: 'rymai.com')
+        Service::Site.new(@site).create
         @invoice = create(:failed_invoice, site: @site)
         @transaction = create(:transaction, invoices: [@invoice], error: 'Credit card refused')
         go 'my', "/sites/#{@site.to_param}/invoices"
@@ -87,7 +90,8 @@ feature "Site invoices page" do
 
     context "site in paid plan with 1 failed invoice having the 3d secure html as the error" do
       background do
-        @site    = create(:site, user: @current_user, hostname: 'rymai.com')
+        @site = build(:site, user: @current_user, hostname: 'rymai.com')
+        Service::Site.new(@site).create
         @invoice = create(:failed_invoice, site: @site)
         @transaction = create(:transaction, invoices: [@invoice], error: '<html>secure.ogone...</html>')
         go 'my', "/sites/#{@site.to_param}/invoices"
@@ -107,7 +111,8 @@ feature "Site invoices page" do
 
     context "site in paid plan with 1 failed invoice and 1 failed invoice for another site" do
       background do
-        @site = create(:site, user: @current_user, hostname: 'rymai.com')
+        @site = build(:site, user: @current_user, hostname: 'rymai.com')
+        Service::Site.new(@site).create
         @invoice1 = create(:failed_invoice, site: @site, last_failed_at: 2.days.ago)
         @transaction = create(:transaction, invoices: [@invoice1], error: 'Credit card refused')
         @invoice2 = create(:failed_invoice, site: @site)
@@ -135,7 +140,8 @@ feature "Site invoices page" do
   context "user has no credit card" do
     background do
       sign_in_as :user, without_cc: true, kill_user: true
-      @site    = create(:site, user: @current_user, hostname: 'rymai.com')
+      @site = build(:site, user: @current_user, hostname: 'rymai.com')
+      Service::Site.new(@site).create
       @invoice = create(:failed_invoice, site: @site)
       @transaction = create(:transaction, invoices: [@invoice], error: 'Credit card refused')
       go 'my', "/sites/#{@site.to_param}/invoices"
@@ -157,7 +163,8 @@ feature "Site invoices page" do
     background do
       sign_in_as :user, cc_expire_on: 2.years.ago, kill_user: true
       @current_user.should be_cc_expired
-      @site    = create(:site, user: @current_user, hostname: 'rymai.com')
+      @site = build(:site, user: @current_user, hostname: 'rymai.com')
+      Service::Site.new(@site).create
       @invoice = create(:failed_invoice, site: @site)
       @transaction = create(:transaction, invoices: [@invoice], error: 'Credit card refused')
       go 'my', "/sites/#{@site.to_param}/invoices"
@@ -187,7 +194,8 @@ feature "Site invoice page" do
 
     context "normal invoice" do
       background do
-        @site = create(:site, user: @current_user, hostname: 'rymai.com')
+        @site = build(:site, user: @current_user, hostname: 'rymai.com')
+        Service::Site.new(@site).create
         @invoice = create(:invoice, site: @site, vat_rate: 0, vat_amount: 0)
         @transaction = create(:transaction, invoices: [@invoice])
         @invoice.succeed!
@@ -224,7 +232,8 @@ feature "Site invoice page" do
 
     context "upgrade invoice" do
       background do
-        @site = create(:site, user: @current_user, hostname: 'rymai.com')
+        @site = build(:site, user: @current_user, hostname: 'rymai.com')
+        Service::Site.new(@site).create
         @invoice = build(:invoice, site: @site)
         @plan_invoice_item1 = create(:plan_invoice_item, invoice: @invoice, amount: -1000)
         @plan_invoice_item2 = create(:plan_invoice_item, invoice: @invoice, amount: 1000)
@@ -242,7 +251,8 @@ feature "Site invoice page" do
 
     context "invoice has balance deduction" do
       background do
-        @site = create(:site, user: @current_user, hostname: 'rymai.com')
+        @site = build(:site, user: @current_user, hostname: 'rymai.com')
+        Service::Site.new(@site).create
         @invoice = create(:invoice, site: @site, balance_deduction_amount: 20000)
 
         go 'my', "/invoices/#{@invoice.reference}"
@@ -258,7 +268,8 @@ feature "Site invoice page" do
 
     context "invoice has a deal discount" do
       background do
-        @site = create(:site, user: @current_user, hostname: 'rymai.com')
+        @site = build(:site, user: @current_user, hostname: 'rymai.com')
+        Service::Site.new(@site).create
         @invoice = create(:invoice, site: @site)
         @deal = create(:deal, value: 0.3, name: 'Foo bar Deal')
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:discounted_percentage, 0.3)
@@ -274,7 +285,8 @@ feature "Site invoice page" do
 
     context "invoice has beta discount" do
       background do
-        @site = create(:site, user: @current_user, hostname: 'rymai.com')
+        @site = build(:site, user: @current_user, hostname: 'rymai.com')
+        Service::Site.new(@site).create
         @invoice = create(:invoice, site: @site)
 
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:discounted_percentage, 0.2)
@@ -291,7 +303,8 @@ feature "Site invoice page" do
   context "user has VAT" do
     background do
       sign_in_as :user, billing_country: 'CH'
-      @site = create(:site, user: @current_user, hostname: 'rymai.com')
+      @site = build(:site, user: @current_user, hostname: 'rymai.com')
+      Service::Site.new(@site).create
       @invoice = create(:invoice, site: @site)
 
       go 'my', "/invoices/#{@invoice.reference}"
