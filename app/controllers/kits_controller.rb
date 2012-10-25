@@ -20,7 +20,7 @@ class KitsController < ApplicationController
 
   # PUT /sites/:site_id/kits/:id
   def update
-    Service::Kit.new(@kit).update_settings!(params[:kit])
+    Service::Kit.new(@kit).update(params[:kit])
 
     redirect_to edit_site_kit_path(@site, @kit)
   end

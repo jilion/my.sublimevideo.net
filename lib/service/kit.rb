@@ -2,17 +2,18 @@ module Service
   Kit = Struct.new(:kit) do
 
     # params => { "<addon_name>" => { "settingKey" => "<value>" }
-    def update_settings!(params)
+    def update(params)
       ::Kit.transaction do
         kit.app_design_id = params.delete(:app_design_id) if params[:app_design_id]
-
-        update_addons_settings(params[:addons])
-
+        set_addons_settings(params[:addons])
         kit.save!
+
+        kit.site.touch(:settings_updated_at)
+        Service::Settings.delay.update_all_types!(kit.site_id)
       end
     end
 
-    def update_addons_settings(new_addons_settings = {})
+    def set_addons_settings(new_addons_settings = {})
       kit.settings = sanitize_new_addons_settings(new_addons_settings)
     end
 

@@ -1,12 +1,56 @@
 require 'fast_spec_helper'
+require 'rails/railtie'
+
 require File.expand_path('lib/service/kit')
+require File.expand_path('lib/service/site')
+
+Kit = Struct.new(:params) unless defined?(Kit)
 
 describe Service::Kit do
-  let(:kit)        { stub(design: stub) }
+  let(:site)       { stub(touch: true) }
+  let(:kit)        { stub(design: stub, site: site, site_id: 1) }
   let(:addon_plan) { stub }
   let(:service)    { described_class.new(kit) }
+  let(:delayed_method) { stub.as_null_object }
 
-  describe '.sanitize_new_addons_settings' do
+  describe "#update" do
+    let(:params) { { app_design_id: 'design_id', addons: { "logo" => { "settings" => "value" } } } }
+    before do
+      ::Kit.stub(:transaction).and_yield
+      Service::Settings.stub(:delay) { delayed_method }
+      service.stub(:set_addons_settings)
+      kit.stub(:app_design_id=)
+      kit.stub(:save!)
+    end
+
+    it 'assignes app_design_id' do
+      kit.should_receive(:app_design_id=).with('design_id')
+      service.update(params)
+    end
+
+    it 'sets addons_settings without app_design_id params' do
+      service.should_receive(:set_addons_settings).with(params[:addons])
+      service.update(params)
+    end
+
+    it 'saves kit' do
+      kit.should_receive(:save!)
+      service.update(params)
+    end
+
+    it 'touches site settings_updated_at' do
+      site.should_receive(:touch).with(:settings_updated_at)
+      service.update(params)
+    end
+
+    it 'delays the update of all settings types' do
+      delayed_method.should_receive(:update_all_types!).with(kit.site_id)
+      service.update(params)
+    end
+  end
+
+
+  describe '#sanitize_new_addons_settings' do
     before do
       kit.stub_chain(:site, :addon_plan_for_addon_name) { addon_plan }
       addon_plan.stub(:settings_template_for, :template) { stub(template: {
