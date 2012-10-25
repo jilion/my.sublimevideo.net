@@ -1,7 +1,6 @@
 require 'fast_spec_helper'
 require 'active_support/core_ext'
 
-require File.expand_path('app/models/app')
 require File.expand_path('lib/app/mangler')
 
 describe App::Mangler do

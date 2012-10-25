@@ -1,7 +1,6 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
 
-require File.expand_path('app/models/app')
 require File.expand_path('lib/app/component_version_dependencies_solver')
 require File.expand_path('lib/stage')
 
