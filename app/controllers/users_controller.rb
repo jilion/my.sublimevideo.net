@@ -22,11 +22,10 @@ class UsersController < Devise::RegistrationsController
   # POST /signup
   def create
     build_resource
-    service = Service::User.new(resource)
-    @user   = service.user
+    @user = resource
     @user.referrer_site_token = cookies[:r] if cookies[:r]
 
-    if service.initial_save
+    if Service::User.new(@user).create
       if @user.active_for_authentication?
         set_flash_message :notice, :signed_up if is_navigational_format?
         sign_in(resource_name, @user)

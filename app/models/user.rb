@@ -101,16 +101,6 @@ class User < ActiveRecord::Base
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
     event(:archive)   { transition all - [:archived] => :archived }
-
-    before_transition :on => :archive do |user, transition|
-      user.archived_at = Time.now.utc
-
-      user.sites.map(&:archive)
-
-      user.tokens.update_all(invalidated_at: Time.now.utc)
-
-      Service::Newsletter.delay.unsubscribe(user.id)
-    end
   end
 
   # =================

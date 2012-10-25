@@ -387,7 +387,7 @@ describe Site, :addons do
         end
 
         it "raises an exception" do
-          expect { site.archive! }.to raise_error(Exception)
+          expect { site.archive! }.to raise_error(ActiveRecord::ActiveRecordError)
 
           @open_invoice.reload.should be_open
           @failed_invoice.reload.should be_failed

@@ -128,7 +128,7 @@ class Site < ActiveRecord::Base
     end
 
     before_transition :on => :archive do |site, transition|
-      raise Exception.new('Cannot be canceled.') if site.invoices.not_paid.any?
+      raise ActiveRecord::ActiveRecordError.new('Cannot be canceled when non-paid invoices present.') if site.invoices.not_paid.any?
 
       site.archived_at = Time.now.utc
     end

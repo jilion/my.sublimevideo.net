@@ -62,43 +62,41 @@ module Service
       end
     end
 
+    # called from app/models/site.rb
     def suspend_billable_items
-      ::Site.transaction do
-        site.billable_items.map(&:suspend!)
-      end
+      site.billable_items.map(&:suspend!)
     end
 
+    # called from app/models/site.rb
     def unsuspend_billable_items
-      ::Site.transaction do
-        set_default_app_designs
-        if site.plan_id?
-          set_billable_addon_plans(AddonPlan.free_addon_plans(reject: %w[logo stats support]))
-          case site.plan.name
-          when 'plus'
-            # Sponsor real-time stats
-            set_billable_addon_plans({
-              stats: AddonPlan.get('stats', 'realtime').id,
-              support: AddonPlan.get('support', 'standard').id
-            }, force: 'sponsored')
-            set_billable_addon_plans({
-              logo: AddonPlan.get('logo', 'disabled').id
-            }, force: 'subscribed')
-          when 'premium'
-            # Sponsor VIP email support
-            set_billable_addon_plans({
-              support: AddonPlan.get('support', 'vip').id
-            }, force: 'sponsored')
-            set_billable_addon_plans({
-              logo: AddonPlan.get('logo', 'disabled').id,
-              stats: AddonPlan.get('stats', 'realtime').id
-            }, force: 'subscribed')
-          end
-          site.save!
-        else
-          site.billable_items.where(state: 'suspended').each do |billable_item|
-            billable_item.state = new_billable_item_state(billable_item.item)
-            billable_item.save!
-          end
+      set_default_app_designs
+      if site.plan_id?
+        set_billable_addon_plans(AddonPlan.free_addon_plans(reject: %w[logo stats support]))
+        case site.plan.name
+        when 'plus'
+          # Sponsor real-time stats
+          set_billable_addon_plans({
+            stats: AddonPlan.get('stats', 'realtime').id,
+            support: AddonPlan.get('support', 'standard').id
+          }, force: 'sponsored')
+          set_billable_addon_plans({
+            logo: AddonPlan.get('logo', 'disabled').id
+          }, force: 'subscribed')
+        when 'premium'
+          # Sponsor VIP email support
+          set_billable_addon_plans({
+            support: AddonPlan.get('support', 'vip').id
+          }, force: 'sponsored')
+          set_billable_addon_plans({
+            logo: AddonPlan.get('logo', 'disabled').id,
+            stats: AddonPlan.get('stats', 'realtime').id
+          }, force: 'subscribed')
+        end
+        site.save!
+      else
+        site.billable_items.where(state: 'suspended').each do |billable_item|
+          billable_item.state = new_billable_item_state(billable_item.item)
+          billable_item.save!
         end
       end
     end
