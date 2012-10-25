@@ -36,7 +36,7 @@ class Admin::App::ComponentVersionsController < Admin::AppController
 private
 
   def find_component
-    @component = App::Component.find_by_token!(params[:component_id])
+    @component = ::App::Component.find_by_token!(params[:component_id])
   rescue ActiveRecord::RecordNotFound
     body = { status: 404, error: "Component with token '#{params[:component_id]}' could not be found." }
     render request.format.ref => body, status: 404
