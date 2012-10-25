@@ -126,7 +126,7 @@ describe Ogone do
         year:               Date.today.year + 1,
         first_name:         'John',
         last_name:          'Doe',
-        verification_value: '111'
+        verification_value: '1111'
       )
     }
 
