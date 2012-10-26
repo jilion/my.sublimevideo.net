@@ -144,7 +144,7 @@ MySublimeVideo::Application.routes.draw do
       get '/app' => redirect("/app/components/#{App::Component::APP_TOKEN}"), as: 'app'
       namespace :app do
         resources :components, only: [:index, :create, :show, :update, :destroy] do
-          resources :versions, only: [:index, :create, :show, :destroy], controller: 'component_versions'
+          resources :component_versions, only: [:index, :create, :show, :destroy], path: 'versions', as: 'versions'
         end
       end
     end
