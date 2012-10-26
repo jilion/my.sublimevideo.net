@@ -5,6 +5,16 @@
         = "#{component.name} (#{component.token})"
 
 %h3 Last Versions
+
+.stage_filters
+  = link_to 'all', { stage: nil }
+  = " | "
+  = link_to 'stable', { stage: 'stable' }
+  = " | "
+  = link_to 'beta', { stage: 'beta' }
+  = " | "
+  = link_to 'alpha', { stage: 'alpha' }
+
 - if @component.versions.present?
   %table
     %tr
@@ -12,7 +22,9 @@
       %th= "Released at"
       %th= "Dependencies"
       %th= "Action"
-    - @component.versions.all.sort.reverse.first(20).each do |version|
+    - versions = @component.versions.all
+    - versions.select! { |v| v.stage == params[:stage] } if params[:stage].present?
+    - versions.sort.reverse.first(20).each do |version|
       %tr{ class: cycle('', 'alt') }
         %td
           = version.version
