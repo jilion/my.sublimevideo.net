@@ -55,9 +55,14 @@ module Populate
         },
         overlay_opacity: {
           type: 'float',
-          range: [0.05, 1],
-          step: 0.05,
+          range: [0.1, 1],
+          step: 0.1,
           default: 0.7
+        },
+        enable_close_button: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
         },
         close_button_visibility: {
           type: 'string',
@@ -71,16 +76,31 @@ module Populate
         }
       }
       controls_template = {
+        enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
+        },
         visibility: {
           type: 'string',
-          values: ['hidden', 'autohide', 'visible'],
+          values: ['autohide', 'visible'],
           default: 'autohide'
         }
       }
       initial_template = {
+        enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
+        },
+        enable_overlay: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
+        },
         overlay_visibility: {
           type: 'string',
-          values: ['hidden', 'autofade'],
+          values: ['autofade', 'visible'],
           default: 'autofade'
         },
         overlay_color: {
@@ -90,6 +110,11 @@ module Populate
         }
       }
       sharing_template = {
+        enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
+        },
         twitter_url: {
           type: 'url'
         },
@@ -223,7 +248,7 @@ module Populate
           # { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
           { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
             template: {
-              enabled: {
+              enable: {
                 type: 'boolean',
                 values: [true],
                 default: true
@@ -237,7 +262,7 @@ module Populate
           },
           { addon_plan: 'ref-AddonPlan-stats-realtime', plugin: nil,
             template: {
-              enabled: {
+              enable: {
                 type: 'boolean',
                 values: [false],
                 default: false
@@ -265,9 +290,14 @@ module Populate
           # },
           { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
             template: {
+              enable: {
+                type: 'boolean',
+                values: [true],
+                default: true
+              },
               visibility: {
                 type: 'string',
-                values: ['autohide'],
+                values: ['autohide', 'visible'],
                 default: 'autohide'
               },
               position: {
@@ -286,10 +316,15 @@ module Populate
           },
           { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
             template: {
+              enable: {
+                type: 'boolean',
+                values: [true, false],
+                default: false
+              },
               visibility: {
                 type: 'string',
-                values: ['hidden', 'autohide'],
-                default: 'hidden'
+                values: ['autohide', 'visible'],
+                default: 'autohide'
               },
               position: {
                 type: 'string',
@@ -308,10 +343,15 @@ module Populate
           },
           { addon_plan: 'ref-AddonPlan-logo-custom', plugin: 'ref-App::Plugin-logo',
             template: {
+              enable: {
+                type: 'boolean',
+                values: [true, false],
+                default: false
+              },
               visibility: {
                 type: 'string',
-                values: ['hidden', 'autohide'],
-                default: 'hidden'
+                values: ['autohide', 'visible'],
+                default: 'autohide'
               },
               position: {
                 type: 'string',
@@ -321,7 +361,7 @@ module Populate
               image_url: {
                 type: 'image'
               },
-              link_url: {
+              action_url: {
                 type: 'url'
               }
             }
@@ -394,7 +434,7 @@ module Populate
       disable_perform_deliveries do
         puts "Creating admins..."
         BASE_USERS.each do |admin_info|
-          Admin.create(email: admin_info[1], password: "123456")
+          Admin.create(email: admin_info[1], password: "123456", roles: ['god'])
           puts "Admin #{admin_info[1]}:123456"
         end
       end
