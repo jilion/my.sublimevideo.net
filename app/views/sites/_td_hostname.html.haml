@@ -9,10 +9,10 @@
 
     - if need_path?(site)
       = tooltip_box href: edit_site_path(site), class: 'warning' do
-        %span.p= raw t 'site.status.need_path', hostname: site.hostname_with_path_needed
+        %span.p= raw t 'site.status.need_path', hostname: hostname_with_path_needed(site)
     - if need_subdomain?(site)
       = tooltip_box href: edit_site_path(site), class: 'warning' do
-        %span.p= raw t 'site.status.need_subdomain', hostname: site.hostname_with_subdomain_needed
+        %span.p= raw t 'site.status.need_subdomain', hostname: hostname_with_subdomain_needed(site)
     .external_link{ style: 'display: inline' }= link_to '->', url_with_protocol(site.hostname)
     .spacer
     .token{ style: 'display: inline' }= "##{site.token}"

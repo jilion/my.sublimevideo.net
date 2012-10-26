@@ -35,7 +35,7 @@ class Admin
       def destroy
         @component = ::App::Component.find_by_token!(params[:id])
         @component.destroy
-        respond_with @component, location: [:admin, :player, :components]
+        respond_with @component, location: [:admin, :app, :components]
       end
 
     end
