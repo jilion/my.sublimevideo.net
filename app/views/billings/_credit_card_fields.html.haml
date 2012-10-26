@@ -8,7 +8,12 @@
   #credit_card_box
     .left
       .entry.card
-        - UserModules::CreditCard::BRANDS.each do |brand|
+        - (UserModules::CreditCard::BRANDS - ['american_express']).each do |brand|
+          .radio_wrap
+            = f.radio_button :cc_brand, brand, id: "user_cc_brand_#{brand}"
+            = f.label :cc_brand, content_tag(:span, t("user.credit_card.type.#{brand}")), class: brand, title: t("user.credit_card.type.#{brand}"), for: "user_cc_brand_#{brand}"
+        - if early_access?('amex')
+          - brand = 'american_express'
           .radio_wrap
             = f.radio_button :cc_brand, brand, id: "user_cc_brand_#{brand}"
             = f.label :cc_brand, content_tag(:span, t("user.credit_card.type.#{brand}")), class: brand, title: t("user.credit_card.type.#{brand}"), for: "user_cc_brand_#{brand}"
