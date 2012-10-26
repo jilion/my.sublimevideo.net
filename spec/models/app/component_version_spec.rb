@@ -66,6 +66,12 @@ describe App::ComponentVersion, :fog_mock do
     end
   end
 
+  describe "#solve_version" do
+    it "returns Solve::Version instance" do
+      build(:app_component_version, version: '1.0.0').solve_version.should eq Solve::Version.new('1.0.0')
+    end
+  end
+
 end
 
 # == Schema Information

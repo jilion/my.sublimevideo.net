@@ -12,7 +12,7 @@
       %th= "Released at"
       %th= "Dependencies"
       %th= "Action"
-    - @component.versions.limit(20).each do |version|
+    - @component.versions.all.sort.reverse.first(20).each do |version|
       %tr{ class: cycle('', 'alt') }
         %td
           = version.version

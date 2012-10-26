@@ -1,3 +1,5 @@
+require 'solve'
+
 class App::ComponentVersion < ActiveRecord::Base
   serialize :dependencies, ActiveRecord::Coders::Hstore
   delegate :token, :name, to: :component
@@ -35,6 +37,14 @@ class App::ComponentVersion < ActiveRecord::Base
   def self.find_by_version!(version_for_url)
     version_string = version_for_url.gsub /_/, '.'
     where(version: version_string).first!
+  end
+
+  def solve_version
+    @solve_version ||= Solve::Version.new(version)
+  end
+
+  def <=>(other)
+    solve_version <=> other.solve_version
   end
 end
 
