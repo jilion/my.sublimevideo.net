@@ -35,6 +35,8 @@ window.AdminSublimeVideo.Helpers.addCommasToInteger = (nStr) ->
   x1 + x2
 
 AdminSublimeVideo.documentReady = ->
+  AdminSublimeVideo.UI.prepareComponentSelector()
+
   if (searchInput = $('#search_input')).exists()
     new AdminSublimeVideo.Form.Ajax(form: searchInput.parent('form'))
 
@@ -78,7 +80,6 @@ AdminSublimeVideo.documentReady = ->
 
 $(document).ready ->
   AdminSublimeVideo.documentReady()
-  AdminSublimeVideo.UI.prepareComponentSelector()
 
   $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax]):not(.selector)').pjax '[data-pjax-container]',
     timeout: 2000
