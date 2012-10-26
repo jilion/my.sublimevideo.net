@@ -23,11 +23,11 @@ describe Service::Settings, :fog_mock do
       its(:app_settings) { should eq({
         "stats" => {
           settings: {
-            enabled: true,
+            enable: true,
             realtime: false
           },
           allowed_settings: {
-            enabled: {
+            enable: {
               values: [true]
             },
             realtime: {
@@ -45,17 +45,21 @@ describe Service::Settings, :fog_mock do
               plugins: {
                 "logo" => {
                   settings: {
+                    enable: true,
                     visibility: 'autohide',
-                    position: "bottomRight",
+                    position: 'bottomRight',
                     image_url: '',
                     link_url: nil
                   },
                   allowed_settings: {
+                    enable: {
+                      values: [true]
+                    },
                     visibility: {
-                      values: ['autohide']
+                      values: ['autohide', 'visible']
                     },
                     position: {
-                      values: ["bottomLeft", "bottomRight"]
+                      values: ['bottomLeft', 'bottomRight']
                     },
                     image_url: {},
                     link_url: {}
@@ -64,23 +68,35 @@ describe Service::Settings, :fog_mock do
                 },
                 "controls" => {
                   settings: {
-                    visibility: "autohide"
+                    enable: true,
+                    visibility: 'autohide'
                   },
                   allowed_settings: {
+                    enable: {
+                      values: [true, false]
+                    },
                     visibility: {
-                      values: ["hidden", "autohide", "visible"]
+                      values: ['autohide', 'visible']
                     }
                   },
                   id: "sa.sh.sq"
                 },
                 "initial" => {
                   settings: {
+                    enable: true,
+                    enable_overlay: true,
                     overlay_visibility: 'autofade',
-                    overlay_color: "#000"
+                    overlay_color: '#000'
                   },
                   allowed_settings: {
+                    enable: {
+                      values: [true, false]
+                    },
+                    enable_overlay: {
+                      values: [true, false]
+                    },
                     overlay_visibility: {
-                      values: ['hidden', 'autofade']
+                      values: ['autofade', 'visible'],
                     },
                     overlay_color: {
                       values: ["#000"]
@@ -91,7 +107,7 @@ describe Service::Settings, :fog_mock do
               },
               settings: {
                 force_fullwindow: false,
-                on_end: "nothing",
+                on_end: 'nothing',
                 enable_fullmode: true,
                 enable_volume: true
               },
@@ -113,6 +129,7 @@ describe Service::Settings, :fog_mock do
             },
             "lightbox" => {
               settings: {
+                enable_close_button: true,
                 on_open: 'play',
                 overlay_color: "#000",
                 overlay_opacity: 0.7,
@@ -120,6 +137,9 @@ describe Service::Settings, :fog_mock do
                 close_button_position: "left"
               },
               allowed_settings: {
+                enable_close_button: {
+                  values: [true, false],
+                },
                 on_open: {
                   values: ['nothing', 'play']
                 },
@@ -127,7 +147,7 @@ describe Service::Settings, :fog_mock do
                   values: ["#000"]
                 },
                 overlay_opacity: {
-                  range: [0.05, 1]
+                  range: [0.1, 1]
                 },
                 close_button_visibility: {
                   values: ["hidden", "autohide", "visible"]
@@ -144,7 +164,7 @@ describe Service::Settings, :fog_mock do
 
       its(:default_kit) { should eq('default') }
 
-      describe "file" do
+      pending "file" do
         it "has good content" do
           File.open(subject.file) do |f|
             f.read.should eq <<-CONTENT.gsub(/^ {12}/, '')
