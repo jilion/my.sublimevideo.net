@@ -187,49 +187,6 @@ describe User do
           end
         end
       end
-
-      describe "Callbacks" do
-        let(:user) { create(:user, newsletter: "1", email: "john@doe.com") }
-        before do
-          user.current_password = "123456"
-          Service::Newsletter.stub(:delay) { stub(unsubscribe: true) }
-        end
-
-        describe "before_transition on: :archive" do
-          it "sets archived_at" do
-            user.archived_at.should be_nil
-
-            user.archive!
-
-            user.archived_at.should be_present
-          end
-
-          it "invalidates all user's tokens" do
-            create(:oauth2_token, user: user)
-            user.reload.tokens.first.should_not be_invalidated_at
-
-            user.archive!
-
-            user.reload.tokens.all? { |token| token.invalidated_at? }.should be_true
-          end
-
-          it "archives each user' site" do
-            user.sites.all? { |site| site.should_not be_archived }
-
-            user.archive!
-
-            user.sites.all? { |site| site.reload.should be_archived }
-          end
-
-          it "unsubscribe user from newsletter" do
-            Service::Newsletter.should_receive(:delay).and_return(@dj = stub)
-            @dj.should_receive(:unsubscribe).with(user.id)
-
-            user.archive!
-          end
-        end
-
-      end
     end
   end
 
