@@ -28,13 +28,13 @@ def create_default_addons
 end
 
 def clear_default_addons
-    App::Component.delete_all
-    App::ComponentVersion.delete_all
-    App::Design.delete_all
-    Addon.delete_all
-    AddonPlan.delete_all
-    App::Plugin.delete_all
-    App::SettingsTemplate.delete_all
+  App::Component.delete_all
+  App::ComponentVersion.delete_all
+  App::Design.delete_all
+  Addon.delete_all
+  AddonPlan.delete_all
+  App::Plugin.delete_all
+  App::SettingsTemplate.delete_all
 end
 
 def instantiate_variables
