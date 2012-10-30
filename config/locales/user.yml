@@ -10,6 +10,7 @@ en:
       type:
         visa:   'Visa'
         master: 'MasterCard'
+        american_express: 'American Express'
       will_expire: "Your credit card expires at the end of the month."
       prevent_charging_problem: "Please %{link} to prevent any charging problem."
       expired: "Your credit card is expired."
