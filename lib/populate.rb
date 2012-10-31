@@ -502,7 +502,13 @@ module Populate
           else
             site = user.sites.build(hostname: hostname)
             Service::Site.new(site).create
+            if rand >= 0.4
+              Timecop.return
+              Timecop.travel(created_at + 30.days)
+              Service::Trial.activate_billable_items_out_of_trial_for_site!(site.id)
+            end
           end
+          Timecop.return
         end
       end
 
@@ -510,16 +516,24 @@ module Populate
       puts "#{BASE_SITES.size} beautiful sites created for each user!"
     end
 
-    # FIXME Remy: After the new add-on invoicing logic is coded
     def invoices(user_id = nil)
       empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction)
       users = user_id ? [User.find(user_id)] : User.all
       users.each do |user|
         user.sites.active.each do |site|
-          (5 + rand(15)).times do |n|
-            service = Service::Invoice.build_for_month(n.months.from_now, site.id).tap { |s| s.save }
-            puts service.invoice.inspect if service.invoice.persisted?
-            puts "Invoice created: $#{service.invoice.amount / 100.0}" if service.invoice.persisted?
+          timestamp = site.created_at
+          while timestamp < Time.now.utc do
+            timestamp += 1.month
+            Timecop.travel(timestamp.end_of_month) do
+              service = Service::Invoice.build_for_month(Time.now.utc, site.id).tap { |s| s.save }
+              if service.invoice.persisted?
+                service.invoice.succeed
+                # puts timestamp
+                puts "Invoice created: $#{service.invoice.amount / 100.0}"
+              # else
+              #   puts "#{timestamp} (failed)!"
+              end
+            end
           end
         end
       end
@@ -744,7 +758,8 @@ module Populate
 
         day += 1.day
       end
-      puts "Fake users stats generated!"
+
+      puts "#{Stats::UsersStat.count} fake users stats generated!"
     end
 
     def sites_stats
@@ -771,7 +786,15 @@ module Populate
 
         day += 1.day
       end
-      puts "Fake sites stats generated!"
+
+      puts "#{Stats::SitesStat.count} fake sites stats generated!"
+    end
+
+    def sales_stats
+      empty_tables(Stats::SalesStat)
+      Stats::SalesStat.create_stats
+
+      puts "#{Stats::SalesStat.count} fake sales stats generated!"
     end
 
     def recurring_site_stats_update(user_id)

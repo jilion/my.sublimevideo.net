@@ -77,7 +77,7 @@ module Stats
             when AddonPlan
               invoice_item.item.addon.name
             end
-            hash[first_key][second_key][invoice_item.item.name] += invoice.amount
+            hash[first_key][second_key][invoice_item.item.name] += invoice_item.amount
           end
         end
 
