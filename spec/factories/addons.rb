@@ -36,7 +36,6 @@ FactoryGirl.define do
   factory :addon do
     sequence(:name)  { |n| "addon#{n}" }
     design_dependent true
-    public_at        Time.now.utc
   end
 
   factory :addon_plan do
@@ -44,6 +43,7 @@ FactoryGirl.define do
     sequence(:name) { |n| "addon_plan#{n}" }
     price           995
     availability    'public'
+    public_at        Time.now.utc
   end
 
   factory :app_plugin, class: App::Plugin do

@@ -159,16 +159,16 @@ module Populate
           { name: 'html5',   skin_token: 'sg.sg.sg', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-html5' }
         ],
         Addon => [
-          { name: 'video_player', kind: 'videoPlayer', design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'controls',     kind: 'controls',    design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
-          { name: 'initial',      kind: 'initial',     design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
+          { name: 'video_player', kind: 'videoPlayer', design_dependent: false, parent_addon: nil },
+          { name: 'controls',     kind: 'controls',    design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'initial',      kind: 'initial',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
           { name: 'sharing',      kind: 'sharing',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'logo',         kind: 'logo',        design_dependent: false, parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
-          { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc }
+          { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil },
+          { name: 'logo',         kind: 'logo',        design_dependent: false, parent_addon: 'ref-Addon-video_player' },
+          { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil },
+          { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil },
+          { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil },
+          { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil }
         ],
         App::Plugin => [
           { name: 'video_player',     token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-app' },
@@ -194,21 +194,21 @@ module Populate
           { name: 'sharing_html5',    token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' }
         ],
         AddonPlan => [
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer', availability: 'hidden' },
-          { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden' },
-          { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats',        availability: 'public' },
-          # { name: 'disabled',  price: 1990, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta' },
-          { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'disabled',  price: 990,  addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'custom',    price: 1990, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-initial',      availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public' },
-          { name: 'vip',       price: 9990, addon: 'ref-Addon-support',      availability: 'public' }
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public', public_at: Time.now.utc },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer', availability: 'hidden', public_at: nil },
+          { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden', public_at: Time.now.utc },
+          { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats',        availability: 'public', public_at: Time.now.utc },
+          # { name: 'disabled',  price: 1990, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta', public_at: nil },
+          { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public', public_at: Time.now.utc },
+          { name: 'disabled',  price: 990,  addon: 'ref-Addon-logo',         availability: 'public', public_at: Time.now.utc },
+          { name: 'custom',    price: 1990, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-initial',      availability: 'hidden', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'hidden', public_at: Time.now.utc },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public', public_at: Time.now.utc },
+          { name: 'vip',       price: 9990, addon: 'ref-Addon-support',      availability: 'public', public_at: Time.now.utc }
         ],
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
@@ -236,15 +236,15 @@ module Populate
             }
           },
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_classic', template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_flat', template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_light', template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_twit', template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_html5', template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_flat',    template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_light',   template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_twit',    template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_html5',   template: controls_template },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat',    template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light',   template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit',    template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5',   template: lightbox_template },
           # { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
           { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
             template: {
@@ -494,6 +494,8 @@ module Populate
 
       User.all.each do |user|
         BASE_SITES.each do |hostname|
+          created_at = rand(24).months.ago
+          Timecop.travel(created_at)
           if rand >= 0.5
             site = user.sites.create({ hostname: hostname, plan_id: Plan.where(name: %w[plus premium].sample, cycle: 'month').first.id }, without_protection: true)
             service = Service::Site.new(site)

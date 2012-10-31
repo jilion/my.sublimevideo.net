@@ -3,14 +3,14 @@ require_dependency 'stage'
 class AddonPlan < ActiveRecord::Base
   AVAILABILITIES = %w[hidden public custom] unless defined? AVAILABILITIES
 
-  attr_accessible :addon, :name, :price, :availability, :required_stage, as: :admin
+  attr_accessible :addon, :name, :price, :availability, :required_stage, :public_at, as: :admin
 
   belongs_to :addon
   has_many :components, through: :addon
   has_many :billable_items, as: :item
   has_many :settings_templates, class_name: 'App::SettingsTemplate'
 
-  delegate :beta?, :kind, to: :addon
+  delegate :kind, to: :addon
 
   validates :addon, :name, :price, presence: true
   validates :name, uniqueness: { scope: :addon_id }
@@ -18,7 +18,7 @@ class AddonPlan < ActiveRecord::Base
   validates :required_stage, inclusion: Stage::STAGES
   validates :price, numericality: true
 
-  scope :paid, -> { includes(:addon).where{ (addon.public_at != nil) & (price > 0) } }
+  scope :paid, -> { where{ (public_at != nil) & (price > 0) } }
 
   def self.free_addon_plans(options = {})
     options = { reject: [] }.merge(options)
@@ -34,7 +34,7 @@ class AddonPlan < ActiveRecord::Base
   end
 
   def self.get(addon_name, addon_plan_name)
-    Rails.cache.fetch("addon_plan_#{addon_name}_#{addon_plan_name}") { includes(:addon).where { (addon.name == addon_name) & (name == addon_plan_name) }.first }
+    Rails.cache.fetch("addon_plan_#{addon_name}_#{addon_plan_name}") { joins(:addon).where { (addon.name == addon_name) & (name == addon_plan_name) }.first }
   end
 
   def available?(site)
@@ -55,8 +55,12 @@ class AddonPlan < ActiveRecord::Base
       addon_plan_id: id).first
   end
 
+  def beta?
+    !public_at?
+  end
+
   def free?
-    price.zero?
+    beta? || price.zero?
   end
 
   def title
