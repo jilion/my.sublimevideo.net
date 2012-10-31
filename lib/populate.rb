@@ -366,7 +366,6 @@ module Populate
               }
             }
           },
-          # { addon_plan: 'ref-AddonPlan-logo-custom',         plugin: 'ref-App::Plugin-logo' },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_classic', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_flat', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_light', template: initial_template },
@@ -413,22 +412,6 @@ module Populate
       puts "#{count} random mail templates created!"
     end
 
-    # def player_components
-    #   empty_tables(App::Component, App::ComponentVersion)
-    #   names_token = {
-    #     'app' => 'e',
-    #     'subtitles' => 'bA'
-    #   }
-    #   versions = %w[2.0.0-alpha 2.0.0 1.1.0 1.0.0]
-    #   version_zip = File.new(Rails.root.join('spec/fixtures/app/e.zip'))
-    #   names_token.each do |name, token|
-    #     component = App::Component.create({ name: name, token: token }, as: :admin)
-    #     versions.each do |version|
-    #       component.versions.create({ version: version, zip: version_zip }, as: :admin)
-    #     end
-    #   end
-    # end
-
     def admins
       empty_tables(Admin)
       disable_perform_deliveries do
@@ -440,7 +423,7 @@ module Populate
       end
     end
 
-    def create_enthusiasts(user_id = nil)
+    def enthusiasts(user_id = nil)
       empty_tables(EnthusiastSite, Enthusiast)
       disable_perform_deliveries do
         (user_id ? [user_id] : 0.upto(BASE_USERS.count - 1)).each do |i|
@@ -531,19 +514,15 @@ module Populate
     def invoices(user_id = nil)
       empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction)
       users = user_id ? [User.find(user_id)] : User.all
-      plans = Plan.standard_plans.all
       users.each do |user|
         user.sites.active.each do |site|
           (5 + rand(15)).times do |n|
-            Timecop.travel(n.months.from_now) do
-              # site.prepare_pending_attributes
-              invoice = Service::Invoice.build(site: site).tap { |s| s.save }.invoice
-              puts "Invoice created: $#{invoice.amount / 100.0}"
-            end
+            service = Service::Invoice.build_for_month(n.months.from_now, site.id).tap { |s| s.save }
+            puts service.invoice.inspect if service.invoice.persisted?
+            puts "Invoice created: $#{service.invoice.amount / 100.0}" if service.invoice.persisted?
           end
         end
       end
-      empty_tables("delayed_jobs")
     end
 
     def site_usages
@@ -771,22 +750,20 @@ module Populate
     def sites_stats
       empty_tables(Stats::SitesStat)
       day = 2.years.ago.midnight
-      hash = { fr: 0, sp: 0, tr: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, su: 0, ar: 0 }
+      hash = { fr: { free: 0 }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 }, addons: 0 }, su: 0, ar: 0 }
 
       while day <= Time.now.utc.midnight
         hash[:d]   = day
-        hash[:fr] += rand(50)
-        hash[:sp] += rand(2)
+        hash[:fr][:free] += rand(50)
 
-        hash[:tr][:plus][:m]    += rand(10)
-        hash[:tr][:plus][:y]    += rand(5)
-        hash[:tr][:premium][:m] += rand(5)
-        hash[:tr][:premium][:y] += rand(2)
-        hash[:pa][:plus][:m]    += rand(7)
-        hash[:pa][:plus][:y]    += rand(3)
-        hash[:pa][:premium][:m] += rand(4)
-        hash[:pa][:premium][:y] += rand(2)
-
+        if day >= Time.utc(2012, 10, 23)
+          hash[:pa][:addons]      += rand(12)
+        else
+          hash[:pa][:plus][:m]    += rand(7)
+          hash[:pa][:plus][:y]    += rand(3)
+          hash[:pa][:premium][:m] += rand(4)
+          hash[:pa][:premium][:y] += rand(2)
+        end
         hash[:su] += rand(3)
         hash[:ar] += rand(6)
 
