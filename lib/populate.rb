@@ -152,7 +152,7 @@ module Populate
         #   { component: 'ref-App::Component-html5', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
         # ],
         App::Design => [
-          { name: 'classic', skin_token: 'sa.sb.sc', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
+          { name: 'classic', skin_token: 'sa.sb.sc', price: 0, availability: 'public', component: 'ref-App::Component-app' },
           { name: 'flat',    skin_token: 'sa.sd.sd', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
           { name: 'light',   skin_token: 'sa.se.se', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
           { name: 'twit',    skin_token: 'sf.sf.sf', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-twit' },

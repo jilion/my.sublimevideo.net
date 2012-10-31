@@ -39,7 +39,7 @@ describe BillableItem do
       @billable_item4 = create(:billable_item, site: site, item: @support_addon_plan_2, state: 'suspended')
       @billable_item5 = create(:billable_item, site: site, item: @classic_design, state: 'subscribed')
 
-      addon_plan = create(:addon_plan, addon: create(:addon, public_at: nil), price: 9999999)
+      addon_plan = create(:addon_plan, addon: create(:addon), price: 9999999, public_at: nil)
       @billable_item6 = create(:billable_item, site: site, item: addon_plan, state: 'subscribed')
     end
 
