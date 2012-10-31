@@ -23,7 +23,7 @@ class Addon < ActiveRecord::Base
   end
 
   def title
-    I18n.t("addon_plans.#{addon.name}.#{name}")
+    I18n.t("addons.#{name}")
   end
 end
 

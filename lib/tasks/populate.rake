@@ -73,14 +73,6 @@ namespace :db do
       timed { Populate.site_stats(argv('user')) }
     end
 
-    desc "Create fake users & sites stats"
-    task users_and_sites_stats: :environment do
-      disable_perform_deliveries do
-        timed { Populate.users_stats }
-        timed { Populate.sites_stats }
-      end
-    end
-
     desc "Create fake site stats"
     task recurring_site_stats: :environment do
       timed { Populate.site_stats(argv('user')) }
@@ -95,6 +87,12 @@ namespace :db do
     desc "Create recurring fake site & video stats"
     task recurring_stats: :environment do
       timed { Populate.recurring_stats_update(argv('site')) }
+    end
+
+    desc "Create fake users & sites stats for the admin dashboard"
+    task admin_stats: :environment do
+      timed { Populate.users_stats }
+      timed { Populate.sites_stats }
     end
 
     desc "Create fake plans"
