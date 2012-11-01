@@ -413,10 +413,6 @@ form .entry.card label span {
   top:-6px;
 }
 
-form .entry.card label.visa span {
-  background-repeat:no-repeat;
-}
-
 form .entry.float, form .entry.small_field {
   float:left;
 }
@@ -470,8 +466,15 @@ form .entry.float select {
   background-repeat:no-repeat;
 }
 
-#credit_card_summary p.visa, form .entry.card label.visa span {background-image:url(<%= asset_path "credit_cards/visa.png" %>)}
-#credit_card_summary p.master, form .entry.card label.master span {background-image:url(<%= asset_path "credit_cards/mastercard.png" %>)}
+#credit_card_summary p.visa, form .entry.card label.visa span {
+  background-image:url(<%= asset_path "credit_cards/visa.png" %>)
+}
+#credit_card_summary p.master, form .entry.card label.master span {
+  background-image:url(<%= asset_path "credit_cards/mastercard.png" %>)
+}
+#credit_card_summary p.american_express, form .entry.card label.american_express span {
+  background-image:url(<%= asset_path "credit_cards/american_express.png" %>)
+}
 
 #delete_account {
   font-size:13px;

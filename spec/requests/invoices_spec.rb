@@ -196,7 +196,9 @@ feature "Site invoice page" do
       background do
         @site = build(:site, user: @current_user, hostname: 'rymai.com')
         Service::Site.new(@site).create
-        @invoice = create(:invoice, site: @site, vat_rate: 0, vat_amount: 0)
+        @invoice = create(:invoice, site: @site, vat_rate: 0, vat_amount: 0).tap { |i|
+          create(:addon_plan_invoice_item, item: @stats_addon_plan_2, invoice: i)
+        }
         @transaction = create(:transaction, invoices: [@invoice])
         @invoice.succeed!
 
@@ -212,7 +214,7 @@ feature "Site invoice page" do
         page.should have_content @site.hostname
         page.should have_content @site.token
         page.should have_content "Payment info:"
-        page.should have_content "Card type: Visa"
+        page.should have_content "Card type: #{I18n.t('user.credit_card.type.visa')}"
         page.should have_content "Card no.: XXXXXXXXXXXX-1111"
 
         page.should have_content "Bill To"
@@ -253,7 +255,9 @@ feature "Site invoice page" do
       background do
         @site = build(:site, user: @current_user, hostname: 'rymai.com')
         Service::Site.new(@site).create
-        @invoice = create(:invoice, site: @site, balance_deduction_amount: 20000)
+        @invoice = create(:invoice, site: @site, balance_deduction_amount: 20000).tap { |i|
+          create(:addon_plan_invoice_item, item: @stats_addon_plan_2, invoice: i)
+        }
 
         go 'my', "/invoices/#{@invoice.reference}"
 
@@ -270,7 +274,9 @@ feature "Site invoice page" do
       background do
         @site = build(:site, user: @current_user, hostname: 'rymai.com')
         Service::Site.new(@site).create
-        @invoice = create(:invoice, site: @site)
+        @invoice = create(:invoice, site: @site).tap { |i|
+          create(:plan_invoice_item, invoice: i)
+        }
         @deal = create(:deal, value: 0.3, name: 'Foo bar Deal')
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:discounted_percentage, 0.3)
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:deal_id, @deal.id)
@@ -287,7 +293,9 @@ feature "Site invoice page" do
       background do
         @site = build(:site, user: @current_user, hostname: 'rymai.com')
         Service::Site.new(@site).create
-        @invoice = create(:invoice, site: @site)
+        @invoice = create(:invoice, site: @site).tap { |i|
+          create(:plan_invoice_item, invoice: i)
+        }
 
         @invoice.plan_invoice_items.order(:id).first.update_attribute(:discounted_percentage, 0.2)
 
@@ -305,7 +313,9 @@ feature "Site invoice page" do
       sign_in_as :user, billing_country: 'CH'
       @site = build(:site, user: @current_user, hostname: 'rymai.com')
       Service::Site.new(@site).create
-      @invoice = create(:invoice, site: @site)
+      @invoice = create(:invoice, site: @site).tap { |i|
+        create(:plan_invoice_item, invoice: i)
+      }
 
       go 'my', "/invoices/#{@invoice.reference}"
     end

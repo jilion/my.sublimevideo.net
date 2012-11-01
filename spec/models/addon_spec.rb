@@ -9,7 +9,7 @@ describe Addon do
   end
 
   describe 'Validations' do
-    [:name, :design_dependent, :public_at, :parent_addon, :kind].each do |attr|
+    [:name, :design_dependent, :parent_addon, :kind].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
     # it { should ensure_inclusion_of(:design_dependent).in_array([true, false]) }
@@ -42,9 +42,20 @@ describe Addon do
     it { @addon.free_plan.should eq @free_plan }
   end
 
-  describe '#beta?' do
-    it { build(:addon, public_at: nil).should be_beta }
-    it { build(:addon, public_at: Time.now).should_not be_beta }
+  describe '.with_paid_plans' do
+    before do
+      @addon1 = create(:addon)
+      create(:addon_plan, addon: @addon1, price: 0)
+      create(:addon_plan, addon: @addon1, price: 995)
+
+      @addon2 = create(:addon)
+      create(:addon_plan, addon: @addon2, price: 995)
+
+      @addon3 = create(:addon)
+      create(:addon_plan, addon: @addon3, price: 0)
+    end
+
+    it { described_class.with_paid_plans.all.should eq [@addon1, @addon2] }
   end
 
 end
@@ -59,7 +70,6 @@ end
 #  kind             :string(255)
 #  name             :string(255)      not null
 #  parent_addon_id  :integer
-#  public_at        :datetime
 #  updated_at       :datetime         not null
 #
 # Indexes

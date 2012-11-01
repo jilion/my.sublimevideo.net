@@ -5,6 +5,8 @@ require_dependency 'notify'
 module UserModules::CreditCard
   extend ActiveSupport::Concern
 
+  BRANDS = %w[visa master american_express]
+
   included do
 
     attr_accessor :cc_register, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value

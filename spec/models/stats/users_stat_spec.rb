@@ -2,14 +2,19 @@ require 'spec_helper'
 
 describe Stats::UsersStat do
 
-  pending ".create_stats" do
+  describe ".create_stats", :addons do
     before do
-      create(:user) # free (no sites)
-      create(:site, plan_id: @free_plan.id) # free (only free sites)
-      create(:site, plan_id: @trial_plan.id) # free (site is in trial)
+      s = create(:site, state: 'active') # in trial => free
+      bi = create(:design_billable_item, state: 'trial', site: s, item: @twit_design)
 
-      create(:site, plan_id: @paid_plan.id) # paying
-      create(:site, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id) # paying with next cycle plan
+      s = create(:site, state: 'archived') # in trial & archived
+      create(:design_billable_item, state: 'trial', site: s, item: @twit_design)
+
+      s = create(:site, state: 'active') # not in trial but design free => free
+      bi = create(:design_billable_item, state: 'subscribed', site: s, item: @twit_design)
+
+      s = create(:site, state: 'active') # not in trial
+      bi = create(:addon_plan_billable_item, state: 'subscribed', site: s, item: @logo_addon_plan_2)
 
       create(:user, state: 'suspended') # suspended
       create(:user, state: 'archived') # archived
@@ -21,7 +26,7 @@ describe Stats::UsersStat do
       described_class.count.should eq 1
       users_stat = described_class.last
       users_stat.fr.should eq 3
-      users_stat.pa.should eq 2
+      users_stat.pa.should eq 1
       users_stat.su.should eq 1
       users_stat.ar.should eq 1
     end

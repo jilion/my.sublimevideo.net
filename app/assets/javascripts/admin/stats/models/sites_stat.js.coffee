@@ -17,10 +17,13 @@ class AdminSublimeVideo.Collections.SitesStats extends AdminSublimeVideo.Collect
   title: (selected) ->
     if selected.length > 1 # attribute is something like: ["pa", "premium"] or ["pa", "premium", "y"]
       text = "Sites "
-      text += "with the "
-      if selected.length > 2 # attribute is something like: ["pa", "premium", "y"]
-        text += if selected[2] == "y" then "yearly " else "monthly "
-      text += "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} plan"
+      if selected[1] is 'addons'
+        text += "with add-ons"
+      else
+        text += "with the"
+        if selected.length > 2 # attribute is something like: ["pa", "premium", "y"]
+          text += if selected[2] == "y" then " yearly " else " monthly "
+        text += "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} plan"
       text
     else
       switch selected[0]

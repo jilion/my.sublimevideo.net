@@ -35,6 +35,9 @@ module Service
         Service::Settings.delay.update_all_types!(site.id)
         Service::Rank.delay(priority: 100).set_ranks(site.id)
       end
+      true
+    rescue ActiveRecord::RecordInvalid
+      false
     end
 
     def update(attributes)
@@ -45,6 +48,9 @@ module Service
 
         Service::Settings.delay.update_all_types!(site.id)
       end
+      true
+    rescue ActiveRecord::RecordInvalid
+      false
     end
 
     # app_designs => { "classic"=>"0", "light"=>"42" }

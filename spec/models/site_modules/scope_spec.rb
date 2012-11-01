@@ -55,18 +55,24 @@ describe SiteModules::Scope do
   describe "addons", :addons do
     let(:site1) { create(:site, user: user) }
     let(:site2) { create(:site, user: user) }
+    let(:site3) { create(:site, user: user, state: 'archived') }
+    before do
+      Timecop.travel(30.days.ago) do
+        create(:billable_item, site: site2, item: @logo_addon_plan_1, state: 'trial')
+      end
+      Timecop.travel(31.days.ago) { create(:billable_item, site: site2, item: @logo_addon_plan_2, state: 'trial') }
+      create(:billable_item, site: site2, item: @stats_addon_plan_1, state: 'trial')
+      create(:billable_item, site: site1, item: @support_addon_plan_2, state: 'subscribed')
+      create(:billable_item, site: site3, item: @support_addon_plan_2, state: 'subscribed')
+    end
 
     describe ".paying" do
-      before do
-        Timecop.travel(30.days.ago) { create(:billable_item, site: site1, item: @logo_addon_plan_1, state: 'trial') }
-        Timecop.travel(31.days.ago) { create(:billable_item, site: site1, item: @logo_addon_plan_2, state: 'trial') }
-        create(:billable_item, site: site1, item: @stats_addon_plan_1, state: 'trial')
-        create(:billable_item, site: site1, item: @support_addon_plan_2, state: 'subscribed')
-      end
-
       it { Site.paying.all.should =~ [site1] }
     end
 
+    describe ".free" do
+      it { Site.free.all.should =~ [site2] }
+    end
   end
 
   describe "invoices" do

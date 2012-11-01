@@ -22,21 +22,22 @@ module SiteModules::Scope
     scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
 
     # addons
-    scope :paying, -> { includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
+    scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
+    scope :paying_ids, -> { active.select("DISTINCT(sites.id)").joins("INNER JOIN billable_items ON billable_items.site_id = sites.id").merge(BillableItem.subscribed).merge(BillableItem.paid) }
+    scope :free,       -> { active.includes(:billable_items).where{ id << Site.paying_ids } }
 
     # admin
     scope :user_id, ->(user_id) { where(user_id: user_id) }
 
     # sort
-    scope :by_hostname,         ->(way = 'asc')  { order{ hostname.send(way) }.order{ token.send(way) } }
-    scope :by_user,             ->(way = 'desc') { includes(:user).order{ user.name.send(way) }.order{ user.email.send(way) } }
-    scope :by_state,            ->(way = 'desc') { order{ state.send(way) } }
-    scope :by_plan_price,       ->(way = 'desc') { includes(:plan).order{ plan.price.send(way) } }
-    scope :by_google_rank,      ->(way = 'desc') { where{ google_rank >= 0 }.order{ google_rank.send(way) } }
-    scope :by_alexa_rank,       ->(way = 'desc') { where{ alexa_rank >= 1 }.order{ alexa_rank.send(way) } }
-    scope :by_date,             ->(way = 'desc') { order{ created_at.send(way) } }
-    scope :by_trial_started_at, ->(way = 'desc') { order{ trial_started_at.send(way) } }
-    scope :by_last_30_days_video_tags, ->(way = 'desc') { order{ last_30_days_video_tags.send(way) } }
+    scope :by_hostname,                ->(way = 'asc')  { order("#{quoted_table_name()}.hostname #{way}, #{quoted_table_name()}.token #{way}") }
+    scope :by_user,                    ->(way = 'desc') { includes(:user).order("name #{way}, email #{way}") }
+    scope :by_state,                   ->(way = 'desc') { order("#{quoted_table_name()}.state #{way}") }
+    scope :by_google_rank,             ->(way = 'desc') { where{ google_rank >= 0 }.order("#{quoted_table_name()}.google_rank #{way}") }
+    scope :by_alexa_rank,              ->(way = 'desc') { where{ alexa_rank >= 1 }.order("#{quoted_table_name()}.alexa_rank #{way}") }
+    scope :by_date,                    ->(way = 'desc') { order("#{quoted_table_name()}.created_at #{way}") }
+    scope :by_trial_started_at,        ->(way = 'desc') { order("#{quoted_table_name()}.trial_started_at #{way}") }
+    scope :by_last_30_days_video_tags, ->(way = 'desc') { order("#{quoted_table_name()}.last_30_days_video_tags #{way}") }
     scope :by_last_30_days_billable_video_views, ->(way = 'desc') {
       order("(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views + sites.last_30_days_embed_video_views) #{way}")
     }

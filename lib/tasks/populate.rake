@@ -10,6 +10,7 @@ namespace :db do
   namespace :populate do
     desc "Empty all the tables"
     task empty_all_tables: :environment do
+      Rails.cache.clear
       timed { Populate.empty_tables("invoices_transactions", DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
@@ -21,9 +22,13 @@ namespace :db do
       timed { Populate.admins }
       timed { Populate.users(argv('user')) }
       timed { Populate.sites }
+      timed { Populate.invoices }
       timed { Populate.site_usages }
       timed { Populate.site_stats }
-      timed { Populate.deals }
+      timed { Populate.users_stats }
+      timed { Populate.sites_stats }
+      timed { Populate.sales_stats }
+      # timed { Populate.deals }
       timed { Populate.mail_templates }
       # timed { Populate.player_components }
     end
@@ -73,14 +78,6 @@ namespace :db do
       timed { Populate.site_stats(argv('user')) }
     end
 
-    desc "Create fake users & sites stats"
-    task users_and_sites_stats: :environment do
-      disable_perform_deliveries do
-        timed { Populate.users_stats }
-        timed { Populate.sites_stats }
-      end
-    end
-
     desc "Create fake site stats"
     task recurring_site_stats: :environment do
       timed { Populate.site_stats(argv('user')) }
@@ -95,6 +92,13 @@ namespace :db do
     desc "Create recurring fake site & video stats"
     task recurring_stats: :environment do
       timed { Populate.recurring_stats_update(argv('site')) }
+    end
+
+    desc "Create fake users & sites stats for the admin dashboard"
+    task admin_stats: :environment do
+      timed { Populate.users_stats }
+      timed { Populate.sites_stats }
+      timed { Populate.sales_stats }
     end
 
     desc "Create fake plans"

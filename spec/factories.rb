@@ -138,7 +138,6 @@ FactoryGirl.define do
     amount               9999
     vat_rate             0.08
     vat_amount           798
-    after(:build) { |invoice| invoice.invoice_items = [FactoryGirl.build(:plan_invoice_item)]}
 
     factory :paid_invoice do
       state   'paid'

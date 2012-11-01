@@ -228,6 +228,8 @@ describe Service::Invoice do
 
     describe 'full example' do
       before do
+        create(:invoice, site: site) # first invoice
+
         create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'beta', created_at: 6.months.ago.beginning_of_month + 2.days)
         create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'trial', created_at: 5.months.ago.beginning_of_month + 5.days)
         create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 4.months.ago.beginning_of_month + 5.days)
@@ -379,10 +381,24 @@ describe Service::Invoice do
       end
     end
 
-    it 'saves the invoice' do
-      service.invoice.should be_new_record
-      service.save
-      service.invoice.should be_persisted
+    context 'first non-canceled invoice' do
+      it 'sets renew to false' do
+        service.save
+
+        service.invoice.should_not be_renew
+      end
+    end
+
+    context 'not first non-canceled invoice' do
+      before do
+        create(:invoice, site: service.site)
+      end
+
+      it 'sets renew to true' do
+        service.save
+
+        service.invoice.should be_renew
+      end
     end
   end
 

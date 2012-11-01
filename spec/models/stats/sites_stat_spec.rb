@@ -2,21 +2,27 @@ require 'spec_helper'
 
 describe Stats::SitesStat do
 
-  pending "with a bunch of different sites" do
-
+  describe "with a bunch of different sites", :addons do
     before do
       user = create(:user)
-      @yearly_plan = create(:plan, name: @paid_plan.name, cycle: 'year')
-      create(:site, user: user, state: 'active', plan_id: @free_plan.id)
-      site = create(:site, user: user, state: 'active', plan_id: @free_plan.id)
-      site.sponsor!
-      create(:site, user: user, state: 'active', plan_id: @trial_plan.id) # in trial
-      create(:site, user: user, state: 'archived', plan_id: @trial_plan.id) # in trial & archived
-      create(:site, user: user, state: 'active', plan_id: @paid_plan.id) # not in trial
-      create(:site, user: user, state: 'active', plan_id: @yearly_plan.id) # not in trial
-      create(:site, user: user, state: 'active', plan_id: @custom_plan.token) # not in trial
-      create(:site, user: user, state: 'suspended', plan_id: @custom_plan.token)
-      create(:site, user: user, state: 'archived', plan_id: @paid_plan.id)
+      create(:site, user: user, state: 'active') # free
+      s = create(:site, user: user, state: 'active') # in trial => free
+      create(:design_billable_item, state: 'trial', site: s, item: @twit_design)
+
+      s = create(:site, user: user, state: 'archived') # in trial & archived
+      create(:design_billable_item, state: 'trial', site: s, item: @twit_design)
+
+      s = create(:site, user: user, state: 'active') # not in trial but design free => free
+      create(:design_billable_item, state: 'subscribed', site: s, item: @twit_design)
+
+      s = create(:site, user: user, state: 'active') # not in trial
+      create(:addon_plan_billable_item, state: 'subscribed', site: s, item: @logo_addon_plan_2)
+
+      s = create(:site, user: user, state: 'active') # not in trial
+      create(:addon_plan_billable_item, state: 'subscribed', site: s, item: @support_addon_plan_2)
+
+      create(:site, user: user, state: 'suspended') # suspended
+      create(:site, user: user, state: 'archived') # archived
     end
 
     describe ".create_stats" do
@@ -24,13 +30,8 @@ describe Stats::SitesStat do
         described_class.create_stats
         described_class.count.should eq 1
         sites_stat = described_class.last
-        sites_stat["fr"].should == { "free" => 1 }
-        sites_stat["sp"].should eq 1
-        sites_stat["tr"].should eq 1
-        sites_stat["pa"].should == {
-          @paid_plan.name => { "m" => 1, "y" => 1 },
-          @custom_plan.name => { "m" => 1 }
-        }
+        sites_stat["fr"].should == { "free" => 3 }
+        sites_stat["pa"].should == { "addons" => 2 }
         sites_stat["su"].should eq 1
         sites_stat["ar"].should eq 2
       end

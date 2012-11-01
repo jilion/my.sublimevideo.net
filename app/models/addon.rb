@@ -1,5 +1,5 @@
 class Addon < ActiveRecord::Base
-  attr_accessible :name, :design_dependent, :public_at, :parent_addon, :kind, as: :admin
+  attr_accessible :name, :design_dependent, :parent_addon, :kind, as: :admin
 
   belongs_to :parent_addon, class_name: 'Addon'
   has_many :plans, class_name: 'AddonPlan'
@@ -10,6 +10,8 @@ class Addon < ActiveRecord::Base
   validates :name, uniqueness: true
   validates :design_dependent, inclusion: [true, false]
 
+  scope :with_paid_plans, -> { includes(:plans).merge(AddonPlan.paid) }
+
   def self.get(name)
     Rails.cache.fetch("addon_#{name}") { where(name: name.to_s).first }
   end
@@ -18,12 +20,8 @@ class Addon < ActiveRecord::Base
     plans.where(price: 0).first
   end
 
-  def beta?
-    !public_at?
-  end
-
   def title
-    I18n.t("addon_plans.#{addon.name}.#{name}")
+    I18n.t("addons.#{name}")
   end
 end
 
@@ -37,7 +35,6 @@ end
 #  kind             :string(255)
 #  name             :string(255)      not null
 #  parent_addon_id  :integer
-#  public_at        :datetime
 #  updated_at       :datetime         not null
 #
 # Indexes

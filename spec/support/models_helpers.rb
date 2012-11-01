@@ -24,6 +24,10 @@ module Spec
         }
       end
 
+      def valid_cc_attributes_visa
+        valid_cc_attributes
+      end
+
       def valid_cc_attributes_master
         {
           cc_brand:              'master',
@@ -35,7 +39,18 @@ module Spec
         }
       end
 
-      def valid_cc_d3d_attributes
+      def valid_cc_attributes_american_express
+        {
+          cc_brand:              'american_express',
+          cc_full_name:          'Bob Doe Hicks',
+          cc_number:             '374111111111111',
+          cc_expiration_month:   3.years.from_now.month,
+          cc_expiration_year:    3.years.from_now.year,
+          cc_verification_value: '111'
+        }
+      end
+
+      def valid_cc_attributes_d3d
         {
           cc_brand:              'visa',
           cc_full_name:          'John Doe Huber',

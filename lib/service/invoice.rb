@@ -41,6 +41,7 @@ module Service
         set_vat_rate_and_amount
         set_balance_deduction_amount
         set_amount
+        set_renew
 
         invoice.save
       end
@@ -108,6 +109,10 @@ module Service
 
     def set_amount
       invoice.amount = invoice.invoice_items_amount + invoice.vat_amount - invoice.balance_deduction_amount
+    end
+
+    def set_renew
+      invoice.renew = site.invoices.not_canceled.any?
     end
 
   end

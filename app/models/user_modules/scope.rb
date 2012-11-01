@@ -17,11 +17,9 @@ module UserModules::Scope
     scope :not_archived, -> { where{ state != 'archived' } }
 
     # billing
-    scope :paying, -> { active.includes(:sites, :billable_items).merge(Site.paying) }
-    scope :free, -> {
-      # active.where{ id << User.select('paying_users.id').from("(#{User.joins(:sites, :addonships).paying.to_sql}) AS paying_users") }
-      active.includes(:billable_items).where{ id << User.paying }
-    }
+    scope :paying,     -> { active.includes(:sites, :billable_items).merge(Site.paying) }
+    scope :paying_ids, -> { active.select("DISTINCT(users.id)").joins("INNER JOIN sites ON sites.user_id = users.id INNER JOIN billable_items ON billable_items.site_id = sites.id").merge(BillableItem.subscribed).merge(BillableItem.paid) }
+    scope :free,       -> { active.where{ id << User.paying_ids } }
 
     # credit card
     scope :without_cc,           -> { where(cc_type: nil, cc_last_digits: nil) }

@@ -29,3 +29,17 @@ CSV.generate do |csv|
     csv << [site.id, site.token, site.hostname.presence, site.state, plan, all_billed_plays, all_video_tags, last_30d_bill_plays, last_30d_video_tags]
   end
 end
+
+
+# Find sites per plan
+
+# for old plans
+d = Time.utc(2012,1,1)
+a = Stats::SitesStat.where(d: d).first[:plans_count].inject({}) do |hash, (plan_id, c)|
+  hash[Plan.find(plan_id).title] = c if plan_id.present?
+  hash
+end
+puts "Date: #{d}"; puts a
+
+# for new plans
+Stats::SitesStat.where(d: Time.utc(2011,12,1)).first[:pa]

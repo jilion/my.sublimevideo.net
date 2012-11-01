@@ -59,63 +59,37 @@
                   %ul
                     %li
                       %a.selector{ href: "?sales.ne.plus", data: { value: 'sales.ne.plus' }, title: "Revenue from new Plus plan subscriptions" } Plus
-                      %ul
-                        %li
-                          %a.selector{ href: "?sales.ne.plus.m", data: { value: 'sales.ne.plus.m' }, title: "Revenue from new monthly Plus plan subscriptions" } Monthly
-                        %li
-                          %a.selector{ href: "?sales.ne.plus.y", data: { value: 'sales.ne.plus.y' }, title: "Revenue from new yearly Plus plan subscriptions" } Yearly
                     %li
                       %a.selector{ href: "?sales.ne.premium", data: { value: 'sales.ne.premium' }, title: "Revenue from new Premium plan subscriptions" } Premium
-                      %ul
-                        %li
-                          %a.selector{ href: "?sales.ne.premium.m", data: { value: 'sales.ne.premium.m' }, title: "Revenue from new monthly Premium plan subscriptions" } Monthly
-                        %li
-                          %a.selector{ href: "?sales.ne.premium.y", data: { value: 'sales.ne.premium.y' }, title: "Revenue from new yearly Premium plan subscriptions" } Yearly
                     %li
                       %a.selector{ href: "?sales.ne.comet", data: { value: 'sales.ne.comet' }, title: "Revenue from new Comet plan subscriptions" } Comet
-                      %ul
-                        %li
-                          %a.selector{ href: "?sales.ne.comet.m", data: { value: 'sales.ne.comet.m' }, title: "Revenue from new monthly Comet plan subscriptions" } Monthly
-                        %li
-                          %a.selector{ href: "?sales.ne.comet.y", data: { value: 'sales.ne.comet.y' }, title: "Revenue from new yearly Comet plan subscriptions" } Yearly
                     %li
                       %a.selector{ href: "?sales.ne.planet", data: { value: 'sales.ne.planet' }, title: "Revenue from new Planet plan subscriptions" } Planet
-                      %ul
-                        %li
-                          %a.selector{ href: "?sales.ne.planet.m", data: { value: 'sales.ne.planet.m' }, title: "Revenue from new monthly Planet plan subscriptions" } Monthly
-                        %li
-                          %a.selector{ href: "?sales.ne.planet.y", data: { value: 'sales.ne.planet.y' }, title: "Revenue from new yearly Planet plan subscriptions" } Yearly
+                    - Addon.with_paid_plans.each do |addon|
+                      %li
+                        %a.selector{ href: "?sales.ne.#{addon.name}", data: { value: "sales.ne.#{addon.name}" }, title: "Revenue from new #{addon.title} add-on subscriptions" }= addon.title
+                        %ul
+                          - addon.plans.paid.each do |addon_plan|
+                            %li
+                              %a.selector{ href: "?sales.ne.#{addon.name}.#{addon_plan.name}", data: { value: "sales.ne.#{addon.name}.#{addon_plan.name}" }, title: "Revenue from new #{addon_plan.title} add-on plan subscriptions" }= addon_plan.title
                 %li
                   %a.selector{ href: "?sales.re", data: { value: 'sales.re' }, title: "Revenue from renewed subscriptions" } Renew
                   %ul
                     %li
                       %a.selector{ href: "?sales.re.plus", data: { value: 'sales.re.plus' }, title: "Revenue from renewed Plus plan subscriptions" } Plus
-                      %ul
-                        %li
-                          %a.selector{ href: "?sales.re.plus.m", data: { value: 'sales.re.plus.m' }, title: "Revenue from renewed monthly Plus plan subscriptions" } Monthly
-                        %li
-                          %a.selector{ href: "?sales.re.plus.y", data: { value: 'sales.re.plus.y' }, title: "Revenue from renewed yearly Plus plan subscriptions" } Yearly
                     %li
                       %a.selector{ href: "?sales.re.premium", data: { value: 'sales.re.premium' }, title: "Revenue from renewed Premium plan subscriptions" } Premium
-                      %ul
-                        %li
-                          %a.selector{ href: "?sales.re.premium.m", data: { value: 'sales.re.premium.m' }, title: "Revenue from renewed monthly Premium plan subscriptions" } Monthly
-                        %li
-                          %a.selector{ href: "?sales.re.premium.y", data: { value: 'sales.re.premium.y' }, title: "Revenue from renewed yearly Premium plan subscriptions" } Yearly
                     %li
                       %a.selector{ href: "?sales.re.comet", data: { value: 'sales.re.comet' }, title: "Revenue from renewed Comet plan subscriptions" } Comet
-                      %ul
-                        %li
-                          %a.selector{ href: "?sales.re.comet.m", data: { value: 'sales.re.comet.m' }, title: "Revenue from renewed monthly Comet plan subscriptions" } Monthly
-                        %li
-                          %a.selector{ href: "?sales.re.comet.y", data: { value: 'sales.re.comet.y' }, title: "Revenue from renewed yearly Comet plan subscriptions" } Yearly
                     %li
                       %a.selector{ href: "?sales.re.planet", data: { value: 'sales.re.planet' }, title: "Revenue from renewed Planet plan subscriptions" } Planet
-                      %ul
-                        %li
-                          %a.selector{ href: "?sales.re.planet.m", data: { value: 'sales.re.planet.m' }, title: "Revenue from renewed monthly Planet plan subscriptions" } Monthly
-                        %li
-                          %a.selector{ href: "?sales.re.planet.y", data: { value: 'sales.re.planet.y' }, title: "Revenue from renewed yearly Planet plan subscriptions" } Yearly
+                    - Addon.with_paid_plans.each do |addon|
+                      %li
+                        %a.selector{ href: "?sales.re.#{addon.name}", data: { value: "sales.re.#{addon.name}" }, title: "Revenue from renewed #{addon.title} add-on subscriptions" }= addon.title
+                        %ul
+                          - addon.plans.paid.each do |addon_plan|
+                            %li
+                              %a.selector{ href: "?sales.re.#{addon.name}.#{addon_plan.name}", data: { value: "sales.re.#{addon.name}.#{addon_plan.name}" }, title: "Revenue from renewed #{addon_plan.title} add-on plan subscriptions" }= addon_plan.title
 
         %td.users
           %h2 Users
@@ -158,19 +132,22 @@
                   %a.selector{ href: "?sites.pa", data: { value: 'sites.pa' } } Paying
                   %ul
                     %li
+                      %a.selector{ href: "?sites.pa.addons", data: { value: 'sites.pa.addons' }, title: "Sites with add-ons" } Add-ons
+                  %ul
+                    %li
                       %a.selector{ href: "?sites.pa.plus", data: { value: 'sites.pa.plus' }, title: "Sites in the Plus plan" } Plus
-                      %ul
-                        %li
-                          %a.selector{ href: "?sites.pa.plus.m", data: { value: 'sites.pa.plus.m' } } Monthly
-                        %li
-                          %a.selector{ href: "?sites.pa.plus.y", data: { value: 'sites.pa.plus.y' } } Yearly
+                      -#%ul
+                      -#  %li
+                      -#    %a.selector{ href: "?sites.pa.plus.m", data: { value: 'sites.pa.plus.m' } } Monthly
+                      -#  %li
+                      -#    %a.selector{ href: "?sites.pa.plus.y", data: { value: 'sites.pa.plus.y' } } Yearly
                     %li
                       %a.selector{ href: "?sites.pa.premium", data: { value: 'sites.pa.premium' }, title: "Sites in the Premium plan" } Premium
-                      %ul
-                        %li
-                          %a.selector{ href: "?sites.pa.premium.m", data: { value: 'sites.pa.premium.m' } } Monthly
-                        %li
-                          %a.selector{ href: "?sites.pa.premium.y", data: { value: 'sites.pa.premium.y' } } Yearly
+                      -#%ul
+                      -#  %li
+                      -#    %a.selector{ href: "?sites.pa.premium.m", data: { value: 'sites.pa.premium.m' } } Monthly
+                      -#  %li
+                      -#    %a.selector{ href: "?sites.pa.premium.y", data: { value: 'sites.pa.premium.y' } } Yearly
             %li
               %a.title.selector{ href: "?sites.passive", data: { value: 'sites.passive' } } Passive
               %ul

@@ -12,7 +12,6 @@ Dir[Rails.root.join('lib/validators/**/*.rb')].each { |f| require f }
 Dir[Rails.root.join('lib/zendesk/**/*.rb')].each { |f| require f }
 
 require 'rake'
-require 'delayed/tasks'
 
 if %w[development test].include?(Rails.env)
   # Jasmine

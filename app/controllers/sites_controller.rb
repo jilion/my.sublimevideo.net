@@ -46,9 +46,7 @@ class SitesController < ApplicationController
   def update
     Service::Site.new(@site).update(params[:site])
 
-    respond_with(@site) do |format|
-      format.html { redirect_to params[:kit_edit] ? [:edit, @site, @site.kits.first] : [:edit, @site] }
-    end
+    respond_with(@site, location: [:edit, @site])
   end
 
   # DELETE /sites/:id

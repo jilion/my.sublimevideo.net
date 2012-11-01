@@ -14,14 +14,17 @@ class AdminSublimeVideo.Collections.SalesStats extends AdminSublimeVideo.Collect
 
   title: (selected) ->
     if selected.length > 1 # attribute is something like: ["ne", "premium"] or ["ne", "premium", "y"]
-      text = "Sales "
-      text += "from "
-      if selected.length > 2 # attribute is something like: ["ne", "premium", "y"]
-        text += if selected[2] == "y" then "yearly " else "monthly "
-      text += "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} plan "
+      text = 'Sales from '
+      if selected.length > 2 # attribute is something like: ["ne", "logo", "disabled"]
+        text += "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} (#{SublimeVideo.Misc.Utils.capitalize(selected[2])}) add-on"
+      else # plan
+        text += if _.contains(['comet', 'planet', 'plus', 'premium'], selected[1])
+          "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} plan"
+        else
+          "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} add-on"
       switch selected[0]
-        when 'ne' then text += 'subscription'
-        when 're' then text += 'renewing'
+        when 'ne' then text += ' subscription'
+        when 're' then text += ' renewing'
       text
     else
       switch selected[0]

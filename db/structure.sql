@@ -54,7 +54,8 @@ CREATE TABLE addon_plans (
     availability character varying(255) NOT NULL,
     required_stage character varying(255) DEFAULT 'stable'::character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    public_at timestamp without time zone
 );
 
 
@@ -85,7 +86,6 @@ CREATE TABLE addons (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
     design_dependent boolean DEFAULT true NOT NULL,
-    public_at timestamp without time zone,
     parent_addon_id integer,
     kind character varying(255),
     created_at timestamp without time zone NOT NULL,
@@ -2287,3 +2287,5 @@ INSERT INTO schema_migrations (version) VALUES ('20121004141903');
 INSERT INTO schema_migrations (version) VALUES ('20121011095931');
 
 INSERT INTO schema_migrations (version) VALUES ('20121029145446');
+
+INSERT INTO schema_migrations (version) VALUES ('20121031120524');

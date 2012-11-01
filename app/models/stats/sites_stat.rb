@@ -53,17 +53,11 @@ module Stats
       def sites_hash(day)
         hash = {
           d: day.to_time,
-          fr: { free: Site.in_plan('free').count },
-          sp: Site.in_plan('sponsored').count,
-          tr: Site.in_trial.count,
-          pa: Hash.new { |h,k| h[k] = Hash.new(0) },
+          fr: { free: Site.free.count },
+          pa: { addons: Site.paying.count },
           su: Site.suspended.count,
           ar: Site.archived.count
         }
-
-        Plan.paid_plans.each do |plan|
-          hash[:pa][plan.name][plan.cycle[0]] = Site.active.in_plan_id(plan.id).count
-        end
 
         hash
       end

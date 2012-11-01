@@ -152,23 +152,23 @@ module Populate
         #   { component: 'ref-App::Component-html5', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
         # ],
         App::Design => [
-          { name: 'classic', skin_token: 'sa.sb.sc', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
+          { name: 'classic', skin_token: 'sa.sb.sc', price: 0, availability: 'public', component: 'ref-App::Component-app' },
           { name: 'flat',    skin_token: 'sa.sd.sd', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
           { name: 'light',   skin_token: 'sa.se.se', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
           { name: 'twit',    skin_token: 'sf.sf.sf', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-twit' },
           { name: 'html5',   skin_token: 'sg.sg.sg', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-html5' }
         ],
         Addon => [
-          { name: 'video_player', kind: 'videoPlayer', design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'controls',     kind: 'controls',    design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
-          { name: 'initial',      kind: 'initial',     design_dependent: true,  parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
+          { name: 'video_player', kind: 'videoPlayer', design_dependent: false, parent_addon: nil },
+          { name: 'controls',     kind: 'controls',    design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'initial',      kind: 'initial',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
           { name: 'sharing',      kind: 'sharing',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'logo',         kind: 'logo',        design_dependent: false, parent_addon: 'ref-Addon-video_player', public_at: Time.now.utc },
-          { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc },
-          { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil,                      public_at: Time.now.utc }
+          { name: 'image_viewer', kind: 'imageViewer', design_dependent: false, parent_addon: nil },
+          { name: 'logo',         kind: 'logo',        design_dependent: false, parent_addon: 'ref-Addon-video_player' },
+          { name: 'lightbox',     kind: 'lightbox',    design_dependent: true,  parent_addon: nil },
+          { name: 'api',          kind: 'api',         design_dependent: false, parent_addon: nil },
+          { name: 'stats',        kind: 'stats',       design_dependent: false, parent_addon: nil },
+          { name: 'support',      kind: 'support',     design_dependent: false, parent_addon: nil }
         ],
         App::Plugin => [
           { name: 'video_player',     token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil,                       component: 'ref-App::Component-app' },
@@ -194,21 +194,21 @@ module Populate
           { name: 'sharing_html5',    token: 'sa.sh.sz', addon: 'ref-Addon-sharing',      design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' }
         ],
         AddonPlan => [
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer', availability: 'hidden' },
-          { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden' },
-          { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats',        availability: 'public' },
-          # { name: 'disabled',  price: 1990, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta' },
-          { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'disabled',  price: 990,  addon: 'ref-Addon-logo',         availability: 'public' },
-          { name: 'custom',    price: 1990, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-initial',      availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'hidden' },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public' },
-          { name: 'vip',       price: 9990, addon: 'ref-Addon-support',      availability: 'public' }
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public', public_at: Time.now.utc },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer', availability: 'hidden', public_at: nil },
+          { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden', public_at: Time.now.utc },
+          { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats',        availability: 'public', public_at: Time.now.utc },
+          # { name: 'disabled',  price: 1990, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta', public_at: nil },
+          { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public', public_at: Time.now.utc },
+          { name: 'disabled',  price: 990,  addon: 'ref-Addon-logo',         availability: 'public', public_at: Time.now.utc },
+          { name: 'custom',    price: 1990, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-initial',      availability: 'hidden', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'hidden', public_at: Time.now.utc },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public', public_at: Time.now.utc },
+          { name: 'vip',       price: 9990, addon: 'ref-Addon-support',      availability: 'public', public_at: Time.now.utc }
         ],
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
@@ -236,15 +236,15 @@ module Populate
             }
           },
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_classic', template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_flat', template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_light', template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_twit', template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_html5', template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_flat',    template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_light',   template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_twit',    template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_html5',   template: controls_template },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit', template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5', template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat',    template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light',   template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit',    template: lightbox_template },
+          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5',   template: lightbox_template },
           # { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
           { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
             template: {
@@ -366,7 +366,6 @@ module Populate
               }
             }
           },
-          # { addon_plan: 'ref-AddonPlan-logo-custom',         plugin: 'ref-App::Plugin-logo' },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_classic', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_flat', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_light', template: initial_template },
@@ -413,22 +412,6 @@ module Populate
       puts "#{count} random mail templates created!"
     end
 
-    # def player_components
-    #   empty_tables(App::Component, App::ComponentVersion)
-    #   names_token = {
-    #     'app' => 'e',
-    #     'subtitles' => 'bA'
-    #   }
-    #   versions = %w[2.0.0-alpha 2.0.0 1.1.0 1.0.0]
-    #   version_zip = File.new(Rails.root.join('spec/fixtures/app/e.zip'))
-    #   names_token.each do |name, token|
-    #     component = App::Component.create({ name: name, token: token }, as: :admin)
-    #     versions.each do |version|
-    #       component.versions.create({ version: version, zip: version_zip }, as: :admin)
-    #     end
-    #   end
-    # end
-
     def admins
       empty_tables(Admin)
       disable_perform_deliveries do
@@ -440,7 +423,7 @@ module Populate
       end
     end
 
-    def create_enthusiasts(user_id = nil)
+    def enthusiasts(user_id = nil)
       empty_tables(EnthusiastSite, Enthusiast)
       disable_perform_deliveries do
         (user_id ? [user_id] : 0.upto(BASE_USERS.count - 1)).each do |i|
@@ -510,6 +493,8 @@ module Populate
 
       User.all.each do |user|
         BASE_SITES.each do |hostname|
+          created_at = rand(24).months.ago
+          Timecop.travel(created_at)
           if rand >= 0.5
             site = user.sites.create({ hostname: hostname, plan_id: Plan.where(name: %w[plus premium].sample, cycle: 'month').first.id }, without_protection: true)
             service = Service::Site.new(site)
@@ -518,25 +503,36 @@ module Populate
           else
             site = user.sites.build(hostname: hostname)
             Service::Site.new(site).create
+            if rand >= 0.4
+              Timecop.return
+              Timecop.travel(created_at + 30.days)
+              Service::Trial.activate_billable_items_out_of_trial_for_site!(site.id)
+            end
           end
+          Timecop.return
         end
       end
 
       puts "#{BASE_SITES.size} beautiful sites created for each user!"
     end
 
-    # FIXME Remy: After the new add-on invoicing logic is coded
     def invoices(user_id = nil)
       empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction)
       users = user_id ? [User.find(user_id)] : User.all
-      plans = Plan.standard_plans.all
       users.each do |user|
         user.sites.active.each do |site|
-          (5 + rand(15)).times do |n|
-            Timecop.travel(n.months.from_now) do
-              # site.prepare_pending_attributes
-              invoice = Service::Invoice.build(site: site).tap { |s| s.save }.invoice
-              puts "Invoice created: $#{invoice.amount / 100.0}"
+          timestamp = site.created_at
+          while timestamp < Time.now.utc do
+            timestamp += 1.month
+            Timecop.travel(timestamp.end_of_month) do
+              service = Service::Invoice.build_for_month(Time.now.utc, site.id).tap { |s| s.save }
+              if service.invoice.persisted?
+                service.invoice.succeed
+                # puts timestamp
+                puts "Invoice created: $#{service.invoice.amount / 100.0}"
+              # else
+              #   puts "#{timestamp} (failed)!"
+              end
             end
           end
         end
@@ -762,28 +758,27 @@ module Populate
 
         day += 1.day
       end
-      puts "Fake users stats generated!"
+
+      puts "#{Stats::UsersStat.count} fake users stats generated!"
     end
 
     def sites_stats
       empty_tables(Stats::SitesStat)
       day = 2.years.ago.midnight
-      hash = { fr: 0, sp: 0, tr: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 } }, su: 0, ar: 0 }
+      hash = { fr: { free: 0 }, pa: { plus: { m: 0, y: 0 }, premium: { m: 0, y: 0 }, addons: 0 }, su: 0, ar: 0 }
 
       while day <= Time.now.utc.midnight
         hash[:d]   = day
-        hash[:fr] += rand(50)
-        hash[:sp] += rand(2)
+        hash[:fr][:free] += rand(50)
 
-        hash[:tr][:plus][:m]    += rand(10)
-        hash[:tr][:plus][:y]    += rand(5)
-        hash[:tr][:premium][:m] += rand(5)
-        hash[:tr][:premium][:y] += rand(2)
-        hash[:pa][:plus][:m]    += rand(7)
-        hash[:pa][:plus][:y]    += rand(3)
-        hash[:pa][:premium][:m] += rand(4)
-        hash[:pa][:premium][:y] += rand(2)
-
+        if day >= Time.utc(2012, 10, 23)
+          hash[:pa][:addons]      += rand(12)
+        else
+          hash[:pa][:plus][:m]    += rand(7)
+          hash[:pa][:plus][:y]    += rand(3)
+          hash[:pa][:premium][:m] += rand(4)
+          hash[:pa][:premium][:y] += rand(2)
+        end
         hash[:su] += rand(3)
         hash[:ar] += rand(6)
 
@@ -791,7 +786,15 @@ module Populate
 
         day += 1.day
       end
-      puts "Fake sites stats generated!"
+
+      puts "#{Stats::SitesStat.count} fake sites stats generated!"
+    end
+
+    def sales_stats
+      empty_tables(Stats::SalesStat)
+      Stats::SalesStat.create_stats
+
+      puts "#{Stats::SalesStat.count} fake sales stats generated!"
     end
 
     def recurring_site_stats_update(user_id)

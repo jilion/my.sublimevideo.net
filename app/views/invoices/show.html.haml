@@ -22,7 +22,7 @@
         - if invoice.last_transaction.present?
           %p
             %strong= "Payment info:"
-          %p= "Card type: #{credit_card_type(invoice.last_transaction.cc_type)}"
+          %p= "Card type: #{t("user.credit_card.type.#{invoice.last_transaction.cc_type}")}"
           %p= "Card no.: XXXXXXXXXXXX-#{invoice.last_transaction.cc_last_digits}"
 
     %td.user_info
