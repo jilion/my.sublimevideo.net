@@ -1,38 +1,77 @@
 require 'spec_helper'
 
 describe Kit do
-  describe "Associations" do
+  describe 'Associations' do
     it { should belong_to :site }
     it { should belong_to(:design).class_name('App::Design') }
   end
 
-  describe "Validations" do
-    [:site, :design].each do |attr|
+  describe 'Validations' do
+    [:site, :name, :app_design_id, :identifier].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
-    it { should allow_mass_assignment_of(:name) }
 
-    [:site, :design, :name].each do |attr|
+    [:site, :design, :identifier].each do |attr|
       it { should validate_presence_of(attr) }
     end
   end
 
-  describe "Callbacks" do
+  describe 'Initialization' do
+    let(:site) { create(:site) }
+    let(:kit)  { Kit.new({ site: site, app_design_id: nil }, as: :admin) }
+    before do
+      create(:app_design, name: 'flat')
+      @classic_design = create(:app_design, name: 'classic')
+    end
 
-    describe "before_validation" do
-      let(:kit) { build(:kit, design: nil) }
-      before do
-        @design = create(:app_design)
+    describe 'set default design' do
+      specify do
+        kit.app_design_id.should eq @classic_design.id
+      end
+    end
+
+    describe 'set name' do
+      let(:kit) { Kit.new({ site: site, name: nil }, as: :admin) }
+
+      context 'site has no kit yet' do
+        specify do
+          kit.name.should eq 'My player 1'
+        end
       end
 
-      describe "set default hostname" do
+      context 'site has kits' do
+        before do
+          site.kits.create!
+          site.kits.should have(1).item
+        end
+
         specify do
-          kit.design.should be_nil
-          kit.should be_valid
-          kit.design.should eq @design
+          kit.name.should eq 'My player 2'
         end
       end
     end
+
+    describe 'set identifier' do
+      let(:kit) { Kit.new({ site: site }, as: :admin) }
+
+      context 'site has no kit yet' do
+        specify do
+          kit.identifier.should eq '1'
+        end
+      end
+
+      context 'site has kits' do
+        before do
+          site.kits.create!
+          site.kits.should have(1).item
+        end
+
+        specify do
+          kit.identifier.should eq '2'
+        end
+      end
+    end
+
   end
 
 end
@@ -44,7 +83,8 @@ end
 #  app_design_id :integer          not null
 #  created_at    :datetime         not null
 #  id            :integer          not null, primary key
-#  name          :string(255)      default("Default"), not null
+#  identifier    :string(255)
+#  name          :string(255)      not null
 #  settings      :text
 #  site_id       :integer          not null
 #  updated_at    :datetime         not null

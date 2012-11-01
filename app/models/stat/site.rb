@@ -271,6 +271,7 @@ end
 #  archived_at                               :datetime
 #  badged                                    :boolean
 #  created_at                                :datetime         not null
+#  default_kit_id                            :integer
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
 #  first_billable_plays_at                   :datetime

@@ -1,5 +1,6 @@
 /*
 *= require 'sites'
+*= require 'kits'
 *= require 'video_tags'
 *= require 'plans'
 *= require 'stats'
@@ -127,12 +128,14 @@ header, header .shadow, header .lights {
 }
 
 #content h2 select {
-  height:60px;
+  // height:60px;
+  height:42px; // REMY
   padding:0 30px 0 10px;
   background:url(<%= asset_path "big_select_back.png" %>) no-repeat right top;
   font-family:inherit;
   color:#1e3966;
-  font-size:48px;
+  // font-size:48px;
+  font-size:30px; // REMY
   font-weight:100;
   border: 1px solid #5e75a2;
   max-width:465px;
@@ -523,10 +526,10 @@ form .entry.float select {
 
 ul.segmented_menu {
   list-style-type:none;
-  // position:absolute;
+  position:absolute;
   // top:40px;
-  // top:120px;
-  // right:44px;
+  top:54px; // REMY
+  right:44px;
 }
 
 ul.segmented_menu li {
@@ -536,11 +539,14 @@ ul.segmented_menu li {
 
 ul.segmented_menu li a {
   display:block;
-  height:58px;
-  line-height:58px;
-  padding:0 20px;
+  // height:58px;
+  height:40px; // REMY
+  // line-height:58px;
+  line-height:40px; // REMY
+  padding:0 10px;
   color:#1e3966;
-  font-size:20px;
+  // font-size:20px;
+  font-size:15px; // REMY
   font-weight:600;
   text-shadow:rgba(255,255,255,0.6) 0 1px 0;
   border:1px solid #576c88;
@@ -1069,4 +1075,3 @@ code {
   font-family:Monaco, Courier, monospace;
   font-size:90%;
 }
-

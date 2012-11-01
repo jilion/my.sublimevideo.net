@@ -1,0 +1,195 @@
+require 'spec_helper'
+
+feature 'New kit' do
+  background do
+    sign_in_as :user
+    @site = build(:site, user: @current_user)
+    Service::Site.new(@site).create
+    go 'my', "/site/#{@site.to_param}/players/new"
+  end
+
+  scenario 'with no name' do
+    fill_in 'Name', with: ''
+    click_button 'Save'
+
+    last_kit_should_be_created('My player 2')
+  end
+
+  scenario 'with a name' do
+    fill_in 'Name', with: 'My awesome player!'
+    click_button 'Save'
+
+    last_site_should_be_created('My awesome player!')
+  end
+end
+
+# feature 'Edit site' do
+#   background do
+#     sign_in_as :user
+#     @site = build(:site, user: @current_user, hostname: hostname1)
+#     Service::Site.new(@site).create
+
+#     go 'my', '/sites'
+#   end
+
+#   scenario 'edit a site', :js do
+#     select 'Settings', from: "site_actions_#{@site.id}"
+
+#     page.should have_selector 'input#site_extra_hostnames'
+#     page.should have_selector 'input#site_dev_hostnames'
+#     page.should have_selector 'input#site_path'
+#     page.should have_selector 'input#site_wildcard'
+
+#     fill_in 'site_extra_hostnames', with: hostname2
+#     fill_in 'site_dev_hostnames', with: dev_hostname
+#     click_button 'Save settings'
+
+#     current_url.should =~ %r(^http://[^/]+/sites/#{@site.token}/edit$)
+
+#     @site.reload.hostname.should eq hostname1
+#     @site.extra_hostnames.should eq hostname2
+#     @site.dev_hostnames.should eq dev_hostname
+#   end
+# end
+
+# feature 'Archive site', :js do
+#   background do
+#     sign_in_as :user
+#     @site = build(:site, user: @current_user, hostname: hostname1)
+#     Service::Site.new(@site).create
+
+#     @paid_site_with_paid_invoices = build(:site, user: @current_user, hostname: hostname2)
+#     Service::Site.new(@paid_site_with_paid_invoices).create
+#     create(:paid_invoice, site: @paid_site_with_paid_invoices)
+
+#     @paid_site_with_open_invoices = build(:site, user: @current_user, hostname: hostname3)
+#     Service::Site.new(@paid_site_with_open_invoices).create
+#     create(:invoice, site: @paid_site_with_open_invoices)
+
+#     go 'my', '/sites'
+#   end
+
+#   scenario 'a paid site with no invoices' do
+#     select 'Settings', from: "site_actions_#{@site.id}"
+#     click_button 'Cancel site'
+
+#     page.should have_no_content hostname1
+#     @site.reload.should be_archived
+#   end
+
+#   scenario 'a paid site with only paid invoices' do
+#     select 'Settings', from: "site_actions_#{@paid_site_with_paid_invoices.id}"
+#     click_button 'Cancel site'
+
+#     page.should have_no_content hostname2
+#     @paid_site_with_paid_invoices.reload.should be_archived
+#   end
+
+#   scenario 'a paid site with an open invoice' do
+#     select 'Settings', from: "site_actions_#{@paid_site_with_open_invoices.id}"
+#     page.should have_no_content 'Cancel site'
+#   end
+
+#   scenario 'a paid site with a failed invoice' do
+#     site = build(:site, user: @current_user, hostname: 'test.com')
+#     Service::Site.new(site).create
+#     create(:failed_invoice, site: site)
+
+#     go 'my', '/sites'
+#     select 'Settings', from: "site_actions_#{site.id}"
+#     page.should have_no_content 'Cancel site'
+#   end
+
+#   scenario 'a paid site with a waiting invoice' do
+#     site = build(:site, user: @current_user, hostname: 'example.org')
+#     Service::Site.new(site).create
+#     create(:waiting_invoice, site: site)
+
+#     go 'my', '/sites'
+#     select 'Settings', from: "site_actions_#{site.id}"
+#     page.should have_no_content 'Cancel site'
+#   end
+# end
+
+# feature 'Sites index' do
+#   background do
+#     sign_in_as :user
+#   end
+
+#   context 'suspended user' do
+#     background do
+#       @current_user.suspend
+#     end
+
+#     scenario 'is redirected to the /suspended page' do
+#       go 'my', '/sites'
+#       current_url.should eq 'http://my.sublimevideo.dev/suspended'
+#     end
+#   end
+
+#   context 'active user' do
+#     context 'with no sites' do
+#       scenario 'should redirect to /sites/new' do
+#         go 'my', '/sites'
+#         current_url.should eq 'http://my.sublimevideo.dev/sites/new'
+#       end
+#     end
+
+#     context 'with sites' do
+#       background do
+#         @site = build(:site, user: @current_user, hostname: hostname1)
+#         Service::Site.new(@site).create
+#       end
+
+#       scenario 'sort buttons displayed only if count of sites > 1' do
+#         go 'my', '/sites'
+#         page.should have_content hostname1
+#         page.should have_no_css 'div.sorting'
+#         page.should have_no_css 'a.sort'
+
+#         Service::Site.new(build(:site, user: @current_user, hostname: hostname2)).create
+#         go 'my', '/sites'
+
+#         page.should have_content hostname1
+#         page.should have_content hostname2
+#         page.should have_css 'div.sorting'
+#         page.should have_css 'a.sort.date'
+#         page.should have_css 'a.sort.hostname'
+#       end
+
+#       scenario 'pagination links displayed only if count of sites > Site.per_page' do
+#         Responders::PaginatedResponder.stub(:per_page).and_return(1)
+#         go 'my', '/sites'
+
+#         page.should have_no_css 'nav.pagination'
+#         page.should have_no_selector 'a[rel=\'next\']'
+
+#         Service::Site.new(build(:site, user: @current_user, hostname: hostname3)).create
+#         go 'my', '/sites'
+
+#         page.should have_css 'nav.pagination'
+#         page.should have_selector 'a[rel=\'next\']'
+#       end
+
+#       context 'user has billable views' do
+#         background do
+#           create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
+#         end
+
+#         scenario 'views notice 1' do
+#           go 'my', '/sites'
+#           page.should have_selector '.hidable_notice[data-notice-id=\'1\']'
+#         end
+#       end
+#     end
+#   end
+# end
+
+def last_kit_should_be_created(site, name)
+  kit = site.kits.last
+  kit.reload
+  kit.name.should eq name
+
+  current_url.should eq "http://my.sublimevideo.dev/sites/#{site.to_param}/players"
+  page.should have_content 'Player has been successfully created.'
+end

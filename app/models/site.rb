@@ -40,10 +40,9 @@ class Site < ActiveRecord::Base
   # = Associations =
   # ================
 
+  belongs_to :default_kit, class_name: 'Kit'
+  belongs_to :plan # legacy
   belongs_to :user
-
-  # Plans
-  belongs_to :plan
 
   # Invoices
   has_many :invoices, class_name: '::Invoice'
@@ -200,6 +199,7 @@ end
 #  archived_at                               :datetime
 #  badged                                    :boolean
 #  created_at                                :datetime         not null
+#  default_kit_id                            :integer
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
 #  first_billable_plays_at                   :datetime

@@ -189,6 +189,8 @@ def last_site_should_be_created(hostname)
   $worker.work_off
   site.reload
   site.hostname.should eq hostname
+  site.kits.should have(1).item
+  site.default_kit.should eq site.kits.first
   site.app_designs.should have(3).items
   site.addon_plans.should have(9).items
 

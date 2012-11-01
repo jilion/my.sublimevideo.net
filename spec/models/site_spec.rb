@@ -29,7 +29,9 @@ describe Site, :addons do
 
     it { should belong_to(:user) }
     it { should belong_to(:plan) }
+    it { should belong_to(:default_kit) }
     it { should have_many(:invoices) }
+    it { should have_one(:last_invoice) }
 
     it { should have_many(:billable_items) }
     it { should have_many(:app_designs).through(:billable_items) }
@@ -474,6 +476,7 @@ end
 #  archived_at                               :datetime
 #  badged                                    :boolean
 #  created_at                                :datetime         not null
+#  default_kit_id                            :integer
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
 #  first_billable_plays_at                   :datetime

@@ -78,6 +78,7 @@ end
 #  id             :integer          not null, primary key
 #  name           :string(255)      not null
 #  price          :integer          not null
+#  public_at      :datetime
 #  required_stage :string(255)      default("stable"), not null
 #  updated_at     :datetime         not null
 #

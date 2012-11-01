@@ -20,12 +20,7 @@ describe Service::Kit do
       Service::Settings.stub(:delay) { delayed_method }
       service.stub(:set_addons_settings)
       kit.stub(:app_design_id=)
-      kit.stub(:save!)
-    end
-
-    it 'assignes app_design_id' do
-      kit.should_receive(:app_design_id=).with('design_id')
-      service.update(params)
+      kit.stub(:update_attributes!)
     end
 
     it 'sets addons_settings without app_design_id params' do
@@ -34,7 +29,7 @@ describe Service::Kit do
     end
 
     it 'saves kit' do
-      kit.should_receive(:save!)
+      kit.should_receive(:update_attributes!)
       service.update(params)
     end
 

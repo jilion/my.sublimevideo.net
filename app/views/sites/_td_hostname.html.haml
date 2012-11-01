@@ -20,7 +20,7 @@
       %select.site_actions{ id: ['site_actions', site.id] }
         %option{ value: '' } Actions
         %option{ value: site_addons_path(site) } Add-ons
-        %option{ value: edit_site_kit_path(site, site.kits.first.id) } Player
+        %option{ value: site_kits_path(site) } Players
         %option{ value: new_site_video_code_path(site) } Video Code
         - if site.realtime_stats_active?
           %option{ value: site_stats_path(site) } Stats
