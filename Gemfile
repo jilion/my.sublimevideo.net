@@ -41,7 +41,7 @@ gem 'oauth-plugin',          '~> 0.4.1'
 gem 'acts_as_api',           '~> 0.4.1'
 
 # Internals
-gem 'sidekiq', github: 'jilion/sidekiq', branch: 'improve_drain_all'
+gem 'sidekiq', github: 'mperham/sidekiq'
 gem 'sinatra', require: false
 gem 'slim'
 

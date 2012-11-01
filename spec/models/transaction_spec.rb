@@ -224,8 +224,8 @@ describe Transaction do
       describe "after_transition on: :succeed, do: :send_charging_succeeded_email" do
         context "from open" do
           it "should send an email to invoice.user" do
-            transaction
-            -> { transaction.succeed }.should delay('%Class%transaction_succeeded%')
+            BillingMailer.should delay(:transaction_succeeded).with(transaction.id)
+            transaction.succeed
           end
         end
       end
@@ -233,10 +233,8 @@ describe Transaction do
       describe "after_transition on: :fail, do: :send_charging_failed_email" do
         context "from open" do
           it "should send an email to invoice.user" do
-            transaction
-            -> { transaction.fail }.should delay('%Class%transaction_failed%')
-            ActionMailer::Base.deliveries.last.to.should eq [user.email]
-            ActionMailer::Base.deliveries.last.to.should eq [transaction.user.email]
+            BillingMailer.should delay(:transaction_failed).with(transaction.id)
+            transaction.fail
           end
         end
       end
@@ -270,10 +268,8 @@ describe Transaction do
       end
 
       it "should delay invoice charging for open invoices which have the renew flag == true by user" do
-        -> { Transaction.charge_invoices }.should delay('%charge_invoices_by_user_id%')
-        djs = Delayed::Job.where{ handler =~ "%charge_invoices_by_user_id%" }
-        djs.should have(1).item
-        djs.map { |dj| YAML.load(dj.handler).args[0] }.should =~ [@invoice1.reload.site.user.id]
+        Transaction.should delay(:charge_invoices_by_user_id, queue: 'high').with(@invoice1.site.user_id)
+        Transaction.charge_invoices
       end
     end # .charge_invoices
 

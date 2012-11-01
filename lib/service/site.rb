@@ -33,7 +33,7 @@ module Service
 
         Service::Loader.delay.update_all_stages!(site.id)
         Service::Settings.delay.update_all_types!(site.id)
-        Service::Rank.delay(priority: 100).set_ranks(site.id)
+        Service::Rank.delay(queue: 'low').set_ranks(site.id)
       end
       true
     rescue ActiveRecord::RecordInvalid

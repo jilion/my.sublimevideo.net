@@ -137,6 +137,7 @@ end
 feature 'Email update' do
   scenario 'ask for password confirmation' do
     sign_in_as :user, { email: "old@jilion.com" }
+    Sidekiq::Worker.clear_all
     Timecop.travel(Time.now + 1.minute) do # for after_confirmation_path_for
       click_link('John Doe')
 
@@ -148,6 +149,8 @@ feature 'Email update' do
 
       User.last.email.should eq "old@jilion.com"
       User.last.unconfirmed_email.should eq "new@jilion.com"
+
+      Sidekiq::Worker.drain_all
 
       last_delivery = ActionMailer::Base.deliveries.last
       last_delivery.to.should eq [User.last.unconfirmed_email]
@@ -182,13 +185,16 @@ feature 'Password recovery' do
     scenario "send reset password email" do
       user = create_user user: { name: "John Doe", email: "john@doe.com", password: "123456" }
       user.should be_active
+      Sidekiq::Worker.clear_all
 
       go 'my', "/password/new"
 
       current_url.should eq "http://my.sublimevideo.dev/password/new"
 
       fill_in "Email", with: "john@doe.com"
-      expect { click_button "Send" }.to change(ActionMailer::Base.deliveries, :count).by(1)
+
+      click_button "Send"
+      expect { Sidekiq::Worker.drain_all }.to change(ActionMailer::Base.deliveries, :count).by(1)
 
       current_url.should eq "http://my.sublimevideo.dev/login"
     end
@@ -198,13 +204,15 @@ feature 'Password recovery' do
     scenario "send reset password email" do
       user = create_user user: { name: "John Doe", email: "john@doe.com", password: "123456", state: 'suspended' }
       user.should be_suspended
+      Sidekiq::Worker.clear_all
 
       go 'my', "/password/new"
 
       current_url.should eq "http://my.sublimevideo.dev/password/new"
 
       fill_in "Email", with: "john@doe.com"
-      expect { click_button "Send" }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      click_button "Send"
+      expect { Sidekiq::Worker.drain_all }.to change(ActionMailer::Base.deliveries, :count).by(1)
 
       current_url.should eq "http://my.sublimevideo.dev/login"
     end
@@ -214,13 +222,15 @@ feature 'Password recovery' do
     scenario "doesn't send reset password email" do
       user = create_user user: { name: "John Doe", email: "john@doe.com", password: "123456", state: 'archived' }
       user.should be_archived
+      Sidekiq::Worker.clear_all
 
       go 'my', "/password/new"
 
       current_url.should eq "http://my.sublimevideo.dev/password/new"
 
       fill_in "Email", with: "john@doe.com"
-      expect { click_button "Send" }.to_not change(ActionMailer::Base.deliveries, :count)
+      click_button "Send"
+      expect { Sidekiq::Worker.drain_all }.to_not change(ActionMailer::Base.deliveries, :count)
 
       current_url.should eq "http://my.sublimevideo.dev/password"
     end
@@ -231,6 +241,7 @@ feature 'Password recovery' do
       archived_user.current_password = '123456'
       archived_user.archive
       user = create(:user, email: email, password: '123456')
+      Sidekiq::Worker.clear_all
 
       go 'my', 'password/new'
 
@@ -238,6 +249,8 @@ feature 'Password recovery' do
       click_button "Send"
 
       user.reload.reset_password_token.should be_present
+
+      Sidekiq::Worker.drain_all
 
       last_delivery = ActionMailer::Base.deliveries.last
       last_delivery.to.should eq [user.email]
@@ -257,6 +270,7 @@ end
 feature "Credentials update" do
   background do
     sign_in_as :user
+    Sidekiq::Worker.clear_all
     go 'my', 'account'
   end
 
@@ -273,6 +287,8 @@ feature "Credentials update" do
     User.find(@current_user.id).unconfirmed_email.should eq "zeno@jilion.com"
 
     page.should have_content 'You updated your account successfully, but we need to verify your new email address.'
+
+    Sidekiq::Worker.drain_all
 
     last_delivery = ActionMailer::Base.deliveries.last
     last_delivery.to.should eq ["zeno@jilion.com"]

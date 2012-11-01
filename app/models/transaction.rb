@@ -63,7 +63,7 @@ class Transaction < ActiveRecord::Base
 
   def self.charge_invoices
     User.active.includes(:invoices).merge(Invoice.open_or_failed).each do |user|
-      delay(priority: 2).charge_invoices_by_user_id(user.id)
+      delay(queue: 'high').charge_invoices_by_user_id(user.id)
     end
   end
 
