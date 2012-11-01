@@ -14,7 +14,7 @@ module App
       super
       @graph = Solve::Graph.new
       @components = [App::Component.app_component]
-      @components += site.components.includes(:versions)
+      @components += site.components
       @components.each { |component| add_component(component) }
     end
 

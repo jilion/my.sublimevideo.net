@@ -186,7 +186,7 @@ end
 
 def last_site_should_be_created(hostname)
   site = @current_user.sites.last
-  $worker.work_off
+  Sidekiq::Worker.clear_all
   site.reload
   site.hostname.should eq hostname
   site.app_designs.should have(3).items

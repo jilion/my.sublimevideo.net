@@ -64,7 +64,7 @@ class Site < ActiveRecord::Base
   has_many :app_designs_components, through: :app_designs, source: :component
   has_many :addon_plans_components, through: :addon_plans, source: :components
   def components
-    app_designs_components + addon_plans_components
+    app_designs_components.includes(:versions) + addon_plans_components.includes(:versions)
   end
 
   # Mongoid associations
