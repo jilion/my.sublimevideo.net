@@ -268,7 +268,6 @@ describe Transaction do
         @invoice4 = create(:failed_invoice, site: @site3)
         @invoice5 = create(:paid_invoice, site: site1)
       end
-      # before { Delayed::Job.delete_all }
 
       it "should delay invoice charging for open invoices which have the renew flag == true by user" do
         -> { Transaction.charge_invoices }.should delay('%charge_invoices_by_user_id%')

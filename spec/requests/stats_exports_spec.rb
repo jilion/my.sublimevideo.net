@@ -15,7 +15,7 @@ feature 'StatsExport' do
       vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
     create(:video_day_stat, st: @site.token, u: @video_tag.u, d: 5.days.ago.midnight.to_i,
       vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
-    Delayed::Job.delete_all
+    Sidekiq::Worker.clear_all
     clear_emails
   end
 
@@ -26,8 +26,8 @@ feature 'StatsExport' do
 
     click_button('Export Data')
 
-    sleep 0.01 until Delayed::Job.count == 1
-    $worker.work_off
+    sleep 0.01 until Sidekiq::Worker.jobs.size == 1
+    Sidekiq::Worker.drain_all
 
     open_email(@current_user.email)
     current_email.find('a', text: %r{stats/exports}).click

@@ -5,6 +5,11 @@ class StatsExporter
 
   attr_reader :site_token, :from, :to
 
+  def self.create_and_notify_export!(site_token, from, to)
+    exporter = new(site_token, from, to)
+    exporter.create_and_notify_export!
+  end
+
   def initialize(site_token, from, to)
     @site_token, @from, @to = site_token, from, to
   end
