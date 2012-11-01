@@ -20,7 +20,6 @@ module RecurringJob
     def schedule_daily_tasks
       options = {
         at: (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
-        queue: 'low'
       }
 
       Service::Invoice.delay(options).create_invoices_for_month
@@ -29,6 +28,9 @@ module RecurringJob
       Service::Trial.delay(options).activate_billable_items_out_of_trial!
       Service::Usage.delay(options).set_first_billable_plays_at_for_not_archived_sites
       Service::Usage.delay(options).update_last_30_days_counters_for_not_archived_sites
+
+      options.merge!(queue: 'low')
+
       User.delay(options).send_credit_card_expiration
       User.delay(options).send_inactive_account_email
       Stats::UsersStat.delay(options).create_stats

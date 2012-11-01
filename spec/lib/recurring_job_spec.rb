@@ -61,48 +61,42 @@ describe RecurringJob, :redis do
 
     it "schedules Service::Invoice.create_invoices_for_month" do
       Service::Invoice.should delay(:create_invoices_for_month,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
-        queue: "low"
+        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules Transaction.charge_invoices" do
       Transaction.should delay(:charge_invoices,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
-        queue: "low"
+        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules Service::Trial.send_trial_will_expire_email" do
       Service::Trial.should delay(:send_trial_will_expire_email,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
-        queue: "low"
+        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules Service::Trial.activate_billable_items_out_of_trial!" do
       Service::Trial.should delay(:activate_billable_items_out_of_trial!,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
-        queue: "low"
+        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules Service::Usage.set_first_billable_plays_at_for_not_archived_sites" do
       Service::Usage.should delay(:set_first_billable_plays_at_for_not_archived_sites,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
-        queue: "low"
+        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules Service::Usage.update_last_30_days_counters_for_not_archived_sites" do
       Service::Usage.should delay(:update_last_30_days_counters_for_not_archived_sites,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
-        queue: "low"
+        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
       )
       described_class.schedule_daily_tasks
     end
