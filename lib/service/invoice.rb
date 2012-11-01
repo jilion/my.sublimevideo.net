@@ -13,7 +13,7 @@ module Service
         build(site: ::Site.find(site_id)).for_month(date)
       end
 
-      def create_invoices_for_month(date)
+      def create_invoices_for_month(date = 1.month.ago)
         ::Site.not_archived.find_each(batch_size: 100) do |site|
           delay.create_for_month(date, site.id)
         end

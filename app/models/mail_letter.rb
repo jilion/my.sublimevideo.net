@@ -6,6 +6,11 @@ class MailLetter
 
   DEV_TEAM_EMAILS = %w[thibaud@jilion.com remy@jilion.com zeno@jilion.com octave@jilion.com]
 
+  def self.deliver_and_log(params)
+    mail_letter = new(params)
+    mail_letter.deliver_and_log
+  end
+
   def initialize(params)
     @template = MailTemplate.find(params[:template_id])
     @admin    = Admin.find(params[:admin_id])

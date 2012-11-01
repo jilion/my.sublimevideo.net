@@ -72,10 +72,6 @@ module Spec
         @mock_mail_log ||= mock_model(MailLog, stubs)
       end
 
-      def mock_delayed_job(stubs = {})
-        @mock_delayed_job ||= mock_model(Delayed::Job, stubs)
-      end
-
       def mock_plan(stubs = {})
         @mock_plan ||= mock_model(Plan, stubs)
       end

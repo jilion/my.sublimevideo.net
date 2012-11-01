@@ -1,0 +1,9 @@
+# Options here can still be overridden by cmd line args.
+#   sidekiq -C config.yml
+---
+:verbose: true
+:concurrency:  25
+:queues:
+  - [low, 0]
+  - [default, 10]
+  - [high, 20]

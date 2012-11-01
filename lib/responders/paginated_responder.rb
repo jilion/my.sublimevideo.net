@@ -25,12 +25,7 @@ module Responders
 
     def add_pagination_scope!
       return unless activate_paginate?
-
-      if controller.controller_name == 'delayed_jobs'
-        set_instance_variable(Delayed::Job)
-      else
-        set_instance_variable
-      end
+      set_instance_variable
     end
 
     def activate_paginate?

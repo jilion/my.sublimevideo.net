@@ -10,7 +10,7 @@ namespace :db do
   namespace :populate do
     desc "Empty all the tables"
     task empty_all_tables: :environment do
-      timed { Populate.empty_tables("delayed_jobs", "invoices_transactions", DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
+      timed { Populate.empty_tables("invoices_transactions", DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
     desc "Load all development fixtures."

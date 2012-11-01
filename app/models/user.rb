@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   include UserModules::Scope
 
   devise :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable, :trackable, :lockable
+         :recoverable, :rememberable, :trackable, :lockable, :async
 
   def self.cookie_domain
     ".sublimevideo.net"
@@ -266,7 +266,7 @@ private
   def zendesk_update
     if zendesk_id? && (email_changed? || (name_changed? && name?))
       updated_field = email_changed? ? { email: email } : { name: name }
-      ZendeskWrapper.delay(priority: 25).update_user(zendesk_id, updated_field)
+      ZendeskWrapper.delay(queue: 'low').update_user(zendesk_id, updated_field)
     end
   end
 

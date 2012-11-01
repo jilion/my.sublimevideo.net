@@ -1,13 +1,4 @@
 GIT
-  remote: git://github.com/collectiveidea/delayed_job.git
-  revision: a7e72bcca12ac96684638c71046c060000003d0c
-  branch: v2.1
-  specs:
-    delayed_job (2.1.4)
-      activesupport (~> 3.0)
-      daemons
-
-GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: be8240784141056b66e0720fbfccb1f8856edaa6
   specs:
@@ -22,6 +13,21 @@ GIT
     premailer (1.7.3)
       css_parser (>= 1.1.9)
       htmlentities (>= 4.0.0)
+
+GIT
+  remote: git://github.com/jilion/sidekiq.git
+  revision: d19af9c102a366cb90865459f7c194224a93ec07
+  branch: improve_drain_all
+  specs:
+    sidekiq (2.5.1)
+      celluloid (~> 0.12.0)
+      compass
+      connection_pool (~> 0.9.2)
+      multi_json (~> 1)
+      redis (~> 3)
+      redis-namespace
+      sass (~> 3.2)
+      sprockets-sass
 
 GIT
   remote: git://github.com/jilion/useragent.git
@@ -40,23 +46,29 @@ GIT
       mongoid-grid_fs (~> 1.3.1)
 
 GIT
+  remote: git://github.com/mhfs/devise-async.git
+  revision: f5f304a655296c67183a8955e7f6a875a394b1a5
+  specs:
+    devise-async (0.3.1)
+      devise (>= 1.1)
+
+GIT
   remote: git://github.com/mongoid/moped.git
-  revision: b014a917aaf1337703522bf97b8d57f0adcf655e
+  revision: 16c502b1a12fc3ee1c90dfa3534508db263f056d
   specs:
     moped (1.3.0)
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: fb9c00116bb7277f61a9d3ef5c399457f26056a4
-  ref: fb9c00116bb7277f61a9d3ef5c399457f26056a4
+  revision: f32f150e45f3dc3ccbd0adc1c91e6144b3cf1384
   branch: 3-2-stable
   specs:
-    actionmailer (3.2.8)
-      actionpack (= 3.2.8)
+    actionmailer (3.2.9.rc1)
+      actionpack (= 3.2.9.rc1)
       mail (~> 2.4.4)
-    actionpack (3.2.8)
-      activemodel (= 3.2.8)
-      activesupport (= 3.2.8)
+    actionpack (3.2.9.rc1)
+      activemodel (= 3.2.9.rc1)
+      activesupport (= 3.2.9.rc1)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
       journey (~> 1.0.4)
@@ -64,31 +76,31 @@ GIT
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
       sprockets (~> 2.2)
-    activemodel (3.2.8)
-      activesupport (= 3.2.8)
+    activemodel (3.2.9.rc1)
+      activesupport (= 3.2.9.rc1)
       builder (~> 3.0.0)
-    activerecord (3.2.8)
-      activemodel (= 3.2.8)
-      activesupport (= 3.2.8)
+    activerecord (3.2.9.rc1)
+      activemodel (= 3.2.9.rc1)
+      activesupport (= 3.2.9.rc1)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activeresource (3.2.8)
-      activemodel (= 3.2.8)
-      activesupport (= 3.2.8)
-    activesupport (3.2.8)
+    activeresource (3.2.9.rc1)
+      activemodel (= 3.2.9.rc1)
+      activesupport (= 3.2.9.rc1)
+    activesupport (3.2.9.rc1)
       i18n (~> 0.6)
       multi_json (~> 1.0)
-    rails (3.2.8)
-      actionmailer (= 3.2.8)
-      actionpack (= 3.2.8)
-      activerecord (= 3.2.8)
-      activeresource (= 3.2.8)
-      activesupport (= 3.2.8)
+    rails (3.2.9.rc1)
+      actionmailer (= 3.2.9.rc1)
+      actionpack (= 3.2.9.rc1)
+      activerecord (= 3.2.9.rc1)
+      activeresource (= 3.2.9.rc1)
+      activesupport (= 3.2.9.rc1)
       bundler (~> 1.0)
-      railties (= 3.2.8)
-    railties (3.2.8)
-      actionpack (= 3.2.8)
-      activesupport (= 3.2.8)
+      railties (= 3.2.9.rc1)
+    railties (3.2.9.rc1)
+      actionpack (= 3.2.9.rc1)
+      activesupport (= 3.2.9.rc1)
       rack-ssl (~> 1.3.2)
       rake (>= 0.8.7)
       rdoc (~> 3.4)
@@ -96,7 +108,7 @@ GIT
 
 GIT
   remote: git://github.com/ryanb/letter_opener.git
-  revision: bc142caeb926a6be534fe243d33c081bdb4745d8
+  revision: 4615240ba4fb201f850cf5c0d99e62a2dd0511f9
   specs:
     letter_opener (1.0.0)
       launchy (>= 2.0.4)
@@ -185,7 +197,7 @@ GEM
       sass (~> 3.0)
       terminal-table (~> 1.4)
     builder (3.0.4)
-    capybara (1.1.2)
+    capybara (1.1.3)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
@@ -199,8 +211,12 @@ GEM
     carrierwave (0.6.2)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
+    celluloid (0.12.3)
+      facter (>= 1.6.12)
+      timers (>= 1.0.0)
     childprocess (0.3.6)
       ffi (~> 1.0, >= 1.0.6)
+    chunky_png (1.2.6)
     coderay (1.0.8)
     coffee-filter (0.1.1)
       coffee-script (>= 2.2.0)
@@ -213,6 +229,10 @@ GEM
       execjs
     coffee-script-source (1.4.0)
     columnize (0.3.6)
+    compass (0.12.2)
+      chunky_png (~> 1.2)
+      fssm (>= 0.2.7)
+      sass (~> 3.1)
     configuration (1.3.2)
     connection_pool (0.9.2)
     cookiejar (0.3.0)
@@ -274,6 +294,7 @@ GEM
     excon (0.16.7)
     execjs (1.4.0)
       multi_json (~> 1.0)
+    facter (1.6.13)
     factory_girl (4.1.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.1.0)
@@ -299,14 +320,15 @@ GEM
     foreman (0.60.2)
       thor (>= 0.13.6)
     formatador (0.2.4)
+    fssm (0.2.9)
     girl_friday (0.10.0)
       connection_pool (~> 0.9.0)
-    guard (1.5.1)
+    guard (1.5.3)
       listen (>= 0.4.2)
       lumberjack (>= 1.0.2)
       pry (>= 0.9.10)
       thor (>= 0.14.6)
-    guard-jasmine (1.9.2)
+    guard-jasmine (1.9.3)
       childprocess
       guard (>= 1.1.0)
       multi_json
@@ -317,7 +339,7 @@ GEM
       multi_json (~> 1.0)
     guard-pow (1.0.0)
       guard (>= 1.1)
-    guard-rspec (2.1.0)
+    guard-rspec (2.1.1)
       guard (>= 1.1)
       rspec (~> 2.11)
     guard-shell (0.5.1)
@@ -335,8 +357,8 @@ GEM
       netrc (~> 0.7.7)
       rest-client (~> 1.6.1)
       rubyzip
-    heroku-api (0.3.5)
-      excon (~> 0.16.1)
+    heroku-api (0.3.6)
+      excon (~> 0.16.7)
     highline (1.6.15)
     hike (1.2.1)
     hpricot (0.8.6)
@@ -365,6 +387,9 @@ GEM
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
+    kiqstand (1.0.0)
+      mongoid (~> 3.0)
+      moped (~> 1.2)
     launchy (2.1.0)
       addressable (~> 2.2.6)
     libwebsocket (0.1.5)
@@ -387,7 +412,7 @@ GEM
       moped (~> 1.1)
       origin (~> 1.0)
       tzinfo (~> 0.3.22)
-    mongoid-grid_fs (1.3.2)
+    mongoid-grid_fs (1.3.3)
       mime-types (~> 1.19)
       mongoid (~> 3.0)
     multi_json (1.3.6)
@@ -397,7 +422,7 @@ GEM
       net-ssh (>= 1.99.1)
     net-ssh (2.6.1)
     netrc (0.7.7)
-    newrelic-redis (1.3.2)
+    newrelic-redis (1.4.0)
       newrelic_rpm (~> 3.0)
       redis (< 4.0)
     newrelic_moped (0.0.3)
@@ -415,7 +440,7 @@ GEM
       jwt (~> 0.1.4)
       multi_json (~> 1.0)
       rack (~> 1.2)
-    origin (1.0.9)
+    origin (1.0.10)
     orm_adapter (0.4.0)
     paper_trail (2.6.3)
       activerecord (~> 3.0)
@@ -449,6 +474,8 @@ GEM
     rack-pjax (0.6.0)
       nokogiri (~> 1.5)
       rack (~> 1.3)
+    rack-protection (1.2.0)
+      rack
     rack-ssl (1.3.2)
       rack
     rack-ssl-enforcer (0.2.4)
@@ -465,6 +492,8 @@ GEM
     rdoc (3.12)
       json (~> 1.4)
     redis (3.0.2)
+    redis-namespace (1.2.1)
+      redis (~> 3.0.0)
     request-log-analyzer (1.12.5)
     responders (0.9.3)
       railties (~> 3.1)
@@ -512,15 +541,25 @@ GEM
     signature (0.1.4)
     silent-postgres (0.1.1)
     simple_oauth (0.1.9)
+    sinatra (1.3.3)
+      rack (~> 1.3, >= 1.3.6)
+      rack-protection (~> 1.2)
+      tilt (~> 1.3, >= 1.3.3)
+    slim (1.3.3)
+      temple (~> 0.5.5)
+      tilt (~> 1.3.3)
     slop (3.3.3)
     snail (0.6.1)
     solve (0.4.0.rc1)
       json
-    sprockets (2.8.0)
+    sprockets (2.8.1)
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
+    sprockets-sass (0.9.1)
+      sprockets (~> 2.0)
+      tilt (~> 1.1)
     squeel (1.0.13)
       activerecord (~> 3.0)
       activesupport (~> 3.0)
@@ -533,6 +572,7 @@ GEM
       haml
       jquery-rails (~> 2.1.1)
       rails (~> 3.2.0)
+    temple (0.5.5)
     terminal-table (1.4.5)
     thin (1.5.0)
       daemons (>= 1.0.9)
@@ -541,7 +581,8 @@ GEM
     thor (0.16.0)
     tilt (1.3.3)
     timecop (0.5.3)
-    treetop (1.4.11)
+    timers (1.0.1)
+    treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
     twitter (3.7.0)
@@ -567,7 +608,7 @@ GEM
     xml-simple (1.0.16)
     xpath (0.1.4)
       nokogiri (~> 1.3)
-    zendesk_api (0.1.8)
+    zendesk_api (0.1.9)
       faraday (>= 0.8.0)
       faraday_middleware (>= 0.8.7)
       hashie
@@ -609,8 +650,8 @@ DEPENDENCIES
   dalli
   database_cleaner (~> 0.8.0)
   debugger
-  delayed_job!
   devise (~> 2.1.2)
+  devise-async!
   devise_invitable (~> 1.1.0)
   display_case (~> 0.0.4)
   eco
@@ -635,6 +676,7 @@ DEPENDENCIES
   hpricot (~> 0.8.6)
   jasminerice
   kaminari (~> 0.14.0)
+  kiqstand
   letter_opener!
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.4.1)
@@ -675,7 +717,10 @@ DEPENDENCIES
   sextant
   shoulda-matchers
   show_me_the_cookies
+  sidekiq!
   silent-postgres
+  sinatra
+  slim
   snail (~> 0.6.1)
   solve (= 0.4.0.rc1)
   squeel (~> 1.0.11)

@@ -497,7 +497,6 @@ module Populate
           use_clients = true
         end
       end
-      empty_tables("delayed_jobs")
     end
 
     def sites
@@ -523,7 +522,6 @@ module Populate
         end
       end
 
-      empty_tables("delayed_jobs")
       puts "#{BASE_SITES.size} beautiful sites created for each user!"
     end
 
@@ -543,7 +541,6 @@ module Populate
           end
         end
       end
-      empty_tables("delayed_jobs")
     end
 
     def site_usages

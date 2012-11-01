@@ -192,7 +192,7 @@ describe User do
         let(:user) { create(:user, newsletter: "1", email: "john@doe.com") }
         before do
           user.current_password = "123456"
-          Service::Newsletter.stub(:delay) { stub(unsubscribe: true) }
+          Service::Newsletter.stub_delay
         end
 
         describe "before_transition on: :archive" do
@@ -222,9 +222,7 @@ describe User do
           end
 
           it "unsubscribe user from newsletter" do
-            Service::Newsletter.should_receive(:delay).and_return(@dj = stub)
-            @dj.should_receive(:unsubscribe).with(user.id)
-
+            Service::Newsletter.should delayreceive(:unsubscribe).with(user.id)
             user.archive!
           end
         end
@@ -282,11 +280,10 @@ describe User do
     describe "after_save :newsletter_update" do
       context "user sign-up" do
         context "user subscribes to the newsletter" do
-          let(:user) { create(:user, newsletter: true, email: "newsletter_sign_up@jilion.com") }
+          let(:user) { create(:user, id: 1, newsletter: true, email: "newsletter_sign_up@jilion.com") }
 
           it 'calls Service::Newsletter.subscribe' do
-            Service::Newsletter.should_receive(:delay).and_return(@dj = stub)
-            @dj.should_receive(:subscribe).with(user.id)
+            Service::Newsletter.should delay(:subscribe).with(1)
             user
           end
         end
@@ -295,7 +292,7 @@ describe User do
           let(:user) { create(:user, newsletter: false, email: "no_newsletter_sign_up@jilion.com") }
 
           it "doesn't calls Service::Newsletter.subscribe" do
-            Service::Newsletter.should_not_receive(:delay)
+            Service::Newsletter.should_not delay(:subscribe)
             user
           end
         end
@@ -305,19 +302,35 @@ describe User do
         let(:user) { create(:user, newsletter: true, email: "newsletter_update@jilion.com") }
 
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
-          user
-          -> { user.update_attribute(:email, "newsletter_update2@jilion.com")
-               user.confirm! }.should delay('%Service::Newsletter%update%')
+          user.update_attribute(:email, "newsletter_update2@jilion.com")
+          Service::Newsletter.should delay(:update).with(user.id,
+            email: "newsletter_update@jilion.com",
+            user: {
+              email: "newsletter_update2@jilion.com",
+              name: user.name,
+              newsletter: true
+            }
+          )
+          user.confirm!
         end
 
         it "updates info in Campaign Monitor if user change his name" do
           user
-          -> { user.update_attribute(:name, 'bob') }.should delay('%Service::Newsletter%update%')
+          Service::Newsletter.should delay(:update).with(user.id,
+            email: "newsletter_update@jilion.com",
+            user: {
+              email: "newsletter_update@jilion.com",
+              name: 'bob',
+              newsletter: true
+            }
+          )
+          user.update_attribute(:name, 'bob')
         end
 
         it "updates subscribing state in Campaign Monitor if user change his newsletter state" do
           user
-          -> { user.update_attribute(:newsletter, false) }.should delay('%Service::Newsletter%unsubscribe%')
+          Service::Newsletter.should delay(:unsubscribe).with(user.id)
+          user.update_attribute(:newsletter, false)
         end
       end
     end
@@ -330,8 +343,8 @@ describe User do
 
       context "user has no zendesk_id" do
         it "doesn't delay ZendeskWrapper.update_user" do
-          user
-          -> { user.update_attribute(:email, '9876@example.org') }.should_not delay
+          ZendeskWrapper.should_not delay(:update_user)
+          user.update_attribute(:email, '9876@example.org')
         end
       end
 
@@ -339,41 +352,47 @@ describe User do
         before { user.update_attribute(:zendesk_id, 59438671) }
 
         context "user updated his email" do
+          let(:new_email) { "9876@example.org" }
+
           it "delays ZendeskWrapper.update_user if the user has a zendesk_id and his email has changed" do
-            -> { user.update_attribute(:email, "9876@example.org")
-                 user.confirm! }.should delay('%Module%update_user%')
+            user.update_attribute(:email, new_email)
+            ZendeskWrapper.should delay(:update_user).with(user.zendesk_id, email: new_email)
+            user.confirm!
           end
 
           it "updates user's email on Zendesk if this user has a zendesk_id and his email has changed" do
-            user.update_attribute(:email, "9876@example.org")
+            user.update_attribute(:email, new_email)
+            Sidekiq::Worker.clear_all
             user.confirm!
 
             VCR.use_cassette("user/zendesk_update") do
-              $worker.work_off
-              Delayed::Job.last.should be_nil
-              ZendeskWrapper.user(59438671).identities.first.value.should eq '9876@example.org'
+              Sidekiq::Worker.drain_all
+              ZendeskWrapper.user(59438671).identities.first.value.should eq new_email
             end
           end
         end
 
         context "user updated his name" do
+          let(:new_name) { "Remy" }
+
           it "delays ZendeskWrapper.update_user" do
-            -> { user.update_attribute(:name, 'Remy') }.should delay('%Module%update_user%')
+            ZendeskWrapper.should delay(:update_user).with(user.zendesk_id, name: new_name)
+            user.update_attribute(:name, new_name)
           end
 
           it "updates user's name on Zendesk" do
-            user.update_attribute(:name, 'Remy')
+            user.update_attribute(:name, new_name)
 
             VCR.use_cassette("user/zendesk_update") do
-              $worker.work_off
-              Delayed::Job.last.should be_nil
-              ZendeskWrapper.user(59438671).name.should eq 'Remy'
+              Sidekiq::Worker.drain_all
+              ZendeskWrapper.user(59438671).name.should eq new_name
             end
           end
 
           context "name has changed to ''" do
             it "doesn't update user's name on Zendesk" do
-              -> { user.update_attribute(:name, '') }.should_not delay
+              ZendeskWrapper.should_not delay(:update_user)
+              user.update_attribute(:name, '')
             end
           end
         end

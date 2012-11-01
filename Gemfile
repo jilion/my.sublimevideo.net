@@ -6,7 +6,7 @@ ruby '1.9.3'
 
 gem 'bundler', '~> 1.2.0'
 
-gem 'rails', github: 'rails/rails', branch: '3-2-stable', ref: 'fb9c00116bb7277f61a9d3ef5c399457f26056a4'
+gem 'rails', github: 'rails/rails', branch: '3-2-stable'
 
 gem 'sublimevideo_layout', '1.4.1' # hosted on gemfury
 
@@ -16,6 +16,7 @@ gem 'squeel',                '~> 1.0.11'
 gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
 gem 'moped',                 github: 'mongoid/moped'
 gem 'mongoid',               '~> 3.0.6'
+gem 'kiqstand'
 
 # Views
 gem 'haml',                  '~> 3.1.6'
@@ -32,6 +33,7 @@ gem 'premailer-rails3',      '~> 1.3.1'
 # Auth / invitations
 gem 'devise',                '~> 2.1.2'
 gem 'devise_invitable',      '~> 1.1.0'
+gem 'devise-async', github: 'mhfs/devise-async'
 
 # API
 gem 'oauth',                 '~> 0.4.7'
@@ -39,7 +41,10 @@ gem 'oauth-plugin',          '~> 0.4.1'
 gem 'acts_as_api',           '~> 0.4.1'
 
 # Internals
-gem 'delayed_job',           github: 'collectiveidea/delayed_job', branch: 'v2.1'
+gem 'sidekiq', github: 'jilion/sidekiq', branch: 'improve_drain_all'
+gem 'sinatra', require: false
+gem 'slim'
+
 gem 'rescue_me',             github: 'rymai/rescue_me' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
 gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'

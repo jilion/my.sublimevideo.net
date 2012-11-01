@@ -68,6 +68,7 @@ class Log
   def day
     @day ||= started_at.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
   end
+
   def month
     @month ||= started_at.change(day: 1, hour: 0, min: 0, sec: 0, usec: 0).to_time
   end
@@ -84,7 +85,7 @@ private
 
   # after_create
   def delay_parse
-    self.class.delay(priority: 20, run_at: 5.seconds.from_now).parse_log(id) # lets finish the upload
+    self.class.delay(queue: 'low', at: 5.seconds.from_now.to_i).parse_log(id) # lets finish the upload
   end
 
   def with_log_file_in_tmp(&block)

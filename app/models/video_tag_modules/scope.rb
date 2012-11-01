@@ -17,7 +17,7 @@ module VideoTagModules::Scope
     scope :not_hosted_on_sublimevideo, where({}) # TODO Thibaud
     scope :inactive, where(state: 'inactive')
     scope :active, where(uo: { :$ne => nil }, no: { :$ne => nil })
-    scope :all, where({}) # TODO Thibaud
+    # scope :all, where({}) # TODO Thibaud
 
     # sort
     scope :by_name,  lambda { |way='desc'| order_by([:n, way.to_sym]) }

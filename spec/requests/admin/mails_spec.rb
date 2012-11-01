@@ -63,7 +63,7 @@ feature "Mails sending" do
   context "choosing the 'Not Archived' criteria" do
     background do
       @user = create(:user)
-      $worker.work_off
+      Sidekiq::Worker.clear_all
       sign_in_as :admin, roles: ['god']
       @mail_template = create(:mail_template)
       ActionMailer::Base.deliveries.clear
@@ -74,17 +74,18 @@ feature "Mails sending" do
 
       page.should have_content "Send an email"
       ActionMailer::Base.deliveries.should be_empty
+      Sidekiq::Worker.clear_all
 
       select @mail_template.title, from: "Template"
       select "Not Archived (1)", from: "mail[criteria]"
-      -> { click_button 'Send email' }.should delay('%deliver_and_log%')
 
+      click_button 'Send email'
 
       current_url.should eq "http://admin.sublimevideo.dev/mails"
 
       page.should have_content "Sending in progress..."
 
-      $worker.work_off
+      Sidekiq::Worker.drain_all
       ActionMailer::Base.deliveries.should have(1).item
 
       latest_log = MailLog.by_date.first
