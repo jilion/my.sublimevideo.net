@@ -31,15 +31,15 @@ describe Service::Invoice do
     end
 
     it 'delay invoices creation for all non-archived sites for the given date' do
-      -> { described_class.create_invoices_for_month(3.months.ago) }.should delay('%Service::Invoice%create_for_month%', 3)
+      described_class.create_invoices_for_month(3.months.ago)
 
-      expect { $worker.work_off }.to_not change(Invoice, :count)
+      expect { Sidekiq::Worker.drain_all }.to_not change(Invoice, :count)
     end
 
     it 'delay invoices creation for all non-archived sites for the last month' do
-      -> { described_class.create_invoices_for_month }.should delay('%Service::Invoice%create_for_month%', 3)
+      described_class.create_invoices_for_month
 
-      expect { $worker.work_off }.to change(Invoice, :count).by(2)
+      expect { Sidekiq::Worker.drain_all }.to change(Invoice, :count).by(2)
     end
   end
 

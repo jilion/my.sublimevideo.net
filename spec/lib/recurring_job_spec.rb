@@ -32,7 +32,7 @@ describe RecurringJob, :redis do
 
   describe ".supervise_queues" do
     it "notifies if number of jobs is higher than threshold" do
-      2.times { Service::Invoice.delay.foo }
+      3.times { Service::Invoice.delay.create_invoices_for_month }
 
       Notify.should_receive(:send)
       described_class.supervise_queues(1)
