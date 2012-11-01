@@ -1,17 +1,18 @@
-= title_and_content_header("Add a site")
+- title("Add a site")
 
 #site.new
   = form_for @site, html: { class: "full" } do |f|
-    .big_break
     .tagline
-      %h3= "Start using SublimeVideo Player for free."
+      %h3 Start using SublimeVideo Player for free.
       -#%h4= "All add-ons come with a #{BusinessModel.days_for_trial}-day unlimited trial. No credit card required."
       -#%h4= "Get all the features. No credit card required."
       %h4= "#{BusinessModel.days_for_trial}-day unlimited trial on all add-ons. No credit card required."
-
     .big_break
 
+    .tagline
+      %h3 Site
+      %h4 On which site do you need a SublimeVideo player?
     = render 'fields', site: @site, f: f
 
     .actions.center
-      = f.submit "Add site", class: "submit green_button", id: 'site_submit'
+      = f.submit 'Add site', class: 'submit green_button', id: 'site_submit'

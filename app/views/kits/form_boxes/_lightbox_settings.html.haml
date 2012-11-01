@@ -1,0 +1,9 @@
+.lightbox
+  - addon_plan = site.addon_plan_for_addon_name('lightbox')
+  - settings_template = addon_plan.settings_template_for(kit.design).template
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :on_open, show_title: true)
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :overlay_opacity)
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable_close_button, data: { master: 'lightbox-enable_close_button' })
+  .indent
+    = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_visibility, data: { dependant: 'lightbox-enable_close_button' }, show_title: true)
+    = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_position, data: { dependant: 'lightbox-enable_close_button' }, show_title: true)

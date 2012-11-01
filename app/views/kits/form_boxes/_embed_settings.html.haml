@@ -1,0 +1,6 @@
+.embed
+  - addon_plan = site.addon_plan_for_addon_name('sharing')
+  - settings_template = addon_plan.settings_template_for(kit.design).template
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable_embed)
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :embed_width)
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :embed_height)

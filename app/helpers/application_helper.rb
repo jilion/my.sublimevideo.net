@@ -2,6 +2,9 @@
 require_dependency 'vat'
 
 module ApplicationHelper
+  def sublimevideo_my_include_tag(*args)
+    javascript_include_tag('//cdn.sublimevideo.net/js/12665678-alpha.js')
+  end
 
   def display_bool(boolean)
     boolean == 0 || boolean.blank? || !boolean ? "–" : "✓"

@@ -2,16 +2,10 @@
 = render '/layouts/site_header'
 
 #site.addons
-  - if @site.plan_id?
-    #grandfather_plan{ style: 'display: none' }= render 'grandfather_plan_text'
 
   #addons_table_wrap
     = form_for @site, url: update_all_site_addons_path, method: 'put', html: { id: 'edit_addons' } do |f|
       = render 'designs_and_addons', site: @site, f: f
-      .big_break
-      %small= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
-      %strong#addons_total= display_amount_with_sup(@site.total_billable_items_price)
-
       .actions.center= submit_tag 'Confirm selection', class: 'submit green_button', id: 'site_submit'
   .spacer
 

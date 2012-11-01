@@ -1,10 +1,62 @@
-.entry.design.select
-  = f.label :app_design_id, 'Select your player design:'
-  = f.select :app_design_id, options_from_collection_for_select(site.app_designs, :id, :title, kit.app_design_id)
+#identifier= "##{kit.identifier}"
 
-.left
-  - addon_plans = site.addon_plans.includes(:addon).where{ addon.name >> %w[video_player controls initial] }.order(:id)
-  = raw kit.render_grouped_settings_input_fields(addon_plans, self)
-  - site.addon_plans.includes(:addon).where{ addon.name << %w[video_player controls initial lightbox] }.order(:id).each do |addon_plan|
-    = raw kit.render_settings_input_fields(addon_plan, self)
-  = kit.render_settings_input_fields(site.addon_plans.includes(:addon).where{ addon.name == 'lightbox' }.first, self)
+.entry.name.text
+  = f.label :name, 'Player name'
+  = f.text_field :name, class: 'text no_icon'
+
+#kit_preview
+  %h3 Preview
+
+  %video{ class: 'sublime', poster: '//media.jilion.com/images/midnight_sun_800.jpg', width: '320', height: '180', preload: 'none' }
+    %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4' }
+    %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_270p.mp4' }
+    %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm' }
+
+#kit_settings
+  %h3 Edit player settings
+
+  .entry.design.select
+    = f.label :app_design_id, 'Player design:'
+    = f.select :app_design_id, options_from_collection_for_select(site.app_designs, :id, :title, kit.app_design_id)
+
+  #basic_player_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to 'Basic Player settings', ''
+    .left.expandable
+      = render 'kits/form_boxes/basic_player_settings', site: site, kit: kit
+
+  #lightbox_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to 'Lightbox settings', ''
+    .left.expandable
+      = render 'kits/form_boxes/lightbox_settings', site: site, kit: kit
+
+  #logo_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to 'On-Video Logo settings', ''
+    .left.expandable
+      = render 'kits/form_boxes/logo_settings', site: site, kit: kit
+
+  #sharing_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to 'Social Sharing Buttons settings', ''
+    .left.expandable
+      = render 'kits/form_boxes/sharing_settings', site: site, kit: kit
+
+  #youtube_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to 'YouTube settings', ''
+    .left.expandable
+      = render 'kits/form_boxes/youtube_settings', site: site, kit: kit
+
+  #embed_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to 'Embed settings', ''
+    .left.expandable
+      = render 'kits/form_boxes/embed_settings', site: site, kit: kit
+
+    -#- addon_plans = site.addon_plans.includes(:addon).where{ addon.name >> %w[video_player controls initial] }.order(:id)
+    -#= raw kit.render_grouped_settings_input_fields(addon_plans, self)
+    -#- site.addon_plans.includes(:addon).where{ addon.name << %w[video_player controls initial lightbox] }.order(:id).each do |addon_plan|
+    -#  = raw kit.render_settings_input_fields(addon_plan, self)
+    -#= kit.render_settings_input_fields(site.addon_plans.includes(:addon).where{ addon.name == 'lightbox' }.first, self)

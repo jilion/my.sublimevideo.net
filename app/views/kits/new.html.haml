@@ -1,8 +1,8 @@
-- title('Configure your player')
+- title('Create a player')
 = render '/layouts/site_header'
 .spacer
 
-#kit.edit
+#kit.new
   #beta_loader_required Beta loader required
   = form_for [@site, @kit] do |f|
     = render 'full_form', f: f, site: @site, kit: @kit
@@ -10,3 +10,4 @@
     .actions.center
       = link_to 'Cancel', site_kits_path(@site), class: 'blue_button'
       = f.submit 'Save', class: 'submit blue_button'
+

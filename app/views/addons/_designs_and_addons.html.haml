@@ -1,4 +1,10 @@
+- if site.plan_id?
+  #grandfather_plan{ style: 'display: none' }= render 'addons/grandfather_plan_text', site: site
 %table{ border: 0, style: 'text-align:left' }
   %h3 Player designs
-  = render 'designs', site: site
-  = render 'addons', site: site
+  = render 'addons/designs', site: site
+  = render 'addons/addons', site: site
+
+.big_break
+%small= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
+%strong#addons_total= display_amount_with_sup(site.total_billable_items_price)

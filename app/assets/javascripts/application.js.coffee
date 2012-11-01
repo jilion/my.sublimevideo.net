@@ -72,7 +72,7 @@ MySublimeVideo.UI.prepareGrandFatherPlanPopUp = ->
     new MySublimeVideo.UI.GrandFatherPlanPopUp($textDiv)
 
 MySublimeVideo.UI.prepareKitEditor = ->
-  $('.edit_kit, .video_code_generator').each ->
+  $('.new_kit, .edit_kit, .video_code_generator').each ->
     new MySublimeVideo.UI.KitEditor
 
 MySublimeVideo.UI.prepareSupportRequest = ->
