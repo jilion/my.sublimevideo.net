@@ -4,6 +4,7 @@
 :verbose: true
 :concurrency:  25
 :queues:
-  - [low, 0]
-  - [default, 10]
-  - [high, 20]
+  - [low, 1]
+  - [mailer, 2]
+  - [default, 5]
+  - [high, 10]
