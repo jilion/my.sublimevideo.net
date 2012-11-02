@@ -11,6 +11,7 @@ namespace :db do
     desc "Empty all the tables"
     task empty_all_tables: :environment do
       Rails.cache.clear
+      $redis.flushall
       timed { Populate.empty_tables("invoices_transactions", DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
