@@ -1,13 +1,3 @@
-module RSpec
-  module Mocks
-    module Methods
-      def stub_delay
-        stub(:delay).and_return(Mock.new("Delay Method").as_null_object)
-      end
-    end
-  end
-end
-
 RSpec::Matchers.define :delay do |message, *opts|
   match_for_should do |object|
     object.stub(:delay) { delayed_job_mock }

@@ -1,6 +1,10 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
 
+require 'sidekiq'
+require File.expand_path('spec/config/sidekiq')
+require File.expand_path('spec/support/sidekiq_custom_matchers')
+
 require File.expand_path('lib/service/kit')
 require File.expand_path('lib/service/site')
 
@@ -11,13 +15,11 @@ describe Service::Kit do
   let(:kit)        { stub(design: stub, site: site, site_id: 1) }
   let(:addon_plan) { stub }
   let(:service)    { described_class.new(kit) }
-  let(:delayed_method) { stub.as_null_object }
 
   describe "#update" do
     let(:params) { { app_design_id: 'design_id', addons: { "logo" => { "settings" => "value" } } } }
     before do
       ::Kit.stub(:transaction).and_yield
-      Service::Settings.stub(:delay) { delayed_method }
       service.stub(:set_addons_settings)
       kit.stub(:app_design_id=)
       kit.stub(:save!)
@@ -44,7 +46,7 @@ describe Service::Kit do
     end
 
     it 'delays the update of all settings types' do
-      delayed_method.should_receive(:update_all_types!).with(kit.site_id)
+      Service::Settings.should delay(:update_all_types!).with(kit.site_id)
       service.update(params)
     end
   end

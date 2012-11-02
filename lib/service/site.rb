@@ -30,11 +30,10 @@ module Service
         site.loaders_updated_at = Time.now.utc
         site.settings_updated_at = Time.now.utc
         site.save!
-
-        Service::Loader.delay.update_all_stages!(site.id)
-        Service::Settings.delay.update_all_types!(site.id)
-        Service::Rank.delay(queue: 'low').set_ranks(site.id)
       end
+      Service::Loader.delay.update_all_stages!(site.id)
+      Service::Settings.delay.update_all_types!(site.id)
+      Service::Rank.delay(queue: 'low').set_ranks(site.id)
       true
     rescue ActiveRecord::RecordInvalid
       false
@@ -45,9 +44,8 @@ module Service
         site.attributes = attributes
         site.settings_updated_at = Time.now.utc
         site.save!
-
-        Service::Settings.delay.update_all_types!(site.id)
       end
+      Service::Settings.delay.update_all_types!(site.id)
       true
     rescue ActiveRecord::RecordInvalid
       false
@@ -62,10 +60,9 @@ module Service
         site.loaders_updated_at = Time.now.utc
         site.settings_updated_at = Time.now.utc
         site.save!
-
-        Service::Loader.delay.update_all_stages!(site.id)
-        Service::Settings.delay.update_all_types!(site.id)
       end
+      Service::Loader.delay.update_all_stages!(site.id)
+      Service::Settings.delay.update_all_types!(site.id)
     end
 
     # called from app/models/site.rb

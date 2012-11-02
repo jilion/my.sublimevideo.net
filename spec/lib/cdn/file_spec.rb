@@ -3,6 +3,10 @@ require 'support/fixtures_helpers'
 require 'rails/railtie'
 require 'fog'
 
+require 'sidekiq'
+require File.expand_path('spec/config/sidekiq')
+require File.expand_path('spec/support/sidekiq_custom_matchers')
+
 # for fog_mock
 require 'carrierwave'
 require File.expand_path('config/initializers/carrierwave')
@@ -11,9 +15,6 @@ require File.expand_path('spec/config/carrierwave')
 require File.expand_path('lib/cdn/file')
 
 describe CDN::File, :fog_mock do
-  let(:delayed_cdn) { mock(purge: true)  }
-  before { CDN.stub(:delay) { delayed_cdn } }
-
   let(:file) { fixture_file('cdn/file.js', 'r') }
   let(:file2) { fixture_file('cdn/file2.js', 'r') }
   let(:destinations) { [{
@@ -71,26 +72,26 @@ describe CDN::File, :fog_mock do
 
     describe "cdn purge" do
       it "is called with new file" do
-        delayed_cdn.should_receive(:purge).with("/js/token.js")
+        CDN.should delay(:purge).with("/js/token.js")
         cdn_file.upload!
       end
 
       it "is not called with new file when purge option is false" do
         cdn_file = CDN::File.new(file, destinations, s3_options, purge: false)
-        delayed_cdn.should_not_receive(:purge).with("/js/token.js")
+        CDN.should_not delay(:purge).with("/js/token.js")
         cdn_file.upload!
       end
 
       it "is called with modified file" do
         cdn_file.upload!
-        delayed_cdn.should_receive(:purge).with("/js/token.js")
+        CDN.should delay(:purge).with("/js/token.js")
         cdn_file.file = file2
         cdn_file.upload!
       end
 
       it "isn't called when same file was already uploaded" do
         cdn_file.upload!
-        delayed_cdn.should_not_receive(:purge).with("/js/token.js")
+        CDN.should_not delay(:purge).with("/js/token.js")
         cdn_file.upload!
       end
     end
@@ -127,7 +128,7 @@ describe CDN::File, :fog_mock do
       end
 
       it "purge CDN" do
-        delayed_cdn.should_receive(:purge).with("/js/token.js")
+        CDN.should delay(:purge).with("/js/token.js")
         cdn_file.delete!
       end
     end
@@ -138,7 +139,7 @@ describe CDN::File, :fog_mock do
       end
 
       it "doesn't purge CDN" do
-        delayed_cdn.should_not_receive(:purge)
+        CDN.should_not delay(:purge)
         cdn_file.delete!
       end
     end

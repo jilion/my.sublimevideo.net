@@ -9,8 +9,8 @@ module Service
         kit.save!
 
         kit.site.touch(:settings_updated_at)
-        Service::Settings.delay.update_all_types!(kit.site_id)
       end
+      Service::Settings.delay.update_all_types!(kit.site_id)
     end
 
     def set_addons_settings(new_addons_settings = {})

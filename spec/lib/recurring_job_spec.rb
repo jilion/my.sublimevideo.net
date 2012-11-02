@@ -46,20 +46,6 @@ describe RecurringJob do
   end
 
   describe ".schedule_daily_tasks" do
-    before do
-      Service::Invoice.stub_delay
-      Transaction.stub_delay
-      Service::Trial.stub_delay
-      Service::Usage.stub_delay
-      User.stub_delay
-      Stats::UsersStat.stub_delay
-      Stats::SitesStat.stub_delay
-      Stats::SiteStatsStat.stub_delay
-      Stats::SalesStat.stub_delay
-      Stats::SiteUsagesStat.stub_delay
-      Stats::TweetsStat.stub_delay
-    end
-
     it "schedules Service::Invoice.create_invoices_for_month" do
       Service::Invoice.should delay(:create_invoices_for_month,
         at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
@@ -168,13 +154,6 @@ describe RecurringJob do
   end
 
   describe ".schedule_hourly_tasks" do
-    before do
-      Tweet.stub_delay
-      Log::Amazon::S3::Player.stub_delay
-      Log::Amazon::S3::Loaders.stub_delay
-      Log::Amazon::S3::Licenses.stub_delay
-    end
-
     it "schedules Tweet.save_new_tweets_and_sync_favorite_tweets" do
       Tweet.should delay(:save_new_tweets_and_sync_favorite_tweets,
         at:    1.hour.from_now.change(min: 0).to_i,
