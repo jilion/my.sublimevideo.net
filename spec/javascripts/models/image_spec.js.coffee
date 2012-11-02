@@ -1,8 +1,8 @@
 describe 'Image and Thumbnail', ->
 
-  describe 'MSVVideoCodeGenerator.Models.Image', ->
+  describe 'MySublimeVideo.Models.Image', ->
     beforeEach ->
-      @image = new MSVVideoCodeGenerator.Models.Image
+      @image = new MySublimeVideo.Models.Image
 
     describe 'setAndPreloadSrc()', ->
       it 'sets the src', ->
@@ -29,9 +29,9 @@ describe 'Image and Thumbnail', ->
         expect(@image.get('height')).toEqual(0)
         expect(@image.get('ratio')).toEqual(1)
 
-  describe 'MSVVideoCodeGenerator.Models.Thumbnail', ->
+  describe 'MySublimeVideo.Models.Thumbnail', ->
     beforeEach ->
-      @thumb = new MSVVideoCodeGenerator.Models.Thumbnail
+      @thumb = new MySublimeVideo.Models.Thumbnail
 
     describe 'setDimensions()', ->
       it 'sets the width, height and ratio', ->

@@ -8,7 +8,7 @@ class KitExhibit < DisplayCase::Exhibit
     title = kit_is_default ? 'This player will be displayed if no player is specified in your <video> tag.' : nil
 
     template.link_to template.edit_site_kit_path(site, self), title: title, class: 'name' do
-      self.name.titleize + (kit_is_default ? ' (Default)' : '')
+      self.name + (kit_is_default ? ' (Default)' : '')
     end
   end
 

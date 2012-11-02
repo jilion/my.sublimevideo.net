@@ -9,6 +9,7 @@ describe 'Videos', ->
   beforeEach ->
     # MSVStats.sites = new MSVStats.Collections.Sites({token: 'site1234'})
     # MSVStats.sites.select('site1234')
+    MSVStats.site = new MSVStats.Models.Site()
 
   describe 'MSVStats.Models.Video', ->
 

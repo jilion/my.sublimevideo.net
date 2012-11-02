@@ -66,13 +66,13 @@ module Populate
         },
         close_button_visibility: {
           type: 'string',
-          values: ['hidden', 'autohide', 'visible'],
+          values: ['autohide', 'visible'],
           default: 'autohide'
         },
         close_button_position: {
           type: 'string',
-          values: ['topLeft', 'topRight'],
-          default: 'topLeft'
+          values: ['left', 'right'],
+          default: 'left'
         }
       }
       controls_template = {

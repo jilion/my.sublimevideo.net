@@ -17,11 +17,19 @@ class KitsController < ApplicationController
     respond_with(@kit)
   end
 
+  # POST /sites/:site_id/players
+  def create
+    @kit = exhibit(@site.kits.build({ name: params[:kit][:name], app_design_id: params[:kit][:app_design_id] }, as: :admin))
+    Service::Kit.new(@kit).create(params[:kit])
+
+    respond_with(@kit, location: [@site, :kits])
+  end
+
   # GET /sites/:site_id/players/:id
   def show
     respond_with(@kit) do |format|
       format.js
-      format.html { redirect_to edit_site_kit_path(params[:site_id], params[:id]) }
+      format.html { redirect_to [:edit, params[:site_id], params[:id]] }
     end
   end
 
@@ -34,7 +42,7 @@ class KitsController < ApplicationController
   def update
     Service::Kit.new(@kit).update(params[:kit])
 
-    redirect_to edit_site_kit_path(@site, @kit)
+    respond_with(@kit, location: [:edit, @site, @kit])
   end
 
   private
@@ -42,6 +50,6 @@ class KitsController < ApplicationController
   def find_kit
     @kit = exhibit(@site.kits.find(params[:id]))
   rescue ActiveRecord::RecordNotFound
-    redirect_to edit_site_kit_path(@site, @site.kits.first.id) and return
+    redirect_to [@site, :kits] and return
   end
 end

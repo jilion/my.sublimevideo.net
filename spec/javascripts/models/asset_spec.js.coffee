@@ -1,8 +1,8 @@
 describe 'Asset', ->
 
-  describe 'MSVVideoCodeGenerator.Models.Asset', ->
+  describe 'MySublimeVideo.Models.Asset', ->
     beforeEach ->
-      @asset = new MSVVideoCodeGenerator.Models.Asset
+      @asset = new MySublimeVideo.Models.Asset
 
     describe 'srcIsEmpty()', ->
       it 'returns true when empty', ->

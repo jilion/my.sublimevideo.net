@@ -1,9 +1,12 @@
 #= require jquery.pjax
 #= require underscore
 #= require highcharts/highcharts
+#= require backbone
 #
 #= require_self
 #= require_tree ./helpers
+#= require_tree ./models
+#= require_tree ./templates
 #= require_tree ./ui
 #
 #= require stats
@@ -117,12 +120,13 @@ $(document).ready ->
 
   $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])').pjax '[data-pjax-container]'
     timeout: 1000
-  $('[data-pjax-container]')
-    .on 'pjax:end', ->
-      # Ensure that body class is always up-to-date
-      bodyClass = $('div[data-body-class]').data('body-class')
-      $('body').attr("class", bodyClass)
+  $('[data-pjax-container]').on 'pjax:end', ->
+    # Ensure that body class is always up-to-date
+    bodyClass = $('div[data-body-class]').data('body-class')
+    $('body').attr("class", bodyClass)
 
-      sublimevideo.prepare()
-      SublimeVideo.documentReady()
-      MySublimeVideo.documentReady()
+    $('video.sublime').each ->
+      sublimevideo.prepare($(this)[0])
+
+    SublimeVideo.documentReady()
+    MySublimeVideo.documentReady()

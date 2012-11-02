@@ -1,4 +1,3 @@
-#= require backbone
 #= require hamlcoffee
 #= require spin/jquery.spin
 #= require video-size-checker/sublimevideo-size-checker.min
@@ -6,8 +5,6 @@
 #= require inflection
 #
 #= require_self
-#= require_tree ./models
-#= require_tree ./templates
 #= require_tree ./video_code_generator
 
 window.MSVVideoCodeGenerator =

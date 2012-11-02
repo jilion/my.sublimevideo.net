@@ -56,10 +56,10 @@ describe 'MSVStats.Models.Period', ->
       @period.autosetPeriod()
       expect(@period.get('type')).toEqual('hours')
 
-    it "sets '24 hours' when hours is empty but in free plan", ->
-      MSVStats.sites.select('free')
-      @period.autosetPeriod()
-      expect(@period.get('type')).toEqual('hours')
+    # it "sets '24 hours' when hours is empty but in free plan", ->
+    #   MSVStats.sites.select('free')
+    #   @period.autosetPeriod()
+    #   expect(@period.get('type')).toEqual('hours')
 
     it "sets '30 days' when days stats are present in the count 30 days", ->
       MSVStats.statsDays = new MSVStats.Collections.StatsDays(daysStats)

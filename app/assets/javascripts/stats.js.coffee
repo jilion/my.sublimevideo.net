@@ -1,13 +1,10 @@
 #= require underscore.date
-#= require backbone
 #= require hamlcoffee
 #= require spin/jquery.spin
 #= require jquery.sparkline
 #= require jquery.ui.datepicker.min
 #
 #= require_self
-#= require_tree ./models
-#= require_tree ./templates
 #= require_tree ./stats
 
 window.SV =

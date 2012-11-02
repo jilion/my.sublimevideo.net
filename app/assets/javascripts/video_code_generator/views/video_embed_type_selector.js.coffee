@@ -20,11 +20,11 @@ class MSVVideoCodeGenerator.Views.VideoEmbedTypeSelector extends Backbone.View
     MSVVideoCodeGenerator.video = switch newBuilderClass
       when 'lightbox'
         attributes = $.extend({}, attributes, { thumbnail: MSVVideoCodeGenerator.thumbnail })
-        new MSVVideoCodeGenerator.Models.VideoLightbox(attributes)
+        new MySublimeVideo.Models.VideoLightbox(attributes)
       when 'iframe_embed'
-        new MSVVideoCodeGenerator.Models.VideoIframeEmbed(attributes)
+        new MySublimeVideo.Models.VideoIframeEmbed(attributes)
       else
-        new MSVVideoCodeGenerator.Models.Video(attributes)
+        new MySublimeVideo.Models.Video(attributes)
 
     @model.set(builderClass: newBuilderClass)
 

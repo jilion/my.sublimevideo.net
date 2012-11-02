@@ -44,8 +44,8 @@ en:
           autohide: 'Auto-hide'
           visible: 'Visible'
         close_button_position:
-          topLeft: 'Top left'
-          topRight: 'Top right'
+          left: 'Top left'
+          right: 'Top right'
 
     stats:
       title: 'Statistics settings'

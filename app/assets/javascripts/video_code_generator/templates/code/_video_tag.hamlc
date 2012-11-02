@@ -1,5 +1,5 @@
 - code = ""
-- code = @attributesHelper.generateVideoCode(@builder, @video)
+- code = @videoTagHelper.generateVideoCode(@builder, @video)
 
 - if @codeOnly
   = code

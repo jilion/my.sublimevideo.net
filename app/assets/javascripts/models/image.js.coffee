@@ -1,4 +1,4 @@
-class MSVVideoCodeGenerator.Models.Image extends MSVVideoCodeGenerator.Models.Asset
+class MySublimeVideo.Models.Image extends MySublimeVideo.Models.Asset
   defaults:
     found: true
     ratio: 1
@@ -34,7 +34,7 @@ class MSVVideoCodeGenerator.Models.Image extends MSVVideoCodeGenerator.Models.As
       this.set(ratio: newRatio)   unless newRatio  is this.get('ratio')
       this.set(found: true)
 
-class MSVVideoCodeGenerator.Models.Thumbnail extends MSVVideoCodeGenerator.Models.Image
+class MySublimeVideo.Models.Thumbnail extends MySublimeVideo.Models.Image
   defaults:
     initialLink: 'image'
     thumbWidth: null

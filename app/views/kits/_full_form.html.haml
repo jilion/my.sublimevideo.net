@@ -1,16 +1,15 @@
 #identifier= "##{kit.identifier}"
 
-.entry.name.text
-  = f.label :name, 'Player name'
-  = f.text_field :name, class: 'text no_icon'
+.entry.text
+  = f.label :name, 'Player name', class: 'icon'
+  = f.text_field :name, placeholder: 'Player name', required: true, class: 'text no_icon'
 
 #kit_preview
   %h3 Preview
 
-  %video{ class: 'sublime', poster: '//media.jilion.com/images/midnight_sun_800.jpg', width: '320', height: '180', preload: 'none' }
-    %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4' }
-    %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_270p.mp4' }
-    %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm' }
+  #preview-standard
+
+  -#= link_to 'Refresh', '', id: 'preview-standard-button', class: 'blue_button'
 
 #kit_settings
   %h3 Edit player settings

@@ -7,6 +7,6 @@
     %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_270p.mp4' }
     %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm' }
 
-  = link_to 'Edit', edit_site_kit_path(site, kit), class: 'edit_kit'
+  = link_to 'Edit', [:edit, site, kit], class: 'edit_kit'
   = form_for [site, kit], style: 'display:inline' do |f|
     .actions= f.submit 'Duplicate', class: 'submit'
