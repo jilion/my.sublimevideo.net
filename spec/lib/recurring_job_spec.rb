@@ -1,8 +1,10 @@
 require 'fast_spec_helper'
 require 'sidekiq'
+require File.expand_path('config/initializers/sidekiq')
+
+require File.expand_path('spec/config/sidekiq')
 require File.expand_path('spec/support/sidekiq_custom_matchers')
 
-require File.expand_path('config/initializers/sidekiq')
 require File.expand_path('lib/recurring_job')
 
 unless defined?(ActiveRecord)
@@ -29,7 +31,9 @@ describe RecurringJob do
 
   describe ".supervise_queues" do
     it "notifies if number of jobs is higher than threshold" do
-      2.times { User.delay.foo }
+      Sidekiq.options[:queues].each do |queue|
+        Sidekiq::Queue.should_receive(:new).with(queue) { 1 }
+      end
 
       Notify.should_receive(:send)
       described_class.supervise_queues(1)
