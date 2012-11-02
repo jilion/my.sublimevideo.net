@@ -1,5 +1,5 @@
 Sidekiq.options = {
-  queues: ['low', 'default', 'high'],
+  queues: ['low', 'default', 'high', 'mailer'],
   concurrency: 25,
   require: '.',
   timeout: 8,
