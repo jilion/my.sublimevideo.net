@@ -21,6 +21,11 @@ describe App::ComponentVersion, :fog_mock do
     its(:dependencies) { should eq({"app" => "1.0.0"}) }
 
     it { should be_valid }
+
+    it "has empty hash dependencies by default" do
+      attributes.delete(:dependencies)
+      App::ComponentVersion.create(attributes, as: :admin).dependencies.should eq({})
+    end
   end
 
   describe "Associations" do
