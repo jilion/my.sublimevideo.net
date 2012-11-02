@@ -1,8 +1,5 @@
 require 'fast_spec_helper'
 require 'sidekiq'
-
-require File.expand_path('spec/config/redis')
-$redis = Redis.new unless defined?($redis)
 require File.expand_path('spec/support/sidekiq_custom_matchers')
 
 require File.expand_path('config/initializers/sidekiq')
@@ -28,11 +25,11 @@ unless defined?(ActiveRecord)
   Log::Amazon::S3::Licenses = Class.new
 end
 
-describe RecurringJob, :redis do
+describe RecurringJob do
 
   describe ".supervise_queues" do
     it "notifies if number of jobs is higher than threshold" do
-      3.times { Service::Invoice.delay.create_invoices_for_month }
+      2.times { User.delay.foo }
 
       Notify.should_receive(:send)
       described_class.supervise_queues(1)

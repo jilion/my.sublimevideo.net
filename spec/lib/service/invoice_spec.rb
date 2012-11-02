@@ -24,10 +24,9 @@ describe Service::Invoice do
       create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'trial', created_at: 1.months.ago.beginning_of_month + 2.days)
       create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 1.months.ago.beginning_of_month + 5.days)
       create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'canceled', created_at: 1.month.ago.beginning_of_month + 10.days)
-
       create(:billable_item_activity, site: site2, item: public_addon_plan_paid, state: 'trial', created_at: 1.months.ago.beginning_of_month)
-
       create(:billable_item_activity, site: site3, item: public_addon_plan_paid, state: 'subscribed', created_at: 1.months.ago.beginning_of_month)
+      Sidekiq::Worker.clear_all
     end
 
     it 'delay invoices creation for all non-archived sites for the given date' do
