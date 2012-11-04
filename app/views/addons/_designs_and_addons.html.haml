@@ -1,10 +1,21 @@
 - if site.plan_id?
   #grandfather_plan{ style: 'display: none' }= render 'addons/grandfather_plan_text', site: site
 %table{ border: 0, style: 'text-align:left' }
-  %h3 Player designs
+  %col{ style: 'width:300px' }
+  %col.odd{ style: 'width:300px' }
+  %col{ style: 'width:200px' }
+  %tr
+    %th{ style: 'width:300px' }
+    %th{ style: 'width:300px' }
+    %th
   = render 'addons/designs', site: site
-  = render 'addons/addons', site: site
 
+  = render 'addons/addon', site: site, addon: Addon.get('logo')
+  = render 'addons/addon', site: site, addon: Addon.get('lightbox')
+  = render 'addons/addon', site: site, addon: Addon.get('api')
+  = render 'addons/addon', site: site, addon: Addon.get('stats')
+  = render 'addons/addon', site: site, addon: Addon.get('support')
 .big_break
+
 %small= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
 %strong#addons_total= display_amount_with_sup(site.total_billable_items_price)

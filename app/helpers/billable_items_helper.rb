@@ -12,14 +12,14 @@ module BillableItemsHelper
   end
 
   def beta_loader_required_notice(addon_plan)
-    content_tag(:small, '(require beta loader)') if addon_plan.required_stage == 'beta'
+    content_tag(:small, '(requires beta loader)') if addon_plan.required_stage == 'beta'
   end
 
   def billable_item_price(billable_item)
     if billable_item.price.zero?
       'free'
     elsif billable_item.beta?
-      'free during beta'
+      "free during beta #{content_tag(:s, display_amount_with_sup(billable_item.price))}".html_safe
     else
       display_amount_with_sup(billable_item.price)
     end
