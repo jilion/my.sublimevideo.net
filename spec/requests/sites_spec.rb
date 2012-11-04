@@ -196,7 +196,7 @@ def last_site_should_be_created(hostname)
 
   current_url.should eq 'http://my.sublimevideo.dev/sites'
   page.should have_content (hostname.present? ? hostname : 'add a hostname')
-  page.should have_content 'Site has been successfully created.'
+  page.should have_content 'Site has been successfully registered.'
 end
 
 def hostname1;    'rymai.com'; end

@@ -16,6 +16,8 @@ en:
       update:
         notice: 'Account has been successfully updated.'
     sites:
+      create:
+        notice: 'Site has been successfully registered.'
       update:
         notice: 'Site settings have been successfully updated.'
     kits:

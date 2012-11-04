@@ -14,15 +14,29 @@
       = tooltip_box href: edit_site_path(site), class: 'warning' do
         %span.p= raw t 'site.status.need_subdomain', hostname: hostname_with_subdomain_needed(site)
     .external_link{ style: 'display: inline' }= link_to '->', url_with_protocol(site.hostname)
-    .spacer
-    .token{ style: 'display: inline' }= "##{site.token}"
     .actions{ style: 'display: inline' }
-      %select.site_actions{ id: ['site_actions', site.id] }
-        %option{ value: '' } Actions
-        %option{ value: site_addons_path(site) } Add-ons
-        %option{ value: site_kits_path(site) } Players
-        %option{ value: new_site_video_code_path(site) } Video Code
+      -#%select.site_actions{ id: ['site_actions', site.id], data: { token: site.token } }
+      -#  %option{ value: '' } Actions
+      -#  %option{ value: site_addons_path(site) } Add-ons
+      -#  %option{ value: site_kits_path(site) } Players
+      -#  %option{ value: 'loader-code' } Loader Code
+      -#  - if site.realtime_stats_active?
+      -#    %option{ value: site_stats_path(site) } Stats
+      -#  %option{ value: edit_site_path(site) } Settings
+      -#  %option{ value: site_invoices_path(site) } Invoices
+      = link_to '', class: 'quick_access' do
+        %span Quick access
+      %ul.site_actions{ id: ['site_actions', site.id], style: 'display:none' }
+        %li= link_to 'Add-ons', site_addons_path(site)
+        %li= link_to 'Players', site_kits_path(site)
+        %li= link_to 'Loader Code', site_addons_path(site), class: 'player_code', data: { token: site.token }
         - if site.realtime_stats_active?
-          %option{ value: site_stats_path(site) } Stats
-        %option{ value: edit_site_path(site) } Settings
-        %option{ value: site_invoices_path(site) } Invoices
+          %li= link_to 'Stats', site_stats_path(site)
+        %li= link_to 'Settings', edit_site_path(site)
+        %li= link_to 'Invoices', site_invoices_path(site)
+      %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'code', site: site
+    .spacer
+    .token{ style: 'display: inline' }
+      %small
+        = 'Site token: '
+        %code= "##{site.token}"

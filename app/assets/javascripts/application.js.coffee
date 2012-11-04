@@ -37,14 +37,27 @@ MySublimeVideo.UI.prepareSiteSelector = ->
     new MySublimeVideo.UI.SiteSelector(select: $select)
 
 MySublimeVideo.UI.prepareSiteActionsSelector = ->
-  $('select.site_actions').each ->
     $select = $(this)
-    $select.on 'change', (e) ->
-      optionValue = $select.attr('value')
-      return if optionValue is ''
-      $.pjax
-        url: optionValue
-        container: '[data-pjax-container]'
+  $('.quick_access').each ->
+    $handler = $(this)
+    $handler.on 'click', ->
+      $handler.siblings('ul.site_actions').toggle()
+      false
+
+  # $('select.site_actions').each ->
+  #   $select.on 'change', (e) ->
+  #     optionValue = $select.val()
+  #     return if optionValue is ''
+
+  #     if optionValue is 'loader-code'
+  #       SublimeVideo.UI.Utils.openPopup
+  #         class: 'popup'
+  #         anchor: $("#embed_code_popup_content_#{$select.data('token')}")
+  #         $select[0][0].selected = '1'
+  #     else
+  #       $.pjax
+  #         url: optionValue
+  #         container: '[data-pjax-container]'
 
 MySublimeVideo.UI.prepareEmbedCodePopups = ->
   $('a.player_code').each ->
