@@ -74,6 +74,21 @@ describe Kit do
 
   end
 
+  describe '#default?' do
+    let(:kit)  { Kit.create!({ site: site, app_design_id: create(:app_design).id }, as: :admin) }
+    let(:site) { create(:site) }
+    context 'kit is not default' do
+      it { kit.should_not be_default }
+    end
+
+    context 'kit is default' do
+      before { site.default_kit_id = kit.id }
+
+      it { kit.should be_default }
+    end
+
+  end
+
 end
 
 # == Schema Information

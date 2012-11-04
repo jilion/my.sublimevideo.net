@@ -78,8 +78,8 @@ class MySublimeVideo.UI.KitEditor
         lightboxCode = @videoTagHelpers[type].generateLightboxCode(href: '#preview-lightbox', id: 'preview-lightbox-button', class: 'blue_button sublime')
         videoCode = @videoTagHelpers[type].generateVideoCode(id: 'preview-lightbox', class: '')
 
-        @$lightboxTestButton.replaceWith($(lightboxCode))
-        $('#lightbox-test').replaceWith($(videoCode))
+        @$lightboxTestButton.replaceWith(lightboxCode)
+        $('#lightbox-test').replaceWith(videoCode)
 
         @$lightboxTestButton = $('#preview-lightbox-button')
 

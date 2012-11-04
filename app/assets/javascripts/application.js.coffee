@@ -37,7 +37,6 @@ MySublimeVideo.UI.prepareSiteSelector = ->
     new MySublimeVideo.UI.SiteSelector(select: $select)
 
 MySublimeVideo.UI.prepareSiteActionsSelector = ->
-    $select = $(this)
   $('.quick_access').each ->
     $handler = $(this)
     $handler.on 'click', ->
@@ -45,6 +44,7 @@ MySublimeVideo.UI.prepareSiteActionsSelector = ->
       false
 
   # $('select.site_actions').each ->
+  #   $select = $(this)
   #   $select.on 'change', (e) ->
   #     optionValue = $select.val()
   #     return if optionValue is ''
@@ -87,8 +87,12 @@ MySublimeVideo.UI.prepareGrandFatherPlanPopUp = ->
   if ($textDiv = $('#grandfather_plan')).exists()
     new MySublimeVideo.UI.GrandFatherPlanPopUp($textDiv)
 
+MySublimeVideo.UI.prepareKitsPage = ->
+  if $('#kits').exists()
+    new MySublimeVideo.UI.KitsPage
+
 MySublimeVideo.UI.prepareKitEditor = ->
-  $('.new_kit, .edit_kit, .video_code_generator').each ->
+  $('form.kit_editor, .video_code_generator').each ->
     new MySublimeVideo.UI.KitEditor
 
 MySublimeVideo.UI.prepareSupportRequest = ->
@@ -114,6 +118,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareSitesStatus()
   MySublimeVideo.UI.prepareAddonsChooser()
   MySublimeVideo.UI.prepareGrandFatherPlanPopUp()
+  MySublimeVideo.UI.prepareKitsPage()
   MySublimeVideo.UI.prepareKitEditor()
   MySublimeVideo.UI.prepareSupportRequest()
   MySublimeVideo.UI.prepareFeedbackForm()

@@ -19,6 +19,15 @@ class Kit < ActiveRecord::Base
       self.name     ||= "My player #{identifier}"
     end
   end
+
+  def default?
+    site.default_kit_id == id
+  end
+
+  def to_param
+    identifier
+  end
+
 end
 
 # == Schema Information

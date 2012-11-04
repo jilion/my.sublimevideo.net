@@ -1,12 +1,12 @@
 - kit = exhibit(kit)
-%li[kit]{ class: cycle('left', 'right') }
+%li[kit]{ class: ['kit', cycle('left', 'right')], data: { settings: kit.settings.to_json } }
   = kit.render_name_as_link(self, site)
 
-  %video{ class: 'sublime', poster: '//media.jilion.com/images/midnight_sun_800.jpg', width: '320', height: '180', preload: 'none' }
-    %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4' }
-    %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_270p.mp4' }
-    %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm' }
+  %div{ id: "preview_kit_#{kit.id}" }
 
   = link_to 'Edit', [:edit, site, kit], class: 'edit_kit'
-  = form_for [site, kit], style: 'display:inline' do |f|
-    .actions= f.submit 'Duplicate', class: 'submit'
+  -#= form_for [site, kit], style: 'display:inline' do |f|
+  -#  .actions= f.submit 'Duplicate', class: 'submit blue_button'
+  - unless kit.default?
+    = form_for [:set_as_default, site, kit], style: 'display:inline' do |f|
+      .actions= f.submit 'Set as default', class: 'submit blue_button'

@@ -1,7 +1,6 @@
 class MySublimeVideo.Helpers.VideoTagHelper
-
   constructor: (@video, @options = {}) ->
-    _.defaults(@options, { type: 'standard', startWithHd: false, forceSettings: false })
+    _.defaults(@options, { type: 'standard', startWithHd: false, forceSettings: false, settings: null })
     @extraSpaces = if @options['type'] is 'iframe_embed' then '    ' else ''
 
   generatePlayerCode: ->
@@ -52,7 +51,11 @@ class MySublimeVideo.Helpers.VideoTagHelper
     code + "\n</a>\n"
 
   generateDataSettings: (addons) ->
-    this.generateDataSettingsArray(addons)
+    @dataSettings = {}
+    if @options['settings']?
+      this.generateDataSettingsArrayFromJSON()
+    else
+      this.generateDataSettingsArrayFromDOM(addons)
 
     if _.isEmpty @dataSettings
       ''
@@ -80,9 +83,14 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateDataQuality: (source) ->
     if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ''
 
-  generateDataSettingsArray: (addons) ->
-    @dataSettings = {}
+  generateDataSettingsArrayFromJSON: ->
+    _.each @options['settings'], (setting, addonName) =>
+      unless addonName is 'lightbox'
+        _.each setting, (settingValue, settingName) =>
+          dataSettingName = this.getDataSettingName(addonName, settingName)
+          this.processCheckBoxAndTextInput(dataSettingName, settingValue, null)
 
+  generateDataSettingsArrayFromDOM: (addons) ->
     for addonName in addons
       $("input[type=checkbox][data-addon='#{addonName}'], " +
       "input[type=radio][data-addon='#{addonName}']:checked, " +

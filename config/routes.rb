@@ -205,7 +205,9 @@ MySublimeVideo::Application.routes.draw do
         end
       end
 
-      resources :kits, only: [:index, :new, :create, :show, :edit, :update], path: 'players'
+      resources :kits, only: [:index, :new, :create, :show, :edit, :update], path: 'players' do
+        put :set_as_default, on: :member
+      end
 
       resources :invoices, only: [:index] do
         put :retry, on: :collection

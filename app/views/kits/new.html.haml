@@ -4,7 +4,7 @@
 
 #kit.new
   #beta_loader_required Beta loader required
-  = form_for [@site, @kit] do |f|
+  = form_for [@site, @kit], html: { class: 'kit_editor' } do |f|
     = render 'full_form', f: f, site: @site, kit: @kit
 
     .actions.center
