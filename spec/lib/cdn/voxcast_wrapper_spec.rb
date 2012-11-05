@@ -18,6 +18,20 @@ describe CDN::VoxcastWrapper do
     end
   end
 
+  describe ".logs_list" do
+    use_vcr_cassette "voxcast/logs_list"
+    let(:logs_list) { described_class.logs_list(CDN::VoxcastWrapper.non_ssl_hostname) }
+
+
+    it "returns all logs" do
+      logs_list.should have(21597).logs
+    end
+
+    it "returns logs name" do
+      logs_list.first["content"].should eq('4076.voxcdn.com.log.1350728640-1350728700.gz')
+    end
+  end
+
   describe ".download_log" do
     context "when log available" do
       use_vcr_cassette "voxcast/download_log_available"
