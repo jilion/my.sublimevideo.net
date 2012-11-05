@@ -1,2 +1,9 @@
 Restoring a pg dump locally
 pg_restore --verbose --clean --no-acl --no-owner -d msv_development_master db/backups/sublimevideo.pgdump
+
+Copying Production db to Staging
+- https://devcenter.heroku.com/articles/migrating-data-between-plans
+heroku pgbackups:restore HEROKU_POSTGRESQL_DB_NAME SNAPSHOT_URL
+
+HEROKU_POSTGRESQL_DB_NAME from heroku pg
+SNAPSHOT_URL get from heroku postgres dashboard (copy link of download)
