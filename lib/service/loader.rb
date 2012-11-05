@@ -30,7 +30,11 @@ module Service
     end
 
     def host
-      "//cdn.sublimevideo.net"
+      if Rails.env == 'staging'
+        "//cdn.sublimevideo-staging.net"
+      else
+        "//cdn.sublimevideo.net"
+      end
     end
 
     def app_component_version
