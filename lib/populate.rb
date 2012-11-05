@@ -383,7 +383,7 @@ module Populate
         ]
       }
       if Rails.env.development?
-      seeds[App::ComponentVersion] = [
+        seeds[App::ComponentVersion] = [
           # { component: 'ref-App::Component-app', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
           # { component: 'ref-App::Component-app', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
           # { component: 'ref-App::Component-app', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
@@ -396,7 +396,7 @@ module Populate
           # { component: 'ref-App::Component-html5', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
           # { component: 'ref-App::Component-html5', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
           { component: 'ref-App::Component-html5', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
-        ],
+        ]
       end
 
       seeds.each do |klass, new_record|
