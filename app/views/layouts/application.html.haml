@@ -3,7 +3,8 @@
 - @body_class = @body_class.to_s + " #{early_access_body_class}"
 
 = content_for :javascript do
-  = sublimevideo_include_tag(request.ssl?, :my).html_safe
+  -# = sublimevideo_include_tag(request.ssl?, :my).html_safe
+  = sublimevideo_my_include_tag
   = javascript_include_tag 'https://d3dy5gmtp8yhk7.cloudfront.net/1.11/pusher.min.js'
   = javascript_include_tag 'application'
 

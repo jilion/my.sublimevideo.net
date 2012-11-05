@@ -66,7 +66,7 @@ module Populate
         },
         close_button_visibility: {
           type: 'string',
-          values: ['hidden', 'autohide', 'visible'],
+          values: ['autohide', 'visible'],
           default: 'autohide'
         },
         close_button_position: {
@@ -88,11 +88,6 @@ module Populate
         }
       }
       initial_template = {
-        enable: {
-          type: 'boolean',
-          values: [true, false],
-          default: true
-        },
         enable_overlay: {
           type: 'boolean',
           values: [true, false],
@@ -110,15 +105,40 @@ module Populate
         }
       }
       sharing_template = {
-        enable: {
+        enable_twitter: {
           type: 'boolean',
           values: [true, false],
           default: true
+        },
+        enable_facebook: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
+        },
+        enable_link: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
+        },
+        enable_embed: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
+        },
+        order: {
+          type: 'string',
+          default: 'twitter link facebook embed'
+        },
+        default_url: {
+          type: 'url'
         },
         twitter_url: {
           type: 'url'
         },
         facebook_url: {
+          type: 'url'
+        },
+        link_url: {
           type: 'url'
         },
         embed_url: {
@@ -196,16 +216,16 @@ module Populate
         AddonPlan => [
           { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden', public_at: nil },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public', public_at: Time.now.utc },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer', availability: 'hidden', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer', availability: 'hidden', required_stage: 'beta', public_at: nil },
           { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden', public_at: Time.now.utc },
           { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats',        availability: 'public', public_at: Time.now.utc },
           # { name: 'disabled',  price: 1990, addon: 'ref-Addon-stats',        availability: 'hidden', required_stage: 'beta', public_at: nil },
           { name: 'sublime',   price: 0,    addon: 'ref-Addon-logo',         availability: 'public', public_at: Time.now.utc },
           { name: 'disabled',  price: 990,  addon: 'ref-Addon-logo',         availability: 'public', public_at: Time.now.utc },
           { name: 'custom',    price: 1990, addon: 'ref-Addon-logo',         availability: 'public', required_stage: 'beta', public_at: nil },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden', public_at: nil },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-initial',      availability: 'hidden', public_at: nil },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'custom', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-controls',     availability: 'hidden', required_stage: 'beta', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-initial',      availability: 'hidden', required_stage: 'beta', public_at: nil },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-sharing',      availability: 'public', required_stage: 'beta', public_at: nil },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-api',          availability: 'hidden', public_at: Time.now.utc },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-support',      availability: 'public', public_at: Time.now.utc },
           { name: 'vip',       price: 9990, addon: 'ref-Addon-support',      availability: 'public', public_at: Time.now.utc }
@@ -213,6 +233,16 @@ module Populate
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
             template: {
+              enable_volume: {
+                type: 'boolean',
+                values: [true, false],
+                default: true
+              },
+              enable_fullmode: {
+                type: 'boolean',
+                values: [true, false],
+                default: true
+              },
               force_fullwindow: {
                 type: 'boolean',
                 values: [true, false],
@@ -222,16 +252,6 @@ module Populate
                 type: 'string',
                 values: ['nothing', 'replay', 'stop'],
                 default: 'nothing'
-              },
-              enable_fullmode: {
-                type: 'boolean',
-                values: [true, false],
-                default: true
-              },
-              enable_volume: {
-                type: 'boolean',
-                values: [true, false],
-                default: true
               }
             }
           },
@@ -526,13 +546,7 @@ module Populate
             timestamp += 1.month
             Timecop.travel(timestamp.end_of_month) do
               service = Service::Invoice.build_for_month(Time.now.utc, site.id).tap { |s| s.save }
-              if service.invoice.persisted?
-                service.invoice.succeed
-                # puts timestamp
-                puts "Invoice created: $#{service.invoice.amount / 100.0}"
-              # else
-              #   puts "#{timestamp} (failed)!"
-              end
+              service.invoice.succeed if service.invoice.persisted?
             end
           end
         end

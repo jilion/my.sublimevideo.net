@@ -8,6 +8,7 @@ require_dependency 'service/settings'
 require_dependency 'service/site'
 
 class Site < ActiveRecord::Base
+  include SiteModules::Activity
   include SiteModules::BillableItem
   include SiteModules::Api
   include SiteModules::Billing
@@ -30,7 +31,7 @@ class Site < ActiveRecord::Base
 
   attr_accessor :last_transaction, :remote_ip
 
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :remote_ip
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :remote_ip, :default_kit_id
 
   serialize :last_30_days_billable_video_views_array, Array
 
@@ -40,10 +41,9 @@ class Site < ActiveRecord::Base
   # = Associations =
   # ================
 
+  belongs_to :default_kit, class_name: 'Kit'
+  belongs_to :plan # legacy
   belongs_to :user
-
-  # Plans
-  belongs_to :plan
 
   # Invoices
   has_many :invoices, class_name: '::Invoice'
@@ -201,6 +201,7 @@ end
 #  archived_at                               :datetime
 #  badged                                    :boolean
 #  created_at                                :datetime         not null
+#  default_kit_id                            :integer
 #  dev_hostnames                             :text
 #  extra_hostnames                           :text
 #  first_billable_plays_at                   :datetime

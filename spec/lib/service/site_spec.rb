@@ -37,7 +37,7 @@ describe Service::Site do
       service.create
     end
 
-    it 'adds default app designs and add-ons to site after creation' do
+    it 'sets default app designs and add-ons to site after creation' do
       service.should_receive(:set_default_app_designs)
       service.should_receive(:set_default_addon_plans)
       service.create

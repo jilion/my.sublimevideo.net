@@ -1,29 +1,12 @@
 - title('Configure your player')
 = render '/layouts/site_header'
-= render 'sites/stable_beta_menu', site: @site
 .spacer
 
-- if stage?('beta')
-  %p
-    %em These settings will be taken in account only if you're using the beta player code.
-  #kit.edit
-    = form_for [@site, @kit] do |f|
-      = render 'full_form', f: f, site: @site, kit: @kit
+#kit.edit
+  #beta_loader_required Beta loader required
+  = form_for [@site, @kit], html: { class: 'kit_editor' } do |f|
+    = render 'full_form', f: f, site: @site, kit: @kit
 
-      .actions.center
-        = f.submit "Save settings", class: "submit blue_button"
-
-- else
-  - if @site.addon_plan_is_active?(AddonPlan.get('logo', 'disabled'))
-    = form_for [@site] do |f|
-      = hidden_field_tag 'kit_edit', '1'
-      .entry.badged
-        .checkbox_wrap
-          = f.check_box :badged
-          = f.label :badged, "Display the SublimeVideo logo."
-        %p.info= "Choose whether you want an unbranded player, or whether you want to display the SublimeVideo seal of quality."
-
-      .actions.center
-        = f.submit "Save settings", class: "submit blue_button"
-  - else
-    There are currently no settings you can customize for the stable version of the SublimeVideo Player.
+    .actions.center
+      = link_to 'Cancel', site_kits_path(@site), class: 'blue_button'
+      = f.submit 'Save', class: 'submit blue_button'

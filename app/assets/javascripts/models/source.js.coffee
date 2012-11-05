@@ -1,4 +1,4 @@
-class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.Asset
+class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
   defaults:
     src: ''
     found: true
@@ -132,8 +132,8 @@ class MSVVideoCodeGenerator.Models.Source extends MSVVideoCodeGenerator.Models.A
     this.set(embedHeight: null)
     this.set(currentMimeType: '')
 
-class MSVVideoCodeGenerator.Collections.Sources extends Backbone.Collection
-  model: MSVVideoCodeGenerator.Models.Source
+class MySublimeVideo.Collections.Sources extends Backbone.Collection
+  model: MySublimeVideo.Models.Source
 
   mp4Base: ->
     this.byFormatAndQuality(['mp4', 'base'])

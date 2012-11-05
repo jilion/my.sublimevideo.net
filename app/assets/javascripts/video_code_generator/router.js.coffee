@@ -34,25 +34,25 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       webmogg_base: 'http://media.jilion.com/vcg/ms_360p.webm'
       webmogg_hd: 'http://media.jilion.com/vcg/ms_720p.webm'
 
-    MSVVideoCodeGenerator.poster  = new MSVVideoCodeGenerator.Models.Image
-    MSVVideoCodeGenerator.sources = new MSVVideoCodeGenerator.Collections.Sources([
-      new MSVVideoCodeGenerator.Models.Source
-      new MSVVideoCodeGenerator.Models.Source
+    MSVVideoCodeGenerator.poster  = new MySublimeVideo.Models.Image
+    MSVVideoCodeGenerator.sources = new MySublimeVideo.Collections.Sources([
+      new MySublimeVideo.Models.Source
+      new MySublimeVideo.Models.Source
         format: 'mp4', quality: 'hd', isUsed: false
-      new MSVVideoCodeGenerator.Models.Source
+      new MySublimeVideo.Models.Source
         format: 'mp4', quality: 'mobile', isUsed: false
-      new MSVVideoCodeGenerator.Models.Source
+      new MySublimeVideo.Models.Source
         format: 'webmogg'
-      new MSVVideoCodeGenerator.Models.Source
+      new MySublimeVideo.Models.Source
         format: 'webmogg', quality: 'hd', isUsed: false
     ])
 
-    MSVVideoCodeGenerator.video = new MSVVideoCodeGenerator.Models.Video
+    MSVVideoCodeGenerator.video = new MySublimeVideo.Models.Video
       poster: MSVVideoCodeGenerator.poster
       sources: MSVVideoCodeGenerator.sources
 
     # Lightbox specific models
-    MSVVideoCodeGenerator.thumbnail = new MSVVideoCodeGenerator.Models.Thumbnail
+    MSVVideoCodeGenerator.thumbnail = new MySublimeVideo.Models.Thumbnail
 
     # Iframe embed specific models
     MSVVideoCodeGenerator.iframe = new MSVVideoCodeGenerator.Models.Iframe

@@ -1,9 +1,12 @@
 #= require jquery.pjax
 #= require underscore
 #= require highcharts/highcharts
+#= require backbone
 #
 #= require_self
 #= require_tree ./helpers
+#= require_tree ./models
+#= require_tree ./templates
 #= require_tree ./ui
 #
 #= require stats
@@ -34,14 +37,27 @@ MySublimeVideo.UI.prepareSiteSelector = ->
     new MySublimeVideo.UI.SiteSelector(select: $select)
 
 MySublimeVideo.UI.prepareSiteActionsSelector = ->
-  $('select.site_actions').each ->
-    $select = $(this)
-    $select.on 'change', (e) ->
-      optionValue = $select.attr('value')
-      return if optionValue is ''
-      $.pjax
-        url: optionValue
-        container: '[data-pjax-container]'
+  $('.quick_access').each ->
+    $handler = $(this)
+    $handler.on 'click', ->
+      $handler.siblings('ul.site_actions').toggle()
+      false
+
+  # $('select.site_actions').each ->
+  #   $select = $(this)
+  #   $select.on 'change', (e) ->
+  #     optionValue = $select.val()
+  #     return if optionValue is ''
+
+  #     if optionValue is 'loader-code'
+  #       SublimeVideo.UI.Utils.openPopup
+  #         class: 'popup'
+  #         anchor: $("#embed_code_popup_content_#{$select.data('token')}")
+  #         $select[0][0].selected = '1'
+  #     else
+  #       $.pjax
+  #         url: optionValue
+  #         container: '[data-pjax-container]'
 
 MySublimeVideo.UI.prepareEmbedCodePopups = ->
   $('a.player_code').each ->
@@ -71,8 +87,12 @@ MySublimeVideo.UI.prepareGrandFatherPlanPopUp = ->
   if ($textDiv = $('#grandfather_plan')).exists()
     new MySublimeVideo.UI.GrandFatherPlanPopUp($textDiv)
 
+MySublimeVideo.UI.prepareKitsPage = ->
+  if $('#kits').exists()
+    new MySublimeVideo.UI.KitsPage
+
 MySublimeVideo.UI.prepareKitEditor = ->
-  $('.edit_kit, .video_code_generator').each ->
+  $('form.kit_editor, .video_code_generator').each ->
     new MySublimeVideo.UI.KitEditor
 
 MySublimeVideo.UI.prepareSupportRequest = ->
@@ -98,6 +118,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareSitesStatus()
   MySublimeVideo.UI.prepareAddonsChooser()
   MySublimeVideo.UI.prepareGrandFatherPlanPopUp()
+  MySublimeVideo.UI.prepareKitsPage()
   MySublimeVideo.UI.prepareKitEditor()
   MySublimeVideo.UI.prepareSupportRequest()
   MySublimeVideo.UI.prepareFeedbackForm()
@@ -117,12 +138,13 @@ $(document).ready ->
 
   $('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])').pjax '[data-pjax-container]'
     timeout: 1000
-  $('[data-pjax-container]')
-    .on 'pjax:end', ->
-      # Ensure that body class is always up-to-date
-      bodyClass = $('div[data-body-class]').data('body-class')
-      $('body').attr("class", bodyClass)
+  $('[data-pjax-container]').on 'pjax:end', ->
+    # Ensure that body class is always up-to-date
+    bodyClass = $('div[data-body-class]').data('body-class')
+    $('body').attr("class", bodyClass)
 
-      sublimevideo.prepare()
-      SublimeVideo.documentReady()
-      MySublimeVideo.documentReady()
+    $('video.sublime').each ->
+      sublimevideo.prepare($(this)[0])
+
+    SublimeVideo.documentReady()
+    MySublimeVideo.documentReady()

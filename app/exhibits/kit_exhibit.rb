@@ -3,6 +3,18 @@ class KitExhibit < DisplayCase::Exhibit
     object.class.name == 'Kit'
   end
 
+  def render_name_as_link(template, site)
+    title = self.default? ? 'This player will be displayed if no player is specified in your <video> tag.' : nil
+
+    template.link_to template.edit_site_kit_path(site, self), title: title, class: 'name' do
+      "##{self.identifier} - #{self.name}#{self.default? ? ' (Default)' : ''}"
+    end
+  end
+
+  def render_settings_input_fields_for_addon(addon_name, template)
+    render_settings_input_fields(site.addon_plan_for_addon_name(addon_name), template)
+  end
+
   def render_grouped_settings_input_fields(addon_plans, template)
     first_inputs = render_settings_input_fields(addon_plans.shift, template, show_break: false)
     last_inputs  = render_settings_input_fields(addon_plans.pop, template, show_title: false)
@@ -32,26 +44,26 @@ class KitExhibit < DisplayCase::Exhibit
     end
   end
 
-  def render_input_field(addon, key, setting_fields, template)
-    settings = self.settings.try(:[], addon.name) || {}
-    default  = setting_fields[:default]
+  def render_input_field(template, params = {})
+    params[:template_settings] = params[:settings_template][params[:setting_key]]
+    params[:settings] = self.settings[params[:addon].name][params[:setting_key]] rescue {}
 
-    case setting_fields[:type]
+    case params[:template_settings][:type]
     when 'boolean'
-      if setting_fields[:values].many?
-        template.render('kits/inputs/check_box', kit: self, addon: addon, key: key, settings: settings, default: default)
+      if params[:template_settings][:values].many?
+        template.render('kits/inputs/check_box', kit: self, params: params)
       end
     when 'float'
-      template.render('kits/inputs/range', kit: self, addon: addon, key: key, in_range: setting_fields[:range], step: setting_fields[:step], settings: settings, default: default)
+      template.render('kits/inputs/range', kit: self, params: params)
     when 'string'
-      if (2..3).cover?(setting_fields[:values].size)
-        template.render('kits/inputs/radio', kit: self, addon: addon, key: key, settings: settings, choices: setting_fields[:values], default: default)
+      if (2..3).cover?(params[:template_settings][:values].size)
+        template.render('kits/inputs/radio', kit: self, params: params)
       end
     when 'url'
-      template.render('kits/inputs/text', kit: self, addon: addon, key: key, settings: settings, default: default)
+      template.render('kits/inputs/text', kit: self, params: params)
     when 'size'
-      if key =~ /width\z/
-        template.render('kits/inputs/size', kit: self, addon: addon, key: key, settings: settings, default: default)
+      if params[:setting_key] =~ /width\z/
+        template.render('kits/inputs/size', kit: self, params: params)
       end
     end || ''
   end

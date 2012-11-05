@@ -22,11 +22,7 @@ class SiteExhibit < DisplayCase::Exhibit
   end
 
   def render_segmented_menu(template)
-    if template.early_access?('video')
-      template.render('sites/segmented_menu/segmented_menu_with_early_access_video', site: self)
-    else
-      template.render('sites/segmented_menu/segmented_menu_without_early_access_video', site: self)
-    end
+    template.render('sites/segmented_menu', site: self)
   end
 
   def realtime_stats_active?

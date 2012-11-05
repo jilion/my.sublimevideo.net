@@ -1,0 +1,19 @@
+.initial
+  - addon_plan = site.addon_plan_for_addon_name('initial')
+  - settings_template = addon_plan.settings_template_for(kit.design).template
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable_overlay, data: { master: 'initial-enable_overlay' })
+  .indent= kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :overlay_visibility, data: { dependant: 'initial-enable_overlay' })
+
+.controls
+  - addon_plan = site.addon_plan_for_addon_name('controls')
+  - settings_template = addon_plan.settings_template_for(kit.design).template
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable, data: { master: 'controls-enable' })
+  .indent= kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :visibility, data: { dependant: 'controls-enable' })
+
+.video_player
+  - addon_plan = site.addon_plan_for_addon_name('video_player')
+  - settings_template = addon_plan.settings_template_for(kit.design).template
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable_volume)
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable_fullmode)
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :force_fullwindow)
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :on_end, show_title: true)

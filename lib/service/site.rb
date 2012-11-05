@@ -150,7 +150,8 @@ module Service
     private
 
     def create_default_kit!
-      site.kits.create!(name: 'default')
+      site.kits.create!
+      site.default_kit = site.kits.first
     end
 
     def set_default_app_designs(options = {})

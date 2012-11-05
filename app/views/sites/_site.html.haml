@@ -9,26 +9,34 @@
 
   %td.code
     .wrap
-      = link_to "Player code", "", class: "player_code embed_code", data: { token: site.token }
-      %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'code', site: site
+      = link_to 'Publish video', new_site_video_code_path(site), class: 'embed_code'
 
-  %td.status{ data: { 'cdn-updated-at' => cdn_updated_at(site) } }
+  %td.code.status{ data: { 'cdn-updated-at' => cdn_updated_at(site) } }
     .wrap
-      - if site.invoices_failed?
-        = tooltip_box href: site_invoices_path(site), class: "payment_issue" do
-          %span.p= t 'site.status.payment_issue'
-      - elsif site.invoices_open?
-        = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
-          %span.p= t 'site.status.payment_open'
-      - elsif site.invoices_waiting?
-        = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
-          %span.p= t 'site.status.payment_waiting'
-      - elsif cdn_up_to_date?(site)
-        = tooltip_box class: "ok" do
-          %span.p= t 'site.status.ok'
+      - if site.billable_views.zero? && site.video_tags.count.zero?
+        - last_visited_page = rand > 0.5 ? :player : :addons
+        - current_step = 4
+
+        - if last_visited_page == :addons
+          - current_step = 3
+        = link_to 'Finish setup', '', class: 'embed_code'
+        = "step #{current_step} of 5"
       - else
-        = tooltip_box class: "in_progress" do
-          %span.p= t 'site.status.in_progress'
-        .completed{ style: "display:none;" }
+        - if site.invoices_failed?
+          = tooltip_box href: site_invoices_path(site), class: "payment_issue" do
+            %span.p= t 'site.status.payment_issue'
+        - elsif site.invoices_open?
+          = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
+            %span.p= t 'site.status.payment_open'
+        - elsif site.invoices_waiting?
+          = tooltip_box href: site_invoices_path(site), class: "payment_waiting" do
+            %span.p= t 'site.status.payment_waiting'
+        - elsif cdn_up_to_date?(site)
           = tooltip_box class: "ok" do
             %span.p= t 'site.status.ok'
+        - else
+          = tooltip_box class: "in_progress" do
+            %span.p= t 'site.status.in_progress'
+          .completed{ style: "display:none;" }
+            = tooltip_box class: "ok" do
+              %span.p= t 'site.status.ok'

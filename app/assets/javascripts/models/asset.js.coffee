@@ -1,4 +1,4 @@
-class MSVVideoCodeGenerator.Models.Asset extends Backbone.Model
+class MySublimeVideo.Models.Asset extends Backbone.Model
   defaults:
     src: ''
     found: true
@@ -8,7 +8,7 @@ class MSVVideoCodeGenerator.Models.Asset extends Backbone.Model
     !this.get('src')
 
   srcIsUrl: ->
-    /^https?:\/\/.+\.\w+(\?+.*)?$/.test this.get('src')
+    /^(https?:)?\/\/.+\.\w+(\?+.*)?$/.test this.get('src')
 
   srcIsEmptyOrUrl: ->
     this.srcIsEmpty() or this.srcIsUrl()

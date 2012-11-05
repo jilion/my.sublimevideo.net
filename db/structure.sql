@@ -729,10 +729,11 @@ CREATE TABLE kits (
     id integer NOT NULL,
     site_id integer NOT NULL,
     app_design_id integer NOT NULL,
-    name character varying(255) DEFAULT 'Default'::character varying NOT NULL,
+    name character varying(255) DEFAULT NULL::character varying NOT NULL,
     settings text,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    identifier character varying(255)
 );
 
 
@@ -988,7 +989,8 @@ CREATE TABLE sites (
     last_30_days_video_tags integer DEFAULT 0,
     first_billable_plays_at timestamp without time zone,
     settings_updated_at timestamp without time zone,
-    loaders_updated_at timestamp without time zone
+    loaders_updated_at timestamp without time zone,
+    default_kit_id integer
 );
 
 
@@ -2289,3 +2291,7 @@ INSERT INTO schema_migrations (version) VALUES ('20121011095931');
 INSERT INTO schema_migrations (version) VALUES ('20121029145446');
 
 INSERT INTO schema_migrations (version) VALUES ('20121031120524');
+
+INSERT INTO schema_migrations (version) VALUES ('20121101092429');
+
+INSERT INTO schema_migrations (version) VALUES ('20121101103815');

@@ -4,7 +4,7 @@ en:
     lightbox: 'Lightbox'
     image_viewer: 'Image Viewer'
     stats: 'Analytics'
-    logo: 'Logo'
+    logo: 'On-video Logo'
     controls: 'Controls'
     initial: 'Start View'
     sharing: 'Sharing'
@@ -28,8 +28,8 @@ en:
 
     logo:
       sublime:  'SublimeVideo logo'
-      disabled: 'Disable the SublimeVideo logo'
-      custom: 'Use your company logo'
+      disabled: 'No SublimeVideo logo'
+      custom: 'Your logo'
 
     controls:
       standard: 'Standard controls'

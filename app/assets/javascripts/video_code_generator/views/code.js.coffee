@@ -19,7 +19,10 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
   # BINDINGS
   #
   render: ->
-    @attributesHelper = new MSVVideoCodeGenerator.Helpers.AttributesHelper(@builder, MSVVideoCodeGenerator.video)
+    @videoTagHelper = new MSVVideoCodeGenerator.Helpers.VideoTagHelper(MSVVideoCodeGenerator.video,
+      type: @builder.get('builderClass')
+      startWithHd: @builder.get('startWithHd')
+    )
     @popup = SublimeVideo.UI.Utils.openPopup
       class: 'popup'
       id: 'popup_code'
@@ -32,7 +35,7 @@ class MSVVideoCodeGenerator.Views.Code extends Backbone.View
         iframeTagTemplate: this.iframeTagTemplate
         videoTagTemplate: this.videoTagTemplate
         iframeContentTemplate: this.iframeContentTemplate
-        attributesHelper: @attributesHelper
+        videoTagHelper: @videoTagHelper
 
     false
 

@@ -1,8 +1,8 @@
 describe 'Source, Sources', ->
 
-  describe 'MSVVideoCodeGenerator.Models.Source', ->
+  describe 'MySublimeVideo.Models.Source', ->
     beforeEach ->
-      @source = new MSVVideoCodeGenerator.Models.Source(_.first(sources))
+      @source = new MySublimeVideo.Models.Source(_.first(sources))
 
     describe 'formatQuality()', ->
       it 'check of format', ->
@@ -210,9 +210,9 @@ describe 'Source, Sources', ->
         expect(@source.get('embedHeight')).toEqual(null)
         expect(@source.get('currentMimeType')).toEqual('')
 
-  describe 'MSVVideoCodeGenerator.Collections.Sources', ->
+  describe 'MySublimeVideo.Collections.Sources', ->
     beforeEach ->
-      @sources = new MSVVideoCodeGenerator.Collections.Sources(sources)
+      @sources = new MySublimeVideo.Collections.Sources(sources)
 
     describe 'mp4Base()', ->
       it 'returns the source with format = mp4 and quality = base', ->
@@ -224,7 +224,7 @@ describe 'Source, Sources', ->
 
       describe 'no mobile source', ->
         beforeEach ->
-          @sources = new MSVVideoCodeGenerator.Collections.Sources([_.first(sources)])
+          @sources = new MySublimeVideo.Collections.Sources([_.first(sources)])
 
         it 'returns the source with format = mp4 and quality = base', ->
           expect(@sources.mp4Mobile()).toEqual(@sources.mp4Base())
@@ -264,7 +264,7 @@ describe 'Source, Sources', ->
 
       describe 'no hd source', ->
         beforeEach ->
-          @sources = new MSVVideoCodeGenerator.Collections.Sources([_.first(sources)])
+          @sources = new MySublimeVideo.Collections.Sources([_.first(sources)])
 
         it 'returns false if no hd source is present', ->
           expect(@sources.hdPresent()).toBeFalsy()

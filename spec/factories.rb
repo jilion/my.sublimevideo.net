@@ -58,7 +58,6 @@ FactoryGirl.define do
 
 
   factory :kit do
-    sequence(:name) { |n| "kit #{n}" }
     site
   end
 

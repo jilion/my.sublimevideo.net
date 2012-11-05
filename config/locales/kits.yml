@@ -1,57 +1,51 @@
 en:
   kit:
     video_player:
-      title: 'Player settings'
       settings:
-        enable_fullmode: 'Display full-screen button'
-        force_fullwindow: 'Use full-window instead of full-screen'
-        enable_volume: 'Display volume control'
-        on_end: 'When a video playback ends'
+        enable_volume: 'Enable volume control'
+        enable_fullmode: 'Enable full-screen'
+        force_fullwindow: 'Maximize to full-window instead of full-screen'
+        on_end: 'Player behavior upon video playback end'
       values:
         on_end:
-          nothing: 'Do nothing'
-          replay: 'Replay the video'
-          stop: 'Stop the video'
+          nothing: 'Do nothing (stays on last frame) - Default'
+          replay: 'Replay the video (loop)'
+          stop: 'Stop the video (goes back to poster frame)'
 
     controls:
-      # title: 'Player controls settings'
       settings:
-        visibility: 'Controls visibility'
+        enable: 'Controls'
       values:
         visibility:
-          hidden: 'Hidden'
           autohide: 'Auto-hide'
-          visible: 'Visible'
+          visible: 'Always visible'
 
     initial:
-      # title: 'Start view settings'
       settings:
-        overlay_visibility: 'Initial overlay visibility'
-        overlay_color: 'Initial overlay color'
+        enable_overlay: 'Initial overlay'
       values:
         overlay_visibility:
-          hidden: 'Hidden'
           autofade: 'Auto-fade'
+          visible: 'Always visible'
 
     lightbox:
-      title: 'Lightbox settings'
       settings:
-        on_open: 'When a lightbox opens-up'
-        overlay_color: 'Overlay color'
+        on_open: 'Opening behavior'
         overlay_opacity: 'Overlay opacity'
-        close_button_visibility: 'Close button visibility'
-        close_button_position: 'Close button position'
+        overlay_color: 'Overlay color'
+        enable_close_button: 'Close button'
+        close_button_visibility: 'Visibility'
+        close_button_position: 'Position'
       values:
         on_open:
-          nothing: 'Do nothing'
-          play: 'Play the video'
+          play: 'Autoplay video'
+          nothing: 'Wait for user to click on "Play"'
         close_button_visibility:
-          hidden: 'Hidden'
           autohide: 'Auto-hide'
           visible: 'Visible'
         close_button_position:
-          left: 'Left'
-          right: 'Right'
+          left: 'Top left'
+          right: 'Top right'
 
     stats:
       title: 'Statistics settings'
@@ -60,29 +54,25 @@ en:
         realtime: 'Enable real-time statistics'
 
     logo:
-      title: 'Logo settings'
       settings:
-        sv_logo_visibility: 'SublimeVideo logo visibility'
-        sv_logo_position: 'SublimeVideo logo position'
-        custom_logo_visibility: 'Your logo visibility'
-        custom_logo_position: 'Your logo position'
+        enable: 'SublimeVideo logo'
+        visibility: 'SublimeVideo logo'
+        position: 'Position'
       values:
-        sv_logo_visibility:
-          hidden: 'Hidden'
+        visibility:
           autohide: 'Auto-hide'
-        sv_logo_position:
-          bottomLeft: 'Bottom left'
-          bottomRight: 'Bottom right'
-        custom_logo_visibility:
-          hidden: 'Hidden'
-          autohide: 'Auto-hide'
-        custom_logo_position:
+          visible: 'Always visible'
+        position:
           bottomLeft: 'Bottom left'
           bottomRight: 'Bottom right'
 
     sharing:
       title: 'Sharing settings'
       settings:
+        enable_link: 'Share via Link button'
+        enable_twitter: 'Share via Twitter button'
+        enable_facebook: 'Share via Facebook button'
+        link_url: 'Twitter URL'
         twitter_url: 'Twitter URL'
         facebook_url: 'Facebook URL'
         embed_url: 'Embed URL'

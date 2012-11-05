@@ -1,20 +1,33 @@
 class Kit < ActiveRecord::Base
   serialize :settings, Hash
 
-  attr_accessible :site, :design, as: :admin
-  attr_accessible :name
+  attr_accessible :site, :name, :app_design_id, :identifier, as: :admin
 
   belongs_to :site
   belongs_to :design, class_name: 'App::Design', foreign_key: 'app_design_id'
 
   delegate :skin_token, :kind, to: :design
 
-  validates :site, :design, :name, presence: true
+  validates :site, :design, :name, :identifier, presence: true
   validates :name, uniqueness: { scope: :site_id }
 
-  before_validation ->(kit) do
-    kit.design = App::Design.first unless kit.app_design_id?
+  def initialize(*args)
+    super
+    self.app_design_id ||= App::Design.get('classic').try(:id)
+    if site
+      self.identifier = (site.kits.size + 1).to_s
+      self.name     ||= "My player #{identifier}"
+    end
   end
+
+  def default?
+    site.default_kit_id == id
+  end
+
+  def to_param
+    identifier
+  end
+
 end
 
 # == Schema Information
@@ -24,7 +37,8 @@ end
 #  app_design_id :integer          not null
 #  created_at    :datetime         not null
 #  id            :integer          not null, primary key
-#  name          :string(255)      default("Default"), not null
+#  identifier    :string(255)
+#  name          :string(255)      not null
 #  settings      :text
 #  site_id       :integer          not null
 #  updated_at    :datetime         not null

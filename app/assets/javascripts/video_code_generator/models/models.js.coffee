@@ -16,7 +16,7 @@ class MSVVideoCodeGenerator.Models.Builder extends Backbone.Model
   hostnameRegex: (hostname, wildcard, path) ->
     ///https?:\/\/(#{if wildcard? then '.*' else 'www'}\.)?#{hostname.trim()}#{if path? then "\/#{path}(\/.*|$)" else '(\/.*$|$)'}///
 
-class MSVVideoCodeGenerator.Models.Iframe extends MSVVideoCodeGenerator.Models.Asset
+class MSVVideoCodeGenerator.Models.Iframe extends MySublimeVideo.Models.Asset
   defaults:
     src: ''
     width: null

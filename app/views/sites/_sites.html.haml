@@ -22,15 +22,14 @@
               Plays (Last 30 Days)
             - else
               .sorting= link_to_sort :last_30_days_billable_video_views, default_way: 'desc', label: "Plays (Last 30 Days)"
-        - if early_access?('video')
-          %th.videos
-            .wrap
-              - if @sites.one?
-                Videos
-              - else
-                .sorting= link_to_sort :last_30_days_video_tags, default_way: 'desc', label: "Videos"
-        %th.code
-          .wrap Player code
+        %th.videos
+          .wrap
+            - if !early_access?('video') || @sites.one?
+              Videos
+            - else
+              .sorting= link_to_sort :last_30_days_video_tags, default_way: 'desc', label: "Videos"
+        -#%th.code
+        -#  .wrap Player code
         %th.status
           .wrap Status
       = render @sites

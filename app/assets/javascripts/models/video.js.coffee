@@ -1,4 +1,4 @@
-class MSVVideoCodeGenerator.Models.Video extends Backbone.Model
+class MySublimeVideo.Models.Video extends Backbone.Model
   defaults:
     poster: null
     sources: null
@@ -19,10 +19,10 @@ class MSVVideoCodeGenerator.Models.Video extends Backbone.Model
 
     result
 
-class MSVVideoCodeGenerator.Models.VideoLightbox extends MSVVideoCodeGenerator.Models.Video
+class MySublimeVideo.Models.VideoLightbox extends MySublimeVideo.Models.Video
   defaults:
     classes: 'sublime lightbox'
 
-class MSVVideoCodeGenerator.Models.VideoIframeEmbed extends MSVVideoCodeGenerator.Models.Video
+class MySublimeVideo.Models.VideoIframeEmbed extends MySublimeVideo.Models.Video
   defaults:
     classes: 'sublime sv_iframe_embed'
