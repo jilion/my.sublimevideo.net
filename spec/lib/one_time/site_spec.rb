@@ -5,14 +5,14 @@ require 'one_time/site'
 describe OneTime::Site do
 
   describe '.regenerate_templates' do
-    before do
-      create(:site)
-      create(:site, state: 'archived')
-    end
+    let!(:site) { create(:site) }
+    let!(:archived_site) { create(:site, state: 'archived') }
 
     it 'regenerates loader and license of all sites' do
-      -> { described_class.regenerate_templates(loaders: true) }.should delay('%Service::Loader%update_all_stages%')
-      -> { described_class.regenerate_templates(settings: true) }.should delay('%Service::Settings%update_all_types%')
+      Service::Loader.should delay(:update_all_stages!).with(site.id, purge: false)
+      described_class.regenerate_templates(loaders: true)
+      Service::Settings.should delay(:update_all_types!).with(site.id, purge: false)
+      described_class.regenerate_templates(settings: true)
     end
   end
 
@@ -98,6 +98,7 @@ describe OneTime::Site do
       @site_premium   = create(:site, plan_id: @premium.id, hostname: 'premium.com')
       @site_suspended = create(:site, plan_id: @premium.id, state: 'suspended')
       @site_archived  = create(:site, plan_id: @premium.id, state: 'archived')
+      Sidekiq::Worker.clear_all
     end
 
     it 'migrate plans to add-ons' do
@@ -110,7 +111,7 @@ describe OneTime::Site do
 
       described_class.migrate_plans_to_addons
 
-      $worker.work_off
+      Sidekiq::Worker.drain_all
 
       # free check
       @site_free.reload.billable_items.should have(12).items
@@ -297,12 +298,13 @@ describe OneTime::Site do
       @site_active    = create(:site, state: 'active')
       @site_suspended = create(:site, state: 'suspended')
       @site_archived  = create(:site, state: 'archived')
+      Sidekiq::Worker.clear_all
     end
 
     it 'creates default kit for all non-archived sites' do
       described_class.create_default_kit_for_all_non_archived_sites
 
-      $worker.work_off
+      Sidekiq::Worker.drain_all
 
       @site_active.reload.kits.should have(1).item
       @site_suspended.reload.kits.should have(1).item

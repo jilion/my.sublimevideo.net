@@ -49,23 +49,22 @@ describe Log::Voxcast do
 
     it "should parse and create usages from trackers on parse" do
       SiteUsage.should_receive(:create_usages_from_trackers!)
-      Log::Voxcast.parse_log(subject.id)
+      described_class.parse_log(subject.id)
     end
 
     it "should set parsed_at on parse" do
       SiteUsage.stub(:create_usages_from_trackers!)
-      Log::Voxcast.parse_log(subject.id)
+      described_class.parse_log(subject.id)
       subject.reload.parsed_at.should >= subject.created_at
     end
 
-    it "should delay parse_log && parse_log_referrer after create" do
-      subject # trigger log creation
-      jobs = Delayed::Job.all.sort_by { |j| j.priority }
-      jobs[0].name.should eq 'Class#parse_log_for_stats'
-      jobs[1].name.should eq 'Class#parse_log_for_video_tags'
-      jobs[2].name.should eq 'Class#parse_log'
-      jobs[3].name.should eq 'Class#parse_log_for_user_agents'
-      jobs[4].name.should eq 'Class#parse_log_for_referrers'
+    it "should delay parse_log methods after create" do
+      described_class.should delay(:parse_log_for_stats, queue: 'high').with('log_id')
+      described_class.should delay(:parse_log_for_video_tags, queue: 'high', at: 5.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_user_agents, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_referrers, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
+      create(:log_voxcast, id: 'log_id')
     end
   end
 
@@ -83,7 +82,7 @@ describe Log::Voxcast do
     its("file.size") { should == 848 }
 
     it "should have good log content" do
-      log = Log::Voxcast.find(subject.id) # to be sure that log is well saved with CarrierWave
+      log = described_class.find(subject.id) # to be sure that log is well saved with CarrierWave
       Zlib::GzipReader.open(log.file.path) do |gz|
         gz.read.should include("#Fields: x-cachemiss x-cachestatus")
       end
@@ -91,148 +90,79 @@ describe Log::Voxcast do
 
     it "should parse and create usages from trackers on parse" do
       SiteUsage.should_receive(:create_usages_from_trackers!)
-      Log::Voxcast.parse_log(subject.id)
+      described_class.parse_log(subject.id)
     end
 
     it "should set parsed_at on parse" do
       SiteUsage.stub(:create_usages_from_trackers!)
-      Log::Voxcast.parse_log(subject.id)
+      described_class.parse_log(subject.id)
       subject.reload.parsed_at.should >= subject.created_at
     end
 
-    it "should delay parse_log after create" do
-      subject # trigger log creation
-      Delayed::Job.all.should have(5).job
+    it "should delay parse_log methods after create" do
+      described_class.should delay(:parse_log_for_stats, queue: 'high').with('log_id')
+      described_class.should delay(:parse_log_for_video_tags, queue: 'high', at: 5.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_user_agents, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_referrers, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
+      create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', id: 'log_id')
     end
   end
 
   describe "Class Methods" do
 
+    describe ".delay_download_and_create_new_logs" do
+      it "delays download_and_create_new_non_ssl_logs && download_and_create_new_ssl_logs" do
+        described_class.should delay(:download_and_create_new_logs, queue: 'high').with(CDN::VoxcastWrapper.non_ssl_hostname)
+        described_class.should delay(:download_and_create_new_logs, queue: 'high').with(CDN::VoxcastWrapper.ssl_hostname)
+        described_class.delay_download_and_create_new_logs(queue: 'high')
+      end
+    end
+
     describe ".download_and_create_new_logs" do
-      it "launches download_and_create_new_non_ssl_logs && download_and_create_new_ssl_logs if not already launched" do
-        Log::Voxcast.should_receive(:download_and_create_new_non_ssl_logs)
-        Log::Voxcast.should_receive(:download_and_create_new_ssl_logs)
-        Log::Voxcast.download_and_create_new_logs
-      end
-
-      it "not launches download_and_create_new_non_ssl_logs && download_and_create_new_ssl_logs if already launched" do
-        VCR.use_cassette("voxcast/download_and_create_new_logs") do
-          Log::Voxcast.download_and_create_new_logs
-        end
-        Log::Voxcast.should_not_receive(:download_and_create_new_non_ssl_logs)
-        Log::Voxcast.should_not_receive(:download_and_create_new_ssl_logs)
-        Log::Voxcast.download_and_create_new_logs
-      end
-    end
-
-    describe ".download_and_create_new_non_ssl_logs" do
-      it "calls download_and_create_new_logs methods with the non ssl voxcast hostname" do
-        Log::Voxcast.should_receive(:download_and_create_new_logs_and_redelay).with("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
-        Log::Voxcast.download_and_create_new_non_ssl_logs
-      end
-    end
-    describe ".download_and_create_new_ssl_logs" do
-      it "calls download_and_create_new_logs methods with the ssl voxcast hostname" do
-        Log::Voxcast.should_receive(:download_and_create_new_logs_and_redelay).with("4076.voxcdn.com", :download_and_create_new_ssl_logs)
-        Log::Voxcast.download_and_create_new_ssl_logs
-      end
-    end
-
-    describe ".download_and_create_new_logs_and_redelay" do
       context "with no log saved" do
-        use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 0 logs"
+        use_vcr_cassette "voxcast/download_and_create_new_logs 0 logs"
 
         it "creates 1 log" do
-          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(1)
-        end
-        it "delays method to run in 1 min" do
-          Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
-          Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+          expect { Log::Voxcast.download_and_create_new_logs("cdn.sublimevideo.net") }.to change(Log::Voxcast, :count).by(1)
         end
       end
 
       context "with a log saved" do
-        use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 1 min ago"
+        use_vcr_cassette "voxcast/download_and_create_new_logs 1 min ago"
         let(:log_voxcast) {  FactoryGirl.create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", Time.now.change(sec: 0))) }
 
         it "creates 0 log (no duplicates)" do
           Timecop.freeze Time.now do
             log_voxcast
-            expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to_not change(Log::Voxcast, :count)
-          end
-        end
-        it "delays method to run in 1 min" do
-          Timecop.freeze Time.now do
-            log_voxcast
-            Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
-            Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
-            Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+            expect { Log::Voxcast.download_and_create_new_logs("cdn.sublimevideo.net") }.to_not change(Log::Voxcast, :count)
           end
         end
       end
 
       context "with log saved 1 min ago" do
-        use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 1 min ago"
+        use_vcr_cassette "voxcast/download_and_create_new_logs 1 min ago"
         let(:log_voxcast) {  FactoryGirl.create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", 1.minute.ago.change(sec: 0))) }
 
         it "creates 1 log" do
           Timecop.freeze Time.now do
             log_voxcast
-            expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(1)
-          end
-        end
-        it "delays method to run in 1 min" do
-          Timecop.freeze Time.now do
-            log_voxcast
-            Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
-            Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
-            Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+            expect { Log::Voxcast.download_and_create_new_logs("cdn.sublimevideo.net") }.to change(Log::Voxcast, :count).by(1)
           end
         end
       end
 
       context "with log saved 5 min ago"  do
-        use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 5 min ago"
+        use_vcr_cassette "voxcast/download_and_create_new_logs 5 min ago"
         let(:log_voxcast) {  FactoryGirl.create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", 5.minutes.ago.change(sec: 0))) }
 
         it "creates 5 logs" do
           Timecop.freeze Time.now do
             log_voxcast
-            expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(5)
-          end
-        end
-        it "delays method to run in 1 min" do
-          Timecop.freeze Time.now do
-            log_voxcast
-            Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
-            Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
-            Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+            expect { Log::Voxcast.download_and_create_new_logs("cdn.sublimevideo.net") }.to change(Log::Voxcast, :count).by(5)
           end
         end
       end
-
-      # context "with a log that is not uploaded to S3" do
-      #   use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 0 logs"
-      #   before do
-      #     Log::Voxcast.stub(:create!) { raise Aws::AwsError }
-      #   end
-      #
-      #   it "doesn't save the record" do
-      #     logs_count = Log::Voxcast.count
-      #     expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to raise_error(Aws::AwsError)
-      #     Log::Voxcast.should have(logs_count).items
-      #   end
-      #
-      #   it "raises exception" do
-      #     expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to raise_error(Aws::AwsError)
-      #   end
-      #
-      #   # it "delays method to run now anyway" do
-      #   #   expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to raise_error(Aws::AwsError)
-      #   #   Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
-      #   #   Delayed::Job.last.run_at.should eq Time.now.utc.change(sec: 0)
-      #   # end
-      # end
     end
 
     describe ".log_name" do

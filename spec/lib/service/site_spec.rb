@@ -1,6 +1,10 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
 
+require 'sidekiq'
+require File.expand_path('spec/config/sidekiq')
+require File.expand_path('spec/support/sidekiq_custom_matchers')
+
 require File.expand_path('app/models/app')
 require File.expand_path('lib/service/site')
 
@@ -11,14 +15,10 @@ describe Service::Site do
   let(:user)           { stub(sites: []) }
   let(:site)           { Struct.new(:user, :id).new(nil, 1234) }
   let(:service)        { described_class.new(site) }
-  let(:delayed_method) { stub.as_null_object }
 
   describe '#create' do
     before do
       Site.stub(:transaction).and_yield
-      Service::Loader.stub(:delay) { delayed_method }
-      Service::Settings.stub(:delay) { delayed_method }
-      Service::Rank.stub(:delay) { delayed_method }
       service.stub(:create_default_kit!)
       service.stub(:set_default_app_designs)
       service.stub(:set_default_addon_plans)
@@ -50,17 +50,17 @@ describe Service::Site do
     end
 
     it 'delays the update of all loader stages' do
-      delayed_method.should_receive(:update_all_stages!).with(site.id)
+      Service::Loader.should delay(:update_all_stages!).with(site.id)
       service.create
     end
 
     it 'delays the update of all settings types' do
-      delayed_method.should_receive(:update_all_types!).with(site.id)
+      Service::Settings.should delay(:update_all_types!).with(site.id)
       service.create
     end
 
     it 'delays the calculation of google and alexa ranks' do
-      delayed_method.should_receive(:set_ranks).with(site.id)
+      Service::Rank.should delay(:set_ranks, queue: 'low').with(site.id)
       service.create
     end
   end
@@ -69,7 +69,6 @@ describe Service::Site do
     let(:attributes) { { hostname: 'test.com' } }
     before do
       Site.stub(:transaction).and_yield
-      Service::Settings.stub(:delay) { delayed_method }
       site.stub(:attributes=)
       site.stub(:settings_updated_at=)
       site.stub(:save!)
@@ -91,7 +90,7 @@ describe Service::Site do
     end
 
     it 'delays the update of all settings types' do
-      delayed_method.should_receive(:update_all_types!).with(site.id)
+      Service::Settings.should delay(:update_all_types!).with(site.id)
       service.update(attributes)
     end
   end

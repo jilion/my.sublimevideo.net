@@ -2,6 +2,10 @@ require 'fast_spec_helper'
 require 'rails/railtie'
 require 'fog'
 
+require 'sidekiq'
+require File.expand_path('spec/config/sidekiq')
+require File.expand_path('spec/support/sidekiq_custom_matchers')
+
 # for fog_mock
 require 'carrierwave'
 require File.expand_path('app/models/app')
@@ -24,12 +28,11 @@ end
 
 
 describe Service::Settings, :fog_mock do
-  before {
-    CDN.stub(:delay) { mock(purge: true) }
+  before do
     site.stub_chain(:addon_plans, :includes) { [] }
     site.stub_chain(:kits, :includes) { [] }
     AddonPlan.stub(:get)
-  }
+  end
 
   let(:site) { mock("Site",
     id: 1,

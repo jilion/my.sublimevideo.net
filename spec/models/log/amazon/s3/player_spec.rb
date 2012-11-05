@@ -28,24 +28,16 @@ describe Log::Amazon::S3::Player do
 
     it "should parse and create usages from trackers on parse_log" do
       SiteUsage.should_receive(:create_usages_from_trackers!)
-      Log::Amazon::S3::Player.parse_log(subject.id)
+      described_class.parse_log(subject.id)
     end
 
     it "should delay parse_log after create" do
-      subject # trigger log creation
-      job = Delayed::Job.last
-      job.name.should eq 'Class#parse_log'
-      job.priority.should eq 20
+      described_class.should delay(:parse_log, queue: 'low', at: 5.seconds.from_now.to_i).with('log_id')
+      create(:log_s3_player, id: 'log_id')
     end
   end
 
   describe "Class Methods" do
-    describe ".fetch_and_create_new_logs" do
-      it "delays fetch_and_create_new_logs only once" do
-        -> { 2.times { described_class.fetch_and_create_new_logs } }.should delay('%fetch_and_create_new_logs%')
-      end
-    end
-
     describe ".config" do
       it "should have config values" do
         described_class.config.should == {

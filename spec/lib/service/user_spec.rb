@@ -1,38 +1,35 @@
 require 'fast_spec_helper'
+
+require 'sidekiq'
+require File.expand_path('spec/config/sidekiq')
+require File.expand_path('spec/support/sidekiq_custom_matchers')
+
 require File.expand_path('lib/service/user')
 
 User = Class.new unless defined?(User)
 UserMailer = Class.new unless defined?(UserMailer)
 
 describe Service::User do
-  let(:user)           { stub(id: 1234, sites: []) }
+  let(:user)           { stub(id: 1234, sites: [], save!: true) }
   let(:site1)          { stub(suspend: true) }
   let(:site2)          { stub(suspend: true) }
   let(:tokens)         { stub }
   let(:service)        { described_class.new(user) }
-  let(:delayed_method) { stub.as_null_object }
   let(:feedback)       { stub }
 
   describe '#create' do
-    before do
-      User.should_receive(:transaction).and_yield
-      UserMailer.stub(:delay) { delayed_method }
-      Service::Newsletter.stub(:delay) { delayed_method }
-      user.stub(:save!)
-    end
-
     it 'saves user' do
       user.should_receive(:save!)
       service.create
     end
 
     it 'delays the sending of the welcome email' do
-      delayed_method.should_receive(:welcome).with(user.id)
+      UserMailer.should delay(:welcome).with(user.id)
       service.create
     end
 
     it 'delays the synchronization with the newsletter service' do
-      delayed_method.should_receive(:sync_from_service).with(user.id)
+      Service::Newsletter.should delay(:sync_from_service).with(user.id)
       service.create
     end
   end
@@ -40,7 +37,6 @@ describe Service::User do
   describe '#suspend' do
     before do
       User.should_receive(:transaction).and_yield
-      UserMailer.stub(:delay) { delayed_method }
       user.stub_chain(:sites, :active) { [site1, site2] }
       user.stub(:suspend!)
       site1.stub(:suspend!)
@@ -59,7 +55,7 @@ describe Service::User do
     end
 
     it 'delays the sending of the account suspended email' do
-      delayed_method.should_receive(:account_suspended)
+      UserMailer.should delay(:account_suspended).with(user.id)
       service.suspend
     end
   end
@@ -67,7 +63,6 @@ describe Service::User do
   describe '#unsuspend' do
     before do
       User.should_receive(:transaction).and_yield
-      UserMailer.stub(:delay) { delayed_method }
       user.stub_chain(:sites, :suspended) { [site1, site2] }
       user.stub(:unsuspend!)
       site1.stub(:unsuspend!)
@@ -86,7 +81,7 @@ describe Service::User do
     end
 
     it 'delays the sending of the account unsuspended email' do
-      delayed_method.should_receive(:account_unsuspended)
+      UserMailer.should delay(:account_unsuspended).with(user.id)
       service.unsuspend
     end
   end
@@ -94,8 +89,6 @@ describe Service::User do
   describe '#archive' do
     before do
       User.should_receive(:transaction).and_yield
-      UserMailer.stub(:delay) { delayed_method }
-      Service::Newsletter.stub(:delay) { delayed_method }
       user.stub_chain(:sites) { [site1, site2] }
       user.stub_chain(:tokens) { tokens }
       tokens.stub(:update_all)
@@ -130,12 +123,12 @@ describe Service::User do
       end
 
       it 'delays the unsubscription from the newsletter' do
-        delayed_method.should_receive(:unsubscribe).with(user.id)
+        Service::Newsletter.should delay(:unsubscribe).with(user.id)
         service.archive
       end
 
       it 'delays the sending of the account archived email' do
-        delayed_method.should_receive(:account_archived)
+        UserMailer.should delay(:account_archived).with(user.id)
         service.archive
       end
     end

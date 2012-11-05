@@ -35,23 +35,23 @@ describe MailLetter do
           let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'dev')) }
           before do
             @dev_user = create(:user, email: 'remy@jilion.com')
-            $worker.work_off
+            Sidekiq::Worker.clear_all
             ActionMailer::Base.deliveries.clear
           end
 
           it "delays delivery of mails" do
-            -> { subject }.should delay('%deliver%')
+            MailLetter.should delay(:deliver).with(@dev_user.id, mail_template.id)
+            subject
           end
 
           it "actually sends email when workers do their jobs" do
             subject
-            expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
+            expect { Sidekiq::Worker.drain_all }.to change(ActionMailer::Base.deliveries, :size).by(1)
           end
 
           it "sends email to user with activity sites and should send appropriate template" do
             subject
-            $worker.work_off
-
+            Sidekiq::Worker.drain_all
             ActionMailer::Base.deliveries.last.to.should eq [@dev_user.email]
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
           end
@@ -68,16 +68,21 @@ describe MailLetter do
             @free_user      = create(:user)
             site = create(:site, user: @paying_user)
             create(:billable_item, site: site, item: create(:addon_plan, price: 495), state: 'subscribed')
-            $worker.work_off
+            Sidekiq::Worker.clear_all
             ActionMailer::Base.deliveries.clear
           end
 
           context "with the 'paying' filter" do
             let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'paying')).deliver_and_log }
 
-            it "delays delivery of mails, actually sends email when workers do their jobs" do
-              -> { mail_letter }.should delay('%MailLetter%deliver%')
-              expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(1)
+            it "delays delivery of mails" do
+              MailLetter.should delay(:deliver).with(@paying_user.id, mail_template.id)
+              mail_letter
+            end
+
+            it "sends email when workers do their jobs" do
+              mail_letter
+              expect { Sidekiq::Worker.drain_all }.to change(ActionMailer::Base.deliveries, :size).by(1)
               ActionMailer::Base.deliveries.map(&:to).should =~ [[@paying_user.email]]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
             end
@@ -90,9 +95,14 @@ describe MailLetter do
           context "with the 'free' filter" do
             let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'free')).deliver_and_log }
 
-            it "delays delivery of mails, actually sends email when workers do their jobs" do
-              -> { mail_letter }.should delay('%MailLetter%deliver%', 2)
-              expect { $worker.work_off }.to change(ActionMailer::Base.deliveries, :size).by(2)
+            it "delays delivery of mails" do
+              MailLetter.should delay(:deliver).with(@free_user.id, mail_template.id)
+              mail_letter
+            end
+
+            it "sends email when workers do their jobs" do
+              mail_letter
+              expect { Sidekiq::Worker.drain_all }.to change(ActionMailer::Base.deliveries, :size).by(2)
               ActionMailer::Base.deliveries.map(&:to).should =~ [[@free_user.email], [user.email]]
               ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
             end

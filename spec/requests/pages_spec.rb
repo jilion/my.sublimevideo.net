@@ -53,7 +53,7 @@ feature "Help page" do
     background do
       sign_in_as :user
       Service::Site.new(build(:site, user: @current_user)).create
-      Delayed::Job.delete_all
+      Sidekiq::Worker.clear_all
       go 'my', '/help'
     end
 
@@ -167,7 +167,7 @@ feature "Suspended page" do
 
       scenario "and a valid credit card with 1 or more failed invoices" do
         ActionMailer::Base.deliveries.clear
-        Delayed::Job.delete_all
+        Sidekiq::Worker.clear_all
         go 'my', 'suspended'
 
         current_url.should eq "http://my.sublimevideo.dev/suspended"

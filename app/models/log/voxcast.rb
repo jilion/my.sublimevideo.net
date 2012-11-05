@@ -33,28 +33,17 @@ class Log::Voxcast < ::Log
   # = Class Methods =
   # =================
 
-  def self.download_and_create_new_logs
-    %w[download_and_create_new_non_ssl_logs download_and_create_new_ssl_logs].each do |method_name|
-      send(method_name) unless Delayed::Job.already_delayed?("%Log::Voxcast%#{method_name}%")
-    end
+  def self.delay_download_and_create_new_logs(sidekiq_options = {})
+    delay(sidekiq_options).download_and_create_new_logs(CDN::VoxcastWrapper.non_ssl_hostname)
+    delay(sidekiq_options).download_and_create_new_logs(CDN::VoxcastWrapper.ssl_hostname)
   end
 
-  def self.download_and_create_new_non_ssl_logs
-    download_and_create_new_logs_and_redelay(CDN::VoxcastWrapper.non_ssl_hostname, __method__)
-  end
-  def self.download_and_create_new_ssl_logs
-    download_and_create_new_logs_and_redelay(CDN::VoxcastWrapper.ssl_hostname, __method__)
-  end
-
-  def self.download_and_create_new_logs_and_redelay(hostname, method)
+  def self.download_and_create_new_logs(hostname)
     new_log_ended_at = nil
     while (new_log_ended_at = next_log_ended_at(hostname, new_log_ended_at)) < Time.now.utc do
       new_log_name = log_name(hostname, new_log_ended_at)
-      new_log_file = CDN::VoxcastWrapper.download_log(new_log_name)
+      new_log_file = CDN::VoxcastWrapper.download_log(new_log_name) # will retry 5 times to dowload
       with(safe: true).create(name: new_log_name, file: new_log_file) if new_log_file
-    end
-    unless Delayed::Job.already_delayed?("%Log::Voxcast%#{method}%")
-      delay(priority: RecurringJob::PRIORITIES[:logs], run_at: new_log_ended_at).send(method)
     end
   end
 
@@ -122,13 +111,13 @@ class Log::Voxcast < ::Log
 
 private
 
-  # after_create
+  # after_create on log model
   def delay_parse
-    self.class.delay(priority: 1).parse_log_for_stats(id)
-    self.class.delay(priority: 2, run_at: 5.seconds.from_now).parse_log_for_video_tags(id)
-    self.class.delay(priority: 3, run_at: 10.seconds.from_now).parse_log(id)
-    self.class.delay(priority: 4, run_at: 10.seconds.from_now).parse_log_for_user_agents(id)
-    self.class.delay(priority: 5, run_at: 10.seconds.from_now).parse_log_for_referrers(id)
+    self.class.delay(queue: 'high').parse_log_for_stats(id)
+    self.class.delay(queue: 'high', at: 5.seconds.from_now.to_i).parse_log_for_video_tags(id)
+    self.class.delay(queue: 'slow', at: 10.seconds.from_now.to_i).parse_log(id)
+    self.class.delay(queue: 'slow', at: 10.seconds.from_now.to_i).parse_log_for_user_agents(id)
+    self.class.delay(queue: 'slow', at: 10.seconds.from_now.to_i).parse_log_for_referrers(id)
   end
 
   # before_validation

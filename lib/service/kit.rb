@@ -21,8 +21,8 @@ module Service
         kit.update_attributes!(params, as: :admin)
 
         kit.site.touch(:settings_updated_at)
-        Service::Settings.delay.update_all_types!(kit.site_id)
       end
+      Service::Settings.delay.update_all_types!(kit.site_id)
       true
     rescue ActiveRecord::RecordInvalid
       false

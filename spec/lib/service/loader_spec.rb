@@ -2,6 +2,10 @@ require 'fast_spec_helper'
 require 'rails/railtie'
 require 'fog'
 
+require 'sidekiq'
+require File.expand_path('spec/config/sidekiq')
+require File.expand_path('spec/support/sidekiq_custom_matchers')
+
 # for fog_mock
 require 'carrierwave'
 require File.expand_path('config/initializers/carrierwave')
@@ -27,7 +31,6 @@ describe Service::Loader, :fog_mock do
   let(:app_component) { mock(App::Component, token: 'e') }
   let(:loader) { described_class.new(site, 'stable') }
   before do
-    CDN.stub(:delay) { mock(purge: true) }
     App::Component.stub(:app_component) { app_component }
     App::ComponentVersionDependenciesSolver.stub(:components_dependencies) { {
       'e' => '1.0.0',

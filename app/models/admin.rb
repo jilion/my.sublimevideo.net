@@ -5,7 +5,7 @@ class Admin < ActiveRecord::Base
   include AdminRoleMethods
 
   devise :database_authenticatable, :token_authenticatable, :invitable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable, :lockable
+         :recoverable, :rememberable, :trackable, :validatable, :lockable, :async
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :roles
 

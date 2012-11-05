@@ -7,10 +7,10 @@ module OneTime
         scheduled, delay = 0, 5
         ::Site.active.find_each(batch_size: 100) do |site|
           if options[:loaders]
-            ::Service::Loader.delay(priority: 200, run_at: delay.seconds.from_now).update_all_stages!(site.id, purge: false)
+            ::Service::Loader.delay(queue: 'low', at: delay.seconds.from_now.to_i).update_all_stages!(site.id, purge: false)
           end
           if options[:settings]
-            ::Service::Settings.delay(priority: 200, run_at: delay.seconds.from_now).update_all_types!(site.id, purge: false)
+            ::Service::Settings.delay(queue: 'low', at: delay.seconds.from_now.to_i).update_all_types!(site.id, purge: false)
           end
 
           scheduled += 1
@@ -67,7 +67,7 @@ module OneTime
         free_addon_plans          = AddonPlan.free_addon_plans
         free_addon_plans_filtered = AddonPlan.free_addon_plans(reject: %w[logo stats support])
         ::Site.not_archived.find_each(batch_size: 100) do |site|
-          Service::Site.delay(priority: 200).migrate_plan_to_addons!(site.id, free_addon_plans, free_addon_plans_filtered)
+          Service::Site.delay(queue: 'low').migrate_plan_to_addons!(site.id, free_addon_plans, free_addon_plans_filtered)
 
           scheduled += 1
 
@@ -83,7 +83,7 @@ module OneTime
       def create_default_kit_for_all_non_archived_sites
         scheduled = 0
         ::Site.not_archived.includes(:kits).where(kits: { id: nil }).find_each(batch_size: 100) do |site|
-          Service::Site.delay(priority: 200).create_default_kit(site.id)
+          Service::Site.delay(queue: 'low').create_default_kit(site.id)
 
           scheduled += 1
 

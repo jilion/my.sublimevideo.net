@@ -2,14 +2,24 @@ require_dependency 'recurring_job'
 
 namespace :scheduler do
 
-  desc "Supervise if all recurring jobs are scheduled"
-  task :supervise_jobs => :environment do
-    RecurringJob.supervise
+  desc "Supervise job queues"
+  task :supervise => :environment do
+    RecurringJob.supervise_queues
   end
 
-  desc "Launch all recurring jobs if they are not already scheduled"
-  task :launch_all => :environment do
-    RecurringJob.launch_all
+  desc "Schedule all daily recurring jobs."
+  task :daily => :environment do
+    RecurringJob.schedule_daily_tasks
+  end
+
+  desc "Schedule all hourly recurring jobs."
+  task :hourly => :environment do
+    RecurringJob.schedule_hourly_tasks
+  end
+
+  desc "Schedule logs recurring download & parsing for the next 10 minures"
+  task :frequent => :environment do
+    RecurringJob.schedule_frequent_tasks
   end
 
 end

@@ -15,23 +15,26 @@ development:
   adapter: postgresql
   encoding: utf8
   database: msv_development_<%= suffix %>
-  pool: 10
+  pool: 25
   host: localhost
 
 test:
   adapter: postgresql
   encoding: utf8
   database: msv_test_<%= suffix %>
+  pool: 25
   host: localhost
 
 staging:
   adapter: postgresql
   encoding: utf8
   database: msv_staging
+  pool: 25
   host: localhost
 
 production:
   adapter: postgresql
   encoding: utf8
   database: msv_development_<%= suffix %>
+  pool: 25
   host: localhost

@@ -1,4 +1,6 @@
 require 'fast_spec_helper'
+require 'active_support/core_ext'
+
 require File.expand_path('lib/stats_exporter')
 
 describe StatsExporter do

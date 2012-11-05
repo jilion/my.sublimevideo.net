@@ -64,6 +64,7 @@ end
 feature "Admins invitations:" do
   background do
     ActionMailer::Base.deliveries.clear
+    Sidekiq::Worker.clear_all
   end
 
   scenario "new invitation" do
@@ -78,6 +79,8 @@ feature "Admins invitations:" do
 
     current_url.should eq "http://admin.sublimevideo.dev/admins"
     page.should have_content I18n.translate('devise.invitations.admin.send_instructions')
+
+    Sidekiq::Worker.drain_all
 
     Admin.last.email.should eq "invited@admin.com"
     Admin.last.invitation_token.should be_present

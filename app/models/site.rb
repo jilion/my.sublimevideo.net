@@ -64,7 +64,7 @@ class Site < ActiveRecord::Base
   has_many :app_designs_components, through: :app_designs, source: :component
   has_many :addon_plans_components, through: :addon_plans, source: :components
   def components
-    app_designs_components + addon_plans_components
+    app_designs_components.includes(:versions) + addon_plans_components.includes(:versions)
   end
 
   # Mongoid associations
@@ -103,7 +103,7 @@ class Site < ActiveRecord::Base
   end
 
   # Only when accessible_stage change in admin
-  after_save ->(site) { Service::Loader.delay.update_all_stages!(site.id) if site.accessible_stage_changed? }
+  after_commit ->(site) { Service::Loader.delay.update_all_stages!(site.id) if site.accessible_stage_changed? }
 
   # =================
   # = State Machine =
@@ -115,8 +115,9 @@ class Site < ActiveRecord::Base
     event(:unsuspend) { transition :suspended => :active }
 
     after_transition ->(site) do
-      Service::Loader.delay.update_all_stages!(site.id)
-      Service::Settings.delay.update_all_types!(site.id)
+      # Delay for 5 seconds to be sure that commit transaction is done.
+      Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id)
+      Service::Settings.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
     end
 
     before_transition :on => :suspend do |site, transition|

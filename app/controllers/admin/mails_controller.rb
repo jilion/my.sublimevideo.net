@@ -26,8 +26,7 @@ class Admin::MailsController < Admin::AdminController
 
   # POST /mails
   def create
-    @mail_letter = MailLetter.new(params[:mail].merge(admin_id: current_admin.id))
-    @mail_letter.delay.deliver_and_log
+    MailLetter.delay.deliver_and_log(params[:mail].merge(admin_id: current_admin.id))
 
     redirect_to [:admin, :mails], notice: "Sending in progress..."
   end

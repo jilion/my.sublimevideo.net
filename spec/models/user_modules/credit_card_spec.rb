@@ -215,8 +215,8 @@ describe UserModules::CreditCard do
     describe ".send_credit_card_expiration" do
       it "sends 'cc will expire' email when user's credit card will expire at the end of the current month" do
         User.stub_chain(:paying, :cc_expire_this_month, :find_each).and_yield(stub(id: 1234))
-
-        -> { User.send_credit_card_expiration }.should delay('%Class%credit_card_will_expire%')
+        BillingMailer.should delay(:credit_card_will_expire).with(1234)
+        User.send_credit_card_expiration
       end
     end
 

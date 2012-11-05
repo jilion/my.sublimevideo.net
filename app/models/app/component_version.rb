@@ -13,6 +13,10 @@ class App::ComponentVersion < ActiveRecord::Base
   validates :component, :zip, presence: true
   validates :version, uniqueness: { scope: :app_component_id }
 
+  before_validation ->(component_version) do
+    component_version.dependencies ||= {}
+  end
+
   def token=(token)
     self.component = App::Component.find_by_token!(token)
   end

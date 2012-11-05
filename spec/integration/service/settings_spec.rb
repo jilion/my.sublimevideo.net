@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Service::Settings, :fog_mock do
-  before { CDN.stub(:delay) { mock(purge: true) } }
-
   context "with populates addons" do
     describe "default settings of a new site" do
       let(:site) {
