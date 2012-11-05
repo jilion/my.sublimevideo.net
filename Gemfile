@@ -106,7 +106,6 @@ gem 'solve', '0.4.0.rc1'
 # in production environments by default.
 group :assets do
   gem 'asset_sync'
-  gem 'sass-rails',           '~> 3.2.5'
   gem 'eco'
   gem 'uglifier'
   gem 'haml_coffee_assets',   '~> 1.4.6'
@@ -116,6 +115,7 @@ group :assets do
   # gem 'prototype-rails',       '~> 3.2.1'
   gem 'rails-backbone',        '~> 0.6.0'
 end
+gem 'sass-rails', '~> 3.2.5'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.11'
