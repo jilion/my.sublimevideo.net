@@ -33,6 +33,10 @@ class Log::Voxcast < ::Log
   # = Class Methods =
   # =================
 
+  def self.safely_create(attributes)
+    with(safe: true).create(attributes)
+  end
+
   def self.download_and_create_new_logs
     %w[download_and_create_new_non_ssl_logs download_and_create_new_ssl_logs].each do |method_name|
       send(method_name) unless Delayed::Job.already_delayed?("%Log::Voxcast%#{method_name}%")

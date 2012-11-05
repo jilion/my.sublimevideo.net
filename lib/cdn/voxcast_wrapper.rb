@@ -31,6 +31,13 @@ module CDN
         end
       end
 
+      def logs_list(hostname)
+        rescue_and_retry(5) do
+          logs = client.voxel_voxcast_ondemand_logs_list(device_id: device_id, hostname: hostname)
+          logs["log_files"]["sites"]["hostname"]["log_file"]
+        end
+      end
+
       def download_log(filename)
         rescue_and_retry(5) do
           xml = client.voxel_voxcast_ondemand_logs_download(filename: filename)
