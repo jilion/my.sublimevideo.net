@@ -3,6 +3,7 @@ pg_restore --verbose --clean --no-acl --no-owner -d msv_development_master db/ba
 
 Copying Production db to Staging
 - https://devcenter.heroku.com/articles/migrating-data-between-plans
+heroku pg:reset HEROKU_POSTGRESQL_DB_NAME
 heroku pgbackups:restore HEROKU_POSTGRESQL_DB_NAME SNAPSHOT_URL --app sv-my-staging
 
 HEROKU_POSTGRESQL_DB_NAME from heroku pg
