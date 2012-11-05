@@ -1,7 +1,6 @@
-- checked = params[:settings]
 - id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
 .entry.checkbox_wrap
   = hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", 0, data: { addon: params[:addon].name, setting: params[:setting_key] }
-  = check_box_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", 1, params[:settings], id: id, data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: params[:settings])
-  = label_tag id, t("kit.#{params[:addon].name}.settings.#{params[:setting_key]}")
+  = check_box_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", 1, params[:setting], id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: params[:setting])
+  = label_tag id, t("kit.#{params[:addon].name}.settings.#{params[:translation_key] || params[:setting_key]}")
 .spacer

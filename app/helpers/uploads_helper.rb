@@ -20,10 +20,6 @@ module UploadsHelper
   #               data: { create_resource_url: options[:create_resource_url] }
   # end
 
-  def s3_bucket_url
-    "https://s3.amazonaws.com/#{S3.buckets['videos_upload']}/"
-  end
-
   def s3_key(path)
     "#{path}/${filename}"
   end
@@ -37,7 +33,7 @@ module UploadsHelper
     Base64.encode64(
       "{'expiration': '#{10.hours.from_now.utc.strftime('%Y-%m-%dT%H:%M:%S.000Z')}',
         'conditions': [
-          {'bucket': '#{S3.buckets['videos_upload']}'},
+          {'bucket': '#{options[:bucket]}'},
           ['starts-with', '$key', ''],
           ['starts-with', '$name', ''],
           ['starts-with', '$Filename', ''],
@@ -56,15 +52,15 @@ module UploadsHelper
       S3.send(:secret_access_key), s3_policy(options))).gsub("\n","")
   end
 
-  def upload_params_for(site)
+  def upload_params(options = {})
     params = {}
-    params[:key]                   = s3_key(site.token)
-    params[:Filename]              = s3_key(site.token)
+    params[:key]                   = options[:s3_key]
+    params[:Filename]              = options[:s3_key]
     params[:AWSAccessKeyId]        = S3.send(:access_key_id)
-    params[:acl]                   = 'private'
+    params[:acl]                   = options[:acl] || 'private'
     params[:success_action_status] = '201'
-    params[:policy]                = s3_policy(success_action_redirect: site_videos_url(site))
-    params[:signature]             = s3_signature(success_action_redirect: site_videos_url(site))
+    params[:policy]                = s3_policy(options)
+    params[:signature]             = s3_signature(options)
 
     params
   end

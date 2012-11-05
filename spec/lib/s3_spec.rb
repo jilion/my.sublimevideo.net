@@ -5,6 +5,10 @@ require File.expand_path('lib/s3')
 
 describe S3 do
 
+  describe '.bucket_url' do
+    it { described_class.bucket_url('foo').should eq 'https://s3.amazonaws.com/foo/' }
+  end
+
   describe "logs list" do
     use_vcr_cassette "s3/logs_bucket_all_keys"
 

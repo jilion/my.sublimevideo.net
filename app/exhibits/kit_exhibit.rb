@@ -26,46 +26,35 @@ class KitExhibit < DisplayCase::Exhibit
     first_inputs + between_inputs + last_inputs
   end
 
-  def render_settings_input_fields(addon_plan, template, options = {})
-    if settings_template = addon_plan.settings_template_for(self.design) and settings_template.template
-      options.reverse_merge!(show_title: true, show_break: true)
-
-      html = settings_template.template.inject('') do |html, (setting_key, setting_fields)|
-        html += self.render_input_field(addon_plan.addon, setting_key, setting_fields, template)
-        html
-      end.html_safe
-
-      if html.present?
-        html  = template.content_tag(:h3, I18n.t("kit.#{addon_plan.addon.name}.title")) + html if options[:show_title]
-        html += template.content_tag(:div, '', class: %w[spacer] + (options[:show_break] ? %w[big_break] : []))
-      end
-
-      html.html_safe
-    end
-  end
-
   def render_input_field(template, params = {})
-    params[:template_settings] = params[:settings_template][params[:setting_key]]
-    params[:settings] = self.settings[params[:addon].name][params[:setting_key]] rescue {}
+    params[:setting_template]  = params[:settings_template][params[:setting_key]]
+    params[:settings] = self.settings
+    params[:setting]  = self.settings[params[:addon].name][params[:setting_key]] rescue {}
 
-    case params[:template_settings][:type]
-    when 'boolean'
-      if params[:template_settings][:values].many?
-        template.render('kits/inputs/check_box', kit: self, params: params)
-      end
-    when 'float'
-      template.render('kits/inputs/range', kit: self, params: params)
-    when 'string'
-      if (2..3).cover?(params[:template_settings][:values].size)
-        template.render('kits/inputs/radio', kit: self, params: params)
-      end
-    when 'url'
-      template.render('kits/inputs/text', kit: self, params: params)
-    when 'size'
-      if params[:setting_key] =~ /width\z/
-        template.render('kits/inputs/size', kit: self, params: params)
-      end
-    end || ''
+    if params[:partial]
+      template.render("kits/inputs/#{params[:partial]}", kit: self, params: params)
+    else
+      case params[:setting_template][:type]
+      when 'boolean'
+        if params[:setting_template][:values].many?
+          template.render('kits/inputs/check_box', kit: self, params: params)
+        end
+      when 'float'
+        template.render('kits/inputs/range', kit: self, params: params)
+      when 'string'
+        if params[:setting_template][:values].many?
+          template.render('kits/inputs/radio', kit: self, params: params)
+        end
+      when 'url'
+        template.render('kits/inputs/text', kit: self, params: params)
+      when 'image'
+        template.render('kits/inputs/image', kit: self, params: params)
+      when 'size'
+        if params[:setting_key] =~ /width\z/
+          template.render('kits/inputs/size', kit: self, params: params)
+        end
+      end || ''
+    end
   end
 
   def eql?(other)

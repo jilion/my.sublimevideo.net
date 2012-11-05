@@ -9,8 +9,6 @@
 
   #preview-standard
 
-  -#= link_to 'Refresh', '', id: 'preview-standard-button', class: 'blue_button'
-
 #kit_settings
   %h3 Edit player settings
 
@@ -42,20 +40,14 @@
     .left.expandable
       = render 'kits/form_boxes/sharing_settings', site: site, kit: kit
 
-  #youtube_settings.expandable_settings_box
-    %h4.expanding_handler
-      = link_to 'YouTube settings', ''
-    .left.expandable
-      = render 'kits/form_boxes/youtube_settings', site: site, kit: kit
+  -##youtube_settings.expandable_settings_box
+  -#  %h4.expanding_handler
+  -#    = link_to 'YouTube settings', ''
+  -#  .left.expandable
+  -#    = render 'kits/form_boxes/youtube_settings', site: site, kit: kit
 
   #embed_settings.expandable_settings_box
     %h4.expanding_handler
       = link_to 'Embed settings', ''
     .left.expandable
       = render 'kits/form_boxes/embed_settings', site: site, kit: kit
-
-    -#- addon_plans = site.addon_plans.includes(:addon).where{ addon.name >> %w[video_player controls initial] }.order(:id)
-    -#= raw kit.render_grouped_settings_input_fields(addon_plans, self)
-    -#- site.addon_plans.includes(:addon).where{ addon.name << %w[video_player controls initial lightbox] }.order(:id).each do |addon_plan|
-    -#  = raw kit.render_settings_input_fields(addon_plan, self)
-    -#= kit.render_settings_input_fields(site.addon_plans.includes(:addon).where{ addon.name == 'lightbox' }.first, self)

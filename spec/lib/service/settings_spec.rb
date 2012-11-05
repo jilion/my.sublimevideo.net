@@ -11,9 +11,9 @@ require 'carrierwave'
 require File.expand_path('app/models/app')
 require File.expand_path('config/initializers/carrierwave')
 require File.expand_path('spec/config/carrierwave')
-require File.expand_path('lib/s3')
+require 's3'
 
-require File.expand_path('lib/service/settings')
+require 'service/settings'
 
 unless defined?(ActiveRecord)
   Site = Class.new

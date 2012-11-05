@@ -114,7 +114,7 @@ describe OneTime::Site do
       Sidekiq::Worker.drain_all
 
       # free check
-      @site_free.reload.billable_items.should have(12).items
+      @site_free.reload.billable_items.should have(13).items
       @site_free.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_free.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_free.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -125,10 +125,11 @@ describe OneTime::Site do
       @site_free.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
       @site_free.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
-      @site_free.billable_item_activities.should have(12).items
+      @site_free.billable_item_activities.should have(13).items
       @site_free.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_free.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_free.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -139,11 +140,12 @@ describe OneTime::Site do
       @site_free.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_free.billable_item_activities.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
       @site_free.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_free.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
       # sponsored check
-      @site_sponsored.reload.billable_items.should have(12).items
+      @site_sponsored.reload.billable_items.should have(13).items
       @site_sponsored.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_sponsored.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_sponsored.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -154,10 +156,11 @@ describe OneTime::Site do
       @site_sponsored.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_sponsored.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_sponsored.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_sponsored.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
       @site_sponsored.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_sponsored.billable_items.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'sponsored').should have(1).item
 
-      @site_sponsored.billable_item_activities.should have(12).items
+      @site_sponsored.billable_item_activities.should have(13).items
       @site_sponsored.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_sponsored.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_sponsored.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -168,11 +171,12 @@ describe OneTime::Site do
       @site_sponsored.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_sponsored.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_sponsored.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_sponsored.billable_item_activities.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
       @site_sponsored.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_sponsored.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'sponsored').should have(1).item
 
       # trial check
-      @site_trial.reload.billable_items.should have(12).items
+      @site_trial.reload.billable_items.should have(13).items
       @site_trial.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_trial.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_trial.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -183,10 +187,11 @@ describe OneTime::Site do
       @site_trial.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_trial.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
       @site_trial.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
-      @site_trial.billable_item_activities.should have(12).items
+      @site_trial.billable_item_activities.should have(13).items
       @site_trial.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_trial.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_trial.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -197,11 +202,12 @@ describe OneTime::Site do
       @site_trial.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_trial.billable_item_activities.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
       @site_trial.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_trial.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
       # plus check
-      @site_plus.reload.billable_items.should have(12).items
+      @site_plus.reload.billable_items.should have(13).items
       @site_plus.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_plus.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_plus.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -212,10 +218,11 @@ describe OneTime::Site do
       @site_plus.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'subscribed').should have(1).item
       @site_plus.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_plus.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_plus.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
       @site_plus.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_plus.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
-      @site_plus.billable_item_activities.should have(12).items
+      @site_plus.billable_item_activities.should have(13).items
       @site_plus.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_plus.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_plus.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -226,11 +233,12 @@ describe OneTime::Site do
       @site_plus.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'subscribed').should have(1).item
       @site_plus.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
       @site_plus.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_plus.billable_item_activities.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
       @site_plus.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_plus.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
 
       # premium check
-      @site_premium.reload.billable_items.should have(12).items
+      @site_premium.reload.billable_items.should have(13).items
       @site_premium.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_premium.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_premium.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -241,10 +249,11 @@ describe OneTime::Site do
       @site_premium.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'subscribed').should have(1).item
       @site_premium.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'subscribed').should have(1).item
       @site_premium.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_premium.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
       @site_premium.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_premium.billable_items.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'sponsored').should have(1).item
 
-      @site_premium.billable_item_activities.should have(12).items
+      @site_premium.billable_item_activities.should have(13).items
       @site_premium.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
       @site_premium.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
       @site_premium.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
@@ -255,11 +264,12 @@ describe OneTime::Site do
       @site_premium.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'subscribed').should have(1).item
       @site_premium.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'subscribed').should have(1).item
       @site_premium.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_premium.billable_item_activities.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
       @site_premium.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
       @site_premium.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'sponsored').should have(1).item
 
       # suspended check
-      @site_suspended.reload.billable_items.should have(12).items
+      @site_suspended.reload.billable_items.should have(13).items
       @site_suspended.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
       @site_suspended.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
       @site_suspended.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
@@ -270,10 +280,11 @@ describe OneTime::Site do
       @site_suspended.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
       @site_suspended.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
       @site_suspended.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
+      @site_suspended.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'suspended').should have(1).item
       @site_suspended.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
       @site_suspended.billable_items.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'suspended').should have(1).item
 
-      @site_suspended.billable_item_activities.should have(12).items
+      @site_suspended.billable_item_activities.should have(13).items
       @site_suspended.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
       @site_suspended.billable_item_activities.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
       @site_suspended.billable_item_activities.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
@@ -284,6 +295,7 @@ describe OneTime::Site do
       @site_suspended.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
       @site_suspended.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
       @site_suspended.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
+      @site_suspended.billable_item_activities.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'suspended').should have(1).item
       @site_suspended.billable_item_activities.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
       @site_suspended.billable_item_activities.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'suspended').should have(1).item
 

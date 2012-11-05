@@ -6,7 +6,6 @@ class MySublimeVideo.UI.KitEditor
     this.setupModels()
     this.setupHelpers()
     this.setupInputsObservers()
-    # this.setupPreviewRefresher()
     this.setupLightboxTester()
 
     sublimevideo.ready =>
@@ -21,8 +20,15 @@ class MySublimeVideo.UI.KitEditor
     thumbnail = new MySublimeVideo.Models.Thumbnail(initialLink: 'text', src: 'Test')
     poster  = new MySublimeVideo.Models.Image(src: '//media.jilion.com/images/midnight_sun_800.jpg')
     sources = new MySublimeVideo.Collections.Sources([
-      new MySublimeVideo.Models.Source().setAndPreloadSrc('//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4')
-      new MySublimeVideo.Models.Source(format: 'webmogg').setAndPreloadSrc('//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm')
+      new MySublimeVideo.Models.Source
+        src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4'
+        embedWidth: 320
+        embedHeight: 180
+      new MySublimeVideo.Models.Source
+        format: 'webmogg'
+        src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm'
+        embedWidth: 320
+        embedHeight: 180
     ])
 
     @video = new MySublimeVideo.Models.Video
@@ -36,7 +42,7 @@ class MySublimeVideo.UI.KitEditor
       lightbox: new MySublimeVideo.Helpers.VideoTagHelper(@video, type: 'lightbox', forceSettings: true)
 
   setupInputsObservers: ->
-    $("input[type=checkbox], input[type=radio], input[type=range], input[type=text]").each (index, el) =>
+    $("input[type=checkbox], input[type=radio], input[type=range], input[type=text], input[type=hidden]").each (index, el) =>
       $(el).on 'change', =>
         this.refreshVideoTagFromSettings('standard')
         false
@@ -57,10 +63,16 @@ class MySublimeVideo.UI.KitEditor
       $el.on 'click', (e) =>
         this.toggleDependantInputs($el)
 
-  setupPreviewRefresher: ->
-    $('#preview-standard-button').on 'click', =>
-      this.refreshVideoTagFromSettings('standard')
-      false
+    $('input[name="kit[addons][logo][type]"]').on 'change', (e) =>
+      $el = $(e.target)
+      if $el.val() is 'custom'
+        $('#custom_logo_fields').show()
+      else
+        $('#custom_logo_fields').hide()
+
+    $('#kit_setting-logo-image_url').on 'change', (e) =>
+      $el = $(e.target)
+      console.log $el
 
   setupLightboxTester: ->
     @$lightboxTestButton.on 'click', =>
@@ -73,18 +85,20 @@ class MySublimeVideo.UI.KitEditor
 
     switch type
       when 'standard'
-        $('#preview-standard').replaceWith(@videoTagHelpers[type].generateVideoCode(id: 'preview-standard'))
+        videoCode = @videoTagHelpers[type].generateVideoCode(id: 'preview-standard')
+        $('#preview-standard').replaceWith(videoCode)
+
       when 'lightbox'
         lightboxCode = @videoTagHelpers[type].generateLightboxCode(href: '#preview-lightbox', id: 'preview-lightbox-button', class: 'blue_button sublime')
         videoCode = @videoTagHelpers[type].generateVideoCode(id: 'preview-lightbox', class: '')
 
         @$lightboxTestButton.replaceWith(lightboxCode)
-        $('#lightbox-test').replaceWith(videoCode)
+        $('#preview-lightbox').replaceWith(videoCode)
 
         @$lightboxTestButton = $('#preview-lightbox-button')
 
         # NEW API
-        # sublimevideo.lightbox('lightbox-test-button').open()
+        # sublimevideo.lightbox('preview-lightbox-button').open()
 
     sublimevideo.prepare("preview-#{type}")
 

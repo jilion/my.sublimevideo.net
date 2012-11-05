@@ -301,6 +301,11 @@ module Populate
                 values: [true],
                 default: true
               },
+              type: {
+                type: 'string',
+                values: ['sv'],
+                default: 'sv'
+              },
               visibility: {
                 type: 'string',
                 values: ['autohide', 'visible'],
@@ -308,7 +313,7 @@ module Populate
               },
               position: {
                 type: 'string',
-                values: ['bottomLeft', 'bottomRight'],
+                values: ['bottomRight'],
                 default: 'bottomRight'
               },
               image_url: {
@@ -327,6 +332,11 @@ module Populate
                 values: [true, false],
                 default: false
               },
+              type: {
+                type: 'string',
+                values: ['sv'],
+                default: 'sv'
+              },
               visibility: {
                 type: 'string',
                 values: ['autohide', 'visible'],
@@ -334,7 +344,7 @@ module Populate
               },
               position: {
                 type: 'string',
-                values: ['bottomLeft', 'bottomRight'],
+                values: ['bottomRight'],
                 default: 'bottomRight'
               },
               image_url: {
@@ -354,6 +364,11 @@ module Populate
                 values: [true, false],
                 default: false
               },
+              type: {
+                type: 'string',
+                values: ['sv', 'custom'],
+                default: 'sv'
+              },
               visibility: {
                 type: 'string',
                 values: ['autohide', 'visible'],
@@ -361,13 +376,13 @@ module Populate
               },
               position: {
                 type: 'string',
-                values: ['bottomLeft', 'bottomRight'],
+                values: ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'],
                 default: 'bottomRight'
               },
               image_url: {
                 type: 'image'
               },
-              action_url: {
+              link_url: {
                 type: 'url'
               }
             }

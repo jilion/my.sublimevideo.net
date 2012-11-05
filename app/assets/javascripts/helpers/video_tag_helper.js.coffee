@@ -92,20 +92,17 @@ class MySublimeVideo.Helpers.VideoTagHelper
 
   generateDataSettingsArrayFromDOM: (addons) ->
     for addonName in addons
-      $("input[type=checkbox][data-addon='#{addonName}'], " +
-      "input[type=radio][data-addon='#{addonName}']:checked, " +
-      "input[type=range][data-addon='#{addonName}'], " +
-      "input[type=text][data-addon='#{addonName}']").each (index, el) =>
+      $("input.previewable[data-addon='#{addonName}'], " +
+      "input[type=radio][data-addon='#{addonName}']:checked").each (index, el) =>
         $el = $(el)
         currentValue    = $el.val()
         defaultValue    = this.getDefaultValue($el)
         dataSettingName = this.getDataSettingName(addonName, $el.data('setting'))
 
         switch this.getInputType($el)
-          when 'range'    then this.processRangeInput(dataSettingName, currentValue, defaultValue)
-          when 'radio'    then this.processRadioInput(dataSettingName, currentValue, defaultValue)
-          when 'checkbox' then this.processCheckBoxAndTextInput(dataSettingName, $el.attr('checked')?, defaultValue)
-          when 'text'     then this.processCheckBoxAndTextInput(dataSettingName, currentValue, defaultValue)
+          when 'range'                   then this.processRangeInput(dataSettingName, currentValue, defaultValue)
+          when 'checkbox'                then this.processCheckBoxInput(dataSettingName, $el.attr('checked')?, defaultValue)
+          when 'radio', 'text', 'hidden' then this.processInputWithValue(dataSettingName, currentValue, defaultValue)
 
   getInputType: ($el) ->
     $el.attr('type')
@@ -126,13 +123,14 @@ class MySublimeVideo.Helpers.VideoTagHelper
     currentValue = Math.round(currentValue * 100) / 100
     this.pushDataSetting(dataSettingName, currentValue) if @options['forceSettings'] or (currentValue isnt defaultValue)
 
-  processRadioInput: (dataSettingName, currentValue, defaultValue) ->
-    this.pushDataSetting(dataSettingName, currentValue) if @options['forceSettings'] or !defaultValue
-
-  processCheckBoxAndTextInput: (dataSettingName, currentValue, defaultValue) ->
+  processCheckBoxInput: (dataSettingName, currentValue, defaultValue) ->
     if !currentValue and (@options['forceSettings'] or (currentValue isnt defaultValue))
       this.pushDataSetting(dataSettingName, 'none')
 
+  processInputWithValue: (dataSettingName, currentValue, defaultValue) ->
+    if @options['forceSettings'] or (currentValue isnt defaultValue)
+      this.pushDataSetting(dataSettingName, currentValue)
+
   pushDataSetting: (dataSettingName, currentValue) ->
-    if !/(-enable|enable-|-visibility)/.test(dataSettingName) or @dataSettings[dataSettingName.replace(/(-enable|enable-|-visibility)/, '')] isnt 'none'
-      @dataSettings[dataSettingName.replace(/(-enable|enable-|-visibility)/, '')] = currentValue.toString().underscore().dasherize()
+    if !/(-enable|-visibility)/.test(dataSettingName) or @dataSettings[dataSettingName.replace(/(-enable|-visibility)/, '')] isnt 'none'
+      @dataSettings[dataSettingName.replace(/(-enable|-visibility)/, '')] = currentValue.toString().underscore().dasherize()

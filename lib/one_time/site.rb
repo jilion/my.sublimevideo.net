@@ -31,14 +31,19 @@ module OneTime
           ::Site.not_archived.where{ plan_id >> Plan.where(name: %w[plus premium], cycle: 'month').map(&:id) }.find_each(batch_size: 100) do |site|
             price_per_day = (site.plan.price * 12) / 365
             add_to_balance = [0, ((site.plan_cycle_ended_at + 1.second - Time.now.utc) / 1.day).floor * price_per_day].max
+            old_balance = site.user.balance
             site.user.increment!(:balance, add_to_balance)
+            puts "#{((site.plan_cycle_ended_at + 1.second - Time.now.utc) / 1.day).floor} days left " +
+                 "until #{site.plan_cycle_ended_at + 1.second} (price per day: $#{price_per_day.to_f / 100}), added to " +
+                 "balance: #{add_to_balance.to_f / 100}. Old balance: $#{old_balance.to_f / 100}, " +
+                 "new balance: $#{site.user.balance.to_f / 100}"
 
             processed += 1
             total += add_to_balance
           end
         end
 
-        "Finished: $#{total} was added to user balances (for #{processed} sites in monthly plans)."
+        "Finished: $#{total.to_f / 100} was added to user balances (for #{processed} sites in monthly plans)."
       end
 
       # TODO: Remove after launch
@@ -58,7 +63,7 @@ module OneTime
           end
         end
 
-        "Finished: #{processed} sites were migrated to monthly plans and $#{total} was added to user balances."
+        "Finished: #{processed} sites were migrated to monthly plans and $#{total.to_f / 100} was added to user balances."
       end
 
       # TODO: Remove after launch

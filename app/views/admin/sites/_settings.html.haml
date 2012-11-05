@@ -22,7 +22,11 @@
   = "Loaders updated_at: #{site.loaders_updated_at}".html_safe
 %p
   = "Settings.js updated at: #{site.settings_updated_at}"
+  - cdn_base_url = "http://cdn.sublimevideo#{'-staging' if Rails.env.staging?}.net"
   %strong= "|"
-  = link_to "See license content", "http://cdn.sublimevideo.net/l/#{site.token}.js", onclick: "window.open(this); return false"
+  = link_to "See stable loader", cdn_url("js/#{site.token}.js"), onclick: "window.open(this); return false"
+  = link_to "See beta loader", cdn_url("js/#{site.token}-beta.js"), onclick: "window.open(this); return false"
   %strong= "|"
-  = link_to "See settings content", "http://cdn.sublimevideo.net/s/#{site.token}.js", onclick: "window.open(this); return false"
+  = link_to "See license content (stable)", cdn_url("l/#{site.token}.js"), onclick: "window.open(this); return false"
+  %strong= "|"
+  = link_to "See settings content (beta)", cdn_url("s/#{site.token}.js"), onclick: "window.open(this); return false"

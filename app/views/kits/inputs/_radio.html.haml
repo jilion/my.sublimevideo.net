@@ -1,11 +1,12 @@
-- value = params[:settings].presence || params[:template_settings][:default]
+- value = params[:setting].presence || params[:setting_template][:default]
+
 .entry
   - if params[:show_title]
-    %span{ style: 'font-weight:600' }= t("kit.#{params[:addon].name}.settings.#{params[:setting_key]}")
+    %span{ style: 'font-weight:600' }= t("kit.#{params[:addon].name}.settings.#{params[:translation_key] || params[:setting_key]}")
     %br
-  - params[:template_settings][:values].each do |choice|
+  - params[:setting_template][:values].each do |choice|
     - id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}_#{choice}"
     .radio_wrap
-      = radio_button_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", choice, value == choice, id: id, disabled: params[:disabled], data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: value == choice)
-      = label_tag id, t("kit.#{params[:addon].name}.values.#{params[:setting_key]}.#{choice}")
+      = radio_button_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", choice, value == choice, id: id, disabled: params[:disabled], data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: value)
+      = label_tag id, t("kit.#{params[:addon].name}.values.#{params[:translation_key] || params[:setting_key]}.#{choice}")
 .spacer

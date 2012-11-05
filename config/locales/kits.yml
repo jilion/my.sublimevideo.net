@@ -56,13 +56,23 @@ en:
     logo:
       settings:
         enable: 'SublimeVideo logo'
+        enable_custom: 'Your custom logo'
+        type: 'Select logo'
         visibility: 'SublimeVideo logo'
+        visibility_custom: 'Visibility'
         position: 'Position'
+        image_url: 'Your logo'
+        link_url: 'Hyperlink'
       values:
+        type:
+          sv: 'SublimeVideo logo'
+          custom: 'Your logo'
         visibility:
           autohide: 'Auto-hide'
           visible: 'Always visible'
         position:
+          topLeft: 'Top left'
+          topRight: 'Top right'
           bottomLeft: 'Bottom left'
           bottomRight: 'Bottom right'
 

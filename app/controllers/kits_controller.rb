@@ -1,9 +1,13 @@
 require_dependency 'service/kit'
+require_dependency 'service/addon/custom_logo'
 
 class KitsController < ApplicationController
+  respond_to :js, only: [:process_custom_logo]
+
   before_filter :redirect_suspended_user, :find_site_by_token!
-  before_filter :find_kit, only: [:show, :edit, :update, :set_as_default]
-  before_filter :find_sites_or_redirect_to_new_site
+  before_filter :find_kit, only: [:show, :edit, :update, :set_as_default, :process_custom_logo]
+  before_filter :find_sites_or_redirect_to_new_site, only: [:show, :edit, :update]
+  skip_before_filter :verify_authenticity_token, only: [:process_custom_logo]
 
   # GET /sites/:site_id/players
   def index
@@ -51,6 +55,12 @@ class KitsController < ApplicationController
     Service::Settings.delay.update_all_types!(@site.id)
 
     redirect_to [@site, :kits]
+  end
+
+  # POST /sites/:site_id/players/:id/process_custom_logo
+  def process_custom_logo
+    @custom_logo = Addons::CustomLogo.new(@kit, params[:file])
+    Service::Addon::CustomLogo.new(@custom_logo).upload!
   end
 
   private

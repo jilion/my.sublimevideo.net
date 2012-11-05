@@ -3,9 +3,10 @@ require_dependency 'cdn/file'
 require_dependency 'app/mangler'
 
 module Service
-  Settings = Struct.new(:site, :type, :options, :file, :cdn_file) do
+  Settings = Struct.new(:site, :type, :options) do
     self::TYPES = %w[license settings]
 
+    attr_accessor :file, :cdn_file
     delegate :upload!, :delete!, :present?, to: :cdn_file
 
     def self.update_all_types!(site_id, options = {})
@@ -21,9 +22,9 @@ module Service
 
     def initialize(*args)
       super
-      self.file = generate_file
-      self.cdn_file = CDN::File.new(
-        file,
+      @file = generate_file
+      @cdn_file = CDN::File.new(
+        @file,
         destinations,
         s3_options,
         options

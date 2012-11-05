@@ -1,14 +1,9 @@
-- if params[:addon]
-  - addon_name = params[:addon]
-  = kit.render_settings_input_fields(site.addon_plans.includes(:addon).where{ addon.name == addon_name }.first, self, show_title: false, show_break: false)
+.entry.design.select
+  = f.label :app_design_id, 'Select your player design:'
+  = f.select :app_design_id, options_from_collection_for_select(site.app_designs, :id, :title, kit.app_design_id)
 
-- else
-  .entry.design.select
-    = f.label :app_design_id, 'Select your player design:'
-    = f.select :app_design_id, options_from_collection_for_select(site.app_designs, :id, :title, kit.app_design_id)
-
-  .left
-    - addon_plans = site.addon_plans.includes(:addon).where{ addon.name >> %w[video_player controls initial] }.order(:id)
-    = raw kit.render_grouped_settings_input_fields(addon_plans, self)
-    - site.addon_plans.includes(:addon).where{ addon.name << %w[video_player controls initial lightbox stats] }.order(:id).each do |addon_plan|
-      = raw kit.render_settings_input_fields(addon_plan, self)
+.left
+  - addon_plans = site.addon_plans.includes(:addon).where{ addon.name >> %w[video_player controls initial] }.order(:id)
+  = raw kit.render_grouped_settings_input_fields(addon_plans, self)
+  - site.addon_plans.includes(:addon).where{ addon.name << %w[video_player controls initial lightbox stats] }.order(:id).each do |addon_plan|
+    -#= raw kit.render_settings_input_fields(addon_plan, self)

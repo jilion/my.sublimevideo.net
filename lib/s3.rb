@@ -8,6 +8,10 @@ module S3
 
   class << self
 
+    def bucket_url(bucket)
+      "https://s3.amazonaws.com/#{bucket}/"
+    end
+
     def logs_name_list(options = {})
       keys_names(logs_bucket, options)
     end

@@ -45,6 +45,7 @@ feature 'New kit' do
     sign_in_as :user
     @site = build(:site, user: @current_user)
     Service::Site.new(@site).create
+    go 'my', "/sites/#{@site.to_param}/players"
     click_link 'New Player'
     current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/players/new"
   end

@@ -1,0 +1,24 @@
+- custom_logo = Addons::CustomLogo.new(kit)
+- current_type = params[:settings].try(:[], :logo).try(:[], :type) || params[:settings_template][:type][:default]
+- default = current_type == 'sv' ? '' : cdn_url(custom_logo.path)
+- id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
+
+.entry#custom_logo_fields{ style: current_type == 'sv' ? 'display:none' : nil }
+  #preview_custom_logo
+    %img{ src: cdn_url(custom_logo.path) }
+  #container
+    %a#pickfiles{ href: '#' } Select file
+    %p or drag'n'drop your logo below
+    #dragdrop{ style: 'width:200px;height:100px;background-color:#BBB;' }
+    #filelist
+    %a#uploadfiles{ href: '#' } Upload file!
+    %p
+      %em Prefer a transparent PNG logo file. Double the size of the image (x2) to allow optimal rendering on Retina® displays.
+
+  :coffeescript
+    MySublimeVideo.uploader = new MySublimeVideo.Helpers.Uploaders.CustomLogoUploader
+      url: '#{process_custom_logo_site_kit_path(kit.site, kit)}'
+      extensions: 'png'
+      title: 'Custom logo'
+  = hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", cdn_url(custom_logo.path), id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: default)
+.spacer
