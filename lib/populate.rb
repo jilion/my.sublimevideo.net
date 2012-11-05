@@ -157,20 +157,6 @@ module Populate
           { name: 'twit', token: 'sf' },
           { name: 'html5', token: 'sg' }
         ],
-        App::ComponentVersion => [
-          # { component: 'ref-App::Component-app', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-app', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-app', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-app', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-twit', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-twit', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-twit', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-twit', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-html5', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-html5', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          # { component: 'ref-App::Component-html5', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
-          { component: 'ref-App::Component-html5', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
-        ],
         App::Design => [
           { name: 'classic', skin_token: 'sa.sb.sc', price: 0, availability: 'public', component: 'ref-App::Component-app' },
           { name: 'flat',    skin_token: 'sa.sd.sd', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
@@ -396,6 +382,22 @@ module Populate
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_html5', template: sharing_template }
         ]
       }
+      if Rails.env.development?
+      seeds[App::ComponentVersion] = [
+          # { component: 'ref-App::Component-app', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-app', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-app', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-app', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-twit', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-twit', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-twit', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-twit', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-html5', version: '2.0.0-alpha', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-html5', version: '2.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          # { component: 'ref-App::Component-html5', version: '1.1.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
+          { component: 'ref-App::Component-html5', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) }
+        ],
+      end
 
       seeds.each do |klass, new_record|
         new_record.each do |attributes|
