@@ -106,14 +106,15 @@ module Service
         unless (plugins = kits_plugins(kit, addon_plan.addon_id)).empty?
           hash[addon_plan.kind][:plugins] = plugins
         end
-        template = addon_plan.settings_templates.detect { |st| st.plugin.app_design_id.in?([nil, kit.app_design_id]) }
-        hash[addon_plan.kind][:settings] = addon_plan_settings(template.template, kit.settings[addon_plan.addon.name])
-        hash[addon_plan.kind][:allowed_settings] = addon_plan_allowed_settings(template.template)
-        hash[addon_plan.kind][:id] = template.plugin.token
-        unless (condition = template.plugin.condition).empty?
-          hash[addon_plan.kind][:condition] = condition
+        if template = addon_plan.settings_templates.detect { |st| st.plugin.app_design_id.in?([nil, kit.app_design_id]) }
+          hash[addon_plan.kind][:settings] = addon_plan_settings(template.template, kit.settings[addon_plan.addon.name])
+          hash[addon_plan.kind][:allowed_settings] = addon_plan_allowed_settings(template.template)
+          hash[addon_plan.kind][:id] = template.plugin.token
+          unless (condition = template.plugin.condition).empty?
+            hash[addon_plan.kind][:condition] = condition
+          end
         end
-        hash
+        hash.reject { |k, v| v.empty? }
       }
     end
 

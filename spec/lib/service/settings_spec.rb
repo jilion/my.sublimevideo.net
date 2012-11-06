@@ -234,21 +234,25 @@ describe Service::Settings, :fog_mock do
       let(:kit2) { mock(Kit, name: 'kit2', app_design_id: 2, skin_token: 'skin_token2', settings: kit_settings2) }
       let(:addon1) { mock(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
       let(:addon2) { mock(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
+      let(:addon3) { mock(Addon, id: 3, name: 'addon3', parent_addon_id: nil) }
       let(:plugin1) { mock(App::Plugin, app_design_id: nil, token: 'plugin1', condition: {}) }
       let(:plugin2_1) { mock(App::Plugin, app_design_id: 1, token: 'plugin2_1', condition: {}) }
       let(:plugin2_2) { mock(App::Plugin, app_design_id: 2, token: 'plugin2_2', condition: {}) }
+      let(:plugin3) { mock(App::Plugin, app_design_id: 3, token: 'plugin3', condition: {}) }
       let(:settings_template1) { mock(App::SettingsTemplate, template: template1, plugin: plugin1) }
       let(:settings_template2_1) { mock(App::SettingsTemplate, template: template2_1, plugin: plugin2_1) }
       let(:settings_template2_2) { mock(App::SettingsTemplate, template: template2_2, plugin: plugin2_2) }
+      let(:settings_template3) { mock(App::SettingsTemplate, plugin: plugin3) }
       let(:addon_plan1) { mock(AddonPlan, addon: addon1, addon_id: addon1.id, kind: 'addon_kind1', settings_templates: [settings_template1]) }
       let(:addon_plan2) { mock(AddonPlan, addon: addon2, addon_id: addon2.id, kind: 'addon_kind2', settings_templates: [settings_template2_1, settings_template2_2]) }
+      let(:addon_plan3) { mock(AddonPlan, addon: addon3, addon_id: addon3.id, kind: 'addon_kind3', settings_templates: [settings_template3]) }
 
       before do
-        site.stub_chain(:addon_plans, :includes) { [addon_plan1, addon_plan2] }
+        site.stub_chain(:addon_plans, :includes) { [addon_plan1, addon_plan2, addon_plan3] }
         site.stub_chain(:kits, :includes) { [kit1, kit2] }
       end
 
-      it "includes template of this addon_plan settings_template" do
+      it "includes template of this addon_plan settings_template", :focus do
         settings.kits.should eq({
           "kit1" => {
             skin: { id: "skin_token1" },
