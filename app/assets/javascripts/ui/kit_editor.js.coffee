@@ -72,7 +72,6 @@ class MySublimeVideo.UI.KitEditor
 
     $('#kit_setting-logo-image_url').on 'change', (e) =>
       $el = $(e.target)
-      console.log $el
 
   setupLightboxTester: ->
     @$lightboxTestButton.on 'click', =>

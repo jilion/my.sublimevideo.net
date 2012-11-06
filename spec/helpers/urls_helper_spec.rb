@@ -33,4 +33,33 @@ describe UrlsHelper do
     end
   end
 
+  describe '.cdn_path_from_full_url' do
+    context 'Rails.env == development' do
+      before { Rails.stub(env: 'development') }
+
+      it { helper.cdn_path_from_full_url('http://s3.amazonaws.com/dev.sublimevideo/foo').should eq 'foo' }
+      it { helper.cdn_path_from_full_url('/foo').should eq 'foo' }
+      it { helper.cdn_path_from_full_url('http://s3.amazonaws.com/dev.sublimevideo/foo/').should eq 'foo/' }
+      it { helper.cdn_path_from_full_url('http://s3.amazonaws.com/dev.sublimevideo/foo.js').should eq 'foo.js' }
+    end
+
+    context 'Rails.env == staging' do
+      before { Rails.stub(env: 'staging') }
+
+      it { helper.cdn_path_from_full_url('http://cdn.sublimevideo.net-staging/foo').should eq 'foo' }
+      it { helper.cdn_path_from_full_url('http://cdn.sublimevideo.net-staging/foo/').should eq 'foo/' }
+      it { helper.cdn_path_from_full_url('http://cdn.sublimevideo.net-staging/foo.js').should eq 'foo.js' }
+    end
+
+    %w[test production].each do |env|
+      context "Rails.env == #{env}" do
+        before { Rails.stub(env: env) }
+
+        it { helper.cdn_path_from_full_url('//cdn.sublimevideo.net/foo').should eq 'foo' }
+        it { helper.cdn_path_from_full_url('//cdn.sublimevideo.net/foo/').should eq 'foo/' }
+        it { helper.cdn_path_from_full_url('//cdn.sublimevideo.net/foo.js').should eq 'foo.js' }
+      end
+    end
+  end
+
 end

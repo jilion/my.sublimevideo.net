@@ -88,7 +88,10 @@ class MySublimeVideo.Helpers.VideoTagHelper
       unless addonName is 'lightbox'
         _.each setting, (settingValue, settingName) =>
           dataSettingName = this.getDataSettingName(addonName, settingName)
-          this.processCheckBoxAndTextInput(dataSettingName, settingValue, null)
+          if settingValue == true or settingValue == false
+            this.processCheckBoxInput(dataSettingName, settingValue, null)
+          else
+            this.processInputWithValue(dataSettingName, settingValue, null)
 
   generateDataSettingsArrayFromDOM: (addons) ->
     for addonName in addons

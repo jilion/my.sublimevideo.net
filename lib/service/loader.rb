@@ -56,9 +56,9 @@ module Service
   private
 
     def generate_file
-      template_path = Rails.root.join("app/templates/app/#{template_file}")
+      template_path = Rails.root.join('app', 'templates', 'app', template_file)
       template = ERB.new(File.new(template_path).read)
-      file = Tempfile.new("l-#{site.token}.js", "#{Rails.root}/tmp")
+      file = Tempfile.new("l-#{site.token}.js", Rails.root.join('tmp'))
       file.print template.result(binding)
       file.flush
       file

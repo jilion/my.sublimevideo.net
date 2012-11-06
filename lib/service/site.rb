@@ -156,9 +156,9 @@ module Service
 
     def set_default_app_designs(options = {})
       set_billable_app_designs({
-        classic: App::Design.get('classic').id,
-        light: App::Design.get('light').id,
-        flat: App::Design.get('flat').id
+        classic: ::App::Design.get('classic').id,
+        light: ::App::Design.get('light').id,
+        flat: ::App::Design.get('flat').id
       }, options)
     end
 

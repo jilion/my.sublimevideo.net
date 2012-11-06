@@ -26,7 +26,7 @@
       -#  %option{ value: site_invoices_path(site) } Invoices
       = link_to '', class: 'quick_access' do
         %span Quick access
-      %ul.site_actions{ id: ['site_actions', site.id], style: 'display:none' }
+      %ul.actions{ id: ['site_actions', site.id], style: 'display:none' }
         %li= link_to 'Add-ons', site_addons_path(site)
         %li= link_to 'Players', site_kits_path(site)
         %li= link_to 'Loader Code', site_addons_path(site), class: 'player_code', data: { token: site.token }

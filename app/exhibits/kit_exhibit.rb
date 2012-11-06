@@ -43,7 +43,7 @@ class KitExhibit < DisplayCase::Exhibit
         template.render('kits/inputs/range', kit: self, params: params)
       when 'string'
         if params[:setting_template][:values].many?
-          template.render('kits/inputs/radio', kit: self, params: params)
+          template.render('kits/inputs/radios', kit: self, params: params)
         end
       when 'url'
         template.render('kits/inputs/text', kit: self, params: params)

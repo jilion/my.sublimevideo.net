@@ -59,8 +59,10 @@ class KitsController < ApplicationController
 
   # POST /sites/:site_id/players/:id/process_custom_logo
   def process_custom_logo
-    @custom_logo = Addons::CustomLogo.new(@kit, params[:file])
-    Service::Addon::CustomLogo.new(@custom_logo).upload!
+    @custom_logo = Addons::CustomLogo.new(params[:file])
+    service = Service::Addon::CustomLogo.new(@kit, @custom_logo, params[:old_custom_logo_path])
+    service.upload!
+    @logo_path, @logo_width, @logo_height = service.current_path, service.width, service.height
   end
 
   private

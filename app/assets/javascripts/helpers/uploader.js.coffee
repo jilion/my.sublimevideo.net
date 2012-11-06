@@ -15,7 +15,6 @@ class MySublimeVideo.Helpers.Uploader
       filters: [
         { title: @options['title'], extensions: @options['extensions'] }
       ]
-      # resize : { width: 320, height: 240, quality: 90 }
       multipart: true
       multipart_params: @options['multipart_params']
 
@@ -31,14 +30,9 @@ class MySublimeVideo.Helpers.Uploader
 
     @uploader.bind 'FilesAdded', (up, files) ->
       $.each files, (i, file) ->
-        $('#filelist').append "<div id='#{file.id}'>#{file.name} (#{plupload.formatSize(file.size)})</div>"
-      up.refresh() # Reposition Flash/Silverlight
-
-    @uploader.bind 'UploadProgress', (up, file) ->
-      $("##{file.id} b").html "#{file.percent}%"
-
-    @uploader.bind 'Error', (up, err) ->
-      $('#filelist').append "<div>Error: #{err.code}, Message: #{err.message}#{if err.file then ", File: #{err.file.name}" else ""}</div>"
+        $('#uploader_error').text ''
+        $('#filelist').append "<div class='file'>#{file.name}</div>"
+        $('#uploadfiles').show()
       up.refresh() # Reposition Flash/Silverlight
 
   getOptions: -> @options

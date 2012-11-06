@@ -63,6 +63,7 @@ gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/p
 # gem 'carrierwave-mongoid',   '~> 0.2.1', require: 'carrierwave/mongoid'
 gem 'carrierwave-mongoid',   github: 'jnicklas/carrierwave-mongoid', branch: 'mongoid-3.0', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
+gem 'cocaine',               '~> 0.4.2'
 
 gem 'rack-pjax'
 

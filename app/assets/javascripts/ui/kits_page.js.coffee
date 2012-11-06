@@ -37,8 +37,9 @@ class MySublimeVideo.UI.KitsPage
   refreshVideoTagFromSettings: (type) ->
     $('li.kit').each (index, el) =>
       $li = $(el)
+      liId = $li.attr('id')
 
-      videoCode = @videoTagHelpers[$li.attr('id')].generateVideoCode(id: "preview_kit_#{$li.attr('id')}")
-
-      $("#preview_#{$li.attr('id')}").replaceWith(videoCode)
-      sublimevideo.prepare("preview_kit_#{$li.attr('id')}")
+      videoCode = @videoTagHelpers[liId].generateVideoCode(id: "preview_kit_#{liId}")
+      console.log videoCode
+      $("#preview_#{liId}").replaceWith(videoCode)
+      sublimevideo.prepare("preview_kit_#{liId}")

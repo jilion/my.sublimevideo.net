@@ -27,14 +27,9 @@
 // REMY
 #kits ul {
   list-style-type:none;
-  // position:absolute;
-  // top:40px;
-  // top:120px;
-  // right:44px;
 }
 
 #kits ul li {
-  // float:left;
   display:block;
   width:350px;
   height:300px;
@@ -61,10 +56,6 @@
   font-size:20px;
   font-weight:600;
   text-shadow:rgba(255,255,255,0.6) 0 1px 0;
-  // border:1px solid #576c88;
-  // border-left-width:0;
-  // @include gradient(rgba(255,255,255,0.4),rgba(255,255,255,0),transparent);
-  // @include box-shadow((inset #f5f8fc 0 1px 0, rgba(255,255,255,0.3) 0 1px 0));
 }
 
 #kits ul li a.name {
@@ -134,4 +125,34 @@
 
 #kit_settings .indent {
   margin-left:32px;
+}
+
+.kit_editor a#uploadfiles {
+  position:relative;
+  float:left;
+}
+
+.kit_editor #spinner {
+  position:relative;
+  float:left;
+  width:50px;
+  height:50px;
+}
+
+.kit_editor #dragdrop {
+  width:350px;
+  height:40px;
+  padding:20px 15px 0;
+  border:1px solid #000;
+  color:#f1f6ff;
+  text-shadow:rgba(0,0,0,0.6) 0 -1px 0;
+  @include gradient(#114492, #207ec3, #1a65ae);
+  @include box-shadow((inset rgba(0,0,0,0.9) 0 1px 13px, rgba(255,255,255,0.3) 0 1px 0));
+  @include border-radius(5px);
+  -webkit-font-smoothing:antialiased;
+}
+
+.kit_editor .help {
+  // position:relative;
+  // float:right;
 }

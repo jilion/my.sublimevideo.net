@@ -1,24 +1,38 @@
 - custom_logo = Addons::CustomLogo.new(kit)
 - current_type = params[:settings].try(:[], :logo).try(:[], :type) || params[:settings_template][:type][:default]
-- default = current_type == 'sv' ? '' : cdn_url(custom_logo.path)
+- value = params[:setting].empty? ? '' : params[:setting]
 - id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
 
 .entry#custom_logo_fields{ style: current_type == 'sv' ? 'display:none' : nil }
-  #preview_custom_logo
-    %img{ src: cdn_url(custom_logo.path) }
-  #container
-    %a#pickfiles{ href: '#' } Select file
-    %p or drag'n'drop your logo below
-    #dragdrop{ style: 'width:200px;height:100px;background-color:#BBB;' }
-    #filelist
-    %a#uploadfiles{ href: '#' } Upload file!
-    %p
-      %em Prefer a transparent PNG logo file. Double the size of the image (x2) to allow optimal rendering on Retina® displays.
+  #preview_custom_logo= display_custom_logo(value)
+  #container{ data: { spinner: true } }
+    .spacer
+    .help
+      %em
+        Only PNG file are accepted.
+        %br
+        Double the size of the image (x2) to allow optimal rendering on Retina® displays.
+    #dragdrop
+      Drag & drop your logo here or
+      %a#pickfiles{ href: '#' } select a file from your computer...
+
+    -##filelist
+    #notices
+    %a#uploadfiles.blue_button{ href: '#', style: 'display:none' } Upload file!
+    #spinner
+  .spacer
 
   :coffeescript
     MySublimeVideo.uploader = new MySublimeVideo.Helpers.Uploaders.CustomLogoUploader
       url: '#{process_custom_logo_site_kit_path(kit.site, kit)}'
       extensions: 'png'
       title: 'Custom logo'
-  = hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", cdn_url(custom_logo.path), id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: default)
+      multipart_params:
+        old_custom_logo_path: '#{cdn_path_from_full_url(value)}'
+  = hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: value)
+
+  = kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :position, data: { dependant: 'logo-enable' }, show_title: true, partial: 'corners_position_radios')
+
+  = kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :visibility, data: { dependant: 'logo-enable' }, translation_key: :visibility_custom, show_title: true)
+  = kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :link_url, data: { dependant: 'logo-enable' })
 .spacer

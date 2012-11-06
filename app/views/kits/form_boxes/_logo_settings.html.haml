@@ -12,6 +12,3 @@
     .indent
       = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :type, data: { dependant: 'logo-enable' })
       = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :image_url, data: { dependant: 'logo-enable' }, partial: 'image_logo_custom')
-      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :position, data: { dependant: 'logo-enable' }, show_title: true)
-      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :visibility, data: { dependant: 'logo-enable' }, translation_key: :visibility_custom, show_title: true)
-      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :link_url, data: { dependant: 'logo-enable' })

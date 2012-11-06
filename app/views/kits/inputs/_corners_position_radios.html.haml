@@ -1,0 +1,17 @@
+- value = params[:setting].presence || params[:setting_template][:default]
+
+.entry
+  - if params[:show_title]
+    %span{ style: 'font-weight:600' }= t("kit.#{params[:addon].name}.settings.#{params[:translation_key] || params[:setting_key]}")
+    %br
+  %table
+    %tr
+      - %w[topLeft topRight].each do |choice|
+        %td
+          = render 'kits/inputs/radio', kit: kit, params: params, value: value, choice: choice
+    %tr
+      - %w[bottomLeft bottomRight].each do |choice|
+        %td
+          = render 'kits/inputs/radio', kit: kit, params: params, value: value, choice: choice
+
+.spacer

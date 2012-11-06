@@ -1,6 +1,13 @@
 %h2
   = hostname_or_token(@site, length: 20)
-  %select#sites_select_title{ 'data-token' => @site.token }
-    -#- @sites.sort_by { |s| hostname_or_token(s, prefix: 'zzz') }.each do |site|
-    -#  - unless site == @site
-    -#    %option{ value: site.token }= hostname_or_token(site, length: 20)
+
+= link_to '', class: 'site_select' do
+  %span Quick access
+%ul.actions{ id: ['site_actions', @site.id], style: 'display:none' }
+  - @sites.sort_by { |s| hostname_or_token(s, prefix: 'zzz') }.each do |site|
+    - unless site == @site
+      %li= link_to hostname_or_token(site, length: 20), url_for(site_id: site.to_param)
+-#%select#sites_select_title{ 'data-token' => @site.token }
+-#  -#- @sites.sort_by { |s| hostname_or_token(s, prefix: 'zzz') }.each do |site|
+-#  -#  - unless site == @site
+-#  -#    %option{ value: site.token }= hostname_or_token(site, length: 20)

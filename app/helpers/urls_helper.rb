@@ -21,4 +21,17 @@ module UrlsHelper
     protocol + [host, path].join('/').squeeze('/')
   end
 
+  def cdn_path_from_full_url(full_url)
+    host = case Rails.env
+    when 'development'
+      "s3.amazonaws.com/#{S3.buckets['sublimevideo']}"
+    when 'staging'
+      'cdn.sublimevideo.net-staging'
+    else
+      'cdn.sublimevideo.net'
+    end
+
+    full_url.sub(%r{(https?:)?//#{host}/}, '')
+  end
+
 end
