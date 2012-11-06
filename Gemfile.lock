@@ -549,7 +549,7 @@ GEM
       tilt (~> 1.3.3)
     slop (3.3.3)
     snail (0.6.1)
-    solve (0.4.0.rc1)
+    solve (0.4.0)
       json
     sprockets (2.8.1)
       hike (~> 1.2)
@@ -721,7 +721,7 @@ DEPENDENCIES
   sinatra
   slim
   snail (~> 0.6.1)
-  solve (= 0.4.0.rc1)
+  solve
   squeel (~> 1.0.11)
   stat_request_parser (~> 1.1.0)
   state_machine (~> 1.1.2)

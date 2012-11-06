@@ -100,7 +100,7 @@ gem 'redis',                 '~> 3.0.1'
 gem 'zendesk_api',           '~> 0.1.2'
 
 # App
-gem 'solve', '0.4.0.rc1'
+gem 'solve'
 
 # Gems used only for assets and not required
 # in production environments by default.
