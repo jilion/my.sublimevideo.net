@@ -252,7 +252,7 @@ describe Service::Settings, :fog_mock do
         site.stub_chain(:kits, :includes) { [kit1, kit2] }
       end
 
-      it "includes template of this addon_plan settings_template", :focus do
+      it "includes template of this addon_plan settings_template" do
         settings.kits.should eq({
           "kit1" => {
             skin: { id: "skin_token1" },
