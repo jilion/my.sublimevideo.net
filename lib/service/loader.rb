@@ -18,6 +18,10 @@ module Service
       end
     end
 
+    def self.update_all_dependant_sites(component_version_id)
+      # TODO
+    end
+
     def initialize(*args)
       super
       self.file = generate_file

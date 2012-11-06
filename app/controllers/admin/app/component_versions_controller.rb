@@ -1,3 +1,5 @@
+require_dependency 'service/app/component_version'
+
 class Admin
   module App
     class ComponentVersionsController < Admin::AppController
@@ -9,30 +11,30 @@ class Admin
 
       # GET /app/components/:component_id/versions
       def index
-        @versions = @component.versions
-        respond_with @versions
+        @component_versions = @component.versions
+        respond_with @component_versions
       end
 
       # GET /app/components/:component_id/versions/:id
       def show
-        @version = @component.versions.find_by_version!(params[:id])
-        respond_with @version do |format|
-          format.zip { redirect_to @version.zip.url }
+        @component_version = @component.versions.find_by_version!(params[:id])
+        respond_with @component_version do |format|
+          format.zip { redirect_to @component_version.zip.url }
         end
       end
 
       # POST /app/components/:component_id/versions
       def create
-        @version = @component.versions.build(params[:version], as: :admin)
-        @version.save
-        respond_with @version, location: [:admin, @component]
+        @component_version = @component.versions.build(params[:version], as: :admin)
+        Service::App::ComponentVersion.new(@component_version).create
+        respond_with @component_version, location: [:admin, @component]
       end
 
       # DELETE /app/components/:component_id/versions/:id
       def destroy
-        @version = @component.versions.find_by_version!(params[:id])
-        @version.destroy
-        respond_with @version, location: [:admin, @component]
+        @component_version = @component.versions.find_by_version!(params[:id])
+        @component_version.destroy
+        respond_with @component_version, location: [:admin, @component]
       end
 
     private
