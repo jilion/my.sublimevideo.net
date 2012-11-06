@@ -4,20 +4,19 @@ module OneTime
     class << self
 
       def regenerate_templates(options = {})
-        scheduled, delay = 0, 5
+        scheduled, = 0
         ::Site.active.find_each(batch_size: 100) do |site|
           if options[:loaders]
-            ::Service::Loader.delay(queue: 'low', at: delay.seconds.from_now.to_i).update_all_stages!(site.id, purge: false)
+            ::Service::Loader.delay(queue: 'low').update_all_stages!(site.id, purge: false)
           end
           if options[:settings]
-            ::Service::Settings.delay(queue: 'low', at: delay.seconds.from_now.to_i).update_all_types!(site.id, purge: false)
+            ::Service::Settings.delay(queue: 'low').update_all_types!(site.id, purge: false)
           end
 
           scheduled += 1
 
           if (scheduled % 500).zero?
             puts "#{scheduled} sites scheduled..."
-            delay += 5
           end
         end
 
