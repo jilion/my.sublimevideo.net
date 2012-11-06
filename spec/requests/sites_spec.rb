@@ -31,8 +31,10 @@ feature 'Edit site' do
     go 'my', '/sites'
   end
 
-  scenario 'edit a site', :js do
-    select 'Settings', from: "site_actions_#{@site.id}"
+  scenario 'edit a site' do
+    within "#site_actions_#{@site.id}" do
+      click_link 'Settings'
+    end
 
     page.should have_selector 'input#site_extra_hostnames'
     page.should have_selector 'input#site_dev_hostnames'
@@ -51,7 +53,7 @@ feature 'Edit site' do
   end
 end
 
-feature 'Archive site', :js do
+feature 'Archive site' do
   background do
     sign_in_as :user
     @site = build(:site, user: @current_user, hostname: hostname1)
@@ -69,7 +71,9 @@ feature 'Archive site', :js do
   end
 
   scenario 'a paid site with no invoices' do
-    select 'Settings', from: "site_actions_#{@site.id}"
+    within "#site_actions_#{@site.id}" do
+      click_link 'Settings'
+    end
     click_button 'Cancel site'
 
     page.should have_no_content hostname1
@@ -77,7 +81,9 @@ feature 'Archive site', :js do
   end
 
   scenario 'a paid site with only paid invoices' do
-    select 'Settings', from: "site_actions_#{@paid_site_with_paid_invoices.id}"
+    within "#site_actions_#{@paid_site_with_paid_invoices.id}" do
+      click_link 'Settings'
+    end
     click_button 'Cancel site'
 
     page.should have_no_content hostname2
@@ -85,7 +91,9 @@ feature 'Archive site', :js do
   end
 
   scenario 'a paid site with an open invoice' do
-    select 'Settings', from: "site_actions_#{@paid_site_with_open_invoices.id}"
+    within "#site_actions_#{@paid_site_with_open_invoices.id}" do
+      click_link 'Settings'
+    end
     page.should have_no_content 'Cancel site'
   end
 
@@ -95,7 +103,9 @@ feature 'Archive site', :js do
     create(:failed_invoice, site: site)
 
     go 'my', '/sites'
-    select 'Settings', from: "site_actions_#{site.id}"
+    within "#site_actions_#{site.id}" do
+      click_link 'Settings'
+    end
     page.should have_no_content 'Cancel site'
   end
 
@@ -105,7 +115,9 @@ feature 'Archive site', :js do
     create(:waiting_invoice, site: site)
 
     go 'my', '/sites'
-    select 'Settings', from: "site_actions_#{site.id}"
+    within "#site_actions_#{site.id}" do
+      click_link 'Settings'
+    end
     page.should have_no_content 'Cancel site'
   end
 end
@@ -169,17 +181,6 @@ feature 'Sites index' do
         page.should have_css 'nav.pagination'
         page.should have_selector 'a[rel=\'next\']'
       end
-
-      context 'user has billable views' do
-        background do
-          create(:site_day_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
-        end
-
-        scenario 'views notice 1' do
-          go 'my', '/sites'
-          page.should have_selector '.hidable_notice[data-notice-id=\'1\']'
-        end
-      end
     end
   end
 end
@@ -192,7 +193,7 @@ def last_site_should_be_created(hostname)
   site.kits.should have(1).item
   site.default_kit.should eq site.kits.first
   site.app_designs.should have(3).items
-  site.addon_plans.should have(9).items
+  site.addon_plans.should have(10).items
 
   current_url.should eq 'http://my.sublimevideo.dev/sites'
   page.should have_content (hostname.present? ? hostname : 'add a hostname')

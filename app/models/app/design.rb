@@ -13,6 +13,7 @@ class App::Design < ActiveRecord::Base
   validates :availability, inclusion: AVAILABILITIES
   validates :required_stage, inclusion: Stage::STAGES
 
+  scope :custom, -> { where { availability == 'custom' } }
   scope :paid, -> { where { price > 0 } }
 
   def self.get(name)

@@ -9,16 +9,16 @@ module UrlsHelper
   end
 
   def cdn_url(path)
-    host = case Rails.env
+    protocol, host = case Rails.env
     when 'development'
-      "s3.amazonaws.com/#{S3.buckets['sublimevideo']}"
+      ['http://', "s3.amazonaws.com/#{S3.buckets['sublimevideo']}"]
     when 'staging'
-      'cdn.sublimevideo.net-staging'
+      ['http://', 'cdn.sublimevideo.net-staging']
     else
-      'cdn.sublimevideo.net'
+      ['//', 'cdn.sublimevideo.net']
     end
 
-    '//' + [host, path].join('/').squeeze('/')
+    protocol + [host, path].join('/').squeeze('/')
   end
 
 end

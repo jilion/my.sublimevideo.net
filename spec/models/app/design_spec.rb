@@ -17,6 +17,24 @@ describe App::Design do
     it { should ensure_inclusion_of(:availability).in_array(%w[public custom]) }
   end
 
+  describe '.custom' do
+    before do
+      @public = create(:app_design, availability: 'public')
+      @custom = create(:app_design, availability: 'custom')
+    end
+
+    it { described_class.custom.all.should eq [@custom] }
+  end
+
+  describe '.paid' do
+    before do
+      @free = create(:app_design, price: 0)
+      @paid = create(:app_design, price: 99)
+    end
+
+    it { described_class.paid.all.should eq [@paid] }
+  end
+
   describe '#available?' do
     let(:site) { create(:site) }
     let(:custom_app_design) { create(:app_design, availability: 'custom') }

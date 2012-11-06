@@ -1,0 +1,10 @@
+- disabled = app_design.free? || addon_plan_is_sponsored
+%tr
+  %td
+    .checkbox_wrap{ class: "#{'disabled' if disabled}" }
+      = check_box_tag "app_designs[#{app_design.name}]", app_design.id, site.app_designs.include?(app_design) || disabled, disabled: disabled, data: { price: app_design.price }
+      = label_tag "app_designs[#{app_design.name}]" do
+        = t("app_designs.#{app_design.name}")
+        = beta_loader_required_notice(app_design)
+  %td
+  %td= billable_item_price(app_design)
