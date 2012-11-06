@@ -176,6 +176,7 @@ group :tools do
   # Guard
   gem 'ruby_gntp'
   gem 'rb-fsevent'
+  gem 'rb-readline'
 
   gem 'pry'
   gem 'guard'

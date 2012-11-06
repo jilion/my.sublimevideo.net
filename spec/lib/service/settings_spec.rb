@@ -44,7 +44,8 @@ describe Service::Settings, :fog_mock do
     path: 'path', path?: true,
     badged: true,
     addon_plan_is_active?: true,
-    accessible_stage: 'stable', player_mode: 'stable'
+    accessible_stage: 'stable', player_mode: 'stable',
+    default_kit: stub(identifier: '1')
   )}
   let(:settings) { described_class.new(site, 'settings') }
 
@@ -96,7 +97,7 @@ describe Service::Settings, :fog_mock do
 
       it "has good content" do
         File.open(file) do |f|
-          f.read.should eq "sublime_.jd(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:'default'},[a]})\n"
+          f.read.should eq "sublime_.jd(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:'1'},[a]})\n"
         end
       end
     end
@@ -230,8 +231,8 @@ describe Service::Settings, :fog_mock do
       let(:kit_settings2) { {
         'addon2' => { close_button_position: 'left' }
       } }
-      let(:kit1) { mock(Kit, name: 'kit1', app_design_id: 1, skin_token: 'skin_token1', settings: kit_settings1) }
-      let(:kit2) { mock(Kit, name: 'kit2', app_design_id: 2, skin_token: 'skin_token2', settings: kit_settings2) }
+      let(:kit1) { mock(Kit, identifier: '1', app_design_id: 1, skin_token: 'skin_token1', settings: kit_settings1) }
+      let(:kit2) { mock(Kit, identifier: '2', app_design_id: 2, skin_token: 'skin_token2', settings: kit_settings2) }
       let(:addon1) { mock(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
       let(:addon2) { mock(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
       let(:addon3) { mock(Addon, id: 3, name: 'addon3', parent_addon_id: nil) }
@@ -254,7 +255,7 @@ describe Service::Settings, :fog_mock do
 
       it "includes template of this addon_plan settings_template" do
         settings.kits.should eq({
-          "kit1" => {
+          "1" => {
             skin: { id: "skin_token1" },
             plugins: {
               "addon_kind1" => {
@@ -283,7 +284,7 @@ describe Service::Settings, :fog_mock do
               }
             }
           },
-          "kit2" => {
+          "2" => {
             skin: { id: "skin_token2" },
             plugins: {
               "addon_kind1" => {

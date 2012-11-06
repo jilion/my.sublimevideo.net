@@ -66,15 +66,15 @@ module Service
 
     def kits
       site.kits.includes(:design).inject({}) do |hash, kit|
-        hash[kit.name] = {}
-        hash[kit.name][:skin] = { id: kit.skin_token }
-        hash[kit.name][:plugins] = kits_plugins(kit, nil)
+        hash[kit.identifier] = {}
+        hash[kit.identifier][:skin] = { id: kit.skin_token }
+        hash[kit.identifier][:plugins] = kits_plugins(kit, nil)
         hash
       end
     end
 
     def default_kit
-      "default"
+      site.default_kit.identifier
     end
 
     def mangle(hash)
