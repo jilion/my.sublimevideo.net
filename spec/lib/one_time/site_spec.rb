@@ -306,7 +306,7 @@ describe OneTime::Site do
 
   describe '.create_default_kit_for_all_non_archived_sites' do
     before do
-      create(:app_design)
+      create(:app_design, name: 'classic')
       @site_active    = create(:site, state: 'active')
       @site_suspended = create(:site, state: 'suspended')
       @site_archived  = create(:site, state: 'archived')
