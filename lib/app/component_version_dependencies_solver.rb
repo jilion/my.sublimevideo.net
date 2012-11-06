@@ -15,7 +15,7 @@ module App
       @graph = Solve::Graph.new
       @components = [App::Component.app_component]
       @components += site.components
-      @components.each { |component| add_component(component) }
+      @components.compact.uniq.each { |component| add_component(component) }
     end
 
     def solve

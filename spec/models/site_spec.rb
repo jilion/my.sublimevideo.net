@@ -53,19 +53,22 @@ describe Site, :addons do
     describe "components" do
       it "returns components from AddonPlan && App::Design" do
         site = create(:site)
-        app_component1 = create(:app_component)
-        app_design = create(:app_design, component: app_component1)
+        app_design = create(:app_design)
         create(:billable_item, site: site, item: app_design)
+        app_custom_design = create(:app_design)
 
-        app_component2 = create(:app_component)
-        app_component3 = create(:app_component)
         addon = create(:addon)
         addon_plan = create(:addon_plan, addon: addon)
-        create(:app_plugin, addon: addon, component: app_component2, design: app_design)
-        create(:app_plugin, addon: addon, component: app_component3, design: nil)
+        app_plugin_with_design = create(:app_plugin, addon: addon, design: app_design)
+        app_plugin_without_design = create(:app_plugin, addon: addon, design: nil)
+        app_plugin_without_custom_design = create(:app_plugin, addon: addon, design: app_custom_design)
         create(:billable_item, site: site, item: addon_plan)
 
-        site.components.should eq([app_component1, app_component2, app_component3])
+        site.components.should eq([
+          app_design.component,
+          app_plugin_with_design.component,
+          app_plugin_without_design.component
+        ])
       end
     end
   end
