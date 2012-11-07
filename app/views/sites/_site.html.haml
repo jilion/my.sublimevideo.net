@@ -8,8 +8,7 @@
   = site.render_videos_row(self)
 
   %td.code
-    .wrap
-      = link_to 'Publish video', new_site_video_code_path(site), class: 'embed_code'
+    .wrap= link_to 'Publish video', new_site_video_code_path(site), class: 'embed_code'
 
   %td.code.status{ data: { 'cdn-updated-at' => cdn_updated_at(site) } }
     .wrap
