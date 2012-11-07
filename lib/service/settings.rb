@@ -78,7 +78,7 @@ module Service
     end
 
     def mangle(hash)
-      App::Mangler.mangle(hash)
+      ::App::Mangler.mangle(hash)
     end
 
   private
