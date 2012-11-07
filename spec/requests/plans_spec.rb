@@ -171,7 +171,7 @@ feature "Plan edit" do
 
     current_url.should == "http://my.sublimevideo.dev/sites"
 
-    page.should have_content("Embed Code")
+    page.should have_content("Loader Code")
     page.should have_content(site.plan.title)
     page.should have_content(I18n.t('site.status.payment_issue'))
 

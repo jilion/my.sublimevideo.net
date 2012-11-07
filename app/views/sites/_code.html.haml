@@ -1,22 +1,12 @@
 %h3.title
   - if site.hostname?
-    Embed code for
+    Loader code for
     %strong= truncate_middle(site.hostname, length: 40)
   - else
-    Embed code
-%p.desc= raw "Copy the code below and paste it into the pages on #{truncate_middle(site.hostname)} where the SublimeVideo player will be used. We #{link_to 'highly recommend', page_url('troubleshooting', subdomain: 'docs', anchor: 'old-browsers-compatibility'), class: 'hl'} you put it into the <code>&lt;head&gt;</code> tag."
+    Loader code
+%p.desc= raw "Copy the code below and paste it into the pages on #{truncate_middle(site.hostname)} where the SublimeVideo player will be used. We #{link_to 'highly recommend', page_url('troubleshooting', subdomain: 'docs', anchor: 'old-browsers-compatibility'), class: 'hl', onclick: "window.open(this); return false"} you put it into the <code>&lt;head&gt;</code> tag."
 %form
-  .embed_code.entry
-    = text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, id: "embed_code_#{site.token}"
-    - if site.in_free_plan?
-      = "SSL delivery for secure pages is "
-      %strong= raw "included #{link_to("in all paid plans", [:edit, site, :plan], class: 'hl')}"
-      = "."
-    - else
-      .checkbox_wrap
-        = check_box_tag "embed_code_ssl_#{site.token}", '1', false, id: "embed_code_ssl_#{site.token}"
-        = label_tag "embed_code_ssl_#{site.token}", 'Deliver with SSL for secure pages.'
-      %p.learn_more= link_to "Learn more about SSL serving.", docs_page_url('ssl'), class: 'hl'
+  .embed_code.entry= text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, id: "embed_code_#{site.token}"
 
 .dark_box
   %p= raw "If you're asked for your site's token, use this: #{content_tag(:code, site.token)}"

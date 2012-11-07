@@ -18,7 +18,6 @@ class MySublimeVideo.UI.EmbedCode
         class: 'popup'
         anchor: @popupContent
       this.setupTextareaSelectAll()
-      this.setupSSLSwitch()
 
       false
 
@@ -27,11 +26,3 @@ class MySublimeVideo.UI.EmbedCode
       textarea = $(event.delegateTarget)
       textarea.focus()
       textarea.select()
-
-  setupSSLSwitch: ->
-    $("#embed_code_ssl_#{@token}").on 'click', (event) =>
-      textarea = $("#embed_code_#{@token}")
-      if $(event.delegateTarget).attr 'checked'
-        textarea.val textarea.val().replace('http://cdn.sublimevideo.net', 'https://4076.voxcdn.com')
-      else
-        textarea.val textarea.val().replace('https://4076.voxcdn.com', 'http://cdn.sublimevideo.net')

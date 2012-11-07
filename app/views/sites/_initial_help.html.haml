@@ -5,7 +5,7 @@
       %em There's only a few things left to do:
     %ol
       %li{ class: ('complete' if current_user.page_visits > 0) }
-        .wrap= "1. Add your embed code to your pages. Click on #{@sites.one? ? 'the' : 'the appropriate'} \"Embed Code\" button below."
+        .wrap= "1. Add your loader code to your pages. Click on #{@sites.one? ? 'the' : 'the appropriate'} \"Loader Code\" button below."
       %li{ class: ('complete' if current_user.dev_views > 0) }
         .wrap= raw "2. Add #{content_tag(:code, '<video>')} elements to your pages. Try our #{link_to "video code generator", video_code_generator_path}!"
       %li

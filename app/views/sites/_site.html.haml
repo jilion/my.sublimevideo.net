@@ -25,7 +25,7 @@
   %td.code
     .wrap
       - if site.plan_id?
-        = link_to "Player code", "", class: "player_code embed_code", data: { token: site.token }
+        = link_to "Loader code", "", class: "player_code embed_code", data: { token: site.token }
       - else
         = "—"
       %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'code', site: site

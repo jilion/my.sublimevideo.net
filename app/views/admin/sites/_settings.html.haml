@@ -22,5 +22,5 @@
   = "Loaders updated_at: #{site.loaders_updated_at}".html_safe
 %p
   = "Settings.js updated at: #{site.settings_updated_at}"
-  = link_to "See license content", "http://cdn.sublimevideo.net/l/#{site.token}.js", onclick: "window.open(this); return false"
-  = link_to "See settings content", "http://cdn.sublimevideo.net/s/#{site.token}.js", onclick: "window.open(this); return false"
+  = link_to "See license content", "//cdn.sublimevideo.net/l/#{site.token}.js", onclick: "window.open(this); return false"
+  = link_to "See settings content", "//cdn.sublimevideo.net/s/#{site.token}.js", onclick: "window.open(this); return false"

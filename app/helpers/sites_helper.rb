@@ -30,7 +30,7 @@ module SitesHelper
   end
 
   def sublimevideo_script_tag_for(site)
-    %{<script type="text/javascript" src="http://cdn.sublimevideo.net/js/%s.js"></script>} % [site.token]
+    %{<script type="text/javascript" src="//cdn.sublimevideo.net/js/%s.js"></script>} % [site.token]
   end
 
   def url_with_protocol(url)

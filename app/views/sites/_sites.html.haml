@@ -30,9 +30,9 @@
               - else
                 .sorting= link_to_sort :last_30_days_video_tags, default_way: 'desc', label: "Videos"
         %th.code
-          .wrap= "Embed code"
+          .wrap Loader code
         %th.status
-          .wrap= "Status"
+          .wrap Status
       = render @sites
 
   .pagination_wrap
