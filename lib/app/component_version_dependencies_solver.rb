@@ -13,7 +13,7 @@ module App
     def initialize(*args)
       super
       @graph = Solve::Graph.new
-      @components = [App::Component.app_component]
+      @components = [::App::Component.app_component]
       @components += site.components
       @components.compact.uniq.each { |component| add_component(component) }
     end
@@ -30,7 +30,7 @@ module App
       component.versions.select { |v| v.stage >= stage }.each do |version|
         graph_component = @graph.artifacts(component.token, version.version)
         version.dependencies.each do |component_name, identifier|
-          dep_component = App::Component.find_by_name(component_name)
+          dep_component = ::App::Component.find_by_name(component_name)
           if @graph.artifacts.none? { |a| a.name == dep_component.token }
             add_component(dep_component)
           end

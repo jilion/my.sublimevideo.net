@@ -52,15 +52,15 @@ module Service
     end
 
     def app_component_version
-      components_dependencies[App::Component.app_component.token]
+      components_dependencies[::App::Component.app_component.token]
     end
 
     def components_versions
-      components_dependencies.select { |token, version| token != App::Component.app_component.token }
+      components_dependencies.select { |token, version| token != ::App::Component.app_component.token }
     end
 
     def components_dependencies
-      @components_dependencies ||= App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
+      @components_dependencies ||= ::App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
     end
 
   private

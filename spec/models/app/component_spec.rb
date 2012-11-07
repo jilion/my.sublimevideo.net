@@ -10,7 +10,7 @@ describe App::Component, :fog_mock do
   describe "Associations" do
     it { should have_many(:versions).dependent(:destroy) }
 
-    describe "sites", :focus do
+    describe "sites" do
       it "returns sites from App::Design" do
       # it "returns sites from AddonPlan && App::Design" do
         site_with_app_design = create(:site)
