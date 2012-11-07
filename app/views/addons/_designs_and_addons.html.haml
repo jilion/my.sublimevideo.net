@@ -26,6 +26,10 @@
     %td{ colspan: 3 }
       .big_break
   %tr
-    %td{ colspan: 2 }= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
+    %td{ colspan: 2 }
+    %td
+      %small= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
+  %tr
+    %td{ colspan: 2 }
     %td
       %strong#addons_total= display_amount_with_sup(site.total_billable_items_price)
