@@ -65,10 +65,10 @@ class Site < ActiveRecord::Base
   has_many :addon_plans_components, through: :addon_plans, source: :components
 
   def components
-    app_designs_components.includes(:versions) +
-    addon_plans_components.includes(:versions).where(
-      app_plugins: { app_design_id: [nil] + app_designs.map(&:id) }
-    )
+    via_designs = app_designs_components.scoped
+    app_design_ids = [nil] + app_designs.map(&:id)
+    via_addon_plans = addon_plans_components.where{app_plugins.app_design_id.in(app_design_ids)}
+    App::Component.where{id.in(via_designs.select{id})| id.in(via_addon_plans.select{id})}.includes(:versions)
   end
 
   # Mongoid associations
@@ -90,7 +90,7 @@ class Site < ActiveRecord::Base
   # ===============
 
   validates :user, presence: true
-  validates :accessible_stage, inclusion: Stage::STAGES
+  validates :accessible_stage, inclusion: Stage.stages
 
   validates :hostname, hostname: true
   validates :dev_hostnames,   dev_hostnames: true

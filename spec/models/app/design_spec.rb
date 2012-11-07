@@ -4,6 +4,7 @@ describe App::Design do
   describe 'Associations' do
     it { should belong_to(:component).class_name('App::Component') }
     it { should have_many(:billable_items) }
+    it { should have_many(:sites).through(:billable_items) }
   end
 
   describe 'Validations' do
@@ -13,7 +14,7 @@ describe App::Design do
 
     it { should validate_numericality_of(:price) }
 
-    it { should ensure_inclusion_of(:required_stage).in_array(::Stage::STAGES) }
+    it { should ensure_inclusion_of(:required_stage).in_array(::Stage.stages) }
     it { should ensure_inclusion_of(:availability).in_array(%w[public custom]) }
   end
 

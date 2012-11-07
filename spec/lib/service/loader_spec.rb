@@ -17,6 +17,7 @@ require File.expand_path('app/models/app')
 unless defined?(ActiveRecord)
   Site = Class.new
   App::Component = Class.new
+  App::ComponentVersion = Class.new
 end
 
 require File.expand_path('lib/service/loader')
@@ -28,7 +29,8 @@ describe Service::Loader, :fog_mock do
     accessible_stage: 'beta', player_mode: 'beta',
     active?: true
   )}
-  let(:app_component) { mock(App::Component, token: 'e') }
+  let(:component) { mock(App::Component, token: 'b', app_component?: false) }
+  let(:app_component) { mock(App::Component, token: 'e', app_component?: true) }
   let(:loader) { described_class.new(site, 'stable') }
   before do
     App::Component.stub(:app_component) { app_component }
@@ -118,6 +120,55 @@ describe Service::Loader, :fog_mock do
         described_class.new(site, 'stable').should_not be_present
         described_class.new(site, 'beta').should_not be_present
         described_class.new(site, 'alpha').should_not be_present
+      end
+    end
+  end
+
+  describe ".update_all_dependant_sites" do
+    let(:scoped_sites) { mock(Site) }
+    before do
+      App::ComponentVersion.stub(:find) { component_version }
+      scoped_sites.stub_chain(:active, :where) { scoped_sites }
+      site.stub(:last_30_days_billable_video_views) { 0 }
+      scoped_sites.stub(:find_each).and_yield(site)
+    end
+
+    context "with app_component version" do
+      let(:component_version) { mock(App::ComponentVersion,
+        id: 'component_version_id',
+        component: app_component,
+        stage: 'stable'
+      )}
+      before { Site.stub(:all) { scoped_sites } }
+
+      it "updates all sites" do
+        Site.should_receive(:all) { scoped_sites }
+        described_class.update_all_dependant_sites(component_version.id)
+      end
+
+      it "delays update_all_stages! with high queue" do
+        site.should_receive(:last_30_days_billable_video_views) { 1 }
+        described_class.should delay(:update_all_stages!, queue: 'high').with(site.id)
+        described_class.update_all_dependant_sites(component_version.id)
+      end
+    end
+
+    context "with non app_component version" do
+      let(:component_version) { mock(App::ComponentVersion,
+        id: 'component_version_id',
+        component: component,
+        stage: 'stable'
+      )}
+      before { component.stub(:sites) { scoped_sites } }
+
+      it "updates component_version component's sites" do
+        component.should_receive(:sites) { scoped_sites }
+        described_class.update_all_dependant_sites(component_version.id)
+      end
+
+      it "delays update_all_stages! with low queue" do
+        described_class.should delay(:update_all_stages!, queue: 'low').with(site.id)
+        described_class.update_all_dependant_sites(component_version.id)
       end
     end
   end

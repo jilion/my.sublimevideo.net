@@ -6,6 +6,7 @@ class App::Plugin < ActiveRecord::Base
   belongs_to :addon
   belongs_to :design, class_name: 'App::Design', foreign_key: 'app_design_id'
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
+  has_many :sites, through: :addon
 
   validates :addon, :component, presence: true
   validates :addon_id, uniqueness: { scope: :app_design_id }

@@ -9,7 +9,7 @@ module Service
 
     def self.update_all_stages!(site_id, options = {})
       site = ::Site.find(site_id)
-      Stage::STAGES.each do |stage|
+      Stage.stages.each do |stage|
         if site.active? && stage >= site.accessible_stage
           new(site, stage, options).upload!
         else
@@ -19,7 +19,17 @@ module Service
     end
 
     def self.update_all_dependant_sites(component_version_id)
-      # TODO
+      component_version = ::App::ComponentVersion.find(component_version_id)
+      if component_version.component.app_component?
+        sites = ::Site.all
+      else
+        sites = component_version.component.sites
+      end
+      sites = sites.active.where(accessible_stage: Stage.stages_with_access_to(component_version.stage))
+      sites.find_each(batch_size: 100) do |site|
+        queue = site.last_30_days_billable_video_views > 0 ? 'high' : 'low'
+        delay(queue: queue).update_all_stages!(site.id)
+      end
     end
 
     def initialize(*args)

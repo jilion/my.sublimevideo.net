@@ -5,6 +5,7 @@ class Addon < ActiveRecord::Base
   has_many :plans, class_name: 'AddonPlan'
   has_many :plugins, class_name: 'App::Plugin'
   has_many :components, through: :plugins
+  has_many :sites, through: :plans
 
   validates :name, presence: true
   validates :name, uniqueness: true

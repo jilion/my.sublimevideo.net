@@ -9,13 +9,14 @@ class AddonPlan < ActiveRecord::Base
   has_many :components, through: :addon
   has_many :billable_items, as: :item
   has_many :settings_templates, class_name: 'App::SettingsTemplate'
+  has_many :sites, through: :billable_items
 
   delegate :kind, to: :addon
 
   validates :addon, :name, :price, presence: true
   validates :name, uniqueness: { scope: :addon_id }
   validates :availability, inclusion: AVAILABILITIES
-  validates :required_stage, inclusion: Stage::STAGES
+  validates :required_stage, inclusion: Stage.stages
   validates :price, numericality: true
 
   scope :paid, -> { where{ (public_at != nil) & (price > 0) } }

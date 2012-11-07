@@ -50,7 +50,7 @@ describe Site, :addons do
       end
     end
 
-    describe "components" do
+    describe "components", :focus do
       it "returns components from AddonPlan && App::Design" do
         site = create(:site)
         app_design = create(:app_design)
@@ -64,7 +64,7 @@ describe Site, :addons do
         app_plugin_without_custom_design = create(:app_plugin, addon: addon, design: app_custom_design)
         create(:billable_item, site: site, item: addon_plan)
 
-        site.components.should eq([
+        site.components.should match_array([
           app_design.component,
           app_plugin_with_design.component,
           app_plugin_without_design.component

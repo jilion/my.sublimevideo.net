@@ -5,6 +5,7 @@ describe App::Plugin do
     it { should belong_to(:addon) }
     it { should belong_to(:design).class_name('App::Design') }
     it { should belong_to(:component).class_name('App::Component') }
+    it { should have_many(:sites).through(:addon) }
   end
 
   describe "Validations" do

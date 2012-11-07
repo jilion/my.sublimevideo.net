@@ -6,6 +6,7 @@ describe Addon do
     it { should have_many(:plans).class_name('AddonPlan') }
     it { should have_many(:plugins).class_name('App::Plugin') }
     it { should have_many(:components).through(:plugins) }
+    it { should have_many(:sites).through(:plans) }
   end
 
   describe 'Validations' do

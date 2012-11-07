@@ -5,6 +5,7 @@ describe AddonPlan do
     it { should belong_to(:addon) }
     it { should have_many(:components).through(:addon) }
     it { should have_many(:billable_items) }
+    it { should have_many(:sites).through(:billable_items) }
   end
 
   describe 'Validations' do
@@ -12,7 +13,7 @@ describe AddonPlan do
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
-    it { should ensure_inclusion_of(:required_stage).in_array(::Stage::STAGES) }
+    it { should ensure_inclusion_of(:required_stage).in_array(::Stage.stages) }
     it { should ensure_inclusion_of(:availability).in_array(%w[hidden public custom]) }
 
     it { should validate_numericality_of(:price) }

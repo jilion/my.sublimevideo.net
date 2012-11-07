@@ -72,7 +72,7 @@
   %h3 Mode update
 
   = form_for [:admin, @site] do |f|
-    = f.select :accessible_stage, Stage::STAGES
+    = f.select :accessible_stage, Stage.stages
     = f.submit "Update accessible stage", data: { confirm: "Are you sure?" }
   %br
 

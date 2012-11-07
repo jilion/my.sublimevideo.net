@@ -7,11 +7,12 @@ class App::Design < ActiveRecord::Base
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
   has_many :billable_items, as: :item
+  has_many :sites, through: :billable_items
 
   validates :component, :skin_token, :name, :price, :availability, :required_stage, presence: true
   validates :price, numericality: true
   validates :availability, inclusion: AVAILABILITIES
-  validates :required_stage, inclusion: Stage::STAGES
+  validates :required_stage, inclusion: Stage.stages
 
   scope :custom, -> { where { availability == 'custom' } }
   scope :paid, -> { where { price > 0 } }
