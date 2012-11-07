@@ -60,7 +60,7 @@ MySublimeVideo.UI.prepareSiteActionsSelector = ->
   #         container: '[data-pjax-container]'
 
 MySublimeVideo.UI.prepareEmbedCodePopups = ->
-  $('a.player_code').each ->
+  $('a.loader_code').each ->
     new MySublimeVideo.UI.EmbedCode(link: $(this))
 
 MySublimeVideo.UI.prepareAddASitePopup = ->

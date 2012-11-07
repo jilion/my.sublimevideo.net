@@ -12,7 +12,11 @@ module BillableItemsHelper
   end
 
   def beta_loader_required_notice(addon_plan)
-    content_tag(:small, '(requires beta loader)') if addon_plan.required_stage == 'beta'
+    if addon_plan.required_stage == 'beta'
+      content_tag(:small) do
+        "(requires #{link_to 'beta loader', '', class: 'loader_code hl', data: { token: @site.token }})".html_safe
+      end
+    end
   end
 
   def billable_item_price(billable_item)

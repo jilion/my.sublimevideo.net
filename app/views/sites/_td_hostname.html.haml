@@ -29,12 +29,12 @@
       %ul.actions{ id: ['site_actions', site.id], style: 'display:none' }
         %li= link_to 'Add-ons', site_addons_path(site)
         %li= link_to 'Players', site_kits_path(site)
-        %li= link_to 'Loader Code', site_addons_path(site), class: 'player_code', data: { token: site.token }
+        %li= link_to 'Loader Code', '', class: 'loader_code', data: { token: site.token }
         - if site.realtime_stats_active?
           %li= link_to 'Stats', site_stats_path(site)
         %li= link_to 'Settings', edit_site_path(site)
         %li= link_to 'Invoices', site_invoices_path(site)
-      %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'code', site: site
+      %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'sites/code', site: site
     .spacer
     .token{ style: 'display: inline' }
       %small
