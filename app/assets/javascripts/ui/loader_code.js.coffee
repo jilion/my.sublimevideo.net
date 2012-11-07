@@ -1,13 +1,13 @@
-# The EmbedCode handle the popup opening and SSL switch for the embed code popup.
+# The LoaderCode handle the popup for the loader code popup.
 #
-class MySublimeVideo.UI.EmbedCode
-  # Construct a new EmbedCode object.
+class MySublimeVideo.UI.LoaderCode
+  # Construct a new LoaderCode object.
   #
-  # @option options [jQuery Element] link an a element that will trigger the embed code popup opening
+  # @option options [jQuery Element] link an a element that will trigger the loader code popup opening
   #
   constructor: (@options = {}) ->
     @token = @options.link.attr('data-token')
-    @popupContent = $("#embed_code_popup_content_#{@token}")
+    @popupContent = $("#loader_code_popup_content_#{@token}")
     this.setupObservers()
 
   # Define a onClick observer for the link.

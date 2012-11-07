@@ -34,7 +34,7 @@
           %li= link_to 'Stats', site_stats_path(site)
         %li= link_to 'Settings', edit_site_path(site)
         %li= link_to 'Invoices', site_invoices_path(site)
-      %div{ id: "embed_code_popup_content_#{site.token}", style: 'display:none' }= render 'sites/code', site: site
+      %div{ id: "loader_code_popup_content_#{site.token}", style: 'display:none' }= render 'sites/code', site: site
     .spacer
     .token{ style: 'display: inline' }
       %small
