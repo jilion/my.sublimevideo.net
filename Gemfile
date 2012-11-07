@@ -59,6 +59,7 @@ gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
 gem 'fog'
+gem 's3etag'
 gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/processing/mime_types']
 # gem 'carrierwave-mongoid',   '~> 0.2.1', require: 'carrierwave/mongoid'
 gem 'carrierwave-mongoid',   github: 'jnicklas/carrierwave-mongoid', branch: 'mongoid-3.0', require: 'carrierwave/mongoid'

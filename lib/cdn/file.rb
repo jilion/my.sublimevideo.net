@@ -11,7 +11,7 @@ CDN::File = Struct.new(:file, :destinations, :s3_options, :options) do
             destination[:bucket],
             destination[:path],
             data,
-            s3_options.merge('Content-MD5' => md5)
+            s3_options
           )
         end
       end
@@ -45,21 +45,22 @@ CDN::File = Struct.new(:file, :destinations, :s3_options, :options) do
 
   # file different that the one already present on S3?
   def changed?
-    md5 != uploaded_md5
+    etag != uploaded_etag
   end
 
   private
 
-  def md5
-    ::File.open(file) { |f| Digest::MD5.base64digest(f.read) }
+  def etag
+    S3Etag.calc(file: file)
   end
 
-  def uploaded_md5
+  def uploaded_etag
     destination = destinations.first
-    s3_headers(
+    headers = s3_headers(
       destination[:bucket],
       destination[:path]
-    )['Content-MD5']
+    )
+    headers['ETag'] && headers['ETag'].gsub('"','').strip
   end
 
   def s3_headers(bucket, path)

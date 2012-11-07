@@ -2,6 +2,7 @@ require 'fast_spec_helper'
 require 'support/fixtures_helpers'
 require 'rails/railtie'
 require 'fog'
+require 's3etag'
 
 require 'sidekiq'
 require File.expand_path('spec/config/sidekiq')
@@ -62,11 +63,9 @@ describe CDN::File, :fog_mock do
         object_headers = S3.fog_connection.head_object(bucket, path).headers
         object_headers['Cache-Control'].should eq 'max-age=60, public'
       end
-      it "have Content-MD5" do
+      it "have ETag" do
         object_headers = S3.fog_connection.head_object(bucket, path).headers
-        File.open(file) do |f|
-          object_headers['Content-MD5'].should eq Digest::MD5.base64digest(f.read)
-        end
+        object_headers['ETag'].should be_present
       end
     end
 
