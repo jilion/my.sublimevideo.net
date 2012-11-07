@@ -1,4 +1,5 @@
 - id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}_#{choice}"
+
 .radio_wrap
   = radio_button_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", choice, value == choice, id: id, disabled: params[:disabled], data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: value)
   = label_tag id, t("kit.#{params[:addon].name}.values.#{params[:translation_key] || params[:setting_key]}.#{choice}")

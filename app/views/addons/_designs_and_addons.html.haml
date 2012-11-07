@@ -22,7 +22,10 @@
   = render 'addons/addon', site: site, addon: Addon.get('api')
   = render 'addons/addon', site: site, addon: Addon.get('stats')
   = render 'addons/addon', site: site, addon: Addon.get('support')
-.big_break
-
-%small= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
-%strong#addons_total= display_amount_with_sup(site.total_billable_items_price)
+  %tr
+    %td{ colspan: 3 }
+      .big_break
+  %tr
+    %td{ colspan: 2 }= "Est. monthly cost (once all your #{BusinessModel.days_for_trial}-day free trials will be over)"
+    %td
+      %strong#addons_total= display_amount_with_sup(site.total_billable_items_price)

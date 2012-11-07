@@ -1,4 +1,4 @@
-- value = params[:setting].empty? ? '' : params[:setting]
+- value = params[:setting].blank? ? '' : params[:setting]
 - id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
 
 .entry

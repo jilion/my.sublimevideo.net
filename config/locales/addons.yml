@@ -1,13 +1,13 @@
 en:
   addons:
-    video_player: 'Video Player'
+    video_player: 'Basic Player'
     lightbox: 'Lightbox'
     image_viewer: 'Image Viewer'
     stats: 'Analytics'
-    logo: 'On-video Logo'
+    logo: 'On Video Logo'
     controls: 'Controls'
     initial: 'Start View'
-    sharing: 'Sharing'
+    sharing: 'Social Sharing Buttons'
     api: 'API'
     support: 'Support'
 

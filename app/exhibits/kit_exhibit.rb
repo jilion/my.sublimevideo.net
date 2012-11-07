@@ -29,7 +29,7 @@ class KitExhibit < DisplayCase::Exhibit
   def render_input_field(template, params = {})
     params[:setting_template]  = params[:settings_template][params[:setting_key]]
     params[:settings] = self.settings
-    params[:setting]  = self.settings[params[:addon].name][params[:setting_key]] rescue {}
+    params[:setting]  = self.settings[params[:addon].name][params[:setting_key]] rescue nil
 
     if params[:partial]
       template.render("kits/inputs/#{params[:partial]}", kit: self, params: params)

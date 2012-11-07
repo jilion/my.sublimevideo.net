@@ -18,36 +18,36 @@
 
   #basic_player_settings.expandable_settings_box
     %h4.expanding_handler
-      = link_to 'Basic Player settings', ''
+      = link_to "#{t('addons.video_player')} settings", '', class: 'hl'
     .left.expandable
       = render 'kits/form_boxes/basic_player_settings', site: site, kit: kit
 
   #lightbox_settings.expandable_settings_box
     %h4.expanding_handler
-      = link_to 'Lightbox settings', ''
+      = link_to "#{t('addons.lightbox')} settings", '', class: 'hl'
     .left.expandable
       = render 'kits/form_boxes/lightbox_settings', site: site, kit: kit
 
   #logo_settings.expandable_settings_box
     %h4.expanding_handler
-      = link_to 'On-Video Logo settings', ''
+      = link_to "#{t('addons.logo')} settings", '', class: 'hl'
     .left.expandable
       = render 'kits/form_boxes/logo_settings', site: site, kit: kit
 
   #sharing_settings.expandable_settings_box
     %h4.expanding_handler
-      = link_to 'Social Sharing Buttons settings', ''
+      = link_to "#{t('addons.sharing')} settings", '', class: 'hl'
     .left.expandable
       = render 'kits/form_boxes/sharing_settings', site: site, kit: kit
 
   -##youtube_settings.expandable_settings_box
   -#  %h4.expanding_handler
-  -#    = link_to 'YouTube settings', ''
+  -#    = link_to 'YouTube settings', '', class: 'hl'
   -#  .left.expandable
   -#    = render 'kits/form_boxes/youtube_settings', site: site, kit: kit
 
   #embed_settings.expandable_settings_box
     %h4.expanding_handler
-      = link_to 'Embed settings', ''
+      = link_to 'Embed settings', '', class: 'hl'
     .left.expandable
       = render 'kits/form_boxes/embed_settings', site: site, kit: kit
