@@ -50,24 +50,25 @@ describe Site, :addons do
       end
     end
 
-    describe "components", :focus do
-      it "returns components from AddonPlan && App::Design" do
+    describe "components" do
+      # it "returns components from AddonPlan && App::Design" do
+      it "returns components from App::Design" do
         site = create(:site)
         app_design = create(:app_design)
         create(:billable_item, site: site, item: app_design)
         app_custom_design = create(:app_design)
 
-        addon = create(:addon)
-        addon_plan = create(:addon_plan, addon: addon)
-        app_plugin_with_design = create(:app_plugin, addon: addon, design: app_design)
-        app_plugin_without_design = create(:app_plugin, addon: addon, design: nil)
-        app_plugin_without_custom_design = create(:app_plugin, addon: addon, design: app_custom_design)
-        create(:billable_item, site: site, item: addon_plan)
+        # addon = create(:addon)
+        # addon_plan = create(:addon_plan, addon: addon)
+        # app_plugin_with_design = create(:app_plugin, addon: addon, design: app_design)
+        # app_plugin_without_design = create(:app_plugin, addon: addon, design: nil)
+        # app_plugin_without_custom_design = create(:app_plugin, addon: addon, design: app_custom_design)
+        # create(:billable_item, site: site, item: addon_plan)
 
         site.components.should match_array([
           app_design.component,
-          app_plugin_with_design.component,
-          app_plugin_without_design.component
+          # app_plugin_with_design.component,
+          # app_plugin_without_design.component
         ])
       end
     end

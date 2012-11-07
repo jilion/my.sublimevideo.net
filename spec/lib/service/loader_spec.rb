@@ -139,10 +139,10 @@ describe Service::Loader, :fog_mock do
         component: app_component,
         stage: 'stable'
       )}
-      before { Site.stub(:all) { scoped_sites } }
+      before { Site.stub(:scoped) { scoped_sites } }
 
       it "updates all sites" do
-        Site.should_receive(:all) { scoped_sites }
+        Site.should_receive(:scoped) { scoped_sites }
         described_class.update_all_dependant_sites(component_version.id)
       end
 
@@ -159,10 +159,11 @@ describe Service::Loader, :fog_mock do
         component: component,
         stage: 'stable'
       )}
-      before { component.stub(:sites) { scoped_sites } }
+      before { component.stub_chain(:sites, :scoped) { scoped_sites } }
 
       it "updates component_version component's sites" do
         component.should_receive(:sites) { scoped_sites }
+        scoped_sites.should_receive(:scoped) { scoped_sites }
         described_class.update_all_dependant_sites(component_version.id)
       end
 

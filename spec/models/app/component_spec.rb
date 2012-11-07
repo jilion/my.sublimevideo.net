@@ -11,27 +11,28 @@ describe App::Component, :fog_mock do
     it { should have_many(:versions).dependent(:destroy) }
 
     describe "sites", :focus do
-      it "returns sites from AddonPlan && App::Design" do
+      it "returns sites from App::Design" do
+      # it "returns sites from AddonPlan && App::Design" do
         site_with_app_design = create(:site)
         app_design = create(:app_design, component: component)
         create(:billable_item, site: site_with_app_design, item: app_design)
         app_custom_design = create(:app_design)
 
-        site_with_app_plugin = create(:site)
-        addon = create(:addon)
-        app_plugin_without_design = create(:app_plugin, addon: addon, component: component, design: nil)
-        addon_plan = create(:addon_plan, addon: addon)
-        create(:billable_item, site: site_with_app_plugin, item: addon_plan)
+        # site_with_app_plugin = create(:site)
+        # addon = create(:addon)
+        # app_plugin_without_design = create(:app_plugin, addon: addon, component: component, design: nil)
+        # addon_plan = create(:addon_plan, addon: addon)
+        # create(:billable_item, site: site_with_app_plugin, item: addon_plan)
 
-        site_with_app_plugin_with_custom_design = create(:site)
-        addon_with_custom_design = create(:addon)
-        app_plugin_without_design = create(:app_plugin, addon: addon_with_custom_design, component: component, design: app_custom_design)
-        addon_plan_with_custom_design = create(:addon_plan, addon: addon_with_custom_design)
-        create(:billable_item, site: site_with_app_plugin_with_custom_design, item: addon_plan_with_custom_design)
+        # site_with_app_plugin_with_custom_design = create(:site)
+        # addon_with_custom_design = create(:addon)
+        # app_plugin_without_design = create(:app_plugin, addon: addon_with_custom_design, component: component, design: app_custom_design)
+        # addon_plan_with_custom_design = create(:addon_plan, addon: addon_with_custom_design)
+        # create(:billable_item, site: site_with_app_plugin_with_custom_design, item: addon_plan_with_custom_design)
 
         component.sites.should eq([
           site_with_app_design,
-          site_with_app_plugin
+          # site_with_app_plugin
         ])
       end
     end

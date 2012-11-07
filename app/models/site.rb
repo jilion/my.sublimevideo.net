@@ -65,10 +65,13 @@ class Site < ActiveRecord::Base
   has_many :addon_plans_components, through: :addon_plans, source: :components
 
   def components
-    via_designs = app_designs_components.scoped
-    app_design_ids = [nil] + app_designs.map(&:id)
-    via_addon_plans = addon_plans_components.where{app_plugins.app_design_id.in(app_design_ids)}
-    App::Component.where{id.in(via_designs.select{id})| id.in(via_addon_plans.select{id})}.includes(:versions)
+    # via_designs = app_designs_components.scoped
+    # app_design_ids = [nil] + app_designs.map(&:id)
+    # via_addon_plans = addon_plans_components.where{app_plugins.app_design_id.in(app_design_ids)}
+    # App::Component.where{id.in(via_designs.select{id})| id.in(via_addon_plans.select{id})}.includes(:versions)
+
+    # Query via addon_plans is too slow and useless for now
+    app_designs_components.includes(:versions)
   end
 
   # Mongoid associations

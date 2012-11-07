@@ -164,7 +164,7 @@ module Service
 
     def set_billable_app_designs(new_app_designs, options = {})
       new_app_designs.each do |new_app_design_name, new_app_design_id|
-        if new_app_design = App::Design.get(new_app_design_name)
+        if new_app_design = ::App::Design.get(new_app_design_name)
           if new_app_design_id == '0'
             site.billable_items.app_designs.where(item_id: new_app_design.id).destroy_all
           else

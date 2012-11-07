@@ -13,10 +13,13 @@ class App::Component < ActiveRecord::Base
   scope :app, ->{ where(token: APP_TOKEN) }
 
   def sites
-    via_designs = designs_sites.scoped
-    site_designs = BillableItem.app_designs.where{site_id == sites.id}
-    via_plugins = plugins_sites.where{app_plugins.app_design_id.in(site_designs.select{item_id}) | app_plugins.app_design_id.eq(nil)}
-    Site.where{ id.in(via_designs.select{id}) | id.in(via_plugins.select{id}) }
+    # via_designs = designs_sites.scoped
+    # site_designs = BillableItem.app_designs.where{site_id == sites.id}
+    # via_plugins = plugins_sites.where{app_plugins.app_design_id.in(site_designs.select{item_id}) | app_plugins.app_design_id.eq(nil)}
+    # Site.where{ id.in(via_designs.select{id}) | id.in(via_plugins.select{id}) }
+
+    # Query via plugins is too slow and useless for now
+    designs_sites.scoped
   end
 
   validates :token, :name, presence: true, uniqueness: true

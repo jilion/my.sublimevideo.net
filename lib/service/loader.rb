@@ -21,9 +21,9 @@ module Service
     def self.update_all_dependant_sites(component_version_id)
       component_version = ::App::ComponentVersion.find(component_version_id)
       if component_version.component.app_component?
-        sites = ::Site.all
+        sites = ::Site.scoped
       else
-        sites = component_version.component.sites
+        sites = component_version.component.sites.scoped
       end
       sites = sites.active.where(accessible_stage: Stage.stages_with_access_to(component_version.stage))
       sites.find_each(batch_size: 100) do |site|
