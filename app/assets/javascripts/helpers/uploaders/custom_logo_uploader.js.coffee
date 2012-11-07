@@ -18,8 +18,10 @@ class MySublimeVideo.Helpers.Uploaders.CustomLogoUploader extends MySublimeVideo
         when -601 # file extension error
           "Your logo must be a .#{@options['extensions'].split(',').join(', .')} file."
         else
-          "Error: #{err.code}, Message: #{err.message}#{if err.file then ", File: #{err.file.name}" else ""}"
+          "An error has occured, please retry."
+          # "Error: #{err.code}, Message: #{err.message}#{if err.file then ", File: #{err.file.name}" else ""}"
       $('#notices').html "<div class='notice error'>#{message}</div>"
+      $('#spinner').data().spinner.stop()
       $('#uploadfiles').hide()
       up.refresh() # Reposition Flash/Silverlight
 
