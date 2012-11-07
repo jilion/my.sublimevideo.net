@@ -3,6 +3,8 @@
 ---
 :verbose: true
 :concurrency:  25
+:require: '.'
+:timeout: 8
 :queues:
   - [low, 1]
   - [mailer, 2]

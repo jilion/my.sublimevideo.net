@@ -1,10 +1,6 @@
-Sidekiq.options = {
-  queues: ['low', 'default', 'high', 'mailer'],
-  concurrency: 25,
-  require: '.',
-  timeout: 8,
-  poll_interval: 5
-}
+Sidekiq.configure_client do |config|
+  config.poll_interval = 5
+end
 
 # http://mongoid.org/en/mongoid/docs/tips.html#sidekiq
 Sidekiq.configure_server do |config|
