@@ -4,18 +4,18 @@ source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg' # thibaud@jilion.com acco
 
 ruby '1.9.3'
 
-gem 'bundler', '~> 1.2.0'
+gem 'bundler'
 
 gem 'rails', github: 'rails/rails', branch: '3-2-stable'
 
 gem 'sublimevideo_layout', '1.4.2' # hosted on gemfury
 
 # Databases
-gem 'pg',                    '~> 0.14.0'
-gem 'squeel',                '~> 1.0.11'
+gem 'pg'
+gem 'squeel'
 gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
 gem 'moped',                 github: 'mongoid/moped'
-gem 'mongoid',               '~> 3.0.6'
+gem 'mongoid'
 gem 'kiqstand'
 
 # Views
@@ -31,9 +31,9 @@ gem 'premailer',             github: 'jilion/premailer'
 gem 'premailer-rails3',      '~> 1.3.1'
 
 # Auth / invitations
-gem 'devise',                '~> 2.1.2'
-gem 'devise_invitable',      '~> 1.1.0'
-gem 'devise-async', github: 'mhfs/devise-async'
+gem 'devise'
+gem 'devise_invitable'
+gem 'devise-async'
 
 # API
 gem 'oauth',                 '~> 0.4.7'
@@ -58,7 +58,7 @@ gem 'responders',            '~> 0.9.2'
 gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
-gem 'fog',                   '~> 1.6.0'
+gem 'fog'
 gem 'carrierwave',           '~> 0.6.2', require: ['carrierwave', 'carrierwave/processing/mime_types']
 # gem 'carrierwave-mongoid',   '~> 0.2.1', require: 'carrierwave/mongoid'
 gem 'carrierwave-mongoid',   github: 'jnicklas/carrierwave-mongoid', branch: 'mongoid-3.0', require: 'carrierwave/mongoid'

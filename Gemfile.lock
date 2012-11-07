@@ -31,43 +31,33 @@ GIT
       mongoid-grid_fs (~> 1.3.1)
 
 GIT
-  remote: git://github.com/mhfs/devise-async.git
-  revision: f5f304a655296c67183a8955e7f6a875a394b1a5
-  specs:
-    devise-async (0.3.1)
-      devise (>= 1.1)
-
-GIT
   remote: git://github.com/mongoid/moped.git
-  revision: 16c502b1a12fc3ee1c90dfa3534508db263f056d
+  revision: 728518c26b8dfe976127dfce266da80012e52fd8
   specs:
     moped (1.3.0)
 
 GIT
   remote: git://github.com/mperham/sidekiq.git
-  revision: b7a6441173c83f28bce272b6192cbd998f97ad15
+  revision: f3c6c65eb047d6353778333e83df8dad8a77ff42
   specs:
-    sidekiq (2.5.1)
+    sidekiq (2.5.2)
       celluloid (~> 0.12.0)
-      compass
       connection_pool (~> 0.9.2)
       multi_json (~> 1)
       redis (~> 3)
       redis-namespace
-      sass (~> 3.2)
-      sprockets-sass
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: f32f150e45f3dc3ccbd0adc1c91e6144b3cf1384
+  revision: e41d78ce221b2ca84cc260e20f3813eaace586b3
   branch: 3-2-stable
   specs:
-    actionmailer (3.2.9.rc1)
-      actionpack (= 3.2.9.rc1)
+    actionmailer (3.2.9.rc2)
+      actionpack (= 3.2.9.rc2)
       mail (~> 2.4.4)
-    actionpack (3.2.9.rc1)
-      activemodel (= 3.2.9.rc1)
-      activesupport (= 3.2.9.rc1)
+    actionpack (3.2.9.rc2)
+      activemodel (= 3.2.9.rc2)
+      activesupport (= 3.2.9.rc2)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
       journey (~> 1.0.4)
@@ -75,31 +65,31 @@ GIT
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
       sprockets (~> 2.2)
-    activemodel (3.2.9.rc1)
-      activesupport (= 3.2.9.rc1)
+    activemodel (3.2.9.rc2)
+      activesupport (= 3.2.9.rc2)
       builder (~> 3.0.0)
-    activerecord (3.2.9.rc1)
-      activemodel (= 3.2.9.rc1)
-      activesupport (= 3.2.9.rc1)
+    activerecord (3.2.9.rc2)
+      activemodel (= 3.2.9.rc2)
+      activesupport (= 3.2.9.rc2)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activeresource (3.2.9.rc1)
-      activemodel (= 3.2.9.rc1)
-      activesupport (= 3.2.9.rc1)
-    activesupport (3.2.9.rc1)
+    activeresource (3.2.9.rc2)
+      activemodel (= 3.2.9.rc2)
+      activesupport (= 3.2.9.rc2)
+    activesupport (3.2.9.rc2)
       i18n (~> 0.6)
       multi_json (~> 1.0)
-    rails (3.2.9.rc1)
-      actionmailer (= 3.2.9.rc1)
-      actionpack (= 3.2.9.rc1)
-      activerecord (= 3.2.9.rc1)
-      activeresource (= 3.2.9.rc1)
-      activesupport (= 3.2.9.rc1)
+    rails (3.2.9.rc2)
+      actionmailer (= 3.2.9.rc2)
+      actionpack (= 3.2.9.rc2)
+      activerecord (= 3.2.9.rc2)
+      activeresource (= 3.2.9.rc2)
+      activesupport (= 3.2.9.rc2)
       bundler (~> 1.0)
-      railties (= 3.2.9.rc1)
-    railties (3.2.9.rc1)
-      actionpack (= 3.2.9.rc1)
-      activesupport (= 3.2.9.rc1)
+      railties (= 3.2.9.rc2)
+    railties (3.2.9.rc2)
+      actionpack (= 3.2.9.rc2)
+      activesupport (= 3.2.9.rc2)
       rack-ssl (~> 1.3.2)
       rake (>= 0.8.7)
       rdoc (~> 3.4)
@@ -120,7 +110,7 @@ GIT
 
 GIT
   remote: git://github.com/softa/activerecord-postgres-hstore.git
-  revision: 94b078e728345c8bbd40862878cf5b95021d6245
+  revision: 396f5af9af5eb70b7d9721a5bb14e14afee5cc38
   specs:
     activerecord-postgres-hstore (0.4.1)
       pg
@@ -215,7 +205,6 @@ GEM
       timers (>= 1.0.0)
     childprocess (0.3.6)
       ffi (~> 1.0, >= 1.0.6)
-    chunky_png (1.2.6)
     cocaine (0.4.2)
     coderay (1.0.8)
     coffee-filter (0.1.1)
@@ -229,14 +218,10 @@ GEM
       execjs
     coffee-script-source (1.4.0)
     columnize (0.3.6)
-    compass (0.12.2)
-      chunky_png (~> 1.2)
-      fssm (>= 0.2.7)
-      sass (~> 3.1)
     configuration (1.3.2)
     connection_pool (0.9.2)
     cookiejar (0.3.0)
-    countries (0.8.3)
+    countries (0.8.4)
       currencies (>= 0.4.0)
     crack (0.1.8)
     createsend (1.0.4)
@@ -262,6 +247,8 @@ GEM
       orm_adapter (~> 0.1)
       railties (~> 3.1)
       warden (~> 1.2.1)
+    devise-async (0.4.0)
+      devise (>= 1.1)
     devise_invitable (1.1.1)
       actionmailer (~> 3.0)
       devise (>= 2.1.0)
@@ -293,7 +280,7 @@ GEM
     excon (0.16.7)
     execjs (1.4.0)
       multi_json (~> 1.0)
-    facter (1.6.13)
+    facter (1.6.14)
     factory_girl (4.1.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.1.0)
@@ -306,7 +293,7 @@ GEM
     fastercsv (1.5.5)
     ffaker (1.15.0)
     ffi (1.1.5)
-    fog (1.6.0)
+    fog (1.7.0)
       builder
       excon (~> 0.14)
       formatador (~> 0.2.0)
@@ -319,7 +306,6 @@ GEM
     foreman (0.60.2)
       thor (>= 0.13.6)
     formatador (0.2.4)
-    fssm (0.2.9)
     girl_friday (0.10.0)
       connection_pool (~> 0.9.0)
     guard (1.5.3)
@@ -406,7 +392,7 @@ GEM
     money (5.0.0)
       i18n (~> 0.4)
       json
-    mongoid (3.0.10)
+    mongoid (3.0.11)
       activemodel (~> 3.1)
       moped (~> 1.1)
       origin (~> 1.0)
@@ -414,7 +400,7 @@ GEM
     mongoid-grid_fs (1.3.3)
       mime-types (~> 1.19)
       mongoid (~> 3.0)
-    multi_json (1.3.6)
+    multi_json (1.3.7)
     multi_xml (0.5.1)
     multipart-post (1.1.5)
     net-scp (1.0.4)
@@ -520,12 +506,12 @@ GEM
     ruby_parser (2.3.1)
       sexp_processor (~> 3.0)
     rubyzip (0.9.9)
-    sass (3.2.1)
+    sass (3.2.2)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
-    selenium-webdriver (2.25.0)
+    selenium-webdriver (2.26.0)
       childprocess (>= 0.2.5)
       libwebsocket (~> 0.1.3)
       multi_json (~> 1.0)
@@ -557,9 +543,6 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sprockets-sass (0.9.1)
-      sprockets (~> 2.0)
-      tilt (~> 1.1)
     squeel (1.0.13)
       activerecord (~> 3.0)
       activesupport (~> 3.0)
@@ -592,7 +575,7 @@ GEM
     typhoeus (0.2.4)
       mime-types
       mime-types
-    tzinfo (0.3.34)
+    tzinfo (0.3.35)
     uglifier (1.3.0)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
@@ -608,7 +591,7 @@ GEM
     xml-simple (1.0.16)
     xpath (0.1.4)
       nokogiri (~> 1.3)
-    zendesk_api (0.1.9)
+    zendesk_api (0.1.10)
       faraday (>= 0.8.0)
       faraday_middleware (>= 0.8.7)
       hashie
@@ -633,7 +616,7 @@ DEPENDENCIES
   asset_sync
   aws (~> 2.5.6)
   brakeman
-  bundler (~> 1.2.0)
+  bundler
   capybara
   capybara-email
   capybara-webkit
@@ -650,9 +633,9 @@ DEPENDENCIES
   dalli
   database_cleaner (~> 0.8.0)
   debugger
-  devise (~> 2.1.2)
-  devise-async!
-  devise_invitable (~> 1.1.0)
+  devise
+  devise-async
+  devise_invitable
   display_case (~> 0.0.4)
   eco
   edge_cast (~> 0.0.1)
@@ -661,7 +644,7 @@ DEPENDENCIES
   factory_girl
   factory_girl_rails
   ffaker
-  fog (~> 1.6.0)
+  fog
   foreman
   guard
   guard-jasmine
@@ -681,7 +664,7 @@ DEPENDENCIES
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.4.1)
   mime-types
-  mongoid (~> 3.0.6)
+  mongoid
   moped!
   newrelic-redis
   newrelic_moped
@@ -689,7 +672,7 @@ DEPENDENCIES
   oauth (~> 0.4.7)
   oauth-plugin (~> 0.4.1)
   paper_trail (~> 2.6.0)
-  pg (~> 0.14.0)
+  pg
   powder
   premailer!
   premailer-rails3 (~> 1.3.1)
@@ -724,7 +707,7 @@ DEPENDENCIES
   slim
   snail (~> 0.6.1)
   solve
-  squeel (~> 1.0.11)
+  squeel
   stat_request_parser (~> 1.1.0)
   state_machine (~> 1.1.2)
   sublimevideo_layout (= 1.4.2)
