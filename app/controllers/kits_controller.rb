@@ -6,7 +6,7 @@ class KitsController < ApplicationController
 
   before_filter :redirect_suspended_user, :find_site_by_token!
   before_filter :find_kit, only: [:show, :edit, :update, :set_as_default, :process_custom_logo]
-  before_filter :find_sites_or_redirect_to_new_site, only: [:show, :edit, :update]
+  before_filter :find_sites_or_redirect_to_new_site, only: [:index, :new, :create, :show, :edit, :update]
   skip_before_filter :verify_authenticity_token, only: [:process_custom_logo]
 
   # GET /sites/:site_id/players
@@ -45,7 +45,7 @@ class KitsController < ApplicationController
   def update
     Service::Kit.new(@kit).update(params[:kit])
 
-    respond_with(@kit, location: [:edit, @site, @kit])
+    respond_with(@kit, location: [@site, :kits])
   end
 
   # PUT /sites/:site_id/players/:id/set_as_default

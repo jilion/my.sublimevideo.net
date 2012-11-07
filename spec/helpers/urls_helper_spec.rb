@@ -15,10 +15,10 @@ describe UrlsHelper do
     context 'Rails.env == staging' do
       before { Rails.stub(env: 'staging') }
 
-      it { helper.cdn_url('foo').should eq 'http://cdn.sublimevideo.net-staging/foo' }
-      it { helper.cdn_url('/foo').should eq 'http://cdn.sublimevideo.net-staging/foo' }
-      it { helper.cdn_url('foo/').should eq 'http://cdn.sublimevideo.net-staging/foo/' }
-      it { helper.cdn_url('/foo.js').should eq 'http://cdn.sublimevideo.net-staging/foo.js' }
+      it { helper.cdn_url('foo').should eq 'http://cdn.sublimevideo-staging.net/foo' }
+      it { helper.cdn_url('/foo').should eq 'http://cdn.sublimevideo-staging.net/foo' }
+      it { helper.cdn_url('foo/').should eq 'http://cdn.sublimevideo-staging.net/foo/' }
+      it { helper.cdn_url('/foo.js').should eq 'http://cdn.sublimevideo-staging.net/foo.js' }
     end
 
     %w[test production].each do |env|
@@ -38,7 +38,6 @@ describe UrlsHelper do
       before { Rails.stub(env: 'development') }
 
       it { helper.cdn_path_from_full_url('http://s3.amazonaws.com/dev.sublimevideo/foo').should eq 'foo' }
-      it { helper.cdn_path_from_full_url('/foo').should eq 'foo' }
       it { helper.cdn_path_from_full_url('http://s3.amazonaws.com/dev.sublimevideo/foo/').should eq 'foo/' }
       it { helper.cdn_path_from_full_url('http://s3.amazonaws.com/dev.sublimevideo/foo.js').should eq 'foo.js' }
     end
@@ -46,9 +45,9 @@ describe UrlsHelper do
     context 'Rails.env == staging' do
       before { Rails.stub(env: 'staging') }
 
-      it { helper.cdn_path_from_full_url('http://cdn.sublimevideo.net-staging/foo').should eq 'foo' }
-      it { helper.cdn_path_from_full_url('http://cdn.sublimevideo.net-staging/foo/').should eq 'foo/' }
-      it { helper.cdn_path_from_full_url('http://cdn.sublimevideo.net-staging/foo.js').should eq 'foo.js' }
+      it { helper.cdn_path_from_full_url('http://cdn.sublimevideo-staging.net/foo').should eq 'foo' }
+      it { helper.cdn_path_from_full_url('http://cdn.sublimevideo-staging.net/foo/').should eq 'foo/' }
+      it { helper.cdn_path_from_full_url('http://cdn.sublimevideo-staging.net/foo.js').should eq 'foo.js' }
     end
 
     %w[test production].each do |env|

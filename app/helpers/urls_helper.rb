@@ -13,7 +13,7 @@ module UrlsHelper
     when 'development'
       ['http://', "s3.amazonaws.com/#{S3.buckets['sublimevideo']}"]
     when 'staging'
-      ['http://', 'cdn.sublimevideo.net-staging']
+      ['http://', 'cdn.sublimevideo-staging.net']
     else
       ['//', 'cdn.sublimevideo.net']
     end
@@ -26,7 +26,7 @@ module UrlsHelper
     when 'development'
       "s3.amazonaws.com/#{S3.buckets['sublimevideo']}"
     when 'staging'
-      'cdn.sublimevideo.net-staging'
+      'cdn.sublimevideo-staging.net'
     else
       'cdn.sublimevideo.net'
     end
