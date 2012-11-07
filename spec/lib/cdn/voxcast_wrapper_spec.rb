@@ -28,7 +28,7 @@ describe CDN::VoxcastWrapper do
     end
 
     it "returns logs name" do
-      logs_list.first["content"].should eq('4076.voxcdn.com.log.1350728640-1350728700.gz')
+      logs_list.first["content"].should eq('cdn.sublimevideo.net.log.1349001120-1349001180.gz')
     end
   end
 
