@@ -203,129 +203,129 @@ describe Service::Settings, :fog_mock do
 
       describe "file" do
         it "has good content" do
+          expected = <<-CONTENT.gsub(/^ {12}/, '')
+          sublime_.jd("ko",[],
+            function() {
+            var a;return a= {
+            kr: {
+            "ku":["test.com"],
+            "kv":["127.0.0.1","localhost"],
+            "kz":null,"ia":null,"ib":"beta"},
+            sa: {
+            "kf": {
+            "ko": {
+            "if":true,"tn":false},
+            "kp": {
+            "if": {
+            "ih":[true]},
+            "tn": {
+            "ih":[false]}}}},
+            ks: {
+            "1": {
+            "kb": {
+            "kn":"sa.sb.sc"},
+            "ka": {
+            "kd": {
+            "ko": {
+            "kj":"play","tg":"#000","th":0.7,"il":true,"ti":"autohide","tl":"left"},
+            "kp": {
+            "kj": {
+            "ih":["nothing","play"]},
+            "tg": {
+            "ih":["#000"]},
+            "th": {
+            "ii":[0.1,1]},
+            "il": {
+            "ih":[true,false]},
+            "ti": {
+            "ih":["autohide","visible"]},
+            "tl": {
+            "ih":["left","right"]}},
+            "kn":"sa.sl.sm"},
+            "ke": {
+            "ka": {
+            "ki": {
+            "ko": {
+            "if":true,"im":"sv","tq":"autohide","to":"bottomRight","ij":"","ik":null},
+            "kp": {
+            "if": {
+            "ih":[true]},
+            "im": {
+            "ih":["sv"]},
+            "tq": {
+            "ih":["autohide","visible"]},
+            "to": {
+            "ih":["bottomRight"]},
+            "ij": {
+            },
+            "ik": {
+            }},
+            "kn":"sa.sh.sp"},
+            "km": {
+            "ko": {
+            "in":true,"io":true,"ip":true,"iq":true,"ir":"twitter link facebook embed","is":null,"ts":null,"tt":null,"ik":null,"tu":null,"tv":null,"tz":null},
+            "kp": {
+            "in": {
+            "ih":[true,false]},
+            "io": {
+            "ih":[true,false]},
+            "ip": {
+            "ih":[true,false]},
+            "iq": {
+            "ih":[true,false]},
+            "ir": {
+            },
+            "is": {
+            },
+            "ts": {
+            },
+            "tt": {
+            },
+            "ik": {
+            },
+            "tu": {
+            },
+            "tv": {
+            },
+            "tz": {
+            }},
+            "kn":"sa.sh.sz"},
+            "kh": {
+            "ko": {
+            "it":true,"tr":"autofade","tg":"#000"},
+            "kp": {
+            "it": {
+            "ih":[true,false]},
+            "tr": {
+            "ih":["autofade","visible"]},
+            "tg": {
+            "ih":["#000"]}},
+            "kn":"sa.sh.sv"},
+            "kg": {
+            "ko": {
+            "if":true,"tq":"autohide"},
+            "kp": {
+            "if": {
+            "ih":[true,false]},
+            "tq": {
+            "ih":["autohide","visible"]}},
+            "kn":"sa.sh.sq"}},
+            "ko": {
+            "te":true,"td":true,"tb":false,"onEnd":"nothing"},
+            "kp": {
+            "te": {
+            "ih":[true,false]},
+            "td": {
+            "ih":[true,false]},
+            "tb": {
+            "ih":[true,false]},
+            "onEnd": {
+            "ih":["nothing","replay","stop"]}},
+            "kn":"sa.sh.si"}}}},
+            kt:'1'},
+            [a]})
+          CONTENT
           File.open(subject.file) do |f|
-            expected = <<-CONTENT.gsub(/^ {12}/, '')
-            sublime_.jd("ko",[],
-              function() {
-              var a;return a= {
-              kr: {
-              "ku":["test.com"],
-              "kv":["127.0.0.1","localhost"],
-              "kz":null,"ia":null,"ib":"beta"},
-              sa: {
-              "kf": {
-              "ko": {
-              "if":true,"tn":false},
-              "kp": {
-              "if": {
-              "ih":[true]},
-              "tn": {
-              "ih":[false]}}}},
-              ks: {
-              "1": {
-              "kb": {
-              "kn":"sa.sb.sc"},
-              "ka": {
-              "kd": {
-              "ko": {
-              "kj":"play","tg":"#000","th":0.7,"il":true,"ti":"autohide","tl":"left"},
-              "kp": {
-              "kj": {
-              "ih":["nothing","play"]},
-              "tg": {
-              "ih":["#000"]},
-              "th": {
-              "ii":[0.1,1]},
-              "il": {
-              "ih":[true,false]},
-              "ti": {
-              "ih":["autohide","visible"]},
-              "tl": {
-              "ih":["left","right"]}},
-              "kn":"sa.sl.sm"},
-              "ke": {
-              "ka": {
-              "ki": {
-              "ko": {
-              "if":true,"im":"sv","tq":"autohide","to":"bottomRight","ij":"","ik":null},
-              "kp": {
-              "if": {
-              "ih":[true]},
-              "im": {
-              "ih":["sv"]},
-              "tq": {
-              "ih":["autohide","visible"]},
-              "to": {
-              "ih":["bottomRight"]},
-              "ij": {
-              },
-              "ik": {
-              }},
-              "kn":"sa.sh.sp"},
-              "km": {
-              "ko": {
-              "in":true,"io":true,"ip":true,"iq":true,"ir":"twitter link facebook embed","is":null,"ts":null,"tt":null,"ik":null,"tu":null,"tv":null,"tz":null},
-              "kp": {
-              "in": {
-              "ih":[true,false]},
-              "io": {
-              "ih":[true,false]},
-              "ip": {
-              "ih":[true,false]},
-              "iq": {
-              "ih":[true,false]},
-              "ir": {
-              },
-              "is": {
-              },
-              "ts": {
-              },
-              "tt": {
-              },
-              "ik": {
-              },
-              "tu": {
-              },
-              "tv": {
-              },
-              "tz": {
-              }},
-              "kn":"sa.sh.sz"},
-              "kh": {
-              "ko": {
-              "it":true,"tr":"autofade","tg":"#000"},
-              "kp": {
-              "it": {
-              "ih":[true,false]},
-              "tr": {
-              "ih":["autofade","visible"]},
-              "tg": {
-              "ih":["#000"]}},
-              "kn":"sa.sh.sv"},
-              "kg": {
-              "ko": {
-              "if":true,"tq":"autohide"},
-              "kp": {
-              "if": {
-              "ih":[true,false]},
-              "tq": {
-              "ih":["autohide","visible"]}},
-              "kn":"sa.sh.sq"}},
-              "ko": {
-              "te":true,"td":true,"tb":false,"onEnd":"nothing"},
-              "kp": {
-              "te": {
-              "ih":[true,false]},
-              "td": {
-              "ih":[true,false]},
-              "tb": {
-              "ih":[true,false]},
-              "onEnd": {
-              "ih":["nothing","replay","stop"]}},
-              "kn":"sa.sh.si"}}}},
-              kt:'1'},
-              [a]})
-            CONTENT
             f.read.gsub(/\{/, " {\n  ").gsub(/(\},|\],)/, "\\1\n  ").should eq expected
           end
         end

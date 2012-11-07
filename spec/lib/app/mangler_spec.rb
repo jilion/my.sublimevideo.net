@@ -32,14 +32,14 @@ describe App::Mangler do
     end
 
     it "mangles recursively all keys" do
-      App::Mangler.mangle('force_flash' => { enabled: 'foo' }).should eq({
-        "ta" => { "tm" => "foo" }
+      App::Mangler.mangle('force_flash' => { enable: 'foo' }).should eq({
+        "ta" => { "if" => "foo" }
       })
     end
 
     it "doesn't mangles if parent key is 'Kits'" do
-      App::Mangler.mangle('force_flash' => { "kits" => { enabled: 'foo' } }).should eq({
-        "ta" => { "ks" => { "enabled" => "foo" } }
+      App::Mangler.mangle('force_flash' => { "kits" => { enable: 'foo' } }).should eq({
+        "ta" => { "ks" => { "enable" => "foo" } }
       })
     end
   end
