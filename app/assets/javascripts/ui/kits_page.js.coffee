@@ -40,6 +40,5 @@ class MySublimeVideo.UI.KitsPage
       liId = $li.attr('id')
 
       videoCode = @videoTagHelpers[liId].generateVideoCode(id: "preview_kit_#{liId}")
-      console.log videoCode
       $("#preview_#{liId}").replaceWith(videoCode)
       sublimevideo.prepare("preview_kit_#{liId}")

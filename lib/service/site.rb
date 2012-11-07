@@ -9,14 +9,14 @@ module Service
     class << self
       # TODO: Remove after launch
       def migrate_plan_to_addons!(site_id, free_addon_plans, free_addon_plans_filtered)
-        site = ::Site.find(site_id)
-        Service::Site.new(site).migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
+        ::Site.find(site_id).tap do |site|
+          Service::Site.new(site).migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
+        end
       end
 
       # TODO: Remove after launch
       def create_default_kit(site_id)
-        site = ::Site.find(site_id)
-        Service::Site.new(site).send(:create_default_kit!)
+        ::Site.find(site_id).tap { |site| Service::Site.new(site).send(:create_default_kit!) }.save!
       end
     end
 
@@ -27,7 +27,7 @@ module Service
 
         set_default_app_designs
         set_default_addon_plans
-        site.loaders_updated_at = Time.now.utc
+        site.loaders_updated_at  = Time.now.utc
         site.settings_updated_at = Time.now.utc
         site.save!
       end
