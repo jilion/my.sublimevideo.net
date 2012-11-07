@@ -97,6 +97,35 @@ namespace :one_time do
       timed { Site.update_last_30_days_counters_for_not_archived_sites }
     end
 
+    # NEW ADDONS BUSINESS MODEL TASKS
+
+    # STEP 1
+    desc "Step 1: db:migrate, one_time:sites:set_default_domain, one_time:sites:update_accessible_stage, db:populate:addons"
+    task migration_step_1: :environment do
+      Rake::Task['db:migrate'].execute
+      Rake::Task['one_time:sites:set_default_domain'].execute
+      Rake::Task['one_time:sites:update_accessible_stage'].execute
+      Rake::Task['db:populate:addons'].execute
+    end
+
+    desc "Set default domain name to all sites without a domain name set"
+    task set_default_domain: :environment do
+      timed { Site.where(hostname: ['', nil]).update_all(hostname: Site::DEFAULT_DOMAIN) }
+    end
+
+    desc "For all non-archived sites, update accessible_stage"
+    task update_accessible_stage: :environment do
+      timed { puts OneTime::Site.update_accessible_stage }
+    end
+
+    # STEP 2
+    desc "Step 2: one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans, one_time:sites:migrate_yearly_plans_to_monthly_plans, one_time:sites:migrate_plans_to_addons"
+    task migration_step_2: :environment do
+      Rake::Task['one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans'].execute
+      Rake::Task['one_time:sites:migrate_yearly_plans_to_monthly_plans'].execute
+      Rake::Task['one_time:sites:migrate_plans_to_addons'].execute
+    end
+
     desc "For all non-archived site with a monthly plan, add the plan's price prorated between [now] and the end of the site's cycle and add it to the user's balance"
     task add_already_paid_amount_to_balance_for_monthly_plans: :environment do
       timed { puts OneTime::Site.add_already_paid_amount_to_balance_for_monthly_plans }
@@ -112,14 +141,15 @@ namespace :one_time do
       timed { puts OneTime::Site.migrate_plans_to_addons }
     end
 
+    # STEP 3
+    desc "Step 3: one_time:sites:create_default_kit_for_all_non_archived_sites"
+    task migration_step_3: :environment do
+      Rake::Task['one_time:sites:create_default_kit_for_all_non_archived_sites'].execute
+    end
+
     desc "For all non-archived sites, create a default kit"
     task create_default_kit_for_all_non_archived_sites: :environment do
       timed { puts OneTime::Site.create_default_kit_for_all_non_archived_sites }
-    end
-
-    desc "For all non-archived sites, update accessible_stage"
-    task update_accessible_stage: :environment do
-      timed { puts OneTime::Site.update_accessible_stage }
     end
   end
 
