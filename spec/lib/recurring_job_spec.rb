@@ -30,18 +30,22 @@ end
 describe RecurringJob do
 
   describe ".supervise_queues" do
-    it "notifies if number of jobs is higher than threshold" do
-      Sidekiq.options[:queues].each do |queue|
-        Sidekiq::Queue.should_receive(:new).with(queue) { 1 }
-      end
+    let(:sidekiq_queue) { mock(Sidekiq::Queue) }
+    before do
+      Sidekiq::Client.stub(:registered_queues) { ['default'] }
+      Sidekiq::Queue.stub(:new).with('default') { sidekiq_queue }
+    end
 
+    it "notifies if number of jobs is higher than threshold" do
+      sidekiq_queue.should_receive(:size) { 101 }
       Notify.should_receive(:send)
-      described_class.supervise_queues(1)
+      described_class.supervise_queues
     end
 
     it "doesn't notify if number of jobs is low" do
+      sidekiq_queue.should_receive(:size) { 99 }
       Notify.should_not_receive(:send)
-      described_class.supervise_queues(50)
+      described_class.supervise_queues
     end
   end
 

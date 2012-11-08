@@ -8,7 +8,8 @@ module RecurringJob
   class << self
 
     def supervise_queues(jobs_threshold = 100)
-      jobs_count = Sidekiq.options[:queues].sum do |queue|
+      queues = Sidekiq::Client.registered_queues
+      jobs_count = queues.sum do |queue|
         Sidekiq::Queue.new(queue).size
       end
 
