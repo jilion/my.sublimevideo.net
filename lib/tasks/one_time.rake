@@ -119,11 +119,11 @@ namespace :one_time do
     end
 
     # STEP 2
-    desc "Step 2: one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans, one_time:sites:migrate_yearly_plans_to_monthly_plans, one_time:sites:migrate_plans_to_addons"
+    desc "Step 2: one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans, one_time:sites:migrate_yearly_plans_to_monthly_plans, one_time:sites:create_default_kit_for_all_non_archived_sites"
     task migration_step_2: :environment do
       Rake::Task['one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans'].execute
       Rake::Task['one_time:sites:migrate_yearly_plans_to_monthly_plans'].execute
-      Rake::Task['one_time:sites:migrate_plans_to_addons'].execute
+      Rake::Task['one_time:sites:create_default_kit_for_all_non_archived_sites'].execute
     end
 
     desc "For all non-archived site with a monthly plan, add the plan's price prorated between [now] and the end of the site's cycle and add it to the user's balance"
@@ -136,20 +136,20 @@ namespace :one_time do
       timed { puts OneTime::Site.migrate_yearly_plans_to_monthly_plans }
     end
 
-    desc "For all non-archived sites, migrate from the old plans to the new add-ons business model"
-    task migrate_plans_to_addons: :environment do
-      timed { puts OneTime::Site.migrate_plans_to_addons }
-    end
-
-    # STEP 3
-    desc "Step 3: one_time:sites:create_default_kit_for_all_non_archived_sites"
-    task migration_step_3: :environment do
-      Rake::Task['one_time:sites:create_default_kit_for_all_non_archived_sites'].execute
-    end
-
     desc "For all non-archived sites, create a default kit"
     task create_default_kit_for_all_non_archived_sites: :environment do
       timed { puts OneTime::Site.create_default_kit_for_all_non_archived_sites }
+    end
+
+    # STEP 3
+    desc "Step 3: one_time:sites:migrate_plans_to_addons"
+    task migration_step_3: :environment do
+      Rake::Task['one_time:sites:migrate_plans_to_addons'].execute
+    end
+
+    desc "For all non-archived sites, migrate from the old plans to the new add-ons business model"
+    task migrate_plans_to_addons: :environment do
+      timed { puts OneTime::Site.migrate_plans_to_addons }
     end
   end
 
