@@ -2160,17 +2160,11 @@ INSERT INTO schema_migrations (version) VALUES ('20100701091254');
 
 INSERT INTO schema_migrations (version) VALUES ('20100706142731');
 
-INSERT INTO schema_migrations (version) VALUES ('20100707142429');
-
-INSERT INTO schema_migrations (version) VALUES ('20100707142455');
-
 INSERT INTO schema_migrations (version) VALUES ('20100720092023');
 
 INSERT INTO schema_migrations (version) VALUES ('20100720101348');
 
 INSERT INTO schema_migrations (version) VALUES ('20100722100536');
-
-INSERT INTO schema_migrations (version) VALUES ('20100722155430');
 
 INSERT INTO schema_migrations (version) VALUES ('20100723135123');
 

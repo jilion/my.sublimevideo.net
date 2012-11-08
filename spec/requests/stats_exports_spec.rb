@@ -30,8 +30,11 @@ feature 'StatsExport' do
     Sidekiq::Worker.drain_all
 
     open_email(@current_user.email)
-    current_email.find('a', text: %r{stats/exports}).click
+    stat_export_id = StatsExport.last.id
+    stats_export_url = current_email.find('a', text: %r{stats/exports}).text
+    stats_export_url.should match(%r(stats/exports/#{stat_export_id}))
 
+    go 'my', "/stats/exports/#{stat_export_id}"
     # File can't be downloaded directly from S3 because of Fog.mock!
     current_url.should match(
       %r{https://s3\.amazonaws\.com/#{S3.buckets['stats_exports']}/uploads/stats_exports/stats_export\.#{@site.hostname}\.\d+-\d+\.csv\.zip\?AWSAccessKeyId=#{S3.access_key_id}&Signature=foo&Expires=\d+}

@@ -156,13 +156,13 @@ group :test do
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'capybara-email'
-  gem "capybara-webkit"
+  gem 'poltergeist'
   gem 'show_me_the_cookies'
   gem 'webmock',  '~> 1.6.0'
   gem 'typhoeus', '~> 0.2.0'
   gem 'vcr',      '~> 1.10.3'
 
-  gem 'database_cleaner', '~> 0.8.0'
+  gem 'database_cleaner'
   gem 'factory_girl'
   gem 'factory_girl_rails' # loaded in spec_helper Spork.each_run
 end
