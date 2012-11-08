@@ -1,4 +1,4 @@
-require 'digest/md5'
+require 's3etag'
 require_dependency 'cdn'
 
 CDN::File = Struct.new(:file, :destinations, :s3_options, :options) do

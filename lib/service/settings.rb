@@ -65,7 +65,7 @@ module Service
     end
 
     def kits
-      site.kits.includes(:design).inject({}) do |hash, kit|
+      site.kits.includes(:design).order(:identifier).inject({}) do |hash, kit|
         hash[kit.identifier] = {}
         hash[kit.identifier][:skin] = { id: kit.skin_token }
         hash[kit.identifier][:plugins] = kits_plugins(kit, nil)
@@ -84,7 +84,7 @@ module Service
   private
 
     def addon_plans
-      @addon_plans ||= site.addon_plans.includes(:addon, settings_templates: :plugin)
+      @addon_plans ||= site.addon_plans.includes(:addon, settings_templates: :plugin).order(:id)
     end
 
     def addon_plans_without_plugins

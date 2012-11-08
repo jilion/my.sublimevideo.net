@@ -225,23 +225,6 @@ describe Service::Settings, :fog_mock do
             "kb": {
             "kn":"sa.sb.sc"},
             "ka": {
-            "kd": {
-            "ko": {
-            "kj":"play","tg":"#000","th":0.7,"il":true,"ti":"autohide","tl":"left"},
-            "kp": {
-            "kj": {
-            "ih":["nothing","play"]},
-            "tg": {
-            "ih":["#000"]},
-            "th": {
-            "ii":[0.1,1]},
-            "il": {
-            "ih":[true,false]},
-            "ti": {
-            "ih":["autohide","visible"]},
-            "tl": {
-            "ih":["left","right"]}},
-            "kn":"sa.sl.sm"},
             "ke": {
             "ka": {
             "ki": {
@@ -261,6 +244,26 @@ describe Service::Settings, :fog_mock do
             "ik": {
             }},
             "kn":"sa.sh.sp"},
+            "kg": {
+            "ko": {
+            "if":true,"tq":"autohide"},
+            "kp": {
+            "if": {
+            "ih":[true,false]},
+            "tq": {
+            "ih":["autohide","visible"]}},
+            "kn":"sa.sh.sq"},
+            "kh": {
+            "ko": {
+            "it":true,"tr":"autofade","tg":"#000"},
+            "kp": {
+            "it": {
+            "ih":[true,false]},
+            "tr": {
+            "ih":["autofade","visible"]},
+            "tg": {
+            "ih":["#000"]}},
+            "kn":"sa.sh.sv"},
             "km": {
             "ko": {
             "in":true,"io":true,"ip":true,"iq":true,"ir":"twitter link facebook embed","is":null,"ts":null,"tt":null,"ik":null,"tu":null,"tv":null,"tz":null},
@@ -289,27 +292,7 @@ describe Service::Settings, :fog_mock do
             },
             "tz": {
             }},
-            "kn":"sa.sh.sz"},
-            "kh": {
-            "ko": {
-            "it":true,"tr":"autofade","tg":"#000"},
-            "kp": {
-            "it": {
-            "ih":[true,false]},
-            "tr": {
-            "ih":["autofade","visible"]},
-            "tg": {
-            "ih":["#000"]}},
-            "kn":"sa.sh.sv"},
-            "kg": {
-            "ko": {
-            "if":true,"tq":"autohide"},
-            "kp": {
-            "if": {
-            "ih":[true,false]},
-            "tq": {
-            "ih":["autohide","visible"]}},
-            "kn":"sa.sh.sq"}},
+            "kn":"sa.sh.sz"}},
             "ko": {
             "te":true,"td":true,"tb":false,"onEnd":"nothing"},
             "kp": {
@@ -321,7 +304,24 @@ describe Service::Settings, :fog_mock do
             "ih":[true,false]},
             "onEnd": {
             "ih":["nothing","replay","stop"]}},
-            "kn":"sa.sh.si"}}}},
+            "kn":"sa.sh.si"},
+            "kd": {
+            "ko": {
+            "kj":"play","tg":"#000","th":0.7,"il":true,"ti":"autohide","tl":"left"},
+            "kp": {
+            "kj": {
+            "ih":["nothing","play"]},
+            "tg": {
+            "ih":["#000"]},
+            "th": {
+            "ii":[0.1,1]},
+            "il": {
+            "ih":[true,false]},
+            "ti": {
+            "ih":["autohide","visible"]},
+            "tl": {
+            "ih":["left","right"]}},
+            "kn":"sa.sl.sm"}}}},
             kt:'1'},
             [a]})
           CONTENT

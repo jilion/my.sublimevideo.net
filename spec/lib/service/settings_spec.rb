@@ -171,7 +171,7 @@ describe Service::Settings, :fog_mock do
       let(:addon_plan) { mock(AddonPlan, addon: addon, settings_templates: [settings_template], kind: 'stats') }
 
       before do
-        site.stub_chain(:addon_plans, :includes) { [addon_plan] }
+        site.stub_chain(:addon_plans, :includes, :order) { [addon_plan] }
       end
 
       it "includes template of this addon_plan settings_template" do
@@ -249,8 +249,8 @@ describe Service::Settings, :fog_mock do
       let(:addon_plan3) { mock(AddonPlan, addon: addon3, addon_id: addon3.id, kind: 'addon_kind3', settings_templates: [settings_template3]) }
 
       before do
-        site.stub_chain(:addon_plans, :includes) { [addon_plan1, addon_plan2, addon_plan3] }
-        site.stub_chain(:kits, :includes) { [kit1, kit2] }
+        site.stub_chain(:addon_plans, :includes, :order) { [addon_plan1, addon_plan2, addon_plan3] }
+        site.stub_chain(:kits, :includes, :order) { [kit1, kit2] }
       end
 
       it "includes template of this addon_plan settings_template" do
