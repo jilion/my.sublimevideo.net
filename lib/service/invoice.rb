@@ -5,14 +5,6 @@ module Service
     delegate :site, to: :invoice
 
     class << self
-      def build(attributes)
-        new attributes.delete(:site).invoices.new(attributes)
-      end
-
-      def build_for_month(date, site_id)
-        build(site: ::Site.find(site_id)).for_month(date)
-      end
-
       def create_invoices_for_month(date = 1.month.ago)
         ::Site.not_archived.find_each(batch_size: 100) do |site|
           delay.create_for_month(date, site.id)
@@ -22,11 +14,21 @@ module Service
       def create_for_month(date, site_id)
         build_for_month(date, site_id).save
       end
+
+      def build_for_month(date, site_id)
+        build(site: ::Site.find(site_id)).for_month(date)
+      end
+
+      def build(attributes)
+        new attributes.delete(:site).invoices.new(attributes)
+      end
     end
 
     def for_month(date)
-      handle_items_not_yet_canceled_and_created_before_month_of(date)
-      handle_items_subscribed_during_month_of(date)
+      if site.invoices.for_month(date).empty?
+        handle_items_not_yet_canceled_and_created_before_month_of(date)
+        handle_items_subscribed_during_month_of(date)
+      end
 
       self
     end

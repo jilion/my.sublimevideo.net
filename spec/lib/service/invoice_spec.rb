@@ -15,7 +15,7 @@ describe Service::Invoice do
   let(:public_addon_plan_paid) { create(:addon_plan, availability: 'public', price: 995) }
   let(:custom_addon_plan_free) { create(:addon_plan, availability: 'custom', price: 0) }
   let(:custom_addon_plan_paid) { create(:addon_plan, availability: 'custom', price: 995) }
-  let(:service) { described_class.build_for_month(1.month.ago.beginning_of_month, site.id) }
+  let(:service) { described_class.build_for_month(1.month.ago, site.id) }
   let(:delayed) { stub }
 
   describe '.create_invoices_for_month' do
@@ -43,7 +43,6 @@ describe Service::Invoice do
   end
 
   describe '.build_for_month' do
-
     describe 'billable items filtering' do
       before do
         create(:billable_item_activity, site: site, item: hidden_addon_plan_free, state: 'subscribed', created_at: 1.month.ago.beginning_of_month)
@@ -340,9 +339,33 @@ describe Service::Invoice do
       create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 1.month.ago.beginning_of_month)
     end
 
+    context 'already one canceled invoice exists for this site for this month' do
+      before do
+        invoice = create(:invoice, site: site, state: 'canceled')
+        create(:addon_plan_invoice_item, invoice: invoice, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+      end
+
+      it 'create a new invoice' do
+        expect { service.save }.to change(Invoice, :count).by(1)
+      end
+    end
+
+    %w[open paid].each do |state|
+      context "already one #{state} invoice exists for this site for this month" do
+        before do
+          invoice = create(:invoice, site: site, state: state)
+          create(:addon_plan_invoice_item, invoice: invoice, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+        end
+
+        it 'does not create a new invoice' do
+          expect { service.save }.to_not change(Invoice, :count)
+        end
+      end
+    end
+
     context 'non-swiss user' do
       it 'has no VAT' do
-        service.save
+        expect { service.save }.to change(Invoice, :count).by(1)
 
         service.invoice.invoice_items_amount.should eq 995
         service.invoice.vat_rate.should eq 0
@@ -356,7 +379,7 @@ describe Service::Invoice do
       let(:user) { create(:user, billing_country: 'CH', balance: 0) }
 
       it 'has VAT' do
-        service.save
+        expect { service.save }.to change(Invoice, :count).by(1)
 
         service.invoice.invoice_items_amount.should eq 995
         service.invoice.vat_rate.should eq 0.08
@@ -370,7 +393,7 @@ describe Service::Invoice do
       let(:user) { create(:user, billing_country: 'FR', balance: 500) }
 
       it 'deduct from balance' do
-        service.save
+        expect { service.save }.to change(Invoice, :count).by(1)
 
         service.invoice.invoice_items_amount.should eq 995
         service.invoice.vat_rate.should eq 0
@@ -382,7 +405,7 @@ describe Service::Invoice do
 
     context 'first non-canceled invoice' do
       it 'sets renew to false' do
-        service.save
+        expect { service.save }.to change(Invoice, :count).by(1)
 
         service.invoice.should_not be_renew
       end
@@ -394,7 +417,7 @@ describe Service::Invoice do
       end
 
       it 'sets renew to true' do
-        service.save
+        expect { service.save }.to change(Invoice, :count).by(1)
 
         service.invoice.should be_renew
       end

@@ -29,8 +29,8 @@ end
 
 describe Service::Settings, :fog_mock do
   before do
-    site.stub_chain(:addon_plans, :includes) { [] }
-    site.stub_chain(:kits, :includes) { [] }
+    site.stub_chain(:addon_plans, :includes, :order) { [] }
+    site.stub_chain(:kits, :includes, :order) { [] }
     AddonPlan.stub(:get)
   end
 
