@@ -19,7 +19,7 @@
   "order": "ir",
   "defaultUrl": "is",
   "enableOverlay": "it",
-  // "": "iu",
+  "module": "iu",
   // "": "iv",
   // "": "iw",
   // "": "ix",
