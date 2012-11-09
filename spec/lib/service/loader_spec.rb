@@ -13,6 +13,7 @@ require File.expand_path('spec/config/carrierwave')
 require File.expand_path('lib/s3')
 require File.expand_path('lib/stage')
 require File.expand_path('app/models/app')
+require File.expand_path('lib/app/mangler')
 
 unless defined?(ActiveRecord)
   Site = Class.new
@@ -256,15 +257,15 @@ describe Service::Loader, :fog_mock do
         end
 
         it "includes site token" do
-          s3_object.body.should include "l:'#{site.token}'"
+          s3_object.body.should include "#{App::Mangler.mangle_key(:token)}:'#{site.token}'"
         end
 
         it "includes sublinevideo host" do
-          s3_object.body.should include "k:'//cdn.sublimevideo.net'"
+          s3_object.body.should include "#{App::Mangler.mangle_key(:host)}:'//cdn.sublimevideo.net'"
         end
 
         it "includes components versions" do
-          s3_object.body.should include "ug:{'c1':'1.2.3','c2':'1.2.4'}"
+          s3_object.body.should include "#{App::Mangler.mangle_key(:components)}:{'c1':'1.2.3','c2':'1.2.4'}"
         end
       end
     end

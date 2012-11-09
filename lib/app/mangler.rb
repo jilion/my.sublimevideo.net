@@ -4,18 +4,12 @@ module App
   class Mangler
 
     def self.mangle(hash)
-      new(hash).mangle
+      new.mangle_hash(hash)
     end
 
-    def initialize(hash)
-      @hash = hash
+    def self.mangle_key(key)
+      new.mangle_key(key)
     end
-
-    def mangle
-      mangle_hash(@hash)
-    end
-
-  private
 
     def mangle_hash(hash, parent_key = nil)
       Hash[hash.map { |key, value|
@@ -28,13 +22,15 @@ module App
       }]
     end
 
-    def mangle_key(key, parent_key)
+    def mangle_key(key, parent_key = nil)
       if parent_key && parent_key == 'kits'
-        key
+        key.to_s
       else
-        dictionary[key] || key
+        dictionary[key.to_s] || key.to_s
       end
     end
+
+private
 
     def dictionary
       $mangler_dictionary ||= begin

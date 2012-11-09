@@ -44,4 +44,10 @@ describe App::Mangler do
     end
   end
 
+  describe ".mangle_key" do
+    it "mangles key" do
+      App::Mangler.mangle_key(:plugins).should eq('ka')
+    end
+  end
+
 end

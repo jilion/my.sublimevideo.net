@@ -204,7 +204,7 @@ describe Service::Settings, :fog_mock do
       describe "file" do
         it "has good content" do
           expected = <<-CONTENT.gsub(/^ {10}/, '')
-          sublime_.jd("ko",[],
+          sublime_.iu("ko",[],
             function() {
             var a;return a= {
             kr: {
