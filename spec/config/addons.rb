@@ -7,17 +7,11 @@ RSpec.configure do |config|
   config.before :all, type: :request do
     create_default_addons
   end
-  config.before :each, type: :request, js: true do
-    create_default_addons
-  end
 
   config.after :all, addons: true do
     clear_default_addons
   end
   config.after :all, type: :request do
-    clear_default_addons
-  end
-  config.after :each, type: :request, js: true do
     clear_default_addons
   end
 end

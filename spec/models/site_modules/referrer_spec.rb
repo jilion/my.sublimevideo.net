@@ -1,13 +1,10 @@
 require 'spec_helper'
 
 describe SiteModules::Referrer do
-
-  after(:all) { DatabaseCleaner.clean_with(:truncation) }
-
   describe "#referrer_type" do
     context "with versioning" do
-      before(:all) do
-        @site = with_versioning do
+      let(:site) {
+        site = with_versioning do
           Timecop.travel(1.day.ago) do
             @site2 = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "localhost, 127.0.0.1")
           end
@@ -15,8 +12,9 @@ describe SiteModules::Referrer do
           @site2.update_attributes(hostname: "jilion.net", extra_hostnames: 'jilion.org, jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
           @site2
         end
-      end
-      subject { @site }
+        site
+      }
+      subject { site }
 
       it { subject.referrer_type("http://jilion.net").should == "main" }
       it { subject.referrer_type("http://jilion.com").should == "extra" }
@@ -32,10 +30,8 @@ describe SiteModules::Referrer do
     end
 
     context "without wildcard or path" do
-      before(:all) do
-        @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
-      end
-      subject { @site }
+      let(:site) { build(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1") }
+      subject { site }
 
       it { subject.referrer_type("http://Jilion.com").should == "main" }
       it { subject.referrer_type("http://jilion.com").should == "main" }
@@ -63,10 +59,8 @@ describe SiteModules::Referrer do
     end
 
     context "with hostname with subdomain" do
-      before(:all) do
-        @site = create(:site, hostname: "blog.jilion.com", extra_hostnames: nil, dev_hostnames: nil)
-      end
-      subject { @site }
+      let(:site) { build(:site, hostname: "blog.jilion.com", extra_hostnames: nil, dev_hostnames: nil) }
+      subject { site }
 
       it { subject.referrer_type("http://blog.jilion.com").should == "main" }
       it { subject.referrer_type("http://www.blog.jilion.com").should == "main" }
@@ -82,10 +76,8 @@ describe SiteModules::Referrer do
     end
 
     context "with wildcard" do
-      before(:all) do
-        @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", wildcard: true)
-      end
-      subject { @site }
+      let(:site) { build(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", wildcard: true) }
+      subject { site }
 
       it { subject.referrer_type("http://blog.jilion.com").should == "main" }
       it { subject.referrer_type("http://jilion.com").should == "main" }
@@ -119,10 +111,8 @@ describe SiteModules::Referrer do
     end
 
     context "with path" do
-      before(:all) do
-        @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo/boo")
-      end
-      subject { @site }
+      let(:site) { build(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo/boo") }
+      subject { site }
 
       it { subject.referrer_type("http://jilion.com/Demo/boo").should == "main" }
       it { subject.referrer_type("http://jilion.com/demo/boo").should == "main" }
@@ -172,10 +162,8 @@ describe SiteModules::Referrer do
     end
 
     context "with wildcard and path" do
-      before(:all) do
-        @site = create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo", wildcard: true)
-      end
-      subject { @site }
+      let(:site) { build(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo", wildcard: true) }
+      subject { site }
 
       it { subject.referrer_type("http://jilion.com/demo").should == "main" }
       it { subject.referrer_type("http://jilion.com/Demo").should == "main" }
@@ -228,10 +216,8 @@ describe SiteModules::Referrer do
     end
 
     context "custom" do
-      before(:all) do
-        @site = create(:site, hostname: "capped.tv", path: "lft-turbulence|mq")
-      end
-      subject { @site }
+      let(:site) { build(:site, hostname: "capped.tv", path: "lft-turbulence|mq") }
+      subject { site }
 
       it { subject.referrer_type("-").should == "invalid" }
       it { subject.referrer_type("123456789").should == "invalid" }

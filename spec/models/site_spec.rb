@@ -190,13 +190,17 @@ describe Site, :addons do
 
     describe "after transition" do
       it "delays Service::Loader update" do
-        Service::Loader.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id)
-        site.suspend
+        Timecop.freeze do
+          Service::Loader.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id)
+          site.suspend
+        end
       end
 
       it "delays Service::Settings update" do
-        Service::Settings.should delay(:update_all_types!, at: 5.seconds.from_now.to_i).with(site.id)
-        site.suspend
+        Timecop.freeze do
+          Service::Settings.should delay(:update_all_types!, at: 5.seconds.from_now.to_i).with(site.id)
+          site.suspend
+        end
       end
     end
 
