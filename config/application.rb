@@ -42,10 +42,10 @@ module MySublimeVideo
 
     # Configure generators values. Many other options are available, be sure to check the documentation.
     config.app_generators do |g|
-      g.orm                 :active_record
-      g.template_engine     :haml
-      g.integration_tool    :rspec
-      g.test_framework      :rspec, fixture: false, views: false
+      g.orm              :active_record
+      g.template_engine  :haml
+      g.integration_tool :rspec
+      g.test_framework   :rspec, fixture: false, views: false
     end
 
     # Configure the default encoding used in templates for Ruby 1.9.
@@ -59,5 +59,11 @@ module MySublimeVideo
 
     # Use sql format for db schema
     config.active_record.schema_format = :sql
+
+    require 'my_sublime_video/console'
+    console do
+      Rails::ConsoleMethods.send :include, MySublimeVideo::Console
+    end
+
   end
 end
