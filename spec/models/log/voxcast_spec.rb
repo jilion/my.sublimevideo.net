@@ -61,9 +61,9 @@ describe Log::Voxcast do
     it "should delay parse_log methods after create" do
       described_class.should delay(:parse_log_for_stats, queue: 'high').with('log_id')
       described_class.should delay(:parse_log_for_video_tags, queue: 'high', at: 5.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_user_agents, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_referrers, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_user_agents, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_referrers, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
       create(:log_voxcast, id: 'log_id')
     end
   end
@@ -102,9 +102,9 @@ describe Log::Voxcast do
     it "should delay parse_log methods after create" do
       described_class.should delay(:parse_log_for_stats, queue: 'high').with('log_id')
       described_class.should delay(:parse_log_for_video_tags, queue: 'high', at: 5.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_user_agents, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_referrers, queue: 'slow', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_user_agents, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_referrers, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
       create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', id: 'log_id')
     end
   end
