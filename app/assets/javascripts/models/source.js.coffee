@@ -8,9 +8,6 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
     dataName: ''
     dataUID: ''
     isUsed: true
-    keepRatio: true
-    embedWidth: null
-    embedHeight: null
     currentMimeType: ''
 
   setAndPreloadSrc: (src) ->
@@ -26,10 +23,6 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
         this.set(found: false)
 
       this.setDefaultDataUID() unless this.get('dataUID')
-
-  setKeepRatio: (keepRatio) ->
-    this.set(keepRatio: keepRatio)
-    this.setEmbedHeightWithRatio() if this.get('keepRatio')
 
   setDefaultDataUID: ->
     this.set(dataUID: crc32(this.get('src'))) unless this.srcIsEmpty()
@@ -84,32 +77,6 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
       this.set(width: 0)  unless this.get('width')
       this.set(height: 0) unless this.get('height')
       this.set(ratio: 0)  unless this.get('ratio')
-
-    this.setEmbedWidth(_.min([this.get('width'), 852]))
-
-  setEmbedWidth: (newEmbedWidth) ->
-    newEmbedWidth = parseInt(newEmbedWidth)
-    newEmbedWidth = 200 if _.isNaN(newEmbedWidth) or newEmbedWidth < 200
-    newEmbedWidth = 1280 if newEmbedWidth > 1280
-
-    this.set(embedWidth: newEmbedWidth)
-    this.setEmbedHeightWithRatio() if this.get('keepRatio')
-    this.trigger('change:embedWidth')
-
-  setEmbedHeight: (newEmbedHeight) ->
-    newEmbedHeight = parseInt(newEmbedHeight)
-    newEmbedHeight = 100 if _.isNaN(newEmbedHeight) or newEmbedHeight < 100
-    newEmbedHeight = 720 if newEmbedHeight > 720
-
-    this.set(embedHeight: newEmbedHeight)
-    this.setEmbedWidthWithRatio() if this.get('keepRatio')
-    this.trigger('change:embedHeight')
-
-  setEmbedHeightWithRatio: ->
-    this.set(embedHeight: parseInt(this.get('embedWidth') * this.get('ratio')))
-
-  setEmbedWidthWithRatio: ->
-    this.set(embedWidth: parseInt(this.get('embedHeight') / this.get('ratio')))
 
   qualityTitle: ->
     switch this.get('quality')

@@ -13,6 +13,7 @@ class VideoCodesController < ApplicationController
   ## Public page:
   # GET /video-code-generator
   def new
+    @kit = exhibit(@site.default_kit)
   end
 
   def show

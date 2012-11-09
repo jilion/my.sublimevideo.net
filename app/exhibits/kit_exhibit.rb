@@ -3,11 +3,15 @@ class KitExhibit < DisplayCase::Exhibit
     object.class.name == 'Kit'
   end
 
+  def label
+    "##{self.identifier} - #{self.name}#{self.default? ? ' (Default)' : ''}"
+  end
+
   def render_name_as_link(template, site)
     title = self.default? ? 'This player will be displayed if no player is specified in your <video> tag.' : nil
 
     template.link_to template.edit_site_kit_path(site, self), title: title, class: 'name' do
-      "##{self.identifier} - #{self.name}#{self.default? ? ' (Default)' : ''}"
+      label
     end
   end
 

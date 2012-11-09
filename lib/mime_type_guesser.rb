@@ -7,9 +7,10 @@ module MimeTypeGuesser
 private
 
   def self.head(uri_str)
-    uri = URI.parse(uri_str)
+    uri  = URI.parse(uri_str)
+    opts = { use_ssl: uri.scheme == 'https', read_timeout: 3 }
 
-    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+    response = Net::HTTP.start(uri.host, uri.port, opts) do |http|
       http.head(uri.path)
     end
 

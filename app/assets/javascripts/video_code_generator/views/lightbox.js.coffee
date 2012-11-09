@@ -28,7 +28,7 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   #
   updateSrc: (event) ->
     @thumbnail.setAndPreloadSrc(event.target.value)
-    @builder.set(demoAssetsUsed: false)
+    @builder.set(testAssetsUsed: false)
 
   updateThumbWidth: (event) ->
     @thumbnail.setThumbWidth(parseInt(event.target.value))

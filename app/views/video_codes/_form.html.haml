@@ -1,58 +1,83 @@
 :coffeescript
   $(document).ready ->
     SublimeVideoSizeChecker.setRoot('/video-size-checker/')
-    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter(userSignedIn: #{user_signed_in?}, sites: #{@sites.try(:to_json) || []}, selectedSiteToken: '#{@site.token}', kit: #{@site.kits.first.to_json}, currentStage: '#{current_stage}')
+    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter
+      userSignedIn: #{user_signed_in?}
+      sites: #{@sites.try(:to_json) || []}
+      selectedSiteToken: '#{@site.token}'
+      kit: #{@site.kits.first.to_json}
+      currentStage: '#{current_stage}'
 
-.video_code_generator
-  #video_embed_type_selector
-    .radio_wrap
-      = radio_button_tag "type", "standard", checked: true
-      = label_tag "type_standard", "Standard"
-    .radio_wrap
-      = radio_button_tag "type", "lightbox"
-      = label_tag "type_lightbox", "Lightbox"
-    .radio_wrap
-      = radio_button_tag "type", "iframe_embed"
-      = label_tag "type_iframe_embed", "Iframe Embed"
 
-  - unless @video_tag
-    #demo_bootstrap
-      = tooltip_box class: "info" do
-        %span.p Use our demo assets if you don't have your video assets yet, or just want to test-drive SublimeVideo.
-
-      %button.green_button#use_demo_assets Use demo assets
-      %a.reset.hl{ href: '' } Reset all fields
-
+%form#video_code_form
+  .expandable_settings_box
+    %h3
+      Preview
+      = render 'sites/stable_beta_menu', site: @site
+    #preview
   .spacer
-  .big_break
 
-  %form#video_code_form
-    #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+  #kit_selection.expandable_settings_box
+    %h3
+      = render 'video_codes/kit_selection', site: @site, kit: @kit
 
-    #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
-
-    #login_needed
-      #poster
+  #video_sources.expandable_settings_box
+    %h4.expanding_handler.expanded
+      = link_to "Video sources", '', class: 'hl'
+    .expandable{ style: 'display:block' }
+      #video_source_type
+        .radio_wrap
+          = radio_button_tag "video_origin", "test", checked: true
+          = label_tag "type_standard", "Use test video files"
+        .radio_wrap
+          = radio_button_tag "video_origin", "own"
+          = label_tag "type_lightbox", "I host my own video files"
+        .radio_wrap
+          = radio_button_tag "video_origin", "youtube"
+          = label_tag "type_iframe_embed", "My video is on YouTube"
       .spacer
-      .big_break
-
-      #sources
-      .spacer
-      .big_break
-
-      #settings
-      .spacer
-      .big_break
-
-      - if stage?('beta')
-        %h2 Override your default player settings
-        %p These settings will be taken in account only if you're using the beta player code.
-
-        #kit_settings_form
-
-      #preview
-      .spacer
-
-      #code
-        %button.blue_button#get_the_code{ style: 'margin:auto' } Get the Code
+      #video_sources_settings
   .spacer
+
+  #video_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to "Video settings", '', class: 'hl'
+    .left.expandable
+      = render 'kits/form_boxes/basic_player_settings', site: @site, kit: @kit
+  .spacer
+
+  -##lightbox_settings.expandable_settings_box
+  -#  %h4.expanding_handler
+  -#    = link_to "#{t('addons.lightbox')} settings", '', class: 'hl'
+  -#  .left.expandable
+  -#    = render 'kits/form_boxes/lightbox_settings', site: @site, kit: @kit
+  -##poster
+  -#.spacer
+  -#.big_break
+
+
+  -##settings
+
+  - if stage?('beta')
+    %h2 Override your default player settings
+    %p These settings will be taken in account only if you're using the beta player code.
+
+    #kit_settings_form
+
+  #code
+    %button.blue_button#get_the_code{ style: 'margin:auto' } Get the Code
+
+-#- unless @video_tag
+-#  #demo_bootstrap
+-#    = tooltip_box class: "info" do
+-#      %span.p Use our demo assets if you don't have your video assets yet, or just want to test-drive SublimeVideo.
+-#    %button.green_button#use_demo_assets Use demo assets
+-#    %a.reset.hl{ href: '' } Reset all fields
+-#.spacer
+-#.big_break
+
+  #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+
+  #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+
+.spacer

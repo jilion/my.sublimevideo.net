@@ -52,12 +52,6 @@ class MySublimeVideo.UI.KitEditor
       $el.on 'change', =>
         this.updateValueDisplayer($el)
 
-    $('.expanding_handler').each (index, el) =>
-      $el = $(el)
-      $el.on 'click', (event) =>
-        this.toggleExpandableBox($el)
-        false
-
     $('input[type=checkbox][data-master]').each (index, el) =>
       $el = $(el)
       $el.on 'click', (e) =>
@@ -103,13 +97,6 @@ class MySublimeVideo.UI.KitEditor
 
   updateValueDisplayer: ($el) ->
     $("##{$el.attr('id')}_value").text Math.round($el.val() * 100) / 100
-
-  toggleExpandableBox: ($el) ->
-    $('.expanding_handler').removeClass('expanded')
-    $('.expandable').hide()
-
-    $el.toggleClass('expanded')
-    $el.siblings('.expandable').toggle()
 
   toggleDependantInputs: ($el) ->
     $dependantInputs = $("input[data-dependant=#{$el.data('master')}]")

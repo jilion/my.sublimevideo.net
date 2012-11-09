@@ -6,7 +6,6 @@ class MSVVideoCodeGenerator.Views.Settings extends Backbone.View
     'change #embed_height': 'updateEmbedHeight'
     'click #keep_ratio':    'updateKeepRatio'
     'click a.reset':        'resetEmbedDimensions'
-    'click #start_with_hd': 'updateStartWithHd'
     'change #data_name':    'updateDataName'
     'change #data_uid':     'updateDataUID'
 
@@ -24,11 +23,11 @@ class MSVVideoCodeGenerator.Views.Settings extends Backbone.View
   #
   updateEmbedWidth: (event) ->
     embedWidth = parseInt(event.target.value)
-    @model.setEmbedWidth(embedWidth)
+    @model.setWidth(embedWidth)
 
   updateEmbedHeight: (event) ->
     embedHeight = parseInt(event.target.value)
-    @model.setEmbedHeight(embedHeight)
+    @model.setHeight(embedHeight)
 
   updateKeepRatio: (event) ->
     @model.setKeepRatio(event.target.checked)
@@ -36,13 +35,10 @@ class MSVVideoCodeGenerator.Views.Settings extends Backbone.View
 
   resetEmbedDimensions: (event) ->
     @model.setKeepRatio(true)
-    @model.setEmbedWidth(_.min([@model.get('width'), 852]))
+    @model.setWidth(_.min([@model.get('width'), 852]))
     this.render()
 
     false
-
-  updateStartWithHd: (event) ->
-    MSVVideoCodeGenerator.builder.set(startWithHd: event.target.checked)
 
   updateDataName: (event) ->
     @model.set(dataName: event.target.value)

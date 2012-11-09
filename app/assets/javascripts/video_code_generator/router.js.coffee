@@ -10,6 +10,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     this.initModels()
     this.initViews()
     sublimevideo.load()
+    MSVVideoCodeGenerator.previewView.render()
 
   handlePublicClass: ->
     $('body').addClass('mysv_public') unless @userSignedIn
@@ -18,49 +19,29 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCodeGenerator.sites = new MySublimeVideo.Collections.Sites(@sites)
     MSVVideoCodeGenerator.sites.select @selectedSiteToken
 
-    MSVVideoCodeGenerator.loader = new MSVVideoCodeGenerator.Models.Loader(site: MSVVideoCodeGenerator.sites.at(0))
-    MSVVideoCodeGenerator.loader.set(site: MSVVideoCodeGenerator.sites.selectedSite)
-
     MSVVideoCodeGenerator.builder = new MSVVideoCodeGenerator.Models.Builder
       site: MSVVideoCodeGenerator.sites.selectedSite
       kit: @kit
       currentStage : @currentStage
+      testAssetsUsed: true
 
-    MSVVideoCodeGenerator.demoPoster    = 'http://media.jilion.com/vcg/ms_800.jpg'
-    MSVVideoCodeGenerator.demoThumbnail = 'http://media.jilion.com/vcg/ms_192.jpg'
-    MSVVideoCodeGenerator.demoSources   =
-      mp4_base: 'http://media.jilion.com/vcg/ms_360p.mp4'
-      mp4_hd: 'http://media.jilion.com/vcg/ms_720p.mp4'
-      webmogg_base: 'http://media.jilion.com/vcg/ms_360p.webm'
-      webmogg_hd: 'http://media.jilion.com/vcg/ms_720p.webm'
+    MSVVideoCodeGenerator.loader = new MSVVideoCodeGenerator.Models.Loader(site: MSVVideoCodeGenerator.sites.at(0))
+    MSVVideoCodeGenerator.loader.set(site: MSVVideoCodeGenerator.sites.selectedSite)
 
-    MSVVideoCodeGenerator.poster  = new MySublimeVideo.Models.Image
-    MSVVideoCodeGenerator.sources = new MySublimeVideo.Collections.Sources([
-      new MySublimeVideo.Models.Source
-      new MySublimeVideo.Models.Source
-        format: 'mp4', quality: 'hd', isUsed: false
-      new MySublimeVideo.Models.Source
-        format: 'mp4', quality: 'mobile', isUsed: false
-      new MySublimeVideo.Models.Source
-        format: 'webmogg'
-      new MySublimeVideo.Models.Source
-        format: 'webmogg', quality: 'hd', isUsed: false
-    ])
-
-    MSVVideoCodeGenerator.video = new MySublimeVideo.Models.Video
-      poster: MSVVideoCodeGenerator.poster
-      sources: MSVVideoCodeGenerator.sources
-
-    # Lightbox specific models
-    MSVVideoCodeGenerator.thumbnail = new MySublimeVideo.Models.Thumbnail
+    MSVVideoCodeGenerator.builder.setTestAssets()
 
     # Iframe embed specific models
     MSVVideoCodeGenerator.iframe = new MSVVideoCodeGenerator.Models.Iframe
 
+    MSVVideoCodeGenerator.video = new MySublimeVideo.Models.Video
+      poster: MSVVideoCodeGenerator.poster
+      sources: MSVVideoCodeGenerator.sources
+    MSVVideoCodeGenerator.video.get('sources').mp4Base().set(dataName: 'Midnight Sun')
+
   initViews: ->
-    new MSVVideoCodeGenerator.Views.DemoBootstrap
-      model: MSVVideoCodeGenerator.builder
-      el: '#demo_bootstrap'
+    # new MSVVideoCodeGenerator.Views.DemoBootstrap
+    #   model: MSVVideoCodeGenerator.builder
+    #   el: '#demo_bootstrap'
 
     new MSVVideoCodeGenerator.Views.VideoEmbedTypeSelector
       model: MSVVideoCodeGenerator.builder
@@ -86,7 +67,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCodeGenerator.settingsView = new MSVVideoCodeGenerator.Views.Settings
       builder:    MSVVideoCodeGenerator.builder
       collection: MSVVideoCodeGenerator.sources
-      model:      MSVVideoCodeGenerator.sources.mp4Base()
+      model:      MSVVideoCodeGenerator.video
       el: '#settings'
 
     if $('#kit_settings_form').exists()
@@ -97,7 +78,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       builder: MSVVideoCodeGenerator.builder
       video: MSVVideoCodeGenerator.video
       settingsView: MSVVideoCodeGenerator.settingsView
-      el: '#sources'
+      el: '#video_sources'
 
     MSVVideoCodeGenerator.codeView = new MSVVideoCodeGenerator.Views.Code
       builder: MSVVideoCodeGenerator.builder

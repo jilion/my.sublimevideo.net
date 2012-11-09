@@ -1,41 +1,60 @@
-#global_errors.notices
-  %ul
-    %li.notice.no_usable_source{ style: 'display: none' } Please provide a valid video source.
+- if @video.get('origin') is 'youtube'
+  .entry
+    %label.icon{ for: "youtube_id" }= "YouTube video ID"
+    %input.text.source{ type: "text", id: "youtube_id", placeholder: "YouTube video ID", value: @video.get('youtube_id') }
 
-#global_warnings.notices
-  %ul
-    %li.notice.mime_type_invalid{ style: 'display: none' }><
-      != "Please find more information on how to fix MIME Type misconfiguration in our&nbsp;"
-      %a{ href: "#{SublimeVideo.Misc.Utils.docsUrl('troubleshooting#videos-dont-start-playing', @builder.get('currentStage'))}", onclick: "window.open(this); return false" }><
-        documentation
-      = "."
+- else
+  #global_errors.notices
+    %ul
+      %li.notice.no_usable_source{ style: 'display: none' } Please provide a valid video source.
 
-- for format, formatTitle of { mp4: 'MP4', webmogg: 'WebM or Ogg' }
-  %div{ class: "content_#{if format is 'mp4' then 'left' else 'right'}" }
-    %h4= "#{formatTitle} sources"
-    - qualities = if format is 'mp4' then ['base', 'hd', 'mobile'] else ['base', 'hd']
-    - for quality in qualities
-      - source = @sources.byFormatAndQuality([format, quality])
-      - check = source.get('isUsed')
+  #global_warnings.notices
+    %ul
+      %li.notice.mime_type_invalid{ style: 'display: none' }><
+        != "Please find more information on how to fix MIME Type misconfiguration in our&nbsp;"
+        %a{ href: "#{SublimeVideo.Misc.Utils.docsUrl('troubleshooting#videos-dont-start-playing', @builder.get('currentStage'))}", onclick: "window.open(this); return false" }><
+          documentation
+        = "."
 
-      - if source.get('quality') isnt 'base'
-        .checkbox_wrap
-          %input.use_source{ type: "checkbox", id: "#{source.formatQuality()}_use_source", checked: check }
-          %label{ for: "#{source.formatQuality()}_use_source" }
-            = "Add mobile version (lower resolution/bitrate)" if source.get('quality') == 'mobile'
-            = "Add HD version" if source.get('quality') is 'hd'
+  - for format, formatTitle of { mp4: 'MP4', webm: 'WebM' }
+    %div{ class: "content_#{if format is 'mp4' then 'left' else 'right'}" }
+      %h4
+        = "#{formatTitle} sources"
+        - if format is 'mp4'
+          != "("
+          %a.hl{ href: "#{SublimeVideo.Misc.Utils.docsUrl('encode-videos-for-the-web', @builder.get('currentStage'))}", onclick: "window.open(this); return false" }= "Need help with video formats?"
+          = ")"
 
-      .entry{ id: "#{source.formatQuality()}_box", style: "#{if check then '' else 'display:none' }" }
-        %label.icon{ for: "#{source.formatQuality()}_src" }= "#{source.qualityTitle()} URL"
-        %input.text.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} URL", value: source.get('src') }
-        %span.inline_alert{ id: "#{source.formatQuality()}_src_invalid", style: "display:none" } Please provide a valid video URL
-        %span.inline_alert{ id: "#{source.formatQuality()}_mime_type_invalid", style: "display:none" } Please check your MIME Type
-        %span.inline_alert{ id: "#{source.formatQuality()}_not_found", style: "display:none" } This file doesn't seem to exist
-      .spacer
-.spacer
+      - qualities = if format is 'mp4' then ['base', 'hd', 'mobile'] else ['base', 'hd']
+      - for quality in qualities
+        - source = @sources.byFormatAndQuality([format, quality])
 
-%p.info><
-  != "Need help encoding your video sources? Read our&nbsp;"
-  %a.hl{ href: "#{SublimeVideo.Misc.Utils.docsUrl('encode-videos-for-the-web', @builder.get('currentStage'))}", onclick: "window.open(this); return false" }><
-    documentation
-  = "."
+        - if source.get('quality') isnt 'base'
+          = "SD" if source.get('quality') is 'base'
+          = "HD" if source.get('quality') is 'hd'
+          = "Mobile" if source.get('quality') is 'mobile'
+
+        .entry{ id: "#{source.formatQuality()}_box" }
+          %label.icon{ for: "#{source.formatQuality()}_src" }= "#{source.qualityTitle()} URL"
+          %input.text.source{ type: "text", id: "#{source.formatQuality()}_src", placeholder: "#{source.qualityTitle()} URL", value: source.get('src') }
+
+          %span.inline_alert{ id: "#{source.formatQuality()}_src_invalid", style: "display:none" } Please provide a valid video URL
+
+          %span.inline_alert{ id: "#{source.formatQuality()}_mime_type_invalid", style: "display:none" } Please check your MIME Type
+
+          %span.inline_alert{ id: "#{source.formatQuality()}_not_found", style: "display:none" } This file doesn't seem to exist
+
+          = "(lower resolution/bitrate)" if source.get('quality') is 'mobile'
+        .spacer
+  .spacer
+
+  #start_with_hd_box.checkbox_wrap{ style: "display:#{if @sources.hdPresent() then 'block' else 'none'}" }
+    %input#start_with_hd{ type: "checkbox", checked: @builder.get('startWithHd') }
+    %label{ for: "start_with_hd" } Start with HD version
+
+
+  -#%p.info><
+  -#  != "Need help encoding your video sources? Read our&nbsp;"
+  -#  %a.hl{ href: "#{SublimeVideo.Misc.Utils.docsUrl('encode-videos-for-the-web', @builder.get('currentStage'))}", onclick: "window.open(this); return false" }><
+  -#    documentation
+  -#  = "."

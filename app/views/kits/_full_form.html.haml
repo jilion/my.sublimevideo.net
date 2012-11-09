@@ -6,7 +6,6 @@
 
 #kit_preview
   %h3 Preview
-
   #preview-standard
 
 #kit_settings
@@ -34,11 +33,11 @@
     .left.expandable
       = render 'kits/form_boxes/logo_settings', site: site, kit: kit
 
-  #sharing_settings.expandable_settings_box
-    %h4.expanding_handler
-      = link_to "#{t('addons.sharing')} settings", '', class: 'hl'
-    .left.expandable
-      = render 'kits/form_boxes/sharing_settings', site: site, kit: kit
+  -##sharing_settings.expandable_settings_box
+  -#  %h4.expanding_handler
+  -#    = link_to "#{t('addons.sharing')} settings", '', class: 'hl'
+  -#  .left.expandable
+  -#    = render 'kits/form_boxes/sharing_settings', site: site, kit: kit
 
   -##youtube_settings.expandable_settings_box
   -#  %h4.expanding_handler
@@ -46,8 +45,8 @@
   -#  .left.expandable
   -#    = render 'kits/form_boxes/youtube_settings', site: site, kit: kit
 
-  #embed_settings.expandable_settings_box
-    %h4.expanding_handler
-      = link_to 'Embed settings', '', class: 'hl'
-    .left.expandable
-      = render 'kits/form_boxes/embed_settings', site: site, kit: kit
+  -##embed_settings.expandable_settings_box
+  -#  %h4.expanding_handler
+  -#    = link_to 'Embed settings', '', class: 'hl'
+  -#  .left.expandable
+  -#    = render 'kits/form_boxes/embed_settings', site: site, kit: kit

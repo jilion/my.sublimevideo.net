@@ -1,28 +1,5 @@
 @import "css3";
 
-body.my.mysv_public.vcg header, body.my.mysv_public.vcg header .shadow, body.my.mysv_public.vcg header .lights {
-  height:270px;
-}
-
-body.my.mysv_public.vcg span.video_code_generator_icon {
-  width:350px;
-  height:280px;
-  background:url(<%= asset_path "video_code_generator/video_code_generator_icon.png" %>) no-repeat center;
-  position:absolute;
-  top:75px;
-  left:-40px;
-}
-
-body.my.mysv_public.vcg header h2 {
-  padding:58px 0 5px 260px;
-  text-align:left;
-}
-
-body.my.mysv_public.vcg header p.sub {
-  padding-left:260px;
-  text-align:left;
-}
-
 .video_code_generator {
   position:relative;
   padding:18px 0px 20px;
@@ -43,11 +20,6 @@ body.my.mysv_public.vcg header p.sub {
   position:absolute;
   top:18px;
   right:0;
-}
-
-body.my.mysv_public #demo_bootstrap {
-  top:30px;
-  right:39px;
 }
 
 button#use_demo_assets {
@@ -131,6 +103,9 @@ button#use_demo_assets {
   padding:20px 0;
   text-align:center;
 }
+#preview .video_wrap {
+  margin:0 auto;
+}
 
 #video_code_form #preview h4 {
   padding:0 0 20px;
@@ -186,4 +161,18 @@ a.reset {
 
 #popup_code .entry.embed_code textarea.small_height {
   height:60px;
+}
+
+// REMY
+
+// .video_code_generator h2 { float:left; }
+
+h2.publish_video {
+  position:absolute;
+  width:500px;
+  height:81px;
+  top:20px;
+  padding-top:50px;
+  right:33px;
+  background:url(<%= asset_path "icons/video_publishing_assistant.png" %>) no-repeat right 0;
 }

@@ -17,12 +17,6 @@
   .spacer
   %a.reset.hl{ href: "" } Reset to original size
 
-  .spacer
-
-  #start_with_hd_box.checkbox_wrap{ style: "display:#{if @sources.hdPresent() then 'block' else 'none'}" }
-    %input#start_with_hd{ type: "checkbox", checked: @builder.get('startWithHd') }
-    %label{ for: "start_with_hd" } Start with HD version
-
 .content_right
   %h4 Stats
 

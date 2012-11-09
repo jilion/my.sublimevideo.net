@@ -71,6 +71,10 @@ MySublimeVideo.UI.prepareGrandFatherPlanPopUp = ->
   if ($textDiv = $('#grandfather_plan')).exists()
     new MySublimeVideo.UI.GrandFatherPlanPopUp($textDiv)
 
+MySublimeVideo.UI.prepareExpandableItems = ->
+  $('.expanding_handler').each ->
+    new MySublimeVideo.UI.ExpandableItem($(this))
+
 MySublimeVideo.UI.prepareKitsPage = ->
   if $('#kits').exists()
     new MySublimeVideo.UI.KitsPage
@@ -102,6 +106,7 @@ MySublimeVideo.documentReady = ->
   MySublimeVideo.UI.prepareSitesStatus()
   MySublimeVideo.UI.prepareAddonsChooser()
   MySublimeVideo.UI.prepareGrandFatherPlanPopUp()
+  MySublimeVideo.UI.prepareExpandableItems()
   MySublimeVideo.UI.prepareKitsPage()
   MySublimeVideo.UI.prepareKitEditor()
   MySublimeVideo.UI.prepareSupportRequest()
