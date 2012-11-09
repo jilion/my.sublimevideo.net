@@ -38,7 +38,7 @@ GIT
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: e41d78ce221b2ca84cc260e20f3813eaace586b3
+  revision: 90a5ec758dfb9698ecfd59bd08340ffecbda1d75
   branch: 3-2-stable
   specs:
     actionmailer (3.2.9.rc2)
@@ -291,10 +291,8 @@ GEM
       net-ssh (>= 2.1.3)
       nokogiri (~> 1.5.0)
       ruby-hmac
-    foreman (0.60.2)
-      thor (>= 0.13.6)
     formatador (0.2.4)
-    girl_friday (0.10.0)
+    girl_friday (0.11.0)
       connection_pool (~> 0.9.0)
     guard (1.5.3)
       listen (>= 0.4.2)
@@ -324,14 +322,6 @@ GEM
       tilt (>= 1.3.3)
     has_scope (0.5.1)
     hashie (1.2.0)
-    heroku (2.33.0)
-      heroku-api (~> 0.3.5)
-      launchy (>= 0.3.2)
-      netrc (~> 0.7.7)
-      rest-client (~> 1.6.1)
-      rubyzip
-    heroku-api (0.3.6)
-      excon (~> 0.16.7)
     highline (1.6.15)
     hike (1.2.1)
     hpricot (0.8.6)
@@ -394,7 +384,6 @@ GEM
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-ssh (2.6.1)
-    netrc (0.7.7)
     newrelic-redis (1.4.0)
       newrelic_rpm (~> 3.0)
       redis (< 4.0)
@@ -477,8 +466,6 @@ GEM
     request-log-analyzer (1.12.5)
     responders (0.9.3)
       railties (~> 3.1)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
     rspec (2.11.0)
       rspec-core (~> 2.11.0)
       rspec-expectations (~> 2.11.0)
@@ -645,7 +632,6 @@ DEPENDENCIES
   factory_girl_rails
   ffaker
   fog
-  foreman
   guard
   guard-jasmine
   guard-livereload
@@ -655,7 +641,6 @@ DEPENDENCIES
   haml (~> 3.1.6)
   haml_coffee_assets (~> 1.4.6)
   has_scope (~> 0.5.1)
-  heroku
   hpricot (~> 0.8.6)
   jasminerice
   kaminari (~> 0.14.0)

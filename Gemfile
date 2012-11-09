@@ -170,8 +170,6 @@ end
 group :tools do
   gem 'annotate'
   gem 'wirble'
-  gem 'heroku'
-  gem 'foreman'
   gem 'powder'
   gem 'brakeman'
 
