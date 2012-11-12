@@ -14,7 +14,7 @@ gem 'sublime_video_layout', '1.0.0' # hosted on gemfury
 gem 'pg'
 gem 'squeel'
 gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
-gem 'moped',                 github: 'mongoid/moped'
+gem 'moped',                        github: 'mongoid/moped', ref: 'f603ea59ad5d046f96f3e8cd631a2a7a844cf47f'
 gem 'mongoid'
 gem 'kiqstand'
 
