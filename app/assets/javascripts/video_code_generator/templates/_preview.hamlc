@@ -14,6 +14,11 @@
         = thumbnail.get('src')
 
   .video_wrap{ style: "width:#{@video.width()}px;height:#{@video.height()}px" }
-    %video{ class: "#{@video.get('classes')}", poster: "#{@posterSrc}", width: "#{@video.width()}", height: "#{@video.height()}" preload: "none", style: "display:none", data: { settings: { autoresize: 'fill' } } }
+    - poster = if @video.get('origin') is 'youtube' then '' else @posterSrc
+    - dataSettings = ['autoresize:fill']
+    - if @video.get('origin') is 'youtube'
+      - dataSettings.push("youtube-id:#{@video.get('youtubeId')}")
+    - console.log dataSettings
+    %video{ class: "#{@video.get('classes')}", poster: poster, width: "#{@video.width()}", height: "#{@video.height()}" preload: "none", style: "display:none", data-settings: dataSettings.join(';') }
       - for source in @video.get('sources').sortedSources(@builder.get('startWithHd'))
         != "<source src='#{source.get('src')}' #{if source.needDataQualityAttribute() then "data-quality='#{source.get('quality')}' " else '' }/>"

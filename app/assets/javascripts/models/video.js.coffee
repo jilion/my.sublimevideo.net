@@ -1,7 +1,7 @@
 class MySublimeVideo.Models.Video extends Backbone.Model
   defaults:
     origin: 'files'
-    youtube_id: null
+    youtubeId: null
     poster: null
     sources: null
     classes: 'sublime'
@@ -16,13 +16,16 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     this.get('height')
 
   viewable: ->
-    result = false
-    _.each this.get('sources').allUsedNotEmpty(), (source) ->
-      if source.srcIsUsable()
-        result = true
-        return
+    if this.get('youtubeId') isnt null
+      true
+    else
+      result = false
+      _.each this.get('sources').allUsedNotEmpty(), (source) ->
+        if source.srcIsUsable()
+          result = true
+          return
 
-    result
+      result
 
   setKeepRatio: (keepRatio) ->
     this.set(keepRatio: keepRatio)

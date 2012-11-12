@@ -4,6 +4,7 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
   events:
     'click input[name=video_origin]': 'updateVideoOrigin'
     'change .source':                 'updateSrc'
+    'change #youtube_id':             'updateYouTubeID'
     'click .use_source':              'updateIsUsed'
     'click #start_with_hd':           'updateStartWithHd'
 
@@ -44,11 +45,14 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
         this.setTestAssets(oldOrigin)
       when 'own'
         this.resetTestAssets(oldOrigin)
-      else
+      when 'youtube'
         this.setYouTube(oldOrigin)
 
   updateSrc: (event) ->
     @collection.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).setAndPreloadSrc(event.target.value)
+
+  updateYouTubeID: (event) ->
+    @video.set(youtubeId: event.target.value)
 
   updateIsUsed: (event) ->
     @collection.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).set(isUsed: event.target.checked)
@@ -135,7 +139,8 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
       this.renderViews()
 
   setYouTube: (oldOrigin) ->
-    this.render()
+    if !this.anyTestAssetModified() or !this.anyAssetNotEmpty() or confirm('All fields will be cleared, continue?')
+      this.render()
 
   anyTestAssetModified: ->
     _.any MSVVideoCodeGenerator.testAssets['sources'], (attributes) ->
@@ -143,7 +148,11 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
       source.get('src') isnt attributes['src']
 
   anyAssetNotEmpty: ->
-    !MSVVideoCodeGenerator.poster.srcIsEmpty() or !MSVVideoCodeGenerator.thumbnail.srcIsEmpty() or (_.any MSVVideoCodeGenerator.sources, (src, key) -> src.get('isUsed') and !src.srcIsEmpty())
+    anySourcesNotEmpty = _.any(MSVVideoCodeGenerator.sources.models, (src) ->
+      src.get('isUsed') and !src.srcIsEmpty()
+    )
+
+    !MSVVideoCodeGenerator.poster.srcIsEmpty() or !MSVVideoCodeGenerator.thumbnail.srcIsEmpty() or anySourcesNotEmpty
 
   renderViews: ->
     MSVVideoCodeGenerator.posterView.render()

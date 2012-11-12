@@ -91,6 +91,7 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCodeGenerator.previewView = new MSVVideoCodeGenerator.Views.Preview
       builder: MSVVideoCodeGenerator.builder
+      video: MSVVideoCodeGenerator.video
       loader: MSVVideoCodeGenerator.loader
       poster: MSVVideoCodeGenerator.poster
       thumbnail: MSVVideoCodeGenerator.thumbnail

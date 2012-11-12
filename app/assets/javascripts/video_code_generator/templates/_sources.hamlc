@@ -1,7 +1,7 @@
 - if @video.get('origin') is 'youtube'
   .entry
     %label.icon{ for: "youtube_id" }= "YouTube video ID"
-    %input.text.source{ type: "text", id: "youtube_id", placeholder: "YouTube video ID", value: @video.get('youtube_id') }
+    %input.text{ type: "text", id: "youtube_id", placeholder: "YouTube video ID", value: @video.get('youtubeId') }
 
 - else
   #global_errors.notices

@@ -3,6 +3,7 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
 
   initialize: ->
     @builder   = @options.builder
+    @video     = @options.video
     @loader    = @options.loader
     @poster    = @options.poster
     @sources   = @options.sources
@@ -12,6 +13,8 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
     _.bindAll this, 'delayedRender'
     @builder.bind   'change:builderClass', this.delayedRender
     @builder.bind   'change:startWithHd',  this.delayedRender
+    @video.bind     'change:origin',       this.delayedRender
+    @video.bind     'change:youtubeId',    this.delayedRender
     @poster.bind    'change:src',          this.delayedRender
     @sources.bind   'change',              this.delayedRender
     @thumbnail.bind 'change',              this.delayedRender
@@ -23,19 +26,20 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
     @renderTimer = setTimeout((=> this.render()), 200)
 
   render: ->
-    if MSVVideoCodeGenerator.video.viewable() and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.thumbnail.viewable())
+    if @video.viewable() and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.thumbnail.viewable())
       @currentScroll = $(window).scrollTop()
       $video = $('video')
 
-      sublimevideo.unprepare($video) if $video.exists()
+      sublimevideo.unprepare($video[0]) if $video.exists()
       $(@el).html this.template
         builder: @builder
-        posterSrc: MSVVideoCodeGenerator.video.get('poster').get('src')
-        video: MSVVideoCodeGenerator.video
+        video: @video
+        posterSrc: @video.get('poster').get('src')
+        video: @video
 
       $video = $('video')
       sublimevideo.ready ->
-        sublimevideo.prepare($video) if $video.exists()
+        sublimevideo.prepare($video[0]) if $video.exists()
 
       $(@el).show()
       $(window).scrollTop(@currentScroll)
