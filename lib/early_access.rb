@@ -1,6 +1,6 @@
 module EarlyAccess
 
-  LIST = %w[video player_beta amex]
+  LIST = %w[video player_beta]
 
   def early_access?(feature)
     current_user_early_access.include?(feature)
