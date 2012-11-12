@@ -7,7 +7,7 @@
   "host": "ic",
   "version": "id",
   "token": "ie",
-  // "": "if", -> reserved key
+  // 'if' is a reserved key
   "components": "ig",
   "values": "ih",
   "range": "ii",
@@ -15,7 +15,7 @@
   "linkUrl": "ik",
   "enableCloseButton": "il",
   "type": "im",
-  // "": "in", // -> reserved key
+  // 'in' is a reserved key
   "enableFacebook": "io",
   "enableLink": "ip",
   "enableEmbed": "iq",
