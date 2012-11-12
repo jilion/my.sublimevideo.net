@@ -21,64 +21,54 @@ GIT
     useragent (0.2.3)
 
 GIT
-  remote: git://github.com/jnicklas/carrierwave-mongoid.git
-  revision: 28a9b718d42b8aba47d2eb951f73bd9d872b6eb0
-  branch: mongoid-3.0
-  specs:
-    carrierwave-mongoid (0.3.0.alpha)
-      carrierwave (~> 0.6.1)
-      mongoid (~> 3.0.0)
-      mongoid-grid_fs (~> 1.3.1)
-
-GIT
   remote: git://github.com/mongoid/moped.git
-  revision: 728518c26b8dfe976127dfce266da80012e52fd8
+  revision: 7c178d49ccef67230ef2b8135271600288a9f9df
   specs:
     moped (1.3.0)
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: 90a5ec758dfb9698ecfd59bd08340ffecbda1d75
+  revision: 5f508471b8919ec8d5fc3b6cbe24978a36de8150
   branch: 3-2-stable
   specs:
-    actionmailer (3.2.9.rc2)
-      actionpack (= 3.2.9.rc2)
+    actionmailer (3.2.9.rc3)
+      actionpack (= 3.2.9.rc3)
       mail (~> 2.4.4)
-    actionpack (3.2.9.rc2)
-      activemodel (= 3.2.9.rc2)
-      activesupport (= 3.2.9.rc2)
+    actionpack (3.2.9.rc3)
+      activemodel (= 3.2.9.rc3)
+      activesupport (= 3.2.9.rc3)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
       journey (~> 1.0.4)
       rack (~> 1.4.0)
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
-      sprockets (~> 2.2)
-    activemodel (3.2.9.rc2)
-      activesupport (= 3.2.9.rc2)
+      sprockets (~> 2.2.1)
+    activemodel (3.2.9.rc3)
+      activesupport (= 3.2.9.rc3)
       builder (~> 3.0.0)
-    activerecord (3.2.9.rc2)
-      activemodel (= 3.2.9.rc2)
-      activesupport (= 3.2.9.rc2)
+    activerecord (3.2.9.rc3)
+      activemodel (= 3.2.9.rc3)
+      activesupport (= 3.2.9.rc3)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activeresource (3.2.9.rc2)
-      activemodel (= 3.2.9.rc2)
-      activesupport (= 3.2.9.rc2)
-    activesupport (3.2.9.rc2)
+    activeresource (3.2.9.rc3)
+      activemodel (= 3.2.9.rc3)
+      activesupport (= 3.2.9.rc3)
+    activesupport (3.2.9.rc3)
       i18n (~> 0.6)
       multi_json (~> 1.0)
-    rails (3.2.9.rc2)
-      actionmailer (= 3.2.9.rc2)
-      actionpack (= 3.2.9.rc2)
-      activerecord (= 3.2.9.rc2)
-      activeresource (= 3.2.9.rc2)
-      activesupport (= 3.2.9.rc2)
+    rails (3.2.9.rc3)
+      actionmailer (= 3.2.9.rc3)
+      actionpack (= 3.2.9.rc3)
+      activerecord (= 3.2.9.rc3)
+      activeresource (= 3.2.9.rc3)
+      activesupport (= 3.2.9.rc3)
       bundler (~> 1.0)
-      railties (= 3.2.9.rc2)
-    railties (3.2.9.rc2)
-      actionpack (= 3.2.9.rc2)
-      activesupport (= 3.2.9.rc2)
+      railties (= 3.2.9.rc3)
+    railties (3.2.9.rc3)
+      actionpack (= 3.2.9.rc3)
+      activesupport (= 3.2.9.rc3)
       rack-ssl (~> 1.3.2)
       rake (>= 0.8.7)
       rdoc (~> 3.4)
@@ -115,6 +105,16 @@ GIT
       libxml-ruby (~> 2.2.0)
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
+
+GIT
+  remote: git://github.com/volmer/carrierwave-mongoid.git
+  revision: 13baa2daa07e9b8e219033cd033a207874efeddb
+  branch: mongoid-3.0
+  specs:
+    carrierwave-mongoid (0.3.0.alpha)
+      carrierwave (~> 0.6)
+      mongoid (~> 3.0.0)
+      mongoid-grid_fs (~> 1.3.1)
 
 GEM
   remote: https://rubygems.org/
@@ -183,7 +183,7 @@ GEM
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
     capybara-email (1.0.0)
-    carrierwave (0.6.2)
+    carrierwave (0.7.1)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
     celluloid (0.12.3)
@@ -292,14 +292,15 @@ GEM
       nokogiri (~> 1.5.0)
       ruby-hmac
     formatador (0.2.4)
-    girl_friday (0.11.0)
+    girl_friday (0.11.1)
       connection_pool (~> 0.9.0)
-    guard (1.5.3)
+      rubinius-actor
+    guard (1.5.4)
       listen (>= 0.4.2)
       lumberjack (>= 1.0.2)
       pry (>= 0.9.10)
       thor (>= 0.14.6)
-    guard-jasmine (1.9.3)
+    guard-jasmine (1.9.4)
       childprocess
       guard (>= 1.1.0)
       multi_json
@@ -367,10 +368,9 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.8.1)
     mime-types (1.19)
-    money (5.0.0)
-      i18n (~> 0.4)
-      json
-    mongoid (3.0.11)
+    money (5.1.0)
+      i18n (~> 0.6.0)
+    mongoid (3.0.12)
       activemodel (~> 3.1)
       moped (~> 1.1)
       origin (~> 1.0)
@@ -479,6 +479,9 @@ GEM
       activesupport (>= 3.0)
       railties (>= 3.0)
       rspec (~> 2.11.0)
+    rubinius-actor (0.0.2)
+      rubinius-core-api
+    rubinius-core-api (0.0.1)
     ruby-hmac (0.4.0)
     ruby2ruby (1.3.1)
       ruby_parser (~> 2.0)
@@ -488,7 +491,7 @@ GEM
       sexp_processor (~> 3.0)
     rubyzip (0.9.9)
     s3etag (0.0.1)
-    sass (3.2.2)
+    sass (3.2.3)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -526,7 +529,7 @@ GEM
     snail (0.6.1)
     solve (0.4.0)
       json
-    sprockets (2.8.1)
+    sprockets (2.2.1)
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
@@ -579,7 +582,7 @@ GEM
     xml-simple (1.0.16)
     xpath (0.1.4)
       nokogiri (~> 1.3)
-    zendesk_api (0.1.10)
+    zendesk_api (0.1.11)
       faraday (>= 0.8.0)
       faraday_middleware (>= 0.8.7)
       hashie
@@ -607,7 +610,7 @@ DEPENDENCIES
   bundler
   capybara
   capybara-email
-  carrierwave (~> 0.6.2)
+  carrierwave
   carrierwave-mongoid!
   chosen-rails!
   cocaine (~> 0.4.2)
