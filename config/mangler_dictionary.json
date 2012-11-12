@@ -1,10 +1,13 @@
+// Pay attention not to use the following reserved keys
+// break|case|catch|continue|debugger|default|delete|do|else|finally|for|function|if|in|instanceof|new|return|switch|this|throw|try|typeof|var|void|while|with
+
 {
   "wildcard": "ia",
   "stage": "ib",
   "host": "ic",
   "version": "id",
   "token": "ie",
-  "enable": "if",
+  // "": "if", -> reserved key
   "components": "ig",
   "values": "ih",
   "range": "ii",
@@ -12,7 +15,7 @@
   "linkUrl": "ik",
   "enableCloseButton": "il",
   "type": "im",
-  "enableTwitter": "in",
+  // "": "in", // -> reserved key
   "enableFacebook": "io",
   "enableLink": "ip",
   "enableEmbed": "iq",
@@ -20,8 +23,8 @@
   "defaultUrl": "is",
   "enableOverlay": "it",
   "module": "iu",
-  // "": "iv",
-  // "": "iw",
+  "enable": "iv",
+  "enableTwitter": "iw",
   // "": "ix",
   // "": "iy",
   // "": "iz",
