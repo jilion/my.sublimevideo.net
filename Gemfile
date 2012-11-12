@@ -69,7 +69,7 @@ gem 'rack-pjax'
 
 # CDN
 gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
-gem 'edge_cast',             '~> 0.0.1' # hosted on gemfury
+gem 'edge_cast',             '~> 0.0.1'
 
 gem 'activemerchant',        '1.28.0'
 gem 'public_suffix',         '~> 1.1.2'
