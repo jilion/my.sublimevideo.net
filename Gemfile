@@ -8,7 +8,7 @@ gem 'bundler'
 
 gem 'rails', github: 'rails/rails', branch: '3-2-stable'
 
-gem 'sublimevideo_layout', '1.4.2' # hosted on gemfury
+gem 'sublime_video_layout', '1.0.0' # hosted on gemfury
 
 # Databases
 gem 'pg'

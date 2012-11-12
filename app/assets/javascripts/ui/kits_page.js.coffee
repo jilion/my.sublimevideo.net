@@ -12,19 +12,17 @@ class MySublimeVideo.UI.KitsPage
     sources = new MySublimeVideo.Collections.Sources([
       new MySublimeVideo.Models.Source
         src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4'
-        embedWidth: 320
-        embedHeight: 180
       new MySublimeVideo.Models.Source
         format: 'webmogg'
         src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm'
-        embedWidth: 320
-        embedHeight: 180
     ])
 
     @video = new MySublimeVideo.Models.Video
       thumbnail: thumbnail
       poster: poster
       sources: sources
+      width: 320
+      height: 180
 
   setupHelpers: ->
     @videoTagHelpers = {}

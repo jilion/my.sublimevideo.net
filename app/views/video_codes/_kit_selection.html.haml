@@ -1,0 +1,2 @@
+= label_tag :kit_id, 'Player'
+= select_tag :kit_id, options_from_collection_for_select(site.kits.order(:identifier).map { |k| exhibit(k) }, :id, :label, kit.id)

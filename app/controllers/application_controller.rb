@@ -9,7 +9,7 @@ require_dependency 'controller_helpers/pjax'
 require_dependency 'responders/paginated_responder'
 
 class ApplicationController < ActionController::Base
-  include SublimeVideoLayoutHelper
+  include SublimeVideoLayout::EngineHelper
   include ControllerHelpers::RedirectionFilters
   include ControllerHelpers::EarlyAccess
   include ControllerHelpers::Sites
