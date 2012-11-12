@@ -8,7 +8,7 @@ gem 'bundler', '~> 1.2.0'
 
 gem 'rails', github: 'rails/rails', branch: '3-2-stable'
 
-gem 'sublimevideo_layout', '1.4.2' # hosted on gemfury
+gem 'sublime_video_layout', '1.0.0' # hosted on gemfury
 
 # Databases
 gem 'pg',                    '~> 0.14.0'
@@ -62,7 +62,7 @@ gem 'rack-pjax'
 
 # CDN
 gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
-gem 'edge_cast',             '~> 0.0.1' # hosted on gemfury
+gem 'edge_cast',             '~> 0.0.1'
 
 gem 'activemerchant',        '1.28.0'
 gem 'public_suffix',         '~> 1.1.2'

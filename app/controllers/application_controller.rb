@@ -6,7 +6,7 @@ require_dependency 'pjax'
 
 class ApplicationController < ActionController::Base
   include MyRedirectionFilters
-  include SublimeVideoLayoutHelper
+  include SublimeVideoLayout::EngineHelper
   include EarlyAccess
   include DemoSiteHelper
   include Pjax
