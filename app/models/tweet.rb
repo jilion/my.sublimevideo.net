@@ -49,30 +49,24 @@ class Tweet
   class << self
 
     def save_new_tweets_and_sync_favorite_tweets
-      return unless enough_remaining_twitter_calls?
-
       KEYWORDS.each do |keyword|
-        page = 1
-        while page < 6 && results = remote_search(keyword, page: page)
-          results.each do |tweet|
+        max_id = nil
+        while search = remote_search(keyword, max_id: max_id) and search.results.present?
+          search.results.each do |tweet|
             if t = self.where(tweet_id: tweet.id).first
               t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
             else
               self.create_from_twitter_tweet!(tweet)
             end
           end
-          page += 1
+          max_id = search.max_id
         end
       end
       self.sync_favorite_tweets
     end
 
     def remote_search(keyword, options = {})
-      if search = TwitterApi.search("\"#{keyword}\"", result_type: 'recent', rpp: 100, page: options[:page])
-        search.results
-      else
-        []
-      end
+      TwitterApi.search("\"#{keyword}\"", result_type: 'recent', count: 100, since_id: options[:max_id])
     end
 
     def remote_favorites(options = {})
@@ -99,8 +93,6 @@ class Tweet
     # It will never favorite/un-favorite tweets on Twitter
     # It simply favorite/un-favorite tweets locally regarding favorites tweets on Twitter
     def sync_favorite_tweets
-      return unless enough_remaining_twitter_calls?(10)
-
       twitter_favorites_ids = (remote_favorites(include_entities: false) || []).map(&:id)
       local_favorites_ids   = favorites.only(:tweet_id).map(&:tweet_id)
 
@@ -170,16 +162,6 @@ class Tweet
       end
 
       selected_tweets.sort { |a, b| b.created_at <=> a.created_at }[0...count]
-    end
-
-    def enough_remaining_twitter_calls?(count=0)
-      rate_limit_status = TwitterApi.rate_limit_status
-      (rate_limit_status.nil? ? KEYWORDS.size * 3 : rate_limit_status.remaining_hits) >= (count.zero? ? KEYWORDS.size * 3 : count)
-    end
-
-    def time_until_next_twitter_calls_limit_reset
-      rate_limit_status = TwitterApi.rate_limit_status
-      Time.zone.at(rate_limit_status.nil? ? Time.now.utc : rate_limit_status.reset_time_in_seconds) - Time.now.utc
     end
 
   end

@@ -94,42 +94,20 @@ describe Tweet do
         described_class::KEYWORDS = %w[rymai]
       end
       use_vcr_cassette "twitter/save_new_tweets_and_sync_favorite_tweets"
-      subject { described_class.save_new_tweets_and_sync_favorite_tweets }
 
       it "should create new tweets" do
-        expect { subject }.to change(Tweet, :count)
+        expect { described_class.save_new_tweets_and_sync_favorite_tweets }.to change(Tweet, :count)
       end
 
       it "should not create new tweets if they're all already saved" do
-        expect { subject }.to change(Tweet, :count)
+        expect { described_class.save_new_tweets_and_sync_favorite_tweets }.to change(Tweet, :count)
         expect { described_class.save_new_tweets_and_sync_favorite_tweets }.to_not change(Tweet, :count)
       end
 
       it "should call sync_favorite_tweets" do
         described_class.should_receive(:sync_favorite_tweets)
-        subject
-      end
-    end
 
-    describe ".enough_remaining_twitter_calls?" do
-      it "should return true if remaining calls are >= KEYWORDS.size * 3" do
-        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', remaining_hits: Tweet::KEYWORDS.size*3))
-        described_class.enough_remaining_twitter_calls?.should be_true
-      end
-
-      it "should return false if remaining calls are < KEYWORDS.size * 3" do
-        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', remaining_hits: Tweet::KEYWORDS.size*3 - 1))
-        described_class.enough_remaining_twitter_calls?.should be_false
-      end
-
-      it "should return true if remaining calls are >= given count" do
-        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', remaining_hits: 100))
-        described_class.enough_remaining_twitter_calls?(100).should be_true
-      end
-
-      it "should return false if remaining calls are < given count" do
-        TwitterApi.should_receive(:rate_limit_status).and_return(mock('rate_limit_status', remaining_hits: 99))
-        described_class.enough_remaining_twitter_calls?(100).should be_false
+        described_class.save_new_tweets_and_sync_favorite_tweets
       end
     end
   end

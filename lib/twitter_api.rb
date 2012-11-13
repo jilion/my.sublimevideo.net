@@ -17,9 +17,8 @@ module TwitterApi
           with_rescue_and_retry(3) do
             Twitter.send(method_name, *args)
           end
-        rescue => ex
-          # Notify.send("Exception during call to Twitter: #{ex.message}", exception: ex)
-          nil
+        rescue Twitter::Error::TooManyRequests => error
+          Notify.send("Too many Twitter requests.")
         end
       else
         super
