@@ -8,18 +8,6 @@ describe VideoCodesController do
 
   it_should_behave_like "redirect when connected as", 'http://my.test.host/sites/new', [[:user, early_access: []]], { get: [:show] }, site_id: '1', id: '1'
 
-  context 'user not logged-in' do
-    it "is success when :new, site_id: 'public'" do
-      get :new, site_id: 'public'
-      response.should be_success
-    end
-
-    it "redirects when :new, site_id: 'site.token'" do
-      get :new, site_id: '1'
-      response.should redirect_to login_user_path
-    end
-  end
-
   context 'user logged-in' do
     before do
       sign_in authenticated_user(early_access: [])
@@ -28,8 +16,8 @@ describe VideoCodesController do
     context "without early access to video" do
 
       context 'without any site' do
-        it "is success when :new, site_id: 'public'" do
-          get :new, site_id: 'public'
+        it "is success when :new, site_id: nil" do
+          get :new, site_id: nil
           response.should redirect_to new_site_path
         end
 
@@ -45,8 +33,8 @@ describe VideoCodesController do
           @site2 = create(:site, user: @authenticated_user, created_at: 2.days.ago)
         end
 
-        it "redirects when :new, site_id: 'public'" do
-          get :new, site_id: 'public'
+        it "redirects when :new, site_id: nil" do
+          get :new, site_id: nil
           response.should redirect_to new_site_video_code_path(@site2.token)
         end
 
@@ -63,8 +51,8 @@ describe VideoCodesController do
         @site = create(:site, user: @authenticated_user)
       end
 
-      it "redirects when :new, site_id: 'public'" do
-        get :new, site_id: 'public'
+      it "redirects when :new, site_id: nil" do
+        get :new, site_id: nil
         response.should redirect_to new_site_video_code_path(@site.token)
       end
 
