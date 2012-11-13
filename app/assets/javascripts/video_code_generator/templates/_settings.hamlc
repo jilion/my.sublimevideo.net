@@ -1,40 +1,70 @@
-.content_left
-  %h4 Settings
+%h4 Poster frame
+.entry#poster_box
+  %label.icon{ for: "poster_src" } Poster frame URL
+  %input#poster_src.text.source{ type: "text", size: "50", placeholder: "Poster frame URL", value: @poster.get('src') }/
+  %span#poster_src_invalid.inline_alert{ style: "display:none" } Please provide a valid image URL
+  %span#poster_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
 
-  %p.info
-    Make sure that 'Keep original ratio' is checked unless you would like black bars (letterboxes/pillarboxes) to display around your video.
+%p.info
+  The poster frame is the image displayed to advertise the video before the user clicks the initial Play button.
+  != "If you need help creating poster frames for your videos, please read our&nbsp;"
+  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('create-poster-frame'), onclick: "window.open(this); return false" }><
+    documentation
+  = "."
 
-  %h5 Size
-  .dimensions.entry.size{ style: "float:left" }
-    %input#embed_width.text.no_icon{ type: "text", value: @source.get('embedWidth'), size: 4, maxlength: 4 }
-    x
-    %input#embed_height.text.no_icon{ type: "text", value: @source.get('embedHeight'), size: 4, maxlength: 4 }
+%h4 Video metadata settings
 
-  .checkbox_wrap{ style: "float:left;margin:14px 0 0 12px" }
-    %input#keep_ratio{ type: "checkbox", checked: @source.get('keepRatio') }
-    %label{ for: "keep_ratio" } Keep original ratio
+%p.info
+  != "Fill in these attributes to identify and name your videos. These fields will also be used by SublimeVideo's&nbsp;"
+  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('real-time-stats'), onclick: "window.open(this); return false" }><
+    Universal Real-Time Statistics platform
+  = "."
 
-  .spacer
-  %a.reset.hl{ href: "" } Reset to original size
+%h5
+  %label{ for: "data_uid" } UID
+#video_data_uid.entry
+  %input#data_uid.text.no_icon{ type: "text", placeholder: "Video unique ID", value: @video.get('dataUID'), size: 8 }
 
-.content_right
-  %h4 Stats
+%h5
+  %label{ for: "data_name" } Name
+#video_data_name.entry
+  %input#data_name.text.no_icon{ type: "text", placeholder: "Video name", value: @video.get('dataName'), size: 50 }
 
-  %p.info
-    != "Fill in these attributes to optimize your videos for SublimeVideo's&nbsp;"
-    - path = if @builder.get('currentStage') is 'beta' then 'addons/real-time-stats/overview' else 'real-time-stats'
-    %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl(path, @builder.get('currentStage')), onclick: "window.open(this); return false" }><
-      Universal Real-Time Statistics platform
-    = "."
+%h4 Player size
 
-  %h5
-    %label{ for: "data_uid" } UID
-  #video_data_uid.entry
-    %input#data_uid.text.no_icon{ type: "text", placeholder: "Video unique ID", value: @source.get('dataUID'), size: 8 }
+%p.info
+  Make sure that 'Keep original ratio' is checked unless you specifically want black bars (letterboxes/pillarboxes) to display around your video.
 
-  %h5
-    %label{ for: "data_name" } Name
-  #video_data_name.entry
-    %input#data_name.text.no_icon{ type: "text", placeholder: "Video name", value: @source.get('dataName'), size: 50 }
+.dimensions.entry.size{ style: "float:left" }
+  %input#width.text.no_icon{ type: "text", placeholder: "Width", value: @video.get('width'), size: 4, maxlength: 4 }
+  x
+  %input#height.text.no_icon{ type: "text", placeholder: "Height", value: @video.get('height'), size: 4, maxlength: 4 }
 
+.checkbox_wrap{ style: "float:left;margin:14px 0 0 12px" }
+  %input#keep_ratio{ type: "checkbox", checked: @video.get('keepRatio') }
+  %label{ for: "keep_ratio" } Keep original ratio
+
+.spacer
+%a.reset.hl{ href: "" } Fit to video size
+
+%h4 Autoresizing (for fluid, liquid & responsive designs)
+
+%p.info
+  Make sure that 'Keep original ratio' is checked unless you would like black bars (letterboxes/pillarboxes) to display around your video.
+
+.dimensions{ style: "float:left" }
+  .radio_wrap
+    %input#autoresize_none{ type: 'radio', name: 'autoresize', value: 'none', checked: @video.get('autoresize') is 'none' }
+    %label{ for: "autoresize_none" } None
+  .radio_wrap
+    %input#autoresize_fit{ type: 'radio', name: 'autoresize', value: 'fit', checked: @video.get('autoresize') is 'fit' }
+    %label{ for: "autoresize_fit" } Fit (player will change size if parent element is resized, and will always keep its proportions)
+  .radio_wrap
+    %input#autoresize_fill{ type: 'radio', name: 'autoresize', value: 'fill', checked: @video.get('autoresize') is 'fill' }
+    %label{ for: "autoresize_fill" } Fill (player will change size to keep filling the parent element if it is resized)
+.spacer
+
+.checkbox_wrap{ style: "float:left;margin:14px 0 0 12px" }
+  %input#autoplay{ type: "checkbox", checked: @video.get('autoplay') }
+  %label{ for: "autoplay" } Autoplay
 .spacer

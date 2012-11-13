@@ -8,36 +8,31 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
     'click .reset':                   'resetThumbDimensions'
 
   initialize: ->
-    @builder     = @options.builder
-    @thumbnail   = @options.thumbnail
     @initialLink = 'image'
     @uiHelper    = new MSVVideoCodeGenerator.Helpers.UIAssetHelper 'thumb'
-    if @builder.get('currentStage') is 'beta'
-      $.get "/sites/#{@builder.get('site').get('token')}/players/#{@builder.get('kit').id}.js?addon=lightbox", (data) =>
-        @lightboxAddonSettingsFields = data
 
     _.bindAll this, 'render', 'renderExtraSettings', 'renderThumbWidth', 'renderThumbHeight', 'renderStatus'
-    @thumbnail.bind 'change:initialLink', this.renderExtraSettings
-    @thumbnail.bind 'change:src',         this.renderStatus
-    @thumbnail.bind 'change:found',       this.renderStatus
-    @thumbnail.bind 'change:thumbWidth',  this.renderThumbWidth
-    @thumbnail.bind 'change:thumbHeight', this.renderThumbHeight
+    MSVVideoCodeGenerator.thumbnail.bind 'change:initialLink', this.renderExtraSettings
+    MSVVideoCodeGenerator.thumbnail.bind 'change:src',         this.renderStatus
+    MSVVideoCodeGenerator.thumbnail.bind 'change:found',       this.renderStatus
+    MSVVideoCodeGenerator.thumbnail.bind 'change:thumbWidth',  this.renderThumbWidth
+    MSVVideoCodeGenerator.thumbnail.bind 'change:thumbHeight', this.renderThumbHeight
 
   #
   # EVENTS
   #
   updateSrc: (event) ->
-    @thumbnail.setAndPreloadSrc(event.target.value)
-    @builder.set(testAssetsUsed: false)
+    MSVVideoCodeGenerator.thumbnail.setAndPreloadSrc(event.target.value)
+    MSVVideoCodeGenerator.video.set(testAssetsUsed: false)
 
   updateThumbWidth: (event) ->
-    @thumbnail.setThumbWidth(parseInt(event.target.value))
+    MSVVideoCodeGenerator.thumbnail.setThumbWidth(parseInt(event.target.value))
 
   updateInitialLink: (event) ->
-    @thumbnail.set(initialLink: event.target.value)
+    MSVVideoCodeGenerator.thumbnail.set(initialLink: event.target.value)
 
   resetThumbDimensions: (event) ->
-    @thumbnail.setThumbWidth(@thumbnail.get('width'))
+    MSVVideoCodeGenerator.thumbnail.setThumbWidth(MSVVideoCodeGenerator.thumbnail.get('width'))
 
     false
 
@@ -45,10 +40,7 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
   # BINDINGS
   #
   render: ->
-    $(@el).html this.template(thumbnail: @thumbnail)
-    if @lightboxAddonSettingsFields?
-      eval @lightboxAddonSettingsFields
-      new MySublimeVideo.UI.KitEditor
+    $(@el).html this.template(thumbnail: MSVVideoCodeGenerator.thumbnail)
     $(@el).show()
     this.renderStatus()
 
@@ -59,26 +51,26 @@ class MSVVideoCodeGenerator.Views.Lightbox extends Backbone.View
 
   renderExtraSettings: ->
     extraDiv = $('.extra')
-    if @thumbnail.get('initialLink') is 'image'
+    if MSVVideoCodeGenerator.thumbnail.get('initialLink') is 'image'
       extraDiv.show()
     else
       extraDiv.hide()
     this.renderStatus()
 
   renderThumbWidth: ->
-    $("#thumb_width").attr(value: @thumbnail.get('thumbWidth'))
+    $("#thumb_width").attr(value: MSVVideoCodeGenerator.thumbnail.get('thumbWidth'))
 
   renderThumbHeight: ->
-    $("#thumb_height").attr(value: @thumbnail.get('thumbHeight'))
+    $("#thumb_height").attr(value: MSVVideoCodeGenerator.thumbnail.get('thumbHeight'))
 
   renderStatus: ->
     @uiHelper.hideErrors()
 
-    return if @thumbnail.get('initialLink') isnt 'image' or @thumbnail.srcIsEmpty()
+    return if MSVVideoCodeGenerator.thumbnail.get('initialLink') isnt 'image' or MSVVideoCodeGenerator.thumbnail.srcIsEmpty()
 
-    if !@thumbnail.srcIsUrl()
+    if !MSVVideoCodeGenerator.thumbnail.srcIsUrl()
       @uiHelper.renderError('src_invalid')
-    else if !@thumbnail.get('found')
+    else if !MSVVideoCodeGenerator.thumbnail.get('found')
       @uiHelper.renderError('not_found')
     else
       @uiHelper.renderValid()

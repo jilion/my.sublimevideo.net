@@ -2,11 +2,9 @@
   $(document).ready ->
     SublimeVideoSizeChecker.setRoot('/video-size-checker/')
     window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter
-      userSignedIn: #{user_signed_in?}
       sites: #{@sites.try(:to_json) || []}
       selectedSiteToken: '#{@site.token}'
       kit: #{@site.kits.first.to_json}
-      currentStage: '#{current_stage}'
 
 
 %form#video_code_form
@@ -36,14 +34,13 @@
           = radio_button_tag "video_origin", "youtube"
           = label_tag "type_iframe_embed", "My video is on YouTube"
       .spacer
-      #video_sources_settings
+      #video_sources_fields
   .spacer
 
   #video_settings.expandable_settings_box
     %h4.expanding_handler
       = link_to "Video settings", '', class: 'hl'
-    .left.expandable
-      = render 'kits/form_boxes/basic_player_settings', site: @site, kit: @kit
+    #video_settings_fields.left.expandable
   .spacer
 
   -##lightbox_settings.expandable_settings_box

@@ -1,5 +1,4 @@
 class MSVVideoCodeGenerator.Helpers.UIAssetHelper
-
   constructor: (@scope) ->
 
   hide: ->

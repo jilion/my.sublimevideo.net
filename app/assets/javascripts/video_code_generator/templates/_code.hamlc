@@ -1,41 +1,12 @@
-- if @video.viewable() and (@builder.get('builderClass') isnt 'lightbox' or MSVVideoCodeGenerator.thumbnail.viewable())
-  - errors   = { src_invalid: 0, not_found: 0 }
-  - warnings = { mime_type_invalid: 0 }
-  - _.each @video.get('sources').allUsedNotEmpty(), (source) ->
-    - if !source.srcIsUrl()
-      - errors['src_invalid'] += 1
-    - else if !source.get('found')
-      - errors['not_found'] += 1
-    - else if !source.validMimeType()
-      - warnings['mime_type_invalid'] += 1
+- if @video.viewable() and (!@video.get('displayInLightbox') or MSVVideoCodeGenerator.thumbnail.viewable())
+  != JST['video_code_generator/templates/code/_notices'](video: @video)
 
-  - if errors['src_invalid'] > 0 or errors['not_found'] > 0
-    .notices
-      %ul
-        - if errors['src_invalid'] > 0
-          %li.notice.error= "There #{if errors['src_invalid'] > 1 then 'are' else 'is'} #{errors['src_invalid']} source#{if errors['not_found'] > 1 then 's' else ''} that #{if errors['src_invalid'] > 1 then "aren't valid URLs" else "isn't a valid URL"}."
-        - if errors['not_found'] > 0
-          %li.notice.error= "There #{if errors['src_invalid'] > 1 then 'are' else 'is'} #{errors['not_found']} source#{if errors['not_found'] > 1 then 's' else ''} that can't be found."
+  -#- if @builder.get('builderClass') is 'iframe_embed'
+  -#  != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, videoTagTemplate: @videoTagTemplate, videoTagHelper: @videoTagHelper)
+  -#  .spacer
 
-  - if warnings['mime_type_invalid'] > 0 or !@video.get('sources').mp4Base().get('dataUID') or !@video.get('sources').mp4Base().get('dataName')
-    .notices
-      %ul
-        - if warnings['mime_type_invalid'] > 0
-          %li.notice.warning= "#{warnings['mime_type_invalid']} source#{if warnings['mime_type_invalid'] > 1 then 's seem' else ' seems'} to have an invalid MIME Type."
-        - unless @video.get('sources').mp4Base().get('dataUID')
-          %li.notice.warning
-            = "We recommend that you provide a UID for this video in the Stats / UID field to make it uniquely identifiable in your Real-Time Statistics dashboard."
-            <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.
-        - unless @video.get('sources').mp4Base().get('dataName')
-          %li.notice.warning
-            = "We recommend that you provide a name for this video in the Stats / Name field to make it easily identifiable in your Real-Time Statistics dashboard."
-            <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.
-
-  - if @builder.get('builderClass') is 'iframe_embed'
-    != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, videoTagTemplate: @videoTagTemplate, videoTagHelper: @videoTagHelper)
-    .spacer
-
-  != this.embedTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, videoTagHelper: @videoTagHelper)
+  != JST['video_code_generator/templates/code/_video_tag'](video: @video, videoTagHelper: @videoTagHelper)
+  -#!= this.embedTemplate(video: @video, videoTagHelper: @videoTagHelper)
   .spacer
 
 - else
@@ -43,5 +14,5 @@
     %ul
       - if !@video.viewable()
         %li.notice.error Please provide a valid video source.
-      - if @builder.get('builderClass') is 'lightbox' and !MSVVideoCodeGenerator.thumbnail.viewable()
+      - if @video.get('displayInLightbox') and !MSVVideoCodeGenerator.thumbnail.viewable()
         %li.notice.error Please provide a valid lightbox image or text.

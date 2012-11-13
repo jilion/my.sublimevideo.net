@@ -1,0 +1,9 @@
+- messages = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video).buildMessages()
+
+- unless _.isEmpty(messages)
+  .notices
+    %ul
+      - _.each messages['errors'], (message) ->
+        %li.notice.error!= message
+      - _.each messages['warnings'], (message) ->
+        %li.notice.warning!= message
