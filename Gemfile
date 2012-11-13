@@ -6,29 +6,29 @@ ruby '1.9.3'
 
 gem 'bundler'
 
-gem 'rails', github: 'rails/rails', branch: '3-2-stable'
+gem 'rails', '3.2.9'
 
-gem 'sublime_video_layout', '1.0.0' # hosted on gemfury
+gem 'sublime_video_layout' # hosted on gemfury
 
 # Databases
 gem 'pg'
 gem 'squeel'
 gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
-gem 'moped',                        github: 'mongoid/moped', ref: 'f603ea59ad5d046f96f3e8cd631a2a7a844cf47f'
+gem 'moped', github: 'mongoid/moped'
 gem 'mongoid'
 gem 'kiqstand'
 
 # Views
-gem 'haml',                  '~> 3.1.6'
-gem 'coffee-rails',          '~> 3.2.2'
-gem 'coffee-filter',         '~> 0.1.1'
-gem 'kaminari',              '~> 0.14.0'
-gem 'liquid',                '~> 2.4.1'
-gem 'display_case',          '~> 0.0.4'
-gem 'rails_autolink',        '~> 1.0.7'
-gem 'hpricot',               '~> 0.8.6'
-gem 'premailer',             github: 'jilion/premailer'
-gem 'premailer-rails3',      '~> 1.3.1'
+gem 'haml'
+gem 'coffee-rails'
+gem 'coffee-filter'
+gem 'kaminari'
+gem 'liquid'
+gem 'display_case'
+gem 'rails_autolink'
+gem 'hpricot'
+gem 'premailer', github: 'jilion/premailer'
+gem 'premailer-rails3'
 
 # Auth / invitations
 gem 'devise'
@@ -36,69 +36,69 @@ gem 'devise_invitable'
 gem 'devise-async'
 
 # API
-gem 'oauth',                 '~> 0.4.7'
-gem 'oauth-plugin',          '~> 0.4.1'
-gem 'acts_as_api',           '~> 0.4.1'
+gem 'oauth'
+gem 'oauth-plugin'
+gem 'acts_as_api'
 
 # Internals
 gem 'sidekiq'
 gem 'sinatra', require: false
 gem 'slim'
 
-gem 'rescue_me',             github: 'rymai/rescue_me' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
-gem 'configuration',         '~> 1.3.1'
-gem 'libxml-ruby',           '~> 2.2.0', require: 'libxml'
+gem 'rescue_me', github: 'rymai/rescue_me' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
+gem 'configuration'
+gem 'libxml-ruby', require: 'libxml'
 
-gem 'state_machine',         '~> 1.1.2'
-gem 'paper_trail',           '~> 2.6.0'
-gem 'uniquify',              '~> 0.1.0'
-gem 'acts-as-taggable-on',   '~> 2.3.3'
+gem 'state_machine'
+gem 'paper_trail'
+gem 'uniquify'
+gem 'acts-as-taggable-on'
 
-gem 'responders',            '~> 0.9.2'
-gem 'has_scope',             '~> 0.5.1'
+gem 'responders'
+gem 'has_scope'
 
-gem 'aws',                   '~> 2.5.6'
+gem 'aws'
 gem 'fog'
 gem 's3etag'
-gem 'carrierwave',           require: ['carrierwave', 'carrierwave/processing/mime_types']
-gem 'carrierwave-mongoid',   github: 'volmer/carrierwave-mongoid', branch: 'mongoid-3.0', require: 'carrierwave/mongoid'
-gem 'request-log-analyzer',  '~> 1.12.0', require: 'request_log_analyzer'
-gem 'cocaine',               '~> 0.4.2'
+gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
+gem 'carrierwave-mongoid', github: 'volmer/carrierwave-mongoid', branch: 'mongoid-3.0', require: 'carrierwave/mongoid'
+gem 'request-log-analyzer', require: 'request_log_analyzer'
+gem 'cocaine'
 
 gem 'rack-pjax'
 
 # CDN
-gem 'voxel_hapi',            github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
-gem 'edge_cast',             '~> 0.0.1'
+gem 'voxel_hapi', github: 'thibaudgg/voxel_hapi', branch: '1.9.2' # VoxCast CDN
+gem 'edge_cast'
 
-gem 'activemerchant',        '1.28.0'
-gem 'public_suffix',         '~> 1.1.2'
-gem 'useragent',             github: 'jilion/useragent' # needed for stat_request_parser
-gem 'stat_request_parser',   '~> 1.1.0' # hosted on gemfury
+gem 'activemerchant'
+gem 'public_suffix'
+gem 'useragent', github: 'jilion/useragent' # needed for stat_request_parser
+gem 'stat_request_parser' # hosted on gemfury
 
-gem 'rubyzip',               '~> 0.9.7', require: 'zip/zip'
+gem 'rubyzip', require: 'zip/zip'
 gem 'mime-types'
-gem 'countries',             '~> 0.8.2'
-gem 'snail',                 '~> 0.6.1'
-gem 'PageRankr',             '~> 3.2.1', require: 'page_rankr'
-gem 'twitter',               '~> 3.7.0'
-gem 'array_stats',           '~> 0.6.0'
-gem 'createsend',            '~> 1.0.0' # Campaign Monitor
+gem 'countries'
+gem 'snail'
+gem 'PageRankr', require: 'page_rankr'
+gem 'twitter'
+gem 'array_stats'
+gem 'createsend' # Campaign Monitor
 
-gem 'airbrake',              '~> 3.1.2'
-gem 'prowl',                 '~> 0.1.3'
+gem 'airbrake'
+gem 'prowl'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77
-gem 'addressable',           '2.2.8', require: 'addressable/uri'
+gem 'addressable', '2.2.8', require: 'addressable/uri'
 
 # Stats
-gem 'crack',                 '~> 0.1.8'
-gem 'pusher',                '~> 0.9.2'
-gem 'redis',                 '~> 3.0.1'
+gem 'crack'
+gem 'pusher'
+gem 'redis'
 
 # Tickets
-gem 'zendesk_api',           '~> 0.1.2'
+gem 'zendesk_api'
 
 # App
 gem 'solve'
@@ -109,17 +109,16 @@ group :assets do
   gem 'asset_sync'
   gem 'eco'
   gem 'uglifier'
-  gem 'haml_coffee_assets',   '~> 1.4.6'
+  gem 'haml_coffee_assets'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
 
-  # gem 'prototype-rails',       '~> 3.2.1'
-  gem 'rails-backbone',        '~> 0.6.0'
+  gem 'rails-backbone', '~> 0.6.0'
 end
-gem 'sass-rails', '~> 3.2.5'
+gem 'sass-rails'
 
 group :production do
-  gem 'rack-google-analytics', '~> 0.11'
+  gem 'rack-google-analytics'
 end
 
 group :staging, :production do
@@ -140,7 +139,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rspec-rails', '~> 2.11.0'
+  gem 'rspec-rails'
   gem 'debugger'
   gem 'timecop'
 
@@ -157,9 +156,9 @@ group :test do
   gem 'capybara-email'
   gem 'poltergeist'
   gem 'show_me_the_cookies'
-  gem 'webmock',  '~> 1.6.0'
+  gem 'webmock', '~> 1.6.0'
   gem 'typhoeus', '~> 0.2.0'
-  gem 'vcr',      '~> 1.10.3'
+  gem 'vcr', '~> 1.10.3'
 
   gem 'database_cleaner'
   gem 'factory_girl'
@@ -184,5 +183,4 @@ group :tools do
   gem 'guard-rspec'
   gem 'guard-jasmine'
   gem 'guard-shell'
-  # gem 'guard-yard'
 end
