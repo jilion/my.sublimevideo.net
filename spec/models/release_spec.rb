@@ -25,7 +25,7 @@ describe Release do
     it "only allows zip file" do
       release = build(:release, zip: fixture_file('railscast_intro.mov'))
       release.should_not be_valid
-      release.errors[:zip].should include("You are not allowed to upload \"mov\" files, allowed types: [\"zip\"]")
+      release.errors[:zip].should include("You are not allowed to upload \"mov\" files, allowed types: zip")
     end
   end
 
