@@ -214,9 +214,9 @@ describe Service::Settings, :fog_mock do
             sa: {
             "kf": {
             "ko": {
-            "if":true,"tn":false},
+            "iv":true,"tn":false},
             "kp": {
-            "if": {
+            "iv": {
             "ih":[true]},
             "tn": {
             "ih":[false]}}}},
@@ -229,9 +229,9 @@ describe Service::Settings, :fog_mock do
             "ka": {
             "ki": {
             "ko": {
-            "if":true,"im":"sv","tq":"autohide","to":"bottomRight","ij":"","ik":null},
+            "iv":true,"im":"sv","tq":"autohide","to":"bottomRight","ij":"","ik":null},
             "kp": {
-            "if": {
+            "iv": {
             "ih":[true]},
             "im": {
             "ih":["sv"]},
@@ -246,9 +246,9 @@ describe Service::Settings, :fog_mock do
             "kn":"sa.sh.sp"},
             "kg": {
             "ko": {
-            "if":true,"tq":"autohide"},
+            "iv":true,"tq":"autohide"},
             "kp": {
-            "if": {
+            "iv": {
             "ih":[true,false]},
             "tq": {
             "ih":["autohide","visible"]}},
@@ -266,9 +266,9 @@ describe Service::Settings, :fog_mock do
             "kn":"sa.sh.sv"},
             "km": {
             "ko": {
-            "in":true,"io":true,"ip":true,"iq":true,"ir":"twitter link facebook embed","is":null,"ts":null,"tt":null,"ik":null,"tu":null,"tv":null,"tz":null},
+            "iw":true,"io":true,"ip":true,"iq":true,"ir":"twitter link facebook embed","is":null,"ts":null,"tt":null,"ik":null,"tu":null,"tv":null,"tz":null},
             "kp": {
-            "in": {
+            "iw": {
             "ih":[true,false]},
             "io": {
             "ih":[true,false]},

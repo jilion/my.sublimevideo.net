@@ -33,7 +33,7 @@ describe App::Mangler do
 
     it "mangles recursively all keys" do
       App::Mangler.mangle('force_flash' => { enable: 'foo' }).should eq({
-        "ta" => { "if" => "foo" }
+        "ta" => { "iv" => "foo" }
       })
     end
 
