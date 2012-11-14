@@ -136,7 +136,7 @@ describe Hostname do
     it { subject.dev_valid?("localhost").should be_true }
     it { subject.dev_valid?("localhost:8888").should be_true }
     it { subject.dev_valid?("google.prod").should be_true }
-    # it { subject.dev_valid?("google.dev").should be_true } # THIS IS HUGELY SLOW DUE TO IPAddr.new('*.dev')!!!!!!!
+    it { subject.dev_valid?("google.dev").should be_true }
     it { subject.dev_valid?("google.test").should be_true }
     it { subject.dev_valid?("http://www.localhost:3000").should be_true }
     it { subject.dev_valid?("www").should be_true }
