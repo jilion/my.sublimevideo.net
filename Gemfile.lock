@@ -1,4 +1,14 @@
 GIT
+  remote: git://github.com/jilion/carrierwave-mongoid.git
+  revision: f15154bd1c0db068ed6d5d2d030e18b3a4a1ab27
+  branch: mongoid-3.0
+  specs:
+    carrierwave-mongoid (0.3.0.alpha)
+      carrierwave (~> 0.6)
+      mongoid (~> 3.0)
+      mongoid-grid_fs (~> 1.3)
+
+GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: be8240784141056b66e0720fbfccb1f8856edaa6
   specs:
@@ -19,6 +29,16 @@ GIT
   revision: 8998a459fbbb0ea74b3edbe85cc280c2256f93e9
   specs:
     useragent (0.2.3)
+
+GIT
+  remote: git://github.com/mongoid/mongoid.git
+  revision: 31c8b391cbb6c6617b30af875d9a3387d1a26eef
+  specs:
+    mongoid (3.1.0)
+      activemodel (~> 3.1)
+      moped (~> 1.2)
+      origin (~> 1.0)
+      tzinfo (~> 0.3.22)
 
 GIT
   remote: git://github.com/mongoid/moped.git
@@ -57,16 +77,6 @@ GIT
       libxml-ruby (~> 2.2.0)
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
-
-GIT
-  remote: git://github.com/volmer/carrierwave-mongoid.git
-  revision: 13baa2daa07e9b8e219033cd033a207874efeddb
-  branch: mongoid-3.0
-  specs:
-    carrierwave-mongoid (0.3.0.alpha)
-      carrierwave (~> 0.6)
-      mongoid (~> 3.0.0)
-      mongoid-grid_fs (~> 1.3.1)
 
 GEM
   remote: https://rubygems.org/
@@ -349,12 +359,7 @@ GEM
     mime-types (1.19)
     money (5.1.0)
       i18n (~> 0.6.0)
-    mongoid (3.0.13)
-      activemodel (~> 3.1)
-      moped (~> 1.1)
-      origin (~> 1.0)
-      tzinfo (~> 0.3.22)
-    mongoid-grid_fs (1.3.3)
+    mongoid-grid_fs (1.7.0)
       mime-types (~> 1.19)
       mongoid (~> 3.0)
     multi_json (1.3.7)
@@ -648,7 +653,7 @@ DEPENDENCIES
   libxml-ruby
   liquid
   mime-types
-  mongoid
+  mongoid!
   moped!
   newrelic-redis
   newrelic_moped

@@ -1,3 +1,4 @@
+
 # http://ablogaboutcode.com/2012/01/12/a-simple-rails-boot-time-improvement/
 source 'https://rubygems.org'
 source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg' # thibaud@jilion.com account
@@ -15,8 +16,7 @@ gem 'pg'
 gem 'squeel'
 gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
 gem 'moped', github: 'mongoid/moped'
-gem 'mongoid'
-gem 'kiqstand'
+gem 'mongoid', github: 'mongoid/mongoid'
 
 # Views
 gem 'haml'
@@ -42,8 +42,9 @@ gem 'acts_as_api'
 
 # Internals
 gem 'sidekiq'
-gem 'sinatra', require: false
-gem 'slim'
+gem 'sinatra', require: false # needed for Sidekiq Web UI
+gem 'slim' # needed for Sidekiq Web UI
+gem 'kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me', github: 'rymai/rescue_me' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
 gem 'configuration'
@@ -61,7 +62,7 @@ gem 'aws'
 gem 'fog'
 gem 's3etag'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
-gem 'carrierwave-mongoid', github: 'volmer/carrierwave-mongoid', branch: 'mongoid-3.0', require: 'carrierwave/mongoid'
+gem 'carrierwave-mongoid', github: 'jilion/carrierwave-mongoid', branch: 'mongoid-3.0', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer', require: 'request_log_analyzer'
 gem 'cocaine'
 
