@@ -5,12 +5,9 @@ class VideoCodesController < ApplicationController
   before_filter :find_sites_or_redirect_to_new_site, :redirect_to_first_site, :find_site_by_token!, only: [:new, :show]
   before_filter :require_video_early_access, only: [:show]
 
-  # GET /sites/:site_id/video-codes/new
+  # GET /sites/:site_id/publish-video
   ## Private page for users with early access to video:
   # GET /sites/:site_id/video-codes/:vid
-  #
-  ## Public page:
-  # GET /video-code-generator
   def new
     @kit = exhibit(@site.default_kit)
   end
