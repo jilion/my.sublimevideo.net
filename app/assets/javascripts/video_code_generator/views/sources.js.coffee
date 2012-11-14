@@ -1,19 +1,17 @@
 class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
-  template: JST['video_code_generator/templates/_sources']
+  template: JST['video_code_generator/templates/sources']
 
   events:
     'click input[name=video_origin]': 'updateVideoOrigin'
     'change .source':                 'updateSrc'
     'change #youtube_id':             'updateYouTubeID'
-    'click .use_source':              'updateIsUsed'
     'click #start_with_hd':           'updateStartWithHd'
 
   initialize: ->
     this.initUIHelpers()
 
-    _.bindAll this, 'render', 'renderStatus'
-    MSVVideoCodeGenerator.video.bind 'change:origin', this.render
-    # MSVVideoCodeGenerator.sources.bind 'change',             this.render
+    _.bindAll this, 'render'
+    MSVVideoCodeGenerator.video.bind   'change:origin',          this.render
     MSVVideoCodeGenerator.sources.bind 'change:src',             this.render
     MSVVideoCodeGenerator.sources.bind 'change:currentMimeType', this.render
     MSVVideoCodeGenerator.sources.bind 'change:found',           this.render
@@ -32,26 +30,28 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     oldOrigin = MSVVideoCodeGenerator.video.get('origin')
     newOrigin = event.target.value
 
-    switch newOrigin
-      when 'test'
-        this.setTestAssets(oldOrigin) unless MSVVideoCodeGenerator.video.get('testAssetsUsed')
-      when 'own'
-        this.resetTestAssets(oldOrigin) if MSVVideoCodeGenerator.video.get('testAssetsUsed')
-      when 'youtube'
-        this.setYouTube(oldOrigin)
+    if oldOrigin is newOrigin
+      false
+    else
+      changed = switch newOrigin
+          when 'test'
+            this.setTestAssets(oldOrigin)
+          when 'own'
+            this.clearTestAssets(oldOrigin)
+          when 'youtube'
+            this.setYouTube(oldOrigin)
+      MSVVideoCodeGenerator.video.set(origin: newOrigin) if changed
 
-    MSVVideoCodeGenerator.video.set(origin: if newOrigin is 'youtube' then 'youtube' else 'files')
+      changed
 
   updateSrc: (event) ->
+    $('#video_origin_own').attr('checked', true)
     MSVVideoCodeGenerator.sources.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).setAndPreloadSrc(event.target.value)
 
   updateYouTubeID: (event) ->
     MSVVideoCodeGenerator.video.set(youtubeId: event.target.value)
     MSVVideoCodeGenerator.video.set(dataUID: event.target.value)
     MSVVideoCodeGenerator.video.set(dataName: '')
-
-  updateIsUsed: (event) ->
-    MSVVideoCodeGenerator.sources.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).set(isUsed: event.target.checked)
 
   updateStartWithHd: (event) ->
     MSVVideoCodeGenerator.video.set(startWithHd: event.target.checked)
@@ -62,7 +62,6 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
   render: ->
     $(@el).find('#video_sources_fields').html this.template
       video: MSVVideoCodeGenerator.video
-      sources: MSVVideoCodeGenerator.sources
 
     _.each MSVVideoCodeGenerator.sources.models, (source) => this.renderStatus(source)
 
@@ -102,34 +101,40 @@ class MSVVideoCodeGenerator.Views.Sources extends Backbone.View
     _.first(id.split('_'), 2)
 
   setTestAssets: (oldOrigin) ->
-    if oldOrigin is 'youtube' or !this.anyAssetNotEmpty() or confirm('All fields will be overwritten, continue?')
+    if oldOrigin is 'youtube' or this.allAssetsEmpty() or confirm('All fields will be overwritten, continue?')
       MSVVideoCodeGenerator.builderRouter.setTestAssets()
       this.initUIHelpers()
       this.renderViews()
+      true
+    else
+      false
 
-  resetTestAssets: (oldOrigin) ->
-    if oldOrigin is 'youtube' or !this.anyTestAssetModified() or confirm('All fields will be cleared, continue?')
-      MSVVideoCodeGenerator.builderRouter.resetTestAssets()
+  clearTestAssets: (oldOrigin) ->
+    if oldOrigin is 'youtube' or this.noTestAssetModified() or confirm('All fields will be cleared, continue?')
+      MSVVideoCodeGenerator.builderRouter.clearTestAssets() if this.noTestAssetModified()
       this.initUIHelpers()
       this.renderViews()
+      true
+    else
+      false
 
   setYouTube: (oldOrigin) ->
-    if !this.anyTestAssetModified() or !this.anyAssetNotEmpty() or confirm('All fields will be cleared, continue?')
-      this.renderViews()
+    this.renderViews()
+    true
 
-  anyTestAssetModified: ->
-    _.any MSVVideoCodeGenerator.testAssets['sources'], (attributes) ->
+  noTestAssetModified: ->
+    _.all MSVVideoCodeGenerator.testAssets['sources'], (attributes) ->
       source = MSVVideoCodeGenerator.sources.byFormatAndQuality([attributes['format'], attributes['quality']])
-      source.get('src') isnt attributes['src']
+      source.get('src') is attributes['src']
 
-  anyAssetNotEmpty: ->
-    anySourcesNotEmpty = _.any(MSVVideoCodeGenerator.sources.models, (src) ->
-      src.get('isUsed') and !src.srcIsEmpty()
+  allAssetsEmpty: ->
+    allSourcesEmpty = _.all(MSVVideoCodeGenerator.sources.models, (src) ->
+      src.srcIsEmpty()
     )
 
-    !MSVVideoCodeGenerator.poster.srcIsEmpty() or !MSVVideoCodeGenerator.thumbnail.srcIsEmpty() or anySourcesNotEmpty
+    MSVVideoCodeGenerator.poster.srcIsEmpty() and MSVVideoCodeGenerator.thumbnail.srcIsEmpty() and allSourcesEmpty
 
   renderViews: ->
     MSVVideoCodeGenerator.settingsView.render()
-    MSVVideoCodeGenerator.lightboxView.render() if MSVVideoCodeGenerator.video.get('displayInLightbox')
+    MSVVideoCodeGenerator.lightboxView.render()
     this.render()

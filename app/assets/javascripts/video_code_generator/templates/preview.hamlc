@@ -1,0 +1,6 @@
+%h4 Preview
+
+.video_wrap
+  - code = new MySublimeVideo.Helpers.VideoTagHelper(@video).generatePlayerCode(id: 'video-preview')
+  - console.log code
+  != code

@@ -35,7 +35,7 @@
 
       - qualities = if format is 'mp4' then ['base', 'hd', 'mobile'] else ['base', 'hd']
       - for quality in qualities
-        - source = @sources.byFormatAndQuality([format, quality])
+        - source = @video.get('sources').byFormatAndQuality([format, quality])
 
         - if source.get('quality') is 'base'
           = "SD"
@@ -58,13 +58,6 @@
         .spacer
   .spacer
 
-  #start_with_hd_box.checkbox_wrap{ style: "display:#{if @sources.hdPresent() then 'block' else 'none'}" }
+  #start_with_hd_box.checkbox_wrap{ style: "display:#{if @video.get('sources').hdPresent() then 'block' else 'none'}" }
     %input#start_with_hd{ type: "checkbox", checked: @video.get('startWithHd') }
     %label{ for: "start_with_hd" } Start with HD version
-
-
-  -#%p.info><
-  -#  != "Need help encoding your video sources? Read our&nbsp;"
-  -#  %a.hl{ href: "#{SublimeVideo.Misc.Utils.docsUrl('encode-videos-for-the-web')}", onclick: "window.open(this); return false" }><
-  -#    documentation
-  -#  = "."

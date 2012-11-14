@@ -2,7 +2,7 @@ class MySublimeVideo.UI.KitEditor
   constructor: ->
     @$lightboxTestButton = $('#lightbox-test-button')
 
-    this.setupInputsInitialState()
+    new MySublimeVideo.UI.DependantInputs
     this.setupModels()
     this.setupHelpers()
     this.setupInputsObservers()
@@ -11,10 +11,6 @@ class MySublimeVideo.UI.KitEditor
     sublimevideo.ready =>
       this.refreshVideoTagFromSettings('standard')
     #   # this.refreshVideoTagFromSettings('lightbox')
-
-  setupInputsInitialState: ->
-    $('input[type=checkbox][data-master]').each (index, el) =>
-      this.toggleDependantInputs($(el))
 
   setupModels: ->
     thumbnail = new MySublimeVideo.Models.Thumbnail(initialLink: 'text', src: 'Test')
@@ -36,10 +32,16 @@ class MySublimeVideo.UI.KitEditor
       poster: poster
       sources: sources
 
+    @lightbox = new MySublimeVideo.Models.Video
+      thumbnail: thumbnail
+      poster: poster
+      sources: sources
+      displayInLightbox: true
+
   setupHelpers: ->
     @videoTagHelpers =
-      standard: new MySublimeVideo.Helpers.VideoTagHelper(@video, type: 'standard', forceSettings: true)
-      lightbox: new MySublimeVideo.Helpers.VideoTagHelper(@video, type: 'lightbox', forceSettings: true)
+      standard: new MySublimeVideo.Helpers.VideoTagHelper(@video, forceSettings: true)
+      lightbox: new MySublimeVideo.Helpers.VideoTagHelper(@lightbox, forceSettings: true)
 
   setupInputsObservers: ->
     $("input[type=checkbox], input[type=radio], input[type=range], input[type=text], input[type=hidden]").each (index, el) =>
@@ -51,11 +53,6 @@ class MySublimeVideo.UI.KitEditor
       $el = $(el)
       $el.on 'change', =>
         this.updateValueDisplayer($el)
-
-    $('input[type=checkbox][data-master]').each (index, el) =>
-      $el = $(el)
-      $el.on 'click', (e) =>
-        this.toggleDependantInputs($el)
 
     $('input[name="kit[addons][logo][type]"]').on 'change', (e) =>
       $el = $(e.target)
@@ -79,6 +76,7 @@ class MySublimeVideo.UI.KitEditor
     switch type
       when 'standard'
         videoCode = @videoTagHelpers[type].generateVideoCode(id: 'preview-standard')
+        console.log videoCode
         $('#preview-standard').replaceWith(videoCode)
 
       when 'lightbox'
@@ -97,11 +95,3 @@ class MySublimeVideo.UI.KitEditor
 
   updateValueDisplayer: ($el) ->
     $("##{$el.attr('id')}_value").text Math.round($el.val() * 100) / 100
-
-  toggleDependantInputs: ($el) ->
-    $dependantInputs = $("input[data-dependant=#{$el.data('master')}]")
-
-    if $el.attr('checked')?
-      $dependantInputs.removeAttr 'disabled'
-    else
-      $dependantInputs.attr 'disabled', 'disabled'

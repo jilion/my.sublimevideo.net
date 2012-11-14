@@ -1,4 +1,4 @@
-- code = @videoTagHelper.generateVideoCode()
+- code = new MySublimeVideo.Helpers.VideoTagHelper(@video).generateVideoCode()
 
 - if @codeOnly
   = code

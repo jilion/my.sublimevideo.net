@@ -131,7 +131,7 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
         expect(@helper.messages['warnings'].length).toEqual(1)
 
       it 'has the right content', ->
-        expect(@helper.messages['warnings'][0]).toEqual("We recommend that you provide a UID for this video in the Stats / UID field to make it uniquely identifiable in your Real-Time Statistics dashboard. <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.")
+        expect(@helper.messages['warnings'][0]).toEqual("We recommend that you provide a UID for this video in the Video settings => Video metadata settings => UID field to make it uniquely identifiable in your Real-Time Statistics dashboard. <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.")
 
     describe 'missing dataName', ->
       beforeEach ->
@@ -144,4 +144,4 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
         expect(@helper.messages['warnings'].length).toEqual(1)
 
       it 'has the right content', ->
-        expect(@helper.messages['warnings'][0]).toEqual("We recommend that you provide a name for this video in the Stats / Name field to make it easily identifiable in your Real-Time Statistics dashboard. <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.")
+        expect(@helper.messages['warnings'][0]).toEqual("We recommend that you provide a name for this video in the Video settings => Video metadata settings => Name field to make it easily identifiable in your Real-Time Statistics dashboard. <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>.")

@@ -1,27 +1,26 @@
 class MySublimeVideo.Helpers.VideoTagHelper
   constructor: (@video, @options = {}) ->
-    _.defaults(@options, { lightbox: false, startWithHd: false, forceSettings: false, settings: null })
+    _.defaults(@options, { forceSettings: false, settings: null })
     # @extraSpaces = if @options['type'] is 'iframe_embed' then '    ' else ''
     @extraSpaces = ''
 
-  generatePlayerCode: ->
-    code  = if @options['lightbox'] then this.generateLightboxCode() else ''
+  generatePlayerCode: (options = {}) ->
+    code = if @video.get('displayInLightbox') then this.generateLightboxCode(options) else ''
 
-    code + this.generateVideoCode()
+    code + this.generateVideoCode(options)
 
   generateVideoCode: (options = {}) ->
-    _.defaults(options, { class: @video.get('classes') })
-
     attributes = []
     attributes.push "id=\"#{options['id']}\"" if options['id']?
-    attributes.push "class=\"#{options['class']}\"" if options['class']?
-    attributes.push this.generatePosterAttribute()
-    attributes.push this.generateWidthAndHeight(@video.width(), @video.height()) #unless @options['type'] is 'iframe_embed'
+    attributes.push this.generateClass()
+    attributes.push this.generatePoster()
+    attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
     attributes.push "data-youtube-id=\"#{@video.get('youtubeId')}\"" if @video.get('origin') is 'youtube'
     attributes.push this.generateDataSettings(['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'])
     attributes.push this.generateDataUIDAndName()
     attributes.push this.generateStyle()
     attributes.push "preload=\"none\""
+    attributes.push "autoplay" if @video.get('autoplay')
 
     code = "#{@extraSpaces}<video #{_.compact(attributes).join(' ')}>\n"
     code += this.generateSources() unless @video.get('origin') is 'youtube'
@@ -29,18 +28,17 @@ class MySublimeVideo.Helpers.VideoTagHelper
     code + "#{@extraSpaces}</video>"
 
   generateSources: ->
-    _.reduce @video.get('sources').sortedSources(@options['startWithHd']), (code, source) =>
+    _.reduce @video.get('sources').sortedSources(@video.get('startWithHd')), (code, source) =>
       code += "#{@extraSpaces}  <source src=\"#{source.get('src')}\" #{this.generateDataQuality(source)}/>\n"
     , ''
 
   generateLightboxCode: (options = {}) ->
-    _.defaults(options, { href: @video.get('sources').mp4Mobile().get('src'), class: 'sublime' })
+    _.defaults(options, { href: @video.get('sources').mp4Mobile().get('src') })
 
     attributes = []
-    attributes.push "href=\"#{options['href']}\""
-    attributes.push "id=\"#{options['id']}\"" if options['id']?
-    attributes.push "class=\"#{options['class']}\""
-    attributes.push "autoplay" if @video.get('autoplay')
+    attributes.push "href=\"##{options['id']}\""
+    attributes.push "id=\"#{options['lightboxId']}\"" if options['lightboxId']?
+    attributes.push "class=\"sublime\""
     attributes.push this.generateDataSettings(['lightbox'])
     code = "<a #{_.compact(attributes).join(' ')}>\n  "
 
@@ -65,7 +63,10 @@ class MySublimeVideo.Helpers.VideoTagHelper
     else
       "data-settings=\"#{_.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')}\""
 
-  generatePosterAttribute: ->
+  generateClass: ->
+    if @video.get('displayInLightbox') then '' else "class=\"sublime\""
+
+  generatePoster: ->
     posterSrc = @video.get('poster').get('src')
     if posterSrc then "poster=\"#{posterSrc}\"" else ''
 
@@ -73,8 +74,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
     "width=\"#{width}\" height=\"#{height}\""
 
   generateStyle: ->
-    # if _.include(['lightbox', 'iframe_embed'], @options['type']) then "style=\"display:none\"" else ''
-    if @options['lightbox'] then "style=\"display:none\"" else ''
+    if @video.get('displayInLightbox') then "style=\"display:none\"" else ''
 
   generateDataUIDAndName: ->
     dataUIDAndName = []

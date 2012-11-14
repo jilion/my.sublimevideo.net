@@ -29,7 +29,6 @@ class MySublimeVideo.UI.KitsPage
     $('li.kit').each (index, el) =>
       $li = $(el)
       @videoTagHelpers[$li.attr('id')] = new MySublimeVideo.Helpers.VideoTagHelper @video,
-        type: 'standard',
         settings: $li.data('settings')
 
   refreshVideoTagFromSettings: (type) ->

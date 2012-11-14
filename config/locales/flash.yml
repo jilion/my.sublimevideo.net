@@ -20,6 +20,9 @@ en:
         notice: 'Site has been successfully registered.'
       update:
         notice: 'Site settings have been successfully updated.'
+    addons:
+      update_all:
+        notice: 'Your add-ons selection has been confirmed.'
     kits:
       create:
         notice: 'Player has been successfully created.'

@@ -201,7 +201,7 @@ module Populate
         ],
         AddonPlan => [
           { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player', availability: 'hidden', public_at: nil },
-          { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'public', public_at: Time.now.utc },
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',     availability: 'hidden', public_at: Time.now.utc },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer', availability: 'hidden', required_stage: 'beta', public_at: nil },
           { name: 'invisible', price: 0,    addon: 'ref-Addon-stats',        availability: 'hidden', public_at: Time.now.utc },
           { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats',        availability: 'public', public_at: Time.now.utc },

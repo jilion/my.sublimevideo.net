@@ -1,7 +1,7 @@
 %h4 Poster frame
 .entry#poster_box
   %label.icon{ for: "poster_src" } Poster frame URL
-  %input#poster_src.text.source{ type: "text", size: "50", placeholder: "Poster frame URL", value: @poster.get('src') }/
+  %input#poster_src.text.source{ type: "text", size: "50", placeholder: "Poster frame URL", value: @video.get('poster').get('src') }/
   %span#poster_src_invalid.inline_alert{ style: "display:none" } Please provide a valid image URL
   %span#poster_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
 
@@ -66,5 +66,5 @@
 
 .checkbox_wrap{ style: "float:left;margin:14px 0 0 12px" }
   %input#autoplay{ type: "checkbox", checked: @video.get('autoplay') }
-  %label{ for: "autoplay" } Autoplay
+  %label{ for: "autoplay" } Autoplay (will automatically play the video when the player is loaded)
 .spacer

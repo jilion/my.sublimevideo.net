@@ -13,6 +13,7 @@
       Preview
       = render 'sites/stable_beta_menu', site: @site
     #preview
+    %button.blue_button.get_the_code{ style: 'margin:auto' } Get the Code
   .spacer
 
   #kit_selection.expandable_settings_box
@@ -26,13 +27,13 @@
       #video_source_type
         .radio_wrap
           = radio_button_tag "video_origin", "test", checked: true
-          = label_tag "type_standard", "Use test video files"
+          = label_tag "video_origin_test", "Use test video files", title: "Will use sample SublimeVideo movies and images so you can easily test the player."
         .radio_wrap
           = radio_button_tag "video_origin", "own"
-          = label_tag "type_lightbox", "I host my own video files"
+          = label_tag "video_origin_own", "I host my own video files"
         .radio_wrap
           = radio_button_tag "video_origin", "youtube"
-          = label_tag "type_iframe_embed", "My video is on YouTube"
+          = label_tag "video_origin_youtube", "My video is on YouTube"
       .spacer
       #video_sources_fields
   .spacer
@@ -43,38 +44,20 @@
     #video_settings_fields.left.expandable
   .spacer
 
-  -##lightbox_settings.expandable_settings_box
-  -#  %h4.expanding_handler
-  -#    = link_to "#{t('addons.lightbox')} settings", '', class: 'hl'
-  -#  .left.expandable
-  -#    = render 'kits/form_boxes/lightbox_settings', site: @site, kit: @kit
-  -##poster
-  -#.spacer
-  -#.big_break
+  #lightbox_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to "#{t('addons.lightbox')} settings", '', class: 'hl'
+    #lightbox_settings_fields.left.expandable
+  #poster
+  .spacer
 
+  .big_break
 
-  -##settings
-
-  - if stage?('beta')
-    %h2 Override your default player settings
-    %p These settings will be taken in account only if you're using the beta player code.
 
     #kit_settings_form
 
   #code
-    %button.blue_button#get_the_code{ style: 'margin:auto' } Get the Code
+    %button.blue_button.get_the_code{ style: 'margin:auto' } Get the Code
 
--#- unless @video_tag
--#  #demo_bootstrap
--#    = tooltip_box class: "info" do
--#      %span.p Use our demo assets if you don't have your video assets yet, or just want to test-drive SublimeVideo.
--#    %button.green_button#use_demo_assets Use demo assets
--#    %a.reset.hl{ href: '' } Reset all fields
--#.spacer
--#.big_break
-
-  #lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
-
-  #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
 
 .spacer

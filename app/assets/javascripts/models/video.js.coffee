@@ -6,7 +6,6 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     startWithHd: false
     poster: null
     sources: null
-    classes: 'sublime'
     sourceWidth: 640
     sourceHeight: 360
     ratio: 360 / 640
@@ -15,16 +14,9 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     keepRatio: true
     autoresize: 'none'
     autoplay: false
-    testAssetsUsed: false
-
-  width: ->
-    this.get('width')
-
-  height: ->
-    this.get('height')
 
   viewable: ->
-    if this.get('youtubeId') isnt null
+    if this.get('youtubeId')?
       true
     else
       result = false
@@ -64,11 +56,3 @@ class MySublimeVideo.Models.Video extends Backbone.Model
   setDefaultDataUID: ->
     mp4BaseSrc = this.get('sources').mp4Base().get('src')
     this.set(dataUID: crc32(mp4BaseSrc)) unless !mp4BaseSrc
-
-class MySublimeVideo.Models.VideoLightbox extends MySublimeVideo.Models.Video
-  defaults:
-    classes: 'sublime lightbox'
-
-class MySublimeVideo.Models.VideoIframeEmbed extends MySublimeVideo.Models.Video
-  defaults:
-    classes: 'sublime sv_iframe_embed'

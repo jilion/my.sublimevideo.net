@@ -27,106 +27,13 @@ describe 'Source, Sources', ->
         @source.set(quality: 'mobile')
         expect(@source.needDataQualityAttribute()).toBeFalsy()
 
-    describe 'setKeepRatio()', ->
-      it 'recalculate only embedHeight from embedWidth and ratio when keepRatio is set to true', ->
-        @source.set(width: 500)
-        @source.set(height: 250)
-        @source.set(ratio: 0.5)
-
-        @source.setEmbedWidth(500)
-        expect(@source.get('embedWidth')).toEqual(500)
-        expect(@source.get('embedHeight')).toEqual(250)
-
-        @source.set(keepRatio: false)
-        @source.set(embedHeight: 100)
-        expect(@source.get('embedWidth')).toEqual(500)
-        expect(@source.get('embedHeight')).toEqual(100)
-
-        @source.setKeepRatio(true)
-        expect(@source.get('embedWidth')).toEqual(500)
-        expect(@source.get('embedHeight')).toEqual(250)
-
-      it 'don\'t recalculate anything when keepRatio is set to false', ->
-        @source.set(width: 500)
-        @source.set(height: 250)
-        @source.set(ratio: 0.5)
-
-        @source.setEmbedWidth(250)
-        expect(@source.get('embedWidth')).toEqual(250)
-        expect(@source.get('embedHeight')).toEqual(125)
-
-        @source.setKeepRatio(false)
-        expect(@source.get('embedWidth')).toEqual(250)
-        expect(@source.get('embedHeight')).toEqual(125)
-
     describe 'setDimensions()', ->
       it 'sets the width, height and ratio', ->
         @source.setDimensions('http://sublimevideo.net/demo/dartmoor.mp4', { width:600, height:364 })
         expect(@source.get('width')).toEqual(600)
         expect(@source.get('height')).toEqual(364)
         expect(@source.get('ratio')).toEqual(364 / 600)
-        expect(@source.get('embedWidth')).toEqual(600)
-
-      it 'width > 852, sets the width, height and ratio', ->
-        @source.setDimensions('http://sublimevideo.net/demo/dartmoor.mp4', { width:1000, height:364 })
-        expect(@source.get('width')).toEqual(1000)
-        expect(@source.get('height')).toEqual(364)
-        expect(@source.get('ratio')).toEqual(364 / 1000)
-        expect(@source.get('embedWidth')).toEqual(852)
-
-    describe 'setEmbedWidth()', ->
-      it 'sets embedWidth to 200 if it is not a number', ->
-        @source.setEmbedWidth('a')
-        expect(@source.get('embedWidth')).toEqual(200)
-
-      it 'cast the given width to integer', ->
-        @source.setEmbedWidth('250')
-        expect(@source.get('embedWidth')).toEqual(250)
-
-      it 'sets the given width casted to integer', ->
-        @source.setEmbedWidth(250.4)
-        expect(@source.get('embedWidth')).toEqual(250)
-
-      it 'minimum is 200', ->
-        @source.setEmbedWidth(50)
-        expect(@source.get('embedWidth')).toEqual(200)
-
-      it 'maximum is 1280', ->
-        @source.setEmbedWidth(5000)
-        expect(@source.get('embedWidth')).toEqual(1280)
-
-    describe 'setEmbedHeight()', ->
-      it 'sets embedHeight to 100 if it is not a number', ->
-        @source.setEmbedHeight('a')
-        expect(@source.get('embedHeight')).toEqual(100)
-
-      it 'cast the given height to integer', ->
-        @source.setEmbedHeight('250')
-        expect(@source.get('embedHeight')).toEqual(250)
-
-      it 'sets the given height casted to integer', ->
-        @source.setEmbedHeight(250.4)
-        expect(@source.get('embedHeight')).toEqual(250)
-
-      it 'minimum is 100', ->
-        @source.setEmbedHeight(50)
-        expect(@source.get('embedHeight')).toEqual(100)
-
-      it 'maximum is 720', ->
-        @source.setEmbedHeight(9999)
-        expect(@source.get('embedHeight')).toEqual(720)
-
-    describe 'setEmbedHeightWithRatio()', ->
-      it 'sets embedHeight from embedWidth and ratio', ->
-        @source.set(embedWidth:300, ratio:0.5)
-        @source.setEmbedHeightWithRatio()
-        expect(@source.get('embedHeight')).toEqual(150)
-
-    describe 'setEmbedWidthWithRatio()', ->
-      it 'sets embedWidth from embedHeight and ratio', ->
-        @source.set(embedHeight:300, ratio:0.5)
-        @source.setEmbedWidthWithRatio()
-        expect(@source.get('embedWidth')).toEqual(600)
+        expect(@source.get('width')).toEqual(600)
 
     describe 'extension()', ->
       it 'returns the extension', ->
@@ -182,7 +89,6 @@ describe 'Source, Sources', ->
         @source.set(quality: 'hd')
         @source.set(dataName: 'foo')
         @source.set(dataUID: 'bar')
-        @source.set(isUsed: false)
         @source.set(keepRatio: false)
         @source.set(embedWidth: 12)
         @source.set(embedHeight: 42)
@@ -192,7 +98,6 @@ describe 'Source, Sources', ->
         expect(@source.get('quality')).toEqual('hd')
         expect(@source.get('dataName')).toEqual('foo')
         expect(@source.get('dataUID')).toEqual('bar')
-        expect(@source.get('isUsed')).toBeFalsy()
         expect(@source.get('keepRatio')).toBeFalsy()
         expect(@source.get('embedWidth')).toEqual(12)
         expect(@source.get('embedHeight')).toEqual(42)
@@ -204,7 +109,6 @@ describe 'Source, Sources', ->
         expect(@source.get('quality')).toEqual('hd')
         expect(@source.get('dataName')).toEqual('')
         expect(@source.get('dataUID')).toEqual('')
-        expect(@source.get('isUsed')).toBeFalsy()
         expect(@source.get('keepRatio')).toBeTruthy()
         expect(@source.get('embedWidth')).toEqual(null)
         expect(@source.get('embedHeight')).toEqual(null)
@@ -232,13 +136,6 @@ describe 'Source, Sources', ->
       describe 'mobile source has no src', ->
         beforeEach ->
           @sources.models[2].set(src: '')
-
-        it 'returns the source with format = mp4 and quality = base', ->
-          expect(@sources.mp4Mobile()).toEqual(@sources.mp4Base())
-
-      describe 'mobile source has isUsed to false', ->
-        beforeEach ->
-          @sources.models[2].set(isUsed: false)
 
         it 'returns the source with format = mp4 and quality = base', ->
           expect(@sources.mp4Mobile()).toEqual(@sources.mp4Base())
@@ -273,14 +170,6 @@ describe 'Source, Sources', ->
         beforeEach ->
           @sources.models[1].set(src: '')
           @sources.models[4].set(src: '')
-
-        it 'returns false', ->
-          expect(@sources.hdPresent()).toBeFalsy()
-
-      describe 'hd sources have isUsed to false', ->
-        beforeEach ->
-          @sources.models[1].set(isUsed: false)
-          @sources.models[4].set(isUsed: false)
 
         it 'returns false', ->
           expect(@sources.hdPresent()).toBeFalsy()

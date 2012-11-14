@@ -7,7 +7,6 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
     quality: 'base'
     dataName: ''
     dataUID: ''
-    isUsed: true
     currentMimeType: ''
 
   setAndPreloadSrc: (src) ->
@@ -102,11 +101,11 @@ class MySublimeVideo.Collections.Sources extends Backbone.Collection
 
   mp4Mobile: ->
     mobileSource = this.byFormatAndQuality(['mp4', 'mobile'])
-    if mobileSource && mobileSource.get('isUsed') && mobileSource.get('src') isnt '' then mobileSource else this.mp4Base()
+    if mobileSource and mobileSource.get('src') isnt '' then mobileSource else this.mp4Base()
 
   hdPresent: ->
     sources = this.allByQuality('hd')
-    sources.length && _.find sources, (source) -> source.get('isUsed') && source.get('src') isnt ''
+    sources.length and _.find sources, (source) -> source.get('src') isnt ''
 
   # Finders
   allByFormat: (format) ->
@@ -119,7 +118,7 @@ class MySublimeVideo.Collections.Sources extends Backbone.Collection
     this.select (source) -> source.get('quality') isnt 'base'
 
   allUsedNotEmpty: ->
-    this.select (source) -> source.get('isUsed') and !source.srcIsEmpty()
+    this.select (source) -> !source.srcIsEmpty()
 
   byQuality: (quality) ->
     this.find (source) -> source.get('quality') is quality
@@ -135,9 +134,9 @@ class MySublimeVideo.Collections.Sources extends Backbone.Collection
     sortedSources  = []
 
     _.each [mp4Sources, webmoggSources], (family) ->
-      baseSource   = _.find(family, (source) -> source.get('isUsed') and source.srcIsUsable() and source.get('quality') is 'base')
-      hdSource     = _.find(family, (source) -> source.get('isUsed') and source.srcIsUsable() and source.get('quality') is 'hd')
-      mobileSource = _.find(family, (source) -> source.get('isUsed') and source.srcIsUsable() and source.get('quality') is 'mobile')
+      baseSource   = _.find(family, (source) -> source.srcIsUsable() and source.get('quality') is 'base')
+      hdSource     = _.find(family, (source) -> source.srcIsUsable() and source.get('quality') is 'hd')
+      mobileSource = _.find(family, (source) -> source.srcIsUsable() and source.get('quality') is 'mobile')
       sources      = if startWithHd then [hdSource, baseSource] else [baseSource, hdSource]
       sortedSources.push([sources, mobileSource])
 
@@ -147,7 +146,7 @@ class MySublimeVideo.Collections.Sources extends Backbone.Collection
     i = 1
     params = ""
     _.each this.sortedSources(startWithHd), (source) ->
-      if source.get('isUsed') and source.srcIsEmptyOrUrl()
+      if source.srcIsEmptyOrUrl()
         params += "&src#{i}=" + encodeURIComponent("(#{source.get('quality')})#{source.get('src')}")
         i++
 

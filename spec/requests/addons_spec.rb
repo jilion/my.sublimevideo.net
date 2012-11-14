@@ -43,6 +43,9 @@ feature 'Choose add-ons' do
     choose "addon_plans_logo_#{@logo_addon_plan_2.id}"
     expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(2)
 
+    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+    page.should have_content 'Your add-ons selection has been confirmed.'
+
     @site.reload.billable_items.should have(13).items
     @site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
     @site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
@@ -78,7 +81,10 @@ feature 'Choose add-ons' do
 
   scenario 'select checkbox add-on' do
     check "addon_plans_stats_#{@stats_addon_plan_2.id}"
-    click_button 'Confirm selection'
+    expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(2)
+
+    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
+    page.should have_content 'Your add-ons selection has been confirmed.'
 
     @site.reload.billable_items.should have(13).items
     @site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item

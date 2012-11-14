@@ -204,7 +204,6 @@ MySublimeVideo::Application.routes.draw do
       resources :addons, only: [:index] do
         collection do
           put :update_all
-          get :thanks
         end
       end
 

@@ -80,7 +80,7 @@ MySublimeVideo.UI.prepareKitsPage = ->
     new MySublimeVideo.UI.KitsPage
 
 MySublimeVideo.UI.prepareKitEditor = ->
-  $('form.kit_editor, .video_code_generator').each ->
+  $('form.kit_editor').each ->
     new MySublimeVideo.UI.KitEditor
 
 MySublimeVideo.UI.prepareSupportRequest = ->

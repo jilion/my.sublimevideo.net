@@ -27,13 +27,13 @@
       = link_to '', class: 'quick_access' do
         %span Quick access
       %ul.actions{ id: ['site_actions', site.id], style: 'display:none' }
-        %li= link_to 'Add-ons', site_addons_path(site)
-        %li= link_to 'Players', site_kits_path(site)
+        %li= link_to 'Add-ons', [site, :addons]
+        %li= link_to 'Players', [site, :kits]
         %li= link_to 'Loader Code', '', class: 'loader_code', data: { token: site.token }
         - if site.realtime_stats_active?
-          %li= link_to 'Stats', site_stats_path(site)
-        %li= link_to 'Settings', edit_site_path(site)
-        %li= link_to 'Invoices', site_invoices_path(site)
+          %li= link_to 'Stats', [site, :stats]
+        %li= link_to 'Settings', [:edit, site]
+        %li= link_to 'Invoices', [site, :invoices]
       %div{ id: "loader_code_popup_content_#{site.token}", style: 'display:none' }= render 'sites/code', site: site
     .spacer
     .token{ style: 'display: inline' }

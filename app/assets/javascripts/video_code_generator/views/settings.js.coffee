@@ -1,16 +1,16 @@
 class MSVVideoCodeGenerator.Views.Settings extends Backbone.View
-  template: JST['video_code_generator/templates/_settings']
+  template: JST['video_code_generator/templates/settings']
 
   events:
-    'change #poster_src':             'updatePosterSrc'
-    'change #width':                  'updateWidth'
-    'change #height':                 'updateHeight'
-    'click #keep_ratio':              'updateKeepRatio'
-    'click a.reset':                  'resetDimensions'
-    'change #data_name':              'updateDataName'
-    'change #data_uid':               'updateDataUID'
-    'click input[name=autoresize]':   'updateAutoresize'
-    'click #autoplay':                'updateAutoplay'
+    'change #poster_src':           'updatePosterSrc'
+    'change #width':                'updateWidth'
+    'change #height':               'updateHeight'
+    'click #keep_ratio':            'updateKeepRatio'
+    'click a.reset':                'resetDimensions'
+    'change #data_name':            'updateDataName'
+    'change #data_uid':             'updateDataUID'
+    'click input[name=autoresize]': 'updateAutoresize'
+    'click #autoplay':              'updateAutoplay'
 
   initialize: ->
     @posterHelper = new MSVVideoCodeGenerator.Helpers.UIAssetHelper 'poster'
@@ -29,6 +29,7 @@ class MSVVideoCodeGenerator.Views.Settings extends Backbone.View
   # EVENTS
   #
   updatePosterSrc: (event) ->
+    $('#video_origin_own').attr('checked', true)
     MSVVideoCodeGenerator.poster.setAndPreloadSrc(event.target.value)
     MSVVideoCodeGenerator.video.set(testAssetsUsed: false)
 
@@ -70,9 +71,7 @@ class MSVVideoCodeGenerator.Views.Settings extends Backbone.View
   #
   render: ->
     $(@el).find('#video_settings_fields').html this.template
-      poster: MSVVideoCodeGenerator.poster
       video: MSVVideoCodeGenerator.video
-      sources: MSVVideoCodeGenerator.sources
 
     this
 

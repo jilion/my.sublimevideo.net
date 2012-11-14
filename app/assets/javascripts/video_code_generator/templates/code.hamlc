@@ -1,12 +1,6 @@
 - if @video.viewable() and (!@video.get('displayInLightbox') or MSVVideoCodeGenerator.thumbnail.viewable())
   != JST['video_code_generator/templates/code/_notices'](video: @video)
-
-  -#- if @builder.get('builderClass') is 'iframe_embed'
-  -#  != @iframeContentTemplate(builder: @builder, loader: @loader, iframe: @iframe, video: @video, videoTagTemplate: @videoTagTemplate, videoTagHelper: @videoTagHelper)
-  -#  .spacer
-
-  != JST['video_code_generator/templates/code/_video_tag'](video: @video, videoTagHelper: @videoTagHelper)
-  -#!= this.embedTemplate(video: @video, videoTagHelper: @videoTagHelper)
+  != JST['video_code_generator/templates/code/_video_tag'](video: @video)
   .spacer
 
 - else
