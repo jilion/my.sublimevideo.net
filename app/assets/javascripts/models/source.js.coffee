@@ -28,7 +28,7 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
   checkMimeType: ->
     $.ajax
       type: "POST"
-      url: "/video-code-generator/mime-type-check"
+      url: "/mime-type-check"
       data: { url: this.get('src') }
       dataType: 'text'
       context: document.body

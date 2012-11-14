@@ -6,7 +6,5 @@
 
   = link_to new_site_path, class: "add_site green_button" do
     %span= "Add a site"
-  -#- unless early_access?('video')
-  -#  = link_to "Generate video code", video_code_generator_path, class: "generate_code hl"
 
   #sites_table_wrap= render 'sites'

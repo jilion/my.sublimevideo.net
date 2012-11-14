@@ -229,9 +229,10 @@ MySublimeVideo::Application.routes.draw do
         get :videos, on: :collection
       end
     end
-    get  '/video-code-generator' => 'video_codes#new', site_id: 'public', as: 'video_code_generator'
-    get  '/video-code-generator/iframe-embed' => 'video_codes#iframe_embed'
-    post '/video-code-generator/mime-type-check' => 'video_codes#mime_type_check'
+    # Legacy redirect
+    get  '/video-code-generator' => redirect('/publish-video')
+    get  '/publish-video' => 'video_codes#new', as: 'video_publishing_assistant'
+    post '/mime-type-check' => 'video_codes#mime_type_check'
 
     get '/stats-demo' => 'site_stats#index', site_id: 'demo'
     get '/stats' => redirect('/stats-demo')

@@ -16,14 +16,9 @@ class VideoCodesController < ApplicationController
     @video_tag = VideoTag.where(st: @site.token, u: params[:id]).first
   end
 
-  # GET /video-code-generator/mime-type-check
+  # GET /mime-type-check
   def mime_type_check
     render text: MimeTypeGuesser.guess(params[:url]), layout: false
-  end
-
-  # GET /video-code-generator/iframe-embed
-  def iframe_embed
-    render layout: false
   end
 
   private
