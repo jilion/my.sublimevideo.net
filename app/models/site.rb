@@ -31,7 +31,7 @@ class Site < ActiveRecord::Base
 
   attr_accessor :last_transaction, :remote_ip
 
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :remote_ip, :default_kit_id
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :remote_ip, :default_kit_id
 
   serialize :last_30_days_billable_video_views_array, Array
 
@@ -169,7 +169,7 @@ class Site < ActiveRecord::Base
   end
 
   def settings_changed?
-    (changed & %w[accessible_stage hostname extra_hostnames dev_hostnames path wildcard badged]).present?
+    (changed & %w[accessible_stage hostname extra_hostnames dev_hostnames path wildcard]).present?
   end
 
   def trial_days_remaining_for_billable_item(billable_item)
@@ -191,10 +191,6 @@ class Site < ActiveRecord::Base
   # for old loader/license templates
   def player_mode
     accessible_stage == 'alpha' ? "dev" : accessible_stage
-  end
-
-  def badged=(attribute)
-    write_attribute(:badged, addon_plan_is_active?(AddonPlan.get('logo', 'disabled')) ? !!attribute : true)
   end
 
 end

@@ -37,7 +37,7 @@ module Service
       hash[:d]  = site.dev_hostnames.split(/,\s*/) if site.dev_hostnames?
       hash[:w]  = site.wildcard if site.wildcard?
       hash[:p]  = site.path if site.path?
-      hash[:b]  = site.badged
+      hash[:b]  = false if site.addon_plan_is_active?(AddonPlan.get('logo', 'disabled'))
       hash[:s]  = true # SSL Always true now
       hash[:r]  = true if site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
       hash[:m]  = site.player_mode

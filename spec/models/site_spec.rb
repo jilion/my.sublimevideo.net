@@ -75,7 +75,7 @@ describe Site, :addons do
   end
 
   describe "Validations" do
-    [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged].each do |attribute|
+    [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
     end
 
@@ -454,28 +454,6 @@ describe Site, :addons do
       @billable_item_activity5.site.trial_end_date_for_billable_item(addon_plan).should eq 16.days.from_now.midnight
       @billable_item_activity6.site.trial_end_date_for_billable_item(addon_plan).should eq 30.days.from_now.midnight
       create(:site).trial_end_date_for_billable_item(addon_plan).should be_nil
-    end
-  end
-
-  describe '#badged=' do
-    let(:site) { create(:site) }
-
-    context 'stats /disabled addon plan is active' do
-      before do
-        create(:billable_item, site: site, item: @logo_addon_plan_2, state: 'subscribed')
-      end
-
-      it 'is possible to set badged to false' do
-        site.badged = false
-        site.badged.should be_false
-      end
-    end
-
-    context 'stats /disabled addon plan is not active' do
-      it 'is not possible to set badged to false' do
-        site.badged = false
-        site.badged.should be_true
-      end
     end
   end
 

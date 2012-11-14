@@ -7,8 +7,6 @@ module Admin::SitesHelper
       " with wildcard"
     elsif params[:with_path]
       " with path"
-    elsif params[:badged]
-      " with#{'out' if params[:badged] == 'false'} badge"
     elsif params[:tagged_with]
       " tagged with '#{params[:tagged_with]}'"
     elsif params[:with_min_billable_video_views]

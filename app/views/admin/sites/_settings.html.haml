@@ -15,8 +15,6 @@
   %strong= "|"
   = "Path: #{content_tag(:strong, site.path? ? "/#{site.path}" : '-')}".html_safe
   %strong= "|"
-  = "Badge: #{content_tag(:strong, site.badged? ? 'ON' : 'OFF')}".html_safe
-  %strong= "|"
   = "Accessible Stage: #{content_tag(:strong, site.accessible_stage)}".html_safe
   %strong= "|"
   = "Loaders updated_at: #{site.loaders_updated_at}".html_safe

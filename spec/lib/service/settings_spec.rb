@@ -42,7 +42,6 @@ describe Service::Settings, :fog_mock do
     dev_hostnames: 'test.dev', dev_hostnames?: true,
     wildcard: true, wildcard?: true,
     path: 'path', path?: true,
-    badged: true,
     addon_plan_is_active?: true,
     accessible_stage: 'stable', player_mode: 'stable',
     default_kit: stub(identifier: '1')
@@ -87,7 +86,7 @@ describe Service::Settings, :fog_mock do
 
       it "has good content" do
         File.open(file) do |f|
-          f.read.should eq "jilion.sublime.video.sites({\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":true,\"s\":true,\"r\":true,\"m\":\"stable\"});\n"
+          f.read.should eq "jilion.sublime.video.sites({\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":false,\"s\":true,\"r\":true,\"m\":\"stable\"});\n"
         end
       end
     end
@@ -107,14 +106,14 @@ describe Service::Settings, :fog_mock do
     describe "common settings" do
 
       it "includes everything" do
-        settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, s: true, r: true, m: 'stable' }
+        settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: false, s: true, r: true, m: 'stable' }
       end
 
       context "without extra_hostnames" do
         before { site.stub(extra_hostnames?: false) }
 
         it "removes extra_hostnames from h: []" do
-          settings.old_license.should == { h: ['test.com'], d: ['test.dev'], w: true, p: "path", b: true, s: true, r: true, m: 'stable' }
+          settings.old_license.should == { h: ['test.com'], d: ['test.dev'], w: true, p: "path", b: false, s: true, r: true, m: 'stable' }
         end
       end
 
@@ -122,7 +121,7 @@ describe Service::Settings, :fog_mock do
         before { site.stub(path?: false) }
 
         it "doesn't include path key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, b: true, s: true, r: true, m: 'stable' }
+          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, b: false, s: true, r: true, m: 'stable' }
         end
       end
 
@@ -130,23 +129,31 @@ describe Service::Settings, :fog_mock do
         before { site.stub(wildcard?: false) }
 
         it "doesn't include wildcard key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], p: "path", b: true, s: true, r: true, m: 'stable' }
+          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], p: "path", b: false, s: true, r: true, m: 'stable' }
         end
       end
 
-      context "without badged" do
-        before { site.stub(badged: false) }
+      context "without the logo/disabled add-on" do
+        before do
+          logo_disabled_addon = stub
+          AddonPlan.should_receive(:get).with('logo', 'disabled').and_return(logo_disabled_addon)
+          site.should_receive(:addon_plan_is_active?).with(logo_disabled_addon).and_return(false)
+        end
 
-        it "includes b: false" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: false, s: true, r: true, m: 'stable' }
+        it "doesn't include b: key/value" do
+          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", s: true, r: true, m: 'stable' }
         end
       end
 
       context "without realtime addons" do
-        before { site.stub(addon_plan_is_active?: false) }
+        before do
+          stats_realtime_addon = stub
+          AddonPlan.should_receive(:get).with('stats', 'realtime').and_return(stats_realtime_addon)
+          site.should_receive(:addon_plan_is_active?).with(stats_realtime_addon).and_return(false)
+        end
 
         it "doesn't includes r key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: true, s: true, m: 'stable' }
+          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: false, s: true, m: 'stable' }
         end
       end
     end

@@ -15,8 +15,6 @@
   = link_to "#{content_tag(:strong, display_integer(Site.active.with_wildcard.size))} With wildcard".html_safe, admin_sites_path(with_state: 'active', with_wildcard: true), remote: true, class: 'remote'
   |
   = link_to "#{content_tag(:strong, display_integer(Site.active.with_path.size))} With path".html_safe, admin_sites_path(with_state: 'active', with_path: true), remote: true, class: 'remote'
-  |
-  = link_to "#{content_tag(:strong, display_integer(Site.active.badged(false).size))} Without badge".html_safe, admin_sites_path(with_state: 'active', badged: false), remote: true, class: 'remote'
 
 = "-----------------------------------------------"
 

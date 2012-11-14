@@ -17,7 +17,6 @@ module SiteModules::Scope
     # attributes queries
     scope :with_wildcard,              where{ wildcard == true }
     scope :with_path,                  where{ (path != nil) & (path != '') & (path != ' ') }
-    scope :badged,                     ->(bool) { where{ badged == bool } }
     scope :with_extra_hostnames,       where{ (extra_hostnames != nil) & (extra_hostnames != '') }
     scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
 
