@@ -4,6 +4,7 @@ describe Stat::Site do
 
   describe ".json" do
     let(:site) { create(:site) }
+    after { Timecop.return }
 
     before do
       @second = Time.now.utc.change(usec: 0)
@@ -34,9 +35,8 @@ describe Stat::Site do
     end
 
     describe "with seconds period (missing value not filled)" do
-      subject { JSON.parse(Stat::Site.json(site.token, period: 'seconds')) }
       before { Timecop.travel(@second) }
-      after { Timecop.return }
+      subject { JSON.parse(Stat::Site.json(site.token, period: 'seconds')) }
 
       its(:size) { should eql(3) }
       it { subject[0]['vv'].should eql(2) }
@@ -48,6 +48,7 @@ describe Stat::Site do
     end
 
     describe "with minutes period" do
+      before { Timecop.freeze }
       subject { JSON.parse(Stat::Site.json(site.token, period: 'minutes')) }
 
       its(:size) { should eql(60) }
@@ -62,6 +63,7 @@ describe Stat::Site do
     end
 
     describe "with hours period" do
+      before { Timecop.freeze }
       subject { JSON.parse(Stat::Site.json(site.token, period: 'hours')) }
 
       its(:size) { should eql(24) }
@@ -76,6 +78,7 @@ describe Stat::Site do
     end
 
     describe "with days period" do
+      before { Timecop.freeze }
       subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
 
       its(:size) { should eql(400) }
@@ -90,6 +93,7 @@ describe Stat::Site do
 
     describe "with days period (less than 365 days stats)" do
       before { @day400.delete }
+      before { Timecop.freeze }
       subject { JSON.parse(Stat::Site.json(site.token, period: 'days')) }
 
       its(:size) { should eql(365) }
@@ -103,6 +107,8 @@ describe Stat::Site do
 end
 
 describe Stat::Site::Day do
+  before { Timecop.freeze }
+  after { Timecop.return }
 
   describe ".views_sum" do
     let(:site1) { create(:site) }
@@ -158,14 +164,17 @@ describe Stat::Site::Day do
   end
 
   describe ".last_stats" do
+
     let(:site1) { create(:site) }
     let(:site2) { create(:site) }
+    before { Timecop.freeze }
     before do
       create(:site_day_stat, t: site1.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
       create(:site_day_stat, t: site1.token, d: Time.now.utc.midnight, pv: { e: 3 }, vv: { m: 4 })
       create(:site_day_stat, t: site2.token, d: 30.days.ago.midnight, pv: { e: 5 }, vv: { m: 6 })
       create(:site_day_stat, t: site2.token, d: Time.now.utc.midnight, pv: { e: 7 }, vv: { m: 8 })
     end
+    after { Timecop.return }
 
     describe "options" do
 
