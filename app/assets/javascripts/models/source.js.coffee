@@ -22,8 +22,6 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
       else
         this.set(found: false)
 
-      # this.setDefaultDataUID() unless this.get('dataUID')
-
   preloadSrc: ->
     new SublimeVideo.Media.VideoPreloader(this.get('src'), this.setDimensions)
 
