@@ -107,7 +107,7 @@ module Service
     # TODO: Remove after launch
     def migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
       ::Site.transaction do
-        set_default_app_designs(suspended: site.suspended?)
+        set_default_app_designs(force: site.plan.try(:name) == 'sponsored' ? 'sponsored' : nil, suspended: site.suspended?)
         case site.plan.try(:name)
         when 'plus'
           # Sponsor real-time stats
@@ -200,12 +200,18 @@ module Service
     def new_billable_item_state(new_billable_item, options = {})
       if options[:suspended]
         'suspended'
+      elsif options[:force]
+        if new_billable_item.beta? || !new_billable_item.free?
+          options[:force]
+        else
+          'subscribed'
+        end
       elsif new_billable_item.beta?
         'beta'
-      elsif options[:force]
-        new_billable_item.free? ? 'subscribed' : options[:force]
+      elsif new_billable_item.free? || site.out_of_trial?(new_billable_item)
+        'subscribed'
       else
-        site.out_of_trial?(new_billable_item) || new_billable_item.free? ? 'subscribed' : 'trial'
+        'trial'
       end
     end
   end
