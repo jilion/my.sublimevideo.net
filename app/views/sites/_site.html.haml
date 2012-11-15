@@ -7,10 +7,10 @@
 
   = site.render_videos_row(self)
 
-  %td.code
+  %td.video
     .wrap= link_to 'Publish video', new_site_video_code_path(site), class: 'embed_code'
 
-  %td.code.status{ data: { 'cdn-updated-at' => cdn_updated_at(site) } }
+  %td.status{ data: { 'cdn-updated-at' => cdn_updated_at(site) } }
     .wrap
       - if site.billable_views.zero? && site.video_tags.count.zero?
         - last_visited_page = rand > 0.5 ? :player : :addons

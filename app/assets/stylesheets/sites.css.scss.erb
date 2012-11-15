@@ -145,20 +145,24 @@ a.add_site span {
   text-align:left;
 }
 
+#sites table.main th.videos {
+  width:140px;
+}
+
 .early_access_video #sites table.main th.videos {
   width:100px;
 }
 
-#sites table.main th.code {
+/*#sites table.main th.code {
   width:158px;
 }
-
+*/
 .early_access_video #sites table.main th.code {
   width:138px;
 }
 
 #sites table.main th.status {
-  width:94px;
+  width:113px;
 }
 
 .early_access_video #sites table.main th.status {
@@ -368,6 +372,16 @@ a.add_site span {
   top:10px;
 }
 
+#sites table.main td.usage .fake_sparkline {
+  width:186px;
+  height:27px;
+  background:url(<%= asset_path "sites/fake_stats@2x.png" %>) no-repeat;
+  background-size:186px 27px;
+  margin:0 auto;
+  position:relative;
+  top:10px;
+}
+
 #sites table.main td.usage .plays {
   position:absolute;
   bottom:6px;
@@ -388,7 +402,7 @@ a.add_site span {
   color:#4a648e;
 }
 
-#sites table.main td.usage a.view_stats {
+#sites table.main td.usage a.view_stats, #sites table.main td.usage a.buy_addon {
   position:absolute;
   bottom:10px;
   right:11px;
@@ -408,6 +422,30 @@ a.add_site span {
 
 #sites table.main td.usage a.view_stats:active {
   @include gradient(#2c4a76,#5f7da6,#46658f);
+}
+
+#sites table.main td.usage a.buy_addon {
+  color:#fff;
+  text-shadow:rgba(0,0,0,0.8) 0 -1px 1px;
+  border:1px solid #1a4224;
+  @include gradient(#068e2c,#045a1c,#057524);
+  @include box-shadow((inset #08b23a 0 1px 0, rgba(255,255,255,0.4) 0 1px 0));
+  @include border-radius(6px);
+}
+
+#sites table.main td.usage a.buy_addon:active {
+  @include gradient(#045a1c,#068e2c,#057524);
+}
+
+#sites table.main td.usage .title_link {
+  font-size:14px;
+  line-height:15px;
+  padding:0 20px;
+  text-align:center;
+  position:absolute;
+  top:17px;
+  left:0;
+  right:0;
 }
 
 .early_access_video #sites table.main td.videos {

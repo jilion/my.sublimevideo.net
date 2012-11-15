@@ -11,14 +11,11 @@
     - if need_subdomain?(site)
       = tooltip_box href: edit_site_path(site), class: 'warning' do
         %span.p= raw t 'site.status.need_subdomain', hostname: hostname_with_subdomain_needed(site)
-    -# .external_link{ style: 'display: inline' }= link_to '->', url_with_protocol(site.hostname)
     .action_popup
       = link_to '', class: 'show_button' do
         %span= "Show actions"
         = svg 8, 5, class: "arrow" do
           %path{ d: "M4,5l4-5H0L4,5z", fill: "rgba(9,23,69,0.5)" }
-        -# = svg 18, 18 do
-        -#   %path{ d: "M18,9.98V7.933l-0.289-0.095l-2.193-0.716L14.934,5.71l1.124-2.38l-1.448-1.448l-0.271,0.138l-2.057,1.044l-1.412-0.585L9.98,0H7.933L7.838,0.29L7.122,2.482L5.71,3.067L3.33,1.942L1.881,3.391l0.138,0.271L3.063,5.72L2.479,7.132L0,8.019v2.049l0.289,0.095l2.193,0.716l0.585,1.412l-1.125,2.38l1.448,1.449l0.271-0.138l2.057-1.045l1.413,0.585L8.019,18h2.048l0.095-0.289l0.716-2.193l1.413-0.585l2.379,1.125l1.449-1.448l-0.138-0.271l-1.044-2.057l0.584-1.413L18,9.98z M9,11.868c-1.584,0-2.868-1.284-2.868-2.868S7.416,6.132,9,6.132S11.868,7.416,11.868,9S10.584,11.868,9,11.868z" }
       %ul.actions{ id: ['site_actions', site.id], style: 'display:none' }
         %li{ class: cycle('','alt', name: "actions")}= link_to 'Add-ons', [site, :addons]
         %li{ class: cycle('','alt', name: "actions")}= link_to 'Players', [site, :kits]
