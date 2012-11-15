@@ -264,96 +264,100 @@ a.add_site span {
   @include border-radius(0 0 5px 0);
 }
 
-#sites table.main td.site a.domain {
+#sites table.main td.site .domain {
   position:relative;
   display:inline-block;
   padding:6px 8px;
-  margin:23px 0 0 18px;
+  margin:17px 0 0 7px;
   color:#1e3966;
-  font-size:18px;
+  font-size:20px;
+  font-weight:600;
   float:left;
-  text-shadow:#fff 0 1px 0;
-  border: 1px solid #62779a;
-  @include gradient(rgba(255,255,255,0.7),rgba(238,241,244,0.6),#e6ecf5);
-  @include box-shadow((inset #fff 0 1px 0, rgba(0,44,94,0.5) 0 1px 4px));
-  @include border-radius(5px);
+  text-shadow:rgba(255,255,255,0.5) 0 1px 0;
 }
 
-#sites table.main td.site.empty a.domain {
+#sites table.main td.site.empty .domain {
   padding-top:7px;
   margin-top:22px;
   color:#4a648e;
 }
 
-#sites table.main td.site a.domain:active {
-  @include gradient(rgba(238,241,244,0.6),rgba(255,255,255,0.7),#e6ecf5);
-}
-
-#sites table.main td.site a.domain img {
+#sites table.main td.site .domain .img_wrap {
+  display:inline-block;
   position:relative;
   top:2px;
-  margin-right:2px;
-  @include border-radius(2px);
-}
-
-#sites table.main td.site a.domain .settings_icon {
-  display:none;
-  background:url(<%= asset_path "sites/settings_icon.png" %>) no-repeat;
-  width:24px;
-  height:24px;
-  position:absolute;
-  top:5px;
-  left:4px;
-}
-
-#sites table.main td.site.empty a.domain .settings_icon {
-  display:block;
-  position:static;
-  float:left;
-  margin:0 4px 0 -2px;
-}
-
-#sites table.main td.site a.domain:hover img {
-  // visibility:hidden;
-}
-
-#sites table.main td.site a.domain:hover .settings_icon {
-  display:block;
+  margin-right:4px;
+  padding:10px;
+  line-height:10px;
+  background:rgba(255,255,255,0.5);
+  @include border-radius(50%);
 }
 
 #sites table.main td.site .tooltip {
   float:left;
-  margin:32px 0 0 10px;
+  margin:33px 0 0;
 }
 
-#sites table.main td.site .plan {
+#sites table.main td.site .show_button {
+  display:block;
+  background:rgba(9,23,69,0.1) url(<%= asset_path "sites/settings_icon@2x.png" %>) no-repeat 4px 6px;
+  background-size:24px;
+  width:17px;
+  height:29px;
+  padding:5px 0 0 34px;
   position:absolute;
-  top:7px;
-  right:7px;
-  color:#4a648e;
-  font-size:12px;
-  letter-spacing:1px;
-  text-transform:uppercase;
+  top:22px;
+  right:22px;
+  @include border-radius(4px);
 }
 
-#sites table.main td.site .plan a {
-  color:#4a648e;
+#sites table.main td.site .show_button span {
+  display:none;
 }
 
-#sites table.main td.site .plan a .disabled {
-  opacity:0.7;
-  filter:alpha(opacity=70);
-}
-
-#sites table.main td.site .cycle {
+#sites table.main td.site ul.actions {
   position:absolute;
-  bottom:5px;
-  right:7px;
-  background:url(<%= asset_path "sites/time_icon.png" %>) no-repeat;
-  padding:0 0 0 15px;
-  font-size:11px;
+  right:22px;
+  top:60px;
+  z-index:9999;
+  list-style-type:none;
+  background:#bfd0e8;
+  @include border-radius(4px);
+  @include box-shadow(rgba(9,23,69,0.6) 0 2px 8px);
+}
+
+#sites table.main td.site ul.actions li a {
+  display:block;
+  padding:5px 30px 5px 10px;
+  background:#bfd0e8;
+  color:#1E3966;
+  font-size:14px;
+  font-weight:600;
+  @include transition(background, .25s, linear);
+}
+
+#sites table.main td.site ul.actions li.alt a {background:#dae5f6}
+#sites table.main td.site ul.actions li a:hover {background:#f2f7ff}
+
+#sites table.main td.site ul.actions li:first-child a {
+  @include border-radius(4px 4px 0 0);
+  @include box-shadow(inset rgba(255,255,255,0.3) 0 1px 0)
+}
+
+#sites table.main td.site ul.actions li:last-child a {
+  @include border-radius(0 0 4px 4px)  
+}
+
+#sites table.main td.site .token {
+  position:absolute;
+  bottom:3px;
+  right:22px;
+  font-size:13px;
   color:#4a648e;
-  letter-spacing:1px;
+}
+
+#sites table.main td.site .token strong {
+  font-weight:600;
 }
 
 #sites table.main td.usage .sparkline {
@@ -525,17 +529,6 @@ a.add_site span {
 }
 
 // REMY
-.quick_access {
-  display:block;
-  float:right;
-  background:url(<%= asset_path "sites/settings_icon.png" %>) no-repeat;
-  width:24px;
-  height:24px;
-}
-
-.quick_access span {
-  display:none;
-}
 
 .site_select {
   display:block;

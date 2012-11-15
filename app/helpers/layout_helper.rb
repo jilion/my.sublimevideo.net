@@ -25,5 +25,11 @@ module LayoutHelper
       memo
     end
   end
+  
+  def svg(width, height, options = {}, &block)
+    content_tag(:svg, options.reverse_merge(version: "1.1", xmlns: "http://www.w3.org/2000/svg", width: width, height: height)) do
+      capture_haml(&block) if block_given?
+    end
+  end
 
 end

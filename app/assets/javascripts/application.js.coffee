@@ -37,7 +37,7 @@ MySublimeVideo.UI.prepareSiteSelector = ->
     new MySublimeVideo.UI.SiteSelector(select: $select)
 
 MySublimeVideo.UI.prepareSiteActionsSelector = ->
-  $('a.quick_access, a.site_select').each ->
+  $('a.show_button, a.site_select').each ->
     $handler = $(this)
     $handler.on 'click', ->
       $handler.siblings('ul.actions').toggle()
