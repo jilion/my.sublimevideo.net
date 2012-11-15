@@ -16,7 +16,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push this.generatePoster()
     attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
     attributes.push "data-youtube-id=\"#{@video.get('youtubeId')}\"" if @video.get('origin') is 'youtube'
-    attributes.push this.generateDataSettings(['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'])
+    attributes.push this.generateDataSettingsAttribute(['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'])
     attributes.push this.generateDataUIDAndName()
     attributes.push this.generateStyle()
     attributes.push "preload=\"none\""
@@ -33,13 +33,14 @@ class MySublimeVideo.Helpers.VideoTagHelper
     , ''
 
   generateLightboxCode: (options = {}) ->
-    _.defaults(options, { href: @video.get('sources').mp4Mobile().get('src') })
+    _.defaults(options, { href: options['id'] })
 
     attributes = []
-    attributes.push "href=\"##{options['id']}\""
+    attributes.push "href=\"##{options['href']}\""
     attributes.push "id=\"#{options['lightboxId']}\"" if options['lightboxId']?
-    attributes.push "class=\"sublime\""
-    attributes.push this.generateDataSettings(['lightbox'])
+    attributes.push "class=\"#{options['lightboxClass'] or 'sublime'}\""
+    attributes.push "style=\"#{options['lightboxStyle']}\"" if options['lightboxStyle']?
+    attributes.push this.generateDataSettingsAttribute(['lightbox'])
     code = "<a #{_.compact(attributes).join(' ')}>\n  "
 
     if @video.get('thumbnail').get('initialLink') is 'image'
@@ -51,17 +52,27 @@ class MySublimeVideo.Helpers.VideoTagHelper
       code += "#{@video.get('thumbnail').get('src')}"
     code + "\n</a>\n"
 
+  generateDataSettingsAttribute: (addons, options = {}) ->
+    this.generateDataSettings(addons, options)
+    if _.isEmpty @dataSettings
+      ''
+    else
+      content = _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
+      if options['contentOnly']
+        content
+      else
+        "data-settings=\"#{content}\""
+
   generateDataSettings: (addons) ->
+    addons = ['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'] if _.isEmpty(addons)
+
     @dataSettings = {}
     if @options['settings']?
       this.generateDataSettingsArrayFromJSON()
     else
       this.generateDataSettingsArrayFromDOM(addons)
 
-    if _.isEmpty @dataSettings
-      ''
-    else
-      "data-settings=\"#{_.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')}\""
+    @dataSettings
 
   generateClass: ->
     if @video.get('displayInLightbox') then '' else "class=\"sublime\""
@@ -132,13 +143,18 @@ class MySublimeVideo.Helpers.VideoTagHelper
     this.pushDataSetting(dataSettingName, currentValue) if @options['forceSettings'] or (currentValue isnt defaultValue)
 
   processCheckBoxInput: (dataSettingName, currentValue, defaultValue) ->
-    if !currentValue and (@options['forceSettings'] or (currentValue isnt defaultValue))
-      this.pushDataSetting(dataSettingName, 'none')
+    if @options['forceSettings'] or (currentValue isnt defaultValue)
+      if /enable/.test(dataSettingName)
+        this.pushDataSetting(dataSettingName, 'none') unless currentValue
+      else
+        this.pushDataSetting(dataSettingName, currentValue)
 
   processInputWithValue: (dataSettingName, currentValue, defaultValue) ->
     if @options['forceSettings'] or (currentValue isnt defaultValue)
       this.pushDataSetting(dataSettingName, currentValue)
 
   pushDataSetting: (dataSettingName, currentValue) ->
-    if !/(-enable|-visibility)/.test(dataSettingName) or @dataSettings[dataSettingName.replace(/(-enable|-visibility)/, '')] isnt 'none'
-      @dataSettings[dataSettingName.replace(/(-enable|-visibility)/, '')] = currentValue.toString().underscore().dasherize()
+    specialSettingsRegex = /(enable-|-enable|-visibility)/
+    if !specialSettingsRegex.test(dataSettingName) or @dataSettings[dataSettingName.replace(specialSettingsRegex, '')] isnt 'none'
+      stripRegex = if @video.get('displayInLightbox') then /enable-/ else /-enable/
+      @dataSettings[dataSettingName.replace(stripRegex, '')] = currentValue.toString().underscore().dasherize()

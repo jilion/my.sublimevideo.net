@@ -11,3 +11,7 @@
   = link_to 'Test', '', class: 'blue_button', id: 'preview-lightbox-button'
 
   #preview-lightbox
+    %a#lightbox-trigger{ href: '#lightbox', class: 'sublime', style: 'display:none' }
+    %video#lightbox{ poster: '//media.jilion.com/images/midnight_sun_800.jpg', width: 320, height: 180, style: 'display:none' }
+      %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4' }
+      %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm' }
