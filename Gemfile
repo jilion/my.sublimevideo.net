@@ -49,6 +49,7 @@ gem 'kiqstand' # Mongoid support for Sidekiq
 gem 'rescue_me', github: 'rymai/rescue_me' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
 gem 'configuration'
 gem 'libxml-ruby', require: 'libxml'
+gem 'yajl-ruby', require: 'yajl'
 
 gem 'state_machine'
 gem 'paper_trail'
