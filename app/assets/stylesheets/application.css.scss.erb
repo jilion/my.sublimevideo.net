@@ -1023,7 +1023,53 @@ section.text ul {
 #step_guide .s4 .line {left:547px}
 #step_guide .s5 .line {left:739px}
 
+.next_box {
+  float:right;
+  margin:20px 0 0;
+}
 
+.next_box a.exit {
+  font-size:14px;
+}
+
+.next_box .btn {
+  display:inline-block;
+  margin:0 0 0 10px;
+  padding:8px 14px;
+  color:#fff;
+  font-family:inherit;
+  font-size:24px;
+  text-shadow:rgba(0,0,0,0.8) 0 -1px 0;
+  border:1px solid #194a7f;
+  outline:0;
+  cursor:pointer;
+  @include gradient(#1e93e2,#135bd7,#1976dc);
+  @include box-shadow((inset #4ca9e8 0 1px 0, rgba(0,24,51,0.5) 0 1px 5px));
+  @include border-radius(5px);
+}
+
+.next_box .btn:active {
+  @include gradient(#135bd7,#1e93e2,#1976dc);
+}
+
+.next_box .btn.disabled, .next_box .btn:disabled {
+  cursor:default;
+  opacity:0.5;
+  pointer-events:none;
+  -webkit-filter:saturate(20%);
+}
+
+.next_box .btn span.arrow {
+  background:url(<%= asset_path "sites/arrow_next@2x.png" %>) no-repeat 100% 50%;
+  background-size:18px 19px;
+  padding-right:28px;
+}
+
+h3.assistant_title {
+  font-size:26px;
+  font-weight:600;
+  padding:30px 0 20px;
+}
 
 /* ========= */
 /* = Popup = */
