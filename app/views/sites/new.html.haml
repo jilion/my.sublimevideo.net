@@ -4,7 +4,6 @@
 #site.new.assistant
   = render 'assistant/step_guide', current_step: 'new_site'
   = form_for @site, html: { class: "full" } do |f|
-
     %h3.title On which site do you need a SublimeVideo player?
     = render 'fields', site: @site, f: f
 
