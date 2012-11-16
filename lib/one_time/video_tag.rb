@@ -2,17 +2,17 @@ module OneTime
   module VideoTag
     class << self
       def mongo_to_pg
-        scheduled = 0
-        ::VideoTag.each do |video_tag|
-          NewVideoTagUpdater.delay(priority: 300).migrate(video_tag.id)
-          scheduled += 1
-
-          if (scheduled % 10000).zero?
-            puts "#{scheduled} video_tags migration scheduled..."
-            sleep 30
-          end
+        skip = 410000
+        while skip < 1036086
+          delay(priority: 500).migrate_mongo_to_pg(skip)
+          skip += 10000
         end
-        "Finished: in total, #{scheduled} video_tags be migrated"
+      end
+
+      def migrate_mongo_to_pg(skip)
+        ::VideoTag.skip(skip).limit(10000).each do |video_tag|
+          NewVideoTagUpdater.delay(priority: 300).migrate(video_tag.id)
+        end
       end
     end
   end
