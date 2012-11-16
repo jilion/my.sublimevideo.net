@@ -1,3 +1,3 @@
 = render 'layouts/sites_select_title'#, sites_select: !defined?(sites_select) || sites_select
-= @site.render_segmented_menu(self)
+= render 'sites/segmented_menu', site: @site
 .spacer

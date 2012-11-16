@@ -1,11 +1,8 @@
 - site = exhibit(site)
 %tr{ id: dom_id(site), data: { "site-token" => site.token }, class: cycle("", "alt") }
-  = site.render_hostname_row(self)
-
-  %td.usage
-    .wrap= site.render_usage_row_content(self)
-
-  = render('sites/td_videos', site: site)
+  = render 'sites/td_hostname', site: site
+  = render 'sites/td_usage', site: site
+  = render 'sites/td_videos', site: site
 
   %td.status{ data: { 'cdn-updated-at' => cdn_updated_at(site) } }
     .wrap

@@ -1,0 +1,16 @@
+%td.usage
+  .wrap
+    - if site.realtime_stats_active?
+      = render 'sites/usage_sparkline', site: site
+      .plays
+        %strong= number_with_delimiter(site.last_30_days_main_video_views + site.last_30_days_extra_video_views + site.last_30_days_embed_video_views)
+        %span= 'plays'
+      = link_to 'View Stats', site_stats_url(site), class: 'view_stats'
+    - else
+      .fake_sparkline
+      .plays
+        %strong= number_with_delimiter(site.last_30_days_main_video_views + site.last_30_days_extra_video_views + site.last_30_days_embed_video_views)
+        %span= 'plays'
+      .title_link
+        = link_to 'Add real-time video stats', [site, :addons], class: 'hl'
+      = link_to 'Buy Add-on', [site, :addons], class: 'buy_addon'
