@@ -1,6 +1,6 @@
 %td.site.has_domain
   .wrap
-    %span.domain{ style: 'display: inline' }
+    %span.domain
       = link_to url_with_protocol(site.hostname), title: "Go to #{site.hostname}", class: "img_wrap", onclick: "window.open(this);return false" do
         = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=https://my.sublimevideo.net/assets/sites/default_favicon.png", alt: "Favicon", size: "16x16", id: "site_favicon_#{site.id}"
       = truncate_middle(site.hostname, length: 35)
@@ -25,8 +25,8 @@
         %li{ class: cycle('','alt', name: "actions")}= link_to 'Settings', [:edit, site]
         %li{ class: cycle('','alt', name: "actions")}= link_to 'Invoices', [site, :invoices]
       %div{ id: "loader_code_popup_content_#{site.token}", style: 'display:none' }= render 'sites/code', site: site
-    .token{ style: 'display: inline' }
+    .token
       %small
-        = 'site token: '
+        = 'token: '
         %strong= "##{site.token}"
     .spacer
