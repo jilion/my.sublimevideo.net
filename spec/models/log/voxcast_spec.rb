@@ -323,12 +323,18 @@ describe Log::Voxcast do
       end
     end
     describe "#parse_and_create_video_tags!" do
+      let(:video_tags_data) { { ['site_token', 'uid'] => { 'video' => 'data' } } }
+      let(:mock_delayed) { mock }
+
       it "analyzes logs" do
         video_tags_trackers = stub
-        video_tags_meta_data = stub
         @log.should_receive(:trackers).with('LogsFileFormat::VoxcastVideoTags', title: :video_tags) { video_tags_trackers }
-        VideoTagTrackersParser.should_receive(:extract_video_tags_meta_data).with(video_tags_trackers) { video_tags_meta_data }
-        VideoTagUpdater.should_receive(:update_video_tags).with(video_tags_meta_data)
+        VideoTagTrackersParser.should_receive(:extract_video_tags_data).with(video_tags_trackers) { video_tags_data }
+        VideoTagUpdater.should_receive(:update_video_tags).with(video_tags_data)
+
+        NewVideoTagUpdater.should_receive(:delay) { mock_delayed }
+        mock_delayed.should_receive(:update).with('site_token', 'uid', { 'video' => 'data' })
+
         @log.parse_and_create_video_tags!
       end
     end

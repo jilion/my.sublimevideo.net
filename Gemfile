@@ -6,7 +6,7 @@ ruby '1.9.3'
 
 gem 'bundler', '~> 1.2.0'
 
-gem 'rails', github: 'rails/rails', branch: '3-2-stable'
+gem 'rails', '3.2.9'
 
 gem 'sublime_video_layout', '1.0.0' # hosted on gemfury
 
@@ -152,7 +152,7 @@ group :test do
   gem 'typhoeus', '~> 0.2.0'
   gem 'vcr',      '~> 1.10.3'
 
-  gem 'database_cleaner'
+  gem 'database_cleaner', '~> 0.8.0'
   gem 'factory_girl'
   gem 'factory_girl_rails' # loaded in spec_helper Spork.each_run
 end
