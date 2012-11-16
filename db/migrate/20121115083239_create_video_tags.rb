@@ -1,10 +1,10 @@
 class CreateVideoTags < ActiveRecord::Migration
   def change
     create_table :video_tags do |t|
-      t.references :site
+      t.references :site, null: false
 
-      t.string  :uid
-      t.string  :uid_origin
+      t.string  :uid, null: false
+      t.string  :uid_origin, null: false
       t.string  :name
       t.string  :name_origin
       t.string  :video_id

@@ -63,7 +63,7 @@ namespace :one_time do
   namespace :video_tags do
     desc "Migrate mongodb video_tags to pg"
     task mongo_to_pg: :environment do
-      timed { OneTime::VideoTag.mongo_to_pg() }
+      timed { OneTime::VideoTag.mongo_to_pg }
     end
   end
 

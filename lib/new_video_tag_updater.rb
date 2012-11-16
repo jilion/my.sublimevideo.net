@@ -1,6 +1,6 @@
 # require_dependency 'pusher_wrapper'
 
-class NewVideoTagUpdater < Struct.new(:site, :uid)
+NewVideoTagUpdater = Struct.new(:site, :uid) do
 
   # TODO Remove after migration
   def self.migrate(video_tag_id)
@@ -10,6 +10,7 @@ class NewVideoTagUpdater < Struct.new(:site, :uid)
 
   def self.update(site_token, uid, data)
     return unless site = Site.where(token: site_token).first
+
     updater = NewVideoTagUpdater.new(site, uid)
     updater.update(data)
   end

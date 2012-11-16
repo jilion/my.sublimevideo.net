@@ -132,11 +132,11 @@ end
 #  name_origin     :string(255)
 #  poster_url      :text
 #  settings        :hstore
-#  site_id         :integer
+#  site_id         :integer          not null
 #  size            :string(255)
 #  sources         :text
-#  uid             :string(255)
-#  uid_origin      :string(255)
+#  uid             :string(255)      not null
+#  uid_origin      :string(255)      not null
 #  updated_at      :datetime         not null
 #  video_id        :string(255)
 #  video_id_origin :string(255)

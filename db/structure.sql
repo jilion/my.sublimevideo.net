@@ -1047,14 +1047,14 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 
 CREATE TABLE video_tags (
     id integer NOT NULL,
-    site_id integer,
-    uid character varying(255),
-    uid_origin character varying(255),
+    site_id integer NOT NULL,
+    uid character varying(255) NOT NULL,
+    uid_origin character varying(255) NOT NULL,
     name character varying(255),
     name_origin character varying(255),
     video_id character varying(255),
     video_id_origin character varying(255),
-    poster_url character varying(255),
+    poster_url text,
     size character varying(255),
     duration integer,
     sources text,
