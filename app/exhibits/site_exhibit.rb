@@ -15,12 +15,6 @@ class SiteExhibit < DisplayCase::Exhibit
     end
   end
 
-  def render_videos_row(template)
-    if template.early_access?('video')
-      template.render('sites/td_videos', site: self)
-    end
-  end
-
   def render_segmented_menu(template)
     template.render('sites/segmented_menu', site: self)
   end

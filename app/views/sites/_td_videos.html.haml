@@ -1,9 +1,12 @@
 %td.videos
   .wrap
-    - if site.last_30_days_video_tags > 0
-      = link_to site_video_tags_path(site), class: "video_number" do
-        %strong= number_with_delimiter(site.last_30_days_video_tags)
-        %em= "videos"
+    - if early_access?('video')
+      - if site.last_30_days_video_tags > 0
+        = link_to site_video_tags_path(site), class: "video_number" do
+          %strong= number_with_delimiter(site.last_30_days_video_tags)
+          %em= "videos"
+      - else
+        = link_to site_video_tags_path(site, anchor: 'add'), class: "add_a_video" do
+          %span= "Add a video"
     - else
-      = link_to site_video_tags_path(site, anchor: 'add'), class: "add_a_video" do
-        %span= "Add a video"
+      = link_to 'Publish video', new_site_video_code_path(site), class: 'embed_code disabled'

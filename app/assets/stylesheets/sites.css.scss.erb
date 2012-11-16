@@ -485,11 +485,11 @@ a.add_site span {
   color:#4a648e;
 }
 
-#sites table.main td.code {
+#sites table.main td.videos {
   text-align:center;
 }
 
-#sites table.main td.code a.embed_code {
+#sites table.main td.videos a.embed_code {
   display:inline-block;
   margin-top:23px;
   padding:8px 10px;
@@ -503,8 +503,44 @@ a.add_site span {
   @include border-radius(5px);
 }
 
-#sites table.main td.code a.embed_code:active {
+#sites table.main td.videos a.embed_code:active {
   @include gradient(#135bd7,#1e93e2,#1976dc);
+}
+
+#sites table.main td.videos a.embed_code.disabled {
+  cursor:default;
+  opacity:0.5;
+  pointer-events:none;
+  -webkit-filter:saturate(20%);
+}
+
+#sites table.main td.status .finish {
+  text-align:center;
+}
+
+#sites table.main td.status a.finish_button {
+  display:inline-block;
+  margin:20px 0 1px;
+  padding:5px 7px;
+  color:#fff;
+  font-size:13px;
+  text-transform:uppercase;
+  text-shadow:rgba(0,0,0,0.8) 0 -1px 0;
+  border:1px solid #194a7f;
+  @include gradient(#1e93e2,#135bd7,#1976dc);
+  @include box-shadow((inset #4ca9e8 0 1px 0, rgba(0,24,51,0.5) 0 1px 5px));
+  @include border-radius(5px);
+}
+
+#sites table.main td.status a.finish_button:active {
+  @include gradient(#135bd7,#1e93e2,#1976dc);
+}
+
+#sites table.main td.status span.steps {
+  font-size:13px;
+  font-weight:600;
+  font-style:italic;
+  color:#4a648e;
 }
 
 #sites table.main td.status .tooltip {
