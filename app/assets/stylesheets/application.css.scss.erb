@@ -586,8 +586,7 @@ form .entry.float select {
 ul.segmented_menu {
   list-style-type:none;
   position:absolute;
-  // top:40px;
-  top:54px; // REMY
+  top:50px;
   right:44px;
 }
 
@@ -598,14 +597,11 @@ ul.segmented_menu li {
 
 ul.segmented_menu li a {
   display:block;
-  // height:58px;
-  height:40px; // REMY
-  // line-height:58px;
-  line-height:40px; // REMY
-  padding:0 10px;
+  height:38px;
+  line-height:38px;
+  padding:0 11px;
   color:#1e3966;
-  // font-size:20px;
-  font-size:15px; // REMY
+  font-size:15px;
   font-weight:600;
   text-shadow:rgba(255,255,255,0.6) 0 1px 0;
   border:1px solid #576c88;
@@ -955,6 +951,79 @@ section.text ol ol ol li, section.text ol ol ol ol li {
 section.text ul {
   padding:5px 20px 10px;
 }
+
+/* =================== */
+/* = Setup Assistant = */
+/* =================== */
+
+#step_guide {
+  width:960px;
+  padding:10px 20px 25px;
+  margin-left:-60px;
+  position:relative;
+}
+
+#step_guide .step {
+  float:left;
+  width:192px;
+  height:100px;
+  text-align:center;
+}
+
+#step_guide .step .circle {
+  width:60px;
+  height:60px;
+  margin:0 auto;
+  background:rgba(30,57,102,0.3);
+  @include border-radius(50%);
+  @include box-shadow((inset rgba(0,24,63,0.5) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0));
+}
+
+#step_guide .step.active .circle {background:rgba(30,57,102,0.9)}
+#step_guide .step.completed .circle {
+  background:#0b873c url(<%= asset_path "sites/check_icon@2x.png" %>) no-repeat center;
+  background-size:33px 25px;
+}
+
+#step_guide .step .circle span {
+  font-size:38px;
+  font-weight:600;
+  color:#c7d1e3;
+  line-height:60px;
+  text-shadow:rgba(0,0,0,0.75) 0 1px 3px;
+}
+
+#step_guide .step.active .circle span {color:#e5efff}
+#step_guide .step.completed .circle span {display:none}
+
+#step_guide .step h4 {
+  color:#51688f;
+  font-size:18px;
+  font-weight:600;
+  padding-top:12px;
+}
+
+#step_guide .step.active h4 {color:#1e3966}
+#step_guide .step.completed h4 {color:#0a5929}
+
+#step_guide .line {
+  width:98px;
+  height:3px;
+  position:absolute;
+  top:38px;
+  left:163px;
+  background:rgba(123,141,172,0.4);
+  @include box-shadow(rgba(255,255,255,0.3) 0 1px 0);
+}
+
+#step_guide .active .line {background:rgba(43,69,112,0.4)}
+#step_guide .completed .line {background:rgba(60,118,88,0.4)}
+
+#step_guide .s3 .line {left:355px}
+#step_guide .s4 .line {left:547px}
+#step_guide .s5 .line {left:739px}
+
+
 
 /* ========= */
 /* = Popup = */
