@@ -7,11 +7,13 @@ feature 'Redirects' do
     site = build(:site)
     Service::Site.new(site).create
     site.update_column(:token, 'ibvjcopp')
-
-    sign_in_as :user
   end
 
   context 'user has no site' do
+    background do
+      sign_in_as :user
+    end
+
     scenario 'redirect / to /sites/new' do
       go 'my', ''
 
@@ -52,8 +54,8 @@ feature 'Redirects' do
 
   context 'user has a site' do
     background do
-      @site = build(:site, user: @current_user, hostname: 'rymai.me')
-      Service::Site.new(@site).create
+      sign_in_as :user_with_site
+      @site = @current_user.sites.first
     end
 
     scenario 'redirect / to /sites' do
