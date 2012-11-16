@@ -1,0 +1,8 @@
+- title 'Choose your add-ons'
+= content_header 'Setup assistant'
+
+.tagline
+  %h3= "Choose player add-ons for #{hostname_or_token(@site)}"
+  You can change this at any time.
+
+= render 'addons/index_content', site: @site, form_action: url_for, submit_text: 'Next'

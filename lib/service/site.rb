@@ -6,18 +6,16 @@ require_dependency 'service/settings'
 module Service
   Site = Struct.new(:site) do
 
-    class << self
-      # TODO: Remove after launch
-      def migrate_plan_to_addons!(site_id, free_addon_plans, free_addon_plans_filtered)
-        ::Site.find(site_id).tap do |site|
-          Service::Site.new(site).migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
-        end
+    # TODO: Remove after launch
+    def self.migrate_plan_to_addons!(site_id, free_addon_plans, free_addon_plans_filtered)
+      ::Site.find(site_id).tap do |site|
+        Service::Site.new(site).migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
       end
+    end
 
-      # TODO: Remove after launch
-      def create_default_kit(site_id)
-        ::Site.find(site_id).tap { |site| Service::Site.new(site).send(:create_default_kit!) }.save!
-      end
+    # TODO: Remove after launch
+    def self.create_default_kit(site_id)
+      ::Site.find(site_id).tap { |site| Service::Site.new(site).send(:create_default_kit!) }.save!
     end
 
     def create
@@ -57,8 +55,9 @@ module Service
       ::Site.transaction do
         set_billable_app_designs(app_designs || {})
         set_billable_addon_plans(addon_plans || {})
-        site.loaders_updated_at = Time.now.utc
+        site.loaders_updated_at  = Time.now.utc
         site.settings_updated_at = Time.now.utc
+        site.addons_updated_at   = Time.now.utc
         site.save!
       end
       Service::Loader.delay.update_all_stages!(site.id)

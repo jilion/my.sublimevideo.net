@@ -200,6 +200,11 @@ MySublimeVideo::Application.routes.draw do
       post '/access_token' => 'oauth#token', as: :oauth_token
     end
 
+    match '/assistant/:site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put]
+    match '/assistant/:site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put]
+    get '/assistant/:site_id/publish-video' => 'assistant#publish_video', as: 'assistant_publish_video'
+    get '/assistant/:site_id/summary' => 'assistant#summary', as: 'assistant_summary'
+
     get '/addons' => 'addons#directory'
 
     resources :sites, except: [:show] do
@@ -222,7 +227,7 @@ MySublimeVideo::Application.routes.draw do
       resources :video_tags, only: [:show]
 
       resource :video_code, only: [], path: 'publish-video' do
-        get :new, on: :collection, path: '', as: :new
+        get :new, on: :collection, path: '', as: 'new'
       end
       resources :video_codes, only: [:show], path: 'video-codes'
 

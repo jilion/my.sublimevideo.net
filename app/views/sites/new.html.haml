@@ -1,5 +1,5 @@
-- title("Add a site")
-= content_header("Setup Assistant")
+- title 'Add a site'
+= content_header 'Setup assistant'
 
 #site.new.assistant
   #step_guide
@@ -30,10 +30,9 @@
     .spacer
   .big_break
   = form_for @site, html: { class: "full" } do |f|
-    
-    
+
     %h3.title On which site do you need a SublimeVideo player?
     = render 'fields', site: @site, f: f
 
-    -# .actions.center
-    -#   = f.submit 'Add site', class: 'submit green_button', id: 'site_submit'
+    .actions.center
+      = f.submit 'Next', class: 'submit green_button', id: 'site_submit'

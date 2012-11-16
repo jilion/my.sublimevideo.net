@@ -1,11 +1,11 @@
 - title('Configure your player')
-= render '/layouts/site_header'
+= render 'layouts/site_header'
 .spacer
 
 #kit.edit
   #beta_loader_required Beta loader required
   = form_for [@site, @kit], html: { class: 'kit_editor' } do |f|
-    = render 'form', f: f, site: @site, kit: @kit
+    = render 'kits/form', f: f, site: @site, kit: @kit
 
     .actions.center
       = link_to 'Cancel', site_kits_path(@site), class: 'blue_button'

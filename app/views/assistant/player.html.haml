@@ -1,0 +1,16 @@
+- title 'Configure your player'
+= content_header 'Setup assistant'
+
+.tagline
+  %h3= "Create a player for #{hostname_or_token(@site)}"
+
+#kit.edit
+  #beta_loader_required Beta loader required
+  = form_for @kit, url: url_for, html: { class: 'kit_editor' } do |f|
+    .actions.center
+      = f.submit 'Next', class: 'submit green_button'
+
+    = render 'kits/form', f: f, site: @site, kit: @kit
+
+    .actions.center
+      = f.submit 'Next', class: 'submit green_button'

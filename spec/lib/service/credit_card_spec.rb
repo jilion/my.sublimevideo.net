@@ -13,10 +13,10 @@ describe Service::CreditCard do
     let(:public_addon_plan_paid) { create(:addon_plan, availability: 'public', price: 995) }
 
     before do
-      @user_no_cc        = create(:user, cc_type: nil, cc_last_digits: nil)
+      @user_no_cc = create(:user, cc_type: nil, cc_last_digits: nil)
       create(:billable_item, site: create(:site, user: @user_no_cc), item: public_addon_plan_paid, state: 'subscribed', created_at: 1.months.ago)
 
-      @user_cc           = create(:user)
+      @user_cc = create(:user)
       create(:billable_item, site: create(:site, user: @user_cc), item: public_addon_plan_paid, state: 'subscribed', created_at: 1.months.ago)
 
       @user_cc_will_expire = create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date)
@@ -33,7 +33,9 @@ describe Service::CreditCard do
     end
 
     it "sends 'cc will expire' email when user's credit card will expire at the end of the current month and the last notice he received is at least 15 days old" do
-      expect { described_class.send_credit_card_expiration_email }.to change(Sidekiq::Worker.jobs, :size).by(1)
+      BillingMailer.should_receive(:delay).once { stub.as_null_object }
+
+      described_class.send_credit_card_expiration_email
     end
 
     it "sends 'cc will expire' email to the right user" do

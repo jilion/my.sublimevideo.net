@@ -11,14 +11,15 @@
   .expandable_settings_box
     %h3
       Preview
-      = render 'sites/stable_beta_menu', site: @site
+      = render 'sites/stable_beta_menu', site: site
     #preview
-    %button.blue_button.get_the_code{ style: 'margin:auto' } Get the Code
+    - if get_code_button == true
+      %button.blue_button.get_the_code{ style: 'margin:auto' } Get the Code
   .spacer
 
   #kit_selection.expandable_settings_box
     %h3
-      = render 'video_codes/kit_selection', site: @site, kit: @kit
+      = render 'video_codes/kit_selection', site: site, kit: kit
 
   #video_sources.expandable_settings_box
     %h4.expanding_handler.expanded
@@ -56,7 +57,7 @@
 
     #kit_settings_form
 
-  #code
+  - if get_code_button == true
     %button.blue_button.get_the_code{ style: 'margin:auto' } Get the Code
 
 

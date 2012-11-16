@@ -9,14 +9,14 @@ feature 'New site' do
 
   scenario 'with no hostname' do
     fill_in 'Domain', with: ''
-    click_button 'Add site'
+    click_button 'Next'
 
     last_site_should_be_created('please-edit.me')
   end
 
   scenario 'with a hostname' do
     fill_in 'Domain', with: hostname1
-    click_button 'Add site'
+    click_button 'Next'
 
     last_site_should_be_created(hostname1)
   end
@@ -195,8 +195,8 @@ def last_site_should_be_created(hostname)
   site.app_designs.should have(3).items
   site.addon_plans.should have(10).items
 
-  current_url.should eq 'http://my.sublimevideo.dev/sites'
-  page.should have_content (hostname.present? ? hostname : 'add a hostname')
+  current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/addons"
+  page.should have_content hostname
   page.should have_content 'Site has been successfully registered.'
 end
 
