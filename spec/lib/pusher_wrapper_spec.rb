@@ -62,14 +62,15 @@ describe PusherWrapper, :redis do
       before { $redis.sadd("pusher:channels", channel_name) }
 
       it "triggers Pusher channel_name" do
-        Pusher[channel_name].should_receive(:trigger!).with(event_name, data)
+        puts $redis.sismember("pusher:channels", channel_name)
+        Pusher.should_receive(:trigger).with(channel_name, event_name, data)
         PusherWrapper.trigger(channel_name, event_name, data).should be_true
       end
     end
 
     context "with channel vacated" do
       it "triggers Pusher channel_name" do
-        Pusher[channel_name].should_not_receive(:trigger!).with(event_name, data)
+        Pusher.should_not_receive(:trigger)
         PusherWrapper.trigger(channel_name, event_name, data).should be_false
       end
     end
