@@ -8,8 +8,7 @@ class NewVideoTag < ActiveRecord::Base
   belongs_to :site
 
   validates :site_id, presence: true, uniqueness: { scope: :uid }
-  validates :uid, presence: true
-  validates :uid_origin, presence: true
+  validates :uid, :uid_origin, presence: true
   validates :uid_origin, :name_origin, inclusion: %w[attribute source]
 
   def to_param
