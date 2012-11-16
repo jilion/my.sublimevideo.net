@@ -28,6 +28,7 @@ describe UserModules::Scope do
       @user_no_cc        = create(:user, cc_type: nil, cc_last_digits: nil)
       @user_cc           = create(:user, cc_type: 'visa', cc_last_digits: '1234')
       @user_cc_expire_on = create(:user, cc_expire_on: Time.now.utc.end_of_month.to_date)
+      @user_last_credit_card_expiration_notice = create(:user, last_credit_card_expiration_notice_sent_at: 30.days.ago)
     end
 
     describe ".without_cc" do
@@ -35,11 +36,16 @@ describe UserModules::Scope do
     end
 
     describe ".with_cc" do
-      specify { User.with_cc.all.should =~ [@user_cc, @user_cc_expire_on] }
+      specify { User.with_cc.all.should =~ [@user_cc, @user_cc_expire_on, @user_last_credit_card_expiration_notice] }
     end
 
     describe ".cc_expire_this_month" do
       specify { User.cc_expire_this_month.all.should =~ [@user_cc_expire_on] }
+    end
+
+    describe ".last_credit_card_expiration_notice_sent_before" do
+      specify { User.last_credit_card_expiration_notice_sent_before(15.days.ago).all.should =~ [@user_last_credit_card_expiration_notice] }
+      specify { User.last_credit_card_expiration_notice_sent_before(30.days.ago - 1.second).all.should be_empty }
     end
   end
 

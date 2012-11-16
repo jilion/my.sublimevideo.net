@@ -92,8 +92,8 @@ describe RecurringJob do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules User.send_credit_card_expiration" do
-      User.should delay(:send_credit_card_expiration,
+    it "schedules User.send_credit_card_expiration_email" do
+      Service::CreditCard.should delay(:send_credit_card_expiration_email,
         at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
         queue: "low"
       )

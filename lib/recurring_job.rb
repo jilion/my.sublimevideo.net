@@ -3,6 +3,7 @@ require_dependency 'service/site'
 require_dependency 'service/trial'
 require_dependency 'service/invoice'
 require_dependency 'service/usage'
+require_dependency 'service/credit_card'
 
 module RecurringJob
   class << self
@@ -32,7 +33,7 @@ module RecurringJob
 
       options.merge!(queue: 'low')
 
-      User.delay(options).send_credit_card_expiration
+      Service::CreditCard.delay(options).send_credit_card_expiration_email
       User.delay(options).send_inactive_account_email
       Stats::UsersStat.delay(options).create_stats
       Stats::SitesStat.delay(options).create_stats
