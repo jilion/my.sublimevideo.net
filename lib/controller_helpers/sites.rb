@@ -20,7 +20,11 @@ module ControllerHelpers
       if user_signed_in?
         @sites = current_user.sites.not_archived
 
-        redirect_to([:new, :site], flash: flash) if @sites.empty?
+        if @sites.empty?
+          redirect_to([:new, :site], flash: flash)
+        else
+          @sites.map! { |site| exhibit(site) }
+        end
       end
     end
 

@@ -1,14 +1,12 @@
-%h2.hostname
-  = hostname_or_token(@site, length: 20)
-.site_select_wrap
-  = link_to '', class: 'site_select' do
-    %span Show sites
-  %ul.actions{ id: ['site_actions', @site.id], style: 'display:none' }
-    - @sites.sort_by { |s| hostname_or_token(s, prefix: 'zzz') }.each do |site|
-      - unless site == @site
-        %li{ class: cycle('','alt') }= link_to hostname_or_token(site, length: 20), url_for(site_id: site.to_param)
-.spacer
--#%select#sites_select_title{ 'data-token' => @site.token }
--#  -#- @sites.sort_by { |s| hostname_or_token(s, prefix: 'zzz') }.each do |site|
--#  -#  - unless site == @site
--#  -#    %option{ value: site.token }= hostname_or_token(site, length: 20)
+%h2.hostname= hostname_or_token(@site, length: 20)
+
+- @sites.select! { |site| site.id != @site.id && (request.url =~ /stats/ ? site.realtime_stats_active? : true) }
+
+- unless @sites.empty?
+  .site_select_wrap
+    = link_to '', class: 'site_select' do
+      %span Show sites
+    %ul.actions{ id: ['site_actions', @site.id], style: 'display:none' }
+      - @sites.sort_by { |s| hostname_or_token(s, prefix: 'zzz') }.each do |site|
+        %li{ class: cycle('', 'alt') }= link_to hostname_or_token(site, length: 20), url_for(site_id: site.to_param)
+  .spacer
