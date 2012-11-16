@@ -92,22 +92,38 @@ module Spec
       def sign_in_as(resource_name, options = {})
         kill_user = options.delete(:kill_user)
         sign_out(kill_user) if @current_user
-        options = { resource_name => options }
+        resource_options = { resource_name => options }
 
         resource = case resource_name
         when :user
-          go 'my', '/login'
-          create_user(options)
+          create_user(resource_options)
+        when :user_with_site
+          create_user(resource_options).tap { |u| create_site_for(u) }
+        when :user_with_sites
+          create_user(resource_options).tap { |u| 2.times { create_site_for(u) } }
         when :admin
-          go 'admin', '/login'
-          create_admin(options)
+          create_admin(resource_options)
         end
+        login(resource_name =~ /admin/ ? 'admin' : 'my', resource, options)
+        resource
+      end
+
+      def login(subdomain = 'my', *args)
+        resource = args.shift
+        go subdomain, '/login'
+        fill_and_submit_login(resource, args.extract_options!)
+      end
+
+      def fill_and_submit_login(resource, options = {})
         fill_in 'Email',    with: resource.email
-        fill_in 'Password', with: options[resource_name][:password] || '123456'
+        fill_in 'Password', with: options[:password] || '123456'
         check   'Remember me' if options[:remember_me] == true
         yield if block_given?
         click_button 'Log In'
-        resource
+      end
+
+      def create_site_for(user)
+        Service::Site.new(build(:site, user: user)).create
       end
 
       def send_invite_to(resource_name, email = "invited@invited.com")

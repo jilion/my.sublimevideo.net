@@ -200,6 +200,8 @@ MySublimeVideo::Application.routes.draw do
       post '/access_token' => 'oauth#token', as: :oauth_token
     end
 
+    get '/addons' => 'addons#directory'
+
     resources :sites, except: [:show] do
       resources :addons, only: [:index] do
         collection do
