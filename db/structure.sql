@@ -990,7 +990,9 @@ CREATE TABLE sites (
     first_billable_plays_at timestamp without time zone,
     settings_updated_at timestamp without time zone,
     loaders_updated_at timestamp without time zone,
-    default_kit_id integer
+    default_kit_id integer,
+    current_assistant_step character varying(255),
+    addons_updated_at timestamp without time zone
 );
 
 
@@ -2304,3 +2306,5 @@ INSERT INTO schema_migrations (version) VALUES ('20121101092429');
 INSERT INTO schema_migrations (version) VALUES ('20121101103815');
 
 INSERT INTO schema_migrations (version) VALUES ('20121116102831');
+
+INSERT INTO schema_migrations (version) VALUES ('20121116133453');

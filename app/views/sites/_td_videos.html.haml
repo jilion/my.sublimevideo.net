@@ -9,4 +9,6 @@
         = link_to site_video_tags_path(site, anchor: 'add'), class: "add_a_video" do
           %span= "Add a video"
     - else
-      = link_to 'Publish video', new_site_video_code_path(site), class: 'embed_code'
+      - classes = ['embed_code']
+      - classes << 'disabled' unless assistant.setup_done?
+      = link_to 'Publish video', new_site_video_code_path(site), class: classes

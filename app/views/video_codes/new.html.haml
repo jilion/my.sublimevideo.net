@@ -4,4 +4,4 @@
 %h2.publish_video Publish a video
 .spacer
 
-.video_code_generator= render 'form'
+.video_code_generator= render 'video_codes/form', site: @site, kit: @kit, get_code_button: true
