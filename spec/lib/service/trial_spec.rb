@@ -118,6 +118,20 @@ describe Service::Trial do
         site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid1).where(state: 'canceled').should have(1).item
         site1.billable_item_activities.addon_plans.where(item_id: @app_design_free).where(state: 'subscribed').should have(1).item
       end
+
+      context 'an issue occurs' do
+        before do
+          service = stub
+          Service::Site.should_receive(:new) { service }
+          service.should_receive(:update_billable_items).and_raise Exception
+        end
+
+        it 'do not send emails if there is any issue during Service::Site#update_billable_items' do
+          BillingMailer.should_not_receive(:delay)
+
+          expect { described_class.activate_billable_items_out_of_trial_for_site!(site1.id) }.to raise_error(Exception)
+        end
+      end
     end
   end
 

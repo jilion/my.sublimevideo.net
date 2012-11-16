@@ -27,13 +27,14 @@ module Service
 
       def activate_billable_items_out_of_trial_for_site!(site_id)
         site = ::Site.not_archived.find(site_id)
+        emails = []
 
         activated_app_designs = site.billable_items.app_designs.where(state: 'trial').inject({}) do |hash, billable_item|
           if site.out_of_trial?(billable_item.item)
             hash[billable_item.item.name] = if site.user.cc?
               billable_item.item.id
             else
-              BillingMailer.delay.trial_has_expired(site.id, billable_item.item.class.to_s, billable_item.item.id)
+              emails << [billable_item.item.class.to_s, billable_item.item.id]
               '0'
             end
           end
@@ -45,7 +46,7 @@ module Service
             hash[billable_item.item.addon.name] = if site.user.cc?
               billable_item.item.id
             else
-              BillingMailer.delay.trial_has_expired(site.id, billable_item.item.class.to_s, billable_item.item.id)
+              emails << [billable_item.item.class.to_s, billable_item.item.id]
               billable_item.item.addon.free_plan.id
             end
           end
@@ -53,6 +54,10 @@ module Service
         end
 
         Service::Site.new(site).update_billable_items(activated_app_designs, activated_addon_plans)
+
+        emails.each do |email|
+          BillingMailer.delay.trial_has_expired(site_id, email[0], email[1])
+        end
       end
 
     end
