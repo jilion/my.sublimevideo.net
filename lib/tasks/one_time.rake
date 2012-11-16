@@ -60,6 +60,13 @@ namespace :one_time do
   namespace :plans do
   end
 
+  namespace :video_tags do
+    desc "Migrate mongodb video_tags to pg"
+    task mongo_to_pg: :environment do
+      timed { OneTime::VideoTag.mongo_to_pg() }
+    end
+  end
+
   namespace :sites do
     desc "Reset sites caches"
     task reset_caches: :environment do

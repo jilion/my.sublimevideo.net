@@ -16,6 +16,10 @@ class NewVideoTag < ActiveRecord::Base
     uid
   end
 
+  def name=(attribute)
+    write_attribute :name, attribute.to(254)
+  end
+
   def sources=(attributes)
     attributes.each do |crc32, source_data|
       unless sources[crc32] == source_data
@@ -37,7 +41,7 @@ end
 #  id              :integer          not null, primary key
 #  name            :string(255)
 #  name_origin     :string(255)
-#  poster_url      :string(255)
+#  poster_url      :text
 #  settings        :hstore
 #  site_id         :integer
 #  size            :string(255)

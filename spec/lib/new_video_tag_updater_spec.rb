@@ -3,7 +3,7 @@ require File.expand_path('lib/new_video_tag_updater')
 
 unless defined?(ActiveRecord)
   Site = Class.new
-  VideoTag = Class.new
+  NewVideoTag = Class.new
 end
 
 describe NewVideoTagUpdater do
@@ -18,18 +18,20 @@ describe NewVideoTagUpdater do
     }
   } }
   let(:site) { mock(Site, id: 'site_id') }
-  let(:video_tag) { mock(VideoTag, uid: 'uid') }
+  let(:video_tag) { mock(NewVideoTag, uid: 'uid') }
 
   describe ".update" do
 
     context "with existing site" do
+      let(:relation) { stub }
       before { Site.stub_chain(:where, :first) { site } }
 
       it "updates video_tag attributes with data" do
-        VideoTag.should_receive(:first_or_initialize).with(
+        NewVideoTag.should_receive(:where).with(
           site_id: site.id,
           uid: video_tag.uid
-        ) { video_tag }
+        ) { relation }
+        relation.should_receive(:first_or_initialize) { video_tag }
         video_tag.should_receive(:attributes=).with(
           uid_origin: 'source',
           name: 'My Video',
@@ -56,7 +58,7 @@ describe NewVideoTagUpdater do
       before { Site.stub_chain(:where, :first) { nil } }
 
       it "does nothing" do
-        VideoTag.should_not_receive(:first_or_initialize)
+        NewVideoTag.should_not_receive(:where)
         NewVideoTagUpdater.update(site.id, video_tag.uid, data)
       end
     end

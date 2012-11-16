@@ -40,6 +40,15 @@ describe NewVideoTag do
     end
   end
 
+  describe "#name=" do
+    it "truncates long name" do
+      long_name = ''
+      256.times.each { long_name += 'a' }
+      video_tag.update_attributes(name: long_name)
+      video_tag.name.size.should eq 255
+    end
+  end
+
   describe "#update_attributes" do
     context "with new data" do
       context ":current_sources" do
@@ -93,7 +102,7 @@ describe NewVideoTag do
       end
     end
 
-    context "with same data", :focus do
+    context "with same data" do
       context ":current_sources" do
         it "overwrites current_sources" do
           video_tag.attributes = { current_sources: video_tag.current_sources }
@@ -121,7 +130,7 @@ end
 #  id              :integer          not null, primary key
 #  name            :string(255)
 #  name_origin     :string(255)
-#  poster_url      :string(255)
+#  poster_url      :text
 #  settings        :hstore
 #  site_id         :integer
 #  size            :string(255)
