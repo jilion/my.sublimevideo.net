@@ -3,6 +3,10 @@ module Service
 
     self::STEPS = %w[new_site addons player publish_video summary]
 
+    def self.step_number(step_name)
+      self::STEPS.index(step_name) + 1
+    end
+
     def setup_done?
       site.billable_views.nonzero? || current_step == 'summary'
     end
@@ -12,7 +16,7 @@ module Service
     end
 
     def current_step_number
-      self.class::STEPS.index(current_step) + 1
+      self.class.step_number(current_step)
     end
 
   end

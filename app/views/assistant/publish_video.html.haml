@@ -4,6 +4,8 @@
 .tagline
   %h3= "Publish a video on #{hostname_or_token(@site)}"
 
-.video_code_generator= render 'video_codes/form', site: @site, kit: @kit, get_code_button: false
+.video_code_generator.assistant
+  = render 'assistant/step_guide', current_step: 'publish_video'
+  = render 'video_codes/form', site: @site, kit: @kit, get_code_button: false
 
 = link_to 'Next', assistant_summary_url, class: 'submit green_button'

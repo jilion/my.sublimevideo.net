@@ -2,33 +2,7 @@
 = content_header 'Setup assistant'
 
 #site.new.assistant
-  #step_guide
-    .step.s1.completed
-      .circle
-        %span 1
-      %h4 Add site
-    .step.s2.completed
-      .circle
-        %span 2
-      %h4 Choose add-ons
-      .line
-    .step.s3.active
-      .circle
-        %span 3
-      %h4 Create Player
-      .line
-    .step.s4
-      .circle
-        %span 4
-      %h4 Publish a video
-      .line
-    .step.s5
-      .circle
-        %span 5
-      %h4 Summary
-      .line
-    .spacer
-  .big_break
+  = render 'assistant/step_guide', current_step: 'new_site'
   = form_for @site, html: { class: "full" } do |f|
 
     %h3.title On which site do you need a SublimeVideo player?

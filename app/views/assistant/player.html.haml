@@ -4,7 +4,8 @@
 .tagline
   %h3= "Create a player for #{hostname_or_token(@site)}"
 
-#kit.edit
+#kit.edit.assistant
+  = render 'assistant/step_guide', current_step: 'player'
   #beta_loader_required Beta loader required
   = form_for @kit, url: url_for, html: { class: 'kit_editor' } do |f|
     .actions.center
