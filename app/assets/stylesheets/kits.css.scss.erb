@@ -2,26 +2,29 @@
 
 #kits, #kit {
   position:relative;
-  margin-top:20px;
-  padding:40px;
 }
 
 #kit_preview, #kit_settings {
   margin-bottom:20px;
-  padding:20px;
-}
-
-#kits, #kit_preview, #kit_settings {
-  background:rgba(255,255,255,0.4);
-  @include border-radius(5px);
+  padding:20px 0;
 }
 
 #beta_loader_required {
   position:absolute;
-  top:0;
+  top:40px;
   right:0;
-  padding:10px 15px;
-  font-size:22px;
+}
+
+#beta_loader_required .tooltip.info {
+  position:absolute;
+  top:-1px;
+  left:-27px;
+}
+
+#beta_loader_required h5.label {
+  font-size:20px;
+  font-style:italic;
+  font-weight:normal;
 }
 
 // REMY
