@@ -21,8 +21,8 @@ class MySublimeVideo.UI.KitsPage
       thumbnail: thumbnail
       poster: poster
       sources: sources
-      width: 320
-      height: 180
+      width: 368
+      height: 207
 
   setupHelpers: ->
     @videoTagHelpers = {}
@@ -37,5 +37,5 @@ class MySublimeVideo.UI.KitsPage
       liId = $li.attr('id')
 
       videoCode = @videoTagHelpers[liId].generateVideoCode(id: "preview_kit_#{liId}")
-      $("#preview_#{liId}").replaceWith(videoCode)
+      $("#preview_#{liId}").html(videoCode)
       sublimevideo.prepare("preview_kit_#{liId}")

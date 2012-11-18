@@ -27,75 +27,85 @@
   font-weight:normal;
 }
 
-// REMY
-#kits ul {
+ul#kits_wrap {
   list-style-type:none;
+  margin-top:10px;
 }
 
-#kits ul li {
-  display:block;
-  width:350px;
+ul#kits_wrap li {
+  width:415px;
   height:300px;
-  padding:10px;
-  border:1px solid #576c88;
-  @include gradient(rgba(255,255,255,0.4),rgba(255,255,255,0),transparent);
-  @include box-shadow((inset #f5f8fc 0 1px 0, rgba(255,255,255,0.3) 0 1px 0));
-  @include border-radius(5px);
-}
-
-#kits ul li.left {
   float:left;
-}
-#kits ul li.right {
-  float:right;
-}
-
-#kits ul li a {
-  display:block;
-  // height:58px;
-  // line-height:58px;
-  padding:0 20px;
-  color:#1e3966;
-  font-size:20px;
-  font-weight:600;
-  text-shadow:rgba(255,255,255,0.6) 0 1px 0;
-}
-
-#kits ul li a.name {
-  padding:10px;
-}
-
-#kits ul li.add_kit.add_kit a {
-  padding-top:125px;
-  height:100%;
+  margin-bottom:50px;
   text-align:center;
+  @include gradient(#dbe8ff,#c4d1e8,#cddaf1);
+  @include border-radius(4px);
+  @include box-shadow((inset rgba(255,255,255,0.9) 0 1px 0, rgba(0,32,79,0.5) 0 1px 4px));
 }
 
-#kits ul li.add_kit a span {
-  padding-left:25px;
-  background:url(<%= asset_path "sites/add_site_cross.png" %>) no-repeat 0 4px;
+ul#kits_wrap li:nth-child(odd) {
+  margin-right:50px;
 }
 
-#kits a.edit_kit {
-  // position:absolute;
-  // bottom:10px;
-  // right:11px;
+ul#kits_wrap li a.name {
+  font-size:18px;
+  font-weight:600;
+  color:#1e3966;
+  padding:15px 0 10px;
+  display:block;
+}
+
+ul#kits_wrap li .preview {
+  width:368px;
+  height:207px;
+  margin:0 auto;
+  @include box-shadow(rgba(0,0,0,0.6) 0 1px 4px);
+}
+
+ul#kits_wrap li .action_links {
+  padding-top:11px;
+}
+
+ul#kits_wrap li .action_links a, ul#kits_wrap li .action_links button, ul#kits_wrap li .action_links input {
+  color:#1e3966;
+  font-weight:600;
+  border:none;
+  background:none;
+  font-family:inherit;
+  font-size:16px;
+  border-bottom:1px solid #7387a6;
+  outline:0;
+  display:inline;
+  cursor:pointer;
+  text-shadow:rgba(255,255,255,0.4) 0 1px 0;
+}
+
+ul#kits_wrap li .action_links form {
+  display:inline;
+}
+
+ul#kits_wrap li.add_kit {
+  text-align:center;
+  border:3px dashed #567094;
+  background:rgba(215,230,255,.10);
+  @include box-shadow(none);
+}
+
+ul#kits_wrap li.add_kit a.add {
+  display:block;
+  width:100%;
+  height:300px;
+  color:#1e3966;
+  font-size:28px;
+  font-weight:600;
+}
+
+ul#kits_wrap li.add_kit a.add span {
+  margin-top:130px;
   display:inline-block;
-  padding:4px 6px 3px;
-  color:#f1f6ff;
-  font-size:10px;
-/*  font-weight:600;*/
-  text-transform:uppercase;
-  letter-spacing:1px;
-  text-shadow:rgba(0,0,0,0.8) 0 -1px 0;
-  border:1px solid #0e2a55;
-  @include gradient(#5f7da6,#2c4a76,#46658f);
-  @include box-shadow((inset rgba(255,255,255,0.24) 0 1px 0, rgba(255,255,255,0.3) 0 1px 0));
-  @include border-radius(5px);
-}
-
-#kits a.edit_kit:active {
-  @include gradient(#2c4a76,#5f7da6,#46658f);
+  padding:0 0 0 30px;
+  background:url(<%= asset_path "sites/add_player@2x.png" %>) no-repeat 0 50%;
+  background-size:18px 19px;  
 }
 
 
