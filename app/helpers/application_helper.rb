@@ -68,5 +68,5 @@ module ApplicationHelper
     host = request ? '' : ActionController::Base.asset_host
     "#{host}#{asset_path(asset)}"
   end
-
+  
 end

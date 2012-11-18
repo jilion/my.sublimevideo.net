@@ -1,39 +1,42 @@
-#identifier= "##{kit.identifier}"
+%h3.assistant_title#identifier
+  = "Edit"
+  %em= kit.name
+  = "(##{kit.identifier})"
 
 .entry.text
   = f.label :name, 'Player name', class: 'icon'
   = f.text_field :name, placeholder: 'Player name', required: true, class: 'text no_icon'
 
-#kit_preview
-  %h3 Preview
+#kit_preview.white_box
+  %h4.title Preview
   #preview-standard
-    %video#standard{ poster: '//media.jilion.com/images/midnight_sun_800.jpg', width: 320, height: 180 }
+    %video#standard{ poster: '//media.jilion.com/images/midnight_sun_800.jpg', width: 640, height: 360 }
       %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4' }
       %source{ src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm' }
 
-#kit_settings
-  %h3 Edit player settings
-
+#kit_settings.white_box
+  %h4.title Edit player settings
+  
   .entry.design.select
     = f.label :app_design_id, 'Player design:'
     = f.select :app_design_id, options_from_collection_for_select(site.app_designs, :id, :title, kit.app_design_id)
 
   #basic_player_settings.expandable_settings_box
     %h4.expanding_handler
-      = link_to "#{t('addons.video_player')} settings", '', class: 'hl'
-    .left.expandable
+      = link_to "#{t('addons.video_player')} settings", ''
+    .expandable
       = render 'kits/form_boxes/basic_player_settings', site: site, kit: kit
 
   #lightbox_settings.expandable_settings_box
     %h4.expanding_handler
-      = link_to "#{t('addons.lightbox')} settings", '', class: 'hl'
-    .left.expandable
+      = link_to "#{t('addons.lightbox')} settings", ''
+    .expandable
       = render 'kits/form_boxes/lightbox_settings', site: site, kit: kit
 
   #logo_settings.expandable_settings_box
     %h4.expanding_handler
-      = link_to "#{t('addons.logo')} settings", '', class: 'hl'
-    .left.expandable
+      = link_to "#{t('addons.logo')} settings", ''
+    .expandable
       = render 'kits/form_boxes/logo_settings', site: site, kit: kit
 
   -##sharing_settings.expandable_settings_box
