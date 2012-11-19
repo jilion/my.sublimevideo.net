@@ -547,7 +547,7 @@ end
 def create_stats(site_token = nil)
   sites = site_token ? [Site.find_by_token(site_token)] : Site.all
   sites.each do |site|
-    site.video_tags.delete_all
+    VideoTag.where(site_id: site).delete_all
     Stat::Site::Day.where(t: site.token).delete_all
     Stat::Site::Hour.where(t: site.token).delete_all
     Stat::Site::Minute.where(t: site.token).delete_all
@@ -562,7 +562,7 @@ def create_stats(site_token = nil)
       VideoTag.create(site_id: site.id, uid: "video#{video_i}",
         uid_origin: "source",
         name: "Video #{video_i} long name test truncate",
-        name_origin: "s",
+        name_origin: "source",
         current_sources: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
         poster_url: "http#{'s' if video_i.even?}://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
         size: "544x306",
@@ -775,12 +775,14 @@ def random_video_stats_inc(i, force = nil)
     "vl.em" => force || (i * rand(2)).round,
     "vl.d"  => force || (i * rand(2)).round,
     "vl.i"  => force || (i * rand(2)).round,
+    "vlc"   => force || (i * rand(2)).round,
     # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
     "vv.m"  => force || (i * rand(10)).round,
     "vv.e"  => force || (i * rand(3)).round,
     "vv.em" => force || (i * rand(3)).round,
     "vv.d"  => force || (i * rand(2)).round,
     "vv.i"  => force || (i * rand(2)).round,
+    "vvc"   => force || (i * rand(2)).round,
     # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1, t (tablet) => 1 }, f (flash) => ... }
     "md.h.d" => i * rand(12),
     "md.h.m" => i * rand(5),
@@ -846,9 +848,9 @@ def create_video_tags(site_token)
     VideoTag.create(
       site_id: site.id,
       uid: generate_unique_token,
-      uid_origin: %w[a s].sample,
+      uid_origin: %w[attribute source].sample,
       name: Faker::Product.product,
-      name_origin: %w[a s].sample,
+      name_origin: %w[attribute source].sample,
       poster_url: 'http://media.jilion.com/vcg/ms_800.jpg',
       size: '400x320',
       current_sources: %w[5ABAC533 2ABFEFDA 97230509 4E855AFF],
