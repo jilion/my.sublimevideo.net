@@ -670,7 +670,7 @@ end
 #  confirmation_token                         :string(255)
 #  confirmed_at                               :datetime
 #  country                                    :string(255)
-#  created_at                                 :datetime
+#  created_at                                 :datetime         not null
 #  current_sign_in_at                         :datetime
 #  current_sign_in_ip                         :string(255)
 #  early_access                               :text
@@ -711,7 +711,7 @@ end
 #  state                                      :string(255)
 #  total_invoiced_amount                      :integer          default(0)
 #  unconfirmed_email                          :string(255)
-#  updated_at                                 :datetime
+#  updated_at                                 :datetime         not null
 #  use_clients                                :boolean
 #  use_company                                :boolean
 #  use_personal                               :boolean

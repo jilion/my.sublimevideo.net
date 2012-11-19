@@ -271,7 +271,7 @@ end
 #  alexa_rank                                :integer
 #  archived_at                               :datetime
 #  badged                                    :boolean
-#  created_at                                :datetime
+#  created_at                                :datetime         not null
 #  current_assistant_step                    :string(255)
 #  default_kit_id                            :integer
 #  dev_hostnames                             :text
@@ -306,7 +306,7 @@ end
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime
-#  updated_at                                :datetime
+#  updated_at                                :datetime         not null
 #  user_id                                   :integer
 #  wildcard                                  :boolean
 #
