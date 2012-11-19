@@ -3,28 +3,6 @@ class SiteExhibit < DisplayCase::Exhibit
     object.class.name == 'Site'
   end
 
-  def render_hostname_row(template)
-    template.render('sites/td_hostname', site: self)
-  end
-
-  def render_usage_row_content(template)
-    if realtime_stats_active?
-      template.render('sites/td_usage/td_content_with_stats', site: self)
-    else
-      template.render('sites/td_usage/td_content_without_stats', site: self)
-    end
-  end
-
-  def render_videos_row(template)
-    if template.early_access?('video')
-      template.render('sites/td_videos', site: self)
-    end
-  end
-
-  def render_segmented_menu(template)
-    template.render('sites/segmented_menu', site: self)
-  end
-
   def realtime_stats_active?
     @realtime_stats_active ||= self.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
   end

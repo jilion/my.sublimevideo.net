@@ -37,10 +37,13 @@ MySublimeVideo.UI.prepareSiteSelector = ->
     new MySublimeVideo.UI.SiteSelector(select: $select)
 
 MySublimeVideo.UI.prepareSiteActionsSelector = ->
-  $('a.quick_access, a.site_select').each ->
+  $('a.show_button, a.site_select').each ->
     $handler = $(this)
     $handler.on 'click', ->
-      $handler.siblings('ul.actions').toggle()
+      $actionList = $handler.siblings('ul.actions')
+      $('ul.actions').each ->
+        $(this).hide() unless $(this)[0] is $actionList[0]
+      $actionList.toggle()
       false
 
 MySublimeVideo.UI.prepareLoaderCodePopups = ->

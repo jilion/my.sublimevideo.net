@@ -1,5 +1,5 @@
-%ul
+%ul#kits_wrap
   = render @kits, site: site
   %li.add_kit{ class: @kits.size.even? ? 'left' : 'right' }
-    = link_to new_site_kit_path(site) do
+    = link_to new_site_kit_path(site), class: 'add' do
       %span= 'New Player'

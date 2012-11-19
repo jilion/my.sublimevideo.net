@@ -27,12 +27,12 @@ class PusherWrapper
 
   def self.trigger(channel_name, event_name, data)
     if $redis.sismember("pusher:channels", channel_name)
-      Pusher[channel_name].trigger!(event_name, data)
+      Pusher.trigger(channel_name, event_name, data)
       true
     else
       false
     end
-  rescue Pusher::Error, Pusher::HTTPError
+  rescue Pusher::Error
     false
   end
 

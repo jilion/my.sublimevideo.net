@@ -1,8 +1,10 @@
 - kit = exhibit(kit)
-%li[kit]{ class: ['kit', cycle('left', 'right')], data: { settings: kit.settings.to_json } }
+%li[kit]{ class: 'kit', data: { settings: kit.settings.to_json } }
   = kit.render_name_as_link(self, site)
-  %div{ id: "preview_kit_#{kit.id}" }
-  = link_to 'Edit', [:edit, site, kit], class: 'edit_kit'
-  - unless kit.default?
-    = form_for [:set_as_default, site, kit], style: 'display:inline' do |f|
-      .actions= f.submit 'Set as default', class: 'submit blue_button'
+  %div.preview{ id: "preview_kit_#{kit.id}" }
+  .action_links
+    = link_to 'Edit', [:edit, site, kit], class: 'edit_kit'
+    - unless kit.default?
+      |
+      = form_for [:set_as_default, site, kit], style: 'display:inline' do |f|
+        = f.submit 'Set as default', class: 'button_link'

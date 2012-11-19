@@ -2,13 +2,10 @@ class SiteStatsController < ApplicationController
   skip_before_filter :authenticate_user!, if: :demo_site?
   before_filter :redirect_suspended_user, :find_site_by_token!
   before_filter :redirect_user_without_stats_addon, unless: :demo_site?
+  before_filter :find_sites_or_redirect_to_new_site, only: [:index], unless: :demo_site?
 
   # GET /sites/:site_id/stats
   def index
-    unless demo_site?
-      @sites = current_user.sites.not_archived.order(:hostname, :token)
-    end
-
     respond_to do |format|
       format.html
       format.json {

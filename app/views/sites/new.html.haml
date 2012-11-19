@@ -1,18 +1,52 @@
 - title("Add a site")
+= content_header("Setup Assistant")
 
 #site.new
+  #step_guide
+    .step.s1.completed
+      .circle
+        %span 1
+      %h4 Add site
+    .step.s2.completed
+      .circle
+        %span 2
+      %h4 Choose add-ons
+      .line
+    .step.s3.active
+      .circle
+        %span 3
+      %h4 Create Player
+      .line
+    .step.s4
+      .circle
+        %span 4
+      %h4 Publish a video
+      .line
+    .step.s5
+      .circle
+        %span 5
+      %h4 Summary
+      .line
+    .spacer
+  .big_break
   = form_for @site, html: { class: "full" } do |f|
-    .tagline
-      %h3 Start using SublimeVideo Player for free.
-      -#%h4= "All add-ons come with a #{BusinessModel.days_for_trial}-day unlimited trial. No credit card required."
-      -#%h4= "Get all the features. No credit card required."
-      %h4= "#{BusinessModel.days_for_trial}-day unlimited trial on all add-ons. No credit card required."
-    .big_break
-
-    .tagline
-      %h3 Site
-      %h4 On which site do you need a SublimeVideo player?
+    
+    -# .next_box
+    -#   = link_to "Exit Assistant", "", class: "exit hl"
+    -#   %button.btn
+    -#     %span.arrow Next
+    -#   -# It should work with link_to too!
+    
+    %h3.assistant_title On which site do you need a SublimeVideo player?
     = render 'fields', site: @site, f: f
+    .next_box
+      = link_to "Exit Assistant", "", class: "exit hl"
+      %button.btn
+        %span.arrow Next
+      -# It should work with link_to too!
+      .spacer
+      -# Remove this spacer when putting it at top
+    
 
-    .actions.center
-      = f.submit 'Add site', class: 'submit green_button', id: 'site_submit'
+    -# .actions.center
+    -#   = f.submit 'Add site', class: 'submit green_button', id: 'site_submit'

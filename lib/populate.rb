@@ -865,7 +865,7 @@ module Populate
             json = {}
             json[:h] = true if now.change(sec: 0, usec: 0) == now.change(min: 0, sec: 0, usec: 0)
             json[:d] = true if now.change(min: 0, sec: 0, usec: 0) == now.change(hour: 0, min: 0, sec: 0, usec: 0)
-            Pusher["stats"].trigger('tick', json)
+            Pusher.trigger('stats', 'tick', json)
 
             puts "Site(s) stats updated at #{now.change(sec: 0, usec: 0)}"
             sleep 50
@@ -879,11 +879,11 @@ module Populate
             second = Time.now.change(usec: 0).to_time
             site = sites.order(:hostname).first()
             json = { "pv" => 1, "bp" => { "saf-osx" => 1 } }
-            Pusher["private-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+            Pusher.trigger_async("private-#{site.token}", 'stats', json.merge('id' => second.to_i))
             json = { "md" => { "f" => { "d" => 1 }, "h" => { "d" => 1 } } }
-            Pusher["private-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+            Pusher.trigger_async("private-#{site.token}", 'stats', json.merge('id' => second.to_i))
             json = { "vv" => 1 }
-            Pusher["private-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+            Pusher.trigger_async("private-#{site.token}", 'stats', json.merge('id' => second.to_i))
           end
         end
       end
@@ -915,7 +915,7 @@ module Populate
                       { id: second.to_i, u: "video#{video_i}", n: "Video #{video_i}", vv: hits }
                     ]
                   }
-                  Pusher["private-#{site.token}"].trigger_async('stats', json)
+                  Pusher.trigger_async("private-#{site.token}", 'stats', json)
                 end
               end
               puts "Stats updated at #{second}"

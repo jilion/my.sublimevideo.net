@@ -1,16 +1,10 @@
 - site = exhibit(site)
 %tr{ id: dom_id(site), data: { "site-token" => site.token }, class: cycle("", "alt") }
-  = site.render_hostname_row(self)
+  = render 'sites/td_hostname', site: site
+  = render 'sites/td_usage', site: site
+  = render 'sites/td_videos', site: site
 
-  %td.usage
-    .wrap= site.render_usage_row_content(self)
-
-  = site.render_videos_row(self)
-
-  %td.code
-    .wrap= link_to 'Publish video', new_site_video_code_path(site), class: 'embed_code'
-
-  %td.code.status{ data: { 'cdn-updated-at' => cdn_updated_at(site) } }
+  %td.status{ data: { 'cdn-updated-at' => cdn_updated_at(site) } }
     .wrap
       - if site.billable_views.zero? && site.video_tags.count.zero?
         - last_visited_page = rand > 0.5 ? :player : :addons
@@ -18,8 +12,9 @@
 
         - if last_visited_page == :addons
           - current_step = 3
-        = link_to 'Finish setup', '', class: 'embed_code'
-        = "step #{current_step} of 5"
+        .finish
+          = link_to 'Finish setup', '', class: 'finish_button'
+          %span.steps= "step #{current_step} of 5"
       - else
         - if site.invoices_failed?
           = tooltip_box href: site_invoices_path(site), class: "payment_issue" do
