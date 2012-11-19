@@ -18,7 +18,7 @@ class VideoTag < ActiveRecord::Base
   # scope :hosted_on_sublimevideo, where({}) # TODO Thibaud
   # scope :not_hosted_on_sublimevideo, where({}) # TODO Thibaud
   # scope :inactive, where(state: 'inactive')
-  scope :active, -> { where{(uid_origin != nil) & (name_origin != nil)} }
+  scope :active, -> { where{ (uid_origin != nil) & (name_origin != nil)} }
   # scope :all, where({}) # TODO Thibaud
 
   # sort

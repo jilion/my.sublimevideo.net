@@ -44,12 +44,12 @@ feature "Deal activation" do
 
       User.last.update_column(:newsletter, true)
 
-      current_url.should eq "http://my.sublimevideo.dev/sites/new"
+      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
       get_me_the_cookie("d")[:value].should eq 'rts3'
 
       expect { visit '/sites' }.to change(DealActivation, :count).by(1)
 
-      current_url.should eq "http://my.sublimevideo.dev/sites/new"
+      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
       get_me_the_cookies.map { |c| c['name'] }.should_not include("d")
     end
   end

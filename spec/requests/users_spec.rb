@@ -90,7 +90,7 @@ feature 'Sign Up' do
     user.name.should be_nil
     user.email.should eq 'user@example.org'
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/new"
+    current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
     get_me_the_cookie("l")[:value].should eq '1'
     page.should have_content I18n.t("devise.users.signed_up")
     page.should have_content user.email
@@ -111,7 +111,7 @@ feature 'Sign Up' do
     new_user.name.should be_nil
     new_user.email.should eq archived_user.email
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/new"
+    current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
     get_me_the_cookie("l")[:value].should eq '1'
     page.should have_content I18n.t("devise.users.signed_up")
     page.should have_content archived_user.email
@@ -159,7 +159,7 @@ feature 'Email update' do
       go 'my', "confirmation?confirmation_token=#{User.last.confirmation_token}"
 
       User.last.email.should eq "new@jilion.com"
-      current_url.should eq "http://my.sublimevideo.dev/sites/new" # redirected from /sites
+      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site" # redirected from /sites
     end
   end
 end
@@ -362,7 +362,7 @@ feature 'Session management' do
 
     click_button "Log In"
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/new"
+    current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
   end
 
   scenario "logout" do
@@ -394,7 +394,7 @@ feature 'Confirmation' do
     fill_in "user_confirmation_comment", with: "I love this player!"
     click_button "Continue"
 
-    current_url.should eq "http://my.sublimevideo.dev/sites/new"
+    current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
     get_me_the_cookie("l")[:value].should eq '1'
     page.should have_content "John Doe"
   end

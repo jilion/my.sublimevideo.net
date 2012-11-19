@@ -14,15 +14,15 @@ feature 'Redirects' do
       sign_in_as :user
     end
 
-    scenario 'redirect / to /sites/new' do
+    scenario 'redirect / to /assistant/new-site' do
       go 'my', ''
 
-      current_url.should eq 'http://my.sublimevideo.dev/sites/new'
+      current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
     end
-    scenario 'redirect /video-code-generator to /sites/new' do
+    scenario 'redirect /video-code-generator to /assistant/new-site' do
       go 'my', 'video-code-generator'
 
-      current_url.should eq 'http://my.sublimevideo.dev/sites/new'
+      current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
     end
 
     scenario 'redirect /account/edit to /account' do

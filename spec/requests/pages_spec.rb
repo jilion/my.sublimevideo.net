@@ -111,7 +111,7 @@ feature "Suspended page" do
       scenario "/suspended" do
         go 'my', 'suspended'
 
-        current_url.should eq "http://my.sublimevideo.dev/sites/new"
+        current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
         page.should have_no_content 'Your account is suspended'
       end
     end

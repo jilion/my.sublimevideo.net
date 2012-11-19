@@ -24,7 +24,7 @@ module Service
     end
 
     def update_last_30_days_video_tags_counters
-      site.update_column(:last_30_days_video_tags, VideoTag.last_30_days_updated_count(site.token))
+      site.update_column(:last_30_days_video_tags, site.video_tags.last_30_days_active.count)
 
       self
     end

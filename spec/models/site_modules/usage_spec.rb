@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SiteModules::Usage, :addons do
+describe SiteModules::Usage do
 
   describe '#billable_usages' do
     before do

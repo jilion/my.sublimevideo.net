@@ -63,9 +63,9 @@ describe Service::Usage do
     let(:site) { create(:site) }
 
     it 'updates site video tags counter from the last 30 days' do
-      create(:video_tag, st: site.token)
-      create(:video_tag, st: site.token)
-      create(:video_tag, st: site.token, updated_at: 31.days.ago.midnight)
+      create(:video_tag, site: site)
+      create(:video_tag, site: site)
+      create(:video_tag, site: site, updated_at: 31.days.ago.midnight)
 
       described_class.new(site).update_last_30_days_video_tags_counters
 

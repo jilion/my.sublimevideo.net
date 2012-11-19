@@ -17,7 +17,7 @@ feature "Newsletter subscription" do
 
       click_button 'Log In'
 
-      current_url.should eq 'http://my.sublimevideo.dev/sites/new'
+      current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
 
       page.should have_content I18n.t('flash.newsletter.subscribe')
     end

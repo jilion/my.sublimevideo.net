@@ -12,7 +12,7 @@ feature 'Feedback' do
     fill_in 'user_current_password', with: '123456'
     expect { click_button 'Submit my feedback' }.to change(Feedback, :count).by(1)
 
-    current_url.should eq 'http://my.sublimevideo.dev/sites/new'
+    current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
 
     @current_user.reload.should_not be_archived
     feedback = Feedback.last

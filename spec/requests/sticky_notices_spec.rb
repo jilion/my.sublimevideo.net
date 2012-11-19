@@ -48,7 +48,7 @@ feature "Sticky notices" do
     context "user is not billable" do
       scenario "doesn't show a notice" do
         @current_user.should_not be_billable
-        current_url.should eq "http://my.sublimevideo.dev/sites/new"
+        current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
       end
     end
 
@@ -81,7 +81,7 @@ feature "Sticky notices" do
       scenario "doesn't show a notice" do
         @current_user.should_not be_billable
 
-        current_url.should eq "http://my.sublimevideo.dev/sites/new"
+        current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
         page.should have_no_content I18n.t("user.billing_address.incomplete")
       end
     end
