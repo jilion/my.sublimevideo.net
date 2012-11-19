@@ -1,6 +1,7 @@
 /*
 *= require 'sites'
 *= require 'kits'
+*= require 'addons'
 *= require 'video_tags'
 *= require 'plans'
 *= require 'stats'
@@ -1165,6 +1166,22 @@ section.oauth section.text {
 
 section.oauth .entry.update .blue_button {
   margin-right:15px;
+}
+
+.footnotes {
+  border-top:1px solid #7183a0;
+  font-size:14px;
+  line-height:17px;
+  padding:10px 0 30px;
+  @include box-shadow(inset rgba(255,255,255,0.2) 0 1px 0);
+}
+
+.footnotes ol {
+  padding:0 10px 0 20px;
+}
+
+.footnotes ol li {
+  padding:3px 0;
 }
 
 /* ============== */

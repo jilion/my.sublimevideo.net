@@ -23,7 +23,7 @@ module BillableItemsHelper
     if billable_item.price.zero?
       'free'
     elsif billable_item.beta?
-      "free during beta #{content_tag(:s, display_amount_with_sup(billable_item.price))}".html_safe
+      "<em>free during beta</em> #{content_tag(:s, display_amount_with_sup(billable_item.price))}".html_safe
     else
       display_amount_with_sup(billable_item.price)
     end

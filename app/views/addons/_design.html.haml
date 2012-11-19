@@ -6,5 +6,5 @@
       = label_tag "app_designs[#{app_design.name}]" do
         = t("app_designs.#{app_design.name}")
         = beta_loader_required_notice(app_design)
-  %td
-  %td= billable_item_price(app_design)
+  %td.trial_notice
+  %td.price= billable_item_price(app_design)

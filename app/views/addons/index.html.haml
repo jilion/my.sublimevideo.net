@@ -1,6 +1,7 @@
 - title("Add-ons for #{hostname_or_token(@site)}")
 = render 'layouts/site_header'
 
+.big_break
 #addons.assistant
   #addons_table_wrap
     = form_for @site, url: update_all_site_addons_path, method: 'put', html: { id: 'edit_addons' } do |f|
