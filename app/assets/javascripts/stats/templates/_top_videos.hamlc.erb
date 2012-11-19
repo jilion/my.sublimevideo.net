@@ -27,21 +27,21 @@
                 %script{ type: "text/javascript" }
                   $("##{video.cid}-crop").prepend($("##{video.cid}-cache").clone());
               - else
-                - if video.get('p')?
+                - if video.get('poster_url')?
                   %script{ type: "text/javascript" }
-                    new SublimeVideo.Media.ImagePreloader("#{video.sslPosterframe()}", SublimeVideo.cropPosterframe, { "imgId": "#{video.cid}" });
+                    new SublimeVideo.Media.ImagePreloader("#{video.sslPosterUrl()}", SublimeVideo.cropPosterframe, { "imgId": "#{video.cid}" });
               .right
                 %h4{ title: video.name() }= video.name(22)
-                - if video.get('uo') == 's' || video.get('no') == 's'
+                - if video.isUidGetFromSource() || video.isNameGetFromSource()
                   %span.tooltip.warning
                     %span.icon
                     %span.content
                       %span.arrow
                       %span.p
                         Your video
-                        - if video.get('uo') == 's' && video.get('no') == 's'
+                        - if video.isUidGetFromSource() && video.isNameGetFromSource()
                           uid & name aren't
-                        - else if video.get('uo') == 's'
+                        - else if video.isUidGetFromSource()
                           uid isn't
                         - else
                           name isn't

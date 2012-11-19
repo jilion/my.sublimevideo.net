@@ -18,7 +18,7 @@ class MSVStats.Views.ExportView extends Backbone.View
     if confirm("Once the CSV export is ready, you'll receive an email with a link to download it.")
       $.post '/stats/exports',
         stats_export:
-          st: MSVStats.site.get('token')
+          site_token: MSVStats.site.get('token')
           from: @options.period.startTime() / 1000
           to: @options.period.endTime() / 1000
       $(@el).find('button').attr('disabled', 'disabled')

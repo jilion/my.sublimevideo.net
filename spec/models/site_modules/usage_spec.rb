@@ -17,8 +17,8 @@ describe SiteModules::Usage do
     end
 
     it 'calls #update_last_30_days_video_tags_counters on each non-archived sites' do
-      create(:video_tag, st: active_site.token)
-      create(:video_tag, st: archived_site.token)
+      create(:video_tag, site: active_site)
+      create(:video_tag, site: archived_site)
 
       Timecop.travel(1.week.from_now) do
         Site.update_last_30_days_counters_for_not_archived_sites
@@ -50,9 +50,9 @@ describe SiteModules::Usage do
 
   describe '#update_last_30_days_video_tags_counters' do
     it 'updates site video tags counter from the last 30 days' do
-      create(:video_tag, st: active_site.token)
-      create(:video_tag, st: active_site.token)
-      create(:video_tag, st: active_site.token, updated_at: 31.days.ago.midnight)
+      create(:video_tag, site: active_site)
+      create(:video_tag, site: active_site)
+      create(:video_tag, site: active_site, updated_at: 31.days.ago.midnight)
 
       active_site.update_last_30_days_video_tags_counters
       active_site.reload.last_30_days_video_tags.should eq 2

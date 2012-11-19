@@ -41,6 +41,7 @@ describe Site, :plans do
 
     it { should belong_to(:user).validate(true) }
     it { should belong_to :plan }
+    it { should have_many :video_tags }
     it { should have_many :invoices }
 
     describe "last_invoice" do

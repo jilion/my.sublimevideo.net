@@ -3,20 +3,20 @@ class StatsExport
   include Mongoid::Timestamps
 
   field :_id, default: -> { unique_token }
-  field :st
+  field :st, as: :site_token
   field :from, type: DateTime
   field :to,   type: DateTime
 
-  index st: 1
+  index site_token: 1
 
   mount_uploader :file, StatsExportUploader
 
-  attr_accessible :st, :from, :to, :file
+  attr_accessible :site_token, :from, :to, :file
 
-  validates :st, :from, :to, :file, presence: true
+  validates :site_token, :from, :to, :file, presence: true
 
   def site
-    Site.find_by_token(st)
+    Site.where(token: site_token).first
   end
 
   def site_hostname

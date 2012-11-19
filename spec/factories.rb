@@ -268,9 +268,6 @@ FactoryGirl.define do
   end
 
   factory :video_tag do
-  end
-
-  factory :new_video_tag do
     site
     sequence(:uid)  { |n| "video_uid_#{n}" }
     uid_origin      'attribute'

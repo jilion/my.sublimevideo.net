@@ -4,14 +4,14 @@ feature 'StatsExport' do
   background do
     sign_in_as :user
     @site = create(:site, user: @current_user, plan_id: @paid_plan.id)
-    @video_tag = create(:video_tag, st: @site.token, u: 'video_uid', uo: 'a', n: 'My Video', no: 'a')
+    @video_tag = create(:video_tag, site: @site, uid: 'video_uid', name: 'My Video')
     create(:site_day_stat, t: @site.token, d: 3.days.ago.midnight.to_i,
       pv: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
     create(:site_day_stat, t: @site.token, d: 5.days.ago.midnight.to_i,
       pv: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
-    create(:video_day_stat, st: @site.token, u: @video_tag.u, d: 3.days.ago.midnight.to_i,
+    create(:video_day_stat, st: @site.token, u: @video_tag.uid, d: 3.days.ago.midnight.to_i,
       vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
-    create(:video_day_stat, st: @site.token, u: @video_tag.u, d: 5.days.ago.midnight.to_i,
+    create(:video_day_stat, st: @site.token, u: @video_tag.uid, d: 5.days.ago.midnight.to_i,
       vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
     Delayed::Job.delete_all
     clear_emails

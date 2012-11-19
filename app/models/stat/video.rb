@@ -48,12 +48,12 @@ module Stat::Video
   #
   # @return [Hash] with an array of video hash with video tag meta_data and period 'vl' & 'vv' totals + vv period array, the total amount of videos viewed or loaded during the period and the start_time of the period
   #
-  def self.top_videos(site_token, options = {})
+  def self.top_videos(site, options = {})
     options[:from], options[:to] = options[:from].to_i, options[:to].to_i
     options    = options.symbolize_keys.reverse_merge(period: 'days', sort_by: 'vv', limit: 5)
-    conditions = { st: site_token, d: { :$gte => Time.at(options[:from]), :$lte => Time.at(options[:to]) } }
+    conditions = { st: site.token, d: { :$gte => Time.at(options[:from]), :$lte => Time.at(options[:to]) } }
     video_uids, total = top_video_uids(conditions, options)
-    videos            = videos_with_tags_meta_data(site_token, video_uids)
+    videos            = videos_with_tags_data(site, video_uids)
     add_video_stats_data!(videos, video_uids, conditions, options)
     # Resort with real sum data
     videos.sort_by! { |video| video["#{options[:sort_by]}_sum"] }.reverse!
@@ -112,12 +112,12 @@ private
     [videos.map { |v| v["u"] }, total]
   end
 
-  def self.videos_with_tags_meta_data(site_token, video_uids)
-    video_tags = VideoTag.where(st: site_token, u: { :$in => video_uids }).entries
+  def self.videos_with_tags_data(site, video_uids)
+    video_tags = site.video_tags.where(uid: video_uids).all
     video_uids.map do |video_uid|
-      # replace u per id for Backbone
-      if video_tag = video_tags.detect { |v| v.u == video_uid }
-        { id: video_uid }.merge(video_tag.meta_data)
+      # replace uid per id for Backbone
+      if video_tag = video_tags.detect { |v| v.uid == video_uid }
+        { id: video_uid }.merge(video_tag.data)
       else
         { id: video_uid }
       end

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Stat::Video do
 
   describe ".top_videos" do
+    let(:site) { create(:site) }
 
     context "last 24 hours" do
       let(:from) { 24.hour.ago.utc.change(min: 0).to_i.to_s }
@@ -10,10 +11,10 @@ describe Stat::Video do
 
       before do
         6.times do |video_i|
-          create(:video_tag, st: 'site1234', u: "video#{video_i}", n: "Video #{video_i}", no: 'a')
+          create(:video_tag, site: site, uid: "video#{video_i}", name: "Video #{video_i}")
           24.times do |hour_i|
             next if hour_i%2 == 0
-            create(:video_hour_stat, st: 'site1234', u: "video#{video_i}", d: (hour_i + 1).hours.ago.utc.change(min: 0),
+            create(:video_hour_stat, st: site.token, u: "video#{video_i}", d: (hour_i + 1).hours.ago.utc.change(min: 0),
               vvc: 2 * (video_i + hour_i),
               vlc: 2 * (video_i * hour_i)
             )
@@ -21,18 +22,18 @@ describe Stat::Video do
         end
       end
 
-      specify { Stat::Video.top_videos('site1234', period: 'hours', from: from, to: to, count: 5)[:videos].should have(5).items }
-      specify { Stat::Video.top_videos('site1234', period: 'hours', from: from, to: to, count: 5)[:total].should eq 6 }
-      specify { Stat::Video.top_videos('site1234', period: 'hours', from: from, to: to, count: 5)[:from].should eq from.to_i }
+      specify { Stat::Video.top_videos(site, period: 'hours', from: from, to: to, count: 5)[:videos].should have(5).items }
+      specify { Stat::Video.top_videos(site, period: 'hours', from: from, to: to, count: 5)[:total].should eq 6 }
+      specify { Stat::Video.top_videos(site, period: 'hours', from: from, to: to, count: 5)[:from].should eq from.to_i }
 
       it "adds video_tag meta data" do
-        video = Stat::Video.top_videos('site1234', period: 'hours', from: from, to: to, count: 5)[:videos].first
-        video["n"].should eql "Video 5"
-        video["no"].should eql "a"
+        video = Stat::Video.top_videos(site, period: 'hours', from: from, to: to, count: 5)[:videos].first
+        video["name"].should eql "Video 5"
+        video["name_origin"].should eql "attribute"
       end
 
       it "replaces vv_hash by vv_array" do
-        video = Stat::Video.top_videos('site1234', period: 'hours', from: from, to: to, count: 5)[:videos].first
+        video = Stat::Video.top_videos(site, period: 'hours', from: from, to: to, count: 5)[:videos].first
         video["vv_array"].should eql([56, 0, 52, 0, 48, 0, 44, 0, 40, 0, 36, 0, 32, 0, 28, 0, 24, 0, 20, 0, 16, 0, 12, 0])
         video["vv_array"].should have(24).items
         video["vv_hash"].should be_nil
@@ -49,10 +50,10 @@ describe Stat::Video do
 
       before do
         6.times do |video_i|
-          create(:video_tag, st: 'site1234', u: "video#{video_i}", n: "Video #{video_i}", no: 'a')
-          62.times do |second_i|
+          create(:video_tag, site: site, uid: "video#{video_i}")
+          64.times do |second_i|
             next if second_i%2 == 0
-            create(:video_second_stat, st: 'site1234', u: "video#{video_i}", d: (second_i).seconds.ago.utc.change(usec: 0),
+            create(:video_second_stat, st: site.token, u: "video#{video_i}", d: (second_i).seconds.ago.utc.change(usec: 0),
               vvc: 2 * (video_i + second_i),
               vlc: 2 * (video_i * second_i)
             )
@@ -60,12 +61,12 @@ describe Stat::Video do
         end
       end
 
-      specify { Stat::Video.top_videos('site1234', period: 'seconds', from: from, to: to, count: 1)[:videos].should have(6).items }
-      specify { Stat::Video.top_videos('site1234', period: 'seconds', from: from, to: to, count: 5)[:total].should eq 6 }
-      specify { Stat::Video.top_videos('site1234', period: 'seconds', from: from, to: to, count: 5)[:from].should eq from.to_i }
+      specify { Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 1)[:videos].should have(6).items }
+      specify { Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:total].should eq 6 }
+      specify { Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:from].should eq from.to_i }
 
       it "replaces vv_hash by vv_array and vl_hash by vl_hash" do
-        videos = Stat::Video.top_videos('site1234', period: 'seconds', from: from, to: to, count: 5)[:videos].sort_by! { |video| video["n"] }.reverse
+        videos = Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:videos].sort_by! { |video| video["name"] }.reverse
         video  = videos.first
         video["vv_sum"].should eq(2220)
         video["vv_array"].should be_nil

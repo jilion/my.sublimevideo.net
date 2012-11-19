@@ -4,16 +4,16 @@ require File.expand_path('app/helpers/video_tags_helper')
 
 describe VideoTagsHelper do
   let(:video_tag) { mock('VideoTag',
-    st: 'site-token',
-    u:  'uid-token',
-    n:  'My Video',
-    poster: 'http://media.jilion.com/vcg/ms_800.jpg',
-    sources: [
-      { 'u' => 'http://media.jilion.com/vcg/ms_360p.mp4',  'q' => 'base', 'f' => 'mp4' },
-      { 'u' => 'http://media.jilion.com/vcg/ms_720p.mp4',  'q' => 'hd',   'f' => 'mp4' },
-      { 'u' => 'http://media.jilion.com/vcg/ms_360p.webm', 'q' => 'base', 'f' => 'webm' },
-      { 'u' => 'http://media.jilion.com/vcg/ms_720p.webm', 'q' => 'hd',   'f' => 'webm' }
-    ]
+    uid:  'uid-token',
+    name: 'My Video',
+    poster_url: 'http://media.jilion.com/vcg/ms_800.jpg',
+    current_sources: %w[base_mp4_crc32 hd_mp4_crc32 base_webm_crc32 hd_webm_crc32],
+    sources: {
+      'base_mp4_crc32'  => { 'url' => 'http://media.jilion.com/vcg/ms_360p.mp4',  'quality' => 'base', 'family' => 'mp4' },
+      'hd_mp4_crc32'    => { 'url' => 'http://media.jilion.com/vcg/ms_720p.mp4',  'quality' => 'hd',   'family' => 'mp4' },
+      'base_webm_crc32' => { 'url' => 'http://media.jilion.com/vcg/ms_360p.webm', 'quality' => 'base', 'family' => 'webm' },
+      'hd_webm_crc32'   => { 'url' => 'http://media.jilion.com/vcg/ms_720p.webm', 'quality' => 'hd',   'family' => 'webm' }
+    }
   )}
 
   module Helper

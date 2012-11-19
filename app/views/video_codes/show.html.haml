@@ -1,11 +1,11 @@
-- title("Generate Video Code for #{@video_tag.n}")
+- title("Generate Video Code for #{@video_tag.name}")
 = render '/layouts/site_header', sites_select: false
 
 .wrap
   .duration
-    %small= duration_string(@video_tag.d)
+    %small= duration_string(@video_tag.duration)
   .thumbnail= playable_lightbox(@video_tag, size: '96x54')
-  %h3.name= @video_tag.n
+  %h3.name= @video_tag.name
   %p= link_to hostname_or_token(@site), site_video_tags_path(@site)
 
 .spacer
