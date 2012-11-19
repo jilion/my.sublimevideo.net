@@ -1,13 +1,13 @@
 class MSVStats.Models.Video extends Backbone.Model
   # id = video uid
   defaults:
-    uo: null
-    n: null
-    no: null
-    p: null
-    z: null
-    cs: []
-    s: {}
+    uid_origin: null
+    name: null
+    name_origin: null
+    poster_url: null
+    size: null
+    current_sources: []
+    sources: {}
     vl_sum: null # main + extra
     vv_sum: null # main + extra
     vl_array: []
@@ -17,50 +17,53 @@ class MSVStats.Models.Video extends Backbone.Model
 
   initialize: ->
     @addTime = MSVStats.period.endTime() + (2 * 1000)
-    this.fetchMetaData() unless this.metaDataPresent()
+    this.fetchData() unless this.dataPresent()
 
-  metaDataPresent: -> this.get('uo')?
+  dataPresent: -> this.get('uid_origin')?
 
-  fetchMetaData: =>
-    $.get this.metaDataUrl(), (data) =>
+  fetchData: =>
+    $.get this.dataUrl(), (data) =>
       this.set(data, silent: true) if data?
 
-  metaDataUrl: =>
+  dataUrl: =>
     "/sites/#{MSVStats.site.get('token')}/video_tags/#{this.id}.json"
 
   currentSources: ->
     sources = []
-    for s in this.get('cs')
-      if this.get('s')[s]?
-        sources.push this.get('s')[s]
+    for current_source in this.get('current_sources')
+      if this.get('sources')[current_source]?
+        sources.push this.get('sources')[current_source]
     sources
 
   width: ->
-    if (z = this.get('z'))?
-      parseInt(z.split('x')[0])
+    if (size = this.get('size'))?
+      parseInt(size.split('x')[0])
     else
       480
 
   height: ->
-    if (z = this.get('z'))?
-      parseInt(z.split('x')[1])
+    if (size = this.get('size'))?
+      parseInt(size.split('x')[1])
     else
       360
 
   isSecond: -> !this.get("vl_sum")?
 
-  sslPosterframe: ->
-    if this.get('p').match(/^https/)
-      this.get('p')
+  isUidGetFromSource: -> this.get('uid_origin') == 'source'
+  isNameGetFromSource: -> this.get('name_origin') == 'source'
+
+  sslPosterUrl: ->
+    if this.get('poster_url').match(/^https/)
+      this.get('poster_url')
     else
-      "https://data.sublimevideo.net/proxy?u=#{encodeURIComponent(this.get('p'))}"
+      "https://data.sublimevideo.net/proxy?u=#{encodeURIComponent(this.get('poster_url'))}"
 
   name: (length = null) ->
-    if this.get('n')?
-      if length? && this.get('n').length > length
-        this.get('n').substring(0, length) + '...'
+    if this.get('name')?
+      if length? && this.get('name').length > length
+        this.get('name').substring(0, length) + '...'
       else
-        this.get('n')
+        this.get('name')
     else
       '–'
 

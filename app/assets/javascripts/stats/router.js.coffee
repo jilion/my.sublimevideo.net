@@ -134,9 +134,9 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
         MSVStats.statsSeconds.merge(data.site, silent: true)
         MSVStats.videos.merge(data.videos, silent: true) if MSVStats.period.isSeconds()
 
-      MSVStats.privateChannel.bind 'video_tag', (data) ->
-        if (video = MSVStats.videos.get(data.u))?
-          video.set(data.meta_data)
+      MSVStats.privateChannel.bind 'video_tag', (video_tag) ->
+        if (video = MSVStats.videos.get(video_tag.uid))?
+          video.set(video_tag)
 
   unsubscribePusherPrivateSiteChannel: ->
     MSVStats.pusher.unsubscribe("private-#{MSVStats.site.realToken()}")

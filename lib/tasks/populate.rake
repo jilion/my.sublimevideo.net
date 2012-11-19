@@ -547,7 +547,7 @@ end
 def create_stats(site_token = nil)
   sites = site_token ? [Site.find_by_token(site_token)] : Site.all
   sites.each do |site|
-    VideoTag.where(st: site.token).delete_all
+    site.video_tags.delete_all
     Stat::Site::Day.where(t: site.token).delete_all
     Stat::Site::Hour.where(t: site.token).delete_all
     Stat::Site::Minute.where(t: site.token).delete_all
@@ -559,14 +559,14 @@ def create_stats(site_token = nil)
     videos_count = 20
     # Video Tags
     videos_count.times do |video_i|
-      VideoTag.create(st: site.token, u: "video#{video_i}",
-        uo: "s",
-        n: "Video #{video_i} long name test truncate",
-        no: "s",
-        cs: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
-        p: "http#{'s' if video_i.even?}://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
-        z: "544x306",
-        s: {
+      VideoTag.create(site_id: site.id, uid: "video#{video_i}",
+        uid_origin: "source",
+        name: "Video #{video_i} long name test truncate",
+        name_origin: "s",
+        current_sources: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
+        poster_url: "http#{'s' if video_i.even?}://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
+        size: "544x306",
+        sources: {
           "83cb4c27" => { u: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4", q: "base", f: "mp4" },
           "83cb4c57" => { u: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", q: "hd", f: "mp4" },
           "af355ec8" => { u: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm", q: "base", f: "webm" },
@@ -844,21 +844,21 @@ def create_video_tags(site_token)
   (100 + rand(200)).times do
     time = rand(3000).hours.ago
     VideoTag.create(
-      st: site.token,
-      u: generate_unique_token,
-      uo: %w[a s].sample,
-      n: Faker::Product.product,
-      no: %w[a s].sample,
-      p: 'http://media.jilion.com/vcg/ms_800.jpg',
-      z: '400x320',
-      cs: %w[5ABAC533 2ABFEFDA 97230509 4E855AFF],
-      s: {
+      site_id: site.id,
+      uid: generate_unique_token,
+      uid_origin: %w[a s].sample,
+      name: Faker::Product.product,
+      name_origin: %w[a s].sample,
+      poster_url: 'http://media.jilion.com/vcg/ms_800.jpg',
+      size: '400x320',
+      current_sources: %w[5ABAC533 2ABFEFDA 97230509 4E855AFF],
+      sources: {
         '5ABAC533' => { u: 'http://media.jilion.com/vcg/ms_360p.mp4', q: 'base', f: 'mp4' },
         '2ABFEFDA' => { u: 'http://media.jilion.com/vcg/ms_720p.mp4', q: 'hd', f: 'mp4' },
         '97230509' => { u: 'http://media.jilion.com/vcg/ms_360p.webm', q: 'base', f: 'webm' },
         '4E855AFF' => { u: 'http://media.jilion.com/vcg/ms_720p.webm', q: 'hd', f: 'webm' }
       },
-      d: (15 * 1000) + rand(2 * 60 * 60 * 1000),
+      duration: (15 * 1000) + rand(2 * 60 * 60 * 1000),
       created_at: time,
       updated_at: time
     )

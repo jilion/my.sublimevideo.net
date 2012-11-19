@@ -16,7 +16,7 @@ class StatsExportsController < ApplicationController
 
   # POST /stats/exports
   def create
-    site_token, from, to = params[:stats_export].slice(:st, :from, :to).values
+    site_token, from, to = params[:stats_export].slice(:site_token, :from, :to).values
 
     if current_user.sites.where(token: site_token).exists?
       stats_exporter = StatsExporter.new(site_token, from.to_i, to.to_i)

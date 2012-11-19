@@ -1,5 +1,5 @@
 %a.sublime{ href: "" }
-%video.lightbox{ id: "playable_video_#{@video.cid}", 'data-uid' => "#{@video.cid}", 'data-name' => "#{@video.get('n')}", style: "display:none", width: "#{@video.width()}", height: "#{@video.height()}", poster: "#{@video.get('p')}", preload: "none" }
+%video.lightbox{ id: "playable_video_#{@video.cid}", 'data-uid' => "#{@video.cid}", 'data-name' => "#{@video.get('name')}", style: "display:none", width: "#{@video.width()}", height: "#{@video.height()}", poster: "#{@video.sslPosterUrl()}", preload: "none" }
   - for source in @video.currentSources()
     - if source.q != 'base'
       %source{ src: "#{source.u}", 'data-quality' => "#{source.q}" }

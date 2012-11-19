@@ -38,10 +38,10 @@ class VideoTagsController < ApplicationController
 
   # GET /sites/:site_id/video_tags/:id
   def show
-    @video_tag = VideoTag.where(st: @site.token, u: params[:id]).first
+    @video_tag = @site.video_tags.where(uid: params[:id]).first
 
     respond_with(@video_tag) do |format|
-      format.json { render json: @video_tag.try(:meta_data) }
+      format.json { render json: @video_tag.try(:data) }
     end
   end
 

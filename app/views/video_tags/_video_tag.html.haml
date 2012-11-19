@@ -1,9 +1,9 @@
-%tr{ id: dom_id(video_tag), data: { "video-tag-uid" => video_tag.u }, class: cycle("", "alt") }
+%tr{ id: dom_id(video_tag), data: { "video-tag-uid" => video_tag.uid }, class: cycle("", "alt") }
   %td.video_tag
     .wrap
-      .duration= duration_string(video_tag.d)
+      .duration= duration_string(video_tag.duration)
       .thumbnail= playable_lightbox(video_tag, size: '96x54')
-      .name= video_tag.n
+      .name= video_tag.name
   %td.usage
     .wrap
       -#- if site.plan_id?

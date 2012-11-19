@@ -17,7 +17,7 @@ module SiteModules::Usage
   end
 
   def update_last_30_days_video_tags_counters
-    self.update_column(:last_30_days_video_tags, VideoTag.last_30_days_updated_count(token))
+    self.update_column(:last_30_days_video_tags, self.video_tags.last_30_days_active.count)
   end
 
   def update_last_30_days_video_views_counters

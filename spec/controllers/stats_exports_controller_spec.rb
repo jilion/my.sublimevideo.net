@@ -3,7 +3,7 @@ require 'spec_helper'
 describe StatsExportsController do
 
   verb_and_actions = { get: [:show], post: :create }
-  it_should_behave_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended']], verb_and_actions#, id: '1'
+  it_should_behave_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended']], verb_and_actions
   it_should_behave_like "redirect when connected as", 'http://my.test.host/login', [:guest], verb_and_actions
 
   describe "GET #show", :fog_mock do
@@ -38,12 +38,12 @@ describe StatsExportsController do
       StatsExporter.should_receive(:new).with(site.token, 1, 2) { stats_exporter }
       stats_exporter.should_receive(:delay).with(priority: 50) { delay_stub }
       delay_stub.should_receive(:create_and_notify_export!)
-      post :create, stats_export: { st: site.token, from: 1, to: 2 }
+      post :create, stats_export: { site_token: site.token, from: 1, to: 2 }
       response.should be_success
     end
 
     it "verify that current_user own the site_token" do
-      post :create, stats_export: { st: 'other_site_token', from: 1, to: 2 }
+      post :create, stats_export: { site_token: 'other_site_token', from: 1, to: 2 }
       response.status.should eq 401
     end
 
