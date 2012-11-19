@@ -9,9 +9,11 @@ describe VideoTagsController do
   it_should_behave_like "redirect when connected as", 'http://my.test.host/', [[:user, early_access: []]], { get: [:index] }, site_id: '1'
 
   context "with demo site" do
+    let(:site) { mock_model(Site, token: SiteToken[:www]) }
 
     it "responds with success to GET :show" do
-      Site.stub(:find_by_token!) { mock_model(Site, token: SiteToken[:www])}
+      Site.stub(:find_by_token!) { site }
+      site.stub_chain(:video_tags, :where, :first)
       get :show, site_id: 'demo', id: '2'
       response.should_not be_redirect
     end
