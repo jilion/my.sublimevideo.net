@@ -6,8 +6,8 @@
   = render 'assistant/step_guide', current_step: 'player'
   .tagline
     %h3= "Create a player for #{hostname_or_token(@site)}"
-  = render 'assistant/next_box', next_url: nil, top: true
   = beta_loader_required
   = form_for @kit, url: url_for, html: { class: 'kit_editor' } do |f|
+    = render 'assistant/next_box', next_url: nil, top: true
     = render 'kits/form', f: f, site: @site, kit: @kit
     = render 'assistant/next_box', next_url: nil, top: false

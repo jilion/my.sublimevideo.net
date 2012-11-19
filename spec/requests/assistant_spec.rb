@@ -8,23 +8,22 @@ feature 'assistant pages' do
     end
 
     scenario 'redirects to /sites/new' do
-      click_link 'Add a site'
       current_url.should eq "http://my.sublimevideo.dev/sites/new"
       click_button 'Next'
       site = @current_user.sites.last
-      site.assistant_current_step.should eq 'addons'
+      site.current_assistant_step.should eq 'addons'
       current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/addons"
 
       click_button 'Next'
-      site.assistant_current_step.should eq 'player'
+      site.reload.current_assistant_step.should eq 'player'
       current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/player"
 
       click_button 'Next'
-      site.assistant_current_step.should eq 'publish_video'
+      site.reload.current_assistant_step.should eq 'publish_video'
       current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/publish-video"
 
-      click_button 'Next'
-      site.assistant_current_step.should eq 'summary'
+      click_link 'Next'
+      site.reload.current_assistant_step.should eq 'summary'
       current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/summary"
     end
   end
@@ -68,7 +67,7 @@ feature 'assistant pages' do
       go 'my', ''
     end
 
-    scenario 'goes to /assistant/:token/player', :focus do
+    scenario 'goes to /assistant/:token/player' do
       page.should have_content 'step 3 of 5'
       click_link 'Finish setup'
       current_url.should eq "http://my.sublimevideo.dev/assistant/#{@site.to_param}/player"
