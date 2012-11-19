@@ -140,9 +140,9 @@ feature 'Sites index' do
 
   context 'active user' do
     context 'with no sites' do
-      scenario 'should redirect to /sites/new' do
+      scenario 'should redirect to /assistant/new-site' do
         go 'my', '/sites'
-        current_url.should eq 'http://my.sublimevideo.dev/sites/new'
+        current_url.should eq 'http://my.sublimevideo.dev/assistant/new-site'
       end
     end
 

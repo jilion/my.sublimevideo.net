@@ -6,7 +6,7 @@ describe VideoCodesController do
   it_should_behave_like "redirect when connected as", 'http://my.test.host/suspended', [[:user, state: 'suspended', early_access: ['video']]], { get: [:new] }, site_id: '1'
   it_should_behave_like "redirect when connected as", 'http://my.test.host/login', [:guest], { get: [:new] }, site_id: '1'
 
-  it_should_behave_like "redirect when connected as", 'http://my.test.host/sites/new', [[:user, early_access: []]], { get: [:show] }, site_id: '1', id: '1'
+  it_should_behave_like "redirect when connected as", 'http://my.test.host/assistant/new-site', [[:user, early_access: []]], { get: [:show] }, site_id: '1', id: '1'
 
   context 'user logged-in' do
     before do
@@ -18,12 +18,12 @@ describe VideoCodesController do
       context 'without any site' do
         it "is success when :new, site_id: nil" do
           get :new, site_id: nil
-          response.should redirect_to new_site_path
+          response.should redirect_to assistant_new_site_path
         end
 
         it "redirects when :new, site_id: '1'" do
           get :new, site_id: '1'
-          response.should redirect_to new_site_path
+          response.should redirect_to assistant_new_site_path
         end
       end
 

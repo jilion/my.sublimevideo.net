@@ -8,5 +8,6 @@
 
 .video_code_generator.assistant
   = beta_loader_required
-  = render 'video_codes/form', site: @site, kit: @kit, get_code_button: false
-  = render 'assistant/next_box', next_url: assistant_summary_url, top: false
+  = form_tag assistant_summary_url(@site), id: 'video_code_form' do
+    = render 'video_codes/form', site: @site, kit: @kit, get_code_button: false
+    = render 'assistant/next_box', display_exit: true, position: 'bottom'

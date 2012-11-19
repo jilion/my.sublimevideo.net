@@ -25,7 +25,7 @@ module ControllerHelpers
         find_sites
 
         if @sites.empty?
-          redirect_to([:new, :site], flash: flash)
+          redirect_to(assistant_new_site_path, flash: flash)
         else
           @sites.map! { |site| exhibit(site) }
         end

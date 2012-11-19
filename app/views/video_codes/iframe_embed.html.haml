@@ -1,8 +1,0 @@
-!!! 5
-%html
-  %head= sublimevideo_include_tag(request.ssl?, :my).html_safe
-  %body
-    %video.sublime.sv_iframe_embed{ poster: params[:poster], preload: 'none', style: 'display:none' }
-      - params.select { |k, v| k =~ /^src\d+$/ }.each do |k, v|
-        - quality, src = /^(\((?<quality>\w+)\))?(?<src>.+)$/.match(v).to_a.pop(2)
-        %source{ src: src, "data-quality" => quality == 'hd' ? quality : nil }/

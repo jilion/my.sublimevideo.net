@@ -3,6 +3,7 @@ require_dependency 'controller_helpers/early_access'
 require_dependency 'controller_helpers/sites'
 require_dependency 'controller_helpers/paper_trail'
 require_dependency 'controller_helpers/cookies'
+require_dependency 'controller_helpers/deals'
 require_dependency 'controller_helpers/stages'
 require_dependency 'controller_helpers/transaction'
 require_dependency 'controller_helpers/pjax'
@@ -15,6 +16,7 @@ class ApplicationController < ActionController::Base
   include ControllerHelpers::Sites
   include ControllerHelpers::PaperTrail
   include ControllerHelpers::Cookies
+  include ControllerHelpers::Deals
   include ControllerHelpers::Stages
   include ControllerHelpers::Transaction
   include ControllerHelpers::Pjax

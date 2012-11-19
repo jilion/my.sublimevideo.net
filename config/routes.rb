@@ -200,21 +200,22 @@ MySublimeVideo::Application.routes.draw do
       post '/access_token' => 'oauth#token', as: :oauth_token
     end
 
+    match '/assistant/new-site' => 'assistant#new_site', as: 'assistant_new_site', via: [:get, :post]
     match '/assistant/:site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put]
     match '/assistant/:site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put]
-    get '/assistant/:site_id/publish-video' => 'assistant#publish_video', as: 'assistant_publish_video'
-    get '/assistant/:site_id/summary' => 'assistant#summary', as: 'assistant_summary'
+    get   '/assistant/:site_id/publish-video' => 'assistant#publish_video', as: 'assistant_publish_video'
+    post  '/assistant/:site_id/summary' => 'assistant#summary', as: 'assistant_summary'
 
     get '/addons' => 'addons#directory'
 
-    resources :sites, except: [:show] do
+    resources :sites, only: [:index, :edit, :update, :destroy] do
       resources :addons, only: [:index] do
         collection do
           put :update_all
         end
       end
 
-      resources :kits, only: [:index, :new, :create, :show, :edit, :update], path: 'players' do
+      resources :kits, except: [:destroy], path: 'players' do
         put  :set_as_default, on: :member
         post :process_custom_logo, on: :member
       end
@@ -239,6 +240,7 @@ MySublimeVideo::Application.routes.draw do
     get  '/video-code-generator' => redirect('/publish-video')
     get  '/publish-video' => 'video_codes#new', as: 'video_publishing_assistant'
     post '/mime-type-check' => 'video_codes#mime_type_check'
+    get  '/sites/new' => redirect('/assistant/new-site')
 
     get '/stats-demo' => 'site_stats#index', site_id: 'demo'
     get '/stats' => redirect('/stats-demo')

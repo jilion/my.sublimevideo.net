@@ -17,10 +17,10 @@
     - else
       = "-"
   %td.custom_token
-    - if plan.custom_plan?
-      = link_to plan.token, new_site_path(custom_plan: plan.token)
-    - else
-      = "-"
+    -#- if plan.custom_plan?
+    -#  = link_to plan.token, new_site_path(custom_plan: plan.token)
+    -#- else
+    = "-"
   %td.used_in_active
     = number_with_delimiter(plan.sites.active.count)
   -#%td.estimated_revenue

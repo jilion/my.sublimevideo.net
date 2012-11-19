@@ -1,11 +1,9 @@
 .next_box
-  - unless @sites.one?
+  - if display_exit && @sites.many?
     = link_to 'Exit Assistant', sites_url, class: 'exit hl'
-  - if next_url
-    = link_to next_url, class: 'btn' do
-      %span.arrow Next
-  - else
-    %button.btn{ type: 'submit' }
-      %span.arrow Next
-  - unless top
+
+  %button.btn{ type: 'submit' }
+    %span.arrow Next
+
+  - if position == 'bottom'
     .spacer

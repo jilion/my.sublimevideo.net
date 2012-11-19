@@ -3,10 +3,9 @@
 
 #addons.assistant
   #addons_table_wrap
-    = form_for @site, url: url_for, method: 'put', html: { id: 'edit_addons' } do |f|
+    = form_for @site, url: update_all_site_addons_path, method: 'put', html: { id: 'edit_addons' } do |f|
       = render 'addons/designs_and_addons', site: @site, f: f
 
       .actions.center= submit_tag 'Confirm selection', class: 'submit green_button', id: 'site_submit'
       .spacer
-
-      = render 'addons/footnotes', site: @site
+    = render 'addons/footnotes', site: @site

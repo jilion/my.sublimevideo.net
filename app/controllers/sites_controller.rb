@@ -6,7 +6,7 @@ class SitesController < ApplicationController
   respond_to :js, :json, only: [:index]
 
   before_filter :redirect_suspended_user
-  before_filter :activate_deal_from_cookie, only: [:index, :new]
+  before_filter :activate_deal_from_cookie, only: [:index]
   before_filter :find_sites_or_redirect_to_new_site, except: [:new, :create]
   before_filter :find_sites, only: [:new, :create]
   before_filter :find_site_by_token!, only: [:edit, :update, :destroy]
@@ -24,24 +24,9 @@ class SitesController < ApplicationController
     end
   end
 
-  # GET /sites/new
-  def new
-    @site = current_user.sites.build
-
-    respond_with(@site)
-  end
-
   # GET /sites/:id/edit
   def edit
     respond_with(@site)
-  end
-
-  # POST /sites
-  def create
-    @site = current_user.sites.build(params[:site])
-    Service::Site.new(@site).create
-
-    respond_with(@site, location: assistant_addons_url(@site))
   end
 
   # PUT /sites/:id
@@ -58,19 +43,6 @@ class SitesController < ApplicationController
         format.html { redirect_to :sites }
       else
         format.html { render :edit }
-      end
-    end
-  end
-
-  private
-
-  def activate_deal_from_cookie
-    if cookies[:d]
-      if deal = Deal.find_by_token(cookies[:d])
-        deal_activation = current_user.deal_activations.build(deal_id: deal.id)
-        if deal_activation.save
-          cookies.delete :d, domain: :all
-        end
       end
     end
   end

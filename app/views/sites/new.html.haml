@@ -1,9 +1,0 @@
-- title 'Add a site'
-= content_header 'Setup assistant'
-
-#site.new
-  = render 'assistant/step_guide', current_step: 'new_site'
-  = form_for @site, html: { class: 'full' } do |f|
-    %h3.assistant_title On which site do you need a SublimeVideo player?
-    = render 'fields', site: @site, f: f
-    = render 'assistant/next_box', next_url: nil, top: false

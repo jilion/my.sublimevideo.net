@@ -6,11 +6,11 @@ feature 'special /addons page' do
       @user = create(:user, use_clients: true)
     end
 
-    scenario 'redirects to /login and then to /sites/new' do
+    scenario 'redirects to /login and then to /assistant/new-site' do
       go 'my', 'addons'
       current_url.should eq "http://my.sublimevideo.dev/login"
       fill_and_submit_login(@user)
-      current_url.should eq "http://my.sublimevideo.dev/sites/new"
+      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
     end
   end
 
@@ -49,9 +49,9 @@ feature 'special /addons page' do
       sign_in_as :user
     end
 
-    scenario 'redirects to /sites/new' do
+    scenario 'redirects to /assistant/new-site' do
       go 'my', 'addons'
-      current_url.should eq "http://my.sublimevideo.dev/sites/new"
+      current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
     end
   end
 
