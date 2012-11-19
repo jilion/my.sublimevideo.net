@@ -4,7 +4,7 @@
   - if params[:show_title]
     %span{ style: 'font-weight:600' }= t("kit.#{params[:addon].name}.settings.#{params[:translation_key] || params[:setting_key]}")
     %br
-  %table
+  %table#logo_position
     %tr
       - %w[topLeft topRight].each do |choice|
         %td

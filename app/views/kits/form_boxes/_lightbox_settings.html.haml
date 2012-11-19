@@ -7,8 +7,8 @@
   .indent
     = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_visibility, data: { dependant: 'lightbox-enable_close_button' }, show_title: true)
     = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_position, data: { dependant: 'lightbox-enable_close_button' }, show_title: true)
-
-  = link_to 'Test', '', class: 'blue_button', id: 'preview-lightbox-button'
+  .actions.center{style: "padding-bottom: 20px"}
+    = link_to 'Test', '', class: 'blue_button', id: 'preview-lightbox-button'
 
   #preview-lightbox
     %a#lightbox-trigger{ href: '#lightbox', class: 'sublime', style: 'display:none' }

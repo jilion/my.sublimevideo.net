@@ -5,7 +5,7 @@ en:
         enable_volume: 'Enable volume control'
         enable_fullmode: 'Enable full-screen'
         force_fullwindow: 'Maximize to full-window instead of full-screen'
-        on_end: 'Player behavior upon video playback end'
+        on_end: 'Player behavior upon video playback end:'
       values:
         on_end:
           nothing: 'Do nothing (stays on last frame) - Default'
@@ -30,7 +30,7 @@ en:
 
     lightbox:
       settings:
-        on_open: 'Opening behavior'
+        on_open: 'Opening behavior:'
         overlay_opacity: 'Overlay opacity'
         overlay_color: 'Overlay color'
         enable_close_button: 'Close button'
@@ -59,10 +59,10 @@ en:
         enable_custom: 'Your custom logo'
         type: 'Select logo'
         visibility: 'SublimeVideo logo'
-        visibility_custom: 'Visibility'
-        position: 'Position'
+        visibility_custom: 'Visibility:'
+        position: 'Position:'
         image_url: 'Your logo'
-        link_url: 'Hyperlink'
+        link_url: 'Logo click url:'
       values:
         type:
           sv: 'SublimeVideo logo'

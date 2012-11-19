@@ -1,8 +1,11 @@
 - title("My players")
 = render '/layouts/site_header'
-
+.big_break
 #kits
-  #beta_loader_required Beta loader required
-
-  #kits_wrap= render 'kits', site: @site
+  #beta_loader_required
+    = tooltip_box class: 'info' do
+      %span.p= "The features or settings on this page only apply to the new SublimeVideo player (in beta) powered by SublimeVideo Horizon."
+    %h5.label Beta loader required
+  %h3.assistant_title Your Players
+  = render 'kits', site: @site
   .spacer

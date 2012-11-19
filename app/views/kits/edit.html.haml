@@ -1,12 +1,16 @@
 - title('Configure your player')
-= render 'layouts/site_header'
-.spacer
+= render '/layouts/site_header'
+.big_break
 
 #kit.edit
-  #beta_loader_required Beta loader required
+  #beta_loader_required
+    = tooltip_box class: 'info' do
+      %span.p= "The features or settings on this page only apply to the new SublimeVideo player (in beta) powered by SublimeVideo Horizon."
+    %h5.label Beta loader required
+
   = form_for [@site, @kit], html: { class: 'kit_editor' } do |f|
     = render 'kits/form', f: f, site: @site, kit: @kit
 
     .actions.center
-      = link_to 'Cancel', site_kits_path(@site), class: 'blue_button'
+      = link_to 'Cancel', site_kits_path(@site), class: 'cancel'
       = f.submit 'Save', class: 'submit blue_button'
