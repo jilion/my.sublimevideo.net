@@ -40,12 +40,6 @@ GIT
       mongoid-grid_fs (~> 1.3.1)
 
 GIT
-  remote: git://github.com/mongoid/moped.git
-  revision: 3070897984a712ede6d7b87ba7a7c8797d62396c
-  specs:
-    moped (1.3.0)
-
-GIT
   remote: git://github.com/ryanb/letter_opener.git
   revision: 4615240ba4fb201f850cf5c0d99e62a2dd0511f9
   specs:
@@ -361,6 +355,7 @@ GEM
     mongoid-grid_fs (1.3.3)
       mime-types (~> 1.19)
       mongoid (~> 3.0)
+    moped (1.3.0)
     multi_json (1.3.7)
     multi_xml (0.5.1)
     multipart-post (1.1.5)
@@ -626,7 +621,7 @@ DEPENDENCIES
   liquid (~> 2.4.1)
   mime-types
   mongoid (~> 3.0.6)
-  moped!
+  moped (~> 1.3.0)
   newrelic-redis
   newrelic_moped
   newrelic_rpm

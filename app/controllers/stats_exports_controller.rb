@@ -19,8 +19,7 @@ class StatsExportsController < ApplicationController
     site_token, from, to = params[:stats_export].slice(:site_token, :from, :to).values
 
     if current_user.sites.where(token: site_token).exists?
-      stats_exporter = StatsExporter.new(site_token, from.to_i, to.to_i)
-      stats_exporter.delay(priority: 50).create_and_notify_export!
+      StatsExporter.delay(priority: 50).create_and_notify_export(site_token, from.to_i, to.to_i)
       render nothing: true
     else
       render nothing: true, status: :unauthorized

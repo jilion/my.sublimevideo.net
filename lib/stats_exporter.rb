@@ -2,15 +2,19 @@ require 'tempfile'
 require 'csv'
 
 class StatsExporter
-
   attr_reader :site, :from, :to
+
+  def self.create_and_notify_export(site_token, from, to)
+    exporter = new(site_token, from, to)
+    exporter.create_and_notify_export
+  end
 
   def initialize(site_token, from, to)
     @site = Site.where(token: site_token).first
     @from, @to = from, to
   end
 
-  def create_and_notify_export!
+  def create_and_notify_export
     with_tempfile_csv_export do |csv_export|
       stats_export = StatsExport.create!(
         site_token: site.token,
