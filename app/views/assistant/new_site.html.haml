@@ -6,4 +6,4 @@
   = form_for @site, url: url_for, html: { class: 'full' } do |f|
     %h3.assistant_title On which site do you need a SublimeVideo player?
     = render 'sites/fields', site: @site, f: f
-    = render 'assistant/next_box', display_exit: false, type: 'button', position: 'bottom'
+    = render 'assistant/next_box', display_exit: false

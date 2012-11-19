@@ -8,6 +8,5 @@
     %h3= "Create a player for #{hostname_or_token(@site)}"
   = beta_loader_required
   = form_for @kit, url: url_for, html: { class: 'kit_editor' } do |f|
-    = render 'assistant/next_box', display_exit: true, position: 'top'
     = render 'kits/form', f: f, site: @site, kit: @kit
-    = render 'assistant/next_box', display_exit: true, position: 'bottom'
+    = render 'assistant/next_box', display_exit: true
