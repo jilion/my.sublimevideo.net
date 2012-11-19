@@ -1,5 +1,3 @@
-
-# http://ablogaboutcode.com/2012/01/12/a-simple-rails-boot-time-improvement/
 source 'https://rubygems.org'
 source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg' # thibaud@jilion.com account
 
