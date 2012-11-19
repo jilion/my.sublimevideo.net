@@ -32,6 +32,7 @@ describe Site, :addons do
     it { should belong_to(:default_kit) }
     it { should have_many(:invoices) }
     it { should have_one(:last_invoice) }
+    it { should have_many :video_tags }
 
     it { should have_many(:billable_items) }
     it { should have_many(:app_designs).through(:billable_items) }

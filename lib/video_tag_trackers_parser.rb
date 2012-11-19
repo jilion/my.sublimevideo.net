@@ -6,7 +6,7 @@ class VideoTagTrackersParser
   #
   # { ['site_token','video_uid'] => { uo: ..., n: ..., cs: ['5062d010',...], s: { '5062d010' => { ...}, ... } } }
   #
-  def self.extract_video_tags_meta_data(video_tags_trackers)
+  def self.extract_video_tags_data(video_tags_trackers)
     video_tags = Hash.new { |h,k| h[k] = Hash.new }
     video_tags_trackers.each do |request, hits|
       begin

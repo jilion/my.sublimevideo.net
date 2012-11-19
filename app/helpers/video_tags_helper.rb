@@ -33,19 +33,21 @@ module VideoTagsHelper
     tags << link_to("http://media.jilion.com/vcg/ms_360p.mp4",
       class: 'sublime'
     ) do
-      image_tag video_tag.poster(:small), size: options[:size]
+      # TO DO USE SSL PROXY (data.sv.net)
+      image_tag video_tag.poster_url, size: options[:size]
     end
     tags << content_tag(:video,
       class: "sublime lightbox",
-      poster: video_tag.poster(:large),
+      # TO DO USE SSL PROXY (data.sv.net)
+      poster: video_tag.poster_url,
       width: 640, height: 360,
-      data: { name: video_tag.n, uid: video_tag.u },
+      data: { name: video_tag.name, uid: video_tag.uid },
       preload: 'none',
       style: 'display:none'
     ) do
-      sources = video_tag.sources.map do |source|
-        options = { src: source['u'] }
-        options[:data] = { quality: 'hd' } if source['q'] == 'hd'
+      sources = video_tag.sources.select { |key, value| key.in?(video_tag.current_sources) }.map do |source|
+        options = { src: source.last['url'] }
+        options[:data] = { quality: 'hd' } if source.last['quality'] == 'hd'
         tag('source', options)
       end
       sources.join.html_safe

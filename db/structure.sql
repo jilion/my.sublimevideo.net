@@ -1256,6 +1256,49 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 
 
 --
+-- Name: video_tags; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE video_tags (
+    id integer NOT NULL,
+    site_id integer NOT NULL,
+    uid character varying(255) NOT NULL,
+    uid_origin character varying(255) NOT NULL,
+    name character varying(255),
+    name_origin character varying(255),
+    video_id character varying(255),
+    video_id_origin character varying(255),
+    poster_url text,
+    size character varying(255),
+    duration integer,
+    sources text,
+    current_sources text,
+    settings hstore,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: video_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE video_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: video_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE video_tags_id_seq OWNED BY video_tags.id;
+
+
+--
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1463,6 +1506,13 @@ ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 --
 
 ALTER TABLE versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE video_tags ALTER COLUMN id SET DEFAULT nextval('video_tags_id_seq'::regclass);
 
 
 --
@@ -1703,6 +1753,14 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY versions
     ADD CONSTRAINT versions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: video_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY video_tags
+    ADD CONSTRAINT video_tags_pkey PRIMARY KEY (id);
 
 
 --
@@ -2119,6 +2177,20 @@ CREATE INDEX index_versions_on_item_type_and_item_id ON versions USING btree (it
 
 
 --
+-- Name: index_video_tags_on_site_id_and_uid; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_video_tags_on_site_id_and_uid ON video_tags USING btree (site_id, uid);
+
+
+--
+-- Name: index_video_tags_on_site_id_and_updated_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_video_tags_on_site_id_and_updated_at ON video_tags USING btree (site_id, updated_at);
+
+
+--
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2298,6 +2370,8 @@ INSERT INTO schema_migrations (version) VALUES ('20121031120524');
 INSERT INTO schema_migrations (version) VALUES ('20121101092429');
 
 INSERT INTO schema_migrations (version) VALUES ('20121101103815');
+
+INSERT INTO schema_migrations (version) VALUES ('20121115083239');
 
 INSERT INTO schema_migrations (version) VALUES ('20121116102831');
 

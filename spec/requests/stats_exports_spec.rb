@@ -6,14 +6,14 @@ feature 'StatsExport' do
     @site = build(:site, user: @current_user)
     Service::Site.new(@site).create
     create(:billable_item, site: @site, item: @stats_addon_plan_2)
-    @video_tag = create(:video_tag, st: @site.token, u: 'video_uid', uo: 'a', n: 'My Video', no: 'a')
+    @video_tag = create(:video_tag, site: @site, uid: 'video_uid', name: 'My Video')
     create(:site_day_stat, t: @site.token, d: 3.days.ago.midnight.to_i,
       pv: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
     create(:site_day_stat, t: @site.token, d: 5.days.ago.midnight.to_i,
       pv: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
-    create(:video_day_stat, st: @site.token, u: @video_tag.u, d: 3.days.ago.midnight.to_i,
+    create(:video_day_stat, st: @site.token, u: @video_tag.uid, d: 3.days.ago.midnight.to_i,
       vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
-    create(:video_day_stat, st: @site.token, u: @video_tag.u, d: 5.days.ago.midnight.to_i,
+    create(:video_day_stat, st: @site.token, u: @video_tag.uid, d: 5.days.ago.midnight.to_i,
       vl: { 'm' => 1, 'e' => 11, 'em' => 101 }, vv: { 'm' => 1, 'e' => 11, 'em' => 101 })
     Sidekiq::Worker.clear_all
     clear_emails

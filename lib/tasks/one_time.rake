@@ -60,6 +60,9 @@ namespace :one_time do
   namespace :plans do
   end
 
+  namespace :video_tags do
+  end
+
   namespace :sites do
     desc "Reset sites caches"
     task reset_caches: :environment do

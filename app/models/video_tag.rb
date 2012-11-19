@@ -1,79 +1,82 @@
-# encoding: utf-8
+class VideoTag < ActiveRecord::Base
+  serialize :current_sources, Array
+  serialize :sources, Hash
+  serialize :settings, ActiveRecord::Coders::Hstore
 
-class VideoTag
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  belongs_to :site
 
-  include VideoTagModules::Presenter
-  include VideoTagModules::Scope
+  # scope :custom_search, lambda { |query|
+  #   where(:$or => [
+  #     { n: /.*#{query}.*/i },
+  #     { u: /.*#{query}.*/i }
+  #   ])
+  # }
 
-  field :st, type: String # Site token
-  field :u,  type: String # Video uid
+  # filter
+  scope :last_30_days_active, -> { where{ updated_at >= 30.days.ago.midnight } }
+  scope :last_90_days_active, -> { where{ updated_at >= 90.days.ago.midnight } }
+  # scope :hosted_on_sublimevideo, where({}) # TODO Thibaud
+  # scope :not_hosted_on_sublimevideo, where({}) # TODO Thibaud
+  # scope :inactive, where(state: 'inactive')
+  scope :active, -> { where{(uid_origin != nil) & (name_origin != nil)} }
+  # scope :all, where({}) # TODO Thibaud
 
-  # meta data
-  field :uo, type: String # Video uid origin  (attribute (a) / source (s) /youtube (y))
-  field :i,  type: String # Video id (hosting or Youtube)
-  field :io, type: String # Video id origin (sublimevideo (s) / youtube (y))
-  field :n,  type: String # Video name
-  field :no, type: String # Video name origin
-  field :p,  type: String # Video poster url
-  field :z,  type: String # Player size
-  field :cs, type: Array, default: [] # Video current sources array (cs) ['5062d010' (video source crc32), 'abcd1234', ... ] # sources actually used in the video tag
-  field :s,  type: Hash,  default: {} # Video sources hash (s) { '5062d010' (video source crc32) => { u (source url) => 'http://.../dartmoor.mp4', q (quality) => 'hd', f (family) => 'mp4', r (resolution) => '320x240' }, ... }
+  # sort
+  scope :by_name,  lambda { |way = 'desc'| order{ name.send(way) } }
+  scope :by_date,  lambda { |way = 'desc'| order{ created_at.send(way) } }
+  # scope :by_state, lambda { |way='desc'| order_by([:state, way.to_sym]) }
 
-  # NEW FIELDS
-  field :d, type: Integer # Video duration (ms)
-  field :state, type: String # State
-
-  index st: 1, u: 1
-  index st: 1, updated_at: 1
-  # TODO Thibaud add indexes
-
-  def site
-    Site.find_by_token(st)
-  end
+  validates :site_id, presence: true, uniqueness: { scope: :uid }
+  validates :uid, :uid_origin, presence: true
+  validates :uid_origin, :name_origin, inclusion: %w[attribute source]
 
   def to_param
-    u
+    uid
   end
 
-  # ====================
-  # = Instance Methods =
-  # ====================
+  def name=(attribute)
+    write_attribute :name, attribute.to(254)
+  end
 
-  def update_meta_data(meta_data)
-    %w[uo i io n no p cs z d].each do |key|
-      self.send("#{key}=", meta_data[key])
+  def sources=(attributes)
+    attributes.each do |crc32, source_data|
+      unless sources[crc32] == source_data
+        sources_will_change!
+        sources[crc32] = source_data
+      end
     end
-    # Properly update sources
-    self.s = read_attribute('s').merge(meta_data['s']) if meta_data['s'].present?
-
-    changed = changed?
-    self.updated_at = Time.now.utc # force updated_at update
-    self.save
-    changed
+    write_attribute :sources, sources
   end
 
-  # meta_data is reserved in Mongoid and used by Backbone
-  def meta_data
-    attributes.slice('uo', 'i', 'io', 'n', 'no', 'p', 'cs', 's', 'z')
+  def data
+    attributes.except(*%w[id created_at updated_at])
   end
-
-  # =================
-  # = Class Methods =
-  # =================
-
-  def self.find_by_st_and_u(st, u)
-    where(st: st, u: u).first
-  end
-
-  def self.all_time_count(site_token)
-    where(st: site_token).count
-  end
-
-  def self.last_30_days_updated_count(site_token)
-    from = 30.days.ago.midnight.to_i
-    where(st: site_token, updated_at: { :$gte => from }).count
-  end
-
 end
+
+# == Schema Information
+#
+# Table name: video_tags
+#
+#  created_at      :datetime         not null
+#  current_sources :text
+#  duration        :integer
+#  id              :integer          not null, primary key
+#  name            :string(255)
+#  name_origin     :string(255)
+#  poster_url      :text
+#  settings        :hstore
+#  site_id         :integer          not null
+#  size            :string(255)
+#  sources         :text
+#  uid             :string(255)      not null
+#  uid_origin      :string(255)      not null
+#  updated_at      :datetime         not null
+#  video_id        :string(255)
+#  video_id_origin :string(255)
+#
+# Indexes
+#
+#  index_video_tags_on_site_id_and_uid         (site_id,uid) UNIQUE
+#  index_video_tags_on_site_id_and_updated_at  (site_id,updated_at)
+#
+

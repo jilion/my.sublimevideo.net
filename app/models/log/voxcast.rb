@@ -101,8 +101,10 @@ class Log::Voxcast < ::Log
 
   def parse_and_create_video_tags!
     video_tags_trackers  = trackers('LogsFileFormat::VoxcastVideoTags', title: :video_tags)
-    video_tags_meta_data = VideoTagTrackersParser.extract_video_tags_meta_data(video_tags_trackers)
-    VideoTagUpdater.update_video_tags(video_tags_meta_data)
+    video_tags_data = VideoTagTrackersParser.extract_video_tags_data(video_tags_trackers)
+    video_tags_data.each do |(site_token, uid), data|
+      VideoTagUpdater.delay(priority: 200).update(site_token, uid, data)
+    end
   end
 
   def minute

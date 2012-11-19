@@ -11,7 +11,7 @@ describe VideoTagTrackersParser do
       "?t=site1234&e=l&d=d&h=i&vu[]=video125&pz[]=300x400" => 1,
       "?t=site1234&e=l&d=d&h=d&vu[]=video126&pz[]=300x400" => 1
     }
-    described_class.extract_video_tags_meta_data(video_tags_trackers).should eql({
+    described_class.extract_video_tags_data(video_tags_trackers).should eql({
       ['site1234', 'video123'] => { 'z' => '300x400' },
       ['site1234', 'video124'] => { 'z' => '300x400' }
     })
@@ -25,7 +25,7 @@ describe VideoTagTrackersParser do
       }}
 
       it "extracts one video tag meta_data" do
-        described_class.extract_video_tags_meta_data(video_tags_trackers).should eql({
+        described_class.extract_video_tags_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'z' => '300x400' }
         })
       end
@@ -38,7 +38,7 @@ describe VideoTagTrackersParser do
       }}
 
       it "extracts two video tag meta_data" do
-        described_class.extract_video_tags_meta_data(video_tags_trackers).should eql({
+        described_class.extract_video_tags_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'z' => '300x400' },
           ['site1234', 'video345'] => { 'z' => '480x360' }
         })
@@ -54,7 +54,7 @@ describe VideoTagTrackersParser do
       } }
 
       it "extracts one video tag meta_data" do
-        described_class.extract_video_tags_meta_data(video_tags_trackers).should eql({
+        described_class.extract_video_tags_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
             'i' => nil, 'io' => nil,
             'd' => nil,
@@ -95,7 +95,7 @@ describe VideoTagTrackersParser do
       } }
 
       it "extracts one video tag meta_data" do
-        described_class.extract_video_tags_meta_data(video_tags_trackers).should eql({
+        described_class.extract_video_tags_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My New Video', 'no' => 's',
             'i' => nil, 'io' => nil,
             'd' => nil,
@@ -118,7 +118,7 @@ describe VideoTagTrackersParser do
       } }
 
       it "extracts two video tag meta_data" do
-        described_class.extract_video_tags_meta_data(video_tags_trackers).should eql({
+        described_class.extract_video_tags_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
             'i' => nil, 'io' => nil,
             'd' => nil,

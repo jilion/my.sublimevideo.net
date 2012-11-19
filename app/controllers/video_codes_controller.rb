@@ -13,7 +13,7 @@ class VideoCodesController < ApplicationController
   end
 
   def show
-    @video_tag = VideoTag.where(st: @site.token, u: params[:id]).first
+    @video_tag = @site.video_tags.where(uid: params[:id]).first
   end
 
   # GET /mime-type-check

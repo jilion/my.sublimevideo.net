@@ -4,14 +4,14 @@ describe StatsExport do
   let(:csv)  { fixture_file('stats_export.csv') }
   let(:site) { create(:site) }
   let(:attributes) { {
-    st: site.token,
+    site_token: site.token,
     from: 30.days.ago.midnight.to_i,
     to: 1.days.ago.midnight.to_i,
     file: csv
   } }
   let(:stats_export) { StatsExport.create(attributes) }
 
-  it { should validate_presence_of(:st) }
+  it { should validate_presence_of(:site_token) }
   it { should validate_presence_of(:from) }
   it { should validate_presence_of(:to) }
   it { should validate_presence_of(:file) }
