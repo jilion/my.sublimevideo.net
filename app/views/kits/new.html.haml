@@ -3,7 +3,7 @@
 .spacer
 
 #kit.new
-  #beta_loader_required Beta loader required
+  = beta_loader_required
   = form_for [@site, @kit], html: { class: 'kit_editor' } do |f|
     = render 'kits/form', f: f, site: @site, kit: @kit
 

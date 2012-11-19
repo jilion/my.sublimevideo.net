@@ -48,15 +48,23 @@ module ApplicationHelper
   end
 
   def tooltip_box(options = {}, &block)
-    content_tag(:div, class: "tooltip" + (options[:class] ? " #{options[:class]}" : "")) do
+    content_tag(:div, class: 'tooltip' + (options[:class] ? " #{options[:class]}" : "")) do
       content_tag(
         :a,
         (options[:class] ? "<span>#{options[:class]}</span>".html_safe : "<span></span>".html_safe),
-        href: (options[:href] ? options[:href] : "#"),
-        onclick: (options[:href] ? "" : "return false"), class: "icon") +
-        content_tag(:span, class: "content") do
-          content_tag(:span, nil, class: "arrow") + capture_haml(&block).chomp.html_safe
+        href: (options[:href] ? options[:href] : '#'),
+        onclick: (options[:href] ? '' : 'return false'), class: 'icon') +
+        content_tag(:span, class: 'content') do
+          content_tag(:span, nil, class: 'arrow') + capture_haml(&block).chomp.html_safe
       end
+    end
+  end
+
+  def beta_loader_required
+    content_tag(:div, id: 'beta_loader_required') do
+      tooltip_box(class: 'info') do
+        haml_tag(:span, 'The features or settings on this page only apply to the new SublimeVideo player (in beta) powered by SublimeVideo Horizon.', class: 'p')
+      end + content_tag(:h5, 'Beta loader required', class: 'label')
     end
   end
 
@@ -68,5 +76,5 @@ module ApplicationHelper
     host = request ? '' : ActionController::Base.asset_host
     "#{host}#{asset_path(asset)}"
   end
-  
+
 end
