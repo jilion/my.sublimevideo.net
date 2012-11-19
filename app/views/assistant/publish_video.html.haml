@@ -1,0 +1,10 @@
+- title 'Publish a video'
+= content_header 'Setup assistant'
+
+.tagline
+  %h3= "Publish a video on #{hostname_or_token(@site)}"
+
+.video_code_generator.assistant
+  = render 'assistant/step_guide', current_step: 'publish_video'
+  = render 'video_codes/form', site: @site, kit: @kit, get_code_button: false
+  = render 'assistant/next_box', next_url: assistant_summary_url, top: false

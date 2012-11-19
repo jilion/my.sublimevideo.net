@@ -59,8 +59,9 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCodeGenerator.lightboxView = new MSVVideoCodeGenerator.Views.Lightbox
       el: '#lightbox_settings'
 
-    MSVVideoCodeGenerator.codeView = new MSVVideoCodeGenerator.Views.Code
-      el: '#video_code_form'
+    if $('.get_the_code').exists()
+      MSVVideoCodeGenerator.codeView = new MSVVideoCodeGenerator.Views.Code
+        el: '#video_code_form'
 
     MSVVideoCodeGenerator.previewView = new MSVVideoCodeGenerator.Views.Preview
       el: '#preview'

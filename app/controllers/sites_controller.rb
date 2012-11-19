@@ -1,4 +1,5 @@
 require_dependency 'service/site'
+require_dependency 'service/assistant'
 
 class SitesController < ApplicationController
   respond_to :html
@@ -39,7 +40,7 @@ class SitesController < ApplicationController
     @site = current_user.sites.build(params[:site])
     Service::Site.new(@site).create
 
-    respond_with(@site, location: :sites)
+    respond_with(@site, location: assistant_addons_url(@site))
   end
 
   # PUT /sites/:id

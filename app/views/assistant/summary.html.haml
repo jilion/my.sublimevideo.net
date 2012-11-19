@@ -1,0 +1,23 @@
+- title 'Summary'
+= content_header 'Setup assistant'
+
+#summary.assistant
+  = render 'assistant/step_guide', current_step: 'summary'
+  .tagline
+    %h3= "Summary for #{hostname_or_token(@site)}"
+
+  Congratulations! You're now ready to use SublimeVideo on mydomain.com.
+
+  You just need to put the following loader code in the header of your site (…)
+
+  %textarea
+    Some code...
+
+  as well as the following video code in the page you want to publish it (...)
+
+  %textarea
+    Some code...
+
+  You can always access and change any setting from the My Sites page.
+
+  = link_to 'Done', :sites, class: 'submit green_button'
