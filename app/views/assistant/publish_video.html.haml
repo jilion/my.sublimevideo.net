@@ -7,5 +7,4 @@
 .video_code_generator.assistant
   = render 'assistant/step_guide', current_step: 'publish_video'
   = render 'video_codes/form', site: @site, kit: @kit, get_code_button: false
-
-= link_to 'Next', assistant_summary_url, class: 'submit green_button'
+  = render 'assistant/next_box', next_url: assistant_summary_url, top: false

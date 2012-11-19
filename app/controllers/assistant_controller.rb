@@ -1,8 +1,7 @@
 require_dependency 'service/assistant'
 
 class AssistantController < ApplicationController
-  before_filter :find_site_by_token!
-  before_filter :update_current_assistant_step_and_redirect
+  before_filter :find_sites_or_redirect_to_new_site, :find_site_by_token!, :update_current_assistant_step_and_redirect
   before_filter :find_default_kit!, only: [:player, :publish_video]
 
   # GET /assistant/:site_id/addons

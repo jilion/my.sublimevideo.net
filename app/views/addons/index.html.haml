@@ -1,3 +1,12 @@
 - title("Add-ons for #{hostname_or_token(@site)}")
 = render 'layouts/site_header'
-= render 'addons/index_content', site: @site, form_action: update_all_site_addons_path, submit_text: 'Confirm selection'
+
+#addons.assistant
+  #addons_table_wrap
+    = form_for @site, url: url_for, method: 'put', html: { id: 'edit_addons' } do |f|
+      = render 'addons/designs_and_addons', site: @site, f: f
+
+      .actions.center= submit_tag 'Confirm selection', class: 'submit green_button', id: 'site_submit'
+      .spacer
+
+      = render 'addons/footnotes', site: @site

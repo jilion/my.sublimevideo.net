@@ -7,4 +7,7 @@
 
 #addons.assistant
   = render 'assistant/step_guide', current_step: 'addons'
-  = render 'addons/index_content', site: @site, form_action: url_for, submit_text: 'Next'
+  = form_for @site, url: url_for, method: 'put', html: { id: 'edit_addons' } do |f|
+    = render 'addons/designs_and_addons', site: @site, f: f
+    = render 'assistant/next_box', next_url: nil, top: false
+    = render 'addons/footnotes', site: @site

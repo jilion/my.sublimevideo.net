@@ -1,10 +1,3 @@
-#site.addons
-  #addons_table_wrap
-    = form_for site, url: form_action, method: 'put', html: { id: 'edit_addons' } do |f|
-      = render 'addons/designs_and_addons', site: site, f: f
-      .actions.center= submit_tag submit_text, class: 'submit green_button', id: 'site_submit'
-  .spacer
-
 %small
   Notes:
   %ol
