@@ -32,6 +32,7 @@ describe VideoTag do
     # it { should validate_uniqueness_of(:site_id).scoped_to(:uid) } # doesn't work with null: false on uid
     it { should ensure_inclusion_of(:name_origin).in_array(%w[attribute source]) }
     it { should ensure_inclusion_of(:uid_origin).in_array(%w[attribute source]) }
+    it { should ensure_inclusion_of(:video_id_origin).in_array(%w[youtube]).allow_nil }
   end
 
   describe "#to_param" do

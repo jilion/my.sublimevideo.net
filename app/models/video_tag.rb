@@ -29,6 +29,7 @@ class VideoTag < ActiveRecord::Base
   validates :site_id, presence: true, uniqueness: { scope: :uid }
   validates :uid, :uid_origin, presence: true
   validates :uid_origin, :name_origin, inclusion: %w[attribute source]
+  validates :video_id_origin, inclusion: %w[youtube], allow_nil: true
 
   def to_param
     uid
