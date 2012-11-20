@@ -340,6 +340,7 @@ describe User do
           end
 
           it "updates user's name on Zendesk" do
+            Sidekiq::Worker.clear_all
             user.update_attribute(:name, new_name)
 
             VCR.use_cassette("user/zendesk_update") do
