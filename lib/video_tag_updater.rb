@@ -25,7 +25,7 @@ private
     n:  'name',
     no: 'name_origin',
     i:  'video_id',
-    ui: 'video_id_origin',
+    io: 'video_id_origin',
     p:  'poster_url',
     z:  'size',
     d:  'duration',
