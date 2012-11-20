@@ -33,17 +33,10 @@ describe Service::CreditCard do
     end
 
     it "sends 'cc will expire' email when user's credit card will expire at the end of the current month and the last notice he received is at least 15 days old" do
-      BillingMailer.should_receive(:delay).once { stub.as_null_object }
-
-      described_class.send_credit_card_expiration_email
-    end
-
-    it "sends 'cc will expire' email to the right user" do
       BillingMailer.should delay(:credit_card_will_expire).with(@user_cc_will_expire_and_last_credit_card_expiration_notice_1.id)
 
       described_class.send_credit_card_expiration_email
     end
   end
-
 
 end

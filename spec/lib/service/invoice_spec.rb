@@ -16,7 +16,6 @@ describe Service::Invoice do
   let(:custom_addon_plan_free) { create(:addon_plan, availability: 'custom', price: 0) }
   let(:custom_addon_plan_paid) { create(:addon_plan, availability: 'custom', price: 995) }
   let(:service) { described_class.build_for_month(1.month.ago, site.id) }
-  let(:delayed) { stub }
 
   describe '.create_invoices_for_month' do
     before do

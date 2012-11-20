@@ -1,4 +1,9 @@
 require 'fast_spec_helper'
+
+require 'sidekiq'
+require File.expand_path('spec/config/sidekiq')
+require File.expand_path('spec/support/sidekiq_custom_matchers')
+
 require File.expand_path('lib/service/newsletter')
 
 User = Class.new unless defined?(User)
@@ -42,8 +47,7 @@ describe Service::Newsletter do
 
   describe '.import' do
     it 'delays CampaignMonitorWrapper.import' do
-      CampaignMonitorWrapper.should_receive(:delay).and_return(@dj = mock('delay'))
-      @dj.should_receive(:import).with(
+      CampaignMonitorWrapper.should delay(:import).with(
         list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'], segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
         users: [
           { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta?.to_s },

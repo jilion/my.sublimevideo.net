@@ -11,7 +11,6 @@ describe Service::Trial do
   let(:app_design_paid2) { create(:app_design, price: 995) }
   let(:addon)            { create(:addon) }
   let(:addon_plan_paid1) { create(:addon_plan, addon: addon, price: 995) }
-  let(:delayed) { stub }
   let(:service) { stub }
   before do
     @app_design_free = create(:addon_plan, addon: addon, price: 0)
@@ -31,9 +30,8 @@ describe Service::Trial do
     end
 
     it 'delays .activate_billable_items_out_of_trial_for_site! for site with at least a billable item out of trial' do
-      BillingMailer.should_receive(:delay) { delayed }
       @billable_items_will_receive_email.each do |billable_item|
-        delayed.should_receive(:trial_will_expire).with(billable_item.id)
+        BillingMailer.should delay(:trial_will_expire).with(billable_item.id)
       end
 
       described_class.send_trial_will_expire_email
@@ -55,9 +53,8 @@ describe Service::Trial do
     end
 
     it 'delays .activate_billable_items_out_of_trial_for_site! for site with at least a billable item out of trial' do
-      described_class.should_receive(:delay).twice { delayed }
-      delayed.should_receive(:activate_billable_items_out_of_trial_for_site!).with(site1.id)
-      delayed.should_receive(:activate_billable_items_out_of_trial_for_site!).with(site2.id)
+      described_class.should delay(:activate_billable_items_out_of_trial_for_site!).with(site1.id)
+      described_class.should delay(:activate_billable_items_out_of_trial_for_site!).with(site2.id)
 
       described_class.activate_billable_items_out_of_trial!
     end
@@ -100,9 +97,8 @@ describe Service::Trial do
       let(:user) { create(:user_no_cc) }
 
       it 'delegates to Service::Site#update_billable_items and cancel the app designs and addon plans IDs' do
-        BillingMailer.should_receive(:delay).twice { delayed }
-        delayed.should_receive(:trial_has_expired).with(site1.id, 'App::Design', app_design_paid2.id)
-        delayed.should_receive(:trial_has_expired).with(site1.id, 'AddonPlan', addon_plan_paid1.id)
+        BillingMailer.should delay(:trial_has_expired).with(site1.id, 'App::Design', app_design_paid2.id)
+        BillingMailer.should delay(:trial_has_expired).with(site1.id, 'AddonPlan', addon_plan_paid1.id)
 
         described_class.activate_billable_items_out_of_trial_for_site!(site1.id)
 
@@ -127,7 +123,7 @@ describe Service::Trial do
         end
 
         it 'do not send emails if there is any issue during Service::Site#update_billable_items' do
-          BillingMailer.should_not_receive(:delay)
+          BillingMailer.should_not delay(:trial_has_expired)
 
           expect { described_class.activate_billable_items_out_of_trial_for_site!(site1.id) }.to raise_error(Exception)
         end
