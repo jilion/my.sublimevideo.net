@@ -5,7 +5,7 @@
 
 .tagline
   %h3= "Choose player add-ons for #{hostname_or_token(@site)}"
-  You can change this at any time.
+  %h4= "You can change this at any time."
 
 #addons.assistant
   = form_for @site, url: url_for, method: 'put', html: { id: 'edit_addons' } do |f|
