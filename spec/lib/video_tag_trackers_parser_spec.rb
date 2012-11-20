@@ -76,7 +76,7 @@ describe VideoTagTrackersParser do
       } }
 
       it "extracts one video tag meta_data" do
-        described_class.extract_video_tags_meta_data(video_tags_trackers).should eq({
+        described_class.extract_video_tags_data(video_tags_trackers).should eq({
           ['site1234', 'youtube123'] => { 'uo' => 'y', 'n' => nil, 'no' => nil,
             'i' => 'youtube123', 'io' => 'y',
             'd'  => 1231,
