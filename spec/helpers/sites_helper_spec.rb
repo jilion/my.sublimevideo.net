@@ -9,16 +9,6 @@ describe SitesHelper do
     end
   end
 
-  describe "#style_for_usage_bar_from_usage_percentage" do
-    it { helper.style_for_usage_bar_from_usage_percentage(0).should eq "display:none;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.0).should eq "display:none;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.02).should eq "width:4%;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.04).should eq "width:4%;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.05).should eq "width:5%;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.12344).should eq "width:12.34%;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.783459).should eq "width:78.35%;" }
-  end
-
   describe "#hostname_or_token" do
     context "site with a hostname" do
       let(:site) { stub(hostname: 'rymai.me') }

@@ -47,35 +47,6 @@ module SitesHelper
     hostname_with_subdomain_needed(site).present?
   end
 
-  def display_none_if(condition, value=nil)
-    value || "display:none;" unless condition
-  end
-
-  def display_text_if(value, condition)
-    value if condition
-  end
-
-  def style_for_usage_bar_from_usage_percentage(fraction)
-    case fraction
-    when 0
-      "display:none;"
-    when 0..0.04
-      "width:4%;"
-    else
-      "width:#{display_percentage(fraction)};"
-    end
-  end
-
-  def conditions_for_show_settings(site)
-    site.extra_hostnames? ||
-    (site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS) ||
-    site.path? || site.wildcard?
-  end
-
-  def conditions_for_show_dev_hostnames_div(site)
-    site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS
-  end
-
   def cdn_up_to_date?(site)
     cdn_updated_at(site) > 0 && cdn_updated_at(site) < 2.minutes.ago.to_i
   end

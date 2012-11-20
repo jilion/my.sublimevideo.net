@@ -645,7 +645,6 @@ DEPENDENCIES
   liquid
   mime-types
   mongoid
-  moped
   newrelic-redis
   newrelic_moped
   newrelic_rpm

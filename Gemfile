@@ -13,7 +13,6 @@ gem 'sublime_video_layout' # hosted on gemfury
 gem 'pg'
 gem 'squeel'
 gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
-gem 'moped'
 gem 'mongoid'
 
 # Views

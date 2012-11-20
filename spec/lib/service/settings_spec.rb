@@ -40,6 +40,7 @@ describe Service::Settings, :fog_mock do
     hostname: 'test.com',
     extra_hostnames: 'test.net', extra_hostnames?: true,
     dev_hostnames: 'test.dev', dev_hostnames?: true,
+    staging_hostnames: 'test-staging.net', staging_hostnames?: true,
     wildcard: true, wildcard?: true,
     path: 'path', path?: true,
     addon_plan_is_active?: true,
@@ -86,7 +87,7 @@ describe Service::Settings, :fog_mock do
 
       it "has good content" do
         File.open(file) do |f|
-          f.read.should eq "jilion.sublime.video.sites({\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":false,\"s\":true,\"r\":true,\"m\":\"stable\"});\n"
+          f.read.should eq "jilion.sublime.video.sites({\"h\":[\"test.com\",\"test.net\"],\"d\":[\"test-staging.net\",\"test.dev\"],\"w\":true,\"p\":\"path\",\"b\":false,\"s\":true,\"r\":true,\"m\":\"stable\"});\n"
         end
       end
     end
@@ -96,7 +97,7 @@ describe Service::Settings, :fog_mock do
 
       it "has good content" do
         File.open(file) do |f|
-          f.read.should eq "sublime_.iu(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:'1'},[a]})\n"
+          f.read.should eq "sublime_.iu(\"ko\",[],function(){var a;return a={kr:{\"ku\":[\"test.com\",\"test.net\"],\"kw\":[\"test-staging.net\"],\"kv\":[\"test.dev\"],\"kz\":\"path\",\"ia\":true,\"ib\":\"stable\"},sa:{},ks:{},kt:'1'},[a]})\n"
         end
       end
     end
@@ -106,14 +107,14 @@ describe Service::Settings, :fog_mock do
     describe "common settings" do
 
       it "includes everything" do
-        settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: false, s: true, r: true, m: 'stable' }
+        settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test-staging.net', 'test.dev'], w: true, p: "path", b: false, s: true, r: true, m: 'stable' }
       end
 
       context "without extra_hostnames" do
         before { site.stub(extra_hostnames?: false) }
 
         it "removes extra_hostnames from h: []" do
-          settings.old_license.should == { h: ['test.com'], d: ['test.dev'], w: true, p: "path", b: false, s: true, r: true, m: 'stable' }
+          settings.old_license.should == { h: ['test.com'], d: ['test-staging.net', 'test.dev'], w: true, p: "path", b: false, s: true, r: true, m: 'stable' }
         end
       end
 
@@ -121,7 +122,7 @@ describe Service::Settings, :fog_mock do
         before { site.stub(path?: false) }
 
         it "doesn't include path key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, b: false, s: true, r: true, m: 'stable' }
+          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test-staging.net', 'test.dev'], w: true, b: false, s: true, r: true, m: 'stable' }
         end
       end
 
@@ -129,7 +130,7 @@ describe Service::Settings, :fog_mock do
         before { site.stub(wildcard?: false) }
 
         it "doesn't include wildcard key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], p: "path", b: false, s: true, r: true, m: 'stable' }
+          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test-staging.net', 'test.dev'], p: "path", b: false, s: true, r: true, m: 'stable' }
         end
       end
 
@@ -141,7 +142,7 @@ describe Service::Settings, :fog_mock do
         end
 
         it "doesn't include b: key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", s: true, r: true, m: 'stable' }
+          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test-staging.net', 'test.dev'], w: true, p: "path", s: true, r: true, m: 'stable' }
         end
       end
 
@@ -153,7 +154,7 @@ describe Service::Settings, :fog_mock do
         end
 
         it "doesn't includes r key/value" do
-          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test.dev'], w: true, p: "path", b: false, s: true, m: 'stable' }
+          settings.old_license.should == { h: ['test.com', 'test.net'], d: ['test-staging.net', 'test.dev'], w: true, p: "path", b: false, s: true, m: 'stable' }
         end
       end
     end
