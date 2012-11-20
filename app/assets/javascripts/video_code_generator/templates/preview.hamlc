@@ -1,6 +1,4 @@
-%h4 Preview
-
-.video_wrap
+.video_wrap{ style: "width:#{@video.get('width')}px;height:#{@video.get('height')}px;" }
   - code = new MySublimeVideo.Helpers.VideoTagHelper(@video).generatePlayerCode(id: 'video-preview')
   - console.log code
   != code
