@@ -17,13 +17,13 @@ class KitsController < ApplicationController
 
   # GET /sites/:site_id/players/new
   def new
-    @kit = exhibit(@site.kits.build({ app_design_id: App::Design.get('classic').id }, as: :admin))
+    @kit = exhibit(@site.kits.build(app_design_id: App::Design.get('classic').id))
     respond_with(@kit)
   end
 
   # POST /sites/:site_id/players
   def create
-    @kit = exhibit(@site.kits.build({ name: params[:kit][:name], app_design_id: params[:kit][:app_design_id] }, as: :admin))
+    @kit = exhibit(@site.kits.build(name: params[:kit][:name], app_design_id: params[:kit][:app_design_id]))
     Service::Kit.new(@kit).create(params[:kit])
 
     respond_with(@kit, location: [@site, :kits])

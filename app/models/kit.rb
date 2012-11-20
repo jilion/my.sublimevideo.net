@@ -1,7 +1,8 @@
 class Kit < ActiveRecord::Base
   serialize :settings, Hash
 
-  attr_accessible :site, :name, :app_design_id, :identifier, as: :admin
+  attr_accessible :site, :identifier, :name, :app_design_id, as: :admin
+  attr_accessible :name, :app_design_id
 
   belongs_to :site
   belongs_to :design, class_name: 'App::Design', foreign_key: 'app_design_id'
@@ -14,10 +15,7 @@ class Kit < ActiveRecord::Base
   def initialize(*args)
     super
     self.app_design_id ||= App::Design.get('classic').try(:id)
-    if site
-      self.identifier = (site.kits.size + 1).to_s
-      self.name     ||= "My player #{identifier}"
-    end
+    self.identifier = (site.kits.size + 1).to_s if site
   end
 
   def default?

@@ -10,11 +10,11 @@ feature 'Kits page' do
 
   scenario 'show the index page' do
     current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/players"
-    page.should have_content 'My player 1'
+    page.should have_content 'Default player'
   end
 
   scenario 'edit a kit by clicking on its name' do
-    click_link 'My player 1'
+    click_link 'Default player'
 
     current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/players/#{@site.kits.first.to_param}/edit"
   end
@@ -26,12 +26,12 @@ feature 'Kits page' do
   end
 
   scenario 'set a kit as default' do
-    @site.kits.create!
+    @site.kits.create!(name: 'Funky player')
     go 'my', "/sites/#{@site.to_param}/players"
 
     @site.kits.first.should be_default
-    page.should have_content 'My player 1'
-    page.should have_content 'My player 2'
+    page.should have_content 'Default player'
+    page.should have_content 'Funky player'
 
     click_button 'Set as default'
 
