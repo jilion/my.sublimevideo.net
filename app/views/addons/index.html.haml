@@ -1,7 +1,9 @@
 - title("Add-ons for #{hostname_or_token(@site)}")
 = render 'layouts/site_header'
-
 .big_break
+.tagline
+  %h3= "Each paid add-on has a 30 days free trial."
+  %h4= "No credit card required."
 #addons.assistant
   #addons_table_wrap
     = form_for @site, url: update_all_site_addons_path, method: 'put', html: { id: 'edit_addons' } do |f|
