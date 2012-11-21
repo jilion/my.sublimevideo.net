@@ -78,7 +78,7 @@ describe Service::Settings, :fog_mock do
                     enable: true,
                     type: 'sv',
                     visibility: 'autohide',
-                    position: 'bottomRight',
+                    position: 'bottom-right',
                     image_url: '',
                     link_url: nil
                   },
@@ -93,7 +93,7 @@ describe Service::Settings, :fog_mock do
                       values: ['autohide', 'visible']
                     },
                     position: {
-                      values: ['bottomRight']
+                      values: ['bottom-right']
                     },
                     image_url: {},
                     link_url: {}
@@ -231,7 +231,7 @@ describe Service::Settings, :fog_mock do
             "ka": {
             "ki": {
             "ko": {
-            "iv":true,"type":"sv","visibility":"autohide","position":"bottomRight","ij":"","ik":null},
+            "iv":true,"type":"sv","visibility":"autohide","position":"bottom-right","ij":"","ik":null},
             "kp": {
             "iv": {
             "ih":[true]},
@@ -240,7 +240,7 @@ describe Service::Settings, :fog_mock do
             "visibility": {
             "ih":["autohide","visible"]},
             "position": {
-            "ih":["bottomRight"]},
+            "ih":["bottom-right"]},
             "ij": {
             },
             "ik": {
