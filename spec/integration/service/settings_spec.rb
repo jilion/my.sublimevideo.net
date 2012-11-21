@@ -231,15 +231,15 @@ describe Service::Settings, :fog_mock do
             "ka": {
             "ki": {
             "ko": {
-            "iv":true,"im":"sv","tq":"autohide","to":"bottomRight","ij":"","ik":null},
+            "iv":true,"type":"sv","visibility":"autohide","position":"bottomRight","ij":"","ik":null},
             "kp": {
             "iv": {
             "ih":[true]},
-            "im": {
+            "type": {
             "ih":["sv"]},
-            "tq": {
+            "visibility": {
             "ih":["autohide","visible"]},
-            "to": {
+            "position": {
             "ih":["bottomRight"]},
             "ij": {
             },
@@ -248,11 +248,11 @@ describe Service::Settings, :fog_mock do
             "kn":"sa.sh.sp"},
             "kg": {
             "ko": {
-            "iv":true,"tq":"autohide"},
+            "iv":true,"visibility":"autohide"},
             "kp": {
             "iv": {
             "ih":[true,false]},
-            "tq": {
+            "visibility": {
             "ih":["autohide","visible"]}},
             "kn":"sa.sh.sq"},
             "kh": {
