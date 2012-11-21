@@ -149,7 +149,7 @@ module Service
     private
 
     def create_default_kit!
-      site.kits.create!
+      site.kits.create!(name: 'Default player')
       site.default_kit = site.kits.first
     end
 

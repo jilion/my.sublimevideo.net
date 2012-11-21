@@ -6,54 +6,54 @@
       selectedSiteToken: '#{@site.token}'
       kit: #{@site.kits.first.to_json}
 
-.expandable_settings_box
-  %h3
-    Preview
-    = render 'sites/stable_beta_menu', site: site
+.white_box
+  %h4.title Preview
   #preview
   - if get_code_button == true
-    %button.blue_button.get_the_code{ style: 'margin:auto' } Get the Code
+    .actions.center
+      %button.blue_button.get_the_code Get the Code
 .spacer
 
-#kit_selection.expandable_settings_box
-  %h3
-    = render 'video_codes/kit_selection', site: site, kit: kit
+.white_box
+  #kit_selection
+    .entry.design.select
+      = render 'video_codes/kit_selection', site: site, kit: kit
 
-#video_sources.expandable_settings_box
-  %h4.expanding_handler.expanded
-    = link_to "Video sources", '', class: 'hl'
-  .expandable{ style: 'display:block' }
-    #video_source_type
-      .radio_wrap
-        = radio_button_tag "video_origin", "test", checked: true
-        = label_tag "video_origin_test", "Use test video files", title: "Will use sample SublimeVideo movies and images so you can easily test the player."
-      .radio_wrap
-        = radio_button_tag "video_origin", "own"
-        = label_tag "video_origin_own", "I host my own video files"
-      .radio_wrap
-        = radio_button_tag "video_origin", "youtube"
-        = label_tag "video_origin_youtube", "My video is on YouTube"
-    .spacer
-    #video_sources_fields
-.spacer
+  #video_sources.expandable_settings_box
+    %h4.expanding_handler.expanded
+      = link_to "Video sources", ''
+    .expandable{ style: 'display:block' }
+      #video_source_type
+        .radio_wrap
+          = radio_button_tag "video_origin", "test", checked: true
+          = label_tag "video_origin_test", "Use test video files", title: "Will use sample SublimeVideo movies and images so you can easily test the player."
+        .radio_wrap
+          = radio_button_tag "video_origin", "own"
+          = label_tag "video_origin_own", "I host my own video files"
+        .radio_wrap
+          = radio_button_tag "video_origin", "youtube"
+          = label_tag "video_origin_youtube", "My video is on YouTube"
+      .spacer
+      #video_sources_fields
+  .spacer
 
-#video_settings.expandable_settings_box
-  %h4.expanding_handler
-    = link_to "Video settings", '', class: 'hl'
-  #video_settings_fields.left.expandable
-.spacer
+  #video_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to "Video settings", ''
+    #video_settings_fields.expandable
+  .spacer
 
-#lightbox_settings.expandable_settings_box
-  %h4.expanding_handler
-    = link_to "#{t('addons.lightbox')} settings", '', class: 'hl'
-  #lightbox_settings_fields.left.expandable
-#poster
+  #lightbox_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to "#{t('addons.lightbox')} settings", ''
+    #lightbox_settings_fields.expandable
+  #poster
 .spacer
 
 .big_break
 
-
-  #kit_settings_form
+#kit_settings_form
 
 - if get_code_button == true
-  %button.blue_button.get_the_code{ style: 'margin:auto' } Get the Code
+  .actions.center
+    %button.blue_button.get_the_code Get the Code

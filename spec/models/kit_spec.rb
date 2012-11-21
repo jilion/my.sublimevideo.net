@@ -7,18 +7,21 @@ describe Kit do
   end
 
   describe 'Validations' do
-    [:site, :name, :app_design_id, :identifier].each do |attr|
+    [:site, :identifier, :name, :app_design_id].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
+    [:name, :app_design_id].each do |attr|
+      it { should allow_mass_assignment_of(attr) }
+    end
 
-    [:site, :design, :identifier].each do |attr|
+    [:site, :design, :identifier, :name].each do |attr|
       it { should validate_presence_of(attr) }
     end
   end
 
   describe 'Initialization' do
     let(:site) { create(:site) }
-    let(:kit)  { Kit.new({ site: site, app_design_id: nil }, as: :admin) }
+    let(:kit)  { Kit.new({ site: site, app_design_id: nil, name: 'My player' }, as: :admin) }
     before do
       create(:app_design, name: 'flat')
       @classic_design = create(:app_design, name: 'classic')
@@ -30,29 +33,8 @@ describe Kit do
       end
     end
 
-    describe 'set name' do
-      let(:kit) { Kit.new({ site: site, name: nil }, as: :admin) }
-
-      context 'site has no kit yet' do
-        specify do
-          kit.name.should eq 'My player 1'
-        end
-      end
-
-      context 'site has kits' do
-        before do
-          site.kits.create!
-          site.kits.should have(1).item
-        end
-
-        specify do
-          kit.name.should eq 'My player 2'
-        end
-      end
-    end
-
     describe 'set identifier' do
-      let(:kit) { Kit.new({ site: site }, as: :admin) }
+      let(:kit) { Kit.new({ site: site, name: 'My player' }, as: :admin) }
 
       context 'site has no kit yet' do
         specify do
@@ -62,7 +44,7 @@ describe Kit do
 
       context 'site has kits' do
         before do
-          site.kits.create!
+          site.kits.create!(name: 'My player')
           site.kits.should have(1).item
         end
 
@@ -75,7 +57,7 @@ describe Kit do
   end
 
   describe '#default?' do
-    let(:kit)  { Kit.create!({ site: site, app_design_id: create(:app_design).id }, as: :admin) }
+    let(:kit)  { Kit.create!({ site: site, app_design_id: create(:app_design).id, name: 'My player' }, as: :admin) }
     let(:site) { create(:site) }
     context 'kit is not default' do
       it { kit.should_not be_default }

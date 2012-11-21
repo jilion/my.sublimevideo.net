@@ -1,4 +1,4 @@
-.checkbox_wrap{ style: "float:left;margin:14px 0 0 12px" }
+.checkbox_wrap
   %input#use_lightbox{ type: "checkbox", checked: @video.get('displayInLightbox'), data: { master: 'use_lightbox' } }
   %label{ for: "use_lightbox", title: "SublimeVideo's integrated lightbox displays your videos in a floating player" } Display this video in a lightbox
 .spacer
@@ -28,7 +28,7 @@
 
   #initial_link_image_extra.content_right
     %h5 Size
-    .entry.size{ style: "margin-top:14px" }
+    .entry.size{ style: "margin-top:10px" }
       %input#thumb_width.text{ type: "text", name: "thumb_width", value: @video.get('thumbnail').get('thumbWidth'), size: 4, maxlength: 4, data: { dependant: 'use_lightbox' } }
       x
       %input#thumb_height.text{ type: "text", name: "thumb_height", value: @video.get('thumbnail').get('thumbHeight'), size: 4, maxlength: 4, data: { dependant: 'use_lightbox' } }

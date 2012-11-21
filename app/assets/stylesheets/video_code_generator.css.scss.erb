@@ -1,8 +1,29 @@
 @import "css3";
 
-.video_code_generator {
-  position:relative;
-  padding:18px 0px 20px;
+#video_code #preview .video_wrap {
+  margin:0 auto;
+  @include box-shadow(rgba(0,0,0,0.6) 0 1px 4px);
+}
+
+#video_code table.sources {
+  width:100%;
+  border-collapse:collapse;
+}
+
+#video_code table.sources td.field {
+  width:438px;
+}
+
+#video_code table.sources td.label {
+  text-align:right;
+  font-weight:600;
+  width:60px;
+  padding-right:10px;
+}
+
+#video_code table.sources td.notes {
+  width:270px;
+  text-align:left;
 }
 
 #video_embed_type_selector {
@@ -15,40 +36,6 @@
   margin-right:20px;
 }
 
-#demo_bootstrap {
-  float:right;
-  position:absolute;
-  top:18px;
-  right:0;
-}
-
-button#use_demo_assets {
-  padding:10px 16px;
-  font-size:20px;
-}
-
-#content #demo_bootstrap .tooltip {
-  position:absolute;
-  left:-38px;
-  top:10px;
-}
-
-#content #demo_bootstrap a.reset {
-  position:absolute;
-  bottom:-23px;
-  right:50px;
-}
-
-.video_code_generator .intro {
-  font-size:18px;
-  line-height:26px;
-  color:#3a5a8c;
-}
-
-.video_code_generator .intro p {
-  padding-top:20px;
-}
-
 #video_code_form .big_break {
   margin-top:30px;
 }
@@ -57,10 +44,14 @@ button#use_demo_assets {
   padding-right:17px;
 }
 
-#video_code_form h4 {
+#video_code_form .expandable h4 {
   font-size:20px;
   font-weight:600;
-  padding-top:20px;
+  padding:20px 0 5px;
+}
+
+#video_code_form .expandable h4 small {
+  font-size:14px;
 }
 
 #video_code_form h5 {
@@ -99,22 +90,6 @@ button#use_demo_assets {
   left:12px;
 }
 
-#preview {
-  padding:20px 0;
-  text-align:center;
-}
-#preview .video_wrap {
-  margin:0 auto;
-}
-
-#video_code_form #preview h4 {
-  padding:0 0 20px;
-}
-
-#preview .big_break {
-  margin-top:30px;
-}
-
 #code {
   text-align:center;
   padding:30px 0 60px;
@@ -137,6 +112,7 @@ a.reset {
 
 .video_code_generator p.info {
   padding-top:10px;
+  line-height:20px;
 }
 
 #popup_code .popup_wrap {
@@ -161,14 +137,4 @@ a.reset {
 
 #popup_code .entry.embed_code textarea.small_height {
   height:60px;
-}
-
-// REMY
-
-h2.publish_video {
-  position:absolute;
-  width:500px;
-  height:81px;
-  top:20px;
-  right:0;
 }

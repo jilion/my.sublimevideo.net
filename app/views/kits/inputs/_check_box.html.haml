@@ -1,4 +1,4 @@
-- value = params[:setting] || params[:setting_template][:default]
+- value = params[:setting].nil? ? params[:setting_template][:default] : params[:setting]
 - id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
 
 .entry.checkbox_wrap

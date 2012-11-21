@@ -1,7 +1,6 @@
-- value = params[:setting].blank? ? '' : params[:setting]
 - id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
 
 .entry
   %span{ style: 'font-weight:600' }= label_tag id, t("kit.#{params[:addon].name}.settings.#{params[:setting_key]}")
-  = text_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, id: id, class: 'text no_icon previewable', data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: value)
+  = text_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", params[:setting], id: id, class: 'text no_icon previewable', data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: params[:setting])
 .spacer

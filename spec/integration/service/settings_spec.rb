@@ -322,7 +322,7 @@ describe Service::Settings, :fog_mock do
             "tl": {
             "ih":["left","right"]}},
             "kn":"sa.sl.sm"}}}},
-            kt:'1'},
+            kt:"1"},
             [a]})
           CONTENT
           File.open(subject.file) do |f|

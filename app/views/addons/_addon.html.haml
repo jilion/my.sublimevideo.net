@@ -4,7 +4,7 @@
     %th{ colspan: 3 }= t("addons.#{addon.name}")
   - visible_addon_plans.each do |addon_plan|
     - addon_plan_is_sponsored = site.addon_plan_is_sponsored?(addon_plan)
-    - price = addon_plan_is_sponsored ? 0 : addon_plan.price
+    - price = addon_plan_is_sponsored || addon_plan.beta? ? 0 : addon_plan.price
     - disabled = addon_plan.free? || addon_plan_is_sponsored
     %tr
       %td
@@ -28,7 +28,7 @@
       %td.price
         - if addon_plan_is_sponsored
           = 'sponsored'
-          %small
-            = raw "(#{link_to('why?', '#', class: 'grandfather_plan_link hl')})" if site.plan_id?
+          - if site.plan_id? && site.plan.title != 'sponsored'
+            %small= raw "(#{link_to('why?', '#', class: 'grandfather_plan_link hl')})"
         - else
           = billable_item_price(addon_plan)
