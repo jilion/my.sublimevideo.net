@@ -1,11 +1,12 @@
 // Pay attention not to use the following reserved keys
 // break|case|catch|continue|debugger|default|delete|do|else|finally|for|function|if|in|instanceof|new|return|switch|this|throw|try|typeof|var|void|while|with
-
+// There are keys that can't be mangled (ie type, version, etc), so
+// if you want to add a key you are better asking @acoiro.
 {
   "wildcard": "ia",
   "stage": "ib",
   "host": "ic",
-  "version": "id",
+  "": "id",
   "token": "ie",
   // 'if' is a reserved key
   "components": "ig",
@@ -14,7 +15,7 @@
   "imageUrl": "ij",
   "linkUrl": "ik",
   "enableCloseButton": "il",
-  "type": "im",
+  // "": "im",
   // 'in' is a reserved key
   "enableFacebook": "io",
   "enableLink": "ip",
@@ -97,9 +98,9 @@
   "closeButtonPosition": "tl",
   // "": "tm",
   "realtime": "tn",
-  "position": "to",
+  // "": "to",
   "url": "tp",
-  "visibility": "tq",
+  // "": "tq",
   "overlayVisibility": "tr",
   "twitterUrl": "ts",
   "facebookUrl": "tt",
