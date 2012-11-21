@@ -9,7 +9,7 @@
 .white_box
   %h4.title Preview
   #preview
-  - if get_code_button == true
+  - if get_code_button
     .actions.center
       %button.blue_button.get_the_code Get the Code
 .spacer
@@ -54,6 +54,6 @@
 
 #kit_settings_form
 
-- if get_code_button == true
+- if get_code_button
   .actions.center
     %button.blue_button.get_the_code Get the Code

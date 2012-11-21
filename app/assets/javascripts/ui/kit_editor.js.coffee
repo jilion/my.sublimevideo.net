@@ -46,16 +46,14 @@ class MySublimeVideo.UI.KitEditor
       false
 
   refreshVideoTagFromSettings: (type) ->
-
     switch type
       when 'standard'
-        console.log @videoTagHelpers[type].generateDataSettings()
         sublime.reprepareVideo 'standard', @videoTagHelpers[type].generateDataSettings()
 
       when 'lightbox'
         if lightbox = sublime.lightbox('lightbox-trigger')
           lightbox.close()
-          sublime.reprepareVideo 'lightbox', @videoTagHelpers[type].generateDataSettings()
+          $('#lightbox').attr('data-settings', @videoTagHelpers[type].generateDataSettingsAttribute([], contentOnly: true))
           dataSettings = @videoTagHelpers[type].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
           $('a#lightbox-trigger').attr('data-settings', dataSettings)
           lightbox.open()

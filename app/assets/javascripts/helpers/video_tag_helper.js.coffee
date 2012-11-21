@@ -12,7 +12,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateVideoCode: (options = {}) ->
     attributes = []
     attributes.push "id=\"#{options['id']}\"" if options['id']?
-    attributes.push this.generateClass()
+    attributes.push this.generateClass(options)
     attributes.push this.generatePoster()
     attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
     attributes.push "data-youtube-id=\"#{@video.get('youtubeId')}\"" if @video.get('origin') is 'youtube'
@@ -74,8 +74,8 @@ class MySublimeVideo.Helpers.VideoTagHelper
 
     @dataSettings
 
-  generateClass: ->
-    if @video.get('displayInLightbox') then '' else "class=\"sublime\""
+  generateClass: (options = {}) ->
+    if @video.get('displayInLightbox') or options['class'] is '' then '' else "class=\"sublime\""
 
   generatePoster: ->
     posterSrc = @video.get('poster').get('src')

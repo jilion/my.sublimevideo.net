@@ -2,6 +2,9 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
   template: JST['video_code_generator/templates/preview']
 
   initialize: ->
+    @$kitSelector = $('#kit_id')
+    @kitsSettings = JSON.parse(@$kitSelector.attr('data-settings'))
+
     _.bindAll this, 'delayedRender'
     MSVVideoCodeGenerator.video.bind     'change',     this.delayedRender
     MSVVideoCodeGenerator.poster.bind    'change:src', this.delayedRender
@@ -17,16 +20,21 @@ class MSVVideoCodeGenerator.Views.Preview extends Backbone.View
   render: ->
     if MSVVideoCodeGenerator.video.viewable() and (!MSVVideoCodeGenerator.video.get('displayInLightbox') or MSVVideoCodeGenerator.thumbnail.viewable())
       @currentScroll = $(window).scrollTop()
-      $video = $('video')
 
-      sublimevideo.unprepare($video[0]) if $video.exists()
+      sublimevideo.unprepare('video-preview') if $('#video-preview').exists()
       $(@el).html this.template
         video: MSVVideoCodeGenerator.video
 
-      unless MSVVideoCodeGenerator.video.get('displayInLightbox')
-        $video = $('video')
-        sublimevideo.ready ->
-          sublimevideo.prepare($video[0]) if $video.exists()
+      if MSVVideoCodeGenerator.video.get('displayInLightbox')
+        if lightbox = sublime.lightbox('lightbox-trigger')
+          lightbox.close()
+          $('#video-preview').attr('data-settings', @videoTagHelpers[type].generateDataSettingsAttribute([], contentOnly: true))
+          dataSettings = @videoTagHelpers[type].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
+          $('a#lightbox-trigger').attr('data-settings', dataSettings)
+          # lightbox.open()
+      else
+        sublimevideo.ready =>
+          sublime.prepareWithKit('video-preview', @kitsSettings[@$kitSelector.val()])
 
       $(@el).show()
       $(window).scrollTop(@currentScroll)

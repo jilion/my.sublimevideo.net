@@ -50,7 +50,7 @@ module Service
       end
 
       def current_path
-        "a/#{site.token}/#{kit.identifier}/logo-custom-#{width}x#{height}@2x.png"
+        @current_path ||= "a/#{site.token}/#{kit.identifier}/logo-custom-#{width}x#{height}-#{Time.now.to_i}@2x.png"
       end
 
       private

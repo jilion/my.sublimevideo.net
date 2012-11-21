@@ -1,4 +1,6 @@
-.video_wrap{ style: "width:#{@video.get('width')}px;height:#{@video.get('height')}px;" }
-  - code = new MySublimeVideo.Helpers.VideoTagHelper(@video).generatePlayerCode(id: 'video-preview')
+- width  = if @video.get('displayInLightbox') then @video.get('thumbnail').get('thumbWidth') else @video.get('width')
+- height = if @video.get('displayInLightbox') then @video.get('thumbnail').get('thumbHeight') else @video.get('height')
+.video_wrap{ style: "width:#{width}px;height:#{height}px;" }
+  - code = new MySublimeVideo.Helpers.VideoTagHelper(@video).generatePlayerCode(id: 'video-preview', lightboxId: 'lightbox-trigger', class: '')
   - console.log code
   != code
