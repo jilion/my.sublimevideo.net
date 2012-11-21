@@ -1,14 +1,11 @@
 #site_settings.settings
   %h4.title Production domains
-  %p Stats are activated for these domains (if Realtime Stats addon subscribed).
-
   .entry.site
     = f.label :hostname
     = f.label :hostname, '', class: 'icon'
     = f.text_field :hostname, class: 'text', autocomplete: :off
     %p.info
-      This is the main domain where you're using SublimeVideo.
-      = raw "#{link_to 'Learn more', docs_url('site-settings#main-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
+      This is a hostname, so you can also enter a subdomain (example: blog.yourdomain.com).
   .spacer
 
   .entry.site
@@ -16,13 +13,11 @@
     = f.label :extra_hostnames, '', class: 'icon'
     = f.text_field :extra_hostnames, class: 'text', placeholder: 'yourdomain-alias.com', autocomplete: :off
     %p.info
-      = raw "Add alias domains separated by commas. Alias domains are meant to be used #{content_tag(:strong, "exclusively")} for multiple domain names leading to the #{content_tag(:strong, "same content")})."
+      = raw "Alias domains (separated by commas) are meant to be used #{content_tag(:strong, "exclusively")} for multiple domain names leading to the #{content_tag(:strong, "same content")})."
       = raw "#{link_to 'Learn more', docs_url('site-settings#alias-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
   .spacer
 
   %h4.title Staging and Development domains
-  %p Stats aren't activated for these domains
-
   .entry.site
     = f.label :staging_hostnames
     = f.label :staging_hostnames, '', class: 'icon'
@@ -40,6 +35,8 @@
       You can use this field to specify local development domains separated by commas.
       = raw "#{link_to 'Learn more', docs_url('site-settings#dev-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
   .spacer
+  %p.note
+    = raw "Stats for staging and development domains #{content_tag(:strong, "are not")} counted."
 
   %h4.title Advanced settings
 
@@ -48,7 +45,7 @@
     = f.label :path, '', class: 'icon'
     = f.text_field :path, class: 'text small_icon', placeholder: 'path', autocomplete: :off, maxlength: 256
     %p.info
-      = "Restrict your player to a specific path. The path option is only added to production domains."
+      = "Use this with caution only to restrict your player to a specific path. The path option is only added to production domains."
       = raw "#{link_to 'Learn more', docs_url('site-settings#path'), onclick: 'window.open(this); return false', class: 'hl'}."
   .spacer
 
