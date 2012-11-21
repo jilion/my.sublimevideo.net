@@ -1,8 +1,8 @@
 - kit = exhibit(kit)
-%li[kit]{ class: 'kit', data: { design: kit.design.name, settings: kit.settings.to_json } }
+%li[kit]{ class: 'kit', data: { design: kit.design.name, settings: mangled_kit_settings(kit) } }
   = kit.render_name_as_link(self, site)
-  %div.preview{ style: 'display:none' }
-    %video{ id: "preview_kit_#{kit.id}", class: 'sublime', poster: '//media.jilion.com/images/midnight_sun_800.jpg', width: 368, height: 207 }
+  %div.preview
+    %video{ id: "preview_kit_#{kit.id}", poster: '//media.jilion.com/images/midnight_sun_800.jpg', width: 368, height: 207 }
       == <source src='//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4' />
       == <source src='//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm' />
 
