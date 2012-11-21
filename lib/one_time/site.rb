@@ -4,7 +4,7 @@ module OneTime
     class << self
 
       def regenerate_templates(options = {})
-        scheduled, = 0
+        scheduled = 0
         ::Site.active.find_each(batch_size: 100) do |site|
           if options[:loaders]
             ::Service::Loader.delay(queue: 'low').update_all_stages!(site.id, purge: false)
@@ -21,6 +21,22 @@ module OneTime
         end
 
         "Schedule finished: #{scheduled} sites will have their loader and license re-generated"
+      end
+
+      # TODO: Remove after launch
+      def move_staging_hostnames_from_extra
+        processed = 0
+        ::Site.not_archived.where{ extra_hostnames =~ '%staging%' }.each do |site|
+          extra, staging = [], []
+          site.extra_hostnames.split(/,\s*/).each do |hostname|
+            if hostname =~ /staging/
+              staging << hostname
+            else
+              extra << hostname
+            end
+          end
+          site.update_attributes(extra_hostnames: extra.join(','), staging_hostnames: staging.join(','))
+        end
       end
 
       # TODO: Remove after launch
