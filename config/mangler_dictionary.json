@@ -6,7 +6,7 @@
   "wildcard": "ia",
   "stage": "ib",
   "host": "ic",
-  "": "id",
+  // "": "id",
   "token": "ie",
   // 'if' is a reserved key
   "components": "ig",
