@@ -4,15 +4,16 @@ describe SiteModules::Api do
 
   describe "#to_api" do
     context "normal site" do
-      let(:site)     { create(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', wildcard: true, path: 'test') }
+      let(:site)     { create(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', staging_hostnames: 'rymai-staging.com', wildcard: true, path: 'test') }
       let(:response) { site.as_api_response(:v1_self_private) }
 
       it "selects a subset of fields, as a hash" do
         response.should be_a(Hash)
         response[:token].should eq site.token
         response[:main_domain].should eq 'rymai.me'
-        response[:dev_domains].should eq ['rymai.local']
         response[:extra_domains].should eq ['rymai.com']
+        response[:staging_domains].should eq ['rymai-staging.com']
+        response[:dev_domains].should eq ['rymai.local']
         response[:wildcard].should eq true
         response[:path].should eq 'test'
       end
@@ -30,7 +31,8 @@ describe SiteModules::Api do
         response.should be_a(Hash)
         response[:token].should eq site.token
         response[:main_domain].should eq 'rymai.me'
-        response[:dev_domains].should eq []
+        response[:extra_domains].should eq []
+        response[:staging_domains].should eq []
         response[:extra_domains].should eq []
         response[:wildcard].should eq false
         response[:path].should eq ''

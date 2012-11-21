@@ -12,6 +12,7 @@ describe Service::Settings, :fog_mock do
 
       its(:license) { should eq({
         hosts: ["test.com"],
+        staging_hosts: [],
         dev_hosts: ["127.0.0.1", "localhost"],
         path: nil,
         wildcard: nil,
@@ -209,6 +210,7 @@ describe Service::Settings, :fog_mock do
             var a;return a= {
             kr: {
             "ku":["test.com"],
+            "kw":[],
             "kv":["127.0.0.1","localhost"],
             "kz":null,"ia":null,"ib":"beta"},
             sa: {

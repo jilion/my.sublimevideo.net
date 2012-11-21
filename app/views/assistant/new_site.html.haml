@@ -5,5 +5,14 @@
   = render 'assistant/step_guide', current_step: 'new_site'
   = form_for @site, url: url_for, html: { class: 'full' } do |f|
     %h3.assistant_title On which site do you need a SublimeVideo player?
-    = render 'sites/fields', site: @site, f: f
+    #site_setup
+      .entry.site
+        .left
+          = f.label :hostname, '', class: "icon"
+          = f.text_field :hostname, class: "text", placeholder: "please-edit.me", autocomplete: :off
+        %p.desc Add your domain or subdomain.
+        .spacer
+        %p.info
+          = raw "By default the player will also work on development domains: #{content_tag(:em, "localhost")} and #{content_tag(:em, "127.0.0.1")}, you can edit them as well as your staging and alias domains later in the site Settings page."
+
     = render 'assistant/next_box', display_exit: false

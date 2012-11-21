@@ -992,7 +992,8 @@ CREATE TABLE sites (
     loaders_updated_at timestamp without time zone,
     default_kit_id integer,
     current_assistant_step character varying(255),
-    addons_updated_at timestamp without time zone
+    addons_updated_at timestamp without time zone,
+    staging_hostnames text
 );
 
 
@@ -2376,3 +2377,5 @@ INSERT INTO schema_migrations (version) VALUES ('20121115083239');
 INSERT INTO schema_migrations (version) VALUES ('20121116102831');
 
 INSERT INTO schema_migrations (version) VALUES ('20121116133453');
+
+INSERT INTO schema_migrations (version) VALUES ('20121120124141');

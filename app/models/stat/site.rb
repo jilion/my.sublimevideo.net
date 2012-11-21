@@ -303,6 +303,7 @@ end
 #  plan_started_at                           :datetime
 #  refunded_at                               :datetime
 #  settings_updated_at                       :datetime
+#  staging_hostnames                         :text
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime

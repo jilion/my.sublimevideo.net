@@ -9,7 +9,7 @@ feature 'assistant pages' do
 
     scenario 'redirects to /assistant/new-site' do
       current_url.should eq "http://my.sublimevideo.dev/assistant/new-site"
-      fill_in 'Domain', with: 'rymai.me'
+      fill_in 'Main domain', with: 'rymai.me'
       click_button 'Next'
       site = @current_user.sites.last
 

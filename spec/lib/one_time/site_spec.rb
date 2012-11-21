@@ -16,6 +16,23 @@ describe OneTime::Site do
     end
   end
 
+  describe '.move_hostnames_domains_from_extra' do
+    let!(:site_with_staging)    { create(:site, extra_hostnames: 'staging.domain.com, domain.net, domain-staging.com') }
+    let!(:site_with_extra_only) { create(:site, extra_hostnames: 'domain.net') }
+    let!(:site_without_extra)   { create(:site) }
+
+    it "extracts staging hostnames from extra domains" do
+      described_class.move_staging_hostnames_from_extra
+
+      site_with_staging.reload.extra_hostnames.should eq 'domain.net'
+      site_with_staging.reload.staging_hostnames.should eq 'domain-staging.com,staging.domain.com'
+      site_with_extra_only.reload.extra_hostnames.should eq 'domain.net'
+      site_with_extra_only.reload.staging_hostnames.should be_nil
+      site_without_extra.reload.extra_hostnames.should be_nil
+      site_without_extra.reload.staging_hostnames.should be_nil
+    end
+  end
+
   describe '.add_already_paid_amount_to_balance_for_monthly_plans' do
     before do
       create_plans
