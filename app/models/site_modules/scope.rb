@@ -59,8 +59,9 @@ module SiteModules::Scope
         (lower(user.name) =~ lower("%#{q}%")) |
         (lower(:token) =~ lower("%#{q}%")) |
         (lower(:hostname) =~ lower("%#{q}%")) |
-        (lower(:dev_hostnames) =~ lower("%#{q}%")) |
-        (lower(:extra_hostnames) =~ lower("%#{q}%"))
+        (lower(:extra_hostnames) =~ lower("%#{q}%")) |
+        (lower(:staging_hostnames) =~ lower("%#{q}%")) |
+        (lower(:dev_hostnames) =~ lower("%#{q}%"))
       }
     end
 

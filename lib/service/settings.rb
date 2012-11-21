@@ -32,9 +32,10 @@ module Service
     end
 
     def old_license
-      hash = { h: [site.hostname] }
+      hash = { h: [site.hostname], d: [] }
       hash[:h] += site.extra_hostnames.split(/,\s*/) if site.extra_hostnames?
-      hash[:d]  = site.dev_hostnames.split(/,\s*/) if site.dev_hostnames?
+      hash[:d] += site.staging_hostnames.split(/,\s*/) if site.staging_hostnames?
+      hash[:d] += site.dev_hostnames.split(/,\s*/) if site.dev_hostnames?
       hash[:w]  = site.wildcard if site.wildcard?
       hash[:p]  = site.path if site.path?
       hash[:b]  = false if site.addon_plan_is_active?(AddonPlan.get('logo', 'disabled'))
@@ -46,11 +47,12 @@ module Service
 
     def license
       hash = { hosts: [site.hostname] }
-      hash[:hosts]    += (site.extra_hostnames || '').split(/,\s*/)
-      hash[:dev_hosts] = (site.dev_hostnames || '').split(/,\s*/)
-      hash[:path]      = site.path
-      hash[:wildcard]  = site.wildcard
-      hash[:stage]     = site.accessible_stage
+      hash[:hosts]        += (site.extra_hostnames || '').split(/,\s*/)
+      hash[:staging_hosts] = (site.staging_hostnames || '').split(/,\s*/)
+      hash[:dev_hosts]     = (site.dev_hostnames || '').split(/,\s*/)
+      hash[:path]          = site.path
+      hash[:wildcard]      = site.wildcard
+      hash[:stage]         = site.accessible_stage
       hash
     end
 

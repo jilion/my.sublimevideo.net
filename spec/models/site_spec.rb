@@ -76,7 +76,7 @@ describe Site, :addons do
   end
 
   describe "Validations" do
-    [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard].each do |attribute|
+    [:hostname, :dev_hostnames, :staging_hostnames, :extra_hostnames, :path, :wildcard].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
     end
 
@@ -91,10 +91,11 @@ describe Site, :addons do
 
     specify { Site.validators_on(:hostname).map(&:class).should eq [HostnameValidator] }
     specify { Site.validators_on(:extra_hostnames).map(&:class).should include ExtraHostnamesValidator }
+    specify { Site.validators_on(:staging_hostnames).map(&:class).should include ExtraHostnamesValidator }
     specify { Site.validators_on(:dev_hostnames).map(&:class).should include DevHostnamesValidator }
 
     describe "with no hostnames at all" do
-      subject { build(:site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil) }
+      subject { build(:site, hostname: nil, extra_hostnames: nil, staging_hostnames: nil, dev_hostnames: nil) }
       it { should be_valid } # dev hostnames are set before validation
       it { should have(0).error_on(:base) }
 
@@ -119,7 +120,7 @@ describe Site, :addons do
   end # Validations
 
   describe "Attributes Accessors" do
-    %w[hostname extra_hostnames dev_hostnames].each do |attr|
+    %w[hostname extra_hostnames staging_hostnames dev_hostnames].each do |attr|
       describe "#{attr}=" do
         it "calls Hostname.clean" do
           site = build_stubbed(:site)
@@ -501,6 +502,7 @@ end
 #  plan_started_at                           :datetime
 #  refunded_at                               :datetime
 #  settings_updated_at                       :datetime
+#  staging_hostnames                         :text
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime

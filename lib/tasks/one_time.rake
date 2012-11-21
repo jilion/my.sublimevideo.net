@@ -122,11 +122,17 @@ namespace :one_time do
     end
 
     # STEP 2
-    desc "Step 2: one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans, one_time:sites:migrate_yearly_plans_to_monthly_plans, one_time:sites:create_default_kit_for_all_non_archived_sites"
+    desc "Step 2: one_time:sites:move_staging_hostnames_from_extra, one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans, one_time:sites:migrate_yearly_plans_to_monthly_plans, one_time:sites:create_default_kit_for_all_non_archived_sites"
     task migration_step_2: :environment do
+      Rake::Task['one_time:sites:move_staging_hostnames_from_extra'].execute
       Rake::Task['one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans'].execute
       Rake::Task['one_time:sites:migrate_yearly_plans_to_monthly_plans'].execute
       Rake::Task['one_time:sites:create_default_kit_for_all_non_archived_sites'].execute
+    end
+
+    desc "For all non-archived site, extracts staging hostnames from extra domains"
+    task move_staging_hostnames_from_extra: :environment do
+      timed { puts OneTime::Site.move_staging_hostnames_from_extra }
     end
 
     desc "For all non-archived site with a monthly plan, add the plan's price prorated between [now] and the end of the site's cycle and add it to the user's balance"

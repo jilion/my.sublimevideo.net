@@ -31,7 +31,7 @@ class Site < ActiveRecord::Base
 
   attr_accessor :last_transaction, :remote_ip
 
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :remote_ip, :default_kit_id
+  attr_accessible :hostname, :extra_hostnames, :staging_hostnames, :dev_hostnames, :path, :wildcard, :remote_ip, :default_kit_id
 
   serialize :last_30_days_billable_video_views_array, Array
 
@@ -96,6 +96,7 @@ class Site < ActiveRecord::Base
   validates :hostname, hostname: true
   validates :dev_hostnames,   dev_hostnames: true
   validates :extra_hostnames, extra_hostnames: true
+  validates :staging_hostnames, extra_hostnames: true
   validates :path, length: { maximum: 255 }
 
   # =============
@@ -148,7 +149,7 @@ class Site < ActiveRecord::Base
     to_json(only: [:token, :hostname])
   end
 
-  %w[hostname extra_hostnames dev_hostnames].each do |method_name|
+  %w[hostname extra_hostnames staging_hostnames dev_hostnames].each do |method_name|
     define_method "#{method_name}=" do |attribute|
       write_attribute(method_name, Hostname.clean(attribute))
     end
@@ -164,10 +165,6 @@ class Site < ActiveRecord::Base
 
   def unmemoize_all
     unmemoize_all_usages
-  end
-
-  def settings_changed?
-    (changed & %w[accessible_stage hostname extra_hostnames dev_hostnames path wildcard]).present?
   end
 
   def trial_days_remaining_for_billable_item(billable_item)
@@ -234,6 +231,7 @@ end
 #  plan_started_at                           :datetime
 #  refunded_at                               :datetime
 #  settings_updated_at                       :datetime
+#  staging_hostnames                         :text
 #  state                                     :string(255)
 #  token                                     :string(255)
 #  trial_started_at                          :datetime

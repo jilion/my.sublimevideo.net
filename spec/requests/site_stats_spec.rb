@@ -12,7 +12,7 @@ feature 'Stats page' do
 
     current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.token}/edit"
     page.should have_content 'Settings'
-    page.should have_no_content 'Stats'
+    page.should have_no_link 'Stats'
   end
 
   context 'user has not activated the stats add-on' do

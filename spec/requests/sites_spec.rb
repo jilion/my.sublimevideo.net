@@ -8,14 +8,14 @@ feature 'New site' do
   end
 
   scenario 'with no hostname' do
-    fill_in 'Domain', with: ''
+    fill_in 'Main domain', with: ''
     click_button 'Next'
 
     last_site_should_be_created('please-edit.me')
   end
 
   scenario 'with a hostname' do
-    fill_in 'Domain', with: hostname1
+    fill_in 'Main domain', with: hostname1
     click_button 'Next'
 
     last_site_should_be_created(hostname1)

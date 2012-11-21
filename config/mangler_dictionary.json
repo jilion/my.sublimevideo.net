@@ -52,7 +52,7 @@
   "defaultKit": "kt",
   "hosts": "ku",
   "devHosts": "kv",
-  // "": "kw",
+  "stagingHosts": "kw",
   // "": "kx",
   // "": "ky",
   "path": "kz",

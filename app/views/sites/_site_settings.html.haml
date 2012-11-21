@@ -1,83 +1,62 @@
--##site_settings.settings
--#  %h4.title Staging and alias domains
--#  .left.entry.site#site_setup_extra_hostnames
--#    = f.label :extra_hostnames, '', class: 'icon'
--#    = f.text_field :extra_hostnames, class: 'text', placeholder: 'staging-yourdomain.com', autocomplete: :off
--#  %p.info
--#    = raw "Add extra domains separated by commas. Extra domains are meant to be used #{content_tag(:strong, "exclusively")} for staging domains and alias domains (multiple domain names leading to the #{content_tag(:strong, "same content")})."
--#    = raw "#{link_to 'Learn more', docs_url('site-settings#staging-and-alias-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
--#  .spacer
--#
--#  %h4.title Development domains
--#  .left.entry.site#site_setup_dev_hostnames
--#    = f.label :dev_hostnames, '', class: 'icon'
--#    = f.text_field :dev_hostnames, class: 'text', placeholder: '127.0.0.1, localhost', autocomplete: :off
--#  -#%p.info= "Add (local only) development domains separated by commas."
--#  %p.info
--#    You can use this field to specify local development domains separated by commas.
--#    = raw "#{link_to 'Learn more', docs_url('site-settings#dev-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
--#  .spacer
--#
--#  %h4.title Path
--#  .left.entry.path
--#    = f.label :path, '', class: 'icon'
--#    = f.text_field :path, class: 'text small_icon', placeholder: 'path', autocomplete: :off, maxlength: 256
--#  %p.info
--#    = "Restrict your player to a specific path. The path will also be added to extra domains (but not to development domains)."
--#    = raw "#{link_to 'Learn more', docs_url('site-settings#path'), onclick: 'window.open(this); return false', class: 'hl'}."
--#  .spacer
--#
--#  %h4.title Wildcard
--#  .left.entry.wildcard.checkbox_wrap
--#    = f.check_box :wildcard
--#    = f.label :wildcard, 'Enable (*.yourdomain.com)'
--#  %p.info
--#    = "It will also be enabled for extra and development domains."
--#    = raw "#{link_to 'Learn more', docs_url('site-settings#wildcard'), onclick: 'window.open(this); return false', class: 'hl'}."
--#  .spacer
--#
--#  = link_to docs_page_url('site-settings'), class: 'help', onclick: 'window.open(this); return false' do
--#    %span Read more
--#
--#  .big_break
-
 #site_settings.settings
-  .left
-    %h4.title Staging and alias domains
+  %h4.title Production domains
+  .entry.site
+    = f.label :hostname
+    = f.label :hostname, '', class: 'icon'
+    = f.text_field :hostname, class: 'text', autocomplete: :off
     %p.info
-      = raw "Add extra domains separated by commas. Extra domains are meant to be used #{content_tag(:strong, "exclusively")} for staging domains and alias domains (multiple domain names leading to the #{content_tag(:strong, "same content")})."
-      = raw "#{link_to 'Learn more', docs_url('site-settings#staging-and-alias-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
-    .entry.site#site_setup_extra_hostnames
-      = f.label :extra_hostnames, "", class: "icon"
-      = f.text_field :extra_hostnames, class: "text", placeholder: "staging-yourdomain.com", autocomplete: :off
-
-    %h4.title Development domains
-    %p.info
-      = "You can use this field to specify local development domains separated by commas."
-      = raw "#{link_to 'Learn more', docs_url('site-settings#dev-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
-    .entry.site#site_setup_dev_hostnames
-      = f.label :dev_hostnames, "", class: "icon"
-      = f.text_field :dev_hostnames, class: "text", placeholder: "127.0.0.1, localhost", autocomplete: :off
-
-  .right
-    %h4.title= "Advanced settings"
-    %p.info
-      = "Restrict your player to a specific path. The path will also be added to extra domains (but not to development domains)."
-      = raw "#{link_to 'Learn more', docs_url('site-settings#path'), onclick: 'window.open(this); return false', class: 'hl'}."
-    .entry.path
-      %p
-        = f.label :path, "", class: "icon"
-        = f.text_field :path, class: "text small_icon", placeholder: "path", autocomplete: :off, maxlength: 256
-    .entry.wildcard
-      .checkbox_wrap
-        = f.check_box :wildcard
-        = f.label :wildcard, "Wildcard (*.yourdomain.com)"
-      %p.info
-        = "It will also be enabled for extra and development domains."
-        = raw "#{link_to 'Learn more', docs_url('site-settings#wildcard'), onclick: 'window.open(this); return false', class: 'hl'}."
+      This is a hostname, so you can also enter a subdomain (example: blog.yourdomain.com).
   .spacer
 
-  = link_to docs_page_url('site-settings'), class: "help", onclick: "window.open(this); return false" do
-    %span= "Read more"
+  .entry.site
+    = f.label :extra_hostnames
+    = f.label :extra_hostnames, '', class: 'icon'
+    = f.text_field :extra_hostnames, class: 'text', placeholder: 'yourdomain-alias.com', autocomplete: :off
+    %p.info
+      = raw "Alias domains (separated by commas) are meant to be used #{content_tag(:strong, "exclusively")} for multiple domain names leading to the #{content_tag(:strong, "same content")})."
+      = raw "#{link_to 'Learn more', docs_url('site-settings#alias-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
+  .spacer
 
-  .big_break
+  %h4.title Staging and Development domains
+  .entry.site
+    = f.label :staging_hostnames
+    = f.label :staging_hostnames, '', class: 'icon'
+    = f.text_field :staging_hostnames, class: 'text', placeholder: 'yourdomain-staging.com', autocomplete: :off
+    %p.info
+      = raw "Add staging domains separated by commas."
+      = raw "#{link_to 'Learn more', docs_url('site-settings#staging-hostnames'), onclick: 'window.open(this); return false', class: 'hl'}."
+  .spacer
+
+  .entry.site
+    = f.label :dev_hostnames
+    = f.label :dev_hostnames, '', class: 'icon'
+    = f.text_field :dev_hostnames, class: 'text', placeholder: '127.0.0.1, localhost', autocomplete: :off
+    %p.info
+      You can use this field to specify local development domains separated by commas.
+      = raw "#{link_to 'Learn more', docs_url('site-settings#dev-domains'), onclick: 'window.open(this); return false', class: 'hl'}."
+  .spacer
+  %p.note
+    = raw "Stats for staging and development domains #{content_tag(:strong, "are not")} counted."
+
+  %h4.title Advanced settings
+
+  .entry.path
+    = f.label :path
+    = f.label :path, '', class: 'icon'
+    = f.text_field :path, class: 'text small_icon', placeholder: 'path', autocomplete: :off, maxlength: 256
+    %p.info
+      = "Use this with caution only to restrict your player to a specific path. The path option is only added to production domains."
+      = raw "#{link_to 'Learn more', docs_url('site-settings#path'), onclick: 'window.open(this); return false', class: 'hl'}."
+  .spacer
+
+  .entry.wildcard
+    = f.label :wildcard, 'Wildcard (*.yourdomain.com)'
+    = f.check_box :wildcard
+    = f.label :wildcard, 'Enable'
+    %p.info
+      = "Enable the wildcard option to extend your SublimeVideo license to any subdomains of your production, staging and development domains."
+      = raw "#{link_to 'Learn more', docs_url('site-settings#wildcard'), onclick: 'window.open(this); return false', class: 'hl'}."
+  .spacer
+
+  = link_to docs_page_url('site-settings'), class: 'help', onclick: 'window.open(this); return false' do
+    %span Read more

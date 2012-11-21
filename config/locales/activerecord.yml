@@ -2,9 +2,11 @@ en:
   activerecord:
     attributes:
       site:
-        hostname:        "Domain"
+        hostname:        "Main domain"
         dev_hostnames:   "Development domains"
-        extra_hostnames: "Extra domains"
+        extra_hostnames: "Alias domains"
+        staging_hostnames: "Staging domains"
+        path: "Custom Path"
       user:
         terms_and_conditions: "Terms & Conditions"
         billing_address_1: "Street"
@@ -38,6 +40,11 @@ en:
               duplicate: "must be unique"
               include_hostname: "cannot include site domain"
             extra_hostnames:
+              invalid: "are invalid"
+              wildcard: "are invalid, please check wildcard option instead"
+              duplicate: "must be unique"
+              include_hostname: "cannot include site domain"
+            staging_hostnames:
               invalid: "are invalid"
               wildcard: "are invalid, please check wildcard option instead"
               duplicate: "must be unique"
