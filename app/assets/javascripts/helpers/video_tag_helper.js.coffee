@@ -68,9 +68,9 @@ class MySublimeVideo.Helpers.VideoTagHelper
 
     @dataSettings = {}
     if @options['settings']?
-      this.generateDataSettingsArrayFromJSON()
+      this.generateDataSettingsFromJSON()
     else
-      this.generateDataSettingsArrayFromDOM(addons)
+      this.generateDataSettingsFromDOM(addons)
 
     @dataSettings
 
@@ -99,7 +99,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateDataQuality: (source) ->
     if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ''
 
-  generateDataSettingsArrayFromJSON: ->
+  generateDataSettingsFromJSON: ->
     _.each @options['settings'], (setting, addonName) =>
       unless addonName is 'lightbox'
         _.each setting, (settingValue, settingName) =>
@@ -109,7 +109,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
           else
             this.processInputWithValue(dataSettingName, settingValue, null)
 
-  generateDataSettingsArrayFromDOM: (addons) ->
+  generateDataSettingsFromDOM: (addons) ->
     for addonName in addons
       $("input.previewable[data-addon='#{addonName}'], " +
       "input[type=radio][data-addon='#{addonName}']:checked").each (index, el) =>

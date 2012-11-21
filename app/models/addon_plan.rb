@@ -51,9 +51,10 @@ class AddonPlan < ActiveRecord::Base
   end
 
   def settings_template_for(design)
-    App::SettingsTemplate.where(
-      app_plugin_id: App::Plugin.where(addon_id: addon.id, app_design_id: addon.design_dependent? ? design.id : nil).first.try(:id),
-      addon_plan_id: id).first
+    dependant_design_id = addon.design_dependent? ? design.id : nil
+    plugin_id = App::Plugin.where(addon_id: addon.id, app_design_id: dependant_design_id).first.try(:id)
+
+    settings_templates.where(app_plugin_id: plugin_id).first
   end
 
   def beta?
