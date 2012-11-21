@@ -1,7 +1,7 @@
 class App::SettingsTemplate < ActiveRecord::Base
   serialize :template, Hash
 
-  attr_accessible :addon_plan, :plugin, :editable, :template, as: :admin
+  attr_accessible :addon_plan, :plugin, :template, as: :admin
 
   belongs_to :addon_plan
   belongs_to :plugin, class_name: 'App::Plugin', foreign_key: 'app_plugin_id'
@@ -16,7 +16,6 @@ end
 #  addon_plan_id :integer          not null
 #  app_plugin_id :integer
 #  created_at    :datetime         not null
-#  editable      :boolean          default(FALSE)
 #  id            :integer          not null, primary key
 #  template      :text
 #  updated_at    :datetime         not null

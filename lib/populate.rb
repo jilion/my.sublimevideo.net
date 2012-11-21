@@ -285,7 +285,7 @@ module Populate
               }
             }
           },
-          # { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil, editable: false,
+          # { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil,
           #   template: {
           #     enabled: {
           #       type: 'boolean',
