@@ -25,7 +25,6 @@ module OneTime
 
       # TODO: Remove after launch
       def move_staging_hostnames_from_extra
-        processed = 0
         ::Site.not_archived.where{ extra_hostnames =~ '%staging%' }.each do |site|
           extra, staging = [], []
           site.extra_hostnames.split(/,\s*/).each do |hostname|
