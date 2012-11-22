@@ -2,6 +2,7 @@
 #= require underscore
 #= require highcharts/highcharts
 #= require backbone
+#= require mousetrap.min
 #
 #= require_self
 #= require_tree ./helpers
@@ -32,19 +33,9 @@ window.spinOptions =
   trail:  60
   shadow: false
 
-MySublimeVideo.UI.prepareSiteSelector = ->
-  if ($select = $('#sites_select_title')).exists()
-    new MySublimeVideo.UI.SiteSelector(select: $select)
-
-MySublimeVideo.UI.prepareSiteActionsSelector = ->
+MySublimeVideo.UI.prepareFakeSelectors = ->
   $('a.show_button, a.site_select').each ->
-    $handler = $(this)
-    $handler.on 'click', ->
-      $actionList = $handler.siblings('ul.actions')
-      $('ul.actions').each ->
-        $(this).hide() unless $(this)[0] is $actionList[0]
-      $actionList.toggle()
-      false
+    new MySublimeVideo.UI.FakeSelect($(this))
 
 MySublimeVideo.UI.prepareLoaderCodePopups = ->
   $('a.loader_code').each ->
@@ -100,8 +91,7 @@ MySublimeVideo.UI.prepareVideoTagsTable = ->
       select: $('#js-video_tags_filter_select')
 
 MySublimeVideo.documentReady = ->
-  MySublimeVideo.UI.prepareSiteSelector()
-  MySublimeVideo.UI.prepareSiteActionsSelector()
+  MySublimeVideo.UI.prepareFakeSelectors()
   MySublimeVideo.UI.prepareFlashNotices()
   MySublimeVideo.UI.prepareHidableNotices()
   MySublimeVideo.UI.prepareLoaderCodePopups()
