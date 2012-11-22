@@ -4,10 +4,9 @@ class MySublimeVideo.UI.KitEditor
     this.setupModels()
     this.setupHelpers()
     this.setupInputsObservers()
-    this.setupLightboxTester()
 
     sublimevideo.ready =>
-      this.refreshVideoTagFromSettings('standard')
+      this.refreshVideoTagFromSettings()
 
   setupModels: ->
     @video    = new MySublimeVideo.Models.Video
@@ -21,7 +20,7 @@ class MySublimeVideo.UI.KitEditor
   setupInputsObservers: ->
     $("select, input[type=checkbox], input[type=radio], input[type=range], input[type=text], input[type=hidden]").each (index, el) =>
       $(el).on 'change', =>
-        this.refreshVideoTagFromSettings('standard')
+        this.refreshVideoTagFromSettings()
         false
 
     $('input[type=range]').each (index, el) =>
@@ -35,28 +34,19 @@ class MySublimeVideo.UI.KitEditor
         $('#custom_logo_fields').show()
       else
         $('#custom_logo_fields').hide()
-      this.refreshVideoTagFromSettings('standard')
+      this.refreshVideoTagFromSettings()
 
     $('#kit_setting-logo-image_url').on 'change', (e) =>
-      this.refreshVideoTagFromSettings('standard')
+      this.refreshVideoTagFromSettings()
 
-  setupLightboxTester: ->
-    $('#preview-lightbox-button').on 'click', (event) =>
-      this.refreshVideoTagFromSettings('lightbox')
-      false
+  refreshVideoTagFromSettings: ->
+    sublime.reprepareVideo 'standard', @videoTagHelpers['standard'].generateDataSettings()
 
-  refreshVideoTagFromSettings: (type) ->
-    switch type
-      when 'standard'
-        sublime.reprepareVideo 'standard', @videoTagHelpers[type].generateDataSettings()
-
-      when 'lightbox'
-        if lightbox = sublime.lightbox('lightbox-trigger')
-          lightbox.close()
-          $('#lightbox').attr('data-settings', @videoTagHelpers[type].generateDataSettingsAttribute([], contentOnly: true))
-          dataSettings = @videoTagHelpers[type].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
-          $('a#lightbox-trigger').attr('data-settings', dataSettings)
-          lightbox.open()
+    if lightbox = sublime.lightbox('lightbox-trigger')
+      lightbox.close()
+    dataSettings = @videoTagHelpers['lightbox'].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
+    $('#lightbox-trigger').attr('data-settings', dataSettings)
+    $('#lightbox').attr('data-settings', @videoTagHelpers['lightbox'].generateDataSettingsAttribute([], contentOnly: true))
 
   updateValueDisplayer: ($el) ->
     $("##{$el.attr('id')}_value").text Math.round($el.val() * 100) / 100
