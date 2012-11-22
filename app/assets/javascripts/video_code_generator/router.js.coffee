@@ -50,6 +50,12 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
       source.reset()
 
   initViews: ->
+    MSVVideoCodeGenerator.previewView = new MSVVideoCodeGenerator.Views.Preview
+      el: '#preview'
+
+    MSVVideoCodeGenerator.sourcesView = new MSVVideoCodeGenerator.Views.Kit
+      el: '#kit_selection'
+
     MSVVideoCodeGenerator.sourcesView = new MSVVideoCodeGenerator.Views.Sources
       el: '#video_sources'
 
@@ -62,6 +68,3 @@ class MSVVideoCodeGenerator.Routers.BuilderRouter extends Backbone.Router
     if $('.get_the_code').exists()
       MSVVideoCodeGenerator.codeView = new MSVVideoCodeGenerator.Views.Code
         el: '#video_code_form'
-
-    MSVVideoCodeGenerator.previewView = new MSVVideoCodeGenerator.Views.Preview
-      el: '#preview'

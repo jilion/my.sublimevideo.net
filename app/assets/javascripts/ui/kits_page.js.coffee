@@ -35,14 +35,6 @@ class MySublimeVideo.UI.KitsPage
     $('li.kit').each (index, el) =>
       $li = $(el)
       liId = $li.attr('id')
-      kitId = switch $li.data('design')
-        when 'classic' then '1'
-        when 'flat'    then '2'
-        when 'light'   then '3'
 
-      console.log "preview_#{liId}"
-      console.log _.extend(@videoTagHelpers[liId].generateDataSettings(), { 'player-kit': kitId })
-
-      sublime.reprepareVideo("preview_#{liId}", _.extend(@videoTagHelpers[liId].generateDataSettings(), { 'player-kit': kitId }))
-      $li.find('.preview').show()
+      sublime.prepareWithKit("preview_#{liId}", $li.data('settings'))
 

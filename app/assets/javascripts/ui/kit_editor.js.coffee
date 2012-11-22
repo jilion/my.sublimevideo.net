@@ -15,11 +15,11 @@ class MySublimeVideo.UI.KitEditor
 
   setupHelpers: ->
     @videoTagHelpers =
-      standard: new MySublimeVideo.Helpers.VideoTagHelper(@video)
-      lightbox: new MySublimeVideo.Helpers.VideoTagHelper(@lightbox)
+      standard: new MySublimeVideo.Helpers.VideoTagHelper(@video, forceSettings: true)
+      lightbox: new MySublimeVideo.Helpers.VideoTagHelper(@lightbox, forceSettings: true)
 
   setupInputsObservers: ->
-    $("input[type=checkbox], input[type=radio], input[type=range], input[type=text], input[type=hidden]").each (index, el) =>
+    $("select, input[type=checkbox], input[type=radio], input[type=range], input[type=text], input[type=hidden]").each (index, el) =>
       $(el).on 'change', =>
         this.refreshVideoTagFromSettings('standard')
         false
@@ -46,19 +46,17 @@ class MySublimeVideo.UI.KitEditor
       false
 
   refreshVideoTagFromSettings: (type) ->
-
     switch type
       when 'standard'
-        sublimevideo.unprepare('standard')
-        dataSettings = @videoTagHelpers[type].generateDataSettingsAttribute([], contentOnly: true)
-        $('video#standard').attr('data-settings', dataSettings)
-        sublimevideo.prepare('standard')
+        sublime.reprepareVideo 'standard', @videoTagHelpers[type].generateDataSettings()
 
       when 'lightbox'
-        sublime.lightbox('lightbox-trigger').close()
-        dataSettings = @videoTagHelpers[type].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
-        $('a#lightbox-trigger').attr('data-settings', dataSettings)
-        sublime.lightbox('lightbox-trigger').open()
+        if lightbox = sublime.lightbox('lightbox-trigger')
+          lightbox.close()
+          $('#lightbox').attr('data-settings', @videoTagHelpers[type].generateDataSettingsAttribute([], contentOnly: true))
+          dataSettings = @videoTagHelpers[type].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
+          $('a#lightbox-trigger').attr('data-settings', dataSettings)
+          lightbox.open()
 
   updateValueDisplayer: ($el) ->
     $("##{$el.attr('id')}_value").text Math.round($el.val() * 100) / 100

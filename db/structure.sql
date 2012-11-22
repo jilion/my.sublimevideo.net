@@ -312,7 +312,6 @@ CREATE TABLE app_settings_templates (
     id integer NOT NULL,
     addon_plan_id integer NOT NULL,
     app_plugin_id integer,
-    editable boolean DEFAULT false,
     template text,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -2379,5 +2378,7 @@ INSERT INTO schema_migrations (version) VALUES ('20121116102831');
 INSERT INTO schema_migrations (version) VALUES ('20121116133453');
 
 INSERT INTO schema_migrations (version) VALUES ('20121120124141');
+
+INSERT INTO schema_migrations (version) VALUES ('20121121161315');
 
 INSERT INTO schema_migrations (version) VALUES ('20121122073822');

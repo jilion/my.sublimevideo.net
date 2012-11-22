@@ -71,10 +71,10 @@ en:
           autohide: 'Auto-hide'
           visible: 'Always visible'
         position:
-          topLeft: 'Top left'
-          topRight: 'Top right'
-          bottomLeft: 'Bottom left'
-          bottomRight: 'Bottom right'
+          top-left: ''
+          top-right: ''
+          bottom-left: ''
+          bottom-right: ''
 
     sharing:
       title: 'Sharing settings'

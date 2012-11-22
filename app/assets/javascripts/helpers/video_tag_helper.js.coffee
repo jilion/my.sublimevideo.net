@@ -12,7 +12,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateVideoCode: (options = {}) ->
     attributes = []
     attributes.push "id=\"#{options['id']}\"" if options['id']?
-    attributes.push this.generateClass()
+    attributes.push this.generateClass(options)
     attributes.push this.generatePoster()
     attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
     attributes.push "data-youtube-id=\"#{@video.get('youtubeId')}\"" if @video.get('origin') is 'youtube'
@@ -64,7 +64,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
         "data-settings=\"#{content}\""
 
   generateDataSettings: (addons) ->
-    addons = ['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'] if _.isEmpty(addons)
+    addons = ['player', 'video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'] if _.isEmpty(addons)
 
     @dataSettings = {}
     if @options['settings']?
@@ -74,8 +74,8 @@ class MySublimeVideo.Helpers.VideoTagHelper
 
     @dataSettings
 
-  generateClass: ->
-    if @video.get('displayInLightbox') then '' else "class=\"sublime\""
+  generateClass: (options = {}) ->
+    if @video.get('displayInLightbox') or options['class'] is '' then '' else "class=\"sublime\""
 
   generatePoster: ->
     posterSrc = @video.get('poster').get('src')
@@ -112,6 +112,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateDataSettingsFromDOM: (addons) ->
     for addonName in addons
       $("input.previewable[data-addon='#{addonName}'], " +
+      "select[data-addon='#{addonName}'], " +
       "input[type=radio][data-addon='#{addonName}']:checked").each (index, el) =>
         $el = $(el)
         currentValue    = $el.val()
@@ -119,9 +120,12 @@ class MySublimeVideo.Helpers.VideoTagHelper
         dataSettingName = this.getDataSettingName(addonName, $el.data('setting'))
 
         switch this.getInputType($el)
-          when 'range'                   then this.processRangeInput(dataSettingName, currentValue, defaultValue)
-          when 'checkbox'                then this.processCheckBoxInput(dataSettingName, $el.attr('checked')?, defaultValue)
-          when 'radio', 'text', 'hidden' then this.processInputWithValue(dataSettingName, currentValue, defaultValue)
+          when 'range'
+            this.processRangeInput(dataSettingName, currentValue, defaultValue)
+          when 'checkbox'
+            this.processCheckBoxInput(dataSettingName, $el.attr('checked')?, defaultValue)
+          else
+            this.processInputWithValue(dataSettingName, currentValue, defaultValue)
 
   getInputType: ($el) ->
     $el.attr('type')

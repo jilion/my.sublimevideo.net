@@ -6,12 +6,12 @@
     %br
   %table#logo_position
     %tr
-      - %w[topLeft topRight].each do |choice|
+      - %w[top-left top-right].each do |choice|
         %td
           = render 'kits/inputs/radio', kit: kit, params: params, value: value, choice: choice
     %tr
-      - %w[bottomLeft bottomRight].each do |choice|
+      - %w[bottom-left bottom-right].each do |choice|
         %td
-          = render 'kits/inputs/radio', kit: kit, params: params, value: value, choice: choice
+          = render 'kits/inputs/radio', kit: kit, params: params.merge(label_on_left: true), value: value, choice: choice
 
 .spacer

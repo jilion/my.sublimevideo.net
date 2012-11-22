@@ -285,7 +285,7 @@ module Populate
               }
             }
           },
-          # { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil, editable: false,
+          # { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil,
           #   template: {
           #     enabled: {
           #       type: 'boolean',
@@ -318,8 +318,8 @@ module Populate
               },
               position: {
                 type: 'string',
-                values: ['bottomRight'],
-                default: 'bottomRight'
+                values: ['bottom-right'],
+                default: 'bottom-right'
               },
               image_url: {
                 type: 'image',
@@ -349,8 +349,8 @@ module Populate
               },
               position: {
                 type: 'string',
-                values: ['bottomRight'],
-                default: 'bottomRight'
+                values: ['bottom-right'],
+                default: 'bottom-right'
               },
               image_url: {
                 type: 'image',
@@ -381,8 +381,8 @@ module Populate
               },
               position: {
                 type: 'string',
-                values: ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'],
-                default: 'bottomRight'
+                values: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+                default: 'bottom-right'
               },
               image_url: {
                 type: 'image'
