@@ -1,5 +1,6 @@
 VideoTagSourcesAnalyzer = Struct.new(:video_tag) do
-  VIMEO_URL_PART = 'player.vimeo.com/external'
+
+  self::VIMEO_URL_PART = 'player.vimeo.com/external'
 
   def initialize(*args)
     super
@@ -20,7 +21,7 @@ private
     unless video_tag.sources_origin
       if vimeo_source?
         @origin = "vimeo"
-        @id = sources_urls.first.match(%r{//#{VIMEO_URL_PART}/(\d+)\..*})[1]
+        @id = sources_urls.first.match(%r{//#{self.class::VIMEO_URL_PART}/(\d+)\..*})[1]
       else
         @origin = "other"
       end
@@ -32,6 +33,9 @@ private
   end
 
   def vimeo_source?
-    sources_urls.first.include? VIMEO_URL_PART
+    puts sources_urls.first
+
+    sources_urls.first.include?(self.class::VIMEO_URL_PART)
   end
+
 end
