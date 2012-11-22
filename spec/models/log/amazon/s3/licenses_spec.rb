@@ -20,8 +20,10 @@ describe Log::Amazon::S3::Licenses do
     end
 
     it "should delay parse_log after create" do
-      described_class.should delay(:parse_log, queue: 'low', at: 5.seconds.from_now.to_i).with('log_id')
-      create(:log_s3_licenses, id: 'log_id')
+      Timecop.freeze do
+        described_class.should delay(:parse_log, queue: 'low', at: 5.seconds.from_now.to_i).with('log_id')
+        create(:log_s3_licenses, id: 'log_id')
+      end
     end
   end
 

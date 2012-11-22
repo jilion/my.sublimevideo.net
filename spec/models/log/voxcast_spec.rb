@@ -254,7 +254,6 @@ describe Log::Voxcast do
     end
     describe "#parse_and_create_video_tags!" do
       let(:video_tags_data) { { ['site_token', 'uid'] => { 'video' => 'data' } } }
-      let(:mock_delayed) { mock }
 
       it "analyzes logs" do
         video_tags_trackers = stub
