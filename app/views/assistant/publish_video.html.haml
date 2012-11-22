@@ -1,13 +1,11 @@
-- title 'Publish a video'
+- title "Publish a video on #{hostname_or_token(@site)}"
 = content_header 'Setup assistant'
 
 = render 'assistant/step_guide', current_step: 'publish_video'
 
-.tagline
-  %h3= "Publish a video on #{hostname_or_token(@site)}"
-
 #video_code.assistant
   = beta_loader_required
-  = form_tag assistant_summary_url(@site), id: 'video_code_form' do
+  %h3.assistant_title= "Publish a video on #{hostname_or_token(@site)}"
+  = form_tag assistant_summary_url(@site), id: 'video_code_form', data: { assistant: true } do
     = render 'video_codes/form', site: @site, kit: @kit, get_code_button: false
     = render 'assistant/next_box', display_exit: true

@@ -1,12 +1,13 @@
-- title 'Summary'
+- title "Summary for #{hostname_or_token(@site)}"
 = content_header 'Setup assistant'
 
+= render 'assistant/step_guide', current_step: 'summary'
+
 #summary.assistant
-  = render 'assistant/step_guide', current_step: 'summary'
   %h3.assistant_title= "Summary for #{hostname_or_token(@site)}"
   %form
     .white_box
-      %p Congratulations! You're now ready to use SublimeVideo on mydomain.com.
+      %p= "Congratulations! You're now ready to use SublimeVideo on #{hostname_or_token(@site)}."
 
       %p You just need to put the following loader code in the header of your site:
       .entry

@@ -1,13 +1,10 @@
-- title 'Choose your add-ons'
+- title "Choose player add-ons for #{hostname_or_token(@site)}"
 = content_header 'Setup assistant'
 
 = render 'assistant/step_guide', current_step: 'addons'
 
-.tagline
-  %h3= "Choose player add-ons for #{hostname_or_token(@site)}"
-  %h4= "You can change this at any time."
-
 #addons.assistant
+  %h3.assistant_title= "Choose player add-ons for #{hostname_or_token(@site)}"
   = form_for @site, url: url_for, method: 'put', html: { id: 'edit_addons' } do |f|
     = render 'addons/designs_and_addons', site: @site, f: f
     = render 'assistant/next_box', display_exit: true

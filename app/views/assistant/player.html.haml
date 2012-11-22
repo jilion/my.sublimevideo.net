@@ -1,8 +1,8 @@
-- title 'Configure your player'
+- title "Create a player for #{hostname_or_token(@site)}"
 = content_header 'Setup assistant'
 
-
 = render 'assistant/step_guide', current_step: 'player'
+
 #kit.edit.assistant
   = beta_loader_required
   %h3.assistant_title= "Create a player for #{hostname_or_token(@site)}"
