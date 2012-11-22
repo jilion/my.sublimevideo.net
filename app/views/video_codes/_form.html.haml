@@ -1,7 +1,7 @@
 :coffeescript
   $(document).ready ->
     SublimeVideoSizeChecker.setRoot('/video-size-checker/')
-    window.MSVVideoCodeGenerator.builderRouter = new MSVVideoCodeGenerator.Routers.BuilderRouter
+    window.MSVVideoCode.builderRouter = new MSVVideoCode.Routers.BuilderRouter
       sites: #{@sites.try(:to_json) || []}
       selectedSiteToken: '#{@site.token}'
       kit: #{@site.kits.first.to_json}
@@ -16,8 +16,7 @@
 
 .white_box
   #kit_selection
-    .entry.design.select
-      = render 'video_codes/kit_selection', site: site, kit: kit
+    .entry.design.select= render 'video_codes/kit_selection', site: site, kit: kit
 
   #video_sources.expandable_settings_box
     %h4.expanding_handler.expanded

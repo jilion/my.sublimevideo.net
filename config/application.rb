@@ -24,7 +24,7 @@ module MySublimeVideo
     config.watchable_dirs['lib'] = [:rb]
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w[stats.js video_code_generator.js admin/stats.js invoices.css invoices_print.css]
+    config.assets.precompile += %w[stats.js video_code.js admin/stats.js invoices.css invoices_print.css]
     config.assets.precompile += %w[admin.js admin/stats.js admin.css]
     config.assets.precompile += %w[invoices.css invoices_print.css]
 

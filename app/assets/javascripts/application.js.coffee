@@ -10,7 +10,7 @@
 #= require_tree ./ui
 #
 #= require stats
-#= require video_code_generator
+#= require video_code
 
 $.fn.exists = -> @length > 0
 

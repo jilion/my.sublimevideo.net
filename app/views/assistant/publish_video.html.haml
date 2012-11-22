@@ -6,7 +6,7 @@
 .tagline
   %h3= "Publish a video on #{hostname_or_token(@site)}"
 
-.video_code_generator.assistant
+#video_code.assistant
   = beta_loader_required
   = form_tag assistant_summary_url(@site), id: 'video_code_form' do
     = render 'video_codes/form', site: @site, kit: @kit, get_code_button: false

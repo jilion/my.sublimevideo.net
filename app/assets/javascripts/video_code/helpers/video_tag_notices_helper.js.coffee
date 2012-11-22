@@ -1,4 +1,4 @@
-class MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper
+class MSVVideoCode.Helpers.VideoTagNoticesHelper
   @MESSAGES_TEMPLATES:
     src_invalid:
       one: "There is one source that isn't a valid URL."
@@ -44,4 +44,4 @@ class MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper
     key = if problemsCount > 1 then 'other' else 'one'
     console.log problemType
     console.log problemsCount
-    MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper.MESSAGES_TEMPLATES[problemType][key].replace('%{count}', problemsCount)
+    MSVVideoCode.Helpers.VideoTagNoticesHelper.MESSAGES_TEMPLATES[problemType][key].replace('%{count}', problemsCount)

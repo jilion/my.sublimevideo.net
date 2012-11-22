@@ -1,4 +1,4 @@
-- messages = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video).buildMessages()
+- messages = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video).buildMessages()
 
 - unless _.isEmpty(messages)
   .notices

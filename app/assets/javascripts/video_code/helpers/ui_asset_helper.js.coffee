@@ -1,4 +1,4 @@
-class MSVVideoCodeGenerator.Helpers.UIAssetHelper
+class MSVVideoCode.Helpers.UIAssetHelper
   constructor: (@scope) ->
 
   hide: ->
@@ -19,7 +19,7 @@ class MSVVideoCodeGenerator.Helpers.UIAssetHelper
     $("##{@scope}_#{name}").show()
     $("##{@scope}_src").addClass 'errors'
 
-class MSVVideoCodeGenerator.Helpers.UISourceHelper extends MSVVideoCodeGenerator.Helpers.UIAssetHelper
+class MSVVideoCode.Helpers.UISourceHelper extends MSVVideoCode.Helpers.UIAssetHelper
   hideErrors: ->
     super
 

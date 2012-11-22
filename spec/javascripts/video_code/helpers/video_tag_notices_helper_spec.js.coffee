@@ -1,4 +1,4 @@
-describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
+describe 'MSVVideoCode.Helpers.VideoTagNoticesHelper', ->
   describe 'diagnose()', ->
     beforeEach ->
       @video = new MySublimeVideo.Models.Video
@@ -12,7 +12,7 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
           new MySublimeVideo.Models.Source(src: 'http://mydomain.com/foo.mp4', found: true, currentMimeType: 'video/wrong')
           new MySublimeVideo.Models.Source(src: 'http://mydomain.com/foo.mp4', found: true)
         ])
-      @helper = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video)
+      @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
       @helper.diagnose()
 
     it 'construct a hash of warnings', ->
@@ -29,7 +29,7 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
           sources: new MySublimeVideo.Collections.Sources([
             new MySublimeVideo.Models.Source(src: 'foo.mp4')
           ])
-        @helper = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
         @helper.buildMessages()
 
       it 'construct a hash of messages', ->
@@ -48,7 +48,7 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
             new MySublimeVideo.Models.Source(src: 'foo.mp4')
             new MySublimeVideo.Models.Source(src: 'foo.mp4')
           ])
-        @helper = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
         @helper.buildMessages()
 
       it 'has the right content', ->
@@ -62,7 +62,7 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
           sources: new MySublimeVideo.Collections.Sources([
             new MySublimeVideo.Models.Source(src: 'http://mydomain.com/foo.mp4', found: false)
           ])
-        @helper = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
         @helper.buildMessages()
 
       it 'construct a hash of messages', ->
@@ -81,7 +81,7 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
             new MySublimeVideo.Models.Source(src: 'http://mydomain.com/foo.mp4', found: false)
             new MySublimeVideo.Models.Source(src: 'http://mydomain.com/foo.mp4', found: false)
           ])
-        @helper = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
         @helper.buildMessages()
 
       it 'has the right content', ->
@@ -95,7 +95,7 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
           sources: new MySublimeVideo.Collections.Sources([
             new MySublimeVideo.Models.Source(src: 'http://mydomain.com/foo.mp4', found: true, currentMimeType: 'video/wrong')
           ])
-        @helper = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
         @helper.buildMessages()
 
       it 'construct a hash of messages', ->
@@ -114,7 +114,7 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
             new MySublimeVideo.Models.Source(src: 'http://mydomain.com/foo.mp4', found: true, currentMimeType: 'video/wrong')
             new MySublimeVideo.Models.Source(src: 'http://mydomain.com/foo.mp4', found: true, currentMimeType: 'video/wrong')
           ])
-        @helper = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
         @helper.buildMessages()
 
       it 'has the right content', ->
@@ -123,7 +123,7 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
     describe 'missing dataUID', ->
       beforeEach ->
         @video = new MySublimeVideo.Models.Video(dataUID: '', dataName: 'Foo', sources: new MySublimeVideo.Collections.Sources)
-        @helper = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
         @helper.buildMessages()
 
       it 'construct a hash of messages', ->
@@ -136,7 +136,7 @@ describe 'MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper', ->
     describe 'missing dataName', ->
       beforeEach ->
         @video = new MySublimeVideo.Models.Video(dataUID: 'foo', dataName: '', sources: new MySublimeVideo.Collections.Sources)
-        @helper = new MSVVideoCodeGenerator.Helpers.VideoTagNoticesHelper(@video)
+        @helper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(@video)
         @helper.buildMessages()
 
       it 'construct a hash of messages', ->

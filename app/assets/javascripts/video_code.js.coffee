@@ -5,9 +5,9 @@
 #= require inflection
 #
 #= require_self
-#= require_tree ./video_code_generator
+#= require_tree ./video_code
 
-window.MSVVideoCodeGenerator =
+window.MSVVideoCode =
   Models: {}
   Collections: {}
   Helpers: {}

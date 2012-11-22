@@ -238,7 +238,7 @@ MySublimeVideo::Application.routes.draw do
     end
     # Legacy redirect
     get  '/video-code-generator' => redirect('/publish-video')
-    get  '/publish-video' => 'video_codes#new', as: 'video_publishing_assistant'
+    get  '/publish-video' => 'video_codes#new', as: 'new_video_code'
     post '/mime-type-check' => 'video_codes#mime_type_check'
     get  '/sites/new' => redirect('/assistant/new-site')
 
