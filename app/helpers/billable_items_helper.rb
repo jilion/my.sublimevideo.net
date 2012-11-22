@@ -1,6 +1,14 @@
 # coding: utf-8
 module BillableItemsHelper
 
+  def highlighted_class(addon_plan)
+    return nil unless params[:h]
+
+    param_addon = params[:h].split('-')
+
+    highlited_class = param_addon[0] == addon_plan.addon.name && param_addon[1] == addon_plan.name ? 'highlight' : nil
+  end
+
   def beta_loader_required_notice(addon_plan)
     if addon_plan.required_stage == 'beta'
       content_tag(:small) do

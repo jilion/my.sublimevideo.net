@@ -6,7 +6,7 @@
     - addon_plan_is_sponsored = site.addon_plan_is_sponsored?(addon_plan)
     - price = addon_plan_is_sponsored || addon_plan.beta? ? 0 : addon_plan.price
     - disabled = addon_plan.free? || addon_plan_is_sponsored
-    %tr
+    %tr{ class: highlighted_class(addon_plan) }
       %td
         - if visible_addon_plans.size > 1
           .radio_wrap
