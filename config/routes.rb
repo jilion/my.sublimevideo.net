@@ -204,7 +204,7 @@ MySublimeVideo::Application.routes.draw do
     match '/assistant/:site_id/addons' => 'assistant#addons', as: 'assistant_addons', via: [:get, :put]
     match '/assistant/:site_id/player' => 'assistant#player', as: 'assistant_player', via: [:get, :put]
     get   '/assistant/:site_id/publish-video' => 'assistant#publish_video', as: 'assistant_publish_video'
-    post  '/assistant/:site_id/summary' => 'assistant#summary', as: 'assistant_summary'
+    match  '/assistant/:site_id/summary' => 'assistant#summary', as: 'assistant_summary', via: [:get, :post]
 
     get '/addons' => 'addons#directory'
 

@@ -16,7 +16,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push this.generatePoster()
     attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
     attributes.push "data-youtube-id=\"#{@video.get('youtubeId')}\"" if @video.get('origin') is 'youtube'
-    attributes.push this.generateDataSettingsAttribute(['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'])
+    attributes.push this.generateDataSettingsAttribute(['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'], options)
     attributes.push this.generateDataUIDAndName()
     attributes.push this.generateStyle()
     attributes.push "preload=\"none\""
@@ -40,7 +40,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push "id=\"#{options['lightboxId']}\"" if options['lightboxId']?
     attributes.push "class=\"#{options['lightboxClass'] or 'sublime'}\""
     attributes.push "style=\"#{options['lightboxStyle']}\"" if options['lightboxStyle']?
-    attributes.push this.generateDataSettingsAttribute(['lightbox'])
+    attributes.push this.generateDataSettingsAttribute(['lightbox'], options)
     code = "<a #{_.compact(attributes).join(' ')}>\n  "
 
     if @video.get('thumbnail').get('initialLink') is 'image'
@@ -63,10 +63,11 @@ class MySublimeVideo.Helpers.VideoTagHelper
       else
         "data-settings=\"#{content}\""
 
-  generateDataSettings: (addons) ->
+  generateDataSettings: (addons, options = {}) ->
     addons = ['player', 'video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'] if _.isEmpty(addons)
 
     @dataSettings = {}
+    @dataSettings['player-kit'] = options['playerKit'] if options['playerKit']?
     if @options['settings']?
       this.generateDataSettingsFromJSON()
     else

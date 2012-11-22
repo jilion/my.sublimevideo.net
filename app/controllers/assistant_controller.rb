@@ -1,4 +1,6 @@
 require_dependency 'service/assistant'
+require_dependency 'service/site'
+require_dependency 'service/kit'
 
 class AssistantController < ApplicationController
   before_filter :find_sites
@@ -9,15 +11,12 @@ class AssistantController < ApplicationController
   # GET /assistant/new-site
   # POST /assistant/new-site
   def new_site
+    @site = current_user.sites.build(params[:site])
     if request.post?
-      @site = current_user.sites.build(params[:site])
-
       if @site.valid?
         Service::Site.new(@site).create
         redirect_to assistant_addons_path(@site), notice: t('flash.sites.create.notice')
       end
-    else
-      @site = current_user.sites.build
     end
   end
 
@@ -45,8 +44,10 @@ class AssistantController < ApplicationController
   def publish_video
   end
 
+  # GET /assistant/:site_id/summary
   # POST /assistant/:site_id/summary
   def summary
+    redirect_to sites_url if request.get?
   end
 
   private

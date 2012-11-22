@@ -85,4 +85,16 @@ feature 'assistant pages' do
       current_url.should eq "http://my.sublimevideo.dev/assistant/#{@site.to_param}/player"
     end
   end
+
+  context 'user is logged-in' do
+    background do
+      sign_in_as :user_with_site
+      @site = @current_user.sites.first
+    end
+
+    scenario 'redirects from/assistant/:token/summary to /sites' do
+      go 'my', "assistant/#{@site.to_param}/summary"
+      current_url.should eq "http://my.sublimevideo.dev/sites"
+    end
+  end
 end
