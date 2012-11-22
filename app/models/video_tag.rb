@@ -28,15 +28,16 @@ class VideoTag < ActiveRecord::Base
 
   validates :site_id, presence: true, uniqueness: { scope: :uid }
   validates :uid, :uid_origin, presence: true
-  validates :uid_origin, :name_origin, inclusion: %w[attribute source]
-  validates :video_id_origin, inclusion: %w[youtube], allow_nil: true
+  validates :uid_origin, inclusion: %w[attribute source]
+  validates :name_origin, inclusion: %w[attribute source youtube vimeo], allow_nil: true
+  validates :sources_origin, inclusion: %w[youtube vimeo other], allow_nil: true
 
   def to_param
     uid
   end
 
   def name=(attribute)
-    write_attribute :name, attribute.to(254)
+    write_attribute :name, attribute.try(:to, 254)
   end
 
   def sources=(attributes)
@@ -47,6 +48,11 @@ class VideoTag < ActiveRecord::Base
       end
     end
     write_attribute :sources, sources
+  end
+
+  # TODO Remove once VideoTag data only get from CORS
+  def used_sources
+    sources.select { |key, value| key.in?(current_sources) }
   end
 
   def data
@@ -69,11 +75,11 @@ end
 #  site_id         :integer          not null
 #  size            :string(255)
 #  sources         :text
+#  sources_id      :string(255)
+#  sources_origin  :string(255)
 #  uid             :string(255)      not null
 #  uid_origin      :string(255)      not null
 #  updated_at      :datetime         not null
-#  video_id        :string(255)
-#  video_id_origin :string(255)
 #
 # Indexes
 #

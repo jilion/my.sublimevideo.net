@@ -1,0 +1,46 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://vimeo.com:80/api/v2/video/invalid_video_id.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 404
+      message: Not Found
+    headers:
+      server:
+      - Apache
+      x-ratelimit-limit:
+      - '3600'
+      x-ratelimit-remaining:
+      - '3594'
+      x-ratelimit-reset:
+      - '1353583318'
+      expires:
+      - Thu, 22 Nov 2012 10:40:53 GMT
+      x-ua-compatible:
+      - IE=edge,chrome=1
+      vary:
+      - Accept-Encoding
+      content-type:
+      - text/html; charset=UTF-8
+      transfer-encoding:
+      - chunked
+      date:
+      - Thu, 22 Nov 2012 10:35:53 GMT
+      x-varnish:
+      - '1063475344'
+      age:
+      - '0'
+      via:
+      - 1.1 varnish
+      x-varnish-cache:
+      - '0'
+      x-vserver:
+      - 10.90.128.196
+      cache-control:
+      - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+    body: invalid_video_id is not a valid method.
+    http_version: '1.1'

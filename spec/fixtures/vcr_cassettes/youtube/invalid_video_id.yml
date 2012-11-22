@@ -1,0 +1,35 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://gdata.youtube.com:80/feeds/api/videos/invalid_video_id?v=2
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 400
+      message: Bad Request
+    headers:
+      x-gdata-user-country:
+      - CH
+      content-type:
+      - application/vnd.google.gdata.error+xml
+      transfer-encoding:
+      - chunked
+      date:
+      - Thu, 22 Nov 2012 10:33:35 GMT
+      expires:
+      - Thu, 22 Nov 2012 10:33:35 GMT
+      cache-control:
+      - private, max-age=0
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - SAMEORIGIN
+      x-xss-protection:
+      - 1; mode=block
+      server:
+      - GSE
+    body: <errors xmlns='http://schemas.google.com/g/2005'><error><domain>GData</domain><code>InvalidRequestUriException</code><internalReason>Invalid
+      id</internalReason></error></errors>
+    http_version: '1.1'

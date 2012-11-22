@@ -20,44 +20,44 @@ describe 'Videos', ->
     describe 'currentSources()', ->
       beforeEach ->
         @video = new MSVStats.Models.Video
-          cs: ['source1', 'source3', 'source4']
-          s:
+          current_sources: ['source1', 'source3', 'source4']
+          sources:
             source1:
-              u: 'http://videos.sublimevideo.net/source1.mp4'
-              q: 'base'
-              f: 'mp4'
-              r: '460x340'
+              url: 'http://videos.sublimevideo.net/source1.mp4'
+              quality: 'base'
+              family: 'mp4'
+              resolution: '460x340'
             source2:
-              u: 'http://videos.sublimevideo.net/source2.mp4'
-              q: 'base'
-              f: 'mp4'
-              r: '460x340'
+              url: 'http://videos.sublimevideo.net/source2.mp4'
+              quality: 'base'
+              family: 'mp4'
+              resolution: '460x340'
             source3:
-              u: 'http://videos.sublimevideo.net/source3.mp4'
-              q: 'base'
-              f: 'mp4'
-              r: '460x340'
+              url: 'http://videos.sublimevideo.net/source3.mp4'
+              quality: 'base'
+              family: 'mp4'
+              resolution: '460x340'
 
       it 'returns first source if no mobile source', ->
         expect(@video.currentSources()).toEqual([
           {
-            u: 'http://videos.sublimevideo.net/source1.mp4'
-            q: 'base'
-            f: 'mp4'
-            r: '460x340'
+            url: 'http://videos.sublimevideo.net/source1.mp4'
+            quality: 'base'
+            family: 'mp4'
+            resolution: '460x340'
           }
           {
-            u: 'http://videos.sublimevideo.net/source3.mp4'
-            q: 'base'
-            f: 'mp4'
-            r: '460x340'
+            url: 'http://videos.sublimevideo.net/source3.mp4'
+            quality: 'base'
+            family: 'mp4'
+            resolution: '460x340'
           }
         ])
 
     describe 'width() & height()', ->
       beforeEach ->
         @video = new MSVStats.Models.Video
-          z: '1280x720'
+          size: '1280x720'
 
       it 'return 1280 for width', ->
         expect(@video.width()).toEqual(1280)
@@ -65,8 +65,20 @@ describe 'Videos', ->
       it 'return 720 for height', ->
         expect(@video.height()).toEqual(720)
 
-    describe 'vlTotal() & vvTotal()', ->
+    describe 'youtubeId()', ->
+      it 'return sources_id if sources_origin is youtube', ->
+        video = new MSVStats.Models.Video
+          sources_origin: 'youtube'
+          sources_id: 'youtube_id'
+        expect(video.youtubeId()).toEqual('youtube_id')
 
+      it 'return null if sources_origin is other', ->
+        video = new MSVStats.Models.Video
+          sources_origin: 'other'
+          sources_id: 'other_id'
+        expect(video.youtubeId()).toEqual(null)
+
+    describe 'vlTotal() & vvTotal()', ->
       describe 'with vv_sum & vl_sum null', ->
         beforeEach ->
           @video = new MSVStats.Models.Video

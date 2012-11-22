@@ -4,12 +4,12 @@ class MSVStats.Models.Video extends Backbone.Model
     uid_origin: null
     name: null
     name_origin: null
-    video_id: null
-    video_id_origin: null
     poster_url: null
     size: null
     current_sources: []
     sources: {}
+    sources_id: null
+    sources_origin: null
     vl_sum: null # main + extra
     vv_sum: null # main + extra
     vl_array: []
@@ -53,7 +53,11 @@ class MSVStats.Models.Video extends Backbone.Model
 
   isUidGetFromSource: -> this.get('uid_origin') == 'source'
   isNameGetFromSource: -> this.get('name_origin') == 'source'
-  isYouTubeVideo: -> this.get('video_id_origin') == 'youtube'
+  isYouTubeVideo: -> this.get('sources_origin') == 'youtube'
+
+  youtubeId: ->
+    if this.isYouTubeVideo()
+      this.get('sources_id')
 
   sslPosterUrl: ->
     if this.get('poster_url').match(/^https/)
@@ -68,7 +72,7 @@ class MSVStats.Models.Video extends Backbone.Model
       else
         this.get('name')
     else if this.isYouTubeVideo()
-      "Youtube: ##{this.get('video_id').toUpperCase()}"
+      "Youtube: ##{this.youtubeId().toUpperCase()}"
     else
       '–'
 

@@ -45,7 +45,7 @@ module VideoTagsHelper
       preload: 'none',
       style: 'display:none'
     ) do
-      sources = video_tag.sources.select { |key, value| key.in?(video_tag.current_sources) }.map do |source|
+      sources = video_tag.used_sources.map do |source|
         options = { src: source.last['url'] }
         options[:data] = { quality: 'hd' } if source.last['quality'] == 'hd'
         tag('source', options)

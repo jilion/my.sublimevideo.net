@@ -30,9 +30,9 @@ describe VideoTag do
     it { should validate_presence_of(:uid) }
     it { should validate_presence_of(:uid_origin) }
     # it { should validate_uniqueness_of(:site_id).scoped_to(:uid) } # doesn't work with null: false on uid
-    it { should ensure_inclusion_of(:name_origin).in_array(%w[attribute source]) }
+    it { should ensure_inclusion_of(:name_origin).in_array(%w[attribute source youtube vimeo]).allow_nil }
     it { should ensure_inclusion_of(:uid_origin).in_array(%w[attribute source]) }
-    it { should ensure_inclusion_of(:video_id_origin).in_array(%w[youtube]).allow_nil }
+    it { should ensure_inclusion_of(:sources_origin).in_array(%w[youtube vimeo other]).allow_nil }
   end
 
   describe "#to_param" do
@@ -47,6 +47,25 @@ describe VideoTag do
       256.times.each { long_name += 'a' }
       video_tag.update_attributes(name: long_name)
       video_tag.name.size.should eq 255
+    end
+
+    it "sets to nil" do
+      video_tag.update_attributes(name: nil)
+      video_tag.name.should be_nil
+    end
+  end
+
+  describe "#used_sources" do
+    let(:video_tag) { described_class.new(
+      current_sources: %w[57fb2708 27fe0de1],
+      sources: {
+      '57fb2708' => { url: 'http://media.jilion.com/vcg/ms_360p.mp4' },
+      '27fe0de1' => { url: 'http://media.jilion.com/vcg/ms_720p.mp4' },
+      '2625adcf' => { url: 'http://media.jilion.com/vcg/ms_360p.webm' },
+      }
+    ) }
+    it "returns only sources in current_sources" do
+      video_tag.used_sources.keys.should eq video_tag.current_sources
     end
   end
 
@@ -126,11 +145,10 @@ describe VideoTag do
     %w[
       uid uid_origin
       name name_origin
-      video_id video_id_origin
       poster_url
       duration
       size
-      current_sources sources
+      current_sources sources sources_id sources_origin
       settings
     ].each do |attribute|
       it "includes #{attribute}" do
@@ -162,11 +180,11 @@ end
 #  site_id         :integer          not null
 #  size            :string(255)
 #  sources         :text
+#  sources_id      :string(255)
+#  sources_origin  :string(255)
 #  uid             :string(255)      not null
 #  uid_origin      :string(255)      not null
 #  updated_at      :datetime         not null
-#  video_id        :string(255)
-#  video_id_origin :string(255)
 #
 # Indexes
 #
