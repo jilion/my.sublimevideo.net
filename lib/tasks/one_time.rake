@@ -61,6 +61,10 @@ namespace :one_time do
   end
 
   namespace :video_tags do
+    desc "Update video_tags name"
+    task update_names: :environment do
+      timed { OneTime::VideoTag.update_names }
+    end
   end
 
   namespace :sites do

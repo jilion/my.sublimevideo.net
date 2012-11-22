@@ -24,7 +24,6 @@ class MySublimeVideo.Models.Video extends Backbone.Model
         if source.srcIsUsable()
           result = true
           return
-
       result
 
   setKeepRatio: (keepRatio) ->

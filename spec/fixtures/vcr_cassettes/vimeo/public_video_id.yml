@@ -1,0 +1,58 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://vimeo.com:80/api/v2/video/35386044.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - Apache
+      x-ratelimit-limit:
+      - '3600'
+      x-ratelimit-remaining:
+      - '3595'
+      x-ratelimit-reset:
+      - '1353583318'
+      expires:
+      - Thu, 22 Nov 2012 10:36:23 GMT
+      last-modified:
+      - Tue, 20 Nov 2012 12:56:48 GMT
+      etag:
+      - ! '"89b27a899136e3a1b9792cd1eedc9b31"'
+      x-ua-compatible:
+      - IE=edge,chrome=1
+      vary:
+      - Accept-Encoding
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      date:
+      - Thu, 22 Nov 2012 10:35:23 GMT
+      x-varnish:
+      - '1063465552'
+      age:
+      - '0'
+      via:
+      - 1.1 varnish
+      x-varnish-cache:
+      - '0'
+      x-vserver:
+      - 10.90.128.196
+      cache-control:
+      - no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+    body: ! '[{"id":35386044,"title":"Sony Professional - MCS-8M Switcher","description":"To
+      find out more about the MCS-8M visit: http:\/\/bit.ly\/zwyNbV  Sony introduces
+      the latest in its line of reliable switcher products. The MCS-8M is a compact
+      full HD 1920 x 1080 switcher, providing broadcast quality in an all in one production
+      system.","url":"http:\/\/vimeo.com\/35386044","upload_date":"2012-01-20 13:11:31","mobile_url":"http:\/\/vimeo.com\/m\/35386044","thumbnail_small":"http:\/\/b.vimeocdn.com\/ts\/241\/847\/241847555_100.jpg","thumbnail_medium":"http:\/\/b.vimeocdn.com\/ts\/241\/847\/241847555_200.jpg","thumbnail_large":"http:\/\/b.vimeocdn.com\/ts\/241\/847\/241847555_640.jpg","user_id":2507467,"user_name":"Sony
+      Professional Europe","user_url":"http:\/\/vimeo.com\/sonyprofessional","user_portrait_small":"http:\/\/b.vimeocdn.com\/ps\/181\/816\/1818161_30.jpg","user_portrait_medium":"http:\/\/b.vimeocdn.com\/ps\/181\/816\/1818161_75.jpg","user_portrait_large":"http:\/\/b.vimeocdn.com\/ps\/181\/816\/1818161_100.jpg","user_portrait_huge":"http:\/\/b.vimeocdn.com\/ps\/181\/816\/1818161_300.jpg","stats_number_of_likes":3,"stats_number_of_plays":1691,"stats_number_of_comments":0,"duration":172,"width":1280,"height":720,"tags":"Sony,
+      Sony Professional, Sony PSE, Sony MCS-8M, MCS-8M, MCS8M Switcher, Sony Switcher,
+      Vision mixer, Video, Digital Video, Production Editing, Live production, broadcast
+      3D, 3D Video, Full HD, HD Video, make.believe, Claus Pfeifer","embed_privacy":"anywhere"}]'
+    http_version: '1.1'

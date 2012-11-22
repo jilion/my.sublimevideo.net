@@ -1267,8 +1267,8 @@ CREATE TABLE video_tags (
     uid_origin character varying(255) NOT NULL,
     name character varying(255),
     name_origin character varying(255),
-    video_id character varying(255),
-    video_id_origin character varying(255),
+    sources_id character varying(255),
+    sources_origin character varying(255),
     poster_url text,
     size character varying(255),
     duration integer,
@@ -2379,3 +2379,5 @@ INSERT INTO schema_migrations (version) VALUES ('20121116102831');
 INSERT INTO schema_migrations (version) VALUES ('20121116133453');
 
 INSERT INTO schema_migrations (version) VALUES ('20121120124141');
+
+INSERT INTO schema_migrations (version) VALUES ('20121122073822');
