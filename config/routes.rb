@@ -82,7 +82,8 @@ MySublimeVideo::Application.routes.draw do
 
       resources :sites, only: [:index, :show, :edit, :update] do
         member do
-          put :sponsor
+          put :update_app_design_subscription
+          put :update_addon_plan_subscription
         end
       end
       resources :plans, only: [:index]

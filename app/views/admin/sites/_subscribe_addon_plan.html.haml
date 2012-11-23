@@ -1,0 +1,12 @@
+%h3 Update addon plan subscription
+
+= form_for [:update_addon_plan_subscription, :admin, site] do |f|
+  .entry
+    = label_tag :force, 'Addon plan:'
+    = select_tag 'addon_plan_id', addon_plans_for_select(site)
+
+  .entry
+    = label_tag :state, 'Action:'
+    = select_tag :state, options_for_select([['Normal subscribe (auto-subscribe for free, trial or beta)', ''], ['Force subscribe (skip trial)', 'subscribed'], ['Sponsor', 'sponsored'], ['Cancel', 'canceled']], selected: '')
+
+  .actions.center= f.submit "Update addon plan subscription", data: { confirm: "Are you sure?" }

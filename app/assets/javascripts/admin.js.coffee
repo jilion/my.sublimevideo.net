@@ -23,7 +23,7 @@ window.AdminSublimeVideo =
   Routers: {}
   Views: {}
 
-window.AdminSublimeVideo.Helpers.addCommasToInteger = (nStr) ->
+AdminSublimeVideo.Helpers.addCommasToInteger = (nStr) ->
   nStr += ''
   x = nStr.split('.')
   x1 = x[0]
@@ -34,8 +34,13 @@ window.AdminSublimeVideo.Helpers.addCommasToInteger = (nStr) ->
 
   x1 + x2
 
+AdminSublimeVideo.UI.prepareExpandableItems = ->
+  $('.expanding_handler').each ->
+    new MySublimeVideo.UI.ExpandableItem($(this))
+
 AdminSublimeVideo.documentReady = ->
   AdminSublimeVideo.UI.prepareComponentSelector()
+  AdminSublimeVideo.UI.prepareExpandableItems()
 
   if (searchInput = $('#search_input')).exists()
     new AdminSublimeVideo.Form.Ajax(form: searchInput.parent('form'))

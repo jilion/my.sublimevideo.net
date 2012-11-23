@@ -384,6 +384,22 @@ select#user_early_access {
 }
 
 /* remy */
+.expandable {
+  display:none;
+}
+
+h3.expanding_handler a {
+  display:block;
+  padding:10px 40px;
+  background:url(<%= asset_path "sites/expandable_box_arrow@2x.png" %>) no-repeat 23px 50%;
+  background-size:10px 13px;
+}
+
+h3.expanding_handler.expanded a {
+  background:url(<%= asset_path "sites/expandable_box_arrow_active@2x.png" %>) no-repeat 22px 50%;
+  background-size:12px 11px;
+}
+
 #main form.date_chooser {
   position:absolute;
   top:0;

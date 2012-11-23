@@ -8,7 +8,6 @@
 
 - not_archived_sites = Site.not_archived.count
 - free_sites         = Site.in_plan('free').count
-- sponsored_sites    = Site.in_plan('sponsored').count
 
 - total_users       = User.active.count
 - today_signups     = User.active.created_on(Time.now.utc)
@@ -29,10 +28,6 @@
           %td Free
           %td= free_sites
           %td= display_percentage(free_sites.to_f / not_archived_sites)
-        %tr{ style: 'border:solid 1px' }
-          %td Sponsored
-          %td= sponsored_sites
-          %td= display_percentage(sponsored_sites.to_f / not_archived_sites)
 
       %table{ style: "float:left; border:solid 1px" }
         %tr

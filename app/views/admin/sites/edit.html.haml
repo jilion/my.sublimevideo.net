@@ -21,41 +21,13 @@
 = render 'timeline_usage', site: @site
 %br
 
-%h3 Billable items
-%table
+%table.crado
   %tr
-    %th Since
-    %th Addon
-    %th State
-  - @site.billable_items.reorder('created_at DESC').each do |billable_item|
-    %tr
-      %td= display_time(billable_item.created_at)
-      %td
-        - if billable_item.item.is_a?(App::Design)
-          = 'Design: ' + t("app_designs.#{billable_item.item.name}")
-        - elsif billable_item.item.is_a?(AddonPlan)
-          = 'Add-on: ' + t("addon_plans.#{billable_item.item.addon.name}.#{billable_item.item.name}")
-        - else
-          = "Plan: #{billable_item.item.title}"
-      %td= billable_item.state
+    %td#subscribe_design= render 'subscribe_design', site: @site
+    %td#subscribe_addon_plan= render 'subscribe_addon_plan', site: @site
 
-%h3 Billable items activities
-%table
-  %tr
-    %th Date
-    %th Addon
-    %th State
-  - @site.billable_item_activities.reorder('created_at DESC').each do |activity|
-    %tr
-      %td= display_time(activity.created_at)
-      %td
-        - if activity.item.is_a?(App::Design)
-          = 'Design: ' + t("app_designs.#{activity.item.name}")
-        - elsif activity.item.is_a?(AddonPlan)
-          = 'Add-on: ' + t("addon_plans.#{activity.item.addon.name}.#{activity.item.name}")
-        - else
-          = "Plan: #{activity.item.title}"
-      %td= activity.state
+#billable_items= render 'billable_items', site: @site
+#billable_items_activities= render 'billable_items_activities', site: @site
 
 - if has_role?('invoices')
   %h3 Invoices
@@ -76,13 +48,8 @@
     = f.submit "Update accessible stage", data: { confirm: "Are you sure?" }
   %br
 
-  -# TODO: Replace with per-addon sponsoring
-  -#- unless @site.in_sponsored_plan?
-  -#  %h3 Sponsoring
-  -#  = form_for [:sponsor, :admin, @site] do |f|
-  -#    = f.submit "Change current plan to sponsored plan", data: { confirm: "Are you sure?" }
-  %br
-  %hr
-  %br
+%br
+%hr
+%br
 
 %p= link_to "Back to sites", [:admin, :sites]

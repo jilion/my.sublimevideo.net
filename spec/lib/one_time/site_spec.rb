@@ -25,7 +25,7 @@ describe OneTime::Site do
       described_class.move_staging_hostnames_from_extra
 
       site_with_staging.reload.extra_hostnames.should eq 'domain.net'
-      site_with_staging.reload.staging_hostnames.should eq 'domain-staging.com,staging.domain.com'
+      site_with_staging.reload.staging_hostnames.should eq 'domain-staging.com, staging.domain.com'
       site_with_extra_only.reload.extra_hostnames.should eq 'domain.net'
       site_with_extra_only.reload.staging_hostnames.should be_nil
       site_without_extra.reload.extra_hostnames.should be_nil

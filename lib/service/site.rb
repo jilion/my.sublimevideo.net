@@ -51,10 +51,10 @@ module Service
 
     # app_designs => { "classic"=>"0", "light"=>"42" }
     # addon_plans => { "logo"=>"80", "support"=>"88" }
-    def update_billable_items(app_designs, addon_plans)
+    def update_billable_items(app_designs, addon_plans, options = {})
       ::Site.transaction do
-        set_billable_app_designs(app_designs || {})
-        set_billable_addon_plans(addon_plans || {})
+        set_billable_app_designs(app_designs || {}, options)
+        set_billable_addon_plans(addon_plans || {}, options)
         site.loaders_updated_at  = Time.now.utc
         site.settings_updated_at = Time.now.utc
         site.addons_updated_at   = Time.now.utc

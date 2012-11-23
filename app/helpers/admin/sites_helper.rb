@@ -59,4 +59,41 @@ module Admin::SitesHelper
     uri.html_safe
   end
 
+  def app_designs_for_select(site)
+    app_designs = App::Design.all
+
+    items = []
+    app_designs.each do |app_design|
+      title = if billable_item = site.billable_items.app_designs.where(item_id: app_design.id).first
+        "#{app_design.title} (#{billable_item.state})"
+      else
+        app_design.title
+      end
+      items << [title, app_design.id]
+    end
+
+    options_for_select(items)
+  end
+
+  def addon_plans_for_select(site)
+    grouped_options = {}
+    addons = Addon.includes(:plans).all
+
+    addons.each do |addon|
+      group_items = []
+      addon.plans.each do |addon_plan|
+        title = if billable_item = site.billable_items.addon_plans.where(item_id: addon_plan.id).first
+          "#{addon_plan.title} (#{billable_item.state})"
+        else
+          addon_plan.title
+        end
+        group_items << [title, addon_plan.id]
+      end
+
+      grouped_options[addon.title] = group_items if group_items.present?
+    end
+
+    grouped_options_for_select(grouped_options)
+  end
+
 end

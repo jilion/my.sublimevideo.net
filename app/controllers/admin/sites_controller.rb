@@ -1,7 +1,9 @@
+require_dependency 'service/site'
+
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
 
-  before_filter { |controller| require_role?('god') if %w[sponsor].include?(action_name) }
+  before_filter { |controller| require_role?('god') if action_name =~ /update/ }
   before_filter :set_default_scopes, only: [:index]
 
   # filter & search
@@ -35,21 +37,49 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id
   def update
     @site = Site.find_by_token!(params[:id])
-    params[:site].delete(:mode) unless has_role?('god')
     @site.update_attributes(params[:site], without_protection: true)
 
-    respond_with(@site, notice: 'Site has been successfully updated.') do |format|
+    respond_with(@site, notice: 'Site has been successfully updated.', location: [:edit, :admin, @site]) do |format|
       format.js   { render 'admin/shared/flash_update' }
-      format.html { redirect_to [:edit, :admin, @site] }
     end
   end
 
-  # PUT /sites/:id/sponsor
-  def sponsor
-    @site = Site.find_by_token!(params[:id])
-    @site.sponsor!
+  # PUT /sites/:id/update_app_design_subscription
+  def update_app_design_subscription
+    @site       = Site.find_by_token!(params[:id])
+    @app_design = App::Design.find(params[:app_design_id])
 
-    respond_with(@site)
+    new_state = if params[:state] == 'canceled'
+      @site.billable_items.app_designs.where(item_id: params[:app_design_id]).destroy_all
+
+      'unsubscribed'
+    else
+      options = params[:state].present? ? { force: params[:state] } : {}
+      Service::Site.new(@site).update_billable_items({ @app_design.name => @app_design.id }, {}, options)
+
+      params[:state].presence || 'subscribed'
+    end
+
+    respond_with(@site, notice: "The #{@app_design.title} design has been successfully #{new_state}.", location: [:edit, :admin, @site])
+  end
+
+  # PUT /sites/:id/update_addon_plan_subscription
+  def update_addon_plan_subscription
+    @site       = Site.find_by_token!(params[:id])
+    @addon_plan = AddonPlan.find(params[:addon_plan_id])
+
+    new_state = if params[:state] == 'canceled'
+      @site.billable_items.addon_plans.where(item_id: params[:addon_plan_id]).destroy_all
+
+      'unsubscribed'
+    else
+      options = params[:state].present? ? { force: params[:state] } : {}
+      Service::Site.new(@site).update_billable_items({}, { addon: params[:addon_plan_id] }, options)
+
+      params[:state].presence || 'subscribed'
+    end
+
+    respond_with(@site, notice: "The #{@addon_plan.title} add-on plan has been successfully #{new_state}.", location: [:edit, :admin, @site])
   end
 
   private
