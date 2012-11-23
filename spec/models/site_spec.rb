@@ -8,7 +8,7 @@ describe Site, :addons do
 
     its(:user)                             { should be_present }
     its(:hostname)                         { should =~ /jilion[0-9]+\.com/ }
-    its(:dev_hostnames)                    { should eq '127.0.0.1,localhost' }
+    its(:dev_hostnames)                    { should eq '127.0.0.1, localhost' }
     its(:extra_hostnames)                  { should be_nil }
     its(:path)                             { should be_nil }
     its(:wildcard)                         { should be_false }

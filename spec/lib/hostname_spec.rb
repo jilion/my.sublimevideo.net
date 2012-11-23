@@ -38,7 +38,7 @@ describe Hostname do
     it { subject.clean("http://www.localhost:3000").should == "localhost" }
     it { subject.clean("ftp://127.]boo[:3000").should == "127.]boo[" }
     it { subject.clean("www.joke;foo").should == "joke;foo" }
-    it { subject.clean("localhost:3000,,http://www.bob.com").should == "bob.com,localhost" }
+    it { subject.clean("localhost:3000,,http://www.bob.com").should == "bob.com, localhost" }
   end
 
   describe "valid?" do
