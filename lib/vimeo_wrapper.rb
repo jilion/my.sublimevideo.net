@@ -1,4 +1,4 @@
-require_dependency 'vimeo'
+require 'vimeo'
 
 VimeoWrapper = Struct.new(:video_id) do
 

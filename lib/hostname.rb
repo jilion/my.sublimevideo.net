@@ -1,5 +1,5 @@
-require_dependency 'ipaddr'
-require_dependency 'active_support/core_ext'
+require 'ipaddr'
+require 'active_support/core_ext'
 
 module Hostname
 

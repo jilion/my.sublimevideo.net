@@ -1,5 +1,5 @@
-require_dependency 'tempfile'
-require_dependency 'csv'
+require 'tempfile'
+require 'csv'
 
 class StatsExporter
   attr_reader :site, :from, :to

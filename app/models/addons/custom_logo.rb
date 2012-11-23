@@ -1,4 +1,4 @@
-require_dependency 'active_model'
+require 'active_model'
 require_dependency 's3'
 
 module Addons

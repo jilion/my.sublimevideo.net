@@ -1,4 +1,4 @@
-require_dependency 'youtube_it'
+require 'youtube_it'
 
 YouTubeWrapper = Struct.new(:video_id) do
 
