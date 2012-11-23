@@ -1,4 +1,4 @@
-require 'sidekiq/web'
+require_dependency 'sidekiq/web'
 
 class SecureSidekiqWeb < Sidekiq::Web
 

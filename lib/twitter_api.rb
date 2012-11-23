@@ -1,5 +1,5 @@
 require_dependency 'configurator'
-# require_dependency 'notify'
+require_dependency 'notify'
 
 module TwitterApi
   include Configurator

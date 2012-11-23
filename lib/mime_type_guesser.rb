@@ -1,10 +1,8 @@
 module MimeTypeGuesser
 
   def self.guess(url)
-    self.head(url)['content-type']
+    head(url)['content-type']
   end
-
-private
 
   def self.head(uri_str)
     uri  = URI.parse(uri_str)
@@ -25,5 +23,6 @@ private
   rescue => ex
     { 'content-type' => "4" }
   end
+  private_class_method :head
 
 end

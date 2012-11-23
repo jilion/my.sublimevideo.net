@@ -1,4 +1,4 @@
-require 'mime/types'
+require_dependency 'mime/types'
 
 module FileHeader
 

@@ -30,4 +30,4 @@ VideoTagNameFetcher = Struct.new(:video_tag) do
     end
   end
 
-end
+end unless defined? VideoTagNameFetcher

@@ -26,14 +26,13 @@ class Feedback < ActiveRecord::Base
     new_feedback(:account_cancellation, *args)
   end
 
-  private
-
   def self.new_feedback(kind, *args)
     feedback = new(*args)
     feedback.kind = kind
 
     feedback
   end
+  private_class_method :new_feedback
 
 end
 

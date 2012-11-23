@@ -1,4 +1,4 @@
-require 'youtube_it'
+require_dependency 'youtube_it'
 
 YouTubeWrapper = Struct.new(:video_id) do
 
@@ -17,4 +17,4 @@ YouTubeWrapper = Struct.new(:video_id) do
     $client ||= YouTubeIt::Client.new
   end
 
-end
+end unless defined? YouTubeWrapper

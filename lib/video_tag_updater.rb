@@ -97,4 +97,5 @@ private
       DICTIONARY[key.to_sym].to_sym
     end
   end
-end
+
+end unless defined? VideoTagUpdater

@@ -1,4 +1,4 @@
-require 'vimeo'
+require_dependency 'vimeo'
 
 VimeoWrapper = Struct.new(:video_id) do
 
@@ -12,4 +12,4 @@ VimeoWrapper = Struct.new(:video_id) do
     Vimeo::Simple::Video.info(video_id).try(:first)
   end
 
-end
+end unless defined? VimeoWrapper

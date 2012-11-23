@@ -38,4 +38,4 @@ private
     sources_urls.first.include?(self.class::VIMEO_URL_PART)
   end
 
-end
+end unless defined? VideoTagSourcesAnalyzer

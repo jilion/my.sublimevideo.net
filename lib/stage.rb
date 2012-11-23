@@ -21,4 +21,4 @@ Stage = Struct.new(:stage) do
     end
   end
 
-end
+end unless defined? Stage
