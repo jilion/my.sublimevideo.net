@@ -47,7 +47,7 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id/update_app_design_subscription
   def update_app_design_subscription
     @site       = Site.find_by_token!(params[:id])
-    @app_design = App::Design.find!(params[:app_design_id])
+    @app_design = App::Design.find(params[:app_design_id])
 
     app_design_new_subscription_hash = { @app_design.name => (params[:state] == 'canceled' ? '0' : @app_design.id) }
     options = params[:state].present? ? { force: params[:state] } : {}
@@ -60,7 +60,7 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id/update_addon_plan_subscription
   def update_addon_plan_subscription
     @site       = Site.find_by_token!(params[:id])
-    @addon_plan = AddonPlan.find!(params[:addon_plan_id])
+    @addon_plan = AddonPlan.find(params[:addon_plan_id])
 
     if params[:state] == 'canceled'
       @site.billable_items.addon_plans.where(item_id: params[:addon_plan_id]).destroy_all

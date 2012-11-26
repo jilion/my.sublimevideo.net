@@ -44,7 +44,7 @@ describe Admin::SitesController do
 
     it "responds with redirect to successful PUT :update_app_design_subscription" do
       Site.stub(:find_by_token!).with('abc123') { mock_site }
-      App::Design.stub(:find!).with(42) { mock_app_design(name: 'foo_design') }
+      App::Design.stub(:find).with(42) { mock_app_design(name: 'foo_design') }
       mock_service = mock('Service::Site')
       Service::Site.stub(:new).with(mock_site) { mock_service }
 
