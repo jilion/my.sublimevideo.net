@@ -8,9 +8,11 @@
 
   - if addon_plan.name == 'sublime'
     = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :visibility, show_title: true)
+
   - elsif addon_plan.name == 'disabled'
     = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable, data: { master: 'logo-enable' })
     .indent= kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :visibility, data: { dependant: 'logo-enable' })
+
   - elsif addon_plan.name == 'custom'
     = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable, data: { master: 'logo-enable' }, translation_key: :enable_custom)
     .indent

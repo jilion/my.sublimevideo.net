@@ -56,7 +56,7 @@ en:
     logo:
       settings:
         enable: 'SublimeVideo logo'
-        enable_custom: 'Your custom logo'
+        enable_custom: 'Enable logo'
         type: 'Select logo'
         visibility: 'SublimeVideo logo'
         visibility_custom: 'Visibility:'

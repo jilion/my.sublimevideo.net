@@ -3,7 +3,7 @@
 - value = params[:setting].to_s
 - id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
 
-.entry#custom_logo_fields{ style: current_type == 'sv' ? 'display:none' : nil }
+.entry.custom_logo_fields{ style: current_type == 'sv' ? 'display:none' : nil }
   #preview_custom_logo= display_custom_logo(value)
   #container{ data: { spinner: true } }
     .spacer
@@ -29,6 +29,8 @@
 
   = kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :position, data: { dependant: 'logo-enable' }, show_title: true, partial: 'corners_position_radios')
 
-  = kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :visibility, data: { dependant: 'logo-enable' }, translation_key: :visibility_custom, show_title: true)
+.entry= kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :visibility, data: { dependant: 'logo-enable' }, translation_key: :visibility_custom, show_title: true)
+
+.entry.custom_logo_fields{ style: current_type == 'sv' ? 'display:none' : nil }
   = kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :link_url, data: { dependant: 'logo-enable' })
 .spacer

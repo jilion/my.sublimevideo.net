@@ -125,7 +125,7 @@ $(document).ready ->
     bodyClass = $('div[data-body-class]').data('body-class')
     $('body').attr("class", bodyClass)
 
-    $('video.sublime').each ->
+    $('.sublime').each ->
       sublimevideo.prepare($(this)[0])
 
     SublimeVideo.documentReady()

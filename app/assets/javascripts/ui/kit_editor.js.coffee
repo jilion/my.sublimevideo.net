@@ -31,9 +31,11 @@ class MySublimeVideo.UI.KitEditor
     $('input[name="kit[addons][logo][type]"]').on 'change', (e) =>
       $el = $(e.target)
       if $el.val() is 'custom'
-        $('#custom_logo_fields').show()
+        $('.custom_logo_fields').show()
+        $('.standard_logo_fields').hide()
       else
-        $('#custom_logo_fields').hide()
+        $('.custom_logo_fields').hide()
+        $('.standard_logo_fields').show()
       this.refreshVideoTagFromSettings()
 
     $('#kit_setting-logo-image_url').on 'change', (e) =>
@@ -44,9 +46,11 @@ class MySublimeVideo.UI.KitEditor
 
     if lightbox = sublime.lightbox('lightbox-trigger')
       lightbox.close()
-    dataSettings = @videoTagHelpers['lightbox'].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
-    $('#lightbox-trigger').attr('data-settings', dataSettings)
-    $('#lightbox').attr('data-settings', @videoTagHelpers['lightbox'].generateDataSettingsAttribute([], contentOnly: true))
+
+    lightboxDataSettings = @videoTagHelpers['lightbox'].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
+    $('#lightbox-trigger').attr('data-settings', lightboxDataSettings)
+
+    $('#lightbox').attr('data-settings', @videoTagHelpers['standard'].generateDataSettingsAttribute([], contentOnly: true))
 
   updateValueDisplayer: ($el) ->
     $("##{$el.attr('id')}_value").text Math.round($el.val() * 100) / 100

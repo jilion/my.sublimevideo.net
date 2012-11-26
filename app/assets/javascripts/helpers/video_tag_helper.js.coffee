@@ -42,15 +42,17 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push "style=\"#{options['lightboxStyle']}\"" if options['lightboxStyle']?
     attributes.push this.generateDataSettingsAttribute(['lightbox'], options)
     code = "<a #{_.compact(attributes).join(' ')}>\n  "
+    code += this.getLightboxTriggerContent()
+    code + "\n</a>\n"
 
+  getLightboxTriggerContent: ->
     if @video.get('thumbnail').get('initialLink') is 'image'
       attributes = []
       attributes.push "src=\"#{@video.get('thumbnail').get('src')}\""
       attributes.push this.generateWidthAndHeight(@video.get('thumbnail').get('thumbWidth'), @video.get('thumbnail').get('thumbHeight'))
-      code += "<img #{_.compact(attributes).join(' ')} />"
+      "<img #{_.compact(attributes).join(' ')} />"
     else
-      code += "#{@video.get('thumbnail').get('src')}"
-    code + "\n</a>\n"
+      "#{@video.get('thumbnail').get('src')}"
 
   generateDataSettingsAttribute: (addons, options = {}) ->
     this.generateDataSettings(addons, options)
@@ -67,11 +69,17 @@ class MySublimeVideo.Helpers.VideoTagHelper
     addons = ['player', 'video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'] if _.isEmpty(addons)
 
     @dataSettings = {}
-    @dataSettings['player-kit'] = options['playerKit'] if options['playerKit']?
     if @options['settings']?
       this.generateDataSettingsFromJSON()
     else
       this.generateDataSettingsFromDOM(addons)
+      if @dataSettings['player-kit']?
+        selectedOption = $("select[data-addon='player']").find("option[value='#{@dataSettings['player-kit']}']")[0]
+        previewKitIdentifier = _.indexOf($("select[data-addon='player']").find('option'), selectedOption) + 1
+        @dataSettings['player-kit'] = previewKitIdentifier
+
+    if options['playerKit']?
+      @dataSettings['player-kit'] = options['playerKit']
 
     @dataSettings
 
@@ -159,7 +167,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
       this.pushDataSetting(dataSettingName, currentValue)
 
   pushDataSetting: (dataSettingName, currentValue) ->
-    specialSettingsRegex = /(enable-|-enable|-visibility)/
+    specialSettingsRegex = /(enable-|-enable|-visibility|-type)/
     if !specialSettingsRegex.test(dataSettingName) or @dataSettings[dataSettingName.replace(specialSettingsRegex, '')] isnt 'none'
-      stripRegex = if @video.get('displayInLightbox') then /enable-/ else /-enable/
+      stripRegex = if @video.get('displayInLightbox') then /enable-|-type/ else /-enable|-type/
       @dataSettings[dataSettingName.replace(stripRegex, '')] = currentValue.toString().underscore().dasherize()
