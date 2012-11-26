@@ -8,7 +8,7 @@ module Service
     end
 
     def setup_done?
-      site.billable_views.nonzero? || current_step == 'summary'
+      site.views.nonzero? || current_step == 'summary'
     end
 
     def current_step

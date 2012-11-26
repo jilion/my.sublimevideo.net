@@ -5,8 +5,8 @@ module SiteModules::Activity
     @page_visits ||= Stat::Site::Day.all_time_page_visits(token)
   end
 
-  def dev_views
-    @dev_views ||= Stat::Site::Day.views_sum(token: token)
+  def views
+    @views ||= Stat::Site::Day.views_sum(token: token)
   end
 
   def billable_views
@@ -17,7 +17,7 @@ module SiteModules::Activity
 
   def unmemoize_all_activity
     @page_visits    = nil
-    @dev_views      = nil
+    @views          = nil
     @billable_views = nil
   end
 
