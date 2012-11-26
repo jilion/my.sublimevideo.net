@@ -108,12 +108,12 @@ describe Service::Site do
     end
 
     it 'sets designs billable items' do
-      service.should_receive(:set_billable_app_designs).with(foo: '0')
+      service.should_receive(:set_billable_app_designs).with({ foo: '0' }, {})
       service.update_billable_items({ foo: '0' }, {})
     end
 
     it 'sets addon plans billable items' do
-      service.should_receive(:set_billable_addon_plans).with(foo: '42')
+      service.should_receive(:set_billable_addon_plans).with({ foo: '42' }, {})
       service.update_billable_items({}, { foo: '42' })
     end
 

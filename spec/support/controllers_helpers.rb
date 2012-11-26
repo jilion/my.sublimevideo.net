@@ -84,6 +84,14 @@ module Spec
         @mock_tweet ||= mock_model(Tweet, stubs)
       end
 
+      def mock_app_design(stubs = {})
+        @mock_app_design ||= mock_model(App::Design, stubs)
+      end
+
+      def mock_addon_plan(stubs = {})
+        @mock_addon_plan ||= mock_model(AddonPlan, stubs)
+      end
+
     end
   end
 end
