@@ -4,16 +4,29 @@
     %strong= truncate_middle(site.hostname, length: 40)
   - else
     Loader code
-%p.desc= raw "Copy the code below and paste it in the pages on #{truncate_middle(site.hostname)} where the SublimeVideo player will be used. We #{link_to 'highly recommend', page_url('troubleshooting', subdomain: 'docs', anchor: 'old-browsers-compatibility'), class: 'hl', onclick: "window.open(this); return false"} you insert it into the <code>&lt;head&gt;</code> tag."
+
+%p.desc= raw "Copy the code below and paste it in the pages on #{site.hostname} where the SublimeVideo player will be used. We #{link_to 'highly recommend', page_url('troubleshooting', subdomain: 'docs', anchor: 'old-browsers-compatibility'), class: 'hl', onclick: "window.open(this); return false"} you insert it into the <code>&lt;head&gt;</code> tag."
 
 %p.desc Loader code for the stable SublimeVideo player:
 %form
-  .embed_code.entry= text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, id: "embed_code_#{site.token}", onclick: "this.focus();this.select();"
+  .embed_code.entry
+    %textarea{ readonly: true, onclick: "this.focus();this.select();" }><= sublimevideo_script_tag_for(site, 'beta')
 
+%p>
+  The code above will load the
+  = link_to 'new SublimeVideo player', layout_url('sublime-video-player'), class: 'hl'
+  (in beta) powered by
+  = link_to('SublimeVideo Horizon', layout_url('horizon-framework'), class: 'hl') + '.'
 %hr
 
-%p.desc= raw "If you would like to test the new SublimeVideo player (in beta), you may copy the code below and paste it in the pages on #{truncate_middle(site.hostname)} where the player will be used."
+%p.desc
+  If you prefer to use the classic SublimeVideo player (stable but without all the
+  = link_to('new features', layout_url('sublime-video-player'), class: 'hl') + '), copy'
+  = link_to 'this code', '#', class: 'hl', onclick: '$("#stable_code").toggle();return false;'
+  instead.
 
-%p.desc Loader code for the beta SublimeVideo player:
-%form
-  .embed_code.entry= text_area_tag '', sublimevideo_script_tag_for(site, 'beta'), readonly: true, id: "embed_code_#{site.token}_beta", onclick: "this.focus();this.select();"
+  #stable_code{ style: 'display:none' }
+    %form
+      .embed_code.entry
+        %textarea{ readonly: true, onclick: "this.focus();this.select();" }><= sublimevideo_script_tag_for(site)
+    Please note you should not insert the two loaders' codes in the same web page. If you wish to test both, please use different web pages for each.
