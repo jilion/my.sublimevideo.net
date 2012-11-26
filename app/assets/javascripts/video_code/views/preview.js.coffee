@@ -3,7 +3,7 @@ class MSVVideoCode.Views.Preview extends Backbone.View
 
   initialize: ->
     @$kitSelector = $('#kit_id')
-    @kitsSettings = JSON.parse(@$kitSelector.attr('data-settings'))
+    @kitsSettings = @$kitSelector.data('settings')
 
     _.bindAll this, 'delayedRender'
     MSVVideoCode.video.bind     'change',     this.delayedRender
@@ -22,27 +22,22 @@ class MSVVideoCode.Views.Preview extends Backbone.View
       @currentScroll = $(window).scrollTop()
 
       sublimevideo.unprepare('video-preview') if $('#video-preview').exists()
+
+      if lightbox = sublime.lightbox('lightbox-trigger')
+        lightbox.close()
+
       $(@el).html this.template
         video: MSVVideoCode.video
+        options: options
 
-      # if MSVVideoCode.video.get('displayInLightbox')
-      #   # if lightbox = sublime.lightbox('lightbox-trigger')
-      #   #   lightbox.close()
-      #   #   $('#video-preview').attr('data-settings', @videoTagHelpers[type].generateDataSettingsAttribute([], contentOnly: true))
-      #   #   dataSettings = @videoTagHelpers[type].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
-      #   #   $('a#lightbox-trigger').attr('data-settings', dataSettings)
-      #   #   lightbox.open()
-      # else
       unless MSVVideoCode.video.get('displayInLightbox')
         sublime.prepareWithKit('video-preview', @kitsSettings[@$kitSelector.val()])
 
-      $(@el).show()
       $(window).scrollTop(@currentScroll)
 
       if $('#video_code_form').attr('data-assistant') is 'true'
         options = {}
         options['playerKit'] = @$kitSelector.val() unless @$kitSelector.val() is @$kitSelector.attr('data-default')
-
         if MSVVideoCode.video.get('displayInLightbox')
           $('#lightbox_code_for_textarea').val(new MySublimeVideo.Helpers.VideoTagHelper(MSVVideoCode.video).generateLightboxCode(href: 'video1'))
           options['id'] = 'video1'

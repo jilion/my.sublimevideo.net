@@ -2,7 +2,6 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
   initialize: (options) ->
     @sites             = options['sites']
     @selectedSiteToken = options['selectedSiteToken']
-    @kit               = options['kit']
 
     this.initModels()
     this.initViews()

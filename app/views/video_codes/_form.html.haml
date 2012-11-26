@@ -4,7 +4,6 @@
     window.MSVVideoCode.builderRouter = new MSVVideoCode.Routers.BuilderRouter
       sites: #{@sites.try(:to_json) || []}
       selectedSiteToken: '#{@site.token}'
-      kit: #{@site.kits.first.to_json}
 
 .white_box
   %h4.title Preview

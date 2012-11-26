@@ -78,7 +78,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
         previewKitIdentifier = _.indexOf($("select[data-addon='player']").find('option'), selectedOption) + 1
         @dataSettings['player-kit'] = previewKitIdentifier
 
-    if options['playerKit']?
+    if options['playerKit']? and !_.isEqual(addons, ['lightbox'])
       @dataSettings['player-kit'] = options['playerKit']
 
     @dataSettings

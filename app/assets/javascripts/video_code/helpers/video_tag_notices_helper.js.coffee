@@ -42,6 +42,4 @@ class MSVVideoCode.Helpers.VideoTagNoticesHelper
 
   messageFor: (problemType, problemsCount) ->
     key = if problemsCount > 1 then 'other' else 'one'
-    console.log problemType
-    console.log problemsCount
     MSVVideoCode.Helpers.VideoTagNoticesHelper.MESSAGES_TEMPLATES[problemType][key].replace('%{count}', problemsCount)
