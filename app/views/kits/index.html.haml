@@ -2,7 +2,7 @@
 = render '/layouts/site_header'
 .big_break
 #kits
-  = beta_loader_required
+  = beta_loader_required(@site)
   %h3.assistant_title Your Players
   = render 'kits', site: @site
   .spacer

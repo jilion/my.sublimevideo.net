@@ -3,7 +3,7 @@
 .big_break
 
 #kit.new
-  = beta_loader_required
+  = beta_loader_required(@site)
   %h3.assistant_title Create a new Player
   = form_for [@site, @kit], html: { class: 'kit_editor' } do |f|
     = render 'kits/form', f: f, site: @site, kit: @kit

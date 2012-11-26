@@ -4,7 +4,7 @@
 = render 'assistant/step_guide', current_step: 'player'
 
 #kit.edit.assistant
-  = beta_loader_required
+  = beta_loader_required(@site)
   %h3.assistant_title= "Create a player for #{hostname_or_token(@site)}"
   = form_for @kit, url: url_for, html: { class: 'kit_editor' } do |f|
     = render 'kits/form', f: f, site: @site, kit: @kit

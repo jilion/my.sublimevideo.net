@@ -60,11 +60,14 @@ module ApplicationHelper
     end
   end
 
-  def beta_loader_required
+  def beta_loader_required(site)
     content_tag(:div, id: 'beta_loader_required') do
       tooltip_box(class: 'info') do
         haml_tag(:span, 'The features or settings on this page only apply to the new SublimeVideo player (in beta) powered by SublimeVideo Horizon.', class: 'p')
-      end + content_tag(:h5, 'Beta loader required', class: 'label')
+      end + content_tag(:h5, class: 'label') do
+        haml_tag(:a, 'Beta loader required', href: '', class: 'loader_code hl', data: { token: site.token })
+        haml_tag(:div, render('sites/code', site: site), id: "loader_code_popup_content_#{site.token}", style: 'display:none')
+      end
     end
   end
 
