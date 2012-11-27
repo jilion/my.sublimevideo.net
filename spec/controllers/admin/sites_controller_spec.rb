@@ -44,7 +44,7 @@ describe Admin::SitesController do
 
     it "responds with redirect to successful PUT :update_app_design_subscription" do
       Site.stub(:find_by_token!).with('abc123') { mock_site }
-      App::Design.stub(:find).with(42) { mock_app_design(name: 'foo_design') }
+      App::Design.stub(:find).with('42') { mock_app_design(id: 42, name: 'foo_design', title: 'Foo Design') }
       mock_service = mock('Service::Site')
       Service::Site.stub(:new).with(mock_site) { mock_service }
 
@@ -66,7 +66,7 @@ describe Admin::SitesController do
       it "responds with redirect to successful PUT :update" do
         mock_site.should_receive(:update_attributes).with({ 'tag_list' => ['foo'] }, { without_protection: true }) { true }
 
-        put :update, id: 'abc123', site: { mode: 'beta', tag_list: ['foo'] }
+        put :update, id: 'abc123', site: { accessible_stage: 'beta', tag_list: ['foo'] }
         response.should redirect_to(edit_admin_site_url(mock_site))
       end
 
