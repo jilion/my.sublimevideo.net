@@ -81,7 +81,7 @@
   "SVStartController": "sv",
   "previewTools": "sw",
   "SNYControls": "sx",
-  // "": "sy",
+  "SNYStartController": "sy",
   "SVSharingButtons": "sz",
 
   "forceFlash": "ta",
