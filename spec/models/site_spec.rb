@@ -184,7 +184,7 @@ describe Site, :addons do
       end
     end
 
-    describe "after_commit" do
+    describe "after_save" do
       let(:site) { create(:site) }
 
       it "delays Service::Loader update if accessible_stage changed" do
