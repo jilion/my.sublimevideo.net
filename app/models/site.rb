@@ -109,7 +109,11 @@ class Site < ActiveRecord::Base
   end
 
   # Only when accessible_stage change in admin
-  after_commit ->(site) { Service::Loader.delay.update_all_stages!(site.id) if site.accessible_stage_changed? }
+  after_save ->(site) do
+    if site.accessible_stage_changed?
+      Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id)
+    end
+  end
 
   # =================
   # = State Machine =

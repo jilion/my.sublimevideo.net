@@ -183,6 +183,17 @@ describe Site, :addons do
         end
       end
     end
+
+    describe "after_commit" do
+      let(:site) { create(:site) }
+
+      it "delays Service::Loader update if accessible_stage changed" do
+        Timecop.freeze do
+          Service::Loader.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id)
+          site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
+        end
+      end
+    end
   end # Callbacks
 
   describe "State Machine" do
