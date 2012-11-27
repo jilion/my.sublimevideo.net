@@ -3,7 +3,7 @@ require_dependency 'service/site'
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
 
-  before_filter { |controller| require_role?('god') if action_name =~ /update/ }
+  before_filter { |controller| require_role?('god') if %w[update_app_design_subscription update_addon_plan_subscription].include?(action_name) }
   before_filter :set_default_scopes, only: [:index]
 
   # filter & search
@@ -37,6 +37,7 @@ class Admin::SitesController < Admin::AdminController
   # PUT /sites/:id
   def update
     @site = Site.find_by_token!(params[:id])
+    params[:site].delete(:accessible_stage) unless has_role?('god')
     @site.update_attributes(params[:site], without_protection: true)
 
     respond_with(@site, notice: 'Site has been successfully updated.', location: [:edit, :admin, @site]) do |format|
