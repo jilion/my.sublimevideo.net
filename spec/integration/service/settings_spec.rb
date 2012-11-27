@@ -102,6 +102,7 @@ describe Service::Settings, :fog_mock do
                 },
                 "sharing" => {
                   settings: {
+                    enable: true,
                     enable_twitter: true,
                     enable_facebook: true,
                     enable_link: true,
@@ -116,6 +117,9 @@ describe Service::Settings, :fog_mock do
                     embed_height: nil
                   },
                   allowed_settings: {
+                    enable: {
+                      values: [true, false]
+                    },
                     enable_twitter: {
                       values: [true, false]
                     },
@@ -268,8 +272,10 @@ describe Service::Settings, :fog_mock do
             "kn":"sa.sh.sv"},
             "km": {
             "ko": {
-            "iw":true,"io":true,"ip":true,"iq":true,"ir":"twitter link facebook embed","is":null,"ts":null,"tt":null,"ik":null,"tu":null,"tv":null,"tz":null},
+            "iv":true,"iw":true,"io":true,"ip":true,"iq":true,"ir":"twitter link facebook embed","is":null,"ts":null,"tt":null,"ik":null,"tu":null,"tv":null,"tz":null},
             "kp": {
+            "iv": {
+            "ih":[true,false]},
             "iw": {
             "ih":[true,false]},
             "io": {
