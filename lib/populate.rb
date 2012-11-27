@@ -105,6 +105,11 @@ module Populate
         }
       }
       sharing_template = {
+        enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
+        },
         enable_twitter: {
           type: 'boolean',
           values: [true, false],
@@ -156,6 +161,7 @@ module Populate
           { name: 'app',   token: 'sa' },
           { name: 'twit',  token: 'sf' },
           { name: 'html5', token: 'sg' },
+          { name: 'sony',  token: 'tj' },
           { name: 'svnet', token: 'sj' }
         ],
         App::Design => [
@@ -164,6 +170,7 @@ module Populate
           { name: 'light',   skin_token: 'sa.se.se', price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
           { name: 'twit',    skin_token: 'sf.sf.sf', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-twit' },
           { name: 'html5',   skin_token: 'sg.sg.sg', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-html5' },
+          { name: 'sony',    skin_token: 'tj.tj.tj', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-sony' },
           { name: 'svnet',   skin_token: 'sj.sj.sj', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-svnet' }
         ],
         Addon => [
@@ -186,6 +193,7 @@ module Populate
           { name: 'ligthbox_light',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',      design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
           { name: 'ligthbox_twit',       token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',      design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
           { name: 'ligthbox_html5',      token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',      design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'ligthbox_sony',       token: 'sa.sl.sm', addon: 'ref-Addon-lightbox',      design: 'ref-App::Design-sony',    component: 'ref-App::Component-app' },
           { name: 'image_viewer',        token: 'sa.sn.so', addon: 'ref-Addon-image_viewer',  design: nil,                       component: 'ref-App::Component-app' },
           { name: 'logo',                token: 'sa.sh.sp', addon: 'ref-Addon-logo',          design: nil,                       component: 'ref-App::Component-app' },
           { name: 'controls_classic',    token: 'sa.sh.sq', addon: 'ref-Addon-controls',      design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
@@ -193,11 +201,13 @@ module Populate
           { name: 'controls_light',      token: 'se.se.ss', addon: 'ref-Addon-controls',      design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
           { name: 'controls_twit',       token: 'sf.sf.st', addon: 'ref-Addon-controls',      design: 'ref-App::Design-twit',    component: 'ref-App::Component-twit' },
           { name: 'controls_html5',      token: 'sg.sg.su', addon: 'ref-Addon-controls',      design: 'ref-App::Design-html5',   component: 'ref-App::Component-html5' },
+          { name: 'controls_sony',       token: 'tj.tj.sx', addon: 'ref-Addon-controls',      design: 'ref-App::Design-sony',    component: 'ref-App::Component-sony' },
           { name: 'initial_classic',     token: 'sa.sh.sv', addon: 'ref-Addon-initial',       design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
           { name: 'initial_flat',        token: 'sa.sh.sv', addon: 'ref-Addon-initial',       design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
           { name: 'initial_light',       token: 'sa.sh.sv', addon: 'ref-Addon-initial',       design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
           { name: 'initial_twit',        token: 'sa.sh.sv', addon: 'ref-Addon-initial',       design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
           { name: 'initial_html5',       token: 'sa.sh.sv', addon: 'ref-Addon-initial',       design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'initial_sony',        token: 'sa.sh.sv', addon: 'ref-Addon-initial',       design: 'ref-App::Design-sony',    component: 'ref-App::Component-app' },
           { name: 'sharing_classic',     token: 'sa.sh.sz', addon: 'ref-Addon-sharing',       design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
           { name: 'sharing_twit',        token: 'sa.sh.sz', addon: 'ref-Addon-sharing',       design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
           { name: 'sharing_html5',       token: 'sa.sh.sz', addon: 'ref-Addon-sharing',       design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
