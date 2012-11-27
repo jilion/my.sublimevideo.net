@@ -23,7 +23,7 @@ describe App::ComponentVersionZipContentUploader, :fog_mock do
   # images/logo.png
   # images/play_button.png
   # images/sub/sub_play_button.png
-  let(:upload_path) { Pathname.new('b/e/2.0.0') }
+  let(:upload_path) { Pathname.new('b/e/2.0.0/') }
   let(:bucket) { S3.buckets['sublimevideo'] }
   let(:js_object_path) { upload_path.join('bA.js').to_s }
 
