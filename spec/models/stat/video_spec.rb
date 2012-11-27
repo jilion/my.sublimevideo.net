@@ -45,10 +45,8 @@ describe Stat::Video do
       let(:from) { 61.seconds.ago.utc.change(usec: 0).to_i.to_s }
       let(:to) { 2.seconds.ago.utc.change(usec: 0).to_i.to_s }
 
-      before { Timecop.freeze second }
-      after { Timecop.return }
-
       before do
+        Timecop.freeze second
         6.times do |video_i|
           create(:video_tag, site: site, uid: "video#{video_i}")
           64.times do |second_i|
@@ -60,6 +58,7 @@ describe Stat::Video do
           end
         end
       end
+      after { Timecop.return }
 
       specify { Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 1)[:videos].should have(6).items }
       specify { Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:total].should eq 6 }
