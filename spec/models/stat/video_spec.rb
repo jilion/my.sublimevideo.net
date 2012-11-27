@@ -49,7 +49,7 @@ describe Stat::Video do
         Timecop.freeze second
         6.times do |video_i|
           create(:video_tag, site: site, uid: "video#{video_i}")
-          64.times do |second_i|
+          66.times do |second_i|
             next if second_i%2 == 0
             create(:video_second_stat, st: site.token, u: "video#{video_i}", d: (second_i).seconds.ago.utc.change(usec: 0),
               vvc: 2 * (video_i + second_i),

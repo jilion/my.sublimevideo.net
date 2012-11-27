@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe App::ComponentVersion, :fog_mock do
+  let(:bucket) { S3.buckets['sublimevideo'] }
   let(:zip) { fixture_file('app/e.zip') }
   let(:component) { App::Component.create({ name: 'app', token: 'e' }, as: :admin) }
   let(:attributes) { {
@@ -83,6 +84,17 @@ describe App::ComponentVersion, :fog_mock do
     end
   end
 
+  describe "#destroy" do
+    before { component_version }
+
+    it "doesn't removes zip content" do
+      prefix = "c/#{component.token}/#{component_version.version}/"
+      S3.fog_connection.directories.get(bucket, prefix: prefix).files.should have(6).files
+      App::ComponentVersion.find(component_version).destroy
+      S3.fog_connection.directories.get(bucket, prefix: prefix).files.should have(6).files
+    end
+  end
+
 end
 
 # == Schema Information
@@ -91,6 +103,7 @@ end
 #
 #  app_component_id :integer
 #  created_at       :datetime         not null
+#  deleted_at       :datetime
 #  dependencies     :hstore
 #  id               :integer          not null, primary key
 #  updated_at       :datetime         not null

@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Service::App::ComponentVersion do
   let(:bucket) { S3.buckets['sublimevideo'] }
-  before { CDN.stub(:purge) }
   let(:site) {
     site = build(:site)
     Service::Site.new(site).create
@@ -10,10 +9,15 @@ describe Service::App::ComponentVersion do
   }
   let(:component) { site.components.first }
   let(:component_version) { component.versions.build({ token: component.token, version: '2.0.0', zip: zip }, as: :admin) }
-
   let(:zip) { fixture_file('app/e.zip') }
 
+  before {
+    CDN.stub(:purge)
+    component.versions.create({ token: component.token, version: '1.0.0', zip: zip }, as: :admin)
+  }
+
   describe "#create" do
+
     it "updates site loader" do
       component.versions.last.version.should_not eq component_version.version
 

@@ -176,7 +176,8 @@ CREATE TABLE app_component_versions (
     zip character varying(255),
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    dependencies hstore
+    dependencies hstore,
+    deleted_at timestamp without time zone
 );
 
 
@@ -2382,3 +2383,5 @@ INSERT INTO schema_migrations (version) VALUES ('20121120124141');
 INSERT INTO schema_migrations (version) VALUES ('20121121161315');
 
 INSERT INTO schema_migrations (version) VALUES ('20121122073822');
+
+INSERT INTO schema_migrations (version) VALUES ('20121127154540');

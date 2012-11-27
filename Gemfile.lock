@@ -377,6 +377,7 @@ GEM
     paper_trail (2.6.4)
       activerecord (~> 3.0)
       railties (~> 3.0)
+    paranoia (1.2.0)
     pg (0.14.1)
     poltergeist (1.0.2)
       capybara (~> 1.1)
@@ -661,6 +662,7 @@ DEPENDENCIES
   oauth-plugin
   oj
   paper_trail
+  paranoia
   pg
   poltergeist
   powder

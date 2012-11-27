@@ -3,11 +3,11 @@ require 'solve'
 class App::ComponentVersion < ActiveRecord::Base
   serialize :dependencies, ActiveRecord::Coders::Hstore
   delegate :token, :name, to: :component
-
   attr_accessible :component, :token, :dependencies, :version, :zip, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
 
+  acts_as_paranoid
   mount_uploader :zip, App::ComponentVersionUploader
 
   validates :component, :zip, presence: true
@@ -62,6 +62,7 @@ end
 #
 #  app_component_id :integer
 #  created_at       :datetime         not null
+#  deleted_at       :datetime
 #  dependencies     :hstore
 #  id               :integer          not null, primary key
 #  updated_at       :datetime         not null

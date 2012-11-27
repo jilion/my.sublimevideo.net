@@ -52,6 +52,7 @@ gem 'state_machine'
 gem 'paper_trail'
 gem 'uniquify'
 gem 'acts-as-taggable-on'
+gem 'paranoia'
 
 gem 'responders'
 gem 'has_scope'
