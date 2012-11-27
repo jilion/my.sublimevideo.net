@@ -9,13 +9,11 @@ require File.expand_path('app/models/app')
 require File.expand_path('lib/service/app/component_version')
 
 describe Service::App::ComponentVersion do
-  let(:component_version) { Struct.new(:id).new(1234) }
+  let(:component_version) { Struct.new(:component_id, :stage).new(1234, 'beta') }
   let(:service)           { described_class.new(component_version) }
 
   describe '#create' do
-    before do
-      component_version.stub(:save!)
-    end
+    before { component_version.stub(:save!) }
 
     it 'saves component_version' do
       component_version.should_receive(:save!)
@@ -23,8 +21,22 @@ describe Service::App::ComponentVersion do
     end
 
     it 'delays the update of all dependant sites loaders' do
-      Service::Loader.should delay(:update_all_dependant_sites).with(component_version.id)
+      Service::Loader.should delay(:update_all_dependant_sites).with(component_version.component_id, component_version.stage)
       service.create
+    end
+  end
+
+  describe '#destroy' do
+    before { component_version.stub(:destroy) }
+
+    it 'saves component_version' do
+      component_version.should_receive(:destroy)
+      service.destroy
+    end
+
+    it 'delays the update of all dependant sites loaders' do
+      Service::Loader.should delay(:update_all_dependant_sites).with(component_version.component_id, component_version.stage)
+      service.destroy
     end
   end
 end

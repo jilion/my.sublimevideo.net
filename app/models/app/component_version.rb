@@ -34,6 +34,10 @@ class App::ComponentVersion < ActiveRecord::Base
     version && version.gsub(/\./, '_')
   end
 
+  def component_id
+    app_component_id
+  end
+
   def stage
     Stage.version_stage(version)
   end

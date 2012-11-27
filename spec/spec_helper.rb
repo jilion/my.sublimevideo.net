@@ -3,6 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.dirname(__FILE__) + "/../config/environment"
 require 'rspec/rails'
 
+require Rails.root.join('spec/config/carrierwave.rb') # force before order
 Dir[Rails.root.join('spec/config/**/*.rb')].each { |f| require f }
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 

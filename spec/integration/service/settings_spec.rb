@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Service::Settings, :fog_mock do
+describe Service::Settings do
   context "with populates addons" do
     describe "default settings of a new site" do
       let(:site) {

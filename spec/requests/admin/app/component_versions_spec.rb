@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe "Admin::App::Components JSON actions", :fog_mock do
+describe "Admin::App::Components JSON actions" do
   let(:admin) {
     admin = create(:admin, roles: ['player'])
     admin.reset_authentication_token!
@@ -9,7 +9,7 @@ describe "Admin::App::Components JSON actions", :fog_mock do
   }
   let(:zip) { fixture_file_upload(Rails.root.join('spec/fixtures', "app/e.zip")) }
   let(:component) { App::Component.create({ name: 'app', token: App::Component::APP_TOKEN }, as: :admin) }
-  let(:component_version) { App::ComponentVersion.create({ token: component.token, version: '1.0.0', zip: fixture_file("app/e.zip") }, as: :admin) }
+  let(:component_version) { App::ComponentVersion.create({ token: component.token, version: '2.0.0', zip: fixture_file("app/e.zip") }, as: :admin) }
   let(:headers) { { 'HTTP_HOST' => 'admin.sublimevideo.dev' } }
 
   describe "Auhtentication" do
@@ -55,9 +55,9 @@ describe "Admin::App::Components JSON actions", :fog_mock do
       it "returns 201" do
         post "app/components/#{component.token}/versions.json?auth_token=#{admin.authentication_token}", {
           version: {
-            version: '1.0.0',
+            version: '2.0.0',
             zip: zip,
-            dependencies: { app: "1.0.0" }.to_json
+            dependencies: { app: "2.0.0" }.to_json
           } }, headers
         response.status.should eq 201
       end
@@ -78,7 +78,7 @@ describe "Admin::App::Components JSON actions", :fog_mock do
       it "returns 422" do
         post "app/components/#{component.token}/versions.json?auth_token=#{admin.authentication_token}", {
           version: {
-            version: '1.0.0'
+            version: '2.0.0'
           } }, headers
         response.status.should eq 422
       end

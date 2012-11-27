@@ -416,7 +416,7 @@ module Populate
           { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }
         ]
       }
-      if Rails.env.development?
+      if Rails.env.development? || Rails.env.test?
         seeds[App::ComponentVersion] = [
           { component: 'ref-App::Component-app', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
           { component: 'ref-App::Component-twit', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },

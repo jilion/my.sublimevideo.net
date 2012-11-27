@@ -19,7 +19,7 @@ feature 'StatsExport' do
     clear_emails
   end
 
-  scenario "request and download stats exports", :js, :fog_mock do
+  scenario "request and download stats exports", :js do
     go 'my', "/sites/#{@site.token}/stats"
 
     current_url.should match %r{sites/#{@site.token}/stats}
