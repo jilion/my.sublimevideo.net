@@ -207,7 +207,7 @@ module Populate
           { name: 'initial_light',       token: 'sa.sh.sv', addon: 'ref-Addon-initial',       design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
           { name: 'initial_twit',        token: 'sa.sh.sv', addon: 'ref-Addon-initial',       design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
           { name: 'initial_html5',       token: 'sa.sh.sv', addon: 'ref-Addon-initial',       design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
-          { name: 'initial_sony',        token: 'sa.sh.sv', addon: 'ref-Addon-initial',       design: 'ref-App::Design-sony',    component: 'ref-App::Component-app' },
+          { name: 'initial_sony',        token: 'tj.tj.sy', addon: 'ref-Addon-initial',       design: 'ref-App::Design-sony',    component: 'ref-App::Component-app' },
           { name: 'sharing_classic',     token: 'sa.sh.sz', addon: 'ref-Addon-sharing',       design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
           { name: 'sharing_twit',        token: 'sa.sh.sz', addon: 'ref-Addon-sharing',       design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
           { name: 'sharing_html5',       token: 'sa.sh.sz', addon: 'ref-Addon-sharing',       design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
