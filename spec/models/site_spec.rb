@@ -193,6 +193,13 @@ describe Site, :addons do
           site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
         end
       end
+
+      it "delays Service::Settings update if accessible_stage changed" do
+        Timecop.freeze do
+          Service::Settings.should delay(:update_all_types!, at: 5.seconds.from_now.to_i).with(site.id)
+          site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
+        end
+      end
     end
   end # Callbacks
 

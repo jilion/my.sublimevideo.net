@@ -112,6 +112,7 @@ class Site < ActiveRecord::Base
   after_save ->(site) do
     if site.accessible_stage_changed?
       Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id)
+      Service::Settings.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
     end
   end
 
