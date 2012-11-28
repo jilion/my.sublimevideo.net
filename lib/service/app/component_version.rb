@@ -1,4 +1,5 @@
 require_dependency 'service/loader'
+require_dependency 'campfire_wrapper'
 
 module Service
   module App
@@ -7,16 +8,23 @@ module Service
       def create
         component_version.save!
         Service::Loader.delay.update_all_dependant_sites(component_version.component_id, component_version.stage)
+        CampfireWrapper.delay.post("#{campfire_message} released")
         true
-      rescue ActiveRecord::RecordInvalid
+      rescue ::ActiveRecord::RecordInvalid
         false
       end
 
       def destroy
-        # component_version.remove_zip!
         component_version.destroy
         Service::Loader.delay.update_all_dependant_sites(component_version.component_id, component_version.stage)
+        CampfireWrapper.delay.post("#{campfire_message} DELETED!")
         true
+      end
+
+    private
+
+      def campfire_message
+        "#{component_version.name.humanize} player component version #{component_version.version}"
       end
 
     end

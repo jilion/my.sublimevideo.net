@@ -9,7 +9,7 @@ require File.expand_path('app/models/app')
 require File.expand_path('lib/service/app/component_version')
 
 describe Service::App::ComponentVersion do
-  let(:component_version) { Struct.new(:component_id, :stage).new(1234, 'beta') }
+  let(:component_version) { Struct.new(:component_id, :stage, :name, :version).new(1234, 'beta', 'app', '1.0.0') }
   let(:service)           { described_class.new(component_version) }
 
   describe '#create' do
@@ -24,6 +24,11 @@ describe Service::App::ComponentVersion do
       Service::Loader.should delay(:update_all_dependant_sites).with(component_version.component_id, component_version.stage)
       service.create
     end
+
+    it 'delays Campfire message' do
+      CampfireWrapper.should delay(:post).with("App player component version 1.0.0 released")
+      service.create
+    end
   end
 
   describe '#destroy' do
@@ -36,6 +41,11 @@ describe Service::App::ComponentVersion do
 
     it 'delays the update of all dependant sites loaders' do
       Service::Loader.should delay(:update_all_dependant_sites).with(component_version.component_id, component_version.stage)
+      service.destroy
+    end
+
+    it 'delays Campfire message' do
+      CampfireWrapper.should delay(:post).with("App player component version 1.0.0 DELETED!")
       service.destroy
     end
   end
