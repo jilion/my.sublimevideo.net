@@ -1,0 +1,311 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/rooms.json
+    body: 
+    headers:
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx
+      date:
+      - Wed, 28 Nov 2012 10:11:30 GMT
+      content-type:
+      - application/json; charset=utf-8
+      content-length:
+      - '1145'
+      status:
+      - 200 OK
+      etag:
+      - ! '"29f56c755fc87d47f1ad362186dd5247"'
+      x-runtime:
+      - '23'
+      set-cookie:
+      - _campfire_session=BAh7CDoQaWRlbnRpdHlfaWRpA3QLOzoJYXV0aHsGIgtqaWxpb257BjoMdXNlcl9pZGkDo%2BMPOg9zZXNzaW9uX2lkIiUwYWM3NzQ2YzQyNGIxYzZlOGI0YzQxNjEyZDgzNGIwMA%3D%3D--acdf63599cc61db7851a9137b6c2cee98d7f3543;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Sun, 28-Nov-2032 10:11:30 GMT; secure
+      cache-control:
+      - private, max-age=0, must-revalidate
+      strict-transport-security:
+      - max-age=31536000
+    body: ! '{"rooms":[{"name":"SV Dev","created_at":"2011/10/27 18:49:54 +0000","updated_at":"2011/11/03
+      12:56:16 +0000","topic":"","id":448517,"membership_limit":12,"locked":false},{"name":"Jilion","created_at":"2011/10/28
+      06:17:19 +0000","updated_at":"2011/10/28 06:17:19 +0000","topic":"","id":448665,"membership_limit":12,"locked":false},{"name":"Aelios","created_at":"2011/11/01
+      13:49:44 +0000","updated_at":"2011/11/10 22:49:27 +0000","topic":"","id":449620,"membership_limit":12,"locked":false},{"name":"SV
+      Support","created_at":"2011/11/02 07:56:35 +0000","updated_at":"2011/11/02 07:56:35
+      +0000","topic":"","id":449918,"membership_limit":12,"locked":false},{"name":"SV
+      Player","created_at":"2011/11/03 09:06:06 +0000","updated_at":"2011/11/03 09:06:06
+      +0000","topic":"","id":450247,"membership_limit":12,"locked":false},{"name":"Aelios
+      Monitoring","created_at":"2011/11/03 09:07:28 +0000","updated_at":"2011/11/03
+      09:07:28 +0000","topic":"","id":450249,"membership_limit":12,"locked":false},{"name":"SV","created_at":"2011/11/03
+      12:57:16 +0000","updated_at":"2011/11/03 12:57:16 +0000","topic":"","id":450283,"membership_limit":12,"locked":false}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/room/448665/speak.json
+    body: ! '{"message":{"body":"Hello I''m a test message","type":"TextMessage"}}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      server:
+      - nginx
+      date:
+      - Wed, 28 Nov 2012 10:11:31 GMT
+      content-type:
+      - application/json; charset=utf-8
+      content-length:
+      - '175'
+      status:
+      - 201 Created
+      location:
+      - https://jilion.campfirenow.com/room/448665
+      x-runtime:
+      - '32'
+      x-json:
+      - '742902702'
+      set-cookie:
+      - _campfire_session=BAh7CDoQaWRlbnRpdHlfaWRpA3QLOzoJYXV0aHsGIgtqaWxpb257BjoMdXNlcl9pZGkDo%2BMPOg9zZXNzaW9uX2lkIiU1NTlmNjJlNTA1Y2I4N2E3OTEzZTc5NDE0ZDAwNTlhNg%3D%3D--45c8a6c56a4ac1d8f41d53eabcfffa06e1670814;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Sun, 28-Nov-2032 10:11:31 GMT; secure
+      cache-control:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000
+    body: ! '{"message":{"type":"TextMessage","room_id":448665,"created_at":"2012/11/28
+      10:11:31 +0000","id":742902702,"user_id":1041315,"body":"Hello I''m a test message","starred":false}}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/rooms.json
+    body: 
+    headers:
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx
+      date:
+      - Wed, 28 Nov 2012 10:11:32 GMT
+      content-type:
+      - application/json; charset=utf-8
+      content-length:
+      - '1145'
+      status:
+      - 200 OK
+      etag:
+      - ! '"29f56c755fc87d47f1ad362186dd5247"'
+      x-runtime:
+      - '29'
+      set-cookie:
+      - _campfire_session=BAh7CDoQaWRlbnRpdHlfaWRpA3QLOzoJYXV0aHsGIgtqaWxpb257BjoMdXNlcl9pZGkDo%2BMPOg9zZXNzaW9uX2lkIiVmNTY4N2IyMTVjMmVkYjBlZjI5MzNlNTUzYjBhNWI5ZA%3D%3D--a4915a9514da443821bd36f91720d6d33da39dd6;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Sun, 28-Nov-2032 10:11:32 GMT; secure
+      cache-control:
+      - private, max-age=0, must-revalidate
+      strict-transport-security:
+      - max-age=31536000
+    body: ! '{"rooms":[{"name":"SV Dev","created_at":"2011/10/27 18:49:54 +0000","updated_at":"2011/11/03
+      12:56:16 +0000","topic":"","id":448517,"membership_limit":12,"locked":false},{"name":"Jilion","created_at":"2011/10/28
+      06:17:19 +0000","updated_at":"2011/10/28 06:17:19 +0000","topic":"","id":448665,"membership_limit":12,"locked":false},{"name":"Aelios","created_at":"2011/11/01
+      13:49:44 +0000","updated_at":"2011/11/10 22:49:27 +0000","topic":"","id":449620,"membership_limit":12,"locked":false},{"name":"SV
+      Support","created_at":"2011/11/02 07:56:35 +0000","updated_at":"2011/11/02 07:56:35
+      +0000","topic":"","id":449918,"membership_limit":12,"locked":false},{"name":"SV
+      Player","created_at":"2011/11/03 09:06:06 +0000","updated_at":"2011/11/03 09:06:06
+      +0000","topic":"","id":450247,"membership_limit":12,"locked":false},{"name":"Aelios
+      Monitoring","created_at":"2011/11/03 09:07:28 +0000","updated_at":"2011/11/03
+      09:07:28 +0000","topic":"","id":450249,"membership_limit":12,"locked":false},{"name":"SV","created_at":"2011/11/03
+      12:57:16 +0000","updated_at":"2011/11/03 12:57:16 +0000","topic":"","id":450283,"membership_limit":12,"locked":false}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/room/448665/recent.json?limit=1&since_message_id=
+    body: 
+    headers:
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx
+      date:
+      - Wed, 28 Nov 2012 10:11:33 GMT
+      content-type:
+      - application/json; charset=utf-8
+      content-length:
+      - '178'
+      status:
+      - 200 OK
+      etag:
+      - ! '"76932d72493d9b146b94ead19eef86c4"'
+      x-runtime:
+      - '11'
+      set-cookie:
+      - _campfire_session=BAh7CDoQaWRlbnRpdHlfaWRpA3QLOzoJYXV0aHsGIgtqaWxpb257BjoMdXNlcl9pZGkDo%2BMPOg9zZXNzaW9uX2lkIiUxZTA4MzM3MjEzOTkzOTU1OTg3NzYzOGVhZjg2MmU4YQ%3D%3D--ebbdf846586e998930db4a8b850fb2ce452aa6da;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Sun, 28-Nov-2032 10:11:33 GMT; secure
+      cache-control:
+      - private, max-age=0, must-revalidate
+      strict-transport-security:
+      - max-age=31536000
+    body: ! '{"messages":[{"type":"TextMessage","room_id":448665,"created_at":"2012/11/28
+      10:11:31 +0000","id":742902702,"user_id":1041315,"body":"Hello I''m a test message","starred":false}]}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/room/448665.json
+    body: 
+    headers:
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: !binary |-
+        T0s=
+    headers:
+      !binary "c2VydmVy":
+      - !binary |-
+        bmdpbng=
+      !binary "ZGF0ZQ==":
+      - !binary |-
+        V2VkLCAyOCBOb3YgMjAxMiAxMDoxMTozNCBHTVQ=
+      !binary "Y29udGVudC10eXBl":
+      - !binary |-
+        YXBwbGljYXRpb24vanNvbjsgY2hhcnNldD11dGYtOA==
+      !binary "Y29udGVudC1sZW5ndGg=":
+      - !binary |-
+        MjA1Ng==
+      !binary "c3RhdHVz":
+      - !binary |-
+        MjAwIE9L
+      !binary "ZXRhZw==":
+      - !binary |-
+        IjgxMDlhNGVhNTIyZDg1NzkzNzgwNDc4MzFkOGJlMjU3Ig==
+      !binary "eC1ydW50aW1l":
+      - !binary |-
+        MjY=
+      !binary "c2V0LWNvb2tpZQ==":
+      - !binary |-
+        X2NhbXBmaXJlX3Nlc3Npb249QkFoN0NEb1FhV1JsYm5ScGRIbGZhV1JwQTNR
+        TE96b0pZWFYwYUhzR0lndHFhV3hwYjI1N0Jqb01kWE5sY2w5cFpHa0RvJTJC
+        TVBPZzl6WlhOemFXOXVYMmxrSWlVMk5XRXlNamxrTm1KalpESXhNekE0T0Ra
+        allqZzNOelZpWVRFek9XVTBOZyUzRCUzRC0tMTZmMWU3MTVkZWExNzhlNzk0
+        YjQyZDU5ZTg5YTEwNmYyODdiYmQ1ZTsgcGF0aD0vOyBIdHRwT25seTsgc2Vj
+        dXJl
+      - !binary |-
+        c2Vzc2lvbl90b2tlbj07IHBhdGg9LzsgZXhwaXJlcz1TdW4sIDI4LU5vdi0y
+        MDMyIDEwOjExOjM0IEdNVDsgc2VjdXJl
+      !binary "Y2FjaGUtY29udHJvbA==":
+      - !binary |-
+        cHJpdmF0ZSwgbWF4LWFnZT0wLCBtdXN0LXJldmFsaWRhdGU=
+      !binary "c3RyaWN0LXRyYW5zcG9ydC1zZWN1cml0eQ==":
+      - !binary |-
+        bWF4LWFnZT0zMTUzNjAwMA==
+    body: !binary |-
+      eyJyb29tIjp7Im5hbWUiOiJKaWxpb24iLCJjcmVhdGVkX2F0IjoiMjAxMS8x
+      MC8yOCAwNjoxNzoxOSArMDAwMCIsInVwZGF0ZWRfYXQiOiIyMDExLzEwLzI4
+      IDA2OjE3OjE5ICswMDAwIiwiZnVsbCI6ZmFsc2UsInRvcGljIjoiIiwiaWQi
+      OjQ0ODY2NSwib3Blbl90b19ndWVzdHMiOmZhbHNlLCJtZW1iZXJzaGlwX2xp
+      bWl0IjoxMiwidXNlcnMiOlt7InR5cGUiOiJNZW1iZXIiLCJhZG1pbiI6dHJ1
+      ZSwiY3JlYXRlZF9hdCI6IjIwMTEvMTAvMjcgMTg6NDk6NTQgKzAwMDAiLCJl
+      bWFpbF9hZGRyZXNzIjoidGhpYmF1ZEBqaWxpb24uY29tIiwiYXZhdGFyX3Vy
+      bCI6Imh0dHA6Ly9hc3NldDAuMzdpbWcuY29tL2dsb2JhbC8yNTgwMmQ2YWVi
+      ZmVlZmIwZmE4ZmRlZTAzOTg1YTZlN2EzZTk3NGY5L2F2YXRhci5naWY/cj0z
+      IiwiaWQiOjEwNDA4NDcsIm5hbWUiOiJUaGliYXVkIEd1aWxsYXVtZS1HZW50
+      aWwifSx7InR5cGUiOiJNZW1iZXIiLCJhZG1pbiI6dHJ1ZSwiY3JlYXRlZF9h
+      dCI6IjIwMTEvMTAvMjcgMTk6MTI6NTMgKzAwMDAiLCJlbWFpbF9hZGRyZXNz
+      IjoicmVteUBqaWxpb24uY29tIiwiYXZhdGFyX3VybCI6Imh0dHA6Ly9hc3Nl
+      dDAuMzdpbWcuY29tL2dsb2JhbC85ZTFiODI5NzFmOTA1YzQxNjJiNzNhYzIy
+      YjFmNmM5Y2QwOWRhYmE0NGZiNzJjZWU4NDFkMjI1ZGQ4MGEyNmZjYTFmMGVh
+      OTE5M2NjNTQzOTc3YTYzMDU0Y2MxZjNhOTlmMzVmNGQ3MDdkMWQ3NmNjNGEy
+      MjUxYjRiYTg2NjUwYTY2ZjY5MmVmNGI2ZDNmNzZkYjk1ZWQzMjg4NTFkZmY3
+      L2F2YXRhci5naWY/cj0zIiwiaWQiOjEwNDA4NzMsIm5hbWUiOiJSw6lteSBD
+      b3V0YWJsZSJ9LHsidHlwZSI6Ik1lbWJlciIsImFkbWluIjp0cnVlLCJjcmVh
+      dGVkX2F0IjoiMjAxMS8xMC8yNyAxOToxMzo0MiArMDAwMCIsImVtYWlsX2Fk
+      ZHJlc3MiOiJ6ZW5vQGppbGlvbi5jb20iLCJhdmF0YXJfdXJsIjoiaHR0cDov
+      L2Fzc2V0MC4zN2ltZy5jb20vZ2xvYmFsLzVhOTBkY2Y3NWI2NzM5NDk3NDA2
+      ODExN2QzYmVhNGQzYzAxMmQxZmMvYXZhdGFyLmdpZj9yPTMiLCJpZCI6MTA0
+      MDg3NSwibmFtZSI6Ilplbm8gQ3JpdmVsbGkifSx7InR5cGUiOiJNZW1iZXIi
+      LCJhZG1pbiI6dHJ1ZSwiY3JlYXRlZF9hdCI6IjIwMTEvMTAvMjcgMTk6MTQ6
+      MTUgKzAwMDAiLCJlbWFpbF9hZGRyZXNzIjoib2N0YXZlQGppbGlvbi5jb20i
+      LCJhdmF0YXJfdXJsIjoiaHR0cDovL2Fzc2V0MC4zN2ltZy5jb20vZ2xvYmFs
+      L2I2MzYwNzAxNzczNTE3YTA4MjUyMDJhMTY2NTU2NTI3NTg5MzllOTAvYXZh
+      dGFyLmdpZj9yPTMiLCJpZCI6MTA0MDg3NiwibmFtZSI6Ik9jdGF2ZSBaYW5n
+      cyJ9LHsidHlwZSI6Ik1lbWJlciIsImFkbWluIjp0cnVlLCJjcmVhdGVkX2F0
+      IjoiMjAxMS8xMS8wMSAxMzoxNDo0MSArMDAwMCIsImVtYWlsX2FkZHJlc3Mi
+      OiJtZWhkaUBqaWxpb24uY29tIiwiYXZhdGFyX3VybCI6Imh0dHA6Ly9hc3Nl
+      dDAuMzdpbWcuY29tL2dsb2JhbC8zMWNlMDZiMTRhMjg1OTgzZWE0NjhlYjMw
+      YTQxMjk3NWM2MTE4YTM4M2U0OWY5NjZmMjVjNDdlOWI1OTA5ZjIyNDk4OWJm
+      OTBmMDcxOWQ5MTBlYjg5NjEyMWY4ZWQ0NzY1YjVkOTE0MzAyYTdkMjNkMDdj
+      ODQ4YjE5Zjk5YTU4YjdhZDlkMWZlNzEyNzM5YTdlNmRmZmVlYjVhOWZiNDUw
+      L2F2YXRhci5naWY/cj0zIiwiaWQiOjEwNDQ3NjEsIm5hbWUiOiJNZWhkaSBB
+      bWluaWFuIn0seyJ0eXBlIjoiTWVtYmVyIiwiYWRtaW4iOnRydWUsImNyZWF0
+      ZWRfYXQiOiIyMDExLzExLzAxIDEzOjE1OjIwICswMDAwIiwiZW1haWxfYWRk
+      cmVzcyI6ImFuZHJlYUBqaWxpb24uY29tIiwiYXZhdGFyX3VybCI6Imh0dHA6
+      Ly9hc3NldDAuMzdpbWcuY29tL2dsb2JhbC9kZDI2MTNmMGEyMWU1OTgxOWIy
+      NmRiNDZjN2NiYzM1ODFjOWU4OTE4YTNmMjgxNjU3MDhmYzNiZDk3MmQ1OTgw
+      NTI5OTVlYThjYzFiNDhmZDQzMjc3OTQ0MWUwNzA2MTA0YjY0OGVkMmUzODc1
+      MzI1ZThkMjkwODc5Y2ZjZTc5YjQ0NzA0ZWZhY2JmNTZjNzlmNGI0YjVlNzMz
+      NjkxZDU0L2F2YXRhci5naWY/cj0zIiwiaWQiOjEwNDQ3NjMsIm5hbWUiOiJB
+      bmRyZWEgQ29pcm8ifV0sImxvY2tlZCI6ZmFsc2V9fQ==
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://902e80d1986be4138f3092d10ee67d468c96d9bf:X@jilion.campfirenow.com:443/users/1041315.json
+    body: 
+    headers:
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx
+      date:
+      - Wed, 28 Nov 2012 10:11:35 GMT
+      content-type:
+      - application/json; charset=utf-8
+      content-length:
+      - '247'
+      status:
+      - 200 OK
+      etag:
+      - ! '"1be9c3b7a630144b583e2bff7f330d1b"'
+      x-runtime:
+      - '8'
+      set-cookie:
+      - _campfire_session=BAh7CDoQaWRlbnRpdHlfaWRpA3QLOzoJYXV0aHsGIgtqaWxpb257BjoMdXNlcl9pZGkDo%2BMPOg9zZXNzaW9uX2lkIiU1MTRhYTQ1NDRjNDViNDQ5NzdmZTc0MTk2OGE3NTQyMQ%3D%3D--83ffea8b1fa0265864cee44b3d9c65e66a3218ec;
+        path=/; HttpOnly; secure
+      - session_token=; path=/; expires=Sun, 28-Nov-2032 10:11:35 GMT; secure
+      cache-control:
+      - private, max-age=0, must-revalidate
+      strict-transport-security:
+      - max-age=31536000
+    body: ! '{"user":{"type":"Member","admin":true,"created_at":"2011/10/28 06:29:22
+      +0000","email_address":"jilion@jilion.com","avatar_url":"http://asset0.37img.com/global/e1182c69dac3113a1c7a87e1cf3988179f777da6/avatar.gif?r=3","id":1041315,"name":"Jilion"}}'
+    http_version: '1.1'
