@@ -42,15 +42,15 @@ describe Service::Settings do
           plugins: {
             "lightbox" => {
               settings: {
-                enable_close_button: true,
                 on_open: 'play',
                 overlay_color: "#000",
                 overlay_opacity: 0.7,
+                close_button_enable: true,
                 close_button_visibility: "autohide",
                 close_button_position: "left"
               },
               allowed_settings: {
-                enable_close_button: {
+                close_button_enable: {
                   values: [true, false],
                 },
                 on_open: {
@@ -145,12 +145,12 @@ describe Service::Settings do
                 },
                 "initial" => {
                   settings: {
-                    enable_overlay: true,
+                    overlay_enable: true,
                     overlay_visibility: 'autofade',
                     overlay_color: '#000'
                   },
                   allowed_settings: {
-                    enable_overlay: {
+                    overlay_enable: {
                       values: [true, false]
                     },
                     overlay_visibility: {
