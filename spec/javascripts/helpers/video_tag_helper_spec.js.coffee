@@ -11,7 +11,7 @@ describe 'MySublimeVideo.Helpers.VideoTagHelper', ->
       expect(@helper.getDataSettingName('lightbox', 'overlay_opacity')).toEqual('overlay-opacity')
 
     it 'replace _ with - and join addon name and setting name', ->
-      expect(@helper.getDataSettingName('initial', 'enable_overlay')).toEqual('initial-enable-overlay')
+      expect(@helper.getDataSettingName('initial', 'overlay_enable')).toEqual('initial-enable-overlay')
 
   describe 'processCheckBoxInput: (dataSettingName, currentValue, defaultValue)', ->
     describe 'options["forceSettings"] is false', ->

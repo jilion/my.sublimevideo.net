@@ -1,8 +1,8 @@
 .initial
   - addon_plan = site.addon_plan_for_addon_name('initial')
   - settings_template = addon_plan.settings_template_for(kit.design).template
-  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable_overlay, data: { master: 'initial-enable_overlay' })
-  .indent= kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :overlay_visibility, data: { dependant: 'initial-enable_overlay' })
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :overlay_enable, data: { master: 'initial-overlay_enable' })
+  .indent= kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :overlay_visibility, data: { dependant: 'initial-overlay_enable' })
 
 .controls
   - addon_plan = site.addon_plan_for_addon_name('controls')

@@ -14,7 +14,7 @@
   "range": "ii",
   "imageUrl": "ij",
   "linkUrl": "ik",
-  "enableCloseButton": "il",
+  "closeButtonEnable": "il",
   // "": "im",
   // 'in' is a reserved key
   "enableFacebook": "io",
@@ -22,7 +22,7 @@
   "enableEmbed": "iq",
   "order": "ir",
   "defaultUrl": "is",
-  "enableOverlay": "it",
+  "overlayEnable": "it",
   "module": "iu",
   "enable": "iv",
   "enableTwitter": "iw",

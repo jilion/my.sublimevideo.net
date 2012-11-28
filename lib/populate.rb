@@ -59,7 +59,7 @@ module Populate
           step: 0.1,
           default: 0.7
         },
-        enable_close_button: {
+        close_button_enable: {
           type: 'boolean',
           values: [true, false],
           default: true
@@ -88,7 +88,7 @@ module Populate
         }
       }
       initial_template = {
-        enable_overlay: {
+        overlay_enable: {
           type: 'boolean',
           values: [true, false],
           default: true
