@@ -548,6 +548,7 @@ module Populate
             service = Service::Site.new(site)
             service.migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
             service.send :create_default_kit!
+            service.site.save
           else
             site = user.sites.build(hostname: hostname)
             Service::Site.new(site).create
