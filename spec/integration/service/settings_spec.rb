@@ -179,13 +179,13 @@ describe Service::Settings do
                 }
               },
               settings: {
-                enable_volume: true,
+                volume_enable: true,
                 enable_fullmode: true,
                 force_fullwindow: false,
                 on_end: 'nothing'
               },
               allowed_settings: {
-                enable_volume: {
+                volume_enable: {
                   values: [true, false]
                 },
                 enable_fullmode: {

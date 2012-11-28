@@ -2,7 +2,7 @@ en:
   kit:
     video_player:
       settings:
-        enable_volume: 'Enable volume control'
+        volume_enable: 'Enable volume control'
         enable_fullmode: 'Enable full-screen'
         force_fullwindow: 'Maximize to full-window instead of full-screen'
         on_end: 'Player behavior upon video playback end:'

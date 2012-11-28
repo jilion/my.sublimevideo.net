@@ -234,7 +234,7 @@ module Populate
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
             template: {
-              enable_volume: {
+              volume_enable: {
                 type: 'boolean',
                 values: [true, false],
                 default: true

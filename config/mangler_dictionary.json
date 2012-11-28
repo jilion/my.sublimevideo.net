@@ -88,7 +88,7 @@
   "forceFullwindow": "tb",
   "stopOnEnd": "tc",
   "enableFullmode": "td",
-  "enableVolume": "te",
+  "volumeEnable": "te",
   "autoplay": "tf",
   "overlayColor": "tg",
   "overlayOpacity": "th",
