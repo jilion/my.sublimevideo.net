@@ -11,13 +11,13 @@ class Admin
 
       # GET /app/components/:component_id/versions
       def index
-        @component_versions = @component.versions
+        @component_versions = @component.versions.with_deleted
         respond_with @component_versions
       end
 
       # GET /app/components/:component_id/versions/:id
       def show
-        @component_version = @component.versions.find_by_version!(params[:id])
+        @component_version = @component.versions.with_deleted.find_by_version!(params[:id])
         respond_with @component_version do |format|
           format.zip { redirect_to @component_version.zip.url }
         end

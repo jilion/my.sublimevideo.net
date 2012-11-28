@@ -15,24 +15,27 @@
   = " | "
   = link_to 'alpha', { stage: 'alpha' }
 
-- if @component.versions.present?
+- if @component.versions.with_deleted.present?
   %table
     %tr
       %th= "Version"
       %th= "Released at"
       %th= "Dependencies"
       %th= "Action"
-    - versions = @component.versions.all
+    - versions = @component.versions.with_deleted.all
     - versions.select! { |v| v.stage == params[:stage] } if params[:stage].present?
     - versions.sort.reverse.first(20).each do |version|
-      %tr{ class: cycle('', 'alt') }
+      - tr_class = version.deleted? ? "deleted" : ""
+      %tr{ class: cycle(tr_class, "#{tr_class} alt") }
         %td
           = version.version
           = " (#{link_to 'download zip', admin_app_component_version_path(@component, version, format: :zip)})".html_safe
         %td= version.created_at
         %td= version.dependencies
         %td
-          = button_to "delete version", admin_app_component_version_path(version.token, version), data: { confirm: 'Are you REALLY sure?' }, method: :delete
-
+          - if version.deleted?
+            %p{ title: "Files are still present in the S3/CDN but aren't use anymore for the loader." }= "DELETED"
+          - else
+            = button_to "delete version", admin_app_component_version_path(version.token, version), data: { confirm: 'Are you REALLY sure? Files will be still present in the S3/CDN but will not be used anymore for the loader.' }, method: :delete
 - else
   %p No versions yet.
