@@ -8,7 +8,7 @@ module Service
       def create
         component_version.save!
         Service::Loader.delay.update_all_dependant_sites(component_version.component_id, component_version.stage)
-        CampfireWrapper.delay.post("#{campfire_message} released")
+        CampfireWrapper.delay.post("#{campfire_message} released") if component_version.name == 'app'
         true
       rescue ::ActiveRecord::RecordInvalid
         false
@@ -17,7 +17,7 @@ module Service
       def destroy
         component_version.destroy
         Service::Loader.delay.update_all_dependant_sites(component_version.component_id, component_version.stage)
-        CampfireWrapper.delay.post("#{campfire_message} DELETED!")
+        CampfireWrapper.delay.post("#{campfire_message} DELETED!") if component_version.name == 'app'
         true
       end
 
