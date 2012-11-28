@@ -14,7 +14,7 @@ YouTubeWrapper = Struct.new(:video_id) do
   end
 
   def self.client
-    $client ||= YouTubeIt::Client.new
+    @client ||= YouTubeIt::Client.new
   end
 
 end unless defined? YouTubeWrapper
