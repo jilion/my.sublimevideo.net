@@ -85,10 +85,10 @@
   "SVSharingButtons": "sz",
 
   "forceFlash": "ta",
-  "forceFullwindow": "tb",
+  "fullmodePriority": "tb",
   "stopOnEnd": "tc",
-  "enableFullmode": "td",
-  "enableVolume": "te",
+  "fullmodeEnable": "td",
+  "volumeEnable": "te",
   "autoplay": "tf",
   "overlayColor": "tg",
   "overlayOpacity": "th",

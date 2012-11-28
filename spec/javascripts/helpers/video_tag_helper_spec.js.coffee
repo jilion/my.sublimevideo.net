@@ -5,7 +5,7 @@ describe 'MySublimeVideo.Helpers.VideoTagHelper', ->
       @helper = new MySublimeVideo.Helpers.VideoTagHelper(@video)
 
     it 'remove addon name if "video_player"', ->
-      expect(@helper.getDataSettingName('video_player', 'force_fullwindow')).toEqual('force-fullwindow')
+      expect(@helper.getDataSettingName('video_player', 'fullmode_priority')).toEqual('fullmode-priority')
 
     it 'remove addon name if "lightbox"', ->
       expect(@helper.getDataSettingName('lightbox', 'overlay_opacity')).toEqual('overlay-opacity')
@@ -29,20 +29,20 @@ describe 'MySublimeVideo.Helpers.VideoTagHelper', ->
         expect(@helper.dataSettings['initial-overlay']).toEqual('none')
 
       it 'set data setting to true', ->
-        expect(@helper.processCheckBoxInput('force-fullwindow', true, false))
-        expect(@helper.dataSettings['force-fullwindow']).toEqual('true')
+        expect(@helper.processCheckBoxInput('fullmode-priority', true, false))
+        expect(@helper.dataSettings['fullmode-priority']).toEqual('true')
 
       it 'set data setting to false', ->
-        expect(@helper.processCheckBoxInput('force-fullwindow', false, true))
-        expect(@helper.dataSettings['force-fullwindow']).toEqual('false')
+        expect(@helper.processCheckBoxInput('fullmode-priority', false, true))
+        expect(@helper.dataSettings['fullmode-priority']).toEqual('false')
 
       it 'do not set data setting to true', ->
-        expect(@helper.processCheckBoxInput('force-fullwindow', true, true))
-        expect(@helper.dataSettings['force-fullwindow']).toEqual(null)
+        expect(@helper.processCheckBoxInput('fullmode-priority', true, true))
+        expect(@helper.dataSettings['fullmode-priority']).toEqual(null)
 
       it 'do not set data setting to false', ->
-        expect(@helper.processCheckBoxInput('force-fullwindow', false, false))
-        expect(@helper.dataSettings['force-fullwindow']).toEqual(null)
+        expect(@helper.processCheckBoxInput('fullmode-priority', false, false))
+        expect(@helper.dataSettings['fullmode-priority']).toEqual(null)
 
     describe 'options["forceSettings"] is true', ->
       beforeEach ->
@@ -59,20 +59,20 @@ describe 'MySublimeVideo.Helpers.VideoTagHelper', ->
         expect(@helper.dataSettings['initial-overlay']).toEqual('none')
 
       it 'set data setting to true', ->
-        expect(@helper.processCheckBoxInput('force-fullwindow', true, false))
-        expect(@helper.dataSettings['force-fullwindow']).toEqual('true')
+        expect(@helper.processCheckBoxInput('fullmode-priority', true, false))
+        expect(@helper.dataSettings['fullmode-priority']).toEqual('true')
 
       it 'set data setting to false', ->
-        expect(@helper.processCheckBoxInput('force-fullwindow', false, true))
-        expect(@helper.dataSettings['force-fullwindow']).toEqual('false')
+        expect(@helper.processCheckBoxInput('fullmode-priority', false, true))
+        expect(@helper.dataSettings['fullmode-priority']).toEqual('false')
 
       it 'do not set data setting to true', ->
-        expect(@helper.processCheckBoxInput('force-fullwindow', true, true))
-        expect(@helper.dataSettings['force-fullwindow']).toEqual('true')
+        expect(@helper.processCheckBoxInput('fullmode-priority', true, true))
+        expect(@helper.dataSettings['fullmode-priority']).toEqual('true')
 
       it 'do not set data setting to false', ->
-        expect(@helper.processCheckBoxInput('force-fullwindow', false, false))
-        expect(@helper.dataSettings['force-fullwindow']).toEqual('false')
+        expect(@helper.processCheckBoxInput('fullmode-priority', false, false))
+        expect(@helper.dataSettings['fullmode-priority']).toEqual('false')
 
   describe 'pushDataSetting: (dataSettingName, currentValue)', ->
     describe 'standard video', ->

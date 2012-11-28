@@ -234,20 +234,20 @@ module Populate
         App::SettingsTemplate => [
           { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
             template: {
-              enable_volume: {
+              volume_enable: {
                 type: 'boolean',
                 values: [true, false],
                 default: true
               },
-              enable_fullmode: {
+              fullmode_enable: {
                 type: 'boolean',
                 values: [true, false],
                 default: true
               },
-              force_fullwindow: {
-                type: 'boolean',
-                values: [true, false],
-                default: false,
+              fullmode_priority: {
+                type: 'string',
+                values: ['screen', 'window'],
+                default: 'screen',
               },
               on_end: {
                 type: 'string',

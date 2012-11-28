@@ -13,7 +13,7 @@
 .video_player
   - addon_plan = site.addon_plan_for_addon_name('video_player')
   - settings_template = addon_plan.settings_template_for(kit.design).template
-  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable_volume)
-  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable_fullmode)
-  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :force_fullwindow)
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :volume_enable)
+  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :fullmode_enable, data: { master: 'fullmode-enable' })
+  .indent= kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :fullmode_priority, data: { dependant: 'fullmode-enable' })
   = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :on_end, show_title: true)
