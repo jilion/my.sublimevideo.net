@@ -5,9 +5,12 @@ module Stat::Site
   include Stat
 
   included do
-    field :t, type: String    # Site token
+    field :t, type: String                  # Site token
 
-    field :pv, type: Hash, default: {} # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 2 }
+    field :pv, type: Hash, default: {}      # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 2 }
+
+    field :st, type: Array, default: []     # Stages used
+    field :s, type: Boolean, default: false # SSL used
 
     index t: 1, d: 1
   end

@@ -20,6 +20,8 @@ describe Stat do
           described_class.stub(:incs_from_trackers).and_return({
             "ovjigy83"=> {
               inc: { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
+              set: {},
+              add_to_set: { "st" => { :$each => ['s', 'b'] } },
               videos: {
                 "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
                 "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
@@ -27,6 +29,8 @@ describe Stat do
             },
             "site1234"=> {
               inc: {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
+              set: { "s" => true },
+              add_to_set: {},
               videos: {
                 "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
                 "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
@@ -89,6 +93,15 @@ describe Stat do
           Stat::Site::Day.where(t: 'site1234', d: @log.day).should be_present
         end
 
+        it "adds ssl & stage info" do
+          Stat.create_stats_from_trackers!(@log, nil)
+
+          Stat::Site::Day.where(t: 'ovjigy83', d: @log.day).first.s.should be_false
+          Stat::Site::Day.where(t: 'ovjigy83', d: @log.day).first.st.should eq ['s', 'b']
+          Stat::Site::Day.where(t: 'site1234', d: @log.day).first.s.should be_true
+          Stat::Site::Day.where(t: 'site1234', d: @log.day).first.st.should eq []
+        end
+
         it "create 2 day video stats for all sites" do
           Stat.create_stats_from_trackers!(@log, nil)
 
@@ -143,15 +156,17 @@ describe Stat do
     context "load event with 1 video loaded" do
       before do
         described_class.stub(:only_stats_trackers).and_return({
-          ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=h", user_agent] => 2,
-          ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=f", user_agent] => 1,
-          ["?t=ovjigy83&e=l&d=d&h=e&vu[]=efgh5678&pm[]=f", user_agent] => 1
+          ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=h&st=b", user_agent] => 2,
+          ["?t=ovjigy83&e=l&d=d&h=m&vu[]=abcd1234&pm[]=f&s=1", user_agent] => 1,
+          ["?t=ovjigy83&e=l&d=d&h=e&vu[]=efgh5678&pm[]=f&st=b", user_agent] => 1
         })
       end
 
       specify { described_class.incs_from_trackers(nil).should eql({
         "ovjigy83"=> {
           inc: { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 2, "md.f.d" => 2 },
+          set: { "s" => true },
+          add_to_set: { "st" => { :$each => ['b', 's'] } },
           videos: {
             "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
             "efgh5678" => { "vl.e" => 1, "vlc" => 1, "bp.saf-osx" => 1, "md.f.d" => 1 }
@@ -173,6 +188,8 @@ describe Stat do
       specify { described_class.incs_from_trackers(nil).should eql({
         "ovjigy83"=> {
           inc: { "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
+          set: {},
+          add_to_set: { "st" => { :$each => ['s'] } },
           videos: {
             "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 },
             "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
@@ -180,6 +197,8 @@ describe Stat do
         },
         "site1234"=> {
           inc: { "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
+          set: {},
+          add_to_set: { "st" => { :$each => ['s'] } },
           videos: {
             "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
             "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }
@@ -199,12 +218,16 @@ describe Stat do
       specify { described_class.incs_from_trackers(nil).should eql({
         "ovjigy83"=> {
           inc: { "vv.m" => 1 },
+          set: {},
+          add_to_set: {},
           videos: {
             "abcd1234" => { "vv.m" => 1, "vs.source12" => 1, "vvc" => 1 }
           }
         },
         "site1234"=> {
           inc: { "vv.i" => 1 },
+          set: {},
+          add_to_set: {},
           videos: {
             "abcd1234" => { "vv.i" => 1 }
           }
@@ -227,6 +250,8 @@ describe Stat do
       specify { described_class.incs_from_trackers(nil).should eql({
         "ovjigy83"=> {
           inc: { "vv.m" => 1, "pv.m" => 3, "pv.e" => 1, "bp.saf-osx" => 4, "md.h.d" => 4, "md.f.d" => 2 },
+          set: {},
+          add_to_set: { "st" => { :$each => ['s'] } },
           videos: {
             "abcd1234" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1, "vv.m" => 1, "vvc" => 1, "vs.source12" => 1 },
             "efgh5678" => { "vl.m" => 2, "vl.e" => 1, "vlc" => 3, "bp.saf-osx" => 3, "md.h.d" => 2, "md.f.d" => 1 }
@@ -234,6 +259,8 @@ describe Stat do
         },
         "site1234"=> {
           inc: {  "vv.i" => 1, "pv.m" => 3, "bp.saf-osx" => 3, "md.h.m" => 6 },
+          set: {},
+          add_to_set: { "st" => { :$each => ['s'] } },
           videos: {
             "abcd1234" => { "vv.i" => 1, "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 },
             "efgh5678" => { "vl.m" => 3, "vlc" => 3, "bp.saf-osx" => 3, "md.h.m" => 3 }

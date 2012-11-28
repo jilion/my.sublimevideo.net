@@ -27,12 +27,16 @@ module Stat
       site = ::Site.where(token: site_token).first
       realtime_stats_active = site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
 
-      if (site_inc = values[:inc]).present?
+      if [values[:inc], values[:set], values[:add_to_set]].any? { |v| v.present? }
         if realtime_stats_active
-          Stat::Site::Minute.collection.find(t: site_token, d: log.minute).update({ :$inc => site_inc }, upsert: true)
-          Stat::Site::Hour.collection.find(t: site_token, d: log.hour).update({ :$inc => site_inc }, upsert: true)
+          Stat::Site::Minute.collection.find(t: site_token, d: log.minute).update({ :$inc => values[:inc] }, upsert: true)
+          Stat::Site::Hour.collection.find(t: site_token, d: log.hour).update({ :$inc => values[:inc] }, upsert: true)
         end
-        Stat::Site::Day.collection.find(t: site_token, d: log.day).update({ :$inc => site_inc }, upsert: true)
+        Stat::Site::Day.collection.find(t: site_token, d: log.day).update({
+          :$inc => values[:inc],
+          :$set => values[:set],
+          :$addToSet => values[:add_to_set]
+        }, upsert: true)
       end
 
       values[:videos].each do |video_ui, video_inc|
@@ -63,7 +67,12 @@ private
   #
   def self.incs_from_trackers(trackers)
     trackers = only_stats_trackers(trackers)
-    incs     = Hash.new { |h,k| h[k] = { inc: Hash.new(0), videos: Hash.new { |h,k| h[k] = Hash.new(0) } } }
+    incs     = Hash.new { |h,k| h[k] = {
+      inc: Hash.new(0),
+      set: {},
+      add_to_set: Hash.new { |h,k| h[k] = { :$each => [] }  },
+      videos: Hash.new { |h,k| h[k] = Hash.new(0) }
+    } }
     trackers.each do |tracker, hits|
       begin
         request, user_agent = tracker
@@ -75,6 +84,17 @@ private
         if site[:inc].present?
           site[:inc].each do |inc, value|
             incs[site[:t]][:inc][inc] += value
+          end
+        end
+        if site[:set].present?
+          site[:set].each do |set, value|
+            incs[site[:t]][:set][set] = value
+          end
+        end
+        if site[:add_to_set].present?
+          site[:add_to_set].each do |add_to_set, value|
+            incs[site[:t]][:add_to_set][add_to_set][:$each] << value
+            incs[site[:t]][:add_to_set][add_to_set][:$each].uniq!
           end
         end
 
