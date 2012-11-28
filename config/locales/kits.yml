@@ -25,7 +25,7 @@ en:
 
     initial:
       settings:
-        enable_overlay: 'Initial overlay'
+        overlay_enable: 'Initial overlay'
       values:
         overlay_visibility:
           autofade: 'Auto-fade'
@@ -36,7 +36,7 @@ en:
         on_open: 'Opening behavior:'
         overlay_opacity: 'Overlay opacity'
         overlay_color: 'Overlay color'
-        enable_close_button: 'Close button'
+        close_button_enable: 'Close button'
         close_button_visibility: 'Visibility'
         close_button_position: 'Position'
       values:
