@@ -85,7 +85,7 @@
   "SVSharingButtons": "sz",
 
   "forceFlash": "ta",
-  "forceFullwindow": "tb",
+  "fullmodePriority": "tb",
   "stopOnEnd": "tc",
   "fullmodeEnable": "td",
   "volumeEnable": "te",

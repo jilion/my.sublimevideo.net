@@ -244,10 +244,10 @@ module Populate
                 values: [true, false],
                 default: true
               },
-              force_fullwindow: {
-                type: 'boolean',
-                values: [true, false],
-                default: false,
+              fullmode_priority: {
+                type: 'string',
+                values: ['screen', 'window'],
+                default: 'screen',
               },
               on_end: {
                 type: 'string',

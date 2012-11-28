@@ -3,10 +3,13 @@ en:
     video_player:
       settings:
         volume_enable: 'Enable volume control'
-        fullmode_enable: 'Enable full-screen'
-        force_fullwindow: 'Maximize to full-window instead of full-screen'
+        fullmode_enable: 'Enable full-mode'
+        fullmode_priority: 'Set the preferred mode to maximize the player'
         on_end: 'Player behavior upon video playback end:'
       values:
+        fullmode_priority:
+          screen: 'Prefer full-screen when possible'
+          window: 'Prefer full-window when possible'
         on_end:
           nothing: 'Do nothing (stays on last frame) - Default'
           replay: 'Replay the video (loop)'

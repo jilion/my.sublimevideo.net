@@ -181,7 +181,7 @@ describe Service::Settings do
               settings: {
                 volume_enable: true,
                 fullmode_enable: true,
-                force_fullwindow: false,
+                fullmode_priority: 'screen',
                 on_end: 'nothing'
               },
               allowed_settings: {
@@ -191,8 +191,8 @@ describe Service::Settings do
                 fullmode_enable: {
                   values: [true, false]
                 },
-                force_fullwindow: {
-                  values: [true, false]
+                fullmode_priority: {
+                  values: ['screen', 'window']
                 },
                 on_end: {
                   values: ['nothing', 'replay', 'stop']
@@ -302,14 +302,14 @@ describe Service::Settings do
             }},
             "kn":"sa.sh.sz"}},
             "ko": {
-            "te":true,"td":true,"tb":false,"onEnd":"nothing"},
+            "te":true,"td":true,"tb":"screen","onEnd":"nothing"},
             "kp": {
             "te": {
             "ih":[true,false]},
             "td": {
             "ih":[true,false]},
             "tb": {
-            "ih":[true,false]},
+            "ih":["screen","window"]},
             "onEnd": {
             "ih":["nothing","replay","stop"]}},
             "kn":"sa.sh.si"},
