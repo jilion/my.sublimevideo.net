@@ -24,7 +24,7 @@ CampfireWrapper = Struct.new(:room) do
   end
 
   def self.client
-    $client ||= Tinder::Campfire.new(subdomain, token: api_token)
+    @client ||= Tinder::Campfire.new(subdomain, token: api_token)
   end
 
 end

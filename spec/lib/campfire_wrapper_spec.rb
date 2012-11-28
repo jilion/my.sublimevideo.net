@@ -42,7 +42,7 @@ describe CampfireWrapper do
 
       it "speaks to the room" do
         CampfireWrapper.post(message, room: room_name)
-        puts CampfireWrapper.new(room_name).room.recent(1).first.body.should eq message
+        CampfireWrapper.new(room_name).room.recent(1).first.body.should eq message
       end
     end
 
@@ -52,7 +52,7 @@ describe CampfireWrapper do
 
       it "speaks to the room" do
         CampfireWrapper.post(message, room: room_name)
-        puts CampfireWrapper.new(room_name).room.recent(1).first.body.should eq "[STAGING] #{message}"
+        CampfireWrapper.new(room_name).room.recent(1).first.body.should eq "[STAGING] #{message}"
       end
     end
 
