@@ -180,7 +180,7 @@ describe Service::Settings do
               },
               settings: {
                 volume_enable: true,
-                enable_fullmode: true,
+                fullmode_enable: true,
                 force_fullwindow: false,
                 on_end: 'nothing'
               },
@@ -188,7 +188,7 @@ describe Service::Settings do
                 volume_enable: {
                   values: [true, false]
                 },
-                enable_fullmode: {
+                fullmode_enable: {
                   values: [true, false]
                 },
                 force_fullwindow: {

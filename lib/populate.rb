@@ -239,7 +239,7 @@ module Populate
                 values: [true, false],
                 default: true
               },
-              enable_fullmode: {
+              fullmode_enable: {
                 type: 'boolean',
                 values: [true, false],
                 default: true

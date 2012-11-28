@@ -3,7 +3,7 @@ en:
     video_player:
       settings:
         volume_enable: 'Enable volume control'
-        enable_fullmode: 'Enable full-screen'
+        fullmode_enable: 'Enable full-screen'
         force_fullwindow: 'Maximize to full-window instead of full-screen'
         on_end: 'Player behavior upon video playback end:'
       values:

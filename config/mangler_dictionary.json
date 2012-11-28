@@ -87,7 +87,7 @@
   "forceFlash": "ta",
   "forceFullwindow": "tb",
   "stopOnEnd": "tc",
-  "enableFullmode": "td",
+  "fullmodeEnable": "td",
   "volumeEnable": "te",
   "autoplay": "tf",
   "overlayColor": "tg",
