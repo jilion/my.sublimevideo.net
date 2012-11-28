@@ -4,12 +4,14 @@ describe Stat::Video do
 
   describe ".top_videos" do
     let(:site) { create(:site) }
+    before { Timecop.freeze Time.utc(2011,11,21,12) }
+    after { Timecop.return }
 
     context "last 24 hours" do
       let(:from) { 24.hour.ago.utc.change(min: 0).to_i.to_s }
       let(:to) { 1.hour.ago.utc.change(min: 0).to_i.to_s }
 
-      before do
+      before {
         6.times do |video_i|
           create(:video_tag, site: site, uid: "video#{video_i}", name: "Video #{video_i}")
           24.times do |hour_i|
@@ -20,7 +22,7 @@ describe Stat::Video do
             )
           end
         end
-      end
+      }
 
       specify { Stat::Video.top_videos(site, period: 'hours', from: from, to: to, count: 5)[:videos].should have(5).items }
       specify { Stat::Video.top_videos(site, period: 'hours', from: from, to: to, count: 5)[:total].should eq 6 }
@@ -41,12 +43,10 @@ describe Stat::Video do
     end
 
     context "last 61 seconds" do
-      let(:second) { Time.utc(2011,11,21,12) }
       let(:from) { 61.seconds.ago.utc.change(usec: 0).to_i.to_s }
       let(:to) { 2.seconds.ago.utc.change(usec: 0).to_i.to_s }
 
-      before do
-        Timecop.freeze second
+      before {
         6.times do |video_i|
           create(:video_tag, site: site, uid: "video#{video_i}")
           66.times do |second_i|
@@ -57,8 +57,7 @@ describe Stat::Video do
             )
           end
         end
-      end
-      after { Timecop.return }
+      }
 
       specify { Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 1)[:videos].should have(6).items }
       specify { Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:total].should eq 6 }
@@ -67,6 +66,7 @@ describe Stat::Video do
       it "replaces vv_hash by vv_array and vl_hash by vl_hash" do
         videos = Stat::Video.top_videos(site, period: 'seconds', from: from, to: to, count: 5)[:videos].sort_by! { |video| video["name"] }.reverse
         video  = videos.first
+        video["uid"].should eql "video5"
         video["vv_sum"].should eq(2220)
         video["vv_array"].should be_nil
         video["vv_hash"].should have(30).items
