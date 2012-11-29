@@ -108,7 +108,7 @@ module Populate
         enable: {
           type: 'boolean',
           values: [true, false],
-          default: true
+          default: false
         },
         enable_twitter: {
           type: 'boolean',
@@ -551,8 +551,18 @@ module Populate
             service.site.save
           else
             site = user.sites.build(hostname: hostname)
-            Service::Site.new(site).create
-            if rand >= 0.4
+            service = Service::Site.new(site).tap { |s| s.create }
+            if rand >= 0.3
+              app_designs, addon_plans = {}, {}
+              App::Design.custom.each do |design|
+                app_designs[design.name] = design.id if rand >= 0.6
+              end
+              AddonPlan.where{ price > 0 }.each do |addon_plan|
+                addon_plans[addon_plan.addon.name] = addon_plan.id if rand >= 0.6
+              end
+              service.update_billable_items(app_designs, addon_plans)
+            end
+            if rand >= 0.5
               Timecop.return
               Timecop.travel(created_at + 30.days)
               Service::Trial.activate_billable_items_out_of_trial_for_site!(site.id)
@@ -966,41 +976,32 @@ module Populate
     end
 
     def send_all_emails(user_id)
-      disable_perform_deliveries do
-        user         = User.find(user_id)
-        trial_site   = user.sites.in_trial.last
-        site         = user.sites.joins(:invoices).in_paid_plan.group { sites.id }.having { { invoices => (count(id) > 0) } }.last || user.sites.last
-        invoice      = site.invoices.last || Service::Invoice.build(site: site).invoice
-        transaction  = invoice.transactions.last || Transaction.create(invoices: [invoice])
-        stats_export = StatsExport.create(st: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
+      user                = user_id ? User.find(user_id) : User.last
+      trial_billable_item = user.billable_items.where(state: 'trial').first
+      site                = user.sites.paying.last || user.sites.last
+      invoice             = site.invoices.not_paid.last || Service::Invoice.build(site: site).tap { |s| s.save }.invoice
+      transaction         = invoice.transactions.last || Transaction.create!(invoices: [invoice])
+      stats_export        = StatsExport.create(site_token: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
 
-        DeviseMailer.confirmation_instructions(user).deliver!
-        DeviseMailer.reset_password_instructions(user).deliver!
+      DeviseMailer.confirmation_instructions(user).deliver!
+      DeviseMailer.reset_password_instructions(user).deliver!
 
-        UserMailer.welcome(user.id).deliver!
-        UserMailer.account_suspended(user.id).deliver!
-        UserMailer.account_unsuspended(user.id).deliver!
-        UserMailer.account_archived(user.id).deliver!
+      UserMailer.welcome(user.id).deliver!
+      UserMailer.account_suspended(user.id).deliver!
+      UserMailer.account_unsuspended(user.id).deliver!
+      UserMailer.account_archived(user.id).deliver!
 
-        BillingMailer.trial_has_started(trial_site.id).deliver!
-        BillingMailer.trial_will_expire(trial_site.id).deliver!
-        BillingMailer.trial_has_expired(trial_site.id).deliver!
-        BillingMailer.yearly_plan_will_be_renewed(site.id).deliver!
+      BillingMailer.trial_will_expire(trial_billable_item.id).deliver!
+      BillingMailer.trial_has_expired(site.id, trial_billable_item.item.class.to_s, trial_billable_item.item_id).deliver!
 
-        BillingMailer.credit_card_will_expire(user.id).deliver!
+      BillingMailer.credit_card_will_expire(user.id).deliver!
 
-        BillingMailer.transaction_succeeded(transaction.id).deliver!
-        BillingMailer.transaction_failed(transaction.id).deliver!
+      BillingMailer.transaction_succeeded(transaction.id).deliver!
+      BillingMailer.transaction_failed(transaction.id).deliver!
 
-        BillingMailer.too_many_charging_attempts(invoice.id).deliver!
+      StatsExportMailer.export_ready(stats_export).deliver!
 
-        StatsExportMailer.export_ready(stats_export).deliver!
-
-        MailMailer.send_mail_with_template(user.id, MailTemplate.last.id).deliver!
-
-        UsageMonitoringMailer.plan_overused(site.id).deliver!
-        UsageMonitoringMailer.plan_upgrade_required(site.id).deliver!
-      end
+      MailMailer.send_mail_with_template(user.id, MailTemplate.last.id).deliver!
     end
 
     def delete_all_files_in_public(*paths)

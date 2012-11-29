@@ -20,7 +20,7 @@ module Service
       end
 
       def build(attributes)
-        new attributes.delete(:site).invoices.new(attributes)
+        new(attributes.delete(:site).invoices.new(attributes))
       end
     end
 
