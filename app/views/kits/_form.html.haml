@@ -14,7 +14,7 @@
 
   .entry.design.select
     = f.label :app_design_id, 'Player design:'
-    = f.select :app_design_id, options_from_collection_for_select(site.app_designs, :id, :title, kit.app_design_id), {}, data: { addon: 'player', setting: 'kit' }
+    = f.select :app_design_id, options_from_collection_for_select(site.app_designs.order(:id), :id, :title, kit.app_design_id), {}, data: { addon: 'player', setting: 'kit' }
 
   #basic_player_settings.expandable_settings_box
     %h4.expanding_handler
