@@ -102,7 +102,7 @@ describe Service::Settings do
                 },
                 "sharing" => {
                   settings: {
-                    enable: true,
+                    enable: false,
                     enable_twitter: true,
                     enable_facebook: true,
                     enable_link: true,
@@ -272,7 +272,7 @@ describe Service::Settings do
             "kn":"sa.sh.sv"},
             "km": {
             "ko": {
-            "iv":true,"iw":true,"io":true,"ip":true,"iq":true,"ir":"twitter link facebook embed","is":null,"ts":null,"tt":null,"ik":null,"tu":null,"tv":null,"tz":null},
+            "iv":false,"iw":true,"io":true,"ip":true,"iq":true,"ir":"twitter link facebook embed","is":null,"ts":null,"tt":null,"ik":null,"tu":null,"tv":null,"tz":null},
             "kp": {
             "iv": {
             "ih":[true,false]},
