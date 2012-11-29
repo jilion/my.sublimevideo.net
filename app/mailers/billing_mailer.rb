@@ -7,8 +7,9 @@ class BillingMailer < Mailer
 
   def trial_will_expire(billable_item_id)
     extract_site_and_user_from_billable_item_id(billable_item_id)
-
-    @days_until_end = @site.trial_days_remaining_for_billable_item(@billable_item.item)
+    @design_or_addon_plan = @billable_item.item
+    @days_until_end = @site.trial_days_remaining_for_billable_item(@design_or_addon_plan) || 30
+    @trial_end_date = @site.trial_end_date_for_billable_item(@design_or_addon_plan) || 30.days.from_now
 
     key = case @days_until_end
     when 0
@@ -21,7 +22,7 @@ class BillingMailer < Mailer
 
     mail(
       to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.trial_will_expire.#{key}", addon: @billable_item.item.title, days: @days_until_end)
+      subject: I18n.t("mailer.billing_mailer.trial_will_expire.#{key}", addon: @design_or_addon_plan.title, days: @days_until_end)
     )
   end
 

@@ -1,12 +1,16 @@
 # coding: utf-8
 module BillableItemsHelper
 
-  def highlighted_class(addon_plan)
+  def highlighted_class(billable_item)
     return nil unless params[:h]
 
-    param_addon = params[:h].split('-')
+    param_billable_item = params[:h].split('-')
 
-    highlited_class = param_addon[0] == addon_plan.addon.name && param_addon[1] == addon_plan.name ? 'highlight' : nil
+    highlited_class = if billable_item.is_a?(App::Design)
+      param_billable_item[0] == billable_item.name ? 'highlight' : nil
+    elsif param_billable_item.size == 2
+      param_billable_item[0] == billable_item.addon.name && param_billable_item[1] == billable_item.name ? 'highlight' : nil
+    end
   end
 
   def beta_loader_required_notice(addon_plan)
