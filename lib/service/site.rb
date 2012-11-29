@@ -103,6 +103,11 @@ module Service
       end
     end
 
+    # called from app/models/site.rb
+    def cancel_billable_items
+      site.billable_items.destroy_all
+    end
+
     # TODO: Remove after launch
     def migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
       ::Site.transaction do

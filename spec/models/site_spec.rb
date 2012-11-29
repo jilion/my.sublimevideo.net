@@ -415,6 +415,11 @@ describe Site, :addons do
         expect { site.archive! }.to change(site, :archived_at)
       end
 
+      it "clear all billable items" do
+        site.archive!
+        site.billable_items.should be_empty
+      end
+
       context "with non-paid invoices" do
         before do
           @open_invoice   = create(:invoice, site: site)
