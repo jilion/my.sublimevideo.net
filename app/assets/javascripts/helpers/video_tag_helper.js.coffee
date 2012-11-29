@@ -157,17 +157,11 @@ class MySublimeVideo.Helpers.VideoTagHelper
 
   processCheckBoxInput: (dataSettingName, currentValue, defaultValue) ->
     if @options['forceSettings'] or (currentValue isnt defaultValue)
-      if /enable/.test(dataSettingName)
-        this.pushDataSetting(dataSettingName, 'none') unless currentValue
-      else
-        this.pushDataSetting(dataSettingName, currentValue)
+      this.pushDataSetting(dataSettingName, currentValue)
 
   processInputWithValue: (dataSettingName, currentValue, defaultValue) ->
     if @options['forceSettings'] or (currentValue isnt defaultValue)
       this.pushDataSetting(dataSettingName, currentValue)
 
   pushDataSetting: (dataSettingName, currentValue) ->
-    specialSettingsRegex = /(enable-|-enable|-visibility|-type)/
-    if !specialSettingsRegex.test(dataSettingName) or @dataSettings[dataSettingName.replace(specialSettingsRegex, '')] isnt 'none'
-      stripRegex = if @video.get('displayInLightbox') then /enable-|-type/ else /-enable|-type/
-      @dataSettings[dataSettingName.replace(stripRegex, '')] = currentValue.toString().underscore().dasherize()
+    @dataSettings[dataSettingName] = currentValue.toString().underscore().dasherize()
