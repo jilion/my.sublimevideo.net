@@ -38,6 +38,7 @@ module RecurringJob
       Stats::UsersStat.delay(options).create_stats
       Stats::SitesStat.delay(options).create_stats
       Stats::SalesStat.delay(options).create_stats
+      Stats::BillableItemsStat.delay(options).create_stats
       Stats::SiteStatsStat.delay(options).create_stats
       Stats::SiteUsagesStat.delay(options).create_stats
       Stats::TweetsStat.delay(options).create_stats

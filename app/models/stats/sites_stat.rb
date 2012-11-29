@@ -19,10 +19,6 @@ module Stats
 
     index d: 1
 
-    # ==========
-    # = Scopes =
-    # ==========
-
     # send time as id for backbonejs model
     def as_json(options = nil)
       json = super
