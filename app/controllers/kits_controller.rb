@@ -68,7 +68,7 @@ class KitsController < ApplicationController
   private
 
   def find_kit
-    @kit = exhibit(@site.kits.find_by_identifier(params[:id]))
+    @kit = exhibit(@site.kits.find_by_identifier!(params[:id]))
   rescue ActiveRecord::RecordNotFound
     redirect_to [@site, :kits] and return
   end

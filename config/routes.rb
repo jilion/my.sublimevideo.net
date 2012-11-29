@@ -239,10 +239,10 @@ MySublimeVideo::Application.routes.draw do
     end
     # Legacy redirect
     get  '/video-code-generator' => redirect('/publish-video')
-    get  '/publish-video' => 'video_codes#new', as: 'new_video_code'
     post '/mime-type-check' => 'video_codes#mime_type_check'
     get  '/sites/new' => redirect('/assistant/new-site')
 
+    get '/publish-video' => 'video_codes#new', as: 'new_video_code'
     get '/stats-demo' => 'site_stats#index', site_id: 'demo'
     get '/stats' => redirect('/stats-demo')
     # old backbone route
