@@ -10,7 +10,7 @@ class Kit < ActiveRecord::Base
   delegate :skin_token, :kind, to: :design
 
   validates :site, :design, :name, :identifier, presence: true
-  validates :name, uniqueness: { scope: :site_id }
+  validates :identifier, uniqueness: { scope: :site_id }
 
   def initialize(*args)
     super
