@@ -10,7 +10,7 @@ module Populate
 
     BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"], ["Andrea Coiro", "andrea@jilion.com"]]
     COUNTRIES  = %w[US FR CH ES DE BE GB CN SE NO FI BR CA]
-    BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 37signals.com youtube.com zeldman.com sumagency.com deaxon.com veerle.duoh.com]
+    BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 37signals.com mattrunks.com zeldman.com devour.com deaxon.com veerle.duoh.com]
 
     def plans
       empty_tables(Plan)
@@ -665,10 +665,11 @@ module Populate
         videos_count = 20
         # Video Tags
         videos_count.times do |video_i|
-          VideoTag.create(site: site, uid: "video#{video_i}",
-            uid_origin: "s",
+          site.video_tags.create!(
+            uid: "video#{video_i}",
+            uid_origin: "source",
             name: "Video #{video_i} long name test truncate",
-            name_origin: "s",
+            name_origin: "source",
             current_sources: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
             poster_url: "http#{'s' if video_i.even?}://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
             size: "544x306",
