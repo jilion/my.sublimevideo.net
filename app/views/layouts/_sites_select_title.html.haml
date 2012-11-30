@@ -1,4 +1,4 @@
-%h2.hostname= hostname_or_token(@site, length: 20)
+%h2.hostname= hostname_or_token(Site.find(@site.id), length: 20)
 
 - @sites.select! { |site| site.id != @site.id && (request.url =~ /stats/ ? site.realtime_stats_active? : true) }
 
