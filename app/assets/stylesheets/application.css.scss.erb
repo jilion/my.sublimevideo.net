@@ -632,7 +632,7 @@ ul.segmented_menu li.active a {
   -webkit-font-smoothing:antialiased;
 }
 
-#site_settings .left, #site_settings .right {
+/*#site_settings .left, #site_settings .right {
   float:left;
 }
 
@@ -644,27 +644,36 @@ ul.segmented_menu li.active a {
 #site_settings .right {
   width:400px;
 }
+*/
+
+#site_settings {
+  position:relative;
+  padding-right:264px;
+  padding-bottom:20px;
+}
 
 #site_settings .entry {
   margin:10px 0;
 }
 
-// THIBAUD
 #site_settings input.text {
-  width:500px;
+  width:553px;
 }
-// THIBAUD
 
-// REMY
 #site_settings input.text.short {
   width:200px;
 }
-// REMY
 
 #site_settings h4.title {
-  font-size:20px;
+  font-size:22px;
   font-weight:600;
   padding:15px 0 10px;
+}
+
+#site_settings h5 {
+  font-size:18px;
+  font-weight:600;
+  padding:10px 0;
 }
 
 #site_settings p.info, #video_code p.info {
@@ -680,12 +689,26 @@ ul.segmented_menu li.active a {
   padding-left:34px;
 }
 
+#site_settings .break {
+  margin:40px 0 15px;
+  background-color:rgba(30,57,102,0.4);
+  border:none;
+}
+
+form #site_settings .inline_errors span {
+  top:-2px;
+}
+
 #site_settings a.help {
-  margin:0 0 5px auto;
+/*  margin:0 0 5px auto;*/
   display:block;
   width:32px;
   height:33px;
   background:url(<%= asset_path "help_icon.png" %>) no-repeat;
+  border:none;
+  position:absolute;
+  bottom:15px;
+  right:18px;
 }
 
 #site_settings a.help span {display:none}

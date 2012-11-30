@@ -1,4 +1,4 @@
-#site_settings
+#site_settings.dark_box
   #hostnames_settings.site
     %h4.title Production domains
 
@@ -20,7 +20,7 @@
     .spacer
 
     %p.note Stats are counted for the production domains only.
-
+    .break
     %h4.title Staging and development domains
 
     %h5= f.label :staging_hostnames
@@ -36,7 +36,7 @@
       = f.label :dev_hostnames, '', class: 'icon'
       = f.text_field :dev_hostnames, class: 'text', placeholder: Site::DEFAULT_DEV_DOMAINS + ', mydomain.local, mydomain.dev', autocomplete: :off
     .spacer
-
+  .break
   #advanced_settings
     %h4.title Advanced settings
 
