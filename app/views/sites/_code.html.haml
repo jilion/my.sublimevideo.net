@@ -22,10 +22,10 @@
 %p.desc
   If you prefer to use the classic SublimeVideo player (stable but without all the
   = link_to('new features', layout_url('sublime-video-player'), class: 'hl') + '), copy'
-  = link_to 'this code', '#', class: 'hl', onclick: '$("#stable_code").toggle();return false;'
+  = link_to 'this code', '#', class: 'hl', onclick: "$('##{"stable_code_#{site.token}"}').toggle();return false;"
   instead.
 
-  #stable_code{ style: 'display:none' }
+  .stable_code{ id: "stable_code_#{site.token}", style: 'display:none' }
     %form
       .embed_code.entry
         %textarea{ readonly: true, onclick: "this.focus();this.select();" }><= sublimevideo_script_tag_for(site)
