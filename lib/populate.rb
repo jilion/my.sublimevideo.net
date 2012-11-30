@@ -650,7 +650,7 @@ module Populate
       puts "#{player_hits_total} video-page views total!"
     end
 
-    def create_stats(site_token = nil)
+    def all_stats(site_token = nil)
       sites = site_token ? [Site.find_by_token(site_token)] : Site.all
       sites.each do |site|
         VideoTag.where(site_id: site).delete_all
@@ -736,7 +736,7 @@ module Populate
               .update({ :$inc => random_video_stats_inc(1) }, upsert: true)
           end
         end
-        site.update_last_30_days_video_views_counters
+        Service::Usage.new(site).update_last_30_days_video_views_counters
       end
       puts "Fake site(s)/video(s) stats generated"
     end
@@ -972,7 +972,7 @@ module Populate
           updated_at: time
         )
       end
-      site.update_last_30_days_video_tags_counters
+      Service::Usage.new(site).update_last_30_days_video_tags_counters
     end
 
     def send_all_emails(user_id)
