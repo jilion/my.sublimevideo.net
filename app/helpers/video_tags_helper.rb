@@ -30,7 +30,7 @@ module VideoTagsHelper
 
   def playable_lightbox(video_tag, options = {})
     tags = []
-    tags << link_to("http://media.jilion.com/vcg/ms_360p.mp4",
+    tags << link_to("//dehqkotcrv4fy.cloudfront.net/vcg/ms_360p.mp4",
       class: 'sublime'
     ) do
       # TO DO USE SSL PROXY (data.sv.net)

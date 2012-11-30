@@ -2,9 +2,9 @@
 %li[kit]{ class: 'kit', data: { settings: mangled_kit_settings(kit) } }
   = kit.render_name_as_link(self, site)
   %div.preview
-    %video{ id: "preview_kit_#{kit.id}", poster: '//media.jilion.com/images/midnight_sun_800.jpg', width: 368, height: 207 }
-      == <source src='//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4' />
-      == <source src='//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm' />
+    %video{ id: "preview_kit_#{kit.id}", poster: '//dehqkotcrv4fy.cloudfront.net/images/midnight_sun_800.jpg', width: 368, height: 207 }
+      == <source src='//dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_1_360p.mp4' />
+      == <source src='//dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_1_360p.webm' />
 
   .action_links
     = link_to 'Edit', [:edit, site, kit], class: 'edit_kit'

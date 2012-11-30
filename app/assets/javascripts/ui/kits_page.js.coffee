@@ -8,13 +8,13 @@ class MySublimeVideo.UI.KitsPage
 
   setupModels: ->
     thumbnail = new MySublimeVideo.Models.Thumbnail(initialLink: 'text', src: 'Test')
-    poster  = new MySublimeVideo.Models.Image(src: '//media.jilion.com/images/midnight_sun_800.jpg')
+    poster  = new MySublimeVideo.Models.Image(src: '//dehqkotcrv4fy.cloudfront.net/images/midnight_sun_800.jpg')
     sources = new MySublimeVideo.Collections.Sources([
       new MySublimeVideo.Models.Source
-        src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.mp4'
+        src: '//dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_1_360p.mp4'
       new MySublimeVideo.Models.Source
         format: 'webmogg'
-        src: '//media.jilion.com/videos/demo/midnight_sun_sv1_1_360p.webm'
+        src: '//dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_1_360p.webm'
     ])
 
     @video = new MySublimeVideo.Models.Video
