@@ -44,11 +44,12 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCode.video.setDefaultDataUID()
 
-  clearTestAssets: ->
+  clearAssets: ->
     MSVVideoCode.poster.reset()
     MSVVideoCode.thumbnail.reset()
     _.each MSVVideoCode.sources.models, (source) ->
       source.reset()
+    MSVVideoCode.video.clearDataUIDAndName()
 
   initViews: ->
     MSVVideoCode.previewView = new MSVVideoCode.Views.Preview

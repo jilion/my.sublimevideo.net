@@ -55,3 +55,7 @@ class MySublimeVideo.Models.Video extends Backbone.Model
   setDefaultDataUID: ->
     mp4BaseSrc = this.get('sources').mp4Base().get('src')
     this.set(dataUID: crc32(mp4BaseSrc)) unless !mp4BaseSrc
+
+  clearDataUIDAndName: ->
+    this.set(dataUID: '')
+    this.set(dataName: '')

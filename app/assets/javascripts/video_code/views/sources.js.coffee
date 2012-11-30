@@ -37,7 +37,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
           when 'test'
             this.setTestAssets(oldOrigin)
           when 'own'
-            this.clearTestAssets(oldOrigin)
+            this.clearAssets(oldOrigin)
           when 'youtube'
             this.setYouTube(oldOrigin)
       MSVVideoCode.video.set(origin: newOrigin) if changed
@@ -50,7 +50,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
 
   updateYouTubeID: (event) ->
     MSVVideoCode.video.set(youtubeId: event.target.value)
-    MSVVideoCode.video.set(dataUID: event.target.value)
+    MSVVideoCode.video.set(dataUID: '')
     MSVVideoCode.video.set(dataName: '')
 
   updateStartWithHd: (event) ->
@@ -109,9 +109,9 @@ class MSVVideoCode.Views.Sources extends Backbone.View
     else
       false
 
-  clearTestAssets: (oldOrigin) ->
-    if oldOrigin is 'youtube' or this.noTestAssetModified() or confirm('All fields will be cleared, continue?')
-      MSVVideoCode.builderRouter.clearTestAssets() if this.noTestAssetModified()
+  clearAssets: (oldOrigin) ->
+    if oldOrigin is 'youtube' or this.allAssetsEmpty() or this.noTestAssetModified() or confirm('All fields will be cleared, continue?')
+      MSVVideoCode.builderRouter.clearAssets()# if this.noTestAssetModified()
       this.initUIHelpers()
       this.renderViews()
       true
@@ -119,8 +119,11 @@ class MSVVideoCode.Views.Sources extends Backbone.View
       false
 
   setYouTube: (oldOrigin) ->
-    this.renderViews()
-    true
+    if this.clearAssets(oldOrigin)
+      this.renderViews()
+      true
+    else
+      false
 
   noTestAssetModified: ->
     _.all MSVVideoCode.testAssets['sources'], (attributes) ->

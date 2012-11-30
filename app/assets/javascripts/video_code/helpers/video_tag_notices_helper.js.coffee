@@ -32,10 +32,10 @@ class MSVVideoCode.Helpers.VideoTagNoticesHelper
     _.each @warnings, (warningsCount, warningType) =>
       @messages['warnings'].push(this.messageFor(warningType, warningsCount)) if warningsCount > 0
 
-    unless @video.get('dataUID')
+    if @video.get('origin') isnt 'youtube' and !@video.get('dataUID')
       @messages['warnings'].push "We recommend that you provide a UID for this video in the Video settings => Video metadata settings => UID field to make it uniquely identifiable in your Real-Time Statistics dashboard. <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>."
 
-    unless @video.get('dataName')
+    if @video.get('origin') isnt 'youtube' and !@video.get('dataName')
       @messages['warnings'].push "We recommend that you provide a name for this video in the Video settings => Video metadata settings => Name field to make it easily identifiable in your Real-Time Statistics dashboard. <a href='http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats' onclick='window.open(this); return false'>Read more</a>."
 
     @messages

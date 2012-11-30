@@ -23,14 +23,13 @@ class MSVVideoCode.Views.Preview extends Backbone.View
 
       sublimevideo.unprepare('video-preview') if $('#video-preview').exists()
 
-      if lightbox = sublime.lightbox('lightbox-trigger')
-        lightbox.close()
-
       $(@el).html this.template
         video: MSVVideoCode.video
         options: options
 
-      unless MSVVideoCode.video.get('displayInLightbox')
+      if MSVVideoCode.video.get('displayInLightbox')
+        sublime.prepare('lightbox-trigger')
+      else
         sublime.prepareWithKit('video-preview', @kitsSettings[@$kitSelector.val()])
 
       $(window).scrollTop(@currentScroll)
