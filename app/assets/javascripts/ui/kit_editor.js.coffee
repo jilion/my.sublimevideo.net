@@ -45,12 +45,14 @@ class MySublimeVideo.UI.KitEditor
     sublime.reprepareVideo 'standard', @videoTagHelpers['standard'].generateDataSettings()
 
     if lightbox = sublime.lightbox('lightbox-trigger')
-      lightbox.close()
+      sublime.unprepare('lightbox-trigger')
 
-    lightboxDataSettings = @videoTagHelpers['lightbox'].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
-    $('#lightbox-trigger').attr('data-settings', lightboxDataSettings)
+      lightboxDataSettings = @videoTagHelpers['lightbox'].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
+      $('#lightbox-trigger').attr('data-settings', lightboxDataSettings)
 
-    $('#lightbox').attr('data-settings', @videoTagHelpers['standard'].generateDataSettingsAttribute([], contentOnly: true))
+      $('#lightbox').attr('data-settings', @videoTagHelpers['standard'].generateDataSettingsAttribute([], contentOnly: true))
+
+      sublime.prepare('lightbox-trigger')
 
   updateValueDisplayer: ($el) ->
     $("##{$el.attr('id')}_value").text Math.round($el.val() * 100) / 100
