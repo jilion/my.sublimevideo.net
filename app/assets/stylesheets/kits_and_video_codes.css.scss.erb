@@ -146,7 +146,7 @@ h4.expanding_handler a {
   display:block;
   padding:20px 20px 20px 50px;
   color:#1e3966;
-  font-size:22px;
+  font-size:24px;
   font-weight:600;
   background:url(<%= asset_path "sites/expandable_box_arrow@2x.png" %>) no-repeat 23px 50%;
   background-size:10px 13px;
@@ -166,6 +166,12 @@ h4.expanding_handler.expanded a {
 
 #kit_settings .indent {
   margin-left:32px;
+}
+
+#kit_settings h5 {
+  font-size:19px;
+  font-weight:600;
+  padding:14px 0 3px;
 }
 
 #kit_settings input[type='range'] {
@@ -197,13 +203,15 @@ h4.expanding_handler.expanded a {
 }
 
 #kit_settings table#logo_position {
+  background:rgba(0,55,147,0.1) url(<%= asset_path "players/logo_position_play_button@2x.png" %>) no-repeat center;
+  background-size:33px 39px;
   border:1px solid rgba(30,57,102,0.5);
   margin:10px 0 20px;
 }
 
 #kit_settings table#logo_position td {
-  width:160px;
-  height:70px;
+  width:100px;
+  height:60px;
 }
 
 #kit_settings table#logo_position tr:first-child td {
@@ -214,19 +222,21 @@ h4.expanding_handler.expanded a {
   vertical-align:bottom;
 }
 
+#kit_settings table#logo_position tr td:first-child .radio_wrap {
+  margin-left:2px;
+}
+
 #kit_settings table#logo_position tr td:last-child .radio_wrap {
   float:right;
-  margin-right:8px;
 }
 
 .kit_editor a#uploadfiles {
-  position:relative;
-/*  float:left;*/
+  margin:0 0 25px;
+  float:left;
 }
 
 .kit_editor #spinner {
-  position:relative;
-/*  float:left;*/
+  float:left;
   width:50px;
   height:50px;
 }

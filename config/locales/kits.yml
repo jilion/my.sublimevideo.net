@@ -63,7 +63,7 @@ en:
         type: 'Select logo'
         visibility: 'SublimeVideo logo'
         visibility_custom: 'Visibility:'
-        position: 'Position:'
+        position: 'Logo position on video:'
         image_url: 'Your logo'
         link_url: 'Logo click url:'
       values:

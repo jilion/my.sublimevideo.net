@@ -28,8 +28,7 @@ class MySublimeVideo.Helpers.Uploaders.CustomLogoUploader extends MySublimeVideo
     @uploader.bind 'UploadProgress', (up, file) ->
       $('#preview_custom_logo').css(opacity: 0.5)
       $('#spinner').spin
-        # color:  '#d5e5ff'
-        color:  'blue'
+        color:  '#596c8a'
         lines:  10
         length: 4
         width:  2
