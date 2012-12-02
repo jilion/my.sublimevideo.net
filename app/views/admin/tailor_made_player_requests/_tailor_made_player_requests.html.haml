@@ -1,0 +1,16 @@
+%table.main#tailor_made_player_requests
+  %tr
+    %th ID
+    %th Name
+    %th Email
+    %th Job title
+    %th Company
+    %th= link_to_sort :topic
+    %th Description
+    %th Document
+    %th= link_to_sort :date, default_way: 'desc', default: true
+  = render @tailor_made_player_requests
+
+.pagination_wrap
+  = paginate @tailor_made_player_requests, theme: 'admin'
+  = page_entries_info @tailor_made_player_requests

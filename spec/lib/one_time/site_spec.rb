@@ -343,12 +343,15 @@ describe OneTime::Site do
 
   describe '.create_preview_kits', :addons do
     before do
-      @site_www = create(:site).tap { |s| s.update_column(:token, SiteToken[:www]) }
-      @site_my = create(:site).tap { |s| s.update_column(:token, SiteToken[:my]) }
+      @site_www  = create(:site).tap { |s| s.update_column(:token, SiteToken[:www]) }
+      @site_my   = create(:site).tap { |s| s.update_column(:token, SiteToken[:my]) }
+      @site_test = create(:site).tap { |s| s.update_column(:token, SiteToken[:test]) }
       Service::Site.new(@site_www).send(:create_default_kit!)
       @site_www.save!
       Service::Site.new(@site_my).send(:create_default_kit!)
       @site_my.save!
+      Service::Site.new(@site_test).send(:create_default_kit!)
+      @site_test.save!
     end
 
     it 'creates preview kits for sublimevideo.net & my.sublimevideo.net' do
@@ -356,10 +359,11 @@ describe OneTime::Site do
 
       @site_www.kits.should have(PreviewKit.kit_ids.size).items
       @site_my.kits.should have(PreviewKit.kit_ids.size).items
+      @site_test.kits.should have(PreviewKit.kit_ids.size).items
     end
 
     PreviewKit.kit_ids.each do |design_name, kit_identifier|
-      it "creates preview kit #{I18n.t("app_designs.#{design_name}")} for sublimevideo.net & my.sublimevideo.net" do
+      it "creates preview kit #{I18n.t("app_designs.#{design_name}")} for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net" do
         described_class.create_preview_kits
 
         kit = @site_www.kits.find_by_identifier(kit_identifier.to_s)
@@ -367,6 +371,10 @@ describe OneTime::Site do
         kit.design.name.should eq design_name
 
         kit = @site_my.kits.find_by_identifier(kit_identifier.to_s)
+        kit.name.should eq I18n.t("app_designs.#{design_name}")
+        kit.design.name.should eq design_name
+
+        kit = @site_test.kits.find_by_identifier(kit_identifier.to_s)
         kit.name.should eq I18n.t("app_designs.#{design_name}")
         kit.design.name.should eq design_name
       end

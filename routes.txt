@@ -55,6 +55,8 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                                           PUT      /admins/:id(.:format)                                     admin/admins#update
                                           DELETE   /admins/:id(.:format)                                     admin/admins#destroy
                           admin_feedbacks GET      /feedbacks(.:format)                                      admin/feedbacks#index
+               admin_tailor_made_requests GET      /tailor_made_requests(.:format)                           admin/tailor_made_requests#index
+                admin_tailor_made_request GET      /tailor_made_requests/:id(.:format)                       admin/tailor_made_requests#show
                    monthly_admin_invoices GET      /invoices/monthly(.:format)                               admin/invoices#monthly
              retry_charging_admin_invoice PUT      /invoices/:id/retry_charging(.:format)                    admin/invoices#retry_charging
                            admin_invoices GET      /invoices(.:format)                                       admin/invoices#index

@@ -1,0 +1,56 @@
+= title_and_content_header "Tailor-made player request: ##{@tailor_made_player_request.id}"
+
+%p
+  %strong Received on:
+  = display_date(@tailor_made_player_request.created_at)
+
+%p
+  %strong Name & email:
+  = raw "#{@tailor_made_player_request.name} <#{mail_to @tailor_made_player_request.email, @tailor_made_player_request.email}>"
+
+%p
+  %strong Country:
+  = @tailor_made_player_request.country? ? Country[@tailor_made_player_request.country].name : 'N/A'
+
+%p
+- if @tailor_made_player_request.job_title?
+  %strong Company & position:
+  = raw "#{@tailor_made_player_request.job_title.titleize} at #{@tailor_made_player_request.company.titleize}"
+- else
+  %strong Company:
+  = @tailor_made_player_request.company? ? @tailor_made_player_request.company.titleize : 'N/A'
+
+%p
+  %strong Website URL:
+  = @tailor_made_player_request.url? ? link_to(@tailor_made_player_request.url, url_with_protocol(@tailor_made_player_request.url)) : 'N/A'
+
+%p
+  %strong Request type:
+  = @tailor_made_player_request.topic.titleize
+  = ", main agency: #{@tailor_made_player_request.topic_standalone_detail}" if @tailor_made_player_request.topic_standalone_detail?
+  = ": #{@tailor_made_player_request.topic_other_detail}" if @tailor_made_player_request.topic_other_detail?
+
+%p
+  %strong Description:
+  = simple_format(@tailor_made_player_request.description)
+
+%p
+  %strong Attached document:
+  = @tailor_made_player_request.document? ? link_to('View document', @tailor_made_player_request.document.url) : 'N/A'
+
+%br
+%hr
+%br
+
+%p
+  %strong Highrise export
+
+  = form_for @tailor_made_player_request, url: [:export_to_highrise, :admin, @tailor_made_player_request] do |f|
+    = f.select :export_type, select_options_for_highrise_export(@tailor_made_player_request)
+    = f.submit 'Submit'
+
+%br
+%hr
+%br
+
+%p= link_to "Back to requests", [:admin, :tailor_made_player_requests]

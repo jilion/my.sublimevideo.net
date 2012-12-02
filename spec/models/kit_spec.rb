@@ -23,13 +23,24 @@ describe Kit do
 
     describe 'uniqueness of identifier by site_id' do
       it 'adds an error if identifier is not unique for this site' do
-        kit = Kit.create({ site: site, app_design_id: app_design.id, name: 'My player' }, as: :admin)
+        kit = Kit.create({ site: site, app_design_id: app_design.id, name: 'My player 1' }, as: :admin)
         kit.identifier.should eq '1'
 
-        kit2 = Kit.new({ site: site, app_design_id: app_design.id, name: 'My player' }, as: :admin)
+        kit2 = Kit.new({ site: site, app_design_id: app_design.id, name: 'My player 2' }, as: :admin)
         kit2.identifier = kit.identifier
         kit2.should_not be_valid
         kit2.should have(1).error_on(:identifier)
+      end
+    end
+
+    describe 'uniqueness of name by site_id' do
+      it 'adds an error if name is not unique for this site' do
+        kit = Kit.create({ site: site, app_design_id: app_design.id, name: 'My player' }, as: :admin)
+        kit.name.should eq 'My player'
+
+        kit2 = Kit.new({ site: site, app_design_id: app_design.id, name: 'My player' }, as: :admin)
+        kit2.should_not be_valid
+        kit2.should have(1).error_on(:name)
       end
     end
   end
