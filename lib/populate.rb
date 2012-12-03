@@ -75,6 +75,13 @@ module Populate
           default: 'left'
         }
       }
+      buy_action_template = {
+        enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: false
+        }
+      }
       controls_template = {
         enable: {
           type: 'boolean',
@@ -164,7 +171,8 @@ module Populate
           { name: 'sony',    token: 'tj' },
           { name: 'svnet',   token: 'sj' },
           { name: 'anthony', token: 'aaa' },
-          { name: 'next15',  token: 'aba' }
+          { name: 'next15',  token: 'aba' },
+          { name: 'blizzard',token: 'aca' }
         ],
         App::Design => [
           { name: 'classic',   skin_token: 'sa.sb.sc',    price: 0, availability: 'public',                         component: 'ref-App::Component-app' },
@@ -175,7 +183,8 @@ module Populate
           { name: 'sony',      skin_token: 'tj.tj.tj',    price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-sony' },
           { name: 'svnet',     skin_token: 'sj.sj.sj',    price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-svnet' },
           { name: 'anthony',   skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-anthony' },
-          { name: 'next15',    skin_token: 'aba.aba.aba', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-next15' }
+          { name: 'next15',    skin_token: 'aba.aba.aba', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-next15' },
+          { name: 'blizzard',  skin_token: 'aca.aca.aca', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-blizzard' }
         ],
         Addon => [
           { name: 'video_player',  kind: 'videoPlayer',  design_dependent: false, parent_addon: nil },
@@ -188,7 +197,8 @@ module Populate
           { name: 'api',           kind: 'api',          design_dependent: false, parent_addon: nil },
           { name: 'stats',         kind: 'stats',        design_dependent: false, parent_addon: nil },
           { name: 'support',       kind: 'support',      design_dependent: false, parent_addon: nil },
-          { name: 'preview_tools', kind: 'previewTools', design_dependent: false, parent_addon: nil }
+          { name: 'preview_tools', kind: 'previewTools', design_dependent: false, parent_addon: nil },
+          { name: 'buy_action',    kind: 'buyAction',    design_dependent: true, parent_addon: 'ref-Addon-video_player'  }
         ],
         App::Plugin => [
           { name: 'video_player',        token: 'sa.sh.si',     addon: 'ref-Addon-video_player',  design: nil,                          component: 'ref-App::Component-app' },
@@ -208,19 +218,24 @@ module Populate
           { name: 'controls_sony',       token: 'tj.tj.sx',     addon: 'ref-Addon-controls',      design: 'ref-App::Design-sony',       component: 'ref-App::Component-sony' },
           { name: 'controls_anthony',    token: 'aaa.aaa.aab',  addon: 'ref-Addon-controls',      design: 'ref-App::Design-anthony',    component: 'ref-App::Component-anthony' },
           { name: 'controls_next15',     token: 'aba.aba.abb',  addon: 'ref-Addon-controls',      design: 'ref-App::Design-next15',     component: 'ref-App::Component-next15' },
+          { name: 'controls_blizzard',   token: 'aca.aca.acd',  addon: 'ref-Addon-controls',      design: 'ref-App::Design-blizzard',   component: 'ref-App::Component-blizzard' },
           { name: 'initial_classic',     token: 'sa.sh.sv',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-classic',    component: 'ref-App::Component-app' },
           { name: 'initial_flat',        token: 'sa.sh.sv',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-flat',       component: 'ref-App::Component-app' },
           { name: 'initial_light',       token: 'sa.sh.sv',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-light',      component: 'ref-App::Component-app' },
           { name: 'initial_twit',        token: 'sa.sh.sv',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-twit',       component: 'ref-App::Component-app' },
           { name: 'initial_html5',       token: 'sa.sh.sv',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-html5',      component: 'ref-App::Component-app' },
           { name: 'initial_sony',        token: 'tj.tj.sy',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-sony',       component: 'ref-App::Component-sony' },
+          { name: 'initial_blizzard',    token: 'aca.aca.acc',  addon: 'ref-Addon-initial',       design: 'ref-App::Design-blizzard',   component: 'ref-App::Component-blizzard' },
           { name: 'sharing_classic',     token: 'sa.sh.sz',     addon: 'ref-Addon-sharing',       design: 'ref-App::Design-classic',    component: 'ref-App::Component-app' },
           { name: 'sharing_twit',        token: 'sa.sh.sz',     addon: 'ref-Addon-sharing',       design: 'ref-App::Design-twit',       component: 'ref-App::Component-app' },
           { name: 'sharing_html5',       token: 'sa.sh.sz',     addon: 'ref-Addon-sharing',       design: 'ref-App::Design-html5',      component: 'ref-App::Component-app' },
+          { name: 'sharing_blizzard',    token: 'sa.sh.sz',     addon: 'ref-Addon-sharing',       design: 'ref-App::Design-blizzard',   component: 'ref-App::Component-blizzard' },
           { name: 'sharing_next15',      token: 'aba.aba.abc',  addon: 'ref-Addon-sharing',       design: 'ref-App::Design-next15',     component: 'ref-App::Component-next15' },
+          { name: 'buy_action_blizzard', token: 'aba.aba.abb',  addon: 'ref-Addon-buy_action',    design: 'ref-App::Design-blizzard',   component: 'ref-App::Component-blizzard' },
           { name: 'preview_tools_svnet', token: 'sj.sj.sk',     addon: 'ref-Addon-preview_tools', design: nil,                          component: 'ref-App::Component-svnet' }
         ],
         AddonPlan => [
+          { name: 'standard',  price: 0,    addon: 'ref-Addon-buy_action',    availability: 'custom', public_at: nil },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-video_player',  availability: 'hidden', public_at: nil },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-lightbox',      availability: 'hidden', public_at: Time.now.utc },
           { name: 'standard',  price: 0,    addon: 'ref-Addon-image_viewer',  availability: 'hidden', required_stage: 'beta', public_at: nil },
@@ -263,6 +278,7 @@ module Populate
               }
             }
           },
+          { addon_plan: 'ref-AddonPlan-buy_action-standard',   plugin: 'ref-App::Plugin-buy_action_blizzard', template: buy_action_template },
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_classic',    template: controls_template },
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_flat',       template: controls_template },
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_light',      template: controls_template },
@@ -271,6 +287,7 @@ module Populate
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_sony',       template: controls_template },
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_anthony',    template: controls_template },
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_next15',     template: controls_template },
+          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_blizzard',   template: controls_template },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic',    template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat',       template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light',      template: lightbox_template },
@@ -422,6 +439,7 @@ module Populate
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_classic', template: sharing_template },
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_twit', template: sharing_template },
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_html5', template: sharing_template },
+          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_blizzard', template: sharing_template },
           { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }
         ]
       }
