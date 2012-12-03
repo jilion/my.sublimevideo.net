@@ -20,26 +20,26 @@ module CDN
       end
 
       def purge_path(path)
-        rescue_and_retry(3, Timeout::Error) do
+        rescue_and_retry(2, Timeout::Error) do
           client.voxel_voxcast_ondemand_content_purge_file(device_id: device_id, paths: path)
         end
       end
 
       def purge_dir(dir)
-        rescue_and_retry(3, Timeout::Error) do
+        rescue_and_retry(2, Timeout::Error) do
           client.voxel_voxcast_ondemand_content_purge_directory(device_id: device_id, paths: dir)
         end
       end
 
       def logs_list(hostname)
-        rescue_and_retry(5) do
+        rescue_and_retry(2) do
           logs = client.voxel_voxcast_ondemand_logs_list(device_id: device_id, hostname: hostname)
           logs["log_files"]["sites"]["hostname"]["log_file"]
         end
       end
 
       def download_log(filename)
-        rescue_and_retry(5) do
+        rescue_and_retry(2) do
           xml = client.voxel_voxcast_ondemand_logs_download(filename: filename)
           tempfile = Tempfile.new('log', Rails.root.join('tmp'), encoding: 'ASCII-8BIT')
           tempfile.write(Base64.decode64(xml['data']['content']))
