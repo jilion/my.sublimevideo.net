@@ -34,8 +34,13 @@ class VideoTag < ActiveRecord::Base
     uid
   end
 
+  # TODO Try to remove once passed to sidekiq
+  def uid=(attribute)
+    write_attribute :uid, attribute.try(:to, 254)
+  end
+
   def name=(attribute)
-    write_attribute :name, attribute.to(254)
+    write_attribute :name, attribute.try(:to, 254)
   end
 
   def sources=(attributes)
