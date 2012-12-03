@@ -192,14 +192,18 @@ module Populate
         ],
         App::Plugin => [
           { name: 'video_player',        token: 'sa.sh.si',     addon: 'ref-Addon-video_player',  design: nil,                          component: 'ref-App::Component-app' },
+
           { name: 'ligthbox_classic',    token: 'sa.sl.sm',     addon: 'ref-Addon-lightbox',      design: 'ref-App::Design-classic',    component: 'ref-App::Component-app' },
           { name: 'ligthbox_flat',       token: 'sa.sl.sm',     addon: 'ref-Addon-lightbox',      design: 'ref-App::Design-flat',       component: 'ref-App::Component-app' },
           { name: 'ligthbox_light',      token: 'sa.sl.sm',     addon: 'ref-Addon-lightbox',      design: 'ref-App::Design-light',      component: 'ref-App::Component-app' },
           { name: 'ligthbox_twit',       token: 'sa.sl.sm',     addon: 'ref-Addon-lightbox',      design: 'ref-App::Design-twit',       component: 'ref-App::Component-app' },
           { name: 'ligthbox_html5',      token: 'sa.sl.sm',     addon: 'ref-Addon-lightbox',      design: 'ref-App::Design-html5',      component: 'ref-App::Component-app' },
           { name: 'ligthbox_sony',       token: 'sa.sl.sm',     addon: 'ref-Addon-lightbox',      design: 'ref-App::Design-sony',       component: 'ref-App::Component-app' },
+
           { name: 'image_viewer',        token: 'sa.sn.so',     addon: 'ref-Addon-image_viewer',  design: nil,                          component: 'ref-App::Component-app' },
+
           { name: 'logo',                token: 'sa.sh.sp',     addon: 'ref-Addon-logo',          design: nil,                          component: 'ref-App::Component-app' },
+
           { name: 'controls_classic',    token: 'sa.sh.sq',     addon: 'ref-Addon-controls',      design: 'ref-App::Design-classic',    component: 'ref-App::Component-app' },
           { name: 'controls_flat',       token: 'sd.sd.sr',     addon: 'ref-Addon-controls',      design: 'ref-App::Design-flat',       component: 'ref-App::Component-app' },
           { name: 'controls_light',      token: 'se.se.ss',     addon: 'ref-Addon-controls',      design: 'ref-App::Design-light',      component: 'ref-App::Component-app' },
@@ -208,16 +212,19 @@ module Populate
           { name: 'controls_sony',       token: 'tj.tj.sx',     addon: 'ref-Addon-controls',      design: 'ref-App::Design-sony',       component: 'ref-App::Component-sony' },
           { name: 'controls_anthony',    token: 'aaa.aaa.aab',  addon: 'ref-Addon-controls',      design: 'ref-App::Design-anthony',    component: 'ref-App::Component-anthony' },
           { name: 'controls_next15',     token: 'aba.aba.abb',  addon: 'ref-Addon-controls',      design: 'ref-App::Design-next15',     component: 'ref-App::Component-next15' },
+
           { name: 'initial_classic',     token: 'sa.sh.sv',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-classic',    component: 'ref-App::Component-app' },
           { name: 'initial_flat',        token: 'sa.sh.sv',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-flat',       component: 'ref-App::Component-app' },
           { name: 'initial_light',       token: 'sa.sh.sv',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-light',      component: 'ref-App::Component-app' },
           { name: 'initial_twit',        token: 'sa.sh.sv',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-twit',       component: 'ref-App::Component-app' },
           { name: 'initial_html5',       token: 'sa.sh.sv',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-html5',      component: 'ref-App::Component-app' },
           { name: 'initial_sony',        token: 'tj.tj.sy',     addon: 'ref-Addon-initial',       design: 'ref-App::Design-sony',       component: 'ref-App::Component-app' },
+
           { name: 'sharing_classic',     token: 'sa.sh.sz',     addon: 'ref-Addon-sharing',       design: 'ref-App::Design-classic',    component: 'ref-App::Component-app' },
           { name: 'sharing_twit',        token: 'sa.sh.sz',     addon: 'ref-Addon-sharing',       design: 'ref-App::Design-twit',       component: 'ref-App::Component-app' },
           { name: 'sharing_html5',       token: 'sa.sh.sz',     addon: 'ref-Addon-sharing',       design: 'ref-App::Design-html5',      component: 'ref-App::Component-app' },
           { name: 'sharing_next15',      token: 'aba.aba.abc',  addon: 'ref-Addon-sharing',       design: 'ref-App::Design-next15',     component: 'ref-App::Component-next15' },
+
           { name: 'preview_tools_svnet', token: 'sj.sj.sk',     addon: 'ref-Addon-preview_tools', design: nil,                          component: 'ref-App::Component-svnet' }
         ],
         AddonPlan => [
@@ -271,6 +278,7 @@ module Populate
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_sony',       template: controls_template },
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_anthony',    template: controls_template },
           { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_next15',     template: controls_template },
+
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic',    template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat',       template: lightbox_template },
           { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light',      template: lightbox_template },
@@ -413,16 +421,19 @@ module Populate
               }
             }
           },
+
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_classic', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_flat', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_light', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_twit', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_html5', template: initial_template },
           { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_sony', template: initial_template },
+
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_classic', template: sharing_template },
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_twit', template: sharing_template },
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_html5', template: sharing_template },
           { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_next15', template: sharing_template },
+
           { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }
         ]
       }
