@@ -33,7 +33,7 @@ class KitsController < ApplicationController
   # GET /sites/:site_id/players/:id
   def show
     respond_with(@kit) do |format|
-      format.html { redirect_to [:edit, params[:site_id], params[:id]] }
+      format.html { redirect_to [:edit, params[:site_id], @kit.id] }
     end
   end
 
@@ -75,7 +75,7 @@ class KitsController < ApplicationController
     @kit    = exhibit(@site.kits.find_by_identifier!(params[:id]))
     @design = @kit.design
   rescue ActiveRecord::RecordNotFound
-    @kit = exhibit(@site.kits.build(app_design_id: @design.id))
+    redirect_to [@site, :kits]
   end
 
   def find_design
