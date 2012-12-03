@@ -37,14 +37,17 @@ module Service
         addon_plan = kit.site.addon_plan_for_addon_name(addon_name)
         if settings_template = addon_plan.settings_template_for(kit.design).try(:template)
           new_addon_settings.each do |new_addon_setting_key, new_addon_setting_value|
-            setting_template = settings_template[new_addon_setting_key.to_sym]
-            case setting_template[:type]
-            when 'float'
-              check_number_inclusion(new_addon_setting_value, (setting_template[:range][0]..setting_template[:range][1]))
-              new_addons_settings[addon_name][new_addon_setting_key.to_sym] = new_addon_setting_value.to_f.round(2)
-            when 'boolean', 'string'
-              new_addons_settings[addon_name][new_addon_setting_key.to_sym] = cast_boolean(new_addon_setting_value) if setting_template[:type] == 'boolean'
-              check_string_inclusion(new_addons_settings[addon_name][new_addon_setting_key.to_sym], setting_template[:values])
+            if setting_template = settings_template[new_addon_setting_key.to_sym]
+              case setting_template[:type]
+              when 'float'
+                check_number_inclusion(new_addon_setting_value, (setting_template[:range][0]..setting_template[:range][1]))
+                new_addons_settings[addon_name][new_addon_setting_key.to_sym] = new_addon_setting_value.to_f.round(2)
+              when 'boolean', 'string'
+                new_addons_settings[addon_name][new_addon_setting_key.to_sym] = cast_boolean(new_addon_setting_value) if setting_template[:type] == 'boolean'
+                check_string_inclusion(new_addons_settings[addon_name][new_addon_setting_key.to_sym], setting_template[:values])
+              end
+            else
+              new_addon_settings.delete(new_addon_setting_key)
             end
           end
         else
