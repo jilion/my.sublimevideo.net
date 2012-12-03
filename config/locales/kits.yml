@@ -98,3 +98,6 @@ en:
     support:
       standard: 'Forum & email support'
       vip:      'VIP email support'
+
+    buy_action:
+      standard: 'Standard buy button'
