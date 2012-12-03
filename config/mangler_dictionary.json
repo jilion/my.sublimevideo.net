@@ -113,14 +113,17 @@
 
   // since these properties aren't used too often (only in custom players),
   // we use 3-letter keys instead use 2-letter keys.
-  // first letter: "a" (for all customs)
-  // second letter: "a-zA-Z" (unique to client)
+  // first 2 letters: "a-zA-Z{2}" (unique to client)
   // third letter: "a-zA-Z" (unique to property)
   "anthony": "aaa",
   "NTHControls": "aab",
 
   "next15": "aba",
   "NXTControls": "abb",
-  "NXTSharingButtons": "abc"
+  "NXTSharingButtons": "abc",
 
+  "blizzard": "aca",
+  "BLZBuyController": "acb",
+  "BLZStartController": "acc",
+  "BLZControls": "acd"
 }
