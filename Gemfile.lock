@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/ashirazi/rescue_me.git
+  revision: bd75a2562302613299fc157d8d6f3e39cdb17cfd
+  specs:
+    rescue_me (0.1.1)
+
+GIT
   remote: git://github.com/jilion/carrierwave-mongoid.git
   revision: f15154bd1c0db068ed6d5d2d030e18b3a4a1ab27
   branch: mongoid-3.0
@@ -18,7 +24,7 @@ GIT
 
 GIT
   remote: git://github.com/jilion/premailer.git
-  revision: 00d6b351f4ca1cdb5f9d5f3806575f87f29a4882
+  revision: 1efecb6763807f1f3a77e309456986c9b572ad9a
   specs:
     premailer (1.7.3)
       css_parser (>= 1.1.9)
@@ -36,12 +42,6 @@ GIT
   specs:
     letter_opener (1.0.0)
       launchy (>= 2.0.4)
-
-GIT
-  remote: git://github.com/rymai/rescue_me.git
-  revision: df3c0b4ad1e7a3a925496fb9225d68a858566b66
-  specs:
-    rescue_me (0.1.1)
 
 GIT
   remote: git://github.com/softa/activerecord-postgres-hstore.git

@@ -22,13 +22,28 @@ module Service
       component = ::App::Component.find(component_id)
       if component.app_component?
         sites = ::Site.scoped
+        purge = false
       else
         sites = component.sites.scoped
+        purge = true
       end
       sites = sites.active.where(accessible_stage: Stage.stages_with_access_to(stage))
-      sites.find_each(batch_size: 100) do |site|
-        queue = site.last_30_days_billable_video_views > 0 ? 'high' : 'low'
-        delay(queue: queue).update_all_stages!(site.id)
+      # Quick loader update with direct purge for site with traffic
+      sites.where{ last_30_days_main_video_views > 0 }.find_each(batch_size: 500) do |site|
+        delay.update_all_stages!(site.id)
+      end
+      # Slower loader update with possibly no direct purge
+      sites.where(last_30_days_main_video_views: 0).find_each(batch_size: 500) do |site|
+        delay(queue: 'loader').update_all_stages!(site.id, purge: purge)
+      end
+      delay(at: 1.minute.from_now.to_i).global_purge unless purge
+    end
+
+    def self.global_purge
+      if Sidekiq::Queue.new('loader').size == 0
+        CDN.delay.purge("/js")
+      else
+        delay(at: 1.minute.from_now.to_i).global_purge
       end
     end
 

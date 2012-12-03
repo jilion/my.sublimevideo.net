@@ -8,7 +8,7 @@
 %p.info
   The poster frame is the image displayed to advertise the video before the user clicks the initial Play button.
   != "If you need help creating poster frames for your videos, please read our&nbsp;"
-  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('create-poster-frame'), onclick: "window.open(this); return false" }><
+  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('beta/create-poster-frame'), onclick: "window.open(this); return false" }><
     documentation
   = "."
 
@@ -16,7 +16,7 @@
 
 %p.info
   != "Fill in these attributes to identify and name your videos. These fields will also be used by SublimeVideo's&nbsp;"
-  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('real-time-stats'), onclick: "window.open(this); return false" }><
+  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('beta/real-time-stats'), onclick: "window.open(this); return false" }><
     Universal Real-Time Statistics platform
   = "."
 

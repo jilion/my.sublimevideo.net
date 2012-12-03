@@ -9,7 +9,8 @@ class AddonsController < ApplicationController
   def directory
     case current_user.sites.not_archived.count
     when 1
-      redirect_to [current_user.sites.not_archived.first, :addons]
+      p = { h: params[:h] } if params[:h]
+      redirect_to site_addons_url(current_user.sites.not_archived.first, p)
     else
       redirect_to [:sites]
     end

@@ -23,7 +23,7 @@ class UsersController < Devise::RegistrationsController
   def create
     build_resource
     @user = resource
-    @user.referrer_site_token = cookies[:r] if cookies[:r]
+    @user.referrer_site_token = cookies[:r]
 
     if Service::User.new(@user).create
       if @user.active_for_authentication?

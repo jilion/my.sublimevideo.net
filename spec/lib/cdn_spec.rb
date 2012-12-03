@@ -1,4 +1,6 @@
 require 'fast_spec_helper'
+require File.expand_path('spec/support/sidekiq_custom_matchers')
+
 require File.expand_path('lib/cdn')
 
 describe CDN do
@@ -12,8 +14,8 @@ describe CDN do
       before { CDN.wrappers = [WrapperOne, WrapperTwo] }
 
       it "calls purge method on all wrappers" do
-        WrapperOne.should_receive(:purge).with('/file.path')
-        WrapperTwo.should_receive(:purge).with('/file.path')
+        WrapperOne.should delay(:purge).with('/file.path')
+        WrapperTwo.should delay(:purge).with('/file.path')
 
         CDN.purge('/file.path')
       end
