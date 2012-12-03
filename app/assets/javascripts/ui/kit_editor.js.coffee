@@ -1,12 +1,15 @@
 class MySublimeVideo.UI.KitEditor
   constructor: ->
+    sublimevideo.ready =>
+      this.setup()
+
+  setup: ->
     new MySublimeVideo.UI.DependantInputs
     this.setupModels()
     this.setupHelpers()
     this.setupInputsObservers()
 
-    sublimevideo.ready =>
-      this.refreshVideoTagFromSettings()
+    this.refreshVideoTagFromSettings()
 
   setupModels: ->
     @video    = new MySublimeVideo.Models.Video
@@ -18,7 +21,15 @@ class MySublimeVideo.UI.KitEditor
       lightbox: new MySublimeVideo.Helpers.VideoTagHelper(@lightbox, forceSettings: true)
 
   setupInputsObservers: ->
-    $("select, input[type=checkbox], input[type=radio], input[type=range], input[type=text], input[type=hidden]").each (index, el) =>
+    $designSelector = $("select#kit_app_design_id")
+    $designSelector.on 'change', =>
+      $.ajax(
+        url: "#{document.location.pathname.replace(/new|\d+\/edit/, 'fields')}?design_id=#{$designSelector.val()}"
+      ).done (data) =>
+        this.setup()
+      false
+
+    $("input[type=checkbox], input[type=radio], input[type=range], input[type=text], input[type=hidden]").each (index, el) =>
       $(el).on 'change', =>
         this.refreshVideoTagFromSettings()
         false
