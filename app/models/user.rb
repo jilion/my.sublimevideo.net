@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :email, presence: true, email_uniqueness: true, format: { with: Devise.email_regexp }, allow_blank: true
+  validates :email, presence: true, email_uniqueness: true, format: { with: Devise.email_regexp }
 
   with_options if: :password_required? do |v|
     v.validates_presence_of :password, on: :create
@@ -75,7 +75,7 @@ class User < ActiveRecord::Base
 
   validates :postal_code, :billing_postal_code, length: { maximum: 20 }, allow_blank: true
   validates :company_url, hostname: true, allow_blank: true
-  validates :terms_and_conditions, acceptance: { accept: "1" }, on: :create
+  validates :terms_and_conditions, acceptance: true, allow_nil: false, on: :create
 
   validate :validates_credit_card_attributes # in user/credit_card
   validate :validates_current_password

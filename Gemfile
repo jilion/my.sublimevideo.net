@@ -43,7 +43,7 @@ gem 'sinatra', require: false # needed for Sidekiq Web UI
 gem 'slim' # needed for Sidekiq Web UI
 gem 'kiqstand' # Mongoid support for Sidekiq
 
-gem 'rescue_me', github: 'rymai/rescue_me' # until https://github.com/ashirazi/rescue_me/pull/2 is merged
+gem 'rescue_me', github: 'ashirazi/rescue_me' # until 0.1.1 is out!
 gem 'configuration'
 gem 'libxml-ruby', require: 'libxml'
 gem 'oj' # fastest json
