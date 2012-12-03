@@ -12,6 +12,7 @@ en:
     support: 'Support'
     preview_tools: 'Preview Tools'
     buy_action: 'Buy Button'
+    action: 'Action Button'
 
   addon_plans:
     video_player:
@@ -54,3 +55,6 @@ en:
 
     buy_action:
       standard: 'Standard Buy Button'
+
+    action:
+      standard: 'Standard Action Button'
