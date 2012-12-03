@@ -53,7 +53,7 @@
   "hosts": "ku",
   "devHosts": "kv",
   "stagingHosts": "kw",
-  // "": "kx",
+  "action": "kx",
   // "": "ky",
   "path": "kz",
 
@@ -125,5 +125,7 @@
   "blizzard": "aca",
   "BLZBuyController": "acb",
   "BLZStartController": "acc",
-  "BLZControls": "acd"
+  "BLZControls": "acd",
+
+  "SVNActionButtons": "adb"
 }
