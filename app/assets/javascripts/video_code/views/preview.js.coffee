@@ -33,6 +33,7 @@ class MSVVideoCode.Views.Preview extends Backbone.View
         sublime.prepareWithKit('video-preview', @kitsSettings[@$kitSelector.val()])
 
       $(window).scrollTop(@currentScroll)
+      $(@el).show()
 
       if $('#video_code_form').attr('data-assistant') is 'true'
         options = {}
@@ -45,6 +46,6 @@ class MSVVideoCode.Views.Preview extends Backbone.View
         $('#video_code_for_textarea').val(new MySublimeVideo.Helpers.VideoTagHelper(MSVVideoCode.video).generateVideoCode(options))
 
     else
-      this.hide()
+      $(@el).hide()
 
     this
