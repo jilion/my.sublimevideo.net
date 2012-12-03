@@ -54,7 +54,7 @@ describe AddonPlan do
     end
   end
 
-  describe '#get' do
+  describe '.get' do
     before do
       @addon_plan = create(:addon_plan, name: 'bar', addon: create(:addon, name: 'foo'))
     end

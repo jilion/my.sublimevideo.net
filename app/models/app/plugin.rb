@@ -10,6 +10,11 @@ class App::Plugin < ActiveRecord::Base
 
   validates :addon, :component, presence: true
   validates :addon_id, uniqueness: { scope: :app_design_id }
+
+  def self.get(name)
+    Rails.cache.fetch("app_plugin_#{name}") { where(name: name.to_s).first }
+  end
+
 end
 
 # == Schema Information
