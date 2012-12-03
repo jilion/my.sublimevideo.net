@@ -4,7 +4,6 @@ class App::SettingsTemplate < ActiveRecord::Base
   attr_accessible :addon_plan, :plugin, :template, as: :admin
 
   belongs_to :addon_plan
-  # belongs_to :addon, through: :addon_plan
   belongs_to :plugin, class_name: 'App::Plugin', foreign_key: 'app_plugin_id'
 
   validates :addon_plan_id, uniqueness: { scope: :app_plugin_id }
