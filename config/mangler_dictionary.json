@@ -40,7 +40,7 @@
   "initial": "kh",
   "logo": "ki",
   "onOpen": "kj",
-  // "": "kk",
+  "buyAction": "kk",
   "cuepoints": "kl",
   "sharing": "km",
   "id": "kn",
