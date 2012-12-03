@@ -59,7 +59,7 @@ module Admin::SitesHelper
     uri.html_safe
   end
 
-  def app_designs_for_select(site)
+  def app_designs_for_admin_select(site)
     app_designs = App::Design.all
 
     items = []

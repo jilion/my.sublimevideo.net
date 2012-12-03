@@ -219,6 +219,7 @@ MySublimeVideo::Application.routes.draw do
       resources :kits, except: [:destroy], path: 'players' do
         put  :set_as_default, on: :member
         post :process_custom_logo, on: :member
+        get :fields, on: :collection
       end
 
       resources :invoices, only: [:index] do

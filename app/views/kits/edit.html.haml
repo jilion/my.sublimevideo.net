@@ -9,7 +9,7 @@
     %em= @kit.name
     = "(##{@kit.identifier})"
   = form_for [@site, @kit], html: { class: 'kit_editor' } do |f|
-    = render 'kits/form', f: f, site: @site, kit: @kit
+    = render 'kits/form', f: f, site: @site, kit: @kit, design: @design
 
     .actions.center
       = link_to 'Cancel', site_kits_path(@site), class: 'cancel'

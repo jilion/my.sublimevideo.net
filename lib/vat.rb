@@ -4,6 +4,7 @@ class Vat
   include Configurator
 
   config_file 'vat.yml', rails_env: false
+  config_accessor :ch
 
   def self.for_country(country)
     case country

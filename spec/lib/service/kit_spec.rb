@@ -50,7 +50,7 @@ describe Service::Kit do
   describe '#sanitize_new_addons_settings' do
     before do
       kit.stub_chain(:site, :addon_plan_for_addon_name) { addon_plan }
-      addon_plan.stub(:settings_template_for, :template) { stub(template: {
+      addon_plan.stub(:settings_template_for, :template) { stub(try: {
           fooBar1: {
             type: 'boolean',
             values: [true],

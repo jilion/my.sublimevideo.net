@@ -2,9 +2,10 @@ require_dependency 'service/kit'
 require_dependency 'service/addon/custom_logo'
 
 class KitsController < ApplicationController
-  respond_to :js, only: [:process_custom_logo]
+  respond_to :js, only: [:fields, :process_custom_logo]
 
   before_filter :redirect_suspended_user, :find_site_by_token!
+  before_filter :find_design, only: [:new, :create, :edit, :update, :fields]
   before_filter :find_kit, only: [:show, :edit, :update, :set_as_default, :process_custom_logo]
   before_filter :find_sites_or_redirect_to_new_site, only: [:index, :new, :create, :show, :edit, :update]
   skip_before_filter :verify_authenticity_token, only: [:process_custom_logo]
@@ -17,7 +18,7 @@ class KitsController < ApplicationController
 
   # GET /sites/:site_id/players/new
   def new
-    @kit = exhibit(@site.kits.build(app_design_id: App::Design.get('classic').id))
+    @kit = exhibit(@site.kits.build(app_design_id: @design.id))
     respond_with(@kit)
   end
 
@@ -32,8 +33,7 @@ class KitsController < ApplicationController
   # GET /sites/:site_id/players/:id
   def show
     respond_with(@kit) do |format|
-      format.js
-      format.html { redirect_to [:edit, params[:site_id], params[:id]] }
+      format.html { redirect_to [:edit, params[:site_id], @kit.id] }
     end
   end
 
@@ -65,11 +65,24 @@ class KitsController < ApplicationController
     @logo_path, @logo_width, @logo_height = service.current_path, service.width, service.height
   end
 
+  # GET /sites/:site_id/players/fields
+  def fields
+    @kit = exhibit(@site.kits.find_by_identifier!(params[:id]))
+  rescue ActiveRecord::RecordNotFound
+    @kit = exhibit(@site.kits.build(app_design_id: @design.id))
+  end
+
   private
 
   def find_kit
-    @kit = exhibit(@site.kits.find_by_identifier!(params[:id]))
+    @kit    = exhibit(@site.kits.find_by_identifier!(params[:id]))
+    @design = @kit.design
   rescue ActiveRecord::RecordNotFound
-    redirect_to [@site, :kits] and return
+    redirect_to [@site, :kits]
   end
+
+  def find_design
+    @design = params[:design_id] ? App::Design.find(params[:design_id]) : App::Design.get('classic')
+  end
+
 end

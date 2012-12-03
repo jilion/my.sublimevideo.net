@@ -11,6 +11,7 @@ en:
     api: 'API'
     support: 'Support'
     preview_tools: 'Preview Tools'
+    buy_action: 'Buy Button'
 
   addon_plans:
     video_player:
@@ -50,3 +51,6 @@ en:
 
     preview_tools:
       standard: 'Standard Preview Tools'
+
+    buy_action:
+      standard: 'Standard Buy Button'

@@ -70,7 +70,8 @@ class AssistantController < ApplicationController
   end
 
   def find_default_kit!
-    @kit = exhibit(@site.default_kit)
+    @kit    = exhibit(@site.default_kit)
+    @design = @kit.design
   end
 
 end

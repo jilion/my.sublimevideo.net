@@ -11,6 +11,18 @@ describe App::SettingsTemplate do
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
   end
+
+  describe '.get' do
+    before do
+      @addon = create(:addon, name: 'foo')
+      @addon_plan = create(:addon_plan, name: 'bar', addon: @addon)
+      @app_plugin = create(:app_plugin, addon: @addon, name: 'foo_bar')
+      @app_settings_template = create(:app_settings_template, addon_plan: @addon_plan, plugin: @app_plugin)
+    end
+
+    it { described_class.get('foo', 'bar', 'foo_bar').should eq @app_settings_template }
+  end
+
 end
 
 # == Schema Information

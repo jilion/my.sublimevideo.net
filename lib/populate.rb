@@ -42,7 +42,128 @@ module Populate
     def addons
       empty_tables(App::Component, App::ComponentVersion, App::Plugin, App::SettingsTemplate, App::Design, Addon, AddonPlan, BillableItem, BillableItemActivity)
 
-      lightbox_template = {
+      seeds = {
+        App::Component => [
+          { name: 'app',      token: 'sa' },
+          { name: 'twit',     token: 'sf' },
+          { name: 'html5',    token: 'sg' },
+          { name: 'sony',     token: 'tj' },
+          { name: 'svnet',    token: 'sj' },
+          { name: 'anthony',  token: 'aaa' },
+          { name: 'next15',   token: 'aba' },
+          { name: 'blizzard', token: 'aca' }
+        ],
+        App::Design => [
+          { name: 'classic',  skin_token: 'sa.sb.sc',    price: 0, availability: 'public',                         component: 'ref-App::Component-app' },
+          { name: 'flat',     skin_token: 'sa.sd.sd',    price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
+          { name: 'light',    skin_token: 'sa.se.se',    price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
+          { name: 'twit',     skin_token: 'sf.sf.sf',    price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-twit' },
+          { name: 'html5',    skin_token: 'sg.sg.sg',    price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-html5' },
+          { name: 'sony',     skin_token: 'tj.tj.tj',    price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-sony' },
+          { name: 'svnet',    skin_token: 'sj.sj.sj',    price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-svnet' },
+          { name: 'anthony',  skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-anthony' },
+          { name: 'next15',   skin_token: 'aba.aba.aba', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-next15' },
+          { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-blizzard' }
+        ],
+        Addon => [
+          { name: 'video_player',  kind: 'videoPlayer',  design_dependent: false, parent_addon: nil },
+          { name: 'controls',      kind: 'controls',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'initial',       kind: 'initial',      design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'sharing',       kind: 'sharing',      design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'image_viewer',  kind: 'imageViewer',  design_dependent: false, parent_addon: nil },
+          { name: 'logo',          kind: 'logo',         design_dependent: false, parent_addon: 'ref-Addon-video_player' },
+          { name: 'lightbox',      kind: 'lightbox',     design_dependent: true,  parent_addon: nil },
+          { name: 'api',           kind: 'api',          design_dependent: false, parent_addon: nil },
+          { name: 'stats',         kind: 'stats',        design_dependent: false, parent_addon: nil },
+          { name: 'support',       kind: 'support',      design_dependent: false, parent_addon: nil },
+          { name: 'preview_tools', kind: 'previewTools', design_dependent: false, parent_addon: nil },
+          { name: 'buy_action',    kind: 'buyAction',    design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'action',        kind: 'action',       design_dependent: true,  parent_addon: 'ref-Addon-video_player' }
+        ],
+        App::Plugin => [
+          { name: 'video_player', token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil, component: 'ref-App::Component-app' },
+
+          { name: 'ligthbox_classic',  token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
+          { name: 'ligthbox_flat',     token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
+          { name: 'ligthbox_light',    token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
+          { name: 'ligthbox_twit',     token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
+          { name: 'ligthbox_html5',    token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
+          { name: 'ligthbox_sony',     token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-sony',    component: 'ref-App::Component-app' },
+          { name: 'ligthbox_anthony',  token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-anthony', component: 'ref-App::Component-app' },
+          { name: 'ligthbox_next15',   token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-next15',  component: 'ref-App::Component-app' },
+          { name: 'ligthbox_blizzard', token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-app' },
+
+          { name: 'image_viewer', token: 'sa.sn.so', addon: 'ref-Addon-image_viewer', design: nil, component: 'ref-App::Component-app' },
+
+          { name: 'logo', token: 'sa.sh.sp', addon: 'ref-Addon-logo', design: nil, component: 'ref-App::Component-app' },
+
+          { name: 'controls_classic',  token: 'sa.sh.sq',    addon: 'ref-Addon-controls', design: 'ref-App::Design-classic',  component: 'ref-App::Component-app' },
+          { name: 'controls_flat',     token: 'sd.sd.sr',    addon: 'ref-Addon-controls', design: 'ref-App::Design-flat',     component: 'ref-App::Component-app' },
+          { name: 'controls_light',    token: 'se.se.ss',    addon: 'ref-Addon-controls', design: 'ref-App::Design-light',    component: 'ref-App::Component-app' },
+          { name: 'controls_twit',     token: 'sf.sf.st',    addon: 'ref-Addon-controls', design: 'ref-App::Design-twit',     component: 'ref-App::Component-twit' },
+          { name: 'controls_html5',    token: 'sg.sg.su',    addon: 'ref-Addon-controls', design: 'ref-App::Design-html5',    component: 'ref-App::Component-html5' },
+          { name: 'controls_sony',     token: 'tj.tj.sx',    addon: 'ref-Addon-controls', design: 'ref-App::Design-sony',     component: 'ref-App::Component-sony' },
+          { name: 'controls_anthony',  token: 'aaa.aaa.aab', addon: 'ref-Addon-controls', design: 'ref-App::Design-anthony',  component: 'ref-App::Component-anthony' },
+          { name: 'controls_next15',   token: 'aba.aba.abb', addon: 'ref-Addon-controls', design: 'ref-App::Design-next15',   component: 'ref-App::Component-next15' },
+          { name: 'controls_blizzard', token: 'aca.aca.acd', addon: 'ref-Addon-controls', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-blizzard' },
+
+          { name: 'initial_classic',  token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-classic',  component: 'ref-App::Component-app' },
+          { name: 'initial_flat',     token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-flat',     component: 'ref-App::Component-app' },
+          { name: 'initial_light',    token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-light',    component: 'ref-App::Component-app' },
+          { name: 'initial_twit',     token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-twit',     component: 'ref-App::Component-app' },
+          { name: 'initial_html5',    token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-html5',    component: 'ref-App::Component-app' },
+          { name: 'initial_sony',     token: 'tj.tj.sy',    addon: 'ref-Addon-initial', design: 'ref-App::Design-sony',     component: 'ref-App::Component-sony' },
+          { name: 'initial_anthony',  token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-anthony',  component: 'ref-App::Component-app' },
+          { name: 'initial_next15',   token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-next15',   component: 'ref-App::Component-app' },
+          { name: 'initial_blizzard', token: 'aca.aca.acc', addon: 'ref-Addon-initial', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-blizzard' },
+
+          { name: 'sharing_classic',  token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-classic',  component: 'ref-App::Component-app' },
+          { name: 'sharing_twit',     token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-twit',     component: 'ref-App::Component-app' },
+          { name: 'sharing_html5',    token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-html5',    component: 'ref-App::Component-app' },
+          { name: 'sharing_next15',   token: 'aba.aba.abc', addon: 'ref-Addon-sharing', design: 'ref-App::Design-next15',   component: 'ref-App::Component-next15' },
+          { name: 'sharing_blizzard', token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-app' },
+
+          { name: 'buy_action_blizzard', token: 'aca.aca.acb', addon: 'ref-Addon-buy_action', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-blizzard' },
+
+          { name: 'preview_tools_svnet', token: 'sj.sj.sk', addon: 'ref-Addon-preview_tools', design: nil, component: 'ref-App::Component-svnet' },
+
+          { name: 'action_svnet', token: 'sj.sj.adb', addon: 'ref-Addon-action', design: nil, component: 'ref-App::Component-svnet' }
+        ],
+        AddonPlan => [
+          { name: 'standard', price: 0, addon: 'ref-Addon-video_player', availability: 'hidden', public_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-lightbox', availability: 'hidden', public_at: Time.now.utc },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-image_viewer', availability: 'hidden', required_stage: 'beta', public_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-preview_tools', availability: 'custom', required_stage: 'beta', public_at: nil },
+
+          { name: 'invisible', price: 0,    addon: 'ref-Addon-stats', availability: 'hidden',                         public_at: Time.now.utc },
+          { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats', availability: 'public',                         public_at: Time.now.utc },
+          # { name: 'disabled',  price: 1990, addon: 'ref-Addon-stats', availability: 'hidden', required_stage: 'beta', public_at: nil },
+
+          { name: 'sublime',  price: 0,    addon: 'ref-Addon-logo', availability: 'public',                         public_at: Time.now.utc },
+          { name: 'disabled', price: 990,  addon: 'ref-Addon-logo', availability: 'public',                         public_at: Time.now.utc },
+          { name: 'custom',   price: 1990, addon: 'ref-Addon-logo', availability: 'public', required_stage: 'beta', public_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-controls', availability: 'hidden', required_stage: 'beta', public_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-initial', availability: 'hidden', required_stage: 'beta', public_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-sharing', availability: 'public', required_stage: 'beta', public_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-api', availability: 'hidden', public_at: Time.now.utc },
+
+          { name: 'standard', price: 0,    addon: 'ref-Addon-support', availability: 'public', public_at: Time.now.utc },
+          { name: 'vip',      price: 9990, addon: 'ref-Addon-support', availability: 'public', public_at: Time.now.utc },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-buy_action', availability: 'custom', required_stage: 'beta', public_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-action', availability: 'custom', required_stage: 'beta', public_at: nil }
+        ]
+      }
+
+      lightbox_without_close_button_template = {
         on_open: {
           type: 'string',
           values: ['nothing', 'play'],
@@ -58,7 +179,9 @@ module Populate
           range: [0.1, 1],
           step: 0.1,
           default: 0.7
-        },
+        }
+      }
+      lightbox_template = lightbox_without_close_button_template.merge({
         close_button_enable: {
           type: 'boolean',
           values: [true, false],
@@ -74,7 +197,7 @@ module Populate
           values: ['left', 'right'],
           default: 'left'
         }
-      }
+      })
       buy_action_template = {
         enable: {
           type: 'boolean',
@@ -170,319 +293,211 @@ module Populate
           type: 'size'
         }
       }
-      seeds = {
-        App::Component => [
-          { name: 'app',      token: 'sa' },
-          { name: 'twit',     token: 'sf' },
-          { name: 'html5',    token: 'sg' },
-          { name: 'sony',     token: 'tj' },
-          { name: 'svnet',    token: 'sj' },
-          { name: 'anthony',  token: 'aaa' },
-          { name: 'next15',   token: 'aba' },
-          { name: 'blizzard', token: 'aca' }
-        ],
-        App::Design => [
-          { name: 'classic',  skin_token: 'sa.sb.sc',    price: 0, availability: 'public',                         component: 'ref-App::Component-app' },
-          { name: 'flat',     skin_token: 'sa.sd.sd',    price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
-          { name: 'light',    skin_token: 'sa.se.se',    price: 0, availability: 'public', required_stage: 'beta', component: 'ref-App::Component-app' },
-          { name: 'twit',     skin_token: 'sf.sf.sf',    price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-twit' },
-          { name: 'html5',    skin_token: 'sg.sg.sg',    price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-html5' },
-          { name: 'sony',     skin_token: 'tj.tj.tj',    price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-sony' },
-          { name: 'svnet',    skin_token: 'sj.sj.sj',    price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-svnet' },
-          { name: 'anthony',  skin_token: 'aaa.aaa.aaa', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-anthony' },
-          { name: 'next15',   skin_token: 'aba.aba.aba', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-next15' },
-          { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-blizzard' }
-        ],
-        Addon => [
-          { name: 'video_player',  kind: 'videoPlayer',  design_dependent: false, parent_addon: nil },
-          { name: 'controls',      kind: 'controls',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'initial',       kind: 'initial',      design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'sharing',       kind: 'sharing',      design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'image_viewer',  kind: 'imageViewer',  design_dependent: false, parent_addon: nil },
-          { name: 'logo',          kind: 'logo',         design_dependent: false, parent_addon: 'ref-Addon-video_player' },
-          { name: 'lightbox',      kind: 'lightbox',     design_dependent: true,  parent_addon: nil },
-          { name: 'api',           kind: 'api',          design_dependent: false, parent_addon: nil },
-          { name: 'stats',         kind: 'stats',        design_dependent: false, parent_addon: nil },
-          { name: 'support',       kind: 'support',      design_dependent: false, parent_addon: nil },
-          { name: 'preview_tools', kind: 'previewTools', design_dependent: false, parent_addon: nil },
-          { name: 'buy_action',    kind: 'buyAction',    design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'action',        kind: 'action',       design_dependent: true,  parent_addon: 'ref-Addon-video_player' }
-        ],
-        App::Plugin => [
-          { name: 'video_player', token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil, component: 'ref-App::Component-app' },
 
-          { name: 'ligthbox_classic', token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-classic', component: 'ref-App::Component-app' },
-          { name: 'ligthbox_flat',    token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-flat',    component: 'ref-App::Component-app' },
-          { name: 'ligthbox_light',   token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-light',   component: 'ref-App::Component-app' },
-          { name: 'ligthbox_twit',    token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-twit',    component: 'ref-App::Component-app' },
-          { name: 'ligthbox_html5',   token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-html5',   component: 'ref-App::Component-app' },
-          { name: 'ligthbox_sony',    token: 'sa.sl.sm', addon: 'ref-Addon-lightbox', design: 'ref-App::Design-sony',    component: 'ref-App::Component-app' },
-
-          { name: 'image_viewer', token: 'sa.sn.so', addon: 'ref-Addon-image_viewer', design: nil, component: 'ref-App::Component-app' },
-
-          { name: 'logo', token: 'sa.sh.sp', addon: 'ref-Addon-logo', design: nil, component: 'ref-App::Component-app' },
-
-          { name: 'controls_classic',  token: 'sa.sh.sq',    addon: 'ref-Addon-controls', design: 'ref-App::Design-classic',  component: 'ref-App::Component-app' },
-          { name: 'controls_flat',     token: 'sd.sd.sr',    addon: 'ref-Addon-controls', design: 'ref-App::Design-flat',     component: 'ref-App::Component-app' },
-          { name: 'controls_light',    token: 'se.se.ss',    addon: 'ref-Addon-controls', design: 'ref-App::Design-light',    component: 'ref-App::Component-app' },
-          { name: 'controls_twit',     token: 'sf.sf.st',    addon: 'ref-Addon-controls', design: 'ref-App::Design-twit',     component: 'ref-App::Component-twit' },
-          { name: 'controls_html5',    token: 'sg.sg.su',    addon: 'ref-Addon-controls', design: 'ref-App::Design-html5',    component: 'ref-App::Component-html5' },
-          { name: 'controls_sony',     token: 'tj.tj.sx',    addon: 'ref-Addon-controls', design: 'ref-App::Design-sony',     component: 'ref-App::Component-sony' },
-          { name: 'controls_anthony',  token: 'aaa.aaa.aab', addon: 'ref-Addon-controls', design: 'ref-App::Design-anthony',  component: 'ref-App::Component-anthony' },
-          { name: 'controls_next15',   token: 'aba.aba.abb', addon: 'ref-Addon-controls', design: 'ref-App::Design-next15',   component: 'ref-App::Component-next15' },
-          { name: 'controls_blizzard', token: 'aca.aca.acd', addon: 'ref-Addon-controls', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-blizzard' },
-
-          { name: 'initial_classic',  token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-classic',  component: 'ref-App::Component-app' },
-          { name: 'initial_flat',     token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-flat',     component: 'ref-App::Component-app' },
-          { name: 'initial_light',    token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-light',    component: 'ref-App::Component-app' },
-          { name: 'initial_twit',     token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-twit',     component: 'ref-App::Component-app' },
-          { name: 'initial_html5',    token: 'sa.sh.sv',    addon: 'ref-Addon-initial', design: 'ref-App::Design-html5',    component: 'ref-App::Component-app' },
-          { name: 'initial_sony',     token: 'tj.tj.sy',    addon: 'ref-Addon-initial', design: 'ref-App::Design-sony',     component: 'ref-App::Component-sony' },
-          { name: 'initial_blizzard', token: 'aca.aca.acc', addon: 'ref-Addon-initial', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-blizzard' },
-
-          { name: 'sharing_classic',  token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-classic',  component: 'ref-App::Component-app' },
-          { name: 'sharing_twit',     token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-twit',     component: 'ref-App::Component-app' },
-          { name: 'sharing_html5',    token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-html5',    component: 'ref-App::Component-app' },
-          { name: 'sharing_next15',   token: 'aba.aba.abc', addon: 'ref-Addon-sharing', design: 'ref-App::Design-next15',   component: 'ref-App::Component-next15' },
-          { name: 'sharing_blizzard', token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-app' },
-
-          { name: 'buy_action_blizzard', token: 'aba.aba.abb', addon: 'ref-Addon-buy_action', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-blizzard' },
-
-          { name: 'preview_tools_svnet', token: 'sj.sj.sk', addon: 'ref-Addon-preview_tools', design: nil, component: 'ref-App::Component-svnet' },
-
-          { name: 'action_svnet', token: 'sj.sj.adb', addon: 'ref-Addon-action', design: nil, component: 'ref-App::Component-svnet' }
-
-        ],
-        AddonPlan => [
-          { name: 'standard', price: 0, addon: 'ref-Addon-video_player', availability: 'hidden', public_at: nil },
-
-          { name: 'standard', price: 0, addon: 'ref-Addon-lightbox', availability: 'hidden', public_at: Time.now.utc },
-
-          { name: 'standard', price: 0, addon: 'ref-Addon-image_viewer', availability: 'hidden', required_stage: 'beta', public_at: nil },
-
-          { name: 'standard', price: 0, addon: 'ref-Addon-preview_tools', availability: 'custom', required_stage: 'beta', public_at: nil },
-
-          { name: 'invisible', price: 0,    addon: 'ref-Addon-stats', availability: 'hidden',                         public_at: Time.now.utc },
-          { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats', availability: 'public',                         public_at: Time.now.utc },
-          # { name: 'disabled',  price: 1990, addon: 'ref-Addon-stats', availability: 'hidden', required_stage: 'beta', public_at: nil },
-
-          { name: 'sublime',  price: 0,    addon: 'ref-Addon-logo', availability: 'public',                         public_at: Time.now.utc },
-          { name: 'disabled', price: 990,  addon: 'ref-Addon-logo', availability: 'public',                         public_at: Time.now.utc },
-          { name: 'custom',   price: 1990, addon: 'ref-Addon-logo', availability: 'public', required_stage: 'beta', public_at: nil },
-
-          { name: 'standard', price: 0, addon: 'ref-Addon-controls', availability: 'hidden', required_stage: 'beta', public_at: nil },
-
-          { name: 'standard', price: 0, addon: 'ref-Addon-initial', availability: 'hidden', required_stage: 'beta', public_at: nil },
-
-          { name: 'standard', price: 0, addon: 'ref-Addon-sharing', availability: 'public', required_stage: 'beta', public_at: nil },
-
-          { name: 'standard', price: 0, addon: 'ref-Addon-api', availability: 'hidden', public_at: Time.now.utc },
-
-          { name: 'standard', price: 0,    addon: 'ref-Addon-support', availability: 'public', public_at: Time.now.utc },
-          { name: 'vip',      price: 9990, addon: 'ref-Addon-support', availability: 'public', public_at: Time.now.utc },
-
-          { name: 'standard', price: 0, addon: 'ref-Addon-buy_action', availability: 'custom', required_stage: 'beta', public_at: nil },
-
-          { name: 'standard', price: 0, addon: 'ref-Addon-action', availability: 'custom', required_stage: 'beta', public_at: nil }
-        ],
-        App::SettingsTemplate => [
-          { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
-            template: {
-              volume_enable: {
-                type: 'boolean',
-                values: [true, false],
-                default: true
-              },
-              fullmode_enable: {
-                type: 'boolean',
-                values: [true, false],
-                default: true
-              },
-              fullmode_priority: {
-                type: 'string',
-                values: ['screen', 'window'],
-                default: 'screen',
-              },
-              on_end: {
-                type: 'string',
-                values: ['nothing', 'replay', 'stop'],
-                default: 'nothing'
-              }
+      seeds[App::SettingsTemplate] = [
+        { addon_plan: 'ref-AddonPlan-video_player-standard', plugin: 'ref-App::Plugin-video_player',
+          template: {
+            volume_enable: {
+              type: 'boolean',
+              values: [true, false],
+              default: true
+            },
+            fullmode_enable: {
+              type: 'boolean',
+              values: [true, false],
+              default: true
+            },
+            fullmode_priority: {
+              type: 'string',
+              values: ['screen', 'window'],
+              default: 'screen',
+            },
+            on_end: {
+              type: 'string',
+              values: ['nothing', 'replay', 'stop'],
+              default: 'nothing'
             }
-          },
-          { addon_plan: 'ref-AddonPlan-action-standard',     plugin: 'ref-App::Plugin-action_svnet',    template: action_template },
+          }
+        },
+        { addon_plan: 'ref-AddonPlan-action-standard', plugin: 'ref-App::Plugin-action_svnet', template: action_template },
 
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_classic',    template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_flat',       template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_light',      template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_twit',       template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_html5',      template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_sony',       template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_anthony',    template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_next15',     template: controls_template },
-          { addon_plan: 'ref-AddonPlan-controls-standard',     plugin: 'ref-App::Plugin-controls_blizzard',   template: controls_template },
+        { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_classic',  template: controls_template },
+        { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_flat',     template: controls_template },
+        { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_light',    template: controls_template },
+        { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_twit',     template: controls_template },
+        { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_html5',    template: controls_template },
+        { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_sony',     template: controls_template },
+        { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_anthony',  template: controls_template },
+        { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_next15',   template: controls_template },
+        { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_blizzard', template: controls_template },
 
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic',    template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat',       template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light',      template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit',       template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5',      template: lightbox_template },
-          { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_sony',       template: lightbox_template },
-          # { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
-          { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
-            template: {
-              enable: {
-                type: 'boolean',
-                values: [true],
-                default: true
-              },
-              realtime: {
-                type: 'boolean',
-                values: [false],
-                default: false
-              }
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_classic',  template: lightbox_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_flat',     template: lightbox_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_light',    template: lightbox_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_twit',     template: lightbox_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_html5',    template: lightbox_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_sony',     template: lightbox_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_anthony',  template: lightbox_without_close_button_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_next15',   template: lightbox_without_close_button_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-ligthbox_blizzard', template: lightbox_without_close_button_template },
+        # { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
+        { addon_plan: 'ref-AddonPlan-stats-invisible',       plugin: nil,
+          template: {
+            enable: {
+              type: 'boolean',
+              values: [true],
+              default: true
+            },
+            realtime: {
+              type: 'boolean',
+              values: [false],
+              default: false
             }
-          },
-          { addon_plan: 'ref-AddonPlan-stats-realtime', plugin: nil,
-            template: {
-              enable: {
-                type: 'boolean',
-                values: [false],
-                default: false
-              },
-              realtime: {
-                type: 'boolean',
-                values: [true],
-                default: true
-              }
+          }
+        },
+        { addon_plan: 'ref-AddonPlan-stats-realtime', plugin: nil,
+          template: {
+            enable: {
+              type: 'boolean',
+              values: [false],
+              default: false
+            },
+            realtime: {
+              type: 'boolean',
+              values: [true],
+              default: true
             }
-          },
-          # { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil,
-          #   template: {
-          #     enabled: {
-          #       type: 'boolean',
-          #       values: [true, false],
-          #       default: false
-          #     },
-          #     realtime: {
-          #       type: 'boolean',
-          #       values: [true, false],
-          #       default: false
-          #     }
-          #   }
-          # },
-          { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
-            template: {
-              enable: {
-                type: 'boolean',
-                values: [true],
-                default: true
-              },
-              type: {
-                type: 'string',
-                values: ['sv'],
-                default: 'sv'
-              },
-              visibility: {
-                type: 'string',
-                values: ['autohide', 'visible'],
-                default: 'autohide'
-              },
-              position: {
-                type: 'string',
-                values: ['bottom-right'],
-                default: 'bottom-right'
-              },
-              image_url: {
-                type: 'image',
-                default: ''
-              },
-              link_url: {
-                type: 'url'
-              }
+          }
+        },
+        # { addon_plan: 'ref-AddonPlan-stats-disabled', plugin: nil,
+        #   template: {
+        #     enabled: {
+        #       type: 'boolean',
+        #       values: [true, false],
+        #       default: false
+        #     },
+        #     realtime: {
+        #       type: 'boolean',
+        #       values: [true, false],
+        #       default: false
+        #     }
+        #   }
+        # },
+        { addon_plan: 'ref-AddonPlan-logo-sublime', plugin: 'ref-App::Plugin-logo',
+          template: {
+            enable: {
+              type: 'boolean',
+              values: [true],
+              default: true
+            },
+            type: {
+              type: 'string',
+              values: ['sv'],
+              default: 'sv'
+            },
+            visibility: {
+              type: 'string',
+              values: ['autohide', 'visible'],
+              default: 'autohide'
+            },
+            position: {
+              type: 'string',
+              values: ['bottom-right'],
+              default: 'bottom-right'
+            },
+            image_url: {
+              type: 'image',
+              default: ''
+            },
+            link_url: {
+              type: 'url'
             }
-          },
-          { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
-            template: {
-              enable: {
-                type: 'boolean',
-                values: [true, false],
-                default: false
-              },
-              type: {
-                type: 'string',
-                values: ['sv'],
-                default: 'sv'
-              },
-              visibility: {
-                type: 'string',
-                values: ['autohide', 'visible'],
-                default: 'autohide'
-              },
-              position: {
-                type: 'string',
-                values: ['bottom-right'],
-                default: 'bottom-right'
-              },
-              image_url: {
-                type: 'image',
-                values: [''],
-                default: ''
-              },
-              link_url: {
-                type: 'url'
-              }
+          }
+        },
+        { addon_plan: 'ref-AddonPlan-logo-disabled', plugin: 'ref-App::Plugin-logo',
+          template: {
+            enable: {
+              type: 'boolean',
+              values: [true, false],
+              default: false
+            },
+            type: {
+              type: 'string',
+              values: ['sv'],
+              default: 'sv'
+            },
+            visibility: {
+              type: 'string',
+              values: ['autohide', 'visible'],
+              default: 'autohide'
+            },
+            position: {
+              type: 'string',
+              values: ['bottom-right'],
+              default: 'bottom-right'
+            },
+            image_url: {
+              type: 'image',
+              values: [''],
+              default: ''
+            },
+            link_url: {
+              type: 'url'
             }
-          },
-          { addon_plan: 'ref-AddonPlan-logo-custom', plugin: 'ref-App::Plugin-logo',
-            template: {
-              enable: {
-                type: 'boolean',
-                values: [true, false],
-                default: false
-              },
-              type: {
-                type: 'string',
-                values: ['sv', 'custom'],
-                default: 'sv'
-              },
-              visibility: {
-                type: 'string',
-                values: ['autohide', 'visible'],
-                default: 'autohide'
-              },
-              position: {
-                type: 'string',
-                values: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
-                default: 'bottom-right'
-              },
-              image_url: {
-                type: 'image'
-              },
-              link_url: {
-                type: 'url'
-              }
+          }
+        },
+        { addon_plan: 'ref-AddonPlan-logo-custom', plugin: 'ref-App::Plugin-logo',
+          template: {
+            enable: {
+              type: 'boolean',
+              values: [true, false],
+              default: false
+            },
+            type: {
+              type: 'string',
+              values: ['sv', 'custom'],
+              default: 'sv'
+            },
+            visibility: {
+              type: 'string',
+              values: ['autohide', 'visible'],
+              default: 'autohide'
+            },
+            position: {
+              type: 'string',
+              values: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+              default: 'bottom-right'
+            },
+            image_url: {
+              type: 'image'
+            },
+            link_url: {
+              type: 'url'
             }
-          },
+          }
+        },
 
-          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_classic', template: initial_template },
-          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_flat',    template: initial_template },
-          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_light',   template: initial_template },
-          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_twit',    template: initial_template },
-          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_html5',   template: initial_template },
-          { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_sony',    template: initial_template },
+        { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_classic',  template: initial_template },
+        { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_flat',     template: initial_template },
+        { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_light',    template: initial_template },
+        { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_twit',     template: initial_template },
+        { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_html5',    template: initial_template },
+        { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_sony',     template: initial_template },
+        { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_anthony',  template: initial_template },
+        { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_next15',   template: initial_template },
+        { addon_plan: 'ref-AddonPlan-initial-standard', plugin: 'ref-App::Plugin-initial_blizzard', template: initial_template },
 
-          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_classic',  template: sharing_template },
-          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_twit',     template: sharing_template },
-          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_html5',    template: sharing_template },
-          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_next15',   template: sharing_template },
-          { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_blizzard', template: sharing_template },
+        { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_classic',  template: sharing_template },
+        { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_twit',     template: sharing_template },
+        { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_html5',    template: sharing_template },
+        { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_next15',   template: sharing_template },
+        { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_blizzard', template: sharing_template },
 
-          # { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }, # no need to create an empty template
+        # { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }, # no need to create an empty template
 
-          { addon_plan: 'ref-AddonPlan-buy_action-standard',   plugin: 'ref-App::Plugin-buy_action_blizzard', template: buy_action_template }
-        ]
-      }
+        { addon_plan: 'ref-AddonPlan-buy_action-standard',   plugin: 'ref-App::Plugin-buy_action_blizzard', template: buy_action_template }
+      ]
+
       if Rails.env.development?
         seeds[App::ComponentVersion] = [
           { component: 'ref-App::Component-app', version: '1.0.0', zip: File.new(Rails.root.join('spec/fixtures/app/e.zip')) },
@@ -627,7 +642,8 @@ module Populate
               AddonPlan.where{ price > 0 }.each do |addon_plan|
                 addon_plans[addon_plan.addon.name] = addon_plan.id if rand >= 0.6
               end
-              service.update_billable_items(app_designs, addon_plans)
+              options = rand >= 0.7 ? { force: 'sponsored' } : (rand >= 0.5 ? { force: 'subscribed' } : {})
+              service.update_billable_items(app_designs, addon_plans, options)
             end
             if rand >= 0.5
               Timecop.return

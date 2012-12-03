@@ -65,6 +65,14 @@ describe App::Component, :fog_mock do
     end
   end
 
+  describe '.get' do
+    before do
+      @app_component = create(:app_component, name: 'foo')
+    end
+
+    it { described_class.get('foo').should eq @app_component }
+  end
+
   describe "#app_component" do
     it "return the app component" do
       component

@@ -28,6 +28,10 @@ class App::Component < ActiveRecord::Base
     self.app.first
   end
 
+  def self.get(name)
+    Rails.cache.fetch("app_component_#{name}") { where(name: name.to_s).first }
+  end
+
   def app_component?
     token == APP_TOKEN
   end
@@ -35,7 +39,6 @@ class App::Component < ActiveRecord::Base
   def to_param
     token
   end
-
 
 end
 
