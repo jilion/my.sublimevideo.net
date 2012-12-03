@@ -628,7 +628,8 @@ module Populate
               AddonPlan.where{ price > 0 }.each do |addon_plan|
                 addon_plans[addon_plan.addon.name] = addon_plan.id if rand >= 0.6
               end
-              service.update_billable_items(app_designs, addon_plans)
+              options = rand >= 0.7 ? { force: 'sponsored' } : (rand >= 0.5 ? { force: 'subscribed' } : {})
+              service.update_billable_items(app_designs, addon_plans, options)
             end
             if rand >= 0.5
               Timecop.return
