@@ -26,7 +26,7 @@
   "module": "iu",
   "enable": "iv",
   "enableTwitter": "iw",
-  // "": "ix",
+  "info": "ix",
   // "": "iy",
   // "": "iz",
 
@@ -127,5 +127,8 @@
   "BLZStartController": "acc",
   "BLZControls": "acd",
 
-  "SVNActionButtons": "adb"
+  "SVNActionButtons": "adb",
+
+  "SNYInfoController": "aeb"
+
 }
