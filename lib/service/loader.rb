@@ -30,7 +30,7 @@ module Service
       sites = sites.active.where(accessible_stage: Stage.stages_with_access_to(stage))
       sites.order{ last_30_days_main_video_views.desc }.find_each(batch_size: 500) do |site|
         important_site = site.token.in?(::SiteToken.tokens)
-        delay(queue: important_site ? 'high' : 'low').update_all_stages!(site.id, purge: purge || important_site)
+        delay(queue: important_site ? 'high' : 'loader').update_all_stages!(site.id, purge: purge || important_site)
       end
     end
 
