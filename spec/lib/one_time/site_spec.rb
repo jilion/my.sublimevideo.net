@@ -341,6 +341,30 @@ describe OneTime::Site do
     end
   end
 
+  describe '.create_preview_kits', :addons do
+    before do
+      @site = create(:site).tap { |s| s.update_column(:token, SiteToken[:my]) }
+      Service::Site.new(@site).send(:create_default_kit!)
+      @site.save!
+    end
+
+    it 'creates preview kits for my.sublimevideo.net' do
+      described_class.create_preview_kits
+
+      @site.kits.should have(PreviewKit.kit_ids.size).items
+    end
+
+    PreviewKit.kit_ids.each do |design_name, kit_identifier|
+      it "creates preview kit #{I18n.t("app_designs.#{design_name}")} for my.sublimevideo.net" do
+        described_class.create_preview_kits
+
+        kit = @site.kits.find_by_identifier(kit_identifier.to_s)
+        kit.name.should eq I18n.t("app_designs.#{design_name}")
+        kit.design.name.should eq design_name
+      end
+    end
+  end
+
   describe ".update_accessible_stage" do
     before do
       @site_active_stable    = create(:site, state: 'active', accessible_stage: 'stable')

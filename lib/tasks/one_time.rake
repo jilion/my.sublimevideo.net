@@ -126,12 +126,13 @@ namespace :one_time do
     end
 
     # STEP 2
-    desc "Step 2: one_time:sites:move_staging_hostnames_from_extra, one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans, one_time:sites:migrate_yearly_plans_to_monthly_plans, one_time:sites:create_default_kit_for_all_non_archived_sites"
+    desc "Step 2: one_time:sites:move_staging_hostnames_from_extra, one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans, one_time:sites:migrate_yearly_plans_to_monthly_plans, one_time:sites:create_default_kit_for_all_non_archived_sites, one_time:sites:create_preview_kits"
     task migration_step_2: :environment do
       Rake::Task['one_time:sites:move_staging_hostnames_from_extra'].execute
       Rake::Task['one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans'].execute
       Rake::Task['one_time:sites:migrate_yearly_plans_to_monthly_plans'].execute
       Rake::Task['one_time:sites:create_default_kit_for_all_non_archived_sites'].execute
+      Rake::Task['one_time:sites:create_preview_kits'].execute
     end
 
     desc "For all non-archived site, extracts staging hostnames from extra domains"
@@ -152,6 +153,11 @@ namespace :one_time do
     desc "For all non-archived sites, create a default kit"
     task create_default_kit_for_all_non_archived_sites: :environment do
       timed { puts OneTime::Site.create_default_kit_for_all_non_archived_sites }
+    end
+
+    desc "Create the preview kits for my.sublimevideo.net"
+    task create_preview_kits: :environment do
+      timed { puts OneTime::Site.create_preview_kits }
     end
 
     # STEP 3

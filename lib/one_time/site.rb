@@ -47,10 +47,13 @@ module OneTime
             add_to_balance = [0, ((site.plan_cycle_ended_at + 1.second - Time.now.utc) / 1.day).floor * price_per_day].max
             old_balance = site.user.balance
             site.user.increment!(:balance, add_to_balance)
-            puts "#{((site.plan_cycle_ended_at + 1.second - Time.now.utc) / 1.day).floor} days left " +
-                 "until #{site.plan_cycle_ended_at + 1.second} (price per day: $#{price_per_day.to_f / 100}), added to " +
-                 "balance: #{add_to_balance.to_f / 100}. Old balance: $#{old_balance.to_f / 100}, " +
-                 "new balance: $#{site.user.balance.to_f / 100}"
+
+            unless Rails.env.test?
+              puts "#{((site.plan_cycle_ended_at + 1.second - Time.now.utc) / 1.day).floor} days left " +
+                   "until #{site.plan_cycle_ended_at + 1.second} (price per day: $#{price_per_day.to_f / 100}), added to " +
+                   "balance: #{add_to_balance.to_f / 100}. Old balance: $#{old_balance.to_f / 100}, " +
+                   "new balance: $#{site.user.balance.to_f / 100}"
+            end
 
             processed += 1
             total += add_to_balance
@@ -112,6 +115,22 @@ module OneTime
         end
 
         "Schedule finished: #{scheduled} sites had a default kit created."
+      end
+
+      # TODO: Remove after launch
+      def create_preview_kits
+        result = []
+        if site = ::Site.find_by_token(SiteToken[:my])
+          site.default_kit.update_column(:name, 'Classic')
+
+          PreviewKit.kit_ids.each do |design_name, kit_identifier|
+            next if design_name == 'classic'
+
+            site.kits.create!({ name: I18n.t("app_designs.#{design_name}"), app_design_id: App::Design.get(design_name).id }, as: :admin)
+            result << I18n.t("app_designs.#{design_name}")
+          end
+        end
+        'Created preview kits: ' + result.join(', ') + ' for my.sublimevideo.net'
       end
 
       def without_versioning
