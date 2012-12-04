@@ -1,10 +1,4 @@
 GIT
-  remote: git://github.com/ashirazi/rescue_me.git
-  revision: bd75a2562302613299fc157d8d6f3e39cdb17cfd
-  specs:
-    rescue_me (0.1.1)
-
-GIT
   remote: git://github.com/jilion/carrierwave-mongoid.git
   revision: f15154bd1c0db068ed6d5d2d030e18b3a4a1ab27
   branch: mongoid-3.0
@@ -456,6 +450,7 @@ GEM
     redis-namespace (1.2.1)
       redis (~> 3.0.0)
     request-log-analyzer (1.12.5)
+    rescue_me (0.1.1)
     responders (0.9.3)
       railties (~> 3.1)
     rspec (2.12.0)
@@ -704,7 +699,7 @@ DEPENDENCIES
   rb-readline
   redis
   request-log-analyzer
-  rescue_me!
+  rescue_me
   responders
   rspec-rails
   ruby_gntp
