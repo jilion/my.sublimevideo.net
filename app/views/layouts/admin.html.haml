@@ -11,11 +11,11 @@
     = stylesheet_link_tag 'admin'
     %link{ rel: "shortcut icon", href: "/favicon.ico", type: "image/x-icon" }
 
-    = javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'
-    = javascript_include_tag 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'
-    = javascript_include_tag 'sublimevideo', 'admin'
-
-    = render 'layouts/typekit'
+    = javascript_include_tag '//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'
+    = javascript_include_tag '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'
+    = javascript_include_tag "//use.typekit.com/vcc7hji.js"
+    = javascript_include_tag 'admin'
+    = javascript_tag "try { Typekit.load(); } catch(e) { }"
 
   %body
     #global{ "data-pjax-container" => true }
