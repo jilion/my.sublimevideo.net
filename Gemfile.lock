@@ -111,6 +111,7 @@ GEM
       activesupport (>= 3.0.0)
       rack (>= 1.1.0)
     addressable (2.2.8)
+    aggregate (0.2.2)
     airbrake (3.1.6)
       builder
       girl_friday
@@ -325,7 +326,14 @@ GEM
       moped (~> 1.2)
     launchy (2.1.0)
       addressable (~> 2.2.6)
-    libwebsocket (0.1.7.1)
+    librato-metrics (0.7.5)
+      aggregate (~> 0.2.2)
+      faraday (~> 0.7)
+      multi_json
+    librato-rails (0.8.0)
+      librato-metrics (~> 0.7.4)
+      rails (>= 3.0)
+    libwebsocket (0.1.5)
       addressable
       websocket
     libxml-ruby (2.2.2)
@@ -673,6 +681,7 @@ DEPENDENCIES
   kaminari
   kiqstand
   letter_opener!
+  librato-rails
   libxml-ruby
   liquid
   mime-types
