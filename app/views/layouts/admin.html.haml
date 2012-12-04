@@ -3,10 +3,11 @@
 !!! 5
 %html
   %head
-    %title= page_title
+    %meta{ charset: 'utf-8' }
     %meta{ "http-equiv" => "X-UA-Compatible", content: "chrome=1" }
-    %meta{ "http-equiv" => "Content-Type", content: "text/html;charset=UTF-8" }
     = csrf_meta_tag
+
+    %title= page_title
 
     = stylesheet_link_tag 'admin'
     %link{ rel: "shortcut icon", href: "/favicon.ico", type: "image/x-icon" }

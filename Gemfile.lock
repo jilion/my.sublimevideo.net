@@ -123,7 +123,10 @@ GEM
       fog
     aws (2.6.0)
       http_connection
+      http_connection
       uuidtools
+      uuidtools
+      xml-simple
       xml-simple
     bcrypt-ruby (3.0.1)
     bourne (1.1.2)
@@ -534,7 +537,7 @@ GEM
     stat_request_parser (1.2.0)
       activesupport (>= 3.0.0)
     state_machine (1.1.2)
-    sublime_video_layout (2.2.1)
+    sublime_video_layout (2.2.2)
       coffee-rails (~> 3.2.0)
       haml
       jquery-rails (~> 2.1.0)

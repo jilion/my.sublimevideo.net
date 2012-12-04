@@ -2,17 +2,17 @@
 - @page_title_prefix = "SublimeVideo"
 
 !!! 5
-%html{ "xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en" }
+%html
   %head
-    %title= page_title
-    %meta{ "http-equiv" => "Content-Type", content: "text/html;charset=UTF-8" }
-
+    %meta{ charset: 'utf-8' }
     %meta{ content: 'SublimeVideo - HTML5 Video Player', property: 'og:title' }
     %meta{ content: 'product', property: 'og:type' }
     %meta{ content: 'http://sublimevideo.net', property: 'og:url' }
     %meta{ content: 'http://media.jilion.s3.amazonaws.com/facebook/sublimevideo_facebook.png', property: 'og:image' }
     %meta{ content: "SublimeVideo is the world's first cloud-based HTML5 video player; a universal and pain-free solution that allows video to play flawlessly on any device or browser.", property: 'og:description'}
     = csrf_meta_tag
+
+    %title= page_title
 
     = stylesheet_link_tag 'application'
     %link{ rel: "shortcut icon", href: "http://sublimevideo.net/favicon.ico", type: "image/x-icon" }

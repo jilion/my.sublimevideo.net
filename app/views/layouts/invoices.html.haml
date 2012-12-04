@@ -1,9 +1,11 @@
 !!! 5
-%html{ "xmlns" => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", "lang" => "en" }
+%html
   %head
-    %title= "MySublimeVideo - #{@page_title}"
+    %meta{ charset: 'utf-8' }
     %meta{ "http-equiv" => "X-UA-Compatible", content: "chrome=1" }
-    %meta{ "http-equiv" => "Content-Type", content: "text/html;charset=UTF-8" }
+
+    %title= "MySublimeVideo - #{@page_title}"
+
     %link{ rel: "shortcut icon", href: "/favicon.ico", type: "image/x-icon" }
     = stylesheet_link_tag 'invoices'
     = stylesheet_link_tag "invoices_print", media: "print"
