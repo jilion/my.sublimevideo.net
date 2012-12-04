@@ -5,7 +5,6 @@
 = content_for :javascript do
   = sublimevideo_loader_tag(:my, host: 'cdn.sublimevideo-staging.net', stage: 'alpha').html_safe
   = javascript_include_tag 'https://d3dy5gmtp8yhk7.cloudfront.net/1.11/pusher.min.js'
-  = javascript_include_tag 'application'
 
 - if flash.present?
   = content_for :middle do

@@ -1,3 +1,4 @@
+#= require sublimevideo
 #= require jquery.pjax
 #= require underscore
 #= require highcharts/highcharts
