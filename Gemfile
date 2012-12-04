@@ -89,6 +89,7 @@ gem 'airbrake'
 gem 'prowl'
 gem 'tinder' # Campfire
 gem 'librato-rails'
+gem 'lograge'
 
 # Highest version change the query_values method behavior
 # https://github.com/sporkmonger/addressable/issues/77

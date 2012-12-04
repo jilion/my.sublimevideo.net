@@ -3,6 +3,9 @@ MySublimeVideo::Application.configure do
   config.middleware.use Rack::GoogleAnalytics, tracker: 'UA-10280941-8'
   config.middleware.insert_before Rack::Lock, Rack::SslEnforcer, force_secure_cookies: false
 
+  # One-line logs
+  config.lograge.enabled = true
+
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
   config.cache_classes = true
