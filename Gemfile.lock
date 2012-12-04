@@ -339,6 +339,9 @@ GEM
     libxml-ruby (2.2.2)
     liquid (2.4.1)
     listen (0.6.0)
+    lograge (0.1.0)
+      actionpack
+      activesupport
     lumberjack (1.0.2)
     mail (2.4.4)
       i18n (>= 0.4.0)
@@ -684,6 +687,7 @@ DEPENDENCIES
   librato-rails
   libxml-ruby
   liquid
+  lograge
   mime-types
   mongoid
   newrelic-redis
