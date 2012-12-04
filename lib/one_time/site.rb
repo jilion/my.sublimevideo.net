@@ -119,18 +119,23 @@ module OneTime
 
       # TODO: Remove after launch
       def create_preview_kits
-        result = []
-        if site = ::Site.find_by_token(SiteToken[:my])
-          site.default_kit.update_column(:name, 'Classic')
+        text = ''
+        [:www, :my].each do |subdomain|
+          result = []
+          if site = ::Site.find_by_token(SiteToken[subdomain])
+            site.default_kit.update_column(:name, 'Classic')
 
-          PreviewKit.kit_ids.each do |design_name, kit_identifier|
-            next if design_name == 'classic'
+            PreviewKit.kit_ids.each do |design_name, kit_identifier|
+              next if design_name == 'classic'
 
-            site.kits.create!({ name: I18n.t("app_designs.#{design_name}"), app_design_id: App::Design.get(design_name).id }, as: :admin)
-            result << I18n.t("app_designs.#{design_name}")
+              site.kits.create!({ name: I18n.t("app_designs.#{design_name}"), app_design_id: App::Design.get(design_name).id }, as: :admin)
+              result << I18n.t("app_designs.#{design_name}")
+            end
           end
+          text += "Created preview kits: ' + result.join(', ') + ' for sublimevideo.net\n"
         end
-        'Created preview kits: ' + result.join(', ') + ' for my.sublimevideo.net'
+
+        text
       end
 
       def without_versioning
