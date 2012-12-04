@@ -122,6 +122,7 @@ module Populate
           { name: 'sharing_html5',    token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-html5',    component: 'ref-App::Component-app' },
           { name: 'sharing_next15',   token: 'aba.aba.abc', addon: 'ref-Addon-sharing', design: 'ref-App::Design-next15',   component: 'ref-App::Component-next15' },
           { name: 'sharing_blizzard', token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-app' },
+          { name: 'sharing_sony',     token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-sony',     component: 'ref-App::Component-app' },
 
           { name: 'buy_action_blizzard', token: 'aca.aca.acb', addon: 'ref-Addon-buy_action', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-blizzard' },
 
@@ -492,6 +493,7 @@ module Populate
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_html5',    template: sharing_template },
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_next15',   template: sharing_template },
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_blizzard', template: sharing_template },
+        { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_sony',     template: sharing_template },
 
         # { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }, # no need to create an empty template
 
