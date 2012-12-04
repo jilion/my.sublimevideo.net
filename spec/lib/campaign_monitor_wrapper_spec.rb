@@ -32,8 +32,8 @@ describe CampaignMonitorWrapper do
   end
 
   describe '.import' do
-    let(:user1) { OpenStruct.new(id: 13, beta: true, email: 'user_import1@example.org', name: 'User Import #1') }
-    let(:user2) { OpenStruct.new(id: 14, beta: false, email: 'user_import2@example.org', name: 'User Import #2') }
+    let(:user1) { OpenStruct.new(id: 13, beta: true, billable: false, email: 'user_import1@example.org', name: 'User Import #1') }
+    let(:user2) { OpenStruct.new(id: 14, beta: false, billable: true, email: 'user_import2@example.org', name: 'User Import #2') }
 
     use_vcr_cassette 'campaign_monitor_wrapper/import'
 
@@ -42,8 +42,8 @@ describe CampaignMonitorWrapper do
         list_id: CampaignMonitorWrapper.lists['sublimevideo']['list_id'],
         segment: CampaignMonitorWrapper.lists['sublimevideo']['segment'],
         users: [
-          { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta },
-          { id: user2.id, email: user2.email, name: user2.name, beta: user2.beta }
+          { id: user1.id, email: user1.email, name: user1.name, beta: user1.beta, billable: user1.billable },
+          { id: user2.id, email: user2.email, name: user2.name, beta: user2.beta, billable: user2.billable }
         ]
       ).should be_true
 
@@ -55,6 +55,7 @@ describe CampaignMonitorWrapper do
       subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
       subscriber['CustomFields'].detect { |h| h.values.include?('user_id') }['Value'].should eq '13'
       subscriber['CustomFields'].detect { |h| h.values.include?('beta') }['Value'].should eq 'true'
+      subscriber['CustomFields'].detect { |h| h.values.include?('billable') }['Value'].should eq 'false'
       # user 2
       subscriber = CreateSend::Subscriber.get(CampaignMonitorWrapper.lists['sublimevideo']['list_id'], user2.email)
       subscriber['EmailAddress'].should eq user2.email
@@ -63,6 +64,7 @@ describe CampaignMonitorWrapper do
       subscriber['CustomFields'].detect { |h| h.values.include?('segment') }['Value'].should eq CampaignMonitorWrapper.lists['sublimevideo']['segment']
       subscriber['CustomFields'].detect { |h| h.values.include?('user_id') }['Value'].should eq '14'
       subscriber['CustomFields'].detect { |h| h.values.include?('beta') }['Value'].should eq 'false'
+      subscriber['CustomFields'].detect { |h| h.values.include?('billable') }['Value'].should eq 'true'
     end
   end
 

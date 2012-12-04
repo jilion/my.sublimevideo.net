@@ -55,6 +55,10 @@ namespace :one_time do
   end
 
   namespace :users do
+    desc "Update billable custom field on Campaign Monitor for all active users"
+    task update_campaign_monitor_billable_custom_field_for_all_active_users: :environement do
+      timed { OneTime::User.update_campaign_monitor_billable_custom_field_for_all_active_users }
+    end
   end
 
   namespace :plans do

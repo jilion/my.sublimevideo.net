@@ -21,9 +21,10 @@ class CampaignMonitorWrapper
     def import(params = {})
       subscribers = params[:users].inject([]) do |memo, user|
         custom_params = []
-        custom_params << { Key: 'segment', Value: params[:segment] }
-        custom_params << { Key: 'user_id', Value: user[:id] }
-        custom_params << { Key: 'beta',    Value: user[:beta] }
+        custom_params << { Key: 'user_id',  Value: user[:id] }
+        custom_params << { Key: 'segment',  Value: params[:segment] }
+        custom_params << { Key: 'beta',     Value: user[:beta] } if user.key?(:beta)
+        custom_params << { Key: 'billable', Value: user[:billable] } if user.key?(:billable)
 
         memo << { EmailAddress: user[:email], Name: user[:name], CustomFields: custom_params }
       end

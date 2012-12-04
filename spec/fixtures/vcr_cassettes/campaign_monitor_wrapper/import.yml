@@ -4,11 +4,11 @@
     method: :post
     uri: https://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:443/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244/import.json
     body: ! '{"Subscribers":[{"EmailAddress":"user_import1@example.org","Name":"User
-      Import #1","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":13},{"Key":"beta","Value":true}]},{"EmailAddress":"user_import2@example.org","Name":"User
-      Import #2","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":14},{"Key":"beta","Value":false}]}],"Resubscribe":false,"QueueSubscriptionBasedAutoresponders":false}'
+      Import #1","CustomFields":[{"Key":"user_id","Value":13},{"Key":"segment","Value":"test"},{"Key":"beta","Value":true},{"Key":"billable","Value":false}]},{"EmailAddress":"user_import2@example.org","Name":"User
+      Import #2","CustomFields":[{"Key":"user_id","Value":14},{"Key":"segment","Value":"test"},{"Key":"beta","Value":false},{"Key":"billable","Value":true}]}],"Resubscribe":false,"QueueSubscriptionBasedAutoresponders":false,"RestartSubscriptionBasedAutoresponders":false}'
     headers:
       user-agent:
-      - createsend-ruby-1.0.4
+      - createsend-ruby-2.4.0
       content-type:
       - application/json; charset=utf-8
       accept-encoding:
@@ -23,13 +23,13 @@
       cache-control:
       - private, s-maxage=0
       x-cs-node:
-      - 9ef49f8657f83d34e8e633bb4b803561
+      - '23'
       content-type:
       - application/json; charset=utf-8
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Wed, 16 May 2012 18:23:03 GMT
+      - Tue, 04 Dec 2012 15:46:57 GMT
       content-length:
       - '138'
     body: ! '{"TotalUniqueEmailsSubmitted":2,"TotalExistingSubscribers":2,"TotalNewSubscribers":0,"DuplicateEmailsInSubmission":[],"FailureDetails":[]}'
@@ -41,7 +41,7 @@
     body: 
     headers:
       user-agent:
-      - createsend-ruby-1.0.4
+      - createsend-ruby-2.4.0
       content-type:
       - application/json; charset=utf-8
       accept-encoding:
@@ -56,17 +56,17 @@
       cache-control:
       - private, s-maxage=0
       x-cs-node:
-      - 2ec6ba42dc70527f06c79f059a4773e3
+      - '30'
       content-type:
       - application/json; charset=utf-8
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Wed, 16 May 2012 18:22:53 GMT
+      - Tue, 04 Dec 2012 15:46:58 GMT
       content-length:
-      - '224'
+      - '279'
     body: ! '{"EmailAddress":"user_import1@example.org","Name":"User Import #1","Date":"2012-05-16
-      20:16:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"13"},{"Key":"beta","Value":"true"}]}'
+      20:16:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"13"},{"Key":"beta","Value":"true"},{"Key":"billable","Value":"false"}],"ReadsEmailWith":""}'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
@@ -75,7 +75,7 @@
     body: 
     headers:
       user-agent:
-      - createsend-ruby-1.0.4
+      - createsend-ruby-2.4.0
       content-type:
       - application/json; charset=utf-8
       accept-encoding:
@@ -90,15 +90,15 @@
       cache-control:
       - private, s-maxage=0
       x-cs-node:
-      - f5a423776d4e0709450a9813dd10d5c4
+      - '26'
       content-type:
       - application/json; charset=utf-8
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Wed, 16 May 2012 18:23:16 GMT
+      - Tue, 04 Dec 2012 15:46:59 GMT
       content-length:
-      - '225'
+      - '279'
     body: ! '{"EmailAddress":"user_import2@example.org","Name":"User Import #2","Date":"2012-05-16
-      20:16:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"14"},{"Key":"beta","Value":"false"}]}'
+      20:16:00","State":"Active","CustomFields":[{"Key":"segment","Value":"test"},{"Key":"user_id","Value":"14"},{"Key":"beta","Value":"false"},{"Key":"billable","Value":"true"}],"ReadsEmailWith":""}'
     http_version: '1.1'
