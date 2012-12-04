@@ -78,7 +78,8 @@ module Populate
           { name: 'support',       kind: 'support',      design_dependent: false, parent_addon: nil },
           { name: 'preview_tools', kind: 'previewTools', design_dependent: false, parent_addon: nil },
           { name: 'buy_action',    kind: 'buyAction',    design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'action',        kind: 'action',       design_dependent: true,  parent_addon: 'ref-Addon-video_player' }
+          { name: 'action',        kind: 'action',       design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'info',          kind: 'info',         design_dependent: true,  parent_addon: 'ref-Addon-video_player' }
         ],
         App::Plugin => [
           { name: 'video_player', token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil, component: 'ref-App::Component-app' },
@@ -122,6 +123,9 @@ module Populate
           { name: 'sharing_html5',    token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-html5',    component: 'ref-App::Component-app' },
           { name: 'sharing_next15',   token: 'aba.aba.abc', addon: 'ref-Addon-sharing', design: 'ref-App::Design-next15',   component: 'ref-App::Component-next15' },
           { name: 'sharing_blizzard', token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-app' },
+          { name: 'sharing_sony',     token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-sony',     component: 'ref-App::Component-app' },
+
+          { name: 'info_sony',        token: 'tj.tj.aeb',    addon: 'ref-Addon-info', design: 'ref-App::Design-sony',     component: 'ref-App::Component-sony' },
 
           { name: 'buy_action_blizzard', token: 'aca.aca.acb', addon: 'ref-Addon-buy_action', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-blizzard' },
 
@@ -158,6 +162,8 @@ module Populate
           { name: 'vip',      price: 9990, addon: 'ref-Addon-support', availability: 'public', public_at: Time.now.utc },
 
           { name: 'standard', price: 0, addon: 'ref-Addon-buy_action', availability: 'custom', required_stage: 'beta', public_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-info', availability: 'custom', required_stage: 'beta', public_at: nil },
 
           { name: 'standard', price: 0, addon: 'ref-Addon-action', availability: 'custom', required_stage: 'beta', public_at: nil }
         ]
@@ -206,6 +212,13 @@ module Populate
         }
       }
       action_template = {
+        enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: false
+        }
+      }
+      info_template = {
         enable: {
           type: 'boolean',
           values: [true, false],
@@ -320,6 +333,8 @@ module Populate
           }
         },
         { addon_plan: 'ref-AddonPlan-action-standard', plugin: 'ref-App::Plugin-action_svnet', template: action_template },
+
+        { addon_plan: 'ref-AddonPlan-info-standard',     plugin: 'ref-App::Plugin-info_sony',    template: info_template },
 
         { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_classic',  template: controls_template },
         { addon_plan: 'ref-AddonPlan-controls-standard', plugin: 'ref-App::Plugin-controls_flat',     template: controls_template },
@@ -492,6 +507,7 @@ module Populate
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_html5',    template: sharing_template },
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_next15',   template: sharing_template },
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_blizzard', template: sharing_template },
+        { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_sony',     template: sharing_template },
 
         # { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }, # no need to create an empty template
 
