@@ -28,22 +28,9 @@ module Service
         purge = true
       end
       sites = sites.active.where(accessible_stage: Stage.stages_with_access_to(stage))
-      # Quick loader update with direct purge for site with traffic
-      sites.where{ last_30_days_main_video_views > 0 }.find_each(batch_size: 500) do |site|
-        delay.update_all_stages!(site.id)
-      end
-      # Slower loader update with possibly no direct purge
-      sites.where(last_30_days_main_video_views: 0).find_each(batch_size: 500) do |site|
-        delay(queue: 'loader').update_all_stages!(site.id, purge: purge)
-      end
-      delay(at: 1.minute.from_now.to_i).global_purge unless purge
-    end
-
-    def self.global_purge
-      if Sidekiq::Queue.new('loader').size == 0
-        CDN.delay.purge("/js")
-      else
-        delay(at: 1.minute.from_now.to_i).global_purge
+      sites.order{ last_30_days_main_video_views.desc }.find_each(batch_size: 500) do |site|
+        important_site = site.token.in?(::SiteToken.tokens)
+        delay(queue: important_site ? 'high' : 'low').update_all_stages!(site.id, purge: purge || important_site)
       end
     end
 
@@ -116,7 +103,7 @@ module Service
 
     def s3_options
       {
-        'Cache-Control' => 'max-age=60, public', # 1 minutes
+        'Cache-Control' => 's-maxage=3600, max-age=120, public', # 1 hours / 2 minutes
         'Content-Type'  => 'text/javascript',
         'x-amz-acl'     => 'public-read'
       }

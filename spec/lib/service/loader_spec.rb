@@ -22,6 +22,14 @@ unless defined?(ActiveRecord)
   App::ComponentVersion = Class.new
 end
 
+unless defined?(SiteToken)
+  module SiteToken
+    def self.tokens
+      ['ibvjcopp']
+    end
+  end
+end
+
 require File.expand_path('lib/service/loader')
 
 describe Service::Loader, :fog_mock do
@@ -131,7 +139,7 @@ describe Service::Loader, :fog_mock do
     before do
       scoped_sites.stub_chain(:active, :where) { scoped_sites }
       site.stub(:last_30_days_billable_video_views) { 0 }
-      scoped_sites.stub_chain(:where, :find_each).and_yield(site)
+      scoped_sites.stub_chain(:order, :find_each).and_yield(site)
     end
 
     context "with app_component version" do
@@ -145,15 +153,16 @@ describe Service::Loader, :fog_mock do
         described_class.update_all_dependant_sites(app_component.id, 'beta')
       end
 
-      it "delays update_all_stages! on default queue and on loader queue with purge at false" do
-        described_class.should delay(:update_all_stages!).with(site.id)
-        described_class.should delay(:update_all_stages!, queue: 'loader').with(site.id, purge: false)
+      it "delays update_all_stages! on low queue with purge at false" do
+        described_class.should delay(:update_all_stages!, queue: 'low').with(site.id, purge: false)
         described_class.update_all_dependant_sites(app_component.id, 'beta')
       end
 
-      it "delays global_purge" do
-        Timecop.freeze do
-          described_class.should delay(:global_purge, at: 1.minute.from_now.to_i)
+      context "with important site" do
+        before { site.stub(token: SiteToken.tokens.first) }
+
+        it "delays update_all_stages! on high queue with purge at true" do
+          described_class.should delay(:update_all_stages!, queue: 'high').with(site.id, purge: true)
           described_class.update_all_dependant_sites(app_component.id, 'beta')
         end
       end
@@ -172,32 +181,17 @@ describe Service::Loader, :fog_mock do
       end
 
       it "delays update_all_stages! on default queue and on loader queue with purge at true" do
-        described_class.should delay(:update_all_stages!).with(site.id)
-        described_class.should delay(:update_all_stages!, queue: 'loader').with(site.id, purge: true)
+        described_class.should delay(:update_all_stages!, queue: 'low').with(site.id, purge: true)
         described_class.update_all_dependant_sites(component.id, 'beta')
       end
-    end
-  end
 
-  describe ".global_purge" do
-    let(:sidekiq_queue) { mock(Sidekiq::Queue) }
-    before { Sidekiq::Queue.stub(:new).with('loader') { sidekiq_queue } }
+      context "with important site" do
+        before { site.stub(token: SiteToken.tokens.first) }
 
-    context "with an empty loader queue" do
-      before { sidekiq_queue.stub(:size) { 0 } }
-
-      it "delays CDN purge" do
-        CDN.should delay(:purge).with("/js")
-        described_class.global_purge
-      end
-    end
-
-    context "with an non-empty loader queue" do
-      before { sidekiq_queue.stub(:size) { 1 } }
-
-      it "re-delays global purge" do
-        described_class.should delay(:global_purge, at: 1.minute.from_now.to_i)
-        described_class.global_purge
+        it "delays update_all_stages! on high queue with purge at true" do
+          described_class.should delay(:update_all_stages!, queue: 'high').with(site.id, purge: true)
+          described_class.update_all_dependant_sites(app_component.id, 'beta')
+        end
       end
     end
   end
@@ -242,7 +236,7 @@ describe Service::Loader, :fog_mock do
           end
           it "have 1 min max-age cache control" do
             object_headers = S3.fog_connection.head_object(bucket, path).headers
-            object_headers['Cache-Control'].should eq 'max-age=60, public'
+            object_headers['Cache-Control'].should eq 's-maxage=3600, max-age=120, public'
           end
           it "includes good loader version" do
             object = S3.fog_connection.get_object(bucket, path)

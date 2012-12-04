@@ -346,7 +346,7 @@ GEM
       mime-types (~> 1.19)
       mongoid (~> 3.0)
     moped (1.3.0)
-    multi_json (1.3.7)
+    multi_json (1.4.0)
     multi_xml (0.5.1)
     multipart-post (1.1.5)
     net-scp (1.0.4)
@@ -530,7 +530,7 @@ GEM
     stat_request_parser (1.2.0)
       activesupport (>= 3.0.0)
     state_machine (1.1.2)
-    sublime_video_layout (2.0.0)
+    sublime_video_layout (2.2.0)
       coffee-rails (~> 3.2.0)
       haml
       jquery-rails (~> 2.1.0)
