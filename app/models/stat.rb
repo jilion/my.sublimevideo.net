@@ -98,13 +98,13 @@ private
   def self.clean_and_increment_metrics(values)
     if values[:inc]
       values[:inc].each do |field, value|
-        increment(field, value) if field =~ /pv\./
+        increment(field, value) if field =~ /^pv\.(m|e|em|d|s|i)$/
       end
     end
     values[:videos].values.each do |video_inc|
       if video_inc.present?
         video_inc.each do |field, value|
-          increment(field, value)  if field =~ /(vv|vl)\./
+          increment(field, value)  if field =~ /^(vv|vl)\.(m|e|em|d|s|i)$/
         end
       end
     end
@@ -122,6 +122,7 @@ private
       "vl" => "video_loads",
       "m"  => "main",
       "e"  => "extra",
+      "em" => "embed",
       "d"  => "dev",
       "s"  => "staging",
       "i"  => "invalid"
