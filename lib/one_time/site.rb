@@ -5,17 +5,17 @@ module OneTime
 
       def regenerate_templates(options = {})
         scheduled = 0
-        ::Site.active.find_each(batch_size: 100) do |site|
+        ::Site.active.select([:id, :token]).order{ last_30_days_main_video_views.desc }.find_each do |site|
+          important_site = site.token.in?(::SiteToken.tokens)
           if options[:loaders]
-            ::Service::Loader.delay(queue: 'low').update_all_stages!(site.id, purge: false)
+            ::Service::Loader.delay(queue: 'loader').update_all_stages!(site.id, purge: important_site)
           end
           if options[:settings]
-            ::Service::Settings.delay(queue: 'low').update_all_types!(site.id, purge: false)
+            ::Service::Settings.delay(queue: 'low').update_all_types!(site.id, purge: important_site)
           end
 
           scheduled += 1
-
-          if (scheduled % 500).zero?
+          if (scheduled % 1000).zero?
             puts "#{scheduled} sites scheduled..."
           end
         end
