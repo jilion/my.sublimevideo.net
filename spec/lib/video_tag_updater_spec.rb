@@ -25,11 +25,12 @@ describe VideoTagUpdater do
 
     context "with existing site" do
       let(:relation) { stub }
+      let(:delayed_job_mock) { mock(trigger: true) }
       before do
         Site.stub_chain(:where, :first) { site }
         VideoTag.stub_chain(:where, :first_or_initialize) { video_tag }
         video_tag.stub(:attributes=)
-        PusherWrapper.stub(:trigger)
+        PusherWrapper.stub(:delay) { delayed_job_mock }
       end
 
       it "updates video_tag attributes with data" do
@@ -60,7 +61,7 @@ describe VideoTagUpdater do
       end
 
       it "trigs Pusher if video_tags data are valid and changed" do
-        PusherWrapper.should_receive(:trigger).with(
+        delayed_job_mock.should_receive(:trigger).with(
           "private-#{site.token}",
           'video_tag',
           video_tag.data

@@ -13,7 +13,7 @@ VideoTagUpdater = Struct.new(:site, :uid) do
     video_tag = VideoTag.where(site_id: site.id, uid: uid).first_or_initialize
     video_tag.attributes = unalias_data(data)
     if video_tag.valid? && video_tag.changed?
-      PusherWrapper.trigger("private-#{site.token}", 'video_tag', video_tag.data)
+      PusherWrapper.delay.trigger("private-#{site.token}", 'video_tag', video_tag.data)
     end
     video_tag.save
   end

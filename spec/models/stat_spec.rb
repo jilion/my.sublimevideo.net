@@ -120,7 +120,9 @@ describe Stat do
         end
 
         it "triggers Pusher on the right private channel for each site" do
-          PusherWrapper.should_receive(:trigger).once.with('stats', 'tick', m: true, h: true, d: true)
+          delayed_job_mock = mock
+          PusherWrapper.should_receive(:delay).once { delayed_job_mock }
+          delayed_job_mock.should_receive(:trigger).with('stats', 'tick', m: true, h: true, d: true)
           Stat.create_stats_from_trackers!(@log, @trackers)
         end
       end

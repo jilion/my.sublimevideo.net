@@ -47,7 +47,7 @@ module Stat
     json = { m: true }
     json[:h] = true if log.hour == log.minute
     json[:d] = true if log.day == log.hour
-    PusherWrapper.trigger('stats', 'tick', json)
+    PusherWrapper.delay.trigger('stats', 'tick', json)
   end
 
 private
