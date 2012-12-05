@@ -10,8 +10,8 @@ class MySublimeVideo.Helpers.Uploaders.CustomLogoUploader extends MySublimeVideo
       $.each files, (i, file) ->
         $('#notices').text ''
         $('#dragdrop').text file.name
-        $('#uploadfiles').show()
       up.refresh() # Reposition Flash/Silverlight
+      up.start()
 
     @uploader.bind 'Error', (up, err) =>
       message = switch err.code

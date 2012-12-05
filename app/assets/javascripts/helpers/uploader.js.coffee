@@ -22,10 +22,6 @@ class MySublimeVideo.Helpers.Uploader
     #   $('#filelist').html 'Supports drag/drop: ' + (!!up.features.dragdrop)
     #   # $('#filelist').html "<div>Current runtime: #{params.runtime}</div>"
 
-    $('#uploadfiles').click (e) =>
-      @uploader.start()
-      e.preventDefault()
-
     @uploader.init()
 
     @uploader.bind 'FilesAdded', (up, files) ->
