@@ -7,17 +7,14 @@
       %h3= link_to "Sites", [:admin, :sites]
       %ul
         %li= link_to "All", [:admin, :sites]
-        %li= link_to "Plans", [:admin, :plans] if has_role?('god')
         %li= link_to "Active pages", [:pages, :admin, :referrers]
         %li= link_to "Referrer clicks", [:admin, :referrers]
 
     .popup_menu
       %h3= link_to "Users", [:admin, :users]
       %ul
-        %li= link_to "All", [:admin, :users]
-        %li= link_to "Tailor-made player requests", [:admin, :tailor_made_player_requests]
+        %li= link_to "SV users", [:admin, :users]
         %li= link_to "Beta requesters", [:admin, :enthusiasts]
-        %li= link_to "Feedbacks", [:admin, :feedbacks]
         %li= link_to "Admins", [:admin, :admins] if has_role?('god')
 
     - if has_role?('invoices')
@@ -25,26 +22,33 @@
         %h3= link_to "Invoices", [:admin, :invoices]
         %ul
           %li= link_to "All", [:admin, :invoices]
-          %li= link_to "Monthly", [:monthly, :admin, :invoices]
+          %li= link_to "Total / month", [:monthly, :admin, :invoices]
 
     .popup_menu
       %h3= link_to "Stats", [:admin, :stats]
       %ul
         %li= link_to "Dashboard", [:admin, :stats]
+        %li= link_to "Tweets", [:admin, :tweets]
         %li= link_to "Countries", single_admin_stats_path(page: 'countries')
         %li= link_to "Employees", single_admin_stats_path(page: 'employees')
         %li= link_to "Videos served", single_admin_stats_path(page: 'videos_served')
-        %li= link_to "Tweets", [:admin, :tweets]
-        %li= link_to "More...", [:more, :admin, :stats]
+        -#%li= link_to "More...", [:more, :admin, :stats]
+
+    - if has_role?('god')
+      .popup_menu
+        %h3= link_to "Biz", [:admin, :tailor_made_player_requests]
+        %ul
+          %li= link_to "Tailor-made player requests", [:admin, :tailor_made_player_requests]
+          %li= link_to "Trial & Cancellation feedbacks", [:admin, :feedbacks]
 
     - if has_role?('god')
       .popup_menu
         %h3= link_to "Other", [:admin, :sidekiq]
         %ul
           %li= link_to "Sidekiq", [:admin, :sidekiq]
+          %li= link_to "Mails", [:admin, :mails]
           %li= link_to "Deals", [:admin, :deals]
           %li= link_to "Deal activations", [:admin, :deal_activations]
-          %li= link_to "Mails", [:admin, :mails]
 
     - if has_role?('player')
       %ul.favorite_links
