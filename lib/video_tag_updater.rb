@@ -14,6 +14,7 @@ VideoTagUpdater = Struct.new(:site, :uid) do
     video_tag.attributes = unalias_data(data)
     if video_tag.valid? && video_tag.changed?
       PusherWrapper.delay.trigger("private-#{site.token}", 'video_tag', video_tag.data)
+      Librato.increment 'video_tag.update'
     end
     video_tag.save
   end

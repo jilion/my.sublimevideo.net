@@ -22,7 +22,6 @@ describe VideoTagUpdater do
   let(:video_tag) { mock(VideoTag, uid: 'uid', data: data, valid?: true, changed?: true, save: true) }
 
   describe ".update" do
-
     context "with existing site" do
       let(:relation) { stub }
       let(:delayed_job_mock) { mock(trigger: true) }
@@ -57,6 +56,11 @@ describe VideoTagUpdater do
           }
         ) { video_tag }
         video_tag.should_receive(:save)
+        VideoTagUpdater.update(site.id, video_tag.uid, data)
+      end
+
+      it "increments metrics if video_tags data are valid and changed" do
+        Librato.should_receive(:increment).with("video_tag.update")
         VideoTagUpdater.update(site.id, video_tag.uid, data)
       end
 

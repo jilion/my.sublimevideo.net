@@ -26,3 +26,11 @@ unless defined?(Rails)
     def self.env; 'test'; end
   end
 end
+
+unless defined?(Librato)
+  class Librato
+    def self.method_missing(*args)
+      true
+    end
+  end
+end

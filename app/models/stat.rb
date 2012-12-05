@@ -42,6 +42,7 @@ module Stat
           end
         end
       end
+      clean_and_increment_metrics(values)
     end
 
     json = { m: true }
@@ -92,6 +93,39 @@ private
 
   def self.only_stats_trackers(trackers)
     trackers.detect { |t| t.options[:title] == :stats }.categories
+  end
+
+  def self.clean_and_increment_metrics(values)
+    if values[:inc]
+      values[:inc].each do |field, value|
+        increment(field, value) if field =~ /pv\./
+      end
+    end
+    values[:videos].values.each do |video_inc|
+      if video_inc.present?
+        video_inc.each do |field, value|
+          increment(field, value)  if field =~ /(vv|vl)\./
+        end
+      end
+    end
+  end
+
+  def self.increment(field, value)
+    keys = field.split('.')
+    Librato.increment "stats.#{key_to_string(keys[0])}", by: value, source: key_to_string(keys[1])
+  end
+
+  def self.key_to_string(key)
+    {
+      "pv" => "page_visits",
+      "vv" => "video_plays",
+      "vl" => "video_loads",
+      "m"  => "main",
+      "e"  => "extra",
+      "d"  => "dev",
+      "s"  => "staging",
+      "i"  => "invalid"
+    }[key]
   end
 
 end

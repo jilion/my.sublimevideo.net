@@ -125,6 +125,17 @@ describe Stat do
           delayed_job_mock.should_receive(:trigger).with('stats', 'tick', m: true, h: true, d: true)
           Stat.create_stats_from_trackers!(@log, @trackers)
         end
+
+        it "increments metrics" do
+          Librato.should_receive(:increment).with("stats.page_visits", by: 3, source: "main").twice
+          Librato.should_receive(:increment).with("stats.page_visits", by: 1, source: "extra")
+          Librato.should_receive(:increment).with("stats.video_loads", by: 3, source: "main").exactly(3).times
+          Librato.should_receive(:increment).with("stats.video_loads", by: 2, source: "main")
+          Librato.should_receive(:increment).with("stats.video_loads", by: 1, source: "extra")
+          Librato.should_receive(:increment).with("stats.video_plays", by: 1, source: "main")
+          Librato.should_receive(:increment).with("stats.video_plays", by: 1, source: "invalid")
+          Stat.create_stats_from_trackers!(@log, @trackers)
+        end
       end
 
     end
