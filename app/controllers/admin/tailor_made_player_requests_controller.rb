@@ -3,6 +3,8 @@ require_dependency 'service/tailor_made_player_request'
 class Admin::TailorMadePlayerRequestsController < Admin::AdminController
   respond_to :html, :js
 
+  before_filter { |controller| require_role?('god') }
+
   before_filter :set_default_scopes, only: [:index]
   before_filter :find_tailor_made_player_request, only: [:show, :export_to_highrise]
 

@@ -19,7 +19,7 @@
 
     - if has_role?('invoices')
       .popup_menu
-        %h3= link_to "Invoices", [:admin, :invoices]
+        %h3= link_to "Billing", [:admin, :invoices]
         %ul
           %li= link_to "All", [:admin, :invoices]
           %li= link_to "Total / month", [:monthly, :admin, :invoices]
@@ -36,7 +36,7 @@
 
     - if has_role?('god')
       .popup_menu
-        %h3= link_to "Biz", [:admin, :tailor_made_player_requests]
+        %h3= link_to "Entreprise", [:admin, :tailor_made_player_requests]
         %ul
           %li= link_to "Tailor-made player requests", [:admin, :tailor_made_player_requests]
           %li= link_to "Trial & Cancellation feedbacks", [:admin, :feedbacks]
@@ -53,14 +53,14 @@
     - if has_role?('player')
       %ul.favorite_links
         %li= link_to "Player", [:admin, :releases]
-
-      %ul.favorite_links
-        %li= link_to "New Player", admin_app_path
+        %li= link_to "New Player", [:admin, :app]
 
   .right
     %ul.extra_links
       - if admin_signed_in?
-        %li= link_to "logout", destroy_admin_session_path
+        %li.logout
+          = link_to destroy_admin_session_path do
+            %span= 'Logout'
         %li= link_to current_admin.email, edit_admin_registration_path
       - else
         = link_to "Login", new_admin_session_path, class: "user"
