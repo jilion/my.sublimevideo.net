@@ -2,46 +2,50 @@ development:
   access_key_id:     AKIAJ2FJVCFJW3RZRUUQ
   secret_access_key: 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
   buckets:
-    sublimevideo:  dev.sublimevideo
-    licenses:      dev.sublimevideo.licenses
-    loaders:       dev.sublimevideo.loaders
-    player:        dev.sublimevideo.player
-    logs:          dev.sublimevideo.logs
-    stats_exports: dev.sublimevideo.stats.exports
-    videos_upload: dev.sublimevideo.videos.uploads
+    sublimevideo:                dev.sublimevideo
+    licenses:                    dev.sublimevideo.licenses
+    loaders:                     dev.sublimevideo.loaders
+    player:                      dev.sublimevideo.player
+    logs:                        dev.sublimevideo.logs
+    stats_exports:               dev.sublimevideo.stats.exports
+    videos_upload:               dev.sublimevideo.videos.uploads
+    tailor_made_player_requests: dev-sublimevideo-tailor-made-player-requests
 
 test:
   access_key_id:     AKIAJ2FJVCFJW3RZRUUQ
   secret_access_key: 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
   buckets:
-    sublimevideo:  dev.sublimevideo
-    licenses:      dev.sublimevideo.licenses
-    loaders:       dev.sublimevideo.loaders
-    player:        dev.sublimevideo.player
-    logs:          dev.sublimevideo.logs
-    stats_exports: dev.sublimevideo.stats.exports
-    videos_upload: dev.sublimevideo.videos.uploads
+    sublimevideo:                dev.sublimevideo
+    licenses:                    dev.sublimevideo.licenses
+    loaders:                     dev.sublimevideo.loaders
+    player:                      dev.sublimevideo.player
+    logs:                        dev.sublimevideo.logs
+    stats_exports:               dev.sublimevideo.stats.exports
+    videos_upload:               dev.sublimevideo.videos.uploads
+    tailor_made_player_requests: dev-sublimevideo-tailor-made-player-requests
 
 staging:
   access_key_id:     AKIAJ2FJVCFJW3RZRUUQ
   secret_access_key: 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
   buckets:
-    sublimevideo:  staging.sublimevideo
-    licenses:      staging.sublimevideo.licenses
-    loaders:       staging.sublimevideo.loaders
-    player:        staging.sublimevideo.player
-    logs:          staging.sublimevideo.logs
-    stats_exports: staging.sublimevideo.stats.exports
-    videos_upload: staging.sublimevideo.videos.uploads
+    sublimevideo:                staging.sublimevideo
+    licenses:                    staging.sublimevideo.licenses
+    loaders:                     staging.sublimevideo.loaders
+    player:                      staging.sublimevideo.player
+    logs:                        staging.sublimevideo.logs
+    stats_exports:               staging.sublimevideo.stats.exports
+    videos_upload:               staging.sublimevideo.videos.uploads
+    tailor_made_player_requests: staging-sublimevideo-tailor-made-player-requests
 
 production:
   access_key_id:     env_var
   secret_access_key: env_var
   buckets:
-    sublimevideo:  sublimevideo
-    licenses:      sublimevideo.licenses
-    loaders:       sublimevideo.loaders
-    player:        sublimevideo.player
-    logs:          sublimevideo.logs
-    stats_exports: sublimevideo.stats.exports
-    videos_upload: sublimevideo.videos.uploads
+    sublimevideo:                sublimevideo
+    licenses:                    sublimevideo.licenses
+    loaders:                     sublimevideo.loaders
+    player:                      sublimevideo.player
+    logs:                        sublimevideo.logs
+    stats_exports:               sublimevideo.stats.exports
+    videos_upload:               sublimevideo.videos.uploads
+    tailor_made_player_requests: sublimevideo-tailor-made-player-requests

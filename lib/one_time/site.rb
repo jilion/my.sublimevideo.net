@@ -120,7 +120,7 @@ module OneTime
       # TODO: Remove after launch
       def create_preview_kits
         text = ''
-        [:www, :my].each do |subdomain|
+        [:www, :my, :test].each do |subdomain|
           result = []
           if site = ::Site.find_by_token(SiteToken[subdomain])
             site.default_kit.update_column(:name, 'Classic')

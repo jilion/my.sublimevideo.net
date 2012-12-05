@@ -15,9 +15,10 @@
       %h3= link_to "Users", [:admin, :users]
       %ul
         %li= link_to "All", [:admin, :users]
+        %li= link_to "Tailor-made player requests", [:admin, :tailor_made_player_requests]
         %li= link_to "Beta requesters", [:admin, :enthusiasts]
-        %li= link_to "Admins", [:admin, :admins] if has_role?('god')
         %li= link_to "Feedbacks", [:admin, :feedbacks]
+        %li= link_to "Admins", [:admin, :admins] if has_role?('god')
 
     - if has_role?('invoices')
       .popup_menu

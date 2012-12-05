@@ -1,0 +1,26 @@
+%tr[tailor_made_player_request]{ class: cycle("", "alt") }
+  %td.id= tailor_made_player_request.id
+
+  %td.name
+    %small= link_to tailor_made_player_request.name, [:admin, tailor_made_player_request]
+
+  %td.email
+    %small= link_to tailor_made_player_request.email, [:admin, tailor_made_player_request]
+
+  %td.job_title
+    %small= tailor_made_player_request.job_title.titleize
+
+  %td.company
+    %small= tailor_made_player_request.company.titleize
+
+  %td.topic
+    %small= tailor_made_player_request.topic.titleize
+
+  %td.description
+    %small= simple_format(tailor_made_player_request.description || 'N/A')
+
+  %td.document
+    %small= display_bool(tailor_made_player_request.document.present?)
+
+  %td.created_at
+    %small= display_date(tailor_made_player_request.created_at)
