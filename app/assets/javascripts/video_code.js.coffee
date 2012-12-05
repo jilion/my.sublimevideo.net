@@ -14,18 +14,18 @@ window.MSVVideoCode =
   Routers: {}
   Views: {}
   testAssets:
-    poster: "http://media.jilion.com/vcg/ms_800.jpg"
-    thumbnail: "http://media.jilion.com/vcg/ms_192.jpg"
+    poster: "http://media.sublimevideo.net/vpa/ms_800.jpg"
+    thumbnail: "http://media.sublimevideo.net/vpa/ms_192.jpg"
     sources: [
       {
         format: 'mp4'
         quality: 'base'
-        src: 'http://media.jilion.com/vcg/ms_360p.mp4'
+        src: 'http://media.sublimevideo.net/vpa/ms_360p.mp4'
       },
       {
         format: 'mp4'
         quality: 'hd'
-        src: 'http://media.jilion.com/vcg/ms_720p.mp4'
+        src: 'http://media.sublimevideo.net/vpa/ms_720p.mp4'
       },
       {
         format: 'mp4'
@@ -35,11 +35,11 @@ window.MSVVideoCode =
       {
         format: 'webm'
         quality: 'base'
-        src: 'http://media.jilion.com/vcg/ms_360p.webm'
+        src: 'http://media.sublimevideo.net/vpa/ms_360p.webm'
       },
       {
         format: 'webm'
         quality: 'hd'
-        src: 'http://media.jilion.com/vcg/ms_720p.webm'
+        src: 'http://media.sublimevideo.net/vpa/ms_720p.webm'
       }
     ]

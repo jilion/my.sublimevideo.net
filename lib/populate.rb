@@ -773,10 +773,10 @@ module Populate
             poster_url: "http#{'s' if video_i.even?}://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
             size: "544x306",
             sources: {
-              "83cb4c27" => { url: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.mp4", quality: "base", family: "mp4" },
-              "83cb4c57" => { url: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.mp4", quality: "hd", family: "mp4" },
-              "af355ec8" => { url: "http://media.jilion.com/videos/demo/midnight_sun_sv1_360p.webm", quality: "base", family: "webm" },
-              "af355ec9" => { url: "http://media.jilion.com/videos/demo/midnight_sun_sv1_720p.webm", quality: "hd", family: "webm" },
+              "83cb4c27" => { url: "http://media.sublimevideo.net/v/midnight_sun_sv1_360p.mp4", quality: "base", family: "mp4" },
+              "83cb4c57" => { url: "http://media.sublimevideo.net/v/midnight_sun_sv1_720p.mp4", quality: "hd", family: "mp4" },
+              "af355ec8" => { url: "http://media.sublimevideo.net/v/midnight_sun_sv1_360p.webm", quality: "base", family: "webm" },
+              "af355ec9" => { url: "http://media.sublimevideo.net/v/midnight_sun_sv1_720p.webm", quality: "hd", family: "webm" },
             }
           )
         end
@@ -1058,14 +1058,14 @@ module Populate
           uid_origin: %w[a s].sample,
           name: Faker::Product.product,
           name_origin: %w[a s].sample,
-          poster_url: 'http://media.jilion.com/vcg/ms_800.jpg',
+          poster_url: 'http://media.sublimevideo.net/vpa/ms_800.jpg',
           size: '400x320',
           current_sources: %w[5ABAC533 2ABFEFDA 97230509 4E855AFF],
           sources: {
-            '5ABAC533' => { url: 'http://media.jilion.com/vcg/ms_360p.mp4',  quality: 'base', family: 'mp4' },
-            '2ABFEFDA' => { url: 'http://media.jilion.com/vcg/ms_720p.mp4',  quality: 'hd',   family: 'mp4' },
-            '97230509' => { url: 'http://media.jilion.com/vcg/ms_360p.webm', quality: 'base', family: 'webm' },
-            '4E855AFF' => { url: 'http://media.jilion.com/vcg/ms_720p.webm', quality: 'hd',   family: 'webm' }
+            '5ABAC533' => { url: 'http://media.sublimevideo.net/vpa/ms_360p.mp4',  quality: 'base', family: 'mp4' },
+            '2ABFEFDA' => { url: 'http://media.sublimevideo.net/vpa/ms_720p.mp4',  quality: 'hd',   family: 'mp4' },
+            '97230509' => { url: 'http://media.sublimevideo.net/vpa/ms_360p.webm', quality: 'base', family: 'webm' },
+            '4E855AFF' => { url: 'http://media.sublimevideo.net/vpa/ms_720p.webm', quality: 'hd',   family: 'webm' }
           },
           duration: (15 * 1000) + rand(2 * 60 * 60 * 1000),
           created_at: time,

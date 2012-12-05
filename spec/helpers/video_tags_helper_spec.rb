@@ -6,12 +6,12 @@ describe VideoTagsHelper do
   let(:video_tag) { mock('VideoTag',
     uid:  'uid-token',
     name: 'My Video',
-    poster_url: 'http://media.jilion.com/vcg/ms_800.jpg',
+    poster_url: 'http://media.sublimevideo.net/vpa/ms_800.jpg',
     used_sources: {
-      'base_mp4_crc32'  => { 'url' => 'http://media.jilion.com/vcg/ms_360p.mp4',  'quality' => 'base', 'family' => 'mp4' },
-      'hd_mp4_crc32'    => { 'url' => 'http://media.jilion.com/vcg/ms_720p.mp4',  'quality' => 'hd',   'family' => 'mp4' },
-      'base_webm_crc32' => { 'url' => 'http://media.jilion.com/vcg/ms_360p.webm', 'quality' => 'base', 'family' => 'webm' },
-      'hd_webm_crc32'   => { 'url' => 'http://media.jilion.com/vcg/ms_720p.webm', 'quality' => 'hd',   'family' => 'webm' }
+      'base_mp4_crc32'  => { 'url' => 'http://media.sublimevideo.net/vpa/ms_360p.mp4',  'quality' => 'base', 'family' => 'mp4' },
+      'hd_mp4_crc32'    => { 'url' => 'http://media.sublimevideo.net/vpa/ms_720p.mp4',  'quality' => 'hd',   'family' => 'mp4' },
+      'base_webm_crc32' => { 'url' => 'http://media.sublimevideo.net/vpa/ms_360p.webm', 'quality' => 'base', 'family' => 'webm' },
+      'hd_webm_crc32'   => { 'url' => 'http://media.sublimevideo.net/vpa/ms_720p.webm', 'quality' => 'hd',   'family' => 'webm' }
     }
   )}
 
@@ -53,7 +53,7 @@ describe VideoTagsHelper do
   describe "#playable_lightbox" do
     it "returns complete" do
       Helper.playable_lightbox(video_tag, size: '96x54').should eq(
-        "<a href=\"//dehqkotcrv4fy.cloudfront.net/vcg/ms_360p.mp4\" class=\"sublime\"><img alt=\"Ms_800\" height=\"54\" src=\"http://media.jilion.com/vcg/ms_800.jpg\" width=\"96\" /></a><video class=\"sublime lightbox\" data-name=\"My Video\" data-uid=\"uid-token\" height=\"360\" poster=\"http://media.jilion.com/vcg/ms_800.jpg\" preload=\"none\" style=\"display:none\" width=\"640\"><source src=\"http://media.jilion.com/vcg/ms_360p.mp4\" /><source data-quality=\"hd\" src=\"http://media.jilion.com/vcg/ms_720p.mp4\" /><source src=\"http://media.jilion.com/vcg/ms_360p.webm\" /><source data-quality=\"hd\" src=\"http://media.jilion.com/vcg/ms_720p.webm\" /></video>"
+        "<a href=\"//dehqkotcrv4fy.cloudfront.net/vcg/ms_360p.mp4\" class=\"sublime\"><img alt=\"Ms_800\" height=\"54\" src=\"http://media.sublimevideo.net/vpa/ms_800.jpg\" width=\"96\" /></a><video class=\"sublime lightbox\" data-name=\"My Video\" data-uid=\"uid-token\" height=\"360\" poster=\"http://media.sublimevideo.net/vpa/ms_800.jpg\" preload=\"none\" style=\"display:none\" width=\"640\"><source src=\"http://media.sublimevideo.net/vpa/ms_360p.mp4\" /><source data-quality=\"hd\" src=\"http://media.sublimevideo.net/vpa/ms_720p.mp4\" /><source src=\"http://media.sublimevideo.net/vpa/ms_360p.webm\" /><source data-quality=\"hd\" src=\"http://media.sublimevideo.net/vpa/ms_720p.webm\" /></video>"
       )
     end
   end

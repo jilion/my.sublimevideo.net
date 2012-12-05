@@ -244,32 +244,32 @@ FactoryGirl.define do
     uid_origin      'attribute'
     sequence(:name) { |n| "Video Tag #{n}" }
     name_origin     'attribute'
-    poster_url      'http://media.jilion.com/vcg/ms_800.jpg'
+    poster_url      'http://media.sublimevideo.net/vpa/ms_800.jpg'
     size            '640x360'
     duration        '10000'
 
     current_sources %w[57fb2708 27fe0de1 2625adcf ff83f239]
     sources         { {
       '57fb2708' => {
-        url: 'http://media.jilion.com/vcg/ms_360p.mp4',
+        url: 'http://media.sublimevideo.net/vpa/ms_360p.mp4',
         quality: 'base',
         family: 'mp4',
         resolution: '640x360'
       },
       '27fe0de1' => {
-        url: 'http://media.jilion.com/vcg/ms_720p.mp4',
+        url: 'http://media.sublimevideo.net/vpa/ms_720p.mp4',
         quality: 'hd',
         family: 'mp4',
         resolution: '1280x720'
       },
       '2625adcf' => {
-        url: 'http://media.jilion.com/vcg/ms_360p.webm',
+        url: 'http://media.sublimevideo.net/vpa/ms_360p.webm',
         quality: 'base',
         family: 'webm',
         resolution: '640x360'
       },
       'ff83f239' => {
-        url: 'http://media.jilion.com/vcg/ms_720p.webm',
+        url: 'http://media.sublimevideo.net/vpa/ms_720p.webm',
         quality: 'hd',
         family: 'webm',
         resolution: '1280x720'

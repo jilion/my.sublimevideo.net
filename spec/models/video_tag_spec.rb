@@ -11,7 +11,7 @@ describe VideoTag do
     its(:uid_origin)      { should eq 'attribute' }
     its(:name)            { should be_present }
     its(:name_origin)     { should eq 'attribute' }
-    its(:poster_url)      { should eq 'http://media.jilion.com/vcg/ms_800.jpg' }
+    its(:poster_url)      { should eq 'http://media.sublimevideo.net/vpa/ms_800.jpg' }
     its(:size)            { should eq '640x360' }
     its(:duration)        { should eq 10000 }
     its(:current_sources) { should eq %w[57fb2708 27fe0de1 2625adcf ff83f239] }
@@ -59,9 +59,9 @@ describe VideoTag do
     let(:video_tag) { described_class.new(
       current_sources: %w[57fb2708 27fe0de1],
       sources: {
-      '57fb2708' => { url: 'http://media.jilion.com/vcg/ms_360p.mp4' },
-      '27fe0de1' => { url: 'http://media.jilion.com/vcg/ms_720p.mp4' },
-      '2625adcf' => { url: 'http://media.jilion.com/vcg/ms_360p.webm' },
+      '57fb2708' => { url: 'http://media.sublimevideo.net/vpa/ms_360p.mp4' },
+      '27fe0de1' => { url: 'http://media.sublimevideo.net/vpa/ms_720p.mp4' },
+      '2625adcf' => { url: 'http://media.sublimevideo.net/vpa/ms_360p.webm' },
       }
     ) }
     it "returns only sources in current_sources" do
@@ -86,7 +86,7 @@ describe VideoTag do
       context ":sources" do
         context "with existing source" do
           let(:modified_source) { { '57fb2708' => {
-            url: 'http://media.jilion.com/vcg/ms_240p.mp4',
+            url: 'http://media.sublimevideo.net/vpa/ms_240p.mp4',
             quality: 'base',
             family: 'mp4',
             resolution: '480x240'
@@ -104,7 +104,7 @@ describe VideoTag do
 
         context "with new source" do
           let(:new_source) { { 'new_crc32' => {
-            url: 'http://media.jilion.com/vcg/ms_240p.mp4',
+            url: 'http://media.sublimevideo.net/vpa/ms_240p.mp4',
             quality: 'base',
             family: 'mp4',
             resolution: '480x240'
