@@ -117,8 +117,10 @@ MySublimeVideo.documentReady = ->
         $('#site_submit').attr('disabled', 'disabled')
 
 MySublimeVideo.prepareVideosAndLightboxes = ->
-  $('.sublime').each ->
-    sublime.prepare($(this)[0])
+  sublime.ready ->
+    $(".sublime").each (index, el) ->
+      sublime.prepare el
+  sublime.load()
 
 $(document).ready ->
   MySublimeVideo.documentReady()
