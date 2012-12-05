@@ -47,7 +47,7 @@ body {
 #header .popup_menu {
   float:left;
   position:relative;
-  margin:0 0 0 25px;
+  margin:0 0 0 20px;
   z-index:100;
 }
 
@@ -138,7 +138,7 @@ ul.favorite_links {
 
 ul.favorite_links li {
   float:left;
-  padding:0 15px 0 0;
+  padding:0 10px 0 0;
 }
 
 ul.favorite_links li a {
@@ -170,7 +170,7 @@ ul.no_bullet {
 }
 
 #header .right {
-  width:280px;
+  width:150px;
   position:absolute;
   top:10px;
   right:15px;
@@ -183,7 +183,7 @@ ul.no_bullet {
 
 #header .right li {
   float:right;
-  padding:0 0 0 16px;
+  padding:0 0 0 12px;
 }
 
 #header .right li a {
@@ -1029,3 +1029,13 @@ table#countries_table td {
 .ui-resizable-sw { cursor: sw-resize; width: 9px; height: 9px; left: -5px; bottom: -5px; }
 .ui-resizable-nw { cursor: nw-resize; width: 9px; height: 9px; left: -5px; top: -5px; }
 .ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px;}
+
+li.logout a {
+  display:block;
+  padding:0;
+  width:15px;
+  height:18px;
+  background:url(<%= asset_path "logout.png" %>) no-repeat;
+}
+
+li.logout span {display:none}

@@ -36,4 +36,9 @@ end
 #  updated_at              :datetime         not null
 #  url                     :string(255)
 #
+# Indexes
+#
+#  index_tailor_made_player_requests_on_created_at  (created_at)
+#  index_tailor_made_player_requests_on_topic       (topic)
+#
 
