@@ -8,10 +8,10 @@ module OneTime
         ::Site.active.select([:id, :token]).order{ last_30_days_main_video_views.desc }.find_each do |site|
           important_site = site.token.in?(::SiteToken.tokens)
           if options[:loaders]
-            ::Service::Loader.delay(queue: 'loader').update_all_stages!(site.id, purge: important_site)
+            ::Service::Loader.delay(queue: important_site ? 'high' : 'loader').update_all_stages!(site.id, purge: important_site)
           end
           if options[:settings]
-            ::Service::Settings.delay(queue: 'low').update_all_types!(site.id, purge: important_site)
+            ::Service::Settings.delay(queue: important_site ? 'high' : 'low').update_all_types!(site.id, purge: important_site)
           end
 
           scheduled += 1
