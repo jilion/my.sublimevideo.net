@@ -116,6 +116,10 @@ MySublimeVideo.documentReady = ->
       form.on 'submit', (e) ->
         $('#site_submit').attr('disabled', 'disabled')
 
+MySublimeVideo.prepareVideosAndLightboxes = ->
+  $('.sublime').each ->
+    sublime.prepare($(this)[0])
+
 $(document).ready ->
   MySublimeVideo.documentReady()
 
@@ -126,8 +130,6 @@ $(document).ready ->
     bodyClass = $('div[data-body-class]').data('body-class')
     $('body').attr("class", bodyClass)
 
-    $('.sublime').each ->
-      sublimevideo.prepare($(this)[0])
-
     SublimeVideo.documentReady()
     MySublimeVideo.documentReady()
+    MySublimeVideo.prepareVideosAndLightboxes()
