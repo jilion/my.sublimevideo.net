@@ -47,7 +47,7 @@ feature 'New kit' do
     Service::Site.new(@site).create
     go 'my', "/sites/#{@site.to_param}/players"
     click_link 'New Player'
-    current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/players/new"
+    current_url.should =~ %r{http://[^/]+/sites/#{@site.to_param}/players/new}
   end
 
   scenario 'with no name' do
@@ -62,6 +62,18 @@ feature 'New kit' do
     click_button 'Save'
 
     last_kit_should_be_created(@site, 'My awesome player!')
+  end
+
+  scenario 'choose a design', :js do
+    find('video#standard')['data-settings'].should include 'player-kit: 1'
+
+    select 'Flat', from: 'Player design:'
+    sleep 1
+    find('video#standard')['data-settings'].should include 'player-kit: 2'
+
+    select 'Light', from: 'Player design:'
+    sleep 1
+    find('video#standard')['data-settings'].should include 'player-kit: 3'
   end
 end
 
