@@ -22,11 +22,12 @@ class MySublimeVideo.UI.KitEditor
 
   setupInputsObservers: ->
     $designSelector = $("select#kit_app_design_id")
-    $designSelector.on 'change', =>
+    $designSelector.one 'change', =>
       this.refreshVideoTagFromSettings()
       $.ajax(
         url: "#{document.location.pathname.replace(/new|\d+\/edit/, 'fields')}?design_id=#{$designSelector.val()}"
       ).done (data) =>
+        MySublimeVideo.prepareVideosAndLightboxes()
         this.setup()
       false
 
