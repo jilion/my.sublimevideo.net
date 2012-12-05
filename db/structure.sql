@@ -1534,7 +1534,14 @@ ALTER TABLE tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY tailor_made_player_requests ALTER COLUMN id SET DEFAULT nextval('tailor_made_player_requests_id_seq'::regclass);
+ALTER TABLE tailor_made_player_requests ALTER COLUMN id SET DEFAULT nextval('tailor_made_player_requests_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE transactions ALTER COLUMN id SET DEFAULT nextval('transactions_id_seq'::regclass);
 
 
 --
@@ -2018,6 +2025,13 @@ CREATE INDEX index_kits_on_site_id ON kits USING btree (site_id);
 
 
 --
+-- Name: index_kits_on_site_id_and_identifier; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_kits_on_site_id_and_identifier ON kits USING btree (site_id, identifier);
+
+
+--
 -- Name: index_kits_on_site_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2148,6 +2162,20 @@ CREATE INDEX index_taggings_on_tag_id ON taggings USING btree (tag_id);
 --
 
 CREATE INDEX index_taggings_on_taggable_id_and_taggable_type_and_context ON taggings USING btree (taggable_id, taggable_type, context);
+
+
+--
+-- Name: index_tailor_made_player_requests_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_tailor_made_player_requests_on_created_at ON tailor_made_player_requests USING btree (created_at);
+
+
+--
+-- Name: index_tailor_made_player_requests_on_topic; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_tailor_made_player_requests_on_topic ON tailor_made_player_requests USING btree (topic);
 
 
 --

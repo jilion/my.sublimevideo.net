@@ -1,2 +1,3 @@
 - if !current_user.notice_hidden?(2) && current_user.created_at < 2.weeks.ago && current_user.more_info_incomplete? && (!current_user.billable? || current_user.billing_address_complete?)
   = render 'layouts/hidable_notice', notice_id: 2, notice_content: t("notices.complete_more_info")
+-# next notice_id is 4!

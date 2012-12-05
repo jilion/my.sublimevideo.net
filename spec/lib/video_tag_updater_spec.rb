@@ -1,6 +1,9 @@
 require 'fast_spec_helper'
 require File.expand_path('lib/video_tag_updater')
 
+require 'sidekiq'
+require File.expand_path('spec/support/sidekiq_custom_matchers')
+
 unless defined?(ActiveRecord)
   Site = Class.new
   VideoTag = Class.new
@@ -40,7 +43,6 @@ describe VideoTagUpdater do
         video_tag.stub(:valid?) { true }
         video_tag.stub(:changed?) { true }
         video_tag.stub(:save) { true }
-        PusherWrapper.stub(:trigger)
         VideoTagSourcesAnalyzer.stub(:new) { sources_analyzer }
         VideoTagNameFetcher.stub(:new) { name_fetcher }
       end
@@ -96,8 +98,14 @@ describe VideoTagUpdater do
       end
 
       context "video_tags data are valid and changed" do
+
+        it "increments metrics if video_tags data are valid and changed" do
+          Librato.should_receive(:increment).with("video_tag.update")
+          VideoTagUpdater.update(site.id, video_tag.uid, data)
+        end
+
         it "trigs PusherWrapper" do
-          PusherWrapper.should_receive(:trigger).with(
+          PusherWrapper.should delay(:trigger).with(
             "private-#{site.token}",
             'video_tag',
             video_tag.data

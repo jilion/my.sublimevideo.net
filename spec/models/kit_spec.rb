@@ -113,8 +113,9 @@ end
 #
 # Indexes
 #
-#  index_kits_on_app_design_id     (app_design_id)
-#  index_kits_on_site_id           (site_id)
-#  index_kits_on_site_id_and_name  (site_id,name) UNIQUE
+#  index_kits_on_app_design_id           (app_design_id)
+#  index_kits_on_site_id                 (site_id)
+#  index_kits_on_site_id_and_identifier  (site_id,identifier) UNIQUE
+#  index_kits_on_site_id_and_name        (site_id,name) UNIQUE
 #
 

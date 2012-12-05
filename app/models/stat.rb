@@ -51,12 +51,13 @@ module Stat
           end
         end
       end
+      clean_and_increment_metrics(values)
     end
 
     json = { m: true }
     json[:h] = true if log.hour == log.minute
     json[:d] = true if log.day == log.hour
-    PusherWrapper.trigger('stats', 'tick', json)
+    PusherWrapper.delay.trigger('stats', 'tick', json)
   end
 
 private
@@ -117,6 +118,40 @@ private
 
   def self.only_stats_trackers(trackers)
     trackers.detect { |t| t.options[:title] == :stats }.categories
+  end
+
+  def self.clean_and_increment_metrics(values)
+    if values[:inc]
+      values[:inc].each do |field, value|
+        increment(field, value) if field =~ /^pv\.(m|e|em|d|s|i)$/
+      end
+    end
+    values[:videos].values.each do |video_inc|
+      if video_inc.present?
+        video_inc.each do |field, value|
+          increment(field, value)  if field =~ /^(vv|vl)\.(m|e|em|d|s|i)$/
+        end
+      end
+    end
+  end
+
+  def self.increment(field, value)
+    keys = field.split('.')
+    Librato.increment "stats.#{key_to_string(keys[0])}", by: value, source: key_to_string(keys[1])
+  end
+
+  def self.key_to_string(key)
+    {
+      "pv" => "page_visits",
+      "vv" => "video_plays",
+      "vl" => "video_loads",
+      "m"  => "main",
+      "e"  => "extra",
+      "em" => "embed",
+      "d"  => "dev",
+      "s"  => "staging",
+      "i"  => "invalid"
+    }[key]
   end
 
 end
