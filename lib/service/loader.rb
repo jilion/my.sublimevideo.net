@@ -19,6 +19,8 @@ module Service
     end
 
     def self.update_all_dependant_sites(component_id, stage)
+      delay(queue: 'high').update_important_sites
+
       component = ::App::Component.find(component_id)
       if component.app_component?
         sites = ::Site.scoped
@@ -28,9 +30,14 @@ module Service
         purge = true
       end
       sites = sites.active.where(accessible_stage: Stage.stages_with_access_to(stage))
-      sites.select([:id, :token]).order{ last_30_days_main_video_views.desc }.find_each do |site|
-        important_site = site.token.in?(::SiteToken.tokens)
-        delay(queue: important_site ? 'high' : 'loader').update_all_stages!(site.id, purge: purge || important_site)
+      sites.select(:id).order{ last_30_days_main_video_views.desc }.find_each do |site|
+        delay(queue: 'loader').update_all_stages!(site.id, purge: purge)
+      end
+    end
+
+    def self.update_important_sites
+      ::Site.select(:id).where(token: ::SiteToken.tokens).each do |site|
+        delay(queue: 'high').update_all_stages!(site.id, purge: true)
       end
     end
 

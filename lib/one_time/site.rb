@@ -4,20 +4,19 @@ module OneTime
     class << self
 
       def regenerate_templates(options = {})
+        ::Site.select(:id).where(token: ::SiteToken.tokens).each do |site|
+          ::Service::Loader.delay(queue: 'high').update_all_stages!(site.id, purge: true) if options[:loaders]
+          ::Service::Settings.delay(queue: 'high').update_all_types!(site.id, purge: true) if options[:settings]
+        end
+        puts "Important sites scheduled..."
+
         scheduled = 0
-        ::Site.active.select([:id, :token]).order{ last_30_days_main_video_views.desc }.find_each do |site|
-          important_site = site.token.in?(::SiteToken.tokens)
-          if options[:loaders]
-            ::Service::Loader.delay(queue: important_site ? 'high' : 'loader').update_all_stages!(site.id, purge: important_site)
-          end
-          if options[:settings]
-            ::Service::Settings.delay(queue: important_site ? 'high' : 'low').update_all_types!(site.id, purge: important_site)
-          end
+        ::Site.active.select(:id).order{ last_30_days_main_video_views.desc }.find_each do |site|
+          ::Service::Loader.delay(queue: 'loader').update_all_stages!(site.id, purge: false) if options[:loaders]
+          ::Service::Settings.delay(queue: 'low').update_all_types!(site.id, purge: false) if options[:settings]
 
           scheduled += 1
-          if (scheduled % 1000).zero?
-            puts "#{scheduled} sites scheduled..."
-          end
+          puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
         end
 
         "Schedule finished: #{scheduled} sites will have their loader and license re-generated"

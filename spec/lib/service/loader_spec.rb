@@ -148,6 +148,11 @@ describe Service::Loader, :fog_mock do
         Site.stub(:scoped) { scoped_sites }
       end
 
+      it "delays important sites update" do
+        described_class.should delay(:update_important_sites, queue: 'high')
+        described_class.update_all_dependant_sites(app_component.id, 'beta')
+      end
+
       it "updates all sites" do
         Site.should_receive(:scoped) { scoped_sites }
         described_class.update_all_dependant_sites(app_component.id, 'beta')
@@ -157,21 +162,17 @@ describe Service::Loader, :fog_mock do
         described_class.should delay(:update_all_stages!, queue: 'loader').with(site.id, purge: false)
         described_class.update_all_dependant_sites(app_component.id, 'beta')
       end
-
-      context "with important site" do
-        before { site.stub(token: SiteToken.tokens.first) }
-
-        it "delays update_all_stages! on high queue with purge at true" do
-          described_class.should delay(:update_all_stages!, queue: 'high').with(site.id, purge: true)
-          described_class.update_all_dependant_sites(app_component.id, 'beta')
-        end
-      end
     end
 
     context "with non app_component version" do
       before do
         App::Component.stub(:find) { component }
         component.stub_chain(:sites, :scoped) { scoped_sites }
+      end
+
+      it "delays important sites update" do
+        described_class.should delay(:update_important_sites, queue: 'high')
+        described_class.update_all_dependant_sites(app_component.id, 'beta')
       end
 
       it "updates component_version component's sites" do
@@ -183,15 +184,6 @@ describe Service::Loader, :fog_mock do
       it "delays update_all_stages! on loader queue with purge at true" do
         described_class.should delay(:update_all_stages!, queue: 'loader').with(site.id, purge: true)
         described_class.update_all_dependant_sites(component.id, 'beta')
-      end
-
-      context "with important site" do
-        before { site.stub(token: SiteToken.tokens.first) }
-
-        it "delays update_all_stages! on high queue with purge at true" do
-          described_class.should delay(:update_all_stages!, queue: 'high').with(site.id, purge: true)
-          described_class.update_all_dependant_sites(app_component.id, 'beta')
-        end
       end
     end
   end
