@@ -1,8 +1,5 @@
-require 'rack/maintenance'
-
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
-  config.middleware.insert_before Rack::Cache, Rack::Maintenance, domain: 'sublimevideo-staging.net'
   config.middleware.insert_before Rack::Cache, Rack::Auth::Basic, "Staging" do |u, p|
     [u, p] == ['jilion', ENV['PRIVATE_CODE']]
   end
