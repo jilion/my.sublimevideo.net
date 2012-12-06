@@ -4,7 +4,7 @@ module Service
   User = Struct.new(:user) do
     def create
       user.save!
-      UserMailer.delay.welcome(user.id)
+      # UserMailer.delay.welcome(user.id) # Temporary until we rewrite the email content
       Service::Newsletter.delay.sync_from_service(user.id)
     rescue
       false
