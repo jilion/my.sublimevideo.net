@@ -129,6 +129,7 @@ group :production do
 end
 
 group :staging, :production do
+  gem 'rack-cache'
   gem 'rack-ssl-enforcer'
   gem 'thin'
   gem 'dalli'

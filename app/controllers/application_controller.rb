@@ -9,7 +9,7 @@ require_dependency 'controller_helpers/transaction'
 require_dependency 'controller_helpers/pjax'
 require_dependency 'responders/paginated_responder'
 
-class ApplicationController < SublimeVideoController
+class ApplicationController < ActionController::Base
   include SublimeVideoLayout::EngineHelper
   include ControllerHelpers::RedirectionFilters
   include ControllerHelpers::EarlyAccess
@@ -28,7 +28,6 @@ class ApplicationController < SublimeVideoController
   respond_to :html
   responders Responders::HttpCacheResponder, Responders::PaginatedResponder, Responders::FlashResponder
 
-  before_filter :fake_maintenance_page
   before_filter :authenticate_user!
   before_filter :set_logged_in_cookie
 

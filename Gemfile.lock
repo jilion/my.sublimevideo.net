@@ -548,7 +548,7 @@ GEM
     stat_request_parser (1.2.0)
       activesupport (>= 3.0.0)
     state_machine (1.1.2)
-    sublime_video_layout (2.3.0)
+    sublime_video_layout (2.4.0)
       coffee-rails
       haml
       jquery-rails
@@ -708,6 +708,7 @@ DEPENDENCIES
   public_suffix
   pusher
   quiet_assets
+  rack-cache
   rack-google-analytics
   rack-livereload
   rack-pjax
