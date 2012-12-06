@@ -102,6 +102,7 @@ gem 'redis'
 
 # Tickets
 gem 'zendesk_api'
+gem 'highrise'
 
 # App
 gem 'solve'

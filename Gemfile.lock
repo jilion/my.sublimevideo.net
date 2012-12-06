@@ -294,6 +294,8 @@ GEM
     has_scope (0.5.1)
     hashie (1.2.0)
     highline (1.6.15)
+    highrise (3.0.3)
+      activeresource (~> 3.0)
     hike (1.2.1)
     hpricot (0.8.6)
     htmlentities (4.3.1)
@@ -548,7 +550,7 @@ GEM
     stat_request_parser (1.2.0)
       activesupport (>= 3.0.0)
     state_machine (1.1.2)
-    sublime_video_layout (2.4.0)
+    sublime_video_layout (2.4.1)
       coffee-rails
       haml
       jquery-rails
@@ -679,6 +681,7 @@ DEPENDENCIES
   haml
   haml_coffee_assets
   has_scope
+  highrise
   hpricot
   jasminerice
   kaminari
