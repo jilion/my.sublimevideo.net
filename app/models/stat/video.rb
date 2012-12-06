@@ -75,7 +75,13 @@ private
   def self.top_video_uids(conditions, options)
     # Demo Page
     if conditions[:st] == SiteToken[:www]
-      conditions[:u]  = { :$in => %w[home features-lightbox features-playlist-1 features-playlist-2 features-playlist-3 features-playlist-4 demo-single demo-lightbox-1 demo-lightbox-2 demo-lightbox-3 demo-lightbox-4 demo-playlist-1 demo-playlist-2 demo-playlist-3 demo-playlist-4] }
+      conditions[:u]  = { :$in => %w[
+        home features-lightbox features-playlist-1 features-playlist-2 features-playlist-3 features-playlist-4
+        demo-single demo-lightbox-1 demo-lightbox-2 demo-lightbox-3 demo-lightbox-4
+        demo-playlist-1 demo-playlist-2 demo-playlist-3 demo-playlist-4
+        horizon-framework pricing-badged designs-demo real-time-stats
+        showcase-sony showcase-twittv showcase-anthony showcase-next15 showcase-html5
+      ] }
     end
 
     # Reduce number of stats to group if too many.
