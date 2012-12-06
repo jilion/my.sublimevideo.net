@@ -6,7 +6,7 @@ en:
         dev_hostnames:   "Development domains"
         extra_hostnames: "Alias domains"
         staging_hostnames: "Staging domains"
-        path: "Custom Path"
+        path: "Custom path"
       user:
         terms_and_conditions: "Terms & Conditions"
         billing_address_1: "Street"
