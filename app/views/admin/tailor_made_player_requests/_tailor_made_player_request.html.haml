@@ -8,16 +8,16 @@
     %small= link_to tailor_made_player_request.email, [:admin, tailor_made_player_request]
 
   %td.job_title
-    %small= tailor_made_player_request.job_title.titleize
+    %small= link_to tailor_made_player_request.job_title.titleize, [:admin, tailor_made_player_request]
 
   %td.company
-    %small= tailor_made_player_request.company.titleize
+    %small= link_to tailor_made_player_request.company.titleize, [:admin, tailor_made_player_request]
 
   %td.topic
-    %small= tailor_made_player_request.topic.titleize
+    %small= link_to tailor_made_player_request.topic.titleize, [:admin, tailor_made_player_request]
 
   %td.description
-    %small= simple_format(tailor_made_player_request.description || 'N/A')
+    %small= link_to simple_format(truncate(tailor_made_player_request.description, length: 250)), [:admin, tailor_made_player_request]
 
   %td.document
     %small= display_bool(tailor_made_player_request.document.present?)

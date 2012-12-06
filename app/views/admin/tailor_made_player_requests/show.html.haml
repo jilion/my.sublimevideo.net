@@ -10,7 +10,7 @@
 
 %p
   %strong Country:
-  = @tailor_made_player_request.country? ? Country[@tailor_made_player_request.country].name : 'N/A'
+  = Country[@tailor_made_player_request.country].name
 
 %p
 - if @tailor_made_player_request.job_title?
@@ -18,11 +18,11 @@
   = raw "#{@tailor_made_player_request.job_title.titleize} at #{@tailor_made_player_request.company.titleize}"
 - else
   %strong Company:
-  = @tailor_made_player_request.company? ? @tailor_made_player_request.company.titleize : 'N/A'
+  = @tailor_made_player_request.company.titleize
 
 %p
   %strong Website URL:
-  = @tailor_made_player_request.url? ? link_to(@tailor_made_player_request.url, url_with_protocol(@tailor_made_player_request.url)) : 'N/A'
+  = link_to(@tailor_made_player_request.url, url_with_protocol(@tailor_made_player_request.url))
 
 %p
   %strong Request type:
@@ -38,16 +38,9 @@
   %strong Attached document:
   = @tailor_made_player_request.document? ? link_to('View document', @tailor_made_player_request.document.url) : 'N/A'
 
-%br
-%hr
-%br
-
 %p
-  %strong Highrise export
-
-  = form_for @tailor_made_player_request, url: [:export_to_highrise, :admin, @tailor_made_player_request] do |f|
-    = f.select :export_type, select_options_for_highrise_export(@tailor_made_player_request)
-    = f.submit 'Submit'
+  %strong Highrise case:
+  = link_to "https://jilion.highrisehq.com/kases/#{@tailor_made_player_request.highrise_kase_id}", "https://jilion.highrisehq.com/kases/#{@tailor_made_player_request.highrise_kase_id}"
 
 %br
 %hr

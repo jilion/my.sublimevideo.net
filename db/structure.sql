@@ -1099,7 +1099,8 @@ CREATE TABLE tailor_made_player_requests (
     description text NOT NULL,
     document character varying(255),
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    highrise_kase_id integer
 );
 
 
@@ -2465,3 +2466,5 @@ INSERT INTO schema_migrations (version) VALUES ('20121122073822');
 INSERT INTO schema_migrations (version) VALUES ('20121127154540');
 
 INSERT INTO schema_migrations (version) VALUES ('20121202170511');
+
+INSERT INTO schema_migrations (version) VALUES ('20121205172815');

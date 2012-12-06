@@ -1,12 +1,10 @@
-require_dependency 'service/tailor_made_player_request'
-
 class Admin::TailorMadePlayerRequestsController < Admin::AdminController
   respond_to :html, :js
 
   before_filter { |controller| require_role?('god') }
 
   before_filter :set_default_scopes, only: [:index]
-  before_filter :find_tailor_made_player_request, only: [:show, :export_to_highrise]
+  before_filter :find_tailor_made_player_request, only: [:show]
 
   # sort
   has_scope :by_topic, :by_date
@@ -18,24 +16,6 @@ class Admin::TailorMadePlayerRequestsController < Admin::AdminController
   end
 
   def show
-  end
-
-  def export_to_highrise
-    service = Service::TailorMadePlayerRequest.new(@tailor_made_player_request)
-
-    case params[:tailor_made_player_request][:export_type]
-    when 'person'
-      success = service.export_person_to_highrise
-      @notice = "The person & company #{success ? 'have been successfully' : 'haven\'t been'} imported into Highrise."
-    when 'company'
-      success = service.export_company_to_highrise
-      @notice = "The company #{success ? 'has been successfully' : 'hasn\'t been'} imported into Highrise."
-    when 'kase'
-      success = service.create_case_in_highrise
-      @notice = "The case #{success ? 'has been successfully' : 'hasn\'t been'} created in Highrise."
-    end
-
-    redirect_to [:admin, @tailor_made_player_request], notice: @notice
   end
 
   private

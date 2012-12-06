@@ -26,6 +26,7 @@ end
 #  description             :text             not null
 #  document                :string(255)
 #  email                   :string(255)      not null
+#  highrise_kase_id        :integer
 #  id                      :integer          not null, primary key
 #  job_title               :string(255)
 #  name                    :string(255)      not null
