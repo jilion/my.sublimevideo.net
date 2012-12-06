@@ -548,11 +548,11 @@ GEM
     stat_request_parser (1.2.0)
       activesupport (>= 3.0.0)
     state_machine (1.1.2)
-    sublime_video_layout (2.2.4)
-      coffee-rails (~> 3.2.0)
+    sublime_video_layout (2.3.0)
+      coffee-rails
       haml
-      jquery-rails (~> 2.1.0)
-      rails (~> 3.2.0)
+      jquery-rails
+      rails
     temple (0.5.5)
     terminal-table (1.4.5)
     thin (1.5.0)
