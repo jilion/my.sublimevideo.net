@@ -81,6 +81,7 @@ private
         demo-playlist-1 demo-playlist-2 demo-playlist-3 demo-playlist-4
         horizon-framework pricing-badged designs-demo real-time-stats
         showcase-sony showcase-twittv showcase-anthony showcase-next15 showcase-html5
+        docs-youtube docs-vimeo docs-wordpress
       ] }
     end
 
