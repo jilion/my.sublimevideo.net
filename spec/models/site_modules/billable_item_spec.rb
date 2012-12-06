@@ -19,11 +19,27 @@ describe SiteModules::BillableItem, :addons do
     end
   end
 
+  describe '#app_design_is_sponsored?' do
+    it 'returns true when the addon is beta, trial, sponsored or paying, false otherwise' do
+      site.app_design_is_sponsored?(@classic_design).should be_false
+      site.app_design_is_sponsored?(@light_design).should be_true
+      site.app_design_is_sponsored?(@flat_design).should be_false
+    end
+  end
+
   describe '#addon_plan_is_active?' do
     it 'returns true when the addon is beta, trial, sponsored or paying, false otherwise' do
       site.addon_plan_is_active?(@logo_addon_plan_2).should be_true
       site.addon_plan_is_active?(@stats_addon_plan_2).should be_true
       site.addon_plan_is_active?(@support_addon_plan_2).should be_false
+    end
+  end
+
+  describe '#addon_plan_is_sponsored?' do
+    it 'returns true when the addon is beta, trial, sponsored or paying, false otherwise' do
+      site.addon_plan_is_sponsored?(@logo_addon_plan_2).should be_false
+      site.addon_plan_is_sponsored?(@stats_addon_plan_2).should be_true
+      site.addon_plan_is_sponsored?(@support_addon_plan_2).should be_false
     end
   end
 

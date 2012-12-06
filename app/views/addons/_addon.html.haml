@@ -5,23 +5,23 @@
   - visible_addon_plans.each do |addon_plan|
     - addon_plan_is_sponsored = site.addon_plan_is_sponsored?(addon_plan)
     - price = addon_plan_is_sponsored || addon_plan.beta? ? 0 : addon_plan.price
-    - disabled = addon_plan.free? || addon_plan_is_sponsored
+    - non_uncheckable = addon_plan.free? || addon_plan_is_sponsored
+
     %tr{ class: highlighted_class(addon_plan) }
       %td
         - if visible_addon_plans.size > 1
           .radio_wrap
             = radio_button_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), data: { price: price }
-            = label_tag "addon_plans[#{addon.name}]" do
-              = t("addon_plans.#{addon.name}.#{addon_plan.name}")
-              = beta_loader_required_notice(addon_plan)
+            = label_tag "addon_plans[#{addon.name}]", addon_label_content(addon_plan)
         - else
-          .checkbox_wrap{ class: disabled ? 'disabled' : nil }
-            - if free_addon_plan_id = addon.free_plan.try(:id)
-              = hidden_field_tag "addon_plans[#{addon.name}]", free_addon_plan_id, id: "addon_plans_#{addon.name}_#{free_addon_plan_id}"
-            = check_box_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), disabled: disabled, id: "addon_plans_#{addon.name}_#{addon_plan.id}", data: { price: price }
-            = label_tag "addon_plans[#{addon.name}]" do
-              = t("addon_plans.#{addon.name}.#{addon_plan.name}")
-              = beta_loader_required_notice(addon_plan)
+          - if non_uncheckable
+            %h5.checked= addon_label_content(addon_plan)
+          - else
+            .checkbox_wrap
+              - if free_addon_plan_id = addon.free_plan.try(:id)
+                = hidden_field_tag "addon_plans[#{addon.name}]", free_addon_plan_id, id: "addon_plans_#{addon.name}_#{free_addon_plan_id}"
+              = check_box_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), id: "addon_plans_#{addon.name}_#{addon_plan.id}", data: { price: price }
+              = label_tag "addon_plans[#{addon.name}]", addon_label_content(addon_plan)
       %td.trial_notice
         - unless addon_plan_is_sponsored
           .trial_days_remaining{ style: "display:#{site.addon_plans.include?(addon_plan) ? 'block' : 'none'}" }= trial_days_remaining(site, addon_plan)

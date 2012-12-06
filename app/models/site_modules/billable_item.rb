@@ -6,6 +6,11 @@ module SiteModules::BillableItem
     app_designs.where{ (billable_items.state >> BillableItem::ACTIVE_STATES) & (id == app_design.id) }.exists?
   end
 
+  def app_design_is_sponsored?(app_design)
+    app_design.present? &&
+    app_designs.where{ (billable_items.state == 'sponsored') & (id == app_design.id) }.exists?
+  end
+
   def addon_plan_is_active?(addon_plan)
     addon_plan.present? &&
     addon_plans.where{ (billable_items.state >> BillableItem::ACTIVE_STATES) & (id == addon_plan.id) }.exists?

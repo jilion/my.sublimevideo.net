@@ -1,10 +1,16 @@
-- disabled = app_design.free? || addon_plan_is_sponsored
-%tr{ class: highlighted_class(app_design) }
+- design_is_sponsored = site.app_design_is_sponsored?(design)
+- non_uncheckable = design.free? || design_is_sponsored
+%tr{ class: highlighted_class(design) }
   %td
-    .checkbox_wrap{ class: "#{'disabled' if disabled}" }
-      = check_box_tag "app_designs[#{app_design.name}]", app_design.id, site.app_designs.include?(app_design) || disabled, disabled: disabled, data: { price: app_design.price }
-      = label_tag "app_designs[#{app_design.name}]" do
-        = t("app_designs.#{app_design.name}")
-        = beta_loader_required_notice(app_design)
+    - if non_uncheckable
+      %h5.checked= design_label_content(design)
+    - else
+      .checkbox_wrap
+        = check_box_tag "app_designs[#{design.name}]", design.id, site.app_designs.include?(design), data: { price: design.price }
+      = label_tag "app_designs[#{design.name}]", design_label_content(design)
   %td.trial_notice
-  %td.price= billable_item_price(app_design)
+  %td.price
+    - if design_is_sponsored
+      = 'sponsored'
+    - else
+      = billable_item_price(design)

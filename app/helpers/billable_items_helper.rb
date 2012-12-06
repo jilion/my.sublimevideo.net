@@ -13,10 +13,18 @@ module BillableItemsHelper
     end
   end
 
+  def design_label_content(design)
+    raw t("app_designs.#{design.name}") + beta_loader_required_notice(design).to_s
+  end
+
+  def addon_label_content(addon_plan)
+    raw t("addon_plans.#{addon_plan.addon.name}.#{addon_plan.name}") + beta_loader_required_notice(addon_plan).to_s
+  end
+
   def beta_loader_required_notice(addon_plan)
     if addon_plan.required_stage == 'beta'
       content_tag(:small) do
-        "(requires #{link_to 'beta loader', '', class: 'loader_code hl', data: { token: @site.token }})".html_safe
+        " (requires #{link_to 'beta loader', '', class: 'loader_code hl', data: { token: @site.token }})".html_safe
       end
     end
   end
