@@ -1,6 +1,6 @@
 %h2.hostname= hostname_or_token(Site.find(@site.id), length: 20)
 
-- @sites.select! { |site| site.id != @site.id && (request.url =~ /stats/ ? site.realtime_stats_active? : true) }
+- @sites.select! { |site| site.id != @site.id && (request.url =~ /\/stats/ ? site.realtime_stats_active? : true) }
 
 - unless @sites.empty?
   .site_select_wrap
