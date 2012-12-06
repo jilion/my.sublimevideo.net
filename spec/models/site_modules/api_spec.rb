@@ -4,7 +4,7 @@ describe SiteModules::Api do
 
   describe "#to_api" do
     context "normal site" do
-      let(:site)     { create(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', staging_hostnames: 'rymai-staging.com', wildcard: true, path: 'test') }
+      let(:site)     { create(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', staging_hostnames: 'rymai-staging.com', wildcard: true, path: 'test', accessible_stage: 'alpha') }
       let(:response) { site.as_api_response(:v1_self_private) }
 
       it "selects a subset of fields, as a hash" do
@@ -16,6 +16,7 @@ describe SiteModules::Api do
         response[:dev_domains].should eq ['rymai.local']
         response[:wildcard].should eq true
         response[:path].should eq 'test'
+        response[:accessible_stage].should eq 'alpha'
       end
     end
 
