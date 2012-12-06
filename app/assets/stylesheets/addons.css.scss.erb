@@ -30,6 +30,14 @@
   @include box-shadow(rgba(255,255,255,0.5) 0 2px 0);
 }
 
+#addons table td h5.checked {
+  font-size:16px;
+  font-weight:600;
+  padding-left:32px;
+  background:url(<%= asset_path "addons/checked_icon@2x.png" %>) no-repeat 0 50%;
+  background-size:22px 17px;
+}
+
 #addons table tr.highlight {
   background:#98cdff;
 }
