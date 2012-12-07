@@ -360,9 +360,9 @@ describe OneTime::Site do
     it 'creates preview kits for sublimevideo.net & my.sublimevideo.net' do
       described_class.create_preview_kits
 
-      @site_www.kits.should have(PreviewKit.kit_ids.size).items
-      @site_my.kits.should have(PreviewKit.kit_ids.size).items
-      @site_test.kits.should have(PreviewKit.kit_ids.size).items
+      @site_www.kits.should have(PreviewKit.kit_names.size).items
+      @site_my.kits.should have(PreviewKit.kit_names.size).items
+      @site_test.kits.should have(PreviewKit.kit_names.size).items
     end
 
     it 'sponsorize all custom add-on plans for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net' do
@@ -375,10 +375,10 @@ describe OneTime::Site do
       end
     end
 
-    it 'sponsorize all custom designs (in PreviewKit.kit_ids) for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net' do
+    it 'sponsorize all custom designs (in PreviewKit.kit_names) for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net' do
       described_class.create_preview_kits
 
-      PreviewKit.kit_ids.each do |design_name, kit_identifier|
+      PreviewKit.kit_names.each do |design_name|
         design = App::Design.get(design_name)
         next unless design.availability == 'custom'
 
@@ -388,19 +388,19 @@ describe OneTime::Site do
       end
     end
 
-    it "creates a preview kit for design in PreviewKit.kit_ids for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net" do
+    it "creates a preview kit for design in PreviewKit.kit_names for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net" do
       described_class.create_preview_kits
 
-      PreviewKit.kit_ids.each do |design_name, kit_identifier|
-        kit = @site_www.kits.find_by_identifier(kit_identifier.to_s)
+      PreviewKit.kit_names.each do |design_name|
+        kit = @site_www.kits.find_by_identifier(PreviewKit.kit_identifer(design_name))
         kit.name.should eq I18n.t("app_designs.#{design_name}")
         kit.design.name.should eq design_name
 
-        kit = @site_my.kits.find_by_identifier(kit_identifier.to_s)
+        kit = @site_my.kits.find_by_identifier(PreviewKit.kit_identifer(design_name))
         kit.name.should eq I18n.t("app_designs.#{design_name}")
         kit.design.name.should eq design_name
 
-        kit = @site_test.kits.find_by_identifier(kit_identifier.to_s)
+        kit = @site_test.kits.find_by_identifier(PreviewKit.kit_identifer(design_name))
         kit.name.should eq I18n.t("app_designs.#{design_name}")
         kit.design.name.should eq design_name
       end
