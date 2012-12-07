@@ -5,8 +5,9 @@ class KitsController < ApplicationController
   respond_to :js, only: [:fields, :process_custom_logo]
 
   before_filter :redirect_suspended_user, :find_site_by_token!
-  before_filter :find_design, only: [:new, :create, :edit, :update, :fields]
-  before_filter :find_kit, only: [:show, :edit, :update, :set_as_default, :process_custom_logo]
+  before_filter :find_design, only: [:new, :create, :edit, :update, :process_custom_logo, :fields]
+  before_filter :find_kit, only: [:show, :edit, :update, :set_as_default]
+  before_filter :find_or_build_kit, only: [:process_custom_logo, :fields]
   before_filter :find_sites_or_redirect_to_new_site, only: [:index, :new, :create, :show, :edit, :update]
   skip_before_filter :verify_authenticity_token, only: [:process_custom_logo]
 
@@ -67,12 +68,15 @@ class KitsController < ApplicationController
 
   # GET /sites/:site_id/players/fields
   def fields
+  end
+
+  private
+
+  def find_or_build_kit
     @kit = exhibit(@site.kits.find_by_identifier!(params[:id]))
   rescue ActiveRecord::RecordNotFound
     @kit = exhibit(@site.kits.build(app_design_id: @design.id))
   end
-
-  private
 
   def find_kit
     @kit    = exhibit(@site.kits.find_by_identifier!(params[:id]))

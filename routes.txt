@@ -55,8 +55,8 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                                           PUT      /admins/:id(.:format)                                     admin/admins#update
                                           DELETE   /admins/:id(.:format)                                     admin/admins#destroy
                           admin_feedbacks GET      /feedbacks(.:format)                                      admin/feedbacks#index
-               admin_tailor_made_requests GET      /tailor_made_requests(.:format)                           admin/tailor_made_requests#index
-                admin_tailor_made_request GET      /tailor_made_requests/:id(.:format)                       admin/tailor_made_requests#show
+        admin_tailor_made_player_requests GET      /tailor_made_player_requests(.:format)                    admin/tailor_made_player_requests#index
+         admin_tailor_made_player_request GET      /tailor_made_player_requests/:id(.:format)                admin/tailor_made_player_requests#show
                    monthly_admin_invoices GET      /invoices/monthly(.:format)                               admin/invoices#monthly
              retry_charging_admin_invoice PUT      /invoices/:id/retry_charging(.:format)                    admin/invoices#retry_charging
                            admin_invoices GET      /invoices(.:format)                                       admin/invoices#index
@@ -152,6 +152,7 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                   set_as_default_site_kit PUT      /sites/:site_id/players/:id/set_as_default(.:format)      kits#set_as_default
              process_custom_logo_site_kit POST     /sites/:site_id/players/:id/process_custom_logo(.:format) kits#process_custom_logo
                          fields_site_kits GET      /sites/:site_id/players/fields(.:format)                  kits#fields
+                          fields_site_kit GET      /sites/:site_id/players/:id/fields(.:format)              kits#fields
                                 site_kits GET      /sites/:site_id/players(.:format)                         kits#index
                                           POST     /sites/:site_id/players(.:format)                         kits#create
                              new_site_kit GET      /sites/:site_id/players/new(.:format)                     kits#new
@@ -196,6 +197,7 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                              rails_routes GET      /rails/routes(.:format)                                   rails/routes#index
                               rails_route GET      /rails/routes/:id(.:format)                               rails/routes#show
                               jasminerice          /jasmine                                                  Jasminerice::Engine
+                              maintenance GET      /maintenance(.:format)                                    maintenance#show
 
 Routes for Jasminerice::Engine:
            GET /spec/:spec_id/fixtures/*filename(.:format) jasminerice/spec#fixtures

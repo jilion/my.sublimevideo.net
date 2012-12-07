@@ -25,7 +25,7 @@ class MySublimeVideo.UI.KitEditor
     $designSelector.one 'change', =>
       this.refreshVideoTagFromSettings()
       $.ajax(
-        url: "#{document.location.pathname.replace(/new|\d+\/edit/, 'fields')}?design_id=#{$designSelector.val()}"
+        url: "#{document.location.pathname.replace(/new|edit/, 'fields')}?design_id=#{$designSelector.val()}"
       ).done (data) =>
         MySublimeVideo.prepareVideosAndLightboxes()
         this.setup()

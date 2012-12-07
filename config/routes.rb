@@ -221,6 +221,7 @@ MySublimeVideo::Application.routes.draw do
         put  :set_as_default, on: :member
         post :process_custom_logo, on: :member
         get :fields, on: :collection
+        get :fields, on: :member
       end
 
       resources :invoices, only: [:index] do
