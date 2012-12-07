@@ -17,7 +17,7 @@ feature "Admin session:" do
   scenario "logout" do
     sign_in_as :admin, { email: "john@doe.com" }
     page.should have_content 'john@doe.com'
-    click_link "logout"
+    go 'admin', 'logout'
 
     current_url.should eq "http://admin.sublimevideo.dev/login"
     page.should_not have_content 'john@doe.com'
