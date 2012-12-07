@@ -21,10 +21,11 @@
 = render 'timeline_usage', site: @site
 %br
 
-%table.crado
-  %tr
-    %td#subscribe_design= render 'subscribe_design', site: @site
-    %td#subscribe_addon_plan= render 'subscribe_addon_plan', site: @site
+- if has_role?('god')
+  %table.crado
+    %tr
+      %td#subscribe_design= render 'subscribe_design', site: @site
+      %td#subscribe_addon_plan= render 'subscribe_addon_plan', site: @site
 
 #billable_items= render 'billable_items', site: @site
 #billable_items_activities= render 'billable_items_activities', site: @site

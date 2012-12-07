@@ -41,7 +41,7 @@ class Admin::SitesController < Admin::AdminController
     @site.update_attributes(params[:site], without_protection: true)
 
     respond_with(@site, notice: 'Site has been successfully updated.', location: [:edit, :admin, @site]) do |format|
-      format.js   { render 'admin/shared/flash_update' }
+      format.js { render 'admin/shared/flash_update' }
     end
   end
 
@@ -51,7 +51,8 @@ class Admin::SitesController < Admin::AdminController
     @app_design = App::Design.find(params[:app_design_id])
 
     app_design_new_subscription_hash = { @app_design.name => (params[:state] == 'canceled' ? '0' : @app_design.id) }
-    options = params[:state].present? ? { force: params[:state] } : {}
+    options = { allow_custom: true }
+    options[:force] = params[:state] if params[:state].present?
     Service::Site.new(@site).update_billable_items(app_design_new_subscription_hash, {}, options)
 
     notice = t('flash.sites.update_app_design_subscription.notice', app_design_title: @app_design.title, state: params[:state].presence || 'subscribed')
@@ -66,7 +67,8 @@ class Admin::SitesController < Admin::AdminController
     if params[:state] == 'canceled'
       @site.billable_items.addon_plans.where(item_id: params[:addon_plan_id]).destroy_all
     else
-      options = params[:state].present? ? { force: params[:state] } : {}
+      options = { allow_custom: true }
+      options[:force] = params[:state] if params[:state].present?
       Service::Site.new(@site).update_billable_items({}, { addon: params[:addon_plan_id] }, options)
     end
 

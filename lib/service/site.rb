@@ -173,7 +173,7 @@ module Service
         if new_app_design = ::App::Design.get(new_app_design_name)
           if new_app_design_id == '0'
             site.billable_items.app_designs.where(item_id: new_app_design.id).destroy_all
-          else
+          elsif new_app_design.public? || options[:allow_custom]
             if billable_item = site.billable_items.app_designs.where(item_id: new_app_design.id).first
               billable_item.state = new_billable_item_state(new_app_design, options)
               billable_item.save!
@@ -196,7 +196,7 @@ module Service
           if billable_item = site.billable_items.addon_plans.where(item_id: new_addon_plan.id).first
             billable_item.state = new_billable_item_state(new_addon_plan, options)
             billable_item.save!
-          else
+          elsif new_addon_plan.public? || options[:allow_custom]
             site.billable_items.build({ item: new_addon_plan, state: new_billable_item_state(new_addon_plan, options) }, as: :admin)
           end
         end

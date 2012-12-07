@@ -48,7 +48,7 @@ describe Admin::SitesController do
       mock_service = mock('Service::Site')
       Service::Site.stub(:new).with(mock_site) { mock_service }
 
-      mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, {})
+      mock_service.should_receive(:update_billable_items).with({ 'foo_design' => 42 }, {}, { allow_custom: true })
 
       put :update_app_design_subscription, id: 'abc123', app_design_id: 42
       response.should redirect_to(edit_admin_site_url(mock_site))

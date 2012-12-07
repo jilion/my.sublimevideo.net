@@ -30,6 +30,10 @@ class App::Design < ActiveRecord::Base
     end
   end
 
+  def public?
+    availability == 'public'
+  end
+
   def beta?
     !stable_at?
   end
