@@ -21,6 +21,7 @@ describe SupportRequest do
   let(:invalid_support_request)         { described_class.new(params.merge(user_id: nil)) }
   let(:vip_support_request)             { described_class.new(params.merge(user_id: user_without_zendesk_id.id)) }
   let(:support_request_without_name)    { described_class.new(params.merge(user_id: user_without_name.id)) }
+  let(:support_request_with_stage)      { described_class.new(params.merge(stage: 'beta')) }
   before do
     User.stub(:find_by_id).with(1) { user_without_zendesk_id }
     User.stub(:find_by_id).with(2) { user_with_zendesk_id }
@@ -45,7 +46,7 @@ describe SupportRequest do
 
       its(:subject) { should eq 'SUBJECT' }
       its(:message) { should eq "DESCRIPTION" }
-      its(:comment) { should eq "Request for site: (#{site.token}) #{site.hostname}\nThe issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }
+      its(:comment) { should eq "Request for site: (#{site.token}) #{site.hostname}\nPlayer version: N/A\nThe issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }
 
       it { should be_valid }
     end
@@ -72,30 +73,28 @@ describe SupportRequest do
   end
 
   describe '#to_params' do
-    context 'user has no name' do
-      before do
-        Users::SupportManager.should_receive(:new) { stub(level: 'email') }
-      end
-
-      it 'generates a hash of the params' do
-        support_request_without_name.user.name_or_email.should eq support_request_without_name.user.email
-        support_request_without_name.to_params.should == {
-          subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" },
-          tags: ['email-support'], requester: { name: user_without_name.email, email: user_without_name.email }, uploads: ['foo.jpg', 'bar.html'], external_id: user_without_name.id
-        }
-      end
-    end
-
     context 'user has email support' do
       before do
         Users::SupportManager.should_receive(:new) { stub(level: 'email') }
       end
 
-      it 'generates a hash of the params' do
-        support_request.to_params.should == {
-          subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" },
-          tags: ['email-support'], requester: { name: user_without_zendesk_id.name_or_email, email: user_without_zendesk_id.email }, uploads: ['foo.jpg', 'bar.html'], external_id: user_without_zendesk_id.id
-        }
+      context 'player stage is specified' do
+        it 'generates a hash of the params' do
+          support_request_with_stage.to_params.should == {
+            subject: 'SUBJECT', comment: { value: "Player version: beta\nThe issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" },
+            tags: ['email-support', 'stage-beta'], requester: { name: user_without_zendesk_id.name_or_email, email: user_without_zendesk_id.email }, uploads: ['foo.jpg', 'bar.html'], external_id: user_without_zendesk_id.id
+          }
+        end
+      end
+
+      context 'user has no name' do
+        it 'generates a hash of the params' do
+          support_request_without_name.user.name_or_email.should eq support_request_without_name.user.email
+          support_request_without_name.to_params.should == {
+            subject: 'SUBJECT', comment: { value: "Player version: N/A\nThe issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" },
+            tags: ['email-support'], requester: { name: user_without_name.email, email: user_without_name.email }, uploads: ['foo.jpg', 'bar.html'], external_id: user_without_name.id
+          }
+        end
       end
     end
 
@@ -106,7 +105,7 @@ describe SupportRequest do
 
       it 'generates a hash of the params' do
         vip_support_request.to_params.should == {
-          subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" },
+          subject: 'SUBJECT', comment: { value: "Player version: N/A\nThe issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" },
           tags: ['vip_email-support'], requester: { name: user_without_zendesk_id.name_or_email, email: user_without_zendesk_id.email },
           uploads: ['foo.jpg', 'bar.html'], external_id: user_without_zendesk_id.id
         }
@@ -120,7 +119,7 @@ describe SupportRequest do
 
       it 'generates a hash of the params' do
         support_request_with_zendesk_id.to_params.should == {
-          subject: 'SUBJECT', comment: { value: "The issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }, tags: ['email-support'],
+          subject: 'SUBJECT', comment: { value: "Player version: N/A\nThe issue occurs on this page: http://example.org\nThe issue occurs under this environment: Windows\n\nDESCRIPTION" }, tags: ['email-support'],
           tags: ['email-support'], requester_id: user_with_zendesk_id.zendesk_id, uploads: ['foo.jpg', 'bar.html'], external_id: user_with_zendesk_id.id
         }
       end

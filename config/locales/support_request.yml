@@ -1,4 +1,6 @@
 en:
   support_request:
     site_token:
-      choose-site_token: "Choose a site (if applicable)"
+      choose-site_token: "Choose a site"
+    stage:
+      choose-stage: "Which player version are you using?"

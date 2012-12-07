@@ -17,7 +17,11 @@ module SupportRequestsHelper
   end
 
   def support_request_site_token_options
-    options_for_select([[t("support_request.site_token.choose-site_token"), ''], ["-"*16, '-']] + current_user.sites.active.map { |s| [hostname_or_token(s), s.token] }, selected: params[:support_request] ? params[:support_request][:site_token] : nil, disabled: ['-'])
+    options_for_select([[t("support_request.site_token.choose-site_token"), ''], ['', '', { disabled: true }]] + current_user.sites.active.map { |s| [hostname_or_token(s), s.token] }, selected: params[:support_request] ? params[:support_request][:site_token] : nil, disabled: ['-'])
+  end
+
+  def support_request_stage_options
+    options_for_select([[t("support_request.stage.choose-stage"), ''], ['', '', { disabled: true }], ['Stable', 'stable'], ['Beta', 'beta']])
   end
 
 end
