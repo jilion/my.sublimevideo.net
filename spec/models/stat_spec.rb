@@ -153,6 +153,10 @@ describe Stat do
           Librato.should_receive(:increment).with("stats.video_loads", by: 1, source: "extra")
           Librato.should_receive(:increment).with("stats.video_plays", by: 1, source: "main")
           Librato.should_receive(:increment).with("stats.video_plays", by: 1, source: "invalid")
+          Librato.should_receive(:increment).with("stats.page_visits.stage_per_min", by: 1, source: "stable").twice
+          Librato.should_receive(:increment).with("stats.page_visits.stage_per_min", by: 1, source: "beta")
+          Librato.should_receive(:increment).with("stats.page_visits.ssl_per_min", by: 1, source: "ssl")
+          Librato.should_receive(:increment).with("stats.page_visits.ssl_per_min", by: 1, source: "non-ssl")
           Stat.create_stats_from_trackers!(@log, @trackers)
         end
       end

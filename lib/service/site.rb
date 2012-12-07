@@ -32,6 +32,7 @@ module Service
       Service::Loader.delay.update_all_stages!(site.id)
       Service::Settings.delay.update_all_types!(site.id)
       Service::Rank.delay(queue: 'low').set_ranks(site.id)
+      Librato.increment 'sites.events', source: 'create'
       true
     rescue ActiveRecord::RecordInvalid
       false
@@ -44,6 +45,7 @@ module Service
         site.save!
       end
       Service::Settings.delay.update_all_types!(site.id)
+      Librato.increment 'sites.events', source: 'update'
       true
     rescue ActiveRecord::RecordInvalid
       false

@@ -12,6 +12,7 @@ module CDN
 
       def purge(path)
         client.purge(:http_small_object, "http://#{cname}#{path}")
+        Librato.increment 'cdn.purge', source: 'edgecast'
       end
 
     private

@@ -7,6 +7,8 @@ require File.expand_path('lib/cdn/voxcast_wrapper')
 describe CDN::VoxcastWrapper do
 
   describe "purge" do
+    before { Librato.stub(:increment) }
+
     it "calls purge_path if a file path is given" do
       described_class.should_receive(:purge_path).with("/filepath.js")
       described_class.purge("/filepath.js")
@@ -15,6 +17,12 @@ describe CDN::VoxcastWrapper do
     it "calls purge_dir if a directory path is given" do
       described_class.should_receive(:purge_dir).with("/dir/path")
       described_class.purge("/dir/path")
+    end
+
+    it "increments metrics" do
+      described_class.stub(:purge_path)
+      Librato.should_receive(:increment).with('cdn.purge', source: 'voxcast')
+      described_class.purge("/filepath.js")
     end
   end
 

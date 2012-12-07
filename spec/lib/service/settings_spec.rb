@@ -69,6 +69,12 @@ describe Service::Settings, :fog_mock do
         described_class.new(site, 'settings').should be_present
       end
 
+      it "increments metrics" do
+        Librato.should_receive(:increment).with('settings.update', source: 'license')
+        Librato.should_receive(:increment).with('settings.update', source: 'settings')
+        described_class.update_all_types!(site.id)
+      end
+
       context "when suspended" do
         before { site.stub(:state) { 'suspended' } }
 
@@ -76,6 +82,12 @@ describe Service::Settings, :fog_mock do
           described_class.update_all_types!(site.id)
           described_class.new(site, 'license').should_not be_present
           described_class.new(site, 'settings').should_not be_present
+        end
+
+        it "increments metrics" do
+          Librato.should_receive(:increment).with('settings.delete', source: 'license')
+          Librato.should_receive(:increment).with('settings.delete', source: 'settings')
+          described_class.update_all_types!(site.id)
         end
       end
     end

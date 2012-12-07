@@ -14,8 +14,10 @@ module Service
       self::TYPES.each do |type|
         if site.state == 'active'
           new(site, type, options).upload!
+          Librato.increment 'settings.update', source: type
         else
           new(site, type, options).delete!
+          Librato.increment 'settings.delete', source: type
         end
       end
     end

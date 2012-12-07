@@ -133,16 +133,19 @@ class Site < ActiveRecord::Base
 
     before_transition :on => :suspend do |site, transition|
       Service::Site.new(site).suspend_billable_items
+      Librato.increment 'sites.events', source: 'suspend'
     end
 
     before_transition :on => :unsuspend do |site, transition|
       Service::Site.new(site).unsuspend_billable_items
+      Librato.increment 'sites.events', source: 'unsuspend'
     end
 
     before_transition :on => :archive do |site, transition|
       raise ActiveRecord::ActiveRecordError.new('Cannot be canceled when non-paid invoices present.') if site.invoices.not_paid.any?
 
       Service::Site.new(site).cancel_billable_items
+      Librato.increment 'sites.events', source: 'archive'
       site.archived_at = Time.now.utc
     end
   end

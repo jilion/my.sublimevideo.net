@@ -53,6 +53,7 @@ class UsersController < Devise::RegistrationsController
         set_flash_message :notice, flash_key || :updated
       end
       sign_in resource_name, @user, :bypass => true
+      Librato.increment 'users.events', source: 'update'
       redirect_to params[:more_info_form] ? sites_url : after_update_path_for(@user)
     else
       clean_up_passwords @user

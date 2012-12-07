@@ -17,6 +17,7 @@ module CDN
         else
           purge_dir(path)
         end
+        Librato.increment 'cdn.purge', source: 'voxcast'
       end
 
       def purge_path(path)

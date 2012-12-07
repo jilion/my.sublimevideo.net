@@ -12,8 +12,10 @@ module Service
       Stage.stages.each do |stage|
         if site.active? && stage >= site.accessible_stage
           new(site, stage, options).upload!
+          Librato.increment 'loader.update', source: stage
         else
           new(site, stage, options).delete!
+          Librato.increment 'loader.delete', source: stage
         end
       end
     end

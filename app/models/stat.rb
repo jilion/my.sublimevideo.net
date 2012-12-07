@@ -123,35 +123,56 @@ private
   def self.clean_and_increment_metrics(values)
     if values[:inc]
       values[:inc].each do |field, value|
-        increment(field, value) if field =~ /^pv\.(m|e|em|d|s|i)$/
+        inc_increment(field, value) if field =~ /^pv\.(m|e|em|d|s|i)$/
+      end
+      if values[:set]
+        if values[:set]['s']
+          Librato.increment "stats.page_visits.ssl_per_min", by: 1, source: 'ssl'
+        else
+          Librato.increment "stats.page_visits.ssl_per_min", by: 1, source: 'non-ssl'
+        end
+      end
+      if values[:add_to_set] && values[:add_to_set]['st'].present?
+        values[:add_to_set]['st'][:$each].each do |stage|
+          Librato.increment "stats.page_visits.stage_per_min", by: 1, source: key_to_string(:add_to_set, stage)
+        end
+      else
+        Librato.increment "stats.page_visits.stage_per_min", by: 1, source: 'stable'
       end
     end
     values[:videos].values.each do |video_inc|
       if video_inc.present?
         video_inc.each do |field, value|
-          increment(field, value)  if field =~ /^(vv|vl)\.(m|e|em|d|s|i)$/
+          inc_increment(field, value)  if field =~ /^(vv|vl)\.(m|e|em|d|s|i)$/
         end
       end
     end
   end
 
-  def self.increment(field, value)
+  def self.inc_increment(field, value)
     keys = field.split('.')
-    Librato.increment "stats.#{key_to_string(keys[0])}", by: value, source: key_to_string(keys[1])
+    Librato.increment "stats.#{key_to_string(:inc, keys[0])}", by: value, source: key_to_string(:inc, keys[1])
   end
 
-  def self.key_to_string(key)
+  def self.key_to_string(namespace, key)
     {
-      "pv" => "page_visits",
-      "vv" => "video_plays",
-      "vl" => "video_loads",
-      "m"  => "main",
-      "e"  => "extra",
-      "em" => "embed",
-      "d"  => "dev",
-      "s"  => "staging",
-      "i"  => "invalid"
-    }[key]
+      inc: {
+        "pv" => "page_visits",
+        "vv" => "video_plays",
+        "vl" => "video_loads",
+        "m"  => "main",
+        "e"  => "extra",
+        "em" => "embed",
+        "d"  => "dev",
+        "s"  => "staging",
+        "i"  => "invalid"
+      },
+      add_to_set: {
+        "s" => 'stable',
+        "b" => 'beta',
+        "a" => 'alpha'
+      }
+    }[namespace][key]
   end
 
 end

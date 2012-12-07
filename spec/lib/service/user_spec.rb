@@ -32,6 +32,11 @@ describe Service::User do
       Service::Newsletter.should delay(:sync_from_service).with(user.id)
       service.create
     end
+
+    it "increments metrics" do
+      Librato.should_receive(:increment).with('users.events', source: 'create')
+      service.create
+    end
   end
 
   describe '#suspend' do
@@ -56,6 +61,11 @@ describe Service::User do
 
     it 'delays the sending of the account suspended email' do
       UserMailer.should delay(:account_suspended).with(user.id)
+      service.suspend
+    end
+
+    it "increments metrics" do
+      Librato.should_receive(:increment).with('users.events', source: 'suspend')
       service.suspend
     end
   end
@@ -84,6 +94,11 @@ describe Service::User do
       UserMailer.should delay(:account_unsuspended).with(user.id)
       service.unsuspend
     end
+
+    it "increments metrics" do
+      Librato.should_receive(:increment).with('users.events', source: 'unsuspend')
+      service.unsuspend
+    end
   end
 
   describe '#archive' do
@@ -98,6 +113,11 @@ describe Service::User do
       feedback.stub(:save!)
       site1.stub(:archive!)
       site2.stub(:archive!)
+    end
+
+    it "increments metrics" do
+      Librato.should_receive(:increment).with('users.events', source: 'archive')
+      service.archive
     end
 
     context 'without feedback' do

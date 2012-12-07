@@ -9,6 +9,7 @@ module Service
         kit.site.touch(:settings_updated_at)
         Service::Settings.delay.update_all_types!(kit.site_id)
       end
+      Librato.increment 'kits.events', source: 'create'
       true
     rescue ActiveRecord::RecordInvalid
       false
@@ -23,6 +24,7 @@ module Service
         kit.site.touch(:settings_updated_at)
       end
       Service::Settings.delay.update_all_types!(kit.site_id)
+      Librato.increment 'kits.events', source: 'update'
       true
     rescue ActiveRecord::RecordInvalid
       false

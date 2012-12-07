@@ -2,7 +2,6 @@
 require 'spec_helper'
 
 describe Site, :addons do
-
   context "Factory" do
     subject { create(:site) }
 
@@ -250,6 +249,11 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'suspended').should have(1).item
         end
+
+        it "increments metrics" do
+          Librato.should_receive(:increment).with('sites.events', source: 'suspend')
+          site.suspend!
+        end
       end
 
       context 'with premium plan' do
@@ -286,12 +290,11 @@ describe Site, :addons do
         before do
           Service::Site.new(site).migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
           site.reload.billable_items.should have(13).items
+          site.suspend!
+          site.reload.billable_items.should have(13).items
         end
 
         it 'suspends all billable items' do
-          site.suspend!
-
-          site.reload.billable_items.should have(13).items
           site.unsuspend!
 
           site.reload.billable_items.should have(13).items
@@ -309,6 +312,11 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
         end
+
+        it "increments metrics" do
+          Librato.should_receive(:increment).with('sites.events', source: 'unsuspend')
+          site.unsuspend!
+        end
       end
 
       context 'with premium plan' do
@@ -316,12 +324,11 @@ describe Site, :addons do
         before do
           Service::Site.new(site).migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
           site.reload.billable_items.should have(13).items
+          site.suspend!
+          site.reload.billable_items.should have(13).items
         end
 
         it 'suspends all billable items' do
-          site.suspend!
-
-          site.reload.billable_items.should have(13).items
           site.unsuspend!
 
           site.reload.billable_items.should have(13).items
@@ -418,6 +425,11 @@ describe Site, :addons do
       it "clear all billable items" do
         site.archive!
         site.billable_items.should be_empty
+      end
+
+      it "increments metrics" do
+        Librato.should_receive(:increment).with('sites.events', source: 'archive')
+        site.archive!
       end
 
       context "with non-paid invoices" do

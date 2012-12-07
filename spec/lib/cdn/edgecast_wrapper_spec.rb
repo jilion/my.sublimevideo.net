@@ -17,11 +17,19 @@ describe CDN::EdgeCastWrapper do
   end
 
   context "with client" do
-    before { described_class.stub(:client) { edgecast } }
+    before {
+      described_class.stub(:client) { edgecast }
+      edgecast.stub(:purge)
+    }
 
     describe "purge" do
       it "calls purge on http_small_object" do
         edgecast.should_receive(:purge).with(:http_small_object, "http://#{described_class.cname}/filepath.js")
+        described_class.purge("/filepath.js")
+      end
+
+      it "increments metrics" do
+        Librato.should_receive(:increment).with('cdn.purge', source: 'edgecast')
         described_class.purge("/filepath.js")
       end
     end

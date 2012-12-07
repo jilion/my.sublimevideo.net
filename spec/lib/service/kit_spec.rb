@@ -44,6 +44,11 @@ describe Service::Kit do
       Service::Settings.should delay(:update_all_types!).with(kit.site_id)
       service.update(params)
     end
+
+    it "increments metrics" do
+      Librato.should_receive(:increment).with('kits.events', source: 'update')
+      service.update(params)
+    end
   end
 
 

@@ -64,6 +64,11 @@ describe Service::Site do
       Service::Rank.should delay(:set_ranks, queue: 'low').with(site.id)
       service.create
     end
+
+    it "increments metrics" do
+      Librato.should_receive(:increment).with('sites.events', source: 'create')
+      service.create
+    end
   end
 
   describe '#update' do
@@ -92,6 +97,11 @@ describe Service::Site do
 
     it 'delays the update of all settings types' do
       Service::Settings.should delay(:update_all_types!).with(site.id)
+      service.update(attributes)
+    end
+
+    it "increments metrics" do
+      Librato.should_receive(:increment).with('sites.events', source: 'update')
       service.update(attributes)
     end
   end

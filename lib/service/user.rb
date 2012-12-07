@@ -6,6 +6,8 @@ module Service
       user.save!
       # UserMailer.delay.welcome(user.id) # Temporary until we rewrite the email content
       Service::Newsletter.delay.sync_from_service(user.id)
+      Librato.increment 'users.events', source: 'create'
+      true
     rescue
       false
     end
@@ -16,6 +18,8 @@ module Service
         user.sites.active.map(&:suspend!)
       end
       UserMailer.delay.account_suspended(user.id)
+      Librato.increment 'users.events', source: 'suspend'
+      true
     rescue
       false
     end
@@ -26,6 +30,8 @@ module Service
         user.sites.suspended.map(&:unsuspend!)
       end
       UserMailer.delay.account_unsuspended(user.id)
+      Librato.increment 'users.events', source: 'unsuspend'
+      true
     rescue
       false
     end
@@ -45,6 +51,8 @@ module Service
       end
       Service::Newsletter.delay.unsubscribe(user.id)
       UserMailer.delay.account_archived(user.id)
+      Librato.increment 'users.events', source: 'archive'
+      true
     rescue
       false
     end
