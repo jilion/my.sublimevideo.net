@@ -136,7 +136,6 @@ namespace :one_time do
       Rake::Task['one_time:sites:add_already_paid_amount_to_balance_for_monthly_plans'].execute
       Rake::Task['one_time:sites:migrate_yearly_plans_to_monthly_plans'].execute
       Rake::Task['one_time:sites:create_default_kit_for_all_non_archived_sites'].execute
-      Rake::Task['one_time:sites:create_preview_kits'].execute
     end
 
     desc "For all non-archived site, extracts staging hostnames from extra domains"
@@ -167,6 +166,7 @@ namespace :one_time do
     # STEP 3
     desc "Step 3: one_time:sites:migrate_plans_to_addons"
     task migration_step_3: :environment do
+      Rake::Task['one_time:sites:create_preview_kits'].execute
       Rake::Task['one_time:sites:migrate_plans_to_addons'].execute
     end
 
