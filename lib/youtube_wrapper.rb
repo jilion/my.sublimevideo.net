@@ -9,6 +9,7 @@ YouTubeWrapper = Struct.new(:video_id) do
   private
 
   def video_info
+    Librato.increment 'video_info.call', source: 'youtube'
     self.class.client.video_by(video_id)
   rescue OpenURI::HTTPError
   end

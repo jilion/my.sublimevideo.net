@@ -45,7 +45,8 @@ module Service
         set_amount
         set_renew
 
-        invoice.save
+        invoice.save!
+        Librato.increment 'invoices.events', source: 'create'
       end
     end
 

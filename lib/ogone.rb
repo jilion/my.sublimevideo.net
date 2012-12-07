@@ -9,18 +9,22 @@ module Ogone
   class << self
 
     def store(*args)
+      Librato.increment 'payment_gateway.store_credit_card', source: 'ogone'
       gateway.store(*args)
     end
 
     def void(*args)
+      Librato.increment 'payment_gateway.void_authorization', source: 'ogone'
       gateway.void(*args)
     end
 
     def purchase(*args)
+      Librato.increment 'payment_gateway.purchase', source: 'ogone'
       gateway.purchase(*args)
     end
 
     def refund(*args)
+      Librato.increment 'payment_gateway.refund', source: 'ogone'
       gateway.refund(*args)
     end
 

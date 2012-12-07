@@ -13,6 +13,7 @@ class CampaignMonitorWrapper
       custom_params << { Key: 'user_id', Value: params[:user][:id] }
       custom_params << { Key: 'beta',    Value: params[:user][:beta] } if params[:user] && params[:user][:beta]
 
+      Librato.increment 'newsletter.subscribe', source: 'campaign_monitor'
       request do
         CreateSend::Subscriber.add(params[:list_id], params[:user][:email], params[:user][:name], custom_params, true)
       end
@@ -29,12 +30,14 @@ class CampaignMonitorWrapper
         memo << { EmailAddress: user[:email], Name: user[:name], CustomFields: custom_params }
       end
 
+      Librato.increment 'newsletter.import', source: 'campaign_monitor'
       request do
         CreateSend::Subscriber.import(params[:list_id], subscribers, false)
       end
     end
 
     def unsubscribe(params = {})
+      Librato.increment 'newsletter.unsubscribe', source: 'campaign_monitor'
       request do
         CreateSend::Subscriber.new(params[:list_id], params[:email]).unsubscribe
         true
@@ -42,6 +45,7 @@ class CampaignMonitorWrapper
     end
 
     def update(params = {})
+      Librato.increment 'newsletter.update', source: 'campaign_monitor'
       request do
         if subscriber = CreateSend::Subscriber.new(params[:list_id], params[:email])
           subscriber.update(params[:user][:email], params[:user][:name], [], params[:user][:newsletter])
@@ -50,6 +54,7 @@ class CampaignMonitorWrapper
     end
 
     def subscriber(email, list_id = CampaignMonitorWrapper.lists['sublimevideo']['list_id'])
+      Librato.increment 'newsletter.subscriber_lookup', source: 'campaign_monitor'
       request do
         CreateSend::Subscriber.get(list_id, email)
       end
@@ -70,7 +75,7 @@ class CampaignMonitorWrapper
     end
 
     def log_bad_request(ex)
-      Rails.logger.error "Campaign Monitor Bad request error: #{ex}"
+      Rails.logger.error "Campaign Monitor Bad request: #{ex}"
       Rails.logger.error "Error Code:    #{ex.data.Code}"
       Rails.logger.error "Error Message: #{ex.data.Message}"
     end

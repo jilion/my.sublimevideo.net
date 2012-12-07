@@ -30,6 +30,76 @@ describe BillableItem do
     it { should be_valid }
   end
 
+  describe 'Callbacks', :addons do
+    describe 'on create' do
+      %w[beta trial subscribed sponsored suspended].each do |new_state|
+        it "create a BillableItemActivity record with the #{new_state} state" do
+          expect {
+            create(:billable_item, site: site, item: @logo_addon_plan_1, state: new_state)
+          }.to change(BillableItemActivity, :count).by(1)
+          last_billable_item_activity = BillableItemActivity.last
+
+          last_billable_item_activity.item.should eq @logo_addon_plan_1
+          last_billable_item_activity.state.should eq new_state
+        end
+
+        it "increments metrics with #{new_state}" do
+          # Librato.should_receive(:increment).with("addons.#{new_state}", source: "#{@logo_addon_plan_1.addon.name}-#{@logo_addon_plan_1.name}")
+          Librato.should_receive(:increment).with('addons.events', source: new_state)
+
+          create(:billable_item, site: site, item: @logo_addon_plan_1, state: new_state)
+        end
+      end
+    end
+
+    describe 'on update' do
+      let(:billable_item) { create(:billable_item, site: site, item: @logo_addon_plan_1, state: 'beta') }
+
+      %w[trial subscribed sponsored suspended].each do |new_state|
+        it "create a BillableItemActivity record with the #{new_state} state" do
+        billable_item # eager load!
+          expect {
+            billable_item.update_attributes({ state: new_state }, without_protection: true)
+          }.to change(BillableItemActivity, :count).by(1)
+          last_billable_item_activity = BillableItemActivity.last
+
+          last_billable_item_activity.item.should eq @logo_addon_plan_1
+          last_billable_item_activity.state.should eq new_state
+        end
+
+        it "increments metrics with #{new_state}" do
+          # Librato.should_receive(:increment).with("addons.#{new_state}", source: "#{@logo_addon_plan_1.addon.name}-#{@logo_addon_plan_1.name}")
+          Librato.should_receive(:increment).with('addons.events', source: new_state)
+
+          create(:billable_item, site: site, item: @logo_addon_plan_1, state: new_state)
+        end
+      end
+    end
+
+    describe 'on delete' do
+      let(:billable_item) { create(:billable_item, site: site, item: @logo_addon_plan_1, state: 'beta') }
+
+      it "create a BillableItemActivity record with the 'canceled' state" do
+        billable_item # eager load!
+        expect {
+          billable_item.destroy
+        }.to change(BillableItemActivity, :count).by(1)
+        last_billable_item_activity = BillableItemActivity.last
+
+        last_billable_item_activity.item.should eq @logo_addon_plan_1
+        last_billable_item_activity.state.should eq 'canceled'
+      end
+
+      it "increments metrics with canceled" do
+        billable_item # eager load!
+        # Librato.should_receive(:increment).with('addons.canceled', source: "#{@logo_addon_plan_1.addon.name}-#{@logo_addon_plan_1.name}")
+        Librato.should_receive(:increment).with('addons.events', source: 'canceled')
+
+        billable_item.destroy
+      end
+    end
+  end
+
   describe 'Scopes', :addons do
     let(:site) { create(:site) }
     before do

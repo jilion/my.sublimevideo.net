@@ -9,6 +9,7 @@ VimeoWrapper = Struct.new(:video_id) do
   private
 
   def video_info
+    Librato.increment 'video_info.call', source: 'vimeo'
     Vimeo::Simple::Video.info(video_id).try(:first)
   end
 

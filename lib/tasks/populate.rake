@@ -154,12 +154,12 @@ namespace :user do
       return if email.nil?
 
       User.find_by_email(email).tap do |user|
-        date = if user.cc_expire_on == TimeUtil.current_month.last.to_date
+        date = if user.cc_expire_on == Time.now.utc.end_of_month.to_date
           puts "Update credit card for #{email}, make it expire in 2 years..."
           2.years.from_now
         else
           puts "Update credit card for #{email}, make it expire at the end of the month..."
-          TimeUtil.current_month.last
+          Time.now.utc.end_of_month.to_date
         end
         user.update_attributes({
           cc_type: 'visa',

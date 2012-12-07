@@ -23,11 +23,19 @@ class BillableItem < ActiveRecord::Base
   end
 
   after_save ->(billable_item) do
-    billable_item.site.billable_item_activities.create({ item: billable_item.item, state: billable_item.state }, as: :admin) if billable_item.state_changed?
+    if billable_item.state_changed?
+      billable_item.site.billable_item_activities.create({ item: billable_item.item, state: billable_item.state }, as: :admin)
+
+      # Librato.increment "addons.#{billable_item.state}", source: "#{billable_item.item_parent_kind}-#{billable_item.item.name}"
+      Librato.increment 'addons.events', source: billable_item.state
+    end
   end
 
   after_destroy ->(billable_item) do
     billable_item.site.billable_item_activities.create({ item: billable_item.item, state: 'canceled' }, as: :admin)
+
+    # Librato.increment 'addons.canceled', source: "#{billable_item.item_parent_kind}-#{billable_item.item.name}"
+    Librato.increment 'addons.events', source: billable_item.state
   end
 
   # ==========
@@ -47,6 +55,10 @@ class BillableItem < ActiveRecord::Base
 
   def active?
     ACTIVE_STATES.include?(state)
+  end
+
+  def item_parent_kind
+    item.is_a?(App::Design) ? 'design' : item.addon.name
   end
 
 end

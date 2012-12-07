@@ -85,6 +85,8 @@ module ZendeskWrapper
       end
 
       ticket.save!
+      Librato.increment 'support.new_ticket', source: 'zendesk'
+
       ticket
     end
 

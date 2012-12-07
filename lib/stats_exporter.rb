@@ -23,6 +23,7 @@ class StatsExporter
         file: csv_export
       )
       StatsExportMailer.export_ready(stats_export).deliver!
+      Librato.increment 'stats.export'
     end
   end
 
