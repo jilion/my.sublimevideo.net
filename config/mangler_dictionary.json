@@ -115,6 +115,7 @@
   // we use 3-letter keys instead use 2-letter keys.
   // first 2 letters: "a-zA-Z{2}" (unique to client)
   // third letter: "a-zA-Z" (unique to property)
+
   "anthony": "aaa",
   "NTHControls": "aab",
 
@@ -127,8 +128,8 @@
   "BLZStartController": "acc",
   "BLZControls": "acd",
 
-  "SVNActionButtons": "adb",
+  "SNYInfoController": "aeb",
 
-  "SNYInfoController": "aeb"
-
+  "df": "afa",
+  "DFBControls": "afb"
 }
