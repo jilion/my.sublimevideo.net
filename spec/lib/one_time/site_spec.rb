@@ -348,10 +348,13 @@ describe OneTime::Site do
       @site_test = create(:site).tap { |s| s.update_column(:token, SiteToken[:test]) }
       Service::Site.new(@site_www).send(:create_default_kit!)
       @site_www.save!
+      @site_www.default_kit.update_column(:name, 'Classic')
       Service::Site.new(@site_my).send(:create_default_kit!)
       @site_my.save!
+      @site_my.default_kit.update_column(:name, 'Classic')
       Service::Site.new(@site_test).send(:create_default_kit!)
       @site_test.save!
+      @site_test.default_kit.update_column(:name, 'Classic')
     end
 
     it 'creates preview kits for sublimevideo.net & my.sublimevideo.net' do
