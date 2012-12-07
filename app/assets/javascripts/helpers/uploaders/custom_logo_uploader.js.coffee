@@ -6,6 +6,8 @@ class MySublimeVideo.Helpers.Uploaders.CustomLogoUploader extends MySublimeVideo
 
     super @options
 
+    @originalDragDroptext = $('#dragdrop').html()
+
     @uploader.bind 'FilesAdded', (up, files) ->
       $.each files, (i, file) ->
         $('#notices').text ''
@@ -41,4 +43,5 @@ class MySublimeVideo.Helpers.Uploaders.CustomLogoUploader extends MySublimeVideo
     @uploader.bind 'FileUploaded', (up, file, response) =>
       $('#filelist').text ''
       $('#notices').text ''
+      $('#dragdrop').html @originalDragDroptext
       eval(response.response)
