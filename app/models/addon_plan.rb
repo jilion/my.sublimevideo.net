@@ -3,7 +3,7 @@ require_dependency 'stage'
 class AddonPlan < ActiveRecord::Base
   AVAILABILITIES = %w[hidden public custom] unless defined? AVAILABILITIES
 
-  attr_accessible :addon, :name, :price, :availability, :required_stage, :public_at, as: :admin
+  attr_accessible :addon, :name, :price, :availability, :required_stage, :stable_at, as: :admin
 
   belongs_to :addon
   has_many :components, through: :addon
@@ -19,7 +19,7 @@ class AddonPlan < ActiveRecord::Base
   validates :required_stage, inclusion: Stage.stages
   validates :price, numericality: true
 
-  scope :paid,   -> { where{ (public_at != nil) & (price > 0) } }
+  scope :paid,   -> { where{ (stable_at != nil) & (price > 0) } }
   scope :custom, -> { where{ availability == 'custom' } }
 
   def self.free_addon_plans(options = {})
@@ -42,6 +42,18 @@ class AddonPlan < ActiveRecord::Base
   end
 
   def available?(site)
+  def public?
+    availability.in?(%w[hidden public])
+  end
+
+  def beta?
+    !stable_at?
+  end
+
+  def free?
+    beta? || price.zero?
+  end
+
     case availability
     when 'hidden'
       false
@@ -53,23 +65,15 @@ class AddonPlan < ActiveRecord::Base
     end
   end
 
+  def title
+    I18n.t("addon_plans.#{addon.name}.#{name}")
+  end
+
   def settings_template_for(design)
     dependant_design_id = addon.design_dependent? ? design.id : nil
     plugin_id = App::Plugin.where(addon_id: addon.id, app_design_id: dependant_design_id).first.try(:id)
 
     settings_templates.where(app_plugin_id: plugin_id).first
-  end
-
-  def beta?
-    !public_at?
-  end
-
-  def free?
-    beta? || price.zero?
-  end
-
-  def title
-    I18n.t("addon_plans.#{addon.name}.#{name}")
   end
 end
 
@@ -83,7 +87,7 @@ end
 #  id             :integer          not null, primary key
 #  name           :string(255)      not null
 #  price          :integer          not null
-#  public_at      :datetime
+#  stable_at      :datetime
 #  required_stage :string(255)      default("stable"), not null
 #  updated_at     :datetime         not null
 #

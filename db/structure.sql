@@ -55,7 +55,7 @@ CREATE TABLE addon_plans (
     required_stage character varying(255) DEFAULT 'stable'::character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    public_at timestamp without time zone
+    stable_at timestamp without time zone
 );
 
 
@@ -244,7 +244,7 @@ CREATE TABLE app_designs (
     price integer NOT NULL,
     availability character varying(255) NOT NULL,
     required_stage character varying(255) DEFAULT 'stable'::character varying NOT NULL,
-    public_at timestamp without time zone,
+    stable_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -2468,3 +2468,5 @@ INSERT INTO schema_migrations (version) VALUES ('20121127154540');
 INSERT INTO schema_migrations (version) VALUES ('20121202170511');
 
 INSERT INTO schema_migrations (version) VALUES ('20121205172815');
+
+INSERT INTO schema_migrations (version) VALUES ('20121207133427');

@@ -3,7 +3,7 @@ require_dependency 'stage'
 class App::Design < ActiveRecord::Base
   AVAILABILITIES = %w[public custom] unless defined? AVAILABILITIES
 
-  attr_accessible :component, :skin_token, :name, :price, :availability, :required_stage, :public_at, as: :admin
+  attr_accessible :component, :skin_token, :name, :price, :availability, :required_stage, :stable_at, as: :admin
 
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
   has_many :billable_items, as: :item
@@ -31,7 +31,7 @@ class App::Design < ActiveRecord::Base
   end
 
   def beta?
-    !public_at?
+    !stable_at?
   end
 
   def free?
@@ -53,9 +53,9 @@ end
 #  id               :integer          not null, primary key
 #  name             :string(255)      not null
 #  price            :integer          not null
-#  public_at        :datetime
 #  required_stage   :string(255)      default("stable"), not null
 #  skin_token       :string(255)      not null
+#  stable_at        :datetime
 #  updated_at       :datetime         not null
 #
 # Indexes

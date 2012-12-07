@@ -9,7 +9,7 @@ describe AddonPlan do
   end
 
   describe 'Validations' do
-    [:addon, :name, :price, :availability, :required_stage, :public_at].each do |attr|
+    [:addon, :name, :price, :availability, :required_stage, :stable_at].each do |attr|
       it { should allow_mass_assignment_of(attr).as(:admin) }
     end
 
@@ -44,9 +44,9 @@ describe AddonPlan do
 
   describe 'Scopes' do
     before do
-      create(:addon_plan, price: 999, public_at: nil)
-      @addon_plan1 = create(:addon_plan, availability: 'custom', public_at: Time.now, price: 0)
-      @addon_plan2 = create(:addon_plan, availability: 'custom', public_at: Time.now, price: 999)
+      create(:addon_plan, price: 999, stable_at: nil)
+      @addon_plan1 = create(:addon_plan, availability: 'custom', stable_at: Time.now, price: 0)
+      @addon_plan2 = create(:addon_plan, availability: 'custom', stable_at: Time.now, price: 999)
     end
 
     describe '.paid' do
@@ -67,8 +67,8 @@ describe AddonPlan do
   end
 
   describe '#beta?' do
-    it { build(:addon_plan, public_at: nil).should be_beta }
-    it { build(:addon_plan, public_at: Time.now).should_not be_beta }
+    it { build(:addon_plan, stable_at: nil).should be_beta }
+    it { build(:addon_plan, stable_at: Time.now).should_not be_beta }
   end
 end
 
@@ -82,8 +82,8 @@ end
 #  id             :integer          not null, primary key
 #  name           :string(255)      not null
 #  price          :integer          not null
-#  public_at      :datetime
 #  required_stage :string(255)      default("stable"), not null
+#  stable_at      :datetime
 #  updated_at     :datetime         not null
 #
 # Indexes

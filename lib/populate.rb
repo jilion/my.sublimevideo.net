@@ -134,38 +134,38 @@ module Populate
           { name: 'action_svnet', token: 'sj.sj.adb', addon: 'ref-Addon-action', design: nil, component: 'ref-App::Component-svnet' }
         ],
         AddonPlan => [
-          { name: 'standard', price: 0, addon: 'ref-Addon-video_player', availability: 'hidden', public_at: nil },
+          { name: 'standard', price: 0, addon: 'ref-Addon-video_player', availability: 'hidden', stable_at: nil },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-lightbox', availability: 'hidden', public_at: Time.now.utc },
+          { name: 'standard', price: 0, addon: 'ref-Addon-lightbox', availability: 'hidden', stable_at: Time.now.utc },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-image_viewer', availability: 'hidden', required_stage: 'beta', public_at: nil },
+          { name: 'standard', price: 0, addon: 'ref-Addon-image_viewer', availability: 'hidden', required_stage: 'beta', stable_at: nil },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-preview_tools', availability: 'custom', required_stage: 'beta', public_at: nil },
+          { name: 'standard', price: 0, addon: 'ref-Addon-preview_tools', availability: 'custom', required_stage: 'beta', stable_at: nil },
 
-          { name: 'invisible', price: 0,    addon: 'ref-Addon-stats', availability: 'hidden',                         public_at: Time.now.utc },
-          { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats', availability: 'public',                         public_at: Time.now.utc },
-          # { name: 'disabled',  price: 1990, addon: 'ref-Addon-stats', availability: 'hidden', required_stage: 'beta', public_at: nil },
+          { name: 'invisible', price: 0,    addon: 'ref-Addon-stats', availability: 'hidden',                         stable_at: Time.now.utc },
+          { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats', availability: 'public',                         stable_at: Time.now.utc },
+          # { name: 'disabled',  price: 1990, addon: 'ref-Addon-stats', availability: 'hidden', required_stage: 'beta', stable_at: nil },
 
-          { name: 'sublime',  price: 0,    addon: 'ref-Addon-logo', availability: 'public',                         public_at: Time.now.utc },
-          { name: 'disabled', price: 990,  addon: 'ref-Addon-logo', availability: 'public',                         public_at: Time.now.utc },
-          { name: 'custom',   price: 1990, addon: 'ref-Addon-logo', availability: 'public', required_stage: 'beta', public_at: nil },
+          { name: 'sublime',  price: 0,    addon: 'ref-Addon-logo', availability: 'public',                         stable_at: Time.now.utc },
+          { name: 'disabled', price: 990,  addon: 'ref-Addon-logo', availability: 'public',                         stable_at: Time.now.utc },
+          { name: 'custom',   price: 1990, addon: 'ref-Addon-logo', availability: 'public', required_stage: 'beta', stable_at: nil },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-controls', availability: 'hidden', required_stage: 'beta', public_at: nil },
+          { name: 'standard', price: 0, addon: 'ref-Addon-controls', availability: 'hidden', required_stage: 'beta', stable_at: nil },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-initial', availability: 'hidden', required_stage: 'beta', public_at: nil },
+          { name: 'standard', price: 0, addon: 'ref-Addon-initial', availability: 'hidden', required_stage: 'beta', stable_at: nil },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-sharing', availability: 'public', required_stage: 'beta', public_at: nil },
+          { name: 'standard', price: 0, addon: 'ref-Addon-sharing', availability: 'public', required_stage: 'beta', stable_at: nil },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-api', availability: 'hidden', public_at: Time.now.utc },
+          { name: 'standard', price: 0, addon: 'ref-Addon-api', availability: 'hidden', stable_at: Time.now.utc },
 
-          { name: 'standard', price: 0,    addon: 'ref-Addon-support', availability: 'public', public_at: Time.now.utc },
-          { name: 'vip',      price: 9990, addon: 'ref-Addon-support', availability: 'public', public_at: Time.now.utc },
+          { name: 'standard', price: 0,    addon: 'ref-Addon-support', availability: 'public', stable_at: Time.now.utc },
+          { name: 'vip',      price: 9990, addon: 'ref-Addon-support', availability: 'public', stable_at: Time.now.utc },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-buy_action', availability: 'custom', required_stage: 'beta', public_at: nil },
+          { name: 'standard', price: 0, addon: 'ref-Addon-buy_action', availability: 'custom', required_stage: 'beta', stable_at: nil },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-info', availability: 'custom', required_stage: 'beta', public_at: nil },
+          { name: 'standard', price: 0, addon: 'ref-Addon-info', availability: 'custom', required_stage: 'beta', stable_at: nil },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-action', availability: 'custom', required_stage: 'beta', public_at: nil }
+          { name: 'standard', price: 0, addon: 'ref-Addon-action', availability: 'custom', required_stage: 'beta', stable_at: nil }
         ]
       }
 
