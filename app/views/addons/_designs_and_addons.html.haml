@@ -9,7 +9,7 @@
   = render 'addons/design', site: site, design: App::Design.get('classic')
   = render 'addons/design', site: site, design: App::Design.get('light')
   = render 'addons/design', site: site, design: App::Design.get('flat')
-  - App::Design.custom.select { |design| design.available?(site) }.each do |custom_design|
+  - App::Design.custom.select { |design| design.available_for_subscription?(site) }.each do |custom_design|
     = render 'addons/design', site: site, design: custom_design
 
   = render 'addons/addon', site: site, addon: Addon.get('logo')

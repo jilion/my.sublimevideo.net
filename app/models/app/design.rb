@@ -21,7 +21,7 @@ class App::Design < ActiveRecord::Base
     Rails.cache.fetch("app_design_#{name}") { where(name: name.to_s).first }
   end
 
-  def available?(site)
+  def available_for_subscription?(site)
     case availability
     when 'public'
       true

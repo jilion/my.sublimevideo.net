@@ -41,7 +41,6 @@ class AddonPlan < ActiveRecord::Base
     end
   end
 
-  def available?(site)
   def public?
     availability.in?(%w[hidden public])
   end
@@ -54,6 +53,7 @@ class AddonPlan < ActiveRecord::Base
     beta? || price.zero?
   end
 
+  def available_for_subscription?(site)
     case availability
     when 'hidden'
       false

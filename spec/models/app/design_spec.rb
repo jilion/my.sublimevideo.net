@@ -36,21 +36,22 @@ describe App::Design do
     it { described_class.paid.all.should eq [@paid] }
   end
 
-  describe '#available?' do
+  describe '#available_for_subscription?' do
     let(:site) { create(:site) }
     let(:custom_app_design) { create(:app_design, availability: 'custom') }
 
-    it { create(:app_design, availability: 'public').available?(site).should be_true }
-    it { custom_app_design.available?(site).should be_false }
+    it { create(:app_design, availability: 'public').available_for_subscription?(site).should be_true }
+    it { custom_app_design.available_for_subscription?(site).should be_false }
 
     context 'site has a billable item for this design' do
       before { create(:billable_item, item: custom_app_design, site: site) }
 
-      it { custom_app_design.available?(site).should be_true }
+      it { custom_app_design.available_for_subscription?(site).should be_true }
     end
   end
 
   describe '#beta?' do
+    it { build(:app_design, stable_at: nil).should be_beta }
     it { build(:app_design, stable_at: Time.now).should_not be_beta }
   end
 end

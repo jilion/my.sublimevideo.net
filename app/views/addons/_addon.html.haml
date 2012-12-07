@@ -1,15 +1,15 @@
-- visible_addon_plans = addon.plans.order(:price).select { |addon_plan| addon_plan.available?(site) }
-- unless visible_addon_plans.empty?
+- addon_plans_available_for_subscription = addon.plans.order(:price).select { |addon_plan| addon_plan.available_for_subscription?(site) }
+- unless addon_plans_available_for_subscription.empty?
   %tr
     %th{ colspan: 3 }= t("addons.#{addon.name}")
-  - visible_addon_plans.each do |addon_plan|
+  - addon_plans_available_for_subscription.each do |addon_plan|
     - addon_plan_is_sponsored = site.addon_plan_is_sponsored?(addon_plan)
     - price = addon_plan_is_sponsored || addon_plan.beta? ? 0 : addon_plan.price
     - non_uncheckable = addon_plan.free? || addon_plan_is_sponsored
 
     %tr{ class: highlighted_class(addon_plan) }
       %td
-        - if visible_addon_plans.size > 1
+        - if addon_plans_available_for_subscription.size > 1
           .radio_wrap
             = radio_button_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), data: { price: price }
             = label_tag "addon_plans[#{addon.name}]", addon_label_content(addon_plan)
