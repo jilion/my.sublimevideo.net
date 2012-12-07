@@ -158,12 +158,14 @@ module UserModules::CreditCard
       # Waiting for identification (3-D Secure)
       # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
       when '46'
+        Librato.increment 'credit_cards.3d_secure', source: payment_params['BRAND']
         @d3d_html = Base64.decode64(authorization_params['HTML_ANSWER'])
 
       # STATUS == 5, Authorized:
       #   The authorization has been accepted.
       #   An authorization code is available in the field "ACCEPTANCE".
       when '5'
+        Librato.increment 'credit_cards.stored', source: payment_params['BRAND']
         Ogone.void([authorization_params['PAYID'], 'RES'].join(';'))
         apply_pending_credit_card_info
 
@@ -171,6 +173,7 @@ module UserModules::CreditCard
       #   The authorization will be processed offline.
       #   This is the standard response if the merchant has chosen offline processing in his account configuration
       when '51'
+        Librato.increment 'credit_cards.waiting', source: payment_params['BRAND']
         @i18n_notice_and_alert = { notice: I18n.t('credit_card.errors.waiting') }
 
       # STATUS == 0, Invalid or incomplete:
@@ -179,18 +182,21 @@ module UserModules::CreditCard
       #   (list available at https://secure.ogone.com/ncol/paymentinfos1.asp).
       #   After correcting the error, the customer can retry the authorization process.
       when '0'
+        Librato.increment 'credit_cards.invalid', source: payment_params['BRAND']
         @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.invalid') }
 
       # STATUS == 2, Authorization refused:
       #   The authorization has been declined by the financial institution.
       #   The customer can retry the authorization process after selecting a different payment method (or card brand).
       when '2'
+        Librato.increment 'credit_cards.refused', source: payment_params['BRAND']
         @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.refused') }
 
       # STATUS == 1, Authorization canceled by client:
       #   The authorization has been canceled by the client (probably because the client failed to authenticate).
       #   The customer can retry the authorization process.
       when '1'
+        Librato.increment 'credit_cards.canceled', source: payment_params['BRAND']
         @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.canceled') }
 
       # STATUS == 52, Authorization not known:
@@ -198,6 +204,7 @@ module UserModules::CreditCard
       #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
       #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
       when '52'
+        Librato.increment 'credit_cards.uncertain', source: payment_params['BRAND']
         @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.unknown') }
         Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorization_params["PAYID"]}) has an uncertain state, please investigate quickly!")
 

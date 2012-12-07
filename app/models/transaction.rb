@@ -122,18 +122,20 @@ class Transaction < ActiveRecord::Base
   def process_payment_response(payment_params)
     @ogone_response_info = payment_params
 
-    case payment_params["STATUS"]
+    case payment_params['STATUS']
 
     # STATUS == 9, Payment requested:
     #   The payment has been accepted.
     #   An authorization code is available in the field "ACCEPTANCE".
     when "9"
+      Librato.increment 'payments.success', by: payment_params['amount'], source: payment_params['BRAND']
       self.succeed
 
     # STATUS == 51, Authorization waiting:
     #   The authorization will be processed offline.
     #   This is the standard response if the merchant has chosen offline processing in his account configuration
     when "51"
+      Librato.increment 'payments.waiting', by: payment_params['amount'], source: payment_params['BRAND']
       self.wait # add a waiting state for invoice & transaction
 
     # NCSTATUS == 5
@@ -153,6 +155,7 @@ class Transaction < ActiveRecord::Base
     # STATUS == 46, Waiting for identification (3-D Secure):
     # THIS SHOULD NEVER HAPPEN...
     when "0", "2", "46", "93"
+      Librato.increment 'payments.fail', by: payment_params['amount'], source: payment_params['BRAND']
       self.fail
 
     # STATUS == 52, Authorization not known; STATUS == 92, Payment uncertain:
@@ -160,6 +163,7 @@ class Transaction < ActiveRecord::Base
     #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
     #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
     when "52", "92"
+      Librato.increment 'payments.uncertain', by: payment_params['amount'], source: payment_params['BRAND']
       Notify.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
 
       self.wait
