@@ -1,17 +1,18 @@
-.lightbox
-  - addon_plan = site.addon_plan_for_addon_name('lightbox')
-  - settings_template = addon_plan.settings_template_for(kit.design).template
-  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :on_open, show_title: true)
-  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :overlay_opacity)
+- addon_plan = site.addon_plan_for_addon_name('lightbox')
+- if settings_template = addon_plan.settings_template_for(kit.design)
+  - settings_template = settings_template.template
+  .lightbox
+    = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :on_open, show_title: true)
+    = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :overlay_opacity)
 
-  - if settings_template.key?(:close_button_enable)
-    = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_enable, data: { master: 'lightbox-close_button_enable' })
-    .indent
-      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_visibility, data: { dependant: 'lightbox-close_button_enable' }, show_title: true)
-      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_position, data: { dependant: 'lightbox-close_button_enable' }, show_title: true)
+    - if settings_template.key?(:close_button_enable)
+      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_enable, data: { master: 'lightbox-close_button_enable' })
+      .indent
+        = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_visibility, data: { dependant: 'lightbox-close_button_enable' }, show_title: true)
+        = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_position, data: { dependant: 'lightbox-close_button_enable' }, show_title: true)
 
-  .actions.center{style: "padding-bottom: 20px"}
-    %a#lightbox-trigger.blue_button.sublime{ href: '#lightbox' } Test the lightbox
-    %video#lightbox{ poster: image_path("players/default_poster.png"), width: 640, height: 360, style: 'display:none' }
-      == <source src='//dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_1_360p.mp4' />
-      == <source src='//dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_1_360p.webm' />
+    .actions.center{style: "padding-bottom: 20px"}
+      %a#lightbox-trigger.blue_button.sublime{ href: '#lightbox' } Test the lightbox
+      %video#lightbox{ poster: image_path("players/default_poster.png"), width: 640, height: 360, style: 'display:none' }
+        == <source src='//dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_1_360p.mp4' />
+        == <source src='//dehqkotcrv4fy.cloudfront.net/videos/demo/midnight_sun_sv1_1_360p.webm' />

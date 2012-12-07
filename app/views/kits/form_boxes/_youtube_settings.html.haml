@@ -1,7 +1,7 @@
-.youtube
-  -#- addon_plan = site.addon_plan_for_addon_name('youtube')
-  -#- settings_template = addon_plan.settings_template_for(kit.design).template
-
-  -#.link
-  -#  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable_link, data: { master: 'sharing-enable_link' })
-  -#  .indent= kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :link_url, data: { dependant: 'sharing-enable_link' })
+- addon_plan = site.addon_plan_for_addon_name('youtube')
+- if settings_template = addon_plan.settings_template_for(kit.design)
+  - settings_template = settings_template.template
+  .youtube
+    -#.link
+    -#  = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable_link, data: { master: 'sharing-enable_link' })
+    -#  .indent= kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :link_url, data: { dependant: 'sharing-enable_link' })

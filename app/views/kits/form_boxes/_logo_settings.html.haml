@@ -1,20 +1,20 @@
-.logo
-  - addon_plan = site.addon_plan_for_addon_name('logo')
-  - settings_template = addon_plan.settings_template_for(kit.design).template
+- addon_plan = site.addon_plan_for_addon_name('logo')
+- if settings_template = addon_plan.settings_template_for(kit.design)
+  - settings_template = settings_template.template
+  .logo
+    - unless addon_plan.name == 'custom'
+      = hidden_field_tag "kit[addons][logo][type]", settings_template[:type][:default], class: 'previewable', data: { addon: 'logo', setting: 'type' }
+      = hidden_field_tag "kit[addons][logo][position]", settings_template[:position][:default], class: 'previewable', data: { addon: 'logo', setting: 'position' }
 
-  - unless addon_plan.name == 'custom'
-    = hidden_field_tag "kit[addons][logo][type]", settings_template[:type][:default], class: 'previewable', data: { addon: 'logo', setting: 'type' }
-    = hidden_field_tag "kit[addons][logo][position]", settings_template[:position][:default], class: 'previewable', data: { addon: 'logo', setting: 'position' }
+    - if addon_plan.name == 'sublime'
+      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :visibility, show_title: true)
 
-  - if addon_plan.name == 'sublime'
-    = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :visibility, show_title: true)
+    - elsif addon_plan.name == 'disabled'
+      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable, data: { master: 'logo-enable' })
+      .indent= kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :visibility, data: { dependant: 'logo-enable' })
 
-  - elsif addon_plan.name == 'disabled'
-    = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable, data: { master: 'logo-enable' })
-    .indent= kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :visibility, data: { dependant: 'logo-enable' })
-
-  - elsif addon_plan.name == 'custom'
-    = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable, data: { master: 'logo-enable' }, translation_key: :enable_custom)
-    .indent
-      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :type, data: { dependant: 'logo-enable' })
-      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :image_url, data: { dependant: 'logo-enable' }, partial: 'image_logo_custom')
+    - elsif addon_plan.name == 'custom'
+      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :enable, data: { master: 'logo-enable' }, translation_key: :enable_custom)
+      .indent
+        = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :type, data: { dependant: 'logo-enable' })
+        = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :image_url, data: { dependant: 'logo-enable' }, partial: 'image_logo_custom')
