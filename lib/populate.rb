@@ -516,7 +516,7 @@ module Populate
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_blizzard', template: sharing_template },
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_sony',     template: sharing_template },
 
-        # { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }, # no need to create an empty template
+        { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }, # no need to create an empty template
 
         { addon_plan: 'ref-AddonPlan-buy_action-standard',   plugin: 'ref-App::Plugin-buy_action_blizzard', template: buy_action_template }
       ]
