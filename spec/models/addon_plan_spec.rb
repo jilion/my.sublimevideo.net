@@ -45,12 +45,16 @@ describe AddonPlan do
   describe 'Scopes' do
     before do
       create(:addon_plan, price: 999, public_at: nil)
-      @addon_plan1 = create(:addon_plan, public_at: Time.now, price: 0)
-      @addon_plan2 = create(:addon_plan, public_at: Time.now, price: 999)
+      @addon_plan1 = create(:addon_plan, availability: 'custom', public_at: Time.now, price: 0)
+      @addon_plan2 = create(:addon_plan, availability: 'custom', public_at: Time.now, price: 999)
     end
 
     describe '.paid' do
       it { described_class.paid.should =~ [@addon_plan2] }
+    end
+
+    describe '.custom' do
+      it { described_class.custom.should =~ [@addon_plan1, @addon_plan2] }
     end
   end
 

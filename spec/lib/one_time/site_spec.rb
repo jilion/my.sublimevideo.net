@@ -132,19 +132,19 @@ describe OneTime::Site do
 
       # free check
       @site_free.reload.billable_items.should have(13).items
-      @site_free.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
-      @site_free.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
-      @site_free.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'beta').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
-      @site_free.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
+      @site_free.billable_items.app_designs.where(item_id: @classic_design.id).where(state: 'beta').should have(1).item
+      @site_free.billable_items.app_designs.where(item_id: @flat_design.id).where(state: 'beta').should have(1).item
+      @site_free.billable_items.app_designs.where(item_id: @light_design.id).where(state: 'beta').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1.id).where(state: 'beta').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1.id).where(state: 'beta').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @controls_addon_plan_1.id).where(state: 'beta').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @initial_addon_plan_1.id).where(state: 'beta').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1.id).where(state: 'beta').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @logo_addon_plan_1.id).where(state: 'subscribed').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @stats_addon_plan_1.id).where(state: 'subscribed').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1.id).where(state: 'subscribed').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @api_addon_plan_1.id).where(state: 'subscribed').should have(1).item
+      @site_free.billable_items.addon_plans.where(item_id: @support_addon_plan_1.id).where(state: 'subscribed').should have(1).item
 
       @site_free.billable_item_activities.should have(13).items
       @site_free.billable_item_activities.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
@@ -362,10 +362,33 @@ describe OneTime::Site do
       @site_test.kits.should have(PreviewKit.kit_ids.size).items
     end
 
-    PreviewKit.kit_ids.each do |design_name, kit_identifier|
-      it "creates preview kit #{I18n.t("app_designs.#{design_name}")} for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net" do
-        described_class.create_preview_kits
+    it 'sponsorize all custom add-on plans for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net' do
+      described_class.create_preview_kits
 
+      AddonPlan.includes(:addon).custom.each do |addon_plan|
+        @site_www.billable_items.addon_plans.where(item_id: addon_plan.id).where(state: 'sponsored').should have(1).item
+        @site_my.billable_items.addon_plans.where(item_id: addon_plan.id).where(state: 'sponsored').should have(1).item
+        @site_test.billable_items.addon_plans.where(item_id: addon_plan.id).where(state: 'sponsored').should have(1).item
+      end
+    end
+
+    it 'sponsorize all custom designs (in PreviewKit.kit_ids) for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net' do
+      described_class.create_preview_kits
+
+      PreviewKit.kit_ids.each do |design_name, kit_identifier|
+        design = App::Design.get(design_name)
+        next unless design.availability == 'custom'
+
+        @site_www.billable_items.app_designs.where(item_id: design.id).where(state: 'sponsored').should have(1).item
+        @site_my.billable_items.app_designs.where(item_id: design.id).where(state: 'sponsored').should have(1).item
+        @site_test.billable_items.app_designs.where(item_id: design.id).where(state: 'sponsored').should have(1).item
+      end
+    end
+
+    it "creates a preview kit for design in PreviewKit.kit_ids for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net" do
+      described_class.create_preview_kits
+
+      PreviewKit.kit_ids.each do |design_name, kit_identifier|
         kit = @site_www.kits.find_by_identifier(kit_identifier.to_s)
         kit.name.should eq I18n.t("app_designs.#{design_name}")
         kit.design.name.should eq design_name

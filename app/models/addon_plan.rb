@@ -19,7 +19,8 @@ class AddonPlan < ActiveRecord::Base
   validates :required_stage, inclusion: Stage.stages
   validates :price, numericality: true
 
-  scope :paid, -> { where{ (public_at != nil) & (price > 0) } }
+  scope :paid,   -> { where{ (public_at != nil) & (price > 0) } }
+  scope :custom, -> { where{ availability == 'custom' } }
 
   def self.free_addon_plans(options = {})
     options = { reject: [] }.merge(options)
@@ -35,7 +36,9 @@ class AddonPlan < ActiveRecord::Base
   end
 
   def self.get(addon_name, addon_plan_name)
-    Rails.cache.fetch("addon_plan_#{addon_name}_#{addon_plan_name}") { joins(:addon).where { (addon.name == addon_name.to_s) & (name == addon_plan_name.to_s) }.first }
+    Rails.cache.fetch("addon_plan_#{addon_name}_#{addon_plan_name}") do
+      joins(:addon).where { (addon.name == addon_name.to_s) & (name == addon_plan_name.to_s) }.first
+    end
   end
 
   def available?(site)

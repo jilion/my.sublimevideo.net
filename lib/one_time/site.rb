@@ -124,14 +124,24 @@ module OneTime
           if site = ::Site.find_by_token(SiteToken[subdomain])
             site.default_kit.update_column(:name, 'Classic')
 
+            addon_plans_to_sponsor = AddonPlan.includes(:addon).custom.inject({}) do |memo, addon_plan|
+              memo[addon_plan.addon.name] = addon_plan.id
+              memo
+            end
+
             PreviewKit.kit_ids.each do |design_name, kit_identifier|
               next if design_name == 'classic'
 
-              site.kits.create!({ name: I18n.t("app_designs.#{design_name}"), app_design_id: App::Design.get(design_name).id }, as: :admin)
+              design = App::Design.get(design_name)
+
+              if design.availability == 'custom'
+                Service::Site.new(site).update_billable_items({ design.name => design.id }, addon_plans_to_sponsor, force: 'sponsored')
+              end
+              site.kits.create!({ name: I18n.t("app_designs.#{design_name}"), app_design_id: design.id }, as: :admin)
               result << I18n.t("app_designs.#{design_name}")
             end
           end
-          text += "Created preview kits: ' + result.join(', ') + ' for sublimevideo.net\n"
+          text += "Created preview kits: ' + #{result.join(', ')} + ' for sublimevideo.net\n"
         end
 
         text
