@@ -1,5 +1,4 @@
 # coding: utf-8
-require_dependency 'time_util'
 require_dependency 'populate'
 
 namespace :db do
