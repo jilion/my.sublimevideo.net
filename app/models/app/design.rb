@@ -18,7 +18,7 @@ class App::Design < ActiveRecord::Base
   scope :paid,   -> { where { price > 0 } }
 
   def self.get(name)
-    Rails.cache.fetch("app_design_#{name}") { self.find_by_name(name.to_s) }
+    self.find_by_name(name.to_s)
   end
 
   def available_for_subscription?(site)

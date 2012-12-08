@@ -9,10 +9,8 @@ class App::SettingsTemplate < ActiveRecord::Base
   validates :addon_plan_id, uniqueness: { scope: :app_plugin_id }
 
   def self.get(addon_name, addon_plan_name, app_plugin_name)
-    Rails.cache.fetch("app_settings_template_#{addon_name}_#{addon_plan_name}_#{app_plugin_name}") do
-      if addon_plan = AddonPlan.get(addon_name, addon_plan_name)
-        joins(:plugin).where(addon_plan_id: addon_plan.id).where { plugin.name == app_plugin_name.to_s }.first
-      end
+    if addon_plan = AddonPlan.get(addon_name, addon_plan_name)
+      joins(:plugin).where(addon_plan_id: addon_plan.id).where { plugin.name == app_plugin_name.to_s }.first
     end
   end
 

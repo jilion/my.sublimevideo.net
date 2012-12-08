@@ -36,9 +36,7 @@ class AddonPlan < ActiveRecord::Base
   end
 
   def self.get(addon_name, addon_plan_name)
-    Rails.cache.fetch("addon_plan_#{addon_name}_#{addon_plan_name}") do
-      joins(:addon).where { (addon.name == addon_name.to_s) & (name == addon_plan_name.to_s) }.first
-    end
+    joins(:addon).where { (addon.name == addon_name.to_s) & (name == addon_plan_name.to_s) }.first
   end
 
   def public?

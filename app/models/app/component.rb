@@ -29,7 +29,7 @@ class App::Component < ActiveRecord::Base
   end
 
   def self.get(name)
-    Rails.cache.fetch("app_component_#{name}") { self.find_by_name(name.to_s) }
+    self.find_by_name(name.to_s)
   end
 
   def app_component?
