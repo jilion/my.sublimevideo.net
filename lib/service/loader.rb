@@ -70,10 +70,6 @@ module Service
       components_dependencies.select { |token, version| token != ::App::Component.app_component.token }
     end
 
-    def components_dependencies
-      @components_dependencies ||= ::App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
-    end
-
   private
 
     def generate_file
@@ -83,6 +79,10 @@ module Service
       file.print template.result(binding)
       file.flush
       file
+    end
+
+    def components_dependencies
+      @components_dependencies ||= ::App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
     end
 
     def template_file

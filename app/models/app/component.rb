@@ -25,7 +25,7 @@ class App::Component < ActiveRecord::Base
   validates :token, :name, presence: true, uniqueness: true
 
   def self.app_component
-    self.app.first
+    @app_component ||= self.app.first
   end
 
   def self.get(name)
