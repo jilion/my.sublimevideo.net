@@ -10,8 +10,6 @@ class App::Component < ActiveRecord::Base
   has_many :designs_sites, through: :designs, source: :sites
   has_many :plugins_sites, through: :plugins, source: :sites
 
-  scope :app, ->{ where(token: APP_TOKEN) }
-
   def sites
     # via_designs = designs_sites.scoped
     # site_designs = BillableItem.app_designs.where{site_id == sites.id}
@@ -25,11 +23,7 @@ class App::Component < ActiveRecord::Base
   validates :token, :name, presence: true, uniqueness: true
 
   def self.app_component
-    @app_component ||= self.app.first
-  end
-
-  def self.get(name)
-    self.find_by_name(name.to_s)
+    self.find_cached_by_token(APP_TOKEN)
   end
 
   def app_component?
@@ -38,6 +32,12 @@ class App::Component < ActiveRecord::Base
 
   def to_param
     token
+  end
+
+  include Cacheable
+  model_cache do
+    with_attribute :name, :token # App::Component.find_cached_by_name('')
+    with_association :versions   # component.cached_versions
   end
 
 end

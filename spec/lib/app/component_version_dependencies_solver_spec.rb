@@ -53,20 +53,20 @@ describe App::ComponentVersionDependenciesSolver do
   describe ".components_dependencies" do
     before do
       App::Component.stub(:app_component) { c_a }
-      c_a.stub(:versions) { [c_a_200, c_a_100, c_a_200alpha1, c_a_200beta1] }
+      c_a.stub(:cached_versions) { [c_a_200, c_a_100, c_a_200alpha1, c_a_200beta1] }
       c_a_100.stub(:dependencies) { {} }
       c_a_200.stub(:dependencies) { {} }
       c_a_200beta1.stub(:dependencies) { {} }
       c_a_200alpha1.stub(:dependencies) { {} }
-      c_c1.stub(:versions) { [c_c1_110, c_c1_100, c_c1_200alpha1, c_c1_200beta1] }
+      c_c1.stub(:cached_versions) { [c_c1_110, c_c1_100, c_c1_200alpha1, c_c1_200beta1] }
       c_c1_100.stub(:dependencies) { {} }
       c_c1_110.stub(:dependencies) { {} }
       c_c1_200alpha1.stub(:dependencies) { {} }
       c_c1_200beta1.stub(:dependencies) { {} }
-      c_c2.stub(:versions) { [c_c2_100, c_c2_200] }
+      c_c2.stub(:cached_versions) { [c_c2_100, c_c2_200] }
       c_c2_100.stub(:dependencies) { {} }
       c_c2_200.stub(:dependencies) { {} }
-      c_c3.stub(:versions) { [c_c3_100, c_c3_200] }
+      c_c3.stub(:cached_versions) { [c_c3_100, c_c3_200] }
       c_c3_100.stub(:dependencies) { {} }
       c_c3_200.stub(:dependencies) { {} }
     end
@@ -99,7 +99,7 @@ describe App::ComponentVersionDependenciesSolver do
 
         context "with app component dependency" do
           before do
-            App::Component.should_receive(:find_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0' } }
           end
@@ -111,7 +111,7 @@ describe App::ComponentVersionDependenciesSolver do
 
         context "with app component dependency with an unexistent dependencies" do
           before do
-            App::Component.should_receive(:find_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '3.0.0' } } # unexistent
           end
@@ -123,8 +123,8 @@ describe App::ComponentVersionDependenciesSolver do
 
         context "with app component dependency and another dependency" do
           before do
-            App::Component.should_receive(:find_by_name).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:find_by_name).with('c2') { c_c2 }
+            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:find_cached_by_name).with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '>= 1.0.0' } }
           end
@@ -136,8 +136,8 @@ describe App::ComponentVersionDependenciesSolver do
 
         context "with app component dependency and another dependency with version with an impossible dependency" do
           before do
-            App::Component.should_receive(:find_by_name).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:find_by_name).with('c2') { c_c2 }
+            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:find_cached_by_name).with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '>= 1.0.0' } }
             c_c2_200.stub(:dependencies) { { 'app' => '2.0.0' } } # impossible
@@ -150,9 +150,9 @@ describe App::ComponentVersionDependenciesSolver do
 
         context "with app component dependency and another dependency with another dependency" do
           before do
-            App::Component.should_receive(:find_by_name).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:find_by_name).with('c2') { c_c2 }
-            App::Component.should_receive(:find_by_name).with('c3') { c_c3 }
+            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:find_cached_by_name).with('c2') { c_c2 }
+            App::Component.should_receive(:find_cached_by_name).with('c3') { c_c3 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '>= 1.0.0' } }
             c_c2_200.stub(:dependencies) { { 'app' => '1.0.0', 'c3' => '1.0.0' } }
@@ -165,8 +165,8 @@ describe App::ComponentVersionDependenciesSolver do
 
         context "with app component dependency with a new version impossible to solve" do
           before do
-            App::Component.should_receive(:find_by_name).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:find_by_name).with('c2') { c_c2 }
+            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:find_cached_by_name).with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '1.0.0' } }
             c_c2_100.stub(:dependencies) { { 'app' => '2.0.0' } }
@@ -180,8 +180,8 @@ describe App::ComponentVersionDependenciesSolver do
 
         context "with app component dependency impossible to solve" do
           before do
-            App::Component.should_receive(:find_by_name).any_number_of_times.with('app') { c_a }
-            App::Component.should_receive(:find_by_name).any_number_of_times.with('c2') { c_c2 }
+            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('c2') { c_c2 }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0', 'c2' => '1.0.0' } }
             c_c2_100.stub(:dependencies) { { 'app' => '2.0.0' } }
@@ -201,7 +201,7 @@ describe App::ComponentVersionDependenciesSolver do
 
         context "with app component dependency and another dependency" do
           before do
-            App::Component.should_receive(:find_by_name).any_number_of_times.with('app') { c_a }
+            App::Component.should_receive(:find_cached_by_name).any_number_of_times.with('app') { c_a }
             c_c1_100.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_110.stub(:dependencies) { { 'app' => '1.0.0' } }
             c_c1_200alpha1.stub(:dependencies) { { 'app' => '2.0.0-alpha.1' } }

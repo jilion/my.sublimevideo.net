@@ -39,12 +39,6 @@ describe App::Component, :fog_mock do
   end
 
   describe "Scopes" do
-    describe "app" do
-      it "returns app component" do
-        component
-        App::Component.app.first.should eq(component)
-      end
-    end
   end
 
   describe "Validations" do
@@ -63,14 +57,6 @@ describe App::Component, :fog_mock do
         it { should validate_uniqueness_of(attr) }
       end
     end
-  end
-
-  describe '.get' do
-    before do
-      @app_component = create(:app_component, name: 'foo')
-    end
-
-    it { described_class.get('foo').should eq @app_component }
   end
 
   describe "#app_component" do

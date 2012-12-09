@@ -14,6 +14,7 @@ gem 'pg'
 gem 'squeel'
 gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
 gem 'mongoid'
+gem 'simple_cacheable', require: 'cacheable'
 
 # Views
 gem 'haml'
