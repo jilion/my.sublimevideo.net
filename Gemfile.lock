@@ -130,6 +130,10 @@ GEM
       xml-simple
       xml-simple
     bcrypt-ruby (3.0.1)
+    better_errors (0.0.8)
+      coderay
+      erubis
+    binding_of_caller (0.6.8)
     bourne (1.1.2)
       mocha (= 0.10.5)
     brakeman (1.8.3)
@@ -526,8 +530,6 @@ GEM
       redis-namespace
     signature (0.1.6)
     silent-postgres (0.1.1)
-    simple_cacheable (1.3.1)
-      rails (>= 3.0.0)
     simple_oauth (0.1.9)
     sinatra (1.3.3)
       rack (~> 1.3, >= 1.3.6)
@@ -645,6 +647,8 @@ DEPENDENCIES
   array_stats
   asset_sync
   aws
+  better_errors
+  binding_of_caller
   brakeman
   bundler
   capybara
@@ -737,7 +741,6 @@ DEPENDENCIES
   show_me_the_cookies
   sidekiq
   silent-postgres
-  simple_cacheable
   sinatra
   slim
   snail

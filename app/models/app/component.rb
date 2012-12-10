@@ -10,20 +10,21 @@ class App::Component < ActiveRecord::Base
   has_many :designs_sites, through: :designs, source: :sites
   has_many :plugins_sites, through: :plugins, source: :sites
 
-  def sites
-    # via_designs = designs_sites.scoped
-    # site_designs = BillableItem.app_designs.where{site_id == sites.id}
-    # via_plugins = plugins_sites.where{app_plugins.app_design_id.in(site_designs.select{item_id}) | app_plugins.app_design_id.eq(nil)}
-    # Site.where{ id.in(via_designs.select{id}) | id.in(via_plugins.select{id}) }
-
-    # Query via plugins is too slow and useless for now
-    designs_sites.scoped
-  end
-
   validates :token, :name, presence: true, uniqueness: true
 
+  after_touch :clear_caches
+  after_save :clear_caches
+
   def self.app_component
-    self.find_cached_by_token(APP_TOKEN)
+    Rails.cache.fetch [self, 'app_component'] do
+      self.where(token: APP_TOKEN).first
+    end
+  end
+
+  def self.find_cached_by_name(name)
+    Rails.cache.fetch [self, 'find_cached_by_name'] do
+      self.where(name: name).first
+    end
   end
 
   def app_component?
@@ -34,10 +35,27 @@ class App::Component < ActiveRecord::Base
     token
   end
 
-  include Cacheable
-  model_cache do
-    with_attribute :name, :token # App::Component.find_cached_by_name('')
-    with_association :versions   # component.cached_versions
+  def cached_versions
+    Rails.cache.fetch [self, 'versions'] do
+      versions.all
+    end
+  end
+
+  def sites
+    # via_designs = designs_sites.scoped
+    # site_designs = BillableItem.app_designs.where{site_id == sites.id}
+    # via_plugins = plugins_sites.where{app_plugins.app_design_id.in(site_designs.select{item_id}) | app_plugins.app_design_id.eq(nil)}
+    # Site.where{ id.in(via_designs.select{id}) | id.in(via_plugins.select{id}) }
+
+    # Query via plugins is too slow and useless for now
+    designs_sites.scoped
+  end
+
+  private
+
+  def clear_caches
+    Rails.cache.delete [self.class, 'app_component']
+    Rails.cache.delete [self.class, 'find_cached_by_name']
   end
 
 end

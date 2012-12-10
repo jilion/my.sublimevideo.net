@@ -14,7 +14,6 @@ gem 'pg'
 gem 'squeel'
 gem 'activerecord-postgres-hstore', github: 'softa/activerecord-postgres-hstore'
 gem 'mongoid'
-gem 'simple_cacheable', require: 'cacheable'
 
 # Views
 gem 'haml'
@@ -152,6 +151,8 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'debugger'
   gem 'timecop'
+  gem 'better_errors'
+  gem 'binding_of_caller'
 
   # Javascript test
   gem 'jasminerice'
