@@ -10,9 +10,15 @@ class App::SettingsTemplate < ActiveRecord::Base
 
   validates :addon_plan_id, uniqueness: { scope: :app_plugin_id }
 
-  def self.find_cached_by_addon_plan_and_plugin_name(addon_plan, plugin_name)
-    Rails.cache.fetch [self, 'find_cached_by_addon_plan_and_plugin_name', addon_plan, plugin_name] do
-      addon_plan.settings_templates.includes(:plugin).where { plugin.name == plugin_name.to_s }.first
+  def self.find_cached_by_addon_plan_and_plugin_name(addon_plan, plugin_name = nil)
+    if plugin_name.blank?
+      Rails.cache.fetch [self, 'find_cached_by_addon_plan', addon_plan] do
+        addon_plan.settings_templates.first
+      end
+    else
+      Rails.cache.fetch [self, 'find_cached_by_addon_plan_and_plugin_name', addon_plan, plugin_name] do
+        addon_plan.settings_templates.includes(:plugin).where { plugin.name == plugin_name.to_s }.first
+      end
     end
   end
 
@@ -23,7 +29,8 @@ class App::SettingsTemplate < ActiveRecord::Base
   private
 
   def clear_caches
-    Rails.cache.clear [self.class, 'find_cached_by_addon_plan_and_plugin_name', addon_plan, plugin.name]
+    Rails.cache.clear [self.class, 'find_cached_by_addon_plan', addon_plan]
+    Rails.cache.clear [self.class, 'find_cached_by_addon_plan_and_plugin_name', addon_plan, plugin.try(:name)]
   end
 
 end
