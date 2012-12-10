@@ -346,23 +346,28 @@ describe OneTime::Site do
       @site_www  = create(:site).tap { |s| s.update_column(:token, SiteToken[:www]) }
       @site_my   = create(:site).tap { |s| s.update_column(:token, SiteToken[:my]) }
       @site_test = create(:site).tap { |s| s.update_column(:token, SiteToken[:test]) }
+      @site_df   = create(:site).tap { |s| s.update_column(:token, 's96w44sn') }
+
       Service::Site.new(@site_www).send(:create_default_kit!)
       @site_www.save!
-      @site_www.default_kit.update_column(:name, 'Classic')
+
       Service::Site.new(@site_my).send(:create_default_kit!)
       @site_my.save!
-      @site_my.default_kit.update_column(:name, 'Classic')
+
       Service::Site.new(@site_test).send(:create_default_kit!)
       @site_test.save!
-      @site_test.default_kit.update_column(:name, 'Classic')
+
+      Service::Site.new(@site_df).send(:create_default_kit!)
+      @site_df.save!
     end
 
     it 'creates preview kits for sublimevideo.net & my.sublimevideo.net' do
       described_class.create_preview_kits
 
-      @site_www.kits.should have(PreviewKit.kit_names.size).items
-      @site_my.kits.should have(PreviewKit.kit_names.size).items
-      @site_test.kits.should have(PreviewKit.kit_names.size).items
+      @site_www.kits.should have(8).items
+      @site_my.kits.should have(8).items
+      @site_test.kits.should have(9).items
+      @site_df.kits.should have(2).items
     end
 
     it 'sponsorize all custom add-on plans for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net' do
@@ -382,9 +387,18 @@ describe OneTime::Site do
         design = App::Design.get(design_name)
         next unless design.availability == 'custom'
 
-        @site_www.billable_items.app_designs.where(item_id: design.id).where(state: 'sponsored').should have(1).item
-        @site_my.billable_items.app_designs.where(item_id: design.id).where(state: 'sponsored').should have(1).item
-        @site_test.billable_items.app_designs.where(item_id: design.id).where(state: 'sponsored').should have(1).item
+        unless design_name.in?(%w[blizzard df])
+          @site_www.billable_items.app_designs.where(item_id: design.id).where(state: 'sponsored').should have(1).item
+          @site_my.billable_items.app_designs.where(item_id: design.id).where(state: 'sponsored').should have(1).item
+        end
+
+        unless design_name == 'df'
+          @site_test.billable_items.app_designs.where(item_id: design.id).where(state: 'sponsored').should have(1).item
+        end
+
+        if design_name == 'df'
+          @site_df.billable_items.app_designs.where(item_id: design.id).where(state: 'sponsored').should have(1).item
+        end
       end
     end
 
@@ -392,17 +406,23 @@ describe OneTime::Site do
       described_class.create_preview_kits
 
       PreviewKit.kit_names.each do |design_name|
-        kit = @site_www.kits.find_by_identifier(PreviewKit.kit_identifer(design_name))
-        kit.name.should eq I18n.t("app_designs.#{design_name}")
-        kit.design.name.should eq design_name
+        unless design_name.in?(%w[blizzard df])
+          kit = @site_www.kits.find_by_name(I18n.t("app_designs.#{design_name}"))
+          kit.design.name.should eq design_name
 
-        kit = @site_my.kits.find_by_identifier(PreviewKit.kit_identifer(design_name))
-        kit.name.should eq I18n.t("app_designs.#{design_name}")
-        kit.design.name.should eq design_name
+          kit = @site_my.kits.find_by_name(I18n.t("app_designs.#{design_name}"))
+          kit.design.name.should eq design_name
+        end
 
-        kit = @site_test.kits.find_by_identifier(PreviewKit.kit_identifer(design_name))
-        kit.name.should eq I18n.t("app_designs.#{design_name}")
-        kit.design.name.should eq design_name
+        unless design_name == 'df'
+          kit = @site_test.kits.find_by_name(I18n.t("app_designs.#{design_name}"))
+          kit.design.name.should eq design_name
+        end
+
+        if design_name == 'df'
+          kit = @site_df.kits.find_by_name(I18n.t("app_designs.#{design_name}"))
+          kit.design.name.should eq design_name
+        end
       end
     end
   end

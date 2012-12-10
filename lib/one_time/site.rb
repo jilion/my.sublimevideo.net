@@ -119,27 +119,50 @@ module OneTime
       # TODO: Remove after launch
       def create_preview_kits
         text = ''
-        [:www, :my, :test].each do |subdomain|
+        [:www, :my, :test, 's96w44sn'].each do |subdomain_or_token|
           result = []
-          if site = ::Site.find_by_token(SiteToken[subdomain])
+          if site = ::Site.find_by_token(subdomain_or_token.is_a?(Symbol) ? SiteToken[subdomain_or_token] : subdomain_or_token)
             site.default_kit.update_column(:name, 'Classic')
 
             designs_to_sponsor = App::Design.custom.inject({}) do |memo, design|
-              memo[design.name] = design.id
+              case subdomain_or_token
+              when :test
+                memo[design.name] = design.id unless design.name == 'df'
+              when Symbol
+                memo[design.name] = design.id unless design.name.in?(%w[blizzard df])
+              when 's96w44sn' # DF
+                memo[design.name] = design.id if design.name == 'df'
+              end
               memo
             end
-            addon_plans_to_sponsor = AddonPlan.includes(:addon).custom.inject({}) do |memo, addon_plan|
-              memo[addon_plan.addon.name] = addon_plan.id
-              memo
+
+            addon_plans_to_sponsor = if subdomain_or_token == 's96w44sn' # DF
+              { 'logo' => AddonPlan.get('logo', 'disabled').id }
+            else
+              AddonPlan.includes(:addon).custom.inject({}) do |memo, addon_plan|
+                memo[addon_plan.addon.name] = addon_plan.id unless subdomain_or_token == 's96w44sn'
+                memo
+              end
             end
             Service::Site.new(site).update_billable_items(designs_to_sponsor, addon_plans_to_sponsor, allow_custom: true, force: 'sponsored')
 
             PreviewKit.kit_names.each do |design_name|
               next if design_name == 'classic'
 
-              design = App::Design.get(design_name)
-              site.kits.create!({ name: I18n.t("app_designs.#{design_name}"), app_design_id: design.id }, as: :admin)
-              result << I18n.t("app_designs.#{design_name}")
+              create_kit = case subdomain_or_token
+              when :test
+                design_name != 'df'
+              when Symbol
+                !design_name.in?(%w[blizzard df])
+              when 's96w44sn' # DF
+                design_name == 'df'
+              end
+
+              if create_kit
+                design = App::Design.get(design_name)
+                site.kits.create!({ name: I18n.t("app_designs.#{design_name}"), app_design_id: design.id }, as: :admin)
+                result << I18n.t("app_designs.#{design_name}")
+              end
             end
           end
           text += "Created preview kits: ' + #{result.join(', ')} + ' for {'www','my','test'}.sublimevideo.net\n"

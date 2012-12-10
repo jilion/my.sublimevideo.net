@@ -251,6 +251,7 @@ describe Site, :addons do
         end
 
         it "increments metrics" do
+          Librato.stub(:increment)
           Librato.should_receive(:increment).with('sites.events', source: 'suspend')
           site.suspend!
         end
@@ -314,6 +315,7 @@ describe Site, :addons do
         end
 
         it "increments metrics" do
+          Librato.stub(:increment)
           Librato.should_receive(:increment).with('sites.events', source: 'unsuspend')
           site.unsuspend!
         end
