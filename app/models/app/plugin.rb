@@ -12,7 +12,7 @@ class App::Plugin < ActiveRecord::Base
   validates :addon_id, uniqueness: { scope: :app_design_id }
 
   def self.get(name)
-    self.find_by_name(name.to_s)
+    Rails.cache.fetch("app_plugin_#{name}") { self.find_by_name(name.to_s) }
   end
 
 end

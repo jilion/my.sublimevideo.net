@@ -14,7 +14,7 @@ class Addon < ActiveRecord::Base
   scope :with_paid_plans, -> { includes(:plans).merge(AddonPlan.paid) }
 
   def self.get(name)
-    self.find_by_name(name.to_s)
+    Rails.cache.fetch("addon_#{name}") { self.find_by_name(name.to_s) }
   end
 
   def free_plan
