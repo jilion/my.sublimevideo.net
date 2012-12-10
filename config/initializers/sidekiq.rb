@@ -1,5 +1,5 @@
 Sidekiq.configure_server do |config|
-  config.redis = { size: 20 } # for worker dyno
+  config.redis = { size: 25 } # for worker dyno
   # http://mongoid.org/en/mongoid/docs/tips.html#sidekiq
   config.server_middleware do |chain|
     chain.add Kiqstand::Middleware
