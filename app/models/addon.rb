@@ -7,7 +7,7 @@ class Addon < ActiveRecord::Base
   has_many :components, through: :plugins
   has_many :sites, through: :plans
 
-  after_save :clear_cache
+  after_save :clear_caches
 
   validates :name, presence: true
   validates :name, uniqueness: true
@@ -35,8 +35,8 @@ class Addon < ActiveRecord::Base
 
   private
 
-  def clear_cache
-    Rails.cache.clear
+  def clear_caches
+    Rails.cache.clear [self.class, 'find_cached_by_name', name]
   end
 end
 

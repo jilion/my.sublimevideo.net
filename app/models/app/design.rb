@@ -14,7 +14,7 @@ class App::Design < ActiveRecord::Base
   validates :availability, inclusion: AVAILABILITIES
   validates :required_stage, inclusion: Stage.stages
 
-  after_save :clear_cache
+  after_save :clear_caches
 
   scope :custom, -> { where { availability == 'custom' } }
   scope :paid,   -> { where { price > 0 } }
@@ -56,8 +56,8 @@ class App::Design < ActiveRecord::Base
 
   private
 
-  def clear_cache
-    Rails.cache.clear
+  def clear_caches
+    Rails.cache.clear [self.class, 'find_cached_by_name', name]
   end
 end
 

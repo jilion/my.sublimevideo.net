@@ -8,7 +8,7 @@ class App::Plugin < ActiveRecord::Base
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
   has_many :sites, through: :addon
 
-  after_save :clear_cache
+  after_save :clear_caches
 
   validates :addon, :component, presence: true
   validates :addon_id, uniqueness: { scope: :app_design_id }
@@ -25,8 +25,8 @@ class App::Plugin < ActiveRecord::Base
 
   private
 
-  def clear_cache
-    Rails.cache.clear
+  def clear_caches
+    Rails.cache.clear [self.class, 'find_cached_by_name', name]
   end
 
 end

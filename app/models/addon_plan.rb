@@ -13,7 +13,7 @@ class AddonPlan < ActiveRecord::Base
 
   delegate :kind, to: :addon
 
-  after_save :clear_cache
+  after_save :clear_caches
 
   validates :addon, :name, :price, presence: true
   validates :name, uniqueness: { scope: :addon_id }
@@ -84,8 +84,8 @@ class AddonPlan < ActiveRecord::Base
 
   private
 
-  def clear_cache
-    Rails.cache.clear
+  def clear_caches
+    Rails.cache.clear [self.class, 'find_cached_by_addon_name_and_name', addon.name, name]
   end
 end
 
