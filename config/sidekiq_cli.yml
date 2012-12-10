@@ -2,9 +2,9 @@
 #   sidekiq -C config.yml
 ---
 :verbose: true
-:concurrency:  50
+:concurrency:  100
 :require: '.'
-:timeout: 8
+:timeout: 60
 :queues:
   - [loader, 1]
   - [low, 1]

@@ -1,7 +1,3 @@
-Sidekiq.configure_client do |config|
-  config.poll_interval = 5
-end
-
 Sidekiq.configure_server do |config|
   config.redis = { size: 20 } # for worker dyno
   # http://mongoid.org/en/mongoid/docs/tips.html#sidekiq
@@ -11,5 +7,6 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
+  config.poll_interval = 1
   config.redis = { size: 2 } # for web dyno
 end
