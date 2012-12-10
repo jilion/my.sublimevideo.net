@@ -135,3 +135,4 @@ $(document).ready ->
     SublimeVideo.documentReady()
     MySublimeVideo.documentReady()
     MySublimeVideo.prepareVideosAndLightboxes()
+    SublimeVideo.UI.updateActiveItemMenus()
