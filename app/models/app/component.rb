@@ -12,8 +12,8 @@ class App::Component < ActiveRecord::Base
 
   validates :token, :name, presence: true, uniqueness: true
 
-  after_touch :clear_caches
-  after_save :clear_caches
+  after_touch :clear_cache
+  after_save :clear_cache
 
   def self.app_component
     Rails.cache.fetch [self, 'app_component'] do
@@ -22,9 +22,13 @@ class App::Component < ActiveRecord::Base
   end
 
   def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name'] do
+    Rails.cache.fetch [self, 'find_cached_by_name', name] do
       self.where(name: name).first
     end
+  end
+
+  class << self
+    alias_method :get, :find_cached_by_name
   end
 
   def app_component?
@@ -53,9 +57,8 @@ class App::Component < ActiveRecord::Base
 
   private
 
-  def clear_caches
-    Rails.cache.delete [self.class, 'app_component']
-    Rails.cache.delete [self.class, 'find_cached_by_name']
+  def clear_cache
+    Rails.cache.clear
   end
 
 end

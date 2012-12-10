@@ -35,29 +35,31 @@ class KitExhibit < DisplayCase::Exhibit
     params[:settings] = self.settings
     params[:setting]  = self.settings[params[:addon].name][params[:setting_key]] rescue nil
 
-    if params[:partial]
-      template.render("kits/inputs/#{params[:partial]}", kit: self, params: params)
-    else
-      case params[:setting_template][:type]
-      when 'boolean'
-        if params[:setting_template][:values].many?
-          template.render('kits/inputs/check_box', kit: self, params: params)
-        end
-      when 'float'
-        template.render('kits/inputs/range', kit: self, params: params)
-      when 'string'
-        if params[:setting_template][:values].many?
-          template.render('kits/inputs/radios', kit: self, params: params)
-        end
-      when 'url'
-        template.render('kits/inputs/text', kit: self, params: params)
-      when 'image'
-        template.render('kits/inputs/image', kit: self, params: params)
-      when 'size'
-        if params[:setting_key] =~ /width\z/
-          template.render('kits/inputs/size', kit: self, params: params)
-        end
-      end || ''
+    if params[:setting_template].present?
+      if params[:partial]
+        template.render("kits/inputs/#{params[:partial]}", kit: self, params: params)
+      else
+        case params[:setting_template][:type]
+        when 'boolean'
+          if params[:setting_template][:values].many?
+            template.render('kits/inputs/check_box', kit: self, params: params)
+          end
+        when 'float'
+          template.render('kits/inputs/range', kit: self, params: params)
+        when 'string'
+          if params[:setting_template][:values].many?
+            template.render('kits/inputs/radios', kit: self, params: params)
+          end
+        when 'url'
+          template.render('kits/inputs/text', kit: self, params: params)
+        when 'image'
+          template.render('kits/inputs/image', kit: self, params: params)
+        when 'size'
+          if params[:setting_key] =~ /width\z/
+            template.render('kits/inputs/size', kit: self, params: params)
+          end
+        end || ''
+      end
     end
   end
 

@@ -14,11 +14,19 @@ class App::Design < ActiveRecord::Base
   validates :availability, inclusion: AVAILABILITIES
   validates :required_stage, inclusion: Stage.stages
 
+  after_save :clear_cache
+
   scope :custom, -> { where { availability == 'custom' } }
   scope :paid,   -> { where { price > 0 } }
 
-  def self.get(name)
-    Rails.cache.fetch("app_design_#{name}") { self.find_by_name(name.to_s) }
+  def self.find_cached_by_name(name)
+    Rails.cache.fetch [self, 'find_cached_by_name', name] do
+      self.where(name: name.to_s).first
+    end
+  end
+
+  class << self
+    alias_method :get, :find_cached_by_name
   end
 
   def available_for_subscription?(site)
@@ -44,6 +52,12 @@ class App::Design < ActiveRecord::Base
 
   def title
     I18n.t("app_designs.#{name}")
+  end
+
+  private
+
+  def clear_cache
+    Rails.cache.clear
   end
 end
 

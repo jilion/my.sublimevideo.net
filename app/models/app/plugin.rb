@@ -8,11 +8,25 @@ class App::Plugin < ActiveRecord::Base
   belongs_to :component, class_name: 'App::Component', foreign_key: 'app_component_id'
   has_many :sites, through: :addon
 
+  after_save :clear_cache
+
   validates :addon, :component, presence: true
   validates :addon_id, uniqueness: { scope: :app_design_id }
 
-  def self.get(name)
-    Rails.cache.fetch("app_plugin_#{name}") { self.find_by_name(name.to_s) }
+  def self.find_cached_by_name(name)
+    Rails.cache.fetch [self, 'find_cached_by_name', name] do
+      self.where(name: name.to_s).first
+    end
+  end
+
+  class << self
+    alias_method :get, :find_cached_by_name
+  end
+
+  private
+
+  def clear_cache
+    Rails.cache.clear
   end
 
 end

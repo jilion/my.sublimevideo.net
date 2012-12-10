@@ -7,14 +7,18 @@ class Addon < ActiveRecord::Base
   has_many :components, through: :plugins
   has_many :sites, through: :plans
 
+  after_save :clear_cache
+
   validates :name, presence: true
   validates :name, uniqueness: true
   validates :design_dependent, inclusion: [true, false]
 
   scope :with_paid_plans, -> { includes(:plans).merge(AddonPlan.paid) }
 
-  def self.get(name)
-    Rails.cache.fetch("addon_#{name}") { self.find_by_name(name.to_s) }
+  def self.find_cached_by_name(name)
+    Rails.cache.fetch [self, 'find_cached_by_name', name] do
+      self.where(name: name.to_s).first
+    end
   end
 
   def free_plan
@@ -23,6 +27,16 @@ class Addon < ActiveRecord::Base
 
   def title
     I18n.t("addons.#{name}")
+  end
+
+  class << self
+    alias_method :get, :find_cached_by_name
+  end
+
+  private
+
+  def clear_cache
+    Rails.cache.clear
   end
 end
 

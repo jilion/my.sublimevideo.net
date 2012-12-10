@@ -13,6 +13,8 @@ class AddonPlan < ActiveRecord::Base
 
   delegate :kind, to: :addon
 
+  after_save :clear_cache
+
   validates :addon, :name, :price, presence: true
   validates :name, uniqueness: { scope: :addon_id }
   validates :availability, inclusion: AVAILABILITIES
@@ -27,7 +29,7 @@ class AddonPlan < ActiveRecord::Base
 
     Addon.all.inject({}) do |hash, addon|
       if free_addon_plan = addon.free_plan
-        unless free_addon_plan.availability == 'custom' || options[:reject].include?(free_addon_plan.addon.name)
+        if free_addon_plan.availability != 'custom' && options[:reject].exclude?(free_addon_plan.addon.name)
           hash[addon.name.to_sym] = addon.free_plan.id
         end
       end
@@ -35,8 +37,8 @@ class AddonPlan < ActiveRecord::Base
     end
   end
 
-  def self.get(addon_name, addon_plan_name)
-    Rails.cache.fetch("addon_plan_#{addon_name}_#{addon_plan_name}") do
+  def self.find_cached_by_addon_name_and_name(addon_name, addon_plan_name)
+    Rails.cache.fetch [self, 'find_cached_by_addon_name_and_name', addon_name, addon_plan_name] do
       joins(:addon).where { (addon.name == addon_name.to_s) & (name == addon_plan_name.to_s) }.first
     end
   end
@@ -74,6 +76,16 @@ class AddonPlan < ActiveRecord::Base
     plugin_id = App::Plugin.where(addon_id: addon.id, app_design_id: dependant_design_id).first.try(:id)
 
     settings_templates.where(app_plugin_id: plugin_id).first
+  end
+
+  class << self
+    alias_method :get, :find_cached_by_addon_name_and_name
+  end
+
+  private
+
+  def clear_cache
+    Rails.cache.clear
   end
 end
 
