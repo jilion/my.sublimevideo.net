@@ -58,7 +58,7 @@ class App::Component < ActiveRecord::Base
   private
 
   def clear_caches
-    Rails.cache.clear [self.class, 'app_component']
+    Rails.cache.clear [self.class, 'app_component'] if token == APP_TOKEN
     Rails.cache.clear [self.class, 'find_cached_by_name', name]
   end
 
