@@ -20,7 +20,7 @@ describe App::SettingsTemplate do
       @app_settings_template = create(:app_settings_template, addon_plan: @addon_plan, plugin: @app_plugin)
     end
 
-    it { described_class.get('foo', 'bar', 'foo_bar').should eq @app_settings_template }
+    it { described_class.get(@addon_plan, 'foo_bar').should eq @app_settings_template }
   end
 
 end
