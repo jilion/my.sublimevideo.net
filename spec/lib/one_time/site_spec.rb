@@ -367,7 +367,7 @@ describe OneTime::Site do
       @site_www.kits.should have(8).items
       @site_my.kits.should have(8).items
       @site_test.kits.should have(9).items
-      @site_df.kits.should have(2).items
+      @site_df.kits.should have(1).item
     end
 
     it 'sponsorize all custom add-on plans for sublimevideo.net, my.sublimevideo.net & test.sublimevideo.net' do

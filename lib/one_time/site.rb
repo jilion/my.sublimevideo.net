@@ -153,8 +153,9 @@ module OneTime
                 design_name != 'df'
               when Symbol
                 !design_name.in?(%w[blizzard df])
-              when 's96w44sn' # DF
-                design_name == 'df'
+              when 's96w44sn' # DF, update the default kit design instead of creating a new one
+                site.default_kit.update_attributes(name: I18n.t("app_designs.#{design_name}"), app_design_id: App::Design.get(design_name).id)
+                false
               end
 
               if create_kit
