@@ -64,6 +64,8 @@
     %label{ for: "autoresize_fill" } Fill (player will change size to keep filling the parent element if it is resized)
 .spacer
 
+%h4 Other
+
 .checkbox_wrap
   %input#autoplay{ type: "checkbox", checked: @video.get('autoplay') }
   %label{ for: "autoplay" } Autoplay (will automatically play the video when the player is loaded)
