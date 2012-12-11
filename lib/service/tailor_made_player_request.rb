@@ -4,7 +4,7 @@ module Service
   TailorMadePlayerRequest = Struct.new(:tailor_made_player_request) do
 
     def self.import_to_highrise(tailor_made_player_request_id)
-      new(TailorMadePlayerRequest.find(tailor_made_player_request_id)).import_to_highrise
+      new(::TailorMadePlayerRequest.find(tailor_made_player_request_id)).import_to_highrise
     end
 
     def import_to_highrise
