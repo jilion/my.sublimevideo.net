@@ -26,14 +26,16 @@ class BillableItem < ActiveRecord::Base
     if billable_item.state_changed?
       billable_item.site.billable_item_activities.create({ item: billable_item.item, state: billable_item.state }, as: :admin)
 
-      Librato.increment "addons.#{billable_item.state}", source: "#{billable_item.item_parent_kind}-#{billable_item.item.name}"
+      free_or_paid = billable_item.item.price.zero? ? 'free' : 'paid'
+      Librato.increment "addons.#{billable_item.state}", source: "#{free_or_paid}.#{billable_item.item_parent_kind}-#{billable_item.item.name}"
     end
   end
 
   after_destroy ->(billable_item) do
     billable_item.site.billable_item_activities.create({ item: billable_item.item, state: 'canceled' }, as: :admin)
 
-    Librato.increment 'addons.canceled', source: "#{billable_item.item_parent_kind}-#{billable_item.item.name}"
+    free_or_paid = billable_item.item.price.zero? ? 'free' : 'paid'
+    Librato.increment 'addons.canceled', source: "#{free_or_paid}.#{billable_item.item_parent_kind}-#{billable_item.item.name}"
   end
 
   # ==========

@@ -121,6 +121,7 @@ module OneTime
           result = []
           if site = ::Site.find_by_token(subdomain_or_token.is_a?(Symbol) ? SiteToken[subdomain_or_token] : subdomain_or_token)
             site.default_kit.update_column(:name, 'Classic')
+            site.update_column(:extra_hostnames, 't.sublimevideo.net') if subdomain_or_token == 's96w44sn'
 
             designs_to_sponsor = App::Design.custom.inject({}) do |memo, design|
               case subdomain_or_token
