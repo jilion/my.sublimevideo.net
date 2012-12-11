@@ -1,3 +1,5 @@
+require_dependency 'service/tailor_made_player_request'
+
 Sidekiq.configure_server do |config|
   config.redis = { size: 25 } # for worker dyno
   # http://mongoid.org/en/mongoid/docs/tips.html#sidekiq
