@@ -87,11 +87,10 @@ module OneTime
         scheduled = 0
         free_addon_plans          = AddonPlan.free_addon_plans
         free_addon_plans_filtered = AddonPlan.free_addon_plans(reject: %w[logo stats support])
-        ::Site.not_archived.find_each(batch_size: 100) do |site|
+        ::Site.select(:id).not_archived.find_each do |site|
           Service::Site.delay(queue: 'low').migrate_plan_to_addons!(site.id, free_addon_plans, free_addon_plans_filtered)
 
           scheduled += 1
-
           if (scheduled % 500).zero?
             puts "#{scheduled} sites scheduled..."
           end
@@ -103,11 +102,10 @@ module OneTime
       # TODO: Remove after launch
       def create_default_kit_for_all_non_archived_sites
         scheduled = 0
-        ::Site.not_archived.includes(:kits).where(kits: { id: nil }).find_each(batch_size: 100) do |site|
+        ::Site.select(:id).not_archived.includes(:kits).where(kits: { id: nil }).find_each do |site|
           Service::Site.delay(queue: 'low').create_default_kit(site.id)
 
           scheduled += 1
-
           if (scheduled % 500).zero?
             puts "#{scheduled} sites scheduled..."
           end
