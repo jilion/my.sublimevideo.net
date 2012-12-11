@@ -20,6 +20,11 @@ en:
         cc_verification_value: "CSC"
         company_employees: "Company size"
         company_videos_served: "Nr. of videos served"
+      tailor_made_player_request:
+        topic_agency: "Agency."
+        topic_standalone: "Standalone."
+        topic_platform: "CMS / OVP / platform."
+        topic_other: "Other."
 
     errors:
       models:
