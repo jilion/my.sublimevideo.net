@@ -31,6 +31,7 @@ module Service
         sites = component.sites.scoped
         purge = true
       end
+      sites = sites.where{ token << ::SiteToken.tokens } # not important sites
       sites = sites.active.where(accessible_stage: Stage.stages_with_access_to(stage))
       sites.select(:id).order{ last_30_days_main_video_views.desc }.find_each do |site|
         delay(queue: 'loader').update_all_stages!(site.id, purge: purge)
@@ -38,7 +39,7 @@ module Service
     end
 
     def self.update_important_sites
-      ::Site.select(:id).where(token: ::SiteToken.tokens).each do |site|
+      ::Site.select(:id).where{ token >> ::SiteToken.tokens }.each do |site|
         delay(queue: 'high').update_all_stages!(site.id, purge: true)
       end
     end
