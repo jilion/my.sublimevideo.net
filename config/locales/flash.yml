@@ -31,7 +31,7 @@ en:
       create:
         notice: 'Player has been successfully created.'
       update:
-        notice: 'Player has been successfully updated.'
+        notice: 'Player has been successfully updated. Please note that this may take a few minutes for the changes to take effect.'
     actions:
       create:
         notice: '%{resource_name} has been successfully created.'
