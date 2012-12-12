@@ -76,8 +76,7 @@ module CDN
 
     def purge_cdn
       unless options && options[:purge] == false
-        # TEST WITH AT
-        CDN.delay(at: 1.minute.from_now.to_i).purge("/#{destinations.first[:path]}")
+        CDN.delay.purge("/#{destinations.first[:path]}")
       end
     end
 
