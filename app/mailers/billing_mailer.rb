@@ -8,8 +8,7 @@ class BillingMailer < Mailer
   def trial_will_expire(billable_item_id)
     extract_site_and_user_from_billable_item_id(billable_item_id)
     @design_or_addon_plan = @billable_item.item
-    @days_until_end = @site.trial_days_remaining_for_billable_item(@design_or_addon_plan) || 30
-    @trial_end_date = @site.trial_end_date_for_billable_item(@design_or_addon_plan) || 30.days.from_now
+    setup_kind_days_until_end_and_trial_end_date
 
     key = case @days_until_end
     when 0
@@ -22,17 +21,18 @@ class BillingMailer < Mailer
 
     mail(
       to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.trial_will_expire.#{key}", addon: @design_or_addon_plan.title, days: @days_until_end)
+      subject: I18n.t("mailer.billing_mailer.trial_will_expire.#{key}", addon: "#{@design_or_addon_plan.title} #{@kind}", days: @days_until_end)
     )
   end
 
   def trial_has_expired(site_id, design_or_addon_plan_class, design_or_addon_plan_id)
     extract_site_and_user_from_site_id(site_id)
     @design_or_addon_plan = design_or_addon_plan_class.constantize.find(design_or_addon_plan_id)
+    setup_kind
 
     mail(
       to: to(@user),
-      subject: I18n.t("mailer.billing_mailer.trial_has_expired", addon: @design_or_addon_plan.title)
+      subject: I18n.t("mailer.billing_mailer.trial_has_expired", addon: "#{@design_or_addon_plan.title} #{@kind}")
     )
   end
 
@@ -75,6 +75,16 @@ class BillingMailer < Mailer
     @billable_item = BillableItem.find(billable_item_id)
     @site          = @billable_item.site
     @user          = @site.user
+  end
+
+  def setup_kind
+    @kind = @design_or_addon_plan.is_a?(App::Design) ? 'player design' : 'add-on'
+  end
+
+  def setup_kind_days_until_end_and_trial_end_date
+    setup_kind
+    @days_until_end = @site.trial_days_remaining_for_billable_item(@design_or_addon_plan) || 30
+    @trial_end_date = @site.trial_end_date_for_billable_item(@design_or_addon_plan) || 30.days.from_now
   end
 
 end

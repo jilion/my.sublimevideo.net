@@ -1,11 +1,10 @@
-- kind = @design_or_addon_plan.is_a?(App::Design) ? 'design' : ' add-on'
 - highlight_param = @design_or_addon_plan.is_a?(App::Design) ? @design_or_addon_plan.name : "#{@design_or_addon_plan.addon.name}-#{@design_or_addon_plan.name}"
 %p
-  = raw "Your #{BusinessModel.days_for_trial}-day free trial for the #{@design_or_addon_plan.title} #{kind}"
+  = raw "Your #{BusinessModel.days_for_trial}-day free trial for the #{@design_or_addon_plan.title} #{@kind}"
   - if @site.hostname?
     = raw "(for #{link_to @site.hostname, url_with_protocol(@site.hostname)})"
   %strong has now expired.
 
-%p= raw "The #{kind} has been disabled."
+%p= raw "The #{@kind} has been disabled."
 
 %p= raw "You can <strong>#{link_to('activate it', site_addons_url(@site, h: highlight_param))}</strong> at any time via the #{link_to('Add-ons', site_addons_url(@site, h: highlight_param))} page."
