@@ -7,6 +7,7 @@ staging:
   user: <%= ENV['LIBRATO_METRICS_USER'] %>
   token: <%= ENV['LIBRATO_METRICS_TOKEN'] %>
   source: my.sublimevideo-staging.net
+  prefix: 'staging'
 
 production:
   user: <%= ENV['LIBRATO_METRICS_USER'] %>
