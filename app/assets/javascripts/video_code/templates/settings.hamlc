@@ -16,7 +16,7 @@
 
 %p.info
   != "Fill in these attributes to identify and name your videos. These fields will also be used by SublimeVideo's&nbsp;"
-  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('beta/real-time-stats'), onclick: "window.open(this); return false" }><
+  %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('beta/addons/real-time-stats/overview'), onclick: "window.open(this); return false" }><
     Universal Real-Time Statistics platform
   = "."
 
