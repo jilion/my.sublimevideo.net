@@ -950,6 +950,43 @@ module Populate
       puts "#{Stats::SitesStat.count} fake sites stats generated!"
     end
 
+    def billable_items_stats
+      empty_tables(Stats::BillableItemsStat)
+      day = 2.years.ago.midnight
+      hash = { be: { 'design' => Hash.new(0) }, tr: { 'design' => Hash.new(0) }, sb: { 'design' => Hash.new(0) }, sp: { 'design' => Hash.new(0) }, su: { 'design' => Hash.new(0) } }
+
+      while day <= Time.now.utc.midnight
+        hash[:d] = day
+        App::Design.all.each do |design|
+          hash[:be]['design'][design.name] += rand(300)
+          hash[:tr]['design'][design.name] += rand(400)
+          hash[:sb]['design'][design.name] += rand(200)
+          hash[:sp]['design'][design.name] += rand(50)
+          hash[:su]['design'][design.name] += rand(20)
+        end
+
+        AddonPlan.all.each do |addon_plan|
+          hash[:be][addon_plan.addon.name] ||= Hash.new(0)
+          hash[:tr][addon_plan.addon.name] ||= Hash.new(0)
+          hash[:sb][addon_plan.addon.name] ||= Hash.new(0)
+          hash[:sp][addon_plan.addon.name] ||= Hash.new(0)
+          hash[:su][addon_plan.addon.name] ||= Hash.new(0)
+
+          hash[:be][addon_plan.addon.name][addon_plan.name] += rand(300)
+          hash[:tr][addon_plan.addon.name][addon_plan.name] += rand(400)
+          hash[:sb][addon_plan.addon.name][addon_plan.name] += rand(200)
+          hash[:sp][addon_plan.addon.name][addon_plan.name] += rand(50)
+          hash[:su][addon_plan.addon.name][addon_plan.name] += rand(20)
+        end
+
+        Stats::BillableItemsStat.create(hash)
+
+        day += 1.day
+      end
+
+      puts "#{Stats::BillableItemsStat.count} fake billable items stats generated!"
+    end
+
     def sales_stats
       empty_tables(Stats::SalesStat)
       Stats::SalesStat.create_stats

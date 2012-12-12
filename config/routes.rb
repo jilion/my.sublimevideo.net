@@ -123,6 +123,7 @@ MySublimeVideo::Application.routes.draw do
           get '/single/:page' => 'stats#show', as: 'single'
           get :more
           get :sales
+          get :billable_items
           get :users
           get :sites
           get :site_stats

@@ -34,7 +34,7 @@ module Stats
           scoped
         end
 
-        json_stats.order_by(d: 1).to_json(only: [:fr, :sp, :tr, :pa, :su, :ar])
+        json_stats.order_by(d: 1).to_json(only: [:be, :tr, :sb, :sp, :su])
       end
 
       def create_stats

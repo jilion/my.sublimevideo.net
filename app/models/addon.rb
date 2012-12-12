@@ -14,6 +14,7 @@ class Addon < ActiveRecord::Base
   validates :design_dependent, inclusion: [true, false]
 
   scope :with_paid_plans, -> { includes(:plans).merge(AddonPlan.paid) }
+  scope :visible,         -> { includes(:plans).merge(AddonPlan.visible) }
 
   def self.find_cached_by_name(name)
     Rails.cache.fetch [self, 'find_cached_by_name', name] do

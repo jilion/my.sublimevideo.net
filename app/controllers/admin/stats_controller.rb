@@ -16,6 +16,12 @@ class Admin::StatsController < Admin::AdminController
     end
   end
 
+  def billable_items
+    respond_to do |format|
+      format.json { render json: Stats::BillableItemsStat.json }
+    end
+  end
+
   def users
     respond_to do |format|
       format.json { render json: Stats::UsersStat.json }

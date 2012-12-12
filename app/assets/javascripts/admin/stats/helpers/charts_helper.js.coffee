@@ -182,6 +182,25 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         title:
           text: "Traffic (GB)"
 
+    if _.include(@usedYAxis, 6)
+      yAxis.push
+        lineWidth: 2
+        lineColor: '#000'
+        min: 0
+        allowDecimals: false
+        startOnTick: true
+        showFirstLabel: true
+        showLastLabel: true
+        labels:
+          align: 'right'
+          x: -4
+          y: 4
+          style:
+            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
+            fontSize: "14px"
+        title:
+          text: "Billable items evolution"
+
     yAxis
 
   chart: (collection) ->

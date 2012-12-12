@@ -28,6 +28,7 @@ namespace :db do
       timed { Populate.users_stats }
       timed { Populate.sites_stats }
       timed { Populate.sales_stats }
+      timed { Populate.billable_items_stats }
       # timed { Populate.deals }
       timed { Populate.mail_templates }
       # timed { Populate.player_components }
@@ -99,6 +100,7 @@ namespace :db do
       timed { Populate.users_stats }
       timed { Populate.sites_stats }
       timed { Populate.sales_stats }
+      timed { Populate.billable_items_stats }
     end
 
     desc "Create fake plans"
@@ -131,7 +133,7 @@ namespace :db do
       mongo_db_pwd = argv('password')
       raise "Please provide a password to access the production database like this: rake db:populate:import_mongo_prod password=MONGOHQ_PASSWORD" if mongo_db_pwd.nil?
 
-      %w[sales_stats site_stats_stats site_usages_stats sites_stats tweets_stats users_stats tweets].each do |collection|
+      %w[billable_items_stats sales_stats site_stats_stats site_usages_stats sites_stats tweets_stats users_stats tweets].each do |collection|
         timed do
           puts "Exporting production '#{collection}' collection"
           `mongodump -h sublimevideo.member0.mongolayer.com:27017 -d sublimevideo-stats -u heroku -p #{mongo_db_pwd} -o db/backups/ --collection #{collection}`

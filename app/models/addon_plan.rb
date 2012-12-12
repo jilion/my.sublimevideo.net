@@ -21,8 +21,9 @@ class AddonPlan < ActiveRecord::Base
   validates :required_stage, inclusion: Stage.stages
   validates :price, numericality: true
 
-  scope :paid,   -> { where{ (stable_at != nil) & (price > 0) } }
-  scope :custom, -> { where{ availability == 'custom' } }
+  scope :paid,    -> { where{ (stable_at != nil) & (price > 0) } }
+  scope :custom,  -> { where{ availability == 'custom' } }
+  scope :visible, -> { where{ availability != 'hidden' } }
 
   def self.free_addon_plans(options = {})
     options = { reject: [] }.merge(options)
