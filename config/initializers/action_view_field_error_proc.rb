@@ -15,7 +15,6 @@ ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
 
       attribute_name = instance.object.class.human_attribute_name(instance.method_name.to_sym)
       inline_errors = inline_errors =~ /#{attribute_name}/ ? inline_errors : "#{attribute_name} #{inline_errors}"
-      inline_errors = inline_errors.downcase.humanize
 
       if html_tag =~ /(radio|checkbox)/
         html_tag = "<div class='inline_errors'><span>#{inline_errors}</span></div>".html_safe + html_tag
