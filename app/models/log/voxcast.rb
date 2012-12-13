@@ -121,9 +121,9 @@ private
   def delay_parse
     self.class.delay(queue: 'high').parse_log_for_stats(id)
     self.class.delay(queue: 'high', at: 5.seconds.from_now.to_i).parse_log_for_video_tags(id)
-    self.class.delay(queue: 'low', at: 10.seconds.from_now.to_i).parse_log(id)
-    self.class.delay(queue: 'low', at: 10.seconds.from_now.to_i).parse_log_for_user_agents(id)
-    self.class.delay(queue: 'low', at: 10.seconds.from_now.to_i).parse_log_for_referrers(id)
+    self.class.delay(queue: 'low', at: 15.seconds.from_now.to_i).parse_log(id)
+    self.class.delay(queue: 'low', at: 20.seconds.from_now.to_i).parse_log_for_user_agents(id)
+    self.class.delay(queue: 'low', at: 25.seconds.from_now.to_i).parse_log_for_referrers(id)
   end
 
   # before_validation
