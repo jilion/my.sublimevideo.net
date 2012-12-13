@@ -90,25 +90,24 @@ private
   end
 
   def with_log_file_in_tmp(&block)
-    Notify.send("Log File ##{id} not present at copy") unless file.present?
+    # Notify.send("Log File ##{id} not present at copy") unless file.present?
     log_file = Tempfile.new([name, '.log.gz'], encoding: 'ASCII-8BIT')
-    rescue_and_retry(3, Excon::Errors::SocketError) do
-      # begin
-      log_file.write(file.read)
-      log_file.close
-      # rescue NoMethodError, Excon::Errors::NotFound => ex
-      #   if is_a?(Log::Voxcast)
-      #     self.file = CDN::VoxcastWrapper.download_log(name)
-      #     self.save
-      #     log = Log.find(self.id) # hard reload
-      #     log_file.write(log.file.read)
-      #   else
-      #     raise ex
-      #   end
-      # end
-    end
+    log_file.write(file.read)
+    # rescue_and_retry(3, Excon::Errors::SocketError) do
+    #   # begin
+    #   # rescue NoMethodError, Excon::Errors::NotFound => ex
+    #   #   if is_a?(Log::Voxcast)
+    #   #     self.file = CDN::VoxcastWrapper.download_log(name)
+    #   #     self.save
+    #   #     log = Log.find(self.id) # hard reload
+    #   #     log_file.write(log.file.read)
+    #   #   else
+    #   #     raise ex
+    #   #   end
+    #   # end
+    # end
     result = yield(log_file)
-    log_file.unlink
+    log_file.close!
     result
   end
 
