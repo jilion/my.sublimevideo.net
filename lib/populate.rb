@@ -354,7 +354,7 @@ module Populate
 
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_classic',  template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_flat',     template: lightbox_template },
-        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_light',    template: lightbox_without_close_button_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_light',    template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_twit',     template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_html5',    template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_sony',     template: lightbox_template },

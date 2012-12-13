@@ -40,37 +40,6 @@ describe Service::Settings do
         "1" => {
           skin: { id: "sa.sb.sc"},
           plugins: {
-            "lightbox" => {
-              settings: {
-                on_open: 'play',
-                overlay_color: "#000",
-                overlay_opacity: 0.7,
-                close_button_enable: true,
-                close_button_visibility: "autohide",
-                close_button_position: "left"
-              },
-              allowed_settings: {
-                close_button_enable: {
-                  values: [true, false],
-                },
-                on_open: {
-                  values: ['nothing', 'play']
-                },
-                overlay_color: {
-                  values: ["#000"]
-                },
-                overlay_opacity: {
-                  range: [0.1, 1]
-                },
-                close_button_visibility: {
-                  values: ["autohide", "visible"]
-                },
-                close_button_position: {
-                  values: ["left", "right"]
-                }
-              },
-              id: "sa.sl.sm"
-            },
             "videoPlayer" => {
               plugins: {
                 "logo" => {
@@ -199,6 +168,42 @@ describe Service::Settings do
                 }
               },
               id: "sa.sh.si"
+            },
+            "lightbox" => {
+              settings: {
+                on_open: 'play',
+                overlay_color: "#000",
+                overlay_opacity: 0.7,
+                close_button_enable: true,
+                close_button_visibility: "autohide",
+                close_button_position: "left"
+              },
+              allowed_settings: {
+                close_button_enable: {
+                  values: [true, false],
+                },
+                on_open: {
+                  values: ['nothing', 'play']
+                },
+                overlay_color: {
+                  values: ["#000"]
+                },
+                overlay_opacity: {
+                  range: [0.1, 1]
+                },
+                close_button_visibility: {
+                  values: ["autohide", "visible"]
+                },
+                close_button_position: {
+                  values: ["left", "right"]
+                }
+              },
+              id: "sa.sl.sm"
+            },
+            "imageViewer" => {
+              settings: {},
+              allowed_settings: {},
+              id: "sa.sn.so"
             }
           }
         }
@@ -329,7 +334,13 @@ describe Service::Settings do
             "ih":["autohide","visible"]},
             "tl": {
             "ih":["left","right"]}},
-            "kn":"sa.sl.sm"}}}},
+            "kn":"sa.sl.sm"},
+            "kc": {
+            "ko": {
+            },
+            "kp": {
+            },
+            "kn":"sa.sn.so"}}}},
             kt:"1"},
             [a]})
           CONTENT
