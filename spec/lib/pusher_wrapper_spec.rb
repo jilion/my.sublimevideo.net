@@ -3,7 +3,7 @@ require 'pusher'
 require File.expand_path('lib/pusher_wrapper')
 
 require File.expand_path('spec/config/redis')
-$redis = Redis.new unless defined?($redis)
+$redis = ConnectionPool::Wrapper.new(size: 1, timeout: 3) { Redis.new } unless defined?($redis)
 
 describe PusherWrapper, :redis do
   before { Pusher.url = 'http://c76b85222fbec28c8508:7ab0d643924b2bcc23d2@api.pusherapp.com/apps/8211' }

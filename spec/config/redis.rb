@@ -1,4 +1,5 @@
 require 'redis'
+require 'connection_pool'
 
 RSpec.configure do |config|
   config.before :each, redis: true do

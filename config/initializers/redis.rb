@@ -1,5 +1,5 @@
-if ENV['REDISTOGO_URL'].present?
-  $redis = Redis.new(url: ENV['REDISTOGO_URL'])
+if ENV['OPENREDIS_URL'].present?
+  $redis = ConnectionPool::Wrapper.new(size: 5, timeout: 3) { Redis.new(url: ENV['OPENREDIS_URL']) }
 else
-  $redis = Redis.new
+  $redis = ConnectionPool::Wrapper.new(size: 1, timeout: 3) { Redis.new }
 end
