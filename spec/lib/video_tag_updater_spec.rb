@@ -12,6 +12,8 @@ end
 describe VideoTagUpdater do
   let(:data) { {
     'uo' => 's', 'n' => 'My Video', 'no' => 'a',
+    'i' => nil,
+    'io' => nil,
     'p' => 'http://posters.sublimevideo.net/video123.png',
     'z' => '640x360',
     'd' => '10000',
@@ -57,6 +59,8 @@ describe VideoTagUpdater do
           uid_origin: 'source',
           name: 'My Video',
           name_origin: 'attribute',
+          sources_id: nil,
+          sources_origin: nil,
           poster_url: 'http://posters.sublimevideo.net/video123.png',
           size:     '640x360',
           duration:   '10000',
@@ -80,6 +84,8 @@ describe VideoTagUpdater do
           uid_origin: 'source',
           name: nil,
           name_origin: nil,
+          sources_id: nil,
+          sources_origin: nil,
           poster_url: 'http://posters.sublimevideo.net/video123.png',
           size:     '640x360',
           duration:   '10000',

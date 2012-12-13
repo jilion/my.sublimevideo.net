@@ -78,7 +78,7 @@ private
     Hash[data.map { |key, value|
       case key = unalias_key(key)
       when /origin/
-        [key, unalias_key(value, :origin).to_s]
+        [key, value.nil? ? nil : unalias_key(value, :origin).to_s]
       when :sources
         [key, Hash[value.map { |crc32, source_data|
           [crc32, Hash[source_data.map { |key, value|
