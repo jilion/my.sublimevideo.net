@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe Log::Voxcast do
+  let(:log_file) { fixture_file('logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz') }
 
   context "Factory build" do
     use_vcr_cassette "ogone/one_log"
-    subject { build(:log_voxcast, name: 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
+    subject { build(:log_voxcast, name: 'cdn.sublimevideo.net.log.1274773200-1274773260.gz', file: log_file) }
 
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
     its(:started_at) { should == Time.zone.at(1274773200).utc }
@@ -23,7 +24,7 @@ describe Log::Voxcast do
       use_vcr_cassette "ogone/one_saved_log"
 
       it "should validate uniqueness of name" do
-        create(:log_voxcast)
+        create(:log_voxcast, file: log_file)
         log = build(:log_voxcast)
         log.should_not be_valid
         log.should have(1).error_on(:name)
@@ -33,12 +34,12 @@ describe Log::Voxcast do
 
   context "Factory create" do
     use_vcr_cassette "ogone/one_saved_log"
-    subject { create(:log_voxcast) }
+    subject { create(:log_voxcast, file: log_file) }
 
     its(:created_at) { should be_present }
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
     its("file.url")  { should == "/uploads/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz" }
-    its("file.size") { should == 1149 }
+    its("file.size") { should == 848 }
 
     it "should have good log content" do
       log = Log::Voxcast.find(subject.id) # to be sure that log is well saved with CarrierWave
@@ -62,19 +63,14 @@ describe Log::Voxcast do
       described_class.should delay(:parse_log_for_stats, queue: 'high').with('log_id')
       described_class.should delay(:parse_log_for_video_tags, queue: 'high', at: 5.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_user_agents, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_referrers, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
-      create(:log_voxcast, id: 'log_id')
+      described_class.should delay(:parse_log_for_user_agents, queue: 'low', at: 15.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_referrers, queue: 'low', at: 20.seconds.from_now.to_i).with('log_id')
+      create(:log_voxcast, id: 'log_id', file: log_file)
     end
   end
 
   context "Factory from 4076.voxcdn.com" do
-    before do
-      CDN::VoxcastWrapper.stub(:download_log).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
-        fixture_file('logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz')
-      }
-    end
-    subject { create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz') }
+    subject { create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', file: log_file) }
 
     its(:created_at) { should be_present }
     its(:hostname)   { should == '4076.voxcdn.com' }
@@ -103,9 +99,9 @@ describe Log::Voxcast do
       described_class.should delay(:parse_log_for_stats, queue: 'high').with('log_id')
       described_class.should delay(:parse_log_for_video_tags, queue: 'high', at: 5.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_user_agents, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_referrers, queue: 'low', at: 10.seconds.from_now.to_i).with('log_id')
-      create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', id: 'log_id')
+      described_class.should delay(:parse_log_for_user_agents, queue: 'low', at: 15.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_referrers, queue: 'low', at: 20.seconds.from_now.to_i).with('log_id')
+      create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', id: 'log_id', file: log_file)
     end
   end
 
@@ -130,7 +126,7 @@ describe Log::Voxcast do
 
       context "with a log saved" do
         use_vcr_cassette "voxcast/download_and_create_new_logs 1 min ago"
-        let(:log_voxcast) {  FactoryGirl.create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", Time.now.change(sec: 0))) }
+        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", Time.now.change(sec: 0)), file: log_file) }
 
         it "creates 0 log (no duplicates)" do
           Timecop.freeze Time.now do
@@ -142,7 +138,7 @@ describe Log::Voxcast do
 
       context "with log saved 1 min ago" do
         use_vcr_cassette "voxcast/download_and_create_new_logs 1 min ago"
-        let(:log_voxcast) {  FactoryGirl.create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", 1.minute.ago.change(sec: 0))) }
+        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", 1.minute.ago.change(sec: 0)), file: log_file) }
 
         it "creates 1 log" do
           Timecop.freeze Time.now do
@@ -154,7 +150,7 @@ describe Log::Voxcast do
 
       context "with log saved 5 min ago"  do
         use_vcr_cassette "voxcast/download_and_create_new_logs 5 min ago"
-        let(:log_voxcast) {  FactoryGirl.create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", 5.minutes.ago.change(sec: 0))) }
+        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", 5.minutes.ago.change(sec: 0)), file: log_file) }
 
         it "creates 5 logs" do
           Timecop.freeze Time.now do
@@ -177,8 +173,8 @@ describe Log::Voxcast do
       context "with already a log saved" do
         use_vcr_cassette "voxcast/next_log_ended_at"
         before do
-          create(:log_voxcast, name: "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,29).to_i}-#{Time.utc(2011,7,7,9,30).to_i}.gz")
-          create(:log_voxcast, name: "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,37).to_i}-#{Time.utc(2011,7,7,9,38).to_i}.gz")
+          create(:log_voxcast, name: "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,29).to_i}-#{Time.utc(2011,7,7,9,30).to_i}.gz", file: log_file)
+          create(:log_voxcast, name: "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,37).to_i}-#{Time.utc(2011,7,7,9,38).to_i}.gz", file: log_file)
         end
 
         it "should check the last log created if no last_log_ended_at is given" do
@@ -202,7 +198,7 @@ describe Log::Voxcast do
       before do
         log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
         CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
-        @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
+        @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz', file: log_file)
       end
 
       it "call parse_and_create_stats! and set stats_parsed_at" do
@@ -225,7 +221,7 @@ describe Log::Voxcast do
     before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
-      @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
+      @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz', file: log_file)
     end
 
     describe "#parse_and_create_stats!" do

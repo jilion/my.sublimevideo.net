@@ -27,7 +27,7 @@ class Log::Voxcast < ::Log
   # = Callbacks =
   # =============
 
-  before_validation :download_and_set_log_file
+  # before_validation :download_and_set_log_file
 
   # =================
   # = Class Methods =
@@ -46,8 +46,9 @@ class Log::Voxcast < ::Log
     new_log_ended_at = nil
     while (new_log_ended_at = next_log_ended_at(hostname, new_log_ended_at)) < Time.now.utc do
       new_log_name = log_name(hostname, new_log_ended_at)
-      new_log_file = CDN::VoxcastWrapper.download_log(new_log_name) # will retry 5 times to dowload
-      safely_create(name: new_log_name, file: new_log_file) if new_log_file
+      if new_log_file = CDN::VoxcastWrapper.download_log(new_log_name) # will retry 2 times to dowload
+        safely_create(name: new_log_name, file: new_log_file)
+      end
     end
   end
 
@@ -121,15 +122,15 @@ private
   def delay_parse
     self.class.delay(queue: 'high').parse_log_for_stats(id)
     self.class.delay(queue: 'high', at: 5.seconds.from_now.to_i).parse_log_for_video_tags(id)
-    self.class.delay(queue: 'low', at: 15.seconds.from_now.to_i).parse_log(id)
-    self.class.delay(queue: 'low', at: 20.seconds.from_now.to_i).parse_log_for_user_agents(id)
-    self.class.delay(queue: 'low', at: 25.seconds.from_now.to_i).parse_log_for_referrers(id)
+    self.class.delay(queue: 'low', at: 10.seconds.from_now.to_i).parse_log(id)
+    self.class.delay(queue: 'low', at: 15.seconds.from_now.to_i).parse_log_for_user_agents(id)
+    self.class.delay(queue: 'low', at: 20.seconds.from_now.to_i).parse_log_for_referrers(id)
   end
 
-  # before_validation
-  def download_and_set_log_file
-    self.file = CDN::VoxcastWrapper.download_log(name) unless file.present?
-  end
+  # # before_validation
+  # def download_and_set_log_file
+  #   self.file = CDN::VoxcastWrapper.download_log(name) unless file.present?
+  # end
 
   # call from name= in Log
   def set_dates_and_hostname_from_name
