@@ -23,12 +23,6 @@ class Log::Voxcast < ::Log
 
   validates :file, presence: true
 
-  # =============
-  # = Callbacks =
-  # =============
-
-  # before_validation :download_and_set_log_file
-
   # =================
   # = Class Methods =
   # =================
@@ -120,17 +114,12 @@ private
 
   # after_create on log model
   def delay_parse
-    self.class.delay(queue: 'log_high').parse_log_for_stats(id)
+    self.class.delay(queue: 'log_high', at: 5.seconds.from_now.to_i).parse_log_for_stats(id)
     self.class.delay(queue: 'log_high', at: 5.seconds.from_now.to_i).parse_log_for_video_tags(id)
     self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log(id)
-    self.class.delay(queue: 'log', at: 15.seconds.from_now.to_i).parse_log_for_user_agents(id)
-    self.class.delay(queue: 'log', at: 20.seconds.from_now.to_i).parse_log_for_referrers(id)
+    self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log_for_user_agents(id)
+    self.class.delay(queue: 'log', at: 10.seconds.from_now.to_i).parse_log_for_referrers(id)
   end
-
-  # # before_validation
-  # def download_and_set_log_file
-  #   self.file = CDN::VoxcastWrapper.download_log(name) unless file.present?
-  # end
 
   # call from name= in Log
   def set_dates_and_hostname_from_name

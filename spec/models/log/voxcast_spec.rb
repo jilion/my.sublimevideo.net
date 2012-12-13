@@ -60,11 +60,11 @@ describe Log::Voxcast do
     end
 
     it "should delay parse_log methods after create" do
-      described_class.should delay(:parse_log_for_stats, queue: 'log_high').with('log_id')
+      described_class.should delay(:parse_log_for_stats, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_video_tags, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_user_agents, queue: 'log', at: 15.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_referrers, queue: 'log', at: 20.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_user_agents, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_referrers, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       create(:log_voxcast, id: 'log_id', file: log_file)
     end
   end
@@ -96,11 +96,11 @@ describe Log::Voxcast do
     end
 
     it "should delay parse_log methods after create" do
-      described_class.should delay(:parse_log_for_stats, queue: 'log_high').with('log_id')
+      described_class.should delay(:parse_log_for_stats, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log_for_video_tags, queue: 'log_high', at: 5.seconds.from_now.to_i).with('log_id')
       described_class.should delay(:parse_log, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_user_agents, queue: 'log', at: 15.seconds.from_now.to_i).with('log_id')
-      described_class.should delay(:parse_log_for_referrers, queue: 'log', at: 20.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_user_agents, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
+      described_class.should delay(:parse_log_for_referrers, queue: 'log', at: 10.seconds.from_now.to_i).with('log_id')
       create(:log_voxcast, name: '4076.voxcdn.com.log.1279103340-1279103400.gz', id: 'log_id', file: log_file)
     end
   end
