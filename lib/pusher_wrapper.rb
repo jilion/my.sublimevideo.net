@@ -29,12 +29,13 @@ class PusherWrapper
 
   def self.trigger(channel_name, event_name, data)
     $redis.with_connection do |redis|
-      if redis.sismember("pusher:channels", channel_name)
-        Pusher.trigger(channel_name, event_name, data)
-        true
-      else
-        false
-      end
+      @channel_occupied = redis.sismember("pusher:channels", channel_name)
+    end
+    if @channel_occupied
+      Pusher.trigger(channel_name, event_name, data)
+      true
+    else
+      false
     end
   rescue Pusher::Error
     false
