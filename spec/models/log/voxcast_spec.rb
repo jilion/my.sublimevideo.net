@@ -231,7 +231,7 @@ describe Log::Voxcast do
     describe "#parse_and_create_stats!" do
       it "analyzes logs" do
         CDN::VoxcastWrapper.should_not_receive(:download_log)
-        LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastStats')
+        LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'LogsFileFormat::VoxcastStats')
         Stat.should_receive(:create_stats_from_trackers!)
         @log.parse_and_create_stats!
       end
@@ -239,7 +239,7 @@ describe Log::Voxcast do
     describe "#parse_and_create_referrers!" do
       it "analyzes logs" do
         CDN::VoxcastWrapper.should_not_receive(:download_log)
-        LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastReferrers')
+        LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'LogsFileFormat::VoxcastReferrers')
         Referrer.should_receive(:create_or_update_from_trackers!)
         @log.parse_and_create_referrers!
       end
@@ -247,7 +247,7 @@ describe Log::Voxcast do
     describe "#parse_and_create_user_agents!" do
       it "analyzes logs" do
         CDN::VoxcastWrapper.should_not_receive(:download_log)
-        LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastUserAgents')
+        LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'LogsFileFormat::VoxcastUserAgents')
         UsrAgent.should_receive(:create_or_update_from_trackers!)
         @log.parse_and_create_user_agents!
       end

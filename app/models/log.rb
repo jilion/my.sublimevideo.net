@@ -91,8 +91,8 @@ private
 
   def with_log_file_in_tmp(&block)
     Notify.send("Log File ##{id} not present at copy") unless file.present?
-    log_file = rescue_and_retry(7, Excon::Errors::SocketError) do
-      log_file = Tempfile.new(name, encoding: 'ASCII-8BIT')
+    log_file = Tempfile.new(name, encoding: 'ASCII-8BIT')
+    rescue_and_retry(7, Excon::Errors::SocketError) do
       begin
         log_file.write(file.read)
       rescue NoMethodError, Excon::Errors::NotFound => ex
@@ -104,10 +104,10 @@ private
           raise ex
         end
       end
-      log_file.flush
+      log_file.rewind
     end
     result = yield(log_file)
-    File.delete(log_file.path)
+    log_file.close!
     result
   end
 
