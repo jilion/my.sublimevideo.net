@@ -91,7 +91,7 @@ private
 
   def with_log_file_in_tmp(&block)
     Notify.send("Log File ##{id} not present at copy") unless file.present?
-    log_file = Tempfile.new(name, encoding: 'ASCII-8BIT')
+    log_file = Tempfile.new([name, '.log.gz'], encoding: 'ASCII-8BIT')
     rescue_and_retry(7, Excon::Errors::SocketError) do
       begin
         log_file.write(file.read)
@@ -104,10 +104,10 @@ private
           raise ex
         end
       end
-      log_file.rewind
+      log_file.close
     end
     result = yield(log_file)
-    log_file.close!
+    log_file.unlink
     result
   end
 
