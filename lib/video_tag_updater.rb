@@ -21,7 +21,7 @@ VideoTagUpdater = Struct.new(:video_tag) do
     if video_tag.valid? && video_tag.changed?
       set_sources_origin_and_id
       set_name
-      PusherWrapper.delay.trigger("private-#{video_tag.site.token}", 'video_tag', video_tag.data)
+      # PusherWrapper.delay.trigger("private-#{video_tag.site.token}", 'video_tag', video_tag.data)
       Librato.increment 'video_tag.update'
     end
     video_tag.save
