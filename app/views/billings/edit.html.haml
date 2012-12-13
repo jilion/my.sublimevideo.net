@@ -29,7 +29,7 @@
     %p
       = "Your credit card information is protected with secure socket layer (SSL) encryption."
       %br
-      = mail_to(t("mailer.billing.email_full").html_safe, "Questions about billing?", encode: "hex", class: "hl")
+      = mail_to(t("mailer.billing.email").html_safe, "Questions about billing?", class: "hl")
 
 .spacer
 

@@ -22,4 +22,4 @@
   - else
     %p
       Unknown reason.
-      = raw t('app.please_email_to_know_more_about_it', email: mail_to(t("mailer.billing.email_full").html_safe, t("mailer.billing.email"), encode: "hex", class: "hl"))
+      = raw t('app.please_email_to_know_more_about_it', email: mail_to(t("mailer.billing.email").html_safe, t("mailer.billing.email"), class: "hl"))

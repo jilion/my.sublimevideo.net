@@ -1,5 +1,5 @@
 class BillingMailer < Mailer
-  default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.billing.email_full')
+  default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.billing.email')
 
   helper :invoices, :sites
   include SitesHelper # the only way to include view helpers in here

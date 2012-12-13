@@ -6,8 +6,7 @@ en:
     reply_to_this_email: "Simply respond to this email if you have any questions or feedback."
 
     stats:
-      email:      "stats@sublimevideo.net"
-      email_full: "SublimeVideo Stats <stats@sublimevideo.net>"
+      email: "stats@sublimevideo.net"
 
     billing_mailer:
       trial_will_expire:

@@ -1,5 +1,5 @@
 class StatsExportMailer < Mailer
-  default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.stats.email_full')
+  default template_path: "mailers/#{self.mailer_name}", from: I18n.t('mailer.stats.email')
 
   helper :sites
 
