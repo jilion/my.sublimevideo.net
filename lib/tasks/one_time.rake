@@ -12,7 +12,7 @@ namespace :one_time do
 
         months_logs = Log.where(started_at: { :$gte => beginning_of_month })
         months_logs_ids = months_logs.map(&:id)
-        puts OneTime::Log.delay(queue: 'low').parse_logs(months_logs_ids)
+        puts OneTime::Log.delay(queue: 'log').parse_logs(months_logs_ids)
         puts "Delayed logs parsing from #{beginning_of_month}"
       end
     end
@@ -25,7 +25,7 @@ namespace :one_time do
 
         months_logs = Log::Voxcast.where(started_at: { :$gte => beginning_of_month })
         months_logs_ids = months_logs.map(&:id)
-        puts OneTime::Log.delay(queue: 'low').parse_logs_for_user_agents(months_logs_ids)
+        puts OneTime::Log.delay(queue: 'log').parse_logs_for_user_agents(months_logs_ids)
         puts "Delayed Voxcast logs parsing for user agent from #{beginning_of_month}"
       end
     end
@@ -35,7 +35,7 @@ namespace :one_time do
       skip  = 0
       while skip < count
         ids = Log::Voxcast.where(parsed_at: nil).only(:id).limit(1000).skip(skip).map(&:id)
-        ids.each { |id| Log.delay(queue: 'low').parse_log(id) }
+        ids.each { |id| Log.delay(queue: 'log').parse_log(id) }
         skip += 1000
       end
     end
@@ -83,7 +83,7 @@ namespace :one_time do
       skip  = 0
       while skip < count
         ids = Log::Voxcast.where(user_agents_parsed_at: nil).only(:id).limit(1000).skip(skip).map(&:id)
-        ids.each { |id| Log::Voxcast.delay(queue: 'low', at: 1.minute.from_now.to_i).parse_log_for_user_agents(id) }
+        ids.each { |id| Log::Voxcast.delay(queue: 'log', at: 1.minute.from_now.to_i).parse_log_for_user_agents(id) }
         skip += 1000
       end
     end

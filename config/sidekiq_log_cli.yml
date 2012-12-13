@@ -1,0 +1,10 @@
+# Options here can still be overridden by cmd line args.
+#   sidekiq -C config.yml
+---
+:verbose: true
+:concurrency:  1
+:require: '.'
+:timeout: 60
+:queues:
+  - [log, 1]
+  - [log_high, 10]

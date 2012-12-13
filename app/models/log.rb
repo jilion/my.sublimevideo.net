@@ -86,7 +86,7 @@ private
 
   # after_create
   def delay_parse
-    self.class.delay(queue: 'low', at: 5.seconds.from_now.to_i).parse_log(id) # lets finish the upload
+    self.class.delay(queue: 'log', at: 5.seconds.from_now.to_i).parse_log(id) # lets finish the upload
   end
 
   def with_log_file_in_tmp(&block)

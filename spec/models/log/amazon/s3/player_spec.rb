@@ -33,7 +33,7 @@ describe Log::Amazon::S3::Player do
 
     it "should delay parse_log after create" do
       Timecop.freeze do
-        described_class.should delay(:parse_log, queue: 'low', at: 5.seconds.from_now.to_i).with('log_id')
+        described_class.should delay(:parse_log, queue: 'log', at: 5.seconds.from_now.to_i).with('log_id')
         create(:log_s3_player, id: 'log_id')
       end
     end
