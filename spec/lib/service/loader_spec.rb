@@ -230,11 +230,11 @@ describe Service::Loader, :fog_mock do
               {"Permission"=>"READ", "Grantee"=>{"URI"=>"http://acs.amazonaws.com/groups/global/AllUsers"}}
             )
           end
-          it "have good content_type public" do
+          it "has good content_type public" do
             object_headers = S3.fog_connection.head_object(bucket, path).headers
             object_headers['Content-Type'].should eq 'text/javascript'
           end
-          it "have 1 min max-age cache control" do
+          it "has 1 min max-age cache control" do
             object_headers = S3.fog_connection.head_object(bucket, path).headers
             object_headers['Cache-Control'].should eq 's-maxage=300, max-age=120, public'
           end
@@ -257,6 +257,16 @@ describe Service::Loader, :fog_mock do
           it "includes good loader version" do
             object = S3.fog_connection.get_object(bucket, path)
             object.body.should include '/p/dev/sublime.js'
+          end
+
+          context "-alpha file" do
+            let(:loader) { described_class.new(site, 'alpha') }
+            let(:path) { "js/#{site.token}-alpha.js" }
+
+            it "has no-cache control" do
+              object_headers = S3.fog_connection.head_object(bucket, path).headers
+              object_headers['Cache-Control'].should eq 'no-cache'
+            end
           end
         end
       end
