@@ -78,30 +78,30 @@ describe VideoTagUpdater do
         VideoTagUpdater.update(site.id, video_tag.uid, data)
       end
 
-      it "clear name and name origin if not present in data" do
-        data_without_name = data.except('n', 'no')
-        video_tag.should_receive(:attributes=).with(
-          uid_origin: 'source',
-          name: nil,
-          name_origin: nil,
-          sources_id: nil,
-          sources_origin: nil,
-          poster_url: 'http://posters.sublimevideo.net/video123.png',
-          size:     '640x360',
-          duration:   '10000',
-          current_sources: ['source11'],
-          sources: {
-            'source11' => {
-              url: 'http://videos.sublimevideo.net/source11.mp4',
-              quality: 'base',
-              family: 'mp4',
-              resolution: '460x340'
-            }
-          }
-        ) { video_tag }
+      # it "clear name and name origin if not present in data" do
+      #   data_without_name = data.except('n', 'no')
+      #   video_tag.should_receive(:attributes=).with(
+      #     uid_origin: 'source',
+      #     name: nil,
+      #     name_origin: nil,
+      #     sources_id: nil,
+      #     sources_origin: nil,
+      #     poster_url: 'http://posters.sublimevideo.net/video123.png',
+      #     size:     '640x360',
+      #     duration:   '10000',
+      #     current_sources: ['source11'],
+      #     sources: {
+      #       'source11' => {
+      #         url: 'http://videos.sublimevideo.net/source11.mp4',
+      #         quality: 'base',
+      #         family: 'mp4',
+      #         resolution: '460x340'
+      #       }
+      #     }
+      #   ) { video_tag }
 
-        VideoTagUpdater.update(site.id, video_tag.uid, data_without_name)
-      end
+      #   VideoTagUpdater.update(site.id, video_tag.uid, data_without_name)
+      # end
 
       context "video_tags data are valid and changed" do
 

@@ -17,7 +17,8 @@ VideoTagUpdater = Struct.new(:video_tag) do
   end
 
   def update(data)
-    video_tag.attributes = { name: nil, name_origin: nil }.merge(unalias_data(data))
+    # video_tag.attributes = { name: nil, name_origin: nil }.merge(unalias_data(data))
+    video_tag.attributes = unalias_data(data)
     if video_tag.valid? && video_tag.changed?
       set_sources_origin_and_id
       set_name
