@@ -34,7 +34,7 @@ class KitsController < ApplicationController
   # GET /sites/:site_id/players/:id
   def show
     respond_with(@kit) do |format|
-      format.html { redirect_to [:edit, params[:site_id], @kit.id] }
+      format.html { redirect_to edit_site_kit_path(params[:site_id], @kit.identifier) }
     end
   end
 
