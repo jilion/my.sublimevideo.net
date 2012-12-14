@@ -35,7 +35,7 @@ module InvoiceModules::Scope
 
   module ClassMethods
 
-    def self.search(q)
+    def search(q)
       joins(:site, :user).where{
         (lower(user.email) =~ lower("%#{q}%")) |
         (lower(user.name) =~ lower("%#{q}%")) |
