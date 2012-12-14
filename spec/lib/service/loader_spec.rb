@@ -236,7 +236,7 @@ describe Service::Loader, :fog_mock do
           end
           it "have 1 min max-age cache control" do
             object_headers = S3.fog_connection.head_object(bucket, path).headers
-            object_headers['Cache-Control'].should eq 's-maxage=3600, max-age=120, public'
+            object_headers['Cache-Control'].should eq 's-maxage=300, max-age=120, public'
           end
           it "includes good loader version" do
             object = S3.fog_connection.get_object(bucket, path)

@@ -1,5 +1,3 @@
-require 'uri'
-
 class Admin::TweetsController < Admin::AdminController
   respond_to :js, :html
 

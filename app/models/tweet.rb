@@ -82,7 +82,7 @@ class Tweet
         to_user_id:        tweet.to_user_id,
         to_user:           tweet.to_user,
         iso_language_code: tweet.iso_language_code,
-        profile_image_url: tweet.profile_image_url_https,
+        profile_image_url: tweet.user.profile_image_url_https,
         source:            tweet.source,
         content:           tweet.text,
         tweeted_at:        tweet.created_at

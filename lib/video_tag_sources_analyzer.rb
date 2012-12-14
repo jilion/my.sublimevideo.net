@@ -33,9 +33,7 @@ private
   end
 
   def vimeo_source?
-    puts sources_urls.first
-
-    sources_urls.first.include?(self.class::VIMEO_URL_PART)
+    sources_urls.present? && sources_urls.first.include?(self.class::VIMEO_URL_PART)
   end
 
 end unless defined? VideoTagSourcesAnalyzer

@@ -173,7 +173,7 @@ module Service
 
     def s3_options
       {
-        'Cache-Control' => 's-maxage=3600, max-age=120, public', # 1 hour / 2 minutes
+        'Cache-Control' => 's-maxage=300, max-age=120, public', # 5 minutes / 2 minutes
         'Content-Type'  => 'text/javascript',
         'x-amz-acl'     => 'public-read'
       }
