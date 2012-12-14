@@ -1,6 +1,6 @@
 class MySublimeVideo.UI.KitsPage
   constructor: ->
-    sublimevideo.ready =>
+    sublime.ready =>
       this.refreshVideoTagFromSettings()
 
   refreshVideoTagFromSettings: (type) ->

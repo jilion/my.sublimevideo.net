@@ -12,7 +12,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.resetAndFetchStats()
     this.initPusherPrivateSiteChannel()
 
-    sublimevideo.load()
+    sublime.load()
 
   initModels: ->
     MSVStats.period = new MSVStats.Models.Period()

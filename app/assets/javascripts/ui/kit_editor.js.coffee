@@ -1,6 +1,6 @@
 class MySublimeVideo.UI.KitEditor
   constructor: ->
-    sublimevideo.ready =>
+    sublime.ready =>
       this.setup()
 
   setup: ->

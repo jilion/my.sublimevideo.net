@@ -7,8 +7,8 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
     this.initViews()
     new MySublimeVideo.UI.DependantInputs
 
-    sublimevideo.load()
-    sublimevideo.ready =>
+    sublime.load()
+    sublime.ready =>
       MSVVideoCode.previewView.render()
 
   initModels: ->
