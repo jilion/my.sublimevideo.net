@@ -4,7 +4,6 @@ class MSVStats.Views.PlayableVideoView extends Backbone.View
   renderAndPlay: (videoID) =>
     if (video = MSVStats.videos.getByCid(videoID))?
       $(@el).html(this.template(video: video))
-      sublime.prepare "playable_video_#{video.cid}", (player) ->
-        player.play()
+      sublime.prepare "playable_video_#{video.cid}_link", (lightbox) -> lightbox.open()
 
     this

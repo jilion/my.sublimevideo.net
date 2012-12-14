@@ -593,7 +593,7 @@ span.beta_badge {
   padding:10px 12px;
 }
 
-.stats #top_videos td.video a.play {
+.stats #top_videos td.video .crop {
   display:inline-block;
   width:96px;
   height:54px;
@@ -607,29 +607,29 @@ span.beta_badge {
   @include box-shadow(#002564 0 1px 4px);
 }
 
-.stats #top_videos td.video a.play.disabled {
-  cursor:default;
-}
+// .stats #top_videos td.video a.play.disabled {
+//   cursor:default;
+// }
 
-.stats #top_videos td.video a.play img {
+.stats #top_videos td.video .crop img {
   -webkit-mask-image:url(<%= asset_path "stats/video_thumb_mask.png" %>);
   -o-mask-image:url(<%= asset_path "stats/video_thumb_mask.png" %>);
   -moz-mask-image:url(<%= asset_path "stats/video_thumb_mask.png" %>);
   mask-image:url(<%= asset_path "stats/video_thumb_mask.png" %>);
 }
 
-.stats #top_videos td.video a.play .overlay {
-  display:block;
-  width:96px;
-  background:url(<%= asset_path "stats/video_thumb_overlay.png" %>) no-repeat center;
-  position:absolute;
-  top:0;
-  left:0;
-  bottom:0;
-  right:0;
-  @include border-radius(4px 4px 0 0);
-  @include box-shadow((inset rgba(255,255,255,0.23) 0 1px 0, inset rgba(0,0,0,0.8) 0 0 20px));
-}
+// .stats #top_videos td.video a.play .overlay {
+//   display:block;
+//   width:96px;
+//   background:url(<%= asset_path "stats/video_thumb_overlay.png" %>) no-repeat center;
+//   position:absolute;
+//   top:0;
+//   left:0;
+//   bottom:0;
+//   right:0;
+//   @include border-radius(4px 4px 0 0);
+//   @include box-shadow((inset rgba(255,255,255,0.23) 0 1px 0, inset rgba(0,0,0,0.8) 0 0 20px));
+// }
 
 .stats #top_videos td.video .right {
   float:left;
