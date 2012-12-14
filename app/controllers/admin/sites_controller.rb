@@ -28,7 +28,7 @@ class Admin::SitesController < Admin::AdminController
 
   # GET /sites/:id/edit
   def edit
-    @site = Site.includes(:user).find_by_token!(params[:id])
+    @site = Site.includes(:user, :kits, :billable_items, :billable_item_activities).find_by_token!(params[:id])
     @tags = Site.tag_counts.order{ tags.name }
 
     respond_with(@site)

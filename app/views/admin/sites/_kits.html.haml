@@ -1,0 +1,11 @@
+%h3 Kits
+
+- if site.kits.empty?
+  %p= "No kits yet!"
+- else
+  %ul
+  - site.kits.each do |kit|
+    %li
+      = kit.name
+      = " [#{kit.design.title}]"
+      = ' (default)' if site.default_kit == kit
