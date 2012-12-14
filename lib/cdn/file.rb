@@ -30,7 +30,7 @@ module CDN
             destination[:path]
           )
         end
-        purge_cdn
+        # purge_cdn
         true
       end
     end

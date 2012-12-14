@@ -126,10 +126,10 @@ describe CDN::File, :fog_mock do
         cdn_file.delete!.should be_true
       end
 
-      it "purge CDN" do
-        CDN.should delay(:purge).with("/js/token.js")
-        cdn_file.delete!
-      end
+      # it "purge CDN" do
+      #   CDN.should delay(:purge).with("/js/token.js")
+      #   cdn_file.delete!
+      # end
     end
 
     context "with file isn't present" do
@@ -137,10 +137,10 @@ describe CDN::File, :fog_mock do
         cdn_file.delete!.should be_false
       end
 
-      it "doesn't purge CDN" do
-        CDN.should_not delay(:purge)
-        cdn_file.delete!
-      end
+      # it "doesn't purge CDN" do
+      #   CDN.should_not delay(:purge)
+      #   cdn_file.delete!
+      # end
     end
   end
 
