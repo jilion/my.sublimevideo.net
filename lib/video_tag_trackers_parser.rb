@@ -22,7 +22,9 @@ class VideoTagTrackersParser
           when 's'
             if all_needed_params_present?(params, %w[t vu vuo])
               %w[uo i io n no p].each do |key|
-                video_tags[[params['t'],params['vu']]][key] = params["v#{key}"]
+                if params.key?("v#{key}")
+                  video_tags[[params['t'],params['vu']]][key] = params["v#{key}"]
+                end
               end
               # Video duration
               video_tags[[params['t'],params['vu']]]['d'] = params['vd'].try(:to_i)

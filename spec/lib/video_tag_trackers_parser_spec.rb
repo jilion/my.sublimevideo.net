@@ -56,9 +56,7 @@ describe VideoTagTrackersParser do
       it "extracts one video tag meta_data" do
         described_class.extract_video_tags_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
-            'i' => nil, 'io' => nil,
             'd' => nil,
-            'p'  => nil,
             'cs' => ['source12', 'source34'],
             's'  => {
               'source12' => { 'u' => 'http://videos.sublimevideo.net/source12.mp4', 'q' => 'hd', 'f' => 'mp4', 'r' => '1280x720' },
@@ -77,10 +75,9 @@ describe VideoTagTrackersParser do
 
       it "extracts one video tag meta_data" do
         described_class.extract_video_tags_data(video_tags_trackers).should eq({
-          ['site1234', 'youtube123'] => { 'uo' => 'y', 'n' => nil, 'no' => nil,
+          ['site1234', 'youtube123'] => { 'uo' => 'y',
             'i' => 'youtube123', 'io' => 'y',
             'd'  => 1231,
-            'p'  => nil,
             'cs' => []
           }
         })
@@ -97,7 +94,6 @@ describe VideoTagTrackersParser do
       it "extracts one video tag meta_data" do
         described_class.extract_video_tags_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My New Video', 'no' => 's',
-            'i' => nil, 'io' => nil,
             'd' => nil,
             'p'  => 'http://posters.sublimevideo.net/video1235.png',
             'cs' => ['source12', 'source35'],
@@ -120,7 +116,6 @@ describe VideoTagTrackersParser do
       it "extracts two video tag meta_data" do
         described_class.extract_video_tags_data(video_tags_trackers).should eql({
           ['site1234', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
-            'i' => nil, 'io' => nil,
             'd' => nil,
             'p'  => 'http://posters.sublimevideo.net/video123.png',
             'cs' => ['source12', 'source34'],
@@ -129,7 +124,6 @@ describe VideoTagTrackersParser do
             }
           },
           ['site5678', 'video123'] => { 'uo' => 'a', 'n' => 'My Video', 'no' => 's',
-            'i' => nil, 'io' => nil,
             'd' => nil,
             'p'  => 'http://posters.sublimevideo.net/video123.png',
             'cs' => ['source44', 'source45'],
