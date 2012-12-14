@@ -28,7 +28,7 @@
       %td.price
         - if addon_plan_is_sponsored
           = 'sponsored'
-          - if site.plan_id? && site.plan.title != 'sponsored'
+          - if site.plan_id? && site.plan.name != 'sponsored'
             %small= raw "(#{link_to('why?', '#', class: 'grandfather_plan_link hl')})"
         - else
           = billable_item_price(addon_plan)
