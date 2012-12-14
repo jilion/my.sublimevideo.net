@@ -9,10 +9,10 @@ class Users::PasswordsController < Devise::PasswordsController
 
   # POST /password
   def create
-    if self.resource = User.not_archived.find_by_email(params[resource_name][:email])
+    if self.resource = User.not_archived.find_by_email(resource_params.try(:[], :email))
       resource.send_reset_password_instructions
     else
-      self.resource = User.new(email: params[resource_name][:email])
+      self.resource = User.new(email: resource_params.try(:[], :email))
       resource.errors.add(:email, resource.email.present? ? :invalid : :blank)
     end
 
