@@ -111,7 +111,7 @@ describe VideoTagUpdater do
         end
 
         it "trigs PusherWrapper" do
-          PusherWrapper.should delay(:trigger).with(
+          PusherWrapper.should_receive(:trigger).with(
             "private-#{site.token}",
             'video_tag',
             video_tag.data
