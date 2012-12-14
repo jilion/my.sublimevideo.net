@@ -7,7 +7,7 @@
   %h3.assistant_title#identifier
     = "Edit"
     %em= @kit.name
-    = "(##{@kit.identifier})"
+    = "(id: #{@kit.identifier})"
   = form_for [@site, @kit], html: { class: 'kit_editor' } do |f|
     = render 'kits/form', f: f, site: @site, kit: @kit, design: @design
 

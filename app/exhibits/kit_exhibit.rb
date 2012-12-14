@@ -1,10 +1,11 @@
+# coding: utf-8
 class KitExhibit < DisplayCase::Exhibit
   def self.applicable_to?(object)
     object.class.name == 'Kit'
   end
 
   def label
-    "##{self.identifier} - #{self.name}#{self.default? ? ' (Default)' : ''}"
+    "#{self.name}#{self.default? ? ' (Default)' : ''} - id: #{self.identifier}"
   end
 
   def render_name_as_link(template, site)
