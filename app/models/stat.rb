@@ -24,34 +24,35 @@ module Stat
   def self.create_stats_from_trackers!(log, trackers)
     tracker_incs = incs_from_trackers(trackers)
     tracker_incs.each do |site_token, values|
-      site = ::Site.where(token: site_token).first
-      realtime_stats_active = site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
+      if site = ::Site.find_by_token(site_token)
+        realtime_stats_active = site.addon_plan_is_active?(AddonPlan.get('stats', 'realtime'))
 
-      if [values[:inc], values[:set], values[:add_to_set]].any? { |v| v.present? }
-        if realtime_stats_active
-          Stat::Site::Minute.collection.find(t: site_token, d: log.minute).update({ :$inc => values[:inc] }, upsert: true)
-          Stat::Site::Hour.collection.find(t: site_token, d: log.hour).update({ :$inc => values[:inc] }, upsert: true)
+        if [values[:inc], values[:set], values[:add_to_set]].any? { |v| v.present? }
+          if realtime_stats_active
+            Stat::Site::Minute.collection.find(t: site_token, d: log.minute).update({ :$inc => values[:inc] }, upsert: true)
+            Stat::Site::Hour.collection.find(t: site_token, d: log.hour).update({ :$inc => values[:inc] }, upsert: true)
+          end
+          Stat::Site::Day.collection.find(t: site_token, d: log.day).update({
+            :$inc => values[:inc],
+            :$set => values[:set],
+            :$addToSet => values[:add_to_set]
+          }, upsert: true)
         end
-        Stat::Site::Day.collection.find(t: site_token, d: log.day).update({
-          :$inc => values[:inc],
-          :$set => values[:set],
-          :$addToSet => values[:add_to_set]
-        }, upsert: true)
-      end
 
-      values[:videos].each do |video_ui, video_inc|
-        if video_inc.present?
-          begin
-            if realtime_stats_active
-              Stat::Video::Minute.collection.find(st: site_token, u: video_ui, d: log.minute).update({ :$inc => video_inc }, upsert: true)
-              Stat::Video::Hour.collection.find(st: site_token, u: video_ui, d: log.hour).update({ :$inc => video_inc }, upsert: true)
+        values[:videos].each do |video_ui, video_inc|
+          if video_inc.present?
+            begin
+              if realtime_stats_active
+                Stat::Video::Minute.collection.find(st: site_token, u: video_ui, d: log.minute).update({ :$inc => video_inc }, upsert: true)
+                Stat::Video::Hour.collection.find(st: site_token, u: video_ui, d: log.hour).update({ :$inc => video_inc }, upsert: true)
+              end
+              Stat::Video::Day.collection.find(st: site_token, u: video_ui, d: log.day).update({ :$inc => video_inc }, upsert: true)
+            rescue BSON::InvalidStringEncoding
             end
-            Stat::Video::Day.collection.find(st: site_token, u: video_ui, d: log.day).update({ :$inc => video_inc }, upsert: true)
-          rescue BSON::InvalidStringEncoding
           end
         end
+        clean_and_increment_metrics(values)
       end
-      clean_and_increment_metrics(values)
     end
 
     json = { m: true }
