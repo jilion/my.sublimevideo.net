@@ -556,7 +556,7 @@ GEM
     stat_request_parser (1.2.0)
       activesupport (>= 3.0.0)
     state_machine (1.1.2)
-    sublime_video_layout (2.5.11)
+    sublime_video_layout (2.5.12)
       coffee-rails
       haml
       jquery-rails
