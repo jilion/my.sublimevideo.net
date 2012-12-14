@@ -38,13 +38,13 @@ describe RecurringJob do
     end
 
     it "notifies if number of jobs is higher than threshold" do
-      sidekiq_queue.should_receive(:size) { 1001 }
+      sidekiq_queue.should_receive(:size) { 10001 }
       Notify.should_receive(:send)
       described_class.supervise_queues
     end
 
     it "doesn't notify if number of jobs is low" do
-      sidekiq_queue.should_receive(:size) { 99 }
+      sidekiq_queue.should_receive(:size) { 9999 }
       Notify.should_not_receive(:send)
       described_class.supervise_queues
     end
