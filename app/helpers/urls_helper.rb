@@ -1,3 +1,5 @@
+require 'uri'
+
 module UrlsHelper
 
   def cdn_host
@@ -7,6 +9,12 @@ module UrlsHelper
     else
       'cdn.sublimevideo-staging.net'
     end
+  end
+
+  def proxied_https_url(url)
+    return if url.blank? || url =~ /^https/
+
+    "https://data.sublimevideo.net/proxy?u=#{URI.encode(url || '')}"
   end
 
   def docs_page_url(path)
