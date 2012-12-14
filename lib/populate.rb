@@ -381,8 +381,8 @@ module Populate
           template: {
             enable: {
               type: 'boolean',
-              values: [false],
-              default: false
+              values: [true],
+              default: true
             },
             realtime: {
               type: 'boolean',
