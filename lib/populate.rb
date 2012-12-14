@@ -1240,12 +1240,14 @@ module Populate
         "vl.em" => force || (i * rand(2)).round,
         "vl.d"  => force || (i * rand(2)).round,
         "vl.i"  => force || (i * rand(2)).round,
+        "vlc"  => force || (i * rand(30)).round,
         # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
         "vv.m"  => force || (i * rand(10)).round,
         "vv.e"  => force || (i * rand(3)).round,
         "vv.em" => force || (i * rand(3)).round,
         "vv.d"  => force || (i * rand(2)).round,
         "vv.i"  => force || (i * rand(2)).round,
+        "vvc"  => force || (i * rand(20)).round,
         # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1, t (tablet) => 1 }, f (flash) => ... }
         "md.h.d" => i * rand(12),
         "md.h.m" => i * rand(5),
