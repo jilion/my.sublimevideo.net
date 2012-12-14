@@ -12,7 +12,7 @@ module UrlsHelper
   end
 
   def proxied_https_url(url)
-    return if url.blank? || url =~ /^https/
+    return url if url.blank? || url =~ /^https/
 
     "https://data.sublimevideo.net/proxy?u=#{URI.encode(url || '')}"
   end
