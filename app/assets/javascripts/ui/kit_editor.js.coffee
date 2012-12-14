@@ -49,7 +49,6 @@ class MySublimeVideo.UI.KitEditor
       else
         $('.custom_logo_fields').hide()
         $('.standard_logo_fields').show()
-      this.refreshVideoTagFromSettings()
 
     $('#kit_setting-logo-image_url').on 'change', (e) =>
       this.refreshVideoTagFromSettings()
