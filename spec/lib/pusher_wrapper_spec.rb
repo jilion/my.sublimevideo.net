@@ -1,9 +1,9 @@
 require 'fast_spec_helper'
 require 'pusher'
-require File.expand_path('lib/pusher_wrapper')
-
+require 'sidekiq'
 require File.expand_path('spec/config/redis')
-$redis = ConnectionPool::Wrapper.new(size: 1, timeout: 3) { Redis.new } unless defined?($redis)
+
+require File.expand_path('lib/pusher_wrapper')
 
 describe PusherWrapper, :redis do
   before { Pusher.url = 'http://c76b85222fbec28c8508:7ab0d643924b2bcc23d2@api.pusherapp.com/apps/8211' }
@@ -35,7 +35,7 @@ describe PusherWrapper, :redis do
 
       it "adds channel_name to Redis Set" do
         PusherWrapper.handle_webhook(webhook)
-        $redis.sismember("pusher:channels", channel_name).should be_true
+        Sidekiq.redis { |con| con.sismember("pusher:channels", channel_name).should be_true }
       end
     end
 
@@ -46,9 +46,9 @@ describe PusherWrapper, :redis do
       } }
 
       it "removes existing channel_name from Redis Set" do
-        $redis.sadd("pusher:channels", channel_name)
+        Sidekiq.redis { |con| con.sadd("pusher:channels", channel_name) }
         PusherWrapper.handle_webhook(webhook)
-        $redis.sismember("pusher:channels", channel_name).should be_false
+        Sidekiq.redis { |con| con.sismember("pusher:channels", channel_name).should be_false }
       end
     end
   end
@@ -59,10 +59,10 @@ describe PusherWrapper, :redis do
     let(:data) { { some: 'data' } }
 
     context "with channel occupied" do
-      before { $redis.sadd("pusher:channels", channel_name) }
+      before {  Sidekiq.redis { |con| con.sadd("pusher:channels", channel_name) } }
 
       it "triggers Pusher channel_name" do
-        puts $redis.sismember("pusher:channels", channel_name)
+        Sidekiq.redis { |con| con.sismember("pusher:channels", channel_name) }
         Pusher.should_receive(:trigger).with(channel_name, event_name, data)
         PusherWrapper.trigger(channel_name, event_name, data).should be_true
       end

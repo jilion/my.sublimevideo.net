@@ -16,22 +16,17 @@ class PusherWrapper
 
   def self.handle_webhook(webhook)
     webhook.events.each do |event|
-      $redis.with_connection do |redis|
-        case event["name"]
-        when 'channel_occupied'
-          redis.sadd("pusher:channels", event["channel"])
-        when 'channel_vacated'
-          redis.srem("pusher:channels", event["channel"])
-        end
+      case event["name"]
+      when 'channel_occupied'
+        Sidekiq.redis { |con| con.sadd("pusher:channels", event["channel"]) }
+      when 'channel_vacated'
+        Sidekiq.redis { |con| con.srem("pusher:channels", event["channel"]) }
       end
     end
   end
 
   def self.trigger(channel_name, event_name, data)
-    $redis.with_connection do |redis|
-      @channel_occupied = redis.sismember("pusher:channels", channel_name)
-    end
-    if @channel_occupied
+    if Sidekiq.redis { |con| con.sismember("pusher:channels", channel_name) }
       Pusher.trigger(channel_name, event_name, data)
       true
     else
