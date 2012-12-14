@@ -9,7 +9,7 @@ en:
       payment_waiting: "Transaction in progress, please be patient. Click to review your invoice."
       payment_open: "Invoice will be charged soon."
       ok: "Player published."
-      in_progress: "Your player is being published (this can take up to 2 minutes)."
+      in_progress: "Your player is being published (this can take up to 5 minutes)."
       need_path: "If you don't own %{hostname}, we highly recommend you set a <em>path</em> to restrict the player to your pages only."
       need_subdomain: "If you don't own %{hostname}, we highly recommend you add a <em>subdomain</em> to it (or disable the wildcard option) to restrict the player to your pages only."
     edit:

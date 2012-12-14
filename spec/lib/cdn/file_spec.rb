@@ -69,31 +69,31 @@ describe CDN::File, :fog_mock do
       end
     end
 
-    describe "cdn purge" do
-      it "is called with new file" do
-        CDN.should delay(:purge).with("/js/token.js")
-        cdn_file.upload!
-      end
+    # describe "cdn purge" do
+    #   it "is called with new file" do
+    #     CDN.should delay(:purge).with("/js/token.js")
+    #     cdn_file.upload!
+    #   end
 
-      it "is not called with new file when purge option is false" do
-        cdn_file = CDN::File.new(file, destinations, s3_options, purge: false)
-        CDN.should_not delay(:purge).with("/js/token.js")
-        cdn_file.upload!
-      end
+    #   it "is not called with new file when purge option is false" do
+    #     cdn_file = CDN::File.new(file, destinations, s3_options, purge: false)
+    #     CDN.should_not delay(:purge).with("/js/token.js")
+    #     cdn_file.upload!
+    #   end
 
-      it "is called with modified file" do
-        cdn_file.upload!
-        CDN.should delay(:purge).with("/js/token.js")
-        cdn_file.file = file2
-        cdn_file.upload!
-      end
+    #   it "is called with modified file" do
+    #     cdn_file.upload!
+    #     CDN.should delay(:purge).with("/js/token.js")
+    #     cdn_file.file = file2
+    #     cdn_file.upload!
+    #   end
 
-      it "isn't called when same file was already uploaded" do
-        cdn_file.upload!
-        CDN.should_not delay(:purge).with("/js/token.js")
-        cdn_file.upload!
-      end
-    end
+    #   it "isn't called when same file was already uploaded" do
+    #     cdn_file.upload!
+    #     CDN.should_not delay(:purge).with("/js/token.js")
+    #     cdn_file.upload!
+    #   end
+    # end
 
     describe "respond" do
       it "is true when file wasn't present before" do

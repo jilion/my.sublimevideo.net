@@ -20,7 +20,7 @@ class MySublimeVideo.UI.SitesStatus
   delaySetCompletedStatus: ->
     _.each @inProgress, (cdnUpdatedAt, token) =>
       now = new Date().getTime()
-      upToDateIn = (120 * 1000) - (now - cdnUpdatedAt)
+      upToDateIn = (300 * 1000) - (now - cdnUpdatedAt)
       _.delay(this.setCompletedStatus, upToDateIn, token)
 
   setCompletedStatus: (token) =>

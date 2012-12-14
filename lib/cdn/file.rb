@@ -17,7 +17,7 @@ module CDN
             )
           end
         end
-        purge_cdn
+        # purge_cdn
         true
       end
     end
