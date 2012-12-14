@@ -91,7 +91,19 @@ private
 
   def with_log_file_in_tmp(&block)
     log_file = Tempfile.new([name, '.log.gz'], encoding: 'ASCII-8BIT')
-    log_file.write(file.read)
+    rescue_and_retry(5, Excon::Errors::SocketError) do
+      begin
+         log_file.write(file.read)
+      rescue NoMethodError, Excon::Errors::NotFound => ex
+        if is_a?(Log::Voxcast)
+          self.file = CDN::VoxcastWrapper.download_log(name)
+          self.save
+          log_file.write(file.read)
+        else
+          raise ex
+        end
+      end
+    end
     result = yield(log_file)
     log_file.close!
     result
