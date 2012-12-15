@@ -41,7 +41,7 @@ class VideoTagsController < ApplicationController
     @video_tag = @site.video_tags.where(uid: params[:id]).first
 
     respond_with(@video_tag) do |format|
-      format.json { render json: @video_tag.try(:data) }
+      format.json { render json: @video_tag.try(:backbone_data) }
     end
   end
 
