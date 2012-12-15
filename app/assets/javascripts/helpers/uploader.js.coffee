@@ -17,6 +17,8 @@ class MySublimeVideo.Helpers.Uploader
       ]
       multipart: true
       multipart_params: @options['multipart_params']
+      headers:
+        'Accept': 'text/javascript'
 
     # @uploader.bind 'Init', (up, params) ->
     #   $('#filelist').html 'Supports drag/drop: ' + (!!up.features.dragdrop)
