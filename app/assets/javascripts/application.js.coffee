@@ -14,8 +14,6 @@
 #= require stats
 #= require video_code
 
-$.fn.exists = -> @length > 0
-
 window.MySublimeVideo =
   UI: {}
   Models: {}

@@ -10,8 +10,6 @@
 #= require_tree ./admin/app
 #= require admin/stats
 
-$.fn.exists = -> @length > 0
-
 window.MySublimeVideo =
   UI: {}
 
