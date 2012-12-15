@@ -1,7 +1,0 @@
-%a.sublime{ href: "#playable_video_#{@video.cid}", id: "playable_video_#{@video.cid}_link" }
-%video{ id: "playable_video_#{@video.cid}", 'data-uid' => "#{@video.cid}", 'data-name' => @video.get('name'), 'data-youtube-id' => @video.youtubeId(), style: "display:none", width: @video.width(), height: @video.height(), poster: @video.sslPosterUrl(), preload: "none" }
-  - for source in @video.currentSources()
-    - if source.quality != 'base'
-      %source{ src: "#{source.url}", 'data-quality' => "#{source.quality}" }
-    - else
-      %source{ src: "#{source.url}" }

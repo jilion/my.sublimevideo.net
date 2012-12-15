@@ -124,7 +124,7 @@ private
     video_uids.map do |video_uid|
       # replace uid per id for Backbone
       if video_tag = video_tags.detect { |v| v.uid == video_uid }
-        { id: video_uid }.merge(video_tag.data)
+        { id: video_uid }.merge(video_tag.backbone_data)
       else
         { id: video_uid }
       end

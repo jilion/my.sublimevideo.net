@@ -75,9 +75,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       period: MSVStats.period
       videos: MSVStats.videos
 
-    # MSVStats.playableVideoView = new MSVStats.Views.PlayableVideoView
-    #   el: '#playable_video'
-
     new MSVStats.Views.BPView
       el: '#bp_content'
       statsSeconds: MSVStats.statsSeconds

@@ -5,9 +5,6 @@ class MSVStats.Models.Video extends Backbone.Model
     name: null
     name_origin: null
     poster_url: null
-    size: null
-    current_sources: []
-    sources: {}
     sources_id: null
     sources_origin: null
     vl_sum: null # main + extra
@@ -29,25 +26,6 @@ class MSVStats.Models.Video extends Backbone.Model
 
   dataUrl: =>
     "/sites/#{MSVStats.site.get('token')}/video_tags/#{this.id}.json"
-
-  currentSources: ->
-    sources = []
-    for current_source in this.get('current_sources')
-      if this.get('sources')[current_source]?
-        sources.push this.get('sources')[current_source]
-    sources
-
-  width: ->
-    if (size = this.get('size'))?
-      parseInt(size.split('x')[0])
-    else
-      480
-
-  height: ->
-    if (size = this.get('size'))?
-      parseInt(size.split('x')[1])
-    else
-      360
 
   isSecond: -> !this.get("vl_sum")?
 

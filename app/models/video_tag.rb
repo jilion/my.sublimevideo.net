@@ -59,8 +59,8 @@ class VideoTag < ActiveRecord::Base
     sources.select { |key, value| key.in?(current_sources) }
   end
 
-  def data
-    attributes.except(*%w[id created_at updated_at])
+  def backbone_data
+    attributes.slice(*%w[uid uid_origin name name_origin poster_url sources_id sources_origin])
   end
 end
 

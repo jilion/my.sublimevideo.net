@@ -139,26 +139,29 @@ describe VideoTag do
     end
   end
 
-  describe "#data" do
+  describe "#backbone_data" do
     let(:video_tag) { described_class.new }
 
     %w[
       uid uid_origin
       name name_origin
+      sources_id sources_origin
       poster_url
-      duration
-      size
-      current_sources sources sources_id sources_origin
-      settings
     ].each do |attribute|
       it "includes #{attribute}" do
-        video_tag.data.keys.should include(attribute)
+        video_tag.backbone_data.keys.should include(attribute)
       end
     end
 
-    %w[id created_at updated_at].each do |attribute|
+    %w[
+      id created_at updated_at
+      duration
+      size
+      current_sources sources
+      settings
+    ].each do |attribute|
       it "doesn't include #{attribute}" do
-        video_tag.data.keys.should_not include(attribute)
+        video_tag.backbone_data.keys.should_not include(attribute)
       end
     end
   end

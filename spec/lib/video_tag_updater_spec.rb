@@ -26,7 +26,7 @@ describe VideoTagUpdater do
   let(:video_tag) { mock(VideoTag,
     id: 'video_tag_id',
     uid: 'video_tag_uid',
-    data: data,
+    backbone_data: data,
     site: site,
     :name= => true, :name_origin= => true,
     :sources_id= => true, :sources_origin= => true,
@@ -114,7 +114,7 @@ describe VideoTagUpdater do
           PusherWrapper.should_receive(:trigger).with(
             "private-#{site.token}",
             'video_tag',
-            video_tag.data
+            video_tag.backbone_data
           )
           VideoTagUpdater.update(site.id, video_tag.uid, data)
         end
