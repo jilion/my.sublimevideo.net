@@ -167,6 +167,7 @@ group :test do
   gem 'capybara-email'
   gem 'poltergeist'
   gem 'show_me_the_cookies'
+  gem 'rspec-core', github: 'rspec/rspec-core'
   gem 'webmock', '~> 1.6.0'
   gem 'typhoeus', '~> 0.2.0'
   gem 'vcr', '~> 1.10.3'
