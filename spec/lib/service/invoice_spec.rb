@@ -16,6 +16,8 @@ describe Service::Invoice do
   let(:custom_addon_plan_free) { create(:addon_plan, availability: 'custom', price: 0) }
   let(:custom_addon_plan_paid) { create(:addon_plan, availability: 'custom', price: 995) }
   let(:service) { described_class.build_for_month(1.month.ago, site.id) }
+  before { Timecop.travel(Time.utc(2013, 3)) }
+  after { Timecop.return }
 
   describe '.create_invoices_for_month' do
     before do
@@ -346,6 +348,21 @@ describe Service::Invoice do
 
       it 'create a new invoice' do
         expect { service.save }.to change(Invoice, :count).by(1)
+      end
+    end
+
+    %w[open paid].each do |state|
+      context "already one #{state} invoice exists for this site for this month bu started_at is before 2012, Dec 14, 15:00 UTC" do
+        let(:service) { described_class.build_for_month(Time.utc(2013, 1, 1), site.id) }
+        before do
+          create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: Time.utc(2012, 12, 14, 15))
+          invoice = create(:invoice, site: site, state: state)
+          create(:addon_plan_invoice_item, invoice: invoice, started_at: Time.utc(2012, 12, 14, 14, 59), ended_at: Time.utc(2013, 1, 13, 14, 59))
+        end
+
+        it 'creates a new invoice' do
+          expect { service.save }.to change(Invoice, :count).by(1)
+        end
       end
     end
 
