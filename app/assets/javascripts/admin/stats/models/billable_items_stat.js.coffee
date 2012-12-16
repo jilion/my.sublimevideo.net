@@ -64,7 +64,7 @@ class AdminSublimeVideo.Collections.BillableItemsStats extends AdminSublimeVideo
       else
         0
 
-      array.push value / 100
+      array.push value
       from += 3600 * 24
 
     array

@@ -312,7 +312,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                   t += "#{Highcharts.numberFormat(point.y, 2)} %<br />#{Highcharts.numberFormat(AdminSublimeVideo.totals[point.series.name], 2)} % (average)"
                 else
                   t += "#{Highcharts.numberFormat(point.y, 0)}"
-                  unless /(sites|users)/i.test point.series.yAxis.axisTitle.textStr
+                  unless /(sites|users|billable items)/i.test point.series.yAxis.axisTitle.textStr
                     t += "<br />#{Highcharts.numberFormat(AdminSublimeVideo.totals[point.series.name], 0)} (total)"
                 t
               ).join("<br />"))
