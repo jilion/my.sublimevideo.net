@@ -16,8 +16,8 @@ module Service
     def create_case_in_highrise
       return true if tailor_made_player_request.highrise_kase_id?
 
-     @highrise_kase = highrise_save(Highrise::Kase.new(name: "Tailor-made player request for #{tailor_made_player_request.company}",
-                                                       background: "From https://admin.sublimevideo.net/tailor_made_player_requests/#{tailor_made_player_request.id}"))
+      @highrise_kase = highrise_save(Highrise::Kase.new(name: "Tailor-made player request for #{tailor_made_player_request.company}",
+                                                        background: "From https://admin.sublimevideo.net/tailor_made_player_requests/#{tailor_made_player_request.id}"))
 
       if @highrise_kase
         tailor_made_player_request.update_column(:highrise_kase_id, @highrise_kase.id)
