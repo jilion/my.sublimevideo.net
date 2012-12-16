@@ -113,8 +113,8 @@ describe VideoTagUpdater do
         it "trigs PusherWrapper" do
           PusherWrapper.should_receive(:trigger).with(
             "private-#{site.token}",
-            'video_tag',
-            video_tag.backbone_data
+            'video_tag_update',
+            video_tag.uid
           )
           VideoTagUpdater.update(site.id, video_tag.uid, data)
         end
