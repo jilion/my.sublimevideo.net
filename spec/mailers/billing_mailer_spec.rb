@@ -25,7 +25,7 @@ describe BillingMailer do
           Capybara.app_host = "http://my.sublimevideo.dev"
         end
 
-        it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', addon: billable_item.item.title, days: 1) }
+        it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', addon: "#{billable_item.item.title} add-on", days: 1) }
         it { last_delivery.body.encoded.should include "Dear #{user.name}," }
         it { last_delivery.body.encoded.should include I18n.l(site.trial_end_date_for_billable_item(billable_item.item).tomorrow, format: :named_date) }
         it { last_delivery.body.encoded.should_not include "https://my.sublimevideo.dev/account/billing/edit" }
@@ -39,7 +39,7 @@ describe BillingMailer do
           Capybara.app_host = "http://my.sublimevideo.dev"
         end
 
-        it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', addon: billable_item.item.title, days: 1) }
+        it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_will_expire.today', addon: "#{billable_item.item.title} add-on", days: 1) }
         it { last_delivery.body.encoded.should include "Dear #{user.name}," }
         it { last_delivery.body.encoded.should include I18n.l(site.trial_end_date_for_billable_item(billable_item.item).tomorrow, format: :named_date) }
         it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/account/billing/edit" }
@@ -52,7 +52,7 @@ describe BillingMailer do
         last_delivery = ActionMailer::Base.deliveries.last
       end
 
-      it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_has_expired', addon: billable_item.item.title, count: 1) }
+      it { last_delivery.subject.should eq   I18n.t('mailer.billing_mailer.trial_has_expired', addon: "#{billable_item.item.title} add-on", count: 1) }
       it { last_delivery.body.encoded.should include "Dear #{user.name}," }
       it { last_delivery.body.encoded.should include "https://my.sublimevideo.dev/sites/#{site.to_param}/addons" }
     end
