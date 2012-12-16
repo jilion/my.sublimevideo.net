@@ -148,7 +148,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rspec-rails'
+  gem 'rspec-rails', github: 'rspec/rspec-rails'
   gem 'debugger'
   gem 'timecop'
   gem 'better_errors'
