@@ -423,7 +423,6 @@ describe Transaction do
             open_invoice.should be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })
             open_invoice.last_transaction.should be_failed
-            open_invoice.last_transaction.error.should eq "Purchase error!"
             open_invoice.reload.should be_failed
           end
         end
