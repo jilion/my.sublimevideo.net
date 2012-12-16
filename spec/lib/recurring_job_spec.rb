@@ -53,49 +53,50 @@ describe RecurringJob do
   describe ".schedule_daily_tasks" do
     it "schedules Service::Invoice.create_invoices_for_month" do
       Service::Invoice.should delay(:create_invoices_for_month,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
-      )
-      described_class.schedule_daily_tasks
-    end
-
-    it "schedules Transaction.charge_invoices" do
-      Transaction.should delay(:charge_invoices,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
+        at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules Service::Trial.send_trial_will_expire_email" do
       Service::Trial.should delay(:send_trial_will_expire_email,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
+        at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules Service::Trial.activate_billable_items_out_of_trial!" do
       Service::Trial.should delay(:activate_billable_items_out_of_trial!,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
+        at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules Service::Usage.set_first_billable_plays_at_for_not_archived_sites" do
       Service::Usage.should delay(:set_first_billable_plays_at_for_not_archived_sites,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
+        at: Time.now.utc.tomorrow.midnight.to_i
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules Service::Usage.update_last_30_days_counters_for_not_archived_sites" do
       Service::Usage.should delay(:update_last_30_days_counters_for_not_archived_sites,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i
+        at: Time.now.utc.tomorrow.midnight.to_i
+      )
+      described_class.schedule_daily_tasks
+    end
+
+    # DEACTIVATED UNTIL FIRST ADD-ON INVOICES ARE CREATED (JAN 1st, 2013), FOR MANUAL CHECK BEFORE RE-ENABLING AUTOMATIC CHARGING
+    pending "schedules Transaction.charge_invoices" do
+      Transaction.should delay(:charge_invoices,
+        at: Time.now.utc.tomorrow.midnight
       )
       described_class.schedule_daily_tasks
     end
 
     it "schedules User.send_credit_card_expiration_email" do
       Service::CreditCard.should delay(:send_credit_card_expiration_email,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
+        at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
@@ -103,7 +104,7 @@ describe RecurringJob do
 
     it "schedules User.send_inactive_account_email" do
       User.should delay(:send_inactive_account_email,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
+        at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
@@ -111,7 +112,7 @@ describe RecurringJob do
 
     it "schedules Stats::UsersStat.create_stats" do
       Stats::UsersStat.should delay(:create_stats,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
+        at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
@@ -119,7 +120,7 @@ describe RecurringJob do
 
     it "schedules Stats::SitesStat.create_stats" do
       Stats::SitesStat.should delay(:create_stats,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
+        at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
@@ -127,7 +128,7 @@ describe RecurringJob do
 
     it "schedules Stats::SalesStat.create_stats" do
       Stats::SalesStat.should delay(:create_stats,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
+        at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
@@ -135,7 +136,7 @@ describe RecurringJob do
 
     it "schedules Stats::SalesStat.create_stats" do
       Stats::BillableItemsStat.should delay(:create_stats,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
+        at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
@@ -143,7 +144,7 @@ describe RecurringJob do
 
     it "schedules Stats::SiteStatsStat.create_stats" do
       Stats::SiteStatsStat.should delay(:create_stats,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
+        at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
@@ -151,7 +152,7 @@ describe RecurringJob do
 
     it "schedules Stats::SiteUsagesStat.create_stats" do
       Stats::SiteUsagesStat.should delay(:create_stats,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
+        at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
@@ -159,7 +160,7 @@ describe RecurringJob do
 
     it "schedules Stats::TweetsStat.create_stats" do
       Stats::TweetsStat.should delay(:create_stats,
-        at:    (Time.now.utc.tomorrow.midnight + 5.minutes).to_i,
+        at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
