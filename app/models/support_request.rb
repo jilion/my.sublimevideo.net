@@ -48,7 +48,7 @@ SupportRequest = Struct.new(:params) do
   def to_params
     parameters = { subject: subject, comment: { value: comment }, uploads: params[:uploads], external_id: user.id }
     parameters[:tags] = ["#{Users::SupportManager.new(user).level}-support"]
-    parameters[:tags] << "stage-#{stage}" if stage
+    parameters[:tags] << "stage-#{stage}" if stage.present?
     if user.zendesk_id?
       parameters[:requester_id] = user.zendesk_id
     else
@@ -63,7 +63,7 @@ SupportRequest = Struct.new(:params) do
   def comment_with_additional_info(message)
     full_message = ''
     full_message += "Request for site: (#{site.token}) #{site.hostname}\n" if site
-    full_message += "Player version: #{stage ? stage : 'N/A'}\n"
+    full_message += "Player version: #{stage.present? ? stage : 'N/A'}\n"
     full_message += "The issue occurs on this page: #{test_page}\n" unless test_page.empty?
     full_message += "The issue occurs under this environment: #{env}\n" unless env.empty?
     full_message += "\n#{message.to_s}"
