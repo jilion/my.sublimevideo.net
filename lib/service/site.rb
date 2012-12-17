@@ -6,18 +6,6 @@ require_dependency 'service/settings'
 module Service
   Site = Struct.new(:site) do
 
-    # TODO: Remove after launch
-    def self.migrate_plan_to_addons!(site_id, free_addon_plans, free_addon_plans_filtered)
-      ::Site.find(site_id).tap do |site|
-        Service::Site.new(site).migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
-      end
-    end
-
-    # TODO: Remove after launch
-    def self.create_default_kit(site_id)
-      ::Site.find(site_id).tap { |site| Service::Site.new(site).send(:create_default_kit!) }.save!
-    end
-
     def create
       ::Site.transaction do
         site.save!
@@ -108,49 +96,6 @@ module Service
     # called from app/models/site.rb
     def cancel_billable_items
       site.billable_items.destroy_all
-    end
-
-    # TODO: Remove after launch
-    def migrate_plan_to_addons!(free_addon_plans, free_addon_plans_filtered)
-      ::Site.transaction do
-        set_default_app_designs(force: site.plan.try(:name) == 'sponsored' ? 'sponsored' : nil, suspended: site.suspended?)
-        case site.plan.try(:name)
-        when 'plus'
-          # Sponsor real-time stats
-          set_billable_addon_plans(free_addon_plans_filtered)
-          set_billable_addon_plans({
-            stats: AddonPlan.get('stats', 'realtime').id,
-            support: AddonPlan.get('support', 'standard').id
-          }, force: 'sponsored', suspended: site.suspended?)
-          set_billable_addon_plans({
-            logo: AddonPlan.get('logo', 'disabled').id
-          }, force: 'subscribed', suspended: site.suspended?)
-        when 'premium'
-          # Sponsor VIP email support
-          set_billable_addon_plans(free_addon_plans_filtered, suspended: site.suspended?)
-          set_billable_addon_plans({
-            support: AddonPlan.get('support', 'vip').id
-          }, force: 'sponsored', suspended: site.suspended?)
-          set_billable_addon_plans({
-            logo: AddonPlan.get('logo', 'disabled').id,
-            stats: AddonPlan.get('stats', 'realtime').id
-          }, force: 'subscribed', suspended: site.suspended?)
-        when 'sponsored'
-          # Sponsor VIP email support
-          set_billable_addon_plans(free_addon_plans.merge({
-            logo: AddonPlan.get('logo', 'disabled').id,
-            stats: AddonPlan.get('stats', 'realtime').id,
-            support: AddonPlan.get('support', 'vip').id
-          }), force: 'sponsored', suspended: site.suspended?)
-        else
-          set_billable_addon_plans(free_addon_plans.merge({
-            logo: AddonPlan.get('logo', 'sublime').id,
-            stats: AddonPlan.get('stats', 'invisible').id,
-            support: AddonPlan.get('support', 'standard').id
-          }), suspended: site.suspended?)
-        end
-        site.save!
-      end
     end
 
     private
