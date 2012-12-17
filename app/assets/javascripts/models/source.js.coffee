@@ -129,11 +129,11 @@ class MySublimeVideo.Collections.Sources extends Backbone.Collection
   # Return used and usable sources, sorted by MP4 first and then WebM/Ogg
   # and putting HD sources first if +startWithHd+ is true.
   sortedSources: (startWithHd) ->
-    mp4Sources     = this.allByFormat('mp4')
-    webmoggSources = this.allByFormat('webmogg')
-    sortedSources  = []
+    mp4Sources    = this.allByFormat('mp4')
+    webMSources   = this.allByFormat('webm')
+    sortedSources = []
 
-    _.each [mp4Sources, webmoggSources], (family) ->
+    _.each [mp4Sources, webMSources], (family) ->
       baseSource   = _.find(family, (source) -> source.srcIsUsable() and source.get('quality') is 'base')
       hdSource     = _.find(family, (source) -> source.srcIsUsable() and source.get('quality') is 'hd')
       mobileSource = _.find(family, (source) -> source.srcIsUsable() and source.get('quality') is 'mobile')
