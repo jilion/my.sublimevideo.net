@@ -1,5 +1,4 @@
 class MySublimeVideo.UI.SiteSelector
-
   constructor: (@options = {}) ->
     @select = @options.select
     this.setupObservers()

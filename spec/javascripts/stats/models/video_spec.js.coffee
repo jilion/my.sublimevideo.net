@@ -17,18 +17,18 @@ describe 'Videos', ->
       @video = new MSVStats.Models.Video()
       expect(@video.addTime).toEqual(MSVStats.period.endTime() + 2 * 1000)
 
-    describe 'youtubeId()', ->
+    describe 'youTubeId()', ->
       it 'return sources_id if sources_origin is youtube', ->
         video = new MSVStats.Models.Video
           sources_origin: 'youtube'
           sources_id: 'youtube_id'
-        expect(video.youtubeId()).toEqual('youtube_id')
+        expect(video.youTubeId()).toEqual('youtube_id')
 
       it 'return null if sources_origin is other', ->
         video = new MSVStats.Models.Video
           sources_origin: 'other'
           sources_id: 'other_id'
-        expect(video.youtubeId()).toEqual(null)
+        expect(video.youTubeId()).toEqual(null)
 
     describe 'vlTotal() & vvTotal()', ->
       describe 'with vv_sum & vl_sum null', ->

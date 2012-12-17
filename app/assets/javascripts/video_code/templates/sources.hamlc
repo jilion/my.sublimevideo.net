@@ -7,10 +7,10 @@
         %a.hl{ href: "#{SublimeVideo.Misc.Utils.docsUrl('beta/youtube')}", onclick: "window.open(this); return false" }= "Where can I find the video ID?"
         = ")"
     %br
-    %input.text{ type: "text", id: "youtube_id", placeholder: "YouTube video ID", value: @video.get('youtubeId') }
+    %input.text{ type: "text", id: "youtube_id", placeholder: "YouTube video ID", value: @video.get('youTubeId') }
 
-    - if @video.get('youtubeId')?
-      %a.hl{ href: "http://youtube.com/watch?v=#{@video.get('youtubeId')}", onclick: "window.open(this); return false" }= "Test"
+    - if @video.get('youTubeId')?
+      %a.hl{ href: "http://youtu.be/#{@video.get('youTubeId')}", onclick: "window.open(this); return false" } Test
 
 - else
   #global_errors.notices

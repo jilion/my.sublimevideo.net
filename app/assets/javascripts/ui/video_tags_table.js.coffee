@@ -1,5 +1,4 @@
 class MySublimeVideo.UI.VideoTagsTable
-
   constructor: (@options = {}) ->
     @form   = @options.form
     @input  = @options.input

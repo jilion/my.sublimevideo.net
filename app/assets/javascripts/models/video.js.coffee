@@ -1,7 +1,7 @@
 class MySublimeVideo.Models.Video extends Backbone.Model
   defaults:
     origin: 'files'
-    youtubeId: null
+    youTubeId: null
     displayInLightbox: false
     startWithHd: false
     poster: null
@@ -16,7 +16,7 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     autoplay: false
 
   viewable: ->
-    if this.get('youtubeId')?
+    if this.get('youTubeId')?
       true
     else
       result = false
@@ -26,8 +26,8 @@ class MySublimeVideo.Models.Video extends Backbone.Model
           return
       result
 
-  setKeepRatio: (keepRatio) ->
-    this.set(keepRatio: keepRatio)
+  setKeepRatio: (newKeepRatio) ->
+    this.set(keepRatio: newKeepRatio)
     this.setHeightWithRatio() if this.get('keepRatio')
 
   setWidth: (newWidth) ->

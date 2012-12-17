@@ -33,7 +33,7 @@ class MSVStats.Models.Video extends Backbone.Model
   isNameGetFromSource: -> this.get('name_origin') == 'source'
   isYouTubeVideo: -> this.get('sources_origin') == 'youtube'
 
-  youtubeId: ->
+  youTubeId: ->
     if this.isYouTubeVideo()
       this.get('sources_id')
 
@@ -50,7 +50,7 @@ class MSVStats.Models.Video extends Backbone.Model
       else
         this.get('name')
     else if this.isYouTubeVideo()
-      "Youtube: ##{this.youtubeId().toUpperCase()}"
+      "YouTube: ##{this.youTubeId().toUpperCase()}"
     else
       '–'
 

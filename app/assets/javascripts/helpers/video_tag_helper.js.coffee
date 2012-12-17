@@ -15,7 +15,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push this.generateClass(options)
     attributes.push this.generatePoster()
     attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
-    attributes.push "data-youtube-id=\"#{@video.get('youtubeId')}\"" if @video.get('origin') is 'youtube'
+    attributes.push "data-youtube-id=\"#{@video.get('youTubeId')}\"" if @video.get('origin') is 'youtube'
     attributes.push this.generateDataSettingsAttribute(['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'], options)
     attributes.push this.generateDataUIDAndName()
     attributes.push this.generateStyle()
