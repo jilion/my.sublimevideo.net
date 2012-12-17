@@ -153,11 +153,11 @@ describe Site, :addons do
     let(:site) { with_versioning { create(:site) } }
 
     it "works!" do
+      old_hostname = site.hostname
       with_versioning do
-        old_hostname = site.hostname
         site.update_attributes(hostname: "bob.com")
-        site.versions.last.reify.hostname.should eq old_hostname
       end
+      site.versions.last.reify.hostname.should eq old_hostname
     end
   end # Versioning
 
