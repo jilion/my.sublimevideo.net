@@ -9,8 +9,6 @@ require File.expand_path('lib/service/kit')
 require File.expand_path('lib/service/site')
 
 Kit = Struct.new(:params) unless defined?(Kit)
-ActiveRecord = Class.new unless defined?(ActiveRecord)
-ActiveRecord::RecordInvalid = Class.new unless defined?(ActiveRecord::RecordInvalid)
 
 describe Service::Kit do
   let(:new_site)       { stub(touch: true, new_record?: true) }
@@ -18,8 +16,8 @@ describe Service::Kit do
   let(:kit)            { stub(design: stub, site: new_site, site_id: 1) }
   let(:addon_plan)     { stub }
   let(:service)        { described_class.new(kit) }
-  let(:settings_sanitizer_service) { stub(sanitize: sanitized_settings) }
   let(:sanitized_settings) { stub }
+  let(:settings_sanitizer_service) { stub(sanitize: sanitized_settings) }
 
   describe "#save" do
     let(:params) { { name: 'My Kit', app_design_id: 42, addons: { "logo" => { "settings" => "value" } } } }
