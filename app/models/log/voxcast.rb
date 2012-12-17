@@ -40,8 +40,11 @@ class Log::Voxcast < ::Log
     new_log_ended_at = nil
     while (new_log_ended_at = next_log_ended_at(hostname, new_log_ended_at)) < Time.now.utc do
       new_log_name = log_name(hostname, new_log_ended_at)
-      if new_log_file = CDN::VoxcastWrapper.download_log(new_log_name) # will retry 2 times to dowload
-        safely_create(name: new_log_name, file: new_log_file)
+      unless where(name: new_log_name).exists?
+        safely_create(
+          name: new_log_name,
+          file: CDN::VoxcastWrapper.download_log(new_log_name)
+        )
       end
     end
   end
