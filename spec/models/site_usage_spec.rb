@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SiteUsage do
 
-  describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file" do
+  pending "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz')
       CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(log_file)
