@@ -34,7 +34,7 @@ class AssistantController < ApplicationController
   # PUT /assistant/:site_id/player
   def player
     if request.put?
-      Service::Kit.new(@kit).update(params[:kit])
+      Service::Kit.new(@kit).save(params[:kit])
 
       redirect_to assistant_publish_video_path(@site)
     end

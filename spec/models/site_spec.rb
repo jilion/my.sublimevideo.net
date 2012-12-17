@@ -224,11 +224,11 @@ describe Site, :addons do
     end
 
     describe "before transition on suspend", :addons do
-      context 'with plus plan' do
-        let(:site) { create(:site, plan_id: plus_plan.id) }
-        before do
-          Service::Site.new(site).migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
-          site.reload.billable_items.should have(13).items
+      context 'with billable items' do
+        let(:site) do
+          site = build(:site)
+          Service::Site.new(site).create
+          site
         end
 
         it 'suspends all billable items' do
@@ -241,8 +241,8 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'suspended').should have(1).item
@@ -256,101 +256,10 @@ describe Site, :addons do
           site.suspend!
         end
       end
-
-      context 'with premium plan' do
-        let(:site) { create(:site, plan_id: premium_plan.id) }
-        before do
-          Service::Site.new(site).migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
-          site.reload.billable_items.should have(13).items
-        end
-
-        it 'suspends all billable items' do
-          site.suspend!
-
-          site.reload.billable_items.should have(13).items
-          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'suspended').should have(1).item
-          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'suspended').should have(1).item
-          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'suspended').should have(1).item
-        end
-      end
     end
 
     describe "before transition on unsuspend", :addons do
-      context 'with plus plan' do
-        let(:site) { create(:site, plan_id: plus_plan.id) }
-        before do
-          Service::Site.new(site).migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
-          site.reload.billable_items.should have(13).items
-          site.suspend!
-          site.reload.billable_items.should have(13).items
-        end
-
-        it 'suspends all billable items' do
-          site.unsuspend!
-
-          site.reload.billable_items.should have(13).items
-          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'sponsored').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
-        end
-
-        it "increments metrics" do
-          Librato.stub(:increment)
-          Librato.should_receive(:increment).with('sites.events', source: 'unsuspend')
-          site.unsuspend!
-        end
-      end
-
-      context 'with premium plan' do
-        let(:site) { create(:site, plan_id: premium_plan.id) }
-        before do
-          Service::Site.new(site).migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
-          site.reload.billable_items.should have(13).items
-          site.suspend!
-          site.reload.billable_items.should have(13).items
-        end
-
-        it 'suspends all billable items' do
-          site.unsuspend!
-
-          site.reload.billable_items.should have(13).items
-          site.billable_items.app_designs.where(item_id: @classic_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @flat_design).where(state: 'beta').should have(1).item
-          site.billable_items.app_designs.where(item_id: @light_design).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @support_addon_plan_2).where(state: 'sponsored').should have(1).item
-        end
-      end
-
-      context 'without plan' do
+      context 'with billable items' do
         let(:site) do
           site = build(:site)
           Service::Site.new(site).create
@@ -381,7 +290,7 @@ describe Site, :addons do
         end
       end
 
-      context 'with a billable item in trial plan' do
+      context 'with a billable item in trial' do
         let(:site) do
           site = build(:site)
           Service::Site.new(site).tap do |service|
