@@ -4,5 +4,5 @@ RSpec.configure do |config|
   config.filter_run_including focus: true
   config.mock_with :rspec
   config.fail_fast = ENV['FAST_FAIL'] != 'false'
-  # config.order = 'random'
+  config.order = 'random'
 end
