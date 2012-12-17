@@ -3,12 +3,7 @@ require 'uri'
 module UrlsHelper
 
   def cdn_host
-    case Rails.env
-    when 'production'
-      'cdn.sublimevideo.net'
-    else
-      'cdn.sublimevideo-staging.net'
-    end
+    'cdn.sublimevideo.net'
   end
 
   def proxied_https_url(url)
