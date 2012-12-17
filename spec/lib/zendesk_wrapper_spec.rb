@@ -65,7 +65,6 @@ describe ZendeskWrapper do
     use_vcr_cassette 'zendesk_wrapper/user'
 
     it 'returns the user' do
-      puts user_response.inpect
       user_response.email.should eq 'remy@jilion.com'
       user_response.id.should eq 17650353
     end

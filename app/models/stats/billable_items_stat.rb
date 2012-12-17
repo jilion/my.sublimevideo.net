@@ -61,8 +61,6 @@ module Stats
             hash[first_key][second_key][billable_item.item.name] += billable_item.count.to_i
           end
         end
-        puts hash.inspect
-
         hash
       end
 
