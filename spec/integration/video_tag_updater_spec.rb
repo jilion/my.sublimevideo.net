@@ -3,7 +3,7 @@ require 'spec_helper'
 describe VideoTagUpdater do
 
   describe ".update" do
-    let(:video_tag) { create(:video_tag) }
+    let(:video_tag) { create(:video_tag, name: nil, name_origin: nil) }
 
     context "a standard video update with public YouTube video" do
       use_vcr_cassette "video_tag_update/update_with_youtube"
