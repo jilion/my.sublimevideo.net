@@ -19,14 +19,14 @@ class KitsController < ApplicationController
 
   # GET /sites/:site_id/players/new
   def new
-    @kit = exhibit(@site.kits.build(app_design_id: @design.id))
+    @kit = exhibit(@site.kits.build)
     respond_with(@kit)
   end
 
   # POST /sites/:site_id/players
   def create
-    @kit = exhibit(@site.kits.build(name: params[:kit][:name], app_design_id: params[:kit][:app_design_id]))
-    Service::Kit.new(@kit).create(params[:kit])
+    @kit = exhibit(@site.kits.build)
+    Service::Kit.new(@kit).save(params[:kit])
 
     respond_with(@kit, location: [@site, :kits])
   end
@@ -44,7 +44,7 @@ class KitsController < ApplicationController
 
   # PUT /sites/:site_id/players/:id
   def update
-    Service::Kit.new(@kit).update(params[:kit])
+    Service::Kit.new(@kit).save(params[:kit])
 
     respond_with(@kit, location: [@site, :kits])
   end
