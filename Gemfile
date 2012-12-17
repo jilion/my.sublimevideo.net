@@ -61,7 +61,7 @@ gem 'aws'
 gem 'fog'
 gem 's3etag'
 gem 'carrierwave', require: ['carrierwave', 'carrierwave/processing/mime_types']
-gem 'carrierwave-mongoid', github: 'jilion/carrierwave-mongoid', branch: 'mongoid-3.0', require: 'carrierwave/mongoid'
+gem 'carrierwave-mongoid', require: 'carrierwave/mongoid'
 gem 'request-log-analyzer', require: 'request_log_analyzer'
 gem 'cocaine'
 

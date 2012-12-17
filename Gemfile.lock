@@ -1,14 +1,4 @@
 GIT
-  remote: git://github.com/jilion/carrierwave-mongoid.git
-  revision: f15154bd1c0db068ed6d5d2d030e18b3a4a1ab27
-  branch: mongoid-3.0
-  specs:
-    carrierwave-mongoid (0.3.0.alpha)
-      carrierwave (~> 0.6)
-      mongoid (~> 3.0)
-      mongoid-grid_fs (~> 1.3)
-
-GIT
   remote: git://github.com/jilion/chosen-rails.git
   revision: be8240784141056b66e0720fbfccb1f8856edaa6
   specs:
@@ -178,6 +168,10 @@ GEM
     carrierwave (0.7.1)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
+    carrierwave-mongoid (0.3.0)
+      carrierwave (~> 0.7.1)
+      mongoid (~> 3.0)
+      mongoid-grid_fs (~> 1.3)
     celluloid (0.12.4)
       facter (>= 1.6.12)
       timers (>= 1.0.0)
@@ -666,7 +660,7 @@ DEPENDENCIES
   capybara
   capybara-email
   carrierwave
-  carrierwave-mongoid!
+  carrierwave-mongoid
   chosen-rails!
   cocaine
   coffee-filter
