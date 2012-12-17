@@ -1,5 +1,5 @@
-%h3.expanding_handler= link_to 'Billable items', ''
-%ul.expandable
+%h3 Billable items
+%ul
   - site.billable_items.reorder('state ASC').each do |billable_item|
     %li
       %strong= "[#{billable_item.state.titleize}]"
