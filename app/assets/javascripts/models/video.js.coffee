@@ -26,6 +26,12 @@ class MySublimeVideo.Models.Video extends Backbone.Model
           return
       result
 
+  setYouTubeId: (newYouTubeId) ->
+    if matches = newYouTubeId.match(/(youtube\.com\/.+v=|youtu\.be\/)(\w+)(&|$)/)
+      newYouTubeId = matches[2]
+
+    this.set(youTubeId: newYouTubeId)
+
   setKeepRatio: (newKeepRatio) ->
     this.set(keepRatio: newKeepRatio)
     this.setHeightWithRatio() if this.get('keepRatio')

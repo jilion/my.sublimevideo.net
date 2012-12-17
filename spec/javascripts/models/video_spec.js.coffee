@@ -2,6 +2,27 @@ describe 'MySublimeVideo.Models.Video', ->
   beforeEach ->
     @video = new MySublimeVideo.Models.Video
 
+  describe 'setYouTubeId()', ->
+    it 'handles proper ID', ->
+      @video.setYouTubeId('abcd1234')
+
+      expect(@video.get('youTubeId')).toEqual('abcd1234')
+
+    it 'handles YouTube long URL (1)', ->
+      @video.setYouTubeId('http://youtube.com/watch?v=abcd1234')
+
+      expect(@video.get('youTubeId')).toEqual('abcd1234')
+
+    it 'handles YouTube long URL (2)', ->
+      @video.setYouTubeId('http://www.youtube.com/watch?feature=em-subs_digest&v=abcd1234')
+
+      expect(@video.get('youTubeId')).toEqual('abcd1234')
+
+    it 'handles YouTube short URL', ->
+      @video.setYouTubeId('http://youtu.be/abcd1234')
+
+      expect(@video.get('youTubeId')).toEqual('abcd1234')
+
   describe 'setKeepRatio()', ->
     it 'recalculate only height from width and ratio when keepRatio is set to true', ->
       @video.set(width: 500)

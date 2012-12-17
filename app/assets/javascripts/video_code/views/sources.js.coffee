@@ -49,9 +49,11 @@ class MSVVideoCode.Views.Sources extends Backbone.View
     MSVVideoCode.sources.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).setAndPreloadSrc(event.target.value)
 
   updateYouTubeID: (event) ->
-    MSVVideoCode.video.set(youtubeId: event.target.value)
+    MSVVideoCode.video.setYouTubeId(event.target.value)
     MSVVideoCode.video.set(dataUID: '')
     MSVVideoCode.video.set(dataName: '')
+
+    this.render()
 
   updateStartWithHd: (event) ->
     MSVVideoCode.video.set(startWithHd: event.target.checked)
