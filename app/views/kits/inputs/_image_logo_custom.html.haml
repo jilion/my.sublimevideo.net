@@ -1,5 +1,5 @@
 - custom_logo = Addons::CustomLogo.new(kit)
-- current_type = params[:settings].try(:[], :logo).try(:[], :type) || params[:settings_template][:type][:default]
+- current_type = params[:settings].try(:[], 'logo').try(:[], :type) || params[:settings_template][:type][:default]
 - value = params[:setting].to_s
 - id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
 
