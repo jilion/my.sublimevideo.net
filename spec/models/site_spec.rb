@@ -149,7 +149,7 @@ describe Site, :addons do
     end
   end
 
-  describe "Versioning" do
+  pending "Versioning" do
     let(:site) { with_versioning { create(:site) } }
 
     it "works!" do
