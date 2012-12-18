@@ -97,7 +97,7 @@ gem 'addressable', '2.2.8', require: 'addressable/uri'
 
 # Stats
 gem 'crack'
-gem 'pusher'
+gem 'pusher', github: 'jilion/pusher-gem'
 gem 'redis'
 
 # Tickets
