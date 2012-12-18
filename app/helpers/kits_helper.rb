@@ -18,6 +18,15 @@ module KitsHelper
     options_for_select(items, kit.app_design_id)
   end
 
+  def kits_for_select(site)
+    items = site.kits.order(:identifier).inject([]) do |memo, kit|
+      kit = exhibit(kit)
+      memo << [kit.name, kit.identifier]
+    end
+
+    options_for_select(items, site.default_kit.identifier)
+  end
+
   def display_custom_logo(url)
     return if url.blank?
 
