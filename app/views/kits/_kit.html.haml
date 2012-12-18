@@ -12,3 +12,6 @@
       |
       = form_for [:set_as_default, site, kit], style: 'display:inline' do |f|
         = f.submit 'Set as default', class: 'button_link'
+  
+  - if kit.default?
+    %span.default{ title: "This player will be displayed if no player is specified in your <video> tag."}= "Default"

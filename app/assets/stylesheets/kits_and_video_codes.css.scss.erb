@@ -32,7 +32,7 @@ ul#kits_wrap li {
   height:300px;
   float:left;
   margin-bottom:50px;
-  text-align:center;
+  position:relative;
   @include gradient(#dbe8ff,#c4d1e8,#cddaf1);
   @include border-radius(4px);
   @include box-shadow((inset rgba(255,255,255,0.9) 0 1px 0, rgba(0,32,79,0.5) 0 1px 4px));
@@ -46,8 +46,19 @@ ul#kits_wrap li a.name {
   font-size:18px;
   font-weight:600;
   color:#1e3966;
-  padding:15px 0 10px;
+  padding:15px 24px 10px 24px;
   display:block;
+}
+
+ul#kits_wrap li a.name strong {
+  display:inline-block;
+  font-size:16px;
+  font-weight:600;
+  padding:2px 5px 1px;
+  color:#556e97;
+  background:rgba(0,36,102,0.2);
+  white-space:nowrap;
+  @include border-radius(4px);
 }
 
 ul#kits_wrap li .preview {
@@ -59,6 +70,7 @@ ul#kits_wrap li .preview {
 
 ul#kits_wrap li .action_links {
   padding-top:11px;
+  text-align:center;
 }
 
 ul#kits_wrap li .action_links a, ul#kits_wrap li .action_links button, ul#kits_wrap li .action_links input {
@@ -102,6 +114,23 @@ ul#kits_wrap li.add_kit a.add span {
   padding:0 0 0 30px;
   background:url(<%= asset_path "sites/add_player@2x.png" %>) no-repeat 0 50%;
   background-size:18px 19px;
+}
+
+ul#kits_wrap li span.default {
+  position:absolute;
+  top:15px;
+  right:24px;
+  padding:3px 4px 2px;
+  display:inline-block;
+  background:rgba(0,67,172,0.5);
+  color:#fff;
+  font-size:11px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  text-shadow:rgba(0,0,0,0.3) 0 1px 1px;
+  @include border-radius(3px);
+  @include box-shadow((inset rgba(0,0,0,0.5) 0 1px 3px, #fff 0 1px 0));
 }
 
 /* =============== */
