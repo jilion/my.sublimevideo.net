@@ -32,8 +32,8 @@ module Service
         purge = true
       end
       sites = sites.where{ token << ::SiteToken.tokens } # not important sites
-      sites = sites.active.where(accessible_stage: Stage.stages_with_access_to(stage))
-      sites.select(:id).order{ last_30_days_main_video_views.desc }.find_each do |site|
+      sites = sites.select(:id).active.where(accessible_stage: Stage.stages_with_access_to(stage))
+      sites.order{ last_30_days_main_video_views.desc }.order{ created_at.desc }.find_each do |site|
         delay(queue: 'loader').update_all_stages!(site.id, purge: purge)
       end
     end

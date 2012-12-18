@@ -145,9 +145,9 @@ describe Service::Loader, :fog_mock do
     let(:scoped_sites) { mock(Site) }
     before do
       scoped_sites.stub(:where) { scoped_sites }
-      scoped_sites.stub_chain(:active, :where) { scoped_sites }
+      scoped_sites.stub_chain(:select, :active, :where) { scoped_sites }
       site.stub(:last_30_days_billable_video_views) { 0 }
-      scoped_sites.stub_chain(:select, :order, :find_each).and_yield(site)
+      scoped_sites.stub_chain(:order, :order, :find_each).and_yield(site)
     end
 
     context "with app_component version" do
