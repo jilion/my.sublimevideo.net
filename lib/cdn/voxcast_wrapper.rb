@@ -7,7 +7,7 @@ module CDN
     include Configurator
 
     config_file 'voxcast.yml'
-    config_accessor :key, :secret, :device_id, :non_ssl_hostname, :ssl_hostname
+    config_accessor :key, :secret, :device_id, :hostname
 
     class << self
 

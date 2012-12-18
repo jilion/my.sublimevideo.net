@@ -41,14 +41,11 @@ namespace :one_time do
     end
 
     task search_for_missing_voxcast_logs: :environment do
-      [CDN::VoxcastWrapper.non_ssl_hostname, CDN::VoxcastWrapper.ssl_hostname].each do |hostname|
-        puts "Logs for #{hostname}:"
-        CDN::VoxcastWrapper.logs_list(hostname).each do |log|
-          log_name = log['content']
-          unless Log::Voxcast.where(name: log_name).exists?
-            Log::Voxcast.delay.safely_create(name: log_name)
-            puts "#{log_name} was missing."
-          end
+      CDN::VoxcastWrapper.logs_list(CDN::VoxcastWrapper.hostname).each do |log|
+        log_name = log['content']
+        unless Log::Voxcast.where(name: log_name).exists?
+          Log::Voxcast.delay.safely_create(name: log_name)
+          puts "#{log_name} was missing."
         end
       end
     end

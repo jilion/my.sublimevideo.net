@@ -58,11 +58,9 @@ module RecurringJob
     end
 
     def schedule_frequent_tasks
-      options = { queue: 'high' }
-
       10.times do |i|
-        options[:at] = (i + 1).minutes.from_now.change(sec: 0).to_i + 5.seconds.to_i # let the log file to be present on Voxcast
-        Log::Voxcast.delay_download_and_create_new_logs(options)
+        at = (i + 1).minutes.from_now.change(sec: 0).to_i + 5.seconds.to_i # let the log file to be present on Voxcast
+        Log::Voxcast.delay(queue: 'high', at: at).download_and_create_new_logs
       end
     end
 

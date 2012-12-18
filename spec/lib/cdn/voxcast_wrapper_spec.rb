@@ -28,7 +28,7 @@ describe CDN::VoxcastWrapper do
 
   describe ".logs_list" do
     use_vcr_cassette "voxcast/logs_list"
-    let(:logs_list) { described_class.logs_list(CDN::VoxcastWrapper.non_ssl_hostname) }
+    let(:logs_list) { described_class.logs_list(CDN::VoxcastWrapper.hostname) }
 
 
     it "returns all logs" do
@@ -48,12 +48,8 @@ describe CDN::VoxcastWrapper do
     end
   end
 
-  describe ".ssl_hostname" do
-    specify { CDN::VoxcastWrapper.ssl_hostname.should eq "4076.voxcdn.com" }
-  end
-
-  describe ".non_ssl_hostname" do
-    specify { CDN::VoxcastWrapper.non_ssl_hostname.should eq "cdn.sublimevideo.net" }
+  describe ".hostname" do
+    specify { CDN::VoxcastWrapper.hostname.should eq "4076.voxcdn.com" }
   end
 
 end

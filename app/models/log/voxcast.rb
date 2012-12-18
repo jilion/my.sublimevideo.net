@@ -27,33 +27,24 @@ class Log::Voxcast < ::Log
   # = Class Methods =
   # =================
 
-  def self.safely_create!(attributes)
-    with(safe: true).create!(attributes)
-  end
-
-  def self.delay_download_and_create_new_logs(sidekiq_options = {})
-    delay(sidekiq_options).download_and_create_new_logs(CDN::VoxcastWrapper.non_ssl_hostname)
-    delay(sidekiq_options).download_and_create_new_logs(CDN::VoxcastWrapper.ssl_hostname)
-  end
-
-  def self.download_and_create_new_logs(hostname)
+  def self.download_and_create_new_logs
     new_log_ended_at = nil
-    while (new_log_ended_at = next_log_ended_at(hostname, new_log_ended_at)) < Time.now.utc do
-      new_log_name = log_name(hostname, new_log_ended_at)
-      safely_create!(
+    while (new_log_ended_at = next_log_ended_at(new_log_ended_at)) < Time.now.utc do
+      new_log_name = log_name(new_log_ended_at)
+      with(safe: true).create!(
         name: new_log_name,
         file: CDN::VoxcastWrapper.download_log(new_log_name)
       )
     end
   end
 
-  def self.log_name(hostname, ended_at)
-    "#{hostname}.log.#{ended_at.to_i - 60}-#{ended_at.to_i}.gz"
+  def self.log_name(ended_at)
+    "#{CDN::VoxcastWrapper.hostname}.log.#{ended_at.to_i - 60}-#{ended_at.to_i}.gz"
   end
 
-  def self.next_log_ended_at(hostname, last_log_ended_at = nil)
+  def self.next_log_ended_at(last_log_ended_at = nil)
     last_ended_at = last_log_ended_at ||
-      where(hostname: hostname, created_at: { :$gt => 7.day.ago }).order_by([:ended_at, :desc]).first.try(:ended_at) ||
+      where(hostname: CDN::VoxcastWrapper.hostname, created_at: { :$gt => 7.day.ago }).order_by([:ended_at, :desc]).first.try(:ended_at) ||
       1.minute.ago.change(sec: 0)
     last_ended_at + 60.seconds
   end

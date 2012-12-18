@@ -107,82 +107,74 @@ describe Log::Voxcast do
 
   describe "Class Methods" do
 
-    describe ".delay_download_and_create_new_logs" do
-      it "delays download_and_create_new_non_ssl_logs && download_and_create_new_ssl_logs" do
-        described_class.should delay(:download_and_create_new_logs, queue: 'high').with(CDN::VoxcastWrapper.non_ssl_hostname)
-        described_class.should delay(:download_and_create_new_logs, queue: 'high').with(CDN::VoxcastWrapper.ssl_hostname)
-        described_class.delay_download_and_create_new_logs(queue: 'high')
-      end
-    end
-
     describe ".download_and_create_new_logs" do
       context "with no log saved" do
         use_vcr_cassette "voxcast/download_and_create_new_logs 0 logs"
 
         it "creates 1 log" do
-          expect { Log::Voxcast.download_and_create_new_logs("cdn.sublimevideo.net") }.to change(Log::Voxcast, :count).by(1)
+          expect { Log::Voxcast.download_and_create_new_logs }.to change(Log::Voxcast, :count).by(1)
         end
       end
 
       context "with a log saved" do
         use_vcr_cassette "voxcast/download_and_create_new_logs 1 min ago"
-        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", Time.now.change(sec: 0)), file: log_file) }
+        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name(Time.now.change(sec: 0)), file: log_file) }
 
         it "creates 0 log (no duplicates)" do
           Timecop.freeze Time.now do
             log_voxcast
-            expect { Log::Voxcast.download_and_create_new_logs("cdn.sublimevideo.net") }.to_not change(Log::Voxcast, :count)
+            expect { Log::Voxcast.download_and_create_new_logs }.to_not change(Log::Voxcast, :count)
           end
         end
       end
 
       context "with log saved 1 min ago" do
         use_vcr_cassette "voxcast/download_and_create_new_logs 1 min ago"
-        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", 1.minute.ago.change(sec: 0)), file: log_file) }
+        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name(1.minute.ago.change(sec: 0)), file: log_file) }
 
         it "creates 1 log" do
           Timecop.freeze Time.now do
             log_voxcast
-            expect { Log::Voxcast.download_and_create_new_logs("cdn.sublimevideo.net") }.to change(Log::Voxcast, :count).by(1)
+            expect { Log::Voxcast.download_and_create_new_logs }.to change(Log::Voxcast, :count).by(1)
           end
         end
       end
 
       context "with log saved 5 min ago"  do
         use_vcr_cassette "voxcast/download_and_create_new_logs 5 min ago"
-        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name("cdn.sublimevideo.net", 5.minutes.ago.change(sec: 0)), file: log_file) }
+        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name(5.minutes.ago.change(sec: 0)), file: log_file) }
 
         it "creates 5 logs" do
           Timecop.freeze Time.now do
             log_voxcast
-            expect { Log::Voxcast.download_and_create_new_logs("cdn.sublimevideo.net") }.to change(Log::Voxcast, :count).by(5)
+            expect { Log::Voxcast.download_and_create_new_logs }.to change(Log::Voxcast, :count).by(5)
           end
         end
       end
     end
 
     describe ".log_name" do
-      specify { Log::Voxcast.log_name('cdn.sublimevideo.net', Time.utc(2011,7,7,11,37)).should eq 'cdn.sublimevideo.net.log.1310038560-1310038620.gz' }
+      specify { Log::Voxcast.log_name(Time.utc(2011,7,7,11,37)).should eq '4076.voxcdn.com.log.1310038560-1310038620.gz' }
     end
 
     describe ".next_log_ended_at" do
       context "with no logs saved" do
-        specify { Log::Voxcast.next_log_ended_at('cdn.sublimevideo.net').should eq Time.now.utc.change(sec: 0) }
+        specify { Log::Voxcast.next_log_ended_at.should eq Time.now.utc.change(sec: 0) }
       end
 
       context "with already a log saved" do
         use_vcr_cassette "voxcast/next_log_ended_at"
         before do
-          create(:log_voxcast, name: "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,29).to_i}-#{Time.utc(2011,7,7,9,30).to_i}.gz", file: log_file)
-          create(:log_voxcast, name: "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,37).to_i}-#{Time.utc(2011,7,7,9,38).to_i}.gz", file: log_file)
+          create(:log_voxcast, name: "4076.voxcdn.com.log.#{Time.utc(2011,7,7,9,29).to_i}-#{Time.utc(2011,7,7,9,30).to_i}.gz", file: log_file)
+          create(:log_voxcast, name: "4076.voxcdn.com.log.#{Time.utc(2011,7,7,9,37).to_i}-#{Time.utc(2011,7,7,9,38).to_i}.gz", file: log_file)
         end
 
         it "should check the last log created if no last_log_ended_at is given" do
-          Log::Voxcast.next_log_ended_at('cdn.sublimevideo.net').should eq Time.utc(2011,7,7,9,39)
+          Log::Voxcast.next_log_ended_at.should eq Time.utc(2011,7,7,9,39)
         end
 
         it "should just add 60 seconds when last_log_ended_at is given" do
-          Log::Voxcast.next_log_ended_at('cdn.sublimevideo.net', Time.utc(2011,7,7,11,0)).should eq Time.utc(2011,7,7,11,1)
+          Log::Voxcast.next_log_ended_at(Time.utc(2011,7,7,11,0)).should eq Time.utc(2011,7,7,11,1)
         end
       end
     end

@@ -204,10 +204,10 @@ describe RecurringJob do
   describe ".schedule_frequent_tasks" do
     it "schedules 10 times Log::Voxcast.delay_download_and_create_new_logs" do
       10.times do |i|
-        Log::Voxcast.should_receive(:delay_download_and_create_new_logs).with({
-          at:    (i + 1).minutes.from_now.change(sec: 0).to_i + 5,
-          queue: "high"
-        })
+        Log::Voxcast.should delay(:download_and_create_new_logs,
+          queue: "high",
+          at:    (i + 1).minutes.from_now.change(sec: 0).to_i + 5
+        )
       end
 
       described_class.schedule_frequent_tasks
