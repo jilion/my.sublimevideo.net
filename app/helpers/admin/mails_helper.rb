@@ -10,6 +10,7 @@ module Admin::MailsHelper
     grouped_criteria['Preview'] <<  ["Dev Team (#{display_integer(MailLetter::DEV_TEAM_EMAILS.size)})", "dev"]
     grouped_criteria['User Type'] << ["Paying (#{display_integer(User.paying.size)})", "paying"]
     grouped_criteria['User Type'] << ["Free (#{display_integer(User.free.size)})", "free"]
+    grouped_criteria['User Type'] << ["Voxcast CDN users", "voxcast_users"]
     grouped_criteria['Status'] << ["Active (#{display_integer(User.active.size)})", "active"]
     grouped_criteria['Status'] << ["Suspended (#{display_integer(User.suspended.size)})", "suspended"]
     grouped_criteria['Status'] << ["Not Archived (#{display_integer(User.not_archived.size)})", "not_archived"]

@@ -23,15 +23,17 @@ class MailLetter
 
   def deliver_and_log
     users = case @criteria
-            when 'dev'
-              User.where(email: DEV_TEAM_EMAILS)
-            when 'trial'
-              User.includes(:sites).merge(Site.in_trial).where{ sites.trial_started_at == nil }
-            when 'old_trial'
-              User.includes(:sites).merge(Site.in_trial).where{ sites.trial_started_at != nil }
-            else
-              User.send(@criteria)
-            end
+    when 'dev'
+      User.where(email: DEV_TEAM_EMAILS)
+    # when 'trial'
+    #   User.includes(:sites).merge(Site.in_trial).where{ sites.trial_started_at == nil }
+    # when 'old_trial'
+      # User.includes(:sites).merge(Site.in_trial).where{ sites.trial_started_at != nil }
+    when 'voxcast_users'
+      User.includes(:sites).where(sites: { id: SiteUsage.site_ids_with_loader_hits })
+    else
+      User.send(@criteria)
+    end
 
     users.not_archived.all.uniq.each { |user| self.class.delay.deliver(user.id, @template.id) }
 

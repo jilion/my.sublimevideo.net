@@ -56,6 +56,10 @@ class SiteUsage
     end
   end
 
+  def self.site_ids_with_loader_hits
+    where(loader_hits: { :$gt => 0 }, day: { :$gt => 15.days.ago }).all.map(&:site_id).uniq
+  end
+
   # ====================
   # = Instance Methods =
   # ====================
