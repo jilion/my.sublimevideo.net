@@ -31,7 +31,7 @@ class Log::Voxcast < ::Log
     new_log_ended_at = nil
     while (new_log_ended_at = next_log_ended_at(new_log_ended_at)) < Time.now.utc do
       new_log_name = log_name(new_log_ended_at)
-      with(safe: true).create!(
+      with(safe: true).create(
         name: new_log_name,
         file: CDN::VoxcastWrapper.download_log(new_log_name)
       )
