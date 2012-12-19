@@ -210,8 +210,8 @@ describe Log::Voxcast do
   end
 
   describe "Instance Methods" do
+    let(:log_file) { fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz') }
     before do
-      log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
       @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz', file: log_file)
     end
@@ -249,6 +249,14 @@ describe Log::Voxcast do
         VideoTagTrackersParser.should_receive(:extract_video_tags_data).with(video_tags_trackers) { video_tags_data }
         VideoTagUpdater.should delay(:update).with('site_token', 'uid', { 'video' => 'data' })
         @log.parse_and_create_video_tags!
+      end
+
+      context "with utf-8 complex logs" do
+        let(:log_file) { fixture_file('logs/voxcast/4076.voxcdn.com.log.1355880780-1355880840.gz') }
+
+        it "analyzes logs" do
+          @log.parse_and_create_video_tags!
+        end
       end
     end
 
