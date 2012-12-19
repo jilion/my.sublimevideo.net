@@ -24,12 +24,12 @@ describe Service::App::ComponentVersion do
       service.create
     end
 
-    it 'delays the update of all dependant sites loaders' do
-      Service::Loader.should delay(:update_all_dependant_sites).with(app_component_version.component_id, app_component_version.stage)
-      service.create
-    end
-
     context 'app component version' do
+      it 'delays the update of all dependant sites loaders' do
+        Service::Loader.should delay(:update_all_dependant_sites, queue: 'high').with(app_component_version.component_id, app_component_version.stage)
+        service.create
+      end
+
       it 'delays Campfire message' do
         CampfireWrapper.should delay(:post).with("App player component version 1.0.0 released")
         service.create
@@ -39,7 +39,12 @@ describe Service::App::ComponentVersion do
     context 'other component version' do
       let(:service) { described_class.new(other_component_version) }
 
-      it 'do not delay Campfire message' do
+      it 'does not the update of all dependant sites loaders' do
+        Service::Loader.should_not delay(:update_all_dependant_sites)
+        service.create
+      end
+
+      it 'does not delay Campfire message' do
         CampfireWrapper.should_not delay(:post)
         service.create
       end
@@ -62,20 +67,9 @@ describe Service::App::ComponentVersion do
       service.destroy
     end
 
-    context 'app component version' do
-      it 'delays Campfire message' do
-        CampfireWrapper.should delay(:post).with("App player component version 1.0.0 DELETED!")
-        service.destroy
-      end
-    end
-
-    context 'other component version' do
-      let(:service) { described_class.new(other_component_version) }
-
-      it 'do not delay Campfire message' do
-        CampfireWrapper.should_not delay(:post)
-        service.destroy
-      end
+    it 'delays Campfire message' do
+      CampfireWrapper.should delay(:post).with("App player component version 1.0.0 DELETED!")
+      service.destroy
     end
   end
 end
