@@ -52,12 +52,12 @@ class VideoTagTrackersParser
   end
 
   def self.clean_encoding_video_uid(params)
-    if params['vu'].is_a? Array
+    if params['vu'].is_a?(Array)
       params['vu'].map! do |uid|
         uid.force_encoding('binary')
         uid.encode('utf-8', :invalid => :replace, :undef => :replace)
       end
-    else
+    elsif params['vu'].is_a?(String)
       params['vu'].force_encoding('binary')
       params['vu'] = params['vu'].encode('utf-8', :invalid => :replace, :undef => :replace)
     end
