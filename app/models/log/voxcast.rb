@@ -91,8 +91,10 @@ class Log::Voxcast < ::Log
     video_tags_data = VideoTagTrackersParser.extract_video_tags_data(video_tags_trackers)
     video_tags_data.each do |(site_token, uid), data|
       data.each do |key, value|
-        value.force_encoding('binary')
-        data[key] = value.encode('utf-8', :invalid => :replace, :undef => :replace)
+        if value.present?
+          value.force_encoding('binary')
+          data[key] = value.encode('utf-8', :invalid => :replace, :undef => :replace)
+        end
       end
       VideoTagUpdater.delay.update(site_token, uid, data)
     end
