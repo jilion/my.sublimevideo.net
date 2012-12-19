@@ -28,25 +28,24 @@ class Log::Voxcast < ::Log
   # =================
 
   def self.download_and_create_new_logs
-    new_log_ended_at = nil
-    while (new_log_ended_at = next_log_ended_at(new_log_ended_at)) < Time.now.utc do
-      new_log_name = log_name(new_log_ended_at)
+    new_ended_at = next_ended_at
+    while new_ended_at < Time.now.utc
+      new_name = log_filename(new_ended_at)
       with(safe: true).create(
-        name: new_log_name,
-        file: CDN::VoxcastWrapper.download_log(new_log_name)
+        name: new_name,
+        file: CDN::VoxcastWrapper.download_log(new_name)
       )
+      new_ended_at += 60.seconds
     end
   end
 
-  def self.log_name(ended_at)
+  def self.log_filename(ended_at)
     "#{CDN::VoxcastWrapper.hostname}.log.#{ended_at.to_i - 60}-#{ended_at.to_i}.gz"
   end
 
-  def self.next_log_ended_at(last_log_ended_at = nil)
-    last_ended_at = last_log_ended_at ||
-      where(hostname: CDN::VoxcastWrapper.hostname, created_at: { :$gt => 7.day.ago }).order_by([:ended_at, :desc]).first.try(:ended_at) ||
-      1.minute.ago.change(sec: 0)
-    last_ended_at + 60.seconds
+  def self.next_ended_at
+    (where(hostname: CDN::VoxcastWrapper.hostname, created_at: { :$gt => 7.day.ago }).order_by([:ended_at, :desc]).first.try(:ended_at) ||
+      1.minute.ago.change(sec: 0)) + 60.seconds
   end
 
   class << self

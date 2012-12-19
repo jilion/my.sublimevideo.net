@@ -118,7 +118,7 @@ describe Log::Voxcast do
 
       context "with a log saved" do
         use_vcr_cassette "voxcast/download_and_create_new_logs 1 min ago"
-        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name(Time.now.change(sec: 0)), file: log_file) }
+        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_filename(Time.now.change(sec: 0)), file: log_file) }
 
         it "creates 0 log (no duplicates)" do
           Timecop.freeze Time.now do
@@ -130,7 +130,7 @@ describe Log::Voxcast do
 
       context "with log saved 1 min ago" do
         use_vcr_cassette "voxcast/download_and_create_new_logs 1 min ago"
-        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name(1.minute.ago.change(sec: 0)), file: log_file) }
+        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_filename(1.minute.ago.change(sec: 0)), file: log_file) }
 
         it "creates 1 log" do
           Timecop.freeze Time.now do
@@ -142,7 +142,7 @@ describe Log::Voxcast do
 
       context "with log saved 5 min ago"  do
         use_vcr_cassette "voxcast/download_and_create_new_logs 5 min ago"
-        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_name(5.minutes.ago.change(sec: 0)), file: log_file) }
+        let(:log_voxcast) { create(:log_voxcast, name: Log::Voxcast.log_filename(5.minutes.ago.change(sec: 0)), file: log_file) }
 
         it "creates 5 logs" do
           Timecop.freeze Time.now do
@@ -153,13 +153,13 @@ describe Log::Voxcast do
       end
     end
 
-    describe ".log_name" do
-      specify { Log::Voxcast.log_name(Time.utc(2011,7,7,11,37)).should eq '4076.voxcdn.com.log.1310038560-1310038620.gz' }
+    describe ".log_filename" do
+      specify { Log::Voxcast.log_filename(Time.utc(2011,7,7,11,37)).should eq '4076.voxcdn.com.log.1310038560-1310038620.gz' }
     end
 
-    describe ".next_log_ended_at" do
+    describe ".next_ended_at" do
       context "with no logs saved" do
-        specify { Log::Voxcast.next_log_ended_at.should eq Time.now.utc.change(sec: 0) }
+        specify { Log::Voxcast.next_ended_at.should eq Time.now.utc.change(sec: 0) }
       end
 
       context "with already a log saved" do
@@ -170,11 +170,7 @@ describe Log::Voxcast do
         end
 
         it "should check the last log created if no last_log_ended_at is given" do
-          Log::Voxcast.next_log_ended_at.should eq Time.utc(2011,7,7,9,39)
-        end
-
-        it "should just add 60 seconds when last_log_ended_at is given" do
-          Log::Voxcast.next_log_ended_at(Time.utc(2011,7,7,11,0)).should eq Time.utc(2011,7,7,11,1)
+          Log::Voxcast.next_ended_at.should eq Time.utc(2011,7,7,9,39)
         end
       end
     end
