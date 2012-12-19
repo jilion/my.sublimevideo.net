@@ -3,4 +3,5 @@ Airbrake.configure do |config|
   config.ignore  << ActionController::UnknownHttpMethod
   config.ignore  << Errno::EPIPE
   config.ignore  << Excon::Errors::SocketError
+  config.ignore  << Excon::Errors::InternalServerError
 end
