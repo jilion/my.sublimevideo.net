@@ -5,7 +5,7 @@
 
 #addons.assistant
   %h3.assistant_title= "Choose player add-ons for #{hostname_or_token(@site)}"
-  = form_for @site, url: url_for, method: 'put', html: { id: 'edit_addons' } do |f|
+  = form_for @site, url: url_for, method: 'put', html: { id: 'edit_addons', class: 'disableable' } do |f|
     = render 'addons/designs_and_addons', site: @site, f: f
     = render 'assistant/next_box', display_exit: true
     .spacer

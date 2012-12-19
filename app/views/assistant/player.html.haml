@@ -6,6 +6,6 @@
 #kit.edit.assistant
   = beta_loader_required(@site)
   %h3.assistant_title= "Create a player for #{hostname_or_token(@site)}"
-  = form_for @kit, url: url_for, html: { class: 'kit_editor' } do |f|
+  = form_for @kit, url: url_for, html: { class: 'kit_editor disableable' } do |f|
     = render 'kits/form', f: f, site: @site, kit: @kit, design: @design
     = render 'assistant/next_box', display_exit: true

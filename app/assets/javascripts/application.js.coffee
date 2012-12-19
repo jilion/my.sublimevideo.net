@@ -109,10 +109,8 @@ MySublimeVideo.documentReady = ->
     moreInfoForm.on 'submit', ->
       _gaq.push(['_trackEvent', 'SignUp', 'Completed', undefined, 1, true]) if _gaq?
 
-  _.each ['new_site', 'edit_addons'], (formId) ->
-    if (form = $("##{formId}")).exists()
-      form.on 'submit', (e) ->
-        $('#site_submit').attr('disabled', 'disabled')
+  $('form.disableable').on 'submit', (event) ->
+    $('button[type=submit]').attr('disabled', 'disabled')
 
 MySublimeVideo.prepareVideosAndLightboxes = ->
   sublime.ready ->

@@ -5,7 +5,7 @@
 
 #site.new.assistant
   %h3.assistant_title On which site do you need a SublimeVideo player?
-  = form_for @site, url: url_for, html: { class: 'full' } do |f|
+  = form_for @site, url: url_for, html: { class: 'full disableable' } do |f|
     #site_setup
       .entry.site
         .left
