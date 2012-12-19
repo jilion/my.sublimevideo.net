@@ -9,9 +9,9 @@ describe OneTime::Site do
     let!(:archived_site) { create(:site, state: 'archived') }
 
     it 'regenerates loader and license of all sites' do
-      Service::Loader.should delay(:update_all_stages!).with(site.id, purge: false)
+      Service::Loader.should delay(:update_all_stages!).with(site.id)
       described_class.regenerate_templates(loaders: true)
-      Service::Settings.should delay(:update_all_types!).with(site.id, purge: false)
+      Service::Settings.should delay(:update_all_types!).with(site.id)
       described_class.regenerate_templates(settings: true)
     end
   end

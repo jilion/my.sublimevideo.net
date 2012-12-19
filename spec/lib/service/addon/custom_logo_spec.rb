@@ -8,9 +8,6 @@ require File.expand_path('app/models/addons/custom_logo')
 require 'service/addon/custom_logo'
 
 describe Service::Addon::CustomLogo do
-  before do
-    CDN.stub(:delay) { mock(purge: true) }
-  end
   let(:kit)  { stub(identifier: '1', site: stub(token: 'abcd1234')) }
   let(:file) { fixture_file('logo-white-big.png') }
   let(:custom_logo) { Addons::CustomLogo.new(file) }

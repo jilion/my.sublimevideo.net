@@ -17,7 +17,6 @@ module CDN
             )
           end
         end
-        # purge_cdn
         true
       end
     end
@@ -30,7 +29,6 @@ module CDN
             destination[:path]
           )
         end
-        # purge_cdn
         true
       end
     end
@@ -72,12 +70,6 @@ module CDN
       ).headers
     rescue Excon::Errors::NotFound
       {}
-    end
-
-    def purge_cdn
-      unless options && options[:purge] == false
-        CDN.delay.purge("/#{destinations.first[:path]}")
-      end
     end
 
   end

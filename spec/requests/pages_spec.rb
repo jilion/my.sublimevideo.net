@@ -67,7 +67,6 @@ feature "Help page" do
         fill_in "Subject", with: "SUBJECT"
         fill_in "Description of your issue or question", with: "DESCRIPTION"
 
-        CDN.stub(:purge)
         PusherWrapper.stub(:trigger)
         VCR.use_cassette("zendesk_wrapper/create_ticket") do
           click_button "Send"

@@ -11,10 +11,7 @@ describe Service::App::ComponentVersion do
   let(:component_version) { component.versions.build({ token: component.token, version: '2.0.0', zip: zip }, as: :admin) }
   let(:zip) { fixture_file('app/e.zip') }
 
-  before {
-    CDN.stub(:purge)
-    component.versions.create({ token: component.token, version: '1.0.0', zip: zip }, as: :admin)
-  }
+  before { component.versions.create({ token: component.token, version: '1.0.0', zip: zip }, as: :admin) }
 
   describe "#create" do
 
