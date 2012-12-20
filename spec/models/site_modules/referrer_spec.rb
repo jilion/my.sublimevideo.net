@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SiteModules::Referrer do
   describe "#referrer_type" do
-    pending "with versioning" do
+    context "with versioning" do
       let(:site) {
         site = with_versioning do
           Timecop.travel(1.day.ago) do
