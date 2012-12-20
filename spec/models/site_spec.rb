@@ -188,7 +188,7 @@ describe Site, :addons do
 
       it "delays Service::Loader update if accessible_stage changed" do
         Timecop.freeze do
-          Service::Loader.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id)
+          Service::Loader.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
           site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
         end
       end
@@ -210,7 +210,7 @@ describe Site, :addons do
     describe "after transition" do
       it "delays Service::Loader update" do
         Timecop.freeze do
-          Service::Loader.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id)
+          Service::Loader.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
           site.suspend
         end
       end

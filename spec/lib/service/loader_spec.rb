@@ -66,9 +66,16 @@ describe Service::Loader, :fog_mock do
 
       it "increments metrics" do
         Librato.should_receive(:increment).with('loader.update', source: 'stable')
-        Librato.should_receive(:increment).with('loader.delete', source: 'beta')
-        Librato.should_receive(:increment).with('loader.delete', source: 'alpha')
         described_class.update_all_stages!(site.id)
+      end
+
+      context "deletable" do
+        it "increments also delete metrics" do
+          Librato.should_receive(:increment).with('loader.update', source: 'stable')
+          Librato.should_receive(:increment).with('loader.delete', source: 'beta')
+          Librato.should_receive(:increment).with('loader.delete', source: 'alpha')
+          described_class.update_all_stages!(site.id, deletable: true)
+        end
       end
     end
 
@@ -106,7 +113,7 @@ describe Service::Loader, :fog_mock do
       end
 
       it "keeps only stable loader" do
-        described_class.update_all_stages!(site.id)
+        described_class.update_all_stages!(site.id, deletable: true)
         described_class.new(site, 'stable').should be_present
         described_class.new(site, 'beta').should_not be_present
         described_class.new(site, 'alpha').should_not be_present

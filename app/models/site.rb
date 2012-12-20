@@ -111,7 +111,8 @@ class Site < ActiveRecord::Base
   # Only when accessible_stage change in admin
   after_save ->(site) do
     if site.accessible_stage_changed?
-      Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id)
+      # Delay for 5 seconds to be sure that commit transaction is done.
+      Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
       Service::Settings.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
     end
   end
@@ -127,7 +128,7 @@ class Site < ActiveRecord::Base
 
     after_transition ->(site) do
       # Delay for 5 seconds to be sure that commit transaction is done.
-      Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id)
+      Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
       Service::Settings.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
     end
 
