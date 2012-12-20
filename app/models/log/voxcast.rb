@@ -1,4 +1,5 @@
 # encoding: utf-8
+require 'thread'
 require_dependency 'recurring_job'
 require_dependency 'video_tag_trackers_parser'
 require_dependency 'video_tag_updater'
@@ -28,16 +29,22 @@ class Log::Voxcast < ::Log
   # =================
 
   def self.download_and_create_new_logs
-    new_ended_at = next_ended_at
-    while new_ended_at < Time.now.utc
-      new_name = log_filename(new_ended_at)
-      log_file = CDN::VoxcastWrapper.download_log(new_name)
-      with(safe: true).create(
-        name: new_name,
-        file: log_file
-      )
-      new_ended_at += 60.seconds
+    mutex.synchronize do
+      new_ended_at = next_ended_at
+      while new_ended_at < Time.now.utc
+        new_name = log_filename(new_ended_at)
+        log_file = CDN::VoxcastWrapper.download_log(new_name)
+        with(safe: true).create(
+          name: new_name,
+          file: log_file
+        )
+        new_ended_at += 60.seconds
+      end
     end
+  end
+
+  def self.mutex
+    @mutex ||= Mutex.new
   end
 
   def self.log_filename(ended_at)
