@@ -31,9 +31,10 @@ class Log::Voxcast < ::Log
     new_ended_at = next_ended_at
     while new_ended_at < Time.now.utc
       new_name = log_filename(new_ended_at)
+      log_file = CDN::VoxcastWrapper.download_log(new_name)
       with(safe: true).create(
         name: new_name,
-        file: CDN::VoxcastWrapper.download_log(new_name)
+        file: log_file
       )
       new_ended_at += 60.seconds
     end
