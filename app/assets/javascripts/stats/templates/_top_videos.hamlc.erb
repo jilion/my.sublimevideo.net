@@ -28,7 +28,7 @@
                   %script{ type: "text/javascript" }
                     new SublimeVideo.Media.ImagePreloader("#{video.sslPosterUrl()}", SublimeVideo.cropPosterframe, { "imgId": "#{video.cid}" });
               .right
-                %h4{ title: video.name() }= video.name(22)
+                %h4{ title: video.name() }!= video.name(22)
                 - if video.isUidGetFromSource() || video.isNameGetFromSource()
                   %span.tooltip.warning
                     %span.icon

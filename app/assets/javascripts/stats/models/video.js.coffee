@@ -32,9 +32,14 @@ class MSVStats.Models.Video extends Backbone.Model
   isUidGetFromSource: -> this.get('uid_origin') == 'source'
   isNameGetFromSource: -> this.get('name_origin') == 'source'
   isYouTubeVideo: -> this.get('sources_origin') == 'youtube'
+  isVimeoVideo: -> this.get('sources_origin') == 'vimeo'
 
   youTubeId: ->
     if this.isYouTubeVideo()
+      this.get('sources_id')
+
+  vimeoId: ->
+    if this.isVimeoVideo()
       this.get('sources_id')
 
   sslPosterUrl: ->
@@ -50,7 +55,9 @@ class MSVStats.Models.Video extends Backbone.Model
       else
         this.get('name')
     else if this.isYouTubeVideo()
-      "YouTube: ##{this.youTubeId().toUpperCase()}"
+      "<em>YouTube: ##{this.youTubeId().toUpperCase()}</em>"
+    else if this.isVimeoVideo()
+      "<em>Vimeo: ##{this.vimeoId().toUpperCase()}</em>"
     else
       '–'
 
