@@ -58,8 +58,8 @@ class App::Component < ActiveRecord::Base
   private
 
   def clear_caches
-    Rails.cache.clear [self.class, 'app_component'] if app_component?
-    Rails.cache.clear [self.class, 'find_cached_by_name', name]
+    Rails.cache.clear [self.class, 'app_component']
+    Rails.cache.clear [self.class, 'find_cached_by_name', name.dup]
   end
 
 end
