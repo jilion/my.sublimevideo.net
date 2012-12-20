@@ -18,10 +18,7 @@
         %tr{ class: "#{if i % 2 == 0 then 'alt' else ''}" }
           %td.video
             .wrap
-              -# playClass = if MSVStats.period.isSeconds() then 'disabled' else 'active'
-              -#%a{ href: "#", onclick: "return false", class: "play #{playClass}", data-video-uid: video.cid }
               .crop{ id: "#{video.cid}-crop", style: "width:96px; height:54px;" }
-              -#  - unless MSVStats.period.isSeconds()
                 %span.overlay
               - if $("##{video.cid}-cache").size() > 0
                 %script{ type: "text/javascript" }
@@ -49,6 +46,14 @@
                         %a{ href: "http://docs.#{SublimeVideo.Misc.Utils.topDomainHost()}/optimize-for-stats", onclick: "window.open(this); return false" }= "More info..."
                 .spacer
                 %span.video_uid= "##{video.id}"
+                - switch video.get('sources_origin')
+                  - when 'youtube'
+                    %a.provider.youtube{ href: "http://www.youtube.com/watch?v=#{video.get('sources_id')}", title: 'Watch on YouTube'}
+                      #span YouTube
+                  - when 'vimeo'
+                    %a.provider.vimeo{ href: "http://www.vimeo.com/#{video.get('sources_id')}", title: 'Watch on Vimeo'}
+                      #span Vimeo
+
               .spacer
           %td.loads= Highcharts.numberFormat(video.vlTotal(), 0)
           %td.plays= Highcharts.numberFormat(video.vvTotal(), 0)

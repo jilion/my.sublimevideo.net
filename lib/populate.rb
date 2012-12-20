@@ -771,21 +771,42 @@ module Populate
         videos_count = 20
         # Video Tags
         videos_count.times do |video_i|
-          site.video_tags.create!(
-            uid: "video#{video_i}",
-            uid_origin: "source",
-            name: "Video #{video_i} long name test truncate",
-            name_origin: "source",
-            current_sources: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
-            poster_url: "http#{'s' if video_i.even?}://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
-            size: "544x306",
-            sources: {
-              "83cb4c27" => { url: "http://media.sublimevideo.net/v/midnight_sun_sv1_360p.mp4", quality: "base", family: "mp4" },
-              "83cb4c57" => { url: "http://media.sublimevideo.net/v/midnight_sun_sv1_720p.mp4", quality: "hd", family: "mp4" },
-              "af355ec8" => { url: "http://media.sublimevideo.net/v/midnight_sun_sv1_360p.webm", quality: "base", family: "webm" },
-              "af355ec9" => { url: "http://media.sublimevideo.net/v/midnight_sun_sv1_720p.webm", quality: "hd", family: "webm" },
-            }
-          )
+          case video_i%3
+          when 0
+            VideoTagUpdater.update(site.token, "video#{video_i}", {
+              uo: "s",
+              n: "Video #{video_i} long name test truncate",
+              no: "s",
+              cs: ["83cb4c27","83cb4c57","af355ec8", "af355ec9"],
+              p: "http#{'s' if video_i.even?}://d1p69vb2iuddhr.cloudfront.net/assets/www/demo/midnight_sun_800-4f8c545242632c5352bc9da1addabcf5.jpg",
+              z: "544x306",
+              s: {
+                "83cb4c27" => { u: "http://media.sublimevideo.net/v/midnight_sun_sv1_360p.mp4", q: "base", f: "mp4" }.stringify_keys,
+                "83cb4c57" => { u: "http://media.sublimevideo.net/v/midnight_sun_sv1_720p.mp4", q: "hd", f: "mp4" }.stringify_keys,
+                "af355ec8" => { u: "http://media.sublimevideo.net/v/midnight_sun_sv1_360p.webm", q: "base", f: "webm" }.stringify_keys,
+                "af355ec9" => { u: "http://media.sublimevideo.net/v/midnight_sun_sv1_720p.webm", q: "hd", f: "webm" }.stringify_keys,
+              }
+            }.stringify_keys)
+          when 1
+            VideoTagUpdater.update(site.token, "video#{video_i}", {
+              uo: "s",
+              n: "Private Vimeo Pro",
+              no: "a",
+              cs: ["83cb4c27","83cb4c57"],
+              p: "https://secure-b.vimeocdn.com/ts/358/030/358030879_960.jpg",
+              z: "544x306",
+              s: {
+                "83cb4c27" => { u: "http://player.vimeo.com/external/51920681.sd.mp4?s=117259e431f97030b1150ddb5ce5858a", q: "base", f: "mp4" }.stringify_keys,
+                "83cb4c57" => { u: "http://player.vimeo.com/external/51920681.hd.mp4?s=70273279a571e027c54032e70db61253", q: "hd", f: "mp4" }.stringify_keys,
+              }
+            }.stringify_keys)
+          when 2
+            VideoTagUpdater.update(site.token, "video#{video_i}", {
+              uo: "s",
+              i: 'rAq2rNEru8A',
+              io: 'y'
+            }.stringify_keys)
+          end
         end
 
         # Days
