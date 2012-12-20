@@ -44,6 +44,16 @@ describe VideoTagTrackersParser do
         })
       end
     end
+
+    context "with empty vu info" do
+      let(:video_tags_trackers) { {
+        "?t=2xrynuh2&e=l&du=http%3A%2F%2Fwww.schooltube.com%2Fvideo%2F1995bd32d3dc3e000a9d%2FDubstep&dt=Dubstep&ru=http%3A%2F%2Fwww.schooltube.com%2Fsearch%2F%3Fterm%3DDeadmau5&sr=768x1024&bl=en-us&pt[]=i&pm[]=h&pff[]=&pz[]=620x350&vu[]" => 1
+      }}
+
+      it "extracts 0 video tag meta_data" do
+        described_class.extract_video_tags_data(video_tags_trackers).should eql({})
+      end
+    end
   end
 
   context "view event" do

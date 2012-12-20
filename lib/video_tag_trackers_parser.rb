@@ -11,8 +11,8 @@ class VideoTagTrackersParser
     video_tags_trackers.each do |request, hits|
       begin
         params = Addressable::URI.parse(request).query_values || {}
-        clean_encoding_video_uid(params)
         if params['h'].in? %w[m e]
+          clean_encoding_video_uid(params)
           case params['e']
           when 'l'
             if all_needed_params_present?(params, %w[vu pz])
@@ -54,6 +54,7 @@ class VideoTagTrackersParser
   def self.clean_encoding_video_uid(params)
     if params['vu'].is_a?(Array)
       params['vu'].map! do |uid|
+        return nil unless uid.is_a?(String)
         uid.force_encoding('binary')
         uid.encode('utf-8', :invalid => :replace, :undef => :replace)
       end
