@@ -18,7 +18,7 @@ class AddonsController < ApplicationController
 
   # GET /sites/:site_id/addons
   def index
-    @site = current_user.sites.not_archived.includes(:billable_items, :app_designs, :addon_plans).find_by_token!(params[:site_id] || params[:id])
+    @site = current_user.sites.not_archived.find_by_token!(params[:site_id] || params[:id])
     @site = exhibit(@site)
   end
 

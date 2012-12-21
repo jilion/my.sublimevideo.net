@@ -145,6 +145,7 @@ group :development do
   gem 'letter_opener', github: 'ryanb/letter_opener' # includes a fix not released yet
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
+  gem 'bullet'
 end
 
 group :development, :test do
@@ -186,10 +187,7 @@ group :tools do
   # Guard
   gem 'ruby_gntp'
   gem 'rb-fsevent'
-  gem 'rb-readline'
 
-  gem 'pry'
-  gem 'guard'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-rspec'
