@@ -2145,6 +2145,13 @@ CREATE INDEX index_sites_on_plan_id ON sites USING btree (plan_id);
 
 
 --
+-- Name: index_sites_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_sites_on_token ON sites USING btree (token);
+
+
+--
 -- Name: index_sites_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2470,3 +2477,5 @@ INSERT INTO schema_migrations (version) VALUES ('20121202170511');
 INSERT INTO schema_migrations (version) VALUES ('20121205172815');
 
 INSERT INTO schema_migrations (version) VALUES ('20121207133427');
+
+INSERT INTO schema_migrations (version) VALUES ('20121217090434');
