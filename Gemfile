@@ -38,6 +38,7 @@ gem 'oauth-plugin'
 gem 'acts_as_api'
 
 # Internals
+gem 'dalli'
 gem 'sidekiq'
 gem 'sinatra', require: false # needed for Sidekiq Web UI
 gem 'slim' # needed for Sidekiq Web UI
@@ -133,7 +134,6 @@ group :staging, :production do
   gem 'rack-cache'
   gem 'rack-ssl-enforcer'
   gem 'thin'
-  gem 'dalli'
   gem 'newrelic_rpm'
   gem 'newrelic-redis'
   gem 'newrelic_moped'
