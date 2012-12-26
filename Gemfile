@@ -157,6 +157,7 @@ group :development, :test do
 
   # Javascript test
   gem 'jasminerice'
+  gem 'guard-jasmine'
   # Rails routes view
   gem 'sextant'
 end
@@ -191,6 +192,5 @@ group :tools do
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-rspec'
-  gem 'guard-jasmine'
   gem 'guard-shell'
 end
