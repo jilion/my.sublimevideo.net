@@ -58,7 +58,7 @@ class Invoice < ActiveRecord::Base
     event(:succeed) { transition [:open, :failed, :waiting] => :paid }
     event(:fail)    { transition [:open, :failed, :waiting] => :failed }
     event(:wait)    { transition [:open, :failed, :waiting] => :waiting }
-    event(:cancel)  { transition [:open, :failed] => :canceled }
+    event(:cancel)  { transition [:open, :failed, :paid] => :canceled }
 
     before_transition on: :succeed do |invoice, transition|
       invoice.paid_at        = Time.now.utc
