@@ -20,8 +20,8 @@ module InvoiceModules::Scope
 
     scope :for_month, ->(date) {
       not_canceled.includes(:invoice_items)
-      .where { invoice_items.started_at <= date.beginning_of_month }
-      .where { invoice_items.ended_at >= date.end_of_month }
+      .where { invoice_items.started_at >= date.beginning_of_month }.where { invoice_items.started_at <= date.end_of_month }
+      .where { invoice_items.ended_at >= date.beginning_of_month }.where { invoice_items.ended_at <= date.end_of_month }
     }
 
     # sort

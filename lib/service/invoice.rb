@@ -25,7 +25,7 @@ module Service
     end
 
     def for_month(date)
-      if site.invoices.for_month(date).where { invoice_items.started_at >= Time.utc(2012, 12, 14, 15) }.empty?
+      if site.invoices.for_month(date).where { invoice_items.started_at >= Time.utc(2012, 12, 13) }.empty?
         handle_items_not_yet_canceled_and_created_before_month_of(date)
         handle_items_subscribed_during_month_of(date)
       end
@@ -107,7 +107,11 @@ module Service
     end
 
     def set_balance_deduction_amount
-      invoice.balance_deduction_amount = invoice.site.user.balance > 0 ? [invoice.site.user.balance, invoice.invoice_items_amount].min : 0
+      invoice.balance_deduction_amount = if invoice.site.user.balance > 0
+        [invoice.site.user.balance, invoice.invoice_items_amount + invoice.vat_amount].min
+      else
+        0
+      end
     end
 
     def set_amount
