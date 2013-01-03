@@ -18,12 +18,12 @@
 
   %td.period
     %small
-      - if invoice.paid_at
+      - if invoice.canceled?
+        = "Canceled"
+      - elsif invoice.paid_at?
         = "Paid: #{display_time(invoice.paid_at)}"
         = ", Refund. #{display_time(invoice.site.refunded_at)}" if invoice.refunded?
-      - elsif invoice.canceled?
-        = "Canceled"
-      - elsif invoice.last_failed_at
+      - elsif invoice.last_failed_at?
         = "Failed: #{display_time(invoice.last_failed_at)}"
       - else
         = "Created: #{display_time(invoice.created_at)}"
@@ -31,12 +31,10 @@
   %td.invoice_items_count
     %small
       %strong
-        - if invoice.invoice_items_count > 1
-          = "Upgrade"
-        - elsif invoice.renew
+        - if invoice.renew
           = "Renew"
         - else
-          = "–"
+          = "New"
       = "/ #{invoice.first_paid_item.cycle}" if invoice.first_paid_item.respond_to?(:cycle)
 
   %td.amount
