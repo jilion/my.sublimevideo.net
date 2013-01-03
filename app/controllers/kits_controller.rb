@@ -13,7 +13,7 @@ class KitsController < ApplicationController
 
   # GET /sites/:site_id/players
   def index
-    @kits = @site.kits.order(:id)
+    @kits = @site.kits.includes(:site).order(:id)
     respond_with(@kits)
   end
 
