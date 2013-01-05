@@ -29,8 +29,7 @@ module RecurringJob
       Service::Trial.delay(options).activate_billable_items_out_of_trial!
       Service::Usage.delay(options).set_first_billable_plays_at_for_not_archived_sites
       Service::Usage.delay(options).update_last_30_days_counters_for_not_archived_sites
-      # DEACTIVATED UNTIL FIRST ADD-ON INVOICES ARE CREATED (JAN 1st, 2013), FOR MANUAL CHECK BEFORE RE-ENABLING AUTOMATIC CHARGING
-      # Transaction.delay(at: (Time.now.utc.tomorrow.midnight + 1.hour).to_i).charge_invoices
+      Transaction.delay(at: (Time.now.utc.tomorrow.midnight + 1.hour).to_i).charge_invoices
 
       options.merge!(queue: 'low')
 

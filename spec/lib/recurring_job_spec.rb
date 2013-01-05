@@ -86,10 +86,9 @@ describe RecurringJob do
       described_class.schedule_daily_tasks
     end
 
-    # DEACTIVATED UNTIL FIRST ADD-ON INVOICES ARE CREATED (JAN 1st, 2013), FOR MANUAL CHECK BEFORE RE-ENABLING AUTOMATIC CHARGING
-    pending "schedules Transaction.charge_invoices" do
+    it "schedules Transaction.charge_invoices" do
       Transaction.should delay(:charge_invoices,
-        at: Time.now.utc.tomorrow.midnight
+        at: (Time.now.utc.tomorrow.midnight + 1.hour).to_i
       )
       described_class.schedule_daily_tasks
     end
