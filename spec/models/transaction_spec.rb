@@ -275,7 +275,7 @@ describe Transaction do
       end
 
       it "should delay invoice charging for open invoices which have the renew flag == true by user" do
-        Transaction.should delay(:charge_invoices_by_user_id, queue: 'high').with(@invoice1.site.user_id)
+        Transaction.should delay(:charge_invoices_by_user_id).with(@invoice1.site.user_id)
         Transaction.charge_invoices
       end
     end # .charge_invoices
