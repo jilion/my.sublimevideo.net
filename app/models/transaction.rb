@@ -21,17 +21,17 @@ class Transaction < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validate :at_least_one_invoice, :all_invoices_belong_to_same_user
+  validate :at_least_one_invoice, :all_invoices_belong_to_same_user, :minimum_amount
 
   # =============
   # = Callbacks =
   # =============
 
-  before_validation :reject_paid_invoices
+  before_validation :reject_paid_invoices, :set_amount
 
   before_save :set_fields_from_ogone_response
 
-  before_create :set_user_and_credit_card_info, :set_amount
+  before_create :set_user_and_credit_card_info
 
   # =================
   # = State Machine =
@@ -43,7 +43,8 @@ class Transaction < ActiveRecord::Base
     event(:succeed)  { transition [:unprocessed, :waiting_d3d, :waiting] => :paid }
     event(:fail)     { transition [:unprocessed, :waiting_d3d, :waiting] => :failed }
 
-    after_transition on: [:succeed, :fail, :wait_d3d, :wait], do: :update_invoices
+    before_transition on: [:succeed, :fail, :wait_d3d, :wait], do: [:set_fields_from_ogone_response]
+    after_transition on: [:succeed, :fail, :wait_d3d, :wait], do: [:update_invoices]
 
     after_transition on: :succeed, do: :send_charging_succeeded_email
     after_transition on: :fail, do: :send_charging_failed_email
@@ -86,31 +87,23 @@ class Transaction < ActiveRecord::Base
   end
 
   def self.charge_by_invoice_ids(invoice_ids, options = {})
-    transaction = new(invoices: Invoice.where(id: invoice_ids))
-    transaction.save!
+    if transaction = create(invoices: Invoice.where(id: invoice_ids))
+      if payment = transaction.execute_payment(options)
+        transaction.process_payment_response(payment.params)
+      else
+        transaction
+      end
+    end
+  end
 
-    options = options.merge({
-      order_id: transaction.order_id,
-      description: transaction.description,
-      email: transaction.user.email,
-      billing_address: {
-        address1: transaction.user.billing_address_1,
-        zip: transaction.user.billing_postal_code,
-        city: transaction.user.billing_city,
-        country: transaction.user.billing_country
-      },
-      paramplus: "PAYMENT=TRUE"
-    })
-
-    payment = begin
-      Ogone.purchase(transaction.amount, transaction.user.cc_alias, options)
+  def execute_payment(opts = {})
+    begin
+      Ogone.purchase(amount, user.cc_alias, payment_options(opts))
     rescue => ex
       Notify.send("Charging failed: #{ex.message}", exception: ex)
-      transaction.fail
+      self.fail
       nil
     end
-
-    payment ? transaction.process_payment_response(payment.params) : transaction
   end
 
   # ====================
@@ -182,6 +175,31 @@ class Transaction < ActiveRecord::Base
 
 private
 
+  def payment_options(options = {})
+    options.merge!({
+      order_id: order_id,
+      description: description,
+      email: user.email,
+      billing_address: {
+        address1: user.billing_address_1,
+        zip: user.billing_postal_code,
+        city: user.billing_city,
+        country: user.billing_country
+      },
+      paramplus: "PAYMENT=TRUE"
+    })
+  end
+
+  # before_validation
+  def reject_paid_invoices
+    self.invoices.reject! { |invoice| invoice.paid? }
+  end
+
+  # before_validation
+  def set_amount
+    self.amount = invoices.map(&:amount).sum
+  end
+
   # validates
   def at_least_one_invoice
     self.errors.add(:base, :at_least_one_invoice) if invoices.empty?
@@ -194,19 +212,11 @@ private
     end
   end
 
-  # before_save
-  def set_fields_from_ogone_response
-    if @ogone_response_info.present?
-      self.pay_id    = @ogone_response_info["PAYID"]
-      self.nc_status = @ogone_response_info["NCSTATUS"].to_i
-      self.status    = @ogone_response_info["STATUS"].to_i
-      self.error     = @ogone_response_info["NCERRORPLUS"]
+  # validates
+  def minimum_amount
+    if amount < 100
+      self.errors.add(:amount, :minimum_amount_not_reached)
     end
-  end
-
-  # before_create
-  def reject_paid_invoices
-    self.invoices.reject! { |invoice| invoice.paid? }
   end
 
   # before_create
@@ -217,21 +227,26 @@ private
     self.cc_expire_on   = self.user.cc_expire_on
   end
 
-  # before_create
-  def set_amount
-    self.amount = invoices.map(&:amount).sum
+  # before_transition on: [:succeed, :fail, :wait, :wait_d3d]
+  def set_fields_from_ogone_response
+    if @ogone_response_info.present?
+      self.pay_id    = @ogone_response_info["PAYID"]
+      self.nc_status = @ogone_response_info["NCSTATUS"].to_i
+      self.status    = @ogone_response_info["STATUS"].to_i
+      self.error     = @ogone_response_info["NCERRORPLUS"]
+    end
   end
 
   # after_transition on: [:succeed, :fail, :wait, :wait_d3d]
   def update_invoices
     action = case state
-      when "paid"
-        'succeed'
-      when "failed"
-        'fail'
-      when "waiting"
-        'wait'
-      end
+             when "paid"
+               'succeed'
+             when "failed"
+               'fail'
+             when "waiting"
+               'wait'
+             end
 
     if action
       invoices.map(&:"#{action}!")

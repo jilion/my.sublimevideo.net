@@ -46,6 +46,13 @@ describe Transaction do
       specify { should_not be_valid }
       specify { should have(1).error_on(:base) }
     end
+
+    describe "#minimum_amount" do
+      subject { build(:transaction, invoices: [create(:invoice, site: create(:site), amount: 50), create(:invoice, site: create(:site), amount: 49)]) }
+
+      specify { should_not be_valid }
+      specify { should have(1).error_on(:amount) }
+    end
   end # Validations
 
   describe "Callbacks" do
