@@ -90,7 +90,9 @@ class Transaction < ActiveRecord::Base
   end
 
   def self.charge_by_invoice_ids(invoice_ids, options = {})
-    if transaction = create(invoices: Invoice.where(id: invoice_ids))
+    transaction = new(invoices: Invoice.where(id: invoice_ids))
+
+    if transaction.save
       if payment = transaction.execute_payment(options)
         transaction.process_payment_response(payment.params)
       else
