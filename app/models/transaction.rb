@@ -105,8 +105,7 @@ class Transaction < ActiveRecord::Base
     begin
       Ogone.purchase(amount, user.cc_alias, payment_options(opts))
     rescue => ex
-      Notify.send("Charging failed: #{ex.message}", exception: ex)
-      self.fail
+      Notify.send("Exception during charging: #{ex.message}", exception: ex)
       nil
     end
   end

@@ -429,8 +429,8 @@ describe Transaction do
           it "should set transaction and invoices to failed state" do
             open_invoice.should be_open
             Transaction.charge_by_invoice_ids([open_invoice.id], { credit_card: user.credit_card })
-            open_invoice.last_transaction.should be_failed
-            open_invoice.reload.should be_failed
+            open_invoice.last_transaction.should be_unprocessed
+            open_invoice.reload.should be_open
           end
         end
 
