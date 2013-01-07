@@ -77,11 +77,11 @@ module Admin::SitesHelper
 
   def addon_plans_for_select(site)
     grouped_options = {}
-    addons = Addon.includes(:plans).all
+    addons = Addon.all
 
     addons.each do |addon|
       group_items = []
-      addon.plans.each do |addon_plan|
+      addon.plans.includes(:addon).each do |addon_plan|
         title = if billable_item = site.billable_items.addon_plans.where(item_id: addon_plan.id).first
           "#{addon_plan.title} (#{billable_item.state})"
         else

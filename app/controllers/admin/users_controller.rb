@@ -33,7 +33,7 @@ class Admin::UsersController < Admin::AdminController
 
   # GET /users/:id/edit
   def edit
-    @user = User.includes(:enthusiast, :feedbacks, :sites, :invoices).find(params[:id])
+    @user = User.includes(:enthusiast, :feedbacks).find(params[:id])
     @tags = User.tag_counts.order{ tags.name }
 
     respond_with(@user)

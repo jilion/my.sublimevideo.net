@@ -1,6 +1,6 @@
 %h3.expanding_handler= link_to 'Billable items activities', ''
 %ul.expandable
-  - site.billable_item_activities.reorder('created_at DESC').each do |billable_item_activity|
+  - site.billable_item_activities.includes(:item).reorder('created_at DESC').each do |billable_item_activity|
     %li
       %strong= "[#{billable_item_activity.state.titleize}]"
       - if billable_item_activity.item.is_a?(App::Design)
