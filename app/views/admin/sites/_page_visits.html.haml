@@ -1,5 +1,3 @@
-%h3 Page visits
-
 %p
   Last 30 days main traffic:
   = "#{number_with_delimiter(Stat::Site::Day.last_30_days_page_visits(site.token, :main), significant: false, precision: 2, delimiter: "'")} page visits"

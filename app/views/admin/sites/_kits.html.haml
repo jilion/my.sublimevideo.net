@@ -6,6 +6,8 @@
   %ul
   - site.kits.includes(:design).each do |kit|
     %li
+      = '[default] ' if site.default_kit == kit
       = kit.name
-      = " [#{kit.design.title}]"
-      = ' (default)' if site.default_kit == kit
+      = ", #{kit.design.title} design"
+      %span.expanding_handler= raw "(#{link_to "settings", ''})"
+      %ul.expandable= kit.settings
