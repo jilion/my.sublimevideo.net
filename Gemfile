@@ -89,7 +89,7 @@ gem 'createsend' # Campaign Monitor
 gem 'airbrake'
 gem 'prowl'
 gem 'tinder' # Campfire
-gem 'librato-rails'
+gem 'librato-rails', github: 'librato/librato-rails', branch: 'feature/rack_first'
 gem 'lograge'
 
 # Highest version change the query_values method behavior

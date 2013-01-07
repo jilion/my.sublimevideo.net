@@ -29,6 +29,15 @@ GIT
     useragent (0.2.3)
 
 GIT
+  remote: git://github.com/librato/librato-rails.git
+  revision: 82a95ae54f2ed990135a7b655293107384da2796
+  branch: feature/rack_first
+  specs:
+    librato-rails (0.8.1)
+      librato-metrics (~> 1.0.2)
+      rails (>= 3.0)
+
+GIT
   remote: git://github.com/rspec/rspec-core.git
   revision: f273be379551b9ecaa2b526152e58703af3f862b
   specs:
@@ -358,9 +367,6 @@ GEM
       aggregate (~> 0.2.2)
       faraday (~> 0.7)
       multi_json
-    librato-rails (0.8.1)
-      librato-metrics (~> 1.0.2)
-      rails (>= 3.0)
     libwebsocket (0.1.7.1)
       addressable
       websocket
@@ -706,7 +712,7 @@ DEPENDENCIES
   kaminari
   kiqstand
   letter_opener!
-  librato-rails
+  librato-rails!
   libxml-ruby
   liquid
   lograge
