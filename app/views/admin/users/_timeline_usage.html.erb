@@ -1,33 +1,36 @@
 <%
 require_dependency 'stat_timeline'
 
-stats_timeline = StatTimeline::SiteDayStat.new(token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
+vv_stats_timeline = StatTimeline::SiteDayStat.new(view_type: 'vv', token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
+pv_stats_timeline = StatTimeline::SiteDayStat.new(view_type: 'pv', token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "Video plays for #{user.name_or_email}" })
+  g.option(title: { text: "Video plays & Page visits for all #{user.name_or_email}' sites" })
   g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
-  g.option(legend: legend(width: 600))
+  g.option(legend: legend)
   g.option(xAxis: x_axis(start_at: range_start_date, end_at: range_end_date))
   g.raw_option(y_axis(""))
   g.raw_option(tooltip(formatter: %(
     var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
     var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";
 
-    if (["Invalid", "Dev", "Extra", "Main"].indexOf(this.series.name) != -1)
+    if (["Dev", "Main", "Extra", "Embed"].indexOf(this.series.name) != -1)
       label += " of " + Highcharts.numberFormat(this.total, 0) + " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
-    else if (this.series.name == "Loader")
-      label += "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
 
     return date + this.series.name + ":<br/>" + label;
   )))
 
   g.option(series: [
-    serie(stats_timeline.d_vv[moving_average_length-1..-1], 'Dev', type: 'column', visible: false, stack: 3),
-    serie(stats_timeline.m_vv[moving_average_length-1..-1], 'Main', type: 'column', stack: 3),
-    serie(stats_timeline.e_vv[moving_average_length-1..-1], 'Extra', type: 'column', stack: 3),
-    serie(stats_timeline.em_vv[moving_average_length-1..-1], 'Embed', type: 'column', stack: 3),
-    serie(moving_average(stats_timeline.billable_vv, moving_average_length), 'AVG Billable (new)', type: 'line', stack: 4)
+    serie(vv_stats_timeline.d_vv[moving_average_length-1..-1], 'Dev (plays)', type: 'column', visible: false, stack: 1),
+    serie(vv_stats_timeline.normal_vv[moving_average_length-1..-1], 'Normal (plays)', type: 'column', stack: 1),
+    serie(vv_stats_timeline.em_vv[moving_average_length-1..-1], 'Embed (plays)', type: 'column', stack: 1),
+    serie(moving_average(vv_stats_timeline.billable_vv, moving_average_length), 'Average (plays)', type: 'line', stack: 2),
+
+    serie(pv_stats_timeline.d_pv[moving_average_length-1..-1], 'Dev (visits)', type: 'column', visible: false, stack: 3),
+    serie(pv_stats_timeline.normal_pv[moving_average_length-1..-1], 'Normal (visits)', type: 'column', visible: false, stack: 3),
+    serie(pv_stats_timeline.em_pv[moving_average_length-1..-1], 'Embed (visits)', type: 'column', visible: false, stack: 3),
+    serie(moving_average(pv_stats_timeline.billable_pv, moving_average_length), 'Average (visits)', type: 'line', visible: false, stack: 4)
   ])
   g.option(plotOptions: plot_options(range_start_date))
   g.option(credits: credits)
