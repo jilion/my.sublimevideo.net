@@ -1,10 +1,7 @@
 <%
 require_dependency 'stat_timeline'
 
-usage_old = StatTimeline::SiteUsage.timeline(graph_start_date, graph_end_date, { site_ids: [site.id], labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true })
-billable_usage_old = usage_old["main_usage"].zip(usage_old["extra_usage"]).map { |item| item.reduce(:+) }
-
-stats_timeline_new = StatTimeline::SiteDayStat.new(token: site.token, from: graph_start_date, to: graph_end_date)
+stats_timeline = StatTimeline::SiteDayStat.new(token: site.token, from: graph_start_date, to: graph_end_date)
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
@@ -23,17 +20,12 @@ graph = Graph.new do |g|
     return date + this.series.name + ":<br/>" + label;
   )))
 
-  usage_old_main_size = usage_old["main_usage"][moving_average_length-1..-1].size
   g.option(series: [
-    serie(usage_old["dev_usage"][moving_average_length-1..-1], 'Dev (old)', type: 'column', visible: false, stack: 1),
-    serie(usage_old["extra_usage"][moving_average_length-1..-1], 'Extra (old)', type: 'column', visible: false, stack: 1),
-    serie(usage_old["main_usage"][moving_average_length-1..-1], 'Main (old)', type: 'column', visible: false, stack: 1),
-    serie(moving_average(billable_usage_old, moving_average_length), 'AVG Billable (old)', type: 'line', stack: 2),
-
-    serie(stats_timeline_new.d_vv[moving_average_length-1..-1], 'Dev (new)', type: 'column', visible: false, stack: 3),
-    serie(stats_timeline_new.e_vv[moving_average_length-1..-1], 'Extra (new)', type: 'column', stack: 3),
-    serie(stats_timeline_new.m_vv[moving_average_length-1..-1], 'Main (new)', type: 'column', stack: 3),
-    serie(moving_average(stats_timeline_new.billable_vv, moving_average_length), 'AVG Billable (new)', type: 'line', stack: 4)
+    serie(stats_timeline.d_vv[moving_average_length-1..-1], 'Dev', type: 'column', visible: false, stack: 3),
+    serie(stats_timeline.m_vv[moving_average_length-1..-1], 'Main', type: 'column', stack: 3),
+    serie(stats_timeline.e_vv[moving_average_length-1..-1], 'Extra', type: 'column', stack: 3),
+    serie(stats_timeline.em_vv[moving_average_length-1..-1], 'Embed', type: 'column', stack: 3),
+    serie(moving_average(stats_timeline.billable_vv, moving_average_length), 'AVG Billable', type: 'line', stack: 4)
     ])
   g.option(plotOptions: plot_options(range_start_date))
   g.option(credits: credits)
