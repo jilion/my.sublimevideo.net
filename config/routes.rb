@@ -1,5 +1,3 @@
-require_dependency 'secure_sidekiq_web'
-
 class SubdomainConstraint
   def initialize(subdomain, options = {})
     @subdomain = subdomain
@@ -77,8 +75,6 @@ MySublimeVideo::Application.routes.draw do
       authenticated :admin do
         root to: redirect('/sites'), as: 'admin'
       end
-
-      mount SecureSidekiqWeb => '/sidekiq', as: 'sidekiq'
 
       resources :sites, only: [:index, :show, :edit, :update] do
         member do

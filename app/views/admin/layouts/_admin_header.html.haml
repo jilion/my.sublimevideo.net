@@ -43,9 +43,9 @@
 
     - if has_role?('god')
       .popup_menu
-        %h3= link_to "Other", [:admin, :sidekiq]
+        %h3= link_to "Other", 'https://sidekiq.sublimevideo.net'
         %ul
-          %li= link_to "Sidekiq", [:admin, :sidekiq]
+          %li= link_to "Sidekiq", 'https://sidekiq.sublimevideo.net'
           %li= link_to "Mails", [:admin, :mails]
           %li= link_to "Deals", [:admin, :deals]
           %li= link_to "Deal activations", [:admin, :deal_activations]

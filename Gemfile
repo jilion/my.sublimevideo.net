@@ -40,8 +40,6 @@ gem 'acts_as_api'
 # Internals
 gem 'dalli'
 gem 'sidekiq'
-gem 'sinatra', require: false # needed for Sidekiq Web UI
-gem 'slim' # needed for Sidekiq Web UI
 gem 'kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
