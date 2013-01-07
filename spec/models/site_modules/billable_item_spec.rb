@@ -65,8 +65,8 @@ describe SiteModules::BillableItem, :addons do
     end
 
     it { site.out_of_trial_on?(@logo_addon_plan_1, 5.days.from_now).should be_false }
-    it { site.out_of_trial_on?(@logo_addon_plan_1, 2.days.from_now).should be_false }
-    it { site.out_of_trial_on?(@logo_addon_plan_1, 1.days.from_now).should be_true }
+    it { site.out_of_trial_on?(@logo_addon_plan_1, 2.days.from_now).should be_true }
+    it { site.out_of_trial_on?(@logo_addon_plan_1, 1.day.from_now).should be_false }
     it { site.out_of_trial_on?(@stats_addon_plan_2, 1.day.ago).should be_false }
   end
 
@@ -79,7 +79,7 @@ describe SiteModules::BillableItem, :addons do
     end
 
     it { site.out_of_trial?(@logo_addon_plan_1).should be_false }
-    it { site.out_of_trial?(@logo_addon_plan_2).should be_true }
+    it { site.out_of_trial?(@logo_addon_plan_2).should be_false }
     it { site.out_of_trial?(@stats_addon_plan_1).should be_true }
     it { site.out_of_trial?(@stats_addon_plan_2).should be_false }
   end
