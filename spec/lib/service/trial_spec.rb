@@ -22,7 +22,7 @@ describe Service::Trial do
       @billable_items_will_receive_email = []
 
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
-        Timecop.travel((BusinessModel.days_for_trial - days_before_trial_end).days.ago) do
+        Timecop.travel((BusinessModel.days_for_trial - days_before_trial_end + 1).days.ago) do
           @billable_items_wont_receive_email << create(:billable_item, site: site0, item: create(:addon_plan), state: 'subscribed')
           @billable_items_will_receive_email << create(:billable_item, site: site0, item: create(:addon_plan), state: 'trial')
         end
