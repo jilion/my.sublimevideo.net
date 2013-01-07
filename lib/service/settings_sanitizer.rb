@@ -66,7 +66,7 @@ module Service
     end
 
     def sanitize_url(url)
-      unless url =~ %r{\Ahttps?://}
+      unless url =~ %r{\A(https?:)?//}
         url = "http://#{url}"
       end
 

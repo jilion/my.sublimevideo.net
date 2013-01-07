@@ -42,7 +42,7 @@ describe Service::SettingsSanitizer do
         floatSetting: 0.8,
         stringSetting: 'foo',
         imageSetting: 'http://mydomain.com/image.png',
-        urlSetting: 'http://mydomain.com'
+        urlSetting: '//mydomain.com'
       },
       addonName2: {
         booleanSetting: '3',
@@ -70,7 +70,7 @@ describe Service::SettingsSanitizer do
           floatSetting: 0.8,
           stringSetting: 'foo',
           imageSetting: 'http://mydomain.com/image.png',
-          urlSetting: 'http://mydomain.com'
+          urlSetting: '//mydomain.com'
         },
         'addonName2' => {
           booleanSetting: true,
