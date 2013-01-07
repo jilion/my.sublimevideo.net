@@ -21,4 +21,5 @@ uploads
 !.sublime-project
 public/test.html
 .rbenv-version
+.ruby-version
 routes.txt
