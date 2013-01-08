@@ -57,7 +57,7 @@ module Stats
       end
 
       def sales_hash(day)
-        invoices = Invoice.paid.between(paid_at: day.beginning_of_day..day.end_of_day)
+        invoices = Invoice.includes(:invoice_items).paid.between(paid_at: day.beginning_of_day..day.end_of_day)
         hash = {
           d: day.to_time,
           ne: Hash.new { |h,k| h[k] = Hash.new(0) },
@@ -65,15 +65,25 @@ module Stats
         }
 
         invoices.each do |invoice|
+          deduction_amount_per_item = if invoice.balance_deduction_amount > 0
+            invoice.balance_deduction_amount / invoice.invoice_items.size
+          else
+            0
+          end
           first_key = invoice.renew? ? :re : :ne
+
           invoice.invoice_items.each do |invoice_item|
-            second_key = case invoice_item.item
-            when App::Design
-              'design'
-            when AddonPlan
-              invoice_item.item.addon.name
-            end
-            hash[first_key][second_key][invoice_item.item.name] += invoice_item.amount
+            third_key = invoice_item.item.name
+            second_key = case invoice_item.type
+                         when 'InvoiceItem::AppDesign'
+                           'design'
+                         when 'InvoiceItem::AddonPlan'
+                           invoice_item.item.addon.name
+                         when 'InvoiceItem::Plan'
+                           third_key = invoice_item.item.cycle[0]
+                           invoice_item.item.name
+                         end
+            hash[first_key][second_key][third_key] += invoice_item.amount - deduction_amount_per_item
           end
         end
 
