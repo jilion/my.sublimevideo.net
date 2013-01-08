@@ -24,6 +24,7 @@ class AddonPlan < ActiveRecord::Base
   scope :paid,    -> { where{ (stable_at != nil) & (price > 0) } }
   scope :custom,  -> { where{ availability == 'custom' } }
   scope :visible, -> { where{ availability != 'hidden' } }
+  scope :public,  -> { where{ availability >> %w[hidden public] } }
 
   def self.free_addon_plans(options = {})
     options = { reject: [] }.merge(options)

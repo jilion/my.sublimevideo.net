@@ -15,6 +15,7 @@ class Addon < ActiveRecord::Base
 
   scope :with_paid_plans, -> { includes(:plans).merge(AddonPlan.paid) }
   scope :visible,         -> { includes(:plans).merge(AddonPlan.visible) }
+  scope :public,          -> { includes(:plans).merge(AddonPlan.public) }
 
   def self.find_cached_by_name(name)
     Rails.cache.fetch [self, 'find_cached_by_name', name] do
