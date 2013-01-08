@@ -44,6 +44,11 @@ class VideoTag < ActiveRecord::Base
     write_attribute :name, attribute.try(:to, 254)
   end
 
+  def duration=(attribute)
+    duration = attribute.to_i > 2147483647 ? 2147483647 : attribute.to_i
+    write_attribute :duration, duration
+  end
+
   def sources=(attributes)
     attributes.each do |crc32, source_data|
       unless sources[crc32] == source_data

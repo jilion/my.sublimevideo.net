@@ -55,6 +55,14 @@ describe VideoTag do
     end
   end
 
+  describe "#duration=" do
+    it "limits max duration integer" do
+      buggy_duration = 6232573214720000
+      video_tag.update_attributes(duration: buggy_duration)
+      video_tag.duration.should eq 2147483647
+    end
+  end
+
   describe "#used_sources" do
     let(:video_tag) { described_class.new(
       current_sources: %w[57fb2708 27fe0de1],
