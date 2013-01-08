@@ -23,22 +23,22 @@ describe Stats::SalesStat do
         create(:app_design_invoice_item, item: @twit_design, invoice: i, amount: 2)
       }.save
 
-      build(:paid_invoice, paid_at: 1.day.ago.midnight, site: site, renew: false, balance_deduction_amount: 4).tap { |i|
-        create(:app_design_invoice_item, item: @twit_design, invoice: i, amount: 2)
+      build(:paid_invoice, paid_at: 1.day.ago.midnight, site: site, renew: false, balance_deduction_amount: 5).tap { |i|
         create(:addon_plan_invoice_item, item: @logo_addon_plan_2, invoice: i, amount: 3)
+        create(:app_design_invoice_item, item: @twit_design, invoice: i, amount: 2)
       }.save
       build(:paid_invoice, paid_at: 1.day.ago.midnight, site: site, renew: false, balance_deduction_amount: 2).tap { |i|
-        create(:app_design_invoice_item, item: @twit_design, invoice: i, amount: 2)
         create(:addon_plan_invoice_item, item: @logo_addon_plan_3, invoice: i, amount: 4)
+        create(:app_design_invoice_item, item: @twit_design, invoice: i, amount: 2)
       }.save
 
       build(:paid_invoice, paid_at: 1.day.ago.midnight, site: site, renew: true).tap { |i|
-        create(:app_design_invoice_item, item: @twit_design, invoice: i, amount: 2)
         create(:addon_plan_invoice_item, item: @logo_addon_plan_3, invoice: i, amount: 4)
+        create(:app_design_invoice_item, item: @twit_design, invoice: i, amount: 2)
       }.save
       build(:paid_invoice, paid_at: 1.day.ago.midnight, site: site, renew: true, balance_deduction_amount: 2).tap { |i|
-        create(:app_design_invoice_item, item: @twit_design, invoice: i, amount: 2)
         create(:addon_plan_invoice_item, item: @support_addon_plan_2, invoice: i, amount: 5)
+        create(:app_design_invoice_item, item: @twit_design, invoice: i, amount: 2)
       }.save
       # useful records
 
@@ -75,13 +75,13 @@ describe Stats::SalesStat do
         sales_stat["d"].should eq 1.day.ago.midnight
         sales_stat["ne"].should == {
           'plus' => { 'm' => 2 },
-          'design' => { 'twit' => 3 },
-          'logo'   => { 'disabled' => 1, 'custom' => 3 }
+          'design' => { 'twit' => 4 },
+          'logo'   => { 'disabled' => 0, 'custom' => 2 }
         }
         sales_stat["re"].should == {
-          'design'  => { 'twit' => 3 },
+          'design'  => { 'twit' => 4 },
           'logo'    => { 'custom' => 4 },
-          'support' => { 'vip' => 4 }
+          'support' => { 'vip' => 3 }
         }
       end
     end

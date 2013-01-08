@@ -65,14 +65,10 @@ module Stats
         }
 
         invoices.each do |invoice|
-          deduction_amount_per_item = if invoice.balance_deduction_amount > 0
-            invoice.balance_deduction_amount / invoice.invoice_items.size
-          else
-            0
-          end
+          deduction_amount = invoice.balance_deduction_amount
           first_key = invoice.renew? ? :re : :ne
 
-          invoice.invoice_items.each do |invoice_item|
+          invoice.invoice_items.order('price DESC').each do |invoice_item|
             third_key = invoice_item.item.name
             second_key = case invoice_item.type
                          when 'InvoiceItem::AppDesign'
@@ -83,7 +79,9 @@ module Stats
                            third_key = invoice_item.item.cycle[0]
                            invoice_item.item.name
                          end
-            hash[first_key][second_key][third_key] += invoice_item.amount - deduction_amount_per_item
+            amount = [0, invoice_item.amount - deduction_amount].max
+            deduction_amount -= [amount, deduction_amount].min
+            hash[first_key][second_key][third_key] += amount
           end
         end
 
