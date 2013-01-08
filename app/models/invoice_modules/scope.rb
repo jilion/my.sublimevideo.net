@@ -26,7 +26,7 @@ module InvoiceModules::Scope
 
     # sort
     scope :by_id,                  lambda { |way='desc'| order("invoices.id #{way}") }
-    scope :by_date,                lambda { |way='desc'| order("invoices.created_at #{way}") }
+    scope :by_date,                lambda { |way='desc'| order("invoices.paid_at #{way}, invoices.last_failed_at #{way}, invoices.created_at #{way}") }
     scope :by_amount,              lambda { |way='desc'| order("invoices.amount #{way}") }
     scope :by_user,                lambda { |way='desc'| joins(:user).order("users.name #{way}, users.email #{way}") }
     scope :by_invoice_items_count, lambda { |way='desc'| order("invoices.invoice_items_count #{way}") }
