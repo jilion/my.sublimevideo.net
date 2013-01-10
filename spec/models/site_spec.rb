@@ -361,50 +361,6 @@ describe Site, :addons do
     end
   end # State Machine
 
-  describe '#trial_days_remaining_for_billable_item' do
-    let(:addon_plan) { create(:addon_plan) }
-    before do
-      @billable_item_activity1 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 31.days.ago)
-      @billable_item_activity2 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 30.days.ago)
-      @billable_item_activity3 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 29.days.ago)
-      @billable_item_activity4 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 28.days.ago)
-      @billable_item_activity5 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 14.days.ago)
-      @billable_item_activity6 = create(:billable_item_activity, item: addon_plan, state: 'trial')
-    end
-
-    it 'works' do
-      @billable_item_activity1.site.trial_days_remaining_for_billable_item(addon_plan).should eq 0
-      @billable_item_activity2.site.trial_days_remaining_for_billable_item(addon_plan).should eq 0
-      @billable_item_activity3.site.trial_days_remaining_for_billable_item(addon_plan).should eq 1
-      @billable_item_activity4.site.trial_days_remaining_for_billable_item(addon_plan).should eq 2
-      @billable_item_activity5.site.trial_days_remaining_for_billable_item(addon_plan).should eq 16
-      @billable_item_activity6.site.trial_days_remaining_for_billable_item(addon_plan).should eq 30
-      create(:site).trial_days_remaining_for_billable_item(addon_plan).should be_nil
-    end
-  end
-
-  describe '#trial_end_date_for_billable_item' do
-    let(:addon_plan) { create(:addon_plan) }
-    before do
-      @billable_item_activity1 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 31.days.ago.midnight)
-      @billable_item_activity2 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 30.days.ago.midnight)
-      @billable_item_activity3 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 29.days.ago.midnight)
-      @billable_item_activity4 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 28.days.ago.midnight)
-      @billable_item_activity5 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: 14.days.ago.midnight)
-      @billable_item_activity6 = create(:billable_item_activity, item: addon_plan, state: 'trial', created_at: Time.now.utc.midnight)
-    end
-
-    it 'works' do
-      @billable_item_activity1.site.trial_end_date_for_billable_item(addon_plan).should eq 1.day.ago.midnight
-      @billable_item_activity2.site.trial_end_date_for_billable_item(addon_plan).should eq Time.now.utc.midnight
-      @billable_item_activity3.site.trial_end_date_for_billable_item(addon_plan).should eq 1.day.from_now.midnight
-      @billable_item_activity4.site.trial_end_date_for_billable_item(addon_plan).should eq 2.days.from_now.midnight
-      @billable_item_activity5.site.trial_end_date_for_billable_item(addon_plan).should eq 16.days.from_now.midnight
-      @billable_item_activity6.site.trial_end_date_for_billable_item(addon_plan).should eq 30.days.from_now.midnight
-      create(:site).trial_end_date_for_billable_item(addon_plan).should be_nil
-    end
-  end
-
 end
 
 # == Schema Information

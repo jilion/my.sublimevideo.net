@@ -24,7 +24,8 @@
               = label_tag "addon_plans[#{addon.name}]", addon_label_content(addon_plan)
       %td.trial_notice
         - unless addon_plan_is_sponsored
-          .trial_days_remaining{ style: "display:#{site.addon_plans.include?(addon_plan) ? 'block' : 'none'}" }= trial_days_remaining(site, addon_plan)
+          .trial_days_remaining{ style: "display:#{site.addon_plans.include?(addon_plan) ? 'block' : 'none'}" }
+            = trial_days_remaining(site, addon_plan)
       %td.price
         - if addon_plan_is_sponsored
           = 'sponsored'

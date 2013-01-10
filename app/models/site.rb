@@ -177,22 +177,6 @@ class Site < ActiveRecord::Base
     unmemoize_all_usages
   end
 
-  def trial_days_remaining_for_billable_item(billable_item)
-    if trial_end_date = trial_end_date_for_billable_item(billable_item)
-      [0, ((trial_end_date - Time.now.utc + 1.day) / 1.day).to_i].max
-    else
-      nil
-    end
-  end
-
-  def trial_end_date_for_billable_item(billable_item)
-    if trial_start = billable_item_activities.where(item_type: billable_item.class.to_s, item_id: billable_item.id, state: 'trial').first
-      trial_start.created_at + BusinessModel.days_for_trial.days
-    else
-      nil
-    end
-  end
-
   # for old loader/license templates
   def player_mode
     accessible_stage == 'alpha' ? "dev" : accessible_stage
