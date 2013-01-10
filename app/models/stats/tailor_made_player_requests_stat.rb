@@ -31,7 +31,7 @@ module Stats
           scoped
         end
 
-        json_stats.order_by(d: 1).to_json(only: [:k])
+        json_stats.order_by(d: 1).to_json(only: [:n])
       end
 
       def create_stats

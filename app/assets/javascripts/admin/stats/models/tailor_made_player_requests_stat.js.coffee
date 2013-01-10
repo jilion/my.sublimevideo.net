@@ -26,12 +26,19 @@ class AdminSublimeVideo.Collections.TailorMadePlayerRequestsStats extends AdminS
       stat = this.get(from)
 
       value = if stat?
-        if stat.get('n')[selected[0]] then stat.get('n')[selected[0]] else 0
+        if selected.length > 1 # attribute is something like: ["n", "agency"]
+          value = stat.get(selected[0])
+          _.each _.rest(selected), (e) -> if value[e]? then value = value[e] else value = 0
+          this.recursiveHashSum(value)
+        else if !_.isEmpty(_.values(stat.get(selected[0])))
+          this.recursiveHashSum(stat.get(selected[0]))
+        else
+          switch selected[0]
+            when 'all' then this.recursiveHashSum(stat.get('n'))
       else
         0
 
       array.push value
       from += 3600 * 24
 
-    console.log array
     array
