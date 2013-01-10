@@ -1,4 +1,4 @@
-%h3 Billable items
+%h3= raw "Billable items (#{display_amount_with_sup(site.total_billable_items_price)} / month)"
 %ul
   - site.billable_items.reorder('state ASC').each do |billable_item|
     %li
