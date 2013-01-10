@@ -125,6 +125,7 @@ MySublimeVideo::Application.routes.draw do
           get :site_stats
           get :site_usages
           get :tweets
+          get :tailor_made_player_requests
         end
       end
       resources :tweets, only: [:index] do

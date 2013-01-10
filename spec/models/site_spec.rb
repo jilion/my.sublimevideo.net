@@ -422,6 +422,7 @@ end
 #  index_sites_on_last_30_days_invalid_video_views  (last_30_days_invalid_video_views)
 #  index_sites_on_last_30_days_main_video_views     (last_30_days_main_video_views)
 #  index_sites_on_plan_id                           (plan_id)
+#  index_sites_on_token                             (token)
 #  index_sites_on_user_id                           (user_id)
 #
 

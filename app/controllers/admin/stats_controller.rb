@@ -40,6 +40,12 @@ class Admin::StatsController < Admin::AdminController
     end
   end
 
+  def tailor_made_player_requests
+    respond_to do |format|
+      format.json { render json: Stats::TailorMadePlayerRequestsStat.json }
+    end
+  end
+
   def site_stats
     respond_to do |format|
       format.json { render json: Stats::SiteStatsStat.json }

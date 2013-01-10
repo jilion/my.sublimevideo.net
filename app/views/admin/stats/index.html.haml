@@ -297,9 +297,17 @@
             %li
               %a.title.selector{ href: "?site_usages.tr.v", data: { value: 'site_usages.tr.v' } } Traffic Voxcast (GB)
 
-        %td.tweets
+        %td
           %h2 Tweets
           %ul
             - Tweet::KEYWORDS.each do |keyword|
               %li
                 %a.selector{ href: "?tweets.#{keyword}", data: { value: "tweets.#{keyword}" } }= keyword.titleize
+          %h2 Tailor-made player requests
+          %ul
+            %li
+              %a.title.selector{ href: "?tailor_made_player_requests.all", data: { value: 'tailor_made_player_requests.all' } } All
+              %ul
+                - TailorMadePlayerRequest::TOPICS.each do |topic|
+                  %li
+                    %a.selector{ href: "?tailor_made_player_requests.n.#{topic}", data: { value: "tailor_made_player_requests.n.#{topic}" } }= topic.titleize

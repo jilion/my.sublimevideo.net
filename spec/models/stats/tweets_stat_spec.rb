@@ -12,12 +12,12 @@ describe Stats::TweetsStat do
     end
 
     describe ".create_stats" do
-      it "creates tweets stats for the last 5 days" do
+      it "creates tweets_stats for the last 5 days" do
         described_class.create_stats
         described_class.count.should eq 5
       end
 
-      it "creates site_stats stats for the last day" do
+      it "creates tweets_stats stats for the last day" do
         described_class.create_stats
         tweets_stat = described_class.last
         tweets_stat.k.should eq({ 'jilion' => 2, 'videojs' => 2, 'sublimevideo' => 1, 'jw player' => 1, 'aelios' => 1, 'aeliosapp' => 1 })

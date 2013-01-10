@@ -36,13 +36,14 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
     unless _.isEmpty @selectedPeriod
       AdminSublimeVideo.period.set(start: new Date(parseInt(@selectedPeriod[0])), end: new Date(parseInt(@selectedPeriod[1])))
 
-    AdminSublimeVideo.stats["sales"]          = new AdminSublimeVideo.Collections.SalesStats(this.selectedSeriesFor('sales'))
-    AdminSublimeVideo.stats["billable_items"] = new AdminSublimeVideo.Collections.BillableItemsStats(this.selectedSeriesFor('billable_items'))
-    AdminSublimeVideo.stats["users"]          = new AdminSublimeVideo.Collections.UsersStats(this.selectedSeriesFor('users'))
-    AdminSublimeVideo.stats["sites"]          = new AdminSublimeVideo.Collections.SitesStats(this.selectedSeriesFor('sites'))
-    AdminSublimeVideo.stats["site_stats"]     = new AdminSublimeVideo.Collections.SiteStatsStats(this.selectedSeriesFor('site_stats'))
-    AdminSublimeVideo.stats["site_usages"]    = new AdminSublimeVideo.Collections.SiteUsagesStats(this.selectedSeriesFor('site_usages'))
-    AdminSublimeVideo.stats["tweets"]         = new AdminSublimeVideo.Collections.TweetsStats(this.selectedSeriesFor('tweets'))
+    AdminSublimeVideo.stats["sales"]                       = new AdminSublimeVideo.Collections.SalesStats(this.selectedSeriesFor('sales'))
+    AdminSublimeVideo.stats["billable_items"]              = new AdminSublimeVideo.Collections.BillableItemsStats(this.selectedSeriesFor('billable_items'))
+    AdminSublimeVideo.stats["users"]                       = new AdminSublimeVideo.Collections.UsersStats(this.selectedSeriesFor('users'))
+    AdminSublimeVideo.stats["sites"]                       = new AdminSublimeVideo.Collections.SitesStats(this.selectedSeriesFor('sites'))
+    AdminSublimeVideo.stats["site_stats"]                  = new AdminSublimeVideo.Collections.SiteStatsStats(this.selectedSeriesFor('site_stats'))
+    AdminSublimeVideo.stats["site_usages"]                 = new AdminSublimeVideo.Collections.SiteUsagesStats(this.selectedSeriesFor('site_usages'))
+    AdminSublimeVideo.stats["tweets"]                      = new AdminSublimeVideo.Collections.TweetsStats(this.selectedSeriesFor('tweets'))
+    AdminSublimeVideo.stats["tailor_made_player_requests"] = new AdminSublimeVideo.Collections.TailorMadePlayerRequestsStats(this.selectedSeriesFor('tailor_made_player_requests'))
     AdminSublimeVideo.totals = {}
 
   initHelpers: ->

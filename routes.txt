@@ -31,7 +31,6 @@
                                admin_exit GET      /exit(.:format)                                           :controller#exit
                                admin_root          /                                                         :controller#:action
                               admin_admin          /                                                         :controller#:action
-                            admin_sidekiq          /sidekiq                                                  SecureSidekiqWeb
 update_app_design_subscription_admin_site PUT      /sites/:id/update_app_design_subscription(.:format)       admin/sites#update_app_design_subscription
 update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_subscription(.:format)       admin/sites#update_addon_plan_subscription
                               admin_sites GET      /sites(.:format)                                          admin/sites#index
@@ -65,11 +64,13 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                        single_admin_stats GET      /stats/single/:page(.:format)                             admin/stats#show
                          more_admin_stats GET      /stats/more(.:format)                                     admin/stats#more
                         sales_admin_stats GET      /stats/sales(.:format)                                    admin/stats#sales
+               billable_items_admin_stats GET      /stats/billable_items(.:format)                           admin/stats#billable_items
                         users_admin_stats GET      /stats/users(.:format)                                    admin/stats#users
                         sites_admin_stats GET      /stats/sites(.:format)                                    admin/stats#sites
                    site_stats_admin_stats GET      /stats/site_stats(.:format)                               admin/stats#site_stats
                   site_usages_admin_stats GET      /stats/site_usages(.:format)                              admin/stats#site_usages
                        tweets_admin_stats GET      /stats/tweets(.:format)                                   admin/stats#tweets
+  tailor_made_player_requests_admin_stats GET      /stats/tailor_made_player_requests(.:format)              admin/stats#tailor_made_player_requests
                               admin_stats GET      /stats(.:format)                                          admin/stats#index
                      favorite_admin_tweet PUT      /tweets/:id/favorite(.:format)                            admin/tweets#favorite
                              admin_tweets GET      /tweets(.:format)                                         admin/tweets#index

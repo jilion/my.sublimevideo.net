@@ -18,6 +18,7 @@ unless defined?(ActiveRecord)
   Stats::SiteStatsStat = Class.new
   Stats::SiteUsagesStat = Class.new
   Stats::TweetsStat = Class.new
+  Stats::TailorMadePlayerRequestsStat = Class.new
   Tweet = Class.new
   Log = Class.new
   Log::Amazon = Class.new
@@ -159,6 +160,14 @@ describe RecurringJob do
 
     it "schedules Stats::TweetsStat.create_stats" do
       Stats::TweetsStat.should delay(:create_stats,
+        at: Time.now.utc.tomorrow.midnight.to_i,
+        queue: "low"
+      )
+      described_class.schedule_daily_tasks
+    end
+
+    it "schedules Stats::TailorMadePlayerRequestsStat.create_stats" do
+      Stats::TailorMadePlayerRequestsStat.should delay(:create_stats,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )

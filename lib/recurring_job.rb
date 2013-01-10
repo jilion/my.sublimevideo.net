@@ -42,6 +42,7 @@ module RecurringJob
       Stats::SiteStatsStat.delay(options).create_stats
       Stats::SiteUsagesStat.delay(options).create_stats
       Stats::TweetsStat.delay(options).create_stats
+      Stats::TailorMadePlayerRequestsStat.delay(options).create_stats
     end
 
     def schedule_hourly_tasks
