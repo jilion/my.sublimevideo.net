@@ -25,8 +25,8 @@ class MySublimeVideo.Models.Image extends MySublimeVideo.Models.Asset
       this.set(ratio: 0)  unless this.get('ratio')
       this.set(found: false) if problem
     else
-      newWidth  = parseInt(dimensions['width'])
-      newHeight = parseInt(dimensions['height'])
+      newWidth  = parseInt(dimensions['width'], 10)
+      newHeight = parseInt(dimensions['height'], 10)
       newRatio  = newHeight / newWidth
 
       this.set(width: newWidth)   unless newWidth  is this.get('width')
@@ -58,7 +58,7 @@ class MySublimeVideo.Models.Thumbnail extends MySublimeVideo.Models.Image
     this.setThumbWidth(this.get('width'))
 
   setThumbWidth: (newThumbWidth) ->
-    newThumbWidth = parseInt(newThumbWidth)
+    newThumbWidth = parseInt(newThumbWidth, 10)
     newThumbWidth = 20 if _.isNaN(newThumbWidth) || newThumbWidth < 20
 
     this.set(thumbWidth: _.min([newThumbWidth, 800]))
@@ -66,7 +66,7 @@ class MySublimeVideo.Models.Thumbnail extends MySublimeVideo.Models.Image
     this.trigger('change:thumbWidth')
 
   setThumbHeight: (newThumbHeight) ->
-    newThumbHeight = parseInt(newThumbHeight)
+    newThumbHeight = parseInt(newThumbHeight, 10)
     newThumbHeight = 20 if _.isNaN(newThumbHeight) || newThumbHeight < 20
 
     this.set(thumbHeight: _.min([newThumbHeight, 400]))
@@ -74,10 +74,10 @@ class MySublimeVideo.Models.Thumbnail extends MySublimeVideo.Models.Image
     this.trigger('change:thumbHeight')
 
   setThumbHeightWithRatio: ->
-    this.set(thumbHeight: parseInt(this.get('thumbWidth') * this.get('ratio')))
+    this.set(thumbHeight: parseInt(this.get('thumbWidth') * this.get('ratio'), 10))
 
   setThumbWidthWithRatio: ->
-    this.set(thumbWidth: parseInt(this.get('thumbHeight') / this.get('ratio')))
+    this.set(thumbWidth: parseInt(this.get('thumbHeight') / this.get('ratio'), 10))
 
   viewable: ->
     (this.get('initialLink') is 'text' and !this.srcIsEmpty()) or (this.get('initialLink') is 'image' and this.srcIsUsable())

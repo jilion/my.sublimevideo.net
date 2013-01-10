@@ -35,10 +35,10 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
     MSVVideoCode.thumbnail.setAndPreloadSrc(event.target.value)
 
   updateThumbWidth: (event) ->
-    MSVVideoCode.thumbnail.setThumbWidth(parseInt(event.target.value))
+    MSVVideoCode.thumbnail.setThumbWidth(parseInt(event.target.value, 10))
 
   updateThumbHeight: (event) ->
-    MSVVideoCode.thumbnail.setThumbHeight(parseInt(event.target.value))
+    MSVVideoCode.thumbnail.setThumbHeight(parseInt(event.target.value, 10))
 
   resetThumbDimensions: (event) ->
     MSVVideoCode.thumbnail.setThumbWidth(MSVVideoCode.thumbnail.get('width'))

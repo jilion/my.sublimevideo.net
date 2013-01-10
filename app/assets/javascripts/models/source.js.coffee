@@ -58,8 +58,8 @@ class MySublimeVideo.Models.Source extends MySublimeVideo.Models.Asset
 
   setDimensions: (videoSrc, dimensions) =>
     if dimensions?
-      newWidth  = parseInt(dimensions['width'])
-      newHeight = parseInt(dimensions['height'])
+      newWidth  = parseInt(dimensions['width'], 10)
+      newHeight = parseInt(dimensions['height'], 10)
       newRatio  = newHeight / newWidth
 
       this.set(src: videoSrc)     unless videoSrc  is this.get('src')

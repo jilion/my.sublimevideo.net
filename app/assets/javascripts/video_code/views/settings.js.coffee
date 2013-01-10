@@ -40,11 +40,11 @@ class MSVVideoCode.Views.Settings extends Backbone.View
     MSVVideoCode.video.set(dataUID: event.target.value)
 
   updateWidth: (event) ->
-    newWidth = parseInt(event.target.value)
+    newWidth = parseInt(event.target.value, 10)
     MSVVideoCode.video.setWidth(newWidth)
 
   updateHeight: (event) ->
-    newHeight = parseInt(event.target.value)
+    newHeight = parseInt(event.target.value, 10)
     MSVVideoCode.video.setHeight(newHeight)
 
   updateKeepRatio: (event) ->

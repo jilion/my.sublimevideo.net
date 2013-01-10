@@ -37,7 +37,7 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     this.setHeightWithRatio() if this.get('keepRatio')
 
   setWidth: (newWidth) ->
-    newWidth = parseInt(newWidth)
+    newWidth = parseInt(newWidth, 10)
     newWidth = 200 if _.isNaN(newWidth) or newWidth < 200
 
     this.set(width: _.min([newWidth, 852]))
@@ -45,7 +45,7 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     this.trigger('change:width')
 
   setHeight: (newHeight) ->
-    newHeight = parseInt(newHeight)
+    newHeight = parseInt(newHeight, 10)
     newHeight = 100 if _.isNaN(newHeight) or newHeight < 100
 
     this.set(height: _.min([newHeight, 720]))
@@ -53,10 +53,10 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     this.trigger('change:height')
 
   setHeightWithRatio: ->
-    this.set(height: parseInt(this.get('width') * this.get('ratio')))
+    this.set(height: parseInt(this.get('width') * this.get('ratio'), 10))
 
   setWidthWithRatio: ->
-    this.set(width: parseInt(this.get('height') / this.get('ratio')))
+    this.set(width: parseInt(this.get('height') / this.get('ratio'), 10))
 
   setDefaultDataUID: ->
     mp4BaseSrc = this.get('sources').mp4Base().get('src')
