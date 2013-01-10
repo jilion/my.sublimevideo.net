@@ -307,7 +307,7 @@ describe Service::Settings do
             }},
             "kn":"sa.sh.sz"}},
             "ko": {
-            "te":true,"td":true,"tb":"screen","onEnd":"nothing"},
+            "te":true,"td":true,"tb":"screen","tc":"nothing"},
             "kp": {
             "te": {
             "ih":[true,false]},
@@ -315,7 +315,7 @@ describe Service::Settings do
             "ih":[true,false]},
             "tb": {
             "ih":["screen","window"]},
-            "onEnd": {
+            "tc": {
             "ih":["nothing","replay","stop"]}},
             "kn":"sa.sh.si"},
             "kd": {
