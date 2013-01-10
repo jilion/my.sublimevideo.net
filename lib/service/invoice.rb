@@ -53,11 +53,11 @@ module Service
     private
 
     def find_start_activity_for_activity(activity)
-      item_for_activity(activity).where{ created_at < activity.created_at }.where(state: 'subscribed').order('created_at DESC').first
+      item_for_activity(activity).where { created_at < activity.created_at }.where(state: 'subscribed').order('created_at DESC').first
     end
 
     def find_end_activity_for_activity(activity, date)
-      item_for_activity(activity).where{ created_at >> (activity.created_at..date.end_of_month) }.where(state: %w[canceled suspended sponsored]).order('created_at ASC').first
+      item_for_activity(activity).where { created_at >> (activity.created_at..date.end_of_month) }.where(state: %w[canceled suspended sponsored]).order('created_at ASC').first
     end
 
     def item_for_activity(activity)
@@ -65,7 +65,7 @@ module Service
     end
 
     def handle_items_not_yet_canceled_and_created_before_month_of(date)
-      site.billable_item_activities.includes(:item).where{ created_at < date.beginning_of_month }.where(state: 'subscribed').reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
+      site.billable_item_activities.includes(:item).where { created_at < date.beginning_of_month }.where(state: 'subscribed').reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
         end_activity = find_end_activity_for_activity(activity, date)
 
         if !end_activity || date.all_month.cover?(end_activity.created_at)
@@ -75,7 +75,7 @@ module Service
     end
 
     def handle_items_subscribed_during_month_of(date)
-      site.billable_item_activities.includes(:item).where{ created_at >> date.all_month }.where(state: 'subscribed').reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
+      site.billable_item_activities.includes(:item).where { created_at >> date.all_month }.where(state: 'subscribed').reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
         next if activity.item.free?
 
         add_invoice_item(build_invoice_item(activity.item, activity.created_at, find_end_activity_for_activity(activity, date).try(:created_at) || date.end_of_month))
