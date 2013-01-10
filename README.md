@@ -1,6 +1,4 @@
-SublimeVideo's "Service" app [![Build Status](https://semaphoreapp.com/api/v1/projects/1193db43083cccb12b94155f01da9ba4c0ecb927/6319/badge.png
-)](https://semaphoreapp.com/projects/240/branches/6319) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/jilion/my.sublimevideo.net)
-=====
+# SublimeVideo's "Service" app [![Build Status](https://semaphoreapp.com/api/v1/projects/1193db43083cccb12b94155f01da9ba4c0ecb927/6319/badge.png)](https://semaphoreapp.com/projects/240/branches/6319) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/jilion/my.sublimevideo.net)
 
 - https://my.sublimevideo.net (https://my.sublimevideo-staging.net)
 - https://api.sublimevideo.net
