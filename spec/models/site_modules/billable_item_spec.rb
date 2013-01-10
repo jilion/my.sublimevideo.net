@@ -79,22 +79,12 @@ describe SiteModules::BillableItem, :addons do
   describe '#out_of_trial?' do
     before do
       create(:billable_item_activity, site: site, item: @logo_addon_plan_1, state: 'trial', created_at: 29.days.ago)
-      create(:billable_item_activity, site: site, item: @logo_addon_plan_2, state: 'trial', created_at: 30.days.ago)
-      create(:billable_item_activity, site: site, item: @stats_addon_plan_1, state: 'trial', created_at: 31.days.ago)
-      create(:billable_item_activity, site: site, item: @support_addon_plan_1, state: 'beta', created_at: 29.days.ago)
       create(:billable_item_activity, site: site, item: @support_addon_plan_2, state: 'beta', created_at: 31.days.ago)
-      create(:billable_item_activity, site: site, item: @stats_addon_plan_2, state: 'subscribed', created_at: 31.days.ago)
     end
 
     it { site.out_of_trial?(@logo_addon_plan_1).should be_false }
-    it { site.out_of_trial?(@logo_addon_plan_2).should be_false }
-
-    it { site.out_of_trial?(@stats_addon_plan_1).should be_true }
-
-    it { site.out_of_trial?(@support_addon_plan_1).should be_false }
     it { site.out_of_trial?(@support_addon_plan_2).should be_true }
-
-    it { site.out_of_trial?(@stats_addon_plan_2).should be_false }
+    it { site.out_of_trial?(@logo_addon_plan_2).should be_true }
   end
 
   describe '#total_billable_items_price' do
