@@ -104,7 +104,7 @@ describe Service::User do
   describe '#archive' do
     before do
       User.should_receive(:transaction).and_yield
-      user.stub_chain(:sites) { [site1, site2] }
+      user.stub_chain(:sites, :not_archived) { [site1, site2] }
       user.stub_chain(:tokens) { tokens }
       tokens.stub(:update_all)
       user.stub(:archive!)

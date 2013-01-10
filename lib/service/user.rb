@@ -36,17 +36,17 @@ module Service
       false
     end
 
-    def archive(feedback = nil)
+    def archive(feedback = nil, skip_password = false)
       ::User.transaction do
         user.archived_at = Time.now.utc
-        user.archive!
+        skip_password ? user.skip_password(:archive!) : user.archive!
 
         if feedback
           feedback.user_id = user.id
           feedback.save!
         end
 
-        user.sites.map(&:archive!)
+        user.sites.not_archived.map(&:archive!)
         user.tokens.update_all(invalidated_at: Time.now.utc)
       end
       Service::Newsletter.delay.unsubscribe(user.id)
