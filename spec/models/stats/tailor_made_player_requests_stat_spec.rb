@@ -6,10 +6,10 @@ describe Stats::TailorMadePlayerRequestsStat do
 
     before do
       create(:tailor_made_player_request, created_at: 5.days.ago.midnight, topic: 'agency')
-      create(:tailor_made_player_request, created_at: 1.day.ago.midnight, topic: 'agency')
-      create(:tailor_made_player_request, created_at: 1.day.ago.midnight, topic: 'standalone')
-      create(:tailor_made_player_request, created_at: 1.day.ago.midnight, topic: 'standalone')
-      create(:tailor_made_player_request, created_at: 1.day.ago.midnight, topic: 'platform')
+      create(:tailor_made_player_request, created_at: 4.day.ago.midnight, topic: 'agency')
+      create(:tailor_made_player_request, created_at: 3.day.ago.midnight, topic: 'standalone')
+      create(:tailor_made_player_request, created_at: 2.day.ago.midnight, topic: 'standalone')
+      create(:tailor_made_player_request, created_at: 2.day.ago.midnight, topic: 'platform')
       create(:tailor_made_player_request, created_at: 1.day.ago.midnight, topic: 'other')
       create(:tailor_made_player_request, created_at: 1.day.ago.midnight, topic: 'other')
       create(:tailor_made_player_request, created_at: 1.day.ago.midnight, topic: 'other')
@@ -24,7 +24,7 @@ describe Stats::TailorMadePlayerRequestsStat do
       it "creates tailor_made_player_requests_stats for the last day" do
         described_class.create_stats
         tailor_made_player_requests_stat = described_class.last
-        tailor_made_player_requests_stat.n.should eq({ 'agency' => 1, 'standalone' => 2, 'platform' => 1, 'other' => 3 })
+        tailor_made_player_requests_stat.n.should eq({ 'agency' => 2, 'standalone' => 2, 'platform' => 1, 'other' => 3 })
       end
     end
 

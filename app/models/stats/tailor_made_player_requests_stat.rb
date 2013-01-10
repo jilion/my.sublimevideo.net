@@ -56,7 +56,7 @@ module Stats
       end
 
       def tailor_made_player_requests_hash(day)
-        tailor_made_player_requests = TailorMadePlayerRequest.between(created_at: day.beginning_of_day..day.end_of_day).all
+        tailor_made_player_requests = TailorMadePlayerRequest.where { created_at <= day.end_of_day }.all
         hash = {
           d: day.to_time,
           n: Hash.new(0)
