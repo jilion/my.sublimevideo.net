@@ -86,7 +86,7 @@
 
   "forceFlash": "ta",
   "fullmodePriority": "tb",
-  "stopOnEnd": "tc",
+  "onEnd": "tc",
   "fullmodeEnable": "td",
   "volumeEnable": "te",
   "autoplay": "tf",
