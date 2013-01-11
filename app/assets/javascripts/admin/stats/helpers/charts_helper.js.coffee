@@ -9,7 +9,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
           newStartDateAtMidnight = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()))
           newEndDateAtMidnight = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()))
 
-          unless _.contains(['sites', 'users'], serie.id())
+          unless _.contains(['sites', 'users', 'tailor_made_player_requests'], serie.id())
             allData = _.compact(serie.customPluck(selection, newStartDateAtMidnight.getTime() / 1000, newEndDateAtMidnight.getTime() / 1000))
 
             AdminSublimeVideo.totals[serie.title(selection)] = _.reduce(allData, ((sum, num)-> return sum + num), 0)
@@ -201,6 +201,25 @@ class AdminSublimeVideo.Helpers.ChartsHelper
         title:
           text: "Billable items evolution"
 
+    if _.include(@usedYAxis, 7)
+      yAxis.push
+        lineWidth: 2
+        lineColor: '#000'
+        min: 0
+        allowDecimals: false
+        startOnTick: true
+        showFirstLabel: true
+        showLastLabel: true
+        labels:
+          align: 'left'
+          x: 4
+          y: 4
+          style:
+            fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
+            fontSize: "14px"
+        title:
+          text: "Tailor-made player requests evolution"
+
     yAxis
 
   chart: (collection) ->
@@ -312,7 +331,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                   t += "#{Highcharts.numberFormat(point.y, 2)} %<br />#{Highcharts.numberFormat(AdminSublimeVideo.totals[point.series.name], 2)} % (average)"
                 else
                   t += "#{Highcharts.numberFormat(point.y, 0)}"
-                  unless /(sites|users|billable items)/i.test point.series.yAxis.axisTitle.textStr
+                  unless /(sites|users|billable items|tailor-made player requests)/i.test point.series.yAxis.axisTitle.textStr
                     t += "<br />#{Highcharts.numberFormat(AdminSublimeVideo.totals[point.series.name], 0)} (total)"
                 t
               ).join("<br />"))

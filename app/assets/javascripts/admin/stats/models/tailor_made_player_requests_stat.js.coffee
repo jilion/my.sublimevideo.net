@@ -8,7 +8,7 @@ class AdminSublimeVideo.Collections.TailorMadePlayerRequestsStats extends AdminS
   model: AdminSublimeVideo.Models.TailorMadePlayerRequestsStat
   url: -> '/stats/tailor_made_player_requests.json'
   id: -> 'tailor_made_player_requests'
-  yAxis: (selected) -> 2
+  yAxis: (selected) -> 7
 
   title: (selected) ->
     if selected.length > 1 # attribute is something like: ["n", "agency"]
