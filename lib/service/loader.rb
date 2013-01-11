@@ -4,6 +4,7 @@ require_dependency 'app/component_version_dependencies_solver'
 
 module Service
   Loader = Struct.new(:site, :stage, :options, :file, :cdn_file) do
+    IMPORTANT_SITE_TOKENS = %w[utcf6unc]
     delegate :token, :accessible_stage, :player_mode, to: :site
     delegate :upload!, :delete!, :present?, to: :cdn_file
 
@@ -29,7 +30,7 @@ module Service
       else
         sites = component.sites.scoped
       end
-      sites = sites.where{ token << ::SiteToken.tokens } # not important sites
+      sites = sites.where{ token << important_site_tokens } # not important sites
       sites = sites.select(:id).active.where(accessible_stage: Stage.stages_with_access_to(stage))
       sites.order{ last_30_days_main_video_views.desc }.order{ created_at.desc }.find_each do |site|
         delay(queue: 'loader').update_all_stages!(site.id)
@@ -37,9 +38,13 @@ module Service
     end
 
     def self.update_important_sites
-      ::Site.select(:id).where{ token >> ::SiteToken.tokens }.each do |site|
+      ::Site.select(:id).where{ token >> important_site_tokens }.each do |site|
         delay(queue: 'high').update_all_stages!(site.id)
       end
+    end
+
+    def self.important_site_tokens
+      @important_sites ||= ::SiteToken.tokens + IMPORTANT_SITE_TOKENS
     end
 
     def initialize(*args)

@@ -43,6 +43,7 @@ describe Service::Loader, :fog_mock do
   let(:app_component) { mock(App::Component, id: 'app_component_id', token: 'e', app_component?: true) }
   let(:loader) { described_class.new(site, 'stable') }
   before do
+    Librato.stub(:increment)
     App::Component.stub(:app_component) { app_component }
     App::ComponentVersionDependenciesSolver.stub(:components_dependencies) { {
       'e' => '1.0.0',
