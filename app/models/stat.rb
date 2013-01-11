@@ -78,6 +78,7 @@ private
     trackers.each do |tracker, hits|
       begin
         request, user_agent = tracker
+        request    = request.encode('UTF-8', invalid: :replace)
         params     = Addressable::URI.parse(request).query_values.try(:symbolize_keys) || {}
         params_inc = StatRequestParser.stat_incs(params, user_agent, hits)
 
