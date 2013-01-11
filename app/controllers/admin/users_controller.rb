@@ -5,6 +5,7 @@ class Admin::UsersController < Admin::AdminController
   respond_to :html, :js
 
   before_filter :set_default_scopes, only: [:index]
+  before_filter :find_user, only: [:update, :become, :new_support_request, :oauth_revoke]
   before_filter { |controller| require_role?('marcom') if %w[update].include?(action_name) }
 
   # filter
@@ -35,13 +36,13 @@ class Admin::UsersController < Admin::AdminController
   def edit
     @user = User.includes(:enthusiast, :feedbacks).find(params[:id])
     @tags = User.tag_counts.order{ tags.name }
+    @oauth_authorizations = @user.tokens.valid
 
     respond_with(@user)
   end
 
   # PUT /users/:id
   def update
-    @user = User.find(params[:id])
     @user.update_attributes(params[:user], without_protection: true)
 
     respond_with(@user, notice: 'User has been successfully updated.') do |format|
@@ -52,17 +53,24 @@ class Admin::UsersController < Admin::AdminController
 
   # GET /users/:id/become
   def become
-    sign_in(User.find(params[:id]), bypass: true)
+    sign_in(@user, bypass: true)
 
     redirect_to root_url(subdomain: 'my')
   end
 
   # GET /users/:id/new_support_request
   def new_support_request
-    @user = User.find(params[:id])
     Service::SupportRequest.create_zendesk_user(@user)
 
     redirect_to ZendeskWrapper.base_url + "/tickets/new?requester_id=#{@user.zendesk_id}"
+  end
+
+  # DELETE /users/:id/oauth_revoke
+  def oauth_revoke
+    @token = @user.tokens.find_by_token!(params[:token])
+    @token.invalidate!
+
+    redirect_to edit_admin_user_path(@user), notice: "Authorization for the application '#{@token.client_application.name}' has been revoked."
   end
 
   private
@@ -70,6 +78,10 @@ class Admin::UsersController < Admin::AdminController
   def set_default_scopes
     params[:with_state] = 'active' if (scopes_configuration.keys & params.keys.map(&:to_sym)).empty?
     params[:by_date]    = 'desc' unless params.keys.any? { |k| k =~ /^by_\w+$/ }
+  end
+
+  def find_user
+    @user = User.find(params[:id])
   end
 
 end

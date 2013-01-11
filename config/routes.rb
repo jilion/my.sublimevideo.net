@@ -93,6 +93,7 @@ MySublimeVideo::Application.routes.draw do
         member do
           get :become
           get :new_support_request
+          delete :oauth_revoke
         end
       end
       resources :enthusiasts, only: [:index, :show]

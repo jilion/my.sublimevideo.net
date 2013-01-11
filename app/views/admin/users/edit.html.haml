@@ -18,14 +18,21 @@
 
 = render 'more_info', user: @user
 %br
+
+= render 'feedbacks', user: @user
+%br
+
 %hr
 
 = render '/admin/shared/date_chooser'
 = render partial: 'timeline_usage', locals: { user: @user }
 
-= render 'feedbacks', user: @user
+%span.expanding_handler
+  %h3 OAuth authorizations
+%ul.expandable= render 'shared/oauth_authorizations', authorizations: @oauth_authorizations, revoke_path: oauth_revoke_admin_user_path
+%br
 
-- cache "user_support_requests_#{@user.id}", expires_in: 15.minutes do
+- cache ['user_support_requests', @user], expires_in: 15.minutes do
   = render 'support_requests', user: @user
 %br
 

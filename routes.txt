@@ -42,6 +42,7 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                           admin_referrers GET      /referrers(.:format)                                      admin/referrers#index
                         become_admin_user GET      /users/:id/become(.:format)                               admin/users#become
            new_support_request_admin_user GET      /users/:id/new_support_request(.:format)                  admin/users#new_support_request
+                  oauth_revoke_admin_user DELETE   /users/:id/oauth_revoke(.:format)                         admin/users#oauth_revoke
                               admin_users GET      /users(.:format)                                          admin/users#index
                           edit_admin_user GET      /users/:id/edit(.:format)                                 admin/users#edit
                                admin_user GET      /users/:id(.:format)                                      admin/users#show

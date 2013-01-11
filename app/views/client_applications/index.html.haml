@@ -2,20 +2,7 @@
 
 - unless @authorizations.empty?
   %p The following applications have been authorized to access your datas in your behalf
-
-  %table
-    %tr
-      %th Application Name
-      %th Issued at
-      %th &nbsp;
-    - @authorizations.each do |authorization|
-      = content_tag_for :tr, authorization do
-        %td= link_to authorization.client_application.name, authorization.client_application.url
-        %td= authorization.authorized_at
-        %td
-          = form_tag oauth_revoke_path, method: 'delete' do
-            = hidden_field_tag 'token', authorization.token
-            = submit_tag "Revoke!"
+  = render 'shared/oauth_authorizations', authorizations: @authorizations, revoke_path: oauth_revoke_path
 
 %h3 Your applications
 
@@ -27,17 +14,15 @@
   %p
     You have the following client applications registered:
 
-  %ul
+  %table{ border:1 }
     - @applications.each do |application|
-      = div_for application do
-        %li
+      %tr[application]
+        %td
           = link_to application.name, action: :show, id: application.id
-          = "("
-          = link_to 'Edit', edit_client_application_path(application)
-          = " | "
+        %td= link_to 'Edit', edit_client_application_path(application)
+        %td
           = form_for application, html: { method: :delete, data: { confirm: 'Are you sure?' } } do |f|
             .entry.delete= f.submit "Delete", class: "submit link_looks delete"
-          = ")"
 %br
 %h3
   = link_to "Register a new application", [:new, :client_application]
