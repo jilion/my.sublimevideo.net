@@ -93,12 +93,12 @@ private
     log_file = Tempfile.new([name, '.log.gz'], encoding: 'ASCII-8BIT')
     rescue_and_retry(5, Excon::Errors::SocketError) do
       begin
-         log_file.write(file.read)
+         log_file.write(file.read.force_encoding('utf-8'))
       rescue NoMethodError, Excon::Errors::NotFound => ex
         if is_a?(Log::Voxcast)
           self.file = CDN::VoxcastWrapper.download_log(name)
           self.save
-          log_file.write(file.read)
+          log_file.write(file.read.force_encoding('utf-8'))
         else
           raise ex
         end
