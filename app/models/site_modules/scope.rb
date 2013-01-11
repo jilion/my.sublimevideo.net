@@ -19,6 +19,13 @@ module SiteModules::Scope
     scope :with_path,                  where{ (path != nil) & (path != '') & (path != ' ') }
     scope :with_extra_hostnames,       where{ (extra_hostnames != nil) & (extra_hostnames != '') }
     scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
+    def self.with_addon_plan(full_addon_name)
+      addon_plan = AddonPlan.get(*full_addon_name.split('-'))
+
+      includes(:billable_items)
+      .where { billable_items.item_type == addon_plan.class.to_s }
+      .where { billable_items.item_id == addon_plan.id }
+    end
 
     # addons
     scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }

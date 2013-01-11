@@ -7,7 +7,7 @@ class Admin::SitesController < Admin::AdminController
   before_filter :set_default_scopes, only: [:index]
 
   # filter & search
-  has_scope :tagged_with, :with_state, :user_id, :search
+  has_scope :tagged_with, :with_state, :user_id, :search, :with_addon_plan
   has_scope :with_wildcard, :with_path, :with_extra_hostnames, :free, :paying, type: :boolean
   # sort
   has_scope :by_hostname, :by_user, :by_state, :by_last_30_days_billable_video_views, :by_last_30_days_video_tags, :by_last_30_days_extra_video_views_percentage,
@@ -15,8 +15,8 @@ class Admin::SitesController < Admin::AdminController
 
   # GET /sites
   def index
-    @sites = apply_scopes(Site.includes(:user))
-    @tags  = Site.tag_counts.order{ tags.name }
+    @sites = apply_scopes(Site.includes(:user, :billable_items))
+    @tags  = Site.tag_counts.order { tags.name }
 
     respond_with(@sites, per_page: 50)
   end

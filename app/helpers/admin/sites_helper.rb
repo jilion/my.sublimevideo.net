@@ -18,9 +18,20 @@ module Admin::SitesHelper
       " for #{user.name_or_email}" if user
     elsif params[:with_state]
       " #{params[:with_state]}"
+    elsif params[:with_addon_plan]
+      " with the '#{AddonPlan.get(*params[:with_addon_plan].split('-')).title}' add-on"
     end
 
     "#{formatted_pluralize(sites.total_count, 'site').titleize}#{state}"
+  end
+
+  def addon_plans_list_for(addon)
+    addon.plans.includes(:addon).order(:price).inject([]) do |memo, addon_plan|
+      count_of_sites_with_this_addon_plan = Site.with_addon_plan("#{addon.name}-#{addon_plan.name}").size
+      text = "#{addon_plan.title} (#{content_tag(:strong, display_integer(count_of_sites_with_this_addon_plan))})".html_safe
+      href = admin_sites_path(with_addon_plan: "#{addon.name}-#{addon_plan.name}")
+      memo << link_to(text, href, remote: true, class: 'remote')
+    end.join(' | ').html_safe
   end
 
   def links_to_hostnames(site)

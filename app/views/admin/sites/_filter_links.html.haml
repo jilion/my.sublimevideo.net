@@ -24,6 +24,14 @@
 
 = "-----------------------------------------------"
 
+%p.filters
+  With add-on:
+  %ul
+    - Addon.public.visible.each do |addon|
+      %li= addon_plans_list_for(addon)
+
+= "-----------------------------------------------"
+
 .range_form
   With at least
   %strong= label_tag 'with_min_billable_video_views', display_integer(params[:with_min_billable_video_views] || 0), style: 'display:inline'
