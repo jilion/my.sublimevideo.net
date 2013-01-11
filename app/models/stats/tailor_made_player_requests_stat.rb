@@ -43,6 +43,18 @@ module Stats
         end
       end
 
+      def update_stats(start_day = nil)
+        scope = if start_day
+          where(d: { :$gte => start_day.midnight })
+        else
+          all
+        end
+
+        scope.each do |stat|
+          stat.update_attributes(tailor_made_player_requests_hash(stat.d))
+        end
+      end
+
       def determine_last_stat_day
         if TailorMadePlayerRequestsStat.present?
           TailorMadePlayerRequestsStat.order_by(d: 1).last.try(:d)

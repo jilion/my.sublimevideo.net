@@ -9,13 +9,24 @@ class Admin::TailorMadePlayerRequestsController < Admin::AdminController
   # sort
   has_scope :by_topic, :by_date
 
+  # GET /tailor_made_player_requests
   def index
     @tailor_made_player_requests = apply_scopes(TailorMadePlayerRequest.scoped)
 
     respond_with(@tailor_made_player_requests, per_page: 50)
   end
 
+  # GET /tailor_made_player_requests/:id
   def show
+  end
+
+  # DELETE /tailor_made_player_requests/:id
+  def destroy
+    @tailor_made_player_request = TailorMadePlayerRequest.find(params[:id])
+    @tailor_made_player_request.destroy
+    # Recalculate trends...
+    Stats::TailorMadePlayerRequestsStat.delay.update_stats(@tailor_made_player_request.created_at)
+    respond_with @tailor_made_player_request, location: [:admin, :tailor_made_player_requests]
   end
 
   private

@@ -11,7 +11,7 @@
     %small= link_to tailor_made_player_request.job_title.titleize, [:admin, tailor_made_player_request]
 
   %td.company
-    %small= link_to tailor_made_player_request.company.titleize, [:admin, tailor_made_player_request]
+    %small= link_to(tailor_made_player_request.company.titleize, url_with_protocol(tailor_made_player_request.url), onclick: "window.open(this); return false")
 
   %td.topic
     %small= link_to tailor_made_player_request.topic.titleize, [:admin, tailor_made_player_request]

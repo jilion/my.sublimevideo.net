@@ -46,4 +46,6 @@
 %hr
 %br
 
+.delete= button_to('Delete', [:admin, @tailor_made_player_request], data: { confirm: 'Are you sure?' }, method: :delete)
+
 %p= link_to "Back to requests", [:admin, :tailor_made_player_requests]

@@ -103,7 +103,7 @@ MySublimeVideo::Application.routes.draw do
         end
       end
       resources :feedbacks, only: [:index]
-      resources :tailor_made_player_requests, only: [:index, :show]
+      resources :tailor_made_player_requests, only: [:index, :show, :destroy]
 
       resources :invoices,  only: [:index, :show, :edit] do
         collection do
