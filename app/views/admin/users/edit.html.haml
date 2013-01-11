@@ -1,5 +1,5 @@
 - title "User: ##{@user.id} - #{@user.name_or_email}"
-= content_header(viped(@user) { @user.name_or_email } + raw(" <#{mail_to @user.email}>"))
+= content_header(viped(@user) { @user.name_or_email } + raw(" [#{mail_to @user.email}]"))
 
 %p= link_to "Signin as #{@user.name_or_email}", become_admin_user_path(@user)
 
@@ -13,13 +13,13 @@
 = render 'basic_info', user: @user
 %br
 
-= render 'billing_info', user: @user
-%br
-
 = render 'more_info', user: @user
 %br
 
 = render 'feedbacks', user: @user
+%br
+
+= render 'billing_info', user: @user
 %br
 
 %hr
