@@ -23,16 +23,7 @@ class InvoicesController < ApplicationController
   def retry
     @invoices = @site.invoices.open_or_failed
 
-    if @invoices.present?
-      transaction = Transaction.charge_by_invoice_ids(@invoices.map(&:id))
-      if transaction.paid?
-        flash[:notice] = t('invoice.retry_succeed')
-      else
-        flash[:alert] = t("transaction.errors.#{transaction.state}")
-      end
-    else
-      flash[:notice] = t('invoice.no_invoices_to_retry')
-    end
+    retry_invoices(@invoices)
 
     respond_with(@invoices) do |format|
       format.html { redirect_to site_invoices_url(site_id: @site.to_param) }
@@ -43,8 +34,18 @@ class InvoicesController < ApplicationController
   def retry_all
     @invoices = current_user.invoices.open_or_failed
 
-    if @invoices.present?
-      transaction = Transaction.charge_by_invoice_ids(@invoices.map(&:id))
+    retry_invoices(@invoices)
+
+    respond_with(@invoices) do |format|
+      format.html { redirect_to sites_url }
+    end
+  end
+
+  private
+
+  def retry_invoices(invoices)
+    if invoices.present?
+      transaction = Transaction.charge_by_invoice_ids(invoices.map(&:id))
       if transaction.paid?
         flash[:notice] = t('invoice.retry_succeed')
       else
@@ -52,10 +53,6 @@ class InvoicesController < ApplicationController
       end
     else
       flash[:notice] = t('invoice.no_invoices_to_retry')
-    end
-
-    respond_with(@invoices) do |format|
-      format.html { redirect_to sites_url }
     end
   end
 
