@@ -39,13 +39,15 @@ GIT
 
 GIT
   remote: git://github.com/rspec/rspec-core.git
-  revision: 960bbd2bd2ccb47fd5649d6c16ec072a00f098ee
+  revision: f273be379551b9ecaa2b526152e58703af3f862b
+  ref: f273be379551b9ecaa2b526152e58703af3f862b
   specs:
     rspec-core (2.12.2)
 
 GIT
   remote: git://github.com/rspec/rspec-rails.git
-  revision: a0f338dd5912c652f6d00a6a703fd42e3ea9e3d9
+  revision: 1d15db02c540e3987d18f0c4b48193a4401ff724
+  ref: 1d15db02c540e3987d18f0c4b48193a4401ff724
   specs:
     rspec-rails (2.12.0)
       actionpack (>= 3.0)
