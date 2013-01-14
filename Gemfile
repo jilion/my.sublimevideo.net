@@ -28,7 +28,7 @@ gem 'premailer', github: 'jilion/premailer'
 gem 'premailer-rails3'
 
 # Auth / invitations
-gem 'devise'
+gem 'devise', '~> 2.1.2'
 gem 'devise_invitable'
 gem 'devise-async'
 
