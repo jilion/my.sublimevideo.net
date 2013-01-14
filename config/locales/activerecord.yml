@@ -67,6 +67,7 @@ en:
             base:
               at_least_one_invoice: "A transaction must contain at least one invoice"
               all_invoices_must_belong_to_the_same_user: "All invoices must belong to the same user"
+            amount:
               minimum_amount_not_reached: "The minimum amount is $1"
 
         user:
