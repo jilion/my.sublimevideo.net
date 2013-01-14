@@ -116,7 +116,7 @@ group :assets do
   gem 'asset_sync'
   gem 'eco'
   gem 'uglifier'
-  gem 'haml_coffee_assets'
+  gem 'haml_coffee_assets', '1.9.1'
   gem 'execjs'
   gem 'chosen-rails', github: 'jilion/chosen-rails'
 
