@@ -1,5 +1,5 @@
 class MSVStats.Views.BPView extends Backbone.View
-  template: JST['stats/templates/_bp']
+  template: JST['stats/templates/bp']
 
   events:
     'click a#show_all':  'showAll'

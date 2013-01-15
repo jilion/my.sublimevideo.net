@@ -1,5 +1,5 @@
 class MSVStats.Views.VVView extends Backbone.View
-  template: JST['stats/templates/_vv_chart_legend']
+  template: JST['stats/templates/vv_chart_legend']
 
   initialize: ->
     @options.period.bind 'change', this.render

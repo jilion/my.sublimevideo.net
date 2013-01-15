@@ -1,5 +1,5 @@
 class MSVStats.Views.PeriodSelectorDays365View extends Backbone.View
-  template: JST['stats/templates/_period_selector']
+  template: JST['stats/templates/period_selector']
 
   initialize: () ->
     @options.period.bind 'change', this.render

@@ -1,5 +1,5 @@
 class MSVStats.Views.DatePickersView extends Backbone.View
-  template: JST['_date_pickers']
+  template: JST['date_pickers']
 
   events:
     'click':               'stopPropagation'

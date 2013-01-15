@@ -1,5 +1,5 @@
 class MSVStats.Views.TopVideosView extends Backbone.View
-  template: JST['stats/templates/_top_videos']
+  template: JST['stats/templates/top_videos']
 
   events:
     'click a.play.active': 'prepareAndPlayVideo'

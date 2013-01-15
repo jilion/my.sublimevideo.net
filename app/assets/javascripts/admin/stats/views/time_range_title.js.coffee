@@ -1,5 +1,5 @@
 class AdminSublimeVideo.Views.TimeRangeTitleView extends Backbone.View
-  template: JST['admin/stats/templates/_time_range_title']
+  template: JST['admin/stats/templates/time_range_title']
 
   events:
     'click': 'toggleDatePicker'

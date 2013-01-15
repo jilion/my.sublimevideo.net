@@ -1,5 +1,5 @@
 class MSVStats.Views.ExportView extends Backbone.View
-  template: JST['stats/templates/_export']
+  template: JST['stats/templates/export']
 
   events:
     'click button:enabled':'export'

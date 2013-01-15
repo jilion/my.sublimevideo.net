@@ -1,5 +1,5 @@
 class MSVStats.Views.PeriodSelectorHoursView extends Backbone.View
-  template: JST['stats/templates/_period_selector']
+  template: JST['stats/templates/period_selector']
 
   initialize: () ->
     @options.period.bind 'change', this.render
@@ -21,7 +21,7 @@ class MSVStats.Views.PeriodSelectorHoursView extends Backbone.View
     $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))
     this.renderSparkline()
     return this
-     
+
   renderSparkline: ->
     MSVStats.chartsHelper.sparkline $(@el).find('.sparkline'), @options.statsHours.pluck('vv'),
       width:    '100%'

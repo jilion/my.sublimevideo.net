@@ -1,5 +1,5 @@
 class MSVStats.Views.TimeRangeTitleView extends Backbone.View
-  template: JST['stats/templates/_time_range_title']
+  template: JST['stats/templates/time_range_title']
 
   events:
     'click': 'toggleDatePicker'

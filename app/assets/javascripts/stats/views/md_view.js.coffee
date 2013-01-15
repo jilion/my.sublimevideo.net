@@ -1,5 +1,5 @@
 class MSVStats.Views.MDView extends Backbone.View
-  template: JST['stats/templates/_md']
+  template: JST['stats/templates/md']
 
   initialize: () ->
     @options.period.bind 'change', this.render
