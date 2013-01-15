@@ -342,8 +342,6 @@ GEM
     has_scope (0.5.1)
     hashie (1.2.0)
     highline (1.6.15)
-    highrise (3.0.3)
-      activeresource (~> 3.0)
     hike (1.2.1)
     hpricot (0.8.6)
     htmlentities (4.3.1)
@@ -705,7 +703,6 @@ DEPENDENCIES
   haml
   haml_coffee_assets (= 1.9.1)
   has_scope
-  highrise
   hpricot
   jasminerice
   kaminari
