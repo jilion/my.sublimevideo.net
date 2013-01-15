@@ -40,7 +40,7 @@ class AddonPlan < ActiveRecord::Base
   end
 
   def self.find_cached_by_addon_name_and_name(addon_name, addon_plan_name)
-    Rails.cache.fetch [self, 'find_cached_by_addon_name_and_name', addon_name, addon_plan_name] do
+    Rails.cache.fetch [self, 'find_cached_by_addon_name_and_name', addon_name.to_s.dup, addon_plan_name.to_s.dup] do
       joins(:addon).where { (addon.name == addon_name.to_s) & (name == addon_plan_name.to_s) }.first
     end
   end

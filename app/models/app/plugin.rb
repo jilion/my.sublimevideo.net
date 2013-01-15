@@ -14,7 +14,7 @@ class App::Plugin < ActiveRecord::Base
   validates :addon_id, uniqueness: { scope: :app_design_id }
 
   def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name', name.to_s] do
+    Rails.cache.fetch [self, 'find_cached_by_name', name.to_s.dup] do
       self.where(name: name.to_s).first
     end
   end
