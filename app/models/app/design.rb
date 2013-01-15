@@ -20,7 +20,7 @@ class App::Design < ActiveRecord::Base
   scope :paid,   -> { where { price > 0 } }
 
   def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name', name] do
+    Rails.cache.fetch [self, 'find_cached_by_name', name.dup] do
       self.where(name: name.to_s).first
     end
   end
@@ -57,7 +57,7 @@ class App::Design < ActiveRecord::Base
   private
 
   def clear_caches
-    Rails.cache.clear [self.class, 'find_cached_by_name', name]
+    Rails.cache.clear [self.class, 'find_cached_by_name', name.dup]
   end
 end
 
