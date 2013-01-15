@@ -18,7 +18,7 @@ class Addon < ActiveRecord::Base
   scope :public,          -> { includes(:plans).merge(AddonPlan.public) }
 
   def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name', name] do
+    Rails.cache.fetch [self, 'find_cached_by_name', name.to_s] do
       self.where(name: name.to_s).first
     end
   end

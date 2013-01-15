@@ -22,7 +22,7 @@ class App::Component < ActiveRecord::Base
   end
 
   def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name', name.dup] do
+    Rails.cache.fetch [self, 'find_cached_by_name', name.to_s] do
       self.where(name: name).first
     end
   end
@@ -59,7 +59,7 @@ class App::Component < ActiveRecord::Base
 
   def clear_caches
     Rails.cache.clear [self.class, 'app_component']
-    Rails.cache.clear [self.class, 'find_cached_by_name', name.dup]
+    Rails.cache.clear [self.class, 'find_cached_by_name', name]
   end
 
 end

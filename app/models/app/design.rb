@@ -20,7 +20,7 @@ class App::Design < ActiveRecord::Base
   scope :paid,   -> { where { price > 0 } }
 
   def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name', name] do
+    Rails.cache.fetch [self, 'find_cached_by_name', name.to_s] do
       self.where(name: name.to_s).first
     end
   end
