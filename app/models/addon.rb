@@ -18,7 +18,7 @@ class Addon < ActiveRecord::Base
   scope :public,          -> { includes(:plans).merge(AddonPlan.public) }
 
   def self.find_cached_by_name(name)
-    Rails.cache.fetch [self, 'find_cached_by_name', name.dup] do
+    Rails.cache.fetch [self, 'find_cached_by_name', name] do
       self.where(name: name.to_s).first
     end
   end
@@ -38,7 +38,7 @@ class Addon < ActiveRecord::Base
   private
 
   def clear_caches
-    Rails.cache.clear [self.class, 'find_cached_by_name', name.dup]
+    Rails.cache.clear [self.class, 'find_cached_by_name', name]
   end
 end
 
