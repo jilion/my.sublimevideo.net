@@ -147,7 +147,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rspec-rails', github: 'rspec/rspec-rails', ref: '1d15db02c540e3987d18f0c4b48193a4401ff724'
+  gem 'rspec-rails'
   gem 'debugger'
   gem 'timecop'
   gem 'better_errors'
@@ -162,12 +162,12 @@ end
 
 group :test do
   gem 'ffaker'
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', github: 'thoughtbot/shoulda-matchers'
   gem 'capybara'
   gem 'capybara-email'
   gem 'poltergeist'
   gem 'show_me_the_cookies'
-  gem 'rspec-core', github: 'rspec/rspec-core', ref: 'f273be379551b9ecaa2b526152e58703af3f862b'
+  gem 'rspec-core'
   gem 'webmock', '~> 1.6.0'
   gem 'typhoeus', '~> 0.2.0'
   gem 'vcr', '~> 1.10.3'

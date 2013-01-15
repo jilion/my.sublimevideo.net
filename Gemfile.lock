@@ -38,26 +38,6 @@ GIT
       rails (>= 3.0)
 
 GIT
-  remote: git://github.com/rspec/rspec-core.git
-  revision: f273be379551b9ecaa2b526152e58703af3f862b
-  ref: f273be379551b9ecaa2b526152e58703af3f862b
-  specs:
-    rspec-core (2.12.2)
-
-GIT
-  remote: git://github.com/rspec/rspec-rails.git
-  revision: 1d15db02c540e3987d18f0c4b48193a4401ff724
-  ref: 1d15db02c540e3987d18f0c4b48193a4401ff724
-  specs:
-    rspec-rails (2.12.0)
-      actionpack (>= 3.0)
-      activesupport (>= 3.0)
-      railties (>= 3.0)
-      rspec-core (~> 2.12.0)
-      rspec-expectations (~> 2.12.0)
-      rspec-mocks (~> 2.12.0)
-
-GIT
   remote: git://github.com/ryanb/letter_opener.git
   revision: 3c8311b5263ff2e7eaa81d1997183a526737e4e3
   specs:
@@ -82,6 +62,14 @@ GIT
       libxml-ruby (~> 2.2.0)
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
+
+GIT
+  remote: git://github.com/thoughtbot/shoulda-matchers.git
+  revision: f7337c62bb8fa361f65fad39f04dca084a4b4420
+  specs:
+    shoulda-matchers (1.4.2)
+      activesupport (>= 3.0.0)
+      bourne (~> 1.2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -161,8 +149,8 @@ GEM
       coderay (>= 1.0.0)
       erubis (>= 2.7.0)
     binding_of_caller (0.6.8)
-    bourne (1.1.2)
-      mocha (= 0.10.5)
+    bourne (1.2.1)
+      mocha (= 0.12.7)
     brakeman (1.9.0)
       activesupport
       erubis (~> 2.6)
@@ -391,7 +379,7 @@ GEM
     metaclass (0.0.1)
     method_source (0.8.1)
     mime-types (1.19)
-    mocha (0.10.5)
+    mocha (0.12.7)
       metaclass (~> 0.0.1)
     money (5.1.0)
       i18n (~> 0.6.0)
@@ -510,9 +498,17 @@ GEM
       rspec-core (~> 2.12.0)
       rspec-expectations (~> 2.12.0)
       rspec-mocks (~> 2.12.0)
+    rspec-core (2.12.2)
     rspec-expectations (2.12.1)
       diff-lcs (~> 1.1.3)
     rspec-mocks (2.12.1)
+    rspec-rails (2.12.2)
+      actionpack (>= 3.0)
+      activesupport (>= 3.0)
+      railties (>= 3.0)
+      rspec-core (~> 2.12.0)
+      rspec-expectations (~> 2.12.0)
+      rspec-mocks (~> 2.12.0)
     rubinius-actor (0.0.2)
       rubinius-core-api
     rubinius-core-api (0.0.1)
@@ -539,9 +535,6 @@ GEM
     sextant (0.2.1)
       activesupport (>= 3.2)
       rails (>= 3.2)
-    shoulda-matchers (1.4.2)
-      activesupport (>= 3.0.0)
-      bourne (~> 1.1.2)
     show_me_the_cookies (1.1.4)
       capybara (~> 1.0)
     sidekiq (2.6.4)
@@ -743,14 +736,14 @@ DEPENDENCIES
   request-log-analyzer
   rescue_me
   responders
-  rspec-core!
-  rspec-rails!
+  rspec-core
+  rspec-rails
   ruby_gntp
   rubyzip
   s3etag
   sass-rails
   sextant
-  shoulda-matchers
+  shoulda-matchers!
   show_me_the_cookies
   sidekiq
   silent-postgres
