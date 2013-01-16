@@ -359,7 +359,7 @@ module Populate
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_html5',    template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_sony',     template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_anthony',  template: lightbox_without_close_button_template },
-        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_next15',   template: lightbox_without_close_button_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_next15',   template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_df',       template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_blizzard', template: lightbox_without_close_button_template },
         { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
