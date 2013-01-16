@@ -81,6 +81,7 @@ module Populate
           { name: 'preview_tools', kind: 'previewTools', design_dependent: false, parent_addon: nil },
           { name: 'buy_action',    kind: 'buyAction',    design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
           { name: 'action',        kind: 'action',       design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'end_actions',   kind: 'endActions',   design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
           { name: 'info',          kind: 'info',         design_dependent: true,  parent_addon: 'ref-Addon-video_player' }
         ],
         App::Plugin => [
@@ -136,6 +137,8 @@ module Populate
 
           { name: 'preview_tools_svnet', token: 'sj.sj.sk', addon: 'ref-Addon-preview_tools', design: nil, component: 'ref-App::Component-svnet' },
 
+          { name: 'end_actions_twit', token: 'sf.sf.agb', addon: 'ref-Addon-end_actions', design: 'ref-App::Design-twit', component: 'ref-App::Component-twit' },
+
           { name: 'action_svnet', token: 'sj.sj.adb', addon: 'ref-Addon-action', design: nil, component: 'ref-App::Component-svnet' }
         ],
         AddonPlan => [
@@ -146,6 +149,8 @@ module Populate
           { name: 'standard', price: 0, addon: 'ref-Addon-image_viewer', availability: 'hidden', required_stage: 'beta', stable_at: nil },
 
           { name: 'standard', price: 0, addon: 'ref-Addon-preview_tools', availability: 'custom', required_stage: 'beta', stable_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-end_actions', availability: 'custom', required_stage: 'beta', stable_at: nil },
 
           { name: 'invisible', price: 0,    addon: 'ref-Addon-stats', availability: 'hidden',                         stable_at: Time.now.utc },
           { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats', availability: 'public',                         stable_at: Time.now.utc },
@@ -210,6 +215,13 @@ module Populate
         }
       })
       buy_action_template = {
+        enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: false
+        }
+      }
+      end_actions_template = {
         enable: {
           type: 'boolean',
           values: [true, false],
@@ -517,6 +529,9 @@ module Populate
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_sony',     template: sharing_template },
 
         { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }, # no need to create an empty template
+
+        { addon_plan: 'ref-AddonPlan-end_actions-standard',   plugin: 'ref-App::Plugin-end_actions_twit', template: end_actions_template }
+
 
         { addon_plan: 'ref-AddonPlan-buy_action-standard',   plugin: 'ref-App::Plugin-buy_action_blizzard', template: buy_action_template }
       ]
