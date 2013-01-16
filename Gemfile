@@ -37,6 +37,9 @@ gem 'oauth'
 gem 'oauth-plugin'
 gem 'acts_as_api'
 
+# Internals API
+gem 'her'
+
 # Internals
 gem 'dalli'
 gem 'sidekiq'

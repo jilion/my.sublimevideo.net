@@ -11,9 +11,9 @@ class Admin::TailorMadePlayerRequestsController < Admin::AdminController
 
   # GET /tailor_made_player_requests
   def index
-    @tailor_made_player_requests = apply_scopes(TailorMadePlayerRequest.scoped)
+    @tailor_made_player_requests = TailorMadePlayerRequest.all(params).page(1)
 
-    respond_with(@tailor_made_player_requests, per_page: 50)
+    respond_with(@tailor_made_player_requests)
   end
 
   # GET /tailor_made_player_requests/:id
