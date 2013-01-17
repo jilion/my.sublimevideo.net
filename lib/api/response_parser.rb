@@ -19,7 +19,8 @@ module Api
     def parse_headers(env)
       env[:response_headers].tap do |headers|
         env[:body][:metadata][:page] = headers['X-Page'].to_i if headers.include?('X-Page')
-        env[:body][:metadata][:per_page] = headers['X-Per-Page'].to_i if headers.include?('X-Per-Page')
+        env[:body][:metadata][:limit] = headers['X-Limit'].to_i if headers.include?('X-Limit')
+        env[:body][:metadata][:offset] = headers['X-Offset'].to_i if headers.include?('X-Offset')
         env[:body][:metadata][:total_count] = headers['X-Total-Count'].to_i if headers.include?('X-Total-Count')
       end
       env[:body]

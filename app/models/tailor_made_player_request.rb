@@ -11,7 +11,9 @@ class TailorMadePlayerRequest
     results = super(params)
     Kaminari.paginate_array(
       results,
-      total_count: results.metadata[:total_count])
+      limit: results.metadata[:limit],
+      offset: results.metadata[:offset],
+      total_count: results.metadata[:total_count]).page(params[:page])
   end
 
   def created_at
