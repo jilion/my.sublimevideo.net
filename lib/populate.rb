@@ -226,6 +226,10 @@ module Populate
           type: 'boolean',
           values: [true, false],
           default: false
+        },
+        anticipate: {
+          type: 'float',
+          default: 1
         }
       }
       action_template = {
