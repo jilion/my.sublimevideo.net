@@ -34,16 +34,24 @@ describe TailorMadePlayerRequest do
     end
   end
 
-  describe "find" do
+  describe "instance returned by find" do
     subject { TailorMadePlayerRequest.find(1) }
+
     its(:name) { should eq 'Test' }
     its(:created_at) { should be_kind_of(Time) }
+
+    describe "#persisted?" do
+      it "returns true" do
+        subject.should be_persisted
+      end
+    end
   end
 
-  describe "all" do
-    it "returns a Kaminari array" do
-      array = TailorMadePlayerRequest.all.page(1)
-      array.total_count.should eq 2
+  describe "collection returned by all" do
+    subject { TailorMadePlayerRequest.all }
+
+    it "is a Kaminari array" do
+      subject.total_count.should eq 2
     end
   end
 
