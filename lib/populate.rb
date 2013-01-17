@@ -229,6 +229,7 @@ module Populate
         },
         anticipate: {
           type: 'float',
+          values: nil,
           default: 1
         }
       }
