@@ -1,5 +1,6 @@
 require_dependency 'api/token_authentication'
 require_dependency 'api/response_parser'
+require_dependency 'api/url'
 
 $www_api = Her::API.new
 $www_api.setup url: Api::Url.new('www').url do |connection|
