@@ -106,6 +106,7 @@ describe SiteModules::BillableItem, :addons do
       @billable_item_activity5.site.trial_days_remaining_for_billable_item(addon_plan).should eq 16
       @billable_item_activity6.site.trial_days_remaining_for_billable_item(addon_plan).should eq 30
       site.trial_days_remaining_for_billable_item(@logo_addon_plan_2).should eq 0
+      site.trial_days_remaining_for_billable_item(@classic_design).should be_nil
       create(:site).trial_days_remaining_for_billable_item(addon_plan).should be_nil
     end
   end
