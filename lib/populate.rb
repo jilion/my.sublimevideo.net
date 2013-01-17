@@ -530,8 +530,7 @@ module Populate
 
         { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }, # no need to create an empty template
 
-        { addon_plan: 'ref-AddonPlan-end_actions-standard',   plugin: 'ref-App::Plugin-end_actions_twit', template: end_actions_template }
-
+        { addon_plan: 'ref-AddonPlan-end_actions-standard',   plugin: 'ref-App::Plugin-end_actions_twit', template: end_actions_template },
 
         { addon_plan: 'ref-AddonPlan-buy_action-standard',   plugin: 'ref-App::Plugin-buy_action_blizzard', template: buy_action_template }
       ]
@@ -663,31 +662,23 @@ module Populate
         BASE_SITES.each do |hostname|
           created_at = rand(24).months.ago
           Timecop.travel(created_at)
+          site = user.sites.build(hostname: hostname)
+          service = Service::Site.new(site).tap { |s| s.create }
+          if rand >= 0.3
+            app_designs, addon_plans = {}, {}
+            App::Design.custom.each do |design|
+              app_designs[design.name] = design.id if rand >= 0.6
+            end
+            AddonPlan.where{ price > 0 }.each do |addon_plan|
+              addon_plans[addon_plan.addon.name] = addon_plan.id if rand >= 0.6
+            end
+            options = rand >= 0.7 ? { force: 'sponsored' } : (rand >= 0.5 ? { force: 'subscribed' } : {})
+            service.update_billable_items(app_designs, addon_plans, options)
+          end
           if rand >= 0.5
-            site = user.sites.create({ hostname: hostname, plan_id: Plan.where(name: %w[plus premium].sample, cycle: 'month').first.id }, without_protection: true)
-            service = Service::Site.new(site)
-            service.migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
-            service.send :create_default_kit!
-            service.site.save
-          else
-            site = user.sites.build(hostname: hostname)
-            service = Service::Site.new(site).tap { |s| s.create }
-            if rand >= 0.3
-              app_designs, addon_plans = {}, {}
-              App::Design.custom.each do |design|
-                app_designs[design.name] = design.id if rand >= 0.6
-              end
-              AddonPlan.where{ price > 0 }.each do |addon_plan|
-                addon_plans[addon_plan.addon.name] = addon_plan.id if rand >= 0.6
-              end
-              options = rand >= 0.7 ? { force: 'sponsored' } : (rand >= 0.5 ? { force: 'subscribed' } : {})
-              service.update_billable_items(app_designs, addon_plans, options)
-            end
-            if rand >= 0.5
-              Timecop.return
-              Timecop.travel(created_at + 30.days)
-              Service::Trial.activate_billable_items_out_of_trial_for_site!(site.id)
-            end
+            Timecop.return
+            Timecop.travel(created_at + 30.days)
+            Service::Trial.activate_billable_items_out_of_trial_for_site!(site.id)
           end
           Timecop.return
         end

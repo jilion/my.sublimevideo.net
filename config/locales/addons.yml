@@ -1,19 +1,20 @@
 en:
   addons:
-    video_player: 'Basic Player'
-    lightbox: 'Lightbox'
-    image_viewer: 'Image Viewer'
-    stats: 'Analytics'
-    logo: 'On-Video Logo'
-    controls: 'Controls'
-    initial: 'Start View'
-    sharing: 'Social Sharing Buttons'
-    api: 'API'
-    support: 'Support'
+    video_player:  'Basic Player'
+    lightbox:      'Lightbox'
+    image_viewer:  'Image Viewer'
+    stats:         'Analytics'
+    logo:          'On-Video Logo'
+    controls:      'Controls'
+    initial:       'Start View'
+    sharing:       'Social Sharing Buttons'
+    api:           'API'
+    support:       'Support'
     preview_tools: 'Preview Tools'
-    buy_action: 'Buy Button'
-    action: 'Action Button'
-    info: 'Info'
+    buy_action:    'Buy Button'
+    action:        'Horizon Custom Actions'
+    info:          'Info'
+    end_actions:   'End Actions'
 
   addon_plans:
     video_player:
@@ -33,7 +34,7 @@ en:
     logo:
       sublime:  'SublimeVideo logo'
       disabled: 'No SublimeVideo logo'
-      custom: 'Your logo'
+      custom:   'Your logo'
 
     controls:
       standard: 'Standard controls'
@@ -58,7 +59,10 @@ en:
       standard: 'Standard Buy Button'
 
     action:
-      standard: 'Standard Action Button'
+      standard: 'Standard Horizon Custom Actions'
 
     info:
       standard: 'Standard Info'
+
+    end_actions:
+      standard: 'Standard End Actions'
