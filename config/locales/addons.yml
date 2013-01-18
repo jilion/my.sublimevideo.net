@@ -1,20 +1,22 @@
 en:
   addons:
-    video_player:  'Basic Player'
-    lightbox:      'Lightbox'
-    image_viewer:  'Image Viewer'
-    stats:         'Analytics'
-    logo:          'On-Video Logo'
-    controls:      'Controls'
-    initial:       'Start View'
-    sharing:       'Social Sharing Buttons'
-    api:           'API'
-    support:       'Support'
-    preview_tools: 'Preview Tools'
-    buy_action:    'Buy Button'
-    action:        'Horizon Custom Actions'
-    info:          'Info'
-    end_actions:   'End Actions'
+    video_player:   'Basic Player'
+    lightbox:       'Lightbox'
+    image_viewer:   'Image Viewer'
+    stats:          'Analytics'
+    logo:           'On-Video Logo'
+    controls:       'Controls'
+    initial:        'Start View'
+    sharing:        'Sharing Buttons'
+    social_sharing: 'Sharing'
+    embed:          'Embed'
+    api:            'API'
+    support:        'Support'
+    preview_tools:  'Preview Tools'
+    buy_action:     'Buy Button'
+    action:         'Horizon Custom Actions'
+    info:           'Info'
+    end_actions:    'End Actions'
 
   addon_plans:
     video_player:
@@ -44,6 +46,12 @@ en:
 
     sharing:
       standard: 'Standard sharing'
+
+    social_sharing:
+      standard: 'Popular social networks sharing'
+
+    embed:
+      standard: 'Manual embedding'
 
     api:
       standard: 'SublimeVideo player basic JavaScript API'

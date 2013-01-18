@@ -68,21 +68,23 @@ module Populate
           { name: 'blizzard', skin_token: 'aca.aca.aca', price: 0, availability: 'custom', required_stage: 'beta', component: 'ref-App::Component-blizzard' }
         ],
         Addon => [
-          { name: 'video_player',  kind: 'videoPlayer',  design_dependent: false, parent_addon: nil },
-          { name: 'controls',      kind: 'controls',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'initial',       kind: 'initial',      design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'sharing',       kind: 'sharing',      design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'image_viewer',  kind: 'imageViewer',  design_dependent: false, parent_addon: nil },
-          { name: 'logo',          kind: 'logo',         design_dependent: false, parent_addon: 'ref-Addon-video_player' },
-          { name: 'lightbox',      kind: 'lightbox',     design_dependent: true,  parent_addon: nil },
-          { name: 'api',           kind: 'api',          design_dependent: false, parent_addon: nil },
-          { name: 'stats',         kind: 'stats',        design_dependent: false, parent_addon: nil },
-          { name: 'support',       kind: 'support',      design_dependent: false, parent_addon: nil },
-          { name: 'preview_tools', kind: 'previewTools', design_dependent: false, parent_addon: nil },
-          { name: 'buy_action',    kind: 'buyAction',    design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'action',        kind: 'action',       design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'end_actions',   kind: 'endActions',   design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
-          { name: 'info',          kind: 'info',         design_dependent: true,  parent_addon: 'ref-Addon-video_player' }
+          { name: 'video_player',   kind: 'videoPlayer',   design_dependent: false, parent_addon: nil },
+          { name: 'controls',       kind: 'controls',      design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'initial',        kind: 'initial',       design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'sharing',        kind: 'sharing',       design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'social_sharing', kind: 'sharing',       design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'embed',          kind: 'embed',         design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'image_viewer',   kind: 'imageViewer',   design_dependent: false, parent_addon: nil },
+          { name: 'logo',           kind: 'logo',          design_dependent: false, parent_addon: 'ref-Addon-video_player' },
+          { name: 'lightbox',       kind: 'lightbox',      design_dependent: true,  parent_addon: nil },
+          { name: 'api',            kind: 'api',           design_dependent: false, parent_addon: nil },
+          { name: 'stats',          kind: 'stats',         design_dependent: false, parent_addon: nil },
+          { name: 'support',        kind: 'support',       design_dependent: false, parent_addon: nil },
+          { name: 'preview_tools',  kind: 'previewTools',  design_dependent: false, parent_addon: nil },
+          { name: 'buy_action',     kind: 'buyAction',     design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'action',         kind: 'action',        design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'end_actions',    kind: 'endActions',    design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'info',           kind: 'info',          design_dependent: true,  parent_addon: 'ref-Addon-video_player' }
         ],
         App::Plugin => [
           { name: 'video_player', token: 'sa.sh.si', addon: 'ref-Addon-video_player', design: nil, component: 'ref-App::Component-app' },
@@ -131,6 +133,24 @@ module Populate
           { name: 'sharing_blizzard', token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-app' },
           { name: 'sharing_sony',     token: 'sa.sh.sz',    addon: 'ref-Addon-sharing', design: 'ref-App::Design-sony',     component: 'ref-App::Component-app' },
 
+          { name: 'social_sharing_classic',  token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-classic',  component: 'ref-App::Component-app' },
+          { name: 'social_sharing_flat',     token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-flat',     component: 'ref-App::Component-app' },
+          { name: 'social_sharing_light',    token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-light',    component: 'ref-App::Component-app' },
+          { name: 'social_sharing_twit',     token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-twit',     component: 'ref-App::Component-app' },
+          { name: 'social_sharing_html5',    token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-html5',    component: 'ref-App::Component-app' },
+          { name: 'social_sharing_next15',   token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-next15',   component: 'ref-App::Component-next15' },
+          { name: 'social_sharing_blizzard', token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-app' },
+          { name: 'social_sharing_sony',     token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-sony',     component: 'ref-App::Component-app' },
+
+          { name: 'embed_classic',  token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-classic',  component: 'ref-App::Component-app' },
+          { name: 'embed_flat',     token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-flat',     component: 'ref-App::Component-app' },
+          { name: 'embed_light',    token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-light',    component: 'ref-App::Component-app' },
+          { name: 'embed_twit',     token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-twit',     component: 'ref-App::Component-app' },
+          { name: 'embed_html5',    token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-html5',    component: 'ref-App::Component-app' },
+          { name: 'embed_next15',   token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-next15',   component: 'ref-App::Component-next15' },
+          { name: 'embed_blizzard', token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-app' },
+          { name: 'embed_sony',     token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-sony',     component: 'ref-App::Component-app' },
+
           { name: 'info_sony',        token: 'tj.tj.aeb',    addon: 'ref-Addon-info', design: 'ref-App::Design-sony',     component: 'ref-App::Component-sony' },
 
           { name: 'buy_action_blizzard', token: 'aca.aca.acb', addon: 'ref-Addon-buy_action', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-blizzard' },
@@ -165,6 +185,10 @@ module Populate
           { name: 'standard', price: 0, addon: 'ref-Addon-initial', availability: 'hidden', required_stage: 'beta', stable_at: nil },
 
           { name: 'standard', price: 0, addon: 'ref-Addon-sharing', availability: 'public', required_stage: 'beta', stable_at: nil },
+
+          { name: 'standard', price: 490, addon: 'ref-Addon-social_sharing', availability: 'public', required_stage: 'beta', stable_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-embed', availability: 'public', required_stage: 'beta', stable_at: nil },
 
           { name: 'standard', price: 0, addon: 'ref-Addon-api', availability: 'hidden', stable_at: Time.now.utc },
 
@@ -326,6 +350,49 @@ module Populate
         },
         embed_height: {
           type: 'size'
+        }
+      }
+      social_sharing_template = {
+        enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: false
+        },
+        url: {
+          type: 'url'
+        },
+        icon: {
+          type: 'string',
+          values: ['default', 'alt'],
+          default: 'default'
+        },
+        buttons: {
+          type: 'string',
+          default: 'facebook twitter'
+        },
+        text: {
+          type: 'string'
+        },
+        twitter_via: {
+          type: 'string'
+        },
+        link_enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: true
+        }
+      }
+      embed_template = {
+        enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: false
+        },
+        size: {
+          type: 'string'
+        },
+        url: {
+          type: 'url'
         }
       }
 
