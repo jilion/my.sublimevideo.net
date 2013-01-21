@@ -736,6 +736,7 @@ DEPENDENCIES
   request-log-analyzer
   rescue_me
   responders
+  rspec
   rspec-rails
   ruby_gntp
   rubyzip
