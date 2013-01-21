@@ -81,6 +81,7 @@ module Populate
           { name: 'preview_tools', kind: 'previewTools', design_dependent: false, parent_addon: nil },
           { name: 'buy_action',    kind: 'buyAction',    design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
           { name: 'action',        kind: 'action',       design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
+          { name: 'end_actions',   kind: 'endActions',   design_dependent: true,  parent_addon: 'ref-Addon-video_player' },
           { name: 'info',          kind: 'info',         design_dependent: true,  parent_addon: 'ref-Addon-video_player' }
         ],
         App::Plugin => [
@@ -136,6 +137,8 @@ module Populate
 
           { name: 'preview_tools_svnet', token: 'sj.sj.sk', addon: 'ref-Addon-preview_tools', design: nil, component: 'ref-App::Component-svnet' },
 
+          { name: 'end_actions_twit', token: 'sf.sf.agb', addon: 'ref-Addon-end_actions', design: 'ref-App::Design-twit', component: 'ref-App::Component-twit' },
+
           { name: 'action_svnet', token: 'sj.sj.adb', addon: 'ref-Addon-action', design: nil, component: 'ref-App::Component-svnet' }
         ],
         AddonPlan => [
@@ -146,6 +149,8 @@ module Populate
           { name: 'standard', price: 0, addon: 'ref-Addon-image_viewer', availability: 'hidden', required_stage: 'beta', stable_at: nil },
 
           { name: 'standard', price: 0, addon: 'ref-Addon-preview_tools', availability: 'custom', required_stage: 'beta', stable_at: nil },
+
+          { name: 'standard', price: 0, addon: 'ref-Addon-end_actions', availability: 'custom', required_stage: 'beta', stable_at: nil },
 
           { name: 'invisible', price: 0,    addon: 'ref-Addon-stats', availability: 'hidden',                         stable_at: Time.now.utc },
           { name: 'realtime',  price: 990,  addon: 'ref-Addon-stats', availability: 'public',                         stable_at: Time.now.utc },
@@ -214,6 +219,18 @@ module Populate
           type: 'boolean',
           values: [true, false],
           default: false
+        }
+      }
+      end_actions_template = {
+        enable: {
+          type: 'boolean',
+          values: [true, false],
+          default: false
+        },
+        anticipate: {
+          type: 'float',
+          values: nil,
+          default: 1
         }
       }
       action_template = {
@@ -359,7 +376,7 @@ module Populate
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_html5',    template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_sony',     template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_anthony',  template: lightbox_without_close_button_template },
-        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_next15',   template: lightbox_without_close_button_template },
+        { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_next15',   template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_df',       template: lightbox_template },
         { addon_plan: 'ref-AddonPlan-lightbox-standard',     plugin: 'ref-App::Plugin-lightbox_blizzard', template: lightbox_without_close_button_template },
         { addon_plan: 'ref-AddonPlan-image_viewer-standard', plugin: 'ref-App::Plugin-image_viewer' },
@@ -518,6 +535,8 @@ module Populate
 
         { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }, # no need to create an empty template
 
+        { addon_plan: 'ref-AddonPlan-end_actions-standard',   plugin: 'ref-App::Plugin-end_actions_twit', template: end_actions_template },
+
         { addon_plan: 'ref-AddonPlan-buy_action-standard',   plugin: 'ref-App::Plugin-buy_action_blizzard', template: buy_action_template }
       ]
 
@@ -648,31 +667,23 @@ module Populate
         BASE_SITES.each do |hostname|
           created_at = rand(24).months.ago
           Timecop.travel(created_at)
+          site = user.sites.build(hostname: hostname)
+          service = Service::Site.new(site).tap { |s| s.create }
+          if rand >= 0.3
+            app_designs, addon_plans = {}, {}
+            App::Design.custom.each do |design|
+              app_designs[design.name] = design.id if rand >= 0.6
+            end
+            AddonPlan.where{ price > 0 }.each do |addon_plan|
+              addon_plans[addon_plan.addon.name] = addon_plan.id if rand >= 0.6
+            end
+            options = rand >= 0.7 ? { force: 'sponsored' } : (rand >= 0.5 ? { force: 'subscribed' } : {})
+            service.update_billable_items(app_designs, addon_plans, options)
+          end
           if rand >= 0.5
-            site = user.sites.create({ hostname: hostname, plan_id: Plan.where(name: %w[plus premium].sample, cycle: 'month').first.id }, without_protection: true)
-            service = Service::Site.new(site)
-            service.migrate_plan_to_addons!(AddonPlan.free_addon_plans, AddonPlan.free_addon_plans(reject: %w[logo stats support]))
-            service.send :create_default_kit!
-            service.site.save
-          else
-            site = user.sites.build(hostname: hostname)
-            service = Service::Site.new(site).tap { |s| s.create }
-            if rand >= 0.3
-              app_designs, addon_plans = {}, {}
-              App::Design.custom.each do |design|
-                app_designs[design.name] = design.id if rand >= 0.6
-              end
-              AddonPlan.where{ price > 0 }.each do |addon_plan|
-                addon_plans[addon_plan.addon.name] = addon_plan.id if rand >= 0.6
-              end
-              options = rand >= 0.7 ? { force: 'sponsored' } : (rand >= 0.5 ? { force: 'subscribed' } : {})
-              service.update_billable_items(app_designs, addon_plans, options)
-            end
-            if rand >= 0.5
-              Timecop.return
-              Timecop.travel(created_at + 30.days)
-              Service::Trial.activate_billable_items_out_of_trial_for_site!(site.id)
-            end
+            Timecop.return
+            Timecop.travel(created_at + 30.days)
+            Service::Trial.activate_billable_items_out_of_trial_for_site!(site.id)
           end
           Timecop.return
         end

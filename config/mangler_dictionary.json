@@ -27,8 +27,8 @@
   "enable": "iv",
   "enableTwitter": "iw",
   "info": "ix",
-  // "": "iy",
-  // "": "iz",
+  "endActions": "iy",
+  "anticipate": "iz",
 
   "plugins": "ka",
   "skin": "kb",
@@ -133,5 +133,7 @@
   "SNYInfoController": "aeb",
 
   "df": "afa",
-  "DFBControls": "afb"
+  "DFBControls": "afb",
+
+  "TWTActionButtons": "agb"
 }

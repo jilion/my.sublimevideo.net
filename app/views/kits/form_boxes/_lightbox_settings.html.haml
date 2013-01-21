@@ -1,5 +1,5 @@
 - addon_plan = site.addon_plan_for_addon_name('lightbox')
-- if settings_template = addon_plan.settings_template_for(kit.design)
+- if settings_template = addon_plan.settings_template_for(design)
   - settings_template = settings_template.template
   .lightbox
     = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :on_open, show_title: true)
