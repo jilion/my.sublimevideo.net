@@ -152,7 +152,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rspec-rails', github: 'rspec/rspec-rails'
+  gem 'rspec-rails'
   gem 'debugger'
   gem 'timecop'
 
@@ -164,10 +164,6 @@ group :development, :test do
 end
 
 group :test do
-  gem 'rspec',              github: 'rspec/rspec'
-  gem 'rspec-core',         github: 'rspec/rspec-core'
-  gem 'rspec-expectations', github: 'rspec/rspec-expectations'
-  gem 'rspec-mocks',        github: 'rspec/rspec-mocks'
   gem 'shoulda-matchers',   github: 'thoughtbot/shoulda-matchers'
   gem 'ffaker'
   gem 'capybara'
