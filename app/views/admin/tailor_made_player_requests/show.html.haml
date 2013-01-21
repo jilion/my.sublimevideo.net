@@ -36,7 +36,7 @@
 
 %p
   %strong Attached document:
-  = @tailor_made_player_request.document? ? link_to('View document', @tailor_made_player_request.document[:url]) : 'N/A'
+  = @tailor_made_player_request.document? ? link_to('View document', @tailor_made_player_request.document_url) : 'N/A'
 
 %p
   %strong Highrise case:

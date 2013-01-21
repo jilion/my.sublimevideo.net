@@ -25,12 +25,14 @@ describe TailorMadePlayerRequest do
     'X-Per-Page' => '25',
     'X-Total-Count' => '2',
   } }
+  let(:topics) { %w[agency standalone platform other] }
 
 
   before do
     stub_api_for(TailorMadePlayerRequest) do |stub|
       stub.get("/api/tailor_made_player_requests/1") { |env| [200, {}, attributes.to_json] }
       stub.get("/api/tailor_made_player_requests")   { |env| [200, response_headers, [attributes].to_json] }
+      stub.get("/api/tailor_made_player_requests/topics") { |env| [200, {}, topics.to_json] }
     end
   end
 
@@ -45,13 +47,32 @@ describe TailorMadePlayerRequest do
         subject.should be_persisted
       end
     end
+
+    describe "#document?" do
+      it "returns false" do
+        subject.document?.should be_false
+      end
+    end
   end
 
-  describe "collection returned by all" do
-    subject { TailorMadePlayerRequest.all }
-
+  describe ".all" do
     it "is a Kaminari array" do
-      subject.total_count.should eq 2
+      array = TailorMadePlayerRequest.all
+      array.total_count.should eq 2
+    end
+  end
+
+  describe ".count" do
+    subject { TailorMadePlayerRequest.count }
+
+    it "returns count from total_count" do
+      TailorMadePlayerRequest.count.should eq 2
+    end
+  end
+
+  describe ".topics" do
+    it "returns all topics" do
+      TailorMadePlayerRequest.topics.should eq topics
     end
   end
 
