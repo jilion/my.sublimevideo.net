@@ -146,14 +146,15 @@ group :development do
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
   gem 'bullet'
+
+  gem 'better_errors'
+  gem 'binding_of_caller'
 end
 
 group :development, :test do
   gem 'rspec-rails', github: 'rspec/rspec-rails'
   gem 'debugger'
   gem 'timecop'
-  gem 'better_errors'
-  gem 'binding_of_caller'
 
   # Javascript test
   gem 'jasminerice'
