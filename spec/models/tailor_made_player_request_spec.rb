@@ -27,32 +27,21 @@ describe TailorMadePlayerRequest do
   } }
   let(:topics) { %w[agency standalone platform other] }
 
-
-  before do
+  before {
     stub_api_for(TailorMadePlayerRequest) do |stub|
       stub.get("/api/tailor_made_player_requests/1") { |env| [200, {}, attributes.to_json] }
       stub.get("/api/tailor_made_player_requests")   { |env| [200, response_headers, [attributes].to_json] }
       stub.get("/api/tailor_made_player_requests/topics") { |env| [200, {}, topics.to_json] }
     end
-  end
+  }
 
   describe "instance returned by find" do
     subject { TailorMadePlayerRequest.find(1) }
 
-    its(:name) { should eq 'Test' }
+    its(:name)       { should eq 'Test' }
     its(:created_at) { should be_kind_of(Time) }
-
-    describe "#persisted?" do
-      it "returns true" do
-        subject.should be_persisted
-      end
-    end
-
-    describe "#document?" do
-      it "returns false" do
-        subject.document?.should be_false
-      end
-    end
+    its(:document?)  { should be_false }
+    it { should be_persisted }
   end
 
   describe ".all" do
@@ -63,8 +52,6 @@ describe TailorMadePlayerRequest do
   end
 
   describe ".count" do
-    subject { TailorMadePlayerRequest.count }
-
     it "returns count from total_count" do
       TailorMadePlayerRequest.count.should eq 2
     end
@@ -75,5 +62,4 @@ describe TailorMadePlayerRequest do
       TailorMadePlayerRequest.topics.should eq topics
     end
   end
-
 end
