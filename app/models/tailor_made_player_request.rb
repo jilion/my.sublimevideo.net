@@ -1,45 +1,45 @@
-class TailorMadePlayerRequest < ActiveRecord::Base
+require 'kaminari'
+require 'kaminari/models/array_extension'
 
-  attr_accessor :export_type
+class TailorMadePlayerRequest
+  include ActiveModel::Conversion
+  extend ActiveModel::Naming
+  include Her::Model
 
-  mount_uploader :document, TailorMadePlayerRequestDocumentUploader
+  uses_api $www_api
 
-  TOPICS = %w[agency standalone platform other] unless defined? TOPICS
+  def self.all(params = {})
+    results = super(params)
+    Kaminari.paginate_array(
+      results,
+      limit: results.metadata[:limit],
+      offset: results.metadata[:offset],
+      total_count: results.metadata[:total_count]).page(params[:page])
+  end
 
-  # ==========
-  # = Scopes =
-  # ==========
+  def self.count(params = {})
+    all(params).total_count
+  end
 
-  # sort
-  scope :by_topic, lambda { |way='desc'| order{ topic.send(way) } }
-  scope :by_date,  lambda { |way='desc'| order{ created_at.send(way) } }
+  def self.topics
+    get_raw(:topics)[:data]
+  end
+
+  def created_at
+    @created_at ||= Time.parse(@data[:created_at])
+  end
+
+  # Needed for url [:admin, ...] generation
+  def persisted?
+    !new?
+  end
+
+  def document?
+    document[:url].present?
+  end
+
+  def document_url
+    document[:url]
+  end
 
 end
-
-# == Schema Information
-#
-# Table name: tailor_made_player_requests
-#
-#  company                 :string(255)
-#  country                 :string(255)
-#  created_at              :datetime         not null
-#  description             :text             not null
-#  document                :string(255)
-#  email                   :string(255)      not null
-#  highrise_kase_id        :integer
-#  id                      :integer          not null, primary key
-#  job_title               :string(255)
-#  name                    :string(255)      not null
-#  token                   :string(255)
-#  topic                   :string(255)      not null
-#  topic_other_detail      :string(255)
-#  topic_standalone_detail :string(255)
-#  updated_at              :datetime         not null
-#  url                     :string(255)
-#
-# Indexes
-#
-#  index_tailor_made_player_requests_on_created_at  (created_at)
-#  index_tailor_made_player_requests_on_topic       (topic)
-#
-

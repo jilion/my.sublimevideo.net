@@ -6,14 +6,10 @@ class Admin::TailorMadePlayerRequestsController < Admin::AdminController
   before_filter :set_default_scopes, only: [:index]
   before_filter :find_tailor_made_player_request, only: [:show, :destroy]
 
-  # sort
-  has_scope :by_topic, :by_date
-
   # GET /tailor_made_player_requests
   def index
-    @tailor_made_player_requests = apply_scopes(TailorMadePlayerRequest.scoped)
-
-    respond_with(@tailor_made_player_requests, per_page: 50)
+    @tailor_made_player_requests = TailorMadePlayerRequest.all(params)
+    respond_with(@tailor_made_player_requests)
   end
 
   # GET /tailor_made_player_requests/:id
@@ -22,9 +18,9 @@ class Admin::TailorMadePlayerRequestsController < Admin::AdminController
 
   # DELETE /tailor_made_player_requests/:id
   def destroy
-    @tailor_made_player_request.destroy
     # Recalculate trends..., move it to wwsv once trends are out of mysv
-    Stats::TailorMadePlayerRequestsStat.delay.update_stats(@tailor_made_player_request.created_at)
+    Stats::TailorMadePlayerRequestsStat.delay(at: 1.minute.from_now.to_i).update_stats(@tailor_made_player_request.created_at)
+    @tailor_made_player_request.destroy
     respond_with @tailor_made_player_request, location: [:admin, :tailor_made_player_requests]
   end
 

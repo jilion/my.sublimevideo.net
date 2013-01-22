@@ -1,5 +1,3 @@
-require_dependency 'service/tailor_made_player_request'
-
 Sidekiq.configure_server do |config|
   # http://mongoid.org/en/mongoid/docs/tips.html#sidekiq
   config.server_middleware do |chain|
