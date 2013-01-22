@@ -38,9 +38,14 @@ describe Api::Url do
   context "test Rails.env" do
     before { Rails.stub(:env) { 'test' } }
 
+    context "www subdomain" do
+      subject { Api::Url.new('my') }
+      its(:url) { should eq 'http://localhost/api' }
+    end
+
     context "my subdomain" do
       subject { Api::Url.new('my') }
-      its(:url) { should eq 'http://my.sublimevideo.dev/api' }
+      its(:url) { should eq 'http://localhost/api' }
     end
   end
 

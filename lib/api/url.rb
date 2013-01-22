@@ -11,6 +11,7 @@ module Api
     private
 
     def subdomain
+      return nil if Rails.env == 'test'
       @subdomain == 'www' ? nil : @subdomain
     end
 
@@ -19,7 +20,7 @@ module Api
       when 'development' then 'sublimevideo.dev'
       when 'production'  then 'sublimevideo.net'
       when 'staging'     then 'sublimevideo-staging.net'
-      when 'test'        then 'sublimevideo.dev'
+      when 'test'        then 'localhost'
       end
     end
 
