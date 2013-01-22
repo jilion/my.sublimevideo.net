@@ -20,7 +20,7 @@ module Api
       when 'development' then 'sublimevideo.dev'
       when 'production'  then 'sublimevideo.net'
       when 'staging'     then 'sublimevideo-staging.net'
-      when 'test'        then 'localhost'
+      when 'test'        then 'example.com'
       end
     end
 

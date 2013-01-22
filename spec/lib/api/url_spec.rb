@@ -40,12 +40,12 @@ describe Api::Url do
 
     context "www subdomain" do
       subject { Api::Url.new('my') }
-      its(:url) { should eq 'http://localhost/api' }
+      its(:url) { should eq 'http://example.com/api' }
     end
 
     context "my subdomain" do
       subject { Api::Url.new('my') }
-      its(:url) { should eq 'http://localhost/api' }
+      its(:url) { should eq 'http://example.com/api' }
     end
   end
 
