@@ -36,6 +36,11 @@ describe App::Design do
     it { described_class.paid.all.should eq [@paid] }
   end
 
+  describe '#not_custom?' do
+    it { create(:app_design, availability: 'public').should be_not_custom }
+    it { create(:app_design, availability: 'custom').should_not be_not_custom }
+  end
+
   describe '#available_for_subscription?' do
     let(:site) { create(:site) }
     let(:custom_app_design) { create(:app_design, availability: 'custom') }

@@ -38,7 +38,7 @@ class App::Design < ActiveRecord::Base
     end
   end
 
-  def public?
+  def not_custom?
     availability == 'public'
   end
 

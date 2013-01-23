@@ -25,30 +25,6 @@ describe AddonPlan do
     it { should validate_numericality_of(:price) }
   end
 
-  describe '#public?' do
-    it { addon_plan1.should be_public }
-    it { addon_plan2.should be_public }
-    it { addon_plan3.should_not be_public }
-  end
-
-  describe '#available_for_subscription?' do
-    before do
-      create(:billable_item, site: site, item: addon_plan1, state: 'sponsored')
-    end
-
-    it { create(:addon_plan, availability: 'hidden').available_for_subscription?(site).should be_false }
-    it { create(:addon_plan, availability: 'public').available_for_subscription?(site).should be_true }
-    it { addon_plan1.available_for_subscription?(site).should be_true }
-    it { addon_plan2.available_for_subscription?(site).should be_false }
-    it { addon_plan3.available_for_subscription?(site).should be_false }
-
-    context 'site has a billable item for this addon plan' do
-      before { create(:billable_item, item: addon_plan3, site: site) }
-
-      it { addon_plan3.available_for_subscription?(site).should be_true }
-    end
-  end
-
   describe 'Scopes' do
     before do
       create(:addon_plan, price: 999, stable_at: nil)
@@ -71,6 +47,30 @@ describe AddonPlan do
     end
 
     it { described_class.get('foo', 'bar').should eq @addon_plan }
+  end
+
+  describe '#not_custom?' do
+    it { addon_plan1.should be_not_custom }
+    it { addon_plan2.should be_not_custom }
+    it { addon_plan3.should_not be_not_custom }
+  end
+
+  describe '#available_for_subscription?' do
+    before do
+      create(:billable_item, site: site, item: addon_plan1, state: 'sponsored')
+    end
+
+    it { create(:addon_plan, availability: 'hidden').available_for_subscription?(site).should be_false }
+    it { create(:addon_plan, availability: 'public').available_for_subscription?(site).should be_true }
+    it { addon_plan1.available_for_subscription?(site).should be_true }
+    it { addon_plan2.available_for_subscription?(site).should be_false }
+    it { addon_plan3.available_for_subscription?(site).should be_false }
+
+    context 'site has a billable item for this addon plan' do
+      before { create(:billable_item, item: addon_plan3, site: site) }
+
+      it { addon_plan3.available_for_subscription?(site).should be_true }
+    end
   end
 
   describe '#beta?' do

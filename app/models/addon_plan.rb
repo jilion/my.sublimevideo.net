@@ -45,7 +45,7 @@ class AddonPlan < ActiveRecord::Base
     end
   end
 
-  def public?
+  def not_custom?
     availability.in?(%w[hidden public])
   end
 
