@@ -54,7 +54,7 @@ class AddonPlan < ActiveRecord::Base
   end
 
   def free?
-    beta? || price.zero?
+    price.zero?
   end
 
   def available_for_subscription?(site)

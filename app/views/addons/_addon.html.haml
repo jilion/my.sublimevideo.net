@@ -5,7 +5,6 @@
   - addon_plans_available_for_subscription.each do |addon_plan|
     - addon_plan_is_sponsored = site.addon_plan_is_sponsored?(addon_plan)
     - price = addon_plan_is_sponsored || addon_plan.beta? ? 0 : addon_plan.price
-    - non_uncheckable = addon_plan.free? || addon_plan_is_sponsored
 
     %tr{ class: highlighted_class(addon_plan) }
       %td
@@ -14,7 +13,7 @@
             = radio_button_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), data: { price: price }
             = label_tag "addon_plans[#{addon.name}]", addon_label_content(addon_plan)
         - else
-          - if non_uncheckable
+          - if addon_plan.free? || addon_plan_is_sponsored
             %h5.checked= addon_label_content(addon_plan)
           - else
             .checkbox_wrap

@@ -56,8 +56,8 @@ describe App::Design do
   end
 
   describe '#free?' do
-    it { build(:app_design, stable_at: nil).should be_free }
-    it { build(:app_design, stable_at: nil, price: 10).should be_free }
+    it { build(:app_design, stable_at: nil, price: 0).should be_free }
+    it { build(:app_design, stable_at: nil, price: 10).should_not be_free }
     it { build(:app_design, stable_at: Time.now, price: 0).should be_free }
     it { build(:app_design, stable_at: Time.now, price: 10).should_not be_free }
   end

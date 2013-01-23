@@ -76,7 +76,7 @@ module Service
 
     def handle_items_subscribed_during_month_of(date)
       site.billable_item_activities.includes(:item).where { created_at >> date.all_month }.where(state: 'subscribed').reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
-        next if activity.item.free?
+        next if activity.item.beta? || activity.item.free?
 
         add_invoice_item(build_invoice_item(activity.item, activity.created_at, find_end_activity_for_activity(activity, date).try(:created_at) || date.end_of_month))
       end

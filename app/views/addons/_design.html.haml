@@ -1,8 +1,7 @@
 - design_is_sponsored = site.app_design_is_sponsored?(design)
-- non_uncheckable = design.free? || design_is_sponsored
 %tr{ class: highlighted_class(design) }
   %td
-    - if non_uncheckable
+    - if design.free? || design_is_sponsored
       %h5.checked= design_label_content(design)
     - else
       .checkbox_wrap

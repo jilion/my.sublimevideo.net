@@ -79,8 +79,8 @@ describe AddonPlan do
   end
 
   describe '#free?' do
-    it { build(:addon_plan, stable_at: nil).should be_free }
-    it { build(:addon_plan, stable_at: nil, price: 10).should be_free }
+    it { build(:addon_plan, stable_at: nil, price: 0).should be_free }
+    it { build(:addon_plan, stable_at: nil, price: 10).should_not be_free }
     it { build(:addon_plan, stable_at: Time.now, price: 0).should be_free }
     it { build(:addon_plan, stable_at: Time.now, price: 10).should_not be_free }
   end

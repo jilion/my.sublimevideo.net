@@ -42,7 +42,7 @@ module SiteModules::BillableItem
   end
 
   def trial_days_remaining_for_billable_item(billable_item)
-    return nil if billable_item.free?
+    return nil if billable_item.beta? || billable_item.free?
     return 0 if out_of_trial?(billable_item)
 
     if trial_end_date = trial_end_date_for_billable_item(billable_item)

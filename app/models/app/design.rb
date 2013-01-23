@@ -47,7 +47,7 @@ class App::Design < ActiveRecord::Base
   end
 
   def free?
-    beta? || price.zero?
+    price.zero?
   end
 
   def title
