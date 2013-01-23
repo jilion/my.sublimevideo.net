@@ -2,7 +2,7 @@ require_dependency 'api/token_authentication'
 require_dependency 'api/response_parser'
 require_dependency 'api/url'
 
-ssl_options = { ca_path: '/usr/lib/ssl/certs' }
+ssl_options = { ca_path: '/usr/lib/ssl/certs', verify: false }
 
 $www_api = Her::API.new
 $www_api.setup url: Api::Url.new('www').url, ssl: ssl_options do |connection|
