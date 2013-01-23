@@ -4,7 +4,7 @@ class KitSettingPresenter
   def self.init(*args)
     presenter = self.new(*args)
 
-    if presenter.any_settings?
+    if presenter.viable?
       presenter
     else
       presenter = nil
@@ -16,6 +16,10 @@ class KitSettingPresenter
     @design     = options.fetch(:design)
     @view       = options.fetch(:view)
     @addon_plan = @kit.site.addon_plan_for_addon_name(addon_name)
+  end
+
+  def viable?
+    @addon_plan && any_settings?
   end
 
   def any_settings?

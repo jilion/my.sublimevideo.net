@@ -31,7 +31,7 @@ class AddonPlan < ActiveRecord::Base
 
     Addon.all.inject({}) do |hash, addon|
       if free_addon_plan = addon.free_plan
-        if free_addon_plan.availability != 'custom' && options[:reject].exclude?(free_addon_plan.addon.name)
+        if free_addon_plan.not_custom? && options[:reject].exclude?(free_addon_plan.addon.name)
           hash[addon.name.to_sym] = addon.free_plan.id
         end
       end

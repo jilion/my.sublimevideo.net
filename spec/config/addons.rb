@@ -58,19 +58,22 @@ def instantiate_variables
   @logo_addon_plan_2 = AddonPlan.get('logo', 'disabled')
   @logo_addon_plan_3 = AddonPlan.get('logo', 'custom')
 
-  @controls_addon = Addon.get('controls')
+  @controls_addon        = Addon.get('controls')
   @controls_addon_plan_1 = AddonPlan.get('controls', 'standard')
 
-  @initial_addon = Addon.get('initial')
+  @initial_addon        = Addon.get('initial')
   @initial_addon_plan_1 = AddonPlan.get('initial', 'standard')
 
-  @sharing_addon = Addon.get('sharing')
-  @sharing_addon_plan_1 = AddonPlan.get('sharing', 'standard')
+  @social_sharing_addon        = Addon.get('social_sharing')
+  @social_sharing_addon_plan_1 = AddonPlan.get('social_sharing', 'standard')
 
-  @api_addon = Addon.get('api')
+  @embed_addon        = Addon.get('embed')
+  @embed_addon_plan_1 = AddonPlan.get('embed', 'standard')
+
+  @api_addon        = Addon.get('api')
   @api_addon_plan_1 = AddonPlan.get('api', 'standard')
 
-  @support_addon = Addon.get('support')
+  @support_addon        = Addon.get('support')
   @support_addon_plan_1 = AddonPlan.get('support', 'standard')
   @support_addon_plan_2 = AddonPlan.get('support', 'vip')
 end

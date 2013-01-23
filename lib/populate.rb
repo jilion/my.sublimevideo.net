@@ -174,7 +174,7 @@ module Populate
 
           { name: 'standard', price: 0, addon: 'ref-Addon-initial', availability: 'hidden', required_stage: 'beta', stable_at: nil },
 
-          { name: 'standard', price: 0, addon: 'ref-Addon-sharing', availability: 'public', required_stage: 'beta', stable_at: nil },
+          { name: 'standard', price: 0, addon: 'ref-Addon-sharing', availability: 'custom', required_stage: 'beta', stable_at: nil },
 
           { name: 'standard', price: 490, addon: 'ref-Addon-social_sharing', availability: 'public', required_stage: 'beta', stable_at: nil },
 
@@ -381,9 +381,6 @@ module Populate
         },
         size: {
           type: 'size'
-        },
-        url: {
-          type: 'url'
         }
       }
 

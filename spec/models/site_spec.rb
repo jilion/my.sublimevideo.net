@@ -245,7 +245,7 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'suspended').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'suspended').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'suspended').should have(1).item
           site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'suspended').should have(1).item
         end
@@ -284,7 +284,7 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
           site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
         end
@@ -321,7 +321,7 @@ describe Site, :addons do
           site.billable_items.addon_plans.where(item_id: @logo_addon_plan_2).where(state: 'trial').should have(1).item
           site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
           site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-          site.billable_items.addon_plans.where(item_id: @sharing_addon_plan_1).where(state: 'beta').should have(1).item
+          site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
           site.billable_items.addon_plans.where(item_id: @api_addon_plan_1).where(state: 'subscribed').should have(1).item
           site.billable_items.addon_plans.where(item_id: @support_addon_plan_1).where(state: 'subscribed').should have(1).item
         end

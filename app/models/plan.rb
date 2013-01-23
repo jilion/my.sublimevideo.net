@@ -149,7 +149,11 @@ class Plan < ActiveRecord::Base
   end
 
   def free?
-    price == 0
+    price.zero?
+  end
+
+  def beta?
+    false
   end
 
 end

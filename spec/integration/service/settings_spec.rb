@@ -69,49 +69,6 @@ describe Service::Settings do
                   },
                   id: "sa.sh.sp"
                 },
-                "sharing" => {
-                  settings: {
-                    enable: false,
-                    enable_twitter: true,
-                    enable_facebook: true,
-                    enable_link: true,
-                    enable_embed: true,
-                    order: "twitter link facebook embed",
-                    default_url: nil,
-                    twitter_url: nil,
-                    facebook_url: nil,
-                    link_url: nil,
-                    embed_url: nil,
-                    embed_width: nil,
-                    embed_height: nil
-                  },
-                  allowed_settings: {
-                    enable: {
-                      values: [true, false]
-                    },
-                    enable_twitter: {
-                      values: [true, false]
-                    },
-                    enable_facebook: {
-                      values: [true, false]
-                    },
-                    enable_link: {
-                      values: [true, false]
-                    },
-                    enable_embed: {
-                      values: [true, false]
-                    },
-                    order: {},
-                    default_url: {},
-                    twitter_url: {},
-                    facebook_url: {},
-                    link_url: {},
-                    embed_url: {},
-                    embed_width: {},
-                    embed_height: {}
-                  },
-                  id: "sa.sh.sz"
-                },
                 "initial" => {
                   settings: {
                     overlay_enable: true,
@@ -130,6 +87,19 @@ describe Service::Settings do
                     }
                   },
                   id: "sa.sh.sv"
+                },
+                "embed" => {
+                  settings: {
+                    enable: true,
+                    size: nil
+                  },
+                  allowed_settings: {
+                    enable: {
+                      values: [true]
+                    },
+                    size: {}
+                  },
+                  id: ""
                 },
                 "controls" => {
                   settings: {
@@ -275,37 +245,15 @@ describe Service::Settings do
             "tg": {
             "ih":["#000"]}},
             "kn":"sa.sh.sv"},
-            "km": {
+            "embed": {
             "ko": {
-            "iv":false,"iw":true,"io":true,"ip":true,"iq":true,"ir":"twitter link facebook embed","is":null,"ts":null,"tt":null,"ik":null,"tu":null,"tv":null,"tz":null},
+            "iv":true,"size":null},
             "kp": {
             "iv": {
-            "ih":[true,false]},
-            "iw": {
-            "ih":[true,false]},
-            "io": {
-            "ih":[true,false]},
-            "ip": {
-            "ih":[true,false]},
-            "iq": {
-            "ih":[true,false]},
-            "ir": {
-            },
-            "is": {
-            },
-            "ts": {
-            },
-            "tt": {
-            },
-            "ik": {
-            },
-            "tu": {
-            },
-            "tv": {
-            },
-            "tz": {
+            "ih":[true]},
+            "size": {
             }},
-            "kn":"sa.sh.sz"}},
+            "kn":""}},
             "ko": {
             "te":true,"td":true,"tb":"screen","tc":"nothing"},
             "kp": {
