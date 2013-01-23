@@ -47,10 +47,13 @@ module Service
         end
         @sanitized_settings[addon_name][setting_key] = setting_value
 
-      when 'boolean', 'string'
+      when 'string'
         if value_is_allowed?(setting_value, addon_plan_setting_template[:values])
           @sanitized_settings[addon_name][setting_key] = setting_value
         end
+
+      when 'array'
+        @sanitized_settings[addon_name][setting_key] = keep_allowed_values(setting_value, addon_plan_setting_template[:values])
       end
     end
 
@@ -83,6 +86,10 @@ module Service
 
     def value_is_allowed?(value, allowed_values)
       allowed_values.include?(value)
+    end
+
+    def keep_allowed_values(values, allowed_values)
+      values & allowed_values
     end
 
   end

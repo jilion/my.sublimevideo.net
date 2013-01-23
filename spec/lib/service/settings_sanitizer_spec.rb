@@ -32,6 +32,11 @@ describe Service::SettingsSanitizer do
       },
       urlSetting: {
         type: 'url'
+      },
+      buttonsSetting: {
+        type: 'array',
+        values: ['twitter', 'facebook', 'pinterest', 'google+'],
+        default: ['twitter', 'facebook']
       }
     }
   }
@@ -42,14 +47,16 @@ describe Service::SettingsSanitizer do
         floatSetting: 0.8,
         stringSetting: 'foo',
         imageSetting: 'http://mydomain.com/image.png',
-        urlSetting: '//mydomain.com'
+        urlSetting: '//mydomain.com',
+        buttonsSetting: ['google+', 'pinterest']
       },
       addonName2: {
         booleanSetting: '3',
         floatSetting: 2,
         stringSetting: 'baz',
         imageSetting: 'mydomain.com/image.png',
-        urlSetting: 'mydomain.com'
+        urlSetting: 'mydomain.com',
+        buttonsSetting: ['google+', 'foo', 'pinterest', 'bar', 'twitter']
       }
     }
   }
@@ -70,13 +77,15 @@ describe Service::SettingsSanitizer do
           floatSetting: 0.8,
           stringSetting: 'foo',
           imageSetting: 'http://mydomain.com/image.png',
-          urlSetting: '//mydomain.com'
+          urlSetting: '//mydomain.com',
+          buttonsSetting: ['google+', 'pinterest']
         },
         'addonName2' => {
           booleanSetting: true,
           floatSetting: 0.45,
           imageSetting: 'http://mydomain.com/image.png',
-          urlSetting: 'http://mydomain.com'
+          urlSetting: 'http://mydomain.com',
+          buttonsSetting: ['google+', 'pinterest', 'twitter']
         }
       }
     end
