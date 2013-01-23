@@ -136,20 +136,10 @@ module Populate
           { name: 'social_sharing_classic',  token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-classic',  component: 'ref-App::Component-app' },
           { name: 'social_sharing_flat',     token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-flat',     component: 'ref-App::Component-app' },
           { name: 'social_sharing_light',    token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-light',    component: 'ref-App::Component-app' },
-          { name: 'social_sharing_twit',     token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-twit',     component: 'ref-App::Component-app' },
-          { name: 'social_sharing_html5',    token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-html5',    component: 'ref-App::Component-app' },
-          { name: 'social_sharing_next15',   token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-next15',   component: 'ref-App::Component-next15' },
-          { name: 'social_sharing_blizzard', token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-app' },
-          { name: 'social_sharing_sony',     token: '', addon: 'ref-Addon-social_sharing', design: 'ref-App::Design-sony',     component: 'ref-App::Component-app' },
 
           { name: 'embed_classic',  token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-classic',  component: 'ref-App::Component-app' },
           { name: 'embed_flat',     token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-flat',     component: 'ref-App::Component-app' },
           { name: 'embed_light',    token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-light',    component: 'ref-App::Component-app' },
-          { name: 'embed_twit',     token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-twit',     component: 'ref-App::Component-app' },
-          { name: 'embed_html5',    token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-html5',    component: 'ref-App::Component-app' },
-          { name: 'embed_next15',   token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-next15',   component: 'ref-App::Component-next15' },
-          { name: 'embed_blizzard', token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-blizzard', component: 'ref-App::Component-app' },
-          { name: 'embed_sony',     token: '', addon: 'ref-Addon-embed', design: 'ref-App::Design-sony',     component: 'ref-App::Component-app' },
 
           { name: 'info_sony',        token: 'tj.tj.aeb',    addon: 'ref-Addon-info', design: 'ref-App::Design-sony',     component: 'ref-App::Component-sony' },
 
@@ -367,8 +357,9 @@ module Populate
           default: 'default'
         },
         buttons: {
-          type: 'string',
-          default: 'facebook twitter'
+          type: 'array',
+          values: ['twitter', 'facebook', 'pinterest', 'google+'],
+          default: ['twitter', 'facebook']
         },
         text: {
           type: 'string'
@@ -385,11 +376,11 @@ module Populate
       embed_template = {
         enable: {
           type: 'boolean',
-          values: [true, false],
-          default: false
+          values: [true],
+          default: true
         },
         size: {
-          type: 'string'
+          type: 'size'
         },
         url: {
           type: 'url'
@@ -599,6 +590,14 @@ module Populate
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_next15',   template: sharing_template },
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_blizzard', template: sharing_template },
         { addon_plan: 'ref-AddonPlan-sharing-standard', plugin: 'ref-App::Plugin-sharing_sony',     template: sharing_template },
+
+        { addon_plan: 'ref-AddonPlan-social_sharing-standard', plugin: 'ref-App::Plugin-social_sharing_classic', template: social_sharing_template },
+        { addon_plan: 'ref-AddonPlan-social_sharing-standard', plugin: 'ref-App::Plugin-social_sharing_flat',    template: social_sharing_template },
+        { addon_plan: 'ref-AddonPlan-social_sharing-standard', plugin: 'ref-App::Plugin-social_sharing_light',   template: social_sharing_template },
+
+        { addon_plan: 'ref-AddonPlan-embed-standard', plugin: 'ref-App::Plugin-embed_classic', template: embed_template },
+        { addon_plan: 'ref-AddonPlan-embed-standard', plugin: 'ref-App::Plugin-embed_flat',    template: embed_template },
+        { addon_plan: 'ref-AddonPlan-embed-standard', plugin: 'ref-App::Plugin-embed_light',   template: embed_template },
 
         { addon_plan: 'ref-AddonPlan-preview_tools-standard', plugin: 'ref-App::Plugin-preview_tools_svnet', template: {} }, # no need to create an empty template
 

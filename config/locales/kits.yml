@@ -79,18 +79,22 @@ en:
           bottom-left: ''
           bottom-right: ''
 
-    sharing:
+    social_sharing:
       title: 'Sharing settings'
       settings:
-        enable_link: 'Share via Link button'
-        enable_twitter: 'Share via Twitter button'
-        enable_facebook: 'Share via Facebook button'
-        link_url: 'Twitter URL'
-        twitter_url: 'Twitter URL'
-        facebook_url: 'Facebook URL'
-        embed_url: 'Embed URL'
-        embed_width: 'Embed size'
-        embed_height: ''
+        enable: 'Enable sharing button'
+        icon: 'Choose icon'
+        url: 'Default sharing URL'
+        buttons: 'Social sharing button'
+        text: 'Twitter default sharing message'
+        twitter_via: 'Twitter via username'
+        link_enable: 'Show sharing URL'
+
+    embed:
+      title: 'Embed settings'
+      settings:
+        url: 'Default embed URL'
+        size: 'Default embed size'
 
     api:
       standard: 'SublimeVideo player basic JavaScript API'
