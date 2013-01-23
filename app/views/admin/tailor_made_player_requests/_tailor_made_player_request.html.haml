@@ -20,7 +20,7 @@
     %small= link_to simple_format(truncate(tailor_made_player_request.description, length: 250)), [:admin, tailor_made_player_request]
 
   %td.document
-    %small= display_bool(tailor_made_player_request.document.present?)
+    %small= display_bool(tailor_made_player_request.document?)
 
   %td.created_at
     %small= display_date(tailor_made_player_request.created_at)

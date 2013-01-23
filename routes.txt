@@ -197,10 +197,12 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                            pusher_webhook POST     /pusher/webhook(.:format)                                 pusher#webhook
                                      page GET      /:page                                                    pages#show
                                      root          /                                                         :controller#:action
-                             rails_routes GET      /rails/routes(.:format)                                   rails/routes#index
-                              rails_route GET      /rails/routes/:id(.:format)                               rails/routes#show
+                             rails_routes          /rails/routes(.:format)                                   sextant/routes#index
+                           sextant_engine          /sextant                                                  Sextant::Engine
                               jasminerice          /jasmine                                                  Jasminerice::Engine
                               maintenance GET      /maintenance(.:format)                                    maintenance#show
+
+Routes for Sextant::Engine:
 
 Routes for Jasminerice::Engine:
            GET /spec/:spec_id/fixtures/*filename(.:format) jasminerice/spec#fixtures
