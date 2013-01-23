@@ -92,7 +92,7 @@ feature 'Choose add-ons' do
     @site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-    @site.billable_items.addon_plans.where(item_id: @social_sharing_addon_plan_1).where(state: 'beta').should have(1).item
+    @site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
@@ -107,7 +107,7 @@ feature 'Choose add-ons' do
     @site.billable_item_activities.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-    @site.billable_item_activities.addon_plans.where(item_id: @social_sharing_addon_plan_1).where(state: 'beta').should have(1).item
+    @site.billable_item_activities.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
@@ -131,7 +131,7 @@ feature 'Choose add-ons' do
     @site.billable_items.addon_plans.where(item_id: @video_player_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-    @site.billable_items.addon_plans.where(item_id: @social_sharing_addon_plan_1).where(state: 'beta').should have(1).item
+    @site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
@@ -147,7 +147,7 @@ feature 'Choose add-ons' do
     @site.billable_item_activities.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-    @site.billable_item_activities.addon_plans.where(item_id: @social_sharing_addon_plan_1).where(state: 'beta').should have(1).item
+    @site.billable_item_activities.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
@@ -172,7 +172,7 @@ feature 'Choose add-ons' do
     @site.billable_items.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-    @site.billable_items.addon_plans.where(item_id: @social_sharing_addon_plan_1).where(state: 'beta').should have(1).item
+    @site.billable_items.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @stats_addon_plan_2).where(state: 'trial').should have(1).item
     @site.billable_items.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
@@ -187,7 +187,7 @@ feature 'Choose add-ons' do
     @site.billable_item_activities.addon_plans.where(item_id: @image_viewer_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @controls_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @initial_addon_plan_1).where(state: 'beta').should have(1).item
-    @site.billable_item_activities.addon_plans.where(item_id: @social_sharing_addon_plan_1).where(state: 'beta').should have(1).item
+    @site.billable_item_activities.addon_plans.where(item_id: @embed_addon_plan_1).where(state: 'beta').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @lightbox_addon_plan_1).where(state: 'subscribed').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @stats_addon_plan_1).where(state: 'subscribed').should have(1).item
     @site.billable_item_activities.addon_plans.where(item_id: @logo_addon_plan_1).where(state: 'subscribed').should have(1).item
