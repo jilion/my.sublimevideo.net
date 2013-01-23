@@ -1,0 +1,4 @@
+- if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
+  .controls
+    = presenter.render_master_input_field(setting_key: 'enable') do
+      = presenter.render_input_field(setting_key: 'visibility')

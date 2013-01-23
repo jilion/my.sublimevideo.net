@@ -1,65 +1,18 @@
 # coding: utf-8
 class KitExhibit < DisplayCase::Exhibit
+
   def self.applicable_to?(object)
     object.class.name == 'Kit'
   end
 
-  def label(template)
-    template.content_tag(:span, "#{self.name}") + " #{template.content_tag(:strong, "id: #{self.identifier}")}".html_safe
-  end
-
-  def render_name_as_link(template, site)
-    template.link_to template.edit_site_kit_path(site, self), class: 'name' do
-      label(template)
+  def render_name_as_link(view_template, site)
+    view_template.link_to view_template.edit_site_kit_path(site, self), class: 'name' do
+      label(view_template)
     end
   end
 
-  def render_settings_input_fields_for_addon(addon_name, template)
-    render_settings_input_fields(site.addon_plan_for_addon_name(addon_name), template)
-  end
-
-  def render_grouped_settings_input_fields(addon_plans, template)
-    first_inputs = render_settings_input_fields(addon_plans.shift, template, show_break: false)
-    last_inputs  = render_settings_input_fields(addon_plans.pop, template, show_title: false)
-    between_inputs = addon_plans.inject('') do |html, addon_plan|
-      html += render_settings_input_fields(addon_plan, template, show_title: false, show_break: false)
-      html
-    end.html_safe
-
-    first_inputs + between_inputs + last_inputs
-  end
-
-  def render_input_field(template, params = {})
-    params[:setting_template]  = params[:settings_template][params[:setting_key]]
-    params[:settings] = self.settings
-    params[:setting]  = self.settings[params[:addon].name][params[:setting_key]] rescue nil
-
-    if params[:setting_template].present?
-      if params[:partial]
-        template.render("kits/inputs/#{params[:partial]}", kit: self, params: params)
-      else
-        case params[:setting_template][:type]
-        when 'boolean'
-          if params[:setting_template][:values].many?
-            template.render('kits/inputs/check_box', kit: self, params: params)
-          end
-        when 'float'
-          template.render('kits/inputs/range', kit: self, params: params)
-        when 'string'
-          if params[:setting_template][:values].many?
-            template.render('kits/inputs/radios', kit: self, params: params)
-          end
-        when 'url'
-          template.render('kits/inputs/text', kit: self, params: params)
-        when 'image'
-          template.render('kits/inputs/image', kit: self, params: params)
-        when 'size'
-          if params[:setting_key] =~ /width\z/
-            template.render('kits/inputs/size', kit: self, params: params)
-          end
-        end || ''
-      end
-    end
+  def label(view_template)
+    view_template.content_tag(:span, "#{self.name}") + " #{view_template.content_tag(:strong, "id: #{self.identifier}")}".html_safe
   end
 
   def eql?(other)

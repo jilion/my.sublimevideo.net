@@ -1,8 +1,10 @@
-#basic_player_settings.expandable_settings_box
+#render_input_field_settings.expandable_settings_box
   %h4.expanding_handler
     = link_to "#{t('addons.video_player')} settings", ''
   .expandable
-    = render 'kits/form_boxes/basic_player_settings', site: site, kit: kit, design: design
+    = render 'kits/form_boxes/initial_settings', site: site, kit: kit, design: design
+    = render 'kits/form_boxes/controls_settings', site: site, kit: kit, design: design
+    = render 'kits/form_boxes/video_player_settings', site: site, kit: kit, design: design
 
 #lightbox_settings.expandable_settings_box
   %h4.expanding_handler
@@ -15,3 +17,15 @@
     = link_to "#{t('addons.logo')} settings", ''
   .expandable
     = render 'kits/form_boxes/logo_settings', site: site, kit: kit, design: design
+
+#social_sharing_settings.expandable_settings_box
+  %h4.expanding_handler
+    = link_to "#{t('addons.social_sharing')} settings", ''
+  .expandable
+    = render 'kits/form_boxes/social_sharing_settings', site: site, kit: kit, design: design
+
+#embed_settings.expandable_settings_box
+  %h4.expanding_handler
+    = link_to 'Embed settings', ''
+  .expandable
+    = render 'kits/form_boxes/embed_settings', site: site, kit: kit, design: design

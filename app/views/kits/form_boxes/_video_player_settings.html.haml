@@ -1,0 +1,6 @@
+- if kit.any_settings_for_design?(design, self)
+  .video_player
+    = kit.render_input_field(setting_key: :volume_enable)
+    = kit.render_input_field(setting_key: :fullmode_enable, data: { master: 'fullmode-enable' })
+    .indent= kit.render_input_field(setting_key: :fullmode_priority, data: { dependant: 'fullmode-enable' })
+    = kit.render_input_field(setting_key: :on_end, show_title: true)

@@ -1,15 +1,12 @@
-- addon_plan = site.addon_plan_for_addon_name('lightbox')
-- if settings_template = addon_plan.settings_template_for(design)
-  - settings_template = settings_template.template
+- if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
   .lightbox
-    = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :on_open, show_title: true)
-    = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :overlay_opacity)
+    = presenter.render_input_field(setting_key: 'on_open', show_title: true)
+    = presenter.render_input_field(setting_key: 'overlay_opacity')
 
-    - if settings_template.key?(:close_button_enable)
-      = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_enable, data: { master: 'lightbox-close_button_enable' })
-      .indent
-        = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_visibility, data: { dependant: 'lightbox-close_button_enable' }, show_title: true)
-        = kit.render_input_field(self, addon: addon_plan.addon, settings_template: settings_template, setting_key: :close_button_position, data: { dependant: 'lightbox-close_button_enable' }, show_title: true)
+    - if presenter.settings_template_has_key?('close_button_enable')
+      = presenter.render_master_input_field(setting_key: 'close_button_enable') do
+        = presenter.render_input_field(setting_key: 'close_button_visibility', show_title: true)
+        = presenter.render_input_field(setting_key: 'close_button_position', show_title: true)
 
     .actions.center{style: "padding-bottom: 20px"}
       %a#lightbox-trigger.blue_button.sublime{ href: '#lightbox' } Test the lightbox

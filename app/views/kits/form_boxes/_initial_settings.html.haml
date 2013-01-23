@@ -1,0 +1,4 @@
+- if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
+  .initial
+    = presenter.render_master_input_field(setting_key: 'overlay_enable') do
+      = presenter.render_input_field(setting_key: 'overlay_visibility')

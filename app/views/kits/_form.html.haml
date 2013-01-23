@@ -16,23 +16,4 @@
     = f.label :app_design_id, 'Player design:'
     = f.select :app_design_id, app_designs_for_select(site, kit), {}, data: { addon: 'player', setting: 'kit' }
 
-  #player_settings
-    = render 'kits/player_settings', site: site, kit: kit, design: design
-
-  -##sharing_settings.expandable_settings_box
-  -#  %h4.expanding_handler
-  -#    = link_to "#{t('addons.sharing')} settings", '', class: 'hl'
-  -#  .left.expandable
-  -#    = render 'kits/form_boxes/sharing_settings', site: site, kit: kit
-
-  -##youtube_settings.expandable_settings_box
-  -#  %h4.expanding_handler
-  -#    = link_to 'YouTube settings', '', class: 'hl'
-  -#  .left.expandable
-  -#    = render 'kits/form_boxes/youtube_settings', site: site, kit: kit
-
-  -##embed_settings.expandable_settings_box
-  -#  %h4.expanding_handler
-  -#    = link_to 'Embed settings', '', class: 'hl'
-  -#  .left.expandable
-  -#    = render 'kits/form_boxes/embed_settings', site: site, kit: kit
+  #player_settings= render 'kits/player_settings', site: site, kit: kit, design: design
