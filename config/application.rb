@@ -39,7 +39,11 @@ module MySublimeVideo
     # Duplicated from svl engine because not loader when initialize_on_precompile is false
     config.assets.precompile += %w[errors.css ie.css]
 
-    config.assets.enabled = true
+     # Enable the asset pipeline
+     config.assets.enabled = true
+
+     # Version of your assets, change this if you want to expire all your assets
+     config.assets.version = '1.0'
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
