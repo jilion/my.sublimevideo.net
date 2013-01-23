@@ -55,11 +55,13 @@ module Stats
         end
       end
 
+      private
+
       def determine_last_stat_day
         if TailorMadePlayerRequestsStat.present?
           TailorMadePlayerRequestsStat.order_by(d: 1).last.try(:d)
         else
-          (TailorMadePlayerRequest.by_date('asc').first.created_at).midnight - 1.day
+          (TailorMadePlayerRequest.all(by_date: 'asc').first.created_at).midnight - 1.day
         end
       end
 
@@ -68,14 +70,13 @@ module Stats
       end
 
       def tailor_made_player_requests_hash(day)
-        tailor_made_player_requests = TailorMadePlayerRequest.where { created_at <= day.end_of_day }.all
         hash = {
           d: day.to_time,
           n: Hash.new(0)
         }
 
-        tailor_made_player_requests.each do |tailor_made_player_request|
-          hash[:n][tailor_made_player_request.topic] += 1
+        TailorMadePlayerRequest.topics.each do |topic|
+          hash[:n][topic] = TailorMadePlayerRequest.count(with_topic: topic, created_before: day.end_of_day)
         end
 
         hash

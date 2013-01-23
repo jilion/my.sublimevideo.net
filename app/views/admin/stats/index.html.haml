@@ -308,6 +308,6 @@
             %li
               %a.title.selector{ href: "?tailor_made_player_requests.all", data: { value: 'tailor_made_player_requests.all' } } All
               %ul
-                - TailorMadePlayerRequest::TOPICS.each do |topic|
+                - TailorMadePlayerRequest.topics.each do |topic|
                   %li
                     %a.selector{ href: "?tailor_made_player_requests.n.#{topic}", data: { value: "tailor_made_player_requests.n.#{topic}" } }= topic.titleize
