@@ -1,0 +1,20 @@
+on_open:
+  type: string
+  values:
+    - nothing
+    - play
+  default: play
+
+overlay_color:
+  type: color
+  values:
+    - '#000'
+  default: '#000'
+
+overlay_opacity:
+  type: float
+  range:
+    - 0.1
+    - 1
+  step: 0.1
+  default: 0.7

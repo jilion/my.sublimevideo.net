@@ -1,0 +1,11 @@
+enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: false
+
+anticipate:
+  type: float
+  values: nil
+  default: 1

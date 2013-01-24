@@ -8,7 +8,6 @@ class MySublimeVideo.UI.KitEditor
     this.setupModels()
     this.setupHelpers()
     this.setupInputsObservers()
-
     this.refreshVideoTagFromSettings()
 
   setupModels: ->
@@ -22,25 +21,37 @@ class MySublimeVideo.UI.KitEditor
 
   setupInputsObservers: ->
     $designSelector = $("select#kit_app_design_id")
+
     $designSelector.one 'change', =>
-      this.refreshVideoTagFromSettings()
+      expandParam = ''
+      if ($handler = $('h4.expanding_handler.expanded')).exists()
+        expandParam = "&expand=#{$handler.attr('id')}"
+
       $.ajax(
-        url: "#{document.location.pathname.replace(/new|edit/, 'fields')}?design_id=#{$designSelector.val()}"
+        url: "#{document.location.pathname.replace(/new|edit/, 'fields')}?design_id=#{$designSelector.val()}#{expandParam}"
       ).done (data) =>
         MySublimeVideo.prepareVideosAndLightboxes()
         this.setup()
       false
 
+    this.setupAllInputsObserver()
+    this.setupRangeInputsObserver()
+    this.setupLogoTypeInputObserver()
+    this.setupLogoUrlInputObserver()
+
+  setupAllInputsObserver: ->
     $("input[type=checkbox], input[type=radio], input[type=range], input[type=text], input[type=hidden]").each (index, el) =>
       $(el).on 'change', =>
         this.refreshVideoTagFromSettings()
         false
 
+  setupRangeInputsObserver: ->
     $('input[type=range]').each (index, el) =>
       $el = $(el)
       $el.on 'change', =>
         this.updateValueDisplayer($el)
 
+  setupLogoTypeInputObserver: ->
     $('input[name="kit[addons][logo][type]"]').on 'change', (e) =>
       $el = $(e.target)
       if $el.val() is 'custom'
@@ -50,6 +61,7 @@ class MySublimeVideo.UI.KitEditor
         $('.custom_logo_fields').hide()
         $('.standard_logo_fields').show()
 
+  setupLogoUrlInputObserver: ->
     $('#kit_setting-logo-image_url').on 'change', (e) =>
       this.refreshVideoTagFromSettings()
 

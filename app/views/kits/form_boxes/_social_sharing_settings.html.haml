@@ -1,8 +1,11 @@
 - if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
-  .social_sharing
-    = presenter.render_master_input_field(setting_key: 'enable') do
-      = presenter.render_input_field(setting_key: 'icon', show_title: true)
-      = presenter.render_input_field(setting_key: 'url')
-      = presenter.render_input_field(setting_key: 'buttons')
-      = presenter.render_input_field(setting_key: 'text')
-      = presenter.render_input_field(setting_key: 'link_enable')
+  #social_sharing_settings.expandable_settings_box
+    - kit_settings_expanding_handler('social_sharing') do
+      = link_to "#{t('addons.social_sharing')} settings", ''
+    - kit_settings_expendable_block('social_sharing') do
+      = presenter.render_master_input_field(setting_key: 'enable') do
+        = presenter.render_input_field(setting_key: 'icon', show_title: true)
+        = presenter.render_input_field(setting_key: 'url')
+        = presenter.render_input_field(setting_key: 'buttons')
+        = presenter.render_input_field(setting_key: 'text')
+        = presenter.render_input_field(setting_key: 'link_enable')

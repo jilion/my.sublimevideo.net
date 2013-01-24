@@ -7,8 +7,8 @@ class MySublimeVideo.UI.ExpandableItem
   toggleExpandableBox: ($el) ->
     toggle = !$el.hasClass('expanded')
     $('.expanding_handler.expanded').removeClass('expanded')
-    $('.expandable').hide()
+    $('.expandable.expanded').removeClass('expanded')
 
     if toggle
       $el.toggleClass('expanded')
-      $el.siblings('.expandable').toggle()
+      $el.siblings('.expandable').toggleClass('expanded')

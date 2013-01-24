@@ -1,0 +1,32 @@
+enable:
+  type: boolean
+  values:
+    - true
+  default: true
+
+type:
+  type: string
+  values:
+    - sv
+  default: sv
+
+visibility:
+  type: string
+  values:
+    - autohide
+    - visible
+  default: autohide
+
+position:
+  type: string
+  values:
+    - bottom-right
+  default: bottom-right
+
+image_url:
+  type: image
+  default: ''
+
+link_url:
+  type: url
+

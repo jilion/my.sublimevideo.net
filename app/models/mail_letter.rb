@@ -25,10 +25,6 @@ class MailLetter
     users = case @criteria
     when 'dev'
       User.where(email: DEV_TEAM_EMAILS)
-    # when 'trial'
-    #   User.includes(:sites).merge(Site.in_trial).where{ sites.trial_started_at == nil }
-    # when 'old_trial'
-      # User.includes(:sites).merge(Site.in_trial).where{ sites.trial_started_at != nil }
     when 'voxcast_users'
       User.includes(:sites).where(sites: { id: SiteUsage.site_ids_with_loader_hits })
     else

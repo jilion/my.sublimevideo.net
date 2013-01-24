@@ -1,0 +1,28 @@
+volume_enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true
+
+fullmode_enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true
+
+fullmode_priority:
+  type: string
+  values:
+    - screen
+    - window
+  default: screen
+
+on_end:
+  type: string
+  values:
+    - nothing
+    - replay
+    - stop
+  default: nothing

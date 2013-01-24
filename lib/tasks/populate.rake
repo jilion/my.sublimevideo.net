@@ -4,103 +4,29 @@ require_dependency 'populate'
 namespace :db do
 
   desc "Load all development fixtures."
-  task populate: ['populate:empty_all_tables', 'populate:all']
+  task populate: ['populate:clear', 'populate:all']
 
   namespace :populate do
     desc "Empty all the tables"
-    task empty_all_tables: :environment do
+    task clear: :environment do
       Rails.cache.clear
       Sidekiq.redis { |con| con.flushall }
-      timed { Populate.empty_tables("invoices_transactions", DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
+      timed { Populate.empty_tables('invoices_transactions', DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
-    desc "Load all development fixtures."
-    task all: :environment do
-      Populate.delete_all_files_in_public('uploads/releases', 'uploads/s3', 'uploads/tmp', 'uploads/voxcast')
+    desc "Load all development fixtures. e.g.: rake 'db:populate:all[remy]'"
+    task :all, [:login] => [:environment] do |t, args|
+      Populate.delete_all_files_in_public('uploads')
       timed { Populate.plans }
       timed { Populate.addons }
       timed { Populate.admins }
-      timed { Populate.users(argv('user')) }
+      timed { Populate.users(args.login) }
       timed { Populate.sites }
       timed { Populate.invoices }
-      timed { Populate.site_usages }
-      timed { Populate.site_stats }
-      timed { Populate.users_stats }
-      timed { Populate.sites_stats }
-      timed { Populate.sales_stats }
-      timed { Populate.billable_items_stats }
+      timed { Populate.stats }
+      timed { Populate.trends }
       # timed { Populate.deals }
       timed { Populate.mail_templates }
-      # timed { Populate.player_components }
-    end
-
-    desc "Load Admin development fixtures."
-    task admins: :environment do
-      timed { Populate.admins }
-    end
-
-    desc "Load Enthusiast development fixtures."
-    task enthusiasts: :environment do
-      timed { Populate.enthusiasts(argv('user')) }
-    end
-
-    desc "Load User development fixtures."
-    task users: :environment do
-      timed { Populate.users(argv('user')) }
-    end
-
-    desc "Load Site development fixtures."
-    task sites: :environment do
-      timed { Populate.sites }
-    end
-
-    desc "Load Site development fixtures."
-    task invoices: :environment do
-      timed { Populate.invoices(argv('user')) }
-    end
-
-    desc "Load Deals development fixtures."
-    task deals: :environment do
-      timed { Populate.deals }
-    end
-
-    desc "Load Mail templates development fixtures."
-    task mail_templates: :environment do
-      timed { Populate.mail_templates }
-    end
-
-    desc "Create fake usages"
-    task site_usages: :environment do
-      timed { Populate.site_usages }
-    end
-
-    desc "Create fake site stats"
-    task site_stats: :environment do
-      timed { Populate.site_stats(argv('user')) }
-    end
-
-    desc "Create fake site stats"
-    task recurring_site_stats: :environment do
-      timed { Populate.site_stats(argv('user')) }
-      timed { Populate.recurring_site_stats_update(argv('user')) }
-    end
-
-    desc "Create fake site & video stats"
-    task all_stats: :environment do
-      timed { Populate.all_stats(argv('site')) }
-    end
-
-    desc "Create recurring fake site & video stats"
-    task recurring_stats: :environment do
-      timed { Populate.recurring_stats_update(argv('site')) }
-    end
-
-    desc "Create fake users & sites stats for the admin dashboard"
-    task admin_stats: :environment do
-      timed { Populate.users_stats }
-      timed { Populate.sites_stats }
-      timed { Populate.sales_stats }
-      timed { Populate.billable_items_stats }
     end
 
     desc "Create fake plans"
@@ -113,19 +39,69 @@ namespace :db do
       timed { Populate.addons }
     end
 
-    # desc "Create fake player components"
-    # task player_components: :environment do
-    #   timed { Populate.player_components }
-    # end
-
-    desc "Create fake video_tags"
-    task video_tags: :environment do
-      timed { Populate.video_tags(argv('site')) }
+    desc "Load Admin development fixtures."
+    task admins: :environment do
+      timed { Populate.admins }
     end
 
-    desc "Send emails (via letter_opener)"
-    task emails: :environment do
-      timed { Populate.send_all_emails(argv('user')) }
+    desc "Load Enthusiast development fixtures."
+    task enthusiasts: :environment do
+      timed { Populate.enthusiasts }
+    end
+
+    desc "Load User development fixtures. e.g.: rake 'db:populate:users[remy]'"
+    task :users, [:login] => [:environment] do |t, args|
+      timed { Populate.users(args.login) }
+    end
+
+    desc "Load Site development fixtures."
+    task sites: :environment do
+      timed { Populate.sites }
+    end
+
+    desc "Load Site development fixtures."
+    task invoices: :environment do
+      timed { Populate.invoices }
+    end
+
+    desc "Create fake usages"
+    task site_usages: :environment do
+      timed { Populate.site_usages }
+    end
+
+    desc "Create fake site stats. e.g.: rake 'db:populate:stats[remy]'"
+    task :stats, [:login] => [:environment] do |t, args|
+      timed { Populate.stats(args.login) }
+    end
+
+    desc "Create recurring fake site & video stats. e.g.: rake 'db:populate:recurring_stats[abcd1234]'"
+    task :recurring_stats, [:token] => [:environment] do |t, args|
+      timed { Populate.recurring_stats(args.token) }
+    end
+
+    desc "Create fake users & sites stats for the admin dashboard"
+    task trends: :environment do
+      timed { Populate.trends }
+    end
+
+    desc "Load Deals development fixtures."
+    task deals: :environment do
+      timed { Populate.deals }
+    end
+
+    desc "Load Mail templates development fixtures."
+    task mail_templates: :environment do
+      timed { Populate.mail_templates }
+    end
+
+    desc "Create fake video_tags. e.g.: rake 'db:populate:video_tags[abcd1234]'"
+    task :video_tags, [:login] => [:environment] do |t, args|
+      timed { Populate.video_tags(args.login) }
+    end
+
+    desc "Send emails (via letter_opener). e.g.: rake 'db:populate:emails[remy]'"
+    task :emails, [:login] => [:environment] do |t, args|
+      timed { Populate.send_all_emails(args.login) }
     end
 
     desc "Import MongoDB production databases locally (not the other way around don't worry!)"
@@ -208,6 +184,6 @@ def argv(var_name, default = nil)
   if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
     var.sub($1, '')
   else
-    default
+    ARGV.try(:[], 1)
   end
 end

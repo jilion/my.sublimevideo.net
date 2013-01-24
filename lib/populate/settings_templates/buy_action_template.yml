@@ -1,0 +1,6 @@
+enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: false

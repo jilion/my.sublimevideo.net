@@ -1,0 +1,19 @@
+overlay_enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true
+
+overlay_visibility:
+  type: string
+  values:
+    - autofade
+    - visible
+  default: autofade
+
+overlay_color:
+  type: color
+  values:
+    - '#000'
+  default: '#000'

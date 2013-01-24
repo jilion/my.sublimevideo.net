@@ -18,6 +18,22 @@ module KitsHelper
     options_for_select(items, kit.app_design_id)
   end
 
+  def kit_settings_expanding_handler(name)
+    id = "#{name}_handler"
+    classes = ['expanding_handler']
+    classes << 'expanded' if params[:expand] == id
+
+    haml_tag("h4##{id}.#{classes.join('.')}", capture_haml { yield })
+  end
+
+  def kit_settings_expendable_block(name)
+    handler_id = "#{name}_handler"
+    classes = ['expandable']
+    classes << 'expanded' if params[:expand] == handler_id
+
+    haml_tag("div.#{classes.join('.')}", capture_haml { yield })
+  end
+
   def kits_for_select(site)
     items = site.kits.order(:identifier).inject([]) do |memo, kit|
       kit = exhibit(kit)
