@@ -8,6 +8,7 @@ class MySublimeVideo.UI.KitEditor
     this.setupModels()
     this.setupHelpers()
     this.setupInputsObservers()
+    this.setupSocialSharingButtonsSelector()
     this.refreshVideoTagFromSettings()
 
   setupModels: ->
@@ -35,7 +36,9 @@ class MySublimeVideo.UI.KitEditor
       false
 
     this.setupAllInputsObserver()
+
     this.setupRangeInputsObserver()
+
     this.setupLogoTypeInputObserver()
     this.setupLogoUrlInputObserver()
 
@@ -65,7 +68,17 @@ class MySublimeVideo.UI.KitEditor
     $('#kit_setting-logo-image_url').on 'change', (e) =>
       this.refreshVideoTagFromSettings()
 
+  setupSocialSharingButtonsSelector: ->
+    socialSharingButtonsInputFieldId = 'kit_setting-social_sharing-buttons'
+    $('#social_sharing_active_buttons, #social_sharing_inactive_buttons').disableSelection().sortable
+      connectWith: '.connectedSortable'
+      stop: (event, ui) =>
+        buttons = $('#social_sharing_active_buttons').sortable('toArray', { attribute: 'data-value' }).join(',')
+        $("##{socialSharingButtonsInputFieldId}").val(buttons)
+        this.refreshVideoTagFromSettings()
+
   refreshVideoTagFromSettings: ->
+    console.log @videoTagHelpers['standard'].generateDataSettings()
     sublime.reprepareVideo 'standard', @videoTagHelpers['standard'].generateDataSettings()
 
     if lightbox = sublime.lightbox('lightbox-trigger')

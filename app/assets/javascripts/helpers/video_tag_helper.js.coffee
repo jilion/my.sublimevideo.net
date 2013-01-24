@@ -67,7 +67,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
         "data-settings=\"#{content}\""
 
   generateDataSettings: (addons, options = {}) ->
-    addons = ['player', 'video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'] if _.isEmpty(addons)
+    addons = ['player', 'video_player', 'controls', 'initial', 'social_sharing', 'embed', 'logo'] if _.isEmpty(addons)
 
     @dataSettings = {}
     if @options['settings']?

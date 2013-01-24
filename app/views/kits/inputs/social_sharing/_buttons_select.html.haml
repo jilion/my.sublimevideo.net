@@ -1,0 +1,21 @@
+- default_buttons = params[:settings_template][:buttons][:item][:default]
+- current_buttons = params[:settings].try(:[], 'social_sharing').try(:[], :buttons) || default_buttons
+- id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
+- value = current_buttons.join(',')
+
+%h5= t("kit.#{params[:addon].name}.settings.#{params[:translation_key] || params[:setting_key]}")
+
+.sort
+  %ul#social_sharing_active_buttons.connectedSortable
+    - current_buttons.each do |button|
+      %li{ data: { value: button } }= button.titleize
+
+  %div.spacer
+
+  %ul#social_sharing_inactive_buttons.connectedSortable
+    - (default_buttons - current_buttons).each do |button|
+      %li{ data: { value: button } }= button.titleize
+
+= hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: value)
+
+%div.spacer

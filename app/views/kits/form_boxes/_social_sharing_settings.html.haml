@@ -6,6 +6,6 @@
       = presenter.render_master_input_field(setting_key: 'enable') do
         = presenter.render_input_field(setting_key: 'icon', show_title: true)
         = presenter.render_input_field(setting_key: 'url')
-        = presenter.render_input_field(setting_key: 'buttons')
+        = presenter.render_input_field(setting_key: 'buttons', partial: 'social_sharing/buttons_select')
         = presenter.render_input_field(setting_key: 'text')
         = presenter.render_input_field(setting_key: 'link_enable')

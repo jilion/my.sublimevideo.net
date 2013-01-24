@@ -2,8 +2,7 @@ enable:
   type: boolean
   values:
     - true
-    - false
-  default: false
+  default: true
 
 url:
   type: url
@@ -24,11 +23,11 @@ buttons:
       - facebook
       - pinterest
       - google+
-  default:
-    - twitter
-    - facebook
-    - pinterest
-    - google+
+    default:
+      - twitter
+      - facebook
+      - pinterest
+      - google+
 
 text:
   type: string

@@ -5,6 +5,8 @@ class SettingsTemplatePopulator < Populator
 
   SETTINGS_TEMPLATES_DIR = Rails.root.join('lib/populate/settings_templates')
 
+  attr_reader :attributes
+
   def initialize(attributes)
     @attributes = attributes
     set_template
@@ -27,11 +29,7 @@ class SettingsTemplatePopulator < Populator
   end
 
   def to_s
-    if @settings_template_record
-      @settings_template_record.to_s
-    else
-      @attributes.inspect
-    end
+    @attributes.inspect
   end
 
   private

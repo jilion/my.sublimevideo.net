@@ -35,8 +35,11 @@ describe Service::SettingsSanitizer do
       },
       buttonsSetting: {
         type: 'array',
-        values: ['twitter', 'facebook', 'pinterest', 'google+'],
-        default: ['twitter', 'facebook']
+        item: {
+          type: 'string',
+          values: %w[twitter facebook pinterest google+]
+        },
+        default: %w[twitter facebook pinterest google+]
       }
     }
   }
@@ -56,7 +59,7 @@ describe Service::SettingsSanitizer do
         stringSetting: 'baz',
         imageSetting: 'mydomain.com/image.png',
         urlSetting: 'mydomain.com',
-        buttonsSetting: ['google+', 'foo', 'pinterest', 'bar', 'twitter']
+        buttonsSetting: 'google+ ,foo , pinterest, bar,twitter'
       }
     }
   }

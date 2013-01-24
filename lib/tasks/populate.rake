@@ -16,14 +16,13 @@ namespace :db do
 
     desc "Load all development fixtures. e.g.: rake 'db:populate:all[remy]'"
     task :all, [:login] => [:environment] do |t, args|
-      Populate.delete_all_files_in_public('uploads')
       timed { Populate.plans }
       timed { Populate.addons }
       timed { Populate.admins }
       timed { Populate.users(args.login) }
       timed { Populate.sites }
       timed { Populate.invoices }
-      timed { Populate.stats }
+      timed { Populate.stats(args.login) }
       timed { Populate.trends }
       # timed { Populate.deals }
       timed { Populate.mail_templates }

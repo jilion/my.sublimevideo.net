@@ -53,7 +53,7 @@ module Service
         end
 
       when 'array'
-        @sanitized_settings[addon_name][setting_key] = keep_allowed_values(setting_value, addon_plan_setting_template[:values])
+        @sanitized_settings[addon_name][setting_key] = keep_allowed_values(setting_value, addon_plan_setting_template[:item][:values])
       end
     end
 
@@ -89,7 +89,12 @@ module Service
     end
 
     def keep_allowed_values(values, allowed_values)
+      values = string_to_array(values) if values.is_a?(String)
       values & allowed_values
+    end
+
+    def string_to_array(string)
+      string.split(/\s*,\s*/)
     end
 
   end

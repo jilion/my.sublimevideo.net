@@ -3,5 +3,6 @@ enable:
   values:
     - true
   default: true
+
 size:
   type: size
