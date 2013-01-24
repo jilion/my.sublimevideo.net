@@ -1,0 +1,44 @@
+enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: false
+
+url:
+  type: url
+
+icon:
+  type: string
+  values:
+    - default
+    - alt
+  default: default
+
+buttons:
+  type: array
+  item:
+    type: 'string'
+    values:
+      - twitter
+      - facebook
+      - pinterest
+      - google+
+  default:
+    - twitter
+    - facebook
+    - pinterest
+    - google+
+
+text:
+  type: string
+
+twitter_via:
+  type: string
+
+link_enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true

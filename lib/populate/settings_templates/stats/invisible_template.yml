@@ -1,0 +1,12 @@
+enable:
+  type: boolean
+  values:
+    - true
+  default: true
+
+realtime:
+  type: boolean
+  values:
+    - false
+  default: false
+

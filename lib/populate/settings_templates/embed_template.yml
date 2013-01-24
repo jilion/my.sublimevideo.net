@@ -1,0 +1,7 @@
+enable:
+  type: boolean
+  values:
+    - true
+  default: true
+size:
+  type: size

@@ -1,0 +1,59 @@
+enable:
+  type: boolean
+  values:
+    - true
+    - false
+  default: false
+
+enable_twitter:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true
+
+enable_facebook:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true
+
+enable_link:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true
+
+enable_embed:
+  type: boolean
+  values:
+    - true
+    - false
+  default: true
+
+order:
+  type: string
+  default: twitter link facebook embed
+
+default_url:
+  type: url
+
+twitter_url:
+  type: url
+
+facebook_url:
+  type: url
+
+link_url:
+  type: url
+
+embed_url:
+  type: url
+
+embed_width:
+  type: size
+
+embed_height:
+  type: size
