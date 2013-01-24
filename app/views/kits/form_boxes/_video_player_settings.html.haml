@@ -1,6 +1,5 @@
 - if presenter = KitSettingPresenter.init(kit: kit, design: design, view: self)
-  .video_player
-    = presenter.render_input_field(setting_key: :volume_enable)
-    = presenter.render_master_input_field(setting_key: 'fullmode_enable') do
-      = presenter.render_input_field(setting_key: 'fullmode_priority')
-    = presenter.render_input_field(setting_key: 'on_end', show_title: true)
+  = presenter.render_input_field(setting_key: :volume_enable)
+  = presenter.render_master_input_field(setting_key: 'fullmode_enable') do
+    = presenter.render_input_field(setting_key: 'fullmode_priority')
+  = presenter.render_input_field(setting_key: 'on_end', show_title: true)
