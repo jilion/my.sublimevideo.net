@@ -1,31 +1,31 @@
-#render_input_field_settings.expandable_settings_box
-  %h4.expanding_handler
+#basic_player_settings.expandable_settings_box
+  - kit_settings_expanding_handler('basic_player') do
     = link_to "#{t('addons.video_player')} settings", ''
-  .expandable
+  - kit_settings_expendable_block('basic_player') do
     = render 'kits/form_boxes/initial_settings', site: site, kit: kit, design: design
     = render 'kits/form_boxes/controls_settings', site: site, kit: kit, design: design
     = render 'kits/form_boxes/video_player_settings', site: site, kit: kit, design: design
 
 #lightbox_settings.expandable_settings_box
-  %h4.expanding_handler
+  - kit_settings_expanding_handler('lightbox') do
     = link_to "#{t('addons.lightbox')} settings", ''
-  .expandable
+  - kit_settings_expendable_block('lightbox') do
     = render 'kits/form_boxes/lightbox_settings', site: site, kit: kit, design: design
 
 #logo_settings.expandable_settings_box
-  %h4.expanding_handler
+  - kit_settings_expanding_handler('logo') do
     = link_to "#{t('addons.logo')} settings", ''
-  .expandable
+  - kit_settings_expendable_block('logo') do
     = render 'kits/form_boxes/logo_settings', site: site, kit: kit, design: design
 
 #social_sharing_settings.expandable_settings_box
-  %h4.expanding_handler
+  - kit_settings_expanding_handler('social_sharing') do
     = link_to "#{t('addons.social_sharing')} settings", ''
-  .expandable
+  - kit_settings_expendable_block('social_sharing') do
     = render 'kits/form_boxes/social_sharing_settings', site: site, kit: kit, design: design
 
 #embed_settings.expandable_settings_box
-  %h4.expanding_handler
+  - kit_settings_expanding_handler('embed') do
     = link_to 'Embed settings', ''
-  .expandable
+  - kit_settings_expendable_block('embed') do
     = render 'kits/form_boxes/embed_settings', site: site, kit: kit, design: design
