@@ -104,7 +104,7 @@ describe Service::Settings do
             },
             allowed_settings: {
               enable: {
-                values: [true]
+                values: [true, false]
               },
               size: {}
             },
@@ -286,7 +286,7 @@ describe Service::Settings do
             "iv":true,"tx":null},
             "kp": {
             "iv": {
-            "ih":[true]},
+            "ih":[true,false]},
             "tx": {
             }},
             "kn":"sa.sh.ub"}},

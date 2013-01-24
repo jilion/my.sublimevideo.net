@@ -19,6 +19,8 @@
             .checkbox_wrap
               - if free_addon_plan_id = addon.free_plan.try(:id)
                 = hidden_field_tag "addon_plans[#{addon.name}]", free_addon_plan_id, id: "addon_plans_#{addon.name}_#{free_addon_plan_id}"
+              - else
+                = hidden_field_tag "addon_plans[#{addon.name}]", '0', id: "addon_plans_#{addon.name}_#{free_addon_plan_id}"
               = check_box_tag "addon_plans[#{addon.name}]", addon_plan.id, site.addon_plans.include?(addon_plan), id: "addon_plans_#{addon.name}_#{addon_plan.id}", data: { price: price }
               = label_tag "addon_plans[#{addon.name}]", addon_label_content(addon_plan)
       %td.trial_notice

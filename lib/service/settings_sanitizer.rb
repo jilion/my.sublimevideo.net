@@ -94,7 +94,7 @@ module Service
     end
 
     def string_to_array(string)
-      string.split(/\s*,\s*/)
+      string.split(/\s+/)
     end
 
   end
