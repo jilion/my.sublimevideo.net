@@ -74,7 +74,7 @@ module Admin::SitesHelper
     app_designs = App::Design.all
 
     items = []
-    app_designs.each do |app_design|
+    app_designs.order(:price).each do |app_design|
       title = if billable_item = site.billable_items.app_designs.where(item_id: app_design.id).first
         "#{app_design.title} (#{billable_item.state})"
       else
@@ -92,7 +92,7 @@ module Admin::SitesHelper
 
     addons.each do |addon|
       group_items = []
-      addon.plans.includes(:addon).each do |addon_plan|
+      addon.plans.includes(:addon).order(:price).each do |addon_plan|
         title = if billable_item = site.billable_items.addon_plans.where(item_id: addon_plan.id).first
           "#{addon_plan.title} (#{billable_item.state})"
         else
