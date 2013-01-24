@@ -10,10 +10,12 @@ describe Service::Trial do
   let(:app_design_paid1) { create(:app_design, price: 995) }
   let(:app_design_paid2) { create(:app_design, price: 995) }
   let(:addon)            { create(:addon) }
+  let(:addon2)            { create(:addon) }
   let(:addon_plan_paid1) { create(:addon_plan, addon: addon, price: 995) }
+  let(:addon_plan_paid2) { create(:addon_plan, addon: addon2, price: 1995) }
   let(:service) { stub }
   before do
-    @app_design_free = create(:addon_plan, addon: addon, price: 0)
+    @free_addon_plan = create(:addon_plan, addon: addon, price: 0)
   end
 
   describe '.send_trial_will_expire_email' do
@@ -68,28 +70,46 @@ describe Service::Trial do
       Timecop.travel(31.days.ago) do
         create(:billable_item, site: site1, item: app_design_paid2, state: 'trial')
         create(:billable_item, site: site1, item: addon_plan_paid1, state: 'trial')
+        create(:billable_item, site: site1, item: addon_plan_paid2, state: 'trial')
       end
       site1.out_of_trial?(app_design_paid1).should be_false
       site1.out_of_trial?(app_design_paid2).should be_true
       site1.out_of_trial?(addon_plan_paid1).should be_true
-      site1.billable_items.should have(3).items
+      site1.out_of_trial?(addon_plan_paid2).should be_true
+      site1.billable_items.should have(4).items
     end
 
     context 'user has a cc' do
       it 'delegates to Service::Site#update_billable_items with the app designs and addon plans IDs' do
         described_class.activate_billable_items_out_of_trial_for_site!(site1.id)
 
-        site1.reload.billable_items.should have(3).items
-        site1.billable_items.app_designs.where(item_id: app_design_paid1).where(state: 'trial').should have(1).item
-        site1.billable_items.app_designs.where(item_id: app_design_paid2).where(state: 'subscribed').should have(1).item
-        site1.billable_items.addon_plans.where(item_id: addon_plan_paid1).where(state: 'subscribed').should have(1).item
+        design_billable_items = site1.billable_items.app_designs
+        addon_billable_items  = site1.billable_items.addon_plans
 
-        site1.billable_item_activities.should have(5).items
+        site1.reload.billable_items.should have(4).items
+        design_billable_items.where(item_id: app_design_paid1).where(state: 'trial').should have(1).item
+
+        design_billable_items.where(item_id: app_design_paid2).where(state: 'subscribed').should have(1).item
+
+        addon_billable_items.where(item_id: addon_plan_paid1).where(state: 'subscribed').should have(1).item
+
+        addon_billable_items.where(item_id: addon_plan_paid2).where(state: 'subscribed').should have(1).item
+
+
+        design_billable_item_activities = site1.billable_item_activities.app_designs
+        addon_billable_item_activities  = site1.billable_item_activities.addon_plans
+
+        site1.billable_item_activities.should have(4 + 3).items
         site1.billable_item_activities.app_designs.where(item_id: app_design_paid1).where(state: 'trial').should have(1).item
+
         site1.billable_item_activities.app_designs.where(item_id: app_design_paid2).where(state: 'trial').should have(1).item
-        site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid1).where(state: 'trial').should have(1).item
         site1.billable_item_activities.app_designs.where(item_id: app_design_paid2).where(state: 'subscribed').should have(1).item
+
+        site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid1).where(state: 'trial').should have(1).item
         site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid1).where(state: 'subscribed').should have(1).item
+
+        site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid2).where(state: 'trial').should have(1).item
+        site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid2).where(state: 'subscribed').should have(1).item
       end
     end
 
@@ -102,17 +122,30 @@ describe Service::Trial do
 
         described_class.activate_billable_items_out_of_trial_for_site!(site1.id)
 
-        site1.reload.billable_items.should have(2).item
-        site1.billable_items.app_designs.where(item_id: app_design_paid1).where(state: 'trial').should have(1).item
-        site1.billable_items.addon_plans.where(item_id: @app_design_free).where(state: 'subscribed').should have(1).item
+        design_billable_items = site1.billable_items.app_designs
+        addon_billable_items  = site1.billable_items.addon_plans
 
-        site1.billable_item_activities.should have(6).items
-        site1.billable_item_activities.app_designs.where(item_id: app_design_paid1).where(state: 'trial').should have(1).item
-        site1.billable_item_activities.app_designs.where(item_id: app_design_paid2).where(state: 'trial').should have(1).item
-        site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid1).where(state: 'trial').should have(1).item
-        site1.billable_item_activities.app_designs.where(item_id: app_design_paid2).where(state: 'canceled').should have(1).item
-        site1.billable_item_activities.addon_plans.where(item_id: addon_plan_paid1).where(state: 'canceled').should have(1).item
-        site1.billable_item_activities.addon_plans.where(item_id: @app_design_free).where(state: 'subscribed').should have(1).item
+        site1.reload.billable_items.should have(2).items
+        design_billable_items.where(item_id: app_design_paid1).where(state: 'trial').should have(1).item
+
+        addon_billable_items.where(item_id: @free_addon_plan).where(state: 'subscribed').should have(1).item
+
+
+        design_billable_item_activities = site1.billable_item_activities.app_designs
+        addon_billable_item_activities  = site1.billable_item_activities.addon_plans
+
+        site1.reload.billable_item_activities.should have(4 + 4).item
+        design_billable_item_activities.where(item_id: app_design_paid1).where(state: 'trial').should have(1).item
+
+        design_billable_item_activities.where(item_id: app_design_paid2).where(state: 'trial').should have(1).item
+        design_billable_item_activities.where(item_id: app_design_paid2).where(state: 'canceled').should have(1).item
+
+        addon_billable_item_activities.where(item_id: addon_plan_paid1).where(state: 'trial').should have(1).item
+        addon_billable_item_activities.where(item_id: addon_plan_paid1).where(state: 'canceled').should have(1).item
+        addon_billable_item_activities.where(item_id: @free_addon_plan).where(state: 'subscribed').should have(1).item
+
+        addon_billable_item_activities.where(item_id: addon_plan_paid2).where(state: 'trial').should have(1).item
+        addon_billable_item_activities.where(item_id: addon_plan_paid2).where(state: 'canceled').should have(1).item
       end
 
       context 'an issue occurs' do

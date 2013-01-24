@@ -10,6 +10,8 @@ require File.expand_path('lib/service/site')
 
 Site = Struct.new(:params) unless defined?(Site)
 AddonPlan = Class.new unless defined?(AddonPlan)
+ActiveRecord = Class.new unless defined?(ActiveRecord)
+ActiveRecord::RecordInvalid = Class.new unless defined?(ActiveRecord::RecordInvalid)
 
 describe Service::Site do
   let(:user)    { stub(sites: []) }
@@ -109,8 +111,8 @@ describe Service::Site do
   describe '#update_billable_items' do
     before do
       Site.stub(:transaction).and_yield
-      service.stub(:set_billable_app_designs)
-      service.stub(:set_billable_addon_plans)
+      service.stub(:update_design_subscriptions)
+      service.stub(:update_addon_subscriptions)
       site.stub(:loaders_updated_at=)
       site.stub(:settings_updated_at=)
       site.stub(:addons_updated_at=)
@@ -118,12 +120,12 @@ describe Service::Site do
     end
 
     it 'sets designs billable items' do
-      service.should_receive(:set_billable_app_designs).with({ foo: '0' }, {})
+      service.should_receive(:update_design_subscriptions).with({ foo: '0' }, {})
       service.update_billable_items({ foo: '0' }, {})
     end
 
     it 'sets addon plans billable items' do
-      service.should_receive(:set_billable_addon_plans).with({ foo: '42' }, {})
+      service.should_receive(:update_addon_subscriptions).with({ foo: '42' }, {})
       service.update_billable_items({}, { foo: '42' })
     end
 

@@ -50,10 +50,10 @@ class Admin::SitesController < Admin::AdminController
     @site       = Site.find_by_token!(params[:id])
     @app_design = App::Design.find(params[:app_design_id])
 
-    app_design_new_subscription_hash = { @app_design.name => (params[:state] == 'canceled' ? '0' : @app_design.id) }
     options = { allow_custom: true }
     options[:force] = params[:state] if params[:state].present?
-    Service::Site.new(@site).update_billable_items(app_design_new_subscription_hash, {}, options)
+    design_subscriptions = { @app_design.name => (params[:state] == 'canceled' ? '0' : @app_design.id) }
+    Service::Site.new(@site).update_billable_items(design_subscriptions, {}, options)
 
     notice = t('flash.sites.update_app_design_subscription.notice', app_design_title: @app_design.title, state: params[:state].presence || 'subscribed')
     respond_with(@site, notice: notice, location: [:edit, :admin, @site])
@@ -64,13 +64,10 @@ class Admin::SitesController < Admin::AdminController
     @site       = Site.find_by_token!(params[:id])
     @addon_plan = AddonPlan.find(params[:addon_plan_id])
 
-    if params[:state] == 'canceled'
-      @site.billable_items.addon_plans.where(item_id: params[:addon_plan_id]).destroy_all
-    else
-      options = { allow_custom: true }
-      options[:force] = params[:state] if params[:state].present?
-      Service::Site.new(@site).update_billable_items({}, { addon: params[:addon_plan_id] }, options)
-    end
+    options = { allow_custom: true }
+    options[:force] = params[:state] if params[:state].present?
+    addon_plan_subscriptions = { @addon_plan.addon.name => (params[:state] == 'canceled' ? '0' : @addon_plan.id) }
+    Service::Site.new(@site).update_billable_items({}, addon_plan_subscriptions, options)
 
     notice = t('flash.sites.update_addon_plan_subscription.notice', addon_plan_title: @addon_plan.title, state: params[:state].presence || 'subscribed')
     respond_with(@site, notice: notice, location: [:edit, :admin, @site])

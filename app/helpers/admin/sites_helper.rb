@@ -71,10 +71,8 @@ module Admin::SitesHelper
   end
 
   def app_designs_for_admin_select(site)
-    app_designs = App::Design.all
-
     items = []
-    app_designs.order(:price).each do |app_design|
+    App::Design.order(:price).each do |app_design|
       title = if billable_item = site.billable_items.app_designs.where(item_id: app_design.id).first
         "#{app_design.title} (#{billable_item.state})"
       else

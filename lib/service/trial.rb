@@ -45,7 +45,11 @@ module Service
             billable_item.item.id
           else
             emails << [billable_item.item.class.to_s, billable_item.item.id]
-            billable_item.item.addon.free_plan.id
+            if free_plan = billable_item.item.addon.free_plan
+              free_plan.id
+            else
+              '0'
+            end
           end
         end
         hash

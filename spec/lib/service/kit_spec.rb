@@ -9,6 +9,8 @@ require File.expand_path('lib/service/kit')
 require File.expand_path('lib/service/site')
 
 Kit = Struct.new(:params) unless defined?(Kit)
+ActiveRecord = Class.new unless defined?(ActiveRecord)
+ActiveRecord::RecordInvalid = Class.new unless defined?(ActiveRecord::RecordInvalid)
 
 describe Service::Kit do
   let(:new_site)       { stub(touch: true, new_record?: true) }

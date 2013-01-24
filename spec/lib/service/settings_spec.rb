@@ -26,7 +26,6 @@ unless defined?(ActiveRecord)
   App::SettingsTemplate = Class.new
 end
 
-
 describe Service::Settings, :fog_mock do
   before do
     site.stub_chain(:addon_plans, :includes, :order) { [] }
