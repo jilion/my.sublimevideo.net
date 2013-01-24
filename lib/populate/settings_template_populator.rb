@@ -3,7 +3,7 @@ require 'active_support/core_ext'
 
 class SettingsTemplatePopulator < Populator
 
-  SETTINGS_TEMPLATES_DIR = Rails.root.join('lib/populators/settings_templates')
+  SETTINGS_TEMPLATES_DIR = Rails.root.join('lib/populate/settings_templates')
 
   def initialize(attributes)
     @attributes = attributes

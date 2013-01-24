@@ -1,6 +1,6 @@
 require 'fast_spec_helper'
 
-require File.expand_path('lib/populators/settings_template_populator')
+require File.expand_path('lib/populate/settings_template_populator')
 
 App = Class.new unless defined?(App)
 App::SettingsTemplate = Class.new unless defined?(App::SettingsTemplate)
