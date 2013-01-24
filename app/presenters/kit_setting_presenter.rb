@@ -77,13 +77,11 @@ class KitSettingPresenter
 
   def populate_params!(params)
     params[:addon]                   ||= @addon_plan.addon
-    params[:settings_template]       ||= HashWithIndifferentAccess.new(settings_template)
+    params[:settings_template]       ||= settings_template.symbolize_keys
     params[:setting_template]          = params[:settings_template][params[:setting_key].to_sym]
-    params[:settings]                  = HashWithIndifferentAccess.new(@kit.settings)
+    params[:settings]                  = @kit.settings.symbolize_keys
     params[:setting]                   = @kit.settings[@addon_plan.addon.name][params[:setting_key].to_sym] rescue nil
     (params[:data] ||= {})[:dependant] = @dependency if @dependency
-    # Rails.logger.debug params[:settings_template]
-    # Rails.logger.debug params[:setting_template]
   end
 
   def addon_name

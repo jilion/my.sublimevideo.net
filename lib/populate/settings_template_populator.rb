@@ -24,7 +24,7 @@ class SettingsTemplatePopulator < Populator
       rescue TypeError
         {}
       end
-      HashWithIndifferentAccess.new(template)
+      template.symbolize_keys
     end
   end
 

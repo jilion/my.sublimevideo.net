@@ -7,5 +7,5 @@ enable:
 
 anticipate:
   type: float
-  values: nil
+  values: ~
   default: 1
