@@ -8,7 +8,8 @@ describe Service::Settings do
         Service::Site.new(site).create
         site
       }
-      subject { described_class.new(site, 'settings') }
+      let(:settings) { described_class.new(site, 'settings') }
+      subject { settings }
 
       its(:license) { should eq({
         hosts: ["test.com"],
@@ -19,7 +20,7 @@ describe Service::Settings do
         stage: "beta"
       } )}
 
-      its(:app_settings) { should eq({
+      its(:app_settings) { should == {
         "stats" => {
           settings: {
             enable: true,
@@ -34,150 +35,185 @@ describe Service::Settings do
             }
           }
         },
-      } )}
+      } }
 
-      its(:kits) { should eq({
-        "1" => {
-          skin: { id: "sa.sb.sc"},
-          plugins: {
-            "videoPlayer" => {
-              plugins: {
-                "logo" => {
-                  settings: {
-                    enable: true,
-                    type: 'sv',
-                    visibility: 'autohide',
-                    position: 'bottom-right',
-                    image_url: '',
-                    link_url: nil
-                  },
-                  allowed_settings: {
-                    enable: {
-                      values: [true]
-                    },
-                    type: {
-                      values: ['sv']
-                    },
-                    visibility: {
-                      values: ['autohide', 'visible']
-                    },
-                    position: {
-                      values: ['bottom-right']
-                    },
-                    image_url: {},
-                    link_url: {}
-                  },
-                  id: "sa.sh.sp"
-                },
-                "initial" => {
-                  settings: {
-                    overlay_enable: true,
-                    overlay_visibility: 'autofade',
-                    overlay_color: '#000'
-                  },
-                  allowed_settings: {
-                    overlay_enable: {
-                      values: [true, false]
-                    },
-                    overlay_visibility: {
-                      values: ['autofade', 'visible'],
-                    },
-                    overlay_color: {
-                      values: ["#000"]
-                    }
-                  },
-                  id: "sa.sh.sv"
-                },
-                "embed" => {
-                  settings: {
-                    enable: true,
-                    size: nil
-                  },
-                  allowed_settings: {
-                    enable: {
-                      values: [true]
-                    },
-                    size: {}
-                  },
-                  id: ""
-                },
-                "controls" => {
-                  settings: {
-                    enable: true,
-                    visibility: 'autohide'
-                  },
-                  allowed_settings: {
-                    enable: {
-                      values: [true, false]
-                    },
-                    visibility: {
-                      values: ['autohide', 'visible']
-                    }
-                  },
-                  id: "sa.sh.sq"
-                }
-              },
-              settings: {
-                volume_enable: true,
-                fullmode_enable: true,
-                fullmode_priority: 'screen',
-                on_end: 'nothing'
-              },
-              allowed_settings: {
-                volume_enable: {
-                  values: [true, false]
-                },
-                fullmode_enable: {
-                  values: [true, false]
-                },
-                fullmode_priority: {
-                  values: ['screen', 'window']
-                },
-                on_end: {
-                  values: ['nothing', 'replay', 'stop']
-                }
-              },
-              id: "sa.sh.si"
+      describe 'settings.kits["1"][:plugins]' do
+        it 'has 3 plugins' do
+          settings.kits['1'][:plugins].should have(3).items
+        end
+      end
+
+      describe 'settings.kits["1"][:plugins]["videoPlayer"]' do
+        it 'has the right settings for ["videoPlayer"][:plugins]["logo"]' do
+          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['logo'].should == {
+            settings: {
+              enable: true,
+              type: 'sv',
+              visibility: 'autohide',
+              position: 'bottom-right',
+              image_url: '',
+              link_url: nil
             },
-            "lightbox" => {
-              settings: {
-                on_open: 'play',
-                overlay_color: "#000",
-                overlay_opacity: 0.7,
-                close_button_enable: true,
-                close_button_visibility: "autohide",
-                close_button_position: "left"
+            allowed_settings: {
+              enable: {
+                values: [true]
               },
-              allowed_settings: {
-                close_button_enable: {
-                  values: [true, false],
-                },
-                on_open: {
-                  values: ['nothing', 'play']
-                },
-                overlay_color: {
-                  values: ["#000"]
-                },
-                overlay_opacity: {
-                  range: [0.1, 1]
-                },
-                close_button_visibility: {
-                  values: ["autohide", "visible"]
-                },
-                close_button_position: {
-                  values: ["left", "right"]
-                }
+              type: {
+                values: ['sv']
               },
-              id: "sa.sl.sm"
+              visibility: {
+                values: ['autohide', 'visible']
+              },
+              position: {
+                values: ['bottom-right']
+              },
+              image_url: {},
+              link_url: {}
             },
-            "imageViewer" => {
-              settings: {},
-              allowed_settings: {},
-              id: "sa.sn.so"
+            id: "sa.sh.sp"
+          }
+        end
+
+        it 'has the right settings for ["videoPlayer"][:plugins]["initial"]' do
+          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['initial'].should == {
+            settings: {
+              overlay_enable: true,
+              overlay_visibility: 'autofade',
+              overlay_color: '#000'
+            },
+            allowed_settings: {
+              overlay_enable: {
+                values: [true, false]
+              },
+              overlay_visibility: {
+                values: ['autofade', 'visible'],
+              },
+              overlay_color: {
+                values: ["#000"]
+              }
+            },
+            id: "sa.sh.sv"
+          }
+        end
+
+        it 'has the right settings for ["videoPlayer"][:plugins]["embed"]' do
+          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['embed'].should == {
+            settings: {
+              enable: true,
+              size: nil
+            },
+            allowed_settings: {
+              enable: {
+                values: [true]
+              },
+              size: {}
+            },
+            id: 'sa.sh.ub'
+          }
+        end
+
+        it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
+          settings.kits['1'][:plugins]['videoPlayer'][:plugins]['controls'].should == {
+            settings: {
+              enable: true,
+              visibility: 'autohide'
+            },
+            allowed_settings: {
+              enable: {
+                values: [true, false]
+              },
+              visibility: {
+                values: ['autohide', 'visible']
+              }
+            },
+            id: 'sa.sh.sq'
+          }
+        end
+
+        it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
+          settings.kits['1'][:plugins]['videoPlayer'][:settings].should == {
+            volume_enable: true,
+            fullmode_enable: true,
+            fullmode_priority: 'screen',
+            on_end: 'nothing'
+          }
+        end
+
+        it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
+          settings.kits['1'][:plugins]['videoPlayer'][:allowed_settings].should == {
+            volume_enable: {
+              values: [true, false]
+            },
+            fullmode_enable: {
+              values: [true, false]
+            },
+            fullmode_priority: {
+              values: ['screen', 'window']
+            },
+            on_end: {
+              values: ['nothing', 'replay', 'stop']
             }
           }
-        }
-      } )}
+        end
+
+        it 'has the right settings for ["videoPlayer"][:plugins]["controls"]' do
+          settings.kits['1'][:plugins]['videoPlayer'][:id].should eq 'sa.sh.si'
+        end
+      end
+
+      describe 'settings.kits["1"][:plugins]["lightbox"]' do
+        it 'has the right settings for ["lightbox"][:settings]' do
+          settings.kits['1'][:plugins]['lightbox'][:settings].should == {
+            on_open: 'play',
+            overlay_color: "#000",
+            overlay_opacity: 0.7,
+            close_button_enable: true,
+            close_button_visibility: "autohide",
+            close_button_position: "left"
+          }
+        end
+
+        it 'has the right settings for ["lightbox"][:allowed_settings]' do
+          settings.kits['1'][:plugins]['lightbox'][:allowed_settings].should == {
+            close_button_enable: {
+              values: [true, false],
+            },
+            on_open: {
+              values: ['nothing', 'play']
+            },
+            overlay_color: {
+              values: ["#000"]
+            },
+            overlay_opacity: {
+              range: [0.1, 1]
+            },
+            close_button_visibility: {
+              values: ["autohide", "visible"]
+            },
+            close_button_position: {
+              values: ["left", "right"]
+            }
+          }
+        end
+
+        it 'has the right settings for ["lightbox"][:id]' do
+          settings.kits['1'][:plugins]['lightbox'][:id].should == 'sa.sl.sm'
+        end
+      end
+
+      describe 'settings.kits["1"][:plugins]["imageViewer"]' do
+        it 'has the right settings for ["imageViewer"][:settings]' do
+          settings.kits['1'][:plugins]['imageViewer'][:settings].should == {}
+        end
+
+        it 'has the right settings for ["imageViewer"][:allowed_settings]' do
+          settings.kits['1'][:plugins]['imageViewer'][:allowed_settings].should == {}
+        end
+
+        it 'has the right settings for ["imageViewer"][:id]' do
+          settings.kits['1'][:plugins]['imageViewer'][:id].should == 'sa.sn.so'
+        end
+      end
 
       its(:default_kit) { should eq('1') }
 
@@ -245,15 +281,15 @@ describe Service::Settings do
             "tg": {
             "ih":["#000"]}},
             "kn":"sa.sh.sv"},
-            "embed": {
+            "tw": {
             "ko": {
-            "iv":true,"size":null},
+            "iv":true,"tx":null},
             "kp": {
             "iv": {
             "ih":[true]},
-            "size": {
+            "tx": {
             }},
-            "kn":""}},
+            "kn":"sa.sh.ub"}},
             "ko": {
             "te":true,"td":true,"tb":"screen","tc":"nothing"},
             "kp": {

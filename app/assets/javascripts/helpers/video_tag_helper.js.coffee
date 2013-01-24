@@ -17,7 +17,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
     attributes.push "data-youtube-id=\"#{@video.get('youTubeId')}\"" if @video.get('origin') is 'youtube'
     attributes.push "data-autoresize=\"#{@video.get('autoresize')}\""
-    attributes.push this.generateDataSettingsAttribute(['video_player', 'controls', 'initial', 'sharing', 'image_viewer', 'logo', 'api', 'stats'], options)
+    attributes.push this.generateDataSettingsAttribute(['video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'], options)
     attributes.push this.generateDataUIDAndName()
     attributes.push this.generateStyle()
     attributes.push "preload=\"none\""
@@ -60,14 +60,13 @@ class MySublimeVideo.Helpers.VideoTagHelper
     if _.isEmpty @dataSettings
       ''
     else
-      content = _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
       if options['contentOnly']
-        content
+        _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
       else
-        "data-settings=\"#{content}\""
+        _.inject(@dataSettings, ((s, v, k) -> s + " data-#{k}='#{v}'"), '')
 
   generateDataSettings: (addons, options = {}) ->
-    addons = ['player', 'video_player', 'controls', 'initial', 'social_sharing', 'embed', 'logo'] if _.isEmpty(addons)
+    addons = ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] if _.isEmpty(addons)
 
     @dataSettings = {}
     if @options['settings']?
@@ -164,4 +163,4 @@ class MySublimeVideo.Helpers.VideoTagHelper
       this.pushDataSetting(dataSettingName, currentValue)
 
   pushDataSetting: (dataSettingName, currentValue) ->
-    @dataSettings[dataSettingName] = currentValue.toString().underscore().dasherize()
+    @dataSettings[dataSettingName] = currentValue.toString()

@@ -22,7 +22,7 @@
       title: 'Custom logo'
       multipart_params:
         old_custom_logo_path: '#{cdn_path_from_full_url(value)}'
-  = hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: value)
+  = hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].kind, setting: params[:setting_key], default: value)
 
 .entry= kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :position, data: { dependant: 'logo-enable' }, show_title: true, partial: 'corners_position_radios')
 

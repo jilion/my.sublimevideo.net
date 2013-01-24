@@ -65,5 +65,5 @@ describe 'MySublimeVideo.Helpers.VideoTagHelper', ->
       @helper.dataSettings = {}
 
     it 'push setting', ->
-      @helper.pushDataSetting('initial-overlay-visibility', 'visible')
-      expect(@helper.dataSettings['initial-overlay-visibility']).toEqual('visible')
+      @helper.pushDataSetting('sharing-buttons', 'facebook google+ twitter')
+      expect(@helper.dataSettings['sharing-buttons']).toEqual('facebook google+ twitter')

@@ -16,6 +16,6 @@
     - (default_buttons - current_buttons).each do |button|
       %li{ data: { value: button } }= button.titleize
 
-= hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].name, setting: params[:setting_key], default: value)
+= hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].kind, setting: params[:setting_key], default: value)
 
 %div.spacer

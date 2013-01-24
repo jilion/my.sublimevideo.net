@@ -73,7 +73,7 @@ class MySublimeVideo.UI.KitEditor
     $('#social_sharing_active_buttons, #social_sharing_inactive_buttons').disableSelection().sortable
       connectWith: '.connectedSortable'
       stop: (event, ui) =>
-        buttons = $('#social_sharing_active_buttons').sortable('toArray', { attribute: 'data-value' }).join(',')
+        buttons = $('#social_sharing_active_buttons').sortable('toArray', { attribute: 'data-value' }).join(' ')
         $("##{socialSharingButtonsInputFieldId}").val(buttons)
         this.refreshVideoTagFromSettings()
 

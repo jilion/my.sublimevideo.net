@@ -3,5 +3,5 @@
 
 .entry.size{ style: "margin-top:14px" }
   %span{ style: 'font-weight:600' }= label_tag id, t("kit.#{params[:addon].name}.settings.#{params[:setting_key]}")
-  = text_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, size: 4, maxlength: 4, id: id, class: 'text no_icon previewable', data: { addon: params[:addon].name, setting: params[:setting_key], default: value }
+  = text_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, size: 4, maxlength: 4, id: id, class: 'text no_icon previewable', data: { addon: params[:addon].kind, setting: params[:setting_key], default: value }
 .spacer

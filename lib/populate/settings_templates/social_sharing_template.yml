@@ -2,10 +2,12 @@ enable:
   type: boolean
   values:
     - true
+    - false
   default: true
 
 url:
   type: url
+  values: nil
 
 icon:
   type: string
