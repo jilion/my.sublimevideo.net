@@ -43,7 +43,7 @@ module KitsHelper
   end
 
   def kit_setting_input_field_name(params)
-    "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]"
+    "kit[settings][#{params[:addon].name}][#{params[:setting_key]}]"
   end
 
   def kit_setting_input_field_id(params, suffix = '')

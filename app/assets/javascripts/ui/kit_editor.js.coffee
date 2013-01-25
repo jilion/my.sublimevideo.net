@@ -55,7 +55,7 @@ class MySublimeVideo.UI.KitEditor
         this.updateValueDisplayer($el)
 
   setupLogoTypeInputObserver: ->
-    $('input[name="kit[addons][logo][type]"]').on 'change', (e) =>
+    $('input[name="kit[settings][logo][type]"]').on 'change', (e) =>
       $el = $(e.target)
       if $el.val() is 'custom'
         $('.custom_logo_fields').show()

@@ -2,7 +2,7 @@
 TM_ORGANIZATION_NAME = 'Jilion SA'
 
 # Settings
-projectDirectory = "$CWD"
+# projectDirectory = "$CWD"
 exclude          = "{$exclude,db/backups,public/uploads,run,script,config.sqlite}"
 
 # I recommend you put the following settings into your ~/.tm_properties

@@ -22,7 +22,7 @@ describe Service::Kit do
   let(:settings_sanitizer_service) { stub(sanitize: sanitized_settings) }
 
   describe "#save" do
-    let(:params) { { name: 'My Kit', app_design_id: 42, addons: { "logo" => { "settings" => "value" } } } }
+    let(:params) { { name: 'My Kit', app_design_id: 42, settings: { "logo" => { "settings" => "value" } } } }
     before do
       ::Kit.stub(:transaction).and_yield
       Service::SettingsSanitizer.stub(:new) { settings_sanitizer_service }
@@ -45,7 +45,7 @@ describe Service::Kit do
     end
 
     it 'sanitize settings' do
-      Service::SettingsSanitizer.should_receive(:new).with(kit, params[:addons]) { settings_sanitizer_service }
+      Service::SettingsSanitizer.should_receive(:new).with(kit, params[:settings]) { settings_sanitizer_service }
       settings_sanitizer_service.should_receive(:sanitize) { sanitized_settings }
       kit.should_receive(:settings=).with(sanitized_settings)
 

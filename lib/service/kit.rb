@@ -8,7 +8,7 @@ module Service
       ::Kit.transaction do
         kit.name          = params.delete(:name)
         kit.app_design_id = params.delete(:app_design_id)
-        kit.settings      = Service::SettingsSanitizer.new(kit, params.delete(:addons)).sanitize
+        kit.settings      = Service::SettingsSanitizer.new(kit, params.delete(:settings)).sanitize
         kit.save!
         kit.site.touch(:settings_updated_at)
       end
