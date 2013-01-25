@@ -1,0 +1,7 @@
+.entry
+  %h5= kit_setting_title(params)
+  - params[:setting_template][:values].each do |choice|
+    .radio_wrap
+      = radio_button_tag kit_setting_input_field_name(params), choice, params[:value] == choice, id: kit_setting_input_field_id(params, "_#{choice}"), disabled: params[:disabled], data: kit_setting_data(params)
+      = label_tag kit_setting_input_field_id(params, "_#{choice}"), image_tag("social_sharing_icons/#{choice}")
+.spacer

@@ -1,10 +1,8 @@
 - custom_logo = Addons::CustomLogo.new(kit)
 - current_type = params[:settings].try(:[], 'logo').try(:[], :type) || params[:settings_template][:type][:default]
-- value = params[:setting].to_s
-- id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
 
 .entry.custom_logo_fields{ style: current_type == 'sv' ? 'display:none' : nil }
-  #preview_custom_logo= display_custom_logo(value)
+  #preview_custom_logo= display_custom_logo(params[:value])
   #container{ data: { spinner: true } }
     .spacer
     %p.note Only PNG files are accepted. Double the size of the image (@2x) to allow optimal rendering on Retina® displays.
@@ -21,13 +19,13 @@
       extensions: 'png'
       title: 'Custom logo'
       multipart_params:
-        old_custom_logo_path: '#{cdn_path_from_full_url(value)}'
-  = hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].kind, setting: params[:setting_key], default: value)
+        old_custom_logo_path: '#{cdn_path_from_full_url(params[:value])}'
+  = hidden_field_tag kit_setting_input_field_name(params), params[:value], id: kit_setting_input_field_id(params), class: 'previewable', data: kit_setting_data(params)
 
-.entry= kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :position, data: { dependant: 'logo-enable' }, show_title: true, partial: 'corners_position_radios')
+.entry= params[:presenter].render_input_field(setting_key: :position, data: { dependant: 'logo-enable' }, show_title: true, partial: 'logo/corners_position_radios')
 
-.entry= kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :visibility, data: { dependant: 'logo-enable' }, translation_key: :visibility_custom, show_title: true)
+.entry= params[:presenter].render_input_field(setting_key: :visibility, data: { dependant: 'logo-enable' }, translation_key: :visibility_custom, show_title: true)
 
 .entry.custom_logo_fields{ style: current_type == 'sv' ? 'display:none' : nil }
-  = kit.render_input_field(self, addon: params[:addon], settings_template: params[:settings_template], setting_key: :link_url, data: { dependant: 'logo-enable' })
+  = params[:presenter].render_input_field(setting_key: :link_url, data: { dependant: 'logo-enable' })
 .spacer

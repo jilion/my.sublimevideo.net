@@ -1,0 +1,15 @@
+.entry
+  - if params[:show_title]
+    %span{ style: 'font-weight:600' }= kit_setting_title(params)
+    %br
+  %table#logo_position
+    %tr
+      - %w[top-left top-right].each do |choice|
+        %td
+          = render 'kits/inputs/radio', kit: kit, params: params, choice: choice
+    %tr
+      - %w[bottom-left bottom-right].each do |choice|
+        %td
+          = render 'kits/inputs/radio', kit: kit, params: params.merge(label_on_left: true), choice: choice
+
+.spacer

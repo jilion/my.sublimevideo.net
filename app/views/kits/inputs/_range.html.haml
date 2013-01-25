@@ -1,9 +1,6 @@
-- value = params[:setting].presence || params[:setting_template][:default]
-- id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
-
 .entry.range
-  %span{ style: 'font-weight:600' }= label_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", t("kit.#{params[:addon].name}.settings.#{params[:setting_key]}")
+  %span{ style: 'font-weight:600' }= label_tag kit_setting_input_field_id(params), kit_setting_title(params)
   %br
-  = range_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", value, in: params[:setting_template][:range], step: params[:setting_template][:step], style: 'display:inline', id: id, class: 'previewable', data: { addon: params[:addon].kind, setting: params[:setting_key], default: value }
-  %span{ id: id + '_value' }= value
+  = range_field_tag kit_setting_input_field_name(params), params[:value], in: params[:setting_template][:range], step: params[:setting_template][:step], style: 'display:inline', id: kit_setting_input_field_id(params), class: 'previewable', data: kit_setting_data(params)
+  %span.value_displayer= params[:value]
 .spacer

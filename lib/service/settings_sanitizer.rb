@@ -90,7 +90,7 @@ module Service
 
     def keep_allowed_values(values, allowed_values)
       values = string_to_array(values) if values.is_a?(String)
-      values & allowed_values
+      (values & allowed_values).join(' ')
     end
 
     def string_to_array(string)

@@ -34,6 +34,26 @@ module KitsHelper
     haml_tag("div.#{classes.join('.')}", capture_haml { yield })
   end
 
+  def kit_setting_title(params, suffix = '')
+    t("kit.#{params[:addon].name}.settings.#{params[:translation_key] || params[:setting_key]}#{suffix}")
+  end
+
+  def kit_setting_radio_label(params, choice = '')
+    t("kit.#{params[:addon].name}.values.#{params[:translation_key] || params[:setting_key]}.#{choice}")
+  end
+
+  def kit_setting_input_field_name(params)
+    "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]"
+  end
+
+  def kit_setting_input_field_id(params, suffix = '')
+    "kit_setting-#{params[:addon].name}-#{params[:setting_key]}#{suffix}"
+  end
+
+  def kit_setting_data(params)
+    params[:data].merge(addon: params[:addon].kind, setting: params[:setting_key], default: params[:value])
+  end
+
   def kits_for_select(site)
     items = site.kits.order(:identifier).inject([]) do |memo, kit|
       kit = exhibit(kit)

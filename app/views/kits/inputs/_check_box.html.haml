@@ -1,8 +1,5 @@
-- value = params[:setting].nil? ? params[:setting_template][:default] : params[:setting]
-- id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
-
 .entry.checkbox_wrap
-  = hidden_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", 0, data: { addon: params[:addon].kind, setting: params[:setting_key] }
-  = check_box_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", 1, value, id: id, class: 'previewable', data: (params[:data] || {}).merge(addon: params[:addon].kind, setting: params[:setting_key], default: value)
-  = label_tag id, t("kit.#{params[:addon].name}.settings.#{params[:translation_key] || params[:setting_key]}")
+  = hidden_field_tag kit_setting_input_field_name(params), 0, data: kit_setting_data(params)
+  = check_box_tag kit_setting_input_field_name(params), 1, params[:value], id: kit_setting_input_field_id(params), class: 'previewable', data: kit_setting_data(params)
+  = label_tag kit_setting_input_field_id(params), kit_setting_title(params)
 .spacer

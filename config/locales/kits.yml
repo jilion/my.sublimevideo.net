@@ -86,7 +86,7 @@ en:
         icon: 'Choose icon'
         url: 'Default sharing URL'
         buttons: 'Social sharing buttons'
-        text: 'Twitter default sharing message'
+        text: 'Default sharing message'
         twitter_via: 'Twitter via username'
         link_enable: 'Show sharing URL'
 

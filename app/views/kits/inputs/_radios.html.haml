@@ -1,8 +1,6 @@
-- value = params[:setting].presence || params[:setting_template][:default]
-
 .entry
   - if params[:show_title]
-    %h5= t("kit.#{params[:addon].name}.settings.#{params[:translation_key] || params[:setting_key]}")
+    %h5= kit_setting_title(params)
   - params[:setting_template][:values].each do |choice|
-    = render 'kits/inputs/radio', kit: kit, params: params, value: value, choice: choice
+    = render 'kits/inputs/radio', kit: kit, params: params, choice: choice
 .spacer
