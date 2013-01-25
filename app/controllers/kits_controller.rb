@@ -66,7 +66,7 @@ class KitsController < ApplicationController
     @logo_path, @logo_width, @logo_height = service.current_path, service.width, service.height
   end
 
-  # GET /sites/:site_id/players/fields
+  # GET /sites/:site_id/players/:id/fields
   def fields
   end
 

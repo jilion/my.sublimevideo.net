@@ -24,12 +24,18 @@ class MySublimeVideo.UI.KitEditor
     $designSelector = $("select#kit_app_design_id")
 
     $designSelector.one 'change', =>
+      siteToken = document.location.pathname.match(/(assistant|sites)\/([\w]{8})/)[2]
+      md = document.location.pathname.match(/sites\/[\w]{8}\/players\/(\d+)/)
+      kitId = if md
+        md[1]
+      else
+        1
       expandParam = ''
       if ($handler = $('h4.expanding_handler.expanded')).exists()
         expandParam = "&expand=#{$handler.attr('id')}"
 
       $.ajax(
-        url: "#{document.location.pathname.replace(/new|edit/, 'fields')}?design_id=#{$designSelector.val()}#{expandParam}"
+        url: "/sites/#{siteToken}/players/#{kitId}/fields?design_id=#{$designSelector.val()}#{expandParam}"
       ).done (data) =>
         MySublimeVideo.prepareVideosAndLightboxes()
         this.setup()
