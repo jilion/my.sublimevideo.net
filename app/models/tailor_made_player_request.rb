@@ -22,7 +22,7 @@ class TailorMadePlayerRequest
   end
 
   def self.topics
-    get_raw(:topics)[:data]
+    @topics ||= get_raw(:topics)[:data]
   end
 
   def created_at
