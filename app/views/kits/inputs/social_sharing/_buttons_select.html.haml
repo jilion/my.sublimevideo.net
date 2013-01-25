@@ -5,14 +5,15 @@
 
 %h5= t("kit.#{params[:addon].name}.settings.#{params[:translation_key] || params[:setting_key]}")
 
-.sort
-  %ul#social_sharing_active_buttons.connectedSortable
+#sharing_button_sort.sort
+  %ul#social_sharing_active_buttons.drop_zone.connectedSortable
     - current_buttons.each do |button|
       %li{ data: { value: button } }= button.titleize
 
   %div.spacer
+  %p.drag_note= "Drag and drop buttons above to enable them and order as you want they appear."
 
-  %ul#social_sharing_inactive_buttons.connectedSortable
+  %ul#social_sharing_inactive_buttons.drop_zone.connectedSortable
     - (default_buttons - current_buttons).each do |button|
       %li{ data: { value: button } }= button.titleize
 

@@ -296,22 +296,39 @@ h4.expanding_handler.expanded a {
 /*  color:#1e3966;*/
 }
 
-/*REMY*/
-.kit_editor #social_sharing_active_buttons { background: #bbb; }
+#sharing_button_sort {
+  padding:15px 0 0;
+}
 
-.kit_editor #social_sharing_inactive_buttons { background: #eee; }
+#sharing_button_sort ul.drop_zone {
+  list-style-type:none;
+  width:520px;
+  height:90px;
+  background:rgba(81,104,143,0.5);
+  @include border-radius(4px);
+  @include box-shadow((inset rgba(0,0,0,0.4) 0 1px 3px, rgba(255,255,255,0.35) 0 1px 0));
+}
+
+#sharing_button_sort ul#social_sharing_inactive_buttons.drop_zone {
+  height:56px;
+}
+
+#sharing_button_sort p.drag_note {
+  width:360px;
+  text-align:center;
+  color:#51688f;
+  font-size:17px;
+  font-weight:600;
+  line-height:22px;
+  padding:20px 80px;
+}
+
+/*REMY*/
 
 .kit_editor #social_sharing_active_buttons li { background: cyan; }
 
 .kit_editor #social_sharing_inactive_buttons li { background: orange; }
 
-.kit_editor #social_sharing_active_buttons, .kit_editor #social_sharing_inactive_buttons {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  width: 450px;
-  height: 150px
-}
 
 .kit_editor #social_sharing_active_buttons li, .kit_editor #social_sharing_inactive_buttons li {
   margin: 3px 3px 3px 0;
