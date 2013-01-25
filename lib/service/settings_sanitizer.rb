@@ -69,7 +69,7 @@ module Service
     end
 
     def sanitize_url(url)
-      unless url =~ %r{\A(https?:)?//}
+      if !url.nil? && url != '' && url !~ %r{\A(https?:)?//}
         url = "http://#{url}"
       end
 
