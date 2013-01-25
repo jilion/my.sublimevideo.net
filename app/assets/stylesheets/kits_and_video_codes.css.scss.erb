@@ -298,6 +298,7 @@ h4.expanding_handler.expanded a {
 
 #sharing_button_sort {
   padding:15px 0 0;
+  position:relative;
 }
 
 #sharing_button_sort ul.drop_zone {
@@ -307,10 +308,21 @@ h4.expanding_handler.expanded a {
   background:rgba(81,104,143,0.5);
   @include border-radius(4px);
   @include box-shadow((inset rgba(0,0,0,0.4) 0 1px 3px, rgba(255,255,255,0.35) 0 1px 0));
+  @include transition(background-color, 0.2s, linear);
 }
 
 #sharing_button_sort ul#social_sharing_inactive_buttons.drop_zone {
   height:56px;
+}
+
+#sharing_button_sort ul.drop_zone.highlight {
+/*  background:red;*/
+  -webkit-animation: pulse 0.8s infinite alternate;
+}
+
+@-webkit-keyframes pulse {
+  0% {background-color: rgba(81,104,143,0.5);}
+  100% {background-color: #87baff;}
 }
 
 #sharing_button_sort p.drag_note {
@@ -323,19 +335,91 @@ h4.expanding_handler.expanded a {
   padding:20px 80px;
 }
 
-/*REMY*/
-
-.kit_editor #social_sharing_active_buttons li { background: cyan; }
-
-.kit_editor #social_sharing_inactive_buttons li { background: orange; }
-
-
-.kit_editor #social_sharing_active_buttons li, .kit_editor #social_sharing_inactive_buttons li {
-  margin: 3px 3px 3px 0;
-  padding: 1px;
-  float: left;
-  width: 100px;
-  height: 90px;
-  text-align: center;
+#sharing_button_sort ul.drop_zone li {
+  display:block;
+  float:left;
+  background-repeat:no-repeat;
+  background-position:center center;
+  cursor:pointer;
+  @include border-radius(3px);
+  @include box-shadow(rgba(0,0,0,0.5) 0 1px 3px);
+  @include transition(background, 0.2s, ease-in-out);
 }
-/*REMY  */
+
+#sharing_button_sort ul#social_sharing_active_buttons.drop_zone li.ui-sortable-placeholder {
+  width:74px !important;
+  height:74px !important;
+}
+
+#sharing_button_sort ul#social_sharing_inactive_buttons.drop_zone li.ui-sortable-placeholder {
+  width:42px !important;
+  height:42px !important;
+}
+
+#sharing_button_sort ul.drop_zone li.enabled {
+  width:74px;
+  height:74px;
+  background-color:#243a61;
+  margin:8px 0 0 8px;
+}
+
+#sharing_button_sort ul.drop_zone li.disabled {
+  width:42px;
+  height:42px;
+  background-color:#c0cee6;
+  margin:7px 0 0 7px;
+}
+
+#sharing_button_sort ul.drop_zone li.enabled.twitter {
+  background-image:url(<%= asset_path "players/twitter_icon@2x.png" %>);
+  background-size:49px 41px;
+}
+
+#sharing_button_sort ul.drop_zone li.disabled.twitter {
+  background-image:url(<%= asset_path "players/twitter_icon_disabled@2x.png" %>);
+  background-size:28px 24px;
+}
+
+#sharing_button_sort ul.drop_zone li.enabled.facebook {
+  background-image:url(<%= asset_path "players/facebook_icon@2x.png" %>);
+  background-size:23px 45px;
+}
+
+#sharing_button_sort ul.drop_zone li.disabled.facebook {
+  background-image:url(<%= asset_path "players/facebook_icon_disabled@2x.png" %>);
+  background-size:13px 29px;
+}
+
+#sharing_button_sort ul.drop_zone li.enabled.google_plus {
+  background-image:url(<%= asset_path "players/google_plus_icon@2x.png" %>);
+  background-size:48px 48px;
+}
+
+#sharing_button_sort ul.drop_zone li.disabled.google_plus {
+  background-image:url(<%= asset_path "players/google_plus_icon_disabled@2x.png" %>);
+  background-size:28px 29px;
+}
+
+#sharing_button_sort ul.drop_zone li.enabled.pinterest {
+  background-image:url(<%= asset_path "players/pinterest_icon@2x.png" %>);
+  background-size:48px 48px;
+}
+
+#sharing_button_sort ul.drop_zone li.disabled.pinterest {
+  background-image:url(<%= asset_path "players/pinterest_icon_disabled@2x.png" %>);
+  background-size:28px 29px;
+}
+
+#sharing_button_sort ul.drop_zone li span {
+  display:none;
+}
+
+#sharing_button_sort .arrow_up {
+  width:34px;
+  height:165px;
+  background:url(<%= asset_path "players/arrow_up@2x.png" %>) no-repeat;
+  background-size:100%;
+  position:absolute;
+  bottom:25px;
+  left:540px;
+}
