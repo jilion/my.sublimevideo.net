@@ -118,7 +118,7 @@ feature 'Choose add-ons' do
   end
 
   scenario 'select radio button add-on' do
-    choose "addon_plans_logo_#{@logo_addon_plan_2.id}"
+    choose "addon_plans_logo_#{@logo_addon_plan_2.name}"
     expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(2)
 
     current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
@@ -158,8 +158,8 @@ feature 'Choose add-ons' do
   end
 
   scenario 'select checkbox add-on' do
-    check "addon_plans_stats_#{@stats_addon_plan_2.id}"
-    check "addon_plans_social_sharing_#{@social_sharing_addon_plan_1.id}"
+    check "addon_plans_stats_#{@stats_addon_plan_2.name}"
+    check "addon_plans_social_sharing_#{@social_sharing_addon_plan_1.name}"
     expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(3)
 
     current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"
@@ -201,8 +201,8 @@ feature 'Choose add-ons' do
 
     go 'my', "/sites/#{@site.to_param}/addons"
 
-    uncheck "addon_plans_stats_#{@stats_addon_plan_2.id}"
-    uncheck "addon_plans_social_sharing_#{@social_sharing_addon_plan_1.id}"
+    uncheck "addon_plans_stats_#{@stats_addon_plan_2.name}"
+    uncheck "addon_plans_social_sharing_#{@social_sharing_addon_plan_1.name}"
     expect { click_button 'Confirm selection' }.to change(@site.billable_item_activities, :count).by(3)
 
     current_url.should eq "http://my.sublimevideo.dev/sites/#{@site.to_param}/addons"

@@ -18,7 +18,7 @@ feature 'assistant pages' do
       page.should have_content 'Choose player add-ons for rymai.me'
       site.current_assistant_step.should eq 'addons'
 
-      choose "addon_plans_logo_#{@logo_addon_plan_2.id}"
+      choose "addon_plans_logo_#{@logo_addon_plan_2.name}"
       expect { click_button 'Next' }.to change(site.billable_item_activities, :count).by(2)
 
       current_url.should eq "http://my.sublimevideo.dev/assistant/#{site.to_param}/player"

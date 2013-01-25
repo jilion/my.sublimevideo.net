@@ -80,7 +80,7 @@ feature 'Redirects' do
 
     scenario 'redirect /sites/stats/:site_id to /sites' do
       go 'my', "/sites/#{@site.to_param}/addons"
-      check "addon_plans_stats_#{@stats_addon_plan_2.id}"
+      check "addon_plans_stats_#{@stats_addon_plan_2.name}"
       click_button 'Confirm selection'
       go 'my', "sites/stats/#{@site.to_param}"
 

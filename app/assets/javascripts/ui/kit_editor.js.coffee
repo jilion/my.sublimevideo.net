@@ -24,12 +24,18 @@ class MySublimeVideo.UI.KitEditor
     $designSelector = $("select#kit_app_design_id")
 
     $designSelector.one 'change', =>
+      siteToken = document.location.pathname.match(/(assistant|sites)\/([\w]{8})/)[2]
+      md = document.location.pathname.match(/sites\/[\w]{8}\/players\/(\d+)/)
+      kitId = if md
+        md[1]
+      else
+        1
       expandParam = ''
       if ($handler = $('h4.expanding_handler.expanded')).exists()
         expandParam = "&expand=#{$handler.attr('id')}"
 
       $.ajax(
-        url: "#{document.location.pathname.replace(/new|edit/, 'fields')}?design_id=#{$designSelector.val()}#{expandParam}"
+        url: "/sites/#{siteToken}/players/#{kitId}/fields?design_id=#{$designSelector.val()}#{expandParam}"
       ).done (data) =>
         MySublimeVideo.prepareVideosAndLightboxes()
         this.setup()
@@ -55,7 +61,7 @@ class MySublimeVideo.UI.KitEditor
         this.updateValueDisplayer($el)
 
   setupLogoTypeInputObserver: ->
-    $('input[name="kit[addons][logo][type]"]').on 'change', (e) =>
+    $('input[name="kit[settings][logo][type]"]').on 'change', (e) =>
       $el = $(e.target)
       if $el.val() is 'custom'
         $('.custom_logo_fields').show()
@@ -91,7 +97,6 @@ class MySublimeVideo.UI.KitEditor
       $('#social_sharing_active_buttons').toggleClass('highlight')
 
   refreshVideoTagFromSettings: ->
-    # console.log @videoTagHelpers['standard'].generateDataSettings()
     sublime.reprepareVideo 'standard', @videoTagHelpers['standard'].generateDataSettings()
 
     if lightbox = sublime.lightbox('lightbox-trigger')

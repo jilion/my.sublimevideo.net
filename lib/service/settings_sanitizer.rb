@@ -29,7 +29,7 @@ module Service
     def sanitize_new_addon_plan_setting(addon_plan, addon_plan_settings_template, setting_key, setting_value)
       addon_name = addon_plan.addon.name
       setting_key = setting_key.to_sym
-      addon_plan_setting_template = addon_plan_settings_template[setting_key]
+      return unless addon_plan_setting_template = addon_plan_settings_template[setting_key]
 
       case addon_plan_setting_template[:type]
       when 'image', 'url'
@@ -69,7 +69,7 @@ module Service
     end
 
     def sanitize_url(url)
-      unless url =~ %r{\A(https?:)?//}
+      if !url.nil? && url != '' && url !~ %r{\A(https?:)?//}
         url = "http://#{url}"
       end
 

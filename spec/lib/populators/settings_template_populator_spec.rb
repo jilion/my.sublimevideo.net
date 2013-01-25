@@ -17,7 +17,7 @@ describe SettingsTemplatePopulator do
         let(:base_attrs) { { addon_plan: stub(addon: stub(name: 'video_player'), name: 'standard'), plugin: stub } }
 
         it 'creates the record in DB' do
-          template = HashWithIndifferentAccess.new(YAML.load_file(described_class::SETTINGS_TEMPLATES_DIR.join("video_player_template.yml")))
+          template = YAML.load_file(described_class::SETTINGS_TEMPLATES_DIR.join("video_player_template.yml")).symbolize_keys
           App::SettingsTemplate.should_receive(:create).with(base_attrs.merge(template: template), without_protection: true)
 
           populator.execute
@@ -28,7 +28,7 @@ describe SettingsTemplatePopulator do
         before { attrs.merge!(suffix: 'without_close_button') }
 
         it 'creates the record in DB' do
-          template = HashWithIndifferentAccess.new(YAML.load_file(described_class::SETTINGS_TEMPLATES_DIR.join("lightbox_without_close_button_template.yml")))
+          template = YAML.load_file(described_class::SETTINGS_TEMPLATES_DIR.join("lightbox_without_close_button_template.yml")).symbolize_keys
           App::SettingsTemplate.should_receive(:create).with(base_attrs.merge(template: template), without_protection: true)
 
           populator.execute

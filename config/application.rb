@@ -10,6 +10,9 @@ Bundler.require *Rails.groups(assets: %w(development test))
 # If you want your assets lazily compiled in production, use this line
 # Bundler.setup(:default, :assets, Rails.env)
 
+# Required from svl, needed for rake assets:precompile when initialize_on_precompile is false
+require_dependency 'site_token'
+
 module MySublimeVideo
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -23,11 +26,24 @@ module MySublimeVideo
     # http://ileitch.github.com/2012/03/24/rails-32-code-reloading-from-lib.html
     config.watchable_dirs['lib'] = [:rb]
 
+    # http://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets
+    # For faster asset precompiles, you can partially load your application
+    # by setting config.assets.initialize_on_precompile to false
+    # in config/application.rb, though in that case templates cannot see
+    # application objects or methods. Heroku requires this to be false.
+    config.assets.initialize_on_precompile = false
+
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
     config.assets.precompile += %w[admin.js admin.css]
     config.assets.precompile += %w[invoices.css invoices_print.css]
+    # Duplicated from svl engine because not loader when initialize_on_precompile is false
+    config.assets.precompile += %w[errors.css ie.css]
 
-    config.assets.enabled = true
+     # Enable the asset pipeline
+     config.assets.enabled = true
+
+     # Version of your assets, change this if you want to expire all your assets
+     config.assets.version = '1.0'
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.

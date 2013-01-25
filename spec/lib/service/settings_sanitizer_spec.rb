@@ -8,6 +8,7 @@ describe Service::SettingsSanitizer do
   let(:kit)         { stub(design: stub, site: site, site_id: 1) }
   let(:addon_plan1) { stub(addon: stub(name: 'addonName1')) }
   let(:addon_plan2) { stub(addon: stub(name: 'addonName2')) }
+  let(:addon_plan3) { stub(addon: stub(name: 'addonName3')) }
   let(:settings_template) {
     {
       booleanSetting: {
@@ -60,6 +61,9 @@ describe Service::SettingsSanitizer do
         imageSetting: 'mydomain.com/image.png',
         urlSetting: 'mydomain.com',
         buttonsSetting: 'google+ foo  pinterest   bar twitter'
+      },
+      addonName3: {
+        urlSetting: ''
       }
     }
   }
@@ -69,8 +73,10 @@ describe Service::SettingsSanitizer do
     before do
       kit.stub_chain(:site, :addon_plan_for_addon_name).with(:addonName1) { addon_plan1 }
       kit.stub_chain(:site, :addon_plan_for_addon_name).with(:addonName2) { addon_plan2 }
+      kit.stub_chain(:site, :addon_plan_for_addon_name).with(:addonName3) { addon_plan3 }
       addon_plan1.stub_chain(:settings_template_for, :try) { settings_template }
       addon_plan2.stub_chain(:settings_template_for, :try) { settings_template }
+      addon_plan3.stub_chain(:settings_template_for, :try) { settings_template }
     end
 
     it 'returns sanitize settings' do
@@ -89,6 +95,9 @@ describe Service::SettingsSanitizer do
           imageSetting: 'http://mydomain.com/image.png',
           urlSetting: 'http://mydomain.com',
           buttonsSetting: 'google+ pinterest twitter'
+        },
+        'addonName3' => {
+          urlSetting: ''
         }
       }
     end
