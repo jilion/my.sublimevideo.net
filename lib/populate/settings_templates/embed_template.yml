@@ -7,3 +7,4 @@ enable:
 
 size:
   type: size
+  default: 640

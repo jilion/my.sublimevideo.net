@@ -1,0 +1,19 @@
+- all_buttons = params[:settings_template][:buttons][:item][:values]
+
+%h5= kit_setting_title(params)
+
+#sharing_button_sort.sort
+  %ul#social_sharing_active_buttons.drop_zone.connectedSortable
+    - params[:value].split(' ').each do |button|
+      %li.enabled{ data: { value: button } }= button.titleize
+
+  %div.spacer
+  %p.drag_note= "Drag and drop buttons above to enable and order them."
+
+  %ul#social_sharing_inactive_buttons.drop_zone.connectedSortable
+    - (all_buttons - params[:value].split(' ')).each do |button|
+      %li.disabled{ data: { value: button } }= button.titleize
+
+= hidden_field_tag kit_setting_input_field_name(params), params[:value], id: kit_setting_input_field_id(params), class: 'previewable', data: kit_setting_data(params)
+
+%div.spacer

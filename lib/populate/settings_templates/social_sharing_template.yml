@@ -28,8 +28,6 @@ buttons:
     default:
       - twitter
       - facebook
-      - pinterest
-      - google+
 
 text:
   type: string

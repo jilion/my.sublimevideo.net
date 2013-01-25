@@ -1,6 +1,0 @@
-- id = "kit_setting-#{params[:addon].name}-#{params[:setting_key]}"
-
-.entry
-  %span{ style: 'font-weight:600' }= label_tag id, t("kit.#{params[:addon].name}.settings.#{params[:setting_key]}")
-  = text_field_tag "kit[addons][#{params[:addon].name}][#{params[:setting_key]}]", params[:setting], id: id, class: 'text no_icon previewable', data: (params[:data] || {}).merge(addon: params[:addon].kind, setting: params[:setting_key], default: params[:setting])
-.spacer

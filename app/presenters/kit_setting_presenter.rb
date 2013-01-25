@@ -56,12 +56,12 @@ class KitSettingPresenter
           end
         when 'float'
           @view.render('kits/inputs/range', opts)
-        when 'string'
+        when 'string', 'url'
           if params[:setting_template][:values] && params[:setting_template][:values].many?
             @view.render('kits/inputs/radios', opts)
+          else
+            @view.render('kits/inputs/string', opts)
           end
-        when 'url'
-          @view.render('kits/inputs/text', opts)
         else
           @view.render("kits/inputs/#{params[:setting_template][:type]}", opts)
         end
@@ -76,12 +76,23 @@ class KitSettingPresenter
   private
 
   def populate_params!(params)
+    params[:data]                    ||= {}
     params[:addon]                   ||= @addon_plan.addon
     params[:settings_template]       ||= settings_template.symbolize_keys
     params[:setting_template]          = params[:settings_template][params[:setting_key].to_sym]
     params[:settings]                  = @kit.settings.symbolize_keys
     params[:setting]                   = @kit.settings[@addon_plan.addon.name][params[:setting_key].to_sym] rescue nil
+    params[:value]                     = get_value_from_params(params)
     (params[:data] ||= {})[:dependant] = @dependency if @dependency
+  end
+
+  def get_value_from_params(params)
+    case params[:setting_template][:type]
+    when 'array'
+      (params[:setting] || params[:setting_template][:item][:default]).join(' ')
+    else
+      params[:setting] || params[:setting_template][:default] || ''
+    end
   end
 
   def addon_name

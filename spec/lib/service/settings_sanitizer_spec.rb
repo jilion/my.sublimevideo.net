@@ -81,14 +81,14 @@ describe Service::SettingsSanitizer do
           stringSetting: 'foo',
           imageSetting: 'http://mydomain.com/image.png',
           urlSetting: '//mydomain.com',
-          buttonsSetting: ['google+', 'pinterest']
+          buttonsSetting: 'google+ pinterest'
         },
         'addonName2' => {
           booleanSetting: true,
           floatSetting: 0.45,
           imageSetting: 'http://mydomain.com/image.png',
           urlSetting: 'http://mydomain.com',
-          buttonsSetting: ['google+', 'pinterest', 'twitter']
+          buttonsSetting: 'google+ pinterest twitter'
         }
       }
     end

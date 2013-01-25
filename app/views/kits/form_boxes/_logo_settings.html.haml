@@ -17,4 +17,4 @@
       - elsif presenter.addon_plan.name == 'custom'
         = presenter.render_master_input_field(setting_key: 'enable', translation_key: :enable_custom) do
           = presenter.render_input_field(setting_key: 'type')
-          = presenter.render_input_field(setting_key: 'image_url', partial: 'logo/image_upload')
+          = presenter.render_input_field(setting_key: 'image_url', partial: 'logo/image_upload', presenter: presenter)

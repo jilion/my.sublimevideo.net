@@ -6,8 +6,8 @@
     - else
       .checkbox_wrap
         = hidden_field_tag "app_designs[#{design.name}]", '0'
-        = check_box_tag "app_designs[#{design.name}]", design.id, site.app_designs.include?(design), data: { price: design.price }
-      = label_tag "app_designs[#{design.name}]", design_label_content(design)
+        = check_box_tag "app_designs[#{design.name}]", design.id, site.app_designs.include?(design), id: "app_designs_#{design.name}", data: { price: design.price }
+      = label_tag "app_designs_#{design.name}", design_label_content(design)
   %td.trial_notice
   %td.price
     - if design_is_sponsored
