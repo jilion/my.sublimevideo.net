@@ -80,7 +80,6 @@ class MySublimeVideo.UI.KitEditor
         this.refreshVideoTagFromSettings()
 
   refreshVideoTagFromSettings: ->
-    # console.log @videoTagHelpers['standard'].generateDataSettings()
     sublime.reprepareVideo 'standard', @videoTagHelpers['standard'].generateDataSettings()
 
     if lightbox = sublime.lightbox('lightbox-trigger')
