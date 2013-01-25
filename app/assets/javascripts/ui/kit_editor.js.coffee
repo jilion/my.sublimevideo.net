@@ -72,13 +72,15 @@ class MySublimeVideo.UI.KitEditor
     socialSharingButtonsInputFieldId = 'kit_setting-social_sharing-buttons'
     $('#social_sharing_active_buttons, #social_sharing_inactive_buttons').disableSelection().sortable
       connectWith: '.connectedSortable'
+      over: (event, ui) =>
+        ui.item.toggleClass('enabled').toggleClass('disabled')
       stop: (event, ui) =>
         buttons = $('#social_sharing_active_buttons').sortable('toArray', { attribute: 'data-value' }).join(' ')
         $("##{socialSharingButtonsInputFieldId}").val(buttons)
         this.refreshVideoTagFromSettings()
 
   refreshVideoTagFromSettings: ->
-    console.log @videoTagHelpers['standard'].generateDataSettings()
+    # console.log @videoTagHelpers['standard'].generateDataSettings()
     sublime.reprepareVideo 'standard', @videoTagHelpers['standard'].generateDataSettings()
 
     if lightbox = sublime.lightbox('lightbox-trigger')
@@ -92,4 +94,4 @@ class MySublimeVideo.UI.KitEditor
       sublime.prepare('lightbox-trigger')
 
   updateValueDisplayer: ($el) ->
-    $("##{$el.attr('id')}_value").text Math.round($el.val() * 100) / 100
+    $el.siblings('.value_displayer').text Math.round($el.val() * 100) / 100
