@@ -86,9 +86,16 @@ en:
         icon: 'Choose icon:'
         url: 'Default sharing URL:'
         buttons: 'Social sharing buttons:'
+        image: 'Automatically use image from:'
+        title: 'Default title'
         text: 'Default sharing message:'
+        twitter_text: 'Default sharing message:'
         twitter_via: 'Twitter via username:'
         link_enable: 'Show sharing URL'
+      values:
+        image:
+          poster: 'Poster frame'
+          og: 'Open graph metadata'
 
     embed:
       title: 'Embed settings'

@@ -5,16 +5,16 @@ enable:
     - false
   default: true
 
-url:
-  type: url
-  values: ~
-
 icon:
   type: string
   values:
     - default
     - alt
   default: default
+
+url:
+  type: url
+  values: ~
 
 buttons:
   type: array
@@ -29,7 +29,17 @@ buttons:
       - twitter
       - facebook
 
+image:
+  type: string
+  values:
+    - poster
+    - og
+  default: poster
+
 text:
+  type: string
+
+twitter_text:
   type: string
 
 twitter_via:

@@ -127,21 +127,26 @@ class MySublimeVideo.Helpers.VideoTagHelper
         defaultValue    = this.getDefaultValue($el)
         dataSettingName = this.getDataSettingName(addonName, $el.data('setting'))
 
-        switch this.getInputType($el)
+        switch $el.attr('type')
           when 'range'
             this.processRangeInput(dataSettingName, currentValue, defaultValue)
           when 'checkbox'
-            this.processCheckBoxInput(dataSettingName, $el.attr('checked')?, defaultValue)
+            this.processCheckBoxInput(dataSettingName, $el.prop('checked'), defaultValue)
           else
             this.processInputWithValue(dataSettingName, currentValue, defaultValue)
-
-  getInputType: ($el) ->
-    $el.attr('type')
 
   getDefaultValue: ($el) ->
     defaultValue = $el.data('default')
 
-    if defaultValue is null then '' else defaultValue
+    switch defaultValue
+      when 'true'
+        true
+      when 'false'
+        false
+      when null
+        ''
+      else
+        defaultValue
 
   getDataSettingName: (addonName, settingName) ->
     (if _.contains(['video_player', 'lightbox'], addonName)
