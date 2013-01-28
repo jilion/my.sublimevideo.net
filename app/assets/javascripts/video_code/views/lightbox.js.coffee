@@ -31,7 +31,7 @@ class MSVVideoCode.Views.Lightbox extends Backbone.View
     MSVVideoCode.thumbnail.set(initialLink: event.target.value)
 
   updateSrc: (event) ->
-    $('#video_origin_own').attr('checked', true)
+    $('#video_origin_own').prop('checked', true)
     MSVVideoCode.thumbnail.setAndPreloadSrc(event.target.value)
 
   updateThumbWidth: (event) ->

@@ -110,7 +110,7 @@ MySublimeVideo.documentReady = ->
       _gaq.push(['_trackEvent', 'SignUp', 'Completed', undefined, 1, true]) if _gaq?
 
   $('form.disableable').on 'submit', (event) ->
-    $('button[type=submit]').attr('disabled', 'disabled')
+    $('button[type=submit]').prop('disabled', true)
 
 MySublimeVideo.prepareVideosAndLightboxes = ->
   sublime.ready ->

@@ -12,7 +12,7 @@ class MySublimeVideo.Helpers.FeedbackForm
 
   setupObserver: ->
     @cancelAccountCheckbox.on 'click', =>
-      if @cancelAccountCheckbox.attr('checked')?
+      if @cancelAccountCheckbox.prop('checked')
         @confirmPasswordBox.show()
         @currentPasswordField.attr('required', 'required')
         @feedbackForm.attr('action', '/account/cancel')

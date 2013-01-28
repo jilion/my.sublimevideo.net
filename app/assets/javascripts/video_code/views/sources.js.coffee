@@ -45,7 +45,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
       changed
 
   updateSrc: (event) ->
-    $('#video_origin_own').attr('checked', true)
+    $('#video_origin_own').prop('checked', true)
     MSVVideoCode.sources.byFormatAndQuality(this.getSourceAndQuality(event.target.id)).setAndPreloadSrc(event.target.value)
 
   updateYouTubeID: (event) ->

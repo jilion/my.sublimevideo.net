@@ -29,7 +29,7 @@ class MSVVideoCode.Views.Settings extends Backbone.View
   # EVENTS
   #
   updatePosterSrc: (event) ->
-    $('#video_origin_own').attr('checked', true)
+    $('#video_origin_own').prop('checked', true)
     MSVVideoCode.poster.setAndPreloadSrc(event.target.value)
     MSVVideoCode.video.set(testAssetsUsed: false)
 

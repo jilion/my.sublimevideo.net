@@ -31,7 +31,7 @@ class MySublimeVideo.Helpers.SupportRequest
       this.setupCurrentEnv()
 
   setupCurrentEnv: ->
-    if @currentEnvCheckbox.attr('checked')?
+    if @currentEnvCheckbox.prop('checked')
       if (!$.trim(@envTextArea.val()))
         this.setCurrentEnv()
       else if confirm 'This will reset what you already added in the textarea and replace it with your current environment information.'

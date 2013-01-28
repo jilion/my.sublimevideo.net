@@ -17,7 +17,7 @@ class MySublimeVideo.UI.AddonsChooser
   toggleTrialNotice: (element) ->
     $("[name='#{element.attr('name')}']").parents('tr').find('td .trial_days_remaining').hide()
     trialDaysRemainingDiv = element.parents('tr').find('td .trial_days_remaining')
-    if element.attr('checked')?
+    if element.prop('checked')
       trialDaysRemainingDiv.show()
     else
       trialDaysRemainingDiv.hide()
