@@ -21,5 +21,5 @@ class MSVStats.Views.ExportView extends Backbone.View
           site_token: MSVStats.site.get('token')
           from: @options.period.startTime() / 1000
           to: @options.period.endTime() / 1000
-      $(@el).find('button').attr('disabled', 'disabled')
+      $(@el).find('button').prop('disabled', true)
       $(@el).find('button span').html("Processing...")

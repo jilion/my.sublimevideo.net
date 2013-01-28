@@ -19,6 +19,6 @@ class MySublimeVideo.UI.DependantInputs
     $dependantInputs = $("input[data-dependant=#{$el.data('master')}]")
 
     if $el.prop('checked')
-      $dependantInputs.removeAttr 'disabled'
+      $dependantInputs.prop('disabled', false)
     else
-      $dependantInputs.attr 'disabled', 'disabled'
+      $dependantInputs.prop('disabled', true)

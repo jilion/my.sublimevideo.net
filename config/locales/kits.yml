@@ -94,8 +94,8 @@ en:
         link_enable: 'Show sharing URL'
       values:
         image:
+          auto: 'Open graph metadata'
           poster: 'Poster frame'
-          og: 'Open graph metadata'
 
     embed:
       title: 'Embed settings'

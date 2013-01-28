@@ -32,9 +32,9 @@ buttons:
 image:
   type: string
   values:
+    - auto
     - poster
-    - og
-  default: poster
+  default: auto
 
 text:
   type: string
