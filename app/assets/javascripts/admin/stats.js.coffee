@@ -1,8 +1,6 @@
-#= require underscore.date
 #= require backbone
 #= require hamlcoffee
-#= require spin/jquery.spin
-#= require jquery.ui.datepicker.min
+#= require jquery.spin
 #= require highstock/highstock
 #
 #= require_tree ../templates
