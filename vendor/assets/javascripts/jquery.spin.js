@@ -1,4 +1,4 @@
-//= require spin/spin
+//= require spin/spin.min
 
 jQuery.fn.spin = function(opts) {
   this.each(function() {
