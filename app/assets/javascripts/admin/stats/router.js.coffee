@@ -55,13 +55,12 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
         useUTC: true
 
   initKeyboardShortcuts: ->
-    $(document).keypress (event) =>
-      if event.which is 114 and !event.metaKey # the 'r' key is pressed without the 'cmd' key
-        event.preventDefault()
-        _.each AdminSublimeVideo.stats, (collection) -> collection.selected = []
-        $('a.selector').removeClass 'active'
-        this.clearUrl()
-        AdminSublimeVideo.period.change() # redraw the chart
+    Mousetrap.bind 'r', =>
+      event.preventDefault()
+      _.each AdminSublimeVideo.stats, (collection) -> collection.selected = []
+      $('a.selector').removeClass 'active'
+      this.clearUrl()
+      AdminSublimeVideo.period.change() # redraw the chart
 
   fetchStats: ->
     @fetchedStatsCount = 0

@@ -2,8 +2,8 @@
 #= require jquery.pjax
 #= require underscore
 #= require highcharts/highcharts
-#= require backbone
 #= require mousetrap.min
+#= require backbone
 #
 #= require_self
 #= require_tree ./helpers

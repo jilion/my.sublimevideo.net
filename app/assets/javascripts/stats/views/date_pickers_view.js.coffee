@@ -9,7 +9,7 @@ class MSVStats.Views.DatePickersView extends Backbone.View
   initialize: ->
     $(@el).html(this.template())
     $(document).click this.close
-    $(document).keydown this.closeIfEsc
+    Mousetrap.bind 'esc', => this.close()
 
   render: ->
     if $(@el).is(":visible") then this.close() else this.show()
@@ -22,11 +22,6 @@ class MSVStats.Views.DatePickersView extends Backbone.View
   close: =>
     $(@el).hide()
     this.destroyDatePickers()
-
-  closeIfEsc: (event) =>
-    if event.keyCode == 27
-      $(@el).hide()
-      this.destroyDatePickers()
 
   apply: ->
     startTime = this.convertDateToUTC('#start_time_picker')
@@ -67,7 +62,7 @@ class MSVStats.Views.DatePickersView extends Backbone.View
 
   convertPickerDate: (pickerDate) ->
     [year, month, day] = pickerDate.split('-')
-    Date.UTC(year, parseInt(month) - 1, day)
+    Date.UTC(year, parseInt(month, 10) - 1, day)
 
   convertDateToUTC: (datePicker) ->
     date = $(datePicker).datepicker('getDate')

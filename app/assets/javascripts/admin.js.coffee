@@ -2,6 +2,7 @@
 #= require jquery.pjax
 #= require underscore
 #= require highcharts/highcharts
+#= require mousetrap.min
 #= require chosen-jquery
 #
 #= require_self

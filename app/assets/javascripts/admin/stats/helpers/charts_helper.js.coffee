@@ -391,7 +391,8 @@ class AdminSublimeVideo.Helpers.ChartsHelper
                       'display': 'none'
                     popUp.html content
 
-                    $(document).keydown (event) -> if event.which is 27 then popUp.remove() # the 'esc' key is pressed
+                    Mousetrap.bind 'esc', -> popUp.remove()
+
                     popUp.click (event) -> if !event.metaKey then popUp.remove()
 
                     $("#content}").append popUp

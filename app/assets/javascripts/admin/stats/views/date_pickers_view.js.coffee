@@ -9,7 +9,7 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
   initialize: ->
     $(@el).html(this.template())
     $(document).click this.close
-    $(document).keydown this.closeIfEsc
+    Mousetrap.bind 'esc', => this.close()
 
   render: ->
     if $(@el).is(":visible") then this.close() else this.show()
@@ -23,11 +23,6 @@ class AdminSublimeVideo.Views.DatePickersView extends Backbone.View
   close: =>
     $(@el).hide()
     this.destroyDatePickers()
-
-  closeIfEsc: (event) =>
-    if event.keyCode == 27
-      $(@el).hide()
-      this.destroyDatePickers()
 
   apply: ->
     newStart = this.convertDateToUTC('#start_time_picker')
