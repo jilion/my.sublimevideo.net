@@ -80,8 +80,6 @@ class MySublimeVideo.UI.KitEditor
       connectWith: '.drop_zone'
       over: (event, ui) =>
         this.toggleReceiveDropZoneHighlight(ui.item)
-      # out: (event, ui) =>
-      #   this.toggleReceiveDropZoneHighlight(ui.item)
       receive: (event, ui) =>
         ui.item.toggleClass('enabled').toggleClass('disabled')
       stop: (event, ui) =>
@@ -89,7 +87,7 @@ class MySublimeVideo.UI.KitEditor
         buttons = $('#social_sharing_active_buttons').sortable('toArray', { attribute: 'data-value' }).join(' ')
         $("##{socialSharingButtonsInputFieldId}").val(buttons)
         this.refreshVideoTagFromSettings()
-  
+
   toggleReceiveDropZoneHighlight: ($item) ->
     if $item.parent().attr('id') is 'social_sharing_active_buttons'
       $('#social_sharing_inactive_buttons').toggleClass('highlight')
