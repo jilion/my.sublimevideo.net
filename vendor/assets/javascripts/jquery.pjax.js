@@ -4,28 +4,36 @@
 
 (function($){
 
-// When called on a link, fetches the href with ajax into the
-// container specified as the first parameter or with the data-pjax
-// attribute on the link itself.
+// When called on a container with a selector, fetches the href with
+// ajax into the container or with the data-pjax attribute on the link
+// itself.
 //
 // Tries to make sure the back button and ctrl+click work the way
 // you'd expect.
 //
+// Exported as $.fn.pjax
+//
 // Accepts a jQuery ajax options object that may include these
 // pjax specific options:
 //
+//
 // container - Where to stick the response body. Usually a String selector.
 //             $(container).html(xhr.responseBody)
+//             (default: current jquery context)
 //      push - Whether to pushState the URL. Defaults to true (of course).
 //   replace - Want to use replaceState instead? That's cool.
 //
-// For convenience the first parameter can be either the container or
+// For convenience the second parameter can be either the container or
 // the options object.
 //
 // Returns the jQuery object
-function fnPjax(container, options) {
-  return this.live('click.pjax', function(event){
-    handleClick(event, container, options)
+function fnPjax(selector, container, options) {
+  var context = this
+  return this.on('click.pjax', selector, function(event) {
+    var opts = $.extend({}, optionsFor(container, options))
+    if (!opts.container)
+      opts.container = $(this).attr('data-pjax') || context
+    handleClick(event, opts)
   })
 }
 
@@ -38,9 +46,9 @@ function fnPjax(container, options) {
 //
 // Examples
 //
-//   $('a').live('click', $.pjax.click)
+//   $(document).on('click', 'a', $.pjax.click)
 //   // is the same as
-//   $('a').pjax()
+//   $(document).pjax('a')
 //
 //  $(document).on('click', 'a', function(event) {
 //    var container = $(this).closest('[data-pjax-container]')
@@ -58,7 +66,7 @@ function handleClick(event, container, options) {
 
   // Middle click, cmd click, and ctrl click should open
   // links in a new tab as normal.
-  if ( event.which > 1 || event.metaKey || event.ctrlKey )
+  if ( event.which > 1 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey )
     return
 
   // Ignore cross origin links
@@ -78,7 +86,6 @@ function handleClick(event, container, options) {
     url: link.href,
     container: $(link).attr('data-pjax'),
     target: link,
-    clickedElement: $(link), // DEPRECATED: use target
     fragment: null
   }
 
@@ -116,8 +123,7 @@ function handleSubmit(event, container, options) {
     data: $(form).serializeArray(),
     container: $(form).attr('data-pjax'),
     target: form,
-    fragment: null,
-    timeout: 0
+    fragment: null
   }
 
   pjax($.extend({}, defaults, options))
@@ -153,17 +159,7 @@ function pjax(options) {
 
   var target = options.target
 
-  // DEPRECATED: use options.target
-  if (!target && options.clickedElement) target = options.clickedElement[0]
-
   var hash = parseURL(options.url).hash
-
-  // DEPRECATED: Save references to original event callbacks. However,
-  // listening for custom pjax:* events is prefered.
-  var oldBeforeSend = options.beforeSend,
-      oldComplete   = options.complete,
-      oldSuccess    = options.success,
-      oldError      = options.error
 
   var context = options.context = findContainerFor(options.container)
 
@@ -189,6 +185,12 @@ function pjax(options) {
       settings.timeout = 0
     }
 
+    xhr.setRequestHeader('X-PJAX', 'true')
+    xhr.setRequestHeader('X-PJAX-Container', context.selector)
+
+    if (!fire('pjax:beforeSend', [xhr, settings]))
+      return false
+
     if (settings.timeout > 0) {
       timeoutTimer = setTimeout(function() {
         if (fire('pjax:timeout', [xhr, options]))
@@ -199,20 +201,6 @@ function pjax(options) {
       settings.timeout = 0
     }
 
-    xhr.setRequestHeader('X-PJAX', 'true')
-    xhr.setRequestHeader('X-PJAX-Container', context.selector)
-
-    var result
-
-    // DEPRECATED: Invoke original `beforeSend` handler
-    if (oldBeforeSend) {
-      result = oldBeforeSend.apply(this, arguments)
-      if (result === false) return false
-    }
-
-    if (!fire('pjax:beforeSend', [xhr, settings]))
-      return false
-
     options.requestUrl = parseURL(settings.url).href
   }
 
@@ -220,25 +208,18 @@ function pjax(options) {
     if (timeoutTimer)
       clearTimeout(timeoutTimer)
 
-    // DEPRECATED: Invoke original `complete` handler
-    if (oldComplete) oldComplete.apply(this, arguments)
-
     fire('pjax:complete', [xhr, textStatus, options])
 
     fire('pjax:end', [xhr, options])
-    // end.pjax is deprecated
-    fire('end.pjax', [xhr, options])
   }
 
   options.error = function(xhr, textStatus, errorThrown) {
     var container = extractContainer("", xhr, options)
 
-    // DEPRECATED: Invoke original `error` handler
-    if (oldError) oldError.apply(this, arguments)
-
     var allowed = fire('pjax:error', [xhr, textStatus, errorThrown, options])
-    if (textStatus !== 'abort' && allowed)
+    if (options.type == 'GET' && textStatus !== 'abort' && allowed) {
       locationReplace(container.url)
+    }
   }
 
   options.success = function(data, status, xhr) {
@@ -291,9 +272,6 @@ function pjax(options) {
       if (target.length) $(window).scrollTop(target.offset().top)
     }
 
-    // DEPRECATED: Invoke original `success` handler
-    if (oldSuccess) oldSuccess.apply(this, arguments)
-
     fire('pjax:success', [data, status, xhr, options])
   }
 
@@ -325,9 +303,6 @@ function pjax(options) {
   var xhr = pjax.xhr = $.ajax(options)
 
   if (xhr.readyState > 0) {
-    // pjax event is deprecated
-    $(document).trigger('pjax', [xhr, options])
-
     if (options.push && !options.replace) {
       // Cache current container element before replacing it
       cachePush(pjax.state.id, context.clone().contents())
@@ -336,9 +311,6 @@ function pjax(options) {
     }
 
     fire('pjax:start', [xhr, options])
-    // start.pjax is deprecated
-    fire('start.pjax', [xhr, options])
-
     fire('pjax:send', [xhr, options])
   }
 
@@ -390,6 +362,11 @@ function onPjaxPopstate(event) {
         // Cache current container before replacement and inform the
         // cache which direction the history shifted.
         cachePop(direction, pjax.state.id, container.clone().contents())
+      } else {
+        // Page was reloaded but we have an existing history entry.
+        // Set it to our initial state.
+        pjax.state = state;
+        return;
       }
 
       var popstateEvent = $.Event('pjax:popstate', {
@@ -409,19 +386,13 @@ function onPjaxPopstate(event) {
       }
 
       if (contents) {
-        // pjax event is deprecated
-        $(document).trigger('pjax', [null, options])
         container.trigger('pjax:start', [null, options])
-        // end.pjax event is deprecated
-        container.trigger('start.pjax', [null, options])
 
         if (state.title) document.title = state.title
         container.html(contents)
         pjax.state = state
 
         container.trigger('pjax:end', [null, options])
-        // end.pjax event is deprecated
-        container.trigger('end.pjax', [null, options])
       } else {
         pjax(options)
       }
@@ -577,6 +548,10 @@ function findAll(elems, selector) {
   return elems.filter(selector).add(elems.find(selector));
 }
 
+function parseHTML(html) {
+  return $.parseHTML(html, document, true)
+}
+
 // Internal: Extracts container and metadata from response.
 //
 // 1. Extracts X-PJAX-URL header if set
@@ -596,20 +571,29 @@ function extractContainer(data, xhr, options) {
   obj.url = stripPjaxParam(xhr.getResponseHeader('X-PJAX-URL') || options.requestUrl)
 
   // Attempt to parse response html into elements
-  var $data = $(data)
+  if (/<html/i.test(data)) {
+    var $head = $(parseHTML(data.match(/<head[^>]*>([\s\S.]*)<\/head>/i)[0]))
+    var $body = $(parseHTML(data.match(/<body[^>]*>([\s\S.]*)<\/body>/i)[0]))
+  } else {
+    var $head = $body = $(parseHTML(data))
+  }
 
   // If response data is empty, return fast
-  if ($data.length === 0)
+  if ($body.length === 0)
     return obj
 
-  // If there's a <title> tag in the response, use it as
+  // If there's a <title> tag in the header, use it as
   // the page's title.
-  obj.title = findAll($data, 'title').last().text()
+  obj.title = findAll($head, 'title').last().text()
 
   if (options.fragment) {
     // If they specified a fragment, look for it in the response
     // and pull it out.
-    var $fragment = findAll($data, options.fragment).first()
+    if (options.fragment === 'body') {
+      var $fragment = $body
+    } else {
+      var $fragment = findAll($body, options.fragment).first()
+    }
 
     if ($fragment.length) {
       obj.contents = $fragment.contents()
@@ -621,7 +605,7 @@ function extractContainer(data, xhr, options) {
     }
 
   } else if (!/<html/i.test(data)) {
-    obj.contents = $data
+    obj.contents = $body
   }
 
   // Clean up any <title> tags
@@ -739,7 +723,8 @@ function disable() {
   $.pjax.disable = $.noop
   $.pjax.click = $.noop
   $.pjax.submit = $.noop
-  $.pjax.reload = window.location.reload
+  $.pjax.reload = function() { window.location.reload() }
+
   $(window).unbind('popstate.pjax', onPjaxPopstate)
 }
 
