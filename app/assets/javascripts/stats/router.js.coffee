@@ -164,14 +164,13 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
         useUTC: if useUTC? then useUTC else MSVStats.period.isDays()
 
   initSparkline: ->
-    # $.fn.sparkline.defaults.line.lineColor       = '#0046ff'
-    # $.fn.sparkline.defaults.line.fillColor       = '#0046ff'
-    $.fn.sparkline.defaults.line.spotRadius      = 0
-    $.fn.sparkline.defaults.line.lineWidth       = 0
-    $.fn.sparkline.defaults.line.spotColor       = false
-    $.fn.sparkline.defaults.line.minSpotColor    = false
-    $.fn.sparkline.defaults.line.maxSpotColor    = false
-    $.fn.sparkline.defaults.line.drawNormalOnTop = true
-    $.fn.sparkline.defaults.line.chartRangeClip  = true
-    $.fn.sparkline.defaults.line.chartRangeMin   = 0
-    # $.fn.sparkline.defaults.line.chartRangeMax   = 0
+    $.fn.sparkline.defaults.line.disableHighlight = true
+    $.fn.sparkline.defaults.line.disableTooltips  = true
+    $.fn.sparkline.defaults.line.spotRadius       = 0
+    $.fn.sparkline.defaults.line.lineWidth        = 0
+    $.fn.sparkline.defaults.line.spotColor        = false
+    $.fn.sparkline.defaults.line.minSpotColor     = false
+    $.fn.sparkline.defaults.line.maxSpotColor     = false
+    $.fn.sparkline.defaults.line.drawNormalOnTop  = true
+    $.fn.sparkline.defaults.line.chartRangeClip   = true
+    $.fn.sparkline.defaults.line.chartRangeMin    = 0

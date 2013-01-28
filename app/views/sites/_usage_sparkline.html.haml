@@ -1,0 +1,12 @@
+- plays = site.last_30_days_billable_video_views_array
+
+.sparkline{ id: "usage_sparkline_#{site.token}" }
+  :coffeescript
+    $('#usage_sparkline_#{site.token}').sparkline #{plays},
+      width:    '100%'
+      height:   '28px'
+      lineColor: '#00ff18'
+      disableHighlight: true
+      disableTooltips: true
+      spotRadius: 0
+      fillColor: 'rgba(79,249,99,.4)'
