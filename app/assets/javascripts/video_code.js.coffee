@@ -1,5 +1,5 @@
 #= require hamlcoffee
-#= require spin/jquery.spin
+#= require jquery.spin
 #= require video-size-checker/sublimevideo-size-checker.min
 #= require crc32
 #= require inflection

@@ -1,8 +1,6 @@
-#= require underscore.date
 #= require hamlcoffee
-#= require spin/jquery.spin
-#= require jquery.sparkline
-#= require jquery.ui.datepicker.min
+#= require jquery.spin
+#= require jquery.sparkline.min
 #
 #= require_self
 #= require_tree ./stats
