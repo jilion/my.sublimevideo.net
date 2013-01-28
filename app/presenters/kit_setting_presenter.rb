@@ -35,10 +35,9 @@ class KitSettingPresenter
     params[:data][:master] = "#{@addon_plan.addon.name}-#{params[:setting_key]}"
 
     @view.haml_concat(render_input_field(params))
+    @view.haml_tag('div', @view.capture_haml { yield }, class: 'indent', data: { dependant: params[:data][:master] })
 
-    @dependency = params[:data][:master]
-    @view.haml_tag('div.indent', @view.capture_haml { yield })
-    @dependency = nil
+    nil
   end
 
   def render_input_field(params = {})
@@ -83,7 +82,6 @@ class KitSettingPresenter
     params[:settings]                  = @kit.settings.symbolize_keys
     params[:setting]                   = @kit.settings[@addon_plan.addon.name][params[:setting_key].to_sym] rescue nil
     params[:value]                     = get_value_from_params(params)
-    (params[:data] ||= {})[:dependant] = @dependency if @dependency
   end
 
   def get_value_from_params(params)

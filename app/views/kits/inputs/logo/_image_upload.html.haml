@@ -22,10 +22,10 @@
         old_custom_logo_path: '#{cdn_path_from_full_url(params[:value])}'
   = hidden_field_tag kit_setting_input_field_name(params), params[:value], id: kit_setting_input_field_id(params), class: 'previewable', data: kit_setting_data(params)
 
-.entry= params[:presenter].render_input_field(setting_key: :position, data: { dependant: 'logo-enable' }, show_title: true, partial: 'logo/corners_position_radios')
+.entry= params[:presenter].render_input_field(setting_key: :position, show_title: true, partial: 'logo/corners_position_radios')
 
-.entry= params[:presenter].render_input_field(setting_key: :visibility, data: { dependant: 'logo-enable' }, translation_key: :visibility_custom, show_title: true)
+.entry= params[:presenter].render_input_field(setting_key: :visibility, translation_key: :visibility_custom, show_title: true)
 
 .entry.custom_logo_fields{ style: current_type == 'sv' ? 'display:none' : nil }
-  = params[:presenter].render_input_field(setting_key: :link_url, data: { dependant: 'logo-enable' })
+  = params[:presenter].render_input_field(setting_key: :link_url)
 .spacer

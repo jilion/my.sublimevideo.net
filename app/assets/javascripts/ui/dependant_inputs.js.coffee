@@ -1,24 +1,32 @@
 class MySublimeVideo.UI.DependantInputs
   constructor: ->
-    @$lightboxTestButton = $('#lightbox-test-button')
-
+    @masterInputs = $('input[type=checkbox][data-master]')
     this.setupInputsInitialState()
     this.setupInputsObservers()
 
   setupInputsInitialState: ->
-    $('input[type=checkbox][data-master]').each (index, el) =>
-      this.toggleDependantInputs($(el))
+    @masterInputs.each (index, el) =>
+      this.toggleDependantInputsOnInit($(el))
 
   setupInputsObservers: ->
-    $('input[type=checkbox][data-master]').each (index, el) =>
+    @masterInputs.each (index, el) =>
       $el = $(el)
       $el.on 'click', (e) =>
-        this.toggleDependantInputs($el)
+        this.toggleDependantInputsOnClick($el)
+
+  toggleDependantInputsOnInit: ($el) ->
+    this.toggleDependantInputs($el)
+
+  toggleDependantInputsOnClick: ($el) ->
+    this.toggleDependantInputs($el)
+    this.toggleSortableWidget($el)
 
   toggleDependantInputs: ($el) ->
-    $dependantInputs = $("input[data-dependant=#{$el.data('master')}]")
+    $dependantDiv    = $("div[data-dependant=#{$el.data('master')}]")
+    $dependantInputs = $dependantDiv.find('input')
 
-    if $el.prop('checked')
-      $dependantInputs.prop('disabled', false)
-    else
-      $dependantInputs.prop('disabled', true)
+    $dependantDiv.toggleClass('disabled', !$el.prop('checked'))
+    $dependantInputs.prop('disabled', !$el.prop('checked'))
+
+  toggleSortableWidget: ($el) ->
+    $('.drop_zone').sortable(if $el.prop('checked') then 'enable' else 'disable')
