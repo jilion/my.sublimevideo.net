@@ -6,6 +6,7 @@ ruby '1.9.3'
 gem 'bundler'
 
 gem 'rails', '3.2.11'
+gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 
 # Databases
 gem 'pg'
@@ -113,7 +114,6 @@ gem 'youtube_it'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
   gem 'asset_sync'
   gem 'eco'
   gem 'uglifier'
