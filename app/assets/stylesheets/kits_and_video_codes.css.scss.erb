@@ -361,12 +361,18 @@ h4.expanding_handler.expanded a {
   height:42px !important;
 }
 
-#sharing_button_sort ul#social_sharing_inactive_buttons.drop_zone li {
+#sharing_button_sort ul#social_sharing_inactive_buttons.drop_zone li,
+.kit_editor .disabled #sharing_button_sort ul#social_sharing_inactive_buttons.drop_zone:hover li {
   opacity:0.6;
 }
 
 #sharing_button_sort ul#social_sharing_inactive_buttons.drop_zone:hover li {
   opacity:1;
+}
+
+.kit_editor .disabled #sharing_button_sort ul.drop_zone li {
+  opacity:0.6;
+  cursor:default;
 }
 
 #sharing_button_sort ul.drop_zone li.enabled {
