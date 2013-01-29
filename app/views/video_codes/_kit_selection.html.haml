@@ -1,2 +1,2 @@
 = label_tag :kit_id, 'Player:'
-= select_tag :kit_id, kits_for_select(site), data: { settings: mangled_kits_settings(site), default: kit.identifier }
+= select_tag :kit_id, kits_for_select(site), data: { addon: 'player', setting: 'kit', default: site.default_kit.identifier }

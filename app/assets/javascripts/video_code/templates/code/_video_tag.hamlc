@@ -7,4 +7,4 @@
 %form
   .embed_code.entry
     %textarea{ readonly: true, onclick: "this.focus();this.select();" }
-      = new MySublimeVideo.Helpers.VideoTagHelper(@video).generatePlayerCode(_.extend(@options, { id: 'video1' }))
+      = @videoTagHelper.generatePlayerCode({ id: 'video1', settings: @settings })

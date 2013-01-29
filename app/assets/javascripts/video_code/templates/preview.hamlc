@@ -1,6 +1,6 @@
 - width  = if @video.get('displayInLightbox') then @video.get('thumbnail').get('thumbWidth') else @video.get('width')
 - height = if @video.get('displayInLightbox') then @video.get('thumbnail').get('thumbHeight') else @video.get('height')
-- code = new MySublimeVideo.Helpers.VideoTagHelper(@video).generatePlayerCode(id: 'video-preview', lightboxId: 'lightbox-trigger', class: '')
+- code = @videoTagHelper.generatePlayerCode(id: 'video-preview', lightboxId: 'lightbox-trigger', class: '', settings: @settings)
 
 - if !@video.get('displayInLightbox') or @video.get('thumbnail').get('initialLink') is 'image'
   .video_wrap{ style: "width:#{width}px;height:#{height}px;" }!= code

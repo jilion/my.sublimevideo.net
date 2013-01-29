@@ -48,7 +48,7 @@ module Service
         @sanitized_settings[addon_name][setting_key] = setting_value
 
       when 'string'
-        if value_is_allowed?(setting_value, addon_plan_setting_template[:values])
+        if addon_plan_setting_template[:values].nil? || value_is_allowed?(setting_value, addon_plan_setting_template[:values])
           @sanitized_settings[addon_name][setting_key] = setting_value
         end
 

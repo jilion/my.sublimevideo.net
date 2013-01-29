@@ -2,8 +2,10 @@
   $(document).ready ->
     SublimeVideoSizeChecker.setRoot('/video-size-checker/')
     window.MSVVideoCode.builderRouter = new MSVVideoCode.Routers.BuilderRouter
-      sites: #{@sites.try(:to_json) || []}
+      sites: #{@sites.to_json}
       selectedSiteToken: '#{@site.token}'
+      kits: #{@site.kits.to_json}
+      defaultKitIdentifier: '#{@site.default_kit.identifier}'
 
 .white_box
   %h4.title Preview
@@ -15,12 +17,12 @@
 
 .white_box
   #kit_selection
-    .entry.design.select= render 'video_codes/kit_selection', site: site, kit: kit
+    .entry.design.select= render 'video_codes/kit_selection', site: site
 
   #video_sources.expandable_settings_box
     %h4.expanding_handler.expanded
       = link_to "Video sources", ''
-    .expandable{ style: 'display:block' }
+    .expandable.expanded
       #video_source_type
         .radio_wrap
           = radio_button_tag "video_origin", "test", checked: true
@@ -45,7 +47,11 @@
     %h4.expanding_handler
       = link_to "#{t('addons.lightbox')} settings", ''
     #lightbox_settings_fields.expandable
-  #poster
+
+  #social_sharing_settings.expandable_settings_box
+    %h4.expanding_handler
+      = link_to "#{t('addons.social_sharing')} settings", ''
+    #social_sharing_settings_fields.expandable
 .spacer
 
 .big_break

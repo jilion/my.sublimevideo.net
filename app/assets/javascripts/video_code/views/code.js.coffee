@@ -5,20 +5,24 @@ class MSVVideoCode.Views.Code extends Backbone.View
     'click .get_the_code': 'render'
 
   initialize: ->
-    @$kitSelector = $('#kit_id')
+    @videoTagHelper        = new MySublimeVideo.Helpers.VideoTagHelper(MSVVideoCode.video)
+    @videoTagNoticesHelper = new MSVVideoCode.Helpers.VideoTagNoticesHelper(MSVVideoCode.video)
 
   #
   # BINDINGS
   #
   render: ->
-    options = {}
-    options['playerKit'] = @$kitSelector.val() unless @$kitSelector.val() is @$kitSelector.data('default').toString()
+    settings = {}
+    settings['player'] = { 'kit': MSVVideoCode.kits.selected.get('identifier') } unless MSVVideoCode.kits.defaultKitSelected()
+    _.extend(settings, MSVVideoCode.video.get('settings'))
 
     @popup = SublimeVideo.UI.Utils.openPopup
       class: 'popup'
       id: 'popup_code'
       content: this.template
         video: MSVVideoCode.video
-        options: options
+        videoTagHelper: @videoTagHelper
+        videoTagNoticesHelper: @videoTagNoticesHelper
+        settings: settings
 
     false

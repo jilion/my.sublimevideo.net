@@ -7,7 +7,11 @@ module KitsHelper
   end
 
   def mangled_kits_settings(site)
-    @mangled_kits_settings ||= App::Mangler.mangle(Service::Settings.new(site, 'settings').kits)
+    @mangled_kits_settings ||= App::Mangler.mangle(kits_settings(site))
+  end
+
+  def kits_settings(site)
+    @kits_settings ||= Service::Settings.new(site, 'settings').kits
   end
 
   def app_designs_for_select(site, kit)
@@ -55,9 +59,8 @@ module KitsHelper
   end
 
   def kits_for_select(site)
-    items = site.kits.order(:identifier).inject([]) do |memo, kit|
-      kit = exhibit(kit)
-      memo << [kit.name, kit.identifier]
+    items = site.kits.includes(:design).order(:identifier).inject([]) do |memo, kit|
+      memo << [kit.name, kit.identifier, { 'data-kit-id' => PreviewKit.kit_identifer(kit.design.name) }]
     end
 
     options_for_select(items, site.default_kit.identifier)

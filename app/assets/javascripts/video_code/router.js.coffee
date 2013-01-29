@@ -1,7 +1,9 @@
 class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
   initialize: (options) ->
-    @sites             = options['sites']
-    @selectedSiteToken = options['selectedSiteToken']
+    @sites                = options['sites']
+    @selectedSiteToken    = options['selectedSiteToken']
+    @kits                 = options['kits']
+    @defaultKitIdentifier = options['defaultKitIdentifier']
 
     this.initModels()
     this.initViews()
@@ -14,6 +16,10 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
   initModels: ->
     MSVVideoCode.sites = new MySublimeVideo.Collections.Sites(@sites)
     MSVVideoCode.sites.select @selectedSiteToken
+
+    MSVVideoCode.kits = new MySublimeVideo.Collections.Kits(@kits)
+    MSVVideoCode.kits.setDefaultKit(@defaultKitIdentifier)
+    MSVVideoCode.kits.select @defaultKitIdentifier
 
     MSVVideoCode.video     = new MySublimeVideo.Models.Video
     MSVVideoCode.sources   = new MySublimeVideo.Collections.Sources
@@ -52,10 +58,14 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCode.video.clearDataUIDAndName()
 
   initViews: ->
-    MSVVideoCode.previewView = new MSVVideoCode.Views.Preview
-      el: '#preview'
+    MSVVideoCode.previewView = if $('#video_code_form').prop('data-assistant') is 'true'
+      new MSVVideoCode.Views.Preview
+        el: '#preview'
+    else
+      new MSVVideoCode.Views.PreviewAssistant
+        el: '#preview'
 
-    MSVVideoCode.sourcesView = new MSVVideoCode.Views.Kit
+    MSVVideoCode.kitView = new MSVVideoCode.Views.Kit
       el: '#kit_selection'
 
     MSVVideoCode.sourcesView = new MSVVideoCode.Views.Sources
@@ -66,6 +76,9 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoCode.lightboxView = new MSVVideoCode.Views.Lightbox
       el: '#lightbox_settings'
+
+    MSVVideoCode.socialSharingView = new MSVVideoCode.Views.SocialSharing
+      el: '#social_sharing_settings'
 
     if $('.get_the_code').exists()
       MSVVideoCode.codeView = new MSVVideoCode.Views.Code

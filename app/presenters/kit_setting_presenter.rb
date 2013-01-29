@@ -75,19 +75,19 @@ class KitSettingPresenter
   private
 
   def populate_params!(params)
-    params[:data]                    ||= {}
-    params[:addon]                   ||= @addon_plan.addon
-    params[:settings_template]       ||= settings_template.symbolize_keys
-    params[:setting_template]          = params[:settings_template][params[:setting_key].to_sym]
-    params[:settings]                  = @kit.settings.symbolize_keys
-    params[:setting]                   = @kit.settings[@addon_plan.addon.name][params[:setting_key].to_sym] rescue nil
-    params[:value]                     = get_value_from_params(params)
+    params[:data]              ||= {}
+    params[:addon]             ||= @addon_plan.addon
+    params[:settings_template] ||= settings_template.symbolize_keys
+    params[:setting_template]    = params[:settings_template][params[:setting_key].to_sym]
+    params[:settings]            = @kit.settings.symbolize_keys
+    params[:setting]             = @kit.settings[@addon_plan.addon.name][params[:setting_key].to_sym] rescue nil
+    params[:value]               = get_value_from_params(params)
   end
 
   def get_value_from_params(params)
     case params[:setting_template][:type]
     when 'array'
-      (params[:setting] || params[:setting_template][:item][:default]).join(' ')
+      params[:setting] || params[:setting_template][:item][:default].join(' ')
     else
       params[:setting] || params[:setting_template][:default] || ''
     end

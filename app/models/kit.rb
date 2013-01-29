@@ -7,7 +7,8 @@ class Kit < ActiveRecord::Base
   belongs_to :site
   belongs_to :design, class_name: 'App::Design', foreign_key: 'app_design_id'
 
-  delegate :skin_token, :kind, to: :design
+  delegate :skin_token, to: :design
+  delegate :kind, to: :addon
 
   validates :site, :design, :name, :identifier, presence: true
   validates :identifier, :name, uniqueness: { scope: :site_id }
@@ -24,6 +25,15 @@ class Kit < ActiveRecord::Base
 
   def to_param
     identifier
+  end
+
+  def as_json(options = nil)
+    json = super
+    json['settings'] = settings.inject({}) do |hash, (addon_name, setting)|
+      hash[Addon.get(addon_name).kind.underscore] = setting
+      hash
+    end
+    json
   end
 
 end

@@ -1,16 +1,16 @@
 require 'spec_helper'
 
 describe Service::Trial do
-  let(:user) { create(:user) }
-  let(:site0) { create(:site, user: user) }
-  let(:site1) { create(:site, user: user) }
-  let(:site2) { create(:site, user: user) }
-  let(:site3) { create(:site, user: user) }
-  let(:archived_site) { create(:site, user: user, state: 'archived') }
+  let(:user)             { create(:user) }
+  let(:site0)            { create(:site, user: user) }
+  let(:site1)            { create(:site, user: user) }
+  let(:site2)            { create(:site, user: user) }
+  let(:site3)            { create(:site, user: user) }
+  let(:archived_site)    { create(:site, user: user, state: 'archived') }
   let(:app_design_paid1) { create(:app_design, price: 995) }
   let(:app_design_paid2) { create(:app_design, price: 995) }
   let(:addon)            { create(:addon) }
-  let(:addon2)            { create(:addon) }
+  let(:addon2)           { create(:addon) }
   let(:addon_plan_paid1) { create(:addon_plan, addon: addon, price: 995) }
   let(:addon_plan_paid2) { create(:addon_plan, addon: addon2, price: 1995) }
   let(:service) { stub }

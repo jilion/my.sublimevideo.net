@@ -91,11 +91,12 @@ en:
         text: 'Default sharing message:'
         twitter_text: 'Default sharing message:'
         twitter_via: 'Twitter via username:'
-        link_enable: 'Show sharing URL'
+        link_enable: 'Show link field'
       values:
         image:
-          auto: 'Open graph metadata'
-          poster: 'Poster frame'
+          auto: 'Automatic'
+          poster: 'Video poster frame'
+          url: 'Your image URL'
 
     embed:
       title: 'Embed settings'

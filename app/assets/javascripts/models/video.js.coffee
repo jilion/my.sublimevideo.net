@@ -14,6 +14,7 @@ class MySublimeVideo.Models.Video extends Backbone.Model
     keepRatio: true
     autoresize: 'none'
     autoplay: false
+    settings: {}
 
   viewable: ->
     if this.get('youTubeId')?
@@ -65,3 +66,10 @@ class MySublimeVideo.Models.Video extends Backbone.Model
   clearDataUIDAndName: ->
     this.set(dataUID: '')
     this.set(dataName: '')
+
+  updateSetting: (addon, setting, value) ->
+    this.get('settings')[addon] = {} unless this.get('settings')[addon]?
+    this.get('settings')[addon][setting] = {} unless this.get('settings')[addon][setting]?
+
+    this.get('settings')[addon][setting] = value
+    this.trigger('change')

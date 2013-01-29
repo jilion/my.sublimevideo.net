@@ -113,7 +113,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
 
   clearAssets: (oldOrigin) ->
     if oldOrigin is 'youtube' or this.allAssetsEmpty() or this.noTestAssetModified() or confirm('All fields will be cleared, continue?')
-      MSVVideoCode.builderRouter.clearAssets()# if this.noTestAssetModified()
+      MSVVideoCode.builderRouter.clearAssets()
       this.initUIHelpers()
       this.renderViews()
       true

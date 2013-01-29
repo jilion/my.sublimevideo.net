@@ -1,7 +1,6 @@
 class MySublimeVideo.Helpers.VideoTagHelper
   constructor: (@video, @options = {}) ->
     _.defaults(@options, { forceSettings: false, settings: null })
-    # @extraSpaces = if @options['type'] is 'iframe_embed' then '    ' else ''
     @extraSpaces = ''
 
   generatePlayerCode: (options = {}) ->
@@ -10,6 +9,8 @@ class MySublimeVideo.Helpers.VideoTagHelper
     code + this.generateVideoCode(options)
 
   generateVideoCode: (options = {}) ->
+    _.defaults(options, { addons: ['video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
+
     attributes = []
     attributes.push "id=\"#{options['id']}\"" if options['id']?
     attributes.push this.generateClass(options)
@@ -17,7 +18,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
     attributes.push this.generateWidthAndHeight(@video.get('width'), @video.get('height'))
     attributes.push "data-youtube-id=\"#{@video.get('youTubeId')}\"" if @video.get('origin') is 'youtube'
     attributes.push "data-autoresize=\"#{@video.get('autoresize')}\""
-    attributes.push this.generateDataSettingsAttribute(['video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'], options)
+    attributes.push this.generateDataSettingsAttribute(options)
     attributes.push this.generateDataUIDAndName()
     attributes.push this.generateStyle()
     attributes.push "preload=\"none\""
@@ -34,14 +35,14 @@ class MySublimeVideo.Helpers.VideoTagHelper
     , ''
 
   generateLightboxCode: (options = {}) ->
-    _.defaults(options, { href: options['id'] })
+    _.defaults(options, { addons: ['lightbox'], href: options['id'] })
 
     attributes = []
     attributes.push "href=\"##{options['href']}\""
     attributes.push "id=\"#{options['lightboxId']}\"" if options['lightboxId']?
     attributes.push "class=\"#{options['lightboxClass'] or 'sublime'}\""
     attributes.push "style=\"#{options['lightboxStyle']}\"" if options['lightboxStyle']?
-    attributes.push this.generateDataSettingsAttribute(['lightbox'], options)
+    attributes.push this.generateDataSettingsAttribute(options)
     code = "<a #{_.compact(attributes).join(' ')}>\n  "
     code += this.getLightboxTriggerContent()
     code + "\n</a>\n"
@@ -55,32 +56,31 @@ class MySublimeVideo.Helpers.VideoTagHelper
     else
       "#{@video.get('thumbnail').get('src')}"
 
-  generateDataSettingsAttribute: (addons, options = {}) ->
-    this.generateDataSettings(addons, options)
+  generateDataSettingsAttribute: (options = {}) ->
+    this.generateDataSettings(options['addons'], options)
     if _.isEmpty @dataSettings
       ''
     else
       if options['contentOnly']
         _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
       else
-        _.inject(@dataSettings, ((s, v, k) -> s + " data-#{k}='#{v}'"), '')
+        _.inject(@dataSettings, ((a, v, k) -> a.push "data-#{k}='#{v}'"; a), []).join(' ')
 
   generateDataSettings: (addons, options = {}) ->
-    addons = ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] if _.isEmpty(addons)
-
-    @dataSettings = {}
-    if @options['settings']?
-      this.generateDataSettingsFromJSON()
+    if options['settings']?
+      this.generateDataSettingsFromJSON(options['settings'])
     else
+      addons = ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] unless options['addons']?
       this.generateDataSettingsFromDOM(addons)
-      if @dataSettings['player-kit']?
-        selectedOption = $("select[data-addon='player']").find("option[value='#{@dataSettings['player-kit']}']")
-        @dataSettings['player-kit'] = selectedOption.data('kit-id')
 
-    if options['playerKit']? and !_.isEqual(addons, ['lightbox'])
-      @dataSettings['player-kit'] = options['playerKit']
+    this.replacePlayerKitSettingWithRealPreviewKitIdentifier()
 
     @dataSettings
+
+  replacePlayerKitSettingWithRealPreviewKitIdentifier: ->
+    if @dataSettings['player-kit']?
+      selectedOption = $("select[data-addon='player']").find("option[value='#{@dataSettings['player-kit']}']")
+      @dataSettings['player-kit'] = selectedOption.data('kit-id')
 
   generateClass: (options = {}) ->
     if @video.get('displayInLightbox') or options['class'] is '' then '' else "class=\"sublime\""
@@ -107,8 +107,9 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateDataQuality: (source) ->
     if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ''
 
-  generateDataSettingsFromJSON: ->
-    _.each @options['settings'], (setting, addonName) =>
+  generateDataSettingsFromJSON: (settings) ->
+    @dataSettings = {}
+    _.each settings, (setting, addonName) =>
       unless addonName is 'lightbox'
         _.each setting, (settingValue, settingName) =>
           dataSettingName = this.getDataSettingName(addonName, settingName)
@@ -118,6 +119,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
             this.processInputWithValue(dataSettingName, settingValue, null)
 
   generateDataSettingsFromDOM: (addons) ->
+    @dataSettings = {}
     for addonName in addons
       $("input.previewable[data-addon='#{addonName}'], " +
       "select[data-addon='#{addonName}'], " +

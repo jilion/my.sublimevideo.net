@@ -108,3 +108,21 @@ describe 'MySublimeVideo.Models.Video', ->
       @video.set(height:300, ratio:0.5)
       @video.setWidthWithRatio()
       expect(@video.get('width')).toEqual(600)
+
+  describe 'updateSetting()', ->
+    it 'create the missing keys and set the value (1)', ->
+      @video.updateSetting('social_sharing', 'title', 'Foo Bar')
+
+      expect(@video.get('settings')).toEqual({ 'social_sharing': { 'title': 'Foo Bar' } })
+
+    it 'create the missing keys and set the value (2)', ->
+      @video.set(settings: { 'social_sharing': {} })
+      @video.updateSetting('social_sharing', 'title', 'Foo Bar')
+
+      expect(@video.get('settings')).toEqual({ 'social_sharing': { 'title': 'Foo Bar' } })
+
+    it 'update the value', ->
+      @video.set(settings: { 'social_sharing': { 'title': 'Foo Bar' } })
+      @video.updateSetting('social_sharing', 'title', 'Bar Foo')
+
+      expect(@video.get('settings')).toEqual({ 'social_sharing': { 'title': 'Bar Foo' } })

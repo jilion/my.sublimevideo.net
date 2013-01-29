@@ -8,5 +8,6 @@
         = presenter.render_input_field(setting_key: 'url')
         = presenter.render_input_field(setting_key: 'buttons', partial: 'social_sharing/buttons_dragndrop')
         = presenter.render_input_field(setting_key: 'image', show_title: true)
-        = presenter.render_input_field(setting_key: 'twitter_via')
-        = presenter.render_input_field(setting_key: 'link_enable')
+        = presenter.render_input_field(setting_key: 'twitter_via', entry_class: 'email', icon: true)
+
+        = presenter.render_input_field(setting_key: 'link_enable', title: 'Link field:')

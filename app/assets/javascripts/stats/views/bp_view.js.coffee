@@ -26,12 +26,11 @@ class MSVStats.Views.BPView extends Backbone.View
       @bps    = if @showAll then bps else _.first(bps, @limit)
       @site   = MSVStats.site
       $(@el).html(this.template(bpData: @bpData, bps: @bps, total: @total, showAll: @showAll, limit: @limit, site: @site))
-
-      return this
     else
       $(@el).empty()
       $(@el).spin(spinOptions)
-      return this
+
+    this
 
   renderIfSelected: (stats) =>
     this.render() if MSVStats.period.get('type') == stats.periodType()

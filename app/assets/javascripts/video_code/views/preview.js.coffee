@@ -2,10 +2,10 @@ class MSVVideoCode.Views.Preview extends Backbone.View
   template: JST['video_code/templates/preview']
 
   initialize: ->
-    @$kitSelector = $('#kit_id')
-    @kitsSettings = @$kitSelector.data('settings')
+    @videoTagHelper = new MySublimeVideo.Helpers.VideoTagHelper(MSVVideoCode.video)
 
     _.bindAll this, 'delayedRender'
+    MSVVideoCode.kits.bind      'change',     this.delayedRender
     MSVVideoCode.video.bind     'change',     this.delayedRender
     MSVVideoCode.poster.bind    'change:src', this.delayedRender
     MSVVideoCode.sources.bind   'change',     this.delayedRender
@@ -19,33 +19,26 @@ class MSVVideoCode.Views.Preview extends Backbone.View
 
   render: ->
     if MSVVideoCode.video.viewable() and (!MSVVideoCode.video.get('displayInLightbox') or MSVVideoCode.thumbnail.viewable())
-      @currentScroll = $(window).scrollTop()
-
-      sublime.unprepare('video-preview') if $('#video-preview').exists()
-
-      $(@el).html this.template
-        video: MSVVideoCode.video
-        options: options
-
-      if MSVVideoCode.video.get('displayInLightbox')
-        sublime.prepare('lightbox-trigger')
-      else
-        sublime.prepareWithKit('video-preview', @kitsSettings[@$kitSelector.val()])
-
-      $(window).scrollTop(@currentScroll)
+      this.refreshPreview()
       $(@el).show()
-
-      if $('#video_code_form').attr('data-assistant') is 'true'
-        options = {}
-        options['playerKit'] = @$kitSelector.val() unless @$kitSelector.val() is @$kitSelector.attr('data-default')
-        if MSVVideoCode.video.get('displayInLightbox')
-          $('#lightbox_code_for_textarea').val(new MySublimeVideo.Helpers.VideoTagHelper(MSVVideoCode.video).generateLightboxCode(href: 'video1'))
-          options['id'] = 'video1'
-        else
-          $('#lightbox_code_for_textarea').val('')
-        $('#video_code_for_textarea').val(new MySublimeVideo.Helpers.VideoTagHelper(MSVVideoCode.video).generateVideoCode(options))
-
     else
       $(@el).hide()
 
     this
+
+  refreshPreview: ->
+    @currentScroll = $(window).scrollTop()
+
+    sublime.unprepare('video-preview') if $('#video-preview').exists()
+    settings = MSVVideoCode.kits.selected.get('settings')
+    settings['player'] = { 'kit': MSVVideoCode.kits.selected.get('identifier') } unless MSVVideoCode.kits.defaultKitSelected()
+    _.extend(settings, MSVVideoCode.video.get('settings'))
+
+    $(@el).html this.template
+      video: MSVVideoCode.video
+      videoTagHelper: @videoTagHelper
+      settings: settings
+
+    sublime.prepare(if MSVVideoCode.video.get('displayInLightbox') then 'lightbox-trigger' else 'video-preview')
+
+    $(window).scrollTop(@currentScroll)

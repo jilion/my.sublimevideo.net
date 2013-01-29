@@ -27,6 +27,9 @@ describe Service::SettingsSanitizer do
         values: ['foo', 'bar'],
         default: 'foo'
       },
+      stringSetting2: {
+        type: 'string'
+      },
       imageSetting: {
         type: 'image',
         default: ''
@@ -50,6 +53,7 @@ describe Service::SettingsSanitizer do
         booleanSetting: '1',
         floatSetting: 0.8,
         stringSetting: 'foo',
+        stringSetting2: 'bar',
         imageSetting: 'http://mydomain.com/image.png',
         urlSetting: '//mydomain.com',
         buttonsSetting: ['google+', 'pinterest']
@@ -85,6 +89,7 @@ describe Service::SettingsSanitizer do
           booleanSetting: true,
           floatSetting: 0.8,
           stringSetting: 'foo',
+          stringSetting2: 'bar',
           imageSetting: 'http://mydomain.com/image.png',
           urlSetting: '//mydomain.com',
           buttonsSetting: 'google+ pinterest'

@@ -1,13 +1,10 @@
 class MSVVideoCode.Views.Kit extends Backbone.View
+
   events:
-    'change select#kit_id': 'render'
+    'change select#kit_id': 'updateSelectedKitIdentifier'
 
   #
-  # BINDINGS
+  # EVENTS
   #
-  render: (event) ->
-    MSVVideoCode.previewView.render()
-
-    false
-
-
+  updateSelectedKitIdentifier: (event) ->
+    MSVVideoCode.kits.select(event.target.value)

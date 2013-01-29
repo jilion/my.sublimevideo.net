@@ -9,7 +9,6 @@ class VideoCodesController < ApplicationController
   ## Private page for users with early access to video:
   # GET /sites/:site_id/video-codes/:vid
   def new
-    @kit = exhibit(@site.default_kit)
   end
 
   def show

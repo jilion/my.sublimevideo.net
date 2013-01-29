@@ -1,0 +1,32 @@
+%h4 Sharing URL
+.entry#social_sharing_url_box
+  %label.icon{ for: "social_sharing_url" } Sharing URL
+  %input#social_sharing_url.text.kit_setting{ type: "text", size: "50", placeholder: "Sharing URL", value: MSVVideoCode.kits.selected.getSetting('sharing', 'url'), data: { addon: 'sharing', setting: 'url' } }/
+  %span#social_sharing_url.inline_alert{ style: "display:none" } Please provide a valid URL
+
+%h4 Title
+.entry#social_sharing_title_box
+  %label.icon{ for: "social_sharing_title" } Title
+  %input#social_sharing_title.text.kit_setting{ type: "text", size: "50", placeholder: "Title", value: MSVVideoCode.kits.selected.getSetting('sharing', 'title'), data: { addon: 'sharing', setting: 'title' } }/
+
+%h4 Text
+.entry#social_sharing_title_box
+  %label.icon{ for: "social_sharing_text" } Text
+  %input#social_sharing_title.text.kit_setting{ type: "text", size: "50", placeholder: "Text", value: MSVVideoCode.kits.selected.getSetting('sharing', 'text'), data: { addon: 'sharing', setting: 'text' } }/
+
+%h4 Twitter text
+.entry#social_sharing_title_box
+  %label.icon{ for: "social_sharing_twitter_text" } Twitter text
+  %input#social_sharing_title.text.kit_setting{ type: "text", size: "50", placeholder: "Twitter text", value: MSVVideoCode.kits.selected.getSetting('sharing', 'twitter_text'), data: { addon: 'sharing', setting: 'twitter_text' } }/
+
+%h4 Image
+.radio_wrap
+  %input#social_sharing_image_og{ type: 'radio', name: 'image', value: 'none', checked: MSVVideoCode.kits.selected.getSetting('sharing', 'image') is 'auto', data: { addon: 'sharing', setting: 'image' } }
+  %label{ for: "social_sharing_image_og" } <%= I18n.t("kit.social_sharing.values.image.auto") %>
+.radio_wrap
+  %input#social_sharing_image_poster{ type: 'radio', name: 'image', value: 'fit', checked: MSVVideoCode.kits.selected.getSetting('sharing', 'image') is 'poster', data: { addon: 'sharing', setting: 'image' } }
+  %label{ for: "social_sharing_image_poster" } <%= I18n.t("kit.social_sharing.values.image.poster") %>
+.radio_wrap
+  %input#social_sharing_image_url{ type: 'radio', name: 'image', value: 'fill', checked: MSVVideoCode.kits.selected.getSetting('sharing', 'image') isnt 'auto' and MSVVideoCode.kits.selected.getSetting('sharing', 'image') isnt 'poster', data: { addon: 'sharing', setting: 'image' } }
+  %label{ for: "social_sharing_image_url" } <%= I18n.t("kit.social_sharing.values.image.url") %>
+.spacer
