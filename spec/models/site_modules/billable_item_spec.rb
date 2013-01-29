@@ -70,10 +70,9 @@ describe SiteModules::BillableItem, :addons do
     it { site.out_of_trial_on?(@logo_addon_plan_1, 1.day.from_now).should be_false }
 
     it { site.out_of_trial_on?(@support_addon_plan_2, 2.days.from_now).should be_false }
-    it { site.out_of_trial_on?(@support_addon_plan_2, 1.day.from_now).should be_true }
+    it { site.out_of_trial_on?(@support_addon_plan_2, 1.day.from_now).should be_false }
 
     it { site.out_of_trial_on?(@stats_addon_plan_2, 1.day.ago).should be_false }
-
   end
 
   describe '#out_of_trial?' do
