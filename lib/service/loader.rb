@@ -43,10 +43,12 @@ module Service
       end
     end
 
-    def initialize(*args)
-      super
-      self.file = generate_file
-      self.cdn_file = CDN::File.new(
+    def file
+      @file ||= generate_file
+    end
+
+    def cdn_file
+      @cdn_file ||= CDN::File.new(
         file,
         destinations,
         s3_options,

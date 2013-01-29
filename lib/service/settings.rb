@@ -6,7 +6,6 @@ module Service
   Settings = Struct.new(:site, :type, :options) do
     self::TYPES = %w[license settings]
 
-    attr_accessor :file, :cdn_file
     delegate :upload!, :delete!, :present?, to: :cdn_file
 
     def self.update_all_types!(site_id, options = {})
@@ -22,11 +21,13 @@ module Service
       end
     end
 
-    def initialize(*args)
-      super
-      @file = generate_file
-      @cdn_file = CDN::File.new(
-        @file,
+    def file
+      @file ||= generate_file
+    end
+
+    def cdn_file
+      @cdn_file ||= CDN::File.new(
+        file,
         destinations,
         s3_options,
         options

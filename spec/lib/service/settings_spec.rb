@@ -58,8 +58,8 @@ describe Service::Settings, :fog_mock do
         site.stub(:accessible_stage) { 'beta' }
         site.stub(:player_mode) { 'beta' }
         described_class.update_all_types!(site.id)
-        described_class.new(site, 'license').should be_present
-        described_class.new(site, 'settings').should be_present
+        described_class.new(site, 'license').cdn_file.should be_present
+        described_class.new(site, 'settings').cdn_file.should be_present
       end
 
       it "uploads all settings types when accessible_stage is 'stable'" do
