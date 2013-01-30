@@ -21,10 +21,6 @@ module Service
       end
     end
 
-    def file
-      @file ||= generate_file
-    end
-
     def cdn_file
       @cdn_file ||= CDN::File.new(
         file,
@@ -32,6 +28,10 @@ module Service
         s3_options,
         options
       )
+    end
+
+    def file
+      @file ||= generate_file
     end
 
     def old_license
@@ -149,8 +149,10 @@ module Service
 
     def template_file
       case type
-      when 'license'; 'settings-old.js.erb'
-      when 'settings'; 'settings.js.erb'
+      when 'license'
+        'settings-old.js.erb'
+      when 'settings'
+        'settings.js.erb'
       end
     end
 
