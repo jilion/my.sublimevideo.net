@@ -89,7 +89,7 @@ module Service
       if stage == 'stable'
         "loader-old.js.erb"
       else
-        "loader.js.erb"
+        "loader-#{stage}.js.erb"
       end
     end
 
