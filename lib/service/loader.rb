@@ -3,7 +3,7 @@ require_dependency 'cdn/file'
 require_dependency 'app/component_version_dependencies_solver'
 
 module Service
-  Loader = Struct.new(:site, :stage, :options, :file, :cdn_file) do
+  Loader = Struct.new(:site, :stage, :options) do
     IMPORTANT_SITE_TOKENS = %w[utcf6unc]
     delegate :token, :accessible_stage, :player_mode, to: :site
     delegate :upload!, :delete!, :present?, to: :cdn_file
@@ -43,10 +43,8 @@ module Service
       end
     end
 
-    def initialize(*args)
-      super
-      self.file = generate_file
-      self.cdn_file = CDN::File.new(
+    def cdn_file
+      @cdn_file ||= CDN::File.new(
         file,
         destinations,
         s3_options,
@@ -54,12 +52,8 @@ module Service
       )
     end
 
-    def host
-      if Rails.env == 'staging'
-        "//cdn.sublimevideo-staging.net"
-      else
-        "//cdn.sublimevideo.net"
-      end
+    def file
+      @file ||= generate_file
     end
 
     def app_component_version
@@ -71,6 +65,14 @@ module Service
     end
 
   private
+
+    def host
+      if Rails.env == 'staging'
+        "//cdn.sublimevideo-staging.net"
+      else
+        "//cdn.sublimevideo.net"
+      end
+    end
 
     def generate_file
       template_path = Rails.root.join('app', 'templates', 'app', template_file)
@@ -112,10 +114,19 @@ module Service
 
     def s3_options
       {
-        'Cache-Control' => stage == 'alpha' ? 'no-cache' : 's-maxage=300, max-age=120, public', # 5 minutes / 2 minutes
+        'Cache-Control' => cache_control,
         'Content-Type'  => 'text/javascript',
         'x-amz-acl'     => 'public-read'
       }
+    end
+
+    def cache_control
+      case stage
+      when 'alpha'
+        'no-cache'
+      else
+        's-maxage=300, max-age=120, public' # 5 minutes / 2 minutes
+      end
     end
 
   end

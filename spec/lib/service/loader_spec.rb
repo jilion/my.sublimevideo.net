@@ -60,9 +60,9 @@ describe Service::Loader, :fog_mock do
 
       it "uploads only stable loader" do
         described_class.update_all_stages!(site.id)
-        described_class.new(site, 'stable').should be_present
-        described_class.new(site, 'beta').should_not be_present
-        described_class.new(site, 'alpha').should_not be_present
+        described_class.new(site, 'stable').cdn_file.should be_present
+        described_class.new(site, 'beta').cdn_file.should_not be_present
+        described_class.new(site, 'alpha').cdn_file.should_not be_present
       end
 
       it "increments metrics" do
@@ -87,9 +87,9 @@ describe Service::Loader, :fog_mock do
       end
 
       it "uploads stable & beta loaders" do
-        described_class.new(site, 'stable').should be_present
-        described_class.new(site, 'beta').should be_present
-        described_class.new(site, 'alpha').should_not be_present
+        described_class.new(site, 'stable').cdn_file.should be_present
+        described_class.new(site, 'beta').cdn_file.should be_present
+        described_class.new(site, 'alpha').cdn_file.should_not be_present
       end
     end
 
@@ -100,9 +100,9 @@ describe Service::Loader, :fog_mock do
       end
 
       it "uploads all loaders" do
-        described_class.new(site, 'stable').should be_present
-        described_class.new(site, 'beta').should be_present
-        described_class.new(site, 'alpha').should be_present
+        described_class.new(site, 'stable').cdn_file.should be_present
+        described_class.new(site, 'beta').cdn_file.should be_present
+        described_class.new(site, 'alpha').cdn_file.should be_present
       end
     end
 
@@ -115,9 +115,9 @@ describe Service::Loader, :fog_mock do
 
       it "keeps only stable loader" do
         described_class.update_all_stages!(site.id, deletable: true)
-        described_class.new(site, 'stable').should be_present
-        described_class.new(site, 'beta').should_not be_present
-        described_class.new(site, 'alpha').should_not be_present
+        described_class.new(site, 'stable').cdn_file.should be_present
+        described_class.new(site, 'beta').cdn_file.should_not be_present
+        described_class.new(site, 'alpha').cdn_file.should_not be_present
       end
     end
 
@@ -129,9 +129,9 @@ describe Service::Loader, :fog_mock do
 
       it "keeps all loaders" do
         described_class.update_all_stages!(site.id)
-        described_class.new(site, 'stable').should be_present
-        described_class.new(site, 'beta').should be_present
-        described_class.new(site, 'alpha').should be_present
+        described_class.new(site, 'stable').cdn_file.should be_present
+        described_class.new(site, 'beta').cdn_file.should be_present
+        described_class.new(site, 'alpha').cdn_file.should be_present
       end
     end
 
@@ -142,9 +142,9 @@ describe Service::Loader, :fog_mock do
       end
 
       it "removes all loaders" do
-        described_class.new(site, 'stable').should_not be_present
-        described_class.new(site, 'beta').should_not be_present
-        described_class.new(site, 'alpha').should_not be_present
+        described_class.new(site, 'stable').cdn_file.should_not be_present
+        described_class.new(site, 'beta').cdn_file.should_not be_present
+        described_class.new(site, 'alpha').cdn_file.should_not be_present
       end
     end
   end
