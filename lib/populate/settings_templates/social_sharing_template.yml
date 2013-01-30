@@ -25,9 +25,9 @@ buttons:
       - facebook
       - pinterest
       - google+
-    default:
-      - twitter
-      - facebook
+  default:
+    - twitter
+    - facebook
 
 image:
   type: string

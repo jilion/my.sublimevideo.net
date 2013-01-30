@@ -30,9 +30,10 @@ class MSVVideoCode.Views.Preview extends Backbone.View
     @currentScroll = $(window).scrollTop()
 
     sublime.unprepare('video-preview') if $('#video-preview').exists()
-    settings = MSVVideoCode.kits.selected.get('settings')
+    kitSettings = MSVVideoCode.kits.selected.get('settings')
+    settings = {}
+    settings = this.combineKitAndVideoSettings()
     settings['player'] = { 'kit': MSVVideoCode.kits.selected.get('identifier') } unless MSVVideoCode.kits.defaultKitSelected()
-    _.extend(settings, MSVVideoCode.video.get('settings'))
 
     $(@el).html this.template
       video: MSVVideoCode.video
@@ -42,3 +43,14 @@ class MSVVideoCode.Views.Preview extends Backbone.View
     sublime.prepare(if MSVVideoCode.video.get('displayInLightbox') then 'lightbox-trigger' else 'video-preview')
 
     $(window).scrollTop(@currentScroll)
+
+  combineKitAndVideoSettings: ->
+    s = {}
+    _.defaults(s, MSVVideoCode.kits.selected.get('settings'))
+    _.each MSVVideoCode.video.get('settings'), (addonSettings, addonName) ->
+      if s[addonName]?
+        _.extend(s[addonName], addonSettings)
+      else
+        s[addonName] = addonSettings
+
+    s

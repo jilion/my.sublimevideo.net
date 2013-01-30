@@ -64,7 +64,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
       if options['contentOnly']
         _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
       else
-        _.inject(@dataSettings, ((a, v, k) -> a.push "data-#{k}='#{v}'"; a), []).join(' ')
+        _.inject(@dataSettings, ((a, v, k) -> a.push "data-#{k}=\"#{v}\""; a), []).join(' ')
 
   generateDataSettings: (addons, options = {}) ->
     if options['settings']?
