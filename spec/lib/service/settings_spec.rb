@@ -263,7 +263,7 @@ describe Service::Settings, :fog_mock do
       let(:settings_template1) { mock(App::SettingsTemplate, template: template1, app_plugin_id: plugin1.id) }
       let(:settings_template2_1) { mock(App::SettingsTemplate, template: template2_1, app_plugin_id: plugin2_1.id) }
       let(:settings_template2_2) { mock(App::SettingsTemplate, template: template2_2, app_plugin_id: plugin2_2.id) }
-      let(:settings_template3) { mock(App::SettingsTemplate, plugin: plugin3) }
+      let(:settings_template3) { mock(App::SettingsTemplate, app_plugin_id: plugin3.id) }
       let(:addon_plan1) { mock(AddonPlan, addon: addon1, addon_id: addon1.id, kind: 'addon_kind1', settings_templates: [settings_template1]) }
       let(:addon_plan2) { mock(AddonPlan, addon: addon2, addon_id: addon2.id, kind: 'addon_kind2', settings_templates: [settings_template2_1, settings_template2_2]) }
       let(:addon_plan3) { mock(AddonPlan, addon: addon3, addon_id: addon3.id, kind: 'addon_kind3', settings_templates: [settings_template3]) }
