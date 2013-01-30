@@ -251,8 +251,10 @@ describe Service::Settings, :fog_mock do
       let(:kit_settings2) { {
         'addon2' => { close_button_position: 'left' }
       } }
-      let(:kit1) { mock(Kit, id: 1, identifier: '1', app_design_id: 1, design: stub, skin_token: 'skin_token1', settings: kit_settings1) }
-      let(:kit2) { mock(Kit, id: 2, identifier: '2', app_design_id: 2, design: stub, skin_token: 'skin_token2', settings: kit_settings2) }
+      let(:design1) { mock(App::Design) }
+      let(:design2) { mock(App::Design) }
+      let(:kit1) { mock(Kit, id: 1, identifier: '1', app_design_id: 1, design: design1, skin_token: 'skin_token1', settings: kit_settings1) }
+      let(:kit2) { mock(Kit, id: 2, identifier: '2', app_design_id: 2, design: design2, skin_token: 'skin_token2', settings: kit_settings2) }
       let(:addon1) { mock(Addon, id: 1, name: 'addon1', parent_addon_id: nil) }
       let(:addon2) { mock(Addon, id: 2, name: 'addon2', parent_addon_id: addon1.id) }
       let(:addon3) { mock(Addon, id: 3, name: 'addon3', parent_addon_id: nil) }
@@ -265,12 +267,14 @@ describe Service::Settings, :fog_mock do
       let(:settings_template2_2) { mock(App::SettingsTemplate, template: template2_2, app_plugin_id: plugin2_2.id, plugin: plugin2_2) }
       let(:settings_template3) { mock(App::SettingsTemplate, template: {}, app_plugin_id: plugin3.id, plugin: plugin3) }
       let(:addon_plan1) { mock(AddonPlan, addon: addon1, addon_id: addon1.id, kind: 'addon_kind1', settings_templates: [settings_template1], settings_template_for: settings_template1) }
-      let(:addon_plan2) { mock(AddonPlan, addon: addon2, addon_id: addon2.id, kind: 'addon_kind2', settings_templates: [settings_template2_1, settings_template2_2], settings_template_for: settings_template2_2) }
+      let(:addon_plan2) { mock(AddonPlan, addon: addon2, addon_id: addon2.id, kind: 'addon_kind2', settings_templates: [settings_template2_1, settings_template2_2]) }
       let(:addon_plan3) { mock(AddonPlan, addon: addon3, addon_id: addon3.id, kind: 'addon_kind3', settings_templates: [settings_template3], settings_template_for: nil) }
 
       before do
         site.stub_chain(:addon_plans, :includes, :order) { [addon_plan1, addon_plan2, addon_plan3] }
         site.stub_chain(:kits, :includes, :order) { [kit1, kit2] }
+        addon_plan2.stub(:settings_template_for).with(design1) { settings_template2_1 }
+        addon_plan2.stub(:settings_template_for).with(design2) { settings_template2_2 }
       end
 
       it "includes template of this addon_plan settings_template" do
