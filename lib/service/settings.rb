@@ -93,25 +93,31 @@ module Service
     end
 
     def addon_plans_without_plugins
-      @addon_plans_without_plugins ||= addon_plans.select { |ap|
-        ap.settings_templates.present? && ap.settings_templates.none? { |st| st.plugin.present? }
-      }
+      @addon_plans_without_plugins ||= addon_plans.select do |ap|
+        ap.settings_templates.present? &&
+        ap.settings_templates.none? { |st| st.app_plugin_id.present? }
+      end
     end
 
-    def addon_plans_with_plugins
-      @addon_plans_with_plugins ||= addon_plans.select { |ap|
-        ap.settings_templates.present? && ap.settings_templates.any? { |st| st.plugin.present? }
-      }
+    def addon_plans_with_plugins(kit)
+      @addon_plans_with_plugins ||= {}
+      @addon_plans_with_plugins[kit.id] ||= addon_plans.select do |ap|
+        ap.settings_templates.present? &&
+        ap.settings_templates.any? { |st| st.app_plugin_id.present? } &&
+        ap.settings_template_for(kit.design).present?
+      end
     end
 
     def kits_plugins(kit, parent_addon_id)
-      addon_plans = addon_plans_with_plugins.select { |ap| ap.addon.parent_addon_id == parent_addon_id }
-      addon_plans.inject({}) { |hash, addon_plan|
+      addon_plans = addon_plans_with_plugins(kit).select { |ap| ap.addon.parent_addon_id == parent_addon_id }
+      addon_plans.inject({}) do |hash, addon_plan|
         hash[addon_plan.kind] = {}
+
         unless (plugins = kits_plugins(kit, addon_plan.addon_id)).empty?
           hash[addon_plan.kind][:plugins] = plugins
         end
-        if template = addon_plan.settings_templates.detect { |st| st.plugin.app_design_id.in?([nil, kit.app_design_id]) }
+
+        if template = addon_plan.settings_template_for(kit.design)
           hash[addon_plan.kind][:settings] = addon_plan_settings(template.template, kit.settings[addon_plan.addon.name])
           hash[addon_plan.kind][:allowed_settings] = addon_plan_allowed_settings(template.template)
           hash[addon_plan.kind][:id] = template.plugin.token
@@ -119,8 +125,9 @@ module Service
             hash[addon_plan.kind][:condition] = condition
           end
         end
+
         hash.reject { |k, v| v.empty? }
-      }
+      end
     end
 
     def addon_plan_settings(template, kit_settings = nil)
