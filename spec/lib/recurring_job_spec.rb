@@ -89,7 +89,7 @@ describe RecurringJob do
 
     it "schedules Transaction.charge_invoices" do
       Transaction.should delay(:charge_invoices,
-        at: (Time.now.utc.tomorrow.midnight + 1.hour).to_i
+        at: (Time.now.utc.tomorrow.midnight + 6.hours).to_i
       )
       described_class.schedule_daily_tasks
     end
