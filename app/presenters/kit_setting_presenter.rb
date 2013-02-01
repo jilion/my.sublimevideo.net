@@ -87,9 +87,9 @@ class KitSettingPresenter
   def get_value_from_params(params)
     case params[:setting_template][:type]
     when 'array'
-      params[:setting] || params[:setting_template][:default].join(' ')
+      params[:setting].nil? ? params[:setting_template][:default].join(' ') : params[:setting]
     else
-      params[:setting] || params[:setting_template][:default] || ''
+      params[:setting].nil? ? params[:setting_template][:default] : params[:setting]
     end
   end
 

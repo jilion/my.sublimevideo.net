@@ -84,7 +84,7 @@ class MySublimeVideo.UI.KitEditor
         ui.item.toggleClass('enabled').toggleClass('disabled')
       stop: (event, ui) =>
         $('#social_sharing_active_buttons, #social_sharing_inactive_buttons').removeClass('highlight')
-        buttons = $('#social_sharing_active_buttons').sortable('toArray', { attribute: 'data-value' }).join(' ')
+        buttons = $('#social_sharing_active_buttons').sortable('toArray', { attribute: 'data-value' })
         $("##{socialSharingButtonsInputFieldId}").val(buttons)
         this.refreshVideoTagFromSettings()
 

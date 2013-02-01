@@ -64,7 +64,7 @@ describe Service::SettingsSanitizer do
         stringSetting: 'baz',
         imageSetting: 'mydomain.com/image.png',
         urlSetting: 'mydomain.com',
-        buttonsSetting: 'google+ foo  pinterest   bar twitter'
+        buttonsSetting: 'google+, foo  pinterest,   bar twitter'
       },
       addonName3: {
         urlSetting: ''

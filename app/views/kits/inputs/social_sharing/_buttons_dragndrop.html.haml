@@ -4,7 +4,7 @@
 
 #sharing_button_sort.sort
   %ul#social_sharing_active_buttons.drop_zone
-    - params[:value].split(' ').each do |button|
+    - params[:value].each do |button|
       %li.enabled{ data: { value: button }, class: button.gsub('+', '_plus') }
         %span= button.titleize
 
@@ -12,7 +12,7 @@
   %p.drag_note= "Drag and drop buttons to enable and order them."
 
   %ul#social_sharing_inactive_buttons.drop_zone
-    - (all_buttons - params[:value].split(' ')).each do |button|
+    - (all_buttons - params[:value]).each do |button|
       %li.disabled{ data: { value: button }, class: button.gsub('+', '_plus') }
         %span= button.titleize
   .arrow_up
