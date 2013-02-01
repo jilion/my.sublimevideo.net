@@ -10,6 +10,8 @@ class BillableItemActivity < ActiveRecord::Base
   scope :plans,       -> { where(item_type: 'Plan') }
   scope :app_designs, -> { where(item_type: 'App::Design') }
   scope :addon_plans, -> { where(item_type: 'AddonPlan') }
+  scope :with_state_before, ->(state, date) { includes(:item).where { created_at < date }.where(state: state) }
+  scope :with_state_during, ->(state, period) { includes(:item).where { created_at >> period }.where(state: state) }
 end
 
 # == Schema Information

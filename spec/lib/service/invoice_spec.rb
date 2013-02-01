@@ -176,6 +176,28 @@ describe Service::Invoice do
       end
     end
 
+    describe 'billable item with wrong items sequences (but happened in production so we must handle this) periods [subscribed, trial, subscribed], started during the last month' do
+      before do
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 2.month.ago.beginning_of_month + 5.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'trial', created_at: 2.month.ago.beginning_of_month + 9.days)
+        create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 1.month.ago.beginning_of_month + 15.days)
+      end
+
+      context 'for 1 month ago' do
+        it 'creates 1 period, starting on the 5th day and ending at the end of the month' do
+          invoice = described_class.build_for_month(1.month.ago, site.id).invoice
+          invoice.invoice_items.should have(1).item
+
+          invoice.invoice_items[0].item.should eq public_addon_plan_paid
+
+          invoice.invoice_items[0].started_at.should eq 1.month.ago.beginning_of_month
+          invoice.invoice_items[0].ended_at.should eq 1.month.ago.end_of_month
+          invoice.invoice_items[0].price.should eq public_addon_plan_paid.price
+          invoice.invoice_items[0].amount.should eq public_addon_plan_paid.price
+        end
+      end
+    end
+
     describe 'billable item sponsored during the last month' do
       before do
         create(:billable_item_activity, site: site, item: public_addon_plan_paid, state: 'subscribed', created_at: 2.months.ago.beginning_of_month)
