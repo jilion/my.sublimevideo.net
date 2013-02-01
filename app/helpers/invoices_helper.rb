@@ -16,7 +16,7 @@ module InvoicesHelper
   end
 
   def invoice_item_dates(invoice_item)
-    end_day = invoice_item.ended_at == invoice_item.ended_at.end_of_day ? invoice_item.ended_at : (invoice_item.ended_at - 1.day).end_of_day
+    end_day = invoice_item.ended_at.to_date == invoice_item.ended_at.end_of_day.to_date ? invoice_item.ended_at : (invoice_item.ended_at - 1.day).end_of_day
     "#{l(invoice_item.started_at, format: :d_b_Y)} - #{l(end_day, format: :d_b_Y)}"
   end
 
