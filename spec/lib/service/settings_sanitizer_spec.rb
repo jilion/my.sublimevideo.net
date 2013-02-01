@@ -92,14 +92,14 @@ describe Service::SettingsSanitizer do
           stringSetting2: 'bar',
           imageSetting: 'http://mydomain.com/image.png',
           urlSetting: '//mydomain.com',
-          buttonsSetting: 'google+ pinterest'
+          buttonsSetting: %w[google+ pinterest]
         },
         'addonName2' => {
           booleanSetting: true,
           floatSetting: 0.45,
           imageSetting: 'http://mydomain.com/image.png',
           urlSetting: 'http://mydomain.com',
-          buttonsSetting: 'google+ pinterest twitter'
+          buttonsSetting: %w[google+ pinterest twitter]
         },
         'addonName3' => {
           urlSetting: ''
