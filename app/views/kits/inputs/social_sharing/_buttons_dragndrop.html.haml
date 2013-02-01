@@ -9,7 +9,7 @@
         %span= button.titleize
 
   %div.spacer
-  %p.drag_note= "Drag and drop buttons above to enable and order them."
+  %p.drag_note= "Drag and drop buttons to enable and order them."
 
   %ul#social_sharing_inactive_buttons.drop_zone
     - (all_buttons - params[:value].split(' ')).each do |button|

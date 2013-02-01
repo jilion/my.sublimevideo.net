@@ -86,7 +86,7 @@ en:
         icon: 'Choose icon:'
         url: 'Default sharing URL:'
         buttons: 'Social sharing buttons:'
-        image: 'Automatically use image from:'
+        image: 'Sharing message image:'
         title: 'Default title'
         text: 'Default sharing message:'
         twitter_text: 'Default sharing message:'

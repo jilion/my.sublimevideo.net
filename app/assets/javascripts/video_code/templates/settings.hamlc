@@ -6,7 +6,7 @@
   %span#poster_not_found.inline_alert{ style: "display:none" } This file doesn't seem to exist
 
 %p.info
-  The poster frame is the image displayed to advertise the video before the user clicks the initial Play button.
+  The poster frame is the image displayed to advertize the video before the user clicks the initial Play button.
   != "If you need help creating poster frames for your videos, please read our&nbsp;"
   %a.hl{ href: SublimeVideo.Misc.Utils.docsUrl('beta/create-poster-frame'), onclick: "window.open(this); return false" }><
     documentation
