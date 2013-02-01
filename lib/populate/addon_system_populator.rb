@@ -102,7 +102,7 @@ class AddonSystemPopulator < Populator
       { name: 'standard',  price: 0,    addon: Addon.get('controls'),       availability: 'hidden', required_stage: 'beta', stable_at: nil },
       { name: 'standard',  price: 0,    addon: Addon.get('initial'),        availability: 'hidden', required_stage: 'beta', stable_at: nil },
       { name: 'standard',  price: 0,    addon: Addon.get('sharing'),        availability: 'custom', required_stage: 'beta', stable_at: nil },
-      { name: 'standard',  price: 490,  addon: Addon.get('social_sharing'), availability: 'public', required_stage: 'beta', stable_at: nil },
+      { name: 'standard',  price: 690,  addon: Addon.get('social_sharing'), availability: 'public', required_stage: 'beta', stable_at: nil },
       { name: 'standard',  price: 0,    addon: Addon.get('embed'),          availability: 'public', required_stage: 'beta', stable_at: nil },
       { name: 'standard',  price: 0,    addon: Addon.get('api'),            availability: 'hidden', stable_at: Time.now.utc },
       { name: 'standard',  price: 0,    addon: Addon.get('support'),        availability: 'public', stable_at: Time.now.utc },
