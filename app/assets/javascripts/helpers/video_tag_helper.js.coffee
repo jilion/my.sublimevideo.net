@@ -1,6 +1,6 @@
 class MySublimeVideo.Helpers.VideoTagHelper
   constructor: (@video, @options = {}) ->
-    _.defaults(@options, { forceSettings: false, settings: null })
+    _.defaults(@options, { forceSettings: false })
     @extraSpaces = ''
 
   generatePlayerCode: (options = {}) ->
@@ -8,8 +8,10 @@ class MySublimeVideo.Helpers.VideoTagHelper
 
     code + this.generateVideoCode(options)
 
-  generateVideoCode: (options = {}) ->
-    _.defaults(options, { addons: ['video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
+  generateVideoCode: (opts = {}) ->
+    options = {}
+    _.extend(options, opts)
+    _.defaults(options, { addons: ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
 
     attributes = []
     attributes.push "id=\"#{options['id']}\"" if options['id']?
@@ -34,7 +36,9 @@ class MySublimeVideo.Helpers.VideoTagHelper
       code += "#{@extraSpaces}  <source src=\"#{source.get('src')}\" #{this.generateDataQuality(source)}/>\n"
     , ''
 
-  generateLightboxCode: (options = {}) ->
+  generateLightboxCode: (opts = {}) ->
+    options = {}
+    _.extend(options, opts)
     _.defaults(options, { addons: ['lightbox'], href: options['id'] })
 
     attributes = []
@@ -57,7 +61,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
       "#{@video.get('thumbnail').get('src')}"
 
   generateDataSettingsAttribute: (options = {}) ->
-    this.generateDataSettings(options['addons'], options)
+    this.generateDataSettings(options)
     if _.isEmpty @dataSettings
       ''
     else
@@ -66,12 +70,15 @@ class MySublimeVideo.Helpers.VideoTagHelper
       else
         _.inject(@dataSettings, ((a, v, k) -> a.push "data-#{k}=\"#{v}\""; a), []).join(' ')
 
-  generateDataSettings: (addons, options = {}) ->
+  generateDataSettings: (opts = {}) ->
+    options = {}
+    _.extend(options, opts)
+    _.defaults(options, { addons: ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] })
+
     if options['settings']?
-      this.generateDataSettingsFromJSON(options['settings'])
+      this.generateDataSettingsFromJSON(options)
     else
-      addons = ['player', 'video_player', 'controls', 'initial', 'sharing', 'embed', 'logo'] unless options['addons']?
-      this.generateDataSettingsFromDOM(addons)
+      this.generateDataSettingsFromDOM(options['addons'])
 
     this.replacePlayerKitSettingWithRealPreviewKitIdentifier()
 
@@ -107,13 +114,13 @@ class MySublimeVideo.Helpers.VideoTagHelper
   generateDataQuality: (source) ->
     if source.needDataQualityAttribute() then "data-quality=\"#{source.get('quality')}\" " else ''
 
-  generateDataSettingsFromJSON: (settings) ->
+  generateDataSettingsFromJSON: (options) ->
     @dataSettings = {}
-    _.each settings, (setting, addonName) =>
-      unless addonName is 'lightbox'
-        _.each setting, (settingValue, settingName) =>
+    for addonName in options['addons']
+      if options['settings'][addonName]?
+        _.each options['settings'][addonName], (settingValue, settingName) =>
           dataSettingName = this.getDataSettingName(addonName, settingName)
-          if settingValue == true or settingValue == false
+          if _.contains([true, false], settingValue)
             this.processCheckBoxInput(dataSettingName, settingValue, null)
           else
             this.processInputWithValue(dataSettingName, settingValue, null)

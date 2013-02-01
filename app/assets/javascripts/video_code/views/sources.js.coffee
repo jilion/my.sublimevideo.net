@@ -50,7 +50,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
 
   updateYouTubeID: (event) ->
     MSVVideoCode.video.setYouTubeId(event.target.value)
-    MSVVideoCode.video.set(dataUID: '')
+    MSVVideoCode.video.set(dataUID: MSVVideoCode.video.get('youTubeId'))
     MSVVideoCode.video.set(dataName: '')
 
     this.render()
