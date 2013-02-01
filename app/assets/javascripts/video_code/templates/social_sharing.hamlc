@@ -35,14 +35,14 @@
 - display = if custom_url then 'block' else 'none'
 .radio_wrap
   %input#social_sharing_image_og{ type: 'radio', name: 'social_sharing_image', value: 'auto', checked: setting is 'auto', data: { addon: 'sharing', setting: 'image' } }
-  %label{ for: "social_sharing_image_og" } <%= I18n.t("kit.social_sharing.values.image.auto") %>
+  %label{ for: "social_sharing_image_og" } Automatic
 .radio_wrap
   %input#social_sharing_image_poster{ type: 'radio', name: 'social_sharing_image', value: 'poster', checked: setting is 'poster', data: { addon: 'sharing', setting: 'image' } }
-  %label{ for: "social_sharing_image_poster" } <%= I18n.t("kit.social_sharing.values.image.poster") %>
+  %label{ for: "social_sharing_image_poster" } Video poster frame
 
 .radio_wrap
   %input#social_sharing_image_url{ type: 'radio', name: 'social_sharing_image', value: 'url', checked: custom_url, data: { addon: 'sharing', setting: 'image' } }
-  %label{ for: "social_sharing_image_url" } <%= I18n.t("kit.social_sharing.values.image.url") %>
+  %label{ for: "social_sharing_image_url" } Image URL
 .entry
   %input.text.kit_setting#social_sharing_image_url_field{ type: 'text', size: 50, placeholder: "Image URL", value: if custom_url then setting else '', data: { addon: 'sharing', setting: 'image' }, style: "display:#{display}" }/
 .spacer
