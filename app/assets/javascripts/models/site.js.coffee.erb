@@ -11,6 +11,6 @@ class MySublimeVideo.Collections.Sites extends Backbone.Collection
   url: '/sites'
 
   select: (token) ->
-    @selectedSite = _.find this.models, (site) =>
+    @selected = _.find this.models, (site) =>
       site.get('token') is token
     this.trigger('change')

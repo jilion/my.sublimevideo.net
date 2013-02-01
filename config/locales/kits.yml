@@ -96,7 +96,7 @@ en:
         image:
           auto: 'Automatic'
           poster: 'Video poster frame'
-          url: 'Your image URL'
+          url: 'Image URL'
 
     embed:
       title: 'Embed settings'
