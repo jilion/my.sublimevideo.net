@@ -3,7 +3,7 @@
     %th.left= "Item"
     %th.left= "Period"
     %th= "Amount (US $)"
-  - invoice.invoice_items.each do |invoice_item|
+  - invoice.invoice_items.order('item_type ASC, item_id ASC, ended_at ASC').each do |invoice_item|
     %tr
       %td.title
         %h3= invoice_item_title(invoice_item)
