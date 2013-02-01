@@ -85,12 +85,7 @@ class KitSettingPresenter
   end
 
   def get_value_from_params(params)
-    case params[:setting_template][:type]
-    when 'array'
-      params[:setting].nil? ? params[:setting_template][:default] : params[:setting]
-    else
-      params[:setting].nil? ? params[:setting_template][:default] : params[:setting]
-    end
+    params[:setting].nil? ? params[:setting_template][:default] : params[:setting]
   end
 
   def addon_name
