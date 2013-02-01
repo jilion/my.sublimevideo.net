@@ -6,12 +6,10 @@
       = presenter.render_master_input_field(setting_key: 'enable') do
         = presenter.render_input_field(setting_key: 'icon', partial: 'social_sharing/icons_radios')
         = presenter.render_input_field(setting_key: 'url')
+        %p.info= "If you want to test the sharing button in the player preview above, you need to provide a value for this field (at least temporarily)."
         = presenter.render_input_field(setting_key: 'buttons', partial: 'social_sharing/buttons_dragndrop')
         = presenter.render_input_field(setting_key: 'image', show_title: true)
-
         %p.info
           = raw "You can provide a link to a specific image in the #{link_to "Publish video", new_site_video_code_path(site), class: "hl"} page. Read our #{link_to "documentation", docs_url('beta/addons/sharing'), onclick: "window.open(this); return false", class: "hl" } for more info."
-
         = presenter.render_input_field(setting_key: 'twitter_via', entry_class: 'email', icon: true)
-
         = presenter.render_input_field(setting_key: 'link_enable', title: 'Link field:')
