@@ -1,5 +1,5 @@
 - custom_logo = Addons::CustomLogo.new(kit)
-- current_type = params[:settings].try(:[], 'logo').try(:[], :type) || params[:settings_template][:type][:default]
+- current_type = params[:settings].try(:[], :logo).try(:[], :type) || params[:settings_template][:type][:default]
 
 .entry.custom_logo_fields{ style: current_type == 'sv' ? 'display:none' : nil }
   #preview_custom_logo= display_custom_logo(params[:value])

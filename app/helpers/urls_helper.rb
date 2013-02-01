@@ -34,6 +34,8 @@ module UrlsHelper
   end
 
   def cdn_path_from_full_url(full_url)
+    return '' if full_url.blank?
+
     host = case Rails.env
     when 'development'
       "s3.amazonaws.com/#{S3.buckets['sublimevideo']}"
