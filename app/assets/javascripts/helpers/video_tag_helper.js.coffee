@@ -177,4 +177,4 @@ class MySublimeVideo.Helpers.VideoTagHelper
       this.pushDataSetting(dataSettingName, currentValue)
 
   pushDataSetting: (dataSettingName, currentValue) ->
-    @dataSettings[dataSettingName] = currentValue.toString()
+    @dataSettings[dataSettingName] = if $.isArray(currentValue) then currentValue.join(' ') else currentValue.toString()
