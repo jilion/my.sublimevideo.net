@@ -81,7 +81,7 @@ class AddonSystemPopulator < Populator
         lambda { { name: 'support',        kind: 'support',       design_dependent: false, parent_addon: nil } },
         lambda { { name: 'preview_tools',  kind: 'previewTools',  design_dependent: false, parent_addon: nil } },
         lambda { { name: 'buy_action',     kind: 'buyAction',     design_dependent: true,  parent_addon: Addon.get('video_player') } },
-        lambda { { name: 'action',         kind: 'action',        design_dependent: true,  parent_addon: Addon.get('video_player') } },
+        lambda { { name: 'action',         kind: 'action',        design_dependent: false, parent_addon: Addon.get('video_player') } },
         lambda { { name: 'end_actions',    kind: 'endActions',    design_dependent: true,  parent_addon: Addon.get('video_player') } },
         lambda { { name: 'info',           kind: 'info',          design_dependent: true,  parent_addon: Addon.get('video_player')  }}
     ]
@@ -178,7 +178,7 @@ class AddonSystemPopulator < Populator
 
       { name: 'end_actions_twit',       token: 'sf.sf.agb',   addon: Addon.get('end_actions'),    design: App::Design.get('twit'),     component: App::Component.get('twit') },
 
-      { name: 'action_svnet',           token: 'sj.sj.adb',   addon: Addon.get('action'),         design: App::Design.get('classic'),                         component: App::Component.get('svnet') }
+      { name: 'action_svnet',           token: 'sj.sj.adb',   addon: Addon.get('action'),         design: nil,                         component: App::Component.get('svnet') }
     ]
   end
 
