@@ -116,6 +116,7 @@ class AddonSystemPopulator < Populator
   def app_plugin_seeds
     [
       { name: 'video_player',           token: 'sa.sh.si',    addon: Addon.get('video_player'),   design: nil,                         component: App::Component.get('app') },
+
       { name: 'lightbox_classic',       token: 'sa.sl.sm',    addon: Addon.get('lightbox'),       design: App::Design.get('classic'),  component: App::Component.get('app') },
       { name: 'lightbox_flat',          token: 'sa.sl.sm',    addon: Addon.get('lightbox'),       design: App::Design.get('flat'),     component: App::Component.get('app') },
       { name: 'lightbox_light',         token: 'sa.sl.sm',    addon: Addon.get('lightbox'),       design: App::Design.get('light'),    component: App::Component.get('app') },
@@ -126,8 +127,11 @@ class AddonSystemPopulator < Populator
       { name: 'lightbox_next15',        token: 'sa.sl.sm',    addon: Addon.get('lightbox'),       design: App::Design.get('next15'),   component: App::Component.get('app') },
       { name: 'lightbox_df',            token: 'sa.sl.sm',    addon: Addon.get('lightbox'),       design: App::Design.get('df'),       component: App::Component.get('app') },
       { name: 'lightbox_blizzard',      token: 'sa.sl.sm',    addon: Addon.get('lightbox'),       design: App::Design.get('blizzard'), component: App::Component.get('app') },
+
       { name: 'image_viewer',           token: 'sa.sn.so',    addon: Addon.get('image_viewer'),   design: nil,                         component: App::Component.get('app') },
+
       { name: 'logo',                   token: 'sa.sh.sp',    addon: Addon.get('logo'),           design: nil,                         component: App::Component.get('app') },
+
       { name: 'controls_classic',       token: 'sa.sh.sq',    addon: Addon.get('controls'),       design: App::Design.get('classic'),  component: App::Component.get('app') },
       { name: 'controls_flat',          token: 'sd.sd.sr',    addon: Addon.get('controls'),       design: App::Design.get('flat'),     component: App::Component.get('app') },
       { name: 'controls_light',         token: 'se.se.ss',    addon: Addon.get('controls'),       design: App::Design.get('light'),    component: App::Component.get('app') },
@@ -138,6 +142,7 @@ class AddonSystemPopulator < Populator
       { name: 'controls_next15',        token: 'aba.aba.abb', addon: Addon.get('controls'),       design: App::Design.get('next15'),   component: App::Component.get('next15') },
       { name: 'controls_df',            token: 'afa.afa.afb', addon: Addon.get('controls'),       design: App::Design.get('df'),       component: App::Component.get('df') },
       { name: 'controls_blizzard',      token: 'aca.aca.acd', addon: Addon.get('controls'),       design: App::Design.get('blizzard'), component: App::Component.get('blizzard') },
+
       { name: 'initial_classic',        token: 'sa.sh.sv',    addon: Addon.get('initial'),        design: App::Design.get('classic'),  component: App::Component.get('app') },
       { name: 'initial_flat',           token: 'sa.sh.sv',    addon: Addon.get('initial'),        design: App::Design.get('flat'),     component: App::Component.get('app') },
       { name: 'initial_light',          token: 'sa.sh.sv',    addon: Addon.get('initial'),        design: App::Design.get('light'),    component: App::Component.get('app') },
@@ -148,31 +153,43 @@ class AddonSystemPopulator < Populator
       { name: 'initial_next15',         token: 'sa.sh.sv',    addon: Addon.get('initial'),        design: App::Design.get('next15'),   component: App::Component.get('app') },
       { name: 'initial_df',             token: 'sa.sh.sv',    addon: Addon.get('initial'),        design: App::Design.get('df'),       component: App::Component.get('app') },
       { name: 'initial_blizzard',       token: 'aca.aca.acc', addon: Addon.get('initial'),        design: App::Design.get('blizzard'), component: App::Component.get('blizzard') },
+
       { name: 'sharing_classic',        token: 'sa.sh.sz',    addon: Addon.get('sharing'),        design: App::Design.get('classic'),  component: App::Component.get('app') },
       { name: 'sharing_twit',           token: 'sa.sh.sz',    addon: Addon.get('sharing'),        design: App::Design.get('twit'),     component: App::Component.get('app') },
       { name: 'sharing_html5',          token: 'sa.sh.sz',    addon: Addon.get('sharing'),        design: App::Design.get('html5'),    component: App::Component.get('app') },
       { name: 'sharing_next15',         token: 'aba.aba.abc', addon: Addon.get('sharing'),        design: App::Design.get('next15'),   component: App::Component.get('next15') },
       { name: 'sharing_blizzard',       token: 'sa.sh.sz',    addon: Addon.get('sharing'),        design: App::Design.get('blizzard'), component: App::Component.get('app') },
       { name: 'sharing_sony',           token: 'sa.sh.sz',    addon: Addon.get('sharing'),        design: App::Design.get('sony'),     component: App::Component.get('app') },
+
       { name: 'social_sharing_classic', token: 'sa.sh.ua',    addon: Addon.get('social_sharing'), design: App::Design.get('classic'),  component: App::Component.get('app') },
       { name: 'social_sharing_flat',    token: 'sa.sh.ua',    addon: Addon.get('social_sharing'), design: App::Design.get('flat'),     component: App::Component.get('app') },
       { name: 'social_sharing_light',   token: 'sa.sh.ua',    addon: Addon.get('social_sharing'), design: App::Design.get('light'),    component: App::Component.get('app') },
+
       { name: 'embed_classic',          token: 'sa.sh.ub',    addon: Addon.get('embed'),          design: App::Design.get('classic'),  component: App::Component.get('app') },
       { name: 'embed_flat',             token: 'sa.sh.ub',    addon: Addon.get('embed'),          design: App::Design.get('flat'),     component: App::Component.get('app') },
       { name: 'embed_light',            token: 'sa.sh.ub',    addon: Addon.get('embed'),          design: App::Design.get('light'),    component: App::Component.get('app') },
+
       { name: 'info_sony',              token: 'tj.tj.aeb',   addon: Addon.get('info'),           design: App::Design.get('sony'),     component: App::Component.get('sony') },
+
+
       { name: 'buy_action_blizzard',    token: 'aca.aca.acb', addon: Addon.get('buy_action'),     design: App::Design.get('blizzard'), component: App::Component.get('blizzard') },
+
       { name: 'preview_tools_svnet',    token: 'sj.sj.sk',    addon: Addon.get('preview_tools'),  design: nil,                         component: App::Component.get('svnet') },
+
       { name: 'end_actions_twit',       token: 'sf.sf.agb',   addon: Addon.get('end_actions'),    design: App::Design.get('twit'),     component: App::Component.get('twit') },
-      { name: 'action_svnet',           token: 'sj.sj.adb',   addon: Addon.get('action'),         design: nil,                         component: App::Component.get('svnet') }
+
+      { name: 'action_svnet',           token: 'sj.sj.adb',   addon: Addon.get('action'),         design: App::Design.get('classic'),                         component: App::Component.get('svnet') }
     ]
   end
 
   def app_settings_template_seeds
     [
       { addon_plan: AddonPlan.get('video_player', 'standard'),   plugin: App::Plugin.get('video_player')          },
+
       { addon_plan: AddonPlan.get('action', 'standard'),         plugin: App::Plugin.get('action_svnet')          },
+
       { addon_plan: AddonPlan.get('info', 'standard'),           plugin: App::Plugin.get('info_sony')             },
+
       { addon_plan: AddonPlan.get('controls', 'standard'),       plugin: App::Plugin.get('controls_classic')      },
       { addon_plan: AddonPlan.get('controls', 'standard'),       plugin: App::Plugin.get('controls_flat')         },
       { addon_plan: AddonPlan.get('controls', 'standard'),       plugin: App::Plugin.get('controls_light')        },
@@ -183,6 +200,7 @@ class AddonSystemPopulator < Populator
       { addon_plan: AddonPlan.get('controls', 'standard'),       plugin: App::Plugin.get('controls_next15')       },
       { addon_plan: AddonPlan.get('controls', 'standard'),       plugin: App::Plugin.get('controls_df')           },
       { addon_plan: AddonPlan.get('controls', 'standard'),       plugin: App::Plugin.get('controls_blizzard')     },
+
       { addon_plan: AddonPlan.get('lightbox', 'standard'),       plugin: App::Plugin.get('lightbox_classic')      },
       { addon_plan: AddonPlan.get('lightbox', 'standard'),       plugin: App::Plugin.get('lightbox_flat'), suffix: 'without_close_button' },
       { addon_plan: AddonPlan.get('lightbox', 'standard'),       plugin: App::Plugin.get('lightbox_light'), suffix: 'without_close_button' },
@@ -193,12 +211,16 @@ class AddonSystemPopulator < Populator
       { addon_plan: AddonPlan.get('lightbox', 'standard'),       plugin: App::Plugin.get('lightbox_next15')       },
       { addon_plan: AddonPlan.get('lightbox', 'standard'),       plugin: App::Plugin.get('lightbox_df')           },
       { addon_plan: AddonPlan.get('lightbox', 'standard'),       plugin: App::Plugin.get('lightbox_blizzard'), suffix: 'without_close_button' },
+
       { addon_plan: AddonPlan.get('image_viewer', 'standard'),   plugin: App::Plugin.get('image_viewer')          },
+
       { addon_plan: AddonPlan.get('stats', 'invisible'),         plugin: nil                                      },
       { addon_plan: AddonPlan.get('stats', 'realtime'),          plugin: nil                                      },
+
       { addon_plan: AddonPlan.get('logo', 'sublime'),            plugin: App::Plugin.get('logo')                  },
       { addon_plan: AddonPlan.get('logo', 'disabled'),           plugin: App::Plugin.get('logo')                  },
       { addon_plan: AddonPlan.get('logo', 'custom'),             plugin: App::Plugin.get('logo')                  },
+
       { addon_plan: AddonPlan.get('initial', 'standard'),        plugin: App::Plugin.get('initial_classic')       },
       { addon_plan: AddonPlan.get('initial', 'standard'),        plugin: App::Plugin.get('initial_flat')          },
       { addon_plan: AddonPlan.get('initial', 'standard'),        plugin: App::Plugin.get('initial_light')         },
@@ -208,20 +230,26 @@ class AddonSystemPopulator < Populator
       { addon_plan: AddonPlan.get('initial', 'standard'),        plugin: App::Plugin.get('initial_anthony')       },
       { addon_plan: AddonPlan.get('initial', 'standard'),        plugin: App::Plugin.get('initial_next15')        },
       { addon_plan: AddonPlan.get('initial', 'standard'),        plugin: App::Plugin.get('initial_blizzard')      },
+
       { addon_plan: AddonPlan.get('sharing', 'standard'),        plugin: App::Plugin.get('sharing_classic')       },
       { addon_plan: AddonPlan.get('sharing', 'standard'),        plugin: App::Plugin.get('sharing_twit')          },
       { addon_plan: AddonPlan.get('sharing', 'standard'),        plugin: App::Plugin.get('sharing_html5')         },
       { addon_plan: AddonPlan.get('sharing', 'standard'),        plugin: App::Plugin.get('sharing_next15')        },
       { addon_plan: AddonPlan.get('sharing', 'standard'),        plugin: App::Plugin.get('sharing_blizzard')      },
       { addon_plan: AddonPlan.get('sharing', 'standard'),        plugin: App::Plugin.get('sharing_sony')          },
+
       { addon_plan: AddonPlan.get('social_sharing', 'standard'), plugin: App::Plugin.get('social_sharing_classic') },
       { addon_plan: AddonPlan.get('social_sharing', 'standard'), plugin: App::Plugin.get('social_sharing_flat')   },
       { addon_plan: AddonPlan.get('social_sharing', 'standard'), plugin: App::Plugin.get('social_sharing_light')  },
+
       { addon_plan: AddonPlan.get('embed', 'standard'),          plugin: App::Plugin.get('embed_classic')         },
       { addon_plan: AddonPlan.get('embed', 'standard'),          plugin: App::Plugin.get('embed_flat')            },
       { addon_plan: AddonPlan.get('embed', 'standard'),          plugin: App::Plugin.get('embed_light')           },
+
       { addon_plan: AddonPlan.get('preview_tools', 'standard'),  plugin: App::Plugin.get('preview_tools_svnet') },
+
       { addon_plan: AddonPlan.get('end_actions', 'standard'),    plugin: App::Plugin.get('end_actions_twit')    },
+
       { addon_plan: AddonPlan.get('buy_action', 'standard'),     plugin: App::Plugin.get('buy_action_blizzard') }
     ]
   end
