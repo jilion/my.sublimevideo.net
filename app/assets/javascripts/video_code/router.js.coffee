@@ -80,6 +80,9 @@ class MSVVideoCode.Routers.BuilderRouter extends Backbone.Router
     MSVVideoCode.socialSharingView = new MSVVideoCode.Views.SocialSharing
       el: '#social_sharing_settings'
 
+    MSVVideoCode.EmbedView = new MSVVideoCode.Views.Embed
+      el: '#embed_settings'
+
     if $('.get_the_code').exists()
       MSVVideoCode.codeView = new MSVVideoCode.Views.Code
         el: '#video_code_form'

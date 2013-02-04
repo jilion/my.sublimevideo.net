@@ -18,11 +18,3 @@ class MSVVideoCode.Helpers.UIAssetHelper
   renderError: (name) ->
     $("##{@scope}_#{name}").show()
     $("##{@scope}_src").addClass 'errors'
-
-class MSVVideoCode.Helpers.UISourceHelper extends MSVVideoCode.Helpers.UIAssetHelper
-  hideErrors: ->
-    super
-
-  renderError: (name) ->
-    super name
-

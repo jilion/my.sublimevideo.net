@@ -6,7 +6,7 @@ class MSVVideoCode.Views.SocialSharing extends Backbone.View
     'click input[name=social_sharing_image]': 'updateSettingsAndToggleImageUrlField'
 
   initialize: ->
-    @videoTagHelper = new MySublimeVideo.Helpers.VideoTagHelper(MSVVideoCode.video)
+    @uiHelper = new MSVVideoCode.Helpers.UIAssetHelper('sharing_url')
 
     _.bindAll this, 'render'
     MSVVideoCode.kits.bind 'change', this.render
@@ -35,6 +35,7 @@ class MSVVideoCode.Views.SocialSharing extends Backbone.View
 
   updateSetting: (addonName, settingName, value)->
     MSVVideoCode.video.updateSetting(addonName, settingName, value)
+    this.renderStatus()
 
   #
   # BINDINGS
@@ -42,6 +43,18 @@ class MSVVideoCode.Views.SocialSharing extends Backbone.View
   render: ->
     $(@el).find('#social_sharing_settings_fields').html this.template
       video: MSVVideoCode.video
-    $(@el).show()
 
     this
+
+  renderStatus: ->
+    @uiHelper.hideErrors()
+
+    socialSharingUrl = new MySublimeVideo.Models.Asset(src: MSVVideoCode.video.getSetting('sharing', 'url', MSVVideoCode.kits.selected))
+
+    return if socialSharingUrl.srcIsEmpty()
+
+    if !socialSharingUrl.srcIsUrl()
+      @uiHelper.renderError('src_invalid')
+    else
+      @uiHelper.renderValid()
+

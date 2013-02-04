@@ -1,0 +1,15 @@
+%h4 Embed URL
+%p.info
+  = "If you want to test the embed button in the player preview above, you need to provide a valid embed URL."
+.entry#embed_url_box
+  %label.icon{ for: "embed_url" } Embed URL
+  %input#embed_url_src.text.kit_setting{ type: 'text', size: 50, placeholder: "URL", value: MSVVideoCode.video.getSetting('embed', 'url', MSVVideoCode.kits.selected), data: { addon: 'embed', setting: 'url' } }/
+  %span#embed_url_src_invalid.inline_alert{ style: "display:none" } Please provide a valid URL
+
+%h4 Embed size
+
+%p.info
+  Enter a WIDTH or a WIDTHxHEIGHT pair.
+
+.dimensions.entry.size
+  %input#width.text.no_icon.kit_setting{ type: "text", placeholder: "Size", value: MSVVideoCode.video.getSetting('embed', 'size', MSVVideoCode.kits.selected), size: 9, maxlength: 9, data: { addon: 'embed', setting: 'size' } }

@@ -21,7 +21,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
   initUIHelpers: ->
     @uiHelpers = {}
     MSVVideoCode.sources.each (source) =>
-      @uiHelpers[source.cid] = new MSVVideoCode.Helpers.UISourceHelper(source.formatQuality())
+      @uiHelpers[source.cid] = new MSVVideoCode.Helpers.UIAssetHelper(source.formatQuality())
 
   #
   # EVENTS
@@ -83,7 +83,7 @@ class MSVVideoCode.Views.Sources extends Backbone.View
     else if !source.validMimeType()
       @uiHelpers[source.cid].renderError('mime_type_invalid')
     else
-      @uiHelpers[source.cid].renderValid(source)
+      @uiHelpers[source.cid].renderValid()
 
   renderAdditionalInformation: ->
     $('.no_usable_source').hide()
