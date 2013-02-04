@@ -44,6 +44,10 @@ describe Service::SettingsSanitizer do
           values: %w[twitter facebook pinterest google+]
         },
         default: %w[twitter facebook pinterest google+]
+      },
+      sizeSetting: {
+        type: 'size',
+        default: '640'
       }
     }
   }
@@ -56,7 +60,8 @@ describe Service::SettingsSanitizer do
         stringSetting2: 'bar',
         imageSetting: 'http://mydomain.com/image.png',
         urlSetting: '//mydomain.com',
-        buttonsSetting: ['google+', 'pinterest']
+        buttonsSetting: ['google+', 'pinterest'],
+        sizeSetting: 640
       },
       addonName2: {
         booleanSetting: '3',
@@ -64,10 +69,12 @@ describe Service::SettingsSanitizer do
         stringSetting: 'baz',
         imageSetting: 'mydomain.com/image.png',
         urlSetting: 'mydomain.com',
-        buttonsSetting: 'google+, foo  pinterest,   bar twitter'
+        buttonsSetting: 'google+, foo  pinterest,   bar twitter',
+        sizeSetting: '640x360'
       },
       addonName3: {
-        urlSetting: ''
+        urlSetting: '',
+        sizeSetting: '640 360'
       }
     }
   }
@@ -92,17 +99,16 @@ describe Service::SettingsSanitizer do
           stringSetting2: 'bar',
           imageSetting: 'http://mydomain.com/image.png',
           urlSetting: '//mydomain.com',
-          buttonsSetting: %w[google+ pinterest]
+          buttonsSetting: %w[google+ pinterest],
+          sizeSetting: '640'
         },
         'addonName2' => {
           booleanSetting: true,
           floatSetting: 0.45,
           imageSetting: 'http://mydomain.com/image.png',
           urlSetting: 'http://mydomain.com',
-          buttonsSetting: %w[google+ pinterest twitter]
-        },
-        'addonName3' => {
-          urlSetting: ''
+          buttonsSetting: %w[google+ pinterest twitter],
+          sizeSetting: '640x360'
         }
       }
     end

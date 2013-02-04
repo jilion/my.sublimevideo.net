@@ -44,7 +44,9 @@ module Service
 
       case addon_plan_setting_template[:type]
       when 'image', 'url'
-        @sanitized_settings[addon_name][setting_key] = sanitize_url(setting_value)
+        if sanitized_url = sanitize_url(setting_value)
+          @sanitized_settings[addon_name][setting_key] = sanitized_url
+        end
 
       when 'float'
         range = (addon_plan_setting_template[:range][0]..addon_plan_setting_template[:range][1])
@@ -63,15 +65,20 @@ module Service
           @sanitized_settings[addon_name][setting_key] = setting_value
         end
 
+      when 'size'
+        if is_a_size?(setting_value)
+          @sanitized_settings[addon_name][setting_key] = setting_value.to_s
+        end
+
       when 'array'
         @sanitized_settings[addon_name][setting_key] = keep_allowed_values(setting_value, addon_plan_setting_template[:item][:values])
       end
     end
 
     def sanitize_url(url)
-      if !url.nil? && url != '' && url !~ %r{\A(https?:)?//}
-        url = "http://#{url}"
-      end
+      return nil if url.nil? || url == ''
+
+      url = "http://#{url}" if url !~ %r{\A(https?:)?//}
 
       url
     end
@@ -86,6 +93,10 @@ module Service
 
     def value_is_allowed?(value, allowed_values)
       allowed_values.include?(value)
+    end
+
+    def is_a_size?(value)
+      value.to_s =~ /\A\d+(x\d+)?\z/
     end
 
     def keep_allowed_values(values, allowed_values)
