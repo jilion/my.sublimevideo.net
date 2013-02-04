@@ -9,6 +9,9 @@
 %h4 Embed size
 
 %p.info
+  If you have already provided an embed URL in your
+  %a.hl{ href: document.location.href.replace(/assistant/, 'sites').replace(/publish-video/, "players/#{MSVVideoCode.kits.selected.get('identifier')}"), onclick: "window.open(this); return false" }= 'Player editor'
+  = "page, this value will override it."
   != "Enter <em>width</em> or <em>width</em>x<em>height</em>. For instance <em>640</em> (the height will respect the video's aspect ratio) or <em>640x360</em>."
 
 .dimensions.entry.size

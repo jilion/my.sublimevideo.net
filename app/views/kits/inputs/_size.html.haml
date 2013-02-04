@@ -1,5 +1,5 @@
 .entry.size{ style: "margin-top:14px" }
   %span{ style: 'font-weight:600' }= label_tag kit_setting_input_field_id(params), kit_setting_title(params)
   = text_field_tag kit_setting_input_field_name(params), params[:value], size: 4, maxlength: 4, id: kit_setting_input_field_id(params), class: 'text no_icon previewable', data: kit_setting_data(params)
-  %p.info= "Only width or width x height. Example: 640 or 640x360."
+  %p.info= raw "Enter <em>width</em> or <em>width</em>x<em>height</em>. For instance <em>640</em> (the height will respect the video's aspect ratio) or <em>640x360</em>."
 .spacer
