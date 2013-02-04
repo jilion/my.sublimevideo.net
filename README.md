@@ -33,4 +33,4 @@
 `gi codo && codo ./app/assets/javascripts`
 
 ------------
-Copyright (c) 2010 - 2012 Jilion(r) - SublimeVideo and Jilion are registered trademarks.
+Copyright (c) 2010 - 2013 Jilion(r) - SublimeVideo and Jilion are registered trademarks.
