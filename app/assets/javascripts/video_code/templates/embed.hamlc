@@ -9,7 +9,7 @@
 %h4 Embed size
 
 %p.info
-  Enter a WIDTH or a WIDTHxHEIGHT pair.
+  != "Enter <em>width</em> or <em>width</em>x<em>height</em>. For instance <em>640</em> (the height will respect the video's aspect ratio) or <em>640x360</em>."
 
 .dimensions.entry.size
   %input#width.text.no_icon.kit_setting{ type: "text", placeholder: "Size", value: MSVVideoCode.video.getSetting('embed', 'size', MSVVideoCode.kits.selected), size: 9, maxlength: 9, data: { addon: 'embed', setting: 'size' } }
