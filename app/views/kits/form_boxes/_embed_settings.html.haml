@@ -3,6 +3,7 @@
     - kit_settings_expanding_handler('embed') do
       = link_to 'Embed settings', ''
     - kit_settings_expendable_block('embed') do
-      = presenter.render_input_field(setting_key: 'size')
-      %p.info
-        = raw "To show the embed button, you'll have to set the 'embed-url' data setting, either through the #{link_to "Publish video", new_site_video_code_path(site), class: "hl"} page or manually. Read our #{link_to "documentation", docs_url('beta/addons/embed'), onclick: "window.open(this); return false", class: "hl" } for more info."
+      = presenter.render_master_input_field(setting_key: 'enable') do
+        = presenter.render_input_field(setting_key: 'size')
+        %p.info
+          = raw "To show the embed button, you'll have to set the 'embed-url' data setting, either through the #{link_to "Publish video", new_site_video_code_path(site), class: "hl"} page or manually. Read our #{link_to "documentation", docs_url('beta/addons/embed'), onclick: "window.open(this); return false", class: "hl" } for more info."
