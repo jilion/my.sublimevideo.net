@@ -1,5 +1,8 @@
-.entry.size{ style: "margin-top:14px" }
-  %span{ style: 'font-weight:600' }= label_tag kit_setting_input_field_id(params), kit_setting_title(params)
-  = text_field_tag kit_setting_input_field_name(params), params[:value], size: 9, maxlength: 9, id: kit_setting_input_field_id(params), class: 'text no_icon previewable', data: kit_setting_data(params)
-  %p.info= raw "Enter <em>width</em> or <em>width</em>x<em>height</em>. For instance <em>640</em> (the height will respect the video's aspect ratio) or <em>640x360</em>."
+- width_and_height = params[:value].to_s.split('x')
+
+%h5= label_tag kit_setting_input_field_id(params), kit_setting_title(params)
+.entry.size
+  = text_field_tag kit_setting_input_field_name(params, '[]'), width_and_height[0], size: 4, maxlength: 4, placeholder: 'Width', id: kit_setting_input_field_id(params), class: 'text no_icon previewable', data: kit_setting_data(params)
+  x
+  = text_field_tag kit_setting_input_field_name(params, '[]'), width_and_height[1], size: 4, maxlength: 4, placeholder: 'Height', id: kit_setting_input_field_id(params), class: 'text no_icon previewable', data: kit_setting_data(params)
 .spacer

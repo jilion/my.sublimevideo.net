@@ -66,9 +66,7 @@ module Service
         end
 
       when 'size'
-        if is_a_size?(setting_value)
-          @sanitized_settings[addon_name][setting_key] = setting_value.to_s
-        end
+        @sanitized_settings[addon_name][setting_key] = compute_size(setting_value)
 
       when 'array'
         @sanitized_settings[addon_name][setting_key] = keep_allowed_values(setting_value, addon_plan_setting_template[:item][:values])
@@ -95,8 +93,8 @@ module Service
       allowed_values.include?(value)
     end
 
-    def is_a_size?(value)
-      value.to_s =~ /\A\d+(x\d+)?\z/
+    def compute_size(value)
+      value.map(&:to_i).reject { |n| n.zero? }.join('x')
     end
 
     def keep_allowed_values(values, allowed_values)

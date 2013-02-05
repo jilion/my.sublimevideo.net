@@ -46,8 +46,8 @@ module KitsHelper
     t("kit.#{params[:addon].name}.values.#{params[:translation_key] || params[:setting_key]}.#{choice}")
   end
 
-  def kit_setting_input_field_name(params)
-    "kit[settings][#{params[:addon].name}][#{params[:setting_key]}]"
+  def kit_setting_input_field_name(params, suffix = '')
+    "kit[settings][#{params[:addon].name}][#{params[:setting_key]}]#{suffix}"
   end
 
   def kit_setting_input_field_id(params, suffix = '')

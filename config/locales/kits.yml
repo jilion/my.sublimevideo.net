@@ -101,8 +101,8 @@ en:
     embed:
       title: 'Embed settings'
       settings:
-        url: 'Default embed URL'
-        size: 'Default embed size'
+        url: 'Default embed URL:'
+        size: 'Default embed size:'
 
     api:
       standard: 'SublimeVideo player basic JavaScript API'

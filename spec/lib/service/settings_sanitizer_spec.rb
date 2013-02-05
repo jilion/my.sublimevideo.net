@@ -61,7 +61,7 @@ describe Service::SettingsSanitizer do
         imageSetting: 'http://mydomain.com/image.png',
         urlSetting: '//mydomain.com',
         buttonsSetting: ['google+', 'pinterest'],
-        sizeSetting: 640
+        sizeSetting: ['640', '']
       },
       addonName2: {
         booleanSetting: '3',
@@ -70,11 +70,11 @@ describe Service::SettingsSanitizer do
         imageSetting: 'mydomain.com/image.png',
         urlSetting: 'mydomain.com',
         buttonsSetting: 'google+, foo  pinterest,   bar twitter',
-        sizeSetting: '640x360'
+        sizeSetting: ['640', '360']
       },
       addonName3: {
         urlSetting: '',
-        sizeSetting: '640 360'
+        sizeSetting: ['640 360']
       }
     }
   }
@@ -109,6 +109,9 @@ describe Service::SettingsSanitizer do
           urlSetting: 'http://mydomain.com',
           buttonsSetting: %w[google+ pinterest twitter],
           sizeSetting: '640x360'
+        },
+        'addonName3' => {
+          sizeSetting: '640'
         }
       }
     end
