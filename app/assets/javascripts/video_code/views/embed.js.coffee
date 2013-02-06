@@ -2,7 +2,8 @@ class MSVVideoCode.Views.Embed extends Backbone.View
   template: JST['video_code/templates/embed']
 
   events:
-    'change .kit_setting': 'updateSettingsFromEvent'
+    'change input#embed_url_src.kit_setting': 'updateUrlSetting'
+    'change input.kit_setting.size': 'updateSizeSetting'
 
   initialize: ->
     @uiHelper = new MSVVideoCode.Helpers.UIAssetHelper('embed_url')
@@ -15,9 +16,14 @@ class MSVVideoCode.Views.Embed extends Backbone.View
   #
   # EVENTS
   #
-  updateSettingsFromEvent: (event) ->
+  updateUrlSetting: (event) ->
     $inputField = $(event.target)
     this.updateSetting($inputField.data('addon'), $inputField.data('setting'), $inputField.val())
+
+  updateSizeSetting: (event) ->
+    $inputField = $(event.target)
+    size = [$('#embed_width').val(), $('#embed_height').val()].join('x')
+    this.updateSetting($inputField.data('addon'), $inputField.data('setting'), size)
 
   updateSetting: (addonName, settingName, value)->
     MSVVideoCode.video.updateSetting(addonName, settingName, value)

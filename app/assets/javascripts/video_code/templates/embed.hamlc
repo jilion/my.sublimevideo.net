@@ -13,5 +13,8 @@
   %a.hl{ href: document.location.href.replace(/assistant/, 'sites').replace(/publish-video/, "players/#{MSVVideoCode.kits.selected.get('identifier')}"), onclick: "window.open(this); return false" }= 'Player editor'
   = "page, the values here will override it."
 
-.dimensions.entry.size
-  %input#width.text.no_icon.kit_setting{ type: "text", placeholder: "Size", value: MSVVideoCode.video.getSetting('embed', 'size', MSVVideoCode.kits.selected), size: 9, maxlength: 9, data: { addon: 'embed', setting: 'size' } }
+- width_and_height = MSVVideoCode.video.getSetting('embed', 'size', MSVVideoCode.kits.selected).split('x')
+.entry.size
+  %input#embed_width.text.no_icon.kit_setting.size{ type: "text", placeholder: "Width", value: width_and_height[0], size: 4, maxlength: 4, data: { addon: 'embed', setting: 'size' } }
+  x
+  %input#embed_height.text.no_icon.kit_setting.size{ type: "text", placeholder: "Height", value: width_and_height[1], size: 4, maxlength: 4, data: { addon: 'embed', setting: 'size' } }
