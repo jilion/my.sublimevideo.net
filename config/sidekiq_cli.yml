@@ -11,3 +11,4 @@
   - [mailer, 2]
   - [default, 5]
   - [high, 10]
+  - [one_time, 5]

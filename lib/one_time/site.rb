@@ -28,7 +28,7 @@ module OneTime
         ::Site.active.find_each do |site|
           next if site.addon_plans.where { billable_items.item_type == 'AddonPlan' }.where { billable_items.item_id == embed_addon }.exists?
 
-          Service::Site.delay.subscribe_site_to_embed_addon(site.id, embed_addon.id)
+          Service::Site.delay(queue: 'one_time').subscribe_site_to_embed_addon(site.id, embed_addon.id)
           scheduled += 1
           puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
         end
