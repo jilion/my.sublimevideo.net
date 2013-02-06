@@ -35,7 +35,7 @@ class MySublimeVideo.UI.KitEditor
         expandParam = "&expand=#{$handler.attr('id')}"
 
       $.ajax(
-        url: "/sites/#{siteToken}/players/#{kitId}/fields?design_id=#{$designSelector.val()}#{expandParam}"
+        url: "/sites/#{siteToken}/players/#{kitId}/fields?design_id=#{$designSelector.val()}#{expandParam}&#{$('.kit_editor').serialize()}"
       ).done (data) =>
         MySublimeVideo.prepareVideosAndLightboxes()
         this.setup()
@@ -100,10 +100,10 @@ class MySublimeVideo.UI.KitEditor
     if lightbox = sublime.lightbox('lightbox-trigger')
       sublime.unprepare('lightbox-trigger')
 
-      lightboxDataSettings = @videoTagHelpers['lightbox'].generateDataSettingsAttribute(['lightbox'], contentOnly: true)
+      lightboxDataSettings = @videoTagHelpers['lightbox'].generateDataSettingsAttribute(addons: ['lightbox'], allTogether: true)
       $('#lightbox-trigger').attr('data-settings', lightboxDataSettings)
 
-      $('#lightbox').attr('data-settings', @videoTagHelpers['standard'].generateDataSettingsAttribute([], contentOnly: true))
+      $('#lightbox').attr('data-settings', @videoTagHelpers['standard'].generateDataSettingsAttribute(allTogether: true))
 
       sublime.prepare('lightbox-trigger')
 

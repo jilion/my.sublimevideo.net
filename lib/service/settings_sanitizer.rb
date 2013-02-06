@@ -1,6 +1,17 @@
 module Service
   SettingsSanitizer = Struct.new(:kit, :settings) do
 
+    def self.cast_boolean(value)
+      case value.to_s
+      when '1'
+        true
+      when '0'
+        false
+      else
+        !!value
+      end
+    end
+
     def initialize(*args)
       super
       @sanitized_settings = Hash.new { |hash, key| hash[key] = {} }
@@ -40,7 +51,7 @@ module Service
         @sanitized_settings[addon_name][setting_key] = sanitize_number(setting_value, range)
 
       when 'boolean'
-        setting_value = cast_boolean(setting_value)
+        setting_value = self.class.cast_boolean(setting_value)
 
         unless value_is_allowed?(setting_value, addon_plan_setting_template[:values])
           setting_value = addon_plan_setting_template[:default]
@@ -54,17 +65,6 @@ module Service
 
       when 'array'
         @sanitized_settings[addon_name][setting_key] = keep_allowed_values(setting_value, addon_plan_setting_template[:item][:values])
-      end
-    end
-
-    def cast_boolean(value)
-      case value
-      when '1'
-        true
-      when '0'
-        false
-      else
-        value
       end
     end
 

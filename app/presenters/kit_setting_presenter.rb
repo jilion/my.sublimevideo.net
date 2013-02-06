@@ -15,6 +15,7 @@ class KitSettingPresenter
     @kit        = options.fetch(:kit)
     @design     = options.fetch(:design)
     @view       = options.fetch(:view)
+    @settings   = @view.params.fetch(:kit) { {} }.fetch(:settings) { @kit.settings.symbolize_keys }
     @addon_plan = @kit.site.addon_plan_for_addon_name(addon_name)
   end
 
@@ -79,8 +80,8 @@ class KitSettingPresenter
     params[:addon]             ||= @addon_plan.addon
     params[:settings_template] ||= settings_template.symbolize_keys
     params[:setting_template]    = params[:settings_template][params[:setting_key].to_sym]
-    params[:settings]            = @kit.settings.symbolize_keys
-    params[:setting]             = @kit.settings[@addon_plan.addon.name][params[:setting_key].to_sym] rescue nil
+    params[:settings]            = @settings
+    params[:setting]             = @settings[@addon_plan.addon.name][params[:setting_key].to_sym] rescue nil
     params[:value]               = get_value_from_params(params)
   end
 

@@ -65,7 +65,7 @@ class MySublimeVideo.Helpers.VideoTagHelper
     if _.isEmpty @dataSettings
       ''
     else
-      if options['contentOnly']
+      if options['allTogether']
         _.inject(@dataSettings, ((s, v, k) -> s + "#{k}:#{v};"), '')
       else
         _.inject(@dataSettings, ((a, v, k) -> a.push "data-#{k}=\"#{v}\""; a), []).join(' ')

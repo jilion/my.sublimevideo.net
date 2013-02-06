@@ -3,6 +3,6 @@
 
 .entry.checkbox_wrap
   = hidden_field_tag kit_setting_input_field_name(params), 0, data: kit_setting_data(params)
-  = check_box_tag kit_setting_input_field_name(params), 1, params[:value], id: kit_setting_input_field_id(params), class: 'previewable', data: kit_setting_data(params)
+  = check_box_tag kit_setting_input_field_name(params), 1, Service::SettingsSanitizer.cast_boolean(params[:value]), id: kit_setting_input_field_id(params), class: 'previewable', data: kit_setting_data(params)
   = label_tag kit_setting_input_field_id(params), kit_setting_title(params)
 .spacer
