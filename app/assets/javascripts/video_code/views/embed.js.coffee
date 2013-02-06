@@ -22,7 +22,7 @@ class MSVVideoCode.Views.Embed extends Backbone.View
 
   updateSizeSetting: (event) ->
     $inputField = $(event.target)
-    size = [$('#embed_width').val(), $('#embed_height').val()].join('x')
+    size = [$('#embed_width').val(), $('#embed_height').val()].join('x').replace(/x$/, '')
     this.updateSetting($inputField.data('addon'), $inputField.data('setting'), size)
 
   updateSetting: (addonName, settingName, value)->
