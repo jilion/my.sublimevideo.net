@@ -100,7 +100,7 @@ describe Service::Settings do
           settings.kits['1'][:plugins]['videoPlayer'][:plugins]['embed'].should == {
             settings: {
               enable: true,
-              size: 640
+              size: '640'
             },
             allowed_settings: {
               enable: {
@@ -283,7 +283,7 @@ describe Service::Settings do
             "kn":"sa.sh.sv"},
             "tw": {
             "ko": {
-            "iv":true,"tx":640},
+            "iv":true,"tx":"640"},
             "kp": {
             "iv": {
             "ih":[true,false]},
