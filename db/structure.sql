@@ -1319,7 +1319,8 @@ CREATE TABLE video_tags (
     current_sources text,
     settings hstore,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    site_token character varying(255) NOT NULL
 );
 
 
@@ -2479,3 +2480,5 @@ INSERT INTO schema_migrations (version) VALUES ('20121205172815');
 INSERT INTO schema_migrations (version) VALUES ('20121207133427');
 
 INSERT INTO schema_migrations (version) VALUES ('20121217090434');
+
+INSERT INTO schema_migrations (version) VALUES ('20130206133628');

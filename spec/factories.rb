@@ -240,6 +240,7 @@ FactoryGirl.define do
 
   factory :video_tag do
     site
+    site_token      { site.token }
     sequence(:uid)  { |n| "video_uid_#{n}" }
     uid_origin      'attribute'
     sequence(:name) { |n| "Video Tag #{n}" }

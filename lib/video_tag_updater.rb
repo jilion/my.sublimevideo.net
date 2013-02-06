@@ -8,6 +8,7 @@ VideoTagUpdater = Struct.new(:video_tag) do
     return unless site = Site.where(token: site_token).first
 
     video_tag = VideoTag.where(site_id: site.id, uid: uid).first_or_initialize
+    video_tag.site_token = site.token
     new(video_tag).update(data)
   end
 

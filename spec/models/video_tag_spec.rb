@@ -27,6 +27,7 @@ describe VideoTag do
 
   describe "Validations" do
     it { should validate_presence_of(:site_id) }
+    it { should validate_presence_of(:site_token) }
     it { should validate_presence_of(:uid) }
     it { should validate_presence_of(:uid_origin) }
     # it { should validate_uniqueness_of(:site_id).scoped_to(:uid) } # doesn't work with null: false on uid
@@ -189,6 +190,7 @@ end
 #  poster_url      :text
 #  settings        :hstore
 #  site_id         :integer          not null
+#  site_token      :string(255)      not null
 #  size            :string(255)
 #  sources         :text
 #  sources_id      :string(255)

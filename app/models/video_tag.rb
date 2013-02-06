@@ -27,6 +27,7 @@ class VideoTag < ActiveRecord::Base
   # scope :by_state, lambda { |way='desc'| order_by([:state, way.to_sym]) }
 
   validates :site_id, presence: true, uniqueness: { scope: :uid }
+  validates :site_token, presence: true
   validates :uid, :uid_origin, presence: true
   validates :uid_origin, inclusion: %w[attribute source]
   validates :name_origin, inclusion: %w[attribute source youtube vimeo], allow_nil: true
@@ -82,6 +83,7 @@ end
 #  poster_url      :text
 #  settings        :hstore
 #  site_id         :integer          not null
+#  site_token      :string(255)      not null
 #  size            :string(255)
 #  sources         :text
 #  sources_id      :string(255)

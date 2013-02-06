@@ -28,12 +28,17 @@ describe VideoTagUpdater do
     uid: 'video_tag_uid',
     backbone_data: data,
     site: site,
+    :site_token= => true,
     :name= => true, :name_origin= => true,
     :sources_id= => true, :sources_origin= => true,
     :attributes= => true
   ) }
   let(:sources_analyzer) { mock(origin: "sources_origin", id: "sources_id") }
   let(:name_fetcher) { mock(name: "new name", origin: 'name_origin') }
+
+  before {
+    Librato.stub(:increment)
+  }
 
   describe ".update" do
     context "with existing site" do
@@ -47,6 +52,11 @@ describe VideoTagUpdater do
         video_tag.stub(:save) { true }
         VideoTagSourcesAnalyzer.stub(:new) { sources_analyzer }
         VideoTagNameFetcher.stub(:new) { name_fetcher }
+      end
+
+      it "sets site_token" do
+        video_tag.should_receive(:site_token=).with(site.token)
+        VideoTagUpdater.update(site.id, video_tag.uid, data)
       end
 
       it "updates video_tag attributes with data" do
