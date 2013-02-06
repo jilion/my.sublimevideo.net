@@ -12,22 +12,37 @@ describe OneTime::Site do
       Service::Loader.should delay(:update_all_stages!).with(site.id)
       described_class.regenerate_templates(loaders: true)
       Service::Settings.should delay(:update_all_types!).with(site.id)
+
       described_class.regenerate_templates(settings: true)
     end
   end
 
-end
+  describe '.subscribe_all_sites_to_embed_addon', :addons do
+    let!(:site1) { create(:site) }
+    let!(:site2) { create(:site) }
+    let!(:archived_site) { create(:site, state: 'archived') }
+    before do
+      create(:billable_item, site: site1, item: @embed_addon_plan_1, state: 'beta')
+    end
 
-def create_plans
-  plans_attributes = [
-    { name: "free",      cycle: "none",  video_views: 0,         stats_retention_days: 0,   price: 0,    support_level: 0 },
-    { name: "sponsored", cycle: "none",  video_views: 0,         stats_retention_days: nil, price: 0,    support_level: 0 },
-    { name: "trial",     cycle: "none",  video_views: 0,         stats_retention_days: nil, price: 0,    support_level: 2 },
-    { name: "plus",      cycle: "month", video_views: 200_000,   stats_retention_days: 365, price: 990,  support_level: 1 },
-    { name: "premium",   cycle: "month", video_views: 1_000_000, stats_retention_days: nil, price: 4990, support_level: 2 },
-    { name: "plus",       cycle: "year",  video_views: 200_000,    stats_retention_days: 365, price: 9900,  support_level: 1 },
-    { name: "premium",    cycle: "year",  video_views: 1_000_000,  stats_retention_days: nil, price: 49900, support_level: 2 },
-    { name: "custom - 1", cycle: "year",  video_views: 10_000_000, stats_retention_days: nil, price: 99900, support_level: 2 }
-  ]
-  plans_attributes.each { |attributes| Plan.create!(attributes) }
+    it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
+      OneTime::Site.should delay(:subscribe_site_to_embed_addon).with(site2.id, @embed_addon_plan_1.id)
+
+      described_class.subscribe_all_sites_to_embed_addon
+    end
+  end
+
+  describe '.subscribe_site_to_embed_addon', :addons do
+    let!(:site) { create(:site) }
+
+    it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
+      Service::Site.should_receive(:new).with(site) do |service|
+        service.should_receive(:update_billable_items).with({}, { 'embed' => @embed_addon_plan_1.id })
+        service
+      end
+
+      described_class.subscribe_site_to_embed_addon(site.id, @embed_addon_plan_1.id)
+    end
+  end
+
 end

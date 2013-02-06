@@ -22,6 +22,24 @@ module OneTime
         "Schedule finished: #{scheduled} sites will have their loader and license re-generated"
       end
 
+      def subscribe_all_sites_to_embed_addon
+        embed_addon = AddonPlan.get('embed', 'standard')
+        scheduled = 0
+        ::Site.active.find_each do |site|
+          next if site.addon_plans.where { billable_items.item_type == 'AddonPlan' }.where { billable_items.item_id == embed_addon }.exists?
+
+          self.delay.subscribe_site_to_embed_addon(site.id, embed_addon.id)
+          scheduled += 1
+          puts "#{scheduled} sites scheduled..." if (scheduled % 1000).zero?
+        end
+
+        "Schedule finished: #{scheduled} sites will be subscribed to the embed add-on"
+      end
+
+      def subscribe_site_to_embed_addon(site_id, embed_addon_id)
+        Service::Site.new(::Site.find(site_id)).update_billable_items({}, { 'embed' => embed_addon_id })
+      end
+
       def without_versioning
         was_enabled = PaperTrail.enabled?
         PaperTrail.enabled = false

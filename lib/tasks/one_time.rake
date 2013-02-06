@@ -104,6 +104,11 @@ namespace :one_time do
     task update_last_30_days_counters_for_not_archived_sites: :environment do
       timed { Site.update_last_30_days_counters_for_not_archived_sites }
     end
+
+    desc "Subscribes all sites to the embed add-on"
+    task subscribe_all_sites_to_embed_addon: :environment do
+      timed { puts OneTime::Site.subscribe_all_sites_to_embed_addon }
+    end
   end
 
   namespace :stats do
