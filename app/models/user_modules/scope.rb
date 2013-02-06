@@ -40,6 +40,8 @@ module UserModules::Scope
 
     scope :sites_tagged_with, ->(word) { joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 
+    scope :voxcast_users, -> { includes(:sites).where(sites: { id: SiteUsage.site_ids_with_loader_hits }) }
+
     # sort
     scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way.upcase}, users.email #{way.upcase}") }
     scope :by_last_invoiced_amount,  ->(way = 'desc') { order("users.last_invoiced_amount #{way.upcase}") }

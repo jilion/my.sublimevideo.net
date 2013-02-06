@@ -4,7 +4,7 @@ class MailLetter
 
   validates :template, :admin_id, :criteria, presence: true
 
-  DEV_TEAM_EMAILS = %w[thibaud@jilion.com remy@jilion.com zeno@jilion.com octave@jilion.com]
+  DEV_TEAM_EMAILS = %w[thibaud@jilion.com remy@jilion.com zeno@jilion.com octave@jilion.com andrea@jilion.com]
 
   def self.deliver_and_log(params)
     mail_letter = new(params)
@@ -25,8 +25,6 @@ class MailLetter
     users = case @criteria
     when 'dev'
       User.where(email: DEV_TEAM_EMAILS)
-    when 'voxcast_users'
-      User.includes(:sites).where(sites: { id: SiteUsage.site_ids_with_loader_hits })
     else
       User.send(@criteria)
     end
