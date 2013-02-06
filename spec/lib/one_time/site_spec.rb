@@ -26,22 +26,9 @@ describe OneTime::Site do
     end
 
     it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
-      OneTime::Site.should delay(:subscribe_site_to_embed_addon).with(site2.id, @embed_addon_plan_1.id)
+      Service::Site.should delay(:subscribe_site_to_embed_addon).with(site2.id, @embed_addon_plan_1.id)
 
       described_class.subscribe_all_sites_to_embed_addon
-    end
-  end
-
-  describe '.subscribe_site_to_embed_addon', :addons do
-    let!(:site) { create(:site) }
-
-    it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
-      Service::Site.should_receive(:new).with(site) do |service|
-        service.should_receive(:update_billable_items).with({}, { 'embed' => @embed_addon_plan_1.id })
-        service
-      end
-
-      described_class.subscribe_site_to_embed_addon(site.id, @embed_addon_plan_1.id)
     end
   end
 

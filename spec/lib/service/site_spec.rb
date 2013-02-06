@@ -18,6 +18,18 @@ describe Service::Site do
   let(:site)    { Struct.new(:user, :id).new(nil, 1234) }
   let(:service) { described_class.new(site) }
 
+  describe '.subscribe_site_to_embed_addon' do
+    it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
+      Site.should_receive(:find) { site }
+      Service::Site.should_receive(:new).with(site) do |service|
+        service.should_receive(:update_billable_items).with({}, { 'embed' => 42 })
+        service
+      end
+
+      described_class.subscribe_site_to_embed_addon(site.id, 42)
+    end
+  end
+
   describe '#create' do
     before do
       Site.stub(:transaction).and_yield

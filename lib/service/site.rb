@@ -8,6 +8,11 @@ module Service
 
     attr_reader :site
 
+    # One time
+    def self.subscribe_site_to_embed_addon(site_id, embed_addon_id)
+      new(::Site.find(site_id)).update_billable_items({}, { 'embed' => embed_addon_id })
+    end
+
     def initialize(site)
       @site = site
     end
