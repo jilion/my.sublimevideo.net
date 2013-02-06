@@ -11,7 +11,7 @@
 %p.info
   This field is optional. User will be able to adjust this size directly from the embed pane. If you have already provided an embed size in your
   %a.hl{ href: document.location.href.replace(/assistant/, 'sites').replace(/publish-video/, "players/#{MSVVideoCode.kits.selected.get('identifier')}"), onclick: "window.open(this); return false" }= 'Player editor'
-  = "page, the values here will override it."
+  = "page, the values here will override it. If no default embed size is specified, the player size will be used instead (and, if necessary, the height will be adjusted to respect the original aspect-ratio of the video)."
 
 - width_and_height = MSVVideoCode.video.getSetting('embed', 'size', MSVVideoCode.kits.selected).split('x')
 .entry.size
