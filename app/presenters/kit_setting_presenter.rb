@@ -1,5 +1,5 @@
 class KitSettingPresenter
-  attr_accessor :addon_plan
+  attr_accessor :addon_plan, :settings
 
   def self.init(*args)
     presenter = self.new(*args)
@@ -15,8 +15,8 @@ class KitSettingPresenter
     @kit        = options.fetch(:kit)
     @design     = options.fetch(:design)
     @view       = options.fetch(:view)
-    @settings   = @view.params.fetch(:kit) { {} }.fetch(:settings) { @kit.settings.symbolize_keys }
-    @addon_plan = @kit.site.addon_plan_for_addon_name(addon_name)
+    @settings   = load_settings
+    @addon_plan = load_addon_plan
   end
 
   def viable?
@@ -74,6 +74,24 @@ class KitSettingPresenter
   end
 
   private
+
+  def load_settings
+    load_settings_from_params || load_settings_from_kit
+  end
+
+  def load_settings_from_params
+    if @view.params[:kit] && @view.params[:kit][:settings]
+      @view.params[:kit][:settings]
+    end
+  end
+
+  def load_settings_from_kit
+    @kit.settings.symbolize_keys
+  end
+
+  def load_addon_plan
+    @kit.site.addon_plan_for_addon_name(addon_name)
+  end
 
   def populate_params!(params)
     params[:data]              ||= {}

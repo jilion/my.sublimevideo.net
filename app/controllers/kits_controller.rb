@@ -68,6 +68,7 @@ class KitsController < ApplicationController
 
   # GET /sites/:site_id/players/:id/fields
   def fields
+    params[:kit][:settings] = Service::SettingsSanitizer.new(@kit, params[:kit][:settings]).sanitize
   end
 
   private
