@@ -14,8 +14,7 @@
 
   = render 'addons/addon', site: site, addon: Addon.get('logo')
   = render 'addons/addon', site: site, addon: Addon.get('social_sharing')
-  - if early_access?('embed_addon')
-    = render 'addons/addon', site: site, addon: Addon.get('embed')
+  = render 'addons/addon', site: site, addon: Addon.get('embed')
   = render 'addons/addon', site: site, addon: Addon.get('stats')
   = render 'addons/addon', site: site, addon: Addon.get('support')
   %tr
