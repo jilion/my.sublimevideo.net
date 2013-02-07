@@ -2,16 +2,12 @@ require 'fast_spec_helper'
 require 'zip/zip'
 require 'rails/railtie'
 require 'fog'
-
-# for fog_mock
-require 'carrierwave'
-require File.expand_path('config/initializers/carrierwave')
-require File.expand_path('spec/config/carrierwave')
-
+require File.expand_path('spec/config/carrierwave') # for fog_mock
 require File.expand_path('spec/support/fixtures_helpers')
 
-require File.expand_path('app/models/app')
-require File.expand_path('app/uploaders/app/component_version_zip_content_uploader')
+App = Module.new unless defined?(App)
+
+require 'uploaders/app/component_version_zip_content_uploader'
 
 describe App::ComponentVersionZipContentUploader, :fog_mock do
 

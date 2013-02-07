@@ -1,3 +1,5 @@
+require 'carrierwave'
+require File.expand_path('config/initializers/carrierwave')
 require 'carrierwave/test/matchers'
 
 RSpec.configure do |config|

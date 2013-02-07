@@ -1,17 +1,10 @@
 require 'fast_spec_helper'
 require 'support/fixtures_helpers'
 require 'rails/railtie'
-require 'fog'
-require 's3etag'
-
 require 'sidekiq'
 require File.expand_path('spec/config/sidekiq')
 require File.expand_path('spec/support/sidekiq_custom_matchers')
-
-# for fog_mock
-require 'carrierwave'
-require File.expand_path('config/initializers/carrierwave')
-require File.expand_path('spec/config/carrierwave')
+require File.expand_path('spec/config/carrierwave') # for fog_mock
 
 require File.expand_path('lib/cdn/file')
 

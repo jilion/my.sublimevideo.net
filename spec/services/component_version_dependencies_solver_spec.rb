@@ -1,23 +1,19 @@
 require 'fast_spec_helper'
-require 'rails/railtie'
-
 require 'services/component_version_dependencies_solver'
 require File.expand_path('lib/stage')
 
-unless defined?(ActiveRecord)
-  App = Module.new
-  Site = Class.new
-  App::Component = Struct.new(:name, :token)
-  App::ComponentVersion = Struct.new(:version, :component, :dependencies) do
-    def stage
-      Stage.version_stage(version)
-    end
+App = Module.new unless defined?(App)
+Site = Class.new unless defined?(Site)
+App::Component = Struct.new(:name, :token) unless defined?(App::Component)
+App::ComponentVersion = Struct.new(:version, :component, :dependencies) do
+  def stage
+    Stage.version_stage(version)
   end
-end
+end unless defined?(App::ComponentVersion)
 
 def create_app_component(name, token)
   if defined?(ActiveRecord)
-    App::Component.new({name: name, token: token}, as: :admin)
+    App::Component.new(name: name, token: token)
   else
     App::Component.new(name, token)
   end
@@ -25,12 +21,11 @@ end
 
 def create_app_component_version(version, component)
   if defined?(ActiveRecord)
-    App::ComponentVersion.new({version: version, component: component}, as: :admin)
+    App::ComponentVersion.new(version: version, component: component)
   else
     App::ComponentVersion.new(version, component)
   end
 end
-
 
 describe ComponentVersionDependenciesSolver do
   let(:site) { Site.new }

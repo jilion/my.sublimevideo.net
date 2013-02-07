@@ -1,5 +1,4 @@
 require 'fast_spec_helper'
-require 'rails/railtie'
 
 require 'sidekiq'
 require File.expand_path('spec/config/sidekiq')
@@ -7,6 +6,7 @@ require File.expand_path('spec/support/sidekiq_custom_matchers')
 
 require File.expand_path('lib/service/kit')
 require File.expand_path('lib/service/site')
+require 'services/settings_generator'
 
 Kit = Struct.new(:params) unless defined?(Kit)
 ActiveRecord = Class.new unless defined?(ActiveRecord)
@@ -20,6 +20,10 @@ describe Service::Kit do
   let(:service)        { described_class.new(kit) }
   let(:sanitized_settings) { stub }
   let(:settings_sanitizer_service) { stub(sanitize: sanitized_settings) }
+
+  before {
+    Librato.stub(:increment)
+  }
 
   describe "#save" do
     let(:params) { { name: 'My Kit', app_design_id: 42, settings: { "logo" => { "settings" => "value" } } } }
