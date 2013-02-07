@@ -6,4 +6,5 @@
 
 = render 'kits/form_boxes/social_sharing_settings', site: site, kit: kit, design: design
 
-= render 'kits/form_boxes/embed_settings', site: site, kit: kit, design: design
+- if early_access?('embed_addon')
+  = render 'kits/form_boxes/embed_settings', site: site, kit: kit, design: design

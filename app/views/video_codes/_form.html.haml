@@ -53,10 +53,11 @@
       = link_to "#{t('addons.social_sharing')} settings", ''
     #social_sharing_settings_fields.expandable
 
-  #embed_settings.expandable_settings_box
-    %h4.expanding_handler
-      = link_to "#{t('addons.embed')} settings", ''
-    #embed_settings_fields.expandable
+  - if early_access?('embed_addon')
+    #embed_settings.expandable_settings_box
+      %h4.expanding_handler
+        = link_to "#{t('addons.embed')} settings", ''
+      #embed_settings_fields.expandable
 .spacer
 
 .big_break
