@@ -1,8 +1,5 @@
 require_dependency 'hostname'
 require_dependency 'stage'
-require_dependency 'validators/hostname_validator'
-require_dependency 'validators/dev_hostnames_validator'
-require_dependency 'validators/extra_hostnames_validator'
 require_dependency 'service/loader'
 require_dependency 'service/settings'
 require_dependency 'service/site'

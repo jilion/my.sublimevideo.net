@@ -1,5 +1,3 @@
-require_dependency 'validators/email_uniqueness_validator'
-require_dependency 'validators/hostname_validator'
 require_dependency 'zendesk_wrapper'
 require_dependency 'service/newsletter'
 require_dependency 'public_launch'

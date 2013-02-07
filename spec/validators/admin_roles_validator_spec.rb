@@ -20,7 +20,7 @@ describe AdminRolesValidator do
 
   describe "valid admin roles" do
     it "should not add an error" do
-      validate_admin_roles(admin, :roles, AdminRole.roles)
+      validate_admin_roles(admin, :roles, Admin.roles)
       admin.errors[:roles].should be_empty
     end
   end
@@ -34,7 +34,7 @@ describe AdminRolesValidator do
 
   describe "duplicated roles" do
     it "should add an error" do
-      validate_admin_roles(admin, :roles, [AdminRole.roles.first, AdminRole.roles.first])
+      validate_admin_roles(admin, :roles, [Admin.roles.first, Admin.roles.first])
       admin.errors[:roles].should have(1).item
     end
   end

@@ -1,8 +1,5 @@
-require_dependency 'admin_role_methods'
-require_dependency 'validators/admin_roles_validator'
-
 class Admin < ActiveRecord::Base
-  include AdminRoleMethods
+  ROLES = %w[marcom player twitter invoices god]
 
   devise :database_authenticatable, :token_authenticatable, :invitable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable, :async
@@ -11,24 +8,19 @@ class Admin < ActiveRecord::Base
 
   serialize :roles, Array
 
-  # ================
-  # = Associations =
-  # ================
-
   has_many :mail_logs, class_name: "MailLog"
-
-  # ===============
-  # = Validations =
-  # ===============
-
-  validates :roles, admin_roles: true
-
-  # ==========
-  # = Scopes =
-  # ==========
 
   scope :by_date, lambda { |way='desc'| order{ created_at.send(way) } }
 
+  validates :roles, admin_roles: true
+
+  def has_role?(role)
+    (roles & %W[god #{role}]).present?
+  end
+
+  def self.roles
+    ROLES
+  end
 end
 
 # == Schema Information
