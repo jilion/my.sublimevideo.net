@@ -72,6 +72,25 @@ module SiteModules::Scope
       }
     end
 
+    def with_page_loads
+      fields_to_add = %w[m e em].inject([]) do |array, sub_field|
+        array << "$pv.#{sub_field}"; array
+      end
+
+      stats = Stat::Site::Day.collection.aggregate([
+        { :$project => {
+            _id: 0,
+            t: 1,
+            pvTot: { :$add => fields_to_add } } },
+        { :$group => {
+          _id: '$t',
+          pvTotSum: { :$sum => '$pvTot' }, } }
+      ])
+
+      where(token: stats.select { |stat| stat['pvTotSum'] > 0 }.map { |s| s['_id'] })
+    end
+
+
   end
 
 end

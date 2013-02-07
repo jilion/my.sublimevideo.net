@@ -124,4 +124,22 @@ describe UserModules::Scope do
     end
   end
 
+  describe '.with_page_loads' do
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:user3) { create(:user) }
+    let(:site1) { create(:site, user: user1) }
+    let(:site2) { create(:site, user: user1) }
+    let(:site3) { create(:site, user: user2) }
+    let(:site4) { create(:site, user: user3) }
+    before do
+      create(:site_day_stat, t: site1.token, d: 3.days.ago.midnight, pv: { m: 1 })
+      create(:site_day_stat, t: site2.token, d: 1.day.ago.midnight, pv: { e: 1 })
+      create(:site_day_stat, t: site3.token, d: Time.now.utc.midnight, pv: { em: 1 })
+      create(:site_day_stat, t: site4.token, d: Time.now.utc.midnight, vv: { em: 1 })
+    end
+
+    specify { User.with_page_loads.all.should =~ [user1, user2] }
+  end
+
 end
