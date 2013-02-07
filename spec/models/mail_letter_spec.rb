@@ -40,7 +40,7 @@ describe MailLetter do
           end
 
           it "delays delivery of mails" do
-            MailLetter.should delay(:deliver).with(@dev_user.id, mail_template.id)
+            MailLetter.should_receive(:deliver).with(@dev_user.id, mail_template.id)
             subject
           end
 
@@ -76,7 +76,7 @@ describe MailLetter do
             let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'paying')).deliver_and_log }
 
             it "delays delivery of mails" do
-              MailLetter.should delay(:deliver).with(@paying_user.id, mail_template.id)
+              MailLetter.should_receive(:deliver).with(@paying_user.id, mail_template.id)
               mail_letter
             end
 
@@ -96,7 +96,7 @@ describe MailLetter do
             let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'free')).deliver_and_log }
 
             it "delays delivery of mails" do
-              MailLetter.should delay(:deliver).with(@free_user.id, mail_template.id)
+              MailLetter.should_receive(:deliver).with(@free_user.id, mail_template.id)
               mail_letter
             end
 

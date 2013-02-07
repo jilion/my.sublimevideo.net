@@ -4,7 +4,7 @@ class MailLetter
 
   validates :template, :admin_id, :criteria, presence: true
 
-  DEV_TEAM_EMAILS = %w[thibaud@jilion.com remy@jilion.com zeno@jilion.com octave@jilion.com andrea@jilion.com]
+  DEV_TEAM_EMAILS = %w[thibaud@jilion.com remy@jilion.com zeno@zeno.name octave@jilion.com andrea@jilion.com]
 
   def self.deliver_and_log(params)
     mail_letter = new(params)
