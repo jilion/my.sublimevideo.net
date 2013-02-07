@@ -99,7 +99,7 @@ class KitSettingPresenter
     params[:settings_template] ||= settings_template.symbolize_keys
     params[:setting_template]    = params[:settings_template][params[:setting_key].to_sym]
     params[:settings]            = @settings
-    params[:setting]             = @settings[@addon_plan.addon.name][params[:setting_key].to_sym] rescue nil
+    params[:setting]             = @settings[addon_name.to_sym][params[:setting_key].to_sym] rescue nil
     params[:value]               = get_value_from_params(params)
   end
 
