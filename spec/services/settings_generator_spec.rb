@@ -1,33 +1,21 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
 require 'fog'
+require File.expand_path('spec/config/carrierwave') # for fog_mock
 
-require 'sidekiq'
-require File.expand_path('spec/config/sidekiq')
-require File.expand_path('spec/support/sidekiq_custom_matchers')
-
-# for fog_mock
-require 'carrierwave'
 require 'services/player_mangler'
-require File.expand_path('app/models/app')
-require File.expand_path('config/initializers/carrierwave')
-require File.expand_path('spec/config/carrierwave')
-require 's3'
+require 'services/settings_generator'
 
-require 'service/settings'
+App = Module.new unless defined?(App)
+App::Design = Class.new unless defined?(App::Design)
+App::Plugin = Class.new unless defined?(App::Plugin)
+App::SettingsTemplate = Class.new unless defined?(App::SettingsTemplate)
+Site = Class.new unless defined?(Site)
+Kit = Class.new unless defined?(Kit)
+Addon = Class.new unless defined?(Addon)
+AddonPlan = Class.new unless defined?(AddonPlan)
 
-unless defined?(ActiveRecord)
-  Site = Class.new
-  Addon = Class.new
-  AddonPlan = Class.new
-  Kit = Class.new
-  App::Design = Class.new
-  App::Component = Class.new
-  App::Plugin = Class.new
-  App::SettingsTemplate = Class.new
-end
-
-describe Service::Settings, :fog_mock do
+describe SettingsGenerator, :fog_mock do
   before {
     site.stub_chain(:addon_plans, :includes, :order) { [] }
     site.stub_chain(:kits, :includes, :order) { [] }

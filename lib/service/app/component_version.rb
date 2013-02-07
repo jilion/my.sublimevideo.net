@@ -1,4 +1,3 @@
-require_dependency 'service/loader'
 require_dependency 'campfire_wrapper'
 
 module Service
@@ -8,7 +7,7 @@ module Service
       def create
         component_version.save!
         if component_version.name == 'app'
-          Service::Loader.delay(queue: 'high').update_all_dependant_sites(component_version.component_id, component_version.stage)
+          LoaderGenerator.delay(queue: 'high').update_all_dependant_sites(component_version.component_id, component_version.stage)
           CampfireWrapper.delay.post("#{campfire_message} released")
         end
         true
@@ -18,7 +17,7 @@ module Service
 
       def destroy
         component_version.destroy
-        Service::Loader.delay(queue: 'high').update_all_dependant_sites(component_version.component_id, component_version.stage)
+        LoaderGenerator.delay(queue: 'high').update_all_dependant_sites(component_version.component_id, component_version.stage)
         CampfireWrapper.delay.post("#{campfire_message} DELETED!")
         true
       end

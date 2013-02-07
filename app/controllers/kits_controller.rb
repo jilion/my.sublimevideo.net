@@ -53,7 +53,7 @@ class KitsController < ApplicationController
   def set_as_default
     @site.touch(:settings_updated_at)
     @site.update_attributes(default_kit_id: @kit.id)
-    Service::Settings.delay.update_all_types!(@site.id)
+    SettingsGenerator.delay.update_all_types!(@site.id)
 
     redirect_to [@site, :kits]
   end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Service::Settings do
+describe SettingsGenerator do
   context "with populates addons" do
     describe "default settings of a new site" do
       let(:site) {

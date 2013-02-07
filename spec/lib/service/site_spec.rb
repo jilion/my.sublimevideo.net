@@ -65,12 +65,12 @@ describe Service::Site do
     end
 
     it 'delays the update of all loader stages' do
-      Service::Loader.should delay(:update_all_stages!).with(site.id)
+      LoaderGenerator.should delay(:update_all_stages!).with(site.id)
       service.create
     end
 
     it 'delays the update of all settings types' do
-      Service::Settings.should delay(:update_all_types!).with(site.id)
+      SettingsGenerator.should delay(:update_all_types!).with(site.id)
       service.create
     end
 
@@ -110,7 +110,7 @@ describe Service::Site do
     end
 
     it 'delays the update of all settings types' do
-      Service::Settings.should delay(:update_all_types!).with(site.id)
+      SettingsGenerator.should delay(:update_all_types!).with(site.id)
       service.update(attributes)
     end
 
@@ -152,12 +152,12 @@ describe Service::Site do
     end
 
     it 'delays the update of all loader stages' do
-      Service::Loader.should delay(:update_all_stages!).with(site.id)
+      LoaderGenerator.should delay(:update_all_stages!).with(site.id)
       service.update_billable_items({}, {})
     end
 
     it 'delays the update of all settings types' do
-      Service::Settings.should delay(:update_all_types!).with(site.id)
+      SettingsGenerator.should delay(:update_all_types!).with(site.id)
       service.update_billable_items({}, {})
     end
   end

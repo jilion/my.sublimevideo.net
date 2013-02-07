@@ -12,7 +12,7 @@ module Service
         kit.save!
         kit.site.touch(:settings_updated_at)
       end
-      Service::Settings.delay.update_all_types!(kit.site_id)
+      SettingsGenerator.delay.update_all_types!(kit.site_id)
       Librato.increment 'kits.events', source: creation ? 'create' : 'update'
       true
     rescue ActiveRecord::RecordInvalid

@@ -11,7 +11,7 @@ module KitsHelper
   end
 
   def kits_settings(site)
-    @kits_settings ||= Service::Settings.new(site, 'settings').kits
+    @kits_settings ||= SettingsGenerator.new(site, 'settings').kits
   end
 
   def app_designs_for_select(site, kit)

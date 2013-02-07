@@ -65,7 +65,7 @@ describe Service::Kit do
     end
 
     it 'delays the update of all settings types' do
-      Service::Settings.should delay(:update_all_types!).with(kit.site_id)
+      SettingsGenerator.should delay(:update_all_types!).with(kit.site_id)
 
       service.save(params)
     end

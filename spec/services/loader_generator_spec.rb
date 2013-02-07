@@ -1,27 +1,19 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
-require 'fog'
-require 'timecop'
-
 require 'sidekiq'
 require File.expand_path('spec/config/sidekiq')
 require File.expand_path('spec/support/sidekiq_custom_matchers')
-
-# for fog_mock
-require 'carrierwave'
-require 'services/player_mangler'
-require 'services/component_version_dependencies_solver'
-require File.expand_path('config/initializers/carrierwave')
-require File.expand_path('spec/config/carrierwave')
-require File.expand_path('lib/s3')
+require File.expand_path('spec/config/carrierwave') # for fog_mock
 require File.expand_path('lib/stage')
-require File.expand_path('app/models/app')
 
-unless defined?(ActiveRecord)
-  Site = Class.new
-  App::Component = Class.new
-  App::ComponentVersion = Class.new
-end
+require 'services/component_version_dependencies_solver'
+require 'services/loader_generator'
+require 'services/player_mangler'
+
+App = Module.new unless defined?(App)
+Site = Class.new unless defined?(Site)
+App::Component = Class.new unless defined?(App::Component)
+App::ComponentVersion = Class.new unless defined?(App::ComponentVersion)
 
 unless defined?(SiteToken)
   module SiteToken
@@ -31,9 +23,7 @@ unless defined?(SiteToken)
   end
 end
 
-require File.expand_path('lib/service/loader')
-
-describe Service::Loader, :fog_mock do
+describe LoaderGenerator, :fog_mock do
   let(:site) { mock("Site",
     id: 1,
     token: 'abcd1234',

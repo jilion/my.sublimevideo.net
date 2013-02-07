@@ -1,7 +1,5 @@
 require_dependency 'hostname'
 require_dependency 'stage'
-require_dependency 'service/loader'
-require_dependency 'service/settings'
 require_dependency 'service/site'
 
 class Site < ActiveRecord::Base
@@ -109,8 +107,8 @@ class Site < ActiveRecord::Base
   after_save ->(site) do
     if site.accessible_stage_changed?
       # Delay for 5 seconds to be sure that commit transaction is done.
-      Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
-      Service::Settings.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
+      LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
+      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
     end
   end
 
@@ -125,8 +123,8 @@ class Site < ActiveRecord::Base
 
     after_transition ->(site) do
       # Delay for 5 seconds to be sure that commit transaction is done.
-      Service::Loader.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
-      Service::Settings.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
+      LoaderGenerator.delay(at: 5.seconds.from_now.to_i).update_all_stages!(site.id, deletable: true)
+      SettingsGenerator.delay(at: 5.seconds.from_now.to_i).update_all_types!(site.id)
     end
 
     before_transition :on => :suspend do |site, transition|

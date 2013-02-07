@@ -186,16 +186,16 @@ describe Site, :addons do
     describe "after_save" do
       let(:site) { create(:site) }
 
-      it "delays Service::Loader update if accessible_stage changed" do
+      it "delays LoaderGenerator update if accessible_stage changed" do
         Timecop.freeze do
-          Service::Loader.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
+          LoaderGenerator.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
           site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
         end
       end
 
-      it "delays Service::Settings update if accessible_stage changed" do
+      it "delays SettingsGenerator update if accessible_stage changed" do
         Timecop.freeze do
-          Service::Settings.should delay(:update_all_types!, at: 5.seconds.from_now.to_i).with(site.id)
+          SettingsGenerator.should delay(:update_all_types!, at: 5.seconds.from_now.to_i).with(site.id)
           site.update_attributes({ accessible_stage: 'alpha' }, without_protection: true)
         end
       end
@@ -208,16 +208,16 @@ describe Site, :addons do
     let(:premium_plan) { create(:plan, name: 'premium') }
 
     describe "after transition" do
-      it "delays Service::Loader update" do
+      it "delays LoaderGenerator update" do
         Timecop.freeze do
-          Service::Loader.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
+          LoaderGenerator.should delay(:update_all_stages!, at: 5.seconds.from_now.to_i).with(site.id, deletable: true)
           site.suspend
         end
       end
 
-      it "delays Service::Settings update" do
+      it "delays SettingsGenerator update" do
         Timecop.freeze do
-          Service::Settings.should delay(:update_all_types!, at: 5.seconds.from_now.to_i).with(site.id)
+          SettingsGenerator.should delay(:update_all_types!, at: 5.seconds.from_now.to_i).with(site.id)
           site.suspend
         end
       end

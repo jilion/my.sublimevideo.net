@@ -26,7 +26,7 @@ describe Service::App::ComponentVersion do
 
     context 'app component version' do
       it 'delays the update of all dependant sites loaders' do
-        Service::Loader.should delay(:update_all_dependant_sites, queue: 'high').with(app_component_version.component_id, app_component_version.stage)
+        LoaderGenerator.should delay(:update_all_dependant_sites, queue: 'high').with(app_component_version.component_id, app_component_version.stage)
         service.create
       end
 
@@ -40,7 +40,7 @@ describe Service::App::ComponentVersion do
       let(:service) { described_class.new(other_component_version) }
 
       it 'does not the update of all dependant sites loaders' do
-        Service::Loader.should_not delay(:update_all_dependant_sites)
+        LoaderGenerator.should_not delay(:update_all_dependant_sites)
         service.create
       end
 
@@ -63,7 +63,7 @@ describe Service::App::ComponentVersion do
     end
 
     it 'delays the update of all dependant sites loaders' do
-      Service::Loader.should delay(:update_all_dependant_sites).with(app_component_version.component_id, app_component_version.stage)
+      LoaderGenerator.should delay(:update_all_dependant_sites).with(app_component_version.component_id, app_component_version.stage)
       service.destroy
     end
 

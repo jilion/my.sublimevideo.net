@@ -1,7 +1,5 @@
 require_dependency 'service/rank'
 require_dependency 'service/usage'
-require_dependency 'service/loader'
-require_dependency 'service/settings'
 
 module Service
   class Site
@@ -28,8 +26,8 @@ module Service
         site.settings_updated_at = Time.now.utc
         site.save!
       end
-      Service::Loader.delay.update_all_stages!(site.id)
-      Service::Settings.delay.update_all_types!(site.id)
+      LoaderGenerator.delay.update_all_stages!(site.id)
+      SettingsGenerator.delay.update_all_types!(site.id)
       Service::Rank.delay(queue: 'low').set_ranks(site.id)
       Librato.increment 'sites.events', source: 'create'
       true
@@ -43,7 +41,7 @@ module Service
         site.settings_updated_at = Time.now.utc
         site.save!
       end
-      Service::Settings.delay.update_all_types!(site.id)
+      SettingsGenerator.delay.update_all_types!(site.id)
       Librato.increment 'sites.events', source: 'update'
       true
     rescue ::ActiveRecord::RecordInvalid
@@ -61,8 +59,8 @@ module Service
         site.addons_updated_at   = Time.now.utc
         site.save!
       end
-      Service::Loader.delay.update_all_stages!(site.id)
-      Service::Settings.delay.update_all_types!(site.id)
+      LoaderGenerator.delay.update_all_stages!(site.id)
+      SettingsGenerator.delay.update_all_types!(site.id)
     end
 
     # called from app/models/site.rb
