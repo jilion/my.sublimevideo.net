@@ -1,5 +1,5 @@
 - site = exhibit(site)
-- assistant = Service::Assistant.new(site)
+- assistant = SiteSetupAssistant.new(site)
 %tr{ id: dom_id(site), data: { "site-token" => site.token }, class: cycle("", "alt") }
   = render 'sites/td_hostname', site: site
   = render 'sites/td_usage', site: site

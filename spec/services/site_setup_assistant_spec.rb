@@ -1,10 +1,8 @@
 require 'fast_spec_helper'
 
-require File.expand_path('lib/service/assistant')
+require 'services/site_setup_assistant'
 
-Site = Struct.new(:params) unless defined?(Site)
-
-describe Service::Assistant do
+describe SiteSetupAssistant do
   let(:site)    { Struct.new(:user, :id).new(nil, 1234) }
   let(:service) { described_class.new(site) }
 

@@ -1,5 +1,4 @@
 require_dependency 'service/site'
-require_dependency 'service/assistant'
 
 class SitesController < ApplicationController
   respond_to :html

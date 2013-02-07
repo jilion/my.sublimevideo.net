@@ -1,4 +1,3 @@
-require_dependency 'service/assistant'
 require_dependency 'service/site'
 require_dependency 'service/kit'
 
@@ -53,8 +52,7 @@ class AssistantController < ApplicationController
   private
 
   def update_current_assistant_step_and_redirect
-    assistant = Service::Assistant.new(@site)
-    if Service::Assistant.step_number(action_name) < assistant.current_step_number
+    if SiteSetupAssistant.step_number(action_name) < assistant.current_step_number
       redirect_to send("assistant_#{assistant.current_step}_path", @site)
     else
       @site.update_column(:current_assistant_step, action_name)
@@ -62,11 +60,14 @@ class AssistantController < ApplicationController
   end
 
   def set_current_assistant_step_to_player_and_redirect_if_addons_already_updated
-    assistant = Service::Assistant.new(@site)
     if @site.addons_updated_at? && assistant.current_step_number < 3
       @site.update_column(:current_assistant_step, 'player')
       redirect_to assistant_player_path(@site)
     end
+  end
+
+  def assistant
+    @assistant ||= SiteSetupAssistant.new(@site)
   end
 
   def find_default_kit!
