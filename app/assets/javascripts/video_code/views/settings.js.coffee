@@ -76,10 +76,10 @@ class MSVVideoCode.Views.Settings extends Backbone.View
     this
 
   renderWidth: ->
-    $(@el).find("#width").attr(value: MSVVideoCode.video.get('width'))
+    $(@el).find("#width").val(MSVVideoCode.video.get('width'))
 
   renderHeight: ->
-    $(@el).find("#height").attr(value: MSVVideoCode.video.get('height'))
+    $(@el).find("#height").val(MSVVideoCode.video.get('height'))
 
   renderPosterStatus: ->
     @posterHelper.hideErrors()
