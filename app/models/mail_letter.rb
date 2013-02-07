@@ -11,6 +11,10 @@ class MailLetter
     mail_letter.deliver_and_log
   end
 
+  def self.deliver(user_id, template_id)
+    MailMailer.send_mail_with_template(user_id, template_id)
+  end
+
   def initialize(params)
     @template = MailTemplate.find(params[:template_id])
     @admin    = Admin.find(params[:admin_id])
@@ -29,17 +33,11 @@ class MailLetter
       User.send(@criteria)
     end
 
-    users.not_archived.all.uniq.each { |user| self.class.delay.deliver(user.id, @template.id) }
+    users.not_archived.all.uniq.each { |user| self.class.delay(queue: 'mailer').deliver(user.id, @template.id) }
 
     unless @criteria == 'dev'
       @template.logs.create(admin_id: @admin.id, criteria: @criteria, user_ids: users.map(&:id))
     end
-  end
-
-private
-
-  def self.deliver(user_id, template_id)
-    MailMailer.delay.send_mail_with_template(user_id, template_id)
   end
 
 end
