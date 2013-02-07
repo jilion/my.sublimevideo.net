@@ -1,6 +1,5 @@
 require 'tempfile'
 require_dependency 'cdn/file'
-require_dependency 'app/mangler'
 
 module Service
   Settings = Struct.new(:site, :type, :options) do
@@ -83,7 +82,7 @@ module Service
     end
 
     def mangle(hash)
-      ::App::Mangler.mangle(hash)
+      PlayerMangler.mangle(hash)
     end
 
   private

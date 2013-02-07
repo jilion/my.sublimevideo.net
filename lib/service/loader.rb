@@ -1,6 +1,5 @@
 require 'tempfile'
 require_dependency 'cdn/file'
-require_dependency 'app/component_version_dependencies_solver'
 
 module Service
   Loader = Struct.new(:site, :stage, :options) do
@@ -84,7 +83,7 @@ module Service
     end
 
     def components_dependencies
-      @components_dependencies ||= ::App::ComponentVersionDependenciesSolver.components_dependencies(site, stage)
+      @components_dependencies ||= ComponentVersionDependenciesSolver.components_dependencies(site, stage)
     end
 
     def template_file

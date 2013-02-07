@@ -1,12 +1,6 @@
-begin
-  # use `bundle install --standalone' to get this...
-  require_relative '../vendor/bundler/setup'
-rescue LoadError
-  # fall back to regular bundler if the developer hasn't bundled standalone
-  require 'bundler'
-  Bundler.setup
-end
+$LOAD_PATH.unshift("#{Dir.pwd}/app") unless $LOAD_PATH.include?("#{Dir.pwd}/app")
 
+require 'bundler/setup'
 require_relative 'config/rspec'
 
 def require_dependency(file_name, message = "No such file to load -- %s")

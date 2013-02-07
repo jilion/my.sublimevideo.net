@@ -1,11 +1,12 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
 
-require File.expand_path('lib/app/component_version_dependencies_solver')
+require 'services/component_version_dependencies_solver'
 require File.expand_path('lib/stage')
 
 unless defined?(ActiveRecord)
-  class Site; end
+  App = Module.new
+  Site = Class.new
   App::Component = Struct.new(:name, :token)
   App::ComponentVersion = Struct.new(:version, :component, :dependencies) do
     def stage
@@ -31,7 +32,7 @@ def create_app_component_version(version, component)
 end
 
 
-describe App::ComponentVersionDependenciesSolver do
+describe ComponentVersionDependenciesSolver do
   let(:site) { Site.new }
   let(:c_a) { create_app_component('app', 'a') }
   let(:c_a_100) { create_app_component_version("1.0.0", c_a) }

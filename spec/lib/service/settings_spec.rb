@@ -8,6 +8,7 @@ require File.expand_path('spec/support/sidekiq_custom_matchers')
 
 # for fog_mock
 require 'carrierwave'
+require 'services/player_mangler'
 require File.expand_path('app/models/app')
 require File.expand_path('config/initializers/carrierwave')
 require File.expand_path('spec/config/carrierwave')
@@ -27,11 +28,12 @@ unless defined?(ActiveRecord)
 end
 
 describe Service::Settings, :fog_mock do
-  before do
+  before {
     site.stub_chain(:addon_plans, :includes, :order) { [] }
     site.stub_chain(:kits, :includes, :order) { [] }
     AddonPlan.stub(:get)
-  end
+    Librato.stub(:increment)
+  }
 
   let(:site) { mock("Site",
     id: 1,

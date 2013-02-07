@@ -9,12 +9,13 @@ require File.expand_path('spec/support/sidekiq_custom_matchers')
 
 # for fog_mock
 require 'carrierwave'
+require 'services/player_mangler'
+require 'services/component_version_dependencies_solver'
 require File.expand_path('config/initializers/carrierwave')
 require File.expand_path('spec/config/carrierwave')
 require File.expand_path('lib/s3')
 require File.expand_path('lib/stage')
 require File.expand_path('app/models/app')
-require File.expand_path('lib/app/mangler')
 
 unless defined?(ActiveRecord)
   Site = Class.new
@@ -45,7 +46,7 @@ describe Service::Loader, :fog_mock do
   before do
     Librato.stub(:increment)
     App::Component.stub(:app_component) { app_component }
-    App::ComponentVersionDependenciesSolver.stub(:components_dependencies) { {
+    ComponentVersionDependenciesSolver.stub(:components_dependencies) { {
       'e' => '1.0.0',
       'c1' => '1.2.3',
       'c2' => '1.2.4',
@@ -296,15 +297,15 @@ describe Service::Loader, :fog_mock do
         end
 
         it "includes site token" do
-          s3_object.body.should include "#{App::Mangler.mangle_key(:token)}:'#{site.token}'"
+          s3_object.body.should include "#{PlayerMangler.mangle_key(:token)}:'#{site.token}'"
         end
 
         it "includes sublinevideo host" do
-          s3_object.body.should include "#{App::Mangler.mangle_key(:host)}:'//cdn.sublimevideo.net'"
+          s3_object.body.should include "#{PlayerMangler.mangle_key(:host)}:'//cdn.sublimevideo.net'"
         end
 
         it "includes components versions" do
-          s3_object.body.should include "#{App::Mangler.mangle_key(:components)}:{'c1':'1.2.3','c2':'1.2.4'}"
+          s3_object.body.should include "#{PlayerMangler.mangle_key(:components)}:{'c1':'1.2.3','c2':'1.2.4'}"
         end
       end
     end

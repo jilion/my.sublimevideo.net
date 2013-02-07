@@ -7,7 +7,7 @@ module KitsHelper
   end
 
   def mangled_kits_settings(site)
-    @mangled_kits_settings ||= App::Mangler.mangle(kits_settings(site))
+    @mangled_kits_settings ||= PlayerMangler.mangle(kits_settings(site))
   end
 
   def kits_settings(site)
