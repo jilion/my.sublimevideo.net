@@ -14,7 +14,7 @@ describe UsrAgent do
   describe ".create_or_update_from_trackers!" do
     let(:log_file) { fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz') }
     before do
-      CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz').and_return(log_file)
+      VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz').and_return(log_file)
       @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz', file: log_file)
       @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastUserAgents')
       create(:site).update_attribute(:token, 'ibvjcopp')

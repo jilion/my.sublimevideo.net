@@ -1,5 +1,3 @@
-require_dependency 'zendesk_wrapper'
-
 module Service
   SupportRequest = Struct.new(:support_request) do
 

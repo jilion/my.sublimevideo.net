@@ -1,5 +1,4 @@
-require 'tinder'
-require_dependency 'configurator'
+require 'configurator'
 
 CampfireWrapper = Struct.new(:room) do
   include Configurator

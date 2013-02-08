@@ -96,7 +96,7 @@ private
          log_file.write(file.read)
       rescue NoMethodError, Excon::Errors::NotFound => ex
         if is_a?(Log::Voxcast)
-          self.file = CDN::VoxcastWrapper.download_log(name)
+          self.file = VoxcastWrapper.download_log(name)
           self.save
           log_file.write(file.read)
         else

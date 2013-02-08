@@ -1,5 +1,4 @@
 require_dependency 'notify'
-require_dependency 'ogone'
 require_dependency 'service/user'
 
 StateMachine::Machine.ignore_method_conflicts = true
@@ -103,7 +102,7 @@ class Transaction < ActiveRecord::Base
 
   def execute_payment(opts = {})
     begin
-      Ogone.purchase(amount, user.cc_alias, payment_options(opts))
+      OgoneWrapper.purchase(amount, user.cc_alias, payment_options(opts))
     rescue => ex
       Notify.send("Exception during charging: #{ex.message}", exception: ex)
       nil

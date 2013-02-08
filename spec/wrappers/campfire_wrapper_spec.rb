@@ -1,7 +1,9 @@
 require 'fast_spec_helper'
 require 'active_support/core_ext'
+require 'tinder'
 require 'config/vcr'
-require File.expand_path('lib/campfire_wrapper')
+
+require 'wrappers/campfire_wrapper'
 
 describe CampfireWrapper do
 

@@ -185,7 +185,7 @@ describe Log::Voxcast do
     describe ".parse_log_for_stats" do
       before do
         log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
-        CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
+        VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
         @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz', file: log_file)
       end
 
@@ -208,13 +208,13 @@ describe Log::Voxcast do
   describe "Instance Methods" do
     let(:log_file) { fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz') }
     before do
-      CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
+      VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
       @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1284549900-1284549960.gz', file: log_file)
     end
 
     describe "#parse_and_create_stats!" do
       it "analyzes logs" do
-        CDN::VoxcastWrapper.should_not_receive(:download_log)
+        VoxcastWrapper.should_not_receive(:download_log)
         LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'LogsFileFormat::VoxcastStats')
         Stat.should_receive(:create_stats_from_trackers!)
         @log.parse_and_create_stats!
@@ -222,7 +222,7 @@ describe Log::Voxcast do
     end
     describe "#parse_and_create_referrers!" do
       it "analyzes logs" do
-        CDN::VoxcastWrapper.should_not_receive(:download_log)
+        VoxcastWrapper.should_not_receive(:download_log)
         LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'LogsFileFormat::VoxcastReferrers')
         Referrer.should_receive(:create_or_update_from_trackers!)
         @log.parse_and_create_referrers!
@@ -230,7 +230,7 @@ describe Log::Voxcast do
     end
     describe "#parse_and_create_user_agents!" do
       it "analyzes logs" do
-        CDN::VoxcastWrapper.should_not_receive(:download_log)
+        VoxcastWrapper.should_not_receive(:download_log)
         LogAnalyzer.should_receive(:parse).with(an_instance_of(Tempfile), 'LogsFileFormat::VoxcastUserAgents')
         UsrAgent.should_receive(:create_or_update_from_trackers!)
         @log.parse_and_create_user_agents!

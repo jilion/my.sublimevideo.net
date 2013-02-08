@@ -1,5 +1,4 @@
 require 'base64'
-require_dependency 'ogone'
 require_dependency 'notify'
 
 module UserModules::CreditCard
@@ -143,7 +142,7 @@ module UserModules::CreditCard
         paramplus: "CHECK_CC_USER_ID=#{self.id}"
       })
 
-      authorization = Ogone.store(credit_card, options)
+      authorization = OgoneWrapper.store(credit_card, options)
 
       self.cc_register = false
       process_credit_card_authorization_response(authorization.params)
@@ -166,7 +165,7 @@ module UserModules::CreditCard
       #   An authorization code is available in the field "ACCEPTANCE".
       when '5'
         Librato.increment 'credit_cards.stored', source: authorization_params['BRAND']
-        Ogone.void([authorization_params['PAYID'], 'RES'].join(';'))
+        OgoneWrapper.void([authorization_params['PAYID'], 'RES'].join(';'))
         apply_pending_credit_card_info
 
       # STATUS == 51, Authorization waiting:

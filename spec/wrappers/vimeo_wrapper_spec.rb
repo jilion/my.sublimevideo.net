@@ -1,9 +1,15 @@
 require 'fast_spec_helper'
+require 'vimeo'
 require 'active_support/core_ext'
 require 'config/vcr'
-require File.expand_path('lib/vimeo_wrapper')
+
+require 'wrappers/vimeo_wrapper'
 
 describe VimeoWrapper do
+
+  before {
+    Librato.stub(:increment)
+  }
 
   context "with public video_id" do
     use_vcr_cassette "vimeo/public_video_id"

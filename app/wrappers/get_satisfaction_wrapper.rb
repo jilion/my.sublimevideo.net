@@ -1,6 +1,6 @@
-require_dependency 'configurator'
+require 'configurator'
 
-class GetSatisfaction
+class GetSatisfactionWrapper
   include Configurator
 
   config_file 'get_satisfaction.yml', rails_env: false

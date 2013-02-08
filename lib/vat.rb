@@ -1,4 +1,4 @@
-require_dependency 'configurator'
+require 'configurator'
 
 class Vat
   include Configurator

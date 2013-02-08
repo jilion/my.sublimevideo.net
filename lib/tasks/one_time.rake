@@ -41,7 +41,7 @@ namespace :one_time do
     end
 
     task search_for_missing_voxcast_logs: :environment do
-      CDN::VoxcastWrapper.logs_list(CDN::VoxcastWrapper.hostname).each do |log|
+      VoxcastWrapper.logs_list(VoxcastWrapper.hostname).each do |log|
         log_name = log['content']
         unless Log::Voxcast.where(name: log_name).exists?
           Log::Voxcast.delay.safely_create(name: log_name)

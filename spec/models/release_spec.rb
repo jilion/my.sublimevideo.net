@@ -47,31 +47,31 @@ describe Release do
 
     describe "when flagged"do
       before do
-        S3.player_bucket.put("dev/foo.txt", "bar")
+        S3Wrapper.player_bucket.put("dev/foo.txt", "bar")
         subject.flag
       end
 
       it { should be_dev }
 
       it "empties dev dir" do
-        keys_name = S3.keys_names(S3.player_bucket, 'prefix' => 'dev')
+        keys_name = S3Wrapper.keys_names(S3Wrapper.player_bucket, 'prefix' => 'dev')
         keys_name.should_not include("/dev/foo.txt")
       end
 
       it "puts zip files inside dev dir" do
-        keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'dev', remove_prefix: true)
+        keys_names = S3Wrapper.keys_names(S3Wrapper.player_bucket, 'prefix' => 'dev', remove_prefix: true)
         keys_names.sort.should eq subject.files_in_zip.map { |f| "/#{f}" }.sort
       end
 
       it "puts zip files inside dev dir with public-read" do
-        S3.player_bucket.keys('prefix' => 'dev').each do |key|
+        S3Wrapper.player_bucket.keys('prefix' => 'dev').each do |key|
           all_users_grantee = key.grantees.detect { |g| g.name == "AllUsers" }
           all_users_grantee.perms.should eq ["READ"]
         end
       end
 
       it "puts zip files inside dev dir with good content-type & content-encoding" do
-        S3.player_bucket.keys('prefix' => 'dev').each do |key|
+        S3Wrapper.player_bucket.keys('prefix' => 'dev').each do |key|
           key.head # refresh headers
           key.headers['content-type'].should eq FileHeader.content_type(key.to_s)
           key.headers['content-encoding'].should eq FileHeader.content_encoding(key.to_s)
@@ -97,7 +97,7 @@ describe Release do
 
     it "copies dev files inside dev dir with good content-type & content-encoding" do
       dev_release
-      S3.player_bucket.keys('prefix' => 'dev').each do |key|
+      S3Wrapper.player_bucket.keys('prefix' => 'dev').each do |key|
         key.head # refresh headers
         key.headers['content-type'].should eq FileHeader.content_type(key.to_s)
         key.headers['content-encoding'].should eq FileHeader.content_encoding(key.to_s)
@@ -106,31 +106,31 @@ describe Release do
 
     describe "when flagged" do
       before do
-        S3.player_bucket.put("beta/foo.txt", "bar")
+        S3Wrapper.player_bucket.put("beta/foo.txt", "bar")
         subject.flag
       end
 
       it { should be_beta }
 
       it "removes no more used files in beta dir" do
-        keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'beta')
+        keys_names = S3Wrapper.keys_names(S3Wrapper.player_bucket, 'prefix' => 'beta')
         keys_names.should_not include("/beta/foo.txt")
       end
 
       it "copies dev files inside beta dir" do
-        keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'beta', remove_prefix: true)
+        keys_names = S3Wrapper.keys_names(S3Wrapper.player_bucket, 'prefix' => 'beta', remove_prefix: true)
         keys_names.sort.should eq subject.files_in_zip.map { |f| "/#{f}" }.sort
       end
 
       it "copies dev files inside beta dir with public-read" do
-        S3.player_bucket.keys('prefix' => 'beta').each do |key|
+        S3Wrapper.player_bucket.keys('prefix' => 'beta').each do |key|
           all_users_grantee = key.grantees.detect { |g| g.name == "AllUsers" }
           all_users_grantee.perms.should eq ["READ"]
         end
       end
 
       it "copies dev files inside beta dir with good content-type & content-encoding" do
-        S3.player_bucket.keys('prefix' => 'beta').each do |key|
+        S3Wrapper.player_bucket.keys('prefix' => 'beta').each do |key|
           key.head # refresh headers
           key.headers['content-type'].should eq FileHeader.content_type(key.to_s)
           key.headers['content-encoding'].should eq FileHeader.content_encoding(key.to_s)
@@ -173,12 +173,12 @@ describe Release do
 
       it { should be_stable }
       it "copies beta files inside stable dir" do
-        keys_names = S3.player_bucket.keys('prefix' => 'stable').select { |k| k.exists? && k.to_s != 'stable/' }.map { |k| k.to_s.sub('stable', '') }
+        keys_names = S3Wrapper.player_bucket.keys('prefix' => 'stable').select { |k| k.exists? && k.to_s != 'stable/' }.map { |k| k.to_s.sub('stable', '') }
         keys_names.sort.should eq subject.files_in_zip.map { |f| "/#{f}" }.sort
       end
 
       it "copies beta files inside stable dir with good content-type & content-encoding" do
-        S3.player_bucket.keys('prefix' => 'stable').each do |key|
+        S3Wrapper.player_bucket.keys('prefix' => 'stable').each do |key|
           unless key.to_s == 'stable/'
             key.head # refresh headers
             key.headers['content-type'].should eq FileHeader.content_type(key.to_s)

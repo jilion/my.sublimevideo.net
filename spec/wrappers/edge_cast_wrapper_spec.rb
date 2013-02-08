@@ -1,9 +1,12 @@
 require 'fast_spec_helper'
 require 'edge_cast'
-require File.expand_path('lib/cdn/edgecast_wrapper')
 
-describe CDN::EdgeCastWrapper do
+require 'wrappers/edge_cast_wrapper'
+
+describe EdgeCastWrapper do
   let(:edgecast) { mock('EdgeCast') }
+
+  before { Librato.stub(:increment) }
 
   describe "client" do
     it "inits EdgeCast client" do

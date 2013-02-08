@@ -1,6 +1,6 @@
-require_dependency 'configurator'
+require 'configurator'
 
-module Ogone
+module OgoneWrapper
   include Configurator
 
   config_file 'ogone.yml'

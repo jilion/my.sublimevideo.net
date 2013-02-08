@@ -1,6 +1,5 @@
 require 'tempfile'
 require 'cocaine'
-require_dependency 'cdn/file'
 
 module Service
   module Addon
@@ -15,7 +14,7 @@ module Service
 
       def initialize(*args)
         super
-        @cdn_file = CDN::File.new(
+        @cdn_file = CDNFile.new(
           file.path,
           destinations,
           s3_options
@@ -23,7 +22,7 @@ module Service
       end
 
       def upload!
-        # CDN::File.new(nil, destinations(old_custom_logo_path), s3_options).delete!
+        # CDNFile.new(nil, destinations(old_custom_logo_path), s3_options).delete!
         @cdn_file.upload!
       end
 
@@ -70,7 +69,7 @@ module Service
 
       def destinations(path = current_path)
         [{
-          bucket: S3.buckets['sublimevideo'],
+          bucket: S3Wrapper.buckets['sublimevideo'],
           path: path
         }]
       end

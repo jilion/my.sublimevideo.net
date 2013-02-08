@@ -1,9 +1,9 @@
 require 'fast_spec_helper'
 require 'createsend'
-require File.expand_path('spec/config/vcr')
+require 'config/vcr'
 require 'ostruct'
 
-require File.expand_path('lib/campaign_monitor_wrapper')
+require 'wrappers/campaign_monitor_wrapper'
 
 describe CampaignMonitorWrapper do
 
@@ -12,9 +12,10 @@ describe CampaignMonitorWrapper do
   specify { CampaignMonitorWrapper.lists['sublimevideo']['segment'].should eq "test" }
   specify { CampaignMonitorWrapper.lists['sublimevideo_newsletter']['list_id'].should eq "a064dfc4b8ccd774252a2e9c9deb9244" }
 
-  before do
+  before {
     described_class.stub(log_bad_request: true)
-  end
+    Librato.stub(:increment)
+  }
 
   let(:subscribe_user) { OpenStruct.new(id: 12, beta: true, newsletter?: true, email: 'user_subscribe3@example.org', name: 'User Subscribe') }
 

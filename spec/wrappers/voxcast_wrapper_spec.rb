@@ -1,10 +1,11 @@
 require 'fast_spec_helper'
 require 'voxel_hapi'
 require 'rescue_me'
-require File.expand_path('spec/config/vcr')
-require File.expand_path('lib/cdn/voxcast_wrapper')
+require 'config/vcr'
 
-describe CDN::VoxcastWrapper do
+require 'wrappers/voxcast_wrapper'
+
+describe VoxcastWrapper do
 
   describe "purge" do
     before { Librato.stub(:increment) }
@@ -28,7 +29,7 @@ describe CDN::VoxcastWrapper do
 
   describe ".logs_list" do
     use_vcr_cassette "voxcast/logs_list"
-    let(:logs_list) { described_class.logs_list(CDN::VoxcastWrapper.hostname) }
+    let(:logs_list) { described_class.logs_list(VoxcastWrapper.hostname) }
 
 
     it "returns all logs" do
@@ -44,12 +45,12 @@ describe CDN::VoxcastWrapper do
     context "when log available" do
       use_vcr_cassette "voxcast/download_log_available"
 
-      specify { CDN::VoxcastWrapper.download_log("cdn.sublimevideo.net.log.1309836000-1309836060.gz").class.should eq Tempfile }
+      specify { VoxcastWrapper.download_log("cdn.sublimevideo.net.log.1309836000-1309836060.gz").class.should eq Tempfile }
     end
   end
 
   describe ".hostname" do
-    specify { CDN::VoxcastWrapper.hostname.should eq "4076.voxcdn.com" }
+    specify { VoxcastWrapper.hostname.should eq "4076.voxcdn.com" }
   end
 
 end

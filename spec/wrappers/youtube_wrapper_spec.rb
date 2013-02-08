@@ -1,9 +1,15 @@
 require 'fast_spec_helper'
 require 'active_support/core_ext'
 require 'config/vcr'
-require File.expand_path('lib/youtube_wrapper')
+require 'youtube_it'
+
+require 'wrappers/youtube_wrapper'
 
 describe YouTubeWrapper do
+
+  before {
+    Librato.stub(:increment)
+  }
 
   context "with public video_id" do
     use_vcr_cassette "youtube/public_video_id"

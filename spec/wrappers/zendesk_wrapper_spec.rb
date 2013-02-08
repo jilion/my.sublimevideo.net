@@ -1,7 +1,8 @@
 require 'fast_spec_helper'
 require 'support/fixtures_helpers'
-require File.expand_path('spec/config/vcr')
-require File.expand_path('lib/zendesk_wrapper')
+require 'config/vcr'
+
+require 'wrappers/zendesk_wrapper'
 
 describe ZendeskWrapper do
   let(:ticket_params) {
@@ -11,6 +12,10 @@ describe ZendeskWrapper do
   let(:ticket_id)           { 2335 }
   let(:ticket_response)     { described_class.ticket(ticket_id) }
   let(:user_response)       { described_class.user(requester_id) }
+
+  before {
+    Librato.stub(:increment)
+  }
 
   describe '.tickets' do
     use_vcr_cassette 'zendesk_wrapper/tickets'

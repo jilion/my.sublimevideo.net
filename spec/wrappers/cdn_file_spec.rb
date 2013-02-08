@@ -1,21 +1,23 @@
 require 'fast_spec_helper'
-require 'support/fixtures_helpers'
 require 'rails/railtie'
 require 'sidekiq'
-require File.expand_path('spec/config/sidekiq')
-require File.expand_path('spec/support/sidekiq_custom_matchers')
-require File.expand_path('spec/config/carrierwave') # for fog_mock
+require 'config/sidekiq'
+require 'support/fixtures_helpers'
+require 'support/sidekiq_custom_matchers'
+require 'config/carrierwave' # for fog_mock
 
-require File.expand_path('lib/cdn/file')
+require 'wrappers/cdn'
+require 'wrappers/s3_wrapper'
+require 'wrappers/cdn_file'
 
-describe CDN::File, :fog_mock do
+describe CDNFile, :fog_mock do
   let(:file) { fixture_file('cdn/file.js', 'r') }
   let(:file2) { fixture_file('cdn/file2.js', 'r') }
   let(:destinations) { [{
-    bucket: S3.buckets['sublimevideo'],
+    bucket: S3Wrapper.buckets['sublimevideo'],
     path: "js/token.js"
   },{
-    bucket: S3.buckets['loaders'],
+    bucket: S3Wrapper.buckets['loaders'],
     path: "loaders/token.js"
   }] }
   let(:s3_options) { {
@@ -23,13 +25,13 @@ describe CDN::File, :fog_mock do
     'Content-Type'  => 'text/javascript',
     'x-amz-acl'     => 'public-read'
   } }
-  let(:cdn_file) { CDN::File.new(file, destinations, s3_options) }
+  let(:cdn_file) { CDNFile.new(file, destinations, s3_options) }
 
   describe "#upload!" do
     it "uploads file to all destinations" do
       cdn_file.upload!
       destinations.each do |destination|
-        S3.fog_connection.head_object(
+        S3Wrapper.fog_connection.head_object(
           destination[:bucket],
           destination[:path]
         ).headers.should be_present
@@ -43,21 +45,21 @@ describe CDN::File, :fog_mock do
       let(:path)   { destinations.first[:path] }
 
       it "is public" do
-        object_acl = S3.fog_connection.get_object_acl(bucket, path).body
+        object_acl = S3Wrapper.fog_connection.get_object_acl(bucket, path).body
         object_acl['AccessControlList'].should include(
           {"Permission"=>"READ", "Grantee"=>{"URI"=>"http://acs.amazonaws.com/groups/global/AllUsers"}}
         )
       end
       it "have good content_type public" do
-        object_headers = S3.fog_connection.head_object(bucket, path).headers
+        object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
         object_headers['Content-Type'].should eq 'text/javascript'
       end
       it "have 5 min max-age cache control" do
-        object_headers = S3.fog_connection.head_object(bucket, path).headers
+        object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
         object_headers['Cache-Control'].should eq 'max-age=60, public'
       end
       it "have ETag" do
-        object_headers = S3.fog_connection.head_object(bucket, path).headers
+        object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
         object_headers['ETag'].should be_present
       end
     end

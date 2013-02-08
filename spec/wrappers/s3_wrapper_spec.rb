@@ -1,9 +1,10 @@
 require 'fast_spec_helper'
+require 'config/vcr'
 require 'aws'
-require File.expand_path('spec/config/vcr')
-require File.expand_path('lib/s3')
 
-describe S3 do
+require 'wrappers/s3_wrapper'
+
+describe S3Wrapper do
 
   describe '.bucket_url' do
     it { described_class.bucket_url('foo').should eq 'https://s3.amazonaws.com/foo/' }
@@ -13,7 +14,7 @@ describe S3 do
     use_vcr_cassette "s3/logs_bucket_all_keys"
 
     it "should return max 100 keys" do
-      S3.logs_name_list.should have(104).names
+      S3Wrapper.logs_name_list.should have(104).names
     end
   end
 
@@ -21,7 +22,7 @@ describe S3 do
     use_vcr_cassette "s3/keys_names"
 
     it "should return the names of all keys" do
-      S3.keys_names(S3.player_bucket).should == ["beta/black_pixel.gif",
+      S3Wrapper.keys_names(S3Wrapper.player_bucket).should == ["beta/black_pixel.gif",
            "beta/close_button.png",
            "beta/ie/transparent_pixel.gif",
            "beta/play_button.png",
@@ -56,19 +57,19 @@ describe S3 do
 
     describe ":remove_prefix option" do
       it "should not remove prefix from key name when remove_prefix is not set" do
-        S3.keys_names(S3.player_bucket, 'prefix' => 'dev').each do |key|
+        S3Wrapper.keys_names(S3Wrapper.player_bucket, 'prefix' => 'dev').each do |key|
           key.should =~ /^dev/
         end
       end
 
       it "should not remove prefix from key name when remove_prefix is set to false" do
-        S3.keys_names(S3.player_bucket, 'prefix' => 'dev', remove_prefix: false).each do |key|
+        S3Wrapper.keys_names(S3Wrapper.player_bucket, 'prefix' => 'dev', remove_prefix: false).each do |key|
           key.should =~ /^dev/
         end
       end
 
       it "should remove prefix from key name when remove_prefix is set to true" do
-        S3.keys_names(S3.player_bucket, 'prefix' => 'dev', remove_prefix: true).each do |key|
+        S3Wrapper.keys_names(S3Wrapper.player_bucket, 'prefix' => 'dev', remove_prefix: true).each do |key|
           key.should_not =~ /^dev/
         end
       end
@@ -77,7 +78,7 @@ describe S3 do
 
   describe ".buckets" do
     it "returns bucket name" do
-      S3.buckets['sublimevideo'].should eq 'dev.sublimevideo'
+      S3Wrapper.buckets['sublimevideo'].should eq 'dev.sublimevideo'
     end
   end
 

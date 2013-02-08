@@ -3,13 +3,13 @@ require 'zip/zip'
 require 'rails/railtie'
 require 'fog'
 require 'carrierwave'
-require File.expand_path('spec/config/carrierwave')
-require File.expand_path('spec/support/fixtures_helpers')
+require 'config/carrierwave'
+require 'support/fixtures_helpers'
 
-require File.expand_path('config/initializers/carrierwave')
-require File.expand_path('app/models/app')
-require File.expand_path('app/uploaders/app/component_version_uploader')
-require File.expand_path('app/uploaders/app/component_version_zip_content_uploader')
+require 'models/app'
+require 'uploaders/app/component_version_uploader'
+require 'uploaders/app/component_version_zip_content_uploader'
+require 'wrappers/s3_wrapper'
 
 describe App::ComponentVersionUploader, :fog_mock do
   let(:component_version) { stub(
@@ -28,7 +28,7 @@ describe App::ComponentVersionUploader, :fog_mock do
     before { uploader.store!(zip) }
 
     it "saves zip file on player S3 bucket" do
-      uploader.fog_directory.should eq S3.buckets['player']
+      uploader.fog_directory.should eq S3Wrapper.buckets['player']
     end
 
     it "is private" do

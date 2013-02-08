@@ -1,16 +1,18 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
 require 'sidekiq'
-require File.expand_path('spec/config/sidekiq')
-require File.expand_path('spec/support/sidekiq_custom_matchers')
-require File.expand_path('spec/config/carrierwave') # for fog_mock
-require File.expand_path('lib/stage')
+require 'config/sidekiq'
+require 'support/sidekiq_custom_matchers'
+require 'config/carrierwave' # for fog_mock
+require 'stage'
 
 require 'services/component_version_dependencies_solver'
 require 'services/loader_generator'
 require 'services/player_mangler'
+require 'wrappers/cdn_file'
+require 'wrappers/s3_wrapper'
+require 'models/app'
 
-App = Module.new unless defined?(App)
 Site = Class.new unless defined?(Site)
 App::Component = Class.new unless defined?(App::Component)
 App::ComponentVersion = Class.new unless defined?(App::ComponentVersion)
@@ -216,7 +218,7 @@ describe LoaderGenerator, :fog_mock do
 
   describe "#upload!" do
     context "stable loader" do
-      let(:bucket) { S3.buckets['sublimevideo'] }
+      let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
       let(:path)   { "js/#{site.token}.js" }
 
       context "when site accessible_stage is beta" do
@@ -224,21 +226,21 @@ describe LoaderGenerator, :fog_mock do
           before { loader.upload! }
 
           it "is public" do
-            object_acl = S3.fog_connection.get_object_acl(bucket, path).body
+            object_acl = S3Wrapper.fog_connection.get_object_acl(bucket, path).body
             object_acl['AccessControlList'].should include(
               {"Permission"=>"READ", "Grantee"=>{"URI"=>"http://acs.amazonaws.com/groups/global/AllUsers"}}
             )
           end
           it "has good content_type public" do
-            object_headers = S3.fog_connection.head_object(bucket, path).headers
+            object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
             object_headers['Content-Type'].should eq 'text/javascript'
           end
           it "has 1 min max-age cache control" do
-            object_headers = S3.fog_connection.head_object(bucket, path).headers
+            object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
             object_headers['Cache-Control'].should eq 's-maxage=300, max-age=120, public'
           end
           it "includes good loader version" do
-            object = S3.fog_connection.get_object(bucket, path)
+            object = S3Wrapper.fog_connection.get_object(bucket, path)
             object.body.should include '/p/beta/sublime.js'
           end
         end
@@ -254,7 +256,7 @@ describe LoaderGenerator, :fog_mock do
           before { loader.upload! }
 
           it "includes good loader version" do
-            object = S3.fog_connection.get_object(bucket, path)
+            object = S3Wrapper.fog_connection.get_object(bucket, path)
             object.body.should include '/p/dev/sublime.js'
           end
 
@@ -263,7 +265,7 @@ describe LoaderGenerator, :fog_mock do
             let(:path) { "js/#{site.token}-alpha.js" }
 
             it "has no-cache control" do
-              object_headers = S3.fog_connection.head_object(bucket, path).headers
+              object_headers = S3Wrapper.fog_connection.head_object(bucket, path).headers
               object_headers['Cache-Control'].should eq 'no-cache'
             end
           end
@@ -273,14 +275,14 @@ describe LoaderGenerator, :fog_mock do
 
     context "beta loader" do
       let(:loader) { described_class.new(site, 'beta') }
-      let(:bucket) { S3.buckets['sublimevideo'] }
+      let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
       let(:path)   { "js/#{site.token}-beta.js" }
 
       describe "S3 object" do
         before do
           loader.upload!
         end
-        let(:s3_object) { S3.fog_connection.get_object(bucket, path) }
+        let(:s3_object) { S3Wrapper.fog_connection.get_object(bucket, path) }
 
         it "includes app version" do
           s3_object.body.should include "version:'1.0.0'"

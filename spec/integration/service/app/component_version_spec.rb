@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Service::App::ComponentVersion do
-  let(:bucket) { S3.buckets['sublimevideo'] }
+  let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
   let(:site) {
     site = build(:site)
     Service::Site.new(site).create
@@ -22,7 +22,7 @@ describe Service::App::ComponentVersion do
       Service::App::ComponentVersion.new(component_version).create
       Sidekiq::Worker.drain_all
 
-      S3.fog_connection.get_object(bucket, "js/#{site.token}-beta.js").body.should include component_version.version
+      S3Wrapper.fog_connection.get_object(bucket, "js/#{site.token}-beta.js").body.should include component_version.version
     end
   end
 
@@ -37,8 +37,8 @@ describe Service::App::ComponentVersion do
       Service::App::ComponentVersion.new(component_version).destroy
       Sidekiq::Worker.drain_all
 
-      S3.fog_connection.head_object(bucket, "c/#{component.token}/#{component_version.version}/bA.js").headers.should be_present
-      S3.fog_connection.get_object(bucket, "js/#{site.token}-beta.js").body.should include '1.0.0'
+      S3Wrapper.fog_connection.head_object(bucket, "c/#{component.token}/#{component_version.version}/bA.js").headers.should be_present
+      S3Wrapper.fog_connection.get_object(bucket, "js/#{site.token}-beta.js").body.should include '1.0.0'
     end
   end
 

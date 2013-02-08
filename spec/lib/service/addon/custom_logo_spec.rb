@@ -1,11 +1,10 @@
 require 'fast_spec_helper'
 require 'support/fixtures_helpers'
-require 'rails/railtie'
-require 'fog'
-require 's3'
 
-require File.expand_path('app/models/addons/custom_logo')
+require 'models/addons/custom_logo'
 require 'service/addon/custom_logo'
+require 'wrappers/cdn_file'
+require 'wrappers/s3_wrapper'
 
 describe Service::Addon::CustomLogo do
   let(:kit)  { stub(identifier: '1', site: stub(token: 'abcd1234')) }

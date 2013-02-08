@@ -1,7 +1,7 @@
-require_dependency 'configurator'
-require_dependency 'notify'
+require 'configurator'
+require 'notify'
 
-module TwitterApi
+module TwitterWrapper
   include Configurator
 
   config_file 'twitter.yml'

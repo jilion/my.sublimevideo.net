@@ -1,12 +1,14 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
 require 'fog'
-require File.expand_path('spec/config/carrierwave') # for fog_mock
+require 'config/carrierwave' # for fog_mock
 
 require 'services/player_mangler'
 require 'services/settings_generator'
+require 'wrappers/s3_wrapper'
+require 'wrappers/cdn_file'
+require 'models/app'
 
-App = Module.new unless defined?(App)
 App::Design = Class.new unless defined?(App::Design)
 App::Plugin = Class.new unless defined?(App::Plugin)
 App::SettingsTemplate = Class.new unless defined?(App::SettingsTemplate)

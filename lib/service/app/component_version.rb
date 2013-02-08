@@ -1,5 +1,3 @@
-require_dependency 'campfire_wrapper'
-
 module Service
   module App
     ComponentVersion = Struct.new(:component_version) do

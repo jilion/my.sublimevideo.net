@@ -1,4 +1,3 @@
-require_dependency 's3'
 require_dependency 'file_header'
 
 class App::ComponentVersionZipContentUploader
@@ -19,8 +18,8 @@ class App::ComponentVersionZipContentUploader
   end
 
   def self.remove_zip_content(upload_path)
-    S3.fog_connection.directories.get(
-      S3.buckets['sublimevideo'],
+    S3Wrapper.fog_connection.directories.get(
+      S3Wrapper.buckets['sublimevideo'],
       prefix: upload_path.to_s
     ).files.each { |file| file.destroy }
   end
@@ -28,8 +27,8 @@ class App::ComponentVersionZipContentUploader
 private
 
   def self.put_object(object_name, data, options = {})
-    S3.fog_connection.put_object(
-      S3.buckets['sublimevideo'],
+    S3Wrapper.fog_connection.put_object(
+      S3Wrapper.buckets['sublimevideo'],
       object_name,
       data,
       options

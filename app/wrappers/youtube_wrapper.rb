@@ -1,5 +1,3 @@
-require 'youtube_it'
-
 YouTubeWrapper = Struct.new(:video_id) do
 
   def video_title

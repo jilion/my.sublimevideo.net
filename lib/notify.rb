@@ -1,5 +1,3 @@
-require_dependency 'prowl_wrapper'
-
 module Notify
 
   def self.send(message_or_exception, options = {})

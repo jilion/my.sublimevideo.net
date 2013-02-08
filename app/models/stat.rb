@@ -1,5 +1,4 @@
 # encoding: utf-8
-require_dependency 'pusher_wrapper'
 require_dependency 'notify'
 
 module Stat

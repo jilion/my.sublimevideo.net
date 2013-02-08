@@ -1,6 +1,3 @@
-require_dependency 'vimeo_wrapper'
-require_dependency 'youtube_wrapper'
-
 VideoTagNameFetcher = Struct.new(:video_tag) do
 
   def initialize(*args)

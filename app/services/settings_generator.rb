@@ -1,5 +1,4 @@
 require 'tempfile'
-require_dependency 'cdn/file'
 
 class SettingsGenerator
   extend Forwardable
@@ -26,7 +25,7 @@ class SettingsGenerator
   end
 
   def cdn_file
-    @cdn_file ||= CDN::File.new(
+    @cdn_file ||= CDNFile.new(
       file,
       destinations,
       s3_options,
@@ -171,15 +170,15 @@ private
     case @type
     when 'license'
       [{
-        bucket: S3.buckets['sublimevideo'],
+        bucket: S3Wrapper.buckets['sublimevideo'],
         path: "l/#{@site.token}.js"
       },{
-        bucket: S3.buckets['licenses'],
+        bucket: S3Wrapper.buckets['licenses'],
         path: "licenses/#{@site.token}.js"
       }]
     when 'settings'
       [{
-        bucket: S3.buckets['sublimevideo'],
+        bucket: S3Wrapper.buckets['sublimevideo'],
         path: "s/#{@site.token}.js"
       }]
     end

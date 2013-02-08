@@ -1,5 +1,3 @@
-require_dependency 'campaign_monitor_wrapper'
-
 module Service
   Newsletter = Struct.new(:user) do
     class << self

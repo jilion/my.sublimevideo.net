@@ -1,5 +1,4 @@
 require_dependency 'service/support_request'
-require_dependency 'zendesk_wrapper'
 
 class Admin::UsersController < Admin::AdminController
   respond_to :html, :js

@@ -1,5 +1,4 @@
 require 'tempfile'
-require_dependency 'cdn/file'
 
 class LoaderGenerator
   extend Forwardable
@@ -51,7 +50,7 @@ class LoaderGenerator
   end
 
   def cdn_file
-    @cdn_file ||= CDN::File.new(
+    @cdn_file ||= CDNFile.new(
       file,
       destinations,
       s3_options,
@@ -107,15 +106,15 @@ private
     case @stage
     when 'stable'
       [{
-        bucket: S3.buckets['sublimevideo'],
+        bucket: S3Wrapper.buckets['sublimevideo'],
         path: "js/#{token}.js"
       },{
-        bucket: S3.buckets['loaders'],
+        bucket: S3Wrapper.buckets['loaders'],
         path: "loaders/#{token}.js"
       }]
     else
       [{
-        bucket: S3.buckets['sublimevideo'],
+        bucket: S3Wrapper.buckets['sublimevideo'],
         path: "js/#{token}-#{@stage}.js"
       }]
     end
