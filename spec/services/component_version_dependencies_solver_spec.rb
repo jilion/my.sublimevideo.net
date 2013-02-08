@@ -13,7 +13,7 @@ end unless defined?(App::ComponentVersion)
 
 def create_app_component(name, token)
   if defined?(ActiveRecord)
-    App::Component.new(name: name, token: token)
+    App::Component.new({ name: name, token: token }, as: :admin)
   else
     App::Component.new(name, token)
   end
@@ -21,7 +21,7 @@ end
 
 def create_app_component_version(version, component)
   if defined?(ActiveRecord)
-    App::ComponentVersion.new(version: version, component: component)
+    App::ComponentVersion.new({ version: version, component: component }, as: :admin)
   else
     App::ComponentVersion.new(version, component)
   end
