@@ -1,9 +1,5 @@
 require 'spec_helper'
 
-require 'sidekiq'
-require File.expand_path('spec/config/sidekiq')
-require File.expand_path('spec/support/sidekiq_custom_matchers')
-
 require File.expand_path('lib/service/credit_card')
 
 describe Service::CreditCard do

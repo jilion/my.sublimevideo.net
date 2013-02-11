@@ -1,11 +1,12 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
-
 require 'sidekiq'
-require File.expand_path('spec/config/sidekiq')
-require File.expand_path('spec/support/sidekiq_custom_matchers')
+require 'config/sidekiq'
+require 'support/sidekiq_custom_matchers'
 
-require File.expand_path('app/models/app')
+require 'models/app'
+require 'services/loader_generator'
+require 'services/settings_generator'
 require File.expand_path('lib/service/site')
 
 Site = Struct.new(:params) unless defined?(Site)
@@ -17,6 +18,10 @@ describe Service::Site do
   let(:user)    { stub(sites: []) }
   let(:site)    { Struct.new(:user, :id).new(nil, 1234) }
   let(:service) { described_class.new(site) }
+
+  before {
+    Librato.stub(:increment)
+  }
 
   describe '.subscribe_site_to_embed_addon' do
     it 'delays subscribing to the embed add-on for all sites not subscribed yet' do

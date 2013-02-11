@@ -1,9 +1,8 @@
 require 'fast_spec_helper'
+require 'active_support/core_ext'
 require 'sidekiq'
-require File.expand_path('config/initializers/sidekiq')
-
-require File.expand_path('spec/config/sidekiq')
-require File.expand_path('spec/support/sidekiq_custom_matchers')
+require 'config/sidekiq'
+require 'support/sidekiq_custom_matchers'
 
 require File.expand_path('lib/recurring_job')
 

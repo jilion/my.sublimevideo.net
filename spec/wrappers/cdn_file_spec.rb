@@ -6,6 +6,8 @@ require 'support/fixtures_helpers'
 require 'support/sidekiq_custom_matchers'
 require 'config/carrierwave' # for fog_mock
 
+require 'wrappers/edge_cast_wrapper'
+require 'wrappers/voxcast_wrapper'
 require 'wrappers/cdn'
 require 'wrappers/s3_wrapper'
 require 'wrappers/cdn_file'

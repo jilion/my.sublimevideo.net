@@ -1,11 +1,12 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
-
 require 'sidekiq'
-require File.expand_path('spec/config/sidekiq')
-require File.expand_path('spec/support/sidekiq_custom_matchers')
+require 'config/sidekiq'
+require 'support/sidekiq_custom_matchers'
 
-require File.expand_path('app/models/app')
+require 'models/app'
+require 'services/loader_generator'
+require 'wrappers/campfire_wrapper'
 require File.expand_path('lib/service/app/component_version')
 
 describe Service::App::ComponentVersion do
