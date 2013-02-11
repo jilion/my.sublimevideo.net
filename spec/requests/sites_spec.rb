@@ -169,7 +169,7 @@ feature 'Sites index' do
       end
 
       scenario 'pagination links displayed only if count of sites > Site.per_page' do
-        Responders::PaginatedResponder.stub(:per_page).and_return(1)
+        PaginatedResponder.stub(:per_page).and_return(1)
         go 'my', '/sites'
 
         page.should have_no_css 'nav.pagination'

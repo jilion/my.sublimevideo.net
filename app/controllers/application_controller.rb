@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   helper_method :exhibit
 
   respond_to :html
-  responders Responders::HttpCacheResponder, Responders::PaginatedResponder, Responders::FlashResponder
+  responders PaginatedResponder, Responders::HttpCacheResponder, Responders::FlashResponder
 
   before_filter :authenticate_user!
   before_filter :set_logged_in_cookie
