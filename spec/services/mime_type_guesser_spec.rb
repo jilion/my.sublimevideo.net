@@ -1,4 +1,6 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+
+require 'services/mime_type_guesser'
 
 describe MimeTypeGuesser do
 
