@@ -1,7 +1,7 @@
 module ControllerHelpers
   module EarlyAccess
 
-    LIST = %w[video embed_addon]
+    LIST = %w[video]
 
     def early_access?(feature)
       current_user_early_access.include?(feature)

@@ -8,7 +8,7 @@ describe MailLetter do
       let(:user)          { create(:user, created_at: Time.utc(2011,1,1)) }
       let(:mail_template) { create(:mail_template) }
       let(:attributes)    { { admin_id: admin.id, template_id: mail_template.id.to_s, criteria: "not_archived" } }
-      let(:mail_letter)   { MailLetter.new(attributes) }
+      let(:mail_letter)   { described_class.new(attributes) }
       before { user }
       subject { mail_letter.deliver_and_log }
 
@@ -32,7 +32,7 @@ describe MailLetter do
 
       context "with multiple users to send emails to" do
         describe "with the 'dev' filter" do
-          let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'dev')) }
+          let(:mail_letter) { described_class.new(attributes.merge(criteria: 'dev')) }
           before do
             @dev_user = create(:user, email: 'remy@jilion.com')
             Sidekiq::Worker.clear_all
@@ -40,7 +40,7 @@ describe MailLetter do
           end
 
           it "delays delivery of mails" do
-            MailLetter.should delay(:deliver).with(@dev_user.id, mail_template.id)
+            MailMailer.should delay(:send_mail_with_template).with(@dev_user.id, mail_template.id)
             subject
           end
 
@@ -73,10 +73,10 @@ describe MailLetter do
           end
 
           context "with the 'paying' filter" do
-            let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'paying')).deliver_and_log }
+            let(:mail_letter) { described_class.new(attributes.merge(criteria: 'paying')).deliver_and_log }
 
             it "delays delivery of mails" do
-              MailLetter.should delay(:deliver).with(@paying_user.id, mail_template.id)
+              MailMailer.should delay(:send_mail_with_template).with(@paying_user.id, mail_template.id)
               mail_letter
             end
 
@@ -93,10 +93,10 @@ describe MailLetter do
           end
 
           context "with the 'free' filter" do
-            let(:mail_letter) { MailLetter.new(attributes.merge(criteria: 'free')).deliver_and_log }
+            let(:mail_letter) { described_class.new(attributes.merge(criteria: 'free')).deliver_and_log }
 
             it "delays delivery of mails" do
-              MailLetter.should delay(:deliver).with(@free_user.id, mail_template.id)
+              MailMailer.should delay(:send_mail_with_template).with(@free_user.id, mail_template.id)
               mail_letter
             end
 

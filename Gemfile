@@ -20,6 +20,7 @@ gem 'coffee-rails'
 gem 'coffee-filter'
 gem 'kaminari'
 gem 'liquid'
+gem 'hpricot'
 gem 'display_case'
 gem 'rails_autolink'
 gem 'premailer', github: 'jilion/premailer'
@@ -140,7 +141,8 @@ end
 group :development do
   gem 'rack-livereload'
   gem 'silent-postgres'
-  gem 'letter_opener', github: 'ryanb/letter_opener' # includes a fix not released yet
+  gem 'launchy', '2.1.0' # after dependency on addressable ~> 2.3
+  gem 'letter_opener'
   gem 'em-http-request' # async pusher in populate
   gem 'quiet_assets'
   gem 'bullet'

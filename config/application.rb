@@ -11,7 +11,7 @@ Bundler.require *Rails.groups(assets: %w(development test))
 # Bundler.setup(:default, :assets, Rails.env)
 
 # Required from svl, needed for rake assets:precompile when initialize_on_precompile is false
-require 'site_token'
+require 'site_token' unless defined?(SiteToken)
 
 module MySublimeVideo
   class Application < Rails::Application

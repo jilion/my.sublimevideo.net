@@ -4,7 +4,7 @@ class MailLetter
 
   validates :template, :admin_id, :criteria, presence: true
 
-  DEV_TEAM_EMAILS = %w[thibaud@jilion.com remy@jilion.com zeno@jilion.com octave@jilion.com andrea@jilion.com]
+  DEV_TEAM_EMAILS = %w[thibaud@jilion.com remy@jilion.com zeno@zeno.name octave@jilion.com andrea@jilion.com]
 
   def self.deliver_and_log(params)
     mail_letter = new(params)
@@ -29,17 +29,13 @@ class MailLetter
       User.send(@criteria)
     end
 
-    users.not_archived.all.uniq.each { |user| self.class.delay.deliver(user.id, @template.id) }
+    users.not_archived.all.uniq.each do |user|
+      MailMailer.delay(queue: 'mailer').send_mail_with_template(user.id, @template.id)
+    end
 
     unless @criteria == 'dev'
       @template.logs.create(admin_id: @admin.id, criteria: @criteria, user_ids: users.map(&:id))
     end
-  end
-
-private
-
-  def self.deliver(user_id, template_id)
-    MailMailer.delay.send_mail_with_template(user_id, template_id)
   end
 
 end
