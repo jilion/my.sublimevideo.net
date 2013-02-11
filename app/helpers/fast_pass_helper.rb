@@ -2,7 +2,7 @@
 # Helper module for integrating Get Satisfaction's FastPass single-sign-on service into a Ruby web
 # app. Use #url to create a signed FastPass URL, and #script to generate the JS-based integration.
 #
-module FastPass
+module FastPassHelper
   extend ERB::Util
 
   def self.domain
