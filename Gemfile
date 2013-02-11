@@ -22,7 +22,6 @@ gem 'kaminari'
 gem 'liquid'
 gem 'display_case'
 gem 'rails_autolink'
-gem 'hpricot'
 gem 'premailer', github: 'jilion/premailer'
 gem 'premailer-rails3'
 
