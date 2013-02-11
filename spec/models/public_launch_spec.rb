@@ -1,6 +1,7 @@
 require 'fast_spec_helper'
 require 'timecop'
-require File.expand_path('lib/public_launch')
+
+require 'models/public_launch'
 
 describe PublicLaunch do
 

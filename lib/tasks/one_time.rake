@@ -1,6 +1,4 @@
 # coding: utf-8
-require_dependency 'public_launch'
-
 namespace :one_time do
 
   namespace :logs do

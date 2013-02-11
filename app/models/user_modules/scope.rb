@@ -1,6 +1,4 @@
 # coding: utf-8
-require_dependency 'public_launch'
-
 module UserModules::Scope
   extend ActiveSupport::Concern
 

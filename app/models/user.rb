@@ -1,5 +1,4 @@
 require_dependency 'service/newsletter'
-require_dependency 'public_launch'
 
 class User < ActiveRecord::Base
   include UserModules::Activity
