@@ -1,10 +1,8 @@
-require_dependency 'controller_helpers/redirection_filters'
-require_dependency 'controller_helpers/custom_devise_paths'
 require_dependency 'service/user'
 
 class UsersController < Devise::RegistrationsController
-  include ControllerHelpers::RedirectionFilters
-  include ControllerHelpers::CustomDevisePaths
+  include RedirectionFiltersControllerHelper
+  include CustomDevisePathsControllerHelper
 
   helper :all
 

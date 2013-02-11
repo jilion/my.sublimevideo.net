@@ -1,10 +1,11 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/controller_helpers/early_access')
 
-describe ControllerHelpers::EarlyAccess do
+require 'controller_helpers/early_access_controller_helper'
+
+describe EarlyAccessControllerHelper do
 
   class Controller
-    extend ControllerHelpers::EarlyAccess
+    extend EarlyAccessControllerHelper
   end
 
   describe "current_user_early_access" do

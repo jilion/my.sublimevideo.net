@@ -76,7 +76,7 @@
 
   = form_for [:admin, @user] do |f|
     = f.label :early_access, 'List of early access feature available to this user:'
-    = f.select :early_access, ControllerHelpers::EarlyAccess::LIST, {}, multiple: true
+    = f.select :early_access, EarlyAccessControllerHelper.list, {}, multiple: true
     = f.submit 'Update'
   %br
   %hr
