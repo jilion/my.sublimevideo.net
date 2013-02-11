@@ -8,6 +8,7 @@ require 'support/fixtures_helpers'
 require 'models/app'
 require 'uploaders/app/component_version_zip_content_uploader'
 require 'wrappers/s3_wrapper'
+require 'services/file_header_analyzer'
 
 describe App::ComponentVersionZipContentUploader, :fog_mock do
 

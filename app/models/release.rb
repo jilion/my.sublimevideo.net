@@ -1,5 +1,3 @@
-require_dependency 'file_header'
-
 class Release < ActiveRecord::Base
 
   attr_accessible :zip
@@ -98,13 +96,14 @@ private
     S3Wrapper.player_bucket.delete_folder('dev')
     S3Wrapper.sublimevideo_bucket.delete_folder('p/dev')
     files_in_zip do |file|
+      file_header = FileHeaderAnalyzer.new(file.to_s)
       S3Wrapper.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, 'public-read',
-        'content-type' => FileHeader.content_type(file.to_s),
-        'content-encoding' => FileHeader.content_encoding(file.to_s)
+        'content-type' => file_header.content_type,
+        'content-encoding' => file_header.content_encoding
       )
       S3Wrapper.sublimevideo_bucket.put("p/dev/#{file.name}", zipfile.read(file), {}, 'public-read',
-        'content-type' => FileHeader.content_type(file.to_s),
-        'content-encoding' => FileHeader.content_encoding(file.to_s)
+        'content-type' => file_header.content_type,
+        'content-encoding' => file_header.content_encoding
       )
     end
   end
