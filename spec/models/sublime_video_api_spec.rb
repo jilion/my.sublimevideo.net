@@ -1,5 +1,6 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/sublime_video_api')
+
+require 'models/sublime_video_api'
 
 describe SublimeVideoApi do
 
