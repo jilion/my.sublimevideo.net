@@ -5,7 +5,7 @@ ruby '1.9.3'
 
 gem 'bundler'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.12'
 gem 'sublime_video_layout', '~> 2.0' # hosted on gemfury
 
 # Databases
@@ -46,6 +46,7 @@ gem 'kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'configuration'
+gem 'json'
 gem 'libxml-ruby', require: 'libxml'
 gem 'yajl-ruby', require: 'yajl' # json
 
