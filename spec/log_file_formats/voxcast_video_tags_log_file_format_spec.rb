@@ -1,15 +1,18 @@
 require 'fast_spec_helper'
+require 'active_support/core_ext'
 require 'request_log_analyzer'
 require 'support/fixtures_helpers'
-require File.expand_path('lib/log_analyzer')
-require File.expand_path('lib/logs_file_format/voxcast_video_tags')
 
-describe LogsFileFormat::VoxcastVideoTags do
+require 'services/log_analyzer'
+require 'log_file_formats/voxcast_log_file_format'
+require 'log_file_formats/voxcast_video_tags_log_file_format'
+
+describe VoxcastVideoTagsLogFileFormat do
 
   describe "with cdn.sublimevideo.net.log.1310993640-1310993700.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1310993640-1310993700.gz')
-      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastVideoTags')
+      @trackers = LogAnalyzer.parse(log_file, 'VoxcastVideoTagsLogFileFormat')
     end
 
     it "should parse and return loader tracker" do
@@ -31,7 +34,7 @@ describe LogsFileFormat::VoxcastVideoTags do
   describe "with 4076.voxcdn.com.log.1310993640-1310993700.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/4076.voxcdn.com.log.1310993640-1310993700.gz')
-      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastVideoTags')
+      @trackers = LogAnalyzer.parse(log_file, 'VoxcastVideoTagsLogFileFormat')
     end
 
     it "should parse and return loader tracker" do

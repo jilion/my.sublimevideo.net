@@ -1,5 +1,3 @@
-require_dependency 'log_analyzer'
-
 class SiteUsage
   include Mongoid::Document
   include SiteUsageModules::Api

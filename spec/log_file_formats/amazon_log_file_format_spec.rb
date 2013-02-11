@@ -1,9 +1,10 @@
 require 'fast_spec_helper'
 require 'request_log_analyzer'
-require File.expand_path('lib/logs_file_format/amazon')
 
-describe LogsFileFormat::Amazon do
-  subject { class Foo; include LogsFileFormat::Amazon; end; Foo.new }
+require 'log_file_formats/amazon_log_file_format'
+
+describe AmazonLogFileFormat do
+  subject { class Foo; include AmazonLogFileFormat; end; Foo.new }
 
   # ==========
   # = Player =

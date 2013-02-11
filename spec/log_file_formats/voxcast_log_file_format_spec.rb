@@ -1,12 +1,13 @@
 require 'fast_spec_helper'
 require 'request_log_analyzer'
-require File.expand_path('lib/logs_file_format/voxcast')
-require File.expand_path('lib/logs_file_format/voxcast_sites')
 
-describe LogsFileFormat::Voxcast do
+require 'log_file_formats/voxcast_log_file_format'
+require 'log_file_formats/voxcast_sites_log_file_format'
+
+describe VoxcastLogFileFormat do
 
   describe "Class Methods" do
-    subject { LogsFileFormat::VoxcastSites }
+    subject { VoxcastSitesLogFileFormat }
 
     describe "token? and token_from" do
       ["/p/sublime.swf?t=6vibplhv","/p/close_button.png?t=6vibplhv", "/p/ie/transparent_pixel.gif?t=6vibplhv", "/p/beta/sublime.js?t=6vibplhv&super=top", '/6vibplhv/posterframe.jpg', '/js/6vibplhv/posterframe.js', '/js/6vibplhv.js', '/l/6vibplhv.js'].each do |path|

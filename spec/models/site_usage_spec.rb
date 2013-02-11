@@ -7,7 +7,7 @@ describe SiteUsage do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz')
       VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(log_file)
       @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1286528280-1286528340.gz', file: log_file)
-      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
+      @trackers = LogAnalyzer.parse(@log.file, 'VoxcastSitesLogFileFormat')
 
       with_versioning do
         Timecop.travel(@log.started_at - 1.hour) do
@@ -89,7 +89,7 @@ describe SiteUsage do
     before do
       VoxcastWrapper.stub(:download_log).with('4076.voxcdn.com.log.1308045840-1308045900.gz').and_return(log_file)
       @log = create(:log_voxcast, name: '4076.voxcdn.com.log.1308045840-1308045900.gz', file: log_file)
-      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
+      @trackers = LogAnalyzer.parse(@log.file, 'VoxcastSitesLogFileFormat')
 
       @site1 = create(:site, hostname: 'customerhub.net', wildcard: true).tap { |s| s.token = '9pfe3uop'; s.save }
       @site2 = create(:site, user: @site1.user, hostname: 'farmerswifeplay.com').tap { |s| s.token = '87r9xy5e'; s.save }
@@ -149,7 +149,7 @@ describe SiteUsage do
       @site2 = create(:site, user: @site1.user, hostname: 'octavez.com').tap { |s| s.token = 'g8thugh6'; s.save }
 
       @log = create(:log_voxcast, file: log_file)
-      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
+      @trackers = LogAnalyzer.parse(@log.file, 'VoxcastSitesLogFileFormat')
       Notifier.should_receive(:send).any_number_of_times
     end
 
@@ -202,7 +202,7 @@ describe SiteUsage do
       @site2 = create(:site, user: @site1.user, hostname: 'google.com').tap { |s| s.token = 'pbgopxwy'; s.save }
 
       @log = create(:log_s3_loaders)
-      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::S3Loaders')
+      @trackers = LogAnalyzer.parse(@log.file, 'S3LoadersLogFileFormat')
     end
 
     it "should clean trackers" do

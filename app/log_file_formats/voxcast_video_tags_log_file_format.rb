@@ -15,18 +15,16 @@
 # gif.src = "http://cdn.sublimevideo.net/_.gif?t=12345678&i=1310389131512&h=d&e=s&pd=d&pm=f";
 # gif.src =     "https://4076.voxcdn.com/_.gif?t=ibvjcopp&i=1310389131519&h=m&e=s&pd=t&pm=h";
 
-module LogsFileFormat
-  class VoxcastStats < RequestLogAnalyzer::FileFormat::Base
-    extend LogsFileFormat::Voxcast
+class VoxcastVideoTagsLogFileFormat < RequestLogAnalyzer::FileFormat::Base
+  extend VoxcastLogFileFormat
 
-    def self.report_trackers
-      analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
-      analyze.frequency(:stats, title: :stats,
-        category: lambda { |r| [remove_timestamp(r), r[:useragent]] },
-        if: lambda { |r| countable_hit?(r) && gif_request?(r) && good_token?(r) }
-      )
-      analyze.trackers
-    end
-
+  def self.report_trackers
+    analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
+    analyze.frequency(:video_tags, title: :video_tags,
+      category: lambda { |r| remove_timestamp(r) },
+      if: lambda { |r| countable_hit?(r) && gif_request?(r) && good_token?(r) }
+    )
+    analyze.trackers
   end
+
 end

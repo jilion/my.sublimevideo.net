@@ -79,22 +79,22 @@ class Log::Voxcast < ::Log
   end
 
   def parse_and_create_stats!
-    trackers = trackers('LogsFileFormat::VoxcastStats')
+    trackers = trackers('VoxcastStatsLogFileFormat')
     Stat.create_stats_from_trackers!(self, trackers)
   end
 
   def parse_and_create_referrers!
-    trackers = trackers('LogsFileFormat::VoxcastReferrers')
+    trackers = trackers('VoxcastReferrersLogFileFormat')
     Referrer.create_or_update_from_trackers!(trackers)
   end
 
   def parse_and_create_user_agents!
-    trackers = trackers('LogsFileFormat::VoxcastUserAgents')
+    trackers = trackers('VoxcastUserAgentsLogFileFormat')
     UsrAgent.create_or_update_from_trackers!(self, trackers)
   end
 
   def parse_and_create_video_tags!
-    video_tags_trackers  = trackers('LogsFileFormat::VoxcastVideoTags', title: :video_tags)
+    video_tags_trackers  = trackers('VoxcastVideoTagsLogFileFormat', title: :video_tags)
     video_tags_data = VideoTagTrackersParser.extract_video_tags_data(video_tags_trackers)
     video_tags_data.each do |(site_token, uid), data|
       VideoTagUpdater.delay.update(site_token, uid, data)

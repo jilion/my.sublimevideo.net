@@ -1,7 +1,6 @@
-require 'tempfile'
-require_dependency 'log_analyzer'
-
 # encoding: utf-8
+require 'tempfile'
+
 class Log
   include Mongoid::Document
   include Mongoid::Timestamps

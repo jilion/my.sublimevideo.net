@@ -1,15 +1,18 @@
 require 'fast_spec_helper'
+require 'active_support/core_ext'
 require 'request_log_analyzer'
 require 'support/fixtures_helpers'
-require File.expand_path('lib/log_analyzer')
-require File.expand_path('lib/logs_file_format/voxcast_sites')
 
-describe LogsFileFormat::VoxcastSites do
+require 'services/log_analyzer'
+require 'log_file_formats/voxcast_log_file_format'
+require 'log_file_formats/voxcast_sites_log_file_format'
+
+describe VoxcastSitesLogFileFormat do
 
   describe "with cdn.sublimevideo.net.log.1274798340-1274798400.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1274798340-1274798400.gz')
-      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastSites')
+      @trackers = LogAnalyzer.parse(log_file, 'VoxcastSitesLogFileFormat')
     end
 
     it "should parse and return loader tracker" do
@@ -26,7 +29,7 @@ describe LogsFileFormat::VoxcastSites do
   describe "with cdn.sublimevideo.net.log.1275002700-1275002760.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz')
-      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastSites')
+      @trackers = LogAnalyzer.parse(log_file, 'VoxcastSitesLogFileFormat')
     end
 
     it "should parse and return loader tracker" do
@@ -55,7 +58,7 @@ describe LogsFileFormat::VoxcastSites do
   describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz')
-      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastSites')
+      @trackers = LogAnalyzer.parse(log_file, 'VoxcastSitesLogFileFormat')
     end
 
     it "should parse and return loader tracker" do
@@ -85,7 +88,7 @@ describe LogsFileFormat::VoxcastSites do
   describe "with 4076.voxcdn.com.log.1279202700-1279202760.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/4076.voxcdn.com.log.1279202700-1279202760.gz')
-      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastSites')
+      @trackers = LogAnalyzer.parse(log_file, 'VoxcastSitesLogFileFormat')
     end
 
     it "should parse and return loader tracker" do
@@ -107,7 +110,7 @@ describe LogsFileFormat::VoxcastSites do
   describe "with 4076.voxcdn.com.log.1279103340-1279103400.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz')
-      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastSites')
+      @trackers = LogAnalyzer.parse(log_file, 'VoxcastSitesLogFileFormat')
     end
 
     it "should parse and return loader tracker" do
