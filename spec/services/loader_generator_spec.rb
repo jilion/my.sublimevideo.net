@@ -4,7 +4,6 @@ require 'sidekiq'
 require 'config/sidekiq'
 require 'support/sidekiq_custom_matchers'
 require 'config/carrierwave' # for fog_mock
-require 'stage'
 
 require 'services/component_version_dependencies_solver'
 require 'services/loader_generator'
@@ -12,6 +11,7 @@ require 'services/player_mangler'
 require 'wrappers/cdn_file'
 require 'wrappers/s3_wrapper'
 require 'models/app'
+require 'models/stage'
 
 Site = Class.new unless defined?(Site)
 App::Component = Class.new unless defined?(App::Component)

@@ -1,6 +1,7 @@
 require 'fast_spec_helper'
+
 require 'services/component_version_dependencies_solver'
-require File.expand_path('lib/stage')
+require 'models/stage'
 
 App = Module.new unless defined?(App)
 Site = Class.new unless defined?(Site)

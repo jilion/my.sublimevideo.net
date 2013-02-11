@@ -1,5 +1,4 @@
 require_dependency 'hostname'
-require_dependency 'stage'
 require_dependency 'service/site'
 
 class Site < ActiveRecord::Base
