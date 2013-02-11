@@ -1,4 +1,3 @@
-require_dependency 'vat'
 require_dependency 'service/user'
 
 StateMachine::Machine.ignore_method_conflicts = true

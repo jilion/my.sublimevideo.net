@@ -1,4 +1,6 @@
-require "spec_helper"
+require 'fast_spec_helper'
+
+require 'models/preview_kit'
 
 describe PreviewKit do
 

@@ -1,5 +1,6 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/vat')
+
+require 'models/vat'
 
 describe Vat do
 

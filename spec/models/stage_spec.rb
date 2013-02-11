@@ -1,6 +1,7 @@
 require 'fast_spec_helper'
 require 'active_support/core_ext'
-require File.expand_path('lib/stage')
+
+require 'models/stage'
 
 describe Stage do
   describe ".stages" do

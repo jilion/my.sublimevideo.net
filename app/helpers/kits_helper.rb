@@ -1,5 +1,3 @@
-require_dependency 'preview_kit'
-
 module KitsHelper
 
   def mangled_kit_settings(kit)

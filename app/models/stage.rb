@@ -1,4 +1,4 @@
-Stage = Struct.new(:stage) do
+class Stage
   STAGES = %w[alpha beta stable]
 
   def self.stages
@@ -21,4 +21,4 @@ Stage = Struct.new(:stage) do
     end
   end
 
-end unless defined? Stage
+end

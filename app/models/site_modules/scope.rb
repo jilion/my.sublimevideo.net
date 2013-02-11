@@ -1,5 +1,3 @@
-require_dependency 'business_model'
-
 module SiteModules::Scope
   extend ActiveSupport::Concern
 

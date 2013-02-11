@@ -1,6 +1,5 @@
 require_dependency 'service/newsletter'
 require_dependency 'public_launch'
-require_dependency 'vat'
 
 class User < ActiveRecord::Base
   include UserModules::Activity

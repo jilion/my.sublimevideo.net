@@ -1,5 +1,3 @@
-require_dependency 'vat'
-
 module Service
   Invoice = Struct.new(:invoice) do
     delegate :site, to: :invoice
