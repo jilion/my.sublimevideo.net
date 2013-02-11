@@ -1081,49 +1081,6 @@ ALTER SEQUENCE tags_id_seq OWNED BY tags.id;
 
 
 --
--- Name: tailor_made_player_requests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE tailor_made_player_requests (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    email character varying(255) NOT NULL,
-    topic character varying(255) NOT NULL,
-    job_title character varying(255),
-    company character varying(255),
-    url character varying(255),
-    country character varying(255),
-    token character varying(255),
-    topic_standalone_detail character varying(255),
-    topic_other_detail character varying(255),
-    description text NOT NULL,
-    document character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    highrise_kase_id integer
-);
-
-
---
--- Name: tailor_made_player_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE tailor_made_player_requests_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: tailor_made_player_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE tailor_made_player_requests_id_seq OWNED BY tailor_made_player_requests.id;
-
-
---
 -- Name: transactions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1536,13 +1493,6 @@ ALTER TABLE tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE tailor_made_player_requests ALTER COLUMN id SET DEFAULT nextval('tailor_made_player_requests_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE transactions ALTER COLUMN id SET DEFAULT nextval('transactions_id_seq'::regclass);
 
 
@@ -1781,14 +1731,6 @@ ALTER TABLE ONLY taggings
 
 ALTER TABLE ONLY tags
     ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
-
-
---
--- Name: tailor_made_player_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY tailor_made_player_requests
-    ADD CONSTRAINT tailor_made_player_requests_pkey PRIMARY KEY (id);
 
 
 --
@@ -2174,20 +2116,6 @@ CREATE INDEX index_taggings_on_taggable_id_and_taggable_type_and_context ON tagg
 
 
 --
--- Name: index_tailor_made_player_requests_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_tailor_made_player_requests_on_created_at ON tailor_made_player_requests USING btree (created_at);
-
-
---
--- Name: index_tailor_made_player_requests_on_topic; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_tailor_made_player_requests_on_topic ON tailor_made_player_requests USING btree (topic);
-
-
---
 -- Name: index_transactions_on_order_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2472,10 +2400,6 @@ INSERT INTO schema_migrations (version) VALUES ('20121121161315');
 INSERT INTO schema_migrations (version) VALUES ('20121122073822');
 
 INSERT INTO schema_migrations (version) VALUES ('20121127154540');
-
-INSERT INTO schema_migrations (version) VALUES ('20121202170511');
-
-INSERT INTO schema_migrations (version) VALUES ('20121205172815');
 
 INSERT INTO schema_migrations (version) VALUES ('20121207133427');
 
