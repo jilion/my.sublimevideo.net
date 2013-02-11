@@ -4,7 +4,7 @@ require_dependency 'stat_timeline'
 invoices = StatTimeline::Invoice.timeline(range_start_date, range_end_date, { user_id: user.id })
 
 unless invoices.empty?
-  graph = Graph.new do |g|
+  graph = HighchartsGraphBuilder.new do |g|
     g.option(chart: chart('timeline_invoices', margin_top: 50))
     g.option(title: { text: "Past invoices" })
     g.option(subtitle: usage_date_subtitle(start_at: invoices.first.created_at, end_at: invoices.last.created_at, date_format: :month_fullyear))

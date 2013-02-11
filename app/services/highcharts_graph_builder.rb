@@ -1,5 +1,5 @@
 # Simple DSL to build Highcharts graph
-class Graph
+class HighchartsGraphBuilder
 
   def initialize
     @options     = {}

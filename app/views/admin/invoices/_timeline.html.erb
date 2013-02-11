@@ -13,7 +13,7 @@ canceled_invoices     = StatTimeline::Invoice.timeline(invoices.canceled, graph_
 refunded_invoices     = StatTimeline::Invoice.timeline(invoices.refunded, graph_start_date, graph_end_date)
 waiting_invoices      = StatTimeline::Invoice.timeline(invoices.waiting, graph_start_date, graph_end_date)
 
-graph = Graph.new do |g|
+graph = HighchartsGraphBuilder.new do |g|
   g.option(chart: chart('timeline_invoices', margin_top: 100))
   g.option(title: { text: "Invoices" })
   g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date, date_format: :year_month_day))

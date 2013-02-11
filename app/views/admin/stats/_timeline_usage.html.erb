@@ -6,7 +6,7 @@ billable_usage_old = usages["main_usage"].zip(usages["extra_usage"]).map { |item
 
 stats_timeline_new = StatTimeline::SiteDayStat.new(from: graph_start_date, to: graph_end_date)
 
-graph = Graph.new do |g|
+graph = HighchartsGraphBuilder.new do |g|
   g.option(chart: chart('timeline_usage'))
   g.option(title: { text: "Total video plays" })
   g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
