@@ -1,5 +1,4 @@
 require 'configurator'
-require 'notify'
 
 module TwitterWrapper
   include Configurator
@@ -18,7 +17,7 @@ module TwitterWrapper
             Twitter.send(method_name, *args)
           end
         rescue Twitter::Error::TooManyRequests => error
-          Notify.send("Too many Twitter requests.")
+          Notifier.send("Too many Twitter requests.")
         end
       else
         super

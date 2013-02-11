@@ -643,7 +643,7 @@ describe UserModules::CreditCard do
 
         context "authorization is  unknown" do
           it "doesn't add an error on base to the user" do
-            Notify.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
+            Notifier.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
             subject.process_credit_card_authorization_response(unknown_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.unknown") }
             subject.d3d_html.should be_nil
@@ -799,7 +799,7 @@ describe UserModules::CreditCard do
 
         context "unknown" do
           it "should set a notice/alert, not reset pending cc info, send a notification and save the user" do
-            Notify.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
+            Notifier.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
             subject.process_credit_card_authorization_response(unknown_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.unknown") }
             subject.d3d_html.should be_nil

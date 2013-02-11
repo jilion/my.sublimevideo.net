@@ -1,5 +1,4 @@
 require 'base64'
-require_dependency 'notify'
 
 module UserModules::CreditCard
   extend ActiveSupport::Concern
@@ -205,11 +204,11 @@ module UserModules::CreditCard
       when '52'
         Librato.increment 'credit_cards.uncertain', source: authorization_params['BRAND']
         @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.unknown') }
-        Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorization_params["PAYID"]}) has an uncertain state, please investigate quickly!")
+        Notifier.send("Credit card authorization for user ##{self.id} (PAYID: #{authorization_params["PAYID"]}) has an uncertain state, please investigate quickly!")
 
       else
         @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.unknown') }
-        Notify.send("Credit card authorization unknown status: #{authorization_params["STATUS"]}")
+        Notifier.send("Credit card authorization unknown status: #{authorization_params["STATUS"]}")
       end
 
       unless authorization_params['STATUS'] == '5'

@@ -1,4 +1,4 @@
-module Notify
+class Notifier
 
   def self.send(message_or_exception, options = {})
     airbrake(message_or_exception, options)
@@ -6,6 +6,8 @@ module Notify
       ProwlWrapper.notify(message_or_exception)
     end
   end
+
+  private
 
   def self.airbrake(message_or_exception, options)
     if message_or_exception.is_a?(Exception)
@@ -16,6 +18,5 @@ module Notify
       Airbrake.notify(Exception.new(message_or_exception))
     end
   end
-  private_class_method :airbrake
 
 end

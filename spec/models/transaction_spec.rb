@@ -615,7 +615,7 @@ describe Transaction do
       context "STATUS is 92" do
         it "puts transaction in 'waiting' state" do
           subject.should be_unprocessed
-          Notify.should_receive(:send)
+          Notifier.should_receive(:send)
 
           subject.process_payment_response(@unknown_params)
 
@@ -659,7 +659,7 @@ describe Transaction do
       context "first STATUS is 92, second is 9" do
         it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
           subject.should be_unprocessed
-          Notify.should_receive(:send)
+          Notifier.should_receive(:send)
 
           subject.process_payment_response(@unknown_params)
 

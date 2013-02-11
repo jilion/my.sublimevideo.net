@@ -2,6 +2,7 @@ require 'fast_spec_helper'
 require 'twitter'
 require 'rescue_me'
 
+require 'services/notifier'
 require 'wrappers/twitter_wrapper'
 
 describe TwitterWrapper do

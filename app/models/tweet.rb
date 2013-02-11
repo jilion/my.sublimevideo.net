@@ -104,7 +104,7 @@ class Tweet
       end
 
       # if to_remove.present?
-      #   Notify.send("These tweets are marked as favorite locally but not on Twitter: #{to_remove.join(', ')}")
+      #   Notifier.send("These tweets are marked as favorite locally but not on Twitter: #{to_remove.join(', ')}")
       #   to_remove.each do |fav_tweet_id_to_remove|
       #     if tweet = self.where(tweet_id: fav_tweet_id_to_remove).first
       #       tweet.update_attribute(:favorited, false)

@@ -1,4 +1,3 @@
-require_dependency 'notify'
 require_dependency 'service/site'
 require_dependency 'service/trial'
 require_dependency 'service/invoice'
@@ -15,7 +14,7 @@ module RecurringJob
       end
 
       if jobs_count > jobs_threshold
-        Notify.send("WARNING!!! There is more than #{jobs_threshold} jobs in queues, please investigate quickly!")
+        Notifier.send("WARNING!!! There is more than #{jobs_threshold} jobs in queues, please investigate quickly!")
       end
     end
 

@@ -1,6 +1,5 @@
 require 'tempfile'
 require_dependency 'log_analyzer'
-require_dependency 'notify'
 
 # encoding: utf-8
 class Log

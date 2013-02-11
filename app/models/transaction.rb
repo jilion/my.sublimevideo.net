@@ -1,4 +1,3 @@
-require_dependency 'notify'
 require_dependency 'service/user'
 
 StateMachine::Machine.ignore_method_conflicts = true
@@ -104,7 +103,7 @@ class Transaction < ActiveRecord::Base
     begin
       OgoneWrapper.purchase(amount, user.cc_alias, payment_options(opts))
     rescue => ex
-      Notify.send("Exception during charging: #{ex.message}", exception: ex)
+      Notifier.send("Exception during charging: #{ex.message}", exception: ex)
       nil
     end
   end
@@ -159,12 +158,12 @@ class Transaction < ActiveRecord::Base
     #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
     when "52", "92"
       Librato.increment 'payments.uncertain', by: payment_params['amount'].to_i, source: payment_params['BRAND']
-      Notify.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
+      Notifier.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
 
       self.wait
 
     else
-      Notify.send("Transaction unknown status: #{payment_params["STATUS"]}")
+      Notifier.send("Transaction unknown status: #{payment_params["STATUS"]}")
 
       self.wait
     end

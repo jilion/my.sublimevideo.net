@@ -1,5 +1,4 @@
 # encoding: utf-8
-require_dependency 'notify'
 require_dependency 'logs_file_format'
 
 module LogAnalyzer
@@ -32,7 +31,7 @@ module LogAnalyzer
 
     def notify_skipped_lines
       if @controller.source.skipped_lines > 0
-        Notify.send("LogAnalyzer skipped #{@controller.source.skipped_lines} line(s) for #{@controller.source.source_files}")
+        Notifier.send("LogAnalyzer skipped #{@controller.source.skipped_lines} line(s) for #{@controller.source.source_files}")
       end
     end
 
