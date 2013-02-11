@@ -133,7 +133,10 @@ GEM
       fog
     aws (2.7.0)
       http_connection
+      http_connection
       uuidtools
+      uuidtools
+      xml-simple
       xml-simple
     bcrypt-ruby (3.0.1)
     better_errors (0.5.0)
@@ -316,6 +319,7 @@ GEM
       multi_json (~> 1.5)
     highline (1.6.15)
     hike (1.2.1)
+    hpricot (0.8.6)
     htmlentities (4.3.1)
     http_connection (1.4.2)
     http_parser.rb (0.5.3)
@@ -681,6 +685,7 @@ DEPENDENCIES
   haml_coffee_assets
   has_scope
   her
+  hpricot
   jasminerice
   kaminari
   kiqstand
