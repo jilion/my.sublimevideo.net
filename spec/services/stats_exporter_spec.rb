@@ -1,7 +1,7 @@
 require 'fast_spec_helper'
 require 'active_support/core_ext'
 
-require File.expand_path('lib/stats_exporter')
+require 'services/stats_exporter'
 
 unless defined?(ActiveRecord)
   Site              = Class.new
@@ -22,7 +22,10 @@ describe StatsExporter do
   let(:stats_exporter) { StatsExporter.new(site_token, from, to) }
   let(:csv_export) { stub }
 
-  before { Site.stub_chain(:where, :first) { site } }
+  before {
+    Librato.stub(:increment)
+    Site.stub_chain(:where, :first) { site }
+  }
 
   describe "#create_and_notify_export" do
 
