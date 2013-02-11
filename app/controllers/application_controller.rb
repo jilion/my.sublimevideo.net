@@ -1,5 +1,3 @@
-require_dependency 'responders/paginated_responder'
-
 class ApplicationController < ActionController::Base
   include SublimeVideoLayout::EngineHelper
   include RedirectionFiltersControllerHelper
