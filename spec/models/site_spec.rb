@@ -121,9 +121,9 @@ describe Site, :addons do
   describe "Attributes Accessors" do
     %w[hostname extra_hostnames staging_hostnames dev_hostnames].each do |attr|
       describe "#{attr}=" do
-        it "calls Hostname.clean" do
+        it "calls HostnameHandler.clean" do
           site = build_stubbed(:site)
-          Hostname.should_receive(:clean).with("foo.com")
+          HostnameHandler.should_receive(:clean).with("foo.com")
 
           site.send("#{attr}=", "foo.com")
         end

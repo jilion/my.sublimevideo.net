@@ -1,7 +1,6 @@
 require 'ipaddr'
-require 'active_support/core_ext'
 
-module Hostname
+class HostnameHandler
 
   # http://en.wikipedia.org/wiki/Pseudo-top-level_domain
   PSEUDO_TLD ||= %w[bitnet csnet exit i2p local onion oz freenet uucp root]
@@ -65,6 +64,8 @@ module Hostname
     end
   end
 
+  private
+
   def self.clean_one(hostname)
     hostname.downcase!
     hostname.gsub!(%r(^.+://), '')
@@ -83,7 +84,6 @@ module Hostname
     end
     hostname
   end
-  private_class_method :clean_one
 
   def self.valid_one?(hostname)
     hostname.strip!
@@ -93,7 +93,6 @@ module Hostname
   rescue
     ipv4?(hostname) && !ipv4_local?(hostname)
   end
-  private_class_method :valid_one?
 
   def self.dev_valid_one?(hostname)
     ssp = PublicSuffix.parse(hostname)
@@ -101,7 +100,6 @@ module Hostname
   rescue
     !ipv4?(hostname) || ipv4_local?(hostname)
   end
-  private_class_method :dev_valid_one?
 
   def self.ipv4?(hostname)
     begin
@@ -111,7 +109,6 @@ module Hostname
       false
     end
   end
-  private_class_method :ipv4?
 
   def self.ipv4_local?(hostname)
     begin
@@ -121,6 +118,4 @@ module Hostname
       false
     end
   end
-  private_class_method :ipv4_local?
-
 end

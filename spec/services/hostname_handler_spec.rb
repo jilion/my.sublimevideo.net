@@ -1,10 +1,12 @@
 # coding: utf-8
 require 'fast_spec_helper'
+require 'active_support/core_ext'
 require 'public_suffix'
-require File.expand_path('lib/hostname')
 
-describe Hostname do
-  subject { Hostname }
+require 'services/hostname_handler'
+
+describe HostnameHandler do
+  subject { HostnameHandler }
 
   describe "clean" do
     it { subject.clean(nil).should == nil }

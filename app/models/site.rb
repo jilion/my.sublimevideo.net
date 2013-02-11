@@ -1,4 +1,3 @@
-require_dependency 'hostname'
 require_dependency 'service/site'
 
 class Site < ActiveRecord::Base
@@ -155,7 +154,7 @@ class Site < ActiveRecord::Base
 
   %w[hostname extra_hostnames staging_hostnames dev_hostnames].each do |method_name|
     define_method "#{method_name}=" do |attribute|
-      write_attribute(method_name, Hostname.clean(attribute))
+      write_attribute(method_name, HostnameHandler.clean(attribute))
     end
   end
 

@@ -1,5 +1,3 @@
-require_dependency 'hostname'
-
 class EnthusiastSite < ActiveRecord::Base
 
   attr_accessible :hostname
@@ -21,7 +19,7 @@ class EnthusiastSite < ActiveRecord::Base
   # ====================
   # add scheme & parse
   def hostname=(attribute)
-    write_attribute(:hostname, Hostname.clean(attribute))
+    write_attribute(:hostname, HostnameHandler.clean(attribute))
   end
 
 end
