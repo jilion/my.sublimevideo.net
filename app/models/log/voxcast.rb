@@ -1,6 +1,5 @@
 # encoding: utf-8
 require 'thread'
-require_dependency 'recurring_job'
 require_dependency 'video_tag_trackers_parser'
 require_dependency 'video_tag_updater'
 
