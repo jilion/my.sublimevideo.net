@@ -1,8 +1,3 @@
-def run(*cmd)
-  system(*cmd)
-  raise "Command #{cmd.inspect} failed!" unless $?.success?
-end
-
 def timed(&block)
   if block_given?
     start_time = Time.now.utc
