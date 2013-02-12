@@ -1,9 +1,9 @@
 require 'fast_spec_helper'
 require 'rails/railtie'
 
-require File.expand_path('lib/service/settings_sanitizer')
+require 'services/settings_sanitizer'
 
-describe Service::SettingsSanitizer do
+describe SettingsSanitizer do
   let(:site)        { stub(touch: true) }
   let(:kit)         { stub(design: stub, site: site, site_id: 1) }
   let(:addon_plan1) { stub(addon: stub(name: 'addonName1')) }

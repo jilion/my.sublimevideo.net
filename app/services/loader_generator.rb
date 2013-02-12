@@ -11,7 +11,7 @@ class LoaderGenerator
   def_instance_delegators :cdn_file, :upload!, :delete!, :present?
 
   def self.update_all_stages!(site_id, options = {})
-    site = ::Site.find(site_id)
+    site = Site.find(site_id)
     Stage.stages.each do |stage|
       if site.active? && stage >= site.accessible_stage
         new(site, stage, options).upload!
@@ -26,13 +26,13 @@ class LoaderGenerator
   def self.update_all_dependant_sites(component_id, stage)
     delay(queue: 'high').update_important_sites
 
-    component = ::App::Component.find(component_id)
+    component = App::Component.find(component_id)
     if component.app_component?
-      sites = ::Site.scoped
+      sites = Site.scoped
     else
       sites = component.sites.scoped
     end
-    sites = sites.where { token << (::SiteToken.tokens + IMPORTANT_SITE_TOKENS) } # not important sites
+    sites = sites.where { token << (SiteToken.tokens + IMPORTANT_SITE_TOKENS) } # not important sites
     sites = sites.select(:id).active.where(accessible_stage: Stage.stages_with_access_to(stage))
     sites.order { last_30_days_main_video_views.desc }.order { created_at.desc }.find_each do |site|
       delay(queue: 'loader').update_all_stages!(site.id)
@@ -40,7 +40,7 @@ class LoaderGenerator
   end
 
   def self.update_important_sites
-    ::Site.select(:id).where { token >> (::SiteToken.tokens + IMPORTANT_SITE_TOKENS) }.each do |site|
+    Site.select(:id).where { token >> (::SiteToken.tokens + IMPORTANT_SITE_TOKENS) }.each do |site|
       delay(queue: 'high').update_all_stages!(site.id)
     end
   end
@@ -63,11 +63,11 @@ class LoaderGenerator
   end
 
   def app_component_version
-    components_dependencies[::App::Component.app_component.token]
+    components_dependencies[App::Component.app_component.token]
   end
 
   def components_versions
-    components_dependencies.select { |token, version| token != ::App::Component.app_component.token }
+    components_dependencies.select { |token, version| token != App::Component.app_component.token }
   end
 
 private

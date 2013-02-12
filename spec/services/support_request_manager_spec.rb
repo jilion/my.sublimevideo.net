@@ -1,9 +1,11 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/service/support_request')
+
+require 'wrappers/zendesk_wrapper'
+require 'services/support_request_manager'
 
 SupportRequest = Struct.new(:params) unless defined?(SupportRequest)
 
-describe Service::SupportRequest do
+describe SupportRequestManager do
   let(:user_without_zendesk_id) { mock('user', zendesk_id?: false) }
   let(:user_with_zendesk_id)    { mock('user', zendesk_id?: true) }
   let(:support_request1)        { mock('support_request', to_params: {}, user: user_without_zendesk_id) }
@@ -11,12 +13,6 @@ describe Service::SupportRequest do
   let(:ticket)                  { mock('ticket', requester_id: 12, params: {}) }
   let(:manager1)                { described_class.new(support_request1) }
   let(:manager2)                { described_class.new(support_request2) }
-
-  describe '.build_support_request' do
-    it 'instantiate a new Service::SupportRequest and returns it' do
-      described_class.build_support_request({}).should be_a(described_class)
-    end
-  end
 
   describe '.create_zendesk_user' do
     context 'user has a zendesk id' do

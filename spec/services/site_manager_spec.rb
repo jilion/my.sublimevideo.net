@@ -5,16 +5,17 @@ require 'config/sidekiq'
 require 'support/sidekiq_custom_matchers'
 
 require 'models/app'
+require 'services/rank_setter'
 require 'services/loader_generator'
 require 'services/settings_generator'
-require File.expand_path('lib/service/site')
+require 'services/site_manager'
 
 Site = Struct.new(:params) unless defined?(Site)
 AddonPlan = Class.new unless defined?(AddonPlan)
 ActiveRecord = Class.new unless defined?(ActiveRecord)
 ActiveRecord::RecordInvalid = Class.new unless defined?(ActiveRecord::RecordInvalid)
 
-describe Service::Site do
+describe SiteManager do
   let(:user)    { stub(sites: []) }
   let(:site)    { Struct.new(:user, :id).new(nil, 1234) }
   let(:service) { described_class.new(site) }
@@ -26,7 +27,7 @@ describe Service::Site do
   describe '.subscribe_site_to_embed_addon' do
     it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
       Site.should_receive(:find) { site }
-      Service::Site.should_receive(:new).with(site) do |service|
+      SiteManager.should_receive(:new).with(site) do |service|
         service.should_receive(:update_billable_items).with({}, { 'embed' => 42 })
         service
       end
@@ -80,7 +81,7 @@ describe Service::Site do
     end
 
     it 'delays the calculation of google and alexa ranks' do
-      Service::Rank.should delay(:set_ranks, queue: 'low').with(site.id)
+      RankSetter.should delay(:set_ranks, queue: 'low').with(site.id)
       service.create
     end
 

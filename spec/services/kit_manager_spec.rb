@@ -3,22 +3,23 @@ require 'sidekiq'
 require 'config/sidekiq'
 require 'support/sidekiq_custom_matchers'
 
-require File.expand_path('lib/service/kit')
-require File.expand_path('lib/service/site')
+require 'services/site_manager'
+require 'services/kit_manager'
+require 'services/settings_sanitizer'
 require 'services/settings_generator'
 
 Kit = Struct.new(:params) unless defined?(Kit)
 ActiveRecord = Class.new unless defined?(ActiveRecord)
 ActiveRecord::RecordInvalid = Class.new unless defined?(ActiveRecord::RecordInvalid)
 
-describe Service::Kit do
+describe KitManager do
   let(:new_site)       { stub(touch: true, new_record?: true) }
   let(:persisted_site) { stub(touch: true, new_record?: false) }
   let(:kit)            { stub(design: stub, site: new_site, site_id: 1) }
   let(:addon_plan)     { stub }
   let(:service)        { described_class.new(kit) }
   let(:sanitized_settings) { stub }
-  let(:settings_sanitizer_service) { stub(sanitize: sanitized_settings) }
+  let(:settings_sanitizer) { stub(sanitize: sanitized_settings) }
 
   before {
     Librato.stub(:increment)
@@ -28,7 +29,7 @@ describe Service::Kit do
     let(:params) { { name: 'My Kit', app_design_id: 42, settings: { "logo" => { "settings" => "value" } } } }
     before do
       ::Kit.stub(:transaction).and_yield
-      Service::SettingsSanitizer.stub(:new) { settings_sanitizer_service }
+      SettingsSanitizer.stub(:new) { settings_sanitizer }
       kit.stub(:name=)
       kit.stub(:app_design_id=)
       kit.stub(:settings=)
@@ -48,8 +49,8 @@ describe Service::Kit do
     end
 
     it 'sanitize settings' do
-      Service::SettingsSanitizer.should_receive(:new).with(kit, params[:settings]) { settings_sanitizer_service }
-      settings_sanitizer_service.should_receive(:sanitize) { sanitized_settings }
+      SettingsSanitizer.should_receive(:new).with(kit, params[:settings]) { settings_sanitizer }
+      settings_sanitizer.should_receive(:sanitize) { sanitized_settings }
       kit.should_receive(:settings=).with(sanitized_settings)
 
       service.save(params)

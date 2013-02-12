@@ -4,11 +4,11 @@ require 'config/sidekiq'
 require 'support/sidekiq_custom_matchers'
 
 require 'wrappers/campaign_monitor_wrapper'
-require File.expand_path('lib/service/newsletter')
+require 'services/newsletter_subscription_manager'
 
 User = Class.new unless defined?(User)
 
-describe Service::Newsletter do
+describe NewsletterSubscriptionManager do
   let(:user1) { OpenStruct.new(id: 12, beta?: true, newsletter?: true, email_was: nil, email: 'user@example.org', name: 'User Example') }
   let(:user2) { OpenStruct.new(id: 13, beta?: false, newsletter?: true, email_was: 'old_user2@example.org', email: 'user2@example.org', name: 'User2 Example') }
   let(:user3) { OpenStruct.new(id: 12, beta?: true, newsletter?: false, email_was: nil, email: 'user@example.org', name: 'User Example') }

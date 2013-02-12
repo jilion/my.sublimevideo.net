@@ -1,9 +1,8 @@
 require 'spec_helper'
-require File.expand_path('lib/service/usage')
 
 Site = Class.new unless defined?(Site)
 
-describe Service::Usage do
+describe SiteCountersUpdater do
   let(:site)          { stub }
   let(:usage_manager) { stub }
 
@@ -11,7 +10,7 @@ describe Service::Usage do
     it 'calls #update_last_30_days_video_tags_counters and #update_last_30_days_video_views_counters on each non-archived sites' do
       Site.stub_chain(:not_archived, :find_each).and_yield(site)
 
-      Service::Usage.should_receive(:new).with(site) { usage_manager }
+      SiteCountersUpdater.should_receive(:new).with(site) { usage_manager }
       usage_manager.should_receive(:update_last_30_days_video_tags_counters) { usage_manager }
       usage_manager.should_receive(:update_last_30_days_video_views_counters) { usage_manager }
 
@@ -23,7 +22,7 @@ describe Service::Usage do
     it 'calls #set_first_billable_plays_at on each non-archived sites' do
       Site.stub_chain(:not_archived, :where, :find_each).and_yield(site)
 
-      Service::Usage.should_receive(:new).with(site) { usage_manager }
+      SiteCountersUpdater.should_receive(:new).with(site) { usage_manager }
       usage_manager.should_receive(:set_first_billable_plays_at)
 
       described_class.set_first_billable_plays_at_for_not_archived_sites

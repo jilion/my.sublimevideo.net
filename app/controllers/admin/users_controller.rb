@@ -1,5 +1,3 @@
-require_dependency 'service/support_request'
-
 class Admin::UsersController < Admin::AdminController
   respond_to :html, :js
 
@@ -59,7 +57,7 @@ class Admin::UsersController < Admin::AdminController
 
   # GET /users/:id/new_support_request
   def new_support_request
-    Service::SupportRequest.create_zendesk_user(@user)
+    SupportRequestManager.create_zendesk_user(@user)
 
     redirect_to ZendeskWrapper.base_url + "/tickets/new?requester_id=#{@user.zendesk_id}"
   end

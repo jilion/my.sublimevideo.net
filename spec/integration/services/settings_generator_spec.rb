@@ -5,7 +5,7 @@ describe SettingsGenerator do
     describe "default settings of a new site" do
       let(:site) {
         site = build(:site, hostname: 'test.com')
-        Service::Site.new(site).create
+        SiteManager.new(site).create
         site
       }
       let(:settings) { described_class.new(site, 'settings') }

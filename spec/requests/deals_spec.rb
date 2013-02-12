@@ -11,7 +11,7 @@ feature "Deal activation" do
   context "user is not logged-in" do
     background do
       @user = create(:user, use_clients: true)
-      Service::Site.new(build(:site, user: @user)).create
+      SiteManager.new(build(:site, user: @user)).create
     end
 
     scenario "deal is activated with a after-login redirect" do
@@ -57,7 +57,7 @@ feature "Deal activation" do
   context "user is logged-in" do
     background do
       sign_in_as :user, use_clients: true
-      Service::Site.new(build(:site, user: @current_user)).create
+      SiteManager.new(build(:site, user: @current_user)).create
     end
 
     context "and can activate the deal" do

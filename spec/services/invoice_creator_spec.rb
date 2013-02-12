@@ -1,7 +1,6 @@
 require 'spec_helper'
-require File.expand_path('lib/service/invoice')
 
-describe Service::Invoice do
+describe InvoiceCreator do
   let(:user) { create(:user, billing_country: 'FR', balance: 0) }
   let(:site) { create(:site, user: user) }
   let(:site2) { create(:site, user: user) }

@@ -1,5 +1,3 @@
-require_dependency 'service/kit'
-
 class KitsController < ApplicationController
   respond_to :js, only: [:fields, :process_custom_logo]
 
@@ -25,7 +23,7 @@ class KitsController < ApplicationController
   # POST /sites/:site_id/players
   def create
     @kit = exhibit(@site.kits.build)
-    Service::Kit.new(@kit).save(params[:kit])
+    KitManager.new(@kit).save(params[:kit])
 
     respond_with(@kit, location: [@site, :kits])
   end
@@ -43,7 +41,7 @@ class KitsController < ApplicationController
 
   # PUT /sites/:site_id/players/:id
   def update
-    Service::Kit.new(@kit).save(params[:kit])
+    KitManager.new(@kit).save(params[:kit])
 
     respond_with(@kit, location: [@site, :kits])
   end
@@ -67,7 +65,7 @@ class KitsController < ApplicationController
 
   # GET /sites/:site_id/players/:id/fields
   def fields
-    params[:kit][:settings] = Service::SettingsSanitizer.new(@kit, params[:kit][:settings]).sanitize
+    params[:kit][:settings] = SettingsSanitizer.new(@kit, params[:kit][:settings]).sanitize
   end
 
   private

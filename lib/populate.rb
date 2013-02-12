@@ -1,7 +1,5 @@
 # coding: utf-8
 require 'ffaker' if Rails.env.development?
-require_dependency 'service/usage'
-require_dependency 'service/invoice'
 require_dependency 'populate/populate_helpers'
 require_dependency 'populate/addon_system_populator'
 require_dependency 'populate/emails_populator'
@@ -94,7 +92,7 @@ module Populate
     ensure
       sites.compact.each do |site|
         VideoTagsPopulator.new.execute(site.token)
-        Service::Usage.new(site).update_last_30_days_video_tags_counters
+        SiteCountersUpdater.new(site).update_last_30_days_video_tags_counters
       end
     end
 

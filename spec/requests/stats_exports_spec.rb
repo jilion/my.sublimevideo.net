@@ -4,7 +4,7 @@ feature 'StatsExport' do
   background do
     sign_in_as :user
     @site = build(:site, user: @current_user)
-    Service::Site.new(@site).create
+    SiteManager.new(@site).create
     create(:billable_item, site: @site, item: @stats_addon_plan_2)
     @video_tag = create(:video_tag, site: @site, uid: 'video_uid', name: 'My Video')
     create(:site_day_stat, t: @site.token, d: 3.days.ago.midnight.to_i,

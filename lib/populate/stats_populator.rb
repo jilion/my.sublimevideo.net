@@ -1,5 +1,4 @@
 require_dependency 'populate/populator'
-require_dependency 'service/usage'
 
 class StatsPopulator < Populator
 
@@ -19,7 +18,7 @@ class StatsPopulator < Populator
     generate_stats(site, 60, 'minute')
     generate_stats(site, 60, 'second')
 
-    Service::Usage.new(site).update_last_30_days_video_views_counters
+    SiteCountersUpdater.new(site).update_last_30_days_video_views_counters
     puts "Fake stats created for #{site.hostname}"
   end
 

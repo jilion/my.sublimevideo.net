@@ -1,5 +1,3 @@
-require_dependency 'service/newsletter'
-
 class User < ActiveRecord::Base
   include UserModules::Activity
   include UserModules::CreditCard
@@ -244,15 +242,15 @@ private
   def newsletter_update
     if newsletter_changed?
       if newsletter?
-        Service::Newsletter.delay.subscribe(self.id)
+        NewsletterSubscriptionManager.delay.subscribe(self.id)
       else
-        Service::Newsletter.delay.unsubscribe(self.id)
+        NewsletterSubscriptionManager.delay.unsubscribe(self.id)
       end
     end
 
     if newsletter?
       if (email_changed? && email_was.present?) || (name_changed? && name_was.present? && name?)
-        Service::Newsletter.delay.update(self.id, { email: email_was || email, user: { email: email, name: name, newsletter: newsletter? } })
+        NewsletterSubscriptionManager.delay.update(self.id, { email: email_was || email, user: { email: email, name: name, newsletter: newsletter? } })
       end
     end
   end

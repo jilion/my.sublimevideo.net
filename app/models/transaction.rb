@@ -1,5 +1,3 @@
-require_dependency 'service/user'
-
 StateMachine::Machine.ignore_method_conflicts = true
 
 class Transaction < ActiveRecord::Base
@@ -77,7 +75,7 @@ class Transaction < ActiveRecord::Base
         if invoice.transactions.failed.count >= 15
           invoices.delete(invoice)
 
-          Service::User.new(invoice.user).suspend unless invoice.user.vip?
+          UserManager.new(invoice.user).suspend unless invoice.user.vip?
 
           return
         end

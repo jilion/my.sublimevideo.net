@@ -1,6 +1,3 @@
-require_dependency 'service/site'
-require_dependency 'service/kit'
-
 class AssistantController < ApplicationController
   before_filter :find_sites
   before_filter :find_site_by_token!, :update_current_assistant_step_and_redirect, except: [:new_site]
@@ -13,7 +10,7 @@ class AssistantController < ApplicationController
     @site = current_user.sites.build(params[:site])
     if request.post?
       if @site.valid?
-        Service::Site.new(@site).create
+        SiteManager.new(@site).create
         redirect_to assistant_addons_path(@site), notice: t('flash.sites.create.notice')
       end
     end
@@ -23,7 +20,7 @@ class AssistantController < ApplicationController
   # PUT /assistant/:site_id/addons
   def addons
     if request.put?
-      Service::Site.new(@site).update_billable_items(params[:app_designs], params[:addon_plans])
+      SiteManager.new(@site).update_billable_items(params[:app_designs], params[:addon_plans])
 
       redirect_to assistant_player_path(@site), notice: t('flash.addons.update_all.notice')
     end
@@ -33,7 +30,7 @@ class AssistantController < ApplicationController
   # PUT /assistant/:site_id/player
   def player
     if request.put?
-      Service::Kit.new(@kit).save(params[:kit])
+      KitManager.new(@kit).save(params[:kit])
 
       redirect_to assistant_publish_video_path(@site)
     end

@@ -26,7 +26,7 @@ describe OneTime::Site do
     end
 
     it 'delays subscribing to the embed add-on for all sites not subscribed yet' do
-      Service::Site.should delay(:subscribe_site_to_embed_addon).with(site2.id, @embed_addon_plan_1.id)
+      SiteManager.should delay(:subscribe_site_to_embed_addon).with(site2.id, @embed_addon_plan_1.id)
 
       described_class.subscribe_all_sites_to_embed_addon
     end

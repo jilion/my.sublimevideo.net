@@ -1,9 +1,3 @@
-require_dependency 'service/site'
-require_dependency 'service/trial'
-require_dependency 'service/invoice'
-require_dependency 'service/usage'
-require_dependency 'service/credit_card'
-
 module RecurringJob
   class << self
 
@@ -23,16 +17,16 @@ module RecurringJob
         at: Time.now.utc.tomorrow.midnight.to_i
       }
 
-      Service::Invoice.delay(options).create_invoices_for_month
-      Service::Trial.delay(options).send_trial_will_expire_email
-      Service::Trial.delay(options).activate_billable_items_out_of_trial!
-      Service::Usage.delay(options).set_first_billable_plays_at_for_not_archived_sites
-      Service::Usage.delay(options).update_last_30_days_counters_for_not_archived_sites
+      InvoiceCreator.delay(options).create_invoices_for_month
+      TrialHandler.delay(options).send_trial_will_expire_email
+      TrialHandler.delay(options).activate_billable_items_out_of_trial!
+      SiteCountersUpdater.delay(options).set_first_billable_plays_at_for_not_archived_sites
+      SiteCountersUpdater.delay(options).update_last_30_days_counters_for_not_archived_sites
       Transaction.delay(at: (Time.now.utc.tomorrow.midnight + 6.hours).to_i).charge_invoices
 
       options.merge!(queue: 'low')
 
-      Service::CreditCard.delay(options).send_credit_card_expiration_email
+      CreditCardExpirationNotifier.delay(options).send_emails
       User.delay(options).send_inactive_account_email
       Stats::UsersStat.delay(options).create_stats
       Stats::SitesStat.delay(options).create_stats

@@ -5,7 +5,7 @@ require 'config/sidekiq'
 require 'support/sidekiq_custom_matchers'
 require 'config/carrierwave' # for fog_mock
 
-require 'services/component_version_dependencies_solver'
+require 'services/app/component_version_dependencies_solver'
 require 'services/loader_generator'
 require 'services/player_mangler'
 require 'wrappers/cdn_file'

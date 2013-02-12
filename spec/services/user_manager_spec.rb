@@ -3,18 +3,23 @@ require 'sidekiq'
 require 'config/sidekiq'
 require 'support/sidekiq_custom_matchers'
 
-require File.expand_path('lib/service/user')
+require 'services/newsletter_subscription_manager'
+require 'services/user_manager'
 
 User = Class.new unless defined?(User)
 UserMailer = Class.new unless defined?(UserMailer)
 
-describe Service::User do
+describe UserManager do
   let(:user)           { stub(id: 1234, sites: [], save!: true) }
   let(:site1)          { stub(suspend: true) }
   let(:site2)          { stub(suspend: true) }
   let(:tokens)         { stub }
   let(:service)        { described_class.new(user) }
   let(:feedback)       { stub }
+
+  before {
+    Librato.stub(:increment)
+  }
 
   describe '#create' do
     it 'saves user' do
@@ -28,7 +33,7 @@ describe Service::User do
     end
 
     it 'delays the synchronization with the newsletter service' do
-      Service::Newsletter.should delay(:sync_from_service).with(user.id)
+      NewsletterSubscriptionManager.should delay(:sync_from_service).with(user.id)
       service.create
     end
 
@@ -142,7 +147,7 @@ describe Service::User do
       end
 
       it 'delays the unsubscription from the newsletter' do
-        Service::Newsletter.should delay(:unsubscribe).with(user.id)
+        NewsletterSubscriptionManager.should delay(:unsubscribe).with(user.id)
         service.archive
       end
 

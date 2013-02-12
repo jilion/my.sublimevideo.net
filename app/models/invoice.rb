@@ -1,5 +1,3 @@
-require_dependency 'service/user'
-
 StateMachine::Machine.ignore_method_conflicts = true
 
 class Invoice < ActiveRecord::Base
@@ -67,7 +65,7 @@ class Invoice < ActiveRecord::Base
       invoice.user.last_invoiced_amount   = invoice.amount
       invoice.user.total_invoiced_amount += invoice.amount
       invoice.user.save
-      Service::User.new(invoice.user).unsuspend if invoice.user.suspended? && invoice.user.invoices.not_paid.empty?
+      UserManager.new(invoice.user).unsuspend if invoice.user.suspended? && invoice.user.invoices.not_paid.empty?
     end
 
     after_transition on: :cancel do |invoice, transition|

@@ -4,7 +4,7 @@ describe App::ComponentVersionManager do
   let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
   let(:site) {
     site = build(:site)
-    Service::Site.new(site).create
+    SiteManager.new(site).create
     site
   }
   let(:component) { site.components.first }

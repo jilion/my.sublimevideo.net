@@ -1,5 +1,3 @@
-require_dependency 'service/site'
-
 class SitesController < ApplicationController
   respond_to :html
   respond_to :js, :json, only: [:index]
@@ -30,7 +28,7 @@ class SitesController < ApplicationController
 
   # PUT /sites/:id
   def update
-    Service::Site.new(@site).update(params[:site])
+    SiteManager.new(@site).update(params[:site])
 
     respond_with(@site, location: [:edit, @site])
   end

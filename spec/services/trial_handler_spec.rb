@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Service::Trial do
+describe TrialHandler do
   let(:user)             { create(:user) }
   let(:site0)            { create(:site, user: user) }
   let(:site1)            { create(:site, user: user) }
@@ -80,7 +80,7 @@ describe Service::Trial do
     end
 
     context 'user has a cc' do
-      it 'delegates to Service::Site#update_billable_items with the app designs and addon plans IDs' do
+      it 'delegates to SiteManager#update_billable_items with the app designs and addon plans IDs' do
         described_class.activate_billable_items_out_of_trial_for_site!(site1.id)
 
         design_billable_items = site1.billable_items.app_designs
@@ -116,7 +116,7 @@ describe Service::Trial do
     context 'user has no cc' do
       let(:user) { create(:user_no_cc) }
 
-      it 'delegates to Service::Site#update_billable_items and cancel the app designs and addon plans IDs' do
+      it 'delegates to SiteManager#update_billable_items and cancel the app designs and addon plans IDs' do
         BillingMailer.should delay(:trial_has_expired).with(site1.id, 'App::Design', app_design_paid2.id)
         BillingMailer.should delay(:trial_has_expired).with(site1.id, 'AddonPlan', addon_plan_paid1.id)
 
@@ -151,11 +151,11 @@ describe Service::Trial do
       context 'an issue occurs' do
         before do
           service = stub
-          Service::Site.should_receive(:new) { service }
+          SiteManager.should_receive(:new) { service }
           service.should_receive(:update_billable_items).and_raise Exception
         end
 
-        it 'do not send emails if there is any issue during Service::Site#update_billable_items' do
+        it 'do not send emails if there is any issue during SiteManager#update_billable_items' do
           BillingMailer.should_not delay(:trial_has_expired)
 
           expect { described_class.activate_billable_items_out_of_trial_for_site!(site1.id) }.to raise_error(Exception)

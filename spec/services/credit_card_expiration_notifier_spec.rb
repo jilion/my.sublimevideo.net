@@ -1,11 +1,9 @@
 require 'spec_helper'
 
-require File.expand_path('lib/service/credit_card')
-
-describe Service::CreditCard do
+describe CreditCardExpirationNotifier do
   let(:user) { create(:user) }
 
-  describe ".send_credit_card_expiration_email" do
+  describe ".send_emails" do
     let(:public_addon_plan_paid) { create(:addon_plan, availability: 'public', price: 995) }
 
     before do
@@ -31,7 +29,7 @@ describe Service::CreditCard do
     it "sends 'cc will expire' email when user's credit card will expire at the end of the current month and the last notice he received is at least 15 days old" do
       BillingMailer.should delay(:credit_card_will_expire).with(@user_cc_will_expire_and_last_credit_card_expiration_notice_1.id)
 
-      described_class.send_credit_card_expiration_email
+      described_class.send_emails
     end
   end
 

@@ -241,8 +241,8 @@ describe User do
         context "user subscribes to the newsletter" do
           let(:user) { create(:user, id: 1, newsletter: true, email: "newsletter_sign_up@jilion.com") }
 
-          it 'calls Service::Newsletter.subscribe' do
-            Service::Newsletter.should delay(:subscribe).with(1)
+          it 'calls NewsletterSubscriptionManager.subscribe' do
+            NewsletterSubscriptionManager.should delay(:subscribe).with(1)
             user
           end
         end
@@ -250,8 +250,8 @@ describe User do
         context "user doesn't subscribe to the newsletter" do
           let(:user) { create(:user, newsletter: false, email: "no_newsletter_sign_up@jilion.com") }
 
-          it "doesn't calls Service::Newsletter.subscribe" do
-            Service::Newsletter.should_not delay(:subscribe)
+          it "doesn't calls NewsletterSubscriptionManager.subscribe" do
+            NewsletterSubscriptionManager.should_not delay(:subscribe)
             user
           end
         end
@@ -262,7 +262,7 @@ describe User do
 
         it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
           user.update_attribute(:email, "newsletter_update2@jilion.com")
-          Service::Newsletter.should delay(:update).with(user.id,
+          NewsletterSubscriptionManager.should delay(:update).with(user.id,
             email: "newsletter_update@jilion.com",
             user: {
               email: "newsletter_update2@jilion.com",
@@ -275,7 +275,7 @@ describe User do
 
         it "updates info in Campaign Monitor if user change his name" do
           user
-          Service::Newsletter.should delay(:update).with(user.id,
+          NewsletterSubscriptionManager.should delay(:update).with(user.id,
             email: "newsletter_update@jilion.com",
             user: {
               email: "newsletter_update@jilion.com",
@@ -288,7 +288,7 @@ describe User do
 
         it "updates subscribing state in Campaign Monitor if user change his newsletter state" do
           user
-          Service::Newsletter.should delay(:unsubscribe).with(user.id)
+          NewsletterSubscriptionManager.should delay(:unsubscribe).with(user.id)
           user.update_attribute(:newsletter, false)
         end
       end
@@ -297,7 +297,7 @@ describe User do
     describe "after_update :zendesk_update" do
       let(:user) { create(:user) }
       before do
-        Service::Newsletter.stub(:sync_from_service)
+        NewsletterSubscriptionManager.stub(:sync_from_service)
       end
 
       context "user has no zendesk_id" do

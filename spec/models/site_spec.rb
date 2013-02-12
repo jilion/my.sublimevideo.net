@@ -227,7 +227,7 @@ describe Site, :addons do
       context 'with billable items' do
         let(:site) do
           site = build(:site)
-          Service::Site.new(site).create
+          SiteManager.new(site).create
           site
         end
 
@@ -262,7 +262,7 @@ describe Site, :addons do
       context 'with billable items' do
         let(:site) do
           site = build(:site)
-          Service::Site.new(site).create
+          SiteManager.new(site).create
           site
         end
 
@@ -293,7 +293,7 @@ describe Site, :addons do
       context 'with a billable item in trial' do
         let(:site) do
           site = build(:site)
-          Service::Site.new(site).tap do |service|
+          SiteManager.new(site).tap do |service|
             service.create
             service.update_billable_items({}, { logo: AddonPlan.get('logo', 'disabled').id })
           end

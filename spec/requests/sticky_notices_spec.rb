@@ -5,7 +5,7 @@ feature "Sticky notices" do
     background do
       sign_in_as :user, kill_user: true
       @site = build(:site, user: @current_user)
-      Service::Site.new(@site).create
+      SiteManager.new(@site).create
       go 'my', '/sites'
     end
 
@@ -20,7 +20,7 @@ feature "Sticky notices" do
     background do
       sign_in_as :user, cc_expire_on: Time.utc(Time.now.utc.year, Time.now.utc.month).end_of_month.to_date, kill_user: true
       @site = build(:site, user: @current_user)
-      Service::Site.new(@site).create
+      SiteManager.new(@site).create
       @current_user.should be_cc_expire_this_month
       go 'my', '/sites'
     end
@@ -55,7 +55,7 @@ feature "Sticky notices" do
     context "user is billable" do
       background do
         @site = build(:site, user: @current_user)
-        Service::Site.new(@site).create
+        SiteManager.new(@site).create
         create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
         @current_user.should be_billable
         go 'my', '/sites'
@@ -91,7 +91,7 @@ feature "Sticky notices" do
         background do
           sign_in_as :user, billing_address_1: ''
           @site = build(:site, user: @current_user)
-          Service::Site.new(@site).create
+          SiteManager.new(@site).create
           create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
           @current_user.should be_billable
           @current_user.should be_cc
@@ -108,7 +108,7 @@ feature "Sticky notices" do
         background do
           sign_in_as :user, without_cc: true, billing_address_1: ''
           @site = build(:site, user: @current_user)
-          Service::Site.new(@site).create
+          SiteManager.new(@site).create
           create(:billable_item, site: @site, item: create(:addon_plan), state: 'subscribed')
           @current_user.should be_billable
           @current_user.should_not be_cc
