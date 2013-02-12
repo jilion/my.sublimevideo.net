@@ -105,7 +105,7 @@ class Invoice < ActiveRecord::Base
 
   def no_invoice_for_the_same_month
     first_invoice_item = invoice_items.first
-    if first_invoice_item && site.invoices.not_canceled.for_month(first_invoice_item.started_at).any?
+    if first_invoice_item && site.invoices.not_canceled.where{ id != my{id} }.for_month(first_invoice_item.started_at).any?
       self.errors.add(:base, 'Already one invoice for this month.')
     end
   end

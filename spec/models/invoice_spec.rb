@@ -48,6 +48,18 @@ describe Invoice, :addons do
     it { should validate_numericality_of(:balance_deduction_amount) }
     it { should validate_numericality_of(:amount) }
 
+    context "invoice is valid if the only one for this month" do
+      before do
+        @invoice = build(:invoice, site: site)
+        @invoice.invoice_items << build(:addon_plan_invoice_item, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+        @invoice.save!
+      end
+
+      it 'can be succeeded' do
+        @invoice.succeed!
+      end
+    end
+
     %w[open paid].each do |state|
       context "already one #{state} invoice exists for this site for this month" do
         before do
