@@ -10,7 +10,7 @@ require 'services/trial_handler'
 require 'services/invoice_creator'
 require 'services/site_counters_updater'
 require 'services/credit_card_expiration_notifier'
-require 'recurring_job'
+require 'scheduler'
 
 unless defined?(ActiveRecord)
   Transaction = Class.new
@@ -34,7 +34,7 @@ unless defined?(ActiveRecord)
   Log::Amazon::S3::Licenses = Class.new
 end
 
-describe RecurringJob do
+describe Scheduler do
 
   describe ".supervise_queues" do
     let(:sidekiq_queue) { mock(Sidekiq::Queue) }
