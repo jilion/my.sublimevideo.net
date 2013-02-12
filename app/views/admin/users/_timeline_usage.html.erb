@@ -1,8 +1,6 @@
 <%
-require_dependency 'stat_timeline'
-
-vv_stats_timeline = StatTimeline::SiteDayStat.new(view_type: 'vv', token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
-pv_stats_timeline = StatTimeline::SiteDayStat.new(view_type: 'pv', token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
+vv_stats_timeline = SiteStatsTimelineBuilder.new(view_type: 'vv', token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
+pv_stats_timeline = SiteStatsTimelineBuilder.new(view_type: 'pv', token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
 
 graph = HighchartsGraphBuilder.new do |g|
   g.option(chart: chart('timeline_usage'))

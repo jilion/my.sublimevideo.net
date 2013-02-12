@@ -1,7 +1,5 @@
 <%
-require_dependency 'stat_timeline'
-
-stats_timeline = StatTimeline::SiteDayStat.new(token: site.token, from: graph_start_date, to: graph_end_date)
+stats_timeline = SiteStatsTimelineBuilder.new(token: site.token, from: graph_start_date, to: graph_end_date)
 
 graph = HighchartsGraphBuilder.new do |g|
   g.option(chart: chart('timeline_usage'))

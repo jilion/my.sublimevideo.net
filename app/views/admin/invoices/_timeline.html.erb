@@ -1,17 +1,15 @@
 <%
-require_dependency 'stat_timeline'
+invoices = Invoice.between(created_at: graph_start_date..graph_end_date).order{ created_at.asc }
 
-invoices = ::Invoice.between(created_at: graph_start_date..graph_end_date).order{ created_at.asc }
-
-paid_invoices         = StatTimeline::Invoice.timeline(invoices.paid, graph_start_date, graph_end_date)
+paid_invoices         = InvoicesTimelineBuilder.new(invoices.paid, graph_start_date, graph_end_date).timeline
 # FIXME Remy
-# monthly_paid_invoices = StatTimeline::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.first_paid_item.monthly? }, graph_start_date, graph_end_date)
-# yearly_paid_invoices  = StatTimeline::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.first_paid_item.yearly? }, graph_start_date, graph_end_date)
-open_invoices         = StatTimeline::Invoice.timeline(invoices.open, graph_start_date, graph_end_date)
-failed_invoices       = StatTimeline::Invoice.timeline(invoices.failed, graph_start_date, graph_end_date)
-canceled_invoices     = StatTimeline::Invoice.timeline(invoices.canceled, graph_start_date, graph_end_date)
-refunded_invoices     = StatTimeline::Invoice.timeline(invoices.refunded, graph_start_date, graph_end_date)
-waiting_invoices      = StatTimeline::Invoice.timeline(invoices.waiting, graph_start_date, graph_end_date)
+# monthly_paid_invoices = InvoicesTimelineBuilder.new(invoices.includes(:plan_invoice_items).timeline.paid.select { |i| i.first_paid_item.monthly? }, graph_start_date, graph_end_date)
+# yearly_paid_invoices  = InvoicesTimelineBuilder.new(invoices.includes(:plan_invoice_items).timeline.paid.select { |i| i.first_paid_item.yearly? }, graph_start_date, graph_end_date)
+open_invoices         = InvoicesTimelineBuilder.new(invoices.open, graph_start_date, graph_end_date).timeline
+failed_invoices       = InvoicesTimelineBuilder.new(invoices.failed, graph_start_date, graph_end_date).timeline
+canceled_invoices     = InvoicesTimelineBuilder.new(invoices.canceled, graph_start_date, graph_end_date).timeline
+refunded_invoices     = InvoicesTimelineBuilder.new(invoices.refunded, graph_start_date, graph_end_date).timeline
+waiting_invoices      = InvoicesTimelineBuilder.new(invoices.waiting, graph_start_date, graph_end_date).timeline
 
 graph = HighchartsGraphBuilder.new do |g|
   g.option(chart: chart('timeline_invoices', margin_top: 100))
