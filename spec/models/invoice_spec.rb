@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Invoice, :addons do
+  let(:site) { create(:site) }
 
   describe "Factory" do
     subject { create(:invoice) }
@@ -46,6 +47,21 @@ describe Invoice, :addons do
     it { should validate_numericality_of(:vat_amount) }
     it { should validate_numericality_of(:balance_deduction_amount) }
     it { should validate_numericality_of(:amount) }
+
+    %w[open paid].each do |state|
+      context "already one #{state} invoice exists for this site for this month" do
+        before do
+          old_invoice = build(:invoice, site: site, state: state)
+          old_invoice.invoice_items << build(:addon_plan_invoice_item, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+          old_invoice.save!
+
+          @new_invoice = build(:invoice, site: site)
+          @new_invoice.invoice_items << build(:addon_plan_invoice_item, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+        end
+
+        it { @new_invoice.should_not be_valid }
+      end
+    end
   end # Validations
 
   describe "State Machine" do

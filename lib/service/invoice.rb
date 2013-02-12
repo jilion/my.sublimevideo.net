@@ -2,7 +2,6 @@ require_dependency 'vat'
 
 module Service
   Invoice = Struct.new(:invoice) do
-    delegate :site, to: :invoice
 
     class << self
       def create_invoices_for_month(date = 1.month.ago)
@@ -12,11 +11,17 @@ module Service
       end
 
       def create_for_month(date, site_id)
-        build_for_month(date, site_id).save
+        if site = ::Site.not_archived.find(site_id)
+          build_for_month(date, site).save
+        end
       end
 
-      def build_for_month(date, site_id)
-        build(site: ::Site.find(site_id)).for_month(date)
+      def build_for_month(date, site)
+        build_for_period(date.all_month, site)
+      end
+
+      def build_for_period(period, site)
+        build(site: site).for_period(period)
       end
 
       def build(attributes)
@@ -24,11 +29,9 @@ module Service
       end
     end
 
-    def for_month(date)
-      if site.invoices.for_month(date).where { invoice_items.started_at >= Time.utc(2012, 12, 13) }.empty?
-        handle_items_not_yet_canceled_and_created_before_month_of(date)
-        handle_items_subscribed_during_month_of(date)
-      end
+    def for_period(period)
+      handle_items_not_yet_canceled_and_created_before_period(period)
+      handle_items_subscribed_during_period(period)
 
       self
     end
@@ -45,46 +48,47 @@ module Service
         set_amount
         set_renew
 
-        invoice.save!
-        Librato.increment 'invoices.events', source: 'create'
+        if invoice.save
+          Librato.increment 'invoices.events', source: 'create'
+        end
       end
     end
 
     private
 
-    def find_start_activity_for_activity(activity)
-      item_for_activity(activity).with_state_before('subscribed', activity.created_at).order('created_at DESC').first
-    end
+    def handle_items_not_yet_canceled_and_created_before_period(period)
+      invoice.site.billable_item_activities.with_state_before('subscribed', period.first).reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
+        end_activity = find_end_activity_for_activity(activity, period)
 
-    def find_end_activity_for_activity(activity, date)
-      item_for_activity(activity).with_state_during(%w[canceled suspended sponsored], (activity.created_at..date.end_of_month)).order('created_at ASC').first
-    end
-
-    def item_for_activity(activity)
-      site.billable_item_activities.where(item_type: activity.item_type, item_id: activity.item_id)
-    end
-
-    def handle_items_not_yet_canceled_and_created_before_month_of(date)
-      site.billable_item_activities.with_state_before('subscribed', date.beginning_of_month).reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
-        end_activity = find_end_activity_for_activity(activity, date)
-
-        if !end_activity || date.all_month.cover?(end_activity.created_at)
-          add_invoice_item(build_invoice_item(activity.item, date.beginning_of_month, find_end_activity_for_activity(activity, date).try(:created_at) || date.end_of_month))
+        if !end_activity || period.cover?(end_activity.created_at)
+          add_invoice_item(build_invoice_item(activity.item, period.first, find_end_activity_for_activity(activity, period).try(:created_at) || period.last))
         end
       end
     end
 
-    def handle_items_subscribed_during_month_of(date)
-      site.billable_item_activities.with_state_during('subscribed', date.all_month).reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
+    def handle_items_subscribed_during_period(period)
+      invoice.site.billable_item_activities.with_state_during('subscribed', period).reorder('created_at ASC, item_type ASC, item_id ASC').each do |activity|
         next if activity.item.beta? || activity.item.free?
 
-        end_activity_date = find_end_activity_for_activity(activity, date).try(:created_at) || date.end_of_month
+        end_activity_date = find_end_activity_for_activity(activity, period).try(:created_at) || period.last
 
         # Ensure we don't create 2 invoice items with the same item and overlapping periods
         unless invoice.invoice_items.detect { |ii| ii.item == activity.item && ii.started_at < activity.created_at && ii.ended_at >= end_activity_date }
           add_invoice_item(build_invoice_item(activity.item, activity.created_at, end_activity_date))
         end
       end
+    end
+
+    def find_start_activity_for_activity(activity)
+      item_for_activity(activity).with_state_before('subscribed', activity.created_at).order('created_at DESC').first
+    end
+
+    def find_end_activity_for_activity(activity, period)
+      item_for_activity(activity).with_state_during(%w[canceled suspended sponsored], (activity.created_at..period.last)).order('created_at ASC').first
+    end
+
+    def item_for_activity(activity)
+      invoice.site.billable_item_activities.where(item_type: activity.item_type, item_id: activity.item_id)
     end
 
     def build_invoice_item(item, started_at, ended_at)
@@ -124,7 +128,7 @@ module Service
     end
 
     def set_renew
-      invoice.renew = site.invoices.not_canceled.any?
+      invoice.renew = invoice.site.invoices.not_canceled.any?
     end
 
   end

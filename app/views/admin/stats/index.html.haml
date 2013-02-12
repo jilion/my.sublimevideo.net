@@ -1,4 +1,5 @@
-- title("Statistics")
+- title 'Trends'
+
 :coffeescript
   $(document).ready ->
     selectedPeriod = #{@selected_period.to_json}
@@ -13,7 +14,7 @@
       if _.any(selectedSeriesString, (selectedSerieString) => selectedSerieString is $(this).data('value'))
         $(this).addClass('active')
 
-%h2#page_title
+%h2#page_title SublimeVideo Trends
 
 .stats
   #dates_range
@@ -48,48 +49,65 @@
   #series_selectors
     %table
       %tr
-        %td.sales
-          %h2 Sales
+        %td.revenues
+          %h2 Revenues
           %ul
             %li
-              %a.title.selector{ href: "?sales.total", data: { value: 'sales.total' }, title: "All sales (new & renew subscriptions)" } Total
+              %a.title.selector{ href: "?revenues.r", data: { value: 'revenues.r' }, title: "All revenues" } Total
+              %ul
+                - Addon.with_paid_plans.each do |addon|
+                  %li
+                    %a.selector{ href: "?revenues.r.#{addon.name}", data: { value: "revenues.r.#{addon.name}" }, title: "Revenue from #{addon.title} add-on subscriptions" }= addon.title
+                    %ul
+                      - addon.plans.paid.each do |addon_plan|
+                        %li
+                          %a.selector{ href: "?revenues.r.#{addon.name}.#{addon_plan.name}", data: { value: "revenues.r.#{addon.name}.#{addon_plan.name}" }, title: "Revenue from #{addon_plan.title} add-on plan subscriptions" }= addon_plan.title
+                - App::Design.paid.each do |design|
+                  %li
+                    %a.selector{ href: "?revenues.r.design.#{design.name}", data: { value: "revenues.r.design.#{design.name}" }, title: "Revenue from #{design.title} design subscriptions" }= addon.title
+
+        %td.billings
+          %h2 Billings
+          %ul
+            %li
+              %a.title.selector{ href: "?billings.total", data: { value: 'billings.total' }, title: "All billings (new & renew subscriptions)" } Total
               %ul
                 %li
-                  %a.selector{ href: "?sales.ne", data: { value: 'sales.ne' }, title: "Revenue from new subscriptions" } New
+                  %a.selector{ href: "?billings.ne", data: { value: 'billings.ne' }, title: "New subscriptions billed" } New
                   %ul
                     %li
-                      %a.selector{ href: "?sales.ne.plus", data: { value: 'sales.ne.plus' }, title: "Revenue from new Plus plan subscriptions" } Plus
+                      %a.selector{ href: "?billings.ne.plus", data: { value: 'billings.ne.plus' }, title: "New Plus plan billed" } Plus
                     %li
-                      %a.selector{ href: "?sales.ne.premium", data: { value: 'sales.ne.premium' }, title: "Revenue from new Premium plan subscriptions" } Premium
+                      %a.selector{ href: "?billings.ne.premium", data: { value: 'billings.ne.premium' }, title: "New Premium plan billed" } Premium
                     %li
-                      %a.selector{ href: "?sales.ne.comet", data: { value: 'sales.ne.comet' }, title: "Revenue from new Comet plan subscriptions" } Comet
+                      %a.selector{ href: "?billings.ne.comet", data: { value: 'billings.ne.comet' }, title: "New Comet plan billed" } Comet
                     %li
-                      %a.selector{ href: "?sales.ne.planet", data: { value: 'sales.ne.planet' }, title: "Revenue from new Planet plan subscriptions" } Planet
+                      %a.selector{ href: "?billings.ne.planet", data: { value: 'billings.ne.planet' }, title: "New Planet plan subscriptions" } Planet
                     - Addon.with_paid_plans.each do |addon|
                       %li
-                        %a.selector{ href: "?sales.ne.#{addon.name}", data: { value: "sales.ne.#{addon.name}" }, title: "Revenue from new #{addon.title} add-on subscriptions" }= addon.title
+                        %a.selector{ href: "?billings.ne.#{addon.name}", data: { value: "billings.ne.#{addon.name}" }, title: "New #{addon.title} add-on billed" }= addon.title
                         %ul
                           - addon.plans.paid.each do |addon_plan|
                             %li
-                              %a.selector{ href: "?sales.ne.#{addon.name}.#{addon_plan.name}", data: { value: "sales.ne.#{addon.name}.#{addon_plan.name}" }, title: "Revenue from new #{addon_plan.title} add-on plan subscriptions" }= addon_plan.title
+                              %a.selector{ href: "?billings.ne.#{addon.name}.#{addon_plan.name}", data: { value: "billings.ne.#{addon.name}.#{addon_plan.name}" }, title: "New #{addon_plan.title} add-on plan billed" }= addon_plan.title
                 %li
-                  %a.selector{ href: "?sales.re", data: { value: 'sales.re' }, title: "Revenue from renewed subscriptions" } Renew
+                  %a.selector{ href: "?billings.re", data: { value: 'billings.re' }, title: "Renewed subscriptions billed" } Renew
                   %ul
                     %li
-                      %a.selector{ href: "?sales.re.plus", data: { value: 'sales.re.plus' }, title: "Revenue from renewed Plus plan subscriptions" } Plus
+                      %a.selector{ href: "?billings.re.plus", data: { value: 'billings.re.plus' }, title: "Renewed Plus plan billed" } Plus
                     %li
-                      %a.selector{ href: "?sales.re.premium", data: { value: 'sales.re.premium' }, title: "Revenue from renewed Premium plan subscriptions" } Premium
+                      %a.selector{ href: "?billings.re.premium", data: { value: 'billings.re.premium' }, title: "Renewed Premium plan billed" } Premium
                     %li
-                      %a.selector{ href: "?sales.re.comet", data: { value: 'sales.re.comet' }, title: "Revenue from renewed Comet plan subscriptions" } Comet
+                      %a.selector{ href: "?billings.re.comet", data: { value: 'billings.re.comet' }, title: "Renewed Comet plan billed" } Comet
                     %li
-                      %a.selector{ href: "?sales.re.planet", data: { value: 'sales.re.planet' }, title: "Revenue from renewed Planet plan subscriptions" } Planet
+                      %a.selector{ href: "?billings.re.planet", data: { value: 'billings.re.planet' }, title: "Renewed Planet plan billed" } Planet
                     - Addon.with_paid_plans.each do |addon|
                       %li
-                        %a.selector{ href: "?sales.re.#{addon.name}", data: { value: "sales.re.#{addon.name}" }, title: "Revenue from renewed #{addon.title} add-on subscriptions" }= addon.title
+                        %a.selector{ href: "?billings.re.#{addon.name}", data: { value: "billings.re.#{addon.name}" }, title: "Renewed #{addon.title} add-on billed" }= addon.title
                         %ul
                           - addon.plans.paid.each do |addon_plan|
                             %li
-                              %a.selector{ href: "?sales.re.#{addon.name}.#{addon_plan.name}", data: { value: "sales.re.#{addon.name}.#{addon_plan.name}" }, title: "Revenue from renewed #{addon_plan.title} add-on plan subscriptions" }= addon_plan.title
+                              %a.selector{ href: "?billings.re.#{addon.name}.#{addon_plan.name}", data: { value: "billings.re.#{addon.name}.#{addon_plan.name}" }, title: "Renewed #{addon_plan.title} add-on plan billed" }= addon_plan.title
 
         %td.billable_items
           %h2 Billable items

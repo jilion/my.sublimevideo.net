@@ -56,18 +56,22 @@ describe InvoiceModules::Scope do
     specify { Invoice.not_paid.order(:id).should eq [@open_invoice, @failed_invoice, @waiting_invoice] }
   end
 
-  describe '.for_month' do
-    context 'already one canceled invoice exists for this site for this month' do
-      let(:open_invoice)     { create(:invoice, site: site, state: 'open') }
-      let(:paid_invoice)     { create(:invoice, site: site, state: 'paid') }
-      let(:canceled_invoice) { create(:invoice, site: site, state: 'canceled') }
-      before do
-        create(:addon_plan_invoice_item, invoice: open_invoice,     started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
-        create(:addon_plan_invoice_item, invoice: paid_invoice,     started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
-        create(:addon_plan_invoice_item, invoice: canceled_invoice, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
-      end
+  describe '.for_month & .for_period' do
+    let(:open_invoice)     { create(:invoice, site: site, state: 'open') }
+    let(:paid_invoice)     { create(:invoice, site: site, state: 'paid') }
+    let(:canceled_invoice) { create(:invoice, site: site, state: 'canceled') }
+    before do
+      create(:addon_plan_invoice_item, invoice: open_invoice,     started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+      create(:addon_plan_invoice_item, invoice: paid_invoice,     started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+      create(:addon_plan_invoice_item, invoice: canceled_invoice, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+    end
 
+    describe '.for_month' do
       specify { Invoice.for_month(1.months.ago).order(:id).should eq [open_invoice, paid_invoice] }
+    end
+
+    describe '.for_period' do
+      specify { Invoice.for_period(1.months.ago.all_month).order(:id).should eq [open_invoice, paid_invoice] }
     end
   end
 

@@ -49,6 +49,7 @@ class Invoice < ActiveRecord::Base
 
   validates :site, presence: true
   validates :invoice_items_amount, :vat_rate, :vat_amount, :balance_deduction_amount, :amount, presence: true, numericality: true
+  validate :no_invoice_for_the_same_month
 
   # =================
   # = State Machine =
@@ -98,6 +99,15 @@ class Invoice < ActiveRecord::Base
 
   def first_paid_item
     invoice_items.find { |pii| pii.amount > 0 }.try(:item)
+  end
+
+  private
+
+  def no_invoice_for_the_same_month
+    first_invoice_item = invoice_items.first
+    if first_invoice_item && site.invoices.not_canceled.for_month(first_invoice_item.started_at).any?
+      self.errors.add(:base, 'Already one invoice for this month.')
+    end
   end
 
 end

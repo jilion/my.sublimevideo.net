@@ -81,7 +81,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
             fontFamily: "proxima-nova-1, proxima-nova-2, Helvetica, Arial, sans-serif"
             fontSize: "14px"
         title:
-          text: "Sales ($)"
+          text: "Revenues & billing ($)"
 
     if _.include(@usedYAxis, 1)
       yAxis.push
@@ -323,7 +323,7 @@ class AdminSublimeVideo.Helpers.ChartsHelper
               points = _.filter(@points, (point) -> point.series.yAxis is yAx)
               title.push(_.map(_.sortBy(points, (p) -> 1/p.y), (point) =>
                 t = "<span style=\"color:#{point.series.color};font-weight:bold\">#{point.series.name}</span> "
-                if /sales/i.test point.series.yAxis.axisTitle.textStr
+                if /billings|revenues/i.test point.series.yAxis.axisTitle.textStr
                   t += "$ #{Highcharts.numberFormat(point.y, 2)}<br />$ #{Highcharts.numberFormat(AdminSublimeVideo.totals[point.series.name], 2)} (total)"
                 else if /traffic/i.test point.series.yAxis.axisTitle.textStr
                   t += "#{Highcharts.numberFormat(point.y, 2)} GB<br />#{Highcharts.numberFormat(AdminSublimeVideo.totals[point.series.name], 2)} GB (total)"

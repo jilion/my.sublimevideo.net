@@ -13,7 +13,7 @@ class InvoicesPopulator < Populator
         while timestamp < Time.now.utc do
           timestamp += 1.month
           Timecop.travel(timestamp.end_of_month) do
-            service = Service::Invoice.build_for_month(Time.now.utc, site.id).tap { |s| s.save }
+            service = Service::Invoice.build_for_period(Time.now.utc, site).tap { |s| s.save }
             service.invoice.succeed if service.invoice.persisted?
           end
         end

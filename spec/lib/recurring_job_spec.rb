@@ -13,7 +13,7 @@ unless defined?(ActiveRecord)
   Stats = Class.new
   Stats::UsersStat = Class.new
   Stats::SitesStat = Class.new
-  Stats::SalesStat = Class.new
+  Stats::BillingsStat = Class.new
   Stats::BillableItemsStat = Class.new
   Stats::SiteStatsStat = Class.new
   Stats::SiteUsagesStat = Class.new
@@ -126,15 +126,15 @@ describe RecurringJob do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::SalesStat.create_stats" do
-      Stats::SalesStat.should delay(:create_stats,
+    it "schedules Stats::BillingsStat.create_stats" do
+      Stats::BillingsStat.should delay(:create_stats,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
       described_class.schedule_daily_tasks
     end
 
-    it "schedules Stats::SalesStat.create_stats" do
+    it "schedules Stats::BillingsStat.create_stats" do
       Stats::BillableItemsStat.should delay(:create_stats,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
