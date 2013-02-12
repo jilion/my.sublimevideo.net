@@ -1,7 +1,3 @@
-require_dependency 'populate/populator'
-require_dependency 'populate/populate_helpers'
-require_dependency 'populate/settings_template_populator'
-
 class AddonSystemPopulator < Populator
 
   def execute

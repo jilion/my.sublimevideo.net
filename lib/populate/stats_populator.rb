@@ -1,5 +1,3 @@
-require_dependency 'populate/populator'
-
 class StatsPopulator < Populator
 
   def execute(site)

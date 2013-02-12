@@ -1,4 +1,4 @@
-require_dependency 'recurring_job'
+require 'recurring_job'
 
 namespace :scheduler do
 

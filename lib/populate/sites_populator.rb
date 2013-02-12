@@ -1,6 +1,3 @@
-require_dependency 'populate/populator'
-require_dependency 'populate/populate_helpers'
-
 class SitesPopulator < Populator
 
   BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 37signals.com mattrunks.com zeldman.com devour.com deaxon.com veerle.duoh.com]

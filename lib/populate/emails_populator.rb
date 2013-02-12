@@ -1,5 +1,3 @@
-require_dependency 'populate/populator'
-
 class EmailsPopulator < Populator
 
   def execute(user)
