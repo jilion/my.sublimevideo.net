@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Service::App::ComponentVersion do
+describe App::ComponentVersionManager do
   let(:bucket) { S3Wrapper.buckets['sublimevideo'] }
   let(:site) {
     site = build(:site)
@@ -19,7 +19,7 @@ describe Service::App::ComponentVersion do
       component.versions.last.version.should_not eq component_version.version
 
       Sidekiq::Worker.clear_all
-      Service::App::ComponentVersion.new(component_version).create
+      App::ComponentVersionManager.new(component_version).create
       Sidekiq::Worker.drain_all
 
       S3Wrapper.fog_connection.get_object(bucket, "js/#{site.token}-beta.js").body.should include component_version.version
@@ -29,12 +29,12 @@ describe Service::App::ComponentVersion do
   describe "#delete" do
     before do
       Sidekiq::Worker.clear_all
-      Service::App::ComponentVersion.new(component_version).create
+      App::ComponentVersionManager.new(component_version).create
       Sidekiq::Worker.drain_all
     end
 
     it "keeps old component version on S3 but updates site loader" do
-      Service::App::ComponentVersion.new(component_version).destroy
+      App::ComponentVersionManager.new(component_version).destroy
       Sidekiq::Worker.drain_all
 
       S3Wrapper.fog_connection.head_object(bucket, "c/#{component.token}/#{component_version.version}/bA.js").headers.should be_present

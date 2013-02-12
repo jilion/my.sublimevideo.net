@@ -7,9 +7,9 @@ require 'support/sidekiq_custom_matchers'
 require 'models/app'
 require 'services/loader_generator'
 require 'wrappers/campfire_wrapper'
-require File.expand_path('lib/service/app/component_version')
+require 'services/app/component_version_manager'
 
-describe Service::App::ComponentVersion do
+describe App::ComponentVersionManager do
   let(:app_component_version)   { Struct.new(:component_id, :stage, :name, :version).new(1234, 'beta', 'app', '1.0.0') }
   let(:other_component_version) { Struct.new(:component_id, :stage, :name, :version).new(4321, 'beta', 'foo', '1.0.0') }
   let(:service) { described_class.new(app_component_version) }
