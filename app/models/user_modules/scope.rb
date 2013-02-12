@@ -41,7 +41,7 @@ module UserModules::Scope
     scope :sites_tagged_with, ->(word) { joins(:sites).merge(Site.not_archived.tagged_with(word)) }
 
     scope :voxcast_users,   -> { active.includes(:sites).where(sites: { id: SiteUsage.site_ids_with_loader_hits }) }
-    scope :with_page_loads, -> { active.includes(:sites).merge(Site.with_page_loads) }
+    scope :with_page_loads_in_the_last_30_days, -> { active.includes(:sites).merge(Site.with_page_loads_in_the_last_30_days) }
 
     # sort
     scope :by_name_or_email,         ->(way = 'asc') { order("users.name #{way.upcase}, users.email #{way.upcase}") }
