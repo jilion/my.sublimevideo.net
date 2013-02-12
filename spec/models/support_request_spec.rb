@@ -1,10 +1,12 @@
 require 'fast_spec_helper'
-require File.expand_path('app/models/support_request')
+
+require 'services/user_support_manager'
+require 'models/support_request'
+
+User = Class.new unless defined? User
+Site = Class.new unless defined? Site
 
 describe SupportRequest do
-  User = Class.new unless defined? User
-  Site = Class.new unless defined? Site
-
 
   let(:user_without_zendesk_id) { stub(:user, id: 1, name_or_email: 'Remy', email: 'remy@rymai.me', zendesk_id?: false) }
   let(:user_with_zendesk_id)    { stub(:user, id: 2, name_or_email: 'Remy', email: 'remy@rymai.me', zendesk_id?: true, zendesk_id: 1234) }
@@ -75,7 +77,7 @@ describe SupportRequest do
   describe '#to_params' do
     context 'user has email support' do
       before do
-        Users::SupportManager.should_receive(:new) { stub(level: 'email') }
+        UserSupportManager.should_receive(:new) { stub(level: 'email') }
       end
 
       context 'player stage is specified' do
@@ -100,7 +102,7 @@ describe SupportRequest do
 
     context 'user has vip support' do
       before do
-        Users::SupportManager.should_receive(:new) { stub(level: 'vip_email') }
+        UserSupportManager.should_receive(:new) { stub(level: 'vip_email') }
       end
 
       it 'generates a hash of the params' do
@@ -114,7 +116,7 @@ describe SupportRequest do
 
     context 'user has a zendesk id' do
       before do
-        Users::SupportManager.should_receive(:new) { stub(level: 'email') }
+        UserSupportManager.should_receive(:new) { stub(level: 'email') }
       end
 
       it 'generates a hash of the params' do

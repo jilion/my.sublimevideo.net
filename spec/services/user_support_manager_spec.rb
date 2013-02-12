@@ -1,10 +1,11 @@
 require 'fast_spec_helper'
-require File.expand_path('lib/users/support_manager')
+
+require 'services/user_support_manager'
 
 Addons = Module.new unless defined?(Addons)
 AddonPlan = Class.new unless defined?(AddonPlan)
 
-describe Users::SupportManager do
+describe UserSupportManager do
   let(:user)    { Struct.new(:id).new(1234) }
   let(:site)    { Struct.new(:user, :id).new(user, 1234) }
   let(:manager) { described_class.new(user) }
