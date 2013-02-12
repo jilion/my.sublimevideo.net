@@ -2,11 +2,11 @@ require 'fast_spec_helper'
 require 'support/fixtures_helpers'
 
 require 'models/addons/custom_logo'
-require 'service/addon/custom_logo'
 require 'wrappers/cdn_file'
 require 'wrappers/s3_wrapper'
+require 'services/addons/custom_logo_uploader'
 
-describe Service::Addon::CustomLogo do
+describe Addons::CustomLogoUploader do
   let(:kit)  { stub(identifier: '1', site: stub(token: 'abcd1234')) }
   let(:file) { fixture_file('logo-white-big.png') }
   let(:custom_logo) { Addons::CustomLogo.new(file) }

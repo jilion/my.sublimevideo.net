@@ -1,5 +1,4 @@
 require_dependency 'service/kit'
-require_dependency 'service/addon/custom_logo'
 
 class KitsController < ApplicationController
   respond_to :js, only: [:fields, :process_custom_logo]
@@ -61,9 +60,9 @@ class KitsController < ApplicationController
   # POST /sites/:site_id/players/:id/process_custom_logo
   def process_custom_logo
     @custom_logo = Addons::CustomLogo.new(params[:file])
-    service = Service::Addon::CustomLogo.new(@kit, @custom_logo, params[:old_custom_logo_path])
-    service.upload!
-    @logo_path, @logo_width, @logo_height = service.current_path, service.width, service.height
+    uploader = Addons::CustomLogoUploader.new(@kit, @custom_logo, params[:old_custom_logo_path])
+    uploader.upload!
+    @logo_path, @logo_width, @logo_height = uploader.current_path, uploader.width, uploader.height
   end
 
   # GET /sites/:site_id/players/:id/fields
