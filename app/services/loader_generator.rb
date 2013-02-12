@@ -90,7 +90,7 @@ private
   end
 
   def components_dependencies
-    @components_dependencies ||= ComponentVersionDependenciesSolver.components_dependencies(@site, @stage)
+    @components_dependencies ||= App::ComponentVersionDependenciesSolver.components_dependencies(@site, @stage)
   end
 
   def template_file

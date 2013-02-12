@@ -1,7 +1,7 @@
 require 'fast_spec_helper'
 
-require 'services/component_version_dependencies_solver'
 require 'models/stage'
+require 'services/app/component_version_dependencies_solver'
 
 App = Module.new unless defined?(App)
 Site = Class.new unless defined?(Site)
@@ -28,7 +28,7 @@ def create_app_component_version(version, component)
   end
 end
 
-describe ComponentVersionDependenciesSolver do
+describe App::ComponentVersionDependenciesSolver do
   let(:site) { Site.new }
   let(:c_a) { create_app_component('app', 'a') }
   let(:c_a_100) { create_app_component_version("1.0.0", c_a) }

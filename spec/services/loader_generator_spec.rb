@@ -38,7 +38,7 @@ describe LoaderGenerator, :fog_mock do
   before do
     Librato.stub(:increment)
     App::Component.stub(:app_component) { app_component }
-    ComponentVersionDependenciesSolver.stub(:components_dependencies) { {
+    App::ComponentVersionDependenciesSolver.stub(:components_dependencies) { {
       'e' => '1.0.0',
       'c1' => '1.2.3',
       'c2' => '1.2.4',
