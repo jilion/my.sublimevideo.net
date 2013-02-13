@@ -1,5 +1,3 @@
-require_dependency 's3'
-
 class App::ComponentVersionUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 
@@ -9,7 +7,7 @@ class App::ComponentVersionUploader < CarrierWave::Uploader::Base
   before :remove, :remove_zip_content
 
   def fog_directory
-    S3.buckets['player']
+    S3Wrapper.buckets['player']
   end
 
   def fog_public

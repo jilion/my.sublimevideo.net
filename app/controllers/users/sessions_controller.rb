@@ -1,7 +1,5 @@
-require_dependency 'controller_helpers/custom_devise_paths'
-
 class Users::SessionsController < Devise::SessionsController
-  include ControllerHelpers::CustomDevisePaths
+  include CustomDevisePathsControllerHelper
 
   helper :all
 

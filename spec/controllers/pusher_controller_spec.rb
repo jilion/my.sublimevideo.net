@@ -11,7 +11,7 @@ describe PusherController do
 
       it "return a json authenticated response" do
         authenticated_response = {}
-        User.stub(:accessible_channel?).with(channel_name, authenticated_user) { true }
+        PusherChannel.stub(:new).with(channel_name) { stub(accessible?: true) }
         PusherWrapper.should_receive(:authenticated_response).with(channel_name, socket_id) {
           authenticated_response
         }
@@ -22,7 +22,7 @@ describe PusherController do
 
     context "with a un-accessible channel" do
       it "return 'Not authorized' 403 status" do
-        User.stub(:accessible_channel?).with(channel_name, authenticated_user) { false }
+        PusherChannel.stub(:new).with(channel_name) { stub(accessible?: false) }
         post :auth, channel_name: channel_name
         response.status.should eq(403)
       end

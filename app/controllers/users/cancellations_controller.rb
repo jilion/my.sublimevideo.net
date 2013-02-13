@@ -1,5 +1,3 @@
-require_dependency 'service/user'
-
 class Users::CancellationsController < ApplicationController
 
   before_filter :find_user
@@ -17,7 +15,7 @@ class Users::CancellationsController < ApplicationController
     @user.attributes = params[:user]
 
     respond_to do |format|
-      if Service::User.new(@user).archive(@feedback)
+      if UserManager.new(@user).archive(@feedback)
         format.html do
           sign_out_and_delete_cookie
           redirect_to layout_url('')

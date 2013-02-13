@@ -1,5 +1,3 @@
-require_dependency 'notify'
-
 module SiteModules::Referrer
   extend ActiveSupport::Concern
 
@@ -32,7 +30,7 @@ module SiteModules::Referrer
       end
     end
   rescue => ex
-    # Notify.send("Referrer (#{referrer}), site_id (#{self.id}), timestamp #{timestamp} type could not be guessed: #{ex.message}", exception: ex)
+    # Notifier.send("Referrer (#{referrer}), site_id (#{self.id}), timestamp #{timestamp} type could not be guessed: #{ex.message}", exception: ex)
     "invalid"
   end
 

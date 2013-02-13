@@ -1,6 +1,6 @@
 require 'fast_spec_helper'
 
-require File.expand_path('app/presenters/kit_setting_presenter')
+require 'presenters/kit_setting_presenter'
 
 describe KitSettingPresenter do
   let(:site)    { Struct.new(:user, :id).new(nil, 1234) }

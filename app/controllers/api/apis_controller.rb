@@ -1,5 +1,3 @@
-require_dependency 'sublime_video_api'
-
 class Api::ApisController < ActionController::Base
   # include AbstractController::Callbacks
   # include ActionController::Head

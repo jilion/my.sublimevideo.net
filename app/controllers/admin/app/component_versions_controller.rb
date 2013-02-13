@@ -1,5 +1,3 @@
-require_dependency 'service/app/component_version'
-
 class Admin
   module App
     class ComponentVersionsController < Admin::AppController
@@ -26,14 +24,14 @@ class Admin
       # POST /app/components/:component_id/versions
       def create
         @component_version = @component.versions.build(params[:version], as: :admin)
-        Service::App::ComponentVersion.new(@component_version).create
+        ::App::ComponentVersionManager.new(@component_version).create
         respond_with @component_version, location: [:admin, @component]
       end
 
       # DELETE /app/components/:component_id/versions/:id
       def destroy
         @component_version = @component.versions.find_by_version!(params[:id])
-        Service::App::ComponentVersion.new(@component_version).destroy
+        ::App::ComponentVersionManager.new(@component_version).destroy
         respond_with @component_version, location: [:admin, @component]
       end
 

@@ -1,7 +1,7 @@
 <%
 plans = Site.with_state(:active).select("plan_id, state, COUNT(*) as total").group(:plan_id, :state).order("total DESC, plan_id DESC").map { |s| [s.plan_id? ? s.plan.title : "No plan", s.total.to_i] }
 
-graph = Graph.new do |g|
+graph = HighchartsGraphBuilder.new do |g|
   g.option(chart: chart('plans_distribution', margin_top: 40, margin_bottom: 20))
   g.option(title: { text: "Distribution of plans" })
   g.option(subtitle: { text: "Ignoring archived sites" })

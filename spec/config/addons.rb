@@ -1,4 +1,4 @@
-require_dependency 'populate'
+require 'populate'
 
 RSpec.configure do |config|
   config.before :all, addons: true do

@@ -108,7 +108,7 @@ end
 feature "Admins pagination:" do
   background do
     sign_in_as :admin, roles: ['god']
-    Responders::PaginatedResponder.stub(:per_page).and_return(1)
+    PaginatedResponder.stub(:per_page).and_return(1)
   end
 
   scenario "pagination links displayed only if count of admins > Admin.per_page" do

@@ -1,6 +1,3 @@
-require_dependency 'populate/populator'
-require 'active_support/core_ext'
-
 class SettingsTemplatePopulator < Populator
 
   SETTINGS_TEMPLATES_DIR = Rails.root.join('lib/populate/settings_templates')

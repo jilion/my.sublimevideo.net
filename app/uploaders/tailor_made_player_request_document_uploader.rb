@@ -1,6 +1,4 @@
 # encoding: utf-8
-require_dependency 's3'
-
 class TailorMadePlayerRequestDocumentUploader < CarrierWave::Uploader::Base
 
   def fog_public
@@ -8,7 +6,7 @@ class TailorMadePlayerRequestDocumentUploader < CarrierWave::Uploader::Base
   end
 
   def fog_directory
-    S3.buckets['tailor_made_player_requests']
+    S3Wrapper.buckets['tailor_made_player_requests']
   end
 
 end

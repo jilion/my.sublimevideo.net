@@ -1,8 +1,6 @@
-require 'tempfile'
-require_dependency 'log_analyzer'
-require_dependency 'notify'
-
 # encoding: utf-8
+require 'tempfile'
+
 class Log
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -96,7 +94,7 @@ private
          log_file.write(file.read)
       rescue NoMethodError, Excon::Errors::NotFound => ex
         if is_a?(Log::Voxcast)
-          self.file = CDN::VoxcastWrapper.download_log(name)
+          self.file = VoxcastWrapper.download_log(name)
           self.save
           log_file.write(file.read)
         else

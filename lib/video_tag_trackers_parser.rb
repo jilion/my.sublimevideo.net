@@ -1,5 +1,3 @@
-require_dependency 'notify'
-
 class VideoTagTrackersParser
 
   # Merge each videos tag in one big hash
@@ -41,7 +39,7 @@ class VideoTagTrackersParser
           end
         end
       rescue => ex
-        Notify.send("VideoTag parsing failed (request: '#{request}'): #{ex.message}", exception: ex)
+        Notifier.send("VideoTag parsing failed (request: '#{request}'): #{ex.message}", exception: ex)
       end
     end
     video_tags

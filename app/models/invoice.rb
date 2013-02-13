@@ -1,11 +1,6 @@
-require_dependency 'vat'
-require_dependency 'service/user'
-
 StateMachine::Machine.ignore_method_conflicts = true
 
 class Invoice < ActiveRecord::Base
-  include InvoiceModules::Scope
-
   uniquify :reference, chars: Array('a'..'z') - ['o'] + Array('1'..'9')
 
   attr_accessible :site, :renew
@@ -69,7 +64,7 @@ class Invoice < ActiveRecord::Base
       invoice.user.last_invoiced_amount   = invoice.amount
       invoice.user.total_invoiced_amount += invoice.amount
       invoice.user.save
-      Service::User.new(invoice.user).unsuspend if invoice.user.suspended? && invoice.user.invoices.not_paid.empty?
+      UserManager.new(invoice.user).unsuspend if invoice.user.suspended? && invoice.user.invoices.not_paid.empty?
     end
 
     after_transition on: :cancel do |invoice, transition|
@@ -79,6 +74,49 @@ class Invoice < ActiveRecord::Base
     before_transition on: :fail do |invoice, transition|
       invoice.last_failed_at = Time.now.utc
     end
+  end
+
+  # ==========
+  # = Scopes =
+  # ==========
+
+  scope :paid_between, lambda { |started_at, ended_at| between(paid_at: started_at..ended_at) }
+
+  scope :open,           where(state: 'open')
+  scope :paid,           where(state: 'paid').includes(:site).where{ sites.refunded_at == nil }
+  scope :refunded,       where(state: 'paid').includes(:site).where{ sites.refunded_at != nil }
+  scope :failed,         where(state: 'failed')
+  scope :waiting,        where(state: 'waiting')
+  scope :canceled,       where(state: 'canceled')
+  scope :open_or_failed, where(state: %w[open failed])
+  scope :not_canceled,   where{ state != 'canceled' }
+  scope :not_paid,       where(state: %w[open waiting failed])
+  scope :renew,          lambda { |bool=true| where(renew: bool) }
+  scope :site_id,        lambda { |site_id| where(site_id: site_id) }
+  scope :user_id,        lambda { |user_id| joins(:user).where{ user.id == user_id } }
+
+  scope :for_month, ->(date) { for_period(date.all_month) }
+
+  scope :for_period, ->(period) {
+    not_canceled.includes(:invoice_items)
+    .where { invoice_items.started_at >= period.first }.where { invoice_items.started_at <= period.last }
+    .where { invoice_items.ended_at >= period.first }.where { invoice_items.ended_at <= period.last }
+  }
+
+  # sort
+  scope :by_id,                  lambda { |way='desc'| order("invoices.id #{way}") }
+  scope :by_date,                lambda { |way='desc'| order("invoices.paid_at #{way}, invoices.last_failed_at #{way}, invoices.created_at #{way}") }
+  scope :by_amount,              lambda { |way='desc'| order("invoices.amount #{way}") }
+  scope :by_user,                lambda { |way='desc'| joins(:user).order("users.name #{way}, users.email #{way}") }
+  scope :by_invoice_items_count, lambda { |way='desc'| order("invoices.invoice_items_count #{way}") }
+
+  def self.search(q)
+    joins(:site, :user).where{
+      (lower(user.email) =~ lower("%#{q}%")) |
+      (lower(user.name) =~ lower("%#{q}%")) |
+      (lower(site.hostname) =~ lower("%#{q}%")) |
+      (lower(reference) =~ lower("%#{q}%"))
+    }
   end
 
   def self.total_revenue

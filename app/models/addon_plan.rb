@@ -1,7 +1,5 @@
-require_dependency 'stage'
-
 class AddonPlan < ActiveRecord::Base
-  AVAILABILITIES = %w[hidden public custom] unless defined? AVAILABILITIES
+  AVAILABILITIES = %w[hidden public custom]
 
   attr_accessible :addon, :name, :price, :availability, :required_stage, :stable_at, as: :admin
 

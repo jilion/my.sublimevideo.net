@@ -1,5 +1,3 @@
-require_dependency 'populate/stats_populator'
-
 class RecurringStatsPopulator < StatsPopulator
 
   def execute(site)

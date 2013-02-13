@@ -1,6 +1,4 @@
 require 'base64'
-require_dependency 'ogone'
-require_dependency 'notify'
 
 module UserModules::CreditCard
   extend ActiveSupport::Concern
@@ -143,7 +141,7 @@ module UserModules::CreditCard
         paramplus: "CHECK_CC_USER_ID=#{self.id}"
       })
 
-      authorization = Ogone.store(credit_card, options)
+      authorization = OgoneWrapper.store(credit_card, options)
 
       self.cc_register = false
       process_credit_card_authorization_response(authorization.params)
@@ -166,7 +164,7 @@ module UserModules::CreditCard
       #   An authorization code is available in the field "ACCEPTANCE".
       when '5'
         Librato.increment 'credit_cards.stored', source: authorization_params['BRAND']
-        Ogone.void([authorization_params['PAYID'], 'RES'].join(';'))
+        OgoneWrapper.void([authorization_params['PAYID'], 'RES'].join(';'))
         apply_pending_credit_card_info
 
       # STATUS == 51, Authorization waiting:
@@ -206,11 +204,11 @@ module UserModules::CreditCard
       when '52'
         Librato.increment 'credit_cards.uncertain', source: authorization_params['BRAND']
         @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.unknown') }
-        Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorization_params["PAYID"]}) has an uncertain state, please investigate quickly!")
+        Notifier.send("Credit card authorization for user ##{self.id} (PAYID: #{authorization_params["PAYID"]}) has an uncertain state, please investigate quickly!")
 
       else
         @i18n_notice_and_alert = { alert: I18n.t('credit_card.errors.unknown') }
-        Notify.send("Credit card authorization unknown status: #{authorization_params["STATUS"]}")
+        Notifier.send("Credit card authorization unknown status: #{authorization_params["STATUS"]}")
       end
 
       unless authorization_params['STATUS'] == '5'

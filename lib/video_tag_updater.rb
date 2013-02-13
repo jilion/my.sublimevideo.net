@@ -1,4 +1,3 @@
-require_dependency 'pusher_wrapper'
 require_dependency 'video_tag_sources_analyzer'
 require_dependency 'video_tag_name_fetcher'
 

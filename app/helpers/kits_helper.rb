@@ -1,5 +1,3 @@
-require_dependency 'preview_kit'
-
 module KitsHelper
 
   def mangled_kit_settings(kit)
@@ -7,11 +5,11 @@ module KitsHelper
   end
 
   def mangled_kits_settings(site)
-    @mangled_kits_settings ||= App::Mangler.mangle(kits_settings(site))
+    @mangled_kits_settings ||= PlayerMangler.mangle(kits_settings(site))
   end
 
   def kits_settings(site)
-    @kits_settings ||= Service::Settings.new(site, 'settings').kits
+    @kits_settings ||= SettingsGenerator.new(site, 'settings').kits
   end
 
   def app_designs_for_select(site, kit)

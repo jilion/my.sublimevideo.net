@@ -1,7 +1,4 @@
 # coding: utf-8
-require_dependency 'populate/populator'
-require_dependency 'populate/populate_helpers'
-
 class PeoplePopulator < Populator
 
   BASE_USERS = {

@@ -1,5 +1,3 @@
-require_dependency 'service/site'
-
 class AddonsController < ApplicationController
   before_filter :redirect_suspended_user, only: [:index, :directory]
   before_filter :find_sites_or_redirect_to_new_site, only: [:index, :directory]
@@ -24,7 +22,7 @@ class AddonsController < ApplicationController
 
   # PUT /sites/:site_id/addons/update_all
   def update_all
-    Service::Site.new(@site).update_billable_items(params[:app_designs], params[:addon_plans])
+    SiteManager.new(@site).update_billable_items(params[:app_designs], params[:addon_plans])
 
     redirect_to [@site, :addons], notice: t('flash.addons.update_all.notice')
   end

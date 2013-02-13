@@ -5,7 +5,7 @@ feature 'Redirects' do
   background do
     # stats demo site
     site = build(:site)
-    Service::Site.new(site).create
+    SiteManager.new(site).create
     site.update_column(:token, 'ibvjcopp')
   end
 

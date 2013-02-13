@@ -7,13 +7,13 @@ module UploadsHelper
   #   options[:resource_name] ||= controller_name.singularize
 
   #   upload_params = { key: s3_key(options[:uploaded_files_path]),
-  #                     AWSAccessKeyId: S3.send(:access_key_id),
+  #                     AWSAccessKeyId: S3Wrapper.send(:access_key_id),
   #                     bucket: s3_bucket_url,
   #                     _policy: s3_policy(path: options[:uploaded_files_path]),
   #                     _signature: s3_signature(path: options[:uploaded_files_path]) }.to_query
 
   #   content_tag :iframe, '',
-  #               src: "https://s3.amazonaws.com/#{S3.buckets['videos_upload']}/#{options[:uploader_path]}?#{upload_params}",
+  #               src: "https://s3.amazonaws.com/#{S3Wrapper.buckets['videos_upload']}/#{options[:uploader_path]}?#{upload_params}",
   #               frameborder: 0,
   #               height: options[:iframe_height] || 60,
   #               width: options[:iframe_width] || 500,
@@ -49,14 +49,14 @@ module UploadsHelper
     Base64.encode64(
       OpenSSL::HMAC.digest(
       OpenSSL::Digest::Digest.new('sha1'),
-      S3.send(:secret_access_key), s3_policy(options))).gsub("\n","")
+      S3Wrapper.send(:secret_access_key), s3_policy(options))).gsub("\n","")
   end
 
   def upload_params(options = {})
     params = {}
     params[:key]                   = options[:s3_key]
     params[:Filename]              = options[:s3_key]
-    params[:AWSAccessKeyId]        = S3.send(:access_key_id)
+    params[:AWSAccessKeyId]        = S3Wrapper.send(:access_key_id)
     params[:acl]                   = options[:acl] || 'private'
     params[:success_action_status] = '201'
     params[:policy]                = s3_policy(options)

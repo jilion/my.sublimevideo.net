@@ -1,5 +1,3 @@
-require_dependency 's3'
-
 module CarrierWave
   class << self
     def fog_configuration
@@ -10,8 +8,8 @@ module CarrierWave
         config.fog_attributes  = {}
         config.fog_credentials = {
           provider:              'AWS',
-          aws_access_key_id:     S3.access_key_id,
-          aws_secret_access_key: S3.secret_access_key,
+          aws_access_key_id:     S3Wrapper.access_key_id,
+          aws_secret_access_key: S3Wrapper.secret_access_key,
           region:                'us-east-1'
         }
       end

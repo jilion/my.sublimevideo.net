@@ -1,5 +1,3 @@
-require_dependency 'business_model'
-
 module SitesHelper
 
   def current_password_needed_error?(site)

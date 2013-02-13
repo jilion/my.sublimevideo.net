@@ -18,7 +18,7 @@
   %h3.section_title= "Roles"
   .entry.roles
     = f.label :roles, "", class: "icon"
-    = f.select(:roles, AdminRole.roles, {}, multiple: true)
+    = f.select(:roles, Admin.roles, {}, multiple: true)
 
 .entry.update
   = f.submit "Update", class: "submit small"

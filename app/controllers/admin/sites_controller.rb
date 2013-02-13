@@ -1,5 +1,3 @@
-require_dependency 'service/site'
-
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
 
@@ -53,7 +51,7 @@ class Admin::SitesController < Admin::AdminController
     options = { allow_custom: true }
     options[:force] = params[:state] if params[:state].present?
     design_subscriptions = { @app_design.name => (params[:state] == 'canceled' ? '0' : @app_design.id) }
-    Service::Site.new(@site).update_billable_items(design_subscriptions, {}, options)
+    SiteManager.new(@site).update_billable_items(design_subscriptions, {}, options)
 
     notice = t('flash.sites.update_app_design_subscription.notice', app_design_title: @app_design.title, state: params[:state].presence || 'subscribed')
     respond_with(@site, notice: notice, location: [:edit, :admin, @site])
@@ -67,7 +65,7 @@ class Admin::SitesController < Admin::AdminController
     options = { allow_custom: true }
     options[:force] = params[:state] if params[:state].present?
     addon_plan_subscriptions = { @addon_plan.addon.name => (params[:state] == 'canceled' ? '0' : @addon_plan.id) }
-    Service::Site.new(@site).update_billable_items({}, addon_plan_subscriptions, options)
+    SiteManager.new(@site).update_billable_items({}, addon_plan_subscriptions, options)
 
     notice = t('flash.sites.update_addon_plan_subscription.notice', addon_plan_title: @addon_plan.title, state: params[:state].presence || 'subscribed')
     respond_with(@site, notice: notice, location: [:edit, :admin, @site])

@@ -1,5 +1,3 @@
-require_dependency 'stats_exporter'
-
 class StatsExportsController < ApplicationController
   before_filter :redirect_suspended_user
 

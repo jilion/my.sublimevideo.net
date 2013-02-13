@@ -1,18 +1,18 @@
 Voxcast:
   store_dir: voxcast
-  file_format_class_name: LogsFileFormat::VoxcastSites
+  file_format_class_name: VoxcastSitesLogFileFormat
 
 Amazon::S3::Player:
   store_dir: s3/sublimevideo.player/
   hostname: sublimevideo.player
-  file_format_class_name: LogsFileFormat::S3Player
+  file_format_class_name: S3PlayerLogFileFormat
 
 Amazon::S3::Loaders:
   store_dir: s3/sublimevideo.loaders/
   hostname: sublimevideo.loaders
-  file_format_class_name: LogsFileFormat::S3Loaders
+  file_format_class_name: S3LoadersLogFileFormat
 
 Amazon::S3::Licenses:
   store_dir: s3/sublimevideo.licenses/
   hostname: sublimevideo.licenses
-  file_format_class_name: LogsFileFormat::S3Licenses
+  file_format_class_name: S3LicensesLogFileFormat

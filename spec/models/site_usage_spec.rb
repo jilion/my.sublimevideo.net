@@ -5,9 +5,9 @@ describe SiteUsage do
   context "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file" do
     before do
       log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz')
-      CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(log_file)
+      VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(log_file)
       @log = create(:log_voxcast, name: 'cdn.sublimevideo.net.log.1286528280-1286528340.gz', file: log_file)
-      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
+      @trackers = LogAnalyzer.parse(@log.file, 'VoxcastSitesLogFileFormat')
 
       with_versioning do
         Timecop.travel(@log.started_at - 1.hour) do
@@ -87,9 +87,9 @@ describe SiteUsage do
   describe "with 4076.voxcdn.com.log.1308045840-1308045900.gz logs file" do
     let(:log_file) { fixture_file('logs/voxcast/4076.voxcdn.com.log.1308045840-1308045900.gz') }
     before do
-      CDN::VoxcastWrapper.stub(:download_log).with('4076.voxcdn.com.log.1308045840-1308045900.gz').and_return(log_file)
+      VoxcastWrapper.stub(:download_log).with('4076.voxcdn.com.log.1308045840-1308045900.gz').and_return(log_file)
       @log = create(:log_voxcast, name: '4076.voxcdn.com.log.1308045840-1308045900.gz', file: log_file)
-      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
+      @trackers = LogAnalyzer.parse(@log.file, 'VoxcastSitesLogFileFormat')
 
       @site1 = create(:site, hostname: 'customerhub.net', wildcard: true).tap { |s| s.token = '9pfe3uop'; s.save }
       @site2 = create(:site, user: @site1.user, hostname: 'farmerswifeplay.com').tap { |s| s.token = '87r9xy5e'; s.save }
@@ -143,14 +143,14 @@ describe SiteUsage do
   describe "Trackers parsing with voxcast cdn.sublimevideo.net.log.1275002700-1275002760.gz logs file" do
     let(:log_file) { fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz') }
     before do
-      CDN::VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1275002700-1275002760.gz').and_return(log_file)
+      VoxcastWrapper.stub(:download_log).with('cdn.sublimevideo.net.log.1275002700-1275002760.gz').and_return(log_file)
 
       @site1 = create(:site, hostname: 'zeno.name').tap { |s| s.token = 'g3325oz4'; s.save }
       @site2 = create(:site, user: @site1.user, hostname: 'octavez.com').tap { |s| s.token = 'g8thugh6'; s.save }
 
       @log = create(:log_voxcast, file: log_file)
-      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
-      Notify.should_receive(:send).any_number_of_times
+      @trackers = LogAnalyzer.parse(@log.file, 'VoxcastSitesLogFileFormat')
+      Notifier.should_receive(:send).any_number_of_times
     end
 
     it "should clean trackers" do
@@ -202,7 +202,7 @@ describe SiteUsage do
       @site2 = create(:site, user: @site1.user, hostname: 'google.com').tap { |s| s.token = 'pbgopxwy'; s.save }
 
       @log = create(:log_s3_loaders)
-      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::S3Loaders')
+      @trackers = LogAnalyzer.parse(@log.file, 'S3LoadersLogFileFormat')
     end
 
     it "should clean trackers" do
@@ -237,4 +237,17 @@ describe SiteUsage do
       usage.traffic_voxcast.should eq 0
     end
   end
+
+  describe "API" do
+    let(:site) { create(:site) }
+    let(:site_usage) { create(:site_usage, site_id: site.id, day: 61.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400) }
+    let(:response) { site_usage.as_api_response(:v1_self_private) }
+
+    it "selects a subset of fields, as a hash" do
+      response.should be_a(Hash)
+      response[:day].should == site_usage.day.strftime("%Y-%m-%d")
+      response[:video_views].should == 2700
+    end
+  end
+
 end

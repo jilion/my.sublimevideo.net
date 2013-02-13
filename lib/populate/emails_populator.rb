@@ -1,12 +1,10 @@
-require_dependency 'populate/populator'
-
 class EmailsPopulator < Populator
 
   def execute(user)
     trial_design        = user.billable_items.app_designs.where(state: 'trial').first || user.billable_items.app_designs.first
     trial_addon_plan    = user.billable_items.addon_plans.where(state: 'trial').first || user.billable_items.addon_plans.first
     site                = user.sites.paying.last || user.sites.last
-    invoice             = site.invoices.not_paid.last || Service::Invoice.build(site: site).tap { |s| s.save }.invoice
+    invoice             = site.invoices.not_paid.last || InvoiceCreator.build(site: site).tap { |s| s.save }.invoice
     transaction         = invoice.transactions.last || Transaction.create!(invoices: [invoice])
     stats_export        = StatsExport.create(site_token: site.token, from: 30.days.ago.midnight.to_i, to: 1.days.ago.midnight.to_i, file: File.new(Rails.root.join('spec/fixtures', 'stats_export.csv')))
 

@@ -1,12 +1,13 @@
 require 'fast_spec_helper'
-require 'zip/zip'
 require 'rails/railtie'
-require 'fog'
 require 'carrierwave'
-require File.expand_path('spec/config/carrierwave')
-require File.expand_path('spec/support/fixtures_helpers')
+require 'zip/zip'
+require 'fog'
+require 'config/carrierwave'
+require 'support/fixtures_helpers'
 
-require File.expand_path('app/uploaders/stats_export_uploader')
+require 'uploaders/stats_export_uploader'
+require 'wrappers/s3_wrapper'
 
 describe StatsExportUploader do
   let(:stat_export) { stub(
@@ -21,7 +22,7 @@ describe StatsExportUploader do
   before { uploader.store!(csv) }
 
   it "has stats_exports S3.bucket" do
-    uploader.fog_directory.should eq S3.buckets['stats_exports']
+    uploader.fog_directory.should eq S3Wrapper.buckets['stats_exports']
   end
 
   it "is private" do

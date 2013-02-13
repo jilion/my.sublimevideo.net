@@ -7,7 +7,7 @@ feature "Hidable notices" do
       Timecop.travel(3.weeks.ago) do
         sign_in_as :user, company_name: 'Jilion', company_url: 'http://jilion.com', company_job_title: 'Foo', company_employees: 'foo'
         @site = build(:site, user: @current_user)
-        Service::Site.new(@site).create
+        SiteManager.new(@site).create
       end
     end
 

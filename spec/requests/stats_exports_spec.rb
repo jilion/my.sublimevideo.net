@@ -4,7 +4,7 @@ feature 'StatsExport' do
   background do
     sign_in_as :user
     @site = build(:site, user: @current_user)
-    Service::Site.new(@site).create
+    SiteManager.new(@site).create
     create(:billable_item, site: @site, item: @stats_addon_plan_2)
     @video_tag = create(:video_tag, site: @site, uid: 'video_uid', name: 'My Video')
     create(:site_day_stat, t: @site.token, d: 3.days.ago.midnight.to_i,
@@ -37,7 +37,7 @@ feature 'StatsExport' do
     go 'my', "/stats/exports/#{stat_export_id}"
     # File can't be downloaded directly from S3 because of Fog.mock!
     current_url.should match(
-      %r{https://s3\.amazonaws\.com/#{S3.buckets['stats_exports']}/uploads/stats_exports/stats_export\.#{@site.hostname}\.\d+-\d+\.csv\.zip\?AWSAccessKeyId=#{S3.access_key_id}&Signature=foo&Expires=\d+}
+      %r{https://s3\.amazonaws\.com/#{S3Wrapper.buckets['stats_exports']}/uploads/stats_exports/stats_export\.#{@site.hostname}\.\d+-\d+\.csv\.zip\?AWSAccessKeyId=#{S3Wrapper.access_key_id}&Signature=foo&Expires=\d+}
     )
 
     # Verify zip content

@@ -10,7 +10,7 @@ class CreateTransactionsAndInvoicesTransactions < ActiveRecord::Migration
       t.string  :cc_last_digits
       t.date    :cc_expire_on
 
-      # untouched params from Ogone
+      # untouched params from OgoneWrapper
       t.string  :pay_id    # PAYID field
       t.integer :nc_status # NCSTATUS field
       t.integer :status    # STATUS field

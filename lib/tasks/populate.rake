@@ -1,5 +1,5 @@
 # coding: utf-8
-require_dependency 'populate'
+require 'populate'
 
 namespace :db do
 
@@ -11,7 +11,7 @@ namespace :db do
     task clear: :environment do
       Rails.cache.clear
       Sidekiq.redis { |con| con.flushall }
-      timed { Populate.empty_tables('invoices_transactions', DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
+      timed { PopulateHelpers.empty_tables('invoices_transactions', DealActivation, Deal, InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
     desc "Load all development fixtures. e.g.: rake 'db:populate:all[remy]'"

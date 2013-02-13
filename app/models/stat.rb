@@ -1,7 +1,4 @@
 # encoding: utf-8
-require_dependency 'pusher_wrapper'
-require_dependency 'notify'
-
 module Stat
   extend ActiveSupport::Concern
 
@@ -110,7 +107,7 @@ private
         end
       rescue StatRequestParser::BadParamsError, ArgumentError
       rescue TypeError => ex
-        Notify.send("Request parsing problem: #{request}", exception: ex)
+        Notifier.send("Request parsing problem: #{request}", exception: ex)
       end
     end
 

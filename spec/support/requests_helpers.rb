@@ -123,7 +123,7 @@ module Spec
       end
 
       def create_site_for(user)
-        Service::Site.new(build(:site, user: user)).create
+        SiteManager.new(build(:site, user: user)).create
       end
 
       def send_invite_to(resource_name, email = "invited@invited.com")

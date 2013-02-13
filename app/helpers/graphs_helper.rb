@@ -1,6 +1,4 @@
 # coding: utf-8
-require_dependency 'graph'
-
 module GraphsHelper
 
   def chart(id, options = {})

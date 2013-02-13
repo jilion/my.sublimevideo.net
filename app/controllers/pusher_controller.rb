@@ -1,12 +1,10 @@
-require_dependency 'pusher_wrapper'
-
 class PusherController < ApplicationController
   skip_before_filter :authenticate_user!
   protect_from_forgery except: [:auth, :webhook]
 
   # POST /pusher/auth
   def auth
-    if User.accessible_channel?(params[:channel_name], current_user)
+    if PusherChannel.new(params[:channel_name]).accessible?(current_user)
       authenticated_response = PusherWrapper.authenticated_response(
         params[:channel_name],
         params[:socket_id]
