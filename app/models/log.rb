@@ -26,32 +26,14 @@ class Log
   validates :started_at, presence: true
   validates :ended_at,   presence: true
 
-  # =============
-  # = Callbacks =
-  # =============
-
-  after_create :delay_parse
-
   # =================
   # = Class Methods =
   # =================
-
-  def self.config
-    yml[self.to_s.gsub("Log::", '').to_sym].symbolize_keys
-  end
 
   def self.create_new_logs(new_logs_names)
     existings_logs_names = only(:name).any_in(name: new_logs_names).map(&:name)
     (new_logs_names - existings_logs_names).each do |name|
       with(safe: true).create(name: name)
-    end
-  end
-
-  def self.parse_log(id)
-    log = find(id)
-    unless log.parsed_at?
-      log.parse_and_create_usages!
-      log.with(safe: true).update_attribute(:parsed_at, Time.now.utc)
     end
   end
 
@@ -82,11 +64,6 @@ class Log
 
 private
 
-  # after_create
-  def delay_parse
-    self.class.delay(queue: 'log', at: 5.seconds.from_now.to_i).parse_log(id) # lets finish the upload
-  end
-
   def with_log_file_in_tmp(&block)
     log_file = Tempfile.new([name, '.log.gz'], encoding: 'ASCII-8BIT')
     rescue_and_retry(5, Excon::Errors::SocketError) do
@@ -105,14 +82,6 @@ private
     result = yield(log_file)
     log_file.close!
     result
-  end
-
-  def self.yml
-    config_path = Rails.root.join('config', 'logs.yml')
-    @default_storage ||= YAML::load_file(config_path)
-    @default_storage.symbolize_keys
-  rescue
-    raise StandardError, "Logs config file '#{config_path}' doesn't exist."
   end
 
 end

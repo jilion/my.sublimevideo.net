@@ -44,9 +44,6 @@ module Scheduler
     }
 
     Tweet.delay(options).save_new_tweets_and_sync_favorite_tweets
-    Log::Amazon::S3::Player.delay(options).fetch_and_create_new_logs
-    Log::Amazon::S3::Loaders.delay(options).fetch_and_create_new_logs
-    Log::Amazon::S3::Licenses.delay(options).fetch_and_create_new_logs
   end
 
   def self.schedule_frequent_tasks

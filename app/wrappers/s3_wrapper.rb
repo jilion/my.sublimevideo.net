@@ -12,10 +12,6 @@ module S3Wrapper
       "https://s3.amazonaws.com/#{bucket}/"
     end
 
-    def logs_name_list(options = {})
-      keys_names(logs_bucket, options)
-    end
-
     def keys_names(bucket, options = {})
       remove_prefix = options.delete(:remove_prefix)
       keys  = bucket.keys(options)
@@ -33,10 +29,6 @@ module S3Wrapper
 
     def player_bucket
       @player_bucket ||= client.bucket(buckets['player'])
-    end
-
-    def logs_bucket
-      @logs_bucket ||= client.bucket(buckets['logs'])
     end
 
     def client

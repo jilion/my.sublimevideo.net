@@ -10,14 +10,6 @@ describe S3Wrapper do
     it { described_class.bucket_url('foo').should eq 'https://s3.amazonaws.com/foo/' }
   end
 
-  describe "logs list" do
-    use_vcr_cassette "s3/logs_bucket_all_keys"
-
-    it "should return max 100 keys" do
-      S3Wrapper.logs_name_list.should have(104).names
-    end
-  end
-
   describe ".keys_names" do
     use_vcr_cassette "s3/keys_names"
 

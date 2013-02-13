@@ -15,36 +15,31 @@ require 'wrappers/cdn_file'
 describe CDNFile, :fog_mock do
   let(:file) { fixture_file('cdn/file.js', 'r') }
   let(:file2) { fixture_file('cdn/file2.js', 'r') }
-  let(:destinations) { [{
+  let(:destination) { {
     bucket: S3Wrapper.buckets['sublimevideo'],
     path: "js/token.js"
-  },{
-    bucket: S3Wrapper.buckets['loaders'],
-    path: "loaders/token.js"
-  }] }
+  } }
   let(:s3_options) { {
     'Cache-Control' => 'max-age=60, public', # 2 minutes
     'Content-Type'  => 'text/javascript',
     'x-amz-acl'     => 'public-read'
   } }
-  let(:cdn_file) { CDNFile.new(file, destinations, s3_options) }
+  let(:cdn_file) { CDNFile.new(file, destination, s3_options) }
 
   describe "#upload!" do
     it "uploads file to all destinations" do
       cdn_file.upload!
-      destinations.each do |destination|
-        S3Wrapper.fog_connection.head_object(
-          destination[:bucket],
-          destination[:path]
-        ).headers.should be_present
-      end
+      S3Wrapper.fog_connection.head_object(
+        destination[:bucket],
+        destination[:path]
+      ).headers.should be_present
     end
 
     describe "s3 object(s)" do
       before { cdn_file.upload! }
 
-      let(:bucket) { destinations.first[:bucket] }
-      let(:path)   { destinations.first[:path] }
+      let(:bucket) { destination[:bucket] }
+      let(:path)   { destination[:path] }
 
       it "is public" do
         object_acl = S3Wrapper.fog_connection.get_object_acl(bucket, path).body

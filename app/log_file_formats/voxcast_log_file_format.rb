@@ -60,36 +60,6 @@ module VoxcastLogFileFormat
     !!token_from(request)
   end
 
-  def loader_token_from(request)
-    if loader_token = request[:path].match(/^\/js\/([a-z0-9]{8})\.js.*/)
-      loader_token[1]
-    end
-  end
-
-  def loader_token?(request)
-    !!loader_token_from(request)
-  end
-
-  def player_token_from(request)
-    if player_token = request[:path].match(/^\/p(\/.*)?\/sublime\.js(\.jgz|\.gz)?\?t=([a-z0-9]{8}).*/)
-      player_token[3]
-    end
-  end
-
-  def player_token?(request)
-    !!player_token_from(request)
-  end
-
-  def flash_token_from(request)
-    if flash_token = request[:path].match(/^\/p(\/.*)?\/sublime\.swf\?t=([a-z0-9]{8}).*/)
-      flash_token[2]
-    end
-  end
-
-  def flash_token?(request)
-    !!flash_token_from(request)
-  end
-
   def countable_hit?(request)
     request[:cache_miss_reason] != 3
   end
