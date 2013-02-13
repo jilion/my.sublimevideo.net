@@ -32,7 +32,7 @@ describe Log::Amazon::S3::Loaders do
       it "should have config values" do
         described_class.config.should == {
           hostname: "sublimevideo.loaders",
-          file_format_class_name: "LogsFileFormat::S3Loaders",
+          file_format_class_name: "S3LoadersLogFileFormat",
           store_dir: "s3/sublimevideo.loaders/"
         }
       end

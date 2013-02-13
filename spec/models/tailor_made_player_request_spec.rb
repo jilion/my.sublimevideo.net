@@ -1,6 +1,7 @@
 require 'fast_spec_helper'
-require File.expand_path('spec/support/her_helpers')
-require File.expand_path('app/models/tailor_made_player_request')
+require 'support/her_helpers'
+
+require 'models/tailor_made_player_request'
 
 describe TailorMadePlayerRequest do
   let(:attributes) { {

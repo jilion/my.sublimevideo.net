@@ -427,9 +427,9 @@ describe UserModules::CreditCard do
       UserModules::CreditCard::BRANDS.each do |brand|
         let(:user) { build(:user_no_cc, send("valid_cc_attributes_#{brand}")) }
 
-        it "should actually call Ogone" do
+        it "should actually call OgoneWrapper" do
           user.prepare_pending_credit_card
-          Ogone.should_receive(:store).with(user.credit_card, {
+          OgoneWrapper.should_receive(:store).with(user.credit_card, {
             billing_id: user.cc_alias,
             email: user.email,
             billing_address: { address1: user.billing_address_1, zip: user.billing_postal_code, city: user.billing_city, country: user.billing_country },
@@ -530,7 +530,7 @@ describe UserModules::CreditCard do
 
         context "authorization is OK" do
           it "adds an error on base to the user" do
-            Ogone.should_receive(:void).with("1234;RES")
+            OgoneWrapper.should_receive(:void).with("1234;RES")
 
             subject.process_credit_card_authorization_response(authorized_params)
             subject.errors.should be_empty
@@ -643,7 +643,7 @@ describe UserModules::CreditCard do
 
         context "authorization is  unknown" do
           it "doesn't add an error on base to the user" do
-            Notify.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
+            Notifier.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
             subject.process_credit_card_authorization_response(unknown_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.unknown") }
             subject.d3d_html.should be_nil
@@ -714,7 +714,7 @@ describe UserModules::CreditCard do
 
         context "authorized" do
           it "should pend and apply pending cc info" do
-            Ogone.should_receive(:void).with("1234;RES")
+            OgoneWrapper.should_receive(:void).with("1234;RES")
             subject.process_credit_card_authorization_response(authorized_params)
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should be_nil
@@ -799,7 +799,7 @@ describe UserModules::CreditCard do
 
         context "unknown" do
           it "should set a notice/alert, not reset pending cc info, send a notification and save the user" do
-            Notify.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
+            Notifier.should_receive(:send).with("Credit card authorization for user ##{subject.id} (PAYID: 1234) has an uncertain state, please investigate quickly!")
             subject.process_credit_card_authorization_response(unknown_params)
             subject.i18n_notice_and_alert.should == { alert: I18n.t("credit_card.errors.unknown") }
             subject.d3d_html.should be_nil

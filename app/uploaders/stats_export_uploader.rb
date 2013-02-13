@@ -1,5 +1,3 @@
-require_dependency 's3'
-
 class StatsExportUploader < CarrierWave::Uploader::Base
   include CarrierWave::MimeTypes
 
@@ -7,7 +5,7 @@ class StatsExportUploader < CarrierWave::Uploader::Base
   process :compress
 
   def fog_directory
-    S3.buckets['stats_exports']
+    S3Wrapper.buckets['stats_exports']
   end
 
   def secure_url(*args)

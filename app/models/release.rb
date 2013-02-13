@@ -1,6 +1,3 @@
-require_dependency 'file_header'
-require_dependency 's3'
-
 class Release < ActiveRecord::Base
 
   attr_accessible :zip
@@ -65,7 +62,7 @@ class Release < ActiveRecord::Base
       # On update, zip.filename is blank!? In this case read_attribute(:zip) is always right...
       # Issue 2: There's an issue with CarrierWave's "zip.read" method, use AWS directly instead...
       # Note: no problem when using :file as storage
-      @local_zip_file.write(Rails.env.test? ? zip.read : S3.player_bucket.get("#{zip.store_dir}/#{read_attribute(:zip)}"))
+      @local_zip_file.write(Rails.env.test? ? zip.read : S3Wrapper.player_bucket.get("#{zip.store_dir}/#{read_attribute(:zip)}"))
       @local_zip_file.flush
       Zip::ZipFile.open(@local_zip_file.path)
     end
@@ -96,37 +93,38 @@ private
 
   # after_transition to dev
   def overwrite_dev_with_zip_content
-    S3.player_bucket.delete_folder('dev')
-    S3.sublimevideo_bucket.delete_folder('p/dev')
+    S3Wrapper.player_bucket.delete_folder('dev')
+    S3Wrapper.sublimevideo_bucket.delete_folder('p/dev')
     files_in_zip do |file|
-      S3.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, 'public-read',
-        'content-type' => FileHeader.content_type(file.to_s),
-        'content-encoding' => FileHeader.content_encoding(file.to_s)
+      file_header = FileHeaderAnalyzer.new(file.to_s)
+      S3Wrapper.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, 'public-read',
+        'content-type' => file_header.content_type,
+        'content-encoding' => file_header.content_encoding
       )
-      S3.sublimevideo_bucket.put("p/dev/#{file.name}", zipfile.read(file), {}, 'public-read',
-        'content-type' => FileHeader.content_type(file.to_s),
-        'content-encoding' => FileHeader.content_encoding(file.to_s)
+      S3Wrapper.sublimevideo_bucket.put("p/dev/#{file.name}", zipfile.read(file), {}, 'public-read',
+        'content-type' => file_header.content_type,
+        'content-encoding' => file_header.content_encoding
       )
     end
   end
 
   # after_transition to beta, stable
   def copy_content_to_next_state
-    old_keys_names = S3.keys_names(S3.player_bucket, 'prefix' => state, remove_prefix: true)
-    new_keys_names = S3.keys_names(S3.player_bucket, 'prefix' => state_was, remove_prefix: true)
+    old_keys_names = S3Wrapper.keys_names(S3Wrapper.player_bucket, 'prefix' => state, remove_prefix: true)
+    new_keys_names = S3Wrapper.keys_names(S3Wrapper.player_bucket, 'prefix' => state_was, remove_prefix: true)
     # copy new keys to next state level
     new_keys_names.each do |name|
       from = state_was + name
       to   = state + name
-      S3.client.interface.copy(S3.player_bucket.name, from, S3.player_bucket.name, to, :copy, 'x-amz-acl' => 'public-read')
+      S3Wrapper.client.interface.copy(S3Wrapper.player_bucket.name, from, S3Wrapper.player_bucket.name, to, :copy, 'x-amz-acl' => 'public-read')
       from = sublimevideo_bucket_state(state_was) + name
       to   = sublimevideo_bucket_state(state) + name
-      S3.client.interface.copy(S3.sublimevideo_bucket.name, from, S3.sublimevideo_bucket.name, to, :copy, 'x-amz-acl' => 'public-read')
+      S3Wrapper.client.interface.copy(S3Wrapper.sublimevideo_bucket.name, from, S3Wrapper.sublimevideo_bucket.name, to, :copy, 'x-amz-acl' => 'public-read')
     end
     # Remove no more used keys
     (old_keys_names - new_keys_names).each do |name|
-      S3.player_bucket.delete_key(state + name)
-      S3.sublimevideo_bucket.delete_key(sublimevideo_bucket_state(state) + name)
+      S3Wrapper.player_bucket.delete_key(state + name)
+      S3Wrapper.sublimevideo_bucket.delete_key(sublimevideo_bucket_state(state) + name)
     end
   end
 

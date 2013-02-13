@@ -1,6 +1,3 @@
-# encoding: utf-8
-require_dependency 's3'
-
 class Log::Amazon < ::Log
 
   # ===============
@@ -35,7 +32,7 @@ private
     if last_log = self.where(created_at: { :$gt => 7.day.ago }).order_by(name: -1).first
       options['marker'] = config[:store_dir] + marker(last_log)
     end
-    rescue_and_retry(7, Aws::AwsError) { ::S3.logs_name_list(options) }
+    rescue_and_retry(7, Aws::AwsError) { S3Wrapper.logs_name_list(options) }
   end
 
   # ====================

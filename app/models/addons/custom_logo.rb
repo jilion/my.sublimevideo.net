@@ -1,5 +1,4 @@
 require 'active_model'
-require_dependency 's3'
 
 module Addons
   CustomLogo = Struct.new(:file) do

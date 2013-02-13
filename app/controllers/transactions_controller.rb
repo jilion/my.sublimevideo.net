@@ -1,5 +1,3 @@
-require_dependency 'ogone'
-
 class TransactionsController < ApplicationController
   respond_to :html
 
@@ -13,7 +11,7 @@ class TransactionsController < ApplicationController
   # Cardholder that have a 3-D Secure card and that successfully authenticated themselves
   # on the Visa/Mastercard 3-D Secure form are redirected to this route.
   # AND
-  # As a callback called by Ogone when a transaction succeed
+  # As a callback called by OgoneWrapper when a transaction succeed
   # In both cases, the transaction parameters are passed along.
   #
   # POST /transaction/callback
@@ -28,9 +26,9 @@ class TransactionsController < ApplicationController
 private
 
   def tempered_request?
-    @sha_params = params.select { |k, v| Ogone.sha_out_keys.include?(k.upcase) }
-    to_digest   = @sha_params.sort { |a, b| a[0].upcase <=> b[0].upcase }.map { |k, v| "#{k.upcase}=#{v}" unless v.blank? }.compact.join(Ogone.signature_out)
-    to_digest << Ogone.signature_out
+    @sha_params = params.select { |k, v| OgoneWrapper.sha_out_keys.include?(k.upcase) }
+    to_digest   = @sha_params.sort { |a, b| a[0].upcase <=> b[0].upcase }.map { |k, v| "#{k.upcase}=#{v}" unless v.blank? }.compact.join(OgoneWrapper.signature_out)
+    to_digest << OgoneWrapper.signature_out
     params["SHASIGN"] != Digest::SHA512.hexdigest(to_digest).upcase
   end
 

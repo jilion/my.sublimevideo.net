@@ -1,5 +1,3 @@
-require_dependency 'mime_type_guesser'
-
 class VideoCodesController < ApplicationController
   before_filter :redirect_suspended_user, only: [:new]
   before_filter :find_sites_or_redirect_to_new_site, :redirect_to_first_site, :find_site_by_token!, only: [:new, :show]

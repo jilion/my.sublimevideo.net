@@ -1,17 +1,17 @@
 # coding: utf-8
 require 'ffaker' if Rails.env.development?
-require_dependency 'service/usage'
-require_dependency 'service/invoice'
-require_dependency 'populate/populate_helpers'
-require_dependency 'populate/addon_system_populator'
-require_dependency 'populate/emails_populator'
-require_dependency 'populate/people_populator'
-require_dependency 'populate/invoices_populator'
-require_dependency 'populate/recurring_stats_populator'
-require_dependency 'populate/sites_populator'
-require_dependency 'populate/stats_populator'
-require_dependency 'populate/trends_populator'
-require_dependency 'populate/video_tags_populator'
+require 'populate/populator'
+require 'populate/populate_helpers'
+require 'populate/stats_populator'
+require 'populate/settings_template_populator'
+require 'populate/addon_system_populator'
+require 'populate/emails_populator'
+require 'populate/people_populator'
+require 'populate/invoices_populator'
+require 'populate/recurring_stats_populator'
+require 'populate/sites_populator'
+require 'populate/trends_populator'
+require 'populate/video_tags_populator'
 
 module Populate
 
@@ -94,7 +94,7 @@ module Populate
     ensure
       sites.compact.each do |site|
         VideoTagsPopulator.new.execute(site.token)
-        Service::Usage.new(site).update_last_30_days_video_tags_counters
+        SiteCountersUpdater.new(site).update_last_30_days_video_tags_counters
       end
     end
 

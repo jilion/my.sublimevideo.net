@@ -4,7 +4,7 @@ feature 'Stats page' do
   background do
     sign_in_as :user
     @site = build(:site, user: @current_user)
-    Service::Site.new(@site).create
+    SiteManager.new(@site).create
   end
 
   scenario 'user dont see the Stats tab' do

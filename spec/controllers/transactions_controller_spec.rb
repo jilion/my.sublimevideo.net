@@ -11,7 +11,7 @@ describe TransactionsController do
             @sha_params = { "PAYID" => "1234", "STATUS" => "5" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
-              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=5"].join(Ogone.signature_out) + Ogone.signature_out).upcase
+              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=5"].join(OgoneWrapper.signature_out) + OgoneWrapper.signature_out).upcase
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: nil))
           end
@@ -32,7 +32,7 @@ describe TransactionsController do
             @sha_params = { "PAYID" => "1234", "STATUS" => "51" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
-              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=51"].join(Ogone.signature_out) + Ogone.signature_out).upcase
+              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=51"].join(OgoneWrapper.signature_out) + OgoneWrapper.signature_out).upcase
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.waiting") }))
           end
@@ -53,7 +53,7 @@ describe TransactionsController do
             @sha_params = { "PAYID" => "1234", "STATUS" => "0" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
-              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=0"].join(Ogone.signature_out) + Ogone.signature_out).upcase
+              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=0"].join(OgoneWrapper.signature_out) + OgoneWrapper.signature_out).upcase
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.invalid") }))
           end
@@ -74,7 +74,7 @@ describe TransactionsController do
             @sha_params = { "PAYID" => "1234", "STATUS" => "2" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
-              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=2"].join(Ogone.signature_out) + Ogone.signature_out).upcase
+              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=2"].join(OgoneWrapper.signature_out) + OgoneWrapper.signature_out).upcase
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.refused") }))
           end
@@ -95,7 +95,7 @@ describe TransactionsController do
             @sha_params = { "PAYID" => "1234", "STATUS" => "52" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
-              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=52"].join(Ogone.signature_out) + Ogone.signature_out).upcase
+              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=52"].join(OgoneWrapper.signature_out) + OgoneWrapper.signature_out).upcase
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.unknown") }))
           end
@@ -116,7 +116,7 @@ describe TransactionsController do
             @sha_params = { "PAYID" => "1234", "STATUS" => "187" }
             @params = {
               "CHECK_CC_USER_ID" => "1",
-              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234","STATUS=187"].join(Ogone.signature_out) + Ogone.signature_out).upcase
+              "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234","STATUS=187"].join(OgoneWrapper.signature_out) + OgoneWrapper.signature_out).upcase
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(i18n_notice_and_alert: { alert: I18n.t("credit_card.errors.unknown") }))
           end
@@ -138,7 +138,7 @@ describe TransactionsController do
           @sha_params = { "PAYID" => "1234", "STATUS" => "9", "orderID" => "dwqdqw756w6q4d654qwd64qw" }
           @params = {
             "PAYMENT" => "TRUE",
-            "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=dwqdqw756w6q4d654qwd64qw", "PAYID=1234", "STATUS=9"].join(Ogone.signature_out) + Ogone.signature_out).upcase
+            "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=dwqdqw756w6q4d654qwd64qw", "PAYID=1234", "STATUS=9"].join(OgoneWrapper.signature_out) + OgoneWrapper.signature_out).upcase
           }
         end
 
@@ -161,7 +161,7 @@ describe TransactionsController do
               @sha_params = { "PAYID" => "1234", "STATUS" => "9", "orderID" => "dwqdqw756w6q4d654qwd64qw" }
               @params = {
                 "PAYMENT" => "TRUE",
-                "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=dwqdqw756w6q4d654qwd64qw", "PAYID=1234", "STATUS=9"].join(Ogone.signature_out) + Ogone.signature_out).upcase
+                "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=dwqdqw756w6q4d654qwd64qw", "PAYID=1234", "STATUS=9"].join(OgoneWrapper.signature_out) + OgoneWrapper.signature_out).upcase
               }
             end
 
@@ -181,7 +181,7 @@ describe TransactionsController do
               @sha_params = { "PAYID" => "1234", "STATUS" => "2", "orderID" => "dwqdqw756w6q4d654qwd64qw" }
               @params = {
                 "PAYMENT" => "TRUE",
-                "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=dwqdqw756w6q4d654qwd64qw", "PAYID=1234", "STATUS=2"].join(Ogone.signature_out) + Ogone.signature_out).upcase
+                "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=dwqdqw756w6q4d654qwd64qw", "PAYID=1234", "STATUS=2"].join(OgoneWrapper.signature_out) + OgoneWrapper.signature_out).upcase
               }
             end
 
@@ -204,7 +204,7 @@ describe TransactionsController do
         @sha_params = { "PAYID" => "1234", "STATUS" => "5" }
         @params = {
           "CHECK_CC_USER_ID" => "1",
-          "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=5"].join(Ogone.signature_out) + Ogone.signature_out).upcase
+          "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234", "STATUS=5"].join(OgoneWrapper.signature_out) + OgoneWrapper.signature_out).upcase
         }
         @sha_params["STATUS"] = "9" # tempering!!!!!
       end

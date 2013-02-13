@@ -1,7 +1,3 @@
-require_dependency 'populate/populator'
-require_dependency 'populate/populate_helpers'
-require_dependency 'service/invoice'
-
 class InvoicesPopulator < Populator
 
   def execute
@@ -13,8 +9,8 @@ class InvoicesPopulator < Populator
         while timestamp < Time.now.utc do
           timestamp += 1.month
           Timecop.travel(timestamp.end_of_month) do
-            service = Service::Invoice.build_for_period(Time.now.utc, site).tap { |s| s.save }
-            service.invoice.succeed if service.invoice.persisted?
+            creator = InvoiceCreator.build_for_period(Time.now.utc, site).tap { |s| s.save }
+            creator.invoice.succeed if creator.invoice.persisted?
           end
         end
       end
