@@ -38,7 +38,7 @@ module Stats
 
         while last_stat_day < 1.day.ago.midnight do
           last_stat_day += 1.day
-          create_revenues_stat(last_stat_day)
+          delay(queue: 'low').create_revenues_stat(last_stat_day)
         end
       end
 
@@ -61,15 +61,15 @@ module Stats
         }
 
         ::Site.not_archived.find_each(batch_size: 100) do |site|
-          invoice_service = InvoiceCreator.build_for_period(day.to_time.yesterday.all_day, site)
+          invoice_service = InvoiceCreator.build_for_period(day.to_time.all_day, site)
 
           invoice_service.invoice.invoice_items.each do |invoice_item|
             second_key = case invoice_item.type
-                        when 'InvoiceItem::AppDesign'
-                          'design'
-                        when 'InvoiceItem::AddonPlan'
-                          invoice_item.item.addon.name
-                        end
+                         when 'InvoiceItem::AppDesign'
+                           'design'
+                         when 'InvoiceItem::AddonPlan'
+                           invoice_item.item.addon.name
+                         end
             third_key = invoice_item.item.name
             hash[:r][second_key][third_key] += invoice_item.amount
           end
