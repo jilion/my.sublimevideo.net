@@ -1,6 +1,5 @@
 class SiteUsage
   include Mongoid::Document
-  include SiteUsageModules::Api
 
   field :site_id,         type: Integer
   field :day,             type: DateTime
@@ -23,6 +22,17 @@ class SiteUsage
 
   index site_id: 1
   index site_id: 1, day: 1 #, unique: true
+
+  # =======
+  # = API =
+  # =======
+
+  acts_as_api
+
+  api_accessible :v1_self_private do |template|
+    template.add lambda { |usage| usage.day.strftime("%Y-%m-%d") }, as: :day
+    template.add lambda { |usage| usage.billable_player_hits }, as: :video_views
+  end
 
   # ================
   # = Associations =
