@@ -1,38 +1,32 @@
 require 's3etag'
 
-CDNFile = Struct.new(:file, :destinations, :s3_options, :options) do
+CDNFile = Struct.new(:file, :destination, :s3_options, :options) do
 
   def upload!
     File.open(file) do |f|
       data = f.read
-      destinations.each do |destination|
-        S3Wrapper.fog_connection.put_object(
-          destination[:bucket],
-          destination[:path],
-          data,
-          s3_options
-        )
-      end
-    end
-  end
-
-  def delete!
-    destinations.each do |destination|
-      S3Wrapper.fog_connection.delete_object(
+      S3Wrapper.fog_connection.put_object(
         destination[:bucket],
-        destination[:path]
+        destination[:path],
+        data,
+        s3_options
       )
     end
   end
 
+  def delete!
+    S3Wrapper.fog_connection.delete_object(
+      destination[:bucket],
+      destination[:path]
+    )
+  end
+
   # file already present on S3Wrapper?
   def present?
-    destinations.all? do |destination|
-      s3_headers(
-        destination[:bucket],
-        destination[:path]
-      ).present?
-    end
+    s3_headers(
+      destination[:bucket],
+      destination[:path]
+    ).present?
   end
 
   private

@@ -28,12 +28,7 @@ unless defined?(ActiveRecord)
   Stats::TailorMadePlayerRequestsStat = Class.new
   Tweet = Class.new
   Log = Class.new
-  Log::Amazon = Class.new
   Log::Voxcast = Class.new
-  Log::Amazon::S3 = Class.new
-  Log::Amazon::S3::Player = Class.new
-  Log::Amazon::S3::Loaders = Class.new
-  Log::Amazon::S3::Licenses = Class.new
 end
 
 describe Scheduler do
@@ -193,30 +188,6 @@ describe Scheduler do
   describe ".schedule_hourly_tasks" do
     it "schedules Tweet.save_new_tweets_and_sync_favorite_tweets" do
       Tweet.should delay(:save_new_tweets_and_sync_favorite_tweets,
-        at:    1.hour.from_now.change(min: 0).to_i,
-        queue: "low"
-      )
-      described_class.schedule_hourly_tasks
-    end
-
-    it "schedules Log::Amazon::S3::Player.fetch_and_create_new_logs" do
-      Log::Amazon::S3::Player.should delay(:fetch_and_create_new_logs,
-        at:    1.hour.from_now.change(min: 0).to_i,
-        queue: "low"
-      )
-      described_class.schedule_hourly_tasks
-    end
-
-    it "schedules Log::Amazon::S3::Loaders.fetch_and_create_new_logs" do
-      Log::Amazon::S3::Loaders.should delay(:fetch_and_create_new_logs,
-        at:    1.hour.from_now.change(min: 0).to_i,
-        queue: "low"
-      )
-      described_class.schedule_hourly_tasks
-    end
-
-    it "schedules Log::Amazon::S3::Licenses.fetch_and_create_new_logs" do
-      Log::Amazon::S3::Licenses.should delay(:fetch_and_create_new_logs,
         at:    1.hour.from_now.change(min: 0).to_i,
         queue: "low"
       )
