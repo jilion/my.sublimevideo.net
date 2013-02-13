@@ -20,7 +20,10 @@ describe Stats::RevenuesStat do
     end
 
     describe '.create_stats' do
-      before { described_class.create_stats }
+      before do
+        described_class.create_stats
+        Sidekiq::Worker.drain_all
+      end
 
       it 'creates revenues_stats stats for the last 5 days' do
         described_class.count.should eq 5
@@ -47,8 +50,7 @@ describe Stats::RevenuesStat do
         billings_stat = described_class.all.entries[2]
         billings_stat['d'].should eq 3.days.ago.midnight
         billings_stat['r'].should == {
-          'design' => { 'foo' => (paid_design.price.to_f / Time.days_in_month(4.days.ago.month, 4.days.ago.year)).round },
-          'stats' => { 'realtime' => (@stats_addon_plan_2.price.to_f / Time.days_in_month(4.days.ago.month, 4.days.ago.year)).round }
+          'design' => { 'foo' => (paid_design.price.to_f / Time.days_in_month(4.days.ago.month, 4.days.ago.year)).round }
         }
       end
 
@@ -66,7 +68,6 @@ describe Stats::RevenuesStat do
         billings_stat['d'].should eq 1.day.ago.midnight
         billings_stat['r'].should == {
           'design' => { 'foo' => (paid_design.price.to_f / Time.days_in_month(2.days.ago.month, 2.days.ago.year)).round },
-          'support' => { 'vip' => (@support_addon_plan_2.price.to_f / Time.days_in_month(2.days.ago.month, 2.days.ago.year)).round },
           'logo' => { 'disabled' => (@logo_addon_plan_2.price.to_f / Time.days_in_month(1.day.ago.month, 1.day.ago.year)).round }
         }
       end
