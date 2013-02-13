@@ -7,7 +7,7 @@
 
 %p.desc= raw "Copy the code below and paste it in the pages on #{site.hostname} where the SublimeVideo player will be used. We #{link_to 'highly recommend', page_url('troubleshooting', subdomain: 'docs', anchor: 'old-browsers-compatibility'), class: 'hl', onclick: "window.open(this); return false"} you insert it into the <code>&lt;head&gt;</code> tag."
 
-%p.desc Loader code for the stable SublimeVideo player:
+%p.desc Loader code for the new SublimeVideo Player (in beta):
 %form
   .embed_code.entry
     %textarea{ readonly: true, onclick: "this.focus();this.select();" }><= sublimevideo_script_tag_for(site, 'beta')
