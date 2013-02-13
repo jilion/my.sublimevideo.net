@@ -386,8 +386,8 @@ GEM
     multi_json (1.6.0)
     multi_xml (0.5.3)
     multipart-post (1.1.5)
-    net-scp (1.0.6)
-      net-ssh (>= 2.6.5)
+    net-scp (1.0.4)
+      net-ssh (>= 1.99.1)
     net-ssh (2.6.5)
     newrelic-redis (1.4.0)
       newrelic_rpm (~> 3.0)
@@ -698,6 +698,7 @@ DEPENDENCIES
   lograge
   mime-types
   mongoid
+  net-scp (= 1.0.4)
   newrelic-redis
   newrelic_moped
   newrelic_rpm
