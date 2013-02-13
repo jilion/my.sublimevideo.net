@@ -20,6 +20,7 @@ unless defined?(ActiveRecord)
   Stats::UsersStat = Class.new
   Stats::SitesStat = Class.new
   Stats::BillingsStat = Class.new
+  Stats::RevenuesStat = Class.new
   Stats::BillableItemsStat = Class.new
   Stats::SiteStatsStat = Class.new
   Stats::SiteUsagesStat = Class.new
@@ -134,6 +135,14 @@ describe Scheduler do
 
     it "schedules Stats::BillingsStat.create_stats" do
       Stats::BillingsStat.should delay(:create_stats,
+        at: Time.now.utc.tomorrow.midnight.to_i,
+        queue: "low"
+      )
+      described_class.schedule_daily_tasks
+    end
+
+    it "schedules Stats::RevenuesStat.create_stats" do
+      Stats::RevenuesStat.should delay(:create_stats,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )
