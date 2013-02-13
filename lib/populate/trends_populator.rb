@@ -4,7 +4,8 @@ class TrendsPopulator < Populator
     generate_users_trends
     generate_sites_trends
     generate_billable_items_trends
-    generate_sales_trends
+    generate_billings_trends
+    generate_revenues_trends
   end
 
   private
@@ -97,12 +98,20 @@ class TrendsPopulator < Populator
     puts "#{Stats::BillableItemsStat.count} days of billable items trends generated!"
   end
 
-  def generate_sales_trends
-    PopulateHelpers.empty_tables(Stats::SalesStat)
+  def generate_billings_trends
+    PopulateHelpers.empty_tables(Stats::BillingsStat)
 
-    Stats::SalesStat.create_stats
+    Stats::BillingsStat.create_stats
 
-    puts "#{Stats::SalesStat.count} days of sales trends generated!"
+    puts "#{Stats::BillingsStat.count} days of billings trends generated!"
+  end
+
+  def generate_revenues_trends
+    PopulateHelpers.empty_tables(Stats::RevenuesStat)
+
+    Stats::RevenuesStat.create_stats
+
+    puts "#{Stats::RevenuesStat.count} days of revenues trends generated!"
   end
 
 end

@@ -763,7 +763,7 @@ describe User do
       end
     end
 
-    describe '.with_page_loads' do
+    describe '.with_page_loads_in_the_last_30_days' do
       let(:user1) { create(:user) }
       let(:user2) { create(:user) }
       let(:user3) { create(:user) }
@@ -778,7 +778,7 @@ describe User do
         create(:site_day_stat, t: site4.token, d: Time.now.utc.midnight, vv: { em: 1 })
       end
 
-      specify { User.with_page_loads.all.should =~ [user1, user2] }
+      specify { User.with_page_loads_in_the_last_30_days.all.should =~ [user1, user2] }
     end
   end # Scopes
 

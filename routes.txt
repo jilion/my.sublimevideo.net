@@ -65,7 +65,8 @@ update_addon_plan_subscription_admin_site PUT      /sites/:id/update_addon_plan_
                             admin_invoice GET      /invoices/:id(.:format)                                   admin/invoices#show
                        single_admin_stats GET      /stats/single/:page(.:format)                             admin/stats#show
                          more_admin_stats GET      /stats/more(.:format)                                     admin/stats#more
-                        sales_admin_stats GET      /stats/sales(.:format)                                    admin/stats#sales
+                     billings_admin_stats GET      /stats/billings(.:format)                                 admin/stats#billings
+                     revenues_admin_stats GET      /stats/revenues(.:format)                                 admin/stats#revenues
                billable_items_admin_stats GET      /stats/billable_items(.:format)                           admin/stats#billable_items
                         users_admin_stats GET      /stats/users(.:format)                                    admin/stats#users
                         sites_admin_stats GET      /stats/sites(.:format)                                    admin/stats#sites

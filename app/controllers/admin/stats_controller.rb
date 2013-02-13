@@ -10,9 +10,15 @@ class Admin::StatsController < Admin::AdminController
     render params[:page]
   end
 
-  def sales
+  def billings
     respond_to do |format|
-      format.json { render json: Stats::SalesStat.json }
+      format.json { render json: Stats::BillingsStat.json }
+    end
+  end
+
+  def revenues
+    respond_to do |format|
+      format.json { render json: Stats::RevenuesStat.json }
     end
   end
 

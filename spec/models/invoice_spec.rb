@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Invoice, :addons do
+  let(:site) { create(:site) }
 
   describe "Factory" do
     subject { create(:invoice) }
@@ -46,6 +47,33 @@ describe Invoice, :addons do
     it { should validate_numericality_of(:vat_amount) }
     it { should validate_numericality_of(:balance_deduction_amount) }
     it { should validate_numericality_of(:amount) }
+
+    context "invoice is valid if the only one for this month" do
+      before do
+        @invoice = build(:invoice, site: site)
+        @invoice.invoice_items << build(:addon_plan_invoice_item, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+        @invoice.save!
+      end
+
+      it 'can be succeeded' do
+        @invoice.succeed!
+      end
+    end
+
+    %w[open paid].each do |state|
+      context "already one #{state} invoice exists for this site for this month" do
+        before do
+          old_invoice = build(:invoice, site: site, state: state)
+          old_invoice.invoice_items << build(:addon_plan_invoice_item, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+          old_invoice.save!
+
+          @new_invoice = build(:invoice, site: site)
+          @new_invoice.invoice_items << build(:addon_plan_invoice_item, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+        end
+
+        it { @new_invoice.should_not be_valid }
+      end
+    end
   end # Validations
 
   describe "State Machine" do
@@ -184,7 +212,8 @@ describe Invoice, :addons do
   describe "Scopes" do
     let(:site) { create(:site) }
     let(:refunded_site) { create(:site, refunded_at: Time.now.utc) }
-    before {
+    before do
+
       @open_invoice     = create(:invoice, site: site, created_at: 48.hours.ago)
       @failed_invoice   = create(:failed_invoice, site: site, created_at: 25.hours.ago)
       @waiting_invoice  = create(:waiting_invoice, site: site, created_at: 18.hours.ago)
@@ -198,7 +227,7 @@ describe Invoice, :addons do
       @paid_invoice.should be_paid
       @canceled_invoice.should be_canceled
       @refunded_invoice.should be_refunded
-    }
+    end
 
     describe '.between' do
       specify { Invoice.between(created_at: 24.hours.ago..15.hours.ago).order(:id).should eq [@waiting_invoice, @paid_invoice] }
@@ -236,18 +265,22 @@ describe Invoice, :addons do
       specify { Invoice.not_paid.order(:id).should eq [@open_invoice, @failed_invoice, @waiting_invoice] }
     end
 
-    describe '.for_month' do
-      context 'already one canceled invoice exists for this site for this month' do
-        let(:open_invoice)     { create(:invoice, site: site, state: 'open') }
-        let(:paid_invoice)     { create(:invoice, site: site, state: 'paid') }
-        let(:canceled_invoice) { create(:invoice, site: site, state: 'canceled') }
-        before do
-          create(:addon_plan_invoice_item, invoice: open_invoice,     started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
-          create(:addon_plan_invoice_item, invoice: paid_invoice,     started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
-          create(:addon_plan_invoice_item, invoice: canceled_invoice, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
-        end
+    describe '.for_month & .for_period' do
+      let(:open_invoice)     { create(:invoice, site: site, state: 'open') }
+      let(:paid_invoice)     { create(:invoice, site: site, state: 'paid') }
+      let(:canceled_invoice) { create(:invoice, site: site, state: 'canceled') }
+      before do
+        create(:addon_plan_invoice_item, invoice: open_invoice,     started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+        create(:addon_plan_invoice_item, invoice: paid_invoice,     started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+        create(:addon_plan_invoice_item, invoice: canceled_invoice, started_at: 1.month.ago.beginning_of_month, ended_at: 1.month.ago.end_of_month)
+      end
 
+      describe '.for_month' do
         specify { Invoice.for_month(1.months.ago).order(:id).should eq [open_invoice, paid_invoice] }
+      end
+
+      describe '.for_period' do
+        specify { Invoice.for_period(1.months.ago.all_month).order(:id).should eq [open_invoice, paid_invoice] }
       end
     end
   end # Scopes

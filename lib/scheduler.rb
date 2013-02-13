@@ -28,7 +28,7 @@ module Scheduler
     NewInactiveUserNotifier.delay(options).send_emails
     Stats::UsersStat.delay(options).create_stats
     Stats::SitesStat.delay(options).create_stats
-    Stats::SalesStat.delay(options).create_stats
+    Stats::BillingsStat.delay(options).create_stats
     Stats::BillableItemsStat.delay(options).create_stats
     Stats::SiteStatsStat.delay(options).create_stats
     Stats::SiteUsagesStat.delay(options).create_stats

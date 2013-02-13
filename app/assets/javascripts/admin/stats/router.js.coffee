@@ -8,9 +8,6 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
     this.initKeyboardShortcuts()
     this.fetchStats()
 
-    new AdminSublimeVideo.Views.PageTitleView
-      el: '#page_title'
-
     AdminSublimeVideo.timeRangeTitleView = new AdminSublimeVideo.Views.TimeRangeTitleView
       el: '#time_range_title'
       period: AdminSublimeVideo.period
@@ -36,7 +33,8 @@ class AdminSublimeVideo.Routers.StatsRouter extends Backbone.Router
     unless _.isEmpty @selectedPeriod
       AdminSublimeVideo.period.set(start: new Date(parseInt(@selectedPeriod[0])), end: new Date(parseInt(@selectedPeriod[1])))
 
-    AdminSublimeVideo.stats["sales"]                       = new AdminSublimeVideo.Collections.SalesStats(this.selectedSeriesFor('sales'))
+    AdminSublimeVideo.stats["billings"]                    = new AdminSublimeVideo.Collections.BillingsStats(this.selectedSeriesFor('billings'))
+    AdminSublimeVideo.stats["revenues"]                    = new AdminSublimeVideo.Collections.RevenuesStats(this.selectedSeriesFor('revenues'))
     AdminSublimeVideo.stats["billable_items"]              = new AdminSublimeVideo.Collections.BillableItemsStats(this.selectedSeriesFor('billable_items'))
     AdminSublimeVideo.stats["users"]                       = new AdminSublimeVideo.Collections.UsersStats(this.selectedSeriesFor('users'))
     AdminSublimeVideo.stats["sites"]                       = new AdminSublimeVideo.Collections.SitesStats(this.selectedSeriesFor('sites'))

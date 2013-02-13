@@ -1,36 +1,36 @@
 #= require ./stat
 
-class AdminSublimeVideo.Models.SalesStat extends AdminSublimeVideo.Models.Stat
+class AdminSublimeVideo.Models.BillingsStat extends AdminSublimeVideo.Models.Stat
   defaults:
     ne: 0 # new
     re: 0 # renew
 
-class AdminSublimeVideo.Collections.SalesStats extends AdminSublimeVideo.Collections.Stats
-  model: AdminSublimeVideo.Models.SalesStat
-  url: -> '/stats/sales.json'
-  id: -> 'sales'
+class AdminSublimeVideo.Collections.BillingsStats extends AdminSublimeVideo.Collections.Stats
+  model: AdminSublimeVideo.Models.BillingsStat
+  url: -> '/stats/billings.json'
+  id: -> 'billings'
   chartType: (selected) -> 'column'
   yAxis: (selected) -> 0
 
   title: (selected) ->
     if selected.length > 1 # attribute is something like: ["ne", "premium"] or ["ne", "premium", "y"]
-      text = 'Sales from '
+      text = switch selected[0]
+        when 'ne' then text += 'New'
+        when 're' then text += 'Renew'
+
       if selected.length > 2 # attribute is something like: ["ne", "logo", "disabled"]
         text += "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} (#{SublimeVideo.Misc.Utils.capitalize(selected[2])}) add-on"
-      else # plan
+      else
         text += if _.contains(['comet', 'planet', 'plus', 'premium'], selected[1])
           "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} plan"
         else
           "#{SublimeVideo.Misc.Utils.capitalize(selected[1])} add-on"
-      switch selected[0]
-        when 'ne' then text += ' subscription'
-        when 're' then text += ' renewing'
-      text
+      text + ' subscription billed'
     else
       switch selected[0]
-        when 'ne' then 'Sales from new subscription'
-        when 're' then 'Sales from renewing'
-        when 'total' then 'Total sales (from new subscription & renewing)'
+        when 'ne' then 'New subscriptions billed'
+        when 're' then 'Renewed subscriptions billed'
+        when 'total' then 'Total subscriptions billed'
 
   customPluck: (selected, from = null, to = null) ->
     array = []

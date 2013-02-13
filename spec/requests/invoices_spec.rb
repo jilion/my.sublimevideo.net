@@ -196,9 +196,10 @@ feature "Site invoice page" do
       background do
         @site = build(:site, user: @current_user, hostname: 'rymai.com')
         SiteManager.new(@site).create
-        @invoice = create(:invoice, site: @site, vat_rate: 0, vat_amount: 0).tap { |i|
-          create(:addon_plan_invoice_item, item: @stats_addon_plan_2, invoice: i)
-        }
+
+        @invoice = build(:invoice, site: @site, vat_rate: 0, vat_amount: 0)
+        @invoice.invoice_items << build(:addon_plan_invoice_item, item: @stats_addon_plan_2)
+        @invoice.save!
         @transaction = create(:transaction, invoices: [@invoice])
         @invoice.succeed!
 
@@ -237,9 +238,9 @@ feature "Site invoice page" do
         @site = build(:site, user: @current_user, hostname: 'rymai.com')
         SiteManager.new(@site).create
         @invoice = build(:invoice, site: @site)
-        @plan_invoice_item1 = create(:plan_invoice_item, invoice: @invoice, amount: -1000)
-        @plan_invoice_item2 = create(:plan_invoice_item, invoice: @invoice, amount: 1000)
-        @invoice.invoice_items = [@plan_invoice_item1, @plan_invoice_item2]
+        @plan_invoice_item1 = build(:plan_invoice_item, amount: -1000)
+        @plan_invoice_item2 = build(:plan_invoice_item, amount: 1000)
+        @invoice.invoice_items << @plan_invoice_item1 << @plan_invoice_item2
         @invoice.save!
 
         go 'my', "/invoices/#{@invoice.reference}"

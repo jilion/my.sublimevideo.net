@@ -231,12 +231,13 @@ class Site < ActiveRecord::Base
     }
   end
 
-  def self.with_page_loads
+  def self.with_page_loads_in_the_last_30_days
     fields_to_add = %w[m e em].inject([]) do |array, sub_field|
       array << "$pv.#{sub_field}"; array
     end
 
     stats = Stat::Site::Day.collection.aggregate([
+      { :$match => { d: { :$gte => 30.days.ago.midnight } } },
       { :$project => {
           _id: 0,
           t: 1,

@@ -1,5 +1,5 @@
 module Stats
-  class SalesStat
+  class BillingsStat
     include Mongoid::Document
     include Mongoid::Timestamps
 
@@ -40,23 +40,23 @@ module Stats
 
         while last_stat_day < 1.day.ago.midnight do
           last_stat_day += 1.day
-          create_sales_stat(last_stat_day)
+          create_billings_stat(last_stat_day)
         end
       end
 
       def determine_last_stat_day
-        if SalesStat.present?
-          SalesStat.order_by(d: 1).last.try(:d)
+        if self.present?
+          self.order_by(d: 1).last.try(:d)
         else
           (Invoice.paid.order{ paid_at.asc }.first.paid_at).midnight - 1.day
         end
       end
 
-      def create_sales_stat(day)
-        self.create(sales_hash(day))
+      def create_billings_stat(day)
+        self.create(billings_hash(day))
       end
 
-      def sales_hash(day)
+      def billings_hash(day)
         invoices = Invoice.includes(:invoice_items).paid.between(paid_at: day.beginning_of_day..day.end_of_day)
         hash = {
           d: day.to_time,

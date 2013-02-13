@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Stats::SalesStat do
+describe Stats::BillingsStat do
 
   context "with a bunch of different invoices", :addons do
     before do
@@ -64,21 +64,21 @@ describe Stats::SalesStat do
     end
 
     describe '.create_stats' do
-      it 'creates sales_stats stats for the last 5 days' do
+      it 'creates billings_stats stats for the last 5 days' do
         described_class.create_stats
         described_class.count.should eq 5
       end
 
-      it 'creates sales_stats stats for the last day' do
+      it 'creates billings_stats stats for the last day' do
         described_class.create_stats
-        sales_stat = described_class.last
-        sales_stat["d"].should eq 1.day.ago.midnight
-        sales_stat["ne"].should == {
+        billings_stat = described_class.last
+        billings_stat["d"].should eq 1.day.ago.midnight
+        billings_stat["ne"].should == {
           'plus' => { 'm' => 2 },
           'design' => { 'twit' => 4 },
           'logo'   => { 'disabled' => 0, 'custom' => 2 }
         }
-        sales_stat["re"].should == {
+        billings_stat["re"].should == {
           'design'  => { 'twit' => 4 },
           'logo'    => { 'custom' => 4 },
           'support' => { 'vip' => 3 }
