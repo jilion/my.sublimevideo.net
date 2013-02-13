@@ -1,8 +1,8 @@
-# coding: utf-8
 require 'spec_helper'
-require 'one_time/site'
 
-describe OneTime::Site do
+require 'sites_tasks'
+
+describe SitesTasks do
 
   describe '.regenerate_templates' do
     let!(:site) { create(:site) }
