@@ -1,6 +1,6 @@
 module SitesTasks
   def self.regenerate_templates(options = {})
-    Site.select(:id).where(token: ::SiteToken.tokens).each do |site|
+    Site.select(:id).where(token: SiteToken.tokens).each do |site|
       LoaderGenerator.delay(queue: 'high').update_all_stages!(site.id) if options[:loaders]
       SettingsGenerator.delay(queue: 'high').update_all_types!(site.id) if options[:settings]
     end

@@ -28,7 +28,7 @@ describe KitManager do
   describe "#save" do
     let(:params) { { name: 'My Kit', app_design_id: 42, settings: { "logo" => { "settings" => "value" } } } }
     before do
-      ::Kit.stub(:transaction).and_yield
+      Kit.stub(:transaction).and_yield
       SettingsSanitizer.stub(:new) { settings_sanitizer }
       kit.stub(:name=)
       kit.stub(:app_design_id=)

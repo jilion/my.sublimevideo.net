@@ -8,7 +8,7 @@ class SettingsGenerator
   def_instance_delegators :cdn_file, :upload!, :delete!, :present?
 
   def self.update_all_types!(site_id, options = {})
-    site = ::Site.find(site_id)
+    site = Site.find(site_id)
     self::TYPES.each do |type|
       if site.state == 'active'
         new(site, type, options).upload!

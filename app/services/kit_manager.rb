@@ -7,7 +7,7 @@ class KitManager
 
   def save(params)
     creation = kit.site.new_record?
-    ::Kit.transaction do
+    Kit.transaction do
       kit.name          = params.delete(:name)
       kit.app_design_id = params.delete(:app_design_id)
       kit.settings      = SettingsSanitizer.new(kit, params.delete(:settings)).sanitize

@@ -26,7 +26,7 @@ class SiteManager
     RankSetter.delay(queue: 'low').set_ranks(site.id)
     Librato.increment 'sites.events', source: 'create'
     true
-  rescue ::ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid
     false
   end
 
@@ -39,7 +39,7 @@ class SiteManager
     SettingsGenerator.delay.update_all_types!(site.id)
     Librato.increment 'sites.events', source: 'update'
     true
-  rescue ::ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid
     false
   end
 

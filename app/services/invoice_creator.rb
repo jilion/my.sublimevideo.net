@@ -7,13 +7,13 @@ class InvoiceCreator
 
   class << self
     def create_invoices_for_month(date = 1.month.ago)
-      ::Site.not_archived.find_each(batch_size: 100) do |site|
+      Site.not_archived.find_each(batch_size: 100) do |site|
         delay.create_for_month(date, site.id)
       end
     end
 
     def create_for_month(date, site_id)
-      if site = ::Site.not_archived.find(site_id)
+      if site = Site.not_archived.find(site_id)
         build_for_month(date, site).save
       end
     end

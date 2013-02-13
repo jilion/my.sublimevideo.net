@@ -3,7 +3,7 @@ require 's3etag'
 CDNFile = Struct.new(:file, :destinations, :s3_options, :options) do
 
   def upload!
-    ::File.open(file) do |f|
+    File.open(file) do |f|
       data = f.read
       destinations.each do |destination|
         S3Wrapper.fog_connection.put_object(

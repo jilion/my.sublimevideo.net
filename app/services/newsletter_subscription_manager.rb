@@ -35,7 +35,7 @@ class NewsletterSubscriptionManager
     end
 
     def sync_from_service(user_id)
-      user = ::User.find(user_id)
+      user = User.find(user_id)
       return if user.newsletter?
 
       CampaignMonitorWrapper.lists.each do |name, list|

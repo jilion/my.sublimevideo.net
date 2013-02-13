@@ -10,7 +10,7 @@ module VoxcastWrapper
   class << self
 
     def purge(path)
-      if ::File.extname(path).present?
+      if File.extname(path).present?
         purge_path(path)
       else
         purge_dir(path)
