@@ -9,7 +9,7 @@ class InvoicesPopulator < Populator
         while timestamp < Time.now.utc do
           timestamp += 1.month
           Timecop.travel(timestamp.end_of_month) do
-            creator = InvoiceCreator.build_for_period(Time.now.utc, site).tap { |s| s.save }
+            creator = InvoiceCreator.build_for_month(Time.now.utc, site).tap { |s| s.save }
             creator.invoice.succeed if creator.invoice.persisted?
           end
         end
