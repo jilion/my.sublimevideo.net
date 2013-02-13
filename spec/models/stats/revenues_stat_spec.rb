@@ -21,6 +21,7 @@ describe Stats::RevenuesStat do
 
     describe '.create_stats' do
       before do
+        Sidekiq::Worker.clear_all
         described_class.create_stats
         Sidekiq::Worker.drain_all
       end
