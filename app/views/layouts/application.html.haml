@@ -13,7 +13,7 @@
 = content_for :javascript_bottom do
   - if Rails.env.production? && user_signed_in?
     = render 'layouts/fastpass'
-  :coffeescript
+  :coffee
     sublime.load()
 
 = render 'layouts/menu'

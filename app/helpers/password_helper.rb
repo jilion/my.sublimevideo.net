@@ -11,7 +11,7 @@ module PasswordHelper
     resource && resource.errors.clear
     flash.clear
 
-    render "password/box", options
+    render 'password/box', options
   end
 
 end
