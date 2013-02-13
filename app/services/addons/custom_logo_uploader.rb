@@ -17,7 +17,7 @@ module Addons
       @old_custom_logo_path = old_custom_logo_path
       @cdn_file = CDNFile.new(
         file.path,
-        destinations,
+        destination,
         s3_options
       )
     end
@@ -68,11 +68,8 @@ module Addons
       processed_file
     end
 
-    def destinations(path = current_path)
-      [{
-        bucket: S3Wrapper.buckets['sublimevideo'],
-        path: path
-      }]
+    def destination(path = current_path)
+      { bucket: S3Wrapper.buckets['sublimevideo'], path: path }
     end
 
     def s3_options
