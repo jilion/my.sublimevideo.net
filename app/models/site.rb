@@ -182,18 +182,27 @@ class Site < ActiveRecord::Base
   scope :with_path,                  where{ (path != nil) & (path != '') & (path != ' ') }
   scope :with_extra_hostnames,       where{ (extra_hostnames != nil) & (extra_hostnames != '') }
   scope :with_not_canceled_invoices, -> { joins(:invoices).merge(::Invoice.not_canceled) }
-  def self.with_addon_plan(full_addon_name)
-    addon_plan = AddonPlan.get(*full_addon_name.split('-'))
-
-    includes(:billable_items)
-    .where { billable_items.item_type == addon_plan.class.to_s }
-    .where { billable_items.item_id == addon_plan.id }
-  end
 
   # addons
   scope :paying,     -> { active.includes(:billable_items).merge(BillableItem.subscribed).merge(BillableItem.paid) }
   scope :paying_ids, -> { active.select("DISTINCT(sites.id)").joins("INNER JOIN billable_items ON billable_items.site_id = sites.id").merge(BillableItem.subscribed).merge(BillableItem.paid) }
   scope :free,       -> { active.includes(:billable_items).where{ id << Site.paying_ids } }
+  def self.with_addon_plan(full_addon_name)
+    addon_plan = AddonPlan.get(*full_addon_name.split('-'))
+
+    active.includes(:billable_items)
+    .where { billable_items.item_type == addon_plan.class.to_s }
+    .where { billable_items.item_id == addon_plan.id }
+  end
+
+  def self.in_beta_trial_ended_after(full_addon_name, timestamp)
+    addon_plan = AddonPlan.get(*full_addon_name.split('-'))
+
+    active.includes(:billable_item_activities).where{ billable_item_activities.state == 'beta' }
+    .where{ billable_item_activities.item_type == addon_plan.class.to_s }
+    .where{ billable_item_activities.item_id == addon_plan.id }
+    .where{ date_trunc('day', created_at) <= (timestamp - (BusinessModel.days_for_trial + 1).days).midnight }
+  end
 
   # admin
   scope :user_id, ->(user_id) { where(user_id: user_id) }

@@ -478,21 +478,39 @@ describe Site, :addons do
       let(:site2) { create(:site, user: user) }
       let(:site3) { create(:site, user: user, state: 'archived') }
       before do
+        Timecop.travel(31.days.ago) do
+          create(:billable_item, site: site1, item: @social_sharing_addon_plan_1, state: 'beta')
+          create(:billable_item_activity, site: site1, item: @social_sharing_addon_plan_1, state: 'beta')
+
+          create(:billable_item, site: site2, item: @logo_addon_plan_2, state: 'trial')
+
+          create(:billable_item, site: site3, item: @social_sharing_addon_plan_1, state: 'beta')
+          create(:billable_item_activity, site: site3, item: @social_sharing_addon_plan_1, state: 'beta')
+        end
         Timecop.travel(30.days.ago) do
           create(:billable_item, site: site2, item: @logo_addon_plan_1, state: 'trial')
+          create(:billable_item_activity, site: site2, item: @logo_addon_plan_1, state: 'trial')
         end
-        Timecop.travel(31.days.ago) { create(:billable_item, site: site2, item: @logo_addon_plan_2, state: 'trial') }
         create(:billable_item, site: site2, item: @stats_addon_plan_1, state: 'trial')
+        create(:billable_item_activity, site: site2, item: @stats_addon_plan_1, state: 'trial')
+
         create(:billable_item, site: site1, item: @support_addon_plan_2, state: 'subscribed')
+        create(:billable_item_activity, site: site1, item: @support_addon_plan_2, state: 'subscribed')
+
         create(:billable_item, site: site3, item: @support_addon_plan_2, state: 'subscribed')
+        create(:billable_item_activity, site: site3, item: @support_addon_plan_2, state: 'subscribed')
       end
 
-      describe ".paying" do
+      describe '.paying' do
         it { Site.paying.all.should =~ [site1] }
       end
 
-      describe ".free" do
+      describe '.free' do
         it { Site.free.all.should =~ [site2] }
+      end
+
+      describe '.in_beta_trial_ended_after' do
+        it { Site.in_beta_trial_ended_after('social_sharing-standard', Time.now.utc).all.should =~ [site1] }
       end
     end
 
