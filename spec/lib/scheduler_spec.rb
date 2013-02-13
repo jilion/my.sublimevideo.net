@@ -13,23 +13,21 @@ require 'services/credit_card_expiration_notifier'
 require 'services/new_inactive_user_notifier'
 require 'scheduler'
 
-unless defined?(ActiveRecord)
-  Transaction = Class.new
-  User = Class.new
-  Stats = Class.new
-  Stats::UsersStat = Class.new
-  Stats::SitesStat = Class.new
-  Stats::BillingsStat = Class.new
-  Stats::RevenuesStat = Class.new
-  Stats::BillableItemsStat = Class.new
-  Stats::SiteStatsStat = Class.new
-  Stats::SiteUsagesStat = Class.new
-  Stats::TweetsStat = Class.new
-  Stats::TailorMadePlayerRequestsStat = Class.new
-  Tweet = Class.new
-  Log = Class.new
-  Log::Voxcast = Class.new
-end
+Transaction = Class.new unless defined?(Transaction)
+User = Class.new unless defined?(User)
+Stats = Module.new unless defined?(Stats)
+Stats::UsersStat = Class.new unless defined?(Stats::UsersStat)
+Stats::SitesStat = Class.new unless defined?(Stats::SitesStat)
+Stats::BillingsStat = Class.new unless defined?(Stats::BillingsStat)
+Stats::RevenuesStat = Class.new unless defined?(Stats::RevenuesStat)
+Stats::BillableItemsStat = Class.new unless defined?(Stats::BillableItemsStat)
+Stats::SiteStatsStat = Class.new unless defined?(Stats::SiteStatsStat)
+Stats::SiteUsagesStat = Class.new unless defined?(Stats::SiteUsagesStat)
+Stats::TweetsStat = Class.new unless defined?(Stats::TweetsStat)
+Stats::TailorMadePlayerRequestsStat = Class.new unless defined?(Stats::TailorMadePlayerRequestsStat)
+Tweet = Class.new unless defined?(Tweet)
+Log = Class.new unless defined?(Log)
+Log::Voxcast = Class.new unless defined?(Log::Voxcast)
 
 describe Scheduler do
 
