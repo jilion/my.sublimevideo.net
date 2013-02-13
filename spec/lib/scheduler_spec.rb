@@ -10,6 +10,7 @@ require 'services/trial_handler'
 require 'services/invoice_creator'
 require 'services/site_counters_updater'
 require 'services/credit_card_expiration_notifier'
+require 'services/new_inactive_user_notifier'
 require 'scheduler'
 
 unless defined?(ActiveRecord)
@@ -107,8 +108,8 @@ describe Scheduler do
       described_class.schedule_daily_tasks
     end
 
-    it "schedules User.send_inactive_account_email" do
-      User.should delay(:send_inactive_account_email,
+    it "schedules NewInactiveUserNotifier.send_emails" do
+      NewInactiveUserNotifier.should delay(:send_emails,
         at: Time.now.utc.tomorrow.midnight.to_i,
         queue: "low"
       )

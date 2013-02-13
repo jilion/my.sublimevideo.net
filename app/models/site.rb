@@ -1,5 +1,4 @@
 class Site < ActiveRecord::Base
-  include SiteModules::Activity
   include SiteModules::BillableItem
   include SiteModules::Api
   include SiteModules::Billing
@@ -75,6 +74,9 @@ class Site < ActiveRecord::Base
   end
   def day_stats
     Stat::Site::Day.where(t: token)
+  end
+  def views
+    @views ||= Stat::Site::Day.views_sum(token: token)
   end
 
   # ===============

@@ -25,7 +25,7 @@ module Scheduler
     options.merge!(queue: 'low')
 
     CreditCardExpirationNotifier.delay(options).send_emails
-    User.delay(options).send_inactive_account_email
+    NewInactiveUserNotifier.delay(options).send_emails
     Stats::UsersStat.delay(options).create_stats
     Stats::SitesStat.delay(options).create_stats
     Stats::SalesStat.delay(options).create_stats
