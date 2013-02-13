@@ -151,13 +151,6 @@ describe Log::Voxcast do
       end
     end
 
-    it "should have config values" do
-      Log::Voxcast.config.should == {
-        file_format_class_name: "VoxcastSitesLogFileFormat",
-        store_dir: "voxcast"
-      }
-    end
-
     describe ".parse_log_for_stats" do
       before do
         log_file = fixture_file('logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz')
