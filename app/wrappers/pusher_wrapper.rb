@@ -35,5 +35,4 @@ class PusherWrapper
   rescue Pusher::Error
     false
   end
-
 end

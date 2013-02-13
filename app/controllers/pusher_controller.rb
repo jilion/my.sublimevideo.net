@@ -4,7 +4,7 @@ class PusherController < ApplicationController
 
   # POST /pusher/auth
   def auth
-    if User.accessible_channel?(params[:channel_name], current_user)
+    if PusherChannel.new(params[:channel_name]).accessible?(current_user)
       authenticated_response = PusherWrapper.authenticated_response(
         params[:channel_name],
         params[:socket_id]
