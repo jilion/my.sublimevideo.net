@@ -1,5 +1,3 @@
-require_dependency 'notify'
-
 class UsrAgent # fucking name conflict with UserAgent gem
   include Mongoid::Document
 
@@ -62,7 +60,7 @@ private
     begin
       useragent = UserAgent.parse(useragent_string) # gem here
     rescue => ex
-      Notify.send("UserAgent (gem) parsing problem with: #{useragent_string}", exception: ex)
+      Notifier.send("UserAgent (gem) parsing problem with: #{useragent_string}", exception: ex)
     end
     if useragent.present?
       hash = %w[browser version platform os].inject({}) do |hash, attr|

@@ -4,7 +4,7 @@ feature 'Kits page' do
   background do
     sign_in_as :user
     @site = build(:site, user: @current_user)
-    Service::Site.new(@site).create
+    SiteManager.new(@site).create
     go 'my', "/sites/#{@site.to_param}/players"
   end
 
@@ -44,7 +44,7 @@ feature 'New kit' do
   background do
     sign_in_as :user
     @site = build(:site, user: @current_user)
-    Service::Site.new(@site).create
+    SiteManager.new(@site).create
     go 'my', "/sites/#{@site.to_param}/players"
     click_link 'New Player'
     current_url.should =~ %r{http://[^/]+/sites/#{@site.to_param}/players/new}

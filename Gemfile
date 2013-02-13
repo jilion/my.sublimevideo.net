@@ -46,7 +46,6 @@ gem 'kiqstand' # Mongoid support for Sidekiq
 
 gem 'rescue_me'
 gem 'configuration'
-gem 'json'
 gem 'libxml-ruby', require: 'libxml'
 gem 'yajl-ruby', require: 'yajl' # json
 
@@ -111,6 +110,10 @@ gem 'solve'
 # Videos
 gem 'vimeo'
 gem 'youtube_it'
+
+# Update was needed, but not directly used by mysv
+gem 'json'
+gem 'net-scp', '1.0.4'
 
 # Gems used only for assets and not required
 # in production environments by default.

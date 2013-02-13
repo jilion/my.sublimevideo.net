@@ -6,7 +6,7 @@ feature "Sites pagination:" do
     sign_in_as :admin
     Site.delete_all
     create(:site)
-    Responders::PaginatedResponder.stub(:per_page).and_return(1)
+    PaginatedResponder.stub(:per_page).and_return(1)
   end
 
   scenario "pagination links displayed only if count of sites > Site.per_page" do

@@ -10,12 +10,6 @@ describe Admin do
     it { should be_valid }
   end # Factory
 
-  describe "Module inclusion" do
-    it "includes the AdminRoleMethods module" do
-      described_class.included_modules.should include(AdminRoleMethods)
-    end
-  end
-
   describe "Associations" do
     subject { create(:admin) }
 
@@ -30,7 +24,7 @@ describe Admin do
     end
 
     it "can have defined roles" do
-      AdminRole.roles.each do |role|
+      Admin.roles.each do |role|
         build(:admin, roles: [role]).should be_valid
       end
     end
@@ -39,6 +33,41 @@ describe Admin do
       build(:admin, roles: ['foo']).should_not be_valid
     end
   end # Validations
+
+  describe ".has_role?" do
+    context "with marcom role" do
+      subject { Admin.new(roles: %w[marcom]) }
+
+      it { should have_role('marcom') }
+      it { should_not have_role('invoices') }
+      it { should_not have_role('god') }
+    end
+
+    context "with invoices role" do
+      subject { Admin.new(roles: %w[invoices]) }
+
+      it { should have_role('invoices') }
+      it { should_not have_role('marcom') }
+      it { should_not have_role('god') }
+    end
+
+    context "with god role" do
+      subject { Admin.new(roles: %w[god]) }
+
+      it { should have_role('god') }
+      it { should have_role('marcom') }
+      it { should have_role('invoices') }
+    end
+
+    context "with 'marcom' and 'invoices' roles" do
+      subject { Admin.new(roles: %w[marcom invoices]) }
+
+      it { should have_role('marcom') }
+      it { should have_role('invoices') }
+      it { should_not have_role('god') }
+    end
+  end
+
 
 end
 

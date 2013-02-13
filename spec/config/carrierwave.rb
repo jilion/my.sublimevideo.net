@@ -1,3 +1,5 @@
+require 'carrierwave'
+require File.expand_path('config/initializers/carrierwave')
 require 'carrierwave/test/matchers'
 
 RSpec.configure do |config|
@@ -24,12 +26,12 @@ def set_fog_configuration
   Fog.mock!
   Fog.credentials = {
     provider:              'AWS',
-    aws_access_key_id:     S3.access_key_id,
-    aws_secret_access_key: S3.secret_access_key,
+    aws_access_key_id:     S3Wrapper.access_key_id,
+    aws_secret_access_key: S3Wrapper.secret_access_key,
     region:                'us-east-1'
   }
   $fog_connection = Fog::Storage.new(provider: 'AWS')
-  S3.buckets.each do |bucket_name, bucket|
+  S3Wrapper.buckets.each do |bucket_name, bucket|
     $fog_connection.directories.create(key: bucket)
   end
 end

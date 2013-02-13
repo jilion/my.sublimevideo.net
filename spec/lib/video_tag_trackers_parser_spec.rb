@@ -1,8 +1,15 @@
 require 'fast_spec_helper'
+require 'active_support/core_ext'
 require 'addressable/uri'
+
+require 'services/notifier'
 require File.expand_path('lib/video_tag_trackers_parser')
 
 describe VideoTagTrackersParser do
+
+  before {
+    Notifier.stub(:send)
+  }
 
   it "extracts video_tag meta_data from only extra & main domain" do
     video_tags_trackers = {

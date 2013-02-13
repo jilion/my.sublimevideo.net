@@ -5,7 +5,7 @@ feature "Users pagination:" do
   background do
     sign_in_as :admin
     create(:site) # this create a billable user
-    Responders::PaginatedResponder.stub(:per_page).and_return(1)
+    PaginatedResponder.stub(:per_page).and_return(1)
   end
 
   scenario "pagination links displayed only if count of users > User.per_page" do

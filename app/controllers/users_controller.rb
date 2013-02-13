@@ -1,10 +1,6 @@
-require_dependency 'controller_helpers/redirection_filters'
-require_dependency 'controller_helpers/custom_devise_paths'
-require_dependency 'service/user'
-
 class UsersController < Devise::RegistrationsController
-  include ControllerHelpers::RedirectionFilters
-  include ControllerHelpers::CustomDevisePaths
+  include RedirectionFiltersControllerHelper
+  include CustomDevisePathsControllerHelper
 
   helper :all
 
@@ -25,7 +21,7 @@ class UsersController < Devise::RegistrationsController
     @user = resource
     @user.referrer_site_token = cookies[:r]
 
-    if Service::User.new(@user).create
+    if UserManager.new(@user).create
       if @user.active_for_authentication?
         set_flash_message :notice, :signed_up if is_navigational_format?
         sign_in(resource_name, @user)

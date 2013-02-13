@@ -18,7 +18,7 @@ feature 'special /addons page' do
     background do
       @user = create(:user, use_clients: true)
       @site = build(:site, user: @user)
-      Service::Site.new(@site).create
+      SiteManager.new(@site).create
     end
 
     scenario 'redirects to /login and then to /sites/:token/addons' do
@@ -32,8 +32,8 @@ feature 'special /addons page' do
   context 'user is not logged-in with more than 1 site' do
     background do
       @user = create(:user, use_clients: true)
-      Service::Site.new(build(:site, user: @user)).create
-      Service::Site.new(build(:site, user: @user)).create
+      SiteManager.new(build(:site, user: @user)).create
+      SiteManager.new(build(:site, user: @user)).create
     end
 
     scenario 'redirects to /login and then to /sites' do

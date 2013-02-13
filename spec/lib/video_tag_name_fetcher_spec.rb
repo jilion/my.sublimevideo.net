@@ -1,6 +1,9 @@
 require 'fast_spec_helper'
 require 'active_support/core_ext'
+
 require File.expand_path('lib/video_tag_name_fetcher')
+require 'wrappers/vimeo_wrapper'
+require 'wrappers/youtube_wrapper'
 
 describe VideoTagNameFetcher do
 

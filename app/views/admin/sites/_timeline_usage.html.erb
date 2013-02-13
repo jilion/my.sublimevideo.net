@@ -1,9 +1,7 @@
 <%
-require_dependency 'stat_timeline'
+stats_timeline = SiteStatsTimelineBuilder.new(token: site.token, from: graph_start_date, to: graph_end_date)
 
-stats_timeline = StatTimeline::SiteDayStat.new(token: site.token, from: graph_start_date, to: graph_end_date)
-
-graph = Graph.new do |g|
+graph = HighchartsGraphBuilder.new do |g|
   g.option(chart: chart('timeline_usage'))
   g.option(title: { text: "Video plays & Page visits for #{truncated_hostname(site)}"})
   g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
