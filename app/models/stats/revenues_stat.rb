@@ -61,7 +61,7 @@ module Stats
         }
 
         ::Site.not_archived.find_each(batch_size: 100) do |site|
-          invoice_service = InvoiceCreator.build_for_period((day - 1.day).all_day, site)
+          invoice_service = InvoiceCreator.build_for_period(day.to_time.yesterday.all_day, site)
 
           invoice_service.invoice.invoice_items.each do |invoice_item|
             second_key = case invoice_item.type
