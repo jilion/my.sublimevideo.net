@@ -40,12 +40,19 @@ module Stats
     end
 
     def self.player_mode_hashes_values_sum(site_stats)
-      md = site_stats.map(&:md)
+      modes_and_devices = site_stats.map(&:md) # { Player Mode => { Device => N } }
 
-      {
-        h: md.map { |h| h["h"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } },
-        f: md.map { |h| h["f"] || {} }.inject { |memo, el| memo.merge(el) { |k, old_v, new_v| old_v + new_v } }
-      }
+      [:h, :f].inject({}) do |hash, key|
+        mapped_mode_and_devices = modes_and_devices.map { |mode_and_devices| mode_and_devices[key.to_s] || {} }
+        hash[key] = player_mode_hash_values_sum(mapped_mode_and_devices)
+        hash
+      end
+    end
+
+    def self.player_mode_hash_values_sum(modes_and_devices)
+      modes_and_devices.inject do |hash, mode_and_devices|
+        hash.merge(mode_and_devices) { |k, old_v, new_v| old_v + new_v }
+      end
     end
 
   end
