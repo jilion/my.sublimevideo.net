@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-source 'https://8dezqz7z7HWea9vtaFwg@gems.fury.io/me/' # thibaud@jilion.com account
+source 'https://gems.gemfury.com/8dezqz7z7HWea9vtaFwg' # thibaud@jilion.com account
 
 ruby '1.9.3'
 
