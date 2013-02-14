@@ -1,87 +1,46 @@
 module Stats
-  class TailorMadePlayerRequestsStat
-    include Mongoid::Document
-    include Mongoid::Timestamps
-
+  class TailorMadePlayerRequestsStat < Base
     store_in collection: 'tailor_made_player_requests_stats'
 
-    field :d, type: DateTime # Day
-    field :n, type: Hash     # new { "agency" => 1, "standalone" => 2, "platform" => 3, "other" => 4 }
+    field :n, type: Hash # new { "agency" => 1, "standalone" => 2, "platform" => 3, "other" => 4 }
 
     index d: 1
-    index created_at: 1
 
-    # send time as id for backbonejs model
-    def as_json(options = nil)
-      json = super
-      json['id'] = d.to_i
-      json
+    def self.json_fields
+      [:n]
     end
 
-    # =================
-    # = Class Methods =
-    # =================
+    def self.determine_last_stat_day
+      if TailorMadePlayerRequestsStat.present?
+        TailorMadePlayerRequestsStat.order_by(d: 1).last.try(:d)
+      else
+        (TailorMadePlayerRequest.all(by_date: 'asc').first.created_at).midnight - 1.day
+      end
+    end
 
-    class << self
-
-      def json(from = nil, to = nil)
-        json_stats = if from.present?
-          between(d: from..(to || Time.now.utc.midnight))
-        else
-          scoped
-        end
-
-        json_stats.order_by(d: 1).to_json(only: [:n])
+    def self.update_stats(start_day = nil)
+      scope = if start_day
+        where(d: { :$gte => start_day.midnight })
+      else
+        all
       end
 
-      def create_stats
-        last_stat_day = determine_last_stat_day
+      scope.each do |stat|
+        stat.update_attributes(stat_hash(stat.d))
+      end
+    end
 
-        while last_stat_day < 1.day.ago.midnight do
-          last_stat_day += 1.day
-          create_tailor_made_player_requests_stat(last_stat_day)
-        end
+    def self.stat_hash(day)
+      hash = {
+        d: day.to_time,
+        n: Hash.new(0)
+      }
+
+      TailorMadePlayerRequest.topics.each do |topic|
+        hash[:n][topic] = TailorMadePlayerRequest.count(with_topic: topic, created_before: day.end_of_day)
       end
 
-      def update_stats(start_day = nil)
-        scope = if start_day
-          where(d: { :$gte => start_day.midnight })
-        else
-          all
-        end
-
-        scope.each do |stat|
-          stat.update_attributes(tailor_made_player_requests_hash(stat.d))
-        end
-      end
-
-      private
-
-      def determine_last_stat_day
-        if TailorMadePlayerRequestsStat.present?
-          TailorMadePlayerRequestsStat.order_by(d: 1).last.try(:d)
-        else
-          (TailorMadePlayerRequest.all(by_date: 'asc').first.created_at).midnight - 1.day
-        end
-      end
-
-      def create_tailor_made_player_requests_stat(day)
-        self.create(tailor_made_player_requests_hash(day))
-      end
-
-      def tailor_made_player_requests_hash(day)
-        hash = {
-          d: day.to_time,
-          n: Hash.new(0)
-        }
-
-        TailorMadePlayerRequest.topics.each do |topic|
-          hash[:n][topic] = TailorMadePlayerRequest.count(with_topic: topic, created_before: day.end_of_day)
-        end
-
-        hash
-      end
-
+      hash
     end
 
   end

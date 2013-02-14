@@ -74,7 +74,17 @@ describe Stats::RevenuesStat do
         }
       end
     end
+  end
 
+  describe '.json' do
+    before do
+      create(:revenues_stat, d: Time.now.utc.midnight)
+    end
+    subject { JSON.parse(described_class.json) }
+
+    its(:size) { should eq 1 }
+    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
+    it { subject[0].should have_key('r') }
   end
 
 end

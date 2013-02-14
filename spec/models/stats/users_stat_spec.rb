@@ -32,17 +32,18 @@ describe Stats::UsersStat do
     end
   end
 
-  describe ".json" do
+  describe '.json' do
     before do
       create(:users_stat, d: Time.now.utc.midnight)
     end
+    subject { JSON.parse(described_class.json) }
 
-    describe "set the id as the 'd' field as an integer" do
-      subject { JSON.parse(described_class.json) }
-
-      its(:size) { should eq 1 }
-      it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
-    end
+    its(:size) { should eq 1 }
+    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
+    it { subject[0].should have_key('fr') }
+    it { subject[0].should have_key('pa') }
+    it { subject[0].should have_key('su') }
+    it { subject[0].should have_key('ar') }
   end
 
 end

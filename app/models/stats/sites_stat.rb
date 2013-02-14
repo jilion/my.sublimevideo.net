@@ -1,15 +1,11 @@
 module Stats
-  class SitesStat
-    include Mongoid::Document
-    include Mongoid::Timestamps
-
+  class SitesStat < Base
     store_in collection: 'sites_stats'
 
     # Legacy
     field :states_count, type: Hash
     field :plans_count,  type: Hash
 
-    field :d,  type: DateTime # Day
     field :fr, type: Hash     # free { "beta" => 2, "dev" => 3, "free" => 4 }
     field :sp, type: Integer  # sponsored
     field :tr, type: Integer  # trial
@@ -19,45 +15,22 @@ module Stats
 
     index d: 1
 
-    # send time as id for backbonejs model
-    def as_json(options = nil)
-      json = super
-      json['id'] = d.to_i
-      json
+    def self.json_fields
+      [:fr, :sp, :tr, :pa, :su, :ar]
     end
 
-    # =================
-    # = Class Methods =
-    # =================
+    def self.create_stats
+      self.create(stat_hash(Time.now.utc.midnight))
+    end
 
-    class << self
-
-      def json(from = nil, to = nil)
-        json_stats = if from.present?
-          between(d: from..(to || Time.now.utc.midnight))
-        else
-          scoped
-        end
-
-        json_stats.order_by(d: 1).to_json(only: [:fr, :sp, :tr, :pa, :su, :ar])
-      end
-
-      def create_stats
-        self.create(sites_hash(Time.now.utc.midnight))
-      end
-
-      def sites_hash(day)
-        hash = {
-          d: day.to_time,
-          fr: { free: Site.free.count },
-          pa: { addons: Site.paying.count },
-          su: Site.suspended.count,
-          ar: Site.archived.count
-        }
-
-        hash
-      end
-
+    def self.stat_hash(day)
+      {
+        d: day.to_time,
+        fr: { free: Site.free.count },
+        pa: { addons: Site.paying.count },
+        su: Site.suspended.count,
+        ar: Site.archived.count
+      }
     end
 
   end

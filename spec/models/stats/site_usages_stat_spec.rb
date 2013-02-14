@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Stats::SiteUsagesStat do
 
   context "with a bunch of different site_usage" do
-
     before do
       site = create(:site)
       create(:site_usage, site_id: site.id, day: 5.days.ago.midnight, loader_hits: 2)
@@ -29,7 +28,21 @@ describe Stats::SiteUsagesStat do
         site_usages_stat.tr.should eq({ 's' => 246, 'v' => 462 })
       end
     end
+  end
 
+  describe '.json' do
+    before do
+      create(:site_usages_stat, d: Time.now.utc.midnight)
+    end
+    subject { JSON.parse(described_class.json) }
+
+    its(:size) { should eq 1 }
+    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
+    it { subject[0].should have_key('lh') }
+    it { subject[0].should have_key('ph') }
+    it { subject[0].should have_key('fh') }
+    it { subject[0].should have_key('sr') }
+    it { subject[0].should have_key('tr') }
   end
 
 end

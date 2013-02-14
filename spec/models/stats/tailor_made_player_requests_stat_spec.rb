@@ -55,4 +55,15 @@ describe Stats::TailorMadePlayerRequestsStat do
 
   end
 
+  describe '.json' do
+    before do
+      create(:tailor_made_player_requests_stat, d: Time.now.utc.midnight)
+    end
+    subject { JSON.parse(described_class.json) }
+
+    its(:size) { should eq 1 }
+    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
+    it { subject[0].should have_key('n') }
+  end
+
 end

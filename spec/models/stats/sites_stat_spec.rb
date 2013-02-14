@@ -36,7 +36,20 @@ describe Stats::SitesStat do
         sites_stat["ar"].should eq 2
       end
     end
+  end
 
+  describe '.json' do
+    before do
+      create(:sites_stat, d: Time.now.utc.midnight)
+    end
+    subject { JSON.parse(described_class.json) }
+
+    its(:size) { should eq 1 }
+    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
+    it { subject[0].should have_key('fr') }
+    it { subject[0].should have_key('pa') }
+    it { subject[0].should have_key('su') }
+    it { subject[0].should have_key('ar') }
   end
 
 end

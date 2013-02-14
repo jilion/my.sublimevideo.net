@@ -55,4 +55,19 @@ describe Stats::BillableItemsStat, :addons do
     end
   end
 
+  describe '.json' do
+    before do
+      create(:billable_items_stat, d: Time.now.utc.midnight)
+    end
+    subject { JSON.parse(described_class.json) }
+
+    its(:size) { should eq 1 }
+    it { subject[0]['id'].should eq(Time.now.utc.midnight.to_i) }
+    it { subject[0].should have_key('be') }
+    it { subject[0].should have_key('tr') }
+    it { subject[0].should have_key('sb') }
+    it { subject[0].should have_key('sp') }
+    it { subject[0].should have_key('su') }
+  end
+
 end
